@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,11 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.macro;
+package org.o42a.common.macro.path;
 
-import static org.o42a.compiler.ip.macro.RequireMacroStep.removeMacroRequirement;
-import static org.o42a.compiler.ip.st.macro.StatementConsumer.consumeCondition;
-import static org.o42a.compiler.ip.st.macro.StatementConsumer.consumeSelfAssignment;
+import static org.o42a.common.macro.Macros.consumeCondition;
+import static org.o42a.common.macro.Macros.consumeSelfAssignment;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
@@ -42,27 +41,10 @@ import org.o42a.util.log.LogInfo;
 
 public class MacroExpansionStep extends Step {
 
-	private static final MacroExpansionStep MACRO_EXPANSION_STEP =
+	public static final MacroExpansionStep MACRO_EXPANSION_STEP =
 			new MacroExpansionStep(false);
-	private static final MacroExpansionStep MACRO_REEXPANSION_STEP =
+	public static final MacroExpansionStep MACRO_REEXPANSION_STEP =
 			new MacroExpansionStep(true);
-
-	public static Ref expandMacro(Ref ref) {
-
-		final BoundPath path = removeMacroRequirement(ref.getPath());
-
-		return expandMacro(path).target(ref.distribute());
-	}
-
-	public static BoundPath expandMacro(final BoundPath path) {
-		return path.append(MACRO_EXPANSION_STEP);
-	}
-
-	public static Ref reexpandMacro(Ref ref) {
-		return ref.getPath()
-				.append(MACRO_REEXPANSION_STEP)
-				.target(ref.distribute());
-	}
 
 	static void prohibitedExpansion(CompilerLogger logger, LogInfo location) {
 		logger.error(

@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.macro;
+package org.o42a.common.macro.path;
 
-import static org.o42a.compiler.ip.macro.MacroExpansionStep.prohibitedExpansion;
+import static org.o42a.common.macro.path.MacroExpansionStep.prohibitedExpansion;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import org.o42a.core.Container;
@@ -35,29 +35,9 @@ import org.o42a.util.log.LogInfo;
 
 public final class RequireMacroStep extends Step {
 
-	public static Ref requireMacro(Ref ref, LogInfo expansion) {
-		if (ref == null) {
-			return null;
-		}
-		return ref.getPath()
-				.append(new RequireMacroStep(expansion))
-				.target(ref.distribute());
-	}
-
-	public static Ref removeMacroRequirement(Ref ref) {
-		return removeMacroRequirement(ref.getPath()).target(ref.distribute());
-	}
-
-	public static BoundPath removeMacroRequirement(BoundPath path) {
-		if (path.getRawPath().lastStep() instanceof RequireMacroStep) {
-			return path.cut(1);
-		}
-		return path;
-	}
-
 	private final LogInfo expansion;
 
-	private RequireMacroStep(LogInfo expansion) {
+	public RequireMacroStep(LogInfo expansion) {
 		this.expansion = expansion;
 	}
 

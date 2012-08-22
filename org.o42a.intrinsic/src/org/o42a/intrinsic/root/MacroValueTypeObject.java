@@ -29,7 +29,6 @@ import org.o42a.core.object.macro.Macro;
 import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -66,11 +65,6 @@ public class MacroValueTypeObject extends ValueTypeObject implements Macro {
 	@Override
 	public Path reexpand(MacroExpander expander) {
 		return cantExpand(expander);
-	}
-
-	@Override
-	public Macro prefixWith(PrefixPath prefix) {
-		return this;
 	}
 
 	@Override

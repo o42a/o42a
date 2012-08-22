@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2012 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,26 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.macro;
+package org.o42a.common.builtin;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.ref.FullResolver;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.LogRecord;
+import org.o42a.core.value.Value;
 
 
-public interface MacroExpander extends LocationInfo {
+public interface Builtin extends LocationInfo {
 
-	Scope getScope();
+	boolean isConstantBuiltin();
 
-	Ref getMacroRef();
+	Obj toObject();
 
-	Obj getMacroObject();
+	Value<?> calculateBuiltin(Resolver resolver);
 
-	CompilerLogger getLogger();
+	void resolveBuiltin(FullResolver resolver);
 
-	void error(LogRecord message);
+	InlineEval inlineBuiltin(Normalizer normalizer, Scope origin);
+
+	Eval evalBuiltin();
 
 }

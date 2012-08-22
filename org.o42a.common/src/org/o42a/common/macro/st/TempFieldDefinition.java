@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,66 +17,55 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.macro;
+package org.o42a.common.macro.st;
 
-import static org.o42a.compiler.ip.macro.MacroExpansionStep.prohibitedExpansion;
-import static org.o42a.core.member.field.DefinitionTarget.linkDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
-import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+import static org.o42a.core.object.link.LinkValueType.GETTER;
 
+import org.o42a.core.Scope;
 import org.o42a.core.member.field.*;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.value.ValueStructFinder;
 
 
-final class FieldDefinitionByMacroExpansion extends FieldDefinition {
+final class TempFieldDefinition extends FieldDefinition {
 
 	private final Ref expansion;
-	private Field field;
-	private boolean invalid;
+	private final boolean condition;
 
-	FieldDefinitionByMacroExpansion(Ref expansion) {
+	TempFieldDefinition(Ref expansion, boolean condition) {
 		super(expansion, expansion.distribute());
 		this.expansion = expansion;
-	}
-
-	@Override
-	public boolean isValid() {
-		return !this.invalid && super.isValid();
+		this.condition = condition;
 	}
 
 	@Override
 	public void init(Field field, Ascendants implicitAscendants) {
-		this.field = field;
-		validate();
 	}
 
 	@Override
 	public DefinitionTarget getDefinitionTarget() {
-
-		final TypeRef type = this.field.getDeclaration().getType();
-
-		if (type == null) {
-			return objectDefinition();
-		}
-
-		return linkDefinition(type.getValueStruct().getLinkDepth());
+		return objectDefinition();
 	}
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		define(definer);
+		definer.setAncestor(ancestor(definer.getField().getEnclosingScope()));
+		definer.define(new ExpandMacroBlock(expansion()));
 	}
 
 	@Override
 	public void overrideObject(ObjectDefiner definer) {
-		define(definer);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		define(definer);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -89,30 +78,36 @@ final class FieldDefinitionByMacroExpansion extends FieldDefinition {
 		if (this.expansion == null) {
 			return super.toString();
 		}
-		return this.expansion.toString();
+		if (this.condition) {
+			return this.expansion.toString();
+		}
+		return '=' + this.expansion.toString();
 	}
 
-	private void validate() {
-
-		final FieldDeclaration declaration = this.field.getDeclaration();
-
-		if (declaration.isMacro()) {
-			// Macro can not be defined by macro expansion.
-			prohibitedExpansion(getLogger(), declaration);
-			this.invalid = true;
-			return;
+	private StaticTypeRef ancestor(Scope scope) {
+		if (this.condition) {
+			return GETTER.typeRef(this.expansion, scope);
 		}
-		if (declaration.getLinkType() != null
-				&& declaration.getType() == null) {
-			// Link without interface can not be defined by macro expansion.
-			prohibitedExpansion(getLogger(), declaration);
-			this.invalid = true;
-			return;
-		}
+
+		final ValueStructFinder valueStruct =
+				new ParentValueStructFinder(scope);
+
+		return GETTER.typeRef(this, getScope(), valueStruct);
 	}
 
-	private void define(FieldDefiner definer) {
-		definer.define(valueBlock(this.expansion));
+	private Ref expansion() {
+
+		final LocalScope local = this.expansion.getScope().toLocal();
+
+		if (local == null) {
+			return this.expansion;
+		}
+
+		final PrefixPath prefix =
+				local.toMember().getMemberKey().toPath().toPrefix(
+						local.getEnclosingScope());
+
+		return this.expansion.prefixWith(prefix);
 	}
 
 }

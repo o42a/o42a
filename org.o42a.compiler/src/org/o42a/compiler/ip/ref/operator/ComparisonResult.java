@@ -27,7 +27,7 @@ import static org.o42a.core.st.DefinerEnv.defaultEnv;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
 
-import org.o42a.common.object.BuiltinObject;
+import org.o42a.common.builtin.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;

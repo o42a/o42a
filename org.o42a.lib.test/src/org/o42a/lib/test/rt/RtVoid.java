@@ -22,7 +22,7 @@ package org.o42a.lib.test.rt;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.builtin.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;

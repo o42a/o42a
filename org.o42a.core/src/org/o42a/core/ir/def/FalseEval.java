@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,21 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.st.macro;
+package org.o42a.core.ir.def;
 
-import org.o42a.core.object.Meta;
-import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.NestedMetaDep;
+import org.o42a.core.ir.HostOp;
+import org.o42a.util.fn.Cancelable;
 
 
-final class TempFieldUpdate extends NestedMetaDep {
+final class FalseEval extends InlineEval {
 
-	TempFieldUpdate(TempMetaDep parent, Meta declaredIn) {
-		super(parent, declaredIn);
+	static final FalseEval INSTANCE = new FalseEval();
+
+	private FalseEval() {
+		super(null);
 	}
 
 	@Override
-	public MetaDep nestedDep() {
+	public void write(DefDirs dirs, HostOp host) {
+		dirs.code().go(dirs.falseDir());
+	}
+
+	@Override
+	public String toString() {
+		return "FALSE";
+	}
+
+	@Override
+	protected Cancelable cancelable() {
 		return null;
 	}
 

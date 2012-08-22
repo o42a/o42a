@@ -225,14 +225,6 @@ public class BoundPath extends RefPath {
 	public final BoundPath prefixWith(PrefixPath prefix) {
 
 		final Path oldPath = getRawPath();
-
-		if (oldPath.isAbsolute() && oldPath.getTemplate() == null) {
-			if (prefix.getStart().is(getOrigin())) {
-				return this;
-			}
-			return oldPath.bind(this, prefix.getStart());
-		}
-
 		final Path newPath = oldPath.prefixWith(prefix);
 
 		if (oldPath == newPath) {

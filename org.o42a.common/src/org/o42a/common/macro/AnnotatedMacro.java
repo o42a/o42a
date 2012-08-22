@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,37 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.st.macro;
+package org.o42a.common.macro;
 
-import org.o42a.core.ref.Ref;
-import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.common.object.AnnotatedObject;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.macro.Macro;
+import org.o42a.core.value.ValueStruct;
 
 
-final class ExpandMacroBlock extends BlockBuilder {
+public abstract class AnnotatedMacro extends AnnotatedObject implements Macro {
 
-	private final Ref expansion;
-
-	ExpandMacroBlock(Ref expansion) {
-		super(expansion);
-		this.expansion = expansion;
+	public AnnotatedMacro(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override
-	public void buildBlock(Block<?, ?> block) {
-
-		final ExpandMacroStatement statement =
-				new ExpandMacroStatement(this.expansion.rescope(block.getScope()));
-
-		block.propose(this).alternative(this).statement(statement);
-	}
-
-	@Override
-	public String toString() {
-		if (this.expansion == null) {
-			return super.toString();
-		}
-		return '=' + this.expansion.toString();
+	protected Definitions explicitDefinitions() {
+		return new MacroDef(this, this, this).toDefinitions(ValueStruct.MACRO);
 	}
 
 }

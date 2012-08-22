@@ -19,8 +19,8 @@
 */
 package org.o42a.compiler.ip.type.ascendant;
 
+import static org.o42a.common.macro.Macros.removeMacroRequirement;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.macro.RequireMacroStep.removeMacroRequirement;
 import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.ancestorTypeRef;
 import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.impliedAncestorTypeRef;
 import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.macroAncestorTypeRef;

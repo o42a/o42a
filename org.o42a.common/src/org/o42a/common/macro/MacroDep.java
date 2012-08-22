@@ -1,6 +1,6 @@
 /*
     Modules Commons
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.def;
+package org.o42a.common.macro;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.Obj;
-import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.Value;
+import org.o42a.core.object.Meta;
+import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PathTemplate;
 
 
-public interface Builtin extends LocationInfo {
+public abstract class MacroDep<D extends MetaDep> {
 
-	boolean isConstantBuiltin();
+	public final D buildDep(Ref macroRef, PathTemplate template) {
+		if (macroRef.isStatic()) {
+			return null;
+		}
 
-	Obj toObject();
+		final MacroDepBuilder<D> builder =
+				new MacroDepBuilder<D>(this, macroRef, template);
 
-	Value<?> calculateBuiltin(Resolver resolver);
+		return builder.buildDep();
+	}
 
-	void resolveBuiltin(FullResolver resolver);
+	public abstract D newDep(Meta meta, Ref macroRef, PathTemplate template);
 
-	InlineEval inlineBuiltin(Normalizer normalizer, Scope origin);
-
-	Eval evalBuiltin();
+	public abstract void setParentDep(D dep, MetaDep parentDep);
 
 }

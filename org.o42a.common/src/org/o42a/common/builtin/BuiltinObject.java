@@ -1,6 +1,6 @@
 /*
     Modules Commons
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,22 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.object;
+package org.o42a.common.builtin;
 
-import org.o42a.common.def.Builtin;
-import org.o42a.common.def.BuiltinDef;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.Distributor;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.ObjectScope;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class AnnotatedBuiltin
-		extends AnnotatedObject
-		implements Builtin {
+public abstract class BuiltinObject extends Obj implements Builtin {
 
-	public AnnotatedBuiltin(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources);
+	public BuiltinObject(
+			LocationInfo location,
+			Distributor enclosing,
+			ValueStruct<?, ?> valueStruct) {
+		super(location, enclosing);
+		setValueStruct(valueStruct);
+	}
+
+	protected BuiltinObject(ObjectScope scope, ValueStruct<?, ?> valueStruct) {
+		super(scope);
+		setValueStruct(valueStruct);
 	}
 
 	@Override
@@ -41,7 +51,22 @@ public abstract class AnnotatedBuiltin
 	}
 
 	@Override
-	protected final Definitions explicitDefinitions() {
+	public abstract String toString();
+
+	@Override
+	protected Ascendants buildAscendants() {
+		return new Ascendants(this).setAncestor(
+				value().getValueType().typeRef(
+						this,
+						getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected void declareMembers(ObjectMembers members) {
+	}
+
+	@Override
+	protected Definitions explicitDefinitions() {
 
 		final ValueStruct<?, ?> ancestorValueStruct =
 				type().getAncestor().getValueStruct();

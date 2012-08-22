@@ -19,26 +19,32 @@
 */
 package org.o42a.core.ir.def;
 
+import static org.o42a.core.object.macro.impl.EmptyMacro.EMPTY_MACRO;
+
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
 
-final class FalseInlineEval extends InlineEval {
+final class MacroEval extends InlineEval {
 
-	static final FalseInlineEval FALSE_INLINE_EVAL = new FalseInlineEval();
+	static final MacroEval INSTANCE = new MacroEval();
 
-	private FalseInlineEval() {
+	private MacroEval() {
 		super(null);
 	}
 
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
-		dirs.code().go(dirs.falseDir());
+		dirs.returnValue(
+				ValueType.MACRO
+				.constantValue(EMPTY_MACRO)
+				.op(dirs.getBuilder(), dirs.code()));
 	}
 
 	@Override
 	public String toString() {
-		return "FALSE";
+		return "MACRO";
 	}
 
 	@Override

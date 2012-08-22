@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,46 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.st.macro;
+package org.o42a.common.macro.st;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.sentence.BlockBuilder;
 
 
-final class ExpandMacroStatement extends Statement {
+final class ExpandMacroBlock extends BlockBuilder {
 
 	private final Ref expansion;
 
-	ExpandMacroStatement(Ref expansion) {
-		super(expansion, expansion.distribute());
+	ExpandMacroBlock(Ref expansion) {
+		super(expansion);
 		this.expansion = expansion;
 	}
 
-	public final Ref getExpansion() {
-		return this.expansion;
-	}
-
 	@Override
-	public Definer define(DefinerEnv env) {
-		return new ExpandMacroDefiner(this, env);
-	}
+	public void buildBlock(Block<?, ?> block) {
 
-	@Override
-	public Command command(CommandEnv env) {
-		throw new UnsupportedOperationException();
-	}
+		final ExpandMacroStatement statement =
+				new ExpandMacroStatement(this.expansion.rescope(block.getScope()));
 
-	@Override
-	public Statement reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref expansion = this.expansion.reproduce(reproducer);
-
-		if (expansion == null) {
-			return null;
-		}
-
-		return new ExpandMacroStatement(expansion);
+		block.propose(this).alternative(this).statement(statement);
 	}
 
 	@Override

@@ -23,8 +23,8 @@ import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.common.def.BuiltinDef;
-import org.o42a.common.object.BuiltinObject;
+import org.o42a.common.builtin.BuiltinDef;
+import org.o42a.common.builtin.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
