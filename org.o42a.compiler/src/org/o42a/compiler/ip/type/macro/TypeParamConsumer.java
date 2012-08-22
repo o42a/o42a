@@ -19,13 +19,17 @@
 */
 package org.o42a.compiler.ip.type.macro;
 
+import org.o42a.core.Scope;
 import org.o42a.core.object.macro.MacroConsumer;
+import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.ValueStructFinder;
+import org.o42a.util.log.LogRecord;
 
 
 final class TypeParamConsumer extends TypeConsumer implements Consumer {
@@ -67,11 +71,13 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 		return new TypeParamMacroConsumer(this.macroDep, macroRef, template);
 	}
 
-	private static final class TypeParamMacroConsumer implements MacroConsumer {
+	private static final class TypeParamMacroConsumer
+			implements MacroConsumer {
 
 		private final TypeParamMacroDep macroDep;
 		private final Ref macroRef;
 		private final PathTemplate template;
+		private final TypeParamExpansionLogger expansionLogger;
 
 		TypeParamMacroConsumer(
 				TypeParamMacroDep macroDep,
@@ -80,6 +86,12 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 			this.macroDep = macroDep;
 			this.macroRef = macroRef;
 			this.template = template;
+			this.expansionLogger = new TypeParamExpansionLogger(macroDep);
+		}
+
+		@Override
+		public MacroExpansionLogger getExpansionLogger() {
+			return this.expansionLogger;
 		}
 
 		@Override
@@ -95,6 +107,38 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 			return macroExpansion;
 		}
 
+	}
+
+	private static final class TypeParamExpansionLogger
+			implements MacroExpansionLogger {
+
+		private final TypeParamMacroDep dep;
+
+		TypeParamExpansionLogger(TypeParamMacroDep dep) {
+			this.dep = dep;
+		}
+
+		@Override
+		public void logExpansionError(
+				Scope scope,
+				CompilerLogger logger,
+				LogRecord error) {
+			DEFAULT_MACRO_EXPANSION_LOGGER.logExpansionError(
+					reportScope(scope),
+					logger,
+					error);
+		}
+
+		private Scope reportScope(Scope scope) {
+
+			final Nesting nesting = this.dep.getNesting();
+
+			if (nesting == null) {
+				return scope;
+			}
+
+			return nesting.findObjectIn(scope).getScope();
+		}
 	}
 
 }

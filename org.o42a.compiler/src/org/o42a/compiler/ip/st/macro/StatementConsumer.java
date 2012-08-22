@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.st.macro;
 
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.object.macro.MacroExpansionLogger.DEFAULT_MACRO_EXPANSION_LOGGER;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.DeclarationStatement;
@@ -28,6 +29,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.macro.MacroConsumer;
+import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
@@ -152,7 +154,8 @@ public final class StatementConsumer implements Consumer {
 		return statement.toMember().toField();
 	}
 
-	private static final class StatementMacroConsumer implements MacroConsumer {
+	private static final class StatementMacroConsumer
+			implements MacroConsumer {
 
 		private final Ref macroRef;
 		private final PathTemplate template;
@@ -165,6 +168,11 @@ public final class StatementConsumer implements Consumer {
 			this.macroRef = macroRef;
 			this.tempField = tempField;
 			this.template = template;
+		}
+
+		@Override
+		public MacroExpansionLogger getExpansionLogger() {
+			return DEFAULT_MACRO_EXPANSION_LOGGER;
 		}
 
 		@Override
