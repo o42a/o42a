@@ -24,6 +24,8 @@ import org.o42a.core.ref.Ref;
 
 public interface MacroConsumer {
 
+	MacroExpansionLogger getExpansionLogger();
+
 	Ref expandMacro(Ref macroExpansion);
 
 }

@@ -19,7 +19,9 @@
 */
 package org.o42a.compiler.ip.macro;
 
+import org.o42a.core.Scope;
 import org.o42a.core.object.macro.MacroExpander;
+import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.source.CompilerContext;
@@ -32,12 +34,15 @@ final class MacroExpanderImpl implements MacroExpander {
 
 	private final MacroExpansion expansion;
 	private final PathExpander pathExpander;
+	private final Scope scope;
 
 	MacroExpanderImpl(
 			MacroExpansion expansion,
-			PathExpander pathExpander) {
+			PathExpander pathExpander,
+			Scope scope) {
 		this.expansion = expansion;
 		this.pathExpander = pathExpander;
+		this.scope = scope;
 	}
 
 	@Override
@@ -62,7 +67,11 @@ final class MacroExpanderImpl implements MacroExpander {
 
 	@Override
 	public void error(LogRecord message) {
-		getLogger().log(message);
+
+		final MacroExpansionLogger expansionLogger =
+				this.expansion.getExpansionLogger();
+
+		expansionLogger.logExpansionError(this.scope, getLogger(), message);
 	}
 
 }

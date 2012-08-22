@@ -25,6 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
 import org.o42a.core.object.macro.MacroConsumer;
+import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
@@ -36,6 +37,7 @@ import org.o42a.core.value.ValueType;
 public class MacroExpansion extends PathFragment {
 
 	private final Ref macroRef;
+	private MacroExpansionLogger expansionLogger;
 	private Scope origin;
 	private Path initialExpansion;
 	private IdentityHashMap<Scope, Path> expansions;
@@ -84,7 +86,7 @@ public class MacroExpansion extends PathFragment {
 		final Macro macro = macro(expander, start);
 
 		if (macro != null) {
-			this.initialExpansion = expand(expander, macro);
+			this.initialExpansion = expand(expander, start, macro);
 		}
 		this.init = 1;
 
@@ -99,7 +101,14 @@ public class MacroExpansion extends PathFragment {
 		return '#' + this.macroRef.toString();
 	}
 
+	final MacroExpansionLogger getExpansionLogger() {
+		return this.expansionLogger;
+	}
+
 	final Ref expandMacro(MacroConsumer consumer, Scope scope) {
+		if (this.expansionLogger == null) {
+			this.expansionLogger = consumer.getExpansionLogger();
+		}
 
 		final Ref macroRef = getMacroRef();
 		final Ref macroExpansion = path(scope).target(macroRef.distribute());
@@ -145,7 +154,7 @@ public class MacroExpansion extends PathFragment {
 			reexpansion = null;
 		} else {
 			// Re-expand the macro in the given scope.
-			reexpansion = reexpand(expander, macro);
+			reexpansion = reexpand(expander, start, macro);
 		}
 
 		this.expansions.put(start, reexpansion);
@@ -153,21 +162,21 @@ public class MacroExpansion extends PathFragment {
 		return reexpansion;
 	}
 
-	private Path expand(PathExpander expander, Macro macro) {
+	private Path expand(PathExpander expander, Scope scope, Macro macro) {
 		if (this.reexpansion) {
-			return reexpand(expander, macro);
+			return reexpand(expander, scope, macro);
 		}
 
 		final MacroExpanderImpl macroExpander =
-				new MacroExpanderImpl(this, expander);
+				new MacroExpanderImpl(this, expander, scope);
 
 		return prefixExpansion(macro.expand(macroExpander));
 	}
 
-	private Path reexpand(PathExpander expander, Macro macro) {
+	private Path reexpand(PathExpander expander, Scope scope, Macro macro) {
 
 		final MacroExpanderImpl macroExpander =
-				new MacroExpanderImpl(this, expander);
+				new MacroExpanderImpl(this, expander, scope);
 
 		return prefixExpansion(macro.reexpand(macroExpander));
 	}
