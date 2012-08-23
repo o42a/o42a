@@ -19,18 +19,34 @@
 */
 package org.o42a.common.macro;
 
+import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PathTemplate;
 
 
-public abstract class MacroDep<D extends MetaDep> extends RefDep<D> {
+public abstract class RefDep<D extends MetaDep> {
 
-	@Override
+	public final D buildDep(Ref ref, PathTemplate template) {
+		if (ref.isStatic()) {
+			return null;
+		}
+
+		final RefDepBuilder<D> builder =
+				new RefDepBuilder<D>(this, ref, template);
+
+		return builder.buildDep();
+	}
+
+	public abstract D newDep(Meta meta, Ref ref, PathTemplate template);
+
+	public abstract void setParentDep(D dep, MetaDep parentDep);
+
 	public void invalidRef(Ref ref) {
 		ref.getLogger().error(
-				"invalid_macro_ref",
+				"invalid_ref_meta_dep",
 				ref,
-				"Invalid macro reference");
+				"Invalid meta-reference");
 	}
 
 }

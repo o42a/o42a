@@ -37,17 +37,17 @@ import org.o42a.core.ref.path.*;
 import org.o42a.util.ArrayUtil;
 
 
-final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
+final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 
-	private final MacroDep<D> builder;
-	private final Ref macroRef;
+	private final RefDep<D> dep;
+	private final Ref ref;
 	private final PathTemplate template;
 	private Meta[] parentMeta;
 	private Path depPath;
 
-	MacroDepBuilder(MacroDep<D> builder, Ref macroRef, PathTemplate template) {
-		this.builder = builder;
-		this.macroRef = macroRef;
+	RefDepBuilder(RefDep<D> dep, Ref ref, PathTemplate template) {
+		this.dep = dep;
+		this.ref = ref;
 		this.template = template;
 	}
 
@@ -81,7 +81,7 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 			Container enclosing,
 			ReversePath reversePath) {
 		if (this.depPath != null) {
-			return invalidMacroRef();
+			return invalidRef();
 		}
 		return appendParentMeta(enclosed.getScope());
 	}
@@ -89,17 +89,17 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 	@Override
 	public boolean member(Container container, Step step, Member member) {
 		if (container.toObject() == null) {
-			return invalidMacroRef();
+			return invalidRef();
 		}
 		if (member.toField() == null) {
-			return invalidMacroRef();
+			return invalidRef();
 		}
 		return appendDepStep(step);
 	}
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		return invalidMacroRef();
+		return invalidRef();
 	}
 
 	@Override
@@ -109,12 +109,12 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 			Ref array,
 			Ref index,
 			ArrayElement element) {
-		return invalidMacroRef();
+		return invalidRef();
 	}
 
 	@Override
 	public boolean dep(Obj object, Step step, Ref dependency) {
-		return invalidMacroRef();
+		return invalidRef();
 	}
 
 	@Override
@@ -157,8 +157,8 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 
 	public final D buildDep() {
 
-		final BoundPath path = this.macroRef.getPath();
-		final Scope start = this.macroRef.getScope();
+		final BoundPath path = this.ref.getPath();
+		final Scope start = this.ref.getScope();
 		final PathResolution resolution =
 				path.walk(pathResolver(start, dummyUser()), this);
 
@@ -166,11 +166,11 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 			return null;
 		}
 		if (resolution.getObject() == null) {
-			invalidMacroRef();
+			invalidRef();
 			return null;
 		}
 		if (this.parentMeta == null) {
-			invalidMacroRef();
+			invalidRef();
 			return null;
 		}
 
@@ -181,22 +181,19 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 		return dep;
 	}
 
-	private final boolean invalidMacroRef() {
-		this.macroRef.getLogger().error(
-				"invalid_macro_ref",
-				this.macroRef,
-				"Invalid macro reference");
+	private final boolean invalidRef() {
+		this.dep.invalidRef(this.ref);
 		return false;
 	}
 
 	private D newDep() {
 
-		final Ref macroRef;
+		final Ref ref;
 		final Meta meta = this.parentMeta[0];
-		final Scope scope = this.macroRef.getScope();
+		final Scope scope = this.ref.getScope();
 
 		if (scope.toObject() != null) {
-			macroRef = this.macroRef;
+			ref = this.ref;
 		} else {
 
 			final Scope metaScope = meta.getObject().getScope();
@@ -206,10 +203,10 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 					.toPath()
 					.toPrefix(metaScope);
 
-			macroRef = this.macroRef.prefixWith(prefix);
+			ref = this.ref.prefixWith(prefix);
 		}
 
-		return this.builder.newDep(meta, macroRef, this.template);
+		return this.dep.newDep(meta, ref, this.template);
 	}
 
 	private boolean appendParentMeta(Scope scope) {
@@ -245,20 +242,20 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 		}
 	}
 
-	private IntermediateMacroDep addIntermediateDeps(D dep) {
+	private IntermediateMetaDep addIntermediateDeps(D dep) {
 
 		final int lastMetaIdx = this.parentMeta.length - 1;
-		IntermediateMacroDep nested = null;
+		IntermediateMetaDep nested = null;
 
 		for (int i = 1; i < lastMetaIdx; ++i) {
 
-			final IntermediateMacroDep parent;
+			final IntermediateMetaDep parent;
 
 			if (nested == null) {
-				parent = new IntermediateMacroDep(dep);
-				this.builder.setParentDep(dep, parent);
+				parent = new IntermediateMetaDep(dep);
+				this.dep.setParentDep(dep, parent);
 			} else {
-				parent = new IntermediateMacroDep(nested);
+				parent = new IntermediateMetaDep(nested);
 				nested.setParentDep(parent);
 			}
 
@@ -268,15 +265,15 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 		return nested;
 	}
 
-	private void addTopDep(D dep, IntermediateMacroDep nested) {
+	private void addTopDep(D dep, IntermediateMetaDep nested) {
 		if (nested == null) {
 
-			final TopMacroDep top = new TopMacroDep(dep, depPath());
+			final TopMetaDep top = new TopMetaDep(dep, depPath());
 
-			this.builder.setParentDep(dep, top);
+			this.dep.setParentDep(dep, top);
 		} else {
 
-			final TopMacroDep top = new TopMacroDep(nested, depPath());
+			final TopMetaDep top = new TopMetaDep(nested, depPath());
 
 			nested.setParentDep(top);
 		}
@@ -293,14 +290,14 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 			depPath = this.depPath;
 		}
 
-		return depPath.bind(this.macroRef, topMeta.getObject().getScope());
+		return depPath.bind(this.ref, topMeta.getObject().getScope());
 	}
 
-	private static final class IntermediateMacroDep extends ParentMetaDep {
+	private static final class IntermediateMetaDep extends ParentMetaDep {
 
 		private MetaDep parentDep;
 
-		IntermediateMacroDep(MetaDep nested) {
+		IntermediateMetaDep(MetaDep nested) {
 			super(nested);
 		}
 
@@ -315,11 +312,11 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 
 	}
 
-	private static final class TopMacroDep extends ParentMetaDep {
+	private static final class TopMetaDep extends ParentMetaDep {
 
 		private final BoundPath depPath;
 
-		TopMacroDep(MetaDep nested, BoundPath depPath) {
+		TopMetaDep(MetaDep nested, BoundPath depPath) {
 			super(nested);
 			this.depPath = depPath;
 		}
