@@ -22,15 +22,12 @@ package org.o42a.compiler.ip.type.macro;
 import org.o42a.common.macro.MacroDep;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.MetaKey;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 
 
-final class TypeParamMacroDep
-		extends MacroDep<TypeParamMetaDep>
-		implements MetaKey {
+final class TypeParamMacroDep extends MacroDep<TypeParamMetaDep> {
 
 	private final Nesting nesting;
 	private final int depth;

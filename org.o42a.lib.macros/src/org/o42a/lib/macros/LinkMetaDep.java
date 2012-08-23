@@ -30,8 +30,8 @@ final class LinkMetaDep extends MetaDep {
 	private final Ref linkRef;
 	private MetaDep parentDep;
 
-	LinkMetaDep(Meta declaredIn, LinkDep linkDep, Ref linkRef) {
-		super(declaredIn, linkDep);
+	LinkMetaDep(Meta declaredIn, Ref linkRef) {
+		super(declaredIn);
 		this.linkRef = linkRef;
 	}
 

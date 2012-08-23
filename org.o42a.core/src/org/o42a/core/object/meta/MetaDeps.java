@@ -19,8 +19,19 @@
 */
 package org.o42a.core.object.meta;
 
+import org.o42a.util.Chain;
 
 
-public interface MetaKey {
+final class MetaDeps extends Chain<MetaDep> {
+
+	@Override
+	protected MetaDep next(MetaDep item) {
+		return item.getNext();
+	}
+
+	@Override
+	protected void setNext(MetaDep prev, MetaDep next) {
+		prev.setNext(next);
+	}
 
 }

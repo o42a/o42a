@@ -32,22 +32,15 @@ import org.o42a.core.ref.path.PathResolution;
 
 public abstract class MetaDep {
 
-	private final MetaKey key;
 	private final Meta declaredIn;
 	private BoundPath parentPath;
 	private Nesting nesting;
+	private MetaDep next;
 
-	public MetaDep(Meta declaredIn, MetaKey key) {
+	public MetaDep(Meta declaredIn) {
 		assert declaredIn != null :
 			"Meta the dependency declared in is not specified";
-		assert key != null :
-			"Meta key not specified";
 		this.declaredIn = declaredIn;
-		this.key = key;
-	}
-
-	public final MetaKey getKey() {
-		return this.key;
 	}
 
 	public final Meta getDeclaredIn() {
@@ -109,12 +102,12 @@ public abstract class MetaDep {
 		declaredIn.addDep(this);
 	}
 
-	@Override
-	public String toString() {
-		if (this.key == null) {
-			return super.toString();
-		}
-		return this.key.toString();
+	final MetaDep getNext() {
+		return this.next;
+	}
+
+	final void setNext(MetaDep next) {
+		this.next = next;
 	}
 
 	protected abstract boolean triggered(Meta meta);
