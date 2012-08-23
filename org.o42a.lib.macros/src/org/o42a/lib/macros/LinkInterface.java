@@ -19,15 +19,10 @@
 */
 package org.o42a.lib.macros;
 
-import static org.o42a.common.macro.Macros.expandMacro;
-import static org.o42a.core.member.MemberName.fieldName;
-import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
-
 import org.o42a.common.macro.AnnotatedMacro;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueStruct;
@@ -42,9 +37,6 @@ import org.o42a.util.log.LogRecord;
 @SourcePath(relativeTo = MacrosModule.class, value = "interface__.o42a")
 class LinkInterface extends AnnotatedMacro {
 
-	private static final MemberName LINK_NAME =
-			fieldName(CASE_SENSITIVE.canonicalName("link"));
-
 	private Ref link;
 
 	LinkInterface(MemberOwner owner, AnnotatedSources sources) {
@@ -53,7 +45,6 @@ class LinkInterface extends AnnotatedMacro {
 
 	@Override
 	public Path expand(MacroExpander expander) {
-		// TODO Auto-generated method stub
 		return linkInterface(expander);
 	}
 
@@ -109,10 +100,7 @@ class LinkInterface extends AnnotatedMacro {
 		if (this.link != null) {
 			return this.link;
 		}
-
-		return this.link = expandMacro(LINK_NAME.key(getScope()).toPath())
-				.bind(this, getScope())
-				.target(distribute());
+		return this.link = LinkDep.linkRef(this);
 	}
 
 	private LogRecord notLink(MacroExpander expander) {
