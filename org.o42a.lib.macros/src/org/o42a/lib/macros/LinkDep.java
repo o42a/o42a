@@ -28,12 +28,11 @@ import org.o42a.common.macro.RefDep;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.MetaKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 
 
-final class LinkDep extends RefDep<LinkMetaDep> implements MetaKey {
+final class LinkDep extends RefDep<LinkMetaDep> {
 
 	private static final MemberName LINK_NAME =
 			fieldName(CASE_SENSITIVE.canonicalName("link"));
@@ -59,7 +58,7 @@ final class LinkDep extends RefDep<LinkMetaDep> implements MetaKey {
 
 	@Override
 	public LinkMetaDep newDep(Meta meta, Ref ref, PathTemplate template) {
-		return new LinkMetaDep(meta, this, ref);
+		return new LinkMetaDep(meta, ref);
 	}
 
 	@Override

@@ -23,12 +23,11 @@ import org.o42a.common.macro.MacroDep;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.MetaKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 
 
-final class TempMacroDep extends MacroDep<TempMetaDep> implements MetaKey {
+final class TempMacroDep extends MacroDep<TempMetaDep> {
 
 	private final MemberField tempField;
 

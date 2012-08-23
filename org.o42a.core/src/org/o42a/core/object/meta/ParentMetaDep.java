@@ -27,7 +27,7 @@ public abstract class ParentMetaDep extends MetaDep {
 	private final MetaDep nested;
 
 	public ParentMetaDep(MetaDep nested) {
-		super(nested.getDeclaredIn().getParentMeta(), nested.getKey());
+		super(nested.getDeclaredIn().getParentMeta());
 		this.nested = nested;
 	}
 

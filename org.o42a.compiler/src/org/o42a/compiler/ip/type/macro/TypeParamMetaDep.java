@@ -44,7 +44,7 @@ final class TypeParamMetaDep extends MetaDep {
 			TypeParamMacroDep macroDep,
 			Ref macroRef,
 			PathTemplate template) {
-		super(declaredIn, macroDep);
+		super(declaredIn);
 		this.macroDep = macroDep;
 		this.macroRef = macroRef;
 		this.template = template;

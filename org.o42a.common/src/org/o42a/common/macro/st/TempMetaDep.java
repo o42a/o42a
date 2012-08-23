@@ -35,7 +35,7 @@ final class TempMetaDep extends MetaDep {
 	private MetaDep nestedDep;
 
 	TempMetaDep(Meta declaredIn, TempMacroDep dep, Ref macroRef) {
-		super(declaredIn, dep);
+		super(declaredIn);
 		this.dep = dep;
 		this.macroRef = macroRef;
 	}

@@ -51,6 +51,15 @@ public abstract class Chain<T> implements Iterable<T> {
 		return this.first == null;
 	}
 
+	public final boolean contains(T item) {
+		for (T t = getFirst(); t != null; t = next(t)) {
+			if (t.equals(item)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public final void clear() {
 		this.first = this.last = null;
 	}

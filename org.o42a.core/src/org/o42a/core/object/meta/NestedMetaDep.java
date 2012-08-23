@@ -27,7 +27,7 @@ public abstract class NestedMetaDep extends MetaDep {
 	private final MetaDep parent;
 
 	public NestedMetaDep(MetaDep parent, Meta declaredIn) {
-		super(declaredIn, parent.getKey());
+		super(declaredIn);
 		assert parent.getDeclaredIn().is(declaredIn.getParentMeta()) :
 			parent.getDeclaredIn() + " is not a parent of " + declaredIn;
 		this.parent = parent;

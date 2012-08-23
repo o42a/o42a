@@ -19,7 +19,8 @@
 */
 package org.o42a.core.object.meta;
 
-import java.util.*;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
@@ -28,10 +29,10 @@ import org.o42a.core.object.Obj;
 
 public abstract class ObjectMeta {
 
-	private IdentityHashMap<MetaKey, Boolean> tripped;
-	private HashMap<MetaKey, MetaDep> deps;
+	private IdentityHashMap<MetaDep, Boolean> tripped;
+	private MetaDeps deps;
 	private Iterator<Scope> checkedAscendants;
-	private Iterator<MetaDep> checkedDeps;
+	private MetaDep checkedDep;
 	private boolean initialized;
 	private byte updated;
 
@@ -53,8 +54,6 @@ public abstract class ObjectMeta {
 
 	final void addDep(MetaDep dep) {
 
-		final MetaKey key = dep.getKey();
-
 		MetaDep currentDep = dep;
 		Meta currentMeta = meta();
 
@@ -63,9 +62,9 @@ public abstract class ObjectMeta {
 			final ObjectMeta objectMeta = currentMeta;
 
 			if (objectMeta.deps == null) {
-				objectMeta.deps = new HashMap<MetaKey, MetaDep>();
+				objectMeta.deps = new MetaDeps();
 			}
-			objectMeta.deps.put(key, currentDep);
+			objectMeta.deps.add(currentDep);
 
 			final MetaDep parentDep = currentDep.parentDep();
 
@@ -81,13 +80,12 @@ public abstract class ObjectMeta {
 	boolean checkUpdated(MetaDep dep) {
 
 		final Meta meta = meta();
-		final MetaKey key = dep.getKey();
 
 		if (this.tripped == null) {
-			this.tripped = new IdentityHashMap<MetaKey, Boolean>();
+			this.tripped = new IdentityHashMap<MetaDep, Boolean>();
 		} else {
 
-			final Boolean cached = this.tripped.get(key);
+			final Boolean cached = this.tripped.get(dep);
 
 			if (cached != null) {
 				return cached.booleanValue();
@@ -97,30 +95,28 @@ public abstract class ObjectMeta {
 		final boolean triggered = dep.triggered(meta);
 
 		if (triggered && dep.changed(meta)) {
-			this.tripped.put(key, Boolean.TRUE);
+			this.tripped.put(dep, Boolean.TRUE);
 			return true;
 		}
 
-		this.tripped.put(key, Boolean.FALSE);
+		this.tripped.put(dep, Boolean.FALSE);
 
 		return false;
 	}
 
-	private ObjectMeta init() {
+	private void init() {
+		if (this.initialized) {
+			return;
+		}
+
+		this.initialized = true;
 
 		final ObjectMeta parentMeta = meta().getParentMeta();
-
-		if (this.initialized) {
-			return this;
-		}
-		this.initialized = true;
 
 		if (parentMeta != null) {
 			parentMeta.init();
 			importParentDeps(parentMeta);
 		}
-
-		return this;
 	}
 
 	private void importParentDeps(ObjectMeta parentMeta) {
@@ -128,14 +124,9 @@ public abstract class ObjectMeta {
 			return;
 		}
 
-		for (Map.Entry<MetaKey, MetaDep> e : parentMeta.deps.entrySet()) {
-
-			final MetaDep parentDep = e.getValue();
-			final MetaKey key = e.getKey();
-
-			if (this.deps != null && this.deps.containsKey(key)) {
-				continue;
-			}
+		for (MetaDep parentDep = parentMeta.deps.getFirst();
+				parentDep != null;
+				parentDep = parentDep.getNext()) {
 
 			final MetaDep dep = parentDep.nestedDep();
 
@@ -146,9 +137,11 @@ public abstract class ObjectMeta {
 				continue;
 			}
 			if (this.deps == null) {
-				this.deps = new HashMap<MetaKey, MetaDep>();
+				this.deps = new MetaDeps();
+			} else if (this.deps.contains(dep)) {
+				continue;
 			}
-			this.deps.put(key, dep);
+			this.deps.add(dep);
 		}
 	}
 
@@ -183,27 +176,24 @@ public abstract class ObjectMeta {
 
 	private MetaDep nextDep() {
 		for (;;) {
-			if (this.checkedDeps != null) {
-				if (this.checkedDeps.hasNext()) {
-					return this.checkedDeps.next();
+			if (this.checkedDep != null) {
+				this.checkedDep = this.checkedDep.getNext();
+				if (this.checkedDep != null) {
+					return this.checkedDep;
 				}
-				this.checkedDeps = null;
 			}
 
-			final ObjectMeta nextMeta = nextMeta();
+			final ObjectMeta nextMeta = nextMetaWithDeps();
 
 			if (nextMeta == null) {
 				return null;
 			}
-			if (nextMeta.deps == null) {
-				continue;
-			}
 
-			this.checkedDeps = nextMeta.deps.values().iterator();
+			return this.checkedDep = nextMeta.deps.getFirst();
 		}
 	}
 
-	private ObjectMeta nextMeta() {
+	private ObjectMeta nextMetaWithDeps() {
 		while (this.checkedAscendants.hasNext()) {
 
 			final Scope nextAscendant = this.checkedAscendants.next();
@@ -215,7 +205,10 @@ public abstract class ObjectMeta {
 
 			final ObjectMeta nextMeta = nextAscendant.toObject().meta();
 
-			return nextMeta.init();
+			nextMeta.init();
+			if (nextMeta.deps != null && !nextMeta.deps.isEmpty()) {
+				return nextMeta;
+			}
 		}
 
 		return null;
