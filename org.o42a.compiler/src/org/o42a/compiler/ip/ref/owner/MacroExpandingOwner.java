@@ -39,7 +39,7 @@ final class MacroExpandingOwner extends Owner {
 
 	@Override
 	public boolean isMacroExpanding() {
-		return super.isMacroExpanding();
+		return true;
 	}
 
 	@Override
