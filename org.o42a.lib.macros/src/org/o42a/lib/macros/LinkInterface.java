@@ -66,8 +66,9 @@ class LinkInterface extends AnnotatedMacro {
 
 	private LinkValueStruct linkStruct(MacroExpander expander) {
 
+		final Scope scope = expander.getMacroObject().getScope();
 		final Obj target =
-				link().resolve(expander.getScope().resolver()).toObject();
+				link().upgradeScope(scope).resolve(scope.resolver())	.toObject();
 
 		if (target == null) {
 			expander.getLogger().log(notLink(expander));
@@ -89,7 +90,7 @@ class LinkInterface extends AnnotatedMacro {
 			MacroExpander expander,
 			LinkValueStruct linkStruct) {
 
-		final Scope scope = expander.getScope();
+		final Scope scope = expander.getMacroObject().getScope();
 		final PrefixPath prefix =
 				link().getPath().rebuildIn(scope).toPrefix(scope);
 

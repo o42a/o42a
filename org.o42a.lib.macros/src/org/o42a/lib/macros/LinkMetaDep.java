@@ -35,10 +35,6 @@ final class LinkMetaDep extends MetaDep {
 		this.linkRef = linkRef;
 	}
 
-	public final Ref getLinkRef() {
-		return this.linkRef;
-	}
-
 	@Override
 	public MetaDep parentDep() {
 		return this.parentDep;
