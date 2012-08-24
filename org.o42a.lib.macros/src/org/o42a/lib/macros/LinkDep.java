@@ -44,13 +44,14 @@ final class LinkDep extends RefDep<LinkMetaDep> {
 				expandMacro(LINK_NAME.key(macro.getScope()).toPath())
 				.bind(macro, macro.getScope())
 				.target(macro.distribute());
-		final LinkMetaDep dep = INSTANCE.buildDep(
-				linkRef.consume(DEFAULT_CONSUMER),
-				null);
+		final Ref ref = linkRef.consume(DEFAULT_CONSUMER);
+		final LinkMetaDep dep = INSTANCE.buildDep(ref, null);
 
-		dep.register();
+		if (dep != null) {
+			dep.register();
+		}
 
-		return dep.getLinkRef();
+		return ref;
 	}
 
 	private LinkDep() {
