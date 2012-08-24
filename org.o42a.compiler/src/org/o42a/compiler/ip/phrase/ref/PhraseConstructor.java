@@ -95,6 +95,14 @@ class PhraseConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	public String toString() {
+		if (this.phrase == null) {
+			return super.toString();
+		}
+		return this.phrase.toString();
+	}
+
+	@Override
 	protected Obj createObject() {
 		return new PhraseObject(this);
 	}
