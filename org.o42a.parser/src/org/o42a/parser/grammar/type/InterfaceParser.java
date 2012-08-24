@@ -19,6 +19,8 @@
 */
 package org.o42a.parser.grammar.type;
 
+import static org.o42a.ast.atom.ParenthesisSign.CLOSING_PARENTHESIS;
+import static org.o42a.ast.atom.ParenthesisSign.OPENING_PARENTHESIS;
 import static org.o42a.parser.grammar.type.TypeParser.TYPE;
 
 import org.o42a.ast.atom.ParenthesisSign;
@@ -65,10 +67,11 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 
 		context.skip();
 
-		final SignNode<ParenthesisSign> opening = new SignNode<ParenthesisSign>(
-				start,
-				context.current().fix(),
-				ParenthesisSign.OPENING_PARENTHESIS);
+		final SignNode<ParenthesisSign> opening =
+				new SignNode<ParenthesisSign>(
+						start,
+						context.current().fix(),
+						OPENING_PARENTHESIS);
 		final SignNode<DefinitionKind> kind = context.push(DEFINITION_KIND);
 
 		if (kind == null) {
@@ -95,7 +98,7 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			closing = new SignNode<ParenthesisSign>(
 					closingStart,
 					context.current().fix(),
-					ParenthesisSign.CLOSING_PARENTHESIS);
+					CLOSING_PARENTHESIS);
 		}
 
 		return context.acceptComments(

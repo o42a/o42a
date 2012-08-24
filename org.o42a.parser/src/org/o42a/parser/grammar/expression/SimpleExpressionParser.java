@@ -30,7 +30,6 @@ import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.ValueTypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
-import org.o42a.parser.grammar.type.ValueTypeParser;
 
 
 public class SimpleExpressionParser implements Parser<ExpressionNode> {
@@ -85,10 +84,10 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			return context.parse(unaryExpression());
 		case '#':
 
-			final ScopeRefNode macrosRef = context.parse(scopeRef());
+			final RefNode macroRef = context.parse(ref());
 
-			if (macrosRef != null) {
-				return macrosRef;
+			if (macroRef != null) {
+				return macroRef;
 			}
 
 			return context.parse(macroExpansion());
@@ -206,7 +205,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 					final TypeNode ascendant = (TypeNode) expression;
 					final ValueTypeNode valueType =
-							context.parse(new ValueTypeParser(ascendant));
+							context.parse(valueType(ascendant));
 
 					if (valueType != null) {
 						expression = valueType;

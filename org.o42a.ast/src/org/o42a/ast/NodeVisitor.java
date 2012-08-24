@@ -65,6 +65,11 @@ public abstract class NodeVisitor<R, P>
 		return visitAtom(string, p);
 	}
 
+	@Override
+	public R visitTypeExpression(TypeExpressionNode type, P p) {
+		return type.getExpression().accept(this, p);
+	}
+
 	public R visitTypeRef(TypeRefNode<?> typeRef, P p) {
 		return visitPart(typeRef, p);
 	}
@@ -125,10 +130,6 @@ public abstract class NodeVisitor<R, P>
 
 	protected R visitPart(Node item, P p) {
 		return visitAny(item, p);
-	}
-
-	protected R visitType(TypeNode type, P p) {
-		return visitAny(type, p);
 	}
 
 	protected R visitDeclarable(DeclarableNode declarable, P p) {

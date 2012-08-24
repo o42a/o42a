@@ -45,6 +45,11 @@ public abstract class AbstractTypeVisitor<R, P>
 	}
 
 	@Override
+	public R visitTypeExpression(TypeExpressionNode type, P p) {
+		return visitType(type, p);
+	}
+
+	@Override
 	protected R visitRef(RefNode ref, P p) {
 		return visitType(ref, p);
 	}

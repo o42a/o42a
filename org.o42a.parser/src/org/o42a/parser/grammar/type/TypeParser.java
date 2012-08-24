@@ -21,8 +21,13 @@ package org.o42a.parser.grammar.type;
 
 import static org.o42a.parser.Grammar.*;
 
+import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.MemberRefNode.Qualifier;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeExpressionNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -38,40 +43,91 @@ public class TypeParser implements Parser<TypeNode> {
 	@Override
 	public TypeNode parse(ParserContext context) {
 
-		final TypeNode ancestor;
+		final TypeNode type;
 		final int c = context.next();
 
 		switch (c) {
 		case '&':
-			ancestor = context.parse(samples());
-			if (ancestor == null) {
-				missingInterface(context);
-				return null;
-			}
+			type = context.parse(samples());
 			break;
 		case '#':
-			ancestor = context.parse(macroExpansion());
-			if (ancestor == null) {
-				return null;
-			}
+			type = parseMacroExpression(context);
 			break;
 		default:
-
-			final RefNode ref = context.parse(ref());
-
-			if (ref == null) {
-				missingInterface(context);
-				return null;
-			}
-
-			final AscendantsNode ascendants = context.parse(ascendants(ref));
-
-			ancestor = context.acceptComments(
-					true,
-					ascendants != null ? ascendants : ref);
+			type = parseRef(context);
 		}
 
-		return ancestor;
+		if (type == null) {
+			missingInterface(context);
+			return null;
+		}
+
+		return context.acceptComments(true, type);
+	}
+
+	private TypeNode parseMacroExpression(ParserContext context) {
+
+		final RefNode macroRef = context.parse(ref());
+
+		if (macroRef == null) {
+			return context.parse(macroExpansion());
+		}
+
+		final TypeNode type = parseTypeExpression(context, macroRef);
+
+		if (type != null) {
+			return type;
+		}
+
+		return macroRef;
+	}
+
+	private TypeNode parseRef(ParserContext context) {
+
+		final RefNode ref = context.parse(ref());
+
+		if (ref == null) {
+			return null;
+		}
+		if (ref instanceof MemberRefNode) {
+
+			final MemberRefNode memberRef = (MemberRefNode) ref;
+			final SignNode<Qualifier> qualifier = memberRef.getQualifier();
+
+			if (qualifier != null && qualifier.getType() == Qualifier.MACRO) {
+
+				final TypeNode type = parseTypeExpression(context, ref);
+
+				if (type != null) {
+					return type;
+				}
+			}
+		}
+
+		final AscendantsNode ascendants = context.parse(ascendants(ref));
+
+		if (ascendants != null) {
+			return ascendants;
+		}
+
+		return ref;
+	}
+
+	private TypeNode parseTypeExpression(
+			ParserContext context,
+			RefNode prefix) {
+
+		final ExpressionNode expression =
+				context.parse(simpleExpression(prefix));
+
+		if (expression == null) {
+			return null;
+		}
+		if (expression instanceof TypeNode) {
+			return (TypeNode) expression;
+		}
+
+		return new TypeExpressionNode(expression);
 	}
 
 	private void missingInterface(ParserContext context) {
