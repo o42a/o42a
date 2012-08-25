@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link GetterValueTypeObject}.
+ * o42a sources for {@link VariableCast}.
  * 
- * File: root/getter.o42a
+ * File: root/variable/cast.o42a
  */
-public final class GetterValueTypeObject__SRC implements AnnotatedSources {
+public final class VariableCast__SRC implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public GetterValueTypeObject__SRC(AnnotatedSources parent) {
+	public VariableCast__SRC(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,17 +28,12 @@ public final class GetterValueTypeObject__SRC implements AnnotatedSources {
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"getter.o42a");
+				"cast.o42a");
 	}
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
-		return new Field[] {
-			new org.o42a.intrinsic.link.GetterCast(
-					owner,
-					new org.o42a.intrinsic.link.GetterCast__SRC(this))
-			.getScope().toField(),
-		};
+		return new Field[0];
 	}
 
 }
