@@ -33,7 +33,12 @@ public final class VariableValueTypeObject__SRC implements AnnotatedSources {
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
-		return new Field[0];
+		return new Field[] {
+			new org.o42a.intrinsic.link.VariableCast(
+					owner,
+					new org.o42a.intrinsic.link.VariableCast__SRC(this))
+			.getScope().toField(),
+		};
 	}
 
 }
