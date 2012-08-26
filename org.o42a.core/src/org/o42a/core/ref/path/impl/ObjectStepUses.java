@@ -65,12 +65,10 @@ public class ObjectStepUses {
 		return this.uses;
 	}
 
-	public final RefUsage usage(
-			PathResolver resolver,
-			BoundPath path,
-			int index) {
+	public final RefUsage usage(StepResolver resolver) {
 
-		final int nextIdx = index + 1;
+		final int nextIdx = resolver.getIndex() + 1;
+		final BoundPath path = resolver.getPath();
 
 		if (path.length() == nextIdx) {
 			return resolver.getUsage();
@@ -81,9 +79,10 @@ public class ObjectStepUses {
 		return nextStep.getObjectUsage();
 	}
 
-	public final void useBy(PathResolver resolver, BoundPath path, int index) {
+	public final void useBy(StepResolver resolver) {
 
-		final int nextIdx = index + 1;
+		final int nextIdx = resolver.getIndex() + 1;
+		final BoundPath path = resolver.getPath();
 
 		if (path.length() == nextIdx) {
 			uses().useBy(resolver, resolver.getUsage());

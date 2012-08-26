@@ -522,6 +522,7 @@ public class BoundPath extends RefPath {
 
 	private PathResolution walkFrom(Scope start, PathTracker tracker) {
 
+		final StepResolver resolver = new StepResolver(tracker);
 		Step[] steps = this.path.getSteps();
 		Container result = start.getContainer();
 		Scope prev = start;
@@ -611,12 +612,7 @@ public class BoundPath extends RefPath {
 				// Do not change the current index.
 				continue;
 			}
-			result = step.resolve(
-					tracker.nextResolver(),
-					this,
-					i,
-					prev,
-					tracker);
+			result = resolver.resolveStep(step, prev, i);
 			if (tracker.isAborted()) {
 				return noResolution(tracker, prev, step);
 			}

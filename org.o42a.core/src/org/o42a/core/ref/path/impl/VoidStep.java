@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -61,16 +60,11 @@ public class VoidStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final Obj voidObject = start.getContext().getVoid();
+		final Obj voidObject = resolver.getContext().getVoid();
 
-		walker.module(this, voidObject);
+		resolver.getWalker().module(this, voidObject);
 
 		return voidObject;
 	}

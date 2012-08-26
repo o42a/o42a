@@ -37,6 +37,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.impl.SimplePathTracker;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Statements;
@@ -93,7 +94,10 @@ public enum PathKind {
 		}
 
 		Scope fromScope = reproducer.getReproducingScope();
-		final PathResolver resolver = pathResolver(fromScope, dummyUser());
+		final StepResolver resolver = new StepResolver(new SimplePathTracker(
+				path,
+				pathResolver(fromScope, dummyUser()),
+				DUMMY_PATH_WALKER));
 		Scope toScope = reproducer.getScope();
 		Path reproduced = SELF_PATH;
 
@@ -135,12 +139,8 @@ public enum PathKind {
 
 			toScope = resolution.getResult().getScope();
 
-			final Container resolvedStep = step.resolve(
-					resolver,
-					path,
-					i,
-					fromScope,
-					DUMMY_PATH_WALKER);
+			final Container resolvedStep =
+					resolver.resolveStep(step, fromScope, i);
 
 			if (resolvedStep == null) {
 				return null;

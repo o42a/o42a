@@ -73,14 +73,9 @@ public class Wrapper extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		start.assertSameScope(this.wrapperScope);
-		walker.staticScope(this, this.wrappedScope);
+	protected Container resolve(	StepResolver resolver) {
+		resolver.getStart().assertSameScope(this.wrapperScope);
+		resolver.getWalker().staticScope(this, this.wrappedScope);
 		return this.wrappedScope.getContainer();
 	}
 

@@ -92,16 +92,10 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(	StepResolver resolver) {
+		getExpectedScope().assertCompatible(resolver.getStart());
 
-		getExpectedScope().assertCompatible(start);
-
-		walker.staticScope(this, getFinalScope());
+		resolver.getWalker().staticScope(this, getFinalScope());
 
 		return getFinalScope().getContainer();
 	}

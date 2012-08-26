@@ -92,24 +92,19 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final Obj object = this.constructor.resolve(start);
+		final Obj object = this.constructor.resolve(resolver.getStart());
 
 		if (object == null) {
 			return null;
 		}
 		if (resolver.isFullResolution()) {
 			object.resolveAll();
-			uses().useBy(resolver, path, index);
+			uses().useBy(resolver);
 			resolveStateless(resolver);
 		}
-		walker.object(this, object);
+		resolver.getWalker().object(this, object);
 
 		return object;
 	}
@@ -157,7 +152,7 @@ public class ObjectConstructorStep extends Step {
 		return this.uses = new ObjectStepUses(this);
 	}
 
-	private void resolveStateless(PathResolver resolver) {
+	private void resolveStateless(StepResolver resolver) {
 
 		final Obj owner;
 		final Scope pathStart = resolver.getPathStart();

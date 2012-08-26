@@ -22,7 +22,6 @@ package org.o42a.core.ref.path.impl;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -33,7 +32,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
 import org.o42a.util.string.Name;
@@ -94,22 +92,17 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(	StepResolver resolver) {
 
-		final CompilerContext context = start.getContext();
 		final Module module =
-				context.getIntrinsics().getModule(this.moduleName);
+				resolver.getContext()
+				.getIntrinsics()
+				.getModule(this.moduleName);
 
 		if (module == null) {
-			context.getIntrinsics().getModule(this.moduleName);
-			context.getLogger().error(
+			resolver.getLogger().error(
 					"unresolved_module",
-					path,
+					resolver,
 					"Module <%s> can not be resolved",
 					this.moduleName);
 			return null;
@@ -117,7 +110,7 @@ public final class ModuleStep extends Step {
 		if (resolver.isFullResolution()) {
 			module.resolveAll();
 		}
-		walker.module(this, module);
+		resolver.getWalker().module(this, module);
 
 		return module;
 	}

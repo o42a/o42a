@@ -23,7 +23,6 @@ import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
@@ -61,11 +60,7 @@ public class ErrorStep extends Step {
 
 	@Override
 	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+			StepResolver resolver) {
 		return null;
 	}
 

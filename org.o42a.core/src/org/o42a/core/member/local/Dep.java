@@ -122,18 +122,14 @@ public final class Dep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final Obj object = start.toObject();
+		final Obj object = resolver.getStart().toObject();
 
 		assert object != null :
-			"Dependency " + path.toString(index + 1)
-			+ " should be resolved against object, but were not: " + start;
+			"Dependency " + resolver
+			+ " should be resolved against object, but were not: "
+			+ resolver.getStart();
 
 		final LocalScope enclosingLocal =
 				object.getScope().getEnclosingContainer().toLocal();
@@ -145,11 +141,11 @@ public final class Dep extends Step {
 		final LocalResolver localResolver = enclosingLocal.resolver();
 
 		if (resolver.isFullResolution()) {
-			uses().useBy(resolver, path, index);
+			uses().useBy(resolver);
 
 			final RefUsage usage;
 
-			if (index == path.length() - 1) {
+			if (resolver.isLastStep()) {
 				// Resolve only the last value.
 				usage = resolver.getUsage();
 			} else {
@@ -162,7 +158,7 @@ public final class Dep extends Step {
 
 		final Resolution resolution = this.depRef.resolve(localResolver);
 
-		walker.dep(object, this, this.depRef);
+		resolver.getWalker().dep(object, this, this.depRef);
 
 		return resolution.toObject();
 	}
