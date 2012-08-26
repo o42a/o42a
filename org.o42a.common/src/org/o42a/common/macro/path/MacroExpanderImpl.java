@@ -85,7 +85,7 @@ final class MacroExpanderImpl implements MacroExpander {
 
 	@Override
 	public CompilerLogger getExplicitLogger() {
-		return getContext().getLogger();
+		return this.pathExpander.getLogger();
 	}
 
 }
