@@ -23,7 +23,6 @@ import static org.o42a.common.macro.path.MacroExpansionStep.prohibitedExpansion;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
@@ -58,13 +57,8 @@ public final class RequireMacroStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		prohibitedExpansion(path.getLogger(), this.expansion);
+	protected Container resolve(StepResolver resolver) {
+		prohibitedExpansion(resolver.getLogger(), this.expansion);
 		return null;
 	}
 

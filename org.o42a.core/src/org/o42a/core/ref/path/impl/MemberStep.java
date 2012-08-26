@@ -55,22 +55,23 @@ public class MemberStep extends AbstractMemberStep {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final Member member = resolveMember(path, index, start);
+		final Member member = resolveMember(
+				resolver.getPath(),
+				resolver.getIndex(),
+				resolver.getStart());
 
 		if (member == null) {
 			return null;
 		}
 		if (resolver.isFullResolution()) {
-			uses().useBy(resolver, path, index);
+			uses().useBy(resolver);
 		}
-		walker.member(start.getContainer(), this, member);
+		resolver.getWalker().member(
+				resolver.getStart().getContainer(),
+				this,
+				member);
 
 		return member.substance(resolver);
 	}

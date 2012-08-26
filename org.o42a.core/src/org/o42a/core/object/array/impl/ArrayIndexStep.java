@@ -23,7 +23,6 @@ import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -82,17 +81,12 @@ public class ArrayIndexStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 		if (this.error) {
 			return null;
 		}
 
-		final Resolver arrayResolver = start.resolver();
+		final Resolver arrayResolver = resolver.getStart().resolver();
 		final Resolution arrayResolution = this.array.resolve(arrayResolver);
 
 		if (arrayResolution.isError()) {
@@ -129,7 +123,7 @@ public class ArrayIndexStep extends Step {
 
 		if (!indexValue.getValueType().is(ValueType.INTEGER)) {
 			this.error = true;
-			path.getLogger().error(
+			resolver.getLogger().error(
 					"non_integer_array_index",
 					this.index,
 					"Array index should be integer");
@@ -148,7 +142,7 @@ public class ArrayIndexStep extends Step {
 
 			if (itemIdx < 0) {
 				this.error = true;
-				path.getLogger().error(
+				resolver.getLogger().error(
 						"negative_array_index",
 						this.index,
 						"Negative array index");
@@ -168,7 +162,7 @@ public class ArrayIndexStep extends Step {
 
 				if (itemIdx >= items.length) {
 					this.error = true;
-					path.getLogger().error(
+					resolver.getLogger().error(
 							"invalid_array_index",
 							this.index,
 							"Array index %d is too big."
@@ -180,7 +174,12 @@ public class ArrayIndexStep extends Step {
 
 				final ArrayItem item = items[(int) itemIdx];
 
-				walker.arrayIndex(start, this, this.array, this.index, item);
+				resolver.getWalker().arrayIndex(
+						resolver.getStart(),
+						this,
+						this.array,
+						this.index,
+						item);
 
 				return item.getTarget();
 			}
@@ -188,9 +187,14 @@ public class ArrayIndexStep extends Step {
 
 		final RtArrayElement element = new RtArrayElement(
 				array.getScope(),
-				this.index.upgradeScope(start));
+				this.index.upgradeScope(resolver.getStart()));
 
-		walker.arrayIndex(start, this, this.array, this.index, element);
+		resolver.getWalker().arrayIndex(
+				resolver.getStart(),
+				this,
+				this.array,
+				this.index,
+				element);
 
 		return element.getTarget();
 	}

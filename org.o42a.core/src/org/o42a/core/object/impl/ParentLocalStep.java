@@ -111,21 +111,16 @@ public final class ParentLocalStep extends Step implements ReversePath {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final Obj object = start.toObject();
+		final Obj object = resolver.getStart().toObject();
 
 		object.assertDerivedFrom(this.object);
 
 		final Container result =
 				object.getScope().getEnclosingContainer();
 
-		walker.up(object, this, result, this);
+		resolver.getWalker().up(object, this, result, this);
 
 		return result;
 	}

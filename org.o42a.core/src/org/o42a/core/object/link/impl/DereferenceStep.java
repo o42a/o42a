@@ -80,23 +80,18 @@ public class DereferenceStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			final PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final Obj linkObject = start.toObject();
+		final Obj linkObject = resolver.getStart().toObject();
 
 		assert linkObject != null :
-			start + " is not an object";
+			resolver + " is not an object";
 
 		final ObjectValue linkObjectValue =
 				linkObject.value().explicitUseBy(resolver);
 
 		if (resolver.isFullResolution()) {
-			uses().useBy(resolver, path, index);
+			uses().useBy(resolver);
 			linkObjectValue.resolveAll(resolver);
 		}
 
@@ -114,9 +109,9 @@ public class DereferenceStep extends Step {
 		final Link link;
 
 		if (!value.getKnowledge().isKnownToCompiler()) {
-			link = new RtLink(path, start);
+			link = new RtLink(resolver.getPath(), resolver.getStart());
 		} else if (value.getKnowledge().isFalse()) {
-			link = new RtLink(path, start);
+			link = new RtLink(resolver.getPath(), resolver.getStart());
 		} else {
 
 			final Value<KnownLink> linkValue = linkStruct.cast(value);
@@ -129,11 +124,11 @@ public class DereferenceStep extends Step {
 
 		if (resolver.isFullResolution()) {
 			link.resolveAll(
-					start.resolver()
+					resolver.getStart().resolver()
 					.fullResolver(resolver, resolver.getUsage()));
 		}
 
-		walker.dereference(linkObject, this, link);
+		resolver.getWalker().dereference(linkObject, this, link);
 
 		return link.getTarget();
 	}

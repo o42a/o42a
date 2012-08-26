@@ -24,7 +24,6 @@ import static org.o42a.common.macro.Macros.consumeSelfAssignment;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.macro.MacroConsumer;
@@ -114,13 +113,8 @@ public class MacroExpansionStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		prohibitedExpansion(resolver.getPathStart().getLogger(), path);
+	protected Container resolve(StepResolver resolver) {
+		prohibitedExpansion(resolver.getLogger(), resolver);
 		return null;
 	}
 

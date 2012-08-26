@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
@@ -67,11 +66,7 @@ public final class PathFragmentStep extends Step {
 
 	@Override
 	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+			StepResolver resolver) {
 		throw unresolved();
 	}
 

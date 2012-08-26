@@ -22,7 +22,6 @@ package org.o42a.core.ref.path.impl;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -68,16 +67,11 @@ public class StaticObjectStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 		if (resolver.isFullResolution()) {
 			this.object.resolveAll();
 		}
-		walker.object(this, this.object);
+		resolver.getWalker().object(this, this.object);
 		return this.object;
 	}
 

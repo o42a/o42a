@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -61,16 +60,11 @@ public class FalseStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final Obj falseObject = start.getContext().getFalse();
+		final Obj falseObject = resolver.getContext().getFalse();
 
-		walker.module(this, falseObject);
+		resolver.getWalker().module(this, falseObject);
 
 		return falseObject;
 	}

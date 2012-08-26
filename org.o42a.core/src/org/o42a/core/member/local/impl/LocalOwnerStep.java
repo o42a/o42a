@@ -73,20 +73,15 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final LocalScope local = start.toLocal();
+		final LocalScope local = resolver.getStart().toLocal();
 
 		local.assertDerivedFrom(this.local);
 
 		final Obj owner = local.getOwner();
 
-		walker.up(local, this, owner, this);
+		resolver.getWalker().up(local, this, owner, this);
 
 		return owner;
 	}

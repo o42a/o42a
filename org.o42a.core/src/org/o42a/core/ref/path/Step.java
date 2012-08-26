@@ -42,16 +42,6 @@ import org.o42a.core.value.ValueStruct;
 
 public abstract class Step {
 
-	public static final Container resolveStep(
-			Step step,
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		return step.resolve(resolver, path, index, start, walker);
-	}
-
 	public abstract PathKind getPathKind();
 
 	public abstract RefUsage getObjectUsage();
@@ -183,12 +173,7 @@ public abstract class Step {
 		return path.append(ANCESTOR_FRAGMENT).typeRef(distributor);
 	}
 
-	protected abstract Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker);
+	protected abstract Container resolve(StepResolver resolver);
 
 	protected abstract void normalize(PathNormalizer normalizer);
 

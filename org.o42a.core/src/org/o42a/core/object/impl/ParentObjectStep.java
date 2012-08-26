@@ -59,32 +59,31 @@ public final class ParentObjectStep
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
+	protected Container resolve(StepResolver resolver) {
 
-		final Obj object = start.toObject();
+		final Obj object = resolver.getStart().toObject();
 
 		if (resolver.isFullResolution()) {
-			uses().useBy(resolver, path, index);
+			uses().useBy(resolver);
 		} else if (!object.membersResolved()) {
 			// Members not resolved yet.
-			if (start.getEnclosingScopePath().getSteps()[0].equals(this)) {
+			if (resolver.getStart().getEnclosingScopePath().getSteps()[0]
+					.equals(this)) {
 				// Workaround to access the enclosing scope
 				// before the scope field created.
 				final Container result =
-						start.getEnclosingScope().getContainer();
+						resolver.getStart().getEnclosingScope().getContainer();
 
-				walker.up(object, this, result, this);
+				resolver.getWalker().up(object, this, result, this);
 
 				return result;
 			}
 		}
 
-		final Member member = resolveMember(path, index, start);
+		final Member member = resolveMember(
+				resolver.getPath(),
+				resolver.getIndex(),
+				resolver.getStart());
 
 		if (member == null) {
 			return null;
@@ -92,7 +91,7 @@ public final class ParentObjectStep
 
 		final Container result = member.substance(resolver);
 
-		walker.up(object, this, result, this);
+		resolver.getWalker().up(object, this, result, this);
 
 		return result;
 	}
