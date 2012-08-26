@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,17 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.common.macro.path;
 
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.util.log.LogRecord;
 
 
-public interface PathExpander {
+final class ExpandingLogger extends CompilerLogger {
 
-	BoundPath getPath();
+	private final MacroExpanderImpl expander;
 
-	CompilerLogger getLogger();
+	ExpandingLogger(MacroExpanderImpl expander) {
+		super(expander.getContext().getLogger());
+		this.expander = expander;
+	}
 
-	boolean replay(PathWalker pathWalker);
+	@Override
+	public void log(LogRecord record) {
+		this.expander.getExpansion().getExpansionLogger().logExpansionError(
+				this.expander.getScope(),
+				this.expander.getContext().getLogger(),
+				record);
+	}
 
 }

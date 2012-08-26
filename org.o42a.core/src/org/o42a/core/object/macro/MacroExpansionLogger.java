@@ -29,9 +29,8 @@ import org.o42a.util.log.LogRecord;
  * Macro expansion error logger.
  *
  * <p>It should be provided by {@link MacroConsumer#getExpansionLogger() macro
- * consumer} in order to conditionally loge the errors
- * {@link MacroExpander#error(LogRecord) reported by macros} during expansion.
- * </p>
+ * consumer} in order to conditionally {@link MacroExpander#getLogger() log
+ * errors} during expansion.</p>
  */
 public interface MacroExpansionLogger {
 
@@ -45,8 +44,8 @@ public interface MacroExpansionLogger {
 	/**
 	 * Reports the macro expansion error.
 	 *
-	 * <p>This method is called by {@link MacroExpander#error(LogRecord)}
-	 * and may conditionally log the error.<p>
+	 * <p>This method is called by {@link MacroExpander#getLogger() macro
+	 * expansion logger} and may conditionally log the error.<p>
 	 *
 	 * @param scope scope in which the macro expansion happens.
 	 * @param logger logger to log error to.

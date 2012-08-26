@@ -21,6 +21,7 @@ package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.source.CompilerLogger;
 
 
 public abstract class PathTracker implements PathWalker, PathExpander {
@@ -43,6 +44,11 @@ public abstract class PathTracker implements PathWalker, PathExpander {
 	@Override
 	public BoundPath getPath() {
 		return this.path;
+	}
+
+	@Override
+	public CompilerLogger getLogger() {
+		return this.path.getLogger();
 	}
 
 	public PathResolver nextResolver() {

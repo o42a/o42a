@@ -28,7 +28,6 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Loggable;
 
 
@@ -132,8 +131,8 @@ final class PrefixedMacro implements Macro {
 		}
 
 		@Override
-		public void error(LogRecord message) {
-			this.expander.error(message);
+		public CompilerLogger getExplicitLogger() {
+			return this.expander.getExplicitLogger();
 		}
 
 		@Override

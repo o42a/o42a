@@ -31,7 +31,8 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.log.LogRecord;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.util.log.LogInfo;
 
 
 @SourcePath(relativeTo = MacrosModule.class, value = "interface__.o42a")
@@ -71,7 +72,8 @@ class LinkInterface extends AnnotatedMacro {
 				link().upgradeScope(scope).resolve(scope.resolver())	.toObject();
 
 		if (target == null) {
-			expander.getLogger().log(notLink(expander));
+			// Log the error unconditionally.
+			notLink(expander, expander.getExplicitLogger());
 			return null;
 		}
 
@@ -79,7 +81,8 @@ class LinkInterface extends AnnotatedMacro {
 				target.value().getValueStruct().toLinkStruct();
 
 		if (linkStruct == null) {
-			expander.error(notLink(expander));
+			// Conditionally report the error.
+			notLink(expander, expander.getLogger());
 			return null;
 		}
 
@@ -104,10 +107,10 @@ class LinkInterface extends AnnotatedMacro {
 		return this.link = LinkDep.linkRef(this);
 	}
 
-	private LogRecord notLink(MacroExpander expander) {
-		return expander.getLogger().errorRecord(
+	private void notLink(LogInfo location, CompilerLogger logger) {
+		logger.error(
 				"not_link_interface",
-				expander,
+				location,
 				"Can only obtain interface from link, variable or getter");
 	}
 

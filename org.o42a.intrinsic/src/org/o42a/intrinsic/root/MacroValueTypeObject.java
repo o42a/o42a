@@ -77,10 +77,10 @@ public class MacroValueTypeObject extends ValueTypeObject implements Macro {
 	}
 
 	private Path cantExpand(MacroExpander expander) {
-		expander.error(expander.getLogger().errorRecord(
+		expander.getLogger().error(
 				"cant_expand_macro",
 				expander,
-				"Macro can not be expanded"));
+				"Macro can not be expanded");
 		return null;
 	}
 
