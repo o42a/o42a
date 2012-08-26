@@ -41,6 +41,11 @@ public class CompilerLogger implements Logger {
 		this.source = source;
 	}
 
+	public CompilerLogger(CompilerLogger logger) {
+		this.logger = logger;
+		this.source = logger.getSource();
+	}
+
 	public void ambiguousClause(LogInfo location, String clauseName) {
 		error(
 				"ambiguous_clause",
@@ -298,7 +303,7 @@ public class CompilerLogger implements Logger {
 			LogInfo location,
 			String defaultMessage,
 			Object... args) {
-		log(errorRecord(code, location, defaultMessage, args));
+		log(Severity.ERROR, code, location, defaultMessage, args);
 	}
 
 	public final void warning(
@@ -306,37 +311,21 @@ public class CompilerLogger implements Logger {
 			LogInfo location,
 			String defaultMessage,
 			Object... args) {
-		log(warningRecord(code, location, defaultMessage, args));
+		log(Severity.WARNING, code, location, defaultMessage, args);
 	}
 
-	public final LogRecord errorRecord(
-			String code,
-			LogInfo location,
-			String defaultMessage,
-			Object... args) {
-		return record(Severity.ERROR, code, location, defaultMessage, args);
-	}
-
-	public final LogRecord warningRecord(
-			String code,
-			LogInfo location,
-			String defaultMessage,
-			Object... args) {
-		return record(Severity.WARNING, code, location, defaultMessage, args);
-	}
-
-	public final LogRecord record(
+	public final void log(
 			Severity severity,
 			String code,
 			LogInfo location,
 			String defaultMessage,
 			Object... args) {
-		return new LogRecord(
+		log(new LogRecord(
 				severity,
 				"compiler." + code,
 				defaultMessage,
 				location.getLoggable(),
-				args);
+				args));
 	}
 
 	@Override

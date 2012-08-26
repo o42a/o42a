@@ -22,12 +22,10 @@ package org.o42a.common.macro.path;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.MacroExpander;
-import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Loggable;
 
 
@@ -37,6 +35,7 @@ final class MacroExpanderImpl implements MacroExpander {
 	private final PathExpander pathExpander;
 	private final Scope scope;
 	private final Obj macroObject;
+	private final ExpandingLogger logger;
 
 	MacroExpanderImpl(
 			MacroExpansion expansion,
@@ -47,6 +46,11 @@ final class MacroExpanderImpl implements MacroExpander {
 		this.pathExpander = pathExpander;
 		this.scope = scope;
 		this.macroObject = macroObject;
+		this.logger = new ExpandingLogger(this);
+	}
+
+	public final MacroExpansion getExpansion() {
+		return this.expansion;
 	}
 
 	@Override
@@ -76,16 +80,12 @@ final class MacroExpanderImpl implements MacroExpander {
 
 	@Override
 	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
+		return this.logger;
 	}
 
 	@Override
-	public void error(LogRecord message) {
-
-		final MacroExpansionLogger expansionLogger =
-				this.expansion.getExpansionLogger();
-
-		expansionLogger.logExpansionError(getScope(), getLogger(), message);
+	public CompilerLogger getExplicitLogger() {
+		return getContext().getLogger();
 	}
 
 }

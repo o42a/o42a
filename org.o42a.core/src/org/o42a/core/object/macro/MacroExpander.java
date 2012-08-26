@@ -24,19 +24,56 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.LogRecord;
 
 
+/**
+ * The macro expansion context.
+ *
+ * <p>This is passed to {@link Macro macro} expansion methods whenever
+ * expansion required.</p>
+ */
 public interface MacroExpander extends LocationInfo {
 
+	/**
+	 * The scope the macro expansion occurs in.
+	 *
+	 * @return expansion scope.
+	 */
 	Scope getScope();
 
+	/**
+	 * The reference to expanded macro.
+	 *
+	 * @return macro reference.
+	 */
 	Ref getMacroRef();
 
+	/**
+	 * The resolved macro object.
+	 *
+	 * @return the object this macro is value of.
+	 */
 	Obj getMacroObject();
 
+	/**
+	 * Conditional logger.
+	 *
+	 * <p>This logger uses the {@link MacroConsumer#getExpansionLogger()
+	 * expansion logger} to coinditionally log the messages with
+	 * {@link #getExplicitLogger() explicit logger}.</p>
+	 *
+	 * @return logger.
+	 */
 	CompilerLogger getLogger();
 
-	void error(LogRecord message);
+	/**
+	 * Explicit logger.
+	 *
+	 * <p>Unlike a {@link #getLogger() conditional logger}, this one always logs
+	 * the messages.</p>
+	 *
+	 * @return logger.
+	 */
+	CompilerLogger getExplicitLogger();
 
 }
