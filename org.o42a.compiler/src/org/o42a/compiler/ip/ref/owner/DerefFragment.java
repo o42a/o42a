@@ -51,7 +51,7 @@ final class DerefFragment extends PathFragment {
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
 		if (!canDereference(start)) {
-			expander.getPath().getLogger().error(
+			expander.getLogger().error(
 					"cant_deref",
 					this.location,
 					"Can not dereference");

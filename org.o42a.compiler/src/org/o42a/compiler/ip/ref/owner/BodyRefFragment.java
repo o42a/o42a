@@ -53,7 +53,7 @@ final class BodyRefFragment extends PathFragment {
 	public Path expand(PathExpander expander, int index, Scope start) {
 		if (!canDereference(start)) {
 			redundantBodyRef(
-					expander.getPath().getLogger(),
+					expander.getLogger(),
 					this.location);
 		}
 		return SELF_PATH;
