@@ -31,6 +31,7 @@ import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -116,12 +117,12 @@ final class ExpandMacroDefiner extends Definer {
 		}
 
 		final ValueStruct<?, ?> expectedStruct =
-				env().getExpectedValueStruct().upgradeScope(scope);
+				env().getValueRequest().getExpectedStruct().upgradeScope(scope);
 
 		final ValueAdapter adapter =
 				getExpansion()
 				.rebuildIn(scope)
-				.valueAdapter(expectedStruct, true);
+				.valueAdapter(new ValueRequest(expectedStruct));
 
 		this.adapters.put(scope, adapter);
 

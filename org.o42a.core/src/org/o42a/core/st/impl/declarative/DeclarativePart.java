@@ -79,7 +79,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	public ValueStruct<?, ?> getValueStruct() {
 
 		final ValueStruct<?, ?> valueStruct =
-				this.definer.env().getExpectedValueStruct();
+				this.definer.env().getValueRequest().getExpectedStruct();
 
 		if (!valueStruct.isScoped()) {
 			return valueStruct;

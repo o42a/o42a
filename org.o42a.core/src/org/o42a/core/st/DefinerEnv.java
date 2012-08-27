@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 
 
 public abstract class DefinerEnv extends ImplicationEnv {
@@ -38,7 +38,7 @@ public abstract class DefinerEnv extends ImplicationEnv {
 		}
 
 		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
+		protected ValueRequest buildValueRequest() {
 			return null;
 		}
 

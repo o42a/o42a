@@ -163,25 +163,20 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return (Value<T>) value;
 	}
 
-	public final ValueAdapter valueAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		assert expectedStruct != null :
-			"Expected value structure not specified";
-		if (expectedStruct.isVoid()) {
+	public final ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
+		if (request.getExpectedStruct().isVoid()) {
 			if (isVoid()) {
 				return rawValueAdapter(ref);
 			}
 			return new VoidValueAdapter(ref);
 		}
-		if (expectedStruct.isMacro()) {
+		if (request.getExpectedStruct().isMacro()) {
 			if (isMacro()) {
 				return rawValueAdapter(ref);
 			}
 			return new MacroValueAdapter(ref);
 		}
-		return defaultAdapter(ref, expectedStruct, adapt);
+		return defaultAdapter(ref, request);
 	}
 
 	public Ref adapterRef(Ref ref, TypeRef expectedTypeRef) {
@@ -250,11 +245,12 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return this.ir = createIR(generator);
 	}
 
-	protected ValueAdapter defaultAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		if (!adapt || expectedStruct.assignableFrom(this)) {
+	protected ValueAdapter defaultAdapter(Ref ref, ValueRequest request) {
+
+		final ValueStruct<?, ?> expectedStruct = request.getExpectedStruct();
+
+		if (!request.isTransformAllowed()
+				|| expectedStruct.assignableFrom(this)) {
 			return rawValueAdapter(ref);
 		}
 
@@ -271,7 +267,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 				ref,
 				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
 
-		return adapter.valueAdapter(expectedStruct, false);
+		return adapter.valueAdapter(request.dontTransofm());
 	}
 
 	protected abstract ValueKnowledge valueKnowledge(T value);

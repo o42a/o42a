@@ -27,7 +27,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Condition;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 
 
 public abstract class DeclarativeSentence
@@ -221,10 +221,8 @@ public abstract class DeclarativeSentence
 		}
 
 		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return this.sentence.getBlock()
-					.getInitialEnv()
-					.getExpectedValueStruct();
+		protected ValueRequest buildValueRequest() {
+			return this.sentence.getBlock().getInitialEnv().getValueRequest();
 		}
 
 	}

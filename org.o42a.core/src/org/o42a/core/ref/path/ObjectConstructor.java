@@ -47,7 +47,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 
 
 public abstract class ObjectConstructor extends Placed {
@@ -80,14 +80,8 @@ public abstract class ObjectConstructor extends Placed {
 		return propagate(scope);
 	}
 
-	public ValueAdapter valueAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		return ref.valueStruct(ref.getScope()).valueAdapter(
-				ref,
-				expectedStruct,
-				adapt);
+	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
+		return ref.valueStruct(ref.getScope()).valueAdapter(ref, request);
 	}
 
 	public abstract FieldDefinition fieldDefinition(Ref ref);

@@ -39,7 +39,7 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 
 
 public class ObjectConstructorStep extends Step {
@@ -62,11 +62,8 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	public ValueAdapter valueAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		return this.constructor.valueAdapter(ref, expectedStruct, adapt);
+	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
+		return this.constructor.valueAdapter(ref, request);
 	}
 
 	@Override

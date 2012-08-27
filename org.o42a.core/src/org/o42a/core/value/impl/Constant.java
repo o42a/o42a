@@ -68,23 +68,17 @@ public final class Constant<T> extends ObjectConstructor {
 	}
 
 	@Override
-	public ValueAdapter valueAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
+	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
 
+		final ValueStruct<?, ?> expectedStruct = request.getExpectedStruct();
 		final SingleValueStruct<T> valueStruct = this.valueType.struct();
 
-		if (adapt
-				&& expectedStruct != null
+		if (request.isTransformAllowed()
 				&& !expectedStruct.assignableFrom(valueStruct)) {
-			return super.valueAdapter(ref, expectedStruct, adapt);
+			return super.valueAdapter(ref, request);
 		}
 
-		return new ConstantValueAdapter<T>(
-				ref,
-				getValueType(),
-				this.constant);
+		return new ConstantValueAdapter<T>(ref, getValueType(), this.constant);
 	}
 
 	@Override

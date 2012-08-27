@@ -33,7 +33,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
 import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
 
@@ -230,10 +230,8 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 		}
 
 		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return this.statements.getSentence()
-					.getAltEnv()
-					.getExpectedValueStruct();
+		protected ValueRequest buildValueRequest() {
+			return this.statements.getSentence().getAltEnv().getValueRequest();
 		}
 
 	}

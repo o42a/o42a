@@ -157,20 +157,15 @@ public class Ref extends Statement {
 				.prefixWith(getPath().toPrefix(resolver.getScope()));
 	}
 
-	public final ValueAdapter valueAdapter(
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
+	public final ValueAdapter valueAdapter(ValueRequest request) {
 
 		final Step lastStep = getPath().lastStep();
 
 		if (lastStep == null) {
-			return valueStruct(getScope()).valueAdapter(
-					this,
-					expectedStruct,
-					adapt);
+			return valueStruct(getScope()).valueAdapter(this, request);
 		}
 
-		return lastStep.valueAdapter(this, expectedStruct, adapt);
+		return lastStep.valueAdapter(this, request);
 	}
 
 	/**

@@ -38,9 +38,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.value.*;
 
 
 public class ArrayConstructor extends ObjectConstructor {
@@ -91,20 +89,18 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public ValueAdapter valueAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		if (adapt && expectedStruct != null) {
+	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
+		if (request.isTransformAllowed()) {
 
-			final ArrayValueStruct arrayStruct = expectedStruct.toArrayStruct();
+			final ArrayValueStruct arrayStruct =
+					request.getExpectedStruct().toArrayStruct();
 
 			if (arrayStruct != null) {
 				return new ArrayInitValueAdapter(ref, this, arrayStruct);
 			}
 		}
 
-		return super.valueAdapter(ref, expectedStruct, adapt);
+		return super.valueAdapter(ref, request);
 	}
 
 	@Override

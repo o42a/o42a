@@ -38,7 +38,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -68,9 +68,9 @@ public final class RefCommand extends Command {
 			return this.valueAdapter;
 		}
 
-		final ValueStruct<?, ?> expectedStruct = env().getExpectedValueStruct();
+		final ValueRequest valueRequest = env().getValueRequest();
 
-		return this.valueAdapter = getRef().valueAdapter(expectedStruct, true);
+		return this.valueAdapter = getRef().valueAdapter(valueRequest);
 	}
 
 	@Override
