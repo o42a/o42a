@@ -22,11 +22,17 @@ package org.o42a.intrinsic.link;
 import org.o42a.common.macro.AnnotatedMacro;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Meta;
 import org.o42a.core.object.macro.MacroExpander;
+import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 
 
 abstract class AbstractLinkCast extends AnnotatedMacro {
+
+	private EnclosingLinkMetaDep linkDep;
 
 	AbstractLinkCast(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
@@ -34,14 +40,62 @@ abstract class AbstractLinkCast extends AnnotatedMacro {
 
 	@Override
 	public Path expand(MacroExpander expander) {
-		// TODO Auto-generated method stub
-		return null;
+		registerLinkDep();
+		return getScope().getEnclosingScopePath();
 	}
 
 	@Override
 	public Path reexpand(MacroExpander expander) {
-		// TODO Auto-generated method stub
-		return null;
+		registerLinkDep();
+		return getScope().getEnclosingScopePath();
+	}
+
+	private void registerLinkDep() {
+		if (this.linkDep != null) {
+			return;
+		}
+		this.linkDep = new EnclosingLinkMetaDep(this);
+		this.linkDep.register();
+	}
+
+	private static final class EnclosingLinkMetaDep extends MetaDep {
+
+		private final Ref path;
+
+		EnclosingLinkMetaDep(AbstractLinkCast cast) {
+			super(cast.meta());
+			this.path =
+					cast.getScope()
+					.getEnclosingScopePath()
+					.bind(cast, cast.getScope())
+					.target(cast.distribute());
+		}
+
+		@Override
+		public MetaDep parentDep() {
+			return null;
+		}
+
+		@Override
+		public MetaDep nestedDep() {
+			return null;
+		}
+
+		@Override
+		protected boolean triggered(Meta meta) {
+
+			final Resolver resolver = meta.getObject().getScope().resolver();
+			final Meta linkMeta =
+					this.path.resolve(resolver).toObject().meta();
+
+			return linkMeta.isUpdated();
+		}
+
+		@Override
+		protected boolean changed(Meta meta) {
+			return true;
+		}
+
 	}
 
 }
