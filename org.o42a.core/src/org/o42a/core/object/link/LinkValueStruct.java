@@ -234,11 +234,12 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	protected ValueAdapter defaultAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		if (!adapt || expectedStruct.convertibleFrom(this)) {
+	protected ValueAdapter defaultAdapter(Ref ref, ValueRequest request) {
+
+		final ValueStruct<?, ?> expectedStruct = request.getExpectedStruct();
+
+		if (!request.isTransformAllowed()
+				|| expectedStruct.convertibleFrom(this)) {
 			return new LinkValueAdapter(
 					ref,
 					expectedStruct != null
@@ -259,7 +260,7 @@ public final class LinkValueStruct
 				ref,
 				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
 
-		return adapter.valueAdapter(expectedStruct, false);
+		return adapter.valueAdapter(request.dontTransofm());
 	}
 
 	@Override

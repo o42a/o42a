@@ -235,16 +235,14 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	protected ValueAdapter defaultAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		if (!adapt || expectedStruct.convertibleFrom(this)) {
+	protected ValueAdapter defaultAdapter(Ref ref, ValueRequest request) {
+		if (!request.isTransformAllowed()
+				|| request.getExpectedStruct().convertibleFrom(this)) {
 			return new ArrayValueAdapter(
 					ref,
-					(ArrayValueStruct) expectedStruct);
+					request.getExpectedStruct().toArrayStruct());
 		}
-		return super.defaultAdapter(ref, expectedStruct, adapt);
+		return super.defaultAdapter(ref, request);
 	}
 
 	@Override

@@ -38,6 +38,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
+import org.o42a.core.value.ValueRequest;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -268,22 +269,18 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private static final class DeclarationEnv extends DefinerEnv {
 
 		private final DeclaredField field;
-		private ValueStruct<?, ?> expectedValueStruct;
 
 		DeclarationEnv(DeclaredField field) {
 			this.field = field;
 		}
 
 		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			if (this.expectedValueStruct != null) {
-				return this.expectedValueStruct;
-			}
+		protected ValueRequest buildValueRequest() {
 
 			final ValueStruct<?, ?> ancestorValueStruct =
 					this.field.toObject().value().getValueStruct();
 
-			return this.expectedValueStruct = ancestorValueStruct;
+			return new ValueRequest(ancestorValueStruct);
 		}
 
 	}

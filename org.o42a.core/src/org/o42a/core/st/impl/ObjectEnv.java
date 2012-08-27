@@ -21,7 +21,7 @@ package org.o42a.core.st.impl;
 
 import org.o42a.core.object.Obj;
 import org.o42a.core.st.DefinerEnv;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 
 
 public final class ObjectEnv extends DefinerEnv {
@@ -41,8 +41,8 @@ public final class ObjectEnv extends DefinerEnv {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> expectedValueStruct() {
-		return this.object.value().getValueStruct();
+	protected ValueRequest buildValueRequest() {
+		return new ValueRequest(this.object.value().getValueStruct());
 	}
 
 }

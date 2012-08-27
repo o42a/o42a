@@ -34,7 +34,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.*;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.fn.Lambda;
 import org.o42a.util.log.Loggable;
@@ -294,8 +294,8 @@ public final class ImperativeBlock
 		}
 
 		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return getInitialEnv().getExpectedValueStruct();
+		protected ValueRequest buildValueRequest() {
+			return getInitialEnv().getValueRequest();
 		}
 
 	}

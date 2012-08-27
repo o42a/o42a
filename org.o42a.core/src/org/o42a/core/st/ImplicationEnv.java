@@ -19,32 +19,29 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.value.ValueStruct;
+import static org.o42a.core.value.ValueRequest.NO_VALUE_REQUEST;
+
+import org.o42a.core.value.ValueRequest;
 
 
 public abstract class ImplicationEnv {
 
-	private ValueStruct<?, ?> expectedStruct;
+	private ValueRequest valueRequest;
 
-	public final ValueStruct<?, ?> getExpectedValueStruct() {
-		if (this.expectedStruct != null) {
-			if (this.expectedStruct.isNone()) {
-				return null;
-			}
-			return this.expectedStruct;
+	public final ValueRequest getValueRequest() {
+		if (this.valueRequest != null) {
+			return this.valueRequest;
 		}
 
-		final ValueStruct<?, ?> expectedType = expectedValueStruct();
+		final ValueRequest valueRequest = buildValueRequest();
 
-		if (expectedType == null) {
-			this.expectedStruct = ValueStruct.NONE;
-		} else {
-			this.expectedStruct = expectedType;
+		if (valueRequest == null) {
+			return this.valueRequest = NO_VALUE_REQUEST;
 		}
 
-		return expectedType;
+		return this.valueRequest = valueRequest;
 	}
 
-	protected abstract ValueStruct<?, ?> expectedValueStruct();
+	protected abstract ValueRequest buildValueRequest();
 
 }

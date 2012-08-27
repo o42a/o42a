@@ -22,7 +22,7 @@ package org.o42a.core.st.impl.imperative;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.ImplicationEnv;
 import org.o42a.core.st.sentence.Imperatives;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueRequest;
 
 
 public class BlockCommandEnv extends CommandEnv {
@@ -37,8 +37,8 @@ public class BlockCommandEnv extends CommandEnv {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> expectedValueStruct() {
-		return this.initialEnv.getExpectedValueStruct();
+	protected ValueRequest buildValueRequest() {
+		return this.initialEnv.getValueRequest();
 	}
 
 }

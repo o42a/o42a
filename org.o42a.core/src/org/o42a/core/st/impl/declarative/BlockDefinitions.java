@@ -68,7 +68,7 @@ final class BlockDefinitions {
 	public Definitions createDefinitions() {
 
 		final ValueStruct<?, ?> valueStruct =
-				this.definer.env().getExpectedValueStruct();
+				this.definer.env().getValueRequest().getExpectedStruct();
 		final Definitions claims;
 
 		if (this.claims == null) {
