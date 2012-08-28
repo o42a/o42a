@@ -19,17 +19,19 @@
 */
 package org.o42a.compiler.ip.type.macro;
 
+import static org.o42a.core.object.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
+
 import org.o42a.core.Scope;
 import org.o42a.core.object.macro.MacroConsumer;
-import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.log.LogRecord;
+import org.o42a.util.log.Logger;
 
 
 final class TypeParamConsumer extends TypeConsumer implements Consumer {
@@ -90,7 +92,7 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 		}
 
 		@Override
-		public MacroExpansionLogger getExpansionLogger() {
+		public ScopedLogger getExpansionLogger() {
 			return this.expansionLogger;
 		}
 
@@ -109,8 +111,7 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 
 	}
 
-	private static final class TypeParamExpansionLogger
-			implements MacroExpansionLogger {
+	private static final class TypeParamExpansionLogger extends ScopedLogger {
 
 		private final TypeParamMacroDep dep;
 
@@ -119,14 +120,14 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 		}
 
 		@Override
-		public void logExpansionError(
+		public void log(
 				Scope scope,
-				CompilerLogger logger,
-				LogRecord error) {
-			DEFAULT_MACRO_EXPANSION_LOGGER.logExpansionError(
+				Logger logger,
+				LogRecord message) {
+			DEFAULT_MACRO_EXPANSION_LOGGER.log(
 					reportScope(scope),
 					logger,
-					error);
+					message);
 		}
 
 		private Scope reportScope(Scope scope) {

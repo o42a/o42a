@@ -25,10 +25,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
 import org.o42a.core.object.macro.MacroConsumer;
-import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -37,7 +37,7 @@ import org.o42a.core.value.ValueType;
 public class MacroExpansion extends PathFragment {
 
 	private final Ref macroRef;
-	private MacroExpansionLogger expansionLogger;
+	private ScopedLogger expansionLogger;
 	private Scope origin;
 	private Path initialExpansion;
 	private IdentityHashMap<Scope, Path> expansions;
@@ -101,7 +101,7 @@ public class MacroExpansion extends PathFragment {
 		return '#' + this.macroRef.toString();
 	}
 
-	final MacroExpansionLogger getExpansionLogger() {
+	final ScopedLogger getExpansionLogger() {
 		return this.expansionLogger;
 	}
 

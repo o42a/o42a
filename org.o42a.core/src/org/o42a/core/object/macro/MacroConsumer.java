@@ -20,8 +20,10 @@
 package org.o42a.core.object.macro;
 
 import org.o42a.core.object.macro.impl.DefaultMacroConsumer;
+import org.o42a.core.object.macro.impl.DefaultMacroExpansionLogger;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.ScopedLogger;
 
 
 public interface MacroConsumer {
@@ -30,7 +32,22 @@ public interface MacroConsumer {
 
 	MacroConsumer DEFAULT_MACRO_CONSUMER = DefaultMacroConsumer.INSTANCE;
 
-	MacroExpansionLogger getExpansionLogger();
+	/**
+	 * Default macro expansion error logger. It does not report the expansion
+	 * errors when it happens inside the prototype object.
+	 */
+	ScopedLogger DEFAULT_MACRO_EXPANSION_LOGGER =
+			DefaultMacroExpansionLogger.INSTANCE;
+
+	/**
+	 * Scoped macro expansion logger.
+	 *
+	 * <p>It should provided by in order to conditionally
+	 * {@link MacroExpander#getLogger() log errors} during expansion.</p>
+	 *
+	 * @return scoped logger.
+	 */
+	ScopedLogger getExpansionLogger();
 
 	Ref expandMacro(Ref macroExpansion);
 
