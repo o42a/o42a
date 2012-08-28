@@ -17,47 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.expression;
+package org.o42a.parser.grammar.atom;
 
-import static org.o42a.parser.Grammar.stringLiteral;
+import static org.o42a.parser.grammar.atom.StringBoundParser.STRING_BOUND;
 
-import java.util.ArrayList;
-
+import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.atom.StringBound;
 import org.o42a.ast.atom.StringNode;
-import org.o42a.ast.expression.TextNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-public class TextParser implements Parser<TextNode> {
+public class StringParser implements Parser<StringNode> {
 
-	public static final TextParser TEXT = new TextParser();
+	public static final StringParser STRING = new StringParser();
 
-	private TextParser() {
+	private StringParser() {
 	}
 
 	@Override
-	public TextNode parse(ParserContext context) {
+	public StringNode parse(ParserContext context) {
 
-		ArrayList<StringNode> literals = null;
+		final SignNode<StringBound> openingBound = context.parse(STRING_BOUND);
 
-		for (;;) {
-
-			final StringNode literal = context.parse(stringLiteral());
-
-			if (literal == null) {
-				break;
-			}
-			if (literals == null) {
-				literals = new ArrayList<StringNode>();
-			}
-			literals.add(literal);
-		}
-		if (literals == null) {
+		if (openingBound == null) {
 			return null;
 		}
+		if (openingBound.getType().isBlockBound()) {
+			return context.parse(new TextBlockParser(openingBound));
+		}
 
-		return new TextNode(literals.toArray(new StringNode[literals.size()]));
+		return context.parse(new InlineStringParser(openingBound));
+
 	}
 
 }

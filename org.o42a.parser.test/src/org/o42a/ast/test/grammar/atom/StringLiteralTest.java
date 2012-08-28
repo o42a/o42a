@@ -19,7 +19,10 @@
 */
 package org.o42a.ast.test.grammar.atom;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.o42a.ast.atom.StringBound.DOUBLE_QUOTE;
+import static org.o42a.ast.atom.StringBound.SINGLE_QUOTE;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,16 +46,16 @@ public class StringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse("''");
 
-		assertEquals("", string.getText());
-		assertEquals(
-				StringNode.SINGLE_QUOTE,
-				string.getOpeningQuotationMark().getType());
-		assertEquals(
-				StringNode.SINGLE_QUOTE,
-				string.getClosingQuotationMark().getType());
+		assertThat(string.getText(), is(""));
+		assertThat(
+				string.getOpeningBound().getType(),
+				is(SINGLE_QUOTE));
+		assertThat(
+				string.getClosingBound().getType(),
+				is(SINGLE_QUOTE));
 		assertRange(0, 2, string);
-		assertRange(0, 1, string.getOpeningQuotationMark());
-		assertRange(1, 2, string.getClosingQuotationMark());
+		assertRange(0, 1, string.getOpeningBound());
+		assertRange(1, 2, string.getClosingBound());
 	}
 
 	@Test
@@ -60,16 +63,16 @@ public class StringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse("\"\"");
 
-		assertEquals("", string.getText());
-		assertEquals(
-				StringNode.DOUBLE_QUOTE,
-				string.getOpeningQuotationMark().getType());
-		assertEquals(
-				StringNode.DOUBLE_QUOTE,
-				string.getClosingQuotationMark().getType());
+		assertThat(string.getText(), is(""));
+		assertThat(
+				string.getOpeningBound().getType(),
+				is(DOUBLE_QUOTE));
+		assertThat(
+				string.getClosingBound().getType(),
+				is(DOUBLE_QUOTE));
 		assertRange(0, 2, string);
-		assertRange(0, 1, string.getOpeningQuotationMark());
-		assertRange(1, 2, string.getClosingQuotationMark());
+		assertRange(0, 1, string.getOpeningBound());
+		assertRange(1, 2, string.getClosingBound());
 	}
 
 	@Test
@@ -77,16 +80,16 @@ public class StringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse("'abc'");
 
-		assertEquals("abc", string.getText());
-		assertEquals(
-				StringNode.SINGLE_QUOTE,
-				string.getOpeningQuotationMark().getType());
-		assertEquals(
-				StringNode.SINGLE_QUOTE,
-				string.getClosingQuotationMark().getType());
+		assertThat(string.getText(), is("abc"));
+		assertThat(
+				string.getOpeningBound().getType(),
+				is(SINGLE_QUOTE));
+		assertThat(
+				string.getClosingBound().getType(),
+				is(SINGLE_QUOTE));
 		assertRange(0, 5, string);
-		assertRange(0, 1, string.getOpeningQuotationMark());
-		assertRange(4, 5, string.getClosingQuotationMark());
+		assertRange(0, 1, string.getOpeningBound());
+		assertRange(4, 5, string.getClosingBound());
 	}
 
 	@Test
@@ -94,23 +97,23 @@ public class StringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse("\"abc\"");
 
-		assertEquals("abc", string.getText());
-		assertEquals(
-				StringNode.DOUBLE_QUOTE,
-				string.getOpeningQuotationMark().getType());
-		assertEquals(
-				StringNode.DOUBLE_QUOTE,
-				string.getClosingQuotationMark().getType());
+		assertThat(string.getText(), is("abc"));
+		assertThat(
+				string.getOpeningBound().getType(),
+				is(DOUBLE_QUOTE));
+		assertThat(
+				string.getClosingBound().getType(),
+				is(DOUBLE_QUOTE));
 		assertRange(0, 5, string);
-		assertRange(0, 1, string.getOpeningQuotationMark());
-		assertRange(4, 5, string.getClosingQuotationMark());
+		assertRange(0, 1, string.getOpeningBound());
+		assertRange(4, 5, string.getClosingBound());
 	}
 
 	@Test
 	public void escape() {
-		assertEquals("\n", parse("'\\n'").getText());
-		assertEquals("\r", parse("'\\r'").getText());
-		assertEquals("\t", parse("'\\t'").getText());
+		assertThat(parse("'\\n'").getText(), is("\n"));
+		assertThat(parse("'\\r'").getText(), is("\r"));
+		assertThat(parse("'\\t'").getText(), is("\t"));
 	}
 
 	@Test
@@ -118,16 +121,16 @@ public class StringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse("'\\f1C\\'");
 
-		assertEquals(0xf1c, string.getText().charAt(0));
-		assertEquals(
-				StringNode.SINGLE_QUOTE,
-				string.getOpeningQuotationMark().getType());
-		assertEquals(
-				StringNode.SINGLE_QUOTE,
-				string.getClosingQuotationMark().getType());
+		assertThat(string.getText().codePointAt(0), is(0xf1c));
+		assertThat(
+				string.getOpeningBound().getType(),
+				is(SINGLE_QUOTE));
+		assertThat(
+				string.getClosingBound().getType(),
+				is(SINGLE_QUOTE));
 		assertRange(0, 7, string);
-		assertRange(0, 1, string.getOpeningQuotationMark());
-		assertRange(6, 7, string.getClosingQuotationMark());
+		assertRange(0, 1, string.getOpeningBound());
+		assertRange(6, 7, string.getClosingBound());
 	}
 
 	private StringNode parse(String text) {

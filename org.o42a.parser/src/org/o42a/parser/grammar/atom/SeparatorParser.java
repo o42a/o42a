@@ -76,14 +76,19 @@ public class SeparatorParser implements Parser<SeparatorNodes> {
 
 				final SeparatorNodes separators = context.push(SEPARATOR_NL);
 
-				if (separators.lineContinuation()) {
-					context.acceptAll();
-					if (comments == null) {
-						return separators;
-					}
-					separators.appendCommentsTo(comments);
-					return new SeparatorNodes(true, comments);
+				if (!separators.lineContinuation()) {
+					break;
 				}
+				context.acceptAll();
+				if (comments == null) {
+					return separators;
+				}
+				separators.appendCommentsTo(comments);
+				return new SeparatorNodes(true, comments);
+			}
+			if (c == '"' || c == '\'') {
+				context.acceptButLast();
+				continuation = true;
 				break;
 			}
 			if (comment == null) {

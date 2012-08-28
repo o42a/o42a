@@ -84,7 +84,7 @@ public class Grammar {
 	}
 
 	public static Parser<StringNode> stringLiteral() {
-		return StringLiteralParser.STRING_LITERAL;
+		return StringParser.STRING;
 	}
 
 	public static Parser<DecimalNode> decimal() {

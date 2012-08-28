@@ -24,18 +24,18 @@ import org.o42a.util.io.SourcePosition;
 
 public class CommentNode extends AbstractAtomNode {
 
-	private final SignNode<CommentBound> opening;
-	private final SignNode<CommentBound> closing;
+	private final SignNode<CommentBound> openingBound;
+	private final SignNode<CommentBound> closingBound;
 	private final String text;
 
 	public CommentNode(
-			SignNode<CommentBound> opening,
+			SignNode<CommentBound> openingBound,
 			String text,
-			SignNode<CommentBound> closing) {
-		super(opening.getStart(), closing.getEnd());
-		this.opening = opening;
+			SignNode<CommentBound> closingBound) {
+		super(openingBound.getStart(), closingBound.getEnd());
+		this.openingBound = openingBound;
 		this.text = text;
-		this.closing = closing;
+		this.closingBound = closingBound;
 	}
 
 	public CommentNode(
@@ -43,21 +43,21 @@ public class CommentNode extends AbstractAtomNode {
 			String text,
 			SourcePosition end) {
 		super(opening.getStart(), end);
-		this.opening = opening;
+		this.openingBound = opening;
 		this.text = text;
-		this.closing = null;
+		this.closingBound = null;
 	}
 
-	public final SignNode<CommentBound> getOpening() {
-		return this.opening;
+	public final SignNode<CommentBound> getOpeningBound() {
+		return this.openingBound;
 	}
 
 	public final String getText() {
 		return this.text;
 	}
 
-	public final SignNode<CommentBound> getClosing() {
-		return this.closing;
+	public final SignNode<CommentBound> getClosingBound() {
+		return this.closingBound;
 	}
 
 	@Override
@@ -67,10 +67,10 @@ public class CommentNode extends AbstractAtomNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		this.opening.printContent(out);
+		this.openingBound.printContent(out);
 		out.append(getText());
-		if (this.closing != null) {
-			this.closing.printContent(out);
+		if (this.closingBound != null) {
+			this.closingBound.printContent(out);
 		}
 	}
 

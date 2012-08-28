@@ -91,7 +91,7 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 
 	@Override
 	public Phrase visitText(TextNode text, Phrase p) {
-		if (!text.isDoubleQuote()) {
+		if (!text.isDoubleQuoted()) {
 			return p.string(location(p, text), text.getText()).getPhrase();
 		}
 

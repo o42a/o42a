@@ -44,8 +44,8 @@ public class BlockCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getLine(), is(3));
 		assertThat(this.worker.position().line(), is(4));
 		assertThat(comment.getText().trim(), is("comment"));
-		assertThat(comment.getOpening().getType(), is(BLOCK_COMMENT));
-		assertThat(comment.getClosing().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getOpeningBound().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getClosingBound().getType(), is(BLOCK_COMMENT));
 	}
 
 	@Test
@@ -59,8 +59,8 @@ public class BlockCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getLine(), is(3));
 		assertThat(this.worker.position().line(), is(3));
 		assertThat(comment.getText().trim(), is("comment"));
-		assertThat(comment.getOpening().getType(), is(BLOCK_COMMENT));
-		assertThat(comment.getClosing(), nullValue());
+		assertThat(comment.getOpeningBound().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getClosingBound(), nullValue());
 	}
 
 	@Test
@@ -75,8 +75,8 @@ public class BlockCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getLine(), is(3));
 		assertThat(this.worker.position().line(), is(4));
 		assertThat(comment.getText().trim(), is("~~"));
-		assertThat(comment.getOpening().getType(), is(BLOCK_COMMENT));
-		assertThat(comment.getClosing().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getOpeningBound().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getClosingBound().getType(), is(BLOCK_COMMENT));
 	}
 
 	@Test
@@ -91,8 +91,8 @@ public class BlockCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getLine(), is(3));
 		assertThat(this.worker.position().line(), is(4));
 		assertThat(comment.getText().trim(), is("~~~ comment"));
-		assertThat(comment.getOpening().getType(), is(BLOCK_COMMENT));
-		assertThat(comment.getClosing().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getOpeningBound().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getClosingBound().getType(), is(BLOCK_COMMENT));
 	}
 
 	@Test
@@ -107,8 +107,8 @@ public class BlockCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getLine(), is(3));
 		assertThat(this.worker.position().line(), is(4));
 		assertThat(comment.getText().trim(), is("comment ~~~"));
-		assertThat(comment.getOpening().getType(), is(BLOCK_COMMENT));
-		assertThat(comment.getClosing().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getOpeningBound().getType(), is(BLOCK_COMMENT));
+		assertThat(comment.getClosingBound().getType(), is(BLOCK_COMMENT));
 	}
 
 	private CommentNode parse(String... text) {

@@ -19,9 +19,7 @@
 */
 package org.o42a.ast.expression;
 
-import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.StringNode;
-import org.o42a.ast.atom.StringNode.Quote;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.clause.ClauseNodeVisitor;
 
@@ -32,23 +30,19 @@ public class TextNode extends AbstractExpressionNode implements ClauseNode {
 	private String text;
 
 	public TextNode(StringNode[] literals) {
-		super(literals[0].getStart(), literals[literals.length - 1].getEnd());
+		super(literals);
 		this.literals = literals;
 	}
 
-	public final boolean isDoubleQuote() {
-
-		final SignNode<Quote> quotationMark =
-				this.literals[0].getOpeningQuotationMark();
-
-		return quotationMark.getType().isDoubleQuote();
+	public final boolean isDoubleQuoted() {
+		return this.literals[0].isDoubleQuoted();
 	}
 
-	public StringNode[] getLiterals() {
+	public final StringNode[] getLiterals() {
 		return this.literals;
 	}
 
-	public String getText() {
+	public final String getText() {
 		if (this.text == null) {
 			this.text = constructText();
 		}
