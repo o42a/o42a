@@ -105,16 +105,8 @@ public class CompilerLogger implements Logger {
 		error("invalid_declaration", location, "Invalid declaration");
 	}
 
-	public void invalidExpression(LogInfo location) {
-		error("invalid_expression", location, "Not a valid expression");
-	}
-
 	public void invalidReference(LogInfo location) {
 		error("invalid_reference", location, "Not a valid reference");
-	}
-
-	public void invalidStatement(LogInfo location) {
-		error("invalid_statement", location, "Not a valid statement");
 	}
 
 	public void invalidType(LogInfo location) {
