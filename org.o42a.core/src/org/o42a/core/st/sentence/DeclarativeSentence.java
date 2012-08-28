@@ -213,16 +213,16 @@ public abstract class DeclarativeSentence
 		}
 
 		@Override
+		public ValueRequest getValueRequest() {
+			return this.sentence.getBlock().getInitialEnv().getValueRequest();
+		}
+
+		@Override
 		public String toString() {
 			if (this.sentence == null) {
 				return super.toString();
 			}
 			return this.sentence.toString();
-		}
-
-		@Override
-		protected ValueRequest buildValueRequest() {
-			return this.sentence.getBlock().getInitialEnv().getValueRequest();
 		}
 
 	}

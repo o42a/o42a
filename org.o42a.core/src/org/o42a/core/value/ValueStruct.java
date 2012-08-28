@@ -39,6 +39,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.impl.*;
@@ -179,13 +180,16 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return defaultAdapter(ref, request);
 	}
 
-	public Ref adapterRef(Ref ref, TypeRef expectedTypeRef) {
+	public Ref adapterRef(
+			Ref ref,
+			TypeRef expectedTypeRef,
+			CompilerLogger logger) {
 
-		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic());
+		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic(), logger);
 
 		adapter.toTypeRef()
 		.relationTo(expectedTypeRef)
-		.checkDerived(ref.getLogger());
+		.checkDerived(logger);
 
 		return adapter;
 	}
@@ -259,13 +263,17 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 		if (expectedLinkStruct != null) {
 			return new LinkByValueAdapter(
-					adapterRef(ref, expectedLinkStruct.getTypeRef()),
+					adapterRef(
+							ref,
+							expectedLinkStruct.getTypeRef(),
+							request.getLogger()),
 					expectedLinkStruct);
 		}
 
 		final Ref adapter = adapterRef(
 				ref,
-				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+				expectedStruct.getValueType().typeRef(ref, ref.getScope()),
+				request.getLogger());
 
 		return adapter.valueAdapter(request.dontTransofm());
 	}

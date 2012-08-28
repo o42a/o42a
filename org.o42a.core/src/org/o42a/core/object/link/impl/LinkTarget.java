@@ -54,11 +54,6 @@ public class LinkTarget extends Obj {
 	}
 
 	@Override
-	public String toString() {
-		return this.linkData.toString();
-	}
-
-	@Override
 	protected Nesting createNesting() {
 		return getDereferencedLink().getTargetNesting();
 	}

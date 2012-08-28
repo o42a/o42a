@@ -269,18 +269,24 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private static final class DeclarationEnv extends DefinerEnv {
 
 		private final DeclaredField field;
+		private ValueRequest valueRequest;
 
 		DeclarationEnv(DeclaredField field) {
 			this.field = field;
 		}
 
 		@Override
-		protected ValueRequest buildValueRequest() {
+		public ValueRequest getValueRequest() {
+			if (this.valueRequest != null) {
+				return this.valueRequest;
+			}
 
 			final ValueStruct<?, ?> ancestorValueStruct =
 					this.field.toObject().value().getValueStruct();
 
-			return new ValueRequest(ancestorValueStruct);
+			return this.valueRequest = new ValueRequest(
+					ancestorValueStruct,
+					this.field.getContext().getLogger());
 		}
 
 	}

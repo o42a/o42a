@@ -41,6 +41,7 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Statements;
@@ -253,9 +254,12 @@ public class Ref extends Statement {
 		return getPath().toStatic().target(distribute());
 	}
 
-	public final Ref adapt(LocationInfo location, StaticTypeRef adapterType) {
+	public final Ref adapt(
+			LocationInfo location,
+			StaticTypeRef adapterType,
+			CompilerLogger logger) {
 
-		final Adapter adapter = new Adapter(location, adapterType);
+		final Adapter adapter = new Adapter(location, adapterType, logger);
 
 		return getPath().append(adapter.toPath()).target(distribute());
 	}

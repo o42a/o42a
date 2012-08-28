@@ -37,7 +37,7 @@ public class BlockCommandEnv extends CommandEnv {
 	}
 
 	@Override
-	protected ValueRequest buildValueRequest() {
+	public ValueRequest getValueRequest() {
 		return this.initialEnv.getValueRequest();
 	}
 
