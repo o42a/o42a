@@ -19,26 +19,35 @@
 */
 package org.o42a.core.value;
 
+import org.o42a.core.source.CompilerLogger;
+
 
 public final class ValueRequest {
 
-	public static final ValueRequest NO_VALUE_REQUEST =
-			new ValueRequest(null, false);
+	public static ValueRequest noValueRequest(CompilerLogger logger) {
+		return new ValueRequest(null, logger, false);
+	}
 
 	private final ValueStruct<?, ?> expectedStruct;
+	private final CompilerLogger logger;
 	private final boolean transformAllowed;
 
-	public ValueRequest(ValueStruct<?, ?> expectedStruct) {
+	public ValueRequest(
+			ValueStruct<?, ?> expectedStruct,
+			CompilerLogger logger) {
 		assert expectedStruct != null :
 			"Expected value structure not specified";
 		this.expectedStruct = expectedStruct;
 		this.transformAllowed = true;
+		this.logger = logger;
 	}
 
 	private ValueRequest(
 			ValueStruct<?, ?> expectedStruct,
+			CompilerLogger logger,
 			boolean transformAllowed) {
 		this.expectedStruct = expectedStruct;
+		this.logger = logger;
 		this.transformAllowed = transformAllowed;
 	}
 
@@ -50,11 +59,22 @@ public final class ValueRequest {
 		return this.transformAllowed;
 	}
 
+	public final CompilerLogger getLogger() {
+		return this.logger;
+	}
+
 	public final ValueRequest dontTransofm() {
 		if (!isTransformAllowed()) {
 			return this;
 		}
-		return new ValueRequest(getExpectedStruct(), false);
+		return new ValueRequest(getExpectedStruct(), getLogger(), false);
+	}
+
+	public final ValueRequest setLogger(CompilerLogger logger) {
+		return new ValueRequest(
+				getExpectedStruct(),
+				logger,
+				isTransformAllowed());
 	}
 
 	@Override

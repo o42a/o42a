@@ -37,7 +37,8 @@ final class ExpandMacroBlock extends BlockBuilder {
 	public void buildBlock(Block<?, ?> block) {
 
 		final ExpandMacroStatement statement =
-				new ExpandMacroStatement(this.expansion.rescope(block.getScope()));
+				new ExpandMacroStatement(
+						this.expansion.rescope(block.getScope()));
 
 		block.propose(this).alternative(this).statement(statement);
 	}

@@ -19,29 +19,11 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.value.ValueRequest.NO_VALUE_REQUEST;
-
 import org.o42a.core.value.ValueRequest;
 
 
 public abstract class ImplicationEnv {
 
-	private ValueRequest valueRequest;
-
-	public final ValueRequest getValueRequest() {
-		if (this.valueRequest != null) {
-			return this.valueRequest;
-		}
-
-		final ValueRequest valueRequest = buildValueRequest();
-
-		if (valueRequest == null) {
-			return this.valueRequest = NO_VALUE_REQUEST;
-		}
-
-		return this.valueRequest = valueRequest;
-	}
-
-	protected abstract ValueRequest buildValueRequest();
+	public abstract ValueRequest getValueRequest();
 
 }

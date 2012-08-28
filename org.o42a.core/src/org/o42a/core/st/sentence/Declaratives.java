@@ -222,16 +222,16 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 		}
 
 		@Override
+		public ValueRequest getValueRequest() {
+			return this.statements.getSentence().getAltEnv().getValueRequest();
+		}
+
+		@Override
 		public String toString() {
 			if (this.statements == null) {
 				return super.toString();
 			}
 			return this.statements.toString();
-		}
-
-		@Override
-		protected ValueRequest buildValueRequest() {
-			return this.statements.getSentence().getAltEnv().getValueRequest();
 		}
 
 	}

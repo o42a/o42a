@@ -248,7 +248,7 @@ public final class ImperativeBlock
 				reproducer.getMemberRegistry(),
 				getSentenceFactory());
 
-		reproduction.define(defaultEnv());
+		reproduction.define(defaultEnv(reproducer.getLogger()));
 		reproduceSentences(reproducer, reproduction);
 
 		return reproduction;
@@ -294,7 +294,7 @@ public final class ImperativeBlock
 		}
 
 		@Override
-		protected ValueRequest buildValueRequest() {
+		public ValueRequest getValueRequest() {
 			return getInitialEnv().getValueRequest();
 		}
 

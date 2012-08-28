@@ -19,27 +19,34 @@
 */
 package org.o42a.core.st;
 
+import static org.o42a.core.value.ValueRequest.noValueRequest;
+
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.ValueRequest;
 
 
 public abstract class DefinerEnv extends ImplicationEnv {
 
-	private static final DefaultEnv DEFAULT_ENV = new DefaultEnv();
-
-	public static DefinerEnv defaultEnv() {
-		return DEFAULT_ENV;
+	public static DefinerEnv defaultEnv(CompilerLogger logger) {
+		return new DefaultEnv(logger);
 	}
 
 	private static final class DefaultEnv extends DefinerEnv {
 
-		@Override
-		public String toString() {
-			return "DefaultEnv";
+		private final ValueRequest valueRequest;
+
+		DefaultEnv(CompilerLogger logger) {
+			this.valueRequest = noValueRequest(logger);
 		}
 
 		@Override
-		protected ValueRequest buildValueRequest() {
-			return null;
+		public ValueRequest getValueRequest() {
+			return this.valueRequest;
+		}
+
+		@Override
+		public String toString() {
+			return "DefaultEnv";
 		}
 
 	}

@@ -144,7 +144,7 @@ final class ComparisonResult extends BuiltinObject {
 			return;
 		}
 
-		statement.define(defaultEnv());
+		statement.define(defaultEnv(getContext().getLogger()));
 
 		this.cmp = statement
 				.toMember()

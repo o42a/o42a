@@ -252,13 +252,19 @@ public final class LinkValueStruct
 					expectedStruct.toLinkStruct();
 
 			return new LinkByValueAdapter(
-					adapterRef(ref, expectedLinkStruct.getTypeRef()),
+					adapterRef(
+							ref,
+							expectedLinkStruct.getTypeRef(),
+							request.getLogger()),
 					expectedLinkStruct);
 		}
 
 		final Ref adapter = adapterRef(
 				ref,
-				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+				expectedStruct.getValueType().typeRef(
+						ref,
+						ref.getScope()),
+				request.getLogger());
 
 		return adapter.valueAdapter(request.dontTransofm());
 	}

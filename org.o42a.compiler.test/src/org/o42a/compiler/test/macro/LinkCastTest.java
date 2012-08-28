@@ -38,4 +38,28 @@ public class LinkCastTest extends CompilerTestCase {
 		assertThat(definiteValue(field("b"), ValueType.STRING), is("123"));
 	}
 
+	@Test
+	public void linkToLink() {
+		compile(
+				"A := `123",
+				"B := (`string) a# cast");
+
+		assertThat(
+				definiteValue(linkTarget(field("b")), ValueType.STRING),
+				is("123"));
+	}
+
+	@Test
+	public void propagateCast() {
+		compile(
+				"To string :=> string (",
+				"  #T :=< void",
+				"  Arg :=< (`#t) void",
+				"  = Arg #cast",
+				")",
+				"A := to string(T = integer. Arg = 456)");
+
+		assertThat(definiteValue(field("a"), ValueType.STRING), is("456"));
+	}
+
 }

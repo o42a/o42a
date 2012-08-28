@@ -27,9 +27,20 @@ import org.o42a.core.value.ValueRequest;
 public final class ObjectEnv extends DefinerEnv {
 
 	private final Obj object;
+	private ValueRequest valueRequest;
 
 	public ObjectEnv(Obj object) {
 		this.object = object;
+	}
+
+	@Override
+	public ValueRequest getValueRequest() {
+		if (this.valueRequest != null) {
+			return this.valueRequest;
+		}
+		return this.valueRequest = new ValueRequest(
+				this.object.value().getValueStruct(),
+				this.object.getLogger());
 	}
 
 	@Override
@@ -38,11 +49,6 @@ public final class ObjectEnv extends DefinerEnv {
 			return super.toString();
 		}
 		return this.object.toString();
-	}
-
-	@Override
-	protected ValueRequest buildValueRequest() {
-		return new ValueRequest(this.object.value().getValueStruct());
 	}
 
 }
