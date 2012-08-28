@@ -40,14 +40,17 @@ abstract class AbstractLinkCast extends AnnotatedMacro {
 
 	@Override
 	public Path expand(MacroExpander expander) {
-		registerLinkDep();
-		return getScope().getEnclosingScopePath();
+		return castLink();
 	}
 
 	@Override
 	public Path reexpand(MacroExpander expander) {
+		return castLink();
+	}
+
+	private Path castLink() {
 		registerLinkDep();
-		return getScope().getEnclosingScopePath();
+		return getScope().getEnclosingScopePath().dereference();
 	}
 
 	private void registerLinkDep() {

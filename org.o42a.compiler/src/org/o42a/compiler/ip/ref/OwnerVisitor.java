@@ -207,13 +207,23 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 
 		if (owner != null) {
 
-			final Owner result = owner.member(
+			final SignNode<Qualifier> qualifier = ref.getQualifier();
+			final boolean macro =
+					qualifier != null && qualifier.getType() == Qualifier.MACRO;
+			final Owner memberOwner;
+
+			if (!macro) {
+				memberOwner = owner;
+			} else {
+				memberOwner = owner.plainOwner();
+			}
+
+			final Owner result = memberOwner.member(
 					location(p, ref),
 					ip().memberName(ref.getName().getName()),
 					declaredIn);
-			final SignNode<Qualifier> qualifier = ref.getQualifier();
 
-			if (qualifier != null && qualifier.getType() == Qualifier.MACRO) {
+			if (macro) {
 				return result.expandMacro(ref.getQualifier());
 			}
 

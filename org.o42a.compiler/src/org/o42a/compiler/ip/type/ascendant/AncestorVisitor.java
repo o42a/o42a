@@ -111,7 +111,6 @@ public class AncestorVisitor
 		}
 		if (!owner.isMacroExpanding()) {
 			return ancestorTypeRef(toTypeRef(this.referral.refer(owner)));
-
 		}
 
 		final Ref result = this.referral.refer(owner);

@@ -104,8 +104,10 @@ final class TempFieldDefinition extends FieldDefinition {
 		}
 
 		final PrefixPath prefix =
-				local.toMember().getMemberKey().toPath().toPrefix(
-						local.getEnclosingScope());
+				local.toMember()
+				.getMemberKey()
+				.toPath()
+				.toPrefix(local.getEnclosingScope());
 
 		return this.expansion.prefixWith(prefix);
 	}
