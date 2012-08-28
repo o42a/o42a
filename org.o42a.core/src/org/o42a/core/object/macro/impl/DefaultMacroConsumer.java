@@ -19,13 +19,11 @@
 */
 package org.o42a.core.object.macro.impl;
 
-import static org.o42a.core.object.macro.MacroExpansionLogger.DEFAULT_MACRO_EXPANSION_LOGGER;
-
 import org.o42a.core.object.macro.MacroConsumer;
-import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.source.ScopedLogger;
 
 
 public class DefaultMacroConsumer implements Consumer, MacroConsumer {
@@ -45,7 +43,7 @@ public class DefaultMacroConsumer implements Consumer, MacroConsumer {
 	}
 
 	@Override
-	public MacroExpansionLogger getExpansionLogger() {
+	public ScopedLogger getExpansionLogger() {
 		return DEFAULT_MACRO_EXPANSION_LOGGER;
 	}
 

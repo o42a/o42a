@@ -35,7 +35,7 @@ final class MacroExpanderImpl implements MacroExpander {
 	private final PathExpander pathExpander;
 	private final Scope scope;
 	private final Obj macroObject;
-	private final ExpandingLogger logger;
+	private final CompilerLogger logger;
 
 	MacroExpanderImpl(
 			MacroExpansion expansion,
@@ -46,7 +46,9 @@ final class MacroExpanderImpl implements MacroExpander {
 		this.pathExpander = pathExpander;
 		this.scope = scope;
 		this.macroObject = macroObject;
-		this.logger = new ExpandingLogger(this);
+		this.logger = expansion.getExpansionLogger().compilerLogger(
+				scope,
+				getExplicitLogger());
 	}
 
 	public final MacroExpansion getExpansion() {

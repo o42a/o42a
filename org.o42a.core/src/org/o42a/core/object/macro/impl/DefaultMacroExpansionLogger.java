@@ -21,12 +21,12 @@ package org.o42a.core.object.macro.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.macro.MacroExpansionLogger;
-import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.ScopedLogger;
 import org.o42a.util.log.LogRecord;
+import org.o42a.util.log.Logger;
 
 
-public class DefaultMacroExpansionLogger implements MacroExpansionLogger {
+public class DefaultMacroExpansionLogger extends ScopedLogger {
 
 	public static final DefaultMacroExpansionLogger INSTANCE =
 			new DefaultMacroExpansionLogger();
@@ -35,15 +35,15 @@ public class DefaultMacroExpansionLogger implements MacroExpansionLogger {
 	}
 
 	@Override
-	public void logExpansionError(
+	public void log(
 			Scope scope,
-			CompilerLogger logger,
-			LogRecord error) {
+			Logger logger,
+			LogRecord message) {
 		if (isInsidePrototype(scope)) {
 			// Do not report an error when expansion happens inside prototype.
 			return;
 		}
-		logger.log(error);
+		logger.log(message);
 	}
 
 	private boolean isInsidePrototype(Scope scope) {
