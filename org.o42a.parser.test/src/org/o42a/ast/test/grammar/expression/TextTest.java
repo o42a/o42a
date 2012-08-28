@@ -22,9 +22,10 @@ package org.o42a.ast.test.grammar.expression;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.o42a.ast.atom.StringBound.DOUBLE_QUOTE;
+import static org.o42a.ast.atom.StringBound.SINGLE_QUOTE;
 
 import org.junit.Test;
-import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.expression.TextNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.parser.Grammar;
@@ -40,12 +41,12 @@ public class TextTest extends GrammarTestCase {
 		assertRange(0, 5, text);
 		assertEquals(1, text.getLiterals().length);
 		assertRange(0, 5, text.getLiterals()[0]);
-		assertEquals(
-				StringNode.SINGLE_QUOTE,
-				text.getLiterals()[0].getOpeningQuotationMark().getType());
-		assertEquals(
-				StringNode.SINGLE_QUOTE,
-				text.getLiterals()[0].getClosingQuotationMark().getType());
+		assertThat(
+				text.getLiterals()[0].getOpeningBound().getType(),
+				is(SINGLE_QUOTE));
+		assertThat(
+				text.getLiterals()[0].getClosingBound().getType(),
+				is(SINGLE_QUOTE));
 		assertEquals("foo", text.getText());
 	}
 
@@ -57,12 +58,12 @@ public class TextTest extends GrammarTestCase {
 		assertRange(0, 5, text);
 		assertEquals(1, text.getLiterals().length);
 		assertRange(0, 5, text.getLiterals()[0]);
-		assertEquals(
-				StringNode.DOUBLE_QUOTE,
-				text.getLiterals()[0].getOpeningQuotationMark().getType());
-		assertEquals(
-				StringNode.DOUBLE_QUOTE,
-				text.getLiterals()[0].getClosingQuotationMark().getType());
+		assertThat(
+				text.getLiterals()[0].getOpeningBound().getType(),
+				is(DOUBLE_QUOTE));
+		assertThat(
+				text.getLiterals()[0].getClosingBound().getType(),
+				is(DOUBLE_QUOTE));
 		assertEquals("foo", text.getText());
 	}
 
@@ -81,8 +82,12 @@ public class TextTest extends GrammarTestCase {
 	@Test
 	public void mixedLiteralsText() {
 
-		final TextNode text =
-				parse("'foo' ~~ comment ~~ \"bar\" \\' \nbaz\n  '\\ ~~ comment");
+		final TextNode text = parse(
+				"'foo' ~~ comment ~~ \"bar\"",
+				"''''",
+				"baz   ",
+				"''''",
+				"~~ comment");
 
 		assertEquals(3, text.getLiterals().length);
 		assertEquals("foo", text.getLiterals()[0].getText());
@@ -92,34 +97,33 @@ public class TextTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void nlAfterMultiline() {
+	public void nlAfterBlock() {
 
-		final TextNode text = parse("\\'foo'\\ \n \"bar\"");
-
-		assertThat(text.getLiterals().length, is(1));
-		assertThat(text.getText(), is("foo"));
-	}
-
-	@Test
-	public void nlAfterString() {
-
-		final TextNode text = parse("'foo' \n \"bar\"");
-
-		assertThat(text.getLiterals().length, is(1));
-		assertThat(text.getText(), is("foo"));
-	}
-
-	@Test
-	public void lineContinuation() {
-
-		final TextNode text = parse("\\'foo'\\ \n _ \"bar\"");
+		final TextNode text = parse(
+				"'''",
+				"foo",
+				"'''",
+				"'bar'");
 
 		assertThat(text.getLiterals().length, is(2));
 		assertThat(text.getText(), is("foobar"));
 	}
 
-	private TextNode parse(String text) {
-		return parse(Grammar.text(), text);
+	@Test
+	public void nlAfterString() {
+
+		final TextNode text = parse(
+				"'foo' ",
+				" ''' ",
+				"bar  ",
+				" '''");
+
+		assertThat(text.getLiterals().length, is(2));
+		assertThat(text.getText(), is("foobar"));
+	}
+
+	private TextNode parse(String... text) {
+		return parseLines(Grammar.text(), text);
 	}
 
 }

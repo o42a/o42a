@@ -59,7 +59,7 @@ public class Expectations {
 		if (expectedString.length() == 1) {
 			return expect(expectedString.charAt(0));
 		}
-		return expect(new StringParser(expectedString));
+		return expect(new ExpectedStringParser(expectedString));
 	}
 
 	public final <T> T parse(Parser<T> parser) {

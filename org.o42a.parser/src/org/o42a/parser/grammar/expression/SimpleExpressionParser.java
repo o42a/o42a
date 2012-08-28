@@ -97,7 +97,6 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			return context.parse(samples());
 		case '"':
 		case '\'':
-		case '\\':
 			return context.parse(text());
 		case '[':
 			return context.parse(brackets());

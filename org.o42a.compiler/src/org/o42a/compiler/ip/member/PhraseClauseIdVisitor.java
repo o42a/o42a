@@ -87,7 +87,7 @@ final class PhraseClauseIdVisitor
 
 	@Override
 	public ClauseDeclaration visitText(TextNode text, Distributor p) {
-		if (text.isDoubleQuote()) {
+		if (text.isDoubleQuoted()) {
 			return super.visitText(text, p);
 		}
 

@@ -49,7 +49,7 @@ final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
 
 	@Override
 	public Phrase visitText(TextNode text, Phrase p) {
-		if (text.isDoubleQuote()) {
+		if (text.isDoubleQuoted()) {
 			return super.visitText(text, p);
 		}
 		return p.string(location(p, text), text.getText()).getPhrase();

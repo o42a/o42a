@@ -175,7 +175,11 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(TextNode.class, parse("\"foo\""));
 		to(TextNode.class, parse("'foo' 'bar'"));
 		to(TextNode.class, parse("\"foo\" 'bar'"));
-		to(TextNode.class, parse("\\'foo'\\ 'bar'"));
+		to(TextNode.class, parse(
+				"'''",
+				"foo",
+				"''''",
+				"'bar'"));
 	}
 
 	@Test
@@ -188,8 +192,8 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(DecimalNode.class, parse("123"));
 	}
 
-	private Node parse(String text) {
-		return parse(simpleExpression(), text);
+	private Node parse(String... text) {
+		return parseLines(simpleExpression(), text);
 	}
 
 }

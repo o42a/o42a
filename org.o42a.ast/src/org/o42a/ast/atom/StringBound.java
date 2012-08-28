@@ -1,6 +1,6 @@
 /*
-    Parser
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Abstract Syntax Tree
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser;
+package org.o42a.ast.atom;
 
 
-final class StringParser implements Parser<String> {
+public enum StringBound implements SignType {
 
-	private final String expectedString;
+	SINGLE_QUOTE("'"),
+	DOUBLE_QUOTE("\""),
+	SINGLE_QUOTED_LINE("'''"),
+	DOUBLE_QUOTED_LINE("\"\"\"");
 
-	StringParser(String expectedString) {
-		this.expectedString = expectedString;
+	private final String sign;
+
+	StringBound(String sign) {
+		this.sign = sign;
+	}
+
+	public final boolean isDoubleQuoted() {
+		return (ordinal() & 1) == 1;
+	}
+
+	public final boolean isBlockBound() {
+		return ordinal() >= SINGLE_QUOTED_LINE.ordinal();
 	}
 
 	@Override
-	public String parse(ParserContext context) {
-		for (int i = 0, len = this.expectedString.length(); i < len ; ++i) {
-			if (context.next() != this.expectedString.charAt(i)) {
-				return null;
-			}
-		}
-		context.acceptAll();
-		return this.expectedString;
-	}
-
-	@Override
-	public String toString() {
-		return "StringParser[" + this.expectedString + ']';
+	public final String getSign() {
+		return this.sign;
 	}
 
 }

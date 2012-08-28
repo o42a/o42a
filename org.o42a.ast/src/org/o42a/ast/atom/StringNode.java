@@ -26,49 +26,48 @@ import org.o42a.util.io.SourcePosition;
 
 public class StringNode extends AbstractAtomNode {
 
-	public static final Quote SINGLE_QUOTE = new Quote("\'", false);
-	public static final Quote DOUBLE_QUOTE = new Quote("\"", true);
-
-	public static final Quote MULTILINE_SINGLE_QUOTE =
-			new OpeningMultilineQuote("'", false);
-	public static final Quote MULTILINE_DOUBLE_QUOTE =
-			new OpeningMultilineQuote("\"", true);
-
-
-	private final SignNode<Quote> openingQuotationMark;
+	private final SignNode<StringBound> openingBound;
 	private final String text;
-	private final SignNode<Quote> closingQuotationMark;
+	private final SignNode<StringBound> closingBound;
 
 	public StringNode(
-			SignNode<Quote> openingQuotationMark,
+			SignNode<StringBound> openingBound,
 			String text,
-			SignNode<Quote> closingQuotationMark) {
-		super(openingQuotationMark.getStart(), closingQuotationMark.getEnd());
-		this.openingQuotationMark = openingQuotationMark;
+			SignNode<StringBound> closingBound) {
+		super(openingBound.getStart(), closingBound.getEnd());
+		this.openingBound = openingBound;
 		this.text = text;
-		this.closingQuotationMark = closingQuotationMark;
+		this.closingBound = closingBound;
 	}
 
 	public StringNode(
-			SignNode<Quote> openingQuotationMark,
+			SignNode<StringBound> openingBound,
 			String text,
 			SourcePosition end) {
-		super(openingQuotationMark.getStart(), end);
-		this.openingQuotationMark = openingQuotationMark;
+		super(openingBound.getStart(), end);
+		this.openingBound = openingBound;
 		this.text = text;
-		this.closingQuotationMark = null;
+		this.closingBound = null;
 	}
 
-	public SignNode<Quote> getOpeningQuotationMark() {
-		return this.openingQuotationMark;
+	public final SignNode<StringBound> getOpeningBound() {
+		return this.openingBound;
 	}
 
-	public String getText() {
+	public final String getText() {
 		return this.text;
 	}
 
-	public SignNode<Quote> getClosingQuotationMark() {
-		return this.closingQuotationMark;
+	public final SignNode<StringBound> getClosingBound() {
+		return this.closingBound;
+	}
+
+	public final boolean isDoubleQuoted() {
+		return getOpeningBound().getType().isDoubleQuoted();
+	}
+
+	public final boolean isTextBlock() {
+		return getOpeningBound().getType().isBlockBound();
 	}
 
 	@Override
@@ -78,110 +77,9 @@ public class StringNode extends AbstractAtomNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		this.openingQuotationMark.printContent(out);
+		this.openingBound.printContent(out);
 		escapeControlChars(out, this.text);
-		if (this.closingQuotationMark != null) {
-			this.closingQuotationMark.printContent(out);
-		} else {
-			out.append(
-					this.openingQuotationMark
-					.getType().getClosing().getSign());
-		}
-	}
-
-	public static class Quote implements SignType {
-
-		private final String sign;
-		private final boolean doubleQuote;
-
-		private Quote(String sign, boolean doubleQuote) {
-			this.sign = sign;
-			this.doubleQuote = doubleQuote;
-		}
-
-		@Override
-		public final String getSign() {
-			return this.sign;
-		}
-
-		public final boolean isDoubleQuote() {
-			return this.doubleQuote;
-		}
-
-		public boolean isMultiline() {
-			return false;
-		}
-
-		public Quote getClosing() {
-			return this;
-		}
-
-		@Override
-		public String toString() {
-			return this.sign;
-		}
-
-		@Override
-		public int hashCode() {
-			return this.sign.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-
-			final Quote other = (Quote) obj;
-
-			return this.sign.equals(other.sign);
-		}
-
-	}
-
-	private static final class OpeningMultilineQuote extends Quote {
-
-		private final Quote closing;
-
-		OpeningMultilineQuote(String quote, boolean doubleQuote) {
-			super('\\' + quote, doubleQuote);
-			this.closing = new ClosingMultilineQuote(quote, doubleQuote);
-		}
-
-		@Override
-		public boolean isMultiline() {
-			return true;
-		}
-
-		@Override
-		public Quote getClosing() {
-			return this.closing;
-		}
-
-	}
-
-	private static final class ClosingMultilineQuote extends Quote {
-
-		ClosingMultilineQuote(String quote, boolean doubleQuote) {
-			super(quote + '\\', doubleQuote);
-		}
-
-		@Override
-		public boolean isMultiline() {
-			return true;
-		}
-
-		@Override
-		public Quote getClosing() {
-			return null;
-		}
-
+		this.openingBound.printContent(out);
 	}
 
 }

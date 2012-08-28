@@ -20,55 +20,31 @@
 package org.o42a.parser.grammar.atom;
 
 import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.atom.StringBound;
 import org.o42a.ast.atom.StringNode;
-import org.o42a.ast.atom.StringNode.Quote;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class StringLiteralParser implements Parser<StringNode> {
+final class InlineStringParser implements Parser<StringNode> {
 
-	public static final StringLiteralParser STRING_LITERAL =
-			new StringLiteralParser();
-
-	private static final MultiLineStringLiteralParser MULTI_LINE =
-			new MultiLineStringLiteralParser();
 	private static final EscapeSequenceParser ESCAPE_SEQUENCE =
 			new EscapeSequenceParser();
 	private static final UnicodeSequenceParser UNICODE_SEQUENCE =
 			new UnicodeSequenceParser();
 
-	private StringLiteralParser() {
+	private final SignNode<StringBound> openingBound;
+
+	InlineStringParser(SignNode<StringBound> openingBound) {
+		this.openingBound = openingBound;
 	}
 
 	@Override
 	public StringNode parse(ParserContext context) {
 
-		final SourcePosition start = context.current().fix();
-		final Quote quote;
-		final int closingQuote;
-
-		switch (context.next()) {
-		case '\'':
-			quote = StringNode.SINGLE_QUOTE;
-			closingQuote = '\'';
-			break;
-		case '\"':
-			quote = StringNode.DOUBLE_QUOTE;
-			closingQuote = '"';
-			break;
-		case '\\':
-			return context.parse(MULTI_LINE);
-		default:
-			return null;
-		}
-
-		context.skip();
-
-		final SignNode<Quote> opening =
-				new SignNode<Quote>(start, context.current().fix(), quote);
-		final SignNode<Quote> closing;
+		final int closingQuote =
+				this.openingBound.getType().isDoubleQuoted() ? '"' : '\'';
 		final StringBuilder text = new StringBuilder();
 
 		for (;;) {
@@ -93,27 +69,31 @@ public class StringLiteralParser implements Parser<StringNode> {
 				final SourcePosition closingStart = context.current().fix();
 
 				context.acceptAll();
-				closing = new SignNode<Quote>(
-						closingStart,
-						context.current().fix(),
-						opening.getType().getClosing());
-				break;
+
+				final SignNode<StringBound> closingBound =
+						new SignNode<StringBound>(
+								closingStart,
+								context.current().fix(),
+								this.openingBound.getType());
+				final StringNode string = new StringNode(
+						this.openingBound,
+						text.toString(),
+						closingBound);
+
+				return context.acceptComments(false, string);
 			}
 			if (c == '\n' || c < 0) {
-				context.getLogger().unterminatedStringLiteral(opening);
+				context.getLogger()
+				.unterminatedStringLiteral(this.openingBound);
 				context.acceptAll();
 				return new StringNode(
-						opening,
+						this.openingBound,
 						text.toString(),
 						context.current().fix());
 			}
 
-			text.append((char) c);
+			text.appendCodePoint(c);
 		}
-
-		return context.acceptComments(
-				false,
-				new StringNode(opening, text.toString(), closing));
 	}
 
 	private static final class EscapeSequenceParser implements Parser<Integer> {

@@ -41,8 +41,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(9L));
 		assertThat(this.worker.position().offset(), is(9L));
 		assertThat(comment.getText(), is("comment"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing(), nullValue());
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound(), nullValue());
 	}
 
 	@Test
@@ -54,8 +54,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(9L));
 		assertThat(this.worker.position().offset(), is(10L));
 		assertThat(comment.getText(), is("comment"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing(), nullValue());
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound(), nullValue());
 	}
 
 	@Test
@@ -67,8 +67,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(12L));
 		assertThat(this.worker.position().offset(), is(12L));
 		assertThat(comment.getText(), is(" comment"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing(), nullValue());
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound(), nullValue());
 	}
 
 	@Test
@@ -80,8 +80,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(12L));
 		assertThat(this.worker.position().offset(), is(13L));
 		assertThat(comment.getText(), is(" comment"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing(), nullValue());
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound(), nullValue());
 	}
 
 	@Test
@@ -93,8 +93,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(9L));
 		assertThat(this.worker.position().offset(), is(9L));
 		assertThat(comment.getText(), is("comment"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing(), nullValue());
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound(), nullValue());
 	}
 
 	@Test
@@ -106,8 +106,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(11L));
 		assertThat(this.worker.position().offset(), is(11L));
 		assertThat(comment.getText(), is("comment"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound().getType(), is(INLINE_COMMENT));
 	}
 
 	@Test
@@ -119,8 +119,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(13L));
 		assertThat(this.worker.position().offset(), is(13L));
 		assertThat(comment.getText(), is("comment"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound().getType(), is(INLINE_COMMENT));
 	}
 
 	@Test
@@ -132,8 +132,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(10L));
 		assertThat(this.worker.position().offset(), is(10L));
 		assertThat(comment.getText(), is("comment~"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing(), nullValue());
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound(), nullValue());
 	}
 
 	@Test
@@ -145,8 +145,8 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(comment.getEnd().getOffset(), is(10L));
 		assertThat(this.worker.position().offset(), is(11L));
 		assertThat(comment.getText(), is("comment~"));
-		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
-		assertThat(comment.getClosing(), nullValue());
+		assertThat(comment.getOpeningBound().getType(), is(INLINE_COMMENT));
+		assertThat(comment.getClosingBound(), nullValue());
 	}
 
 	@Test

@@ -80,7 +80,7 @@ public final class ExpressionVisitor
 
 		final String text = textNode.getText();
 
-		if (textNode.isDoubleQuote()) {
+		if (textNode.isDoubleQuoted()) {
 			return STRING.constantRef(location(p, textNode), p, text);
 		}
 
