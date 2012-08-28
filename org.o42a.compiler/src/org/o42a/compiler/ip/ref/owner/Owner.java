@@ -81,8 +81,8 @@ public abstract class Owner {
 		return new MacroExpandingOwner(this, expansion);
 	}
 
-	public final Owner expandMemberMacro(LogInfo expansion) {
-		return new MacroExpandingOwner(this, expansion);
+	public final Owner plainOwner() {
+		return new NonLinkOwner(this.ownerRef);
 	}
 
 	@Override
