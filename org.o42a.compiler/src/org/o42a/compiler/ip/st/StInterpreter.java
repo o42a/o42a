@@ -64,8 +64,8 @@ public final class StInterpreter {
 			sentence = block.issue(location);
 			break;
 		default:
-			block.getLogger().invalidExpression(node);
-			return null;
+			throw new IllegalStateException(
+					"Unsupported sentence type: " + type);
 		}
 
 		if (sentence != null) {

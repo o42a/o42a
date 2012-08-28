@@ -19,7 +19,10 @@
 */
 package org.o42a.compiler.ip.st;
 
-import org.o42a.ast.expression.ExpressionNodeVisitor;
+import static org.o42a.compiler.ip.Interpreter.unwrap;
+
+import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.Interpreter;
@@ -28,6 +31,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.util.log.LogInfo;
 
 
 public abstract class StatementVisitor
@@ -58,9 +62,42 @@ public abstract class StatementVisitor
 	}
 
 	@Override
-	protected Void visitStatement(StatementNode statement, Statements<?, ?> p) {
-		getLogger().invalidStatement(statement);
+	public Void visitDecimal(DecimalNode decimal, Statements<?, ?> p) {
+		invalidStatement(decimal);
 		return null;
+	}
+
+	@Override
+	public Void visitText(TextNode text, Statements<?, ?> p) {
+		invalidStatement(text);
+		return null;
+	}
+
+	@Override
+	public Void visitParentheses(
+			ParenthesesNode parentheses,
+			Statements<?, ?> p) {
+
+		final ExpressionNode unwrapped = unwrap(parentheses);
+
+		if (unwrapped != null) {
+			return unwrapped.accept(this, p);
+		}
+
+		return super.visitParentheses(parentheses, p);
+	}
+
+	@Override
+	protected Void visitStatement(StatementNode statement, Statements<?, ?> p) {
+		invalidStatement(statement);
+		return null;
+	}
+
+	private void invalidStatement(LogInfo location) {
+		getLogger().error(
+				"invalid_statement",
+				location,
+				"Not a valid statement");
 	}
 
 }

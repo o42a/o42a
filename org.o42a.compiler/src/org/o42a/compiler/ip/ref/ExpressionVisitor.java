@@ -42,6 +42,8 @@ import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.util.log.LogInfo;
 
 
 public final class ExpressionVisitor
@@ -203,8 +205,14 @@ public final class ExpressionVisitor
 
 	@Override
 	protected Ref visitExpression(ExpressionNode expression, Distributor p) {
-		p.getLogger().invalidExpression(expression);
+		invalidExpression(p.getLogger(), expression);
 		return errorRef(location(p, expression), p);
+	}
+
+	private static void invalidExpression(
+			CompilerLogger logger,
+			LogInfo location) {
+		logger.error("invalid_expression", location, "Not a valid expression");
 	}
 
 }
