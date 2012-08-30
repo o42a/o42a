@@ -1,9 +1,4 @@
-function print_copyright() {
-	if (o42a) {
-		print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-	} else {
-		print "/*"
-	}
+function print_gpl() {
 	print indent (progname ? progname : "o42a Programming Language")
 	print indent "Copyright (C)", year, author
 	print ""
@@ -21,8 +16,41 @@ function print_copyright() {
 	print ""
 	print indent "You should have received a copy of the GNU General Public License"
 	print indent "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+}
+
+function print_lgpl() {
+	print indent (progname ? progname : "o42a Programming Language")
+	print indent "Copyright (C)", year, author
+	print ""
+	print indent "This file is part of o42a."
+	print ""
+	print indent "o42a is free software: you can redistribute it and/or modify"
+	print indent "it under the terms of the GNU Lesser General Public License"
+	print indent "as published by the Free Software Foundation, either version 3"
+	print indent "of the License, or (at your option) any later version."
+	print ""
+	print indent "o42a is distributed in the hope that it will be useful,"
+	print indent "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+	print indent "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+	print indent "GNU General Public License for more details."
+	print ""
+	print indent "You should have received a copy of the GNU Lesser General Public License"
+	print indent "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+}
+
+function print_copyright() {
 	if (o42a) {
-		print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	} else {
+		print "/*"
+	}
+	if (LGPL) {
+		print_lgpl()
+	} else {
+		print_gpl()
+	}
+	if (o42a) {
+		print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	} else {
 		print "*/"
 	}
@@ -34,6 +62,7 @@ BEGIN {
 	skip = 0
 	comment = 0
 	o42a = license ~ "-o42a$"
+	LGPL = license ~ "^LGPL" 
 	indent = o42a ? "" : "    "
 	year = "2012"
 	author = "Ruslan Lopatin"
