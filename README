@@ -1,6 +1,7 @@
 This directory contains o42a Programming Language compiler and run-time
 libraries.
 
-The o42a is free software. See the file COPYING for copying permission.
+The o42a is free software. See the file COPYING for compiler copying permission.
+See the file COPYING.LESSER for the run-time libraries copying permission.
 
 See http://o42a.org/ for more information.
