@@ -46,7 +46,7 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 
 		final SourcePosition start = context.current().fix();
 
-		context.acceptAll();
+		context.skip();
 
 		final SignNode<AssignmentOperator> prefix =
 				new SignNode<AssignmentOperator>(
@@ -54,6 +54,11 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 						context.current().fix(),
 						AssignmentOperator.ASSIGN);
 
+		if (context.next() == '=') {
+			return null;
+		}
+
+		context.acceptButLast();
 		context.acceptComments(false, prefix);
 
 		final ExpressionNode value = context.parse(expression());

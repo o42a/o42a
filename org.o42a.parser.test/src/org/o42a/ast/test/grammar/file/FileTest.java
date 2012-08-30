@@ -109,6 +109,7 @@ public class FileTest extends GrammarTestCase {
 	public void sectionWithoutTitle() {
 
 		final FileNode file = parse(
+				"~~ comment",
 				"=====",
 				"Baz = 1");
 
