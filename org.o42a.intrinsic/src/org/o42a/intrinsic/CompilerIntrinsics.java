@@ -22,6 +22,7 @@ package org.o42a.intrinsic;
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.intrinsic.root.Root.createRoot;
+import static org.o42a.lib.collections.CollectionsModule.collectionsModule;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import static org.o42a.lib.macros.MacrosModule.macrosModule;
 import static org.o42a.lib.test.TestModule.testModule;
@@ -73,6 +74,7 @@ public class CompilerIntrinsics extends Intrinsics {
 		this.none = new NoneObject(this.top);
 		this.root = createRoot(this.top);
 		this.consoleModule = consoleModule(this.root.getContext());
+		addModule(collectionsModule(this.root.getContext()));
 		addModule(this.consoleModule);
 		addModule(macrosModule(this.root.getContext()));
 		addModule(testModule(this.root.getContext()));

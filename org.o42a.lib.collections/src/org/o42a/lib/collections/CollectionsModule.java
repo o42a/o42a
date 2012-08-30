@@ -1,5 +1,5 @@
 /*
-    Standard Macros
+    Collections Library
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.macros;
+package org.o42a.lib.collections;
 
 import org.o42a.common.object.AnnotatedModule;
 import org.o42a.common.object.AnnotatedSources;
@@ -25,16 +25,17 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.source.CompilerContext;
 
 
-@SourcePath("macros.o42a")
-public class MacrosModule extends AnnotatedModule {
+@SourcePath("collections.o42a")
+public class CollectionsModule extends AnnotatedModule {
 
-	public static MacrosModule macrosModule(CompilerContext parentContext) {
-		return new MacrosModule(
+	public static CollectionsModule collectionsModule(
+			CompilerContext parentContext) {
+		return new CollectionsModule(
 				parentContext,
-				moduleSources(MacrosModule.class));
+				moduleSources(CollectionsModule.class));
 	}
 
-	private MacrosModule(
+	private CollectionsModule(
 			CompilerContext parentContext,
 			AnnotatedSources sources) {
 		super(parentContext, sources);

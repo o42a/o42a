@@ -38,6 +38,7 @@
 		<file name="org.o42a.codegen"/>
 		<file name="org.o42a.core"/>
 		<file name="org.o42a.common"/>
+		<file name="org.o42a.lib.collections"/>
 		<file name="org.o42a.lib.console"/>
 		<file name="org.o42a.lib.macros"/>
 		<file name="org.o42a.lib.test"/>
