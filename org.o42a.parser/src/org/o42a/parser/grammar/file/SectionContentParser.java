@@ -47,35 +47,40 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 
 		for (;;) {
 
-			final SentenceNode sentence = context.parse(DECLARATIVE.sentence());
-
-			if (sentence == null) {
-				return createResult(sentences, null, null);
-			}
-
+			final SentenceNode sentence =
+					context.expect('=').parse(DECLARATIVE.sentence());
 			final SubTitleNode subTitle = context.parse(SUB_TITLE);
 
 			if (subTitle == null) {
+				if (sentence == null) {
+					return createResult(sentences, null, null);
+				}
 				// No subtitle after last sentence.
 				sentences.add(sentence);
 				continue;
 			}
 
-			final SourcePosition sentenceEnd = sentence.getEnd();
 			final SentenceNode title;
 
-			if (context.current().line() - sentenceEnd.getLine() > 1) {
-				// No empty or pure-comment lines between title
-				// and sub-title.
-				sentences.add(sentence);
-				title = null;
-			} else if (sectionDeclaratorFromTitle(sentence) == null) {
-				// Preceding sentence is not a valid title.
-				context.getLogger().invalidSectionTitle(sentence);
-				sentences.add(sentence);
+			if (sentence == null) {
 				title = null;
 			} else {
-				title = sentence;
+
+				final SourcePosition sentenceEnd = sentence.getEnd();
+
+				if (context.current().line() - sentenceEnd.getLine() > 1) {
+					// No empty or pure-comment lines between title
+					// and sub-title.
+					sentences.add(sentence);
+					title = null;
+				} else if (sectionDeclaratorFromTitle(sentence) == null) {
+					// Preceding sentence is not a valid title.
+					context.getLogger().invalidSectionTitle(sentence);
+					sentences.add(sentence);
+					title = null;
+				} else {
+					title = sentence;
+				}
 			}
 
 			return createResult(sentences, title, subTitle);

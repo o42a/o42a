@@ -23,7 +23,9 @@ import static org.o42a.parser.Grammar.memberRef;
 import static org.o42a.parser.Grammar.name;
 import static org.o42a.parser.grammar.file.OddParser.ODD;
 
+import org.o42a.ast.Node;
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.file.DoubleLine;
 import org.o42a.ast.file.SubTitleNode;
@@ -45,6 +47,7 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 	@Override
 	public SubTitleNode parse(ParserContext context) {
 
+		final SeparatorNodes comments = context.skipComments(true);
 		final SignNode<DoubleLine> prefix = context.parse(PREFIX);
 
 		if (prefix == null) {
@@ -54,12 +57,14 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 		final NameNode tagFirstName = context.parse(name());
 
 		if (tagFirstName == null) {
-			return new SubTitleNode(prefix, null, null);
+			return addComments(new SubTitleNode(prefix, null, null), comments);
 		}
 
 		final MemberRefNode owner = context.acceptComments(
 					false,
-					new MemberRefNode(null, null, tagFirstName, null));
+					addComments(
+							new MemberRefNode(null, null, tagFirstName, null),
+							comments));
 		final MemberRefNode memberRef = context.parse(memberRef(owner, true));
 		final MemberRefNode tag = memberRef != null ? memberRef : owner;
 
@@ -68,6 +73,14 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 		context.parse(ODD);
 
 		return new SubTitleNode(prefix, tag, suffix);
+	}
+
+	private <N extends Node> N addComments(N node, SeparatorNodes comments) {
+		if (comments == null) {
+			return node;
+		}
+		node.addComments(comments.getComments());
+		return node;
 	}
 
 	private static final class DoubleLineParser extends LineParser<DoubleLine> {
