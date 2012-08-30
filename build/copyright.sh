@@ -53,7 +53,6 @@ assign_copyright GPL      org.o42a.backend.constant/src "Constant Handler Compil
 assign_copyright GPL      org.o42a.backend.llvm/src "Compiler LLVM Back-end" "*.java"
 assign_copyright GPL      org.o42a.backend.llvm.jni/include "Compiler JNI Bindings to LLVM" "*.h"
 assign_copyright GPL      org.o42a.backend.llvm.jni/src "Compiler JNI Bindings to LLVM" "*.cc"
-assign_copyright GPL      org.o42a.backend.llvm.test/src "Compiler LLVM Back-end Tests" "*.java"
 assign_copyright GPL      org.o42a.cl/src "Compiler Command-Line Interface" "*.java"
 assign_copyright GPL      org.o42a.codegen/src "Compiler Code Generator" "*.java"
 assign_copyright GPL      org.o42a.common/src "Modules Commons" "*.java"

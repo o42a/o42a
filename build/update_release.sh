@@ -19,7 +19,6 @@ update_mf analysis
 update_mf ast
 update_mf backend.constant
 update_mf backend.llvm
-update_mf backend.llvm.test
 update_mf cl
 update_mf codegen
 update_mf common
