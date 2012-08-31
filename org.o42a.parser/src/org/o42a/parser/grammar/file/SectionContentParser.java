@@ -29,7 +29,6 @@ import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
-import org.o42a.util.io.SourcePosition;
 
 
 final class SectionContentParser implements Parser<ContentWithNextTitle> {
@@ -47,43 +46,49 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 
 		for (;;) {
 
-			final SentenceNode sentence =
-					context.expect('=').parse(DECLARATIVE.sentence());
 			final SubTitleNode subTitle = context.parse(SUB_TITLE);
 
-			if (subTitle == null) {
-				if (sentence == null) {
-					return createResult(sentences, null, null);
+			if (subTitle != null) {
+
+				final int numSentences = sentences.size();
+
+				if (numSentences == 0) {
+					return createResult(sentences, null, subTitle);
 				}
-				// No subtitle after last sentence.
-				sentences.add(sentence);
-				continue;
-			}
 
-			final SentenceNode title;
+				final SentenceNode lastSentence =
+						sentences.remove(numSentences - 1);
+				final SentenceNode title;
 
-			if (sentence == null) {
-				title = null;
-			} else {
-
-				final SourcePosition sentenceEnd = sentence.getEnd();
-
-				if (context.current().line() - sentenceEnd.getLine() > 1) {
-					// No empty or pure-comment lines between title
-					// and sub-title.
-					sentences.add(sentence);
+				if (subTitle.getStart().getLine()
+						- lastSentence.getEnd().getLine() > 1) {
+					// Empty or pure-comment lines between title and sub-title.
+					sentences.add(lastSentence);
 					title = null;
-				} else if (sectionDeclaratorFromTitle(sentence) == null) {
+				} else if (sectionDeclaratorFromTitle(lastSentence) == null) {
 					// Preceding sentence is not a valid title.
-					context.getLogger().invalidSectionTitle(sentence);
-					sentences.add(sentence);
+					context.getLogger().error(
+							"invalid_section_title",
+							lastSentence,
+							"Section title should be a proposition or claim"
+							+ " with only a single field declaration");
+					sentences.add(lastSentence);
 					title = null;
 				} else {
-					title = sentence;
+					title = lastSentence;
 				}
+
+				return createResult(sentences, title, subTitle);
 			}
 
-			return createResult(sentences, title, subTitle);
+			final SentenceNode sentence = context.parse(DECLARATIVE.sentence());
+
+			if (sentence == null) {
+				// No title.
+				return createResult(sentences, null, null);
+			}
+
+			sentences.add(sentence);
 		}
 	}
 

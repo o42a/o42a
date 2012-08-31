@@ -48,7 +48,7 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 	public SubTitleNode parse(ParserContext context) {
 
 		final SeparatorNodes comments = context.skipComments(true);
-		final SignNode<DoubleLine> prefix = context.parse(PREFIX);
+		final SignNode<DoubleLine> prefix = parsePrefix(context);
 
 		if (prefix == null) {
 			return null;
@@ -57,6 +57,7 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 		final NameNode tagFirstName = context.parse(name());
 
 		if (tagFirstName == null) {
+			context.parse(ODD);
 			return addComments(new SubTitleNode(prefix, null, null), comments);
 		}
 
@@ -75,12 +76,33 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 		return new SubTitleNode(prefix, tag, suffix);
 	}
 
+	private SignNode<DoubleLine> parsePrefix(ParserContext context) {
+
+		final boolean lineStart = context.isLineStart();
+		final SignNode<DoubleLine> prefix = context.parse(PREFIX);
+
+		if (prefix != null && !lineStart) {
+			invalidTitleUnderline(context, prefix);
+		}
+
+		return prefix;
+	}
+
 	private <N extends Node> N addComments(N node, SeparatorNodes comments) {
 		if (comments == null) {
 			return node;
 		}
 		node.addComments(comments.getComments());
 		return node;
+	}
+
+	private void invalidTitleUnderline(
+			ParserContext context,
+			SignNode<DoubleLine> titleLine) {
+		context.getLogger().error(
+				"invalid_title_underline",
+				titleLine,
+				"Nothing but spaces may preceed the title underline");
 	}
 
 	private static final class DoubleLineParser extends LineParser<DoubleLine> {

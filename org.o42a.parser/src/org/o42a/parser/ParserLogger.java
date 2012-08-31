@@ -69,14 +69,6 @@ public abstract class ParserLogger implements Logger {
 				"Invalid target: expected either block name or nothing");
 	}
 
-	public void invalidSectionTitle(LogInfo location) {
-		error(
-				"invalid_section_title",
-				location,
-				"Section title should be a proposition or claim"
-				+ " with only a single field declaration");
-	}
-
 	public void invalidSpaceInNumber(LogInfo location) {
 		warning(
 				"invalid_space_in_number",
