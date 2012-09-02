@@ -200,13 +200,13 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
 		@Override
 		public String toString() {
-			if (this.linkType == LinkValueType.LINK) {
+			if (this.linkType.is(LinkValueType.LINK)) {
 				return "`";
 			}
-			if (this.linkType == LinkValueType.VARIABLE) {
+			if (this.linkType.is(LinkValueType.VARIABLE)) {
 				return "``";
 			}
-			if (this.linkType == LinkValueType.GETTER) {
+			if (this.linkType.is(LinkValueType.GETTER)) {
 				return "```";
 			}
 			return super.toString();

@@ -48,7 +48,7 @@ final class CustomAssignment extends AssignmentKind {
 		final LinkValueType destType =
 				destination.value().getValueType().toLinkType();
 
-		if (destType != LinkValueType.GETTER) {
+		if (destType.isVariable()) {
 			return null;
 		}
 
