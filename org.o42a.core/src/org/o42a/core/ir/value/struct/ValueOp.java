@@ -92,7 +92,7 @@ public abstract class ValueOp {
 			"Wrong value type: " + getValueType()
 			+ ", but " + dirs.getValueType() + " expected";
 
-		if (getValueType().isStateless()) {
+		if (!getValueType().isStateful()) {
 			return write(dirs);
 		}
 

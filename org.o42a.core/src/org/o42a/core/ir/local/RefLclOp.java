@@ -38,7 +38,6 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -93,15 +92,8 @@ public final class RefLclOp extends LclOp {
 
 		final ObjectOp target =
 				anonymousObject(getBuilder(), objectPtr, ascendant);
-		final ValueType<?> valueType =
-				getFieldIR().getField().toObject().value().getValueType();
 
-		if (valueType.isStateless()
-				|| valueType.isLink() && valueType.isVariable()) {
-			return holder.holdVolatile(code, target);
-		}
-
-		return holder.hold(code, target);
+		return holder.holdVolatile(code, target);
 	}
 
 	@Override
@@ -112,7 +104,7 @@ public final class RefLclOp extends LclOp {
 				control.getBuilder().dirs(code, control.falseDir());
 		final Obj object = getObject();
 
-		// New objects created for the whole duration of the function.
+		// New objects are created for the whole duration of the function.
 		final ObjectOp newObject = getBuilder().newObject(
 				dirs,
 				tempObjHolder(
