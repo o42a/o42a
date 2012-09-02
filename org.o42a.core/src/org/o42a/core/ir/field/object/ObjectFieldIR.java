@@ -110,8 +110,6 @@ public final class ObjectFieldIR extends FieldIR {
 			fld = new GetterFld(bodyIR, field, target);
 		} else if (linkType == LinkValueType.VARIABLE) {
 			fld = new VarFld(bodyIR, field, target);
-		} else if (linkType == LinkValueType.GETTER) {
-			fld = new GetterFld(bodyIR, field, target);
 		} else {
 			return null;
 		}
