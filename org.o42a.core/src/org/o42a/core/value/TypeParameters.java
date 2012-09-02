@@ -206,9 +206,6 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 			if (this.linkType.is(LinkValueType.VARIABLE)) {
 				return "``";
 			}
-			if (this.linkType.is(LinkValueType.GETTER)) {
-				return "```";
-			}
 			return super.toString();
 		}
 

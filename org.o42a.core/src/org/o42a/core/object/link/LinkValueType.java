@@ -67,22 +67,6 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 
 	};
 
-	public static final LinkValueType GETTER = new LinkValueType("getter") {
-
-		@Override
-		public Obj typeObject(Intrinsics intrinsics) {
-			return intrinsics.getGetter();
-		}
-
-		@Override
-		GetterValueStructIR structIR(
-				Generator generator,
-				LinkValueStruct linkStruct) {
-			return new GetterValueStructIR(generator, linkStruct);
-		}
-
-	};
-
 	private LinkValueType(String systemId) {
 		super(systemId);
 	}
