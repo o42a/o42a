@@ -77,8 +77,6 @@ public final class TypeInterpreter {
 			return LinkValueType.LINK;
 		case VARIABLE:
 			return LinkValueType.VARIABLE;
-		case GETTER:
-			return LinkValueType.GETTER;
 		}
 		throw new IllegalArgumentException(
 				"Unknwon definition kind: " + definitionKind);

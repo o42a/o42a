@@ -61,7 +61,7 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 	@Override
 	public boolean isConstant() {
-		if (getExpectedStruct().getValueType().isRuntimeConstructed()) {
+		if (getExpectedStruct().isVariable()) {
 			return false;
 		}
 		return getAdaptedRef().isConstant();

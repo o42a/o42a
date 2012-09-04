@@ -59,6 +59,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			CodeBuilder builder,
 			DataOp ptr,
 			Obj wellKnownType) {
+		assert !wellKnownType.getConstructionMode().isRuntime() :
+			"Run-time consrtucted object has no well known type";
 		return new AnonymousObjOp(builder, ptr, wellKnownType);
 	}
 
