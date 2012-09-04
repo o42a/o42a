@@ -98,7 +98,6 @@ public class ObjectConstructorStep extends Step {
 		if (resolver.isFullResolution()) {
 			object.resolveAll();
 			uses().useBy(resolver);
-			this.constructor.getConstructed().type().stateless();
 		}
 		resolver.getWalker().object(this, object);
 
