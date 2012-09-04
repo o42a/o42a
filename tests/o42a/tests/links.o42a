@@ -74,5 +74,5 @@ Target and body := test (
     Assert [runtime link`] "Runtime link body is false"
     Assert [runtime link] "Runtime link target is false"
     Assert [runtime link == 2] "Wrong runtime link target"
-  }  
+  }
 )
