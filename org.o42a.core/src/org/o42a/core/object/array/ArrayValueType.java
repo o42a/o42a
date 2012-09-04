@@ -44,7 +44,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 
 	@Override
 	public boolean isStateful() {
-		return false;
+		return isVariable();
 	}
 
 	@Override
