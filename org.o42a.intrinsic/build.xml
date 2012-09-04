@@ -22,6 +22,7 @@
 <project name="org.o42a.intrinsic" default="package">
 
 	<filelist id="project.deps" dir="..">
+		<file name="org.o42a.lib.collections"/>
 		<file name="org.o42a.lib.console"/>
 		<file name="org.o42a.lib.macros"/>
 		<file name="org.o42a.lib.test"/>
