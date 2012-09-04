@@ -19,8 +19,6 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.core.ir.IRNames.CONST_ID;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
@@ -35,8 +33,6 @@ import org.o42a.util.string.ID;
 
 abstract class AbstractLinkValueStructIR
 		extends AbstractValueStructIR<LinkValueStruct, KnownLink> {
-
-	private static final ID LINK_CONST_ID = CONST_ID.sub("LINK");
 
 	private int constSeq;
 
@@ -67,7 +63,9 @@ abstract class AbstractLinkValueStructIR
 
 	@Override
 	protected ID constId(KnownLink value) {
-		return LINK_CONST_ID.anonymous(++this.constSeq);
+		return constIdPrefix().anonymous(++this.constSeq);
 	}
+
+	protected abstract ID constIdPrefix();
 
 }

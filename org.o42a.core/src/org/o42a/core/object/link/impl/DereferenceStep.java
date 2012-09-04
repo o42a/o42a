@@ -175,8 +175,8 @@ public class DereferenceStep extends Step {
 		final LinkValueType linkType =
 				linkObject.value().getValueType().toLinkType();
 
-		if (linkType.isRuntimeConstructed()) {
-			normalizer.finish();// Can not normalize run time constructed link.
+		if (linkType.isVariable()) {
+			normalizer.finish();// Can not normalize a variable.
 			return;
 		}
 
