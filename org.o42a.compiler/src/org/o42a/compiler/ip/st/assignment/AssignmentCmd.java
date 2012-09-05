@@ -49,7 +49,7 @@ final class AssignmentCmd implements Cmd {
 		final HostOp value =
 				this.assignment.getValue().op(control.host()).target(subDirs);
 
-		destination.assign(subDirs, value);
+		destination.value().assign(subDirs, value);
 
 		subDirs.done();
 		dirs.done();

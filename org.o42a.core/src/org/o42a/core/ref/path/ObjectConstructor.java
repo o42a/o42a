@@ -30,6 +30,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -202,8 +203,13 @@ public abstract class ObjectConstructor extends Placed {
 
 	private final class Op extends PathOp {
 
-		public Op(PathOp start) {
+		Op(PathOp start) {
 			super(start);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return targetValueOp();
 		}
 
 		@Override
