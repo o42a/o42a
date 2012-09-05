@@ -41,10 +41,10 @@ enum o42a_gc_lists {
 	O42A_GC_LIST_NEW_ALLOCATED = 1,
 
 	/**
-	 * A "gray" list flag. The "gray" list is a list of data objects known to be
+	 * A "grey" list flag. The "grey" list is a list of data objects known to be
 	 * used and thus couldn't be deallocated.
 	 */
-	O42A_GC_LIST_GRAY_FLAG = 0x02,
+	O42A_GC_LIST_GREY_FLAG = 0x02,
 
 	/**
 	 * A list of data blocks used by some thread(s).
@@ -52,16 +52,16 @@ enum o42a_gc_lists {
 	 * A data block from this list travels to the "white" list once no longer
 	 * used.
 	 *
-	 * This, along with O42A_LIST_STATIC forms a "gray" GC list.
+	 * This, along with O42A_LIST_STATIC forms a "grey" GC list.
 	 */
-	O42A_GC_LIST_USED = O42A_GC_LIST_GRAY_FLAG | 0,
+	O42A_GC_LIST_USED = O42A_GC_LIST_GREY_FLAG | 0,
 
 	/**
 	 * A list of statically allocated data blocks.
 	 *
-	 * This, along with O42A_LIST_USED forms a "gray" GC list.
+	 * This, along with O42A_LIST_USED forms a "grey" GC list.
 	 */
-	O42A_GC_LIST_STATIC = O42A_GC_LIST_GRAY_FLAG | 1,
+	O42A_GC_LIST_STATIC = O42A_GC_LIST_GREY_FLAG | 1,
 
 	/**
 	 * A "while" list flag of all the remaining data blocks.
@@ -659,7 +659,7 @@ void o42a_gc_unuse(o42a_gc_block_t *const block) {
 	O42A(o42a_gc_lock_block(block));
 	if (block->list != O42A_GC_LIST_USED) {
 		assert(
-				(block->list & O42A_GC_LIST_GRAY_FLAG)
+				(block->list & O42A_GC_LIST_GREY_FLAG)
 				&& "The block is not in a \"grey\" list");
 	} else if (!(--block->use_count)) {
 		gc_has_white = O42A_TRUE;
