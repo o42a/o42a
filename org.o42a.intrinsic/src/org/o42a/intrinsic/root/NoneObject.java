@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.PREDEFINED_CONSTRUCTION;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.ConstructionMode;
@@ -34,7 +34,7 @@ public final class NoneObject extends FalseObject {
 
 	@Override
 	public ConstructionMode getConstructionMode() {
-		return RUNTIME_CONSTRUCTION;
+		return PREDEFINED_CONSTRUCTION;
 	}
 
 	@Override
