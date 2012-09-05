@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
+import static org.o42a.core.object.ConstructionMode.PREDEFINED_CONSTRUCTION;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
@@ -175,7 +176,7 @@ public abstract class ObjectValuePartFnIR
 		if (part().isUsed(getGenerator().getAnalyzer(), VALUE_PART_ACCESS)) {
 			return false;
 		}
-		return !getObject().is(getObject().getContext().getNone());
+		return getObject().getConstructionMode() != PREDEFINED_CONSTRUCTION;
 	}
 
 	@Override
