@@ -172,7 +172,10 @@ public abstract class ObjectValuePartFnIR
 				RUNTIME_DERIVATION_USAGE)) {
 			return false;
 		}
-		return !part().isUsed(getGenerator().getAnalyzer(), VALUE_PART_ACCESS);
+		if (part().isUsed(getGenerator().getAnalyzer(), VALUE_PART_ACCESS)) {
+			return false;
+		}
+		return !getObject().is(getObject().getContext().getNone());
 	}
 
 	@Override

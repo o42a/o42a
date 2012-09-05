@@ -19,7 +19,10 @@
 */
 package org.o42a.intrinsic.root;
 
+import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
+
 import org.o42a.core.Scope;
+import org.o42a.core.object.ConstructionMode;
 import org.o42a.util.string.ID;
 
 
@@ -27,6 +30,11 @@ public final class NoneObject extends FalseObject {
 
 	public NoneObject(Scope topScope) {
 		super(topScope, ID.id("NONE"));
+	}
+
+	@Override
+	public ConstructionMode getConstructionMode() {
+		return RUNTIME_CONSTRUCTION;
 	}
 
 	@Override

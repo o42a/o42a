@@ -177,14 +177,12 @@ final class ArrayIndexOp extends StepOp<ArrayIndexStep> {
 
 		@Override
 		public void writeCond(CodeDirs dirs) {
-			throw new UnsupportedOperationException(
-					"Array index condition can not be obtained");
+			object(dirs).value().writeCond(dirs);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			throw new UnsupportedOperationException(
-					"Array index value can not be obtained");
+			return object(dirs.dirs()).value().writeValue(dirs);
 		}
 
 		@Override
@@ -219,6 +217,10 @@ final class ArrayIndexOp extends StepOp<ArrayIndexStep> {
 				return super.toString();
 			}
 			return this.index.toString();
+		}
+
+		private ObjectOp object(CodeDirs dirs) {
+			return this.index.object(dirs, tempObjHolder(dirs.getAllocator()));
 		}
 
 		private void assignItem(
