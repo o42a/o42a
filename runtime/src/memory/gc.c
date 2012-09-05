@@ -659,7 +659,8 @@ void o42a_gc_unuse(o42a_gc_block_t *const block) {
 	O42A(o42a_gc_lock_block(block));
 	if (block->list != O42A_GC_LIST_USED) {
 		assert(
-				(block->list & O42A_GC_LIST_GREY_FLAG)
+				((block->list & O42A_GC_LIST_GREY_FLAG)
+						|| block->list == O42A_GC_LIST_NEW_STATIC)
 				&& "The block is not in a \"grey\" list");
 	} else if (!(--block->use_count)) {
 		gc_has_white = O42A_TRUE;
