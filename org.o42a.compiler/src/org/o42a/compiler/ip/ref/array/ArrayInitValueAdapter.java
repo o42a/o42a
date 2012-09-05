@@ -61,7 +61,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 	@Override
 	public boolean isConstant() {
-		return !this.arrayStruct.getValueType().isRuntimeConstructed();
+		return false;
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public enum IDSeparator {
 
 	},
 	ANONYMOUS(":", ": (", ")"),
-	DETAIL("//", " // ", ""),
+	DETAIL("~~", " ~~ ", ""),
 	TYPE("@@", " @@(", ")"),
 	IN("@", " @(", ")");
 

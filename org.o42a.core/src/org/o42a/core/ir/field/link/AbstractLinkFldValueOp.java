@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,46 +17,59 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field.object;
+package org.o42a.core.ir.field.link;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
-import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 
 
-public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
+public abstract class AbstractLinkFldValueOp<F extends RefFldOp<?, ?>>
+	implements HostValueOp {
 
-	private final ObjFld.Op ptr;
+	private final F fld;
 
-	ObjFldOp(ObjFld fld, ObjOp host, ObjFld.Op ptr) {
-		super(fld, host);
-		this.ptr = ptr;
+	public AbstractLinkFldValueOp(F fld) {
+		this.fld = fld;
+	}
+
+	public final F fld() {
+		return this.fld;
 	}
 
 	@Override
-	public final ObjFld fld() {
-		return (ObjFld) super.fld();
+	public void writeCond(CodeDirs dirs) {
+		object(dirs);
 	}
 
 	@Override
-	public final ObjFld.Op ptr() {
-		return this.ptr;
+	public ValOp writeValue(ValDirs dirs) {
+
+		final Block code = dirs.code();
+		final AnyOp objectPtr = object(dirs.dirs()).toAny(null, code);
+
+		return dirs.value().store(code, objectPtr);
 	}
 
 	@Override
-	public HostValueOp value() {
-		return objectFldValueOp();
+	public String toString() {
+		if (this.fld == null) {
+			return super.toString();
+		}
+		return this.fld.toString();
 	}
 
-	@Override
-	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-		return target(dirs, tempObjHolder(dirs.getAllocator()))
-				.dereference(dirs, holder);
+	protected final ObjectOp object(CodeDirs dirs) {
+		return this.fld.materialize(
+				dirs,
+				tempObjHolder(dirs.getAllocator()));
 	}
 
 }

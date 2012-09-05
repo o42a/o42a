@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
@@ -59,6 +58,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			CodeBuilder builder,
 			DataOp ptr,
 			Obj wellKnownType) {
+		assert !wellKnownType.getConstructionMode().isRuntime() :
+			"Run-time consrtucted object has no well known type";
 		return new AnonymousObjOp(builder, ptr, wellKnownType);
 	}
 
@@ -160,6 +161,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return result;
 	}
 
+	@Override
 	public abstract ValueOp value();
 
 	public final ObjectTypeOp objectType(Code code) {
@@ -220,13 +222,6 @@ public abstract class ObjectOp extends IROp implements HostOp {
 						getBuilder(),
 						ptr,
 						linkStruct.getTypeRef().getType()));
-	}
-
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-		value().assign(
-				dirs,
-				value.materialize(dirs, tempObjHolder(dirs.getAllocator())));
 	}
 
 	@Override

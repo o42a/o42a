@@ -19,7 +19,7 @@
 */
 package org.o42a.common.macro.st;
 
-import static org.o42a.core.object.link.LinkValueType.GETTER;
+import static org.o42a.core.object.link.LinkValueType.LINK;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
@@ -65,12 +65,12 @@ final class ParentValueStructFinder implements ValueStructFinder {
 
 		if (parentLinkStruct != null) {
 			// Parent object is link.
-			if (parentLinkStruct.getValueType().isStateless()) {
+			if (parentLinkStruct.getValueType().is(LINK)) {
 				// Parent object is getter.
 				return parentLinkStruct;
 			}
 			// Construct a getter with the same interface.
-			return GETTER.linkStruct(parentLinkStruct.getTypeRef());
+			return LINK.linkStruct(parentLinkStruct.getTypeRef());
 		}
 
 		final StaticTypeRef parentValueTypeRef =
@@ -80,7 +80,7 @@ final class ParentValueStructFinder implements ValueStructFinder {
 				.rescope(this.scope);
 
 		// Construct a getter.
-		return GETTER.linkStruct(parentValueTypeRef);
+		return LINK.linkStruct(parentValueTypeRef);
 	}
 
 }
