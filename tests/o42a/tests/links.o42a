@@ -28,19 +28,51 @@ Name = "Link Tests"
 Print error [name] nl
 Run tests
 
-Static link := link (`integer) [1]
+Reference := test (
+  Name = "Reference Link"
+  Print error '  ' [name] nl
 
-Runtime link := link (`integer) [rt-integer '2']
+  Value := ``1
+  Proxy := `value
 
+  {
+    Assert [proxy == 1] "Wrong initial reference link value"
+    Value = 2
+    Assert [proxy == 2] "Reference link value did not update properly"
+  }
+)
 
-Target and body := test {
-  Print error "  Target and Body" nl
+Expression := test (
+  Name = "Expression Link"
+  Print error '  ' [name] nl
+
+  Value := ``1
+  Proxy := `value * 10
+
+  {
+    Assert [proxy == 10] "Wrong initial expression link value"
+    Value = 2
+    Assert [proxy == 20] "Expression link value did not update properly"
+  }
+)
+
+Target and body := test (
+  Name = "Target and Body"
+  Print error '  ' [name] nl
   
-  Assert [static link`] "Static link body is false"
-  Assert [static link] "Static link target is false"
-  Assert [static link == 1] "Wrong static link target"
+  Static link := link (`integer) [1]
+  
+  {
+    Assert [static link`] "Static link body is false"
+    Assert [static link] "Static link target is false"
+    Assert [static link == 1] "Wrong static link target"
+  }
 
-  Assert [runtime link`] "Runtime link body is false"
-  Assert [runtime link] "Runtime link target is false"
-  Assert [runtime link == 2] "Wrong runtime link target"  
-}
+  Runtime link := link (`integer) [rt-integer '2']
+  
+  {
+    Assert [runtime link`] "Runtime link body is false"
+    Assert [runtime link] "Runtime link target is false"
+    Assert [runtime link == 2] "Wrong runtime link target"
+  }
+)

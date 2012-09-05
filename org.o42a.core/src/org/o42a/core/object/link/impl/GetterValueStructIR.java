@@ -19,34 +19,25 @@
 */
 package org.o42a.core.object.link.impl;
 
+import static org.o42a.core.ir.IRNames.CONST_ID;
+
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.*;
-import org.o42a.core.ir.value.ValType.Op;
+import org.o42a.core.ir.value.ValHolder;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.util.string.ID;
 
 
-public class GetterValueStructIR
-		extends ValueStructIR<LinkValueStruct, KnownLink> {
+public class GetterValueStructIR extends AbstractLinkValueStructIR {
+
+	private static final ID LINK_CONST_ID = CONST_ID.sub("LINK");
 
 	public GetterValueStructIR(
 			Generator generator,
 			LinkValueStruct valueStruct) {
 		super(generator, valueStruct);
-	}
-
-	@Override
-	public Ptr<Op> valPtr(KnownLink value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Val val(KnownLink value) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -67,6 +58,11 @@ public class GetterValueStructIR
 	@Override
 	public ValHolder valTrap(ValOp value) {
 		return new LinkValTrap(value);
+	}
+
+	@Override
+	protected ID constIdPrefix() {
+		return LINK_CONST_ID;
 	}
 
 }

@@ -39,6 +39,8 @@ public interface HostOp {
 
 	CompilerContext getContext();
 
+	HostValueOp value();
+
 	LocalOp toLocal();
 
 	HostOp field(CodeDirs dirs, MemberKey memberKey);
@@ -46,7 +48,5 @@ public interface HostOp {
 	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);
 
 	ObjectOp dereference(CodeDirs dirs, ObjHolder holder);
-
-	void assign(CodeDirs dirs, HostOp value);
 
 }

@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -106,28 +107,58 @@ public abstract class PathOp implements HostOp {
 		return target(dirs).dereference(dirs, holder);
 	}
 
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-		target(dirs).assign(dirs, value);
-	}
-
-	public void writeCond(CodeDirs dirs) {
-		materialize(dirs, tempObjHolder(dirs.getAllocator()))
-		.value()
-		.writeCond(dirs);
-	}
-
-	public ValOp writeValue(ValDirs dirs) {
-		return materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()))
-				.value().writeValue(dirs);
-	}
-
 	public abstract HostOp target(CodeDirs dirs);
+
+	protected final HostValueOp targetValueOp() {
+		return new PathTargetValueOp(this);
+	}
+
+	private static final class PathTargetValueOp implements HostValueOp {
+
+		private final PathOp path;
+
+		PathTargetValueOp(PathOp path) {
+			this.path = path;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			targetValue(dirs).writeCond(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return targetValue(dirs.dirs()).writeValue(dirs);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			targetValue(dirs).assign(dirs, value);
+		}
+
+		@Override
+		public String toString() {
+			if (this.path == null) {
+				return super.toString();
+			}
+			return this.path.toString();
+		}
+
+		private HostValueOp targetValue(CodeDirs dirs) {
+			return this.path.target(dirs).value();
+		}
+
+	}
 
 	private static final class HostPathOp extends PathOp {
 
 		HostPathOp(BoundPath path, HostOp pathStart, HostOp host) {
 			super(path, pathStart, host);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return host().value();
 		}
 
 		@Override

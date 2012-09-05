@@ -26,6 +26,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
@@ -175,8 +176,8 @@ public class DereferenceStep extends Step {
 		final LinkValueType linkType =
 				linkObject.value().getValueType().toLinkType();
 
-		if (linkType.isRuntimeConstructed()) {
-			normalizer.finish();// Can not normalize run time constructed link.
+		if (linkType.isVariable()) {
+			normalizer.finish();// Can not normalize a variable.
 			return;
 		}
 
@@ -239,6 +240,11 @@ public class DereferenceStep extends Step {
 
 		Op(PathOp start, DereferenceStep step) {
 			super(start, step);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return targetValueOp();
 		}
 
 		@Override

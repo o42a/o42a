@@ -109,8 +109,7 @@ public class FieldAnalysis {
 		uses.useBy(object.content().toUser(), SUBSTANCE_USAGE);
 		uses.useBy(object.fieldUses(), NESTED_USAGE);
 
-		if (object.getConstructionMode().isRuntime()
-				|| !object.meta().isUpdated()) {
+		if (object.type().isRuntimeConstructed()) {
 			derivationUses().useBy(object.content(), RUNTIME_DERIVATION_USAGE);
 		}
 	}
