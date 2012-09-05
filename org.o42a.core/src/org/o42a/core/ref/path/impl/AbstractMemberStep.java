@@ -25,6 +25,7 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
@@ -152,7 +153,7 @@ public abstract class AbstractMemberStep extends Step {
 
 	@Override
 	protected final PathOp op(PathOp start) {
-		return new Op(start, this);
+		return new MemberOp(start, this);
 	}
 
 	private final Member firstDeclaration() {
@@ -169,10 +170,15 @@ public abstract class AbstractMemberStep extends Step {
 		return null;
 	}
 
-	private static final class Op extends StepOp<AbstractMemberStep> {
+	private static final class MemberOp extends StepOp<AbstractMemberStep> {
 
-		Op(PathOp start, AbstractMemberStep step) {
+		MemberOp(PathOp start, AbstractMemberStep step) {
 			super(start, step);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return targetValueOp();
 		}
 
 		@Override
@@ -182,7 +188,7 @@ public abstract class AbstractMemberStep extends Step {
 
 			if (firstDeclaration.toLocal() != null) {
 				// Member is a local scope.
-				return host();
+				return host().toLocal();
 			}
 
 			assert firstDeclaration.toField() != null :

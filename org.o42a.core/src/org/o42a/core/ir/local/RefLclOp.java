@@ -31,11 +31,14 @@ import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -63,6 +66,11 @@ public final class RefLclOp extends LclOp {
 	@Override
 	public final Op ptr() {
 		return this.ptr;
+	}
+
+	@Override
+	public HostValueOp value() {
+		return new RefLclValueOp(this);
 	}
 
 	@Override
@@ -117,16 +125,6 @@ public final class RefLclOp extends LclOp {
 		newObject.value().writeCond(dirs);
 	}
 
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-
-		final Code code = dirs.code();
-		final ObjectOp object =
-				value.materialize(dirs, tempObjHolder(code.getAllocator()));
-
-		ptr().object(code).store(code, object.toData(null, code));
-	}
-
 	public static final class Op extends LclOp.Op<Op> {
 
 		private Op(StructWriter<Op> writer) {
@@ -169,6 +167,60 @@ public final class RefLclOp extends LclOp {
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.object = data.addDataPtr("object");
+		}
+
+	}
+
+	private static final class RefLclValueOp implements HostValueOp {
+
+		private final RefLclOp lcl;
+
+		RefLclValueOp(RefLclOp lcl) {
+			this.lcl = lcl;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			loadObject(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+
+			final DataOp object = loadObject(dirs.dirs());
+			final Block code = dirs.code();
+
+			return dirs.value().store(code, object.toAny(null, code));
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+
+			final Code code = dirs.code();
+			final ObjectOp object =
+					value.materialize(dirs, tempObjHolder(code.getAllocator()));
+
+			this.lcl.ptr().object(code)
+			.store(code, object.toData(null, code));
+		}
+
+		@Override
+		public String toString() {
+			if (this.lcl == null) {
+				return super.toString();
+			}
+			return this.lcl.toString();
+		}
+
+		private DataOp loadObject(CodeDirs dirs) {
+
+			final Block code = dirs.code();
+			final DataOp object =
+					this.lcl.ptr().object(code).load(null, code);
+
+			object.isNull(null, code).go(code, dirs.falseDir());
+
+			return object;
 		}
 
 	}
