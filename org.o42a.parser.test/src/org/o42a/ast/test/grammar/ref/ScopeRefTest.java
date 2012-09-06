@@ -20,6 +20,7 @@
 package org.o42a.ast.test.grammar.ref;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.ast.ref.ScopeRefNode;
@@ -36,7 +37,7 @@ public class ScopeRefTest extends GrammarTestCase {
 		final ScopeRefNode ref = parse("* ");
 
 		assertEquals(ScopeType.IMPLIED, ref.getType());
-		assertRange(0, 1, ref);
+		assertThat(ref, hasRange(0, 1));
 		assertEquals(2, this.worker.position().offset());
 	}
 
@@ -46,7 +47,7 @@ public class ScopeRefTest extends GrammarTestCase {
 		final ScopeRefNode ref = parse(": ");
 
 		assertEquals(ScopeType.SELF, ref.getType());
-		assertRange(0, 1, ref);
+		assertThat(ref, hasRange(0, 1));
 		assertEquals(2, this.worker.position().offset());
 	}
 
@@ -56,7 +57,7 @@ public class ScopeRefTest extends GrammarTestCase {
 		final ScopeRefNode ref = parse(":");
 
 		assertEquals(ScopeType.SELF, ref.getType());
-		assertRange(0, 1, ref);
+		assertThat(ref, hasRange(0, 1));
 	}
 
 	@Test
@@ -65,7 +66,7 @@ public class ScopeRefTest extends GrammarTestCase {
 		final ScopeRefNode ref = parse(":: ");
 
 		assertEquals(ScopeType.PARENT, ref.getType());
-		assertRange(0, 2, ref);
+		assertThat(ref, hasRange(0, 2));
 		assertEquals(3, this.worker.position().offset());
 	}
 
@@ -75,7 +76,7 @@ public class ScopeRefTest extends GrammarTestCase {
 		final ScopeRefNode ref = parse("## ");
 
 		assertEquals(ScopeType.MACROS, ref.getType());
-		assertRange(0, 2, ref);
+		assertThat(ref, hasRange(0, 2));
 		assertEquals(3, this.worker.position().offset());
 	}
 
@@ -85,7 +86,7 @@ public class ScopeRefTest extends GrammarTestCase {
 		final ScopeRefNode ref = parse("$ ");
 
 		assertEquals(ScopeType.MODULE, ref.getType());
-		assertRange(0, 1, ref);
+		assertThat(ref, hasRange(0, 1));
 		assertEquals(2, this.worker.position().offset());
 	}
 
@@ -95,7 +96,7 @@ public class ScopeRefTest extends GrammarTestCase {
 		final ScopeRefNode ref = parse("$$ ");
 
 		assertEquals(ScopeType.ROOT, ref.getType());
-		assertRange(0, 2, ref);
+		assertThat(ref, hasRange(0, 2));
 		assertEquals(3, this.worker.position().offset());
 	}
 

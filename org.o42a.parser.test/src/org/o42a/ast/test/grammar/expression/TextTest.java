@@ -38,9 +38,9 @@ public class TextTest extends GrammarTestCase {
 
 		final TextNode text = parse("'foo'");
 
-		assertRange(0, 5, text);
+		assertThat(text, hasRange(0, 5));
 		assertEquals(1, text.getLiterals().length);
-		assertRange(0, 5, text.getLiterals()[0]);
+		assertThat(text.getLiterals()[0], hasRange(0, 5));
 		assertThat(
 				text.getLiterals()[0].getOpeningBound().getType(),
 				is(SINGLE_QUOTE));
@@ -55,9 +55,9 @@ public class TextTest extends GrammarTestCase {
 
 		final TextNode text = parse("\"foo\"");
 
-		assertRange(0, 5, text);
+		assertThat(text, hasRange(0, 5));
 		assertEquals(1, text.getLiterals().length);
-		assertRange(0, 5, text.getLiterals()[0]);
+		assertThat(text.getLiterals()[0], hasRange(0, 5));
 		assertThat(
 				text.getLiterals()[0].getOpeningBound().getType(),
 				is(DOUBLE_QUOTE));
@@ -72,7 +72,7 @@ public class TextTest extends GrammarTestCase {
 
 		final TextNode text = parse("'foo' 'bar'");
 
-		assertRange(0, 11, text);
+		assertThat(text, hasRange(0, 11));
 		assertEquals(2, text.getLiterals().length);
 		assertEquals("foo", text.getLiterals()[0].getText());
 		assertEquals("bar", text.getLiterals()[1].getText());

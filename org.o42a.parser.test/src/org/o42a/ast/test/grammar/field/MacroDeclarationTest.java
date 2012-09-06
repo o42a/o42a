@@ -47,8 +47,8 @@ public class MacroDeclarationTest extends GrammarTestCase {
 				to(MacroExpansionNode.class, declarator.getDeclarable());
 
 		assertThat(declarable.getOperator(), is(UnaryOperator.MACRO_EXPANSION));
-		assertName("foo", declarable.getOperand());
-		assertName("bar", declarator.getDefinition());
+		assertThat(declarable.getOperand(), isName("foo"));
+		assertThat(declarator.getDefinition(), isName("bar"));
 		assertThat(declarator.getDefinitionKind(), nullValue());
 		assertThat(declarator.getTarget(), is(DeclarationTarget.VALUE));
 	}
@@ -65,8 +65,8 @@ public class MacroDeclarationTest extends GrammarTestCase {
 				to(MacroExpansionNode.class, declarator.getDeclarable());
 
 		assertThat(declarable.getOperator(), is(UnaryOperator.MACRO_EXPANSION));
-		assertName("foo", declarable.getOperand());
-		assertName("bar", declarator.getDefinition());
+		assertThat(declarable.getOperand(), isName("foo"));
+		assertThat(declarator.getDefinition(), isName("bar"));
 		assertThat(declarator.getDefinitionKind(), nullValue());
 		assertThat(
 				declarator.getTarget(),

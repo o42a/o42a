@@ -19,8 +19,9 @@
 */
 package org.o42a.ast.test.grammar.expression;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.unaryExpression;
 
 import org.junit.Test;
@@ -36,11 +37,10 @@ public class UnaryExpressionTest extends GrammarTestCase {
 
 		final UnaryNode result = parse("+foo");
 
-		assertNotNull(result);
-		assertEquals(UnaryOperator.PLUS, result.getOperator());
-		assertName("foo", result.getOperand());
-		assertRange(0, 4, result);
-		assertRange(0, 1, result.getSign());
+		assertThat(result.getOperator(), is(UnaryOperator.PLUS));
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 4));
+		assertThat(result.getSign(), hasRange(0, 1));
 	}
 
 	@Test
@@ -48,11 +48,10 @@ public class UnaryExpressionTest extends GrammarTestCase {
 
 		final UnaryNode result = parse("-foo");
 
-		assertNotNull(result);
 		assertEquals(UnaryOperator.MINUS, result.getOperator());
-		assertName("foo", result.getOperand());
-		assertRange(0, 4, result);
-		assertRange(0, 1, result.getSign());
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 4));
+		assertThat(result.getSign(), hasRange(0, 1));
 	}
 
 	@Test
@@ -60,11 +59,10 @@ public class UnaryExpressionTest extends GrammarTestCase {
 
 		final UnaryNode result = parse("\u2212foo");
 
-		assertNotNull(result);
 		assertEquals(UnaryOperator.MINUS, result.getOperator());
-		assertName("foo", result.getOperand());
-		assertRange(0, 4, result);
-		assertRange(0, 1, result.getSign());
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 4));
+		assertThat(result.getSign(), hasRange(0, 1));
 	}
 
 	@Test
@@ -72,11 +70,10 @@ public class UnaryExpressionTest extends GrammarTestCase {
 
 		final UnaryNode result = parse("--foo");
 
-		assertNotNull(result);
 		assertEquals(UnaryOperator.NOT, result.getOperator());
-		assertName("foo", result.getOperand());
-		assertRange(0, 5, result);
-		assertRange(0, 2, result.getSign());
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 5));
+		assertThat(result.getSign(), hasRange(0, 2));
 	}
 
 	@Test
@@ -84,11 +81,32 @@ public class UnaryExpressionTest extends GrammarTestCase {
 
 		final UnaryNode result = parse("++foo");
 
-		assertNotNull(result);
 		assertEquals(UnaryOperator.IS_TRUE, result.getOperator());
-		assertName("foo", result.getOperand());
-		assertRange(0, 5, result);
-		assertRange(0, 2, result.getSign());
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 5));
+		assertThat(result.getSign(), hasRange(0, 2));
+	}
+
+	@Test
+	public void valueOf() {
+
+		final UnaryNode result = parse("/foo");
+
+		assertEquals(UnaryOperator.VALUE_OF, result.getOperator());
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 4));
+		assertThat(result.getSign(), hasRange(0, 1));
+	}
+
+	@Test
+	public void macroExpansion() {
+
+		final UnaryNode result = parse("#foo");
+
+		assertEquals(UnaryOperator.MACRO_EXPANSION, result.getOperator());
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 4));
+		assertThat(result.getSign(), hasRange(0, 1));
 	}
 
 	private UnaryNode parse(String text) {

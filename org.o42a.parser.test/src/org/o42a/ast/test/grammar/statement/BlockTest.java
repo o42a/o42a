@@ -70,8 +70,8 @@ public class BlockTest extends GrammarTestCase {
 		assertThat(
 				declarator.getTarget(),
 				is(DeclarationTarget.OVERRIDE_VALUE));
-		assertName("foo", declarator.getDeclarable());
-		assertName("bar", declarator.getDefinition());
+		assertThat(declarator.getDeclarable(), isName("foo"));
+		assertThat(declarator.getDefinition(), isName("bar"));
 	}
 
 	@Test
@@ -95,8 +95,8 @@ public class BlockTest extends GrammarTestCase {
 		final AssignmentNode assignment =
 				singleStatement(AssignmentNode.class, result);
 
-		assertName("foo", assignment.getDestination());
-		assertName("bar", assignment.getValue());
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(assignment.getValue(), isName("bar"));
 	}
 
 	@Test
@@ -110,8 +110,8 @@ public class BlockTest extends GrammarTestCase {
 		final AssignmentNode assignment =
 				singleStatement(AssignmentNode.class, parentheses);
 
-		assertName("foo", assignment.getDestination());
-		assertName("bar", assignment.getValue());
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(assignment.getValue(), isName("bar"));
 	}
 
 	@Test
@@ -125,9 +125,7 @@ public class BlockTest extends GrammarTestCase {
 		assertThat(
 				result.getSeparator().getType(),
 				is(NamedBlockNode.Separator.COLON));
-		assertName(
-				"bar",
-				singleStatement(MemberRefNode.class, result.getBlock()));
+		assertThat(singleStatement(MemberRefNode.class, result.getBlock()), isName("bar"));
 	}
 
 	@Test
