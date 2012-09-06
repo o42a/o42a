@@ -60,13 +60,20 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 			break;
 		case '-':
 		case MINUS:
-			switch (context.next()) {
-			case '-':
+			if (context.next() == '-') {
 				operator = UnaryOperator.NOT;
 				context.acceptAll();
-				break;
-			default:
+			} else {
 				operator = UnaryOperator.MINUS;
+				context.acceptButLast();
+			}
+			break;
+		case '/':
+			if (context.next() == '/') {
+				operator = UnaryOperator.KEEP_VALUE;
+				context.acceptAll();
+			} else {
+				operator = UnaryOperator.VALUE_OF;
 				context.acceptButLast();
 			}
 			break;
