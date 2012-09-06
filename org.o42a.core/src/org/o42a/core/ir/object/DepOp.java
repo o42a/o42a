@@ -28,17 +28,20 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.util.string.ID;
 
 
-public class DepOp extends IROp implements HostOp {
+public class DepOp extends IROp implements HostOp, HostValueOp {
 
 	public static final ID DEP_ID = ID.id("dep");
 
@@ -71,8 +74,23 @@ public class DepOp extends IROp implements HostOp {
 	}
 
 	@Override
+	public final HostValueOp value() {
+		return this;
+	}
+
+	@Override
 	public final LocalOp toLocal() {
 		return null;
+	}
+
+	@Override
+	public void writeCond(CodeDirs dirs) {
+		object(dirs.code()).value().writeCond(dirs);
+	}
+
+	@Override
+	public ValOp writeValue(ValDirs dirs) {
+		return object(dirs.code()).value().writeValue(dirs);
 	}
 
 	@Override
@@ -86,12 +104,7 @@ public class DepOp extends IROp implements HostOp {
 
 		final Block code = dirs.code();
 
-		return holder.hold(
-				code,
-				anonymousObject(
-						getBuilder(),
-						ptr().object(code).load(null, code),
-						getDep().getDepTarget()));
+		return holder.hold(code, object(code));
 	}
 
 	@Override
@@ -111,7 +124,7 @@ public class DepOp extends IROp implements HostOp {
 		final Block noDep = dirs.addBlock("no_dep");
 		final CodeDirs depDirs = builder.dirs(dirs.code(), noDep.head());
 
-		final DataOp object = object(builder, depDirs);
+		final DataOp object = createObject(builder, depDirs);
 		final Block code = depDirs.code();
 
 		objectRec.store(code, object);
@@ -131,7 +144,12 @@ public class DepOp extends IROp implements HostOp {
 		depDirs.done();
 	}
 
-	private DataOp object(CodeBuilder builder, CodeDirs dirs) {
+	@Override
+	public String toString() {
+		return "DepOp[" + getDep() + '@' + host() + ']';
+	}
+
+	private DataOp createObject(CodeBuilder builder, CodeDirs dirs) {
 
 		final Code code = dirs.code();
 		final Ref depRef = getDep().getDepRef();
@@ -142,9 +160,11 @@ public class DepOp extends IROp implements HostOp {
 				tempObjHolder(dirs.getAllocator())).toData(null, code);
 	}
 
-	@Override
-	public String toString() {
-		return "DepOp[" + getDep() + '@' + host() + ']';
+	private ObjectOp object(final Block code) {
+		return anonymousObject(
+				getBuilder(),
+				ptr().object(code).load(null, code),
+				getDep().getDepTarget());
 	}
 
 }

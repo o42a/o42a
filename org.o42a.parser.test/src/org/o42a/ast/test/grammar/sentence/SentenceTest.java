@@ -49,15 +49,15 @@ public class SentenceTest extends GrammarTestCase {
 
 		assertNull(alt1.getSeparator());
 		assertEquals(2, alt1.getConjunction().length);
-		assertName("foo1", alt1.getConjunction()[0].getStatement());
-		assertName("bar1", alt1.getConjunction()[1].getStatement());
+		assertThat(alt1.getConjunction()[0].getStatement(), isName("foo1"));
+		assertThat(alt1.getConjunction()[1].getStatement(), isName("bar1"));
 
 		final AlternativeNode alt2 = disjunction[1];
 
 		assertEquals(Separator.ALTERNATIVE, alt2.getSeparator().getType());
 		assertEquals(2, alt2.getConjunction().length);
-		assertName("foo2", alt2.getConjunction()[0].getStatement());
-		assertName("bar2", alt2.getConjunction()[1].getStatement());
+		assertThat(alt2.getConjunction()[0].getStatement(), isName("foo2"));
+		assertThat(alt2.getConjunction()[1].getStatement(), isName("bar2"));
 	}
 
 	@Test

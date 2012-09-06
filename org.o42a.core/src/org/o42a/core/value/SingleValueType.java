@@ -38,17 +38,12 @@ public abstract class SingleValueType<T>
 	}
 
 	@Override
+	public boolean isStateful() {
+		return false;
+	}
+
+	@Override
 	public final boolean isVariable() {
-		return false;
-	}
-
-	@Override
-	public final boolean isStateless() {
-		return false;
-	}
-
-	@Override
-	public final boolean isRuntimeConstructed() {
 		return false;
 	}
 

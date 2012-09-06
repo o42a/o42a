@@ -82,6 +82,11 @@ public final class ObjectValue extends ObjectValueParts {
 		return this.uses.selectUse(analyzer, selector);
 	}
 
+	public final boolean isRuntimeConstructed() {
+		return !getValueType().isStateful()
+				|| getObject().type().isRuntimeConstructed();
+	}
+
 	public final boolean isUsed(
 			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
@@ -234,8 +239,7 @@ public final class ObjectValue extends ObjectValueParts {
 		if (!user.toUser().isDummy()) {
 			uses().useBy(
 					user,
-					getObject().getConstructionMode().isRuntime()
-					|| !getObject().meta().isUpdated()
+					isRuntimeConstructed()
 					? EXPLICIT_RUNTIME_VALUE_USAGE
 					: EXPLICIT_STATIC_VALUE_USAGE);
 		}

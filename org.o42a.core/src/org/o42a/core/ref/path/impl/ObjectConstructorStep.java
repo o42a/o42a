@@ -25,7 +25,6 @@ import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -99,7 +98,6 @@ public class ObjectConstructorStep extends Step {
 		if (resolver.isFullResolution()) {
 			object.resolveAll();
 			uses().useBy(resolver);
-			resolveStateless(resolver);
 		}
 		resolver.getWalker().object(this, object);
 
@@ -147,23 +145,6 @@ public class ObjectConstructorStep extends Step {
 			return this.uses;
 		}
 		return this.uses = new ObjectStepUses(this);
-	}
-
-	private void resolveStateless(StepResolver resolver) {
-
-		final Obj owner;
-		final Scope pathStart = resolver.getPathStart();
-		final Obj startObject = pathStart.toObject();
-
-		if (startObject != null) {
-			owner = startObject;
-		} else {
-			owner = pathStart.toLocal().getOwner();
-		}
-
-		if (owner.value().getValueType().isStateless()) {
-			this.constructor.getConstructed().type().stateless();
-		}
 	}
 
 	private void normalizeConstructor(PathNormalizer normalizer) {

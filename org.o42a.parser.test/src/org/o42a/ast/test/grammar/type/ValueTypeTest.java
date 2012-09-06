@@ -39,8 +39,8 @@ public class ValueTypeTest extends GrammarTestCase {
 
 		final ValueTypeNode result = parse("Foo (`bar)");
 
-		assertName("foo", result.getAscendant());
-		assertName("bar", result.getValueType().getType());
+		assertThat(result.getAscendant(), isName("foo"));
+		assertThat(result.getValueType().getType(), isName("bar"));
 		assertThat(
 				result.getValueType().getKind().getType(),
 				is(DefinitionKind.LINK));
@@ -57,8 +57,8 @@ public class ValueTypeTest extends GrammarTestCase {
 
 		final ValueTypeNode result = parse("Foo (``bar)");
 
-		assertName("foo", result.getAscendant());
-		assertName("bar", result.getValueType().getType());
+		assertThat(result.getAscendant(), isName("foo"));
+		assertThat(result.getValueType().getType(), isName("bar"));
 		assertThat(
 				result.getValueType().getKind().getType(),
 				is(DefinitionKind.VARIABLE));
@@ -81,9 +81,9 @@ public class ValueTypeTest extends GrammarTestCase {
 		assertThat(
 				ascendants.getAncestor().getSeparator().getType(),
 				is(Separator.SAMPLE));
-		assertName("foo", ascendants.getAncestor().getSpec());
+		assertThat(ascendants.getAncestor().getSpec(), isName("foo"));
 
-		assertName("bar", result.getValueType().getType());
+		assertThat(result.getValueType().getType(), isName("bar"));
 		assertThat(
 				result.getValueType().getKind().getType(),
 				is(DefinitionKind.LINK));
@@ -106,13 +106,13 @@ public class ValueTypeTest extends GrammarTestCase {
 		assertThat(
 				ascendants.getAncestor().getSeparator(),
 				nullValue());
-		assertName("foo", ascendants.getAncestor().getSpec());
+		assertThat(ascendants.getAncestor().getSpec(), isName("foo"));
 		assertThat(
 				ascendants.getSamples()[0].getSeparator().getType(),
 				is(Separator.SAMPLE));
-		assertName("bar", ascendants.getSamples()[0].getSpec());
+		assertThat(ascendants.getSamples()[0].getSpec(), isName("bar"));
 
-		assertName("baz", result.getValueType().getType());
+		assertThat(result.getValueType().getType(), isName("baz"));
 		assertThat(
 				result.getValueType().getKind().getType(),
 				is(DefinitionKind.VARIABLE));

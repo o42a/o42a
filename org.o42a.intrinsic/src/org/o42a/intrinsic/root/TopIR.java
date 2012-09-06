@@ -22,14 +22,14 @@ package org.o42a.intrinsic.root;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.ir.*;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
 
@@ -50,15 +50,15 @@ final class TopIR extends ScopeIR {
 
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
-		return new Op(builder, getScope());
+		return new TopOp(builder, getScope());
 	}
 
-	private static final class Op implements HostOp {
+	private static final class TopOp implements HostOp, HostValueOp {
 
 		private final CodeBuilder builder;
 		private final Scope scope;
 
-		public Op(CodeBuilder builder, Scope scope) {
+		public TopOp(CodeBuilder builder, Scope scope) {
 			this.builder = builder;
 			this.scope = scope;
 		}
@@ -79,6 +79,11 @@ final class TopIR extends ScopeIR {
 		}
 
 		@Override
+		public HostValueOp value() {
+			return this;
+		}
+
+		@Override
 		public LocalOp toLocal() {
 			return null;
 		}
@@ -95,6 +100,16 @@ final class TopIR extends ScopeIR {
 
 		@Override
 		public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
 			throw new UnsupportedOperationException();
 		}
 

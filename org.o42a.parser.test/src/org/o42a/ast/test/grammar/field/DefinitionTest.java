@@ -19,9 +19,7 @@
 */
 package org.o42a.ast.test.grammar.field;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.o42a.parser.Grammar.declarator;
 import static org.o42a.parser.Grammar.ref;
 
@@ -46,7 +44,7 @@ public class DefinitionTest extends GrammarTestCase {
 		assertEquals(DeclarationTarget.VALUE, result.getTarget());
 		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
 		assertNull(result.getDefinitionType());
-		assertName("bar", result.getDefinition());
+		assertThat(result.getDefinition(), isName("bar"));
 	}
 
 	@Test
@@ -62,7 +60,7 @@ public class DefinitionTest extends GrammarTestCase {
 				to(AscendantsNode.class, result.getDefinition());
 
 		assertFalse(ascendants.hasSamples());
-		assertName("bar", ascendants.getAncestor().getSpec());
+		assertThat(ascendants.getAncestor().getSpec(), isName("bar"));
 	}
 
 	@Test
@@ -72,8 +70,8 @@ public class DefinitionTest extends GrammarTestCase {
 
 		assertEquals(DeclarationTarget.VALUE, result.getTarget());
 		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
-		assertName("bar", result.getDefinitionType());
-		assertName("baz", result.getDefinition());
+		assertThat(result.getDefinitionType(), isName("bar"));
+		assertThat(result.getDefinition(), isName("baz"));
 	}
 
 	@Test
@@ -87,8 +85,8 @@ public class DefinitionTest extends GrammarTestCase {
 		final AscendantsNode ascendants =
 				to(AscendantsNode.class, result.getDefinitionType());
 
-		assertName("bar", ascendants.getAncestor().getSpec());
-		assertName("baz", result.getDefinition());
+		assertThat(ascendants.getAncestor().getSpec(), isName("bar"));
+		assertThat(result.getDefinition(), isName("baz"));
 	}
 
 	@Test
@@ -99,7 +97,7 @@ public class DefinitionTest extends GrammarTestCase {
 		assertEquals(DeclarationTarget.VALUE, result.getTarget());
 		assertEquals(DefinitionKind.VARIABLE, result.getDefinitionKind());
 		assertNull(result.getDefinitionType());
-		assertName("bar", result.getDefinition());
+		assertThat(result.getDefinition(), isName("bar"));
 	}
 
 	@Test
@@ -109,30 +107,8 @@ public class DefinitionTest extends GrammarTestCase {
 
 		assertEquals(DeclarationTarget.VALUE, result.getTarget());
 		assertEquals(DefinitionKind.VARIABLE, result.getDefinitionKind());
-		assertName("bar", result.getDefinitionType());
-		assertName("baz", result.getDefinition());
-	}
-
-	@Test
-	public void getter() {
-
-		final DeclaratorNode result = parse("foo := ```bar");
-
-		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.GETTER, result.getDefinitionKind());
-		assertNull(result.getDefinitionType());
-		assertName("bar", result.getDefinition());
-	}
-
-	@Test
-	public void getterInterface() {
-
-		final DeclaratorNode result = parse("foo := (```bar) baz");
-
-		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.GETTER, result.getDefinitionKind());
-		assertName("bar", result.getDefinitionType());
-		assertName("baz", result.getDefinition());
+		assertThat(result.getDefinitionType(), isName("bar"));
+		assertThat(result.getDefinition(), isName("baz"));
 	}
 
 	private DeclaratorNode parse(String text) {
@@ -142,7 +118,7 @@ public class DefinitionTest extends GrammarTestCase {
 		final MemberRefNode field =
 				to(MemberRefNode.class, this.worker.parse(ref()));
 
-		assertName("foo", field);
+		assertThat(field, isName("foo"));
 
 		return this.worker.parse(declarator(field));
 	}

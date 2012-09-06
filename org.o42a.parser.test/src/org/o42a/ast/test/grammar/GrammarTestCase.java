@@ -19,25 +19,27 @@
 */
 package org.o42a.ast.test.grammar;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.o42a.util.string.NameEncoder.NAME_ENCODER;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.o42a.ast.Node;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.test.grammar.matchers.MemberRefWithoutOwner;
+import org.o42a.ast.test.grammar.matchers.NodeHasNameMatcher;
+import org.o42a.ast.test.grammar.matchers.NodeRangeMatcher;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
@@ -55,11 +57,6 @@ public class GrammarTestCase {
 		return type.cast(value);
 	}
 
-	public static void assertRange(long start, long end, Node node) {
-		assertThat("Wrong range start", node.getStart().getOffset(), is(start));
-		assertThat("Wrong range end", node.getEnd().getOffset(), is(end));
-	}
-
 	public static String canonicalName(Name name) {
 		assertThat("No name", name, notNullValue());
 		return NAME_ENCODER.canonical().print(name);
@@ -69,14 +66,30 @@ public class GrammarTestCase {
 		return canonicalName(node.getName());
 	}
 
-	public static void assertName(String name, Node node) {
+	public static <T extends Node> Matcher<T> hasRange(long from, long to) {
+		return new NodeRangeMatcher<T>(from, to);
+	}
 
-		final MemberRefNode ref = to(MemberRefNode.class, node);
+	public static <T extends Node> Matcher<T> hasName(String name) {
+		return new NodeHasNameMatcher<T>(name);
+	}
 
-		assertThat("Unexpected field owner", ref.getOwner(), nullValue());
-		assertThat("Unexpected retention", ref.getDeclaredIn(), nullValue());
-		assertThat("No name", ref.getName(), notNullValue());
-		assertThat(canonicalName(ref.getName()), is(name));
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> memberRefWithoutOwner() {
+		return (Matcher<T>) MemberRefWithoutOwner.MEMBER_REF_WITHOUT_OWNER;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> memberRefWithoutRetention() {
+		return (Matcher<T>) MemberRefWithoutOwner.MEMBER_REF_WITHOUT_OWNER;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> isName(String name) {
+		return CoreMatchers.<T>allOf(
+				GrammarTestCase.<T>memberRefWithoutOwner(),
+				GrammarTestCase.<T>memberRefWithoutRetention(),
+				GrammarTestCase.<T>hasName(name));
 	}
 
 	public static <T extends StatementNode> T singleStatement(

@@ -39,7 +39,7 @@ public class ConjunctionTest extends GrammarTestCase {
 
 		assertNotNull(result);
 		assertEquals(1, result.length);
-		assertName("foo", result[0].getStatement());
+		assertThat(result[0].getStatement(), isName("foo"));
 	}
 
 	@Test
@@ -49,8 +49,8 @@ public class ConjunctionTest extends GrammarTestCase {
 
 		assertNotNull(result);
 		assertEquals(2, result.length);
-		assertName("foo", result[0].getStatement());
-		assertName("bar", result[1].getStatement());
+		assertThat(result[0].getStatement(), isName("foo"));
+		assertThat(result[1].getStatement(), isName("bar"));
 	}
 
 	@Test
@@ -60,9 +60,9 @@ public class ConjunctionTest extends GrammarTestCase {
 
 		assertNotNull(result);
 		assertEquals(3, result.length);
-		assertName("foo", result[0].getStatement());
-		assertName("bar", result[1].getStatement());
-		assertName("bas", result[2].getStatement());
+		assertThat(result[0].getStatement(), isName("foo"));
+		assertThat(result[1].getStatement(), isName("bar"));
+		assertThat(result[2].getStatement(), isName("bas"));
 	}
 
 	@Test

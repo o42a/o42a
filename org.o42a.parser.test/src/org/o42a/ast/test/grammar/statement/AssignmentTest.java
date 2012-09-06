@@ -20,6 +20,7 @@
 package org.o42a.ast.test.grammar.statement;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.IMPERATIVE;
 
 import org.junit.Test;
@@ -36,9 +37,9 @@ public class AssignmentTest extends GrammarTestCase {
 
 		final AssignmentNode assignment = parse("foo = bar");
 
-		assertRange(0, 9, assignment);
-		assertName("foo", assignment.getDestination());
-		assertName("bar", assignment.getValue());
+		assertThat(assignment, hasRange(0, 9));
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(assignment.getValue(), isName("bar"));
 	}
 
 	@Test
@@ -46,14 +47,14 @@ public class AssignmentTest extends GrammarTestCase {
 
 		final AssignmentNode assignment = parse("foo = bar + baz");
 
-		assertName("foo", assignment.getDestination());
+		assertThat(assignment.getDestination(), isName("foo"));
 
 		final BinaryNode value =
 				to(BinaryNode.class, assignment.getValue());
 
 		assertEquals(BinaryOperator.ADD, value.getOperator());
-		assertName("bar", value.getLeftOperand());
-		assertName("baz", value.getRightOperand());
+		assertThat(value.getLeftOperand(), isName("bar"));
+		assertThat(value.getRightOperand(), isName("baz"));
 	}
 
 	@Test
@@ -64,9 +65,9 @@ public class AssignmentTest extends GrammarTestCase {
 				to(BinaryNode.class, assignment.getDestination());
 
 		assertEquals(BinaryOperator.ADD, destination.getOperator());
-		assertName("foo", destination.getLeftOperand());
-		assertName("bar", destination.getRightOperand());
-		assertName("baz", assignment.getValue());
+		assertThat(destination.getLeftOperand(), isName("foo"));
+		assertThat(destination.getRightOperand(), isName("bar"));
+		assertThat(assignment.getValue(), isName("baz"));
 	}
 
 	private AssignmentNode parse(String text) {

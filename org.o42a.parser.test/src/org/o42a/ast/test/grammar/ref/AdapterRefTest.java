@@ -38,9 +38,9 @@ public class AdapterRefTest extends GrammarTestCase {
 
 		final AdapterRefNode ref = parse("foo@@bar");
 
-		assertName("foo", ref.getOwner());
-		assertRange(3, 5, ref.getAdapterId().getPrefix());
-		assertName("bar", ref.getType());
+		assertThat(ref.getOwner(), isName("foo"));
+		assertThat(ref.getAdapterId().getPrefix(), hasRange(3, 5));
+		assertThat(ref.getType(), isName("bar"));
 		assertThat(ref.getMembership(), nullValue());
 	}
 
@@ -49,15 +49,15 @@ public class AdapterRefTest extends GrammarTestCase {
 
 		final AdapterRefNode ref = parse("foo@@bar@baz");
 
-		assertName("foo", ref.getOwner());
-		assertRange(3, 5, ref.getAdapterId().getPrefix());
+		assertThat(ref.getOwner(), isName("foo"));
+		assertThat(ref.getAdapterId().getPrefix(), hasRange(3, 5));
 
 		final MemberRefNode type = to(MemberRefNode.class, ref.getType());
 
-		assertName("bar", type);
+		assertThat(type, isName("bar"));
 
-		assertRange(8, 9, ref.getMembership().getPrefix());
-		assertName("baz", ref.getDeclaredIn());
+		assertThat(ref.getMembership().getPrefix(), hasRange(8, 9));
+		assertThat(ref.getDeclaredIn(), isName("baz"));
 	}
 
 	@Test
@@ -66,18 +66,18 @@ public class AdapterRefTest extends GrammarTestCase {
 		final AdapterRefNode ref = parse("foo@@bar@@baz@type");
 		final AdapterRefNode owner = to(AdapterRefNode.class, ref.getOwner());
 
-		assertName("foo", owner.getOwner());
-		assertRange(3, 5, owner.getAdapterId().getPrefix());
+		assertThat(owner.getOwner(), isName("foo"));
+		assertThat(owner.getAdapterId().getPrefix(), hasRange(3, 5));
 
-		assertName("bar", owner.getType());
+		assertThat(owner.getType(), isName("bar"));
 
-		assertRange(8, 10, ref.getAdapterId().getPrefix());
+		assertThat(ref.getAdapterId().getPrefix(), hasRange(8, 10));
 		assertThat(
 				canonicalName(
 						to(MemberRefNode.class, ref.getType()).getName()),
 				is("baz"));
-		assertRange(13, 14, ref.getMembership().getPrefix());
-		assertName("type", ref.getDeclaredIn());
+		assertThat(ref.getMembership().getPrefix(), hasRange(13, 14));
+		assertThat(ref.getDeclaredIn(), isName("type"));
 	}
 
 	@Test
@@ -87,8 +87,8 @@ public class AdapterRefTest extends GrammarTestCase {
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 
 		assertThat(canonicalName(owner.getName()), is("foo"));
-		assertName("bar", ref.getAdapterId().getType());
-		assertName("type", ref.getDeclaredIn());
+		assertThat(ref.getAdapterId().getType(), isName("bar"));
+		assertThat(ref.getDeclaredIn(), isName("type"));
 	}
 
 	@Test
@@ -98,9 +98,9 @@ public class AdapterRefTest extends GrammarTestCase {
 		final MemberRefNode type =
 				to(MemberRefNode.class, ref.getAdapterId().getType());
 
-		assertName("foo", ref.getOwner());
+		assertThat(ref.getOwner(), isName("foo"));
 		assertThat(canonicalName(type.getName()), is("bar"));
-		assertName("type", type.getDeclaredIn());
+		assertThat(type.getDeclaredIn(), isName("type"));
 		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 
@@ -109,7 +109,7 @@ public class AdapterRefTest extends GrammarTestCase {
 
 		final RefNode ref = parse(ref(), "foo\n@@");
 
-		assertName("foo", ref);
+		assertThat(ref, isName("foo"));
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class AdapterRefTest extends GrammarTestCase {
 
 		final AdapterRefNode ref = parse("foo@@\nbar");
 
-		assertName("foo", ref.getOwner());
+		assertThat(ref.getOwner(), isName("foo"));
 		assertThat(ref.getType(), nullValue());
 		assertThat(ref.getDeclaredIn(), nullValue());
 	}
@@ -128,8 +128,8 @@ public class AdapterRefTest extends GrammarTestCase {
 
 		final AdapterRefNode ref = parse("foo @@bar \n@baz");
 
-		assertName("foo", ref.getOwner());
-		assertName("bar", ref.getType());
+		assertThat(ref.getOwner(), isName("foo"));
+		assertThat(ref.getType(), isName("bar"));
 		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 
@@ -139,8 +139,8 @@ public class AdapterRefTest extends GrammarTestCase {
 
 		final AdapterRefNode ref = parse("foo @@bar @\nbaz");
 
-		assertName("foo", ref.getOwner());
-		assertName("bar", ref.getType());
+		assertThat(ref.getOwner(), isName("foo"));
+		assertThat(ref.getType(), isName("bar"));
 		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 

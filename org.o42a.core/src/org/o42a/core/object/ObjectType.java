@@ -81,6 +81,14 @@ public final class ObjectType implements UserInfo {
 		return this.lastDefinition = object;
 	}
 
+	public final boolean isRuntimeConstructed() {
+
+		final Obj object = getObject();
+
+		return object.getConstructionMode().isRuntime()
+				|| !object.meta().isUpdated();
+	}
+
 	@Override
 	public final User<TypeUsage> toUser() {
 		return uses().toUser();
@@ -378,9 +386,7 @@ public final class ObjectType implements UserInfo {
 				assert enclosingScope.isTopScope() :
 					"No enclosing object of non-top-level object " + object;
 			}
-			if (object.getConstructionMode().isRuntime()
-					|| object.getPlace().isInsideLoop()
-					|| !object.meta().isUpdated()) {
+			if (isRuntimeConstructed() || object.getPlace().isInsideLoop()) {
 				this.derivationUses.useBy(
 						getObject().content(),
 						RUNTIME_DERIVATION_USAGE);

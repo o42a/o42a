@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Use namespace 'Console'
 Use namespace 'Test'
 
-
 Setter := test
 ==============
 
@@ -36,7 +35,7 @@ Assign :=> void (
   }
 )
   
-Property :=> getter (`string) (
+Property :=> link (`string) (
   Value :=< ``string
   = Value
   <*> Assign (

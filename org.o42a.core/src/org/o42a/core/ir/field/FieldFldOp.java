@@ -19,7 +19,15 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.string.ID;
 
 
@@ -40,6 +48,49 @@ public abstract class FieldFldOp extends FldOp {
 	@Override
 	public FieldFld fld() {
 		return (FieldFld) super.fld();
+	}
+
+	protected final HostValueOp objectFldValueOp() {
+		return new ObjectFldValueOp(this);
+	}
+
+	private static final class ObjectFldValueOp implements HostValueOp {
+
+		private final FieldFldOp fld;
+
+		ObjectFldValueOp(FieldFldOp fld) {
+			this.fld = fld;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			object(dirs).value().writeCond(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return object(dirs.dirs()).value().writeValue(dirs);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			object(dirs).value().assign(dirs, value);
+		}
+
+		@Override
+		public String toString() {
+			if (this.fld == null) {
+				return super.toString();
+			}
+			return this.fld.toString();
+		}
+
+		private final ObjectOp object(CodeDirs dirs) {
+			return this.fld.materialize(
+					dirs,
+					tempObjHolder(dirs.getAllocator()));
+		}
+
 	}
 
 }

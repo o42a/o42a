@@ -24,7 +24,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FieldFldOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.*;
@@ -51,6 +51,11 @@ public class ScopeFldOp extends FieldFldOp {
 	@Override
 	public final ScopeFld.Op ptr() {
 		return this.ptr;
+	}
+
+	@Override
+	public HostValueOp value() {
+		return objectFldValueOp();
 	}
 
 	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
@@ -89,11 +94,6 @@ public class ScopeFldOp extends FieldFldOp {
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.dereference(dirs, holder);
-	}
-
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-		throw new UnsupportedOperationException();
 	}
 
 }

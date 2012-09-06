@@ -95,7 +95,10 @@ final class LogicalResult extends BuiltinObject {
 
 	@Override
 	public String toString() {
-		return this.logical != null ? this.logical.toString() : "LogicalOp";
+		if (this.logical == null) {
+			return "LogicalOp";
+		}
+		return this.logical.toString();
 	}
 
 	@Override
