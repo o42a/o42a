@@ -20,7 +20,7 @@
 package org.o42a.common.macro.st;
 
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
-import static org.o42a.core.object.link.LinkValueType.GETTER;
+import static org.o42a.core.object.link.LinkValueType.LINK;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.*;
@@ -86,13 +86,13 @@ final class TempFieldDefinition extends FieldDefinition {
 
 	private StaticTypeRef ancestor(Scope scope) {
 		if (this.condition) {
-			return GETTER.typeRef(this.expansion, scope);
+			return LINK.typeRef(this.expansion, scope);
 		}
 
 		final ValueStructFinder valueStruct =
 				new ParentValueStructFinder(scope);
 
-		return GETTER.typeRef(this, getScope(), valueStruct);
+		return LINK.typeRef(this, getScope(), valueStruct);
 	}
 
 	private Ref expansion() {

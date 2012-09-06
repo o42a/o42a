@@ -39,7 +39,7 @@ public class DerefTest extends GrammarTestCase {
 				DerefNode.class,
 				parse("foo ~~1~~ -> ~~2~~"));
 
-		assertName("foo", deref.getOwner());
+		assertThat(deref.getOwner(), isName("foo"));
 		assertThat(deref.getSuffix().getType(), is(ARROW));
 		assertThat(this.worker.position().offset(), is(18L));
 	}
@@ -52,7 +52,7 @@ public class DerefTest extends GrammarTestCase {
 		final DerefNode deref =
 				to(DerefNode.class, memberRef.getOwner());
 
-		assertName("foo", deref.getOwner());
+		assertThat(deref.getOwner(), isName("foo"));
 		assertThat(deref.getSuffix().getType(), is(ARROW));
 
 		assertThat(canonicalName(memberRef.getName()), is("bar"));
@@ -67,11 +67,11 @@ public class DerefTest extends GrammarTestCase {
 		final DerefNode deref =
 				to(DerefNode.class, memberRef.getOwner());
 
-		assertName("foo", deref.getOwner());
+		assertThat(deref.getOwner(), isName("foo"));
 		assertThat(deref.getSuffix().getType(), is(ARROW));
 
 		assertThat(canonicalName(memberRef.getName()), is("bar"));
-		assertName("baz", memberRef.getDeclaredIn());
+		assertThat(memberRef.getDeclaredIn(), isName("baz"));
 	}
 
 	@Test
@@ -82,10 +82,10 @@ public class DerefTest extends GrammarTestCase {
 		final DerefNode deref =
 				to(DerefNode.class, adapterRef.getOwner());
 
-		assertName("foo", deref.getOwner());
+		assertThat(deref.getOwner(), isName("foo"));
 		assertThat(deref.getSuffix().getType(), is(ARROW));
 
-		assertName("bar", adapterRef.getType());
+		assertThat(adapterRef.getType(), isName("bar"));
 		assertThat(adapterRef.getDeclaredIn(), nullValue());
 	}
 
@@ -97,11 +97,11 @@ public class DerefTest extends GrammarTestCase {
 		final DerefNode deref =
 				to(DerefNode.class, adapterRef.getOwner());
 
-		assertName("foo", deref.getOwner());
+		assertThat(deref.getOwner(), isName("foo"));
 		assertThat(deref.getSuffix().getType(), is(ARROW));
 
-		assertName("bar", adapterRef.getType());
-		assertName("baz", adapterRef.getDeclaredIn());
+		assertThat(adapterRef.getType(), isName("bar"));
+		assertThat(adapterRef.getDeclaredIn(), isName("baz"));
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class DerefTest extends GrammarTestCase {
 		final MemberRefNode memberRef =
 				to(MemberRefNode.class, deref.getOwner());
 
-		assertName("foo", memberRef.getOwner());
+		assertThat(memberRef.getOwner(), isName("foo"));
 		assertThat(canonicalName(memberRef.getName()), is("bar"));
 		assertThat(memberRef.getDeclaredIn(), nullValue());
 	}

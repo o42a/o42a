@@ -39,10 +39,10 @@ public class ParentRefTest extends GrammarTestCase {
 		final ParentRefNode ref = parse("foo :: /* */");
 
 		assertThat(ref, notNullValue());
-		assertRange(0, 6, ref);
+		assertThat(ref, hasRange(0, 6));
 		assertThat(canonicalName(ref.getName()), is("foo"));
-		assertRange(0, 3, ref.getName());
-		assertRange(4, 6, ref.getQualifier());
+		assertThat(ref.getName(), hasRange(0, 3));
+		assertThat(ref.getQualifier(), hasRange(4, 6));
 	}
 
 	@Test

@@ -24,6 +24,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -65,6 +66,11 @@ public final class LocalOp implements HostOp {
 	}
 
 	@Override
+	public HostValueOp value() {
+		throw new UnsupportedOperationException("Local scope has no value");
+	}
+
+	@Override
 	public final LocalOp toLocal() {
 		return this;
 	}
@@ -90,11 +96,6 @@ public final class LocalOp implements HostOp {
 
 	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
 		throw new UnsupportedOperationException();
 	}
 

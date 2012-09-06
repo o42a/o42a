@@ -27,11 +27,13 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
@@ -51,15 +53,9 @@ public final class Dep extends Step {
 		this.object = object;
 		this.depRef = depRef;
 		this.name = name;
-
-		final Container container =
-				object.getScope().getEnclosingContainer();
-		final LocalScope local = container.toLocal();
-
-		assert local != null :
-			object + " is not a local object";
-
-		this.target = this.depRef.resolve(local.resolver()).toObject();
+		this.target = target();
+		assert !this.target.getConstructionMode().isRuntime() :
+			"Can not find an interface of run-time constructed dependency";
 	}
 
 	public final boolean isDisabled() {
@@ -231,6 +227,30 @@ public final class Dep extends Step {
 		return this.uses = new ObjectStepUses(this);
 	}
 
+	private Obj target() {
+
+		final Container container =
+				this.object.getScope().getEnclosingContainer();
+		final LocalScope local = container.toLocal();
+
+		assert local != null :
+			this.object + " is not a local object";
+
+		final Obj target = this.depRef.resolve(local.resolver()).toObject();
+
+		if (!target.getConstructionMode().isRuntime()) {
+			return target;
+		}
+
+		final Link link = target.getDereferencedLink();
+
+		if (link != null) {
+			return link.getValueStruct().getTypeRef().getType();
+		}
+
+		return target.type().getAncestor().getType();
+	}
+
 	private final class DepDisabler extends NormalAppender {
 
 		@Override
@@ -260,6 +280,11 @@ public final class Dep extends Step {
 
 		Op(PathOp start, Dep step) {
 			super(start, step);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return targetValueOp();
 		}
 
 		@Override

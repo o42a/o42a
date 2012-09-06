@@ -72,7 +72,7 @@ public class SyntaxErrorTest extends GrammarTestCase {
 		final ParenthesesNode result =
 				parse(ParenthesesNode.class, "(\u2055 foo)");
 
-		assertName("foo", singleStatement(RefNode.class, result));
+		assertThat(singleStatement(RefNode.class, result), isName("foo"));
 	}
 
 	@Test
@@ -82,8 +82,8 @@ public class SyntaxErrorTest extends GrammarTestCase {
 		final ParenthesesNode result =
 				parse(ParenthesesNode.class, "(foo,\u2055 bar)");
 
-		assertName("foo", statement(RefNode.class, result, 0, 2));
-		assertName("bar", statement(RefNode.class, result, 1, 2));
+		assertThat(statement(RefNode.class, result, 0, 2), isName("foo"));
+		assertThat(statement(RefNode.class, result, 1, 2), isName("bar"));
 	}
 
 	private <T> T parse(Class<? extends T> type, String text) {

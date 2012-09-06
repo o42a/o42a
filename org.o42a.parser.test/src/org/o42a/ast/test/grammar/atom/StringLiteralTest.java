@@ -53,9 +53,9 @@ public class StringLiteralTest extends GrammarTestCase {
 		assertThat(
 				string.getClosingBound().getType(),
 				is(SINGLE_QUOTE));
-		assertRange(0, 2, string);
-		assertRange(0, 1, string.getOpeningBound());
-		assertRange(1, 2, string.getClosingBound());
+		assertThat(string, hasRange(0, 2));
+		assertThat(string.getOpeningBound(), hasRange(0, 1));
+		assertThat(string.getClosingBound(), hasRange(1, 2));
 	}
 
 	@Test
@@ -70,9 +70,9 @@ public class StringLiteralTest extends GrammarTestCase {
 		assertThat(
 				string.getClosingBound().getType(),
 				is(DOUBLE_QUOTE));
-		assertRange(0, 2, string);
-		assertRange(0, 1, string.getOpeningBound());
-		assertRange(1, 2, string.getClosingBound());
+		assertThat(string, hasRange(0, 2));
+		assertThat(string.getOpeningBound(), hasRange(0, 1));
+		assertThat(string.getClosingBound(), hasRange(1, 2));
 	}
 
 	@Test
@@ -87,9 +87,9 @@ public class StringLiteralTest extends GrammarTestCase {
 		assertThat(
 				string.getClosingBound().getType(),
 				is(SINGLE_QUOTE));
-		assertRange(0, 5, string);
-		assertRange(0, 1, string.getOpeningBound());
-		assertRange(4, 5, string.getClosingBound());
+		assertThat(string, hasRange(0, 5));
+		assertThat(string.getOpeningBound(), hasRange(0, 1));
+		assertThat(string.getClosingBound(), hasRange(4, 5));
 	}
 
 	@Test
@@ -104,9 +104,9 @@ public class StringLiteralTest extends GrammarTestCase {
 		assertThat(
 				string.getClosingBound().getType(),
 				is(DOUBLE_QUOTE));
-		assertRange(0, 5, string);
-		assertRange(0, 1, string.getOpeningBound());
-		assertRange(4, 5, string.getClosingBound());
+		assertThat(string, hasRange(0, 5));
+		assertThat(string.getOpeningBound(), hasRange(0, 1));
+		assertThat(string.getClosingBound(), hasRange(4, 5));
 	}
 
 	@Test
@@ -128,9 +128,9 @@ public class StringLiteralTest extends GrammarTestCase {
 		assertThat(
 				string.getClosingBound().getType(),
 				is(SINGLE_QUOTE));
-		assertRange(0, 7, string);
-		assertRange(0, 1, string.getOpeningBound());
-		assertRange(6, 7, string.getClosingBound());
+		assertThat(string, hasRange(0, 7));
+		assertThat(string.getOpeningBound(), hasRange(0, 1));
+		assertThat(string.getClosingBound(), hasRange(6, 7));
 	}
 
 	private StringNode parse(String text) {

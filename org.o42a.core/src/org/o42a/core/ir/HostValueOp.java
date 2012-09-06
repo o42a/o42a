@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,18 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.link;
+package org.o42a.core.ir;
 
-import org.o42a.common.object.AnnotatedSources;
-import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 
 
-@SourcePath(relativeTo = GetterValueTypeObject.class, value = "cast.o42a")
-final class GetterCast extends AbstractLinkCast {
+public interface HostValueOp {
 
-	GetterCast(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources);
-	}
+	void writeCond(CodeDirs dirs);
+
+	ValOp writeValue(ValDirs dirs);
+
+	void assign(CodeDirs dirs, HostOp value);
 
 }

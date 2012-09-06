@@ -21,7 +21,9 @@ package org.o42a.core.ir.field.getter;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
+import org.o42a.core.ir.field.link.AbstractLinkFldValueOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -49,6 +51,11 @@ public class GetterFldOp extends RefFldOp<GetterFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
+	public HostValueOp value() {
+		return new GetterFldValueOp(this);
+	}
+
+	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, holder);
 	}
@@ -59,15 +66,24 @@ public class GetterFldOp extends RefFldOp<GetterFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	protected ObjectOp target(Block code, ObjHolder holder) {
 		return holder.set(
 				code,
 				createObject(code, ptr().construct(code, host())));
+	}
+
+	private static final class GetterFldValueOp
+			extends AbstractLinkFldValueOp<GetterFldOp> {
+
+		GetterFldValueOp(GetterFldOp fld) {
+			super(fld);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

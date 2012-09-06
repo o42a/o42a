@@ -22,6 +22,7 @@ package org.o42a.core.value.impl;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -118,13 +119,18 @@ public final class Constant<T> extends ObjectConstructor {
 				getConstant());
 	}
 
-	private static final class Op<T> extends PathOp {
+	private static final class Op<T> extends PathOp implements HostValueOp {
 
 		private final Constant<T> constant;
 
 		Op(PathOp start, Constant<T> constant) {
 			super(start);
 			this.constant = constant;
+		}
+
+		@Override
+		public HostValueOp value() {
+			return this;
 		}
 
 		@Override
@@ -144,6 +150,12 @@ public final class Constant<T> extends ObjectConstructor {
 			return op.op(
 					dirs.getBuilder(),
 					valueStructIR.val(this.constant.getConstant()));
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			throw new UnsupportedOperationException(
+					"Can not assign to constant");
 		}
 
 		@Override

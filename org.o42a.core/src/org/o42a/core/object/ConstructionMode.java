@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object;
 
+import org.o42a.core.source.Intrinsics;
+
 
 /**
  * Object construction mode.
@@ -80,6 +82,16 @@ public enum ConstructionMode {
 	RUNTIME_CONSTRUCTION,
 
 	/**
+	 * Predefined object construction mode.
+	 *
+	 * <p>This is applied to objects, which should be constructed without
+	 * any optimization attempt. The only such object is
+	 * {@link Intrinsics#getNone() NONE}. This object may be accessed by runtime
+	 * directly, without proper full resolution.<p>
+	 */
+	PREDEFINED_CONSTRUCTION,
+
+	/**
 	 * Object construction is prohibited.
 	 *
 	 * <p>This may happen, when object ancestor is unknown or it can not
@@ -92,7 +104,7 @@ public enum ConstructionMode {
 	}
 
 	public final boolean isRuntime() {
-		return this == RUNTIME_CONSTRUCTION || isProhibited();
+		return ordinal() >= RUNTIME_CONSTRUCTION.ordinal();
 	}
 
 	public final boolean isProhibited() {

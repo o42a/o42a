@@ -82,11 +82,9 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 		return toArrayType() != null;
 	}
 
+	public abstract boolean isStateful();
+
 	public abstract boolean isVariable();
-
-	public abstract boolean isStateless();
-
-	public abstract boolean isRuntimeConstructed();
 
 	public final boolean is(ValueType<?> valueType) {
 		return this == valueType;

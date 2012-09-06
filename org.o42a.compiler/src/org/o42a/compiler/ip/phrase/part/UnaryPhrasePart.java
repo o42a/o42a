@@ -74,6 +74,8 @@ public class UnaryPhrasePart extends PhraseContinuation {
 			return ClauseId.MINUS;
 		case IS_TRUE:
 		case NOT:
+		case VALUE_OF:
+		case KEEP_VALUE:
 		case MACRO_EXPANSION:
 		}
 

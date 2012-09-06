@@ -19,8 +19,10 @@
 */
 package org.o42a.ast.test.grammar.expression;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.binaryExpression;
 import static org.o42a.parser.Grammar.simpleExpression;
 
@@ -94,10 +96,10 @@ public class BinaryExpressionTest extends GrammarTestCase {
 
 		final BinaryNode result = parse("foo " + sign + " bar ");
 
-		assertNotNull(result);
-		assertEquals(operator, result.getOperator());
-		assertName("foo", result.getLeftOperand());
-		assertName("bar", result.getRightOperand());
+		assertThat(result, notNullValue());
+		assertThat(result.getOperator(), is(operator));
+		assertThat(result.getLeftOperand(), isName("foo"));
+		assertThat(result.getRightOperand(), isName("bar"));
 		assertEquals(0, result.getStart().getOffset());
 		assertEquals(8 + sign.length(), result.getEnd().getOffset());
 		assertEquals(4, result.getSign().getStart().getOffset());

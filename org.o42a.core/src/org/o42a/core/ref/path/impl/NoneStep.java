@@ -25,6 +25,7 @@ import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -96,7 +97,7 @@ public class NoneStep extends Step {
 
 	@Override
 	protected PathOp op(PathOp start) {
-		return new Op(start, this);
+		return new NoneOp(start, this);
 	}
 
 	private static final class Inline extends InlineStep {
@@ -136,10 +137,17 @@ public class NoneStep extends Step {
 
 	}
 
-	private static final class Op extends StepOp<NoneStep> {
+	private static final class NoneOp
+			extends StepOp<NoneStep>
+			implements HostValueOp {
 
-		Op(PathOp start, NoneStep step) {
+		NoneOp(PathOp start, NoneStep step) {
 			super(start, step);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return this;
 		}
 
 		@Override
@@ -157,6 +165,12 @@ public class NoneStep extends Step {
 			dirs.code().go(dirs.falseDir());
 
 			return result;
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			throw new UnsupportedOperationException(
+					this + " is not assignable");
 		}
 
 		@Override

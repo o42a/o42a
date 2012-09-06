@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -134,13 +135,18 @@ public final class ModuleStep extends Step {
 
 	@Override
 	protected PathOp op(PathOp start) {
-		return new Op(start, this);
+		return new ModuleOp(start, this);
 	}
 
-	private static final class Op extends StepOp<ModuleStep> {
+	private static final class ModuleOp extends StepOp<ModuleStep> {
 
-		Op(PathOp start, ModuleStep step) {
+		ModuleOp(PathOp start, ModuleStep step) {
 			super(start, step);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return targetValueOp();
 		}
 
 		@Override

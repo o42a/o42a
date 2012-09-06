@@ -42,7 +42,7 @@ public class EllipsisTest extends GrammarTestCase {
 				singleStatement(EllipsisNode.class, sentence);
 
 		assertThat(sentence.getMark(), nullValue());
-		assertRange(0, 3, ellipsis);
+		assertThat(ellipsis, hasRange(0, 3));
 		assertThat(ellipsis.getTarget(), nullValue());
 		assertThat(
 				ellipsis.getMark().getType(),
@@ -57,7 +57,7 @@ public class EllipsisTest extends GrammarTestCase {
 				singleStatement(EllipsisNode.class, sentence);
 
 		assertThat(sentence.getMark(), nullValue());
-		assertRange(0, 1, ellipsis);
+		assertThat(ellipsis, hasRange(0, 1));
 		assertThat(ellipsis.getTarget(), nullValue());
 		assertThat(
 				ellipsis.getMark().getType(),
@@ -96,8 +96,8 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark(), nullValue());
-		assertName("foo", statement);
-		assertRange(4, 7, ellipsis);
+		assertThat(statement, isName("foo"));
+		assertThat(ellipsis, hasRange(4, 7));
 		assertThat(ellipsis.getTarget(), nullValue());
 	}
 
@@ -111,8 +111,8 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark(), nullValue());
-		assertName("foo", statement);
-		assertRange(4, 5, ellipsis);
+		assertThat(statement, isName("foo"));
+		assertThat(ellipsis, hasRange(4, 5));
 		assertThat(ellipsis.getTarget(), nullValue());
 	}
 
@@ -126,7 +126,7 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark(), nullValue());
-		assertName("foo", statement);
+		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
 
@@ -140,7 +140,7 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark(), nullValue());
-		assertName("foo", statement);
+		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
 
@@ -154,7 +154,7 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark().getType(), is(SentenceType.PROPOSITION));
-		assertName("foo", statement);
+		assertThat(statement, isName("foo"));
 		assertThat(ellipsis.getTarget(), nullValue());
 	}
 
@@ -168,7 +168,7 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark().getType(), is(SentenceType.PROPOSITION));
-		assertName("foo", statement);
+		assertThat(statement, isName("foo"));
 		assertThat(ellipsis.getTarget(), nullValue());
 	}
 
@@ -182,7 +182,7 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark().getType(), is(SentenceType.PROPOSITION));
-		assertName("foo", statement);
+		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
 
@@ -196,7 +196,7 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark().getType(), is(SentenceType.PROPOSITION));
-		assertName("foo", statement);
+		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
 
@@ -210,7 +210,7 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark().getType(), is(SentenceType.CLAIM));
-		assertName("foo", statement);
+		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
 
@@ -224,7 +224,7 @@ public class EllipsisTest extends GrammarTestCase {
 				statement(EllipsisNode.class, sentence, 1, 2);
 
 		assertThat(sentence.getMark().getType(), is(SentenceType.CLAIM));
-		assertName("foo", statement);
+		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
 

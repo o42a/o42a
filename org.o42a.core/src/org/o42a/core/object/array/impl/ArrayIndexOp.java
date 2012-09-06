@@ -27,6 +27,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
@@ -52,11 +53,31 @@ final class ArrayIndexOp extends StepOp<ArrayIndexStep> {
 	}
 
 	@Override
+	public HostValueOp value() {
+		return new ArrayIndexValueOp(this);
+	}
+
+	@Override
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return object(dirs, holder);
+	}
+
+	@Override
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return object(dirs, tempObjHolder(dirs.getAllocator()))
+				.dereference(dirs, holder);
+	}
+
+	@Override
 	public HostOp target(CodeDirs dirs) {
+		throw new UnsupportedOperationException(
+				"Array index target does not exist");
+	}
+
+	private ObjectOp object(CodeDirs dirs, ObjHolder holder) {
 
 		final ArrayValueStruct arrayStruct = getArrayStruct();
-		final ObjectOp array =
-				loadArray(dirs, tempObjHolder(dirs.getAllocator()));
+		final ObjectOp array = loadArray(dirs, holder);
 		final ValDirs indexDirs =
 				dirs.nested().value(ValueStruct.INTEGER, TEMP_VAL_HOLDER);
 		final Int64op index = loadIndex(indexDirs);
@@ -70,32 +91,6 @@ final class ArrayIndexOp extends StepOp<ArrayIndexStep> {
 		indexDirs.done();
 
 		return itemObject;
-	}
-
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-
-		final ArrayValueStruct arrayStruct = getArrayStruct();
-
-		assert arrayStruct.isVariable() :
-			value + " is immutable of type " + arrayStruct
-			+ ". Can not re-assign it`s element";
-
-		final ObjectOp array = loadArray(
-				dirs,
-				tempObjHolder(dirs.getAllocator()).toVolatile());
-		final ValDirs indexDirs =
-				dirs.nested().value(ValueStruct.INTEGER, TEMP_VAL_HOLDER);
-		final Int64op index = loadIndex(indexDirs);
-
-		final ValDirs arrayDirs = indexDirs.dirs().nested().value(
-				arrayStruct,
-				TEMP_VAL_HOLDER);
-
-		assignItem(arrayDirs, array, index, value);
-
-		arrayDirs.done();
-		indexDirs.done();
 	}
 
 	private ArrayValueStruct getArrayStruct() {
@@ -172,22 +167,80 @@ final class ArrayIndexOp extends StepOp<ArrayIndexStep> {
 		return anonymousObject(getBuilder(), item, itemAscendant);
 	}
 
-	private void assignItem(
-			ValDirs dirs,
-			ObjectOp array,
-			Int64op index,
-			HostOp value) {
+	private static final class ArrayIndexValueOp implements HostValueOp {
 
-		final AnyRecOp itemRec = itemRec(dirs, array, index);
-		final Code code = dirs.code();
+		private final ArrayIndexOp index;
 
-		// TODO implement array element type checking.
+		ArrayIndexValueOp(ArrayIndexOp index) {
+			this.index = index;
+		}
 
-		final ObjectOp object = value.materialize(
-				dirs.dirs(),
-				tempObjHolder(dirs.getAllocator()));
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			object(dirs).value().writeCond(dirs);
+		}
 
-		itemRec.store(code, object.toAny(null, code));
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return object(dirs.dirs()).value().writeValue(dirs);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+
+			final ArrayValueStruct arrayStruct = this.index.getArrayStruct();
+
+			assert arrayStruct.isVariable() :
+				value + " is immutable of type " + arrayStruct
+				+ ". Can not re-assign it`s element";
+
+			final ObjectOp array = this.index.loadArray(
+					dirs,
+					tempObjHolder(dirs.getAllocator()).toVolatile());
+			final ValDirs indexDirs =
+					dirs.nested().value(ValueStruct.INTEGER, TEMP_VAL_HOLDER);
+			final Int64op index = this.index.loadIndex(indexDirs);
+
+			final ValDirs arrayDirs = indexDirs.dirs().nested().value(
+					arrayStruct,
+					TEMP_VAL_HOLDER);
+
+			assignItem(arrayDirs, array, index, value);
+
+			arrayDirs.done();
+			indexDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.index == null) {
+				return super.toString();
+			}
+			return this.index.toString();
+		}
+
+		private ObjectOp object(CodeDirs dirs) {
+			return this.index.object(dirs, tempObjHolder(dirs.getAllocator()));
+		}
+
+		private void assignItem(
+				ValDirs dirs,
+				ObjectOp array,
+				Int64op index,
+				HostOp value) {
+
+			final AnyRecOp itemRec = this.index.itemRec(dirs, array, index);
+			final Code code = dirs.code();
+
+			// TODO implement array element type checking.
+
+			final ObjectOp object = value.materialize(
+					dirs.dirs(),
+					tempObjHolder(dirs.getAllocator()));
+
+			itemRec.store(code, object.toAny(null, code));
+		}
+
 	}
 
 }

@@ -24,6 +24,7 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -117,6 +118,11 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 
 		Op(PathOp start, LocalOwnerStep step) {
 			super(start, step);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return targetValueOp();
 		}
 
 		@Override

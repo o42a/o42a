@@ -20,6 +20,7 @@
 package org.o42a.ast.test.grammar.expression;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.expression;
 
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class ExpressionTest extends GrammarTestCase {
 
 		final PhraseNode operand = to(PhraseNode.class, result.getOperand());
 
-		assertName("foo", operand.getPrefix());
+		assertThat(operand.getPrefix(), isName("foo"));
 	}
 
 	@Test
@@ -51,9 +52,9 @@ public class ExpressionTest extends GrammarTestCase {
 		final AscendantsNode left =
 				to(AscendantsNode.class, result.getLeftOperand());
 
-		assertName("foo", left.getAncestor().getSpec());
-		assertName("bar", left.getSamples()[0].getSpec());
-		assertName("baz", result.getRightOperand());
+		assertThat(left.getAncestor().getSpec(), isName("foo"));
+		assertThat(left.getSamples()[0].getSpec(), isName("bar"));
+		assertThat(result.getRightOperand(), isName("baz"));
 	}
 
 	@Test
@@ -64,9 +65,9 @@ public class ExpressionTest extends GrammarTestCase {
 		final AscendantsNode left =
 				to(AscendantsNode.class, result.getLeftOperand());
 
-		assertName("foo", left.getAncestor().getSpec());
-		assertName("bar", left.getSamples()[0].getSpec());
-		assertName("baz", result.getRightOperand());
+		assertThat(left.getAncestor().getSpec(), isName("foo"));
+		assertThat(left.getSamples()[0].getSpec(), isName("bar"));
+		assertThat(result.getRightOperand(), isName("baz"));
 	}
 
 	@Test
@@ -75,13 +76,13 @@ public class ExpressionTest extends GrammarTestCase {
 		final BinaryNode result =
 				to(BinaryNode.class, parse("foo \u2212 bar & baz"));
 
-		assertName("foo", result.getLeftOperand());
+		assertThat(result.getLeftOperand(), isName("foo"));
 
 		final AscendantsNode right =
 				to(AscendantsNode.class, result.getRightOperand());
 
-		assertName("bar", right.getAncestor().getSpec());
-		assertName("baz", right.getSamples()[0].getSpec());
+		assertThat(right.getAncestor().getSpec(), isName("bar"));
+		assertThat(right.getSamples()[0].getSpec(), isName("baz"));
 	}
 
 	@Test
@@ -92,9 +93,9 @@ public class ExpressionTest extends GrammarTestCase {
 		final AscendantsNode right =
 				to(AscendantsNode.class, result.getRightOperand());
 
-		assertName("foo", result.getLeftOperand());
-		assertName("bar", right.getAncestor().getSpec());
-		assertName("baz", right.getSamples()[0].getSpec());
+		assertThat(result.getLeftOperand(), isName("foo"));
+		assertThat(right.getAncestor().getSpec(), isName("bar"));
+		assertThat(right.getSamples()[0].getSpec(), isName("baz"));
 	}
 
 	@Test
@@ -142,7 +143,7 @@ public class ExpressionTest extends GrammarTestCase {
 
 		assertEquals(second, unary2.getOperator());
 
-		assertName(name, unary2.getOperand());
+		assertThat(unary2.getOperand(), isName(name));
 	}
 
 	private ExpressionNode parse(String text) {
