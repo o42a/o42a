@@ -46,7 +46,7 @@ public class BracketsTest extends GrammarTestCase {
 		final BracketsNode brackets = parse("[foo]");
 
 		assertThat(brackets.getArguments().length, is(1));
-		assertName("foo", brackets.getArguments()[0].getValue());
+		assertThat(brackets.getArguments()[0].getValue(), isName("foo"));
 	}
 
 	@Test
@@ -55,9 +55,9 @@ public class BracketsTest extends GrammarTestCase {
 		final BracketsNode brackets = parse("[foo, bar, baz]");
 
 		assertThat(brackets.getArguments().length, is(3));
-		assertName("foo", brackets.getArguments()[0].getValue());
-		assertName("bar", brackets.getArguments()[1].getValue());
-		assertName("baz", brackets.getArguments()[2].getValue());
+		assertThat(brackets.getArguments()[0].getValue(), isName("foo"));
+		assertThat(brackets.getArguments()[1].getValue(), isName("bar"));
+		assertThat(brackets.getArguments()[2].getValue(), isName("baz"));
 	}
 
 	@Test
@@ -67,8 +67,8 @@ public class BracketsTest extends GrammarTestCase {
 
 		assertThat(brackets.getArguments().length, is(3));
 		assertNull(brackets.getArguments()[0].getValue());
-		assertName("bar", brackets.getArguments()[1].getValue());
-		assertName("baz", brackets.getArguments()[2].getValue());
+		assertThat(brackets.getArguments()[1].getValue(), isName("bar"));
+		assertThat(brackets.getArguments()[2].getValue(), isName("baz"));
 	}
 
 	@Test
@@ -77,9 +77,9 @@ public class BracketsTest extends GrammarTestCase {
 		final BracketsNode brackets = parse("[foo, , baz]");
 
 		assertThat(brackets.getArguments().length, is(3));
-		assertName("foo", brackets.getArguments()[0].getValue());
+		assertThat(brackets.getArguments()[0].getValue(), isName("foo"));
 		assertNull(brackets.getArguments()[1].getValue());
-		assertName("baz", brackets.getArguments()[2].getValue());
+		assertThat(brackets.getArguments()[2].getValue(), isName("baz"));
 	}
 
 	@Test
@@ -88,8 +88,8 @@ public class BracketsTest extends GrammarTestCase {
 		final BracketsNode brackets = parse("[foo, bar,]");
 
 		assertThat(brackets.getArguments().length, is(3));
-		assertName("foo", brackets.getArguments()[0].getValue());
-		assertName("bar", brackets.getArguments()[1].getValue());
+		assertThat(brackets.getArguments()[0].getValue(), isName("foo"));
+		assertThat(brackets.getArguments()[1].getValue(), isName("bar"));
 		assertNull(brackets.getArguments()[2].getValue());
 	}
 
@@ -115,13 +115,11 @@ public class BracketsTest extends GrammarTestCase {
 				"]");
 
 		assertThat(brackets.getArguments().length, is(3));
-		assertName(
-				"a",
-				to(
-						PhraseNode.class,
-						brackets.getArguments()[0].getValue()).getPrefix());
-		assertName("b", brackets.getArguments()[1].getValue());
-		assertName("c", brackets.getArguments()[2].getValue());
+		assertThat(to(
+		PhraseNode.class,
+		brackets.getArguments()[0].getValue()).getPrefix(), isName("a"));
+		assertThat(brackets.getArguments()[1].getValue(), isName("b"));
+		assertThat(brackets.getArguments()[2].getValue(), isName("c"));
 	}
 
 

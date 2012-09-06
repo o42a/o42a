@@ -38,8 +38,8 @@ public class ClauseReuseTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<foo|bar|baz> val");
 
 		assertFalse(result.requiresContinuation());
-		assertName("foo", result.getClauseId());
-		assertName("val", result.getContent());
+		assertThat(result.getClauseId(), isName("foo"));
+		assertThat(result.getContent(), isName("val"));
 
 		final ReusedClauseNode[] reused = result.getReused();
 
@@ -48,13 +48,13 @@ public class ClauseReuseTest extends GrammarTestCase {
 		assertEquals(
 				ReusedClauseNode.Separator.OR,
 				reused[0].getSeparator().getType());
-		assertName("bar", reused[0].getClause());
+		assertThat(reused[0].getClause(), isName("bar"));
 		assertNull(reused[0].getReuseContents());
 
 		assertEquals(
 				ReusedClauseNode.Separator.OR,
 				reused[1].getSeparator().getType());
-		assertName("baz", reused[1].getClause());
+		assertThat(reused[1].getClause(), isName("baz"));
 		assertNull(reused[1].getReuseContents());
 
 		checkParentheses(result);
@@ -65,7 +65,7 @@ public class ClauseReuseTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<foo | bar ...> ()");
 
-		assertRange(11, 14, result.getRequirement());
+		assertThat(result.getRequirement(), hasRange(11, 14));
 
 		final ReusedClauseNode[] reused = result.getReused();
 
@@ -81,8 +81,8 @@ public class ClauseReuseTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<foo | bar* | baz> val");
 
 		assertFalse(result.requiresContinuation());
-		assertName("foo", result.getClauseId());
-		assertName("val", result.getContent());
+		assertThat(result.getClauseId(), isName("foo"));
+		assertThat(result.getContent(), isName("val"));
 
 		final ReusedClauseNode[] reused = result.getReused();
 
@@ -91,7 +91,7 @@ public class ClauseReuseTest extends GrammarTestCase {
 		assertEquals(
 				ReusedClauseNode.Separator.OR,
 				reused[0].getSeparator().getType());
-		assertName("bar", reused[0].getClause());
+		assertThat(reused[0].getClause(), isName("bar"));
 		assertThat(
 				reused[0].getReuseContents().getType(),
 				is(ReusedClauseNode.ReuseContents.ASTERISK));
@@ -99,7 +99,7 @@ public class ClauseReuseTest extends GrammarTestCase {
 		assertEquals(
 				ReusedClauseNode.Separator.OR,
 				reused[1].getSeparator().getType());
-		assertName("baz", reused[1].getClause());
+		assertThat(reused[1].getClause(), isName("baz"));
 		assertNull(reused[1].getReuseContents());
 
 		checkParentheses(result);

@@ -47,9 +47,9 @@ public class TextBlockTest extends GrammarTestCase {
 		assertThat(
 				string.getOpeningBound().getType(),
 				is(SINGLE_QUOTED_LINE));
-		assertRange(0, 9, string);
-		assertRange(0, 5, string.getOpeningBound());
-		assertRange(5, 9, string.getClosingBound());
+		assertThat(string, hasRange(0, 9));
+		assertThat(string.getOpeningBound(), hasRange(0, 5));
+		assertThat(string.getClosingBound(), hasRange(5, 9));
 	}
 
 	@Test
@@ -66,9 +66,9 @@ public class TextBlockTest extends GrammarTestCase {
 		assertThat(
 				string.getOpeningBound().getType(),
 				is(DOUBLE_QUOTED_LINE));
-		assertRange(0, 9, string);
-		assertRange(0, 5, string.getOpeningBound());
-		assertRange(5, 9, string.getClosingBound());
+		assertThat(string, hasRange(0, 9));
+		assertThat(string.getOpeningBound(), hasRange(0, 5));
+		assertThat(string.getClosingBound(), hasRange(5, 9));
 	}
 
 	@Test

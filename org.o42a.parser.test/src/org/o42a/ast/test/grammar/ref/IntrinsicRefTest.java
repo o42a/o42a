@@ -39,11 +39,11 @@ public class IntrinsicRefTest extends GrammarTestCase {
 		final IntrinsicRefNode ref = parse("$ foo $ /* */");
 
 		assertThat(ref, notNullValue());
-		assertRange(0, 7, ref);
+		assertThat(ref, hasRange(0, 7));
 		assertThat(canonicalName(ref.getName()), is("foo"));
-		assertRange(0, 1, ref.getPrefix());
-		assertRange(2, 5, ref.getName());
-		assertRange(6, 7, ref.getSuffix());
+		assertThat(ref.getPrefix(), hasRange(0, 1));
+		assertThat(ref.getName(), hasRange(2, 5));
+		assertThat(ref.getSuffix(), hasRange(6, 7));
 	}
 
 	@Test

@@ -19,6 +19,8 @@
 */
 package org.o42a.ast.test.grammar.expression;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
@@ -34,147 +36,147 @@ public class SimpleExpressionTest extends GrammarTestCase {
 
 	@Test
 	public void memberRef() {
-		to(MemberRefNode.class, parse("foo:bar"));
-		to(MemberRefNode.class, parse("foo (): bar"));
-		to(MemberRefNode.class, parse("(foo): bar"));
-		to(MemberRefNode.class, parse("(foo)` bar"));
-		to(MemberRefNode.class, parse("foo ()` bar"));
-		to(MemberRefNode.class, parse("(foo) -> bar"));
-		to(MemberRefNode.class, parse("foo () -> bar"));
+		assertThat(parse("foo:bar"), is(MemberRefNode.class));
+		assertThat(parse("foo (): bar"), is(MemberRefNode.class));
+		assertThat(parse("(foo): bar"), is(MemberRefNode.class));
+		assertThat(parse("(foo)` bar"), is(MemberRefNode.class));
+		assertThat(parse("foo ()` bar"), is(MemberRefNode.class));
+		assertThat(parse("(foo) -> bar"), is(MemberRefNode.class));
+		assertThat(parse("foo () -> bar"), is(MemberRefNode.class));
 	}
 
 	@Test
 	public void macroRef() {
-		to(MemberRefNode.class, parse("foo#bar"));
-		to(MemberRefNode.class, parse("foo ()# bar"));
-		to(MemberRefNode.class, parse("(foo)# bar"));
-		to(MemberRefNode.class, parse("(foo)`# bar"));
-		to(MemberRefNode.class, parse("foo ()`# bar"));
-		to(MemberRefNode.class, parse("(foo) -># bar"));
-		to(MemberRefNode.class, parse("foo () -># bar"));
+		assertThat(parse("foo#bar"), is(MemberRefNode.class));
+		assertThat(parse("foo ()# bar"), is(MemberRefNode.class));
+		assertThat(parse("(foo)# bar"), is(MemberRefNode.class));
+		assertThat(parse("(foo)`# bar"), is(MemberRefNode.class));
+		assertThat(parse("foo ()`# bar"), is(MemberRefNode.class));
+		assertThat(parse("(foo) -># bar"), is(MemberRefNode.class));
+		assertThat(parse("foo () -># bar"), is(MemberRefNode.class));
 	}
 
 	@Test
 	public void adapterRef() {
-		to(AdapterRefNode.class, parse("foo @@bar"));
-		to(AdapterRefNode.class, parse("foo () @@bar"));
-		to(AdapterRefNode.class, parse("(foo) @@bar"));
-		to(AdapterRefNode.class, parse("foo ()` @@bar"));
-		to(AdapterRefNode.class, parse("(foo)` @@bar"));
-		to(AdapterRefNode.class, parse("foo () -> @@bar"));
-		to(AdapterRefNode.class, parse("(foo) -> @@bar"));
-		to(AdapterRefNode.class, parse("*@@bar"));
-		to(AdapterRefNode.class, parse(":@@bar"));
-		to(AdapterRefNode.class, parse("::@@bar"));
-		to(AdapterRefNode.class, parse("$@@bar"));
-		to(AdapterRefNode.class, parse("$$@@bar"));
+		assertThat(parse("foo @@bar"), is(AdapterRefNode.class));
+		assertThat(parse("foo () @@bar"), is(AdapterRefNode.class));
+		assertThat(parse("(foo) @@bar"), is(AdapterRefNode.class));
+		assertThat(parse("foo ()` @@bar"), is(AdapterRefNode.class));
+		assertThat(parse("(foo)` @@bar"), is(AdapterRefNode.class));
+		assertThat(parse("foo () -> @@bar"), is(AdapterRefNode.class));
+		assertThat(parse("(foo) -> @@bar"), is(AdapterRefNode.class));
+		assertThat(parse("*@@bar"), is(AdapterRefNode.class));
+		assertThat(parse(":@@bar"), is(AdapterRefNode.class));
+		assertThat(parse("::@@bar"), is(AdapterRefNode.class));
+		assertThat(parse("$@@bar"), is(AdapterRefNode.class));
+		assertThat(parse("$$@@bar"), is(AdapterRefNode.class));
 	}
 
 	@Test
 	public void bodyRef() {
-		to(BodyRefNode.class, parse("(foo)`"));
-		to(BodyRefNode.class, parse("foo()`"));
-		to(BodyRefNode.class, parse("\"\"`"));
-		to(BodyRefNode.class, parse("123 456`"));
-		to(BodyRefNode.class, parse("foo_ bar`"));
-		to(BodyRefNode.class, parse("foo->`"));
+		assertThat(parse("(foo)`"), is(BodyRefNode.class));
+		assertThat(parse("foo()`"), is(BodyRefNode.class));
+		assertThat(parse("\"\"`"), is(BodyRefNode.class));
+		assertThat(parse("123 456`"), is(BodyRefNode.class));
+		assertThat(parse("foo_ bar`"), is(BodyRefNode.class));
+		assertThat(parse("foo->`"), is(BodyRefNode.class));
 	}
 
 	@Test
 	public void deref() {
-		to(DerefNode.class, parse("(foo)->"));
-		to(DerefNode.class, parse("foo()->"));
-		to(DerefNode.class, parse("\"\"->"));
-		to(DerefNode.class, parse("123 456->"));
-		to(DerefNode.class, parse("foo_ bar->"));
-		to(DerefNode.class, parse("foo`->"));
+		assertThat(parse("(foo)->"), is(DerefNode.class));
+		assertThat(parse("foo()->"), is(DerefNode.class));
+		assertThat(parse("\"\"->"), is(DerefNode.class));
+		assertThat(parse("123 456->"), is(DerefNode.class));
+		assertThat(parse("foo_ bar->"), is(DerefNode.class));
+		assertThat(parse("foo`->"), is(DerefNode.class));
 	}
 
 	@Test
 	public void scopeRef() {
-		to(ScopeRefNode.class, parse("*"));
-		to(ScopeRefNode.class, parse(":"));
-		to(ScopeRefNode.class, parse("::"));
-		to(ScopeRefNode.class, parse("##"));
-		to(ScopeRefNode.class, parse("$"));
-		to(ScopeRefNode.class, parse("$$"));
+		assertThat(parse("*"), is(ScopeRefNode.class));
+		assertThat(parse(":"), is(ScopeRefNode.class));
+		assertThat(parse("::"), is(ScopeRefNode.class));
+		assertThat(parse("##"), is(ScopeRefNode.class));
+		assertThat(parse("$"), is(ScopeRefNode.class));
+		assertThat(parse("$$"), is(ScopeRefNode.class));
 	}
 
 	@Test
 	public void parentRef() {
-		to(ParentRefNode.class, parse("foo::"));
+		assertThat(parse("foo::"), is(ParentRefNode.class));
 	}
 
 	@Test
 	public void intrinsicRef() {
-		to(IntrinsicRefNode.class, parse("$foo$"));
+		assertThat(parse("$foo$"), is(IntrinsicRefNode.class));
 	}
 
 	@Test
 	public void unaryExpression() {
-		to(UnaryNode.class, parse("+foo"));
-		to(UnaryNode.class, parse("-foo"));
-		to(UnaryNode.class, parse("\u2212 foo"));
-		to(UnaryNode.class, parse("++foo"));
-		to(UnaryNode.class, parse("--foo"));
-		to(UnaryNode.class, parse("+-foo"));
-		to(UnaryNode.class, parse("-+foo"));
+		assertThat(parse("+foo"), is(UnaryNode.class));
+		assertThat(parse("-foo"), is(UnaryNode.class));
+		assertThat(parse("\u2212 foo"), is(UnaryNode.class));
+		assertThat(parse("++foo"), is(UnaryNode.class));
+		assertThat(parse("--foo"), is(UnaryNode.class));
+		assertThat(parse("/foo"), is(UnaryNode.class));
+		assertThat(parse("//foo"), is(UnaryNode.class));
 	}
 
 	@Test
 	public void macroExpansion() {
-		to(MacroExpansionNode.class, parse("#foo: bar"));
-		to(MacroExpansionNode.class, parse("# ::"));
-		to(MacroExpansionNode.class, parse("#(abc)"));
-		to(MacroExpansionNode.class, parse("# abc ()"));
-		to(MacroExpansionNode.class, parse("# #foo"));
+		assertThat(parse("#foo: bar"), is(MacroExpansionNode.class));
+		assertThat(parse("# ::"), is(MacroExpansionNode.class));
+		assertThat(parse("#(abc)"), is(MacroExpansionNode.class));
+		assertThat(parse("# abc ()"), is(MacroExpansionNode.class));
+		assertThat(parse("# #foo"), is(MacroExpansionNode.class));
 	}
 
 	@Test
 	public void parentheses() {
-		to(ParenthesesNode.class, parse("(foo)"));
+		assertThat(parse("(foo)"), is(ParenthesesNode.class));
 	}
 
 	@Test
 	public void ascendants() {
-		to(AscendantsNode.class, parse("&foo"));
-		to(AscendantsNode.class, parse("foo & bar"));
-		to(AscendantsNode.class, parse("&foo & bar"));
+		assertThat(parse("&foo"), is(AscendantsNode.class));
+		assertThat(parse("foo & bar"), is(AscendantsNode.class));
+		assertThat(parse("&foo & bar"), is(AscendantsNode.class));
 	}
 
 	@Test
 	public void call() {
-		to(PhraseNode.class, parse("foo ()"));
-		to(PhraseNode.class, parse("&foo ()"));
-		to(PhraseNode.class, parse("foo & bar ()"));
-		to(PhraseNode.class, parse("&foo & bar ()"));
-		to(PhraseNode.class, parse("*()"));
+		assertThat(parse("foo ()"), is(PhraseNode.class));
+		assertThat(parse("&foo ()"), is(PhraseNode.class));
+		assertThat(parse("foo & bar ()"), is(PhraseNode.class));
+		assertThat(parse("&foo & bar ()"), is(PhraseNode.class));
+		assertThat(parse("*()"), is(PhraseNode.class));
 	}
 
 	@Test
 	public void qualifiedString() {
-		to(PhraseNode.class, parse("foo 'bar'"));
-		to(PhraseNode.class, parse("foo \"bar\""));
+		assertThat(parse("foo 'bar'"), is(PhraseNode.class));
+		assertThat(parse("foo \"bar\""), is(PhraseNode.class));
 	}
 
 	@Test
 	public void simplePhrase() {
-		to(PhraseNode.class, parse("foo {bar}"));
-		to(PhraseNode.class, parse("foo [bar]"));
+		assertThat(parse("foo {bar}"), is(PhraseNode.class));
+		assertThat(parse("foo [bar]"), is(PhraseNode.class));
 	}
 
 	@Test
 	public void phrase() {
-		to(PhraseNode.class, parse("foo_ bar"));
-		to(PhraseNode.class, parse("(foo`) bar"));
+		assertThat(parse("foo_ bar"), is(PhraseNode.class));
+		assertThat(parse("(foo`) bar"), is(PhraseNode.class));
 	}
 
 	@Test
 	public void text() {
-		to(TextNode.class, parse("'foo'"));
-		to(TextNode.class, parse("\"foo\""));
-		to(TextNode.class, parse("'foo' 'bar'"));
-		to(TextNode.class, parse("\"foo\" 'bar'"));
+		assertThat(parse("'foo'"), is(TextNode.class));
+		assertThat(parse("\"foo\""), is(TextNode.class));
+		assertThat(parse("'foo' 'bar'"), is(TextNode.class));
+		assertThat(parse("\"foo\" 'bar'"), is(TextNode.class));
 		to(TextNode.class, parse(
 				"'''",
 				"foo",
@@ -184,12 +186,12 @@ public class SimpleExpressionTest extends GrammarTestCase {
 
 	@Test
 	public void array() {
-		to(BracketsNode.class, parse("[a, b, c]"));
+		assertThat(parse("[a, b, c]"), is(BracketsNode.class));
 	}
 
 	@Test
 	public void decimalLiteral() {
-		to(DecimalNode.class, parse("123"));
+		assertThat(parse("123"), is(DecimalNode.class));
 	}
 
 	private Node parse(String... text) {
