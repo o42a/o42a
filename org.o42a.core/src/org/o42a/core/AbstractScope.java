@@ -28,7 +28,6 @@ import static org.o42a.core.object.ConstructionMode.STRICT_CONSTRUCTION;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
@@ -118,16 +117,10 @@ public abstract class AbstractScope implements Scope {
 
 		final Path pathToEnclosing = pathToEnclosing(fromScope, toScope);
 
-		if (pathToEnclosing != null) {
-			return pathToEnclosing.toPrefix(fromScope);
-		}
-
-		final Path pathToMember = pathToMember(fromScope, toScope);
-
-		assert pathToMember != null :
+		assert pathToEnclosing != null :
 			"Can not build path from " + fromScope + " to " + toScope;
 
-		return pathToMember.toPrefix(fromScope);
+		return pathToEnclosing.toPrefix(fromScope);
 	}
 
 	public static boolean contains(Scope scope, Scope other) {
@@ -165,35 +158,6 @@ public abstract class AbstractScope implements Scope {
 		}
 
 		return null;
-	}
-
-	private static Path pathToMember(Scope scope, Scope targetScope) {
-
-		Member member = targetScope.getContainer().toMember();
-
-		if (member == null) {
-			return null;
-		}
-
-		Container enclosing = targetScope.getEnclosingContainer();
-
-		if (enclosing == null) {
-			return null;
-		}
-
-		final Scope enclosingScope = enclosing.getScope();
-
-		if (scope.is(enclosingScope)) {
-			return member.getMemberKey().toPath();
-		}
-
-		final Path pathToMember = pathToMember(scope, enclosingScope);
-
-		if (pathToMember == null) {
-			return null;
-		}
-
-		return pathToMember.append(member.getMemberKey());
 	}
 
 	private final ResolverFactory<Resolver, FullResolver> resolverFactory;

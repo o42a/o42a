@@ -63,7 +63,11 @@ public final class ImperativeDefiner extends Definer {
 		final LocalScope localScope = block.getScope();
 		final Scope ownerScope = localScope.getEnclosingScope();
 
-		this.localPrefix = ownerScope.pathTo(localScope);
+		this.localPrefix =
+				localScope.toMember()
+				.getMemberKey()
+				.toPath()
+				.toPrefix(ownerScope);
 	}
 
 	public final ImperativeBlock getBlock() {
