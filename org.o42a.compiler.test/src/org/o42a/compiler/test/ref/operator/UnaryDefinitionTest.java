@@ -24,7 +24,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.value.ValueType;
 
 
@@ -34,22 +33,23 @@ public class UnaryDefinitionTest extends CompilerTestCase {
 	public void plus() {
 		compile("A := 1. B := +a.");
 
-		final Field a = field("a");
-		final Field b = field("b");
-
-		assertThat(definiteValue(a, ValueType.INTEGER), is(1L));
-		assertThat(definiteValue(b, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(1L));
 	}
 
 	@Test
 	public void minus() {
 		compile("A := 1. B := -a.");
 
-		final Field a = field("a");
-		final Field b = field("b");
-
-		assertThat(definiteValue(a, ValueType.INTEGER), is(1L));
-		assertThat(definiteValue(b, ValueType.INTEGER), is(-1L));
+		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(-1L));
 	}
 
+	@Test
+	public void valueOf() {
+		compile("A := 1. B := /a");
+
+		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(1L));
+	}
 }

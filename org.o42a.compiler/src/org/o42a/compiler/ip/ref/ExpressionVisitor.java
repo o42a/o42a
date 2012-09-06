@@ -36,6 +36,7 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.ref.operator.LogicalExpression;
+import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
@@ -116,6 +117,8 @@ public final class ExpressionVisitor
 					p.getContext(),
 					expression,
 					p).toRef();
+		case VALUE_OF:
+			return new ValueOf(ip(), p.getContext(), expression, p).toRef();
 		case MACRO_EXPANSION:
 
 			final Ref operand = operandNode.accept(ip().targetExVisitor(), p);
