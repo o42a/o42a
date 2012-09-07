@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.state;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -30,8 +30,10 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.member.local.Dep;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
@@ -89,6 +91,11 @@ public class DepIR implements FldIR {
 		return getInstance().data(generator);
 	}
 
+	public void allocate(SubData<?> data) {
+		this.instance = data.addInstance(getId(), DEP_IR);
+		this.instance.object().setNull();
+	}
+
 	public final DepOp op(Code code, ObjOp host) {
 		assert getInstance() != null :
 			this + " is not allocated yet";
@@ -101,11 +108,6 @@ public class DepIR implements FldIR {
 	@Override
 	public String toString() {
 		return this.dep + " IR";
-	}
-
-	void allocate(SubData<?> data) {
-		this.instance = data.addInstance(getId(), DEP_IR);
-		this.instance.object().setNull();
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
