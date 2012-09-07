@@ -66,8 +66,17 @@ public final class Deps extends ObjectDeps implements Iterable<Dep> {
 				Integer.toString(newDepId));
 		final Dep dep = addDep(newDep);
 
-		if (dep == newDep) {
-			this.depNameSeq = newDepId;
+		if (dep != newDep) {
+			// The old dependency reused.
+			return dep;
+		}
+		// The new dependency added.
+		this.depNameSeq = newDepId;
+
+		final LinkUses linkUses = getObject().type().linkUses();
+
+		if (linkUses != null) {
+			linkUses.depAdded();
 		}
 
 		return dep;
