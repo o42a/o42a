@@ -89,21 +89,21 @@ final class KeeperDef extends Def {
 
 	@Override
 	protected boolean hasConstantValue() {
-		return keeperRef().isConstant();
+		return getValue().isConstant();
 	}
 
 	@Override
 	protected DefValue calculateValue(Resolver resolver) {
-		return defValue(keeperRef().value(resolver));
+		return defValue(getValue().value(resolver));
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-		keeperRef().resolveAll(resolver);
+		getValue().resolveAll(resolver);
 	}
 
-	private Ref keeperRef() {
-		return this.keeperObject.keeperRef();
+	private Ref getValue() {
+		return this.keeperObject.getValue();
 	}
 
 }

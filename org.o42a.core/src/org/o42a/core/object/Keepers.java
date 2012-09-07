@@ -33,11 +33,12 @@ public final class Keepers extends ObjectKeepers {
 		super(object);
 	}
 
-	public final Keeper addKeeper(LocationInfo location, Ref ref) {
+	public final Keeper keep(LocationInfo location, Ref value) {
 		assert getObject().getContext().fullResolution().assertIncomplete();
+		value.assertSameScope(getObject());
 		return declareKeeper(
 				location,
-				ref,
+				value,
 				Integer.toString(++this.keeperNameSeq));
 	}
 
