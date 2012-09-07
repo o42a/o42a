@@ -98,7 +98,7 @@ final class VariableIR extends ValueIR {
 					dirs,
 					assignerKey(getBuilder().getContext()));
 
-			fld.assign(dirs, value);
+			fld.value().assign(dirs, value);
 		}
 
 		@Override

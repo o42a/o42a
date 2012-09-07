@@ -30,7 +30,9 @@ import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
+import org.o42a.core.ir.field.link.AbstractLinkFldValueOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -42,7 +44,7 @@ import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.link.LinkValueStruct;
 
 
-public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
+public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 	private final VarFld.Op ptr;
 
@@ -62,6 +64,11 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
+	public HostValueOp value() {
+		return new VarFldValueOp(this);
+	}
+
+	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, holder);
 	}
@@ -71,8 +78,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 		return super.target(dirs, holder.toVolatile());
 	}
 
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
+	private void assign(CodeDirs dirs, HostOp value) {
 
 		final Obj object = fld().getField().toObject();
 		final ObjectValue objectValue = object.value();
@@ -123,6 +129,20 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 		assigned.goUnless(boundUnknown, dirs.falseDir());
 		boundUnknown.go(code.tail());
+	}
+
+	private static final class VarFldValueOp
+			extends AbstractLinkFldValueOp<VarFldOp> {
+
+		VarFldValueOp(VarFldOp fld) {
+			super(fld);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			fld().assign(dirs, value);
+		}
+
 	}
 
 }

@@ -37,8 +37,8 @@ public class OutcomeTest extends  GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<Foo = bar> Val");
 
-		assertName("foo", result.getClauseId());
-		assertName("bar", result.getOutcome().getValue());
+		assertThat(result.getClauseId(), isName("foo"));
+		assertThat(result.getOutcome().getValue(), isName("bar"));
 	}
 
 	@Test
@@ -46,10 +46,10 @@ public class OutcomeTest extends  GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<Foo = bar | baz> Val");
 
-		assertName("foo", result.getClauseId());
-		assertName("bar", result.getOutcome().getValue());
+		assertThat(result.getClauseId(), isName("foo"));
+		assertThat(result.getOutcome().getValue(), isName("bar"));
 		assertThat(result.getReused().length, is(1));
-		assertName("baz", result.getReused()[0].getClause());
+		assertThat(result.getReused()[0].getClause(), isName("baz"));
 	}
 
 	@Test
@@ -57,8 +57,8 @@ public class OutcomeTest extends  GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<Foo = bar...> Val");
 
-		assertName("foo", result.getClauseId());
-		assertName("bar", result.getOutcome().getValue());
+		assertThat(result.getClauseId(), isName("foo"));
+		assertThat(result.getOutcome().getValue(), isName("bar"));
 		assertNotNull(result.getRequirement());
 	}
 
@@ -68,11 +68,11 @@ public class OutcomeTest extends  GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<Foo = | bar...> Val");
 
-		assertName("foo", result.getClauseId());
+		assertThat(result.getClauseId(), isName("foo"));
 		assertNotNull(result.getOutcome());
 		assertNull(result.getOutcome().getValue());
 		assertThat(result.getReused().length, is(1));
-		assertName("bar", result.getReused()[0].getClause());
+		assertThat(result.getReused()[0].getClause(), isName("bar"));
 		assertNotNull(result.getRequirement());
 	}
 

@@ -37,12 +37,12 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 	@Test
 	public void plus() {
 		compile(
-				"A := void(",
-				"  Foo := 1.",
-				"  Bar := +foo.",
-				").",
-				"B := a(Foo = 2).",
-				"C := b.");
+				"A := void (",
+				"  Foo := 1",
+				"  Bar := +foo",
+				")",
+				"B := a (Foo = 2)",
+				"C := b");
 
 		assertThat(definiteValue(this.aBar, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(this.bBar, ValueType.INTEGER), is(2L));
@@ -52,16 +52,31 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 	@Test
 	public void minus() {
 		compile(
-				"A := void(",
-				"  Foo := 1.",
+				"A := void (",
+				"  Foo := 1",
 				"  Bar := -foo.",
-				").",
-				"B := a(Foo = 2).",
-				"C := b.");
+				")",
+				"B := a (Foo = 2)",
+				"C := b");
 
 		assertThat(definiteValue(this.aBar, ValueType.INTEGER), is(-1L));
 		assertThat(definiteValue(this.bBar, ValueType.INTEGER), is(-2L));
 		assertThat(definiteValue(this.cBar, ValueType.INTEGER), is(-2L));
+	}
+
+	@Test
+	public void valueOf() {
+		compile(
+				"A := void (",
+				"  Foo := 1",
+				"  Bar := /foo",
+				")",
+				"B := a (Foo = 2)",
+				"C := b");
+
+		assertThat(definiteValue(this.aBar, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.bBar, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(this.cBar, ValueType.INTEGER), is(2L));
 	}
 
 	@Override

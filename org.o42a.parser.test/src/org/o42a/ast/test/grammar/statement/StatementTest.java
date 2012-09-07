@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.test.grammar.statement;
 
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.IMPERATIVE;
 
@@ -43,9 +44,9 @@ public class StatementTest extends GrammarTestCase {
 		final SelfAssignmentNode result =
 				parse(SelfAssignmentNode.class, "= foo");
 
-		assertRange(0, 1, result.getPrefix());
-		assertRange(2, 5, result.getValue());
-		assertName("foo", result.getValue());
+		assertThat(result.getPrefix(), hasRange(0, 1));
+		assertThat(result.getValue(), hasRange(2, 5));
+		assertThat(result.getValue(), isName("foo"));
 	}
 
 	@Test

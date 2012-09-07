@@ -42,8 +42,8 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<foo> bar");
 
 		assertFalse(result.requiresContinuation());
-		assertName("foo", result.getClauseId());
-		assertName("bar", result.getContent());
+		assertThat(result.getClauseId(), isName("foo"));
+		assertThat(result.getContent(), isName("bar"));
 		assertNothingReused(result);
 		checkParentheses(result);
 	}
@@ -54,11 +54,9 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<@foo> bar");
 
 		assertFalse(result.requiresContinuation());
-		assertName(
-				"foo",
-				to(DeclarableAdapterNode.class, result.getClauseId())
-				.getMember());
-		assertName("bar", result.getContent());
+		assertThat(to(DeclarableAdapterNode.class, result.getClauseId())
+		.getMember(), isName("foo"));
+		assertThat(result.getContent(), isName("bar"));
 		assertNothingReused(result);
 		checkParentheses(result);
 	}
@@ -73,11 +71,9 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		assertEquals(
 				ScopeType.IMPLIED,
 				to(ScopeRefNode.class, phrase.getPrefix()).getType());
-		assertName(
-				"foo",
-				singleClause(BracketsNode.class, phrase)
-				.getArguments()[0].getValue());
-		assertName("bar", result.getContent());
+		assertThat(singleClause(BracketsNode.class, phrase)
+		.getArguments()[0].getValue(), isName("foo"));
+		assertThat(result.getContent(), isName("bar"));
 		assertNothingReused(result);
 		checkParentheses(result);
 	}
@@ -91,7 +87,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		assertEquals(
 				ScopeType.IMPLIED,
 				to(ScopeRefNode.class, result.getClauseId()).getType());
-		assertName("foo", result.getContent());
+		assertThat(result.getContent(), isName("foo"));
 		assertNothingReused(result);
 		checkParentheses(result);
 	}
@@ -131,8 +127,8 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 
 		assertThat(row.getArguments().length, is(1));
 
-		assertName("foo", row.getArguments()[0].getValue());
-		assertName("bar", result.getContent());
+		assertThat(row.getArguments()[0].getValue(), isName("foo"));
+		assertThat(result.getContent(), isName("bar"));
 		assertNothingReused(result);
 		checkParentheses(result);
 	}
@@ -151,7 +147,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<foo...> ()");
 
-		assertRange(4, 7, result.getRequirement());
+		assertThat(result.getRequirement(), hasRange(4, 7));
 		assertTrue(result.requiresContinuation());
 		assertThat(result.getReused().length, is(0));
 	}
@@ -161,7 +157,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<foo!> ()");
 
-		assertRange(4, 5, result.getRequirement());
+		assertThat(result.getRequirement(), hasRange(4, 5));
 		assertTrue(result.isTerminator());
 		assertThat(result.getReused().length, is(0));
 	}

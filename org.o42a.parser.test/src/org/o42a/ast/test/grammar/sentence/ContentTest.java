@@ -42,8 +42,8 @@ public class ContentTest extends GrammarTestCase {
 		final SentenceNode[] result = parse("foo. bar.");
 
 		assertThat(result.length, is(2));
-		assertName("foo",singleStatement(MemberRefNode.class, result[0]));
-		assertName("bar", singleStatement(MemberRefNode.class, result[1]));
+		assertThat(singleStatement(MemberRefNode.class, result[0]), isName("foo"));
+		assertThat(singleStatement(MemberRefNode.class, result[1]), isName("bar"));
 	}
 
 	@Test
@@ -55,25 +55,25 @@ public class ContentTest extends GrammarTestCase {
 
 		final PhraseNode call1 = singleStatement(PhraseNode.class, result[0]);
 
-		assertName("a", call1.getPrefix());
+		assertThat(call1.getPrefix(), isName("a"));
 
 		final DeclaratorNode decl1 = singleStatement(
 				DeclaratorNode.class,
 				singleClause(ParenthesesNode.class, call1));
 
-		assertName("foo", decl1.getDeclarable());
-		assertName("bar", decl1.getDefinition());
+		assertThat(decl1.getDeclarable(), isName("foo"));
+		assertThat(decl1.getDefinition(), isName("bar"));
 
 		final PhraseNode call2 = singleStatement(PhraseNode.class, result[1]);
 
-		assertName("b", call2.getPrefix());
+		assertThat(call2.getPrefix(), isName("b"));
 
 		final DeclaratorNode decl2 = singleStatement(
 				DeclaratorNode.class,
 				singleClause(ParenthesesNode.class, call2));
 
-		assertName("bar", decl2.getDeclarable());
-		assertName("foo", decl2.getDefinition());
+		assertThat(decl2.getDeclarable(), isName("bar"));
+		assertThat(decl2.getDefinition(), isName("foo"));
 	}
 
 	@Test
@@ -127,8 +127,8 @@ public class ContentTest extends GrammarTestCase {
 				"b");
 
 		assertThat(result.length, is(2));
-		assertName("a", singleStatement(MemberRefNode.class, result[0]));
-		assertName("b", singleStatement(MemberRefNode.class, result[1]));
+		assertThat(singleStatement(MemberRefNode.class, result[0]), isName("a"));
+		assertThat(singleStatement(MemberRefNode.class, result[1]), isName("b"));
 	}
 
 	private SentenceNode[] parse(String... lines) {

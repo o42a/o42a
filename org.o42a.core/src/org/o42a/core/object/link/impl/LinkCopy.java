@@ -57,8 +57,8 @@ final class LinkCopy extends KnownLink {
 		if (!value.getKnowledge().isKnownToCompiler()) {
 			return resultStruct.runtimeValue();
 		}
-		if (sourceStruct.getValueType().isRuntimeConstructed()) {
-			// Run time constructed link can not be copied at compile time.
+		if (sourceStruct.getValueType().isVariable()) {
+			// Variable initializer can not be copied at compile time.
 			return resultStruct.runtimeValue();
 		}
 

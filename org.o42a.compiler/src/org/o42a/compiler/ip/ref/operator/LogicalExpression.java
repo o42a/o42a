@@ -39,7 +39,6 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
 
@@ -62,10 +61,11 @@ public class LogicalExpression extends ObjectConstructor {
 
 	private LogicalExpression(
 			LogicalExpression prototype,
-			Reproducer reproducer) {
-		super(prototype, reproducer.distribute());
+			Distributor distributor,
+			Ref operand) {
+		super(prototype, distributor);
 		this.node = prototype.node;
-		this.operand = prototype.operand.reproduce(reproducer);
+		this.operand = operand;
 	}
 
 	public final UnaryNode getNode() {
@@ -88,12 +88,19 @@ public class LogicalExpression extends ObjectConstructor {
 
 	@Override
 	public LogicalExpression reproduce(PathReproducer reproducer) {
-		return new LogicalExpression(this, reproducer.getReproducer());
+
+		final Ref operand = this.operand.reproduce(reproducer.getReproducer());
+
+		if (operand == null) {
+			return null;
+		}
+
+		return new LogicalExpression(this, reproducer.distribute(), operand);
 	}
 
 	@Override
 	public String toString() {
-		if (this.node != null) {
+		if (this.operand != null) {
 			return this.node.getOperator().getSign() + this.operand;
 		}
 		return super.toString();

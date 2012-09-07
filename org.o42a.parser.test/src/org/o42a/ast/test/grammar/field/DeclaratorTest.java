@@ -20,6 +20,7 @@
 package org.o42a.ast.test.grammar.field;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.o42a.ast.field.DeclarationTarget.*;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
@@ -85,14 +86,11 @@ public class DeclaratorTest extends GrammarTestCase {
 		final DeclaratorNode declarator = parse("foo " + sign + " bar ");
 
 		assertEquals(target, declarator.getTarget());
-		assertRange(0, 3, declarator.getDeclarable());
-		assertRange(0, 8 + sign.length(), declarator);
-		assertRange(
-				4,
-				4 + sign.length(),
-				declarator.getDefinitionAssignment());
-		assertName("foo", declarator.getDeclarable());
-		assertName("bar", declarator.getDefinition());
+		assertThat(declarator.getDeclarable(), hasRange(0, 3));
+		assertThat(declarator, hasRange(0, (long) (8 + sign.length())));
+		assertThat(declarator.getDefinitionAssignment(), hasRange(4, (long) (4 + sign.length())));
+		assertThat(declarator.getDeclarable(), isName("foo"));
+		assertThat(declarator.getDefinition(), isName("bar"));
 	}
 
 	private void assertAdapter(DeclarationTarget target, String sign) {
@@ -101,17 +99,14 @@ public class DeclaratorTest extends GrammarTestCase {
 		final DeclarableAdapterNode adapter =
 				to(DeclarableAdapterNode.class, declarator.getDeclarable());
 
-		assertRange(0, 4, adapter);
-		assertRange(0, 1, adapter.getPrefix());
-		assertRange(1, 4, adapter.getMember());
+		assertThat(adapter, hasRange(0, 4));
+		assertThat(adapter.getPrefix(), hasRange(0, 1));
+		assertThat(adapter.getMember(), hasRange(1, 4));
 		assertEquals(target, declarator.getTarget());
-		assertRange(0, 9 + sign.length(), declarator);
-		assertRange(
-				5,
-				5 + sign.length(),
-				declarator.getDefinitionAssignment());
-		assertName("foo", adapter.getMember());
-		assertName("bar", declarator.getDefinition());
+		assertThat(declarator, hasRange(0, (long) (9 + sign.length())));
+		assertThat(declarator.getDefinitionAssignment(), hasRange(5, (long) (5 + sign.length())));
+		assertThat(adapter.getMember(), isName("foo"));
+		assertThat(declarator.getDefinition(), isName("bar"));
 	}
 
 	private DeclaratorNode parse(String text) {

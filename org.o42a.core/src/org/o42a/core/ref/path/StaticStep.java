@@ -25,6 +25,7 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -137,6 +138,11 @@ final class StaticStep extends Step {
 
 		Op(PathOp start, StaticStep step) {
 			super(start, step);
+		}
+
+		@Override
+		public HostValueOp value() {
+			return targetValueOp();
 		}
 
 		@Override

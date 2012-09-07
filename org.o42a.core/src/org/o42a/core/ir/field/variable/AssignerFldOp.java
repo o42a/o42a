@@ -37,6 +37,7 @@ import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -72,6 +73,11 @@ public final class AssignerFldOp extends FldOp {
 	}
 
 	@Override
+	public HostValueOp value() {
+		return new AssignerFldValueOp(this);
+	}
+
+	@Override
 	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, holder);
 	}
@@ -79,46 +85,6 @@ public final class AssignerFldOp extends FldOp {
 	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-
-		final Block code = dirs.code();
-		final ObjectOp valueObject =
-				value.materialize(dirs, tempObjHolder(code.getAllocator()));
-		final StructRecOp<ObjectIRTypeOp> boundRec = ptr().bound(null, code);
-		final ObjectIRTypeOp knownBound = boundRec.load(null, code, VOLATILE);
-
-		// Bound is already known.
-		final CondBlock boundUnknown =
-				knownBound.isNull(null, code)
-				.branch(code, "bound_unknown", "bound_known");
-		final Block boundKnown = boundUnknown.otherwise();
-
-		boundKnown.dumpName("Known bound: ", knownBound);
-
-		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
-		final ObjectOp castObject = valueObject.dynamicCast(
-				ID.id("cast_target"),
-				boundKnownDirs,
-				knownBound.op(getBuilder(), DERIVED),
-				fld().linkStruct().getTypeRef().getType(),
-				true);
-
-		assignValue(boundKnown, castObject);
-
-		boundKnown.dump("Assigned: ", this);
-		boundKnown.go(code.tail());
-
-		// Bound is not known yet.
-		final VariableAssignerFunc assigner =
-				ptr().assigner(null, boundUnknown).load(null, boundUnknown);
-		final BoolOp assigned =
-				assigner.assign(boundUnknown, host(), valueObject);
-
-		assigned.goUnless(boundUnknown, dirs.falseDir());
-		boundUnknown.go(code.tail());
 	}
 
 	@Override
@@ -177,6 +143,78 @@ public final class AssignerFldOp extends FldOp {
 		flags.store(code, VAL_CONDITION);
 
 		skip.go(code.tail());
+	}
+
+	private void assign(CodeDirs dirs, HostOp value) {
+
+		final Block code = dirs.code();
+		final ObjectOp valueObject =
+				value.materialize(dirs, tempObjHolder(code.getAllocator()));
+		final StructRecOp<ObjectIRTypeOp> boundRec = ptr().bound(null, code);
+		final ObjectIRTypeOp knownBound = boundRec.load(null, code, VOLATILE);
+
+		// Bound is already known.
+		final CondBlock boundUnknown =
+				knownBound.isNull(null, code)
+				.branch(code, "bound_unknown", "bound_known");
+		final Block boundKnown = boundUnknown.otherwise();
+
+		boundKnown.dumpName("Known bound: ", knownBound);
+
+		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
+		final ObjectOp castObject = valueObject.dynamicCast(
+				ID.id("cast_target"),
+				boundKnownDirs,
+				knownBound.op(getBuilder(), DERIVED),
+				fld().linkStruct().getTypeRef().getType(),
+				true);
+
+		assignValue(boundKnown, castObject);
+
+		boundKnown.dump("Assigned: ", this);
+		boundKnown.go(code.tail());
+
+		// Bound is not known yet.
+		final VariableAssignerFunc assigner =
+				ptr().assigner(null, boundUnknown).load(null, boundUnknown);
+		final BoolOp assigned =
+				assigner.assign(boundUnknown, host(), valueObject);
+
+		assigned.goUnless(boundUnknown, dirs.falseDir());
+		boundUnknown.go(code.tail());
+	}
+
+	private static final class AssignerFldValueOp implements HostValueOp {
+
+		private final AssignerFldOp fld;
+
+		AssignerFldValueOp(AssignerFldOp fld) {
+			this.fld = fld;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			this.fld.assign(dirs, value);
+		}
+
+		@Override
+		public String toString() {
+			if (this.fld == null) {
+				return super.toString();
+			}
+			return this.fld.toString() + '`';
+		}
+
 	}
 
 }

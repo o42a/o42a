@@ -41,13 +41,11 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo(bar)");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
-		assertName(
-				"bar",
-				singleStatement(
-						MemberRefNode.class,
-						singleClause(ParenthesesNode.class, result)));
+		assertThat(singleStatement(
+		MemberRefNode.class,
+		singleClause(ParenthesesNode.class, result)), isName("bar"));
 	}
 
 	@Test
@@ -57,7 +55,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo()",
 				"bar");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(1));
 	}
 
@@ -68,7 +66,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo()",
 				"_ bar");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(2));
 	}
 
@@ -77,13 +75,11 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo{bar}");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
-		assertName(
-				"bar",
-				singleStatement(
-						MemberRefNode.class,
-						singleClause(BracesNode.class, result)));
+		assertThat(singleStatement(
+		MemberRefNode.class,
+		singleClause(BracesNode.class, result)), isName("bar"));
 	}
 
 	@Test
@@ -93,7 +89,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo{}",
 				"bar");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(1));
 	}
 
@@ -104,7 +100,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo{}",
 				"_ bar");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(2));
 	}
 
@@ -113,13 +109,13 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo[bar]");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
 		final ArgumentNode[] arguments =
 				singleClause(BracketsNode.class, result).getArguments();
 
 		assertEquals(1, arguments.length);
-		assertName("bar", arguments[0].getValue());
+		assertThat(arguments[0].getValue(), isName("bar"));
 	}
 
 	@Test
@@ -129,7 +125,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo[]",
 				"bar");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(1));
 	}
 
@@ -140,7 +136,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo[]",
 				"_ bar");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(2));
 	}
 
@@ -149,7 +145,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo 'bar' 'baz'");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
 		final StringNode[] literals =
 				singleClause(TextNode.class, result).getLiterals();
@@ -167,7 +163,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo 'bar'",
 				"baz");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(1));
 	}
 
@@ -178,7 +174,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo 'bar'",
 				"_ baz");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(2));
 	}
 
@@ -187,13 +183,13 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo [bar] baz");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
 		final ArgumentNode[] arguments =
 				clause(BracketsNode.class, result, 0, 2).getArguments();
 
 		assertThat(arguments.length, is(1));
-		assertName("bar", arguments[0].getValue());
+		assertThat(arguments[0].getValue(), isName("bar"));
 
 		final NameNode name = clause(NameNode.class, result, 1, 2);
 
@@ -205,7 +201,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo _ bar [baz]");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
 		final NameNode name = clause(NameNode.class, result, 0, 2);
 
@@ -215,7 +211,7 @@ public class PhraseTest extends GrammarTestCase {
 				clause(BracketsNode.class, result, 1, 2).getArguments();
 
 		assertThat(arguments.length, is(1));
-		assertName("baz", arguments[0].getValue());
+		assertThat(arguments[0].getValue(), isName("baz"));
 	}
 
 	@Test
@@ -223,7 +219,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo_bar_baz");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
 		final NameNode name1 = clause(NameNode.class, result, 0, 2);
 
@@ -241,7 +237,7 @@ public class PhraseTest extends GrammarTestCase {
 				"foo _ bar",
 				"(baz)");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(1));
 	}
 
@@ -253,7 +249,7 @@ public class PhraseTest extends GrammarTestCase {
 				"_ bar",
 				"_ (baz)");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 		assertThat(result.getClauses().length, is(2));
 	}
 
@@ -262,7 +258,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo_ 42");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
 		final ClauseNode[] clauses = result.getClauses();
 
@@ -278,7 +274,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo 'bar' 'baz' 42");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
 		final ClauseNode[] clauses = result.getClauses();
 
@@ -295,7 +291,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		final PhraseNode result = parse("foo (bar) 123 456");
 
-		assertName("foo", result.getPrefix());
+		assertThat(result.getPrefix(), isName("foo"));
 
 		final ClauseNode[] clauses = result.getClauses();
 

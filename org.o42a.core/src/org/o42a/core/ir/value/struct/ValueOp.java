@@ -21,6 +21,7 @@ package org.o42a.core.ir.value.struct;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
@@ -29,18 +30,18 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValFlagsOp;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.*;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ValueOp {
+public abstract class ValueOp implements HostValueOp {
 
 	private final ValueIR valueIR;
 	private final ObjectOp object;
@@ -78,6 +79,7 @@ public abstract class ValueOp {
 		return this.object;
 	}
 
+	@Override
 	public final void writeCond(CodeDirs dirs) {
 
 		final ValDirs valDirs =
@@ -87,12 +89,13 @@ public abstract class ValueOp {
 		valDirs.done();
 	}
 
+	@Override
 	public final ValOp writeValue(ValDirs dirs) {
 		assert dirs.getValueType() == getValueType() :
 			"Wrong value type: " + getValueType()
 			+ ", but " + dirs.getValueType() + " expected";
 
-		if (getValueType().isStateless()) {
+		if (!getValueType().isStateful()) {
 			return write(dirs);
 		}
 
@@ -120,6 +123,13 @@ public abstract class ValueOp {
 		definite.go(code.tail());
 
 		return value.op(null, getBuilder(), getValueStruct(), NO_VAL_HOLDER);
+	}
+
+	@Override
+	public final void assign(CodeDirs dirs, HostOp value) {
+		assign(
+				dirs,
+				value.materialize(dirs, tempObjHolder(dirs.getAllocator())));
 	}
 
 	public abstract void init(Block code, ValOp value);

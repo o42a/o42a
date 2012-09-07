@@ -172,7 +172,7 @@ public class FileTest extends GrammarTestCase {
 		assertThat(
 				sections[0].getSubTitle().getPrefix().getType().getLength(),
 				is(5));
-		assertName("section1", sections[0].getSubTitle().getTag());
+		assertThat(sections[0].getSubTitle().getTag(), isName("section1"));
 		assertThat(
 				sections[0].getSubTitle().getSuffix().getType().getLength(),
 				is(6));
@@ -183,7 +183,7 @@ public class FileTest extends GrammarTestCase {
 		assertThat(
 				sections[1].getSubTitle().getPrefix().getType().getLength(),
 				is(5));
-		assertName("section2", sections[1].getSubTitle().getTag());
+		assertThat(sections[1].getSubTitle().getTag(), isName("section2"));
 		assertNull(sections[1].getSubTitle().getSuffix());
 		assertThat(sections[1].getContent().length, is(1));
 
@@ -191,7 +191,7 @@ public class FileTest extends GrammarTestCase {
 		assertThat(
 				sections[2].getSubTitle().getPrefix().getType().getLength(),
 				is(5));
-		assertName("section3", sections[2].getSubTitle().getTag());
+		assertThat(sections[2].getSubTitle().getTag(), isName("section3"));
 		assertNotNull(sections[2].getSubTitle().getSuffix());
 		assertThat(sections[2].getContent().length, is(0));
 	}
@@ -212,7 +212,7 @@ public class FileTest extends GrammarTestCase {
 		final SubTitleNode subTitle = section.getSubTitle();
 		final MemberRefNode tag = subTitle.getTag();
 
-		assertName("tag1", tag.getOwner());
+		assertThat(tag.getOwner(), isName("tag1"));
 		assertThat(canonicalName(tag.getName()), is("tag1-1"));
 
 		assertThat(subTitle.getPrefix().getType().getLength(), is(3));
@@ -235,7 +235,7 @@ public class FileTest extends GrammarTestCase {
 		final MemberRefNode ref =
 				singleStatement(MemberRefNode.class, content[0]);
 
-		assertName("void", ref);
+		assertThat(ref, isName("void"));
 	}
 
 	private FileNode parse(String... lines) {

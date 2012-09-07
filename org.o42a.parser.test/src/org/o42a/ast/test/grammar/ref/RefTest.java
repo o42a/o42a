@@ -42,9 +42,9 @@ public class RefTest extends GrammarTestCase {
 		assertThat(ref.getQualifier(), nullValue());
 		assertThat(ref.getDeclaredIn(), nullValue());
 		assertThat(this.worker.position().offset(), is(5L));
-		assertRange(0, 5, ref);
+		assertThat(ref, hasRange(0, 5));
 		assertThat(owner.getType(), is(ScopeType.PARENT));
-		assertRange(0, 2, owner);
+		assertThat(owner, hasRange(0, 2));
 	}
 
 	@Test
@@ -57,10 +57,10 @@ public class RefTest extends GrammarTestCase {
 		assertThat(ref.getQualifier(), nullValue());
 		assertThat(ref.getDeclaredIn(), nullValue());
 		assertEquals(8, this.worker.position().offset());
-		assertRange(0, 8, ref);
+		assertThat(ref, hasRange(0, 8));
 		assertThat(canonicalName(owner.getName()), is("foo"));
-		assertRange(0, 5, owner);
-		assertRange(3, 5, owner.getQualifier());
+		assertThat(owner, hasRange(0, 5));
+		assertThat(owner.getQualifier(), hasRange(3, 5));
 	}
 
 	private RefNode parse(String text) {
