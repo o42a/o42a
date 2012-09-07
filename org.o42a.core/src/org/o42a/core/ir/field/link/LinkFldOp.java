@@ -20,6 +20,7 @@
 package org.o42a.core.ir.field.link;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -48,13 +49,28 @@ public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
+	public HostValueOp value() {
+		return new LinkFldValueOp(this);
+	}
+
+	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, holder);
 	}
 
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-		throw new UnsupportedOperationException();
+
+	private static final class LinkFldValueOp
+			extends AbstractLinkFldValueOp<LinkFldOp> {
+
+		LinkFldValueOp(LinkFldOp fld) {
+			super(fld);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

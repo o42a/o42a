@@ -43,18 +43,13 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 	}
 
 	@Override
+	public boolean isStateful() {
+		return isVariable();
+	}
+
+	@Override
 	public final boolean isVariable() {
 		return this.variable;
-	}
-
-	@Override
-	public final boolean isStateless() {
-		return false;
-	}
-
-	@Override
-	public final boolean isRuntimeConstructed() {
-		return isVariable();
 	}
 
 	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {

@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -104,9 +105,14 @@ public class StaticObjectStep extends Step {
 		}
 
 		@Override
+		public HostValueOp value() {
+			return targetValueOp();
+		}
+
+		@Override
 		public HostOp target(CodeDirs dirs) {
 
-			final ObjectIR objectIR = getStep().object.ir(dirs.getGenerator());
+			final ObjectIR objectIR = getStep().object.ir(getGenerator());
 
 			return objectIR.op(getBuilder(), dirs.code());
 		}

@@ -79,7 +79,7 @@ public class SeparatorsTest extends GrammarTestCase {
 
 		assertThat(comments.length, is(1));
 		assertThat(comments[0].getText(), is("comment1"));
-		assertRange(0, 10, comments[0]);
+		assertThat(comments[0], hasRange(0, 10));
 		assertThat(this.worker.position().offset(), is(10L));
 	}
 
@@ -96,9 +96,9 @@ public class SeparatorsTest extends GrammarTestCase {
 
 		assertThat(comments.length, is(2));
 		assertThat(comments[0].getText(), is("comment1"));
-		assertRange(0, 10, comments[0]);
+		assertThat(comments[0], hasRange(0, 10));
 		assertThat(comments[1].getText(), is("comment2"));
-		assertRange(14, 24, comments[1]);
+		assertThat(comments[1], hasRange(14, 24));
 		assertThat(this.worker.position().offset(), is(27L));
 	}
 
@@ -115,7 +115,7 @@ public class SeparatorsTest extends GrammarTestCase {
 
 		assertThat(comments.length, is(1));
 		assertThat(comments[0].getText(), is("comment1"));
-		assertRange(0, 10, comments[0]);
+		assertThat(comments[0], hasRange(0, 10));
 		assertThat(this.worker.position().offset(), is(13L));
 	}
 
@@ -132,9 +132,9 @@ public class SeparatorsTest extends GrammarTestCase {
 
 		assertThat(comments.length, is(2));
 		assertThat(comments[0].getText(), is("comment1"));
-		assertRange(0, 10, comments[0]);
+		assertThat(comments[0], hasRange(0, 10));
 		assertThat(comments[1].getText(), is("comment2"));
-		assertRange(13, 23, comments[1]);
+		assertThat(comments[1], hasRange(13, 23));
 		assertThat(this.worker.position().offset(), is(26L));
 	}
 
@@ -157,9 +157,9 @@ public class SeparatorsTest extends GrammarTestCase {
 
 		assertThat(comments.length, is(2));
 		assertThat(comments[0].getText(), is("comment1\n"));
-		assertRange(4, 23, comments[0]);
+		assertThat(comments[0], hasRange(4, 23));
 		assertThat(comments[1].getText(), is(" comment2"));
-		assertRange(26, 38, comments[1]);
+		assertThat(comments[1], hasRange(26, 38));
 		assertThat(this.worker.position().offset(), is(42L));
 	}
 

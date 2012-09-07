@@ -35,11 +35,11 @@ public class AscendantsTest extends GrammarTestCase {
 
 		final AscendantsNode result = parse("&foo");
 
-		assertRange(0, 4, result);
+		assertThat(result, hasRange(0, 4));
 		assertFalse(result.hasSamples());
 		assertNotNull(result.getAncestor().getSeparator());
-		assertRange(0, 4, result.getAncestor());
-		assertName("foo", result.getAncestor().getSpec());
+		assertThat(result.getAncestor(), hasRange(0, 4));
+		assertThat(result.getAncestor().getSpec(), isName("foo"));
 	}
 
 	@Test
@@ -51,13 +51,13 @@ public class AscendantsTest extends GrammarTestCase {
 		assertEquals(2, samples.length);
 
 		assertNotNull(result.getAncestor().getSeparator());
-		assertName("foo", result.getAncestor().getSpec());
+		assertThat(result.getAncestor().getSpec(), isName("foo"));
 
 		assertNotNull(samples[0].getSeparator());
-		assertName("bar", samples[0].getSpec());
+		assertThat(samples[0].getSpec(), isName("bar"));
 
 		assertNotNull(samples[1].getSeparator());
-		assertName("baz", samples[1].getSpec());
+		assertThat(samples[1].getSpec(), isName("baz"));
 	}
 
 	@Test
@@ -65,18 +65,18 @@ public class AscendantsTest extends GrammarTestCase {
 
 		final AscendantsNode result = parse("foo & bar");
 
-		assertRange(0, 9, result);
+		assertThat(result, hasRange(0, 9));
 
 		final AscendantNode[] samples = result.getSamples();
 
 		assertEquals(1, samples.length);
-		assertRange(0, 3, result.getAncestor());
+		assertThat(result.getAncestor(), hasRange(0, 3));
 		assertNull(result.getAncestor().getSeparator());
-		assertName("foo", result.getAncestor().getSpec());
+		assertThat(result.getAncestor().getSpec(), isName("foo"));
 
-		assertRange(4, 9, samples[0]);
+		assertThat(samples[0], hasRange(4, 9));
 		assertNotNull(samples[0].getSeparator());
-		assertName("bar", samples[0].getSpec());
+		assertThat(samples[0].getSpec(), isName("bar"));
 	}
 
 	@Test
@@ -88,16 +88,16 @@ public class AscendantsTest extends GrammarTestCase {
 		assertEquals(3, samples.length);
 
 		assertNull(result.getAncestor().getSeparator());
-		assertName("foo", result.getAncestor().getSpec());
+		assertThat(result.getAncestor().getSpec(), isName("foo"));
 
 		assertNotNull(samples[0].getSeparator());
-		assertName("s1", samples[0].getSpec());
+		assertThat(samples[0].getSpec(), isName("s1"));
 
 		assertNotNull(samples[1].getSeparator());
-		assertName("s2", samples[1].getSpec());
+		assertThat(samples[1].getSpec(), isName("s2"));
 
 		assertNotNull(samples[2].getSeparator());
-		assertName("s3", samples[2].getSpec());
+		assertThat(samples[2].getSpec(), isName("s3"));
 	}
 
 	private AscendantsNode parse(String text) {

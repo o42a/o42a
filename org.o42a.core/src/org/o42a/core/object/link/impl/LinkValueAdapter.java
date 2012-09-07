@@ -56,10 +56,7 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	@Override
 	public boolean isConstant() {
-		if (getExpectedStruct().getValueType().isRuntimeConstructed()) {
-			return false;
-		}
-		return getAdaptedRef().isConstant();
+		return false;
 	}
 
 	@Override

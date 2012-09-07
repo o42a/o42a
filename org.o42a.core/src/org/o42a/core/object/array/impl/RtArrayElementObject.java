@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object.array.impl;
 
+import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
+
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
@@ -39,7 +41,7 @@ final class RtArrayElementObject extends Obj {
 
 	@Override
 	public ConstructionMode getConstructionMode() {
-		return ConstructionMode.RUNTIME_CONSTRUCTION;
+		return RUNTIME_CONSTRUCTION;
 	}
 
 	@Override

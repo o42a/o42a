@@ -39,7 +39,7 @@ public class BodyRefTest extends GrammarTestCase {
 				BodyRefNode.class,
 				parse("foo ~~1~~ ` ~~2"));
 
-		assertName("foo", bodyRef.getOwner());
+		assertThat(bodyRef.getOwner(), isName("foo"));
 		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
 		assertThat(this.worker.position().offset(), is(15L));
 	}
@@ -52,7 +52,7 @@ public class BodyRefTest extends GrammarTestCase {
 		final BodyRefNode bodyRef =
 				to(BodyRefNode.class, memberRef.getOwner());
 
-		assertName("foo", bodyRef.getOwner());
+		assertThat(bodyRef.getOwner(), isName("foo"));
 		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
 
 		assertThat(canonicalName(memberRef.getName()), is("bar"));
@@ -67,11 +67,11 @@ public class BodyRefTest extends GrammarTestCase {
 		final BodyRefNode bodyRef =
 				to(BodyRefNode.class, memberRef.getOwner());
 
-		assertName("foo", bodyRef.getOwner());
+		assertThat(bodyRef.getOwner(), isName("foo"));
 		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
 
 		assertThat(canonicalName(memberRef.getName()), is("bar"));
-		assertName("baz", memberRef.getDeclaredIn());
+		assertThat(memberRef.getDeclaredIn(), isName("baz"));
 	}
 
 	@Test
@@ -82,10 +82,10 @@ public class BodyRefTest extends GrammarTestCase {
 		final BodyRefNode bodyRef =
 				to(BodyRefNode.class, adapterRef.getOwner());
 
-		assertName("foo", bodyRef.getOwner());
+		assertThat(bodyRef.getOwner(), isName("foo"));
 		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
 
-		assertName("bar", adapterRef.getType());
+		assertThat(adapterRef.getType(), isName("bar"));
 		assertThat(adapterRef.getDeclaredIn(), nullValue());
 	}
 
@@ -97,11 +97,11 @@ public class BodyRefTest extends GrammarTestCase {
 		final BodyRefNode bodyRef =
 				to(BodyRefNode.class, adapterRef.getOwner());
 
-		assertName("foo", bodyRef.getOwner());
+		assertThat(bodyRef.getOwner(), isName("foo"));
 		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
 
-		assertName("bar", adapterRef.getType());
-		assertName("baz", adapterRef.getDeclaredIn());
+		assertThat(adapterRef.getType(), isName("bar"));
+		assertThat(adapterRef.getDeclaredIn(), isName("baz"));
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class BodyRefTest extends GrammarTestCase {
 		final MemberRefNode memberRef =
 				to(MemberRefNode.class, bodyRef.getOwner());
 
-		assertName("foo", memberRef.getOwner());
+		assertThat(memberRef.getOwner(), isName("foo"));
 		assertThat(canonicalName(memberRef.getName()), is("bar"));
 		assertThat(memberRef.getDeclaredIn(), nullValue());
 	}

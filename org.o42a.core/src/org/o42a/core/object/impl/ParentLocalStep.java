@@ -24,12 +24,11 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -166,6 +165,11 @@ public final class ParentLocalStep extends Step implements ReversePath {
 		}
 
 		@Override
+		public HostValueOp value() {
+			throw new UnsupportedOperationException(this + " has no value");
+		}
+
+		@Override
 		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
 			throw new UnsupportedOperationException(
 					"Can not retrieve a field of " + this);
@@ -175,24 +179,6 @@ public final class ParentLocalStep extends Step implements ReversePath {
 		public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 			throw new UnsupportedOperationException(
 					"Can not materialize " + this);
-		}
-
-		@Override
-		public void assign(CodeDirs dirs, HostOp value) {
-			throw new UnsupportedOperationException(
-					"Can not assign to " + this);
-		}
-
-		@Override
-		public void writeCond(CodeDirs dirs) {
-			throw new UnsupportedOperationException(
-					"Can not write logical value of " + this);
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs) {
-			throw new UnsupportedOperationException(
-					"Can not write value of " + this);
 		}
 
 		@Override

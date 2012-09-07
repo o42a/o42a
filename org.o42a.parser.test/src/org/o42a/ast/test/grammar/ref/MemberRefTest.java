@@ -40,9 +40,9 @@ public class MemberRefTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("foo");
 
-		assertName("foo", ref);
+		assertThat(ref, isName("foo"));
 		assertThat(this.worker.position().offset(), is(3L));
-		assertRange(0, 3, ref);
+		assertThat(ref, hasRange(0, 3));
 	}
 
 	@Test
@@ -51,14 +51,14 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode ref = parse("foo:bar");
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 
-		assertName("foo", owner);
+		assertThat(owner, isName("foo"));
 		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER));
 		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(this.worker.position().offset(), is(7L));
-		assertRange(0, 7, ref);
-		assertRange(3, 4, ref.getQualifier());
-		assertRange(4, 7, ref.getName());
-		assertRange(0, 3, owner);
+		assertThat(ref, hasRange(0, 7));
+		assertThat(ref.getQualifier(), hasRange(3, 4));
+		assertThat(ref.getName(), hasRange(4, 7));
+		assertThat(owner, hasRange(0, 3));
 	}
 
 	@Test
@@ -67,14 +67,14 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode ref = parse("foo#bar");
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 
-		assertName("foo", owner);
+		assertThat(owner, isName("foo"));
 		assertThat(ref.getQualifier().getType(), is(Qualifier.MACRO));
 		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(this.worker.position().offset(), is(7L));
-		assertRange(0, 7, ref);
-		assertRange(3, 4, ref.getQualifier());
-		assertRange(4, 7, ref.getName());
-		assertRange(0, 3, owner);
+		assertThat(ref, hasRange(0, 7));
+		assertThat(ref.getQualifier(), hasRange(3, 4));
+		assertThat(ref.getName(), hasRange(4, 7));
+		assertThat(owner, hasRange(0, 3));
 	}
 
 	@Test
@@ -86,12 +86,12 @@ public class MemberRefTest extends GrammarTestCase {
 
 		assertThat(canonicalName(ref.getName()), is("foo"));
 		assertThat(ref.getQualifier(), nullValue());
-		assertName("bar", declaredIn);
+		assertThat(declaredIn, isName("bar"));
 		assertThat(this.worker.position().offset(), is(7L));
-		assertRange(0, 7, ref);
-		assertRange(0, 3, ref.getName());
-		assertRange(3, 4, ref.getMembership().getPrefix());
-		assertRange(4, 7, declaredIn.getName());
+		assertThat(ref, hasRange(0, 7));
+		assertThat(ref.getName(), hasRange(0, 3));
+		assertThat(ref.getMembership().getPrefix(), hasRange(3, 4));
+		assertThat(declaredIn.getName(), hasRange(4, 7));
 	}
 
 	@Test
@@ -101,12 +101,12 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 		final MembershipNode membership = ref.getMembership();
 
-		assertName("foo", owner);
+		assertThat(owner, isName("foo"));
 		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER));
 		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(membership.getPrefix().getType(), is(DECLARED_IN));
 		assertThat(membership.getOpening().getType(), is(OPENING_PARENTHESIS));
-		assertName("baz", membership.getDeclaredIn());
+		assertThat(membership.getDeclaredIn(), isName("baz"));
 		assertThat(membership.getClosing().getType(), is(CLOSING_PARENTHESIS));
 	}
 
@@ -117,12 +117,12 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 		final MembershipNode membership = ref.getMembership();
 
-		assertName("foo", owner);
+		assertThat(owner, isName("foo"));
 		assertThat(ref.getQualifier().getType(), is(Qualifier.MACRO));
 		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(membership.getPrefix().getType(), is(DECLARED_IN));
 		assertThat(membership.getOpening().getType(), is(OPENING_PARENTHESIS));
-		assertName("baz", membership.getDeclaredIn());
+		assertThat(membership.getDeclaredIn(), isName("baz"));
 		assertThat(membership.getClosing().getType(), is(CLOSING_PARENTHESIS));
 	}
 
@@ -131,7 +131,7 @@ public class MemberRefTest extends GrammarTestCase {
 
 		final RefNode ref = parse(ref(), "foo \n: bar");
 
-		assertName("foo", ref);
+		assertThat(ref, isName("foo"));
 	}
 
 	@Test
@@ -139,7 +139,7 @@ public class MemberRefTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("foo:\nbar");
 
-		assertName("foo", ref);
+		assertThat(ref, isName("foo"));
 	}
 
 	@Test
@@ -147,7 +147,7 @@ public class MemberRefTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("foo: bar\n@ baz");
 
-		assertName("foo", ref.getOwner());
+		assertThat(ref.getOwner(), isName("foo"));
 		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(ref.getMembership(), nullValue());
 	}
@@ -158,7 +158,7 @@ public class MemberRefTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("foo: bar @\nbaz");
 
-		assertName("foo", ref.getOwner());
+		assertThat(ref.getOwner(), isName("foo"));
 		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(ref.getDeclaredIn(), nullValue());
 	}
