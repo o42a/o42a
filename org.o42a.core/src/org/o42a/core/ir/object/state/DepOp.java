@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.state;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
@@ -30,13 +30,16 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.local.Dep;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.util.string.ID;
 
@@ -152,7 +155,7 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 	private DataOp createObject(CodeBuilder builder, CodeDirs dirs) {
 
 		final Code code = dirs.code();
-		final Ref depRef = getDep().getDepRef();
+		final Ref depRef = getDep().getRef();
 		final HostOp refTarget = depRef.op(builder.host()).target(dirs);
 
 		return refTarget.materialize(

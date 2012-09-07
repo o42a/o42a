@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.local;
+package org.o42a.core.object.state;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
@@ -32,6 +32,8 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.*;
@@ -44,14 +46,14 @@ public final class Dep extends Step {
 
 	private final Obj object;
 	private final String name;
-	private final Ref depRef;
+	private final Ref ref;
 	private final Obj target;
 	private ObjectStepUses uses;
 	private boolean disabled;
 
-	public Dep(Obj object, Ref depRef, String name) {
+	public Dep(Obj object, Ref ref, String name) {
 		this.object = object;
-		this.depRef = depRef;
+		this.ref = ref;
 		this.name = name;
 		this.target = target();
 		assert !this.target.getConstructionMode().isRuntime() :
@@ -85,23 +87,23 @@ public final class Dep extends Step {
 	}
 
 	public final Object getDepKey() {
-		return this.depRef.getPath().getPath();
+		return this.ref.getPath().getPath();
 	}
 
 	public final Obj getDepTarget() {
 		return this.target;
 	}
 
-	public final Ref getDepRef() {
-		return this.depRef;
+	public final Ref getRef() {
+		return this.ref;
 	}
 
 	@Override
 	public String toString() {
-		if (this.depRef == null) {
+		if (this.ref == null) {
 			return super.toString();
 		}
-		return "Dep[" + this.depRef + " of " + getObject() + ']';
+		return "Dep[" + this.ref + " of " + getObject() + ']';
 	}
 
 	@Override
@@ -112,7 +114,7 @@ public final class Dep extends Step {
 				.append(getObject().getScope().getEnclosingScopePath())
 				.toPrefix(ref.getScope());
 
-		return getDepRef().toFieldDefinition()
+		return getRef().toFieldDefinition()
 				.prefixWith(prefix)
 				.upgradeScope(ref.getScope());
 	}
@@ -148,13 +150,13 @@ public final class Dep extends Step {
 				usage = CONTAINER_REF_USAGE;
 			}
 
-			this.depRef.resolveAll(
+			this.ref.resolveAll(
 					localResolver.fullResolver(resolver, usage));
 		}
 
-		final Resolution resolution = this.depRef.resolve(localResolver);
+		final Resolution resolution = this.ref.resolve(localResolver);
 
-		resolver.getWalker().dep(object, this, this.depRef);
+		resolver.getWalker().dep(object, this, this.ref);
 
 		return resolution.toObject();
 	}
@@ -181,7 +183,7 @@ public final class Dep extends Step {
 
 		normalizer.skip(normalizer.lastPrediction(), new DepDisabler());
 		normalizer.append(
-				getDepRef().getPath(),
+				getRef().getPath(),
 				uses().nestedNormalizer(normalizer));
 	}
 
@@ -193,12 +195,12 @@ public final class Dep extends Step {
 
 	@Override
 	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
-		return getDepRef().getPath().getPath();
+		return getRef().getPath().getPath();
 	}
 
 	@Override
 	protected void normalizeStep(Analyzer analyzer) {
-		getDepRef().normalize(analyzer);
+		getRef().normalize(analyzer);
 	}
 
 	@Override
@@ -208,7 +210,7 @@ public final class Dep extends Step {
 		return reproducedPath(
 				new Dep(
 						reproducer.getScope().toObject(),
-						getDepRef(),
+						getRef(),
 						this.name)
 				.toPath());
 	}
@@ -236,7 +238,7 @@ public final class Dep extends Step {
 		assert local != null :
 			this.object + " is not a local object";
 
-		final Obj target = this.depRef.resolve(local.resolver()).toObject();
+		final Obj target = this.ref.resolve(local.resolver()).toObject();
 
 		if (!target.getConstructionMode().isRuntime()) {
 			return target;

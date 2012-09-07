@@ -22,24 +22,19 @@ package org.o42a.core.object;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.o42a.core.member.local.Dep;
-import org.o42a.core.object.impl.ObjectDeps;
+import org.o42a.core.object.state.Dep;
+import org.o42a.core.object.state.ObjectDeps;
 import org.o42a.core.ref.Ref;
 
 
 public final class Deps extends ObjectDeps implements Iterable<Dep> {
 
-	private final Obj object;
 	private LinkedHashMap<Object, Dep> deps =
 			new LinkedHashMap<Object, Dep>();
 	private int depNameSeq;
 
 	Deps(Obj object) {
-		this.object = object;
-	}
-
-	public final Obj getObject() {
-		return this.object;
+		super(object);
 	}
 
 	@Override
@@ -47,23 +42,11 @@ public final class Deps extends ObjectDeps implements Iterable<Dep> {
 		return this.deps.values().iterator();
 	}
 
-	@Override
-	public String toString() {
-		if (this.object == null) {
-			return super.toString();
-		}
-		return "Deps[" + this.object + ']';
-	}
-
-	@Override
-	protected Dep addDep(Ref ref) {
+	public Dep addDep(Ref ref) {
 		assert getObject().getContext().fullResolution().assertIncomplete();
 
 		final int newDepId = this.depNameSeq + 1;
-		final Dep newDep = new Dep(
-				getObject(),
-				ref,
-				Integer.toString(newDepId));
+		final Dep newDep = newDep(ref, Integer.toString(newDepId));
 		final Dep dep = addDep(newDep);
 
 		if (dep != newDep) {
