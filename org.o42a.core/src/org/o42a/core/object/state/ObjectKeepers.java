@@ -60,10 +60,10 @@ public abstract class ObjectKeepers {
 
 	protected final Keeper declareKeeper(
 			LocationInfo location,
-			Ref ref,
+			Ref value,
 			String name) {
 
-		final Keeper keeper = new Keeper(getObject(), location, ref, name);
+		final Keeper keeper = new Keeper(getObject(), location, value, name);
 
 		this.declaredKeepers.add(keeper);
 

@@ -32,7 +32,7 @@ import org.o42a.core.ref.Ref;
 public final class KeeperObject extends Obj {
 
 	private final Keeper keeper;
-	private final Ref keeperRef;
+	private final Ref value;
 
 	public KeeperObject(Keeper keeper) {
 		super(
@@ -42,12 +42,12 @@ public final class KeeperObject extends Obj {
 
 		final Scope scope = getScope();
 
-		this.keeperRef = getKeeper().getRef().rescope(scope);
-		setValueStruct(this.keeperRef.valueStruct(scope));
+		this.value = getKeeper().getValue().rescope(scope);
+		setValueStruct(this.value.valueStruct(scope));
 	}
 
-	public final Ref keeperRef() {
-		return this.keeperRef;
+	public final Ref getValue() {
+		return this.value;
 	}
 
 	public final Keeper getKeeper() {

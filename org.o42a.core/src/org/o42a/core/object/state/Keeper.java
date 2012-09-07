@@ -33,23 +33,24 @@ import org.o42a.core.source.LocationInfo;
 public final class Keeper extends ObjectConstructor {
 
 	private final Obj declaredIn;
-	private final Ref ref;
+	private final Ref value;
 	private final String name;
 	private Keeper next;
 
-	Keeper(Obj declaredIn, LocationInfo location, Ref ref, String name) {
-		super(location, ref.distribute());
+	Keeper(Obj declaredIn, LocationInfo location, Ref value, String name) {
+		super(location, value.distribute());
 		this.declaredIn = declaredIn;
 		this.name = name;
-		this.ref = ref;
+		this.value = value;
+		value.assertSameScope(this);
 	}
 
 	public final Obj getDeclaredIn() {
 		return this.declaredIn;
 	}
 
-	public final Ref getRef() {
-		return this.ref;
+	public final Ref getValue() {
+		return this.value;
 	}
 
 	public final String getName() {
@@ -58,7 +59,7 @@ public final class Keeper extends ObjectConstructor {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return getRef().getValueType().typeRef(location, getScope());
+		return getValue().getValueType().typeRef(location, getScope());
 	}
 
 	@Override
@@ -68,23 +69,23 @@ public final class Keeper extends ObjectConstructor {
 
 	@Override
 	public final Keeper reproduce(PathReproducer reproducer) {
-		getRef().assertCompatible(reproducer.getReproducingScope());
+		assertCompatible(reproducer.getReproducingScope());
 
-		final Ref ref = getRef().reproduce(reproducer.getReproducer());
+		final Ref value = getValue().reproduce(reproducer.getReproducer());
 
-		if (ref == null) {
+		if (value == null) {
 			return null;
 		}
 
-		return reproducer.getScope().toObject().keepers().addKeeper(this, ref);
+		return reproducer.getScope().toObject().keepers().keep(this, value);
 	}
 
 	@Override
 	public String toString() {
-		if (this.ref == null) {
+		if (this.value == null) {
 			return super.toString();
 		}
-		return "//" + this.ref;
+		return "//" + this.value;
 	}
 
 	@Override
