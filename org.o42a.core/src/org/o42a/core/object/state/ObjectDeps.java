@@ -17,14 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.impl;
+package org.o42a.core.object.state;
 
-import org.o42a.core.member.local.Dep;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 
 
 public abstract class ObjectDeps {
 
-	protected abstract Dep addDep(Ref ref);
+	private final Obj object;
+
+	public ObjectDeps(Obj object) {
+		this.object = object;
+	}
+
+	public final Obj getObject() {
+		return this.object;
+	}
+
+	@Override
+	public String toString() {
+		if (this.object == null) {
+			return super.toString();
+		}
+		return "Deps[" + this.object + ']';
+	}
+
+	protected final Dep newDep(Ref ref, String name) {
+		return new Dep(getObject(), ref, name);
+	}
 
 }

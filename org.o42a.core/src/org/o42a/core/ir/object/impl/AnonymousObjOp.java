@@ -20,20 +20,21 @@
 package org.o42a.core.ir.object.impl;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
-import static org.o42a.core.ir.object.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.state.DepOp.DEP_ID;
 
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.state.DepOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
