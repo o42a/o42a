@@ -36,7 +36,9 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.Link;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
@@ -44,15 +46,15 @@ import org.o42a.core.source.LocationInfo;
 
 public final class Dep extends Step {
 
-	private final Obj object;
-	private final String name;
+	private final Obj declaredIn;
 	private final Ref ref;
+	private final String name;
 	private final Obj target;
 	private ObjectStepUses uses;
-	private boolean disabled;
+	private byte disabled;
 
-	public Dep(Obj object, Ref ref, String name) {
-		this.object = object;
+	Dep(Obj declaredIn, Ref ref, String name) {
+		this.declaredIn = declaredIn;
 		this.ref = ref;
 		this.name = name;
 		this.target = target();
@@ -60,26 +62,12 @@ public final class Dep extends Step {
 			"Can not find an interface of run-time constructed dependency";
 	}
 
-	public final boolean isDisabled() {
-		return this.disabled;
+	public final Obj getDeclaredIn() {
+		return this.declaredIn;
 	}
 
-	public final void setDisabled(boolean disabled) {
-		this.disabled = disabled;
-	}
-
-	@Override
-	public final PathKind getPathKind() {
-		return PathKind.RELATIVE_PATH;
-	}
-
-	@Override
-	public RefUsage getObjectUsage() {
-		return RefUsage.CONTAINER_REF_USAGE;
-	}
-
-	public final Obj getObject() {
-		return this.object;
+	public final Ref getRef() {
+		return this.ref;
 	}
 
 	public final String getName() {
@@ -94,8 +82,18 @@ public final class Dep extends Step {
 		return this.target;
 	}
 
-	public final Ref getRef() {
-		return this.ref;
+	public final boolean isDisabled() {
+		return this.disabled > 0;
+	}
+
+	@Override
+	public final PathKind getPathKind() {
+		return PathKind.RELATIVE_PATH;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	@Override
@@ -103,7 +101,7 @@ public final class Dep extends Step {
 		if (this.ref == null) {
 			return super.toString();
 		}
-		return "Dep[" + this.ref + " of " + getObject() + ']';
+		return "Dep[" + this.ref + " of " + getDeclaredIn() + ']';
 	}
 
 	@Override
@@ -111,7 +109,7 @@ public final class Dep extends Step {
 
 		final PrefixPath prefix =
 				ref.getPath().cut(1)
-				.append(getObject().getScope().getEnclosingScopePath())
+				.append(getDeclaredIn().getScope().getEnclosingScopePath())
 				.toPrefix(ref.getScope());
 
 		return getRef().toFieldDefinition()
@@ -125,8 +123,7 @@ public final class Dep extends Step {
 		final Obj object = resolver.getStart().toObject();
 
 		assert object != null :
-			"Dependency " + resolver
-			+ " should be resolved against object, but were not: "
+			"Dependency should be resolved against object, but were not: "
 			+ resolver.getStart();
 
 		final LocalScope enclosingLocal =
@@ -154,9 +151,9 @@ public final class Dep extends Step {
 					localResolver.fullResolver(resolver, usage));
 		}
 
-		final Resolution resolution = this.ref.resolve(localResolver);
+		final Obj resolution = getRef().resolve(localResolver).toObject();
 
-		resolver.getWalker().dep(object, this, this.ref);
+		resolver.getWalker().dep(object, this, getRef());
 
 		return resolution.toObject();
 	}
@@ -207,12 +204,17 @@ public final class Dep extends Step {
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
-		return reproducedPath(
-				new Dep(
-						reproducer.getScope().toObject(),
-						getRef(),
-						this.name)
-				.toPath());
+
+		final Ref ref = getRef().reproduce(reproducer.getReproducer());
+
+		if (ref == null) {
+			return null;
+		}
+
+		final Dep reproduction =
+				reproducer.getScope().toObject().deps().addDep(ref);
+
+		return reproducedPath(reproduction.toPath());
 	}
 
 	@Override
@@ -229,14 +231,30 @@ public final class Dep extends Step {
 		return this.uses = new ObjectStepUses(this);
 	}
 
+	final void reuseDep() {
+		if (this.disabled > 0) {
+			this.disabled = 0;
+		}
+	}
+
+	private void ignoreDep() {
+		if (this.disabled == 0) {
+			this.disabled = 1;
+		}
+	}
+
+	private void enableDep() {
+		this.disabled = -1;
+	}
+
 	private Obj target() {
 
 		final Container container =
-				this.object.getScope().getEnclosingContainer();
+				this.declaredIn.getScope().getEnclosingContainer();
 		final LocalScope local = container.toLocal();
 
 		assert local != null :
-			this.object + " is not a local object";
+			this.declaredIn + " is not a local object";
 
 		final Obj target = this.ref.resolve(local.resolver()).toObject();
 
@@ -257,18 +275,18 @@ public final class Dep extends Step {
 
 		@Override
 		public Path appendTo(Path path) {
-			ignore();
+			ignoreDep();
 			return path;
 		}
 
 		@Override
 		public void ignore() {
-			setDisabled(true);
+			ignoreDep();
 		}
 
 		@Override
 		public void cancel() {
-			setDisabled(false);
+			enableDep();
 		}
 
 		@Override

@@ -177,7 +177,7 @@ public class ObjectIR  {
 	}
 
 	public DepIR dep(Dep dep) {
-		return bodyIR(dep.getObject()).dep(dep);
+		return bodyIR(dep.getDeclaredIn()).dep(dep);
 	}
 
 	@Override

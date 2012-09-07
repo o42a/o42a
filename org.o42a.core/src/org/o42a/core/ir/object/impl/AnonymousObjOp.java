@@ -130,7 +130,7 @@ public final class AnonymousObjOp extends ObjectOp {
 		final ObjOp ascendant = cast(
 				depName != null ? hostId.sub(depName) : hostId,
 				subDirs,
-				dep.getObject());
+				dep.getDeclaredIn());
 		final DepOp op = ascendant.dep(subDirs, dep);
 
 		subDirs.code().dumpName("Dep: ", op);
