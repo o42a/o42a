@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,38 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.state;
+package org.o42a.core.object;
 
-import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Keeper;
+import org.o42a.core.object.state.ObjectKeepers;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 
 
-public abstract class ObjectDeps {
+public final class Keepers extends ObjectKeepers {
 
-	private final Obj object;
+	private int keeperNameSeq;
 
-	public ObjectDeps(Obj object) {
-		this.object = object;
+	Keepers(Obj object) {
+		super(object);
 	}
 
-	public final Obj getObject() {
-		return this.object;
-	}
-
-	@Override
-	public String toString() {
-		if (this.object == null) {
-			return super.toString();
-		}
-		return "Deps[" + this.object + ']';
-	}
-
-	protected final Dep newDep(Ref ref, String name) {
-		return new Dep(getObject(), ref, name);
-	}
-
-	protected final void reuseDep(Dep dep) {
-		dep.reuseDep();
+	public final Keeper addKeeper(LocationInfo location, Ref ref) {
+		assert getObject().getContext().fullResolution().assertIncomplete();
+		return declareKeeper(
+				location,
+				ref,
+				Integer.toString(++this.keeperNameSeq));
 	}
 
 }

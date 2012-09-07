@@ -81,16 +81,7 @@ public class ObjectStepUses {
 
 	public final void useBy(StepResolver resolver) {
 
-		final int nextIdx = resolver.getIndex() + 1;
-		final BoundPath path = resolver.getPath();
-
-		if (path.length() == nextIdx) {
-			uses().useBy(resolver, resolver.getUsage());
-			return;
-		}
-
-		final Step nextStep = path.getSteps()[nextIdx];
-		final RefUsage usage = nextStep.getObjectUsage();
+		final RefUsage usage = usage(resolver);
 
 		if (usage != null) {
 			uses().useBy(resolver, usage);

@@ -44,6 +44,15 @@ public abstract class Step {
 
 	public abstract PathKind getPathKind();
 
+	/**
+	 * Return the usage, which should be applied to the object produced by the
+	 * previous step.
+	 *
+	 * <p>This is applied by the previous step in the path. For the last step of
+	 * the path {@link PathResolver#getUsage()} will be applied.</p>
+	 *
+	 * @return preceding object usage.
+	 */
 	public abstract RefUsage getObjectUsage();
 
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {

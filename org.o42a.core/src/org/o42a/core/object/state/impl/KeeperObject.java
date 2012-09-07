@@ -17,42 +17,60 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref.operator;
+package org.o42a.core.object.state.impl;
 
+import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 
 
-final class ValueObject extends Obj {
+public final class KeeperObject extends Obj {
 
-	private final ValueOf valueOf;
+	private final Keeper keeper;
+	private final Ref keeperRef;
 
-	ValueObject(ValueOf valueOf) {
-		super(valueOf, valueOf.distributeIn(valueOf.getContainer()));
-		this.valueOf = valueOf;
-		setValueStruct(operand().valueStruct(getScope()));
+	public KeeperObject(Keeper keeper) {
+		super(
+				keeper,
+				keeper.distributeIn(keeper.getContainer()));
+		this.keeper = keeper;
+
+		final Scope scope = getScope();
+
+		this.keeperRef = getKeeper().getRef().rescope(scope);
+		setValueStruct(this.keeperRef.valueStruct(scope));
+	}
+
+	public final Ref keeperRef() {
+		return this.keeperRef;
+	}
+
+	public final Keeper getKeeper() {
+		return this.keeper;
 	}
 
 	@Override
 	public String toString() {
-		if (this.valueOf == null) {
+		if (this.keeper == null) {
 			return super.toString();
 		}
-		return this.valueOf.toString();
+		return this.keeper.toString();
 	}
 
 	@Override
 	protected Nesting createNesting() {
-		return this.valueOf.getNesting();
+		return this.keeper.getNesting();
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(this.valueOf.ancestor(this));
+		return new Ascendants(this).setAncestor(
+				this.keeper.ancestor(this));
 	}
 
 	@Override
@@ -61,11 +79,7 @@ final class ValueObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return operand().toDefinitions(definitionEnv());
-	}
-
-	private Ref operand() {
-		return this.valueOf.operand().rescope(getScope());
+		return new KeeperDef(this).toDefinitions(value().getValueStruct());
 	}
 
 }

@@ -78,7 +78,7 @@ public class DepIR implements FldIR {
 
 	@Override
 	public final Obj getDeclaredIn() {
-		return getDep().getObject();
+		return getDep().getDeclaredIn();
 	}
 
 	@Override

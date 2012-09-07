@@ -75,7 +75,7 @@ public final class Deps extends ObjectDeps implements Iterable<Dep> {
 		}
 
 		this.deps.put(key, found);
-		found.setDisabled(false);
+		reuseDep(found);
 
 		return found;
 	}
