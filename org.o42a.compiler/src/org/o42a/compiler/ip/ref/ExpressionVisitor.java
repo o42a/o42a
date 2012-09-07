@@ -35,8 +35,7 @@ import org.o42a.ast.type.ValueTypeNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
-import org.o42a.compiler.ip.ref.operator.LogicalExpression;
-import org.o42a.compiler.ip.ref.operator.ValueOf;
+import org.o42a.compiler.ip.ref.operator.*;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
@@ -44,6 +43,7 @@ import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.util.log.LogInfo;
 
 
@@ -92,24 +92,14 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitUnary(UnaryNode expression, Distributor p) {
-
-		final ExpressionNode operandNode = expression.getOperand();
-
-		if (operandNode == null) {
+		if (expression.getOperand() == null) {
 			return null;
 		}
 
 		switch (expression.getOperator()) {
 		case PLUS:
 		case MINUS:
-
-			final Phrase phrase = ip().phraseIp().unary(expression, p);
-
-			if (phrase == null) {
-				return null;
-			}
-
-			return phrase.toRef();
+			return unaryPhrase(expression, p);
 		case IS_TRUE:
 		case NOT:
 			return new LogicalExpression(
@@ -119,15 +109,10 @@ public final class ExpressionVisitor
 					p).toRef();
 		case VALUE_OF:
 			return new ValueOf(ip(), p.getContext(), expression, p).toRef();
+		case KEEP_VALUE:
+			return keepValue(expression, p);
 		case MACRO_EXPANSION:
-
-			final Ref operand = operandNode.accept(ip().targetExVisitor(), p);
-
-			if (operand == null) {
-				return null;
-			}
-
-			return expandMacro(operand);
+			return macroExpansion(expression, p);
 		}
 
 		return super.visitUnary(expression, p);
@@ -216,6 +201,47 @@ public final class ExpressionVisitor
 			CompilerLogger logger,
 			LogInfo location) {
 		logger.error("invalid_expression", location, "Not a valid expression");
+	}
+
+	private Ref unaryPhrase(UnaryNode expression, Distributor p) {
+
+		final Phrase phrase = ip().phraseIp().unary(expression, p);
+
+		if (phrase == null) {
+			return null;
+		}
+
+		return phrase.toRef();
+	}
+
+	private Ref keepValue(UnaryNode expression, Distributor p) {
+
+		final Ref value =
+				expression.getOperand().accept(ip().targetExVisitor(), p);
+
+		if (value == null) {
+			return null;
+		}
+
+		final Location location = location(p, expression.getSign());
+
+		if (p.getScope().toLocal() != null) {
+			return new KeptLocalValue(location, value).toRef();
+		}
+
+		return new KeptObjectValue(location, value).toRef();
+	}
+
+	private Ref macroExpansion(UnaryNode expression, Distributor p) {
+
+		final Ref operand =
+				expression.getOperand().accept(ip().targetExVisitor(), p);
+
+		if (operand == null) {
+			return null;
+		}
+
+		return expandMacro(operand);
 	}
 
 }
