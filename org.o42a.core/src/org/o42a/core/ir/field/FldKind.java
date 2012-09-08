@@ -23,12 +23,11 @@ package org.o42a.core.ir.field;
 public enum FldKind {
 
 	OBJ(0, false, false),
-	LINK(1, false, false),
+	LINK(1, true, false),
 	VAR(2, true, false),
-	GETTER(3, true, false),
-	SCOPE(4, false, true),
-	DEP(5, false, true),
-	ASSIGNER(6, true, true);
+	SCOPE(3, false, true),
+	DEP(4, false, true),
+	ASSIGNER(5, true, true);
 
 	private final int code;
 	private final boolean variable;

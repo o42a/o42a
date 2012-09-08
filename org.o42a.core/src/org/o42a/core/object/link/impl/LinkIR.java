@@ -30,9 +30,9 @@ import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueOp;
 
 
-final class GetterIR extends ValueIR {
+final class LinkIR extends ValueIR {
 
-	GetterIR(GetterValueStructIR valueStructIR, ObjectIR objectIR) {
+	LinkIR(LinkValueStructIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
 	}
 
@@ -47,28 +47,28 @@ final class GetterIR extends ValueIR {
 
 	@Override
 	public ValueOp op(ObjectOp object) {
-		return new GetterOp(this, object);
+		return new LinkOp(this, object);
 	}
 
-	private static final class GetterOp extends ValueOp {
+	private static final class LinkOp extends ValueOp {
 
-		GetterOp(GetterIR valueIR, ObjectOp object) {
+		LinkOp(LinkIR valueIR, ObjectOp object) {
 			super(valueIR, object);
 		}
 
 		@Override
 		public void init(Block code, ValOp value) {
-			// Getter value is never initialized.
+			// Link value is never initialized.
 		}
 
 		@Override
 		public void initToFalse(Block code) {
-			// Getter value is never initialized.
+			// Link value is never initialized.
 		}
 
 		@Override
 		public void assign(CodeDirs dirs, ObjectOp value) {
-			throw new UnsupportedOperationException("Can't assign to getter");
+			throw new UnsupportedOperationException("Can't assign to link");
 		}
 
 		@Override

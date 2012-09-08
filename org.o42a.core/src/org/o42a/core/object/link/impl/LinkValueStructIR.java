@@ -34,18 +34,20 @@ public class LinkValueStructIR extends AbstractLinkValueStructIR {
 
 	private static final ID LINK_CONST_ID = CONST_ID.sub("LINK");
 
-	public LinkValueStructIR(Generator generator, LinkValueStruct valueStruct) {
+	public LinkValueStructIR(
+			Generator generator,
+			LinkValueStruct valueStruct) {
 		super(generator, valueStruct);
 	}
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+		return new LinkIR(this, objectIR);
 	}
 
 	@Override
 	public ValHolder tempValHolder(ValOp value) {
-		return new LinkValHolder(value, false);
+		return new LinkValHolder(value, true);
 	}
 
 	@Override

@@ -150,11 +150,6 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
-	public Obj getGetter() {
-		return this.root.getGetter();
-	}
-
-	@Override
 	public Obj getArray() {
 		return this.root.getArray();
 	}

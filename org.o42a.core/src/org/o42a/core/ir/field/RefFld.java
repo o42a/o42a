@@ -26,7 +26,6 @@ import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
@@ -77,7 +76,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 	}
 
 	public final boolean isStateless() {
-		return getKind() == FldKind.GETTER;
+		return getKind() == FldKind.LINK;
 	}
 
 	public final Obj getTarget() {
@@ -192,17 +191,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			.returnValue(constructed);
 		}
 
-		final ObjHolder holder;
-
-		if (getKind().isVariable()) {
-			// Variables and getters should trap the object before returning
-			// to caller.
-			holder = objTrap();
-		} else {
-			holder = tempObjHolder(code.getAllocator());
-		}
-
-		final ObjectOp result = construct(builder, dirs, holder);
+		// Links and variables should trap the object before returning
+		// to caller.
+		final ObjectOp result = construct(builder, dirs, objTrap());
 		final DataOp res = result.toData(null, code);
 
 		if (ctr != null) {

@@ -70,7 +70,6 @@ objects += $(srcdir)/value.o
 
 objects += $(srcdir)/fld/assigner.o
 objects += $(srcdir)/fld/dep.o
-objects += $(srcdir)/fld/getter.o
 objects += $(srcdir)/fld/link.o
 objects += $(srcdir)/fld/obj.o
 objects += $(srcdir)/fld/scope.o

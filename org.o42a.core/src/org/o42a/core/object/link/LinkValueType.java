@@ -25,7 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueType;
-import org.o42a.core.object.link.impl.GetterValueStructIR;
+import org.o42a.core.object.link.impl.LinkValueStructIR;
 import org.o42a.core.object.link.impl.VariableValueStructIR;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
@@ -43,10 +43,10 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 		}
 
 		@Override
-		GetterValueStructIR structIR(
+		LinkValueStructIR structIR(
 				Generator generator,
 				LinkValueStruct linkStruct) {
-			return new GetterValueStructIR(generator, linkStruct);
+			return new LinkValueStructIR(generator, linkStruct);
 		}
 
 	};
