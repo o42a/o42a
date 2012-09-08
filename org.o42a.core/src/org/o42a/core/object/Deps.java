@@ -56,13 +56,17 @@ public final class Deps extends ObjectDeps implements Iterable<Dep> {
 		// The new dependency added.
 		this.depNameSeq = newDepId;
 
+		return dep;
+	}
+
+	@Override
+	protected void depResolved(Dep dep) {
+
 		final LinkUses linkUses = getObject().type().linkUses();
 
 		if (linkUses != null) {
 			linkUses.depAdded();
 		}
-
-		return dep;
 	}
 
 	private Dep addDep(Dep dep) {
