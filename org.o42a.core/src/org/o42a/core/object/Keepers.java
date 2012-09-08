@@ -23,9 +23,13 @@ import org.o42a.core.object.state.Keeper;
 import org.o42a.core.object.state.ObjectKeepers;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 public final class Keepers extends ObjectKeepers {
+
+	private static final ID KEEPER_PREFIX =
+			ID.id(ID.id("K").setDescription("Keeper #"));
 
 	private int keeperNameSeq;
 
@@ -39,7 +43,7 @@ public final class Keepers extends ObjectKeepers {
 		return declareKeeper(
 				location,
 				value,
-				Integer.toString(++this.keeperNameSeq));
+				KEEPER_PREFIX.suffix(Integer.toString(++this.keeperNameSeq)));
 	}
 
 	@Override

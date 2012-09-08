@@ -27,19 +27,21 @@ import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
+import org.o42a.util.string.SubID;
 
 
-public final class Keeper extends ObjectConstructor {
+public final class Keeper extends ObjectConstructor implements SubID {
 
 	private final Obj declaredIn;
 	private final Ref value;
-	private final String name;
+	private final ID id;
 	private Keeper next;
 
-	Keeper(Obj declaredIn, LocationInfo location, Ref value, String name) {
+	Keeper(Obj declaredIn, LocationInfo location, Ref value, ID id) {
 		super(location, value.distribute());
 		this.declaredIn = declaredIn;
-		this.name = name;
+		this.id = id;
 		this.value = value;
 		value.assertSameScope(this);
 	}
@@ -50,10 +52,6 @@ public final class Keeper extends ObjectConstructor {
 
 	public final Ref getValue() {
 		return this.value;
-	}
-
-	public final String getName() {
-		return this.name;
 	}
 
 	@Override
@@ -80,11 +78,21 @@ public final class Keeper extends ObjectConstructor {
 	}
 
 	@Override
+	public final ID toID() {
+		return this.id;
+	}
+
+	@Override
+	public final ID toDisplayID() {
+		return this.id;
+	}
+
+	@Override
 	public String toString() {
-		if (this.value == null) {
+		if (this.id == null) {
 			return super.toString();
 		}
-		return "//" + this.value;
+		return this.id.toString();
 	}
 
 	@Override

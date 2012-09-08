@@ -27,6 +27,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.Chain;
+import org.o42a.util.string.ID;
 
 
 public abstract class ObjectKeepers {
@@ -61,9 +62,9 @@ public abstract class ObjectKeepers {
 	protected final Keeper declareKeeper(
 			LocationInfo location,
 			Ref value,
-			String name) {
+			ID id) {
 
-		final Keeper keeper = new Keeper(getObject(), location, value, name);
+		final Keeper keeper = new Keeper(getObject(), location, value, id);
 
 		this.declaredKeepers.add(keeper);
 
