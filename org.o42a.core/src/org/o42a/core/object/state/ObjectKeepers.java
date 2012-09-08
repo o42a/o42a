@@ -70,6 +70,8 @@ public abstract class ObjectKeepers {
 		return keeper;
 	}
 
+	protected abstract void keeperResolved(Keeper keeper);
+
 	private static final class DeclaredKeepers extends Chain<Keeper> {
 
 		@Override

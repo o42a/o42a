@@ -116,7 +116,11 @@ public class LinkUses {
 		uses().useBy(field.object(dummyUser()).content(), LINK_FIELD_CHANGES);
 	}
 
-	void depAdded() {
+	final void depAdded() {
+		uses().useBy(getObject().content(), LINK_FIELD_CHANGES);
+	}
+
+	final void keeperAdded() {
 		uses().useBy(getObject().content(), LINK_FIELD_CHANGES);
 	}
 

@@ -42,4 +42,14 @@ public final class Keepers extends ObjectKeepers {
 				Integer.toString(++this.keeperNameSeq));
 	}
 
+	@Override
+	protected void keeperResolved(Keeper keeper) {
+
+		final LinkUses linkUses = getObject().type().linkUses();
+
+		if (linkUses != null) {
+			linkUses.keeperAdded();
+		}
+	}
+
 }

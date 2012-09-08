@@ -21,7 +21,6 @@ package org.o42a.core.object.state;
 
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.state.impl.KeeperObject;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
 import org.o42a.core.ref.path.ObjectConstructor;
@@ -99,6 +98,13 @@ public final class Keeper extends ObjectConstructor {
 
 	final void setNext(Keeper next) {
 		this.next = next;
+	}
+
+	final void resolveAll() {
+
+		final ObjectKeepers keepers = getDeclaredIn().keepers();
+
+		keepers.keeperResolved(this);
 	}
 
 }

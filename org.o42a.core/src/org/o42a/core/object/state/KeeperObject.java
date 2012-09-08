@@ -17,24 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.state.impl;
+package org.o42a.core.object.state;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.object.state.Keeper;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 
 
-public final class KeeperObject extends Obj {
+final class KeeperObject extends Obj {
 
 	private final Keeper keeper;
 	private final Ref value;
 
-	public KeeperObject(Keeper keeper) {
+	KeeperObject(Keeper keeper) {
 		super(
 				keeper,
 				keeper.distributeIn(keeper.getContainer()));
@@ -80,6 +79,12 @@ public final class KeeperObject extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return new KeeperDef(this).toDefinitions(value().getValueStruct());
+	}
+
+	@Override
+	protected void fullyResolve() {
+		super.fullyResolve();
+		this.keeper.resolveAll();
 	}
 
 }
