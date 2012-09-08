@@ -147,7 +147,14 @@ public final class ObjectType implements UserInfo {
 		if (this.allAscendants != null) {
 			return this.allAscendants;
 		}
-		return this.allAscendants = unmodifiableMap(buildAllAscendants());
+
+		final HashMap<Scope, Derivation> allAscendants = buildAllAscendants();
+
+		if (getResolution().typeResolved()) {
+			this.allAscendants = unmodifiableMap(allAscendants);
+		}
+
+		return allAscendants;
 	}
 
 	public final List<Derivative> allDerivatives() {
@@ -403,7 +410,12 @@ public final class ObjectType implements UserInfo {
 
 		allAscendants.put(getObject().getScope(), Derivation.SAME);
 
-		final TypeRef ancestor = getAncestor();
+		resolve(true);
+		if (this.ascendants == null) {
+			return allAscendants;
+		}
+
+		final TypeRef ancestor = this.ascendants.getAncestor();
 
 		if (ancestor != null) {
 
@@ -414,10 +426,10 @@ public final class ObjectType implements UserInfo {
 			}
 		}
 
-		addSamplesAscendants(allAscendants, getSamples());
+		addSamplesAscendants(allAscendants, this.ascendants.getSamples());
 		addSamplesAscendants(
 				allAscendants,
-				getAscendants().getDiscardedSamples());
+				this.ascendants.getDiscardedSamples());
 
 		return allAscendants;
 	}
