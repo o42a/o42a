@@ -43,7 +43,6 @@ public class DepIR implements FldIR {
 
 	private final ObjectIRBody bodyIR;
 	private final Dep dep;
-	private final ID id;
 	private Type instance;
 
 	public DepIR(ObjectIRBody bodyIR, Dep dep) {
@@ -51,7 +50,6 @@ public class DepIR implements FldIR {
 			dep + " is disabled";
 		this.bodyIR = bodyIR;
 		this.dep = dep;
-		this.id = ID.id('D' + dep.getName());
 	}
 
 	public final Generator getGenerator() {
@@ -68,7 +66,7 @@ public class DepIR implements FldIR {
 
 	@Override
 	public final ID getId() {
-		return this.id;
+		return this.dep.toID();
 	}
 
 	@Override

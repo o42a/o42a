@@ -22,32 +22,34 @@ package org.o42a.util.string;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 
-final class DisplayText implements SubID {
+final class DescriptionOfID implements SubID {
 
-	private final ID text;
+	private final ID id;
+	private final ID description;
 
-	DisplayText(String text) {
+	DescriptionOfID(ID id, String text) {
+		this.id = id;
 		assert text != null :
 			"Text to display is not specified";
-		this.text = CASE_INSENSITIVE.name(text).toID();
+		this.description = CASE_INSENSITIVE.name(text).toID();
 	}
 
 	@Override
 	public ID toDisplayID() {
-		return this.text;
+		return this.description;
 	}
 
 	@Override
 	public ID toID() {
-		return ID.id();
+		return this.id;
 	}
 
 	@Override
 	public String toString() {
-		if (this.text == null) {
+		if (this.description == null) {
 			return super.toString();
 		}
-		return this.text.toString();
+		return this.description.toString();
 	}
 
 }

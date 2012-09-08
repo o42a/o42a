@@ -21,6 +21,7 @@ package org.o42a.core.object.state;
 
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.util.string.ID;
 
 
 public abstract class ObjectDeps {
@@ -43,8 +44,8 @@ public abstract class ObjectDeps {
 		return "Deps[" + this.object + ']';
 	}
 
-	protected final Dep newDep(Ref ref, String name) {
-		return new Dep(getObject(), ref, name);
+	protected final Dep newDep(Ref ref, ID id) {
+		return new Dep(getObject(), ref, id);
 	}
 
 	protected final void reuseDep(Dep dep) {
