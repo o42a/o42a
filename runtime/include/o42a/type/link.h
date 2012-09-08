@@ -27,8 +27,6 @@
 extern "C" {
 #endif
 
-extern const o42a_val_type_t o42a_val_type_getter;
-
 extern const o42a_val_type_t o42a_val_type_link;
 
 extern const o42a_val_type_t o42a_val_type_variable;

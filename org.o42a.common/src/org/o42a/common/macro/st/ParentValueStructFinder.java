@@ -66,10 +66,10 @@ final class ParentValueStructFinder implements ValueStructFinder {
 		if (parentLinkStruct != null) {
 			// Parent object is link.
 			if (parentLinkStruct.getValueType().is(LINK)) {
-				// Parent object is getter.
+				// Parent object is link.
 				return parentLinkStruct;
 			}
-			// Construct a getter with the same interface.
+			// Construct a link with the same interface.
 			return LINK.linkStruct(parentLinkStruct.getTypeRef());
 		}
 
@@ -79,7 +79,7 @@ final class ParentValueStructFinder implements ValueStructFinder {
 				.setValueStruct(parentValueStruct)
 				.rescope(this.scope);
 
-		// Construct a getter.
+		// Construct a link.
 		return LINK.linkStruct(parentValueTypeRef);
 	}
 

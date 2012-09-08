@@ -67,8 +67,6 @@ public class Root extends Obj {
 			fieldName(CASE_INSENSITIVE.canonicalName("link"));
 	private static final MemberName VARIABLE_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("variable"));
-	private static final MemberName GETTER_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("getter"));
 	private static final MemberName ARRAY_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("array"));
 	private static final MemberName ROW_MEMBER =
@@ -93,7 +91,6 @@ public class Root extends Obj {
 	private Obj stringObject;
 	private Obj linkObject;
 	private Obj variableObject;
-	private Obj getterObject;
 	private Obj arrayObject;
 	private Obj rowObject;
 
@@ -169,14 +166,6 @@ public class Root extends Obj {
 		}
 		return this.variableObject =
 				member(VARIABLE_MEMBER).substance(dummyUser()).toObject();
-	}
-
-	public final Obj getGetter() {
-		if (this.getterObject != null) {
-			return this.getterObject;
-		}
-		return this.getterObject =
-				member(GETTER_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getArray() {

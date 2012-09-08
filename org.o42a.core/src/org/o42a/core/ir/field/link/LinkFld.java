@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -67,6 +67,11 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		return LINK_FLD;
 	}
 
+	@Override
+	protected boolean mayOmit() {
+		return false;
+	}
+
 	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {
 
 		private Op(StructWriter<Op> writer) {
@@ -96,12 +101,17 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 		@Override
 		public boolean isStateless() {
-			return false;
+			return true;
 		}
 
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.LINK.code());
 		}
 
 		@Override
@@ -111,16 +121,9 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 		@Override
 		protected FuncPtr<ObjectRefFunc> constructorStub() {
-			return getGenerator()
-					.externalFunction()
-					.link("o42a_obj_ref_stub", OBJECT_REF);
-		}
-
-		@Override
-		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0200 | FldKind.LINK.code());
+			throw new IllegalStateException(
+					"The link constructor can not be a stub");
 		}
 
 	}
-
 }

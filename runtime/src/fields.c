@@ -88,17 +88,12 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	[O42A_FLD_LINK] = {// link field
 		.propagate = &o42a_fld_link_propagate,
 		.inherit = &o42a_fld_link_inherit,
-		.mark = &o42a_fld_mark_obj,
+		.mark = &o42a_fld_mark_none,
 	},
 	[O42A_FLD_VAR] = {// variable field
 		.propagate = &o42a_fld_var_propagate,
 		.inherit = &o42a_fld_var_inherit,
 		.mark = &o42a_fld_var_mark,
-	},
-	[O42A_FLD_GETTER] = {// getter field
-		.propagate = &o42a_fld_getter_propagate,
-		.inherit = &o42a_fld_getter_inherit,
-		.mark = &o42a_fld_mark_none,
 	},
 	[O42A_FLD_SCOPE] = {// scope object pointer
 		.propagate = &o42a_fld_scope_propagate,

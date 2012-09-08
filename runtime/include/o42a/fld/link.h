@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -31,15 +31,13 @@ typedef struct {
 
 	O42A_HEADER
 
-	o42a_obj_t *object;
-
 	o42a_obj_ref_ft *constructor;
 
 } o42a_fld_link;
 
 
 #ifndef NDEBUG
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_fld_link;
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_link;
 #endif /* NDEBUG */
 
 void o42a_fld_link_propagate(o42a_obj_ctable_t*);

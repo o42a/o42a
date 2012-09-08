@@ -22,7 +22,6 @@
 
 #include "o42a/fld/assigner.h"
 #include "o42a/fld/dep.h"
-#include "o42a/fld/getter.h"
 #include "o42a/fld/link.h"
 #include "o42a/fld/obj.h"
 #include "o42a/fld/scope.h"
@@ -45,8 +44,6 @@ union o42a_fld {
 	o42a_fld_link link;
 
 	o42a_fld_var var;
-
-	o42a_fld_getter getter;
 
 	o42a_fld_scope scope;
 

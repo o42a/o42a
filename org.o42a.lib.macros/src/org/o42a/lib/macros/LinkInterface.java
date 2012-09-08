@@ -111,7 +111,7 @@ class LinkInterface extends AnnotatedMacro {
 		logger.error(
 				"not_link_interface",
 				location,
-				"Can only obtain interface from link, variable or getter");
+				"Can only obtain interface from link or variable");
 	}
 
 }

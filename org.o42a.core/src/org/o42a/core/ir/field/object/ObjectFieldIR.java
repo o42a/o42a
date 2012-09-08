@@ -28,7 +28,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.RefFld;
-import org.o42a.core.ir.field.getter.GetterFld;
+import org.o42a.core.ir.field.link.LinkFld;
 import org.o42a.core.ir.field.variable.VarFld;
 import org.o42a.core.ir.local.RefLclOp;
 import org.o42a.core.ir.object.ObjectIRBody;
@@ -107,7 +107,7 @@ public final class ObjectFieldIR extends FieldIR {
 		final RefFld<?> fld;
 
 		if (linkType == LinkValueType.LINK) {
-			fld = new GetterFld(bodyIR, field, target);
+			fld = new LinkFld(bodyIR, field, target);
 		} else if (linkType == LinkValueType.VARIABLE) {
 			fld = new VarFld(bodyIR, field, target);
 		} else {

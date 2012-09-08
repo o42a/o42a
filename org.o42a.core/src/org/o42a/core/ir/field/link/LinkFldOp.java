@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.link;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
@@ -58,6 +59,17 @@ public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 		return target(dirs, holder);
 	}
 
+	@Override
+	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
+		return super.target(dirs, holder.toVolatile());
+	}
+
+	@Override
+	protected ObjectOp target(Block code, ObjHolder holder) {
+		return holder.set(
+				code,
+				createObject(code, ptr().construct(code, host())));
+	}
 
 	private static final class LinkFldValueOp
 			extends AbstractLinkFldValueOp<LinkFldOp> {
