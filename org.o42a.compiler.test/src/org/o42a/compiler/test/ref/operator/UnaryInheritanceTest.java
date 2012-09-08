@@ -79,6 +79,21 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 		assertThat(definiteValue(this.cBar, ValueType.INTEGER), is(2L));
 	}
 
+	@Test
+	public void keepValue() {
+		compile(
+				"A := void (",
+				"  Foo := 1",
+				"  Bar := //foo",
+				")",
+				"B := a (Foo = 2)",
+				"C := b");
+
+		assertThat(definiteValue(this.aBar, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.bBar, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(this.cBar, ValueType.INTEGER), is(2L));
+	}
+
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
