@@ -51,4 +51,6 @@ public abstract class ObjectDeps {
 		dep.reuseDep();
 	}
 
+	protected abstract void depResolved(Dep dep);
+
 }

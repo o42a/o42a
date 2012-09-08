@@ -149,6 +149,10 @@ public final class Dep extends Step {
 
 			this.ref.resolveAll(
 					localResolver.fullResolver(resolver, usage));
+
+			final ObjectDeps deps = getDeclaredIn().deps();
+
+			deps.depResolved(this);
 		}
 
 		final Obj resolution = getRef().resolve(localResolver).toObject();
