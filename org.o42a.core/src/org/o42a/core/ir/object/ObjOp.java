@@ -173,10 +173,8 @@ public final class ObjOp extends ObjectOp {
 		final CodeDirs subDirs = dirs.begin(DEP_ID, dep.toString());
 		final Code code = subDirs.code();
 		final DepIR ir = getObjectIR().dep(dep);
-		final String depName = dep.getName();
-		final ID hostId = DEP_HOST_ID;
 		final ObjOp host = cast(
-				depName != null ? hostId.sub(depName) : hostId,
+				DEP_HOST_ID.sub(dep),
 				subDirs,
 				dep.getDeclaredIn());
 		final DepOp op = ir.op(code, host);

@@ -42,21 +42,23 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
+import org.o42a.util.string.SubID;
 
 
-public final class Dep extends Step {
+public final class Dep extends Step implements SubID {
 
 	private final Obj declaredIn;
 	private final Ref ref;
-	private final String name;
+	private final ID id;
 	private final Obj target;
 	private ObjectStepUses uses;
 	private byte disabled;
 
-	Dep(Obj declaredIn, Ref ref, String name) {
+	Dep(Obj declaredIn, Ref ref, ID id) {
 		this.declaredIn = declaredIn;
 		this.ref = ref;
-		this.name = name;
+		this.id = id;
 		this.target = target();
 		assert !this.target.getConstructionMode().isRuntime() :
 			"Can not find an interface of run-time constructed dependency";
@@ -68,10 +70,6 @@ public final class Dep extends Step {
 
 	public final Ref getRef() {
 		return this.ref;
-	}
-
-	public final String getName() {
-		return this.name;
 	}
 
 	public final Object getDepKey() {
@@ -97,11 +95,21 @@ public final class Dep extends Step {
 	}
 
 	@Override
+	public final ID toID() {
+		return this.id;
+	}
+
+	@Override
+	public final ID toDisplayID() {
+		return this.id;
+	}
+
+	@Override
 	public String toString() {
-		if (this.ref == null) {
+		if (this.id == null) {
 			return super.toString();
 		}
-		return "Dep[" + this.ref + " of " + getDeclaredIn() + ']';
+		return this.id.toString();
 	}
 
 	@Override

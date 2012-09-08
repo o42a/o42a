@@ -25,9 +25,13 @@ import java.util.LinkedHashMap;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.state.ObjectDeps;
 import org.o42a.core.ref.Ref;
+import org.o42a.util.string.ID;
 
 
 public final class Deps extends ObjectDeps implements Iterable<Dep> {
+
+	private static final ID DEP_PREFIX =
+			ID.id(ID.id("D").setDescription("Dependency #"));
 
 	private LinkedHashMap<Object, Dep> deps =
 			new LinkedHashMap<Object, Dep>();
@@ -46,7 +50,9 @@ public final class Deps extends ObjectDeps implements Iterable<Dep> {
 		assert getObject().getContext().fullResolution().assertIncomplete();
 
 		final int newDepId = this.depNameSeq + 1;
-		final Dep newDep = newDep(ref, Integer.toString(newDepId));
+		final Dep newDep = newDep(
+				ref,
+				DEP_PREFIX.suffix(Integer.toString(newDepId)));
 		final Dep dep = addDep(newDep);
 
 		if (dep != newDep) {

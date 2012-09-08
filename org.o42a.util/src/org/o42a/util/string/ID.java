@@ -53,7 +53,7 @@ public final class ID implements SubID {
 	}
 
 	public static SubID displayText(String text) {
-		return new DisplayText(text);
+		return new DescriptionOfID(ID.id(), text);
 	}
 
 	private final ID prefix;
@@ -249,6 +249,12 @@ public final class ID implements SubID {
 		assert in != null :
 			"Identifier not specified";
 		return separate(IDSeparator.IN, in);
+	}
+
+	public final SubID setDescription(String description) {
+		assert description != null :
+			"Description not specified";
+		return new DescriptionOfID(this, description);
 	}
 
 	@Override

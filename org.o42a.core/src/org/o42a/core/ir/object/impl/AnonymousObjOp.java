@@ -125,10 +125,8 @@ public final class AnonymousObjOp extends ObjectOp {
 	public DepOp dep(CodeDirs dirs, Dep dep) {
 
 		final CodeDirs subDirs = dirs.begin(DEP_ID, dep.toString());
-		final String depName = dep.getName();
-		final ID hostId = DEP_HOST_ID;
 		final ObjOp ascendant = cast(
-				depName != null ? hostId.sub(depName) : hostId,
+				DEP_HOST_ID.sub(dep),
 				subDirs,
 				dep.getDeclaredIn());
 		final DepOp op = ascendant.dep(subDirs, dep);
