@@ -52,7 +52,7 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 	private final DepIR depIR;
 	private final DepIR.Op ptr;
 
-	public DepOp(DepIR depIR, ObjOp host, DepIR.Op ptr) {
+	DepOp(ObjOp host, DepIR depIR, DepIR.Op ptr) {
 		super(host.getBuilder());
 		this.depIR = depIR;
 		this.host = host;

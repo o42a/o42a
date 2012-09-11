@@ -30,6 +30,8 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.state.DepIR;
+import org.o42a.core.ir.object.state.KeeperIROp;
+import org.o42a.core.ir.object.state.KeeperIRType;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
@@ -74,6 +76,10 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 	}
 
 	public final DepIR.Op dep(Code code, DepIR.Type instance) {
+		return struct(null, code, instance);
+	}
+
+	public final KeeperIROp<?> keeper(Code code, KeeperIRType<?> instance) {
 		return struct(null, code, instance);
 	}
 

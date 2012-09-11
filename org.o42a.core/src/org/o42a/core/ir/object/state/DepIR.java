@@ -66,7 +66,7 @@ public class DepIR implements FldIR {
 
 	@Override
 	public final ID getId() {
-		return this.dep.toID();
+		return getDep().toID();
 	}
 
 	@Override
@@ -98,14 +98,17 @@ public class DepIR implements FldIR {
 		assert getInstance() != null :
 			this + " is not allocated yet";
 		return new DepOp(
-				this,
 				host,
+				this,
 				host.ptr().dep(code, getInstance()));
 	}
 
 	@Override
 	public String toString() {
-		return this.dep + " IR";
+		if (this.dep == null) {
+			return super.toString();
+		}
+		return this.dep.toString();
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
