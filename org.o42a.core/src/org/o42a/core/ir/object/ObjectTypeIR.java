@@ -31,6 +31,7 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.state.DepIR;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.object.type.FieldDescIR;
 import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
@@ -152,7 +153,11 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				this.objectIRStruct.bodyIRs().values());
 		getObjectData().samples().addAll(
 				this.objectIRStruct.sampleBodyIRs());
-		fillFields();
+
+		allocateFieldDecls();
+		allocateKeeperDecls();
+		allocateDepDecls();
+		allocateOverriders();
 
 		getObjectData().ascendants().allocateItems(data);
 		getObjectData().samples().allocateItems(data);
@@ -162,12 +167,11 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		getObjectIR().getObjectValueIR().allocate(this);
 	}
 
-	private void fillFields() {
+	private void allocateFieldDecls() {
 
-		final ObjectIR objectIR = getObjectIR();
 		final RelList<FieldDescIR> fields = getObjectType().fields();
 
-		for (Fld fld : objectIR.getMainBodyIR().getDeclaredFields()) {
+		for (Fld fld : getObjectIR().getMainBodyIR().getDeclaredFields()) {
 			if (fld.isOmitted()) {
 				continue;
 			}
@@ -179,15 +183,33 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				this.fieldDescs.put(fld.getKey(), fieldDescIR);
 			}
 		}
+	}
 
-		for (DepIR dep : objectIR.getMainBodyIR().getDeclaredDeps()) {
+	private void allocateKeeperDecls() {
+
+		final RelList<FieldDescIR> fields = getObjectType().fields();
+
+		for (KeeperIR<?, ?> keeper
+				: getObjectIR().getMainBodyIR().getDeclaredKeepers()) {
+			fields.add(new FieldDescIR(keeper));
+		}
+	}
+
+	private void allocateDepDecls() {
+
+		final RelList<FieldDescIR> fields = getObjectType().fields();
+
+		for (DepIR dep : getObjectIR().getMainBodyIR().getDeclaredDeps()) {
 			fields.add(new FieldDescIR(dep));
 		}
+	}
+
+	private void allocateOverriders() {
 
 		final RelList<OverriderDescIR> overriders =
 				getObjectType().overriders();
 
-		for (Member member : objectIR.getObject().getMembers()) {
+		for (Member member : getObjectIR().getObject().getMembers()) {
 
 			final MemberField field = member.toField();
 
@@ -198,7 +220,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				continue;
 			}
 
-			final Fld fld = objectIR.findFld(field.getMemberKey());
+			final Fld fld = getObjectIR().findFld(field.getMemberKey());
 
 			if (fld == null || fld.isOmitted() || !fld.isOverrider()) {
 				continue;

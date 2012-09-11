@@ -36,6 +36,7 @@ import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.state.DepOp;
+import org.o42a.core.ir.object.state.KeeperOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
@@ -45,6 +46,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.state.Dep;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
@@ -54,6 +56,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	protected static final ID TARGET_ID = ID.id("target");
 	protected static final ID FIELD_HOST_ID = ID.id("field_host");
 	protected static final ID DEP_HOST_ID = ID.id("dep_host");
+	protected static final ID KEEPER_HOST_ID = ID.id("keeper_host");
 
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,
@@ -189,6 +192,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	public abstract FldOp field(CodeDirs dirs, MemberKey memberKey);
 
 	public abstract DepOp dep(CodeDirs dirs, Dep dep);
+
+	public abstract KeeperOp keeper(CodeDirs dirs, Keeper keeper);
 
 	@Override
 	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {

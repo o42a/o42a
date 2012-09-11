@@ -30,6 +30,8 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.state.DepIR;
+import org.o42a.core.ir.object.state.KeeperIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -37,6 +39,7 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Getter;
@@ -59,6 +62,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 			new HashMap<MemberKey, Fld>();
 	private final LinkedHashMap<Dep, DepIR> deps =
 			new LinkedHashMap<Dep, DepIR>();
+	private final LinkedHashMap<Keeper, KeeperIR<?, ?>> keepers =
+			new LinkedHashMap<Keeper, KeeperIR<?, ?>>();
 
 	private RelRec objectType;
 	private RelRec ancestorBody;
@@ -151,12 +156,22 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this.fieldMap.get(memberKey);
 	}
 
-	public DepIR dep(Dep dep) {
+	public final DepIR dep(Dep dep) {
 
 		final DepIR ir = this.deps.get(dep);
 
 		assert ir != null :
-			"Dep " + dep + " not found in " + this;
+			dep + " not found in " + this;
+
+		return ir;
+	}
+
+	public final KeeperIR<? ,?> keeper(Keeper keeper) {
+
+		final KeeperIR<?, ?> ir = this.keepers.get(keeper);
+
+		assert ir != null :
+			keeper + " not found in " + this;
 
 		return ir;
 	}
@@ -174,6 +189,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.flags = data.addInt32("flags");
 		allocateValueBody(data);
 		allocateFields(data);
+		allocateKeepers(data);
 		allocateDeps(data);
 	}
 
@@ -208,6 +224,10 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	final Collection<DepIR> getDeclaredDeps() {
 		return this.deps.values();
+	}
+
+	final Collection<KeeperIR<?, ?>> getDeclaredKeepers() {
+		return this.keepers.values();
 	}
 
 	void allocateMethodsIR(SubData<?> data) {
@@ -298,7 +318,25 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return true;
 	}
 
-	private final void allocateDeps(SubData<ObjectIRBodyOp> data) {
+	private void allocateKeepers(SubData<ObjectIRBodyOp> data) {
+
+		final Obj ascendant = getAscendant();
+
+		for (Keeper keeper : ascendant.keepers().declaredKeepers()) {
+
+			final ValueStructIR<?, ?> valueStructIR =
+					keeper.getValue()
+					.valueStruct(keeper.getScope())
+					.ir(getGenerator());
+			final KeeperIR<?, ?> keeperIR =
+					valueStructIR.createKeeperIR(this, keeper);
+
+			keeperIR.allocate(data);
+			this.keepers.put(keeper, keeperIR);
+		}
+	}
+
+	private void allocateDeps(SubData<ObjectIRBodyOp> data) {
 
 		final Obj ascendant = getAscendant();
 

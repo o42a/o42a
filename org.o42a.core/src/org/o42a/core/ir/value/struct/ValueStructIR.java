@@ -24,9 +24,12 @@ import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.value.*;
 import org.o42a.core.ir.value.impl.DefaultValueIR;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -75,6 +78,13 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 	public abstract Val val(T value);
 
 	public abstract Ptr<ValType.Op> valPtr(T value);
+
+	public KeeperIR<?, ?> createKeeperIR(
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		// TODO Implement the value keepers.
+		return null;
+	}
 
 	public abstract ValueIR valueIR(ObjectIR objectIR);
 
