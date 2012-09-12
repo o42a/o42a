@@ -19,11 +19,16 @@
 */
 package org.o42a.core.object.state;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.state.KeeperOp;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
@@ -58,20 +63,18 @@ final class KeeperDef extends Def {
 
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		// TODO Auto-generated method stub
-
+		this.keeperObject.getKeeper().getValue().normalize(
+				normalizer.getAnalyzer());
 	}
 
 	@Override
 	public Eval eval() {
-		// TODO Auto-generated method stub
-		return null;
+		return new KeeperEval(this);
 	}
 
 	@Override
@@ -104,6 +107,36 @@ final class KeeperDef extends Def {
 
 	private Ref getValue() {
 		return this.keeperObject.getValue();
+	}
+
+	private static final class KeeperEval implements Eval {
+
+		private final KeeperDef def;
+
+		KeeperEval(KeeperDef def) {
+			this.def = def;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final ObjectOp object = host.materialize(
+					dirs.dirs(),
+					tempObjHolder(dirs.getAllocator()));
+			final KeeperOp keeper = object.keeper(
+					dirs.dirs(),
+					this.def.keeperObject.getKeeper());
+
+			dirs.returnValue(keeper.writeValue(dirs.valDirs()));
+		}
+
+		@Override
+		public String toString() {
+			if (this.def == null) {
+				return super.toString();
+			}
+			return this.def.toString();
+		}
 	}
 
 }
