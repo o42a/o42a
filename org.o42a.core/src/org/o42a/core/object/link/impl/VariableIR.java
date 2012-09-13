@@ -28,7 +28,6 @@ import static org.o42a.core.ir.value.Val.VAL_ASSIGN;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.Int32op;
-import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.variable.AssignerFld;
 import org.o42a.core.ir.field.variable.AssignerFldOp;
 import org.o42a.core.ir.object.*;
@@ -62,10 +61,6 @@ final class VariableIR extends ValueIR {
 		this.bodyIR = data.getBodyIR();
 		this.fld = new AssignerFld();
 		this.fld.declare(data);
-	}
-
-	@Override
-	public void allocateMethods(ObjectIRMethods methodsIR, SubData<?> data) {
 	}
 
 	@Override

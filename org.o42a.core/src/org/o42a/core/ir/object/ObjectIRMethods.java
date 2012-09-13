@@ -26,8 +26,6 @@ import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.object.Obj;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -63,7 +61,6 @@ public final class ObjectIRMethods extends Struct<ObjectIRMethodsOp> {
 	@Override
 	protected void allocate(SubData<ObjectIRMethodsOp> data) {
 		this.objectType = data.addPtr("object_type", OBJECT_TYPE);
-		allocateValueMethods(data);
 	}
 
 	@Override
@@ -91,20 +88,6 @@ public final class ObjectIRMethods extends Struct<ObjectIRMethodsOp> {
 		}
 
 		return objectIR.getId().setLocal(localId);
-	}
-
-	private void allocateValueMethods(SubData<ObjectIRMethodsOp> data) {
-
-		final Obj ascendant = getBodyIR().getAscendant();
-		final ValueStruct<?, ?> valueStruct =
-				ascendant.value().getValueStruct();
-		final ValueType<?> valueType = valueStruct.getValueType();
-		final Obj typeObject =
-				valueType.typeObject(ascendant.getContext().getIntrinsics());
-
-		if (ascendant.is(typeObject)) {
-			getObjectIR().getValueIR().allocateMethods(this, data);
-		}
 	}
 
 }

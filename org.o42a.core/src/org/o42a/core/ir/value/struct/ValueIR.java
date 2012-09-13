@@ -20,8 +20,9 @@
 package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBodyData;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.value.impl.DefaultValueOp;
 import org.o42a.core.value.ValueStruct;
 
@@ -57,10 +58,6 @@ public abstract class ValueIR {
 	}
 
 	public abstract void allocateBody(ObjectIRBodyData data);
-
-	public abstract void allocateMethods(
-			ObjectIRMethods methodsIR,
-			SubData<?> data);
 
 	public abstract ValueOp op(ObjectOp object);
 
