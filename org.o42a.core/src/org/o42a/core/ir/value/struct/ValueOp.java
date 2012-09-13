@@ -36,7 +36,9 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.ValFlagsOp;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 

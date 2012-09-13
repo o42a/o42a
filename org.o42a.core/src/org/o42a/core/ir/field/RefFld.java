@@ -51,7 +51,7 @@ import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.util.string.ID;
 
 
-public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
+public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 
 	public static final ID FLD_CTR_ID = ID.id("fld_ctr");
 

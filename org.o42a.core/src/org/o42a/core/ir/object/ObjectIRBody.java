@@ -239,8 +239,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 					this.methodsIR);
 			return;
 		}
-		// reuse meta from original type
-
+		// Reuse methods from original type.
 		final ObjectIR ascendantIR = getAscendant().ir(getGenerator());
 
 		this.methodsIR = ascendantIR.getMainBodyIR().getMethodsIR();

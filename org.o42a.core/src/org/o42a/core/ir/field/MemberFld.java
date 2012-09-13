@@ -34,11 +34,11 @@ import org.o42a.core.object.ObjectType;
 import org.o42a.util.string.ID;
 
 
-public abstract class FieldFld extends Fld {
+public abstract class MemberFld extends Fld {
 
 	private Field field;
 
-	public FieldFld(ObjectIRBody bodyIR, Field field) {
+	public MemberFld(ObjectIRBody bodyIR, Field field) {
 		super(bodyIR);
 		this.field = field;
 
@@ -105,7 +105,7 @@ public abstract class FieldFld extends Fld {
 	}
 
 	@Override
-	public abstract FieldFldOp op(Code code, ObjOp host);
+	public abstract MemberFldOp op(Code code, ObjOp host);
 
 	@Override
 	public String toString() {

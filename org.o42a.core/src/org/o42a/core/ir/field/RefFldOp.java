@@ -38,7 +38,7 @@ import org.o42a.core.object.Obj;
 public abstract class RefFldOp<
 		S extends RefFld.Op<S, C>,
 		C extends ObjectFunc<C>>
-				extends FieldFldOp {
+				extends MemberFldOp {
 
 	public RefFldOp(RefFld<C> fld, ObjOp host) {
 		super(fld, host);
