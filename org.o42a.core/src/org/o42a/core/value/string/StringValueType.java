@@ -17,36 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.value.string;
 
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
-import org.o42a.core.value.Void;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.ValueStruct;
 
 
-public final class VoidValueType extends SingleValueType<Void> {
+public final class StringValueType extends SingleValueType<String> {
 
-	public static VoidValueType INSTANCE = new VoidValueType();
+	public static StringValueType INSTANCE = new StringValueType();
 
-	private VoidValueType() {
-		super("void");
+	private StringValueType() {
+		super("string");
 	}
 
 	@Override
-	public SingleValueStruct<Void> struct() {
-		return ValueStruct.VOID;
+	public SingleValueStruct<String> struct() {
+		return ValueStruct.STRING;
 	}
 
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
-		return intrinsics.getVoid();
+		return intrinsics.getString();
 	}
 
 	@Override
 	public Path path(Intrinsics intrinsics) {
-		return Path.VOID_PATH;
+		return Path.ROOT_PATH.append(
+				typeObject(intrinsics).getScope().toField().getKey());
 	}
 
 }

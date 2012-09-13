@@ -27,7 +27,8 @@ public enum FldKind {
 	VAR(2, true, true),
 	SCOPE(3, false, true),
 	DEP(4, false, true),
-	ASSIGNER(5, true, true);
+	ASSIGNER(5, true, true),
+	INTEGER_KEEPER(6, false, false);
 
 	private final int code;
 	private final boolean variable;
