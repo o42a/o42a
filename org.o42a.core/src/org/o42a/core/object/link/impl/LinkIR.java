@@ -21,7 +21,6 @@ package org.o42a.core.object.link.impl;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -37,8 +36,7 @@ final class LinkIR extends ValueIR {
 	}
 
 	@Override
-	public Fld allocateBody(ObjectIRBody bodyIR, SubData<?> data) {
-		return null;
+	public void allocateBody(ObjectIRBodyData data) {
 	}
 
 	@Override

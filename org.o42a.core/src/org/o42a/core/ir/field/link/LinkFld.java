@@ -29,7 +29,6 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
@@ -40,8 +39,8 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 	public static final Type LINK_FLD = new Type();
 
-	public LinkFld(ObjectIRBody bodyIR, Field field, Obj target) {
-		super(bodyIR, field, target);
+	public LinkFld(Field field, Obj target) {
+		super(field, target);
 	}
 
 	@Override

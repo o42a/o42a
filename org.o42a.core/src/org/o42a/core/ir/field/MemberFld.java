@@ -25,7 +25,7 @@ import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
@@ -36,15 +36,11 @@ import org.o42a.util.string.ID;
 
 public abstract class MemberFld extends Fld {
 
-	private Field field;
+	private final Field field;
 
-	public MemberFld(ObjectIRBody bodyIR, Field field) {
-		super(bodyIR);
+	public MemberFld(Field field) {
+		super();
 		this.field = field;
-
-		assert getField().toMember().getAnalysis().getDeclarationAnalysis()
-		.isUsed(getGenerator().getAnalyzer(), ALL_FIELD_USAGES) :
-			"Attempt to generate never accessed field " + getField();
 	}
 
 	public final Field getField() {
@@ -110,6 +106,17 @@ public abstract class MemberFld extends Fld {
 	@Override
 	public String toString() {
 		return getField().toString();
+	}
+
+	@Override
+	protected void allocate(ObjectIRBodyData data) {
+		assert getField()
+		.toMember()
+		.getAnalysis()
+		.getDeclarationAnalysis()
+		.isUsed(data.getGenerator().getAnalyzer(), ALL_FIELD_USAGES) :
+			"Attempt to generate never accessed field " + getField();
+		super.allocate(data);
 	}
 
 	@Override

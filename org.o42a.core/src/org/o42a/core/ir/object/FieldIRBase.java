@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.SubData;
 import org.o42a.core.Container;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -68,7 +67,7 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 		}
 	}
 
-	protected abstract Fld declare(SubData<?> data, ObjectIRBody bodyIR);
+	protected abstract Fld declare(ObjectIRBodyData data);
 
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
@@ -80,13 +79,13 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 		return this.fld.op(code, host);
 	}
 
-	Fld allocate(SubData<?> data, ObjectIRBody bodyIR) {
+	void allocate(ObjectIRBodyData data) {
 		assertNotLocal();
 
-		final Fld fld = declare(data, bodyIR);
+		final Fld fld = declare(data);
 
 		if (fld == null) {
-			return null;
+			return;
 		}
 
 		this.fld = fld;
@@ -94,8 +93,6 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 			this.targetAllocated = false;
 			fld.targetAllocated();
 		}
-
-		return fld;
 	}
 
 }

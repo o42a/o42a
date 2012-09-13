@@ -23,7 +23,6 @@ import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
@@ -31,7 +30,7 @@ import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.link.LinkFld;
 import org.o42a.core.ir.field.variable.VarFld;
 import org.o42a.core.ir.local.RefLclOp;
-import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.LinkUses;
 import org.o42a.core.object.Obj;
@@ -54,22 +53,22 @@ public final class ObjectFieldIR extends FieldIR {
 	}
 
 	@Override
-	protected RefFld<?> declare(SubData<?> data, ObjectIRBody bodyIR) {
+	protected RefFld<?> declare(ObjectIRBodyData data) {
 
-		final RefFld<?> linkFld = declareLink(data, bodyIR);
+		final RefFld<?> linkFld = declareLink(data);
 
 		if (linkFld != null) {
 			return linkFld;
 		}
 
-		final ObjFld fld = new ObjFld(bodyIR, getField());
+		final ObjFld fld = new ObjFld(getField());
 
 		fld.allocate(data, getField().toObject());
 
 		return fld;
 	}
 
-	private RefFld<?> declareLink(SubData<?> data, ObjectIRBody bodyIR) {
+	private RefFld<?> declareLink(ObjectIRBodyData data) {
 
 		final Field field = getField();
 		final Obj object = field.toObject();
@@ -107,9 +106,9 @@ public final class ObjectFieldIR extends FieldIR {
 		final RefFld<?> fld;
 
 		if (linkType == LinkValueType.LINK) {
-			fld = new LinkFld(bodyIR, field, target);
+			fld = new LinkFld(field, target);
 		} else if (linkType == LinkValueType.VARIABLE) {
-			fld = new VarFld(bodyIR, field, target);
+			fld = new VarFld(field, target);
 		} else {
 			return null;
 		}

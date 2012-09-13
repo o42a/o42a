@@ -17,34 +17,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.impl;
+package org.o42a.core.ir.object;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueOp;
-import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.ir.field.Fld;
 
 
-public final class DefaultValueIR extends ValueIR {
+public final class ObjectIRBodyData {
 
-	public DefaultValueIR(
-			ValueStructIR<?, ?> valueStructIR,
-			ObjectIR objectIR) {
-		super(valueStructIR, objectIR);
+	private final ObjectIRBody bodyIR;
+	private final SubData<?> data;
+
+	ObjectIRBodyData(ObjectIRBody bodyIR, SubData<?> data) {
+		this.bodyIR = bodyIR;
+		this.data = data;
+	}
+
+	public final Generator getGenerator() {
+		return getBodyIR().getGenerator();
+	}
+
+	public final ObjectIRBody getBodyIR() {
+		return this.bodyIR;
+	}
+
+	public final SubData<?> getData() {
+		return this.data;
+	}
+
+	public final void declareFld(Fld fld) {
+		getBodyIR().declareFld(fld);
 	}
 
 	@Override
-	public void allocateBody(ObjectIRBodyData data) {
-	}
-
-	@Override
-	public void allocateMethods(ObjectIRMethods methodsIR, SubData<?> data) {
-	}
-
-	@Override
-	public ValueOp op(ObjectOp object) {
-		return defaultOp(object);
+	public String toString() {
+		if (this.data == null) {
+			return super.toString();
+		}
+		return this.data.toString();
 	}
 
 }

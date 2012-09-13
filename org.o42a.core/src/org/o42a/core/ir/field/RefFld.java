@@ -65,10 +65,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 
 	private FuncPtr<C> constructor;
 
-	public RefFld(ObjectIRBody bodyIR, Field field, Obj target) {
-		super(bodyIR, field);
+	public RefFld(Field field, Obj target) {
+		super(field);
 		this.target = target;
-		this.targetIRAllocated = isOmitted();
 	}
 
 	public final boolean isLink() {
@@ -93,7 +92,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 		return (Type<?, C>) super.getInstance();
 	}
 
-	public final void allocate(SubData<?> data, Obj targetAscendant) {
+	public final void allocate(ObjectIRBodyData data, Obj targetAscendant) {
 		getTarget().assertDerivedFrom(targetAscendant);
 		this.targetAscendant = targetAscendant;
 		allocate(data);
@@ -114,6 +113,14 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 
 	@Override
 	protected abstract Type<?, C> getType();
+
+	@Override
+	protected void allocate(ObjectIRBodyData data) {
+		super.allocate(data);
+		if (!this.targetIRAllocated) {
+			this.targetIRAllocated = isOmitted();
+		}
+	}
 
 	@Override
 	protected boolean mayOmit() {

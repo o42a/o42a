@@ -29,9 +29,7 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.MemberFld;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.util.string.ID;
 
@@ -44,8 +42,8 @@ public final class ScopeFld
 
 	private ObjectIRBody target;
 
-	public ScopeFld(ObjectIRBody bodyIR, Field field) {
-		super(bodyIR, field);
+	public ScopeFld(Field field) {
+		super(field);
 	}
 
 	@Override
@@ -75,7 +73,7 @@ public final class ScopeFld
 				isOmitted() ? null : host.ptr().field(code, getInstance()));
 	}
 
-	public final void declare(SubData<?> data, ObjectIRBody target) {
+	public final void declare(ObjectIRBodyData data, ObjectIRBody target) {
 		this.target = target;
 		allocate(data);
 	}

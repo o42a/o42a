@@ -36,7 +36,9 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjBuilder;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.util.string.ID;
@@ -46,8 +48,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 	public static final Type OBJ_FLD = new Type();
 
-	public ObjFld(ObjectIRBody bodyIR, Field field) {
-		super(bodyIR, field, field.toObject());
+	public ObjFld(Field field) {
+		super(field, field.toObject());
 	}
 
 	@Override
