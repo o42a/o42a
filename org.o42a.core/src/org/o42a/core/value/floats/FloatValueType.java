@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.value.floats;
 
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -27,22 +27,22 @@ import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class IntegerValueType extends SingleValueType<Long> {
+public final class FloatValueType extends SingleValueType<Double> {
 
-	public static final IntegerValueType INSTANCE = new IntegerValueType();
+	public static final FloatValueType INSTANCE = new FloatValueType();
 
-	private IntegerValueType() {
-		super("integer");
+	private FloatValueType() {
+		super("float");
 	}
 
 	@Override
-	public SingleValueStruct<Long> struct() {
-		return ValueStruct.INTEGER;
+	public SingleValueStruct<Double> struct() {
+		return ValueStruct.FLOAT;
 	}
 
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
-		return intrinsics.getInteger();
+		return intrinsics.getFloat();
 	}
 
 	@Override

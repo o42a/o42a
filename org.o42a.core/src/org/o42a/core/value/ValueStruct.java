@@ -42,7 +42,12 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.floats.FloatValueStruct;
 import org.o42a.core.value.impl.*;
+import org.o42a.core.value.integer.IntegerValueStruct;
+import org.o42a.core.value.string.StringValueStruct;
+import org.o42a.core.value.voids.VoidValueAdapter;
+import org.o42a.core.value.voids.VoidValueStruct;
 
 
 public abstract class ValueStruct<S extends ValueStruct<S, T>, T>

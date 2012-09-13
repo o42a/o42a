@@ -31,7 +31,11 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.floats.FloatValueType;
 import org.o42a.core.value.impl.*;
+import org.o42a.core.value.integer.IntegerValueType;
+import org.o42a.core.value.string.StringValueType;
+import org.o42a.core.value.voids.VoidValueType;
 
 
 public abstract class ValueType<S extends ValueStruct<?, ?>> {

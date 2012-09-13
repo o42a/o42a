@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.value.voids;
 
 import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.VOID_VAL;
@@ -31,66 +31,46 @@ import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
 
 
-public class VoidValueStruct extends SingleValueStruct<Void> {
+final class VoidValueStructIR extends SingleValueStructIR<Void> {
 
-	public static final VoidValueStruct INSTANCE = new VoidValueStruct();
+	private Ptr<ValType.Op> valPtr;
 
-	private VoidValueStruct() {
-		super(ValueType.VOID, Void.class);
+	VoidValueStructIR(Generator generator, VoidValueStruct valueStruct) {
+		super(generator, valueStruct);
 	}
 
 	@Override
-	protected ValueStructIR<SingleValueStruct<Void>, Void> createIR(
-			Generator generator) {
-		return new IR(generator, this);
+	public boolean hasValue() {
+		return false;
 	}
 
-	private static final class IR extends SingleValueStructIR<Void> {
+	@Override
+	public Val val(Void value) {
+		return VOID_VAL;
+	}
 
-		private Ptr<ValType.Op> valPtr;
-
-		IR(Generator generator, VoidValueStruct valueStruct) {
-			super(generator, valueStruct);
+	@Override
+	public Ptr<ValType.Op> valPtr(Void value) {
+		if (this.valPtr != null) {
+			return this.valPtr;
 		}
 
-		@Override
-		public boolean hasValue() {
-			return false;
-		}
+		final Global<ValType.Op, ValType> global =
+				getGenerator()
+				.newGlobal()
+				.setConstant()
+				.dontExport()
+				.newInstance(CONST_ID.sub("VOID"), VAL_TYPE, val(value));
 
-		@Override
-		public Val val(Void value) {
-			return VOID_VAL;
-		}
+		return this.valPtr = global.getPointer();
+	}
 
-		@Override
-		public Ptr<ValType.Op> valPtr(Void value) {
-			if (this.valPtr != null) {
-				return this.valPtr;
-			}
-
-			final Global<ValType.Op, ValType> global =
-					getGenerator()
-					.newGlobal()
-					.setConstant()
-					.dontExport()
-					.newInstance(CONST_ID.sub("VOID"), VAL_TYPE, val(value));
-
-			return this.valPtr = global.getPointer();
-		}
-
-		@Override
-		public ValueIR valueIR(ObjectIR objectIR) {
-			return defaultValueIR(objectIR);
-		}
-
+	@Override
+	public ValueIR valueIR(ObjectIR objectIR) {
+		return defaultValueIR(objectIR);
 	}
 
 }
-

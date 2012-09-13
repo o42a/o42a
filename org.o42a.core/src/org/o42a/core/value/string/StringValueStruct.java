@@ -17,22 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.value.string;
 
 import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.IRNames.DATA_ID;
-import static org.o42a.util.string.StringCodec.bytesPerChar;
 import static org.o42a.util.string.StringCodec.escapeControlChars;
-import static org.o42a.util.string.StringCodec.stringToBinary;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.struct.ExternalValueStructIR;
-import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.DataAlignment;
 import org.o42a.util.string.ID;
 
 
@@ -40,8 +34,8 @@ public class StringValueStruct extends SingleValueStruct<String> {
 
 	public static final StringValueStruct INSTANCE = new StringValueStruct();
 
-	private static final ID STRING_CONST_ID = CONST_ID.sub("STRING");
-	private static final ID STRING_DATA_ID = DATA_ID.sub("STRING");
+	static final ID STRING_CONST_ID = CONST_ID.sub("STRING");
+	static final ID STRING_DATA_ID = DATA_ID.sub("STRING");
 
 	private StringValueStruct() {
 		super(ValueType.STRING, String.class);
@@ -62,58 +56,7 @@ public class StringValueStruct extends SingleValueStruct<String> {
 	@Override
 	protected ValueStructIR<SingleValueStruct<String>, String> createIR(
 			Generator generator) {
-		return new IR(generator, this);
-	}
-
-	private static final class IR
-			extends ExternalValueStructIR<SingleValueStruct<String>, String> {
-
-		private int stringSeq;
-		private int constSeq;
-
-		IR(Generator generator, StringValueStruct valueStruct) {
-			super(generator, valueStruct);
-		}
-
-		@Override
-		public ValueIR valueIR(ObjectIR objectIR) {
-			return defaultValueIR(objectIR);
-		}
-
-		@Override
-		protected ID constId(String value) {
-			return STRING_CONST_ID.anonymous(++this.constSeq);
-		}
-
-		@Override
-		protected ID valueId(String value) {
-			return STRING_DATA_ID.anonymous(this.stringSeq++);
-		}
-
-		@Override
-		protected DataAlignment alignment(String value) {
-			return bytesPerChar(value);
-		}
-
-		@Override
-		protected byte[] toBinary(String value, DataAlignment alignment) {
-
-			final byte[] bytes =
-					new byte[alignment.getBytes() * value.length()];
-
-			stringToBinary(value, bytes, alignment);
-
-			return bytes;
-		}
-
-		@Override
-		protected int length(
-				String value,
-				byte[] binary,
-				DataAlignment alignment) {
-			return binary.length >>> alignment.getShift();
-		}
-
+		return new StringValueStructIR(generator, this);
 	}
 
 }

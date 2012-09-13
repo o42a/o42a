@@ -17,57 +17,46 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.value.integer;
 
 import static org.o42a.core.ir.IRNames.CONST_ID;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.struct.AbstractSingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
-public class IntegerValueStruct extends SingleValueStruct<Long> {
+final class IntegerValueStructIR
+		extends AbstractSingleValueStructIR<Long> {
 
-	public static final IntegerValueStruct INSTANCE = new IntegerValueStruct();
-
-	private IntegerValueStruct() {
-		super(ValueType.INTEGER, Long.class);
+	IntegerValueStructIR(Generator generator, IntegerValueStruct valueStruct) {
+		super(generator, valueStruct);
 	}
 
 	@Override
-	protected ValueStructIR<SingleValueStruct<Long>, Long> createIR(
-			Generator generator) {
-		return new IR(generator, this);
+	public Val val(Long value) {
+		return new Val(value);
 	}
 
-	private static final class IR
-			extends AbstractSingleValueStructIR<Long> {
+	@Override
+	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+		return new IntegerKeeperIR(bodyIR, keeper);
+	}
 
-		IR(Generator generator, IntegerValueStruct valueStruct) {
-			super(generator, valueStruct);
-		}
+	@Override
+	public ValueIR valueIR(ObjectIR objectIR) {
+		return defaultValueIR(objectIR);
+	}
 
-		@Override
-		public Val val(Long value) {
-			return new Val(value);
-		}
-
-		@Override
-		public ValueIR valueIR(ObjectIR objectIR) {
-			return defaultValueIR(objectIR);
-		}
-
-		@Override
-		protected ID constId(Long value) {
-			return CONST_ID.sub("INTEGER").sub(Long.toString(value));
-		}
-
+	@Override
+	protected ID constId(Long value) {
+		return CONST_ID.sub("INTEGER").sub(Long.toString(value));
 	}
 
 }

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.value.integer;
 
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -27,22 +27,22 @@ import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class StringValueType extends SingleValueType<String> {
+public final class IntegerValueType extends SingleValueType<Long> {
 
-	public static StringValueType INSTANCE = new StringValueType();
+	public static final IntegerValueType INSTANCE = new IntegerValueType();
 
-	private StringValueType() {
-		super("string");
+	private IntegerValueType() {
+		super("integer");
 	}
 
 	@Override
-	public SingleValueStruct<String> struct() {
-		return ValueStruct.STRING;
+	public SingleValueStruct<Long> struct() {
+		return ValueStruct.INTEGER;
 	}
 
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
-		return intrinsics.getString();
+		return intrinsics.getInteger();
 	}
 
 	@Override
