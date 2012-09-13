@@ -22,10 +22,10 @@ package org.o42a.core.ir.object.state;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
@@ -77,7 +77,7 @@ public abstract class KeeperIR<
 		return getInstance().data(generator);
 	}
 
-	public final void allocate(SubData<?> data) {
+	public final void allocate(ObjectIRBodyData data) {
 		this.instance = allocateKeeper(data);
 	}
 
@@ -98,6 +98,6 @@ public abstract class KeeperIR<
 		return this.keeper.toString();
 	}
 
-	protected abstract T allocateKeeper(SubData<?> data);
+	protected abstract T allocateKeeper(ObjectIRBodyData data);
 
 }

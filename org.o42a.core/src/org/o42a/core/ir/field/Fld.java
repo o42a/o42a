@@ -25,9 +25,9 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -38,13 +38,9 @@ public abstract class Fld implements FldIR {
 	public static final ID FIELD_ID = ID.id("field");
 	public static final ID FLD_ID = ID.id("fld");
 
-	private final ObjectIRBody bodyIR;
+	private ObjectIRBody bodyIR;
 	private Type<?> instance;
 	private byte omitted;
-
-	public Fld(ObjectIRBody bodyIR) {
-		this.bodyIR = bodyIR;
-	}
 
 	public final Generator getGenerator() {
 		return getBodyIR().getGenerator();
@@ -96,11 +92,13 @@ public abstract class Fld implements FldIR {
 	protected abstract boolean mayOmit();
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected void allocate(SubData<?> data) {
+	protected void allocate(ObjectIRBodyData data) {
+		this.bodyIR = data.getBodyIR();
+		data.declareFld(this);
 		if (isOmitted()) {
 			return;
 		}
-		this.instance = data.addInstance(
+		this.instance = data.getData().addInstance(
 				FLD_ID.detail(getId().getLocal()),
 				(Type) getType(),
 				(Content) content());

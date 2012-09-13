@@ -21,7 +21,6 @@ package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.value.impl.DefaultValueOp;
 import org.o42a.core.value.ValueStruct;
@@ -57,9 +56,7 @@ public abstract class ValueIR {
 		return this.objectIR;
 	}
 
-	public abstract Fld allocateBody(
-			ObjectIRBody bodyIR,
-			SubData<?> data);
+	public abstract void allocateBody(ObjectIRBodyData data);
 
 	public abstract void allocateMethods(
 			ObjectIRMethods methodsIR,

@@ -52,8 +52,8 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	private FuncPtr<VariableAssignerFunc> assigner;
 
-	public VarFld(ObjectIRBody bodyIR, Field field, Obj target) {
-		super(bodyIR, field, target);
+	public VarFld(Field field, Obj target) {
+		super(field, target);
 	}
 
 	@Override

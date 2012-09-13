@@ -187,10 +187,13 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.ancestorBody = data.addRelPtr("ancestor_body");
 		this.methods = data.addDataPtr("methods");
 		this.flags = data.addInt32("flags");
-		allocateValueBody(data);
-		allocateFields(data);
-		allocateKeepers(data);
-		allocateDeps(data);
+
+		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
+
+		allocateValueBody(bodyData);
+		allocateFields(bodyData);
+		allocateKeepers(bodyData);
+		allocateDeps(bodyData);
 	}
 
 	@Override
@@ -230,6 +233,11 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this.keepers.values();
 	}
 
+	final void declareFld(Fld fld) {
+		this.fieldList.add(fld);
+		this.fieldMap.put(fld.getKey(), fld);
+	}
+
 	void allocateMethodsIR(SubData<?> data) {
 		if (isMain()) {
 			this.methodsIR = new ObjectIRMethods(this);
@@ -249,7 +257,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return ascendantIR.getId().detail(BODY_ID);
 	}
 
-	private void allocateValueBody(SubData<ObjectIRBodyOp> data) {
+	private void allocateValueBody(ObjectIRBodyData data) {
 
 		final Obj ascendant = getAscendant();
 		final ValueStruct<?, ?> valueStruct =
@@ -259,11 +267,11 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 				valueType.typeObject(ascendant.getContext().getIntrinsics());
 
 		if (ascendant.is(typeObject)) {
-			addFld(getObjectIR().getValueIR().allocateBody(this, data));
+			getObjectIR().getValueIR().allocateBody(data);
 		}
 	}
 
-	private final void allocateFields(SubData<ObjectIRBodyOp> data) {
+	private final void allocateFields(ObjectIRBodyData data) {
 
 		final Obj ascendant = getAscendant();
 		final Generator generator = getGenerator();
@@ -291,14 +299,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 			final FieldIRBase fieldIR = field.ir(generator);
 
-			addFld(fieldIR.allocate(data, this));
-		}
-	}
-
-	private final void addFld(Fld fld) {
-		if (fld != null) {
-			this.fieldList.add(fld);
-			this.fieldMap.put(fld.getKey(), fld);
+			fieldIR.allocate(data);
 		}
 	}
 
@@ -317,7 +318,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return true;
 	}
 
-	private void allocateKeepers(SubData<ObjectIRBodyOp> data) {
+	private void allocateKeepers(ObjectIRBodyData data) {
 
 		final Obj ascendant = getAscendant();
 
@@ -335,7 +336,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		}
 	}
 
-	private void allocateDeps(SubData<ObjectIRBodyOp> data) {
+	private void allocateDeps(ObjectIRBodyData data) {
 
 		final Obj ascendant = getAscendant();
 

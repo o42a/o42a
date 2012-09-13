@@ -68,15 +68,10 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		return context.getIntrinsics().getVariable();
 	}
 
-	private final ID id;
+	private final ID id = ASSIGNER_NAME.toID();
 	private MemberKey key;
 	private Obj definedIn;
 	private FuncPtr<VariableAssignerFunc> assigner;
-
-	public AssignerFld(ObjectIRBody bodyIR) {
-		super(bodyIR);
-		this.id = ASSIGNER_NAME.toID();
-	}
 
 	@Override
 	public MemberKey getKey() {
@@ -160,7 +155,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		return this.definedIn = definedIn(getObject());
 	}
 
-	public final void declare(SubData<?> data) {
+	public final void declare(ObjectIRBodyData data) {
 		allocate(data);
 	}
 

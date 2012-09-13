@@ -26,14 +26,13 @@ import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.scope.ScopeFld;
 import org.o42a.core.ir.field.scope.ScopeFldOp;
 import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
@@ -137,9 +136,9 @@ public final class ScopeField extends ObjectField {
 		}
 
 		@Override
-		protected ScopeFld declare(SubData<?> data, ObjectIRBody bodyIR) {
+		protected ScopeFld declare(ObjectIRBodyData data) {
 
-			final ScopeFld fld = new ScopeFld(bodyIR, getField());
+			final ScopeFld fld = new ScopeFld(getField());
 
 			fld.declare(
 					data,

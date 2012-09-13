@@ -32,6 +32,7 @@ import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
@@ -89,8 +90,8 @@ public class DepIR implements FldIR {
 		return getInstance().data(generator);
 	}
 
-	public void allocate(SubData<?> data) {
-		this.instance = data.addInstance(getId(), DEP_IR);
+	public final void allocate(ObjectIRBodyData data) {
+		this.instance = data.getData().addInstance(getId(), DEP_IR);
 		this.instance.object().setNull();
 	}
 
