@@ -53,6 +53,8 @@ enum o42a_fld_kind {
 
 	O42A_KPR_INTEGER = 7,
 
+	O42A_KPR_FLOAT = 8,
+
 };
 
 

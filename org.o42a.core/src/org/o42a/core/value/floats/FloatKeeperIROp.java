@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.integer;
+package org.o42a.core.value.floats;
 
 import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
@@ -38,23 +38,23 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.string.ID;
 
 
-final class IntegerKeeperIROp extends KeeperIROp<IntegerKeeperIROp> {
+final class FloatKeeperIROp extends KeeperIROp<FloatKeeperIROp> {
 
-	IntegerKeeperIROp(StructWriter<IntegerKeeperIROp> writer) {
+	FloatKeeperIROp(StructWriter<FloatKeeperIROp> writer) {
 		super(writer);
 	}
 
 	@Override
-	public final IntegerKeeperIRType getType() {
-		return (IntegerKeeperIRType) super.getType();
+	public final FloatKeeperIRType getType() {
+		return (FloatKeeperIRType) super.getType();
 	}
 
 	public final Int8recOp flags(ID id, Code code) {
 		return int8(id, code, getType().flags());
 	}
 
-	public final Int64recOp value(ID id, Code code) {
-		return int64(id, code, getType().value());
+	public final Fp64recOp value(ID id, Code code) {
+		return fp64(id, code, getType().value());
 	}
 
 	@Override
@@ -81,11 +81,15 @@ final class IntegerKeeperIROp extends KeeperIROp<IntegerKeeperIROp> {
 		private final Int8op flags;
 		private final Int64recOp value;
 
-		Eval(Code code, KeeperOp keeper, IntegerKeeperIROp op) {
+		Eval(Code code, KeeperOp keeper, FloatKeeperIROp op) {
 			super(keeper);
 			this.flagsRec = op.flags(null, code);
 			this.flags = this.flagsRec.load(null, code, ATOMIC);
-			this.value = op.value(null, code);
+			// Floats can not be stored atomically, so change to int64.
+			this.value =
+					op.value(null, code)
+					.toAny(null, code)
+					.toInt64(null, code);
 		}
 
 		@Override
@@ -102,9 +106,7 @@ final class IntegerKeeperIROp extends KeeperIROp<IntegerKeeperIROp> {
 
 		@Override
 		protected ValOp loadValue(ValDirs dirs, Code code) {
-			return dirs.value().store(
-					code,
-					this.value.load(null, code, ATOMIC));
+			return dirs.value().store(code, this.value.load(null, code));
 		}
 
 		@Override

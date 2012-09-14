@@ -120,6 +120,11 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.inherit = &o42a_kpr_integer_derive,
 		.mark = &o42a_fld_mark_none,
 	},
+	[O42A_KPR_FLOAT] = {// Float keeper.
+		.propagate = &o42a_kpr_float_derive,
+		.inherit = &o42a_kpr_float_derive,
+		.mark = &o42a_fld_mark_none,
+	},
 };
 
 

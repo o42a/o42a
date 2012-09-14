@@ -28,6 +28,7 @@ import static org.o42a.core.value.Value.voidValue;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.Int8op;
 import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -75,21 +76,23 @@ final class VoidKeeperIROp extends KeeperIROp<VoidKeeperIROp> {
 
 	private static final class Eval extends KeeperEval {
 
-		private final Int8recOp flags;
+		private final Int8recOp flagsRec;
+		private final Int8op flags;
 
 		Eval(Code code, KeeperOp keeper, VoidKeeperIROp op) {
 			super(keeper);
-			this.flags = op.flags(null, code);
+			this.flagsRec = op.flags(null, code);
+			this.flags = this.flagsRec.load(null, code, ATOMIC);
 		}
 
 		@Override
 		protected BoolOp loadCondition(Code code) {
-			return this.flags.load(null, code).lowestBit(null, code);
+			return this.flags.lowestBit(null, code);
 		}
 
 		@Override
 		protected BoolOp loadIndefinite(Code code) {
-			return this.flags.load(null, code)
+			return this.flags
 					.lshr(null, code, numberOfTrailingZeros(VAL_INDEFINITE))
 					.lowestBit(null, code);
 		}
@@ -105,7 +108,7 @@ final class VoidKeeperIROp extends KeeperIROp<VoidKeeperIROp> {
 
 		@Override
 		protected void storeCondition(Code code, boolean condition) {
-			this.flags.store(
+			this.flagsRec.store(
 					code,
 					code.int8(condition ? (byte) VAL_CONDITION : 0),
 					ATOMIC);
