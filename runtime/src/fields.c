@@ -80,35 +80,40 @@ static void o42a_fld_mark_obj(o42a_fld *const field) {
 }
 
 static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
-	[O42A_FLD_OBJ] = {// object field
+	[O42A_FLD_OBJ] = {// Object field.
 		.propagate = &o42a_fld_obj_propagate,
 		.inherit = &o42a_fld_obj_inherit,
 		.mark = &o42a_fld_mark_obj,
 	},
-	[O42A_FLD_LINK] = {// link field
+	[O42A_FLD_LINK] = {// Link field.
 		.propagate = &o42a_fld_link_propagate,
 		.inherit = &o42a_fld_link_inherit,
 		.mark = &o42a_fld_mark_none,
 	},
-	[O42A_FLD_VAR] = {// variable field
+	[O42A_FLD_VAR] = {// Variable field.
 		.propagate = &o42a_fld_var_propagate,
 		.inherit = &o42a_fld_var_inherit,
 		.mark = &o42a_fld_var_mark,
 	},
-	[O42A_FLD_SCOPE] = {// scope object pointer
+	[O42A_FLD_SCOPE] = {// Scope object pointer.
 		.propagate = &o42a_fld_scope_propagate,
 		.inherit = &o42a_fld_scope_inherit,
 		.mark = &o42a_fld_mark_obj,
 	},
-	[O42A_FLD_DEP] = {// dependency field
+	[O42A_FLD_DEP] = {// Local dependency field.
 		.propagate = &o42a_fld_dep_copy,
 		.inherit = &o42a_fld_dep_copy,
 		.mark = &o42a_fld_mark_obj,
 	},
-	[O42A_FLD_ASSIGNER] = {// variable assigner
+	[O42A_FLD_ASSIGNER] = {// Variable assigner.
 		.propagate = &o42a_fld_assigner_propagate,
 		.inherit = &o42a_fld_assigner_inherit,
 		.mark = &o42a_fld_assigner_mark,
+	},
+	[O42A_KPR_INTEGER] = {// Integer keeper.
+		.propagate = &o42a_kpr_integer_derive,
+		.inherit = &o42a_kpr_integer_derive,
+		.mark = &o42a_fld_mark_none,
 	},
 };
 

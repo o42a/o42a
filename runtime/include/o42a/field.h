@@ -33,7 +33,7 @@ extern "C" {
 typedef union o42a_fld o42a_fld;
 
 /**
- * A field kind identifiers.
+ * A field and keeper kind identifiers.
  */
 enum o42a_fld_kind {
 
@@ -48,6 +48,8 @@ enum o42a_fld_kind {
 	O42A_FLD_DEP = 4,
 
 	O42A_FLD_ASSIGNER = 5,
+
+	O42A_KPR_INTEGER = 6,
 
 };
 
