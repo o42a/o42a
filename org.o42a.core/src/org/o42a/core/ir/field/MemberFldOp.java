@@ -34,7 +34,7 @@ import org.o42a.util.string.ID;
 public abstract class MemberFldOp extends FldOp {
 
 	public MemberFldOp(MemberFld fld, ObjOp host) {
-		super(fld, host);
+		super(host, fld);
 	}
 
 	@Override
