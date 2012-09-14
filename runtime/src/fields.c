@@ -110,6 +110,11 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.inherit = &o42a_fld_assigner_inherit,
 		.mark = &o42a_fld_assigner_mark,
 	},
+	[O42A_KPR_VOID] = {// Void keeper.
+		.propagate = &o42a_kpr_void_derive,
+		.inherit = &o42a_kpr_void_derive,
+		.mark = &o42a_fld_mark_none,
+	},
 	[O42A_KPR_INTEGER] = {// Integer keeper.
 		.propagate = &o42a_kpr_integer_derive,
 		.inherit = &o42a_kpr_integer_derive,

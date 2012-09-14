@@ -27,10 +27,13 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.Void;
 
 
@@ -66,6 +69,11 @@ final class VoidValueStructIR extends SingleValueStructIR<Void> {
 				.newInstance(CONST_ID.sub("VOID"), VAL_TYPE, val(value));
 
 		return this.valPtr = global.getPointer();
+	}
+
+	@Override
+	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+		return new VoidKeeperIR(bodyIR, keeper);
 	}
 
 	@Override

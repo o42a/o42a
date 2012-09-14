@@ -17,36 +17,30 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_KPR_INTEGER_H
-#define O42A_KPR_INTEGER_H
-
-#include "o42a/field.h"
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct {
-
-	O42A_HEADER
-
-	uint8_t flags;
-
-	int64_t value;
-
-} o42a_kpr_integer;
+#include "o42a/fields.h"
 
 
 #ifndef NDEBUG
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_kpr_integer;
+const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_void = {
+	.type_code = 0x042a0200 | O42A_KPR_VOID,
+	.field_num = 2,
+	.name = "o42a_kpr_void",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_INT8,
+			.offset = offsetof(o42a_kpr_integer, flags),
+			.name = "flags",
+		},
+	},
+};
 #endif /* NDEBUG */
 
+void o42a_kpr_void_derive(o42a_obj_ctable_t *const ctable) {
+	O42A_ENTER(return);
 
-void o42a_kpr_integer_derive(o42a_obj_ctable_t *);
+	o42a_kpr_void *const to = &ctable->to.fld->kpr_void;
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+	to->flags = O42A_VAL_INDEFINITE;
 
-#endif /* O42A_KPR_INTEGER_H */
+	O42A_RETURN;
+}
