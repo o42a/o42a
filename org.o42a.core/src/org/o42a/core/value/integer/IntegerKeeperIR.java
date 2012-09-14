@@ -19,17 +19,24 @@
 */
 package org.o42a.core.value.integer;
 
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.value.integer.IntegerKeeperIRType.INTEGER_KEEPER_IR_TYPE;
 
+import org.o42a.codegen.data.Content;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 
 
 final class IntegerKeeperIR
-		extends KeeperIR<IntegerKeeperIROp, IntegerKeeperIRType> {
+		extends KeeperIR<IntegerKeeperIROp, IntegerKeeperIRType>
+		implements Content<IntegerKeeperIRType> {
 
 	IntegerKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
 		super(bodyIR, keeper);
@@ -41,10 +48,34 @@ final class IntegerKeeperIR
 	}
 
 	@Override
+	public void allocated(IntegerKeeperIRType instance) {
+	}
+
+	@Override
+	public void fill(IntegerKeeperIRType instance) {
+
+		final Scope scope = getBodyIR().getObjectIR().getObject().getScope();
+		final Value<?> value = getKeeper().getValue().value(scope.resolver());
+
+		if (!value.getKnowledge().isKnownToCompiler()) {
+			instance.flags().setValue((byte) VAL_INDEFINITE);
+			instance.value().setValue(0);
+		} else if (value.getKnowledge().isFalse()) {
+			instance.flags().setValue((byte) 0);
+			instance.value().setValue(0);
+		} else {
+			instance.flags().setValue((byte) VAL_CONDITION);
+			instance.value().setValue(
+					ValueType.INTEGER.cast(value).getCompilerValue());
+		}
+	}
+
+	@Override
 	protected IntegerKeeperIRType allocateKeeper(ObjectIRBodyData data) {
 		return data.getData().addInstance(
 				getKeeper().toID(),
-				INTEGER_KEEPER_IR_TYPE);
+				INTEGER_KEEPER_IR_TYPE,
+				this);
 	}
 
 }

@@ -22,6 +22,7 @@ package org.o42a.core.ir.value;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
+import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
@@ -314,6 +315,11 @@ public abstract class ValOp extends IROp {
 	public final ValOp valueSet(Code code) {
 		holder().set(code);
 		return this;
+	}
+
+	public final ValOp phi(ID id, Code code, ValOp other) {
+		return code.phi(id, ptr(), other.ptr())
+				.op(null, getBuilder(), getValueStruct(), NO_VAL_HOLDER);
 	}
 
 	public final void go(Block code, DefDirs dirs) {
