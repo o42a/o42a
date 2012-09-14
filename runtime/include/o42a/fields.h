@@ -27,10 +27,12 @@
 #include "o42a/fld/scope.h"
 #include "o42a/fld/var.h"
 
+#include "o42a/kpr/integer.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**
  * A union of all field kinds.
@@ -50,6 +52,8 @@ union o42a_fld {
 	o42a_fld_dep dep;
 
 	o42a_fld_assigner assigner;
+
+	o42a_kpr_integer kpr_integer;
 
 };
 

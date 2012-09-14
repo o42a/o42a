@@ -607,8 +607,7 @@ static void derive_object_body(
 		ctable->from.fld = O42A(o42a_fld_by_field(from_body, field));
 		ctable->to.fld = O42A(o42a_fld_by_field(to_body, field));
 
-		const o42a_fld_desc_t *const desc =
-				O42A(o42a_fld_desc(field));
+		const o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
 
 		O42A_DO(kind == DK_INHERIT ? "Inherit field" : "Propagate field");
 		o42a_debug_mem_name("From: ", ctable->from.fld);

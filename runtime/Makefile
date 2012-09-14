@@ -75,6 +75,8 @@ objects += $(srcdir)/fld/obj.o
 objects += $(srcdir)/fld/scope.o
 objects += $(srcdir)/fld/var.o
 
+objects += $(srcdir)/kpr/integer.o
+
 objects += $(srcdir)/lib/io.o
 
 objects += $(srcdir)/memory/gc.o
@@ -126,6 +128,7 @@ $(srcdir)/debug.o : $(srcdir)/debug.c
 
 $(srcdir)/fields.*.o : $(fld_deps)
 $(srcdir)/fields.*.o : $(headersdir)/fld/*.h
+$(srcdir)/fields.*.o : $(headersdir)/kpr/*.h
 $(srcdir)/fields.%.o : $(srcdir)/fields.c
 	$(call compile)
 
@@ -200,11 +203,18 @@ $(srcdir)/type/string.*.o : $(headersdir)/type/string.h
 $(srcdir)/type/string.%.o : $(srcdir)/type/string.c
 	$(call compile)
 
-# Implicit rule for field type descriptor compilation.
+# Implicit rule for field type descriptors compilation.
 $(srcdir)/fld/*.o : $(fld_deps)
 $(srcdir)/fld/%.dbg.o : $(srcdir)/fld/%.c $(headersdir)/fld/%.h
 	$(call compile)
 $(srcdir)/fld/%.rel.o : $(srcdir)/fld/%.c $(headersdir)/fld/%.h
+	$(call compile)
+	
+# Implicit rule for value keeper descriptors compilation.
+$(srcdir)/kpr/*.o : $(fld_deps)
+$(srcdir)/kpr/%.dbg.o : $(srcdir)/kpr/%.c $(headersdir)/kpr/%.h
+	$(call compile)
+$(srcdir)/kpr/%.rel.o : $(srcdir)/kpr/%.c $(headersdir)/kpr/%.h
 	$(call compile)
 
 # Built-in modules compilation.
