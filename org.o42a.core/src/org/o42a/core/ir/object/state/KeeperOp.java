@@ -21,12 +21,11 @@ package org.o42a.core.ir.object.state;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.field.FldIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
@@ -34,31 +33,28 @@ import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
-public final class KeeperOp extends IROp implements HostOp, HostValueOp {
+public final class KeeperOp extends FldIROp implements HostValueOp {
 
 	public static final ID KEEPER_ID = ID.id("keeper");
 
-	private final ObjOp host;
-	private final KeeperIR<?, ?> keeperIR;
 	private final KeeperIROp<?> ptr;
 
 	KeeperOp(ObjOp host, KeeperIR<?, ?> keeperIR, KeeperIROp<?> ptr) {
-		super(host.getBuilder());
-		this.host = host;
-		this.keeperIR = keeperIR;
+		super(host, keeperIR);
 		this.ptr = ptr;
+	}
+
+	@Override
+	public final KeeperIR<?, ?> fld() {
+		return (KeeperIR<?, ?>) super.fld();
 	}
 
 	public final Keeper getKeeper() {
 		return keeperIR().getKeeper();
 	}
 
-	public final ObjOp host() {
-		return this.host;
-	}
-
 	public final KeeperIR<?, ?> keeperIR() {
-		return this.keeperIR;
+		return (KeeperIR<?, ?>) super.fld();
 	}
 
 	@Override
@@ -69,11 +65,6 @@ public final class KeeperOp extends IROp implements HostOp, HostValueOp {
 	@Override
 	public final HostValueOp value() {
 		return this;
-	}
-
-	@Override
-	public final LocalOp toLocal() {
-		return null;
 	}
 
 	@Override

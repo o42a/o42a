@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,39 +19,34 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.MemberKey;
-import org.o42a.util.string.ID;
+import org.o42a.core.ir.op.IROp;
 
 
-public abstract class FldOp extends FldIROp {
+public abstract class FldIROp extends IROp implements HostOp {
 
-	public FldOp(ObjOp host, Fld fld) {
-		super(host, fld);
+	private final ObjOp host;
+	private final FldIR fld;
+
+	public FldIROp(ObjOp host, FldIR fld) {
+		super(host.getBuilder());
+		this.host = host;
+		this.fld = fld;
 	}
 
-	public final boolean isOmitted() {
-		return fld().isOmitted();
+	public final ObjOp host() {
+		return this.host;
 	}
 
-	@Override
-	public ID getId() {
-		if (!isOmitted()) {
-			return super.getId();
-		}
-		return fld().getId();
-	}
-
-	@Override
-	public Fld fld() {
-		return (Fld) super.fld();
+	public FldIR fld() {
+		return this.fld;
 	}
 
 	@Override
-	public abstract Fld.Op<?> ptr();
-
-	@Override
-	public abstract FldOp field(CodeDirs dirs, MemberKey memberKey);
+	public final LocalOp toLocal() {
+		return null;
+	}
 
 }

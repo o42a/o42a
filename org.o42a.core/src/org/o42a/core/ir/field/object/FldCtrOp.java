@@ -30,7 +30,7 @@ import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.FldIROp;
 import org.o42a.util.string.ID;
 
 
@@ -42,7 +42,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		super(writer);
 	}
 
-	public BoolOp start(Code code, FldOp fld) {
+	public BoolOp start(Code code, FldIROp fld) {
 
 		final FuncPtr<FldCtrStartFunc> fn =
 				code.getGenerator().externalFunction().link(
@@ -56,7 +56,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 				.call(code, fld.host().objectType(code).ptr().data(code), this);
 	}
 
-	public void finish(Code code, FldOp fld) {
+	public void finish(Code code, FldIROp fld) {
 
 		final FuncPtr<FldCtrFinishFunc> fn =
 				code.getGenerator().externalFunction().link(

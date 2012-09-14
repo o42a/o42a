@@ -58,7 +58,7 @@ public final class AssignerFldOp extends FldOp {
 	private final AssignerFld.Op ptr;
 
 	AssignerFldOp(AssignerFld fld, ObjOp host, AssignerFld.Op ptr) {
-		super(fld, host);
+		super(host, fld);
 		this.ptr = ptr;
 	}
 
