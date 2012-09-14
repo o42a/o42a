@@ -22,22 +22,20 @@ package org.o42a.core.ir.field;
 
 public enum FldKind {
 
-	OBJ(0, false, true),
-	LINK(1, true, true),
-	VAR(2, true, true),
-	SCOPE(3, false, true),
-	DEP(4, false, true),
-	ASSIGNER(5, true, true),
-	INTEGER_KEEPER(6, false, false);
+	OBJ(0, false),
+	LINK(1, true),
+	VAR(2, true),
+	SCOPE(3, false),
+	DEP(4, false),
+	ASSIGNER(5, true),
+	INTEGER_KEEPER(6, false);
 
 	private final int code;
 	private final boolean variable;
-	private final boolean garbageCollected;
 
-	FldKind(int code, boolean variable, boolean garbageCollected) {
+	FldKind(int code, boolean variable) {
 		this.code = code;
 		this.variable = variable;
-		this.garbageCollected = garbageCollected;
 	}
 
 	public final int code() {
@@ -46,10 +44,6 @@ public enum FldKind {
 
 	public final boolean isVariable() {
 		return this.variable;
-	}
-
-	public final boolean isGarbageCollected() {
-		return this.garbageCollected;
 	}
 
 }
