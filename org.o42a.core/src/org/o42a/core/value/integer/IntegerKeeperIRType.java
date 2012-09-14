@@ -19,10 +19,13 @@
 */
 package org.o42a.core.value.integer;
 
+import static org.o42a.core.ir.field.FldKind.INTEGER_KEEPER;
+
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.Int64rec;
 import org.o42a.codegen.data.Int8rec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.state.KeeperIRType;
 import org.o42a.util.string.ID;
 
@@ -56,6 +59,11 @@ final class IntegerKeeperIRType extends KeeperIRType<IntegerKeeperIROp> {
 	protected void allocate(SubData<IntegerKeeperIROp> data) {
 		this.flags = data.addInt8("flags");
 		this.value = data.addInt64("value");
+	}
+
+	@Override
+	protected DebugTypeInfo createTypeInfo() {
+		return externalTypeInfo(0x042a0200 | INTEGER_KEEPER.code());
 	}
 
 }

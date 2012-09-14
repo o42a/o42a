@@ -17,8 +17,8 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_KPR_INTEGER_H
-#define O42A_KPR_INTEGER_H
+#ifndef O42A_KPR_VOID_H
+#define O42A_KPR_VOID_H
 
 #include "o42a/field.h"
 
@@ -33,20 +33,18 @@ typedef struct {
 
 	uint8_t flags;
 
-	int64_t value;
-
-} o42a_kpr_integer;
+} o42a_kpr_void;
 
 
 #ifndef NDEBUG
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_kpr_integer;
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_void;
 #endif /* NDEBUG */
 
 
-void o42a_kpr_integer_derive(o42a_obj_ctable_t *);
+void o42a_kpr_void_derive(o42a_obj_ctable_t *);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* O42A_KPR_INTEGER_H */
+#endif /* O42A_KPR_VOID_H */

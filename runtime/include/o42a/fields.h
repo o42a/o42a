@@ -28,6 +28,7 @@
 #include "o42a/fld/var.h"
 
 #include "o42a/kpr/integer.h"
+#include "o42a/kpr/void.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,6 +53,8 @@ union o42a_fld {
 	o42a_fld_dep dep;
 
 	o42a_fld_assigner assigner;
+
+	o42a_kpr_void kpr_void;
 
 	o42a_kpr_integer kpr_integer;
 

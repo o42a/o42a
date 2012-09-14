@@ -49,7 +49,9 @@ enum o42a_fld_kind {
 
 	O42A_FLD_ASSIGNER = 5,
 
-	O42A_KPR_INTEGER = 6,
+	O42A_KPR_VOID = 6,
+
+	O42A_KPR_INTEGER = 7,
 
 };
 
