@@ -27,6 +27,7 @@
 #include "o42a/fld/scope.h"
 #include "o42a/fld/var.h"
 
+#include "o42a/kpr/float.h"
 #include "o42a/kpr/integer.h"
 #include "o42a/kpr/void.h"
 
@@ -57,6 +58,8 @@ union o42a_fld {
 	o42a_kpr_void kpr_void;
 
 	o42a_kpr_integer kpr_integer;
+
+	o42a_kpr_float kpr_float;
 
 };
 

@@ -29,7 +29,8 @@ public enum FldKind {
 	DEP(4, false),
 	ASSIGNER(5, true),
 	VOID_KEEPER(6, false),
-	INTEGER_KEEPER(7, false);
+	INTEGER_KEEPER(7, false),
+	FLOAT_KEEPER(8, false);
 
 	private final int code;
 	private final boolean variable;

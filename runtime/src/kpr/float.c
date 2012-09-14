@@ -21,26 +21,32 @@
 
 
 #ifndef NDEBUG
-const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_void = {
-	.type_code = 0x042a0200 | O42A_KPR_VOID,
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_kpr_float = {
+	.type_code = 0x042a0200 | O42A_KPR_FLOAT,
 	.field_num = 2,
-	.name = "o42a_kpr_void",
+	.name = "o42a_kpr_float",
 	.fields = {
 		{
 			.data_type = O42A_TYPE_INT8,
-			.offset = offsetof(o42a_kpr_void, flags),
+			.offset = offsetof(o42a_kpr_float, flags),
 			.name = "flags",
+		},
+		{
+			.data_type = O42A_TYPE_FP64,
+			.offset = offsetof(o42a_kpr_float, value),
+			.name = "value",
 		},
 	},
 };
 #endif /* NDEBUG */
 
-void o42a_kpr_void_derive(o42a_obj_ctable_t *const ctable) {
+void o42a_kpr_float_derive(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
-	o42a_kpr_void *const to = &ctable->to.fld->kpr_void;
+	o42a_kpr_float *const to = &ctable->to.fld->kpr_float;
 
 	to->flags = O42A_VAL_INDEFINITE;
+	to->value = 0.0;
 
 	O42A_RETURN;
 }
