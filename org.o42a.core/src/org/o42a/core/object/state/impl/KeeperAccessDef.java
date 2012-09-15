@@ -72,7 +72,7 @@ final class KeeperAccessDef extends Def {
 
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
-		return null;
+		return new InlineKeeperAccessEval(this);
 	}
 
 	@Override
