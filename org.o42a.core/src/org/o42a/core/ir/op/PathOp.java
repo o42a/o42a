@@ -167,6 +167,11 @@ public abstract class PathOp implements HostOp {
 		}
 
 		@Override
+		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+			return host().field(dirs, memberKey);
+		}
+
+		@Override
 		public HostOp target(CodeDirs dirs) {
 			return host();
 		}
