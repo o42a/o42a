@@ -92,6 +92,13 @@ struct o42a_fld_ctr {
 	/** A thread constructing the field. */
 	pthread_t thread;
 
+	/**
+	 * Field kind.
+	 *
+	 * One of the o42a_fld_kind values.
+	 */
+	uint16_t fld_kind;
+
 };
 
 o42a_bool_t o42a_fld_start(o42a_obj_data_t *, o42a_fld_ctr_t *);

@@ -43,6 +43,8 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_void;
 
 void o42a_kpr_void_derive(o42a_obj_ctable_t *);
 
+o42a_bool_t o42a_kpr_is_definite(const o42a_fld *);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

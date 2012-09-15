@@ -148,14 +148,12 @@ public abstract class KeeperEval {
 
 		final ValOp keeperValue = writeKeeperValue(valDirs);
 
-		value.store(valDirs.code(), keeperValue);
-		storeValue(valDirs.code(), keeperValue);
+		value.store(code, keeperValue);
+		storeValue(code, keeperValue);
+		code.releaseBarrier();
+		storeCondition(code, true);
 
-		valDirs.code().releaseBarrier();
-
-		storeCondition(valDirs.code(), true);
-
-		valDirs.done().code().go(code.tail());
+		valDirs.done();
 
 		if (!fail.exists()) {
 			return;

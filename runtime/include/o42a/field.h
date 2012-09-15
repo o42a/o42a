@@ -111,11 +111,21 @@ typedef const struct o42a_fld_desc {
 	 */
 	void (* mark) (o42a_fld *);
 
+	/**
+	 * A function, which checks whether the given field is already initialized.
+	 *
+	 * This function is used by o42a_fld_start() function to lock the field
+	 * during initialization in order to prevent a race conditions.
+	 *
+	 * \param field the field to check.
+	 */
+	o42a_bool_t (* is_init) (const o42a_fld *);
+
 } o42a_fld_desc_t;
 
 
 #ifndef NDEBUG
-extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_ctr;
+extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_fld_ctr;
 #endif /* NDEBUG */
 
 /**
