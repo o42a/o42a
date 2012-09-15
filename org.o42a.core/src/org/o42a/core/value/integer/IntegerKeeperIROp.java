@@ -19,17 +19,12 @@
 */
 package org.o42a.core.value.integer;
 
-import static java.lang.Integer.numberOfTrailingZeros;
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.value.Val.VAL_CONDITION;
-import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.Int64recOp;
+import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.object.state.KeeperEval;
 import org.o42a.core.ir.object.state.KeeperIROp;
 import org.o42a.core.ir.object.state.KeeperOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -59,12 +54,12 @@ final class IntegerKeeperIROp extends KeeperIROp<IntegerKeeperIROp> {
 
 	@Override
 	protected void writeCond(KeeperOp keeper, CodeDirs dirs) {
-		new Eval(dirs.code(), keeper, this).writeCond(dirs);
+		new IntegerKeeperEval(keeper, this).writeCond(dirs);
 	}
 
 	@Override
 	protected ValOp writeValue(KeeperOp keeper, ValDirs dirs) {
-		return new Eval(dirs.code(), keeper, this).writeValue(dirs);
+		return new IntegerKeeperEval(keeper, this).writeValue(dirs);
 	}
 
 	@Override
@@ -73,56 +68,6 @@ final class IntegerKeeperIROp extends KeeperIROp<IntegerKeeperIROp> {
 			CodeDirs dirs,
 			ObjHolder holder) {
 		throw new UnsupportedOperationException();
-	}
-
-	private static final class Eval extends KeeperEval {
-
-		private final Int8recOp flagsRec;
-		private final Int8op flags;
-		private final Int64recOp value;
-
-		Eval(Code code, KeeperOp keeper, IntegerKeeperIROp op) {
-			super(keeper);
-			this.flagsRec = op.flags(null, code);
-			this.flags = this.flagsRec.load(null, code, ATOMIC);
-			this.value = op.value(null, code);
-		}
-
-		@Override
-		protected BoolOp loadCondition(Code code) {
-			return this.flags.lowestBit(null, code);
-		}
-
-		@Override
-		protected BoolOp loadIndefinite(Code code) {
-			return this.flags
-					.lshr(null, code, numberOfTrailingZeros(VAL_INDEFINITE))
-					.lowestBit(null, code);
-		}
-
-		@Override
-		protected ValOp loadValue(ValDirs dirs, Code code) {
-			return dirs.value().store(
-					code,
-					this.value.load(null, code, ATOMIC));
-		}
-
-		@Override
-		protected void storeValue(Code code, ValOp newValue) {
-			this.value.store(
-					code,
-					newValue.rawValue(null, code).load(null, code),
-					ATOMIC);
-		}
-
-		@Override
-		protected void storeCondition(Code code, boolean condition) {
-			this.flagsRec.store(
-					code,
-					code.int8(condition ? (byte) VAL_CONDITION : 0),
-					ATOMIC);
-		}
-
 	}
 
 }

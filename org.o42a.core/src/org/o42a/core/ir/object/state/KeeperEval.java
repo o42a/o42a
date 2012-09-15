@@ -67,7 +67,7 @@ public abstract class KeeperEval {
 		final ValOp value = dirs.value();
 		final Block code = dirs.code();
 
-		code.acquireBarrier();
+		start(code);
 
 		final CondBlock isSet =
 				loadCondition(code).branch(code, "is_set", "not_set");
@@ -85,6 +85,17 @@ public abstract class KeeperEval {
 		return value;
 	}
 
+	/**
+	 * Starts the value or condition evaluation.
+	 *
+	 * <p>Acquires the memory barrier by default.</p>
+	 *
+	 * @param code the code to write the initial operations to.
+	 */
+	protected void start(Code code) {
+		code.acquireBarrier();
+	}
+
 	protected abstract BoolOp loadCondition(Code code);
 
 	protected abstract BoolOp loadIndefinite(Code code);
@@ -98,14 +109,9 @@ public abstract class KeeperEval {
 				.writeValue(dirs);
 	}
 
-	protected abstract void storeValue(Code code, ValOp newValue);
+	protected abstract void updateValue(Code code, ValOp newValue);
 
-	protected void releaseCondition(Code code, boolean condition) {
-		code.releaseBarrier();
-		storeCondition(code, condition);
-	}
-
-	protected abstract void storeCondition(Code code, boolean condition);
+	protected abstract void updateCondition(Code code, boolean condition);
 
 	private void eval(ValDirs dirs, Block code) {
 
@@ -154,8 +160,8 @@ public abstract class KeeperEval {
 		final ValOp keeperValue = writeKeeperValue(valDirs);
 
 		value.store(code, keeperValue);
-		storeValue(code, keeperValue);
-		releaseCondition(code, true);
+		updateValue(code, keeperValue);
+		updateCondition(code, true);
 
 		valDirs.done();
 
@@ -164,7 +170,7 @@ public abstract class KeeperEval {
 		}
 
 		// Value evaluation failed. Store false.
-		releaseCondition(fail, false);
+		updateCondition(fail, false);
 		value.storeFalse(fail);
 
 		fail.go(code.tail());
