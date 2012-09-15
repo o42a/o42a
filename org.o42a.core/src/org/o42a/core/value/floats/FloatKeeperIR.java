@@ -75,10 +75,7 @@ final class FloatKeeperIR
 
 	@Override
 	protected FloatKeeperIRType allocateKeeper(ObjectIRBodyData data) {
-		return data.getData().addInstance(
-				getKeeper().toID(),
-				FLOAT_KEEPER_IR_TYPE,
-				this);
+		return data.getData().addInstance(getId(), FLOAT_KEEPER_IR_TYPE, this);
 	}
 
 }

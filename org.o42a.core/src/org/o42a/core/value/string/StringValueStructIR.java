@@ -26,8 +26,11 @@ import static org.o42a.util.string.StringCodec.stringToBinary;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.struct.ExternalValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.util.DataAlignment;
 import org.o42a.util.string.ID;
@@ -44,6 +47,11 @@ final class StringValueStructIR
 
 	StringValueStructIR(Generator generator, StringValueStruct valueStruct) {
 		super(generator, valueStruct);
+	}
+
+	@Override
+	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+		return new StringKeeperIR(this, bodyIR, keeper);
 	}
 
 	@Override

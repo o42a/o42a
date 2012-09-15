@@ -49,3 +49,11 @@ Keep variable := test (
     Assert [kept == 1] 'Kept variable value updated'
   }
 )
+
+Keep string := test (
+  Name = "Keep string"
+  Print error '  ' [name] nl
+  
+  Kept := //rt-string 'Kept'
+  Assert [kept == "Kept"] 'Wrong string kept'
+)

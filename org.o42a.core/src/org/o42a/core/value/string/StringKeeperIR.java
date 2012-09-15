@@ -17,12 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.voids;
+package org.o42a.core.value.string;
 
-import static org.o42a.core.ir.field.FldKind.VOID_KEEPER;
-import static org.o42a.core.ir.value.Val.VAL_CONDITION;
-import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
-import static org.o42a.core.value.voids.VoidKeeperIRType.VOID_KEEPER_IR_TYPE;
+import static org.o42a.core.ir.field.FldKind.STRING_KEEPER;
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
+import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+import static org.o42a.core.value.string.StringKeeperIRType.STRING_KEEPER_IR_TYPE;
 
 import org.o42a.codegen.data.Content;
 import org.o42a.core.Scope;
@@ -30,16 +30,17 @@ import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.Value;
 
 
-final class VoidKeeperIR
-		extends KeeperIR<VoidKeeperIROp, VoidKeeperIRType>
-		implements Content<VoidKeeperIRType> {
+final class StringKeeperIR
+		extends KeeperIR<StringKeeperIROp, StringKeeperIRType>
+		implements Content<StringKeeperIRType> {
 
-	VoidKeeperIR(
-			VoidValueStructIR valueStructIR,
+	StringKeeperIR(
+			StringValueStructIR valueStructIR,
 			ObjectIRBody bodyIR,
 			Keeper keeper) {
 		super(valueStructIR, bodyIR, keeper);
@@ -47,31 +48,40 @@ final class VoidKeeperIR
 
 	@Override
 	public FldKind getKind() {
-		return VOID_KEEPER;
+		return STRING_KEEPER;
 	}
 
 	@Override
-	public void allocated(VoidKeeperIRType instance) {
+	public void allocated(StringKeeperIRType instance) {
 	}
 
 	@Override
-	public void fill(VoidKeeperIRType instance) {
+	public void fill(StringKeeperIRType instance) {
 
+		final ValType val = instance.value();
 		final Scope scope = getBodyIR().getObjectIR().getObject().getScope();
 		final Value<?> value = getKeeper().getValue().value(scope.resolver());
 
 		if (!value.getKnowledge().isKnownToCompiler()) {
-			instance.flags().setValue((byte) VAL_INDEFINITE);
+			val.set(INDEFINITE_VAL);
 		} else if (value.getKnowledge().isFalse()) {
-			instance.flags().setValue((byte) 0);
+			val.set(FALSE_VAL);
 		} else {
-			instance.flags().setValue((byte) VAL_CONDITION);
+
+			final StringValueStructIR valueStructIR =
+					(StringValueStructIR) getValueStructIR();
+			final String compilerValue =
+					valueStructIR.getValueStruct()
+					.cast(value)
+					.getCompilerValue();
+
+			val.set(valueStructIR.val(compilerValue));
 		}
 	}
 
 	@Override
-	protected VoidKeeperIRType allocateKeeper(ObjectIRBodyData data) {
-		return data.getData().addInstance(getId(), VOID_KEEPER_IR_TYPE, this);
+	protected StringKeeperIRType allocateKeeper(ObjectIRBodyData data) {
+		return data.getData().addInstance(getId(), STRING_KEEPER_IR_TYPE, this);
 	}
 
 }

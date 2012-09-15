@@ -76,7 +76,7 @@ final class IntegerKeeperIR
 	@Override
 	protected IntegerKeeperIRType allocateKeeper(ObjectIRBodyData data) {
 		return data.getData().addInstance(
-				getKeeper().toID(),
+				getId(),
 				INTEGER_KEEPER_IR_TYPE,
 				this);
 	}

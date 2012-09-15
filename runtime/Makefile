@@ -77,6 +77,7 @@ objects += $(srcdir)/fld/var.o
 
 objects += $(srcdir)/kpr/float.o
 objects += $(srcdir)/kpr/integer.o
+objects += $(srcdir)/kpr/string.o
 objects += $(srcdir)/kpr/void.o
 
 objects += $(srcdir)/lib/io.o
