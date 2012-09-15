@@ -26,6 +26,7 @@ import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyData;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
@@ -36,17 +37,26 @@ public abstract class KeeperIR<
 		T extends KeeperIRType<O>>
 				implements FldIR {
 
+	private final ValueStructIR<?, ?> valueStructIR;
 	private final ObjectIRBody bodyIR;
 	private final Keeper keeper;
 	private T instance;
 
-	public KeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+	public KeeperIR(
+			ValueStructIR<?, ?> valueStructIR,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		this.valueStructIR = valueStructIR;
 		this.bodyIR = bodyIR;
 		this.keeper = keeper;
 	}
 
 	public final Generator getGenerator() {
 		return getBodyIR().getGenerator();
+	}
+
+	public final ValueStructIR<?, ?> getValueStructIR() {
+		return this.valueStructIR;
 	}
 
 	@Override

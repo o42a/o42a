@@ -20,9 +20,12 @@
 package org.o42a.core.object.state;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -38,6 +41,7 @@ import org.o42a.core.value.ValueStruct;
 final class KeeperDef extends Def {
 
 	private final KeeperObject keeperObject;
+	private Ref object;
 
 	KeeperDef(KeeperObject source) {
 		super(source, source, noScopeUpgrade(source.getScope()));
@@ -74,7 +78,7 @@ final class KeeperDef extends Def {
 
 	@Override
 	public Eval eval() {
-		return new KeeperEval(this);
+		return new KeeperDefEval(this);
 	}
 
 	@Override
@@ -103,26 +107,51 @@ final class KeeperDef extends Def {
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getValue().resolveAll(resolver);
+
+		final FullResolver keeperResolver =
+				object()
+				.resolveAll(resolver.setRefUsage(CONTAINER_REF_USAGE))
+				.getScope()
+				.resolver()
+				.fullResolver(resolver, VALUE_REF_USAGE);
+
+		this.keeperObject.getKeeper().getValue().resolveAll(keeperResolver);
 	}
 
 	private Ref getValue() {
 		return this.keeperObject.getValue();
 	}
 
-	private static final class KeeperEval implements Eval {
+	private Ref object() {
+		if (this.object != null) {
+			return this.object;
+		}
+
+		final Scope scope = getScope();
+
+		return this.object =
+				scope.getEnclosingScopePath()
+				.bind(this, scope)
+				.target(scope.distribute());
+	}
+
+	private static final class KeeperDefEval implements Eval {
 
 		private final KeeperDef def;
 
-		KeeperEval(KeeperDef def) {
+		KeeperDefEval(KeeperDef def) {
 			this.def = def;
 		}
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ObjectOp object = host.materialize(
-					dirs.dirs(),
-					tempObjHolder(dirs.getAllocator()));
+			final ObjectOp object =
+					this.def.object().op(host)
+					.target(dirs.dirs())
+					.materialize(
+							dirs.dirs(),
+							tempObjHolder(dirs.getAllocator()));
 			final KeeperOp keeper = object.keeper(
 					dirs.dirs(),
 					this.def.keeperObject.getKeeper());

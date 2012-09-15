@@ -38,8 +38,11 @@ final class IntegerKeeperIR
 		extends KeeperIR<IntegerKeeperIROp, IntegerKeeperIRType>
 		implements Content<IntegerKeeperIRType> {
 
-	IntegerKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
-		super(bodyIR, keeper);
+	IntegerKeeperIR(
+			IntegerValueStructIR valueStructIR,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		super(valueStructIR, bodyIR, keeper);
 	}
 
 	@Override

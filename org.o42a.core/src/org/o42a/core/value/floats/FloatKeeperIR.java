@@ -38,8 +38,11 @@ final class FloatKeeperIR
 		extends KeeperIR<FloatKeeperIROp, FloatKeeperIRType>
 		implements Content<FloatKeeperIRType> {
 
-	FloatKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
-		super(bodyIR, keeper);
+	FloatKeeperIR(
+			FloatValueStructIR valueStructIR,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		super(valueStructIR, bodyIR, keeper);
 	}
 
 	@Override

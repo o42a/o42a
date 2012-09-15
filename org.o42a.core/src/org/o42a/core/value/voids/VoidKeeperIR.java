@@ -38,8 +38,11 @@ final class VoidKeeperIR
 		extends KeeperIR<VoidKeeperIROp, VoidKeeperIRType>
 		implements Content<VoidKeeperIRType> {
 
-	VoidKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
-		super(bodyIR, keeper);
+	VoidKeeperIR(
+			VoidValueStructIR valueStructIR,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		super(valueStructIR, bodyIR, keeper);
 	}
 
 	@Override
