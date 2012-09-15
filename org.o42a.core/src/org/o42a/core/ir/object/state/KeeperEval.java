@@ -114,22 +114,8 @@ public abstract class KeeperEval {
 	protected abstract void updateCondition(Code code, boolean condition);
 
 	private void eval(ValDirs dirs, Block code) {
-
-		final ValOp value = dirs.value();
-		final CondBlock syncEval =
-				loadIndefinite(code).branch(code, "sync_eval", "false");
-
-		syncEval(dirs, syncEval);
-		syncEval.go(code.tail());
-
-		// Value is false.
-		final Block falseVal = syncEval.otherwise();
-
-		value.storeFalse(falseVal);
-		falseVal.go(code.tail());
-	}
-
-	private void syncEval(ValDirs dirs, Block code) {
+		// Evaluate if value is indefinite, or false otherwise.
+		loadIndefinite(code).goUnless(code, dirs.falseDir());
 
 		final FldCtrOp ctr =
 				code.getAllocator()
@@ -150,16 +136,14 @@ public abstract class KeeperEval {
 	}
 
 	private void buildValue(ValDirs dirs, Block code) {
-
 		// Evaluate and store the value.
-		final ValOp value = dirs.value();
 		final Block fail = code.addBlock("fail");
 		final ValDirs valDirs =
 				codeDirs(dirs.getBuilder(), code, fail.head()).value(dirs);
 
 		final ValOp keeperValue = writeKeeperValue(valDirs);
 
-		value.store(code, keeperValue);
+		dirs.value().store(code, keeperValue);
 		updateValue(code, keeperValue);
 		updateCondition(code, true);
 
@@ -171,25 +155,14 @@ public abstract class KeeperEval {
 
 		// Value evaluation failed. Store false.
 		updateCondition(fail, false);
-		value.storeFalse(fail);
-
-		fail.go(code.tail());
+		fail.go(dirs.falseDir());
 	}
 
 	private void writeKeptValue(ValDirs dirs, Block code) {
-
-		final CondBlock hasValue =
-				loadCondition(code).branch(code, "has_value", "false_value");
-
-		final ValOp existingValue = loadValue(dirs, hasValue);
-
-		dirs.value().store(hasValue, existingValue);
-		hasValue.go(code.tail());
-
-		final Block falseVal = hasValue.otherwise();
-
-		dirs.value().storeFalse(falseVal);
-		falseVal.go(code.tail());
+		// Check the condition.
+		loadCondition(code).goUnless(code, dirs.falseDir());
+		// Return the value if condition is not false.
+		dirs.value().store(code, loadValue(dirs, code));
 	}
 
 }
