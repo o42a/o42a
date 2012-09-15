@@ -17,45 +17,50 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.state;
+package org.o42a.core.object.state.impl;
 
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.state.KeeperOp;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 
 
-final class KeeperDef extends Def {
+final class KeeperAccessDef extends Def {
 
-	private final KeeperObject keeperObject;
+	private final KeeperAccessor keeperAccessor;
 	private Ref object;
 
-	KeeperDef(KeeperObject source) {
-		super(source, source, noScopeUpgrade(source.getScope()));
-		this.keeperObject = source;
+	KeeperAccessDef(KeeperAccessor keeperAccessor) {
+		super(
+				keeperAccessor,
+				keeperAccessor,
+				noScopeUpgrade(keeperAccessor.getScope()));
+		this.keeperAccessor = keeperAccessor;
 	}
 
-	private KeeperDef(KeeperDef prototype, ScopeUpgrade scopeUpgrade) {
+	private KeeperAccessDef(
+			KeeperAccessDef prototype,
+			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.keeperObject = prototype.keeperObject;
+		this.keeperAccessor = prototype.keeperAccessor;
+	}
+
+	public final Keeper getKeeper() {
+		return this.keeperAccessor.getKeeper();
 	}
 
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
-		return this.keeperObject.value()
+		return this.keeperAccessor.value()
 				.getValueStruct()
 				.upgradeScope(getScope());
 	}
@@ -72,26 +77,26 @@ final class KeeperDef extends Def {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.keeperObject.getKeeper().getValue().normalize(
+		this.keeperAccessor.getKeeper().getValue().normalize(
 				normalizer.getAnalyzer());
 	}
 
 	@Override
 	public Eval eval() {
-		return new KeeperDefEval(this);
+		return new KeeperAccessEval(this);
 	}
 
 	@Override
 	public String toString() {
-		if (this.keeperObject == null) {
+		if (this.keeperAccessor == null) {
 			return super.toString();
 		}
-		return "=" + this.keeperObject.getKeeper();
+		return "=" + this.keeperAccessor.getKeeper();
 	}
 
 	@Override
 	protected Def create(ScopeUpgrade upgrade, ScopeUpgrade additionalUpgrade) {
-		return new KeeperDef(this, upgrade);
+		return new KeeperAccessDef(this, upgrade);
 	}
 
 	@Override
@@ -115,14 +120,10 @@ final class KeeperDef extends Def {
 				.resolver()
 				.fullResolver(resolver, VALUE_REF_USAGE);
 
-		this.keeperObject.getKeeper().getValue().resolveAll(keeperResolver);
+		this.keeperAccessor.getKeeper().getValue().resolveAll(keeperResolver);
 	}
 
-	private Ref getValue() {
-		return this.keeperObject.getValue();
-	}
-
-	private Ref object() {
+	Ref object() {
 		if (this.object != null) {
 			return this.object;
 		}
@@ -135,37 +136,8 @@ final class KeeperDef extends Def {
 				.target(scope.distribute());
 	}
 
-	private static final class KeeperDefEval implements Eval {
-
-		private final KeeperDef def;
-
-		KeeperDefEval(KeeperDef def) {
-			this.def = def;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-
-			final ObjectOp object =
-					this.def.object().op(host)
-					.target(dirs.dirs())
-					.materialize(
-							dirs.dirs(),
-							tempObjHolder(dirs.getAllocator()));
-			final KeeperOp keeper = object.keeper(
-					dirs.dirs(),
-					this.def.keeperObject.getKeeper());
-
-			dirs.returnValue(keeper.writeValue(dirs.valDirs()));
-		}
-
-		@Override
-		public String toString() {
-			if (this.def == null) {
-				return super.toString();
-			}
-			return this.def.toString();
-		}
+	private Ref getValue() {
+		return this.keeperAccessor.getValue();
 	}
 
 }

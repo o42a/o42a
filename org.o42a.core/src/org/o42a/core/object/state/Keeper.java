@@ -21,6 +21,7 @@ package org.o42a.core.object.state;
 
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.impl.KeeperAccessor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
 import org.o42a.core.ref.path.ObjectConstructor;
@@ -87,6 +88,13 @@ public final class Keeper extends ObjectConstructor implements SubID {
 		return this.id;
 	}
 
+	public final void resolveAll() {
+
+		final ObjectKeepers keepers = getDeclaredIn().keepers();
+
+		keepers.keeperResolved(this);
+	}
+
 	@Override
 	public String toString() {
 		if (this.id == null) {
@@ -97,7 +105,7 @@ public final class Keeper extends ObjectConstructor implements SubID {
 
 	@Override
 	protected Obj createObject() {
-		return new KeeperObject(this);
+		return new KeeperAccessor(this);
 	}
 
 	final Keeper getNext() {
@@ -106,13 +114,6 @@ public final class Keeper extends ObjectConstructor implements SubID {
 
 	final void setNext(Keeper next) {
 		this.next = next;
-	}
-
-	final void resolveAll() {
-
-		final ObjectKeepers keepers = getDeclaredIn().keepers();
-
-		keepers.keeperResolved(this);
 	}
 
 }
