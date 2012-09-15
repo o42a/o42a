@@ -29,6 +29,7 @@
 
 #include "o42a/kpr/float.h"
 #include "o42a/kpr/integer.h"
+#include "o42a/kpr/string.h"
 #include "o42a/kpr/void.h"
 
 #ifdef __cplusplus
@@ -60,6 +61,8 @@ union o42a_fld {
 	o42a_kpr_integer kpr_integer;
 
 	o42a_kpr_float kpr_float;
+
+	o42a_kpr_string kpr_string;
 
 };
 

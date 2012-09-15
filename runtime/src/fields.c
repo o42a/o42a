@@ -139,6 +139,12 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.mark = &o42a_fld_mark_none,
 		.is_init = &o42a_kpr_is_definite,
 	},
+	[O42A_KPR_STRING] = {// String keeper.
+		.propagate = &o42a_kpr_string_derive,
+		.inherit = &o42a_kpr_float_derive,
+		.mark = &o42a_fld_mark_none,
+		.is_init = &o42a_kpr_string_is_init,
+	},
 };
 
 

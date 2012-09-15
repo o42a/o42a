@@ -100,6 +100,11 @@ public abstract class KeeperEval {
 
 	protected abstract void storeValue(Code code, ValOp newValue);
 
+	protected void releaseCondition(Code code, boolean condition) {
+		code.releaseBarrier();
+		storeCondition(code, condition);
+	}
+
 	protected abstract void storeCondition(Code code, boolean condition);
 
 	private void eval(ValDirs dirs, Block code) {
@@ -150,8 +155,7 @@ public abstract class KeeperEval {
 
 		value.store(code, keeperValue);
 		storeValue(code, keeperValue);
-		code.releaseBarrier();
-		storeCondition(code, true);
+		releaseCondition(code, true);
 
 		valDirs.done();
 
@@ -160,9 +164,7 @@ public abstract class KeeperEval {
 		}
 
 		// Value evaluation failed. Store false.
-		fail.releaseBarrier();
-		storeCondition(fail, false);
-
+		releaseCondition(fail, false);
 		value.storeFalse(fail);
 
 		fail.go(code.tail());
