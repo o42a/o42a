@@ -23,28 +23,27 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.state.KeeperOp;
+import org.o42a.util.fn.Cancelable;
 
 
-final class KeeperAccessEval implements Eval {
+final class InlineKeeperAccessEval extends InlineEval {
 
 	private final KeeperAccessDef def;
 
-	KeeperAccessEval(KeeperAccessDef def) {
+	InlineKeeperAccessEval(KeeperAccessDef def) {
+		super(null);
 		this.def = def;
 	}
 
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
 
-		final ObjectOp object =
-				this.def.object().op(host)
-				.target(dirs.dirs())
-				.materialize(
-						dirs.dirs(),
-						tempObjHolder(dirs.getAllocator()));
+		final ObjectOp object = host.materialize(
+				dirs.dirs(),
+				tempObjHolder(dirs.getAllocator()));
 		final KeeperOp keeper =
 				object.keeper(dirs.dirs(), this.def.getKeeper());
 
@@ -57,6 +56,11 @@ final class KeeperAccessEval implements Eval {
 			return super.toString();
 		}
 		return this.def.getKeeper().toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }
