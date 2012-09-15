@@ -20,6 +20,7 @@
 package org.o42a.core.value.voids;
 
 import static java.lang.Integer.numberOfTrailingZeros;
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
@@ -107,11 +108,15 @@ final class VoidKeeperIROp extends KeeperIROp<VoidKeeperIROp> {
 		}
 
 		@Override
-		protected void storeCondition(Code code, boolean condition) {
+		protected void releaseCondition(Code code, boolean condition) {
 			this.flagsRec.store(
 					code,
 					code.int8(condition ? (byte) VAL_CONDITION : 0),
-					ATOMIC);
+					ACQUIRE_RELEASE);
+		}
+
+		@Override
+		protected void storeCondition(Code code, boolean condition) {
 		}
 
 	}
