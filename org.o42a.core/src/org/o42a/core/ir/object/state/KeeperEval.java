@@ -64,6 +64,7 @@ public abstract class KeeperEval {
 
 	public final ValOp writeValue(ValDirs dirs) {
 
+		final ValOp value = dirs.value();
 		final Block code = dirs.code();
 
 		code.acquireBarrier();
@@ -72,19 +73,16 @@ public abstract class KeeperEval {
 				loadCondition(code).branch(code, "is_set", "not_set");
 
 		// A non-false value is already stored in keeper.
-		final ValOp value1 = dirs.value().store(isSet, loadValue(dirs, isSet));
-
+		value.store(isSet, loadValue(dirs, isSet));
 		isSet.go(code.tail());
 
 		// Value is either indefinite or false.
 		final Block notSet = isSet.otherwise();
 
-		final ValOp value2 = eval(dirs, notSet);
-
+		eval(dirs, notSet);
 		notSet.go(code.tail());
 
-		// Net result.
-		return value1.phi(null, code, value2);
+		return value;
 	}
 
 	protected abstract BoolOp loadCondition(Code code);
@@ -104,29 +102,23 @@ public abstract class KeeperEval {
 
 	protected abstract void storeCondition(Code code, boolean condition);
 
-	private ValOp eval(ValDirs dirs, Block code) {
+	private void eval(ValDirs dirs, Block code) {
 
+		final ValOp value = dirs.value();
 		final CondBlock syncEval =
 				loadIndefinite(code).branch(code, "sync_eval", "false");
 
-		final ValOp evaluatedValue = syncEval(dirs, syncEval);
-
+		syncEval(dirs, syncEval);
 		syncEval.go(code.tail());
 
 		// Value is false.
 		final Block falseVal = syncEval.otherwise();
-		final ValOp falseValue =
-				dirs.getValueStruct()
-				.falseValue()
-				.op(dirs.getBuilder(), falseVal);
 
+		value.storeFalse(falseVal);
 		falseVal.go(code.tail());
-
-		// Evaluation result.
-		return evaluatedValue.phi(null, code, falseValue);
 	}
 
-	private ValOp syncEval(ValDirs dirs, Block code) {
+	private void syncEval(ValDirs dirs, Block code) {
 
 		final FldCtrOp ctr =
 				code.getAllocator()
@@ -135,64 +127,63 @@ public abstract class KeeperEval {
 		final CondBlock build =
 				ctr.start(code, keeper()).branch(code, "build", "built");
 
-		final ValOp newValue = buildValue(dirs, build);
+		buildValue(dirs, build);
 
 		ctr.finish(build, keeper());
 		build.go(code.tail());
 
 		final Block built = build.otherwise();
-		final ValOp builtValue = builtValue(dirs, built);
 
+		writeKeptValue(dirs, built);
 		built.go(code.tail());
-
-		return newValue.phi(null, code, builtValue);
 	}
 
-	private ValOp buildValue(ValDirs dirs, Block code) {
+	private void buildValue(ValDirs dirs, Block code) {
 
 		// Evaluate and store the value.
+		final ValOp value = dirs.value();
 		final Block fail = code.addBlock("fail");
 		final ValDirs valDirs =
 				codeDirs(dirs.getBuilder(), code, fail.head()).value(dirs);
-		final ValOp value = writeKeeperValue(valDirs);
 
-		storeValue(code, value);
+		final ValOp keeperValue = writeKeeperValue(valDirs);
 
-		code.releaseBarrier();
+		value.store(valDirs.code(), keeperValue);
+		storeValue(valDirs.code(), keeperValue);
 
-		storeCondition(code, true);
+		valDirs.code().releaseBarrier();
+
+		storeCondition(valDirs.code(), true);
 
 		valDirs.done().code().go(code.tail());
 
-		if (fail.exists()) {
-			// Value evaluation failed. Store false.
-			fail.releaseBarrier();
-			storeCondition(fail, false);
-			fail.go(code.tail());
+		if (!fail.exists()) {
+			return;
 		}
 
-		return value;
+		// Value evaluation failed. Store false.
+		fail.releaseBarrier();
+		storeCondition(fail, false);
+
+		value.storeFalse(fail);
+
+		fail.go(code.tail());
 	}
 
-	private ValOp builtValue(ValDirs dirs, Block built) {
+	private void writeKeptValue(ValDirs dirs, Block code) {
 
 		final CondBlock hasValue =
-				loadCondition(built).branch(built, "has_value", "false_value");
+				loadCondition(code).branch(code, "has_value", "false_value");
 
 		final ValOp existingValue = loadValue(dirs, hasValue);
 
-		hasValue.go(built.tail());
+		dirs.value().store(hasValue, existingValue);
+		hasValue.go(code.tail());
 
 		final Block falseVal = hasValue.otherwise();
 
-		final ValOp falseValue =
-				dirs.getValueStruct()
-				.falseValue()
-				.op(dirs.getBuilder(), falseVal);
-
-		falseVal.go(built.tail());
-
-		return existingValue.phi(null, built, falseValue);
+		dirs.value().storeFalse(falseVal);
+		falseVal.go(code.tail());
 	}
 
 }

@@ -46,7 +46,7 @@ final class IntegerValueStructIR
 
 	@Override
 	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
-		return new IntegerKeeperIR(bodyIR, keeper);
+		return new IntegerKeeperIR(this, bodyIR, keeper);
 	}
 
 	@Override

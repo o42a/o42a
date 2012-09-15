@@ -23,9 +23,12 @@ import static org.o42a.core.ir.IRNames.CONST_ID;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.struct.AbstractSingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
@@ -41,6 +44,11 @@ final class FloatValueStructIR
 	@Override
 	public Val val(Double value) {
 		return new Val(value);
+	}
+
+	@Override
+	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+		return new FloatKeeperIR(this, bodyIR, keeper);
 	}
 
 	@Override

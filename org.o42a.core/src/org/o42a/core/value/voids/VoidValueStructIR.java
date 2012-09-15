@@ -73,7 +73,7 @@ final class VoidValueStructIR extends SingleValueStructIR<Void> {
 
 	@Override
 	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
-		return new VoidKeeperIR(bodyIR, keeper);
+		return new VoidKeeperIR(this, bodyIR, keeper);
 	}
 
 	@Override

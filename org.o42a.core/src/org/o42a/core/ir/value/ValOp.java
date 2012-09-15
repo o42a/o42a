@@ -317,6 +317,19 @@ public abstract class ValOp extends IROp {
 		return this;
 	}
 
+	public final ValOp phi(Code code) {
+
+		final Val constant = getConstant();
+
+		if (constant != null) {
+			return code.phi(null, ptr())
+					.op(getBuilder(), constant);
+		}
+
+		return code.phi(null, ptr())
+				.op(null, getBuilder(), getValueStruct(), NO_VAL_HOLDER);
+	}
+
 	public final ValOp phi(ID id, Code code, ValOp other) {
 		return code.phi(id, ptr(), other.ptr())
 				.op(null, getBuilder(), getValueStruct(), NO_VAL_HOLDER);
