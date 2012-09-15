@@ -26,8 +26,7 @@ import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIROp;
@@ -42,6 +41,14 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		super(writer);
 	}
 
+	public final DataRecOp fld(Code code) {
+		return ptr(null, code, FLD_CTR_TYPE.fld());
+	}
+
+	public final Int16recOp fldKind(Code code) {
+		return int16(null, code, FLD_CTR_TYPE.fldKind());
+	}
+
 	public BoolOp start(Code code, FldIROp fld) {
 
 		final FuncPtr<FldCtrStartFunc> fn =
@@ -49,8 +56,10 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 						"o42a_fld_start",
 						FLD_CTR_START);
 
-		ptr(null, code, FLD_CTR_TYPE.fld())
-		.store(code, fld.toData(null, code));
+		fld(code).store(code, fld.toData(null, code));
+		fldKind(code).store(
+				code,
+				code.int16((short) fld.fld().getKind().code()));
 
 		return fn.op(null, code)
 				.call(code, fld.host().objectType(code).ptr().data(code), this);
@@ -74,6 +83,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		private StructRec<FldCtrOp> next;
 		private DataRec fld;
 		private SystemData thread;
+		private Int16rec fldKind;
 
 		private Type() {
 			super(ID.rawId("o42a_fld_ctr_t"));
@@ -95,6 +105,10 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 			return this.thread;
 		}
 
+		public final Int16rec fldKind() {
+			return this.fldKind;
+		}
+
 		@Override
 		public final FldCtrOp op(StructWriter<FldCtrOp> writer) {
 			return new FldCtrOp(writer);
@@ -106,6 +120,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 			this.next = data.addPtr("next", FLD_CTR_TYPE);
 			this.fld = data.addDataPtr("fld");
 			this.thread = data.addSystem("thread", THREAD_SYSTEM_TYPE);
+			this.fldKind = data.addInt16("fld_kind");
 		}
 
 		@Override

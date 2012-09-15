@@ -24,7 +24,7 @@
 #include "o42a/object.h"
 
 #ifndef NDEBUG
-const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_ctr = {
+const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_fld_ctr = {
 	.type_code = 0x042a02ff,
 	.field_num = 4,
 	.name = "o42a_fld_ctr_t",
@@ -52,6 +52,11 @@ const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_ctr = {
 			.data_type = O42A_TYPE_SYSTEM,
 			.offset = offsetof(o42a_fld_ctr_t, thread),
 			.name = "thread",
+		},
+		{
+			.data_type = O42A_TYPE_INT16,
+			.offset = offsetof(o42a_fld_ctr_t, thread),
+			.name = "fld_kind",
 		},
 	},
 };
@@ -84,46 +89,55 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.propagate = &o42a_fld_obj_propagate,
 		.inherit = &o42a_fld_obj_inherit,
 		.mark = &o42a_fld_mark_obj,
+		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_LINK] = {// Link field.
 		.propagate = &o42a_fld_link_propagate,
 		.inherit = &o42a_fld_link_inherit,
 		.mark = &o42a_fld_mark_none,
+		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_VAR] = {// Variable field.
 		.propagate = &o42a_fld_var_propagate,
 		.inherit = &o42a_fld_var_inherit,
 		.mark = &o42a_fld_var_mark,
+		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_SCOPE] = {// Scope object pointer.
 		.propagate = &o42a_fld_scope_propagate,
 		.inherit = &o42a_fld_scope_inherit,
 		.mark = &o42a_fld_mark_obj,
+		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_DEP] = {// Local dependency field.
 		.propagate = &o42a_fld_dep_copy,
 		.inherit = &o42a_fld_dep_copy,
 		.mark = &o42a_fld_mark_obj,
+		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_ASSIGNER] = {// Variable assigner.
 		.propagate = &o42a_fld_assigner_propagate,
 		.inherit = &o42a_fld_assigner_inherit,
 		.mark = &o42a_fld_assigner_mark,
+		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_KPR_VOID] = {// Void keeper.
 		.propagate = &o42a_kpr_void_derive,
 		.inherit = &o42a_kpr_void_derive,
 		.mark = &o42a_fld_mark_none,
+		.is_init = &o42a_kpr_is_definite,
 	},
 	[O42A_KPR_INTEGER] = {// Integer keeper.
 		.propagate = &o42a_kpr_integer_derive,
 		.inherit = &o42a_kpr_integer_derive,
 		.mark = &o42a_fld_mark_none,
+		.is_init = &o42a_kpr_is_definite,
 	},
 	[O42A_KPR_FLOAT] = {// Float keeper.
 		.propagate = &o42a_kpr_float_derive,
 		.inherit = &o42a_kpr_float_derive,
 		.mark = &o42a_fld_mark_none,
+		.is_init = &o42a_kpr_is_definite,
 	},
 };
 
@@ -155,7 +169,12 @@ o42a_bool_t o42a_fld_start(
 	O42A_ENTER(return O42A_FALSE);
 
 	O42A(o42a_obj_lock(data));
-	if (ctr->fld->obj.object) {
+
+	const o42a_fld *const fld = ctr->fld;
+	o42a_bool_t (*const is_init) (const o42a_fld *) =
+			o42a_obj_field_kinds[ctr->fld_kind].is_init;
+
+	if (is_init(fld)) {
 		O42A(o42a_obj_unlock(data));
 		// Object already set.
 		O42A_RETURN O42A_FALSE;
@@ -176,7 +195,7 @@ o42a_bool_t o42a_fld_start(
 
 	// Find out if the field already constructing.
 	while (1) {
-		if (last_ctr->fld != ctr->fld) {
+		if (last_ctr->fld != fld) {
 			// Check the next field.
 			o42a_fld_ctr_t *next_ctr = last_ctr->next;
 			if (!next_ctr) {
@@ -196,7 +215,7 @@ o42a_bool_t o42a_fld_start(
 			O42A_RETURN O42A_TRUE;
 		}
 		// Wait for another thread to construct the field.
-		while (last_ctr->fld->obj.object) {
+		while (!is_init(fld)) {
 			O42A(o42a_obj_wait(data));
 		}
 		// Field constructed.
