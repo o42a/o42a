@@ -89,7 +89,7 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 
 	@Override
 	public ValHolder tempValHolder(ValOp value) {
-		return new ExternValHolder(value, false);
+		return new ExternValHolder(value, !getValueType().isStateful());
 	}
 
 	@Override

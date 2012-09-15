@@ -19,23 +19,17 @@
 */
 package org.o42a.core.value.string;
 
-import static org.o42a.core.ir.IRNames.CONST_ID;
-import static org.o42a.core.ir.IRNames.DATA_ID;
 import static org.o42a.util.string.StringCodec.escapeControlChars;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.string.ID;
 
 
 public class StringValueStruct extends SingleValueStruct<String> {
 
 	public static final StringValueStruct INSTANCE = new StringValueStruct();
-
-	static final ID STRING_CONST_ID = CONST_ID.sub("STRING");
-	static final ID STRING_DATA_ID = DATA_ID.sub("STRING");
 
 	private StringValueStruct() {
 		super(ValueType.STRING, String.class);

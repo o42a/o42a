@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.string;
 
+import static org.o42a.core.ir.IRNames.CONST_ID;
+import static org.o42a.core.ir.IRNames.DATA_ID;
 import static org.o42a.util.string.StringCodec.bytesPerChar;
 import static org.o42a.util.string.StringCodec.stringToBinary;
 
@@ -34,6 +36,9 @@ import org.o42a.util.string.ID;
 final class StringValueStructIR
 		extends ExternalValueStructIR<SingleValueStruct<String>, String> {
 
+	private static final ID STRING_CONST_ID = CONST_ID.sub("STRING");
+	private static final ID STRING_DATA_ID = DATA_ID.sub("STRING");
+
 	private int stringSeq;
 	private int constSeq;
 
@@ -48,12 +53,12 @@ final class StringValueStructIR
 
 	@Override
 	protected ID constId(String value) {
-		return StringValueStruct.STRING_CONST_ID.anonymous(++this.constSeq);
+		return STRING_CONST_ID.anonymous(++this.constSeq);
 	}
 
 	@Override
 	protected ID valueId(String value) {
-		return StringValueStruct.STRING_DATA_ID.anonymous(this.stringSeq++);
+		return STRING_DATA_ID.anonymous(this.stringSeq++);
 	}
 
 	@Override
