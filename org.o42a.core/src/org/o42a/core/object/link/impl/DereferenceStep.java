@@ -36,7 +36,9 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.*;
+import org.o42a.core.object.link.Link;
+import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
@@ -113,14 +115,10 @@ public class DereferenceStep extends Step {
 			link = new RtLink(resolver.getPath(), resolver.getStart());
 		} else if (value.getKnowledge().isFalse()) {
 			link = new RtLink(resolver.getPath(), resolver.getStart());
+		} else if (!value.getKnowledge().isFalse()) {
+			link = linkStruct.cast(value.getCompilerValue());
 		} else {
-
-			final Value<KnownLink> linkValue = linkStruct.cast(value);
-
-			if (linkValue.getKnowledge().isFalse()) {
-				return null;
-			}
-			link = linkValue.getCompilerValue();
+			return null;
 		}
 
 		if (resolver.isFullResolution()) {
