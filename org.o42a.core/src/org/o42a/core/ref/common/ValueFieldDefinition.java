@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.common;
 
-import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
-
 import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
@@ -35,7 +33,7 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 
 	@Override
 	public DefinitionTarget getDefinitionTarget() {
-		return objectDefinition();
+		return refDefinitionTarget(getRef());
 	}
 
 	@Override
