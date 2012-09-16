@@ -35,19 +35,19 @@ final class IntegerKeeperIRType extends KeeperIRType<IntegerKeeperIROp> {
 	public static final IntegerKeeperIRType INTEGER_KEEPER_IR_TYPE =
 			new IntegerKeeperIRType();
 
-	private Int8rec flags;
 	private Int64rec value;
+	private Int8rec flags;
 
 	private IntegerKeeperIRType() {
 		super(ID.id("o42a_kpr_integer"));
 	}
 
-	public final Int8rec flags() {
-		return this.flags;
-	}
-
 	public final Int64rec value() {
 		return this.value;
+	}
+
+	public final Int8rec flags() {
+		return this.flags;
 	}
 
 	@Override
@@ -57,8 +57,8 @@ final class IntegerKeeperIRType extends KeeperIRType<IntegerKeeperIROp> {
 
 	@Override
 	protected void allocate(SubData<IntegerKeeperIROp> data) {
-		this.flags = data.addInt8("flags");
 		this.value = data.addInt64("value");
+		this.flags = data.addInt8("flags");
 	}
 
 	@Override
