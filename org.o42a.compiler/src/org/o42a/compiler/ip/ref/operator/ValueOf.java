@@ -32,6 +32,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.ValueStruct;
 
 
 public class ValueOf extends ObjectConstructor {
@@ -60,7 +61,12 @@ public class ValueOf extends ObjectConstructor {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return this.operand.getValueType().typeRef(location, getScope());
+
+		final ValueStruct<?, ?> valueStruct =
+				operand().valueStruct(getScope());
+
+		return valueStruct.getValueType()
+				.typeRef(location, getScope(), valueStruct.getParameters());
 	}
 
 	@Override
@@ -71,7 +77,7 @@ public class ValueOf extends ObjectConstructor {
 	@Override
 	public ValueOf reproduce(PathReproducer reproducer) {
 
-		final Ref operand = this.operand.reproduce(reproducer.getReproducer());
+		final Ref operand = operand().reproduce(reproducer.getReproducer());
 
 		if (operand == null) {
 			return null;
