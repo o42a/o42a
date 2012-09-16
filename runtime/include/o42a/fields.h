@@ -27,6 +27,7 @@
 #include "o42a/fld/scope.h"
 #include "o42a/fld/var.h"
 
+#include "o42a/kpr/array.h"
 #include "o42a/kpr/float.h"
 #include "o42a/kpr/integer.h"
 #include "o42a/kpr/link.h"
@@ -66,6 +67,8 @@ union o42a_fld {
 	o42a_kpr_string kpr_string;
 
 	o42a_kpr_link kpr_link;
+
+	o42a_kpr_array kpr_array;
 
 };
 

@@ -140,16 +140,22 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.is_init = &o42a_kpr_float_is_init,
 	},
 	[O42A_KPR_STRING] = {// String keeper.
-		.propagate = &o42a_kpr_string_derive,
+		.propagate = &o42a_kpr_value_derive,
 		.inherit = &o42a_kpr_float_derive,
 		.mark = &o42a_fld_mark_none,
-		.is_init = &o42a_kpr_string_is_init,
+		.is_init = &o42a_kpr_value_is_init,
 	},
 	[O42A_KPR_LINK] = {// Link keeper.
 		.propagate = &o42a_kpr_link_derive,
 		.inherit = &o42a_kpr_link_derive,
 		.mark = &o42a_fld_mark_obj,
 		.is_init = &o42a_fld_obj_is_init,
+	},
+	[O42A_KPR_ARRAY] = {// Array keeper.
+		.propagate = &o42a_kpr_value_derive,
+		.inherit = &o42a_kpr_float_derive,
+		.mark = &o42a_kpr_array_mark,
+		.is_init = &o42a_kpr_value_is_init,
 	},
 };
 

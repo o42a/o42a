@@ -75,6 +75,7 @@ objects += $(srcdir)/fld/obj.o
 objects += $(srcdir)/fld/scope.o
 objects += $(srcdir)/fld/var.o
 
+objects += $(srcdir)/kpr/array.o
 objects += $(srcdir)/kpr/float.o
 objects += $(srcdir)/kpr/integer.o
 objects += $(srcdir)/kpr/link.o
@@ -207,6 +208,8 @@ $(srcdir)/type/string.*.o : $(headersdir)/type/string.h
 $(srcdir)/type/string.%.o : $(srcdir)/type/string.c
 	$(call compile)
 
+$(srcdir)/kpr/array.*.o : $(headersdir)/type/array.h
+
 # Implicit rule for field type descriptors compilation.
 $(srcdir)/fld/*.o : $(fld_deps)
 $(srcdir)/fld/%.dbg.o : $(srcdir)/fld/%.c $(headersdir)/fld/%.h
@@ -220,6 +223,8 @@ $(srcdir)/kpr/%.dbg.o : $(srcdir)/kpr/%.c $(headersdir)/kpr/%.h
 	$(call compile)
 $(srcdir)/kpr/%.rel.o : $(srcdir)/kpr/%.c $(headersdir)/kpr/%.h
 	$(call compile)
+
+
 
 # Built-in modules compilation.
 $(srcdir)/lib/io.*.o : $(common_deps)
