@@ -32,6 +32,7 @@ public abstract class DefaultFieldDefinition extends FieldDefinition {
 
 	public DefaultFieldDefinition(Ref ref) {
 		super(ref);
+		assertSameScope(ref);
 		this.ref = ref;
 	}
 

@@ -34,6 +34,11 @@ public abstract class KeeperIROp<O extends KeeperIROp<O>> extends StructOp<O> {
 		super(writer);
 	}
 
+	@Override
+	public KeeperIRType<O> getType() {
+		return (KeeperIRType<O>) super.getType();
+	}
+
 	protected abstract void writeCond(KeeperOp keeper, CodeDirs dirs);
 
 	protected abstract ValOp writeValue(KeeperOp keeper, ValDirs dirs);

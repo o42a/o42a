@@ -22,12 +22,15 @@ package org.o42a.core.object.link.impl;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyOp;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.struct.AbstractValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
@@ -59,6 +62,11 @@ abstract class AbstractLinkValueStructIR
 				Val.VAL_CONDITION,
 				0,
 				mainBodyPtr.toAny());
+	}
+
+	@Override
+	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+		return new LinkKeeperIR(this, bodyIR, keeper);
 	}
 
 	@Override

@@ -39,8 +39,7 @@ public final class DefaultValueStructFinder implements ValueStructFinder {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStructBy(
-			ValueStruct<?, ?> defaultStruct) {
+	public ValueStruct<?, ?> valueStructBy(ValueStruct<?, ?> defaultStruct) {
 		return defaultStruct;
 	}
 

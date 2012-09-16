@@ -23,6 +23,7 @@ import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.op.CodeDirs.codeDirs;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondBlock;
@@ -32,6 +33,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.string.ID;
 
@@ -44,6 +46,14 @@ public abstract class KeeperEval {
 
 	public KeeperEval(KeeperOp keeper) {
 		this.keeper = keeper;
+	}
+
+	public final Generator getGenerator() {
+		return keeper().getGenerator();
+	}
+
+	public final CompilerContext getContext() {
+		return keeper().getContext();
 	}
 
 	public final KeeperOp keeper() {

@@ -37,8 +37,8 @@ Keep constant := test (
   Assert [kept == 1] 'Wrong subsequent constant keeper value' 
 )
 
-Keep variable := test (
-  Name = "Keep variable"
+Keep variable target := test (
+  Name = "Keep variable target"
   Print error '  ' [name] nl
   
   Var := ``1
@@ -56,4 +56,13 @@ Keep string := test (
   
   Kept := //rt-string 'Kept'
   Assert [kept == "Kept"] 'Wrong string kept'
+)
+
+Keep link := test (
+  Name = "Keep link"
+  Print error '  ' [name] nl
+  
+  Lnk := `rt-string 'Kept'
+  Kept := //Lnk`
+  Assert [kept == "Kept"] 'Wrong link kept'
 )
