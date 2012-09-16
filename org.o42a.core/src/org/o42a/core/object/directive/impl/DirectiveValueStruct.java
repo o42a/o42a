@@ -20,17 +20,9 @@
 package org.o42a.core.object.directive.impl;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType.Op;
-import org.o42a.core.ir.value.struct.SingleValueStructIR;
-import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.directive.Directive;
 import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.Void;
 
 
 public class DirectiveValueStruct extends SingleValueStruct<Directive> {
@@ -45,43 +37,7 @@ public class DirectiveValueStruct extends SingleValueStruct<Directive> {
 	@Override
 	protected ValueStructIR<SingleValueStruct<Directive>, Directive> createIR(
 			Generator generator) {
-		return new IR(generator, this);
-	}
-
-	private static final class IR extends SingleValueStructIR<Directive> {
-
-		IR(Generator generator, DirectiveValueStruct valueStruct) {
-			super(generator, valueStruct);
-		}
-
-		@Override
-		public boolean hasValue() {
-			return false;
-		}
-
-		@Override
-		public Val val(Directive value) {
-
-			final Val voidValue =
-					ValueStruct.VOID.ir(getGenerator()).val(Void.VOID);
-
-			return new Val(
-					getValueStruct(),
-					voidValue.getFlags(),
-					voidValue.getLength(),
-					voidValue.getValue());
-		}
-
-		@Override
-		public Ptr<Op> valPtr(Directive value) {
-			return ValueStruct.VOID.ir(getGenerator()).valPtr(Void.VOID);
-		}
-
-		@Override
-		public ValueIR valueIR(ObjectIR objectIR) {
-			return defaultValueIR(objectIR);
-		}
-
+		return new DirectiveValueStructIR(generator, this);
 	}
 
 }
