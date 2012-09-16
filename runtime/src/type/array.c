@@ -70,10 +70,8 @@ void o42a_array_copy(const o42a_val_t *const from, o42a_val_t *const to) {
 	O42A_RETURN;
 }
 
-static void o42a_val_mark_array(o42a_obj_data_t *const data) {
+void o42a_array_mark(const volatile o42a_val_t *const value) {
 	O42A_ENTER(return);
-
-	const volatile o42a_val_t *const value = &data->value;
 
 	if (!value->flags & O42A_VAL_CONDITION) {
 		O42A_RETURN;
@@ -105,6 +103,12 @@ static void o42a_val_mark_array(o42a_obj_data_t *const data) {
 				o42a_gc_blockof((char *) item_data + item_data->start)));
 	}
 
+	O42A_RETURN;
+}
+
+static void o42a_val_mark_array(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	O42A(o42a_array_mark(&data->value));
 	O42A_RETURN;
 }
 

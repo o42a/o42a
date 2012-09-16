@@ -79,12 +79,9 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	public abstract Ptr<ValType.Op> valPtr(T value);
 
-	public KeeperIR<?, ?> createKeeperIR(
+	public abstract KeeperIR<?, ?> createKeeperIR(
 			ObjectIRBody bodyIR,
-			Keeper keeper) {
-		// TODO Implement the value keepers.
-		return null;
-	}
+			Keeper keeper);
 
 	public abstract ValueIR valueIR(ObjectIR objectIR);
 

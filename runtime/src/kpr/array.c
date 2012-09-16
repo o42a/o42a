@@ -19,16 +19,18 @@
 */
 #include "o42a/fields.h"
 
+#include "o42a/type/array.h"
+
 
 #ifndef NDEBUG
-const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_string = {
-	.type_code = 0x042a0200 | O42A_KPR_STRING,
+const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_array = {
+	.type_code = 0x042a0200 | O42A_KPR_ARRAY,
 	.field_num = 1,
-	.name = "o42a_kpr_string",
+	.name = "o42a_kpr_array",
 	.fields = {
 		{
 			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_kpr_string, value),
+			.offset = offsetof(o42a_kpr_array, value),
 			.name = "value",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
 		},
@@ -36,18 +38,8 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_string = {
 };
 #endif /* NDEBUG */
 
-void o42a_kpr_value_derive(o42a_obj_ctable_t *const ctable) {
+void o42a_kpr_array_mark(o42a_fld *const fld) {
 	O42A_ENTER(return);
-
-	o42a_kpr_string *const to = &ctable->to.fld->kpr_string;
-
-	to->value.flags = O42A_VAL_INDEFINITE;
-
+	O42A(o42a_array_mark(&fld->kpr_array.value));
 	O42A_RETURN;
-}
-
-o42a_bool_t o42a_kpr_value_is_init(const o42a_fld *const fld) {
-	O42A_ENTER(return O42A_FALSE);
-	O42A_RETURN ((fld->kpr_string.value.flags & O42A_VAL_INDEFINITE)
-			? O42A_FALSE : O42A_TRUE);
 }

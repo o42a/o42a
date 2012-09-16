@@ -22,11 +22,14 @@ package org.o42a.core.ir.value.array;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.*;
 import org.o42a.core.ir.value.struct.*;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
+import org.o42a.core.object.state.Keeper;
 
 
 public final class ArrayValueStructIR
@@ -58,6 +61,11 @@ public final class ArrayValueStructIR
 	@Override
 	public Ptr<ValType.Op> valPtr(Array value) {
 		return value.ir(getValueTypeIR()).getValPtr();
+	}
+
+	@Override
+	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+		return new ArrayKeeperIR(this, bodyIR, keeper);
 	}
 
 	@Override

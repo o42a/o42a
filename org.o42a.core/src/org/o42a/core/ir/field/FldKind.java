@@ -32,7 +32,8 @@ public enum FldKind {
 	INTEGER_KEEPER(7, false),
 	FLOAT_KEEPER(8, false),
 	STRING_KEEPER(9, false),
-	LINK_KEEPER(10, false);
+	LINK_KEEPER(10, false),
+	ARRAY_KEEPER(11, false),;
 
 	private final int code;
 	private final boolean variable;

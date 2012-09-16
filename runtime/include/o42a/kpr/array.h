@@ -17,37 +17,34 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "o42a/fields.h"
+#ifndef O42A_KPR_ARRAY_H
+#define O42A_KPR_ARRAY_H
+
+#include "o42a/field.h"
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct {
+
+	O42A_HEADER
+
+	o42a_val_t value;
+
+} o42a_kpr_array;
 
 
 #ifndef NDEBUG
-const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_string = {
-	.type_code = 0x042a0200 | O42A_KPR_STRING,
-	.field_num = 1,
-	.name = "o42a_kpr_string",
-	.fields = {
-		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_kpr_string, value),
-			.name = "value",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
-		},
-	},
-};
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_array;
 #endif /* NDEBUG */
 
-void o42a_kpr_value_derive(o42a_obj_ctable_t *const ctable) {
-	O42A_ENTER(return);
 
-	o42a_kpr_string *const to = &ctable->to.fld->kpr_string;
+void o42a_kpr_array_mark(o42a_fld *);
 
-	to->value.flags = O42A_VAL_INDEFINITE;
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
-	O42A_RETURN;
-}
-
-o42a_bool_t o42a_kpr_value_is_init(const o42a_fld *const fld) {
-	O42A_ENTER(return O42A_FALSE);
-	O42A_RETURN ((fld->kpr_string.value.flags & O42A_VAL_INDEFINITE)
-			? O42A_FALSE : O42A_TRUE);
-}
+#endif /* O42A_KPR_ARRAY_H */

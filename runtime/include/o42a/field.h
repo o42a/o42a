@@ -59,6 +59,8 @@ enum o42a_fld_kind {
 
 	O42A_KPR_LINK = 10,
 
+	O42A_KPR_ARRAY = 11,
+
 };
 
 
