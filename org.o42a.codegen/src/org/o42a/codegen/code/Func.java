@@ -61,6 +61,11 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	@Override
+	public BoolOp ne(ID id, Code code, F other) {
+		return this.caller.ne(id, code, other);
+	}
+
+	@Override
 	public final AnyOp toAny(ID id, Code code) {
 		return this.caller.toAny(id, code);
 	}

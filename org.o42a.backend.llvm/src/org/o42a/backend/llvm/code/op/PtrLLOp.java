@@ -26,6 +26,7 @@ import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.util.string.ID;
 
@@ -93,6 +94,26 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 				resultId,
 				nextPtr,
 				llvm.instr(IntLLOp.eq(
+						nextPtr,
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr(),
+						nativePtr(other))));
+	}
+
+	@Override
+	public BoolOp ne(ID id, Code code, P other) {
+
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
+		final ID resultId = code.getOpNames().binaryId(id, NE_ID, this, other);
+
+		return new BoolLLOp(
+				resultId,
+				nextPtr,
+				llvm.instr(IntLLOp.ne(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),

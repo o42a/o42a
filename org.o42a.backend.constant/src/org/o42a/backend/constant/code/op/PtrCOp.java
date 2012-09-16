@@ -99,6 +99,37 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	}
 
 	@Override
+	public BoolOp ne(ID id, Code code, P other) {
+
+		final CCode<?> ccode = cast(code);
+		final ID resultId =
+				code.getOpNames().binaryId(id, NE_ID, this, other);
+		final COp<P, ?> o = cast(other);
+
+		if (isConstant() && o.isConstant()) {
+			return new BoolCOp(
+					resultId,
+					ccode,
+					!getConstant().equals(o.getConstant()));
+		}
+
+		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+				use(o);
+			}
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().ne(
+						getId(),
+						part().underlying(),
+						o.backend().underlying());
+			}
+		});
+	}
+
+	@Override
 	public final void returnValue(Block code) {
 		new ReturnBE(cast(code).nextPart()) {
 			@Override
