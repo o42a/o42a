@@ -22,17 +22,10 @@ package org.o42a.core.object.macro.impl;
 import static org.o42a.core.object.macro.impl.PrefixedMacro.prefixMacro;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType.Op;
-import org.o42a.core.ir.value.struct.SingleValueStructIR;
-import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.macro.Macro;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.*;
-import org.o42a.core.value.Void;
 
 
 public class MacroValueStruct extends SingleValueStruct<Macro> {
@@ -64,43 +57,7 @@ public class MacroValueStruct extends SingleValueStruct<Macro> {
 	@Override
 	protected ValueStructIR<SingleValueStruct<Macro>, Macro> createIR(
 			Generator generator) {
-		return new MacroIR(generator, this);
-	}
-
-	private static final class MacroIR extends SingleValueStructIR<Macro> {
-
-		MacroIR(Generator generator, MacroValueStruct valueStruct) {
-			super(generator, valueStruct);
-		}
-
-		@Override
-		public boolean hasValue() {
-			return false;
-		}
-
-		@Override
-		public Val val(Macro value) {
-
-			final Val voidValue =
-					ValueStruct.VOID.ir(getGenerator()).val(Void.VOID);
-
-			return new Val(
-					getValueStruct(),
-					voidValue.getFlags(),
-					voidValue.getLength(),
-					voidValue.getValue());
-		}
-
-		@Override
-		public Ptr<Op> valPtr(Macro value) {
-			return ValueStruct.VOID.ir(getGenerator()).valPtr(Void.VOID);
-		}
-
-		@Override
-		public ValueIR valueIR(ObjectIR objectIR) {
-			return defaultValueIR(objectIR);
-		}
-
+		return new MacroValueStructIR(generator, this);
 	}
 
 }

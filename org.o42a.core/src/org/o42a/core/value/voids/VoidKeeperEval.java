@@ -21,7 +21,6 @@ package org.o42a.core.value.voids;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
-import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int8recOp;
@@ -47,7 +46,12 @@ final class VoidKeeperEval extends FlaggedKeeperEval {
 
 	@Override
 	protected ValOp loadValue(ValDirs dirs, Code code) {
-		return voidValue().op(dirs.getBuilder(), code);
+
+		final ValOp value = dirs.value();
+
+		value.flags(code).store(code, VAL_CONDITION);
+
+		return value;
 	}
 
 	@Override
