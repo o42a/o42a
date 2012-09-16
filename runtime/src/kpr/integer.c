@@ -50,3 +50,9 @@ void o42a_kpr_integer_derive(o42a_obj_ctable_t *const ctable) {
 
 	O42A_RETURN;
 }
+
+o42a_bool_t o42a_kpr_integer_is_init(const o42a_fld *const fld) {
+	O42A_ENTER(return O42A_FALSE);
+	O42A_RETURN ((fld->kpr_integer.flags & O42A_VAL_INDEFINITE)
+			? O42A_FALSE : O42A_TRUE);
+}

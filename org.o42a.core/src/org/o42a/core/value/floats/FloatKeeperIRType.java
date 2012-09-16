@@ -35,19 +35,19 @@ final class FloatKeeperIRType extends KeeperIRType<FloatKeeperIROp> {
 	public static final FloatKeeperIRType FLOAT_KEEPER_IR_TYPE =
 			new FloatKeeperIRType();
 
-	private Int8rec flags;
 	private Fp64rec value;
+	private Int8rec flags;
 
 	private FloatKeeperIRType() {
 		super(ID.id("o42a_kpr_float"));
 	}
 
-	public final Int8rec flags() {
-		return this.flags;
-	}
-
 	public final Fp64rec value() {
 		return this.value;
+	}
+
+	public final Int8rec flags() {
+		return this.flags;
 	}
 
 	@Override
@@ -57,8 +57,8 @@ final class FloatKeeperIRType extends KeeperIRType<FloatKeeperIROp> {
 
 	@Override
 	protected void allocate(SubData<FloatKeeperIROp> data) {
-		this.flags = data.addInt8("flags");
 		this.value = data.addFp64("value");
+		this.flags = data.addInt8("flags");
 	}
 
 	@Override
