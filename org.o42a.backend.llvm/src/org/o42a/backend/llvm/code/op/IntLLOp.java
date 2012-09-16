@@ -680,7 +680,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 			long op1ptr,
 			long op2ptr);
 
-	private static native long ne(
+	static native long ne(
 			long blockPtr,
 			long instrPtr,
 			long id,

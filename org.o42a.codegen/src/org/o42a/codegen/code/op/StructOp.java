@@ -76,8 +76,13 @@ public abstract class StructOp<S extends StructOp<S>>
 	}
 
 	@Override
-	public BoolOp eq(ID id, Code code, S other) {
+	public final BoolOp eq(ID id, Code code, S other) {
 		return writer().eq(id, code, other);
+	}
+
+	@Override
+	public final BoolOp ne(ID id, Code code, S other) {
+		return writer().ne(id, code, other);
 	}
 
 	@Override

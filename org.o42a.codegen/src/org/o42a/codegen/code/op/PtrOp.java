@@ -32,6 +32,8 @@ public interface PtrOp<P extends PtrOp<P>> extends Op {
 
 	BoolOp eq(ID id, Code code, P other);
 
+	BoolOp ne(ID id, Code code, P other);
+
 	AnyOp toAny(ID id, Code code);
 
 	void returnValue(Block code);
