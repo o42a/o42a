@@ -367,8 +367,11 @@ public final class ObjectType implements UserInfo {
 
 			if (field != null) {
 				this.derivationUses.useBy(
-						field.getAnalysis().derivation(),
+						field.getAnalysis().rtDerivation(),
 						RUNTIME_DERIVATION_USAGE);
+				this.derivationUses.useBy(
+						field.getAnalysis().staticDerivation(),
+						STATIC_DERIVATION_USAGE);
 			}
 		} else {
 

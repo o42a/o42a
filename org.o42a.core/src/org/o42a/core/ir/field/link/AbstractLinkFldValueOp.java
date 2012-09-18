@@ -32,7 +32,7 @@ import org.o42a.core.ir.value.ValOp;
 
 
 public abstract class AbstractLinkFldValueOp<F extends RefFldOp<?, ?>>
-	implements HostValueOp {
+		implements HostValueOp {
 
 	private final F fld;
 
