@@ -103,6 +103,10 @@ public enum ConstructionMode {
 		return this != FULL_CONSTRUCTION;
 	}
 
+	public final boolean isPredefined() {
+		return this == PREDEFINED_CONSTRUCTION;
+	}
+
 	public final boolean isRuntime() {
 		return ordinal() >= RUNTIME_CONSTRUCTION.ordinal();
 	}
