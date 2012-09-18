@@ -65,6 +65,14 @@ public class FieldAnalysis {
 		return derivationUses().toUser();
 	}
 
+	public final User<DerivationUsage> rtDerivation() {
+		return derivationUses().usageUser(RUNTIME_DERIVATION_USAGE);
+	}
+
+	public final User<DerivationUsage> staticDerivation() {
+		return derivationUses().usageUser(STATIC_DERIVATION_USAGE);
+	}
+
 	public String reasonNotFound(Analyzer analyzer) {
 
 		final StringBuilder out = new StringBuilder();
