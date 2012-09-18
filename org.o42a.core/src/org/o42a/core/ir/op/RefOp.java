@@ -64,7 +64,8 @@ public final class RefOp {
 	public final void writeCond(CodeDirs dirs) {
 		target(dirs)
 		.materialize(dirs, tempObjHolder(dirs.getAllocator()))
-		.value().writeCond(dirs);
+		.value()
+		.writeCond(dirs);
 	}
 
 	public final HostOp target(CodeDirs dirs) {
