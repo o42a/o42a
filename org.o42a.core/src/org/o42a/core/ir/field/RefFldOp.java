@@ -25,14 +25,17 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
+import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public abstract class RefFldOp<
@@ -65,7 +68,13 @@ public abstract class RefFldOp<
 
 		if (isOmitted()) {
 
-			final ObjectIR targetIR = fld().getTarget().ir(getGenerator());
+			final Obj target = fld().getTarget();
+
+			if (target.isNone()) {
+				code.go(dirs.falseDir());
+			}
+
+			final ObjectIR targetIR = target.ir(getGenerator());
 
 			return holder.hold(code, targetIR.op(getBuilder(), dirs.code()));
 		}
@@ -75,7 +84,7 @@ public abstract class RefFldOp<
 		code.dumpName(kind + " field: ", this);
 		code.dumpName(kind + " host: ", host());
 
-		return target(code, holder);
+		return findTarget(dirs, holder);
 	}
 
 	@Override
@@ -83,26 +92,34 @@ public abstract class RefFldOp<
 		return target(dirs, holder);
 	}
 
-	protected ObjectOp target(Block code, ObjHolder holder) {
+	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
 
+		final Block code = dirs.code();
 		final DataRecOp objectRec = ptr().object(null, code);
 
 		code.acquireBarrier();
 
-		final DataOp object = objectRec.load(null, code, ATOMIC);
+		final DataOp existing = objectRec.load(null, code, ATOMIC);
 		final CondBlock noTarget =
-				object.isNull(null, code)
+				existing.isNull(null, code)
 				.branch(code, "no_target", "has_target");
 		final Block hasTarget = noTarget.otherwise();
 
-		final DataOp ptr1 = hasTarget.phi(null, object);
+		isNone(hasTarget, existing).go(hasTarget, dirs.falseDir());
+
+		final DataOp ptr1 = hasTarget.phi(null, existing);
 
 		if (fld().getKind().isVariable()) {
 			holder.hold(hasTarget, createObject(hasTarget, ptr1));
 		}
+
 		hasTarget.go(code.tail());
 
-		final DataOp ptr2 = ptr().construct(noTarget, host());
+		final DataOp constructed = ptr().construct(noTarget, host());
+
+		constructed.isNull(null, noTarget).go(noTarget, dirs.falseDir());
+
+		final DataOp ptr2 = noTarget.phi(null, constructed);
 
 		if (fld().getKind().isVariable()) {
 			// Object is trapped in variable constructor.
@@ -140,6 +157,16 @@ public abstract class RefFldOp<
 		}
 
 		return anonymousObject(getBuilder(), ptr, targetType);
+	}
+
+	private BoolOp isNone(Block hasTarget, DataOp ptr) {
+
+		final ObjectIR noneIR = getContext().getNone().ir(getGenerator());
+		final Ptr<ObjectIRBodyOp> nonePtr =
+				noneIR.getMainBodyIR().pointer(getGenerator());
+		final DataOp none = nonePtr.toData().op(null, hasTarget);
+
+		return ptr.eq(ID.id("is_none"), hasTarget, none);
 	}
 
 }
