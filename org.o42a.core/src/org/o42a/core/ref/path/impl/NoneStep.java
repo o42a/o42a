@@ -175,6 +175,7 @@ public class NoneStep extends Step {
 
 		@Override
 		public HostOp target(CodeDirs dirs) {
+			dirs.code().go(dirs.falseDir());
 
 			final Obj none = getContext().getNone();
 
