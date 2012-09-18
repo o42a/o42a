@@ -187,15 +187,24 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		final DefValue finalValue = getFinal();
 
 		if (isConstantValue(finalValue)) {
+			if (finalValue.getCondition().isFalse()) {
+				// Always false.
+				reuse(falseValFunc());
+				return;
+			}
+			// Condition is true.
 			if (!finalValue.hasValue()) {
+				// Only condition present in value.
 				if (finalValue.getCondition().isTrue()) {
+					// Condition is unknown.
+					// Do not update the value during calculation.
 					reuse(unknownValFunc());
-				} else {
-					reuse(falseValFunc());
 				}
 				return;
 			}
+			// Final value is known.
 			if (getValueStruct().isVoid()) {
+				// Value is void.
 				reuse(voidValFunc());
 				return;
 			}

@@ -40,7 +40,7 @@ final class LogicalResult extends BuiltinObject {
 	private Ref operand;
 
 	LogicalResult(LogicalExpression logical) {
-		super(logical, logical.distributeIn(logical.getContainer()), ValueStruct.VOID);
+		super(logical, logical.distribute(), ValueStruct.VOID);
 		this.logical = logical;
 	}
 
