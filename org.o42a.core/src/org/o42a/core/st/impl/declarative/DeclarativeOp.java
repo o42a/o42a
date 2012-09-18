@@ -84,23 +84,21 @@ final class DeclarativeOp {
 					origin,
 					prerequisite,
 					inline != null ? inline.getPrerequisite() : null);
-
-			prereqDirs.done();
 		}
 
 		final List<Declaratives> alts = sentence.getAlternatives();
 		final int size = alts.size();
 
 		if (size <= 1) {
-			if (size == 0) {
-				return;
+			if (size != 0) {
+				writeStatements(
+						dirs,
+						host,
+						origin,
+						alts.get(0),
+						inline != null ? inline.get(0) : null);
 			}
-			writeStatements(
-					dirs,
-					host,
-					origin,
-					alts.get(0),
-					inline != null ? inline.get(0) : null);
+			endPrereq(dirs, prereqFailed);
 			return;
 		}
 
@@ -147,6 +145,10 @@ final class DeclarativeOp {
 		if (end.exists()) {
 			end.go(dirs.code().tail());
 		}
+		endPrereq(dirs, prereqFailed);
+	}
+
+	private static void endPrereq(DefDirs dirs, Block prereqFailed) {
 		if (prereqFailed != null && prereqFailed.exists()) {
 			prereqFailed.go(dirs.code().tail());
 		}
