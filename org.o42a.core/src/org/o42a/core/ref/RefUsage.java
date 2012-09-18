@@ -134,6 +134,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		@Override
 		protected void resolveObject(Obj object, UserInfo user) {
 			object.resolveAll();
+			object.type().useBy(user);
 		}
 
 	}

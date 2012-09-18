@@ -357,11 +357,11 @@ public final class ObjectType implements UserInfo {
 		final Obj object = getObject();
 
 		if (!object.meta().isUpdated()) {
-			this.derivationUses = object.getCloneOf().type().derivationUses();
-		} else {
-			this.derivationUses =
-					DerivationUsage.usable("DerivationOf", object);
+			return this.derivationUses =
+					object.getCloneOf().type().derivationUses();
 		}
+
+		this.derivationUses = DerivationUsage.usable("DerivationOf", object);
 
 		final Member member = object.toMember();
 
@@ -392,9 +392,9 @@ public final class ObjectType implements UserInfo {
 
 			if (enclosingObject != null) {
 				// Stand-alone object is constructed at run time,
-				// if enclosing object is ever derived.
+				// if it is ever derived.
 				this.derivationUses.useBy(
-						enclosingObject.type().derivation(),
+						staticDerivation(),
 						RUNTIME_DERIVATION_USAGE);
 			} else {
 				assert enclosingScope.isTopScope() :

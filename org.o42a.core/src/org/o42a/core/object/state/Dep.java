@@ -60,7 +60,8 @@ public final class Dep extends Step implements SubID {
 		this.ref = ref;
 		this.id = id;
 		this.target = target();
-		assert !this.target.getConstructionMode().isRuntime() :
+		assert !this.target.getConstructionMode().isRuntime()
+			|| this.target.getConstructionMode().isPredefined():
 			"Can not find an interface of run-time constructed dependency";
 	}
 
@@ -270,7 +271,8 @@ public final class Dep extends Step implements SubID {
 
 		final Obj target = this.ref.resolve(local.resolver()).toObject();
 
-		if (!target.getConstructionMode().isRuntime()) {
+		if (!target.getConstructionMode().isRuntime()
+				|| target.getConstructionMode().isPredefined()) {
 			return target;
 		}
 
