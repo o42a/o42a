@@ -162,8 +162,11 @@ public class FieldAnalysis {
 
 		// If owner derived then member derived too.
 		this.derivationUses.useBy(
-				owner.type().derivation(),
+				owner.type().staticDerivation(),
 				STATIC_DERIVATION_USAGE);
+		this.derivationUses.useBy(
+				owner.type().rtDerivation(),
+				RUNTIME_DERIVATION_USAGE);
 
 		final MemberField firstDeclaration = member.getFirstDeclaration();
 
@@ -171,20 +174,16 @@ public class FieldAnalysis {
 			firstDeclaration.getAnalysis().derivationUses().useBy(
 					this.derivationUses,
 					STATIC_DERIVATION_USAGE);
-		}
+			if (!member.isUpdated()) {
 
-		// Run time construction status derived from owner.
-		this.derivationUses.useBy(
-				owner.type().rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
+				final MemberField lastDefinition = member.getLastDefinition();
 
-		if (!member.isUpdated()) {
-
-			final MemberField lastDefinition = member.getLastDefinition();
-
-			lastDefinition.getAnalysis().derivationUses().useBy(
-					this.derivationUses.usageUser(RUNTIME_DERIVATION_USAGE),
-					RUNTIME_DERIVATION_USAGE);
+				if (lastDefinition != member) {
+					lastDefinition.getAnalysis().derivationUses().useBy(
+							rtDerivation(),
+							RUNTIME_DERIVATION_USAGE);
+				}
+			}
 		}
 
 		return this.derivationUses;

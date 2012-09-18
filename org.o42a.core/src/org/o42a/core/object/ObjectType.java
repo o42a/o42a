@@ -182,6 +182,10 @@ public final class ObjectType implements UserInfo {
 		return derivationUses().usageUser(RUNTIME_DERIVATION_USAGE);
 	}
 
+	public final User<DerivationUsage> staticDerivation() {
+		return derivationUses().usageUser(STATIC_DERIVATION_USAGE);
+	}
+
 	public final boolean derivedFrom(ObjectType other) {
 		return allAscendants().containsKey(other.getObject().getScope());
 	}
