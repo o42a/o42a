@@ -78,10 +78,7 @@ to report when condition fails.
   A message reported when condition fails.
   ~~~
   
-  {
-    --Condition? Fail [message]
-    = Void
-  }
+  --Condition? Fail [message]
 
   <*[] | error message> Condition = ()
   <:Error message> (
