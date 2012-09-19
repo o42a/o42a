@@ -92,7 +92,12 @@ public abstract class RefFldOp<
 		return target(dirs, holder);
 	}
 
-	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
+	protected abstract ObjectOp findTarget(CodeDirs dirs, ObjHolder holder);
+
+	protected final ObjectOp loadOrConstructTarget(
+			CodeDirs dirs,
+			ObjHolder holder,
+			boolean trappingConstructor) {
 
 		final Block code = dirs.code();
 		final DataRecOp objectRec = ptr().object(null, code);
@@ -109,7 +114,7 @@ public abstract class RefFldOp<
 
 		final DataOp ptr1 = hasTarget.phi(null, existing);
 
-		if (fld().getKind().isVariable()) {
+		if (trappingConstructor) {
 			holder.hold(hasTarget, createObject(hasTarget, ptr1));
 		}
 
@@ -121,7 +126,7 @@ public abstract class RefFldOp<
 
 		final DataOp ptr2 = noTarget.phi(null, constructed);
 
-		if (fld().getKind().isVariable()) {
+		if (trappingConstructor) {
 			// Object is trapped in variable constructor.
 			// Add it to holder to unuse it automatically.
 			holder.set(noTarget, createObject(noTarget, ptr2));
@@ -130,31 +135,25 @@ public abstract class RefFldOp<
 
 		final ObjectOp target = createObject(code, code.phi(null, ptr1, ptr2));
 
-		if (!fld().getKind().isVariable()) {
+		if (!trappingConstructor) {
 			holder.hold(code, target);
 		}
 
 		return target;
 	}
 
+	/**
+	 * Create an object by the given pointer.
+	 *
+	 * @param code code block to construct the object in.
+	 * @param ptr object pointer.
+	 *
+	 * @return constructed object.
+	 */
 	protected ObjectOp createObject(Block code, DataOp ptr) {
 
 		final Obj hostAscendant = host().getAscendant();
 		final Obj targetType = fld().targetType(hostAscendant);
-
-		if (!fld().isLink() && host().getPrecision().isExact()) {
-
-			final ObjectIRBodyOp targetBodyPtr = ptr.to(
-					null,
-					code,
-					fld().getTargetAscendant()
-					.ir(getGenerator()).getBodyType());
-
-			return targetBodyPtr.op(
-					getBuilder(),
-					fld().getTargetAscendant(),
-					ObjectPrecision.EXACT);
-		}
 
 		return anonymousObject(getBuilder(), ptr, targetType);
 	}

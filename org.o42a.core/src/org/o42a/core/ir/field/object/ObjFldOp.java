@@ -21,10 +21,11 @@ package org.o42a.core.ir.field.object;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 
@@ -57,6 +58,29 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.dereference(dirs, holder);
+	}
+
+	@Override
+	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
+		return loadOrConstructTarget(dirs, holder, false);
+	}
+
+	@Override
+	protected ObjectOp createObject(Block code, DataOp ptr) {
+		if (!host().getPrecision().isExact()) {
+			return super.createObject(code, ptr);
+		}
+
+		final ObjectIRBodyOp targetBodyPtr = ptr.to(
+				null,
+				code,
+				fld().getTargetAscendant()
+				.ir(getGenerator()).getBodyType());
+
+		return targetBodyPtr.op(
+				getBuilder(),
+				fld().getTargetAscendant(),
+				ObjectPrecision.EXACT);
 	}
 
 }
