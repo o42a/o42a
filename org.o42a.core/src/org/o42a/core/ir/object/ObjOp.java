@@ -61,11 +61,7 @@ public final class ObjOp extends ObjectOp {
 		assert ascendant != null :
 			"Object ascendant not specified";
 		this.ascendant = ascendant;
-		assert getPrecision().isCompatible() :
-			"Wrong object precision: " + this;
-		assert (!getPrecision().isExact()
-				|| ascendant.cloneOf(ptr.getAscendant())) :
-					ascendant + " is not a clone of " + ptr.getAscendant();
+		assert validPrecision();
 	}
 
 	ObjOp(
@@ -80,11 +76,7 @@ public final class ObjOp extends ObjectOp {
 		assert ascendant != null :
 			"Object ascendant not specified";
 		this.ascendant = ascendant;
-		assert getPrecision().isCompatible() :
-			"Wrong object precision: " + this;
-		assert (!getPrecision().isExact()
-				|| ascendant.cloneOf(ptr.getAscendant())) :
-					ascendant + " is not a clone of " + ptr.getAscendant();
+		assert validPrecision();
 	}
 
 	ObjOp(CodeBuilder builder, ObjectIR objectIR, ObjectIRBodyOp ptr) {
@@ -92,6 +84,11 @@ public final class ObjOp extends ObjectOp {
 		this.ptr = ptr;
 		this.ascendant = objectIR.getObject();
 		this.objectIR = objectIR;
+		assert validPrecision();
+	}
+
+	public final ObjectIR getObjectIR() {
+		return this.objectIR;
 	}
 
 	public final Obj getAscendant() {
@@ -210,6 +207,16 @@ public final class ObjOp extends ObjectOp {
 		return ptr().declaredField(code, this, memberKey);
 	}
 
+	private boolean validPrecision() {
+		assert getPrecision().isCompatible() :
+			"Wrong object precision: " + this;
+		assert (!getPrecision().isExact()
+				|| getAscendant().cloneOf(ptr().getAscendant())) :
+				getAscendant() + " is not a clone of "
+				+ ptr().getAscendant();
+		return true;
+	}
+
 	private ObjOp staticCast(Code code, Obj ascendant) {
 
 		final ObjectIRBody ascendantBodyIR =
@@ -224,10 +231,6 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		return ascendantBody.op(getBuilder(), getObjectIR(), ascendant, EXACT);
-	}
-
-	private final ObjectIR getObjectIR() {
-		return this.objectIR;
 	}
 
 	private static final class ExactValueOp extends ValueOp {

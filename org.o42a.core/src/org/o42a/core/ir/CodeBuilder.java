@@ -26,15 +26,12 @@ import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.core.Scope;
-import org.o42a.core.ir.local.LocalBuilder;
-import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.ObjectPrecision;
-import org.o42a.core.ir.object.op.*;
+import org.o42a.core.ir.object.op.CtrOp;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -47,32 +44,6 @@ public abstract class CodeBuilder {
 
 	public static CodeBuilder defaultBuilder(Function<?> function, Obj object) {
 		return new DefaultBuilder(function, object);
-	}
-
-	public static CodeBuilder codeBuilder(
-			Function<? extends ObjectFunc<?>> function,
-			CodePos exit,
-			Scope scope,
-			ObjectPrecision hostPrecision) {
-
-		final Generator generator = function.getGenerator();
-		final LocalScope local = scope.toLocal();
-
-		if (local != null) {
-			return new LocalBuilder(function, local.ir(generator));
-		}
-
-		final Obj scopeObject = scope.toObject();
-
-		assert scopeObject != null :
-			"Unsupported scope: " + scope;
-
-		return new ObjBuilder(
-				function,
-				exit,
-				scopeObject.ir(generator).getBodyType(),
-				scopeObject,
-				hostPrecision);
 	}
 
 	public static ObjectOp objectAncestor(

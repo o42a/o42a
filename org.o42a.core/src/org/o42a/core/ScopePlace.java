@@ -76,7 +76,26 @@ public class ScopePlace {
 	}
 
 	public boolean isInsideLoop() {
-		return false;
+
+		final Scope appearedIn = getAppearedIn();
+
+		if (appearedIn == null) {
+			return false;
+		}
+
+		final ScopePlace scopePlace = appearedIn.getPlace();
+
+		if (scopePlace != this) {
+			return scopePlace.isInsideLoop();
+		}
+
+		final Scope enclosingScope = appearedIn.getEnclosingScope();
+
+		if (enclosingScope == null) {
+			return false;
+		}
+
+		return enclosingScope.getPlace().isInsideLoop();
 	}
 
 	public Trace nestedTrace() {
