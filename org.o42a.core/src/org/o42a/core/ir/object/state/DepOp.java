@@ -88,22 +88,26 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 
 	@Override
 	public void writeCond(CodeDirs dirs) {
+		assert validUsage();
 		object(dirs.code()).value().writeCond(dirs);
 	}
 
 	@Override
 	public ValOp writeValue(ValDirs dirs) {
+		assert validUsage();
 		return object(dirs.code()).value().writeValue(dirs);
 	}
 
 	@Override
 	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+		assert validUsage();
 		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}
 
 	@Override
 	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		assert validUsage();
 
 		final Block code = dirs.code();
 
@@ -112,6 +116,7 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 
 	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		assert validUsage();
 		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
 				.dereference(dirs, holder);
 	}
@@ -122,6 +127,7 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 	}
 
 	public void fill(CodeBuilder builder, CodeDirs dirs) {
+		assert validUsage();
 
 		final DataRecOp objectRec = ptr().object(dirs.code());
 		final Block noDep = dirs.addBlock("no_dep");
@@ -150,6 +156,15 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 	@Override
 	public String toString() {
 		return "DepOp[" + getDep() + '@' + host() + ']';
+	}
+
+	private boolean validUsage() {
+		assert (!host().getPrecision().isExact()
+				|| !host().getAscendant().getPlace().isInsideLoop()) :
+				host().getAscendant()
+				+ " has exact precision and is inside loop. "
+				+ "Its dependencies should never be used directly";
+		return true;
 	}
 
 	private DataOp createObject(CodeBuilder builder, CodeDirs dirs) {

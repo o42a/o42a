@@ -160,7 +160,11 @@ public final class ImperativeBlock
 
 		final Statements<?, ?> enclosing = getEnclosing();
 
-		return !isTopLevel() && enclosing != null && enclosing.isInsideLoop();
+		if (enclosing != null) {
+			return enclosing.getPlace().isInsideLoop();
+		}
+
+		return getScope().getEnclosingScope().getPlace().isInsideLoop();
 	}
 
 	public final boolean isLoop() {

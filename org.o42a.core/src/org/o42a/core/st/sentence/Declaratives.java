@@ -53,7 +53,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	@Override
 	public final boolean isInsideLoop() {
-		return false;
+		return getScope().getPlace().isInsideLoop();
 	}
 
 	public final boolean isInsideClaim() {
