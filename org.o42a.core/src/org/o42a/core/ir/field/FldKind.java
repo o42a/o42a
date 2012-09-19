@@ -22,33 +22,27 @@ package org.o42a.core.ir.field;
 
 public enum FldKind {
 
-	OBJ(0, false),
-	LINK(1, true),
-	VAR(2, true),
-	SCOPE(3, false),
-	DEP(4, false),
-	ASSIGNER(5, true),
-	VOID_KEEPER(6, false),
-	INTEGER_KEEPER(7, false),
-	FLOAT_KEEPER(8, false),
-	STRING_KEEPER(9, false),
-	LINK_KEEPER(10, false),
-	ARRAY_KEEPER(11, false),;
+	OBJ(0),
+	LINK(1),
+	VAR(2),
+	SCOPE(3),
+	DEP(4),
+	ASSIGNER(5),
+	VOID_KEEPER(6),
+	INTEGER_KEEPER(7),
+	FLOAT_KEEPER(8),
+	STRING_KEEPER(9),
+	LINK_KEEPER(10),
+	ARRAY_KEEPER(11),;
 
 	private final int code;
-	private final boolean variable;
 
-	FldKind(int code, boolean variable) {
+	FldKind(int code) {
 		this.code = code;
-		this.variable = variable;
 	}
 
 	public final int code() {
 		return this.code;
-	}
-
-	public final boolean isVariable() {
-		return this.variable;
 	}
 
 }

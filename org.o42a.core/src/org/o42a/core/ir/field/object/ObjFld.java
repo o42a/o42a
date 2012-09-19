@@ -19,12 +19,14 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -39,8 +41,11 @@ import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldAnalysis;
+import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
@@ -73,6 +78,35 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	@Override
 	protected Type getType() {
 		return OBJ_FLD;
+	}
+
+	@Override
+	protected Obj targetType(Obj bodyType) {
+		return bodyType.member(getField().getKey())
+				.toField()
+				.object(dummyUser());
+	}
+
+	@Override
+	protected FuncPtr<ObjectConstructorFunc> reuseConstructor() {
+
+		final FuncPtr<ObjectConstructorFunc> reused = super.reuseConstructor();
+
+		if (reused != null) {
+			return reused;
+		}
+
+		final FieldAnalysis analysis = getField().getAnalysis();
+
+		if (!analysis.derivation().isUsed(
+				getGenerator().getAnalyzer(),
+				RUNTIME_DERIVATION_USAGE)) {
+			// Reuse the derived constructor if no run-time
+			// inheritance expected.
+			return getType().constructorStub();
+		}
+
+		return null;
 	}
 
 	@Override
@@ -152,6 +186,21 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		ctr.finish(code, ownFld);
 
 		result.returnValue(code);
+	}
+
+	private ObjectOp construct(
+			ObjBuilder builder,
+			CodeDirs dirs,
+			ObjHolder holder) {
+
+		final Obj object = getField().toObject();
+
+		return builder.newObject(
+				dirs,
+				holder,
+				builder.host(),
+				builder.objectAncestor(dirs, object),
+				object);
 	}
 
 	private ObjectOp delegate(

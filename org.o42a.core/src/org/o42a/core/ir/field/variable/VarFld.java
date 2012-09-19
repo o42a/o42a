@@ -19,7 +19,10 @@
 */
 package org.o42a.core.ir.field.variable;
 
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
+import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
@@ -28,17 +31,19 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.field.RefFldOp;
+import org.o42a.core.ir.field.link.AbstractLinkFld;
+import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
@@ -46,7 +51,7 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.string.ID;
 
 
-public class VarFld extends RefFld<ObjectRefFunc> {
+public class VarFld extends AbstractLinkFld {
 
 	public static final Type VAR_FLD = new Type();
 
@@ -111,6 +116,36 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		getInstance().bound().setValue(
 				typeIR.getInstance().pointer(getGenerator()));
 		getInstance().assigner().setConstant(true).setValue(this.assigner);
+	}
+
+	@Override
+	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
+
+		final Block code = dirs.code();
+		final RefFldOp<?, ObjectRefFunc> fld = op(code, builder.host());
+		final FldCtrOp ctr =
+				code.getAllocator()
+				.allocation()
+				.allocate(FLD_CTR_ID, FLD_CTR_TYPE);
+
+		final Block constructed = code.addBlock("constructed");
+
+		ctr.start(code, fld).goUnless(code, constructed.head());
+
+		fld.ptr()
+		.object(null, constructed)
+		.load(null, constructed, ATOMIC)
+		.toData(null, constructed)
+		.returnValue(constructed);
+
+		final DataOp res = construct(builder, dirs).toData(null, code);
+		final DataRecOp objectRec =
+				op(code, builder.host()).ptr().object(null, code);
+
+		objectRec.store(code, res, ACQUIRE_RELEASE);
+		ctr.finish(code, fld);
+
+		res.returnValue(code);
 	}
 
 	private FuncPtr<VariableAssignerFunc> reusedAssigner() {

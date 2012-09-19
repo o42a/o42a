@@ -21,6 +21,7 @@ package org.o42a.core.ir.field.link;
 
 import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -28,14 +29,17 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public class LinkFld extends RefFld<ObjectRefFunc> {
+public class LinkFld extends AbstractLinkFld {
 
 	public static final Type LINK_FLD = new Type();
 
@@ -69,6 +73,15 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 	@Override
 	protected boolean mayOmit() {
 		return false;
+	}
+
+	@Override
+	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
+
+		final Block code = dirs.code();
+		final ObjectOp result = construct(builder, dirs);
+
+		result.toData(null, code).returnValue(code);
 	}
 
 	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {

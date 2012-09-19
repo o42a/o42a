@@ -78,6 +78,11 @@ public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 		return super.target(dirs, holder.toVolatile());
 	}
 
+	@Override
+	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
+		return loadOrConstructTarget(dirs, holder, true);
+	}
+
 	private void assign(CodeDirs dirs, HostOp value) {
 
 		final Obj object = fld().getField().toObject();
