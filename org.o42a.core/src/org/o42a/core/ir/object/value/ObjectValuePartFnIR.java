@@ -24,8 +24,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
-import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
-import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
+import static org.o42a.core.object.value.ValuePartUsage.ALL_VALUE_PART_USAGES;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
 import org.o42a.codegen.code.*;
@@ -167,12 +166,7 @@ public abstract class ObjectValuePartFnIR
 
 	@Override
 	protected boolean canStub() {
-		if (getObject().type().derivation().isUsed(
-				getGenerator().getAnalyzer(),
-				RUNTIME_DERIVATION_USAGE)) {
-			return false;
-		}
-		if (part().isUsed(getGenerator().getAnalyzer(), VALUE_PART_ACCESS)) {
+		if (part().isUsed(getGenerator().getAnalyzer(), ALL_VALUE_PART_USAGES)) {
 			return false;
 		}
 		return !getObject().getConstructionMode().isPredefined();
