@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -55,17 +53,11 @@ public final class RefOp {
 	}
 
 	public final ValOp writeValue(ValDirs dirs) {
-		return target(dirs.dirs())
-				.materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()))
-				.value()
-				.writeValue(dirs);
+		return target(dirs.dirs()).value().writeValue(dirs);
 	}
 
 	public final void writeCond(CodeDirs dirs) {
-		target(dirs)
-		.materialize(dirs, tempObjHolder(dirs.getAllocator()))
-		.value()
-		.writeCond(dirs);
+		target(dirs).value().writeCond(dirs);
 	}
 
 	public final HostOp target(CodeDirs dirs) {
