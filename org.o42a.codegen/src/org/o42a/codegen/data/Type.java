@@ -118,11 +118,18 @@ public abstract class Type<S extends StructOp<S>>
 
 	protected abstract void allocate(SubData<S> data);
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Type<S> clone() {
 		try {
-			return (Type<S>) super.clone();
+
+			@SuppressWarnings("unchecked")
+			final Type<S> clone = (Type<S>) super.clone();
+
+			clone.allocated = null;
+			clone.allocating = null;
+			clone.data = null;
+
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
