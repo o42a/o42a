@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.RUNTIME_VALUE_USAGE;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import org.o42a.analysis.Analyzer;
@@ -300,6 +301,11 @@ public final class ObjectValue extends ObjectValueParts {
 			this.uses = cloneOf.value().uses();
 		} else {
 			this.uses = ValueUsage.usable(this);
+			// Always construct the value functions
+			// of run-time constructed objects.
+			this.uses.useBy(
+					getObject().type().rtDerivation(),
+					RUNTIME_VALUE_USAGE);
 		}
 		getObject().content().useBy(this.uses);
 
