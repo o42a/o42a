@@ -80,7 +80,7 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 		return targetBodyPtr.op(
 				getBuilder(),
 				fld().getTargetAscendant(),
-				ObjectPrecision.EXACT);
+				ObjectPrecision.COMPATIBLE);
 	}
 
 }
