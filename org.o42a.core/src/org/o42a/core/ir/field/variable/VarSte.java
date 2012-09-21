@@ -236,7 +236,7 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 				definedIn = sampleDefinedIn;
 				continue;
 			}
-			if (definedIn != sampleDefinedIn) {
+			if (!definedIn.is(sampleDefinedIn)) {
 				return object;
 			}
 		}

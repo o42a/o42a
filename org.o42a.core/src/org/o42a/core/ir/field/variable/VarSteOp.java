@@ -74,7 +74,7 @@ public final class VarSteOp extends FldOp {
 
 	@Override
 	public HostValueOp value() {
-		return new AssignerFldValueOp(this);
+		return new VarSteValueOp(this);
 	}
 
 	@Override
@@ -184,11 +184,11 @@ public final class VarSteOp extends FldOp {
 		boundUnknown.go(code.tail());
 	}
 
-	private static final class AssignerFldValueOp implements HostValueOp {
+	private static final class VarSteValueOp implements HostValueOp {
 
 		private final VarSteOp fld;
 
-		AssignerFldValueOp(VarSteOp fld) {
+		VarSteValueOp(VarSteOp fld) {
 			this.fld = fld;
 		}
 
