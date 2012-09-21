@@ -17,28 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.link.impl;
+package org.o42a.core.ir.value.struct;
 
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueOp;
+import org.o42a.core.ir.op.CodeDirs;
 
 
-final class LinkIR extends ValueIR {
+public abstract class StatelessValueOp extends ValueOp {
 
-	LinkIR(LinkValueStructIR valueStructIR, ObjectIR objectIR) {
-		super(valueStructIR, objectIR);
+	public StatelessValueOp(ValueIR valueIR, ObjectOp object) {
+		super(valueIR, object);
+		assert !valueIR.getValueStruct().getValueType().isStateful() :
+			valueIR.getValueStruct().getValueType() + " is stateful";
 	}
 
 	@Override
-	public void allocateBody(ObjectIRBodyData data) {
-	}
-
-	@Override
-	public ValueOp op(ObjectOp object) {
-		return defaultOp(object);
+	public final StateOp state(CodeDirs dirs) {
+		throw new UnsupportedOperationException(
+				"Value of type " + getValueType() + " has no state");
 	}
 
 }

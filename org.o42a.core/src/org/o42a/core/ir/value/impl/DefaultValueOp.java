@@ -19,38 +19,21 @@
 */
 package org.o42a.core.ir.value.impl;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.struct.StatelessValueOp;
 import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueOp;
 
 
-public final class DefaultValueOp extends ValueOp {
+public final class DefaultValueOp extends StatelessValueOp {
 
 	public DefaultValueOp(ValueIR valueIR, ObjectOp object) {
 		super(valueIR, object);
 	}
 
 	@Override
-	public void init(Block code, ValOp value) {
-		defaultInit(code, value);
-	}
-
-	@Override
-	public void initToFalse(Block code) {
-		defaultInitToFalse(code);
-	}
-
-	@Override
-	public void assign(CodeDirs dirs, ObjectOp value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected ValOp write(ValDirs dirs) {
+	public ValOp writeValue(ValDirs dirs) {
 		return defaultWrite(dirs);
 	}
 

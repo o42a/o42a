@@ -70,7 +70,10 @@ public final class ArrayValueStructIR
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+		if (!getValueType().isVariable()) {
+			return defaultValueIR(objectIR);
+		}
+		return new ArrayValueIR(this, objectIR);
 	}
 
 	@Override

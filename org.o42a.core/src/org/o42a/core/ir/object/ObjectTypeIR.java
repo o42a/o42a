@@ -128,7 +128,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				.getValueIR()
 				.getValueStructIR()
 				.getValueTypeDesc());
-		getObjectIR().getObjectValueIR().fill(this);
 	}
 
 	public ObjectTypeOp op(CodeBuilder builder, Code code) {

@@ -20,22 +20,15 @@
 package org.o42a.core.ir.field.variable;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
-import static org.o42a.codegen.code.op.IntRecOp.OLD_ID;
-import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.value.Val.VAL_ASSIGN;
-import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.ValHolderFactory.VOLATILE_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FldKind;
@@ -46,9 +39,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.MemberKey;
 import org.o42a.util.string.ID;
 
@@ -123,26 +114,9 @@ public final class VarSteOp extends FldOp {
 
 	void assignValue(Block code, ObjectOp object) {
 
-		final ValType.Op value =
-				host().objectType(code).ptr().data(code).value(code);
-		final Block skip = code.addBlock("skip");
-		final ValFlagsOp flags = value.flags(code, ACQUIRE_RELEASE);
+		final DataRecOp objectRec = ptr().object(null, code);
 
-		code.acquireBarrier();
-
-		final ValFlagsOp old =
-				flags.atomicRMW(OLD_ID, code, R_OR_W, VAL_ASSIGN);
-
-		old.assigning(null, code).go(code, skip.head());
-
-		value.rawValue(null, code)
-		.toAny(null, code)
-		.toPtr(null, code)
-		.store(code, object.toAny(null, code), ATOMIC);
-
-		flags.store(code, VAL_CONDITION);
-
-		skip.go(code.tail());
+		objectRec.store(code, object.toData(null, code), ACQUIRE_RELEASE);
 	}
 
 	private void assign(CodeDirs dirs, HostOp value) {

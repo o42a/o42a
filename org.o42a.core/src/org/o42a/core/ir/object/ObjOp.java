@@ -24,7 +24,6 @@ import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.state.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.state.KeeperOp.KEEPER_ID;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
@@ -34,6 +33,7 @@ import org.o42a.core.ir.object.state.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.struct.StateOp;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
@@ -243,22 +243,7 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		@Override
-		public void init(Block code, ValOp value) {
-			this.value.init(code, value);
-		}
-
-		@Override
-		public void initToFalse(Block code) {
-			this.value.initToFalse(code);
-		}
-
-		@Override
-		public void assign(CodeDirs dirs, ObjectOp value) {
-			this.value.assign(dirs, value);
-		}
-
-		@Override
-		protected ValOp write(ValDirs dirs) {
+		public ValOp writeValue(ValDirs dirs) {
 
 			final DefDirs defDirs = dirs.nested().def();
 
@@ -266,6 +251,11 @@ public final class ObjOp extends ObjectOp {
 			defDirs.done();
 
 			return defDirs.result();
+		}
+
+		@Override
+		public StateOp state(CodeDirs dirs) {
+			return this.value.state(dirs);
 		}
 
 		private final ObjOp obj() {
