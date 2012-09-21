@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static org.o42a.core.ir.field.variable.AssignerFld.CAST_TARGET_ID;
+import static org.o42a.core.ir.field.variable.VarSte.CAST_TARGET_ID;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
@@ -35,7 +35,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 
 
-abstract class AbstractAssignerBuilder<F extends FldOp>
+abstract class AssignerBuilder<F extends FldOp>
 		implements FunctionBuilder<VariableAssignerFunc> {
 
 	@Override

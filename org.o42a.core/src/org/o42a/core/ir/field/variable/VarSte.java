@@ -48,27 +48,25 @@ import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
-public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
+public class VarSte extends Fld implements Content<VarSte.Type> {
 
-	private static final Name ASSIGNER_NAME = CASE_SENSITIVE.name("AS");
-
-	public static final Type ASSIGNER_FLD = new Type();
+	public static final Type VAR_STE = new Type();
 
 	static final ID CAST_TARGET_ID = ID.id("cast_target");
 
-	private static final MemberName ASSIGNER_MEMBER = fieldName(ASSIGNER_NAME);
+	private static final Name VAR_STE_NAME = CASE_SENSITIVE.name("V");
+	private static final ID VAR_STE_ID = VAR_STE_NAME.toID();
+	private static final MemberName VAR_STE_MEMBER = fieldName(VAR_STE_NAME);
+	private static final ID ASSIGNER_SUFFIX = ID.id("assigner");
 
-	private static final ID ASSIGNER_ID = ID.id("assigner");
-
-	public static MemberKey assignerKey(CompilerContext context) {
-		return ASSIGNER_MEMBER.key(variableObject(context).getScope());
+	public static MemberKey varSteKey(CompilerContext context) {
+		return VAR_STE_MEMBER.key(variableObject(context).getScope());
 	}
 
 	private static Obj variableObject(CompilerContext context) {
 		return context.getIntrinsics().getVariable();
 	}
 
-	private final ID id = ASSIGNER_NAME.toID();
 	private MemberKey key;
 	private Obj definedIn;
 	private FuncPtr<VariableAssignerFunc> assigner;
@@ -78,17 +76,17 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		if (this.key != null) {
 			return this.key;
 		}
-		return this.key = ASSIGNER_MEMBER.key(getDeclaredIn().getScope());
+		return this.key = VAR_STE_MEMBER.key(getDeclaredIn().getScope());
 	}
 
 	@Override
 	public final ID getId() {
-		return this.id;
+		return VAR_STE_ID;
 	}
 
 	@Override
 	public FldKind getKind() {
-		return FldKind.ASSIGNER;
+		return FldKind.VAR_STATE;
 	}
 
 	@Override
@@ -108,9 +106,9 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		}
 
 		return this.assigner = getGenerator().newFunction().create(
-				getObjectIR().getId().detail(ASSIGNER_ID),
+				getObjectIR().getId().detail(ASSIGNER_SUFFIX),
 				VARIABLE_ASSIGNER,
-				new AssignerBuilder(this)).getPointer();
+				new VarSteAssignerBuilder(this)).getPointer();
 	}
 
 	@Override
@@ -174,8 +172,8 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 	}
 
 	@Override
-	public AssignerFldOp op(Code code, ObjOp host) {
-		return new AssignerFldOp(
+	public VarSteOp op(Code code, ObjOp host) {
+		return new VarSteOp(
 				this,
 				host,
 				host.ptr().field(code, getInstance()));
@@ -201,7 +199,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 	@Override
 	protected Type getType() {
-		return ASSIGNER_FLD;
+		return VAR_STE;
 	}
 
 	final LinkValueStruct linkStruct() {
@@ -264,8 +262,8 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 			return null;
 		}
 
-		final AssignerFld definedFld =
-				(AssignerFld) definedIn.ir(getGenerator()).fld(getKey());
+		final VarSte definedFld =
+				(VarSte) definedIn.ir(getGenerator()).fld(getKey());
 
 		return definedFld.getAssigner();
 	}
@@ -297,7 +295,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		private FuncRec<VariableAssignerFunc> assigner;
 
 		Type() {
-			super(ID.rawId("o42a_fld_assigner"));
+			super(ID.rawId("o42a_ste_var"));
 		}
 
 		public final StructRec<ObjectIRTypeOp> bound() {
@@ -323,17 +321,17 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0200 | FldKind.ASSIGNER.code());
+			return externalTypeInfo(0x042a0200 | FldKind.VAR_STATE.code());
 		}
 
 	}
 
-	private static final class AssignerBuilder
-			extends AbstractAssignerBuilder<AssignerFldOp> {
+	private static final class VarSteAssignerBuilder
+			extends AssignerBuilder<VarSteOp> {
 
-		private final AssignerFld fld;
+		private final VarSte fld;
 
-		AssignerBuilder(AssignerFld fld) {
+		VarSteAssignerBuilder(VarSte fld) {
 			this.fld = fld;
 		}
 
@@ -348,14 +346,14 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		}
 
 		@Override
-		protected AssignerFldOp op(Code code, ObjOp host) {
+		protected VarSteOp op(Code code, ObjOp host) {
 			return this.fld.op(code, host);
 		}
 
 		@Override
 		protected void storeBound(
 				Code code,
-				AssignerFldOp fld,
+				VarSteOp fld,
 				ObjectIRTypeOp bound) {
 			fld.ptr().bound(null, code).store(code, bound, VOLATILE);
 		}
@@ -363,7 +361,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		@Override
 		protected void storeObject(
 				Block code,
-				AssignerFldOp fld,
+				VarSteOp fld,
 				ObjectOp object) {
 			fld.assignValue(code, object);
 		}

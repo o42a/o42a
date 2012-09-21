@@ -21,7 +21,7 @@ package org.o42a.core.ir.field.variable;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.variable.AssignerFld.CAST_TARGET_ID;
+import static org.o42a.core.ir.field.variable.VarSte.CAST_TARGET_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 

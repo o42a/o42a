@@ -17,8 +17,8 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_FLD_ASSIGNER_H
-#define O42A_FLD_ASSIGNER_H
+#ifndef O42A_STE_VAR_H
+#define O42A_STE_VAR_H
 
 #include "o42a/field.h"
 
@@ -35,22 +35,22 @@ typedef struct {
 
 	o42a_obj_assigner_ft *assigner_f;
 
-} o42a_fld_assigner;
+} o42a_ste_var;
 
 
 #ifndef NDEBUG
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_fld_assigner;
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_ste_var;
 #endif /* NDEBUG */
 
-void o42a_fld_assigner_propagate(o42a_obj_ctable_t *);
+void o42a_ste_var_propagate(o42a_obj_ctable_t *);
 
-void o42a_fld_assigner_inherit(o42a_obj_ctable_t *);
+void o42a_ste_var_inherit(o42a_obj_ctable_t *);
 
-void o42a_fld_assigner_mark(o42a_fld *);
+void o42a_ste_var_mark(o42a_fld *);
 
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* O42A_FLD_ASSIGNER_H */
+#endif /* O42A_STE_VAR_H */

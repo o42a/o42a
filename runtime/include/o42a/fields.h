@@ -20,7 +20,6 @@
 #ifndef O42A_FIELDS_H
 #define O42A_FIELDS_H
 
-#include "o42a/fld/assigner.h"
 #include "o42a/fld/dep.h"
 #include "o42a/fld/link.h"
 #include "o42a/fld/obj.h"
@@ -33,6 +32,9 @@
 #include "o42a/kpr/link.h"
 #include "o42a/kpr/string.h"
 #include "o42a/kpr/void.h"
+
+#include "o42a/ste/var.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,7 +58,7 @@ union o42a_fld {
 
 	o42a_fld_dep dep;
 
-	o42a_fld_assigner assigner;
+	o42a_ste_var ste_var;
 
 	o42a_kpr_void kpr_void;
 
