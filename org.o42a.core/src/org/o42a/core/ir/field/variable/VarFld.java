@@ -103,7 +103,7 @@ public class VarFld extends AbstractLinkFld {
 		this.assigner = getGenerator().newFunction().create(
 				getField().getId().detail("assigner"),
 				VARIABLE_ASSIGNER,
-				new AssignerBuilder(this)).getPointer();
+				new VarFldAssignerBuilder(this)).getPointer();
 	}
 
 	@Override
@@ -269,12 +269,12 @@ public class VarFld extends AbstractLinkFld {
 
 	}
 
-	private static final class AssignerBuilder
-			extends AbstractAssignerBuilder<VarFldOp> {
+	private static final class VarFldAssignerBuilder
+			extends AssignerBuilder<VarFldOp> {
 
 		private final VarFld fld;
 
-		AssignerBuilder(VarFld fld) {
+		VarFldAssignerBuilder(VarFld fld) {
 			this.fld = fld;
 		}
 

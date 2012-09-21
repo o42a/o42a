@@ -53,22 +53,22 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.util.string.ID;
 
 
-public final class AssignerFldOp extends FldOp {
+public final class VarSteOp extends FldOp {
 
-	private final AssignerFld.Op ptr;
+	private final VarSte.Op ptr;
 
-	AssignerFldOp(AssignerFld fld, ObjOp host, AssignerFld.Op ptr) {
+	VarSteOp(VarSte fld, ObjOp host, VarSte.Op ptr) {
 		super(host, fld);
 		this.ptr = ptr;
 	}
 
 	@Override
-	public final AssignerFld fld() {
-		return (AssignerFld) super.fld();
+	public final VarSte fld() {
+		return (VarSte) super.fld();
 	}
 
 	@Override
-	public final AssignerFld.Op ptr() {
+	public final VarSte.Op ptr() {
 		return this.ptr;
 	}
 
@@ -186,9 +186,9 @@ public final class AssignerFldOp extends FldOp {
 
 	private static final class AssignerFldValueOp implements HostValueOp {
 
-		private final AssignerFldOp fld;
+		private final VarSteOp fld;
 
-		AssignerFldValueOp(AssignerFldOp fld) {
+		AssignerFldValueOp(VarSteOp fld) {
 			this.fld = fld;
 		}
 

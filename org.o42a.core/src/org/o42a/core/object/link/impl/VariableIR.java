@@ -22,14 +22,14 @@ package org.o42a.core.object.link.impl;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
-import static org.o42a.core.ir.field.variable.AssignerFld.assignerKey;
+import static org.o42a.core.ir.field.variable.VarSte.varSteKey;
 import static org.o42a.core.ir.value.Val.VAL_ASSIGN;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.Int32op;
-import org.o42a.core.ir.field.variable.AssignerFld;
-import org.o42a.core.ir.field.variable.AssignerFldOp;
+import org.o42a.core.ir.field.variable.VarSte;
+import org.o42a.core.ir.field.variable.VarSteOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -46,7 +46,7 @@ final class VariableIR extends ValueIR {
 	private static final ID OLD_ID = ID.id("old");
 
 	private ObjectIRBody bodyIR;
-	private AssignerFld fld;
+	private VarSte fld;
 
 	VariableIR(VariableValueStructIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
@@ -59,7 +59,7 @@ final class VariableIR extends ValueIR {
 	@Override
 	public void allocateBody(ObjectIRBodyData data) {
 		this.bodyIR = data.getBodyIR();
-		this.fld = new AssignerFld();
+		this.fld = new VarSte();
 		this.fld.declare(data);
 	}
 
@@ -87,9 +87,9 @@ final class VariableIR extends ValueIR {
 		@Override
 		public void assign(CodeDirs dirs, ObjectOp value) {
 
-			final AssignerFldOp fld = (AssignerFldOp) object().field(
+			final VarSteOp fld = (VarSteOp) object().field(
 					dirs,
-					assignerKey(getBuilder().getContext()));
+					varSteKey(getBuilder().getContext()));
 
 			fld.value().assign(dirs, value);
 		}

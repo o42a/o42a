@@ -115,10 +115,10 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.mark = &o42a_fld_mark_obj,
 		.is_init = &o42a_fld_obj_is_init,
 	},
-	[O42A_FLD_ASSIGNER] = {// Variable assigner.
-		.propagate = &o42a_fld_assigner_propagate,
-		.inherit = &o42a_fld_assigner_inherit,
-		.mark = &o42a_fld_assigner_mark,
+	[O42A_STE_VAR] = {// Variable state.
+		.propagate = &o42a_ste_var_propagate,
+		.inherit = &o42a_ste_var_inherit,
+		.mark = &o42a_ste_var_mark,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_KPR_VOID] = {// Void keeper.
