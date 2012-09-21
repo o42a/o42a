@@ -39,6 +39,7 @@ import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
@@ -88,10 +89,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.flags;
 	}
 
-	public final ValType value() {
-		return this.value;
-	}
-
 	public final FuncRec<ObjectValueFunc> valueFunc() {
 		return this.valueFunc;
 	}
@@ -132,6 +129,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.value = data.addInstance(VALUE_ID, VAL_TYPE);
+		this.value.set(Val.FALSE_VAL);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);

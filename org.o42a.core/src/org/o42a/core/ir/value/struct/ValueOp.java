@@ -19,16 +19,12 @@
 */
 package org.o42a.core.ir.value.struct;
 
-import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
@@ -92,60 +88,21 @@ public abstract class ValueOp implements HostValueOp {
 	}
 
 	@Override
-	public final ValOp writeValue(ValDirs dirs) {
-		assert dirs.getValueType() == getValueType() :
-			"Wrong value type: " + getValueType()
-			+ ", but " + dirs.getValueType() + " expected";
-
-		if (!getValueType().isStateful()) {
-			return write(dirs);
-		}
-
-		final Block code = dirs.code();
-
-		code.acquireBarrier();
-
-		final Block definite = code.addBlock("definite");
-		final ValType.Op value =
-				object()
-				.objectType(code)
-				.ptr()
-				.data(code)
-				.value(code);
-		final ValFlagsOp flags = value.flags(code, ATOMIC);
-
-		flags.indefinite(null, code).goUnless(code, definite.head());
-
-		write(dirs);
-		code.dump(this + " value calculated: ", value);
-
-		definite.dump(this + " value is definite: ", value);
-		checkFalse(definite, dirs.falseDir(), value, flags);
-
-		definite.go(code.tail());
-
-		return value.op(null, getBuilder(), getValueStruct(), NO_VAL_HOLDER);
-	}
+	public abstract ValOp writeValue(ValDirs dirs);
 
 	@Override
 	public final void assign(CodeDirs dirs, HostOp value) {
-		assign(
+		state(dirs).assign(
 				dirs,
 				value.materialize(dirs, tempObjHolder(dirs.getAllocator())));
 	}
 
-	public abstract void init(Block code, ValOp value);
-
-	public abstract void initToFalse(Block code);
-
-	public abstract void assign(CodeDirs dirs, ObjectOp value);
+	public abstract StateOp state(CodeDirs dirs);
 
 	@Override
 	public String toString() {
 		return "ValueOp[" + this.object + ']';
 	}
-
-	protected abstract ValOp write(ValDirs dirs);
 
 	/**
 	 * Checks whether the object value is known to be false.
@@ -161,44 +118,6 @@ public abstract class ValueOp implements HostValueOp {
 			ValType.Op value,
 			ValFlagsOp flags) {
 		flags.condition(null, code).goUnless(code, falseDir);
-	}
-
-	protected final void defaultInit(Block code, ValOp value) {
-
-		final ValueStructIR<?, ?> valueStructIR = getValueStructIR();
-		final ValType.Op objectValue =
-				object().objectType(code).ptr().data(code).value(code);
-
-		if (valueStructIR.hasValue()) {
-			objectValue.rawValue(null, code).store(
-					code,
-					value.rawValue(null, code).load(null, code),
-					ATOMIC);
-			if (valueStructIR.hasLength()) {
-				objectValue.length(null, code).store(
-						code,
-						value.length(null, code).load(null, code),
-						ATOMIC);
-			}
-		}
-
-		final Int32op valueFlags = value.flags(code).get();
-		final ValFlagsOp objectValueFlags =
-				objectValue.flags(code, ACQUIRE_RELEASE);
-
-		objectValueFlags.store(code, valueFlags);
-		if (valueStructIR.hasLength()) {
-			objectValue.useRefCounted(code);
-		}
-	}
-
-	protected final void defaultInitToFalse(Block code) {
-
-		final ValType.Op objectValue =
-				object().objectType(code).ptr().data(code).value(code);
-		final ValFlagsOp flags = objectValue.flags(code, ACQUIRE_RELEASE);
-
-		flags.storeFalse(code);
 	}
 
 	protected final ValOp defaultWrite(ValDirs dirs) {

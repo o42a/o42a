@@ -19,29 +19,29 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
-import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
-import static org.o42a.core.ir.object.op.ObjectValueStartFunc.OBJECT_VALUE_START;
+import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRDataOp;
-import org.o42a.core.ir.object.op.ObjectDataFunc;
-import org.o42a.core.ir.object.op.ObjectValueStartFunc;
-import org.o42a.core.ir.value.ValFlagsOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.struct.StateOp;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 public abstract class AbstractObjectValueBuilder
 		implements FunctionBuilder<ObjectValueFunc> {
+
+	private static final ID FLD_CTR_ID = ID.id("fld_ctr");
 
 	@Override
 	public void build(Function<ObjectValueFunc> function) {
@@ -53,34 +53,37 @@ public abstract class AbstractObjectValueBuilder
 		final ObjOp host = builder.host();
 		final ValueOp value = host.value();
 
-		assert getValueStruct().getValueType() == value.getValueType() :
+		assert getValueStruct().getValueType().is(value.getValueType()) :
 			"Wrong value type";
 
 		final ObjectIRDataOp data = data(function, function);
-		final ObjectDataFunc finishOp;
+		final StateOp state;
+		final FldCtrOp ctr;
 
 		if (!lock()) {
-			finishOp = null;
+			state = null;
+			ctr = null;
 		} else {
 
-			final FuncPtr<ObjectValueStartFunc> startFn =
-					function.getGenerator().externalFunction().link(
-							"o42a_obj_value_start",
-							OBJECT_VALUE_START);
-			final FuncPtr<ObjectDataFunc> finishFn =
-					function.getGenerator().externalFunction().link(
-							"o42a_obj_value_finish",
-							OBJECT_DATA);
+			final Block alreadyFalse = function.addBlock("already_false");
+			final ValDirs dirs =
+					builder.dirs(function, alreadyFalse.head()).value(result);
 
-			finishOp = finishFn.op(null, function);
+			ctr = function.allocation().allocate(FLD_CTR_ID, FLD_CTR_TYPE);
+			state = value.state(dirs.dirs());
+			state.useByValueFunction(function);
 
 			final Block finish = function.addBlock("finish");
 
-			startFn.op(null, function)
-			.call(function, result, data)
-			.goUnless(function, finish.head());
+			ctr.start(function, state.fld()).goUnless(function, finish.head());
 
+			writeKeptValue(dirs, finish, state);
 			finish.returnVoid();
+
+			if (alreadyFalse.exists()) {
+				result.storeFalse(alreadyFalse);
+				alreadyFalse.returnVoid();
+			}
 		}
 
 		final Block done = function.addBlock("done");
@@ -97,26 +100,26 @@ public abstract class AbstractObjectValueBuilder
 		if (code.exists()) {
 			code.debug("Indefinite");
 			result.storeFalse(code);
-			if (finishOp != null) {
-				value.initToFalse(code);
-				finishOp.call(code, data);
+			if (state != null && ctr != null) {
+				state.initToFalse(code);
+				ctr.finish(code, state.fld());
 			}
 			code.returnVoid();
 		}
 		if (exit.exists()) {
 			exit.debug("False");
 			result.storeFalse(exit);
-			if (finishOp != null) {
-				value.initToFalse(exit);
-				finishOp.call(exit, data);
+			if (state != null && ctr != null) {
+				state.initToFalse(exit);
+				ctr.finish(exit, state.fld());
 			}
 			exit.returnVoid();
 		}
 		if (done.exists()) {
 			result.store(done, dirs.result());
-			if (finishOp != null) {
-				value.init(done, result);
-				finishOp.call(done, data);
+			if (state != null && ctr != null) {
+				state.init(done, result);
+				ctr.finish(done, state.fld());
 			}
 			done.returnVoid();
 		}
@@ -155,17 +158,17 @@ public abstract class AbstractObjectValueBuilder
 					.op(function, builder, getValueStruct(), NO_VAL_HOLDER);
 
 			result.storeFalse(failure);
-			if (lock()) {
-
-				final ValType.Op value = data(failure, function).value(failure);
-				final ValFlagsOp flags = value.flags(failure, ACQUIRE_RELEASE);
-
-				flags.storeFalse(failure);
-			}
 			failure.returnVoid();
 		}
 
 		return builder;
+	}
+
+	private void writeKeptValue(ValDirs dirs, Block code, StateOp state) {
+		// Check the condition.
+		state.loadCondition(code).goUnless(code, dirs.falseDir());
+		// Return the value if condition is not false.
+		dirs.value().store(code, state.loadValue(dirs, code));
 	}
 
 }

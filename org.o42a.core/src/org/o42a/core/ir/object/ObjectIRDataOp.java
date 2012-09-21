@@ -29,7 +29,6 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
 
@@ -67,10 +66,6 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 				.load(null, code)
 				.offset(null, code, this)
 				.toData(OBJECT_START_ID, code);
-	}
-
-	public final ValType.Op value(Code code) {
-		return struct(null, code, getType().value());
 	}
 
 	public final FuncOp<ObjectValueFunc> valueFunc(Code code) {

@@ -29,7 +29,7 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_ste_array = {
 	.name = "o42a_ste_array",
 	.fields = {
 		{
-			.data_type = O42A_TYPE_DATA_PTR,
+			.data_type = O42A_TYPE_STRUCT,
 			.offset = offsetof(o42a_ste_array, value),
 			.name = "value",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,

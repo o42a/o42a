@@ -222,7 +222,7 @@ public abstract class ValOp extends IROp {
 			return store(code, constant);
 		}
 
-		assert getValueStruct().assignableFrom(value.getValueStruct()) :
+		assert getValueType().is(value.getValueType()) :
 			"Can not store " + value + " in " + this;
 
 		flags(code).store(code, value.flags(code).get());

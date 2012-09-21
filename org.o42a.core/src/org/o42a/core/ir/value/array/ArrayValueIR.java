@@ -17,8 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.link.impl;
+package org.o42a.core.ir.value.array;
 
+import org.o42a.core.ir.field.array.ArraySte;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
@@ -26,19 +27,20 @@ import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueOp;
 
 
-final class LinkIR extends ValueIR {
+final class ArrayValueIR extends ValueIR {
 
-	LinkIR(LinkValueStructIR valueStructIR, ObjectIR objectIR) {
+	ArrayValueIR(ArrayValueStructIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
 	}
 
 	@Override
 	public void allocateBody(ObjectIRBodyData data) {
+		new ArraySte().declare(data);
 	}
 
 	@Override
 	public ValueOp op(ObjectOp object) {
-		return defaultOp(object);
+		return new ArrayValueOp(this, object);
 	}
 
 }

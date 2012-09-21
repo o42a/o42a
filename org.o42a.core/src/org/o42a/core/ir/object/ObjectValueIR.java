@@ -19,22 +19,15 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.value.Val.FALSE_VAL;
-import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.impl.ObjectIRLocals;
 import org.o42a.core.ir.object.value.*;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.Value;
 
 
 public class ObjectValueIR {
@@ -107,42 +100,12 @@ public class ObjectValueIR {
 		this.proposition.allocate(typeIR);
 	}
 
-	protected void fill(ObjectTypeIR typeIR) {
-
-		final Val initialValue = initialValue();
-		final ValType value = typeIR.getObjectData().value();
-
-		value.setConstant(!initialValue.isIndefinite());
-		value.set(initialValue);
-	}
-
 	final ObjectIRLocals getLocals() {
 		return this.locals;
 	}
 
 	private final Definitions definitions() {
 		return getObject().value().getDefinitions();
-	}
-
-	private Val initialValue() {
-
-		final Definitions definitions = definitions();
-		final Resolver resolver = definitions.getScope().resolver();
-		final Value<?> value = definitions.value(resolver);
-
-		switch (value.getKnowledge().getCondition()) {
-		case TRUE:
-			if (!value.getKnowledge().isInitiallyKnown()) {
-				return INDEFINITE_VAL;
-			}
-			return value.val(getGenerator());
-		case RUNTIME:
-			return INDEFINITE_VAL;
-		case FALSE:
-			return FALSE_VAL;
-		}
-
-		throw new IllegalStateException("Unsupported value: " + value);
 	}
 
 }

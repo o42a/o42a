@@ -29,6 +29,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
@@ -279,6 +280,10 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 			return (Type) super.getType();
 		}
 
+		public final DataRecOp object(ID id, Code code) {
+			return ptr(id, code, getType().object());
+		}
+
 		public final StructRecOp<ObjectIRTypeOp> bound(ID id, Code code) {
 			return ptr(id, code, getType().bound());
 		}
@@ -291,11 +296,16 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 
 	public static final class Type extends Fld.Type<Op> {
 
+		private DataRec object;
 		private StructRec<ObjectIRTypeOp> bound;
 		private FuncRec<VariableAssignerFunc> assigner;
 
 		Type() {
 			super(ID.rawId("o42a_ste_var"));
+		}
+
+		public final DataRec object() {
+			return this.object;
 		}
 
 		public final StructRec<ObjectIRTypeOp> bound() {
@@ -313,6 +323,7 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
+			this.object = data.addDataPtr("object");
 			this.bound = data.addPtr("bound", OBJECT_TYPE);
 			this.assigner =
 					data.addFuncPtr("assigner_f", VARIABLE_ASSIGNER)
