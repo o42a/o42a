@@ -20,13 +20,14 @@
 package org.o42a.core.ir.field.array;
 
 import static org.o42a.core.ir.field.FldKind.ARRAY_STATE;
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
+import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.AnyRecOp;
-import org.o42a.codegen.data.AnyRec;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
@@ -35,12 +36,16 @@ import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBodyData;
+import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.array.ArrayValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.value.Value;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
@@ -63,7 +68,6 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 	}
 
 	private MemberKey key;
-
 	private Obj definedIn;
 
 	@Override
@@ -117,7 +121,24 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 
 	@Override
 	public void fill(Type instance) {
-		getInstance().items().setNull();
+
+		final ValType val = instance.value();
+		final Value<?> value = getObject().value().getValue();
+
+		if (!value.getKnowledge().isInitiallyKnown()) {
+			val.set(INDEFINITE_VAL);
+		} else if (value.getKnowledge().isFalse()) {
+			val.set(FALSE_VAL);
+		} else {
+
+			final ArrayValueStruct arrayStruct =
+					getObject().value().getValueStruct().toArrayStruct();
+			final Array array = arrayStruct.cast(value).getCompilerValue();
+			final ArrayValueStructIR arrayStructIR =
+					(ArrayValueStructIR) arrayStruct.ir(getGenerator());
+
+			val.set(arrayStructIR.val(array));
+		}
 	}
 
 	@Override
@@ -193,14 +214,14 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 
 	public static final class Type extends Fld.Type<Op> {
 
-		private AnyRec items;
+		private ValType value;
 
 		private Type() {
 			super(ID.id("o42a_ste_array"));
 		}
 
-		public final AnyRec items() {
-			return this.items;
+		public final ValType value() {
+			return this.value;
 		}
 
 		@Override
@@ -210,7 +231,7 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.items = data.addPtr("items");
+			this.value = data.addInstance(ID.id("value"), VAL_TYPE);
 		}
 
 		@Override
@@ -226,8 +247,8 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 			super(writer);
 		}
 
-		public final AnyRecOp items(ID id, Code code) {
-			return ptr(id, code, ARRAY_STE.items());
+		public final ValType.Op value(ID id, Code code) {
+			return struct(id, code, ARRAY_STE.value());
 		}
 
 	}

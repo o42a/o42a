@@ -121,6 +121,12 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.mark = &o42a_ste_var_mark,
 		.is_init = &o42a_fld_obj_is_init,
 	},
+	[O42A_STE_ARRAY] = {// Array state.
+		.propagate = &o42a_kpr_value_derive,
+		.inherit = &o42a_kpr_value_derive,
+		.mark = &o42a_kpr_array_mark,
+		.is_init = &o42a_kpr_value_is_init,
+	},
 	[O42A_KPR_VOID] = {// Void keeper.
 		.propagate = &o42a_kpr_void_derive,
 		.inherit = &o42a_kpr_void_derive,
@@ -141,7 +147,7 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	},
 	[O42A_KPR_STRING] = {// String keeper.
 		.propagate = &o42a_kpr_value_derive,
-		.inherit = &o42a_kpr_float_derive,
+		.inherit = &o42a_kpr_value_derive,
 		.mark = &o42a_fld_mark_none,
 		.is_init = &o42a_kpr_value_is_init,
 	},
@@ -153,7 +159,7 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	},
 	[O42A_KPR_ARRAY] = {// Array keeper.
 		.propagate = &o42a_kpr_value_derive,
-		.inherit = &o42a_kpr_float_derive,
+		.inherit = &o42a_kpr_value_derive,
 		.mark = &o42a_kpr_array_mark,
 		.is_init = &o42a_kpr_value_is_init,
 	},
