@@ -76,7 +76,9 @@ public abstract class Fld implements FldIR {
 	public abstract boolean isOverrider();
 
 	@Override
-	public abstract Obj getDeclaredIn();
+	public final Obj getDeclaredIn() {
+		return getKey().getOrigin().toObject();
+	}
 
 	public abstract Obj getDefinedIn();
 
