@@ -39,8 +39,6 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 			extends org.o42a.codegen.data.Type<ValueTypeDescOp> {
 
 		private AnyRec name;
-		private AnyRec mark;
-		private AnyRec sweep;
 
 		private Type() {
 			super(ID.rawId("o42a_val_type_t"));
@@ -48,14 +46,6 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 
 		public final AnyRec name() {
 			return this.name;
-		}
-
-		public final AnyRec mark() {
-			return this.mark;
-		}
-
-		public final AnyRec sweep() {
-			return this.sweep;
 		}
 
 		@Override
@@ -66,8 +56,6 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 		@Override
 		protected void allocate(SubData<ValueTypeDescOp> data) {
 			this.name = data.addPtr("name");
-			this.mark = data.addPtr("mark");
-			this.sweep = data.addPtr("sweep");
 		}
 
 		@Override

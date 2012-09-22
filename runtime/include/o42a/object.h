@@ -233,21 +233,6 @@ struct o42a_obj_data {
 	int8_t mutex_init;
 
 	/**
-	 * This flag is set while calculating an object value.
-	 *
-	 * It is modified only together with value_thread field.
-	 */
-	o42a_bool_t value_calc;
-
-	/**
-	 * An identifier of the thread evaluating the object value.
-	 *
-	 * This value can only be  set by the thread owning an object mutex and only
-	 * together with value_calc flag.
-	 */
-	pthread_t value_thread;
-
-	/**
 	 * Object mutex.
 	 *
 	 * The mutex is valid only when mutex_init flags set. The o42a_obj_lock
@@ -272,9 +257,6 @@ struct o42a_obj_data {
 	 * all waiting thread.
 	 */
 	pthread_cond_t thread_cond;
-
-	/** Constructed object value. */
-	o42a_val_t value;
 
 	/**
 	 * Object value calculator function.
@@ -556,7 +538,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[16];
+	o42a_dbg_field_info_t fields[13];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_stype;
@@ -822,30 +804,6 @@ void o42a_obj_signal(o42a_obj_data_t *);
  * Unblocks all threads waiting on an object condition.
  */
 void o42a_obj_broadcast(o42a_obj_data_t *);
-
-
-/**
- * Starts the object value evaluation.
- *
- * If O42A_TRUE returned, then the value should be evaluated and after that the
- * o42a_obj_value_finish should be called.
- *
- * If O42A_FALSE returned, then the value should not be evaluated, because it
- * is already known or because of error.
- *
- * If another thread already evaluating the value, then current thread
- * will wait until the value evaluated and will return O42A_FALSE.
- *
- * If current thread already evaluating the value, then this is considered an
- * error and this function returns O42A_FALSE.
- */
-o42a_bool_t o42a_obj_value_start(o42a_val_t *, o42a_obj_data_t *);
-
-/**
- * Finishes the value evaluation started with o42a_obj_value_start and signals
- * all waiting thread about the value availability.
- */
-void o42a_obj_value_finish(o42a_obj_data_t *);
 
 
 /**

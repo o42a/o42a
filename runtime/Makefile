@@ -211,6 +211,7 @@ $(srcdir)/type/string.%.o : $(srcdir)/type/string.c
 	$(call compile)
 
 $(srcdir)/kpr/array.*.o : $(headersdir)/type/array.h
+$(srcdir)/kpr/string.*.o : $(headersdir)/memory/refcount.h
 
 # Implicit rule for field type structures compilation.
 $(srcdir)/fld/*.o : $(fld_deps)

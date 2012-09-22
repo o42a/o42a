@@ -24,8 +24,7 @@
 #include "o42a/memory/refcount.h"
 
 
-const o42a_val_type_t o42a_val_type_string =
-		O42A_VAL_TYPE("string", &o42a_val_mark_none, &o42a_val_sweep_external);
+const o42a_val_type_t o42a_val_type_string = O42A_VAL_TYPE("string");
 
 inline UChar32 o42a_str_cmask(const o42a_val_t *const val) {
 

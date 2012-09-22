@@ -155,26 +155,6 @@ typedef struct o42a_val_type {
 	 */
 	const char *name;
 
-	/**
-	 * An object value marker.
-	 *
-	 * This function is called during the garbage-collected object mark to
-	 * mark all data blocks referenced by object value (see o42a_gc_desc.mark).
-	 *
-	 * \data sweeping object data.
-	 */
-	void (*mark) (struct o42a_obj_data *);
-
-	/**
-	 * An object value sweeper.
-	 *
-	 * This function is called during the garbage-collected object sweep to
-	 * release the resources used by object value (see o42a_gc_desc.sweep).
-	 *
-	 * \data sweeping object data.
-	 */
-	void (*sweep) (struct o42a_obj_data *);
-
 } o42a_val_type_t;
 
 #ifdef NDEBUG
@@ -186,15 +166,13 @@ typedef struct o42a_val_type {
  * \param _mark mark function pointer.
  * \param _sweep sweep function pointer.
  */
-#define O42A_VAL_TYPE(_type_name, _mark, _sweep) { \
+#define O42A_VAL_TYPE(_type_name) { \
 	.name = _type_name, \
-	.mark = _mark, \
-	.sweep = _sweep, \
 }
 
 #else /* NDEBUG */
 
-#define O42A_VAL_TYPE(_type_name, _mark, _sweep) { \
+#define O42A_VAL_TYPE(_type_name) { \
 	.__o42a_dbg_header__ = { \
 		.type_code = 0x042a0003, \
 		.enclosing = 0, \
@@ -202,13 +180,11 @@ typedef struct o42a_val_type {
 		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type, \
 	}, \
 	.name = _type_name, \
-	.mark = _mark, \
-	.sweep = _sweep, \
 }
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val;
 
-extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val_type;
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_val_type;
 
 #endif /* NDEBUG */
 
@@ -221,6 +197,11 @@ extern const o42a_val_type_t o42a_val_type_void;
  * Directive value type descriptor.
  */
 extern const o42a_val_type_t o42a_val_type_directive;
+
+/**
+ * Macro value type descriptor.
+ */
+extern const o42a_val_type_t o42a_val_type_macro;
 
 
 inline size_t o42a_val_ashift(const o42a_val_t *const val) {
@@ -241,26 +222,6 @@ inline void *o42a_val_data(const o42a_val_t *const val) {
 void o42a_val_use(o42a_val_t *);
 
 void o42a_val_unuse(o42a_val_t *);
-
-
-/**
- * The object value marker which does nothing.
- */
-void o42a_val_mark_none(struct o42a_obj_data *);
-
-/**
- * The object value sweeper which does nothing.
- */
-void o42a_val_sweep_none(struct o42a_obj_data *);
-
-/**
- * The object value sweeper supporting the external, reference counted values.
- *
- * This function decreases the reference count of externally stored data
- * if O42A_VAL_CONDITION and O42A_VAL_EXTERNAL flags are set and O42A_VAL_STATIC
- * one is not. It deallocates the data if it is no longer used.
- */
-void o42a_val_sweep_external(struct o42a_obj_data *);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -25,10 +25,7 @@ import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
-import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
-import static org.o42a.core.ir.value.ValOp.VALUE_ID;
-import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
@@ -39,8 +36,6 @@ import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
 
@@ -60,7 +55,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private RelRec object;
 	private RelRec start;
 	private Int16rec flags;
-	private ValType value;
 	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
@@ -124,12 +118,8 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.start = data.addRelPtr("start");
 		this.flags = data.addInt16("flags");
 		data.addInt8("mutex_init").setValue((byte) 0);
-		data.addInt8("value_calc").setValue((byte) 0);
-		data.addSystem("value_thread", THREAD_SYSTEM_TYPE);
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
-		this.value = data.addInstance(VALUE_ID, VAL_TYPE);
-		this.value.set(Val.FALSE_VAL);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
