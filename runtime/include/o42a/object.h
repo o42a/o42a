@@ -184,6 +184,11 @@ typedef struct o42a_obj_body {
 	 */
 	uint32_t flags;
 
+	/**
+	 * A 32-bit alignment to work arond LLVM issues.
+	 */
+	uint32_t align32;
+
 } o42a_obj_body_t;
 
 /**

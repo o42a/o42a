@@ -187,6 +187,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.ancestorBody = data.addRelPtr("ancestor_body");
 		this.methods = data.addDataPtr("methods");
 		this.flags = data.addInt32("flags");
+		data.addInt32("align32").setValue(0);
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
 
