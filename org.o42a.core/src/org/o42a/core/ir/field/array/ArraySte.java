@@ -214,7 +214,7 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 		private ValType value;
 
 		private Type() {
-			super(ID.id("o42a_ste_array"));
+			super(ID.rawId("o42a_ste_array"));
 		}
 
 		public final ValType value() {

@@ -19,15 +19,12 @@
 */
 package org.o42a.core.ir.field.array;
 
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 
 
@@ -52,55 +49,22 @@ public final class ArraySteOp extends FldOp {
 
 	@Override
 	public final HostValueOp value() {
-		return new ArraySteValueOp(this);
-	}
-
-	@Override
-	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
+	public final ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 
-	private static final class ArraySteValueOp implements HostValueOp {
-
-		private final ArraySteOp fld;
-
-		ArraySteValueOp(ArraySteOp fld) {
-			this.fld = fld;
-		}
-
-		@Override
-		public void writeCond(CodeDirs dirs) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void assign(CodeDirs dirs, HostOp value) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public String toString() {
-			if (this.fld == null) {
-				return super.toString();
-			}
-			return this.fld.toString() + '`';
-		}
-
+	@Override
+	public final FldOp field(CodeDirs dirs, MemberKey memberKey) {
+		throw new UnsupportedOperationException();
 	}
 
 }
