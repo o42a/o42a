@@ -88,14 +88,6 @@ public abstract class MemberFld extends Fld {
 	}
 
 	@Override
-	public final Obj getDeclaredIn() {
-
-		final Field original = getField().getOriginal();
-
-		return original.getEnclosingContainer().toObject();
-	}
-
-	@Override
 	public final Obj getDefinedIn() {
 		return getField().getDefinedIn().toObject();
 	}

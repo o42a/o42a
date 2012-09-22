@@ -80,7 +80,9 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 		if (this.key != null) {
 			return this.key;
 		}
-		return this.key = ARRAY_STE_MEMBER.key(getDeclaredIn().getScope());
+		return this.key = ARRAY_STE_MEMBER.key(
+				arrayObject(getBodyIR().getAscendant().getContext())
+				.getScope());
 	}
 
 	@Override
@@ -96,11 +98,6 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 	@Override
 	public final Type getInstance() {
 		return (Type) super.getInstance();
-	}
-
-	@Override
-	public Obj getDeclaredIn() {
-		return arrayObject(getBodyIR().getAscendant().getContext());
 	}
 
 	@Override

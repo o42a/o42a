@@ -77,7 +77,9 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 		if (this.key != null) {
 			return this.key;
 		}
-		return this.key = VAR_STE_MEMBER.key(getDeclaredIn().getScope());
+		return this.key = VAR_STE_MEMBER.key(
+				variableObject(getBodyIR().getAscendant().getContext())
+				.getScope());
 	}
 
 	@Override
@@ -139,11 +141,6 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 
 		// Overridden in sample.
 		return true;
-	}
-
-	@Override
-	public Obj getDeclaredIn() {
-		return variableObject(getBodyIR().getAscendant().getContext());
 	}
 
 	@Override
