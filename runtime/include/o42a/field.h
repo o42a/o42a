@@ -120,6 +120,16 @@ typedef const struct o42a_fld_desc {
 	void (* mark) (o42a_fld *);
 
 	/**
+	 * GC marker function pointer.
+	 *
+	 * This function is called when the GC marks an object containing the field
+	 * to mark the GC data referenced by this field.
+	 *
+	 * \param field marking field pointer.
+	 */
+	void (* sweep) (o42a_fld *);
+
+	/**
 	 * A function, which checks whether the given field is already initialized.
 	 *
 	 * This function is used by o42a_fld_start() function to lock the field

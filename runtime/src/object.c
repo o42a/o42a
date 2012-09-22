@@ -31,7 +31,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 16,
+	.field_num = 13,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -55,16 +55,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.name = "mutex_init",
 		},
 		{
-			.data_type = O42A_TYPE_BOOL,
-			.offset = offsetof(o42a_obj_data_t, value_calc),
-			.name = "value_calc",
-		},
-		{
-			.data_type = O42A_TYPE_SYSTEM,
-			.offset = offsetof(o42a_obj_data_t, value_thread),
-			.name = "value_thread",
-		},
-		{
 			.data_type = O42A_TYPE_SYSTEM,
 			.offset = offsetof(o42a_obj_data_t, mutex),
 			.name = "mutex",
@@ -73,12 +63,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.data_type = O42A_TYPE_SYSTEM,
 			.offset = offsetof(o42a_obj_data_t, thread_cond),
 			.name = "thread_cond",
-		},
-		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_data_t, value),
-			.name = "value",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
@@ -802,10 +786,6 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 	O42A_ENTER(return);
 
 	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
-
-	// Mark object value.
-	O42A(data->value_type->mark(data));
-
 	uint32_t num_asc = data->ascendants.size;
 
 	if (!num_asc) {
@@ -855,7 +835,45 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
 
 	o42a_debug_mem_name("Sweep object: ", (char *) data + data->start);
-	O42A(data->value_type->sweep(data));
+	uint32_t num_asc = data->ascendants.size;
+
+	if (!num_asc) {
+		O42A_RETURN;
+	}
+
+	// Mark all fields.
+	o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(data));
+
+	while (1) {
+
+		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(asc));
+		o42a_obj_stype_t *const type = asc->type;
+
+		uint32_t num_fields = type->fields.size;
+
+		if (num_fields) {
+
+			o42a_obj_field_t *field = O42A(o42a_obj_fields(type));
+
+			while (1) {
+
+				o42a_fld *const fld = O42A(o42a_fld_by_field(body, field));
+				o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
+
+				O42A(desc->sweep(fld));
+
+				if (!(--num_fields)) {
+					break;
+				}
+				++field;
+			}
+		}
+
+		if (!(--num_asc)) {
+			break;
+		}
+		++asc;
+	} while (num_asc);
 
 	O42A_RETURN;
 }
@@ -930,10 +948,7 @@ static o42a_obj_rtype_t *propagate_object(
 	data->start = adata->start;
 	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
-	data->value_calc = O42A_FALSE;
 
-	data->value.flags = O42A_VAL_INDEFINITE;
-	data->value.value.v_integer = 0;
 	data->value_f = adata->value_f;
 	data->claim_f = adata->claim_f;
 	data->proposition_f = adata->proposition_f;
@@ -1236,10 +1251,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->start = -data_start;
 	data->flags = O42A_OBJ_RT | (sdata->flags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
-	data->value_calc = O42A_FALSE;
 
-	data->value.flags = O42A_VAL_INDEFINITE;
-	data->value.value.v_integer = 0;
 	data->value_f = sdata->value_f;
 	data->claim_f = sdata->claim_f;
 	data->proposition_f = sdata->proposition_f;
@@ -1410,56 +1422,6 @@ void o42a_obj_broadcast(o42a_obj_data_t *const data) {
 		o42a_error_print(
 				"Failed to broadcast signal to an object condition waiters");
 	}
-	O42A_RETURN;
-}
-
-o42a_bool_t o42a_obj_value_start(
-		o42a_val_t *value,
-		o42a_obj_data_t *const data) {
-	O42A_ENTER(return O42A_FALSE);
-
-	O42A(o42a_obj_lock(data));
-	if (!(data->value.flags & O42A_VAL_INDEFINITE)) {
-		// Value already known.
-		O42A(o42a_obj_unlock(data));
-		O42A_RETURN O42A_FALSE;
-	}
-	if (data->value_calc) {
-		// Value evaluation is in progress.
-		if (O42A(pthread_equal(data->value_thread, pthread_self()))) {
-			// Value evaluation happens in current thread and is recursive.
-			O42A(o42a_obj_unlock(data));
-			o42a_error_print("Recursive value evaluation");
-			value->flags = O42A_FALSE;
-			O42A_RETURN O42A_FALSE;
-		}
-		// Wait for another thread to evaluate the value.
-		while (data->value_calc) {
-			O42A(o42a_obj_wait(data));
-		}
-		O42A(o42a_obj_unlock(data));
-		O42A_RETURN O42A_FALSE;
-	}
-
-	// Start the value evaluation.
-	data->value_calc = O42A_TRUE;
-	data->value_thread = O42A(pthread_self());
-	O42A(o42a_obj_unlock(data));
-
-	// The caller shall continue the value evaluation.
-	O42A_RETURN O42A_TRUE;
-}
-
-void o42a_obj_value_finish(o42a_obj_data_t *const data) {
-	O42A_ENTER(return);
-	O42A(o42a_obj_lock(data));
-
-	// Reset the value evaluation flag.
-	data->value_calc = O42A_FALSE;
-	// Unblock all value waiting thread.
-	O42A(o42a_obj_broadcast(data));
-
-	O42A(o42a_obj_unlock(data));
 	O42A_RETURN;
 }
 

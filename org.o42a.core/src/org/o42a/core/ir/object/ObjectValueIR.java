@@ -27,7 +27,6 @@ import org.o42a.core.ir.object.impl.ObjectIRLocals;
 import org.o42a.core.ir.object.value.*;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.Definitions;
 
 
 public class ObjectValueIR {
@@ -102,10 +101,6 @@ public class ObjectValueIR {
 
 	final ObjectIRLocals getLocals() {
 		return this.locals;
-	}
-
-	private final Definitions definitions() {
-		return getObject().value().getDefinitions();
 	}
 
 }

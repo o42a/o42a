@@ -67,6 +67,11 @@ static void o42a_fld_mark_none(o42a_fld *const field) {
 	O42A_RETURN;
 }
 
+static void o42a_fld_sweep_none(o42a_fld *const field) {
+	O42A_ENTER(return);
+	O42A_RETURN;
+}
+
 static void o42a_fld_mark_obj(o42a_fld *const field) {
 	O42A_ENTER(return);
 
@@ -89,78 +94,91 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.propagate = &o42a_fld_obj_propagate,
 		.inherit = &o42a_fld_obj_inherit,
 		.mark = &o42a_fld_mark_obj,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_LINK] = {// Link field.
 		.propagate = &o42a_fld_link_propagate,
 		.inherit = &o42a_fld_link_inherit,
 		.mark = &o42a_fld_mark_none,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_VAR] = {// Variable field.
 		.propagate = &o42a_fld_var_propagate,
 		.inherit = &o42a_fld_var_inherit,
 		.mark = &o42a_fld_var_mark,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_SCOPE] = {// Scope object pointer.
 		.propagate = &o42a_fld_scope_propagate,
 		.inherit = &o42a_fld_scope_inherit,
 		.mark = &o42a_fld_mark_obj,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_DEP] = {// Local dependency field.
 		.propagate = &o42a_fld_dep_copy,
 		.inherit = &o42a_fld_dep_copy,
 		.mark = &o42a_fld_mark_obj,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_STE_VAR] = {// Variable state.
 		.propagate = &o42a_ste_var_propagate,
 		.inherit = &o42a_ste_var_inherit,
 		.mark = &o42a_ste_var_mark,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_STE_ARRAY] = {// Array state.
 		.propagate = &o42a_kpr_value_derive,
 		.inherit = &o42a_kpr_value_derive,
 		.mark = &o42a_kpr_array_mark,
+		.sweep = &o42a_kpr_value_sweep,
 		.is_init = &o42a_kpr_value_is_init,
 	},
 	[O42A_KPR_VOID] = {// Void keeper.
 		.propagate = &o42a_kpr_void_derive,
 		.inherit = &o42a_kpr_void_derive,
 		.mark = &o42a_fld_mark_none,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_kpr_void_is_init,
 	},
 	[O42A_KPR_INTEGER] = {// Integer keeper.
 		.propagate = &o42a_kpr_integer_derive,
 		.inherit = &o42a_kpr_integer_derive,
 		.mark = &o42a_fld_mark_none,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_kpr_integer_is_init,
 	},
 	[O42A_KPR_FLOAT] = {// Float keeper.
 		.propagate = &o42a_kpr_float_derive,
 		.inherit = &o42a_kpr_float_derive,
 		.mark = &o42a_fld_mark_none,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_kpr_float_is_init,
 	},
 	[O42A_KPR_STRING] = {// String keeper.
 		.propagate = &o42a_kpr_value_derive,
 		.inherit = &o42a_kpr_value_derive,
 		.mark = &o42a_fld_mark_none,
+		.sweep = &o42a_kpr_value_sweep,
 		.is_init = &o42a_kpr_value_is_init,
 	},
 	[O42A_KPR_LINK] = {// Link keeper.
 		.propagate = &o42a_kpr_link_derive,
 		.inherit = &o42a_kpr_link_derive,
 		.mark = &o42a_fld_mark_obj,
+		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_KPR_ARRAY] = {// Array keeper.
 		.propagate = &o42a_kpr_value_derive,
 		.inherit = &o42a_kpr_value_derive,
 		.mark = &o42a_kpr_array_mark,
+		.sweep = &o42a_kpr_value_sweep,
 		.is_init = &o42a_kpr_value_is_init,
 	},
 };
