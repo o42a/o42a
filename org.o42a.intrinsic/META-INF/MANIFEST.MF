@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Intrinsics
 Bundle-SymbolicName: org.o42a.intrinsic;singleton:=true
-Bundle-Version: 0.2.3
+Bundle-Version: 0.2.4
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.o42a.common;bundle-version="0.2.3",
- org.o42a.lib.collections;bundle-version="0.2.3",
- org.o42a.lib.console;bundle-version="0.2.3",
- org.o42a.lib.macros;bundle-version="0.2.3",
- org.o42a.lib.test;bundle-version="0.2.3"
+Require-Bundle: org.o42a.common;bundle-version="0.2.4",
+ org.o42a.lib.collections;bundle-version="0.2.4",
+ org.o42a.lib.console;bundle-version="0.2.4",
+ org.o42a.lib.macros;bundle-version="0.2.4",
+ org.o42a.lib.test;bundle-version="0.2.4"
 Export-Package: org.o42a.intrinsic
 Bundle-ActivationPolicy: lazy
