@@ -62,8 +62,27 @@ public abstract class Type<S extends StructOp<S>>
 		return this.id;
 	}
 
-	public boolean isPacked() {
-		return false;
+	/**
+	 * Whether this type is packed.
+	 *
+	 * @return <code>true</code> if a {{@link TypeAlignment#PACKED_TYPE packed}
+	 * data alignment {@link #requiredAlignment() requested},
+	 * or <code>false</code> otherwise.
+	 */
+	public final boolean isPacked() {
+		return requiredAlignment().isPacked();
+	}
+
+	/**
+	 * The required type data alignment.
+	 *
+	 * <p>This is a minimum data alignment. The real one can be bigger, unless
+	 * a {@link TypeAlignment#PACKED_TYPE packed} alignment returned.</p>
+	 *
+	 * @return {@link TypeAlignment#TYPE_ALIGN_1 1 byte alignment} by default.
+	 */
+	public TypeAlignment requiredAlignment() {
+		return TypeAlignment.TYPE_ALIGN_1;
 	}
 
 	public boolean isReentrant() {

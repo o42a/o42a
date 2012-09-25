@@ -172,8 +172,8 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		}
 
 		@Override
-		public boolean isPacked() {
-			return true;
+		public TypeAlignment requiredAlignment() {
+			return TypeAlignment.PACKED_TYPE;
 		}
 
 		@Override
