@@ -22,9 +22,7 @@ package org.o42a.backend.constant.data.struct;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Struct;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 
 
 public final class CType<S extends StructOp<S>> extends Struct<S> {
@@ -44,8 +42,8 @@ public final class CType<S extends StructOp<S>> extends Struct<S> {
 	}
 
 	@Override
-	public boolean isPacked() {
-		return this.original.isPacked();
+	public TypeAlignment requiredAlignment() {
+		return getOriginal().requiredAlignment();
 	}
 
 	@Override
