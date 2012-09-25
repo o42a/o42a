@@ -40,6 +40,7 @@ public final class StructRecLLDAlloc<S extends StructOp<S>>
 			Type<S> type) {
 		super(enclosing);
 		this.type = type;
+		init();
 	}
 
 	@Override

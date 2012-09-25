@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.llvm.id;
 
+import static org.o42a.backend.llvm.data.NameLLVMEncoder.NAME_LLVM_ENCODER;
+
 import org.o42a.backend.llvm.data.LLVMModule;
 
 
@@ -30,7 +32,7 @@ final class NestedId extends LLVMId {
 	private long typePtr;
 
 	NestedId(LLVMId enclosing, int index) {
-		super(enclosing.getGlobalId(), enclosing.kind);
+		super(enclosing.getGlobalId(), enclosing.getKind());
 		this.enclosing = enclosing;
 		this.index = index;
 	}
@@ -120,7 +122,8 @@ final class NestedId extends LLVMId {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append("getElementPtr(").append(getGlobalId());
+		out.append("getElementPtr(");
+		out.append(NAME_LLVM_ENCODER.print(getGlobalId()));
 		printIndices(out);
 		out.append(')');
 

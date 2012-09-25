@@ -20,6 +20,7 @@
 package org.o42a.backend.llvm.data.alloc;
 
 import org.o42a.backend.llvm.id.LLVMId;
+import org.o42a.backend.llvm.id.TempLLVMId;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
 
@@ -28,24 +29,35 @@ public final class StructLLDAlloc<S extends StructOp<S>>
 		extends ContainerLLDAlloc<S> {
 
 	private final LLVMId llvmId;
+	private final TempLLVMId tempId;
 
 	public StructLLDAlloc(
 			long typePtr,
 			long nativePtr,
 			ContainerLLDAlloc<?> enclosing,
-			Type<S> type) {
-		super(
-				enclosing.getModule(),
-				typePtr,
-				nativePtr,
-				enclosing,
-				type);
-		this.llvmId = enclosing.nextId();
+			Type<S> type,
+			String displayName) {
+		super(enclosing.getModule(), typePtr, nativePtr, enclosing, type);
+		if (isTypeAllocated()) {
+			this.llvmId = enclosing.nextId();
+			this.tempId = null;
+		} else {
+			this.llvmId = this.tempId = enclosing.llvmId().addTemp(displayName);
+		}
 	}
 
 	@Override
 	public LLVMId llvmId() {
 		return this.llvmId;
+	}
+
+	@Override
+	public void setNativePtr(long nativePtr) {
+		super.setNativePtr(nativePtr);
+		if (this.tempId != null) {
+			getEnclosing().layout(this);
+			this.tempId.refine(getEnclosing().nextId());
+		}
 	}
 
 }

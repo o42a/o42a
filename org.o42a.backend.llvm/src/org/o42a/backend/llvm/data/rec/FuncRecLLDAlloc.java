@@ -40,6 +40,7 @@ public final class FuncRecLLDAlloc<F extends Func<F>>
 			Signature<F> signature) {
 		super(enclosing);
 		this.signature = signature;
+		init();
 	}
 
 	@Override

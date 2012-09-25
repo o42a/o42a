@@ -79,6 +79,34 @@ public final class DataLayout {
 		return this.layout;
 	}
 
+	public final int alignedOffset(DataAlignment nextAlignment) {
+
+		final int ashift = nextAlignment.getShift();
+		final int remainder = size() & ~((~0) << ashift);
+
+		return remainder > 0 ? (1 << ashift) - remainder : 0;
+	}
+
+	public final DataLayout union(DataLayout next) {
+
+		final DataAlignment nextAlignment = next.alignment();
+
+		return new DataLayout(
+				size() + alignedOffset(nextAlignment) + next.size(),
+				alignment().union(next.alignment()));
+	}
+
+	public final DataLayout roundToAlignment() {
+
+		final int size = size();
+		final DataAlignment alignment = alignment();
+		final byte ashift = alignment.getShift();
+
+		return new DataLayout(
+				(size + alignment.getBytes() - 1) >>> ashift << ashift,
+				alignment);
+	}
+
 	@Override
 	public int hashCode() {
 		return this.layout;

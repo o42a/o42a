@@ -32,6 +32,7 @@ public final class Int64lldAlloc extends SimpleLLDAlloc<Int64recOp> {
 
 	public Int64lldAlloc(ContainerLLDAlloc<?> enclosing) {
 		super(enclosing);
+		init();
 	}
 
 	@Override

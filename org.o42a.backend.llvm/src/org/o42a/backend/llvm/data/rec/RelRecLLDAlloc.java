@@ -32,6 +32,7 @@ public final class RelRecLLDAlloc extends SimpleLLDAlloc<RelRecOp> {
 
 	public RelRecLLDAlloc(ContainerLLDAlloc<?> enclosing) {
 		super(enclosing);
+		init();
 	}
 
 	@Override
