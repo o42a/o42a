@@ -62,7 +62,7 @@ public abstract class LLVMId {
 	}
 
 	private final ID globalId;
-	final LLVMIdKind kind;
+	private final LLVMIdKind kind;
 
 	LLVMId(ID globalId, LLVMIdKind kind) {
 		this.globalId = globalId;
@@ -77,8 +77,16 @@ public abstract class LLVMId {
 
 	public abstract int getIndex();
 
+	public String getDisplayName() {
+		return Integer.toString(getIndex());
+	}
+
 	public LLVMId addIndex(int index) {
 		return new NestedId(this, index);
+	}
+
+	public TempLLVMId addTemp(String displayName) {
+		return new TempLLVMId(this, displayName);
 	}
 
 	public abstract long expression(LLVMModule module);
@@ -160,13 +168,17 @@ public abstract class LLVMId {
 		return true;
 	}
 
+	final LLVMIdKind getKind() {
+		return this.kind;
+	}
+
 	final void printIndices(StringBuilder out) {
 
 		final LLVMId enclosing = getEnclosing();
 
 		if (enclosing != null) {
 			enclosing.printIndices(out);
-			out.append(", ").append(getIndex());
+			out.append(", ").append(getDisplayName());
 		}
 	}
 

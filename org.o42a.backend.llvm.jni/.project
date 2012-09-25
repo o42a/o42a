@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>org.o42a.backend.llvm</project>
+		<project>org.o42a.rt</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -19,13 +19,18 @@
 */
 package org.o42a.backend.llvm.data.alloc;
 
+import static org.o42a.util.DataAlignment.ALIGN_1;
+import static org.o42a.util.DataAlignment.maxAlignmentBelowSize;
+
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
+import org.o42a.backend.llvm.data.LLVMDataAllocator;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.DataAlignment;
 import org.o42a.util.string.ID;
 
 
@@ -34,6 +39,8 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 
 	private final Type<S> type;
 	private final long typePtr;
+	private DataLayout layout;
+	private DataLayout realLayout;
 	private long nativePtr;
 	private int nextIndex;
 	private boolean typeAllocated;
@@ -48,10 +55,13 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 		this.typePtr = typePtr;
 		this.nativePtr = typeDataPtr;
 		this.type = type;
+		this.layout =
+				new DataLayout(0, type.requiredAlignment().getAlignment());
 		if (typeDataPtr != 0L) {
+			// New structure construction.
 			this.typeAllocated = false;
 		} else {
-
+			// Construct an instance of the given type.
 			final Ptr<S> typePointer = type.pointer(module.getGenerator());
 			final ContainerLLDAlloc<?> typeAlloc;
 			final ContainerLLDAlloc<?> protoAlloc =
@@ -63,11 +73,21 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 				typeAlloc = (ContainerLLDAlloc<?>) typePointer.getAllocation();
 			}
 
-			this.typeAllocated = typeAlloc.isTypeAllocated();
+			assert typeAlloc.isTypeAllocated() :
+				"Can not instantiate the not allocated type "
+				+ typeAlloc.getType();
+
+			this.typeAllocated = true;
+			this.layout = typeAlloc.getLayout();
+			this.realLayout = typeAlloc.getRealLayout();
+			if (enclosing != null && !enclosing.isTypeAllocated()) {
+				enclosing.layout(this);
+			}
 		}
 
 		assert typePtr != 0L :
 			"Type not created";
+
 	}
 
 	public final long getTypePtr() {
@@ -90,10 +110,24 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 		return this.nativePtr;
 	}
 
-	public final void setNativePtr(long nativePtr) {
+	public void setNativePtr(long nativePtr) {
 		assert isTypeAllocated() :
 			"Type not allocated yet";
 		this.nativePtr = nativePtr;
+
+		if (this.realLayout != null) {
+			return;
+		}
+
+		this.layout = this.layout.roundToAlignment();
+		this.realLayout = getModule().dataAllocator().structLayout(this);
+
+		assert getLayout().size() == getRealLayout().size()
+				&& getRealLayout().alignment().getBytes()
+				<= getLayout().alignment().getBytes():
+			"The real and calculated data layouts of type "
+			+ getType() + " are not compatible. Real: " + getRealLayout()
+			+ ", calculated: " + getLayout();
 	}
 
 	public final long getTypeDataPtr() {
@@ -108,7 +142,15 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 
 	@Override
 	public final DataLayout getLayout() {
-		return getModule().dataAllocator().structLayout(this);
+		assert isTypeAllocated() :
+			getType() + " is not allocated yet";
+		return this.layout;
+	}
+
+	public final DataLayout getRealLayout() {
+		assert isTypeAllocated() :
+			getType() + " is not allocated yet";
+		return this.realLayout;
 	}
 
 	@Override
@@ -124,8 +166,74 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 				llvmId().expression(code.getModule())));
 	}
 
+	public void layout(ContainerLLDAlloc<?> type) {
+		assert !isTypeAllocated() :
+			getType() + " is already allocated";
+		alignStructField(type);
+		unionLayout(type.getLayout());
+	}
+
+	public void layout(DataLayout layout) {
+		assert !isTypeAllocated() :
+			getType() + " already allocated";
+		unionLayout(layout);
+	}
+
 	final LLVMId nextId() {
 		return llvmId().addIndex(this.nextIndex++);
+	}
+
+	private void alignStructField(ContainerLLDAlloc<?> type) {
+
+		final DataAlignment typeAlignment = type.getLayout().alignment();
+
+		if (typeAlignment.getBytes() != 1) {
+			// One-byte aligned data does not require alignment.
+			alignNotPackedStructField(type, typeAlignment);
+		} else if (getType().isPacked() && !type.getType().isPacked()) {
+			throw new IllegalArgumentException(
+					"Packed type " + getType()
+					+ " can not contain a field of non-packed type "
+					+ type);
+		}
+	}
+
+	private void alignNotPackedStructField(
+			ContainerLLDAlloc<?> type,
+			DataAlignment typeAlignment) {
+
+		final LLVMDataAllocator allocator = getModule().dataAllocator();
+		final int realAlignment =
+				type.getRealLayout().alignment().getBytes();
+		int offset = this.layout.alignedOffset(typeAlignment);
+
+		while (offset >= realAlignment) {
+
+			final int allocate =
+					maxAlignmentBelowSize(offset).getBytes();
+
+			if (!allocator.allocateField(getTypeDataPtr(), allocate)) {
+				throw new IllegalArgumentException(
+						"Can not allocate the type " + getType()
+						+ ": can not allocate a field"
+						+ " with size and alignment " + allocate);
+			}
+			offset -= allocate;
+			this.layout = new DataLayout(
+					this.layout.size() + allocate,
+					this.layout.alignment());
+			nextId();// Identifier is not needed, but should be allocated.
+		}
+	}
+
+	private void unionLayout(DataLayout layout) {
+		if (getType().isPacked()) {
+			this.layout = new DataLayout(
+					this.layout.size() + layout.size(),
+					ALIGN_1);
+		} else {
+			this.layout = this.layout.union(layout);
+		}
 	}
 
 }

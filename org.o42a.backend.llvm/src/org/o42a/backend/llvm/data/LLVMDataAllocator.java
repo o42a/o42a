@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.llvm.data;
 
+import static org.o42a.backend.llvm.data.NameLLVMEncoder.NAME_LLVM_ENCODER;
 import static org.o42a.backend.llvm.data.SystemTypeInfo.allocateSystemType;
 import static org.o42a.backend.llvm.id.LLVMId.dataId;
 
@@ -160,7 +161,8 @@ public class LLVMDataAllocator implements DataAllocator {
 				typePtr,
 				typeDataPtr,
 				container(enclosing),
-				data.getInstance());
+				data.getInstance(),
+				NAME_LLVM_ENCODER.print(data.getId()));
 	}
 
 	@Override
@@ -496,8 +498,10 @@ public class LLVMDataAllocator implements DataAllocator {
 	 * @param enclosingPtr enclosing type's data native pointer.
 	 * @param numBytes number of bytes to allocate and an alignment
 	 * of the allocated data.
+	 * @return <code>true</code> if alignment succeed, or <code>false</code>
+	 * if the field of the given size and alignment can not be allocated.
 	 */
-	boolean allocateField(long enclosingPtr, int numBytes) {
+	public boolean allocateField(long enclosingPtr, int numBytes) {
 
 		final long modulePtr = getModule().getNativePtr();
 

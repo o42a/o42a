@@ -30,11 +30,10 @@ import org.o42a.util.string.ID;
 
 public abstract class SimpleLLDAlloc<P extends PtrOp<P>> extends LLDAlloc<P> {
 
-	private final LLVMId llvmId;
+	private LLVMId llvmId;
 
 	public SimpleLLDAlloc(ContainerLLDAlloc<?> enclosing) {
 		super(enclosing.getModule(), enclosing);
-		this.llvmId = enclosing.nextId();
 	}
 
 	public SimpleLLDAlloc(
@@ -67,5 +66,15 @@ public abstract class SimpleLLDAlloc<P extends PtrOp<P>> extends LLDAlloc<P> {
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr);
+
+	protected void init() {
+
+		final ContainerLLDAlloc<?> enclosing = getEnclosing();
+
+		if (!enclosing.isTypeAllocated()) {
+			enclosing.layout(getLayout());
+		}
+		this.llvmId = enclosing.nextId();
+	}
 
 }

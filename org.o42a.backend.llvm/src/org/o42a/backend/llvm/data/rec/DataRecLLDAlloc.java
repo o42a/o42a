@@ -32,6 +32,7 @@ public final class DataRecLLDAlloc extends SimpleLLDAlloc<DataRecOp> {
 
 	public DataRecLLDAlloc(ContainerLLDAlloc<?> enclosing) {
 		super(enclosing);
+		init();
 	}
 
 	@Override

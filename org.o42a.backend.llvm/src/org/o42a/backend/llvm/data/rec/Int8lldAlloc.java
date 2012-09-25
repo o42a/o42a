@@ -32,6 +32,7 @@ public final class Int8lldAlloc extends SimpleLLDAlloc<Int8recOp> {
 
 	public Int8lldAlloc(ContainerLLDAlloc<?> enclosing) {
 		super(enclosing);
+		init();
 	}
 
 	@Override

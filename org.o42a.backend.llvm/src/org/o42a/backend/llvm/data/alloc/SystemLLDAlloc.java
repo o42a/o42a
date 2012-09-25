@@ -35,6 +35,7 @@ public class SystemLLDAlloc extends SimpleLLDAlloc<SystemOp> {
 			SystemTypeLLAlloc typeAlloc) {
 		super(enclosing);
 		this.typeAlloc = typeAlloc;
+		init();
 	}
 
 	public final SystemTypeLLAlloc getTypeAlloc() {

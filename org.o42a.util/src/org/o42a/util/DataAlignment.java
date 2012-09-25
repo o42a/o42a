@@ -19,6 +19,8 @@
 */
 package org.o42a.util;
 
+import static java.lang.Integer.numberOfLeadingZeros;
+
 
 public enum DataAlignment {
 
@@ -61,6 +63,10 @@ public enum DataAlignment {
 		}
 	}
 
+	public static DataAlignment maxAlignmentBelowSize(int bytes) {
+		return alignmentByShift(31 - numberOfLeadingZeros(bytes));
+	}
+
 	private final short bytes;
 	private final byte shift;
 
@@ -76,6 +82,13 @@ public enum DataAlignment {
 
 	public final byte getShift() {
 		return this.shift;
+	}
+
+	public final DataAlignment union(DataAlignment other) {
+		if (other.getBytes() > getBytes()) {
+			return other;
+		}
+		return this;
 	}
 
 	@Override

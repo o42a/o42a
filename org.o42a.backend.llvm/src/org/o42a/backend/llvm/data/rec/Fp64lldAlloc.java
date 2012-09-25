@@ -32,6 +32,7 @@ public final class Fp64lldAlloc extends SimpleLLDAlloc<Fp64recOp> {
 
 	public Fp64lldAlloc(ContainerLLDAlloc<?> enclosing) {
 		super(enclosing);
+		init();
 	}
 
 	@Override

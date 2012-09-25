@@ -29,7 +29,7 @@ final class AnyId extends LLVMId {
 	private long typePtr;
 
 	AnyId(LLVMId prototype) {
-		super(prototype.getGlobalId(), prototype.kind);
+		super(prototype.getGlobalId(), prototype.getKind());
 		this.prototype = prototype;
 	}
 
