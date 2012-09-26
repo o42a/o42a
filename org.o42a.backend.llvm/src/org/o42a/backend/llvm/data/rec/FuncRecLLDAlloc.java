@@ -27,6 +27,7 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
@@ -37,8 +38,9 @@ public final class FuncRecLLDAlloc<F extends Func<F>>
 
 	public FuncRecLLDAlloc(
 			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<FuncOp<F>> proto,
 			Signature<F> signature) {
-		super(enclosing);
+		super(enclosing, proto);
 		this.signature = signature;
 		init();
 	}

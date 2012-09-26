@@ -25,6 +25,7 @@ import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
@@ -32,8 +33,17 @@ public abstract class SimpleLLDAlloc<P extends PtrOp<P>> extends LLDAlloc<P> {
 
 	private LLVMId llvmId;
 
-	public SimpleLLDAlloc(ContainerLLDAlloc<?> enclosing) {
+	public SimpleLLDAlloc(
+			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<P> proto) {
 		super(enclosing.getModule(), enclosing);
+		if (proto != null) {
+
+			final SimpleLLDAlloc<P> protoAlloc = (SimpleLLDAlloc<P>) proto;
+
+			this.llvmId =
+					enclosing.llvmId().addIndex(protoAlloc.llvmId().getIndex());
+		}
 	}
 
 	public SimpleLLDAlloc(
@@ -68,13 +78,13 @@ public abstract class SimpleLLDAlloc<P extends PtrOp<P>> extends LLDAlloc<P> {
 			long nativePtr);
 
 	protected void init() {
+		if (this.llvmId == null) {
 
-		final ContainerLLDAlloc<?> enclosing = getEnclosing();
+			final ContainerLLDAlloc<?> enclosing = getEnclosing();
 
-		if (!enclosing.isTypeAllocated()) {
 			enclosing.layout(getLayout());
+			this.llvmId = enclosing.nextId();
 		}
-		this.llvmId = enclosing.nextId();
 	}
 
 }

@@ -25,13 +25,16 @@ import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
 public final class AnyRecLLDAlloc extends SimpleLLDAlloc<AnyRecOp> {
 
-	public AnyRecLLDAlloc(ContainerLLDAlloc<?> enclosing) {
-		super(enclosing);
+	public AnyRecLLDAlloc(
+			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<AnyRecOp> proto) {
+		super(enclosing, proto);
 		init();
 	}
 

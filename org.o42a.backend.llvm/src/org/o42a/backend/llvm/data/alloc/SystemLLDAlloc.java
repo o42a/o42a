@@ -23,6 +23,7 @@ import org.o42a.backend.llvm.code.op.SystemLLOp;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
@@ -32,8 +33,9 @@ public class SystemLLDAlloc extends SimpleLLDAlloc<SystemOp> {
 
 	public SystemLLDAlloc(
 			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<SystemOp> proto,
 			SystemTypeLLAlloc typeAlloc) {
-		super(enclosing);
+		super(enclosing, proto);
 		this.typeAlloc = typeAlloc;
 		init();
 	}

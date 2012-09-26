@@ -162,6 +162,7 @@ public class LLVMDataAllocator implements DataAllocator {
 				typeDataPtr,
 				container(enclosing),
 				data.getInstance(),
+				data.getPointer().getProtoAllocation(),
 				NAME_LLVM_ENCODER.print(data.getId()));
 	}
 
@@ -245,7 +246,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 8);
 		}
-		return new Int8lldAlloc(container(enclosing));
+		return new Int8lldAlloc(container(enclosing), type);
 	}
 
 	@Override
@@ -256,7 +257,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 16);
 		}
-		return new Int16lldAlloc(container(enclosing));
+		return new Int16lldAlloc(container(enclosing), type);
 	}
 
 	@Override
@@ -267,7 +268,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 32);
 		}
-		return new Int32lldAlloc(container(enclosing));
+		return new Int32lldAlloc(container(enclosing), type);
 	}
 
 	@Override
@@ -278,7 +279,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 64);
 		}
-		return new Int64lldAlloc(container(enclosing));
+		return new Int64lldAlloc(container(enclosing), type);
 	}
 
 	@Override
@@ -289,7 +290,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocateFp32(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new Fp32lldAlloc(container(enclosing));
+		return new Fp32lldAlloc(container(enclosing), type);
 	}
 
 	@Override
@@ -300,7 +301,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocateFp64(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new Fp64lldAlloc(container(enclosing));
+		return new Fp64lldAlloc(container(enclosing), type);
 	}
 
 	@Override
@@ -319,7 +320,7 @@ public class LLVMDataAllocator implements DataAllocator {
 					typeAlloc.getTypePtr());
 		}
 
-		return new SystemLLDAlloc(container(enclosing), typeAlloc);
+		return new SystemLLDAlloc(container(enclosing), type, typeAlloc);
 	}
 
 	@Override
@@ -333,7 +334,7 @@ public class LLVMDataAllocator implements DataAllocator {
 					typeDataPtr(enclosing),
 					getModule().nativePtr(signature));
 		}
-		return new FuncRecLLDAlloc<F>(container(enclosing), signature);
+		return new FuncRecLLDAlloc<F>(container(enclosing), type, signature);
 	}
 
 	@Override
@@ -344,7 +345,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new AnyRecLLDAlloc(container(enclosing));
+		return new AnyRecLLDAlloc(container(enclosing), type);
 	}
 
 	@Override
@@ -355,7 +356,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new DataRecLLDAlloc(container(enclosing));
+		return new DataRecLLDAlloc(container(enclosing), type);
 	}
 
 
@@ -377,6 +378,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		return new StructRecLLDAlloc<S>(
 				container(enclosing),
+				type,
 				llvmStruct.getType());
 	}
 
@@ -388,7 +390,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), 32);
 		}
-		return new RelRecLLDAlloc(container(enclosing));
+		return new RelRecLLDAlloc(container(enclosing), type);
 	}
 
 	@Override

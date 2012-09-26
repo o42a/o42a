@@ -25,13 +25,16 @@ import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.Fp64recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
 public final class Fp64lldAlloc extends SimpleLLDAlloc<Fp64recOp> {
 
-	public Fp64lldAlloc(ContainerLLDAlloc<?> enclosing) {
-		super(enclosing);
+	public Fp64lldAlloc(
+			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<Fp64recOp> proto) {
+		super(enclosing, proto);
 		init();
 	}
 
