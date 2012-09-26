@@ -179,13 +179,12 @@ public class LLVMDataAllocator implements DataAllocator {
 					data.getInstance().isPacked());
 			allocation.typeAllocated();
 		}
+		allocation.setNativePtr(allocation.getTypePtr());
 		if (allocate(enclosing)) {
-			allocation.setNativePtr(allocateStruct(
+			allocateStruct(
 					getModulePtr(),
 					typeDataPtr(enclosing),
-					allocation.getTypePtr()));
-		} else {
-			allocation.setNativePtr(allocation.getTypePtr());
+					allocation.getTypePtr());
 		}
 	}
 
@@ -629,7 +628,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	static native long createTypeData(long modulePtr);
 
-	private static native long allocateStruct(
+	private static native void allocateStruct(
 			long modulePtr,
 			long enclosingPtr,
 			long typePtr);
@@ -688,5 +687,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	private static native int relPtrLayout(long modulePtr);
 
 	static native int structLayout(long modulePtr, long typePtr);
+
+	public static native void dumpStructLayout(long modulePtr, long typePtr);
 
 }

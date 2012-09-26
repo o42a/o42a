@@ -52,11 +52,15 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 			ContainerLLDAlloc<?> enclosing,
 			Type<S> type) {
 		super(module, enclosing);
+		assert typePtr != 0L :
+			"Type not created";
+
 		this.typePtr = typePtr;
 		this.nativePtr = typeDataPtr;
 		this.type = type;
 		this.layout =
 				new DataLayout(0, type.requiredAlignment().getAlignment());
+
 		if (typeDataPtr != 0L) {
 			// New structure construction.
 			this.typeAllocated = false;
@@ -80,14 +84,7 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 			this.typeAllocated = true;
 			this.layout = typeAlloc.getLayout();
 			this.realLayout = typeAlloc.getRealLayout();
-			if (enclosing != null && !enclosing.isTypeAllocated()) {
-				enclosing.layout(this);
-			}
 		}
-
-		assert typePtr != 0L :
-			"Type not created";
-
 	}
 
 	public final long getTypePtr() {
@@ -119,6 +116,8 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 			return;
 		}
 
+		final DataLayout oldLayout = this.layout;
+
 		this.layout = this.layout.roundToAlignment();
 		this.realLayout = getModule().dataAllocator().structLayout(this);
 
@@ -127,7 +126,8 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 				<= getLayout().alignment().getBytes():
 			"The real and calculated data layouts of type "
 			+ getType() + " are not compatible. Real: " + getRealLayout()
-			+ ", calculated: " + getLayout();
+			+ ", calculated: " + getLayout() + " (" + oldLayout + ')';
+
 	}
 
 	public final long getTypeDataPtr() {
@@ -205,7 +205,8 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 		final LLVMDataAllocator allocator = getModule().dataAllocator();
 		final int realAlignment =
 				type.getRealLayout().alignment().getBytes();
-		int offset = this.layout.alignedOffset(typeAlignment);
+		final int alignedOffset = this.layout.alignedOffset(typeAlignment);
+		int offset = alignedOffset;
 
 		while (offset >= realAlignment) {
 

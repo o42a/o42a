@@ -42,6 +42,7 @@ public final class StructLLDAlloc<S extends StructOp<S>>
 		super(enclosing.getModule(), typePtr, typeDataPtr, enclosing, type);
 
 		if (isTypeAllocated() && !enclosing.isTypeAllocated()) {
+			enclosing.layout(this);
 			this.llvmId = enclosing.nextId();
 			this.tempId = null;
 		} else {
