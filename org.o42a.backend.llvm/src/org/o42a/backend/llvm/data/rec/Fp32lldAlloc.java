@@ -25,13 +25,16 @@ import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.Fp32recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
 public final class Fp32lldAlloc extends SimpleLLDAlloc<Fp32recOp> {
 
-	public Fp32lldAlloc(ContainerLLDAlloc<?> enclosing) {
-		super(enclosing);
+	public Fp32lldAlloc(
+			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<Fp32recOp> proto) {
+		super(enclosing, proto);
 		init();
 	}
 

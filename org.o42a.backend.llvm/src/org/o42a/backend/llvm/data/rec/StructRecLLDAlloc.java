@@ -27,6 +27,7 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
@@ -37,8 +38,9 @@ public final class StructRecLLDAlloc<S extends StructOp<S>>
 
 	public StructRecLLDAlloc(
 			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<StructRecOp<S>> proto,
 			Type<S> type) {
-		super(enclosing);
+		super(enclosing, proto);
 		this.type = type;
 		init();
 	}

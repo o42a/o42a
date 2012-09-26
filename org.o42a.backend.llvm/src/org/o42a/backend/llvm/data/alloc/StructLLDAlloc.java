@@ -23,6 +23,7 @@ import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.backend.llvm.id.TempLLVMId;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.backend.DataAllocation;
 
 
 public final class StructLLDAlloc<S extends StructOp<S>>
@@ -33,16 +34,27 @@ public final class StructLLDAlloc<S extends StructOp<S>>
 
 	public StructLLDAlloc(
 			long typePtr,
-			long nativePtr,
+			long typeDataPtr,
 			ContainerLLDAlloc<?> enclosing,
 			Type<S> type,
+			DataAllocation<S> proto,
 			String displayName) {
-		super(enclosing.getModule(), typePtr, nativePtr, enclosing, type);
-		if (isTypeAllocated()) {
+		super(enclosing.getModule(), typePtr, typeDataPtr, enclosing, type);
+
+		if (isTypeAllocated() && !enclosing.isTypeAllocated()) {
 			this.llvmId = enclosing.nextId();
 			this.tempId = null;
 		} else {
-			this.llvmId = this.tempId = enclosing.llvmId().addTemp(displayName);
+
+			final int protoIndex = protoIndex(proto);
+
+			if (protoIndex >= 0) {
+				this.llvmId = enclosing.llvmId().addIndex(protoIndex);
+				this.tempId = null;
+			} else {
+				this.llvmId = this.tempId =
+						enclosing.llvmId().addTemp(displayName);
+			}
 		}
 	}
 
@@ -58,6 +70,16 @@ public final class StructLLDAlloc<S extends StructOp<S>>
 			getEnclosing().layout(this);
 			this.tempId.refine(getEnclosing().nextId());
 		}
+	}
+
+	private int protoIndex(DataAllocation<?> proto) {
+		if (proto == null)  {
+			return -1;
+		}
+
+		final ContainerLLDAlloc<?> protoAlloc = (ContainerLLDAlloc<?>) proto;
+
+		return protoAlloc.llvmId().getIndex();
 	}
 
 }

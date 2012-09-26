@@ -25,13 +25,16 @@ import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
 public final class Int8lldAlloc extends SimpleLLDAlloc<Int8recOp> {
 
-	public Int8lldAlloc(ContainerLLDAlloc<?> enclosing) {
-		super(enclosing);
+	public Int8lldAlloc(
+			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<Int8recOp> proto) {
+		super(enclosing, proto);
 		init();
 	}
 

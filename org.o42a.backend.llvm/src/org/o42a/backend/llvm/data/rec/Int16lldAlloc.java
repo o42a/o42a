@@ -25,13 +25,16 @@ import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.Int16recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
 
 public final class Int16lldAlloc extends SimpleLLDAlloc<Int16recOp> {
 
-	public Int16lldAlloc(ContainerLLDAlloc<?> enclosing) {
-		super(enclosing);
+	public Int16lldAlloc(
+			ContainerLLDAlloc<?> enclosing,
+			DataAllocation<Int16recOp> proto) {
+		super(enclosing, proto);
 		init();
 	}
 
