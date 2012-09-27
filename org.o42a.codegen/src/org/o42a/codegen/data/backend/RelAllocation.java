@@ -27,7 +27,7 @@ import org.o42a.util.string.ID;
 
 public interface RelAllocation {
 
-	void write(DataWriter writer, DataAllocation<RelRecOp> detination);
+	void write(DataWriter writer, DataAllocation<RelRecOp> destination);
 
 	RelOp op(ID id, CodeWriter writer);
 

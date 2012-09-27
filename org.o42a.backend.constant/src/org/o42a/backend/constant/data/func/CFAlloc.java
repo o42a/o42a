@@ -72,9 +72,9 @@ public abstract class CFAlloc<F extends Func<F>>
 	@Override
 	public void write(
 			DataWriter writer,
-			DataAllocation<FuncOp<F>> detsination) {
+			DataAllocation<FuncOp<F>> destination) {
 
-		final FuncRecCDAlloc<F> dest = (FuncRecCDAlloc<F>) detsination;
+		final FuncRecCDAlloc<F> dest = (FuncRecCDAlloc<F>) destination;
 
 		dest.setValue(getPointer());
 	}
