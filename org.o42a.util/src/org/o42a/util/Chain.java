@@ -24,11 +24,25 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 
+/**
+ * A single-linked items chain.
+ *
+ * <p>Each item of the chain should contain the next one.</p>
+ *
+ * @param <T> item type.
+ */
 public abstract class Chain<T> implements Iterable<T> {
 
 	private T first;
 	private T last;
 
+	/**
+	 * Appends the last item of the chain.
+	 *
+	 * @param item item to add.
+	 *
+	 * @return added item.
+	 */
 	public <I extends T> I add(I item) {
 		if (isEmpty()) {
 			this.first = this.last = item;
@@ -39,18 +53,75 @@ public abstract class Chain<T> implements Iterable<T> {
 		return item;
 	}
 
+	/**
+	 * Adds the first item to chain.
+	 *
+	 * @param item item to add.
+	 *
+	 * @return added item.
+	 */
+	public <I extends T> I push(I item) {
+		if (isEmpty()) {
+			this.first = this.last = item;
+		} else {
+			setNext(item, this.first);
+			this.first = item;
+		}
+		return item;
+	}
+
+	/**
+	 * Removes the first item from the chain.
+	 *
+	 * @return removed item or <code>null</code> for empty chain.
+	 */
+	public T pop() {
+
+		final T first = this.first;
+
+		if (first != null) {
+			this.first = next(first);
+		}
+
+		return first;
+	}
+
+	/**
+	 * The first item of this chain.
+	 *
+	 * @return the first item or <code>null</code> for empty chain.
+	 */
 	public final T getFirst() {
 		return this.first;
 	}
 
+	/**
+	 * The last item of this chain.
+	 *
+	 * @return the last item or <code>null</code> for empty chain.
+	 */
 	public final T getLast() {
 		return this.last;
 	}
 
+	/**
+	 * Checks whether this chain is empty.
+	 *
+	 * @return <code>true</code> is this chain contains no items,
+	 *  or <code>false</code> otherwise.
+	 */
 	public final boolean isEmpty() {
 		return this.first == null;
 	}
 
+	/**
+	 * Checks whether this chain contains the given item.
+	 *
+	 * @param item item to find.
+	 *
+	 * @return <code>true</code> if this chain contains an item equal to the
+	 * given one, or <code>false</code> othwerwise.
+	 */
 	public final boolean contains(T item) {
 		for (T t = getFirst(); t != null; t = next(t)) {
 			if (t.equals(item)) {
@@ -60,6 +131,9 @@ public abstract class Chain<T> implements Iterable<T> {
 		return false;
 	}
 
+	/**
+	 * Clears this chain by removing all items from it.
+	 */
 	public final void clear() {
 		this.first = this.last = null;
 	}
