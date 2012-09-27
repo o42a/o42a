@@ -299,7 +299,8 @@ public abstract class LLCode implements CodeWriter {
 						nextInstr(),
 						ids.write(id),
 						ids.length(),
-						type.getTypePtr()))));
+						type.getTypePtr(),
+						type.getLayout().alignment().getBytes()))));
 	}
 
 	@Override
@@ -521,7 +522,8 @@ public abstract class LLCode implements CodeWriter {
 			long instrPtr,
 			long id,
 			int idLen,
-			long typePtr);
+			long typePtr,
+			short alignment);
 
 	private static native long phi2(
 			long blockPtr,
