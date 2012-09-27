@@ -129,7 +129,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createTypeData(
 	return to_ptr<std::vector<Type*> >(result);
 }
 
-jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct(
+void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct(
 		JNIEnv *,
 		jclass,
 		jlong,
@@ -140,8 +140,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct(
 	Type *type = from_ptr<Type>(typePtr);
 
 	enclosing->push_back(type);
-
-	return to_ptr<Type>(type);
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
@@ -391,6 +389,24 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_structLayout(
 	Type *type = from_ptr<Type>(typePtr);
 
 	return typeLayout(module, type);
+}
+
+void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_dumpStructLayout(
+		JNIEnv *,
+		jclass,
+		jlong modulePtr,
+		jlong typePtr) {
+
+	const o42ac::BackendModule *module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
+	const TargetData &targetData = module->getTargetData();
+	StructType *type = from_ptr<StructType>(typePtr);
+	const StructLayout *layout = targetData.getStructLayout(type);
+	const unsigned numElements = type->getNumElements();
+
+	for (unsigned i = 0; i < numElements; ++i) {
+		errs() << layout->getElementOffset(i) << ": " << *type->getElementType(i) << "\n";
+	}
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullPtr(
