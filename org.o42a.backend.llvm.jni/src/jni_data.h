@@ -88,9 +88,9 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_create
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    allocateStruct
- * Signature: (JJJ)J
+ * Signature: (JJJ)V
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct
   (JNIEnv *, jclass, jlong, jlong, jlong);
 
 /*
@@ -227,6 +227,14 @@ JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_relPtrL
  * Signature: (JJ)I
  */
 JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_structLayout
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
+ * Method:    dumpStructLayout
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_dumpStructLayout
   (JNIEnv *, jclass, jlong, jlong);
 
 #ifdef __cplusplus
