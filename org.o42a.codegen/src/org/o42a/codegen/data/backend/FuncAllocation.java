@@ -29,7 +29,7 @@ public interface FuncAllocation<F extends Func<F>> {
 
 	Signature<F> getSignature();
 
-	void write(DataWriter writer, DataAllocation<FuncOp<F>> detsination);
+	void write(DataWriter writer, DataAllocation<FuncOp<F>> destination);
 
 	DataAllocation<AnyOp> toAny();
 
