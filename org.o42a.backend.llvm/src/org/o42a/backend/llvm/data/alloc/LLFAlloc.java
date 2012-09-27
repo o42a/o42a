@@ -71,8 +71,8 @@ public final class LLFAlloc<F extends Func<F>>
 	@Override
 	public void write(
 			DataWriter writer,
-			DataAllocation<FuncOp<F>> detsination) {
-		llvmId().write(writer);
+			DataAllocation<FuncOp<F>> destination) {
+		llvmId().write(writer, destination);
 	}
 
 	@Override

@@ -645,3 +645,19 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeGlobal(
 
 	global->setInitializer(initializer);
 }
+
+void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeAlignmentGap(
+		JNIEnv *,
+		jclass,
+		jlong typePtr,
+		jlong structPtr,
+		jint index) {
+
+	StructType *type = from_ptr<StructType>(typePtr);
+	std::vector<Constant *> *data =
+			from_ptr<std::vector<Constant*> >(structPtr);
+	Constant *constant =
+			ConstantExpr::getNullValue(type->getElementType(index));
+
+	data->push_back(constant);
+}
