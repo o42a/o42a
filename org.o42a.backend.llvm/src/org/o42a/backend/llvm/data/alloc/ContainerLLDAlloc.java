@@ -29,8 +29,11 @@ import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.Type;
 import org.o42a.util.DataAlignment;
+import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 
 

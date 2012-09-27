@@ -32,7 +32,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.floats.FloatValueType;
-import org.o42a.core.value.impl.*;
+import org.o42a.core.value.impl.NoneValueType;
 import org.o42a.core.value.integer.IntegerValueType;
 import org.o42a.core.value.string.StringValueType;
 import org.o42a.core.value.voids.VoidValueType;

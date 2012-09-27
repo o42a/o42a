@@ -26,8 +26,8 @@ import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.SystemType;
+import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 
 
