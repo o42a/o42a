@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Utilities
     Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,41 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.data;
+package org.o42a.util;
 
-import static org.o42a.util.DataAlignment.*;
-
-import org.o42a.util.DataAlignment;
+import static org.o42a.util.DataAlignment.alignmentByShift;
 
 
 public final class DataLayout {
 
 	private static final int ALIGNMENT_MASK = 0xE0000000;
 	private static final int SIZE_MASK = 0x1FFFFFFF;
-
-	public static DataLayout paddingLayout(int padding) {
-		switch (padding) {
-		case 0:
-		case 1:
-		case 2:
-		case 4:
-		case 8:
-			return new DataLayout(padding, alignmentByBytes(padding));
-		case 3:
-			return new DataLayout(padding, ALIGN_2);
-		case 5:
-		case 6:
-		case 7:
-			return new DataLayout(padding, ALIGN_4);
-		}
-
-		if (padding >= 16) {
-			throw new IllegalArgumentException(
-					"Padding greater than 16 bytes is not supported");
-		}
-
-		return new DataLayout(padding, ALIGN_8);
-	}
 
 	private final int layout;
 

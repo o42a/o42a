@@ -22,8 +22,8 @@ package org.o42a.codegen.data.backend;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.RelPtr;
+import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 
 

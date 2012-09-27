@@ -26,8 +26,8 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 
 

@@ -25,7 +25,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.macro.Macro;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.Value;
 
 
 public class MacroValueStruct extends SingleValueStruct<Macro> {

@@ -20,14 +20,14 @@
 package org.o42a.backend.llvm.data;
 
 import static org.o42a.backend.llvm.data.LLVMDataAllocator.*;
-import static org.o42a.codegen.data.DataLayout.paddingLayout;
+import static org.o42a.util.DataAlignment.maxAlignmentBelowSize;
 
 import java.util.HashMap;
 
 import org.o42a.backend.llvm.data.alloc.SystemTypeLLAlloc;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.SystemType;
 import org.o42a.util.DataAlignment;
+import org.o42a.util.DataLayout;
 
 
 enum SystemTypeInfo {
@@ -63,7 +63,10 @@ enum SystemTypeInfo {
 
 		@Override
 		protected DataLayout layout() {
-			return paddingLayout(gcBlockPadding());
+
+			final int padding = gcBlockPadding();
+
+			return new DataLayout(padding, maxAlignmentBelowSize(padding));
 		}
 
 	};

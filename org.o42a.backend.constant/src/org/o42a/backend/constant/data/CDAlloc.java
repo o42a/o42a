@@ -25,10 +25,13 @@ import static org.o42a.backend.constant.data.UnderAlloc.dataUnderAlloc;
 import org.o42a.backend.constant.data.rec.PtrRecCDAlloc;
 import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.PtrRec;
+import org.o42a.codegen.data.RelPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
+import org.o42a.util.DataLayout;
 
 
 public abstract class CDAlloc<P extends DataPtrOp<P>>

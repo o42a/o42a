@@ -37,7 +37,7 @@ public enum DataAlignment {
 		return Registry.byShift[shift];
 	}
 
-	public static DataAlignment alignmentByBytes(int bytes) {
+	public static DataAlignment alignmentOfBytes(int bytes) {
 
 		final int diff = bytes - 4;
 
@@ -64,6 +64,9 @@ public enum DataAlignment {
 	}
 
 	public static DataAlignment maxAlignmentBelowSize(int bytes) {
+		if (bytes == 0) {
+			return ALIGN_1;
+		}
 		return alignmentByShift(31 - numberOfLeadingZeros(bytes));
 	}
 

@@ -31,6 +31,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
+import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 
 

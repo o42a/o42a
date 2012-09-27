@@ -27,6 +27,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.debug.DebugHeader;
 import org.o42a.codegen.debug.TypeDebugBase;
+import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 
 

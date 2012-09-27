@@ -20,7 +20,10 @@
 package org.o42a.backend.constant.data;
 
 import org.o42a.codegen.code.op.AllocPtrOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.SubData;
+import org.o42a.util.DataLayout;
 
 
 public abstract class DCDAlloc<P extends AllocPtrOp<P>, D extends Data<P>>
