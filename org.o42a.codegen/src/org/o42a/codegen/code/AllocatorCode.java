@@ -33,9 +33,9 @@ final class AllocatorCode extends Allocator {
 		super(enclosing, name);
 		this.enclosingAllocator = enclosing.getAllocator();
 		this.writer = enclosing.writer().block(this);
-		this.disposal = enclosing.writer().startAllocation();
-		allocation();
+		this.disposal = enclosing.writer().startAllocation(this);
 		enclosing.writer().go(unwrapPos(head()));
+		allocation();
 	}
 
 	@Override

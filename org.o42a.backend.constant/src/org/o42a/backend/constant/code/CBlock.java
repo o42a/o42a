@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.backend.constant.code.op.AllocPtrCOp;
 import org.o42a.backend.constant.code.op.BaseInstrBE;
 import org.o42a.backend.constant.code.op.BoolCOp;
 import org.o42a.backend.constant.data.ConstBackend;
@@ -38,6 +39,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	private CBlockPart nextPart;
 
 	private final SubBlocks subBlocks = new SubBlocks();
+	private StartAllocation startAllocation;
 	private CBlock<?> nextBlock;
 	private int blockSeq;
 
@@ -104,9 +106,18 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	}
 
 	@Override
-	public Disposal startAllocation() {
+	public Disposal startAllocation(Allocator allocator) {
 
 		final StartAllocation startAllocation = new StartAllocation(this);
+
+		if (allocator != null) {
+
+			final CBlock<?> block = (CBlock<?>) allocator.writer();
+
+			block.startAllocation = startAllocation;
+		} else {
+			startAllocation.alwaysEmit();
+		}
 
 		return new Disposal() {
 			@Override
@@ -114,7 +125,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 				new BaseInstrBE(cast(code)) {
 					@Override
 					public void prepare() {
-						alwaysEmit();
+						useBy(startAllocation);
 					}
 					@Override
 					protected void emit() {
@@ -216,6 +227,12 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	protected abstract CBlockPart createFirstBlock();
 
+	final void allocate(AllocPtrCOp<?> op) {
+		if (this.startAllocation != null) {
+			this.startAllocation.useBy(op);
+		}
+	}
+
 	final void resetNextPart() {
 		this.nextPart = null;
 	}
@@ -276,7 +293,6 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 		@Override
 		public void prepare() {
-			alwaysEmit();
 		}
 
 		@Override
@@ -284,7 +300,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 			final CBlockPart part = (CBlockPart) part();
 
-			this.disposal = part.underlying().writer().startAllocation();
+			this.disposal = part.underlying().writer().startAllocation(null);
 		}
 
 		Disposal getDisposal() {
