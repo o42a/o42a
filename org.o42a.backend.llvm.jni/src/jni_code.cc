@@ -260,18 +260,17 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 		jlong instrPtr,
 		jlong id,
 		jint idLen,
-		jlong typePtr) {
+		jlong typePtr,
+		jshort alignment) {
 
 	MAKE_BUILDER;
-	o42ac::BackendModule *module = static_cast<o42ac::BackendModule*>(
-			builder.GetInsertBlock()->getParent()->getParent());
 	Type *type = from_ptr<Type>(typePtr);
 	AllocaInst *result = builder.CreateAlloca(
 			type,
 			0,
 			StringRef(from_ptr<char>(id), idLen));
 
-	result->setAlignment(module->getTargetData().getPrefTypeAlignment(type));
+	result->setAlignment(alignment);
 
 	return to_instr_ptr(result);
 }
