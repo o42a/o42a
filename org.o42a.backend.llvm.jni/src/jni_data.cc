@@ -508,6 +508,23 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
 	data->push_back(result);
 }
 
+void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFp32(
+		JNIEnv *,
+		jclass,
+		jlong modulePtr,
+		jlong structPtr,
+		jfloat value) {
+
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
+	Type* type = Type::getFloatTy(module->getContext());
+	std::vector<Constant*> *data =
+			from_ptr<std::vector<Constant*> >(structPtr);
+	Constant *result = ConstantFP::get(type, value);
+
+	data->push_back(result);
+}
+
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFp64(
 		JNIEnv *,
 		jclass,
