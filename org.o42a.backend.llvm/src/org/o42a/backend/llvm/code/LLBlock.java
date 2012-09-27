@@ -103,7 +103,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	@Override
-	public Disposal startAllocation() {
+	public Disposal startAllocation(Allocator allocator) {
 
 		final long stackPtr = instr(stackSave(nextPtr(), nextInstr()));
 

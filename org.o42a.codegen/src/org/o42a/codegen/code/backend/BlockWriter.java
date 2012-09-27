@@ -19,9 +19,7 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.Disposal;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.BoolOp;
 
 
@@ -33,7 +31,7 @@ public interface BlockWriter extends CodeWriter {
 
 	BlockWriter block(Block code);
 
-	Disposal startAllocation();
+	Disposal startAllocation(Allocator allocator);
 
 	void go(CodePos pos);
 

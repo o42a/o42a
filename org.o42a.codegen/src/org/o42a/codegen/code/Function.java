@@ -123,7 +123,7 @@ public final class Function<F extends Func<F>>
 		if (getGenerator().isProxied()) {
 			this.disposal = NO_DISPOSAL;
 		} else {
-			this.disposal = this.writer.startAllocation();
+			this.disposal = this.writer.startAllocation(this);
 		}
 		allocation();
 

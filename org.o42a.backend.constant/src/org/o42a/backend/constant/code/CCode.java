@@ -235,7 +235,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final AnyRecCOp allocatePtr(ID id) {
-		return new AnyRecCOp(
+		return allocated(new AnyRecCOp(
 				new OpBE<AnyRecOp>(id, this) {
 					@Override
 					public void prepare() {
@@ -248,7 +248,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 								.allocatePtr(getId());
 					}
 				},
-				autoRecStore());
+				autoRecStore()));
 	}
 
 	@Override
@@ -259,7 +259,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final ContainerCDAlloc<S> typeAlloc =
 				(ContainerCDAlloc<S>) typeAllocation;
 
-		return new StructRecCOp<S>(
+		return allocated(new StructRecCOp<S>(
 				new OpBE<StructRecOp<S>>(id, this) {
 					@Override
 					public void prepare() {
@@ -272,7 +272,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 					}
 				},
 				autoRecStore(),
-				typeAlloc.getType());
+				typeAlloc.getType()));
 	}
 
 	@Override
@@ -284,7 +284,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				(ContainerCDAlloc<S>) typeAllocation;
 		final Type<S> type = typeAlloc.getType();
 
-		return type.op(new CStruct<S>(
+		return type.op(allocated(new CStruct<S>(
 				new OpBE<S>(id, this) {
 					@Override
 					public void prepare() {
@@ -297,7 +297,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 					}
 				},
 				autoStructStore(),
-				type));
+				type)));
 	}
 
 	@Override
@@ -410,6 +410,16 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		part.add(op);
 
 		return part;
+	}
+
+	private final <O extends AllocPtrCOp<?>> O allocated(O op) {
+
+		final CBlock<?> allocator =
+				(CBlock<?>) code().getAllocator().writer();
+
+		allocator.allocate(op);
+
+		return op;
 	}
 
 }
