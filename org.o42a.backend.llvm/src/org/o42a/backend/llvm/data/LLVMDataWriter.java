@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.llvm.data;
 
+import static org.o42a.backend.llvm.data.LLVMDataAllocator.container;
+
 import org.o42a.backend.llvm.data.alloc.*;
 import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.Func;
@@ -91,14 +93,16 @@ public class LLVMDataWriter implements DataWriter {
 	public <S extends StructOp<S>> void begin(
 			DataAllocation<S> destination,
 			Global<S, ?> global) {
-		push(createStruct(global.getInstance().size(global.getGenerator())));
+		push(
+				destination,
+				createStruct(global.getInstance().size(global.getGenerator())));
 	}
 
 	@Override
 	public <S extends StructOp<S>> void enter(
 			DataAllocation<S> destination,
 			SubData<S> data) {
-		push(createStruct(data.size()));
+		push(destination, createStruct(data.size()));
 	}
 
 	@Override
@@ -128,6 +132,7 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeInt8(
 			DataAllocation<Int8recOp> destination,
 			Getter<Byte> value) {
+		nextField(destination);
 		writeInt(
 				getModule().getNativePtr(),
 				getStructPtr(),
@@ -139,6 +144,7 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeInt16(
 			DataAllocation<Int16recOp> destination,
 			Getter<Short> value) {
+		nextField(destination);
 		writeInt(
 				getModule().getNativePtr(),
 				getStructPtr(),
@@ -150,6 +156,7 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeInt32(
 			DataAllocation<Int32recOp> destination,
 			Getter<Integer> value) {
+		nextField(destination);
 		writeInt(
 				getModule().getNativePtr(),
 				getStructPtr(),
@@ -161,6 +168,7 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeInt64(
 			DataAllocation<Int64recOp> destination,
 			Getter<Long> value) {
+		nextField(destination);
 		writeInt(
 				getModule().getNativePtr(),
 				getStructPtr(),
@@ -172,6 +180,7 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeNativePtrAsInt64(
 			DataAllocation<Int64recOp> destination,
 			Getter<Ptr<AnyOp>> value) {
+		nextField(destination);
 
 		final LLDAlloc<?> alloc =
 				(LLDAlloc<?>) value.get().getAllocation();
@@ -185,6 +194,7 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeFp32(
 			DataAllocation<Fp32recOp> destination,
 			Getter<Float> value) {
+		nextField(destination);
 		writeFp32(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
@@ -192,11 +202,13 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeFp64(
 			DataAllocation<Fp64recOp> destination,
 			Getter<Double> value) {
+		nextField(destination);
 		writeFp64(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
 	@Override
 	public void writeSystem(DataAllocation<SystemOp> destination) {
+		nextField(destination);
 
 		final SystemLLDAlloc alloc = (SystemLLDAlloc) destination;
 		final SystemTypeLLAlloc typeAlloc = alloc.getTypeAlloc();
@@ -206,21 +218,30 @@ public class LLVMDataWriter implements DataWriter {
 		}
 	}
 
-	public final void writeDataId(LLVMId llvmId) {
+	public final void writeDataId(
+			DataAllocation<?> destination,
+			LLVMId llvmId) {
+		nextField(destination);
 
 		final long ptr = llvmId.expression(getModule());
 
 		writeDataPtr(getStructPtr(), ptr);
 	}
 
-	public final void writeCodeId(LLVMId llvmId) {
+	public final void writeCodeId(
+			DataAllocation<?> destination,
+			LLVMId llvmId) {
+		nextField(destination);
 
 		final long ptr = llvmId.expression(getModule());
 
 		writeFuncPtr(getStructPtr(), ptr);
 	}
 
-	public final void writeRelPtr(long nativePtr) {
+	public final void writeRelPtr(
+			DataAllocation<RelRecOp> destination,
+			long nativePtr) {
+		nextField(destination);
 		writeRelPtr(getStructPtr(), nativePtr);
 	}
 
@@ -233,8 +254,19 @@ public class LLVMDataWriter implements DataWriter {
 		return this.currentData.getNativePtr();
 	}
 
-	private void push(final long dataPtr) {
-		this.currentData = new LLVMData(dataPtr, this.currentData);
+	private final void nextField(DataAllocation<?> destination) {
+		this.currentData.nextField((LLDAlloc<?>) destination);
+	}
+
+	private void push(DataAllocation<?> container, long dataPtr) {
+
+		final ContainerLLDAlloc<?> alloc = container(container);
+
+		if (this.currentData != null) {
+			this.currentData.nextField(alloc);
+		}
+
+		this.currentData = new LLVMData(alloc, dataPtr, this.currentData);
 	}
 
 	private LLVMData pull() {
@@ -287,29 +319,62 @@ public class LLVMDataWriter implements DataWriter {
 			long dataPtr);
 
 	private static native void writeSystemStruct(
-			long enclosingPtr,
+			long structPtr,
 			long typePtr);
 
 	private static native void writeGlobal(long globalPtr, long dataPtr);
 
-	private static final class LLVMData {
+	private static native void writeAlignmentGap(
+			long typePtr,
+			long dataPtr,
+			int index);
 
+	private final class LLVMData {
+
+		private final ContainerLLDAlloc<?> container;
 		private final long nativePtr;
 		private final LLVMData prev;
+		private int lastIndex = -1;
 
-		public LLVMData(long nativePtr, LLVMData prev) {
+		LLVMData(
+				ContainerLLDAlloc<?> container,
+				long nativePtr,
+				LLVMData prev) {
+			this.container = container;
 			this.nativePtr = nativePtr;
 			this.prev = prev;
 		}
 
-		public long getNativePtr() {
+		public final ContainerLLDAlloc<?> getContainer() {
+			return this.container;
+		}
+
+		public final long getNativePtr() {
 			return this.nativePtr;
 		}
 
-		public LLVMData getPrev() {
+		public final LLVMData getPrev() {
 			return this.prev;
 		}
 
+		public final void nextField(LLDAlloc<?> field) {
+
+			final int nextIndex = field.llvmId().getIndex();
+
+			for (;;) {
+				++this.lastIndex;
+				if (this.lastIndex == nextIndex) {
+					break;
+				}
+				assert this.lastIndex < nextIndex :
+					"Wrong field " + field + " writing after #"
+					+ (this.lastIndex - 1);
+				writeAlignmentGap(
+						getContainer().getTypePtr(),
+						getNativePtr(),
+						this.lastIndex);
+			}
+		}
 	}
 
 }

@@ -42,13 +42,17 @@ public final class RelLLDAlloc implements RelAllocation {
 	}
 
 	@Override
-	public void write(DataWriter writer, DataAllocation<RelRecOp> detination) {
+	public void write(
+			DataWriter writer,
+			DataAllocation<RelRecOp> destination) {
 
 		final LLVMDataWriter llvmWriter = (LLVMDataWriter) writer;
 
-		llvmWriter.writeRelPtr(this.id.relativeExpression(
-				llvmWriter.getModule(),
-				this.relativeTo));
+		llvmWriter.writeRelPtr(
+				destination,
+				this.id.relativeExpression(
+						llvmWriter.getModule(),
+						this.relativeTo));
 	}
 
 	@Override

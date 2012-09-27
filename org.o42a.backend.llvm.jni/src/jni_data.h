@@ -360,6 +360,14 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeSyste
 JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeGlobal
   (JNIEnv *, jclass, jlong, jlong);
 
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
+ * Method:    writeAlignmentGap
+ * Signature: (JJI)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeAlignmentGap
+  (JNIEnv *, jclass, jlong, jlong, jint);
+
 #ifdef __cplusplus
 }
 #endif

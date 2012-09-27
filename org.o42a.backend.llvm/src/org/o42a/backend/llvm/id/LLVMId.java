@@ -97,16 +97,16 @@ public abstract class LLVMId {
 		return new AnyId(this);
 	}
 
-	public void write(DataWriter writer) {
+	public void write(DataWriter writer, DataAllocation<?> destination) {
 
 		final LLVMDataWriter llvmWriter = (LLVMDataWriter) writer;
 
 		switch (this.kind) {
 		case DATA:
-			llvmWriter.writeDataId(this);
+			llvmWriter.writeDataId(destination, this);
 			return;
 		case CODE:
-			llvmWriter.writeCodeId(this);
+			llvmWriter.writeCodeId(destination, this);
 			return;
 		case TYPE:
 			throw new IllegalStateException("Type pointer can not be written");
