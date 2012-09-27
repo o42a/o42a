@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.value;
 
+import static org.o42a.codegen.data.TypeAlignment.TYPE_ALIGN_8;
 import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
 import org.o42a.codegen.code.Allocator;
@@ -57,6 +58,11 @@ public final class ValType extends Type<ValType.Op> {
 
 	public final Int64rec value() {
 		return this.value;
+	}
+
+	@Override
+	public TypeAlignment requiredAlignment() {
+		return TYPE_ALIGN_8;
 	}
 
 	public final ValType setConstant(boolean constant) {
