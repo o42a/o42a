@@ -85,17 +85,14 @@ public abstract class CBlockPart extends CCodePart<Block> {
 
 	@Override
 	public boolean revealUpTo(OpRecord last) {
-		if (isJoined()) {
-
-			// Reveal the records of the part this one is joined to.
-			final CBlockPart joinedTo = join();
-
-			if (!joinedTo.isEmpty()) {
-				joinedTo.revealRecords();
-			}
-		}
-
+		revealJoinedTo();
 		return super.revealUpTo(last);
+	}
+
+	@Override
+	protected void revealRecords() {
+		revealJoinedTo();
+		super.revealRecords();
 	}
 
 	protected abstract CBlockPart newNextPart(int index);
@@ -192,19 +189,31 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		return jump.part();// Join with entry block.
 	}
 
-	private void revealPart() {
-		assert (this.flags & REVEALED) == 0 :
-			this + " already revealed";
-		this.flags |= REVEALED;
+	private void revealJoinedTo() {
+		if (isJoined()) {
 
-		if (!exists()) {
-			assert this.nextPart == null :
-				"Part \"" + this + "\" does not exist, but has a next part";
-			return;
+			// Reveal the records of the part this one is joined to.
+			final CBlockPart joinedTo = join();
+
+			if (!joinedTo.isRevealed()) {
+				joinedTo.flags |= REVEALED;
+				joinedTo.revealRecords();
+			}
 		}
-		if (!isEmpty()) {
-			revealRecords();
+	}
+
+	private void revealPart() {
+		if (!isRevealed()) {
+			revealPartRecords();
 		}
+		if (this.firstEntry != null || !isEmpty()) {
+			revealTerminator();
+		}
+	}
+
+	private void revealTerminator() {
+		assert isTerminated() :
+			this + " does not have terminator";
 
 		final CBlockPart joined = nextJoined();
 
@@ -213,6 +222,21 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		} else {
 			this.terminator.reveal();
 		}
+	}
+
+	private final boolean isRevealed() {
+		return (this.flags & REVEALED) != 0;
+	}
+
+	private void revealPartRecords() {
+		this.flags |= REVEALED;
+
+		if (!exists()) {
+			assert this.nextPart == null :
+				"Part \"" + this + "\" does not exist, but has a next part";
+			return;
+		}
+		revealRecords();
 	}
 
 	private CBlockPart nextJoined() {

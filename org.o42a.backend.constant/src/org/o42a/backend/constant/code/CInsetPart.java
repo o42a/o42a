@@ -81,9 +81,6 @@ final class CInsetPart<C extends Code>
 
 	@Override
 	public final void reveal() {
-		if (isEmpty()) {
-			return;
-		}
 		revealRecords();
 	}
 

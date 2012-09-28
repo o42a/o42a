@@ -116,8 +116,10 @@ public abstract class CCodePart<C extends Code> {
 		}
 	}
 
-	protected final void revealRecords() {
-		revealUpTo(this.records.getLast());
+	protected void revealRecords() {
+		if (!isEmpty()) {
+			revealUpTo(this.records.getLast());
+		}
 	}
 
 	final void add(OpRecord op) {
