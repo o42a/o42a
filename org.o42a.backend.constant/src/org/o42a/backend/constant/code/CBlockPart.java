@@ -30,6 +30,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	private static final short MULTIPLE_ENTRIES = 0x04;
 	private static final short JOINED = 0x08;
 	private static final short REVEALED = 0x10;
+	private static final short TERMINATOR_REVEALED = 0x20;
 
 	private static final short HAS_ENTRIES = ENTRY_BLOCK;
 
@@ -85,13 +86,13 @@ public abstract class CBlockPart extends CCodePart<Block> {
 
 	@Override
 	public boolean revealUpTo(OpRecord last) {
-		revealJoinedTo();
+		revealHeadingPart();
 		return super.revealUpTo(last);
 	}
 
 	@Override
 	protected void revealRecords() {
-		revealJoinedTo();
+		revealHeadingPart();
 		super.revealRecords();
 	}
 
@@ -125,24 +126,26 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		return this;
 	}
 
-	final void prepare() {
+	final void prepareAll() {
 		prepareRecords();
 		if (this.nextPart != null) {
-			this.nextPart.prepare();
+			this.nextPart.prepareAll();
 		}
 		if (this.terminator != null) {
 			this.terminator.prepare();
 		}
 	}
 
-	final void reveal() {
-		// Do not reveal a joined part explicitly.
-		if (!isJoined()) {
-			revealPart();
-		}
+	final void revealAll() {
+		revealAlongWithJoinedPart();
 		if (this.nextPart != null) {
-			this.nextPart.reveal();
+			this.nextPart.revealAll();
 		}
+	}
+
+	private final boolean isJoined() {
+		underlying();
+		return (this.flags & JOINED) != 0;
 	}
 
 	private final Block initUnderlying() {
@@ -152,27 +155,23 @@ public abstract class CBlockPart extends CCodePart<Block> {
 				+ "\" does not exist, but has continuation";
 			return null;
 		}
+
 		assert isTerminated() :
 			this + " does not have terminator";
 		assert this.underlying == null :
 			"Underlying block already created for " + this;
 
-		final CBlockPart joinedTo = join();
+		final CBlockPart headingPart = headingPart();
 
-		if (joinedTo != null) {
+		if (headingPart != null) {
 			this.flags |= JOINED;
-			return joinedTo.underlying();
+			return headingPart.underlying();
 		}
 
 		return createUnderlying();
 	}
 
-	private final boolean isJoined() {
-		underlying();
-		return (this.flags & JOINED) != 0;
-	}
-
-	private CBlockPart join() {
+	private CBlockPart headingPart() {
 		if ((this.flags & MULTIPLE_ENTRIES) != 0) {
 			return null;// Can only join with single entry part.
 		}
@@ -189,48 +188,22 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		return jump.part();// Join with entry block.
 	}
 
-	private void revealJoinedTo() {
+	private void revealHeadingPart() {
 		if (isJoined()) {
-
-			// Reveal the records of the part this one is joined to.
-			final CBlockPart joinedTo = join();
-
-			if (!joinedTo.isRevealed()) {
-				joinedTo.flags |= REVEALED;
-				joinedTo.revealRecords();
-			}
+			headingPart().revealNonTerminatingRecords();
 		}
 	}
 
-	private void revealPart() {
-		if (!isRevealed()) {
-			revealPartRecords();
-		}
-		if (this.firstEntry != null || !isEmpty()) {
-			revealTerminator();
-		}
+	private void revealAlongWithJoinedPart() {
+		revealNonTerminatingRecords();
+		revealTerminatorOrJoinedPart();
 	}
 
-	private void revealTerminator() {
-		assert isTerminated() :
-			this + " does not have terminator";
-
-		final CBlockPart joined = nextJoined();
-
-		if (joined != null) {
-			joined.revealPart();
-		} else {
-			this.terminator.reveal();
+	private void revealNonTerminatingRecords() {
+		if ((this.flags & REVEALED) != 0) {
+			return;
 		}
-	}
-
-	private final boolean isRevealed() {
-		return (this.flags & REVEALED) != 0;
-	}
-
-	private void revealPartRecords() {
 		this.flags |= REVEALED;
-
 		if (!exists()) {
 			assert this.nextPart == null :
 				"Part \"" + this + "\" does not exist, but has a next part";
@@ -239,7 +212,28 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		revealRecords();
 	}
 
-	private CBlockPart nextJoined() {
+	private void revealTerminatorOrJoinedPart() {
+		if ((this.flags & TERMINATOR_REVEALED) != 0) {
+			return;
+		}
+		this.flags |= TERMINATOR_REVEALED;
+		if (this.firstEntry == null && isEmpty()) {
+			return;
+		}
+
+		assert isTerminated() :
+			this + " does not have terminator";
+
+		final CBlockPart joinedPart = joinedPart();
+
+		if (joinedPart != null) {
+			joinedPart.revealAlongWithJoinedPart();
+		} else {
+			this.terminator.reveal();
+		}
+	}
+
+	private CBlockPart joinedPart() {
 
 		final JumpBE jump = this.terminator.toJump();
 
@@ -253,11 +247,13 @@ public abstract class CBlockPart extends CCodePart<Block> {
 			return null;
 		}
 		if (nextPart.underlying() != underlying()) {
+			assert !nextPart.isJoined() :
+				nextPart + " should not be joined";
 			return null;
 		}
 
 		assert nextPart.isJoined() :
-			nextPart + " expected to be joint with " + this;
+			nextPart + " expected to be joined to " + this;
 
 		return nextPart;
 	}

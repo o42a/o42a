@@ -241,7 +241,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		if (!created()) {
 			return;
 		}
-		this.firstPart.prepare();
+		this.firstPart.prepareAll();
 		for (CBlock<?> subBlock : this.subBlocks) {
 			subBlock.prepare();
 		}
@@ -251,7 +251,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		if (!created()) {
 			return;
 		}
-		this.firstPart.reveal();
+		this.firstPart.revealAll();
 		for (CBlock<?> subBlock : this.subBlocks) {
 			subBlock.reveal();
 		}
