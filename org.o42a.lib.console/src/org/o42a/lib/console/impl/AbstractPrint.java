@@ -151,7 +151,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 			printFunc.print(code, text);
 			dirs.returnValue(
 					code,
-					voidValue().op(dirs.getBuilder(), dirs.code()));
+					voidValue().op(dirs.getBuilder(), code));
 
 			textDirs.done();
 		}
@@ -195,7 +195,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 			printFunc.print(code, text);
 			dirs.returnValue(
 					code,
-					voidValue().op(dirs.getBuilder(), dirs.code()));
+					voidValue().op(dirs.getBuilder(), code));
 
 			textDirs.done();
 		}
