@@ -29,6 +29,7 @@ import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
@@ -152,21 +153,25 @@ public final class TypeVisitor
 			return null;
 		}
 
-		return this.consumer.consumeType(
-				ref,
-				this.valueStruct);
+		return this.consumer.consumeType(ref, this.valueStruct);
 	}
 
 	@Override
 	protected TypeRef visitRef(RefNode node, Distributor p) {
 
-		final Ref ref = node.accept(ip().bodyRefVisitor(), p);
+		final Owner ref = node.accept(ip().refIp().ownerVisitor(), p);
 
 		if (ref == null) {
 			return null;
 		}
 
-		return this.consumer.consumeType(ref, this.valueStruct);
+		if (!ref.isMacroExpanding()) {
+			return this.consumer.consumeType(ref.bodyRef(), this.valueStruct);
+		}
+
+		return this.consumer.consumeType(
+				expandMacro(ref.bodyRef()),
+				this.valueStruct);
 	}
 
 	@Override
