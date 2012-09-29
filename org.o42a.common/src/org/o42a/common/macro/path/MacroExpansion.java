@@ -185,6 +185,9 @@ public class MacroExpansion extends PathFragment {
 	}
 
 	private Path prefixExpansion(Path path) {
+		if (path == null) {
+			return null;
+		}
 		return getMacroRef().getPath().getPath().append(path);
 	}
 
