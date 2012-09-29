@@ -83,7 +83,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 		if (this.depPath != null) {
 			return invalidRef();
 		}
-		return appendParentMeta(enclosed.getScope());
+		return appendParentMeta(enclosing.getScope());
 	}
 
 	@Override
@@ -129,10 +129,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 				final Member topMember = enclosingScope.toMember();
 
 				appendParentMeta(
-						topMember
-						.getMemberOwner()
-						.getOwner()
-						.getScope());
+						topMember.getMemberOwner().getOwner().getScope());
 
 				// The dependency path starts with this member access.
 				this.depPath = topMember.getMemberKey().toPath();
