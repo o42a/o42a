@@ -22,8 +22,8 @@ package org.o42a.intrinsic.link;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.link.LinkValueType;
 
 
 public abstract class AbstractLinkValueTypeObject extends ValueTypeObject {

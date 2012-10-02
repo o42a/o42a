@@ -33,12 +33,12 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefTargets;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.fn.Holder;
 

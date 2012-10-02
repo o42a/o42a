@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.def;
 
-import static org.o42a.core.object.macro.impl.EmptyMacro.EMPTY_MACRO;
+import static org.o42a.core.value.macro.impl.EmptyMacro.EMPTY_MACRO;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.value.ValueType;

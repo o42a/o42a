@@ -22,9 +22,9 @@ package org.o42a.core.value;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.impl.RawValueAdapter;
+import org.o42a.core.value.link.TargetResolver;
 
 
 public abstract class ValueAdapter {

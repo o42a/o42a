@@ -31,10 +31,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.impl.DereferenceStep;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.link.impl.DereferenceStep;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.Name;
 

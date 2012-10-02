@@ -41,7 +41,7 @@ import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
-import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.value.link.LinkValueStruct;
 
 
 public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {

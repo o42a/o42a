@@ -20,13 +20,13 @@
 package org.o42a.core.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.object.link.LinkUsage.*;
+import static org.o42a.core.value.link.LinkUsage.*;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.Usable;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.object.link.LinkUsage;
 import org.o42a.core.object.type.Sample;
+import org.o42a.core.value.link.LinkUsage;
 
 
 public class LinkUses {

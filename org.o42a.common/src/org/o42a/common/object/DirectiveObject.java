@@ -23,8 +23,8 @@ import static org.o42a.core.value.ValueType.DIRECTIVE;
 
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.directive.Directive;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.value.directive.Directive;
 
 
 public abstract class DirectiveObject

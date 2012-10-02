@@ -19,19 +19,19 @@
 */
 package org.o42a.compiler.ip.st.assignment;
 
-import static org.o42a.core.object.link.LinkValueType.VARIABLE;
 import static org.o42a.core.ref.RefUsage.ASSIGNEE_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
+import static org.o42a.core.value.link.LinkValueType.VARIABLE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.link.LinkValueStruct;
 
 
 final class VariableAssignment extends AssignmentKind {

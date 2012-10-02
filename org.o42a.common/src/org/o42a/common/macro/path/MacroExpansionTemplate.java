@@ -20,12 +20,12 @@
 package org.o42a.common.macro.path;
 
 import org.o42a.core.Scope;
-import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.value.macro.MacroConsumer;
 
 
 final class MacroExpansionTemplate extends PathTemplate {

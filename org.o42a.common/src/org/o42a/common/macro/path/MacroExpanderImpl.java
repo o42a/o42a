@@ -21,11 +21,11 @@ package org.o42a.common.macro.path;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.value.macro.MacroExpander;
 import org.o42a.util.log.Loggable;
 
 

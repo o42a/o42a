@@ -20,13 +20,13 @@
 package org.o42a.core.value;
 
 import org.o42a.core.*;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.log.Loggable;
 
 

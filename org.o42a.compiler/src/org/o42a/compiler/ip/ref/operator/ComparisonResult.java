@@ -40,12 +40,12 @@ import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 
 

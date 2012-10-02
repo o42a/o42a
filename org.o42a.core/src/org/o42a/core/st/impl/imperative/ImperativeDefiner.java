@@ -37,7 +37,6 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.*;
@@ -45,6 +44,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 

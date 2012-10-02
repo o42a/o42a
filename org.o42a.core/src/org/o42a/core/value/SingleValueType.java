@@ -21,13 +21,13 @@ package org.o42a.core.value;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.impl.Constant;
+import org.o42a.core.value.link.LinkValueType;
 
 
 public abstract class SingleValueType<T>

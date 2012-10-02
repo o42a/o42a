@@ -23,11 +23,11 @@ import org.o42a.common.macro.AnnotatedMacro;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Meta;
-import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.value.macro.MacroExpander;
 
 
 abstract class AbstractLinkCast extends AnnotatedMacro {

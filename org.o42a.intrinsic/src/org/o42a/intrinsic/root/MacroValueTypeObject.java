@@ -25,12 +25,12 @@ import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.macro.Macro;
-import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.macro.Macro;
+import org.o42a.core.value.macro.MacroExpander;
 
 
 @SourcePath(relativeTo = Root.class, value = "macro.o42a")

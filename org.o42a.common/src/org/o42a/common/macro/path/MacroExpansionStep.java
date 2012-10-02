@@ -26,7 +26,6 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import org.o42a.core.Container;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -35,6 +34,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.value.macro.MacroConsumer;
 import org.o42a.util.log.LogInfo;
 
 

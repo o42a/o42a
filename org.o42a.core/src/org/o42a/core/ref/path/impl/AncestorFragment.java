@@ -23,12 +23,12 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
+import org.o42a.core.value.link.Link;
 
 
 public class AncestorFragment extends PathFragment {

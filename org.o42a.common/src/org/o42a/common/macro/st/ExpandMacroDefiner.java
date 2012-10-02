@@ -19,7 +19,7 @@
 */
 package org.o42a.common.macro.st;
 
-import static org.o42a.core.object.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
+import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
 
 import java.util.IdentityHashMap;
 
@@ -29,13 +29,13 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.link.TargetResolver;
 
 
 final class ExpandMacroDefiner extends Definer {

@@ -33,11 +33,11 @@ import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.impl.InlineDefs;
 import org.o42a.core.object.def.impl.RuntimeDef;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.ArrayUtil;
 
 

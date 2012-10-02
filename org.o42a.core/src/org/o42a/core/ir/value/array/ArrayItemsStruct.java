@@ -30,8 +30,8 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.Array;
-import org.o42a.core.object.array.ArrayItem;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayItem;
 
 
 final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {

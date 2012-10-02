@@ -19,16 +19,16 @@
 */
 package org.o42a.common.macro.st;
 
-import static org.o42a.core.object.link.LinkValueType.LINK;
+import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.value.link.LinkValueStruct;
 
 
 final class ParentValueStructFinder implements ValueStructFinder {

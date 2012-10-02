@@ -21,19 +21,19 @@ package org.o42a.core.value;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.ArrayValueType;
-import org.o42a.core.object.directive.Directive;
-import org.o42a.core.object.directive.impl.DirectiveValueType;
-import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.object.macro.Macro;
-import org.o42a.core.object.macro.impl.MacroValueType;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.core.value.directive.Directive;
+import org.o42a.core.value.directive.impl.DirectiveValueType;
 import org.o42a.core.value.floats.FloatValueType;
 import org.o42a.core.value.impl.NoneValueType;
 import org.o42a.core.value.integer.IntegerValueType;
+import org.o42a.core.value.link.LinkValueType;
+import org.o42a.core.value.macro.Macro;
+import org.o42a.core.value.macro.impl.MacroValueType;
 import org.o42a.core.value.string.StringValueType;
 import org.o42a.core.value.voids.VoidValueType;
 

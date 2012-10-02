@@ -25,10 +25,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.link.TargetResolver;
 
 
 public class RawValueAdapter extends ValueAdapter {

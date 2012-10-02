@@ -34,13 +34,13 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayValueTypeIR;
-import org.o42a.core.object.array.Array;
-import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.array.ArrayValueType;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.core.value.link.TargetResolver;
 
 
 final class ArrayInitValueAdapter extends ValueAdapter {

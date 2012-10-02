@@ -27,7 +27,6 @@ import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
@@ -35,6 +34,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.value.macro.MacroConsumer;
 
 
 public final class StatementConsumer implements Consumer {

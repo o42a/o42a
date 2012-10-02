@@ -29,8 +29,8 @@ import java.util.NoSuchElementException;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.*;
+import org.o42a.core.value.link.Link;
 
 
 final class DerefPrediction extends Prediction {

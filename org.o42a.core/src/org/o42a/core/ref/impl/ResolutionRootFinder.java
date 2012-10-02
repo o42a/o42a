@@ -27,13 +27,13 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.ArrayElement;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.array.ArrayElement;
+import org.o42a.core.value.link.Link;
 
 
 public final class ResolutionRootFinder implements PathWalker {

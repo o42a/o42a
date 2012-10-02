@@ -41,11 +41,11 @@ import org.o42a.core.ir.value.array.ArrayValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.Array;
-import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 

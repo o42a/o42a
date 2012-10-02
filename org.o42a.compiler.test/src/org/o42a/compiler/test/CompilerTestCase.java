@@ -38,10 +38,10 @@ import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.core.value.*;
+import org.o42a.core.value.link.Link;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.string.Name;
 

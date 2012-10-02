@@ -21,7 +21,7 @@ package org.o42a.lib.macros;
 
 import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.core.member.MemberName.fieldName;
-import static org.o42a.core.object.macro.MacroConsumer.DEFAULT_CONSUMER;
+import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_CONSUMER;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.common.macro.RefDep;

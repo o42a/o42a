@@ -41,7 +41,6 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.impl.ArrayIndexStep;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
@@ -53,6 +52,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.value.array.impl.ArrayIndexStep;
 import org.o42a.util.ArrayUtil;
 
 

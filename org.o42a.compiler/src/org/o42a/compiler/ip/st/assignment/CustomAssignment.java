@@ -31,11 +31,11 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 
 
