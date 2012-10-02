@@ -21,10 +21,10 @@ package org.o42a.core.st;
 
 import org.o42a.core.*;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.log.Loggable;
 
 

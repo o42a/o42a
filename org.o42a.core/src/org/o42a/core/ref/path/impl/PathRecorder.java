@@ -25,11 +25,11 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.ArrayElement;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.value.array.ArrayElement;
+import org.o42a.core.value.link.Link;
 
 
 public class PathRecorder extends PathTracker {

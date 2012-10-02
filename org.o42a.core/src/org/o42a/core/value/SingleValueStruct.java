@@ -21,12 +21,12 @@ package org.o42a.core.value;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.link.LinkValueStruct;
 
 
 public abstract class SingleValueStruct<T>

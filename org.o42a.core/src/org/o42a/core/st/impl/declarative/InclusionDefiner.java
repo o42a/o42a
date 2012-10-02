@@ -24,10 +24,10 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.link.TargetResolver;
 
 
 abstract class InclusionDefiner<I extends Inclusion>

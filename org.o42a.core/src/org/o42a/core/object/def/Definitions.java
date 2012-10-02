@@ -31,8 +31,6 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
-import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
@@ -40,6 +38,8 @@ import org.o42a.core.st.DefValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.link.TargetResolver;
 
 
 public class Definitions extends Scoped {

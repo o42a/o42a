@@ -23,8 +23,6 @@ import java.util.IdentityHashMap;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.macro.Macro;
-import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
@@ -32,6 +30,8 @@ import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.macro.Macro;
+import org.o42a.core.value.macro.MacroConsumer;
 
 
 public class MacroExpansion extends PathFragment {

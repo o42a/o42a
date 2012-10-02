@@ -33,7 +33,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.value.link.LinkValueStruct;
 
 
 public abstract class AbstractLinkFld extends RefFld<ObjectRefFunc> {

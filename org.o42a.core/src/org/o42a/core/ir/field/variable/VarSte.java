@@ -41,10 +41,10 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
-import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 

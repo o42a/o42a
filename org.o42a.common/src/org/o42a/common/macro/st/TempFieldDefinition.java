@@ -20,7 +20,7 @@
 package org.o42a.common.macro.st;
 
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
-import static org.o42a.core.object.link.LinkValueType.LINK;
+import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.*;

@@ -30,7 +30,6 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -38,6 +37,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.log.Loggable;
 
 

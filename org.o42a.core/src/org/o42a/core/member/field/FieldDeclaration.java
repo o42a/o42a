@@ -26,11 +26,11 @@ import org.o42a.core.Placed;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.decl.DeclaredField;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.link.LinkValueType;
 
 
 public final class FieldDeclaration extends Placed implements Cloneable {

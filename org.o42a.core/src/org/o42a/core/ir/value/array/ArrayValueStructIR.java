@@ -26,10 +26,10 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.*;
 import org.o42a.core.ir.value.struct.*;
-import org.o42a.core.object.array.Array;
-import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 public final class ArrayValueStructIR

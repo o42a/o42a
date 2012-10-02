@@ -35,11 +35,11 @@ import org.o42a.compiler.ip.type.ascendant.*;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.value.link.LinkValueType;
 
 
 public final class TypeInterpreter {

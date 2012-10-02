@@ -35,13 +35,13 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.link.Link;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.SubID;
 

@@ -34,12 +34,12 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.object.array.Array;
-import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 

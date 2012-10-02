@@ -35,7 +35,7 @@ import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.array.ArrayItemsStruct.Op;
-import org.o42a.core.object.array.Array;
+import org.o42a.core.value.array.Array;
 import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 

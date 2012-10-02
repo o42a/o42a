@@ -26,9 +26,9 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.value.link.TargetResolver;
 
 
 final class ClauseDefiner extends Definer {

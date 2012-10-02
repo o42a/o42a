@@ -23,10 +23,10 @@ import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.DefaultFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.link.Link;
 
 
 public final class PathFieldDefinition extends DefaultFieldDefinition {

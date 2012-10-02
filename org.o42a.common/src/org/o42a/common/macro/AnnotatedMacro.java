@@ -23,8 +23,8 @@ import org.o42a.common.object.AnnotatedObject;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.macro.Macro;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.macro.Macro;
 
 
 public abstract class AnnotatedMacro extends AnnotatedObject implements Macro {

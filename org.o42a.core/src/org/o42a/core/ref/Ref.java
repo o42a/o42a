@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.object.link.TargetRef.targetRef;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
 import static org.o42a.core.ref.type.TypeRef.typeRef;
+import static org.o42a.core.value.link.TargetRef.targetRef;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Distributor;
@@ -33,7 +33,6 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.impl.Adapter;
 import org.o42a.core.ref.impl.RefCommand;
 import org.o42a.core.ref.impl.RefDefiner;
@@ -46,6 +45,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.*;
+import org.o42a.core.value.link.TargetRef;
 import org.o42a.util.fn.Cancelable;
 
 

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.value.macro.MacroConsumer;
 
 
 public interface Consumer {

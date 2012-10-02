@@ -44,9 +44,9 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.util.string.ID;
 
 

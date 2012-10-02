@@ -31,11 +31,11 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.Condition;
+import org.o42a.core.value.link.TargetResolver;
 
 
 public final class FieldDeclarationStatement extends DeclarationStatement {

@@ -31,9 +31,9 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.object.array.Array;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.array.Array;
 
 
 final class ArrayKeeperIR

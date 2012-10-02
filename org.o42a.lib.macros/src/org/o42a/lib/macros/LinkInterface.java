@@ -25,13 +25,13 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.macro.MacroExpander;
 import org.o42a.util.log.LogInfo;
 
 

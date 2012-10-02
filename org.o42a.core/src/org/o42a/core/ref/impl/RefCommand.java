@@ -31,7 +31,6 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -39,6 +38,7 @@ import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
+import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 
 

@@ -27,8 +27,8 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.link.Link;
 
 
 public class SubstitutionClauseTest extends CompilerTestCase {

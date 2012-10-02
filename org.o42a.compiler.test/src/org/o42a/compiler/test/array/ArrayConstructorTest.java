@@ -27,10 +27,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.Array;
-import org.o42a.core.object.array.ArrayItem;
-import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayItem;
+import org.o42a.core.value.array.ArrayValueStruct;
 
 
 public class ArrayConstructorTest extends CompilerTestCase {

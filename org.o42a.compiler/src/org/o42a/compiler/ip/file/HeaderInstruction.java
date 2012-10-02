@@ -21,13 +21,13 @@ package org.o42a.compiler.ip.file;
 
 import static org.o42a.core.member.MemberRegistry.skipDeclarations;
 
-import org.o42a.core.object.directive.Directive;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.directive.Directive;
 
 
 final class HeaderInstruction implements Instruction, InstructionContext {

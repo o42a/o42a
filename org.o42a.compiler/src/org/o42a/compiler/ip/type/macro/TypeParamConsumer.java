@@ -19,10 +19,9 @@
 */
 package org.o42a.compiler.ip.type.macro;
 
-import static org.o42a.core.object.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
+import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
 
 import org.o42a.core.Scope;
-import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
@@ -30,6 +29,7 @@ import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.value.macro.MacroConsumer;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 

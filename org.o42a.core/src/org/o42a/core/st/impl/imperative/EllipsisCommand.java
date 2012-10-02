@@ -26,7 +26,6 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -34,6 +33,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
 import org.o42a.core.st.action.RepeatLoop;
+import org.o42a.core.value.link.TargetResolver;
 
 
 abstract class EllipsisCommand extends Command {

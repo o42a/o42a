@@ -22,7 +22,7 @@ package org.o42a.core.ir.value.array;
 import static org.o42a.core.ir.IRNames.DATA_ID;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.object.array.ArrayValueType;
+import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.util.string.ID;
 
 

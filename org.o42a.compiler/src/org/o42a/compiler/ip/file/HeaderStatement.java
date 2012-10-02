@@ -26,11 +26,11 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.directive.Directive;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
+import org.o42a.core.value.directive.Directive;
+import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.log.LogInfo;
 
 

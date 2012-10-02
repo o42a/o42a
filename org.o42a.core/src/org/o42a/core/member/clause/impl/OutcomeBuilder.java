@@ -30,13 +30,13 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.ArrayElement;
-import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.array.ArrayElement;
+import org.o42a.core.value.link.Link;
 
 
 public class OutcomeBuilder implements PathWalker {

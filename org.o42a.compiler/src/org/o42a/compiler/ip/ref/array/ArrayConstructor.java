@@ -26,8 +26,6 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
 import org.o42a.core.ref.path.ObjectConstructor;
@@ -39,6 +37,8 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
+import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 public class ArrayConstructor extends ObjectConstructor {

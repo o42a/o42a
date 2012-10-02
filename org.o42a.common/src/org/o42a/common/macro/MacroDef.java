@@ -27,11 +27,11 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.object.macro.Macro;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.macro.Macro;
 
 
 public final class MacroDef extends Def {
