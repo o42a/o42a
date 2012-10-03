@@ -23,6 +23,7 @@ import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -51,11 +52,6 @@ final class VoidDef extends Def {
 			ScopeUpgrade additionalUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.def = prototype.def.upgradeScope(additionalUpgrade);
-	}
-
-	@Override
-	public final ValueStruct<?, ?> getValueStruct() {
-		return ValueStruct.VOID;
 	}
 
 	@Override
@@ -104,6 +100,11 @@ final class VoidDef extends Def {
 	@Override
 	protected boolean hasConstantValue() {
 		return this.def.hasConstantValue();
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+		return ValueStruct.VOID;
 	}
 
 	@Override

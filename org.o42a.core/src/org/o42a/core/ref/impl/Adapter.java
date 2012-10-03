@@ -25,13 +25,16 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -114,6 +117,16 @@ public final class Adapter extends PathFragment implements LocationInfo {
 		// adapter to the link of the same depth.
 		// Use the field itself as adapter.
 		return key.toPath();
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return defaultInterface(ref);
 	}
 
 	@Override

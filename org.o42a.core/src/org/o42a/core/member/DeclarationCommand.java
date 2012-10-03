@@ -31,6 +31,7 @@ import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationCommand extends Command {
@@ -44,7 +45,12 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public DefTarget toTarget(Scope origin) {
+	public final DefTarget toTarget(Scope origin) {
+		return null;
+	}
+
+	@Override
+	public final ValueStruct<?, ?> valueStruct(Scope scope) {
 		return null;
 	}
 
@@ -59,16 +65,16 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
+	public final void normalize(RootNormalizer normalizer) {
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
+	public final Instruction toInstruction(Resolver resolver) {
 		return null;
 	}
 
 	@Override
-	protected void fullyResolve(FullLocalResolver resolver) {
+	protected final void fullyResolve(FullLocalResolver resolver) {
 	}
 
 }

@@ -28,9 +28,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.SingleValueType;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.*;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 
@@ -57,6 +55,11 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	@Override
 	public Ref toTarget() {
 		return null;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return this.valueType.struct();
 	}
 
 	@Override

@@ -23,7 +23,6 @@ import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -159,22 +158,27 @@ public abstract class Step {
 	}
 
 	/**
-	 * Builds an ancestor of an object pointed by the path.
+	 * Builds an ancestor of an object referred by the path.
 	 *
 	 * <p>This method is called on the last step of the path.</p>
 	 *
-	 * @param path the bound path to build an ancestor for.
 	 * @param location the location of ancestor expression.
-	 * @param distributor the constructing ancestor's distributor.
+	 * @param ref the reference to build an ancestor of.
 	 *
 	 * @return an ancestor type reference.
 	 */
-	protected TypeRef ancestor(
-			BoundPath path,
-			LocationInfo location,
-			Distributor distributor) {
-		return path.append(ANCESTOR_FRAGMENT).typeRef(distributor);
-	}
+	protected abstract TypeRef ancestor(LocationInfo location, Ref ref);
+
+	/**
+	 * Builds an interface of an object referred by the path.
+	 *
+	 * <p>This method is called on the last step of the path.</p>
+	 *
+	 * @param ref the reference to build an ancestorinterface of.
+	 *
+	 * @return an interface type reference.
+	 */
+	protected abstract TypeRef iface(Ref ref);
 
 	protected abstract Container resolve(StepResolver resolver);
 
@@ -211,6 +215,13 @@ public abstract class Step {
 	protected abstract PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer);
+
+	protected final TypeRef defaultAncestor(LocationInfo location, Ref ref) {
+		return ref.getPath()
+				.setLocation(location)
+				.append(ANCESTOR_FRAGMENT)
+				.typeRef(ref.distribute());
+	}
 
 	protected final FieldDefinition defaultFieldDefinition(Ref ref) {
 		return new PathFieldDefinition(ref);

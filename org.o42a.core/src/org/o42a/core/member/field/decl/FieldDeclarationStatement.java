@@ -152,8 +152,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 			final Obj object = member.toField().object(dummyUser());
 			final Condition condition =
 					object.value()
-					.getDefinitions()
-					.value(object.getScope().resolver())
+					.getValue()
 					.getKnowledge()
 					.getCondition();
 

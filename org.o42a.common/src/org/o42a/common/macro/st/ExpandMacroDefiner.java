@@ -61,6 +61,11 @@ final class ExpandMacroDefiner extends Definer {
 	}
 
 	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return valueAdapter(scope).valueStruct(scope);
+	}
+
+	@Override
 	public DefValue value(Resolver resolver) {
 		return valueAdapter(resolver.getScope()).value(resolver).toDefValue();
 	}

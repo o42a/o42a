@@ -169,21 +169,6 @@ public class BoundPath extends RefPath {
 		return this;
 	}
 
-	public TypeRef ancestor(LocationInfo location, Distributor distributor) {
-
-		final Step[] steps = getRawSteps();
-
-		if (steps.length == 0) {
-			return ANCESTOR_FRAGMENT.toPath()
-					.bind(location, distributor.getScope())
-					.typeRef(distributor);
-		}
-
-		final Step lastStep = steps[steps.length - 1];
-
-		return lastStep.ancestor(this, location, distributor);
-	}
-
 	public final BoundPath append(Step step) {
 		return getRawPath().append(step).bind(this, getOrigin());
 	}
@@ -346,6 +331,47 @@ public class BoundPath extends RefPath {
 	@Override
 	public String toString() {
 		return toString(0);
+	}
+
+	@Override
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+
+		final Step[] steps = getRawSteps();
+
+		if (steps.length == 0) {
+		}
+
+		final Step lastStep = lastRawStep();
+
+		if (lastStep == null) {
+			return ANCESTOR_FRAGMENT.toPath()
+					.bind(location, ref.getScope())
+					.typeRef(ref.distribute());
+		}
+
+		return lastStep.ancestor(location, ref);
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref, boolean rebuilt) {
+
+		final Step lastStep;
+
+		if (rebuilt) {
+			lastStep = lastStep();
+		} else {
+			// It is essential to use the last unresolved step,
+			// as it can be an unexpanded path fragment,
+			// which field definition can perform an additional tasks.
+			// One example is phrase.
+			lastStep = lastRawStep();
+		}
+
+		if (lastStep == null) {
+			return ref.toTypeRef();
+		}
+
+		return lastStep.iface(ref);
 	}
 
 	public String toString(int length) {

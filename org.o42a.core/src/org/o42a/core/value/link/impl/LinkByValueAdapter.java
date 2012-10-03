@@ -21,7 +21,6 @@ package org.o42a.core.value.link.impl;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
-import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.link.impl.TargetLink.linkByValue;
 
 import org.o42a.codegen.code.Block;
@@ -32,8 +31,10 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -65,13 +66,23 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return linkStruct(rescopeRef(scope));
+	}
+
+	@Override
 	public Value<?> value(Resolver resolver) {
 
-		final Value<?> value =
-				linkByValue(getAdaptedRef(), getExpectedStruct());
+		final Ref ref = rescopeRef(resolver.getScope());
+		final LinkValueStruct linkStruct = linkStruct(ref);
 
-		return value.prefixWith(
-				upgradePrefix(getAdaptedRef(), resolver.getScope()));
+		if (linkStruct != null) {
+			return linkByValue(ref, linkStruct);
+		}
+
+		return linkByValue(
+				ref,
+				getExpectedStruct().upgradeScope(resolver.getScope()));
 	}
 
 	@Override
@@ -97,6 +108,21 @@ public class LinkByValueAdapter extends ValueAdapter {
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getAdaptedRef().resolveAll(resolver.setRefUsage(TARGET_REF_USAGE));
+	}
+
+	private final Ref rescopeRef(Scope scope) {
+		return getAdaptedRef().upgradeScope(scope);
+	}
+
+	private final LinkValueStruct linkStruct(Ref ref) {
+
+		final TypeRef iface = ref.getInterface();
+
+		if (!iface.isValid() || iface.getRef().getResolution().isNone()) {
+			return null;
+		}
+
+		return getExpectedStruct().getValueType().linkStruct(iface);
 	}
 
 	private static final class LinkByValueEval implements Eval {

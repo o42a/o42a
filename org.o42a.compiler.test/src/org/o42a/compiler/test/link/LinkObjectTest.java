@@ -52,7 +52,7 @@ public class LinkObjectTest extends CompilerTestCase {
 				.getTypeRef()
 				.getType(),
 				is(b.getContext().getIntrinsics().getVoid()));
-		assertTrue(bTarget.value().getValueType().isVoid());
+		assertTrue(bTarget.value().getValueType().is(ValueType.INTEGER));
 		assertThat(bTarget.getWrapped(), sameInstance(a));
 	}
 

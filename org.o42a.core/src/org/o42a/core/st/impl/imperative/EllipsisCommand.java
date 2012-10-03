@@ -33,6 +33,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
 import org.o42a.core.st.action.RepeatLoop;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -54,6 +55,11 @@ abstract class EllipsisCommand extends Command {
 	@Override
 	public DefTarget toTarget(Scope origin) {
 		return DefTarget.NO_DEF_TARGET;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return null;
 	}
 
 	@Override

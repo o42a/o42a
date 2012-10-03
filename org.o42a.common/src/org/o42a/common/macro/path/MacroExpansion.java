@@ -22,10 +22,12 @@ package org.o42a.common.macro.path;
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -91,6 +93,16 @@ public class MacroExpansion extends PathFragment {
 		this.init = 1;
 
 		return this.initialExpansion;
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return defaultInterface(ref);
 	}
 
 	@Override
@@ -211,9 +223,8 @@ public class MacroExpansion extends PathFragment {
 			return notMacro(expander);
 		}
 
-		final Value<Macro> macroValue = ValueStruct.MACRO.cast(
-				object.value().getDefinitions().value(
-						object.getScope().resolver()));
+		final Value<Macro> macroValue =
+				ValueStruct.MACRO.cast(object.value().getValue());
 
 		if (!macroValue.getKnowledge().isKnown()
 				|| macroValue.getKnowledge().isFalse()) {

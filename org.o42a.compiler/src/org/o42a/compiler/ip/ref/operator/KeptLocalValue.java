@@ -25,6 +25,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -49,11 +50,6 @@ public class KeptLocalValue extends PathFragment {
 	}
 
 	@Override
-	public FieldDefinition fieldDefinition(Ref ref) {
-		return new KeptLocalValueDefinition(this);
-	}
-
-	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
 		expander.getLogger().error(
 				"redundant_local_keeper",
@@ -61,6 +57,16 @@ public class KeptLocalValue extends PathFragment {
 				"Local value can not be kept inside an imperative block."
 				+ " Consider to use a local field instead");
 		return null;
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return new KeptLocalValueDefinition(this);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return defaultInterface(ref);
 	}
 
 	public final Ref toRef() {

@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,64 +17,41 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref.owner;
-
-import static org.o42a.compiler.ip.ref.owner.Owner.redundantBodyRef;
-import static org.o42a.core.ref.path.Path.SELF_PATH;
+package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.LocationInfo;
 
 
-final class BodyRefFragment extends PathFragment {
+public class RebuiltInterface extends PathFragment {
 
-	static boolean canDereference(Scope start) {
+	private final Ref ref;
 
-		final Obj object = start.toObject();
-
-		if (object == null) {
-			return false;
-		}
-
-		return object.value().getValueType().toLinkType() != null;
-	}
-
-	private final LocationInfo location;
-
-	BodyRefFragment(LocationInfo location) {
-		this.location = location;
+	public RebuiltInterface(Ref ref) {
+		this.ref = ref;
 	}
 
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
-		if (!canDereference(start)) {
-			redundantBodyRef(
-					expander.getLogger(),
-					this.location);
-		}
-		return SELF_PATH;
+
+		final TypeRef iface = this.ref.rebuiltInterface();
+
+		return iface.getPath().getPath();
 	}
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return defaultFieldDefinition(ref);
+		return this.ref.rebuiltFieldDefinition();
 	}
 
 	@Override
 	public TypeRef iface(Ref ref) {
-		return defaultInterface(ref);
-	}
-
-	@Override
-	public String toString() {
-		return "`";
+		return ref.toTypeRef();
 	}
 
 }

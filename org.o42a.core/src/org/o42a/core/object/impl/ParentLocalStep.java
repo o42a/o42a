@@ -36,6 +36,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -106,7 +107,17 @@ public final class ParentLocalStep extends Step implements ReversePath {
 
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
-		return defaultFieldDefinition(ref);
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

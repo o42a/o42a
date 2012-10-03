@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -74,12 +73,16 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected TypeRef ancestor(
-			BoundPath path,
-			LocationInfo location,
-			Distributor distributor) {
-		return this.constructor.ancestor(location)
-				.prefixWith(path.cut(1).toPrefix(distributor.getScope()));
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+
+		final PrefixPath prefix = ref.getPath().cut(1).toPrefix(ref.getScope());
+
+		return this.constructor.ancestor(location).prefixWith(prefix);
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
 	}
 
 	@Override

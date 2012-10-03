@@ -22,6 +22,7 @@ package org.o42a.core.value.impl;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -51,11 +52,6 @@ final class ConstantDef<T> extends Def {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return this.value.getValueStruct();
-	}
-
-	@Override
 	public boolean unconditional() {
 		return true;
 	}
@@ -78,6 +74,11 @@ final class ConstantDef<T> extends Def {
 	@Override
 	protected boolean hasConstantValue() {
 		return true;
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+		return this.value.getValueStruct();
 	}
 
 	@Override

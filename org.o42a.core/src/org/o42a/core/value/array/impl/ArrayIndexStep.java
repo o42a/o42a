@@ -29,6 +29,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -78,6 +79,16 @@ public class ArrayIndexStep extends Step {
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+		return defaultAncestor(location, ref);
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
 	}
 
 	@Override

@@ -37,6 +37,7 @@ import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.array.ArrayValueType;
@@ -67,6 +68,11 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	@Override
 	public Ref toTarget() {
 		return null;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return array(scope).getValueStruct();
 	}
 
 	@Override

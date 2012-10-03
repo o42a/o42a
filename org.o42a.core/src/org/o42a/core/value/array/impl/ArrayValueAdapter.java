@@ -73,6 +73,11 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return value(scope.resolver()).getValueStruct();
+	}
+
+	@Override
 	public Value<?> value(Resolver resolver) {
 		return arrayValue(
 				getAdaptedRef(),

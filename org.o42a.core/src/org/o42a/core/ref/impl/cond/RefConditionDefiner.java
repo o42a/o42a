@@ -32,6 +32,7 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
@@ -85,6 +86,11 @@ final class RefConditionDefiner extends Definer {
 	@Override
 	public DefTarget toTarget(Scope origin) {
 		return DefTarget.NO_DEF_TARGET;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return null;
 	}
 
 	@Override

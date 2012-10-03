@@ -56,7 +56,7 @@ public final class PathFieldDefinition extends DefaultFieldDefinition {
 		if (dereferencedLink == null) {
 			typeRef = target.toTypeRef();
 		} else {
-			typeRef = target.ancestor(this);
+			typeRef = target.getInterface();
 		}
 
 		definer.setTargetRef(target, typeRef);

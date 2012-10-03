@@ -44,6 +44,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
@@ -104,6 +105,20 @@ public final class ImperativeDefiner extends Definer {
 		}
 
 		return new DefTarget(ref.prefixWith(getLocalPrefix()));
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+
+		final Scope localScope = getLocalPrefix().rescope(scope);
+		final ValueStruct<?, ?> valueStruct =
+				getCommand().valueStruct(localScope);
+
+		if (valueStruct == null) {
+			return null;
+		}
+
+		return valueStruct.prefixWith(getLocalPrefix());
 	}
 
 	@Override

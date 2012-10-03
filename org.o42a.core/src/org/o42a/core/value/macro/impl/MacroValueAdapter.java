@@ -30,9 +30,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 
@@ -54,6 +52,11 @@ public class MacroValueAdapter extends ValueAdapter {
 	@Override
 	public Ref toTarget() {
 		return null;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return ValueStruct.MACRO;
 	}
 
 	@Override

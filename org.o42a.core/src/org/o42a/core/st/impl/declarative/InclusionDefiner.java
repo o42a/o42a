@@ -27,6 +27,7 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -60,6 +61,11 @@ abstract class InclusionDefiner<I extends Inclusion>
 		final DeclarativeBlock block = context.getBlock().toDeclarativeBlock();
 
 		includeInto(block);
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

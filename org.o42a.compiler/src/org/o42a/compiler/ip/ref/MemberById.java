@@ -36,13 +36,16 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.PlainClause;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.PlacedPathFragment;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -104,6 +107,16 @@ public class MemberById extends PlacedPathFragment {
 		}
 
 		return path(getContainer(), declaredIn, false);
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return ref.toTypeRef();
 	}
 
 	@Override

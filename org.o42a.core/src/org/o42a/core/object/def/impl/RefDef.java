@@ -50,15 +50,6 @@ public final class RefDef extends Def {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-
-		final Scope scope = getScopeUpgrade().rescope(getScope());
-
-		return this.ref.valueStruct(scope).prefixWith(
-				getScopeUpgrade().toPrefix());
-	}
-
-	@Override
 	public boolean unconditional() {
 		return true;
 	}
@@ -92,6 +83,11 @@ public final class RefDef extends Def {
 	@Override
 	protected boolean hasConstantValue() {
 		return this.ref.isConstant();
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+		return this.ref.valueStruct(scope);
 	}
 
 	@Override

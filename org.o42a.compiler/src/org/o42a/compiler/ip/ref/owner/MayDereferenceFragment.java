@@ -22,10 +22,13 @@ package org.o42a.compiler.ip.ref.owner;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class MayDereferenceFragment extends PathFragment {
@@ -42,6 +45,16 @@ final class MayDereferenceFragment extends PathFragment {
 			return SELF_PATH;
 		}
 		return SELF_PATH.dereference();
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return defaultInterface(ref);
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -65,8 +66,17 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			StepResolver resolver) {
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+		return defaultAncestor(location, ref);
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
+		return this.fragment.iface(ref);
+	}
+
+	@Override
+	protected Container resolve(StepResolver resolver) {
 		throw unresolved();
 	}
 
