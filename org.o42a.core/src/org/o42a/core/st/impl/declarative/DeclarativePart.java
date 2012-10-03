@@ -76,19 +76,6 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-
-		final ValueStruct<?, ?> valueStruct =
-				this.definer.env().getValueRequest().getExpectedStruct();
-
-		if (!valueStruct.isScoped()) {
-			return valueStruct;
-		}
-
-		return valueStruct.prefixWith(getScopeUpgrade().toPrefix());
-	}
-
-	@Override
 	public boolean unconditional() {
 		return this.targets.haveValue() && !this.targets.havePrerequisite();
 	}
@@ -173,6 +160,18 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	@Override
 	protected boolean hasConstantValue() {
 		return getDefTargets().isConstant();
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+
+		final ValueStruct<?, ?> expectedStruct =
+				this.definer.env()
+				.getValueRequest()
+				.getExpectedStruct()
+				.upgradeScope(scope);
+
+		return BlockDefiner.valueStruct(scope, this, expectedStruct);
 	}
 
 	@Override

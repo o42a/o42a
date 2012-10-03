@@ -26,6 +26,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -69,6 +70,16 @@ public class Wrapper extends Step {
 
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
 		throw new UnsupportedOperationException();
 	}
 

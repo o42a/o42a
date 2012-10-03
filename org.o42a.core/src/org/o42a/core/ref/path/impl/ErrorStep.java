@@ -28,6 +28,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -59,8 +60,17 @@ public class ErrorStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			StepResolver resolver) {
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+		return ref.toTypeRef();
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
+		return ref.toTypeRef();
+	}
+
+	@Override
+	protected Container resolve(StepResolver resolver) {
 		return null;
 	}
 

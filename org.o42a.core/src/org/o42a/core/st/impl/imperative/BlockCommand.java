@@ -40,6 +40,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.Condition;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -94,6 +95,37 @@ public final class BlockCommand extends Command {
 		}
 
 		return null;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+
+		ValueStruct<?, ?> valueStruct = null;
+		final ValueStruct<?, ?> expectedStruct =
+				env()
+				.getValueRequest()
+				.getExpectedStruct()
+				.upgradeScope(scope);
+
+		for (ImperativeSentence sentence : getBlock().getSentences()) {
+
+			final ValueStruct<?, ?> sentenceStruct =
+					sentence.valueStruct(scope, expectedStruct);
+
+			if (sentenceStruct == null) {
+				continue;
+			}
+			if (valueStruct == null) {
+				valueStruct = sentenceStruct;
+				continue;
+			}
+			if (valueStruct.assertAssignableFrom(sentenceStruct)) {
+				continue;
+			}
+			valueStruct = sentenceStruct;
+		}
+
+		return valueStruct;
 	}
 
 	@Override

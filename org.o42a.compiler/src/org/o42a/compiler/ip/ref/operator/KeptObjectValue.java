@@ -20,12 +20,14 @@
 package org.o42a.compiler.ip.ref.operator;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -53,6 +55,16 @@ public class KeptObjectValue extends PathFragment {
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
 		return keeper().toPath();
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return defaultInterface(ref);
 	}
 
 	@Override

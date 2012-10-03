@@ -43,6 +43,7 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.Locals;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.string.Name;
 
@@ -353,6 +354,32 @@ public abstract class Statements<
 		}
 		this.instructionsExecuted = true;
 		new InstructionExecutor(this).executeAll();
+	}
+
+	ValueStruct<?, ?> valueStruct(
+			Scope scope,
+			ValueStruct<?, ?> expectedStruct) {
+		executeInstructions();
+
+		// Statements contain at most one value.
+		for (Implication<?> implication : getImplications()) {
+
+			final ValueStruct<?, ?> valueStruct =
+					implication.valueStruct(scope);
+
+			if (valueStruct == null) {
+				continue;
+			}
+			if (!expectedStruct.assignableFrom(valueStruct)) {
+				implication.valueStruct(scope);
+				scope.getLogger().incompatible(implication, expectedStruct);
+				return null;
+			}
+
+			return valueStruct;
+		}
+
+		return null;
 	}
 
 	void reportEmptyAlternative() {

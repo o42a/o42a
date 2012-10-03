@@ -79,7 +79,7 @@ abstract class ArrayBuilder {
 				if (itemRef != null) {
 
 					final Ref rescopedItemRef = itemRef.rescope(scope);
-					final TypeRef itemType = rescopedItemRef.ancestor(itemRef);
+					final TypeRef itemType = rescopedItemRef.getInterface();
 
 					if (arrayItemType == null) {
 						arrayItemType = itemType;

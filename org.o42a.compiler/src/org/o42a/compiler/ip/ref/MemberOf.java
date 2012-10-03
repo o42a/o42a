@@ -19,18 +19,20 @@
 */
 package org.o42a.compiler.ip.ref;
 
-
 import org.o42a.common.resolution.CompoundPathWalker;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Role;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.PlacedPathFragment;
 import org.o42a.core.ref.common.RoleResolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -83,6 +85,16 @@ public class MemberOf extends PlacedPathFragment {
 		}
 
 		return memberPath;
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return ref.toTypeRef();
 	}
 
 	@Override

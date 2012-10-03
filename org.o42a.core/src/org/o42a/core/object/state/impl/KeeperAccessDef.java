@@ -59,13 +59,6 @@ final class KeeperAccessDef extends Def {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return this.keeperAccessor.value()
-				.getValueStruct()
-				.upgradeScope(getScope());
-	}
-
-	@Override
 	public boolean unconditional() {
 		return true;
 	}
@@ -102,6 +95,11 @@ final class KeeperAccessDef extends Def {
 	@Override
 	protected boolean hasConstantValue() {
 		return getValue().isConstant();
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+		return getValue().valueStruct(scope);
 	}
 
 	@Override

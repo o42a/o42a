@@ -31,6 +31,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.Loggable;
 
 
@@ -105,6 +106,37 @@ public abstract class Sentence<
 		}
 
 		return alt;
+	}
+
+	public ValueStruct<?, ?> valueStruct(
+			Scope scope,
+			ValueStruct<?, ?> expectedStruct) {
+
+		ValueStruct<?, ?> valueStruct = null;
+
+		for (Statements<S, L> alt : getAlternatives()) {
+
+			final ValueStruct<?, ?> altStruct =
+					alt.valueStruct(scope, expectedStruct);
+
+			if (altStruct == null) {
+				continue;
+			}
+			if (valueStruct == null) {
+				valueStruct = altStruct;
+				continue;
+			}
+			if (valueStruct.assignableFrom(altStruct)) {
+				continue;
+			}
+			if (altStruct.assignableFrom(valueStruct)) {
+				valueStruct = altStruct;
+				continue;
+			}
+			valueStruct = expectedStruct;
+		}
+
+		return valueStruct;
 	}
 
 	@Override

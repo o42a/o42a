@@ -38,12 +38,45 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.*;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
 public final class BlockDefiner
 		extends MainDefiner
 		implements DeclarativeSentences {
+
+	static ValueStruct<?, ?> valueStruct(
+			Scope scope,
+			DeclarativeSentences sentences,
+			ValueStruct<?, ?> expectedStruct) {
+
+		ValueStruct<?, ?> valueStruct = null;
+
+		for (DeclarativeSentence sentence : sentences.getSentences()) {
+
+			final ValueStruct<?, ?> sentenceStruct =
+					sentence.valueStruct(scope, expectedStruct);
+
+			if (sentenceStruct == null) {
+				continue;
+			}
+			if (valueStruct == null) {
+				valueStruct = sentenceStruct;
+				continue;
+			}
+			if (valueStruct.assertAssignableFrom(sentenceStruct)) {
+				continue;
+			}
+			if (sentenceStruct.assignableFrom(valueStruct)) {
+				valueStruct = sentenceStruct;
+				continue;
+			}
+			valueStruct = expectedStruct;
+		}
+
+		return valueStruct;
+	}
 
 	static DefValue sentencesValue(
 			Resolver resolver,
@@ -132,6 +165,17 @@ public final class BlockDefiner
 	@Override
 	public DefTarget toTarget(Scope origin) {
 		return sentencesTargets(origin, this);
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return valueStruct(
+				scope,
+				this,
+				env()
+				.getValueRequest()
+				.getExpectedStruct()
+				.upgradeScope(scope));
 	}
 
 	@Override

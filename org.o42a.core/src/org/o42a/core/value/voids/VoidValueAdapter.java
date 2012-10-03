@@ -55,6 +55,11 @@ public class VoidValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return ValueStruct.VOID;
+	}
+
+	@Override
 	public Value<?> value(Resolver resolver) {
 
 		final Value<?> value = getAdaptedRef().value(resolver);

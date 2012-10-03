@@ -22,6 +22,7 @@ package org.o42a.core.object.def.impl;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
@@ -72,11 +73,6 @@ public final class RuntimeDef extends Def {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return this.definitions.getValueStruct();
-	}
-
-	@Override
 	public InlineEval inline(Normalizer normalizer) {
 		throw new UnsupportedOperationException();
 	}
@@ -89,6 +85,11 @@ public final class RuntimeDef extends Def {
 	@Override
 	protected boolean hasConstantValue() {
 		return false;
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+		return this.definitions.getValueStruct();
 	}
 
 	@Override

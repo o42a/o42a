@@ -20,6 +20,7 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -37,6 +38,10 @@ public abstract class RefPath extends Location {
 	public RefPath(CompilerContext context, LogInfo logInfo) {
 		super(context, logInfo);
 	}
+
+	protected abstract TypeRef ancestor(LocationInfo location, Ref ref);
+
+	protected abstract TypeRef iface(Ref ref, boolean rebuilt);
 
 	protected abstract Statement toCondition(
 			Ref condition,

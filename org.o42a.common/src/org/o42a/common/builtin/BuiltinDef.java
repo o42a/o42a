@@ -22,6 +22,7 @@ package org.o42a.common.builtin;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
@@ -47,11 +48,6 @@ public class BuiltinDef extends Def {
 	private BuiltinDef(BuiltinDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.builtin = prototype.builtin;
-	}
-
-	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return this.builtin.toObject().value().getValueStruct();
 	}
 
 	@Override
@@ -87,6 +83,11 @@ public class BuiltinDef extends Def {
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
 		return new BuiltinDef(this, upgrade);
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+		return this.builtin.toObject().value().getValueStruct();
 	}
 
 	@Override

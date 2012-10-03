@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause.impl;
 
+import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
@@ -28,6 +30,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -44,6 +47,11 @@ final class ClauseDefiner extends Definer {
 	@Override
 	public DefTargets getDefTargets() {
 		return definer().getDefTargets();
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return definer().valueStruct(scope);
 	}
 
 	@Override
@@ -147,6 +155,11 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
+		public ValueStruct<?, ?> valueStruct(Scope scope) {
+			return null;
+		}
+
+		@Override
 		public DefValue value(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
@@ -158,7 +171,7 @@ final class ClauseDefiner extends Definer {
 
 		@Override
 		public DefTarget toTarget(Scope origin) {
-			return DefTarget.NO_DEF_TARGET;
+			return NO_DEF_TARGET;
 		}
 
 		@Override
@@ -200,6 +213,11 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
+		public ValueStruct<?, ?> valueStruct(Scope scope) {
+			return null;
+		}
+
+		@Override
 		public DefValue value(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
@@ -211,7 +229,7 @@ final class ClauseDefiner extends Definer {
 
 		@Override
 		public DefTarget toTarget(Scope origin) {
-			return DefTarget.NO_DEF_TARGET;
+			return NO_DEF_TARGET;
 		}
 
 		@Override
@@ -256,6 +274,11 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
+		public ValueStruct<?, ?> valueStruct(Scope scope) {
+			return null;
+		}
+
+		@Override
 		public DefValue value(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
@@ -267,7 +290,7 @@ final class ClauseDefiner extends Definer {
 
 		@Override
 		public DefTarget toTarget(Scope origin) {
-			return DefTarget.NO_DEF_TARGET;
+			return NO_DEF_TARGET;
 		}
 
 		@Override

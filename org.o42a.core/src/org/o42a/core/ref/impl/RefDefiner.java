@@ -31,6 +31,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -69,6 +70,11 @@ public final class RefDefiner extends Definer {
 		final RefDef def = new RefDef(getRef());
 
 		return def.toDefinitions(env().getValueRequest().getExpectedStruct());
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return getValueAdapter().valueStruct(scope);
 	}
 
 	@Override

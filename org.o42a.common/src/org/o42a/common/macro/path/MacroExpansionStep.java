@@ -30,6 +30,7 @@ import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
@@ -110,6 +111,16 @@ public class MacroExpansionStep extends Step {
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		return new FieldDefinitionByMacroExpansion(ref);
+	}
+
+	@Override
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+		return defaultAncestor(location, ref);
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
+		return ref.toTypeRef();
 	}
 
 	@Override

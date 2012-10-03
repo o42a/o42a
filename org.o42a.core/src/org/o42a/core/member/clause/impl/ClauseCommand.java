@@ -31,6 +31,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -47,6 +48,11 @@ final class ClauseCommand extends Command {
 	@Override
 	public CommandTargets getCommandTargets() {
 		return command().getCommandTargets();
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return command().valueStruct(scope);
 	}
 
 	@Override
@@ -139,6 +145,11 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
+		public ValueStruct<?, ?> valueStruct(Scope scope) {
+			return null;
+		}
+
+		@Override
 		public Action initialValue(LocalResolver resolver) {
 			throw new UnsupportedOperationException();
 		}
@@ -197,6 +208,11 @@ final class ClauseCommand extends Command {
 		@Override
 		public CommandTargets getCommandTargets() {
 			return this.command.getCommandTargets();
+		}
+
+		@Override
+		public ValueStruct<?, ?> valueStruct(Scope scope) {
+			return null;
 		}
 
 		@Override

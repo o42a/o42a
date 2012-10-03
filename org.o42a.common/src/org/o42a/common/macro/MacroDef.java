@@ -23,6 +23,7 @@ import static org.o42a.core.ir.def.InlineEval.macroInlineEval;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
@@ -46,11 +47,6 @@ public final class MacroDef extends Def {
 	private MacroDef(MacroDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.macro = prototype.macro;
-	}
-
-	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return ValueStruct.MACRO;
 	}
 
 	@Override
@@ -80,6 +76,11 @@ public final class MacroDef extends Def {
 	@Override
 	protected boolean hasConstantValue() {
 		return true;
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+		return ValueStruct.MACRO;
 	}
 
 	@Override

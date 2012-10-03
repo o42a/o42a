@@ -41,12 +41,26 @@ public class MacroDerivationTest extends CompilerTestCase {
 				"  T = integer",
 				")");
 
-		final Obj afTarget = linkTarget(field("a", "f"));
+		final Obj af = field("a", "f").toObject();
 		final Obj bf = field("b", "f").toObject();
-		final Obj bfTarget = linkTarget(bf);
 
-		assertTrueVoid(afTarget);
-		assertThat(definiteValue(bfTarget, ValueType.INTEGER), is(1L));
+		assertThat(
+				af.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getType(),
+				is(this.context.getIntrinsics().getVoid()));
+		assertThat(definiteValue(linkTarget(af), ValueType.INTEGER), is(1L));
+
+		assertThat(
+				bf.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getType(),
+				is(this.context.getIntrinsics().getInteger()));
+		assertThat(definiteValue(linkTarget(bf), ValueType.INTEGER), is(1L));
 
 		assertThat(bf.meta().isUpdated(), is(true));
 	}
@@ -60,12 +74,26 @@ public class MacroDerivationTest extends CompilerTestCase {
 				")",
 				"B := a");
 
-		final Obj afTarget = linkTarget(field("a", "f"));
+		final Obj af = field("a", "f").toObject();
 		final Obj bf = field("b", "f").toObject();
-		final Obj bfTarget = linkTarget(bf);
 
-		assertTrueVoid(afTarget);
-		assertTrueVoid(bfTarget);
+		assertThat(
+				af.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getType(),
+				is(this.context.getIntrinsics().getVoid()));
+		assertThat(definiteValue(linkTarget(af), ValueType.INTEGER), is(1L));
+
+		assertThat(
+				bf.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getType(),
+				is(this.context.getIntrinsics().getVoid()));
+		assertThat(definiteValue(linkTarget(bf), ValueType.INTEGER), is(1L));
 
 		assertThat(bf.meta().isUpdated(), is(false));
 	}
@@ -81,12 +109,26 @@ public class MacroDerivationTest extends CompilerTestCase {
 				")",
 				"B := a");
 
-		final Obj afTarget = linkTarget(field("a", "f"));
+		final Obj af = field("a", "f").toObject();
 		final Obj bf = field("b", "f").toObject();
-		final Obj bfTarget = linkTarget(bf);
 
-		assertTrueVoid(afTarget);
-		assertTrueVoid(bfTarget);
+		assertThat(
+				af.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getType(),
+				is(this.context.getIntrinsics().getVoid()));
+		assertThat(definiteValue(linkTarget(af), ValueType.INTEGER), is(1L));
+
+		assertThat(
+				bf.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getType(),
+				is(this.context.getIntrinsics().getVoid()));
+		assertThat(definiteValue(linkTarget(bf), ValueType.INTEGER), is(1L));
 
 		assertThat(bf.meta().isUpdated(), is(false));
 	}

@@ -39,7 +39,7 @@ public class ScopeWrap extends ScopeUpgrade {
 
 	@Override
 	public Scope rescope(Scope scope) {
-		scope.assertSameScope(getFinalScope());
+		scope.assertDerivedFrom(getFinalScope());
 		return this.wrappedScope;
 	}
 

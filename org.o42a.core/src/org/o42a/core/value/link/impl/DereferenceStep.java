@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
@@ -49,7 +48,7 @@ import org.o42a.core.value.link.LinkValueType;
 
 public class DereferenceStep extends Step {
 
-	private static final LinkAncestor LINK_ANCESTOR = new LinkAncestor();
+	private static final LinkInterface LINK_INTERFACE = new LinkInterface();
 
 	private LinkValueStruct linkStruct;
 	private ObjectStepUses uses;
@@ -70,16 +69,22 @@ public class DereferenceStep extends Step {
 	}
 
 	@Override
-	protected TypeRef ancestor(
-			BoundPath path,
-			LocationInfo location,
-			Distributor distributor) {
-		return path.cut(1).append(LINK_ANCESTOR).typeRef(distributor);
+	protected FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(Ref ref) {
-		return defaultFieldDefinition(ref);
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+		return ref.getPath()
+				.cut(1)
+				.setLocation(location)
+				.append(LINK_INTERFACE)
+				.typeRef(ref.distribute());
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
 	}
 
 	@Override
@@ -215,7 +220,7 @@ public class DereferenceStep extends Step {
 		return false;
 	}
 
-	private static final class LinkAncestor extends PathFragment {
+	private static final class LinkInterface extends PathFragment {
 
 		@Override
 		public Path expand(PathExpander expander, int index, Scope start) {
@@ -225,6 +230,16 @@ public class DereferenceStep extends Step {
 			final TypeRef typeRef = linkStruct.getTypeRef();
 
 			return typeRef.getPath().getPath();
+		}
+
+		@Override
+		public FieldDefinition fieldDefinition(Ref ref) {
+			return defaultFieldDefinition(ref);
+		}
+
+		@Override
+		public TypeRef iface(Ref ref) {
+			return defaultInterface(ref);
 		}
 
 		@Override

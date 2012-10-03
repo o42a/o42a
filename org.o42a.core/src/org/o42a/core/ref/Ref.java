@@ -172,8 +172,7 @@ public class Ref extends Statement {
 	/**
 	 * Builds ancestor reference.
 	 *
-	 * <p>This returns ancestor of object or interface of the link. This
-	 * shouldn't be called for e.g. arrays.</p>
+	 * <p>This returns an ancestor of object or interface of the link.</p>
 	 *
 	 * <p>If this reference is an object constructor, the ancestor should be
 	 * built before object construction.</p>
@@ -183,7 +182,37 @@ public class Ref extends Statement {
 	 * @return ancestor reference or <code>null</code> if can not be determined.
 	 */
 	public final TypeRef ancestor(LocationInfo location) {
-		return getPath().ancestor(location, distribute());
+
+		final RefPath path = getPath();
+
+		return path.ancestor(location, this);
+	}
+
+	/**
+	 * A referred object's interface.
+	 *
+	 * <p>This interface is the same as the one used when constructing a link
+	 * with this reference as definition.</p>
+	 *
+	 * @return ancestor interface type reference.
+	 */
+	public final TypeRef getInterface() {
+
+		final RefPath path = getPath();
+
+		return path.iface(this, false);
+	}
+
+	/**
+	 * A referred object's interface built for rebuilt path.
+	 *
+	 * @return ancestor interface type reference.
+	 */
+	public final TypeRef rebuiltInterface() {
+
+		final RefPath path = getPath();
+
+		return path.iface(this, true);
 	}
 
 	@Override

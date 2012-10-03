@@ -324,7 +324,13 @@ public final class Defs {
 		boolean ok = true;
 
 		for (Def def : get()) {
-			if (!valueStruct.assignableFrom(def.getValueStruct())) {
+
+			final ValueStruct<?, ?> defValueStruct = def.getValueStruct();
+
+			if (defValueStruct == null) {
+				continue;
+			}
+			if (!valueStruct.assignableFrom(defValueStruct)) {
 				definitions.getLogger().incompatible(def, valueStruct);
 			}
 		}
@@ -357,7 +363,13 @@ public final class Defs {
 
 	private void validate(ValueStruct<?, ?> valueStruct) {
 		for (Def def : get()) {
-			if (!valueStruct.assignableFrom(def.getValueStruct())) {
+
+			final ValueStruct<?, ?> defValueStruct = def.getValueStruct();
+
+			if (defValueStruct == null) {
+				continue;
+			}
+			if (!valueStruct.assignableFrom(defValueStruct)) {
 				def.getContext().getLogger().incompatible(
 						def,
 						valueStruct);

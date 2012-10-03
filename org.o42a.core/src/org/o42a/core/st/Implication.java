@@ -20,10 +20,12 @@
 package org.o42a.core.st;
 
 import org.o42a.core.*;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.log.Loggable;
 
@@ -82,6 +84,19 @@ public abstract class Implication<L extends Implication<L>>
 	public L replaceWith(Statement statement) {
 		throw new UnsupportedOperationException();
 	}
+
+	/**
+	 * Determines a structure of the implication's value in the given scope.
+	 *
+	 * <p>This value is used by {@link Def#getValueStruct() value definition}
+	 * and for compatibility checks.</p>
+	 *
+	 * @param scope the scope the value structure determined in.
+	 *
+	 * @return the value structure or <code>null</code> if this implication
+	 * does not produce any values.
+	 */
+	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
 
 	public abstract Instruction toInstruction(Resolver resolver);
 

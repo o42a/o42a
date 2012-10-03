@@ -28,6 +28,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -44,41 +45,48 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
+	public final Instruction toInstruction(Resolver resolver) {
 		return null;
 	}
 
 	@Override
-	public DefTarget toTarget(Scope origin) {
+	public final DefTarget toTarget(Scope origin) {
 		return null;
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
+	public final ValueStruct<?, ?> valueStruct(Scope scope) {
+		return null;
+	}
+
+	@Override
+	public final DefValue value(Resolver resolver) {
 		return TRUE_DEF_VALUE;
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver, Scope origin) {
+	public final void resolveTargets(TargetResolver resolver, Scope origin) {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
+	public final InlineEval inline(Normalizer normalizer, Scope origin) {
 		return InlineEval.noInlineEval();
 	}
 
 	@Override
-	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+	public final InlineEval normalize(
+			RootNormalizer normalizer,
+			Scope origin) {
 		return null;
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public final Eval eval(CodeBuilder builder, Scope origin) {
 		return null;
 	}
 
 	@Override
-	protected void fullyResolve(FullResolver resolver) {
+	protected final void fullyResolve(FullResolver resolver) {
 	}
 
 }

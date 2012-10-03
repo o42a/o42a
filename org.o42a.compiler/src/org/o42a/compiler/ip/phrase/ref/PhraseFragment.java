@@ -28,6 +28,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.type.TypeRef;
 
 
 class PhraseFragment extends PathFragment {
@@ -45,7 +46,12 @@ class PhraseFragment extends PathFragment {
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
 		// This is called before path resolution.
-		return new Definition(this.phrase, super.fieldDefinition(ref));
+		return new Definition(this.phrase, defaultFieldDefinition(ref));
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return defaultInterface(ref);
 	}
 
 	@Override

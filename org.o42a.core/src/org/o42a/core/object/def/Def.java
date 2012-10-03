@@ -128,10 +128,27 @@ public abstract class Def implements SourceInfo {
 	}
 
 	public final ValueType<?> getValueType() {
-		return getValueStruct().getValueType();
+
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+
+		if (valueStruct == null) {
+			return null;
+		}
+
+		return valueStruct.getValueType();
 	}
 
-	public abstract ValueStruct<?, ?> getValueStruct();
+	public final ValueStruct<?, ?> getValueStruct() {
+
+		final Scope scope = getScopeUpgrade().rescope(getScope());
+		final ValueStruct<?, ?> valueStruct = valueStruct(scope);
+
+		if (valueStruct == null) {
+			return null;
+		}
+
+		return valueStruct.prefixWith(getScopeUpgrade().toPrefix());
+	}
 
 	public abstract boolean unconditional();
 
@@ -288,6 +305,8 @@ public abstract class Def implements SourceInfo {
 			ScopeUpgrade additionalUpgrade);
 
 	protected abstract boolean hasConstantValue();
+
+	protected abstract ValueStruct<?, ?> valueStruct(Scope scope);
 
 	protected abstract DefValue calculateValue(Resolver resolver);
 

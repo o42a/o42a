@@ -34,6 +34,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
@@ -78,6 +79,11 @@ final class RefConditionCommand extends Command {
 	@Override
 	public DefTarget toTarget(Scope origin) {
 		return DefTarget.NO_DEF_TARGET;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return null;
 	}
 
 	@Override

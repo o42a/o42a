@@ -40,7 +40,7 @@ public final class TargetRef implements ScopeInfo {
 		if (typeRef != null) {
 			return new TargetRef(ref, typeRef);
 		}
-		return new TargetRef(ref, ref.ancestor(ref));
+		return new TargetRef(ref, ref.getInterface());
 	}
 
 	private final Ref ref;

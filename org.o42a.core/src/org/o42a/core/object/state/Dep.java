@@ -40,6 +40,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.string.ID;
@@ -115,15 +116,20 @@ public final class Dep extends Step implements SubID {
 
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
-
-		final PrefixPath prefix =
-				ref.getPath().cut(1)
-				.append(getDeclaredIn().getScope().getEnclosingScopePath())
-				.toPrefix(ref.getScope());
-
-		return getRef().toFieldDefinition()
-				.prefixWith(prefix)
+		return getRef()
+				.toFieldDefinition()
+				.prefixWith(refPrefix(ref))
 				.upgradeScope(ref.getScope());
+	}
+
+	@Override
+	protected TypeRef ancestor(LocationInfo location, Ref ref) {
+		return getRef().ancestor(location).prefixWith(refPrefix(ref));
+	}
+
+	@Override
+	protected TypeRef iface(Ref ref) {
+		return getRef().getInterface().prefixWith(refPrefix(ref));
 	}
 
 	@Override
@@ -235,6 +241,13 @@ public final class Dep extends Step implements SubID {
 		assert !isDisabled() :
 			this + " is disabled";
 		return new Op(start, this);
+	}
+
+	private PrefixPath refPrefix(Ref ref) {
+		return ref.getPath()
+				.cut(1)
+				.append(getDeclaredIn().getScope().getEnclosingScopePath())
+				.toPrefix(ref.getScope());
 	}
 
 	private final ObjectStepUses uses() {

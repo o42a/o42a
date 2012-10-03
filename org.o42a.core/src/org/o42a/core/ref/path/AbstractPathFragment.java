@@ -24,6 +24,8 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.PathFragmentFieldDefinition;
 import org.o42a.core.ref.path.impl.PathFragmentStep;
+import org.o42a.core.ref.path.impl.RebuiltInterface;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public abstract class AbstractPathFragment {
@@ -45,9 +47,9 @@ public abstract class AbstractPathFragment {
 	 */
 	public abstract boolean isTemplate();
 
-	public FieldDefinition fieldDefinition(Ref ref) {
-		return new PathFragmentFieldDefinition(ref);
-	}
+	public abstract FieldDefinition fieldDefinition(Ref ref);
+
+	public abstract TypeRef iface(Ref ref);
 
 	public final Step toStep() {
 		return new PathFragmentStep(this);
@@ -55,6 +57,17 @@ public abstract class AbstractPathFragment {
 
 	public final Path toPath() {
 		return toStep().toPath();
+	}
+
+	protected final FieldDefinition defaultFieldDefinition(Ref ref) {
+		return new PathFragmentFieldDefinition(ref);
+	}
+
+	protected final TypeRef defaultInterface(Ref ref) {
+		return new RebuiltInterface(ref)
+		.toPath()
+		.bind(ref, ref.getScope())
+		.typeRef(ref.distribute());
 	}
 
 }

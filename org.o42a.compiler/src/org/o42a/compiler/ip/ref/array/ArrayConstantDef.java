@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -36,15 +37,14 @@ import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.Array;
-import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.array.ArrayValueType;
 
 
 final class ArrayConstantDef extends Def {
 
 	private final Value<Array> value;
-	private ArrayValueStruct valueStruct;
 
 	ArrayConstantDef(Obj source, Array value) {
 		super(source, source, noScopeUpgrade(source.getScope()));
@@ -56,19 +56,6 @@ final class ArrayConstantDef extends Def {
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.value = prototype.value;
-	}
-
-	@Override
-	public ArrayValueStruct getValueStruct() {
-		if (this.valueStruct != null) {
-			return this.valueStruct;
-		}
-
-		final ArrayValueStruct valueStruct =
-				(ArrayValueStruct) this.value.getValueStruct();
-
-		return this.valueStruct =
-				valueStruct.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
 	@Override
@@ -112,6 +99,11 @@ final class ArrayConstantDef extends Def {
 		final Array array = getArray();
 
 		return !array.isVariable() && array.hasStaticItems();
+	}
+
+	@Override
+	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+		return this.value.getValueStruct().toArrayStruct();
 	}
 
 	@Override

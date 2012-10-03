@@ -35,6 +35,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -62,6 +63,11 @@ public class LinkValueAdapter extends ValueAdapter {
 	@Override
 	public final Ref toTarget() {
 		return getAdaptedRef().dereference();
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return getAdaptedRef().valueStruct(scope);
 	}
 
 	@Override
