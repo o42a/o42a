@@ -15,20 +15,25 @@ import org.o42a.core.member.field.Field;
 public final class VariableValueTypeObject__SRC implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
-	private SingleURLSource sourceTree;
+	private URLSources sourceTree;
 
 	public VariableValueTypeObject__SRC(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public SingleURLSource getSourceTree() {
+	public URLSources getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new SingleURLSource(
+
+		this.sourceTree = new URLSources(
 				this.parent.getSourceTree(),
 				"variable.o42a");
+
+		this.sourceTree.add("interface__.o42a");
+
+		return this.sourceTree;
 	}
 
 	@Override

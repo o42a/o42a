@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.link;
 
 import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.RelatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.value.link.LinkValueType;
@@ -27,6 +28,7 @@ import org.o42a.intrinsic.root.Root;
 
 
 @SourcePath(relativeTo = Root.class, value = "variable.o42a")
+@RelatedSources("interface__.o42a")
 public class VariableValueTypeObject extends AbstractLinkValueTypeObject {
 
 	public VariableValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
