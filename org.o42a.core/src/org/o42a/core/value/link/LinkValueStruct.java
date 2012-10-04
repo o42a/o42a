@@ -114,7 +114,7 @@ public final class LinkValueStruct
 			return this;
 		}
 
-		return new LinkValueStruct(this, getValueType(), newTypeRef);
+		return new LinkValueStruct(getValueType(), newTypeRef);
 	}
 
 	@Override
