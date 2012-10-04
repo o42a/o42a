@@ -21,12 +21,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Interface :=> macro
 ===================
 ~~~
-A link interface reference.
+A link or variable interface reference.
+
+This macro works for link prototypes. So the following is fairly valid:
+    ##interface [link`] ~~ Returns `void`.
 ~~~
 
 #Link :=< void
 ~~~
 The link reference to get interface of.
+
+Note that the value passed here should be a reference to the link body, note to
+it's target. So, it should end with a backquote:
+    ##interface [referenced link`] 
 ~~~
 
 <*[]!> Link = ()

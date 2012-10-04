@@ -21,4 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ===
 ~~~
 Standard Macros.
+
+Note that there is no need to import this module in order to expand it's macros.
+The _standard macro expansion_ (`##`) expression can be used for that.
+For example:
+    ##Interface [link`]
+means the same as:
+    Use object 'Interface' from 'Macros'
+    #Interface [link`]
+
+The import of this module is required, however, in order to use a non-expanded
+standard standard macro, e.g. to derive it.
 ~~~
