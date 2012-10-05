@@ -50,7 +50,12 @@ import org.o42a.util.io.URLSource;
 
 
 @SourcePath("root.o42a")
-@RelatedSources({"number.o42a", "abstract_array.o42a", "operators.o42a"})
+@RelatedSources({
+	"number.o42a",
+	"abstract_array.o42a",
+	"operators.o42a",
+	"property.o42a"
+})
 public class Root extends Obj {
 
 	private static final MemberName DIRECTIVE_MEMBER =
