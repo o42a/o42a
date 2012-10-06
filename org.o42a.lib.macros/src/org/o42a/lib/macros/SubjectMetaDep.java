@@ -25,12 +25,12 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 
 
-final class LinkMetaDep extends MetaDep {
+final class SubjectMetaDep extends MetaDep {
 
 	private final Ref linkRef;
 	private MetaDep parentDep;
 
-	LinkMetaDep(Meta declaredIn, Ref linkRef) {
+	SubjectMetaDep(Meta declaredIn, Ref linkRef) {
 		super(declaredIn);
 		this.linkRef = linkRef;
 	}

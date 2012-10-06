@@ -30,88 +30,91 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.macro.MacroExpander;
 import org.o42a.util.log.LogInfo;
 
 
-@SourcePath(relativeTo = MacrosModule.class, value = "interface__.o42a")
-final class LinkInterface extends AnnotatedMacro {
+@SourcePath(relativeTo = MacrosModule.class, value = "item_type.o42a")
+final class ItemType extends AnnotatedMacro {
 
-	private Ref link;
+	private Ref array;
 
-	LinkInterface(MemberOwner owner, AnnotatedSources sources) {
+	ItemType(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 
 	@Override
 	public Path expand(MacroExpander expander) {
-		return linkInterface(expander);
+		return itemType(expander);
 	}
 
 	@Override
 	public Path reexpand(MacroExpander expander) {
-		return linkInterface(expander);
+		return itemType(expander);
 	}
 
-	private Path linkInterface(MacroExpander expander) {
+	private Path itemType(MacroExpander expander) {
 
-		final LinkValueStruct linkStruct = linkStruct(expander);
+		final ArrayValueStruct arrayStruct = arrayStruct(expander);
 
-		if (linkStruct == null) {
+		if (arrayStruct == null) {
 			return null;
 		}
 
-		return linkTypeRef(expander, linkStruct).getPath().getPath();
+		return arrayTypeRef(expander, arrayStruct).getPath().getPath();
 	}
 
-	private LinkValueStruct linkStruct(MacroExpander expander) {
+	private ArrayValueStruct arrayStruct(MacroExpander expander) {
 
 		final Scope scope = expander.getMacroObject().getScope();
 		final Obj target =
-				link().upgradeScope(scope).resolve(scope.resolver())	.toObject();
+				array()
+				.upgradeScope(scope)
+				.resolve(scope.resolver())
+				.toObject();
 
 		if (target == null) {
 			// Log the error unconditionally.
-			notLink(expander, expander.getExplicitLogger());
+			notArray(expander, expander.getExplicitLogger());
 			return null;
 		}
 
-		final LinkValueStruct linkStruct =
-				target.value().getValueStruct().toLinkStruct();
+		final ArrayValueStruct arrayStruct =
+				target.value().getValueStruct().toArrayStruct();
 
-		if (linkStruct == null) {
+		if (arrayStruct == null) {
 			// Conditionally report the error.
-			notLink(expander, expander.getLogger());
+			notArray(expander, expander.getLogger());
 			return null;
 		}
 
-		return linkStruct;
+		return arrayStruct;
 	}
 
-	private TypeRef linkTypeRef(
+	private TypeRef arrayTypeRef(
 			MacroExpander expander,
-			LinkValueStruct linkStruct) {
+			ArrayValueStruct arrayStruct) {
 
 		final Scope scope = expander.getMacroObject().getScope();
 		final PrefixPath prefix =
-				link().getPath().rebuildIn(scope).toPrefix(scope);
+				array().getPath().rebuildIn(scope).toPrefix(scope);
 
-		return linkStruct.getTypeRef().prefixWith(prefix);
+		return arrayStruct.getItemTypeRef().prefixWith(prefix);
 	}
 
-	private Ref link() {
-		if (this.link != null) {
-			return this.link;
+	private Ref array() {
+		if (this.array != null) {
+			return this.array;
 		}
-		return this.link = LinkSubjectDep.linkRef(this);
+		return this.array = ArraySubjectDep.arrayRef(this);
 	}
 
-	private void notLink(LogInfo location, CompilerLogger logger) {
+	private void notArray(LogInfo location, CompilerLogger logger) {
 		logger.error(
-				"not_link_interface",
+				"not_array_item_type",
 				location,
-				"Can only obtain interface from link or variable");
+				"Can only obtain item type from array or row");
 	}
 
 }

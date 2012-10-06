@@ -49,6 +49,10 @@ public final class MacrosModule__SRC implements AnnotatedSources {
 					owner,
 					new org.o42a.lib.macros.LinkInterface__SRC(this))
 			.getScope().toField(),
+			new org.o42a.lib.macros.ItemType(
+					owner,
+					new org.o42a.lib.macros.ItemType__SRC(this))
+			.getScope().toField(),
 		};
 	}
 
