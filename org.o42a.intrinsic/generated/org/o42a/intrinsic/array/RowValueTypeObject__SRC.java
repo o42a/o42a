@@ -15,20 +15,25 @@ import org.o42a.core.member.field.Field;
 public final class RowValueTypeObject__SRC implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
-	private SingleURLSource sourceTree;
+	private URLSources sourceTree;
 
 	public RowValueTypeObject__SRC(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public SingleURLSource getSourceTree() {
+	public URLSources getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new SingleURLSource(
+
+		this.sourceTree = new URLSources(
 				this.parent.getSourceTree(),
 				"row.o42a");
+
+		this.sourceTree.add("item_type.o42a");
+
+		return this.sourceTree;
 	}
 
 	@Override

@@ -28,3 +28,5 @@ This macro works for array prototypes too. So, the following is fairly valid:
 ~~~
 
 #Array :=< void ~~ The array reference to get item type of.
+
+<*[]!> Array = ()

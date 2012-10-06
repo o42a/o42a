@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.array;
 
 import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.RelatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.value.array.ArrayValueType;
@@ -27,6 +28,7 @@ import org.o42a.intrinsic.root.Root;
 
 
 @SourcePath(relativeTo = Root.class, value = "array.o42a")
+@RelatedSources("item_type.o42a")
 public class ArrayValueTypeObject extends IndexedValueTypeObject {
 
 	public ArrayValueTypeObject(
