@@ -18,7 +18,18 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Abstract array :=> void
-=======================
+Indexed :=> void
+================
+~~~
+A set of objects indexed by integer keys (indexes) starting with zero.
+
+This is a base of <array> and <row>. Other indexed objects, such as lists,
+can also base on this prototype.
+~~~
 
 Length :=< $$integer
+~~~
+Indexed length.
+
+This is one less than a maximum index. 
+~~~

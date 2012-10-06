@@ -26,9 +26,9 @@ import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.ArrayValueType;
 
 
-public abstract class AbstractArrayValueTypeObject extends ValueTypeObject {
+public abstract class IndexedValueTypeObject extends ValueTypeObject {
 
-	public AbstractArrayValueTypeObject(
+	public IndexedValueTypeObject(
 			MemberOwner owner,
 			AnnotatedSources sources,
 			ArrayValueType arrayType) {

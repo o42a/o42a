@@ -44,13 +44,13 @@ import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
 
-abstract class AbstractArrayLength extends AnnotatedBuiltin {
+abstract class IndexedLength extends AnnotatedBuiltin {
 
 	private static final ID ARRAY_LEN_ID = ID.id("array_len");
 
 	private Ref array;
 
-	AbstractArrayLength(MemberOwner owner, AnnotatedSources sources) {
+	IndexedLength(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 
@@ -145,10 +145,10 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 
 	private static final class ArrayLengthEval extends InlineEval {
 
-		private final AbstractArrayLength length;
+		private final IndexedLength length;
 		private final InlineValue inlineArray;
 
-		ArrayLengthEval(AbstractArrayLength length, InlineValue inlineArray) {
+		ArrayLengthEval(IndexedLength length, InlineValue inlineArray) {
 			super(null);
 			this.length = length;
 			this.inlineArray = inlineArray;

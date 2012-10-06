@@ -27,7 +27,7 @@ import org.o42a.intrinsic.root.Root;
 
 
 @SourcePath(relativeTo = Root.class, value = "row.o42a")
-public class RowValueTypeObject extends AbstractArrayValueTypeObject {
+public class RowValueTypeObject extends IndexedValueTypeObject {
 
 	public RowValueTypeObject(
 			MemberOwner owner,
