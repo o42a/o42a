@@ -18,22 +18,13 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Interface :=> macro
+Item type :=> macro
 ===================
 ~~~
-A link or variable interface reference.
+An array or row item type.
 
-This macro works for link prototypes too. So, the following is fairly valid:
-    ##interface [link`] ~~ Returns `void`.
+This macro works for array prototypes too. So, the following is fairly valid:
+    ##item type [$$array] ~~ Returns `void`.
 ~~~
 
-#Link :=< void
-~~~
-The link reference to get interface of.
-
-Note that the value passed here should be a reference to the link body rather
-it's target. So, it should end with a backquote:
-    ##interface [referenced link`] 
-~~~
-
-<*[]!> Link = ()
+#Array :=< void ~~ The array reference to get item type of.

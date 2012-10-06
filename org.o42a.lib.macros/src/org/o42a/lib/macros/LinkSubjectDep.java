@@ -32,11 +32,11 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 
 
-final class LinkDep extends RefDep<LinkMetaDep> {
+final class LinkSubjectDep extends RefDep<SubjectMetaDep> {
 
 	private static final MemberName LINK_NAME =
 			fieldName(CASE_SENSITIVE.canonicalName("link"));
-	private static final LinkDep INSTANCE = new LinkDep();
+	private static final LinkSubjectDep INSTANCE = new LinkSubjectDep();
 
 	static Ref linkRef(LinkInterface macro) {
 
@@ -45,7 +45,7 @@ final class LinkDep extends RefDep<LinkMetaDep> {
 				.bind(macro, macro.getScope())
 				.target(macro.distribute());
 		final Ref ref = linkRef.consume(DEFAULT_CONSUMER);
-		final LinkMetaDep dep = INSTANCE.buildDep(ref, null);
+		final SubjectMetaDep dep = INSTANCE.buildDep(ref, null);
 
 		if (dep != null) {
 			dep.register();
@@ -54,16 +54,16 @@ final class LinkDep extends RefDep<LinkMetaDep> {
 		return ref;
 	}
 
-	private LinkDep() {
+	private LinkSubjectDep() {
 	}
 
 	@Override
-	public LinkMetaDep newDep(Meta meta, Ref ref, PathTemplate template) {
-		return new LinkMetaDep(meta, ref);
+	public SubjectMetaDep newDep(Meta meta, Ref ref, PathTemplate template) {
+		return new SubjectMetaDep(meta, ref);
 	}
 
 	@Override
-	public void setParentDep(LinkMetaDep dep, MetaDep parentDep) {
+	public void setParentDep(SubjectMetaDep dep, MetaDep parentDep) {
 		dep.setParentDep(parentDep);
 	}
 
