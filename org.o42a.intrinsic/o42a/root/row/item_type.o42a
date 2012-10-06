@@ -1,6 +1,6 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Intrinsics
-Copyright (C) 2011,2012 Ruslan Lopatin
+Copyright (C) 2012 Ruslan Lopatin
 
 This file is part of o42a.
 
@@ -17,21 +17,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use object 'Item type' from 'Macros' as 'Array item type'
 
-Indexed :=> void
-================
-~~~
-A set of items indexed by integer keys (indexes) starting with zero.
+Item type = *
+=============
 
-This is a base of <array> and <row>. Other indexed objects, such as lists,
-can also base on this prototype.
-~~~
-
-Item type :=< macro ~~ An indexed items' type reference.
-
-Length :=< $$integer
-~~~
-Indexed length.
-
-This is one less than a maximum index. 
-~~~
+= array item type [row::]
