@@ -39,6 +39,10 @@ public final class ArrayValueTypeObject__SRC implements AnnotatedSources {
 	@Override
 	public Field[] fields(MemberOwner owner) {
 		return new Field[] {
+			new org.o42a.intrinsic.array.ArrayItem(
+					owner,
+					new org.o42a.intrinsic.array.ArrayItem__SRC(this))
+			.getScope().toField(),
 			new org.o42a.intrinsic.array.ArrayLength(
 					owner,
 					new org.o42a.intrinsic.array.ArrayLength__SRC(this))

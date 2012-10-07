@@ -76,17 +76,14 @@ final class TargetLink extends KnownLink {
 	@Override
 	protected Link findLinkIn(Scope enclosing) {
 
-		final TargetRef targetRef =
-				getTargetRef().upgradeScope(enclosing);
+		final TargetRef targetRef = getTargetRef().upgradeScope(enclosing);
 
 		return new TargetLink(this, targetRef);
 	}
 
 	@Override
 	protected KnownLink prefixWith(PrefixPath prefix) {
-		return new TargetLink(
-				this,
-				getTargetRef().prefixWith(prefix));
+		return new TargetLink(this, getTargetRef().prefixWith(prefix));
 	}
 
 }

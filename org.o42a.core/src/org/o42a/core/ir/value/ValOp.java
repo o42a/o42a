@@ -68,6 +68,8 @@ public abstract class ValOp extends IROp {
 	public ValOp(CodeBuilder builder, ValueStruct<?, ?> valueStruct) {
 		super(builder);
 		this.valueStruct = valueStruct;
+		assert valueStruct != null :
+			"Value structure not specified";
 	}
 
 	public final ValueType<?> getValueType() {
