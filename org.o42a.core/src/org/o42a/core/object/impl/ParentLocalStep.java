@@ -125,6 +125,9 @@ public final class ParentLocalStep extends Step implements ReversePath {
 
 		final Obj object = resolver.getStart().toObject();
 
+		assert object != null :
+			"Not an object: " + resolver.getStart();
+
 		object.assertDerivedFrom(this.object);
 
 		final Container result =

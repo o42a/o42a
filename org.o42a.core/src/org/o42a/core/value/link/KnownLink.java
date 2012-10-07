@@ -46,7 +46,7 @@ public abstract class KnownLink extends Link {
 		this.data = new KnownLinkData(this, targetRef);
 	}
 
-	protected KnownLink(Link prototype, TargetRef targetRef) {
+	protected KnownLink(KnownLink prototype, TargetRef targetRef) {
 		this(
 				addDeclaration(targetRef.getScope(), prototype),
 				prototype.distributeIn(targetRef.getScope().getContainer()),
