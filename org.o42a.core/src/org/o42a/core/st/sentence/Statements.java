@@ -371,7 +371,6 @@ public abstract class Statements<
 				continue;
 			}
 			if (!expectedStruct.assignableFrom(valueStruct)) {
-				implication.valueStruct(scope);
 				scope.getLogger().incompatible(implication, expectedStruct);
 				return null;
 			}

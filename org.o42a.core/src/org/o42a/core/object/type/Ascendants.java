@@ -551,8 +551,6 @@ public class Ascendants
 
 		if (!relation.isDerivative()) {
 			if (!relation.isError()) {
-				ancestor.relationTo(sampleAncestor)
-				.check(getScope().getLogger());
 				getScope().getLogger().error(
 						"unexpected_ancestor",
 						sample,
