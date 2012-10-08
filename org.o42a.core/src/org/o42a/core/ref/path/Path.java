@@ -362,6 +362,14 @@ public final class Path {
 		return out.toString();
 	}
 
+	boolean assertNoFragments() {
+		for (Step step : getSteps()) {
+			assert step.getPathFragment() == null :
+				"Rebuilt path should never contain path fragments: " + this;
+		}
+		return true;
+	}
+
 	private static final boolean stepsNotNull(Step[] steps) {
 		for (Step step : steps) {
 			assert step != null :
