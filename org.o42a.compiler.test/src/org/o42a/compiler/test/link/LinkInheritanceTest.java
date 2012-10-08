@@ -59,8 +59,8 @@ public class LinkInheritanceTest extends CompilerTestCase {
 				")",
 				"B := a (Foo = 2)");
 
-		final Field aBar = field(field("a"), "bar");
-		final Field bBar = field(field("b"), "bar");
+		final Field aBar = field("a", "bar");
+		final Field bBar = field("b", "bar");
 
 		assertThat(
 				definiteValue(linkTarget(aBar), ValueType.INTEGER),
@@ -68,6 +68,34 @@ public class LinkInheritanceTest extends CompilerTestCase {
 		assertThat(
 				definiteValue(linkTarget(bBar), ValueType.INTEGER),
 				is(2L));
+	}
+
+	@Test
+	public void linkPrototypePropagation() {
+		compile(
+				"A :=> void (",
+				"  Foo :=<> link (`integer) ()",
+				")",
+				"B := a (Foo => *)");
+
+		assertThat(
+				field("a", "foo")
+				.toObject()
+				.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getType(),
+				is(this.context.getIntrinsics().getInteger()));
+		assertThat(
+				field("b", "foo")
+				.toObject()
+				.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getType(),
+				is(this.context.getIntrinsics().getInteger()));
 	}
 
 	@Test
@@ -79,8 +107,8 @@ public class LinkInheritanceTest extends CompilerTestCase {
 				")",
 				"B := a (Foo = 2)");
 
-		final Field aBar = field(field("a"), "bar");
-		final Field bBar = field(field("b"), "bar");
+		final Field aBar = field("a", "bar");
+		final Field bBar = field("b", "bar");
 
 		assertThat(definiteValue(aBar, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(bBar, ValueType.INTEGER), is(2L));
@@ -97,9 +125,9 @@ public class LinkInheritanceTest extends CompilerTestCase {
 				"C := b",
 				"D := b ()");
 
-		final Field bBar = field(field("b"), "bar");
-		final Field cBar = field(field("c"), "bar");
-		final Field dBar = field(field("d"), "bar");
+		final Field bBar = field("b", "bar");
+		final Field cBar = field("c", "bar");
+		final Field dBar = field("d", "bar");
 
 		assertThat(
 				definiteValue(linkTarget(bBar), ValueType.INTEGER),
@@ -123,9 +151,9 @@ public class LinkInheritanceTest extends CompilerTestCase {
 				"C := b",
 				"D := b ()");
 
-		final Field bBar = field(field("b"), "bar");
-		final Field cBar = field(field("c"), "bar");
-		final Field dBar = field(field("d"), "bar");
+		final Field bBar = field("b", "bar");
+		final Field cBar = field("c", "bar");
+		final Field dBar = field("d", "bar");
 
 		assertThat(definiteValue(bBar, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(cBar, ValueType.INTEGER), is(1L));
