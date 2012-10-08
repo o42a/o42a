@@ -66,6 +66,11 @@ public final class LinkValueStruct
 	}
 
 	@Override
+	public final boolean isValid() {
+		return getTypeRef().isValid();
+	}
+
+	@Override
 	public final int getLinkDepth() {
 		return 1 + getTypeRef().getValueStruct().getLinkDepth();
 	}

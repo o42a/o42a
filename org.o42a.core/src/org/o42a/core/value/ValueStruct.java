@@ -106,6 +106,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return getValueType().isLink();
 	}
 
+	public abstract boolean isValid();
+
 	public abstract int getLinkDepth();
 
 	public final boolean isVariable() {
