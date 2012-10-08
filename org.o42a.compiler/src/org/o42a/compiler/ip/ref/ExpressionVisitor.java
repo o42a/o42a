@@ -158,14 +158,14 @@ public final class ExpressionVisitor
 			return ancestor.getAncestor().getRef();
 		}
 
-		return ip().phraseIp().ascendants(ascendants, p).toRef();
+		return ip().phraseIp().ascendantsPhrase(ascendants, p).toRef();
 	}
 
 	@Override
 	public Ref visitValueType(ValueTypeNode valueType, Distributor p) {
 
 		final Phrase phrase =
-				ip().phraseIp().ascendants(valueType, p, this.typeConsumer);
+				ip().phraseIp().valueTypePhrase(valueType, p, this.typeConsumer);
 
 		if (phrase == null) {
 			return super.visitValueType(valueType, p);
