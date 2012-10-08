@@ -146,10 +146,6 @@ public class MacroExpansion extends PathFragment {
 		if (start.is(origin) || origin == null) {
 			return this.initialExpansion;
 		}
-		if (this.initialExpansion == null) {
-			// Initial expansion error.
-			return null;
-		}
 
 		// Find a cached expansion.
 		if (this.expansions == null) {
