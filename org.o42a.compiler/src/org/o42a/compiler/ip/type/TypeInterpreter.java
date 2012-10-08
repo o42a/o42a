@@ -157,19 +157,19 @@ public final class TypeInterpreter {
 	public AncestorTypeRef parseAncestor(
 			Distributor distributor,
 			AscendantNode ascendantNode,
-			ValueStructFinder arrayStructFinder,
+			ValueStructFinder valueStructFinder,
 			Referral referral) {
 
 		final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;
 
 		if (ascendantNode.getSeparator() == null) {
 			ancestorVisitor = ancestorVisitor(
-					arrayStructFinder,
+					valueStructFinder,
 					referral,
 					NO_TYPE_CONSUMER);
 		} else {
 			ancestorVisitor = staticAncestorVisitor(
-					arrayStructFinder,
+					valueStructFinder,
 					referral,
 					NO_TYPE_CONSUMER);
 		}

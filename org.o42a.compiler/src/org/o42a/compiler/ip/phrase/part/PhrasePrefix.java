@@ -49,7 +49,8 @@ public final class PhrasePrefix extends PhrasePart {
 		return this.ascendants.getTypeParameters();
 	}
 
-	public final PhrasePrefix setTypeParameters(TypeParameters typeParameters) {
+	public final PhrasePrefix setTypeParameters(
+			TypeParameters typeParameters) {
 		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
 		return this;
 	}

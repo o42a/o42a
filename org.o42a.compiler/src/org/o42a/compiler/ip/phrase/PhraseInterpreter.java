@@ -66,41 +66,25 @@ public final class PhraseInterpreter {
 		return addClauses(prefixed, node);
 	}
 
-	public Phrase ascendants(
+	public Phrase ascendantsPhrase(
 			AscendantsNode node,
 			Distributor distributor) {
 
 		final Phrase phrase =
 				new Phrase(ip(), location(distributor, node), distributor);
-		final Phrase prefixed = prefix(phrase, node);
+		final Phrase prefixed = prefixByAscendants(phrase, node);
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
 	}
 
-	public Phrase ascendants(
+	public Phrase valueTypePhrase(
 			ValueTypeNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final TypeParameters typeParams = ip().typeIp().typeParameters(
-				node.getValueType(),
-				distributor,
-				typeConsumer.paramConsumer());
 		final Phrase phrase =
 				new Phrase(ip(), location(distributor, node), distributor);
-
-		final Phrase prefixed;
-		final TypeNode ascendantNode = node.getAscendant();
-
-		if (ascendantNode == null) {
-			prefixed =
-					phrase.setImpliedAncestor(location(distributor, node))
-					.setTypeParameters(typeParams);
-		} else {
-			prefixed = ascendantNode.accept(
-					new PhrasePrefixVisitor(typeParams),
-					phrase);
-		}
+		final Phrase prefixed = prefixByValueType(phrase, node, typeConsumer);
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
 	}
@@ -163,7 +147,7 @@ public final class PhraseInterpreter {
 		return binary;
 	}
 
-	static Phrase prefix(Phrase phrase, AscendantsNode node) {
+	static Phrase prefixByAscendants(Phrase phrase, AscendantsNode node) {
 
 		final Distributor distributor = phrase.distribute();
 		final AncestorTypeRef ancestor =
@@ -200,6 +184,27 @@ public final class PhraseInterpreter {
 		}
 
 		return result;
+	}
+
+	static Phrase prefixByValueType(
+			Phrase phrase,
+			ValueTypeNode node,
+			TypeConsumer typeConsumer) {
+
+		final TypeParameters typeParams = phrase.ip().typeIp().typeParameters(
+				node.getValueType(),
+				phrase.distribute(),
+				typeConsumer.paramConsumer());
+		final TypeNode ascendantNode = node.getAscendant();
+
+		if (ascendantNode == null) {
+			return phrase.setImpliedAncestor(location(phrase, node))
+					.setTypeParameters(typeParams);
+		}
+
+		return ascendantNode.accept(
+				new PhrasePrefixVisitor(typeParams),
+				phrase);
 	}
 
 	private static Phrase addClauses(Phrase phrase, PhraseNode node) {

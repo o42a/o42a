@@ -20,13 +20,15 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefix;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByAscendants;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByValueType;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.ValueTypeNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
@@ -52,7 +54,12 @@ final class PhrasePrefixVisitor
 
 	@Override
 	public Phrase visitAscendants(AscendantsNode ascendants, Phrase p) {
-		return prefix(p, ascendants);
+		return prefixByAscendants(p, ascendants);
+	}
+
+	@Override
+	public Phrase visitValueType(ValueTypeNode valueType, Phrase p) {
+		return prefixByValueType(p, valueType, this.typeConsumer);
 	}
 
 	@Override
