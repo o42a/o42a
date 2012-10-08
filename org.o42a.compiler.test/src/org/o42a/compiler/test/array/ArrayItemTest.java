@@ -30,12 +30,25 @@ import org.o42a.core.value.ValueType;
 public class ArrayItemTest extends CompilerTestCase {
 
 	@Test
-	public void rowItem() {
+	public void shortRowItem() {
 		compile(
 				"Array := [1, 2, 3]",
-				"Item := array[1]");
+				"Item := array [1]");
 
 		assertThat(definiteValue(field("item"), ValueType.INTEGER), is(2L));
+	}
+
+	@Test
+	public void fullRowItem() {
+		compile(
+				"Array := [1, 2, 3]",
+				"Item := array: item` [1]");
+
+		assertThat(
+				definiteValue(
+						linkTarget(field("item")),
+						ValueType.INTEGER),
+				is(2L));
 	}
 
 }
