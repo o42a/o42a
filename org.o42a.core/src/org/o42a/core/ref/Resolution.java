@@ -69,6 +69,7 @@ public final class Resolution implements ScopeInfo {
 	}
 
 	public final boolean isError() {
+		getResolved();
 		return this.error;
 	}
 
