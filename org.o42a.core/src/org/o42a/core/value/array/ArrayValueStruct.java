@@ -72,6 +72,11 @@ public final class ArrayValueStruct
 	}
 
 	@Override
+	public final boolean isValid() {
+		return getItemTypeRef().isValid();
+	}
+
+	@Override
 	public final int getLinkDepth() {
 		return 0;
 	}

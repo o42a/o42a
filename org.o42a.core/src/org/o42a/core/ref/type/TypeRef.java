@@ -117,16 +117,20 @@ public abstract class TypeRef implements ScopeInfo {
 		if (valueStruct == null || valueStruct.isNone()) {
 			scoped = defaultValueStruct.toScoped();
 			this.valueStruct = defaultValueStruct;
-		} else {
+		} else if (!valueStruct.isValid()) {
 			scoped = valueStruct.toScoped();
+			this.valueStruct = valueStruct;
+		} else {
 			assert defaultValueStruct.assertAssignableFrom(valueStruct);
+			scoped = valueStruct.toScoped();
+			this.valueStruct = valueStruct;
 		}
 
 		if (scoped != null) {
 			assertSameScope(scoped);
 		}
 
-		return this.valueStruct = valueStruct;
+		return this.valueStruct;
 	}
 
 	public final BoundPath getPath() {

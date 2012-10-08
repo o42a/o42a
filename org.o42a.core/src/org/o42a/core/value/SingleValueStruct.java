@@ -44,6 +44,11 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	@Override
 	public final int getLinkDepth() {
 		return 0;
 	}

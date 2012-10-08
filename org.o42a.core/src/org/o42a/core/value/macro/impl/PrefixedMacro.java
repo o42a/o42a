@@ -22,6 +22,8 @@ package org.o42a.core.value.macro.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
@@ -52,7 +54,7 @@ final class PrefixedMacro implements Macro {
 	private final PrefixPath prefix;
 	private final Macro macro;
 
-	PrefixedMacro(PrefixPath prefix, Macro macro) {
+	private PrefixedMacro(PrefixPath prefix, Macro macro) {
 		this.prefix = prefix;
 		this.macro = macro;
 	}
@@ -60,8 +62,14 @@ final class PrefixedMacro implements Macro {
 	@Override
 	public Path expand(MacroExpander expander) {
 
-		final Path expansion = this.macro.expand(
-				new PrefixedMacroExpander(this.prefix, expander));
+		final PrefixedMacroExpander prefixedExpander =
+				prefixedExpander(expander);
+
+		if (prefixedExpander == null) {
+			return null;
+		}
+
+		final Path expansion = this.macro.expand(prefixedExpander);
 
 		return prefixExpansion(expansion);
 	}
@@ -69,8 +77,14 @@ final class PrefixedMacro implements Macro {
 	@Override
 	public Path reexpand(MacroExpander expander) {
 
-		final Path expansion = this.macro.reexpand(
-				new PrefixedMacroExpander(this.prefix, expander));
+		final PrefixedMacroExpander prefixedExpander =
+				prefixedExpander(expander);
+
+		if (prefixedExpander == null) {
+			return null;
+		}
+
+		final Path expansion = this.macro.reexpand(prefixedExpander);
 
 		return prefixExpansion(expansion);
 	}
@@ -83,6 +97,29 @@ final class PrefixedMacro implements Macro {
 		return this.macro.toString();
 	}
 
+	private PrefixedMacroExpander prefixedExpander(MacroExpander expander) {
+
+		final Scope macroScope = expander.getMacroObject().getScope();
+		final Ref finalRef =
+				this.prefix.bind(expander.getMacroRef())
+				.target(macroScope.distribute());
+		final Resolver resolver = macroScope.resolver();
+		final Resolution resolution = finalRef.resolve(resolver);
+
+		if (!resolution.isResolved()) {
+			assert resolution.isError() :
+				"Not macro: " + resolution;
+			return null;
+		}
+
+		final Obj macroObject = resolution.toObject();
+
+		assert macroObject != null :
+			"Not macro: " + resolution;
+
+		return new PrefixedMacroExpander(expander, finalRef, macroObject);
+	}
+
 	private Path prefixExpansion(Path expansion) {
 		if (expansion == null) {
 			return null;
@@ -92,12 +129,17 @@ final class PrefixedMacro implements Macro {
 
 	private static final class PrefixedMacroExpander implements MacroExpander {
 
-		private final PrefixPath prefix;
 		private final MacroExpander expander;
+		private final Ref macroRef;
+		private final Obj macroObject;
 
-		PrefixedMacroExpander(PrefixPath prefix, MacroExpander expander) {
-			this.prefix = prefix;
+		PrefixedMacroExpander(
+				MacroExpander expander,
+				Ref macroRef,
+				Obj macroObject) {
 			this.expander = expander;
+			this.macroRef = macroRef;
+			this.macroObject = macroObject;
 		}
 
 		@Override
@@ -112,17 +154,17 @@ final class PrefixedMacro implements Macro {
 
 		@Override
 		public Scope getScope() {
-			return this.prefix.getStart();
+			return this.macroRef.getScope();
 		}
 
 		@Override
 		public Ref getMacroRef() {
-			return this.expander.getMacroRef().prefixWith(this.prefix);
+			return this.macroRef;
 		}
 
 		@Override
 		public Obj getMacroObject() {
-			return this.expander.getMacroObject();
+			return this.macroObject;
 		}
 
 		@Override
