@@ -70,7 +70,7 @@ public final class AncestorTypeRef {
 		return this.mactoExpanding;
 	}
 
-	public final boolean isBodyRef() {
+	public final boolean isBodyReferred() {
 		return this.bodyRef;
 	}
 

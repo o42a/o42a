@@ -35,7 +35,7 @@ final class DerefOwner extends Owner {
 	}
 
 	@Override
-	public final boolean isBodyRef() {
+	public final boolean isBodyReferred() {
 		return false;
 	}
 

@@ -158,8 +158,8 @@ public final class PhraseInterpreter {
 			result = result.setImpliedAncestor(
 					location(phrase, node.getAncestor()));
 		} else {
-			if (ancestor.isBodyRef()) {
-				result = result.setBodyRef(true);
+			if (ancestor.isBodyReferred()) {
+				result = result.referBody();
 			}
 			result = result.setAncestor(ancestor.getAncestor());
 		}
@@ -193,7 +193,7 @@ public final class PhraseInterpreter {
 			Phrase phrase,
 			ValueTypeNode node,
 			TypeConsumer typeConsumer) {
-		phrase.setBodyRef(true);
+		phrase.referBody();
 
 		final TypeParameters typeParams = phrase.ip().typeIp().typeParameters(
 				node.getValueType(),

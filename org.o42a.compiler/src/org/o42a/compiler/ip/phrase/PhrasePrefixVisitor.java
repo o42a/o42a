@@ -68,7 +68,7 @@ final class PhrasePrefixVisitor
 			return null;
 		}
 
-		return result.setBodyRef(true);
+		return result.referBody();
 	}
 
 	@Override
@@ -91,8 +91,8 @@ final class PhrasePrefixVisitor
 
 		final Phrase phrase;
 
-		if (this.typeParameters != null || ancestor.isBodyRef()) {
-			phrase = p.setBodyRef(true);
+		if (this.typeParameters != null || ancestor.isBodyReferred()) {
+			phrase = p.referBody();
 		} else {
 			phrase = p;
 		}

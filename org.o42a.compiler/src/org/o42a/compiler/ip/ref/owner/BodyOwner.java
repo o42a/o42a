@@ -35,7 +35,7 @@ final class BodyOwner extends Owner {
 	}
 
 	@Override
-	public final boolean isBodyRef() {
+	public final boolean isBodyReferred() {
 		return true;
 	}
 

@@ -186,7 +186,7 @@ public final class ExpressionVisitor
 			return result.toRef();
 		}
 
-		return result.setBodyRef(true).toRef();
+		return result.referBody().toRef();
 	}
 
 	@Override
