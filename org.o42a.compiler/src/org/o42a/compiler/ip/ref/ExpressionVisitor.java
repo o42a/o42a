@@ -178,7 +178,15 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitPhrase(PhraseNode phrase, Distributor p) {
-		return ip().phraseIp().phrase(phrase, p, this.typeConsumer).toRef();
+
+		final Phrase result =
+				ip().phraseIp().phrase(phrase, p, this.typeConsumer);
+
+		if (!this.referral.isBodyReferral()) {
+			return result.toRef();
+		}
+
+		return result.setBodyRef(true).toRef();
 	}
 
 	@Override
