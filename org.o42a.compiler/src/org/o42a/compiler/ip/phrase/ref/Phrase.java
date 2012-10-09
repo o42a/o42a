@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase.ref;
 
+import static org.o42a.compiler.ip.ref.owner.MayDereferenceFragment.mayDereference;
+
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.statement.AssignmentNode;
@@ -46,6 +48,7 @@ public class Phrase extends Placed {
 	private PhrasePart last;
 	private MainPhraseContext mainContext;
 	private boolean macroExpansion;
+	private boolean bodyRef;
 
 	public Phrase(
 			Interpreter ip,
@@ -70,6 +73,7 @@ public class Phrase extends Placed {
 	public final Phrase setImpliedAncestor(LocationInfo location) {
 		if (this.prefix == null) {
 			this.last = this.prefix = new PhrasePrefix(location, this);
+			setBodyRef(true);
 		}
 		return this;
 	}
@@ -88,7 +92,7 @@ public class Phrase extends Placed {
 
 	public final Phrase setTypeParameters(TypeParameters typeParameters) {
 		this.prefix.setTypeParameters(typeParameters);
-		return this;
+		return setBodyRef(true);
 	}
 
 	public final StaticTypeRef[] getSamples() {
@@ -113,6 +117,15 @@ public class Phrase extends Placed {
 
 	public final Phrase expandMacro() {
 		this.macroExpansion = true;
+		return this;
+	}
+
+	public final boolean isBodyRef() {
+		return this.bodyRef;
+	}
+
+	public final Phrase setBodyRef(boolean bodyRef) {
+		this.bodyRef = bodyRef;
 		return this;
 	}
 
@@ -167,11 +180,17 @@ public class Phrase extends Placed {
 		final BoundPath path =
 				new PhraseFragment(this).toPath().bind(this, getScope());
 
-		if (!isMacroExpansion()) {
-			return path.target(distribute());
+		if (isMacroExpansion()) {
+			return Macros.expandMacro(path).target(distribute());
 		}
 
-		return Macros.expandMacro(path).target(distribute());
+		final Ref target = path.target(distribute());
+
+		if (isBodyRef()) {
+			return target;
+		}
+
+		return mayDereference(target);
 	}
 
 	public final void build() {
@@ -204,6 +223,8 @@ public class Phrase extends Placed {
 		newPhrase.setAncestor(prefix.toTypeRef());
 		newPhrase.prefix.append(nextPart);
 		newPhrase.last = this.last;
+		newPhrase.macroExpansion = isMacroExpansion();
+		newPhrase.setBodyRef(isBodyRef());
 
 		return newPhrase;
 	}

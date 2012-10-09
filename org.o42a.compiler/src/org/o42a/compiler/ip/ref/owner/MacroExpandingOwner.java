@@ -38,6 +38,11 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
+	public final boolean isBodyRef() {
+		return true;
+	}
+
+	@Override
 	public boolean isMacroExpanding() {
 		return true;
 	}

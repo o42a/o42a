@@ -23,7 +23,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
 
-class BodyOwner extends Owner {
+final class BodyOwner extends Owner {
 
 	private final LocationInfo location;
 	private final LocationInfo bodyRef;
@@ -32,6 +32,11 @@ class BodyOwner extends Owner {
 		super(ownerRef);
 		this.location = location;
 		this.bodyRef = bodyRef;
+	}
+
+	@Override
+	public final boolean isBodyRef() {
+		return true;
 	}
 
 	@Override

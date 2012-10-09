@@ -31,9 +31,15 @@ import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 
 
-final class MayDereferenceFragment extends PathFragment {
+public final class MayDereferenceFragment extends PathFragment {
 
-	static final MayDereferenceFragment MAY_DEREFERENCE_FRAGMENT =
+	public static Ref mayDereference(Ref ref) {
+		return ref.getPath()
+				.append(MAY_DEREFERENCE_FRAGMENT)
+				.target(ref.distribute());
+	}
+
+	private static final MayDereferenceFragment MAY_DEREFERENCE_FRAGMENT =
 			new MayDereferenceFragment();
 
 	private MayDereferenceFragment() {
@@ -70,7 +76,7 @@ final class MayDereferenceFragment extends PathFragment {
 			return false;
 		}
 
-		return object.value().getValueType().toLinkType() != null;
+		return object.value().getValueType().isLink();
 	}
 
 }

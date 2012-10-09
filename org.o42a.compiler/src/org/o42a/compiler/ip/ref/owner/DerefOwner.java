@@ -35,6 +35,11 @@ final class DerefOwner extends Owner {
 	}
 
 	@Override
+	public final boolean isBodyRef() {
+		return false;
+	}
+
+	@Override
 	public Ref targetRef() {
 		return this.ownerRef.getPath()
 				.append(new DerefFragment(this.deref))

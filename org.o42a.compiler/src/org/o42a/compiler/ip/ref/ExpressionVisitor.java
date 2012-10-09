@@ -165,7 +165,9 @@ public final class ExpressionVisitor
 	public Ref visitValueType(ValueTypeNode valueType, Distributor p) {
 
 		final Phrase phrase =
-				ip().phraseIp().valueTypePhrase(valueType, p, this.typeConsumer);
+				ip()
+				.phraseIp()
+				.valueTypePhrase(valueType, p, this.typeConsumer);
 
 		if (phrase == null) {
 			return super.visitValueType(valueType, p);
