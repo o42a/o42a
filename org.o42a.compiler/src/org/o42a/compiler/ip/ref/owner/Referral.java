@@ -39,6 +39,10 @@ public abstract class Referral {
 		return refVisitor(ip.refIp());
 	}
 
+	public final boolean isBodyReferral() {
+		return this == BODY_REFERRAL;
+	}
+
 	public abstract RefNodeVisitor<Ref, Distributor> refVisitor(
 			RefInterpreter ip);
 
