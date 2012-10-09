@@ -21,9 +21,7 @@ package org.o42a.compiler.ip.type.ascendant;
 
 import static org.o42a.common.macro.Macros.removeMacroRequirement;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.ancestorTypeRef;
-import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.impliedAncestorTypeRef;
-import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.macroAncestorTypeRef;
+import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.*;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
@@ -109,14 +107,21 @@ public class AncestorVisitor
 		if (owner == null) {
 			return null;
 		}
-		if (!owner.isMacroExpanding()) {
-			return ancestorTypeRef(toTypeRef(this.referral.refer(owner)));
-		}
 
 		final Ref result = this.referral.refer(owner);
 
-		return macroAncestorTypeRef(
-				toTypeRef(removeMacroRequirement(result)));
+		if (owner.isMacroExpanding()) {
+			return macroAncestorTypeRef(
+					toTypeRef(removeMacroRequirement(result)));
+		}
+
+		final TypeRef typeRef = toTypeRef(result);
+
+		if (owner.isBodyRef()) {
+			return ancestorBodyTypeRef(typeRef);
+		}
+
+		return ancestorTypeRef(typeRef);
 	}
 
 	@Override

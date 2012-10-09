@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import static org.o42a.compiler.ip.ref.owner.MayDereferenceFragment.MAY_DEREFERENCE_FRAGMENT;
+import static org.o42a.compiler.ip.ref.owner.MayDereferenceFragment.mayDereference;
 
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
@@ -32,10 +32,13 @@ final class DefaultOwner extends Owner {
 	}
 
 	@Override
+	public final boolean isBodyRef() {
+		return false;
+	}
+
+	@Override
 	public Ref targetRef() {
-		return this.ownerRef.getPath()
-				.append(MAY_DEREFERENCE_FRAGMENT)
-				.target(this.ownerRef.distribute());
+		return mayDereference(this.ownerRef);
 	}
 
 	@Override

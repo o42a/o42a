@@ -152,13 +152,16 @@ public final class PhraseInterpreter {
 		final Distributor distributor = phrase.distribute();
 		final AncestorTypeRef ancestor =
 				phrase.ip().typeIp().parseAncestor(node, distributor);
-		Phrase result;
+		Phrase result = phrase;
 
 		if (ancestor.isImplied()) {
-			result = phrase.setImpliedAncestor(
+			result = result.setImpliedAncestor(
 					location(phrase, node.getAncestor()));
 		} else {
-			result = phrase.setAncestor(ancestor.getAncestor());
+			if (ancestor.isBodyRef()) {
+				result = result.setBodyRef(true);
+			}
+			result = result.setAncestor(ancestor.getAncestor());
 		}
 
 		if (!node.hasSamples()) {
@@ -190,6 +193,7 @@ public final class PhraseInterpreter {
 			Phrase phrase,
 			ValueTypeNode node,
 			TypeConsumer typeConsumer) {
+		phrase.setBodyRef(true);
 
 		final TypeParameters typeParams = phrase.ip().typeIp().typeParameters(
 				node.getValueType(),

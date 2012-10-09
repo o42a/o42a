@@ -51,6 +51,8 @@ public abstract class Owner {
 		return false;
 	}
 
+	public abstract boolean isBodyRef();
+
 	public abstract Ref targetRef();
 
 	public abstract Owner body(LocationInfo location, LocationInfo bodyRef);

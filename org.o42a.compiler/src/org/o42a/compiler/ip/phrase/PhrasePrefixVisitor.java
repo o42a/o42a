@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByAscendants;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByValueType;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
+import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
@@ -49,7 +50,7 @@ final class PhrasePrefixVisitor
 
 	PhrasePrefixVisitor(TypeParameters typeParameters) {
 		this.typeParameters = typeParameters;
-		this.typeConsumer = TypeConsumer.NO_TYPE_CONSUMER;
+		this.typeConsumer = NO_TYPE_CONSUMER;
 	}
 
 	@Override
@@ -59,7 +60,15 @@ final class PhrasePrefixVisitor
 
 	@Override
 	public Phrase visitValueType(ValueTypeNode valueType, Phrase p) {
-		return prefixByValueType(p, valueType, this.typeConsumer);
+
+		final Phrase result =
+				prefixByValueType(p, valueType, this.typeConsumer);
+
+		if (result == null) {
+			return null;
+		}
+
+		return result.setBodyRef(true);
 	}
 
 	@Override
@@ -80,7 +89,15 @@ final class PhrasePrefixVisitor
 					.setTypeParameters(this.typeParameters);
 		}
 
-		final Phrase result = p.setAncestor(ancestor.getAncestor());
+		final Phrase phrase;
+
+		if (this.typeParameters != null || ancestor.isBodyRef()) {
+			phrase = p.setBodyRef(true);
+		} else {
+			phrase = p;
+		}
+
+		final Phrase result = phrase.setAncestor(ancestor.getAncestor());
 
 		if (!ancestor.isMacroExpanding()) {
 			return result;
