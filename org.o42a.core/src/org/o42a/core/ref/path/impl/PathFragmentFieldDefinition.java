@@ -35,6 +35,11 @@ public final class PathFragmentFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public boolean isValid() {
+		return getDefinition().isValid();
+	}
+
+	@Override
 	public void init(Field field, Ascendants implicitAscendants) {
 		getDefinition().init(field, implicitAscendants);
 	}
