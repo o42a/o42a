@@ -30,7 +30,7 @@ class NonLinkOwner extends Owner {
 	}
 
 	@Override
-	public final boolean isBodyRef() {
+	public final boolean isBodyReferred() {
 		return true;
 	}
 

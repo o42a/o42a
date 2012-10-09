@@ -117,7 +117,7 @@ public class AncestorVisitor
 
 		final TypeRef typeRef = toTypeRef(result);
 
-		if (owner.isBodyRef()) {
+		if (owner.isBodyReferred()) {
 			return ancestorBodyTypeRef(typeRef);
 		}
 

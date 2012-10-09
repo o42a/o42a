@@ -51,7 +51,7 @@ public abstract class Owner {
 		return false;
 	}
 
-	public abstract boolean isBodyRef();
+	public abstract boolean isBodyReferred();
 
 	public abstract Ref targetRef();
 

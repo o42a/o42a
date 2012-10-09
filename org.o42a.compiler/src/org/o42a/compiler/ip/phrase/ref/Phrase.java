@@ -48,7 +48,7 @@ public class Phrase extends Placed {
 	private PhrasePart last;
 	private MainPhraseContext mainContext;
 	private boolean macroExpansion;
-	private boolean bodyRef;
+	private boolean bodyReferred;
 
 	public Phrase(
 			Interpreter ip,
@@ -73,7 +73,7 @@ public class Phrase extends Placed {
 	public final Phrase setImpliedAncestor(LocationInfo location) {
 		if (this.prefix == null) {
 			this.last = this.prefix = new PhrasePrefix(location, this);
-			setBodyRef(true);
+			referBody();
 		}
 		return this;
 	}
@@ -92,7 +92,7 @@ public class Phrase extends Placed {
 
 	public final Phrase setTypeParameters(TypeParameters typeParameters) {
 		this.prefix.setTypeParameters(typeParameters);
-		return setBodyRef(true);
+		return referBody();
 	}
 
 	public final StaticTypeRef[] getSamples() {
@@ -120,12 +120,12 @@ public class Phrase extends Placed {
 		return this;
 	}
 
-	public final boolean isBodyRef() {
-		return this.bodyRef;
+	public final boolean isBodyReferred() {
+		return this.bodyReferred;
 	}
 
-	public final Phrase setBodyRef(boolean bodyRef) {
-		this.bodyRef = bodyRef;
+	public final Phrase referBody() {
+		this.bodyReferred = true;
 		return this;
 	}
 
@@ -186,7 +186,7 @@ public class Phrase extends Placed {
 
 		final Ref target = path.target(distribute());
 
-		if (isBodyRef()) {
+		if (isBodyReferred()) {
 			return target;
 		}
 
@@ -224,7 +224,7 @@ public class Phrase extends Placed {
 		newPhrase.prefix.append(nextPart);
 		newPhrase.last = this.last;
 		newPhrase.macroExpansion = isMacroExpansion();
-		newPhrase.setBodyRef(isBodyRef());
+		newPhrase.bodyReferred = isBodyReferred();
 
 		return newPhrase;
 	}
