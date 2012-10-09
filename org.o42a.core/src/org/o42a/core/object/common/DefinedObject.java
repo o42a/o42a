@@ -50,12 +50,6 @@ public abstract class DefinedObject extends Obj {
 	}
 
 	@Override
-	protected void postResolve() {
-		getDefinition();
-		super.postResolve();
-	}
-
-	@Override
 	protected Definitions explicitDefinitions() {
 		return getDefiner().createDefinitions();
 	}
