@@ -20,8 +20,8 @@ as main priorities. This achieved by
 * **powerful, yet restrained, semantics**, and
 * **expressive and natural syntax**.
 
-> See the [Mission Statement][].
-> Take a look at the [feature list][] for overall language description.
+> See the [Mission Statement][].  
+> Take a look at the [feature list][] for overall language description.  
 > Read [documentation][] for the details.
 
 Development Status
@@ -46,7 +46,7 @@ Here is a "Hello, World!" program written in o42a:
       Print "Hello, World!" nl.
     }
 
-> See the [explanation][hello_world].
+> See the [explanation][hello world].
 
 
 [o42a]:              <http://o42a.org/>
