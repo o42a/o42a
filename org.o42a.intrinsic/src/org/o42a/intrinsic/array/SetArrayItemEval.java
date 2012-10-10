@@ -19,7 +19,9 @@
 */
 package org.o42a.intrinsic.array;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.intrinsic.array.IndexedItemEval.*;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -27,38 +29,39 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
 
-final class IndexedItemEval extends InlineEval {
+final class SetArrayItemEval extends InlineEval {
 
-	static final ID IDX_ID = ID.id("idx");
-	static final ID NEG_IDX_ID = ID.id("neg_idx");
-	static final ID ARRAY_LEN_ID = ID.id("array_len");
-	static final ID ITEM_ID = ID.id("item");
-	static final ID ITEM_REC_ID = ID.id("item_rec");
-	static final ID ITEMS_REC_ID = ID.id("items_rec");
-	static final ID ITEMS_REC_PTR_ID = ID.id("items_rec_ptr");
+	private static final ID NEW_VAL_ID = ID.id("new_val");
+	private static final ID NEW_VAL_REC_ID = ID.id("new_val_rec");
 
-	private final IndexedItem item;
+	private final SetArrayItem setItem;
 	private final InlineValue inlineArray;
 	private final InlineValue inlineIndex;
+	private final InlineValue inlineNewValue;
 
-	IndexedItemEval(
-			IndexedItem item,
+	SetArrayItemEval(
+			SetArrayItem setItem,
 			InlineValue inlineArray,
-			InlineValue inlineIndex) {
+			InlineValue inlineIndex,
+			InlineValue inlineNewValue) {
 		super(null);
-		this.item = item;
+		this.setItem = setItem;
 		this.inlineArray = inlineArray;
 		this.inlineIndex = inlineIndex;
+		this.inlineNewValue = inlineNewValue;
 	}
 
 	@Override
@@ -75,10 +78,11 @@ final class IndexedItemEval extends InlineEval {
 				arrayStruct,
 				TEMP_VAL_HOLDER);
 
-		loadItem(dirs, itemsDirs, host, index);
+		assignItem(dirs, itemsDirs, host, index);
 
 		itemsDirs.done();
 		indexDirs.done();
+
 	}
 
 	@Override
@@ -87,12 +91,20 @@ final class IndexedItemEval extends InlineEval {
 	}
 
 	private final ArrayValueStruct getArrayStruct() {
-		return this.item.getScope()
-				.getEnclosingScope()
+		return this.setItem.getScope()
+				.getEnclosingScope() // item
+				.getEnclosingScope() // array
 				.toObject()
 				.value()
 				.getValueStruct()
 				.toArrayStruct();
+	}
+
+	private final LinkValueStruct getItemStruct() {
+
+		final Ref item = this.setItem.item();
+
+		return item.valueStruct(item.getScope()).toLinkStruct();
 	}
 
 	private Int64op loadIndex(ValDirs dirs, HostOp host) {
@@ -102,7 +114,7 @@ final class IndexedItemEval extends InlineEval {
 		if (this.inlineIndex != null) {
 			indexVal = this.inlineIndex.writeValue(dirs, host);
 		} else {
-			indexVal = this.item.index().op(host).writeValue(dirs);
+			indexVal = this.setItem.index().op(host).writeValue(dirs);
 		}
 
 		final Block code = dirs.code();
@@ -133,7 +145,7 @@ final class IndexedItemEval extends InlineEval {
 		if (this.inlineArray != null) {
 			arrayVal = this.inlineArray.writeValue(dirs, host);
 		} else {
-			arrayVal = this.item.array().op(host).writeValue(dirs);
+			arrayVal = this.setItem.array().op(host).writeValue(dirs);
 		}
 
 		checkIndex(dirs.dirs(), index, arrayVal);
@@ -148,21 +160,50 @@ final class IndexedItemEval extends InlineEval {
 		return items.offset(ITEM_REC_ID, code, index.toInt32(null, code));
 	}
 
-	private void loadItem(
+	private void assignItem(
 			DefDirs dirs,
 			ValDirs itemsDirs,
 			HostOp host,
 			Int64op index) {
 
-		final Block code = itemsDirs.code();
 		final AnyRecOp itemRec = itemRec(itemsDirs, host, index);
-		final AnyOp itemPtr = itemRec.load(ITEM_ID, code);
+		final ValDirs newValDirs;
+		final Block code;
+		final AnyOp newPtr;
 
-		itemPtr.isNull(null, code).go(code, itemsDirs.falseDir());
+		if (this.inlineNewValue != null) {
+			newValDirs =
+					itemsDirs.dirs().value(getItemStruct(), TEMP_VAL_HOLDER);
+			code = newValDirs.code();
 
-		dirs.returnValue(
-				itemsDirs.code(),
-				dirs.value().store(itemsDirs.code(), itemPtr));
+			final ValOp newVal =
+					this.inlineNewValue.writeValue(newValDirs, host);
+
+			newPtr =
+					newVal.value(NEW_VAL_REC_ID, code)
+					.toPtr(null, code)
+					.load(NEW_VAL_ID, code);
+		} else {
+			newValDirs = null;
+			code = itemsDirs.code();
+
+			final ObjectOp newObject =
+					this.setItem.newValue()
+					.op(host)
+					.target(itemsDirs.dirs())
+					.materialize(
+							itemsDirs.dirs(),
+							tempObjHolder(itemsDirs.getAllocator()));
+
+			newPtr = newObject.toAny(NEW_VAL_ID, code);
+		}
+
+		itemRec.store(code, newPtr);
+		dirs.returnValue(code, dirs.value().storeVoid(code));
+
+		if (newValDirs != null) {
+			newValDirs.done();
+		}
 	}
 
 }

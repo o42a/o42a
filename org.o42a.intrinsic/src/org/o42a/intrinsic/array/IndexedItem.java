@@ -33,6 +33,7 @@ import org.o42a.core.member.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -127,14 +128,9 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
 		final InlineValue inlineArray = array().inline(normalizer, origin);
-
-		if (inlineArray == null) {
-			return null;
-		}
-
 		final InlineValue inlineIndex = index().inline(normalizer, origin);
 
-		if (inlineIndex == null) {
+		if (inlineArray == null && inlineIndex == null) {
 			return null;
 		}
 
@@ -161,16 +157,16 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 		if (this.index != null) {
 			return this.index;
 		}
+		return this.index = indexPath(getScope()).target(distribute());
+	}
+
+	static final BoundPath indexPath(Scope scope) {
 
 		final MemberKey indexKey =
-				INDEX_NAME.key(getScope().toField().getFirstDeclaration());
-		final Member indexField = member(indexKey);
+				INDEX_NAME.key(scope.toField().getFirstDeclaration());
+		final Member indexField = scope.getContainer().member(indexKey);
 
-		return this.index =
-				indexKey.toPath()
-				.dereference()
-				.bind(indexField, getScope())
-				.target(distribute());
+		return indexKey.toPath().dereference().bind(indexField, scope);
 	}
 
 }
