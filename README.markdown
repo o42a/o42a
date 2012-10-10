@@ -1,7 +1,7 @@
 o42a Programming Language
 =========================
 
-[o42a](http://o42a.org/) is a high-level general purpose programming language.
+[o42a][] is a high-level general purpose programming language.
 It is:
 
 * **compiled**,
@@ -20,14 +20,9 @@ as main priorities. This achieved by
 * **powerful, yet restrained, semantics**, and
 * **expressive and natural syntax**.
 
->>>>>>>>>>>> See the [Mission Statement](http://o42a.org/devel/mission).
-
->>>>>>>>>>>> Take a look at the
-[feature list](http://o42a.org/docs/intro/features)
-for overall language description.
-
->>>>>>>>>>>> Read [documentation](http://o42a.org/docs/) for the details.
-
+> See the [Mission Statement][].
+> Take a look at the [feature list][] for overall language description.
+> Read [documentation][] for the details.
 
 Development Status
 ------------------
@@ -39,8 +34,7 @@ focused on core libraries implementation, compiler stability and implementation
 of additional language features, necessary to make the libraries handy and
 efficient.
 
->>>>>>>>>>>> See the detailed [development](http://o42a.org/devel/)
-status and plan.
+> See the detailed [development][] status and plan.
 
 Hello, World!
 -------------
@@ -52,5 +46,18 @@ Here is a "Hello, World!" program written in o42a:
       Print "Hello, World!" nl.
     }
 
->>>>>>>>>>>> See the
-[explanation](http://o42a.org/docs/intro/hello_world_explained).
+> See the [explanation][hello_world].
+
+
+[o42a]:              <http://o42a.org/>
+    "o42a programming language official site"
+[Mission statement]: <http://o42a.org/devel/mission>
+    "o42a mission statement"
+[Feature list]:      <http://o42a.org/docs/intro/features>
+    "o42a features"
+[Documentation]:     <http://o42a.org/docs/>
+    "o42a documentation"
+[Development]:       <http://o42a.org/devel/>
+    "o42a development status"
+[Hello world]:       <http://o42a.org/docs/intro/hello_world_explained>
+    ("Hello, World!" explained)
