@@ -18,14 +18,10 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Item => *
-=========
-
-<@Operators: assign> Set (
+Set :=> void
+============
 ~~~
-Array item assignment clause.
-
-It assigns new item value with <set> prototype.
+Assigns a new value to enclosing array item.
 ~~~
-  <@Operators: operand> New value = ()
-)
+
+New value :=< link (`#item type)

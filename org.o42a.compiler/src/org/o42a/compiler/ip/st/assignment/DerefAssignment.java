@@ -82,15 +82,10 @@ final class DerefAssignment extends AssignmentKind {
 
 		final Ref destination = getStatement().getDestination();
 		final Ref value = getStatement().getValue();
-
-		destination.resolveAll(resolver.setRefUsage(ASSIGNEE_REF_USAGE));
-
-		final Ref destTarget =
-				destination.getPath().target(destination.distribute());
-		final FullLocalResolver targetResolver =
-				resolver.setRefUsage(TARGET_REF_USAGE);
-		final Resolution val = value.resolveAll(targetResolver);
-		final Resolution dest = destTarget.resolveAll(targetResolver);
+		final Resolution val = value.resolveAll(
+				resolver.setRefUsage(TARGET_REF_USAGE));
+		final Resolution dest = destination.resolveAll(
+				resolver.setRefUsage(ASSIGNEE_REF_USAGE));
 
 		if (dest.isError() || val.isError()) {
 			return;

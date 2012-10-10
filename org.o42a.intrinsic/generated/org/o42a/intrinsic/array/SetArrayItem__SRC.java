@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link ArrayItem}.
+ * o42a sources for {@link SetArrayItem}.
  * 
- * File: root/array/item.o42a
+ * File: root/array/item/set.o42a
  */
-public final class ArrayItem__SRC implements AnnotatedSources {
+public final class SetArrayItem__SRC implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public ArrayItem__SRC(AnnotatedSources parent) {
+	public SetArrayItem__SRC(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,17 +28,12 @@ public final class ArrayItem__SRC implements AnnotatedSources {
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"item.o42a");
+				"set.o42a");
 	}
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
-		return new Field[] {
-			new org.o42a.intrinsic.array.SetArrayItem(
-					owner,
-					new org.o42a.intrinsic.array.SetArrayItem__SRC(this))
-			.getScope().toField(),
-		};
+		return new Field[0];
 	}
 
 }

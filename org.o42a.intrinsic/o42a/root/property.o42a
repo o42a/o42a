@@ -47,7 +47,7 @@ Value setter.
 ~~~
 Value assignment clause.
 
-It assigns new property value by `set` prototype.  
+It assigns new property value with <set> prototype.
 ~~~
   <@Operators: operand> New value = ()
 )
