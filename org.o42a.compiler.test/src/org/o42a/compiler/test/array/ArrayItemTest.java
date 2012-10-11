@@ -51,4 +51,26 @@ public class ArrayItemTest extends CompilerTestCase {
 				is(2L));
 	}
 
+	@Test
+	public void arrayItemValue() {
+		compile(
+				"Array := [1, 2, 3]",
+				"Value := integer (= array [1])");
+
+		assertThat(
+				definiteValue(field("value"), ValueType.INTEGER),
+				is(2L));
+	}
+
+	@Test
+	public void arrayItemExpression() {
+		compile(
+				"Array := [1, 2, 3]",
+				"Expression := array [1] + 2");
+
+		assertThat(
+				definiteValue(field("expression"), ValueType.INTEGER),
+				is(4L));
+	}
+
 }
