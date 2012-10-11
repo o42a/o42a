@@ -101,7 +101,8 @@ final class PrefixedMacro implements Macro {
 
 		final Scope macroScope = expander.getMacroObject().getScope();
 		final Ref finalRef =
-				this.prefix.bind(expander.getMacroRef())
+				this.prefix.getPrefix()
+				.bind(expander.getMacroRef(), macroScope)
 				.target(macroScope.distribute());
 		final Resolver resolver = macroScope.resolver();
 		final Resolution resolution = finalRef.resolve(resolver);

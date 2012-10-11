@@ -60,6 +60,10 @@ public final class PrefixPath {
 		return this.start;
 	}
 
+	public final Path getPrefix() {
+		return this.prefix;
+	}
+
 	public final boolean isEmpty() {
 		return getPrefix().isSelf();
 	}
@@ -206,10 +210,6 @@ public final class PrefixPath {
 			return this.boundPath;
 		}
 		return this.boundPath = bind(getStart());
-	}
-
-	private final Path getPrefix() {
-		return this.prefix;
 	}
 
 	private final PrefixPath append(Path path) {
