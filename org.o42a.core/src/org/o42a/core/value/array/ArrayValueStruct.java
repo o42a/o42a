@@ -104,9 +104,9 @@ public final class ArrayValueStruct
 		parameters.assertSameScope(toScoped());
 
 		final TypeRef newItemTypeRef = parameters.getTypeRef();
-		final TypeRef oldItemTypeRef = getItemTypeRef();
 
-		if (!newItemTypeRef.relationTo(oldItemTypeRef)
+		if (newItemTypeRef.isValid() &&
+				!newItemTypeRef.relationTo(getItemTypeRef())
 				.checkDerived(parameters.getLogger())) {
 			return this;
 		}

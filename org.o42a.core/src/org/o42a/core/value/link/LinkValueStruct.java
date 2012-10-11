@@ -98,10 +98,10 @@ public final class LinkValueStruct
 		parameters.assertSameScope(toScoped());
 
 		final TypeRef newTypeRef = parameters.getTypeRef();
-		final TypeRef oldTypeRef = getTypeRef();
 
-		if (!newTypeRef.relationTo(oldTypeRef).checkDerived(
-				parameters.getLogger())) {
+		if (newTypeRef.isValid()
+				&& !newTypeRef.relationTo(getTypeRef())
+				.checkDerived(parameters.getLogger())) {
 			return this;
 		}
 
