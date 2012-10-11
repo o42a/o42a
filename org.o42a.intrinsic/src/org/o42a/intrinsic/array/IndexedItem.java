@@ -130,7 +130,7 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 		final InlineValue inlineArray = array().inline(normalizer, origin);
 		final InlineValue inlineIndex = index().inline(normalizer, origin);
 
-		if (inlineArray == null && inlineIndex == null) {
+		if (inlineArray == null || inlineIndex == null) {
 			return null;
 		}
 
