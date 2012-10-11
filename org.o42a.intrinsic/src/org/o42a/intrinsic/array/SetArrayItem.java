@@ -100,8 +100,8 @@ final class SetArrayItem extends AnnotatedBuiltin {
 				newValue().inline(normalizer, origin);
 
 		if (inlineArray == null
-				&& inlineIndex == null
-				&& inlineNewValue == null) {
+				|| inlineIndex == null
+				|| inlineNewValue == null) {
 			return null;
 		}
 
@@ -165,7 +165,7 @@ final class SetArrayItem extends AnnotatedBuiltin {
 		final MemberKey newValueKey = NEW_VALUE_NAME.key(getScope());
 		final Member newValueField = member(newValueKey);
 
-		return newValueKey.toPath()
+		return this.newValue = newValueKey.toPath()
 				.dereference()
 				.bind(newValueField, getScope())
 				.target(distribute());
