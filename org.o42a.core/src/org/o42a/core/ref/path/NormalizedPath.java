@@ -25,7 +25,6 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.User;
@@ -74,8 +73,10 @@ final class NormalizedPath implements NormalPath {
 	}
 
 	@Override
-	public void appendTo(List<NormalStep> normalSteps) {
-		normalSteps.addAll(this.normalSteps);
+	public void appendTo(NormalSteps normalSteps) {
+		for (NormalStep normalStep : this.normalSteps) {
+			normalSteps.addNormalStep(normalStep);
+		}
 	}
 
 	@Override

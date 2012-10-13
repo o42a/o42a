@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.impl.normalizer;
 
-import java.util.List;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -28,7 +26,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.NormalPath;
-import org.o42a.core.ref.path.NormalStep;
+import org.o42a.core.ref.path.NormalSteps;
 
 
 public class UnchangedNormalPath implements NormalPath {
@@ -54,8 +52,8 @@ public class UnchangedNormalPath implements NormalPath {
 	}
 
 	@Override
-	public void appendTo(List<NormalStep> normalSteps) {
-		normalSteps.add(new NormalPathStep(this.path.getPath()));
+	public void appendTo(NormalSteps normalSteps) {
+		normalSteps.addNormalStep(new NormalPathStep(this.path.getPath()));
 	}
 
 	@Override
