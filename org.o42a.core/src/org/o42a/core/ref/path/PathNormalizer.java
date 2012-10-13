@@ -60,7 +60,7 @@ public final class PathNormalizer {
 	private final Data data;
 	private final Prediction origin;
 
-	private final ArrayList<NormalStep> normalSteps;
+	private NormalizedSteps normalizedSteps;
 	private int firstNonIgnored = -1;
 	private boolean overrideNonIgnored;
 	private boolean staticNormalization;
@@ -82,7 +82,6 @@ public final class PathNormalizer {
 		this.nested = null;
 		this.data = new Data(path);
 		this.origin = origin;
-		this.normalSteps = new ArrayList<NormalStep>(path.length());
 	}
 
 	private PathNormalizer(
@@ -97,7 +96,6 @@ public final class PathNormalizer {
 		this.data = parent.data;
 		this.data.append(path);
 		this.origin = parent.lastPrediction();
-		this.normalSteps = new ArrayList<NormalStep>(path.length());
 	}
 
 	public final Analyzer getAnalyzer() {
@@ -206,7 +204,7 @@ public final class PathNormalizer {
 
 			final Prediction lastPrediction = lastPrediction();
 
-			this.normalSteps.add(new NormalPathStep(enclosingPath));
+			this.normalizedSteps.addNormalStep(new NormalPathStep(enclosingPath));
 			overrideNonIgnored();
 
 			this.stepPrediction = enclosingPrediction(
@@ -221,7 +219,7 @@ public final class PathNormalizer {
 					step.nonNormalizedRemainder(this);
 
 			if (!nonNormalizedRemainder.isSelf()) {
-				this.normalSteps.add(
+				this.normalizedSteps.addNormalStep(
 						new NormalPathStep(nonNormalizedRemainder));
 			}
 			addRest(getStepIndex() + 1);
@@ -265,7 +263,7 @@ public final class PathNormalizer {
 		if (normalizer.firstNonIgnored >= 0) {
 
 			final int index =
-					this.normalSteps.size() + normalizer.firstNonIgnored;
+					this.normalizedSteps.size() + normalizer.firstNonIgnored;
 
 			if (normalizer.overrideNonIgnored) {
 				overrideNonIgnored(index);
@@ -274,7 +272,7 @@ public final class PathNormalizer {
 			}
 		}
 
-		normalPath.appendTo(this.normalSteps);
+		normalPath.appendTo(this.normalizedSteps);
 
 		if (normalizer.isNormalizationFinished()) {
 			addRest(getStepIndex() + 1);
@@ -318,7 +316,7 @@ public final class PathNormalizer {
 	}
 
 	NormalPath normalize() {
-		new Cancel(getNormalizer());
+		this.normalizedSteps = new NormalizedSteps(getNormalizer(), this.path.length());
 		if (isStatic()) {
 			return normalizeStatic();
 		}
@@ -360,7 +358,7 @@ public final class PathNormalizer {
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
-						this.normalSteps,
+						this.normalizedSteps.steps(),
 						this.firstNonIgnored,
 						isAbsolute(),
 						isStatic()).done(getAnalyzer(), !isNested());
@@ -382,7 +380,7 @@ public final class PathNormalizer {
 		return new NormalizedPath(
 				getNormalizedStart(),
 				this.path,
-				this.normalSteps,
+				this.normalizedSteps.steps(),
 				this.firstNonIgnored,
 				isAbsolute(),
 				isStatic()).done(getAnalyzer(), !isNested());
@@ -404,7 +402,7 @@ public final class PathNormalizer {
 				startObjectScope);
 
 		if (!isAbsolute()) {
-			this.normalSteps.add(new SameNormalStep(
+			this.normalizedSteps.addNormalStep(new SameNormalStep(
 					new StaticStep(getNormalizedStart(), startObjectScope)));
 		}
 		while (this.stepIndex < steps.length) {
@@ -416,7 +414,7 @@ public final class PathNormalizer {
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
-						this.normalSteps,
+						this.normalizedSteps.steps(),
 						this.firstNonIgnored,
 						isAbsolute(),
 						isStatic()).done(getAnalyzer(), !isNested());
@@ -465,11 +463,11 @@ public final class PathNormalizer {
 		this.stepPrediction = prediction;
 		this.nextPrediction = null;
 		this.stepNormalized = true;
-		this.normalSteps.add(normalStep);
+		this.normalizedSteps.addNormalStep(normalStep);
 	}
 
 	private final void dontIgnore() {
-		dontIgnore(this.normalSteps.size() - 1);
+		dontIgnore(this.normalizedSteps.size() - 1);
 	}
 
 	private final void dontIgnore(int index) {
@@ -479,7 +477,7 @@ public final class PathNormalizer {
 	}
 
 	private final void overrideNonIgnored() {
-		overrideNonIgnored(this.normalSteps.size() - 1);
+		overrideNonIgnored(this.normalizedSteps.size() - 1);
 	}
 
 	private final void overrideNonIgnored(int firstNonIgnored) {
@@ -489,7 +487,7 @@ public final class PathNormalizer {
 
 	private void addRest(int nextStep) {
 		if (nextStep < getPath().length()) {
-			this.normalSteps.add(new SubPathNormalStep(
+			this.normalizedSteps.addNormalStep(new SubPathNormalStep(
 					getPath().getPath(),
 					nextStep,
 					getPath().length()));
@@ -531,10 +529,31 @@ public final class PathNormalizer {
 
 	}
 
-	private final class Cancel extends Normal implements Cancelable {
+	private final class NormalizedSteps
+			extends Normal
+			implements NormalSteps, Cancelable {
 
-		Cancel(Normalizer normalizer) {
+		private final ArrayList<NormalStep> steps;
+
+		NormalizedSteps(Normalizer normalizer, int length) {
 			super(normalizer);
+			this.steps = new ArrayList<NormalStep>(length);
+		}
+
+		@Override
+		public final void addNormalStep(NormalStep step) {
+			this.steps.add(step);
+			if (getNormalizer().isCancelled()) {
+				step.cancel();
+			}
+		}
+
+		public final ArrayList<NormalStep> steps() {
+			return this.steps;
+		}
+
+		public final int size() {
+			return this.steps.size();
 		}
 
 		@Override
@@ -542,8 +561,10 @@ public final class PathNormalizer {
 			getPath()
 			.doubt(getNormalizer().getAnalyzer())
 			.abortNormalization();
-			for (NormalStep step : PathNormalizer.this.normalSteps) {
-				step.cancel();
+			if (this.steps != null) {
+				for (NormalStep step : this.steps) {
+					step.cancel();
+				}
 			}
 		}
 

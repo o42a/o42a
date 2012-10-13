@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,23 +19,9 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 
+public interface NormalSteps {
 
-public interface NormalPath {
-
-	boolean isNormalized();
-
-	Scope getOrigin();
-
-	void appendTo(NormalSteps normalSteps);
-
-	void writeCond(CodeDirs dirs, HostOp host);
-
-	ValOp writeValue(ValDirs dirs, HostOp host);
+	void addNormalStep(NormalStep step);
 
 }
