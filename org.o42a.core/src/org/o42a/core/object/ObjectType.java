@@ -37,7 +37,6 @@ import org.o42a.analysis.use.*;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
@@ -377,34 +376,12 @@ public final class ObjectType implements UserInfo {
 						field.getAnalysis().staticDerivation(),
 						STATIC_DERIVATION_USAGE);
 			}
-		} else {
-
-			final Obj enclosingObject;
-			final Scope enclosingScope =
-					object.getScope().getEnclosingScope();
-			final LocalScope enclosingLocal = enclosingScope.toLocal();
-
-			if (enclosingLocal != null) {
-				enclosingObject = enclosingLocal.getOwner();
-			} else {
-				enclosingObject = enclosingScope.toObject();
-			}
-
-			if (enclosingObject != null) {
-				// Stand-alone object is constructed at run time,
-				// if it is ever derived.
-				this.derivationUses.useBy(
-						staticDerivation(),
-						RUNTIME_DERIVATION_USAGE);
-			} else {
-				assert enclosingScope.isTopScope() :
-					"No enclosing object of non-top-level object " + object;
-			}
-			if (isRuntimeConstructed() || object.getPlace().isInsideLoop()) {
-				this.derivationUses.useBy(
-						getObject().content(),
-						RUNTIME_DERIVATION_USAGE);
-			}
+		} else if (!object.getScope().getEnclosingScope().isTopScope()) {
+			// Stand-alone object is constructed at run time,
+			// if it is ever used.
+			this.derivationUses.useBy(
+					object.content(),
+					RUNTIME_DERIVATION_USAGE);
 		}
 
 		return this.derivationUses;
@@ -583,10 +560,6 @@ public final class ObjectType implements UserInfo {
 				sample.getObject().type().registerDerivative(sample);
 			}
 		}
-	}
-
-	public final void stateless() {
-		derivationUses().useBy(this, RUNTIME_DERIVATION_USAGE);
 	}
 
 }
