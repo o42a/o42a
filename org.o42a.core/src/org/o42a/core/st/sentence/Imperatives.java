@@ -44,19 +44,6 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 	}
 
 	@Override
-	public final LocalScope getLocalScope() {
-		return getScope();
-	}
-
-	@Override
-	public final boolean isInsideLoop() {
-
-		final ImperativeBlock block = getSentence().getBlock();
-
-		return block.isLoop() || block.isInsideLoop();
-	}
-
-	@Override
 	public final ImperativeSentence getSentence() {
 		return (ImperativeSentence) super.getSentence();
 	}

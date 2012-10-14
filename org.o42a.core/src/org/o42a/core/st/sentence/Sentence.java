@@ -242,13 +242,14 @@ public abstract class Sentence<
 			this.location = location;
 			this.block = block;
 
-			final ImperativeBlock imperativeBlock = this.block.toImperativeBlock();
+			final ImperativeBlock imperativeBlock =
+					this.block.toImperativeBlock();
 
 			if (imperativeBlock == null) {
 				this.place = scopePlace(getScope());
 			} else {
 				this.place = localPlace(
-						imperativeBlock,
+						imperativeBlock.getScope(),
 						imperativeBlock.getTrace().next());
 			}
 		}

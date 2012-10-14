@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.*;
-import org.o42a.core.LocalPlace.ImperativePlace;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -51,8 +50,7 @@ import org.o42a.util.string.Name;
 public abstract class Statements<
 		S extends Statements<S, L>,
 		L extends Implication<L>>
-				extends Placed
-				implements ImperativePlace {
+				extends Placed {
 
 	private final Sentence<S, L> sentence;
 	private final ArrayList<L> implications = new ArrayList<L>(1);
