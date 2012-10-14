@@ -64,7 +64,12 @@ final class SetArrayItem extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(FullResolver resolver) {
-		array().resolveAll(resolver.setRefUsage(VALUE_REF_USAGE));
+
+		final FullResolver valueResolver =
+				resolver.setRefUsage(VALUE_REF_USAGE);
+
+		array().resolveAll(valueResolver);
+		index().resolveAll(valueResolver);
 
 		final Ref item = item();
 		final Ref newValue = newValue();
@@ -166,7 +171,6 @@ final class SetArrayItem extends AnnotatedBuiltin {
 		final Member newValueField = member(newValueKey);
 
 		return this.newValue = newValueKey.toPath()
-				.dereference()
 				.bind(newValueField, getScope())
 				.target(distribute());
 	}
