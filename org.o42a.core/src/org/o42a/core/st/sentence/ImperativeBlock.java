@@ -25,8 +25,9 @@ import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
-import org.o42a.core.*;
-import org.o42a.core.LocalPlace.ImperativePlace;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.ScopePlace;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
@@ -41,9 +42,7 @@ import org.o42a.util.log.Loggable;
 import org.o42a.util.string.Name;
 
 
-public final class ImperativeBlock
-		extends Block<Imperatives, Command>
-		implements ImperativePlace {
+public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	public static ImperativeBlock topLevelImperativeBlock(
 			LocationInfo location,
@@ -150,21 +149,8 @@ public final class ImperativeBlock
 		return this.topLevel;
 	}
 
-	@Override
 	public final LocalScope getLocalScope() {
 		return getScope();
-	}
-
-	@Override
-	public final boolean isInsideLoop() {
-
-		final Statements<?, ?> enclosing = getEnclosing();
-
-		if (enclosing != null) {
-			return enclosing.getPlace().isInsideLoop();
-		}
-
-		return getScope().getEnclosingScope().getPlace().isInsideLoop();
 	}
 
 	public final boolean isLoop() {
@@ -304,9 +290,7 @@ public final class ImperativeBlock
 
 	}
 
-	public static final class BlockDistributor
-			extends Distributor
-			implements ImperativePlace {
+	public static final class BlockDistributor extends Distributor {
 
 		private final LocationInfo location;
 		private final LocalScope scope;
@@ -337,18 +321,8 @@ public final class ImperativeBlock
 		}
 
 		@Override
-		public final LocalScope getLocalScope() {
-			return this.scope;
-		}
-
-		@Override
-		public boolean isInsideLoop() {
-			return this.scope.getBlock().isInsideLoop();
-		}
-
-		@Override
 		public ScopePlace getPlace() {
-			return localPlace(this, FIRST_PLACE);
+			return localPlace(getScope(), FIRST_PLACE);
 		}
 
 	}

@@ -27,7 +27,6 @@ import org.o42a.core.Container;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -44,16 +43,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	Declaratives(LocationInfo location, DeclarativeSentence sentence) {
 		super(location, sentence);
-	}
-
-	@Override
-	public final LocalScope getLocalScope() {
-		return null;
-	}
-
-	@Override
-	public final boolean isInsideLoop() {
-		return getScope().getPlace().isInsideLoop();
 	}
 
 	public final boolean isInsideClaim() {

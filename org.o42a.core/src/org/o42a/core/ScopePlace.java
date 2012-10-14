@@ -19,7 +19,7 @@
 */
 package org.o42a.core;
 
-import org.o42a.core.LocalPlace.ImperativePlace;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.util.Place;
 import org.o42a.util.Place.Trace;
 
@@ -30,9 +30,7 @@ public class ScopePlace {
 		return new ScopePlace(appearedIn);
 	}
 
-	public static LocalPlace localPlace(
-			ImperativePlace appearedIn,
-			Place place) {
+	public static LocalPlace localPlace(LocalScope appearedIn, Place place) {
 		assert appearedIn != null :
 			"The imperative place not specified";
 		assert place != null :
@@ -73,29 +71,6 @@ public class ScopePlace {
 
 	public final boolean isImperative() {
 		return this.place != null;
-	}
-
-	public boolean isInsideLoop() {
-
-		final Scope appearedIn = getAppearedIn();
-
-		if (appearedIn == null) {
-			return false;
-		}
-
-		final ScopePlace scopePlace = appearedIn.getPlace();
-
-		if (scopePlace != this) {
-			return scopePlace.isInsideLoop();
-		}
-
-		final Scope enclosingScope = appearedIn.getEnclosingScope();
-
-		if (enclosingScope == null) {
-			return false;
-		}
-
-		return enclosingScope.getPlace().isInsideLoop();
 	}
 
 	public Trace nestedTrace() {
