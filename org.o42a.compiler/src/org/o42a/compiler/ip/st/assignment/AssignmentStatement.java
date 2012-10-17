@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.st.assignment.CustomAssignment.customAssignment;
-import static org.o42a.compiler.ip.st.assignment.DerefAssignment.derefAssignment;
 import static org.o42a.compiler.ip.st.assignment.VariableAssignment.variableAssignment;
 
 import org.o42a.ast.statement.AssignmentNode;
@@ -133,12 +132,6 @@ public class AssignmentStatement extends Statement {
 					"Can only assign to variable");
 
 			return this.assignmentKind = new AssignmentError(this);
-		}
-
-		final AssignmentKind deref = derefAssignment(this, object);
-
-		if (deref != null) {
-			return this.assignmentKind = deref;
 		}
 
 		final AssignmentKind custom = customAssignment(this, object);
