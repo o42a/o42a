@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
-import org.o42a.compiler.ip.phrase.part.PhraseTerminator;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
@@ -75,19 +74,10 @@ class PhraseFragment extends PathFragment {
 			ref = new PhraseConstructor(phrase).toRef();
 		}
 
-		final Ref result =
+		final Ref terminated =
 				ref.getPath()
 				.append(context.getOutcome())
 				.target(ref.distribute());
-		final PhraseTerminator terminator = context.getTerminator();
-		final Ref terminated;
-
-		if (terminator == null) {
-			terminated = result;
-		} else {
-			terminated = terminator.terminate(result);
-		}
-
 		final PhraseContinuation nextPart = context.getNextPart();
 
 		if (nextPart == null) {
