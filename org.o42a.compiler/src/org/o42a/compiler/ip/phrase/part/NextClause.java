@@ -19,7 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.compiler.ip.phrase.part.PartsAsPrefix.*;
+import static org.o42a.compiler.ip.phrase.part.PartsAsPrefix.NOT_PREFIX;
+import static org.o42a.compiler.ip.phrase.part.PartsAsPrefix.PREFIX_WITH_LAST;
 
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
@@ -65,14 +66,6 @@ public class NextClause implements Cloneable {
 		return new NextClause(memberId, clause, container);
 	}
 
-	public static NextClause terminatePhrase(
-			PhraseTerminator terminator,
-			boolean ignoreLast) {
-		return new PhraseTermination(
-				ignoreLast ? PREFIX_IGNORE_LAST : PREFIX_WITHOUT_LAST,
-				terminator);
-	}
-
 	private final MemberId memberId;
 	private final Clause clause;
 	private final PartsAsPrefix partsAsPrefix;
@@ -110,10 +103,6 @@ public class NextClause implements Cloneable {
 
 	public final PartsAsPrefix partsAsPrefix() {
 		return this.partsAsPrefix;
-	}
-
-	public PhraseTerminator getTerminator() {
-		return null;
 	}
 
 	public final MemberId getMemberId() {
@@ -242,34 +231,6 @@ public class NextClause implements Cloneable {
 				return "DeclarationsClause()";
 			}
 			return "DeclarationsClause(" + getClause() + ")";
-		}
-
-	}
-
-	private static final class PhraseTermination extends NextClause {
-
-		private final PhraseTerminator terminator;
-
-		PhraseTermination(
-				PartsAsPrefix partsAsPrefix,
-				PhraseTerminator terminator) {
-			super(partsAsPrefix);
-			this.terminator = terminator;
-		}
-
-		@Override
-		public boolean requiresInstance() {
-			return this.terminator.requiresInstance();
-		}
-
-		@Override
-		public Object what() {
-			return this.terminator;
-		}
-
-		@Override
-		public PhraseTerminator getTerminator() {
-			return this.terminator;
 		}
 
 	}

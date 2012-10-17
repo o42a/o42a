@@ -53,7 +53,6 @@ final class MainPhraseContext extends PhraseContext {
 	private PhraseContext nextContext;
 	private Ascendants implicitAscendants;
 	private PhraseContinuation nextPart;
-	private PhraseTerminator terminator;
 	private Path outcome = Path.SELF_PATH;
 
 	MainPhraseContext(Phrase phrase) {
@@ -70,10 +69,6 @@ final class MainPhraseContext extends PhraseContext {
 
 	public final PhraseContinuation getNextPart() {
 		return this.nextPart;
-	}
-
-	public final PhraseTerminator getTerminator() {
-		return this.terminator;
 	}
 
 	public Path getOutcome() {
@@ -333,7 +328,6 @@ final class MainPhraseContext extends PhraseContext {
 				// Phrase terminator encountered.
 				// Use the phrase prefix with preceding parts
 				// as a new phrase prefix.
-				this.terminator = nextClause.getTerminator();
 				if (partsAsPrefix.startNewPhraseFromLast()) {
 					this.nextPart = continuation;
 				} else {
