@@ -19,9 +19,12 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.object.op.ObjectSignature;
@@ -36,13 +39,19 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 		super(caller);
 	}
 
-	public DataOp call(Code code, ObjectOp object, ObjFld.Op fld) {
+	public DataOp call(
+			Code code,
+			ObjectOp object,
+			ObjFld.Op fld,
+			ObjectIRTypeOp ancestor) {
 		return invoke(
 				null,
 				code,
 				OBJECT_CONSTRUCTOR.result(),
-				object != null ? object.toData(null, code) : code.nullDataPtr(),
-				fld);
+				object != null
+				? object.toData(null, code) : code.nullDataPtr(),
+				fld,
+				ancestor != null ? ancestor : code.nullPtr(OBJECT_TYPE));
 	}
 
 	public static final class Signature
@@ -51,6 +60,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
 		private Arg<ObjFld.Op> field;
+		private Arg<ObjectIRTypeOp> ancestor;
 
 		private Signature() {
 			super(ID.id("ObjectConstructorF"));
@@ -69,6 +79,10 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 			return this.field;
 		}
 
+		public final Arg<ObjectIRTypeOp> ancestorType() {
+			return this.ancestor;
+		}
+
 		@Override
 		public ObjectConstructorFunc op(
 				FuncCaller<ObjectConstructorFunc> caller) {
@@ -80,6 +94,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 			this.result = builder.returnData();
 			this.object = builder.addData("object");
 			this.field = builder.addPtr("field", ObjFld.OBJ_FLD);
+			this.ancestor = builder.addPtr("ancestor_type", OBJECT_TYPE);
 		}
 
 	}

@@ -25,6 +25,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectFunc;
@@ -61,7 +62,7 @@ public class LocalBuilder extends CodeBuilder {
 			CodeDirs dirs,
 			ObjHolder holder,
 			ObjectOp owner,
-			ObjectOp ancestor,
+			ObjectIRTypeOp ancestor,
 			Obj sample) {
 
 		final ObjectOp newObject =
