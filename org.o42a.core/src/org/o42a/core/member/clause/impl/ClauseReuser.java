@@ -36,7 +36,6 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.array.ArrayElement;
 import org.o42a.core.value.link.Link;
 
 
@@ -148,16 +147,6 @@ final class ClauseReuser implements PathWalker {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		return invalidClauseReused();
-	}
-
-	@Override
-	public boolean arrayIndex(
-			Scope start,
-			Step step,
-			Ref array,
-			Ref index,
-			ArrayElement element) {
 		return invalidClauseReused();
 	}
 

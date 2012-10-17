@@ -35,7 +35,6 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.array.ArrayElement;
 import org.o42a.core.value.link.Link;
 
 
@@ -150,16 +149,6 @@ public class OutcomeBuilder implements PathWalker {
 		}
 		this.outcome = this.outcome.dereference();
 		return true;
-	}
-
-	@Override
-	public boolean arrayIndex(
-			Scope start,
-			Step step,
-			Ref array,
-			Ref index,
-			ArrayElement element) {
-		return invalidOutcome();
 	}
 
 	@Override

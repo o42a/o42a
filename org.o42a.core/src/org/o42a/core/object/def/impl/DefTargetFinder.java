@@ -30,7 +30,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.value.array.ArrayElement;
 import org.o42a.core.value.link.Link;
 
 
@@ -122,16 +121,6 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		return appendIfExist(step);
-	}
-
-	@Override
-	public boolean arrayIndex(
-			Scope start,
-			Step step,
-			Ref array,
-			Ref index,
-			ArrayElement element) {
 		return appendIfExist(step);
 	}
 

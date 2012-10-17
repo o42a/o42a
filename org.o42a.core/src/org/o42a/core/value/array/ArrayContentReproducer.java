@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.array.impl;
+package org.o42a.core.value.array;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -27,14 +27,13 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.array.Array;
 
 
-public final class ArrayContentReproducer extends Reproducer {
+final class ArrayContentReproducer extends Reproducer {
 
 	private final Reproducer arrayReproducer;
 
-	public ArrayContentReproducer(
+	ArrayContentReproducer(
 			Array array,
 			Distributor distributor,
 			Reproducer arrayReproducer) {
