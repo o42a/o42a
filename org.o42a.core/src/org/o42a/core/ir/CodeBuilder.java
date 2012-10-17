@@ -26,6 +26,7 @@ import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -101,11 +102,26 @@ public abstract class CodeBuilder {
 		return CodeDirs.codeDirs(this, code, falseDir);
 	}
 
-	public ObjectOp newObject(
+	public final ObjectOp newObject(
 			CodeDirs dirs,
 			ObjHolder holder,
 			ObjectOp owner,
 			ObjectOp ancestor,
+			Obj sample) {
+		return newObject(
+				dirs,
+				holder,
+				owner,
+				ancestor == null
+				? null : ancestor.objectType(dirs.code()).ptr(),
+				sample);
+	}
+
+	public ObjectOp newObject(
+			CodeDirs dirs,
+			ObjHolder holder,
+			ObjectOp owner,
+			ObjectIRTypeOp ancestor,
 			Obj sample) {
 
 		final Code alloc = dirs.code().getAllocator().allocation();

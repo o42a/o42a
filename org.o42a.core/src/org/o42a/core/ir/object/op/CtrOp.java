@@ -67,10 +67,29 @@ public class CtrOp extends IROp {
 			ObjectOp ancestor,
 			ObjectOp sample) {
 
+		final Block code = dirs.code();
+
+		return newObject(
+				dirs,
+				holder,
+				owner,
+				ancestor != null
+				? ancestor.objectType(code).ptr()
+				: code.nullPtr(OBJECT_TYPE),
+				sample);
+	}
+
+	public ObjectOp newObject(
+			CodeDirs dirs,
+			ObjHolder holder,
+			ObjectOp owner,
+			ObjectIRTypeOp ancestorType,
+			ObjectOp sample) {
+
 		final CodeDirs subDirs = dirs.begin(
 				"new_object",
 				"New object: sample=" + sample
-				+ ", ancestor=" + ancestor);
+				+ ", ancestor=" + ancestorType);
 		final Block code = subDirs.code();
 
 		if (owner != null) {
@@ -80,9 +99,8 @@ public class CtrOp extends IROp {
 		}
 		ptr().ancestorType(code).store(
 				code,
-				ancestor != null
-				? ancestor.objectType(code).ptr()
-				: code.nullPtr(OBJECT_TYPE));
+				ancestorType != null
+				? ancestorType : code.nullPtr(OBJECT_TYPE));
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);

@@ -38,9 +38,7 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
-import org.o42a.core.ir.object.ObjBuilder;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
@@ -131,23 +129,34 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				.allocation()
 				.allocate(FLD_CTR_ID, FLD_CTR_TYPE);
 
-		final Block start = code.addBlock("start");
+		final CondBlock start = isOwn.branch(code, "start", "cont");
 
-		isOwn.go(code, start.head());
-		if (start.exists()) {
+		final Block constructed = start.addBlock("constructed");
 
-			final Block constructed = start.addBlock("constructed");
+		ctr.start(start, ownFld).goUnless(start, constructed.head());
 
-			ctr.start(start, ownFld).goUnless(start, constructed.head());
+		ownFld.ptr()
+		.object(null, constructed)
+		.load(null, constructed, ATOMIC)
+		.toData(null, constructed)
+		.returnValue(constructed);
 
-			ownFld.ptr()
-			.object(null, constructed)
-			.load(null, constructed, ATOMIC)
-			.toData(null, constructed)
-			.returnValue(constructed);
+		final ObjectIRTypeOp evaluatedAncestorType =
+				ancestorType(builder, dirs, start);
 
-			start.go(code.tail());
-		}
+		start.go(code.tail());
+
+		final Block cont = start.otherwise();
+		final ObjectIRTypeOp suppliedAncestorType = builder.getFunction().arg(
+				cont,
+				OBJECT_CONSTRUCTOR.ancestorType());
+
+		cont.go(code.tail());
+
+		final ObjectIRTypeOp ancestorType = code.phi(
+				ID.id("atype"),
+				evaluatedAncestorType,
+				suppliedAncestorType);
 
 		final ObjFldTargetHolder holder =
 				new ObjFldTargetHolder(code.getAllocator(), isOwn);
@@ -159,7 +168,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				construct(
 						builder,
 						builder.dirs(construct, dirs.falseDir()),
-						holder)
+						holder,
+						ancestorType)
 				.toData(null, construct);
 
 		construct.go(code.tail());
@@ -169,7 +179,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				builder,
 				builder.dirs(delegate, dirs.falseDir()),
 				holder,
-				previous).toData(null, delegate);
+				previous,
+				ancestorType).toData(null, delegate);
 
 		delegate.go(code.tail());
 
@@ -188,10 +199,28 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		result.returnValue(code);
 	}
 
+	private ObjectIRTypeOp ancestorType(
+			ObjBuilder builder,
+			CodeDirs dirs,
+			CondBlock code) {
+
+		final CodeDirs ancDirs = dirs.sub(code);
+		final ObjectIRTypeOp ancestorType =
+				builder.objectAncestor(ancDirs, getField().toObject())
+				.objectType(code)
+				.ptr();
+
+		code.dumpName("Ancestor: ", ancestorType);
+		ancDirs.done();
+
+		return ancestorType;
+	}
+
 	private ObjectOp construct(
 			ObjBuilder builder,
 			CodeDirs dirs,
-			ObjHolder holder) {
+			ObjHolder holder,
+			ObjectIRTypeOp ancestorType) {
 
 		final Obj object = getField().toObject();
 
@@ -199,7 +228,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				dirs,
 				holder,
 				builder.host(),
-				builder.objectAncestor(dirs, object),
+				ancestorType != null ? ancestorType :
+				builder.objectAncestor(dirs, object).objectType(dirs.code()).ptr(),
 				object);
 	}
 
@@ -207,7 +237,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			ObjBuilder builder,
 			CodeDirs dirs,
 			ObjFldTargetHolder holder,
-			Op previous) {
+			Op previous,
+			ObjectIRTypeOp ancestorType) {
 
 		final Block code = dirs.code();
 
@@ -216,7 +247,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final ObjectConstructorFunc constructor =
 				previous.constructor(null, code).load(null, code);
 		final DataOp ancestorPtr =
-				constructor.call(code, builder.host(), previous);
+				constructor.call(code, builder.host(), previous, ancestorType);
 		final ObjectOp ancestor = anonymousObject(
 				builder,
 				ancestorPtr,
@@ -254,7 +285,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				Code code,
 				ObjOp host,
 				ObjectConstructorFunc constructor) {
-			return constructor.call(code, host, this);
+			return constructor.call(code, host, this, null);
 		}
 
 	}
