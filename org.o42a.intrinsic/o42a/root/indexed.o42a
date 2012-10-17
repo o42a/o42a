@@ -47,3 +47,8 @@ Item :=<> $$link (`#item type) (
 
   <*[Item index]!> Index = ()
 )
+
+<*Item by index> Item` (
+  <*[Item index]!> Index = ()
+)
+ 
