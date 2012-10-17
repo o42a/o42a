@@ -34,7 +34,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.impl.ParentLocalStep;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.value.array.ArrayElement;
 import org.o42a.core.value.link.Link;
 
 
@@ -142,17 +141,6 @@ public class PredictionWalker implements PathWalker {
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
 		return set(derefPrediction(getPrediction(), link));
-	}
-
-	@Override
-	public boolean arrayIndex(
-			Scope start,
-			Step step,
-			Ref array,
-			Ref index,
-			ArrayElement element) {
-		// Array elements not predictable yet.
-		return set(unpredicted(element.getScope()));
 	}
 
 	@Override

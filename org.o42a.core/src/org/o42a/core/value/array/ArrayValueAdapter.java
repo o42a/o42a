@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.array.impl;
+package org.o42a.core.value.array;
 
 import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
@@ -40,17 +40,14 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.array.Array;
-import org.o42a.core.value.array.ArrayItem;
-import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
-public final class ArrayValueAdapter extends ValueAdapter {
+final class ArrayValueAdapter extends ValueAdapter {
 
 	private final ArrayValueStruct expectedStruct;
 
-	public ArrayValueAdapter(Ref adaptedRef, ArrayValueStruct expectedStruct) {
+	ArrayValueAdapter(Ref adaptedRef, ArrayValueStruct expectedStruct) {
 		super(adaptedRef);
 		this.expectedStruct = expectedStruct;
 	}

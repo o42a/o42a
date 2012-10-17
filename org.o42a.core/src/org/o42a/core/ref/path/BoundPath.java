@@ -52,17 +52,10 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueStructFinder;
-import org.o42a.core.value.array.impl.ArrayIndexStep;
 import org.o42a.util.ArrayUtil;
 
 
 public class BoundPath extends RefPath {
-
-	public static BoundPath arrayIndex(Ref array, Ref index) {
-		return new ArrayIndexStep(array, index)
-		.toPath()
-		.bind(index, array.getScope());
-	}
 
 	private final Scope origin;
 	private final Path rawPath;

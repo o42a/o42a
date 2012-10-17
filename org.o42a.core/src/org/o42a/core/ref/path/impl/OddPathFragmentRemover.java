@@ -30,7 +30,6 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.core.value.array.ArrayElement;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.ArrayUtil;
 
@@ -94,16 +93,6 @@ public class OddPathFragmentRemover implements PathWalker {
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
 		return enter(linkObject.getScope());
-	}
-
-	@Override
-	public boolean arrayIndex(
-			Scope start,
-			Step step,
-			Ref array,
-			Ref index,
-			ArrayElement element) {
-		return skip();
 	}
 
 	@Override

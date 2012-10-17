@@ -33,7 +33,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.core.value.array.ArrayElement;
 import org.o42a.core.value.link.Link;
 
 
@@ -144,32 +143,6 @@ public class RoleResolver implements PathWalker {
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
 		return mayProceedInsidePrototype();
-	}
-
-	@Override
-	public boolean arrayIndex(
-			Scope start,
-			Step step,
-			Ref array,
-			Ref index,
-			ArrayElement element) {
-		if (!mayProceedInsidePrototype()) {
-			return false;
-		}
-
-		final Resolver resolver = start.walkingResolver(this);
-		final Resolution resolution = array.resolve(resolver);
-
-		if (!resolution.isResolved()) {
-			return false;
-		}
-		if (this.insidePrototype || !this.role.atLeast(INSTANCE)) {
-			this.insidePrototype = false;
-			// An attempt to access an element of prototype.
-			return updateRole(Role.NONE);
-		}
-
-		return true;
 	}
 
 	@Override

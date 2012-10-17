@@ -34,7 +34,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
-import org.o42a.core.value.array.impl.ArrayContentReproducer;
 
 
 public final class Array extends Placed {

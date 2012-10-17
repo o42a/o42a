@@ -28,7 +28,6 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.core.value.array.ArrayElement;
 import org.o42a.core.value.link.Link;
 
 
@@ -129,25 +128,6 @@ public class CompoundPathWalker implements PathWalker {
 
 		for (PathWalker walker : getWalkers()) {
 			proceed = walker.dereference(linkObject, step, link) & proceed;
-		}
-
-		return proceed;
-	}
-
-	@Override
-	public boolean arrayIndex(
-			Scope start,
-			Step step,
-			Ref array,
-			Ref index,
-			ArrayElement element) {
-
-		boolean proceed = true;
-
-		for (PathWalker walker : getWalkers()) {
-			proceed =
-					walker.arrayIndex(start, step, array, index, element)
-					& proceed;
 		}
 
 		return proceed;

@@ -36,7 +36,6 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
-import org.o42a.core.value.array.impl.ArrayValueAdapter;
 import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.link.LinkValueType;
 
