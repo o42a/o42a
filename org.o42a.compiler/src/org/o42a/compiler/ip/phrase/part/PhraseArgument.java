@@ -19,18 +19,10 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.compiler.ip.phrase.part.NextClause.terminatePhrase;
-import static org.o42a.core.ref.path.BoundPath.arrayIndex;
-
-import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
-import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
@@ -63,11 +55,8 @@ public class PhraseArgument extends PhraseContinuation {
 		if (!context.isObject()) {
 			return next;
 		}
-		if (!isArray(context.getPhrase())) {
-			return next;
-		}
 
-		return terminatePhrase(new GetArrayItem(), true);
+		return next;
 	}
 
 	@Override
@@ -96,63 +85,6 @@ public class PhraseArgument extends PhraseContinuation {
 			return "[]";
 		}
 		return '[' + this.value.toString() + ']';
-	}
-
-	private boolean isArray(Phrase phrase) {
-
-		final TypeRef ancestor = phrase.getAncestor();
-
-		if (ancestor != null && isArray(ancestor)) {
-			return true;
-		}
-		for (StaticTypeRef sample : phrase.getSamples()) {
-			if (isArray(sample)) {
-				return true;
-			}
-		}
-
-		final Ascendants implicitAscendants = phrase.getImplicitAscendants();
-
-		if (implicitAscendants == null) {
-			return false;
-		}
-
-		final TypeRef implicitAncestor = implicitAscendants.getAncestor();
-
-		if (implicitAncestor != null && isArray(implicitAncestor)) {
-			return true;
-		}
-
-		for (Sample implicitSample : implicitAscendants.getSamples()) {
-			if (isArray(implicitSample.getTypeRef())) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean isArray(TypeRef typeRef) {
-		return typeRef.getValueType().isArray();
-	}
-
-	private final class GetArrayItem implements PhraseTerminator {
-
-		@Override
-		public boolean requiresInstance() {
-			return false;
-		}
-
-		@Override
-		public Ref terminate(Ref prefix) {
-			return arrayIndex(prefix, getValue()).target(prefix.distribute());
-		}
-
-		@Override
-		public String toString() {
-			return PhraseArgument.this.toString();
-		}
-
 	}
 
 }
