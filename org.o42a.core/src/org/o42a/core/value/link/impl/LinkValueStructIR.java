@@ -47,12 +47,12 @@ public class LinkValueStructIR extends AbstractLinkValueStructIR {
 
 	@Override
 	public ValHolder tempValHolder(ValOp value) {
-		return new LinkValHolder(value, true);
+		return new LinkValHolder(value);
 	}
 
 	@Override
 	public ValHolder volatileValHolder(ValOp value) {
-		return new LinkValHolder(value, true);
+		return new LinkValHolder(value);
 	}
 
 	@Override

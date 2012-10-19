@@ -28,12 +28,10 @@ import org.o42a.core.ir.value.ValOp;
 final class LinkValHolder extends ValHolder {
 
 	private final ValOp value;
-	private final boolean volatileHolder;
 	private UnuseLinkVal disposal;
 
-	LinkValHolder(ValOp value, boolean volatileHolder) {
+	LinkValHolder(ValOp value) {
 		this.value = value;
-		this.volatileHolder = volatileHolder;
 	}
 
 	@Override
@@ -43,9 +41,6 @@ final class LinkValHolder extends ValHolder {
 
 	@Override
 	public void hold(Code code) {
-		if (!this.volatileHolder) {
-			return;
-		}
 		this.value.useObjectPointer(code);
 		addDisposal();
 	}
@@ -55,10 +50,7 @@ final class LinkValHolder extends ValHolder {
 		if (this.value == null) {
 			return super.toString();
 		}
-		if (!this.volatileHolder) {
-			return "LinkValHolder[" + this.value + ']';
-		}
-		return "VolatileLinkValHolder" + this.value + ']';
+		return "LinkValHolder[" + this.value + ']';
 	}
 
 	private void addDisposal() {
