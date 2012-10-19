@@ -78,7 +78,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 				object != null ? object : code.nullDataPtr());
 
 		value.flags(code).condition(null, code).goUnless(code, dirs.falseDir());
-		value.valueSet(code);
+		value.holder().set(code);
 		dirs.returnValue(value);
 	}
 

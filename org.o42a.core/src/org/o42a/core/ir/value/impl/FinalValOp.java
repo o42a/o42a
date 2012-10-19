@@ -59,6 +59,11 @@ public final class FinalValOp extends ValOp {
 	}
 
 	@Override
+	public final ValHolder holder() {
+		return this.holder;
+	}
+
+	@Override
 	public String toString() {
 
 		final ValueStruct<?, ?> valueStruct = getValueStruct();
@@ -68,11 +73,6 @@ public final class FinalValOp extends ValOp {
 		}
 
 		return "(" + valueStruct + ") " + ptr();
-	}
-
-	@Override
-	protected final ValHolder holder() {
-		return this.holder;
 	}
 
 }
