@@ -421,6 +421,22 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullPtr(
 			Type::getInt8PtrTy(module->getContext())));
 }
 
+jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_allOnesPtr(
+		JNIEnv *,
+		jclass,
+		jlong modulePtr) {
+
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
+
+	return to_ptr<Value>(ConstantExpr::getIntToPtr(
+			ConstantInt::get(
+					module->getTargetData().getIntPtrType(module->getContext()),
+					~0L,
+					false),
+			Type::getInt8PtrTy(module->getContext())));
+}
+
 jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullStructPtr(
 		JNIEnv *,
 		jclass,

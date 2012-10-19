@@ -44,6 +44,7 @@ public abstract class Globals {
 			new LinkedList<AbstractTypeData<?>>();
 
 	private Ptr<AnyOp> nullPtr;
+	private Ptr<AnyOp> allOnesPtr;
 	private Ptr<DataOp> nullDataPtr;
 
 	public Globals(Generator generator) {
@@ -69,6 +70,25 @@ public abstract class Globals {
 			@Override
 			protected DataAllocation<AnyOp> createAllocation() {
 				return dataWriter().nullPtr(this);
+			}
+		};
+	}
+
+	public final Ptr<AnyOp> allOnesPtr() {
+		if (this.allOnesPtr != null) {
+			return this.allOnesPtr;
+		}
+
+		final ID id = ID.id("all_ones");
+
+		return this.allOnesPtr = new Ptr<AnyOp>(id, true, true) {
+			@Override
+			public Ptr<AnyOp> toAny() {
+				return this;
+			}
+			@Override
+			protected DataAllocation<AnyOp> createAllocation() {
+				return dataWriter().allOnesPtr(this);
 			}
 		};
 	}

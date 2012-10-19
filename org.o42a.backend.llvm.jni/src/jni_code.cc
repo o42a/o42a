@@ -187,6 +187,22 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_nullPtr(
 	return to_ptr<Value>(result);
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLCode_allOnesPtr(
+		JNIEnv *,
+		jclass,
+		jlong modulePtr) {
+
+	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
+	Constant *result = ConstantExpr::getIntToPtr(
+			ConstantInt::get(
+					module->getTargetData().getIntPtrType(module->getContext()),
+					~0L,
+					false),
+			Type::getInt8PtrTy(module->getContext()));
+
+	return to_ptr<Value>(result);
+}
+
 jlong Java_org_o42a_backend_llvm_code_LLCode_nullStructPtr(
 		JNIEnv *,
 		jclass,

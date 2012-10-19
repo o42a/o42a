@@ -55,6 +55,14 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
+	public DataAllocation<AnyOp> allOnesPtr(Ptr<AnyOp> pointer) {
+		return new AnyLLDAlloc(
+				getModule(),
+				LLVMId.allOnesId(allOnesPtr(getModule().getNativePtr()), false),
+				null);
+	}
+
+	@Override
 	public DataAllocation<DataOp> nullDataPtr(Ptr<DataOp> pointer) {
 		return new DataLLDAlloc(
 				getModule(),
@@ -279,6 +287,8 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	private static native long nullPtr(long modulePtr);
+
+	private static native long allOnesPtr(long modulePtr);
 
 	private static native long nullStructPtr(long typePtr);
 
