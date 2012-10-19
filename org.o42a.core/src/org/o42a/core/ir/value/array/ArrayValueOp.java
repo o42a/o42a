@@ -100,8 +100,6 @@ final class ArrayValueOp extends StatefulValueOp {
 			code.releaseBarrier();
 
 			this.flags.store(code, value.flags(code).get());
-			this.value.useRefCounted(code);
-
 		}
 
 		@Override

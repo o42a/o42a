@@ -39,12 +39,21 @@ extern const o42a_val_type_t o42a_val_type_array;
  */
 extern const o42a_val_type_t o42a_val_type_row;
 
+/**
+ * Array items GC descriptor.
+ */
+extern const o42a_gc_desc_t o42a_array_gc_desc;
 
-o42a_array_t o42a_array_alloc(o42a_val_t *, uint32_t);
+
+o42a_array_t *o42a_array_alloc(o42a_val_t *, uint32_t);
 
 void o42a_array_copy(const o42a_val_t *, o42a_val_t *);
 
 void o42a_array_mark(const volatile o42a_val_t *);
+
+void o42a_array_start_use(o42a_val_t *);
+
+void o42a_array_end_use(o42a_val_t *);
 
 
 #ifdef __cplusplus

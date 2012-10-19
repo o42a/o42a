@@ -20,21 +20,27 @@
 package org.o42a.core.ir.value.array;
 
 
+import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
+import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.DataRec;
-import org.o42a.codegen.data.Struct;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
+import org.o42a.core.ir.gc.GCBlockOp;
+import org.o42a.core.ir.gc.GCBlockOp.Type;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
+import org.o42a.util.string.ID;
 
 
 final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
+
+	private static final ArrayGCBlock ARRAY_GC_BLOCK = new ArrayGCBlock();
 
 	private final ArrayIR arrayIR;
 	private final DataRec[] items;
@@ -42,12 +48,17 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 	ArrayItemsStruct(ArrayIR arrayIR) {
 		super(arrayIR.getId());
 		this.arrayIR = arrayIR;
-		this.items = new DataRec[arrayIR.getArray().getItems().length];
+		// Reserve one pointer for terminator.
+		this.items = new DataRec[arrayIR.getArray().getItems().length + 1];
 	}
 
 	@Override
 	public boolean isDebuggable() {
 		return false;
+	}
+
+	public final int length() {
+		return this.items.length - 1;
 	}
 
 	public final DataRec[] getItems() {
@@ -61,9 +72,14 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		for (int i = 0; i < this.items.length; ++i) {
+		data.addInstance(ID.id("gc_header"), GC_BLOCK_TYPE, ARRAY_GC_BLOCK);
+
+		final int length = length();
+
+		for (int i = 0; i < length; ++i) {
 			this.items[i] = data.addDataPtr(Integer.toString(i));
 		}
+		this.items[length] = data.addDataPtr("END");
 	}
 
 	@Override
@@ -87,6 +103,13 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 
 			this.items[i].setValue(itemBodyIR.pointer(getGenerator()).toData());
 		}
+
+		// Last element is always all-ones pointer.
+		this.items[length].setValue(
+				getGenerator()
+				.getGlobals()
+				.allOnesPtr()
+				.toData());
 	}
 
 	public static final class Op extends StructOp<Op> {
@@ -103,6 +126,29 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 		public DataRecOp item(Code code, int index) {
 			return writer().ptr(null, code, getType().getItems()[index]);
 		}
+	}
+
+	private static final class ArrayGCBlock
+			implements Content<GCBlockOp.Type> {
+
+		@Override
+		public void allocated(Type instance) {
+		}
+
+		@Override
+		public void fill(Type instance) {
+			instance.lock().setValue((byte) 0);
+			instance.list().setValue((byte) 0);
+			instance.flags().setValue((short) 0);
+			instance.useCount().setValue(0);
+			instance.desc().setConstant(true).setValue(
+					instance.getGenerator().externalGlobal().setConstant().link(
+							"o42a_array_gc_desc",
+							GC_DESC_TYPE));
+			instance.prev().setNull();
+			instance.next().setNull();
+		}
+
 	}
 
 }

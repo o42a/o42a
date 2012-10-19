@@ -706,3 +706,8 @@ void o42a_gc_mark(o42a_gc_block_t *block) {
 
 	O42A_RETURN;
 }
+
+void o42a_gc_noop(void *data) {
+	O42A_ENTER(return);
+	O42A_RETURN;
+}

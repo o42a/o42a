@@ -238,6 +238,11 @@ void o42a_gc_run();
  */
 void o42a_gc_mark(o42a_gc_block_t *);
 
+/**
+ * GC mark or sweep operation, which does nothing.
+ */
+void o42a_gc_noop(void *);
+
 #ifdef __cplusplus
 } /* externd "C" */
 #endif

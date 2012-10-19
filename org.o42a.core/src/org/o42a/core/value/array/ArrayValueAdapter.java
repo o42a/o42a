@@ -24,6 +24,7 @@ import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.value.Value.falseValue;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -177,6 +178,7 @@ final class ArrayValueAdapter extends ValueAdapter {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
+			final Block code = dirs.code();
 			final ValueStruct<?, ?> fromValueStruct =
 					getRef().valueStruct(getRef().getScope());
 			final ValDirs fromDirs = dirs.dirs().nested().value(
@@ -188,7 +190,8 @@ final class ArrayValueAdapter extends ValueAdapter {
 					.externalFunction()
 					.link("o42a_array_copy", VAL_COPY);
 
-			func.op(null, dirs.code()).copy(dirs, from);
+			func.op(null, code).copy(dirs, from);
+			dirs.value().holder().set(code);
 			fromDirs.done();
 		}
 
