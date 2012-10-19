@@ -177,7 +177,6 @@ $(srcdir)/memory/refcount.%.o : $(srcdir)/memory/refcount.c
 
 $(srcdir)/type/array.*.o : $(common_deps)
 $(srcdir)/type/array.*.o : $(headersdir)/memory/gc.h
-$(srcdir)/type/array.*.o : $(headersdir)/memory/refcount.h
 $(srcdir)/type/array.*.o : $(headersdir)/object.h
 $(srcdir)/type/array.*.o : $(headersdir)/type/array.h
 $(srcdir)/type/array.%.o : $(srcdir)/type/array.c

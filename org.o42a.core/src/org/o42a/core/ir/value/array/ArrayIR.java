@@ -88,7 +88,7 @@ public class ArrayIR {
 				array.getValueStruct(),
 				VAL_CONDITION | VAL_EXTERNAL | VAL_STATIC
 				| (itemsLayout.alignmentShift() << 8),
-				items.getItems().length,
+				items.length(),
 				itemsData.getPointer().toAny());
 	}
 

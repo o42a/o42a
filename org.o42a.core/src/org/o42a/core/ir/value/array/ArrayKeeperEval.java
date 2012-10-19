@@ -83,7 +83,6 @@ final class ArrayKeeperEval extends KeeperEval {
 		code.releaseBarrier();
 
 		this.flags.store(code, newValue.flags(code).get());
-		this.value.useRefCounted(code);
 	}
 
 	@Override

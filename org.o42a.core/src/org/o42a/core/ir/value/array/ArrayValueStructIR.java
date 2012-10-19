@@ -25,7 +25,8 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.*;
-import org.o42a.core.ir.value.struct.*;
+import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueStruct;
@@ -78,17 +79,17 @@ public final class ArrayValueStructIR
 
 	@Override
 	public ValHolder tempValHolder(ValOp value) {
-		return new ExternValHolder(value, !getValueType().isStateful());
+		return new ArrayValHolder(value);
 	}
 
 	@Override
 	public ValHolder volatileValHolder(ValOp value) {
-		return new ExternValHolder(value, true);
+		return new ArrayValHolder(value);
 	}
 
 	@Override
 	public ValHolder valTrap(ValOp value) {
-		return new ExternValTrap(value);
+		return new ArrayValTrap(value);
 	}
 
 }

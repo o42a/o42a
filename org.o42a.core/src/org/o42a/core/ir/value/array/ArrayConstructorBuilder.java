@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.value.array;
 
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
@@ -105,16 +106,20 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 				.allocate(dirs, items.length)
 				.toPtr(ITEMS_ID, code);
 
-		allocateItem(dirs, data, items[0], 0);
-		for (int i = 1; i < items.length; ++i) {
-			data = data.offset(null, code, code.int32(1));
-			allocateItem(dirs, data, items[i], i);
+		dirs.value().holder().hold(code);
+		for (int i = 0; i < items.length; ++i) {
+
+			final AnyRecOp next = data.offset(null, code, code.int32(1));
+
+			allocateItem(dirs, data, next, items[i], i);
+			data = next;
 		}
 	}
 
 	private void allocateItem(
 			ValDirs arrayDirs,
 			AnyRecOp data,
+			AnyRecOp next,
 			ArrayItem item,
 			int index) {
 
@@ -123,15 +128,16 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 				arrayDirs.getBuilder(),
 				arrayDirs.code(),
 				failure.head()).value(arrayDirs);
-
+		final Code code = dirs.code();
 		final RefOp itemOp =
 				item.getValueRef().op(dirs.getBuilder().host());
 		final ObjectOp itemValue =
 				itemOp.target(dirs.dirs())
 				.materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()));
-		final Code code = dirs.code();
 
-		data.store(code, itemValue.toAny(null, code));
+		next.store(code, code.allOnesPtr(), ATOMIC);
+		code.releaseBarrier();
+		data.store(code, itemValue.toAny(null, code), ATOMIC);
 
 		dirs.done();
 
