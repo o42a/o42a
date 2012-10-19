@@ -51,16 +51,16 @@ public final class ConstValOp extends ValOp {
 	}
 
 	@Override
+	public final ValHolder holder() {
+		throw new IllegalStateException("Constant value can not be held");
+	}
+
+	@Override
 	public String toString() {
 		if (this.constant == null) {
 			return super.toString();
 		}
 		return this.constant.toString();
-	}
-
-	@Override
-	protected final ValHolder holder() {
-		throw new IllegalStateException("Constant value can not be held");
 	}
 
 }

@@ -81,16 +81,16 @@ public final class StackAllocatedValOp extends ValOp {
 	}
 
 	@Override
+	public final ValHolder holder() {
+		return this.holder;
+	}
+
+	@Override
 	public String toString() {
 		if (this.id == null) {
 			return super.toString();
 		}
 		return "(" + getValueStruct() + ") " + this.id;
-	}
-
-	@Override
-	protected final ValHolder holder() {
-		return this.holder;
 	}
 
 }

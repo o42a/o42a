@@ -314,11 +314,6 @@ public abstract class ValOp extends IROp {
 		return this;
 	}
 
-	public final ValOp valueSet(Code code) {
-		holder().set(code);
-		return this;
-	}
-
 	public final ValOp phi(Code code) {
 
 		final Val constant = getConstant();
@@ -359,6 +354,8 @@ public abstract class ValOp extends IROp {
 		flags(code).condition(null, code).goUnless(code, dirs.falseDir());
 	}
 
+	public abstract ValHolder holder();
+
 	public final void useRefCounted(Code code) {
 		ptr().useRefCounted(code);
 	}
@@ -375,6 +372,12 @@ public abstract class ValOp extends IROp {
 		ptr().unuseObjectPointer(code);
 	}
 
-	protected abstract ValHolder holder();
+	public final void useArrayPointer(Code code) {
+		ptr().useArrayPointer(code);
+	}
+
+	public final void unuseArrayPointer(Code code) {
+		ptr().unuseArrayPointer(code);
+	}
 
 }

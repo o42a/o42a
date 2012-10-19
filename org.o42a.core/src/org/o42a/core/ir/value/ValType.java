@@ -199,6 +199,26 @@ public final class ValType extends Type<ValType.Op> {
 			func.op(null, code).call(code, this);
 		}
 
+		public final void useArrayPointer(Code code) {
+
+			final FuncPtr<ValUseFunc> func =
+					code.getGenerator()
+					.externalFunction()
+					.link("o42a_array_start_use", VAL_USE);
+
+			func.op(null, code).call(code, this);
+		}
+
+		public final void unuseArrayPointer(Code code) {
+
+			final FuncPtr<ValUseFunc> func =
+					code.getGenerator()
+					.externalFunction()
+					.link("o42a_array_end_use", VAL_USE);
+
+			func.op(null, code).call(code, this);
+		}
+
 		final boolean isAllocatedOnStack() {
 			return this.allocatedOnStack;
 		}
