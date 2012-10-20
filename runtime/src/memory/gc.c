@@ -190,6 +190,7 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 inline void o42a_gc_lock_block(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 	O42A_DEBUG("Lock block: %#lx\n", (long) block);
+	assert((block->lock == 0 || block->lock == 1) && "Wrong GC block");
 	while (__sync_lock_test_and_set(&block->lock, 1)) {
 		O42A(sched_yield());
 	}
@@ -198,8 +199,9 @@ inline void o42a_gc_lock_block(o42a_gc_block_t *const block) {
 
 inline void o42a_gc_unlock_block(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
-	__sync_lock_release(&block->lock);
 	O42A_DEBUG("Unlock block: %#lx\n", (long) block);
+	assert((block->lock == 0 || block->lock == 1) && "Wrong GC block");
+	__sync_lock_release(&block->lock);
 	O42A_RETURN;
 }
 
@@ -597,6 +599,7 @@ void o42a_gc_discard(o42a_gc_block_t *const block) {
 void o42a_gc_use(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 
+	assert(block->list <= O42A_GC_LIST_MAX && "Wrong GC list");
 	O42A(o42a_gc_lock_block(block));
 
 	switch (block->list) {
