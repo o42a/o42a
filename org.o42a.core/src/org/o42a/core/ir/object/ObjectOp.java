@@ -220,7 +220,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				.toPtr(null, code)
 				.load(null, code)
 				.toData(TARGET_ID, code);
-		final ObjectOp result = holder.hold(
+		final ObjectOp result = holder.holdVolatile(
 				code,
 				anonymousObject(
 						getBuilder(),
