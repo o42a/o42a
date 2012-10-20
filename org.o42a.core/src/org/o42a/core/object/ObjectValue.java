@@ -21,9 +21,7 @@ package org.o42a.core.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
-import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
-import static org.o42a.core.object.value.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
-import static org.o42a.core.object.value.ValueUsage.RUNTIME_VALUE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.*;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import org.o42a.analysis.Analyzer;
@@ -287,6 +285,10 @@ public final class ObjectValue extends ObjectValueParts {
 				new RootNormalizer(analyzer, getObject().getScope());
 
 		getDefinitions().normalize(normalizer);
+	}
+
+	public final User<?> rtUses() {
+		return uses().selectiveUser(ANY_RUNTIME_VALUE_USAGE);
 	}
 
 	@Override
