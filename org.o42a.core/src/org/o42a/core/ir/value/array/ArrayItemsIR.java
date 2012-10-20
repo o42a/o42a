@@ -20,33 +20,27 @@
 package org.o42a.core.ir.value.array;
 
 
-import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
-import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.*;
-import org.o42a.core.ir.gc.GCBlockOp;
-import org.o42a.core.ir.gc.GCBlockOp.Type;
+import org.o42a.codegen.data.DataRec;
+import org.o42a.codegen.data.Struct;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
-import org.o42a.util.string.ID;
 
 
-final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
-
-	private static final ArrayGCBlock ARRAY_GC_BLOCK = new ArrayGCBlock();
+final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
 
 	private final ArrayIR arrayIR;
 	private final DataRec[] items;
 
-	ArrayItemsStruct(ArrayIR arrayIR) {
-		super(arrayIR.getId());
+	ArrayItemsIR(ArrayIR arrayIR) {
+		super(arrayIR.getId().detail("items"));
 		this.arrayIR = arrayIR;
 		// Reserve one pointer for terminator.
 		this.items = new DataRec[arrayIR.getArray().getItems().length + 1];
@@ -72,7 +66,6 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(ID.id("gc_header"), GC_BLOCK_TYPE, ARRAY_GC_BLOCK);
 
 		final int length = length();
 
@@ -119,36 +112,13 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 		}
 
 		@Override
-		public final ArrayItemsStruct getType() {
-			return (ArrayItemsStruct) super.getType();
+		public final ArrayItemsIR getType() {
+			return (ArrayItemsIR) super.getType();
 		}
 
 		public DataRecOp item(Code code, int index) {
 			return writer().ptr(null, code, getType().getItems()[index]);
 		}
-	}
-
-	private static final class ArrayGCBlock
-			implements Content<GCBlockOp.Type> {
-
-		@Override
-		public void allocated(Type instance) {
-		}
-
-		@Override
-		public void fill(Type instance) {
-			instance.lock().setValue((byte) 0);
-			instance.list().setValue((byte) 0);
-			instance.flags().setValue((short) 0);
-			instance.useCount().setValue(0);
-			instance.desc().setConstant(true).setValue(
-					instance.getGenerator().externalGlobal().setConstant().link(
-							"o42a_array_gc_desc",
-							GC_DESC_TYPE));
-			instance.prev().setNull();
-			instance.next().setNull();
-		}
-
 	}
 
 }
