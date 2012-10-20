@@ -365,26 +365,59 @@ public final class ObjectType implements UserInfo {
 		final Member member = object.toMember();
 
 		if (member != null) {
-			// Detect run time construction mode by member.
-			final MemberField field = member.toField();
-
-			if (field != null) {
-				this.derivationUses.useBy(
-						field.getAnalysis().rtDerivation(),
-						RUNTIME_DERIVATION_USAGE);
-				this.derivationUses.useBy(
-						field.getAnalysis().staticDerivation(),
-						STATIC_DERIVATION_USAGE);
-			}
-		} else if (!object.getScope().getEnclosingScope().isTopScope()) {
-			// Stand-alone object is constructed at run time,
-			// if it is ever used.
-			this.derivationUses.useBy(
-					object.content(),
-					RUNTIME_DERIVATION_USAGE);
+			detectFieldRtDerivation(member);
+		} else {
+			detectStandaloneObjectRtDerivation();
 		}
 
 		return this.derivationUses;
+	}
+
+	private void detectFieldRtDerivation(final Member member) {
+
+		// Detect run time construction mode by member.
+		final MemberField field = member.toField();
+
+		if (field == null) {
+			return;
+		}
+
+		this.derivationUses.useBy(
+				field.getAnalysis().rtDerivation(),
+				RUNTIME_DERIVATION_USAGE);
+		this.derivationUses.useBy(
+				field.getAnalysis().staticDerivation(),
+				STATIC_DERIVATION_USAGE);
+	}
+
+	private void detectStandaloneObjectRtDerivation() {
+		if (getObject().getScope().getEnclosingScope().isTopScope()) {
+			return;
+		}
+
+		// Stand-alone object is constructed at run time, if it's ever derived.
+		this.derivationUses.useBy(
+				staticDerivation(),
+				RUNTIME_DERIVATION_USAGE);
+
+		// Stand-alone object is constructed at run time
+		// if its owner's value is ever used at runtime.
+		this.derivationUses.useBy(
+				getOwner().value().rtUses(),
+				RUNTIME_DERIVATION_USAGE);
+	}
+
+	private Obj getOwner() {
+
+		final Scope enclosingScope =
+				getObject().getScope().getEnclosingScope();
+		final Obj enclosingObject = enclosingScope.toObject();
+
+		if (enclosingObject != null) {
+			return enclosingObject;
+		}
+
+		return enclosingScope.toMember().getMemberOwner().getOwner();
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {

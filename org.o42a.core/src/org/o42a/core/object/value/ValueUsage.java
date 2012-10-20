@@ -36,6 +36,9 @@ public class ValueUsage extends Usage<ValueUsage> {
 	public static final ValueUsage EXPLICIT_RUNTIME_VALUE_USAGE =
 			new ValueUsage("ExplicitRuntimeValue");
 
+	public static final UseSelector<ValueUsage> ANY_RUNTIME_VALUE_USAGE =
+			RUNTIME_VALUE_USAGE.or(EXPLICIT_RUNTIME_VALUE_USAGE);
+
 	public static final Uses<ValueUsage> alwaysUsed() {
 		return ALL_VALUE_USAGES.alwaysUsed();
 	}
