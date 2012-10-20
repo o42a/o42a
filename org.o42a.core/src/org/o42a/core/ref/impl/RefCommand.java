@@ -227,9 +227,9 @@ public final class RefCommand extends Command {
 					.value(control.result());
 			final ValOp value = this.inline.writeValue(dirs, control.host());
 
-			dirs.done();
+			control.returnValue(dirs.code(), value);
 
-			control.returnValue(value);
+			dirs.done();
 		}
 
 		@Override
