@@ -220,15 +220,16 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				.toPtr(null, code)
 				.load(null, code)
 				.toData(TARGET_ID, code);
-
-		final Block resultCode = valDirs.done().code();
-
-		return holder.hold(
-				resultCode,
+		final ObjectOp result = holder.hold(
+				code,
 				anonymousObject(
 						getBuilder(),
 						ptr,
 						linkStruct.getTypeRef().getType()));
+
+		valDirs.done();
+
+		return result;
 	}
 
 	@Override
