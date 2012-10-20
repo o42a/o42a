@@ -17,12 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.value.array;
 
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_ID;
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
 import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
-import static org.o42a.core.ir.object.ObjectIRStruct.OBJECT_ID;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -31,21 +30,32 @@ import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.gc.GCBlockOp;
 import org.o42a.core.ir.gc.GCBlockOp.Type;
+import org.o42a.util.string.ID;
 
 
-public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
+final class ArrayItemsIRContainer extends Struct<ArrayItemsIRContainer.Op> {
 
-	private static final ObjectGCBlock OBJECT_GC_BLOCK = new ObjectGCBlock();
+	private static final ArrayGCBlock ARRAY_GC_BLOCK = new ArrayGCBlock();
+	private static final ID ITEMS_ID = ID.id("items");
 
-	private final ObjectIRStruct struct;
+	private final ArrayItemsIR items;
 
-	public ObjectIRBlock(ObjectIR objectIR) {
-		super(objectIR.getId());
-		this.struct = new ObjectIRStruct(objectIR);
+	ArrayItemsIRContainer(ArrayIR arrayIR) {
+		super(arrayIR.getId());
+		this.items = new ArrayItemsIR(arrayIR);
 	}
 
-	public final ObjectIRStruct getStruct() {
-		return this.struct;
+	@Override
+	public boolean isDebuggable() {
+		return false;
+	}
+
+	public final ArrayItemsIR items() {
+		return this.items;
+	}
+
+	@Override
+	protected void fill() {
 	}
 
 	@Override
@@ -55,15 +65,11 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, OBJECT_GC_BLOCK);
-		data.addStruct(OBJECT_ID, this.struct);
+		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, ARRAY_GC_BLOCK);
+		data.addStruct(ITEMS_ID, this.items);
 	}
 
-	@Override
-	protected void fill() {
-	}
-
-	public static final class Op extends StructOp<Op> {
+	static class Op extends StructOp<Op> {
 
 		private Op(StructWriter<Op> writer) {
 			super(writer);
@@ -71,7 +77,7 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 	}
 
-	private static final class ObjectGCBlock
+	private static final class ArrayGCBlock
 			implements Content<GCBlockOp.Type> {
 
 		@Override
@@ -88,7 +94,7 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 					instance.getGenerator()
 					.externalGlobal()
 					.setConstant()
-					.link("o42a_obj_gc_desc", GC_DESC_TYPE));
+					.link("o42a_array_gc_desc", GC_DESC_TYPE));
 			instance.prev().setNull();
 			instance.next().setNull();
 		}

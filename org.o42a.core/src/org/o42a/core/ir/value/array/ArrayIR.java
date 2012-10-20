@@ -22,8 +22,6 @@ package org.o42a.core.ir.value.array;
 import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
-import static org.o42a.core.ir.value.Val.VAL_EXTERNAL;
-import static org.o42a.core.ir.value.Val.VAL_STATIC;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.Generator;
@@ -34,9 +32,8 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.array.ArrayItemsStruct.Op;
+import org.o42a.core.ir.value.array.ArrayItemsIR.Op;
 import org.o42a.core.value.array.Array;
-import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 
 
@@ -47,7 +44,7 @@ public class ArrayIR {
 	private final Array array;
 	private Val val;
 	private Ptr<ValType.Op> valPtr;
-	private ArrayItemsStruct items;
+	private ArrayItemsIR items;
 	private FuncPtr<ObjectValFunc> constructor;
 
 	public ArrayIR(ArrayIRGenerator generator, Array array) {
@@ -80,14 +77,12 @@ public class ArrayIR {
 					new Val(array.getValueStruct(), VAL_CONDITION, 0, 0L);
 		}
 
-		final ArrayItemsStruct items = getItems();
+		final ArrayItemsIR items = items();
 		final Data<Op> itemsData = items.data(getGenerator());
-		final DataLayout itemsLayout = itemsData.getLayout();
 
 		return this.val = new Val(
 				array.getValueStruct(),
-				VAL_CONDITION | VAL_EXTERNAL | VAL_STATIC
-				| (itemsLayout.alignmentShift() << 8),
+				VAL_CONDITION,
 				items.length(),
 				itemsData.getPointer().toAny());
 	}
@@ -107,7 +102,7 @@ public class ArrayIR {
 		return this.valPtr = global.getPointer();
 	}
 
-	public final ArrayItemsStruct getItems() {
+	public final ArrayItemsIR items() {
 		assert !getArray().isEmpty() :
 			"Empty array doesn't have any items";
 
@@ -115,14 +110,12 @@ public class ArrayIR {
 			return this.items;
 		}
 
-		this.items = new ArrayItemsStruct(this);
-		getGenerator()
-		.newGlobal()
-		.dontExport()
-		.setConstant(!getArray().isVariable())
-		.struct(this.items);
+		final ArrayItemsIRContainer itemsContainer =
+				new ArrayItemsIRContainer(this);
 
-		return this.items;
+		getGenerator().newGlobal().dontExport().struct(itemsContainer);
+
+		return this.items = itemsContainer.items();
 	}
 
 	public final FuncPtr<ObjectValFunc> getConstructor() {

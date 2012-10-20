@@ -30,6 +30,7 @@ import org.o42a.util.string.ID;
 public final class GCBlockOp extends StructOp<GCBlockOp> {
 
 	public static final Type GC_BLOCK_TYPE = new Type();
+	public static final ID GC_BLOCK_ID = ID.id("gc_block");
 
 	private GCBlockOp(StructWriter<GCBlockOp> writer) {
 		super(writer);
