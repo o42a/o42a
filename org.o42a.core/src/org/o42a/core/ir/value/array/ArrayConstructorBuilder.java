@@ -19,11 +19,9 @@
 */
 package org.o42a.core.ir.value.array;
 
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.op.CodeDirs.codeDirs;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValAllocFunc.VAL_ALLOC;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
@@ -33,6 +31,7 @@ import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
@@ -95,7 +94,8 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 	private void allocateItems(ValDirs dirs) {
 
 		final Array array = this.arrayIR.getArray();
-		final Block code = dirs.code();
+		final CodeDirs arrayDirs = dirs.dirs();
+		final Block code = arrayDirs.code();
 		final ArrayItem[] items = array.getItems();
 		final FuncPtr<ValAllocFunc> func =
 				dirs.getGenerator()
@@ -106,38 +106,31 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 				.allocate(dirs, items.length)
 				.toPtr(ITEMS_ID, code);
 
-		dirs.value().holder().hold(code);
-		for (int i = 0; i < items.length; ++i) {
-
-			final AnyRecOp next = data.offset(null, code, code.int32(1));
-
-			allocateItem(dirs, data, next, items[i], i);
-			data = next;
+		allocateItem(arrayDirs, data, items[0], 0);
+		for (int i = 1; i < items.length; ++i) {
+			data = data.offset(null, code, code.int32(1));
+			allocateItem(arrayDirs, data, items[i], i);
 		}
+
+		dirs.value().holder().hold(code);
 	}
 
 	private void allocateItem(
-			ValDirs arrayDirs,
+			CodeDirs arrayDirs,
 			AnyRecOp data,
-			AnyRecOp next,
 			ArrayItem item,
 			int index) {
 
 		final Block failure = arrayDirs.addBlock("item_" + index + "_failed");
-		final ValDirs dirs = codeDirs(
-				arrayDirs.getBuilder(),
-				arrayDirs.code(),
-				failure.head()).value(arrayDirs);
+		final CodeDirs dirs = arrayDirs.setFalseDir(failure.head());
 		final Code code = dirs.code();
 		final RefOp itemOp =
 				item.getValueRef().op(dirs.getBuilder().host());
 		final ObjectOp itemValue =
-				itemOp.target(dirs.dirs())
-				.materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()));
+				itemOp.target(dirs)
+				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
 
-		next.store(code, code.allOnesPtr(), ATOMIC);
-		code.releaseBarrier();
-		data.store(code, itemValue.toAny(null, code), ATOMIC);
+		data.store(code, itemValue.toAny(null, code));
 
 		dirs.done();
 

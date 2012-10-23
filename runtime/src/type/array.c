@@ -26,7 +26,7 @@
 
 
 // Last array items consists of all ones.
-#define O42A_ARRAY_END ((o42a_obj_t *const) ~0L)
+#define O42A_ARRAY_END ((const o42a_array_t) ~0L)
 
 const o42a_val_type_t o42a_val_type_array = O42A_VAL_TYPE("array");
 
@@ -77,13 +77,10 @@ o42a_array_t *o42a_array_alloc(o42a_val_t *value, const uint32_t size) {
 		O42A_RETURN NULL;
 	}
 
-	array[0] = O42A_ARRAY_END;
+	array[size] = O42A_ARRAY_END;
 	value->value.v_ptr = array;
 	value->length = size;
-	__sync_synchronize();
-	value->flags =
-			O42A_TRUE | O42A_VAL_EXTERNAL
-			| (sizeof(o42a_array_t) == 8 ? 0x30 : 0x20);
+	value->flags = O42A_TRUE;
 
 	O42A_RETURN array;
 }
