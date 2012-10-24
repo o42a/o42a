@@ -23,10 +23,10 @@ Use namespace 'Test'
 Length := test
 ==============
 
-Name = "Array Length"
+Name = "Array length"
 
 Print error '  ' [name] nl
 
 Assert [[1, rt-integer '2']: length == 2] "Wrong constant array length"
 Assert [array (`integer) [[1, rt-integer '2', 3]]: length == 3]
-_ "Wrong length of variable array"
+_"Wrong length of variable array"

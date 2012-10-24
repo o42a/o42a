@@ -116,7 +116,8 @@ abstract class ArrayBuilder {
 		return new Array(
 				this.constructor,
 				distributor,
-				finalValueStruct, items);
+				finalValueStruct,
+				items);
 	}
 
 	protected abstract ArrayValueType arrayType();
