@@ -135,11 +135,13 @@ final class ArrayAsRow extends AnnotatedBuiltin {
 			arrayVal = array().op(host).writeValue(arrayDirs);
 		}
 
-		dirs.returnValue(dirs.value().store(
-				code,
-				arrayVal.value(null, code)
-				.toPtr(null, code)
-				.load(null, code)));
+		dirs.returnValue(
+				dirs.value().store(
+						code,
+						arrayVal.value(null, code)
+						.toPtr(null, code)
+						.load(null, code),
+						arrayVal.loadLength(null, code)));
 
 		arrayDirs.done();
 	}
