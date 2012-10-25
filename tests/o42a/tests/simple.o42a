@@ -24,7 +24,7 @@ Use namespace 'Test'
 Simple := test
 ==============
 
-Name = "Simple Tests"
+Name = "Simple tests"
 
 Print error [name] nl
 Run tests

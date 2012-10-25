@@ -23,7 +23,7 @@ Use namespace 'Test'
 Arrays := test
 ==============
 
-Name = "Array Tests"
+Name = "Arrays"
 
 Print error [name] nl
 Run tests

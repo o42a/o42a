@@ -24,7 +24,7 @@ Use namespace 'Test'
 Values := test
 ==============
 
-Name = "Imperative Values"
+Name = "Values"
 
 Print error '  ' [name] nl
 Run tests

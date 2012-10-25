@@ -24,7 +24,7 @@ Use namespace 'Test'
 Conditions := test
 ==================
 
-Name = "Imperative Conditions"
+Name = "Conditions"
 
 Print error '  ' [name] nl
 Run tests

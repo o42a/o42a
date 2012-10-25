@@ -29,7 +29,7 @@ Print error '  ' [name] nl
 Run tests
 
 Unary conditions := test (
-  Name = "Unary Conditions"
+  Name = "Unary conditions"
   Print error '    ' [name] nl
 
   Assert [+5] 'Unary integer constant plus is not true'
@@ -48,7 +48,7 @@ Equal := test (
 )
 
 Not equal := test (
-  Name = "Not Equal"
+  Name = "Not equal"
   Print error '    ' [name] nl
 
   Assert [rt-integer '5' <> rt-integer '6'] 'Integers equal'

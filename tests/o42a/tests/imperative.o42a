@@ -24,7 +24,7 @@ Use namespace 'Test'
 Imperative := test
 ==================
 
-Name = "Imperative Tests"
+Name = "Imperatives"
 
 Print error [name] nl
 Run tests

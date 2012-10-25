@@ -55,7 +55,7 @@ Equality := test (
 )
 
 Non-equality := test (
-  Name = "Non-Equality"
+  Name = "Non-equality"
   Print error '    ' [name] nl
 
   Assert [rt-string 'abc' <> "b"] "Strings non-equality failed"
@@ -73,7 +73,7 @@ Less := test (
 )
 
 Less or equal := test (
-  Name = "Less or Equal"
+  Name = "Less or equal"
   Print error '    ' [name] nl
 
   Assert [rt-string 'a' <= "ab"] "Shorter string is not less or equal"
@@ -93,7 +93,7 @@ Greater := test (
 )
 
 Greater or equal := test (
-  Name = "Greater or Equal"
+  Name = "Greater or equal"
   Print error '    ' [name] nl
 
   Assert [rt-string 'ab' >= "a"] "Longer string is not greater or equal"
