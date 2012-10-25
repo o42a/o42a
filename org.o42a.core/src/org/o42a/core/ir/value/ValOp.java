@@ -314,6 +314,25 @@ public abstract class ValOp extends IROp {
 		return this;
 	}
 
+	public final ValOp store(
+			Code code,
+			AnyOp pointer,
+			Int32op length) {
+		assert getValueStructIR().hasValue() :
+			"Can not store value to " + getValueType();
+		assert getValueStructIR().hasLength() :
+			"Can not store pointer to value of scalar type: "
+			+ getValueType();
+
+		flags(code).store(code, Val.VAL_CONDITION);
+		length(null, code).store(code, length);
+		value(null, code).toPtr(null, code).store(code, pointer);
+
+		holder().hold(code);
+
+		return this;
+	}
+
 	public final ValOp phi(Code code) {
 
 		final Val constant = getConstant();
