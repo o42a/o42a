@@ -56,9 +56,7 @@ public class ArrayAsRowTest extends CompilerTestCase {
 				"A := array (`integer) (False, = [1, 2, 3])",
 				"B := a: as row");
 
-		final Array array = definiteValue(field("b"));
-
-		assertThat(array.length(), is(0));
+		assertFalseValue(valueOf(field("b")));
 	}
 
 }
