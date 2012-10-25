@@ -226,7 +226,7 @@ public final class Path {
 			if (oldTemplate == newTemplate) {
 				return path;
 			}
-			return new Path(getKind(), true, newTemplate, path.getSteps());
+			return new Path(ABSOLUTE_PATH, true, newTemplate, path.getSteps());
 		}
 
 		return new Path(
@@ -243,7 +243,7 @@ public final class Path {
 		if (isAbsolute() && getTemplate() == null) {
 			return this;
 		}
-		return prefix.getBoundPath().getRawPath().append(this);
+		return prefix.getPrefix().append(this);
 	}
 
 	public final Step lastStep() {
