@@ -29,7 +29,7 @@ Print error '  ' [name] nl
 Run tests
 
 Unary conditions := test (
-  Name = "Unary Conditions"
+  Name = "Unary conditions"
   Print error '    ' [name] nl
 
   Assert [+rt-float '3.13'] 'Unary float plus is not true'
@@ -45,7 +45,7 @@ Equal := test (
 )
 
 Not equal := test (
-  Name = "Not Equal"
+  Name = "Not equal"
   Print error '    ' [name] nl
 
   Assert [rt-float '5.1' <> rt-float '5.2'] 'Floats equal'
@@ -72,25 +72,25 @@ Arithmetics := test (
   Print error '    ' [name] nl
 
   Assert [rt-float '5.5' + float '6.25' == float '11.75']
-  _ 'Float addition failed'
+  _'Float addition failed'
   Assert [rt-float '6.5' - float '5' == float '1.5']
-  _ 'Float subtraction failed'
+  _'Float subtraction failed'
   Assert [rt-float '5.25' * float '6' == float '31.5' ]
-  _ 'Float multiplication failed'
+  _'Float multiplication failed'
   Assert [rt-float '7.5' / float '2.5' == float '3']
-  _ 'Float division failed'
+  _'Float division failed'
 )
 
 Mixed arithmetics := test (
-  Name = "Mixed Arithmetics"
+  Name = "Mixed arithmetics"
   Print error '    ' [name] nl
 
   Assert [rt-float '5.5' + 6 == float '11.5']
-  _ 'Float and integer addition failed'
+  _'Float and integer addition failed'
   Assert [rt-float '6.5' - 5 == float '1.5']
-  _ 'Float and integer subtraction failed'
+  _'Float and integer subtraction failed'
   Assert [rt-float '5.25' * 6 == float '31.5' ]
-  _ 'Float and integer multiplication failed'
+  _'Float and integer multiplication failed'
   Assert [rt-float '9.4' / 2 == float '4.7']
-  _ 'Float and integer division failed'
+  _'Float and integer division failed'
 )

@@ -23,7 +23,7 @@ Use namespace 'Test'
 Keepers := test
 ===============
 
-Name = "Keeper Tests"
+Name = "Keepers"
 
 Print error [name] nl
 Run tests

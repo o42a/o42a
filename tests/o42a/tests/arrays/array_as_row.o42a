@@ -39,5 +39,5 @@ Row := array: as row
   
   Array [rt-integer '2'] = "new2"
   Assert [row [2] == "new2"]
-  "Wrong value assigned to row item with run-time index"
+  _"Wrong value assigned to row item with run-time index"
 }

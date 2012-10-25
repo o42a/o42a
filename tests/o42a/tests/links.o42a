@@ -23,13 +23,13 @@ Use namespace 'Test'
 Links := test
 =============
 
-Name = "Link Tests"
+Name = "Links"
 
 Print error [name] nl
 Run tests
 
 Reference := test (
-  Name = "Reference Link"
+  Name = "Reference link"
   Print error '  ' [name] nl
 
   Value := ``1
@@ -43,7 +43,7 @@ Reference := test (
 )
 
 Expression := test (
-  Name = "Expression Link"
+  Name = "Expression link"
   Print error '  ' [name] nl
 
   Value := ``1
@@ -57,7 +57,7 @@ Expression := test (
 )
 
 Target and body := test (
-  Name = "Target and Body"
+  Name = "Target and body"
   Print error '  ' [name] nl
   
   Static link := link (`integer) [1]

@@ -23,7 +23,7 @@ Use namespace 'Test'
 Variables := test
 =================
 
-Name = "Variable Tests"
+Name = "Variables"
 
 Print error [name] nl
 Run tests
