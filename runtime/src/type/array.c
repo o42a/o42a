@@ -128,6 +128,7 @@ void o42a_array_of_duplicates(
 
 	do {
 		(*array) = item;
+		++array;
 	} while (array < end);
 
 	O42A_RETURN;
