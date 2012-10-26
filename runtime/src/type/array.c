@@ -106,6 +106,33 @@ void o42a_array_copy(const o42a_val_t *const from, o42a_val_t *const to) {
 	O42A_RETURN;
 }
 
+void o42a_array_of_duplicates(
+		o42a_val_t *const value,
+		uint32_t size,
+		o42a_array_t item) {
+	O42A_ENTER(return);
+
+	if (!size) {
+		value->flags = O42A_TRUE;
+		value->length = 0;
+		O42A_RETURN;
+	}
+
+	o42a_array_t *array = o42a_array_alloc(value, size);
+
+	if (!array) {
+		O42A_RETURN;
+	}
+
+	o42a_array_t *const end = array + size;
+
+	do {
+		(*array) = item;
+	} while (array < end);
+
+	O42A_RETURN;
+}
+
 void o42a_array_mark(const volatile o42a_val_t *const value) {
 	O42A_ENTER(return);
 
