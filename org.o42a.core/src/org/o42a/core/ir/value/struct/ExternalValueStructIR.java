@@ -93,11 +93,6 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 	}
 
 	@Override
-	public ValHolder volatileValHolder(ValOp value) {
-		return new ExternValHolder(value);
-	}
-
-	@Override
 	public ValHolder valTrap(ValOp value) {
 		return new ExternValTrap(value);
 	}

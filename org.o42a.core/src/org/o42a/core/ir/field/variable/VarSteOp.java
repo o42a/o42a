@@ -24,7 +24,7 @@ import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.value.ValHolderFactory.VOLATILE_VAL_HOLDER;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
@@ -93,7 +93,7 @@ public final class VarSteOp extends FldOp {
 
 		final ValDirs valDirs = dirs.nested().value(
 				host().getAscendant().value().getValueStruct(),
-				VOLATILE_VAL_HOLDER);
+				TEMP_VAL_HOLDER);
 		final Block code = valDirs.code();
 		final ValOp value = host().value().writeValue(valDirs);
 

@@ -42,11 +42,6 @@ public abstract class SingleValueStructIR<T>
 	}
 
 	@Override
-	public ValHolder volatileValHolder(ValOp value) {
-		return NO_VAL_HOLDER;
-	}
-
-	@Override
 	public ValHolder valTrap(ValOp value) {
 		return NO_VAL_HOLDER;
 	}
