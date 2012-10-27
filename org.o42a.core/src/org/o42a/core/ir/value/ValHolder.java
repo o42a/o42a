@@ -27,8 +27,36 @@ public abstract class ValHolder {
 
 	public static final ValHolder NO_VAL_HOLDER = NoValHolder.INSTANCE;
 
-	public abstract void set(Code code);
+	private final ValOp value;
 
-	public abstract void hold(Code code);
+	public ValHolder(ValOp value) {
+		this.value = value;
+	}
+
+	public final void set(Code code) {
+		if (holdable(this.value)) {
+			setValue(code, this.value);
+		}
+	}
+
+	public final void hold(Code code) {
+		if (holdable(this.value)) {
+			holdValue(code, this.value);
+		}
+	}
+
+	public abstract boolean holdable(ValOp value);
+
+	@Override
+	public String toString() {
+		if (this.value == null) {
+			return super.toString();
+		}
+		return getClass().getSimpleName() + '[' + this.value + ']';
+	}
+
+	protected abstract void setValue(Code code, ValOp value);
+
+	protected abstract void holdValue(Code code, ValOp value);
 
 }

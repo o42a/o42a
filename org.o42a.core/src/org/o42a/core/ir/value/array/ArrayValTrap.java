@@ -26,27 +26,22 @@ import org.o42a.core.ir.value.ValOp;
 
 final class ArrayValTrap extends ValHolder {
 
-	private final ValOp value;
-
 	ArrayValTrap(ValOp value) {
-		this.value = value;
+		super(value);
 	}
 
 	@Override
-	public void set(Code code) {
+	public boolean holdable(ValOp value) {
+		return !value.isConstant();
 	}
 
 	@Override
-	public void hold(Code code) {
-		this.value.useArrayPointer(code);
+	protected void setValue(Code code, ValOp value) {
 	}
 
 	@Override
-	public String toString() {
-		if (this.value == null) {
-			return super.toString();
-		}
-		return "ArrayValTrap[" + this.value + ']';
+	protected void holdValue(Code code, ValOp value) {
+		value.useArrayPointer(code);
 	}
 
 }

@@ -27,36 +27,32 @@ import org.o42a.core.ir.value.ValOp;
 
 final class LinkValHolder extends ValHolder {
 
-	private final ValOp value;
 	private UnuseLinkVal disposal;
 
 	LinkValHolder(ValOp value) {
-		this.value = value;
+		super(value);
 	}
 
 	@Override
-	public void set(Code code) {
-		addDisposal();
+	public boolean holdable(ValOp value) {
+		return true;
 	}
 
 	@Override
-	public void hold(Code code) {
-		this.value.useObjectPointer(code);
-		addDisposal();
+	protected void setValue(Code code, ValOp value) {
+		addDisposal(value);
 	}
 
 	@Override
-	public String toString() {
-		if (this.value == null) {
-			return super.toString();
-		}
-		return "LinkValHolder[" + this.value + ']';
+	protected void holdValue(Code code, ValOp value) {
+		value.useObjectPointer(code);
+		addDisposal(value);
 	}
 
-	private void addDisposal() {
+	private void addDisposal(ValOp value) {
 		if (this.disposal == null) {
-			this.disposal = new UnuseLinkVal(this.value);
-			this.value.getAllocator().addDisposal(this.disposal);
+			this.disposal = new UnuseLinkVal(value);
+			value.getAllocator().addDisposal(this.disposal);
 		}
 	}
 

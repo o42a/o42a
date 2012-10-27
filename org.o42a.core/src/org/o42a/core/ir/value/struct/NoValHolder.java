@@ -21,6 +21,7 @@ package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.value.ValHolder;
+import org.o42a.core.ir.value.ValOp;
 
 
 public final class NoValHolder extends ValHolder {
@@ -28,19 +29,25 @@ public final class NoValHolder extends ValHolder {
 	public static final NoValHolder INSTANCE = new NoValHolder();
 
 	private NoValHolder() {
+		super(null);
 	}
 
 	@Override
-	public void set(Code code) {
-	}
-
-	@Override
-	public void hold(Code code) {
+	public boolean holdable(ValOp value) {
+		return false;
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName();
+		return "NoValHolder";
+	}
+
+	@Override
+	protected void setValue(Code code, ValOp value) {
+	}
+
+	@Override
+	protected void holdValue(Code code, ValOp value) {
 	}
 
 }

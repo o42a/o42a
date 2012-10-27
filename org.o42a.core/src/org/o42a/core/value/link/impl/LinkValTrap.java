@@ -26,27 +26,22 @@ import org.o42a.core.ir.value.ValOp;
 
 final class LinkValTrap extends ValHolder {
 
-	private final ValOp value;
-
 	public LinkValTrap(ValOp value) {
-		this.value = value;
+		super(value);
 	}
 
 	@Override
-	public void set(Code code) {
+	public boolean holdable(ValOp value) {
+		return true;
 	}
 
 	@Override
-	public void hold(Code code) {
-		this.value.useObjectPointer(code);
+	protected void setValue(Code code, ValOp value) {
 	}
 
 	@Override
-	public String toString() {
-		if (this.value == null) {
-			return super.toString();
-		}
-		return "LinkValTrap[" + this.value + ']';
+	protected void holdValue(Code code, ValOp value) {
+		value.useObjectPointer(code);
 	}
 
 }
