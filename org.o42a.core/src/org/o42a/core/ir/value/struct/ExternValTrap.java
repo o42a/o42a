@@ -26,27 +26,22 @@ import org.o42a.core.ir.value.ValOp;
 
 public class ExternValTrap extends ValHolder {
 
-	private final ValOp value;
-
 	public ExternValTrap(ValOp value) {
-		this.value = value;
+		super(value);
 	}
 
 	@Override
-	public void set(Code code) {
+	public boolean holdable(ValOp value) {
+		return !value.isConstant();
 	}
 
 	@Override
-	public void hold(Code code) {
-		this.value.useRefCounted(code);
+	protected void setValue(Code code, ValOp value) {
 	}
 
 	@Override
-	public String toString() {
-		if (this.value == null) {
-			return super.toString();
-		}
-		return "ExternValTrap[" + this.value + ']';
+	protected void holdValue(Code code, ValOp value) {
+		value.useRefCounted(code);
 	}
 
 }

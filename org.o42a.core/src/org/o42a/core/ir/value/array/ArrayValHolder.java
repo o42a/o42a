@@ -27,36 +27,32 @@ import org.o42a.core.ir.value.ValOp;
 
 final class ArrayValHolder extends ValHolder {
 
-	private final ValOp value;
 	private UnuseArrayVal disposal;
 
 	ArrayValHolder(ValOp value) {
-		this.value = value;
+		super(value);
 	}
 
 	@Override
-	public void set(Code code) {
-		addDisposal();
+	public boolean holdable(ValOp value) {
+		return !value.isConstant();
 	}
 
 	@Override
-	public void hold(Code code) {
-		this.value.useArrayPointer(code);
-		addDisposal();
+	protected void setValue(Code code, ValOp value) {
+		addDisposal(value);
 	}
 
 	@Override
-	public String toString() {
-		if (this.value == null) {
-			return super.toString();
-		}
-		return "ArrayValHolder[" + this.value + ']';
+	protected void holdValue(Code code, ValOp value) {
+		value.useArrayPointer(code);
+		addDisposal(value);
 	}
 
-	private void addDisposal() {
+	private void addDisposal(ValOp value) {
 		if (this.disposal == null) {
-			this.disposal = new UnuseArrayVal(this.value);
-			this.value.getAllocator().addDisposal(this.disposal);
+			this.disposal = new UnuseArrayVal(value);
+			value.getAllocator().addDisposal(this.disposal);
 		}
 	}
 

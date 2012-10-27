@@ -27,41 +27,32 @@ import org.o42a.core.ir.value.ValOp;
 
 public final class ExternValHolder extends ValHolder {
 
-	private final ValOp value;
 	private UnuseExternVal disposal;
-	private final boolean volatileHolder;
 
-	public ExternValHolder(ValOp value, boolean volatileHolder) {
-		this.value = value;
-		this.volatileHolder = volatileHolder;
+	public ExternValHolder(ValOp value) {
+		super(value);
 	}
 
 	@Override
-	public void set(Code code) {
-		addDisposal();
+	public boolean holdable(ValOp value) {
+		return !value.isConstant();
 	}
 
 	@Override
-	public void hold(Code code) {
-		if (!this.volatileHolder) {
-			return;
-		}
-		this.value.useRefCounted(code);
-		addDisposal();
+	protected void setValue(Code code, ValOp value) {
+		addDisposal(value);
 	}
 
 	@Override
-	public String toString() {
-		if (!this.volatileHolder) {
-			return "ExternValHolder[" + this.value + ']';
-		}
-		return "VolatileExternValHolder[" + this.value + ']';
+	protected void holdValue(Code code, ValOp value) {
+		value.useRefCounted(code);
+		addDisposal(value);
 	}
 
-	private void addDisposal() {
+	private void addDisposal(ValOp value) {
 		if (this.disposal == null) {
-			this.disposal = new UnuseExternVal(this.value);
-			this.value.getAllocator().addDisposal(this.disposal);
+			this.disposal = new UnuseExternVal(value);
+			value.getAllocator().addDisposal(this.disposal);
 		}
 	}
 

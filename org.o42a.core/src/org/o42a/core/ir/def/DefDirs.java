@@ -155,7 +155,9 @@ public class DefDirs {
 		private void store(Code code, ValOp result) {
 			assert getValueStruct().assertAssignableFrom(
 					result.getValueStruct());
-			if (this.result == null && valueAccessibleBy(code)) {
+			if (this.result == null
+					&& valueAccessibleBy(code)
+					&& !holdableValue(result)) {
 				this.result = result;
 				this.singleResultInset = code.inset("store_def");
 				return;
@@ -171,11 +173,23 @@ public class DefDirs {
 			value().store(code, result);
 		}
 
+
 		private boolean valueAccessibleBy(Code code) {
 			if (!valDirs().value().isStackAllocated()) {
 				return true;
 			}
 			return code.getAllocator() == valDirs().code().getAllocator();
+		}
+
+		private boolean holdableValue(ValOp result) {
+
+			final ValOp value = valDirs().value();
+
+			if (value == result) {
+				return false;
+			}
+
+			return value.holder().holdable(result);
 		}
 
 	}
