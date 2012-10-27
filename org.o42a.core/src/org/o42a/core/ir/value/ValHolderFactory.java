@@ -40,15 +40,6 @@ public interface ValHolderFactory {
 
 	};
 
-	ValHolderFactory VOLATILE_VAL_HOLDER = new ValHolderFactory() {
-
-		@Override
-		public ValHolder createValHolder(ValOp value) {
-			return value.getValueStructIR().volatileValHolder(value);
-		}
-
-	};
-
 	ValHolderFactory VAL_TRAP = new ValHolderFactory() {
 
 		@Override

@@ -83,11 +83,6 @@ public final class ArrayValueStructIR
 	}
 
 	@Override
-	public ValHolder volatileValHolder(ValOp value) {
-		return new ArrayValHolder(value);
-	}
-
-	@Override
 	public ValHolder valTrap(ValOp value) {
 		return new ArrayValTrap(value);
 	}

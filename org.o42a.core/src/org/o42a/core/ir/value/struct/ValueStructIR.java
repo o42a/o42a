@@ -87,8 +87,6 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	public abstract ValHolder tempValHolder(ValOp value);
 
-	public abstract ValHolder volatileValHolder(ValOp value);
-
 	public abstract ValHolder valTrap(ValOp value);
 
 	@Override
