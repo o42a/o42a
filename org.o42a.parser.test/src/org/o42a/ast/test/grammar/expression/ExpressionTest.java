@@ -123,10 +123,18 @@ public class ExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void binaryMetaExpression() {
+	public void binaryWithMacroExpansion() {
 		to(BinaryNode.class, parse("#a + b"));
 		to(BinaryNode.class, parse("a + #b"));
 		to(BinaryNode.class, parse("#a + #b"));
+	}
+
+	@Test
+	public void binaryWithGroup() {
+		to(BinaryNode.class, parse("a\\ + b"));
+		to(BinaryNode.class, parse("a + b\\"));
+		to(BinaryNode.class, parse("a\\ + b\\"));
+		to(BinaryNode.class, parse("a\\ f + b\\ g"));
 	}
 
 	private static void assertUnaries(

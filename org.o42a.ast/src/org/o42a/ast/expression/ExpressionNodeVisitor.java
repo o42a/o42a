@@ -27,13 +27,15 @@ import org.o42a.ast.type.ValueTypeNode;
 
 public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
+	R visitDecimal(DecimalNode decimal, P p);
+
+	R visitText(TextNode text, P p);
+
 	R visitAscendants(AscendantsNode ascendants, P p);
 
 	R visitValueType(ValueTypeNode valueType, P p);
 
-	R visitDecimal(DecimalNode decimal, P p);
-
-	R visitText(TextNode text, P p);
+	R visitGroup(GroupNode group, P p);
 
 	R visitUnary(UnaryNode expression, P p);
 
