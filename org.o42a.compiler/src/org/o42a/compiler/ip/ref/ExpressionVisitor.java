@@ -91,6 +91,43 @@ public final class ExpressionVisitor
 	}
 
 	@Override
+	public Ref visitAscendants(AscendantsNode ascendants, Distributor p) {
+		if (!ascendants.hasSamples()) {
+
+			final AncestorTypeRef ancestor =
+					ip().typeIp().parseAncestor(ascendants, p);
+
+			if (ancestor.isImplied()) {
+				return super.visitAscendants(ascendants, p);
+			}
+
+			return ancestor.getAncestor().getRef();
+		}
+
+		return ip().phraseIp().ascendantsPhrase(ascendants, p).toRef();
+	}
+
+	@Override
+	public Ref visitValueType(ValueTypeNode valueType, Distributor p) {
+
+		final Phrase phrase =
+				ip()
+				.phraseIp()
+				.valueTypePhrase(valueType, p, this.typeConsumer);
+
+		if (phrase == null) {
+			return super.visitValueType(valueType, p);
+		}
+
+		return phrase.toRef();
+	}
+
+	@Override
+	public Ref visitGroup(GroupNode group, Distributor p) {
+		return group.getExpression().accept(this, p);
+	}
+
+	@Override
 	public Ref visitUnary(UnaryNode expression, Distributor p) {
 		if (expression.getOperand() == null) {
 			return null;
@@ -142,38 +179,6 @@ public final class ExpressionVisitor
 		}
 
 		return super.visitParentheses(parentheses, p);
-	}
-
-	@Override
-	public Ref visitAscendants(AscendantsNode ascendants, Distributor p) {
-		if (!ascendants.hasSamples()) {
-
-			final AncestorTypeRef ancestor =
-					ip().typeIp().parseAncestor(ascendants, p);
-
-			if (ancestor.isImplied()) {
-				return super.visitAscendants(ascendants, p);
-			}
-
-			return ancestor.getAncestor().getRef();
-		}
-
-		return ip().phraseIp().ascendantsPhrase(ascendants, p).toRef();
-	}
-
-	@Override
-	public Ref visitValueType(ValueTypeNode valueType, Distributor p) {
-
-		final Phrase phrase =
-				ip()
-				.phraseIp()
-				.valueTypePhrase(valueType, p, this.typeConsumer);
-
-		if (phrase == null) {
-			return super.visitValueType(valueType, p);
-		}
-
-		return phrase.toRef();
 	}
 
 	@Override
