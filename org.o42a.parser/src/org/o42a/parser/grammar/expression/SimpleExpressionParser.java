@@ -23,6 +23,7 @@ import static org.o42a.parser.Grammar.*;
 import static org.o42a.util.string.Characters.MINUS;
 
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.GroupNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.type.AscendantsNode;
@@ -125,13 +126,23 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 	private ExpressionNode parse(ParserContext context, ExpressionNode base) {
 
 		ExpressionNode expression = base;
+		int next = context.next();
 
 		for (;;) {
+			switch (next) {
+			case '\\':
 
-			final int c = context.next();
-			final int next;
+				final GroupNode group =
+						context.parse(new GroupParser(expression));
 
-			switch (c) {
+				if (group == null) {
+					return expression;
+				}
+
+				expression = group;
+				next = context.pendingOrNext();
+
+				continue;
 			case '`':
 
 				final BodyRefNode bodyRef = context.parse(bodyRef(expression));
@@ -149,9 +160,9 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 				}
 
 				expression = bodyRef;
-				next = context.next();
+				next = context.pendingOrNext();
 
-				break;
+				continue;
 			case '-':
 
 				final DerefNode deref = context.parse(deref(expression));
@@ -169,11 +180,9 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 				}
 
 				expression = deref;
-				next = context.next();
+				next = context.pendingOrNext();
 
-				break;
-			default:
-				next = c;
+				continue;
 			}
 
 			switch (next) {
@@ -185,6 +194,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				if (memberRef != null) {
 					expression = memberRef;
+					next = context.pendingOrNext();
 					continue;
 				}
 
@@ -196,6 +206,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				if (adapterRef != null) {
 					expression = adapterRef;
+					next = context.pendingOrNext();
 					continue;
 				}
 
@@ -209,6 +220,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 					if (valueType != null) {
 						expression = valueType;
+						next = context.pendingOrNext();
 						continue;
 					}
 				}
@@ -217,6 +229,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				if (phrase != null) {
 					expression = phrase;
+					next = context.pendingOrNext();
 					continue;
 				}
 

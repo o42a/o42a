@@ -41,6 +41,21 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
+	public R visitAscendants(AscendantsNode ascendants, P p) {
+		return visitExpression(ascendants, p);
+	}
+
+	@Override
+	public R visitValueType(ValueTypeNode valueType, P p) {
+		return visitExpression(valueType, p);
+	}
+
+	@Override
+	public R visitGroup(GroupNode group, P p) {
+		return visitExpression(group, p);
+	}
+
+	@Override
 	public R visitUnary(UnaryNode expression, P p) {
 		return visitExpression(expression, p);
 	}
@@ -53,16 +68,6 @@ public abstract class AbstractExpressionVisitor<R, P>
 	@Override
 	public R visitBinary(BinaryNode expression, P p) {
 		return visitExpression(expression, p);
-	}
-
-	@Override
-	public R visitAscendants(AscendantsNode ascendants, P p) {
-		return visitExpression(ascendants, p);
-	}
-
-	@Override
-	public R visitValueType(ValueTypeNode valueType, P p) {
-		return visitExpression(valueType, p);
 	}
 
 	@Override
