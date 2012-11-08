@@ -192,7 +192,7 @@ public class CompilerIntrinsics extends Intrinsics {
 		this.consoleModule.createMain(this.user);
 	}
 
-	public void resolveAll(Analyzer analyzer) {
+	public void resolveAll(Analyzer analyzer, CompileErrors errors) {
 		// False object can be used by runtime, so it should always present.
 
 		final FullResolution fullResolution =
@@ -208,7 +208,9 @@ public class CompilerIntrinsics extends Intrinsics {
 			if (consoleUsed()) {
 				this.user.useBy(analyzer, SIMPLE_USAGE);
 			}
-			normalizeAll(analyzer);
+			if (!errors.hasCompileErrors()) {
+				normalizeAll(analyzer);
+			}
 		} finally {
 			fullResolution.end();
 		}

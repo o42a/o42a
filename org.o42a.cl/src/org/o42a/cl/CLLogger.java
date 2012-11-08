@@ -22,10 +22,11 @@ package org.o42a.cl;
 import static org.o42a.cl.CL.COMPILE_ERROR;
 
 import org.o42a.backend.llvm.TerminalLogger;
+import org.o42a.intrinsic.CompileErrors;
 import org.o42a.util.log.LogRecord;
 
 
-final class CLLogger extends TerminalLogger {
+final class CLLogger extends TerminalLogger implements CompileErrors {
 
 	private boolean hasErrors;
 	private boolean abortOnError;
@@ -39,6 +40,11 @@ final class CLLogger extends TerminalLogger {
 			}
 			this.hasErrors = true;
 		}
+	}
+
+	@Override
+	public boolean hasCompileErrors() {
+		return this.hasErrors;
 	}
 
 	public void abortOnError() {

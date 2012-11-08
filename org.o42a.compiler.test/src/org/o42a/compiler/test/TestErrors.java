@@ -27,17 +27,27 @@ import java.util.LinkedList;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.o42a.intrinsic.CompileErrors;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
 
-final class TestErrors extends TestWatcher implements Logger {
+final class TestErrors extends TestWatcher implements Logger, CompileErrors {
 
 	private final LinkedList<String> expectedErrors =
 			new LinkedList<String>();
+	private boolean hasErrors;
+
+	@Override
+	public boolean hasCompileErrors() {
+		return this.hasErrors;
+	}
 
 	@Override
 	public void log(LogRecord record) {
+		if (record.getSeverity().isError()) {
+			this.hasErrors = true;
+		}
 
 		final String code = record.getCode();
 		final String expected = this.expectedErrors.poll();
@@ -71,6 +81,7 @@ final class TestErrors extends TestWatcher implements Logger {
 
 	@Override
 	protected void starting(Description description) {
+		this.hasErrors = false;
 		this.expectedErrors.clear();
 	}
 
