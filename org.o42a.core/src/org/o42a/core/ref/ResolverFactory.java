@@ -22,9 +22,7 @@ package org.o42a.core.ref;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.use.User;
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.ref.common.RoleResolver;
 import org.o42a.core.ref.path.PathWalker;
 
 
@@ -55,13 +53,6 @@ public abstract class ResolverFactory<
 			return resolver();
 		}
 		return createResolver(walker);
-	}
-
-	public final F fullResolver(UserInfo user, RefUsage refUsage) {
-		return createFullResolver(
-				walkingResolver(new RoleResolver(refUsage.getRole())),
-				user.toUser(),
-				refUsage);
 	}
 
 	@Override

@@ -89,7 +89,8 @@ public class Resolver implements LocationInfo {
 	public FullResolver fullResolver(UserInfo user, RefUsage usage) {
 
 		final Resolver resolver =
-				this.factory.walkingResolver(new RoleResolver(usage.getRole()));
+				this.factory.walkingResolver(
+						new RoleResolver(this, usage.getRole()));
 
 		return factory().createFullResolver(resolver, user.toUser(), usage);
 	}
