@@ -21,5 +21,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Equals :=> void
 ===============
 
-What :=< `$$float
-To :=< `$$float
+What :=< $$link (`$$float)
+To :=< $$link (`$$float)

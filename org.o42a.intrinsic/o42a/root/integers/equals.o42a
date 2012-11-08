@@ -21,5 +21,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Equals :=> void
 ===============
 
-What :=< `$$integer
-To :=< `$$integer
+What :=< $$link (`$$integer)
+To :=< $$link (`$$integer)
