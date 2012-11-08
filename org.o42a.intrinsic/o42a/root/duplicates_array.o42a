@@ -24,9 +24,9 @@ Duplicates array :=> $$array
 An array prefilled with the same item.
 ~~~
 
-Size :=< `integer ~~ The size of array.
+Size :=< $$link (`integer) ~~ The size of array.
 
-Duplicate := link (`#item type)
+Duplicate := $$link (`#item type)
 ~~~
 Array item to prefill the array with.
 

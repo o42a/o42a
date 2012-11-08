@@ -21,5 +21,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Compare :=> $$integer
 =====================
 
-What :=< `$$float
-With :=< `$$float
+What :=< $$link (`$$float)
+With :=< $$link (`$$float)
