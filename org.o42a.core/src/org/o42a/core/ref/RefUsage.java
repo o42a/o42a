@@ -38,7 +38,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 	public static final RefUsage DEREF_USAGE =
 			new ResolutionUsage("DerefValue", Role.INSTANCE);
 	public static final RefUsage TYPE_REF_USAGE =
-			new TypeUsage("RefType", Role.PROTOTYPE);
+			new TypeUsage("RefType");
 	public static final RefUsage CONTAINER_REF_USAGE =
 			new ResolutionUsage("RefContainer", Role.INSTANCE);
 	public static final RefUsage TARGET_REF_USAGE =
@@ -102,8 +102,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 
 	private static final class TypeUsage extends RefUsage {
 
-		TypeUsage(String name, Role role) {
-			super(name, role);
+		TypeUsage(String name) {
+			super(name, Role.PROTOTYPE);
 		}
 
 		@Override
