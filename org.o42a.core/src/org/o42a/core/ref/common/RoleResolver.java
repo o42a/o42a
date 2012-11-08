@@ -211,7 +211,11 @@ public class RoleResolver implements PathWalker {
 
 	@Override
 	public boolean done(Container result) {
-		return true;
+		if (getRole().atLeast(getExpectedRole())) {
+			return true;
+		}
+		getExpectedRole().reportMisuseBy(this.user, result);
+		return false;
 	}
 
 	protected boolean updateRole(Role role) {
