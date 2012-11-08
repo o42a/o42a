@@ -73,15 +73,11 @@ public class FullResolver implements UserInfo, LocationInfo {
 		return this.refUsage;
 	}
 
-	@SuppressWarnings("unchecked")
 	public FullResolver setRefUsage(RefUsage refUsage) {
 		if (getRefUsage() == refUsage) {
 			return this;
 		}
-		return this.resolver.factory().createFullResolver(
-				getResolver(),
-				this.user,
-				refUsage);
+		return getResolver().fullResolver(this.user, refUsage);
 	}
 
 	public final CompilerLogger getLogger() {
