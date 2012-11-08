@@ -34,8 +34,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void add() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< `void",
-				"  Right :=< `integer",
+				"  Left :=< link (`void)",
+				"  Right :=< link (`integer)",
 				")",
 				"A := void (",
 				"  <*Eval> Compute (",
@@ -56,8 +56,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void subtract() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< `void",
-				"  Right :=< `integer",
+				"  Left :=< link (`void)",
+				"  Right :=< link (`integer)",
 				")",
 				"A := void (",
 				"  <*Eval> Compute (",
@@ -78,8 +78,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void multiply() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< `void",
-				"  Right :=< `integer",
+				"  Left :=< link (`void)",
+				"  Right :=< link (`integer)",
 				")",
 				"A := void (",
 				"  <*Eval> Compute (",
@@ -100,11 +100,11 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void divide() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< `void",
-				"  Right :=< `integer",
+				"  Left :=< link (`void)",
+				"  Right :=< link (`integer)",
 				")",
 				"A := void (",
-				"  <*Eval> Compute(",
+				"  <*Eval> Compute (",
 				"    <@Operators: divide | eval> Left = void",
 				"    <@Operators: operand> Right = integer",
 				"  )",

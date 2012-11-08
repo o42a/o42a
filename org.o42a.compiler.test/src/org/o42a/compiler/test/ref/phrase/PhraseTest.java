@@ -34,10 +34,10 @@ public class PhraseTest extends CompilerTestCase {
 	public void overriderInsideOverrider() {
 		compile(
 				"A := void(",
-				"  Foo := integer(Bar :=> string. = 1)",
-				"  <*[]> foo = *(<*''> bar = *)",
+				"  Foo := integer (Bar :=> string. = 1)",
+				"  <*[]> foo = * (<*''> Bar = *)",
 				")",
-				"B := a[2]'b'");
+				"B := a [2] 'b'");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -52,9 +52,9 @@ public class PhraseTest extends CompilerTestCase {
 		compile(
 				"A := integer(",
 				"  Foo :=> string",
-				"  <*[]> a(<*''> foo = string)",
+				"  <*[]> a (<*''> Foo = string)",
 				")",
-				"B := a[2]'b'");
+				"B := a [2] 'b'");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -66,18 +66,18 @@ public class PhraseTest extends CompilerTestCase {
 	@Test
 	public void nestedFieldRef() {
 		compile(
-				"A :=> void(",
-				"  Val :=< `integer",
-				"  Sum :=> integer(",
-				"    Inc :=< `integer",
+				"A :=> void (",
+				"  Val :=< link (`integer)",
+				"  Sum :=> integer (",
+				"    Inc :=< link (`integer)",
 				"    = Val + inc",
 				"  )",
-				"  <*> Sum(",
+				"  <*> Sum (",
 				"    <*[]> Inc = ()",
 				"  )",
 				")",
-				"B := a(Val = 1)",
-				"C := b[10]");
+				"B := a (Val = 1)",
+				"C := b [10]");
 
 		assertThat(definiteValue(field("c"), ValueType.INTEGER), is(11L));
 	}
