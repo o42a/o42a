@@ -55,14 +55,11 @@ public class MemberOf extends PlacedPathFragment {
 	public Path expand(PathExpander expander, int index, Scope owner) {
 
 		final AccessorResolver accessorResolver = new AccessorResolver();
-		final RoleResolver roleResolver = new RoleResolver(Role.INSTANCE);
+		final RoleResolver roleResolver = new RoleResolver(this, Role.INSTANCE);
 		final CompoundPathWalker walker =
 				new CompoundPathWalker(roleResolver, accessorResolver);
 
 		if (!expander.replay(walker)) {
-			if (!roleResolver.getRole().atLeast(Role.INSTANCE)) {
-				Role.INSTANCE.reportMisuseBy(this, owner);
-			}
 			return null;
 		}
 

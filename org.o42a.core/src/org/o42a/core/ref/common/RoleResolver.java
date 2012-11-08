@@ -33,15 +33,25 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.link.Link;
 
 
 public class RoleResolver implements PathWalker {
 
 	public static Role expectedRoleOf(Ref ref, Scope scope, Role expectedRole) {
+		return expectedRoleOf(ref, ref, scope, expectedRole);
+	}
+
+	public static Role expectedRoleOf(
+			LocationInfo user,
+			Ref ref,
+			Scope scope,
+			Role expectedRole) {
 		ref.assertCompatible(scope);
 
-		final RoleResolver roleResolver = new RoleResolver(expectedRole);
+		final RoleResolver roleResolver =
+				new RoleResolver(user, expectedRole);
 		final Resolver resolver = scope.walkingResolver(roleResolver);
 		final Resolution resolution = ref.resolve(resolver);
 
@@ -56,6 +66,13 @@ public class RoleResolver implements PathWalker {
 		return expectedRoleOf(ref, ref.getScope(), expectedRole);
 	}
 
+	public static final Role expectedRoleOf(
+			LocationInfo user,
+			Ref ref,
+			Role expectedRole) {
+		return expectedRoleOf(user, ref, ref.getScope(), expectedRole);
+	}
+
 	public static final Role roleOf(Ref ref, Scope scope) {
 		return expectedRoleOf(ref, scope, Role.ANY);
 	}
@@ -64,15 +81,18 @@ public class RoleResolver implements PathWalker {
 		return expectedRoleOf(ref, ref.getScope(), Role.ANY);
 	}
 
+	private final LocationInfo user;
 	private final Role expectedRole;
-	private Role role = INSTANCE;
+	private Role role;
 	private boolean insidePrototype;
 
-	public RoleResolver() {
+	public RoleResolver(LocationInfo user) {
+		this.user = user;
 		this.expectedRole = ANY;
 	}
 
-	public RoleResolver(Role expectedRole) {
+	public RoleResolver(LocationInfo user, Role expectedRole) {
+		this.user = user;
 		this.expectedRole = expectedRole != null ? expectedRole : ANY;
 	}
 
@@ -91,11 +111,14 @@ public class RoleResolver implements PathWalker {
 	@Override
 	public boolean root(BoundPath path, Scope root) {
 		this.insidePrototype = false;
+		this.role = Role.INSTANCE;
 		return true;
 	}
 
 	@Override
 	public boolean start(BoundPath path, Scope start) {
+		this.insidePrototype = false;
+		this.role = Role.INSTANCE;
 		return true;
 	}
 
@@ -128,7 +151,11 @@ public class RoleResolver implements PathWalker {
 		if (this.insidePrototype || !this.role.atLeast(INSTANCE)) {
 			this.insidePrototype = false;
 			// An attempt to access the member of prototype.
-			return updateRole(Role.NONE);
+			if (updateRole(Role.NONE)) {
+				return true;
+			}
+			getExpectedRole().reportMisuseBy(this.user, member);
+			return false;
 		}
 
 		final MemberField field = member.toField();
@@ -142,12 +169,17 @@ public class RoleResolver implements PathWalker {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		return mayProceedInsidePrototype();
+		if (mayProceedInsidePrototype()) {
+			return true;
+		}
+		getExpectedRole().reportMisuseBy(this.user, link);
+		return false;
 	}
 
 	@Override
 	public boolean dep(Obj object, Step step, Ref dependency) {
 		if (!mayProceedInsidePrototype()) {
+			getExpectedRole().reportMisuseBy(dependency, object);
 			return false;
 		}
 
@@ -161,7 +193,11 @@ public class RoleResolver implements PathWalker {
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		return mayProceedInsidePrototype();
+		if (mayProceedInsidePrototype()) {
+			return true;
+		}
+		getExpectedRole().reportMisuseBy(this.user, object);
+		return false;
 	}
 
 	@Override

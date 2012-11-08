@@ -103,13 +103,11 @@ public enum Role {
 			Ref ref,
 			Scope scope) {
 
-		final Role role = expectedRoleOf(ref, scope, this);
+		final Role role = expectedRoleOf(user, ref, scope, this);
 
 		if (role.atLeast(this)) {
 			return true;
 		}
-
-		reportMisuseBy(user, ref);
 
 		return false;
 	}
