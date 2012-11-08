@@ -116,8 +116,7 @@ public class Resolver implements LocationInfo {
 		}
 
 		@Override
-		protected Resolver createResolver(
-				PathWalker walker) {
+		protected Resolver createResolver(PathWalker walker) {
 			return new Resolver(this, getScope(), walker);
 		}
 
