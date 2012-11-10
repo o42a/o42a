@@ -56,16 +56,16 @@ final class SectionAscendantsVisitor
 
 	@Override
 	public AscendantsDefinition visitTypeParameters(
-			TypeParametersNode valueType,
+			TypeParametersNode parameters,
 			Distributor p) {
 
 		AscendantsDefinition ascendants =
-				new AscendantsDefinition(location(p, valueType), p);
+				new AscendantsDefinition(location(p, parameters), p);
 		final TypeParameters typeParams = PLAIN_IP.typeIp().typeParameters(
-				valueType.getValueType(),
+				parameters.getValueType(),
 				p,
 				this.consumer.paramConsumer());
-		final TypeNode ascendantNode = valueType.getAscendant();
+		final TypeNode ascendantNode = parameters.getAscendant();
 
 		if (ascendantNode != null) {
 

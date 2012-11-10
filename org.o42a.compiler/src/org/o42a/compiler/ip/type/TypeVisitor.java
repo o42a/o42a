@@ -88,16 +88,18 @@ public final class TypeVisitor
 	}
 
 	@Override
-	public TypeRef visitTypeParameters(TypeParametersNode valueType, Distributor p) {
+	public TypeRef visitTypeParameters(
+			TypeParametersNode parameters,
+			Distributor p) {
 
-		final TypeNode ascendantNode = valueType.getAscendant();
+		final TypeNode ascendantNode = parameters.getAscendant();
 
 		if (ascendantNode == null) {
-			return super.visitTypeParameters(valueType, p);
+			return super.visitTypeParameters(parameters, p);
 		}
 
 		final ValueStructFinder vsFinder;
-		final InterfaceNode ifaceNode = valueType.getValueType();
+		final InterfaceNode ifaceNode = parameters.getValueType();
 
 		if (this.valueStruct != null) {
 			p.getLogger().error(
