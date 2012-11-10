@@ -27,21 +27,21 @@ public class TypeParametersNode
 		extends AbstractExpressionNode
 		implements TypeNode {
 
-	private final TypeNode ascendant;
-	private final InterfaceNode valueType;
+	private final TypeNode type;
+	private final InterfaceNode parameters;
 
-	public TypeParametersNode(TypeNode ascendant, InterfaceNode valueType) {
-		super(ascendant.getStart(), valueType.getEnd());
-		this.ascendant = ascendant;
-		this.valueType = valueType;
+	public TypeParametersNode(TypeNode type, InterfaceNode parameters) {
+		super(type.getStart(), parameters.getEnd());
+		this.type = type;
+		this.parameters = parameters;
 	}
 
-	public final TypeNode getAscendant() {
-		return this.ascendant;
+	public final TypeNode getType() {
+		return this.type;
 	}
 
-	public final InterfaceNode getValueType() {
-		return this.valueType;
+	public final InterfaceNode getParameters() {
+		return this.parameters;
 	}
 
 	@Override
@@ -56,8 +56,8 @@ public class TypeParametersNode
 
 	@Override
 	public void printContent(StringBuilder out) {
-		this.ascendant.printContent(out);
-		this.valueType.printContent(out);
+		this.type.printContent(out);
+		this.parameters.printContent(out);
 	}
 
 }

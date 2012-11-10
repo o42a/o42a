@@ -21,14 +21,14 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
+import org.o42a.ast.atom.CommaSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
 import org.o42a.util.io.SourcePosition;
 
 
 public class ArgumentNode extends AbstractNode {
 
-	private final SignNode<Separator> separator;
+	private final SignNode<CommaSign> separator;
 	private final ExpressionNode value;
 
 	public ArgumentNode(SourcePosition start) {
@@ -37,15 +37,13 @@ public class ArgumentNode extends AbstractNode {
 		this.value = null;
 	}
 
-	public ArgumentNode(SignNode<Separator> separator, ExpressionNode value) {
-		super(
-				start(separator, value),
-				end(separator, value));
+	public ArgumentNode(SignNode<CommaSign> separator, ExpressionNode value) {
+		super(separator, value);
 		this.separator = separator;
 		this.value = value;
 	}
 
-	public SignNode<Separator> getSeparator() {
+	public SignNode<CommaSign> getSeparator() {
 		return this.separator;
 	}
 
@@ -66,17 +64,6 @@ public class ArgumentNode extends AbstractNode {
 		if (this.value != null) {
 			this.value.printContent(out);
 		}
-	}
-
-	public enum Separator implements SignType {
-
-		COMMA;
-
-		@Override
-		public String getSign() {
-			return ",";
-		}
-
 	}
 
 }

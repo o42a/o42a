@@ -27,28 +27,31 @@ import org.o42a.ast.atom.SignNode;
 
 public class InterfaceNode extends AbstractNode {
 
+	public static final TypeParameterNode[] NO_PARAMETER =
+			new TypeParameterNode[0];
+
 	private final SignNode<ParenthesisSign> opening;
 	private final SignNode<DefinitionKind> kind;
-	private final TypeNode type;
+	private final TypeParameterNode[] parameters;
 	private final SignNode<ParenthesisSign> closing;
 
 	public InterfaceNode(SignNode<DefinitionKind> kind) {
 		super(kind.getStart(), kind.getEnd());
 		this.opening = null;
 		this.kind = kind;
-		this.type = null;
+		this.parameters = NO_PARAMETER;
 		this.closing = null;
 	}
 
 	public InterfaceNode(
 			SignNode<ParenthesisSign> opening,
 			SignNode<DefinitionKind> kind,
-			TypeNode declaredType,
+			TypeParameterNode[] parameters,
 			SignNode<ParenthesisSign> closing) {
 		super(opening.getStart(), closing.getEnd());
 		this.opening = opening;
 		this.kind = kind;
-		this.type = declaredType;
+		this.parameters = parameters;
 		this.closing = closing;
 	}
 
@@ -60,8 +63,8 @@ public class InterfaceNode extends AbstractNode {
 		return this.kind;
 	}
 
-	public TypeNode getType() {
-		return this.type;
+	public TypeParameterNode[] getParameters() {
+		return this.parameters;
 	}
 
 	public SignNode<ParenthesisSign> getClosing() {
@@ -81,8 +84,15 @@ public class InterfaceNode extends AbstractNode {
 		}
 		out.append('(');
 		this.kind.printContent(out);
-		if (this.type != null) {
-			this.type.printContent(out);
+
+		final int numTypes = this.parameters.length;
+
+		if (numTypes > 0) {
+			this.parameters[0].printContent(out);
+			for (int i = 1; i < numTypes; ++i) {
+				out.append(',');
+				this.parameters[i].printContent(out);
+			}
 		}
 		out.append(')');
 	}

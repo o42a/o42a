@@ -191,8 +191,8 @@ public class Grammar {
 	}
 
 	public static final Parser<TypeParametersNode> typeParameters(
-			TypeNode ascendant) {
-		return new TypeParametersParser(ascendant);
+			TypeNode type) {
+		return new TypeParametersParser(type);
 	}
 
 	public static final Parser<TypeDefinitionNode> typeDefinition(

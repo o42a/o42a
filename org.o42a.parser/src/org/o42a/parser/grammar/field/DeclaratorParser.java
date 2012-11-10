@@ -29,6 +29,7 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.type.InterfaceNode;
+import org.o42a.ast.type.TypeParameterNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -60,8 +61,10 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 
 		switch (c) {
 		case '`':
-		case '(':
 			iface = context.parse(INTERFACE);
+			break;
+		case '(':
+			iface = parseTypeParameters(context);
 			break;
 		default:
 			iface = null;
@@ -78,6 +81,30 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 				definitionAssignment,
 				iface,
 				definition);
+	}
+
+	private InterfaceNode parseTypeParameters(ParserContext context) {
+
+		final InterfaceNode iface = context.parse(INTERFACE);
+
+		if (iface == null) {
+			return null;
+		}
+
+		final TypeParameterNode[] parameters = iface.getParameters();
+
+		if (parameters.length == 1) {
+			return iface;
+		}
+
+		if (iface.getParameters().length > 1) {
+			context.getLogger().error(
+					"redundant_type_parameter",
+					iface.getParameters()[1],
+					"Too many type parameters");
+		}
+
+		return null;
 	}
 
 	private static final class DefinitionAssignmentParser

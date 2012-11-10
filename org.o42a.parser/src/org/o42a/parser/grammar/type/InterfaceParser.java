@@ -23,11 +23,11 @@ import static org.o42a.ast.atom.ParenthesisSign.CLOSING_PARENTHESIS;
 import static org.o42a.ast.atom.ParenthesisSign.OPENING_PARENTHESIS;
 import static org.o42a.parser.grammar.type.TypeParser.TYPE;
 
-import org.o42a.ast.atom.ParenthesisSign;
-import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.type.DefinitionKind;
-import org.o42a.ast.type.InterfaceNode;
-import org.o42a.ast.type.TypeNode;
+import java.util.ArrayList;
+
+import org.o42a.ast.atom.*;
+import org.o42a.ast.type.*;
+import org.o42a.parser.Expectations;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -78,32 +78,98 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			return null;
 		}
 
-		final TypeNode type = context.parse(TYPE);
+		final ArrayList<TypeParameterNode> parameters =
+				new ArrayList<TypeParameterNode>();
+		SignNode<ParenthesisSign> closing = null;
+		SignNode<CommaSign> separator = null;
+		SeparatorNodes prevSeparators = null;
 
-		if (type == null) {
-			return null;
-		}
+		final Expectations expectations =
+				context.expectNothing().expect(',').expect(')');
 
-		final SignNode<ParenthesisSign> closing;
+		for (;;) {
 
-		if (context.next() != ')') {
-			closing = null;
-			context.getLogger().notClosed(opening, "(");
-		} else {
+			final TypeParameterNode parameter =
+					expectations.parse(new TypeParameterParser(separator));
 
-			final SourcePosition closingStart = context.current().fix();
+			if (parameter != null) {
+				parameter.addComments(prevSeparators);
+				prevSeparators = null;
+				parameters.add(parameter);
+			} else if (separator != null) {
+
+				final TypeParameterNode emptyArg =
+						new TypeParameterNode(separator.getEnd());
+
+				parameters.add(emptyArg);
+			}
+
+			final SeparatorNodes separators = context.acceptComments(true);
+			final int c = context.next();
+
+			if (c == ')') {
+
+				final SourcePosition closingStart = context.current().fix();
+
+				context.acceptAll();
+
+				closing = new SignNode<ParenthesisSign>(
+						closingStart,
+						context.current().fix(),
+						CLOSING_PARENTHESIS);
+				closing.addComments(prevSeparators);
+				prevSeparators = null;
+				closing.addComments(separators);
+				break;
+			}
+			if (c != ',') {
+				if (separators == null) {
+					context.getLogger().notClosed(opening, "(");
+					context.acceptButLast();
+					break;
+				}
+				prevSeparators = separators;
+				continue;
+			}
+			if (parameter == null && separator == null) {
+
+				final TypeParameterNode emptyArg =
+						new TypeParameterNode(opening.getEnd());
+
+				emptyArg.addComments(separators);
+				parameters.add(emptyArg);
+			}
+
+			final SourcePosition separatorStart = context.current().fix();
 
 			context.acceptAll();
-
-			closing = new SignNode<ParenthesisSign>(
-					closingStart,
+			separator = new SignNode<CommaSign>(
+					separatorStart,
 					context.current().fix(),
-					CLOSING_PARENTHESIS);
+					CommaSign.COMMA);
+			separator.addComments(prevSeparators);
+			prevSeparators = null;
+			separator.addComments(separators);
+			context.acceptComments(true, separator);
 		}
 
-		return context.acceptComments(
+		final InterfaceNode result = context.acceptComments(
 				false,
-				new InterfaceNode(opening, kind, type, closing));
+				new InterfaceNode(
+						opening,
+						kind,
+						parameters.toArray(
+								new TypeParameterNode[parameters.size()]),
+						closing));
+
+		if (parameters.isEmpty()) {
+			context.getLogger().error(
+					"missing_type_parameters",
+					result,
+					"Type parameter not specified");
+		}
+
+		return result;
 	}
 
 	private static final class DefinitionKindParser
@@ -136,4 +202,57 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 		}
 
 	}
+
+	private static final class TypeParameterParser
+			implements Parser<TypeParameterNode> {
+
+		private final SignNode<CommaSign> separator;
+
+		TypeParameterParser(SignNode<CommaSign> separator) {
+			this.separator = separator;
+		}
+
+		@Override
+		public TypeParameterNode parse(ParserContext context) {
+
+			SourcePosition firstUnexpected = null;
+
+			for (;;) {
+
+				final SourcePosition start = context.current().fix();
+				final TypeNode value = context.parse(TYPE);
+
+				if (value != null) {
+					context.logUnexpected(firstUnexpected, start);
+					context.acceptUnexpected();
+					return new TypeParameterNode(this.separator, value);
+				}
+
+				// Unexpected input before the argument.
+				// Possibly multiple lines.
+				if (context.isEOF()) {
+					if (firstUnexpected != null) {
+						context.logUnexpected(firstUnexpected, start);
+					} else {
+						context.getLogger().eof(start);
+					}
+					return null;
+				}
+				if (!context.unexpected()) {
+					context.logUnexpected(firstUnexpected, start);
+					return null;
+				}
+				if (firstUnexpected == null) {
+					firstUnexpected = start;
+				}
+				context.acceptAll();
+				if (context.acceptComments(true) != null) {
+					context.logUnexpected(firstUnexpected, start);
+					firstUnexpected = null;
+				}
+			}
+		}
+
+	}
+
 }
