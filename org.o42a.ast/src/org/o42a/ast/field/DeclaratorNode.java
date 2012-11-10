@@ -23,9 +23,7 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
-import org.o42a.ast.type.DefinitionKind;
-import org.o42a.ast.type.InterfaceNode;
-import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.*;
 
 
 public class DeclaratorNode extends AbstractStatementNode {
@@ -79,7 +77,17 @@ public class DeclaratorNode extends AbstractStatementNode {
 
 		final InterfaceNode iface = getInterface();
 
-		return iface != null ? iface.getType() : null;
+		if (iface == null) {
+			return null;
+		}
+
+		final TypeParameterNode[] parameters = iface.getParameters();
+
+		if (parameters.length == 0) {
+			return null;
+		}
+
+		return parameters[0].getType();
 	}
 
 	public ExpressionNode getDefinition() {

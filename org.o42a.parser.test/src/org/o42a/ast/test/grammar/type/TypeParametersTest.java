@@ -35,47 +35,77 @@ import org.o42a.ast.type.*;
 public class TypeParametersTest extends GrammarTestCase {
 
 	@Test
-	public void linkValueType() {
+	public void linkTypeParameter() {
 
 		final TypeParametersNode result = parse("Foo (`bar)");
 
-		assertThat(result.getAscendant(), isName("foo"));
-		assertThat(result.getValueType().getType(), isName("bar"));
+		assertThat(result.getType(), isName("foo"));
+		assertThat(result.getParameters().getParameters().length, is(1));
 		assertThat(
-				result.getValueType().getKind().getType(),
+				result.getParameters().getParameters()[0].getType(),
+				isName("bar"));
+		assertThat(
+				result.getParameters().getKind().getType(),
 				is(DefinitionKind.LINK));
 		assertThat(
-				result.getValueType().getOpening().getType(),
+				result.getParameters().getOpening().getType(),
 				is(ParenthesisSign.OPENING_PARENTHESIS));
 		assertThat(
-				result.getValueType().getClosing().getType(),
+				result.getParameters().getClosing().getType(),
 				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 
 	@Test
-	public void variableValueType() {
+	public void linkTypeParameters() {
+
+		final TypeParametersNode result = parse("Foo (`bar, baz)");
+
+		assertThat(result.getType(), isName("foo"));
+		assertThat(result.getParameters().getParameters().length, is(2));
+		assertThat(
+				result.getParameters().getParameters()[0].getType(),
+				isName("bar"));
+		assertThat(
+				result.getParameters().getParameters()[1].getType(),
+				isName("baz"));
+		assertThat(
+				result.getParameters().getKind().getType(),
+				is(DefinitionKind.LINK));
+		assertThat(
+				result.getParameters().getOpening().getType(),
+				is(ParenthesisSign.OPENING_PARENTHESIS));
+		assertThat(
+				result.getParameters().getClosing().getType(),
+				is(ParenthesisSign.CLOSING_PARENTHESIS));
+	}
+
+	@Test
+	public void variableTypeParameter() {
 
 		final TypeParametersNode result = parse("Foo (``bar)");
 
-		assertThat(result.getAscendant(), isName("foo"));
-		assertThat(result.getValueType().getType(), isName("bar"));
+		assertThat(result.getType(), isName("foo"));
+		assertThat(result.getParameters().getParameters().length, is(1));
 		assertThat(
-				result.getValueType().getKind().getType(),
+				result.getParameters().getParameters()[0].getType(),
+				isName("bar"));
+		assertThat(
+				result.getParameters().getKind().getType(),
 				is(DefinitionKind.VARIABLE));
 		assertThat(
-				result.getValueType().getOpening().getType(),
+				result.getParameters().getOpening().getType(),
 				is(ParenthesisSign.OPENING_PARENTHESIS));
 		assertThat(
-				result.getValueType().getClosing().getType(),
+				result.getParameters().getClosing().getType(),
 				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 
 	@Test
-	public void staticTypeValueType() {
+	public void staticTypeParameter() {
 
 		final TypeParametersNode result = parse("&Foo (`bar)");
 		final AscendantsNode ascendants =
-				to(AscendantsNode.class, result.getAscendant());
+				to(AscendantsNode.class, result.getType());
 
 		assertFalse(ascendants.hasSamples());
 		assertThat(
@@ -83,24 +113,27 @@ public class TypeParametersTest extends GrammarTestCase {
 				is(Separator.SAMPLE));
 		assertThat(ascendants.getAncestor().getSpec(), isName("foo"));
 
-		assertThat(result.getValueType().getType(), isName("bar"));
+		assertThat(result.getParameters().getParameters().length, is(1));
 		assertThat(
-				result.getValueType().getKind().getType(),
+				result.getParameters().getParameters()[0].getType(),
+				isName("bar"));
+		assertThat(
+				result.getParameters().getKind().getType(),
 				is(DefinitionKind.LINK));
 		assertThat(
-				result.getValueType().getOpening().getType(),
+				result.getParameters().getOpening().getType(),
 				is(ParenthesisSign.OPENING_PARENTHESIS));
 		assertThat(
-				result.getValueType().getClosing().getType(),
+				result.getParameters().getClosing().getType(),
 				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 
 	@Test
-	public void ascendantsValueType() {
+	public void ascendantsParameter() {
 
 		final TypeParametersNode result = parse("Foo & bar (``baz)");
 		final AscendantsNode ascendants =
-				to(AscendantsNode.class, result.getAscendant());
+				to(AscendantsNode.class, result.getType());
 
 		assertThat(ascendants.getSamples().length, is(1));
 		assertThat(
@@ -112,15 +145,18 @@ public class TypeParametersTest extends GrammarTestCase {
 				is(Separator.SAMPLE));
 		assertThat(ascendants.getSamples()[0].getSpec(), isName("bar"));
 
-		assertThat(result.getValueType().getType(), isName("baz"));
+		assertThat(result.getParameters().getParameters().length, is(1));
 		assertThat(
-				result.getValueType().getKind().getType(),
+				result.getParameters().getParameters()[0].getType(),
+				isName("baz"));
+		assertThat(
+				result.getParameters().getKind().getType(),
 				is(DefinitionKind.VARIABLE));
 		assertThat(
-				result.getValueType().getOpening().getType(),
+				result.getParameters().getOpening().getType(),
 				is(ParenthesisSign.OPENING_PARENTHESIS));
 		assertThat(
-				result.getValueType().getClosing().getType(),
+				result.getParameters().getClosing().getType(),
 				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 

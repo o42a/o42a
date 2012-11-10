@@ -25,11 +25,10 @@ import static org.o42a.parser.Grammar.expression;
 
 import java.util.ArrayList;
 
-import org.o42a.ast.atom.BracketSign;
-import org.o42a.ast.atom.SeparatorNodes;
-import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.*;
-import org.o42a.ast.expression.ArgumentNode.Separator;
+import org.o42a.ast.atom.*;
+import org.o42a.ast.expression.ArgumentNode;
+import org.o42a.ast.expression.BracketsNode;
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.parser.Expectations;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -52,7 +51,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 		final SignNode<BracketSign> opening = opening(context);
 		final ArrayList<ArgumentNode> arguments = new ArrayList<ArgumentNode>();
 		SignNode<BracketSign> closing = null;
-		SignNode<Separator> separator = null;
+		SignNode<CommaSign> separator = null;
 		SeparatorNodes prevSeparators = null;
 
 		final Expectations expectations =
@@ -60,8 +59,8 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 		for (;;) {
 
-			final ArgumentNode argument = expectations.parse(
-					new ArgumentParser(separator, expression()));
+			final ArgumentNode argument =
+					expectations.parse(new ArgumentParser(separator));
 
 			if (argument != null) {
 				argument.addComments(prevSeparators);
@@ -114,10 +113,10 @@ public final class BracketsParser implements Parser<BracketsNode> {
 			final SourcePosition separatorStart = context.current().fix();
 
 			context.acceptAll();
-			separator = new SignNode<Separator>(
+			separator = new SignNode<CommaSign>(
 					separatorStart,
 					context.current().fix(),
-					Separator.COMMA);
+					CommaSign.COMMA);
 			separator.addComments(prevSeparators);
 			prevSeparators = null;
 			separator.addComments(separators);
@@ -148,14 +147,10 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 	private static final class ArgumentParser implements Parser<ArgumentNode> {
 
-		private final SignNode<Separator> separator;
-		private final Parser<ExpressionNode> elementParser;
+		private final SignNode<CommaSign> separator;
 
-		ArgumentParser(
-				SignNode<Separator> separator,
-				Parser<ExpressionNode> elementParser) {
+		ArgumentParser(SignNode<CommaSign> separator) {
 			this.separator = separator;
-			this.elementParser = elementParser;
 		}
 
 		@Override
@@ -166,7 +161,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 			for (;;) {
 
 				final SourcePosition start = context.current().fix();
-				final ExpressionNode value = context.parse(this.elementParser);
+				final ExpressionNode value = context.parse(expression());
 
 				if (value != null) {
 					context.logUnexpected(firstUnexpected, start);

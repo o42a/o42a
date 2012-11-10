@@ -62,10 +62,10 @@ final class SectionAscendantsVisitor
 		AscendantsDefinition ascendants =
 				new AscendantsDefinition(location(p, parameters), p);
 		final TypeParameters typeParams = PLAIN_IP.typeIp().typeParameters(
-				parameters.getValueType(),
+				parameters.getParameters(),
 				p,
 				this.consumer.paramConsumer());
-		final TypeNode ascendantNode = parameters.getAscendant();
+		final TypeNode ascendantNode = parameters.getType();
 
 		if (ascendantNode != null) {
 

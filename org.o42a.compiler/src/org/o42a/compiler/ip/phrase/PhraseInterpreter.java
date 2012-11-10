@@ -196,10 +196,10 @@ public final class PhraseInterpreter {
 		phrase.referBody();
 
 		final TypeParameters typeParams = phrase.ip().typeIp().typeParameters(
-				node.getValueType(),
+				node.getParameters(),
 				phrase.distribute(),
 				typeConsumer.paramConsumer());
-		final TypeNode ascendantNode = node.getAscendant();
+		final TypeNode ascendantNode = node.getType();
 
 		if (ascendantNode == null) {
 			return phrase.setImpliedAncestor(location(phrase, node))

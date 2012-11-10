@@ -92,14 +92,14 @@ public final class TypeVisitor
 			TypeParametersNode parameters,
 			Distributor p) {
 
-		final TypeNode ascendantNode = parameters.getAscendant();
+		final TypeNode ascendantNode = parameters.getType();
 
 		if (ascendantNode == null) {
 			return super.visitTypeParameters(parameters, p);
 		}
 
 		final ValueStructFinder vsFinder;
-		final InterfaceNode ifaceNode = parameters.getValueType();
+		final InterfaceNode ifaceNode = parameters.getParameters();
 
 		if (this.valueStruct != null) {
 			p.getLogger().error(

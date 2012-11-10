@@ -30,10 +30,10 @@ import org.o42a.parser.ParserContext;
 
 public class TypeParametersParser implements Parser<TypeParametersNode> {
 
-	private final TypeNode ascendant;
+	private final TypeNode type;
 
-	public TypeParametersParser(TypeNode ascendant) {
-		this.ascendant = ascendant;
+	public TypeParametersParser(TypeNode type) {
+		this.type = type;
 	}
 
 	@Override
@@ -42,13 +42,13 @@ public class TypeParametersParser implements Parser<TypeParametersNode> {
 			return null;
 		}
 
-		final InterfaceNode valueType = context.parse(INTERFACE);
+		final InterfaceNode parameters = context.parse(INTERFACE);
 
-		if (valueType == null) {
+		if (parameters == null) {
 			return null;
 		}
 
-		return new TypeParametersNode(this.ascendant, valueType);
+		return new TypeParametersNode(this.type, parameters);
 	}
 
 }

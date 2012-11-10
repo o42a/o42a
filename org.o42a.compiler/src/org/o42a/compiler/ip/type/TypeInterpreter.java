@@ -87,8 +87,19 @@ public final class TypeInterpreter {
 			Distributor p,
 			TypeConsumer consumer) {
 
-		final TypeRef paramTypeRef =
-				ifaceNode.getType().accept(typeVisitor(consumer), p);
+		final TypeParameterNode[] typeParameters = ifaceNode.getParameters();
+
+		if (typeParameters.length != 1) {
+			return null;
+		}
+
+		final TypeNode type = typeParameters[0].getType();
+
+		if (type == null) {
+			return null;
+		}
+
+		final TypeRef paramTypeRef = type.accept(typeVisitor(consumer), p);
 
 		if (paramTypeRef == null) {
 			return null;
