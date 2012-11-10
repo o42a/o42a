@@ -23,21 +23,21 @@ import static org.o42a.parser.grammar.type.InterfaceParser.INTERFACE;
 
 import org.o42a.ast.type.InterfaceNode;
 import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.ValueTypeNode;
+import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-public class ValueTypeParser implements Parser<ValueTypeNode> {
+public class TypeParametersParser implements Parser<TypeParametersNode> {
 
 	private final TypeNode ascendant;
 
-	public ValueTypeParser(TypeNode ascendant) {
+	public TypeParametersParser(TypeNode ascendant) {
 		this.ascendant = ascendant;
 	}
 
 	@Override
-	public ValueTypeNode parse(ParserContext context) {
+	public TypeParametersNode parse(ParserContext context) {
 		if (context.next() != '(') {
 			return null;
 		}
@@ -48,7 +48,7 @@ public class ValueTypeParser implements Parser<ValueTypeNode> {
 			return null;
 		}
 
-		return new ValueTypeNode(this.ascendant, valueType);
+		return new TypeParametersNode(this.ascendant, valueType);
 	}
 
 }

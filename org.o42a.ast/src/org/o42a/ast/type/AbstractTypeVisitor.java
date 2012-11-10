@@ -35,7 +35,7 @@ public abstract class AbstractTypeVisitor<R, P>
 	}
 
 	@Override
-	public R visitValueType(ValueTypeNode valueType, P p) {
+	public R visitTypeParameters(TypeParametersNode valueType, P p) {
 		return visitType(valueType, p);
 	}
 

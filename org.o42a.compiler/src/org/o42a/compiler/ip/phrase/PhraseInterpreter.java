@@ -78,7 +78,7 @@ public final class PhraseInterpreter {
 	}
 
 	public Phrase valueTypePhrase(
-			ValueTypeNode node,
+			TypeParametersNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
@@ -191,7 +191,7 @@ public final class PhraseInterpreter {
 
 	static Phrase prefixByValueType(
 			Phrase phrase,
-			ValueTypeNode node,
+			TypeParametersNode node,
 			TypeConsumer typeConsumer) {
 		phrase.referBody();
 

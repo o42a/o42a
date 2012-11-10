@@ -34,7 +34,7 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.ValueTypeNode;
+import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.parser.grammar.atom.*;
 import org.o42a.parser.grammar.clause.ClauseDeclaratorParser;
 import org.o42a.parser.grammar.expression.*;
@@ -46,7 +46,7 @@ import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
 import org.o42a.parser.grammar.type.AscendantsParser;
-import org.o42a.parser.grammar.type.ValueTypeParser;
+import org.o42a.parser.grammar.type.TypeParametersParser;
 
 
 public class Grammar {
@@ -191,8 +191,9 @@ public class Grammar {
 		return MacroExpansionParser.MACRO_EXPANSION;
 	}
 
-	public static final Parser<ValueTypeNode> valueType(TypeNode ascendant) {
-		return new ValueTypeParser(ascendant);
+	public static final Parser<TypeParametersNode> typeParameters(
+			TypeNode ascendant) {
+		return new TypeParametersParser(ascendant);
 	}
 
 	public static final Parser<BinaryNode> binaryExpression(

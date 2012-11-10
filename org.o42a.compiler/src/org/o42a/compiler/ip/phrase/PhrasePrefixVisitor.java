@@ -29,7 +29,7 @@ import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.ValueTypeNode;
+import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
@@ -59,7 +59,7 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	public Phrase visitValueType(ValueTypeNode valueType, Phrase p) {
+	public Phrase visitTypeParameters(TypeParametersNode valueType, Phrase p) {
 
 		final Phrase result =
 				prefixByValueType(p, valueType, this.typeConsumer);
