@@ -31,7 +31,7 @@ import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.ValueTypeNode;
+import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
@@ -108,7 +108,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitValueType(ValueTypeNode valueType, Distributor p) {
+	public Ref visitTypeParameters(TypeParametersNode valueType, Distributor p) {
 
 		final Phrase phrase =
 				ip()
@@ -116,7 +116,7 @@ public final class ExpressionVisitor
 				.valueTypePhrase(valueType, p, this.typeConsumer);
 
 		if (phrase == null) {
-			return super.visitValueType(valueType, p);
+			return super.visitTypeParameters(valueType, p);
 		}
 
 		return phrase.toRef();

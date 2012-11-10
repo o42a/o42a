@@ -23,12 +23,14 @@ import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 
 
-public class ValueTypeNode extends AbstractExpressionNode implements TypeNode {
+public class TypeParametersNode
+		extends AbstractExpressionNode
+		implements TypeNode {
 
 	private final TypeNode ascendant;
 	private final InterfaceNode valueType;
 
-	public ValueTypeNode(TypeNode ascendant, InterfaceNode valueType) {
+	public TypeParametersNode(TypeNode ascendant, InterfaceNode valueType) {
 		super(ascendant.getStart(), valueType.getEnd());
 		this.ascendant = ascendant;
 		this.valueType = valueType;
@@ -44,12 +46,12 @@ public class ValueTypeNode extends AbstractExpressionNode implements TypeNode {
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitValueType(this, p);
+		return visitor.visitTypeParameters(this, p);
 	}
 
 	@Override
 	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitValueType(this, p);
+		return visitor.visitTypeParameters(this, p);
 	}
 
 	@Override

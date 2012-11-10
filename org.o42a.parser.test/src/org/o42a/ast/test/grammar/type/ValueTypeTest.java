@@ -37,7 +37,7 @@ public class ValueTypeTest extends GrammarTestCase {
 	@Test
 	public void linkValueType() {
 
-		final ValueTypeNode result = parse("Foo (`bar)");
+		final TypeParametersNode result = parse("Foo (`bar)");
 
 		assertThat(result.getAscendant(), isName("foo"));
 		assertThat(result.getValueType().getType(), isName("bar"));
@@ -55,7 +55,7 @@ public class ValueTypeTest extends GrammarTestCase {
 	@Test
 	public void variableValueType() {
 
-		final ValueTypeNode result = parse("Foo (``bar)");
+		final TypeParametersNode result = parse("Foo (``bar)");
 
 		assertThat(result.getAscendant(), isName("foo"));
 		assertThat(result.getValueType().getType(), isName("bar"));
@@ -73,7 +73,7 @@ public class ValueTypeTest extends GrammarTestCase {
 	@Test
 	public void staticTypeValueType() {
 
-		final ValueTypeNode result = parse("&Foo (`bar)");
+		final TypeParametersNode result = parse("&Foo (`bar)");
 		final AscendantsNode ascendants =
 				to(AscendantsNode.class, result.getAscendant());
 
@@ -98,7 +98,7 @@ public class ValueTypeTest extends GrammarTestCase {
 	@Test
 	public void ascendantsValueType() {
 
-		final ValueTypeNode result = parse("Foo & bar (``baz)");
+		final TypeParametersNode result = parse("Foo & bar (``baz)");
 		final AscendantsNode ascendants =
 				to(AscendantsNode.class, result.getAscendant());
 
@@ -124,9 +124,9 @@ public class ValueTypeTest extends GrammarTestCase {
 				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 
-	private ValueTypeNode parse(String text) {
+	private TypeParametersNode parse(String text) {
 		return to(
-				ValueTypeNode.class,
+				TypeParametersNode.class,
 				parse(simpleExpression(), text));
 	}
 
