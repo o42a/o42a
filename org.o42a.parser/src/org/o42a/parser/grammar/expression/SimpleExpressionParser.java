@@ -26,9 +26,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.GroupNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.*;
-import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.*;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -156,10 +154,10 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				if (bodyMemberRef != null) {
 					expression = bodyMemberRef;
-					continue;
+				} else {
+					expression = bodyRef;
 				}
 
-				expression = bodyRef;
 				next = context.pendingOrNext();
 
 				continue;
@@ -176,18 +174,40 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				if (derefMemberRef != null) {
 					expression = derefMemberRef;
-					continue;
+				} else {
+					expression = deref;
 				}
 
-				expression = deref;
 				next = context.pendingOrNext();
 
 				continue;
 			}
 
 			switch (next) {
-			case ':':
 			case '#':
+				if (expression instanceof TypeNode) {
+
+					final TypeDefinitionNode typeDefinition = context.parse(
+							typeDefinition((TypeNode) expression));
+
+					if (typeDefinition != null) {
+						expression = typeDefinition;
+						next = context.pendingOrNext();
+						continue;
+					}
+				}
+
+				final MemberRefNode macroMemberRef =
+						context.parse(memberRef(expression, true));
+
+				if (macroMemberRef != null) {
+					expression = macroMemberRef;
+					next = context.pendingOrNext();
+					continue;
+				}
+
+				return expression;
+			case ':':
 
 				final MemberRefNode memberRef =
 						context.parse(memberRef(expression, true));
