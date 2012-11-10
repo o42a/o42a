@@ -46,8 +46,8 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
-	public R visitTypeParameters(TypeParametersNode valueType, P p) {
-		return visitExpression(valueType, p);
+	public R visitTypeParameters(TypeParametersNode parameters, P p) {
+		return visitExpression(parameters, p);
 	}
 
 	@Override

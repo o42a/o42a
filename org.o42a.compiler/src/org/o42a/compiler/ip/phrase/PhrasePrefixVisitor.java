@@ -59,10 +59,10 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	public Phrase visitTypeParameters(TypeParametersNode valueType, Phrase p) {
+	public Phrase visitTypeParameters(TypeParametersNode parameters, Phrase p) {
 
 		final Phrase result =
-				prefixByValueType(p, valueType, this.typeConsumer);
+				prefixByValueType(p, parameters, this.typeConsumer);
 
 		if (result == null) {
 			return null;

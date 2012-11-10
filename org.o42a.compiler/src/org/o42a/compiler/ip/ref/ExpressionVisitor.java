@@ -108,15 +108,15 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitTypeParameters(TypeParametersNode valueType, Distributor p) {
+	public Ref visitTypeParameters(TypeParametersNode parameters, Distributor p) {
 
 		final Phrase phrase =
 				ip()
 				.phraseIp()
-				.valueTypePhrase(valueType, p, this.typeConsumer);
+				.valueTypePhrase(parameters, p, this.typeConsumer);
 
 		if (phrase == null) {
-			return super.visitTypeParameters(valueType, p);
+			return super.visitTypeParameters(parameters, p);
 		}
 
 		return phrase.toRef();
