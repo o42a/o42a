@@ -32,7 +32,7 @@ import org.o42a.ast.type.AscendantNode.Separator;
 import org.o42a.ast.type.*;
 
 
-public class ValueTypeTest extends GrammarTestCase {
+public class TypeParametersTest extends GrammarTestCase {
 
 	@Test
 	public void linkValueType() {
