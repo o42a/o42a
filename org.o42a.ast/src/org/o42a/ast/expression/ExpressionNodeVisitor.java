@@ -22,7 +22,6 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeDefinitionNode;
 import org.o42a.ast.type.TypeParametersNode;
 
 
@@ -35,8 +34,6 @@ public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 	R visitAscendants(AscendantsNode ascendants, P p);
 
 	R visitTypeParameters(TypeParametersNode parameters, P p);
-
-	R visitTypeDefinition(TypeDefinitionNode definition, P p);
 
 	R visitGroup(GroupNode group, P p);
 

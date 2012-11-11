@@ -38,4 +38,6 @@ public interface ClauseNodeVisitor<R, P> {
 
 	R visitDecimal(DecimalNode decimal, P p);
 
+	R visitTypeDefinition(TypeDefinitionNode definition, P p);
+
 }

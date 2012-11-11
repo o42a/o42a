@@ -23,7 +23,6 @@ import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeDefinitionNode;
 import org.o42a.ast.type.TypeParametersNode;
 
 
@@ -49,11 +48,6 @@ public abstract class AbstractExpressionVisitor<R, P>
 	@Override
 	public R visitTypeParameters(TypeParametersNode parameters, P p) {
 		return visitExpression(parameters, p);
-	}
-
-	@Override
-	public R visitTypeDefinition(TypeDefinitionNode definition, P p) {
-		return visitExpression(definition, p);
 	}
 
 	@Override
