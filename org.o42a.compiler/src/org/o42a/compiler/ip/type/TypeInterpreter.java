@@ -111,7 +111,7 @@ public final class TypeInterpreter {
 			return null;
 		}
 
-		return new TypeParameters(location(p, ifaceNode), p)
+		return new TypeParameters(location(p, ifaceNode))
 		.setTypeRef(paramTypeRef);
 	}
 

@@ -82,25 +82,26 @@ public final class ArrayValueStruct
 
 		final TypeRef itemTypeRef = getItemTypeRef();
 
-		return new TypeParameters(
-				itemTypeRef,
-				itemTypeRef.getRef().distribute())
-		.setTypeRef(itemTypeRef);
+		return new TypeParameters(itemTypeRef).setTypeRef(itemTypeRef);
 	}
 
 	@Override
 	public ArrayValueStruct setParameters(TypeParameters parameters) {
-		parameters.assertSameScope(toScoped());
 
-		final TypeRef newItemTypeRef = parameters.getTypeRef();
+		final TypeRef itemTypeRef = parameters.getTypeRef();
 
-		if (newItemTypeRef.isValid() &&
-				!newItemTypeRef.relationTo(getItemTypeRef())
+		if (itemTypeRef == null) {
+			return this;
+		}
+
+		itemTypeRef.assertSameScope(toScoped());
+		if (itemTypeRef.isValid() &&
+				!itemTypeRef.relationTo(getItemTypeRef())
 				.checkDerived(parameters.getLogger())) {
 			return this;
 		}
 
-		return new ArrayValueStruct(getValueType(), newItemTypeRef);
+		return new ArrayValueStruct(getValueType(), itemTypeRef);
 	}
 
 	public final TypeRef getItemTypeRef() {
