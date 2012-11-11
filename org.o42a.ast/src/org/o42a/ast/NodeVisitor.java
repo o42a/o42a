@@ -20,14 +20,17 @@
 package org.o42a.ast;
 
 import org.o42a.ast.atom.*;
-import org.o42a.ast.clause.*;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
+import org.o42a.ast.clause.OutcomeNode;
+import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.expression.ArgumentNode;
-import org.o42a.ast.expression.TypeDefinitionNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
+import org.o42a.ast.phrase.PhrasePartNodeVisitor;
+import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.ref.TypeRefNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
@@ -43,7 +46,7 @@ public abstract class NodeVisitor<R, P>
 				AtomNodeVisitor<R, P>,
 				DeclarableNodeVisitor<R, P>,
 				ClauseIdNodeVisitor<R, P>,
-				ClauseNodeVisitor<R, P> {
+				PhrasePartNodeVisitor<R, P> {
 
 	@Override
 	public <S extends SignType> R visitSign(SignNode<S> sign, P p) {

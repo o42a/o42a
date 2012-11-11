@@ -20,11 +20,11 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.StringNode;
-import org.o42a.ast.clause.ClauseNode;
-import org.o42a.ast.clause.ClauseNodeVisitor;
+import org.o42a.ast.phrase.PhrasePartNode;
+import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 
 
-public class TextNode extends AbstractExpressionNode implements ClauseNode {
+public class TextNode extends AbstractExpressionNode implements PhrasePartNode {
 
 	private final StringNode[] literals;
 	private String text;
@@ -55,7 +55,7 @@ public class TextNode extends AbstractExpressionNode implements ClauseNode {
 	}
 
 	@Override
-	public <R, P> R accept(ClauseNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitText(this, p);
 	}
 

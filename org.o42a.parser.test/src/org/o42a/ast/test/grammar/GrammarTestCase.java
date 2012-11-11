@@ -30,9 +30,9 @@ import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.o42a.ast.Node;
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.PhraseNode;
+import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
@@ -148,19 +148,19 @@ public class GrammarTestCase {
 		return to(type, conjunction[index].getStatement());
 	}
 
-	public static <T extends ClauseNode> T singleClause(
+	public static <T extends PhrasePartNode> T singleClause(
 			Class<? extends T> type,
 			PhraseNode phrase) {
 		return clause(type, phrase, 0, 1);
 	}
 
-	public static <T extends ClauseNode> T clause(
+	public static <T extends PhrasePartNode> T clause(
 			Class<? extends T> type,
 			PhraseNode phrase,
 			int index,
 			int length) {
 
-		final ClauseNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] clauses = phrase.getClauses();
 
 		assertEquals(
 				"Wrong numer of phrase clauses: " + phrase,

@@ -22,7 +22,7 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
-import org.o42a.ast.clause.ClauseNode;
+import org.o42a.ast.phrase.PhrasePartNode;
 
 
 public class PhraseNode
@@ -30,11 +30,11 @@ public class PhraseNode
 		implements ClauseIdNode {
 
 	private final ExpressionNode prefix;
-	private final ClauseNode[] clauses;
+	private final PhrasePartNode[] clauses;
 
 	public PhraseNode(
 			ExpressionNode prefix,
-			ClauseNode[] clauses) {
+			PhrasePartNode[] clauses) {
 		super(prefix.getStart(), lastNode(clauses).getEnd());
 		this.prefix = prefix;
 		this.clauses = clauses;
@@ -44,7 +44,7 @@ public class PhraseNode
 		return this.prefix;
 	}
 
-	public final ClauseNode[] getClauses() {
+	public final PhrasePartNode[] getClauses() {
 		return this.clauses;
 	}
 
@@ -56,7 +56,7 @@ public class PhraseNode
 
 		boolean prevName = true;
 
-		for (ClauseNode clause : this.clauses) {
+		for (PhrasePartNode clause : this.clauses) {
 			if (clause instanceof NameNode) {
 				if (prevName) {
 					out.append(" _ ");

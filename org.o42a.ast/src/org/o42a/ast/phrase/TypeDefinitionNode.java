@@ -17,17 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
+package org.o42a.ast.phrase;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
-import org.o42a.ast.clause.ClauseNode;
-import org.o42a.ast.clause.ClauseNodeVisitor;
+import org.o42a.ast.expression.ParenthesesNode;
 
 
-public class TypeDefinitionNode extends AbstractNode implements ClauseNode {
+public class TypeDefinitionNode extends AbstractNode implements PhrasePartNode {
 
 	private final SignNode<Prefix> prefix;
 	private final ParenthesesNode definition;
@@ -54,7 +53,7 @@ public class TypeDefinitionNode extends AbstractNode implements ClauseNode {
 	}
 
 	@Override
-	public <R, P> R accept(ClauseNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitTypeDefinition(this, p);
 	}
 

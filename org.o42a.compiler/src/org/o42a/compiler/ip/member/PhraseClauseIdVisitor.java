@@ -24,9 +24,9 @@ import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.clause.AbstractClauseVisitor;
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.phrase.AbstractPhrasePartVisitor;
+import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
@@ -42,7 +42,7 @@ import org.o42a.util.string.Name;
 
 
 final class PhraseClauseIdVisitor
-		extends AbstractClauseVisitor<ClauseDeclaration, Distributor> {
+		extends AbstractPhrasePartVisitor<ClauseDeclaration, Distributor> {
 
 	private static final NameExtractor NAME_EXTRACTOR = new NameExtractor();
 	private static final BracketsExtractor BRACKETS_EXTRACTOR =
@@ -101,10 +101,10 @@ final class PhraseClauseIdVisitor
 	}
 
 	@Override
-	protected ClauseDeclaration visitClause(
-			ClauseNode clause,
+	protected ClauseDeclaration visitPhrasePart(
+			PhrasePartNode part,
 			Distributor p) {
-		p.getLogger().invalidDeclaration(clause);
+		p.getLogger().invalidDeclaration(part);
 		return null;
 	}
 

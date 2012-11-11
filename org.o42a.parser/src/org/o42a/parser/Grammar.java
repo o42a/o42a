@@ -42,6 +42,7 @@ import org.o42a.parser.grammar.field.DeclarableAdapterParser;
 import org.o42a.parser.grammar.field.DeclaratorParser;
 import org.o42a.parser.grammar.file.FileParser;
 import org.o42a.parser.grammar.file.InclusionParser;
+import org.o42a.parser.grammar.phrase.PhraseParser;
 import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;

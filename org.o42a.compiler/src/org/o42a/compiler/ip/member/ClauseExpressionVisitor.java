@@ -26,8 +26,8 @@ import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.core.Distributor;
@@ -76,7 +76,7 @@ class ClauseExpressionVisitor
 	@Override
 	public ClauseBuilder visitPhrase(PhraseNode phrase, ClauseBuilder p) {
 
-		final ClauseNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] clauses = phrase.getClauses();
 
 		if (clauses.length == 1) {
 

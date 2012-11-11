@@ -32,10 +32,10 @@ import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.AbstractClauseIdVisitor;
 import org.o42a.ast.clause.ClauseIdNode;
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
@@ -127,7 +127,7 @@ final class ClauseIdVisitor
 			return null;
 		}
 
-		final ClauseNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] clauses = phrase.getClauses();
 
 		if (clauses.length != 1) {
 			return super.visitPhrase(phrase, p);

@@ -21,11 +21,11 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.BracketSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.clause.ClauseNode;
-import org.o42a.ast.clause.ClauseNodeVisitor;
+import org.o42a.ast.phrase.PhrasePartNode;
+import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 
 
-public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
+public class BracketsNode extends AbstractExpressionNode implements PhrasePartNode {
 
 	private final SignNode<BracketSign> opening;
 	private final ArgumentNode[] arguments;
@@ -61,7 +61,7 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 	}
 
 	@Override
-	public <R, P> R accept(ClauseNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitBrackets(this, p);
 	}
 

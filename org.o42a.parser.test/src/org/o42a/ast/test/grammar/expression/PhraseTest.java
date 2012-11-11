@@ -28,8 +28,8 @@ import org.junit.Test;
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.StringNode;
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
@@ -260,7 +260,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(result.getPrefix(), isName("foo"));
 
-		final ClauseNode[] clauses = result.getClauses();
+		final PhrasePartNode[] clauses = result.getClauses();
 
 		assertThat(clauses.length, is(1));
 
@@ -276,7 +276,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(result.getPrefix(), isName("foo"));
 
-		final ClauseNode[] clauses = result.getClauses();
+		final PhrasePartNode[] clauses = result.getClauses();
 
 		assertThat(clauses.length, is(2));
 		to(TextNode.class, clauses[0]);
@@ -293,7 +293,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(result.getPrefix(), isName("foo"));
 
-		final ClauseNode[] clauses = result.getClauses();
+		final PhrasePartNode[] clauses = result.getClauses();
 
 		assertThat(clauses.length, is(2));
 		to(ParenthesesNode.class, clauses[0]);
