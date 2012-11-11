@@ -29,8 +29,6 @@ public interface TypeNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitTypeParameters(TypeParametersNode parameters, P p);
 
-	R visitTypeDefinition(TypeDefinitionNode definition, P p);
-
 	R visitMacroExpansion(MacroExpansionNode expansion, P p);
 
 	R visitTypeExpression(TypeExpressionNode type, P p);

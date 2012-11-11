@@ -26,9 +26,7 @@ import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.expression.ParenthesesNode;
 
 
-public class TypeDefinitionNode
-		extends AbstractExpressionNode
-		implements TypeNode {
+public class TypeDefinitionNode extends AbstractExpressionNode {
 
 	private final TypeNode type;
 	private final SignNode<Prefix> prefix;
@@ -58,11 +56,6 @@ public class TypeDefinitionNode
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeDefinition(this, p);
-	}
-
-	@Override
-	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitTypeDefinition(this, p);
 	}
 
