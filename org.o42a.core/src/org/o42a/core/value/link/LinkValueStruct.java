@@ -20,8 +20,6 @@
 package org.o42a.core.value.link;
 
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
-import static org.o42a.core.value.TypeParameters.typeMutability;
-import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -80,21 +78,12 @@ public final class LinkValueStruct
 
 		final TypeRef typeRef = getTypeRef();
 
-		return typeMutability(
-				typeRef,
-				typeRef.getRef().distribute(),
-				LINK).setTypeRef(typeRef);
+		return new TypeParameters(typeRef, typeRef.getRef().distribute())
+		.setTypeRef(typeRef);
 	}
 
 	@Override
 	public LinkValueStruct setParameters(TypeParameters parameters) {
-		if (parameters.getLinkType() != LinkValueType.LINK) {
-			parameters.getLogger().error(
-					"prohibited_type_mutability",
-					parameters.getMutability(),
-					"Mutability flag prohibited here. Use a single backquote");
-		}
-
 		parameters.assertSameScope(toScoped());
 
 		final TypeRef newTypeRef = parameters.getTypeRef();

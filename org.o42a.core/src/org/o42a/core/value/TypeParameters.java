@@ -19,33 +19,30 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.link.LinkValueType;
-import org.o42a.util.log.Loggable;
 
 
-public final class TypeParameters implements ValueStructFinder, PlaceInfo {
+public final class TypeParameters extends Placed implements ValueStructFinder {
 
-	public static Mutability typeMutability(
-			LocationInfo location,
-			Distributor distributor,
-			LinkValueType linkType) {
-		return new Mutability(location, distributor, linkType);
+	private TypeRef typeRef;
+
+	public TypeParameters(LocationInfo location, Distributor distributor) {
+		super(location, distributor);
+		this.typeRef = null;
 	}
 
-	private final TypeRef typeRef;
-	private final Mutability mutability;
-
-	private TypeParameters(TypeRef typeRef, Mutability mutability) {
-		typeRef.assertSameScope(mutability);
+	private TypeParameters(
+			LocationInfo location,
+			Distributor distributor,
+			TypeRef typeRef) {
+		super(location, distributor);
 		this.typeRef = typeRef;
-		this.mutability = mutability;
+		assertSameScope(typeRef);
 	}
 
 	public final TypeRef getTypeRef() {
@@ -53,48 +50,7 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 	}
 
 	public final TypeParameters setTypeRef(TypeRef typeRef) {
-		return typeMutability(
-				typeRef,
-				typeRef.getRef().distribute(),
-				getLinkType())
-				.setTypeRef(typeRef);
-	}
-
-	public final LinkValueType getLinkType() {
-		return getMutability().getLinkType();
-	}
-
-	public final Mutability getMutability() {
-		return this.mutability;
-	}
-
-	@Override
-	public final CompilerContext getContext() {
-		return getTypeRef().getContext();
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return getTypeRef().getLoggable();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
-	}
-
-	@Override
-	public final Scope getScope() {
-		return getMutability().getScope();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return getMutability().getPlace();
-	}
-
-	@Override
-	public final Container getContainer() {
-		return getMutability().getContainer();
+		return new TypeParameters(this, distribute(), typeRef);
 	}
 
 	@Override
@@ -107,6 +63,16 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 	public final TypeParameters prefixWith(PrefixPath prefix) {
 
 		final TypeRef oldTypeRef = getTypeRef();
+
+		if (oldTypeRef == null) {
+			if (getScope().is(prefix.getStart())) {
+				return this;
+			}
+			return new TypeParameters(
+					this,
+					distributeIn(prefix.getStart().getContainer()));
+		}
+
 		final TypeRef newTypeRef = oldTypeRef.prefixWith(prefix);
 
 		if (oldTypeRef == newTypeRef) {
@@ -114,105 +80,39 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 		}
 
 		return new TypeParameters(
-				newTypeRef,
-				getMutability().toScope(prefix.getStart()));
-	}
-
-	@Override
-	public final Distributor distribute() {
-		return Placed.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+				this,
+				distributeIn(prefix.getStart().getContainer()),
+				newTypeRef);
 	}
 
 	@Override
 	public ValueStructFinder reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final TypeRef typeRef = getTypeRef().reproduce(reproducer);
+		final TypeRef oldTypeRef = getTypeRef();
 
-		if (typeRef == null) {
+		if (oldTypeRef == null) {
+			return new TypeParameters(this, reproducer.distribute());
+		}
+
+		final TypeRef newTypeRef = oldTypeRef.reproduce(reproducer);
+
+		if (newTypeRef == null) {
 			return null;
 		}
 
 		return new TypeParameters(
-				typeRef,
-				getMutability().toScope(reproducer.getScope()));
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
+				this,
+				reproducer.distribute(),
+				newTypeRef);
 	}
 
 	@Override
 	public String toString() {
-		if (this.mutability == null) {
-			return super.toString();
+		if (this.typeRef == null) {
+			return "(`*)";
 		}
-		return "(" + this.mutability + this.typeRef + ")";
-	}
-
-	public static final class Mutability extends Placed {
-
-		private final LinkValueType linkType;
-
-		private Mutability(
-				LocationInfo location,
-				Distributor distributor,
-				LinkValueType linkType) {
-			super(location, distributor);
-			this.linkType = linkType;
-		}
-
-		private Mutability(Scope scope, Mutability prototype) {
-			super(prototype, prototype.distributeIn(scope.getContainer()));
-			this.linkType = prototype.linkType;
-		}
-
-		public final LinkValueType getLinkType() {
-			return this.linkType;
-		}
-
-		public final TypeParameters setTypeRef(TypeRef typeRef) {
-			assert typeRef != null :
-				"Type reference not specified";
-			return new TypeParameters(typeRef, this);
-		}
-
-		@Override
-		public String toString() {
-			if (this.linkType.is(LinkValueType.LINK)) {
-				return "`";
-			}
-			if (this.linkType.is(LinkValueType.VARIABLE)) {
-				return "``";
-			}
-			return super.toString();
-		}
-
-		private final Mutability toScope(Scope scope) {
-			return new Mutability(scope, this);
-		}
-
+		return "(`" + this.typeRef + ")";
 	}
 
 }
