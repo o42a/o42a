@@ -21,8 +21,6 @@ package org.o42a.core.value.array;
 
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.value.TypeParameters.typeMutability;
-import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -37,7 +35,6 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 import org.o42a.core.value.link.LinkValueStruct;
-import org.o42a.core.value.link.LinkValueType;
 
 
 public final class ArrayValueStruct
@@ -85,21 +82,14 @@ public final class ArrayValueStruct
 
 		final TypeRef itemTypeRef = getItemTypeRef();
 
-		return typeMutability(
+		return new TypeParameters(
 				itemTypeRef,
-				itemTypeRef.getRef().distribute(),
-				LINK).setTypeRef(itemTypeRef);
+				itemTypeRef.getRef().distribute())
+		.setTypeRef(itemTypeRef);
 	}
 
 	@Override
 	public ArrayValueStruct setParameters(TypeParameters parameters) {
-		if (parameters.getLinkType() != LinkValueType.LINK) {
-			parameters.getLogger().error(
-					"prohibited_type_mutability",
-					parameters.getMutability(),
-					"Mutability flag prohibited here. Use a single backquote");
-		}
-
 		parameters.assertSameScope(toScoped());
 
 		final TypeRef newItemTypeRef = parameters.getTypeRef();

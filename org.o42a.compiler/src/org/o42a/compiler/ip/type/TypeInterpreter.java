@@ -23,7 +23,6 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
-import static org.o42a.core.value.TypeParameters.typeMutability;
 
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNode;
@@ -99,18 +98,21 @@ public final class TypeInterpreter {
 			return null;
 		}
 
+		if (ifaceNode.getKind().getType() != DefinitionKind.LINK) {
+			p.getLogger().error(
+					"prohibited_type_mutability",
+					ifaceNode.getKind(),
+					"Mutability flag prohibited here. Use a single backquote");
+		}
+
 		final TypeRef paramTypeRef = type.accept(typeVisitor(consumer), p);
 
 		if (paramTypeRef == null) {
 			return null;
 		}
 
-		final TypeParameters.Mutability mutability = typeMutability(
-				location(p, ifaceNode),
-				p,
-				definitionLinkType(ifaceNode.getKind().getType()));
-
-		return mutability.setTypeRef(paramTypeRef);
+		return new TypeParameters(location(p, ifaceNode), p)
+		.setTypeRef(paramTypeRef);
 	}
 
 	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor(

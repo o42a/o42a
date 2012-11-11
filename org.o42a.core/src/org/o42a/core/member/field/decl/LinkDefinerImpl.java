@@ -19,14 +19,13 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.core.value.TypeParameters.typeMutability;
-
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.link.TargetRef;
 
@@ -92,10 +91,9 @@ final class LinkDefinerImpl implements LinkDefiner {
 
 		if (!this.ascendants.isEmpty()) {
 			return this.ascendants.setTypeParameters(
-					typeMutability(
+					new TypeParameters(
 							targetType,
-							targetType.getRef().distribute(),
-							linkType)
+							targetType.getRef().distribute())
 					.setTypeRef(targetType));
 		}
 
