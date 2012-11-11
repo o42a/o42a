@@ -57,6 +57,11 @@ public abstract class AbstractClauseVisitor<R, P>
 		return visitClause(decimal, p);
 	}
 
+	@Override
+	public R visitTypeDefinition(TypeDefinitionNode definition, P p) {
+		return visitClause(definition, p);
+	}
+
 	protected abstract R visitClause(ClauseNode clause, P p);
 
 }

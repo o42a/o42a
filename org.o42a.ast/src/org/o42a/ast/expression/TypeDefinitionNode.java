@@ -17,33 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.type;
+package org.o42a.ast.expression;
 
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
-import org.o42a.ast.expression.AbstractExpressionNode;
-import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.clause.ClauseNode;
+import org.o42a.ast.clause.ClauseNodeVisitor;
 
 
-public class TypeDefinitionNode extends AbstractExpressionNode {
+public class TypeDefinitionNode extends AbstractNode implements ClauseNode {
 
-	private final TypeNode type;
 	private final SignNode<Prefix> prefix;
 	private final ParenthesesNode definition;
 
 	public TypeDefinitionNode(
-			TypeNode type,
 			SignNode<Prefix> prefix,
 			ParenthesesNode definition) {
-		super(type.getStart(), definition.getEnd());
-		this.type = type;
+		super(prefix.getStart(), definition.getEnd());
 		this.prefix = prefix;
 		this.definition = definition;
-	}
-
-	public final TypeNode getType() {
-		return this.type;
 	}
 
 	public final SignNode<Prefix> getPrefix() {
@@ -55,13 +49,17 @@ public class TypeDefinitionNode extends AbstractExpressionNode {
 	}
 
 	@Override
-	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
+		return visitor.visitTypeDefinition(this, p);
+	}
+
+	@Override
+	public <R, P> R accept(ClauseNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitTypeDefinition(this, p);
 	}
 
 	@Override
 	public void printContent(StringBuilder out) {
-		this.type.printContent(out);
 		this.prefix.printContent(out);
 		this.definition.printContent(out);
 	}

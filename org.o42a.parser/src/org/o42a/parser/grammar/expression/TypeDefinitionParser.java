@@ -17,15 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.type;
+package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ParenthesesNode;
-import org.o42a.ast.type.TypeDefinitionNode;
-import org.o42a.ast.type.TypeDefinitionNode.Prefix;
-import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.expression.TypeDefinitionNode;
+import org.o42a.ast.expression.TypeDefinitionNode.Prefix;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -33,10 +32,10 @@ import org.o42a.util.io.SourcePosition;
 
 public class TypeDefinitionParser implements Parser<TypeDefinitionNode> {
 
-	private final TypeNode type;
+	public static final TypeDefinitionParser TYPE_DEFINITION =
+			new TypeDefinitionParser();
 
-	public TypeDefinitionParser(TypeNode type) {
-		this.type = type;
+	private TypeDefinitionParser() {
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class TypeDefinitionParser implements Parser<TypeDefinitionNode> {
 			return null;
 		}
 
-		return new TypeDefinitionNode(this.type, prefix, definition);
+		return new TypeDefinitionNode(prefix, definition);
 	}
 
 	private SignNode<Prefix> parsePrefix(ParserContext context) {

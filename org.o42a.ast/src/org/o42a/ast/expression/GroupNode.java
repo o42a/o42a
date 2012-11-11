@@ -46,8 +46,7 @@ public class GroupNode extends AbstractExpressionNode {
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		// TODO Auto-generated method stub
-		return null;
+		return visitor.visitGroup(this, p);
 	}
 
 	@Override

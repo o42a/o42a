@@ -20,6 +20,7 @@
 package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.*;
+import static org.o42a.parser.grammar.expression.TypeDefinitionParser.TYPE_DEFINITION;
 
 import java.util.ArrayList;
 
@@ -85,6 +86,8 @@ public class PhraseParser implements Parser<PhraseNode> {
 				return context.parse(DECLARATIVE.parentheses());
 			case '{':
 				return context.parse(braces());
+			case '#':
+				return context.parse(TYPE_DEFINITION);
 			case '\\':
 			case '\'':
 			case '"':

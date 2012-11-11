@@ -17,16 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.test.grammar.type;
+package org.o42a.ast.test.grammar.expression;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
+import org.o42a.ast.clause.ClauseNode;
+import org.o42a.ast.expression.PhraseNode;
+import org.o42a.ast.expression.TypeDefinitionNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeDefinitionNode;
 
 
 public class TypeDefinitionTest extends GrammarTestCase {
@@ -34,34 +36,45 @@ public class TypeDefinitionTest extends GrammarTestCase {
 	@Test
 	public void typeDefinition() {
 
-		final TypeDefinitionNode result = parse("A #(Foo := bar)");
+		final PhraseNode phrase = parse("A #(Foo := bar)");
+		final ClauseNode[] clauses = phrase.getClauses();
 
-		assertThat(result.getType(), isName("a"));
+		assertThat(phrase.getPrefix(), isName("a"));
+		assertThat(clauses.length, is(1));
+
+		final TypeDefinitionNode definition =
+				to(TypeDefinitionNode.class, clauses[0]);
+
 		assertThat(
-				result.getPrefix().getType(),
+				definition.getPrefix().getType(),
 				is(TypeDefinitionNode.Prefix.HASH));
-		assertThat(result.getDefinition().getContent().length, is(1));
+		assertThat(definition.getDefinition().getContent().length, is(1));
 	}
 
 	@Test
 	public void ascendantsDefinition() {
 
-		final TypeDefinitionNode result = parse("A & b # (Foo := bar)");
+		final PhraseNode phrase = parse("A & b #(Foo := bar)");
+		final ClauseNode[] clauses = phrase.getClauses();
 		final AscendantsNode ascendants =
-				to(AscendantsNode.class, result.getType());
+				to(AscendantsNode.class, phrase.getPrefix());
 
 		assertThat(ascendants.getAncestor().getSpec(), isName("a"));
 		assertThat(ascendants.getSamples().length, is(1));
 		assertThat(ascendants.getSamples()[0].getSpec(), isName("b"));
+
+		final TypeDefinitionNode definition =
+				to(TypeDefinitionNode.class, clauses[0]);
+
 		assertThat(
-				result.getPrefix().getType(),
+				definition.getPrefix().getType(),
 				is(TypeDefinitionNode.Prefix.HASH));
-		assertThat(result.getDefinition().getContent().length, is(1));
+		assertThat(definition.getDefinition().getContent().length, is(1));
 
 	}
-	private TypeDefinitionNode parse(String text) {
+	private PhraseNode parse(String text) {
 		return to(
-				TypeDefinitionNode.class,
+				PhraseNode.class,
 				parse(simpleExpression(), text));
 	}
 
