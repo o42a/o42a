@@ -40,11 +40,6 @@ public abstract class AbstractTypeVisitor<R, P>
 	}
 
 	@Override
-	public R visitTypeDefinition(TypeDefinitionNode definition, P p) {
-		return visitType(definition, p);
-	}
-
-	@Override
 	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
 		return visitType(expansion, p);
 	}
