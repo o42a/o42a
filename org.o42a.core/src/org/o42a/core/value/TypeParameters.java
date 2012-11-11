@@ -19,30 +19,27 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public final class TypeParameters extends Placed implements ValueStructFinder {
+public final class TypeParameters
+		extends Location
+		implements ValueStructFinder {
 
 	private TypeRef typeRef;
 
-	public TypeParameters(LocationInfo location, Distributor distributor) {
-		super(location, distributor);
+	public TypeParameters(LocationInfo location) {
+		super(location);
 		this.typeRef = null;
 	}
 
-	private TypeParameters(
-			LocationInfo location,
-			Distributor distributor,
-			TypeRef typeRef) {
-		super(location, distributor);
+	private TypeParameters(LocationInfo location, TypeRef typeRef) {
+		super(location);
 		this.typeRef = typeRef;
-		assertSameScope(typeRef);
 	}
 
 	public final TypeRef getTypeRef() {
@@ -50,7 +47,7 @@ public final class TypeParameters extends Placed implements ValueStructFinder {
 	}
 
 	public final TypeParameters setTypeRef(TypeRef typeRef) {
-		return new TypeParameters(this, distribute(), typeRef);
+		return new TypeParameters(this, typeRef);
 	}
 
 	@Override
@@ -65,12 +62,7 @@ public final class TypeParameters extends Placed implements ValueStructFinder {
 		final TypeRef oldTypeRef = getTypeRef();
 
 		if (oldTypeRef == null) {
-			if (getScope().is(prefix.getStart())) {
-				return this;
-			}
-			return new TypeParameters(
-					this,
-					distributeIn(prefix.getStart().getContainer()));
+			return this;
 		}
 
 		final TypeRef newTypeRef = oldTypeRef.prefixWith(prefix);
@@ -79,20 +71,16 @@ public final class TypeParameters extends Placed implements ValueStructFinder {
 			return this;
 		}
 
-		return new TypeParameters(
-				this,
-				distributeIn(prefix.getStart().getContainer()),
-				newTypeRef);
+		return new TypeParameters(this, newTypeRef);
 	}
 
 	@Override
 	public ValueStructFinder reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
 
 		final TypeRef oldTypeRef = getTypeRef();
 
 		if (oldTypeRef == null) {
-			return new TypeParameters(this, reproducer.distribute());
+			return this;
 		}
 
 		final TypeRef newTypeRef = oldTypeRef.reproduce(reproducer);
@@ -101,10 +89,7 @@ public final class TypeParameters extends Placed implements ValueStructFinder {
 			return null;
 		}
 
-		return new TypeParameters(
-				this,
-				reproducer.distribute(),
-				newTypeRef);
+		return new TypeParameters(this, newTypeRef);
 	}
 
 	@Override

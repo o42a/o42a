@@ -78,23 +78,27 @@ public final class LinkValueStruct
 
 		final TypeRef typeRef = getTypeRef();
 
-		return new TypeParameters(typeRef, typeRef.getRef().distribute())
-		.setTypeRef(typeRef);
+		return new TypeParameters(typeRef).setTypeRef(typeRef);
 	}
 
 	@Override
 	public LinkValueStruct setParameters(TypeParameters parameters) {
-		parameters.assertSameScope(toScoped());
 
-		final TypeRef newTypeRef = parameters.getTypeRef();
+		final TypeRef typeRef = parameters.getTypeRef();
 
-		if (newTypeRef.isValid()
-				&& !newTypeRef.relationTo(getTypeRef())
+		if (typeRef == null) {
+			return this;
+		}
+
+		typeRef.assertSameScope(toScoped());
+
+		if (typeRef.isValid()
+				&& !typeRef.relationTo(getTypeRef())
 				.checkDerived(parameters.getLogger())) {
 			return this;
 		}
 
-		return new LinkValueStruct(getValueType(), newTypeRef);
+		return new LinkValueStruct(getValueType(), typeRef);
 	}
 
 	@Override

@@ -91,10 +91,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 
 		if (!this.ascendants.isEmpty()) {
 			return this.ascendants.setTypeParameters(
-					new TypeParameters(
-							targetType,
-							targetType.getRef().distribute())
-					.setTypeRef(targetType));
+					new TypeParameters(targetType).setTypeRef(targetType));
 		}
 
 		return this.ascendants.setAncestor(
