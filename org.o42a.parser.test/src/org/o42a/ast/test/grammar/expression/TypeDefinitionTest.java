@@ -24,9 +24,9 @@ import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.expression.TypeDefinitionNode;
+import org.o42a.ast.phrase.PhrasePartNode;
+import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantsNode;
 
@@ -37,7 +37,7 @@ public class TypeDefinitionTest extends GrammarTestCase {
 	public void typeDefinition() {
 
 		final PhraseNode phrase = parse("A #(Foo := bar)");
-		final ClauseNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] clauses = phrase.getClauses();
 
 		assertThat(phrase.getPrefix(), isName("a"));
 		assertThat(clauses.length, is(1));
@@ -55,7 +55,7 @@ public class TypeDefinitionTest extends GrammarTestCase {
 	public void ascendantsDefinition() {
 
 		final PhraseNode phrase = parse("A & b #(Foo := bar)");
-		final ClauseNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] clauses = phrase.getClauses();
 		final AscendantsNode ascendants =
 				to(AscendantsNode.class, phrase.getPrefix());
 

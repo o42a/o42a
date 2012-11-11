@@ -26,19 +26,21 @@ import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.clause.AbstractClauseVisitor;
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.phrase.AbstractPhrasePartVisitor;
+import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.core.ref.Ref;
 
 
-final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
+final class PhrasePartVisitor
+		extends AbstractPhrasePartVisitor<Phrase, Phrase> {
 
-	public static final ClauseVisitor CLAUSE_VISITOR = new ClauseVisitor();
+	public static final PhrasePartVisitor PHRASE_PART_VISITOR =
+			new PhrasePartVisitor();
 
-	private ClauseVisitor() {
+	private PhrasePartVisitor() {
 	}
 
 	@Override
@@ -117,8 +119,8 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 	}
 
 	@Override
-	protected Phrase visitClause(ClauseNode clause, Phrase p) {
-		p.getLogger().invalidClause(clause);
+	protected Phrase visitPhrasePart(PhrasePartNode part, Phrase p) {
+		p.getLogger().invalidClause(part);
 		return p;
 	}
 

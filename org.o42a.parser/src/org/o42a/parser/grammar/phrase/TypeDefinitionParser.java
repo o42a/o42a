@@ -17,14 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.expression;
+package org.o42a.parser.grammar.phrase;
 
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ParenthesesNode;
-import org.o42a.ast.expression.TypeDefinitionNode;
-import org.o42a.ast.expression.TypeDefinitionNode.Prefix;
+import org.o42a.ast.phrase.TypeDefinitionNode;
+import org.o42a.ast.phrase.TypeDefinitionNode.Prefix;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;

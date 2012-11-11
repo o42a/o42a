@@ -21,15 +21,15 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.ParenthesisSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.clause.ClauseNode;
-import org.o42a.ast.clause.ClauseNodeVisitor;
+import org.o42a.ast.phrase.PhrasePartNode;
+import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.util.io.SourcePosition;
 
 
 public class ParenthesesNode
 		extends AbstractExpressionNode
-		implements BlockNode<ParenthesisSign>, ClauseNode {
+		implements BlockNode<ParenthesisSign>, PhrasePartNode {
 
 	private final SignNode<ParenthesisSign> opening;
 	private final SentenceNode[] content;
@@ -73,7 +73,7 @@ public class ParenthesesNode
 	}
 
 	@Override
-	public <R, P> R accept(ClauseNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitParentheses(this, p);
 	}
 

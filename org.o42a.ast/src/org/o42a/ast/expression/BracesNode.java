@@ -21,8 +21,8 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.BraceSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.clause.ClauseNode;
-import org.o42a.ast.clause.ClauseNodeVisitor;
+import org.o42a.ast.phrase.PhrasePartNode;
+import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
@@ -30,7 +30,7 @@ import org.o42a.ast.statement.StatementNodeVisitor;
 
 public class BracesNode
 		extends AbstractStatementNode
-		implements BlockNode<BraceSign>, ClauseNode {
+		implements BlockNode<BraceSign>, PhrasePartNode {
 
 	private final SignNode<BraceSign> opening;
 	private final SentenceNode[] content;
@@ -67,7 +67,7 @@ public class BracesNode
 	}
 
 	@Override
-	public <R, P> R accept(ClauseNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitBraces(this, p);
 	}
 

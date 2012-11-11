@@ -17,17 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.expression;
+package org.o42a.parser.grammar.phrase;
 
 import static org.o42a.parser.Grammar.*;
-import static org.o42a.parser.grammar.expression.TypeDefinitionParser.TYPE_DEFINITION;
+import static org.o42a.parser.grammar.phrase.TypeDefinitionParser.TYPE_DEFINITION;
 
 import java.util.ArrayList;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
+import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -45,11 +45,11 @@ public class PhraseParser implements Parser<PhraseNode> {
 	@Override
 	public PhraseNode parse(ParserContext context) {
 
-		final ArrayList<ClauseNode> clauses = new ArrayList<ClauseNode>();
+		final ArrayList<PhrasePartNode> clauses = new ArrayList<PhrasePartNode>();
 
 		for (;;) {
 
-			final ClauseNode clause = context.parse(CLAUSE);
+			final PhrasePartNode clause = context.parse(CLAUSE);
 
 			if (clause == null) {
 				break;
@@ -66,16 +66,16 @@ public class PhraseParser implements Parser<PhraseNode> {
 
 		return new PhraseNode(
 				this.prefix,
-				clauses.toArray(new ClauseNode[size]));
+				clauses.toArray(new PhrasePartNode[size]));
 	}
 
-	private static final class ClauseParser implements Parser<ClauseNode> {
+	private static final class ClauseParser implements Parser<PhrasePartNode> {
 
 		ClauseParser() {
 		}
 
 		@Override
-		public ClauseNode parse(ParserContext context) {
+		public PhrasePartNode parse(ParserContext context) {
 
 			final int c = context.next();
 

@@ -20,11 +20,11 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.phrase.ClauseVisitor.CLAUSE_VISITOR;
+import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
-import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.Interpreter;
@@ -215,8 +215,8 @@ public final class PhraseInterpreter {
 
 		Phrase result = phrase;
 
-		for (ClauseNode clause : node.getClauses()) {
-			result = clause.accept(CLAUSE_VISITOR, result);
+		for (PhrasePartNode clause : node.getClauses()) {
+			result = clause.accept(PHRASE_PART_VISITOR, result);
 		}
 
 		return result;

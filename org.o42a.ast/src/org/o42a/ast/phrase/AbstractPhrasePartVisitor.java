@@ -17,51 +17,51 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.clause;
+package org.o42a.ast.phrase;
 
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 
 
-public abstract class AbstractClauseVisitor<R, P>
-		implements ClauseNodeVisitor<R, P> {
+public abstract class AbstractPhrasePartVisitor<R, P>
+		implements PhrasePartNodeVisitor<R, P> {
 
 	@Override
 	public R visitName(NameNode name, P p) {
-		return visitClause(name, p);
+		return visitPhrasePart(name, p);
 	}
 
 	@Override
 	public R visitBraces(BracesNode braces, P p) {
-		return visitClause(braces, p);
+		return visitPhrasePart(braces, p);
 	}
 
 	@Override
 	public R visitParentheses(ParenthesesNode parentheses, P p) {
-		return visitClause(parentheses, p);
+		return visitPhrasePart(parentheses, p);
 	}
 
 	@Override
 	public R visitBrackets(BracketsNode brackets, P p) {
-		return visitClause(brackets, p);
+		return visitPhrasePart(brackets, p);
 	}
 
 	@Override
 	public R visitText(TextNode text, P p) {
-		return visitClause(text, p);
+		return visitPhrasePart(text, p);
 	}
 
 	@Override
 	public R visitDecimal(DecimalNode decimal, P p) {
-		return visitClause(decimal, p);
+		return visitPhrasePart(decimal, p);
 	}
 
 	@Override
 	public R visitTypeDefinition(TypeDefinitionNode definition, P p) {
-		return visitClause(definition, p);
+		return visitPhrasePart(definition, p);
 	}
 
-	protected abstract R visitClause(ClauseNode clause, P p);
+	protected abstract R visitPhrasePart(PhrasePartNode part, P p);
 
 }

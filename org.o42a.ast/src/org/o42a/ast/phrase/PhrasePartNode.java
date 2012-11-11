@@ -17,27 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.clause;
+package org.o42a.ast.phrase;
 
-import org.o42a.ast.atom.DecimalNode;
-import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.expression.*;
+import org.o42a.ast.Node;
 
 
-public interface ClauseNodeVisitor<R, P> {
+public interface PhrasePartNode extends Node {
 
-	R visitName(NameNode name, P p);
-
-	R visitBraces(BracesNode braces, P p);
-
-	R visitParentheses(ParenthesesNode parentheses, P p);
-
-	R visitBrackets(BracketsNode brackets, P p);
-
-	R visitText(TextNode text, P p);
-
-	R visitDecimal(DecimalNode decimal, P p);
-
-	R visitTypeDefinition(TypeDefinitionNode definition, P p);
+	<R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p);
 
 }
