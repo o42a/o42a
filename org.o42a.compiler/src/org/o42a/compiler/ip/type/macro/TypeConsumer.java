@@ -33,7 +33,7 @@ public abstract class TypeConsumer {
 		return new DefaultTypeConsumer(nesting);
 	}
 
-	public abstract TypeConsumer paramConsumer();
+	public abstract TypeConsumer paramConsumer(int index);
 
 	public abstract TypeRef consumeType(Ref ref, ValueStructFinder valueStruct);
 

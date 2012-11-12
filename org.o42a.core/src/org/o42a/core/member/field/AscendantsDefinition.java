@@ -30,11 +30,11 @@ import org.o42a.core.member.field.impl.DefaultFieldDefinition;
 import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 

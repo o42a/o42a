@@ -26,8 +26,9 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.ref.type.TypeParameter;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -103,12 +104,17 @@ final class TypeParamMetaDep extends MetaDep {
 	}
 
 	final boolean typeParamChanged(Meta meta) {
+		return typeParamChanged(meta, this.macroDep.getParamIndex());
+	}
+
+	private final boolean typeParamChanged(Meta meta, int paramIndex) {
 
 		final ValueStruct<?, ?> valueStruct =
 				meta.getObject().value().getValueStruct();
 		final TypeParameters typeParams =
 				valueStruct.getParameters();
-		final TypeRef typeRef = typeParams.getTypeRef();
+		final TypeRef typeRef =
+				typeParams.getTypeRef(paramIndex);
 
 		return typeParamChanged(meta, typeRef, this.macroDep.getDepth());
 	}
@@ -116,11 +122,19 @@ final class TypeParamMetaDep extends MetaDep {
 	private boolean typeParamChanged(Meta meta, TypeRef typeRef, int depth) {
 		if (depth > 0) {
 
-			final TypeParameters subTypeParams =
-					typeRef.getValueStruct().getParameters();
-			final TypeRef subTypeRef = subTypeParams.getTypeRef();
+			final TypeParameter[] subTypeParams =
+					typeRef.getTypeParameters().getParameters();
 
-			return typeParamChanged(meta, subTypeRef, depth - 1);
+			for (int i = 0; i < subTypeParams.length; ++i) {
+
+				final TypeRef subTypeRef = subTypeParams[i].getTypeRef();
+
+				if (typeParamChanged(meta, subTypeRef, depth - 1)) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		if (!typeRef.getPath().hasTemplate(this.template)) {

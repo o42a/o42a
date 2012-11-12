@@ -23,6 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
+import static org.o42a.core.ref.type.TypeParameter.typeParameter;
 
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNode;
@@ -34,9 +35,7 @@ import org.o42a.compiler.ip.type.ascendant.*;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.TypeParameters;
+import org.o42a.core.ref.type.*;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.link.LinkValueType;
 
@@ -85,19 +84,6 @@ public final class TypeInterpreter {
 			InterfaceNode ifaceNode,
 			Distributor p,
 			TypeConsumer consumer) {
-
-		final TypeParameterNode[] typeParameters = ifaceNode.getParameters();
-
-		if (typeParameters.length != 1) {
-			return null;
-		}
-
-		final TypeNode type = typeParameters[0].getType();
-
-		if (type == null) {
-			return null;
-		}
-
 		if (ifaceNode.getKind().getType() != DefinitionKind.LINK) {
 			p.getLogger().error(
 					"prohibited_type_mutability",
@@ -105,14 +91,29 @@ public final class TypeInterpreter {
 					"Mutability flag prohibited here. Use a single backquote");
 		}
 
-		final TypeRef paramTypeRef = type.accept(typeVisitor(consumer), p);
+		final TypeParameterNode[] typeParamNodes = ifaceNode.getParameters();
+		final TypeParameter[] typeParams =
+				new TypeParameter[typeParamNodes.length];
 
-		if (paramTypeRef == null) {
-			return null;
+		for (int i = 0; i < typeParams.length; ++i) {
+
+			final TypeNode type = typeParamNodes[i].getType();
+
+			if (type == null) {
+				return null;
+			}
+
+			final TypeRef paramTypeRef =
+					type.accept(typeVisitor(consumer.paramConsumer(i)), p);
+
+			if (paramTypeRef == null) {
+				return null;
+			}
+
+			typeParams[i] = typeParameter(paramTypeRef);
 		}
 
-		return new TypeParameters(location(p, ifaceNode))
-		.setTypeRef(paramTypeRef);
+		return new TypeParameters(location(p, ifaceNode), typeParams);
 	}
 
 	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor(

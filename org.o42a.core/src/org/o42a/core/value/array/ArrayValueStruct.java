@@ -21,6 +21,7 @@ package org.o42a.core.value.array;
 
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+import static org.o42a.core.ref.type.TypeParameter.typeParameter;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -30,6 +31,7 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
@@ -82,13 +84,13 @@ public final class ArrayValueStruct
 
 		final TypeRef itemTypeRef = getItemTypeRef();
 
-		return new TypeParameters(itemTypeRef).setTypeRef(itemTypeRef);
+		return new TypeParameters(itemTypeRef, typeParameter(itemTypeRef));
 	}
 
 	@Override
 	public ArrayValueStruct setParameters(TypeParameters parameters) {
 
-		final TypeRef itemTypeRef = parameters.getTypeRef();
+		final TypeRef itemTypeRef = parameters.getTypeRef(0);
 
 		if (itemTypeRef == null) {
 			return this;

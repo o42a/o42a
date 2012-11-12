@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,33 +17,48 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.macro;
+package org.o42a.core.ref.impl;
 
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeParameter;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStructFinder;
 
 
-final class NoTypeConsumer extends TypeConsumer {
+public class KnownTypeParameter extends TypeParameter {
 
-	public static final NoTypeConsumer INSTANCE = new NoTypeConsumer();
+	private final TypeRef typeRef;
 
-	private NoTypeConsumer() {
+	public KnownTypeParameter(TypeRef typeRef) {
+		super(typeRef, typeRef.getScope());
+		assert typeRef != null :
+			"Type parameter not specified";
+		this.typeRef = typeRef;
 	}
 
 	@Override
-	public TypeConsumer paramConsumer(int index) {
-		return this;
+	public final TypeRef getTypeRef() {
+		return this.typeRef;
 	}
 
 	@Override
-	public TypeRef consumeType(Ref ref, ValueStructFinder valueStruct) {
-		return ref.toTypeRef(valueStruct);
+	public TypeParameter prefixWith(PrefixPath prefix) {
+
+		final TypeRef oldTypeRef = getTypeRef();
+		final TypeRef newTypeRef = oldTypeRef.prefixWith(prefix);
+
+		if (oldTypeRef == newTypeRef) {
+			return this;
+		}
+
+		return new KnownTypeParameter(newTypeRef);
 	}
 
 	@Override
 	public String toString() {
-		return "NoTypeConsumer";
+		if (this.typeRef == null) {
+			return super.toString();
+		}
+		return this.typeRef.toString();
 	}
 
 }
