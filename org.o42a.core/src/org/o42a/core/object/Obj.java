@@ -761,7 +761,7 @@ public abstract class Obj
 		}
 
 		final TypeParameters ancestorTypeParameters =
-				ancestor.getTypeParameters();
+				ancestor.getParameters();
 
 		if (ancestorTypeParameters.isEmpty()) {
 			return ancestorTypeParameters;

@@ -21,7 +21,7 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
+import static org.o42a.core.ref.type.TypeParametersBuilder.DEFAULT_TYPE_PARAMETERS;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -36,47 +36,49 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
 public abstract class TypeRef implements ScopeInfo {
 
-	public static TypeRef typeRef(
-			Ref ref,
-			ValueStructFinder valueStructFinder) {
+	public static TypeRef typeRef(Ref ref, TypeParametersBuilder parameters) {
 		if (ref.isKnownStatic()) {
-			return ref.toStaticTypeRef(valueStructFinder);
+			return ref.toStaticTypeRef(parameters);
 		}
-		return new DefaultTypeRef(ref, vsFinder(valueStructFinder));
+		return new DefaultTypeRef(ref, parameters(parameters));
 	}
 
 	public static StaticTypeRef staticTypeRef(
 			Ref ref,
-			ValueStructFinder valueStructFinder) {
+			TypeParametersBuilder parameters) {
 		return new StaticTypeRef(
 				ref,
 				ref.toStatic(),
-				vsFinder(valueStructFinder));
+				parameters(parameters));
 	}
 
-	private static ValueStructFinder vsFinder(ValueStructFinder vsFinder) {
-		if (vsFinder != null) {
-			return vsFinder;
+	private static TypeParametersBuilder parameters(
+			TypeParametersBuilder parameters) {
+		if (parameters != null) {
+			return parameters;
 		}
-		return DEFAULT_VALUE_STRUCT_FINDER;
+		return DEFAULT_TYPE_PARAMETERS;
 	}
 
 	private final Ref ref;
-	private final ValueStructFinder valueStructFinder;
+	private final TypeParametersBuilder parametersBuilder;
 	private ValueStruct<?, ?> valueStruct;
+	private TypeParameters parameters;
 	private TypeRef ancestor;
 	private TypeHolder type;
 	private boolean allResolved;
 
-	public TypeRef(Ref ref, ValueStructFinder valueStructFinder) {
+	public TypeRef(Ref ref, TypeParametersBuilder parameters) {
 		this.ref = ref;
-		this.valueStructFinder = valueStructFinder;
+		this.parametersBuilder = parameters;
 	}
 
 	@Override
@@ -102,6 +104,14 @@ public abstract class TypeRef implements ScopeInfo {
 
 	public abstract Ref getIntactRef();
 
+	public final ValueType<?> getValueType() {
+		return getValueStruct().getValueType();
+	}
+
+	public final Obj getType() {
+		return get().getObject();
+	}
+
 	public ValueStruct<?, ?> getValueStruct() {
 		if (this.valueStruct != null) {
 			return this.valueStruct;
@@ -112,7 +122,7 @@ public abstract class TypeRef implements ScopeInfo {
 
 		final ScopeInfo scoped;
 		final ValueStruct<?, ?> valueStruct =
-				this.valueStructFinder.valueStructBy(defaultValueStruct);
+				this.parametersBuilder.valueStructBy(defaultValueStruct);
 
 		if (valueStruct == null || valueStruct.isNone()) {
 			scoped = defaultValueStruct.toScoped();
@@ -133,8 +143,41 @@ public abstract class TypeRef implements ScopeInfo {
 		return this.valueStruct;
 	}
 
-	public final TypeParameters getTypeParameters() {
-		return getValueStruct().getParameters();
+	public final TypeParameters getParameters() {
+		if (this.parameters != null) {
+			return this.parameters;
+		}
+
+		final TypeParameters defaultParameters =
+				getRef().typeParameters(getScope());
+		final TypeParameters typeParameters =
+				this.parametersBuilder.typeParametersBy(defaultParameters);
+
+		if (typeParameters == null || typeParameters.isEmpty()) {
+			this.parameters = defaultParameters;
+		} else if (!typeParameters.isValid()) {
+			this.parameters = typeParameters;
+		} else {
+			assert defaultParameters.assertAssignableFrom(typeParameters);
+			this.parameters = typeParameters;
+		}
+
+		this.parameters.assertSameScope(this);
+
+		return this.parameters;
+	}
+
+	public TypeRef setParameters(TypeParametersBuilder parameters) {
+
+		final TypeParametersBuilder typeParameters;
+
+		if (parameters != null) {
+			typeParameters = parameters;
+		} else {
+			typeParameters = DEFAULT_TYPE_PARAMETERS;
+		}
+
+		return create(getIntactRef(), getRef(), typeParameters);
 	}
 
 	public final BoundPath getPath() {
@@ -181,27 +224,6 @@ public abstract class TypeRef implements ScopeInfo {
 		return getRef().value(resolver);
 	}
 
-	public final Obj getType() {
-		return get().getObject();
-	}
-
-	public final ValueType<?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public TypeRef setValueStruct(ValueStructFinder valueStructFinder) {
-
-		final ValueStructFinder vsFinder;
-
-		if (valueStructFinder != null) {
-			vsFinder = valueStructFinder;
-		} else {
-			vsFinder = DEFAULT_VALUE_STRUCT_FINDER;
-		}
-
-		return create(getIntactRef(), getRef(), vsFinder);
-	}
-
 	public final TypeRelation relationTo(TypeRef other) {
 		return new DefaultTypeRelation(this, other);
 	}
@@ -214,7 +236,7 @@ public abstract class TypeRef implements ScopeInfo {
 		return new StaticTypeRef(
 				getIntactRef(),
 				getRef(),
-				this.valueStructFinder);
+				this.parametersBuilder);
 	}
 
 	public TypeRef prefixWith(PrefixPath prefix) {
@@ -222,14 +244,13 @@ public abstract class TypeRef implements ScopeInfo {
 			return this;
 		}
 
-
 		final Ref oldRef = getRef();
 		final Ref newRef = oldRef.prefixWith(prefix);
 
-		final ValueStructFinder vsFinder =
-				this.valueStructFinder.prefixWith(prefix);
+		final TypeParametersBuilder parameters =
+				this.parametersBuilder.prefixWith(prefix);
 
-		if (oldRef == newRef && this.valueStructFinder == vsFinder) {
+		if (oldRef == newRef && this.parametersBuilder == parameters) {
 			return this;
 		}
 
@@ -242,7 +263,7 @@ public abstract class TypeRef implements ScopeInfo {
 			newIntactRef = oldIntactRef.prefixWith(prefix);
 		}
 
-		return create(newIntactRef, newRef, vsFinder);
+		return create(newIntactRef, newRef, parameters);
 	}
 
 	public TypeRef upgradeScope(Scope toScope) {
@@ -299,14 +320,14 @@ public abstract class TypeRef implements ScopeInfo {
 			}
 		}
 
-		final ValueStructFinder vsFinder =
-				this.valueStructFinder.reproduce(reproducer);
+		final TypeParametersBuilder parameters =
+				this.parametersBuilder.reproduce(reproducer);
 
-		if (vsFinder == null) {
+		if (parameters == null) {
 			return null;
 		}
 
-		return create(newIntactRef, newRef, vsFinder);
+		return create(newIntactRef, newRef, parameters);
 	}
 
 	public final RefOp op(HostOp host) {
@@ -350,7 +371,7 @@ public abstract class TypeRef implements ScopeInfo {
 	protected abstract TypeRef create(
 			Ref intactRef,
 			Ref ref,
-			ValueStructFinder valueStructFinder);
+			TypeParametersBuilder parameters);
 
 	private TypeHolder get() {
 		if (this.type != null) {

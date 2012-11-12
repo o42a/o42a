@@ -79,7 +79,7 @@ public class Ascendants
 			}
 			if (this.typeParameters != null) {
 				this.ancestor =
-						this.ancestor.setValueStruct(this.typeParameters);
+						this.ancestor.setParameters(this.typeParameters);
 			}
 		}
 

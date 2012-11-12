@@ -20,7 +20,7 @@
 package org.o42a.core.value.link;
 
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
-import static org.o42a.core.ref.type.TypeParameter.typeParameter;
+import static org.o42a.core.value.link.Link.linkTypeParameters;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -77,10 +77,7 @@ public final class LinkValueStruct
 
 	@Override
 	public TypeParameters getParameters() {
-
-		final TypeRef typeRef = getTypeRef();
-
-		return new TypeParameters(typeRef, typeParameter(typeRef));
+		return linkTypeParameters(getTypeRef());
 	}
 
 	@Override

@@ -37,6 +37,10 @@ public abstract class TypeParameter extends Scoped {
 		super(location, scope);
 	}
 
+	public boolean isValid() {
+		return getTypeRef().isValid();
+	}
+
 	public abstract TypeRef getTypeRef();
 
 	public abstract TypeParameter prefixWith(PrefixPath prefix);

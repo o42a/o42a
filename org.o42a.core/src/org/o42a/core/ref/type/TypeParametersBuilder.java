@@ -17,22 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.ref.type;
 
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.impl.DefaultValueStructFinder;
+import org.o42a.core.value.ValueStruct;
 
 
-public interface ValueStructFinder {
+public interface TypeParametersBuilder {
 
-	ValueStructFinder DEFAULT_VALUE_STRUCT_FINDER =
-			DefaultValueStructFinder.INSTANCE;
+	TypeParametersBuilder DEFAULT_TYPE_PARAMETERS =
+			DefaultTypeParameters.INSTANCE;
 
-	ValueStructFinder prefixWith(PrefixPath prefix);
+	TypeParametersBuilder prefixWith(PrefixPath prefix);
 
 	ValueStruct<?, ?> valueStructBy(ValueStruct<?, ?> defaultStruct);
 
-	ValueStructFinder reproduce(Reproducer reproducer);
+	TypeParameters typeParametersBy(TypeParameters defaultParameters);
+
+	TypeParametersBuilder reproduce(Reproducer reproducer);
 
 }

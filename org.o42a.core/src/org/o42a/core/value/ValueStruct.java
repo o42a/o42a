@@ -29,9 +29,7 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeParameters;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.ref.type.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -52,7 +50,7 @@ import org.o42a.core.value.voids.VoidValueStruct;
 
 
 public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
-		implements ValueStructFinder {
+		implements TypeParametersBuilder {
 
 	public static final SingleValueStruct<Void> VOID =
 			VoidValueStruct.INSTANCE;
@@ -217,6 +215,11 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	@SuppressWarnings("unchecked")
 	public final S valueStructBy(ValueStruct<?, ?> defaultStruct) {
 		return (S) this;
+	}
+
+	@Override
+	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
+		return getParameters();
 	}
 
 	public abstract ScopeInfo toScoped();

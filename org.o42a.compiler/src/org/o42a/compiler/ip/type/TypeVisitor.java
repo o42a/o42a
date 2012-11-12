@@ -34,8 +34,8 @@ import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStructFinder;
 
 
 public final class TypeVisitor
@@ -43,20 +43,20 @@ public final class TypeVisitor
 
 	private final TypeInterpreter typeIp;
 	private final TypeConsumer consumer;
-	private final ValueStructFinder valueStruct;
+	private final TypeParametersBuilder typeParameters;
 
 	public TypeVisitor(TypeInterpreter ip, TypeConsumer consumer) {
 		this.typeIp = ip;
-		this.valueStruct = null;
+		this.typeParameters = null;
 		this.consumer = consumer;
 	}
 
 	private TypeVisitor(
 			TypeInterpreter ip,
 			TypeConsumer consumer,
-			ValueStructFinder valueStruct) {
+			TypeParametersBuilder typeParameters) {
 		this.typeIp = ip;
-		this.valueStruct = valueStruct;
+		this.typeParameters = typeParameters;
 		this.consumer = consumer;
 	}
 
@@ -77,7 +77,7 @@ public final class TypeVisitor
 		final AncestorTypeRef ancestor = typeIp().parseAncestor(
 				p,
 				ascendants.getAncestor(),
-				this.valueStruct,
+				this.typeParameters,
 				BODY_REFERRAL);
 
 		if (ancestor.isImplied()) {
@@ -98,27 +98,27 @@ public final class TypeVisitor
 			return super.visitTypeParameters(parameters, p);
 		}
 
-		final ValueStructFinder vsFinder;
+		final TypeParametersBuilder typeParameters;
 		final InterfaceNode ifaceNode = parameters.getParameters();
 
-		if (this.valueStruct != null) {
+		if (this.typeParameters != null) {
 			p.getLogger().error(
 					"redundant_value_type",
 					ifaceNode,
 					"Redundant value type");
-			vsFinder = this.valueStruct;
+			typeParameters = this.typeParameters;
 		} else {
-			vsFinder = typeIp().typeParameters(
+			typeParameters = typeIp().typeParameters(
 					ifaceNode,
 					p,
 					this.consumer);
-			if (vsFinder == null) {
+			if (typeParameters == null) {
 				return null;
 			}
 		}
 
 		return ascendantNode.accept(
-				new TypeVisitor(typeIp(), NO_TYPE_CONSUMER, vsFinder),
+				new TypeVisitor(typeIp(), NO_TYPE_CONSUMER, typeParameters),
 				p);
 	}
 
@@ -141,7 +141,7 @@ public final class TypeVisitor
 
 		return this.consumer.consumeType(
 				expandMacro(macroRef),
-				this.valueStruct);
+				this.typeParameters);
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public final class TypeVisitor
 			return null;
 		}
 
-		return this.consumer.consumeType(ref, this.valueStruct);
+		return this.consumer.consumeType(ref, this.typeParameters);
 	}
 
 	@Override
@@ -168,12 +168,12 @@ public final class TypeVisitor
 		}
 
 		if (!ref.isMacroExpanding()) {
-			return this.consumer.consumeType(ref.bodyRef(), this.valueStruct);
+			return this.consumer.consumeType(ref.bodyRef(), this.typeParameters);
 		}
 
 		return this.consumer.consumeType(
 				expandMacro(ref.bodyRef()),
-				this.valueStruct);
+				this.typeParameters);
 	}
 
 	@Override

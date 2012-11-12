@@ -36,7 +36,6 @@ import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.*;
-import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -123,34 +122,34 @@ public final class TypeInterpreter {
 
 	public final ExpressionNodeVisitor<AncestorTypeRef, Distributor>
 	ancestorVisitor(
-			ValueStructFinder valueStruct,
+			TypeParametersBuilder typeParameters,
 			Referral referral,
 			TypeConsumer typeConsumer) {
-		if (valueStruct == null
+		if (typeParameters == null
 				&& referral == TARGET_REFERRAL
 				&& typeConsumer == NO_TYPE_CONSUMER) {
 			return this.ancestorVisitor;
 		}
 		return new AncestorVisitor(
 				ip(),
-				valueStruct,
+				typeParameters,
 				referral,
 				typeConsumer);
 	}
 
 	public final ExpressionNodeVisitor<AncestorTypeRef, Distributor>
 	staticAncestorVisitor(
-			ValueStructFinder valueStruct,
+			TypeParametersBuilder typeParameters,
 			Referral referral,
 			TypeConsumer typeConsumer) {
-		if (valueStruct == null
+		if (typeParameters == null
 				&& referral == TARGET_REFERRAL
 				&& typeConsumer == NO_TYPE_CONSUMER) {
 			return this.staticAncestorVisitor;
 		}
 		return new StaticAncestorVisitor(
 				ip(),
-				valueStruct,
+				typeParameters,
 				referral,
 				typeConsumer);
 	}
@@ -171,19 +170,19 @@ public final class TypeInterpreter {
 	public AncestorTypeRef parseAncestor(
 			Distributor distributor,
 			AscendantNode ascendantNode,
-			ValueStructFinder valueStructFinder,
+			TypeParametersBuilder typeParameters,
 			Referral referral) {
 
 		final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;
 
 		if (ascendantNode.getSeparator() == null) {
 			ancestorVisitor = ancestorVisitor(
-					valueStructFinder,
+					typeParameters,
 					referral,
 					NO_TYPE_CONSUMER);
 		} else {
 			ancestorVisitor = staticAncestorVisitor(
-					valueStructFinder,
+					typeParameters,
 					referral,
 					NO_TYPE_CONSUMER);
 		}

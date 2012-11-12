@@ -21,8 +21,8 @@ package org.o42a.compiler.ip.type.macro;
 
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStructFinder;
 
 
 public abstract class TypeConsumer {
@@ -35,6 +35,8 @@ public abstract class TypeConsumer {
 
 	public abstract TypeConsumer paramConsumer(int index);
 
-	public abstract TypeRef consumeType(Ref ref, ValueStructFinder valueStruct);
+	public abstract TypeRef consumeType(
+			Ref ref,
+			TypeParametersBuilder typeParameters);
 
 }
