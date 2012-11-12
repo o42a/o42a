@@ -89,14 +89,7 @@ final class TypeParamMetaDep extends MetaDep {
 
 	@Override
 	protected boolean changed(Meta meta) {
-
-		final Meta nestedMeta = nestedMeta(meta);
-
-		if (nestedMeta != null) {
-			return typeParamChanged(nestedMeta);
-		}
-
-		return typeParamChanged(meta);
+		return typeParamChanged(findNestedMeta(meta));
 	}
 
 	final void setParentDep(MetaDep parentDep) {
@@ -107,14 +100,31 @@ final class TypeParamMetaDep extends MetaDep {
 		return typeParamChanged(meta, this.macroDep.getParamIndex());
 	}
 
+	private Meta findNestedMeta(Meta meta) {
+
+		final Meta nestedMeta = nestedMeta(meta);
+
+		if (nestedMeta != null) {
+			return nestedMeta;
+		}
+
+		return meta;
+	}
+
 	private final boolean typeParamChanged(Meta meta, int paramIndex) {
 
 		final ValueStruct<?, ?> valueStruct =
 				meta.getObject().value().getValueStruct();
 		final TypeParameters typeParams =
 				valueStruct.getParameters();
-		final TypeRef typeRef =
-				typeParams.getTypeRef(paramIndex);
+		final Object paramKey =
+				findNestedMeta(getDeclaredIn())
+				.getObject()
+				.value()
+				.getValueStruct()
+				.getParameters()
+				.parameterKey(paramIndex);
+		final TypeRef typeRef = typeParams.typeRef(paramKey);
 
 		return typeParamChanged(meta, typeRef, this.macroDep.getDepth());
 	}

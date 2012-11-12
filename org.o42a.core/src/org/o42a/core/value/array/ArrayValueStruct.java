@@ -90,7 +90,7 @@ public final class ArrayValueStruct
 	@Override
 	public ArrayValueStruct setParameters(TypeParameters parameters) {
 
-		final TypeRef itemTypeRef = parameters.getTypeRef(0);
+		final TypeRef itemTypeRef = parameters.typeRef(0);
 
 		if (itemTypeRef == null) {
 			return this;
