@@ -46,18 +46,31 @@ public final class TypeParameters
 		return this.parameters;
 	}
 
-	public final TypeParameter getParameter(int index) {
+	public final Object parameterKey(int index) {
+		return Integer.valueOf(index);
+	}
+
+	public final TypeParameter parameter(Object key) {
+
+		// TODO Implement the parameter key as field key.
+		final int index = (Integer) key;
+
 		if (this.parameters.length <= index) {
 			return null;
 		}
+
 		return this.parameters[index];
 	}
 
-	public final TypeRef getTypeRef(int index) {
-		if (this.parameters.length <= index) {
+	public final TypeRef typeRef(Object key) {
+
+		final TypeParameter parameter = parameter(key);
+
+		if (parameter == null) {
 			return null;
 		}
-		return this.parameters[index].getTypeRef();
+
+		return parameter.getTypeRef();
 	}
 
 	@Override

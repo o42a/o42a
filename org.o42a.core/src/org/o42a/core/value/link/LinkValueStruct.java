@@ -86,7 +86,7 @@ public final class LinkValueStruct
 	@Override
 	public LinkValueStruct setParameters(TypeParameters parameters) {
 
-		final TypeRef typeRef = parameters.getTypeRef(0);
+		final TypeRef typeRef = parameters.typeRef(0);
 
 		if (typeRef == null) {
 			return this;
