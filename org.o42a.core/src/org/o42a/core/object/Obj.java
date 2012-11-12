@@ -52,6 +52,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.AbstractMemberStep;
 import org.o42a.core.ref.path.impl.StaticObjectStep;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -749,6 +750,28 @@ public abstract class Obj
 				scope.getEnclosingScopePath().toPrefix(scope);
 
 		return ancestorValueStruct.prefixWith(prefix);
+	}
+
+	protected TypeParameters determineTypeParameters() {
+
+		final TypeRef ancestor = type().getAncestor();
+
+		if (ancestor == null) {
+			return new TypeParameters(this);
+		}
+
+		final TypeParameters ancestorTypeParameters =
+				ancestor.getTypeParameters();
+
+		if (ancestorTypeParameters.isEmpty()) {
+			return ancestorTypeParameters;
+		}
+
+		final Scope scope = getScope();
+		final PrefixPath prefix =
+				scope.getEnclosingScopePath().toPrefix(scope);
+
+		return ancestorTypeParameters.prefixWith(prefix);
 	}
 
 	protected abstract Definitions explicitDefinitions();

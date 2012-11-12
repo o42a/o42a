@@ -46,6 +46,10 @@ public final class TypeParameters
 		return this.parameters;
 	}
 
+	public final boolean isEmpty() {
+		return this.parameters.length == 0;
+	}
+
 	public final Object parameterKey(int index) {
 		return Integer.valueOf(index);
 	}

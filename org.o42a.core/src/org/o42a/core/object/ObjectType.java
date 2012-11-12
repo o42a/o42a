@@ -41,6 +41,7 @@ import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 
@@ -49,6 +50,7 @@ public final class ObjectType implements UserInfo {
 
 	private final Obj object;
 	private Obj lastDefinition;
+	private TypeParameters parameters;
 	private Usable<TypeUsage> uses;
 	private Usable<DerivationUsage> derivationUses;
 	private LinkUses linkUses;
@@ -126,6 +128,23 @@ public final class ObjectType implements UserInfo {
 	 */
 	public final Sample[] getSamples() {
 		return getAscendants().getSamples();
+	}
+
+	public final TypeParameters getParameters() {
+		if (this.parameters != null) {
+			return this.parameters;
+		}
+
+		final TypeParameters parameters =
+				getObject().determineTypeParameters();
+
+		if (parameters.isEmpty()) {
+			return this.parameters = parameters;
+		}
+
+		parameters.parameter(0).assertSameScope(getObject());
+
+		return this.parameters = parameters;
 	}
 
 	public boolean inherits(ObjectType other) {

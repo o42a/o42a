@@ -29,7 +29,6 @@ import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeParameter;
 import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStruct;
 
 
 final class TypeParamMetaDep extends MetaDep {
@@ -113,15 +112,12 @@ final class TypeParamMetaDep extends MetaDep {
 
 	private final boolean typeParamChanged(Meta meta, int paramIndex) {
 
-		final ValueStruct<?, ?> valueStruct =
-				meta.getObject().value().getValueStruct();
 		final TypeParameters typeParams =
-				valueStruct.getParameters();
+				meta.getObject().type().getParameters();
 		final Object paramKey =
 				findNestedMeta(getDeclaredIn())
 				.getObject()
-				.value()
-				.getValueStruct()
+				.type()
 				.getParameters()
 				.parameterKey(paramIndex);
 		final TypeRef typeRef = typeParams.typeRef(paramKey);
