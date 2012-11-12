@@ -29,7 +29,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 
 
 final class TempFieldDefinition extends FieldDefinition {
@@ -89,10 +89,10 @@ final class TempFieldDefinition extends FieldDefinition {
 			return LINK.typeRef(this.expansion, scope);
 		}
 
-		final ValueStructFinder valueStruct =
-				new ParentValueStructFinder(scope);
+		final TypeParametersBuilder typeParameters =
+				new ParentTypeParameters(scope);
 
-		return LINK.typeRef(this, getScope(), valueStruct);
+		return LINK.typeRef(this, getScope(), typeParameters);
 	}
 
 	private Ref expansion() {

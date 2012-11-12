@@ -19,20 +19,17 @@
 */
 package org.o42a.core.ref.type;
 
-import java.util.Arrays;
-import java.util.Iterator;
-
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueStructFinder;
 
 
 public final class TypeParameters
 		extends Location
-		implements ValueStructFinder, Iterable<TypeParameter> {
+		implements TypeParametersBuilder {
 
 	private TypeParameter[] parameters;
 
@@ -48,6 +45,15 @@ public final class TypeParameters
 
 	public final boolean isEmpty() {
 		return this.parameters.length == 0;
+	}
+
+	public final boolean isValid() {
+		for (TypeParameter parameter : getParameters()) {
+			if (!parameter.isValid()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public final Object parameterKey(int index) {
@@ -77,6 +83,26 @@ public final class TypeParameters
 		return parameter.getTypeRef();
 	}
 
+	public boolean assignableFrom(TypeParameters parameters) {
+
+		final TypeParameter[] params = getParameters();
+
+		for (int i = 0; i < params.length; ++i) {
+
+			final Object paramKey = parameterKey(i);
+			final TypeRef typeRef = parameters.typeRef(paramKey);
+
+			if (typeRef == null) {
+				return false;
+			}
+			if (!typeRef.derivedFrom(params[i].getTypeRef())) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	@Override
 	public final ValueStruct<?, ?> valueStructBy(
 			ValueStruct<?, ?> defaultStruct) {
@@ -84,8 +110,11 @@ public final class TypeParameters
 	}
 
 	@Override
-	public final Iterator<TypeParameter> iterator() {
-		return Arrays.asList(this.parameters).iterator();
+	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
+		if (isEmpty()) {
+			return defaultParameters;
+		}
+		return this;
 	}
 
 	@Override
@@ -117,7 +146,7 @@ public final class TypeParameters
 	}
 
 	@Override
-	public ValueStructFinder reproduce(Reproducer reproducer) {
+	public TypeParametersBuilder reproduce(Reproducer reproducer) {
 
 		final TypeParameter[] oldParameters = getParameters();
 		final TypeParameter[] newParameters =
@@ -135,6 +164,19 @@ public final class TypeParameters
 		}
 
 		return new TypeParameters(this, newParameters);
+	}
+
+	public final boolean assertAssignableFrom(TypeParameters parameters) {
+		assert assignableFrom(parameters) :
+			this + " is not assignable from " + parameters;
+		return true;
+	}
+
+	public final boolean assertSameScope(ScopeInfo scope) {
+		if (!isEmpty()) {
+			this.parameters[0].assertSameScope(scope);
+		}
+		return true;
 	}
 
 	@Override

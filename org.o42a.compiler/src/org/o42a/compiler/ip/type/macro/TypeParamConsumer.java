@@ -27,8 +27,8 @@ import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.source.ScopedLogger;
-import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.macro.MacroConsumer;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
@@ -55,7 +55,7 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 	}
 
 	@Override
-	public TypeRef consumeType(Ref ref, ValueStructFinder valueStruct) {
+	public TypeRef consumeType(Ref ref, TypeParametersBuilder typeParameters) {
 
 		final Ref consumption = ref.consume(this);
 
@@ -63,7 +63,7 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 			return null;
 		}
 
-		return consumption.toTypeRef(valueStruct);
+		return consumption.toTypeRef(typeParameters);
 	}
 
 	@Override

@@ -38,8 +38,7 @@ import org.o42a.core.ref.impl.RefCommand;
 import org.o42a.core.ref.impl.RefDefiner;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -112,6 +111,15 @@ public class Ref extends Statement {
 				resolution.toObject().value().getValueStruct();
 
 		return valueStruct.prefixWith(getPath().toPrefix(scope));
+	}
+
+	public final TypeParameters typeParameters(Scope scope) {
+
+		final Resolution resolution = resolve(scope.resolver());
+		final TypeParameters typeParameters =
+				resolution.toObject().type().getParameters();
+
+		return typeParameters.prefixWith(getPath().toPrefix(scope));
 	}
 
 	public final Resolution getResolution() {
@@ -334,8 +342,8 @@ public class Ref extends Statement {
 		return toTypeRef(null);
 	}
 
-	public TypeRef toTypeRef(ValueStructFinder valueStructFinder) {
-		return typeRef(this, valueStructFinder);
+	public TypeRef toTypeRef(TypeParametersBuilder typeParameters) {
+		return typeRef(this, typeParameters);
 	}
 
 	public final StaticTypeRef toStaticTypeRef() {
@@ -343,8 +351,8 @@ public class Ref extends Statement {
 	}
 
 	public final StaticTypeRef toStaticTypeRef(
-			ValueStructFinder valueStructFinder) {
-		return staticTypeRef(this, valueStructFinder);
+			TypeParametersBuilder typeParameters) {
+		return staticTypeRef(this, typeParameters);
 	}
 
 	public final TargetRef toTargetRef(TypeRef typeRef) {

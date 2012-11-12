@@ -31,12 +31,16 @@ import org.o42a.core.ref.common.ValueFieldDefinition;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.array.ArrayValueType;
 
@@ -48,7 +52,7 @@ public class ArrayConstructor extends ObjectConstructor {
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
 	private ArrayValueStruct arrayStruct;
-	private ValueStructFinder valueStructFinder;
+	private TypeParametersBuilder typeParameters;
 
 	public ArrayConstructor(
 			Interpreter ip,
@@ -85,7 +89,7 @@ public class ArrayConstructor extends ObjectConstructor {
 		return ArrayValueType.ROW.typeRef(
 				location,
 				getScope(),
-				valueStructFinder());
+				typeParameters());
 	}
 
 	@Override
@@ -138,49 +142,50 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	boolean typeByItems() {
-		valueStructFinder();
+		typeParameters();
 		return this.arrayStruct == null;
 	}
 
-	private ValueStructFinder valueStructFinder() {
-		if (this.valueStructFinder != null) {
-			return this.valueStructFinder;
+	private TypeParametersBuilder typeParameters() {
+		if (this.typeParameters != null) {
+			return this.typeParameters;
 		}
 		if (this.reproducedFrom != null) {
 			if (this.reproducedFrom.arrayStruct == null) {
-				return this.valueStructFinder =
-						this.reproducedFrom.valueStructFinder;
+				return this.typeParameters =
+						this.reproducedFrom.typeParameters;
 			}
 			this.arrayStruct =
 					this.reproducedFrom.arrayStruct.reproduce(
 							this.reproducer);
 			if (this.arrayStruct != null) {
-				return this.valueStructFinder = this.arrayStruct;
+				return this.typeParameters = this.arrayStruct;
 			}
-			return this.valueStructFinder =
-					this.reproducedFrom.valueStructFinder;
+			return this.typeParameters =
+					this.reproducedFrom.typeParameters;
 		}
 
 		if (this.node.getArguments().length == 0) {
-			return this.valueStructFinder =
+			return this.typeParameters =
 					this.arrayStruct =
 					ArrayValueType.ROW.arrayStruct(
 							voidRef(this, distribute()).toTypeRef());
 		}
 
-		return this.valueStructFinder = new ArrayStructByItems(toRef());
+		return this.typeParameters = new ArrayTypeParamsByItems(toRef());
 	}
 
-	private static final class ArrayStructByItems implements ValueStructFinder {
+	private static final class ArrayTypeParamsByItems
+			implements TypeParametersBuilder {
 
 		private final Ref arrayRef;
 
-		public ArrayStructByItems(Ref arrayRef) {
+		public ArrayTypeParamsByItems(Ref arrayRef) {
 			this.arrayRef = arrayRef;
 		}
 
 		@Override
-		public ValueStructFinder prefixWith(PrefixPath prefix) {
+		public TypeParametersBuilder prefixWith(PrefixPath prefix) {
 
 			final Ref arrayRef = this.arrayRef.prefixWith(prefix);
 
@@ -188,7 +193,7 @@ public class ArrayConstructor extends ObjectConstructor {
 				return this;
 			}
 
-			return new ArrayStructByItems(arrayRef);
+			return new ArrayTypeParamsByItems(arrayRef);
 		}
 
 		@Override
@@ -198,7 +203,13 @@ public class ArrayConstructor extends ObjectConstructor {
 		}
 
 		@Override
-		public ValueStructFinder reproduce(Reproducer reproducer) {
+		public TypeParameters typeParametersBy(
+				TypeParameters defaultParameters) {
+			return this.arrayRef.typeParameters(this.arrayRef.getScope());
+		}
+
+		@Override
+		public TypeParametersBuilder reproduce(Reproducer reproducer) {
 
 			final Ref arrayRef = this.arrayRef.reproduce(reproducer);
 
@@ -206,7 +217,7 @@ public class ArrayConstructor extends ObjectConstructor {
 				return null;
 			}
 
-			return new ArrayStructByItems(arrayRef);
+			return new ArrayTypeParamsByItems(arrayRef);
 		}
 
 	}

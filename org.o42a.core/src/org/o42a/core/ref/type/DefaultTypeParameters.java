@@ -17,24 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.ref.type;
 
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueStructFinder;
 
 
-public final class DefaultValueStructFinder implements ValueStructFinder {
+final class DefaultTypeParameters implements TypeParametersBuilder {
 
-	public static final DefaultValueStructFinder INSTANCE =
-			new DefaultValueStructFinder();
+	static final DefaultTypeParameters INSTANCE = new DefaultTypeParameters();
 
-	private DefaultValueStructFinder() {
+	private DefaultTypeParameters() {
 	}
 
 	@Override
-	public ValueStructFinder prefixWith(PrefixPath prefix) {
+	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
 		return this;
 	}
 
@@ -44,7 +42,12 @@ public final class DefaultValueStructFinder implements ValueStructFinder {
 	}
 
 	@Override
-	public ValueStructFinder reproduce(Reproducer reproducer) {
+	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
+		return defaultParameters;
+	}
+
+	@Override
+	public TypeParametersBuilder reproduce(Reproducer reproducer) {
 		return this;
 	}
 

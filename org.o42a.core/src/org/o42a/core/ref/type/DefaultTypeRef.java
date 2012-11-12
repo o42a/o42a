@@ -20,13 +20,12 @@
 package org.o42a.core.ref.type;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.ValueStructFinder;
 
 
 final class DefaultTypeRef extends TypeRef {
 
-	DefaultTypeRef(Ref ref, ValueStructFinder valueStructFinder) {
-		super(ref, valueStructFinder);
+	DefaultTypeRef(Ref ref, TypeParametersBuilder typeParameters) {
+		super(ref, typeParameters);
 	}
 
 	@Override
@@ -43,10 +42,10 @@ final class DefaultTypeRef extends TypeRef {
 	protected TypeRef create(
 			Ref intactRef,
 			Ref ref,
-			ValueStructFinder valueStructFinder) {
+			TypeParametersBuilder parameters) {
 		assert intactRef == ref :
 			intactRef + " should be the same as " + intactRef;
-		return new DefaultTypeRef(ref, valueStructFinder);
+		return new DefaultTypeRef(ref, parameters);
 	}
 
 }

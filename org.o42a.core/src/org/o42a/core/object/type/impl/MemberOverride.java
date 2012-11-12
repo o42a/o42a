@@ -113,7 +113,7 @@ public final class MemberOverride extends Sample {
 					object.getScope().getEnclosingScope());
 		}
 
-		return ancestor.setValueStruct(valueStruct());
+		return ancestor.setParameters(valueStruct());
 	}
 
 	private ValueStruct<?, ?> valueStruct() {

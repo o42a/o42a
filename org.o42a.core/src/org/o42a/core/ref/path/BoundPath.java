@@ -46,12 +46,12 @@ import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 
 
@@ -251,8 +251,8 @@ public class BoundPath extends RefPath {
 
 	public final TypeRef typeRef(
 			Distributor distributor,
-			ValueStructFinder valueStructFinder) {
-		return target(distributor).toTypeRef(valueStructFinder);
+			TypeParametersBuilder typeParameters) {
+		return target(distributor).toTypeRef(typeParameters);
 	}
 
 	public final StaticTypeRef staticTypeRef(Distributor distributor) {
@@ -261,8 +261,8 @@ public class BoundPath extends RefPath {
 
 	public final StaticTypeRef staticTypeRef(
 			Distributor distributor,
-			ValueStructFinder valueStructFinder) {
-		return target(distributor).toStaticTypeRef(valueStructFinder);
+			TypeParametersBuilder typeParameters) {
+		return target(distributor).toStaticTypeRef(typeParameters);
 	}
 
 	public final NormalPath normalize(Normalizer normalizer, Scope origin) {

@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.array.ArrayValueType;
@@ -105,10 +106,10 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 	public StaticTypeRef typeRef(
 			LocationInfo location,
 			Scope scope,
-			ValueStructFinder valueStructFinder) {
+			TypeParametersBuilder typeParameters) {
 		return path(location.getContext().getIntrinsics())
 				.bind(location, scope)
-				.staticTypeRef(scope.distribute(), valueStructFinder);
+				.staticTypeRef(scope.distribute(), typeParameters);
 	}
 
 	public abstract LinkValueType toLinkType();

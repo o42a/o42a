@@ -21,7 +21,7 @@ package org.o42a.core.value.array;
 
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.ref.type.TypeParameter.typeParameter;
+import static org.o42a.core.value.array.Array.arrayTypeParameters;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -81,10 +81,7 @@ public final class ArrayValueStruct
 
 	@Override
 	public TypeParameters getParameters() {
-
-		final TypeRef itemTypeRef = getItemTypeRef();
-
-		return new TypeParameters(itemTypeRef, typeParameter(itemTypeRef));
+		return arrayTypeParameters(getItemTypeRef());
 	}
 
 	@Override

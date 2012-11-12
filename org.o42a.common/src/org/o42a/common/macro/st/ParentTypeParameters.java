@@ -19,23 +19,26 @@
 */
 package org.o42a.common.macro.st;
 
+import static org.o42a.core.value.link.Link.linkTypeParameters;
 import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueStruct;
 
 
-final class ParentValueStructFinder implements ValueStructFinder {
+final class ParentTypeParameters implements TypeParametersBuilder {
 
 	private final Scope scope;
 
-	ParentValueStructFinder(Scope scope) {
+	ParentTypeParameters(Scope scope) {
 		this.scope = scope;
 	}
 
@@ -45,14 +48,41 @@ final class ParentValueStructFinder implements ValueStructFinder {
 	}
 
 	@Override
-	public ValueStructFinder reproduce(Reproducer reproducer) {
-		this.scope.assertCompatibleScope(reproducer.getReproducingScope());
-		return new ParentValueStructFinder(reproducer.getScope());
+	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
+		return typeParameters();
 	}
 
 	@Override
-	public ValueStructFinder prefixWith(PrefixPath prefix) {
+	public TypeParametersBuilder reproduce(Reproducer reproducer) {
+		this.scope.assertCompatibleScope(reproducer.getReproducingScope());
+		return new ParentTypeParameters(reproducer.getScope());
+	}
+
+	@Override
+	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
 		return valueStruct().prefixWith(prefix);
+	}
+
+	private TypeParameters typeParameters() {
+
+		final Obj parent = this.scope.toObject();
+		final TypeParameters parentTypeParameters =
+				parent.type().getParameters();
+		final ValueType<?> parentValueType =
+				parent.value().getValueType();
+
+		if (parentValueType.isLink()) {
+			return parentTypeParameters;
+		}
+
+		final StaticTypeRef parentValueTypeRef =
+				parentValueType.typeRef(
+						this.scope,
+						this.scope.getEnclosingScope())
+				.setParameters(parentTypeParameters)
+				.rescope(this.scope);
+
+		return linkTypeParameters(parentValueTypeRef);
 	}
 
 	private ValueStruct<?, ?> valueStruct() {
@@ -76,7 +106,7 @@ final class ParentValueStructFinder implements ValueStructFinder {
 		final StaticTypeRef parentValueTypeRef =
 				parentValueStruct.getValueType()
 				.typeRef(this.scope, this.scope.getEnclosingScope())
-				.setValueStruct(parentValueStruct)
+				.setParameters(parentValueStruct)
 				.rescope(this.scope);
 
 		// Construct a link.

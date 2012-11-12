@@ -35,25 +35,25 @@ import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStructFinder;
 
 
 public class AncestorVisitor
 		extends AbstractExpressionVisitor<AncestorTypeRef, Distributor> {
 
 	private final Interpreter ip;
-	private final ValueStructFinder valueStruct;
+	private final TypeParametersBuilder typeParameters;
 	private final Referral referral;
 	private final TypeConsumer typeConsumer;
 
 	public AncestorVisitor(
 			Interpreter ip,
-			ValueStructFinder valueStruct,
+			TypeParametersBuilder typeParameters,
 			Referral referral,
 			TypeConsumer typeConsumer) {
 		this.ip = ip;
-		this.valueStruct = valueStruct;
+		this.typeParameters = typeParameters;
 		this.referral = referral;
 		this.typeConsumer = typeConsumer;
 	}
@@ -62,8 +62,8 @@ public class AncestorVisitor
 		return this.ip;
 	}
 
-	public final ValueStructFinder valueStruct() {
-		return this.valueStruct;
+	public final TypeParametersBuilder typeParameters() {
+		return this.typeParameters;
 	}
 
 	public final Referral referral() {
@@ -98,7 +98,7 @@ public class AncestorVisitor
 
 	@Override
 	protected AncestorTypeRef visitRef(RefNode ref, Distributor p) {
-		if (valueStruct() != null) {
+		if (typeParameters() != null) {
 			return super.visitRef(ref, p);
 		}
 
@@ -141,7 +141,7 @@ public class AncestorVisitor
 	}
 
 	protected TypeRef toTypeRef(Ref ref) {
-		return ref.toTypeRef(valueStruct());
+		return ref.toTypeRef(typeParameters());
 	}
 
 }

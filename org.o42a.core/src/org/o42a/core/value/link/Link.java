@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.link;
 
+import static org.o42a.core.ref.type.TypeParameter.typeParameter;
+
 import org.o42a.core.*;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -30,11 +32,16 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
 public abstract class Link extends AbstractContainer implements PlaceInfo {
+
+	public static TypeParameters linkTypeParameters(TypeRef typeRef) {
+		return new TypeParameters(typeRef, typeParameter(typeRef));
+	}
 
 	private final Container enclosing;
 	private final ScopePlace place;

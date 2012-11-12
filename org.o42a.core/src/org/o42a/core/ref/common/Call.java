@@ -70,7 +70,7 @@ public class Call extends ObjectConstructor {
 			return ancestor;
 		}
 
-		return ancestor.setValueStruct(typeParameters);
+		return ancestor.setParameters(typeParameters);
 	}
 
 	@Override

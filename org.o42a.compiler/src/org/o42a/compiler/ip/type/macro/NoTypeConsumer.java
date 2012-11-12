@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.type.macro;
 
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 
 
 final class NoTypeConsumer extends TypeConsumer {
@@ -37,8 +37,8 @@ final class NoTypeConsumer extends TypeConsumer {
 	}
 
 	@Override
-	public TypeRef consumeType(Ref ref, ValueStructFinder valueStruct) {
-		return ref.toTypeRef(valueStruct);
+	public TypeRef consumeType(Ref ref, TypeParametersBuilder typeParameters) {
+		return ref.toTypeRef(typeParameters);
 	}
 
 	@Override

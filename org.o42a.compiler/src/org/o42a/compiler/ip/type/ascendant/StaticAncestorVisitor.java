@@ -23,23 +23,23 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStructFinder;
 
 
 public final class StaticAncestorVisitor extends AncestorVisitor {
 
 	public StaticAncestorVisitor(
 			Interpreter ip,
-			ValueStructFinder valueStructFinder,
+			TypeParametersBuilder typeParameters,
 			Referral referral,
 			TypeConsumer typeConsumer) {
-		super(ip, valueStructFinder, referral, typeConsumer);
+		super(ip, typeParameters, referral, typeConsumer);
 	}
 
 	@Override
 	protected TypeRef toTypeRef(Ref ref) {
-		return ref.toStaticTypeRef(valueStruct());
+		return ref.toStaticTypeRef(typeParameters());
 	}
 
 }
