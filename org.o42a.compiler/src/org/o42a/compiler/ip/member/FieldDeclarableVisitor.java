@@ -227,7 +227,7 @@ public final class FieldDeclarableVisitor
 					ip().typeIp().typeVisitor(
 							new FieldNesting(declaration)
 							.toTypeConsumer()
-							.paramConsumer()),
+							.paramConsumer(0)),
 					declaration.distribute());
 
 			if (type != null) {

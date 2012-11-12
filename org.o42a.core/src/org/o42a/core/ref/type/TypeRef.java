@@ -133,6 +133,10 @@ public abstract class TypeRef implements ScopeInfo {
 		return this.valueStruct;
 	}
 
+	public final TypeParameters getTypeParameters() {
+		return getValueStruct().getParameters();
+	}
+
 	public final BoundPath getPath() {
 
 		final BoundPath path = getRef().getPath();

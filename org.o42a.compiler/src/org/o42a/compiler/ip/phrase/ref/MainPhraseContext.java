@@ -38,11 +38,11 @@ import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.Name;
 
 

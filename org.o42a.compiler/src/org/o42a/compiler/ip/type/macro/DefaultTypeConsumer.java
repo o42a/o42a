@@ -34,8 +34,8 @@ final class DefaultTypeConsumer extends TypeConsumer {
 	}
 
 	@Override
-	public TypeParamConsumer paramConsumer() {
-		return new TypeParamConsumer(this.nesting);
+	public TypeParamConsumer paramConsumer(int index) {
+		return new TypeParamConsumer(this.nesting, index);
 	}
 
 	@Override

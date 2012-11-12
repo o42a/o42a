@@ -19,31 +19,9 @@
 */
 package org.o42a.compiler.ip.type.macro;
 
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStructFinder;
 
+public interface TypeParamConsumers {
 
-final class NoTypeConsumer extends TypeConsumer {
-
-	public static final NoTypeConsumer INSTANCE = new NoTypeConsumer();
-
-	private NoTypeConsumer() {
-	}
-
-	@Override
-	public TypeConsumer paramConsumer(int index) {
-		return this;
-	}
-
-	@Override
-	public TypeRef consumeType(Ref ref, ValueStructFinder valueStruct) {
-		return ref.toTypeRef(valueStruct);
-	}
-
-	@Override
-	public String toString() {
-		return "NoTypeConsumer";
-	}
+	TypeConsumer paramConsumer(int index);
 
 }

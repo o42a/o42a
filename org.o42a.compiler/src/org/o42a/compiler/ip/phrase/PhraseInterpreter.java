@@ -37,7 +37,7 @@ import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.value.TypeParameters;
+import org.o42a.core.ref.type.TypeParameters;
 
 
 public final class PhraseInterpreter {
@@ -198,7 +198,7 @@ public final class PhraseInterpreter {
 		final TypeParameters typeParams = phrase.ip().typeIp().typeParameters(
 				node.getParameters(),
 				phrase.distribute(),
-				typeConsumer.paramConsumer());
+				typeConsumer);
 		final TypeNode ascendantNode = node.getType();
 
 		if (ascendantNode == null) {

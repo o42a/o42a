@@ -29,6 +29,7 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.CompilerLogger;

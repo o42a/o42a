@@ -38,8 +38,8 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 
 	private final TypeParamMacroDep macroDep;
 
-	TypeParamConsumer(Nesting nesting) {
-		this.macroDep = new TypeParamMacroDep(nesting, 0);
+	TypeParamConsumer(Nesting nesting, int paramIndex) {
+		this.macroDep = new TypeParamMacroDep(nesting, paramIndex, 0);
 	}
 
 	private TypeParamConsumer(TypeParamMacroDep macroDep) {
@@ -47,9 +47,10 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 	}
 
 	@Override
-	public final TypeParamConsumer paramConsumer() {
+	public final TypeParamConsumer paramConsumer(int index) {
 		return new TypeParamConsumer(new TypeParamMacroDep(
 				this.macroDep.getNesting(),
+				index,
 				this.macroDep.getDepth() + 1));
 	}
 

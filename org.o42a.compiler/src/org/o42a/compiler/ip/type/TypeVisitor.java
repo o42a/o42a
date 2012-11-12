@@ -111,7 +111,7 @@ public final class TypeVisitor
 			vsFinder = typeIp().typeParameters(
 					ifaceNode,
 					p,
-					this.consumer.paramConsumer());
+					this.consumer);
 			if (vsFinder == null) {
 				return null;
 			}
