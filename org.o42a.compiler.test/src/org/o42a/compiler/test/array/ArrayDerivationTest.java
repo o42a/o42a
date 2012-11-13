@@ -26,10 +26,11 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
-import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 public class ArrayDerivationTest extends CompilerTestCase {
@@ -42,12 +43,14 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		final Obj b = field("b").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) b.value().getValueStruct();
+		final ArrayValueType arrayType =
+				b.value().getValueType().toArrayType();
+		final TypeRef itemTypeRef =
+				arrayType.itemTypeRef(arrayType.cast(b.type().getParameters()));
 
-		assertFalse(arraySruct.isVariable());
+		assertFalse(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				itemTypeRef.getType(),
 				is(b.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(b);
@@ -75,12 +78,15 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		final Obj bField = field("b", "field").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) bField.value().getValueStruct();
+		final ArrayValueType arrayType =
+				bField.value().getValueType().toArrayType();
+		final TypeRef itemTypeRef =
+				arrayType.itemTypeRef(
+						arrayType.cast(bField.type().getParameters()));
 
-		assertFalse(arraySruct.isVariable());
+		assertFalse(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				itemTypeRef.getType(),
 				is(bField.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(bField);
@@ -110,12 +116,15 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		final Obj bField = field("b", "field").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) bField.value().getValueStruct();
+		final ArrayValueType arrayType =
+				bField.value().getValueType().toArrayType();
+		final TypeRef itemTypeRef =
+				arrayType.itemTypeRef(
+						arrayType.cast(bField.type().getParameters()));
 
-		assertFalse(arraySruct.isVariable());
+		assertFalse(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				itemTypeRef.getType(),
 				is(bField.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(bField);

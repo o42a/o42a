@@ -21,6 +21,7 @@ package org.o42a.compiler.test.macro;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -36,12 +37,7 @@ public class LinkInterfaceTest extends CompilerTestCase {
 				"B := (`##interface [a`]) 2");
 
 		assertThat(
-				field("b")
-				.toObject()
-				.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
+				LINK.interfaceRef(field("b").toObject().type().getParameters())
 				.getType(),
 				is(ValueType.INTEGER.typeObject(this.context.getIntrinsics())));
 		assertThat(
@@ -56,12 +52,7 @@ public class LinkInterfaceTest extends CompilerTestCase {
 				"B := (`a #interface) 2");
 
 		assertThat(
-				field("b")
-				.toObject()
-				.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
+				LINK.interfaceRef(field("b").toObject().type().getParameters())
 				.getType(),
 				is(ValueType.INTEGER.typeObject(this.context.getIntrinsics())));
 		assertThat(
@@ -76,12 +67,7 @@ public class LinkInterfaceTest extends CompilerTestCase {
 				"B := (`##interface [a`]) 2");
 
 		assertThat(
-				field("b")
-				.toObject()
-				.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
+				LINK.interfaceRef(field("b").toObject().type().getParameters())
 				.getType(),
 				is(ValueType.INTEGER.typeObject(this.context.getIntrinsics())));
 		assertThat(
@@ -96,12 +82,7 @@ public class LinkInterfaceTest extends CompilerTestCase {
 				"B := (`a #interface) 2");
 
 		assertThat(
-				field("b")
-				.toObject()
-				.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
+				LINK.interfaceRef(field("b").toObject().type().getParameters())
 				.getType(),
 				is(ValueType.INTEGER.typeObject(this.context.getIntrinsics())));
 		assertThat(

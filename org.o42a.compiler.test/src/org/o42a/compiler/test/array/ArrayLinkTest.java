@@ -23,14 +23,17 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.o42a.core.value.array.ArrayValueType.ARRAY;
+import static org.o42a.core.value.array.ArrayValueType.ROW;
+import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
-import org.o42a.core.value.array.ArrayValueStruct;
 
 
 public class ArrayLinkTest extends CompilerTestCase {
@@ -40,16 +43,14 @@ public class ArrayLinkTest extends CompilerTestCase {
 		compile("A := `row (`integer) [[1, 2, 3]]");
 
 		final Obj a = field("a").toObject();
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getValueStruct();
+		final TypeParameters<Array> arrayParameters =
+				ROW.cast(
+						LINK.interfaceRef(a.type().getParameters())
+						.getParameters());
 
-		assertFalse(arraySruct.isVariable());
+		assertFalse(arrayParameters.getValueType().isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				ROW.itemTypeRef(arrayParameters).getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -72,16 +73,14 @@ public class ArrayLinkTest extends CompilerTestCase {
 		compile("A := `[1, 2, 3]");
 
 		final Obj a = field("a").toObject();
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getValueStruct();
+		final TypeParameters<Array> arrayParameters =
+				ROW.cast(
+						LINK.interfaceRef(a.type().getParameters())
+						.getParameters());
 
-		assertFalse(arraySruct.isVariable());
+		assertFalse(arrayParameters.getValueType().isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				ROW.itemTypeRef(arrayParameters).getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -104,16 +103,14 @@ public class ArrayLinkTest extends CompilerTestCase {
 		compile("A := `array (`integer) [[1, 2, 3]]");
 
 		final Obj a = field("a").toObject();
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getValueStruct();
+		final TypeParameters<Array> arrayParameters =
+				ARRAY.cast(
+						LINK.interfaceRef(a.type().getParameters())
+						.getParameters());
 
-		assertTrue(arraySruct.isVariable());
+		assertTrue(arrayParameters.getValueType().isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				ARRAY.itemTypeRef(arrayParameters).getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -130,16 +127,14 @@ public class ArrayLinkTest extends CompilerTestCase {
 		compile("A := `array [[1, 2, 3]]");
 
 		final Obj a = field("a").toObject();
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getValueStruct();
+		final TypeParameters<Array> arrayParameters =
+				ARRAY.cast(
+						LINK.interfaceRef(a.type().getParameters())
+						.getParameters());
 
-		assertTrue(arraySruct.isVariable());
+		assertTrue(arrayParameters.getValueType().isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				ARRAY.itemTypeRef(arrayParameters).getType(),
 				is(a.getContext().getIntrinsics().getVoid()));
 
 		final Array array = definiteValue(linkTarget(a));

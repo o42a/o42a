@@ -21,6 +21,7 @@ package org.o42a.compiler.test.macro;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -45,20 +46,12 @@ public class MacroDerivationTest extends CompilerTestCase {
 		final Obj bf = field("b", "f").toObject();
 
 		assertThat(
-				af.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getType(),
+				LINK.interfaceRef(af.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getVoid()));
 		assertThat(definiteValue(linkTarget(af), ValueType.INTEGER), is(1L));
 
 		assertThat(
-				bf.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getType(),
+				LINK.interfaceRef(bf.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getInteger()));
 		assertThat(definiteValue(linkTarget(bf), ValueType.INTEGER), is(1L));
 
@@ -78,20 +71,12 @@ public class MacroDerivationTest extends CompilerTestCase {
 		final Obj bf = field("b", "f").toObject();
 
 		assertThat(
-				af.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getType(),
+				LINK.interfaceRef(af.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getVoid()));
 		assertThat(definiteValue(linkTarget(af), ValueType.INTEGER), is(1L));
 
 		assertThat(
-				bf.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getType(),
+				LINK.interfaceRef(bf.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getVoid()));
 		assertThat(definiteValue(linkTarget(bf), ValueType.INTEGER), is(1L));
 
@@ -113,20 +98,12 @@ public class MacroDerivationTest extends CompilerTestCase {
 		final Obj bf = field("b", "f").toObject();
 
 		assertThat(
-				af.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getType(),
+				LINK.interfaceRef(af.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getVoid()));
 		assertThat(definiteValue(linkTarget(af), ValueType.INTEGER), is(1L));
 
 		assertThat(
-				bf.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getType(),
+				LINK.interfaceRef(bf.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getVoid()));
 		assertThat(definiteValue(linkTarget(bf), ValueType.INTEGER), is(1L));
 

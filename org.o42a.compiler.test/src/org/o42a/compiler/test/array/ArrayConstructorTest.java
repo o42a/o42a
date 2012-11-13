@@ -27,10 +27,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
-import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 public class ArrayConstructorTest extends CompilerTestCase {
@@ -41,12 +42,14 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		final Obj a = field("a").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value().getValueStruct();
+		final ArrayValueType arrayType =
+				a.value().getValueType().toArrayType();
+		final TypeRef itemTypeRef =
+				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
-		assertFalse(arraySruct.isVariable());
+		assertFalse(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				itemTypeRef.getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(a);
@@ -70,12 +73,14 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		final Obj a = field("a").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value().getValueStruct();
+		final ArrayValueType arrayType =
+				a.value().getValueType().toArrayType();
+		final TypeRef itemTypeRef =
+				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
-		assertFalse(arraySruct.isVariable());
+		assertFalse(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				itemTypeRef.getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(a);
@@ -99,12 +104,14 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		final Obj a = field("a").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value().getValueStruct();
+		final ArrayValueType arrayType =
+				a.value().getValueType().toArrayType();
+		final TypeRef itemTypeRef =
+				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
-		assertTrue(arraySruct.isVariable());
+		assertTrue(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				itemTypeRef.getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(a);
@@ -122,12 +129,14 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		final Obj a = field("a").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value().getValueStruct();
+		final ArrayValueType arrayType =
+				a.value().getValueType().toArrayType();
+		final TypeRef itemTypeRef =
+				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
-		assertTrue(arraySruct.isVariable());
+		assertTrue(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				itemTypeRef.getType(),
 				is(a.getContext().getIntrinsics().getVoid()));
 
 		final Array array = definiteValue(a);
