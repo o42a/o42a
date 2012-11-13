@@ -35,12 +35,12 @@ public final class TypeParameters
 		extends Location
 		implements TypeParametersBuilder {
 
-	private final ValueType<?> valueType;
+	private final ValueType<?, ?> valueType;
 	private final TypeParameter[] parameters;
 
 	public TypeParameters(
 			LocationInfo location,
-			ValueType<?> valueType) {
+			ValueType<?, ?> valueType) {
 		super(location);
 		assert valueType != null :
 			"Value type not specified";
@@ -50,7 +50,7 @@ public final class TypeParameters
 
 	private TypeParameters(
 			LocationInfo location,
-			ValueType<?> valueType,
+			ValueType<?, ?> valueType,
 			TypeParameter[] parameters) {
 		super(location);
 		this.valueType = valueType;
@@ -58,7 +58,7 @@ public final class TypeParameters
 		this.parameters = parameters;
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 		return this.valueType;
 	}
 

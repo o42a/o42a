@@ -99,7 +99,7 @@ public abstract class Obj
 
 	private ObjectIR ir;
 
-	private ValueType<?> knownValueType;
+	private ValueType<?, ?> knownValueType;
 
 	public Obj(Scope scope) {
 		super(scope, new ObjectDistributor(scope, scope));

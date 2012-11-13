@@ -28,6 +28,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.st.DefValue;
 
 
@@ -49,8 +50,12 @@ public abstract class Value<T> {
 		this.knowledge = knowledge;
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, T> getValueType() {
 		return this.valueStruct.getValueType();
+	}
+
+	public final TypeParameters getTypeParameters() {
+		return getValueStruct().getParameters();
 	}
 
 	public final ValueStruct<?, T> getValueStruct() {

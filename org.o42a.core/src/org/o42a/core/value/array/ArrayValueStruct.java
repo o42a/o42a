@@ -107,7 +107,7 @@ public final class ArrayValueStruct
 	@Override
 	public boolean assignableFrom(ValueStruct<?, ?> other) {
 
-		final ValueType<?> valueType = other.getValueType();
+		final ValueType<?, ?> valueType = other.getValueType();
 
 		if (valueType != getValueType()) {
 			return false;
@@ -121,7 +121,7 @@ public final class ArrayValueStruct
 	@Override
 	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
 
-		final ValueType<?> valueType = other.getValueType();
+		final ValueType<?, ?> valueType = other.getValueType();
 
 		if (valueType != getValueType()) {
 			return TypeRelation.Kind.INCOMPATIBLE;

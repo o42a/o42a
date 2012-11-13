@@ -58,7 +58,7 @@ public final class ObjectValue extends ObjectValueParts {
 		super(object);
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 		return getValueStruct().getValueType();
 	}
 

@@ -35,7 +35,8 @@ import org.o42a.core.value.link.impl.LinkValueStructIR;
 import org.o42a.core.value.link.impl.VariableValueStructIR;
 
 
-public abstract class LinkValueType extends ValueType<LinkValueStruct> {
+public abstract class LinkValueType
+		extends ValueType<LinkValueStruct, KnownLink> {
 
 	public static final LinkValueType LINK = new LinkValueType("link") {
 

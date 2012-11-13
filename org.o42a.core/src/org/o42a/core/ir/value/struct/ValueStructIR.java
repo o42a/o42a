@@ -49,7 +49,7 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		return this.generator;
 	}
 
-	public final ValueType<S> getValueType() {
+	public final ValueType<S, T> getValueType() {
 		return this.valueStruct.getValueType();
 	}
 

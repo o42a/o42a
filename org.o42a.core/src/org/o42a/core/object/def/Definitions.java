@@ -109,7 +109,7 @@ public class Definitions extends Scoped {
 				propositions);
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 
 		final ValueStruct<?, ?> valueStruct = getValueStruct();
 

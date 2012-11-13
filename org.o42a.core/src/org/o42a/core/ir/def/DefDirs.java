@@ -69,7 +69,7 @@ public class DefDirs {
 		return valDirs().getValueStruct();
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 		return getValueStruct().getValueType();
 	}
 

@@ -68,7 +68,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public static final SingleValueStruct<java.lang.Void> NONE =
 			NoneValueStruct.INSTANCE;
 
-	private final ValueType<S> valueType;
+	private final ValueType<S, T> valueType;
 	private final Class<? extends T> valueClass;
 
 	private final RuntimeValue<T> runtimeValue = new RuntimeValue<T>(this);
@@ -76,12 +76,14 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	private ValueStructIR<S, T> ir;
 
-	public ValueStruct(ValueType<S> valueType, Class<? extends T> valueClass) {
+	public ValueStruct(
+			ValueType<S, T> valueType,
+			Class<? extends T> valueClass) {
 		this.valueType = valueType;
 		this.valueClass = valueClass;
 	}
 
-	public ValueType<S> getValueType() {
+	public ValueType<S, T> getValueType() {
 		return this.valueType;
 	}
 

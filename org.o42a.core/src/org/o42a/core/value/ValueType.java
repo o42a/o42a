@@ -39,7 +39,7 @@ import org.o42a.core.value.string.StringValueType;
 import org.o42a.core.value.voids.VoidValueType;
 
 
-public abstract class ValueType<S extends ValueStruct<?, ?>> {
+public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 	public static final SingleValueType<Void> VOID =
 			VoidValueType.INSTANCE;
@@ -91,7 +91,7 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 
 	public abstract boolean isVariable();
 
-	public final boolean is(ValueType<?> valueType) {
+	public final boolean is(ValueType<?, ?> valueType) {
 		return this == valueType;
 	}
 

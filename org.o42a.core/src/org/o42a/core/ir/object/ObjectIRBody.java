@@ -262,7 +262,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		final Obj ascendant = getAscendant();
 		final ValueStruct<?, ?> valueStruct =
 				ascendant.value().getValueStruct();
-		final ValueType<?> valueType = valueStruct.getValueType();
+		final ValueType<?, ?> valueType = valueStruct.getValueType();
 		final Obj typeObject =
 				valueType.typeObject(ascendant.getContext().getIntrinsics());
 

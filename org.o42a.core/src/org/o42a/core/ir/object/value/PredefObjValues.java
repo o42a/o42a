@@ -66,9 +66,9 @@ final class PredefObjValues {
 	FuncPtr<ObjectValueFunc> get(
 			CompilerContext context,
 			PredefObjValue value,
-			ValueType<?> valueType) {
+			ValueType<?, ?> valueType) {
 
-		final ValueType<?> type =
+		final ValueType<?, ?> type =
 				value.isTypeAware() ? valueType : ValueType.VOID;
 		final PredefKey key = new PredefKey(value, type);
 
@@ -97,12 +97,12 @@ final class PredefObjValues {
 
 		private final CompilerContext context;
 		private final PredefObjValue value;
-		private final ValueType<?> valueType;
+		private final ValueType<?, ?> valueType;
 
 		PredefValueBuilder(
 				CompilerContext context,
 				PredefObjValue value,
-				ValueType<?> valueType) {
+				ValueType<?, ?> valueType) {
 			this.context = context;
 			this.value = value;
 			this.valueType = valueType;
@@ -164,9 +164,9 @@ final class PredefObjValues {
 	private static final class PredefKey {
 
 		private final PredefObjValue value;
-		private final ValueType<?> valueType;
+		private final ValueType<?, ?> valueType;
 
-		PredefKey(PredefObjValue value, ValueType<?> valueType) {
+		PredefKey(PredefObjValue value, ValueType<?, ?> valueType) {
 			this.value = value;
 			this.valueType = valueType;
 		}

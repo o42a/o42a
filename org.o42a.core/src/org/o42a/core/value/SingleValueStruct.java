@@ -113,7 +113,7 @@ public abstract class SingleValueStruct<T>
 	@Override
 	public String toString() {
 
-		final ValueType<SingleValueStruct<T>> valueType = getValueType();
+		final SingleValueType<T> valueType = getValueType();
 
 		if (valueType == null) {
 			return super.toString();

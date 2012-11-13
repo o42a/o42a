@@ -31,7 +31,7 @@ import org.o42a.core.value.link.LinkValueType;
 
 
 public abstract class SingleValueType<T>
-		extends ValueType<SingleValueStruct<T>> {
+		extends ValueType<SingleValueStruct<T>, T> {
 
 	public SingleValueType(String systemId) {
 		super(systemId);
