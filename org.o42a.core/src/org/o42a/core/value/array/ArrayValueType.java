@@ -19,10 +19,13 @@
 */
 package org.o42a.core.value.array;
 
+import static org.o42a.core.ref.type.TypeParameter.typeParameter;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.ValueType;
@@ -50,6 +53,13 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 	@Override
 	public final boolean isVariable() {
 		return this.variable;
+	}
+
+	public final TypeParameters typeParameters(TypeRef itemTypeRef) {
+		return new TypeParameters(
+				itemTypeRef,
+				this,
+				typeParameter(itemTypeRef));
 	}
 
 	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {

@@ -105,7 +105,7 @@ public abstract class TypeRef implements ScopeInfo {
 	public abstract Ref getIntactRef();
 
 	public final ValueType<?> getValueType() {
-		return getValueStruct().getValueType();
+		return getParameters().getValueType();
 	}
 
 	public final Obj getType() {

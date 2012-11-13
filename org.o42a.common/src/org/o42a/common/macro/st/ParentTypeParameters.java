@@ -19,7 +19,6 @@
 */
 package org.o42a.common.macro.st;
 
-import static org.o42a.core.value.link.Link.linkTypeParameters;
 import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.o42a.core.Scope;
@@ -32,6 +31,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.link.LinkValueType;
 
 
 final class ParentTypeParameters implements TypeParametersBuilder {
@@ -72,7 +72,11 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 				parent.value().getValueType();
 
 		if (parentValueType.isLink()) {
-			return parentTypeParameters;
+			if (parentValueType.is(LinkValueType.LINK)) {
+				return parentTypeParameters;
+			}
+			return LinkValueType.LINK.typeParameters(
+					parentTypeParameters.parameter(0).getTypeRef());
 		}
 
 		final StaticTypeRef parentValueTypeRef =
@@ -82,7 +86,7 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 				.setParameters(parentTypeParameters)
 				.rescope(this.scope);
 
-		return linkTypeParameters(parentValueTypeRef);
+		return LinkValueType.LINK.typeParameters(parentValueTypeRef);
 	}
 
 	private ValueStruct<?, ?> valueStruct() {
