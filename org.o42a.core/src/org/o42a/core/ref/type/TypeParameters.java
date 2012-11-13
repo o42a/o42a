@@ -26,6 +26,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.ArrayUtil;
 
 
 public final class TypeParameters
@@ -37,8 +38,18 @@ public final class TypeParameters
 
 	public TypeParameters(
 			LocationInfo location,
+			ValueType<?> valueType) {
+		super(location);
+		assert valueType != null :
+			"Value type not specified";
+		this.valueType = valueType;
+		this.parameters = new TypeParameter[0];
+	}
+
+	private TypeParameters(
+			LocationInfo location,
 			ValueType<?> valueType,
-			TypeParameter... parameters) {
+			TypeParameter[] parameters) {
 		super(location);
 		this.valueType = valueType;
 		assert parametersHaveSameScope(parameters);
@@ -66,8 +77,18 @@ public final class TypeParameters
 		return true;
 	}
 
-	public final Object parameterKey(int index) {
-		return Integer.valueOf(index);
+	public final TypeParameters add(TypeRef parameter) {
+		if (this.parameters.length != 0) {
+			parameter.assertSameScope(this.parameters[0]);
+		}
+
+		final TypeParameter param =
+				new TypeParameter(this.parameters.length, parameter);
+
+		return new TypeParameters(
+				this,
+				getValueType(),
+				ArrayUtil.append(this.parameters, param));
 	}
 
 	public final TypeParameter parameter(Object key) {
@@ -99,7 +120,7 @@ public final class TypeParameters
 
 		for (int i = 0; i < params.length; ++i) {
 
-			final Object paramKey = parameterKey(i);
+			final Object paramKey = params[i].getKey();
 			final TypeRef typeRef = parameters.typeRef(paramKey);
 
 			if (typeRef == null) {

@@ -19,10 +19,10 @@
 */
 package org.o42a.common.ref;
 
-import static org.o42a.core.ref.type.TypeParameter.typeParameter;
-
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.*;
+import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -84,18 +84,14 @@ public class ArbitraryTypeParameters
 	@Override
 	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
 
-		final TypeRef[] parameterRefs = getParameters();
-		final TypeParameter[] parameters =
-				new TypeParameter[parameterRefs.length];
+		TypeParameters parameters =
+				new TypeParameters(this, defaultParameters.getValueType());
 
-		for (int i = 0; i < parameters.length; ++i) {
-			parameters[i] = typeParameter(parameterRefs[i]);
+		for (TypeRef parameter : getParameters()) {
+			parameters = parameters.add(parameter);
 		}
 
-		return new TypeParameters(
-				this,
-				defaultParameters.getValueType(),
-				parameters);
+		return parameters;
 	}
 
 	@Override

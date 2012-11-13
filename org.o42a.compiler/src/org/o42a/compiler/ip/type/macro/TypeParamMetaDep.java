@@ -119,7 +119,8 @@ final class TypeParamMetaDep extends MetaDep {
 				.getObject()
 				.type()
 				.getParameters()
-				.parameterKey(paramIndex);
+				.parameter(paramIndex)
+				.getKey();
 		final TypeRef typeRef = typeParams.typeRef(paramKey);
 
 		return typeParamChanged(meta, typeRef, this.macroDep.getDepth());
