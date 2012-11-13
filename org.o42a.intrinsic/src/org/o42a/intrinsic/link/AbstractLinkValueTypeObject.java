@@ -22,6 +22,7 @@ package org.o42a.intrinsic.link;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueType;
 
@@ -35,6 +36,16 @@ public abstract class AbstractLinkValueTypeObject extends ValueTypeObject {
 		super(owner, sources);
 		setValueStruct(
 				linkType.linkStruct(ValueType.VOID.typeRef(this, getScope())));
+	}
+
+	@Override
+	protected TypeParameters<?> determineTypeParameters() {
+
+		final LinkValueType linkType = value().getValueType().toLinkType();
+
+		return super.determineTypeParameters().add(
+				linkType.interfaceKey(getContext().getIntrinsics()),
+				ValueType.VOID.typeRef(this, getScope()));
 	}
 
 }

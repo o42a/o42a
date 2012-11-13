@@ -22,6 +22,7 @@ package org.o42a.intrinsic.array;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.ArrayValueType;
 
@@ -35,6 +36,16 @@ public abstract class IndexedValueTypeObject extends ValueTypeObject {
 		super(owner, sources);
 		setValueStruct(arrayType.arrayStruct(
 				ValueType.VOID.typeRef(this, getScope())));
+	}
+
+	@Override
+	protected TypeParameters<?> determineTypeParameters() {
+
+		final ArrayValueType arrayType = value().getValueType().toArrayType();
+
+		return super.determineTypeParameters().add(
+				arrayType.itemTypeKey(getContext().getIntrinsics()),
+				ValueType.VOID.typeRef(this, getScope()));
 	}
 
 }
