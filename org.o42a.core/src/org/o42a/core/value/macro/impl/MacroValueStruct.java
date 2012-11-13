@@ -34,7 +34,7 @@ public class MacroValueStruct extends SingleValueStruct<Macro> {
 	public static final MacroValueStruct INSTANCE = new MacroValueStruct();
 
 	private MacroValueStruct() {
-		super(MacroValueType.INSTANCE, Macro.class);
+		super(MacroValueType.INSTANCE);
 	}
 
 	@Override

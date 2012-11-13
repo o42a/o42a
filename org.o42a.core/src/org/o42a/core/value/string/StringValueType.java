@@ -32,7 +32,7 @@ public final class StringValueType extends SingleValueType<String> {
 	public static StringValueType INSTANCE = new StringValueType();
 
 	private StringValueType() {
-		super("string");
+		super("string", String.class);
 	}
 
 	@Override

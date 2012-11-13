@@ -32,7 +32,7 @@ public class NoneValueType extends SingleValueType<Void> {
 	public static final NoneValueType INSTANCE = new NoneValueType();
 
 	private NoneValueType() {
-		super("none");
+		super("none", Void.class);
 	}
 
 	@Override

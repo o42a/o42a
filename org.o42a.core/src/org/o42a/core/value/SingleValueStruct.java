@@ -33,10 +33,8 @@ import org.o42a.core.value.link.LinkValueStruct;
 public abstract class SingleValueStruct<T>
 		extends ValueStruct<SingleValueStruct<T>, T> {
 
-	public SingleValueStruct(
-			SingleValueType<T> valueType,
-			Class<? extends T> valueClass) {
-		super(valueType, valueClass);
+	public SingleValueStruct(SingleValueType<T> valueType) {
+		super(valueType);
 	}
 
 	@Override

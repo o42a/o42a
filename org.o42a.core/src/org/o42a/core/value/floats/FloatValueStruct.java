@@ -31,7 +31,7 @@ public class FloatValueStruct extends SingleValueStruct<Double> {
 	public static final FloatValueStruct INSTANCE = new FloatValueStruct();
 
 	private FloatValueStruct() {
-		super(ValueType.FLOAT, Double.class);
+		super(ValueType.FLOAT);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public final class DirectiveValueType extends SingleValueType<Directive> {
 	public static final DirectiveValueType INSTANCE = new DirectiveValueType();
 
 	private DirectiveValueType() {
-		super("directive");
+		super("directive", Directive.class);
 	}
 
 	@Override

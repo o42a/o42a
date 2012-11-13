@@ -136,7 +136,7 @@ public abstract class CompilerTestCase {
 
 		assertNotNull(object + " has not definite value", definiteValue);
 
-		return valueStruct.cast(definiteValue);
+		return valueStruct.getValueType().cast(definiteValue);
 	}
 
 	public static <T> T definiteValue(Field field) {

@@ -30,7 +30,7 @@ public class NoneValueStruct extends SingleValueStruct<Void> {
 	public static final NoneValueStruct INSTANCE = new NoneValueStruct();
 
 	private NoneValueStruct() {
-		super(ValueType.NONE, Void.class);
+		super(ValueType.NONE);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public final class FloatValueType extends SingleValueType<Double> {
 	public static final FloatValueType INSTANCE = new FloatValueType();
 
 	private FloatValueType() {
-		super("float");
+		super("float", Double.class);
 	}
 
 	@Override

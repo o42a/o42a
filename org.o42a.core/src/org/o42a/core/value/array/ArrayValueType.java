@@ -40,7 +40,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	private ArrayValueTypeIR ir;
 
 	private ArrayValueType(boolean variable) {
-		super(variable ? "array" : "row");
+		super(variable ? "array" : "row", Array.class);
 		this.variable = variable;
 	}
 
