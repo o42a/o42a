@@ -54,7 +54,7 @@ public abstract class Value<T> {
 		return this.valueStruct.getValueType();
 	}
 
-	public final TypeParameters getTypeParameters() {
+	public final TypeParameters<T> getTypeParameters() {
 		return getValueStruct().getParameters();
 	}
 

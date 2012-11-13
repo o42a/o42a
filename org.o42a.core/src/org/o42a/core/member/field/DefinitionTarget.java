@@ -60,7 +60,7 @@ public final class DefinitionTarget {
 	}
 
 	public static DefinitionTarget definitionTarget(
-			TypeParameters typeParameters) {
+			TypeParameters<?> typeParameters) {
 		if (typeParameters.getValueType().isMacro()) {
 			return macroDefinition();
 		}

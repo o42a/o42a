@@ -71,12 +71,12 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	public final TypeParameters getParameters() {
+	public final TypeParameters<KnownLink> getParameters() {
 		return getValueType().typeParameters(getTypeRef());
 	}
 
 	@Override
-	public LinkValueStruct setParameters(TypeParameters parameters) {
+	public LinkValueStruct setParameters(TypeParameters<?> parameters) {
 
 		final MemberKey interfaceKey = getValueType().interfaceKey(
 				getTypeRef().getContext().getIntrinsics());

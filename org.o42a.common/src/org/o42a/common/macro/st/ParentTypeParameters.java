@@ -47,7 +47,7 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeRef typeRef) {
+	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
 		return typeParameters();
 	}
 
@@ -62,10 +62,10 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 		return valueStruct().prefixWith(prefix);
 	}
 
-	private TypeParameters typeParameters() {
+	private TypeParameters<?> typeParameters() {
 
 		final Obj parent = this.scope.toObject();
-		final TypeParameters parentTypeParameters =
+		final TypeParameters<?> parentTypeParameters =
 				parent.type().getParameters();
 		final ValueType<?, ?> parentValueType = parent.value().getValueType();
 		final LinkValueType parentLinkType = parentValueType.toLinkType();

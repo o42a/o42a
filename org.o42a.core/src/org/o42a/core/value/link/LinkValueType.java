@@ -93,12 +93,13 @@ public abstract class LinkValueType
 		return typeObject(intrinsics).toMember().getMemberKey();
 	}
 
-	public TypeParameters typeParameters(TypeRef typeRef) {
+	public TypeParameters<KnownLink> typeParameters(TypeRef typeRef) {
 
 		final MemberKey interfaceKey =
 				interfaceKey(typeRef.getContext().getIntrinsics());
 
-		return new TypeParameters(typeRef, this).add(interfaceKey, typeRef);
+		return TypeParameters.typeParameters(typeRef, this)
+				.add(interfaceKey, typeRef);
 	}
 
 	@Override
@@ -171,7 +172,7 @@ public abstract class LinkValueType
 			Generator generator,
 			LinkValueStruct linkStruct);
 
-	private TypeRef typeRef(TypeParameters parameters) {
+	private TypeRef typeRef(TypeParameters<KnownLink> parameters) {
 
 		final MemberKey interfaceKey = interfaceKey(
 				parameters.getContext().getIntrinsics());

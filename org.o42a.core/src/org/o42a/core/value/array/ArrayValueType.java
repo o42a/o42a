@@ -64,13 +64,13 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 		return typeObject(intrinsics).toMember().getMemberKey();
 	}
 
-	public final TypeParameters typeParameters(TypeRef itemTypeRef) {
+	public final TypeParameters<Array> typeParameters(TypeRef itemTypeRef) {
 
 		final MemberKey itemTypeKey =
 				itemTypeKey(itemTypeRef.getContext().getIntrinsics());
 
-		return new TypeParameters(itemTypeRef, this)
-		.add(itemTypeKey, itemTypeRef);
+		return TypeParameters.typeParameters(itemTypeRef, this)
+				.add(itemTypeKey, itemTypeRef);
 	}
 
 	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {
@@ -160,7 +160,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 		}
 	}
 
-	private TypeRef itemTypeRef(TypeParameters parameters) {
+	private TypeRef itemTypeRef(TypeParameters<Array> parameters) {
 
 		final MemberKey itemTypeKey = itemTypeKey(
 				parameters.getContext().getIntrinsics());

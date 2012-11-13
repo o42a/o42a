@@ -99,7 +99,7 @@ public class Ref extends Statement {
 
 	public final ValueType<?, ?> getValueType() {
 
-		final TypeParameters typeParameters = typeParameters(getScope());
+		final TypeParameters<?> typeParameters = typeParameters(getScope());
 
 		return typeParameters != null ? typeParameters.getValueType() : null;
 	}
@@ -113,10 +113,10 @@ public class Ref extends Statement {
 		return valueStruct.prefixWith(getPath().toPrefix(scope));
 	}
 
-	public final TypeParameters typeParameters(Scope scope) {
+	public final TypeParameters<?> typeParameters(Scope scope) {
 
 		final Resolution resolution = resolve(scope.resolver());
-		final TypeParameters typeParameters =
+		final TypeParameters<?> typeParameters =
 				resolution.toObject().type().getParameters();
 
 		return typeParameters.prefixWith(getPath().toPrefix(scope));

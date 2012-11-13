@@ -85,9 +85,9 @@ public class ArbitraryTypeParameters
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeRef typeRef) {
+	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
 
-		final TypeParameters defaultParameters = typeRef.defaultParameters();
+		final TypeParameters<?> defaultParameters = typeRef.defaultParameters();
 		final TypeRef[] params = getParameters();
 
 		if (params.length == 0) {

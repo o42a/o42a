@@ -71,7 +71,7 @@ public abstract class TypeRef implements ScopeInfo {
 	private final Ref ref;
 	private final TypeParametersBuilder parametersBuilder;
 	private ValueStruct<?, ?> valueStruct;
-	private TypeParameters parameters;
+	private TypeParameters<?> parameters;
 	private TypeRef ancestor;
 	private TypeHolder type;
 	private boolean allResolved;
@@ -145,12 +145,12 @@ public abstract class TypeRef implements ScopeInfo {
 		return getRef().valueStruct(getScope());
 	}
 
-	public final TypeParameters getParameters() {
+	public final TypeParameters<?> getParameters() {
 		if (this.parameters != null) {
 			return this.parameters;
 		}
 
-		final TypeParameters typeParameters =
+		final TypeParameters<?> typeParameters =
 				this.parametersBuilder.typeParametersBy(this);
 
 		if (typeParameters == null || typeParameters.isEmpty()) {
@@ -167,7 +167,7 @@ public abstract class TypeRef implements ScopeInfo {
 		return this.parameters;
 	}
 
-	public final TypeParameters defaultParameters() {
+	public final TypeParameters<?> defaultParameters() {
 		return getRef().typeParameters(getScope());
 	}
 

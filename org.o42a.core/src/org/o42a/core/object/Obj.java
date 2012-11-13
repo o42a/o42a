@@ -26,6 +26,7 @@ import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
+import static org.o42a.core.ref.type.TypeParameters.typeParameters;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -757,15 +758,15 @@ public abstract class Obj
 		return ancestorValueStruct.prefixWith(prefix);
 	}
 
-	protected TypeParameters determineTypeParameters() {
+	protected TypeParameters<?> determineTypeParameters() {
 
 		final TypeRef ancestor = type().getAncestor();
 
 		if (ancestor == null) {
-			return new TypeParameters(this, ValueType.VOID);
+			return typeParameters(this, ValueType.VOID);
 		}
 
-		final TypeParameters ancestorTypeParameters =
+		final TypeParameters<?> ancestorTypeParameters =
 				ancestor.getParameters();
 
 		if (this.knownValueType != null
@@ -775,7 +776,7 @@ public abstract class Obj
 			&& ancestorTypeParameters.getValueType().isVoid() :
 				"Unexpected ancestor type parameters: "
 				+ ancestorTypeParameters;
-			return new TypeParameters(this, this.knownValueType);
+			return typeParameters(this, this.knownValueType);
 		}
 
 		if (ancestorTypeParameters.isEmpty()) {

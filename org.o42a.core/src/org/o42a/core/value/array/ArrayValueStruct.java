@@ -75,12 +75,12 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	public final TypeParameters getParameters() {
+	public final TypeParameters<Array> getParameters() {
 		return getValueType().typeParameters(getItemTypeRef());
 	}
 
 	@Override
-	public ArrayValueStruct setParameters(TypeParameters parameters) {
+	public ArrayValueStruct setParameters(TypeParameters<?> parameters) {
 
 		final MemberKey itemTypeKey = getValueType().itemTypeKey(
 				this.itemTypeRef.getContext().getIntrinsics());

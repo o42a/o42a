@@ -50,7 +50,7 @@ public final class ObjectType implements UserInfo {
 
 	private final Obj object;
 	private Obj lastDefinition;
-	private TypeParameters parameters;
+	private TypeParameters<?> parameters;
 	private Usable<TypeUsage> uses;
 	private Usable<DerivationUsage> derivationUses;
 	private LinkUses linkUses;
@@ -130,12 +130,12 @@ public final class ObjectType implements UserInfo {
 		return getAscendants().getSamples();
 	}
 
-	public final TypeParameters getParameters() {
+	public final TypeParameters<?> getParameters() {
 		if (this.parameters != null) {
 			return this.parameters;
 		}
 
-		final TypeParameters parameters =
+		final TypeParameters<?> parameters =
 				getObject().determineTypeParameters();
 
 		parameters.assertSameScope(getObject());

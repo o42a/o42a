@@ -178,7 +178,7 @@ public class Ascendants
 
 		for (Sample sample : getSamples()) {
 
-			final TypeParameters typeParameters =
+			final TypeParameters<?> typeParameters =
 					sample.getObject().type().getParameters();
 
 			if (!typeParameters.getValueType().isVoid()) {
