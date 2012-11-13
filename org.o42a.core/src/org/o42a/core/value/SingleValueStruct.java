@@ -19,22 +19,36 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
+import static org.o42a.core.ref.type.TypeParameters.typeParameters;
+import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
+
+import org.o42a.core.*;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeParameters;
-import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.source.*;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.util.io.EmptySource;
+import org.o42a.util.io.Source;
+import org.o42a.util.string.Name;
 
 
 public abstract class SingleValueStruct<T>
 		extends ValueStruct<SingleValueStruct<T>, T> {
 
+	private static final FakeContext FAKE_CONTEXT = new FakeContext();
+	private static final Location BUILTIN =
+			new Location(FAKE_CONTEXT, FAKE_CONTEXT.getSource());
+
+	private final TypeParameters<T> parameters;
+
 	public SingleValueStruct(SingleValueType<T> valueType) {
 		super(valueType);
+		this.parameters = typeParameters(BUILTIN, valueType);
 	}
 
 	@Override
@@ -49,24 +63,11 @@ public abstract class SingleValueStruct<T>
 
 	@Override
 	public final TypeParameters<T> getParameters() {
-		return null;
+		return this.parameters;
 	}
 
 	public final boolean is(ValueStruct<?, ?> valueStruct) {
 		return this == valueStruct;
-	}
-
-	@Override
-	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
-		if (getValueType() == other.getValueType()) {
-			return TypeRelation.Kind.SAME;
-		}
-		return TypeRelation.Kind.INCOMPATIBLE;
-	}
-
-	@Override
-	public boolean convertibleFrom(ValueStruct<?, ?> other) {
-		return assignableFrom(other);
 	}
 
 	@Override
@@ -118,6 +119,153 @@ public abstract class SingleValueStruct<T>
 		}
 
 		return valueType.toString();
+	}
+
+	private static final class FakeIntrinsics extends Intrinsics {
+
+		@Override
+		public Obj getVoid() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getFalse() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getNone() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Container getTop() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Namespace getModuleNamespace() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getRoot() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getDirective() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getMacro() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getInteger() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getFloat() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getString() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getLink() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getVariable() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getArray() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Obj getRow() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Module getModule(Name moduleName) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Module getMainModule() {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
+	private static final class FakeCompiler implements SourceCompiler {
+
+		@Override
+		public ModuleCompiler compileModule(ObjectSource source) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public FieldCompiler compileField(ObjectSource source) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public DefinitionCompiler compileDefinition(DefinitionSource source) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public PathWithAlias compilePath(
+				Scope scope,
+				Name moduleName,
+				LocationInfo location,
+				String string) {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
+	private static final class FakeContext extends CompilerContext {
+
+		private final EmptySource source = new EmptySource("built-in");
+
+		FakeContext() {
+			super(new FakeCompiler(), new FakeIntrinsics(), DECLARATION_LOGGER);
+		}
+
+		@Override
+		public Source getSource() {
+			return this.source;
+		}
+
+		@Override
+		public ModuleCompiler compileModule() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public FieldCompiler compileField() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void include(DeclarativeBlock block, SectionTag tag) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

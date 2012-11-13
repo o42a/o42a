@@ -125,7 +125,8 @@ public abstract class TypeRef implements ScopeInfo {
 		} else if (!valueStruct.isValid()) {
 			this.valueStruct = valueStruct;
 		} else {
-			assert defaultValueStruct().assertAssignableFrom(valueStruct);
+			assert defaultParameters().assertAssignableFrom(
+					valueStruct.getParameters());
 			this.valueStruct = valueStruct;
 		}
 

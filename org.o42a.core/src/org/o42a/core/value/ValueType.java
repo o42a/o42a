@@ -25,6 +25,7 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
@@ -103,6 +104,8 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 		return this == valueType;
 	}
 
+	public abstract boolean convertibleFrom(ValueType<?, ?> other);
+
 	public abstract Obj typeObject(Intrinsics intrinsics);
 
 	public abstract Path path(Intrinsics intrinsics);
@@ -126,6 +129,24 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 	public final T cast(Object value) {
 		return getValueClass().cast(value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final Value<T> cast(Value<?> value) {
+		if (!is(value.getValueType())) {
+			throw new ClassCastException(
+					value + " is not compatible with " + this);
+		}
+		return (Value<T>) value;
+	}
+
+	@SuppressWarnings("unchecked")
+	public final TypeParameters<T> cast(TypeParameters<?> parameters) {
+		if (!is(parameters.getValueType())) {
+			throw new ClassCastException(
+					parameters + " is not compatible with " + this);
+		}
+		return (TypeParameters<T>) parameters;
 	}
 
 	@Override

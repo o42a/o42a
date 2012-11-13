@@ -130,7 +130,8 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 
 			final ArrayValueStruct arrayStruct =
 					getObject().value().getValueStruct().toArrayStruct();
-			final Array array = arrayStruct.cast(value).getCompilerValue();
+			final Array array =
+					arrayStruct.getValueType().cast(value).getCompilerValue();
 			final ArrayValueStructIR arrayStructIR =
 					(ArrayValueStructIR) arrayStruct.ir(getGenerator());
 

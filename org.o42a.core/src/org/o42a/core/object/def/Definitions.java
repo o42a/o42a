@@ -298,7 +298,8 @@ public class Definitions extends Scoped {
 		final ValueStruct<?, ?> objectValueStruct = getValueStruct();
 
 		if (objectValueStruct != null
-				&& valueStruct.relationTo(objectValueStruct).isSame()) {
+				&& valueStruct.getParameters().relationTo(
+						objectValueStruct.getParameters()).isSame()) {
 			return this;
 		}
 

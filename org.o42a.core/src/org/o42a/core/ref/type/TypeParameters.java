@@ -22,9 +22,11 @@ package org.o42a.core.ref.type;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeRelation.Kind;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueType;
@@ -66,6 +68,15 @@ public final class TypeParameters<T>
 
 	public final ValueType<?, T> getValueType() {
 		return this.valueType;
+	}
+
+	public TypeParameters<T> convertTo(ValueType<?, T> valueType) {
+		if (valueType.is(getValueType())) {
+			return this;
+		}
+		assert valueType.convertibleFrom(getValueType()) :
+			valueType + " is not convertible from " + getValueType();
+		return new TypeParameters<T>(this, valueType, this.parameters);
 	}
 
 	public final TypeParameter[] getParameters() {
@@ -138,23 +149,47 @@ public final class TypeParameters<T>
 		return parameter.getTypeRef();
 	}
 
-	public boolean assignableFrom(TypeParameters<?> parameters) {
+	public final boolean assignableFrom(TypeParameters<?> other) {
+		if (!getValueType().is(other.getValueType())) {
+			return false;
+		}
+		return parametersAssignableFrom(other);
+	}
 
-		final TypeParameter[] params = getParameters();
+	public final boolean convertibleFrom(TypeParameters<?> other) {
+		if (!getValueType().convertibleFrom(other.getValueType())) {
+			return false;
+		}
+		return parametersAssignableFrom(other);
+	}
 
-		for (int i = 0; i < params.length; ++i) {
-
-			final TypeRef typeRef = parameters.typeRef(params[i].getKey());
-
-			if (typeRef == null) {
-				return false;
-			}
-			if (!typeRef.derivedFrom(params[i].getTypeRef())) {
-				return false;
-			}
+	public TypeRelation.Kind relationTo(TypeParameters<?> other) {
+		if (!getValueType().is(other.getValueType())) {
+			return TypeRelation.Kind.INCOMPATIBLE;
 		}
 
-		return true;
+		final Kind relation1 = parametersRelation(other);
+
+		if (!relation1.isError()) {
+			return relation1;
+		}
+
+		final Kind relation2 = other.parametersRelation(this);
+
+		if (!relation2.isError()) {
+			return relation2.revert();
+		}
+
+		return relation1;
+	}
+
+	@SuppressWarnings("unchecked")
+	public final Value<T> cast(Value<?> value) {
+		if (!assignableFrom(value.getTypeParameters())) {
+			throw new ClassCastException(
+					value + " is not compatible with " + this);
+		}
+		return (Value<T>) value;
 	}
 
 	@Override
@@ -268,6 +303,54 @@ public final class TypeParameters<T>
 		}
 
 		return true;
+	}
+
+	private boolean parametersAssignableFrom(TypeParameters<?> other) {
+		for (TypeParameter parameter : getParameters()) {
+
+			final TypeRef typeRef = other.typeRef(parameter.getKey());
+
+			if (typeRef == null) {
+				return false;
+			}
+			if (!typeRef.derivedFrom(parameter.getTypeRef())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private Kind parametersRelation(TypeParameters<?> other) {
+
+		Kind result = TypeRelation.Kind.SAME;
+
+		for (TypeParameter parameter : getParameters()) {
+
+			final TypeRef typeRef = other.typeRef(parameter.getKey());
+
+			if (typeRef == null) {
+				return Kind.INCOMPATIBLE;
+			}
+
+			final Kind kind =
+					parameter.getTypeRef().relationTo(typeRef).getKind();
+
+			if (kind.isError()) {
+				return kind;
+			}
+			if (result == null) {
+				result = kind;
+				continue;
+			}
+			if (kind.isAscendant() != result.isAscendant()) {
+				return Kind.INCOMPATIBLE;
+			}
+			if (result.isSame()) {
+				result = kind;
+			}
+		}
+
+		return result;
 	}
 
 }

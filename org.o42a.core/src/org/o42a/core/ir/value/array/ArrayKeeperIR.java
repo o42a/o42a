@@ -72,7 +72,7 @@ final class ArrayKeeperIR
 			final ArrayValueStructIR arrayStructIR =
 					(ArrayValueStructIR) getValueStructIR();
 			final Array array =
-					arrayStructIR.getValueStruct()
+					arrayStructIR.getValueType()
 					.cast(value)
 					.getCompilerValue();
 

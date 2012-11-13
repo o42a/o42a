@@ -61,7 +61,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	}
 
 	public final MemberKey itemTypeKey(Intrinsics intrinsics) {
-		return typeObject(intrinsics).toMember().getMemberKey();
+		return ROW.typeObject(intrinsics).toMember().getMemberKey();
 	}
 
 	public final TypeParameters<Array> typeParameters(TypeRef itemTypeRef) {
@@ -91,6 +91,18 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 		final Obj array = typeObject(intrinsics);
 
 		return Path.ROOT_PATH.append(array.getScope().toField().getKey());
+	}
+
+	@Override
+	public boolean convertibleFrom(ValueType<?, ?> other) {
+		return other.isArray();
+	}
+
+	public ArrayValueType setVariable(boolean variable) {
+		if (isVariable() == variable) {
+			return this;
+		}
+		return variable ? ArrayValueType.ARRAY : ArrayValueType.ROW;
 	}
 
 	@Override

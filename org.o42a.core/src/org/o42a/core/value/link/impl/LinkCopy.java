@@ -65,7 +65,7 @@ final class LinkCopy extends KnownLink {
 		final PrefixPath prefix =
 				ref.getPath().toPrefix(resolver.getScope());
 		final KnownLink sourceLink =
-				sourceStruct.cast(value).getCompilerValue();
+				sourceStruct.getParameters().cast(value).getCompilerValue();
 		final TargetRef targetRef =
 				sourceLink.getTargetRef().prefixWith(prefix);
 

@@ -30,7 +30,6 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.macro.MacroConsumer;
@@ -220,7 +219,7 @@ public class MacroExpansion extends PathFragment {
 		}
 
 		final Value<Macro> macroValue =
-				ValueStruct.MACRO.cast(object.value().getValue());
+				ValueType.MACRO.cast(object.value().getValue());
 
 		if (!macroValue.getKnowledge().isKnown()
 				|| macroValue.getKnowledge().isFalse()) {

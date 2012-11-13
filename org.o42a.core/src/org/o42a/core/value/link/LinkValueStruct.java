@@ -31,9 +31,10 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.link.impl.LinkByValueAdapter;
 import org.o42a.core.value.link.impl.LinkValueAdapter;
@@ -95,46 +96,6 @@ public final class LinkValueStruct
 		}
 
 		return new LinkValueStruct(getValueType(), typeRef);
-	}
-
-	@Override
-	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
-
-		final ValueType<?, ?> valueType = other.getValueType();
-
-		if (valueType != getValueType()) {
-			return TypeRelation.Kind.INCOMPATIBLE;
-		}
-
-		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
-
-		return getTypeRef().relationTo(otherLinkStruct.getTypeRef()).getKind();
-	}
-
-	@Override
-	public boolean assignableFrom(ValueStruct<?, ?> other) {
-
-		final ValueType<?, ?> valueType = other.getValueType();
-
-		if (valueType != getValueType()) {
-			return false;
-		}
-
-		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
-
-		return otherLinkStruct.getTypeRef().derivedFrom(getTypeRef());
-	}
-
-	@Override
-	public boolean convertibleFrom(ValueStruct<?, ?> other) {
-
-		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
-
-		if (otherLinkStruct == null) {
-			return false;
-		}
-
-		return otherLinkStruct.getTypeRef().derivedFrom(getTypeRef());
 	}
 
 	@Override
@@ -219,7 +180,8 @@ public final class LinkValueStruct
 		final ValueStruct<?, ?> expectedStruct = request.getExpectedStruct();
 
 		if (!request.isTransformAllowed()
-				|| expectedStruct.convertibleFrom(this)) {
+				|| expectedStruct.getParameters()
+				.convertibleFrom(getParameters())) {
 			return new LinkValueAdapter(
 					ref,
 					expectedStruct != null

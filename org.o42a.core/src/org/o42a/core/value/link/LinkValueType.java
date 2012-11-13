@@ -90,7 +90,7 @@ public abstract class LinkValueType
 	}
 
 	public final MemberKey interfaceKey(Intrinsics intrinsics) {
-		return typeObject(intrinsics).toMember().getMemberKey();
+		return LINK.typeObject(intrinsics).toMember().getMemberKey();
 	}
 
 	public TypeParameters<KnownLink> typeParameters(TypeRef typeRef) {
@@ -112,6 +112,11 @@ public abstract class LinkValueType
 
 	public final LinkValueStruct linkStruct(TypeRef typeRef) {
 		return new LinkValueStruct(this, typeRef);
+	}
+
+	@Override
+	public boolean convertibleFrom(ValueType<?, ?> other) {
+		return other.isLink();
 	}
 
 	@Override

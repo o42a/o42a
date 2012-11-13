@@ -27,6 +27,7 @@ import org.o42a.core.object.ObjectValue;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.link.LinkData;
@@ -85,10 +86,12 @@ public final class ArrayItem extends ArrayElement {
 
 		final Obj array = enclosing.toObject();
 		final ObjectValue arrayValue = array.value();
-		final ArrayValueStruct arrayStruct =
-				ArrayValueStruct.class.cast(arrayValue.getValueStruct());
+		final TypeParameters<?> parameters =
+				array.type().getParameters();
+		final TypeParameters<Array> arrayParameters =
+				parameters.getValueType().toArrayType().cast(parameters);
 		final Value<Array> arrayVal =
-				arrayStruct.cast(arrayValue.getValue());
+				arrayParameters.cast(arrayValue.getValue());
 		final ArrayItem[] items =
 				arrayVal.getCompilerValue().items(enclosing);
 

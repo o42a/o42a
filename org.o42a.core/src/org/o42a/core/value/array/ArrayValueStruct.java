@@ -33,9 +33,10 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.LinkValueStruct;
 
 
@@ -102,48 +103,6 @@ public final class ArrayValueStruct
 
 	public final TypeRef getItemTypeRef() {
 		return this.itemTypeRef;
-	}
-
-	@Override
-	public boolean assignableFrom(ValueStruct<?, ?> other) {
-
-		final ValueType<?, ?> valueType = other.getValueType();
-
-		if (valueType != getValueType()) {
-			return false;
-		}
-
-		final ArrayValueStruct otherArrayStruct = (ArrayValueStruct) other;
-
-		return otherArrayStruct.getItemTypeRef().derivedFrom(getItemTypeRef());
-	}
-
-	@Override
-	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
-
-		final ValueType<?, ?> valueType = other.getValueType();
-
-		if (valueType != getValueType()) {
-			return TypeRelation.Kind.INCOMPATIBLE;
-		}
-
-		final ArrayValueStruct otherArrayStruct = (ArrayValueStruct) other;
-
-		return getItemTypeRef()
-				.relationTo(otherArrayStruct.getItemTypeRef())
-				.getKind();
-	}
-
-	@Override
-	public boolean convertibleFrom(ValueStruct<?, ?> other) {
-
-		final ArrayValueStruct otherArrayStruct = other.toArrayStruct();
-
-		if (otherArrayStruct == null) {
-			return false;
-		}
-
-		return otherArrayStruct.getItemTypeRef().derivedFrom(getItemTypeRef());
 	}
 
 	@Override
@@ -228,7 +187,8 @@ public final class ArrayValueStruct
 	@Override
 	protected ValueAdapter defaultAdapter(Ref ref, ValueRequest request) {
 		if (!request.isTransformAllowed()
-				|| request.getExpectedStruct().convertibleFrom(this)) {
+				|| request.getExpectedStruct().getParameters()
+				.convertibleFrom(getParameters())) {
 			return new ArrayValueAdapter(
 					ref,
 					request.getExpectedStruct().toArrayStruct());

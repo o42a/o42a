@@ -99,7 +99,8 @@ public class LinkValueAdapter extends ValueAdapter {
 				.valueStruct(getAdaptedRef().getScope())
 				.toLinkStruct();
 
-		if (getExpectedStruct().assignableFrom(fromStruct)) {
+		if (getExpectedStruct().getParameters().assignableFrom(
+				fromStruct.getParameters())) {
 			return new RefOpEval(getAdaptedRef());
 		}
 
