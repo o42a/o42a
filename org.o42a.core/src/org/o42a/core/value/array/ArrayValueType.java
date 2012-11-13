@@ -73,6 +73,15 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 				.add(itemTypeKey, itemTypeRef);
 	}
 
+	public final TypeRef itemTypeRef(TypeParameters<?> parameters) {
+
+		final TypeParameters<Array> arrayParameters = cast(parameters);
+		final MemberKey itemTypeKey = itemTypeKey(
+				parameters.getContext().getIntrinsics());
+
+		return arrayParameters.typeRef(itemTypeKey);
+	}
+
 	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {
 		return new ArrayValueStruct(this, itemTypeRef);
 	}
@@ -170,14 +179,6 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 				item.resolveAll(resolver);
 			}
 		}
-	}
-
-	private TypeRef itemTypeRef(TypeParameters<Array> parameters) {
-
-		final MemberKey itemTypeKey = itemTypeKey(
-				parameters.getContext().getIntrinsics());
-
-		return parameters.typeRef(itemTypeKey);
 	}
 
 }
