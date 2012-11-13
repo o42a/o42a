@@ -138,11 +138,7 @@ public final class ObjectType implements UserInfo {
 		final TypeParameters parameters =
 				getObject().determineTypeParameters();
 
-		if (parameters.isEmpty()) {
-			return this.parameters = parameters;
-		}
-
-		parameters.parameter(0).assertSameScope(getObject());
+		parameters.assertSameScope(getObject());
 
 		return this.parameters = parameters;
 	}

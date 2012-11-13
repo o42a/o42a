@@ -99,6 +99,8 @@ public abstract class Obj
 
 	private ObjectIR ir;
 
+	private ValueType<?> knownValueType;
+
 	public Obj(Scope scope) {
 		super(scope, new ObjectDistributor(scope, scope));
 		this.propagatedFrom = null;
@@ -725,6 +727,7 @@ public abstract class Obj
 
 	protected final void setValueStruct(ValueStruct<?, ?> valueStruct) {
 		value().setValueStruct(valueStruct);
+		this.knownValueType = valueStruct.getValueType();
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);
@@ -740,7 +743,8 @@ public abstract class Obj
 			return ValueStruct.VOID;
 		}
 
-		final ValueStruct<?, ?> ancestorValueStruct = ancestor.getValueStruct();
+		final ValueStruct<?, ?> ancestorValueStruct =
+				ancestor.getValueStruct();
 
 		if (!ancestorValueStruct.isScoped()) {
 			return ancestorValueStruct;
@@ -763,6 +767,16 @@ public abstract class Obj
 
 		final TypeParameters ancestorTypeParameters =
 				ancestor.getParameters();
+
+		if (this.knownValueType != null
+				&& this.knownValueType
+				!= ancestorTypeParameters.getValueType()) {
+			assert ancestorTypeParameters.isEmpty()
+			&& ancestorTypeParameters.getValueType().isVoid() :
+				"Unexpected ancestor type parameters: "
+				+ ancestorTypeParameters;
+			return new TypeParameters(this, this.knownValueType);
+		}
 
 		if (ancestorTypeParameters.isEmpty()) {
 			return ancestorTypeParameters;

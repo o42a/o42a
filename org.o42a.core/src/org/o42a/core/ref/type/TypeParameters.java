@@ -20,6 +20,7 @@
 package org.o42a.core.ref.type;
 
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -77,13 +78,13 @@ public final class TypeParameters
 		return true;
 	}
 
-	public final TypeParameters add(TypeRef parameter) {
+	public final TypeParameters add(MemberKey key, TypeRef parameter) {
 		if (this.parameters.length != 0) {
 			parameter.assertSameScope(this.parameters[0]);
 		}
 
 		final TypeParameter param =
-				new TypeParameter(this.parameters.length, parameter);
+				new TypeParameter(key, this.parameters.length, parameter);
 
 		return new TypeParameters(
 				this,
@@ -91,19 +92,16 @@ public final class TypeParameters
 				ArrayUtil.append(this.parameters, param));
 	}
 
-	public final TypeParameter parameter(Object key) {
-
-		// TODO Implement the parameter key as field key.
-		final int index = (Integer) key;
-
-		if (this.parameters.length <= index) {
-			return null;
+	public final TypeParameter parameter(MemberKey key) {
+		for (TypeParameter parameter : getParameters()) {
+			if (parameter.getKey().equals(key)) {
+				return parameter;
+			}
 		}
-
-		return this.parameters[index];
+		return null;
 	}
 
-	public final TypeRef typeRef(Object key) {
+	public final TypeRef typeRef(MemberKey key) {
 
 		final TypeParameter parameter = parameter(key);
 
@@ -120,8 +118,7 @@ public final class TypeParameters
 
 		for (int i = 0; i < params.length; ++i) {
 
-			final Object paramKey = params[i].getKey();
-			final TypeRef typeRef = parameters.typeRef(paramKey);
+			final TypeRef typeRef = parameters.typeRef(params[i].getKey());
 
 			if (typeRef == null) {
 				return false;
@@ -135,15 +132,17 @@ public final class TypeParameters
 	}
 
 	@Override
-	public final ValueStruct<?, ?> valueStructBy(
-			ValueStruct<?, ?> defaultStruct) {
-		return defaultStruct.setParameters(this);
+	public final ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
+		if (isEmpty()) {
+			return typeRef.defaultValueStruct();
+		}
+		return typeRef.defaultValueStruct().setParameters(this);
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
+	public TypeParameters typeParametersBy(TypeRef typeRef) {
 		if (isEmpty()) {
-			return defaultParameters;
+			return typeRef.defaultParameters();
 		}
 		return this;
 	}

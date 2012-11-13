@@ -22,11 +22,10 @@ package org.o42a.common.macro.st;
 import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParameters;
-import org.o42a.core.ref.type.TypeParametersBuilder;
+import org.o42a.core.ref.type.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -43,12 +42,12 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStructBy(ValueStruct<?, ?> defaultStruct) {
+	public ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
 		return valueStruct();
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
+	public TypeParameters typeParametersBy(TypeRef typeRef) {
 		return typeParameters();
 	}
 
@@ -68,15 +67,20 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 		final Obj parent = this.scope.toObject();
 		final TypeParameters parentTypeParameters =
 				parent.type().getParameters();
-		final ValueType<?> parentValueType =
-				parent.value().getValueType();
+		final ValueType<?> parentValueType = parent.value().getValueType();
+		final LinkValueType parentLinkType = parentValueType.toLinkType();
 
-		if (parentValueType.isLink()) {
+		if (parentLinkType != null) {
 			if (parentValueType.is(LinkValueType.LINK)) {
 				return parentTypeParameters;
 			}
+
+			final MemberKey interfaceKey =
+					parentLinkType.interfaceKey(
+							parent.getContext().getIntrinsics());
+
 			return LinkValueType.LINK.typeParameters(
-					parentTypeParameters.parameter(0).getTypeRef());
+					parentTypeParameters.parameter(interfaceKey).getTypeRef());
 		}
 
 		final StaticTypeRef parentValueTypeRef =

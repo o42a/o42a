@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.type.macro;
 
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.MetaDep;
@@ -114,12 +115,12 @@ final class TypeParamMetaDep extends MetaDep {
 
 		final TypeParameters typeParams =
 				meta.getObject().type().getParameters();
-		final Object paramKey =
+		final MemberKey paramKey =
 				findNestedMeta(getDeclaredIn())
 				.getObject()
 				.type()
 				.getParameters()
-				.parameter(paramIndex)
+				.getParameters()[paramIndex]
 				.getKey();
 		final TypeRef typeRef = typeParams.typeRef(paramKey);
 

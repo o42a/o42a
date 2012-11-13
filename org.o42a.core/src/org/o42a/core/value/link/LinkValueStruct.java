@@ -25,6 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
@@ -82,7 +83,9 @@ public final class LinkValueStruct
 	@Override
 	public LinkValueStruct setParameters(TypeParameters parameters) {
 
-		final TypeRef typeRef = parameters.typeRef(0);
+		final MemberKey interfaceKey = getValueType().interfaceKey(
+				getTypeRef().getContext().getIntrinsics());
+		final TypeRef typeRef = parameters.typeRef(interfaceKey);
 
 		if (typeRef == null) {
 			return this;

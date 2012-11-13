@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeParameters;
@@ -82,8 +83,16 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 		return is(VARIABLE);
 	}
 
+	public final MemberKey interfaceKey(Intrinsics intrinsics) {
+		return typeObject(intrinsics).toMember().getMemberKey();
+	}
+
 	public TypeParameters typeParameters(TypeRef typeRef) {
-		return new TypeParameters(typeRef, this).add(typeRef);
+
+		final MemberKey interfaceKey =
+				interfaceKey(typeRef.getContext().getIntrinsics());
+
+		return new TypeParameters(typeRef, this).add(interfaceKey, typeRef);
 	}
 
 	@Override

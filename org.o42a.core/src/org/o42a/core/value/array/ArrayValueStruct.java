@@ -27,6 +27,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.array.ArrayValueStructIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
@@ -86,7 +87,9 @@ public final class ArrayValueStruct
 	@Override
 	public ArrayValueStruct setParameters(TypeParameters parameters) {
 
-		final TypeRef itemTypeRef = parameters.typeRef(0);
+		final MemberKey itemTypeKey = getValueType().itemTypeKey(
+				this.itemTypeRef.getContext().getIntrinsics());
+		final TypeRef itemTypeRef = parameters.typeRef(itemTypeKey);
 
 		if (itemTypeRef == null) {
 			return this;
