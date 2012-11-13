@@ -61,7 +61,7 @@ final class FieldDefinitionByMacroExpansion extends FieldDefinition {
 			return objectDefinition();
 		}
 
-		return linkDefinition(type.getValueStruct().getLinkDepth());
+		return linkDefinition(type.getParameters().getLinkDepth());
 	}
 
 	@Override

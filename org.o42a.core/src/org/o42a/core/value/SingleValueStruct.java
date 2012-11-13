@@ -50,11 +50,6 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public final int getLinkDepth() {
-		return 0;
-	}
-
-	@Override
 	public final TypeParameters getParameters() {
 		return null;
 	}

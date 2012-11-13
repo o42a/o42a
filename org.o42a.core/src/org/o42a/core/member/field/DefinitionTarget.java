@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.ref.type.TypeParameters;
 
 
 public final class DefinitionTarget {
@@ -60,12 +60,12 @@ public final class DefinitionTarget {
 	}
 
 	public static DefinitionTarget definitionTarget(
-			ValueStruct<?, ?> valueStruct) {
-		if (valueStruct.isMacro()) {
+			TypeParameters typeParameters) {
+		if (typeParameters.getValueType().isMacro()) {
 			return macroDefinition();
 		}
 
-		final int linkDepth = valueStruct.getLinkDepth();
+		final int linkDepth = typeParameters.getLinkDepth();
 
 		if (linkDepth != 0) {
 			return linkDefinition(linkDepth);
