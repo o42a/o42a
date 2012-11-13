@@ -102,6 +102,15 @@ public abstract class LinkValueType
 				.add(interfaceKey, typeRef);
 	}
 
+	public TypeRef interfaceRef(TypeParameters<?> parameters) {
+
+		final TypeParameters<KnownLink> linkParameters = cast(parameters);
+		final MemberKey interfaceKey = interfaceKey(
+				parameters.getContext().getIntrinsics());
+
+		return linkParameters.typeRef(interfaceKey);
+	}
+
 	@Override
 	public Path path(Intrinsics intrinsics) {
 
@@ -166,7 +175,7 @@ public abstract class LinkValueType
 
 	@Override
 	protected void resolveAll(Value<KnownLink> value, FullResolver resolver) {
-		typeRef(value.getTypeParameters())
+		interfaceRef(value.getTypeParameters())
 		.resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
 		if (value.getKnowledge().hasCompilerValue()) {
 			value.getCompilerValue().resolveAll(resolver);
@@ -176,13 +185,5 @@ public abstract class LinkValueType
 	abstract ValueStructIR<LinkValueStruct, KnownLink> structIR(
 			Generator generator,
 			LinkValueStruct linkStruct);
-
-	private TypeRef typeRef(TypeParameters<KnownLink> parameters) {
-
-		final MemberKey interfaceKey = interfaceKey(
-				parameters.getContext().getIntrinsics());
-
-		return parameters.typeRef(interfaceKey);
-	}
 
 }
