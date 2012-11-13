@@ -33,8 +33,10 @@ import org.o42a.core.value.link.LinkValueType;
 public abstract class SingleValueType<T>
 		extends ValueType<SingleValueStruct<T>, T> {
 
-	public SingleValueType(String systemId) {
-		super(systemId);
+	public SingleValueType(
+			String systemId,
+			Class<? extends T> valueClass) {
+		super(systemId, valueClass);
 	}
 
 	@Override
@@ -83,10 +85,6 @@ public abstract class SingleValueType<T>
 			LocationInfo location,
 			Scope scope) {
 		return struct().noValueDefinitions(location, scope);
-	}
-
-	public final T cast(Object value) {
-		return struct().cast(value);
 	}
 
 	public final Value<T> cast(Value<?> value) {

@@ -31,7 +31,7 @@ public class IntegerValueStruct extends SingleValueStruct<Long> {
 	public static final IntegerValueStruct INSTANCE = new IntegerValueStruct();
 
 	private IntegerValueStruct() {
-		super(ValueType.INTEGER, Long.class);
+		super(ValueType.INTEGER);
 	}
 
 	@Override

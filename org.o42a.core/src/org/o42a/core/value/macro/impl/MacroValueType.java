@@ -32,7 +32,7 @@ public final class MacroValueType extends SingleValueType<Macro> {
 	public static final MacroValueType INSTANCE = new MacroValueType();
 
 	private MacroValueType() {
-		super("macro");
+		super("macro", Macro.class);
 	}
 
 	@Override

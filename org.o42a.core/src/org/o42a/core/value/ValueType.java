@@ -58,13 +58,19 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 			NoneValueType.INSTANCE;
 
 	private final String systemId;
+	private final Class<? extends T> valueClass;
 
-	public ValueType(String systemId) {
+	public ValueType(String systemId, Class<? extends T> valueClass) {
 		this.systemId = systemId;
+		this.valueClass = valueClass;
 	}
 
 	public final String getSystemId() {
 		return this.systemId;
+	}
+
+	public final Class<? extends T> getValueClass() {
+		return this.valueClass;
 	}
 
 	public final boolean isVoid() {
@@ -115,6 +121,10 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 	public abstract LinkValueType toLinkType();
 
 	public abstract ArrayValueType toArrayType();
+
+	public final T cast(Object value) {
+		return getValueClass().cast(value);
+	}
 
 	@Override
 	public String toString() {

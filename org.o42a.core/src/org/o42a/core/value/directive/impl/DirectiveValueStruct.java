@@ -31,7 +31,7 @@ public class DirectiveValueStruct extends SingleValueStruct<Directive> {
 			new DirectiveValueStruct();
 
 	private DirectiveValueStruct() {
-		super(DirectiveValueType.INSTANCE, Directive.class);
+		super(DirectiveValueType.INSTANCE);
 	}
 
 	@Override

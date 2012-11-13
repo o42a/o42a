@@ -71,7 +71,7 @@ public abstract class LinkValueType
 	};
 
 	private LinkValueType(String systemId) {
-		super(systemId);
+		super(systemId, KnownLink.class);
 	}
 
 	@Override

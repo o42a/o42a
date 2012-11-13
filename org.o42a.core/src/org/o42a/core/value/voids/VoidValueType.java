@@ -31,7 +31,7 @@ public final class VoidValueType extends SingleValueType<Void> {
 	public static VoidValueType INSTANCE = new VoidValueType();
 
 	private VoidValueType() {
-		super("void");
+		super("void", Void.class);
 	}
 
 	@Override

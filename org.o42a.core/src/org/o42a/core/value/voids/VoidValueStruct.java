@@ -32,7 +32,7 @@ public class VoidValueStruct extends SingleValueStruct<Void> {
 	public static final VoidValueStruct INSTANCE = new VoidValueStruct();
 
 	private VoidValueStruct() {
-		super(ValueType.VOID, Void.class);
+		super(ValueType.VOID);
 	}
 
 	@Override

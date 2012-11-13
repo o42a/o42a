@@ -46,7 +46,7 @@ public final class ArrayValueStruct
 	private ArrayValueStruct constCounterpart;
 
 	ArrayValueStruct(ArrayValueType valueType, TypeRef itemTypeRef) {
-		super(valueType, Array.class);
+		super(valueType);
 		assert itemTypeRef != null :
 			"Array item type not specified";
 		this.itemTypeRef = itemTypeRef;

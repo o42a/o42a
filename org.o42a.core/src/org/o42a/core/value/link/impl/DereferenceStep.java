@@ -121,7 +121,7 @@ public class DereferenceStep extends Step {
 		} else if (value.getKnowledge().isFalse()) {
 			link = new RtLink(resolver.getPath(), resolver.getStart());
 		} else if (!value.getKnowledge().isFalse()) {
-			link = linkStruct.cast(value.getCompilerValue());
+			link = linkStruct.getValueType().cast(value.getCompilerValue());
 		} else {
 			return null;
 		}

@@ -32,7 +32,7 @@ public class StringValueStruct extends SingleValueStruct<String> {
 	public static final StringValueStruct INSTANCE = new StringValueStruct();
 
 	private StringValueStruct() {
-		super(ValueType.STRING, String.class);
+		super(ValueType.STRING);
 	}
 
 	@Override

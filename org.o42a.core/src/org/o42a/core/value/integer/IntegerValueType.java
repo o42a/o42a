@@ -32,7 +32,7 @@ public final class IntegerValueType extends SingleValueType<Long> {
 	public static final IntegerValueType INSTANCE = new IntegerValueType();
 
 	private IntegerValueType() {
-		super("integer");
+		super("integer", Long.class);
 	}
 
 	@Override

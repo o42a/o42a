@@ -69,26 +69,18 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			NoneValueStruct.INSTANCE;
 
 	private final ValueType<S, T> valueType;
-	private final Class<? extends T> valueClass;
 
 	private final RuntimeValue<T> runtimeValue = new RuntimeValue<T>(this);
 	private final FalseValue<T> falseValue = new FalseValue<T>(this);
 
 	private ValueStructIR<S, T> ir;
 
-	public ValueStruct(
-			ValueType<S, T> valueType,
-			Class<? extends T> valueClass) {
+	public ValueStruct(ValueType<S, T> valueType) {
 		this.valueType = valueType;
-		this.valueClass = valueClass;
 	}
 
 	public ValueType<S, T> getValueType() {
 		return this.valueType;
-	}
-
-	public final Class<? extends T> getValueClass() {
-		return this.valueClass;
 	}
 
 	public final boolean isVoid() {
@@ -156,10 +148,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	}
 
 	public abstract boolean convertibleFrom(ValueStruct<?, ?> other);
-
-	public final T cast(Object value) {
-		return getValueClass().cast(value);
-	}
 
 	@SuppressWarnings("unchecked")
 	public final Value<T> cast(Value<?> value) {

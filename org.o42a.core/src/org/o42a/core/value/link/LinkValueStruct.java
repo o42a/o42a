@@ -45,7 +45,7 @@ public final class LinkValueStruct
 	private final TypeRef typeRef;
 
 	LinkValueStruct(LinkValueType valueType, TypeRef typeRef) {
-		super(valueType, KnownLink.class);
+		super(valueType);
 		this.typeRef = typeRef;
 	}
 
