@@ -19,13 +19,9 @@
 */
 package org.o42a.core.value.macro.impl;
 
-import static org.o42a.core.value.macro.impl.PrefixedMacro.prefixMacro;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.macro.Macro;
 
 
@@ -35,24 +31,6 @@ public class MacroValueStruct extends SingleValueStruct<Macro> {
 
 	private MacroValueStruct() {
 		super(MacroValueType.INSTANCE);
-	}
-
-	@Override
-	protected Value<Macro> prefixValueWith(
-			Value<Macro> value,
-			PrefixPath prefix) {
-		if (!value.getKnowledge().hasCompilerValue()) {
-			return value;
-		}
-
-		final Macro oldMacro = value.getCompilerValue();
-		final Macro newMacro = prefixMacro(prefix, oldMacro);
-
-		if (oldMacro == newMacro) {
-			return value;
-		}
-
-		return compilerValue(newMacro);
 	}
 
 	@Override

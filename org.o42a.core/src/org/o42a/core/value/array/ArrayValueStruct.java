@@ -237,55 +237,6 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	protected ValueKnowledge valueKnowledge(Array value) {
-		return value.getValueKnowledge();
-	}
-
-	@Override
-	protected Value<Array> prefixValueWith(
-			Value<Array> value,
-			PrefixPath prefix) {
-		if (value.getKnowledge().hasCompilerValue()) {
-
-			final Array array = value.getCompilerValue();
-
-			if (prefix.emptyFor(array)) {
-				return value;
-			}
-
-			return array.prefixWith(prefix).toValue();
-		}
-
-		final ArrayValueStruct initialStruct =
-				(ArrayValueStruct) value.getValueStruct();
-		final ArrayValueStruct rescopedStruct =
-				initialStruct.prefixWith(prefix);
-
-		if (initialStruct == rescopedStruct) {
-			return value;
-		}
-		if (!value.getKnowledge().isKnownToCompiler()) {
-			return rescopedStruct.runtimeValue();
-		}
-
-		return rescopedStruct.falseValue();
-	}
-
-	@Override
-	protected void resolveAll(Value<Array> value, FullResolver resolver) {
-		getItemTypeRef().resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
-		if (value.getKnowledge().hasCompilerValue()) {
-
-			final ArrayItem[] items =
-					value.getCompilerValue().items(resolver.getScope());
-
-			for (ArrayItem item : items) {
-				item.resolveAll(resolver);
-			}
-		}
-	}
-
-	@Override
 	protected ValueStructIR<ArrayValueStruct, Array> createIR(
 			Generator generator) {
 		return new ArrayValueStructIR(generator, this);

@@ -19,16 +19,21 @@
 */
 package org.o42a.core.value.link;
 
+import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.link.impl.LinkValueStructIR;
@@ -118,8 +123,60 @@ public abstract class LinkValueType
 		return null;
 	}
 
+	@Override
+	protected ValueKnowledge valueKnowledge(KnownLink value) {
+		return value.getKnowledge();
+	}
+
+	@Override
+	protected Value<KnownLink> prefixValueWith(
+			Value<KnownLink> value,
+			PrefixPath prefix) {
+		if (value.getKnowledge().hasCompilerValue()) {
+
+			final KnownLink link = value.getCompilerValue();
+
+			if (prefix.emptyFor(link)) {
+				return value;
+			}
+
+			return link.prefixWith(prefix).toValue();
+		}
+
+		final LinkValueStruct initialStruct =
+				(LinkValueStruct) value.getValueStruct();
+		final LinkValueStruct rescopedStruct =
+				initialStruct.prefixWith(prefix);
+
+		if (initialStruct == rescopedStruct) {
+			return value;
+		}
+		if (!value.getKnowledge().isKnownToCompiler()) {
+			return rescopedStruct.runtimeValue();
+		}
+
+		return rescopedStruct.falseValue();
+	}
+
+	@Override
+	protected void resolveAll(Value<KnownLink> value, FullResolver resolver) {
+		typeRef(value.getTypeParameters())
+		.resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
+		if (value.getKnowledge().hasCompilerValue()) {
+			value.getCompilerValue().resolveAll(resolver);
+		}
+	}
+
 	abstract ValueStructIR<LinkValueStruct, KnownLink> structIR(
 			Generator generator,
 			LinkValueStruct linkStruct);
+
+	private TypeRef typeRef(TypeParameters parameters) {
+
+		final MemberKey interfaceKey = interfaceKey(
+				parameters.getContext().getIntrinsics());
+
+		return parameters.typeRef(interfaceKey);
+	}
 
 }

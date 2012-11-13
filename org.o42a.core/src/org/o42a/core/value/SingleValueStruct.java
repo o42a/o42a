@@ -120,18 +120,4 @@ public abstract class SingleValueStruct<T>
 		return valueType.toString();
 	}
 
-	@Override
-	protected final ValueKnowledge valueKnowledge(T value) {
-		return ValueKnowledge.KNOWN_VALUE;
-	}
-
-	@Override
-	protected Value<T> prefixValueWith(Value<T> value, PrefixPath prefix) {
-		return value;
-	}
-
-	@Override
-	protected void resolveAll(Value<T> value, FullResolver resolver) {
-	}
-
 }

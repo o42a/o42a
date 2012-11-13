@@ -21,7 +21,9 @@ package org.o42a.core.value;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.source.Intrinsics;
@@ -130,5 +132,13 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 	public String toString() {
 		return getSystemId();
 	}
+
+	protected abstract ValueKnowledge valueKnowledge(T value);
+
+	protected abstract Value<T> prefixValueWith(
+			Value<T> value,
+			PrefixPath prefix);
+
+	protected abstract void resolveAll(Value<T> value, FullResolver resolver);
 
 }

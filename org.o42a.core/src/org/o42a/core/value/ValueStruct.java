@@ -118,7 +118,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public final Value<T> compilerValue(T value) {
 
-		final ValueKnowledge knowledge = valueKnowledge(value);
+		final ValueKnowledge knowledge = getValueType().valueKnowledge(value);
 
 		assert knowledge.hasCompilerValue() :
 			"Incomplete knowledge (" + knowledge
@@ -276,14 +276,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 		return adapter.valueAdapter(request.dontTransofm());
 	}
-
-	protected abstract ValueKnowledge valueKnowledge(T value);
-
-	protected abstract Value<T> prefixValueWith(
-			Value<T> value,
-			PrefixPath prefix);
-
-	protected abstract void resolveAll(Value<T> value, FullResolver resolver);
 
 	protected abstract ValueStructIR<S, T> createIR(Generator generator);
 
