@@ -62,7 +62,7 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		return this.id;
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 		return getValueStruct().getValueType();
 	}
 

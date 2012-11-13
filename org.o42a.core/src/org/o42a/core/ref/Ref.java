@@ -97,11 +97,11 @@ public class Ref extends Statement {
 		return this.path;
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 
-		final ValueStruct<?, ?> valueStruct = valueStruct(getScope());
+		final TypeParameters typeParameters = typeParameters(getScope());
 
-		return valueStruct != null ? valueStruct.getValueType() : null;
+		return typeParameters != null ? typeParameters.getValueType() : null;
 	}
 
 	public final ValueStruct<?, ?> valueStruct(Scope scope) {

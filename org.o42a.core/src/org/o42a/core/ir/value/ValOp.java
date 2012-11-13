@@ -72,7 +72,7 @@ public abstract class ValOp extends IROp {
 			"Value structure not specified";
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 
 		final ValueStruct<?, ?> valueStruct = getValueStruct();
 

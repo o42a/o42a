@@ -100,7 +100,7 @@ public final class LinkValueStruct
 	@Override
 	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
 
-		final ValueType<?> valueType = other.getValueType();
+		final ValueType<?, ?> valueType = other.getValueType();
 
 		if (valueType != getValueType()) {
 			return TypeRelation.Kind.INCOMPATIBLE;
@@ -114,7 +114,7 @@ public final class LinkValueStruct
 	@Override
 	public boolean assignableFrom(ValueStruct<?, ?> other) {
 
-		final ValueType<?> valueType = other.getValueType();
+		final ValueType<?, ?> valueType = other.getValueType();
 
 		if (valueType != getValueType()) {
 			return false;

@@ -90,7 +90,7 @@ public final class Val implements Content<ValType> {
 		this.pointer = pointer;
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 		return getValueStruct().getValueType();
 	}
 

@@ -55,7 +55,7 @@ public abstract class StateOp {
 		return fld().getBuilder();
 	}
 
-	public final ValueType<?> getValueType() {
+	public final ValueType<?, ?> getValueType() {
 		return getValueStruct().getValueType();
 	}
 
