@@ -29,7 +29,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
-import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -63,7 +63,7 @@ public class Call extends ObjectConstructor {
 	public TypeRef ancestor(LocationInfo location) {
 
 		final TypeRef ancestor = this.ascendants.getAncestor();
-		final TypeParameters typeParameters =
+		final TypeParametersBuilder typeParameters =
 				this.ascendants.getTypeParameters();
 
 		if (typeParameters == null) {

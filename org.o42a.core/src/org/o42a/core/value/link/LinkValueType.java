@@ -20,11 +20,13 @@
 package org.o42a.core.value.link;
 
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
+import static org.o42a.core.ref.type.TypeParameter.typeParameter;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.ValueType;
@@ -79,6 +81,10 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 	@Override
 	public final boolean isVariable() {
 		return is(VARIABLE);
+	}
+
+	public TypeParameters typeParameters(TypeRef typeRef) {
+		return new TypeParameters(typeRef, this, typeParameter(typeRef));
 	}
 
 	@Override

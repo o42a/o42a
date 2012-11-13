@@ -23,19 +23,21 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
-import static org.o42a.core.ref.type.TypeParameter.typeParameter;
 
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.*;
+import org.o42a.common.ref.ArbitraryTypeParameters;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.*;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.ref.type.*;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -79,7 +81,7 @@ public final class TypeInterpreter {
 				"Unknwon definition kind: " + definitionKind);
 	}
 
-	public final TypeParameters typeParameters(
+	public final ArbitraryTypeParameters typeParameters(
 			InterfaceNode ifaceNode,
 			Distributor p,
 			TypeConsumer consumer) {
@@ -91,8 +93,7 @@ public final class TypeInterpreter {
 		}
 
 		final TypeParameterNode[] typeParamNodes = ifaceNode.getParameters();
-		final TypeParameter[] typeParams =
-				new TypeParameter[typeParamNodes.length];
+		final TypeRef[] typeParams = new TypeRef[typeParamNodes.length];
 
 		for (int i = 0; i < typeParams.length; ++i) {
 
@@ -109,10 +110,10 @@ public final class TypeInterpreter {
 				return null;
 			}
 
-			typeParams[i] = typeParameter(paramTypeRef);
+			typeParams[i] = paramTypeRef;
 		}
 
-		return new TypeParameters(location(p, ifaceNode), typeParams);
+		return new ArbitraryTypeParameters(location(p, ifaceNode), typeParams);
 	}
 
 	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor(

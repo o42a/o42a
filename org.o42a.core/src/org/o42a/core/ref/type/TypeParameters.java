@@ -25,18 +25,28 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public final class TypeParameters
 		extends Location
 		implements TypeParametersBuilder {
 
-	private TypeParameter[] parameters;
+	private final ValueType<?> valueType;
+	private final TypeParameter[] parameters;
 
-	public TypeParameters(LocationInfo location, TypeParameter... parameters) {
+	public TypeParameters(
+			LocationInfo location,
+			ValueType<?> valueType,
+			TypeParameter... parameters) {
 		super(location);
+		this.valueType = valueType;
 		assert parametersHaveSameScope(parameters);
 		this.parameters = parameters;
+	}
+
+	public final ValueType<?> getValueType() {
+		return this.valueType;
 	}
 
 	public final TypeParameter[] getParameters() {
@@ -142,7 +152,7 @@ public final class TypeParameters
 			return this;
 		}
 
-		return new TypeParameters(this, newParameters);
+		return new TypeParameters(this, getValueType(), newParameters);
 	}
 
 	@Override
@@ -163,7 +173,7 @@ public final class TypeParameters
 			newParameters[i] = newParameter;
 		}
 
-		return new TypeParameters(this, newParameters);
+		return new TypeParameters(this, getValueType(), newParameters);
 	}
 
 	public final boolean assertAssignableFrom(TypeParameters parameters) {
@@ -182,12 +192,12 @@ public final class TypeParameters
 	@Override
 	public String toString() {
 		if (this.parameters == null) {
-			return "(`*)";
+			return super.toString();
 		}
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append("(`");
+		out.append(this.valueType).append("(`");
 		if (this.parameters.length != 0) {
 			out.append(this.parameters[0]);
 			for (int i = 1; i < this.parameters.length; ++i) {

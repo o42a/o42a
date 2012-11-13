@@ -50,7 +50,7 @@ public class Ascendants
 
 	private final Obj object;
 	private TypeRef explicitAncestor;
-	private TypeParameters typeParameters;
+	private TypeParametersBuilder typeParameters;
 	private TypeRef ancestor;
 	private Sample[] samples = NO_SAMPLES;
 	private Sample[] discardedSamples = NO_SAMPLES;
@@ -103,12 +103,13 @@ public class Ascendants
 		return clone;
 	}
 
-	public final TypeParameters getTypeParameters() {
+	public final TypeParametersBuilder getTypeParameters() {
 		return this.typeParameters;
 	}
 
 	@Override
-	public final Ascendants setTypeParameters(TypeParameters typeParameters) {
+	public final Ascendants setTypeParameters(
+			TypeParametersBuilder typeParameters) {
 
 		final Ascendants clone = clone();
 

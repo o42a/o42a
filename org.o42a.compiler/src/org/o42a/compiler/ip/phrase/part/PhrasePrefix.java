@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.phrase.part;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -30,6 +30,7 @@ import org.o42a.core.source.LocationInfo;
 public final class PhrasePrefix extends PhrasePart {
 
 	private AscendantsDefinition ascendants;
+	private LocationInfo typeParametersLocation;
 
 	public PhrasePrefix(LocationInfo location, Phrase phrase) {
 		super(location, phrase, null);
@@ -45,12 +46,18 @@ public final class PhrasePrefix extends PhrasePart {
 		return this;
 	}
 
-	public final TypeParameters getTypeParameters() {
+	public final TypeParametersBuilder getTypeParameters() {
 		return this.ascendants.getTypeParameters();
 	}
 
+	public final LocationInfo getTypeParametersLocation() {
+		return this.typeParametersLocation;
+	}
+
 	public final PhrasePrefix setTypeParameters(
-			TypeParameters typeParameters) {
+			LocationInfo location,
+			TypeParametersBuilder typeParameters) {
+		this.typeParametersLocation = location;
 		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
 		return this;
 	}

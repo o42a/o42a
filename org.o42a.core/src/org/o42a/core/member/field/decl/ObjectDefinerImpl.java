@@ -23,7 +23,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -60,7 +60,7 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	}
 
 	@Override
-	public ObjectDefiner setTypeParameters(TypeParameters typeParameters) {
+	public ObjectDefiner setTypeParameters(TypeParametersBuilder typeParameters) {
 		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
 		return this;
 	}

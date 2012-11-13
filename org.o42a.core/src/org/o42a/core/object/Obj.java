@@ -59,6 +59,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.impl.ObjectEnv;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.fn.Holder;
@@ -757,7 +758,7 @@ public abstract class Obj
 		final TypeRef ancestor = type().getAncestor();
 
 		if (ancestor == null) {
-			return new TypeParameters(this);
+			return new TypeParameters(this, ValueType.VOID);
 		}
 
 		final TypeParameters ancestorTypeParameters =

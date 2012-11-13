@@ -21,7 +21,6 @@ package org.o42a.core.value.array;
 
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.ref.type.TypeParameter.typeParameter;
 import static org.o42a.core.value.ValueKnowledge.*;
 
 import org.o42a.core.Distributor;
@@ -32,7 +31,6 @@ import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeParameters;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
@@ -40,10 +38,6 @@ import org.o42a.core.value.ValueKnowledge;
 
 
 public final class Array extends Placed {
-
-	public static TypeParameters arrayTypeParameters(TypeRef itemTypeRef) {
-		return new TypeParameters(itemTypeRef, typeParameter(itemTypeRef));
-	}
 
 	private final Array origin;
 	private final PrefixPath prefix;

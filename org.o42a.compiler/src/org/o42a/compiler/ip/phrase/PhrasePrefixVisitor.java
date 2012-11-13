@@ -30,17 +30,17 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.common.ref.ArbitraryTypeParameters;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
-import org.o42a.core.ref.type.TypeParameters;
 
 
 final class PhrasePrefixVisitor
 		extends AbstractExpressionVisitor<Phrase, Phrase> {
 
-	private final TypeParameters typeParameters;
+	private final ArbitraryTypeParameters typeParameters;
 	private final TypeConsumer typeConsumer;
 
 	PhrasePrefixVisitor(TypeConsumer typeConsumer) {
@@ -48,7 +48,7 @@ final class PhrasePrefixVisitor
 		this.typeParameters = null;
 	}
 
-	PhrasePrefixVisitor(TypeParameters typeParameters) {
+	PhrasePrefixVisitor(ArbitraryTypeParameters typeParameters) {
 		this.typeParameters = typeParameters;
 		this.typeConsumer = NO_TYPE_CONSUMER;
 	}
@@ -59,7 +59,9 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	public Phrase visitTypeParameters(TypeParametersNode parameters, Phrase p) {
+	public Phrase visitTypeParameters(
+			TypeParametersNode parameters,
+			Phrase p) {
 
 		final Phrase result =
 				prefixByValueType(p, parameters, this.typeConsumer);

@@ -34,7 +34,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -86,12 +86,19 @@ public class Phrase extends Placed {
 		return this;
 	}
 
-	public final TypeParameters getTypeParameters() {
+	public final TypeParametersBuilder getTypeParameters() {
 		return this.prefix.getTypeParameters();
 	}
 
-	public final Phrase setTypeParameters(TypeParameters typeParameters) {
-		this.prefix.setTypeParameters(typeParameters);
+	public final <P extends TypeParametersBuilder & LocationInfo>
+	Phrase setTypeParameters(P typeParameters) {
+		return setTypeParameters(typeParameters, typeParameters);
+	}
+
+	public final Phrase setTypeParameters(
+			LocationInfo location,
+			TypeParametersBuilder typeParameters) {
+		this.prefix.setTypeParameters(location, typeParameters);
 		return referBody();
 	}
 

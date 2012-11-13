@@ -19,8 +19,6 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.core.value.link.Link.linkTypeParameters;
-
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.object.type.Ascendants;
@@ -92,7 +90,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 
 		if (!this.ascendants.isEmpty()) {
 			return this.ascendants.setTypeParameters(
-					linkTypeParameters(targetType));
+					linkType.typeParameters(targetType));
 		}
 
 		return this.ascendants.setAncestor(

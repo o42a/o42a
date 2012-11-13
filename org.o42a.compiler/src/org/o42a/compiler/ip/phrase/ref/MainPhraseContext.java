@@ -38,7 +38,7 @@ import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
@@ -363,13 +363,13 @@ final class MainPhraseContext extends PhraseContext {
 							+ " clause of phrase is an expression");
 				}
 
-				final TypeParameters typeParameters =
+				final TypeParametersBuilder typeParameters =
 						getPhrase().getTypeParameters();
 
 				if (typeParameters != null) {
 					getLogger().error(
 							"prohibited_phrase_type_parameters",
-							typeParameters,
+							getPhrase().getPrefix().getTypeParametersLocation(),
 							"The value type is prohibited when the top-level"
 							+ " clause of phrase is an expression");
 				}
