@@ -24,7 +24,6 @@ import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 import org.o42a.core.Scope;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.value.ValueStruct;
 
 
 final class DefaultTypeRelation extends TypeRelation {
@@ -121,7 +120,7 @@ final class DefaultTypeRelation extends TypeRelation {
 	private Kind checkAscendant(CompilerLogger logger) {
 		if (!assignable(of(), to())) {
 			if (logger != null) {
-				logger.incompatible(to(), of().getValueStruct());
+				logger.incompatible(to(), of().getParameters());
 			}
 			return Kind.INCOMPATIBLE;
 		}
@@ -131,7 +130,7 @@ final class DefaultTypeRelation extends TypeRelation {
 	private Kind checkDerivative(CompilerLogger logger) {
 		if (!assignable(to(), of())) {
 			if (logger != null) {
-				logger.incompatible(of(), to().getValueStruct());
+				logger.incompatible(of(), to().getParameters());
 			}
 			return Kind.INCOMPATIBLE;
 		}
@@ -140,12 +139,12 @@ final class DefaultTypeRelation extends TypeRelation {
 
 	private static boolean assignable(TypeRef dest, TypeRef value) {
 
-		final ValueStruct<?, ?> destValueStruct = dest.getValueStruct();
+		final TypeParameters destParameters = dest.getParameters();
 
-		if (destValueStruct.assignableFrom(value.getValueStruct())) {
+		if (destParameters.assignableFrom(value.getParameters())) {
 			return true;
 		}
-		if (destValueStruct.isVoid()) {
+		if (dest.getValueType().isVoid()) {
 			return true;
 		}
 
