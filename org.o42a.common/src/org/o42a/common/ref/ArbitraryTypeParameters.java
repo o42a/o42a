@@ -27,6 +27,9 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.core.value.link.LinkValueType;
 
 
 
@@ -76,22 +79,43 @@ public class ArbitraryTypeParameters
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStructBy(ValueStruct<?, ?> defaultStruct) {
-		return defaultStruct.setParameters(
-				typeParametersBy(defaultStruct.getParameters()));
+	public ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
+		return typeRef.defaultValueStruct().setParameters(
+				typeParametersBy(typeRef));
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
+	public TypeParameters typeParametersBy(TypeRef typeRef) {
 
-		TypeParameters parameters =
-				new TypeParameters(this, defaultParameters.getValueType());
+		final TypeParameters defaultParameters = typeRef.defaultParameters();
+		final TypeRef[] params = getParameters();
 
-		for (TypeRef parameter : getParameters()) {
-			parameters = parameters.add(parameter);
+		if (params.length == 0) {
+			return defaultParameters;
 		}
 
-		return parameters;
+		// TODO Replace with a proper parameter key search when implement the
+		// type parameters declaration.
+		if (params.length > 1) {
+			redundantTypeParameter(params[1]);
+		}
+
+		final ValueType<?> valueType = defaultParameters.getValueType();
+		final LinkValueType linkType = valueType.toLinkType();
+
+		if (linkType != null) {
+			return linkType.typeParameters(params[0]);
+		}
+
+		final ArrayValueType arrayType = valueType.toArrayType();
+
+		if (arrayType != null) {
+			return arrayType.typeParameters(params[0]);
+		}
+
+		redundantTypeParameter(params[0]);
+
+		return defaultParameters;
 	}
 
 	@Override
@@ -133,6 +157,13 @@ public class ArbitraryTypeParameters
 		out.append(')');
 
 		return out.toString();
+	}
+
+	private void redundantTypeParameter(TypeRef param) {
+		getLogger().error(
+				"redundant_type_parameter",
+				param,
+				"Redundant type parameter");
 	}
 
 }

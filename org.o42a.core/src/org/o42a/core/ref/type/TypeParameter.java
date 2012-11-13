@@ -22,6 +22,7 @@ package org.o42a.core.ref.type;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
@@ -30,12 +31,16 @@ import org.o42a.util.log.Loggable;
 
 public final class TypeParameter implements ScopeInfo {
 
+	private final MemberKey key;
 	private final int index;
 	private final TypeRef typeRef;
 
-	TypeParameter(int index, TypeRef typeRef) {
+	TypeParameter(MemberKey key, int index, TypeRef typeRef) {
 		assert typeRef != null :
 			"Type parameter not specified";
+		assert key != null :
+			"Type parameter key not specified";
+		this.key = key;
 		this.index = index;
 		this.typeRef = typeRef;
 	}
@@ -59,8 +64,8 @@ public final class TypeParameter implements ScopeInfo {
 		return getTypeRef().isValid();
 	}
 
-	public final Object getKey() {
-		return Integer.valueOf(getIndex());
+	public final MemberKey getKey() {
+		return this.key;
 	}
 
 	public final int getIndex() {
@@ -80,7 +85,7 @@ public final class TypeParameter implements ScopeInfo {
 			return this;
 		}
 
-		return new TypeParameter(getIndex(), newTypeRef);
+		return new TypeParameter(getKey(), getIndex(), newTypeRef);
 	}
 
 	public final TypeParameter reproduce(Reproducer reproducer) {
@@ -91,7 +96,7 @@ public final class TypeParameter implements ScopeInfo {
 			return null;
 		}
 
-		return new TypeParameter(getIndex(), typeRef);
+		return new TypeParameter(getKey(), getIndex(), typeRef);
 	}
 
 	@Override

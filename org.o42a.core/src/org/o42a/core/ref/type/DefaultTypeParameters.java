@@ -37,13 +37,13 @@ final class DefaultTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStructBy(ValueStruct<?, ?> defaultStruct) {
-		return defaultStruct;
+	public ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
+		return typeRef.defaultValueStruct();
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
-		return defaultParameters;
+	public TypeParameters typeParametersBy(TypeRef typeRef) {
+		return typeRef.defaultParameters();
 	}
 
 	@Override

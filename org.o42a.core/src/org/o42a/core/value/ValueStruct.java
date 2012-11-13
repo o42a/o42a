@@ -213,12 +213,12 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final S valueStructBy(ValueStruct<?, ?> defaultStruct) {
+	public final S valueStructBy(TypeRef typeRef) {
 		return (S) this;
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeParameters defaultParameters) {
+	public TypeParameters typeParametersBy(TypeRef typeRef) {
 		return getParameters();
 	}
 

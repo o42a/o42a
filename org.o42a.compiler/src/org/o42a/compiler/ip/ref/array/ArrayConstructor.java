@@ -198,13 +198,13 @@ public class ArrayConstructor extends ObjectConstructor {
 
 		@Override
 		public ValueStruct<?, ?> valueStructBy(
-				ValueStruct<?, ?> defaultStruct) {
+				TypeRef typeRef) {
 			return this.arrayRef.valueStruct(this.arrayRef.getScope());
 		}
 
 		@Override
 		public TypeParameters typeParametersBy(
-				TypeParameters defaultParameters) {
+				TypeRef typeRef) {
 			return this.arrayRef.typeParameters(this.arrayRef.getScope());
 		}
 

@@ -117,30 +117,32 @@ public abstract class TypeRef implements ScopeInfo {
 			return this.valueStruct;
 		}
 
-		final ValueStruct<?, ?> defaultValueStruct =
-				getRef().valueStruct(getScope());
-
-		final ScopeInfo scoped;
 		final ValueStruct<?, ?> valueStruct =
-				this.parametersBuilder.valueStructBy(defaultValueStruct);
+				this.parametersBuilder.valueStructBy(this);
 
 		if (valueStruct == null || valueStruct.isNone()) {
-			scoped = defaultValueStruct.toScoped();
-			this.valueStruct = defaultValueStruct;
+			this.valueStruct = defaultValueStruct();
 		} else if (!valueStruct.isValid()) {
-			scoped = valueStruct.toScoped();
 			this.valueStruct = valueStruct;
 		} else {
-			assert defaultValueStruct.assertAssignableFrom(valueStruct);
-			scoped = valueStruct.toScoped();
+			assert defaultValueStruct().assertAssignableFrom(valueStruct);
 			this.valueStruct = valueStruct;
 		}
 
-		if (scoped != null) {
-			assertSameScope(scoped);
+		if (this.valueStruct != null) {
+
+			final ScopeInfo scoped = this.valueStruct.toScoped();
+
+			if (scoped != null) {
+				assertSameScope(scoped);
+			}
 		}
 
 		return this.valueStruct;
+	}
+
+	public final ValueStruct<?, ?> defaultValueStruct() {
+		return getRef().valueStruct(getScope());
 	}
 
 	public final TypeParameters getParameters() {
@@ -148,23 +150,25 @@ public abstract class TypeRef implements ScopeInfo {
 			return this.parameters;
 		}
 
-		final TypeParameters defaultParameters =
-				getRef().typeParameters(getScope());
 		final TypeParameters typeParameters =
-				this.parametersBuilder.typeParametersBy(defaultParameters);
+				this.parametersBuilder.typeParametersBy(this);
 
 		if (typeParameters == null || typeParameters.isEmpty()) {
-			this.parameters = defaultParameters;
+			this.parameters = defaultParameters();
 		} else if (!typeParameters.isValid()) {
 			this.parameters = typeParameters;
 		} else {
-			assert defaultParameters.assertAssignableFrom(typeParameters);
+			assert defaultParameters().assertAssignableFrom(typeParameters);
 			this.parameters = typeParameters;
 		}
 
 		this.parameters.assertSameScope(this);
 
 		return this.parameters;
+	}
+
+	public final TypeParameters defaultParameters() {
+		return getRef().typeParameters(getScope());
 	}
 
 	public TypeRef setParameters(TypeParametersBuilder parameters) {

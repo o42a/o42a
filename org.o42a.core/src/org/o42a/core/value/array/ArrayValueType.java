@@ -21,6 +21,7 @@ package org.o42a.core.value.array;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.array.ArrayValueTypeIR;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeParameters;
@@ -53,8 +54,17 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 		return this.variable;
 	}
 
+	public final MemberKey itemTypeKey(Intrinsics intrinsics) {
+		return typeObject(intrinsics).toMember().getMemberKey();
+	}
+
 	public final TypeParameters typeParameters(TypeRef itemTypeRef) {
-		return new TypeParameters(itemTypeRef, this).add(itemTypeRef);
+
+		final MemberKey itemTypeKey =
+				itemTypeKey(itemTypeRef.getContext().getIntrinsics());
+
+		return new TypeParameters(itemTypeRef, this)
+		.add(itemTypeKey, itemTypeRef);
 	}
 
 	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {
