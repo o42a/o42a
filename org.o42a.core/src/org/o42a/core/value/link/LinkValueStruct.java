@@ -251,49 +251,6 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	protected ValueKnowledge valueKnowledge(KnownLink value) {
-		return value.getKnowledge();
-	}
-
-	@Override
-	protected Value<KnownLink> prefixValueWith(
-			Value<KnownLink> value,
-			PrefixPath prefix) {
-		if (value.getKnowledge().hasCompilerValue()) {
-
-			final KnownLink link = value.getCompilerValue();
-
-			if (prefix.emptyFor(link)) {
-				return value;
-			}
-
-			return link.prefixWith(prefix).toValue();
-		}
-
-		final LinkValueStruct initialStruct =
-				(LinkValueStruct) value.getValueStruct();
-		final LinkValueStruct rescopedStruct =
-				initialStruct.prefixWith(prefix);
-
-		if (initialStruct == rescopedStruct) {
-			return value;
-		}
-		if (!value.getKnowledge().isKnownToCompiler()) {
-			return rescopedStruct.runtimeValue();
-		}
-
-		return rescopedStruct.falseValue();
-	}
-
-	@Override
-	protected void resolveAll(Value<KnownLink> value, FullResolver resolver) {
-		getTypeRef().resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
-		if (value.getKnowledge().hasCompilerValue()) {
-			value.getCompilerValue().resolveAll(resolver);
-		}
-	}
-
-	@Override
 	protected ValueStructIR<LinkValueStruct, KnownLink> createIR(
 			Generator generator) {
 		return getValueType().structIR(generator, this);

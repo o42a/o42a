@@ -19,11 +19,15 @@
 */
 package org.o42a.core.value.macro.impl;
 
+import static org.o42a.core.value.macro.impl.PrefixedMacro.prefixMacro;
+
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.macro.Macro;
 
 
@@ -49,6 +53,24 @@ public final class MacroValueType extends SingleValueType<Macro> {
 	public Path path(Intrinsics intrinsics) {
 		return Path.ROOT_PATH.append(
 				typeObject(intrinsics).getScope().toField().getKey());
+	}
+
+	@Override
+	protected Value<Macro> prefixValueWith(
+			Value<Macro> value,
+			PrefixPath prefix) {
+		if (!value.getKnowledge().hasCompilerValue()) {
+			return value;
+		}
+
+		final Macro oldMacro = value.getCompilerValue();
+		final Macro newMacro = prefixMacro(prefix, oldMacro);
+
+		if (oldMacro == newMacro) {
+			return value;
+		}
+
+		return compilerValue(newMacro);
 	}
 
 }

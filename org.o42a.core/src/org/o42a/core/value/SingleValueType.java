@@ -22,8 +22,10 @@ package org.o42a.core.value;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.impl.Constant;
@@ -99,6 +101,20 @@ public abstract class SingleValueType<T>
 	@Override
 	public final ArrayValueType toArrayType() {
 		return null;
+	}
+
+	@Override
+	protected final ValueKnowledge valueKnowledge(T value) {
+		return ValueKnowledge.KNOWN_VALUE;
+	}
+
+	@Override
+	protected Value<T> prefixValueWith(Value<T> value, PrefixPath prefix) {
+		return value;
+	}
+
+	@Override
+	protected void resolveAll(Value<T> value, FullResolver resolver) {
 	}
 
 }

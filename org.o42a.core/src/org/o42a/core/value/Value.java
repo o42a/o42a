@@ -73,7 +73,7 @@ public abstract class Value<T> {
 	public abstract T getCompilerValue();
 
 	public Value<T> prefixWith(PrefixPath prefix) {
-		return getValueStruct().prefixValueWith(this, prefix);
+		return getValueType().prefixValueWith(this, prefix);
 	}
 
 	public abstract Val val(Generator generator);
@@ -81,7 +81,7 @@ public abstract class Value<T> {
 	public abstract Ptr<ValType.Op> valPtr(Generator generator);
 
 	public final void resolveAll(FullResolver resolver) {
-		getValueStruct().resolveAll(this, resolver);
+		getValueType().resolveAll(this, resolver);
 	}
 
 	public final ValOp op(CodeBuilder builder, Code code) {
