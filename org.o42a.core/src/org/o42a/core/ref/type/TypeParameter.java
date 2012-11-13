@@ -20,30 +20,68 @@
 package org.o42a.core.ref.type;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
-import org.o42a.core.ref.impl.KnownTypeParameter;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.log.Loggable;
 
 
-public abstract class TypeParameter extends Scoped {
+public final class TypeParameter implements ScopeInfo {
 
-	public static TypeParameter typeParameter(TypeRef typeRef) {
-		return new KnownTypeParameter(typeRef);
+	private final int index;
+	private final TypeRef typeRef;
+
+	TypeParameter(int index, TypeRef typeRef) {
+		assert typeRef != null :
+			"Type parameter not specified";
+		this.index = index;
+		this.typeRef = typeRef;
 	}
 
-	public TypeParameter(LocationInfo location, Scope scope) {
-		super(location, scope);
+	@Override
+	public final Loggable getLoggable() {
+		return getTypeRef().getLoggable();
 	}
 
-	public boolean isValid() {
+	@Override
+	public final CompilerContext getContext() {
+		return getTypeRef().getContext();
+	}
+
+	@Override
+	public final Scope getScope() {
+		return getTypeRef().getScope();
+	}
+
+	public final boolean isValid() {
 		return getTypeRef().isValid();
 	}
 
-	public abstract TypeRef getTypeRef();
+	public final Object getKey() {
+		return Integer.valueOf(getIndex());
+	}
 
-	public abstract TypeParameter prefixWith(PrefixPath prefix);
+	public final int getIndex() {
+		return this.index;
+	}
+
+	public final TypeRef getTypeRef() {
+		return this.typeRef;
+	}
+
+	public final TypeParameter prefixWith(PrefixPath prefix) {
+
+		final TypeRef oldTypeRef = getTypeRef();
+		final TypeRef newTypeRef = oldTypeRef.prefixWith(prefix);
+
+		if (oldTypeRef == newTypeRef) {
+			return this;
+		}
+
+		return new TypeParameter(getIndex(), newTypeRef);
+	}
 
 	public final TypeParameter reproduce(Reproducer reproducer) {
 
@@ -53,7 +91,35 @@ public abstract class TypeParameter extends Scoped {
 			return null;
 		}
 
-		return typeParameter(typeRef);
+		return new TypeParameter(getIndex(), typeRef);
+	}
+
+	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
+
+	@Override
+	public String toString() {
+		if (this.typeRef == null) {
+			return super.toString();
+		}
+		return this.typeRef.toString();
 	}
 
 }

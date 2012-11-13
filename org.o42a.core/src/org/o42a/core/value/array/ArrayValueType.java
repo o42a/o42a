@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value.array;
 
-import static org.o42a.core.ref.type.TypeParameter.typeParameter;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.object.Obj;
@@ -56,10 +54,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 	}
 
 	public final TypeParameters typeParameters(TypeRef itemTypeRef) {
-		return new TypeParameters(
-				itemTypeRef,
-				this,
-				typeParameter(itemTypeRef));
+		return new TypeParameters(itemTypeRef, this).add(itemTypeRef);
 	}
 
 	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {

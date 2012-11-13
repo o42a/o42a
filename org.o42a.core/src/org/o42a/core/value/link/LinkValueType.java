@@ -20,7 +20,6 @@
 package org.o42a.core.value.link;
 
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
-import static org.o42a.core.ref.type.TypeParameter.typeParameter;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
@@ -84,7 +83,7 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 	}
 
 	public TypeParameters typeParameters(TypeRef typeRef) {
-		return new TypeParameters(typeRef, this, typeParameter(typeRef));
+		return new TypeParameters(typeRef, this).add(typeRef);
 	}
 
 	@Override
