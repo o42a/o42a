@@ -30,7 +30,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
-import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 public class DefByArrayTest extends CompilerTestCase {
@@ -45,12 +45,12 @@ public class DefByArrayTest extends CompilerTestCase {
 
 		final Obj b = field("b").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) b.value().getValueStruct();
+		final ArrayValueType arrayType =
+				b.value().getValueType().toArrayType();
 
-		assertFalse(arraySruct.isVariable());
+		assertFalse(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				arrayType.itemTypeRef(b.type().getParameters()).getType(),
 				is(b.getContext().getIntrinsics().getString()));
 
 		final Array array = definiteValue(b);
@@ -78,12 +78,12 @@ public class DefByArrayTest extends CompilerTestCase {
 
 		final Obj b = field("b").toObject();
 
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) b.value().getValueStruct();
+		final ArrayValueType arrayType =
+				b.value().getValueType().toArrayType();
 
-		assertTrue(arraySruct.isVariable());
+		assertTrue(arrayType.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().getType(),
+				arrayType.itemTypeRef(b.type().getParameters()).getType(),
 				is(b.getContext().getIntrinsics().getString()));
 
 		final Array array = definiteValue(b);

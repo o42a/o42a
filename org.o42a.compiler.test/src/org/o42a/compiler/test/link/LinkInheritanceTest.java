@@ -22,6 +22,7 @@ package org.o42a.compiler.test.link;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -79,21 +80,19 @@ public class LinkInheritanceTest extends CompilerTestCase {
 				"B := a (Foo => *)");
 
 		assertThat(
-				field("a", "foo")
-				.toObject()
-				.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
+				LINK.interfaceRef(
+						field("a", "foo")
+						.toObject()
+						.type()
+						.getParameters())
 				.getType(),
 				is(this.context.getIntrinsics().getInteger()));
 		assertThat(
-				field("b", "foo")
-				.toObject()
-				.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
+				LINK.interfaceRef(
+						field("b", "foo")
+						.toObject()
+						.type()
+						.getParameters())
 				.getType(),
 				is(this.context.getIntrinsics().getInteger()));
 	}

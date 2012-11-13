@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.test;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.o42a.analysis.use.User.useCase;
 import static org.o42a.compiler.Compiler.compiler;
@@ -40,8 +41,10 @@ import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
-import org.o42a.core.value.*;
-import org.o42a.core.value.link.Link;
+import org.o42a.core.value.Condition;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.string.Name;
 
@@ -64,34 +67,23 @@ public abstract class CompilerTestCase {
 
 	public static <T> Value<T> valueOf(
 			Field field,
-			SingleValueType<T> valueType) {
-		return valueOf(field, valueType.struct());
-	}
-
-	public static <T> Value<T> valueOf(
-			Obj object,
-			SingleValueType<T> valueType) {
-		return valueOf(object, valueType.struct());
-	}
-
-	public static <T> Value<T> valueOf(
-			Field field,
-			ValueStruct<?, T> valueStruct) {
+			ValueType<?, T> valueStruct) {
 		return valueOf(field.toObject(), valueStruct);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static <T> Value<T> valueOf(
 			Obj object,
-			ValueStruct<?, T> valueStruct) {
+			ValueType<?, T> valueType) {
 
 		final Value<?> value = valueOf(object);
 
-		assertEquals(
+		assertThat(
 				value + " has wrong type",
-				valueStruct,
-				value.getValueStruct());
+				value.getValueType(),
+				is((ValueType) valueType));
 
-		return valueStruct.getParameters().cast(value);
+		return valueType.cast(value);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -113,17 +105,9 @@ public abstract class CompilerTestCase {
 		return (T) definiteValue;
 	}
 
-	public static <T> T definiteValue(
-			Obj object,
-			SingleValueType<T> valueType) {
-		return definiteValue(object, valueType.struct());
-	}
+	public static <T> T definiteValue(Obj object, ValueType<?, T> valueType) {
 
-	public static <T> T definiteValue(
-			Obj object,
-			ValueStruct<?, T> valueStruct) {
-
-		final Value<?> value = valueOf(object, valueStruct);
+		final Value<?> value = valueOf(object, valueType);
 
 		assertTrue(
 				"Value is not definite: " + value,
@@ -136,7 +120,7 @@ public abstract class CompilerTestCase {
 
 		assertNotNull(object + " has not definite value", definiteValue);
 
-		return valueStruct.getValueType().cast(definiteValue);
+		return valueType.cast(definiteValue);
 	}
 
 	public static <T> T definiteValue(Field field) {
@@ -145,30 +129,12 @@ public abstract class CompilerTestCase {
 
 	public static <T> T definiteValue(
 			Field field,
-			SingleValueType<T> valueType) {
-		return definiteValue(field.toObject(), valueType.struct());
-	}
-
-	public static <T> T definiteValue(
-			Field field,
-			ValueStruct<?, T> valueStruct) {
+			ValueType<?, T> valueStruct) {
 		return definiteValue(field.toObject(), valueStruct);
 	}
 
-	public static <T> T definiteValue(
-			Obj object,
-			Class<? extends T> valueClass) {
-		return valueClass.cast(definiteValue(object));
-	}
-
-	public static <T> T definiteValue(
-			Field field,
-			Class<? extends T> valueClass) {
-		return valueClass.cast(definiteValue(field));
-	}
-
 	public static Obj linkTarget(Obj object) {
-		return definiteValue(object, Link.class).getTarget();
+		return definiteValue(object, LinkValueType.LINK).getTarget();
 	}
 
 	public static Obj linkTarget(Scope scope) {

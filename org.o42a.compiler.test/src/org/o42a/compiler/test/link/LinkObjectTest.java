@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -46,11 +47,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		final Obj bTarget = linkTarget(b);
 
 		assertThat(
-				b.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getType(),
+				LINK.interfaceRef(b.type().getParameters()).getType(),
 				is(b.getContext().getIntrinsics().getVoid()));
 		assertTrue(bTarget.value().getValueType().is(ValueType.INTEGER));
 		assertThat(bTarget.getWrapped(), sameInstance(a));
@@ -68,11 +65,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		final Obj bTarget = linkTarget(b);
 
 		assertThat(
-				b.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
-				.getType(),
+				LINK.interfaceRef(b.type().getParameters()).getType(),
 				is(b.getContext().getIntrinsics().getInteger()));
 		assertEquals(ValueType.INTEGER, bTarget.value().getValueType());
 		assertThat(definiteValue(bTarget, ValueType.INTEGER), is(1L));
