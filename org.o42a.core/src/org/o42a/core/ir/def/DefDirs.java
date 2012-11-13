@@ -153,8 +153,8 @@ public class DefDirs {
 		}
 
 		private void store(Code code, ValOp result) {
-			assert getValueStruct().assertAssignableFrom(
-					result.getValueStruct());
+			assert getValueStruct().getParameters().assertAssignableFrom(
+					result.getValueStruct().getParameters());
 			if (this.result == null
 					&& valueAccessibleBy(code)
 					&& !holdableValue(result)) {

@@ -77,7 +77,8 @@ final class LinkKeeperIR
 
 			final LinkValueStruct linkStruct =
 					getValueStructIR().getValueStruct().toLinkStruct();
-			final KnownLink link = linkStruct.cast(value).getCompilerValue();
+			final KnownLink link =
+					linkStruct.getParameters().cast(value).getCompilerValue();
 
 			object.setValue(
 					link.getTarget()

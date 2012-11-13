@@ -66,7 +66,10 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 		@SuppressWarnings("unchecked")
 		final ValueStruct<?, F> valueStruct =
 				(ValueStruct<?, F>) objectValue.getValueStruct();
-		final F value = valueStruct.cast(objectValue).getCompilerValue();
+		final F value =
+				valueStruct.getParameters()
+				.cast(objectValue)
+				.getCompilerValue();
 		final T converted = convert(resolver, resolver, value);
 
 		if (converted == null) {

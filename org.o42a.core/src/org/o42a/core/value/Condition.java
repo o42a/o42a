@@ -40,7 +40,7 @@ public enum Condition {
 		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
 			assert valueStruct.isVoid() :
 				"Can not construct a non-void TRUE";
-			return valueStruct.cast(voidValue());
+			return valueStruct.getParameters().cast(voidValue());
 		}
 
 	},

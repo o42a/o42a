@@ -126,10 +126,12 @@ public abstract class Sentence<
 				valueStruct = altStruct;
 				continue;
 			}
-			if (valueStruct.assignableFrom(altStruct)) {
+			if (valueStruct.getParameters().assignableFrom(
+					altStruct.getParameters())) {
 				continue;
 			}
-			if (altStruct.assignableFrom(valueStruct)) {
+			if (altStruct.getParameters().assignableFrom(
+					valueStruct.getParameters())) {
 				valueStruct = altStruct;
 				continue;
 			}

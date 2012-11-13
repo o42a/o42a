@@ -29,7 +29,9 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.*;
+import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.ref.type.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -141,23 +143,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return Definitions.noValueDefinitions(location, scope, this);
 	}
 
-	public abstract TypeRelation.Kind relationTo(ValueStruct<?, ?> other);
-
-	public boolean assignableFrom(ValueStruct<?, ?> other) {
-		return relationTo(other).isAscendant();
-	}
-
-	public abstract boolean convertibleFrom(ValueStruct<?, ?> other);
-
-	@SuppressWarnings("unchecked")
-	public final Value<T> cast(Value<?> value) {
-		if (!assignableFrom(value.getValueStruct())) {
-			throw new ClassCastException(
-					value + " is not compatible with " + this);
-		}
-		return (Value<T>) value;
-	}
-
 	public final ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
 		if (request.getExpectedStruct().isVoid()) {
 			if (isVoid()) {
@@ -221,18 +206,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public abstract void resolveAll(FullResolver resolver);
 
-	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
-		assert assignableFrom(other) :
-			this + " is not assignable from " + other;
-		return true;
-	}
-
-	public final boolean assertIs(ValueStruct<?, ?> other) {
-		assert this == other :
-			this + " is not " + other;
-		return true;
-	}
-
 	public String valueString(T value) {
 		return value.toString();
 	}
@@ -253,7 +226,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		final ValueStruct<?, ?> expectedStruct = request.getExpectedStruct();
 
 		if (!request.isTransformAllowed()
-				|| expectedStruct.assignableFrom(this)) {
+				|| expectedStruct.getParameters()
+				.assignableFrom(getParameters())) {
 			return rawValueAdapter(ref);
 		}
 

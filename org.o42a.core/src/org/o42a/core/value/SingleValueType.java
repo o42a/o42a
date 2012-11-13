@@ -51,6 +51,11 @@ public abstract class SingleValueType<T>
 		return false;
 	}
 
+	@Override
+	public boolean convertibleFrom(ValueType<?, ?> other) {
+		return is(other);
+	}
+
 	public abstract SingleValueStruct<T> struct();
 
 	public final Value<T> constantValue(T value) {
@@ -87,10 +92,6 @@ public abstract class SingleValueType<T>
 			LocationInfo location,
 			Scope scope) {
 		return struct().noValueDefinitions(location, scope);
-	}
-
-	public final Value<T> cast(Value<?> value) {
-		return struct().cast(value);
 	}
 
 	@Override

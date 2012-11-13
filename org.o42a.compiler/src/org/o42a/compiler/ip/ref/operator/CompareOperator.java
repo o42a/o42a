@@ -80,7 +80,7 @@ abstract class CompareOperator extends ComparisonOperator {
 		}
 
 		final Long compareResult =
-				ValueStruct.INTEGER.cast(value).getCompilerValue();
+				ValueType.INTEGER.cast(value).getCompilerValue();
 
 		return compare(compareResult);
 	}

@@ -91,7 +91,7 @@ public abstract class CompilerTestCase {
 				valueStruct,
 				value.getValueStruct());
 
-		return valueStruct.cast(value);
+		return valueStruct.getParameters().cast(value);
 	}
 
 	@SuppressWarnings("unchecked")

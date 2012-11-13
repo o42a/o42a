@@ -71,7 +71,7 @@ final class StringKeeperIR
 			final StringValueStructIR valueStructIR =
 					(StringValueStructIR) getValueStructIR();
 			final String compilerValue =
-					valueStructIR.getValueStruct()
+					valueStructIR.getValueType()
 					.cast(value)
 					.getCompilerValue();
 

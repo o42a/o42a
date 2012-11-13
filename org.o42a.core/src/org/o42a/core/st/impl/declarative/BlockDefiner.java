@@ -65,10 +65,12 @@ public final class BlockDefiner
 				valueStruct = sentenceStruct;
 				continue;
 			}
-			if (valueStruct.assertAssignableFrom(sentenceStruct)) {
+			if (valueStruct.getParameters().assignableFrom(
+					sentenceStruct.getParameters())) {
 				continue;
 			}
-			if (sentenceStruct.assignableFrom(valueStruct)) {
+			if (sentenceStruct.getParameters().assignableFrom(
+					valueStruct.getParameters())) {
 				valueStruct = sentenceStruct;
 				continue;
 			}

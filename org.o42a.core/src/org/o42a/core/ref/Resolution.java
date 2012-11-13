@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.value.ValueType.DIRECTIVE;
+
 import org.o42a.core.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
@@ -27,8 +29,6 @@ import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.util.log.Loggable;
 
@@ -102,12 +102,12 @@ public final class Resolution implements ScopeInfo {
 		if (object == null) {
 			return null;
 		}
-		if (!object.value().getValueType().is(ValueType.DIRECTIVE)) {
+		if (!object.value().getValueType().is(DIRECTIVE)) {
 			return null;
 		}
 
 		final Value<Directive> value =
-				ValueStruct.DIRECTIVE.cast(object.value().getValue());
+				DIRECTIVE.cast(object.value().getValue());
 
 		if (!value.getKnowledge().isKnown()) {
 			getResolver().getLogger().error(

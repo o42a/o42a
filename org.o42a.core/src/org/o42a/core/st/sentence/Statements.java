@@ -368,7 +368,8 @@ public abstract class Statements<
 			if (valueStruct == null) {
 				continue;
 			}
-			if (!expectedStruct.assignableFrom(valueStruct)) {
+			if (!expectedStruct.getParameters().assignableFrom(
+					valueStruct.getParameters())) {
 				scope.getLogger().incompatible(implication, expectedStruct);
 				return null;
 			}

@@ -330,7 +330,8 @@ public final class Defs {
 			if (defValueStruct == null) {
 				continue;
 			}
-			if (!valueStruct.assignableFrom(defValueStruct)) {
+			if (!valueStruct.getParameters().assignableFrom(
+					defValueStruct.getParameters())) {
 				definitions.getLogger().incompatible(def, valueStruct);
 			}
 		}
@@ -369,7 +370,8 @@ public final class Defs {
 			if (defValueStruct == null) {
 				continue;
 			}
-			if (!valueStruct.assignableFrom(defValueStruct)) {
+			if (!valueStruct.getParameters().assignableFrom(
+					defValueStruct.getParameters())) {
 				def.getContext().getLogger().incompatible(
 						def,
 						valueStruct);

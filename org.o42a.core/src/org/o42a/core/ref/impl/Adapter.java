@@ -76,6 +76,9 @@ public final class Adapter extends PathFragment implements LocationInfo {
 	public Path expand(PathExpander expander, int index, Scope start) {
 
 		final ObjectType objectType = start.toObject().type();
+		if (objectType.toString().equals("ObjectType[Build array: a]")) {
+			System.err.println("(!)");
+		}
 
 		if (objectType.derivedFrom(this.adapterType.getType().type())) {
 			return Path.SELF_PATH;

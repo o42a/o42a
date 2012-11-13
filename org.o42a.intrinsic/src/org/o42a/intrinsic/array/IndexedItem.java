@@ -68,7 +68,7 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 		final LinkValueStruct resultStruct =
 				LinkValueType.LINK.linkStruct(arrayStruct.getItemTypeRef());
 		final Value<Array> arrayValue =
-				arrayStruct.cast(arrayObjectValue.getValue());
+				arrayStruct.getParameters().cast(arrayObjectValue.getValue());
 
 		if (!arrayValue.getKnowledge().isKnown()) {
 			return resultStruct.runtimeValue();

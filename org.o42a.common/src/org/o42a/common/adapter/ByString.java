@@ -42,6 +42,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -69,7 +70,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		}
 
 		final String input =
-				ValueStruct.STRING.cast(inputValue).getCompilerValue();
+				ValueType.STRING.cast(inputValue).getCompilerValue();
 		final T result = byString(resolver, resolver, input);
 
 		if (result == null) {

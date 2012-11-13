@@ -143,7 +143,8 @@ final class ArrayValueAdapter extends ValueAdapter {
 			return resultStruct.runtimeValue();
 		}
 
-		final Array array = sourceStruct.cast(value).getCompilerValue();
+		final Array array =
+				sourceStruct.getParameters().cast(value).getCompilerValue();
 		final ArrayItem[] items = array.items(arrayObject.getScope());
 		final ArrayItem[] defItems = new ArrayItem[items.length];
 

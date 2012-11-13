@@ -68,6 +68,7 @@ abstract class IndexedLength extends AnnotatedBuiltin {
 
 		final Array array =
 				valueStruct(resolver.getScope())
+				.getParameters()
 				.cast(arrayValue)
 				.getCompilerValue();
 		final int length = array.length();

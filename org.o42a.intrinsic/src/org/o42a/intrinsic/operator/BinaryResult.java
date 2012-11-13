@@ -104,9 +104,15 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		}
 
 		final L left =
-				getLeftOperandStruct().cast(leftValue).getCompilerValue();
+				getLeftOperandStruct()
+				.getParameters()
+				.cast(leftValue)
+				.getCompilerValue();
 		final R right =
-				getRightOperandStruct().cast(rightValue).getCompilerValue();
+				getRightOperandStruct()
+				.getParameters()
+				.cast(rightValue)
+				.getCompilerValue();
 
 		final T result = calculate(resolver, left, right);
 

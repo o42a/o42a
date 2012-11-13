@@ -67,7 +67,7 @@ final class ArrayAsRow extends AnnotatedBuiltin {
 		}
 
 		final Array array =
-				arrayStruct.cast(arrayValue).getCompilerValue();
+				arrayStruct.getParameters().cast(arrayValue).getCompilerValue();
 
 		if (array.length() == 0) {
 

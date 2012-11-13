@@ -58,7 +58,7 @@ final class DefaultTypeRelation extends TypeRelation {
 			if (type1.getObject().is(type2.getObject())) {
 
 				final TypeRelation.Kind structRelation =
-						of().getValueStruct().relationTo(to().getValueStruct());
+						of().getParameters().relationTo(to().getParameters());
 
 				if (logger != null && structRelation == Kind.INCOMPATIBLE) {
 					logger.incompatible(to(), of().getValueStruct());

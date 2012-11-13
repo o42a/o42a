@@ -119,7 +119,8 @@ public final class BlockCommand extends Command {
 				valueStruct = sentenceStruct;
 				continue;
 			}
-			if (valueStruct.assertAssignableFrom(sentenceStruct)) {
+			if (valueStruct.getParameters().assignableFrom(
+					sentenceStruct.getParameters())) {
 				continue;
 			}
 			valueStruct = sentenceStruct;

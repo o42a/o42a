@@ -86,7 +86,10 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		}
 
 		final O operand =
-				getOperandStruct().cast(operandValue).getCompilerValue();
+				getOperandStruct()
+				.getParameters()
+				.cast(operandValue)
+				.getCompilerValue();
 		final T result = calculate(operand);
 
 		if (result == null) {

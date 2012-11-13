@@ -75,7 +75,8 @@ public final class Constant<T> extends ObjectConstructor {
 		final SingleValueStruct<T> valueStruct = this.valueType.struct();
 
 		if (request.isTransformAllowed()
-				&& !expectedStruct.assignableFrom(valueStruct)) {
+				&& !expectedStruct.getParameters().assignableFrom(
+						valueStruct.getParameters())) {
 			return super.valueAdapter(ref, request);
 		}
 
