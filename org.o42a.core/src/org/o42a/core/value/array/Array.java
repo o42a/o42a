@@ -97,7 +97,7 @@ public final class Array extends Placed {
 		return this.valueStruct;
 	}
 
-	public final TypeParameters getTypeParameters() {
+	public final TypeParameters<Array> getTypeParameters() {
 		return getValueStruct().getParameters();
 	}
 

@@ -139,7 +139,7 @@ final class DefaultTypeRelation extends TypeRelation {
 
 	private static boolean assignable(TypeRef dest, TypeRef value) {
 
-		final TypeParameters destParameters = dest.getParameters();
+		final TypeParameters<?> destParameters = dest.getParameters();
 
 		if (destParameters.assignableFrom(value.getParameters())) {
 			return true;

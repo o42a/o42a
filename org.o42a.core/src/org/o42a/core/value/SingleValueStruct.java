@@ -48,7 +48,7 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public final TypeParameters getParameters() {
+	public final TypeParameters<T> getParameters() {
 		return null;
 	}
 

@@ -42,7 +42,7 @@ final class DefaultTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeRef typeRef) {
+	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
 		return typeRef.defaultParameters();
 	}
 

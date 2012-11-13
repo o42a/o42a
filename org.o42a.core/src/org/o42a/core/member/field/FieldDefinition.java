@@ -63,7 +63,7 @@ public abstract class FieldDefinition extends Placed {
 
 		for (Field overridden : allOverridden) {
 
-			final TypeParameters typeParameters =
+			final TypeParameters<?> typeParameters =
 					overridden.toObject().type().getParameters();
 
 			if (!typeParameters.getValueType().isVoid()) {

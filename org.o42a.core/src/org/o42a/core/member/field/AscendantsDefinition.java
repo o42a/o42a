@@ -73,7 +73,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 
 		if (ancestor != null) {
 
-			final TypeParameters typeParameters = ancestor.getParameters();
+			final TypeParameters<?> typeParameters = ancestor.getParameters();
 
 			if (typeParameters.getValueType().isVoid()) {
 				return definitionTarget(typeParameters);
@@ -82,7 +82,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 
 		for (StaticTypeRef sample : getSamples()) {
 
-			final TypeParameters typeParameters = sample.getParameters();
+			final TypeParameters<?> typeParameters = sample.getParameters();
 
 			if (!typeParameters.getValueType().isVoid()) {
 				return definitionTarget(typeParameters);

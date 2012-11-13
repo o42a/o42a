@@ -105,9 +105,9 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return getValueType().isVariable();
 	}
 
-	public abstract TypeParameters getParameters();
+	public abstract TypeParameters<T> getParameters();
 
-	public ValueStruct<S,T> setParameters(TypeParameters parameters) {
+	public ValueStruct<S,T> setParameters(TypeParameters<?> parameters) {
 		parameters.getLogger().error(
 				"unsupported_type_parameters",
 				parameters,
@@ -206,7 +206,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeRef typeRef) {
+	public TypeParameters<T> typeParametersBy(TypeRef typeRef) {
 		return getParameters();
 	}
 

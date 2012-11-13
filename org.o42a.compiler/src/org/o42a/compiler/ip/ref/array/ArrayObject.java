@@ -97,7 +97,7 @@ final class ArrayObject extends ConstructedObject {
 	}
 
 	@Override
-	protected TypeParameters determineTypeParameters() {
+	protected TypeParameters<?> determineTypeParameters() {
 		if (!this.typeByItems) {
 			return super.determineTypeParameters();
 		}

@@ -31,16 +31,22 @@ import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.ArrayUtil;
 
 
-public final class TypeParameters
+public final class TypeParameters<T>
 		extends Location
 		implements TypeParametersBuilder {
 
-	private final ValueType<?, ?> valueType;
+	public static <T> TypeParameters<T> typeParameters(
+			LocationInfo location,
+			ValueType<?, T> valueType) {
+		return new TypeParameters<T>(location, valueType);
+	}
+
+	private final ValueType<?, T> valueType;
 	private final TypeParameter[] parameters;
 
-	public TypeParameters(
+	private TypeParameters(
 			LocationInfo location,
-			ValueType<?, ?> valueType) {
+			ValueType<?, T> valueType) {
 		super(location);
 		assert valueType != null :
 			"Value type not specified";
@@ -50,7 +56,7 @@ public final class TypeParameters
 
 	private TypeParameters(
 			LocationInfo location,
-			ValueType<?, ?> valueType,
+			ValueType<?, T> valueType,
 			TypeParameter[] parameters) {
 		super(location);
 		this.valueType = valueType;
@@ -58,7 +64,7 @@ public final class TypeParameters
 		this.parameters = parameters;
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?, T> getValueType() {
 		return this.valueType;
 	}
 
@@ -98,7 +104,7 @@ public final class TypeParameters
 		return 1 + typeRef.getParameters().getLinkDepth();
 	}
 
-	public final TypeParameters add(MemberKey key, TypeRef parameter) {
+	public final TypeParameters<T> add(MemberKey key, TypeRef parameter) {
 		if (this.parameters.length != 0) {
 			parameter.assertSameScope(this.parameters[0]);
 		}
@@ -106,7 +112,7 @@ public final class TypeParameters
 		final TypeParameter param =
 				new TypeParameter(key, this.parameters.length, parameter);
 
-		return new TypeParameters(
+		return new TypeParameters<T>(
 				this,
 				getValueType(),
 				ArrayUtil.append(this.parameters, param));
@@ -132,7 +138,7 @@ public final class TypeParameters
 		return parameter.getTypeRef();
 	}
 
-	public boolean assignableFrom(TypeParameters parameters) {
+	public boolean assignableFrom(TypeParameters<?> parameters) {
 
 		final TypeParameter[] params = getParameters();
 
@@ -160,7 +166,7 @@ public final class TypeParameters
 	}
 
 	@Override
-	public TypeParameters typeParametersBy(TypeRef typeRef) {
+	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
 		if (isEmpty()) {
 			return typeRef.defaultParameters();
 		}
@@ -168,7 +174,7 @@ public final class TypeParameters
 	}
 
 	@Override
-	public final TypeParameters prefixWith(PrefixPath prefix) {
+	public final TypeParameters<T> prefixWith(PrefixPath prefix) {
 
 		final TypeParameter[] oldParameters = getParameters();
 		TypeParameter[] newParameters = null;
@@ -192,11 +198,11 @@ public final class TypeParameters
 			return this;
 		}
 
-		return new TypeParameters(this, getValueType(), newParameters);
+		return new TypeParameters<T>(this, getValueType(), newParameters);
 	}
 
 	@Override
-	public TypeParametersBuilder reproduce(Reproducer reproducer) {
+	public TypeParameters<T> reproduce(Reproducer reproducer) {
 
 		final TypeParameter[] oldParameters = getParameters();
 		final TypeParameter[] newParameters =
@@ -213,10 +219,10 @@ public final class TypeParameters
 			newParameters[i] = newParameter;
 		}
 
-		return new TypeParameters(this, getValueType(), newParameters);
+		return new TypeParameters<T>(this, getValueType(), newParameters);
 	}
 
-	public final boolean assertAssignableFrom(TypeParameters parameters) {
+	public final boolean assertAssignableFrom(TypeParameters<?> parameters) {
 		assert assignableFrom(parameters) :
 			this + " is not assignable from " + parameters;
 		return true;

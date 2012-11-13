@@ -33,7 +33,7 @@ public interface TypeParametersBuilder {
 
 	ValueStruct<?, ?> valueStructBy(TypeRef typeRef);
 
-	TypeParameters typeParametersBy(TypeRef typeRef);
+	TypeParameters<?> typeParametersBy(TypeRef typeRef);
 
 	TypeParametersBuilder reproduce(Reproducer reproducer);
 
