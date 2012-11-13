@@ -29,13 +29,10 @@ import org.o42a.core.Placed;
 import org.o42a.core.member.field.impl.DefaultFieldDefinition;
 import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParametersBuilder;
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 
 
@@ -76,19 +73,19 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 
 		if (ancestor != null) {
 
-			final ValueStruct<?, ?> valueStruct = ancestor.getValueStruct();
+			final TypeParameters typeParameters = ancestor.getParameters();
 
-			if (valueStruct.isVoid()) {
-				return definitionTarget(valueStruct);
+			if (typeParameters.getValueType().isVoid()) {
+				return definitionTarget(typeParameters);
 			}
 		}
 
 		for (StaticTypeRef sample : getSamples()) {
 
-			final ValueStruct<?, ?> valueStruct = sample.getValueStruct();
+			final TypeParameters typeParameters = sample.getParameters();
 
-			if (!valueStruct.isVoid()) {
-				return definitionTarget(valueStruct);
+			if (!typeParameters.getValueType().isVoid()) {
+				return definitionTarget(typeParameters);
 			}
 		}
 

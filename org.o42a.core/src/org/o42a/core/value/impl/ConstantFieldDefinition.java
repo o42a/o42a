@@ -24,6 +24,7 @@ import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.DefaultFieldDefinition;
@@ -44,7 +45,12 @@ final class ConstantFieldDefinition extends DefaultFieldDefinition {
 
 	@Override
 	public DefinitionTarget getDefinitionTarget() {
-		return definitionTarget(this.constant.getValueType().struct());
+
+		final Obj typeObject =
+				this.constant.getValueType()
+				.typeObject(getContext().getIntrinsics());
+
+		return definitionTarget(typeObject.type().getParameters());
 	}
 
 	@Override

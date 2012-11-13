@@ -37,8 +37,8 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class FieldDefinition extends Placed {
@@ -63,11 +63,11 @@ public abstract class FieldDefinition extends Placed {
 
 		for (Field overridden : allOverridden) {
 
-			final ValueStruct<?, ?> valueStruct =
-					overridden.toObject().value().getValueStruct();
+			final TypeParameters typeParameters =
+					overridden.toObject().type().getParameters();
 
-			if (!valueStruct.isVoid()) {
-				return definitionTarget(valueStruct);
+			if (!typeParameters.getValueType().isVoid()) {
+				return definitionTarget(typeParameters);
 			}
 		}
 
@@ -93,7 +93,7 @@ public abstract class FieldDefinition extends Placed {
 			return objectDefinition();
 		}
 
-		return definitionTarget(object.value().getValueStruct());
+		return definitionTarget(object.type().getParameters());
 	}
 
 	public FieldDefinition(Ref ref) {

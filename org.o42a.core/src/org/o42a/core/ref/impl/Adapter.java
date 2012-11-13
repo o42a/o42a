@@ -103,9 +103,9 @@ public final class Adapter extends PathFragment implements LocationInfo {
 		final Obj adapterObject = adapterDecl.substance(dummyUser());
 
 		final int expectedLinkDepth =
-				this.adapterType.getValueStruct().getLinkDepth();
+				this.adapterType.getParameters().getLinkDepth();
 		final int adapterLinkDepth =
-				adapterObject.value().getValueStruct().getLinkDepth();
+				adapterObject.type().getParameters().getLinkDepth();
 
 		if (adapterLinkDepth - expectedLinkDepth  == 1) {
 			// Adapter was declared as a link.

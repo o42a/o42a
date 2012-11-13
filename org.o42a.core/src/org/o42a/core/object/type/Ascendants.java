@@ -172,17 +172,17 @@ public class Ascendants
 			final ValueStruct<?, ?> valueStruct = ancestor.getValueStruct();
 
 			if (!valueStruct.isVoid()) {
-				return definitionTarget(ancestor.getValueStruct());
+				return definitionTarget(ancestor.getParameters());
 			}
 		}
 
 		for (Sample sample : getSamples()) {
 
-			final ValueStruct<?, ?> valueStruct =
-					sample.getObject().value().getValueStruct();
+			final TypeParameters typeParameters =
+					sample.getObject().type().getParameters();
 
-			if (!valueStruct.isVoid()) {
-				return definitionTarget(valueStruct);
+			if (!typeParameters.getValueType().isVoid()) {
+				return definitionTarget(typeParameters);
 			}
 		}
 

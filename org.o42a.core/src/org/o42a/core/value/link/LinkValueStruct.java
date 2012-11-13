@@ -71,11 +71,6 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	public final int getLinkDepth() {
-		return 1 + getTypeRef().getValueStruct().getLinkDepth();
-	}
-
-	@Override
 	public final TypeParameters getParameters() {
 		return getValueType().typeParameters(getTypeRef());
 	}
@@ -231,7 +226,8 @@ public final class LinkValueStruct
 					? expectedStruct.toLinkStruct()
 					: ref.valueStruct(ref.getScope()).toLinkStruct());
 		}
-		if (expectedStruct.getLinkDepth() - getLinkDepth() == 1) {
+		if (expectedStruct.getParameters().getLinkDepth()
+				- getParameters().getLinkDepth() == 1) {
 
 			final LinkValueStruct expectedLinkStruct =
 					expectedStruct.toLinkStruct();

@@ -27,6 +27,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.ArrayUtil;
 
 
@@ -76,6 +77,25 @@ public final class TypeParameters
 			}
 		}
 		return true;
+	}
+
+	public final int getLinkDepth() {
+
+		final LinkValueType linkType = getValueType().toLinkType();
+
+		if (linkType == null) {
+			return 0;
+		}
+
+		final MemberKey interfaceKey =
+				linkType.interfaceKey(getContext().getIntrinsics());
+		final TypeRef typeRef = typeRef(interfaceKey);
+
+		if (typeRef == null) {
+			return 1;
+		}
+
+		return 1 + typeRef.getParameters().getLinkDepth();
 	}
 
 	public final TypeParameters add(MemberKey key, TypeRef parameter) {
