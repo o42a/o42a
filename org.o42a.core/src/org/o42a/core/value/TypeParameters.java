@@ -92,7 +92,7 @@ public final class TypeParameters<T>
 		return valueType.getConverter().convertParameters(this);
 	}
 
-	public final TypeParameter[] getParameters() {
+	public final TypeParameter[] all() {
 		return this.parameters;
 	}
 
@@ -101,7 +101,7 @@ public final class TypeParameters<T>
 	}
 
 	public final boolean isValid() {
-		for (TypeParameter parameter : getParameters()) {
+		for (TypeParameter parameter : all()) {
 			if (!parameter.isValid()) {
 				return false;
 			}
@@ -143,7 +143,7 @@ public final class TypeParameters<T>
 	}
 
 	public final TypeParameter parameter(MemberKey key) {
-		for (TypeParameter parameter : getParameters()) {
+		for (TypeParameter parameter : all()) {
 			if (parameter.getKey().equals(key)) {
 				return parameter;
 			}
@@ -260,7 +260,7 @@ public final class TypeParameters<T>
 	@Override
 	public final TypeParameters<T> prefixWith(PrefixPath prefix) {
 
-		final TypeParameter[] oldParameters = getParameters();
+		final TypeParameter[] oldParameters = all();
 		TypeParameter[] newParameters = null;
 
 		for (int i = 0; i < oldParameters.length; ++i) {
@@ -290,7 +290,7 @@ public final class TypeParameters<T>
 			return this;
 		}
 
-		final Scope scope = getParameters()[0].getScope();
+		final Scope scope = all()[0].getScope();
 
 		if (scope.is(toScope)) {
 			return this;
@@ -328,7 +328,7 @@ public final class TypeParameters<T>
 	@Override
 	public TypeParameters<T> reproduce(Reproducer reproducer) {
 
-		final TypeParameter[] oldParameters = getParameters();
+		final TypeParameter[] oldParameters = all();
 		final TypeParameter[] newParameters =
 				new TypeParameter[oldParameters.length];
 
@@ -386,7 +386,7 @@ public final class TypeParameters<T>
 	}
 
 	final boolean parametersAssignableFrom(TypeParameters<?> other) {
-		for (TypeParameter parameter : getParameters()) {
+		for (TypeParameter parameter : all()) {
 
 			final TypeRef typeRef = other.typeRef(parameter.getKey());
 
@@ -418,7 +418,7 @@ public final class TypeParameters<T>
 
 		Kind result = TypeRelation.Kind.SAME;
 
-		for (TypeParameter parameter : getParameters()) {
+		for (TypeParameter parameter : all()) {
 
 			final TypeRef typeRef = other.typeRef(parameter.getKey());
 

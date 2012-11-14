@@ -32,7 +32,9 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -66,16 +68,8 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-
-		final TypeParameters<KnownLink> linkParameters =
-				linkParameters(rescopeRef(scope));
-
-		if (linkParameters == null) {
-			return null;
-		}
-
-		return linkParameters.toValueStruct();
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return linkParameters(rescopeRef(scope));
 	}
 
 	@Override

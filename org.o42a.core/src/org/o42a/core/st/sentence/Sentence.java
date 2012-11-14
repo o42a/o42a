@@ -31,7 +31,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.util.log.Loggable;
 
 
@@ -108,37 +108,35 @@ public abstract class Sentence<
 		return alt;
 	}
 
-	public ValueStruct<?, ?> valueStruct(
+	public TypeParameters<?> typeParameters(
 			Scope scope,
-			ValueStruct<?, ?> expectedStruct) {
+			TypeParameters<?> expectedParameters) {
 
-		ValueStruct<?, ?> valueStruct = null;
+		TypeParameters<?> typeParameters = null;
 
 		for (Statements<S, L> alt : getAlternatives()) {
 
-			final ValueStruct<?, ?> altStruct =
-					alt.valueStruct(scope, expectedStruct);
+			final TypeParameters<?> altParameters =
+					alt.typeParameters(scope, expectedParameters);
 
-			if (altStruct == null) {
+			if (altParameters == null) {
 				continue;
 			}
-			if (valueStruct == null) {
-				valueStruct = altStruct;
+			if (typeParameters == null) {
+				typeParameters = altParameters;
 				continue;
 			}
-			if (valueStruct.getParameters().assignableFrom(
-					altStruct.getParameters())) {
+			if (typeParameters.assignableFrom(altParameters)) {
 				continue;
 			}
-			if (altStruct.getParameters().assignableFrom(
-					valueStruct.getParameters())) {
-				valueStruct = altStruct;
+			if (altParameters.assignableFrom(typeParameters)) {
+				typeParameters = altParameters;
 				continue;
 			}
-			valueStruct = expectedStruct;
+			typeParameters = expectedParameters;
 		}
 
-		return valueStruct;
+		return typeParameters;
 	}
 
 	@Override

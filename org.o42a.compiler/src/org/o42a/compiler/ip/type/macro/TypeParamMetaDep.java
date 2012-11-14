@@ -118,7 +118,7 @@ final class TypeParamMetaDep extends MetaDep {
 				.getObject()
 				.type()
 				.getParameters()
-				.getParameters()[paramIndex]
+				.all()[paramIndex]
 				.getKey();
 		final TypeParameters<?> typeParameters =
 				meta.getObject().type().getParameters();
@@ -131,7 +131,7 @@ final class TypeParamMetaDep extends MetaDep {
 		if (depth > 0) {
 
 			final TypeParameter[] subTypeParams =
-					typeRef.getParameters().getParameters();
+					typeRef.getParameters().all();
 
 			for (int i = 0; i < subTypeParams.length; ++i) {
 

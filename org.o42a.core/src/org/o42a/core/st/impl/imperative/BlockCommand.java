@@ -40,7 +40,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.Condition;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -98,35 +98,34 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
+	public TypeParameters<?> typeParameters(Scope scope) {
 
-		ValueStruct<?, ?> valueStruct = null;
-		final ValueStruct<?, ?> expectedStruct =
+		TypeParameters<?> typeParameters = null;
+		final TypeParameters<?> expectedParameters =
 				env()
 				.getValueRequest()
-				.getExpectedStruct()
+				.getExpectedParameters()
 				.upgradeScope(scope);
 
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 
-			final ValueStruct<?, ?> sentenceStruct =
-					sentence.valueStruct(scope, expectedStruct);
+			final TypeParameters<?> sentenceParameters =
+					sentence.typeParameters(scope, expectedParameters);
 
-			if (sentenceStruct == null) {
+			if (sentenceParameters == null) {
 				continue;
 			}
-			if (valueStruct == null) {
-				valueStruct = sentenceStruct;
+			if (typeParameters == null) {
+				typeParameters = sentenceParameters;
 				continue;
 			}
-			if (valueStruct.getParameters().assignableFrom(
-					sentenceStruct.getParameters())) {
+			if (typeParameters.assignableFrom(sentenceParameters)) {
 				continue;
 			}
-			valueStruct = sentenceStruct;
+			typeParameters = sentenceParameters;
 		}
 
-		return valueStruct;
+		return typeParameters;
 	}
 
 	@Override

@@ -27,7 +27,7 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -64,7 +64,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
+	public TypeParameters<?> typeParameters(Scope scope) {
 		throw new UnsupportedOperationException();
 	}
 

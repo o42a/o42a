@@ -29,7 +29,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 
 
 public class BuiltinDef extends Def {
@@ -86,8 +86,8 @@ public class BuiltinDef extends Def {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.builtin.toObject().value().getValueStruct();
+	protected TypeParameters<?> typeParameters(Scope scope) {
+		return this.builtin.toObject().type().getParameters();
 	}
 
 	@Override
@@ -105,7 +105,10 @@ public class BuiltinDef extends Def {
 			builtin.value().resolveAll(resolver);
 		}
 		object.resolveAll();
-		this.builtin.resolveBuiltin(object.value().part(isClaim()).fullResolver());
+		this.builtin.resolveBuiltin(
+				object.value()
+				.part(isClaim())
+				.fullResolver());
 	}
 
 }

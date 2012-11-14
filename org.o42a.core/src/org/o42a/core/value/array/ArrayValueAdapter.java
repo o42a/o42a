@@ -38,7 +38,9 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -71,8 +73,8 @@ final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return value(scope.resolver()).getValueStruct();
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return value(scope.resolver()).getTypeParameters();
 	}
 
 	@Override

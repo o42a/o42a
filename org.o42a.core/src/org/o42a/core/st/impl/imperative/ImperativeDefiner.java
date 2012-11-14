@@ -43,8 +43,8 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
@@ -108,17 +108,17 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
+	public TypeParameters<?> typeParameters(Scope scope) {
 
 		final Scope localScope = getLocalPrefix().rescope(scope);
-		final ValueStruct<?, ?> valueStruct =
-				getCommand().valueStruct(localScope);
+		final TypeParameters<?> typeParameters =
+				getCommand().typeParameters(localScope);
 
-		if (valueStruct == null) {
+		if (typeParameters == null) {
 			return null;
 		}
 
-		return valueStruct.prefixWith(getLocalPrefix());
+		return typeParameters.prefixWith(getLocalPrefix());
 	}
 
 	@Override

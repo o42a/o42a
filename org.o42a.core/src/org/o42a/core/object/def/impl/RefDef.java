@@ -31,7 +31,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 
 
 public final class RefDef extends Def {
@@ -86,8 +86,8 @@ public final class RefDef extends Def {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.ref.valueStruct(scope);
+	protected TypeParameters<?> typeParameters(Scope scope) {
+		return this.ref.typeParameters(scope);
 	}
 
 	@Override

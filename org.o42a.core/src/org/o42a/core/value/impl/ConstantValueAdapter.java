@@ -58,8 +58,8 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.valueType.struct();
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return TypeParameters.typeParameters(getAdaptedRef(), this.valueType);
 	}
 
 	@Override

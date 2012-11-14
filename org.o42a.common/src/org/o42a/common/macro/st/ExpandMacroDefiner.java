@@ -32,9 +32,7 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueRequest;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.*;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -61,8 +59,8 @@ final class ExpandMacroDefiner extends Definer {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return valueAdapter(scope).valueStruct(scope);
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return valueAdapter(scope).typeParameters(scope);
 	}
 
 	@Override

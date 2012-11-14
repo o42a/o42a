@@ -29,7 +29,7 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.log.LogInfo;
@@ -125,7 +125,7 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		public ValueStruct<?, ?> valueStruct(Scope scope) {
+		public TypeParameters<?> typeParameters(Scope scope) {
 			return null;
 		}
 

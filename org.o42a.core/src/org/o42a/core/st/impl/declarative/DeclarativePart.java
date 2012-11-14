@@ -37,7 +37,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.DefTargets;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.DeclarativeSentence;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.fn.Holder;
@@ -163,15 +163,15 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> valueStruct(Scope scope) {
+	protected TypeParameters<?> typeParameters(Scope scope) {
 
-		final ValueStruct<?, ?> expectedStruct =
+		final TypeParameters<?> expectedParameters =
 				this.definer.env()
 				.getValueRequest()
-				.getExpectedStruct()
+				.getExpectedParameters()
 				.upgradeScope(scope);
 
-		return BlockDefiner.valueStruct(scope, this, expectedStruct);
+		return BlockDefiner.typeParameters(scope, this, expectedParameters);
 	}
 
 	@Override
