@@ -39,6 +39,9 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.core.value.impl.CompilerValue;
+import org.o42a.core.value.impl.FalseValue;
+import org.o42a.core.value.impl.RuntimeValue;
 import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.macro.impl.MacroValueAdapter;
@@ -163,15 +166,22 @@ public final class TypeParameters<T>
 	}
 
 	public final Value<T> compilerValue(T value) {
-		return toValueStruct().compilerValue(value);
+
+		final ValueKnowledge knowledge = getValueType().valueKnowledge(value);
+
+		assert knowledge.hasCompilerValue() :
+			"Incomplete knowledge (" + knowledge
+			+ ") about value " + getValueType().valueString(value);
+
+		return new CompilerValue<T>(this, knowledge, value);
 	}
 
 	public final Value<T> runtimeValue() {
-		return toValueStruct().runtimeValue();
+		return new RuntimeValue<T>(this);
 	}
 
 	public final Value<T> falseValue() {
-		return toValueStruct().falseValue();
+		return new FalseValue<T>(this);
 	}
 
 	public final boolean assignableFrom(TypeParameters<?> other) {

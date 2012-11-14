@@ -28,9 +28,9 @@ import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class FalseValue<T> extends Value<T> {
@@ -38,8 +38,8 @@ public final class FalseValue<T> extends Value<T> {
 	private static Ptr<ValType.Op> cachedPtr;
 	private static Generator cachedGenerator;
 
-	public FalseValue(ValueStruct<?, T> valueStruct) {
-		super(valueStruct, ValueKnowledge.FALSE_VALUE);
+	public FalseValue(TypeParameters<T> typeParameters) {
+		super(typeParameters, ValueKnowledge.FALSE_VALUE);
 	}
 
 	@Override

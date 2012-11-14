@@ -31,10 +31,10 @@ public final class CompilerValue<T> extends Value<T> {
 	private final T value;
 
 	public CompilerValue(
-			ValueStruct<?, T> valueStruct,
+			TypeParameters<T> typeParameters,
 			ValueKnowledge knowledge,
 			T value) {
-		super(valueStruct, knowledge);
+		super(typeParameters, knowledge);
 		this.value = value;
 	}
 

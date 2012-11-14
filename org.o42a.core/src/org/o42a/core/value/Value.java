@@ -41,24 +41,20 @@ public abstract class Value<T> {
 		return ValueType.VOID.falseValue();
 	}
 
-	private final ValueStruct<?, T> valueStruct;
+	private final TypeParameters<T> typeParameters;
 	private final ValueKnowledge knowledge;
 
-	public Value(ValueStruct<?, T> valueStruct, ValueKnowledge knowledge) {
-		this.valueStruct = valueStruct;
+	public Value(TypeParameters<T> typeParameters, ValueKnowledge knowledge) {
+		this.typeParameters = typeParameters;
 		this.knowledge = knowledge;
 	}
 
 	public final ValueType<?, T> getValueType() {
-		return this.valueStruct.getValueType();
+		return this.typeParameters.getValueType();
 	}
 
 	public final TypeParameters<T> getTypeParameters() {
-		return getValueStruct().getParameters();
-	}
-
-	public final ValueStruct<?, T> getValueStruct() {
-		return this.valueStruct;
+		return this.typeParameters;
 	}
 
 	public final boolean isVoid() {
@@ -113,7 +109,7 @@ public abstract class Value<T> {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append('(').append(this.valueStruct).append(") ");
+		out.append('(').append(this.typeParameters).append(") ");
 		out.append(valueString());
 
 		return out.toString();
