@@ -21,6 +21,7 @@ package org.o42a.core.value.floats;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 
@@ -34,6 +35,11 @@ final class FloatValueTypeIR extends ValueTypeIR<Double> {
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
 		return defaultValueIR(objectIR);
+	}
+
+	@Override
+	protected StaticsIR<Double> createStaticsIR() {
+		return new FloatStaticsIR(this);
 	}
 
 }

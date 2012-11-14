@@ -21,16 +21,16 @@ package org.o42a.core.value.integer;
 
 import static org.o42a.core.ir.IRNames.CONST_ID;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.type.CachingStaticsIR;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.util.string.ID;
 
 
 final class IntegerStaticsIR extends CachingStaticsIR<Long> {
 
-	IntegerStaticsIR(Generator generator, IntegerValueType valueType) {
-		super(generator, valueType);
+	IntegerStaticsIR(ValueTypeIR<Long> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override

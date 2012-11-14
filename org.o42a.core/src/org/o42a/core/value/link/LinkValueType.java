@@ -26,7 +26,6 @@ import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
@@ -230,11 +229,6 @@ public abstract class LinkValueType
 	@Override
 	protected ValueTypeIR<KnownLink> createIR(Generator generator) {
 		return new LinkValueTypeIR(generator, this);
-	}
-
-	@Override
-	protected StaticsIR<KnownLink> createStaticsIR(Generator generator) {
-		return new LinkStaticsIR(generator, this);
 	}
 
 	@Override

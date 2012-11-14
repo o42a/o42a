@@ -26,7 +26,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.object.Obj;
@@ -76,7 +75,6 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 	private final Class<? extends T> valueClass;
 
 	private ValueTypeIR<T> ir;
-	private StaticsIR<T> staticsIR;
 
 	public ValueType(String systemId, Class<? extends T> valueClass) {
 		this.systemId = systemId;
@@ -183,17 +181,6 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 		return this.ir = createIR(generator);
 	}
 
-	public final StaticsIR<T> staticsIR(Generator generator) {
-
-		final StaticsIR<T> staticsIR = this.staticsIR;
-
-		if (staticsIR != null && staticsIR.getGenerator() == generator) {
-			return staticsIR;
-		}
-
-		return this.staticsIR = createStaticsIR(generator);
-	}
-
 	@Override
 	public String toString() {
 		return getSystemId();
@@ -261,8 +248,6 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 	protected abstract void resolveAll(Value<T> value, FullResolver resolver);
 
 	protected abstract ValueTypeIR<T> createIR(Generator generator);
-
-	protected abstract StaticsIR<T> createStaticsIR(Generator generator);
 
 	protected abstract KeeperIR<?, ?> createKeeperIR(
 			TypeParameters<T> parameters,

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.value.type;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType.Op;
@@ -29,10 +28,8 @@ import org.o42a.core.value.Void;
 
 public class VoidStaticsIR<T> extends StaticsIR<T> {
 
-	public VoidStaticsIR(
-			Generator generator,
-			ValueType<?, T> valueType) {
-		super(generator, valueType);
+	public VoidStaticsIR(ValueTypeIR<T> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override
@@ -53,7 +50,7 @@ public class VoidStaticsIR<T> extends StaticsIR<T> {
 	}
 
 	private StaticsIR<Void> voidStaticsIR() {
-		return ValueType.VOID.staticsIR(getGenerator());
+		return ValueType.VOID.ir(getGenerator()).staticsIR();
 	}
 
 }

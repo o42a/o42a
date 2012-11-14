@@ -133,7 +133,7 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 			final Array array =
 					arrayType.cast(value).getCompilerValue();
 
-			val.set(arrayType.staticsIR(getGenerator()).val(array));
+			val.set(arrayType.ir(getGenerator()).staticsIR().val(array));
 		}
 	}
 

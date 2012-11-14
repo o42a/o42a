@@ -24,8 +24,8 @@ import static org.o42a.core.ir.IRNames.DATA_ID;
 import static org.o42a.util.string.StringCodec.bytesPerChar;
 import static org.o42a.util.string.StringCodec.stringToBinary;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.type.ExternStaticsIR;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.util.DataAlignment;
 import org.o42a.util.string.ID;
 
@@ -38,8 +38,8 @@ final class StringStaticsIR extends ExternStaticsIR<String> {
 	private int stringSeq;
 	private int constSeq;
 
-	StringStaticsIR(Generator generator, StringValueType valueType) {
-		super(generator, valueType);
+	StringStaticsIR(ValueTypeIR<String> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override

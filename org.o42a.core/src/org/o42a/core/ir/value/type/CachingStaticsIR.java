@@ -21,11 +21,9 @@ package org.o42a.core.ir.value.type;
 
 import java.util.HashMap;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -34,8 +32,8 @@ public abstract class CachingStaticsIR<T> extends StaticsIR<T> {
 	private final HashMap<T, Ptr<ValType.Op>> constCache =
 			new HashMap<T, Ptr<ValType.Op>>();
 
-	public CachingStaticsIR(Generator generator, ValueType<?, T> valueType) {
-		super(generator, valueType);
+	public CachingStaticsIR(ValueTypeIR<T> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override

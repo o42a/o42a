@@ -41,4 +41,9 @@ public final class ArrayValueTypeIR extends ValueTypeIR<Array> {
 		return new ArrayValueIR(this, objectIR);
 	}
 
+	@Override
+	protected ArrayStaticsIR createStaticsIR() {
+		return new ArrayStaticsIR(this);
+	}
+
 }

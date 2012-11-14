@@ -28,20 +28,24 @@ import org.o42a.core.value.ValueType;
 
 public abstract class StaticsIR<T> {
 
-	private final Generator generator;
-	private final ValueType<?, T> valueType;
+	private final ValueTypeIR<T> valueTypeIR;
 
-	public StaticsIR(Generator generator, ValueType<?, T> valueType) {
-		this.generator = generator;
-		this.valueType = valueType;
+	public StaticsIR(ValueTypeIR<T> valueTypeIR) {
+		this.valueTypeIR = valueTypeIR;
+		assert valueTypeIR != null :
+			"Value type not specified";
 	}
 
 	public final Generator getGenerator() {
-		return this.generator;
+		return getValueTypeIR().getGenerator();
 	}
 
 	public final ValueType<?, T> getValueType() {
-		return this.valueType;
+		return getValueTypeIR().getValueType();
+	}
+
+	public final ValueTypeIR<T> getValueTypeIR() {
+		return this.valueTypeIR;
 	}
 
 	public abstract Val val(T value);
@@ -50,10 +54,10 @@ public abstract class StaticsIR<T> {
 
 	@Override
 	public String toString() {
-		if (this.valueType == null) {
+		if (this.valueTypeIR == null) {
 			return super.toString();
 		}
-		return "StaticsIR[" + this.valueType + ']';
+		return "StaticsIR[" + getValueType() + ']';
 	}
 
 }

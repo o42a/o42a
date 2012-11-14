@@ -25,11 +25,9 @@ import static org.o42a.core.ir.value.Val.VAL_STATIC;
 
 import java.util.HashMap;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
 import org.o42a.util.string.ID;
 
@@ -38,8 +36,8 @@ public abstract class ExternStaticsIR<T> extends CachingStaticsIR<T> {
 
 	private final HashMap<T, Val> valueCache = new HashMap<T, Val>();
 
-	public ExternStaticsIR(Generator generator, ValueType<?, T> valueType) {
-		super(generator, valueType);
+	public ExternStaticsIR(ValueTypeIR<T> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override

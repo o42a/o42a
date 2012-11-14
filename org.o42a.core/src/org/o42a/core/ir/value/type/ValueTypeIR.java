@@ -34,6 +34,7 @@ public abstract class ValueTypeIR<T> {
 	private final Generator generator;
 	private final ValueType<?, T> valueType;
 	private Ptr<ValueTypeDescOp> valueTypeDesc;
+	private StaticsIR<T> staticsIR;
 
 	public ValueTypeIR(Generator generator, ValueType<?, T> valueType) {
 		this.generator = generator;
@@ -58,6 +59,13 @@ public abstract class ValueTypeIR<T> {
 						VALUE_TYPE_DESC_TYPE);
 	}
 
+	public StaticsIR<T> staticsIR() {
+		if (this.staticsIR != null) {
+			return this.staticsIR;
+		}
+		return this.staticsIR = createStaticsIR();
+	}
+
 	public abstract ValueIR valueIR(ObjectIR objectIR);
 
 	@Override
@@ -65,8 +73,10 @@ public abstract class ValueTypeIR<T> {
 		if (this.valueType == null) {
 			return super.toString();
 		}
-		return this.valueType + " IR";
+		return "ValueTypeIR[" + this.valueType + ']';
 	}
+
+	protected abstract StaticsIR<T> createStaticsIR();
 
 	protected final ValueIR defaultValueIR(ObjectIR objectIR) {
 		return new DefaultValueIR(this, objectIR);

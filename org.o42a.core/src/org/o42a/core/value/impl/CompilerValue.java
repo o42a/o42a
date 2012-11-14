@@ -45,12 +45,12 @@ public final class CompilerValue<T> extends Value<T> {
 
 	@Override
 	public Val val(Generator generator) {
-		return getValueType().staticsIR(generator).val(this.value);
+		return getValueType().ir(generator).staticsIR().val(this.value);
 	}
 
 	@Override
 	public Ptr<ValType.Op> valPtr(Generator generator) {
-		return getValueType().staticsIR(generator).valPtr(this.value);
+		return getValueType().ir(generator).staticsIR().valPtr(this.value);
 	}
 
 	@Override

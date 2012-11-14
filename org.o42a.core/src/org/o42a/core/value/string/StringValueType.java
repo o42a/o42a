@@ -25,7 +25,6 @@ import static org.o42a.util.string.StringCodec.escapeControlChars;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.object.Obj;
@@ -79,11 +78,6 @@ public final class StringValueType extends SingleValueType<String> {
 	@Override
 	protected ValueTypeIR<String> createIR(Generator generator) {
 		return new StringValueTypeIR(generator, this);
-	}
-
-	@Override
-	protected StaticsIR<String> createStaticsIR(Generator generator) {
-		return new StringStaticsIR(generator, this);
 	}
 
 	@Override

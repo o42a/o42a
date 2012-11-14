@@ -26,7 +26,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
-import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
@@ -134,7 +133,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	}
 
 	public final ArrayIRGenerator irGenerator(Generator generator) {
-		return (ArrayStaticsIR) staticsIR(generator);
+		return (ArrayStaticsIR) ir(generator).staticsIR();
 	}
 
 	@Override
@@ -214,11 +213,6 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	@Override
 	protected ValueTypeIR<Array> createIR(Generator generator) {
 		return new ArrayValueTypeIR(generator, this);
-	}
-
-	@Override
-	protected StaticsIR<Array> createStaticsIR(Generator generator) {
-		return new ArrayStaticsIR(generator, this);
 	}
 
 	@Override
