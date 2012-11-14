@@ -24,7 +24,6 @@ import static org.o42a.core.ir.value.type.ValueIRDesc.PRIMITIVE_VALUE_IR_DESC;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.object.Obj;
@@ -66,11 +65,6 @@ public final class IntegerValueType extends SingleValueType<Long> {
 	@Override
 	protected ValueTypeIR<Long> createIR(Generator generator) {
 		return new IntegerValueTypeIR(generator, this);
-	}
-
-	@Override
-	protected StaticsIR<Long> createStaticsIR(Generator generator) {
-		return new IntegerStaticsIR(generator, this);
 	}
 
 	@Override

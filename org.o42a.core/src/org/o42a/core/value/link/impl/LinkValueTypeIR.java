@@ -21,6 +21,7 @@ package org.o42a.core.value.link.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.value.link.KnownLink;
@@ -39,6 +40,11 @@ public final class LinkValueTypeIR extends ValueTypeIR<KnownLink> {
 			return new VariableIR(this, objectIR);
 		}
 		return new LinkIR(this, objectIR);
+	}
+
+	@Override
+	protected StaticsIR<KnownLink> createStaticsIR() {
+		return new LinkStaticsIR(this);
 	}
 
 }

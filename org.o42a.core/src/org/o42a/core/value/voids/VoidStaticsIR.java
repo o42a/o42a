@@ -23,12 +23,12 @@ import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.VOID_VAL;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.StaticsIR;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.value.Void;
 
 
@@ -36,8 +36,8 @@ final class VoidStaticsIR extends StaticsIR<Void> {
 
 	private Ptr<ValType.Op> valPtr;
 
-	VoidStaticsIR(Generator generator, VoidValueType valueType) {
-		super(generator, valueType);
+	VoidStaticsIR(ValueTypeIR<Void> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override

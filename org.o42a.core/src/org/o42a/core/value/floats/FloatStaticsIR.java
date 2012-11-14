@@ -21,9 +21,9 @@ package org.o42a.core.value.floats;
 
 import static org.o42a.core.ir.IRNames.CONST_ID;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.type.CachingStaticsIR;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.util.string.ID;
 
 
@@ -31,8 +31,8 @@ final class FloatStaticsIR extends CachingStaticsIR<Double> {
 
 	private int constSeq;
 
-	FloatStaticsIR(Generator generator, FloatValueType valueType) {
-		super(generator, valueType);
+	FloatStaticsIR(ValueTypeIR<Double> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override

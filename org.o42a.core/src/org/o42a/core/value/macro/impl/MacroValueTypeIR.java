@@ -21,8 +21,7 @@ package org.o42a.core.value.macro.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.core.ir.value.type.*;
 import org.o42a.core.value.macro.Macro;
 
 
@@ -35,6 +34,11 @@ final class MacroValueTypeIR extends ValueTypeIR<Macro> {
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
 		return defaultValueIR(objectIR);
+	}
+
+	@Override
+	protected StaticsIR<Macro> createStaticsIR() {
+		return new VoidStaticsIR<Macro>(this);
 	}
 
 }

@@ -22,15 +22,14 @@ package org.o42a.core.value.link.impl;
 import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBodyOp;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.type.CachingStaticsIR;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.link.KnownLink;
-import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
 
 
@@ -41,8 +40,8 @@ public class LinkStaticsIR extends CachingStaticsIR<KnownLink> {
 
 	private int constSeq;
 
-	public LinkStaticsIR(Generator generator, LinkValueType valueType) {
-		super(generator, valueType);
+	public LinkStaticsIR(ValueTypeIR<KnownLink> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override

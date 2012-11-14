@@ -72,7 +72,7 @@ final class StringKeeperIR
 
 			final String compilerValue = STRING.cast(value).getCompilerValue();
 
-			val.set(STRING.staticsIR(getGenerator()).val(compilerValue));
+			val.set(STRING.ir(getGenerator()).staticsIR().val(compilerValue));
 		}
 	}
 

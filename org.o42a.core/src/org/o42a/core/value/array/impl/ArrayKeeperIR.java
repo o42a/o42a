@@ -74,7 +74,7 @@ public final class ArrayKeeperIR
 			final ArrayValueType arrayType = getValueType().toArrayType();
 			final Array array = arrayType.cast(value).getCompilerValue();
 
-			val.set(arrayType.staticsIR(getGenerator()).val(array));
+			val.set(arrayType.ir(getGenerator()).staticsIR().val(array));
 		}
 	}
 

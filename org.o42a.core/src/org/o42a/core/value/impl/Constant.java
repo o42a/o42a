@@ -142,7 +142,7 @@ public final class Constant<T> extends ObjectConstructor {
 		public ValOp writeValue(ValDirs dirs) {
 
 			final StaticsIR<T> staticsIR =
-					this.constant.getValueType().staticsIR(getGenerator());
+					this.constant.getValueType().ir(getGenerator()).staticsIR();
 			final Ptr<ValType.Op> ptr =
 					staticsIR.valPtr(this.constant.getConstant());
 			final ValType.Op op =

@@ -21,13 +21,12 @@ package org.o42a.core.value.array.impl;
 
 import static org.o42a.core.ir.IRNames.DATA_ID;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.ir.value.type.StaticsIR;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.value.array.Array;
 import org.o42a.util.string.ID;
 
@@ -38,10 +37,11 @@ public class ArrayStaticsIR
 
 	private static final ID ROW_DATA_ID = DATA_ID.sub("ROW");
 	private static final ID ARRAY_DATA_ID = DATA_ID.sub("ARRAY");
+
 	private int idSeq;
 
-	public ArrayStaticsIR(Generator generator, ValueType<?, Array> valueType) {
-		super(generator, valueType);
+	public ArrayStaticsIR(ValueTypeIR<Array> valueTypeIR) {
+		super(valueTypeIR);
 	}
 
 	@Override
