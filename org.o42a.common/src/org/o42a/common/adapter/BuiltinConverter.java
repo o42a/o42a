@@ -135,7 +135,7 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 			final Ref object = this.converter.object();
 			final ValDirs valueDirs = dirs.dirs().nested().value(
 					"value",
-					object.valueStruct(object.getScope()),
+					object.getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp value = this.value.writeValue(valueDirs, host);
 
@@ -179,7 +179,7 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 			final Ref object = this.converter.object();
 			final ValDirs valueDirs = dirs.dirs().nested().value(
 					"value",
-					object.valueStruct(object.getScope()),
+					object.getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp value = object.op(host).writeValue(valueDirs);
 

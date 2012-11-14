@@ -29,8 +29,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValHolder;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.DataAlignment;
 import org.o42a.util.string.ID;
@@ -43,11 +41,6 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 
 	public ExternalValueStructIR(Generator generator, S valueStruct) {
 		super(generator, valueStruct);
-	}
-
-	@Override
-	public boolean hasLength() {
-		return true;
 	}
 
 	@Override
@@ -65,7 +58,7 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 
 		if (bytes.length <= 8) {
 			val = new Val(
-					ValueStruct.STRING,
+					getValueType(),
 					VAL_CONDITION | (alignment.getShift() << 8),
 					length(value, bytes, alignment),
 					bytesToLong(bytes));
@@ -75,7 +68,7 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 					getGenerator().addBinary(valueId(value), true, bytes);
 
 			val = new Val(
-					ValueStruct.STRING,
+					getValueType(),
 					VAL_CONDITION | VAL_EXTERNAL | VAL_STATIC
 					| (alignment.getShift() << 8),
 					length(value, bytes, alignment),
@@ -85,16 +78,6 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 		this.valueCache.put(value, val);
 
 		return val;
-	}
-
-	@Override
-	public ValHolder tempValHolder(ValOp value) {
-		return new ExternValHolder(value);
-	}
-
-	@Override
-	public ValHolder valTrap(ValOp value) {
-		return new ExternValTrap(value);
 	}
 
 	protected abstract ID valueId(T value);

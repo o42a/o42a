@@ -46,11 +46,6 @@ final class VoidValueStructIR extends SingleValueStructIR<Void> {
 	}
 
 	@Override
-	public boolean hasValue() {
-		return false;
-	}
-
-	@Override
 	public Val val(Void value) {
 		return VOID_VAL;
 	}

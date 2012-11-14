@@ -81,7 +81,7 @@ public abstract class ValueOp implements HostValueOp {
 	public final void writeCond(CodeDirs dirs) {
 
 		final ValDirs valDirs =
-				dirs.nested().value(getValueStruct(), TEMP_VAL_HOLDER);
+				dirs.nested().value(getValueType(), TEMP_VAL_HOLDER);
 
 		writeValue(valDirs);
 		valDirs.done();

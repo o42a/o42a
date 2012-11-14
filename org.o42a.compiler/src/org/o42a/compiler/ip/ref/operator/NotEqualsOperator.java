@@ -29,7 +29,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 final class NotEqualsOperator extends ComparisonOperator {
@@ -39,8 +39,8 @@ final class NotEqualsOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return ValueStruct.VOID;
+	public ValueType<?, ?> getValueType() {
+		return ValueType.VOID;
 	}
 
 	@Override

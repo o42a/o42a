@@ -27,7 +27,8 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
-import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.impl.DefaultValueIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.ValueStruct;
@@ -57,14 +58,6 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		return this.valueStruct;
 	}
 
-	public boolean hasValue() {
-		return true;
-	}
-
-	public boolean hasLength() {
-		return false;
-	}
-
 	public final Ptr<ValueTypeDescOp> getValueTypeDesc() {
 		if (this.valueTypeDesc != null) {
 			return this.valueTypeDesc;
@@ -84,10 +77,6 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 			Keeper keeper);
 
 	public abstract ValueIR valueIR(ObjectIR objectIR);
-
-	public abstract ValHolder tempValHolder(ValOp value);
-
-	public abstract ValHolder valTrap(ValOp value);
 
 	@Override
 	public String toString() {

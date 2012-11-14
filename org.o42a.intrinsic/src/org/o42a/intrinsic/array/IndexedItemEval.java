@@ -31,8 +31,8 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
@@ -64,15 +64,15 @@ final class IndexedItemEval extends InlineEval {
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
 
-		final ArrayValueStruct arrayStruct = getArrayStruct();
+		final ArrayValueType arrayType = getArrayType();
 		final ValDirs indexDirs =
 				dirs.dirs().nested().value(
-						ValueStruct.INTEGER,
+						ValueType.INTEGER,
 						TEMP_VAL_HOLDER);
 		final Int64op index = loadIndex(indexDirs, host);
 
 		final ValDirs itemsDirs = indexDirs.dirs().nested().value(
-				arrayStruct,
+				arrayType,
 				TEMP_VAL_HOLDER);
 
 		loadItem(dirs, itemsDirs, host, index);
@@ -86,13 +86,13 @@ final class IndexedItemEval extends InlineEval {
 		return null;
 	}
 
-	private final ArrayValueStruct getArrayStruct() {
+	private final ArrayValueType getArrayType() {
 		return this.item.getScope()
 				.getEnclosingScope()
 				.toObject()
 				.value()
-				.getValueStruct()
-				.toArrayStruct();
+				.getValueType()
+				.toArrayType();
 	}
 
 	private Int64op loadIndex(ValDirs dirs, HostOp host) {

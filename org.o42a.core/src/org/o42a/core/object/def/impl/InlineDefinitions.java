@@ -28,22 +28,22 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
 
 public class InlineDefinitions extends InlineValue {
 
-	private final ValueStruct<?, ?> valueStruct;
+	private final ValueType<?, ?> valueType;
 	private final InlineEval claim;
 	private final InlineEval proposition;
 
 	public InlineDefinitions(
-			ValueStruct<?, ?> valueStruct,
+			ValueType<?, ?> valueType,
 			InlineEval claim,
 			InlineEval proposition) {
 		super(null);
-		this.valueStruct = valueStruct;
+		this.valueType = valueType;
 		this.claim = claim;
 		this.proposition = proposition;
 	}
@@ -52,7 +52,7 @@ public class InlineDefinitions extends InlineValue {
 	public void writeCond(CodeDirs dirs, HostOp host) {
 
 		final DefDirs defDirs =
-				dirs.nested().value(this.valueStruct, TEMP_VAL_HOLDER).def();
+				dirs.nested().value(this.valueType, TEMP_VAL_HOLDER).def();
 
 		this.claim.write(defDirs, host);
 		this.proposition.write(defDirs, host);

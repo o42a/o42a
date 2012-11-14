@@ -22,7 +22,7 @@ package org.o42a.core.ir.value.impl;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public final class FinalValOp extends ValOp {
@@ -35,9 +35,9 @@ public final class FinalValOp extends ValOp {
 			Allocator allocator,
 			CodeBuilder builder,
 			ValType.Op ptr,
-			ValueStruct<?, ?> valueStruct,
+			ValueType<?, ?> valueType,
 			ValHolderFactory holderFactory) {
-		super(builder, valueStruct);
+		super(builder, valueType);
 		this.allocator = allocator;
 		this.ptr = ptr;
 		this.holder = holderFactory.createValHolder(this);
@@ -66,13 +66,13 @@ public final class FinalValOp extends ValOp {
 	@Override
 	public String toString() {
 
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
+		final ValueType<?, ?> valueType = getValueType();
 
-		if (valueStruct == null) {
+		if (valueType == null) {
 			return super.toString();
 		}
 
-		return "(" + valueStruct + ") " + ptr();
+		return "(" + valueType + ") " + ptr();
 	}
 
 }

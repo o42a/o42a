@@ -199,13 +199,13 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 			final ValDirs leftDirs = dirs.dirs().nested().value(
 					"left",
-					this.binary.getLeftOperandStruct(),
+					this.binary.getLeftOperandStruct().getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp leftVal = this.leftValue.writeValue(leftDirs, host);
 
 			final ValDirs rightDirs = leftDirs.dirs().nested().value(
 					"right",
-					this.binary.getRightOperandStruct(),
+					this.binary.getRightOperandStruct().getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp rightVal = this.rightValue.writeValue(rightDirs, host);
 
@@ -249,14 +249,14 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 			final ValDirs leftDirs = dirs.dirs().nested().value(
 					"left",
-					this.binary.getLeftOperandStruct(),
+					this.binary.getLeftOperandStruct().getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp leftVal =
 					this.binary.leftOperand().op(host).writeValue(leftDirs);
 
 			final ValDirs rightDirs = leftDirs.dirs().nested().value(
 					"right",
-					this.binary.getRightOperandStruct(),
+					this.binary.getRightOperandStruct().getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp rightVal =
 					this.binary.rightOperand().op(host).writeValue(rightDirs);

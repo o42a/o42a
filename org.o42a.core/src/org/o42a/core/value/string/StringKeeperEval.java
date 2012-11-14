@@ -30,7 +30,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 final class StringKeeperEval extends KeeperEval {
@@ -66,7 +66,7 @@ final class StringKeeperEval extends KeeperEval {
 		return this.value.op(
 				code.getAllocator(),
 				dirs.getBuilder(),
-				ValueStruct.STRING,
+				ValueType.STRING,
 				TEMP_VAL_HOLDER);
 	}
 

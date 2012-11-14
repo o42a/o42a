@@ -74,7 +74,7 @@ public class ArrayIR {
 
 		if (array.isEmpty()) {
 			return this.val = new Val(
-					array.getTypeParameters().toValueStruct(),
+					array.getValueType(),
 					VAL_CONDITION,
 					0,
 					0L);
@@ -84,7 +84,7 @@ public class ArrayIR {
 		final Data<Op> itemsData = items.data(getGenerator());
 
 		return this.val = new Val(
-				array.getTypeParameters().toValueStruct(),
+				array.getValueType(),
 				VAL_CONDITION,
 				items.length(),
 				itemsData.getPointer().toAny());

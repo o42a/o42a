@@ -46,7 +46,8 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.state.Keeper;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
 
 
@@ -204,14 +205,16 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 
-		final LinkValueStruct linkStruct =
-				getWellKnownType().value().getValueStruct().toLinkStruct();
+		final TypeParameters<?> typeParameters =
+				getWellKnownType().type().getParameters();
+		final LinkValueType linkType =
+				typeParameters.getValueType().toLinkType();
 
-		assert linkStruct != null :
+		assert typeParameters != null :
 			"Not a link: " + this;
 
 		final ValDirs valDirs =
-				dirs.nested().value("link", linkStruct, TEMP_VAL_HOLDER);
+				dirs.nested().value("link", linkType, TEMP_VAL_HOLDER);
 		final ValOp value = value().writeValue(valDirs);
 		final Block code = valDirs.code();
 
@@ -225,7 +228,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				anonymousObject(
 						getBuilder(),
 						ptr,
-						linkStruct.getTypeRef().getType()));
+						linkType.interfaceRef(typeParameters).getType()));
 
 		valDirs.done();
 

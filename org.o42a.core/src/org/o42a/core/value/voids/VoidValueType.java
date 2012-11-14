@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value.voids;
 
+import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
@@ -47,6 +48,11 @@ public final class VoidValueType extends SingleValueType<Void> {
 	@Override
 	public Path path(Intrinsics intrinsics) {
 		return Path.VOID_PATH;
+	}
+
+	@Override
+	public ValueIRDesc irDesc() {
+		return ValueIRDesc.VOID_VALUE_IR_DESC;
 	}
 
 }

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.link.impl;
 
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
@@ -58,8 +60,8 @@ abstract class AbstractLinkValueStructIR
 				targetIR.getMainBodyIR().pointer(getGenerator());
 
 		return new Val(
-				getValueStruct(),
-				Val.VAL_CONDITION,
+				getValueType(),
+				VAL_CONDITION,
 				0,
 				mainBodyPtr.toAny());
 	}

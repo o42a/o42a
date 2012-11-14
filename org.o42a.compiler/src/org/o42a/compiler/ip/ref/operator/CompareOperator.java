@@ -31,7 +31,6 @@ import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -46,8 +45,8 @@ abstract class CompareOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public final ValueStruct<?, ?> getValueStruct() {
-		return ValueStruct.INTEGER;
+	public final ValueType<?, ?> getValueType() {
+		return ValueType.INTEGER;
 	}
 
 	@Override

@@ -52,7 +52,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -202,7 +202,7 @@ public class ConsoleModule extends AnnotatedModule {
 				"result",
 				main,
 				builder,
-				ValueStruct.INTEGER,
+				ValueType.INTEGER,
 				TEMP_VAL_HOLDER);
 		final ValDirs dirs = builder.dirs(main, exit.head()).value(result);
 		final ValOp programResult;

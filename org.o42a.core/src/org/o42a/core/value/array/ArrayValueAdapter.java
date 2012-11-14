@@ -182,10 +182,8 @@ final class ArrayValueAdapter extends ValueAdapter {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final Block code = dirs.code();
-			final ValueStruct<?, ?> fromValueStruct =
-					getRef().valueStruct(getRef().getScope());
 			final ValDirs fromDirs = dirs.dirs().nested().value(
-					fromValueStruct,
+					getRef().getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 			final FuncPtr<ValCopyFunc> func =

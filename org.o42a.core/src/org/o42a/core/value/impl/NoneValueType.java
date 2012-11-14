@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value.impl;
 
+import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
@@ -47,6 +48,11 @@ public class NoneValueType extends SingleValueType<Void> {
 
 	@Override
 	public Path path(Intrinsics intrinsics) {
+		throw new UnsupportedOperationException("Type NONE does not exist");
+	}
+
+	@Override
+	public ValueIRDesc irDesc() {
 		throw new UnsupportedOperationException("Type NONE does not exist");
 	}
 

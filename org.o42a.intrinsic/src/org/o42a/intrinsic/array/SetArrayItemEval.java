@@ -34,10 +34,9 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.array.ArrayValueStruct;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
@@ -67,10 +66,10 @@ final class SetArrayItemEval extends InlineEval {
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
 
-		final ArrayValueStruct arrayStruct = getArrayStruct();
+		final ArrayValueType arrayStruct = getArrayType();
 		final ValDirs indexDirs =
 				dirs.dirs().nested().value(
-						ValueStruct.INTEGER,
+						ValueType.INTEGER,
 						TEMP_VAL_HOLDER);
 		final Int64op index = loadIndex(indexDirs, host);
 
@@ -90,21 +89,18 @@ final class SetArrayItemEval extends InlineEval {
 		return null;
 	}
 
-	private final ArrayValueStruct getArrayStruct() {
+	private final ArrayValueType getArrayType() {
 		return this.setItem.getScope()
 				.getEnclosingScope() // item
 				.getEnclosingScope() // array
 				.toObject()
 				.value()
-				.getValueStruct()
-				.toArrayStruct();
+				.getValueType()
+				.toArrayType();
 	}
 
-	private final LinkValueStruct getItemStruct() {
-
-		final Ref item = this.setItem.item();
-
-		return item.valueStruct(item.getScope()).toLinkStruct();
+	private final LinkValueType getItemType() {
+		return this.setItem.item().getValueType().toLinkType();
 	}
 
 	private Int64op loadIndex(ValDirs dirs, HostOp host) {
@@ -173,7 +169,7 @@ final class SetArrayItemEval extends InlineEval {
 
 		if (this.inlineNewValue != null) {
 			newValDirs =
-					itemsDirs.dirs().value(getItemStruct(), TEMP_VAL_HOLDER);
+					itemsDirs.dirs().value(getItemType(), TEMP_VAL_HOLDER);
 			code = newValDirs.code();
 
 			final ValOp newVal =

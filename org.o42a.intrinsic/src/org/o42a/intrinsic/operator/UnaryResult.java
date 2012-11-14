@@ -153,7 +153,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
 			final ValDirs operandDirs = dirs.dirs().nested().value(
 					"operand",
-					this.unary.getOperandStruct(),
+					this.unary.getOperandStruct().getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp operandVal =
 					this.operandValue.writeValue(operandDirs, host);
@@ -195,7 +195,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
 			final ValDirs operandDirs = dirs.dirs().nested().value(
 					"operand",
-					this.unary.getOperandStruct(),
+					this.unary.getOperandStruct().getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValOp operandVal =
 					this.unary.operand().op(host).writeValue(operandDirs);

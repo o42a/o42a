@@ -42,18 +42,13 @@ final class MacroValueStructIR extends SingleValueStructIR<Macro> {
 	}
 
 	@Override
-	public boolean hasValue() {
-		return false;
-	}
-
-	@Override
 	public Val val(Macro value) {
 
 		final Val voidValue =
 				ValueStruct.VOID.ir(getGenerator()).val(Void.VOID);
 
 		return new Val(
-				getValueStruct(),
+				getValueType(),
 				voidValue.getFlags(),
 				voidValue.getLength(),
 				voidValue.getValue());

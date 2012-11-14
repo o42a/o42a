@@ -23,6 +23,7 @@ import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.impl.DefaultValueConverter.defaultValueConverter;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
@@ -159,6 +160,8 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 	public String valueString(T value) {
 		return value.toString();
 	}
+
+	public abstract ValueIRDesc irDesc();
 
 	@Override
 	public String toString() {

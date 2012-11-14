@@ -21,9 +21,11 @@ package org.o42a.core.value.link;
 
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
+import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
@@ -131,6 +133,11 @@ public abstract class LinkValueType
 	@Override
 	public final ArrayValueType toArrayType() {
 		return null;
+	}
+
+	@Override
+	public final ValueIRDesc irDesc() {
+		return LINK_VALUE_IR_DESC;
 	}
 
 	@Override
