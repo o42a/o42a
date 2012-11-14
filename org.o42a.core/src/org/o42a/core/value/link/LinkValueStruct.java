@@ -21,10 +21,8 @@ package org.o42a.core.value.link;
 
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -33,7 +31,6 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.ArrayValueStruct;
-import org.o42a.core.value.link.impl.LinkValueStructIR;
 
 
 public final class LinkValueStruct
@@ -168,12 +165,6 @@ public final class LinkValueStruct
 	@Override
 	public String toString() {
 		return getValueType() + "(`" + this.typeRef + ')';
-	}
-
-	@Override
-	protected ValueStructIR<LinkValueStruct, KnownLink> createIR(
-			Generator generator) {
-		return new LinkValueStructIR(generator, this);
 	}
 
 }

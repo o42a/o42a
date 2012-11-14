@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value.directive.impl;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.directive.Directive;
 
@@ -32,12 +30,6 @@ public class DirectiveValueStruct extends SingleValueStruct<Directive> {
 
 	private DirectiveValueStruct() {
 		super(DirectiveValueType.INSTANCE);
-	}
-
-	@Override
-	protected ValueStructIR<SingleValueStruct<Directive>, Directive> createIR(
-			Generator generator) {
-		return new DirectiveValueStructIR(generator, this);
 	}
 
 }

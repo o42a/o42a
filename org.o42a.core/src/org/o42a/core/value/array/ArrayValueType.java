@@ -28,6 +28,7 @@ import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
@@ -40,6 +41,7 @@ import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.impl.ArrayKeeperIR;
 import org.o42a.core.value.array.impl.ArrayStaticsIR;
+import org.o42a.core.value.array.impl.ArrayValueTypeIR;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -207,6 +209,11 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 				item.resolveAll(resolver);
 			}
 		}
+	}
+
+	@Override
+	protected ValueTypeIR<Array> createIR(Generator generator) {
+		return new ArrayValueTypeIR(generator, this);
 	}
 
 	@Override

@@ -20,8 +20,6 @@
 package org.o42a.core.value.integer;
 
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -32,12 +30,6 @@ public class IntegerValueStruct extends SingleValueStruct<Long> {
 
 	private IntegerValueStruct() {
 		super(ValueType.INTEGER);
-	}
-
-	@Override
-	protected ValueStructIR<SingleValueStruct<Long>, Long> createIR(
-			Generator generator) {
-		return new IntegerValueStructIR(generator, this);
 	}
 
 }

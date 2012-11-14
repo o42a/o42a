@@ -28,6 +28,7 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
@@ -224,6 +225,11 @@ public abstract class LinkValueType
 		if (value.getKnowledge().hasCompilerValue()) {
 			value.getCompilerValue().resolveAll(resolver);
 		}
+	}
+
+	@Override
+	protected ValueTypeIR<KnownLink> createIR(Generator generator) {
+		return new LinkValueTypeIR(generator, this);
 	}
 
 	@Override

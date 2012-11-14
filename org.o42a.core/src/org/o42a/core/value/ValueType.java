@@ -28,6 +28,7 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
@@ -73,6 +74,8 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 	private final String systemId;
 	private final Class<? extends T> valueClass;
+
+	private ValueTypeIR<T> ir;
 	private StaticsIR<T> staticsIR;
 
 	public ValueType(String systemId, Class<? extends T> valueClass) {
@@ -169,6 +172,17 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 	public abstract ValueIRDesc irDesc();
 
+	public final ValueTypeIR<T> ir(Generator generator) {
+
+		final ValueTypeIR<T> ir = this.ir;
+
+		if (ir != null && ir.getGenerator() == generator) {
+			return ir;
+		}
+
+		return this.ir = createIR(generator);
+	}
+
 	public final StaticsIR<T> staticsIR(Generator generator) {
 
 		final StaticsIR<T> staticsIR = this.staticsIR;
@@ -245,6 +259,8 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 			PrefixPath prefix);
 
 	protected abstract void resolveAll(Value<T> value, FullResolver resolver);
+
+	protected abstract ValueTypeIR<T> createIR(Generator generator);
 
 	protected abstract StaticsIR<T> createStaticsIR(Generator generator);
 

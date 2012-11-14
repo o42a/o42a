@@ -24,34 +24,33 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.value.impl.DefaultValueOp;
-import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class ValueIR {
 
 	private final ObjectIR objectIR;
-	private final ValueStructIR<?, ?> valueStructIR;
+	private final ValueTypeIR<?> valueTypeIR;
 
-	public ValueIR(ValueStructIR<?, ?> valueStructIR, ObjectIR objectIR) {
-		assert valueStructIR != null :
-			"Value struct not specified";
+	public ValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
+		assert valueTypeIR != null :
+			"Value type not specified";
 		assert objectIR != null :
 			"Body not specified";
-		this.valueStructIR = valueStructIR;
+		this.valueTypeIR = valueTypeIR;
 		this.objectIR = objectIR;
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-		return getValueStructIR().getValueStruct();
 	}
 
 	public final Generator getGenerator() {
 		return getObjectIR().getGenerator();
 	}
 
-	public final ValueStructIR<?, ?> getValueStructIR() {
-		return this.valueStructIR;
+	public final ValueType<?, ?> getValueType() {
+		return getValueTypeIR().getValueType();
+	}
+
+	public final ValueTypeIR<?> getValueTypeIR() {
+		return this.valueTypeIR;
 	}
 
 	public final ObjectIR getObjectIR() {

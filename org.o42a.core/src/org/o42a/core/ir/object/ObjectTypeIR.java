@@ -126,7 +126,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		instance.data().valueType().setConstant(true).setValue(
 				getObjectIR()
 				.getValueIR()
-				.getValueStructIR()
+				.getValueTypeIR()
 				.getValueTypeDesc());
 	}
 

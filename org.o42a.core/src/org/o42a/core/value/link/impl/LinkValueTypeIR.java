@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,28 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.directive.impl;
+package org.o42a.core.value.link.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.directive.Directive;
+import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.core.value.link.KnownLink;
+import org.o42a.core.value.link.LinkValueType;
 
 
-final class DirectiveValueStructIR
-		extends ValueStructIR<SingleValueStruct<Directive>, Directive> {
+public final class LinkValueTypeIR extends ValueTypeIR<KnownLink> {
 
-	DirectiveValueStructIR(
-			Generator generator,
-			DirectiveValueStruct valueStruct) {
-		super(generator, valueStruct);
+	public LinkValueTypeIR(Generator generator, LinkValueType valueType) {
+		super(generator, valueType);
 	}
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+		if (getValueType().isVariable()) {
+			return new VariableIR(this, objectIR);
+		}
+		return new LinkIR(this, objectIR);
 	}
 
 }

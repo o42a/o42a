@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value.macro.impl;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.macro.Macro;
 
@@ -31,12 +29,6 @@ public class MacroValueStruct extends SingleValueStruct<Macro> {
 
 	private MacroValueStruct() {
 		super(MacroValueType.INSTANCE);
-	}
-
-	@Override
-	protected ValueStructIR<SingleValueStruct<Macro>, Macro> createIR(
-			Generator generator) {
-		return new MacroValueStructIR(generator, this);
 	}
 
 }

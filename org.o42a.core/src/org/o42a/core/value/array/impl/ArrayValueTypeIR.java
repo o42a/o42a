@@ -17,26 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.voids;
+package org.o42a.core.value.array.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.Void;
+import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayValueType;
 
 
-final class VoidValueStructIR
-		extends ValueStructIR<SingleValueStruct<Void>, Void> {
+public final class ArrayValueTypeIR extends ValueTypeIR<Array> {
 
-	VoidValueStructIR(Generator generator, VoidValueStruct valueStruct) {
-		super(generator, valueStruct);
+	public ArrayValueTypeIR(Generator generator, ArrayValueType valueType) {
+		super(generator, valueType);
 	}
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+		if (!getValueType().isVariable()) {
+			return defaultValueIR(objectIR);
+		}
+		return new ArrayValueIR(this, objectIR);
 	}
 
 }

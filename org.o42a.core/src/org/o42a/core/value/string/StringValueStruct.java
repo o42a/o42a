@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value.string;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -31,12 +29,6 @@ public class StringValueStruct extends SingleValueStruct<String> {
 
 	private StringValueStruct() {
 		super(ValueType.STRING);
-	}
-
-	@Override
-	protected ValueStructIR<SingleValueStruct<String>, String> createIR(
-			Generator generator) {
-		return new StringValueStructIR(generator, this);
 	}
 
 }

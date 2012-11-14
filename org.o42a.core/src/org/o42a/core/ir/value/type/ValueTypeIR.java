@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.struct;
+package org.o42a.core.ir.value.type;
 
 import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 
@@ -26,32 +26,26 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.value.impl.DefaultValueIR;
-import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
+public abstract class ValueTypeIR<T> {
 
 	private final Generator generator;
-	private final S valueStruct;
+	private final ValueType<?, T> valueType;
 	private Ptr<ValueTypeDescOp> valueTypeDesc;
 
-	public ValueStructIR(Generator generator, S valueStruct) {
+	public ValueTypeIR(Generator generator, ValueType<?, T> valueType) {
 		this.generator = generator;
-		this.valueStruct = valueStruct;
+		this.valueType = valueType;
 	}
 
 	public final Generator getGenerator() {
 		return this.generator;
 	}
 
-	public final ValueType<S, T> getValueType() {
-		return this.valueStruct.getValueType();
-	}
-
-	public final S getValueStruct() {
-		return this.valueStruct;
+	public final ValueType<?, T> getValueType() {
+		return this.valueType;
 	}
 
 	public final Ptr<ValueTypeDescOp> getValueTypeDesc() {
@@ -68,10 +62,10 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	@Override
 	public String toString() {
-		if (this.valueStruct == null) {
+		if (this.valueType == null) {
 			return super.toString();
 		}
-		return this.valueStruct + " IR";
+		return this.valueType + " IR";
 	}
 
 	protected final ValueIR defaultValueIR(ObjectIR objectIR) {

@@ -19,10 +19,8 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -65,8 +63,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	private final RuntimeValue<T> runtimeValue = new RuntimeValue<T>(this);
 	private final FalseValue<T> falseValue = new FalseValue<T>(this);
-
-	private ValueStructIR<S, T> ir;
 
 	public ValueStruct(ValueType<S, T> valueType) {
 		this.valueType = valueType;
@@ -166,18 +162,5 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public abstract S reproduce(Reproducer reproducer);
 
 	public abstract void resolveAll(FullResolver resolver);
-
-	public final ValueStructIR<S, T> ir(Generator generator) {
-
-		final ValueStructIR<S, T> ir = this.ir;
-
-		if (ir != null && ir.getGenerator() == generator) {
-			return ir;
-		}
-
-		return this.ir = createIR(generator);
-	}
-
-	protected abstract ValueStructIR<S, T> createIR(Generator generator);
 
 }

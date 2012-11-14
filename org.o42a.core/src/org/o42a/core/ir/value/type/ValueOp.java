@@ -35,8 +35,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -51,11 +49,7 @@ public abstract class ValueOp implements HostValueOp {
 	}
 
 	public final ValueType<?, ?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-		return getValueIR().getValueStruct();
+		return getValueIR().getValueType();
 	}
 
 	public final Generator getGenerator() {
@@ -68,10 +62,6 @@ public abstract class ValueOp implements HostValueOp {
 
 	public final ValueIR getValueIR() {
 		return this.valueIR;
-	}
-
-	public final ValueStructIR<?, ?> getValueStructIR() {
-		return getValueIR().getValueStructIR();
 	}
 
 	public final ObjectOp object() {

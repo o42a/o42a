@@ -22,10 +22,8 @@ package org.o42a.core.value.array;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -33,7 +31,6 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.array.impl.ArrayValueStructIR;
 import org.o42a.core.value.link.LinkValueStruct;
 
 
@@ -179,12 +176,6 @@ public final class ArrayValueStruct
 		out.append(this.itemTypeRef).append(')');
 
 		return out.toString();
-	}
-
-	@Override
-	protected ValueStructIR<ArrayValueStruct, Array> createIR(
-			Generator generator) {
-		return new ArrayValueStructIR(generator, this);
 	}
 
 }
