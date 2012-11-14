@@ -20,7 +20,6 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.value.TypeParameters.typeParameters;
-import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -43,9 +42,8 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
@@ -70,7 +68,8 @@ public final class VoidObject extends BuiltinObject {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return voidValue();
+		return ValueType.VOID.cast(type().getParameters())
+				.compilerValue(Void.VOID);
 	}
 
 	@Override
@@ -163,7 +162,7 @@ public final class VoidObject extends BuiltinObject {
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
-			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
+			dirs.returnValue(dirs.getBuilder().voidVal(dirs.code()));
 		}
 
 		@Override

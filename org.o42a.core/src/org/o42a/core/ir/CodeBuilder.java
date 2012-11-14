@@ -33,9 +33,13 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.Void;
 import org.o42a.util.string.ID;
 
 
@@ -145,6 +149,14 @@ public abstract class CodeBuilder {
 		}
 		this.signalGC = true;
 		getFunction().addLastDisposal(SIGNAL_GC);
+	}
+
+	public ValOp voidVal(Code code) {
+		return ValueType.VOID
+				.ir(getGenerator()).staticsIR()
+				.valPtr(Void.VOID)
+				.op(null, code)
+				.op(this, Val.VOID_VAL);
 	}
 
 	private static final class SignalGC implements Disposal {

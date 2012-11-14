@@ -77,10 +77,10 @@ final class SubString extends AnnotatedBuiltin {
 		if (stringValue.getKnowledge().isFalse()
 				|| fromValue.getKnowledge().isFalse()
 				|| toValue.getKnowledge().isFalse()) {
-			return ValueType.STRING.falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!stringValue.getKnowledge().isKnown()) {
-			return ValueType.STRING.runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		final String string =
@@ -118,10 +118,10 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		if (!ok) {
-			return ValueType.STRING.falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (from < 0 || to < 0) {
-			return ValueType.STRING.runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 		if (from > to) {
 			resolver.getLogger().error(
@@ -130,12 +130,13 @@ final class SubString extends AnnotatedBuiltin {
 					"Invalid substring range: %d - %d",
 					from,
 					to);
-			return ValueType.STRING.falseValue();
+			return type().getParameters().falseValue();
 		}
 
 		final String substring = string.substring((int) from, (int) to);
 
-		return ValueType.STRING.constantValue(substring);
+		return ValueType.STRING.cast(type().getParameters())
+				.compilerValue(substring);
 	}
 
 	@Override

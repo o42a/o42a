@@ -27,7 +27,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 
 
@@ -42,9 +42,9 @@ abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 				owner,
 				sources,
 				leftOperandName,
-				ValueStruct.INTEGER,
+				ValueType.INTEGER,
 				rightOperandName,
-				ValueStruct.INTEGER);
+				ValueType.INTEGER);
 	}
 
 	@Override

@@ -28,9 +28,8 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -50,20 +49,22 @@ final class LogicalResult extends BuiltinObject {
 		final Value<?> value = operand().value(resolver);
 
 		if (!value.getKnowledge().isKnown()) {
-			return ValueType.VOID.runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		switch (this.logical.getNode().getOperator()) {
 		case NOT:
 			if (value.getKnowledge().isFalse()) {
-				return Value.voidValue();
+				return ValueType.VOID.cast(type().getParameters())
+						.compilerValue(Void.VOID);
 			}
-			return Value.falseValue();
+			return type().getParameters().falseValue();
 		case IS_TRUE:
 			if (value.getKnowledge().isFalse()) {
-				return Value.falseValue();
+				return type().getParameters().falseValue();
 			}
-			return Value.voidValue();
+			return ValueType.VOID.cast(type().getParameters())
+					.compilerValue(Void.VOID);
 		default:
 			throw new IllegalStateException(
 					"Unsupported logical operator: "

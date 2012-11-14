@@ -33,7 +33,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.TypeParameters;
 
 
 public abstract class AbstractLinkFld extends RefFld<ObjectRefFunc> {
@@ -60,10 +60,12 @@ public abstract class AbstractLinkFld extends RefFld<ObjectRefFunc> {
 				.toField()
 				.object(dummyUser());
 
-		final LinkValueStruct linkStruct =
-				object.value().getValueStruct().toLinkStruct();
+		final TypeParameters<?> parameters = object.type().getParameters();
 
-		return linkStruct.getTypeRef().getType();
+		return parameters.getValueType()
+				.toLinkType()
+				.interfaceRef(parameters)
+				.getType();
 	}
 
 	protected final ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
@@ -74,8 +76,7 @@ public abstract class AbstractLinkFld extends RefFld<ObjectRefFunc> {
 		assert objectValue.getValueType().isLink() :
 			"Not a link: " + this;
 
-		final LinkValueStruct linkStruct =
-				objectValue.getValueStruct().toLinkStruct();
+		final TypeParameters<?> parameters = object.type().getParameters();
 		final Definitions definitions = objectValue.getDefinitions();
 		final DefTarget target = definitions.target();
 
@@ -96,7 +97,13 @@ public abstract class AbstractLinkFld extends RefFld<ObjectRefFunc> {
 				.op(builder.host())
 				.target(dirs)
 				.materialize(dirs, objTrap())
-				.cast(null, dirs, linkStruct.getTypeRef().getType());
+				.cast(
+						null,
+						dirs,
+						parameters.getValueType()
+						.toLinkType()
+						.interfaceRef(parameters)
+						.getType());
 	}
 
 }

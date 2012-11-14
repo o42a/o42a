@@ -31,7 +31,6 @@ import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -63,11 +62,7 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 	}
 
 	public final ValueType<?, ?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-		return getObject().value().getValueStruct();
+		return getObject().value().getValueType();
 	}
 
 	public final boolean isReused() {
@@ -203,7 +198,7 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 				return;
 			}
 			// Final value is known.
-			if (getValueStruct().isVoid()) {
+			if (getValueType().isVoid()) {
 				// Value is void.
 				reuse(voidValFunc());
 				return;

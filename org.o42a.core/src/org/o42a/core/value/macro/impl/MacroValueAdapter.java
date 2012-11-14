@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value.macro.impl;
 
-
 import static org.o42a.core.value.macro.impl.EmptyMacro.EMPTY_MACRO;
 
 import org.o42a.core.Scope;
@@ -32,13 +31,11 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.*;
 import org.o42a.core.value.link.TargetResolver;
+import org.o42a.core.value.macro.Macro;
 import org.o42a.util.fn.Cancelable;
 
 
 public class MacroValueAdapter extends ValueAdapter {
-
-	private static final InlineMacroValue INLINE_MACRO_VALUE =
-			new InlineMacroValue();
 
 	public MacroValueAdapter(Ref adaptedRef) {
 		super(adaptedRef);
@@ -55,7 +52,7 @@ public class MacroValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public TypeParameters<?> typeParameters(Scope scope) {
+	public TypeParameters<Macro> typeParameters(Scope scope) {
 		return TypeParameters.typeParameters(getAdaptedRef(), ValueType.MACRO);
 	}
 
@@ -64,7 +61,8 @@ public class MacroValueAdapter extends ValueAdapter {
 
 		final Ref ref = getAdaptedRef().upgradeScope(resolver.getScope());
 
-		return ValueType.MACRO.compilerValue(new MacroRef(ref));
+		return typeParameters(resolver.getScope())
+				.compilerValue(new MacroRef(ref));
 	}
 
 	@Override
@@ -73,7 +71,9 @@ public class MacroValueAdapter extends ValueAdapter {
 
 	@Override
 	public InlineValue inline(Normalizer normalizer, Scope origin) {
-		return INLINE_MACRO_VALUE;
+		return new InlineMacroValue(
+				typeParameters(getAdaptedRef().getScope())
+				.compilerValue(EMPTY_MACRO));
 	}
 
 	@Override
@@ -87,8 +87,11 @@ public class MacroValueAdapter extends ValueAdapter {
 
 	private static final class InlineMacroValue extends InlineValue {
 
-		InlineMacroValue() {
+		private final Value<Macro> value;
+
+		InlineMacroValue(Value<Macro> value) {
 			super(null);
+			this.value = value;
 		}
 
 		@Override
@@ -97,9 +100,7 @@ public class MacroValueAdapter extends ValueAdapter {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return ValueType.MACRO
-					.constantValue(EMPTY_MACRO)
-					.op(dirs.getBuilder(), dirs.code());
+			return this.value.op(dirs.getBuilder(), dirs.code());
 		}
 
 		@Override

@@ -39,8 +39,9 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
@@ -51,26 +52,26 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 	public static final ID OPERAND_PTR_ID = ID.id("operand_ptr");
 
 	private final MemberName operandId;
-	private final ValueStruct<?, O> operandStruct;
+	private final ValueType<?, O> operandType;
 	private Ref operand;
 
 	public UnaryResult(
 			MemberOwner owner,
 			AnnotatedSources sources,
 			String operandName,
-			ValueStruct<?, O> operandStruct) {
+			ValueType<?, O> operandType) {
 		super(owner, sources);
 		this.operandId = fieldName(CASE_INSENSITIVE.canonicalName(operandName));
-		this.operandStruct = operandStruct;
+		this.operandType = operandType;
+	}
+
+	public final ValueType<?, O> getOperandType() {
+		return this.operandType;
 	}
 
 	@SuppressWarnings("unchecked")
-	public final ValueStruct<?, T> getResultStruct() {
-		return (ValueStruct<?, T>) value().getValueStruct();
-	}
-
-	public final ValueStruct<?, O> getOperandStruct() {
-		return this.operandStruct;
+	public final TypeParameters<T> getResultParameters() {
+		return (TypeParameters<T>) type().getParameters();
 	}
 
 	@Override
@@ -79,24 +80,21 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		final Value<?> operandValue = operand().value(resolver);
 
 		if (operandValue.getKnowledge().isFalse()) {
-			return getResultStruct().falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!operandValue.getKnowledge().isKnown()) {
-			return getResultStruct().runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		final O operand =
-				getOperandStruct()
-				.getParameters()
-				.cast(operandValue)
-				.getCompilerValue();
+				getOperandType().cast(operandValue).getCompilerValue();
 		final T result = calculate(operand);
 
 		if (result == null) {
-			return getResultStruct().falseValue();
+			return type().getParameters().falseValue();
 		}
 
-		return getResultStruct().compilerValue(result);
+		return getResultParameters().compilerValue(result);
 	}
 
 	@Override
@@ -153,7 +151,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
 			final ValDirs operandDirs = dirs.dirs().nested().value(
 					"operand",
-					this.unary.getOperandStruct().getValueType(),
+					this.unary.getOperandType(),
 					TEMP_VAL_HOLDER);
 			final ValOp operandVal =
 					this.operandValue.writeValue(operandDirs, host);
@@ -195,7 +193,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
 			final ValDirs operandDirs = dirs.dirs().nested().value(
 					"operand",
-					this.unary.getOperandStruct().getValueType(),
+					this.unary.getOperandType(),
 					TEMP_VAL_HOLDER);
 			final ValOp operandVal =
 					this.unary.operand().op(host).writeValue(operandDirs);

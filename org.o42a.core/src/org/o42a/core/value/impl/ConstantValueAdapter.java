@@ -44,7 +44,9 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 			T constant) {
 		super(adaptedRef);
 		this.valueType = valueType;
-		this.value = valueType.constantValue(constant);
+		this.value =
+				typeParameters(adaptedRef.getScope())
+				.compilerValue(constant);
 	}
 
 	@Override
@@ -58,13 +60,13 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public TypeParameters<?> typeParameters(Scope scope) {
+	public TypeParameters<T> typeParameters(Scope scope) {
 		return TypeParameters.typeParameters(getAdaptedRef(), this.valueType);
 	}
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return this.valueType.constantValue(this.value.getCompilerValue());
+		return this.value;
 	}
 
 	@Override

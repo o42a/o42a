@@ -21,7 +21,6 @@ package org.o42a.core.ref.path.impl;
 
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
-import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.HostOp;
@@ -119,7 +118,7 @@ public class VoidStep extends Step {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return voidValue().op(dirs.getBuilder(), dirs.code());
+			return dirs.getBuilder().voidVal(dirs.code());
 		}
 
 		@Override
@@ -160,7 +159,7 @@ public class VoidStep extends Step {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			return voidValue().op(getBuilder(), dirs.code());
+			return dirs.getBuilder().voidVal(dirs.code());
 		}
 
 		@Override

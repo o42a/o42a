@@ -20,7 +20,6 @@
 package org.o42a.core.value.voids;
 
 import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
-import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -32,6 +31,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 
@@ -53,7 +53,7 @@ public class VoidValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public TypeParameters<?> typeParameters(Scope scope) {
+	public TypeParameters<Void> typeParameters(Scope scope) {
 		return TypeParameters.typeParameters(getAdaptedRef(), ValueType.VOID);
 	}
 
@@ -62,7 +62,9 @@ public class VoidValueAdapter extends ValueAdapter {
 
 		final Value<?> value = getAdaptedRef().value(resolver);
 
-		return value.getKnowledge().getCondition().toValue(ValueStruct.VOID);
+		return value.getKnowledge()
+				.getCondition()
+				.toValue(typeParameters(resolver.getScope()));
 	}
 
 	@Override
@@ -78,12 +80,12 @@ public class VoidValueAdapter extends ValueAdapter {
 			return null;
 		}
 
-		return new InlineToVoid(value);
+		return new InlineToVoid(this, value);
 	}
 
 	@Override
 	public Eval eval() {
-		return new EvalToVoid(getAdaptedRef());
+		return new EvalToVoid(this, getAdaptedRef());
 	}
 
 	@Override
@@ -93,10 +95,12 @@ public class VoidValueAdapter extends ValueAdapter {
 
 	private static final class InlineToVoid extends InlineValue {
 
+		private final VoidValueAdapter adapter;
 		private final InlineValue value;
 
-		InlineToVoid(InlineValue value) {
+		InlineToVoid(VoidValueAdapter adapter, InlineValue value) {
 			super(null);
+			this.adapter = adapter;
 			this.value = value;
 		}
 
@@ -108,7 +112,10 @@ public class VoidValueAdapter extends ValueAdapter {
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
 			this.value.writeCond(dirs.dirs(), host);
-			return voidValue().op(dirs.getBuilder(), dirs.code());
+			return this.adapter
+					.typeParameters(this.adapter.getAdaptedRef().getScope())
+					.compilerValue(Void.VOID)
+					.op(dirs.getBuilder(), dirs.code());
 		}
 
 		@Override
@@ -128,16 +135,24 @@ public class VoidValueAdapter extends ValueAdapter {
 
 	private static final class EvalToVoid implements Eval {
 
+		private final VoidValueAdapter adapter;
 		private final Ref ref;
 
-		EvalToVoid(Ref ref) {
+		EvalToVoid(VoidValueAdapter adapter, Ref ref) {
+			this.adapter = adapter;
 			this.ref = ref;
 		}
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 			this.ref.op(host).writeCond(dirs.dirs());
-			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
+
+			final Value<Void> voidValue =
+					this.adapter
+					.typeParameters(this.adapter.getAdaptedRef().getScope())
+					.compilerValue(Void.VOID);
+
+			dirs.returnValue(voidValue.op(dirs.getBuilder(), dirs.code()));
 		}
 
 		@Override

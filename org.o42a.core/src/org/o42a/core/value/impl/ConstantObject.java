@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.value.TypeParameters.typeParameters;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
@@ -41,7 +43,7 @@ final class ConstantObject<T> extends ConstructedObject {
 			T value) {
 		super(constant, enclosing);
 		setValueStruct(valueType.struct());
-		this.value = valueType.constantValue(value);
+		this.value = typeParameters(this, valueType).compilerValue(value);
 	}
 
 	public final Value<T> getValue() {

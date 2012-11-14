@@ -58,17 +58,18 @@ final class StringLength extends AnnotatedBuiltin {
 		final Value<?> stringValue = string().value(resolver);
 
 		if (stringValue.getKnowledge().isFalse()) {
-			return ValueType.INTEGER.falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!stringValue.getKnowledge().isKnown()) {
-			return ValueType.INTEGER.runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		final String string =
 				ValueType.STRING.cast(stringValue).getCompilerValue();
 		final int length = string.length();
 
-		return ValueType.INTEGER.constantValue(Long.valueOf(length));
+		return ValueType.INTEGER.cast(type().getParameters())
+				.compilerValue(Long.valueOf(length));
 	}
 
 	@Override

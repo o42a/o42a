@@ -78,7 +78,7 @@ public class LinkValueAdapter extends ValueAdapter {
 		return linkValue(
 				getAdaptedRef(),
 				resolver,
-				getExpectedParameters().getValueType().toLinkType());
+				getExpectedParameters());
 	}
 
 	@Override

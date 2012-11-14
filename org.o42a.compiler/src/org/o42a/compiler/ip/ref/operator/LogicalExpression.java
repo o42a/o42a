@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.ref.operator;
 
-import static org.o42a.core.value.Value.voidValue;
-
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Block;
 import org.o42a.compiler.ip.Interpreter;
@@ -142,7 +140,7 @@ public class LogicalExpression extends ObjectConstructor {
 					+ this.node.getOperator().getSign());
 		}
 
-		return voidValue().op(builder, code);
+		return builder.voidVal(code);
 	}
 
 	private final void writeCond(

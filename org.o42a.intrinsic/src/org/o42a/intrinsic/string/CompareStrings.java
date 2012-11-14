@@ -30,7 +30,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 
 
@@ -42,9 +42,9 @@ final class CompareStrings extends BinaryResult<Long, String, String> {
 				owner,
 				sources,
 				"what",
-				ValueStruct.STRING,
+				ValueType.STRING,
 				"with",
-				ValueStruct.STRING);
+				ValueType.STRING);
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.Link;
 import org.o42a.core.value.link.LinkValueType;
 
@@ -43,8 +44,8 @@ public abstract class ArrayElement extends Link {
 		return this.owner;
 	}
 
-	public final ArrayValueStruct getArrayStruct() {
-		return getOwner().value().getValueStruct().toArrayStruct();
+	public final TypeParameters<Array> getTypeParameters() {
+		return getOwner().type().getParameters().toArrayParameters();
 	}
 
 	@Override
@@ -58,12 +59,17 @@ public abstract class ArrayElement extends Link {
 	}
 
 	public final boolean isVariable() {
-		return getArrayStruct().isVariable();
+		return getTypeParameters().getValueType().isVariable();
 	}
 
 	@Override
 	public final TypeRef getTypeRef() {
-		return getArrayStruct().getItemTypeRef();
+
+		final TypeParameters<Array> typeParameters = getTypeParameters();
+		final ArrayValueType arrayType =
+				typeParameters.getValueType().toArrayType();
+
+		return arrayType.itemTypeRef(typeParameters);
 	}
 
 	@Override

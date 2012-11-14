@@ -22,7 +22,6 @@ package org.o42a.core.value.array;
 import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
-import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
@@ -82,7 +81,7 @@ final class ArrayValueAdapter extends ValueAdapter {
 		return arrayValue(
 				getAdaptedRef(),
 				resolver,
-				getExpectedParameters().getValueType().isVariable());
+				getExpectedParameters());
 	}
 
 	@Override
@@ -117,12 +116,12 @@ final class ArrayValueAdapter extends ValueAdapter {
 	private static Value<?> arrayValue(
 			Ref ref,
 			Resolver resolver,
-			boolean toVariable) {
+			TypeParameters<Array> expectedParameters) {
 
 		final Resolution arrayResolution = ref.resolve(resolver);
 
 		if (arrayResolution.isError()) {
-			return falseValue();
+			return expectedParameters.falseValue();
 		}
 
 		final Obj arrayObject = arrayResolution.toObject();
@@ -134,7 +133,8 @@ final class ArrayValueAdapter extends ValueAdapter {
 
 		final PrefixPath prefix = ref.getPath().toPrefix(resolver.getScope());
 		final TypeParameters<Array> resultParams =
-				sourceParams.convertTo(sourceType.setVariable(toVariable))
+				sourceParams.convertTo(sourceType.setVariable(
+						expectedParameters.getValueType().isVariable()))
 				.prefixWith(prefix);
 
 		if (value.getKnowledge().isFalse()) {

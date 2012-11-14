@@ -24,8 +24,6 @@ import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
-import static org.o42a.core.value.Value.falseValue;
-import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.common.builtin.BuiltinObject;
 import org.o42a.core.Distributor;
@@ -42,9 +40,8 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -64,7 +61,7 @@ final class ComparisonResult extends BuiltinObject {
 		resolveMembers(false);// Initialize comparisonKey.
 
 		if (this.comparison.hasError()) {
-			return falseValue();
+			return type().getParameters().falseValue();
 		}
 
 		final Value<?> value = this.cmp.value(resolver);
@@ -72,12 +69,18 @@ final class ComparisonResult extends BuiltinObject {
 		if (!value.getKnowledge().isKnown()) {
 			// Value could not be determined at compile-time.
 			// Result will be determined at run time.
-			return ValueType.VOID.runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
-		final boolean result = this.comparison.getOperator().result(value);
+		if (!this.comparison.getOperator().result(value)) {
+			return type().getParameters().falseValue();
+		}
 
-		return result ? voidValue() : falseValue();
+		@SuppressWarnings("unchecked")
+		final TypeParameters<Void> parameters =
+				(TypeParameters<Void>) type().getParameters();
+
+		return parameters.compilerValue(Void.VOID);
 	}
 
 	@Override

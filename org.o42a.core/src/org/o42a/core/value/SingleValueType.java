@@ -19,11 +19,7 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.value.TypeParameters.typeParameters;
-
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
@@ -53,22 +49,6 @@ public abstract class SingleValueType<T>
 
 	public abstract SingleValueStruct<T> struct();
 
-	public final Value<T> constantValue(T value) {
-		return struct().compilerValue(value);
-	}
-
-	public final Value<T> runtimeValue() {
-		return struct().runtimeValue();
-	}
-
-	public final Value<T> falseValue() {
-		return struct().falseValue();
-	}
-
-	public final Value<T> compilerValue(T value) {
-		return struct().compilerValue(value);
-	}
-
 	public final Ref constantRef(
 			LocationInfo location,
 			Distributor distributor,
@@ -81,13 +61,6 @@ public abstract class SingleValueType<T>
 				distributor.getScope());
 
 		return path.target(distributor);
-	}
-
-	public final Definitions noValueDefinitions(
-			LocationInfo location,
-			Scope scope) {
-		return typeParameters(location, this)
-				.noValueDefinitions(location, scope);
 	}
 
 	@Override

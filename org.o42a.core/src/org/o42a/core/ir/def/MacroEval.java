@@ -22,6 +22,7 @@ package org.o42a.core.ir.def;
 import static org.o42a.core.value.macro.impl.EmptyMacro.EMPTY_MACRO;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -36,9 +37,13 @@ final class MacroEval extends InlineEval {
 
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
+
+		final Obj macro =
+				dirs.getBuilder().getContext().getIntrinsics().getMacro();
+
 		dirs.returnValue(
-				ValueType.MACRO
-				.constantValue(EMPTY_MACRO)
+				ValueType.MACRO.cast(macro.type().getParameters())
+				.compilerValue(EMPTY_MACRO)
 				.op(dirs.getBuilder(), dirs.code()));
 	}
 
