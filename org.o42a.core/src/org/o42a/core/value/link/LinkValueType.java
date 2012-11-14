@@ -33,6 +33,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.core.value.link.impl.LinkValueConverter;
 import org.o42a.core.value.link.impl.LinkValueStructIR;
 import org.o42a.core.value.link.impl.VariableValueStructIR;
 
@@ -72,8 +73,11 @@ public abstract class LinkValueType
 
 	};
 
+	private final LinkValueConverter converter;
+
 	private LinkValueType(String systemId) {
 		super(systemId, KnownLink.class);
+		this.converter = new LinkValueConverter(this);
 	}
 
 	@Override
@@ -87,16 +91,16 @@ public abstract class LinkValueType
 	}
 
 	public final MemberKey interfaceKey(Intrinsics intrinsics) {
-		return LINK.typeObject(intrinsics).toMember().getMemberKey();
+		return typeObject(intrinsics).toMember().getMemberKey();
 	}
 
-	public TypeParameters<KnownLink> typeParameters(TypeRef typeRef) {
+	public TypeParameters<KnownLink> typeParameters(TypeRef interfaceRef) {
 
 		final MemberKey interfaceKey =
-				interfaceKey(typeRef.getContext().getIntrinsics());
+				interfaceKey(interfaceRef.getContext().getIntrinsics());
 
-		return TypeParameters.typeParameters(typeRef, this)
-				.add(interfaceKey, typeRef);
+		return TypeParameters.typeParameters(interfaceRef, this)
+				.add(interfaceKey, interfaceRef);
 	}
 
 	public TypeRef interfaceRef(TypeParameters<?> parameters) {
@@ -121,11 +125,6 @@ public abstract class LinkValueType
 	}
 
 	@Override
-	public boolean convertibleFrom(ValueType<?, ?> other) {
-		return other.isLink();
-	}
-
-	@Override
 	public final LinkValueType toLinkType() {
 		return this;
 	}
@@ -133,6 +132,11 @@ public abstract class LinkValueType
 	@Override
 	public final ArrayValueType toArrayType() {
 		return null;
+	}
+
+	@Override
+	protected ValueConverter<KnownLink> getConverter() {
+		return this.converter;
 	}
 
 	@Override

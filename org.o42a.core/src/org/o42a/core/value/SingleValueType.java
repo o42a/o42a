@@ -35,9 +35,7 @@ import org.o42a.core.value.link.LinkValueType;
 public abstract class SingleValueType<T>
 		extends ValueType<SingleValueStruct<T>, T> {
 
-	public SingleValueType(
-			String systemId,
-			Class<? extends T> valueClass) {
+	public SingleValueType(String systemId, Class<? extends T> valueClass) {
 		super(systemId, valueClass);
 	}
 
@@ -49,11 +47,6 @@ public abstract class SingleValueType<T>
 	@Override
 	public final boolean isVariable() {
 		return false;
-	}
-
-	@Override
-	public boolean convertibleFrom(ValueType<?, ?> other) {
-		return is(other);
 	}
 
 	public abstract SingleValueStruct<T> struct();

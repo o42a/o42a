@@ -40,11 +40,13 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	public static final ArrayValueType ARRAY = new ArrayValueType(true);
 
 	private final boolean variable;
+	private final ArrayValueConverter converter;
 	private ArrayValueTypeIR ir;
 
 	private ArrayValueType(boolean variable) {
 		super(variable ? "array" : "row", Array.class);
 		this.variable = variable;
+		this.converter = new ArrayValueConverter(this);
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	}
 
 	public final MemberKey itemTypeKey(Intrinsics intrinsics) {
-		return ROW.typeObject(intrinsics).toMember().getMemberKey();
+		return typeObject(intrinsics).toMember().getMemberKey();
 	}
 
 	public final TypeParameters<Array> typeParameters(TypeRef itemTypeRef) {
@@ -99,11 +101,6 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 		return Path.ROOT_PATH.append(array.getScope().toField().getKey());
 	}
 
-	@Override
-	public boolean convertibleFrom(ValueType<?, ?> other) {
-		return other.isArray();
-	}
-
 	public ArrayValueType setVariable(boolean variable) {
 		if (isVariable() == variable) {
 			return this;
@@ -126,6 +123,11 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 			return this.ir;
 		}
 		return this.ir = new ArrayValueTypeIR(generator, this);
+	}
+
+	@Override
+	protected ValueConverter<Array> getConverter() {
+		return this.converter;
 	}
 
 	@Override

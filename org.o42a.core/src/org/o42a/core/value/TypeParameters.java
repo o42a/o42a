@@ -75,7 +75,7 @@ public final class TypeParameters<T>
 		}
 		assert valueType.convertibleFrom(getValueType()) :
 			valueType + " is not convertible from " + getValueType();
-		return new TypeParameters<T>(this, valueType, this.parameters);
+		return valueType.getConverter().convertParameters(this);
 	}
 
 	public final TypeParameter[] getParameters() {
@@ -159,7 +159,7 @@ public final class TypeParameters<T>
 		if (!getValueType().convertibleFrom(other.getValueType())) {
 			return false;
 		}
-		return parametersAssignableFrom(other);
+		return getValueType().getConverter().convertibleParameters(this, other);
 	}
 
 	public TypeRelation.Kind relationTo(TypeParameters<?> other) {
@@ -290,21 +290,7 @@ public final class TypeParameters<T>
 		return out.toString();
 	}
 
-	private static boolean parametersHaveSameScope(TypeParameter[] parameters) {
-		if (parameters.length <= 1) {
-			return true;
-		}
-
-		final TypeParameter first = parameters[0];
-
-		for (int i = 1; i < parameters.length; ++i) {
-			parameters[i].assertSameScope(first);
-		}
-
-		return true;
-	}
-
-	private boolean parametersAssignableFrom(TypeParameters<?> other) {
+	final boolean parametersAssignableFrom(TypeParameters<?> other) {
 		for (TypeParameter parameter : getParameters()) {
 
 			final TypeRef typeRef = other.typeRef(parameter.getKey());
@@ -316,6 +302,20 @@ public final class TypeParameters<T>
 				return false;
 			}
 		}
+		return true;
+	}
+
+	private static boolean parametersHaveSameScope(TypeParameter[] parameters) {
+		if (parameters.length <= 1) {
+			return true;
+		}
+
+		final TypeParameter first = parameters[0];
+
+		for (int i = 1; i < parameters.length; ++i) {
+			parameters[i].assertSameScope(first);
+		}
+
 		return true;
 	}
 
