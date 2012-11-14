@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
@@ -65,7 +65,7 @@ final class ArrayKeeperEval extends KeeperEval {
 		return this.value.op(
 				code.getAllocator(),
 				dirs.getBuilder(),
-				keeper().keeperIR().getValueStructIR().getValueType(),
+				keeper().keeperIR().getValueType(),
 				TEMP_VAL_HOLDER);
 	}
 

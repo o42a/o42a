@@ -17,31 +17,44 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.value.ValHolder;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.type.ValueIRDesc;
 
 
-final class ArrayValTrap extends ValHolder {
+public final class ArrayValueIRDesc implements ValueIRDesc {
 
-	ArrayValTrap(ValOp value) {
-		super(value);
+	public static final ArrayValueIRDesc ARRAY_VALUE_IR_DESC =
+			new ArrayValueIRDesc();
+
+	private ArrayValueIRDesc() {
 	}
 
 	@Override
-	public boolean holdable(ValOp value) {
-		return !value.isConstant();
+	public boolean hasValue() {
+		return true;
 	}
 
 	@Override
-	protected void setValue(Code code, ValOp value) {
+	public boolean hasLength() {
+		return true;
 	}
 
 	@Override
-	protected void holdValue(Code code, ValOp value) {
-		value.useArrayPointer(code);
+	public ValHolder tempValHolder(ValOp value) {
+		return new ArrayValHolder(value);
+	}
+
+	@Override
+	public ValHolder valTrap(ValOp value) {
+		return new ArrayValTrap(value);
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
 	}
 
 }

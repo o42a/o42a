@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
 import static org.o42a.core.ir.field.FldKind.ARRAY_KEEPER;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;

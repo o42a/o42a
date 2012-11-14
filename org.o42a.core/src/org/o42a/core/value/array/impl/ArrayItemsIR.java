@@ -17,8 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
-
+package org.o42a.core.value.array.impl;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -29,6 +28,7 @@ import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.array.Array;
@@ -36,12 +36,12 @@ import org.o42a.core.value.array.ArrayItem;
 import org.o42a.core.value.array.ArrayValueType;
 
 
-final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
+public final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
 
 	private final ArrayIR arrayIR;
 	private final DataRec[] items;
 
-	ArrayItemsIR(ArrayIR arrayIR) {
+	public ArrayItemsIR(ArrayIR arrayIR) {
 		super(arrayIR.getId().detail("items"));
 		this.arrayIR = arrayIR;
 		// Reserve one pointer for terminator.

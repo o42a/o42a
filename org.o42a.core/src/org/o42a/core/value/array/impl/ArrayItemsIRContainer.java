@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_ID;
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
@@ -30,17 +30,18 @@ import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.gc.GCBlockOp;
 import org.o42a.core.ir.gc.GCBlockOp.Type;
+import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.util.string.ID;
 
 
-final class ArrayItemsIRContainer extends Struct<ArrayItemsIRContainer.Op> {
+public final class ArrayItemsIRContainer extends Struct<ArrayItemsIRContainer.Op> {
 
 	private static final ArrayGCBlock ARRAY_GC_BLOCK = new ArrayGCBlock();
 	private static final ID ITEMS_ID = ID.id("items");
 
 	private final ArrayItemsIR items;
 
-	ArrayItemsIRContainer(ArrayIR arrayIR) {
+	public ArrayItemsIRContainer(ArrayIR arrayIR) {
 		super(arrayIR.getId());
 		this.items = new ArrayItemsIR(arrayIR);
 	}

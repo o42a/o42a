@@ -24,10 +24,13 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -226,6 +229,14 @@ public abstract class LinkValueType
 	@Override
 	protected StaticsIR<KnownLink> createStaticsIR(Generator generator) {
 		return new LinkStaticsIR(generator, this);
+	}
+
+	@Override
+	protected KeeperIR<?, ?> createKeeperIR(
+			TypeParameters<KnownLink> parameters,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		return new LinkKeeperIR(parameters, bodyIR, keeper);
 	}
 
 }

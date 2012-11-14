@@ -31,7 +31,6 @@ import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.state.DepIR;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -324,12 +323,10 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 		for (Keeper keeper : ascendant.keepers().declaredKeepers()) {
 
-			final ValueStructIR<?, ?> valueStructIR =
-					keeper.getValue()
-					.valueStruct(keeper.getScope())
-					.ir(getGenerator());
 			final KeeperIR<?, ?> keeperIR =
-					valueStructIR.createKeeperIR(this, keeper);
+					keeper.getValue()
+					.typeParameters(keeper.getScope())
+					.keeperIR(this, keeper);
 
 			keeperIR.allocate(data);
 			this.keepers.put(keeper, keeperIR);

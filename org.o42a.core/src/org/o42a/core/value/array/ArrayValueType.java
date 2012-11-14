@@ -19,16 +19,18 @@
 */
 package org.o42a.core.value.array;
 
-import static org.o42a.core.ir.value.array.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
+import static org.o42a.core.value.array.impl.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
-import org.o42a.core.ir.value.array.ArrayStaticsIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -36,6 +38,8 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.*;
+import org.o42a.core.value.array.impl.ArrayKeeperIR;
+import org.o42a.core.value.array.impl.ArrayStaticsIR;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -208,6 +212,14 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	@Override
 	protected StaticsIR<Array> createStaticsIR(Generator generator) {
 		return new ArrayStaticsIR(generator, this);
+	}
+
+	@Override
+	protected KeeperIR<?, ?> createKeeperIR(
+			TypeParameters<Array> parameters,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		return new ArrayKeeperIR(parameters, bodyIR, keeper);
 	}
 
 }

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
 import static org.o42a.core.ir.IRNames.DATA_ID;
 
@@ -25,6 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;

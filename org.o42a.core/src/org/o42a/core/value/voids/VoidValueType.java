@@ -20,9 +20,12 @@
 package org.o42a.core.value.voids;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.*;
@@ -60,6 +63,14 @@ public final class VoidValueType extends SingleValueType<Void> {
 	@Override
 	protected StaticsIR<Void> createStaticsIR(Generator generator) {
 		return new VoidStaticsIR(generator, this);
+	}
+
+	@Override
+	protected KeeperIR<?, ?> createKeeperIR(
+			TypeParameters<Void> parameters,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		return new VoidKeeperIR(parameters, bodyIR, keeper);
 	}
 
 }

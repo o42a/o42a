@@ -17,44 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
-import org.o42a.core.ir.value.ValHolder;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.type.ValueIRDesc;
+import org.o42a.core.ir.field.array.ArraySte;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBodyData;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.value.type.ValueIR;
+import org.o42a.core.ir.value.type.ValueOp;
 
 
-public final class ArrayValueIRDesc implements ValueIRDesc {
+final class ArrayValueIR extends ValueIR {
 
-	public static final ArrayValueIRDesc ARRAY_VALUE_IR_DESC =
-			new ArrayValueIRDesc();
-
-	private ArrayValueIRDesc() {
+	ArrayValueIR(ArrayValueStructIR valueStructIR, ObjectIR objectIR) {
+		super(valueStructIR, objectIR);
 	}
 
 	@Override
-	public boolean hasValue() {
-		return true;
+	public void allocateBody(ObjectIRBodyData data) {
+		new ArraySte().declare(data);
 	}
 
 	@Override
-	public boolean hasLength() {
-		return true;
-	}
-
-	@Override
-	public ValHolder tempValHolder(ValOp value) {
-		return new ArrayValHolder(value);
-	}
-
-	@Override
-	public ValHolder valTrap(ValOp value) {
-		return new ArrayValTrap(value);
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
+	public ValueOp op(ObjectOp object) {
+		return new ArrayValueOp(this, object);
 	}
 
 }

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
@@ -37,19 +37,21 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValAllocFunc;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
 import org.o42a.util.string.ID;
 
 
-class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
+public class ArrayConstructorBuilder
+		implements FunctionBuilder<ObjectValFunc> {
 
 	private static final ID ITEMS_ID = ID.id("items");
 
 	private final ArrayIR arrayIR;
 
-	ArrayConstructorBuilder(ArrayIR arrayIR) {
+	public ArrayConstructorBuilder(ArrayIR arrayIR) {
 		this.arrayIR = arrayIR;
 	}
 
