@@ -28,6 +28,7 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.value.impl.DefaultValueIR;
+import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;

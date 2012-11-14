@@ -17,16 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.struct;
+package org.o42a.core.ir.value.type;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Disposal;
 import org.o42a.core.ir.value.ValHolder;
 import org.o42a.core.ir.value.ValOp;
 
 
-public class ExternValTrap extends ValHolder {
+public final class ExternValHolder extends ValHolder {
 
-	public ExternValTrap(ValOp value) {
+	private UnuseExternVal disposal;
+
+	public ExternValHolder(ValOp value) {
 		super(value);
 	}
 
@@ -37,11 +40,43 @@ public class ExternValTrap extends ValHolder {
 
 	@Override
 	protected void setValue(Code code, ValOp value) {
+		addDisposal(value);
 	}
 
 	@Override
 	protected void holdValue(Code code, ValOp value) {
 		value.useRefCounted(code);
+		addDisposal(value);
+	}
+
+	private void addDisposal(ValOp value) {
+		if (this.disposal == null) {
+			this.disposal = new UnuseExternVal(value);
+			value.getAllocator().addDisposal(this.disposal);
+		}
+	}
+
+	private static final class UnuseExternVal implements Disposal {
+
+		private final ValOp value;
+
+		public UnuseExternVal(ValOp value) {
+			this.value = value;
+		}
+
+		@Override
+		public void dispose(Code code) {
+			this.value.unuseRefCounted(code);
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return "UnuseExternVal[" + this.value + ']';
+		}
+
 	}
 
 }

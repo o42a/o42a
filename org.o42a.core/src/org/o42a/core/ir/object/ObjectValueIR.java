@@ -25,7 +25,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.impl.ObjectIRLocals;
 import org.o42a.core.ir.object.value.*;
-import org.o42a.core.ir.value.struct.ValueOp;
+import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.object.Obj;
 
 

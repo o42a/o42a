@@ -33,8 +33,8 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.struct.StateOp;
-import org.o42a.core.ir.value.struct.StatefulValueOp;
+import org.o42a.core.ir.value.type.StateOp;
+import org.o42a.core.ir.value.type.StatefulValueOp;
 
 
 final class ArrayValueOp extends StatefulValueOp {

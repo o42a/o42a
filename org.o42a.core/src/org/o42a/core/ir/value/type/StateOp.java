@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.struct;
+package org.o42a.core.ir.value.type;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;

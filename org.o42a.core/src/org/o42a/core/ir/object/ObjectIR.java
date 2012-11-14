@@ -31,7 +31,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.state.DepIR;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;

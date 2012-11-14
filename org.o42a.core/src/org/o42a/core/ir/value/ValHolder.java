@@ -20,7 +20,7 @@
 package org.o42a.core.ir.value;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.value.struct.NoValHolder;
+import org.o42a.core.ir.value.type.NoValHolder;
 
 
 public abstract class ValHolder {

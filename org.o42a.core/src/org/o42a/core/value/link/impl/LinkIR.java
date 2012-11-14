@@ -22,8 +22,8 @@ package org.o42a.core.value.link.impl;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueOp;
+import org.o42a.core.ir.value.type.ValueIR;
+import org.o42a.core.ir.value.type.ValueOp;
 
 
 final class LinkIR extends ValueIR {

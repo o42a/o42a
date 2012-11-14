@@ -41,7 +41,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.struct.ValueOp;
+import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;

@@ -17,24 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.struct;
+package org.o42a.core.ir.value.type;
 
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.op.CodeDirs;
 
 
-public abstract class StatefulValueOp extends ValueOp {
+public abstract class StatelessValueOp extends ValueOp {
 
-	public StatefulValueOp(ValueIR valueIR, ObjectOp object) {
+	public StatelessValueOp(ValueIR valueIR, ObjectOp object) {
 		super(valueIR, object);
-		assert valueIR.getValueStruct().getValueType().isStateful() :
-			valueIR.getValueStruct().getValueType() + " is stateless";
+		assert !valueIR.getValueStruct().getValueType().isStateful() :
+			valueIR.getValueStruct().getValueType() + " is stateful";
 	}
 
 	@Override
-	public final ValOp writeValue(ValDirs dirs) {
-		return state(dirs.dirs()).writeValue(dirs);
+	public final StateOp state(CodeDirs dirs) {
+		throw new UnsupportedOperationException(
+				"Value of type " + getValueType() + " has no state");
 	}
 
 }

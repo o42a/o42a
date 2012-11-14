@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.struct;
+package org.o42a.core.ir.value.type;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
@@ -35,6 +35,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 

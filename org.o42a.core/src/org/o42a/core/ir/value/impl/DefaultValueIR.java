@@ -22,9 +22,9 @@ package org.o42a.core.ir.value.impl;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.ir.value.type.ValueIR;
+import org.o42a.core.ir.value.type.ValueOp;
 
 
 public final class DefaultValueIR extends ValueIR {
