@@ -19,8 +19,13 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
+
+import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -28,7 +33,12 @@ import org.o42a.core.ref.type.TypeRelation.Kind;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
+import org.o42a.core.value.macro.impl.MacroValueAdapter;
+import org.o42a.core.value.voids.VoidValueAdapter;
 import org.o42a.util.ArrayUtil;
 
 
@@ -148,6 +158,18 @@ public final class TypeParameters<T>
 		return parameter.getTypeRef();
 	}
 
+	public final Value<T> compilerValue(T value) {
+		return toValueStruct().compilerValue(value);
+	}
+
+	public final Value<T> runtimeValue() {
+		return toValueStruct().runtimeValue();
+	}
+
+	public final Value<T> falseValue() {
+		return toValueStruct().falseValue();
+	}
+
 	public final boolean assignableFrom(TypeParameters<?> other) {
 		if (!getValueType().is(other.getValueType())) {
 			return false;
@@ -180,6 +202,24 @@ public final class TypeParameters<T>
 		}
 
 		return relation1;
+	}
+
+	public final ValueAdapter valueAdapter(
+			Ref ref,
+			ValueRequest request) {
+		if (request.getExpectedStruct().isVoid()) {
+			if (getValueType().isVoid()) {
+				return rawValueAdapter(ref);
+			}
+			return new VoidValueAdapter(ref);
+		}
+		if (request.getExpectedStruct().isMacro()) {
+			if (getValueType().isMacro()) {
+				return rawValueAdapter(ref);
+			}
+			return new MacroValueAdapter(ref);
+		}
+		return getValueType().defaultAdapter(ref, this, request);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -233,6 +273,46 @@ public final class TypeParameters<T>
 		}
 
 		return new TypeParameters<T>(this, getValueType(), newParameters);
+	}
+
+	public final TypeParameters<T> upgradeScope(Scope toScope) {
+		if (isEmpty()) {
+			return this;
+		}
+
+		final Scope scope = getParameters()[0].getScope();
+
+		if (scope.is(toScope)) {
+			return this;
+		}
+
+		return prefixWith(upgradePrefix(scope, toScope));
+	}
+
+	public final ValueStruct<?, T> toValueStruct() {
+		return getValueType().valueStruct(this);
+	}
+
+	public final TypeParameters<KnownLink> toLinkParameters() {
+
+		final LinkValueType linkType = getValueType().toLinkType();
+
+		if (linkType == null) {
+			return null;
+		}
+
+		return linkType.cast(this);
+	}
+
+	public final TypeParameters<Array> toArrayParameters() {
+
+		final ArrayValueType arrayType = getValueType().toArrayType();
+
+		if (arrayType == null) {
+			return null;
+		}
+
+		return arrayType.cast(this);
 	}
 
 	@Override

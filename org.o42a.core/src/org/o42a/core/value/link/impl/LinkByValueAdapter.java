@@ -32,29 +32,29 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.*;
+import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.TargetResolver;
 
 
 public class LinkByValueAdapter extends ValueAdapter {
 
-	private final LinkValueStruct expectedStruct;
+	private final TypeParameters<KnownLink> expectedParameters;
 
-	public LinkByValueAdapter(Ref adaptedRef, LinkValueStruct expectedStruct) {
+	public LinkByValueAdapter(
+			Ref adaptedRef,
+			TypeParameters<KnownLink> expectedParameters) {
 		super(adaptedRef);
-		this.expectedStruct = expectedStruct;
+		this.expectedParameters = expectedParameters;
 	}
 
-	public final LinkValueStruct getExpectedStruct() {
-		return this.expectedStruct;
+	public final TypeParameters<KnownLink> getExpectedParameters() {
+		return this.expectedParameters;
 	}
 
 	@Override
 	public boolean isConstant() {
-		if (getExpectedStruct().isVariable()) {
+		if (getExpectedParameters().getValueType().isVariable()) {
 			return false;
 		}
 		return getAdaptedRef().isConstant();
@@ -67,14 +67,22 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return linkStruct(rescopeRef(scope));
+
+		final TypeParameters<KnownLink> linkParameters =
+				linkParameters(rescopeRef(scope));
+
+		if (linkParameters == null) {
+			return null;
+		}
+
+		return linkParameters.toValueStruct();
 	}
 
 	@Override
 	public Value<?> value(Resolver resolver) {
 
 		final Ref ref = rescopeRef(resolver.getScope());
-		final LinkValueStruct linkStruct = linkStruct(ref);
+		final TypeParameters<KnownLink> linkStruct = linkParameters(ref);
 
 		if (linkStruct != null) {
 			return linkByValue(ref, linkStruct);
@@ -82,7 +90,7 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 		return linkByValue(
 				ref,
-				getExpectedStruct().upgradeScope(resolver.getScope()));
+				getExpectedParameters().upgradeScope(resolver.getScope()));
 	}
 
 	@Override
@@ -114,7 +122,7 @@ public class LinkByValueAdapter extends ValueAdapter {
 		return getAdaptedRef().upgradeScope(scope);
 	}
 
-	private final LinkValueStruct linkStruct(Ref ref) {
+	private final TypeParameters<KnownLink> linkParameters(Ref ref) {
 
 		final TypeRef iface = ref.getInterface();
 
@@ -122,7 +130,10 @@ public class LinkByValueAdapter extends ValueAdapter {
 			return null;
 		}
 
-		return getExpectedStruct().getValueType().linkStruct(iface);
+		return getExpectedParameters()
+				.getValueType()
+				.toLinkType()
+				.typeParameters(iface);
 	}
 
 	private static final class LinkByValueEval implements Eval {

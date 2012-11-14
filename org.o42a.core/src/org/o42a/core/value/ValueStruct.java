@@ -19,18 +19,14 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.array.ArrayValueStruct;
@@ -40,12 +36,9 @@ import org.o42a.core.value.floats.FloatValueStruct;
 import org.o42a.core.value.impl.*;
 import org.o42a.core.value.integer.IntegerValueStruct;
 import org.o42a.core.value.link.LinkValueStruct;
-import org.o42a.core.value.link.impl.LinkByValueAdapter;
 import org.o42a.core.value.macro.Macro;
-import org.o42a.core.value.macro.impl.MacroValueAdapter;
 import org.o42a.core.value.macro.impl.MacroValueStruct;
 import org.o42a.core.value.string.StringValueStruct;
-import org.o42a.core.value.voids.VoidValueAdapter;
 import org.o42a.core.value.voids.VoidValueStruct;
 
 
@@ -122,7 +115,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 		assert knowledge.hasCompilerValue() :
 			"Incomplete knowledge (" + knowledge
-			+ ") about value " + valueString(value);
+			+ ") about value " + getValueType().valueString(value);
 
 		return new CompilerValue<T>(this, knowledge, value);
 	}
@@ -139,36 +132,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			LocationInfo location,
 			Scope scope) {
 		return Definitions.noValueDefinitions(location, scope, this);
-	}
-
-	public final ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
-		if (request.getExpectedStruct().isVoid()) {
-			if (isVoid()) {
-				return rawValueAdapter(ref);
-			}
-			return new VoidValueAdapter(ref);
-		}
-		if (request.getExpectedStruct().isMacro()) {
-			if (isMacro()) {
-				return rawValueAdapter(ref);
-			}
-			return new MacroValueAdapter(ref);
-		}
-		return defaultAdapter(ref, request);
-	}
-
-	public Ref adapterRef(
-			Ref ref,
-			TypeRef expectedTypeRef,
-			CompilerLogger logger) {
-
-		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic(), logger);
-
-		adapter.toTypeRef()
-		.relationTo(expectedTypeRef)
-		.checkDerived(logger);
-
-		return adapter;
 	}
 
 	public final boolean isScoped() {
@@ -204,10 +167,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public abstract void resolveAll(FullResolver resolver);
 
-	public String valueString(T value) {
-		return value.toString();
-	}
-
 	public final ValueStructIR<S, T> ir(Generator generator) {
 
 		final ValueStructIR<S, T> ir = this.ir;
@@ -217,36 +176,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		}
 
 		return this.ir = createIR(generator);
-	}
-
-	protected ValueAdapter defaultAdapter(Ref ref, ValueRequest request) {
-
-		final ValueStruct<?, ?> expectedStruct = request.getExpectedStruct();
-
-		if (!request.isTransformAllowed()
-				|| expectedStruct.getParameters()
-				.assignableFrom(getParameters())) {
-			return rawValueAdapter(ref);
-		}
-
-		final LinkValueStruct expectedLinkStruct =
-				expectedStruct.toLinkStruct();
-
-		if (expectedLinkStruct != null) {
-			return new LinkByValueAdapter(
-					adapterRef(
-							ref,
-							expectedLinkStruct.getTypeRef(),
-							request.getLogger()),
-					expectedLinkStruct);
-		}
-
-		final Ref adapter = adapterRef(
-				ref,
-				expectedStruct.getValueType().typeRef(ref, ref.getScope()),
-				request.getLogger());
-
-		return adapter.valueAdapter(request.dontTransofm());
 	}
 
 	protected abstract ValueStructIR<S, T> createIR(Generator generator);

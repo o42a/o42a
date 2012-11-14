@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value.string;
 
-import static org.o42a.util.string.StringCodec.escapeControlChars;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
@@ -33,18 +31,6 @@ public class StringValueStruct extends SingleValueStruct<String> {
 
 	private StringValueStruct() {
 		super(ValueType.STRING);
-	}
-
-	@Override
-	public String valueString(String value) {
-
-		final StringBuilder out = new StringBuilder(value.length() + 2);
-
-		out.append('"');
-		escapeControlChars(out, value);
-		out.append('"');
-
-		return out.toString();
 	}
 
 	@Override

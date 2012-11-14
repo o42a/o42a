@@ -27,15 +27,14 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.ArrayValueType;
-import org.o42a.core.value.link.impl.LinkValueConverter;
-import org.o42a.core.value.link.impl.LinkValueStructIR;
-import org.o42a.core.value.link.impl.VariableValueStructIR;
+import org.o42a.core.value.link.impl.*;
 
 
 public abstract class LinkValueType
@@ -137,6 +136,54 @@ public abstract class LinkValueType
 	@Override
 	protected ValueConverter<KnownLink> getConverter() {
 		return this.converter;
+	}
+
+	@Override
+	protected LinkValueStruct valueStruct(TypeParameters<KnownLink> parameters) {
+		return linkStruct(interfaceRef(parameters));
+	}
+
+	@Override
+	protected ValueAdapter defaultAdapter(
+			Ref ref,
+			TypeParameters<KnownLink> parameters,
+			ValueRequest request) {
+
+		final TypeParameters<?> expectedParameters =
+				request.getExpectedParameters();
+
+		if (!request.isTransformAllowed()
+				|| expectedParameters.convertibleFrom(parameters)) {
+			return new LinkValueAdapter(
+					ref,
+					expectedParameters != null
+					? expectedParameters.toLinkParameters()
+					: ref.typeParameters(ref.getScope()).toLinkParameters());
+		}
+		if (expectedParameters.getLinkDepth()
+				- parameters.getLinkDepth() == 1) {
+
+			final TypeParameters<KnownLink> expectedLinkParameters =
+					expectedParameters.toLinkParameters();
+
+			return new LinkByValueAdapter(
+					adapterRef(
+							ref,
+							expectedLinkParameters.getValueType()
+							.toLinkType()
+							.interfaceRef(expectedLinkParameters),
+							request.getLogger()),
+					expectedLinkParameters);
+		}
+
+		final Ref adapter = adapterRef(
+				ref,
+				expectedParameters.getValueType().typeRef(
+						ref,
+						ref.getScope()),
+				request.getLogger());
+
+		return adapter.valueAdapter(request.dontTransofm());
 	}
 
 	@Override

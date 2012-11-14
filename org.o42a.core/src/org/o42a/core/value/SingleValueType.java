@@ -98,6 +98,13 @@ public abstract class SingleValueType<T>
 	}
 
 	@Override
+	protected SingleValueStruct<T> valueStruct(TypeParameters<T> parameters) {
+		assert parameters.isEmpty() :
+			"Type parameters are not expected here: " + parameters;
+		return struct();
+	}
+
+	@Override
 	protected final ValueKnowledge valueKnowledge(T value) {
 		return ValueKnowledge.KNOWN_VALUE;
 	}

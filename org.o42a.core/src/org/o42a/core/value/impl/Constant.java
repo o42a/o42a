@@ -108,7 +108,7 @@ public final class Constant<T> extends ObjectConstructor {
 		if (this.constant == null) {
 			return super.toString();
 		}
-		return this.valueType.struct().valueString(this.constant);
+		return this.valueType.valueString(this.constant);
 	}
 
 	@Override
