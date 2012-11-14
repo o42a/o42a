@@ -17,12 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
 import static org.o42a.core.ir.field.FldKind.ARRAY_KEEPER;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
-import static org.o42a.core.ir.value.array.ArrayKeeperIRType.ARRAY_KEEPER_IR_TYPE;
+import static org.o42a.core.value.array.impl.ArrayKeeperIRType.ARRAY_KEEPER_IR_TYPE;
 
 import org.o42a.codegen.data.Content;
 import org.o42a.core.Scope;
@@ -32,20 +32,21 @@ import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
 
 
-final class ArrayKeeperIR
+public final class ArrayKeeperIR
 		extends KeeperIR<ArrayKeeperIROp, ArrayKeeperIRType>
 		implements Content<ArrayKeeperIRType> {
 
-	ArrayKeeperIR(
-			ArrayValueStructIR valueStructIR,
+	public ArrayKeeperIR(
+			TypeParameters<Array> typeParameters,
 			ObjectIRBody bodyIR,
 			Keeper keeper) {
-		super(valueStructIR, bodyIR, keeper);
+		super(typeParameters, bodyIR, keeper);
 	}
 
 	@Override
@@ -70,8 +71,7 @@ final class ArrayKeeperIR
 			val.set(FALSE_VAL);
 		} else {
 
-			final ArrayValueType arrayType =
-					getValueStructIR().getValueType().toArrayType();
+			final ArrayValueType arrayType = getValueType().toArrayType();
 			final Array array = arrayType.cast(value).getCompilerValue();
 
 			val.set(arrayType.staticsIR(getGenerator()).val(array));

@@ -20,47 +20,60 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.SingleValueType;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.*;
 
 
-public class NoneValueType extends SingleValueType<Void> {
+public class NoneValueType extends SingleValueType<java.lang.Void> {
 
 	public static final NoneValueType INSTANCE = new NoneValueType();
 
 	private NoneValueType() {
-		super("none", Void.class);
+		super("none", java.lang.Void.class);
 	}
 
 	@Override
-	public SingleValueStruct<Void> struct() {
+	public SingleValueStruct<java.lang.Void> struct() {
 		return ValueStruct.NONE;
 	}
 
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
-		throw new UnsupportedOperationException("Type NONE does not exist");
+		throw doesNotExist();
 	}
 
 	@Override
 	public Path path(Intrinsics intrinsics) {
-		throw new UnsupportedOperationException("Type NONE does not exist");
+		throw doesNotExist();
 	}
 
 	@Override
 	public ValueIRDesc irDesc() {
-		throw new UnsupportedOperationException("Type NONE does not exist");
+		throw doesNotExist();
 	}
 
 	@Override
-	protected StaticsIR<Void> createStaticsIR(Generator generator) {
-		throw new UnsupportedOperationException("Type NONE does not exist");
+	protected StaticsIR<java.lang.Void> createStaticsIR(Generator generator) {
+		throw doesNotExist();
+	}
+
+	@Override
+	protected KeeperIR<?, ?> createKeeperIR(
+			TypeParameters<java.lang.Void> parameters,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		throw doesNotExist();
+	}
+
+	private UnsupportedOperationException doesNotExist() {
+		return new UnsupportedOperationException("Type NONE does not exist");
 	}
 
 }

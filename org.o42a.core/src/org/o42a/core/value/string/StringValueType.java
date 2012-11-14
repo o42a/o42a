@@ -23,14 +23,15 @@ import static org.o42a.core.ir.value.type.ValueIRDesc.EXTERN_VALUE_IR_DESC;
 import static org.o42a.util.string.StringCodec.escapeControlChars;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.SingleValueType;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.*;
 
 
 public final class StringValueType extends SingleValueType<String> {
@@ -77,6 +78,14 @@ public final class StringValueType extends SingleValueType<String> {
 	@Override
 	protected StaticsIR<String> createStaticsIR(Generator generator) {
 		return new StringStaticsIR(generator, this);
+	}
+
+	@Override
+	protected KeeperIR<?, ?> createKeeperIR(
+			TypeParameters<String> parameters,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		return new StringKeeperIR(parameters, bodyIR, keeper);
 	}
 
 }

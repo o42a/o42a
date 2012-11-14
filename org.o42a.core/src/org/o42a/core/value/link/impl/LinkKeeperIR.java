@@ -30,20 +30,20 @@ import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.link.KnownLink;
-import org.o42a.core.value.link.LinkValueStruct;
 
 
-final class LinkKeeperIR
+public final class LinkKeeperIR
 		extends KeeperIR<LinkKeeperIROp, LinkKeeperIRType>
 		implements Content<LinkKeeperIRType> {
 
-	LinkKeeperIR(
-			LinkValueStructIR valueStructIR,
+	public LinkKeeperIR(
+			TypeParameters<KnownLink> typeParameters,
 			ObjectIRBody bodyIR,
 			Keeper keeper) {
-		super(valueStructIR, bodyIR, keeper);
+		super(typeParameters, bodyIR, keeper);
 	}
 
 	@Override
@@ -75,10 +75,11 @@ final class LinkKeeperIR
 					.toData());
 		} else {
 
-			final LinkValueStruct linkStruct =
-					getValueStructIR().getValueStruct().toLinkStruct();
 			final KnownLink link =
-					linkStruct.getParameters().cast(value).getCompilerValue();
+					getValueType()
+					.toLinkType()
+					.cast(value)
+					.getCompilerValue();
 
 			object.setValue(
 					link.getTarget()

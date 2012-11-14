@@ -23,17 +23,19 @@ import static org.o42a.core.ir.value.type.ValueIRDesc.VOID_VALUE_IR_DESC;
 import static org.o42a.core.value.macro.impl.PrefixedMacro.prefixMacro;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.VoidStaticsIR;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.SingleValueType;
-import org.o42a.core.value.Value;
+import org.o42a.core.value.*;
 import org.o42a.core.value.macro.Macro;
+import org.o42a.core.value.voids.VoidKeeperIR;
 
 
 public final class MacroValueType extends SingleValueType<Macro> {
@@ -86,6 +88,14 @@ public final class MacroValueType extends SingleValueType<Macro> {
 	@Override
 	protected StaticsIR<Macro> createStaticsIR(Generator generator) {
 		return new VoidStaticsIR<Macro>(generator, this);
+	}
+
+	@Override
+	protected KeeperIR<?, ?> createKeeperIR(
+			TypeParameters<Macro> parameters,
+			ObjectIRBody bodyIR,
+			Keeper keeper) {
+		return new VoidKeeperIR(parameters, bodyIR, keeper);
 	}
 
 }

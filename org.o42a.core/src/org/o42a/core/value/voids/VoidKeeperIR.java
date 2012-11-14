@@ -30,9 +30,8 @@ import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.state.Keeper;
-import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 
 
@@ -41,10 +40,10 @@ public final class VoidKeeperIR
 		implements Content<VoidKeeperIRType> {
 
 	public VoidKeeperIR(
-			ValueStructIR<? extends SingleValueStruct<?>, ?> valueStructIR,
+			TypeParameters<?> typeParameters,
 			ObjectIRBody bodyIR,
 			Keeper keeper) {
-		super(valueStructIR, bodyIR, keeper);
+		super(typeParameters, bodyIR, keeper);
 	}
 
 	@Override

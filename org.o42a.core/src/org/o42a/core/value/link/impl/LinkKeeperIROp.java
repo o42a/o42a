@@ -34,7 +34,8 @@ import org.o42a.core.ir.object.state.KeeperOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.link.LinkValueType;
 
 
 final class LinkKeeperIROp extends KeeperIROp<LinkKeeperIROp> {
@@ -68,14 +69,13 @@ final class LinkKeeperIROp extends KeeperIROp<LinkKeeperIROp> {
 			CodeDirs dirs,
 			ObjHolder holder) {
 
-		final LinkValueStruct linkStruct =
-				keeper.keeperIR()
-				.getValueStructIR()
-				.getValueStruct()
-				.toLinkStruct();
+		final TypeParameters<?> typeParameters =
+				keeper.keeperIR().getTypeParameters();
+		final LinkValueType linkType =
+				typeParameters.getValueType().toLinkType();
 
 		final ValDirs valDirs =
-				dirs.value(linkStruct.getValueType(), TEMP_VAL_HOLDER);
+				dirs.value(linkType, TEMP_VAL_HOLDER);
 		final Block valCode = valDirs.code();
 		final ValOp value = writeValue(keeper, valDirs);
 		final DataOp objectPtr =
@@ -89,7 +89,7 @@ final class LinkKeeperIROp extends KeeperIROp<LinkKeeperIROp> {
 		return anonymousObject(
 				dirs.getBuilder(),
 				objectPtr,
-				linkStruct.getTypeRef().getType());
+				linkType.interfaceRef(typeParameters).getType());
 	}
 
 }

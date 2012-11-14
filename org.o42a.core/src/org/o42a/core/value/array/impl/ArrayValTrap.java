@@ -17,30 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.array;
+package org.o42a.core.value.array.impl;
 
-import org.o42a.core.ir.field.array.ArraySte;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBodyData;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.ir.value.type.ValueOp;
+import org.o42a.codegen.code.Code;
+import org.o42a.core.ir.value.ValHolder;
+import org.o42a.core.ir.value.ValOp;
 
 
-final class ArrayValueIR extends ValueIR {
+final class ArrayValTrap extends ValHolder {
 
-	ArrayValueIR(ArrayValueStructIR valueStructIR, ObjectIR objectIR) {
-		super(valueStructIR, objectIR);
+	ArrayValTrap(ValOp value) {
+		super(value);
 	}
 
 	@Override
-	public void allocateBody(ObjectIRBodyData data) {
-		new ArraySte().declare(data);
+	public boolean holdable(ValOp value) {
+		return !value.isConstant();
 	}
 
 	@Override
-	public ValueOp op(ObjectOp object) {
-		return new ArrayValueOp(this, object);
+	protected void setValue(Code code, ValOp value) {
+	}
+
+	@Override
+	protected void holdValue(Code code, ValOp value) {
+		value.useArrayPointer(code);
 	}
 
 }

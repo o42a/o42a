@@ -21,14 +21,10 @@ package org.o42a.core.value.macro.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.macro.Macro;
-import org.o42a.core.value.voids.VoidKeeperIR;
 
 
 final class MacroValueStructIR
@@ -36,13 +32,6 @@ final class MacroValueStructIR
 
 	MacroValueStructIR(Generator generator, MacroValueStruct valueStruct) {
 		super(generator, valueStruct);
-	}
-
-	@Override
-	public KeeperIR<?, ?> createKeeperIR(
-			ObjectIRBody bodyIR,
-			Keeper keeper) {
-		return new VoidKeeperIR(this, bodyIR, keeper);
 	}
 
 	@Override

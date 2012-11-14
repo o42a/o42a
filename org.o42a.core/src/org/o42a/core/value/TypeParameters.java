@@ -24,7 +24,10 @@ import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
@@ -334,6 +337,10 @@ public final class TypeParameters<T>
 		}
 
 		return new TypeParameters<T>(this, getValueType(), newParameters);
+	}
+
+	public final KeeperIR<?, ?> keeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+		return getValueType().createKeeperIR(this, bodyIR, keeper);
 	}
 
 	public final boolean assertAssignableFrom(TypeParameters<?> parameters) {

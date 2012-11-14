@@ -30,6 +30,7 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -39,10 +40,10 @@ final class FloatKeeperIR
 		implements Content<FloatKeeperIRType> {
 
 	FloatKeeperIR(
-			FloatValueStructIR valueStructIR,
+			TypeParameters<Double> typeParameters,
 			ObjectIRBody bodyIR,
 			Keeper keeper) {
-		super(valueStructIR, bodyIR, keeper);
+		super(typeParameters, bodyIR, keeper);
 	}
 
 	@Override
