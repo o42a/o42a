@@ -24,9 +24,9 @@ import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.NestedMetaDep;
 
 
-final class ValueStructUpdate extends NestedMetaDep {
+final class TypeParametersUpdate extends NestedMetaDep {
 
-	ValueStructUpdate(TypeParamMetaDep parent, Meta declaredIn) {
+	TypeParametersUpdate(TypeParamMetaDep parent, Meta declaredIn) {
 		super(parent, declaredIn);
 	}
 
