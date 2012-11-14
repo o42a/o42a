@@ -38,7 +38,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.struct.*;
+import org.o42a.core.ir.value.type.*;
 
 
 final class VariableIR extends ValueIR {

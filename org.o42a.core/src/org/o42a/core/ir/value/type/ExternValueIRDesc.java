@@ -21,8 +21,6 @@ package org.o42a.core.ir.value.type;
 
 import org.o42a.core.ir.value.ValHolder;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.struct.ExternValHolder;
-import org.o42a.core.ir.value.struct.ExternValTrap;
 
 
 final class ExternValueIRDesc implements ValueIRDesc {

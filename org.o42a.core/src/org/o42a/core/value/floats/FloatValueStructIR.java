@@ -23,8 +23,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.SingleValueStruct;
 

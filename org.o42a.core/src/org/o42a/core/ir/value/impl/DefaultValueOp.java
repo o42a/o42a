@@ -22,8 +22,8 @@ package org.o42a.core.ir.value.impl;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.struct.StatelessValueOp;
-import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.type.StatelessValueOp;
+import org.o42a.core.ir.value.type.ValueIR;
 
 
 public final class DefaultValueOp extends StatelessValueOp {
