@@ -26,14 +26,14 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.struct.AbstractSingleValueStructIR;
+import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
 final class FloatValueStructIR
-		extends AbstractSingleValueStructIR<Double> {
+		extends SingleValueStructIR<Double> {
 
 	private int constSeq;
 
