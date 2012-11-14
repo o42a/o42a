@@ -27,6 +27,7 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
@@ -234,6 +235,12 @@ public final class TypeParameters<T>
 		return (Value<T>) value;
 	}
 
+	public final Definitions noValueDefinitions(
+			LocationInfo location,
+			Scope scope) {
+		return Definitions.noValueDefinitions(location, scope, this);
+	}
+
 	@Override
 	public final ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
 		if (isEmpty()) {
@@ -364,15 +371,16 @@ public final class TypeParameters<T>
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(this.valueType).append("(`");
+		out.append(this.valueType);
 		if (this.parameters.length != 0) {
+			out.append("(`");
 			out.append(this.parameters[0]);
 			for (int i = 1; i < this.parameters.length; ++i) {
 				out.append(", ");
 				out.append(this.parameters[i]);
 			}
+			out.append(')');
 		}
-		out.append(')');
 
 		return out.toString();
 	}

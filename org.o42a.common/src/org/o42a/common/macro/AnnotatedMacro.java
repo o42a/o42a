@@ -19,11 +19,13 @@
 */
 package org.o42a.common.macro;
 
+import static org.o42a.core.value.TypeParameters.typeParameters;
+
 import org.o42a.common.object.AnnotatedObject;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.macro.Macro;
 
 
@@ -35,7 +37,8 @@ public abstract class AnnotatedMacro extends AnnotatedObject implements Macro {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return new MacroDef(this, this, this).toDefinitions(ValueStruct.MACRO);
+		return new MacroDef(this, this, this)
+		.toDefinitions(typeParameters(this, ValueType.MACRO));
 	}
 
 }

@@ -89,7 +89,7 @@ public final class RuntimeDef extends Def {
 
 	@Override
 	protected ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.definitions.getValueStruct();
+		return this.definitions.getTypeParameters().toValueStruct();
 	}
 
 	@Override

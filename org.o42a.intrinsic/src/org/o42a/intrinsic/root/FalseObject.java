@@ -22,6 +22,7 @@ package org.o42a.intrinsic.root;
 import static org.o42a.core.ir.def.Eval.FALSE_EVAL;
 import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.ref.Ref.voidRef;
+import static org.o42a.core.value.TypeParameters.typeParameters;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.Generator;
@@ -46,6 +47,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -109,7 +111,7 @@ public class FalseObject extends BuiltinObject {
 	protected final Definitions explicitDefinitions() {
 		return new BuiltinDef(this)
 				.claim()
-				.toDefinitions(ValueStruct.VOID);
+				.toDefinitions(typeParameters(this, ValueType.VOID));
 	}
 
 	private static FalseScope falseScope(Scope topScope, ID id) {

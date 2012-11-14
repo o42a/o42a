@@ -36,7 +36,7 @@ import org.o42a.core.object.def.impl.RuntimeDef;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.ArrayUtil;
 
@@ -317,22 +317,21 @@ public final class Defs {
 						this.defs));
 	}
 
-	boolean upgradeValueStruct(
+	boolean upgradeTypeParameters(
 			Definitions definitions,
-			ValueStruct<?, ?> valueStruct) {
+			TypeParameters<?> typeParameters) {
 
 		boolean ok = true;
 
 		for (Def def : get()) {
 
-			final ValueStruct<?, ?> defValueStruct = def.getValueStruct();
+			final TypeParameters<?> defTypeParameters = def.getTypeParameters();
 
-			if (defValueStruct == null) {
+			if (defTypeParameters == null) {
 				continue;
 			}
-			if (!valueStruct.getParameters().assignableFrom(
-					defValueStruct.getParameters())) {
-				definitions.getLogger().incompatible(def, valueStruct);
+			if (!typeParameters.assignableFrom(defTypeParameters)) {
+				definitions.getLogger().incompatible(def, typeParameters);
 			}
 		}
 
@@ -362,25 +361,8 @@ public final class Defs {
 		}
 	}
 
-	private void validate(ValueStruct<?, ?> valueStruct) {
-		for (Def def : get()) {
-
-			final ValueStruct<?, ?> defValueStruct = def.getValueStruct();
-
-			if (defValueStruct == null) {
-				continue;
-			}
-			if (!valueStruct.getParameters().assignableFrom(
-					defValueStruct.getParameters())) {
-				def.getContext().getLogger().incompatible(
-						def,
-						valueStruct);
-			}
-		}
-	}
-
 	void resolveAll(Definitions definitions) {
-		validate(definitions.getValueStruct());
+		validate(definitions.getTypeParameters());
 
 		final ObjectValue objectValue =
 				definitions.getScope().toObject().value();
@@ -395,6 +377,22 @@ public final class Defs {
 	final void normalize(RootNormalizer normalizer) {
 		for (Def def : get()) {
 			def.normalize(normalizer);
+		}
+	}
+
+	private void validate(TypeParameters<?> typeParameters) {
+		for (Def def : get()) {
+
+			final TypeParameters<?> defTypeParameters = def.getTypeParameters();
+
+			if (defTypeParameters == null) {
+				continue;
+			}
+			if (!typeParameters.assignableFrom(defTypeParameters)) {
+				def.getContext().getLogger().incompatible(
+						def,
+						typeParameters);
+			}
 		}
 	}
 

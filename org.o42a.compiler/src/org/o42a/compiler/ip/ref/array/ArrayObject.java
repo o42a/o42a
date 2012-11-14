@@ -116,7 +116,7 @@ final class ArrayObject extends ConstructedObject {
 		return def.toDefinitions(
 				type()
 				.getAncestor()
-				.getValueStruct()
+				.getParameters()
 				.prefixWith(prefix));
 	}
 

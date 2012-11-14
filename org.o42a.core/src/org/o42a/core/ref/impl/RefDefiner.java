@@ -69,7 +69,8 @@ public final class RefDefiner extends Definer {
 
 		final RefDef def = new RefDef(getRef());
 
-		return def.toDefinitions(env().getValueRequest().getExpectedStruct());
+		return def.toDefinitions(
+				env().getValueRequest().getExpectedParameters());
 	}
 
 	@Override
