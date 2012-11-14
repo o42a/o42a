@@ -24,7 +24,8 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.state.Keeper;
@@ -50,11 +51,6 @@ public final class ArrayValueStructIR
 	}
 
 	@Override
-	public boolean hasLength() {
-		return true;
-	}
-
-	@Override
 	public Val val(Array value) {
 		return value.ir(getValueTypeIR()).getVal();
 	}
@@ -75,16 +71,6 @@ public final class ArrayValueStructIR
 			return defaultValueIR(objectIR);
 		}
 		return new ArrayValueIR(this, objectIR);
-	}
-
-	@Override
-	public ValHolder tempValHolder(ValOp value) {
-		return new ArrayValHolder(value);
-	}
-
-	@Override
-	public ValHolder valTrap(ValOp value) {
-		return new ArrayValTrap(value);
 	}
 
 }

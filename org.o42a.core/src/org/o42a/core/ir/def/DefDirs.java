@@ -25,7 +25,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -65,12 +64,8 @@ public class DefDirs {
 		return valDirs().getAllocator();
 	}
 
-	public final ValueStruct<?, ?> getValueStruct() {
-		return valDirs().getValueStruct();
-	}
-
 	public final ValueType<?, ?> getValueType() {
-		return getValueStruct().getValueType();
+		return valDirs().getValueType();
 	}
 
 	public final CodeDirs dirs() {
@@ -153,8 +148,9 @@ public class DefDirs {
 		}
 
 		private void store(Code code, ValOp result) {
-			assert getValueStruct().getParameters().assertAssignableFrom(
-					result.getValueStruct().getParameters());
+			assert getValueType().is(result.getValueType()) :
+				"Wrong value type: " + result.getValueType()
+				+ ", but " + getValueType() + " expected";
 			if (this.result == null
 					&& valueAccessibleBy(code)
 					&& !holdableValue(result)) {

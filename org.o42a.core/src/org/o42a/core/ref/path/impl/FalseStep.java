@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.core.ir.value.Val.falseVal;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.value.Value.falseValue;
@@ -28,6 +29,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.impl.ConstValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -168,14 +170,11 @@ public class FalseStep extends Step {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-
-			final ValOp result = dirs.getValueStruct().falseValue().op(
-					getBuilder(),
-					dirs.code());
-
 			dirs.code().go(dirs.falseDir());
-
-			return result;
+			return new ConstValOp(
+					dirs.getBuilder(),
+					dirs.value().ptr(),
+					falseVal(dirs.getValueType()));
 		}
 
 		@Override

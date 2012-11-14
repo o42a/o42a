@@ -31,6 +31,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -84,7 +85,7 @@ final class VoidDef extends Def {
 			return null;
 		}
 
-		return new EvalToVoid(this.def.getValueStruct(), inline);
+		return new EvalToVoid(this.def.getValueType(), inline);
 	}
 
 	@Override
@@ -94,7 +95,7 @@ final class VoidDef extends Def {
 
 	@Override
 	public Eval eval() {
-		return new EvalToVoid(this.def.getValueStruct(), this.def.eval());
+		return new EvalToVoid(this.def.getValueType(), this.def.eval());
 	}
 
 	@Override
@@ -126,12 +127,12 @@ final class VoidDef extends Def {
 
 	private static final class EvalToVoid extends InlineEval {
 
-		private final ValueStruct<?, ?> valueStruct;
+		private final ValueType<?, ?> valueType;
 		private final Eval def;
 
-		EvalToVoid(ValueStruct<?, ?> valueStruct, Eval def) {
+		EvalToVoid(ValueType<?, ?> valueType, Eval def) {
 			super(null);
-			this.valueStruct = valueStruct;
+			this.valueType = valueType;
 			this.def = def;
 		}
 
@@ -142,7 +143,7 @@ final class VoidDef extends Def {
 			final DefDirs defDirs =
 					dirs.dirs()
 					.nested()
-					.value(this.valueStruct, TEMP_VAL_HOLDER)
+					.value(this.valueType, TEMP_VAL_HOLDER)
 					.def(trueVal.head());
 
 			this.def.write(defDirs, host);

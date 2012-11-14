@@ -106,7 +106,7 @@ public class LinkValueAdapter extends ValueAdapter {
 		final LinkValueType linkType =
 				fromParameters.getValueType().toLinkType();
 
-		return new LinkEval(getAdaptedRef(), linkType.cast(fromParameters));
+		return new LinkEval(getAdaptedRef(), linkType);
 	}
 
 	@Override
@@ -116,12 +116,12 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	private static final class LinkEval implements Eval {
 
-		private final TypeParameters<?> fromparameters;
+		private final LinkValueType fromValueType;
 		private final Ref ref;
 
-		LinkEval(Ref ref, TypeParameters<?> fromParameters) {
+		LinkEval(Ref ref, LinkValueType fromValueType) {
 			this.ref = ref;
-			this.fromparameters = fromParameters;
+			this.fromValueType = fromValueType;
 		}
 
 		public final Ref getRef() {
@@ -132,7 +132,7 @@ public class LinkValueAdapter extends ValueAdapter {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs fromDirs = dirs.dirs().nested().value(
-					this.fromparameters.toValueStruct(),
+					this.fromValueType,
 					TEMP_VAL_HOLDER);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 

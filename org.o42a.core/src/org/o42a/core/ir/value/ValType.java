@@ -32,7 +32,7 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.impl.ConstValOp;
 import org.o42a.core.ir.value.impl.FinalValOp;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -120,13 +120,13 @@ public final class ValType extends Type<ValType.Op> {
 		public final ValOp op(
 				Allocator allocator,
 				CodeBuilder builder,
-				ValueStruct<?, ?> valueStruct,
+				ValueType<?, ?> valueType,
 				ValHolderFactory holderFactory) {
 			return new FinalValOp(
 					allocator,
 					builder,
 					this,
-					valueStruct,
+					valueType,
 					holderFactory);
 		}
 

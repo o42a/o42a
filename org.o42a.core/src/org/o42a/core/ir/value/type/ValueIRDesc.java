@@ -17,19 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.struct;
+package org.o42a.core.ir.value.type;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.ir.value.ValHolder;
+import org.o42a.core.ir.value.ValOp;
 
 
-public abstract class SingleValueStructIR<T>
-		extends ValueStructIR<SingleValueStruct<T>, T> {
+public interface ValueIRDesc {
 
-	public SingleValueStructIR(
-			Generator generator,
-			SingleValueStruct<T> valueStruct) {
-		super(generator, valueStruct);
-	}
+	ValueIRDesc VOID_VALUE_IR_DESC = VoidValueIRDesc.INSTANCE;
+	ValueIRDesc PRIMITIVE_VALUE_IR_DESC = PrimitiveValueIRDesc.INSTANCE;
+	ValueIRDesc EXTERN_VALUE_IR_DESC = ExternValueIRDesc.INSTANCE;
+
+	boolean hasValue();
+
+	boolean hasLength();
+
+	ValHolder tempValHolder(ValOp value);
+
+	ValHolder valTrap(ValOp value);
 
 }

@@ -45,7 +45,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -140,7 +140,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 			final ValDirs textDirs = dirs.dirs().nested().value(
 					"text",
-					ValueStruct.STRING,
+					ValueType.STRING,
 					TEMP_VAL_HOLDER);
 			final Block code = textDirs.code();
 
@@ -184,7 +184,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 			final ValDirs textDirs = dirs.dirs().nested().value(
 					"text",
-					ValueStruct.STRING,
+					ValueType.STRING,
 					TEMP_VAL_HOLDER);
 			final Block code = textDirs.code();
 

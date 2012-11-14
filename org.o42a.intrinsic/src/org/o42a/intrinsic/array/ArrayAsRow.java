@@ -39,7 +39,6 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.array.Array;
-import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -119,16 +118,12 @@ final class ArrayAsRow extends AnnotatedBuiltin {
 		return this.array = path.bind(this, getScope()).target(distribute());
 	}
 
-	private ArrayValueStruct valueStruct(Scope scope) {
-		return array().valueStruct(scope).toArrayStruct().toArrayStruct();
-	}
-
 	private void write(DefDirs dirs, HostOp host, InlineValue inlineArray) {
 
 		final ValDirs arrayDirs =
 				dirs.dirs()
 				.nested()
-				.value("array_val", valueStruct(getScope()), TEMP_VAL_HOLDER);
+				.value("array_val", array().getValueType(), TEMP_VAL_HOLDER);
 		final Block code = arrayDirs.code();
 
 		final ValOp arrayVal;

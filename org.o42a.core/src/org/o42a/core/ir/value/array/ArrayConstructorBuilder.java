@@ -71,7 +71,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 				function.arg(function, OBJECT_VAL.value()).op(
 						function,
 						builder,
-						array.getTypeParameters().toValueStruct(),
+						array.getValueType(),
 						VAL_TRAP);
 
 		if (array.isEmpty()) {

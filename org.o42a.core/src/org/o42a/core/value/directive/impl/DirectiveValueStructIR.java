@@ -44,18 +44,13 @@ final class DirectiveValueStructIR extends SingleValueStructIR<Directive> {
 	}
 
 	@Override
-	public boolean hasValue() {
-		return false;
-	}
-
-	@Override
 	public Val val(Directive value) {
 
 		final Val voidValue =
 				ValueStruct.VOID.ir(getGenerator()).val(Void.VOID);
 
 		return new Val(
-				getValueStruct(),
+				getValueType(),
 				voidValue.getFlags(),
 				voidValue.getLength(),
 				voidValue.getValue());

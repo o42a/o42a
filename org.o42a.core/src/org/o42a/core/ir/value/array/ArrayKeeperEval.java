@@ -65,7 +65,7 @@ final class ArrayKeeperEval extends KeeperEval {
 		return this.value.op(
 				code.getAllocator(),
 				dirs.getBuilder(),
-				keeper().keeperIR().getValueStructIR().getValueStruct(),
+				keeper().keeperIR().getValueStructIR().getValueType(),
 				TEMP_VAL_HOLDER);
 	}
 

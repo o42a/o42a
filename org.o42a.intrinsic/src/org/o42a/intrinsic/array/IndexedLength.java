@@ -36,10 +36,10 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;
-import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
@@ -67,8 +67,7 @@ abstract class IndexedLength extends AnnotatedBuiltin {
 		}
 
 		final Array array =
-				valueStruct(resolver.getScope())
-				.getParameters()
+				typeParameters(resolver.getScope())
 				.cast(arrayValue)
 				.getCompilerValue();
 		final int length = array.length();
@@ -106,8 +105,8 @@ abstract class IndexedLength extends AnnotatedBuiltin {
 		return "(" + this.array + "):length";
 	}
 
-	private ArrayValueStruct valueStruct(Scope scope) {
-		return array().valueStruct(scope).toArrayStruct().toArrayStruct();
+	private TypeParameters<Array> typeParameters(Scope scope) {
+		return array().typeParameters(scope).toArrayParameters();
 	}
 
 	private Ref array() {
@@ -125,7 +124,7 @@ abstract class IndexedLength extends AnnotatedBuiltin {
 		final ValDirs arrayDirs =
 				dirs.dirs()
 				.nested()
-				.value("array_val", valueStruct(getScope()), TEMP_VAL_HOLDER);
+				.value("array_val", array().getValueType(), TEMP_VAL_HOLDER);
 		final Block code = arrayDirs.code();
 
 		final ValOp arrayVal;

@@ -43,7 +43,6 @@ import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -154,7 +153,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		final ValDirs whatDirs = dirs.dirs().nested().value(
 				"what",
-				ValueStruct.STRING,
+				ValueType.STRING,
 				TEMP_VAL_HOLDER);
 		final ValOp whatVal;
 
@@ -166,7 +165,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		final ValDirs withDirs = whatDirs.dirs().nested().value(
 				"with",
-				ValueStruct.STRING,
+				ValueType.STRING,
 				TEMP_VAL_HOLDER);
 		final ValOp withVal;
 

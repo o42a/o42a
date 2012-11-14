@@ -23,7 +23,7 @@ import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -38,9 +38,9 @@ public final class StackAllocatedValOp extends ValOp {
 			ID id,
 			Allocator allocator,
 			CodeBuilder builder,
-			ValueStruct<?, ?> valueStruct,
+			ValueType<?, ?> valueType,
 			ValHolderFactory holderFactory) {
-		super(builder, valueStruct);
+		super(builder, valueType);
 		this.id = id;
 		this.allocator = allocator;
 		this.holder = holderFactory.createValHolder(this);
@@ -90,7 +90,7 @@ public final class StackAllocatedValOp extends ValOp {
 		if (this.id == null) {
 			return super.toString();
 		}
-		return "(" + getValueStruct() + ") " + this.id;
+		return "(" + getValueType() + ") " + this.id;
 	}
 
 }

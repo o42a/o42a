@@ -35,7 +35,7 @@ public interface ValHolderFactory {
 
 		@Override
 		public ValHolder createValHolder(ValOp value) {
-			return value.getValueStructIR().tempValHolder(value);
+			return value.getDesc().tempValHolder(value);
 		}
 
 	};
@@ -44,7 +44,7 @@ public interface ValHolderFactory {
 
 		@Override
 		public ValHolder createValHolder(ValOp value) {
-			return value.getValueStructIR().valTrap(value);
+			return value.getDesc().valTrap(value);
 		}
 
 	};

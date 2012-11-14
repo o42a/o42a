@@ -34,7 +34,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.string.ID;
 
 
@@ -63,9 +62,8 @@ public abstract class KeeperEval {
 	public final void writeCond(CodeDirs dirs) {
 
 		final Ref value = keeper().getKeeper().getValue();
-		final ValueStruct<?, ?> valueStruct =
-				value.valueStruct(value.getScope());
-		final ValDirs valDirs = dirs.value(valueStruct, TEMP_VAL_HOLDER);
+		final ValDirs valDirs =
+				dirs.value(value.getValueType(), TEMP_VAL_HOLDER);
 
 		writeValue(valDirs);
 

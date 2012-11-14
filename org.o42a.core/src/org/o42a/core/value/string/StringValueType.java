@@ -19,8 +19,10 @@
 */
 package org.o42a.core.value.string;
 
+import static org.o42a.core.ir.value.type.ValueIRDesc.EXTERN_VALUE_IR_DESC;
 import static org.o42a.util.string.StringCodec.escapeControlChars;
 
+import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
@@ -63,6 +65,11 @@ public final class StringValueType extends SingleValueType<String> {
 		out.append('"');
 
 		return out.toString();
+	}
+
+	@Override
+	public ValueIRDesc irDesc() {
+		return EXTERN_VALUE_IR_DESC;
 	}
 
 }

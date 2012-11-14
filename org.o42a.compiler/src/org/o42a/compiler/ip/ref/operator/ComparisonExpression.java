@@ -169,7 +169,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 		final ComparisonOperator operator = getOperator();
 		final ValDirs cmpDirs = dirs.dirs().nested().value(
 				"cmp",
-				operator.getValueStruct(),
+				operator.getValueType(),
 				TEMP_VAL_HOLDER);
 		final ValOp cmpVal;
 

@@ -43,7 +43,6 @@ import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
@@ -221,7 +220,7 @@ final class SubString extends AnnotatedBuiltin {
 
 		final ValDirs stringDirs = dirs.dirs().nested().value(
 				"string",
-				ValueStruct.STRING,
+				ValueType.STRING,
 				TEMP_VAL_HOLDER);
 		final ValOp stringVal;
 
@@ -233,7 +232,7 @@ final class SubString extends AnnotatedBuiltin {
 
 		final ValDirs fromDirs = stringDirs.dirs().nested().value(
 				"from",
-				ValueStruct.INTEGER,
+				ValueType.INTEGER,
 				TEMP_VAL_HOLDER);
 		final ValOp fromVal;
 
@@ -245,7 +244,7 @@ final class SubString extends AnnotatedBuiltin {
 
 		final ValDirs toDirs = fromDirs.dirs().nested().value(
 				"to",
-				ValueStruct.INTEGER,
+				ValueType.INTEGER,
 				TEMP_VAL_HOLDER);
 		final ValOp toVal;
 

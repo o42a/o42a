@@ -91,7 +91,7 @@ public final class LocalFnIR
 		final ValOp result = value.op(
 				function,
 				builder,
-				this.locals.getValueIR().getObject().value().getValueStruct(),
+				this.locals.getValueIR().getObject().value().getValueType(),
 				VAL_TRAP);
 
 		build(builder, function, result);

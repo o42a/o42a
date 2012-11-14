@@ -140,7 +140,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 
 			final ValDirs inputDirs = dirs.dirs().nested().value(
 					"input",
-					ValueStruct.STRING,
+					ValueType.STRING,
 					TEMP_VAL_HOLDER);
 			final ValOp inputValue =
 					this.inputValue.writeValue(inputDirs, host);
@@ -184,7 +184,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 
 			final ValDirs inputDirs = dirs.dirs().nested().value(
 					"input",
-					ValueStruct.STRING,
+					ValueType.STRING,
 					TEMP_VAL_HOLDER);
 			final ValOp inputValue =
 					this.byString.input().op(host).writeValue(inputDirs);

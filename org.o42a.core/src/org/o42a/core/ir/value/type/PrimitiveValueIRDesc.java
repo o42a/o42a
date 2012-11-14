@@ -17,50 +17,44 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.impl;
+package org.o42a.core.ir.value.type;
 
-import org.o42a.codegen.code.Allocator;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.value.*;
+import static org.o42a.core.ir.value.ValHolder.NO_VAL_HOLDER;
+
+import org.o42a.core.ir.value.ValHolder;
+import org.o42a.core.ir.value.ValOp;
 
 
-public final class ConstValOp extends ValOp {
+final class PrimitiveValueIRDesc implements ValueIRDesc {
 
-	private final ValType.Op ptr;
-	private final Val constant;
+	static final PrimitiveValueIRDesc INSTANCE = new PrimitiveValueIRDesc();
 
-	public ConstValOp(CodeBuilder builder, ValType.Op ptr, Val constant) {
-		super(builder, constant.getValueType());
-		this.ptr = ptr;
-		this.constant = constant;
+	private PrimitiveValueIRDesc() {
 	}
 
 	@Override
-	public final Val getConstant() {
-		return this.constant;
+	public boolean hasValue() {
+		return true;
 	}
 
 	@Override
-	public final Allocator getAllocator() {
-		throw new IllegalStateException("Constant value is not allocated");
+	public boolean hasLength() {
+		return false;
 	}
 
 	@Override
-	public final ValType.Op ptr() {
-		return this.ptr;
+	public ValHolder tempValHolder(ValOp value) {
+		return NO_VAL_HOLDER;
 	}
 
 	@Override
-	public final ValHolder holder() {
-		throw new IllegalStateException("Constant value can not be held");
+	public ValHolder valTrap(ValOp value) {
+		return NO_VAL_HOLDER;
 	}
 
 	@Override
 	public String toString() {
-		if (this.constant == null) {
-			return super.toString();
-		}
-		return this.constant.toString();
+		return getClass().getSimpleName();
 	}
 
 }

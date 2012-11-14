@@ -29,7 +29,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -37,11 +36,11 @@ import org.o42a.util.string.ID;
 public abstract class ValDirs {
 
 	private final CodeDirs dirs;
-	private final ValueStruct<?, ?> valueStruct;
+	private final ValueType<?, ?> valueType;
 
-	ValDirs(CodeDirs dirs, ValueStruct<?, ?> valueStruct) {
+	ValDirs(CodeDirs dirs, ValueType<?, ?> valueType) {
 		this.dirs = dirs;
-		this.valueStruct = valueStruct;
+		this.valueType = valueType;
 	}
 
 	public final Generator getGenerator() {
@@ -53,11 +52,7 @@ public abstract class ValDirs {
 	}
 
 	public final ValueType<?, ?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-		return this.valueStruct;
+		return this.valueType;
 	}
 
 	public final boolean isDebug() {
@@ -137,19 +132,19 @@ public abstract class ValDirs {
 
 		TopLevelValDirs(
 				CodeDirs dirs,
-				ValueStruct<?, ?> valueStruct,
+				ValueType<?, ?> valueType,
 				ValHolderFactory holderFactory) {
-			super(dirs, valueStruct);
+			super(dirs, valueType);
 			this.value = stackAllocatedVal(
 					"value",
 					dirs.code().getAllocator(),
 					getBuilder(),
-					valueStruct,
+					valueType,
 					holderFactory);
 		}
 
 		TopLevelValDirs(CodeDirs dirs, ValOp value) {
-			super(dirs, value.getValueStruct());
+			super(dirs, value.getValueType());
 			this.value = value;
 		}
 
@@ -170,7 +165,7 @@ public abstract class ValDirs {
 		private TopLevelValDirs topLevel;
 
 		NestedValDirs(CodeDirs dirs, ValDirs storage) {
-			super(dirs, storage.getValueStruct());
+			super(dirs, storage.getValueType());
 			this.topLevel = storage.topLevel();
 		}
 

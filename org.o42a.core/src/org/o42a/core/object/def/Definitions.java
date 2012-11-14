@@ -348,7 +348,7 @@ public class Definitions extends Scoped {
 			return null;
 		}
 
-		return new InlineDefinitions(getValueStruct(), claim, proposition);
+		return new InlineDefinitions(getValueType(), claim, proposition);
 	}
 
 	public final void resolveAll() {

@@ -82,7 +82,7 @@ final class ArrayValueOp extends StatefulValueOp {
 			return this.value.op(
 					code.getAllocator(),
 					dirs.getBuilder(),
-					getValueStruct(),
+					getValueType(),
 					TEMP_VAL_HOLDER);
 		}
 

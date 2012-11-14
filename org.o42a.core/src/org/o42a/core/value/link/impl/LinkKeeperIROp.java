@@ -74,7 +74,8 @@ final class LinkKeeperIROp extends KeeperIROp<LinkKeeperIROp> {
 				.getValueStruct()
 				.toLinkStruct();
 
-		final ValDirs valDirs = dirs.value(linkStruct, TEMP_VAL_HOLDER);
+		final ValDirs valDirs =
+				dirs.value(linkStruct.getValueType(), TEMP_VAL_HOLDER);
 		final Block valCode = valDirs.code();
 		final ValOp value = writeValue(keeper, valDirs);
 		final DataOp objectPtr =

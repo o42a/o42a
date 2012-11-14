@@ -33,8 +33,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.impl.StackAllocatedValOp;
-import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
 import org.o42a.util.string.ID;
@@ -48,7 +47,7 @@ public abstract class ValOp extends IROp {
 			String name,
 			Allocator allocator,
 			CodeBuilder builder,
-			ValueStruct<?, ?> valueStruct,
+			ValueType<?, ?> valueType,
 			ValHolderFactory holderFactory) {
 
 		final ID valId =
@@ -58,36 +57,29 @@ public abstract class ValOp extends IROp {
 				valId,
 				allocator,
 				builder,
-				valueStruct,
+				valueType,
 				holderFactory);
 	}
 
-	private final ValueStruct<?, ?> valueStruct;
-	private ValueStructIR<?, ?> valueStructIR;
+	private final ValueType<?, ?> valueType;
+	private ValueIRDesc desc;
 
-	public ValOp(CodeBuilder builder, ValueStruct<?, ?> valueStruct) {
+	public ValOp(CodeBuilder builder, ValueType<?, ?> valueType) {
 		super(builder);
-		this.valueStruct = valueStruct;
-		assert valueStruct != null :
+		this.valueType = valueType;
+		assert valueType != null :
 			"Value structure not specified";
 	}
 
 	public final ValueType<?, ?> getValueType() {
-
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
-
-		return valueStruct != null ? valueStruct.getValueType() : null;
+		return this.valueType;
 	}
 
-	public final ValueStruct<?, ?> getValueStruct() {
-		return this.valueStruct;
-	}
-
-	public final ValueStructIR<?, ?> getValueStructIR() {
-		if (this.valueStructIR != null) {
-			return this.valueStructIR;
+	public final ValueIRDesc getDesc() {
+		if (this.desc != null) {
+			return this.desc;
 		}
-		return this.valueStructIR = this.valueStruct.ir(getGenerator());
+		return this.desc = getValueType().irDesc();
 	}
 
 	public final boolean isConstant() {
@@ -160,8 +152,8 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp storeVoid(Code code) {
-		assert getValueStruct().isVoid() :
-			"Can not store VOID in " + getValueStruct() + " value";
+		assert getValueType().isVoid() :
+			"Can not store VOID in " + getValueType() + " value";
 
 		flags(code).store(code, VAL_CONDITION);
 
@@ -191,10 +183,10 @@ public abstract class ValOp extends IROp {
 		if (!value.getCondition()) {
 			return this;
 		}
-		if (!getValueStructIR().hasValue()) {
+		if (!getDesc().hasValue()) {
 			return this;
 		}
-		if (getValueStructIR().hasLength()) {
+		if (getDesc().hasLength()) {
 			length(null, code).store(code, code.int32(value.getLength()));
 		}
 
@@ -228,10 +220,10 @@ public abstract class ValOp extends IROp {
 			"Can not store " + value + " in " + this;
 
 		flags(code).store(code, value.flags(code).get());
-		if (!getValueStructIR().hasValue()) {
+		if (!getDesc().hasValue()) {
 			return this;
 		}
-		if (getValueStructIR().hasLength()) {
+		if (getDesc().hasLength()) {
 			length(null, code)
 			.store(code, value.length(null, code).load(null, code));
 		}
@@ -245,7 +237,7 @@ public abstract class ValOp extends IROp {
 
 	public final ValOp store(Code code, Int64op value) {
 		assert getValueType().is(ValueType.INTEGER) :
-			"Can not store integer in " + getValueStruct() + " value";
+			"Can not store integer in " + getValueType() + " value";
 
 		rawValue(null, code).store(code, value);
 		flags(code).store(code, VAL_CONDITION);
@@ -256,7 +248,7 @@ public abstract class ValOp extends IROp {
 	public final ValOp store(Code code, Fp64op value) {
 		assert getValueType().is(ValueType.FLOAT) :
 			"Can not store floating-point number in "
-			+ getValueStruct() + " value";
+			+ getValueType() + " value";
 
 		value(null, code).toFp64(null, code).store(code, value);
 		flags(code).store(code, VAL_CONDITION);
@@ -265,11 +257,11 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp storeNull(Code code) {
-		assert getValueStructIR().hasValue() :
-			"Can not store value to " + getValueStruct();
+		assert getDesc().hasValue() :
+			"Can not store value to " + getValueType();
 
 		flags(code).store(code, VAL_CONDITION);
-		if (getValueStructIR().hasLength()) {
+		if (getDesc().hasLength()) {
 			length(null, code).store(code, code.int32(0));
 		}
 		value(null, code).toPtr(null, code).store(code, code.nullPtr());
@@ -278,9 +270,9 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp store(Code code, AnyOp pointer) {
-		assert getValueStructIR().hasValue() :
+		assert getDesc().hasValue() :
 			"Can not store value to " + getValueType();
-		assert !getValueStructIR().hasLength() :
+		assert !getDesc().hasLength() :
 			"Can not store pointer without length to " + getValueType();
 
 		value(null, code).toPtr(null, code).store(code, pointer);
@@ -296,9 +288,9 @@ public abstract class ValOp extends IROp {
 			AnyOp pointer,
 			DataAlignment alignment,
 			Int32op length) {
-		assert getValueStructIR().hasValue() :
+		assert getDesc().hasValue() :
 			"Can not store value to " + getValueType();
-		assert getValueStructIR().hasLength() :
+		assert getDesc().hasLength() :
 			"Can not store pointer to value of scalar type: "
 			+ getValueType();
 
@@ -318,9 +310,9 @@ public abstract class ValOp extends IROp {
 			Code code,
 			AnyOp pointer,
 			Int32op length) {
-		assert getValueStructIR().hasValue() :
+		assert getDesc().hasValue() :
 			"Can not store value to " + getValueType();
-		assert getValueStructIR().hasLength() :
+		assert getDesc().hasLength() :
 			"Can not store pointer to value of scalar type: "
 			+ getValueType();
 
@@ -343,12 +335,12 @@ public abstract class ValOp extends IROp {
 		}
 
 		return code.phi(null, ptr())
-				.op(null, getBuilder(), getValueStruct(), NO_VAL_HOLDER);
+				.op(null, getBuilder(), getValueType(), NO_VAL_HOLDER);
 	}
 
 	public final ValOp phi(ID id, Code code, ValOp other) {
 		return code.phi(id, ptr(), other.ptr())
-				.op(null, getBuilder(), getValueStruct(), NO_VAL_HOLDER);
+				.op(null, getBuilder(), getValueType(), NO_VAL_HOLDER);
 	}
 
 	public final void go(Block code, DefDirs dirs) {

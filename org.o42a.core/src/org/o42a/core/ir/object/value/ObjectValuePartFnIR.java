@@ -98,7 +98,7 @@ public abstract class ObjectValuePartFnIR
 				getObjectIR().isExact() ? EXACT : DERIVED);
 		final ValOp result =
 				function.arg(function, OBJECT_VAL.value())
-				.op(function, builder, getValueStruct(), VAL_TRAP);
+				.op(function, builder, getValueType(), VAL_TRAP);
 		final DefDirs dirs =
 				builder.dirs(function, failure.head())
 				.value(result)

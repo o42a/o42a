@@ -42,7 +42,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.*;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;
 import org.o42a.util.fn.Cancelable;
 
@@ -131,7 +131,7 @@ public class DuplicatesArray extends AnnotatedBuiltin {
 
 		final ValDirs sizeDirs = dirs.dirs().nested().value(
 				"size",
-				ValueStruct.INTEGER,
+				ValueType.INTEGER,
 				TEMP_VAL_HOLDER);
 		final ValOp sizeVal;
 
@@ -147,7 +147,7 @@ public class DuplicatesArray extends AnnotatedBuiltin {
 				.setFalseDir(noDuplicate.head())
 				.value(
 						"duplicate",
-						duplicate().valueStruct(duplicate().getScope()),
+						duplicate().getValueType(),
 						TEMP_VAL_HOLDER);
 		final ValOp dupVal;
 

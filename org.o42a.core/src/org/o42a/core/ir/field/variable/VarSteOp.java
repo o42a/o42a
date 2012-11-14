@@ -92,7 +92,7 @@ public final class VarSteOp extends FldOp {
 		dirs.code().dumpName(kind + " host: ", host());
 
 		final ValDirs valDirs = dirs.nested().value(
-				host().getAscendant().value().getValueStruct(),
+				host().getAscendant().value().getValueType(),
 				TEMP_VAL_HOLDER);
 		final Block code = valDirs.code();
 		final ValOp value = host().value().writeValue(valDirs);

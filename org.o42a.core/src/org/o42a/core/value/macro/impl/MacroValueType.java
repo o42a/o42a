@@ -19,8 +19,10 @@
 */
 package org.o42a.core.value.macro.impl;
 
+import static org.o42a.core.ir.value.type.ValueIRDesc.VOID_VALUE_IR_DESC;
 import static org.o42a.core.value.macro.impl.PrefixedMacro.prefixMacro;
 
+import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
@@ -53,6 +55,11 @@ public final class MacroValueType extends SingleValueType<Macro> {
 	public Path path(Intrinsics intrinsics) {
 		return Path.ROOT_PATH.append(
 				typeObject(intrinsics).getScope().toField().getKey());
+	}
+
+	@Override
+	public ValueIRDesc irDesc() {
+		return VOID_VALUE_IR_DESC;
 	}
 
 	@Override

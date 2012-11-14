@@ -81,7 +81,7 @@ public final class CompareIntegers extends CompareNumbers<Long> {
 		return result.op(
 				null,
 				dirs.getBuilder(),
-				value().getValueStruct(),
+				value().getValueType(),
 				NO_VAL_HOLDER);
 	}
 

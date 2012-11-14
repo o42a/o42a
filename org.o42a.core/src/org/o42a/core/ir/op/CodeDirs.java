@@ -25,7 +25,7 @@ import org.o42a.codegen.debug.TaskBlock;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -105,30 +105,30 @@ public class CodeDirs {
 	}
 
 	public final ValDirs value(
-			ValueStruct<?, ?> valueStruct,
+			ValueType<?, ?> valueType,
 			ValHolderFactory holderFactory) {
-		return value(VALUE_ID, valueStruct, holderFactory);
+		return value(VALUE_ID, valueType, holderFactory);
 	}
 
 	public final ValDirs value(
 			String name,
-			ValueStruct<?, ?> valueStruct,
+			ValueType<?, ?> valueType,
 			ValHolderFactory holderFactory) {
 		return value(
 				name != null ? ID.id(name) : VALUE_ID,
-				valueStruct,
+				valueType,
 				holderFactory);
 	}
 
 	public final ValDirs value(
 			ID name,
-			ValueStruct<?, ?> valueStruct,
+			ValueType<?, ?> valueType,
 			ValHolderFactory holderFactory) {
 
 		final AllocatorCodeDirs dirs =
 				new AllocatorCodeDirs(this, code().allocator(name));
 
-		return new ValDirs.TopLevelValDirs(dirs, valueStruct, holderFactory);
+		return new ValDirs.TopLevelValDirs(dirs, valueType, holderFactory);
 	}
 
 	public final ValDirs value(ValOp value) {

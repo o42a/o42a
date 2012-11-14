@@ -35,6 +35,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.struct.StateOp;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -49,11 +50,11 @@ public abstract class AbstractObjectValueBuilder
 		final ObjBuilder builder = builder(function);
 		final ValOp result =
 				function.arg(function, OBJECT_VALUE.value())
-				.op(function, builder, getValueStruct(), VAL_TRAP);
+				.op(function, builder, getValueType(), VAL_TRAP);
 		final ObjOp host = builder.host();
 		final ValueOp value = host.value();
 
-		assert getValueStruct().getValueType().is(value.getValueType()) :
+		assert getValueType().is(value.getValueType()) :
 			"Wrong value type";
 
 		final ObjectIRDataOp data = data(function, function);
@@ -125,10 +126,14 @@ public abstract class AbstractObjectValueBuilder
 		}
 	}
 
+	protected final ValueType<?, ?> getValueType() {
+		return getValueStruct().getValueType();
+	}
+
 	protected abstract ValueStruct<?, ?> getValueStruct();
 
 	protected boolean lock() {
-		return getValueStruct().getValueType().isStateful();
+		return getValueType().isStateful();
 	}
 
 	protected abstract ObjBuilder createBuilder(
@@ -155,7 +160,7 @@ public abstract class AbstractObjectValueBuilder
 			// No need to hold a false value.
 			final ValOp result =
 					function.arg(failure, OBJECT_VALUE.value())
-					.op(function, builder, getValueStruct(), NO_VAL_HOLDER);
+					.op(function, builder, getValueType(), NO_VAL_HOLDER);
 
 			result.storeFalse(failure);
 			failure.returnVoid();

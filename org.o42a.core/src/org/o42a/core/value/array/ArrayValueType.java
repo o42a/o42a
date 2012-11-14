@@ -19,10 +19,12 @@
 */
 package org.o42a.core.value.array;
 
+import static org.o42a.core.ir.value.array.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.array.ArrayValueTypeIR;
+import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
@@ -117,6 +119,11 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	@Override
 	public final ArrayValueType toArrayType() {
 		return this;
+	}
+
+	@Override
+	public final ValueIRDesc irDesc() {
+		return ARRAY_VALUE_IR_DESC;
 	}
 
 	public final ArrayValueTypeIR ir(Generator generator) {
