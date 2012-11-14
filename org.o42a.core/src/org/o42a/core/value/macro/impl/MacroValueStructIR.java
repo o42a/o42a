@@ -26,16 +26,18 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType.Op;
-import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.Void;
 import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.voids.VoidKeeperIR;
 
 
-final class MacroValueStructIR extends SingleValueStructIR<Macro> {
+final class MacroValueStructIR
+		extends ValueStructIR<SingleValueStruct<Macro>, Macro> {
 
 	MacroValueStructIR(Generator generator, MacroValueStruct valueStruct) {
 		super(generator, valueStruct);

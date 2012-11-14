@@ -31,13 +31,15 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.Void;
 
 
-final class VoidValueStructIR extends SingleValueStructIR<Void> {
+final class VoidValueStructIR
+		extends ValueStructIR<SingleValueStruct<Void>, Void> {
 
 	private Ptr<ValType.Op> valPtr;
 
