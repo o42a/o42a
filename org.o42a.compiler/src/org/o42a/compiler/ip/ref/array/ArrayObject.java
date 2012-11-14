@@ -30,7 +30,9 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.array.*;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayItem;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 final class ArrayObject extends ConstructedObject {
@@ -93,7 +95,7 @@ final class ArrayObject extends ConstructedObject {
 		if (!this.typeByItems) {
 			return super.determineValueStruct();
 		}
-		return getArray().getValueStruct();
+		return getArray().getTypeParameters().toValueStruct();
 	}
 
 	@Override
@@ -133,12 +135,15 @@ final class ArrayObject extends ConstructedObject {
 			return reproduced;
 		}
 
+		final ArrayValueType valueType = array.getValueType();
+
 		return new Array(
 				array,
 				this.reproducer.distribute(),
-				array.getValueType().arrayStruct(
+				valueType.typeParameters(
 						errorRef(
-								array.getValueStruct().getItemTypeRef(),
+								valueType.itemTypeRef(
+										array.getTypeParameters()),
 								distribute()).toTypeRef()),
 				new ArrayItem[0]);
 	}
@@ -163,8 +168,8 @@ final class ArrayObject extends ConstructedObject {
 		}
 
 		@Override
-		protected ArrayValueStruct knownArrayStruct() {
-			return this.object.value().getValueStruct().toArrayStruct();
+		protected TypeParameters<Array> knownTypeParameters() {
+			return this.object.type().getParameters().toArrayParameters();
 		}
 
 	}

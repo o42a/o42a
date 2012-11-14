@@ -42,7 +42,7 @@ public final class Array extends Placed {
 	private final Array origin;
 	private final PrefixPath prefix;
 	private final Obj owner;
-	private final ArrayValueStruct valueStruct;
+	private final TypeParameters<Array> typeParameters;
 	private final ArrayItem[] items;
 	private ArrayIR ir;
 	private ValueKnowledge valueKnowledge;
@@ -51,14 +51,14 @@ public final class Array extends Placed {
 	public Array(
 			LocationInfo location,
 			Distributor distributor,
-			ArrayValueStruct valueStruct,
+			TypeParameters<Array> typeParameters,
 			ArrayItem[] items) {
 		super(location, distributor);
 		this.origin = this;
 		this.prefix = PrefixPath.emptyPrefix(distributor.getScope());
 		this.owner = owner(distributor.getScope());
-		valueStruct.getItemTypeRef().assertSameScope(distributor);
-		this.valueStruct = valueStruct;
+		typeParameters.assertSameScope(distributor);
+		this.typeParameters = typeParameters;
 		this.items = items;
 	}
 
@@ -67,7 +67,7 @@ public final class Array extends Placed {
 		this.origin = from.getOrigin();
 		this.prefix = from.getPrefix().and(prefix);
 		this.owner = owner(prefix.getStart());
-		this.valueStruct = from.getValueStruct().prefixWith(prefix);
+		this.typeParameters = from.getTypeParameters().prefixWith(prefix);
 		this.items = from.prefixItems(prefix);
 		this.valueKnowledge = from.getValueKnowledge();
 		this.hasStaticItems = from.hasStaticItems();
@@ -90,15 +90,11 @@ public final class Array extends Placed {
 	}
 
 	public final ArrayValueType getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public final ArrayValueStruct getValueStruct() {
-		return this.valueStruct;
+		return getTypeParameters().getValueType().toArrayType();
 	}
 
 	public final TypeParameters<Array> getTypeParameters() {
-		return getValueStruct().getParameters();
+		return this.typeParameters;
 	}
 
 	public final boolean isVariable() {
@@ -141,10 +137,10 @@ public final class Array extends Placed {
 						distributor,
 						reproducer);
 
-		final ArrayValueStruct valueStruct =
-				getValueStruct().reproduce(contentReproducer);
+		final TypeParameters<Array> typeParameters =
+				getTypeParameters().reproduce(contentReproducer);
 
-		if (valueStruct == null) {
+		if (typeParameters == null) {
 			return null;
 		}
 
@@ -152,7 +148,7 @@ public final class Array extends Placed {
 				items(reproducer.getReproducingScope()),
 				contentReproducer);
 
-		return new Array(this, distributor, valueStruct, items);
+		return new Array(this, distributor, typeParameters, items);
 	}
 
 	public final Array prefixWith(PrefixPath prefix) {
@@ -170,7 +166,7 @@ public final class Array extends Placed {
 	}
 
 	public final Value<Array> toValue() {
-		return getValueStruct().compilerValue(this);
+		return getTypeParameters().compilerValue(this);
 	}
 
 	public final ArrayIR ir(ArrayIRGenerator generator) {
@@ -189,7 +185,7 @@ public final class Array extends Placed {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(getValueStruct()).append('[');
+		out.append(getTypeParameters()).append('[');
 
 		if (this.items.length == 0) {
 			return out.append(']').toString();

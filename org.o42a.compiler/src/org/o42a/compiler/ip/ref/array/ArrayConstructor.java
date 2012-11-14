@@ -37,6 +37,7 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
+import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.array.ArrayValueType;
 
@@ -92,11 +93,11 @@ public class ArrayConstructor extends ObjectConstructor {
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
 		if (request.isTransformAllowed()) {
 
-			final ArrayValueStruct arrayStruct =
-					request.getExpectedStruct().toArrayStruct();
+			final TypeParameters<Array> arrayParameters =
+					request.getExpectedParameters().toArrayParameters();
 
-			if (arrayStruct != null) {
-				return new ArrayInitValueAdapter(ref, this, arrayStruct);
+			if (arrayParameters != null) {
+				return new ArrayInitValueAdapter(ref, this, arrayParameters);
 			}
 		}
 

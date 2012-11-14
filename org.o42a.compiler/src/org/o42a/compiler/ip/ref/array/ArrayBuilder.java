@@ -28,8 +28,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
-import org.o42a.core.value.array.*;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayItem;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 abstract class ArrayBuilder {
@@ -48,14 +51,17 @@ abstract class ArrayBuilder {
 
 		final boolean typeByItems = typeByItems();
 		final Distributor distributor = scope.distribute();
-		final ArrayValueStruct valueStruct;
+		final TypeParameters<Array> typeParams;
 		TypeRef arrayItemType;
 
 		if (!typeByItems) {
-			valueStruct = knownArrayStruct().upgradeScope(scope);
-			arrayItemType = valueStruct.getItemTypeRef();
+			typeParams = knownTypeParameters().upgradeScope(scope);
+			arrayItemType =
+					typeParams.getValueType()
+					.toArrayType()
+					.itemTypeRef(typeParams);
 		} else {
-			valueStruct = null;
+			typeParams = null;
 			arrayItemType = null;
 		}
 
@@ -102,21 +108,21 @@ abstract class ArrayBuilder {
 			items[i] = new ArrayItem(i, errorRef(location, distributor));
 		}
 
-		final ArrayValueStruct finalValueStruct;
+		final TypeParameters<Array> finalTypeParams;
 
 		if (!typeByItems) {
-			finalValueStruct = valueStruct;
+			finalTypeParams = typeParams;
 		} else if (arrayItemType != null) {
-			finalValueStruct = arrayType().arrayStruct(arrayItemType);
+			finalTypeParams = arrayType().typeParameters(arrayItemType);
 		} else {
-			finalValueStruct = arrayType().arrayStruct(
+			finalTypeParams = arrayType().typeParameters(
 					ValueType.VOID.typeRef(this.constructor, scope));
 		}
 
 		return new Array(
 				this.constructor,
 				distributor,
-				finalValueStruct,
+				finalTypeParams,
 				items);
 	}
 
@@ -124,6 +130,6 @@ abstract class ArrayBuilder {
 
 	protected abstract boolean typeByItems();
 
-	protected abstract ArrayValueStruct knownArrayStruct();
+	protected abstract TypeParameters<Array> knownTypeParameters();
 
 }

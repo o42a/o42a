@@ -68,8 +68,11 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 				owner,
 				ownerIR.isExact() ? EXACT : DERIVED);
 		final ValOp value =
-				function.arg(function, OBJECT_VAL.value())
-				.op(function, builder, array.getValueStruct(), VAL_TRAP);
+				function.arg(function, OBJECT_VAL.value()).op(
+						function,
+						builder,
+						array.getTypeParameters().toValueStruct(),
+						VAL_TRAP);
 
 		if (array.isEmpty()) {
 			value.storeNull(function);
