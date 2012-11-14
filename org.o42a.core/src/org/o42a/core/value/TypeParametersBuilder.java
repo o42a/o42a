@@ -32,8 +32,6 @@ public interface TypeParametersBuilder {
 
 	TypeParametersBuilder prefixWith(PrefixPath prefix);
 
-	ValueStruct<?, ?> valueStructBy(TypeRef typeRef);
-
 	TypeParameters<?> typeParametersBy(TypeRef typeRef);
 
 	TypeParametersBuilder reproduce(Reproducer reproducer);

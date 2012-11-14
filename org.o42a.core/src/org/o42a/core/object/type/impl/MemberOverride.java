@@ -31,7 +31,7 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 
 
@@ -113,17 +113,17 @@ public final class MemberOverride extends Sample {
 					object.getScope().getEnclosingScope());
 		}
 
-		return ancestor.setParameters(valueStruct());
+		return ancestor.setParameters(typeParameters());
 	}
 
-	private ValueStruct<?, ?> valueStruct() {
+	private TypeParameters<?> typeParameters() {
 
 		final Obj object = getObject();
 		final Path memberPath = this.overriddenMember.getMemberKey().toPath();
 		final PrefixPath prefix =
 				memberPath.toPrefix(object.getScope().getEnclosingScope());
 
-		return object.value().getValueStruct().prefixWith(prefix);
+		return object.type().getParameters().prefixWith(prefix);
 	}
 
 }

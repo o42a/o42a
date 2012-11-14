@@ -35,6 +35,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.LinkUses;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -85,11 +86,12 @@ public final class ObjectFieldIR extends FieldIR {
 			return null;
 		}
 
+		final TypeParameters<?> parameters = object.type().getParameters();
+
 		final Obj ascendant =
-				object.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef()
+				parameters.getValueType()
+				.toLinkType()
+				.interfaceRef(parameters)
 				.getType();
 		final Obj target;
 		final DefTarget defTarget = object.value().getDefinitions().target();

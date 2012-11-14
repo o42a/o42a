@@ -40,9 +40,9 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.link.Link;
-import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -50,7 +50,6 @@ public class DereferenceStep extends Step {
 
 	private static final LinkInterface LINK_INTERFACE = new LinkInterface();
 
-	private LinkValueStruct linkStruct;
 	private ObjectStepUses uses;
 
 	@Override
@@ -103,15 +102,13 @@ public class DereferenceStep extends Step {
 			linkObjectValue.resolveAll(resolver);
 		}
 
-		final LinkValueStruct linkStruct =
-				linkObjectValue.getValueStruct().toLinkStruct();
+		final TypeParameters<?> typeParameters =
+				linkObject.type().getParameters();
+		final LinkValueType linkType =
+				typeParameters.getValueType().toLinkType();
 
-		assert linkStruct != null :
+		assert linkType != null :
 			linkObject + " is not a link object";
-
-		if (this.linkStruct == null) {
-			this.linkStruct = linkStruct;
-		}
 
 		final Value<?> value = linkObjectValue.getValue();
 		final Link link;
@@ -121,7 +118,7 @@ public class DereferenceStep extends Step {
 		} else if (value.getKnowledge().isFalse()) {
 			link = new RtLink(resolver.getPath(), resolver.getStart());
 		} else if (!value.getKnowledge().isFalse()) {
-			link = linkStruct.getValueType().cast(value.getCompilerValue());
+			link = linkType.cast(value.getCompilerValue());
 		} else {
 			return null;
 		}
@@ -225,11 +222,13 @@ public class DereferenceStep extends Step {
 		@Override
 		public Path expand(PathExpander expander, int index, Scope start) {
 
-			final LinkValueStruct linkStruct =
-					start.toObject().value().getValueStruct().toLinkStruct();
-			final TypeRef typeRef = linkStruct.getTypeRef();
+			final TypeParameters<?> typeParameters =
+					start.toObject().type().getParameters();
+			final LinkValueType linkType =
+					typeParameters.getValueType().toLinkType();
+			final TypeRef interfaceRef = linkType.interfaceRef(typeParameters);
 
-			return typeRef.getPath().getPath();
+			return interfaceRef.getPath().getPath();
 		}
 
 		@Override

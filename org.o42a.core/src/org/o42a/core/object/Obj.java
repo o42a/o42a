@@ -745,7 +745,7 @@ public abstract class Obj
 		}
 
 		final ValueStruct<?, ?> ancestorValueStruct =
-				ancestor.getValueStruct();
+				ancestor.getParameters().toValueStruct();
 
 		if (!ancestorValueStruct.isScoped()) {
 			return ancestorValueStruct;

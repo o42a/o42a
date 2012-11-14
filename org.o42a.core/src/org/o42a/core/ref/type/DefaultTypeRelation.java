@@ -62,7 +62,7 @@ final class DefaultTypeRelation extends TypeRelation {
 						of().getParameters().relationTo(to().getParameters());
 
 				if (logger != null && structRelation == Kind.INCOMPATIBLE) {
-					logger.incompatible(to(), of().getValueStruct());
+					logger.incompatible(to(), of().getParameters());
 				}
 
 				return structRelation;

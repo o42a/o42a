@@ -19,8 +19,6 @@
 */
 package org.o42a.common.macro.st;
 
-import static org.o42a.core.value.link.LinkValueType.LINK;
-
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -28,8 +26,9 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -39,11 +38,6 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 
 	ParentTypeParameters(Scope scope) {
 		this.scope = scope;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
-		return valueStruct();
 	}
 
 	@Override
@@ -59,7 +53,7 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 
 	@Override
 	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
-		return valueStruct().prefixWith(prefix);
+		return typeParameters().prefixWith(prefix);
 	}
 
 	private TypeParameters<?> typeParameters() {
@@ -91,34 +85,6 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 				.rescope(this.scope);
 
 		return LinkValueType.LINK.typeParameters(parentValueTypeRef);
-	}
-
-	private ValueStruct<?, ?> valueStruct() {
-
-		final Obj parent = this.scope.toObject();
-		final ValueStruct<?, ?> parentValueStruct =
-				parent.value().getValueStruct();
-		final LinkValueStruct parentLinkStruct =
-				parentValueStruct.toLinkStruct();
-
-		if (parentLinkStruct != null) {
-			// Parent object is link.
-			if (parentLinkStruct.getValueType().is(LINK)) {
-				// Parent object is link.
-				return parentLinkStruct;
-			}
-			// Construct a link with the same interface.
-			return LINK.linkStruct(parentLinkStruct.getTypeRef());
-		}
-
-		final StaticTypeRef parentValueTypeRef =
-				parentValueStruct.getValueType()
-				.typeRef(this.scope, this.scope.getEnclosingScope())
-				.setParameters(parentValueStruct)
-				.rescope(this.scope);
-
-		// Construct a link.
-		return LINK.linkStruct(parentValueTypeRef);
 	}
 
 }

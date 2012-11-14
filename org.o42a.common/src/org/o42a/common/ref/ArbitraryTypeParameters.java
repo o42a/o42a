@@ -24,7 +24,9 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.link.LinkValueType;
 
@@ -73,12 +75,6 @@ public class ArbitraryTypeParameters
 		}
 
 		return new ArbitraryTypeParameters(this, newParameters);
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
-		return typeRef.defaultValueStruct().setParameters(
-				typeParametersBy(typeRef));
 	}
 
 	@Override

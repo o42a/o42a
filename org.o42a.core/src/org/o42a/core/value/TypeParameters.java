@@ -252,14 +252,6 @@ public final class TypeParameters<T>
 	}
 
 	@Override
-	public final ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
-		if (isEmpty()) {
-			return typeRef.defaultValueStruct();
-		}
-		return typeRef.defaultValueStruct().setParameters(this);
-	}
-
-	@Override
 	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
 		if (isEmpty()) {
 			return typeRef.defaultParameters();
@@ -307,6 +299,36 @@ public final class TypeParameters<T>
 		}
 
 		return prefixWith(upgradePrefix(scope, toScope));
+	}
+
+	public TypeParameters<T> rebuildIn(Scope scope) {
+		if (isEmpty()) {
+			return this;
+		}
+
+		final TypeParameter[] oldParameters = all();
+		TypeParameter[] newParameters = null;
+
+		for (int i = 0; i < oldParameters.length; ++i) {
+
+			final TypeParameter oldParameter = oldParameters[i];
+			final TypeParameter newParameter = oldParameter.rebuildIn(scope);
+
+			if (oldParameter == newParameter) {
+				continue;
+			}
+			if (newParameters == null) {
+				newParameters = new TypeParameter[oldParameters.length];
+				System.arraycopy(oldParameters, 0, newParameters, 0, i);
+			}
+			newParameters[i] = newParameter;
+		}
+
+		if (newParameters == null) {
+			return this;
+		}
+
+		return new TypeParameters<T>(this, getValueType(), newParameters);
 	}
 
 	public final ValueStruct<?, T> toValueStruct() {
