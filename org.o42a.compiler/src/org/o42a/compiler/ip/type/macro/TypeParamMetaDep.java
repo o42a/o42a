@@ -71,7 +71,7 @@ final class TypeParamMetaDep extends MetaDep {
 		final Obj nested =
 				nesting.findObjectIn(getDeclaredIn().getObject().getScope());
 
-		return this.nestedDep = new ValueStructUpdate(this, nested.meta());
+		return this.nestedDep = new TypeParametersUpdate(this, nested.meta());
 	}
 
 	@Override
