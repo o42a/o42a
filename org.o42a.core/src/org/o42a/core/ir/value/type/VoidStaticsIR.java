@@ -17,29 +17,43 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.link.impl;
+package org.o42a.core.ir.value.type;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.struct.AbstractValueStructIR;
-import org.o42a.core.object.state.Keeper;
-import org.o42a.core.value.link.KnownLink;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValType.Op;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.Void;
 
 
-abstract class AbstractLinkValueStructIR
-		extends AbstractValueStructIR<LinkValueStruct, KnownLink> {
+public class VoidStaticsIR<T> extends StaticsIR<T> {
 
-	AbstractLinkValueStructIR(
+	public VoidStaticsIR(
 			Generator generator,
-			LinkValueStruct valueStruct) {
-		super(generator, valueStruct);
+			ValueType<?, T> valueType) {
+		super(generator, valueType);
 	}
 
 	@Override
-	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
-		return new LinkKeeperIR(this, bodyIR, keeper);
+	public Val val(T value) {
+
+		final Val voidValue = voidStaticsIR().val(Void.VOID);
+
+		return new Val(
+				getValueType(),
+				voidValue.getFlags(),
+				voidValue.getLength(),
+				voidValue.getValue());
+	}
+
+	@Override
+	public Ptr<Op> valPtr(T value) {
+		return voidStaticsIR().valPtr(Void.VOID);
+	}
+
+	private StaticsIR<Void> voidStaticsIR() {
+		return ValueType.VOID.staticsIR(getGenerator());
 	}
 
 }

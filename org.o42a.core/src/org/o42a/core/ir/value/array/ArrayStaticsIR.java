@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,31 +22,35 @@ package org.o42a.core.ir.value.array;
 import static org.o42a.core.ir.IRNames.DATA_ID;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.type.StaticsIR;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.array.Array;
 import org.o42a.util.string.ID;
 
 
-public class ArrayValueTypeIR implements ArrayIRGenerator {
+public class ArrayStaticsIR
+		extends StaticsIR<Array>
+		implements ArrayIRGenerator {
 
 	private static final ID ROW_DATA_ID = DATA_ID.sub("ROW");
 	private static final ID ARRAY_DATA_ID = DATA_ID.sub("ARRAY");
-
-	private final Generator generator;
-	private final ArrayValueType valueType;
 	private int idSeq;
 
-	public ArrayValueTypeIR(Generator generator, ArrayValueType valueType) {
-		this.generator = generator;
-		this.valueType = valueType;
+	public ArrayStaticsIR(Generator generator, ValueType<?, Array> valueType) {
+		super(generator, valueType);
 	}
 
 	@Override
-	public final Generator getGenerator() {
-		return this.generator;
+	public Val val(Array value) {
+		return value.ir(this).getVal();
 	}
 
-	public final ArrayValueType getValueType() {
-		return this.valueType;
+	@Override
+	public Ptr<ValType.Op> valPtr(Array value) {
+		return value.ir(this).getValPtr();
 	}
 
 	@Override
@@ -61,14 +65,6 @@ public class ArrayValueTypeIR implements ArrayIRGenerator {
 		}
 
 		return prefix.anonymous(++this.idSeq);
-	}
-
-	@Override
-	public String toString() {
-		if (this.valueType == null) {
-			return super.toString();
-		}
-		return this.valueType + " IR";
 	}
 
 }

@@ -31,7 +31,6 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.array.ArrayIR;
-import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
@@ -158,9 +157,8 @@ final class ArrayConstantDef extends Def {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ArrayValueType valueType = this.array.getValueType();
-			final ArrayValueTypeIR valueTypeIR =
-					valueType.ir(dirs.getGenerator());
-			final ArrayIR arrayIR = this.array.ir(valueTypeIR);
+			final ArrayIR arrayIR =
+					this.array.ir(valueType.irGenerator(dirs.getGenerator()));
 			final ObjectOp array =
 					this.array.getPrefix()
 					.write(dirs.dirs(), host)

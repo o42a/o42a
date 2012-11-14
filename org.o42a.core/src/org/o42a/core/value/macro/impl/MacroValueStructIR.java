@@ -20,18 +20,13 @@
 package org.o42a.core.value.macro.impl;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType.Op;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.Void;
 import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.voids.VoidKeeperIR;
 
@@ -41,24 +36,6 @@ final class MacroValueStructIR
 
 	MacroValueStructIR(Generator generator, MacroValueStruct valueStruct) {
 		super(generator, valueStruct);
-	}
-
-	@Override
-	public Val val(Macro value) {
-
-		final Val voidValue =
-				ValueStruct.VOID.ir(getGenerator()).val(Void.VOID);
-
-		return new Val(
-				getValueType(),
-				voidValue.getFlags(),
-				voidValue.getLength(),
-				voidValue.getValue());
-	}
-
-	@Override
-	public Ptr<Op> valPtr(Macro value) {
-		return ValueStruct.VOID.ir(getGenerator()).valPtr(Void.VOID);
 	}
 
 	@Override

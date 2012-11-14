@@ -37,7 +37,6 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.array.ArrayValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
@@ -46,6 +45,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
@@ -128,14 +128,12 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 			val.set(FALSE_VAL);
 		} else {
 
-			final ArrayValueStruct arrayStruct =
-					getObject().value().getValueStruct().toArrayStruct();
+			final ArrayValueType arrayType =
+					getObject().value().getValueType().toArrayType();
 			final Array array =
-					arrayStruct.getValueType().cast(value).getCompilerValue();
-			final ArrayValueStructIR arrayStructIR =
-					(ArrayValueStructIR) arrayStruct.ir(getGenerator());
+					arrayType.cast(value).getCompilerValue();
 
-			val.set(arrayStructIR.val(array));
+			val.set(arrayType.staticsIR(getGenerator()).val(array));
 		}
 	}
 

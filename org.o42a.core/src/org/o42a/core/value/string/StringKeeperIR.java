@@ -22,6 +22,7 @@ package org.o42a.core.value.string;
 import static org.o42a.core.ir.field.FldKind.STRING_KEEPER;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+import static org.o42a.core.value.ValueType.STRING;
 import static org.o42a.core.value.string.StringKeeperIRType.STRING_KEEPER_IR_TYPE;
 
 import org.o42a.codegen.data.Content;
@@ -68,14 +69,9 @@ final class StringKeeperIR
 			val.set(FALSE_VAL);
 		} else {
 
-			final StringValueStructIR valueStructIR =
-					(StringValueStructIR) getValueStructIR();
-			final String compilerValue =
-					valueStructIR.getValueType()
-					.cast(value)
-					.getCompilerValue();
+			final String compilerValue = STRING.cast(value).getCompilerValue();
 
-			val.set(valueStructIR.val(compilerValue));
+			val.set(STRING.staticsIR(getGenerator()).val(compilerValue));
 		}
 	}
 

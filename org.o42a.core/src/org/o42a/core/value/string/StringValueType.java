@@ -22,6 +22,8 @@ package org.o42a.core.value.string;
 import static org.o42a.core.ir.value.type.ValueIRDesc.EXTERN_VALUE_IR_DESC;
 import static org.o42a.util.string.StringCodec.escapeControlChars;
 
+import org.o42a.codegen.Generator;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -70,6 +72,11 @@ public final class StringValueType extends SingleValueType<String> {
 	@Override
 	public ValueIRDesc irDesc() {
 		return EXTERN_VALUE_IR_DESC;
+	}
+
+	@Override
+	protected StaticsIR<String> createStaticsIR(Generator generator) {
+		return new StringStaticsIR(generator, this);
 	}
 
 }

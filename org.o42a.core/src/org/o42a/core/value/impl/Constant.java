@@ -29,7 +29,7 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -141,16 +141,16 @@ public final class Constant<T> extends ObjectConstructor {
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
 
-			final ValueStructIR<?, T> valueStructIR =
-					this.constant.getValueType().struct().ir(getGenerator());
+			final StaticsIR<T> staticsIR =
+					this.constant.getValueType().staticsIR(getGenerator());
 			final Ptr<ValType.Op> ptr =
-					valueStructIR.valPtr(this.constant.getConstant());
+					staticsIR.valPtr(this.constant.getConstant());
 			final ValType.Op op =
 					ptr.op(ptr.getId(), dirs.code());
 
 			return op.op(
 					dirs.getBuilder(),
-					valueStructIR.val(this.constant.getConstant()));
+					staticsIR.val(this.constant.getConstant()));
 		}
 
 		@Override

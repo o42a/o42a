@@ -19,31 +19,20 @@
 */
 package org.o42a.core.value.floats;
 
-import static org.o42a.core.ir.IRNames.CONST_ID;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.object.state.Keeper;
-import org.o42a.util.string.ID;
 
 
 final class FloatValueStructIR
 		extends SingleValueStructIR<Double> {
 
-	private int constSeq;
-
 	FloatValueStructIR(Generator generator, FloatValueStruct valueStruct) {
 		super(generator, valueStruct);
-	}
-
-	@Override
-	public Val val(Double value) {
-		return new Val(value);
 	}
 
 	@Override
@@ -54,11 +43,6 @@ final class FloatValueStructIR
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
 		return defaultValueIR(objectIR);
-	}
-
-	@Override
-	protected ID constId(Double value) {
-		return CONST_ID.sub("FLOAT").anonymous(++this.constSeq);
 	}
 
 }

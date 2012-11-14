@@ -19,18 +19,10 @@
 */
 package org.o42a.core.value.voids;
 
-import static org.o42a.core.ir.IRNames.CONST_ID;
-import static org.o42a.core.ir.value.Val.VOID_VAL;
-import static org.o42a.core.ir.value.ValType.VAL_TYPE;
-
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.state.Keeper;
@@ -41,31 +33,8 @@ import org.o42a.core.value.Void;
 final class VoidValueStructIR
 		extends ValueStructIR<SingleValueStruct<Void>, Void> {
 
-	private Ptr<ValType.Op> valPtr;
-
 	VoidValueStructIR(Generator generator, VoidValueStruct valueStruct) {
 		super(generator, valueStruct);
-	}
-
-	@Override
-	public Val val(Void value) {
-		return VOID_VAL;
-	}
-
-	@Override
-	public Ptr<ValType.Op> valPtr(Void value) {
-		if (this.valPtr != null) {
-			return this.valPtr;
-		}
-
-		final Global<ValType.Op, ValType> global =
-				getGenerator()
-				.newGlobal()
-				.setConstant()
-				.dontExport()
-				.newInstance(CONST_ID.sub("VOID"), VAL_TYPE, val(value));
-
-		return this.valPtr = global.getPointer();
 	}
 
 	@Override

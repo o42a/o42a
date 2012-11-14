@@ -22,7 +22,10 @@ package org.o42a.core.value.macro.impl;
 import static org.o42a.core.ir.value.type.ValueIRDesc.VOID_VALUE_IR_DESC;
 import static org.o42a.core.value.macro.impl.PrefixedMacro.prefixMacro;
 
+import org.o42a.codegen.Generator;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
+import org.o42a.core.ir.value.type.VoidStaticsIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
@@ -78,6 +81,11 @@ public final class MacroValueType extends SingleValueType<Macro> {
 		}
 
 		return compilerValue(newMacro);
+	}
+
+	@Override
+	protected StaticsIR<Macro> createStaticsIR(Generator generator) {
+		return new VoidStaticsIR<Macro>(generator, this);
 	}
 
 }

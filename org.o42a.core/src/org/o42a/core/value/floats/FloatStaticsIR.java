@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,17 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.struct;
+package org.o42a.core.value.floats;
+
+import static org.o42a.core.ir.IRNames.CONST_ID;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.type.CachingStaticsIR;
+import org.o42a.util.string.ID;
 
 
-public abstract class AbstractValueStructIR<S extends ValueStruct<S, T>, T>
-		extends ValueStructIR<S, T> {
+final class FloatStaticsIR extends CachingStaticsIR<Double> {
 
-	public AbstractValueStructIR(Generator generator, S valueStruct) {
-		super(generator, valueStruct);
+	private int constSeq;
+
+	FloatStaticsIR(Generator generator, FloatValueType valueType) {
+		super(generator, valueType);
+	}
+
+	@Override
+	public Val val(Double value) {
+		return new Val(value);
+	}
+
+	@Override
+	protected ID constId(Double value) {
+		return CONST_ID.sub("FLOAT").anonymous(++this.constSeq);
 	}
 
 }

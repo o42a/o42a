@@ -19,52 +19,17 @@
 */
 package org.o42a.core.ir.value.struct;
 
-import static org.o42a.core.ir.value.ValType.VAL_TYPE;
-
-import java.util.HashMap;
-
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.SingleValueStruct;
-import org.o42a.util.string.ID;
 
 
 public abstract class SingleValueStructIR<T>
 		extends ValueStructIR<SingleValueStruct<T>, T> {
-
-	private final HashMap<T, Ptr<ValType.Op>> constCache =
-			new HashMap<T, Ptr<ValType.Op>>();
 
 	public SingleValueStructIR(
 			Generator generator,
 			SingleValueStruct<T> valueStruct) {
 		super(generator, valueStruct);
 	}
-
-	@Override
-	public Ptr<ValType.Op> valPtr(T value) {
-
-		final Ptr<ValType.Op> cached = this.constCache.get(value);
-
-		if (cached != null) {
-			return cached;
-		}
-
-		final Global<ValType.Op, ValType> global =
-				getGenerator()
-				.newGlobal()
-				.setConstant()
-				.dontExport()
-				.newInstance(constId(value), VAL_TYPE, val(value));
-		final Ptr<ValType.Op> result = global.getPointer();
-
-		this.constCache.put(value, result);
-
-		return result;
-	}
-
-	protected abstract ID constId(T value);
 
 }

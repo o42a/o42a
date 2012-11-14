@@ -23,7 +23,9 @@ import static org.o42a.core.ir.value.array.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.array.ArrayValueTypeIR;
+import org.o42a.core.ir.value.array.ArrayIRGenerator;
+import org.o42a.core.ir.value.array.ArrayStaticsIR;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -44,7 +46,6 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 
 	private final boolean variable;
 	private final ArrayValueConverter converter;
-	private ArrayValueTypeIR ir;
 
 	private ArrayValueType(boolean variable) {
 		super(variable ? "array" : "row", Array.class);
@@ -126,11 +127,8 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 		return ARRAY_VALUE_IR_DESC;
 	}
 
-	public final ArrayValueTypeIR ir(Generator generator) {
-		if (this.ir != null && this.ir.getGenerator() == generator) {
-			return this.ir;
-		}
-		return this.ir = new ArrayValueTypeIR(generator, this);
+	public final ArrayIRGenerator irGenerator(Generator generator) {
+		return (ArrayStaticsIR) staticsIR(generator);
 	}
 
 	@Override
@@ -205,6 +203,11 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 				item.resolveAll(resolver);
 			}
 		}
+	}
+
+	@Override
+	protected StaticsIR<Array> createStaticsIR(Generator generator) {
+		return new ArrayStaticsIR(generator, this);
 	}
 
 }
