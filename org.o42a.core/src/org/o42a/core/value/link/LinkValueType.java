@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.member.MemberKey;
@@ -50,13 +49,6 @@ public abstract class LinkValueType
 			return intrinsics.getLink();
 		}
 
-		@Override
-		LinkValueStructIR structIR(
-				Generator generator,
-				LinkValueStruct linkStruct) {
-			return new LinkValueStructIR(generator, linkStruct);
-		}
-
 	};
 
 	public static final LinkValueType VARIABLE = new LinkValueType("variable") {
@@ -64,13 +56,6 @@ public abstract class LinkValueType
 		@Override
 		public Obj typeObject(Intrinsics intrinsics) {
 			return intrinsics.getVariable();
-		}
-
-		@Override
-		VariableValueStructIR structIR(
-				Generator generator,
-				LinkValueStruct linkStruct) {
-			return new VariableValueStructIR(generator, linkStruct);
 		}
 
 	};
@@ -242,9 +227,5 @@ public abstract class LinkValueType
 	protected StaticsIR<KnownLink> createStaticsIR(Generator generator) {
 		return new LinkStaticsIR(generator, this);
 	}
-
-	abstract ValueStructIR<LinkValueStruct, KnownLink> structIR(
-			Generator generator,
-			LinkValueStruct linkStruct);
 
 }

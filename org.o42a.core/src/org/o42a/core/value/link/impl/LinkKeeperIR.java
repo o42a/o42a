@@ -40,7 +40,7 @@ final class LinkKeeperIR
 		implements Content<LinkKeeperIRType> {
 
 	LinkKeeperIR(
-			AbstractLinkValueStructIR valueStructIR,
+			LinkValueStructIR valueStructIR,
 			ObjectIRBody bodyIR,
 			Keeper keeper) {
 		super(valueStructIR, bodyIR, keeper);

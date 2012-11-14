@@ -21,11 +21,17 @@ package org.o42a.core.value.link.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.object.state.Keeper;
+import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueStruct;
 
 
-public class LinkValueStructIR extends AbstractLinkValueStructIR {
+public final class LinkValueStructIR
+		extends ValueStructIR<LinkValueStruct, KnownLink> {
 
 	public LinkValueStructIR(
 			Generator generator,
@@ -34,7 +40,15 @@ public class LinkValueStructIR extends AbstractLinkValueStructIR {
 	}
 
 	@Override
+	public KeeperIR<?, ?> createKeeperIR(ObjectIRBody bodyIR, Keeper keeper) {
+		return new LinkKeeperIR(this, bodyIR, keeper);
+	}
+
+	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
+		if (getValueType().isVariable()) {
+			return new VariableIR(this, objectIR);
+		}
 		return new LinkIR(this, objectIR);
 	}
 

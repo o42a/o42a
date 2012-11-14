@@ -33,6 +33,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.link.impl.LinkValueStructIR;
 
 
 public final class LinkValueStruct
@@ -172,7 +173,7 @@ public final class LinkValueStruct
 	@Override
 	protected ValueStructIR<LinkValueStruct, KnownLink> createIR(
 			Generator generator) {
-		return getValueType().structIR(generator, this);
+		return new LinkValueStructIR(generator, this);
 	}
 
 }

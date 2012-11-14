@@ -43,7 +43,7 @@ import org.o42a.core.ir.value.struct.*;
 
 final class VariableIR extends ValueIR {
 
-	VariableIR(VariableValueStructIR valueStructIR, ObjectIR objectIR) {
+	VariableIR(LinkValueStructIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
 	}
 
