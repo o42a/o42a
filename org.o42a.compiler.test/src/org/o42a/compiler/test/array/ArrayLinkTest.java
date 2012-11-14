@@ -30,7 +30,7 @@ import static org.o42a.core.value.link.LinkValueType.LINK;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;

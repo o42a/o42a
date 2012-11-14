@@ -21,7 +21,7 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.ref.type.TypeParametersBuilder.DEFAULT_TYPE_PARAMETERS;
+import static org.o42a.core.value.TypeParametersBuilder.DEFAULT_TYPE_PARAMETERS;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -36,9 +36,7 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.util.log.Loggable;
 
 

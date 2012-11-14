@@ -23,9 +23,9 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 final class ObjectDefinerImpl implements ObjectDefiner {

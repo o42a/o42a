@@ -21,8 +21,8 @@ package org.o42a.core.object.type;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 public interface AscendantsBuilder<A extends AscendantsBuilder<A>> {

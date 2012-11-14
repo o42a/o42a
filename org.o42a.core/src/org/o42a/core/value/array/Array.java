@@ -30,9 +30,9 @@ import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
 

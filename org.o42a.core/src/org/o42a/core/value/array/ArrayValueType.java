@@ -28,12 +28,9 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueKnowledge;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.core.value.link.LinkValueType;
 
 

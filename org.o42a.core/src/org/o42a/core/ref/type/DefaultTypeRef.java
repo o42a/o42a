@@ -20,6 +20,7 @@
 package org.o42a.core.ref.type;
 
 import org.o42a.core.ref.Ref;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 final class DefaultTypeRef extends TypeRef {

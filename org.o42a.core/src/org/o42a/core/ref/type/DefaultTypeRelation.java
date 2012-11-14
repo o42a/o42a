@@ -24,6 +24,7 @@ import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 import org.o42a.core.Scope;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.value.TypeParameters;
 
 
 final class DefaultTypeRelation extends TypeRelation {

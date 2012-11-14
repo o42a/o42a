@@ -25,8 +25,6 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParameters;
-import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.array.ArrayValueType;

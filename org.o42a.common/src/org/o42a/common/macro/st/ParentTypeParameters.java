@@ -25,10 +25,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.*;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.link.LinkValueType;
 

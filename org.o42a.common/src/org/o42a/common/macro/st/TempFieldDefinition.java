@@ -29,7 +29,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeParametersBuilder;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 final class TempFieldDefinition extends FieldDefinition {

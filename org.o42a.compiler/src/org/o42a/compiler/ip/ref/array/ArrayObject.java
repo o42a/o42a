@@ -27,8 +27,8 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.ConstructedObject;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.*;
 

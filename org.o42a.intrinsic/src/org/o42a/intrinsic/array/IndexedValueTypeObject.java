@@ -22,7 +22,7 @@ package org.o42a.intrinsic.array;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.ArrayValueType;
 
