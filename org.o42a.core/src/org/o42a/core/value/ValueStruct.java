@@ -21,11 +21,9 @@ package org.o42a.core.value;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.directive.Directive;
@@ -122,12 +120,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public final Value<T> falseValue() {
 		return this.falseValue;
-	}
-
-	public final Definitions noValueDefinitions(
-			LocationInfo location,
-			Scope scope) {
-		return Definitions.noValueDefinitions(location, scope, this);
 	}
 
 	public final boolean isScoped() {

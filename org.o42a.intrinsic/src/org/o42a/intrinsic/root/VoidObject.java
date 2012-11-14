@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
+import static org.o42a.core.value.TypeParameters.typeParameters;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.Generator;
@@ -44,6 +45,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
@@ -102,7 +104,8 @@ public final class VoidObject extends BuiltinObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return new BuiltinDef(this).toDefinitions(ValueStruct.VOID);
+		return new BuiltinDef(this)
+		.toDefinitions(typeParameters(this, ValueType.VOID));
 	}
 
 	private static VoidScope voidScope(Scope topScope) {

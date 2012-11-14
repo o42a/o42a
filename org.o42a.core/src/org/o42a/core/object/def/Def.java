@@ -35,6 +35,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.TargetResolver;
@@ -138,6 +139,17 @@ public abstract class Def implements SourceInfo {
 		return valueStruct.getValueType();
 	}
 
+	public final TypeParameters<?> getTypeParameters() {
+
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+
+		if (valueStruct == null) {
+			return null;
+		}
+
+		return valueStruct.getParameters();
+	}
+
 	public final ValueStruct<?, ?> getValueStruct() {
 
 		final Scope scope = getScopeUpgrade().rescope(getScope());
@@ -221,15 +233,15 @@ public abstract class Def implements SourceInfo {
 		return new VoidDef(this);
 	}
 
-	public final Definitions toDefinitions(ValueStruct<?, ?> valueStruct) {
-		assert valueStruct != null :
-			"Value structure expected";
+	public final Definitions toDefinitions(TypeParameters<?> typeParameters) {
+		assert typeParameters != null :
+			"Type parameters expected";
 
 		if (isClaim()) {
 			return new Definitions(
 					this,
 					getScope(),
-					valueStruct,
+					typeParameters,
 					new Defs(true, this),
 					NO_PROPOSITIONS);
 		}
@@ -237,7 +249,7 @@ public abstract class Def implements SourceInfo {
 		return new Definitions(
 				this,
 				getScope(),
-				valueStruct,
+				typeParameters,
 				NO_CLAIMS,
 				new Defs(false, this));
 	}

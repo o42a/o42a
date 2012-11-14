@@ -79,7 +79,7 @@ public final class KeeperAccessor extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return new KeeperAccessDef(this).toDefinitions(value().getValueStruct());
+		return new KeeperAccessDef(this).toDefinitions(type().getParameters());
 	}
 
 	@Override

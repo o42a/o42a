@@ -28,7 +28,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.DefTargets;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 
 
 final class BlockDefinitions {
@@ -67,12 +67,12 @@ final class BlockDefinitions {
 
 	public Definitions createDefinitions() {
 
-		final ValueStruct<?, ?> valueStruct =
-				this.definer.env().getValueRequest().getExpectedStruct();
+		final TypeParameters<?> typeParameters =
+				this.definer.env().getValueRequest().getExpectedParameters();
 		final Definitions claims;
 
 		if (this.claims == null) {
-			claims = valueStruct.noValueDefinitions(
+			claims = typeParameters.noValueDefinitions(
 					getBlock(),
 					getBlock().getScope());
 		} else {
@@ -82,7 +82,7 @@ final class BlockDefinitions {
 							this.claimTargets,
 							this.claims,
 							true)
-					.toDefinitions(valueStruct);
+					.toDefinitions(typeParameters);
 		}
 
 		if (this.propositions == null) {
@@ -95,7 +95,7 @@ final class BlockDefinitions {
 						this.propositionTargets,
 						this.propositions,
 						false)
-				.toDefinitions(valueStruct));
+				.toDefinitions(typeParameters));
 	}
 
 	@Override

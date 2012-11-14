@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.value.TypeParameters.typeParameters;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
@@ -84,7 +86,8 @@ public abstract class SingleValueType<T>
 	public final Definitions noValueDefinitions(
 			LocationInfo location,
 			Scope scope) {
-		return struct().noValueDefinitions(location, scope);
+		return typeParameters(location, this)
+				.noValueDefinitions(location, scope);
 	}
 
 	@Override

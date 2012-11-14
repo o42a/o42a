@@ -24,6 +24,7 @@ import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
+import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
@@ -35,10 +36,9 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
-import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -56,16 +56,16 @@ public class Definitions extends Scoped {
 	public static Definitions noValueDefinitions(
 			LocationInfo location,
 			Scope scope,
-			ValueStruct<?, ?> valueStruct) {
+			TypeParameters<?> typeParameters) {
 		return new Definitions(
 				location,
 				scope,
-				valueStruct,
+				typeParameters,
 				NO_CLAIMS,
 				NO_PROPOSITIONS);
 	}
 
-	private final ValueStruct<?, ?> valueStruct;
+	private final TypeParameters<?> typeParameters;
 	private final Defs claims;
 	private final Defs propositions;
 
@@ -75,13 +75,13 @@ public class Definitions extends Scoped {
 	Definitions(
 			LocationInfo location,
 			Scope scope,
-			ValueStruct<?, ?> valueStruct,
+			TypeParameters<?> typeParameters,
 			Defs claims,
 			Defs propositions) {
 		super(location, scope);
 		assert claims.assertValid(scope, true);
 		assert propositions.assertValid(scope, false);
-		this.valueStruct = valueStruct;
+		this.typeParameters = typeParameters;
 		this.claims = claims;
 		this.propositions = propositions;
 		assert assertEmptyWithoutValues();
@@ -98,30 +98,30 @@ public class Definitions extends Scoped {
 
 	Definitions(
 			Definitions prototype,
-			ValueStruct<?, ?> valueStruct,
+			TypeParameters<?> typeParameters,
 			Defs claims,
 			Defs propositions) {
 		this(
 				prototype,
 				prototype.getScope(),
-				valueStruct,
+				typeParameters,
 				claims,
 				propositions);
 	}
 
 	public final ValueType<?, ?> getValueType() {
 
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
+		final TypeParameters<?> typeParameters = getTypeParameters();
 
-		return valueStruct != null ? valueStruct.getValueType() : null;
+		return typeParameters != null ? typeParameters.getValueType() : null;
 	}
 
 	public final boolean hasValues() {
-		return getValueStruct() != null;
+		return getTypeParameters() != null;
 	}
 
-	public final ValueStruct<?, ?> getValueStruct() {
-		return this.valueStruct;
+	public final TypeParameters<?> getTypeParameters() {
+		return this.typeParameters;
 	}
 
 	public boolean isEmpty() {
@@ -145,9 +145,9 @@ public class Definitions extends Scoped {
 
 		switch (claim.getCondition()) {
 		case FALSE:
-			return this.constant = getValueStruct().falseValue();
+			return this.constant = getTypeParameters().falseValue();
 		case RUNTIME:
-			return this.constant = getValueStruct().runtimeValue();
+			return this.constant = getTypeParameters().runtimeValue();
 		case TRUE:
 			break;
 		}
@@ -158,10 +158,10 @@ public class Definitions extends Scoped {
 			return this.constant = proposition.getValue();
 		}
 		if (proposition.getCondition().isConstant()) {
-			return this.constant = getValueStruct().falseValue();
+			return this.constant = getTypeParameters().falseValue();
 		}
 
-		return this.constant = getValueStruct().runtimeValue();
+		return this.constant = getTypeParameters().runtimeValue();
 	}
 
 	public final Defs claims() {
@@ -198,9 +198,9 @@ public class Definitions extends Scoped {
 
 		switch (claim.getCondition()) {
 		case FALSE:
-			return getValueStruct().falseValue();
+			return getTypeParameters().falseValue();
 		case RUNTIME:
-			return getValueStruct().runtimeValue();
+			return getTypeParameters().runtimeValue();
 		case TRUE:
 			break;
 		}
@@ -211,10 +211,10 @@ public class Definitions extends Scoped {
 			return proposition.getValue();
 		}
 		if (proposition.getCondition().isConstant()) {
-			return getValueStruct().falseValue();
+			return getTypeParameters().falseValue();
 		}
 
-		return getValueStruct().runtimeValue();
+		return getTypeParameters().runtimeValue();
 	}
 
 	public Definitions refine(Definitions refinements) {
@@ -226,9 +226,9 @@ public class Definitions extends Scoped {
 			return refinements;
 		}
 
-		final ValueStruct<?, ?> valueStruct =
-				getValueStruct() != null
-				? getValueStruct() : refinements.getValueStruct();
+		final TypeParameters<?> typeParameters =
+				getTypeParameters() != null
+				? getTypeParameters() : refinements.getTypeParameters();
 		final Defs newClaims = claims().add(refinements.claims());
 		final Defs newPropositions;
 
@@ -240,7 +240,7 @@ public class Definitions extends Scoped {
 
 		return new Definitions(
 				this,
-				valueStruct,
+				typeParameters,
 				newClaims,
 				newPropositions);
 	}
@@ -255,7 +255,7 @@ public class Definitions extends Scoped {
 		}
 		return new Definitions(
 				this,
-				getValueStruct(),
+				getTypeParameters(),
 				propositions().claim(claims()),
 				NO_PROPOSITIONS);
 	}
@@ -266,7 +266,7 @@ public class Definitions extends Scoped {
 		}
 		return new Definitions(
 				this,
-				getValueStruct(),
+				getTypeParameters(),
 				NO_CLAIMS,
 				claims().unclaim(propositions()));
 	}
@@ -288,25 +288,25 @@ public class Definitions extends Scoped {
 		}
 		return new Definitions(
 				this,
-				ValueStruct.VOID,
+				typeParameters(this, ValueType.VOID),
 				claims().toVoid(),
 				propositions().toVoid());
 	}
 
-	public final Definitions upgradeValueStruct(ValueStruct<?, ?> valueStruct) {
+	public final Definitions upgradeTypeParameters(
+			TypeParameters<?> typeParameters) {
 
-		final ValueStruct<?, ?> objectValueStruct = getValueStruct();
+		final TypeParameters<?> objectTypeParameters = getTypeParameters();
 
-		if (objectValueStruct != null
-				&& valueStruct.getParameters().relationTo(
-						objectValueStruct.getParameters()).isSame()) {
+		if (objectTypeParameters != null
+				&& typeParameters.relationTo(objectTypeParameters).isSame()) {
 			return this;
 		}
 
 		final boolean claimsOk =
-				claims().upgradeValueStruct(this, valueStruct);
+				claims().upgradeTypeParameters(this, typeParameters);
 		final boolean propositionsOk =
-				propositions().upgradeValueStruct(this, valueStruct);
+				propositions().upgradeTypeParameters(this, typeParameters);
 
 		if (!claimsOk || !propositionsOk) {
 			return this;
@@ -314,7 +314,7 @@ public class Definitions extends Scoped {
 
 		return new Definitions(
 				this,
-				valueStruct,
+				typeParameters,
 				claims(),
 				propositions());
 	}
@@ -327,7 +327,7 @@ public class Definitions extends Scoped {
 	public Definitions runtime() {
 		return new Definitions(
 				this,
-				getValueStruct(),
+				getTypeParameters(),
 				claims().runtime(this),
 				propositions());
 	}
@@ -395,10 +395,7 @@ public class Definitions extends Scoped {
 		if (cloneOf != null) {
 			return this.target = cloneOf.value().getDefinitions().target();
 		}
-
-		final LinkValueStruct linkStruct = getValueStruct().toLinkStruct();
-
-		if (linkStruct == null) {
+		if (!getValueType().isLink()) {
 			return this.target = NO_DEF_TARGET;
 		}
 
@@ -421,11 +418,11 @@ public class Definitions extends Scoped {
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
+		final TypeParameters<?> typeParameters = getTypeParameters();
 
-		if (valueStruct != null) {
+		if (typeParameters != null) {
 			out.append("Definitions(");
-			out.append(valueStruct);
+			out.append(typeParameters);
 			out.append(")[");
 		} else {
 			out.append("Definitions[");
@@ -463,15 +460,15 @@ public class Definitions extends Scoped {
 		final Defs newClaims = claims.upgradeScope(scopeUpgrade);
 		final Defs propositions = propositions();
 		final Defs newPropositions = propositions.upgradeScope(scopeUpgrade);
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
-		final ValueStruct<?, ?> newValueStruct =
-				valueStruct != null
-				? valueStruct.prefixWith(scopeUpgrade.toPrefix())
+		final TypeParameters<?> oldTypeParameters = getTypeParameters();
+		final TypeParameters<?> newTypeParameters =
+				oldTypeParameters != null
+				? oldTypeParameters.prefixWith(scopeUpgrade.toPrefix())
 				: null;
 
 		if (resultScope.is(getScope())
 				// This may fail when there is no definitions.
-				&& valueStruct == newValueStruct
+				&& oldTypeParameters == newTypeParameters
 				&& claims == newClaims
 				&& propositions == newPropositions) {
 			return this;
@@ -480,7 +477,7 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				resultScope,
-				newValueStruct,
+				newTypeParameters,
 				newClaims,
 				newPropositions);
 	}
