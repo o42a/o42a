@@ -23,6 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.link.*;
@@ -30,22 +31,25 @@ import org.o42a.core.value.link.*;
 
 final class TargetLink extends KnownLink {
 
-	static Value<?> linkByValue(Ref ref, LinkValueStruct linkStruct) {
+	static Value<?> linkByValue(Ref ref, TypeParameters<KnownLink> parameters) {
 
+		final LinkValueType linkType = parameters.getValueType().toLinkType();
 		final TargetLink link = new TargetLink(
-				ref.toTargetRef(linkStruct.getTypeRef()),
+				ref.toTargetRef(
+						linkType
+						.interfaceRef(parameters)),
 				ref.distribute(),
-				linkStruct.getValueType());
+				linkType);
 		final ValueKnowledge knowledge = link.getKnowledge();
 
 		if (!knowledge.hasCompilerValue()) {
 			if (knowledge.isKnownToCompiler()) {
-				return linkStruct.falseValue();
+				return parameters.falseValue();
 			}
-			return linkStruct.runtimeValue();
+			return parameters.runtimeValue();
 		}
 
-		return linkStruct.compilerValue(link);
+		return parameters.compilerValue(link);
 	}
 
 	private final LinkValueType linkType;

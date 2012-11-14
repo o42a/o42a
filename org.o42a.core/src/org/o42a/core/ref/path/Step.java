@@ -55,7 +55,7 @@ public abstract class Step {
 	public abstract RefUsage getObjectUsage();
 
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
-		return ref.valueStruct(ref.getScope()).valueAdapter(ref, request);
+		return ref.typeParameters(ref.getScope()).valueAdapter(ref, request);
 	}
 
 	public Path toPath() {

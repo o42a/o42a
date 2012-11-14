@@ -33,26 +33,27 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.*;
+import org.o42a.core.value.link.KnownLink;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.link.TargetResolver;
 
 
 public class LinkValueAdapter extends ValueAdapter {
 
-	private final LinkValueStruct expectedStruct;
+	private final TypeParameters<KnownLink> expectedParameters;
 
-	public LinkValueAdapter(Ref adaptedRef, LinkValueStruct expectedStruct) {
+	public LinkValueAdapter(
+			Ref adaptedRef,
+			TypeParameters<KnownLink> expectedParameters) {
 		super(adaptedRef);
-		assert expectedStruct != null :
+		assert expectedParameters != null :
 			"Link value structure not specified";
-		this.expectedStruct = expectedStruct;
+		this.expectedParameters = expectedParameters;
 	}
 
-	public final LinkValueStruct getExpectedStruct() {
-		return this.expectedStruct;
+	public final TypeParameters<KnownLink> getExpectedParameters() {
+		return this.expectedParameters;
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public class LinkValueAdapter extends ValueAdapter {
 		return linkValue(
 				getAdaptedRef(),
 				resolver,
-				getExpectedStruct().getValueType());
+				getExpectedParameters().getValueType().toLinkType());
 	}
 
 	@Override
@@ -94,17 +95,18 @@ public class LinkValueAdapter extends ValueAdapter {
 	@Override
 	public Eval eval() {
 
-		final LinkValueStruct fromStruct =
+		final TypeParameters<?> fromParameters =
 				getAdaptedRef()
-				.valueStruct(getAdaptedRef().getScope())
-				.toLinkStruct();
+				.typeParameters(getAdaptedRef().getScope());
 
-		if (getExpectedStruct().getParameters().assignableFrom(
-				fromStruct.getParameters())) {
+		if (getExpectedParameters().assignableFrom(fromParameters)) {
 			return new RefOpEval(getAdaptedRef());
 		}
 
-		return new LinkEval(getAdaptedRef(), fromStruct);
+		final LinkValueType linkType =
+				fromParameters.getValueType().toLinkType();
+
+		return new LinkEval(getAdaptedRef(), linkType.cast(fromParameters));
 	}
 
 	@Override
@@ -114,12 +116,12 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	private static final class LinkEval implements Eval {
 
-		private final LinkValueStruct fromStruct;
+		private final TypeParameters<?> fromparameters;
 		private final Ref ref;
 
-		LinkEval(Ref ref, LinkValueStruct fromStruct) {
+		LinkEval(Ref ref, TypeParameters<?> fromParameters) {
 			this.ref = ref;
-			this.fromStruct = fromStruct;
+			this.fromparameters = fromParameters;
 		}
 
 		public final Ref getRef() {
@@ -130,7 +132,7 @@ public class LinkValueAdapter extends ValueAdapter {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs fromDirs = dirs.dirs().nested().value(
-					this.fromStruct,
+					this.fromparameters.toValueStruct(),
 					TEMP_VAL_HOLDER);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 

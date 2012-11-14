@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.string;
 
+import static org.o42a.util.string.StringCodec.escapeControlChars;
+
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
@@ -49,6 +51,18 @@ public final class StringValueType extends SingleValueType<String> {
 	public Path path(Intrinsics intrinsics) {
 		return Path.ROOT_PATH.append(
 				typeObject(intrinsics).getScope().toField().getKey());
+	}
+
+	@Override
+	public String valueString(String value) {
+
+		final StringBuilder out = new StringBuilder(value.length() + 2);
+
+		out.append('"');
+		escapeControlChars(out, value);
+		out.append('"');
+
+		return out.toString();
 	}
 
 }

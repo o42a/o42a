@@ -29,11 +29,11 @@ import org.o42a.core.ir.value.array.ArrayValueStructIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.link.LinkValueStruct;
 
 
@@ -179,18 +179,6 @@ public final class ArrayValueStruct
 		out.append(this.itemTypeRef).append(')');
 
 		return out.toString();
-	}
-
-	@Override
-	protected ValueAdapter defaultAdapter(Ref ref, ValueRequest request) {
-		if (!request.isTransformAllowed()
-				|| request.getExpectedStruct().getParameters()
-				.convertibleFrom(getParameters())) {
-			return new ArrayValueAdapter(
-					ref,
-					request.getExpectedStruct().toArrayStruct());
-		}
-		return super.defaultAdapter(ref, request);
 	}
 
 	@Override

@@ -19,14 +19,18 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.impl.DefaultValueConverter.defaultValueConverter;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.array.ArrayValueType;
@@ -36,6 +40,7 @@ import org.o42a.core.value.floats.FloatValueType;
 import org.o42a.core.value.impl.NoneValueType;
 import org.o42a.core.value.integer.IntegerValueType;
 import org.o42a.core.value.link.LinkValueType;
+import org.o42a.core.value.link.impl.LinkByValueAdapter;
 import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.macro.impl.MacroValueType;
 import org.o42a.core.value.string.StringValueType;
@@ -151,6 +156,10 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 		return (TypeParameters<T>) parameters;
 	}
 
+	public String valueString(T value) {
+		return value.toString();
+	}
+
 	@Override
 	public String toString() {
 		return getSystemId();
@@ -158,6 +167,55 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 	protected ValueConverter<T> getConverter() {
 		return defaultValueConverter();
+	}
+
+	protected abstract S valueStruct(TypeParameters<T> parameters);
+
+	protected ValueAdapter defaultAdapter(
+			Ref ref,
+			TypeParameters<T> parameters,
+			ValueRequest request) {
+
+		final TypeParameters<?> expectedParameters =
+				request.getExpectedParameters();
+		final ValueType<?, ?> expectedType = expectedParameters.getValueType();
+
+		if (!request.isTransformAllowed()
+				|| expectedParameters.assignableFrom(parameters)) {
+			return rawValueAdapter(ref);
+		}
+
+		final LinkValueType expectedLinkType = expectedType.toLinkType();
+
+		if (expectedLinkType != null) {
+			return new LinkByValueAdapter(
+					adapterRef(
+							ref,
+							expectedLinkType.interfaceRef(expectedParameters),
+							request.getLogger()),
+					expectedLinkType.cast(expectedParameters));
+		}
+
+		final Ref adapter = adapterRef(
+				ref,
+				expectedParameters.getValueType().typeRef(ref, ref.getScope()),
+				request.getLogger());
+
+		return adapter.valueAdapter(request.dontTransofm());
+	}
+
+	protected Ref adapterRef(
+			Ref ref,
+			TypeRef expectedTypeRef,
+			CompilerLogger logger) {
+
+		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic(), logger);
+
+		adapter.toTypeRef()
+		.relationTo(expectedTypeRef)
+		.checkDerived(logger);
+
+		return adapter;
 	}
 
 	protected abstract ValueKnowledge valueKnowledge(T value);

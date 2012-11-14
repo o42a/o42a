@@ -26,6 +26,7 @@ import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
@@ -128,6 +129,25 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	@Override
 	protected ValueConverter<Array> getConverter() {
 		return this.converter;
+	}
+
+	@Override
+	protected ArrayValueStruct valueStruct(TypeParameters<Array> parameters) {
+		return arrayStruct(itemTypeRef(parameters));
+	}
+
+	@Override
+	protected ValueAdapter defaultAdapter(
+			Ref ref,
+			TypeParameters<Array> parameters,
+			ValueRequest request) {
+		if (!request.isTransformAllowed()
+				|| request.getExpectedParameters().convertibleFrom(parameters)) {
+			return new ArrayValueAdapter(
+					ref,
+					request.getExpectedStruct().toArrayStruct());
+		}
+		return super.defaultAdapter(ref, parameters, request);
 	}
 
 	@Override

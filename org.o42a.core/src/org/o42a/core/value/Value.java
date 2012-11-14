@@ -101,7 +101,7 @@ public abstract class Value<T> {
 			return condition.toString();
 		}
 
-		return getValueStruct().valueString(getCompilerValue());
+		return getValueType().valueString(getCompilerValue());
 	}
 
 	public final DefValue toDefValue() {

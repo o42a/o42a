@@ -82,7 +82,7 @@ public abstract class ObjectConstructor extends Placed {
 	}
 
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
-		return ref.valueStruct(ref.getScope()).valueAdapter(ref, request);
+		return ref.typeParameters(ref.getScope()).valueAdapter(ref, request);
 	}
 
 	public abstract FieldDefinition fieldDefinition(Ref ref);

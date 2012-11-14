@@ -27,14 +27,12 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.ArrayValueStruct;
-import org.o42a.core.value.link.impl.LinkByValueAdapter;
-import org.o42a.core.value.link.impl.LinkValueAdapter;
 
 
 public final class LinkValueStruct
@@ -169,44 +167,6 @@ public final class LinkValueStruct
 	@Override
 	public String toString() {
 		return getValueType() + "(`" + this.typeRef + ')';
-	}
-
-	@Override
-	protected ValueAdapter defaultAdapter(Ref ref, ValueRequest request) {
-
-		final ValueStruct<?, ?> expectedStruct = request.getExpectedStruct();
-
-		if (!request.isTransformAllowed()
-				|| expectedStruct.getParameters()
-				.convertibleFrom(getParameters())) {
-			return new LinkValueAdapter(
-					ref,
-					expectedStruct != null
-					? expectedStruct.toLinkStruct()
-					: ref.valueStruct(ref.getScope()).toLinkStruct());
-		}
-		if (expectedStruct.getParameters().getLinkDepth()
-				- getParameters().getLinkDepth() == 1) {
-
-			final LinkValueStruct expectedLinkStruct =
-					expectedStruct.toLinkStruct();
-
-			return new LinkByValueAdapter(
-					adapterRef(
-							ref,
-							expectedLinkStruct.getTypeRef(),
-							request.getLogger()),
-					expectedLinkStruct);
-		}
-
-		final Ref adapter = adapterRef(
-				ref,
-				expectedStruct.getValueType().typeRef(
-						ref,
-						ref.getScope()),
-				request.getLogger());
-
-		return adapter.valueAdapter(request.dontTransofm());
 	}
 
 	@Override

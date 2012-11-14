@@ -23,9 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueKnowledge;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.*;
 
 
 public final class CompilerValue<T> extends Value<T> {
@@ -57,15 +55,15 @@ public final class CompilerValue<T> extends Value<T> {
 
 	@Override
 	public String toString() {
-		return valueString(getValueStruct(), this.value);
+		return valueString(getValueType(), this.value);
 	}
 
-	static <T> String valueString(ValueStruct<?, T> valueStruct, T value) {
+	static <T> String valueString(ValueType<?, T> valueType, T value) {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append('(').append(valueStruct).append(") ");
-		out.append(valueStruct.valueString(value));
+		out.append('(').append(valueType).append(") ");
+		out.append(valueType.valueString(value));
 
 		return out.toString();
 	}

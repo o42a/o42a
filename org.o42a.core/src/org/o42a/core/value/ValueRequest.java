@@ -55,6 +55,10 @@ public final class ValueRequest {
 		return this.expectedStruct;
 	}
 
+	public final TypeParameters<?> getExpectedParameters() {
+		return getExpectedStruct().getParameters();
+	}
+
 	public final boolean isTransformAllowed() {
 		return this.transformAllowed;
 	}
