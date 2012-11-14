@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.voids;
 
+import org.o42a.codegen.Generator;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -53,6 +55,11 @@ public final class VoidValueType extends SingleValueType<Void> {
 	@Override
 	public ValueIRDesc irDesc() {
 		return ValueIRDesc.VOID_VALUE_IR_DESC;
+	}
+
+	@Override
+	protected StaticsIR<Void> createStaticsIR(Generator generator) {
+		return new VoidStaticsIR(generator, this);
 	}
 
 }

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.impl;
 
+import org.o42a.codegen.Generator;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -53,6 +55,11 @@ public class NoneValueType extends SingleValueType<Void> {
 
 	@Override
 	public ValueIRDesc irDesc() {
+		throw new UnsupportedOperationException("Type NONE does not exist");
+	}
+
+	@Override
+	protected StaticsIR<Void> createStaticsIR(Generator generator) {
 		throw new UnsupportedOperationException("Type NONE does not exist");
 	}
 

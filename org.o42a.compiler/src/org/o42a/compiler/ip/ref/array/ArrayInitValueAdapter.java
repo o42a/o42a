@@ -33,7 +33,6 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.array.ArrayIR;
-import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.Array;
@@ -185,9 +184,8 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 			final Array array = this.value.getCompilerValue();
 			final ArrayValueType valueType =
 					this.value.getValueType().toArrayType();
-			final ArrayValueTypeIR valueTypeIR =
-					valueType.ir(dirs.getGenerator());
-			final ArrayIR arrayIR = array.ir(valueTypeIR);
+			final ArrayIR arrayIR =
+					array.ir(valueType.irGenerator(dirs.getGenerator()));
 			final ObjectOp arrayObject =
 					array.getPrefix()
 					.write(dirs.dirs(), host)

@@ -34,6 +34,7 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 final class ArrayKeeperIR
@@ -69,14 +70,11 @@ final class ArrayKeeperIR
 			val.set(FALSE_VAL);
 		} else {
 
-			final ArrayValueStructIR arrayStructIR =
-					(ArrayValueStructIR) getValueStructIR();
-			final Array array =
-					arrayStructIR.getValueType()
-					.cast(value)
-					.getCompilerValue();
+			final ArrayValueType arrayType =
+					getValueStructIR().getValueType().toArrayType();
+			final Array array = arrayType.cast(value).getCompilerValue();
 
-			val.set(arrayStructIR.val(array));
+			val.set(arrayType.staticsIR(getGenerator()).val(array));
 		}
 	}
 

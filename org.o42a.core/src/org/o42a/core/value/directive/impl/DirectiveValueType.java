@@ -21,7 +21,10 @@ package org.o42a.core.value.directive.impl;
 
 import static org.o42a.core.ir.value.type.ValueIRDesc.VOID_VALUE_IR_DESC;
 
+import org.o42a.codegen.Generator;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
+import org.o42a.core.ir.value.type.VoidStaticsIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
@@ -57,6 +60,11 @@ public final class DirectiveValueType extends SingleValueType<Directive> {
 	@Override
 	public ValueIRDesc irDesc() {
 		return VOID_VALUE_IR_DESC;
+	}
+
+	@Override
+	protected StaticsIR<Directive> createStaticsIR(Generator generator) {
+		return new VoidStaticsIR<Directive>(generator, this);
 	}
 
 }

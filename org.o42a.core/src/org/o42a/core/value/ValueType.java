@@ -22,7 +22,9 @@ package org.o42a.core.value;
 import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.impl.DefaultValueConverter.defaultValueConverter;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
@@ -68,6 +70,7 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 	private final String systemId;
 	private final Class<? extends T> valueClass;
+	private StaticsIR<T> staticsIR;
 
 	public ValueType(String systemId, Class<? extends T> valueClass) {
 		this.systemId = systemId;
@@ -163,6 +166,17 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 	public abstract ValueIRDesc irDesc();
 
+	public final StaticsIR<T> staticsIR(Generator generator) {
+
+		final StaticsIR<T> staticsIR = this.staticsIR;
+
+		if (staticsIR != null && staticsIR.getGenerator() == generator) {
+			return staticsIR;
+		}
+
+		return this.staticsIR = createStaticsIR(generator);
+	}
+
 	@Override
 	public String toString() {
 		return getSystemId();
@@ -228,5 +242,7 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 			PrefixPath prefix);
 
 	protected abstract void resolveAll(Value<T> value, FullResolver resolver);
+
+	protected abstract StaticsIR<T> createStaticsIR(Generator generator);
 
 }

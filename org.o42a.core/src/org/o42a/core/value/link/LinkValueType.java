@@ -25,6 +25,7 @@ import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -235,6 +236,11 @@ public abstract class LinkValueType
 		if (value.getKnowledge().hasCompilerValue()) {
 			value.getCompilerValue().resolveAll(resolver);
 		}
+	}
+
+	@Override
+	protected StaticsIR<KnownLink> createStaticsIR(Generator generator) {
+		return new LinkStaticsIR(generator, this);
 	}
 
 	abstract ValueStructIR<LinkValueStruct, KnownLink> structIR(
