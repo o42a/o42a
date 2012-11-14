@@ -27,6 +27,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.link.*;
 
@@ -46,30 +47,30 @@ final class LinkCopy extends KnownLink {
 
 		final Obj linkObject = linkResolution.toObject();
 		final Value<?> value = linkObject.value().getValue();
-		final LinkValueStruct sourceStruct =
-				value.getValueStruct().toLinkStruct();
-		final LinkValueStruct resultStruct =
-				sourceStruct.setValueType(toLinkType);
+		final TypeParameters<KnownLink> sourceParams =
+				value.getTypeParameters().toLinkParameters();
+		final TypeParameters<KnownLink> resultParams =
+				sourceParams.convertTo(toLinkType);
 
 		if (value.getKnowledge().isFalse()) {
-			return resultStruct.falseValue();
+			return resultParams.falseValue();
 		}
 		if (!value.getKnowledge().isKnownToCompiler()) {
-			return resultStruct.runtimeValue();
+			return resultParams.runtimeValue();
 		}
-		if (sourceStruct.getValueType().isVariable()) {
+		if (sourceParams.getValueType().isVariable()) {
 			// Variable initializer can not be copied at compile time.
-			return resultStruct.runtimeValue();
+			return resultParams.runtimeValue();
 		}
 
 		final PrefixPath prefix =
 				ref.getPath().toPrefix(resolver.getScope());
 		final KnownLink sourceLink =
-				sourceStruct.getParameters().cast(value).getCompilerValue();
+				sourceParams.cast(value).getCompilerValue();
 		final TargetRef targetRef =
 				sourceLink.getTargetRef().prefixWith(prefix);
 
-		return resultStruct.compilerValue(
+		return resultParams.compilerValue(
 				new LinkCopy(sourceLink, toLinkType, targetRef));
 	}
 

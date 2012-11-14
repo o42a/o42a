@@ -36,8 +36,8 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -64,12 +64,10 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 		}
 
 		@SuppressWarnings("unchecked")
-		final ValueStruct<?, F> valueStruct =
-				(ValueStruct<?, F>) objectValue.getValueStruct();
+		final TypeParameters<F> typeParameters =
+				(TypeParameters<F>) objectValue.getTypeParameters();
 		final F value =
-				valueStruct.getParameters()
-				.cast(objectValue)
-				.getCompilerValue();
+				typeParameters.cast(objectValue).getCompilerValue();
 		final T converted = convert(resolver, resolver, value);
 
 		if (converted == null) {

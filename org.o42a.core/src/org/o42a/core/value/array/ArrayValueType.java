@@ -180,19 +180,19 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 			return array.prefixWith(prefix).toValue();
 		}
 
-		final ArrayValueStruct initialStruct =
-				(ArrayValueStruct) value.getValueStruct();
-		final ArrayValueStruct rescopedStruct =
-				initialStruct.prefixWith(prefix);
+		final TypeParameters<Array> initialParams =
+				value.getTypeParameters().toArrayParameters();
+		final TypeParameters<Array> rescopedParams =
+				initialParams.prefixWith(prefix);
 
-		if (initialStruct == rescopedStruct) {
+		if (initialParams == rescopedParams) {
 			return value;
 		}
 		if (!value.getKnowledge().isKnownToCompiler()) {
-			return rescopedStruct.runtimeValue();
+			return rescopedParams.runtimeValue();
 		}
 
-		return rescopedStruct.falseValue();
+		return rescopedParams.falseValue();
 	}
 
 	@Override

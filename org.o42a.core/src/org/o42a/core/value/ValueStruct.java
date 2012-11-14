@@ -29,7 +29,7 @@ import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.directive.impl.DirectiveValueStruct;
 import org.o42a.core.value.floats.FloatValueStruct;
-import org.o42a.core.value.impl.*;
+import org.o42a.core.value.impl.NoneValueStruct;
 import org.o42a.core.value.integer.IntegerValueStruct;
 import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.macro.Macro;
@@ -58,9 +58,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			NoneValueStruct.INSTANCE;
 
 	private final ValueType<S, T> valueType;
-
-	private final RuntimeValue<T> runtimeValue = new RuntimeValue<T>(this);
-	private final FalseValue<T> falseValue = new FalseValue<T>(this);
 
 	public ValueStruct(ValueType<S, T> valueType) {
 		this.valueType = valueType;
@@ -104,22 +101,15 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	}
 
 	public final Value<T> compilerValue(T value) {
-
-		final ValueKnowledge knowledge = getValueType().valueKnowledge(value);
-
-		assert knowledge.hasCompilerValue() :
-			"Incomplete knowledge (" + knowledge
-			+ ") about value " + getValueType().valueString(value);
-
-		return new CompilerValue<T>(this, knowledge, value);
+		return getParameters().compilerValue(value);
 	}
 
 	public final Value<T> runtimeValue() {
-		return this.runtimeValue;
+		return getParameters().runtimeValue();
 	}
 
 	public final Value<T> falseValue() {
-		return this.falseValue;
+		return getParameters().falseValue();
 	}
 
 	public final boolean isScoped() {

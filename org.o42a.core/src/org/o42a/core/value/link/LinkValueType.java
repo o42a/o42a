@@ -202,19 +202,19 @@ public abstract class LinkValueType
 			return link.prefixWith(prefix).toValue();
 		}
 
-		final LinkValueStruct initialStruct =
-				(LinkValueStruct) value.getValueStruct();
-		final LinkValueStruct rescopedStruct =
-				initialStruct.prefixWith(prefix);
+		final TypeParameters<KnownLink> initialParams =
+				cast(value).getTypeParameters();
+		final TypeParameters<KnownLink> rescopedParams =
+				initialParams.prefixWith(prefix);
 
-		if (initialStruct == rescopedStruct) {
+		if (initialParams == rescopedParams) {
 			return value;
 		}
 		if (!value.getKnowledge().isKnownToCompiler()) {
-			return rescopedStruct.runtimeValue();
+			return rescopedParams.runtimeValue();
 		}
 
-		return rescopedStruct.falseValue();
+		return rescopedParams.falseValue();
 	}
 
 	@Override
