@@ -33,14 +33,6 @@ import org.o42a.core.st.DefValue;
 
 public abstract class Value<T> {
 
-	public static final Value<Void> voidValue() {
-		return ValueType.VOID.constantValue(Void.VOID);
-	}
-
-	public static final Value<Void> falseValue() {
-		return ValueType.VOID.falseValue();
-	}
-
 	private final TypeParameters<T> typeParameters;
 	private final ValueKnowledge knowledge;
 

@@ -35,7 +35,6 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.util.fn.Cancelable;
@@ -49,18 +48,16 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 		super(owner, sources);
 	}
 
-	public abstract SingleValueType<T> toValueType();
-
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 
 		final Value<?> objectValue = object().value(resolver);
 
 		if (objectValue.getKnowledge().isFalse()) {
-			return value().getValueStruct().falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!objectValue.getKnowledge().isKnown()) {
-			return value().getValueStruct().runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -71,10 +68,15 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 		final T converted = convert(resolver, resolver, value);
 
 		if (converted == null) {
-			return toValueType().falseValue();
+			return type().getParameters().falseValue();
 		}
 
-		return toValueType().compilerValue(converted);
+		return getTypeParameters().compilerValue(converted);
+	}
+
+	@SuppressWarnings("unchecked")
+	private TypeParameters<T> getTypeParameters() {
+		return (TypeParameters<T>) type().getParameters();
 	}
 
 	@Override

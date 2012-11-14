@@ -31,8 +31,8 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.Void;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -74,7 +74,7 @@ final class VoidDef extends Def {
 				value.getValue()
 				.getKnowledge()
 				.getCondition()
-				.toValue(ValueStruct.VOID));
+				.toValue(typeParameters(resolver.getScope())));
 	}
 
 	@Override
@@ -105,7 +105,7 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	protected TypeParameters<?> typeParameters(Scope scope) {
+	protected TypeParameters<Void> typeParameters(Scope scope) {
 		return TypeParameters.typeParameters(this, ValueType.VOID);
 	}
 

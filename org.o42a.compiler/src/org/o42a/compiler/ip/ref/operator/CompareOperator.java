@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.ref.operator;
 
-import static org.o42a.core.value.Value.voidValue;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
@@ -95,7 +93,7 @@ abstract class CompareOperator extends ComparisonOperator {
 
 		write(dirs.dirs(), comparisonValue);
 
-		return voidValue().op(dirs.getBuilder(), code);
+		return dirs.getBuilder().voidVal(code);
 	}
 
 	protected abstract boolean compare(long compareResult);

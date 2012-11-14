@@ -21,7 +21,6 @@ package org.o42a.lib.console.impl;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberName.fieldName;
-import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.lib.console.impl.PrintFunc.PRINT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -46,6 +45,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.Void;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -69,7 +69,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return value().getValueStruct().runtimeValue();
+		return type().getParameters().runtimeValue();
 	}
 
 	@Override
@@ -151,7 +151,10 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 			printFunc.print(code, text);
 			dirs.returnValue(
 					code,
-					voidValue().op(dirs.getBuilder(), code));
+					ValueType.VOID
+					.cast(this.print.type().getParameters())
+					.compilerValue(Void.VOID)
+					.op(dirs.getBuilder(), code));
 
 			textDirs.done();
 		}
@@ -195,7 +198,10 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 			printFunc.print(code, text);
 			dirs.returnValue(
 					code,
-					voidValue().op(dirs.getBuilder(), code));
+					ValueType.VOID
+					.cast(this.print.type().getParameters())
+					.compilerValue(Void.VOID)
+					.op(dirs.getBuilder(), code));
 
 			textDirs.done();
 		}

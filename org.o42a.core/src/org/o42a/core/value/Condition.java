@@ -22,7 +22,6 @@ package org.o42a.core.value;
 import static org.o42a.core.st.DefValue.FALSE_DEF_VALUE;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.core.st.DefValue;
 
@@ -37,10 +36,16 @@ public enum Condition {
 		}
 
 		@Override
-		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
-			assert valueStruct.isVoid() :
+		public <T> Value<T> toValue(TypeParameters<T> typeParameters) {
+
+			final ValueType<?, T> valueType = typeParameters.getValueType();
+
+			assert valueType.isVoid() :
 				"Can not construct a non-void TRUE";
-			return valueStruct.getParameters().cast(voidValue());
+
+			return valueType.cast(
+					ValueType.VOID.cast(typeParameters)
+					.compilerValue(Void.VOID));
 		}
 
 	},
@@ -53,8 +58,8 @@ public enum Condition {
 		}
 
 		@Override
-		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
-			return valueStruct.runtimeValue();
+		public <T> Value<T> toValue(TypeParameters<T> typeParameters) {
+			return typeParameters.runtimeValue();
 		}
 
 	},
@@ -67,8 +72,8 @@ public enum Condition {
 		}
 
 		@Override
-		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
-			return valueStruct.falseValue();
+		public <T> Value<T> toValue(TypeParameters<T> typeParameters) {
+			return typeParameters.falseValue();
 		}
 
 	};
@@ -99,6 +104,6 @@ public enum Condition {
 
 	public abstract DefValue toDefValue();
 
-	public abstract <T> Value<T> toValue(ValueStruct<?, T> valueStruct);
+	public abstract <T> Value<T> toValue(TypeParameters<T> typeParameters);
 
 }

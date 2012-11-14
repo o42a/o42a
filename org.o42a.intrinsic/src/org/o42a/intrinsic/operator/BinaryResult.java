@@ -39,8 +39,9 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
@@ -53,39 +54,39 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 	public static final ID RIGHT_PTR_ID = ID.id("right_ptr");
 
 	private final MemberName leftOperandId;
-	private final ValueStruct<?, L> leftOperandStruct;
+	private final ValueType<?, L> leftOperandType;
 	private Ref leftOperand;
 	private final MemberName rightOperandId;
-	private final ValueStruct<?, R> rightOperandStruct;
+	private final ValueType<?, R> rightOperandType;
 	private Ref rightOperand;
 
 	public BinaryResult(
 			MemberOwner owner,
 			AnnotatedSources sources,
 			String leftOperandName,
-			ValueStruct<?, L> leftOperandType,
+			ValueType<?, L> leftOperandType,
 			String rightOperandName,
-			ValueStruct<?, R> rightOperandType) {
+			ValueType<?, R> rightOperandType) {
 		super(owner, sources);
 		this.leftOperandId =
 				fieldName(CASE_INSENSITIVE.canonicalName(leftOperandName));
-		this.leftOperandStruct = leftOperandType;
+		this.leftOperandType = leftOperandType;
 		this.rightOperandId =
 				fieldName(CASE_INSENSITIVE.canonicalName(rightOperandName));
-		this.rightOperandStruct = rightOperandType;
+		this.rightOperandType = rightOperandType;
 	}
 
 	@SuppressWarnings("unchecked")
-	public final ValueStruct<?, T> getResultStruct() {
-		return (ValueStruct<?, T>) value().getValueStruct();
+	public final TypeParameters<T> getResultParameters() {
+		return (TypeParameters<T>) type().getParameters();
 	}
 
-	public final ValueStruct<?, L> getLeftOperandStruct() {
-		return this.leftOperandStruct;
+	public final ValueType<?, L> getLeftOperandType() {
+		return this.leftOperandType;
 	}
 
-	public final ValueStruct<?, R> getRightOperandStruct() {
-		return this.rightOperandStruct;
+	public final ValueType<?, R> getRightOperandType() {
+		return this.rightOperandType;
 	}
 
 	@Override
@@ -96,31 +97,25 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 		if (leftValue.getKnowledge().isFalse()
 				|| rightValue.getKnowledge().isFalse()) {
-			return getResultStruct().falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!leftValue.getKnowledge().isKnown()
 				|| !rightValue.getKnowledge().isKnown()) {
-			return getResultStruct().runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		final L left =
-				getLeftOperandStruct()
-				.getParameters()
-				.cast(leftValue)
-				.getCompilerValue();
+				getLeftOperandType().cast(leftValue).getCompilerValue();
 		final R right =
-				getRightOperandStruct()
-				.getParameters()
-				.cast(rightValue)
-				.getCompilerValue();
+				getRightOperandType().cast(rightValue).getCompilerValue();
 
 		final T result = calculate(resolver, left, right);
 
 		if (result == null) {
-			return getResultStruct().falseValue();
+			return type().getParameters().falseValue();
 		}
 
-		return getResultStruct().compilerValue(result);
+		return getResultParameters().compilerValue(result);
 	}
 
 	@Override
@@ -199,13 +194,13 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 			final ValDirs leftDirs = dirs.dirs().nested().value(
 					"left",
-					this.binary.getLeftOperandStruct().getValueType(),
+					this.binary.getLeftOperandType(),
 					TEMP_VAL_HOLDER);
 			final ValOp leftVal = this.leftValue.writeValue(leftDirs, host);
 
 			final ValDirs rightDirs = leftDirs.dirs().nested().value(
 					"right",
-					this.binary.getRightOperandStruct().getValueType(),
+					this.binary.getRightOperandType(),
 					TEMP_VAL_HOLDER);
 			final ValOp rightVal = this.rightValue.writeValue(rightDirs, host);
 
@@ -249,14 +244,14 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 			final ValDirs leftDirs = dirs.dirs().nested().value(
 					"left",
-					this.binary.getLeftOperandStruct().getValueType(),
+					this.binary.getLeftOperandType(),
 					TEMP_VAL_HOLDER);
 			final ValOp leftVal =
 					this.binary.leftOperand().op(host).writeValue(leftDirs);
 
 			final ValDirs rightDirs = leftDirs.dirs().nested().value(
 					"right",
-					this.binary.getRightOperandStruct().getValueType(),
+					this.binary.getRightOperandType(),
 					TEMP_VAL_HOLDER);
 			final ValOp rightVal =
 					this.binary.rightOperand().op(host).writeValue(rightDirs);

@@ -23,7 +23,6 @@ import static org.o42a.core.ir.def.Eval.FALSE_EVAL;
 import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.TypeParameters.typeParameters;
-import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -73,7 +72,7 @@ public class FalseObject extends BuiltinObject {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return falseValue();
+		return type().getParameters().falseValue();
 	}
 
 	@Override

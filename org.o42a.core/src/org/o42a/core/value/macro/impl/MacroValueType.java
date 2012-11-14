@@ -81,7 +81,9 @@ public final class MacroValueType extends SingleValueType<Macro> {
 			return value;
 		}
 
-		return compilerValue(newMacro);
+		return value.getTypeParameters()
+				.prefixWith(prefix)
+				.compilerValue(newMacro);
 	}
 
 	@Override

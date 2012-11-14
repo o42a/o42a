@@ -19,11 +19,13 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.common.object.AnnotatedSources;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 import org.o42a.util.string.ID;
@@ -36,15 +38,11 @@ abstract class CompareNumbers<P extends Number>
 	static final ID GREATER_ID = ID.id("greater");
 	static final ID NOT_GREATER_ID = ID.id("not_greater");
 
-	static final Value<Long> MINUS_ONE = ValueType.INTEGER.constantValue(-1L);
-	static final Value<Long> ZERO = ValueType.INTEGER.constantValue(0L);
-	static final Value<Long> ONE = ValueType.INTEGER.constantValue(1L);
-
 	CompareNumbers(
 			MemberOwner owner,
 			AnnotatedSources sources,
-			ValueStruct<?, P> operandStruct) {
-		super(owner, sources, "what", operandStruct, "with", operandStruct);
+			ValueType<?, P> operandType) {
+		super(owner, sources, "what", operandType, "with", operandType);
 	}
 
 	@Override
@@ -53,5 +51,14 @@ abstract class CompareNumbers<P extends Number>
 	}
 
 	protected abstract long compare(P left, P right);
+
+	protected ValType.Op intVal(CodeBuilder builder, Code code, long value) {
+
+		final StaticsIR<Long> staticsIR =
+				ValueType.INTEGER.ir(builder.getGenerator())
+				.staticsIR();
+
+		return staticsIR.valPtr(value).op(null, code);
+	}
 
 }

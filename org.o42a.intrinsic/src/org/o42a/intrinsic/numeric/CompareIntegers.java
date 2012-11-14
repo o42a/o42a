@@ -33,7 +33,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;
 
 
@@ -41,7 +41,7 @@ import org.o42a.intrinsic.root.Root;
 public final class CompareIntegers extends CompareNumbers<Long> {
 
 	public CompareIntegers(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources, ValueStruct.INTEGER);
+		super(owner, sources, ValueType.INTEGER);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public final class CompareIntegers extends CompareNumbers<Long> {
 		final CondBlock greater = gt.branch(code, GREATER_ID, NOT_GREATER_ID);
 		final Block notGreater = greater.otherwise();
 
-		final ValType.Op result1 = ONE.op(dirs.getBuilder(), greater).ptr();
+		final ValType.Op result1 = intVal(dirs.getBuilder(), greater, 1);
 
 		greater.go(code.tail());
 
@@ -71,8 +71,8 @@ public final class CompareIntegers extends CompareNumbers<Long> {
 		final ValType.Op result2 = eq.select(
 				null,
 				notGreater,
-				ZERO.op(dirs.getBuilder(), notGreater).ptr(),
-				MINUS_ONE.op(dirs.getBuilder(), notGreater).ptr());
+				intVal(dirs.getBuilder(), notGreater, 0),
+				intVal(dirs.getBuilder(), notGreater, -1));
 
 		notGreater.go(code.tail());
 

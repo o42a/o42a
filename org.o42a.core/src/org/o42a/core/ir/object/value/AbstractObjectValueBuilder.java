@@ -34,7 +34,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
 import org.o42a.core.ir.value.type.ValueOp;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -126,11 +125,7 @@ public abstract class AbstractObjectValueBuilder
 		}
 	}
 
-	protected final ValueType<?, ?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	protected abstract ValueStruct<?, ?> getValueStruct();
+	protected abstract ValueType<?, ?> getValueType();
 
 	protected boolean lock() {
 		return getValueType().isStateful();

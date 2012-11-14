@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.falseVal;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
-import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.HostOp;
@@ -121,13 +121,11 @@ public class NoneStep extends Step {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
-
-			final ValOp result =
-					falseValue().op(dirs.getBuilder(), dirs.code());
-
 			dirs.code().go(dirs.falseDir());
-
-			return result;
+			return new ConstValOp(
+					dirs.getBuilder(),
+					dirs.value().ptr(),
+					FALSE_VAL);
 		}
 
 		@Override

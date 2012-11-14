@@ -84,11 +84,11 @@ final class StringChar extends AnnotatedBuiltin {
 
 		if (stringValue.getKnowledge().isFalse()
 				|| indexValue.getKnowledge().isFalse()) {
-			return ValueType.STRING.falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!stringValue.getKnowledge().isKnown()
 				|| !indexValue.getKnowledge().isKnown()) {
-			return ValueType.STRING.runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		final String string =
@@ -102,11 +102,11 @@ final class StringChar extends AnnotatedBuiltin {
 					resolver,
 					"Invalid charater index: %d",
 					index);
-			return ValueType.STRING.falseValue();
+			return type().getParameters().falseValue();
 		}
 
-		return ValueType.STRING.constantValue(
-				Character.toString(string.charAt((int) index)));
+		return ValueType.STRING.cast(type().getParameters())
+				.compilerValue(Character.toString(string.charAt((int) index)));
 	}
 
 	@Override

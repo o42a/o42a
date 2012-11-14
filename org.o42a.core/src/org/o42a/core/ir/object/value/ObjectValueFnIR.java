@@ -32,7 +32,7 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -155,8 +155,8 @@ public final class ObjectValueFnIR
 		}
 
 		@Override
-		protected ValueStruct<?, ?> getValueStruct() {
-			return ObjectValueFnIR.this.getValueStruct();
+		protected ValueType<?, ?> getValueType() {
+			return ObjectValueFnIR.this.getValueType();
 		}
 
 		@Override

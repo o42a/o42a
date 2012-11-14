@@ -60,10 +60,10 @@ abstract class IndexedLength extends AnnotatedBuiltin {
 		final Value<?> arrayValue = array().value(resolver);
 
 		if (arrayValue.getKnowledge().isFalse()) {
-			return ValueType.INTEGER.falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!arrayValue.getKnowledge().isKnownToCompiler()) {
-			return ValueType.INTEGER.runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		final Array array =
@@ -72,7 +72,9 @@ abstract class IndexedLength extends AnnotatedBuiltin {
 				.getCompilerValue();
 		final int length = array.length();
 
-		return ValueType.INTEGER.constantValue(Long.valueOf(length));
+		return ValueType.INTEGER
+				.cast(type().getParameters())
+				.compilerValue(Long.valueOf(length));
 	}
 
 	@Override

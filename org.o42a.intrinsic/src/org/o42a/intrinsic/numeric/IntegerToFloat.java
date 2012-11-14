@@ -29,8 +29,6 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.SingleValueType;
-import org.o42a.core.value.ValueType;
 
 
 @SourcePath(relativeTo = IntegerValueTypeObject.class, value = "@float.o42a")
@@ -38,11 +36,6 @@ public class IntegerToFloat extends BuiltinConverter<Long, Double> {
 
 	public IntegerToFloat(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
-	}
-
-	@Override
-	public SingleValueType<Double> toValueType() {
-		return ValueType.FLOAT;
 	}
 
 	@Override

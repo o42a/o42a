@@ -20,7 +20,6 @@
 package org.o42a.intrinsic.numeric;
 
 import static org.o42a.codegen.code.op.Op.EQ_ID;
-import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.*;
@@ -29,7 +28,7 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;
 
 
@@ -37,7 +36,7 @@ import org.o42a.intrinsic.root.Root;
 public final class FloatsEqual extends NumbersEqual<Double> {
 
 	public FloatsEqual(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources, ValueStruct.FLOAT);
+		super(owner, sources, ValueType.FLOAT);
 	}
 
 	@Override
@@ -61,7 +60,7 @@ public final class FloatsEqual extends NumbersEqual<Double> {
 
 		equals.goUnless(code, dirs.falseDir());
 
-		return voidValue().op(dirs.getBuilder(), code);
+		return dirs.getBuilder().voidVal(code);
 	}
 
 }

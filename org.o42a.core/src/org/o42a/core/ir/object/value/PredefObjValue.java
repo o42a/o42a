@@ -22,7 +22,6 @@ package org.o42a.core.ir.object.value;
 import static org.o42a.core.ir.IRNames.ERROR_ID;
 import static org.o42a.core.ir.object.value.PredefObjValues.predefObjValues;
 import static org.o42a.core.ir.op.PrintMessageFunc.PRINT_MESSAGE;
-import static org.o42a.core.value.Value.voidValue;
 
 import java.io.UnsupportedEncodingException;
 
@@ -55,7 +54,7 @@ public enum PredefObjValue {
 
 		@Override
 		public void write(DefDirs dirs, ObjectIRDataOp data) {
-			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
+			dirs.returnValue(dirs.getBuilder().voidVal(dirs.code()));
 		}
 
 	},

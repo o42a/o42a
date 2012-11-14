@@ -19,12 +19,14 @@
 */
 package org.o42a.core.st.action;
 
+import static org.o42a.core.value.TypeParameters.typeParameters;
+
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public class ReturnValue extends Action {
@@ -62,7 +64,7 @@ public class ReturnValue extends Action {
 				this,
 				this.resolver,
 				getValue().getKnowledge().getCondition().toValue(
-						ValueStruct.VOID));
+						typeParameters(this, ValueType.VOID)));
 	}
 
 	@Override

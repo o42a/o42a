@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.ref.operator;
 
-import static org.o42a.core.value.Value.voidValue;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.InlineValue;
@@ -62,7 +60,7 @@ final class NotEqualsOperator extends ComparisonOperator {
 			notEqual.go(code.tail());
 		}
 
-		return voidValue().op(dirs.getBuilder(), code);
+		return dirs.getBuilder().voidVal(code);
 	}
 
 	@Override
@@ -80,12 +78,12 @@ final class NotEqualsOperator extends ComparisonOperator {
 			notEqual.go(code.tail());
 		}
 
-		return voidValue().op(dirs.getBuilder(), code);
+		return dirs.getBuilder().voidVal(code);
 	}
 
 	@Override
 	public ValOp write(ValDirs dirs, ValOp comparisonVal) {
-		return voidValue().op(dirs.getBuilder(), dirs.code());
+		return dirs.getBuilder().voidVal(dirs.code());
 	}
 
 }

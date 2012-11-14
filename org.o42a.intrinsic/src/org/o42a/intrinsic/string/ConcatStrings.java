@@ -70,11 +70,11 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		if (whatValue.getKnowledge().isFalse()
 				|| withValue.getKnowledge().isFalse()) {
-			return ValueType.STRING.falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!whatValue.getKnowledge().isKnown()
 				|| !withValue.getKnowledge().isKnown()) {
-			return ValueType.STRING.runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		final String what =
@@ -82,7 +82,8 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		final String with =
 				ValueType.STRING.cast(withValue).getCompilerValue();
 
-		return ValueType.STRING.constantValue(what + with);
+		return ValueType.STRING.cast(type().getParameters())
+				.compilerValue(what + with);
 	}
 
 	@Override

@@ -19,8 +19,6 @@
 */
 package org.o42a.lib.test.rt;
 
-import static org.o42a.core.value.Value.voidValue;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.common.builtin.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
@@ -79,7 +77,8 @@ public class RtVoid extends AnnotatedBuiltin {
 			final Code code = dirs.code();
 
 			code.debug("Run-time void");
-			dirs.returnValue(voidValue().op(dirs.getBuilder(), code));
+
+			dirs.returnValue(dirs.getBuilder().voidVal(dirs.code()));
 		}
 
 		@Override

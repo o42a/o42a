@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value.link.impl;
 
-import static org.o42a.core.value.Value.falseValue;
-
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -37,14 +35,16 @@ final class LinkCopy extends KnownLink {
 	static Value<?> linkValue(
 			Ref ref,
 			Resolver resolver,
-			LinkValueType toLinkType) {
+			TypeParameters<KnownLink> expectedParameters) {
 
 		final Resolution linkResolution = ref.resolve(resolver);
 
 		if (linkResolution.isError()) {
-			return falseValue();
+			return expectedParameters.falseValue();
 		}
 
+		final LinkValueType toLinkType =
+				expectedParameters.getValueType().toLinkType();
 		final Obj linkObject = linkResolution.toObject();
 		final Value<?> value = linkObject.value().getValue();
 		final TypeParameters<KnownLink> sourceParams =

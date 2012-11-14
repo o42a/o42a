@@ -44,7 +44,6 @@ import org.o42a.core.object.type.Sample;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.array.Array;
-import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
@@ -169,11 +168,7 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 	}
 
 	private static Obj definedIn(Obj object) {
-
-		final ArrayValueStruct arrayStruct =
-				object.value().getValueStruct().toArrayStruct();
-
-		if (arrayStruct == null) {
+		if (!object.value().getValueType().isArray()) {
 			return null;
 		}
 

@@ -32,7 +32,6 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -123,11 +122,11 @@ final class PredefObjValues {
 		}
 
 		@Override
-		protected ValueStruct<?, ?> getValueStruct() {
+		protected ValueType<?, ?> getValueType() {
 			if (!this.value.isTypeAware()) {
-				return ValueStruct.VOID;
+				return ValueType.VOID;
 			}
-			return typeObject().value().getValueStruct();
+			return typeObject().value().getValueType();
 		}
 
 		private Obj typeObject() {
