@@ -17,24 +17,42 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.type;
+package org.o42a.core.value.impl;
 
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.ValueStruct;
 
 
-public interface TypeParametersBuilder {
+public final class DefaultTypeParameters implements TypeParametersBuilder {
 
-	TypeParametersBuilder DEFAULT_TYPE_PARAMETERS =
-			DefaultTypeParameters.INSTANCE;
+	public static final DefaultTypeParameters INSTANCE =
+			new DefaultTypeParameters();
 
-	TypeParametersBuilder prefixWith(PrefixPath prefix);
+	private DefaultTypeParameters() {
+	}
 
-	ValueStruct<?, ?> valueStructBy(TypeRef typeRef);
+	@Override
+	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
+		return this;
+	}
 
-	TypeParameters<?> typeParametersBy(TypeRef typeRef);
+	@Override
+	public ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
+		return typeRef.defaultValueStruct();
+	}
 
-	TypeParametersBuilder reproduce(Reproducer reproducer);
+	@Override
+	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
+		return typeRef.defaultParameters();
+	}
+
+	@Override
+	public TypeParametersBuilder reproduce(Reproducer reproducer) {
+		return this;
+	}
 
 }

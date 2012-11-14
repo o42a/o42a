@@ -20,14 +20,11 @@
 package org.o42a.common.ref;
 
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeParameters;
-import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.link.LinkValueType;
 

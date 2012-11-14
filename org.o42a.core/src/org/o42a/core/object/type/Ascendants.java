@@ -37,9 +37,10 @@ import org.o42a.core.object.type.impl.ExplicitSample;
 import org.o42a.core.object.type.impl.ImplicitSample;
 import org.o42a.core.object.type.impl.MemberOverride;
 import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.type.*;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.value.*;
 import org.o42a.util.ArrayUtil;
 
 

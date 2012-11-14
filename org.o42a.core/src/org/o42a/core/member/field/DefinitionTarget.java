@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.ref.type.TypeParameters;
+import org.o42a.core.value.TypeParameters;
 
 
 public final class DefinitionTarget {

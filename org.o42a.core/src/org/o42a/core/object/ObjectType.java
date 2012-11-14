@@ -41,8 +41,8 @@ import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
-import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 
 

@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 public final class StaticTypeRef extends TypeRef {

@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.type.macro;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.TypeParametersBuilder;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 final class DefaultTypeConsumer extends TypeConsumer {

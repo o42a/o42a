@@ -28,7 +28,6 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.st.DefValue;
 
 

@@ -27,9 +27,9 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.PathTemplate;
-import org.o42a.core.ref.type.TypeParameter;
-import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.TypeParameter;
+import org.o42a.core.value.TypeParameters;
 
 
 final class TypeParamMetaDep extends MetaDep {

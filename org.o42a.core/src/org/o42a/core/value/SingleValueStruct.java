@@ -19,14 +19,13 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ref.type.TypeParameters.typeParameters;
+import static org.o42a.core.value.TypeParameters.typeParameters;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import org.o42a.core.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.source.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.DeclarativeBlock;

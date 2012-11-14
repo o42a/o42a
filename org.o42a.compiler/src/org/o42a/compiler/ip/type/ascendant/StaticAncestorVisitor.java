@@ -23,8 +23,8 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeParametersBuilder;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 public final class StaticAncestorVisitor extends AncestorVisitor {

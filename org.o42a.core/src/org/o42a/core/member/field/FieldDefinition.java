@@ -37,8 +37,8 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeParameters;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 
 
 public abstract class FieldDefinition extends Placed {
