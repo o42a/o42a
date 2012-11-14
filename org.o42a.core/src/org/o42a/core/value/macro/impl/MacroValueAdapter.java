@@ -55,8 +55,8 @@ public class MacroValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return ValueStruct.MACRO;
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return TypeParameters.typeParameters(getAdaptedRef(), ValueType.MACRO);
 	}
 
 	@Override

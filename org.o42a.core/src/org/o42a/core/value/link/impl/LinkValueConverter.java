@@ -54,7 +54,7 @@ public final class LinkValueConverter implements ValueConverter<KnownLink> {
 		final MemberKey destIfaceKey = getValueType().interfaceKey(intrinsics);
 		final MemberKey srcIfaceKey = srcLinkType.interfaceKey(intrinsics);
 
-		for (TypeParameter parameter : destination.getParameters()) {
+		for (TypeParameter parameter : destination.all()) {
 
 			final MemberKey destKey = parameter.getKey();
 			final MemberKey srcKey;

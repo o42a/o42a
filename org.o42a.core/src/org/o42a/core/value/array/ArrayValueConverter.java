@@ -52,7 +52,7 @@ final class ArrayValueConverter implements ValueConverter<Array> {
 		final MemberKey destItemTypeKey = getValueType().itemTypeKey(intrinsics);
 		final MemberKey srcItemTypeKey = srcArrayType.itemTypeKey(intrinsics);
 
-		for (TypeParameter parameter : destination.getParameters()) {
+		for (TypeParameter parameter : destination.all()) {
 
 			final MemberKey destKey = parameter.getKey();
 			final MemberKey srcKey;

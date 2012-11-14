@@ -48,13 +48,13 @@ public abstract class ValueAdapter {
 	public abstract Ref toTarget();
 
 	/**
-	 * Determines an adapted value structure.
+	 * Determines an adapted type parameters.
 	 *
-	 * @param scope the scope to determine the value structure in.
+	 * @param scope the scope to determine the type parameters in.
 	 *
-	 * @return value structure.
+	 * @return type parameters.
 	 */
-	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
+	public abstract TypeParameters<?> typeParameters(Scope scope);
 
 	public abstract Value<?> value(Resolver resolver);
 

@@ -31,9 +31,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.*;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 
@@ -55,8 +53,8 @@ public class VoidValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return ValueStruct.VOID;
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return TypeParameters.typeParameters(getAdaptedRef(), ValueType.VOID);
 	}
 
 	@Override

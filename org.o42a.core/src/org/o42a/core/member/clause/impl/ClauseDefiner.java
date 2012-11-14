@@ -30,7 +30,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -50,8 +50,8 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return definer().valueStruct(scope);
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return definer().typeParameters(scope);
 	}
 
 	@Override
@@ -155,7 +155,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public ValueStruct<?, ?> valueStruct(Scope scope) {
+		public TypeParameters<?> typeParameters(Scope scope) {
 			return null;
 		}
 
@@ -213,7 +213,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public ValueStruct<?, ?> valueStruct(Scope scope) {
+		public TypeParameters<?> typeParameters(Scope scope) {
 			return null;
 		}
 
@@ -274,7 +274,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public ValueStruct<?, ?> valueStruct(Scope scope) {
+		public TypeParameters<?> typeParameters(Scope scope) {
 			return null;
 		}
 

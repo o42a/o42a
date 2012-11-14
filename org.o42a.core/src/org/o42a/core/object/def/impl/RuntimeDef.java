@@ -29,7 +29,7 @@ import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 
 
 public final class RuntimeDef extends Def {
@@ -88,8 +88,8 @@ public final class RuntimeDef extends Def {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.definitions.getTypeParameters().toValueStruct();
+	protected TypeParameters<?> typeParameters(Scope scope) {
+		return this.definitions.getTypeParameters();
 	}
 
 	@Override

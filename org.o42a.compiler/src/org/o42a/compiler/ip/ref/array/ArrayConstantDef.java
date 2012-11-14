@@ -35,8 +35,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
 
@@ -101,8 +101,8 @@ final class ArrayConstantDef extends Def {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.value.getValueStruct().toArrayStruct();
+	protected TypeParameters<Array> typeParameters(Scope scope) {
+		return this.value.getTypeParameters().toArrayParameters();
 	}
 
 	@Override

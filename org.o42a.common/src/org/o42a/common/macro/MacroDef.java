@@ -31,7 +31,9 @@ import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.macro.Macro;
 
 
@@ -79,8 +81,8 @@ public final class MacroDef extends Def {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> valueStruct(Scope scope) {
-		return ValueStruct.MACRO;
+	protected TypeParameters<?> typeParameters(Scope scope) {
+		return TypeParameters.typeParameters(this, ValueType.MACRO);
 	}
 
 	@Override

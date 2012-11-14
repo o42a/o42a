@@ -32,7 +32,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.Condition;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -61,7 +61,7 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
+	public TypeParameters<?> typeParameters(Scope scope) {
 		return null;
 	}
 

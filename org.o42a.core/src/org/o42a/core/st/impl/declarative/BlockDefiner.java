@@ -38,7 +38,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.*;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -46,38 +46,36 @@ public final class BlockDefiner
 		extends MainDefiner
 		implements DeclarativeSentences {
 
-	static ValueStruct<?, ?> valueStruct(
+	static TypeParameters<?> typeParameters(
 			Scope scope,
 			DeclarativeSentences sentences,
-			ValueStruct<?, ?> expectedStruct) {
+			TypeParameters<?> expectedParameters) {
 
-		ValueStruct<?, ?> valueStruct = null;
+		TypeParameters<?> typeParameters = null;
 
 		for (DeclarativeSentence sentence : sentences.getSentences()) {
 
-			final ValueStruct<?, ?> sentenceStruct =
-					sentence.valueStruct(scope, expectedStruct);
+			final TypeParameters<?> sentenceParameters =
+					sentence.typeParameters(scope, expectedParameters);
 
-			if (sentenceStruct == null) {
+			if (sentenceParameters == null) {
 				continue;
 			}
-			if (valueStruct == null) {
-				valueStruct = sentenceStruct;
+			if (typeParameters == null) {
+				typeParameters = sentenceParameters;
 				continue;
 			}
-			if (valueStruct.getParameters().assignableFrom(
-					sentenceStruct.getParameters())) {
+			if (typeParameters.assignableFrom(sentenceParameters)) {
 				continue;
 			}
-			if (sentenceStruct.getParameters().assignableFrom(
-					valueStruct.getParameters())) {
-				valueStruct = sentenceStruct;
+			if (sentenceParameters.assignableFrom(typeParameters)) {
+				typeParameters = sentenceParameters;
 				continue;
 			}
-			valueStruct = expectedStruct;
+			typeParameters = expectedParameters;
 		}
 
-		return valueStruct;
+		return typeParameters;
 	}
 
 	static DefValue sentencesValue(
@@ -170,13 +168,13 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return valueStruct(
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return typeParameters(
 				scope,
 				this,
 				env()
 				.getValueRequest()
-				.getExpectedStruct()
+				.getExpectedParameters()
 				.upgradeScope(scope));
 	}
 

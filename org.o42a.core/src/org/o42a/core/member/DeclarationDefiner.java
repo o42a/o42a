@@ -28,7 +28,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -55,7 +55,7 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public final ValueStruct<?, ?> valueStruct(Scope scope) {
+	public final TypeParameters<?> typeParameters(Scope scope) {
 		return null;
 	}
 

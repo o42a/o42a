@@ -31,7 +31,7 @@ import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 
 
 public abstract class DeclarationCommand extends Command {
@@ -50,7 +50,7 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public final ValueStruct<?, ?> valueStruct(Scope scope) {
+	public final TypeParameters<?> typeParameters(Scope scope) {
 		return null;
 	}
 

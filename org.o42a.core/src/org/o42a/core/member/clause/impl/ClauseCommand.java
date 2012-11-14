@@ -31,7 +31,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -51,8 +51,8 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return command().valueStruct(scope);
+	public TypeParameters<?> typeParameters(Scope scope) {
+		return command().typeParameters(scope);
 	}
 
 	@Override
@@ -145,7 +145,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public ValueStruct<?, ?> valueStruct(Scope scope) {
+		public TypeParameters<?> typeParameters(Scope scope) {
 			return null;
 		}
 
@@ -211,7 +211,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public ValueStruct<?, ?> valueStruct(Scope scope) {
+		public TypeParameters<?> typeParameters(Scope scope) {
 			return null;
 		}
 

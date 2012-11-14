@@ -42,7 +42,7 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.string.Name;
 
@@ -354,27 +354,26 @@ public abstract class Statements<
 		new InstructionExecutor(this).executeAll();
 	}
 
-	ValueStruct<?, ?> valueStruct(
+	TypeParameters<?> typeParameters(
 			Scope scope,
-			ValueStruct<?, ?> expectedStruct) {
+			TypeParameters<?> expectedParameters) {
 		executeInstructions();
 
 		// Statements contain at most one value.
 		for (Implication<?> implication : getImplications()) {
 
-			final ValueStruct<?, ?> valueStruct =
-					implication.valueStruct(scope);
+			final TypeParameters<?> typeParameters =
+					implication.typeParameters(scope);
 
-			if (valueStruct == null) {
+			if (typeParameters == null) {
 				continue;
 			}
-			if (!expectedStruct.getParameters().assignableFrom(
-					valueStruct.getParameters())) {
-				scope.getLogger().incompatible(implication, expectedStruct);
+			if (!expectedParameters.assignableFrom(typeParameters)) {
+				scope.getLogger().incompatible(implication, expectedParameters);
 				return null;
 			}
 
-			return valueStruct;
+			return typeParameters;
 		}
 
 		return null;

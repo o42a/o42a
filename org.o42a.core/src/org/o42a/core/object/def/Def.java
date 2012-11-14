@@ -36,7 +36,6 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.log.Loggable;
@@ -130,36 +129,25 @@ public abstract class Def implements SourceInfo {
 
 	public final ValueType<?, ?> getValueType() {
 
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
+		final TypeParameters<?> typeParameters = getTypeParameters();
 
-		if (valueStruct == null) {
+		if (typeParameters == null) {
 			return null;
 		}
 
-		return valueStruct.getValueType();
+		return typeParameters.getValueType();
 	}
 
 	public final TypeParameters<?> getTypeParameters() {
 
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
-
-		if (valueStruct == null) {
-			return null;
-		}
-
-		return valueStruct.getParameters();
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-
 		final Scope scope = getScopeUpgrade().rescope(getScope());
-		final ValueStruct<?, ?> valueStruct = valueStruct(scope);
+		final TypeParameters<?> typeParameters = typeParameters(scope);
 
-		if (valueStruct == null) {
+		if (typeParameters == null) {
 			return null;
 		}
 
-		return valueStruct.prefixWith(getScopeUpgrade().toPrefix());
+		return typeParameters.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
 	public abstract boolean unconditional();
@@ -318,7 +306,7 @@ public abstract class Def implements SourceInfo {
 
 	protected abstract boolean hasConstantValue();
 
-	protected abstract ValueStruct<?, ?> valueStruct(Scope scope);
+	protected abstract TypeParameters<?> typeParameters(Scope scope);
 
 	protected abstract DefValue calculateValue(Resolver resolver);
 

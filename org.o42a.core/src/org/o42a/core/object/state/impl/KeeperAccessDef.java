@@ -31,7 +31,7 @@ import org.o42a.core.object.def.Def;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 
 
 final class KeeperAccessDef extends Def {
@@ -98,8 +98,8 @@ final class KeeperAccessDef extends Def {
 	}
 
 	@Override
-	protected ValueStruct<?, ?> valueStruct(Scope scope) {
-		return getValue().valueStruct(scope);
+	protected TypeParameters<?> typeParameters(Scope scope) {
+		return getValue().typeParameters(scope);
 	}
 
 	@Override
