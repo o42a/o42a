@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.value.impl.DefaultValueConverter.defaultValueConverter;
+
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
@@ -102,7 +104,9 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 		return this == valueType;
 	}
 
-	public abstract boolean convertibleFrom(ValueType<?, ?> other);
+	public final boolean convertibleFrom(ValueType<?, ?> other) {
+		return getConverter().convertibleFrom(other);
+	}
 
 	public abstract Obj typeObject(Intrinsics intrinsics);
 
@@ -150,6 +154,10 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 	@Override
 	public String toString() {
 		return getSystemId();
+	}
+
+	protected ValueConverter<T> getConverter() {
+		return defaultValueConverter();
 	}
 
 	protected abstract ValueKnowledge valueKnowledge(T value);
