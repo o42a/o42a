@@ -73,15 +73,18 @@ public class ArrayIR {
 		final Array array = getArray();
 
 		if (array.isEmpty()) {
-			return this.val =
-					new Val(array.getValueStruct(), VAL_CONDITION, 0, 0L);
+			return this.val = new Val(
+					array.getTypeParameters().toValueStruct(),
+					VAL_CONDITION,
+					0,
+					0L);
 		}
 
 		final ArrayItemsIR items = items();
 		final Data<Op> itemsData = items.data(getGenerator());
 
 		return this.val = new Val(
-				array.getValueStruct(),
+				array.getTypeParameters().toValueStruct(),
 				VAL_CONDITION,
 				items.length(),
 				itemsData.getPointer().toAny());

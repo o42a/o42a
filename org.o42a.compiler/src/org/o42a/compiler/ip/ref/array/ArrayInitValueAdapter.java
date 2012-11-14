@@ -35,11 +35,8 @@ import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.*;
 import org.o42a.core.value.array.Array;
-import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -47,17 +44,17 @@ import org.o42a.core.value.link.TargetResolver;
 final class ArrayInitValueAdapter extends ValueAdapter {
 
 	private final ArrayConstructor constructor;
-	private final ArrayValueStruct arrayStruct;
+	private final TypeParameters<Array> arrayParameters;
 	private Value<Array> value;
 	private IdentityHashMap<Scope, Value<Array>> cache;
 
 	ArrayInitValueAdapter(
 			Ref adaptedRef,
 			ArrayConstructor constructor,
-			ArrayValueStruct arrayStruct) {
+			TypeParameters<Array> arrayParameters) {
 		super(adaptedRef);
 		this.constructor = constructor;
-		this.arrayStruct = arrayStruct;
+		this.arrayParameters = arrayParameters;
 	}
 
 	@Override
@@ -155,7 +152,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 		@Override
 		protected ArrayValueType arrayType() {
-			return knownArrayStruct().getValueType();
+			return knownTypeParameters().getValueType().toArrayType();
 		}
 
 		@Override
@@ -164,8 +161,8 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 		}
 
 		@Override
-		protected ArrayValueStruct knownArrayStruct() {
-			return this.adapter.arrayStruct;
+		protected TypeParameters<Array> knownTypeParameters() {
+			return this.adapter.arrayParameters;
 		}
 
 	}

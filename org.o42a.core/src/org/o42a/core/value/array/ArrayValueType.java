@@ -145,7 +145,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 				|| request.getExpectedParameters().convertibleFrom(parameters)) {
 			return new ArrayValueAdapter(
 					ref,
-					request.getExpectedStruct().toArrayStruct());
+					request.getExpectedParameters().toArrayParameters());
 		}
 		return super.defaultAdapter(ref, parameters, request);
 	}

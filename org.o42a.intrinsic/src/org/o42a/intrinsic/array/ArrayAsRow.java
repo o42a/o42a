@@ -36,9 +36,11 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -55,32 +57,34 @@ final class ArrayAsRow extends AnnotatedBuiltin {
 	public Value<?> calculateBuiltin(Resolver resolver) {
 
 		final Value<?> arrayValue = array().value(resolver);
-		final ArrayValueStruct arrayStruct =
-				arrayValue.getValueStruct().toArrayStruct();
-		final ArrayValueStruct rowStruct = arrayStruct.setVariable(false);
+		final TypeParameters<Array> arrayParams =
+				arrayValue.getTypeParameters().toArrayParameters();
+		final ArrayValueType arrayType =
+				arrayParams.getValueType().toArrayType();
+		final TypeParameters<Array> rowParams =
+				arrayParams.convertTo(arrayType.setVariable(false));
 
 		if (arrayValue.getKnowledge().isFalse()) {
-			return rowStruct.falseValue();
+			return rowParams.falseValue();
 		}
 		if (!arrayValue.getKnowledge().isKnownToCompiler()) {
-			return rowStruct.runtimeValue();
+			return rowParams.runtimeValue();
 		}
 
-		final Array array =
-				arrayStruct.getParameters().cast(arrayValue).getCompilerValue();
+		final Array array = arrayParams.cast(arrayValue).getCompilerValue();
 
 		if (array.length() == 0) {
 
 			final Array row = new Array(
 					array,
 					array.distribute(),
-					rowStruct,
+					rowParams,
 					new org.o42a.core.value.array.ArrayItem[0]);
 
 			return row.toValue();
 		}
 
-		return rowStruct.runtimeValue();
+		return rowParams.runtimeValue();
 	}
 
 	@Override

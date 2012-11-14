@@ -38,28 +38,28 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.*;
 import org.o42a.core.value.link.TargetResolver;
 
 
 final class ArrayValueAdapter extends ValueAdapter {
 
-	private final ArrayValueStruct expectedStruct;
+	private final TypeParameters<Array> expectedParameters;
 
-	ArrayValueAdapter(Ref adaptedRef, ArrayValueStruct expectedStruct) {
+	ArrayValueAdapter(
+			Ref adaptedRef,
+			TypeParameters<Array> expectedParameters) {
 		super(adaptedRef);
-		this.expectedStruct = expectedStruct;
+		this.expectedParameters = expectedParameters;
 	}
 
-	public final ArrayValueStruct getExpectedStruct() {
-		return this.expectedStruct;
+	public final TypeParameters<Array> getExpectedParameters() {
+		return this.expectedParameters;
 	}
 
 	@Override
 	public boolean isConstant() {
-		if (getExpectedStruct().isVariable()) {
+		if (getExpectedParameters().getValueType().isVariable()) {
 			return false;
 		}
 		return getAdaptedRef().isConstant();
@@ -80,7 +80,7 @@ final class ArrayValueAdapter extends ValueAdapter {
 		return arrayValue(
 				getAdaptedRef(),
 				resolver,
-				getExpectedStruct().isVariable());
+				getExpectedParameters().getValueType().isVariable());
 	}
 
 	@Override
@@ -106,7 +106,7 @@ final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	private boolean fromConstToConst() {
-		if (getExpectedStruct().isVariable()) {
+		if (getExpectedParameters().getValueType().isVariable()) {
 			return false;
 		}
 		return !getAdaptedRef().getValueType().isVariable();
@@ -125,26 +125,28 @@ final class ArrayValueAdapter extends ValueAdapter {
 
 		final Obj arrayObject = arrayResolution.toObject();
 		final Value<?> value = arrayObject.value().getValue();
-		final ArrayValueStruct sourceStruct =
-				(ArrayValueStruct) value.getValueStruct();
+		final TypeParameters<Array> sourceParams =
+				value.getTypeParameters().toArrayParameters();
+		final ArrayValueType sourceType =
+				sourceParams.getValueType().toArrayType();
 
 		final PrefixPath prefix = ref.getPath().toPrefix(resolver.getScope());
-		final ArrayValueStruct resultStruct =
-				sourceStruct.setVariable(toVariable).prefixWith(prefix);
+		final TypeParameters<Array> resultParams =
+				sourceParams.convertTo(sourceType.setVariable(toVariable))
+				.prefixWith(prefix);
 
 		if (value.getKnowledge().isFalse()) {
-			return resultStruct.falseValue();
+			return resultParams.falseValue();
 		}
 		if (!value.getKnowledge().isKnownToCompiler()) {
-			return resultStruct.runtimeValue();
+			return resultParams.runtimeValue();
 		}
-		if (sourceStruct.isVariable()) {
+		if (sourceType.isVariable()) {
 			// Mutable array can not be copied at compile time.
-			return resultStruct.runtimeValue();
+			return resultParams.runtimeValue();
 		}
 
-		final Array array =
-				sourceStruct.getParameters().cast(value).getCompilerValue();
+		final Array array = sourceParams.cast(value).getCompilerValue();
 		final ArrayItem[] items = array.items(arrayObject.getScope());
 		final ArrayItem[] defItems = new ArrayItem[items.length];
 
@@ -156,11 +158,11 @@ final class ArrayValueAdapter extends ValueAdapter {
 			defItems[i] = new ArrayItem(i, defValueRef);
 		}
 
-		return resultStruct.compilerValue(
+		return resultParams.compilerValue(
 				new Array(
 						array,
 						array.distributeIn(resolver.getContainer()),
-						resultStruct,
+						resultParams,
 						defItems));
 	}
 

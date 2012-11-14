@@ -30,8 +30,10 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
@@ -79,8 +81,11 @@ final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
 	protected void fill() {
 
 		final Array array = this.arrayIR.getArray();
+		final TypeParameters<Array> typeParameters = array.getTypeParameters();
+		final ArrayValueType arrayType =
+				typeParameters.getValueType().toArrayType();
 		final Obj itemAscendant =
-				array.getValueStruct().getItemTypeRef().getType();
+				arrayType.itemTypeRef(typeParameters).getType();
 		final ArrayItem[] items = array.getItems();
 		final int length = items.length;
 
