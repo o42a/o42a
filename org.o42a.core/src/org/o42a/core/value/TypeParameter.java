@@ -89,6 +89,18 @@ public final class TypeParameter implements ScopeInfo {
 		return new TypeParameter(getKey(), getIndex(), newTypeRef);
 	}
 
+	public TypeParameter rebuildIn(Scope scope) {
+
+		final TypeRef oldTypeRef = getTypeRef();
+		final TypeRef newTypeRef = oldTypeRef.rebuildIn(scope);
+
+		if (oldTypeRef == newTypeRef) {
+			return this;
+		}
+
+		return new TypeParameter(getKey(), getIndex(), newTypeRef);
+	}
+
 	public final TypeParameter reproduce(Reproducer reproducer) {
 
 		final TypeRef typeRef = getTypeRef().reproduce(reproducer);

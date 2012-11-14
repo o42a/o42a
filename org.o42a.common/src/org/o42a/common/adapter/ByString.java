@@ -40,8 +40,8 @@ import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -63,10 +63,10 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		final Value<?> inputValue = input().value(resolver);
 
 		if (inputValue.getKnowledge().isFalse()) {
-			return value().getValueStruct().falseValue();
+			return type().getParameters().falseValue();
 		}
 		if (!inputValue.getKnowledge().isKnown()) {
-			return value().getValueStruct().runtimeValue();
+			return type().getParameters().runtimeValue();
 		}
 
 		final String input =
@@ -74,14 +74,14 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		final T result = byString(resolver, resolver, input);
 
 		if (result == null) {
-			return value().getValueStruct().falseValue();
+			return type().getParameters().falseValue();
 		}
 
 		@SuppressWarnings("unchecked")
-		final ValueStruct<?, T> valueType =
-				(ValueStruct<?, T>) value().getValueStruct();
+		final TypeParameters<T> typeParameters =
+				(TypeParameters<T>) type().getParameters();
 
-		return valueType.compilerValue(result);
+		return typeParameters.compilerValue(result);
 	}
 
 	@Override

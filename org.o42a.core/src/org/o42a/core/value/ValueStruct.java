@@ -124,12 +124,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public abstract S rebuildIn(Scope scope);
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public final S valueStructBy(TypeRef typeRef) {
-		return (S) this;
-	}
-
-	@Override
 	public TypeParameters<T> typeParametersBy(TypeRef typeRef) {
 		return getParameters();
 	}

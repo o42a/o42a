@@ -35,11 +35,11 @@ import org.o42a.core.object.ObjectValue;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
-import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.link.TargetRef;
@@ -63,12 +63,14 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 		final Ref arrayRef = array();
 		final Obj arrayObject = arrayRef.resolve(resolver).toObject();
 		final ObjectValue arrayObjectValue = arrayObject.value();
-		final ArrayValueStruct arrayStruct =
-				arrayObjectValue.getValueStruct().toArrayStruct();
+		final TypeParameters<Array> arrayParams =
+				arrayObject.type().getParameters().toArrayParameters();
 		final LinkValueStruct resultStruct =
-				LinkValueType.LINK.linkStruct(arrayStruct.getItemTypeRef());
+				LinkValueType.LINK.linkStruct(
+						arrayParams.getValueType().toArrayType().itemTypeRef(
+								arrayParams));
 		final Value<Array> arrayValue =
-				arrayStruct.getParameters().cast(arrayObjectValue.getValue());
+				arrayParams.cast(arrayObjectValue.getValue());
 
 		if (!arrayValue.getKnowledge().isKnown()) {
 			return resultStruct.runtimeValue();

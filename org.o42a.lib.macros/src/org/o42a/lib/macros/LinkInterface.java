@@ -30,7 +30,8 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.macro.MacroExpander;
 import org.o42a.util.log.LogInfo;
 
@@ -56,16 +57,16 @@ final class LinkInterface extends AnnotatedMacro {
 
 	private Path linkInterface(MacroExpander expander) {
 
-		final LinkValueStruct linkStruct = linkStruct(expander);
+		final TypeParameters<KnownLink> linkParameters = linkParameters(expander);
 
-		if (linkStruct == null) {
+		if (linkParameters == null) {
 			return null;
 		}
 
-		return linkTypeRef(expander, linkStruct).getPath().getPath();
+		return interfaceRef(expander, linkParameters).getPath().getPath();
 	}
 
-	private LinkValueStruct linkStruct(MacroExpander expander) {
+	private TypeParameters<KnownLink> linkParameters(MacroExpander expander) {
 
 		final Scope scope = expander.getMacroObject().getScope();
 		final Obj target =
@@ -77,27 +78,30 @@ final class LinkInterface extends AnnotatedMacro {
 			return null;
 		}
 
-		final LinkValueStruct linkStruct =
-				target.value().getValueStruct().toLinkStruct();
+		final TypeParameters<KnownLink> linkParameters =
+				target.type().getParameters().toLinkParameters();
 
-		if (linkStruct == null) {
+		if (linkParameters == null) {
 			// Conditionally report the error.
 			notLink(expander, expander.getLogger());
 			return null;
 		}
 
-		return linkStruct;
+		return linkParameters;
 	}
 
-	private TypeRef linkTypeRef(
+	private TypeRef interfaceRef(
 			MacroExpander expander,
-			LinkValueStruct linkStruct) {
+			TypeParameters<KnownLink> linkParameters) {
 
 		final Scope scope = expander.getMacroObject().getScope();
 		final PrefixPath prefix =
 				link().getPath().rebuildIn(scope).toPrefix(scope);
 
-		return linkStruct.getTypeRef().prefixWith(prefix);
+		return linkParameters.getValueType()
+				.toLinkType()
+				.interfaceRef(linkParameters)
+				.prefixWith(prefix);
 	}
 
 	private Ref link() {

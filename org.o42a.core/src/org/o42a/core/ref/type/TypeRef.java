@@ -115,33 +115,9 @@ public abstract class TypeRef implements ScopeInfo {
 			return this.valueStruct;
 		}
 
-		final ValueStruct<?, ?> valueStruct =
-				this.parametersBuilder.valueStructBy(this);
+		final TypeParameters<?> parameters = getParameters();
 
-		if (valueStruct == null || valueStruct.isNone()) {
-			this.valueStruct = defaultValueStruct();
-		} else if (!valueStruct.isValid()) {
-			this.valueStruct = valueStruct;
-		} else {
-			assert defaultParameters().assertAssignableFrom(
-					valueStruct.getParameters());
-			this.valueStruct = valueStruct;
-		}
-
-		if (this.valueStruct != null) {
-
-			final ScopeInfo scoped = this.valueStruct.toScoped();
-
-			if (scoped != null) {
-				assertSameScope(scoped);
-			}
-		}
-
-		return this.valueStruct;
-	}
-
-	public final ValueStruct<?, ?> defaultValueStruct() {
-		return getRef().valueStruct(getScope());
+		return this.valueStruct = parameters.toValueStruct();
 	}
 
 	public final TypeParameters<?> getParameters() {
@@ -288,7 +264,7 @@ public abstract class TypeRef implements ScopeInfo {
 		final TypeRef typeRef = upgradeScope(scope);
 		final Ref ref = typeRef.getRef().rebuildIn(scope);
 
-		return ref.toTypeRef(getValueStruct().rebuildIn(scope));
+		return ref.toTypeRef(getParameters().rebuildIn(scope));
 	}
 
 	public void resolveAll(FullResolver resolver) {

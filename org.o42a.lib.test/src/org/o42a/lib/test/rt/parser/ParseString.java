@@ -55,7 +55,7 @@ public final class ParseString extends ByString<String> {
 			return value;
 		}
 
-		return value().getValueStruct().runtimeValue();
+		return type().getParameters().runtimeValue();
 	}
 
 	@Override

@@ -39,7 +39,6 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.state.Keeper;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
@@ -259,9 +258,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private void allocateValueBody(ObjectIRBodyData data) {
 
 		final Obj ascendant = getAscendant();
-		final ValueStruct<?, ?> valueStruct =
-				ascendant.value().getValueStruct();
-		final ValueType<?, ?> valueType = valueStruct.getValueType();
+		final ValueType<?, ?> valueType = ascendant.value().getValueType();
 		final Obj typeObject =
 				valueType.typeObject(ascendant.getContext().getIntrinsics());
 

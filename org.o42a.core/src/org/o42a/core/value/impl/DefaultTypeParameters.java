@@ -24,7 +24,6 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class DefaultTypeParameters implements TypeParametersBuilder {
@@ -38,11 +37,6 @@ public final class DefaultTypeParameters implements TypeParametersBuilder {
 	@Override
 	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
 		return this;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStructBy(TypeRef typeRef) {
-		return typeRef.defaultValueStruct();
 	}
 
 	@Override

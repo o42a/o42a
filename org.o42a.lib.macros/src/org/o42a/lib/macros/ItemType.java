@@ -30,7 +30,8 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.value.array.ArrayValueStruct;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.array.Array;
 import org.o42a.core.value.macro.MacroExpander;
 import org.o42a.util.log.LogInfo;
 
@@ -56,16 +57,17 @@ final class ItemType extends AnnotatedMacro {
 
 	private Path itemType(MacroExpander expander) {
 
-		final ArrayValueStruct arrayStruct = arrayStruct(expander);
+		final TypeParameters<Array> arrayParameters =
+				arrayParameters(expander);
 
-		if (arrayStruct == null) {
+		if (arrayParameters == null) {
 			return null;
 		}
 
-		return arrayTypeRef(expander, arrayStruct).getPath().getPath();
+		return arrayTypeRef(expander, arrayParameters).getPath().getPath();
 	}
 
-	private ArrayValueStruct arrayStruct(MacroExpander expander) {
+	private TypeParameters<Array> arrayParameters(MacroExpander expander) {
 
 		final Scope scope = expander.getMacroObject().getScope();
 		final Obj target =
@@ -80,27 +82,30 @@ final class ItemType extends AnnotatedMacro {
 			return null;
 		}
 
-		final ArrayValueStruct arrayStruct =
-				target.value().getValueStruct().toArrayStruct();
+		final TypeParameters<Array> arrayParameters =
+				target.type().getParameters().toArrayParameters();
 
-		if (arrayStruct == null) {
+		if (arrayParameters == null) {
 			// Conditionally report the error.
 			notArray(expander, expander.getLogger());
 			return null;
 		}
 
-		return arrayStruct;
+		return arrayParameters;
 	}
 
 	private TypeRef arrayTypeRef(
 			MacroExpander expander,
-			ArrayValueStruct arrayStruct) {
+			TypeParameters<Array> typeParameters) {
 
 		final Scope scope = expander.getMacroObject().getScope();
 		final PrefixPath prefix =
 				array().getPath().rebuildIn(scope).toPrefix(scope);
 
-		return arrayStruct.getItemTypeRef().prefixWith(prefix);
+		return typeParameters.getValueType()
+				.toArrayType()
+				.itemTypeRef(typeParameters)
+				.prefixWith(prefix);
 	}
 
 	private Ref array() {

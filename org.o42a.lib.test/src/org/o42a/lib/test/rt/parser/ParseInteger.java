@@ -46,7 +46,7 @@ public final class ParseInteger extends IntegerByString {
 			return value;
 		}
 
-		return value().getValueStruct().runtimeValue();
+		return type().getParameters().runtimeValue();
 	}
 
 	@Override

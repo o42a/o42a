@@ -40,7 +40,9 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 
 
@@ -170,10 +172,10 @@ public class Ascendants
 
 		if (ancestor != null) {
 
-			final ValueStruct<?, ?> valueStruct = ancestor.getValueStruct();
+			final TypeParameters<?> parameters = ancestor.getParameters();
 
-			if (!valueStruct.isVoid()) {
-				return definitionTarget(ancestor.getParameters());
+			if (!parameters.getValueType().isVoid()) {
+				return definitionTarget(parameters);
 			}
 		}
 

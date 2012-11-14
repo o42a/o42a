@@ -64,7 +64,7 @@ public class DuplicatesArray extends AnnotatedBuiltin {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return value().getValueStruct()
+		return type().getParameters()
 				.upgradeScope(resolver.getScope())
 				.runtimeValue();
 	}
