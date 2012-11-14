@@ -28,7 +28,7 @@ import org.o42a.core.ir.value.type.ValueOp;
 
 final class LinkIR extends ValueIR {
 
-	LinkIR(LinkValueStructIR valueStructIR, ObjectIR objectIR) {
+	LinkIR(LinkValueTypeIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
 	}
 

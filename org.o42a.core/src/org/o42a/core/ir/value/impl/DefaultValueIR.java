@@ -22,17 +22,15 @@ package org.o42a.core.ir.value.impl;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueOp;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 
 
 public final class DefaultValueIR extends ValueIR {
 
-	public DefaultValueIR(
-			ValueStructIR<?, ?> valueStructIR,
-			ObjectIR objectIR) {
-		super(valueStructIR, objectIR);
+	public DefaultValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
+		super(valueTypeIR, objectIR);
 	}
 
 	@Override

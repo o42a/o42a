@@ -17,20 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.integer;
+package org.o42a.core.value.directive.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.core.value.directive.Directive;
 
 
-final class IntegerValueStructIR
-		extends ValueStructIR<SingleValueStruct<Long>, Long> {
+final class DirectiveValueTypeIR extends ValueTypeIR<Directive> {
 
-	IntegerValueStructIR(Generator generator, IntegerValueStruct valueStruct) {
-		super(generator, valueStruct);
+	DirectiveValueTypeIR(Generator generator, DirectiveValueType valueType) {
+		super(generator, valueType);
 	}
 
 	@Override

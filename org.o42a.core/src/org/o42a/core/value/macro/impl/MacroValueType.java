@@ -25,9 +25,7 @@ import static org.o42a.core.value.macro.impl.PrefixedMacro.prefixMacro;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
-import org.o42a.core.ir.value.type.StaticsIR;
-import org.o42a.core.ir.value.type.ValueIRDesc;
-import org.o42a.core.ir.value.type.VoidStaticsIR;
+import org.o42a.core.ir.value.type.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
@@ -83,6 +81,11 @@ public final class MacroValueType extends SingleValueType<Macro> {
 		}
 
 		return compilerValue(newMacro);
+	}
+
+	@Override
+	protected ValueTypeIR<Macro> createIR(Generator generator) {
+		return new MacroValueTypeIR(generator, this);
 	}
 
 	@Override

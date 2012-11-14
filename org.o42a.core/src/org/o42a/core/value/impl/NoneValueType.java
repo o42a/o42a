@@ -24,6 +24,7 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
@@ -56,6 +57,11 @@ public class NoneValueType extends SingleValueType<java.lang.Void> {
 
 	@Override
 	public ValueIRDesc irDesc() {
+		throw doesNotExist();
+	}
+
+	@Override
+	protected ValueTypeIR<java.lang.Void> createIR(Generator generator) {
 		throw doesNotExist();
 	}
 

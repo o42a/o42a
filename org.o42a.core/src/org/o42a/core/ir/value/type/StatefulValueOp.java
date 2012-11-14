@@ -28,8 +28,8 @@ public abstract class StatefulValueOp extends ValueOp {
 
 	public StatefulValueOp(ValueIR valueIR, ObjectOp object) {
 		super(valueIR, object);
-		assert valueIR.getValueStruct().getValueType().isStateful() :
-			valueIR.getValueStruct().getValueType() + " is stateless";
+		assert valueIR.getValueType().isStateful() :
+			valueIR.getValueType() + " is stateless";
 	}
 
 	@Override

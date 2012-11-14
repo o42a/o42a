@@ -17,20 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.string;
+package org.o42a.core.value.floats;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.ir.value.type.ValueTypeIR;
 
 
-final class StringValueStructIR
-		extends ValueStructIR<SingleValueStruct<String>, String> {
+final class FloatValueTypeIR extends ValueTypeIR<Double> {
 
-	StringValueStructIR(Generator generator, StringValueStruct valueStruct) {
-		super(generator, valueStruct);
+	FloatValueTypeIR(Generator generator, FloatValueType valueType) {
+		super(generator, valueType);
 	}
 
 	@Override

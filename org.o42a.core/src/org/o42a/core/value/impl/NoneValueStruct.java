@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value.impl;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -31,13 +29,6 @@ public class NoneValueStruct extends SingleValueStruct<Void> {
 
 	private NoneValueStruct() {
 		super(ValueType.NONE);
-	}
-
-	@Override
-	protected ValueStructIR<SingleValueStruct<Void>, Void> createIR(
-			Generator generator) {
-		throw new UnsupportedOperationException(
-				"Type NONE can not have IR");
 	}
 
 }

@@ -20,8 +20,6 @@
 package org.o42a.core.value.voids;
 
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
@@ -33,12 +31,6 @@ public class VoidValueStruct extends SingleValueStruct<Void> {
 
 	private VoidValueStruct() {
 		super(ValueType.VOID);
-	}
-
-	@Override
-	protected ValueStructIR<SingleValueStruct<Void>, Void> createIR(
-			Generator generator) {
-		return new VoidValueStructIR(generator, this);
 	}
 
 }

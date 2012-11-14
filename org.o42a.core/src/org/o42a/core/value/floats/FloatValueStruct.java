@@ -20,8 +20,6 @@
 package org.o42a.core.value.floats;
 
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -32,12 +30,6 @@ public class FloatValueStruct extends SingleValueStruct<Double> {
 
 	private FloatValueStruct() {
 		super(ValueType.FLOAT);
-	}
-
-	@Override
-	protected ValueStructIR<SingleValueStruct<Double>, Double> createIR(
-			Generator generator) {
-		return new FloatValueStructIR(generator, this);
 	}
 
 }

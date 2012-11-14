@@ -29,7 +29,7 @@ import org.o42a.core.ir.value.type.ValueOp;
 
 final class ArrayValueIR extends ValueIR {
 
-	ArrayValueIR(ArrayValueStructIR valueStructIR, ObjectIR objectIR) {
+	ArrayValueIR(ArrayValueTypeIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
 	}
 

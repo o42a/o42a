@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.floats;
+package org.o42a.core.value.macro.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.core.value.macro.Macro;
 
 
-final class FloatValueStructIR
-		extends ValueStructIR<SingleValueStruct<Double>, Double> {
+final class MacroValueTypeIR extends ValueTypeIR<Macro> {
 
-	FloatValueStructIR(Generator generator, FloatValueStruct valueStruct) {
-		super(generator, valueStruct);
+	MacroValueTypeIR(Generator generator, MacroValueType valueType) {
+		super(generator, valueType);
 	}
 
 	@Override
