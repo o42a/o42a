@@ -30,7 +30,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.directive.Directive;
@@ -48,11 +47,6 @@ public final class DirectiveValueType extends SingleValueType<Directive> {
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
 		return intrinsics.getDirective();
-	}
-
-	@Override
-	public SingleValueStruct<Directive> struct() {
-		return DirectiveValueStruct.INSTANCE;
 	}
 
 	@Override

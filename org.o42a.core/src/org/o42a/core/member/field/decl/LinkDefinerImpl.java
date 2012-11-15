@@ -97,7 +97,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 				linkType.typeRef(
 						declaration,
 						declaration.getScope(),
-						linkType.linkStruct(targetType)));
+						linkType.typeParameters(targetType)));
 	}
 
 	private TypeRef explicitTypeRef() {

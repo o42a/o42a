@@ -30,7 +30,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.TypeParameters;
 
 
 public final class FloatValueType extends SingleValueType<Double> {
@@ -39,11 +40,6 @@ public final class FloatValueType extends SingleValueType<Double> {
 
 	private FloatValueType() {
 		super("float", Double.class);
-	}
-
-	@Override
-	public SingleValueStruct<Double> struct() {
-		return ValueStruct.FLOAT;
 	}
 
 	@Override

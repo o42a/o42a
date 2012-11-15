@@ -225,7 +225,7 @@ public final class ObjectType implements UserInfo {
 			return this.linkUses;
 		}
 
-		final ValueType<?, ?> valueType = getObject().value().getValueType();
+		final ValueType<?, ?> valueType = getValueType();
 
 		if (!valueType.isLink()) {
 			return null;

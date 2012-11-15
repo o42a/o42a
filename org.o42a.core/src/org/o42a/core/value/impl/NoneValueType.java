@@ -28,7 +28,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.TypeParameters;
 
 
 public class NoneValueType extends SingleValueType<java.lang.Void> {
@@ -37,11 +38,6 @@ public class NoneValueType extends SingleValueType<java.lang.Void> {
 
 	private NoneValueType() {
 		super("none", java.lang.Void.class);
-	}
-
-	@Override
-	public SingleValueStruct<java.lang.Void> struct() {
-		return ValueStruct.NONE;
 	}
 
 	@Override

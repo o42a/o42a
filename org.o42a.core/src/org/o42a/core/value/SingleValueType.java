@@ -47,8 +47,6 @@ public abstract class SingleValueType<T>
 		return false;
 	}
 
-	public abstract SingleValueStruct<T> struct();
-
 	public final Ref constantRef(
 			LocationInfo location,
 			Distributor distributor,
@@ -71,13 +69,6 @@ public abstract class SingleValueType<T>
 	@Override
 	public final ArrayValueType toArrayType() {
 		return null;
-	}
-
-	@Override
-	protected SingleValueStruct<T> valueStruct(TypeParameters<T> parameters) {
-		assert parameters.isEmpty() :
-			"Type parameters are not expected here: " + parameters;
-		return struct();
 	}
 
 	@Override

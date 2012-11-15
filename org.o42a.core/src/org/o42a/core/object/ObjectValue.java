@@ -36,8 +36,6 @@ import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.FullResolution;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 
 
 public final class ObjectValue extends ObjectValueParts {
@@ -57,16 +55,6 @@ public final class ObjectValue extends ObjectValueParts {
 		super(object);
 	}
 
-	@Deprecated
-	public final ValueType<?, ?> getValueType() {
-		return getObject().type().getValueType();
-	}
-
-	@Deprecated
-	public final ValueStruct<?, ?> getValueStruct() {
-		return getObject().type().getParameters().toValueStruct();
-	}
-
 	public final UseFlag selectUse(
 			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
@@ -77,7 +65,7 @@ public final class ObjectValue extends ObjectValueParts {
 	}
 
 	public final boolean isRuntimeConstructed() {
-		return !getValueType().isStateful()
+		return !getObject().type().getValueType().isStateful()
 				|| getObject().type().isRuntimeConstructed();
 	}
 
@@ -144,7 +132,7 @@ public final class ObjectValue extends ObjectValueParts {
 					wrapped.value().getDefinitions();
 			final Definitions explicitDefinitions;
 
-			if (getValueType().isVoid()) {
+			if (getObject().type().getValueType().isVoid()) {
 				explicitDefinitions = wrappedDefinitions.toVoid();
 			} else {
 				explicitDefinitions = wrappedDefinitions;

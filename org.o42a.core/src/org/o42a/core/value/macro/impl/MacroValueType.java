@@ -32,7 +32,9 @@ import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.voids.VoidKeeperIR;
 
@@ -48,11 +50,6 @@ public final class MacroValueType extends SingleValueType<Macro> {
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
 		return intrinsics.getMacro();
-	}
-
-	@Override
-	public SingleValueStruct<Macro> struct() {
-		return MacroValueStruct.INSTANCE;
 	}
 
 	@Override

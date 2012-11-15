@@ -110,10 +110,6 @@ public abstract class LinkValueType
 		return ROOT_PATH.append(link.getScope().toField().getKey());
 	}
 
-	public final LinkValueStruct linkStruct(TypeRef typeRef) {
-		return new LinkValueStruct(this, typeRef);
-	}
-
 	@Override
 	public final LinkValueType toLinkType() {
 		return this;
@@ -132,11 +128,6 @@ public abstract class LinkValueType
 	@Override
 	protected ValueConverter<KnownLink> getConverter() {
 		return this.converter;
-	}
-
-	@Override
-	protected LinkValueStruct valueStruct(TypeParameters<KnownLink> parameters) {
-		return linkStruct(interfaceRef(parameters));
 	}
 
 	@Override

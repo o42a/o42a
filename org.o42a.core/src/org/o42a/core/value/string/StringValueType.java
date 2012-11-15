@@ -31,7 +31,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.TypeParameters;
 
 
 public final class StringValueType extends SingleValueType<String> {
@@ -40,11 +41,6 @@ public final class StringValueType extends SingleValueType<String> {
 
 	private StringValueType() {
 		super("string", String.class);
-	}
-
-	@Override
-	public SingleValueStruct<String> struct() {
-		return ValueStruct.STRING;
 	}
 
 	@Override

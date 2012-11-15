@@ -174,7 +174,7 @@ public class DereferenceStep extends Step {
 
 		final Obj linkObject = nextPrediction.getScope().toObject();
 		final LinkValueType linkType =
-				linkObject.value().getValueType().toLinkType();
+				linkObject.type().getValueType().toLinkType();
 
 		if (linkType.isVariable()) {
 			normalizer.finish();// Can not normalize a variable.

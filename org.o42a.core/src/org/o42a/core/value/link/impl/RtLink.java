@@ -24,8 +24,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.Link;
-import org.o42a.core.value.link.LinkValueStruct;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -39,14 +39,15 @@ final class RtLink extends Link {
 	public TypeRef getInterfaceRef() {
 
 		final Obj linkObject = linkObject();
+		final TypeParameters<?> linkParameters =
+				linkObject.type().getParameters();
+		final LinkValueType linkType =
+				linkParameters.getValueType().toLinkType();
 
-		final LinkValueStruct linkStruct =
-				linkObject.value().getValueStruct().toLinkStruct();
-
-		assert linkStruct != null :
+		assert linkType != null :
 			linkObject + " is not a link object";
 
-		return linkStruct.getTypeRef();
+		return linkType.interfaceRef(linkParameters);
 	}
 
 	@Override
@@ -55,7 +56,7 @@ final class RtLink extends Link {
 		final Obj linkObject = linkObject();
 
 		final LinkValueType linkType =
-				linkObject.value().getValueType().toLinkType();
+				linkObject.type().getValueType().toLinkType();
 
 		assert linkType != null :
 			linkObject + " is not a link object";
