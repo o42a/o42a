@@ -94,7 +94,7 @@ final class SetArrayItemEval extends InlineEval {
 				.getEnclosingScope() // item
 				.getEnclosingScope() // array
 				.toObject()
-				.value()
+				.type()
 				.getValueType()
 				.toArrayType();
 	}

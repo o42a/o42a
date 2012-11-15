@@ -81,7 +81,7 @@ public final class CompareFloats extends CompareNumbers<Double> {
 		return result.op(
 				null,
 				dirs.getBuilder(),
-				value().getValueType(),
+				type().getValueType(),
 				NO_VAL_HOLDER);
 	}
 

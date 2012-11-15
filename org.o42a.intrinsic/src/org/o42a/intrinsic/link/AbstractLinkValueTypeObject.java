@@ -40,7 +40,7 @@ public abstract class AbstractLinkValueTypeObject extends ValueTypeObject {
 	@Override
 	protected TypeParameters<?> determineTypeParameters() {
 
-		final LinkValueType linkType = value().getValueType().toLinkType();
+		final LinkValueType linkType = type().getValueType().toLinkType();
 
 		return super.determineTypeParameters().add(
 				linkType.interfaceKey(getContext().getIntrinsics()),
