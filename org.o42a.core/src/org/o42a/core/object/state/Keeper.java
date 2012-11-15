@@ -28,7 +28,7 @@ import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.SubID;
 
@@ -59,11 +59,11 @@ public final class Keeper extends ObjectConstructor implements SubID {
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 
-		final ValueStruct<?, ?> valueStruct =
-				getValue().valueStruct(getScope());
+		final TypeParameters<?> typeParameters =
+				getValue().typeParameters(getScope());
 
-		return valueStruct.getValueType()
-				.typeRef(location, getScope(), valueStruct.getParameters());
+		return typeParameters.getValueType()
+				.typeRef(location, getScope(), typeParameters);
 	}
 
 	@Override

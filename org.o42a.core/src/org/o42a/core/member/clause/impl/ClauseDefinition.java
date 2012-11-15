@@ -174,7 +174,7 @@ final class ClauseDefinition extends Obj {
 		if (toClause().getSubstitution().substitutes()) {
 			return ascendants;
 		}
-		if (!object.value().getValueType().isLink()) {
+		if (!object.type().getValueType().isLink()) {
 			return toClause().getAscendants().updateAscendants(ascendants);
 		}
 

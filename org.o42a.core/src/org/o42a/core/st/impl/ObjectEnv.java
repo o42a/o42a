@@ -39,7 +39,7 @@ public final class ObjectEnv extends DefinerEnv {
 			return this.valueRequest;
 		}
 		return this.valueRequest = new ValueRequest(
-				this.object.value().getValueStruct(),
+				this.object.type().getParameters(),
 				this.object.getLogger());
 	}
 

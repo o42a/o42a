@@ -102,7 +102,7 @@ public final class Resolution implements ScopeInfo {
 		if (object == null) {
 			return null;
 		}
-		if (!object.value().getValueType().is(DIRECTIVE)) {
+		if (!object.type().getValueType().is(DIRECTIVE)) {
 			return null;
 		}
 

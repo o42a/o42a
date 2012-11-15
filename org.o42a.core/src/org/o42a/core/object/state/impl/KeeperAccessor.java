@@ -43,7 +43,7 @@ public final class KeeperAccessor extends Obj {
 		final Scope scope = getScope();
 
 		this.value = getKeeper().getValue().rescope(scope);
-		setValueStruct(this.value.valueStruct(scope));
+		setValueType(this.value.getValueType());
 	}
 
 	public final Ref getValue() {

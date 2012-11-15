@@ -27,7 +27,6 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.directive.Directive;
 
@@ -40,7 +39,7 @@ public class DirectiveValueTypeObject
 	public DirectiveValueTypeObject(
 			MemberOwner owner,
 			AnnotatedSources sources) {
-		super(owner, sources, ValueStruct.DIRECTIVE);
+		super(owner, sources, ValueType.DIRECTIVE);
 	}
 
 	@Override

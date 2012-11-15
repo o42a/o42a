@@ -38,8 +38,8 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueRequest;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -281,11 +281,11 @@ public final class DeclaredField extends Field implements FieldAscendants {
 				return this.valueRequest;
 			}
 
-			final ValueStruct<?, ?> ancestorValueStruct =
-					this.field.toObject().value().getValueStruct();
+			final TypeParameters<?> ancestorParameters =
+					this.field.toObject().type().getParameters();
 
 			return this.valueRequest = new ValueRequest(
-					ancestorValueStruct,
+					ancestorParameters,
 					this.field.getContext().getLogger());
 		}
 

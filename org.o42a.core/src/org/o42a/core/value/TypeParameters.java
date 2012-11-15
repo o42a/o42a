@@ -219,16 +219,14 @@ public final class TypeParameters<T>
 		return relation1;
 	}
 
-	public final ValueAdapter valueAdapter(
-			Ref ref,
-			ValueRequest request) {
-		if (request.getExpectedStruct().isVoid()) {
+	public final ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
+		if (request.getExpectedType().isVoid()) {
 			if (getValueType().isVoid()) {
 				return rawValueAdapter(ref);
 			}
 			return new VoidValueAdapter(ref);
 		}
-		if (request.getExpectedStruct().isMacro()) {
+		if (request.getExpectedType().isMacro()) {
 			if (getValueType().isMacro()) {
 				return rawValueAdapter(ref);
 			}

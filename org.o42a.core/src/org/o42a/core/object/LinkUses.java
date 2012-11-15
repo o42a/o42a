@@ -98,7 +98,7 @@ public class LinkUses {
 
 		final Obj linkTypeObject =
 				getObject()
-				.value()
+				.type()
 				.getValueType()
 				.typeObject(getObject().getContext().getIntrinsics());
 

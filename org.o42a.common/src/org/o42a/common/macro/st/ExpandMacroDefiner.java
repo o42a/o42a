@@ -32,7 +32,9 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -122,14 +124,17 @@ final class ExpandMacroDefiner extends Definer {
 			return cached;
 		}
 
-		final ValueStruct<?, ?> expectedStruct =
-				env().getValueRequest().getExpectedStruct().upgradeScope(scope);
+		final TypeParameters<?> expectedParameters =
+				env()
+				.getValueRequest()
+				.getExpectedParameters()
+				.upgradeScope(scope);
 		final CompilerLogger logger =
 				DEFAULT_MACRO_EXPANSION_LOGGER.compilerLogger(
 						scope,
 						getContext().getLogger());
 		final ValueRequest valueRequest =
-				new ValueRequest(expectedStruct, logger);
+				new ValueRequest(expectedParameters, logger);
 		final ValueAdapter adapter =
 				getExpansion().rebuildIn(scope).valueAdapter(valueRequest);
 
