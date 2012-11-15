@@ -90,7 +90,7 @@ final class IndexedItemEval extends InlineEval {
 		return this.item.getScope()
 				.getEnclosingScope()
 				.toObject()
-				.value()
+				.type()
 				.getValueType()
 				.toArrayType();
 	}

@@ -40,7 +40,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.link.TargetRef;
 
@@ -65,18 +65,19 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 		final ObjectValue arrayObjectValue = arrayObject.value();
 		final TypeParameters<Array> arrayParams =
 				arrayObject.type().getParameters().toArrayParameters();
-		final LinkValueStruct resultStruct =
-				LinkValueType.LINK.linkStruct(
-						arrayParams.getValueType().toArrayType().itemTypeRef(
-								arrayParams));
+		final TypeParameters<KnownLink> resultParams =
+				LinkValueType.LINK.typeParameters(
+						arrayParams.getValueType()
+						.toArrayType()
+						.itemTypeRef(arrayParams));
 		final Value<Array> arrayValue =
 				arrayParams.cast(arrayObjectValue.getValue());
 
 		if (!arrayValue.getKnowledge().isKnown()) {
-			return resultStruct.runtimeValue();
+			return resultParams.runtimeValue();
 		}
 		if (arrayValue.getKnowledge().isFalse()) {
-			return resultStruct.falseValue();
+			return resultParams.falseValue();
 		}
 
 		final ObjectValue indexObjectValue =
@@ -85,20 +86,20 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 				ValueType.INTEGER.cast(indexObjectValue.getValue());
 
 		if (!indexValue.getKnowledge().isKnown()) {
-			return resultStruct.runtimeValue();
+			return resultParams.runtimeValue();
 		}
 		if (indexValue.getKnowledge().isFalse()) {
-			return resultStruct.falseValue();
+			return resultParams.falseValue();
 		}
 
 		final Array array = arrayValue.getCompilerValue();
 		final long index = indexValue.getCompilerValue();
 
 		if (index < 0) {
-			return resultStruct.falseValue();
+			return resultParams.falseValue();
 		}
 		if (index >= array.length()) {
-			return resultStruct.falseValue();
+			return resultParams.falseValue();
 		}
 
 		final ArrayItem item =
@@ -110,7 +111,7 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 				.toTargetRef(item.getTypeRef())
 				.prefixWith(arrayPrefix);
 
-		return resultStruct.compilerValue(new IndexedItemLink(
+		return resultParams.compilerValue(new IndexedItemLink(
 				resolver,
 				distributeIn(resolver.getContainer()),
 				itemTarget));
