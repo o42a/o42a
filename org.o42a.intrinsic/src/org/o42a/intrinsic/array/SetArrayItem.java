@@ -38,7 +38,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 @SourcePath(relativeTo = ArrayItem.class, value = "set.o42a")
@@ -54,12 +54,12 @@ final class SetArrayItem extends AnnotatedBuiltin {
 
 	SetArrayItem(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
-		setValueStruct(ValueStruct.VOID);
+		setValueType(ValueType.VOID);
 	}
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return ValueStruct.VOID.runtimeValue();
+		return type().getParameters().runtimeValue();
 	}
 
 	@Override

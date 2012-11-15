@@ -42,7 +42,7 @@ final class ConstantObject<T> extends ConstructedObject {
 			SingleValueType<T> valueType,
 			T value) {
 		super(constant, enclosing);
-		setValueStruct(valueType.struct());
+		setValueType(valueType);
 		this.value = typeParameters(this, valueType).compilerValue(value);
 	}
 
@@ -61,7 +61,7 @@ final class ConstantObject<T> extends ConstructedObject {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
+				type().getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));
 	}

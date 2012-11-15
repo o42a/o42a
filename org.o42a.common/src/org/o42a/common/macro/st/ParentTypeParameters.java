@@ -61,7 +61,7 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 		final Obj parent = this.scope.toObject();
 		final TypeParameters<?> parentTypeParameters =
 				parent.type().getParameters();
-		final ValueType<?, ?> parentValueType = parent.value().getValueType();
+		final ValueType<?, ?> parentValueType = parent.type().getValueType();
 		final LinkValueType parentLinkType = parentValueType.toLinkType();
 
 		if (parentLinkType != null) {

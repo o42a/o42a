@@ -59,7 +59,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.impl.ObjectEnv;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.ArrayUtil;
@@ -723,11 +722,6 @@ public abstract class Obj
 	}
 
 	protected abstract Ascendants buildAscendants();
-
-	@Deprecated
-	protected final void setValueStruct(ValueStruct<?, ?> valueStruct) {
-		setValueType(valueStruct.getValueType());
-	}
 
 	protected final void setValueType(ValueType<?, ?> valueType) {
 		type().setKnownValueType(valueType);

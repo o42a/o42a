@@ -37,7 +37,9 @@ import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
 
 
 public final class Constant<T> extends ObjectConstructor {
@@ -70,16 +72,10 @@ public final class Constant<T> extends ObjectConstructor {
 
 	@Override
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
-
-		final ValueStruct<?, ?> expectedStruct = request.getExpectedStruct();
-		final SingleValueStruct<T> valueStruct = this.valueType.struct();
-
 		if (request.isTransformAllowed()
-				&& !expectedStruct.getParameters().assignableFrom(
-						valueStruct.getParameters())) {
+				&& !request.getExpectedType().is(getValueType())) {
 			return super.valueAdapter(ref, request);
 		}
-
 		return new ConstantValueAdapter<T>(ref, getValueType(), this.constant);
 	}
 

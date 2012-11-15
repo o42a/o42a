@@ -105,15 +105,6 @@ public class Ref extends Statement {
 		return typeParameters != null ? typeParameters.getValueType() : null;
 	}
 
-	public final ValueStruct<?, ?> valueStruct(Scope scope) {
-
-		final Resolution resolution = resolve(scope.resolver());
-		final ValueStruct<?, ?> valueStruct =
-				resolution.toObject().value().getValueStruct();
-
-		return valueStruct.prefixWith(getPath().toPrefix(scope));
-	}
-
 	public final TypeParameters<?> typeParameters(Scope scope) {
 
 		final Resolution resolution = resolve(scope.resolver());

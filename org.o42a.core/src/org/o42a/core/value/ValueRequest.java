@@ -28,35 +28,35 @@ public final class ValueRequest {
 		return new ValueRequest(null, logger, false);
 	}
 
-	private final ValueStruct<?, ?> expectedStruct;
+	private final TypeParameters<?> expectedParameters;
 	private final CompilerLogger logger;
 	private final boolean transformAllowed;
 
 	public ValueRequest(
-			ValueStruct<?, ?> expectedStruct,
+			TypeParameters<?> expectedParameters,
 			CompilerLogger logger) {
-		assert expectedStruct != null :
-			"Expected value structure not specified";
-		this.expectedStruct = expectedStruct;
+		assert expectedParameters != null :
+			"Expected type parameters not specified";
+		this.expectedParameters = expectedParameters;
 		this.transformAllowed = true;
 		this.logger = logger;
 	}
 
 	private ValueRequest(
-			ValueStruct<?, ?> expectedStruct,
+			TypeParameters<?> expectedParameters,
 			CompilerLogger logger,
 			boolean transformAllowed) {
-		this.expectedStruct = expectedStruct;
+		this.expectedParameters = expectedParameters;
 		this.logger = logger;
 		this.transformAllowed = transformAllowed;
 	}
 
-	public final ValueStruct<?, ?> getExpectedStruct() {
-		return this.expectedStruct;
+	public final ValueType<?, ?> getExpectedType() {
+		return getExpectedParameters().getValueType();
 	}
 
 	public final TypeParameters<?> getExpectedParameters() {
-		return getExpectedStruct().getParameters();
+		return this.expectedParameters;
 	}
 
 	public final boolean isTransformAllowed() {
@@ -71,26 +71,26 @@ public final class ValueRequest {
 		if (!isTransformAllowed()) {
 			return this;
 		}
-		return new ValueRequest(getExpectedStruct(), getLogger(), false);
+		return new ValueRequest(getExpectedParameters(), getLogger(), false);
 	}
 
 	public final ValueRequest setLogger(CompilerLogger logger) {
 		return new ValueRequest(
-				getExpectedStruct(),
+				getExpectedParameters(),
 				logger,
 				isTransformAllowed());
 	}
 
 	@Override
 	public String toString() {
-		if (this.expectedStruct == null) {
+		if (this.expectedParameters == null) {
 			return super.toString();
 		}
 
 		final StringBuilder out = new StringBuilder();
 
 		out.append("ValueRequest[");
-		out.append(this.expectedStruct);
+		out.append(this.expectedParameters);
 		if (this.transformAllowed) {
 			out.append(", allow transform]");
 		} else {

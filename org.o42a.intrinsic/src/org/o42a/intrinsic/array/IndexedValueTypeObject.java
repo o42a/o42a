@@ -34,14 +34,13 @@ public abstract class IndexedValueTypeObject extends ValueTypeObject {
 			AnnotatedSources sources,
 			ArrayValueType arrayType) {
 		super(owner, sources);
-		setValueStruct(arrayType.arrayStruct(
-				ValueType.VOID.typeRef(this, getScope())));
+		setValueType(arrayType);
 	}
 
 	@Override
 	protected TypeParameters<?> determineTypeParameters() {
 
-		final ArrayValueType arrayType = value().getValueType().toArrayType();
+		final ArrayValueType arrayType = type().getValueType().toArrayType();
 
 		return super.determineTypeParameters().add(
 				arrayType.itemTypeKey(getContext().getIntrinsics()),

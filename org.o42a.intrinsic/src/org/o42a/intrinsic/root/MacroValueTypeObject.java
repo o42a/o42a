@@ -27,7 +27,6 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.macro.MacroExpander;
@@ -39,7 +38,7 @@ public class MacroValueTypeObject extends ValueTypeObject implements Macro {
 	public MacroValueTypeObject(
 			MemberOwner owner,
 			AnnotatedSources sources) {
-		super(owner, sources, ValueStruct.MACRO);
+		super(owner, sources, ValueType.MACRO);
 	}
 
 	@Override
