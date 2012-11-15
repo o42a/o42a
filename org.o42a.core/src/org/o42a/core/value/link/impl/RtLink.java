@@ -36,7 +36,7 @@ final class RtLink extends Link {
 	}
 
 	@Override
-	public TypeRef getTypeRef() {
+	public TypeRef getInterfaceRef() {
 
 		final Obj linkObject = linkObject();
 

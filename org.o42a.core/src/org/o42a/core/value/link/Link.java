@@ -32,6 +32,7 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 
 
 public abstract class Link extends AbstractContainer implements PlaceInfo {
@@ -39,7 +40,7 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	private final Container enclosing;
 	private final ScopePlace place;
 	private final LinkTargetNesting targetNesting = new LinkTargetNesting(this);
-	private LinkValueStruct valueStruct;
+	private TypeParameters<KnownLink> typeParameters;
 	private Obj target;
 
 	public Link(LocationInfo location, Distributor distributor) {
@@ -74,11 +75,12 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 
 	public abstract LinkValueType getValueType();
 
-	public final LinkValueStruct getValueStruct() {
-		if (this.valueStruct != null) {
-			return this.valueStruct;
+	public final TypeParameters<KnownLink> getLinkParameters() {
+		if (this.typeParameters != null) {
+			return this.typeParameters;
 		}
-		return this.valueStruct = getValueType().linkStruct(getTypeRef());
+		return this.typeParameters =
+				getValueType().typeParameters(getInterfaceRef());
 	}
 
 	public abstract boolean isSynthetic();
@@ -88,7 +90,7 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 				|| getScope().getConstructionMode().isRuntime());
 	}
 
-	public abstract TypeRef getTypeRef();
+	public abstract TypeRef getInterfaceRef();
 
 	public final Obj getTarget() {
 		if (this.target != null) {

@@ -108,7 +108,7 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 				arrayRef.getPath().toPrefix(resolver.getScope());
 		final TargetRef itemTarget =
 				item.getValueRef()
-				.toTargetRef(item.getTypeRef())
+				.toTargetRef(item.getInterfaceRef())
 				.prefixWith(arrayPrefix);
 
 		return resultParams.compilerValue(new IndexedItemLink(

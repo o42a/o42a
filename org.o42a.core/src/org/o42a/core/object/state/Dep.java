@@ -292,7 +292,7 @@ public final class Dep extends Step implements SubID {
 		final Link link = target.getDereferencedLink();
 
 		if (link != null) {
-			return link.getValueStruct().getTypeRef().getType();
+			return link.getInterfaceRef().getType();
 		}
 
 		return target.type().getAncestor().getType();

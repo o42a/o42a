@@ -53,7 +53,7 @@ public class AncestorFragment extends PathFragment {
 
 		if (dereferencedLink != null) {
 			return start.getEnclosingScopePath().append(
-					dereferencedLink.getTypeRef().getPath().getPath());
+					dereferencedLink.getInterfaceRef().getPath().getPath());
 		}
 
 		final Intrinsics intrinsics = start.getContext().getIntrinsics();

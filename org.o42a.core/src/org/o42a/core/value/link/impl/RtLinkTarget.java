@@ -66,7 +66,7 @@ public final class RtLinkTarget extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(this.link.getTypeRef());
+		return new Ascendants(this).setAncestor(this.link.getInterfaceRef());
 	}
 
 	@Override

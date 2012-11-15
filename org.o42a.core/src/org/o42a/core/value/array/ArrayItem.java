@@ -122,7 +122,7 @@ public final class ArrayItem extends ArrayElement {
 
 		@Override
 		protected TargetRef buildTargetRef() {
-			return getLink().getValueRef().toTargetRef(getLink().getTypeRef());
+			return getLink().getValueRef().toTargetRef(getLink().getInterfaceRef());
 		}
 
 	}

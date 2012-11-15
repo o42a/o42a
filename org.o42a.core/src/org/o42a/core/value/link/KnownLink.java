@@ -59,7 +59,7 @@ public abstract class KnownLink extends Link {
 	}
 
 	@Override
-	public final TypeRef getTypeRef() {
+	public final TypeRef getInterfaceRef() {
 		return this.data.getTypeRef();
 	}
 
@@ -72,7 +72,7 @@ public abstract class KnownLink extends Link {
 	}
 
 	public final Value<KnownLink> toValue() {
-		return getValueStruct().compilerValue(this);
+		return getLinkParameters().compilerValue(this);
 	}
 
 	@Override
