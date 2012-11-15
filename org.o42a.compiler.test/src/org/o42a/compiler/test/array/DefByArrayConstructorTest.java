@@ -45,7 +45,7 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 
 		final ArrayValueType arrayType =
-				a.value().getValueType().toArrayType();
+				a.type().getValueType().toArrayType();
 
 		assertFalse(arrayType.isVariable());
 		assertThat(
@@ -77,7 +77,7 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 
 		final ArrayValueType arrayType =
-				a.value().getValueType().toArrayType();
+				a.type().getValueType().toArrayType();
 
 		assertTrue(arrayType.isVariable());
 		assertThat(

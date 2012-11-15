@@ -49,7 +49,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		assertThat(
 				LINK.interfaceRef(b.type().getParameters()).getType(),
 				is(b.getContext().getIntrinsics().getVoid()));
-		assertTrue(bTarget.value().getValueType().is(ValueType.INTEGER));
+		assertTrue(bTarget.type().getValueType().is(ValueType.INTEGER));
 		assertThat(bTarget.getWrapped(), sameInstance(a));
 	}
 
@@ -67,7 +67,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		assertThat(
 				LINK.interfaceRef(b.type().getParameters()).getType(),
 				is(b.getContext().getIntrinsics().getInteger()));
-		assertEquals(ValueType.INTEGER, bTarget.value().getValueType());
+		assertEquals(ValueType.INTEGER, bTarget.type().getValueType());
 		assertThat(definiteValue(bTarget, ValueType.INTEGER), is(1L));
 		assertThat(bTarget.getWrapped(), sameInstance(a));
 	}

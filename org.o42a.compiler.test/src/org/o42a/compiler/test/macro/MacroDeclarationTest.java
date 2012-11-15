@@ -37,7 +37,7 @@ public class MacroDeclarationTest extends CompilerTestCase {
 
 		final Obj b = field("b").toObject();
 
-		assertThat(b.value().getValueType().isMacro(), is(true));
+		assertThat(b.type().getValueType().isMacro(), is(true));
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class MacroDeclarationTest extends CompilerTestCase {
 
 		final Obj b = field("b").toObject();
 
-		assertThat(b.value().getValueType().isMacro(), is(true));
+		assertThat(b.type().getValueType().isMacro(), is(true));
 	}
 
 	@Test
@@ -60,8 +60,8 @@ public class MacroDeclarationTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();
 
-		assertThat(a.value().getValueType().isMacro(), is(true));
-		assertThat(b.value().getValueType().isMacro(), is(true));
+		assertThat(a.type().getValueType().isMacro(), is(true));
+		assertThat(b.type().getValueType().isMacro(), is(true));
 	}
 
 	@Test
@@ -73,8 +73,8 @@ public class MacroDeclarationTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();
 
-		assertThat(a.value().getValueType().isMacro(), is(true));
-		assertThat(b.value().getValueType().isMacro(), is(true));
+		assertThat(a.type().getValueType().isMacro(), is(true));
+		assertThat(b.type().getValueType().isMacro(), is(true));
 	}
 
 }

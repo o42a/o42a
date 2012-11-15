@@ -46,7 +46,7 @@ public class DefByArrayTest extends CompilerTestCase {
 		final Obj b = field("b").toObject();
 
 		final ArrayValueType arrayType =
-				b.value().getValueType().toArrayType();
+				b.type().getValueType().toArrayType();
 
 		assertFalse(arrayType.isVariable());
 		assertThat(
@@ -79,7 +79,7 @@ public class DefByArrayTest extends CompilerTestCase {
 		final Obj b = field("b").toObject();
 
 		final ArrayValueType arrayType =
-				b.value().getValueType().toArrayType();
+				b.type().getValueType().toArrayType();
 
 		assertTrue(arrayType.isVariable());
 		assertThat(
