@@ -39,7 +39,7 @@ public class DefaultValueConverter<T> implements ValueConverter<T> {
 	}
 
 	@Override
-	public boolean convertibleFrom(ValueType<?, ?> other) {
+	public boolean convertibleFrom(ValueType<?> other) {
 		return false;
 	}
 

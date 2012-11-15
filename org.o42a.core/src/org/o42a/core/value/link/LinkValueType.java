@@ -42,8 +42,7 @@ import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.link.impl.*;
 
 
-public abstract class LinkValueType
-		extends ValueType<LinkValueStruct, KnownLink> {
+public abstract class LinkValueType extends ValueType<KnownLink> {
 
 	public static final LinkValueType LINK = new LinkValueType("link") {
 

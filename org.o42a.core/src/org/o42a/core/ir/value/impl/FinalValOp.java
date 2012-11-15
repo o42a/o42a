@@ -35,7 +35,7 @@ public final class FinalValOp extends ValOp {
 			Allocator allocator,
 			CodeBuilder builder,
 			ValType.Op ptr,
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			ValHolderFactory holderFactory) {
 		super(builder, valueType);
 		this.allocator = allocator;
@@ -66,7 +66,7 @@ public final class FinalValOp extends ValOp {
 	@Override
 	public String toString() {
 
-		final ValueType<?, ?> valueType = getValueType();
+		final ValueType<?> valueType = getValueType();
 
 		if (valueType == null) {
 			return super.toString();

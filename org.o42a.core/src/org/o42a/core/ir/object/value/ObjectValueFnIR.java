@@ -155,7 +155,7 @@ public final class ObjectValueFnIR
 		}
 
 		@Override
-		protected ValueType<?, ?> getValueType() {
+		protected ValueType<?> getValueType() {
 			return ObjectValueFnIR.this.getValueType();
 		}
 

@@ -32,11 +32,11 @@ import org.o42a.core.value.ValueType;
 public abstract class ValueTypeIR<T> {
 
 	private final Generator generator;
-	private final ValueType<?, T> valueType;
+	private final ValueType<T> valueType;
 	private Ptr<ValueTypeDescOp> valueTypeDesc;
 	private StaticsIR<T> staticsIR;
 
-	public ValueTypeIR(Generator generator, ValueType<?, T> valueType) {
+	public ValueTypeIR(Generator generator, ValueType<T> valueType) {
 		this.generator = generator;
 		this.valueType = valueType;
 	}
@@ -45,7 +45,7 @@ public abstract class ValueTypeIR<T> {
 		return this.generator;
 	}
 
-	public final ValueType<?, T> getValueType() {
+	public final ValueType<T> getValueType() {
 		return this.valueType;
 	}
 

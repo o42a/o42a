@@ -67,14 +67,14 @@ public abstract class CompilerTestCase {
 
 	public static <T> Value<T> valueOf(
 			Field field,
-			ValueType<?, T> valueStruct) {
+			ValueType<T> valueStruct) {
 		return valueOf(field.toObject(), valueStruct);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public static <T> Value<T> valueOf(
 			Obj object,
-			ValueType<?, T> valueType) {
+			ValueType<T> valueType) {
 
 		final Value<?> value = valueOf(object);
 
@@ -105,7 +105,7 @@ public abstract class CompilerTestCase {
 		return (T) definiteValue;
 	}
 
-	public static <T> T definiteValue(Obj object, ValueType<?, T> valueType) {
+	public static <T> T definiteValue(Obj object, ValueType<T> valueType) {
 
 		final Value<?> value = valueOf(object, valueType);
 
@@ -129,7 +129,7 @@ public abstract class CompilerTestCase {
 
 	public static <T> T definiteValue(
 			Field field,
-			ValueType<?, T> valueStruct) {
+			ValueType<T> valueStruct) {
 		return definiteValue(field.toObject(), valueStruct);
 	}
 

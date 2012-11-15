@@ -34,12 +34,12 @@ import org.o42a.util.fn.Cancelable;
 
 public class InlineDefinitions extends InlineValue {
 
-	private final ValueType<?, ?> valueType;
+	private final ValueType<?> valueType;
 	private final InlineEval claim;
 	private final InlineEval proposition;
 
 	public InlineDefinitions(
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			InlineEval claim,
 			InlineEval proposition) {
 		super(null);

@@ -36,12 +36,12 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	public BuiltinObject(
 			LocationInfo location,
 			Distributor enclosing,
-			ValueType<?, ?> valueType) {
+			ValueType<?> valueType) {
 		super(location, enclosing);
 		setValueType(valueType);
 	}
 
-	protected BuiltinObject(ObjectScope scope, ValueType<?, ?> valueType) {
+	protected BuiltinObject(ObjectScope scope, ValueType<?> valueType) {
 		super(scope);
 		setValueType(valueType);
 	}

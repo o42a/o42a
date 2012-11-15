@@ -56,16 +56,16 @@ public final class TypeParameters<T>
 
 	public static <T> TypeParameters<T> typeParameters(
 			LocationInfo location,
-			ValueType<?, T> valueType) {
+			ValueType<T> valueType) {
 		return new TypeParameters<T>(location, valueType);
 	}
 
-	private final ValueType<?, T> valueType;
+	private final ValueType<T> valueType;
 	private final TypeParameter[] parameters;
 
 	private TypeParameters(
 			LocationInfo location,
-			ValueType<?, T> valueType) {
+			ValueType<T> valueType) {
 		super(location);
 		assert valueType != null :
 			"Value type not specified";
@@ -75,7 +75,7 @@ public final class TypeParameters<T>
 
 	private TypeParameters(
 			LocationInfo location,
-			ValueType<?, T> valueType,
+			ValueType<T> valueType,
 			TypeParameter[] parameters) {
 		super(location);
 		this.valueType = valueType;
@@ -83,11 +83,11 @@ public final class TypeParameters<T>
 		this.parameters = parameters;
 	}
 
-	public final ValueType<?, T> getValueType() {
+	public final ValueType<T> getValueType() {
 		return this.valueType;
 	}
 
-	public TypeParameters<T> convertTo(ValueType<?, T> valueType) {
+	public TypeParameters<T> convertTo(ValueType<T> valueType) {
 		if (valueType.is(getValueType())) {
 			return this;
 		}

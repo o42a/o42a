@@ -52,20 +52,20 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 	public static final ID OPERAND_PTR_ID = ID.id("operand_ptr");
 
 	private final MemberName operandId;
-	private final ValueType<?, O> operandType;
+	private final ValueType<O> operandType;
 	private Ref operand;
 
 	public UnaryResult(
 			MemberOwner owner,
 			AnnotatedSources sources,
 			String operandName,
-			ValueType<?, O> operandType) {
+			ValueType<O> operandType) {
 		super(owner, sources);
 		this.operandId = fieldName(CASE_INSENSITIVE.canonicalName(operandName));
 		this.operandType = operandType;
 	}
 
-	public final ValueType<?, O> getOperandType() {
+	public final ValueType<O> getOperandType() {
 		return this.operandType;
 	}
 

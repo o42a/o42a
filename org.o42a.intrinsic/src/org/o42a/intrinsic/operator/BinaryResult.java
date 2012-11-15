@@ -54,19 +54,19 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 	public static final ID RIGHT_PTR_ID = ID.id("right_ptr");
 
 	private final MemberName leftOperandId;
-	private final ValueType<?, L> leftOperandType;
+	private final ValueType<L> leftOperandType;
 	private Ref leftOperand;
 	private final MemberName rightOperandId;
-	private final ValueType<?, R> rightOperandType;
+	private final ValueType<R> rightOperandType;
 	private Ref rightOperand;
 
 	public BinaryResult(
 			MemberOwner owner,
 			AnnotatedSources sources,
 			String leftOperandName,
-			ValueType<?, L> leftOperandType,
+			ValueType<L> leftOperandType,
 			String rightOperandName,
-			ValueType<?, R> rightOperandType) {
+			ValueType<R> rightOperandType) {
 		super(owner, sources);
 		this.leftOperandId =
 				fieldName(CASE_INSENSITIVE.canonicalName(leftOperandName));
@@ -81,11 +81,11 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		return (TypeParameters<T>) type().getParameters();
 	}
 
-	public final ValueType<?, L> getLeftOperandType() {
+	public final ValueType<L> getLeftOperandType() {
 		return this.leftOperandType;
 	}
 
-	public final ValueType<?, R> getRightOperandType() {
+	public final ValueType<R> getRightOperandType() {
 		return this.rightOperandType;
 	}
 

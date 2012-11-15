@@ -127,7 +127,7 @@ public abstract class Def implements SourceInfo {
 		return this.source;
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 
 		final TypeParameters<?> typeParameters = getTypeParameters();
 

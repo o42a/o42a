@@ -723,7 +723,7 @@ public abstract class Obj
 
 	protected abstract Ascendants buildAscendants();
 
-	protected final void setValueType(ValueType<?, ?> valueType) {
+	protected final void setValueType(ValueType<?> valueType) {
 		type().setKnownValueType(valueType);
 	}
 
@@ -743,7 +743,7 @@ public abstract class Obj
 		final TypeParameters<?> ancestorTypeParameters =
 				ancestor.getParameters();
 
-		final ValueType<?, ?> knownValueType = type().getKnownValueType();
+		final ValueType<?> knownValueType = type().getKnownValueType();
 
 		if (knownValueType != null
 				&& !knownValueType.is(ancestorTypeParameters.getValueType())) {

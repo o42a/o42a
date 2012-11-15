@@ -38,7 +38,7 @@ public enum Condition {
 		@Override
 		public <T> Value<T> toValue(TypeParameters<T> typeParameters) {
 
-			final ValueType<?, T> valueType = typeParameters.getValueType();
+			final ValueType<T> valueType = typeParameters.getValueType();
 
 			assert valueType.isVoid() :
 				"Can not construct a non-void TRUE";

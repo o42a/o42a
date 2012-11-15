@@ -40,7 +40,7 @@ public abstract class StaticsIR<T> {
 		return getValueTypeIR().getGenerator();
 	}
 
-	public final ValueType<?, T> getValueType() {
+	public final ValueType<T> getValueType() {
 		return getValueTypeIR().getValueType();
 	}
 

@@ -53,7 +53,7 @@ import org.o42a.core.value.string.StringValueType;
 import org.o42a.core.value.voids.VoidValueType;
 
 
-public abstract class ValueType<S extends ValueStruct<S, T>, T> {
+public abstract class ValueType<T> {
 
 	public static final SingleValueType<Void> VOID =
 			VoidValueType.INSTANCE;
@@ -113,11 +113,11 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 	public abstract boolean isVariable();
 
-	public final boolean is(ValueType<?, ?> valueType) {
+	public final boolean is(ValueType<?> valueType) {
 		return this == valueType;
 	}
 
-	public final boolean convertibleFrom(ValueType<?, ?> other) {
+	public final boolean convertibleFrom(ValueType<?> other) {
 		return getConverter().convertibleFrom(other);
 	}
 
@@ -197,7 +197,7 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 
 		final TypeParameters<?> expectedParameters =
 				request.getExpectedParameters();
-		final ValueType<?, ?> expectedType = expectedParameters.getValueType();
+		final ValueType<?> expectedType = expectedParameters.getValueType();
 
 		if (!request.isTransformAllowed()
 				|| expectedParameters.assignableFrom(parameters)) {

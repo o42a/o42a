@@ -45,7 +45,7 @@ public abstract class ValueIR {
 		return getObjectIR().getGenerator();
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 		return getValueTypeIR().getValueType();
 	}
 

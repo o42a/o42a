@@ -64,7 +64,7 @@ public class DefDirs {
 		return valDirs().getAllocator();
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 		return valDirs().getValueType();
 	}
 

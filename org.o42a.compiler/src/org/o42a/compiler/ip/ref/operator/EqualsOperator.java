@@ -33,7 +33,7 @@ final class EqualsOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public ValueType<?, ?> getValueType() {
+	public ValueType<?> getValueType() {
 		return ValueType.VOID;
 	}
 

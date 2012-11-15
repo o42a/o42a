@@ -105,14 +105,14 @@ public class CodeDirs {
 	}
 
 	public final ValDirs value(
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			ValHolderFactory holderFactory) {
 		return value(VALUE_ID, valueType, holderFactory);
 	}
 
 	public final ValDirs value(
 			String name,
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			ValHolderFactory holderFactory) {
 		return value(
 				name != null ? ID.id(name) : VALUE_ID,
@@ -122,7 +122,7 @@ public class CodeDirs {
 
 	public final ValDirs value(
 			ID name,
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			ValHolderFactory holderFactory) {
 
 		final AllocatorCodeDirs dirs =

@@ -38,7 +38,7 @@ public final class StackAllocatedValOp extends ValOp {
 			ID id,
 			Allocator allocator,
 			CodeBuilder builder,
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			ValHolderFactory holderFactory) {
 		super(builder, valueType);
 		this.id = id;

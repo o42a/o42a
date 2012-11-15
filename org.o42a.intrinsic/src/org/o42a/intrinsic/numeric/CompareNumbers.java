@@ -41,7 +41,7 @@ abstract class CompareNumbers<P extends Number>
 	CompareNumbers(
 			MemberOwner owner,
 			AnnotatedSources sources,
-			ValueType<?, P> operandType) {
+			ValueType<P> operandType) {
 		super(owner, sources, "what", operandType, "with", operandType);
 	}
 

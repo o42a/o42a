@@ -98,7 +98,7 @@ public class Ref extends Statement {
 		return this.path;
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 
 		final TypeParameters<?> typeParameters = typeParameters(getScope());
 

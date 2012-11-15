@@ -44,7 +44,7 @@ import org.o42a.core.value.array.impl.ArrayValueTypeIR;
 import org.o42a.core.value.link.LinkValueType;
 
 
-public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
+public class ArrayValueType extends ValueType<Array> {
 
 	public static final ArrayValueType ROW = new ArrayValueType(false);
 	public static final ArrayValueType ARRAY = new ArrayValueType(true);
