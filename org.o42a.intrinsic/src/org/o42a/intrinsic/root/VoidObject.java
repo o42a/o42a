@@ -42,7 +42,8 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.*;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
@@ -53,7 +54,7 @@ public final class VoidObject extends BuiltinObject {
 	private static final VoidEval VOID_EVAL = new VoidEval();
 
 	public VoidObject(Scope topScope) {
-		super(voidScope(topScope), ValueStruct.VOID);
+		super(voidScope(topScope), ValueType.VOID);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class BuiltinObject extends Obj implements Builtin {
@@ -36,14 +36,14 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	public BuiltinObject(
 			LocationInfo location,
 			Distributor enclosing,
-			ValueStruct<?, ?> valueStruct) {
+			ValueType<?, ?> valueType) {
 		super(location, enclosing);
-		setValueStruct(valueStruct);
+		setValueType(valueType);
 	}
 
-	protected BuiltinObject(ObjectScope scope, ValueStruct<?, ?> valueStruct) {
+	protected BuiltinObject(ObjectScope scope, ValueType<?, ?> valueType) {
 		super(scope);
-		setValueStruct(valueStruct);
+		setValueType(valueType);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
+				type().getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));
 	}
