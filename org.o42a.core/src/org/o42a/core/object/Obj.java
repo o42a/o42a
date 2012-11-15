@@ -100,8 +100,6 @@ public abstract class Obj
 
 	private ObjectIR ir;
 
-	private ValueType<?, ?> knownValueType;
-
 	public Obj(Scope scope) {
 		super(scope, new ObjectDistributor(scope, scope));
 		this.propagatedFrom = null;
@@ -726,36 +724,18 @@ public abstract class Obj
 
 	protected abstract Ascendants buildAscendants();
 
+	@Deprecated
 	protected final void setValueStruct(ValueStruct<?, ?> valueStruct) {
-		value().setValueStruct(valueStruct);
-		this.knownValueType = valueStruct.getValueType();
+		setValueType(valueStruct.getValueType());
+	}
+
+	protected final void setValueType(ValueType<?, ?> valueType) {
+		type().setKnownValueType(valueType);
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);
 
 	protected void updateMembers() {
-	}
-
-	protected ValueStruct<?, ?> determineValueStruct() {
-
-		final TypeRef ancestor = type().getAncestor();
-
-		if (ancestor == null) {
-			return ValueStruct.VOID;
-		}
-
-		final ValueStruct<?, ?> ancestorValueStruct =
-				ancestor.getParameters().toValueStruct();
-
-		if (!ancestorValueStruct.isScoped()) {
-			return ancestorValueStruct;
-		}
-
-		final Scope scope = getScope();
-		final PrefixPath prefix =
-				scope.getEnclosingScopePath().toPrefix(scope);
-
-		return ancestorValueStruct.prefixWith(prefix);
 	}
 
 	protected TypeParameters<?> determineTypeParameters() {
@@ -769,14 +749,15 @@ public abstract class Obj
 		final TypeParameters<?> ancestorTypeParameters =
 				ancestor.getParameters();
 
-		if (this.knownValueType != null
-				&& this.knownValueType
-				!= ancestorTypeParameters.getValueType()) {
+		final ValueType<?, ?> knownValueType = type().getKnownValueType();
+
+		if (knownValueType != null
+				&& !knownValueType.is(ancestorTypeParameters.getValueType())) {
 			assert ancestorTypeParameters.isEmpty()
 			&& ancestorTypeParameters.getValueType().isVoid() :
 				"Unexpected ancestor type parameters: "
 				+ ancestorTypeParameters;
-			return typeParameters(this, this.knownValueType);
+			return typeParameters(this, knownValueType);
 		}
 
 		if (ancestorTypeParameters.isEmpty()) {

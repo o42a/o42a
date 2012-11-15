@@ -128,7 +128,7 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 		} else {
 
 			final ArrayValueType arrayType =
-					getObject().value().getValueType().toArrayType();
+					getObject().type().getValueType().toArrayType();
 			final Array array =
 					arrayType.cast(value).getCompilerValue();
 
@@ -168,7 +168,7 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 	}
 
 	private static Obj definedIn(Obj object) {
-		if (!object.value().getValueType().isArray()) {
+		if (!object.type().getValueType().isArray()) {
 			return null;
 		}
 

@@ -29,6 +29,7 @@ import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
@@ -376,6 +377,12 @@ public final class TypeParameters<T>
 		}
 
 		return new TypeParameters<T>(this, getValueType(), newParameters);
+	}
+
+	public final void resolveAll(FullResolver resolver) {
+		for (TypeParameter parameter : all()) {
+			parameter.getTypeRef().resolveAll(resolver);
+		}
 	}
 
 	public final KeeperIR<?, ?> keeperIR(ObjectIRBody bodyIR, Keeper keeper) {

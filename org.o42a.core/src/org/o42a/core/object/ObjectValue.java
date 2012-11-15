@@ -45,7 +45,6 @@ public final class ObjectValue extends ObjectValueParts {
 	private static final byte FULLY_RESOLVED = 1;
 	private static final byte NORMALIZED = 2;
 
-	private ValueStruct<?, ?> valueStruct;
 	private Value<?> value;
 	private Definitions definitions;
 	private Definitions explicitDefinitions;
@@ -58,18 +57,14 @@ public final class ObjectValue extends ObjectValueParts {
 		super(object);
 	}
 
+	@Deprecated
 	public final ValueType<?, ?> getValueType() {
-		return getValueStruct().getValueType();
+		return getObject().type().getValueType();
 	}
 
+	@Deprecated
 	public final ValueStruct<?, ?> getValueStruct() {
-		if (this.valueStruct != null) {
-			return this.valueStruct;
-		}
-
-		setValueStruct(getObject().determineValueStruct());
-
-		return this.valueStruct;
+		return getObject().type().getParameters().toValueStruct();
 	}
 
 	public final UseFlag selectUse(
@@ -266,7 +261,7 @@ public final class ObjectValue extends ObjectValueParts {
 			object.resolveAll();
 			explicitUseBy(user);
 			object.fullyResolveDefinitions();
-			getValueStruct().resolveAll(
+			object.type().getParameters().resolveAll(
 					object.getScope()
 					.resolver()
 					.fullResolver(uses(), TYPE_REF_USAGE));
@@ -312,15 +307,6 @@ public final class ObjectValue extends ObjectValueParts {
 		getObject().content().useBy(this.uses);
 
 		return this.uses;
-	}
-
-	final void setValueStruct(ValueStruct<?, ?> valueStruct) {
-		if (valueStruct != null) {
-			this.valueStruct = valueStruct;
-			if (valueStruct.isScoped()) {
-				valueStruct.toScoped().assertSameScope(getObject());
-			}
-		}
 	}
 
 	private Definitions getAncestorDefinitions() {

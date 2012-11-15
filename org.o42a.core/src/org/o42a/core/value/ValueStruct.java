@@ -38,6 +38,7 @@ import org.o42a.core.value.string.StringValueStruct;
 import org.o42a.core.value.voids.VoidValueStruct;
 
 
+@Deprecated
 public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		implements TypeParametersBuilder {
 

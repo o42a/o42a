@@ -58,6 +58,7 @@ public final class ObjectType implements UserInfo {
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
 	private ArrayList<Derivative> allDerivatives;
+	private ValueType<?, ?> valueType;
 
 	ObjectType(Obj object) {
 		this.object = object;
@@ -128,6 +129,13 @@ public final class ObjectType implements UserInfo {
 	 */
 	public final Sample[] getSamples() {
 		return getAscendants().getSamples();
+	}
+
+	public final ValueType<?, ?> getValueType() {
+		if (this.valueType != null) {
+			return this.valueType;
+		}
+		return this.valueType = getParameters().getValueType();
 	}
 
 	public final TypeParameters<?> getParameters() {
@@ -303,6 +311,14 @@ public final class ObjectType implements UserInfo {
 				registerDerivative(sample);
 			}
 		}
+	}
+
+	final void setKnownValueType(ValueType<?, ?> valueType) {
+		this.valueType = valueType;
+	}
+
+	final ValueType<?, ?> getKnownValueType() {
+		return this.valueType;
 	}
 
 	final ObjectResolution getResolution() {
