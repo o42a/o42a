@@ -44,7 +44,7 @@ import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
@@ -162,8 +162,8 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 	@Override
 	public void fill(Type instance) {
 
-		final Obj type = linkStruct().getTypeRef().getType();
-		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
+		final ObjectTypeIR typeIR =
+				interfaceType().ir(getGenerator()).getStaticTypeIR();
 
 		instance.bound().setValue(typeIR.getInstance().pointer(getGenerator()));
 		getInstance().assigner().setConstant(true).setValue(getAssigner());
@@ -200,8 +200,18 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 		return VAR_STE;
 	}
 
-	final LinkValueStruct linkStruct() {
-		return getObject().value().getValueStruct().toLinkStruct();
+	final TypeRef interfaceRef() {
+
+		final TypeParameters<?> typeParameters =
+				getObject().type().getParameters();
+
+		return typeParameters.getValueType()
+				.toLinkType()
+				.interfaceRef(typeParameters);
+	}
+
+	final Obj interfaceType() {
+		return interfaceRef().getType();
 	}
 
 	final Obj getObject() {
@@ -213,11 +223,7 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 	}
 
 	private static Obj definedIn(Obj object) {
-
-		final LinkValueStruct linkStruct =
-				object.value().getValueStruct().toLinkStruct();
-
-		if (linkStruct == null) {
+		if (!object.type().getValueType().isLink()) {
 			return null;
 		}
 
@@ -344,8 +350,8 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 		}
 
 		@Override
-		protected TypeRef getTypeRef() {
-			return this.fld.linkStruct().getTypeRef();
+		protected TypeRef getInterfaceRef() {
+			return this.fld.interfaceRef();
 		}
 
 		@Override

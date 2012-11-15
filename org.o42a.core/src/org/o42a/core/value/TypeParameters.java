@@ -330,6 +330,7 @@ public final class TypeParameters<T>
 		return new TypeParameters<T>(this, getValueType(), newParameters);
 	}
 
+	@Deprecated
 	public final ValueStruct<?, T> toValueStruct() {
 		return getValueType().valueStruct(this);
 	}

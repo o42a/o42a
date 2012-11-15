@@ -52,7 +52,7 @@ public class ObjectIR  {
 		this.generator = generator;
 		this.object = object;
 		this.valueIR =
-				object.value().getValueType().ir(generator).valueIR(this);
+				object.type().getValueType().ir(generator).valueIR(this);
 	}
 
 	public final Generator getGenerator() {

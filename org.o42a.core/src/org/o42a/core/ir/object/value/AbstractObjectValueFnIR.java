@@ -62,7 +62,7 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 	}
 
 	public final ValueType<?, ?> getValueType() {
-		return getObject().value().getValueType();
+		return getObject().type().getValueType();
 	}
 
 	public final boolean isReused() {
