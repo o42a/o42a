@@ -48,7 +48,7 @@ public class RtVoid extends AnnotatedBuiltin {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return value().getValueStruct().runtimeValue();
+		return type().getParameters().runtimeValue();
 	}
 
 	@Override
