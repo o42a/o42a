@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.User.dummyUser;
 
-import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.Doubt;
 import org.o42a.analysis.use.*;
 import org.o42a.core.ref.path.BoundPath;
@@ -36,17 +35,12 @@ public final class PathNormalizationDoubt extends Doubt {
 	private final Usable<SimpleUsage> uses;
 	private final ProxyUser<SimpleUsage> user;
 	private ProxyUser<SimpleUsage> normalUser;
-	private Analyzer analyzer;
 	private boolean normalizationAborted;
 
 	public PathNormalizationDoubt(BoundPath path) {
 		this.path = path;
 		this.uses = ALL_SIMPLE_USAGES.usable(path);
 		this.user = new ProxyUser<SimpleUsage>(this.uses.toUser());
-	}
-
-	public final Analyzer getAnalyzer() {
-		return this.analyzer;
 	}
 
 	public final PathResolver wrapResolutionUser(
@@ -90,15 +84,16 @@ public final class PathNormalizationDoubt extends Doubt {
 		}
 	}
 
-	public final void reuse(Analyzer analyzer) {
-		if (this.analyzer == analyzer) {
-			return;
+	@Override
+	public String toString() {
+		if (this.path == null) {
+			return super.toString();
 		}
-		if (this.analyzer == null) {
-			this.analyzer = analyzer;
-			analyzer.doubt(this);
-			return;
-		}
+		return this.path.toString();
+	}
+
+	@Override
+	protected void reused() {
 		if (this.normalUser != null) {
 			this.normalUser.setProxied(dummyUser());
 			this.normalUser = null;
@@ -107,16 +102,6 @@ public final class PathNormalizationDoubt extends Doubt {
 			this.user.setProxied(this.uses.toUser());
 		}
 		this.normalizationAborted = false;
-		this.analyzer = analyzer;
-		analyzer.doubt(this);
-	}
-
-	@Override
-	public String toString() {
-		if (this.path == null) {
-			return super.toString();
-		}
-		return this.path.toString();
 	}
 
 }

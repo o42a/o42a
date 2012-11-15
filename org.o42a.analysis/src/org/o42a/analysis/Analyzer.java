@@ -62,10 +62,6 @@ public class Analyzer implements UseCaseInfo {
 		return this;
 	}
 
-	public final void doubt(Doubt doubt) {
-		this.doubts.add(doubt);
-	}
-
 	public void resolveDoubts() {
 
 		Doubt doubt = this.doubts.getFirst();
@@ -92,6 +88,10 @@ public class Analyzer implements UseCaseInfo {
 			return super.toString();
 		}
 		return "Analyzer[" + this.useCase.getName() + ']';
+	}
+
+	final void addDoubt(Doubt doubt) {
+		this.doubts.add(doubt);
 	}
 
 }
