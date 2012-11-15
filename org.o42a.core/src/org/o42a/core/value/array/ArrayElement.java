@@ -63,7 +63,7 @@ public abstract class ArrayElement extends Link {
 	}
 
 	@Override
-	public final TypeRef getTypeRef() {
+	public final TypeRef getInterfaceRef() {
 
 		final TypeParameters<Array> typeParameters = getTypeParameters();
 		final ArrayValueType arrayType =
