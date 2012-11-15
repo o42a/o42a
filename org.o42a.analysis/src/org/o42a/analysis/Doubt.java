@@ -23,8 +23,31 @@ package org.o42a.analysis;
 public abstract class Doubt {
 
 	private Doubt next;
+	private Analyzer analyzer;
+
+	public final Analyzer getAnalyzer() {
+		return this.analyzer;
+	}
+
+	public final boolean addTo(Analyzer analyzer) {
+		if (this.analyzer == analyzer) {
+			return false;
+		}
+		if (this.analyzer == null) {
+			this.analyzer = analyzer;
+			analyzer.addDoubt(this);
+			return true;
+		}
+		this.analyzer = analyzer;
+		this.next = null;
+		reused();
+		analyzer.addDoubt(this);
+		return true;
+	}
 
 	public abstract void resolveDoubt();
+
+	protected abstract void reused();
 
 	final Doubt getNext() {
 		return this.next;

@@ -442,7 +442,7 @@ public class BoundPath extends RefPath {
 	}
 
 	final PathNormalizationDoubt doubt(Analyzer analyzer) {
-		this.doubt.reuse(analyzer);
+		this.doubt.addTo(analyzer);
 		return this.doubt;
 	}
 
