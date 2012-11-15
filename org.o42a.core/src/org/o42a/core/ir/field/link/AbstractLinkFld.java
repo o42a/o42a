@@ -30,7 +30,6 @@ import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.TypeParameters;
@@ -71,13 +70,12 @@ public abstract class AbstractLinkFld extends RefFld<ObjectRefFunc> {
 	protected final ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
 
 		final Obj object = getField().toObject();
-		final ObjectValue objectValue = object.value();
 
-		assert objectValue.getValueType().isLink() :
+		assert object.type().getValueType().isLink() :
 			"Not a link: " + this;
 
 		final TypeParameters<?> parameters = object.type().getParameters();
-		final Definitions definitions = objectValue.getDefinitions();
+		final Definitions definitions = object.value().getDefinitions();
 		final DefTarget target = definitions.target();
 
 		assert target.exists() :

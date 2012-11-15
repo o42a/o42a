@@ -92,7 +92,7 @@ public final class VarSteOp extends FldOp {
 		dirs.code().dumpName(kind + " host: ", host());
 
 		final ValDirs valDirs = dirs.nested().value(
-				host().getAscendant().value().getValueType(),
+				host().getAscendant().type().getValueType(),
 				TEMP_VAL_HOLDER);
 		final Block code = valDirs.code();
 		final ValOp value = host().value().writeValue(valDirs);
@@ -105,7 +105,7 @@ public final class VarSteOp extends FldOp {
 		final ObjectOp target = anonymousObject(
 				getBuilder(),
 				targetPtr,
-				fld().linkStruct().getTypeRef().getType());
+				fld().interfaceType());
 
 		final Block resultCode = valDirs.done().code();
 
@@ -140,7 +140,7 @@ public final class VarSteOp extends FldOp {
 				ID.id("cast_target"),
 				boundKnownDirs,
 				knownBound.op(getBuilder(), DERIVED),
-				fld().linkStruct().getTypeRef().getType(),
+				fld().interfaceType(),
 				true);
 
 		assignValue(boundKnown, castObject);

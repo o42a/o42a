@@ -74,7 +74,7 @@ public final class ObjectFieldIR extends FieldIR {
 		final Field field = getField();
 		final Obj object = field.toObject();
 		final LinkValueType linkType =
-				object.value().getValueType().toLinkType();
+				object.type().getValueType().toLinkType();
 
 		if (linkType == null) {
 			return null;

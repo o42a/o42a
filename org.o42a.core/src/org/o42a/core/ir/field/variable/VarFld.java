@@ -48,6 +48,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.ID;
 
 
@@ -110,7 +111,7 @@ public class VarFld extends AbstractLinkFld {
 	protected void fill() {
 		super.fill();
 
-		final Obj type = getTypeRef().getType();
+		final Obj type = getInterfaceRef().getType();
 		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
 
 		getInstance().bound().setValue(
@@ -152,9 +153,9 @@ public class VarFld extends AbstractLinkFld {
 		for (Field overridden : getField().getOverridden()) {
 
 			final TypeRelation relation =
-					typeRef(overridden)
+					interfaceRef(overridden)
 					.upgradeScope(getField())
-					.relationTo(getTypeRef());
+					.relationTo(getInterfaceRef());
 
 			if (relation.isSame()) {
 				// Variable has the same interface type as one
@@ -175,16 +176,18 @@ public class VarFld extends AbstractLinkFld {
 		return null;
 	}
 
-	private static TypeRef typeRef(Field field) {
-		return field.toObject()
-				.value()
-				.getValueStruct()
-				.toLinkStruct()
-				.getTypeRef();
+	private static TypeRef interfaceRef(Field field) {
+
+		final TypeParameters<?> typeParameters =
+				field.toObject().type().getParameters();
+
+		return typeParameters.getValueType()
+				.toLinkType()
+				.interfaceRef(typeParameters);
 	}
 
-	private final TypeRef getTypeRef() {
-		return typeRef(getField());
+	private final TypeRef getInterfaceRef() {
+		return interfaceRef(getField());
 	}
 
 	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {
@@ -279,8 +282,8 @@ public class VarFld extends AbstractLinkFld {
 		}
 
 		@Override
-		protected TypeRef getTypeRef() {
-			return this.fld.getTypeRef();
+		protected TypeRef getInterfaceRef() {
+			return this.fld.getInterfaceRef();
 		}
 
 		@Override

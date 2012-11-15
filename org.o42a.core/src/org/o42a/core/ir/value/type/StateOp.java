@@ -31,7 +31,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -56,17 +55,13 @@ public abstract class StateOp {
 	}
 
 	public final ValueType<?, ?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
 		return fld()
 				.fld()
 				.getBodyIR()
 				.getObjectIR()
 				.getObject()
-				.value()
-				.getValueStruct();
+				.type()
+				.getValueType();
 	}
 
 	public final FldOp fld() {

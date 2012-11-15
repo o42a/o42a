@@ -126,7 +126,7 @@ final class PredefObjValues {
 			if (!this.value.isTypeAware()) {
 				return ValueType.VOID;
 			}
-			return typeObject().value().getValueType();
+			return typeObject().type().getValueType();
 		}
 
 		private Obj typeObject() {

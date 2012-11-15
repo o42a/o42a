@@ -40,8 +40,7 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectValue;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.TypeParameters;
 
 
 public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
@@ -86,10 +85,12 @@ public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	private void assign(CodeDirs dirs, HostOp value) {
 
 		final Obj object = fld().getField().toObject();
-		final ObjectValue objectValue = object.value();
-		final LinkValueStruct linkStruct =
-				objectValue.getValueStruct().toLinkStruct();
-		final Obj targetType = linkStruct.getTypeRef().getType();
+		final TypeParameters<?> typeParameters =
+				object.type().getParameters();
+		final Obj targetType =
+				typeParameters.getValueType()
+				.toLinkType()
+				.interfaceRef(typeParameters).getType();
 
 		final Block code = dirs.code();
 

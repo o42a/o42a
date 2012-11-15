@@ -52,9 +52,9 @@ abstract class AssignerBuilder<F extends FldOp>
 				builder.dirs(assigner, failure.head());
 
 		final F fld = op(assigner, builder.host());
-		final TypeRef typeRef = getTypeRef();
-		final Obj typeObject = typeRef.getType();
-		final RefOp boundRef = typeRef.op(builder.host());
+		final TypeRef interfaceRef = getInterfaceRef();
+		final Obj typeObject = interfaceRef.getType();
+		final RefOp boundRef = interfaceRef.op(builder.host());
 		final ObjectTypeOp bound =
 				boundRef.target(dirs)
 				.materialize(dirs, tempObjHolder(dirs.getAllocator()))
@@ -96,7 +96,7 @@ abstract class AssignerBuilder<F extends FldOp>
 		}
 	}
 
-	protected abstract TypeRef getTypeRef();
+	protected abstract TypeRef getInterfaceRef();
 
 	protected abstract ObjectIRBody getBodyIR();
 
