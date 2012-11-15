@@ -28,7 +28,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Void;
 
 
@@ -38,11 +39,6 @@ public final class VoidValueType extends SingleValueType<Void> {
 
 	private VoidValueType() {
 		super("void", Void.class);
-	}
-
-	@Override
-	public SingleValueStruct<Void> struct() {
-		return ValueStruct.VOID;
 	}
 
 	@Override

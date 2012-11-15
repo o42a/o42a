@@ -190,8 +190,6 @@ public abstract class ValueType<S extends ValueStruct<S, T>, T> {
 		return defaultValueConverter();
 	}
 
-	protected abstract S valueStruct(TypeParameters<T> parameters);
-
 	protected ValueAdapter defaultAdapter(
 			Ref ref,
 			TypeParameters<T> parameters,

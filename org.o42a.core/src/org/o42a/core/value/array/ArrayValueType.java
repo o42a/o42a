@@ -90,10 +90,6 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 		return arrayParameters.typeRef(itemTypeKey);
 	}
 
-	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {
-		return new ArrayValueStruct(this, itemTypeRef);
-	}
-
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
 		if (isVariable()) {
@@ -139,11 +135,6 @@ public class ArrayValueType extends ValueType<ArrayValueStruct, Array> {
 	@Override
 	protected ValueConverter<Array> getConverter() {
 		return this.converter;
-	}
-
-	@Override
-	protected ArrayValueStruct valueStruct(TypeParameters<Array> parameters) {
-		return arrayStruct(itemTypeRef(parameters));
 	}
 
 	@Override
