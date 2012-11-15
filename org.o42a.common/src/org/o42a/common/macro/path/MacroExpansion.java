@@ -214,7 +214,7 @@ public class MacroExpansion extends PathFragment {
 		if (object == null) {
 			return notMacro(expander);
 		}
-		if (object.value().getValueType() != ValueType.MACRO) {
+		if (!object.type().getValueType().is(ValueType.MACRO)) {
 			return notMacro(expander);
 		}
 

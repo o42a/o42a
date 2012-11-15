@@ -43,7 +43,7 @@ final class BodyRefFragment extends PathFragment {
 			return false;
 		}
 
-		return object.value().getValueType().toLinkType() != null;
+		return object.type().getValueType().isLink();
 	}
 
 	private final LocationInfo location;

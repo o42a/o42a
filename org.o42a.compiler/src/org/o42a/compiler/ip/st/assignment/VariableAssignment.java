@@ -29,9 +29,11 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.link.LinkValueStruct;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.link.LinkValueType;
 
 
 final class VariableAssignment extends AssignmentKind {
@@ -40,10 +42,12 @@ final class VariableAssignment extends AssignmentKind {
 			AssignmentStatement statement,
 			Obj destination) {
 
-		final LinkValueStruct destStruct =
-				destination.value().getValueStruct().toLinkStruct();
+		final TypeParameters<?> destParams =
+				destination.type().getParameters();
+		final LinkValueType destLinkType =
+				destParams.getValueType().toLinkType();
 
-		if (destStruct == null || destStruct.getValueType() != VARIABLE) {
+		if (destLinkType == null || !destLinkType.is(VARIABLE)) {
 			statement.getLogger().error(
 					"not_variable_assigned",
 					statement.getDestination(),
@@ -51,10 +55,12 @@ final class VariableAssignment extends AssignmentKind {
 			return new AssignmentError(statement);
 		}
 
+		final PrefixPath prefix =
+				statement.getDestination()
+				.getPath()
+				.toPrefix(statement.getScope());
 		final TypeRef destTypeRef =
-				destStruct.getTypeRef().prefixWith(
-						statement.getDestination().getPath().toPrefix(
-								statement.getScope()));
+				destLinkType.interfaceRef(destParams).prefixWith(prefix);
 
 		if (!statement.getValue()
 				.toTypeRef()

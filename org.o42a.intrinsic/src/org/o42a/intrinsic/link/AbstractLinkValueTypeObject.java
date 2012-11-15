@@ -34,8 +34,7 @@ public abstract class AbstractLinkValueTypeObject extends ValueTypeObject {
 			AnnotatedSources sources,
 			LinkValueType linkType) {
 		super(owner, sources);
-		setValueStruct(
-				linkType.linkStruct(ValueType.VOID.typeRef(this, getScope())));
+		setValueType(linkType);
 	}
 
 	@Override

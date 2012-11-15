@@ -32,7 +32,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.macro.Macro;
 
@@ -81,13 +81,18 @@ public final class MacroDef extends Def {
 	}
 
 	@Override
-	protected TypeParameters<?> typeParameters(Scope scope) {
+	protected TypeParameters<Macro> typeParameters(Scope scope) {
 		return TypeParameters.typeParameters(this, ValueType.MACRO);
 	}
 
 	@Override
 	protected DefValue calculateValue(Resolver resolver) {
-		return defValue(ValueStruct.MACRO.compilerValue(this.macro));
+
+		final Value<Macro> value =
+				typeParameters(resolver.getScope())
+				.compilerValue(this.macro);
+
+		return defValue(value);
 	}
 
 	@Override

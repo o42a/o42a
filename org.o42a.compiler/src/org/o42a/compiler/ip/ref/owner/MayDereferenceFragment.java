@@ -76,7 +76,7 @@ public final class MayDereferenceFragment extends PathFragment {
 			return false;
 		}
 
-		return object.value().getValueType().isLink();
+		return object.type().getValueType().isLink();
 	}
 
 }

@@ -52,7 +52,7 @@ final class ComparisonResult extends BuiltinObject {
 	private Ref cmp;
 
 	ComparisonResult(ComparisonExpression comparison) {
-		super(comparison, comparison.distribute(), ValueStruct.VOID);
+		super(comparison, comparison.distribute(), ValueType.VOID);
 		this.comparison = comparison;
 	}
 

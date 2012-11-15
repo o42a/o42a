@@ -38,7 +38,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.Array;
-import org.o42a.core.value.array.ArrayValueStruct;
 import org.o42a.core.value.array.ArrayValueType;
 
 
@@ -48,7 +47,7 @@ public class ArrayConstructor extends ObjectConstructor {
 	private final BracketsNode node;
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
-	private ArrayValueStruct arrayStruct;
+	private TypeParameters<Array> arrayParameters;
 	private TypeParametersBuilder typeParameters;
 
 	public ArrayConstructor(
@@ -140,7 +139,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	boolean typeByItems() {
 		typeParameters();
-		return this.arrayStruct == null;
+		return this.arrayParameters == null;
 	}
 
 	private TypeParametersBuilder typeParameters() {
@@ -148,24 +147,23 @@ public class ArrayConstructor extends ObjectConstructor {
 			return this.typeParameters;
 		}
 		if (this.reproducedFrom != null) {
-			if (this.reproducedFrom.arrayStruct == null) {
+			if (this.reproducedFrom.arrayParameters == null) {
 				return this.typeParameters =
 						this.reproducedFrom.typeParameters;
 			}
-			this.arrayStruct =
-					this.reproducedFrom.arrayStruct.reproduce(
+			this.arrayParameters =
+					this.reproducedFrom.arrayParameters.reproduce(
 							this.reproducer);
-			if (this.arrayStruct != null) {
-				return this.typeParameters = this.arrayStruct;
+			if (this.arrayParameters != null) {
+				return this.typeParameters = this.arrayParameters;
 			}
 			return this.typeParameters =
 					this.reproducedFrom.typeParameters;
 		}
 
 		if (this.node.getArguments().length == 0) {
-			return this.typeParameters =
-					this.arrayStruct =
-					ArrayValueType.ROW.arrayStruct(
+			return this.typeParameters = this.arrayParameters =
+					ArrayValueType.ROW.typeParameters(
 							voidRef(this, distribute()).toTypeRef());
 		}
 

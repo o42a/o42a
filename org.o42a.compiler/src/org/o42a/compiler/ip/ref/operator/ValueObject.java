@@ -34,7 +34,7 @@ final class ValueObject extends Obj {
 	ValueObject(ValueOf valueOf) {
 		super(valueOf, valueOf.distributeIn(valueOf.getContainer()));
 		this.valueOf = valueOf;
-		setValueStruct(operand().valueStruct(getScope()));
+		setValueType(operand().getValueType());
 	}
 
 	@Override

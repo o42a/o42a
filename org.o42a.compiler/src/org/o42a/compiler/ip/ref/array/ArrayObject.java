@@ -29,7 +29,6 @@ import org.o42a.core.ref.path.ConstructedObject;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
 import org.o42a.core.value.array.ArrayValueType;
@@ -88,14 +87,6 @@ final class ArrayObject extends ConstructedObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-	}
-
-	@Override
-	protected ValueStruct<?, ?> determineValueStruct() {
-		if (!this.typeByItems) {
-			return super.determineValueStruct();
-		}
-		return getArray().getTypeParameters().toValueStruct();
 	}
 
 	@Override

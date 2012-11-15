@@ -28,7 +28,8 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.*;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
 import org.o42a.util.fn.Cancelable;
 
@@ -39,7 +40,7 @@ final class LogicalResult extends BuiltinObject {
 	private Ref operand;
 
 	LogicalResult(LogicalExpression logical) {
-		super(logical, logical.distribute(), ValueStruct.VOID);
+		super(logical, logical.distribute(), ValueType.VOID);
 		this.logical = logical;
 	}
 

@@ -45,7 +45,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -57,7 +56,7 @@ public class FalseObject extends BuiltinObject {
 	}
 
 	protected FalseObject(Scope topScope, ID id) {
-		super(falseScope(topScope, id), ValueStruct.VOID);
+		super(falseScope(topScope, id), ValueType.VOID);
 	}
 
 	@Override
