@@ -63,7 +63,7 @@ public class RuntimeValueTest extends CompilerTestCase {
 	}
 
 	private static void assertRuntimeInteger(Obj object) {
-		assertEquals(ValueType.INTEGER, object.value().getValueType());
+		assertEquals(ValueType.INTEGER, object.type().getValueType());
 		assertRuntimeValue(object.value().getValue());
 	}
 

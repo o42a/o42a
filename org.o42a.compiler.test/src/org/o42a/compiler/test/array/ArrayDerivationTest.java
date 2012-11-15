@@ -44,7 +44,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 		final Obj b = field("b").toObject();
 
 		final ArrayValueType arrayType =
-				b.value().getValueType().toArrayType();
+				b.type().getValueType().toArrayType();
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(b.type().getParameters()));
 
@@ -79,7 +79,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 		final Obj bField = field("b", "field").toObject();
 
 		final ArrayValueType arrayType =
-				bField.value().getValueType().toArrayType();
+				bField.type().getValueType().toArrayType();
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(
 						arrayType.cast(bField.type().getParameters()));
@@ -117,7 +117,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 		final Obj bField = field("b", "field").toObject();
 
 		final ArrayValueType arrayType =
-				bField.value().getValueType().toArrayType();
+				bField.type().getValueType().toArrayType();
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(
 						arrayType.cast(bField.type().getParameters()));

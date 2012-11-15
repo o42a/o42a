@@ -43,7 +43,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 
 		final ArrayValueType arrayType =
-				a.value().getValueType().toArrayType();
+				a.type().getValueType().toArrayType();
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
@@ -74,7 +74,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 
 		final ArrayValueType arrayType =
-				a.value().getValueType().toArrayType();
+				a.type().getValueType().toArrayType();
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
@@ -105,7 +105,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 
 		final ArrayValueType arrayType =
-				a.value().getValueType().toArrayType();
+				a.type().getValueType().toArrayType();
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
@@ -130,7 +130,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 
 		final ArrayValueType arrayType =
-				a.value().getValueType().toArrayType();
+				a.type().getValueType().toArrayType();
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 

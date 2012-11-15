@@ -119,7 +119,7 @@ public class LinkTest extends CompilerTestCase {
 
 		final Obj bTarget = linkTarget(field("b"));
 
-		assertTrue(bTarget.value().getValueType().isLink());
+		assertTrue(bTarget.type().getValueType().isLink());
 		assertThat(
 				LINK.interfaceRef(bTarget.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getInteger()));
@@ -129,7 +129,7 @@ public class LinkTest extends CompilerTestCase {
 
 		final Obj c = field("c").toObject();
 
-		assertTrue(c.value().getValueType().isLink());
+		assertTrue(c.type().getValueType().isLink());
 		assertThat(
 				LINK.interfaceRef(c.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getInteger()));
