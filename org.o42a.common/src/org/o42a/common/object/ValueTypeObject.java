@@ -30,7 +30,7 @@ public abstract class ValueTypeObject extends AnnotatedObject {
 	public ValueTypeObject(
 			MemberOwner owner,
 			AnnotatedSources sources,
-			ValueType<?, ?> valueType) {
+			ValueType<?> valueType) {
 		super(owner, sources);
 		setValueType(valueType);
 	}

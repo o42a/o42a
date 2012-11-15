@@ -56,7 +56,7 @@ public abstract class KeeperIR<
 		return getBodyIR().getGenerator();
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 		return getTypeParameters().getValueType();
 	}
 

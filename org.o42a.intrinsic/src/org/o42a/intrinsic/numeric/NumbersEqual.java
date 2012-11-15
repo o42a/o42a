@@ -33,7 +33,7 @@ abstract class NumbersEqual<P extends Number>
 	NumbersEqual(
 			MemberOwner owner,
 			AnnotatedSources sources,
-			ValueType<?, P> operandType) {
+			ValueType<P> operandType) {
 		super(owner, sources, "what", operandType, "to", operandType);
 	}
 

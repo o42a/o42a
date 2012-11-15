@@ -51,7 +51,7 @@ public final class ValueRequest {
 		this.transformAllowed = transformAllowed;
 	}
 
-	public final ValueType<?, ?> getExpectedType() {
+	public final ValueType<?> getExpectedType() {
 		return getExpectedParameters().getValueType();
 	}
 

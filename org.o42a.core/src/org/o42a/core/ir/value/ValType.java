@@ -120,7 +120,7 @@ public final class ValType extends Type<ValType.Op> {
 		public final ValOp op(
 				Allocator allocator,
 				CodeBuilder builder,
-				ValueType<?, ?> valueType,
+				ValueType<?> valueType,
 				ValHolderFactory holderFactory) {
 			return new FinalValOp(
 					allocator,

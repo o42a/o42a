@@ -128,10 +128,10 @@ final class VoidDef extends Def {
 
 	private static final class EvalToVoid extends InlineEval {
 
-		private final ValueType<?, ?> valueType;
+		private final ValueType<?> valueType;
 		private final Eval def;
 
-		EvalToVoid(ValueType<?, ?> valueType, Eval def) {
+		EvalToVoid(ValueType<?> valueType, Eval def) {
 			super(null);
 			this.valueType = valueType;
 			this.def = def;

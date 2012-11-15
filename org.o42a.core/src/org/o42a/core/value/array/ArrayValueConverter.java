@@ -38,7 +38,7 @@ final class ArrayValueConverter implements ValueConverter<Array> {
 	}
 
 	@Override
-	public boolean convertibleFrom(ValueType<?, ?> other) {
+	public boolean convertibleFrom(ValueType<?> other) {
 		return other.isArray();
 	}
 
@@ -49,7 +49,8 @@ final class ArrayValueConverter implements ValueConverter<Array> {
 
 		final ArrayValueType srcArrayType = source.getValueType().toArrayType();
 		final Intrinsics intrinsics = destination.getContext().getIntrinsics();
-		final MemberKey destItemTypeKey = getValueType().itemTypeKey(intrinsics);
+		final MemberKey destItemTypeKey =
+				getValueType().itemTypeKey(intrinsics);
 		final MemberKey srcItemTypeKey = srcArrayType.itemTypeKey(intrinsics);
 
 		for (TypeParameter parameter : destination.all()) {

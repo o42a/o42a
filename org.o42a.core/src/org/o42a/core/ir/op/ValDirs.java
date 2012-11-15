@@ -36,9 +36,9 @@ import org.o42a.util.string.ID;
 public abstract class ValDirs {
 
 	private final CodeDirs dirs;
-	private final ValueType<?, ?> valueType;
+	private final ValueType<?> valueType;
 
-	ValDirs(CodeDirs dirs, ValueType<?, ?> valueType) {
+	ValDirs(CodeDirs dirs, ValueType<?> valueType) {
 		this.dirs = dirs;
 		this.valueType = valueType;
 	}
@@ -51,7 +51,7 @@ public abstract class ValDirs {
 		return dirs().getBuilder();
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 		return this.valueType;
 	}
 
@@ -132,7 +132,7 @@ public abstract class ValDirs {
 
 		TopLevelValDirs(
 				CodeDirs dirs,
-				ValueType<?, ?> valueType,
+				ValueType<?> valueType,
 				ValHolderFactory holderFactory) {
 			super(dirs, valueType);
 			this.value = stackAllocatedVal(

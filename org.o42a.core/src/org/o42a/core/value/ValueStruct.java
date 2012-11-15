@@ -58,13 +58,13 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public static final SingleValueStruct<java.lang.Void> NONE =
 			NoneValueStruct.INSTANCE;
 
-	private final ValueType<S, T> valueType;
+	private final ValueType<T> valueType;
 
-	public ValueStruct(ValueType<S, T> valueType) {
+	public ValueStruct(ValueType<T> valueType) {
 		this.valueType = valueType;
 	}
 
-	public ValueType<S, T> getValueType() {
+	public ValueType<T> getValueType() {
 		return this.valueType;
 	}
 

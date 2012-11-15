@@ -47,7 +47,7 @@ public abstract class ValOp extends IROp {
 			String name,
 			Allocator allocator,
 			CodeBuilder builder,
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			ValHolderFactory holderFactory) {
 
 		final ID valId =
@@ -61,17 +61,17 @@ public abstract class ValOp extends IROp {
 				holderFactory);
 	}
 
-	private final ValueType<?, ?> valueType;
+	private final ValueType<?> valueType;
 	private ValueIRDesc desc;
 
-	public ValOp(CodeBuilder builder, ValueType<?, ?> valueType) {
+	public ValOp(CodeBuilder builder, ValueType<?> valueType) {
 		super(builder);
 		this.valueType = valueType;
 		assert valueType != null :
 			"Value structure not specified";
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 		return this.valueType;
 	}
 

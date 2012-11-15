@@ -78,7 +78,7 @@ public abstract class ComparisonOperator {
 		return this.clauseId;
 	}
 
-	public abstract ValueType<?, ?> getValueType();
+	public abstract ValueType<?> getValueType();
 
 	/**
 	 * Validate the phrase against operator considerations.

@@ -58,7 +58,7 @@ public final class CompilerValue<T> extends Value<T> {
 		return valueString(getValueType(), this.value);
 	}
 
-	static <T> String valueString(ValueType<?, T> valueType, T value) {
+	static <T> String valueString(ValueType<T> valueType, T value) {
 
 		final StringBuilder out = new StringBuilder();
 

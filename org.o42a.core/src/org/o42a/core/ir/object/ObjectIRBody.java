@@ -258,7 +258,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private void allocateValueBody(ObjectIRBodyData data) {
 
 		final Obj ascendant = getAscendant();
-		final ValueType<?, ?> valueType = ascendant.type().getValueType();
+		final ValueType<?> valueType = ascendant.type().getValueType();
 		final Obj typeObject =
 				valueType.typeObject(ascendant.getContext().getIntrinsics());
 

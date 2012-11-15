@@ -41,7 +41,7 @@ public abstract class Value<T> {
 		this.knowledge = knowledge;
 	}
 
-	public final ValueType<?, T> getValueType() {
+	public final ValueType<T> getValueType() {
 		return this.typeParameters.getValueType();
 	}
 

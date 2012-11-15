@@ -93,7 +93,7 @@ public class ArbitraryTypeParameters
 			redundantTypeParameter(params[1]);
 		}
 
-		final ValueType<?, ?> valueType = defaultParameters.getValueType();
+		final ValueType<?> valueType = defaultParameters.getValueType();
 		final LinkValueType linkType = valueType.toLinkType();
 
 		if (linkType != null) {

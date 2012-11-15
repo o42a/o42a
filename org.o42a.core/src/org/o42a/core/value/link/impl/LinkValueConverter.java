@@ -40,7 +40,7 @@ public final class LinkValueConverter implements ValueConverter<KnownLink> {
 	}
 
 	@Override
-	public boolean convertibleFrom(ValueType<?, ?> other) {
+	public boolean convertibleFrom(ValueType<?> other) {
 		return other.isLink();
 	}
 

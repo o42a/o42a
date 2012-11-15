@@ -22,7 +22,7 @@ package org.o42a.core.value;
 
 public interface ValueConverter<T> {
 
-	boolean convertibleFrom(ValueType<?, ?> other);
+	boolean convertibleFrom(ValueType<?> other);
 
 	boolean convertibleParameters(
 			TypeParameters<T> destination,

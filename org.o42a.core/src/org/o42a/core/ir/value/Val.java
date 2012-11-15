@@ -43,14 +43,14 @@ public final class Val implements Content<ValType> {
 	public static final Val INDEFINITE_VAL =
 			new Val(ValueType.VOID, VAL_INDEFINITE, 0, 0L);
 
-	public static Val falseVal(ValueType<?, ?> valueType) {
+	public static Val falseVal(ValueType<?> valueType) {
 		if (valueType.isVoid()) {
 			return FALSE_VAL;
 		}
 		return new Val(valueType, 0, 0, 0L);
 	}
 
-	private final ValueType<?, ?> valueType;
+	private final ValueType<?> valueType;
 	private final int flags;
 	private final int length;
 	private final long value;
@@ -73,7 +73,7 @@ public final class Val implements Content<ValType> {
 	}
 
 	public Val(
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			int flags,
 			int length,
 			long value) {
@@ -85,7 +85,7 @@ public final class Val implements Content<ValType> {
 	}
 
 	public Val(
-			ValueType<?, ?> valueType,
+			ValueType<?> valueType,
 			int flags,
 			int length,
 			Ptr<AnyOp> pointer) {
@@ -96,7 +96,7 @@ public final class Val implements Content<ValType> {
 		this.pointer = pointer;
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 		return this.valueType;
 	}
 

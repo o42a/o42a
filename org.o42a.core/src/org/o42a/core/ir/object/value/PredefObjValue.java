@@ -122,7 +122,7 @@ public enum PredefObjValue {
 	public final FuncPtr<ObjectValueFunc> get(
 			CompilerContext context,
 			Generator generator,
-			ValueType<?, ?> valueType) {
+			ValueType<?> valueType) {
 		return predefObjValues(generator).get(context, this, valueType);
 	}
 

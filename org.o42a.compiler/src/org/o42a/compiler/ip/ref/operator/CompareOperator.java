@@ -43,7 +43,7 @@ abstract class CompareOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 		return ValueType.INTEGER;
 	}
 
@@ -56,7 +56,7 @@ abstract class CompareOperator extends ComparisonOperator {
 			return true;
 		}
 
-		final ValueType<?, ?> valueType = phrase.getValueType();
+		final ValueType<?> valueType = phrase.getValueType();
 
 		if (valueType.is(ValueType.INTEGER)) {
 			return false;

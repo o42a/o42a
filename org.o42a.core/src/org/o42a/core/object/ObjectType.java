@@ -58,7 +58,7 @@ public final class ObjectType implements UserInfo {
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
 	private ArrayList<Derivative> allDerivatives;
-	private ValueType<?, ?> valueType;
+	private ValueType<?> valueType;
 
 	ObjectType(Obj object) {
 		this.object = object;
@@ -131,7 +131,7 @@ public final class ObjectType implements UserInfo {
 		return getAscendants().getSamples();
 	}
 
-	public final ValueType<?, ?> getValueType() {
+	public final ValueType<?> getValueType() {
 		if (this.valueType != null) {
 			return this.valueType;
 		}
@@ -225,7 +225,7 @@ public final class ObjectType implements UserInfo {
 			return this.linkUses;
 		}
 
-		final ValueType<?, ?> valueType = getValueType();
+		final ValueType<?> valueType = getValueType();
 
 		if (!valueType.isLink()) {
 			return null;
@@ -313,11 +313,11 @@ public final class ObjectType implements UserInfo {
 		}
 	}
 
-	final void setKnownValueType(ValueType<?, ?> valueType) {
+	final void setKnownValueType(ValueType<?> valueType) {
 		this.valueType = valueType;
 	}
 
-	final ValueType<?, ?> getKnownValueType() {
+	final ValueType<?> getKnownValueType() {
 		return this.valueType;
 	}
 

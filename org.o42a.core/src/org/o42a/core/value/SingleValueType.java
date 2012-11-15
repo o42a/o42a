@@ -30,8 +30,7 @@ import org.o42a.core.value.impl.Constant;
 import org.o42a.core.value.link.LinkValueType;
 
 
-public abstract class SingleValueType<T>
-		extends ValueType<SingleValueStruct<T>, T> {
+public abstract class SingleValueType<T> extends ValueType<T> {
 
 	public SingleValueType(String systemId, Class<? extends T> valueClass) {
 		super(systemId, valueClass);
