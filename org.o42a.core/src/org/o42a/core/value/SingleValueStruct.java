@@ -36,6 +36,7 @@ import org.o42a.util.io.Source;
 import org.o42a.util.string.Name;
 
 
+@Deprecated
 public abstract class SingleValueStruct<T>
 		extends ValueStruct<SingleValueStruct<T>, T> {
 

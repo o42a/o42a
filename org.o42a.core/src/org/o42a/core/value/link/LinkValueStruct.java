@@ -33,6 +33,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.array.ArrayValueStruct;
 
 
+@Deprecated
 public final class LinkValueStruct
 		extends ValueStruct<LinkValueStruct, KnownLink> {
 
