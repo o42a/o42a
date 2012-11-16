@@ -115,7 +115,7 @@ public abstract class TypeRef implements ScopeInfo {
 		}
 
 		final TypeParameters<?> typeParameters =
-				this.parametersBuilder.typeParametersBy(this);
+				this.parametersBuilder.refine(defaultParameters());
 
 		if (typeParameters == null || typeParameters.isEmpty()) {
 			this.parameters = defaultParameters();

@@ -24,7 +24,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
@@ -41,8 +40,9 @@ final class ParentTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
-		return typeParameters();
+	public TypeParameters<?> refine(
+			TypeParameters<?> defaultParameters) {
+		return typeParameters().refine(defaultParameters);
 	}
 
 	@Override

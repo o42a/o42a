@@ -100,6 +100,10 @@ public final class TypeParameters<T>
 		return this.parameters;
 	}
 
+	public final int size() {
+		return this.parameters.length;
+	}
+
 	public final boolean isEmpty() {
 		return this.parameters.length == 0;
 	}
@@ -251,11 +255,42 @@ public final class TypeParameters<T>
 	}
 
 	@Override
-	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
-		if (isEmpty()) {
-			return typeRef.defaultParameters();
+	public final TypeParameters<T> refine(
+			TypeParameters<?> defaultParameters) {
+		assert defaultParameters.getValueType().isVoid()
+		|| getValueType().is(defaultParameters.getValueType()) :
+			this + " value type is not compatible with "
+			+ defaultParameters.getValueType();
+
+		if (defaultParameters.isEmpty()) {
+			return this;
 		}
-		return this;
+		if (isEmpty()) {
+			if (defaultParameters.getValueType().is(getValueType())) {
+				return getValueType().cast(defaultParameters);
+			}
+			return new TypeParameters<T>(
+					this,
+					getValueType(),
+					defaultParameters.all());
+		}
+
+		assertSameScope(defaultParameters.all()[0]);
+
+		TypeParameter[] newParameters = all();
+
+		for (TypeParameter param : defaultParameters.all()) {
+			if (parameter(param.getKey()) != null) {
+				continue;
+			}
+			newParameters = ArrayUtil.append(newParameters, param);
+		}
+
+		if (newParameters.length == size()) {
+			return this;
+		}
+
+		return new TypeParameters<T>(this, getValueType(), newParameters);
 	}
 
 	@Override

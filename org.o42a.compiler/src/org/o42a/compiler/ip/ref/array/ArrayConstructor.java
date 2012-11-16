@@ -192,8 +192,10 @@ public class ArrayConstructor extends ObjectConstructor {
 		}
 
 		@Override
-		public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
-			return this.arrayRef.typeParameters(this.arrayRef.getScope());
+		public TypeParameters<?> refine(
+				TypeParameters<?> defaultParameters) {
+			return this.arrayRef.typeParameters(this.arrayRef.getScope())
+					.refine(defaultParameters);
 		}
 
 		@Override
