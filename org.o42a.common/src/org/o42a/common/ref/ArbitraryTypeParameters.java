@@ -31,7 +31,6 @@ import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.link.LinkValueType;
 
 
-
 public class ArbitraryTypeParameters
 		extends Location
 		implements TypeParametersBuilder {
@@ -78,9 +77,9 @@ public class ArbitraryTypeParameters
 	}
 
 	@Override
-	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
+	public TypeParameters<?> refine(
+			TypeParameters<?> defaultParameters) {
 
-		final TypeParameters<?> defaultParameters = typeRef.defaultParameters();
 		final TypeRef[] params = getParameters();
 
 		if (params.length == 0) {

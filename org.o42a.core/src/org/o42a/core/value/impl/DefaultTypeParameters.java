@@ -20,7 +20,6 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
@@ -40,8 +39,9 @@ public final class DefaultTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParameters<?> typeParametersBy(TypeRef typeRef) {
-		return typeRef.defaultParameters();
+	public TypeParameters<?> refine(
+			TypeParameters<?> defaultParameters) {
+		return defaultParameters;
 	}
 
 	@Override

@@ -20,7 +20,6 @@
 package org.o42a.core.value;
 
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.impl.DefaultTypeParameters;
 
@@ -32,7 +31,7 @@ public interface TypeParametersBuilder {
 
 	TypeParametersBuilder prefixWith(PrefixPath prefix);
 
-	TypeParameters<?> typeParametersBy(TypeRef typeRef);
+	TypeParameters<?> refine(TypeParameters<?> defaultParameters);
 
 	TypeParametersBuilder reproduce(Reproducer reproducer);
 
