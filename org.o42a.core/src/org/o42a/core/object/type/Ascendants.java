@@ -24,6 +24,8 @@ import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
+import static org.o42a.core.value.TypeParameters.refineTypeParameters;
+import static org.o42a.core.value.TypeParametersBuilder.DEFAULT_TYPE_PARAMETERS;
 
 import java.util.Arrays;
 
@@ -53,7 +55,7 @@ public class Ascendants
 
 	private final Obj object;
 	private TypeRef explicitAncestor;
-	private TypeParametersBuilder typeParameters;
+	private TypeParametersBuilder explicitParameters;
 	private TypeRef ancestor;
 	private Sample[] samples = NO_SAMPLES;
 	private Sample[] discardedSamples = NO_SAMPLES;
@@ -80,9 +82,8 @@ public class Ascendants
 			} else {
 				this.ancestor = sampleAncestor();
 			}
-			if (this.typeParameters != null) {
-				this.ancestor =
-						this.ancestor.setParameters(this.typeParameters);
+			if (this.ancestor != null) {
+				this.ancestor = this.ancestor.setParameters(typeParameters());
 			}
 		}
 
@@ -106,17 +107,17 @@ public class Ascendants
 		return clone;
 	}
 
-	public final TypeParametersBuilder getTypeParameters() {
-		return this.typeParameters;
+	public final TypeParametersBuilder getExplicitParameters() {
+		return this.explicitParameters;
 	}
 
 	@Override
-	public final Ascendants setTypeParameters(
+	public final Ascendants setParameters(
 			TypeParametersBuilder typeParameters) {
 
 		final Ascendants clone = clone();
 
-		clone.typeParameters = typeParameters;
+		clone.explicitParameters = typeParameters;
 
 		return clone;
 	}
@@ -577,6 +578,69 @@ public class Ascendants
 	private void removeSample(int index) {
 		discardSample(this.samples[index]);
 		this.samples = ArrayUtil.remove(this.samples, index);
+	}
+
+	private final TypeParametersBuilder typeParameters() {
+
+		TypeParameters<?> parameters = null;
+		boolean ancestorApplied = this.explicitAncestor == null;
+
+		for (Sample sample : getSamples()) {
+			if (!ancestorApplied && sample.isExplicit()) {
+				// Apply an explicit ancestor's parameters after
+				// implicit samples, but before the explicit ones.
+				ancestorApplied = true;
+				parameters = applyAncestorParameters(parameters);
+			}
+			parameters = applySampleParameters(parameters, sample);
+		}
+		if (!ancestorApplied) {
+			// Apply an ancestor paraameters if not applied yet.
+			parameters = applyAncestorParameters(parameters);
+		}
+
+		return applyExplicitParameters(parameters);
+	}
+
+	private TypeParameters<?> applyAncestorParameters(
+			TypeParameters<?> parameters) {
+
+		final TypeParameters<?> ancestorParameters =
+				this.explicitAncestor.getParameters();
+
+		if (parameters == null) {
+			return ancestorParameters;
+		}
+
+		return ancestorParameters.refine(parameters);
+	}
+
+	private TypeParameters<?> applySampleParameters(
+			TypeParameters<?> parameters,
+			Sample sample) {
+		final TypeParameters<?> sampleParameters =
+				sample.getAncestor().getParameters();
+
+		if (parameters == null) {
+			return sampleParameters;
+		}
+
+		return sampleParameters.refine(parameters);
+	}
+
+	private TypeParametersBuilder applyExplicitParameters(
+			TypeParameters<?> parameters) {
+		if (parameters == null) {
+			if (this.explicitParameters == null) {
+				return DEFAULT_TYPE_PARAMETERS;
+			}
+			return this.explicitParameters;
+		}
+		if (this.explicitParameters == null) {
+			return parameters;
+		}
+
+		return refineTypeParameters(parameters, this.explicitParameters);
 	}
 
 	private ConstructionMode enclosingConstructionMode() {

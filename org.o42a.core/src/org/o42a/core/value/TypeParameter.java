@@ -33,16 +33,14 @@ import org.o42a.util.log.Loggable;
 public final class TypeParameter implements ScopeInfo {
 
 	private final MemberKey key;
-	private final int index;
 	private final TypeRef typeRef;
 
-	TypeParameter(MemberKey key, int index, TypeRef typeRef) {
+	TypeParameter(MemberKey key, TypeRef typeRef) {
 		assert typeRef != null :
 			"Type parameter not specified";
 		assert key != null :
 			"Type parameter key not specified";
 		this.key = key;
-		this.index = index;
 		this.typeRef = typeRef;
 	}
 
@@ -69,10 +67,6 @@ public final class TypeParameter implements ScopeInfo {
 		return this.key;
 	}
 
-	public final int getIndex() {
-		return this.index;
-	}
-
 	public final TypeRef getTypeRef() {
 		return this.typeRef;
 	}
@@ -86,7 +80,7 @@ public final class TypeParameter implements ScopeInfo {
 			return this;
 		}
 
-		return new TypeParameter(getKey(), getIndex(), newTypeRef);
+		return new TypeParameter(getKey(), newTypeRef);
 	}
 
 	public TypeParameter rebuildIn(Scope scope) {
@@ -98,7 +92,7 @@ public final class TypeParameter implements ScopeInfo {
 			return this;
 		}
 
-		return new TypeParameter(getKey(), getIndex(), newTypeRef);
+		return new TypeParameter(getKey(), newTypeRef);
 	}
 
 	public final TypeParameter reproduce(Reproducer reproducer) {
@@ -109,7 +103,7 @@ public final class TypeParameter implements ScopeInfo {
 			return null;
 		}
 
-		return new TypeParameter(getKey(), getIndex(), typeRef);
+		return new TypeParameter(getKey(), typeRef);
 	}
 
 	@Override

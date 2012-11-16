@@ -40,9 +40,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
-import org.o42a.core.value.impl.CompilerValue;
-import org.o42a.core.value.impl.FalseValue;
-import org.o42a.core.value.impl.RuntimeValue;
+import org.o42a.core.value.impl.*;
 import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.macro.impl.MacroValueAdapter;
@@ -58,6 +56,22 @@ public final class TypeParameters<T>
 			LocationInfo location,
 			ValueType<T> valueType) {
 		return new TypeParameters<T>(location, valueType);
+	}
+
+	public static TypeParametersBuilder refineTypeParameters(
+			TypeParametersBuilder refined,
+			TypeParametersBuilder refinement) {
+		assert refined != null :
+			"Refined type parameters not specified";
+		assert refinement != null:
+			"Type parameters refinement not specified";
+		if (refinement == DEFAULT_TYPE_PARAMETERS) {
+			return refined;
+		}
+		if (refined == DEFAULT_TYPE_PARAMETERS) {
+			return refinement;
+		}
+		return new RefinedTypeParameters(refined, refinement);
 	}
 
 	private final ValueType<T> valueType;
@@ -141,8 +155,7 @@ public final class TypeParameters<T>
 			parameter.assertSameScope(this.parameters[0]);
 		}
 
-		final TypeParameter param =
-				new TypeParameter(key, this.parameters.length, parameter);
+		final TypeParameter param = new TypeParameter(key, parameter);
 
 		return new TypeParameters<T>(
 				this,
@@ -263,12 +276,14 @@ public final class TypeParameters<T>
 			+ defaultParameters.getValueType();
 
 		if (defaultParameters.isEmpty()) {
+			// Always override the empty parameters.
 			return this;
 		}
 		if (isEmpty()) {
 			if (defaultParameters.getValueType().is(getValueType())) {
 				return getValueType().cast(defaultParameters);
 			}
+			// Value type updated from VOID to something else.
 			return new TypeParameters<T>(
 					this,
 					getValueType(),
@@ -279,14 +294,16 @@ public final class TypeParameters<T>
 
 		TypeParameter[] newParameters = all();
 
-		for (TypeParameter param : defaultParameters.all()) {
-			if (parameter(param.getKey()) != null) {
-				continue;
+		for (TypeParameter defaultParam : defaultParameters.all()) {
+			if (parameter(defaultParam.getKey()) == null) {
+				// Do only apply the default type parameter if it's not present
+				// in this type parameters.
+				newParameters = ArrayUtil.append(newParameters, defaultParam);
 			}
-			newParameters = ArrayUtil.append(newParameters, param);
 		}
 
 		if (newParameters.length == size()) {
+			// This type parameters completely override the default ones.
 			return this;
 		}
 
