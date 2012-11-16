@@ -122,8 +122,8 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public ObjectDefiner setTypeParameters(TypeParametersBuilder typeParameters) {
-			this.definer.setTypeParameters(
+		public ObjectDefiner setParameters(TypeParametersBuilder typeParameters) {
+			this.definer.setParameters(
 					typeParameters.prefixWith(getPrefix()));
 			return this;
 		}

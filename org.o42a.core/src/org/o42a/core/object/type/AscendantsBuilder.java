@@ -29,7 +29,7 @@ public interface AscendantsBuilder<A extends AscendantsBuilder<A>> {
 
 	A setAncestor(TypeRef explicitAncestor);
 
-	A setTypeParameters(TypeParametersBuilder typeParameters);
+	A setParameters(TypeParametersBuilder typeParameters);
 
 	A addExplicitSample(StaticTypeRef explicitAscendant);
 

@@ -29,9 +29,9 @@ public interface TypeParametersBuilder {
 	TypeParametersBuilder DEFAULT_TYPE_PARAMETERS =
 			DefaultTypeParameters.INSTANCE;
 
-	TypeParametersBuilder prefixWith(PrefixPath prefix);
-
 	TypeParameters<?> refine(TypeParameters<?> defaultParameters);
+
+	TypeParametersBuilder prefixWith(PrefixPath prefix);
 
 	TypeParametersBuilder reproduce(Reproducer reproducer);
 

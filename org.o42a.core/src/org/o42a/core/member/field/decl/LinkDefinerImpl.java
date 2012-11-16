@@ -89,7 +89,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 		final LinkValueType linkType = declaration.getLinkType();
 
 		if (!this.ascendants.isEmpty()) {
-			return this.ascendants.setTypeParameters(
+			return this.ascendants.setParameters(
 					linkType.typeParameters(targetType));
 		}
 

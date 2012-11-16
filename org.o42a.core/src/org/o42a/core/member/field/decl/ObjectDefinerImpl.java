@@ -60,8 +60,8 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	}
 
 	@Override
-	public ObjectDefiner setTypeParameters(TypeParametersBuilder typeParameters) {
-		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
+	public ObjectDefiner setParameters(TypeParametersBuilder typeParameters) {
+		this.ascendants = this.ascendants.setParameters(typeParameters);
 		return this;
 	}
 

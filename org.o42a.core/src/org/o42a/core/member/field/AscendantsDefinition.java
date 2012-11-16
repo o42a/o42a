@@ -172,7 +172,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 			result = ascendants.setAncestor(this.ancestor);
 		}
 		if (this.typeParameters != null) {
-			result = result.setTypeParameters(this.typeParameters);
+			result = result.setParameters(this.typeParameters);
 		}
 		for (StaticTypeRef sample : this.samples) {
 			result = result.addExplicitSample(sample);
