@@ -84,6 +84,25 @@ public abstract class Member extends Placed {
 		return getMemberId().toString();
 	}
 
+	/**
+	 * Whether this member is type parameter.
+	 *
+	 * <p>A type parameter member can be accessed even if the owner object is
+	 * prototype.</p>
+	 *
+	 * <p>Type parameters can only be declared or overridden inside the type
+	 * definition block like this:
+	 * <pre><code>
+	 * Prefix #(
+	 *   Type parameter := void
+	 * )
+	 * </code></pre></p>
+	 *
+	 * @return <code>true</code> if this member is a type parameter,
+	 * or <code>false</code> otherwise.
+	 */
+	public abstract boolean isTypeParameter();
+
 	public abstract MemberField toField();
 
 	public abstract MemberClause toClause();

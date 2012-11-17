@@ -50,6 +50,11 @@ public abstract class OverriddenMemberField<F extends Field>
 	public abstract OverriddenMemberField<F> propagateTo(MemberOwner owner);
 
 	@Override
+	public final boolean isTypeParameter() {
+		return getPropagatedFrom().isTypeParameter();
+	}
+
+	@Override
 	protected final F createField() {
 
 		@SuppressWarnings("unchecked")
