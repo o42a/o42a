@@ -42,7 +42,26 @@ public abstract class ContainerMembers {
 		return this.owner.getContainer();
 	}
 
+	public final void addTypeParameter(Member typeParameter) {
+		assert typeParameter.isTypeParameter() :
+			"Not a type parameter: " + typeParameter;
+		assert !typeParameter.isOverride() :
+			"Can not override the type parameter " + typeParameter;
+		addEntry(new MemberEntry(typeParameter, false));
+	}
+
 	public final void addMember(Member member) {
+		if (member.isTypeParameter()) {
+			assert member.isOverride() :
+				"Type parameters can not be explicitly declared";
+			member.getLogger().error(
+					"prohibited_type_parameter_override",
+					member,
+					"The type parameter can not be defined here. "
+					+ "Use a type parameters expression "
+					+ "or type definition instead");
+			return;
+		}
 		addEntry(new MemberEntry(member, false));
 	}
 

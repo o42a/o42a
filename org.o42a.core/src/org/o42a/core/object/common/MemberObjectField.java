@@ -45,6 +45,11 @@ final class MemberObjectField extends MemberField {
 	}
 
 	@Override
+	public boolean isTypeParameter() {
+		return false;
+	}
+
+	@Override
 	protected Field createField() {
 		throw new UnsupportedOperationException();
 	}

@@ -55,6 +55,11 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
+	public final boolean isTypeParameter() {
+		return false;
+	}
+
+	@Override
 	public final MemberField toField() {
 		return null;
 	}

@@ -73,6 +73,11 @@ public abstract class MemberClause extends Member {
 	public abstract Clause clause();
 
 	@Override
+	public final boolean isTypeParameter() {
+		return false;
+	}
+
+	@Override
 	public final MemberField toField() {
 		return null;
 	}

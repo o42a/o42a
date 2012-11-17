@@ -103,6 +103,11 @@ public final class ClauseAlias extends Alias {
 	}
 
 	@Override
+	public final boolean isTypeParameter() {
+		return false;
+	}
+
+	@Override
 	public MemberField toField() {
 		return null;
 	}
