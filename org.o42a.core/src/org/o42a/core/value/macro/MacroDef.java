@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.macro;
+package org.o42a.core.value.macro;
 
 import static org.o42a.core.ir.def.InlineEval.macroInlineEval;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
@@ -34,7 +34,6 @@ import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.core.value.macro.Macro;
 
 
 public final class MacroDef extends Def {

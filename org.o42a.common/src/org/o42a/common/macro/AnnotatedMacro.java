@@ -27,6 +27,7 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.macro.Macro;
+import org.o42a.core.value.macro.MacroDef;
 
 
 public abstract class AnnotatedMacro extends AnnotatedObject implements Macro {

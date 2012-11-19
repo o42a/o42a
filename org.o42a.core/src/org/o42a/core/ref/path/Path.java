@@ -32,6 +32,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.impl.*;
+import org.o42a.core.ref.path.impl.member.MemberFragment;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.link.impl.DereferenceStep;
@@ -190,7 +191,7 @@ public final class Path {
 	public final Path append(MemberKey memberKey) {
 		assert memberKey != null :
 			"Member key not specified";
-		return append(new MemberStep(memberKey));
+		return append(new MemberFragment(memberKey));
 	}
 
 	public final Path append(PathFragment fragment) {

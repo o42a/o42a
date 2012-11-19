@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path.impl;
+package org.o42a.core.ref.path.impl.member;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
@@ -88,6 +88,9 @@ public abstract class AbstractMemberStep extends Step {
 
 	@Override
 	public String toString() {
+		if (this.memberKey == null) {
+			return super.toString();
+		}
 		return this.memberKey.toString();
 	}
 

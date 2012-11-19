@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,36 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.macro.st;
+package org.o42a.core.value.macro;
 
-import org.o42a.core.member.field.MemberField;
-import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PathTemplate;
-import org.o42a.core.value.macro.MacroDep;
 
 
-final class TempMacroDep extends MacroDep<TempMetaDep> {
-
-	private final MemberField tempField;
-
-	TempMacroDep(MemberField tempField) {
-		this.tempField = tempField;
-	}
-
-	public final MemberField getTempField() {
-		return this.tempField;
-	}
+public abstract class MacroDep<D extends MetaDep> extends RefDep<D> {
 
 	@Override
-	public TempMetaDep newDep(Meta meta, Ref macroRef, PathTemplate template) {
-		return new TempMetaDep(meta, this, macroRef);
-	}
-
-	@Override
-	public void setParentDep(TempMetaDep dep, MetaDep parentDep) {
-		dep.setParentDep(parentDep);
+	public void invalidRef(Ref ref) {
+		ref.getLogger().error(
+				"invalid_macro_ref",
+				ref,
+				"Invalid macro reference");
 	}
 
 }

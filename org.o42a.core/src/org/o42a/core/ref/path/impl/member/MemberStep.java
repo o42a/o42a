@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path.impl;
+package org.o42a.core.ref.path.impl.member;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
@@ -38,14 +38,15 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.normalizer.InlineValueStep;
 import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
 
 
-public class MemberStep extends AbstractMemberStep {
+final class MemberStep extends AbstractMemberStep {
 
 	private ObjectStepUses uses;
 
-	public MemberStep(MemberKey memberKey) {
+	MemberStep(MemberKey memberKey) {
 		super(memberKey);
 	}
 

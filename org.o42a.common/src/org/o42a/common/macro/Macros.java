@@ -21,9 +21,9 @@ package org.o42a.common.macro;
 
 import static org.o42a.common.macro.path.MacroExpansionStep.MACRO_EXPANSION_STEP;
 import static org.o42a.common.macro.path.MacroExpansionStep.MACRO_REEXPANSION_STEP;
+import static org.o42a.common.macro.st.StatementConsumer.consumeStatement;
 
 import org.o42a.common.macro.path.RequireMacroStep;
-import org.o42a.common.macro.st.StatementConsumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
@@ -78,17 +78,15 @@ public final class Macros {
 	private Macros() {
 	}
 
-	public static Ref consumeCondition(
-			Statements<?, ?> statements,
-			Ref value) {
-		return StatementConsumer.consumeStatement(statements, value, value, true);
+	public static Ref consumeCondition(Statements<?, ?> statements, Ref value) {
+		return consumeStatement(statements, value, value, true);
 	}
 
 	public static Ref consumeSelfAssignment(
 			Statements<?, ?> statements,
 			LocationInfo location,
 			Ref condition) {
-		return StatementConsumer.consumeStatement(statements, location, condition, false);
+		return consumeStatement(statements, location, condition, false);
 	}
 
 }

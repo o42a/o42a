@@ -1,5 +1,5 @@
 /*
-    Standard Macros
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,14 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.macros;
+package org.o42a.core.ref.path.impl.member;
 
-import static org.o42a.common.macro.Macros.expandMacro;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.ref.path.impl.member.MemberFragment.unresolvedTypeParameter;
 import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_CONSUMER;
-import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
-import org.o42a.core.member.MemberName;
+import org.o42a.core.Scope;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
@@ -32,20 +31,21 @@ import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.value.macro.RefDep;
 
 
-final class ArraySubjectDep extends RefDep<SubjectMetaDep> {
+final class OwnerRefDep extends RefDep<ObjectMetaDep> {
 
-	private static final MemberName ARRAY_NAME =
-			fieldName(CASE_SENSITIVE.canonicalName("array"));
-	private static final ArraySubjectDep INSTANCE = new ArraySubjectDep();
 
-	static Ref arrayRef(ItemType macro) {
+	static Ref ownerRef(TypeParameterMacro macro) {
 
-		final Ref arrayRef =
-				expandMacro(ARRAY_NAME.key(macro.getScope()).toPath())
-				.bind(macro, macro.getScope())
-				.target(macro.distribute());
-		final Ref ref = arrayRef.consume(DEFAULT_CONSUMER);
-		final SubjectMetaDep dep = INSTANCE.buildDep(ref, null);
+		final TypeParameterObject object = macro.getObject();
+		final Scope scope = object.getScope();
+		final Ref ownerRef =
+				scope.getEnclosingScopePath()
+				.bind(object, scope)
+				.target(scope.distribute());
+
+		final Ref ref = ownerRef.consume(DEFAULT_CONSUMER);
+		final ObjectMetaDep dep =
+				new OwnerRefDep(object.getParameterKey()).buildDep(ref, null);
 
 		if (dep != null) {
 			dep.register();
@@ -54,25 +54,28 @@ final class ArraySubjectDep extends RefDep<SubjectMetaDep> {
 		return ref;
 	}
 
-	private ArraySubjectDep() {
+	private MemberKey parameterKey;
+
+	private OwnerRefDep(MemberKey parameterKey) {
+		this.parameterKey = parameterKey;
 	}
 
 	@Override
-	public SubjectMetaDep newDep(Meta meta, Ref ref, PathTemplate template) {
-		return new SubjectMetaDep(meta, ref);
+	public ObjectMetaDep newDep(Meta meta, Ref ref, PathTemplate template) {
+		return new ObjectMetaDep(meta, ref);
 	}
 
 	@Override
-	public void setParentDep(SubjectMetaDep dep, MetaDep parentDep) {
+	public void setParentDep(ObjectMetaDep dep, MetaDep parentDep) {
 		dep.setParentDep(parentDep);
 	}
 
 	@Override
 	public void invalidRef(Ref ref) {
-		ref.getLogger().error(
-				"invalid_array_meta_dep",
+		unresolvedTypeParameter(
+				ref.getLogger(),
 				ref,
-				"Invalid array meta-reference");
+				this.parameterKey);
 	}
 
 }
