@@ -25,6 +25,7 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.ref.path.Path;
 
 
@@ -103,8 +104,8 @@ public final class ClauseAlias extends Alias {
 	}
 
 	@Override
-	public final boolean isTypeParameter() {
-		return false;
+	public final MemberTypeParameter toTypeParameter() {
+		return null;
 	}
 
 	@Override

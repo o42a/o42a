@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,48 +17,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field.impl;
+package org.o42a.core.member.type;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Obj;
 
 
-public abstract class OverriddenMemberField<F extends Field>
-		extends MemberField {
+final class OverriddenMemberTypeParameter extends MemberTypeParameter {
 
-	private final MemberField propagatedFrom;
+	private final MemberTypeParameter propagatedFrom;
 
-	public OverriddenMemberField(
-			MemberOwner owner,
-			MemberField propagatedFrom) {
+	OverriddenMemberTypeParameter(
+			Obj owner,
+			MemberTypeParameter propagatedFrom) {
 		super(
 				addDeclaration(owner, propagatedFrom.getLastDefinition()),
-				owner,
-				propagatedFrom);
+				propagatedFrom.distributeIn(owner.getContainer()),
+				owner);
 		this.propagatedFrom = propagatedFrom;
 	}
 
 	@Override
-	public final MemberField getPropagatedFrom() {
+	public MemberTypeParameter getPropagatedFrom() {
 		return this.propagatedFrom;
 	}
 
 	@Override
-	public abstract OverriddenMemberField<F> propagateTo(MemberOwner owner);
-
-	@Override
-	protected final F createField() {
-
-		@SuppressWarnings("unchecked")
-		final F propagatedFrom =
-				(F) getPropagatedFrom().toField().field(dummyUser());
-
-		return propagateField(propagatedFrom);
+	public MemberId getMemberId() {
+		return this.propagatedFrom.getMemberId();
 	}
 
-	protected abstract F propagateField(F propagatedFrom);
+	@Override
+	public MemberKey getMemberKey() {
+		return this.propagatedFrom.getMemberKey();
+	}
+
+	@Override
+	public boolean isOverride() {
+		return true;
+	}
 
 }

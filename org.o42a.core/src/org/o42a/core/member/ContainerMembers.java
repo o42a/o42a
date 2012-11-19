@@ -42,14 +42,6 @@ public abstract class ContainerMembers {
 		return this.owner.getContainer();
 	}
 
-	public final void addTypeParameter(Member typeParameter) {
-		assert typeParameter.isTypeParameter() :
-			"Not a type parameter: " + typeParameter;
-		assert !typeParameter.isOverride() :
-			"Can not override the type parameter " + typeParameter;
-		addEntry(new MemberEntry(typeParameter, false));
-	}
-
 	public final void addMember(Member member) {
 		if (member.isTypeParameter()) {
 			assert member.isOverride() :
@@ -121,6 +113,10 @@ public abstract class ContainerMembers {
 			symbol = new Symbol(memberId, member);
 			symbols().put(memberId, symbol);
 		}
+	}
+
+	protected void add(Member member, boolean override) {
+		addEntry(new MemberEntry(member, override));
 	}
 
 	private void addEntry(MemberEntry entry) {

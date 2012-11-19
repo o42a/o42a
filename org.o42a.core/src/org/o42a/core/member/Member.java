@@ -31,6 +31,7 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.MemberPropagatedFromID;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
@@ -101,7 +102,11 @@ public abstract class Member extends Placed {
 	 * @return <code>true</code> if this member is a type parameter,
 	 * or <code>false</code> otherwise.
 	 */
-	public abstract boolean isTypeParameter();
+	public final boolean isTypeParameter() {
+		return toTypeParameter() != null;
+	}
+
+	public abstract MemberTypeParameter toTypeParameter();
 
 	public abstract MemberField toField();
 
