@@ -19,36 +19,50 @@
 */
 package org.o42a.compiler.ip.type.def;
 
+import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.ref.RefInterpreter.PLAIN_REF_IP;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.*;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
 final class TypeParameterDefinitionVisitor
 		extends AbstractExpressionVisitor<TypeRef, Distributor> {
 
-	static final TypeParameterDefinitionVisitor
-	TYPE_PARAMETER_DEFINITION_VISITOR = new TypeParameterDefinitionVisitor();
+	private final TypeNodeVisitor<TypeRef, Distributor> typeVisitor;
 
-	private TypeParameterDefinitionVisitor() {
+	TypeParameterDefinitionVisitor(TypeConsumer consumer) {
+		this.typeVisitor = PLAIN_IP.typeIp().typeVisitor(consumer);
+	}
+
+	@Override
+	public TypeRef visitAscendants(AscendantsNode ascendants, Distributor p) {
+		return typeRef(ascendants, p);
+	}
+
+	@Override
+	public TypeRef visitTypeParameters(
+			TypeParametersNode parameters,
+			Distributor p) {
+		return typeRef(parameters, p);
 	}
 
 	@Override
 	protected TypeRef visitRef(RefNode ref, Distributor p) {
+		return typeRef(ref, p);
+	}
 
-		final Ref typeRef = ref.accept(PLAIN_REF_IP.bodyRefVisitor(), p);
-
-		if (typeRef == null) {
-			return null;
-		}
-
-		return typeRef.toTypeRef();
+	@Override
+	public TypeRef visitMacroExpansion(
+			MacroExpansionNode expansion,
+			Distributor p) {
+		return typeRef(expansion, p);
 	}
 
 	@Override
@@ -60,6 +74,10 @@ final class TypeParameterDefinitionVisitor
 				location(p, expression),
 				"Type parameter desfinition should be a type reference");
 		return null;
+	}
+
+	private TypeRef typeRef(TypeNode node, Distributor p) {
+		return node.accept(this.typeVisitor, p);
 	}
 
 }
