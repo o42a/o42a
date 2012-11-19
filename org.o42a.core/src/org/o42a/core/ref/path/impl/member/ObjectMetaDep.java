@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,36 +17,54 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.macro;
+package org.o42a.core.ref.path.impl.member;
 
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.ref.Resolution;
 
 
-public abstract class RefDep<D extends MetaDep> {
+final class ObjectMetaDep extends MetaDep {
 
-	public final D buildDep(Ref ref, PathTemplate template) {
-		if (ref.isStatic()) {
-			return null;
-		}
+	private final Ref ref;
+	private MetaDep parentDep;
 
-		final RefDepBuilder<D> builder =
-				new RefDepBuilder<D>(this, ref, template);
-
-		return builder.buildDep();
+	ObjectMetaDep(Meta declaredIn, Ref ref) {
+		super(declaredIn);
+		this.ref = ref;
 	}
 
-	public abstract D newDep(Meta meta, Ref ref, PathTemplate template);
+	@Override
+	public MetaDep parentDep() {
+		return this.parentDep;
+	}
 
-	public abstract void setParentDep(D dep, MetaDep parentDep);
+	@Override
+	public MetaDep nestedDep() {
+		return null;
+	}
 
-	public void invalidRef(Ref ref) {
-		ref.getLogger().error(
-				"invalid_ref_meta_dep",
-				ref,
-				"Invalid meta-reference");
+	@Override
+	protected boolean triggered(Meta meta) {
+
+		final Resolution resolution =
+				this.ref.resolve(meta.getObject().getScope().resolver());
+
+		if (!resolution.isResolved()) {
+			return false;
+		}
+
+		return resolution.toObject().meta().isUpdated();
+	}
+
+	@Override
+	protected boolean changed(Meta meta) {
+		return true;
+	}
+
+	final void setParentDep(MetaDep parentDep) {
+		this.parentDep = parentDep;
 	}
 
 }

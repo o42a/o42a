@@ -36,8 +36,8 @@ import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.impl.normalizer.InlineValueStep;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.ref.path.impl.AbstractMemberStep;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
+import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.source.LocationInfo;
 
 

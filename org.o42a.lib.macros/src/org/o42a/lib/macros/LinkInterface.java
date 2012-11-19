@@ -57,7 +57,8 @@ final class LinkInterface extends AnnotatedMacro {
 
 	private Path linkInterface(MacroExpander expander) {
 
-		final TypeParameters<KnownLink> linkParameters = linkParameters(expander);
+		final TypeParameters<KnownLink> linkParameters =
+				linkParameters(expander);
 
 		if (linkParameters == null) {
 			return null;

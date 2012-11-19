@@ -24,12 +24,12 @@ import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_CONSUMER;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
-import org.o42a.common.macro.RefDep;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.value.macro.RefDep;
 
 
 final class LinkSubjectDep extends RefDep<SubjectMetaDep> {
