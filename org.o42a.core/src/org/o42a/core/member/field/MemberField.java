@@ -30,6 +30,7 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.source.LocationInfo;
@@ -54,7 +55,8 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			MemberField propagatedFrom) {
 		super(
 				location,
-				propagatedFrom.distributeIn(owner.getContainer()), owner);
+				propagatedFrom.distributeIn(owner.getContainer()),
+				owner);
 		this.declaration =
 				new FieldDeclaration(
 						propagatedFrom,
@@ -162,6 +164,11 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	public final Obj object(UserInfo user) {
 		return field(user).toObject();
+	}
+
+	@Override
+	public final MemberTypeParameter toTypeParameter() {
+		return null;
 	}
 
 	@Override

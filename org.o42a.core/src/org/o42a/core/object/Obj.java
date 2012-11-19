@@ -285,7 +285,7 @@ public abstract class Obj
 		final Scope origin = getScope();
 
 		for (Member member : getMembers()) {
-			if (member.toAlias() != null) {
+			if (member.isTypeParameter() || member.toAlias() != null) {
 				continue;
 			}
 

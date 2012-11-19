@@ -56,11 +56,6 @@ public final class DeclaredMemberField extends MemberField {
 	}
 
 	@Override
-	public final boolean isTypeParameter() {
-		return false;
-	}
-
-	@Override
 	protected Field createField() {
 		return new DeclaredField(this, this.builder.getDefinition());
 	}

@@ -34,6 +34,14 @@ public class ObjectMembers extends ContainerMembers {
 		return (Obj) getContainer();
 	}
 
+	public final void addTypeParameter(Member typeParameter) {
+		assert typeParameter.isTypeParameter() :
+			"Not a type parameter: " + typeParameter;
+		assert !typeParameter.isOverride() :
+			"Can not override the type parameter " + typeParameter;
+		add(typeParameter, false);
+	}
+
 	public void deriveMembers(Obj ascendant) {
 		for (Member member : ascendant.getMembers()) {
 			propagateMember(member);

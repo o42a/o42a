@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,47 +17,48 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.local;
+package org.o42a.core.member.type;
 
 import org.o42a.analysis.use.UserInfo;
+import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.impl.PropagatedMemberLocal;
-import org.o42a.core.member.type.MemberTypeParameter;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.OwningObject;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameter;
 
 
-public abstract class MemberLocal extends Member {
+public abstract class MemberTypeParameter extends Member {
 
-	public MemberLocal(
+	public MemberTypeParameter(
 			LocationInfo location,
 			Distributor distributor,
-			OwningObject owner) {
-		super(location, distributor, owner);
+			Obj owner) {
+		super(location, distributor, owner.toMemberOwner());
 	}
 
-	protected MemberLocal(MemberOwner owner, MemberLocal propagatedFrom) {
-		super(
-				addDeclaration(owner, propagatedFrom.getLastDefinition()),
-				propagatedFrom.distributeIn(owner.getContainer()),
-				owner);
-	}
+	public final TypeParameter getTypeParameter() {
 
-	public final Obj getOwner() {
-		return getOwningObject().getObject();
-	}
+		final TypeParameter parameter =
+				getMemberOwner()
+				.toObject()
+				.type()
+				.getParameters()
+				.parameter(getMemberKey());
 
-	public final OwningObject getOwningObject() {
-		return (OwningObject) getMemberOwner();
+		assert parameter != null :
+			"Type paramter " + getMemberKey()
+			+ " not found in " + getMemberOwner();
+
+		return parameter;
 	}
 
 	@Override
 	public final MemberTypeParameter toTypeParameter() {
-		return null;
+		return this;
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public abstract class MemberLocal extends Member {
 
 	@Override
 	public final MemberLocal toLocal() {
-		return this;
+		return null;
 	}
 
 	@Override
@@ -80,40 +81,26 @@ public abstract class MemberLocal extends Member {
 		return null;
 	}
 
-	public abstract LocalScope local();
-
 	@Override
-	public final LocalScope substance(UserInfo user) {
-		return local();
+	public final Container substance(UserInfo user) {
+		return getMemberOwner().toObject();
 	}
 
 	@Override
 	public final Visibility getVisibility() {
-		if (toClause() != null) {
-			return Visibility.PUBLIC;
-		}
-		return Visibility.PRIVATE;
+		return Visibility.PUBLIC;
 	}
 
 	@Override
-	public final boolean isOverride() {
-		return isPropagated();
-	}
+	public abstract MemberTypeParameter getPropagatedFrom();
 
 	@Override
-	public final MemberLocal propagateTo(MemberOwner owner) {
-
-		final Obj ownerObject = owner.getContainer().toObject();
-
-		assert ownerObject != null :
-			ownerObject + " is not object";
-
-		return new PropagatedMemberLocal(owner, this);
+	public final MemberTypeParameter propagateTo(MemberOwner owner) {
+		return new OverriddenMemberTypeParameter(owner.toObject(), this);
 	}
 
 	@Override
 	public void resolveAll() {
-		local().resolveAll();
 	}
 
 }

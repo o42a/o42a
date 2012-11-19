@@ -24,6 +24,7 @@ import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.type.MemberTypeParameter;
 
 
 public abstract class MemberClause extends Member {
@@ -73,8 +74,8 @@ public abstract class MemberClause extends Member {
 	public abstract Clause clause();
 
 	@Override
-	public final boolean isTypeParameter() {
-		return false;
+	public final MemberTypeParameter toTypeParameter() {
+		return null;
 	}
 
 	@Override
