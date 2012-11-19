@@ -25,7 +25,9 @@ import static org.o42a.compiler.ip.type.def.TypeDefinitionVisitor.TYPE_DEFINITIO
 import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.value.TypeParametersBuilder;
 
 
@@ -33,10 +35,15 @@ public class TypeDefInterpreter {
 
 	public static TypeParametersBuilder typeDefinition(
 			TypeDefinitionNode node,
-			Distributor distributor) {
+			Distributor distributor,
+			Nesting nesting,
+			TypeConsumer consumer) {
 
-		TypeDefinition definition =
-				new TypeDefinition(location(distributor, node), distributor);
+		TypeDefinition definition = new TypeDefinition(
+				location(distributor, node),
+				distributor,
+				nesting,
+				consumer);
 
 		for (SentenceNode sentence : node.getDefinition().getContent()) {
 			definition = addSentence(definition, sentence);

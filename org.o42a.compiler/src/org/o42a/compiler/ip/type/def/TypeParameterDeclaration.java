@@ -22,14 +22,19 @@ package org.o42a.compiler.ip.type.def;
 import static org.o42a.compiler.ip.type.def.TypeParameterNameVisitor.typeParameterNameVisitor;
 
 import org.o42a.ast.field.DeclaratorNode;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
+import org.o42a.compiler.ip.type.macro.TypeParameterKey;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.TypeParameters;
 
 
-final class TypeParameterDeclaration extends Location {
+final class TypeParameterDeclaration
+		extends Location
+		implements TypeParameterKey {
 
 	private final TypeDefinition typeDefinition;
 	private final DeclaratorNode node;
@@ -37,6 +42,21 @@ final class TypeParameterDeclaration extends Location {
 	private MemberKey key;
 
 	TypeParameterDeclaration(
+			TypeDefinition typeDefinition,
+			DeclaratorNode node) {
+		super(typeDefinition.getContext(), node);
+		this.typeDefinition = typeDefinition;
+		this.node = node;
+
+		final TypeConsumer consumer =
+				typeDefinition.getConsumer().paramConsumer(this);
+
+		this.definition = node.getDefinition().accept(
+				new TypeParameterDefinitionVisitor(consumer),
+				typeDefinition.distribute());
+	}
+
+	private TypeParameterDeclaration(
 			TypeDefinition typeDefinition,
 			DeclaratorNode node,
 			TypeRef definition) {
@@ -93,6 +113,11 @@ final class TypeParameterDeclaration extends Location {
 		reproduction.key = key;
 
 		return reproduction;
+	}
+
+	@Override
+	public MemberKey typeParameterKey(TypeParameters<?> parameters) {
+		return getKey();
 	}
 
 	@Override

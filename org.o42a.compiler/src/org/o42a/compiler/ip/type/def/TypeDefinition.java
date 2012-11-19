@@ -20,16 +20,16 @@
 package org.o42a.compiler.ip.type.def;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.type.def.TypeParameterDefinitionVisitor.TYPE_PARAMETER_DEFINITION_VISITOR;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclaratorNode;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
@@ -47,8 +47,17 @@ final class TypeDefinition
 
 	private TypeParameterDeclaration[] parameters;
 
-	TypeDefinition(LocationInfo location, Distributor disrtibutor) {
+	private final Nesting nesting;
+	private final TypeConsumer consumer;
+
+	TypeDefinition(
+			LocationInfo location,
+			Distributor disrtibutor,
+			Nesting nesting,
+			TypeConsumer consumer) {
 		super(location, disrtibutor);
+		this.nesting = nesting;
+		this.consumer = consumer;
 		this.parameters = NO_PARAMETERS;
 	}
 
@@ -57,6 +66,16 @@ final class TypeDefinition
 			TypeParameterDeclaration[] parameters) {
 		super(location, location.distribute());
 		this.parameters = parameters;
+		this.nesting = null;
+		this.consumer = null;
+	}
+
+	public final Nesting getNesting() {
+		return this.nesting;
+	}
+
+	public final TypeConsumer getConsumer() {
+		return this.consumer;
 	}
 
 	public TypeDefinition addParameter(DeclaratorNode declarator) {
@@ -84,16 +103,12 @@ final class TypeDefinition
 					"Type parameter can not be a link");
 		}
 
-		final TypeRef definition = definitionNode.accept(
-				TYPE_PARAMETER_DEFINITION_VISITOR,
-				distribute());
+		final TypeParameterDeclaration parameter =
+				new TypeParameterDeclaration(this, declarator);
 
-		if (definition == null) {
+		if (parameter.getDefinition() == null) {
 			return this;
 		}
-
-		final TypeParameterDeclaration parameter =
-				new TypeParameterDeclaration(this, declarator, definition);
 
 		return new TypeDefinition(
 				this,
