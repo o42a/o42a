@@ -32,7 +32,7 @@ final class NoTypeConsumer extends TypeConsumer {
 	}
 
 	@Override
-	public TypeConsumer paramConsumer(int index) {
+	public TypeConsumer paramConsumer(TypeParameterKey parameterKey) {
 		return this;
 	}
 

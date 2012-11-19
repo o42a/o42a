@@ -30,12 +30,15 @@ import org.o42a.core.value.macro.MacroDep;
 final class TypeParamMacroDep extends MacroDep<TypeParamMetaDep> {
 
 	private final Nesting nesting;
-	private final int paramIndex;
+	private final TypeParameterKey parameterKey;
 	private final int depth;
 
-	TypeParamMacroDep(Nesting nesting, int paramIndex, int depth) {
+	TypeParamMacroDep(
+			Nesting nesting,
+			TypeParameterKey parameterKey,
+			int depth) {
 		this.nesting = nesting;
-		this.paramIndex = paramIndex;
+		this.parameterKey = parameterKey;
 		this.depth = depth;
 	}
 
@@ -43,8 +46,8 @@ final class TypeParamMacroDep extends MacroDep<TypeParamMetaDep> {
 		return this.nesting;
 	}
 
-	public final int getParamIndex() {
-		return this.paramIndex;
+	public final TypeParameterKey getParameterKey() {
+		return this.parameterKey;
 	}
 
 	public final int getDepth() {

@@ -33,6 +33,7 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.*;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
+import org.o42a.compiler.ip.type.macro.TypeParameterIndex;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -103,8 +104,10 @@ public final class TypeInterpreter {
 				return null;
 			}
 
-			final TypeRef paramTypeRef =
-					type.accept(typeVisitor(consumer.paramConsumer(i)), p);
+			final TypeRef paramTypeRef = type.accept(
+					typeVisitor(
+							consumer.paramConsumer(new TypeParameterIndex(i))),
+					p);
 
 			if (paramTypeRef == null) {
 				return null;
