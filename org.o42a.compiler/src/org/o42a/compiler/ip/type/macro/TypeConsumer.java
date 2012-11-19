@@ -27,13 +27,14 @@ import org.o42a.core.value.TypeParametersBuilder;
 
 public abstract class TypeConsumer {
 
-	public static final TypeConsumer NO_TYPE_CONSUMER = NoTypeConsumer.INSTANCE;
+	public static final TypeConsumer NO_TYPE_CONSUMER =
+			NoTypeConsumer.INSTANCE;
 
 	public static TypeConsumer typeConsumer(Nesting nesting) {
 		return new DefaultTypeConsumer(nesting);
 	}
 
-	public abstract TypeConsumer paramConsumer(int index);
+	public abstract TypeConsumer paramConsumer(TypeParameterKey parameterKey);
 
 	public abstract TypeRef consumeType(
 			Ref ref,

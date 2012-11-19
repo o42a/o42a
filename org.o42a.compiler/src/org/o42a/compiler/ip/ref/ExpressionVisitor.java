@@ -108,7 +108,9 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitTypeParameters(TypeParametersNode parameters, Distributor p) {
+	public Ref visitTypeParameters(
+			TypeParametersNode parameters,
+			Distributor p) {
 
 		final Phrase phrase =
 				ip()

@@ -19,28 +19,29 @@
 */
 package org.o42a.compiler.ip.type.macro;
 
-import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.value.TypeParameters;
 
 
-final class DefaultTypeConsumer extends TypeConsumer {
+public class TypeParameterMemberKey implements TypeParameterKey {
 
-	private final Nesting nesting;
+	private final MemberKey parameterKey;
 
-	public DefaultTypeConsumer(Nesting nesting) {
-		this.nesting = nesting;
+	public TypeParameterMemberKey(MemberKey parameterKey) {
+		this.parameterKey = parameterKey;
 	}
 
 	@Override
-	public TypeParamConsumer paramConsumer(TypeParameterKey parameterKey) {
-		return new TypeParamConsumer(this.nesting, parameterKey);
+	public MemberKey typeParameterKey(TypeParameters<?> parameters) {
+		return this.parameterKey;
 	}
 
 	@Override
-	public TypeRef consumeType(Ref ref, TypeParametersBuilder typeParameters) {
-		return ref.toTypeRef(typeParameters);
+	public String toString() {
+		if (this.parameterKey == null) {
+			return super.toString();
+		}
+		return this.parameterKey.toString();
 	}
 
 }

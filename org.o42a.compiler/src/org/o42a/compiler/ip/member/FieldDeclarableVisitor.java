@@ -37,6 +37,7 @@ import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.type.DefinitionKind;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.type.macro.TypeParameterMemberKey;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -216,24 +217,31 @@ public final class FieldDeclarableVisitor
 			return null;
 		}
 
-		FieldDeclaration result;
-		final TypeNode typeNode = declarator.getDefinitionType();
+		FieldDeclaration result = declaration;
+		final DefinitionKind definitionKind = declarator.getDefinitionKind();
 
-		if (typeNode == null) {
-			result = declaration;
-		} else {
+		if (definitionKind != null) {
+			result = result.setLinkType(definitionLinkType(definitionKind));
 
-			final TypeRef type = typeNode.accept(
-					ip().typeIp().typeVisitor(
-							new FieldNesting(declaration)
-							.toTypeConsumer()
-							.paramConsumer(0)),
-					declaration.distribute());
+			final TypeNode typeNode = declarator.getDefinitionType();
 
-			if (type != null) {
-				result = declaration.setType(type);
-			} else {
-				result = declaration;
+			if (typeNode != null) {
+
+				final TypeParameterMemberKey parameterKey =
+						new TypeParameterMemberKey(
+								result.getLinkType().interfaceKey(
+										declaration.getContext()
+										.getIntrinsics()));
+				final TypeRef type = typeNode.accept(
+						ip().typeIp().typeVisitor(
+								new FieldNesting(result)
+								.toTypeConsumer()
+								.paramConsumer(parameterKey)),
+						result.distribute());
+
+				if (type != null) {
+					result = result.setType(type);
+				}
 			}
 		}
 
@@ -257,9 +265,6 @@ public final class FieldDeclarableVisitor
 			}
 			result = result.setAbstract();
 		}
-
-		final DefinitionKind definitionKind = declarator.getDefinitionKind();
-
 		if (target.isPrototype()) {
 			if (definitionKind != null) {
 				getLogger().error(
@@ -274,10 +279,6 @@ public final class FieldDeclarableVisitor
 			} else {
 				result = result.prototype();
 			}
-		}
-
-		if (definitionKind != null) {
-			result = result.setLinkType(definitionLinkType(definitionKind));
 		}
 
 		return result;

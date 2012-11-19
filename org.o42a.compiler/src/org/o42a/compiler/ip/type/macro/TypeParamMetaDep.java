@@ -97,7 +97,7 @@ final class TypeParamMetaDep extends MetaDep {
 	}
 
 	final boolean typeParamChanged(Meta meta) {
-		return typeParamChanged(meta, this.macroDep.getParamIndex());
+		return typeParamChanged(meta, this.macroDep.getParameterKey());
 	}
 
 	private Meta findNestedMeta(Meta meta) {
@@ -111,15 +111,16 @@ final class TypeParamMetaDep extends MetaDep {
 		return meta;
 	}
 
-	private final boolean typeParamChanged(Meta meta, int paramIndex) {
+	private final boolean typeParamChanged(
+			Meta meta,
+			TypeParameterKey parameterKey) {
 
 		final MemberKey paramKey =
-				findNestedMeta(getDeclaredIn())
-				.getObject()
-				.type()
-				.getParameters()
-				.all()[paramIndex]
-				.getKey();
+				parameterKey.typeParameterKey(
+						findNestedMeta(getDeclaredIn())
+								.getObject()
+								.type()
+								.getParameters());
 		final TypeParameters<?> typeParameters =
 				meta.getObject().type().getParameters();
 		final TypeRef typeRef = typeParameters.typeRef(paramKey);
