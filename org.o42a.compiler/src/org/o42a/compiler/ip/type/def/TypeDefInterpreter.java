@@ -25,7 +25,7 @@ import static org.o42a.compiler.ip.type.def.TypeDefinitionVisitor.TYPE_DEFINITIO
 import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.value.TypeParametersBuilder;

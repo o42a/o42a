@@ -27,7 +27,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;

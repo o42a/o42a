@@ -32,7 +32,7 @@ import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;

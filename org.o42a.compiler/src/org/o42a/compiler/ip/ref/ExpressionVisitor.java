@@ -23,7 +23,7 @@ import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.ref.RefInterpreter.integer;
-import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.value.ValueType.STRING;
 
@@ -38,8 +38,8 @@ import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.ref.operator.*;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;

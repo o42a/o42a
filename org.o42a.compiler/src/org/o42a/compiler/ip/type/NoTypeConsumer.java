@@ -17,11 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.macro;
+package org.o42a.compiler.ip.type;
+
+import org.o42a.compiler.ip.type.param.TypeParameterKey;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
-public interface TypeParamConsumers {
+final class NoTypeConsumer extends TypeConsumer {
 
-	TypeConsumer paramConsumer(int index);
+	public static final NoTypeConsumer INSTANCE = new NoTypeConsumer();
+
+	private NoTypeConsumer() {
+	}
+
+	@Override
+	public TypeConsumer paramConsumer(TypeParameterKey parameterKey) {
+		return this;
+	}
+
+	@Override
+	public TypeRef consumeType(Ref ref, TypeParametersBuilder typeParameters) {
+		return ref.toTypeRef(typeParameters);
+	}
+
+	@Override
+	public String toString() {
+		return "NoTypeConsumer";
+	}
 
 }

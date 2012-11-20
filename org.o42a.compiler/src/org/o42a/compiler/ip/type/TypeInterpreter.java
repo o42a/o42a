@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.type;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
-import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNode;
@@ -32,8 +32,7 @@ import org.o42a.common.ref.ArbitraryTypeParameters;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.*;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
-import org.o42a.compiler.ip.type.macro.TypeParameterIndex;
+import org.o42a.compiler.ip.type.param.TypeParameterIndex;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
