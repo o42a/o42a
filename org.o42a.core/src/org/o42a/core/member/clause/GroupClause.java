@@ -139,8 +139,8 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Namespace toNamespace() {
-		return getEnclosingContainer().toNamespace();
+	public final Namespace toNamespace() {
+		return null;
 	}
 
 	@Override
