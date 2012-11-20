@@ -72,6 +72,19 @@ public abstract class ObjectConstructor extends Placed {
 		return this.constructed = createObject();
 	}
 
+	/**
+	 * Whether the object construction is allowed inside prototype.
+	 *
+	 * <p>This is so only for special object constructors, like type parameter
+	 * access.</p>
+	 *
+	 * @return <code>true</code> if object construction allowed inside prototype,
+	 * or <code>false</code> otherwise. Returns <code>false</code> by default.
+	 */
+	public boolean isAllowedInsidePrototype() {
+		return false;
+	}
+
 	public abstract TypeRef ancestor(LocationInfo location);
 
 	public final Obj resolve(Scope scope) {

@@ -43,6 +43,11 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
+	public AbstractPathFragment getPathFragment() {
+		return this.fragment;
+	}
+
+	@Override
 	public RefUsage getObjectUsage() {
 		return null;
 	}
@@ -53,11 +58,6 @@ public final class PathFragmentStep extends Step {
 			return "(?)";
 		}
 		return '(' + this.fragment.toString() + ')';
-	}
-
-	@Override
-	protected AbstractPathFragment getPathFragment() {
-		return this.fragment;
 	}
 
 	@Override
