@@ -36,33 +36,32 @@ final class TypeParameterDeclaration
 		extends Location
 		implements TypeParameterKey {
 
-	private final TypeDefinition typeDefinition;
+	private final TypeDefinitionBuilder builder;
 	private final DeclaratorNode node;
 	private final TypeRef definition;
 	private MemberKey key;
 
 	TypeParameterDeclaration(
-			TypeDefinition typeDefinition,
+			TypeDefinitionBuilder builder,
 			DeclaratorNode node) {
-		super(typeDefinition.getContext(), node);
-		this.typeDefinition = typeDefinition;
+		super(builder.getContext(), node);
+		this.builder = builder;
 		this.node = node;
 
 		final TypeConsumer consumer =
-				typeDefinition.getConsumer().paramConsumer(this);
+				builder.getConsumer().paramConsumer(this);
 
 		this.definition = node.getDefinition().accept(
 				new TypeParameterDefinitionVisitor(consumer),
-				typeDefinition.distribute());
+				builder.distribute());
 	}
 
 	private TypeParameterDeclaration(
-			TypeDefinition typeDefinition,
-			DeclaratorNode node,
+			TypeParameterDeclaration location,
 			TypeRef definition) {
-		super(typeDefinition.getContext(), node);
-		this.typeDefinition = typeDefinition;
-		this.node = node;
+		super(location);
+		this.builder = null;
+		this.node = location.node;
 		this.definition = definition;
 	}
 
@@ -72,21 +71,20 @@ final class TypeParameterDeclaration
 		}
 		return this.key = this.node.getDeclarable().accept(
 				typeParameterNameVisitor(isOverride()),
-				this.typeDefinition.distribute());
+				this.builder);
 	}
 
 	public final TypeRef getDefinition() {
 		return this.definition;
 	}
 
-	public TypeParameterDeclaration prefixWith(PrefixPath prefix) {
+	public final TypeParameterDeclaration prefixWith(PrefixPath prefix) {
 		return new TypeParameterDeclaration(
-				this.typeDefinition,
-				this.node,
+				this,
 				this.definition.prefixWith(prefix));
 	}
 
-	public TypeParameterDeclaration reproduce(Reproducer reproducer) {
+	public final TypeParameterDeclaration reproduce(Reproducer reproducer) {
 
 		final MemberKey key = getKey();
 
@@ -105,10 +103,7 @@ final class TypeParameterDeclaration
 		}
 
 		final TypeParameterDeclaration reproduction =
-				new TypeParameterDeclaration(
-						this.typeDefinition,
-						this.node,
-						definition);
+				new TypeParameterDeclaration(this, definition);
 
 		reproduction.key = key;
 

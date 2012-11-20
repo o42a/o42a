@@ -19,100 +19,33 @@
 */
 package org.o42a.compiler.ip.type.def;
 
-import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
+import org.o42a.core.Scope;
+import org.o42a.core.Scoped;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.ArrayUtil;
 
 
-final class TypeDefinition
-		extends Placed
-		implements TypeParametersBuilder {
+final class TypeDefinition extends Scoped implements TypeParametersBuilder {
 
-	private static final TypeParameterDeclaration[] NO_PARAMETERS =
-			new TypeParameterDeclaration[0];
+	private final TypeParameterDeclaration[] parameters;
 
-	private TypeParameterDeclaration[] parameters;
-
-	private final Nesting nesting;
-	private final TypeConsumer consumer;
-
-	TypeDefinition(
-			LocationInfo location,
-			Distributor disrtibutor,
-			Nesting nesting,
-			TypeConsumer consumer) {
-		super(location, disrtibutor);
-		this.nesting = nesting;
-		this.consumer = consumer;
-		this.parameters = NO_PARAMETERS;
+	TypeDefinition(TypeDefinitionBuilder builder) {
+		super(builder, builder.getScope());
+		this.parameters = builder.getParameters();
 	}
 
 	private TypeDefinition(
 			TypeDefinition location,
+			Scope scope,
 			TypeParameterDeclaration[] parameters) {
-		super(location, location.distribute());
+		super(location, scope);
 		this.parameters = parameters;
-		this.nesting = null;
-		this.consumer = null;
-	}
-
-	public final Nesting getNesting() {
-		return this.nesting;
-	}
-
-	public final TypeConsumer getConsumer() {
-		return this.consumer;
-	}
-
-	public TypeDefinition addParameter(DeclaratorNode declarator) {
-
-		final ExpressionNode definitionNode = declarator.getDefinition();
-
-		if (definitionNode == null) {
-			return this;
-		}
-		if (declarator.getTarget().isPrototype()) {
-			getLogger().error(
-					"prohibited_prototype_type_parameter",
-					location(this, declarator.getDefinitionAssignment()),
-					"Type parameter can not be a prototype");
-		} else if (declarator.getTarget().isAbstract()) {
-			getLogger().error(
-					"prohibited_abstract_type_parameter",
-					location(this, declarator.getDefinitionAssignment()),
-					"Type parameter can not be abstract");
-		}
-		if (declarator.getInterface() != null) {
-			getLogger().error(
-					"prohibited_link_type_parameter",
-					location(this, declarator.getInterface()),
-					"Type parameter can not be a link");
-		}
-
-		final TypeParameterDeclaration parameter =
-				new TypeParameterDeclaration(this, declarator);
-
-		if (parameter.getDefinition() == null) {
-			return this;
-		}
-
-		return new TypeDefinition(
-				this,
-				ArrayUtil.append(this.parameters, parameter));
 	}
 
 	@Override
@@ -131,7 +64,7 @@ final class TypeDefinition
 			newParameters[i] = this.parameters[i].prefixWith(prefix);
 		}
 
-		return new TypeDefinition(this, newParameters);
+		return new TypeDefinition(this, prefix.getStart(), newParameters);
 	}
 
 	@Override
@@ -151,7 +84,7 @@ final class TypeDefinition
 			newParameters[i] = newParameter;
 		}
 
-		return new TypeDefinition(this, newParameters);
+		return new TypeDefinition(this, reproducer.getScope(), newParameters);
 	}
 
 	@Override

@@ -27,7 +27,7 @@ import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
-import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.TypeParametersBuilder;
 
 
@@ -36,27 +36,27 @@ public class TypeDefInterpreter {
 	public static TypeParametersBuilder typeDefinition(
 			TypeDefinitionNode node,
 			Distributor distributor,
-			Nesting nesting,
+			Path objectPath,
 			TypeConsumer consumer) {
 
-		TypeDefinition definition = new TypeDefinition(
+		final TypeDefinitionBuilder builder = new TypeDefinitionBuilder(
 				location(distributor, node),
 				distributor,
-				nesting,
+				objectPath,
 				consumer);
 
 		for (SentenceNode sentence : node.getDefinition().getContent()) {
-			definition = addSentence(definition, sentence);
+			addSentence(builder, sentence);
 		}
 
-		return definition;
+		return builder.buildDefinition();
 	}
 
-	private static TypeDefinition addSentence(
-			TypeDefinition definition,
+	private static void addSentence(
+			TypeDefinitionBuilder builder,
 			SentenceNode sentence) {
 		if (sentence.getType() != SentenceType.PROPOSITION) {
-			definition.getLogger().error(
+			builder.getLogger().error(
 					"prohibited_type_definition_sentence_type",
 					sentence.getMark(),
 					"Only propositions allowed within type definition");
@@ -65,32 +65,30 @@ public class TypeDefInterpreter {
 		final AlternativeNode[] disjunction = sentence.getDisjunction();
 
 		if (disjunction.length == 0) {
-			return definition;
+			return;
 		}
 		if (disjunction.length > 1) {
-			definition.getLogger().error(
+			builder.getLogger().error(
 					"prohibited_type_definition_disjunction",
 					disjunction[1].getSeparator(),
 					"Disjunctions prohibited within type definition");
 		}
 
-		return addAlt(definition, disjunction[0]);
+		addAlt(builder, disjunction[0]);
 	}
 
-	private static TypeDefinition addAlt(
-			TypeDefinition definition,
+	private static void addAlt(
+			TypeDefinitionBuilder builder,
 			AlternativeNode alt) {
 
 		final SerialNode[] conjunction = alt.getConjunction();
 
 		if (conjunction.length > 1) {
-			definition.getLogger().error(
+			builder.getLogger().error(
 					"prohibited_type_definition_conjunction",
 					conjunction[1].getSeparator(),
 					"Conjunctions prohibited within type definition");
 		}
-
-		TypeDefinition result = definition;
 
 		for (SerialNode node : conjunction) {
 
@@ -99,10 +97,8 @@ public class TypeDefInterpreter {
 			if (statement == null) {
 				continue;
 			}
-			result = statement.accept(TYPE_DEFINITION_VISITOR, result);
+			statement.accept(TYPE_DEFINITION_VISITOR, builder);
 		}
-
-		return result;
 	}
 
 	private TypeDefInterpreter() {

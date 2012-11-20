@@ -19,36 +19,72 @@
 */
 package org.o42a.compiler.ip.type.def;
 
+import static org.o42a.compiler.ip.Interpreter.location;
+
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
 
 
 final class TypeDefinitionVisitor
-		extends AbstractStatementVisitor<TypeDefinition, TypeDefinition> {
+		extends AbstractStatementVisitor<Void, TypeDefinitionBuilder> {
 
-	public static final TypeDefinitionVisitor TYPE_DEFINITION_VISITOR =
+	static final TypeDefinitionVisitor TYPE_DEFINITION_VISITOR =
 			new TypeDefinitionVisitor();
 
 	private TypeDefinitionVisitor() {
 	}
 
 	@Override
-	public TypeDefinition visitDeclarator(
+	public Void visitDeclarator(
 			DeclaratorNode declarator,
-			TypeDefinition p) {
-		return p.addParameter(declarator);
+			TypeDefinitionBuilder p) {
+
+		final ExpressionNode definitionNode = declarator.getDefinition();
+
+		if (definitionNode == null) {
+			return null;
+		}
+		if (declarator.getTarget().isPrototype()) {
+			p.getLogger().error(
+					"prohibited_prototype_type_parameter",
+					location(p, declarator.getDefinitionAssignment()),
+					"Type parameter can not be a prototype");
+		} else if (declarator.getTarget().isAbstract()) {
+			p.getLogger().error(
+					"prohibited_abstract_type_parameter",
+					location(p, declarator.getDefinitionAssignment()),
+					"Type parameter can not be abstract");
+		}
+		if (declarator.getInterface() != null) {
+			p.getLogger().error(
+					"prohibited_link_type_parameter",
+					location(p, declarator.getInterface()),
+					"Type parameter can not be a link");
+		}
+
+		final TypeParameterDeclaration parameter =
+				new TypeParameterDeclaration(p, declarator);
+
+		if (parameter.getDefinition() == null) {
+			return null;
+		}
+
+		p.addParameter(parameter);
+
+		return null;
 	}
 
 	@Override
-	protected TypeDefinition visitStatement(
+	protected Void visitStatement(
 			StatementNode statement,
-			TypeDefinition p) {
+			TypeDefinitionBuilder p) {
 		p.getLogger().error(
 				"invalid_type_declaration",
 				statement,
 				"Not a valid type parameter declaration");
-		return p;
+		return null;
 	}
 
 }
