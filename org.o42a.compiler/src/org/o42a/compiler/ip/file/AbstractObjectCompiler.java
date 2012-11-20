@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.file;
 
 import org.o42a.ast.file.FileNode;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.AscendantsDefinition;

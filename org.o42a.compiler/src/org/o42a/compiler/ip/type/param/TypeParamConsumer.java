@@ -17,10 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.macro;
+package org.o42a.compiler.ip.type.param;
 
 import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
 
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Scope;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
@@ -34,11 +35,11 @@ import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
 
-final class TypeParamConsumer extends TypeConsumer implements Consumer {
+public class TypeParamConsumer extends TypeConsumer implements Consumer {
 
 	private final TypeParamMacroDep macroDep;
 
-	TypeParamConsumer(Nesting nesting, TypeParameterKey parameterKey) {
+	public TypeParamConsumer(Nesting nesting, TypeParameterKey parameterKey) {
 		this.macroDep = new TypeParamMacroDep(nesting, parameterKey, 0);
 	}
 
@@ -47,7 +48,8 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 	}
 
 	@Override
-	public final TypeParamConsumer paramConsumer(TypeParameterKey parameterKey) {
+	public final TypeParamConsumer paramConsumer(
+			TypeParameterKey parameterKey) {
 		return new TypeParamConsumer(new TypeParamMacroDep(
 				this.macroDep.getNesting(),
 				parameterKey,

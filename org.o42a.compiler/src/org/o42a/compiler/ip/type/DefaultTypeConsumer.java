@@ -17,31 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.macro;
+package org.o42a.compiler.ip.type;
 
-import org.o42a.core.object.Meta;
-import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.NestedMetaDep;
+import org.o42a.compiler.ip.type.param.TypeParamConsumer;
+import org.o42a.compiler.ip.type.param.TypeParameterKey;
+import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
-final class TypeParametersUpdate extends NestedMetaDep {
+final class DefaultTypeConsumer extends TypeConsumer {
 
-	TypeParametersUpdate(TypeParamMetaDep parent, Meta declaredIn) {
-		super(parent, declaredIn);
+	private final Nesting nesting;
+
+	DefaultTypeConsumer(Nesting nesting) {
+		this.nesting = nesting;
 	}
 
 	@Override
-	public MetaDep nestedDep() {
-		return null;
+	public TypeParamConsumer paramConsumer(TypeParameterKey parameterKey) {
+		return new TypeParamConsumer(this.nesting, parameterKey);
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
-
-		final TypeParamMetaDep parent =
-				(TypeParamMetaDep) parentDep();
-
-		return parent.typeParamChanged(meta);
+	public TypeRef consumeType(Ref ref, TypeParametersBuilder typeParameters) {
+		return ref.toTypeRef(typeParameters);
 	}
 
 }

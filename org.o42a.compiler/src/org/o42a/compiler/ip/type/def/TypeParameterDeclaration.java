@@ -22,8 +22,8 @@ package org.o42a.compiler.ip.type.def;
 import static org.o42a.compiler.ip.type.def.TypeParameterNameVisitor.typeParameterNameVisitor;
 
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
-import org.o42a.compiler.ip.type.macro.TypeParameterKey;
+import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.type.param.TypeParameterKey;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;

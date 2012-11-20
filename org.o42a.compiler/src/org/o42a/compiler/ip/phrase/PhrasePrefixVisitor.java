@@ -24,7 +24,7 @@ import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByAscendants;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByValueType;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
-import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
@@ -32,8 +32,8 @@ import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.common.ref.ArbitraryTypeParameters;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 
 

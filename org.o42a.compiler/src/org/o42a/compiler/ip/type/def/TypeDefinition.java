@@ -24,7 +24,7 @@ import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.compiler.ip.type.macro.TypeConsumer;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.member.MemberKey;

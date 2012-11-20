@@ -17,27 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.macro;
+package org.o42a.compiler.ip.type.param;
 
-import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.value.TypeParameters;
 
 
-public abstract class TypeConsumer {
+public class TypeParameterMemberKey implements TypeParameterKey {
 
-	public static final TypeConsumer NO_TYPE_CONSUMER =
-			NoTypeConsumer.INSTANCE;
+	private final MemberKey parameterKey;
 
-	public static TypeConsumer typeConsumer(Nesting nesting) {
-		return new DefaultTypeConsumer(nesting);
+	public TypeParameterMemberKey(MemberKey parameterKey) {
+		this.parameterKey = parameterKey;
 	}
 
-	public abstract TypeConsumer paramConsumer(TypeParameterKey parameterKey);
+	@Override
+	public MemberKey typeParameterKey(TypeParameters<?> parameters) {
+		return this.parameterKey;
+	}
 
-	public abstract TypeRef consumeType(
-			Ref ref,
-			TypeParametersBuilder typeParameters);
+	@Override
+	public String toString() {
+		if (this.parameterKey == null) {
+			return super.toString();
+		}
+		return this.parameterKey.toString();
+	}
 
 }

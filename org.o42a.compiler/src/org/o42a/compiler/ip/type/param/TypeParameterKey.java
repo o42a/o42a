@@ -17,31 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.macro;
+package org.o42a.compiler.ip.type.param;
 
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.value.TypeParameters;
 
 
-public class TypeParameterMemberKey implements TypeParameterKey {
+public interface TypeParameterKey {
 
-	private final MemberKey parameterKey;
-
-	public TypeParameterMemberKey(MemberKey parameterKey) {
-		this.parameterKey = parameterKey;
-	}
-
-	@Override
-	public MemberKey typeParameterKey(TypeParameters<?> parameters) {
-		return this.parameterKey;
-	}
-
-	@Override
-	public String toString() {
-		if (this.parameterKey == null) {
-			return super.toString();
-		}
-		return this.parameterKey.toString();
-	}
+	MemberKey typeParameterKey(TypeParameters<?> parameters);
 
 }
