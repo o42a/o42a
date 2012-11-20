@@ -28,7 +28,6 @@ import org.o42a.ast.field.AbstractDeclarableVisitor;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -40,7 +39,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 
 
 final class TypeParameterNameVisitor
-		extends AbstractDeclarableVisitor<MemberKey, Distributor> {
+		extends AbstractDeclarableVisitor<MemberKey, TypeDefinitionBuilder> {
 
 	private static final TypeParameterNameVisitor
 	DECLARED_TYPE_PARAMETER_NAME_VISITOR = new TypeParameterNameVisitor(false);
@@ -62,7 +61,9 @@ final class TypeParameterNameVisitor
 	}
 
 	@Override
-	public MemberKey visitMemberRef(MemberRefNode ref, Distributor p) {
+	public MemberKey visitMemberRef(
+			MemberRefNode ref,
+			TypeDefinitionBuilder p) {
 
 		final NameNode name = ref.getName();
 
@@ -83,13 +84,14 @@ final class TypeParameterNameVisitor
 		}
 
 		final MemberName fieldName = fieldName(name.getName());
-		final Placed location = new Placed(p.getContext(), ref, p);
+		final Placed location =
+				new Placed(p.getContext(), ref, p.distribute());
 
 		if (!this.overridden) {
-			return fieldName.key(p.getScope());
+			return fieldName.key(p.getObject().getScope());
 		}
 
-		final Obj object = p.getScope().toObject();
+		final Obj object = p.getObject();
 		final Member member = object.objectMember(
 				Accessor.PUBLIC,
 				fieldName,
@@ -106,7 +108,7 @@ final class TypeParameterNameVisitor
 	@Override
 	protected MemberKey visitDeclarable(
 			DeclarableNode declarable,
-			Distributor p) {
+			TypeDefinitionBuilder p) {
 		p.getLogger().error(
 				"invalid_type_parameter_name",
 				declarable,
@@ -114,7 +116,9 @@ final class TypeParameterNameVisitor
 		return brokenMemberKey();
 	}
 
-	private StaticTypeRef declaredIn(MemberRefNode ref, Distributor p) {
+	private StaticTypeRef declaredIn(
+			MemberRefNode ref,
+			TypeDefinitionBuilder p) {
 
 		final RefNode declaredInNode = ref.getDeclaredIn();
 
@@ -126,8 +130,9 @@ final class TypeParameterNameVisitor
 			return null;
 		}
 
-		final Ref declaredIn =
-				declaredInNode.accept(PLAIN_REF_IP.bodyRefVisitor(), p);
+		final Ref declaredIn = declaredInNode.accept(
+				PLAIN_REF_IP.bodyRefVisitor(),
+				p.distribute());
 
 		if (declaredIn == null) {
 			return null;
