@@ -55,13 +55,18 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
+	public final ObjectConstructor getConstructor() {
+		return this.constructor;
+	}
+
+	@Override
 	public final RefUsage getObjectUsage() {
 		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	@Override
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
-		return this.constructor.valueAdapter(ref, request);
+		return getConstructor().valueAdapter(ref, request);
 	}
 
 	@Override
@@ -77,7 +82,7 @@ public class ObjectConstructorStep extends Step {
 
 		final PrefixPath prefix = ref.getPath().cut(1).toPrefix(ref.getScope());
 
-		return this.constructor.ancestor(location).prefixWith(prefix);
+		return getConstructor().ancestor(location).prefixWith(prefix);
 	}
 
 	@Override
@@ -87,13 +92,13 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
-		return this.constructor.fieldDefinition(ref);
+		return getConstructor().fieldDefinition(ref);
 	}
 
 	@Override
 	protected Container resolve(StepResolver resolver) {
 
-		final Obj object = this.constructor.resolve(resolver.getStart());
+		final Obj object = getConstructor().resolve(resolver.getStart());
 
 		if (object == null) {
 			return null;
@@ -119,17 +124,17 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	protected void normalizeStep(Analyzer analyzer) {
-		this.constructor.getConstructed().normalize(analyzer);
+		getConstructor().getConstructed().normalize(analyzer);
 	}
 
 	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
-		this.constructor.assertCompatible(reproducer.getReproducingScope());
+		getConstructor().assertCompatible(reproducer.getReproducingScope());
 
 		final ObjectConstructor reproduced =
-				this.constructor.reproduce(reproducer);
+				getConstructor().reproduce(reproducer);
 
 		if (reproduced == null) {
 			return null;
@@ -140,7 +145,7 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	protected PathOp op(PathOp start) {
-		return this.constructor.op(start);
+		return getConstructor().op(start);
 	}
 
 	private final ObjectStepUses uses() {
@@ -152,7 +157,7 @@ public class ObjectConstructorStep extends Step {
 
 	private void normalizeConstructor(PathNormalizer normalizer) {
 
-		final Obj object = this.constructor.resolve(
+		final Obj object = getConstructor().resolve(
 				normalizer.lastPrediction().getScope());
 
 		if (object.getConstructionMode().isRuntime()) {

@@ -30,9 +30,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
 import org.o42a.core.ref.*;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.link.Link;
 
@@ -196,7 +194,16 @@ public class RoleResolver implements PathWalker {
 		if (mayProceedInsidePrototype()) {
 			return true;
 		}
+
+		final ObjectConstructor constructor = step.getConstructor();
+
+		if (constructor != null && constructor.isAllowedInsidePrototype()) {
+			this.insidePrototype = false;
+			return true;
+		}
+
 		getExpectedRole().reportMisuseBy(this.user, object);
+
 		return false;
 	}
 

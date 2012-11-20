@@ -44,6 +44,26 @@ public abstract class Step {
 	public abstract PathKind getPathKind();
 
 	/**
+	 * Return a path fragment represented by this step.
+	 *
+	 * @return path fragment, or <code>null</code> if this step is not
+	 * representing a fragment one. Returns <code>null</code> by default.
+	 */
+	public AbstractPathFragment getPathFragment() {
+		return null;
+	}
+
+	/**
+	 * Returns an object constructor represented by this step.
+	 *
+	 * @return object constructor, or <code>null</code> if this step is not
+	 * representing an object constructor. Returns <code>null</code> by default.
+	 */
+	public ObjectConstructor getConstructor() {
+		return null;
+	}
+
+	/**
 	 * Return the usage, which should be applied to the object produced by the
 	 * previous step.
 	 *
@@ -65,10 +85,6 @@ public abstract class Step {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName();
-	}
-
-	protected AbstractPathFragment getPathFragment() {
-		return null;
 	}
 
 	/**
