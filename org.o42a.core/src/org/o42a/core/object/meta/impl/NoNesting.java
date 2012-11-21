@@ -22,6 +22,7 @@ package org.o42a.core.object.meta.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.ref.path.Path;
 
 
 public class NoNesting implements Nesting {
@@ -35,6 +36,11 @@ public class NoNesting implements Nesting {
 	public Obj findObjectIn(Scope enclosing) {
 		throw new IllegalStateException(
 				"Nesting is impossible inside " + enclosing);
+	}
+
+	@Override
+	public Path toPath() {
+		throw new IllegalStateException("Nesting is impossible");
 	}
 
 }

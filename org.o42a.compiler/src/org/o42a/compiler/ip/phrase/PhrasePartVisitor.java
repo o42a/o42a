@@ -23,14 +23,17 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.integer;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
+import static org.o42a.compiler.ip.type.def.TypeDefInterpreter.typeDefinition;
 
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.AbstractPhrasePartVisitor;
 import org.o42a.ast.phrase.PhrasePartNode;
+import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
+import org.o42a.compiler.ip.type.def.TypeDefinition;
 import org.o42a.core.ref.Ref;
 
 
@@ -116,6 +119,23 @@ final class PhrasePartVisitor
 		}
 
 		return p.argument(integer).getPhrase();
+	}
+
+	@Override
+	public Phrase visitTypeDefinition(
+			TypeDefinitionNode definition,
+			Phrase p) {
+
+		final TypeDefinition typeDefinition = typeDefinition(
+				definition,
+				p.distribute(),
+				p.getTypeConsumer());
+
+		if (typeDefinition == null) {
+			return p;
+		}
+
+		return p.setTypeParameters(typeDefinition);
 	}
 
 	@Override

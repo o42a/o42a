@@ -155,6 +155,11 @@ public abstract class ObjectConstructor extends Placed {
 		}
 
 		@Override
+		public Path toPath() {
+			return this.constructor.toPath();
+		}
+
+		@Override
 		public String toString() {
 			if (this.constructor == null) {
 				return super.toString();

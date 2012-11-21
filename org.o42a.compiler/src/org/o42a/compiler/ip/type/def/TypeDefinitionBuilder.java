@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.type.def;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.*;
 import org.o42a.core.member.Member;
@@ -32,8 +30,6 @@ import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathResolution;
-import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
 
@@ -47,20 +43,18 @@ public class TypeDefinitionBuilder
 
 	private final Container enclosing;
 	private final ScopePlace place;
-	private final Path objectPath;
 	private final TypeConsumer consumer;
+	private Path objectPath;
 	private Obj object;
 	private TypeParameterDeclaration[] parameters = NO_PARAMETERS;
 
 	public TypeDefinitionBuilder(
 			LocationInfo location,
 			Distributor enclosing,
-			Path objectPath,
 			TypeConsumer consumer) {
 		super(location);
 		this.enclosing = enclosing.getContainer();
 		this.place = enclosing.getPlace();
-		this.objectPath = objectPath;
 		this.consumer = consumer;
 	}
 
@@ -92,12 +86,8 @@ public class TypeDefinitionBuilder
 		if (this.object != null) {
 			return this.object;
 		}
-
-		final PathResolution resolution =
-				this.objectPath.bind(this, getScope())
-				.resolve(PathResolver.pathResolver(getScope(), dummyUser()));
-
-		return this.object = resolution.getResult().toObject();
+		return this.object =
+				getConsumer().getNesting().findObjectIn(getScope());
 	}
 
 	public final TypeParameterDeclaration[] getParameters() {
@@ -155,7 +145,7 @@ public class TypeDefinitionBuilder
 				findTypeParameter(memberId, declaredIn);
 
 		if (typeParameter != null) {
-			return this.objectPath.append(typeParameter.getMemberKey());
+			return objectPath().append(typeParameter.getMemberKey());
 		}
 
 		return getEnclosingContainer()
@@ -178,6 +168,13 @@ public class TypeDefinitionBuilder
 	@Override
 	public final Distributor distributeIn(Container container) {
 		return Placed.distributeIn(this, container);
+	}
+
+	private Path objectPath() {
+		if (this.objectPath != null) {
+			return this.objectPath;
+		}
+		return this.objectPath = getConsumer().getNesting().toPath();
 	}
 
 	private MemberTypeParameter findTypeParameter(

@@ -35,6 +35,16 @@ public abstract class TypeConsumer {
 		return new DefaultTypeConsumer(nesting);
 	}
 
+	private final Nesting nesting;
+
+	public TypeConsumer(Nesting nesting) {
+		this.nesting = nesting;
+	}
+
+	public final Nesting getNesting() {
+		return this.nesting;
+	}
+
 	public abstract TypeConsumer paramConsumer(TypeParameterKey parameterKey);
 
 	public abstract TypeRef consumeType(

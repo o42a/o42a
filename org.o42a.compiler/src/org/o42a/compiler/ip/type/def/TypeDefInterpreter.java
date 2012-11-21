@@ -27,22 +27,18 @@ import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.value.TypeParametersBuilder;
 
 
 public class TypeDefInterpreter {
 
-	public static TypeParametersBuilder typeDefinition(
+	public static TypeDefinition typeDefinition(
 			TypeDefinitionNode node,
 			Distributor distributor,
-			Path objectPath,
 			TypeConsumer consumer) {
 
 		final TypeDefinitionBuilder builder = new TypeDefinitionBuilder(
 				location(distributor, node),
 				distributor,
-				objectPath,
 				consumer);
 
 		for (SentenceNode sentence : node.getDefinition().getContent()) {

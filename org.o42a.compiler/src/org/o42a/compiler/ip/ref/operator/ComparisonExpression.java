@@ -27,6 +27,7 @@ import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.InlineValue;
@@ -53,19 +54,23 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 	private final Interpreter ip;
 	private final BinaryNode node;
+	private final TypeConsumer typeConsumer;
 	private final ComparisonExpression prototype;
 	private final Reproducer reproducer;
 	private ComparisonOperator operator;
 	private Ref phrase;
 	private byte error;
 
+
 	public ComparisonExpression(
 			Interpreter ip,
 			BinaryNode node,
-			Distributor distributor) {
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 		super(location(distributor, node), distributor);
 		this.ip = ip;
 		this.node = node;
+		this.typeConsumer = typeConsumer;
 		this.prototype = null;
 		this.reproducer = null;
 	}
@@ -76,6 +81,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 		super(prototype, reproducer.distribute());
 		this.ip = prototype.ip;
 		this.node = prototype.node;
+		this.typeConsumer = null;
 		this.prototype = prototype;
 		this.reproducer = reproducer;
 		this.operator = prototype.getOperator();
@@ -147,7 +153,10 @@ public final class ComparisonExpression extends ObjectConstructor {
 		if (this.prototype == null) {
 
 			final BinaryPhrasePart binary =
-					ip().phraseIp().binaryPhrase(this.node, distributor);
+					ip().phraseIp().binaryPhrase(
+							this.node,
+							distributor,
+							this.typeConsumer);
 
 			this.operator = binary.getComparisonOperator();
 

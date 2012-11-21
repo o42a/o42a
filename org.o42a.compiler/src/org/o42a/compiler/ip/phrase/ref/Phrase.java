@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import static org.o42a.compiler.ip.ref.owner.MayDereferenceFragment.mayDereference;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
@@ -28,6 +29,7 @@ import org.o42a.common.macro.Macros;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.object.type.Ascendants;
@@ -44,6 +46,7 @@ import org.o42a.util.string.Name;
 public class Phrase extends Placed {
 
 	private final Interpreter ip;
+	private TypeConsumer typeConsumer;
 	private PhrasePrefix prefix;
 	private PhrasePart last;
 	private MainPhraseContext mainContext;
@@ -53,13 +56,19 @@ public class Phrase extends Placed {
 	public Phrase(
 			Interpreter ip,
 			LocationInfo location,
-			Distributor distributor) {
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 		super(location, distributor);
 		this.ip = ip;
+		this.typeConsumer = typeConsumer;
 	}
 
 	public final Interpreter ip() {
 		return this.ip;
+	}
+
+	public final TypeConsumer getTypeConsumer() {
+		return this.typeConsumer;
 	}
 
 	public final PhrasePrefix getPrefix() {
@@ -98,6 +107,20 @@ public class Phrase extends Placed {
 	public final Phrase setTypeParameters(
 			LocationInfo location,
 			TypeParametersBuilder typeParameters) {
+		if (this.prefix.getFollowing() != null) {
+			getLogger().error(
+					"redundant_type_parameters",
+					location,
+					"Type parameters not allowed here");
+			return this;
+		}
+		if (getTypeParameters() != null) {
+			getLogger().error(
+					"duplicate_type_parameters",
+					location,
+					"Type parameters already set");
+			return this;
+		}
 		this.prefix.setTypeParameters(location, typeParameters);
 		return referBody();
 	}
@@ -225,7 +248,8 @@ public class Phrase extends Placed {
 
 	public Phrase asPrefix(Ref prefix, PhraseContinuation nextPart) {
 
-		final Phrase newPhrase = new Phrase(this.ip, this, distribute());
+		final Phrase newPhrase =
+				new Phrase(this.ip, this, distribute(), NO_TYPE_CONSUMER);
 
 		newPhrase.setAncestor(prefix.toTypeRef());
 		newPhrase.prefix.append(nextPart);

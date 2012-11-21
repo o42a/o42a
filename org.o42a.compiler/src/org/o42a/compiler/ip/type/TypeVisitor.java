@@ -144,7 +144,9 @@ public final class TypeVisitor
 	}
 
 	@Override
-	public TypeRef visitTypeExpression(TypeExpressionNode type, Distributor p) {
+	public TypeRef visitTypeExpression(
+			TypeExpressionNode type,
+			Distributor p) {
 
 		final Ref ref = type.getExpression().accept(
 				ip().bodyExVisitor(this.consumer),
@@ -167,7 +169,9 @@ public final class TypeVisitor
 		}
 
 		if (!ref.isMacroExpanding()) {
-			return this.consumer.consumeType(ref.bodyRef(), this.typeParameters);
+			return this.consumer.consumeType(
+					ref.bodyRef(),
+					this.typeParameters);
 		}
 
 		return this.consumer.consumeType(
