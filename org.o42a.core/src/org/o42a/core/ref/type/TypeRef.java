@@ -119,10 +119,7 @@ public abstract class TypeRef implements ScopeInfo {
 
 		if (typeParameters == null || typeParameters.isEmpty()) {
 			this.parameters = defaultParameters();
-		} else if (!typeParameters.isValid()) {
-			this.parameters = typeParameters;
 		} else {
-			assert defaultParameters().assertAssignableFrom(typeParameters);
 			this.parameters = typeParameters;
 		}
 

@@ -17,45 +17,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.type;
+package org.o42a.core.member.type.impl;
 
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.TypeParameter;
 
 
-final class OverriddenMemberTypeParameter extends MemberTypeParameter {
+public final class DeclaredMemberTypeParameter extends MemberTypeParameter {
 
-	private final MemberTypeParameter propagatedFrom;
+	private final TypeParameter typeParameter;
 
-	OverriddenMemberTypeParameter(
-			Obj owner,
-			MemberTypeParameter propagatedFrom) {
-		super(
-				addDeclaration(owner, propagatedFrom.getLastDefinition()),
-				propagatedFrom.distributeIn(owner.getContainer()),
-				owner);
-		this.propagatedFrom = propagatedFrom;
+	public DeclaredMemberTypeParameter(
+			TypeParameter typeParameter,
+			Obj owner) {
+		super(typeParameter, owner.distribute(), owner);
+		assert typeParameter.getScope().is(owner.getScope()) :
+			"Attempt to declare the type parameter of "
+			+ typeParameter.getScope() + " in the wrong object " + owner;
+		this.typeParameter = typeParameter;
 	}
 
 	@Override
-	public MemberTypeParameter getPropagatedFrom() {
-		return this.propagatedFrom;
+	public final MemberTypeParameter getPropagatedFrom() {
+		return null;
 	}
 
 	@Override
-	public MemberId getMemberId() {
-		return this.propagatedFrom.getMemberId();
+	public final MemberId getMemberId() {
+		return getMemberKey().getMemberId();
 	}
 
 	@Override
-	public MemberKey getMemberKey() {
-		return this.propagatedFrom.getMemberKey();
+	public final MemberKey getMemberKey() {
+		return this.typeParameter.getKey();
 	}
 
 	@Override
-	public boolean isOverride() {
-		return true;
+	public final boolean isOverride() {
+		return false;
 	}
 
 }
