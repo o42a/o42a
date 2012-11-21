@@ -33,6 +33,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.link.impl.DereferenceStep;
 
 
 public abstract class Link extends AbstractContainer implements PlaceInfo {
@@ -192,6 +193,11 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 		@Override
 		public Obj findObjectIn(Scope enclosing) {
 			return this.link.findIn(enclosing).getTarget();
+		}
+
+		@Override
+		public Path toPath() {
+			return new DereferenceStep().toPath();
 		}
 
 		@Override

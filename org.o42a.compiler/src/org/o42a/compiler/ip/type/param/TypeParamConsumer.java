@@ -40,10 +40,12 @@ public class TypeParamConsumer extends TypeConsumer implements Consumer {
 	private final TypeParamMacroDep macroDep;
 
 	public TypeParamConsumer(Nesting nesting, TypeParameterKey parameterKey) {
+		super(nesting);
 		this.macroDep = new TypeParamMacroDep(nesting, parameterKey, 0);
 	}
 
 	private TypeParamConsumer(TypeParamMacroDep macroDep) {
+		super(macroDep.getNesting());
 		this.macroDep = macroDep;
 	}
 

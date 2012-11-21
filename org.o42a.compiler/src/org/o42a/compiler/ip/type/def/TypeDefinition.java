@@ -31,7 +31,9 @@ import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.ValueType;
 
 
-final class TypeDefinition extends Scoped implements TypeParametersBuilder {
+public final class TypeDefinition
+		extends Scoped
+		implements TypeParametersBuilder {
 
 	private final TypeParameterDeclaration[] parameters;
 

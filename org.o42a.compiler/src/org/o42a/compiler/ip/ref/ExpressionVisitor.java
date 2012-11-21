@@ -104,7 +104,9 @@ public final class ExpressionVisitor
 			return ancestor.getAncestor().getRef();
 		}
 
-		return ip().phraseIp().ascendantsPhrase(ascendants, p).toRef();
+		return ip().phraseIp()
+				.ascendantsPhrase(ascendants, p, this.typeConsumer)
+				.toRef();
 	}
 
 	@Override
@@ -159,7 +161,7 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitBinary(BinaryNode expression, Distributor p) {
-		return ip().phraseIp().binary(expression, p);
+		return ip().phraseIp().binary(expression, p, this.typeConsumer);
 	}
 
 	@Override
@@ -222,7 +224,8 @@ public final class ExpressionVisitor
 
 	private Ref unaryPhrase(UnaryNode expression, Distributor p) {
 
-		final Phrase phrase = ip().phraseIp().unary(expression, p);
+		final Phrase phrase =
+				ip().phraseIp().unary(expression, p, this.typeConsumer);
 
 		if (phrase == null) {
 			return null;

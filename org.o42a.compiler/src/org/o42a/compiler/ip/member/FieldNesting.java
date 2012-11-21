@@ -26,6 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.ref.path.Path;
 
 
 public final class FieldNesting implements Nesting {
@@ -40,6 +41,11 @@ public final class FieldNesting implements Nesting {
 	public Obj findObjectIn(Scope enclosing) {
 		// Delay the field key construction until it's really required.
 		return this.declaration.getFieldKey().findObjectIn(enclosing);
+	}
+
+	@Override
+	public Path toPath() {
+		return this.declaration.getFieldKey().toPath();
 	}
 
 	public final TypeConsumer toTypeConsumer() {

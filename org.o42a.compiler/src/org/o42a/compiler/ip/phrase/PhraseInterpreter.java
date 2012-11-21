@@ -57,8 +57,11 @@ public final class PhraseInterpreter {
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Phrase phrase =
-				new Phrase(ip(), location(distributor, node), distributor);
+		final Phrase phrase = new Phrase(
+				ip(),
+				location(distributor, node),
+				distributor,
+				typeConsumer);
 		final Phrase prefixed = node.getPrefix().accept(
 				new PhrasePrefixVisitor(typeConsumer),
 				phrase);
@@ -68,10 +71,14 @@ public final class PhraseInterpreter {
 
 	public Phrase ascendantsPhrase(
 			AscendantsNode node,
-			Distributor distributor) {
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 
-		final Phrase phrase =
-				new Phrase(ip(), location(distributor, node), distributor);
+		final Phrase phrase = new Phrase(
+				ip(),
+				location(distributor, node),
+				distributor,
+				typeConsumer);
 		final Phrase prefixed = prefixByAscendants(phrase, node);
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
@@ -82,14 +89,20 @@ public final class PhraseInterpreter {
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Phrase phrase =
-				new Phrase(ip(), location(distributor, node), distributor);
+		final Phrase phrase = new Phrase(
+				ip(),
+				location(distributor, node),
+				distributor,
+				typeConsumer);
 		final Phrase prefixed = prefixByValueType(phrase, node, typeConsumer);
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
 	}
 
-	public Phrase unary(UnaryNode node, Distributor distributor) {
+	public Phrase unary(
+			UnaryNode node,
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 
 		final Ref operand = node.getOperand().accept(
 				ip().targetExVisitor(),
@@ -99,22 +112,32 @@ public final class PhraseInterpreter {
 			return null;
 		}
 
-		final Phrase phrase =
-				new Phrase(ip(), location(distributor, node), distributor);
+		final Phrase phrase = new Phrase(
+				ip(),
+				location(distributor, node),
+				distributor,
+				typeConsumer);
 
 		return phrase.setAncestor(operand.toTypeRef()).unary(node).getPhrase();
 	}
 
-	public Ref binary(BinaryNode node, Distributor distributor) {
+	public Ref binary(
+			BinaryNode node,
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 		if (node.getOperator().isArithmetic()) {
-			return binaryPhrase(node, distributor).getPhrase().toRef();
+			return binaryPhrase(node, distributor, typeConsumer)
+					.getPhrase()
+					.toRef();
 		}
-		return new ComparisonExpression(ip(), node, distributor).toRef();
+		return new ComparisonExpression(ip(), node, distributor, typeConsumer)
+		.toRef();
 	}
 
 	public BinaryPhrasePart binaryPhrase(
 			BinaryNode node,
-			Distributor distributor) {
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 
 		final Ref left = node.getLeftOperand().accept(
 				ip().targetExVisitor(),
@@ -124,8 +147,11 @@ public final class PhraseInterpreter {
 			return null;
 		}
 
-		final Phrase phrase =
-				new Phrase(ip(), location(distributor, node), distributor);
+		final Phrase phrase = new Phrase(
+				ip(),
+				location(distributor, node),
+				distributor,
+				typeConsumer);
 		final BinaryPhrasePart binary =
 				phrase.setAncestor(left.toTypeRef()).binary(node);
 

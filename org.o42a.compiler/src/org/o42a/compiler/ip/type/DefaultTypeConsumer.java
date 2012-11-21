@@ -29,15 +29,13 @@ import org.o42a.core.value.TypeParametersBuilder;
 
 final class DefaultTypeConsumer extends TypeConsumer {
 
-	private final Nesting nesting;
-
 	DefaultTypeConsumer(Nesting nesting) {
-		this.nesting = nesting;
+		super(nesting);
 	}
 
 	@Override
 	public TypeParamConsumer paramConsumer(TypeParameterKey parameterKey) {
-		return new TypeParamConsumer(this.nesting, parameterKey);
+		return new TypeParamConsumer(getNesting(), parameterKey);
 	}
 
 	@Override

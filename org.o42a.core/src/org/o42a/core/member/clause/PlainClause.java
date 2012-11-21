@@ -350,12 +350,18 @@ public abstract class PlainClause
 		}
 
 		@Override
+		public Path toPath() {
+			return this.clauseKey.toPath();
+		}
+
+		@Override
 		public String toString() {
 			if (this.clauseKey == null) {
 				return super.toString();
 			}
 			return this.clauseKey.toString();
 		}
+
 	}
 
 }

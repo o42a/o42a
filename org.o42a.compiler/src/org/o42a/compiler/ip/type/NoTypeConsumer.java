@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.type;
 
 import org.o42a.compiler.ip.type.param.TypeParameterKey;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParametersBuilder;
@@ -30,6 +31,7 @@ final class NoTypeConsumer extends TypeConsumer {
 	public static final NoTypeConsumer INSTANCE = new NoTypeConsumer();
 
 	private NoTypeConsumer() {
+		super(Nesting.NO_NESTING);
 	}
 
 	@Override
