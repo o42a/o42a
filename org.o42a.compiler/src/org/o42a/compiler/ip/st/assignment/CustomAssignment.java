@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
-import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
+import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.compiler.ip.phrase.ref.Phrase;
@@ -57,7 +57,7 @@ final class CustomAssignment extends AssignmentKind {
 				PLAIN_IP,
 				statement,
 				statement.distribute(),
-				NO_TYPE_CONSUMER);
+				EXPRESSION_TYPE_CONSUMER);
 
 		phrase.setAncestor(statement.getDestination().toTypeRef());
 		phrase.assign(statement.getNode());

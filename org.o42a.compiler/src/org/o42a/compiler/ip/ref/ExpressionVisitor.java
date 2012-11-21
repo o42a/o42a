@@ -23,6 +23,7 @@ import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.ref.RefInterpreter.integer;
+import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.value.ValueType.STRING;
@@ -57,7 +58,7 @@ public final class ExpressionVisitor
 	public ExpressionVisitor(Interpreter ip, Referral referral) {
 		this.ip = ip;
 		this.referral = referral;
-		this.typeConsumer = NO_TYPE_CONSUMER;
+		this.typeConsumer = EXPRESSION_TYPE_CONSUMER;
 	}
 
 	public ExpressionVisitor(
@@ -66,7 +67,9 @@ public final class ExpressionVisitor
 			TypeConsumer typeConsumer) {
 		this.ip = ip;
 		this.referral = referral;
-		this.typeConsumer = typeConsumer;
+		this.typeConsumer =
+				typeConsumer == NO_TYPE_CONSUMER
+				? EXPRESSION_TYPE_CONSUMER : typeConsumer;
 	}
 
 	public final Interpreter ip() {
@@ -117,7 +120,7 @@ public final class ExpressionVisitor
 		final Phrase phrase =
 				ip()
 				.phraseIp()
-				.valueTypePhrase(parameters, p, this.typeConsumer);
+				.typeParametersPhrase(parameters, p, this.typeConsumer);
 
 		if (phrase == null) {
 			return super.visitTypeParameters(parameters, p);
