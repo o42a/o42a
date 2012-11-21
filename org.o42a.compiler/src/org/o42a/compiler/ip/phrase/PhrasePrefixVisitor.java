@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByAscendants;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByValueType;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByTypeParameters;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 
@@ -61,8 +61,7 @@ final class PhrasePrefixVisitor
 			TypeParametersNode parameters,
 			Phrase p) {
 
-		final Phrase result =
-				prefixByValueType(p, parameters, p.getTypeConsumer());
+		final Phrase result = prefixByTypeParameters(p, parameters);
 
 		if (result == null) {
 			return null;

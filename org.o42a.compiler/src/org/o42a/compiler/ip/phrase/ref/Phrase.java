@@ -20,7 +20,9 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import static org.o42a.compiler.ip.ref.owner.MayDereferenceFragment.mayDereference;
+import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
+import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
@@ -32,9 +34,13 @@ import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
+import org.o42a.core.Scope;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -46,10 +52,11 @@ import org.o42a.util.string.Name;
 public class Phrase extends Placed {
 
 	private final Interpreter ip;
-	private TypeConsumer typeConsumer;
+	private final TypeConsumer typeConsumer;
 	private PhrasePrefix prefix;
 	private PhrasePart last;
 	private MainPhraseContext mainContext;
+	private Ref ref;
 	private boolean macroExpansion;
 	private boolean bodyReferred;
 
@@ -60,7 +67,11 @@ public class Phrase extends Placed {
 			TypeConsumer typeConsumer) {
 		super(location, distributor);
 		this.ip = ip;
-		this.typeConsumer = typeConsumer;
+		if (typeConsumer != EXPRESSION_TYPE_CONSUMER) {
+			this.typeConsumer = typeConsumer;
+		} else {
+			this.typeConsumer = typeConsumer(new StandalonePhraseNesting(this));
+		}
 	}
 
 	public final Interpreter ip() {
@@ -206,21 +217,24 @@ public class Phrase extends Placed {
 	}
 
 	public final Ref toRef() {
+		if (this.ref != null) {
+			return this.ref;
+		}
 
 		final BoundPath path =
 				new PhraseFragment(this).toPath().bind(this, getScope());
 
 		if (isMacroExpansion()) {
-			return Macros.expandMacro(path).target(distribute());
+			return this.ref = Macros.expandMacro(path).target(distribute());
 		}
 
 		final Ref target = path.target(distribute());
 
 		if (isBodyReferred()) {
-			return target;
+			return this.ref = target;
 		}
 
-		return mayDereference(target);
+		return this.ref = mayDereference(target);
 	}
 
 	public final void build() {
@@ -275,6 +289,34 @@ public class Phrase extends Placed {
 	private final <P extends PhrasePart> P append(P part) {
 		this.last = part;
 		return part;
+	}
+
+	private static final class StandalonePhraseNesting implements Nesting {
+
+		private final Phrase phrase;
+
+		StandalonePhraseNesting(Phrase phrase) {
+			this.phrase = phrase;
+		}
+
+		@Override
+		public Obj findObjectIn(Scope enclosing) {
+			return this.phrase.toRef().resolve(enclosing.resolver()).toObject();
+		}
+
+		@Override
+		public Path toPath() {
+			return this.phrase.toRef().getPath().getPath();
+		}
+
+		@Override
+		public String toString() {
+			if (this.phrase == null) {
+				return super.toString();
+			}
+			return this.phrase.toString();
+		}
+
 	}
 
 }

@@ -85,7 +85,7 @@ public final class PhraseInterpreter {
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
 	}
 
-	public Phrase valueTypePhrase(
+	public Phrase typeParametersPhrase(
 			TypeParametersNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
@@ -95,7 +95,7 @@ public final class PhraseInterpreter {
 				location(distributor, node),
 				distributor,
 				typeConsumer);
-		final Phrase prefixed = prefixByValueType(phrase, node, typeConsumer);
+		final Phrase prefixed = prefixByTypeParameters(phrase, node);
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
 	}
@@ -105,19 +105,18 @@ public final class PhraseInterpreter {
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Ref operand = node.getOperand().accept(
-				ip().targetExVisitor(),
-				distributor);
-
-		if (operand == null) {
-			return null;
-		}
-
 		final Phrase phrase = new Phrase(
 				ip(),
 				location(distributor, node),
 				distributor,
 				typeConsumer);
+		final Ref operand = node.getOperand().accept(
+				ip().targetExVisitor(phrase.getTypeConsumer().noConsumption()),
+				distributor);
+
+		if (operand == null) {
+			return null;
+		}
 
 		return phrase.setAncestor(operand.toTypeRef()).unary(node).getPhrase();
 	}
@@ -216,17 +215,16 @@ public final class PhraseInterpreter {
 		return result;
 	}
 
-	static Phrase prefixByValueType(
+	static Phrase prefixByTypeParameters(
 			Phrase phrase,
-			TypeParametersNode node,
-			TypeConsumer typeConsumer) {
+			TypeParametersNode node) {
 		phrase.referBody();
 
 		final ArbitraryTypeParameters typeParams =
 				phrase.ip().typeIp().typeParameters(
 						node.getParameters(),
 						phrase.distribute(),
-						typeConsumer);
+						phrase.getTypeConsumer());
 		final TypeNode ascendantNode = node.getType();
 
 		if (ascendantNode == null) {

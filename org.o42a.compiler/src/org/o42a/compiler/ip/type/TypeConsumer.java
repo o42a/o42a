@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.type;
 
+import static org.o42a.core.object.meta.Nesting.NO_NESTING;
+
 import org.o42a.compiler.ip.type.param.TypeParameterKey;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
@@ -29,7 +31,15 @@ import org.o42a.core.value.TypeParametersBuilder;
 public abstract class TypeConsumer {
 
 	public static final TypeConsumer NO_TYPE_CONSUMER =
-			new NoTypeConsumer(Nesting.NO_NESTING);
+			new NoTypeConsumer(NO_NESTING);
+	/**
+	 * This consumer is applied to standalone expressions.
+	 *
+	 * <p>A phrase can recognize and replace it with appropriate type consumer.
+	 * </p>
+	 */
+	public static final TypeConsumer EXPRESSION_TYPE_CONSUMER =
+			new NoTypeConsumer(NO_NESTING);
 
 	public static TypeConsumer typeConsumer(Nesting nesting) {
 		return new DefaultTypeConsumer(nesting);
