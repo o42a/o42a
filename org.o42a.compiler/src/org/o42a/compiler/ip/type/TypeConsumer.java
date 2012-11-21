@@ -29,7 +29,7 @@ import org.o42a.core.value.TypeParametersBuilder;
 public abstract class TypeConsumer {
 
 	public static final TypeConsumer NO_TYPE_CONSUMER =
-			NoTypeConsumer.INSTANCE;
+			new NoTypeConsumer(Nesting.NO_NESTING);
 
 	public static TypeConsumer typeConsumer(Nesting nesting) {
 		return new DefaultTypeConsumer(nesting);
@@ -50,5 +50,9 @@ public abstract class TypeConsumer {
 	public abstract TypeRef consumeType(
 			Ref ref,
 			TypeParametersBuilder typeParameters);
+
+	public final TypeConsumer noConsumption() {
+		return new NoTypeConsumer(getNesting());
+	}
 
 }

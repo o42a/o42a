@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.type;
 
 import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
-import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.ExpressionNode;
@@ -117,7 +116,10 @@ public final class TypeVisitor
 		}
 
 		return ascendantNode.accept(
-				new TypeVisitor(typeIp(), NO_TYPE_CONSUMER, typeParameters),
+				new TypeVisitor(
+						typeIp(),
+						this.consumer.noConsumption(),
+						typeParameters),
 				p);
 	}
 

@@ -28,10 +28,8 @@ import org.o42a.core.value.TypeParametersBuilder;
 
 final class NoTypeConsumer extends TypeConsumer {
 
-	public static final NoTypeConsumer INSTANCE = new NoTypeConsumer();
-
-	private NoTypeConsumer() {
-		super(Nesting.NO_NESTING);
+	NoTypeConsumer(Nesting nesting) {
+		super(nesting);
 	}
 
 	@Override

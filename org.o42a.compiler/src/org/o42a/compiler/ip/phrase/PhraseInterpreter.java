@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
+import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
@@ -63,7 +64,7 @@ public final class PhraseInterpreter {
 				distributor,
 				typeConsumer);
 		final Phrase prefixed = node.getPrefix().accept(
-				new PhrasePrefixVisitor(typeConsumer),
+				PHRASE_PREFIX_VISITOR,
 				phrase);
 
 		return addClauses(prefixed, node);
