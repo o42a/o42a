@@ -44,6 +44,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldUses;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.type.impl.DeclaredMemberTypeParameter;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
 import org.o42a.core.object.meta.Nesting;
@@ -58,6 +59,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.impl.ObjectEnv;
+import org.o42a.core.value.TypeParameter;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.Link;
@@ -869,6 +871,7 @@ public abstract class Obj
 	private void declareMembers() {
 		this.objectMembers = new ObjectMembers(this);
 		declareScopeField();
+		declareMemberTypeParameters();
 		declareMembers(this.objectMembers);
 
 		final ObjectType objectType = type();
@@ -912,6 +915,15 @@ public abstract class Obj
 
 		this.objectMembers.addMember(
 				new ScopeField(this, memberKey.getMemberId()).toMember());
+	}
+
+	private void declareMemberTypeParameters() {
+		for (TypeParameter parameter : type().getParameters().all()) {
+			if (parameter.getKey().getOrigin().is(getScope())) {
+				this.objectMembers.addTypeParameter(
+						new DeclaredMemberTypeParameter(parameter, this));
+			}
+		}
 	}
 
 	private void resolveAllMembers() {
