@@ -264,7 +264,14 @@ final class MainPhraseContext extends PhraseContext {
 		PhraseContext context = this;
 		PhraseContinuation continuation = prefix.getFollowing();
 
-		while (continuation != null) {
+		if (continuation == null) {
+			// Phrase with only prefix and no parts.
+			// It probably has a type prameters.
+			// It creates an object.
+			this.createsObject = 1;
+			return;
+		}
+		do {
 
 			final NextClause nextClause = continuation.nextClause(context);
 
@@ -337,7 +344,7 @@ final class MainPhraseContext extends PhraseContext {
 			}
 
 			continuation = continuation.getFollowing();
-		}
+		} while (continuation != null);
 	}
 
 	private PhraseContext nextContext(
