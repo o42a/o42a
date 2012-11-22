@@ -68,7 +68,7 @@ public final class LinkValueConverter implements ValueConverter<KnownLink> {
 			final TypeRef typeRef = source.typeRef(srcKey);
 
 			if (typeRef == null) {
-				return false;
+				continue;
 			}
 			if (!typeRef.derivedFrom(parameter.getTypeRef())) {
 				return false;
