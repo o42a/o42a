@@ -42,8 +42,7 @@ public abstract class IndexedValueTypeObject extends ValueTypeObject {
 
 		final ArrayValueType arrayType = type().getValueType().toArrayType();
 
-		return super.determineTypeParameters().add(
-				arrayType.itemTypeKey(getContext().getIntrinsics()),
+		return arrayType.typeParameters(
 				ValueType.VOID.typeRef(this, getScope()));
 	}
 
