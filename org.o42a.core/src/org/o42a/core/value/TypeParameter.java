@@ -63,6 +63,10 @@ public final class TypeParameter implements ScopeInfo {
 		return getTypeRef().isValid();
 	}
 
+	public final boolean validateAll() {
+		return getTypeRef().validateAll();
+	}
+
 	public final MemberKey getKey() {
 		return this.key;
 	}

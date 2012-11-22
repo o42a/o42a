@@ -57,6 +57,18 @@ public final class Meta extends ObjectMeta {
 		return null;
 	}
 
+	@Override
+	public boolean isUpdated() {
+
+		getObject().resolveMembers(true);
+
+		final ObjectType type = getObject().type();
+
+		type.resolve(false);
+
+		return super.isUpdated();
+	}
+
 	public final Nesting getNesting() {
 		if (this.nesting != null) {
 			return this.nesting;

@@ -159,6 +159,13 @@ public abstract class TypeRef implements ScopeInfo {
 		return get().isValid();
 	}
 
+	public boolean validateAll() {
+		if (!isValid()) {
+			return false;
+		}
+		return getParameters().validateAll();
+	}
+
 	public final TypeRef getAncestor() {
 		if (this.ancestor != null) {
 			return this.ancestor;
