@@ -191,11 +191,34 @@ public abstract class CompilerTestCase {
 		assertFalseValue(object.value().getValue());
 	}
 
+	public Field field(String name, String... names) {
+		return field(this.module, name, names);
+	}
+
+	public Member member(String name, String... names) {
+		return member(this.module, name, names);
+	}
+
+	public Field field(String name, Accessor accessor) {
+		return field(this.module, name, accessor);
+	}
+
+	public Member member(String name, Accessor accessor) {
+		return member(this.module, name, accessor);
+	}
+
 	public static Field field(
 			Field container,
 			String name,
 			String... names) {
 		return field(container.toObject(), name, names);
+	}
+
+	public static Member member(
+			Field container,
+			String name,
+			String... names) {
+		return member(container.toObject(), name, names);
 	}
 
 	public static Field field(
@@ -212,6 +235,24 @@ public abstract class CompilerTestCase {
 		return field;
 	}
 
+	public static Member member(
+			Obj container,
+			String name,
+			String... names) {
+		if (names.length == 0) {
+			return member(container, name, Accessor.PUBLIC);
+		}
+
+		Field field = field(container, name, Accessor.PUBLIC);
+		final int numFields = names.length - 1;
+
+		for (int i = 0; i < numFields; ++i) {
+			field = field(field, names[i], Accessor.PUBLIC);
+		}
+
+		return member(field, names[numFields], Accessor.PUBLIC);
+	}
+
 	public static Field field(
 			Field container,
 			String name,
@@ -219,7 +260,27 @@ public abstract class CompilerTestCase {
 		return field(container.toObject(), name, accessor);
 	}
 
+	public static Member member(
+			Field container,
+			String name,
+			Accessor accessor) {
+		return member(container.toObject(), name, accessor);
+	}
+
 	public static Field field(Obj container, String name, Accessor accessor) {
+
+		final Member member = member(container, name, accessor);
+		final Field field = member.toField().field(USE_CASE);
+
+		assertNotNull(member + " is not a field", field);
+
+		return field;
+	}
+
+	public static Member member(
+			Obj container,
+			String name,
+			Accessor accessor) {
 
 		final MemberName fieldName =
 				fieldName(CASE_INSENSITIVE.canonicalName(name));
@@ -230,19 +291,15 @@ public abstract class CompilerTestCase {
 			final Member m = container.member(fieldName, Accessor.OWNER);
 
 			if (m == null) {
-				fail("No such field: " + name);
+				fail("No such member: " + name);
 			} else {
-				fail("Field " + name + " is not available to " + accessor);
+				fail("Member " + name + " is not available to " + accessor);
 			}
 
 			return null;
 		}
 
-		final Field field = member.toField().field(USE_CASE);
-
-		assertNotNull(member + " is not a field", field);
-
-		return field;
+		return member;
 	}
 
 	@Rule
@@ -272,14 +329,6 @@ public abstract class CompilerTestCase {
 
 	public void expectError(String code) {
 		this.errors.expectError(code);
-	}
-
-	public Field field(String name, String... names) {
-		return field(this.module, name, names);
-	}
-
-	public Field field(String name, Accessor accessor) {
-		return field(this.module, name, accessor);
 	}
 
 	protected void addSource(
