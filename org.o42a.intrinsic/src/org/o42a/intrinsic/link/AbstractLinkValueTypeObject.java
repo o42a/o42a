@@ -42,8 +42,7 @@ public abstract class AbstractLinkValueTypeObject extends ValueTypeObject {
 
 		final LinkValueType linkType = type().getValueType().toLinkType();
 
-		return super.determineTypeParameters().add(
-				linkType.interfaceKey(getContext().getIntrinsics()),
+		return linkType.typeParameters(
 				ValueType.VOID.typeRef(this, getScope()));
 	}
 
