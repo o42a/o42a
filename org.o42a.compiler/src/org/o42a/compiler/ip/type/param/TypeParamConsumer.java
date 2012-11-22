@@ -85,6 +85,7 @@ public class TypeParamConsumer extends TypeConsumer implements Consumer {
 		private final Ref macroRef;
 		private final PathTemplate template;
 		private final TypeParamExpansionLogger expansionLogger;
+		private boolean dependencyRegistered;
 
 		TypeParamMacroConsumer(
 				TypeParamMacroDep macroDep,
@@ -103,6 +104,10 @@ public class TypeParamConsumer extends TypeConsumer implements Consumer {
 
 		@Override
 		public Ref expandMacro(Ref macroExpansion) {
+			if (this.dependencyRegistered) {
+				return macroExpansion;
+			}
+			this.dependencyRegistered = true;
 
 			final TypeParamMetaDep dep =
 					this.macroDep.buildDep(this.macroRef, this.template);
