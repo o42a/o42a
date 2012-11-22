@@ -20,19 +20,19 @@
 package org.o42a.core.object.meta;
 
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 
-import org.o42a.core.Scope;
+import org.o42a.analysis.use.User;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
-import org.o42a.core.object.Obj;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public abstract class ObjectMeta {
 
 	private IdentityHashMap<MetaDep, Boolean> tripped;
 	private MetaDeps deps;
-	private Iterator<Scope> checkedAscendants;
-	private MetaDep checkedDep;
 	private boolean initialized;
 	private byte updated;
 
@@ -50,6 +50,10 @@ public abstract class ObjectMeta {
 		}
 		this.updated = -1;
 		return false;
+	}
+
+	final MetaDeps deps() {
+		return this.deps;
 	}
 
 	final void addDep(MetaDep dep) {
@@ -104,22 +108,24 @@ public abstract class ObjectMeta {
 		return false;
 	}
 
-	private void init() {
+	void init() {
 		if (this.initialized) {
 			return;
 		}
-
 		this.initialized = true;
+		importParentDeps();
+		initTypeParameters();
+		initNestedDeps();
+	}
+
+	private void importParentDeps() {
 
 		final ObjectMeta parentMeta = meta().getParentMeta();
 
-		if (parentMeta != null) {
-			parentMeta.init();
-			importParentDeps(parentMeta);
+		if (parentMeta == null) {
+			return;
 		}
-	}
-
-	private void importParentDeps(ObjectMeta parentMeta) {
+		parentMeta.init();
 		if (parentMeta.deps == null) {
 			return;
 		}
@@ -145,73 +151,50 @@ public abstract class ObjectMeta {
 		}
 	}
 
-	private final Meta meta() {
-		return (Meta) this;
-	}
+	private void initTypeParameters() {
 
-	private boolean hasUpdates() {
+		final TypeRef ancestor =
+				meta().getObject().type().getAscendants().getAncestor();
 
-		boolean hasUpdates = false;
-		final Meta meta = meta();
-		final Obj object = meta.getObject();
-
-		if (this.checkedAscendants == null) {
-			this.checkedAscendants =
-					object.type().allAscendants().keySet().iterator();
-		}
-
-		for (;;) {
-
-			final MetaDep dep = nextDep();
-
-			if (dep == null) {
-				this.checkedAscendants = null;
-				return hasUpdates;
-			}
-			if (dep.updated(meta)) {
-				hasUpdates = true;
-			}
+		if (ancestor != null) {
+			ancestor.validateAll();
 		}
 	}
 
-	private MetaDep nextDep() {
-		for (;;) {
-			if (this.checkedDep != null) {
-				this.checkedDep = this.checkedDep.getNext();
-				if (this.checkedDep != null) {
-					return this.checkedDep;
-				}
-			}
-
-			final ObjectMeta nextMeta = nextMetaWithDeps();
-
-			if (nextMeta == null) {
-				return null;
-			}
-
-			return this.checkedDep = nextMeta.deps.getFirst();
-		}
-	}
-
-	private ObjectMeta nextMetaWithDeps() {
-		while (this.checkedAscendants.hasNext()) {
-
-			final Scope nextAscendant = this.checkedAscendants.next();
-
-			if (nextAscendant.is(meta().getObject().getScope())) {
-				// No need to check an explicit dependencies.
+	private void initNestedDeps() {
+		for (Member member : meta().getObject().getMembers()) {
+			if (member.isClone()) {
+				// Clone can not provide new dependencies.
 				continue;
 			}
 
-			final ObjectMeta nextMeta = nextAscendant.toObject().meta();
+			final MemberField memberField = member.toField();
 
-			nextMeta.init();
-			if (nextMeta.deps != null && !nextMeta.deps.isEmpty()) {
-				return nextMeta;
+			if (memberField == null) {
+				// Only fields are interesting.
+				continue;
 			}
-		}
 
-		return null;
+			final Field field = memberField.field(User.dummyUser());
+
+			if (field.isScopeField()) {
+				// Only nested fields are interesting.
+				continue;
+			}
+
+			final ObjectMeta nestedMeta = field.toObject().meta();
+
+			nestedMeta.initTypeParameters();
+			nestedMeta.initNestedDeps();
+		}
+	}
+
+	private boolean hasUpdates() {
+		return new MetaUpdatesChecker(meta()).hasUpdates();
+	}
+
+	private final Meta meta() {
+		return (Meta) this;
 	}
 
 }

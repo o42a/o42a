@@ -131,6 +131,15 @@ public final class TypeParameters<T>
 		return true;
 	}
 
+	public final boolean validateAll() {
+		for (TypeParameter parameter : all()) {
+			if (!parameter.validateAll()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public final int getLinkDepth() {
 
 		final LinkValueType linkType = getValueType().toLinkType();
