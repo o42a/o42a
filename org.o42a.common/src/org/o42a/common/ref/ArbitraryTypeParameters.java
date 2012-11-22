@@ -19,14 +19,14 @@
 */
 package org.o42a.common.ref;
 
+import static org.o42a.core.value.TypeParameters.typeParameters;
+
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.link.LinkValueType;
 
@@ -86,28 +86,39 @@ public class ArbitraryTypeParameters
 			return defaultParameters;
 		}
 
-		// TODO Replace with a proper parameter key search when implement the
-		// type parameters declaration.
-		if (params.length > 1) {
-			redundantTypeParameter(params[1]);
+		final TypeParameters<?> legacyParameters =
+				refineLegacyParameters(defaultParameters);
+
+		if (legacyParameters != null) {
+			return legacyParameters;
 		}
 
-		final ValueType<?> valueType = defaultParameters.getValueType();
-		final LinkValueType linkType = valueType.toLinkType();
+		final int paramsRequired = defaultParameters.size();
+		final int paramsToApply;
 
-		if (linkType != null) {
-			return linkType.typeParameters(params[0]);
+		if (params.length > paramsRequired) {
+			redundantTypeParameter(params[paramsRequired]);
+			paramsToApply = paramsRequired;
+		} else {
+			paramsToApply = params.length;
 		}
 
-		final ArrayValueType arrayType = valueType.toArrayType();
+		final TypeParameter[] oldParams = defaultParameters.all();
+		TypeParameters<?> newParameters =
+				typeParameters(this, defaultParameters.getValueType());
 
-		if (arrayType != null) {
-			return arrayType.typeParameters(params[0]);
+		for (int i = 0; i < paramsToApply; ++i) {
+			newParameters = newParameters.add(oldParams[i].getKey(), params[i]);
+		}
+		for (int i = paramsToApply; i < paramsRequired; ++i) {
+
+			final TypeParameter oldParam = oldParams[i];
+
+			newParameters =
+					newParameters.add(oldParam.getKey(), oldParam.getTypeRef());
 		}
 
-		redundantTypeParameter(params[0]);
-
-		return defaultParameters;
+		return newParameters;
 	}
 
 	@Override
@@ -149,6 +160,32 @@ public class ArbitraryTypeParameters
 		out.append(')');
 
 		return out.toString();
+	}
+
+	private TypeParameters<?> refineLegacyParameters(
+			TypeParameters<?> defaultParameters) {
+		// TODO Remove a legacy type parameters support.
+		final TypeRef[] params = getParameters();
+		final ValueType<?> valueType = defaultParameters.getValueType();
+		final LinkValueType linkType = valueType.toLinkType();
+
+		if (linkType != null) {
+			if (params.length > 1) {
+				redundantTypeParameter(params[1]);
+			}
+			return linkType.typeParameters(params[0]);
+		}
+
+		final ArrayValueType arrayType = valueType.toArrayType();
+
+		if (arrayType != null) {
+			if (params.length > 1) {
+				redundantTypeParameter(params[1]);
+			}
+			return arrayType.typeParameters(params[0]);
+		}
+
+		return null;
 	}
 
 	private void redundantTypeParameter(TypeRef param) {
