@@ -485,7 +485,7 @@ public final class TypeParameters<T>
 			final TypeRef typeRef = other.typeRef(parameter.getKey());
 
 			if (typeRef == null) {
-				return false;
+				continue;
 			}
 			if (!typeRef.derivedFrom(parameter.getTypeRef())) {
 				return false;
@@ -517,7 +517,7 @@ public final class TypeParameters<T>
 			final TypeRef typeRef = other.typeRef(parameter.getKey());
 
 			if (typeRef == null) {
-				return Kind.INCOMPATIBLE;
+				continue;
 			}
 
 			final Kind kind =
