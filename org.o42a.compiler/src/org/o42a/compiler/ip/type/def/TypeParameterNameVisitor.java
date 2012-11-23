@@ -34,8 +34,11 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class TypeParameterNameVisitor
@@ -77,11 +80,14 @@ final class TypeParameterNameVisitor
 					"Type parameter visibility is always public");
 		}
 
-		final StaticTypeRef declaredIn = declaredIn(ref, p);
+		final StaticTypeRef declaredInRef = declaredIn(ref, p);
 
-		if (declaredIn != null && !declaredIn.isValid()) {
+		if (declaredInRef != null && !declaredInRef.isValid()) {
 			return brokenMemberKey();
 		}
+
+		final Obj declaredIn =
+				declaredInRef != null ? declaredInRef.getType() : null;
 
 		final MemberName fieldName = fieldName(name.getName());
 		final Placed location =
@@ -92,17 +98,37 @@ final class TypeParameterNameVisitor
 		}
 
 		final Obj object = p.getObject();
-		final Member member = object.objectMember(
-				Accessor.PUBLIC,
-				fieldName,
-				declaredIn != null ? declaredIn.getType() : null);
+		final Ascendants ascendants = object.type().getAscendants();
 
-		if (member == null) {
-			p.getLogger().unresolved(location, name.getName());
-			return brokenMemberKey();
+		for (Sample sample : ascendants.getSamples()) {
+
+			final Member member = sample.getObject().objectMember(
+					Accessor.PUBLIC,
+					fieldName,
+					declaredIn);
+
+			if (member != null) {
+				return member.getMemberKey();
+			}
 		}
 
-		return member.getMemberKey();
+		final TypeRef ancestor = ascendants.getAncestor();
+
+		if (ancestor != null) {
+
+			final Member member = ancestor.getType().objectMember(
+					Accessor.PUBLIC,
+					fieldName,
+					declaredIn);
+
+			if (member != null) {
+				return member.getMemberKey();
+			}
+		}
+
+		p.getLogger().unresolved(location, name.getName());
+
+		return brokenMemberKey();
 	}
 
 	@Override
