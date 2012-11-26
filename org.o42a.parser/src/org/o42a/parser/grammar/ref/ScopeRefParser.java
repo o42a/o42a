@@ -46,8 +46,12 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 			break;
 		case '#':
 			if (context.next() == '#') {
+				if (context.next() == '#') {
+					// The macros scope requires exactly two hashes.
+					return null;
+				}
 				type = ScopeType.MACROS;
-				context.acceptAll();
+				context.acceptButLast();
 				break;
 			}
 			return null;

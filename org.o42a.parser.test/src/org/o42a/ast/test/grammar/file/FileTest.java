@@ -20,8 +20,8 @@
 package org.o42a.ast.test.grammar.file;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.file;
 
@@ -43,14 +43,77 @@ public class FileTest extends GrammarTestCase {
 				"Use module 'Console'",
 				"Foo := bar");
 
-		assertNull(file.getHeader());
+		assertThat(file.getHeader(), nullValue());
 		assertThat(file.getSections().length, is(1));
 
 		final SectionNode section = file.getSections()[0];
 
-		assertNull(section.getTitle());
-		assertNull(section.getSubTitle());
+		assertThat(section.getTitle(), nullValue());
+		assertThat(section.getSubTitle(), nullValue());
+		assertThat(section.getTypeDefinition(), nullValue());
 		assertThat(section.getContent().length, is(2));
+	}
+
+	@Test
+	public void moduleWithTypeDefinitionOnly() {
+
+		final FileNode file = parse(
+				"T := void",
+				"####");
+
+		assertThat(file.getHeader(), nullValue());
+		assertThat(file.getSections().length, is(1));
+
+		final SectionNode section = file.getSections()[0];
+
+		assertThat(section.getTitle(), nullValue());
+		assertThat(section.getSubTitle(), nullValue());
+		assertThat(section.getTypeDefinition(), notNullValue());
+		assertThat(section.getTypeDefinition().getContent().length, is(1));
+		assertThat(section.getContent().length, is(0));
+	}
+
+	@Test
+	public void moduleWithTypeDefinition() {
+
+		final FileNode file = parse(
+				"T := void",
+				"####",
+				"Foo := bar");
+
+		assertThat(file.getHeader(), nullValue());
+		assertThat(file.getSections().length, is(1));
+
+		final SectionNode section = file.getSections()[0];
+
+		assertThat(section.getTitle(), nullValue());
+		assertThat(section.getSubTitle(), nullValue());
+		assertThat(section.getTypeDefinition(), notNullValue());
+		assertThat(section.getTypeDefinition().getContent().length, is(1));
+		assertThat(section.getContent().length, is(1));
+	}
+
+	@Test
+	public void redundantHashLine() {
+		expectError("redundant_hash_line");
+
+		final FileNode file = parse(
+				"T := void",
+				"###",
+				"V := integer",
+				"####",
+				"Foo := bar");
+
+		assertThat(file.getHeader(), nullValue());
+		assertThat(file.getSections().length, is(1));
+
+		final SectionNode section = file.getSections()[0];
+
+		assertThat(section.getTitle(), nullValue());
+		assertThat(section.getSubTitle(), nullValue());
+		assertThat(section.getTypeDefinition(), notNullValue());
+		assertThat(section.getTypeDefinition().getContent().length, is(2));
+		assertThat(section.getContent().length, is(1));
 	}
 
 	@Test
@@ -63,16 +126,44 @@ public class FileTest extends GrammarTestCase {
 
 		final SectionNode[] sections = file.getSections();
 
-		assertNull(file.getHeader());
+		assertThat(file.getHeader(), nullValue());
 		assertThat(sections.length, is(1));
 
 		final SectionNode section = sections[0];
 
-		assertNotNull(section.getTitle());
-		assertNotNull(section.getDeclarator());
+		assertThat(section.getTitle(), notNullValue());
+		assertThat(section.getDeclarator(), notNullValue());
 		assertThat(
 				section.getSubTitle().getPrefix().getType().getLength(),
 				is(11));
+		assertThat(section.getTypeDefinition(), nullValue());
+		assertThat(section.getContent().length, is(1));
+	}
+
+	@Test
+	public void sectionWithTypeDefinition() {
+
+		final FileNode file = parse(
+				"Foo :=> bar",
+				"===========",
+				"T := void",
+				"V := integer",
+				"####",
+				"Baz = 1");
+
+		final SectionNode[] sections = file.getSections();
+
+		assertThat(file.getHeader(), nullValue());
+		assertThat(sections.length, is(1));
+
+		final SectionNode section = sections[0];
+
+		assertThat(section.getTitle(), notNullValue());
+		assertThat(section.getDeclarator(), notNullValue());
+		assertThat(
+				section.getSubTitle().getPrefix().getType().getLength(),
+				is(11));
+		assertThat(section.getTypeDefinition().getContent().length, is(2));
 		assertThat(section.getContent().length, is(1));
 	}
 
@@ -88,20 +179,21 @@ public class FileTest extends GrammarTestCase {
 		final SectionNode[] sections = file.getSections();
 		final SectionNode header = file.getHeader();
 
-		assertNotNull(header);
-		assertNull(header.getTitle());
-		assertNull(header.getSubTitle());
+		assertThat(header, notNullValue());
+		assertThat(header.getTitle(), nullValue());
+		assertThat(header.getSubTitle(), nullValue());
 		assertThat(header.getContent().length, is(1));
 
 		assertThat(sections.length, is(1));
 
 		final SectionNode section = sections[0];
 
-		assertNotNull(section.getTitle());
-		assertNotNull(section.getDeclarator());
+		assertThat(section.getTitle(), notNullValue());
+		assertThat(section.getDeclarator(), notNullValue());
 		assertThat(
 				section.getSubTitle().getPrefix().getType().getLength(),
 				is(10));
+		assertThat(section.getTypeDefinition(), nullValue());
 		assertThat(section.getContent().length, is(1));
 	}
 
@@ -115,15 +207,16 @@ public class FileTest extends GrammarTestCase {
 
 		final SectionNode[] sections = file.getSections();
 
-		assertNull(file.getHeader());
+		assertThat(file.getHeader(), nullValue());
 		assertThat(sections.length, is(1));
 
 		final SectionNode section = sections[0];
 
-		assertNull(section.getTitle());
+		assertThat(section.getTitle(), nullValue());
 		assertThat(
 				section.getSubTitle().getPrefix().getType().getLength(),
 				is(5));
+		assertThat(section.getTypeDefinition(), nullValue());
 		assertThat(section.getContent().length, is(1));
 	}
 
@@ -139,16 +232,17 @@ public class FileTest extends GrammarTestCase {
 		final SectionNode[] sections = file.getSections();
 		final SectionNode header = file.getHeader();
 
-		assertNotNull(header);
-		assertNull(header.getTitle());
-		assertNull(header.getSubTitle());
+		assertThat(header, notNullValue());
+		assertThat(header.getTitle(), nullValue());
+		assertThat(header.getSubTitle(), nullValue());
 		assertThat(header.getContent().length, is(1));
 
 		assertThat(sections.length, is(1));
-		assertNull(sections[0].getTitle());
+		assertThat(sections[0].getTitle(), nullValue());
 		assertThat(
 				sections[0].getSubTitle().getPrefix().getType().getLength(),
 				is(6));
+		assertThat(sections[0].getTypeDefinition(), nullValue());
 		assertThat(sections[0].getContent().length, is(1));
 	}
 
@@ -165,10 +259,10 @@ public class FileTest extends GrammarTestCase {
 
 		final SectionNode[] sections = file.getSections();
 
-		assertNull(file.getHeader());
+		assertThat(file.getHeader(), nullValue());
 		assertThat(sections.length, is(3));
 
-		assertNull(sections[0].getTitle());
+		assertThat(sections[0].getTitle(), nullValue());
 		assertThat(
 				sections[0].getSubTitle().getPrefix().getType().getLength(),
 				is(5));
@@ -176,23 +270,26 @@ public class FileTest extends GrammarTestCase {
 		assertThat(
 				sections[0].getSubTitle().getSuffix().getType().getLength(),
 				is(6));
+		assertThat(sections[0].getTypeDefinition(), nullValue());
 		assertThat(sections[0].getContent().length, is(0));
 
-		assertNotNull(sections[1].getTitle());
-		assertNotNull(sections[1].getDeclarator());
+		assertThat(sections[1].getTitle(), notNullValue());
+		assertThat(sections[1].getDeclarator(), notNullValue());
 		assertThat(
 				sections[1].getSubTitle().getPrefix().getType().getLength(),
 				is(5));
 		assertThat(sections[1].getSubTitle().getTag(), isName("section2"));
-		assertNull(sections[1].getSubTitle().getSuffix());
+		assertThat(sections[1].getSubTitle().getSuffix(), nullValue());
+		assertThat(sections[1].getTypeDefinition(), nullValue());
 		assertThat(sections[1].getContent().length, is(1));
 
-		assertNull(sections[2].getTitle());
+		assertThat(sections[2].getTitle(), nullValue());
 		assertThat(
 				sections[2].getSubTitle().getPrefix().getType().getLength(),
 				is(5));
 		assertThat(sections[2].getSubTitle().getTag(), isName("section3"));
-		assertNotNull(sections[2].getSubTitle().getSuffix());
+		assertThat(sections[2].getSubTitle().getSuffix(), notNullValue());
+		assertThat(sections[2].getTypeDefinition(), nullValue());
 		assertThat(sections[2].getContent().length, is(0));
 	}
 
@@ -205,7 +302,7 @@ public class FileTest extends GrammarTestCase {
 
 		final SectionNode[] sections = file.getSections();
 
-		assertNull(file.getHeader());
+		assertThat(file.getHeader(), nullValue());
 		assertThat(sections.length, is(1));
 
 		final SectionNode section = sections[0];
@@ -225,7 +322,7 @@ public class FileTest extends GrammarTestCase {
 		final FileNode file = parse(file(), "void");
 		final SectionNode[] sections = file.getSections();
 
-		assertNull(file.getHeader());
+		assertThat(file.getHeader(), nullValue());
 		assertThat(sections.length, is(1));
 
 		final SentenceNode[] content = sections[0].getContent();

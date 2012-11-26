@@ -29,6 +29,7 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
+import org.o42a.ast.file.SectionTypeDefinitionNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.ref.TypeRefNode;
@@ -121,6 +122,12 @@ public abstract class NodeVisitor<R, P>
 
 	public R visitReusedClause(ReusedClauseNode reusedClause, P p) {
 		return visitPart(reusedClause, p);
+	}
+
+	public R visitSectionTypeDefinition(
+			SectionTypeDefinitionNode definition,
+			P p) {
+		return visitPart(definition, p);
 	}
 
 	public R visitSection(SectionNode section, P p) {

@@ -19,23 +19,31 @@
 */
 package org.o42a.parser.grammar.file;
 
+import org.o42a.ast.file.SectionTypeDefinitionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.sentence.SentenceNode;
 
 
 final class ContentWithNextTitle {
 
+	private final SectionTypeDefinitionNode typeDefinition;
 	private final SentenceNode[] content;
 	private final SentenceNode nextTitle;
 	private final SubTitleNode nextSubTitle;
 
 	public ContentWithNextTitle(
+			SectionTypeDefinitionNode typeDefinition,
 			SentenceNode[] content,
 			SentenceNode nextTitle,
 			SubTitleNode nextSubTitle) {
+		this.typeDefinition = typeDefinition;
 		this.content = content;
 		this.nextTitle = nextTitle;
 		this.nextSubTitle = nextSubTitle;
+	}
+
+	public final SectionTypeDefinitionNode getTypeDefinition() {
+		return this.typeDefinition;
 	}
 
 	public final SentenceNode[] getContent() {

@@ -69,17 +69,20 @@ public class SectionNode
 
 	private final SentenceNode title;
 	private final SubTitleNode subTitle;
+	private final SectionTypeDefinitionNode typeDefinition;
 	private final SentenceNode[] content;
 
 	public SectionNode(
 			SentenceNode title,
 			SubTitleNode subTitle,
+			SectionTypeDefinitionNode typeDefinition,
 			SentenceNode[] content) {
 		super(
-				start(title, subTitle, firstNode(content)),
-				end(title, subTitle, lastNode(content)));
+				start(title, subTitle, typeDefinition, firstNode(content)),
+				end(title, subTitle, typeDefinition, lastNode(content)));
 		this.title = title;
 		this.subTitle = subTitle;
+		this.typeDefinition = typeDefinition;
 		this.content = content;
 	}
 
@@ -87,6 +90,7 @@ public class SectionNode
 		super(start, end);
 		this.title = null;
 		this.subTitle = null;
+		this.typeDefinition = null;
 		this.content = new SentenceNode[0];
 	}
 
@@ -107,6 +111,10 @@ public class SectionNode
 
 	public final MemberRefNode getLabel() {
 		return this.subTitle != null ? this.subTitle.getTag() : null;
+	}
+
+	public final SectionTypeDefinitionNode getTypeDefinition() {
+		return this.typeDefinition;
 	}
 
 	@Override
