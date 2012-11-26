@@ -44,6 +44,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	private static final StaticTypeRef[] NO_SAMPLES = new StaticTypeRef[0];
 
 	private TypeRef ancestor;
+	private LocationInfo typeParametersLocation;
 	private TypeParametersBuilder typeParameters;
 	private StaticTypeRef[] samples = NO_SAMPLES;
 
@@ -112,15 +113,26 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		return clone;
 	}
 
+	public final LocationInfo getTypeParametersLocation() {
+		return this.typeParametersLocation;
+	}
+
 	public final TypeParametersBuilder getTypeParameters() {
 		return this.typeParameters;
 	}
 
+	public final <P extends TypeParametersBuilder & LocationInfo>
+	AscendantsDefinition setTypeParameters(P typeParameters) {
+		return setTypeParameters(typeParameters, typeParameters);
+	}
+
 	public final AscendantsDefinition setTypeParameters(
+			LocationInfo location,
 			TypeParametersBuilder typeParameters) {
 
 		final AscendantsDefinition clone = clone();
 
+		clone.typeParametersLocation = location;
 		clone.typeParameters = typeParameters;
 
 		return clone;

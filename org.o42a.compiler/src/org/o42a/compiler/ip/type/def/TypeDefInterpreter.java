@@ -22,11 +22,14 @@ package org.o42a.compiler.ip.type.def;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.type.def.TypeDefinitionVisitor.TYPE_DEFINITION_VISITOR;
 
+import org.o42a.ast.Node;
 import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.util.log.LogInfo;
 
 
 public class TypeDefInterpreter {
@@ -35,17 +38,37 @@ public class TypeDefInterpreter {
 			TypeDefinitionNode node,
 			Distributor distributor,
 			TypeConsumer consumer) {
+		return typeDefinition(
+				node,
+				node.getDefinition().getContent(),
+				distributor,
+				consumer);
+	}
+
+	public static TypeDefinition typeDefinition(
+			Node node,
+			SentenceNode[] definitions,
+			Distributor distributor,
+			TypeConsumer consumer) {
 
 		final TypeDefinitionBuilder builder = new TypeDefinitionBuilder(
 				location(distributor, node),
 				distributor,
 				consumer);
-
-		for (SentenceNode sentence : node.getDefinition().getContent()) {
+		for (SentenceNode sentence : definitions) {
 			addSentence(builder, sentence);
 		}
 
 		return builder.buildDefinition();
+	}
+
+	public static void redundantTypeParameters(
+			CompilerLogger logger,
+			LogInfo location) {
+		logger.error(
+				"redundant_type_parameters",
+				location,
+				"Redundant type parameters");
 	}
 
 	private static void addSentence(

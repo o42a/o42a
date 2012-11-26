@@ -107,7 +107,15 @@ final class SectionTitle implements LogInfo {
 		return explicitFieldDeclaration(distributor);
 	}
 
-	public AscendantsDefinition ascendants(
+	@Override
+	public String toString() {
+		if (this.loggable == null) {
+			return super.toString();
+		}
+		return this.loggable.toString();
+	}
+
+	final AscendantsDefinition ascendants(
 			Distributor distributor,
 			TypeConsumer consumer) {
 		if (isImplicit()) {
@@ -127,14 +135,6 @@ final class SectionTitle implements LogInfo {
 		return definition.accept(
 				new SectionAscendantsVisitor(consumer),
 				distributor);
-	}
-
-	@Override
-	public String toString() {
-		if (this.loggable == null) {
-			return super.toString();
-		}
-		return this.loggable.toString();
 	}
 
 	static Loggable titleLoggable(SectionNode sectionNode) {

@@ -23,15 +23,19 @@ import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 import static org.o42a.compiler.ip.st.StInterpreter.addSentence;
+import static org.o42a.compiler.ip.type.def.TypeDefInterpreter.redundantTypeParameters;
+import static org.o42a.compiler.ip.type.def.TypeDefInterpreter.typeDefinition;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.ast.file.SectionNode;
+import org.o42a.ast.file.SectionTypeDefinitionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.member.FieldNesting;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.type.def.TypeDefinition;
 import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
 import org.o42a.core.member.field.*;
@@ -140,19 +144,42 @@ final class Section implements LogInfo {
 				new OtherContextDistributor(
 						getContext(),
 						this.enclosingBlock.distribute());
+		final SectionTypeDefinitionNode typeDefinitionNode =
+				getSectionNode().getTypeDefinition();
 		final SectionTitle title = getTitle();
+		AscendantsDefinition ascendants = null;
 
 		if (title != null) {
-
-			final AscendantsDefinition ascendants =
-					title.ascendants(ascendantsDistributor, consumer);
-
+			ascendants = title.ascendants(ascendantsDistributor, consumer);
 			if (ascendants != null) {
-				return ascendants;
+				if (typeDefinitionNode == null
+						|| ascendants.getTypeParametersLocation() == null) {
+					return ascendants;
+				}
+				redundantTypeParameters(
+						getLogger(),
+						ascendants.getTypeParametersLocation());
+			}
+		}
+		if (ascendants == null) {
+			ascendants = new AscendantsDefinition(
+					getLocation(),
+					ascendantsDistributor);
+		}
+		if (typeDefinitionNode != null) {
+
+			final TypeDefinition typeDefinition = typeDefinition(
+					typeDefinitionNode,
+					typeDefinitionNode.getContent(),
+					ascendantsDistributor,
+					consumer);
+
+			if (typeDefinition != null) {
+				ascendants = ascendants.setTypeParameters(typeDefinition);
 			}
 		}
 
-		return new AscendantsDefinition(getLocation(), ascendantsDistributor);
+		return ascendants;
 	}
 
 	public void define(DeclarativeBlock definition) {

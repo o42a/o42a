@@ -118,13 +118,6 @@ public class Phrase extends Placed {
 	public final Phrase setTypeParameters(
 			LocationInfo location,
 			TypeParametersBuilder typeParameters) {
-		if (this.prefix.getFollowing() != null) {
-			getLogger().error(
-					"redundant_type_parameters",
-					location,
-					"Type parameters not allowed here");
-			return this;
-		}
 		if (getTypeParameters() != null) {
 			getLogger().error(
 					"duplicate_type_parameters",
