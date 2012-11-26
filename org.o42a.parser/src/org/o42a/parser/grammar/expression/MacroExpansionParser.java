@@ -46,13 +46,17 @@ public class MacroExpansionParser implements Parser<MacroExpansionNode> {
 
 		final SourcePosition start = context.current().fix();
 
-		context.acceptAll();
+		context.skip();
 
 		final SignNode<UnaryOperator> sign = new SignNode<UnaryOperator>(
 				start,
-				context.firstUnaccepted().fix(),
+				context.current().fix(),
 				UnaryOperator.MACRO_EXPANSION);
 
+		if (context.next() == '#') {
+			// The macro expansion expression requires exactly one hash.
+			return null;
+		}
 		context.acceptComments(false, sign);
 
 		final ExpressionNode operand = context.parse(simpleExpression());

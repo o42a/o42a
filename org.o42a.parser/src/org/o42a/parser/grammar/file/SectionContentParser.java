@@ -25,16 +25,22 @@ import static org.o42a.parser.grammar.file.SubTitleParser.SUB_TITLE;
 
 import java.util.ArrayList;
 
+import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.file.HashLine;
+import org.o42a.ast.file.SectionTypeDefinitionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.ArrayUtil;
 
 
 final class SectionContentParser implements Parser<ContentWithNextTitle> {
 
 	public static final SectionContentParser SECTION_CONTENT =
 			new SectionContentParser();
+
+	private static final HashLineParser HASH_LINE = new HashLineParser();
 
 	private SectionContentParser() {
 	}
@@ -43,6 +49,7 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 	public ContentWithNextTitle parse(ParserContext context) {
 
 		final ArrayList<SentenceNode> sentences = new ArrayList<SentenceNode>();
+		SectionTypeDefinitionNode typeDefinition = null;
 
 		for (;;) {
 
@@ -53,7 +60,11 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 				final int numSentences = sentences.size();
 
 				if (numSentences == 0) {
-					return createResult(sentences, null, subTitle);
+					return createResult(
+							typeDefinition,
+							sentences,
+							null,
+							subTitle);
 				}
 
 				final SentenceNode lastSentence =
@@ -78,14 +89,40 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 					title = lastSentence;
 				}
 
-				return createResult(sentences, title, subTitle);
+				return createResult(typeDefinition, sentences, title, subTitle);
 			}
 
-			final SentenceNode sentence = context.parse(DECLARATIVE.sentence());
+			final SignNode<HashLine> hashLine = context.parse(HASH_LINE);
+
+			if (hashLine != null) {
+				if (typeDefinition == null) {
+					typeDefinition = new SectionTypeDefinitionNode(
+							sentences.toArray(
+									new SentenceNode[sentences.size()]),
+							hashLine);
+					sentences.clear();
+					continue;
+				}
+				context.getLogger().error(
+						"redundant_hash_line",
+						hashLine,
+						"Only one hash line allowed within section");
+				typeDefinition = new SectionTypeDefinitionNode(
+						ArrayUtil.append(
+								typeDefinition.getContent(),
+								sentences.toArray(
+										new SentenceNode[sentences.size()])),
+						hashLine);
+				sentences.clear();
+				continue;
+			}
+
+			final SentenceNode sentence =
+					context.parse(DECLARATIVE.sentence());
 
 			if (sentence == null) {
 				// No title.
-				return createResult(sentences, null, null);
+				return createResult(typeDefinition, sentences, null, null);
 			}
 
 			sentences.add(sentence);
@@ -93,20 +130,35 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 	}
 
 	private ContentWithNextTitle createResult(
+			SectionTypeDefinitionNode typeDefinition,
 			ArrayList<SentenceNode> sentences,
 			SentenceNode nextTitle,
 			SubTitleNode nextSubTitle) {
 
 		final int size = sentences.size();
 
-		if (size == 0 && nextSubTitle == null) {
+		if (size == 0 && nextSubTitle == null && typeDefinition == null) {
 			return null;
 		}
 
 		return new ContentWithNextTitle(
+				typeDefinition,
 				sentences.toArray(new SentenceNode[size]),
 				nextTitle,
 				nextSubTitle);
+	}
+
+	private static final class HashLineParser extends LineParser<HashLine> {
+
+		HashLineParser() {
+			super('#', 3);
+		}
+
+		@Override
+		protected HashLine createLine(int length) {
+			return new HashLine(length);
+		}
+
 	}
 
 }

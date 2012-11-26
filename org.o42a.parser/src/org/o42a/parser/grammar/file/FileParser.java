@@ -57,12 +57,16 @@ public final class FileParser implements Parser<FileNode> {
 
 			final SentenceNode[] content = contentWithNextTitle.getContent();
 
-			if (content.length == 0 && subTitle == null && sections.isEmpty()) {
-				// Do not create a very first empty section.
+			if (content.length == 0
+					&& contentWithNextTitle.getTypeDefinition() == null
+					&& subTitle == null
+					&& sections.isEmpty()) {
+				// Do not create the very first empty section.
 			} else {
 				sections.add(new SectionNode(
 						title,
 						subTitle,
+						contentWithNextTitle.getTypeDefinition(),
 						content));
 			}
 
@@ -71,7 +75,11 @@ public final class FileParser implements Parser<FileNode> {
 		}
 
 		if (subTitle != null) {
-			sections.add(new SectionNode(title, subTitle, new SentenceNode[0]));
+			sections.add(new SectionNode(
+					title,
+					subTitle,
+					null,
+					new SentenceNode[0]));
 		} else if (sections.isEmpty()) {
 			return null;
 		}
@@ -85,8 +93,8 @@ public final class FileParser implements Parser<FileNode> {
 			if (first.getSubTitle() == null) {
 				return new FileNode(
 						first,
-						sections.subList(1, numSections).toArray(
-								new SectionNode[numSections - 1]));
+						sections.subList(1, numSections)
+						.toArray(new SectionNode[numSections - 1]));
 			}
 		}
 
