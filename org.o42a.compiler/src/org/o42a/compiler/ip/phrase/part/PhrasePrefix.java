@@ -30,7 +30,6 @@ import org.o42a.core.value.TypeParametersBuilder;
 public final class PhrasePrefix extends PhrasePart {
 
 	private AscendantsDefinition ascendants;
-	private LocationInfo typeParametersLocation;
 
 	public PhrasePrefix(LocationInfo location, Phrase phrase) {
 		super(location, phrase, null);
@@ -51,14 +50,14 @@ public final class PhrasePrefix extends PhrasePart {
 	}
 
 	public final LocationInfo getTypeParametersLocation() {
-		return this.typeParametersLocation;
+		return this.ascendants.getTypeParametersLocation();
 	}
 
 	public final PhrasePrefix setTypeParameters(
 			LocationInfo location,
 			TypeParametersBuilder typeParameters) {
-		this.typeParametersLocation = location;
-		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
+		this.ascendants =
+				this.ascendants.setTypeParameters(location, typeParameters);
 		return this;
 	}
 

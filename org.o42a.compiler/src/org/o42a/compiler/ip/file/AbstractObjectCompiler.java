@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.file;
 
 import org.o42a.ast.file.FileNode;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.object.meta.Nesting;
@@ -85,12 +84,10 @@ public abstract class AbstractObjectCompiler
 	public Ascendants buildAscendants(Ascendants ascendants) {
 
 		final Scope scope = ascendants.getScope();
-		final Distributor distributor =
-				scope.getEnclosingScope().distribute();
 		final Nesting nesting = scope.toObject().meta().getNesting();
 		final TypeConsumer consumer = TypeConsumer.typeConsumer(nesting);
 		final AscendantsDefinition ascendantsDefinition =
-				getSection().getTitle().ascendants(distributor, consumer);
+				getSection().ascendants(consumer);
 
 		return ascendantsDefinition.updateAscendants(ascendants);
 	}
