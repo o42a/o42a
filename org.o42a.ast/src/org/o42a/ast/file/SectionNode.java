@@ -166,6 +166,9 @@ public class SectionNode
 			this.subTitle.printContent(out);
 			out.append('\n');
 		}
+		if (this.typeDefinition != null) {
+			this.typeDefinition.printContent(out);
+		}
 		for (SentenceNode sentence : this.content) {
 			sentence.printContent(out);
 			out.append('\n');
