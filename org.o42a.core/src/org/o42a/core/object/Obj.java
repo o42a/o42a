@@ -744,27 +744,25 @@ public abstract class Obj
 
 		final TypeParameters<?> ancestorTypeParameters =
 				ancestor.getParameters();
-
 		final ValueType<?> knownValueType = type().getKnownValueType();
+		final TypeParameters<?> typeParameters;
 
-		if (knownValueType != null
-				&& !knownValueType.is(ancestorTypeParameters.getValueType())) {
-			assert ancestorTypeParameters.isEmpty()
-			&& ancestorTypeParameters.getValueType().isVoid() :
-				"Unexpected ancestor type parameters: "
-				+ ancestorTypeParameters;
-			return typeParameters(this, knownValueType);
+		if (knownValueType != null) {
+			typeParameters = typeParameters(this, knownValueType)
+					.refine(ancestorTypeParameters);
+		} else {
+			typeParameters = ancestorTypeParameters;
 		}
 
-		if (ancestorTypeParameters.isEmpty()) {
-			return ancestorTypeParameters;
+		if (typeParameters.isEmpty()) {
+			return typeParameters;
 		}
 
 		final Scope scope = getScope();
 		final PrefixPath prefix =
 				scope.getEnclosingScopePath().toPrefix(scope);
 
-		return ancestorTypeParameters.prefixWith(prefix);
+		return typeParameters.prefixWith(prefix);
 	}
 
 	protected abstract Definitions explicitDefinitions();
