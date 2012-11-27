@@ -152,13 +152,12 @@ final class Section implements LogInfo {
 		if (title != null) {
 			ascendants = title.ascendants(ascendantsDistributor, consumer);
 			if (ascendants != null) {
-				if (typeDefinitionNode == null
-						|| ascendants.getTypeParametersLocation() == null) {
-					return ascendants;
+				if (typeDefinitionNode != null
+						&& ascendants.getTypeParametersLocation() != null) {
+					redundantTypeParameters(
+							getLogger(),
+							ascendants.getTypeParametersLocation());
 				}
-				redundantTypeParameters(
-						getLogger(),
-						ascendants.getTypeParametersLocation());
 			}
 		}
 		if (ascendants == null) {
