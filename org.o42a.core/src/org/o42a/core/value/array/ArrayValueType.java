@@ -19,8 +19,11 @@
 */
 package org.o42a.core.value.array;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.value.array.impl.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIRBody;
@@ -29,6 +32,7 @@ import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
@@ -49,8 +53,15 @@ public class ArrayValueType extends ValueType<Array> {
 	public static final ArrayValueType ROW = new ArrayValueType(false);
 	public static final ArrayValueType ARRAY = new ArrayValueType(true);
 
+	private static final MemberName INDEXED_ID =
+			fieldName(CASE_INSENSITIVE.canonicalName("indexed"));
+	private static final MemberName ITEM_TYPE_ID =
+			fieldName(CASE_INSENSITIVE.canonicalName("item type"));
+
 	private final boolean variable;
 	private final ArrayValueConverter converter;
+	private Intrinsics intrinsics;
+	private MemberKey itemTypeKey;
 
 	private ArrayValueType(boolean variable) {
 		super(variable ? "array" : "row", Array.class);
@@ -69,7 +80,20 @@ public class ArrayValueType extends ValueType<Array> {
 	}
 
 	public final MemberKey itemTypeKey(Intrinsics intrinsics) {
-		return typeObject(intrinsics).toMember().getMemberKey();
+		if (this.itemTypeKey != null && this.intrinsics == intrinsics) {
+			return this.itemTypeKey;
+		}
+
+		this.intrinsics = intrinsics;
+
+		return this.itemTypeKey =
+				intrinsics.getRoot()
+				.member(INDEXED_ID)
+				.toField()
+				.field(dummyUser())
+				.toObject()
+				.member(ITEM_TYPE_ID)
+				.getMemberKey();
 	}
 
 	public final TypeParameters<Array> typeParameters(TypeRef itemTypeRef) {

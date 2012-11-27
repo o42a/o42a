@@ -27,7 +27,8 @@ This is a base of <array> and <row>. Other indexed objects, such as lists,
 can also base on this prototype.
 ~~~
 
-Item type :=< macro ~~ An indexed items' type reference.
+Item type := void ~~ An indexed items' type reference.
+#################
 
 Length :=< $$integer
 ~~~
