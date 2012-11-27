@@ -33,6 +33,7 @@ import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
@@ -84,16 +85,15 @@ public class ArrayValueType extends ValueType<Array> {
 			return this.itemTypeKey;
 		}
 
-		this.intrinsics = intrinsics;
-
-		return this.itemTypeKey =
+		final Field indexed =
 				intrinsics.getRoot()
 				.member(INDEXED_ID)
 				.toField()
-				.field(dummyUser())
-				.toObject()
-				.member(ITEM_TYPE_ID)
-				.getMemberKey();
+				.field(dummyUser());
+
+		this.intrinsics = intrinsics;
+
+		return this.itemTypeKey = ITEM_TYPE_ID.key(indexed);
 	}
 
 	public final TypeParameters<Array> typeParameters(TypeRef itemTypeRef) {

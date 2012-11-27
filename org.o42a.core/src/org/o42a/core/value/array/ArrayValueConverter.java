@@ -19,10 +19,11 @@
 */
 package org.o42a.core.value.array;
 
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueConverter;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.impl.DefaultValueConverter;
 
 
 final class ArrayValueConverter implements ValueConverter<Array> {
@@ -46,35 +47,8 @@ final class ArrayValueConverter implements ValueConverter<Array> {
 	public boolean convertibleParameters(
 			TypeParameters<Array> destination,
 			TypeParameters<?> source) {
-
-		final ArrayValueType srcArrayType = source.getValueType().toArrayType();
-		final Intrinsics intrinsics = destination.getContext().getIntrinsics();
-		final MemberKey destItemTypeKey =
-				getValueType().itemTypeKey(intrinsics);
-		final MemberKey srcItemTypeKey = srcArrayType.itemTypeKey(intrinsics);
-
-		for (TypeParameter parameter : destination.all()) {
-
-			final MemberKey destKey = parameter.getKey();
-			final MemberKey srcKey;
-
-			if (destKey.equals(destItemTypeKey)) {
-				srcKey = srcItemTypeKey;
-			} else {
-				srcKey = destKey;
-			}
-
-			final TypeRef typeRef = source.typeRef(srcKey);
-
-			if (typeRef == null) {
-				continue;
-			}
-			if (!typeRef.derivedFrom(parameter.getTypeRef())) {
-				return false;
-			}
-		}
-
-		return true;
+		return DefaultValueConverter.<Array>defaultValueConverter()
+				.convertibleParameters(destination, source);
 	}
 
 	@Override
