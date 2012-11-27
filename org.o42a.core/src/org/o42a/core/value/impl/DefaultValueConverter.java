@@ -19,9 +19,9 @@
 */
 package org.o42a.core.value.impl;
 
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueConverter;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.*;
 
 
 public class DefaultValueConverter<T> implements ValueConverter<T> {
@@ -47,7 +47,20 @@ public class DefaultValueConverter<T> implements ValueConverter<T> {
 	public boolean convertibleParameters(
 			TypeParameters<T> destination,
 			TypeParameters<?> source) {
-		return false;
+		for (TypeParameter parameter : destination.all()) {
+
+			final MemberKey key = parameter.getKey();
+			final TypeRef typeRef = source.typeRef(key);
+
+			if (typeRef == null) {
+				continue;
+			}
+			if (!typeRef.derivedFrom(parameter.getTypeRef())) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
