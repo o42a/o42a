@@ -19,9 +19,11 @@
 */
 package org.o42a.core.value.link;
 
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIRBody;
@@ -29,6 +31,7 @@ import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
@@ -62,7 +65,12 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 
 	};
 
+	private static final MemberName INTERFACE_ID =
+			fieldName(CASE_INSENSITIVE.canonicalName("interface"));
+
 	private final LinkValueConverter converter;
+	private Intrinsics intrinsics;
+	private MemberKey interfaceKey;
 
 	private LinkValueType(String systemId) {
 		super(systemId, KnownLink.class);
@@ -80,7 +88,14 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 	}
 
 	public final MemberKey interfaceKey(Intrinsics intrinsics) {
-		return typeObject(intrinsics).toMember().getMemberKey();
+		if (this.interfaceKey != null && this.intrinsics == intrinsics) {
+			return this.interfaceKey;
+		}
+
+		this.intrinsics = intrinsics;
+
+		return this.interfaceKey =
+				INTERFACE_ID.key(typeObject(intrinsics).getScope());
 	}
 
 	public TypeParameters<KnownLink> typeParameters(TypeRef interfaceRef) {

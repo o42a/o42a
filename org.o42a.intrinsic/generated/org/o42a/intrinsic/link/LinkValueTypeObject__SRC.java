@@ -15,25 +15,20 @@ import org.o42a.core.member.field.Field;
 public final class LinkValueTypeObject__SRC implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
-	private URLSources sourceTree;
+	private SingleURLSource sourceTree;
 
 	public LinkValueTypeObject__SRC(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public URLSources getSourceTree() {
+	public SingleURLSource getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-
-		this.sourceTree = new URLSources(
+		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
 				"link.o42a");
-
-		this.sourceTree.add("interface__.o42a");
-
-		return this.sourceTree;
 	}
 
 	@Override

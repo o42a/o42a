@@ -20,5 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Variable :=> void
 =================
+~~~
+Variable is a link to an object, which can be modified at run time.
+~~~
+
+Interface := void ~~ A variable value type.
+#################
 
 <*[]!> ()
