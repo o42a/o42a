@@ -34,21 +34,6 @@ public class LinkInterfaceTest extends CompilerTestCase {
 	public void linkInterface() {
 		compile(
 				"A := `1",
-				"B := (`##interface [a`]) 2");
-
-		assertThat(
-				LINK.interfaceRef(field("b").toObject().type().getParameters())
-				.getType(),
-				is(ValueType.INTEGER.typeObject(this.context.getIntrinsics())));
-		assertThat(
-				definiteValue(linkTarget(field("b")), ValueType.INTEGER),
-				is(2L));
-	}
-
-	@Test
-	public void linkInterfaceByMember() {
-		compile(
-				"A := `1",
 				"B := (`a #interface) 2");
 
 		assertThat(
@@ -62,21 +47,6 @@ public class LinkInterfaceTest extends CompilerTestCase {
 
 	@Test
 	public void linkPrototypeInterface() {
-		compile(
-				"A :=> link (`integer)",
-				"B := (`##interface [a`]) 2");
-
-		assertThat(
-				LINK.interfaceRef(field("b").toObject().type().getParameters())
-				.getType(),
-				is(ValueType.INTEGER.typeObject(this.context.getIntrinsics())));
-		assertThat(
-				definiteValue(linkTarget(field("b")), ValueType.INTEGER),
-				is(2L));
-	}
-
-	@Test
-	public void linkPrototypeInterfaceByMember() {
 		compile(
 				"A :=> link (`integer)",
 				"B := (`a #interface) 2");
