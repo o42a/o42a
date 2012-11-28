@@ -44,16 +44,7 @@ public final class MacrosModule__SRC implements AnnotatedSources {
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
-		return new Field[] {
-			new org.o42a.lib.macros.LinkInterface(
-					owner,
-					new org.o42a.lib.macros.LinkInterface__SRC(this))
-			.getScope().toField(),
-			new org.o42a.lib.macros.ItemType(
-					owner,
-					new org.o42a.lib.macros.ItemType__SRC(this))
-			.getScope().toField(),
-		};
+		return new Field[0];
 	}
 
 }
