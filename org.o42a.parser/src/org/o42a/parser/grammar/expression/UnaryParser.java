@@ -92,9 +92,7 @@ public class UnaryParser implements Parser<UnaryNode> {
 		final ExpressionNode operand = context.parse(simpleExpression());
 
 		if (operand == null) {
-			context.getLogger().missingOperand(
-					context.current(),
-					operator.getSign());
+			context.getLogger().missingOperand(sign, operator.getSign());
 		}
 
 		return new UnaryNode(sign, operand);
