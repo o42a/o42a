@@ -1,6 +1,6 @@
 /*
     Parser
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,12 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.statement;
+package org.o42a.parser.grammar.clause;
 
-import static org.o42a.parser.Grammar.expression;
+import static org.o42a.parser.Grammar.ref;
 
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.parser.Parser;
@@ -30,11 +30,11 @@ import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class AssignmentParser implements Parser<AssignmentNode> {
+final class AssignmentClauseIdParser implements Parser<AssignmentNode> {
 
-	private final ExpressionNode destination;
+	private final RefNode destination;
 
-	public AssignmentParser(ExpressionNode destination) {
+	AssignmentClauseIdParser(RefNode destination) {
 		this.destination = destination;
 	}
 
@@ -44,7 +44,7 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 			return null;
 		}
 
-		final SourcePosition operatorStart = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		if (context.next() == '=') {
 			return null;
@@ -52,14 +52,13 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 		context.acceptButLast();
 
 		final SignNode<AssignmentOperator> operator =
-				new SignNode<AssignmentOperator>(
-						operatorStart,
-						context.current().fix(),
-						AssignmentOperator.ASSIGN);
-
-		context.acceptComments(false, operator);
-
-		final ExpressionNode value = context.parse(expression());
+				context.acceptComments(
+						false,
+						new SignNode<AssignmentOperator>(
+								start,
+								context.current().fix(),
+								AssignmentOperator.ASSIGN));
+		final RefNode value = context.parse(ref());
 
 		if (value == null) {
 			context.getLogger().missingValue(operator);

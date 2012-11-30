@@ -44,7 +44,7 @@ final class BinaryClauseIdParser implements Parser<BinaryNode> {
 	@Override
 	public BinaryNode parse(ParserContext context) {
 
-		final SignNode<BinaryOperator> sign = context.push(OPERATOR);
+		final SignNode<BinaryOperator> sign = context.parse(OPERATOR);
 
 		if (sign == null) {
 			return null;

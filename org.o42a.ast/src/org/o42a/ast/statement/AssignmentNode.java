@@ -20,11 +20,14 @@
 package org.o42a.ast.statement;
 
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 
 
-public class AssignmentNode extends AbstractStatementNode {
+public class AssignmentNode
+		extends AbstractStatementNode
+		implements ClauseIdNode {
 
 	private final ExpressionNode destination;
 	private final SignNode<AssignmentOperator> operator;
@@ -60,23 +63,17 @@ public class AssignmentNode extends AbstractStatementNode {
 	}
 
 	@Override
+	public <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitAssignment(this, p);
+	}
+
+	@Override
 	public void printContent(StringBuilder out) {
 		this.destination.printContent(out);
 		this.operator.printContent(out);
 		if (this.value != null) {
 			this.value.printContent(out);
 		}
-	}
-
-	public enum AssignmentOperator implements SignType {
-
-		ASSIGN;
-
-		@Override
-		public String getSign() {
-			return "=";
-		}
-
 	}
 
 }
