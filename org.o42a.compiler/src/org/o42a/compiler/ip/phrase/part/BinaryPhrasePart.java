@@ -92,7 +92,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		final BinaryOperator operator = this.node.getOperator();
 		final ClauseId clauseId;
 
-		if (operator.isArithmetic()) {
+		if (operator.isArithmetic() || operator.isCompare()) {
 			switch (operator) {
 			case ADD:
 				clauseId = ClauseId.ADD;
@@ -105,6 +105,9 @@ public class BinaryPhrasePart extends PhraseContinuation {
 				break;
 			case DIVIDE:
 				clauseId = ClauseId.DIVIDE;
+				break;
+			case COMPARE:
+				clauseId = ClauseId.COMPARE;
 				break;
 			default:
 				clauseId = null;

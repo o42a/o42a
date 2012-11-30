@@ -118,4 +118,26 @@ public class BinaryOperatorTest extends CompilerTestCase {
 		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
+	@Test
+	public void compare() {
+		compile(
+				"Compute :=> void (",
+				"  Left :=< link (`void)",
+				"  Right :=< link (`integer)",
+				")",
+				"A := void (",
+				"  <*Eval> Compute (",
+				"    <@Operators: compare | eval> Left = void",
+				"    <@Operators: operand> Right = integer",
+				"  )",
+				")",
+				"B := a <=> 3");
+
+		final Obj leftTarget = linkTarget(field("b", "left"));
+		final Obj rightTarget = linkTarget(field("b", "right"));
+
+		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
+	}
+
 }
