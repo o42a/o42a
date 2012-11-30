@@ -40,8 +40,6 @@ final class ClauseIdParser implements Parser<ClauseIdNode> {
 	@Override
 	public ClauseIdNode parse(ParserContext context) {
 		switch (context.next()) {
-		case '@':
-			return context.parse(declarableAdapter());
 		case '[':
 			return context.parse(brackets());
 		case '{':
