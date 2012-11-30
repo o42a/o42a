@@ -38,17 +38,17 @@ import org.o42a.util.io.StringSource;
 public class BinaryExpressionTest extends GrammarTestCase {
 
 	@Test
-	public void plus() {
+	public void add() {
 		assertOperator(BinaryOperator.ADD, "+");
 	}
 
 	@Test
-	public void hyphenMinus() {
+	public void hyphenSubtract() {
 		assertOperator(BinaryOperator.SUBTRACT, "-");
 	}
 
 	@Test
-	public void minus() {
+	public void subtract() {
 		assertOperator(BinaryOperator.SUBTRACT, "\u2212");
 	}
 
@@ -60,6 +60,11 @@ public class BinaryExpressionTest extends GrammarTestCase {
 	@Test
 	public void divide() {
 		assertOperator(BinaryOperator.DIVIDE, "/");
+	}
+
+	@Test
+	public void compare() {
+		assertOperator(BinaryOperator.COMPARE, "<=>");
 	}
 
 	@Test

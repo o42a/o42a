@@ -30,10 +30,11 @@ public enum BinaryOperator implements SignType {
 	LESS_OR_EQUAL("<=", 0),
 	NOT_EQUAL("<>", 0),
 	EQUAL("==", 0),
-	ADD("+", 1),
-	SUBTRACT("-", 1),
-	MULTIPLY("*", 2),
-	DIVIDE("/", 2);
+	COMPARE("<=>", 1),
+	ADD("+", 2),
+	SUBTRACT("-", 2),
+	MULTIPLY("*", 3),
+	DIVIDE("/", 3);
 
 	private final String sign;
 	private final int priority;
@@ -49,6 +50,10 @@ public enum BinaryOperator implements SignType {
 
 	public final boolean isEquality() {
 		return this == NOT_EQUAL || this == EQUAL;
+	}
+
+	public final boolean isCompare() {
+		return this == COMPARE;
 	}
 
 	public final boolean isComparison() {

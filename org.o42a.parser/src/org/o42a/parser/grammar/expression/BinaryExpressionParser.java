@@ -114,8 +114,13 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 					context.acceptAll();
 					break;
 				case '=':
-					operator = BinaryOperator.LESS_OR_EQUAL;
-					context.acceptAll();
+					if (context.next() == '>') {
+						operator = BinaryOperator.COMPARE;
+						context.acceptAll();
+					} else {
+						operator = BinaryOperator.LESS_OR_EQUAL;
+						context.acceptButLast();
+					}
 					break;
 				default:
 					operator = BinaryOperator.LESS;
