@@ -27,4 +27,4 @@ Variable is a link to an object, which can be modified at run time.
 Interface := void ~~ A variable value type.
 #################
 
-<*[]!> ()
+<[]!> ()

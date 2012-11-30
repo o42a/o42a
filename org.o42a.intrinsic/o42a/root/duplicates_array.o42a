@@ -34,10 +34,10 @@ If omitted then array will be prefilled with false items.
 ~~~
 
 <Of...> (
-  <*[Duplicate] | of size...> Duplicate = ()
+  <[Duplicate] | of size...> Duplicate = ()
 )
 
 <Of size> (
-  <*[Size]> Size = ()
+  <[Size]> Size = ()
 )
  

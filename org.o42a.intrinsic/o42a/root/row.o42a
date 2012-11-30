@@ -24,4 +24,4 @@ Row :=> $$indexed
 A row of object, i.e. immutable array.
 ~~~
 
-<*[[]]!> ()
+<[[]]!> ()

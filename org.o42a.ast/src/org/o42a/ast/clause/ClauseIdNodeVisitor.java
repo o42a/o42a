@@ -47,6 +47,4 @@ public interface ClauseIdNodeVisitor<R, P> {
 
 	R visitAssignment(AssignmentNode assignment, P p);
 
-	R visitPhrase(PhraseNode phrase, P p);
-
 }

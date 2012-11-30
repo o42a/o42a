@@ -20,12 +20,17 @@
 package org.o42a.ast.test.grammar.clause;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
+import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
-import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.BracesNode;
+import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.statement.SelfAssignmentNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
@@ -36,14 +41,12 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	@Test
 	public void noContent() {
 
-		final ClauseDeclaratorNode result = parse("<*'foo'>");
-		final PhraseNode phrase = to(PhraseNode.class, result.getClauseId());
+		final ClauseDeclaratorNode result = parse("<'foo'>");
+		final StringNode string = to(StringNode.class, result.getClauseId());
 
-		assertFalse(result.requiresContinuation());
-		assertEquals(
-				"foo",
-				singleClause(TextNode.class, phrase).getText());
-		assertNull(result.getContent());
+		assertThat(result.requiresContinuation(), is(false));
+		assertThat(string.getText(), is("foo"));
+		assertThat(result.getContent(), nullValue());
 		checkNothingReused(result);
 		checkParentheses(result);
 	}
@@ -73,7 +76,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<foo!> ()");
 
 		assertThat(result.getRequirement(), hasRange(4, 5));
-		assertTrue(result.isTerminator());
+		assertThat(result.isTerminator(), is(true));
 		assertThat(result.getReused().length, is(0));
 	}
 
@@ -82,12 +85,12 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	}
 
 	static void checkParentheses(ClauseDeclaratorNode declarator) {
-		assertEquals(
-				ClauseDeclaratorNode.Parenthesis.OPENING,
-				declarator.getOpening().getType());
-		assertEquals(
-				ClauseDeclaratorNode.Parenthesis.CLOSING,
-				declarator.getClosing().getType());
+		assertThat(
+				declarator.getOpening().getType(),
+				is(ClauseDeclaratorNode.Parenthesis.OPENING));
+		assertThat(
+				declarator.getClosing().getType(),
+				is(ClauseDeclaratorNode.Parenthesis.CLOSING));
 	}
 
 	private ClauseDeclaratorNode parse(String text) {
