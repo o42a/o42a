@@ -46,10 +46,10 @@ Item :=<> $$link (`#item type) (
 
   Index :=< $$link (`integer) ~~ Item index.
 
-  <*[Item index]!> Index = ()
+  <[Item index]!> Index = ()
 )
 
 <*Item by index> Item` (
-  <*[Item index]!> Index = ()
+  <[Item index]!> Index = ()
 )
  

@@ -22,19 +22,19 @@ String :=> void
 ===============
 
 <*Char> Char (
-  <*[]!> Index = ()
+  <[]!> Index = ()
 )
 
 <*Addition> Strings: concat (
-  <@Operators: add | concat with> What = $prefix$
+  <* + * | concat with> What = $prefix$
   <:Concat with> (
-    <@Operators: operand> With = ()
+    <[]> With = ()
   )
 )
 
 <*Comparison> Strings: compare (
-  <@Operators: compare | compare with> What = $prefix$
+  <* <=> * | compare with> What = $prefix$
   <:Compare with> (
-    <@Operators: operand> With = ()
+    <[]> With = ()
   )
 )

@@ -38,7 +38,7 @@ public class OperandPhrasePart extends PhraseContinuation {
 
 	@Override
 	public NextClause nextClause(PhraseContext context) {
-		return context.clauseById(this, ClauseId.OPERAND);
+		return context.clauseById(this, ClauseId.ARGUMENT);
 	}
 
 	@Override
