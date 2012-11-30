@@ -21,7 +21,6 @@ package org.o42a.ast.clause;
 
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.statement.AssignmentNode;
@@ -33,11 +32,6 @@ public abstract class AbstractClauseIdVisitor<R, P>
 	@Override
 	public R visitMemberRef(MemberRefNode ref, P p) {
 		return visitClauseId(ref, p);
-	}
-
-	@Override
-	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
-		return visitClauseId(adapter, p);
 	}
 
 	@Override

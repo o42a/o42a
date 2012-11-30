@@ -21,8 +21,6 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByName;
-import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
-import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
@@ -33,7 +31,6 @@ import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.clause.AbstractClauseIdVisitor;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
@@ -46,7 +43,6 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseId;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.string.Name;
@@ -232,26 +228,6 @@ final class ClauseIdVisitor
 				p,
 				name,
 				ClauseId.ASSIGN);
-	}
-
-	@Override
-	public ClauseDeclaration visitDeclarableAdapter(
-			DeclarableAdapterNode adapter,
-			Distributor p) {
-
-		final Ref adapterId = adapter.getMember().accept(
-				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
-				p);
-
-		if (adapterId == null) {
-			return null;
-		}
-
-		return clauseDeclaration(
-				location(p, adapter),
-				p,
-				null,
-				adapterId(adapterId.toStaticTypeRef()));
 	}
 
 	@Override

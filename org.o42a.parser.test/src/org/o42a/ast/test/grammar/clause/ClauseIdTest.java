@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
@@ -48,19 +47,6 @@ public class ClauseIdTest extends GrammarTestCase {
 
 		assertFalse(result.requiresContinuation());
 		assertThat(result.getClauseId(), isName("foo"));
-		assertThat(result.getContent(), isName("bar"));
-		checkNothingReused(result);
-		checkParentheses(result);
-	}
-
-	@Test
-	public void adapter() {
-
-		final ClauseDeclaratorNode result = parse("<@foo> bar");
-
-		assertThat(result.requiresContinuation(), is(false));
-		assertThat(to(DeclarableAdapterNode.class, result.getClauseId())
-		.getMember(), isName("foo"));
 		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
 		checkParentheses(result);

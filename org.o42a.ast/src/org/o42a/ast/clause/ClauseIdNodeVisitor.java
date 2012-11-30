@@ -21,7 +21,6 @@ package org.o42a.ast.clause;
 
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.statement.AssignmentNode;
@@ -30,8 +29,6 @@ import org.o42a.ast.statement.AssignmentNode;
 public interface ClauseIdNodeVisitor<R, P> {
 
 	R visitMemberRef(MemberRefNode ref, P p);
-
-	R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p);
 
 	R visitScopeRef(ScopeRefNode ref, P p);
 
