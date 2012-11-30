@@ -164,7 +164,7 @@ final class ClauseIdVisitor
 
 		switch (unary.getOperator()) {
 		case PLUS:
-			clauseId = ClauseId.ADD;
+			clauseId = ClauseId.PLUS;
 			break;
 		case MINUS:
 			clauseId = ClauseId.MINUS;

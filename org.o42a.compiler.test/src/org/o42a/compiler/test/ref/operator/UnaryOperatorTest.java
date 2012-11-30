@@ -32,7 +32,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 	@Test
 	public void plus() {
 		compile(
-				"A :=> integer(<@Operators: plus> = 1)",
+				"A :=> integer (<+*> = 1)",
 				"B := + a");
 
 		final Obj b = field("b").toObject();
@@ -45,7 +45,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 	@Test
 	public void minus() {
 		compile(
-				"A :=> integer(<@Operators: minus> = 1)",
+				"A :=> integer (<-*> = 1)",
 				"B := - a");
 
 		final Obj b = field("b").toObject();
@@ -58,7 +58,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 	@Test
 	public void remainSamePlus() {
 		compile(
-				"A := integer(= 2. <@Operators: plus>)",
+				"A := integer (= 2. <+*>)",
 				"B := + a");
 
 		final Obj b = field("b").toObject();
