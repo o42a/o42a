@@ -143,10 +143,9 @@ public class ClauseInterpreter {
 		final Distributor distributor =
 				new Placed(context, declarator, statements.nextDistributor())
 				.distribute();
-		ClauseDeclaration declaration =
-				declarator.getClauseId().accept(
-						CLAUSE_ID_VISITOR,
-						distributor);
+		ClauseDeclaration declaration = declarator.getClauseId().accept(
+				CLAUSE_ID_VISITOR,
+				distributor);
 
 		if (declaration == null) {
 			return;
