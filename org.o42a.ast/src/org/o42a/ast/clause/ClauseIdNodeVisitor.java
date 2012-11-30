@@ -19,7 +19,7 @@
 */
 package org.o42a.ast.clause;
 
-import org.o42a.ast.expression.PhraseNode;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
@@ -32,6 +32,14 @@ public interface ClauseIdNodeVisitor<R, P> {
 	R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p);
 
 	R visitScopeRef(ScopeRefNode ref, P p);
+
+	R visitBrackets(BracketsNode brackets, P p);
+
+	R visitBraces(BracesNode braces, P p);
+
+	R visitUnary(UnaryNode unary, P p);
+
+	R visitBinary(BinaryNode binary, P p);
 
 	R visitPhrase(PhraseNode phrase, P p);
 

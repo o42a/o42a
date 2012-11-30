@@ -22,7 +22,7 @@ package org.o42a.ast.test.grammar.expression;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.o42a.parser.Grammar.unaryExpression;
+import static org.o42a.parser.Grammar.unary;
 
 import org.junit.Test;
 import org.o42a.ast.expression.UnaryNode;
@@ -110,7 +110,7 @@ public class UnaryExpressionTest extends GrammarTestCase {
 	}
 
 	private UnaryNode parse(String text) {
-		return parse(unaryExpression(), text);
+		return parse(unary(), text);
 	}
 
 }

@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.o42a.parser.Grammar.binaryExpression;
+import static org.o42a.parser.Grammar.binary;
 import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
@@ -120,7 +120,7 @@ public class BinaryExpressionTest extends GrammarTestCase {
 		final ExpressionNode expression =
 				this.worker.parse(simpleExpression());
 
-		return this.worker.parse(binaryExpression(expression));
+		return this.worker.parse(binary(expression));
 	}
 
 }

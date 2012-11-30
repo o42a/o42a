@@ -32,12 +32,11 @@ import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class UnaryExpressionParser implements Parser<UnaryNode> {
+public class UnaryParser implements Parser<UnaryNode> {
 
-	public static final UnaryExpressionParser UNARY_EXPRESSION =
-			new UnaryExpressionParser();
+	public static final UnaryParser UNARY = new UnaryParser();
 
-	private UnaryExpressionParser() {
+	private UnaryParser() {
 	}
 
 	@Override

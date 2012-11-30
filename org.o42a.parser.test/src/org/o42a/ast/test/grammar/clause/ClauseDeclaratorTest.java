@@ -26,71 +26,12 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 import org.junit.Test;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.ref.ScopeRefNode;
-import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.statement.SelfAssignmentNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
 public class ClauseDeclaratorTest extends GrammarTestCase {
-
-	@Test
-	public void nameKey() {
-
-		final ClauseDeclaratorNode result = parse("<foo> bar");
-
-		assertFalse(result.requiresContinuation());
-		assertThat(result.getClauseId(), isName("foo"));
-		assertThat(result.getContent(), isName("bar"));
-		assertNothingReused(result);
-		checkParentheses(result);
-	}
-
-	@Test
-	public void adapterId() {
-
-		final ClauseDeclaratorNode result = parse("<@foo> bar");
-
-		assertFalse(result.requiresContinuation());
-		assertThat(to(DeclarableAdapterNode.class, result.getClauseId())
-		.getMember(), isName("foo"));
-		assertThat(result.getContent(), isName("bar"));
-		assertNothingReused(result);
-		checkParentheses(result);
-	}
-
-	@Test
-	public void phraseId() {
-
-		final ClauseDeclaratorNode result = parse("<*[foo]> bar");
-		final PhraseNode phrase = to(PhraseNode.class, result.getClauseId());
-
-		assertFalse(result.requiresContinuation());
-		assertEquals(
-				ScopeType.IMPLIED,
-				to(ScopeRefNode.class, phrase.getPrefix()).getType());
-		assertThat(singleClause(BracketsNode.class, phrase)
-		.getArguments()[0].getValue(), isName("foo"));
-		assertThat(result.getContent(), isName("bar"));
-		assertNothingReused(result);
-		checkParentheses(result);
-	}
-
-	@Test
-	public void impliedId() {
-
-		final ClauseDeclaratorNode result = parse("<*> foo");
-
-		assertFalse(result.requiresContinuation());
-		assertEquals(
-				ScopeType.IMPLIED,
-				to(ScopeRefNode.class, result.getClauseId()).getType());
-		assertThat(result.getContent(), isName("foo"));
-		assertNothingReused(result);
-		checkParentheses(result);
-	}
 
 	@Test
 	public void noContent() {
@@ -103,33 +44,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 				"foo",
 				singleClause(TextNode.class, phrase).getText());
 		assertNull(result.getContent());
-		assertNothingReused(result);
-		checkParentheses(result);
-	}
-
-	@Test
-	public void rowId() {
-
-		final ClauseDeclaratorNode result = parse("<*[[foo]]> bar");
-		final PhraseNode phrase = to(PhraseNode.class, result.getClauseId());
-
-		assertFalse(result.requiresContinuation());
-		assertEquals(
-				ScopeType.IMPLIED,
-				to(ScopeRefNode.class, phrase.getPrefix()).getType());
-
-		final BracketsNode key = singleClause(BracketsNode.class, phrase);
-
-		assertThat(key.getArguments().length, is(1));
-
-		final BracketsNode row =
-				to(BracketsNode.class, key.getArguments()[0].getValue());
-
-		assertThat(row.getArguments().length, is(1));
-
-		assertThat(row.getArguments()[0].getValue(), isName("foo"));
-		assertThat(result.getContent(), isName("bar"));
-		assertNothingReused(result);
+		checkNothingReused(result);
 		checkParentheses(result);
 	}
 
@@ -162,8 +77,8 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		assertThat(result.getReused().length, is(0));
 	}
 
-	private void assertNothingReused(ClauseDeclaratorNode declarator) {
-		assertEquals(0, declarator.getReused().length);
+	static void checkNothingReused(ClauseDeclaratorNode declarator) {
+		assertThat(declarator.getReused().length, is(0));
 	}
 
 	static void checkParentheses(ClauseDeclaratorNode declarator) {
