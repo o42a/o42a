@@ -125,11 +125,15 @@ public final class PhraseInterpreter {
 			BinaryNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
-		if (node.getOperator().isArithmetic()) {
+
+		final BinaryOperator operator = node.getOperator();
+
+		if (operator.isArithmetic() || operator.isCompare()) {
 			return binaryPhrase(node, distributor, typeConsumer)
 					.getPhrase()
 					.toRef();
 		}
+
 		return new ComparisonExpression(ip(), node, distributor, typeConsumer)
 		.toRef();
 	}
