@@ -23,6 +23,8 @@ import static org.o42a.parser.Grammar.ref;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.parser.Parser;
@@ -49,22 +51,40 @@ final class AssignmentClauseIdParser implements Parser<AssignmentNode> {
 		if (context.next() == '=') {
 			return null;
 		}
-		context.acceptButLast();
 
 		final SignNode<AssignmentOperator> operator =
-				context.acceptComments(
+				context.skipComments(
 						false,
 						new SignNode<AssignmentOperator>(
 								start,
 								context.current().fix(),
 								AssignmentOperator.ASSIGN));
-		final RefNode value = context.parse(ref());
+		final ScopeRefNode value = parseImpliedValue(context);
 
 		if (value == null) {
-			context.getLogger().missingValue(operator);
+			return null;
 		}
 
+		context.acceptAll();
+
 		return new AssignmentNode(this.destination, operator, value);
+	}
+
+	private ScopeRefNode parseImpliedValue(ParserContext context) {
+
+		final RefNode value = context.push(ref());
+
+		if (!(value instanceof ScopeRefNode)) {
+			return null;
+		}
+
+		final ScopeRefNode scopeRef = (ScopeRefNode) value;
+
+		if (scopeRef.getType() != ScopeType.IMPLIED) {
+			return null;
+		}
+
+		return scopeRef;
 	}
 
 }

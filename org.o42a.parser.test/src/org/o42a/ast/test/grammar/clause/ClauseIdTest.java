@@ -27,7 +27,6 @@ import static org.o42a.ast.test.grammar.clause.ClauseDeclaratorTest.checkNothing
 import static org.o42a.ast.test.grammar.clause.ClauseDeclaratorTest.checkParentheses;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
@@ -319,7 +318,6 @@ public class ClauseIdTest extends GrammarTestCase {
 	}
 
 	@Test
-	@Ignore
 	public void assign() {
 
 		final ClauseDeclaratorNode result = parse("<foo = *> bar");
