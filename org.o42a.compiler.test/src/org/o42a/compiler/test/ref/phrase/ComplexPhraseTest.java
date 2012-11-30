@@ -40,9 +40,9 @@ public class ComplexPhraseTest extends CompilerTestCase {
 	public void phraseAsPhrasePrefix2() {
 		compile(
 				"Str :=> string(",
-				"  <*''> ()",
+				"  <''> ()",
 				")",
-				"A := (str 'abc')[1]");
+				"A := (str 'abc') [1]");
 
 		assertThat(definiteValue(field("a"), ValueType.STRING), is("b"));
 	}
@@ -51,7 +51,7 @@ public class ComplexPhraseTest extends CompilerTestCase {
 	public void issueClause() {
 		compile(
 				"Is :=> string (",
-				"  <*Check> (<*[Condition]>? = \"true\". = \"false\")",
+				"  <*Check> (<[Condition]>? = \"true\". = \"false\")",
 				")",
 				"A := is [1 > 0]",
 				"B := is [1 < 0]");

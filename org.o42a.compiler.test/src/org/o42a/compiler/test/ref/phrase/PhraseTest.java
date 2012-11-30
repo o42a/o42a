@@ -33,9 +33,9 @@ public class PhraseTest extends CompilerTestCase {
 	@Test
 	public void overriderInsideOverrider() {
 		compile(
-				"A := void(",
+				"A := void (",
 				"  Foo := integer (Bar :=> string. = 1)",
-				"  <*[]> foo = * (<*''> Bar = *)",
+				"  <[]> foo = * (<''> Bar = *)",
 				")",
 				"B := a [2] 'b'");
 
@@ -50,9 +50,9 @@ public class PhraseTest extends CompilerTestCase {
 	@Test
 	public void overriderInsideClause() {
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  Foo :=> string",
-				"  <*[]> a (<*''> Foo = string)",
+				"  <[]> a (<''> Foo = string)",
 				")",
 				"B := a [2] 'b'");
 
@@ -73,7 +73,7 @@ public class PhraseTest extends CompilerTestCase {
 				"    = Val + inc",
 				"  )",
 				"  <*> Sum (",
-				"    <*[]> Inc = ()",
+				"    <[]> Inc = ()",
 				"  )",
 				")",
 				"B := a (Val = 1)",

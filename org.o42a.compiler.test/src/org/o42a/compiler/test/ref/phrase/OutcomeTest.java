@@ -34,9 +34,9 @@ public class OutcomeTest extends CompilerTestCase {
 		compile(
 				"A :=> void(",
 				"  F :=< integer",
-				"  <*[] = f> F = ()",
+				"  <[] = f> F = ()",
 				")",
-				"B := a[42]");
+				"B := a [42]");
 
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(42L));
 	}
@@ -46,11 +46,11 @@ public class OutcomeTest extends CompilerTestCase {
 		compile(
 				"A :=> void(",
 				"  F :=< integer",
-				"  <*> A(",
-				"    <*[] = f> F = ()",
+				"  <*> A (",
+				"    <[] = f> F = ()",
 				"  )",
 				")",
-				"B := a[42]");
+				"B := a [42]");
 
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(42L));
 	}
@@ -62,14 +62,14 @@ public class OutcomeTest extends CompilerTestCase {
 				"  F :=< string(",
 				"    G := 1",
 				"  )",
-				"  <*'' = f: g> F = *(",
-				"    <G> G = *(",
-				"       <*[]> ()",
+				"  <'' = f: g> F = * (",
+				"    <G> G = * (",
+				"       <[]> ()",
 				"    )",
 				"  )",
 				")",
-				"B := a'value 1'",
-				"C := a'value 2' g[2]");
+				"B := a 'value 1'",
+				"C := a 'value 2' g [2]");
 
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(field("c"), ValueType.INTEGER), is(2L));

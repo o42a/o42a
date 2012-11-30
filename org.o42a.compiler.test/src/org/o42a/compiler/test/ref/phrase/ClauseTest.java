@@ -33,7 +33,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void argument() {
 		compile(
-				"A := void(<*[arg]> integer)",
+				"A := void(<[arg]> integer)",
 				"B := a[2]");
 
 		final Field b = field("b");
@@ -48,7 +48,7 @@ public class ClauseTest extends CompilerTestCase {
 				"  Foo :=< integer ",
 				"  <Name> Foo = *",
 				")",
-				"B := a_name(=2)");
+				"B := a_name(= 2)");
 
 		final Field bFoo = field("b", "foo");
 
@@ -58,8 +58,8 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void string() {
 		compile(
-				"A := void(<*'arg'>)",
-				"B := a'b'");
+				"A := void(<'arg'>)",
+				"B := a 'b'");
 
 		final Field b = field("b");
 
@@ -69,8 +69,8 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void stringInBrackets() {
 		compile(
-				"A := void(<*'arg'>)",
-				"B := a['b']");
+				"A := void(<'arg'>)",
+				"B := a ['b']");
 
 		final Field b = field("b");
 
@@ -80,8 +80,8 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void doubleQuotedStringArgument() {
 		compile(
-				"A := void(<*[arg]>)",
-				"B := a\"b\"");
+				"A := void(<[arg]>)",
+				"B := a \"b\"");
 
 		final Field b = field("b");
 
@@ -91,7 +91,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void implicit() {
 		compile(
-				"A := string(<*implicit> = string(<*''> ()))",
+				"A := string(<*implicit> = string(<''> ()))",
 				"B := a 'b'");
 
 		final Field b = field("b");
@@ -105,7 +105,7 @@ public class ClauseTest extends CompilerTestCase {
 				"A :=> void(",
 				"  Foo :=< \"a\"",
 				"  <*implicit> A(",
-				"    <*[arg]> foo = string",
+				"    <[arg]> foo = string",
 				"  )",
 				")",
 				"B := a \"b\"");

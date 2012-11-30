@@ -35,8 +35,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 		compile(
 				"A := string (",
 				"  Foo := 1",
-				"  <* [Foo value] | $object$> foo = *",
-				"  <Bar> (<*'Value'> ())",
+				"  <[Foo value] | $object$> foo = *",
+				"  <Bar> (<'Value'> ())",
 				")",
 				"B := a[2] bar 'b'");
 
@@ -52,8 +52,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 		compile(
 				"A := string (",
 				"  Foo := 1",
-				"  <* [Foo value] | bar> foo = *",
-				"  <Bar> (<*'Value'> ())",
+				"  <[Foo value] | bar> foo = *",
+				"  <Bar> (<'Value'> ())",
 				")",
 				"B := a[2] bar 'b'");
 
@@ -69,9 +69,9 @@ public class ClauseReuseTest extends CompilerTestCase {
 		compile(
 				"A := string (",
 				"  Foo := 1",
-				"  <*[Foo value] | group> Foo = *",
+				"  <[Foo value] | group> Foo = *",
 				"  <*Group> (",
-				"    <Bar> (<*'Value'> ())",
+				"    <Bar> (<'Value'> ())",
 				"  )",
 				")",
 				"B := a [2] bar 'b'");
@@ -88,9 +88,9 @@ public class ClauseReuseTest extends CompilerTestCase {
 		compile(
 				"A := string (",
 				"  Foo := 1",
-				"  <*[Foo value] | internal group> Foo = *",
+				"  <[Foo value] | internal group> Foo = *",
 				"  <:Internal group> (",
-				"    <Bar> (<*'Value'> ())",
+				"    <Bar> (<'Value'> ())",
 				"  )",
 				")",
 				"B := a [2] bar 'b'");
@@ -108,8 +108,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 				"A := void (",
 				"  Foo := \"a\"",
 				"  Bar := \"b\"",
-				"  <:Foo group> (<*''> Foo = ())",
-				"  <:Bar group> (<*''> Bar = ())",
+				"  <:Foo group> (<''> Foo = ())",
+				"  <:Bar group> (<''> Bar = ())",
 				" <Set | foo group | bar group> ()",
 				")",
 				"B := a () set 'c'");
@@ -129,8 +129,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 				"  Foo := \"a\"",
 				"  Bar := \"b\"",
 				"  <*Group> (",
-				"    <*'' | group> Foo = ()",
-				"    <*[] | group> Bar = ()",
+				"    <'' | group> Foo = ()",
+				"    <[] | group> Bar = ()",
 				"  )",
 				")",
 				"B := a 'c' [\"d\"]");
@@ -149,8 +149,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 				"A := void (",
 				"  Foo := \"a\"",
 				"  Bar := \"b\"",
-				"  <*[Foo] | bar> Foo = ()",
-				"  <*'Bar'> Bar = ()",
+				"  <[Foo] | bar> Foo = ()",
+				"  <'Bar'> Bar = ()",
 				")",
 				"B := a [\"c\"] 'd'");
 
@@ -165,9 +165,9 @@ public class ClauseReuseTest extends CompilerTestCase {
 				"  Foo := \"a\"",
 				"  Bar := \"b\"",
 				"  <*Group> (",
-				"    <*[Foo] | bar> Foo = ()",
+				"    <[Foo] | bar> Foo = ()",
 				"  )",
-				"  <*'Bar'> Bar = ()",
+				"  <'Bar'> Bar = ()",
 				")",
 				"B := a [\"c\", 'd']");
 

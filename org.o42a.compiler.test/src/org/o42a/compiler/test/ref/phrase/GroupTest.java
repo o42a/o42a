@@ -33,10 +33,10 @@ public class GroupTest extends CompilerTestCase {
 	@Test
 	public void group() {
 		compile(
-				"A := integer(",
-				"  <*[arg]> ()",
+				"A := integer (",
+				"  <[Arg]> ()",
 				")",
-				"B := A[2]");
+				"B := A [2]");
 
 		final Field b = field("b");
 
@@ -46,13 +46,13 @@ public class GroupTest extends CompilerTestCase {
 	@Test
 	public void overriderInGroup() {
 		compile(
-				"A := void(",
-				"  Foo := 1.",
-				"  <Set> foo = *(",
-				"    <*[value]> ()",
+				"A := void (",
+				"  Foo := 1",
+				"  <Set> foo = * (",
+				"    <[Value]> ()",
 				"  )",
 				")",
-				"B := A() set[2]");
+				"B := A _set [2]");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -63,13 +63,13 @@ public class GroupTest extends CompilerTestCase {
 	@Test
 	public void overriderInImplicitGroup() {
 		compile(
-				"A := void(",
-				"  Foo := 1.",
-				"  <*implied> foo = *(",
-				"    <*[value]> ()",
+				"A := void (",
+				"  Foo := 1",
+				"  <*Implied> foo = * (",
+				"    <[value]> ()",
 				"  )",
 				")",
-				"B := A[2]");
+				"B := A [2]");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -80,12 +80,12 @@ public class GroupTest extends CompilerTestCase {
 	@Test
 	public void groupInGroup() {
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  <Set> (",
-				"    <*[value]> ()",
+				"    <[Value]> ()",
 				"  )",
 				")",
-				"B := A() set[2]");
+				"B := A _set [2]");
 
 		final Field b = field("b");
 
@@ -95,14 +95,14 @@ public class GroupTest extends CompilerTestCase {
 	@Test
 	public void groupIn2ImplicitGroups() {
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  <*> (",
 				"    <*> (",
-				"      <*[value]> ()",
+				"      <[Value]> ()",
 				"    )",
 				"  )",
 				")",
-				"B := A[2]");
+				"B := A [2]");
 
 		final Field b = field("b");
 
@@ -112,14 +112,14 @@ public class GroupTest extends CompilerTestCase {
 	@Test
 	public void assignerIn2ImplicitGroups() {
 		compile(
-				"A := integer(",
-				"  <*foo> (",
-				"    <*bar> (",
-				"      <*[value]> = integer()",
+				"A := integer (",
+				"  <*Foo> (",
+				"    <*Bar> (",
+				"      <[Value]> = integer ()",
 				"    )",
 				"  )",
 				")",
-				"B := A[2]");
+				"B := A [2]");
 
 		final Field b = field("b");
 
@@ -129,12 +129,12 @@ public class GroupTest extends CompilerTestCase {
 	@Test
 	public void groupInImplicitGroup() {
 		compile(
-				"A := integer(",
-				"  <*implicit> (",
-				"    <*[value]> ()",
+				"A := integer (",
+				"  <*Implicit> (",
+				"    <[Value]> ()",
 				"  )",
 				")",
-				"B := A[2]");
+				"B := A [2]");
 
 		final Field b = field("b");
 

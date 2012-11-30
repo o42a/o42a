@@ -145,7 +145,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 	public void argument() {
 		compile(
 				"A :=> integer (",
-				"  <*[]!> ()",
+				"  <[]!> ()",
 				")",
 				"#T := 123",
 				"B := a [#t]");
@@ -158,7 +158,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 		compile(
 				"A :=> void (",
 				"  F :=< string",
-				"  <*[]!> F = ()",
+				"  <[]!> F = ()",
 				")",
 				"#T := \"test\"",
 				"B := a [#t]");
