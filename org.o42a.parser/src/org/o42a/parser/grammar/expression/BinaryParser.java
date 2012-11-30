@@ -31,13 +31,13 @@ import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class BinaryExpressionParser implements Parser<BinaryNode> {
+public class BinaryParser implements Parser<BinaryNode> {
 
 	private static final OperatorParser OPERATOR = new OperatorParser();
 
 	private final ExpressionNode leftOperand;
 
-	public BinaryExpressionParser(ExpressionNode leftOperand) {
+	public BinaryParser(ExpressionNode leftOperand) {
 		this.leftOperand = leftOperand;
 	}
 

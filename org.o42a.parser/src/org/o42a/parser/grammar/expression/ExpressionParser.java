@@ -19,7 +19,7 @@
 */
 package org.o42a.parser.grammar.expression;
 
-import static org.o42a.parser.Grammar.binaryExpression;
+import static org.o42a.parser.Grammar.binary;
 import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.o42a.ast.expression.BinaryNode;
@@ -52,7 +52,7 @@ public final class ExpressionParser implements Parser<ExpressionNode> {
 		}
 		if (!context.isEOF()) {
 
-			final BinaryNode binary = context.parse(binaryExpression(left));
+			final BinaryNode binary = context.parse(binary(left));
 
 			if (binary != null) {
 				return binary;

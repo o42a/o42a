@@ -19,9 +19,7 @@
 */
 package org.o42a.parser.grammar.clause;
 
-import static org.o42a.parser.Grammar.declarableAdapter;
-import static org.o42a.parser.Grammar.phrase;
-import static org.o42a.parser.Grammar.ref;
+import static org.o42a.parser.grammar.clause.ClauseIdParser.CLAUSE_ID;
 import static org.o42a.parser.grammar.clause.ClauseRequirementParser.CLAUSE_REQUIREMENT;
 import static org.o42a.parser.grammar.clause.OutcomeParser.OUTCOME;
 import static org.o42a.parser.grammar.clause.ReusedClauseParser.REUSED_CLAUSE;
@@ -29,8 +27,6 @@ import static org.o42a.parser.grammar.clause.ReusedClauseParser.REUSED_CLAUSE;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.*;
 import org.o42a.ast.clause.ClauseDeclaratorNode.Requirement;
-import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
@@ -56,7 +52,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		final SignNode<ClauseDeclaratorNode.Parenthesis> opening =
 				opening(context);
 
-		final ClauseIdNode clauseId = clauseId(context);
+		final ClauseIdNode clauseId = context.parse(CLAUSE_ID);
 
 		if (clauseId == null) {
 			return null;
@@ -94,30 +90,6 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 						ClauseDeclaratorNode.Parenthesis.OPENING);
 
 		return context.skipComments(true, opening);
-	}
-
-	private ClauseIdNode clauseId(ParserContext context) {
-		if (context.next() == '@') {
-			return context.parse(declarableAdapter());
-		}
-
-		final RefNode ref = context.parse(ref());
-
-		if (ref == null) {
-			return null;
-		}
-
-		final PhraseNode phrase = context.parse(phrase(ref));
-
-		if (phrase != null) {
-			return phrase;
-		}
-
-		if (ref instanceof ClauseIdNode) {
-			return (ClauseIdNode) ref;
-		}
-
-		return null;
 	}
 
 	private ReusedClauseNode[] reused(ParserContext context) {

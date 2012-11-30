@@ -19,7 +19,7 @@
 */
 package org.o42a.ast.clause;
 
-import org.o42a.ast.expression.PhraseNode;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
@@ -41,6 +41,26 @@ public abstract class AbstractClauseIdVisitor<R, P>
 	@Override
 	public R visitScopeRef(ScopeRefNode ref, P p) {
 		return visitClauseId(ref, p);
+	}
+
+	@Override
+	public R visitBrackets(BracketsNode brackets, P p) {
+		return visitClauseId(brackets, p);
+	}
+
+	@Override
+	public R visitBraces(BracesNode braces, P p) {
+		return visitClauseId(braces, p);
+	}
+
+	@Override
+	public R visitUnary(UnaryNode unary, P p) {
+		return visitClauseId(unary, p);
+	}
+
+	@Override
+	public R visitBinary(BinaryNode binary, P p) {
+		return visitClauseId(binary, p);
 	}
 
 	@Override

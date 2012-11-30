@@ -184,8 +184,8 @@ public class Grammar {
 		return new PhraseParser(prefix);
 	}
 
-	public static final Parser<UnaryNode> unaryExpression() {
-		return UnaryExpressionParser.UNARY_EXPRESSION;
+	public static final Parser<UnaryNode> unary() {
+		return UnaryParser.UNARY;
 	}
 
 	public static final Parser<MacroExpansionNode> macroExpansion() {
@@ -197,9 +197,8 @@ public class Grammar {
 		return new TypeParametersParser(type);
 	}
 
-	public static final Parser<BinaryNode> binaryExpression(
-			ExpressionNode leftOperand) {
-		return new BinaryExpressionParser(leftOperand);
+	public static final Parser<BinaryNode> binary(ExpressionNode leftOperand) {
+		return new BinaryParser(leftOperand);
 	}
 
 	public static final Parser<BracketsNode> brackets() {

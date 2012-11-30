@@ -83,7 +83,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '-':
 		case MINUS:
 		case '/':
-			return context.parse(unaryExpression());
+			return context.parse(unary());
 		case '#':
 
 			final RefNode macroRef = context.parse(ref());
