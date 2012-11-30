@@ -252,9 +252,9 @@ public enum ClauseId {
 		@Override
 		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
-				return "* <compare> *";
+				return "* <=> *";
 			}
-			return name + " <compare> *";
+			return name + " <=> *";
 		}
 
 	},
@@ -272,23 +272,6 @@ public enum ClauseId {
 				return "* = *";
 			}
 			return name + " = *";
-		}
-
-	},
-
-	OPERAND("right operand", true) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "operand");
-		}
-
-		@Override
-		public String toString(MemberId memberId, Name name) {
-			if (name == null) {
-				return "<operand>";
-			}
-			return "<operand>(" + name + ')';
 		}
 
 	};

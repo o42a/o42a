@@ -28,13 +28,6 @@ Minus :=> void
 Clause identifier of unary minus (`-`) operator.
 ~~~
 
-Operand :=> void
-~~~~~~~~~~~~~~~~
-Clause identifier representing the right operand of binary operators.
-
-The left operand is represented by binary operator's clause itself.
-~~~ 
-
 Add :=> void
 ~~~~~~~~~~~~
 Clause identifier of addition (`+`) operator.

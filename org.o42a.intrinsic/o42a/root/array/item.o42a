@@ -27,5 +27,5 @@ Array item assignment clause.
 
 It assigns new item value with <set> prototype.
 ~~~
-  <@Operators: operand> New value = ()
+  <[]> New value = ()
 )

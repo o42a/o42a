@@ -24,4 +24,4 @@ Array :=> $$indexed
 A mutable array of objects.
 ~~~
 
-<*[[]]!> ()
+<[[]]!> ()

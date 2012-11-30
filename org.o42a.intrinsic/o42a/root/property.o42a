@@ -49,7 +49,7 @@ Value assignment clause.
 
 It assigns new property value with <set> prototype.
 ~~~
-  <@Operators: operand> New value = ()
+  <[]> New value = ()
 )
 
-<*[]!> Value = () ~~ Property initializer.
+<[]!> Value = () ~~ Property initializer.
