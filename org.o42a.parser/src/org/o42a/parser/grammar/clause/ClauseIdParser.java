@@ -25,6 +25,7 @@ import static org.o42a.parser.grammar.clause.UnaryClauseIdParser.UNARY_CLAUSE_ID
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -56,6 +57,16 @@ final class ClauseIdParser implements Parser<ClauseIdNode> {
 
 		if (ref == null) {
 			return null;
+		}
+
+		if (context.pendingOrNext() == '=') {
+
+			final AssignmentNode assignment =
+					context.parse(new AssignmentClauseIdParser(ref));
+
+			if (assignment != null) {
+				return assignment;
+			}
 		}
 
 		final BinaryNode binary = context.parse(new BinaryClauseIdParser(ref));
