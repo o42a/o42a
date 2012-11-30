@@ -41,6 +41,7 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
+import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -54,8 +55,7 @@ import org.o42a.util.string.Name;
 final class ClauseIdVisitor
 		extends AbstractClauseIdVisitor<ClauseDeclaration, Distributor> {
 
-	public static final ClauseIdVisitor CLAUSE_ID_VISITOR =
-			new ClauseIdVisitor();
+	static final ClauseIdVisitor CLAUSE_ID_VISITOR = new ClauseIdVisitor();
 
 	private static final NameExtractor NAME_EXTRACTOR = new NameExtractor();
 	private static final NameOrImpliedExtractor NAME_OR_IMPLIED_EXTRACTOR =
@@ -216,6 +216,22 @@ final class ClauseIdVisitor
 		}
 
 		return clauseDeclaration(location(p, binary), p, name, clauseId);
+	}
+
+	@Override
+	public ClauseDeclaration visitAssignment(
+			AssignmentNode assignment,
+			Distributor p) {
+
+		final Name name = assignment.getDestination().accept(
+				NAME_OR_IMPLIED_EXTRACTOR,
+				p.getContext());
+
+		return clauseDeclaration(
+				location(p, assignment),
+				p,
+				name,
+				ClauseId.ASSIGN);
 	}
 
 	@Override
