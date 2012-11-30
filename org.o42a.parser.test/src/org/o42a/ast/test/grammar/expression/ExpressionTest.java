@@ -99,30 +99,6 @@ public class ExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void unaryPrecedence() {
-		assertUnaries(
-				UnaryOperator.IS_TRUE,
-				UnaryOperator.PLUS,
-				"foo",
-				parse("+++foo"));
-		assertUnaries(
-				UnaryOperator.PLUS,
-				UnaryOperator.IS_TRUE,
-				"foo",
-				parse("+ ++foo"));
-		assertUnaries(
-				UnaryOperator.NOT,
-				UnaryOperator.MINUS,
-				"foo",
-				parse("---foo"));
-		assertUnaries(
-				UnaryOperator.MINUS,
-				UnaryOperator.NOT,
-				"foo",
-				parse("- --foo"));
-	}
-
-	@Test
 	public void binaryWithMacroExpansion() {
 		to(BinaryNode.class, parse("#a + b"));
 		to(BinaryNode.class, parse("a + #b"));
@@ -135,23 +111,6 @@ public class ExpressionTest extends GrammarTestCase {
 		to(BinaryNode.class, parse("a + b\\"));
 		to(BinaryNode.class, parse("a\\ + b\\"));
 		to(BinaryNode.class, parse("a\\ f + b\\ g"));
-	}
-
-	private static void assertUnaries(
-			UnaryOperator first,
-			UnaryOperator second,
-			String name,
-			ExpressionNode expression) {
-
-		final UnaryNode unary1 = to(UnaryNode.class, expression);
-
-		assertEquals(first, unary1.getOperator());
-
-		final UnaryNode unary2 = to(UnaryNode.class, unary1.getOperand());
-
-		assertEquals(second, unary2.getOperator());
-
-		assertThat(unary2.getOperand(), isName(name));
 	}
 
 	private ExpressionNode parse(String text) {
