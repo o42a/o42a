@@ -337,23 +337,6 @@ public class ClauseIdTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void phrase() {
-
-		final ClauseDeclaratorNode result = parse("<*[foo]> bar");
-		final PhraseNode phrase = to(PhraseNode.class, result.getClauseId());
-
-		assertThat(result.requiresContinuation(), is(false));
-		assertThat(
-				to(ScopeRefNode.class, phrase.getPrefix()).getType(),
-				is(ScopeType.IMPLIED));
-		assertThat(singleClause(BracketsNode.class, phrase)
-		.getArguments()[0].getValue(), isName("foo"));
-		assertThat(result.getContent(), isName("bar"));
-		checkNothingReused(result);
-		checkParentheses(result);
-	}
-
-	@Test
 	public void implied() {
 
 		final ClauseDeclaratorNode result = parse("<*> foo");
@@ -363,32 +346,6 @@ public class ClauseIdTest extends GrammarTestCase {
 				ScopeType.IMPLIED,
 				to(ScopeRefNode.class, result.getClauseId()).getType());
 		assertThat(result.getContent(), isName("foo"));
-		checkNothingReused(result);
-		checkParentheses(result);
-	}
-
-	@Test
-	public void rowPhrase() {
-
-		final ClauseDeclaratorNode result = parse("<*[[foo]]> bar");
-		final PhraseNode phrase = to(PhraseNode.class, result.getClauseId());
-
-		assertFalse(result.requiresContinuation());
-		assertEquals(
-				ScopeType.IMPLIED,
-				to(ScopeRefNode.class, phrase.getPrefix()).getType());
-
-		final BracketsNode key = singleClause(BracketsNode.class, phrase);
-
-		assertThat(key.getArguments().length, is(1));
-
-		final BracketsNode row =
-				to(BracketsNode.class, key.getArguments()[0].getValue());
-
-		assertThat(row.getArguments().length, is(1));
-
-		assertThat(row.getArguments()[0].getValue(), isName("foo"));
-		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
 		checkParentheses(result);
 	}

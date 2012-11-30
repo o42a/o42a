@@ -22,14 +22,14 @@ Substring :=> string
 ====================
 
 <*Range start> (
-  <*[] | to*> From = ()
+  <[] | to*> From = ()
 )
 
 <From ...> (
-  <*[] | to> From = ()
+  <[] | to> From = ()
 )
 <To ...> (
-  <*[]> To = ()
+  <[]> To = ()
 )
 
 From := `0

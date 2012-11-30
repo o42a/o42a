@@ -21,4 +21,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Rt-integer :=> integer
 ======================
 
-<*By string> Parser: integer(<*''!> Input = ())
+<*By string> Parser: integer(<''!> Input = ())

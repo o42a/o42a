@@ -22,5 +22,5 @@ Rt-string :=> string
 ====================
 
 <*By string> Parser: string(
-  <*''!> Input = ()
+  <''!> Input = ()
 )

@@ -52,7 +52,7 @@ Perfroms the given action for each element left to iterate.
     Do (It = next item)... 
   }
 
-  <*{Action}!> Do = *
+  <{Action}!> Do = *
   ~~~
   A imperative `for each` phrase constructor.
   ~~~

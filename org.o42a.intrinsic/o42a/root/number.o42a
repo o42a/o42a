@@ -21,4 +21,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Number :=> void
 ===============
 
-<@Operators: plus> ~~ Unary `+` returns the number passed as operand.
+<+Plus> ~~ Unary `+` returns the number passed as operand.

@@ -75,11 +75,6 @@ public abstract class AbstractClauseIdVisitor<R, P>
 		return visitClauseId(assignment, p);
 	}
 
-	@Override
-	public R visitPhrase(PhraseNode phrase, P p) {
-		return visitClauseId(phrase, p);
-	}
-
 	protected abstract R visitClauseId(ClauseIdNode clauseId, P p);
 
 }

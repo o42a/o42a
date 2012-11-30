@@ -20,9 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.ClauseVisibility.IMPLICIT_CLAUSE;
 import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByName;
-import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByPrefix;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.clauseName;
@@ -36,7 +34,6 @@ import org.o42a.ast.clause.AbstractClauseIdVisitor;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
-import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
@@ -117,20 +114,20 @@ final class ClauseIdVisitor
 			BracketsNode brackets,
 			Distributor p) {
 
-		final BracketsNode row = extractRow(brackets);
+		final BracketsNode row = rowFromBrackets(brackets);
 
 		if (row != null) {
 			return clauseDeclaration(
 					location(p, brackets),
 					p,
-					extractName(p.getContext(), row),
+					nameFromBrackets(p.getContext(), row),
 					ClauseId.ROW);
 		}
 
 		return clauseDeclaration(
 				location(p, brackets),
 				p,
-				extractName(p.getContext(), brackets),
+				nameFromBrackets(p.getContext(), brackets),
 				ClauseId.ARGUMENT);
 	}
 
@@ -144,7 +141,7 @@ final class ClauseIdVisitor
 		return clauseDeclaration(
 				location(p, string),
 				p,
-				extractName(p.getContext(), string, string.getText()),
+				buildClauseName(p.getContext(), string, string.getText()),
 				ClauseId.STRING);
 	}
 
@@ -153,7 +150,7 @@ final class ClauseIdVisitor
 		return clauseDeclaration(
 				location(p, braces),
 				p,
-				extractName(p.getContext(), braces),
+				nameFromBlock(p.getContext(), braces),
 				ClauseId.IMPERATIVE);
 	}
 
@@ -242,28 +239,6 @@ final class ClauseIdVisitor
 	}
 
 	@Override
-	public ClauseDeclaration visitPhrase(PhraseNode phrase, Distributor p) {
-
-		final ExpressionNode prefix = phrase.getPrefix();
-
-		if (prefix == null) {
-			return super.visitPhrase(phrase, p);
-		}
-		if (clauseVisibilityByPrefix(prefix) != IMPLICIT_CLAUSE) {
-			p.getContext().getLogger().invalidDeclaration(phrase);
-			return null;
-		}
-
-		final PhrasePartNode[] clauses = phrase.getClauses();
-
-		if (clauses.length != 1) {
-			return super.visitPhrase(phrase, p);
-		}
-
-		return clauses[0].accept(new PhraseClauseIdVisitor(phrase), p);
-	}
-
-	@Override
 	protected ClauseDeclaration visitClauseId(
 			ClauseIdNode clauseId,
 			Distributor p) {
@@ -271,7 +246,16 @@ final class ClauseIdVisitor
 		return null;
 	}
 
-	static BracketsNode extractRow(BracketsNode brackets) {
+	private static void expectedClauseName(
+			CompilerContext context,
+			LogInfo location) {
+		context.getLogger().error(
+				"expected_clause_name",
+				location,
+				"Clause name expected here");
+	}
+
+	private static BracketsNode rowFromBrackets(BracketsNode brackets) {
 
 		final ArgumentNode[] arguments = brackets.getArguments();
 
@@ -291,7 +275,9 @@ final class ClauseIdVisitor
 		return value.accept(BRACKETS_EXTRACTOR, null);
 	}
 
-	static Name extractName(CompilerContext context, BracketsNode brackets) {
+	private static Name nameFromBrackets(
+			CompilerContext context,
+			BracketsNode brackets) {
 
 		final ArgumentNode[] arguments = brackets.getArguments();
 
@@ -312,14 +298,9 @@ final class ClauseIdVisitor
 		return value.accept(NAME_EXTRACTOR, context);
 	}
 
-	static void expectedClauseName(CompilerContext context, LogInfo location) {
-		context.getLogger().error(
-				"expected_clause_name",
-				location,
-				"Clause name expected here");
-	}
-
-	static Name extractName(CompilerContext context, BlockNode<?> block) {
+	private static Name nameFromBlock(
+			CompilerContext context,
+			BlockNode<?> block) {
 
 		final SentenceNode[] sentences = block.getContent();
 
@@ -364,7 +345,7 @@ final class ClauseIdVisitor
 		return statement.accept(NAME_EXTRACTOR, context);
 	}
 
-	static Name extractName(
+	private static Name buildClauseName(
 			CompilerContext context,
 			LogInfo location,
 			String name) {
