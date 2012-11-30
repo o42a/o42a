@@ -21,10 +21,12 @@ package org.o42a.ast.atom;
 
 import static org.o42a.util.string.StringCodec.escapeControlChars;
 
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
-public class StringNode extends AbstractAtomNode {
+public class StringNode extends AbstractAtomNode implements ClauseIdNode {
 
 	private final SignNode<StringBound> openingBound;
 	private final String text;
@@ -72,6 +74,11 @@ public class StringNode extends AbstractAtomNode {
 
 	@Override
 	public <R, P> R accept(AtomNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitStringLiteral(this, p);
+	}
+
+	@Override
+	public <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitStringLiteral(this, p);
 	}
 
