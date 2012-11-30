@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.clause;
 
+import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
@@ -46,6 +47,11 @@ public abstract class AbstractClauseIdVisitor<R, P>
 	@Override
 	public R visitBrackets(BracketsNode brackets, P p) {
 		return visitClauseId(brackets, p);
+	}
+
+	@Override
+	public R visitStringLiteral(StringNode string, P p) {
+		return visitClauseId(string, p);
 	}
 
 	@Override
