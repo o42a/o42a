@@ -35,10 +35,10 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 	@Test
 	public void topLevelSubstitution() {
 		compile(
-				"A := void(",
-				"  <*[arg]>",
+				"A := void (",
+				"  <[Arg]>",
 				")",
-				"B := a[2]");
+				"B := a [2]");
 
 		final Field b = field("b");
 
@@ -48,10 +48,10 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 	@Test
 	public void selfAssignment() {
 		compile(
-				"A := integer(",
-				"  <*[arg]> ()",
+				"A := integer (",
+				"  <[Arg]> ()",
 				")",
-				"B := a[2]");
+				"B := a [2]");
 
 		final Field b = field("b");
 
@@ -62,11 +62,11 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 	public void overrider() {
 		compile(
 				"Val := 1",
-				"A :=> integer(",
+				"A :=> integer (",
 				"  Foo :=< link (`integer)",
-				"  <*[arg]> Foo = ()",
+				"  <[Arg]> Foo = ()",
 				")",
-				"B := a[val]");
+				"B := a [val]");
 
 		final Field bFoo = field("b", "foo");
 		final Obj bFooTarget = linkTarget(bFoo);

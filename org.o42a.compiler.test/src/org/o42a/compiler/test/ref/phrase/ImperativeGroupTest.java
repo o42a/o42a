@@ -33,12 +33,12 @@ public class ImperativeGroupTest extends CompilerTestCase {
 	@Test
 	public void imperativeGroup() {
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  <*> {",
-				"    <*[arg]> ()",
+				"    <[Arg]> ()",
 				"  }",
 				")",
-				"B := A[5]");
+				"B := A [5]");
 
 		final Field b = field("b");
 

@@ -33,11 +33,11 @@ public class OverriderTest extends CompilerTestCase {
 	@Test
 	public void argument() {
 		compile(
-				"A := void(",
-				"  Foo := 1.",
-				"  <*[arg]> foo = *.",
-				").",
-				"B := a[2]");
+				"A := void (",
+				"  Foo := 1",
+				"  <[arg]> foo = *",
+				")",
+				"B := a [2]");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -48,11 +48,11 @@ public class OverriderTest extends CompilerTestCase {
 	@Test
 	public void string() {
 		compile(
-				"A := void(",
-				"  Foo := \"a\".",
-				"  <*'arg'> foo = *.",
-				").",
-				"B := a'b'");
+				"A := void (",
+				"  Foo := \"a\"",
+				"  <'arg'> foo = *",
+				")",
+				"B := a 'b'");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -63,11 +63,11 @@ public class OverriderTest extends CompilerTestCase {
 	@Test
 	public void stringInBrackets() {
 		compile(
-				"A := void(",
-				"  Foo := \"a\".",
-				"  <*'arg'> foo = *.",
-				").",
-				"B := a['b']");
+				"A := void (",
+				"  Foo := \"a\"",
+				"  <'arg'> foo = *",
+				")",
+				"B := a ['b']");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -78,11 +78,11 @@ public class OverriderTest extends CompilerTestCase {
 	@Test
 	public void doubleQuotedStringArgument() {
 		compile(
-				"A := void(",
-				"  Foo := \"a\".",
-				"  <*[arg]> foo = *.",
-				").",
-				"B := a\"b\"");
+				"A := void (",
+				"  Foo := \"a\"",
+				"  <[arg]> foo = *",
+				")",
+				"B := a \"b\"");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
