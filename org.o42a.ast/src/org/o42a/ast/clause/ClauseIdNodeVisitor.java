@@ -24,6 +24,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.statement.AssignmentNode;
 
 
 public interface ClauseIdNodeVisitor<R, P> {
@@ -43,6 +44,8 @@ public interface ClauseIdNodeVisitor<R, P> {
 	R visitUnary(UnaryNode unary, P p);
 
 	R visitBinary(BinaryNode binary, P p);
+
+	R visitAssignment(AssignmentNode assignment, P p);
 
 	R visitPhrase(PhraseNode phrase, P p);
 

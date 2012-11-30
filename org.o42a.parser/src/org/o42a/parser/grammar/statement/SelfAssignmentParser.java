@@ -23,7 +23,7 @@ import static org.o42a.parser.Grammar.expression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.AssignmentNode.AssignmentOperator;
+import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.ast.statement.SelfAssignmentNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;

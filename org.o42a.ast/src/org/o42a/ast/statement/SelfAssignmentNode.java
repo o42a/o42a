@@ -21,7 +21,6 @@ package org.o42a.ast.statement;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.AssignmentNode.AssignmentOperator;
 
 
 public class SelfAssignmentNode extends AbstractStatementNode {

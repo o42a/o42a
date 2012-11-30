@@ -27,6 +27,7 @@ import static org.o42a.ast.test.grammar.clause.ClauseDeclaratorTest.checkNothing
 import static org.o42a.ast.test.grammar.clause.ClauseDeclaratorTest.checkParentheses;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
@@ -35,6 +36,7 @@ import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
+import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -217,14 +219,16 @@ public class ClauseIdTest extends GrammarTestCase {
 	@Test
 	public void add() {
 
-		final ClauseDeclaratorNode result = parse("<foo + bar> baz");
+		final ClauseDeclaratorNode result = parse("<foo + *> bar");
 		final BinaryNode binary = to(BinaryNode.class, result.getClauseId());
 
 		assertThat(result.requiresContinuation(), is(false));
 		assertThat(binary.getOperator(), is(BinaryOperator.ADD));
 		assertThat(binary.getLeftOperand(), isName("foo"));
-		assertThat(binary.getRightOperand(), isName("bar"));
-		assertThat(result.getContent(), isName("baz"));
+		assertThat(
+				to(ScopeRefNode.class, binary.getRightOperand()).getType(),
+				is(ScopeType.IMPLIED));
+		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
 		checkParentheses(result);
 	}
@@ -232,14 +236,16 @@ public class ClauseIdTest extends GrammarTestCase {
 	@Test
 	public void subtract() {
 
-		final ClauseDeclaratorNode result = parse("<foo - bar> baz");
+		final ClauseDeclaratorNode result = parse("<foo - *> bar");
 		final BinaryNode binary = to(BinaryNode.class, result.getClauseId());
 
 		assertThat(result.requiresContinuation(), is(false));
 		assertThat(binary.getOperator(), is(BinaryOperator.SUBTRACT));
 		assertThat(binary.getLeftOperand(), isName("foo"));
-		assertThat(binary.getRightOperand(), isName("bar"));
-		assertThat(result.getContent(), isName("baz"));
+		assertThat(
+				to(ScopeRefNode.class, binary.getRightOperand()).getType(),
+				is(ScopeType.IMPLIED));
+		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
 		checkParentheses(result);
 	}
@@ -247,14 +253,16 @@ public class ClauseIdTest extends GrammarTestCase {
 	@Test
 	public void multiply() {
 
-		final ClauseDeclaratorNode result = parse("<foo * bar> baz");
+		final ClauseDeclaratorNode result = parse("<foo * *> bar");
 		final BinaryNode binary = to(BinaryNode.class, result.getClauseId());
 
 		assertThat(result.requiresContinuation(), is(false));
 		assertThat(binary.getOperator(), is(BinaryOperator.MULTIPLY));
 		assertThat(binary.getLeftOperand(), isName("foo"));
-		assertThat(binary.getRightOperand(), isName("bar"));
-		assertThat(result.getContent(), isName("baz"));
+		assertThat(
+				to(ScopeRefNode.class, binary.getRightOperand()).getType(),
+				is(ScopeType.IMPLIED));
+		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
 		checkParentheses(result);
 	}
@@ -262,14 +270,16 @@ public class ClauseIdTest extends GrammarTestCase {
 	@Test
 	public void divide() {
 
-		final ClauseDeclaratorNode result = parse("<foo / bar> baz");
+		final ClauseDeclaratorNode result = parse("<foo / *> bar");
 		final BinaryNode binary = to(BinaryNode.class, result.getClauseId());
 
 		assertThat(result.requiresContinuation(), is(false));
 		assertThat(binary.getOperator(), is(BinaryOperator.DIVIDE));
 		assertThat(binary.getLeftOperand(), isName("foo"));
-		assertThat(binary.getRightOperand(), isName("bar"));
-		assertThat(result.getContent(), isName("baz"));
+		assertThat(
+				to(ScopeRefNode.class, binary.getRightOperand()).getType(),
+				is(ScopeType.IMPLIED));
+		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
 		checkParentheses(result);
 	}
@@ -277,14 +287,16 @@ public class ClauseIdTest extends GrammarTestCase {
 	@Test
 	public void compare() {
 
-		final ClauseDeclaratorNode result = parse("<foo <=> bar> baz");
+		final ClauseDeclaratorNode result = parse("<foo <=> *> bar");
 		final BinaryNode binary = to(BinaryNode.class, result.getClauseId());
 
 		assertThat(result.requiresContinuation(), is(false));
 		assertThat(binary.getOperator(), is(BinaryOperator.COMPARE));
 		assertThat(binary.getLeftOperand(), isName("foo"));
-		assertThat(binary.getRightOperand(), isName("bar"));
-		assertThat(result.getContent(), isName("baz"));
+		assertThat(
+				to(ScopeRefNode.class, binary.getRightOperand()).getType(),
+				is(ScopeType.IMPLIED));
+		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
 		checkParentheses(result);
 	}
@@ -292,14 +304,34 @@ public class ClauseIdTest extends GrammarTestCase {
 	@Test
 	public void equal() {
 
-		final ClauseDeclaratorNode result = parse("<foo == bar> baz");
+		final ClauseDeclaratorNode result = parse("<foo == *> bar");
 		final BinaryNode binary = to(BinaryNode.class, result.getClauseId());
 
 		assertThat(result.requiresContinuation(), is(false));
 		assertThat(binary.getOperator(), is(BinaryOperator.EQUAL));
 		assertThat(binary.getLeftOperand(), isName("foo"));
-		assertThat(binary.getRightOperand(), isName("bar"));
-		assertThat(result.getContent(), isName("baz"));
+		assertThat(
+				to(ScopeRefNode.class, binary.getRightOperand()).getType(),
+				is(ScopeType.IMPLIED));
+		assertThat(result.getContent(), isName("bar"));
+		checkNothingReused(result);
+		checkParentheses(result);
+	}
+
+	@Test
+	@Ignore
+	public void assign() {
+
+		final ClauseDeclaratorNode result = parse("<foo = *> bar");
+		final AssignmentNode assignment =
+				to(AssignmentNode.class, result.getClauseId());
+
+		assertThat(result.requiresContinuation(), is(false));
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(
+				to(ScopeRefNode.class, assignment.getValue()).getType(),
+				is(ScopeType.IMPLIED));
+		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
 		checkParentheses(result);
 	}

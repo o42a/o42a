@@ -24,6 +24,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.statement.AssignmentNode;
 
 
 public abstract class AbstractClauseIdVisitor<R, P>
@@ -67,6 +68,11 @@ public abstract class AbstractClauseIdVisitor<R, P>
 	@Override
 	public R visitBinary(BinaryNode binary, P p) {
 		return visitClauseId(binary, p);
+	}
+
+	@Override
+	public R visitAssignment(AssignmentNode assignment, P p) {
+		return visitClauseId(assignment, p);
 	}
 
 	@Override
