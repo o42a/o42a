@@ -43,13 +43,13 @@ Value setter.
 
 = value
 
-<@Operators: assign> Set (
+<Set = *> Set (
 ~~~
 Value assignment clause.
 
 It assigns new property value with <set> prototype.
 ~~~
-  <[]> New value = ()
+  <[New value]> New value = ()
 )
 
 <[]!> Value = () ~~ Property initializer.
