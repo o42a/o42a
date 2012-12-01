@@ -21,13 +21,11 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import static org.o42a.compiler.ip.phrase.part.NextClause.clauseNotFound;
 import static org.o42a.compiler.ip.phrase.part.NextClause.nextClause;
-import static org.o42a.core.member.AdapterId.adapterId;
 
 import org.o42a.compiler.ip.phrase.part.NextClause;
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.member.field.AscendantsDefinition;
@@ -142,12 +140,6 @@ public abstract class PhraseContext {
 		final ClauseInstance newInstance = new ClauseInstance(this, location);
 
 		this.instances = ArrayUtil.append(this.instances, newInstance);
-	}
-
-	final AdapterId clauseId(LocationInfo location, ClauseId clauseId) {
-		return adapterId(clauseId.adapterType(
-				location,
-				getPhrase().distribute()));
 	}
 
 	NextClause findClause(

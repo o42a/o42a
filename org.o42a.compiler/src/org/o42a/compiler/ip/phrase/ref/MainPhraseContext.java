@@ -110,10 +110,7 @@ final class MainPhraseContext extends PhraseContext {
 
 	@Override
 	public NextClause clauseById(LocationInfo location, ClauseId clauseId) {
-		return findObjectClause(
-				location,
-				clauseId(location, clauseId),
-				clauseId);
+		return findObjectClause(location, clauseId.getMemberId(), clauseId);
 	}
 
 	@Override

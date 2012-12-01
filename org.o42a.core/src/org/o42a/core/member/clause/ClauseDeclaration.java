@@ -19,13 +19,13 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.clauseName;
-import static org.o42a.core.member.clause.ClauseId.byAdapterType;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.member.*;
+import org.o42a.core.member.AdapterId;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.Name;
@@ -42,21 +42,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 				location,
 				distributor,
 				name,
-				null,
 				clauseId);
-	}
-
-	public static ClauseDeclaration clauseDeclaration(
-			LocationInfo location,
-			Distributor distributor,
-			Name name,
-			MemberId memberId) {
-		return new ClauseDeclaration(
-				location,
-				distributor,
-				name,
-				memberId,
-				null);
 	}
 
 	public static ClauseDeclaration anonymousClauseDeclaration(
@@ -66,9 +52,9 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	}
 
 	private Name name;
+	private ClauseId clauseId;
 	private MemberId memberId;
 	private MemberId groupId;
-	private ClauseId clauseId;
 	private ClauseKind kind;
 	private boolean requiresContinuation;
 	private boolean terminator;
@@ -79,13 +65,11 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 			LocationInfo location,
 			Distributor distributor,
 			Name name,
-			MemberId memberId,
 			ClauseId clauseId) {
 		super(location, distributor);
-		assert memberId != null || clauseId != null :
-			"Either member identifier or clause kind should be specified";
+		assert clauseId != null :
+			"Clause identifier not specified";
 		this.name = name;
-		this.memberId = memberId;
 		this.clauseId = clauseId;
 		this.kind = ClauseKind.EXPRESSION;
 	}
@@ -108,13 +92,12 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	private ClauseDeclaration(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 		this.name = null;
-		this.memberId = null;
 		this.clauseId = ClauseId.NAME;
 		this.kind = ClauseKind.EXPRESSION;
 	}
 
 	public final boolean isAnonymous() {
-		return this.memberId == null && this.clauseId == ClauseId.NAME;
+		return getClauseId().isName() && getName() == null;
 	}
 
 	public final Name getName() {
@@ -125,18 +108,10 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		if (this.memberId != null) {
 			return this.memberId;
 		}
-		if (this.clauseId == ClauseId.NAME) {
-			return null;
-		}
-
-		final StaticTypeRef adapterType =
-				this.clauseId.adapterType(this, distribute());
-
 		if (this.groupId == null) {
-			return this.memberId = adapterId(adapterType);
+			return this.memberId = getLocalId();
 		}
-
-		return this.memberId = this.groupId.append(adapterId(adapterType));
+		return this.memberId = this.groupId.append(getLocalId());
 	}
 
 	public final ClauseDeclaration setName(Name name) {
@@ -155,20 +130,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	}
 
 	public final ClauseId getClauseId() {
-		if (this.clauseId != null) {
-			return this.clauseId;
-		}
-
-		if (this.memberId != null) {
-
-			final MemberName name = this.memberId.getMemberName();
-
-			if (name != null) {
-				return this.clauseId = ClauseId.NAME;
-			}
-		}
-
-		return this.clauseId = byAdapterType(getAdapterType());
+		return this.clauseId;
 	}
 
 	public final String getDisplayName() {
@@ -292,6 +254,17 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 				overrider,
 				distributeIn(overrider.getContainer()),
 				this);
+	}
+
+	private MemberId getLocalId() {
+
+		final ClauseId clauseId = getClauseId();
+
+		if (clauseId.isName()) {
+			return clauseName(getName());
+		}
+
+		return clauseId.getMemberId();
 	}
 
 }
