@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByName;
-import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 import static org.o42a.util.string.Name.caseInsensitiveName;
@@ -99,7 +98,7 @@ final class ClauseIdVisitor
 					location(p, ref),
 					p,
 					name.getName(),
-					clauseName(name.getName()));
+					ClauseId.NAME);
 		}
 
 		return visibility.applyTo(declaration);

@@ -19,31 +19,15 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.AdapterId.adapterTypeScope;
-import static org.o42a.core.ref.path.Path.absolutePath;
-import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.core.member.MemberName.clauseId;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathResolution;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.Name;
 
 
 public enum ClauseId {
 
 	NAME("named", false) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return null;
-		}
 
 		@Override
 		public String toString(MemberId memberId, Name name) {
@@ -58,11 +42,6 @@ public enum ClauseId {
 	ARGUMENT("argument", true) {
 
 		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "clauses", "argument");
-		}
-
-		@Override
 		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "[]";
@@ -73,11 +52,6 @@ public enum ClauseId {
 	},
 
 	ROW("row", true) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "clauses", "row");
-		}
 
 		@Override
 		public String toString(MemberId memberId, Name name) {
@@ -92,11 +66,6 @@ public enum ClauseId {
 	IMPERATIVE("imperative", false) {
 
 		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "clauses", "imperative");
-		}
-
-		@Override
 		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "{}";
@@ -107,11 +76,6 @@ public enum ClauseId {
 	},
 
 	STRING("string", true) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "clauses", "string");
-		}
 
 		@Override
 		public String toString(MemberId memberId, Name name) {
@@ -126,11 +90,6 @@ public enum ClauseId {
 	PLUS("unary plus operator", true) {
 
 		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "plus");
-		}
-
-		@Override
 		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "+*";
@@ -141,11 +100,6 @@ public enum ClauseId {
 	},
 
 	MINUS("unary minus operator", true) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "minus");
-		}
 
 		@Override
 		public String toString(MemberId memberId, Name name) {
@@ -160,11 +114,6 @@ public enum ClauseId {
 	ADD("addition operator", true) {
 
 		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "add");
-		}
-
-		@Override
 		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* + *";
@@ -175,11 +124,6 @@ public enum ClauseId {
 	},
 
 	SUBTRACT("subtraction operator", true) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "subtract");
-		}
 
 		@Override
 		public String toString(MemberId memberId, Name name) {
@@ -194,11 +138,6 @@ public enum ClauseId {
 	MULTIPLY("multiplication operator", true) {
 
 		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "multiply");
-		}
-
-		@Override
 		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* * *";
@@ -209,11 +148,6 @@ public enum ClauseId {
 	},
 
 	DIVIDE("division operator", true) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "divide");
-		}
 
 		@Override
 		public String toString(MemberId memberId, Name name) {
@@ -228,11 +162,6 @@ public enum ClauseId {
 	EQUALS("equality check", true) {
 
 		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "equals");
-		}
-
-		@Override
 		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* == *";
@@ -243,11 +172,6 @@ public enum ClauseId {
 	},
 
 	COMPARE("comparison", true) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "compare");
-		}
 
 		@Override
 		public String toString(MemberId memberId, Name name) {
@@ -262,11 +186,6 @@ public enum ClauseId {
 	ASSIGN("value assignment", true) {
 
 		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "operators", "assign");
-		}
-
-		@Override
 		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* = *";
@@ -276,64 +195,35 @@ public enum ClauseId {
 
 	};
 
-	public static ClauseId byAdapterType(StaticTypeRef adapterType) {
-		assert adapterType != null :
-			"Clause adapter type not specified";
-
-		final Scope typeScope = adapterTypeScope(adapterType.getType());
-
-		for (ClauseId clauseId : values()) {
-			if (!clauseId.hasAdapterType()) {
-				continue;
-			}
-
-			final Scope start = adapterType.getContext().getRoot().getScope();
-			final BoundPath adapterPath =
-					clauseId.adapterPath(adapterType.getContext())
-					.bind(adapterType, start);
-			final PathResolution adapterResolution =
-					adapterPath.resolve(pathResolver(start, dummyUser()));
-
-			if (typeScope.is(adapterResolution.getObject().getScope())) {
-				return clauseId;
-			}
-		}
-
-		return NAME;
-	}
-
 	private final String displayName;
 	private final boolean hasValue;
+	private final MemberId memberId;
 
 	ClauseId(String displayName, boolean hasValue) {
 		this.displayName = displayName;
 		this.hasValue = hasValue;
-	}
-
-	public final String getDisplayName() {
-		return this.displayName;
+		if (isName()) {
+			this.memberId = null;
+		} else {
+			this.memberId = clauseId(this);
+		}
 	}
 
 	public final boolean hasValue() {
 		return this.hasValue;
 	}
 
-	public final boolean hasAdapterType() {
-		return this != NAME;
+	public final boolean isName() {
+		return this == NAME;
 	}
 
-	public final StaticTypeRef adapterType(
-			LocationInfo location,
-			Distributor distributor) {
-		if (!hasAdapterType()) {
-			return null;
-		}
-		return adapterPath(location.getContext())
-				.bind(location, distributor.getScope())
-				.staticTypeRef(distributor);
+	public final MemberId getMemberId() {
+		return this.memberId;
 	}
 
-	public abstract Path adapterPath(CompilerContext context);
+	public final String getDisplayName() {
+		return this.displayName;
+	}
 
 	public void validateClause(Clause clause) {
 		if (clause.getSubstitution().requiresValue() && !hasValue()) {

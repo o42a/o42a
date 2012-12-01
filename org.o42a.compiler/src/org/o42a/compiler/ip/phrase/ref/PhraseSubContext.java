@@ -75,7 +75,7 @@ class PhraseSubContext extends PhraseContext {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
-				clauseId(location, clauseId),
+				clauseId.getMemberId(),
 				clauseId);
 	}
 
