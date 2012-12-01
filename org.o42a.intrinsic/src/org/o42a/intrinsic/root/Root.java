@@ -53,7 +53,6 @@ import org.o42a.util.io.URLSource;
 @RelatedSources({
 	"number.o42a",
 	"indexed.o42a",
-	"operators.o42a",
 	"property.o42a"
 })
 public class Root extends Obj {
