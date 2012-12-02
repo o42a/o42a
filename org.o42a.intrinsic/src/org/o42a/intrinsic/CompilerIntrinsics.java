@@ -21,11 +21,11 @@ package org.o42a.intrinsic;
 
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
-import static org.o42a.intrinsic.root.Root.createRoot;
 import static org.o42a.lib.collections.CollectionsModule.collectionsModule;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import static org.o42a.lib.macros.MacrosModule.macrosModule;
 import static org.o42a.lib.test.TestModule.testModule;
+import static org.o42a.root.Root.createRoot;
 
 import java.util.HashMap;
 
@@ -37,8 +37,11 @@ import org.o42a.core.Container;
 import org.o42a.core.Namespace;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.*;
-import org.o42a.intrinsic.root.*;
+import org.o42a.intrinsic.impl.ModuleNamespace;
+import org.o42a.intrinsic.impl.Top;
+import org.o42a.intrinsic.impl.TopContext;
 import org.o42a.lib.console.ConsoleModule;
+import org.o42a.root.*;
 import org.o42a.util.string.Name;
 
 
