@@ -22,6 +22,7 @@
 <project name="org.o42a.intrinsic" default="package">
 
 	<filelist id="project.deps" dir="..">
+		<file name="org.o42a.root"/>
 		<file name="org.o42a.lib.collections"/>
 		<file name="org.o42a.lib.console"/>
 		<file name="org.o42a.lib.macros"/>
@@ -32,12 +33,6 @@
 		name="compile.deps"
 		value="org.o42a.util,org.o42a.analysis,org.o42a.codegen,org.o42a.core,org.o42a.common"/>
 
-	<import file="../build/module.build.xml" />
-
-	<target name="copy-resources">
-		<copy todir="${output..}" taskname="${ant.project.name}">
-			<fileset dir="o42a"/>
-		</copy>
-	</target>
+	<import file="../build/common.build.xml"/>
 
 </project>

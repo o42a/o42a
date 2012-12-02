@@ -25,7 +25,7 @@
 			<arguments>
 				<dictionary>
 					<key>LaunchConfigHandle</key>
-					<value>&lt;project&gt;/.externalToolBuilders/Ant Builder.launch</value>
+					<value>&lt;project&gt;/.externalToolBuilders/org.o42a.intrinsic Builder.launch</value>
 				</dictionary>
 				<dictionary>
 					<key>incclean</key>
