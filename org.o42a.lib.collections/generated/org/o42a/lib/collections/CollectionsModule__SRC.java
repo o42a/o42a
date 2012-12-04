@@ -29,17 +29,24 @@ public final class CollectionsModule__SRC implements AnnotatedSources {
 		}
 	}
 
-	private SingleURLSource sourceTree;
+	private URLSources sourceTree;
 
 	@Override
-	public SingleURLSource getSourceTree() {
+	public URLSources getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new SingleURLSource(
+
+		this.sourceTree = new URLSources(
 				null,
 				base(),
 				"collections.o42a");
+
+		this.sourceTree.add("collection.o42a");
+		this.sourceTree.add("iterator.o42a");
+		this.sourceTree.add("list.o42a");
+
+		return this.sourceTree;
 	}
 
 	@Override
