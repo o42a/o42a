@@ -19,13 +19,16 @@
 */
 package org.o42a.lib.collections;
 
-import org.o42a.common.object.AnnotatedModule;
-import org.o42a.common.object.AnnotatedSources;
-import org.o42a.common.object.SourcePath;
+import org.o42a.common.object.*;
 import org.o42a.core.source.CompilerContext;
 
 
 @SourcePath("collections.o42a")
+@RelatedSources({
+	"collection.o42a",
+	"iterator.o42a",
+	"list.o42a"
+})
 public class CollectionsModule extends AnnotatedModule {
 
 	public static CollectionsModule collectionsModule(

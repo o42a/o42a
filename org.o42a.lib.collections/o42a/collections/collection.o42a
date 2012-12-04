@@ -24,7 +24,13 @@ Collection :=> void
 An abstract collection of elements.
 ~~~
 
-Iterate :=<> iterator ~~ Constructs an iterator over all collection elements.
+Element type := void ~~ The type of elements of this collection.
+###
+
+Iterate :=<> iterator (`#element type)
+~~~
+Constructs an iterator over all collection elements.
+~~~
 
 Size :=< integer
 ~~~

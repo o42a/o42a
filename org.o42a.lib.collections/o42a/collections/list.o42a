@@ -24,4 +24,8 @@ List :=> collection & indexed
 An indexed list of elements.
 ~~~
 
+Element type = void
+Item type = element type
+###
+
 Size = * (= length!)
