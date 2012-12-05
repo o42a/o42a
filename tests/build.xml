@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<project name="org.o42a.tests" default="compile">
+<project name="org.o42a.tests" default="compile-all">
 
 	<import file="../build/build.setup.xml"/>
 
@@ -36,21 +36,43 @@
 		</subant>
 	</target>
 
-	<target name="compile" depends="package-deps">
+	<target name="compile-tests" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
+			<param name="_compile.file" value="tests"/>
 			<param name="_compile.name" value="tests"/>
 			<param name="_compile.debug" value="0"/>
 		</antcall>
 	</target>
-	
-	<target name="compile-debug" depends="package-deps">
+
+	<target name="compile-collection-tests" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
+			<param name="_compile.file" value="collection_tests"/>
+			<param name="_compile.name" value="collection_tests"/>
+			<param name="_compile.debug" value="0"/>
+		</antcall>
+	</target>
+	
+	<target 
+		name="compile-all"
+		depends="compile-tests,compile-collection-tests"/>
+
+	<target name="compile-tests-debug" depends="package-deps">
+		<antcall target="_compile" inheritall="true" inheritrefs="true">
+			<param name="_compile.file" value="tests"/>
 			<param name="_compile.name" value="debug_tests"/>
 			<param name="_compile.debug" value="1"/>
 		</antcall>
 	</target>
 
-	<target name="exec" depends="compile">
+	<target name="compile-collection-tests-debug" depends="package-deps">
+		<antcall target="_compile" inheritall="true" inheritrefs="true">
+			<param name="_compile.file" value="collection_tests"/>
+			<param name="_compile.name" value="debug_collection_tests"/>
+			<param name="_compile.debug" value="1"/>
+		</antcall>
+	</target>
+
+	<target name="exec-tests" depends="compile-tests">
 		<exec
 			executable="bin/tests"
 			searchpath="false"
@@ -59,8 +81,18 @@
 			failonerror="true">
 		</exec>
 	</target>
+
+	<target name="exec-collection-tests" depends="compile-collection-tests">
+		<exec
+			executable="bin/collection_tests"
+			searchpath="false"
+			resolveexecutable="true"
+			taskname="exec"
+			failonerror="true">
+		</exec>
+	</target>
 	
-	<target name="debug" depends="compile-debug">
+	<target name="debug-tests" depends="compile-tests-debug">
 		<exec
 			executable="bin/debug_tests"
 			searchpath="false"
@@ -70,8 +102,21 @@
 			<env key="O42A_THREAD_LOG_GC" value="GC.log"/>
 		</exec>
 	</target>
+	
+	<target 
+		name="debug-collection-tests" 
+		depends="compile-collection-tests-debug">
+		<exec
+			executable="bin/debug_collection_tests"
+			searchpath="false"
+			resolveexecutable="true"
+			taskname="debug"
+			failonerror="true">
+			<env key="O42A_THREAD_LOG_GC" value="GC.log"/>
+		</exec>
+	</target>
 
-	<target name="jdwp" depends="package-deps">
+	<target name="jdwp-tests" depends="package-deps">
 		<java
 			jar="${root.dir}/target/org.o42a.cl-${o42a_release}.jar"
 			fork="true">
@@ -80,6 +125,18 @@
 			<jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"/>
 			<arg line="-o/dev/null"/>
 			<arg line="o42a/tests.o42a"/>
+		</java>
+	</target>
+	
+	<target name="jdwp-collection-tests" depends="package-deps">
+		<java
+			jar="${root.dir}/target/org.o42a.cl-${o42a_release}.jar"
+			fork="true">
+			<jvmarg line="-Djava.library.path=${root.dir}/target"/>
+			<jvmarg line="-ea:org.o42a..."/>
+			<jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"/>
+			<arg line="-o/dev/null"/>
+			<arg line="o42a/collection_tests.o42a"/>
 		</java>
 	</target>
 
@@ -95,7 +152,7 @@
 			taskname="o42ac"
 			failonerror="true">
 			<arg line="-rt-debug=${_compile.debug}"/>
-			<arg line="o42a/tests.o42a"/>
+			<arg line="o42a/${_compile.file}.o42a"/>
 			<arg line="-o bin/${_compile.name}"/>
 
 			<arg line="--vmargs"/>
