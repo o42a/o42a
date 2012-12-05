@@ -94,35 +94,43 @@ public class ConsoleModule extends AnnotatedModule {
 
 		final Obj mainObject =
 				member(MAIN_MEMBER).substance(dummyUser()).toObject();
-		final AdapterId mainAdapterId = adapterId(mainObject);
-		final Member mainMember = mainModule.member(mainAdapterId);
-
-		if (mainMember == null) {
-			return null;
-		}
-
-		final Field mainAdapter = mainMember.toField().field(dummyUser());
-
-		if (mainAdapter == null) {
-			return null;
-		}
-
-		final Obj main = mainAdapter.toObject();
-
-		if (main == null) {
-			return null;
-		}
-
-		final Path adapterPath =
-				mainAdapterId.key(mainModule.getScope()).toPath();
-		final Path mainPath =
-				modulePath(mainModule.getModuleName()).append(adapterPath);
-
 		final Scope mainScope = mainModule.getScope();
 
-		this.main = mainPath
-				.bind(mainAdapter, mainScope)
-				.target(mainScope.distribute());
+		final Path modulePath = modulePath(mainModule.getModuleName());
+
+		if (mainModule.type().derivedFrom(mainObject.type())) {
+			this.main =
+					modulePath.bind(mainModule, mainScope)
+					.target(mainScope.distribute());
+		} else {
+
+			final AdapterId mainAdapterId = adapterId(mainObject);
+			final Member mainMember = mainModule.member(mainAdapterId);
+
+			if (mainMember == null) {
+				return null;
+			}
+
+			final Field mainAdapter = mainMember.toField().field(dummyUser());
+
+			if (mainAdapter == null) {
+				return null;
+			}
+
+			final Obj main = mainAdapter.toObject();
+
+			if (main == null) {
+				return null;
+			}
+
+			final Path adapterPath =
+					mainAdapterId.key(mainModule.getScope()).toPath();
+			final Path mainPath = modulePath.append(adapterPath);
+
+			this.main =
+					mainPath.bind(mainAdapter, mainScope)
+					.target(mainScope.distribute());
+		}
 
 		return this.main;
 	}
