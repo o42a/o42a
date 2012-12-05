@@ -65,7 +65,13 @@ final class KeeperAccessDef extends Def {
 
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
-		return new InlineKeeperAccessEval(this);
+		if (normalizer.getNormalizedScope().is(
+				getScope().getEnclosingScope())) {
+			// Inline the keeper inside enclosing scope only,
+			// as it contains the keeper's data.
+			return new InlineKeeperAccessEval(this);
+		}
+		return null;
 	}
 
 	@Override
