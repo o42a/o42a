@@ -30,6 +30,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.ObjectType;
@@ -39,7 +40,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
@@ -53,7 +54,7 @@ final class TestRunner extends ConstructedObject {
 	public static void runTest(
 			TestModule module,
 			UserInfo user,
-			Imperatives statements,
+			Statements<?, ?> statements,
 			Field field) {
 		if (field.getVisibility() != Visibility.PUBLIC) {
 			return; // Only public fields recognized as tests.
@@ -88,7 +89,10 @@ final class TestRunner extends ConstructedObject {
 		run(statements, testName(statements, field, adapter), field);
 	}
 
-	private static void run(Imperatives statements, String name, Field field) {
+	private static void run(
+			Statements<?, ?> statements,
+			String name,
+			Field field) {
 		if (field.isPrototype()) {
 			statements.expression(new RunTest(
 					statements,
@@ -98,18 +102,16 @@ final class TestRunner extends ConstructedObject {
 			return;
 		}
 
-		final Path testPath = field.getKey().toPath();
-		final Scope localScope = statements.getScope();
-		final Path pathFromLocal =
-				localScope.getEnclosingScopePath().append(testPath);
+		final Scope scope = statements.getScope();
 
 		statements.expression(
-				pathFromLocal.bind(statements, statements.getScope())
+				testPath(field, scope)
+				.bind(statements, scope)
 				.target(statements.nextDistributor()));
 	}
 
 	private static String testName(
-			Imperatives statements,
+			Statements<?, ?> statements,
 			Field field,
 			Obj test) {
 
@@ -132,6 +134,17 @@ final class TestRunner extends ConstructedObject {
 		}
 
 		return field.getDisplayName().replace('_', ' ');
+	}
+
+	private static Path testPath(Field field, Scope scope) {
+
+		final LocalScope localScope = scope.toLocal();
+
+		if (localScope == null) {
+			return field.getKey().toPath();
+		}
+
+		return localScope.getEnclosingScopePath().append(field.getKey());
 	}
 
 	private final RunTest runTest;
