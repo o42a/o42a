@@ -25,6 +25,7 @@ import org.o42a.core.source.CompilerContext;
 
 @SourcePath("collections.o42a")
 @RelatedSources({
+	"array_list.o42a",
 	"collection.o42a",
 	"iterator.o42a",
 	"list.o42a"
