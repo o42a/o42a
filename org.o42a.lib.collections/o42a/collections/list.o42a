@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-List :=> collection & indexed
+List :=> indexed & collection
 =============================
 ~~~
 An indexed list of elements.
@@ -28,4 +28,14 @@ Element type = void
 Item type = #element type
 ###
 
-Size = * (= length!)
+Length = * (= size!)
+
+Iterate => * (
+  ::Last index := ``-1
+  Next = * (
+    {
+      Last index = last index + 1
+    }
+    = List:: [last index]
+  )
+)
