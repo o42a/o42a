@@ -37,7 +37,7 @@ If omitted then array will be prefilled with false items.
   <[Duplicate] | of size...> Duplicate = ()
 )
 
-<Of size> (
+<Of size...> (
   <[Size]> Size = ()
 )
  
