@@ -42,10 +42,10 @@ public final class CollectionsModule__SRC implements AnnotatedSources {
 				base(),
 				"collections.o42a");
 
-		this.sourceTree.add("array_list.o42a");
 		this.sourceTree.add("collection.o42a");
 		this.sourceTree.add("iterator.o42a");
 		this.sourceTree.add("list.o42a");
+		this.sourceTree.add("row_list.o42a");
 
 		return this.sourceTree;
 	}

@@ -18,15 +18,29 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Array list :=> list
-===================
+Row list :=> list
+=================
+~~~
+A row represened as list. 
+~~~
 
-Items := array (`#element type)
+Row := array (`#element type) ~~ A row represented by this list.
 
 Size = items: length
 
 Item => * (
-  = items [index]
+  = Row [index]
 )
 
-<[[Items]]!> Items = ()
+<[[Items]]!> Row = ()
+~~~
+Constructs a list by given row.
+~~~
+
+<Create...> (
+  ~~~
+  Constructs a list by given row.
+  ~~~
+  <[[Items]]!> Row = () ~~ Row expression argument.
+  <[Row]!> Row = ()     ~~ Row value argument. 
+)
