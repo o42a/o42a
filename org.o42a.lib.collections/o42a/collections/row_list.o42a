@@ -24,9 +24,9 @@ Row list :=> list
 A row represened as list. 
 ~~~
 
-Row := array (`#element type) ~~ A row represented by this list.
+Row := $$row (`#element type) ~~ A row represented by this list.
 
-Size = items: length
+Size = row: length
 
 Item => * (
   = Row [index]
