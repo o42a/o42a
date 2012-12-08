@@ -100,22 +100,22 @@ final class KeeperAccessDef extends Def {
 
 	@Override
 	protected boolean hasConstantValue() {
-		return getValue().isConstant();
+		return value().isConstant();
 	}
 
 	@Override
 	protected TypeParameters<?> typeParameters(Scope scope) {
-		return getValue().typeParameters(scope);
+		return value().typeParameters(scope);
 	}
 
 	@Override
 	protected DefValue calculateValue(Resolver resolver) {
-		return defValue(getValue().value(resolver));
+		return defValue(value().value(resolver));
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-		getValue().resolveAll(resolver);
+		value().resolveAll(resolver);
 
 		final FullResolver keeperResolver =
 				object()
@@ -132,7 +132,7 @@ final class KeeperAccessDef extends Def {
 			return this.object;
 		}
 
-		final Scope scope = getScope();
+		final Scope scope = this.keeperAccessor.getScope();
 
 		return this.object =
 				scope.getEnclosingScopePath()
@@ -140,7 +140,7 @@ final class KeeperAccessDef extends Def {
 				.target(scope.distribute());
 	}
 
-	private Ref getValue() {
+	private Ref value() {
 		return this.keeperAccessor.getValue();
 	}
 
