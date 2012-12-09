@@ -33,7 +33,6 @@ final class ImperativeDefinerCommandEnv extends CommandEnv {
 	private ValueRequest valueRequest;
 
 	ImperativeDefinerCommandEnv(ImperativeDefiner definer, DefinerEnv env) {
-		super(null);
 		this.definer = definer;
 		this.initialEnv = env;
 	}

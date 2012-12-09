@@ -20,17 +20,14 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.st.CommandEnv;
-import org.o42a.core.st.ImplicationEnv;
-import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueRequest;
 
 
 public class BlockCommandEnv extends CommandEnv {
 
-	private final ImplicationEnv initialEnv;
+	private final CommandEnv initialEnv;
 
-	public BlockCommandEnv(Imperatives imperatives, ImplicationEnv initialEnv) {
-		super(imperatives);
+	public BlockCommandEnv(CommandEnv initialEnv) {
 		assert initialEnv != null :
 			"Command environment not provided";
 		this.initialEnv = initialEnv;

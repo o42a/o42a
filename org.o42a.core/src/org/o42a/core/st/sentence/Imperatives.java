@@ -111,7 +111,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 		final CommandEnv initialEnv = getSentence().getBlock().sentencesEnv();
 
-		return statement.command(new BlockCommandEnv(this, initialEnv));
+		return statement.command(new BlockCommandEnv(initialEnv));
 	}
 
 	private ImperativeBlock blockByName(LocationInfo location, Name name) {

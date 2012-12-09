@@ -19,19 +19,7 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.st.sentence.Imperatives;
-
 
 public abstract class CommandEnv extends ImplicationEnv {
-
-	private final Imperatives statements;
-
-	public CommandEnv(Imperatives statements) {
-		this.statements = statements;
-	}
-
-	public final Imperatives getStatements() {
-		return this.statements;
-	}
 
 }
