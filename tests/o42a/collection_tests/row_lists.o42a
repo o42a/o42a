@@ -1,0 +1,42 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tests
+Copyright (C) 2012 Ruslan Lopatin
+
+This file is part of o42a.
+
+o42a is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+o42a is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use namespace 'Collections'
+Use namespace 'Console'
+Use namespace 'Test'
+
+Row lists := test
+=================
+
+Name = "Row lists"
+
+Print error [name] nl
+Run tests
+
+Static := test (
+  Name = "Static"
+  Print error '  ' [name] nl
+   
+  List := row list (`integer) [[1, 2, 3]]
+
+  Assert [list: size == 3] "Wrong static row list size"
+  Assert [list [1] == 2] "Wrong static row list element"
+  Assert [--list [-1]] "Invalid static row list element accessed"
+  Assert [--list [3]] "Non-existing static row list element accessed"
+)
