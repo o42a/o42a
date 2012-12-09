@@ -279,10 +279,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	private final class SentencesEnv extends CommandEnv {
 
-		SentencesEnv() {
-			super(null);
-		}
-
 		@Override
 		public ValueRequest getValueRequest() {
 			return getInitialEnv().getValueRequest();
