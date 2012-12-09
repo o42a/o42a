@@ -31,7 +31,7 @@ Item type = #element type
 Length = * (= size!)
 
 Iterate => * (
-  ::Last index := ``-1
+  ::Last index := ``/-1
   Next = * (
     {
       Last index = last index + 1
