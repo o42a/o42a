@@ -54,12 +54,11 @@ public final class ImperativeDefiner extends Definer {
 
 	private static final ID OWNER_ID = ID.id("owner");
 
-	private final Command command;
 	private final PrefixPath localPrefix;
+	private final Command command;
 
 	public ImperativeDefiner(ImperativeBlock block, DefinerEnv env) {
 		super(block, env);
-		this.command = block.command(new BlockCommandEnv(null, env));
 
 		final LocalScope localScope = block.getScope();
 		final Scope ownerScope = localScope.getEnclosingScope();
@@ -69,6 +68,7 @@ public final class ImperativeDefiner extends Definer {
 				.getMemberKey()
 				.toPath()
 				.toPrefix(ownerScope);
+		this.command = block.command(new ImperativeDefinerCommandEnv(this, env));
 	}
 
 	public final ImperativeBlock getBlock() {
