@@ -26,7 +26,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
-import org.o42a.core.ref.type.TypeRef;
 
 
 public abstract class ObjectMeta {
@@ -152,13 +151,7 @@ public abstract class ObjectMeta {
 	}
 
 	private void initTypeParameters() {
-
-		final TypeRef ancestor =
-				meta().getObject().type().getAscendants().getAncestor();
-
-		if (ancestor != null) {
-			ancestor.validateAll();
-		}
+		meta().getObject().type().getParameters().validateAll();
 	}
 
 	private void initNestedDeps() {

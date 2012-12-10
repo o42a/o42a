@@ -46,8 +46,7 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	public final StaticTypeRef setParameters(
-			TypeParametersBuilder parameters) {
+	public final StaticTypeRef setParameters(TypeParametersBuilder parameters) {
 		return super.setParameters(parameters).toStatic();
 	}
 

@@ -596,7 +596,7 @@ public class Ascendants
 			parameters = applySampleParameters(parameters, sample);
 		}
 		if (!ancestorApplied) {
-			// Apply an ancestor paraameters if not applied yet.
+			// Apply an ancestor parameters if not applied yet.
 			parameters = applyAncestorParameters(parameters);
 		}
 
@@ -619,6 +619,7 @@ public class Ascendants
 	private TypeParameters<?> applySampleParameters(
 			TypeParameters<?> parameters,
 			Sample sample) {
+
 		final TypeParameters<?> sampleParameters =
 				sample.getAncestor().getParameters();
 
