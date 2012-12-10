@@ -271,8 +271,7 @@ public final class TypeParameters<T>
 	}
 
 	@Override
-	public final TypeParameters<T> refine(
-			TypeParameters<?> defaultParameters) {
+	public final TypeParameters<T> refine(TypeParameters<?> defaultParameters) {
 		assert defaultParameters.getValueType().isVoid()
 		|| getValueType().is(defaultParameters.getValueType()) :
 			this + " value type is not compatible with "
