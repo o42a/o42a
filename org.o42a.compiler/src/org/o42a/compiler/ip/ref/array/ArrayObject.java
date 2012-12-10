@@ -26,7 +26,6 @@ import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.ConstructedObject;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.array.Array;
@@ -101,14 +100,8 @@ final class ArrayObject extends ConstructedObject {
 	protected Definitions explicitDefinitions() {
 
 		final Def def = new ArrayConstantDef(this, getArray());
-		final PrefixPath prefix =
-				getScope().getEnclosingScopePath().toPrefix(getScope());
 
-		return def.toDefinitions(
-				type()
-				.getAncestor()
-				.getParameters()
-				.prefixWith(prefix));
+		return def.toDefinitions(type().getParameters());
 	}
 
 	private Array createArray() {
