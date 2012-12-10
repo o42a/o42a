@@ -44,8 +44,9 @@ import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.*;
-import org.o42a.core.value.Void;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ValueType;
 
 
 public final class ObjectType implements UserInfo {
@@ -651,33 +652,21 @@ public final class ObjectType implements UserInfo {
 
 	private TypeParameters<?> applyAncestorParameters(
 			TypeParameters<?> parameters) {
-
-		final TypeParameters<?> ancestorParameters =
-				getAscendants()
+		return getAscendants()
 				.getExplicitAncestor()
 				.getType()
 				.type()
 				.getParameters()
-				.upgradeScope(getObject().getScope());
-
-		return ancestorParameters.refine(parameters);
+				.upgradeScope(getObject().getScope()).refine(parameters);
 	}
 
 	private TypeParameters<?> applySampleParameters(
 			TypeParameters<?> parameters,
 			Sample sample) {
-
-		final TypeParameters<?> sampleParameters =
-				sample.getObject()
+		return sample.getObject()
 				.type()
 				.getParameters()
-				.upgradeScope(getObject().getScope());
-
-		if (parameters == null) {
-			return sampleParameters;
-		}
-
-		return sampleParameters.refine(parameters);
+				.upgradeScope(getObject().getScope()).refine(parameters);
 	}
 
 	private TypeParameters<?> applyExplicitParameters(
@@ -687,27 +676,13 @@ public final class ObjectType implements UserInfo {
 				getAscendants().getExplicitParameters();
 
 		if (explicitParameters == null) {
-			if (parameters == null) {
-				return typeParameters(getObject(), ValueType.VOID);
-			}
 			return parameters;
 		}
 
 		final Scope scope = getObject().getScope();
-		final PrefixPath prefix =
-				scope.getEnclosingScopePath().toPrefix(scope);
-		final TypeParametersBuilder rescopedExplicitParameters =
-				explicitParameters.prefixWith(prefix);
+		final PrefixPath prefix = scope.getEnclosingScopePath().toPrefix(scope);
 
-		if (parameters == null) {
-
-			final TypeParameters<Void> voidParameters =
-					typeParameters(getObject(), ValueType.VOID);
-
-			return rescopedExplicitParameters.refine(voidParameters);
-		}
-
-		return rescopedExplicitParameters.refine(parameters);
+		return explicitParameters.prefixWith(prefix).refine(parameters);
 	}
 
 }
