@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path.impl.member;
 
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
@@ -41,6 +42,11 @@ final class TypeParameterObject extends Obj {
 
 	public final MemberKey getParameterKey() {
 		return this.constructor.getParameterKey();
+	}
+
+	@Override
+	public ConstructionMode getConstructionMode() {
+		return ConstructionMode.FULL_CONSTRUCTION;
 	}
 
 	@Override

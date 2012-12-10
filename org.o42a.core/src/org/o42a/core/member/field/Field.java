@@ -31,7 +31,7 @@ import org.o42a.core.ir.field.object.ObjectFieldIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
-import org.o42a.core.member.field.decl.PropagatedObject;
+import org.o42a.core.member.field.decl.PropagatedFieldObject;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectScope;
 import org.o42a.core.ref.Prediction;
@@ -267,7 +267,7 @@ public abstract class Field extends ObjectScope {
 	}
 
 	protected final Obj propagateObject() {
-		return new PropagatedObject(this);
+		return new PropagatedFieldObject(this);
 	}
 
 	protected FieldIR createIR(Generator generator) {
