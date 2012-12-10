@@ -45,11 +45,6 @@ final class IndexedItemLink extends KnownLink {
 	}
 
 	@Override
-	protected TargetRef buildTargetRef() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public LinkValueType getValueType() {
 		return LinkValueType.LINK;
 	}
