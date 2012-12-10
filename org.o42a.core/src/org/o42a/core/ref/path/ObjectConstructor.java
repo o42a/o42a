@@ -21,7 +21,6 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.ir.CodeBuilder.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
 import java.util.IdentityHashMap;
@@ -38,13 +37,9 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectMembers;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.ObjectConstructorStep;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueAdapter;
@@ -120,6 +115,10 @@ public abstract class ObjectConstructor extends Placed {
 
 	protected abstract Obj createObject();
 
+	protected Obj propagateObject(Scope scope) {
+		return new PropagatedConstructedObject(this, scope);
+	}
+
 	final Obj propagate(Scope scope) {
 		assertCompatible(scope);
 		if (this.propagated != null) {
@@ -133,8 +132,7 @@ public abstract class ObjectConstructor extends Placed {
 			this.propagated = new IdentityHashMap<Scope, Obj>();
 		}
 
-		final Propagated propagated =
-				new Propagated(scope, this, getConstructed());
+		final Obj propagated = propagateObject(scope);
 
 		this.propagated.put(scope, propagated);
 
@@ -165,56 +163,6 @@ public abstract class ObjectConstructor extends Placed {
 				return super.toString();
 			}
 			return this.constructor.toString();
-		}
-
-	}
-
-	private static final class Propagated extends Obj {
-
-		private final ObjectConstructor constructor;
-		private final StaticTypeRef propagatedFrom;
-		private final TypeRef overriddenAncestor;
-
-		Propagated(Scope scope, ObjectConstructor constructor, Obj sample) {
-			super(
-					constructor.distributeIn(scope.getContainer()),
-					sample);
-			this.constructor = constructor;
-
-			final Ref ref = constructor.toRef();
-
-			this.propagatedFrom = ref.toStaticTypeRef().upgradeScope(scope);
-			this.overriddenAncestor =
-					ref.rebuildIn(sample.getScope().getEnclosingScope())
-					.ancestor(sample.getScope().getEnclosingScope())
-					.upgradeScope(scope);
-		}
-
-		@Override
-		public String toString() {
-			return ("Propagated[" + this.propagatedFrom
-					+ " / " + getScope().getEnclosingScope() + "]");
-		}
-
-		@Override
-		protected Nesting createNesting() {
-			return this.constructor.getNesting();
-		}
-
-		@Override
-		protected Ascendants buildAscendants() {
-			return new Ascendants(this).addImplicitSample(
-					this.propagatedFrom,
-					this.overriddenAncestor);
-		}
-
-		@Override
-		protected void declareMembers(ObjectMembers members) {
-		}
-
-		@Override
-		protected Definitions explicitDefinitions() {
-			return emptyDefinitions(this, getScope());
 		}
 
 	}

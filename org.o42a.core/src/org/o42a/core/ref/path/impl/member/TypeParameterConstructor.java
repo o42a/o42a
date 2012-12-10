@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path.impl.member;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -78,6 +79,11 @@ final class TypeParameterConstructor extends ObjectConstructor {
 	@Override
 	protected Obj createObject() {
 		return new TypeParameterObject(this);
+	}
+
+	@Override
+	protected Obj propagateObject(Scope scope) {
+		return new PropagatedTypeParameterObject(this, scope);
 	}
 
 }

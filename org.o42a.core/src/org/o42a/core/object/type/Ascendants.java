@@ -132,7 +132,7 @@ public class Ascendants
 
 	public ConstructionMode getConstructionMode() {
 		if (this.constructionMode != null) {
-			return this.constructionMode;
+			//return this.constructionMode;
 		}
 
 		final ConstructionMode enclosingMode = enclosingConstructionMode();
@@ -478,7 +478,8 @@ public class Ascendants
 				return false;
 			}
 
-			final ConstructionMode constructionMode = getConstructionMode();
+			final ConstructionMode constructionMode =
+					getObject().getConstructionMode();
 
 			if (constructionMode.isStrict()) {
 				getScope().getLogger().error(

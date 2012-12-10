@@ -31,9 +31,9 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 
 
-public final class PropagatedObject extends Obj {
+public final class PropagatedFieldObject extends Obj {
 
-	public PropagatedObject(Field field) {
+	public PropagatedFieldObject(Field field) {
 		super(field, field.getOverridden()[0].toObject());
 	}
 
