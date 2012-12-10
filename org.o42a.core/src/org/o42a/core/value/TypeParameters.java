@@ -63,22 +63,6 @@ public final class TypeParameters<T>
 		return new TypeParameters<T>(location, valueType);
 	}
 
-	public static TypeParametersBuilder refineTypeParameters(
-			TypeParametersBuilder refined,
-			TypeParametersBuilder refinement) {
-		assert refined != null :
-			"Refined type parameters not specified";
-		assert refinement != null:
-			"Type parameters refinement not specified";
-		if (refinement.isDefaultTypeParameters()) {
-			return refined;
-		}
-		if (refined.isDefaultTypeParameters()) {
-			return refinement;
-		}
-		return new RefinedTypeParameters(refined, refinement);
-	}
-
 	private final ValueType<T> valueType;
 	private final TypeParameter[] parameters;
 
