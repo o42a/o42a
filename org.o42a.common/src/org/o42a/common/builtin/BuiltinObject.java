@@ -25,9 +25,7 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.ObjectScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 
 
@@ -68,22 +66,7 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-
-		final TypeParameters<?> ancestorTypeParameters =
-				type().getAncestor().getParameters();
-		final TypeParameters<?> typeParameters;
-
-		if (ancestorTypeParameters.isEmpty()) {
-			typeParameters = ancestorTypeParameters;
-		} else {
-
-			final PrefixPath prefix =
-					getScope().getEnclosingScopePath().toPrefix(getScope());
-
-			typeParameters = ancestorTypeParameters.prefixWith(prefix);
-		}
-
-		return new BuiltinDef(this).toDefinitions(typeParameters);
+		return new BuiltinDef(this).toDefinitions(type().getParameters());
 	}
 
 }

@@ -23,8 +23,6 @@ import org.o42a.common.object.AnnotatedObject;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.value.TypeParameters;
 
 
 public abstract class AnnotatedBuiltin
@@ -42,22 +40,7 @@ public abstract class AnnotatedBuiltin
 
 	@Override
 	protected final Definitions explicitDefinitions() {
-
-		final TypeParameters<?> ancestorTypeParameters =
-				type().getAncestor().getParameters();
-		final TypeParameters<?> typeParameters;
-
-		if (ancestorTypeParameters.isEmpty()) {
-			typeParameters = ancestorTypeParameters;
-		} else {
-
-			final PrefixPath prefix =
-					getScope().getEnclosingScopePath().toPrefix(getScope());
-
-			typeParameters = ancestorTypeParameters.prefixWith(prefix);
-		}
-
-		return new BuiltinDef(this).toDefinitions(typeParameters);
+		return new BuiltinDef(this).toDefinitions(type().getParameters());
 	}
 
 }
