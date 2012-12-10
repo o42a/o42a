@@ -742,16 +742,17 @@ public abstract class Obj
 			return typeParameters(this, ValueType.VOID);
 		}
 
-		final TypeParameters<?> ancestorTypeParameters =
-				ancestor.getParameters();
+		final TypeParameters<?> derivedTypeParameters =
+				type().getAscendants().derivedParameters();
 		final ValueType<?> knownValueType = type().getKnownValueType();
 		final TypeParameters<?> typeParameters;
 
 		if (knownValueType != null) {
-			typeParameters = typeParameters(this, knownValueType)
-					.refine(ancestorTypeParameters);
+			typeParameters =
+					typeParameters(this, knownValueType)
+					.refine(derivedTypeParameters);
 		} else {
-			typeParameters = ancestorTypeParameters;
+			typeParameters = derivedTypeParameters;
 		}
 
 		if (typeParameters.isEmpty()) {
