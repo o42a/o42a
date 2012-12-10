@@ -743,7 +743,7 @@ public abstract class Obj
 		}
 
 		final TypeParameters<?> derivedTypeParameters =
-				type().getAscendants().derivedParameters();
+				type().derivedParameters();
 		final ValueType<?> knownValueType = type().getKnownValueType();
 		final TypeParameters<?> typeParameters;
 
