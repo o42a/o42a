@@ -158,10 +158,15 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
-	public void pathTrimmed(BoundPath path, Scope root) {
+	public boolean pathTrimmed(BoundPath path, Scope root) {
+
+		boolean proceed = true;
+
 		for (PathWalker walker : getWalkers()) {
-			walker.pathTrimmed(path, root);
+			proceed = walker.pathTrimmed(path, root) & proceed;
 		}
+
+		return proceed;
 	}
 
 	@Override

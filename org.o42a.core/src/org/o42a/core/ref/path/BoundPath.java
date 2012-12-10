@@ -234,7 +234,16 @@ public class BoundPath extends RefPath {
 	}
 
 	public final PathResolution walk(PathResolver resolver, PathWalker walker) {
-		return walkPath(getPath(), resolver, walker, false);
+
+		final Path path = getPath();
+		final Path template = path.getTemplate();
+
+		return walkPath(
+				template != null ? template : path,
+				resolver,
+				walker,
+				template != null /* Only template may contain
+				                    unresolved fragments      */);
 	}
 
 	public final Ref target(Distributor distributor) {
@@ -603,7 +612,6 @@ public class BoundPath extends RefPath {
 							0,
 							i + 1,
 							replacementSteps);
-
 					this.path = new Path(
 							PathKind.ABSOLUTE_PATH,
 							true,
@@ -612,9 +620,10 @@ public class BoundPath extends RefPath {
 					// Continue from the ROOT.
 					prev = root();
 					i = 0;
-					tracker.pathTrimmed(this, prev);
+					if (!tracker.pathTrimmed(this, prev)) {
+						return noResolution(tracker, prev, step);
+					}
 				} else {
-
 					// Replacement is a relative path.
 					// Replace the current step.
 					steps = ArrayUtil.replace(
@@ -679,16 +688,10 @@ public class BoundPath extends RefPath {
 
 	private Path rebuildPath() {
 
-		final Path path;
+		final Path path = getRawPath();
 		final Path template = getTemplate();
 
-		if (template != null) {
-			path = template;
-		} else {
-			path = getRawPath();
-		}
-
-		removeOddFragments(path);
+		removeOddFragments(template != null ? template : path);
 
 		return this.path = combineSteps();
 	}

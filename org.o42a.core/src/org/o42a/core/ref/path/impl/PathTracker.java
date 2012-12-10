@@ -79,8 +79,8 @@ public abstract class PathTracker implements PathWalker, PathExpander {
 	}
 
 	@Override
-	public void pathTrimmed(BoundPath path, Scope root) {
-		walker().pathTrimmed(path, root);
+	public boolean pathTrimmed(BoundPath path, Scope root) {
+		return walk(walker().pathTrimmed(path, root));
 	}
 
 	@Override

@@ -208,7 +208,8 @@ public class RoleResolver implements PathWalker {
 	}
 
 	@Override
-	public void pathTrimmed(BoundPath path, Scope root) {
+	public boolean pathTrimmed(BoundPath path, Scope root) {
+		return root(path, root);
 	}
 
 	@Override

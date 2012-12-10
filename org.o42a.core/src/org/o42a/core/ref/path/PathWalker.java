@@ -63,13 +63,15 @@ public interface PathWalker {
 	 * zero.</p>
 	 *
 	 * <p>This only happens at path rebuild phase. So, this method won't be
-	 * called for ordinary path walkers, as they applied to already rebuild
-	 * paths.</p>
+	 * called for ordinary path walkers, unless the path has a template.</p>
 	 *
 	 * @param path rebuilding path.
 	 * @param root root scope.
+	 *
+	 * @return <code>true</code> to continue the path resolution,
+	 * or <code>false</code> to abort it.
 	 */
-	void pathTrimmed(BoundPath path, Scope root);
+	boolean pathTrimmed(BoundPath path, Scope root);
 
 	void abortedAt(Scope last, Step brokenStep);
 

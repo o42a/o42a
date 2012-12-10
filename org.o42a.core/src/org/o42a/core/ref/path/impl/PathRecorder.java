@@ -152,13 +152,11 @@ public class PathRecorder extends PathTracker {
 	}
 
 	@Override
-	public void pathTrimmed(BoundPath path, Scope root) {
+	public boolean pathTrimmed(BoundPath path, Scope root) {
 		this.records.clear();
-		if (!this.absolute) {
-			this.absolute = true;
-			this.start = root;
-		}
-		super.pathTrimmed(path, root);
+		this.absolute = true;
+		this.start = root;
+		return super.pathTrimmed(path, root);
 	}
 
 	@Override
