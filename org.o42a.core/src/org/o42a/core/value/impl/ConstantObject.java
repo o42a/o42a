@@ -26,9 +26,7 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.ConstructedObject;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.SingleValueType;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 
 
@@ -72,22 +70,7 @@ final class ConstantObject<T> extends ConstructedObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-
-		final TypeParameters<?> ancestorTypeParameters =
-				type().getAncestor().getParameters();
-		final TypeParameters<?> typeParameters;
-
-		if (ancestorTypeParameters.isEmpty()) {
-			typeParameters = ancestorTypeParameters;
-		} else {
-
-			final PrefixPath prefix =
-					getScope().getEnclosingScopePath().toPrefix(getScope());
-
-			typeParameters = ancestorTypeParameters.prefixWith(prefix);
-		}
-
-		return new ConstantDef<T>(this).toDefinitions(typeParameters);
+		return new ConstantDef<T>(this).toDefinitions(type().getParameters());
 	}
 
 }

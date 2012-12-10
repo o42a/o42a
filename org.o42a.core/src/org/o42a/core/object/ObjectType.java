@@ -571,10 +571,8 @@ public final class ObjectType implements UserInfo {
 			return;
 		}
 
-		final ObjectValue newAncestorValue =
-				newAncestor.getType().value();
-		final Obj oldAncestorObject =
-				oldAncestor.getType();
+		final ObjectValue newAncestorValue = newAncestor.getType().value();
+		final Obj oldAncestorObject = oldAncestor.getType();
 
 		trackAncestorPartUpdates(
 				since,
