@@ -24,8 +24,7 @@ import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
-import static org.o42a.core.value.TypeParameters.refineTypeParameters;
-import static org.o42a.core.value.TypeParametersBuilder.DEFAULT_TYPE_PARAMETERS;
+import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.Arrays;
 
@@ -42,9 +41,8 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 import org.o42a.util.ArrayUtil;
 
 
@@ -82,11 +80,7 @@ public class Ascendants
 			} else {
 				this.ancestor = sampleAncestor();
 			}
-			if (this.ancestor != null) {
-				this.ancestor = this.ancestor.setParameters(typeParameters());
-			}
 		}
-
 		return this.ancestor;
 	}
 
@@ -226,6 +220,28 @@ public class Ascendants
 			"Can not override non-object member " + overriddenMember;
 
 		return addSample(new MemberOverride(overriddenMember, this));
+	}
+
+	public TypeParameters<?> derivedParameters() {
+
+		TypeParameters<?> parameters = null;
+		boolean ancestorApplied = getExplicitAncestor() == null;
+
+		for (Sample sample : getSamples()) {
+			if (!ancestorApplied && sample.isExplicit()) {
+				// Apply an explicit ancestor's parameters after
+				// implicit samples, but before the explicit ones.
+				ancestorApplied = true;
+				parameters = applyAncestorParameters(parameters);
+			}
+			parameters = applySampleParameters(parameters, sample);
+		}
+		if (!ancestorApplied) {
+			// Apply an ancestor parameters if not applied yet.
+			parameters = applyAncestorParameters(parameters);
+		}
+
+		return applyExplicitParameters(parameters);
 	}
 
 	public void resolveAll() {
@@ -581,33 +597,11 @@ public class Ascendants
 		this.samples = ArrayUtil.remove(this.samples, index);
 	}
 
-	private final TypeParametersBuilder typeParameters() {
-
-		TypeParameters<?> parameters = null;
-		boolean ancestorApplied = this.explicitAncestor == null;
-
-		for (Sample sample : getSamples()) {
-			if (!ancestorApplied && sample.isExplicit()) {
-				// Apply an explicit ancestor's parameters after
-				// implicit samples, but before the explicit ones.
-				ancestorApplied = true;
-				parameters = applyAncestorParameters(parameters);
-			}
-			parameters = applySampleParameters(parameters, sample);
-		}
-		if (!ancestorApplied) {
-			// Apply an ancestor parameters if not applied yet.
-			parameters = applyAncestorParameters(parameters);
-		}
-
-		return applyExplicitParameters(parameters);
-	}
-
 	private TypeParameters<?> applyAncestorParameters(
 			TypeParameters<?> parameters) {
 
 		final TypeParameters<?> ancestorParameters =
-				this.explicitAncestor.getParameters();
+				getExplicitAncestor().getParameters();
 
 		if (parameters == null) {
 			return ancestorParameters;
@@ -630,19 +624,28 @@ public class Ascendants
 		return sampleParameters.refine(parameters);
 	}
 
-	private TypeParametersBuilder applyExplicitParameters(
+	private TypeParameters<?> applyExplicitParameters(
 			TypeParameters<?> parameters) {
+
+		final TypeParametersBuilder explicitParameters =
+				getExplicitParameters();
+
 		if (parameters == null) {
-			if (this.explicitParameters == null) {
-				return DEFAULT_TYPE_PARAMETERS;
+
+			final TypeParameters<Void> voidParameters =
+					typeParameters(getObject(), ValueType.VOID);
+
+			if (explicitParameters == null) {
+				return voidParameters;
 			}
-			return this.explicitParameters;
+
+			return explicitParameters.refine(voidParameters);
 		}
-		if (this.explicitParameters == null) {
+		if (explicitParameters == null) {
 			return parameters;
 		}
 
-		return refineTypeParameters(parameters, this.explicitParameters);
+		return explicitParameters.refine(parameters);
 	}
 
 	private ConstructionMode enclosingConstructionMode() {
