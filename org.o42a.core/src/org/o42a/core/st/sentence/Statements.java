@@ -56,6 +56,7 @@ public abstract class Statements<
 	private final ArrayList<L> implications = new ArrayList<L>(1);
 	private boolean statementDropped;
 	private boolean instructionsExecuted;
+	private boolean incompatibilityReported;
 
 	Statements(LocationInfo location, Sentence<S, L> sentence) {
 		super(
@@ -369,7 +370,12 @@ public abstract class Statements<
 				continue;
 			}
 			if (!expectedParameters.assignableFrom(typeParameters)) {
-				scope.getLogger().incompatible(implication, expectedParameters);
+				if (!this.incompatibilityReported) {
+					this.incompatibilityReported = true;
+					scope.getLogger().incompatible(
+							implication,
+							expectedParameters);
+				}
 				return null;
 			}
 
