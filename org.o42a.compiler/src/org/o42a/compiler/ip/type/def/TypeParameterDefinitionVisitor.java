@@ -27,6 +27,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
+import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.type.TypeRef;
@@ -35,14 +36,16 @@ import org.o42a.core.ref.type.TypeRef;
 final class TypeParameterDefinitionVisitor
 		extends AbstractExpressionVisitor<TypeRef, Distributor> {
 
-	private final TypeNodeVisitor<TypeRef, Distributor> typeVisitor;
+	private final TypeNodeVisitor<ParamTypeRef, Distributor> typeVisitor;
 
 	TypeParameterDefinitionVisitor(TypeConsumer consumer) {
 		this.typeVisitor = PLAIN_IP.typeIp().typeVisitor(consumer);
 	}
 
 	@Override
-	public TypeRef visitAscendants(AscendantsNode ascendants, Distributor p) {
+	public TypeRef visitAscendants(
+			AscendantsNode ascendants,
+			Distributor p) {
 		return typeRef(ascendants, p);
 	}
 
@@ -77,7 +80,7 @@ final class TypeParameterDefinitionVisitor
 	}
 
 	private TypeRef typeRef(TypeNode node, Distributor p) {
-		return node.accept(this.typeVisitor, p);
+		return node.accept(this.typeVisitor, p).parameterize();
 	}
 
 }

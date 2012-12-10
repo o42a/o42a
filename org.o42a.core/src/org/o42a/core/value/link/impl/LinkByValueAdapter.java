@@ -76,10 +76,10 @@ public class LinkByValueAdapter extends ValueAdapter {
 	public Value<?> value(Resolver resolver) {
 
 		final Ref ref = rescopeRef(resolver.getScope());
-		final TypeParameters<KnownLink> linkStruct = linkParameters(ref);
+		final TypeParameters<KnownLink> linkParameters = linkParameters(ref);
 
-		if (linkStruct != null) {
-			return linkByValue(ref, linkStruct);
+		if (linkParameters != null) {
+			return linkByValue(ref, linkParameters);
 		}
 
 		return linkByValue(

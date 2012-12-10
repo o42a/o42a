@@ -28,6 +28,7 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.link.Link;
 import org.o42a.core.value.link.LinkData;
 
@@ -68,7 +69,12 @@ public class LinkTarget extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(this.linkData.getTypeRef());
+
+		final TypeRef typeRef = this.linkData.getTypeRef();
+
+		return new Ascendants(this)
+				.setAncestor(typeRef)
+				.setParameters(typeRef.copyParameters());
 	}
 
 	@Override

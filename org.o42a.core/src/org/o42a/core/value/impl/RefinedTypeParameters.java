@@ -20,9 +20,11 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.util.log.Loggable;
 
 
 public class RefinedTypeParameters implements TypeParametersBuilder {
@@ -35,6 +37,21 @@ public class RefinedTypeParameters implements TypeParametersBuilder {
 			TypeParametersBuilder refinement) {
 		this.refined = refinded;
 		this.refinement = refinement;
+	}
+
+	@Override
+	public CompilerContext getContext() {
+		return this.refinement.getContext();
+	}
+
+	@Override
+	public Loggable getLoggable() {
+		return this.refinement.getLoggable();
+	}
+
+	@Override
+	public boolean isDefaultTypeParameters() {
+		return false;
 	}
 
 	@Override

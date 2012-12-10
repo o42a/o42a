@@ -20,14 +20,13 @@
 package org.o42a.core.value;
 
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.impl.DefaultTypeParameters;
 
 
-public interface TypeParametersBuilder {
+public interface TypeParametersBuilder extends LocationInfo {
 
-	TypeParametersBuilder DEFAULT_TYPE_PARAMETERS =
-			DefaultTypeParameters.INSTANCE;
+	boolean isDefaultTypeParameters();
 
 	TypeParameters<?> refine(TypeParameters<?> defaultParameters);
 

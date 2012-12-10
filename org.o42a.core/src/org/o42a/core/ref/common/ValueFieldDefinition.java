@@ -20,15 +20,20 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.member.field.DefinitionTarget;
+import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 public class ValueFieldDefinition extends DefaultFieldDefinition {
 
-	public ValueFieldDefinition(Ref ref) {
+	private final TypeParametersBuilder typeParameters;
+
+	public ValueFieldDefinition(Ref ref, TypeParametersBuilder typeParameters) {
 		super(ref);
+		this.typeParameters = typeParameters;
 	}
 
 	@Override
@@ -39,7 +44,25 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAncestor(ancestor());
+		if (this.typeParameters != null) {
+			definer.setParameters(this.typeParameters);
+		}
 		pathAsValue(definer);
+	}
+
+	@Override
+	public void overrideObject(ObjectDefiner definer) {
+		if (this.typeParameters != null) {
+			definer.setParameters(this.typeParameters);
+		}
+		super.overrideObject(definer);
+	}
+
+	@Override
+	public void defineLink(LinkDefiner definer) {
+		definer.setTargetRef(
+				getRef(),
+				getRef().getInterface().setParameters(this.typeParameters));
 	}
 
 	protected TypeRef ancestor() {

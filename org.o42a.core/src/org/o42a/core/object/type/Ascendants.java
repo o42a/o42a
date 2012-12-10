@@ -155,6 +155,9 @@ public class Ascendants
 		if (getExplicitAncestor() != null) {
 			return false;
 		}
+		if (getExplicitParameters() != null) {
+			return false;
+		}
 		return getSamples().length == 0;
 	}
 

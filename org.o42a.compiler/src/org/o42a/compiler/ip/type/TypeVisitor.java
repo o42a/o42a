@@ -32,12 +32,11 @@ import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParametersBuilder;
 
 
 public final class TypeVisitor
-		extends AbstractTypeVisitor<TypeRef, Distributor> {
+		extends AbstractTypeVisitor<ParamTypeRef, Distributor> {
 
 	private final TypeInterpreter typeIp;
 	private final TypeConsumer consumer;
@@ -67,7 +66,9 @@ public final class TypeVisitor
 	}
 
 	@Override
-	public TypeRef visitAscendants(AscendantsNode ascendants, Distributor p) {
+	public ParamTypeRef visitAscendants(
+			AscendantsNode ascendants,
+			Distributor p) {
 		if (ascendants.hasSamples()) {
 			return super.visitAscendants(ascendants, p);
 		}
@@ -86,7 +87,7 @@ public final class TypeVisitor
 	}
 
 	@Override
-	public TypeRef visitTypeParameters(
+	public ParamTypeRef visitTypeParameters(
 			TypeParametersNode parameters,
 			Distributor p) {
 
@@ -124,7 +125,7 @@ public final class TypeVisitor
 	}
 
 	@Override
-	public TypeRef visitMacroExpansion(
+	public ParamTypeRef visitMacroExpansion(
 			MacroExpansionNode expansion,
 			Distributor p) {
 
@@ -146,7 +147,7 @@ public final class TypeVisitor
 	}
 
 	@Override
-	public TypeRef visitTypeExpression(
+	public ParamTypeRef visitTypeExpression(
 			TypeExpressionNode type,
 			Distributor p) {
 
@@ -162,7 +163,7 @@ public final class TypeVisitor
 	}
 
 	@Override
-	protected TypeRef visitRef(RefNode node, Distributor p) {
+	protected ParamTypeRef visitRef(RefNode node, Distributor p) {
 
 		final Owner ref = node.accept(ip().refIp().ownerVisitor(), p);
 
@@ -182,7 +183,7 @@ public final class TypeVisitor
 	}
 
 	@Override
-	protected TypeRef visitType(Node type, Distributor p) {
+	protected ParamTypeRef visitType(Node type, Distributor p) {
 		p.getContext().getLogger().invalidType(type);
 		return null;
 	}

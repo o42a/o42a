@@ -96,7 +96,7 @@ final class PhrasePrefixVisitor
 			phrase = p;
 		}
 
-		final Phrase result = phrase.setAncestor(ancestor.getAncestor());
+		final Phrase result = ancestor.applyTo(phrase);
 
 		if (!ancestor.isMacroExpanding()) {
 			return result;

@@ -110,22 +110,16 @@ public class Phrase extends Placed {
 		return this.prefix.getTypeParameters();
 	}
 
-	public final <P extends TypeParametersBuilder & LocationInfo>
-	Phrase setTypeParameters(P typeParameters) {
-		return setTypeParameters(typeParameters, typeParameters);
-	}
-
 	public final Phrase setTypeParameters(
-			LocationInfo location,
 			TypeParametersBuilder typeParameters) {
 		if (getTypeParameters() != null) {
 			getLogger().error(
 					"duplicate_type_parameters",
-					location,
+					typeParameters,
 					"Type parameters already set");
 			return this;
 		}
-		this.prefix.setTypeParameters(location, typeParameters);
+		this.prefix.setTypeParameters(typeParameters);
 		return referBody();
 	}
 

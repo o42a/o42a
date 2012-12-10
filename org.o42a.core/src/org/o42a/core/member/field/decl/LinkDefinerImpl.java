@@ -88,16 +88,10 @@ final class LinkDefinerImpl implements LinkDefiner {
 		final FieldDeclaration declaration = getField().getDeclaration();
 		final LinkValueType linkType = declaration.getLinkType();
 
-		if (!this.ascendants.isEmpty()) {
-			return this.ascendants.setParameters(
-					linkType.typeParameters(targetType));
-		}
-
-		return this.ascendants.setAncestor(
-				linkType.typeRef(
-						declaration,
-						declaration.getScope(),
-						linkType.typeParameters(targetType)));
+		return this.ascendants
+				.setAncestor(
+						linkType.typeRef(declaration, declaration.getScope()))
+				.setParameters(linkType.typeParameters(targetType));
 	}
 
 	private TypeRef explicitTypeRef() {

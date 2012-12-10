@@ -51,6 +51,11 @@ public final class TypeDefinition
 	}
 
 	@Override
+	public boolean isDefaultTypeParameters() {
+		return this.parameters.length == 0;
+	}
+
+	@Override
 	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 		return toTypeParameters(defaultParameters.getValueType())
 				.refine(defaultParameters);
@@ -109,6 +114,7 @@ public final class TypeDefinition
 
 		return out.toString();
 	}
+
 	private TypeParameters<?> toTypeParameters(ValueType<?> valueType) {
 
 		TypeParameters<?> parameters = typeParameters(this, valueType);
@@ -122,6 +128,7 @@ public final class TypeDefinition
 			}
 			parameters = parameters.add(key, decl.getDefinition());
 		}
+
 		return parameters;
 	}
 

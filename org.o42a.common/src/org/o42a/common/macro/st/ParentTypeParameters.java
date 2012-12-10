@@ -24,6 +24,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
@@ -31,17 +32,24 @@ import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueType;
 
 
-final class ParentTypeParameters implements TypeParametersBuilder {
+final class ParentTypeParameters
+		extends Location
+		implements TypeParametersBuilder {
 
 	private final Scope scope;
 
 	ParentTypeParameters(Scope scope) {
+		super(scope);
 		this.scope = scope;
 	}
 
 	@Override
-	public TypeParameters<?> refine(
-			TypeParameters<?> defaultParameters) {
+	public boolean isDefaultTypeParameters() {
+		return false;
+	}
+
+	@Override
+	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 		return typeParameters().refine(defaultParameters);
 	}
 

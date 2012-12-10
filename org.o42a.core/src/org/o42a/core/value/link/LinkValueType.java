@@ -110,8 +110,8 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 	public TypeRef interfaceRef(TypeParameters<?> parameters) {
 
 		final TypeParameters<KnownLink> linkParameters = cast(parameters);
-		final MemberKey interfaceKey = interfaceKey(
-				parameters.getContext().getIntrinsics());
+		final MemberKey interfaceKey =
+				interfaceKey(parameters.getContext().getIntrinsics());
 
 		return linkParameters.typeRef(interfaceKey);
 	}

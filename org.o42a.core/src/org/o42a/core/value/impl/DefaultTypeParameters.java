@@ -20,17 +20,24 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
 
 
-public final class DefaultTypeParameters implements TypeParametersBuilder {
+public final class DefaultTypeParameters
+		extends Location
+		implements TypeParametersBuilder {
 
-	public static final DefaultTypeParameters INSTANCE =
-			new DefaultTypeParameters();
+	public DefaultTypeParameters(LocationInfo location) {
+		super(location);
+	}
 
-	private DefaultTypeParameters() {
+	@Override
+	public boolean isDefaultTypeParameters() {
+		return true;
 	}
 
 	@Override
@@ -39,14 +46,18 @@ public final class DefaultTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParameters<?> refine(
-			TypeParameters<?> defaultParameters) {
+	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 		return defaultParameters;
 	}
 
 	@Override
 	public TypeParametersBuilder reproduce(Reproducer reproducer) {
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "(`)";
 	}
 
 }

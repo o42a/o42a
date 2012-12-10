@@ -103,7 +103,7 @@ public final class TypeInterpreter {
 				return null;
 			}
 
-			final TypeRef paramTypeRef = type.accept(
+			final ParamTypeRef paramTypeRef = type.accept(
 					typeVisitor(
 							consumer.paramConsumer(new TypeParameterIndex(i))),
 					p);
@@ -112,13 +112,13 @@ public final class TypeInterpreter {
 				return null;
 			}
 
-			typeParams[i] = paramTypeRef;
+			typeParams[i] = paramTypeRef.parameterize();
 		}
 
 		return new ArbitraryTypeParameters(location(p, ifaceNode), typeParams);
 	}
 
-	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor(
+	public final TypeNodeVisitor<ParamTypeRef, Distributor> typeVisitor(
 			TypeConsumer consumer) {
 		return new TypeVisitor(this, consumer);
 	}
@@ -207,7 +207,7 @@ public final class TypeInterpreter {
 		final AncestorTypeRef ancestor = parseAncestor(node, distributor);
 
 		if (!ancestor.isImplied()) {
-			ascendants = ascendants.setAncestor(ancestor.getAncestor());
+			ascendants = ancestor.applyTo(ascendants);
 		}
 
 		for (AscendantNode sampleNode : node.getSamples()) {

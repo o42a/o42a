@@ -373,7 +373,7 @@ final class MainPhraseContext extends PhraseContext {
 				if (typeParameters != null) {
 					getLogger().error(
 							"prohibited_phrase_type_parameters",
-							getPhrase().getPrefix().getTypeParametersLocation(),
+							typeParameters,
 							"The value type is prohibited when the top-level"
 							+ " clause of phrase is an expression");
 				}

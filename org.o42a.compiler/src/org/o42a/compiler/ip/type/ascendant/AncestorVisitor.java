@@ -32,10 +32,10 @@ import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
+import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParametersBuilder;
 
 
@@ -112,10 +112,10 @@ public class AncestorVisitor
 
 		if (owner.isMacroExpanding()) {
 			return macroAncestorTypeRef(
-					toTypeRef(removeMacroRequirement(result)));
+					paramTypeRef(removeMacroRequirement(result)));
 		}
 
-		final TypeRef typeRef = toTypeRef(result);
+		final ParamTypeRef typeRef = paramTypeRef(result);
 
 		if (owner.isBodyReferred()) {
 			return ancestorBodyTypeRef(typeRef);
@@ -137,11 +137,11 @@ public class AncestorVisitor
 			return null;
 		}
 
-		return ancestorTypeRef(toTypeRef(ref));
+		return ancestorTypeRef(paramTypeRef(ref));
 	}
 
-	protected TypeRef toTypeRef(Ref ref) {
-		return ref.toTypeRef(typeParameters());
+	protected ParamTypeRef paramTypeRef(Ref ref) {
+		return new ParamTypeRef(ref.toTypeRef(), typeParameters());
 	}
 
 }

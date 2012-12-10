@@ -24,7 +24,6 @@ import static org.o42a.core.object.meta.Nesting.NO_NESTING;
 import org.o42a.compiler.ip.type.param.TypeParameterKey;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParametersBuilder;
 
 
@@ -57,7 +56,7 @@ public abstract class TypeConsumer {
 
 	public abstract TypeConsumer paramConsumer(TypeParameterKey parameterKey);
 
-	public abstract TypeRef consumeType(
+	public abstract ParamTypeRef consumeType(
 			Ref ref,
 			TypeParametersBuilder typeParameters);
 
