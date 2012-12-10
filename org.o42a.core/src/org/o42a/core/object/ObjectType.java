@@ -29,6 +29,7 @@ import static org.o42a.core.object.type.TypeUsage.RUNTIME_TYPE_USAGE;
 import static org.o42a.core.object.type.TypeUsage.STATIC_TYPE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.RUNTIME_VALUE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.STATIC_VALUE_USAGE;
+import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.*;
 
@@ -42,8 +43,8 @@ import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 
 
 public final class ObjectType implements UserInfo {
@@ -353,6 +354,28 @@ public final class ObjectType implements UserInfo {
 		return this.resolution.resolved();
 	}
 
+	final TypeParameters<?> derivedParameters() {
+
+		TypeParameters<?> parameters = null;
+		boolean ancestorApplied = getAscendants().getExplicitAncestor() == null;
+
+		for (Sample sample : getSamples()) {
+			if (!ancestorApplied && sample.isExplicit()) {
+				// Apply an explicit ancestor's parameters after
+				// implicit samples, but before the explicit ones.
+				ancestorApplied = true;
+				parameters = applyAncestorParameters(parameters);
+			}
+			parameters = applySampleParameters(parameters, sample);
+		}
+		if (!ancestorApplied) {
+			// Apply an ancestor parameters if not applied yet.
+			parameters = applyAncestorParameters(parameters);
+		}
+
+		return applyExplicitParameters(parameters);
+	}
+
 	private final Usable<TypeUsage> uses() {
 		if (this.uses != null) {
 			return this.uses;
@@ -622,6 +645,57 @@ public final class ObjectType implements UserInfo {
 				sample.getObject().type().registerDerivative(sample);
 			}
 		}
+	}
+
+	private TypeParameters<?> applyAncestorParameters(
+			TypeParameters<?> parameters) {
+
+		final TypeParameters<?> ancestorParameters =
+				getAscendants().getExplicitAncestor().getParameters();
+
+		if (parameters == null) {
+			return ancestorParameters;
+		}
+
+		return ancestorParameters.refine(parameters);
+	}
+
+	private TypeParameters<?> applySampleParameters(
+			TypeParameters<?> parameters,
+			Sample sample) {
+
+		final TypeParameters<?> sampleParameters =
+				sample.getAncestor().getParameters();
+
+		if (parameters == null) {
+			return sampleParameters;
+		}
+
+		return sampleParameters.refine(parameters);
+	}
+
+	private TypeParameters<?> applyExplicitParameters(
+			TypeParameters<?> parameters) {
+
+		final TypeParametersBuilder explicitParameters =
+				getAscendants().getExplicitParameters();
+
+		if (parameters == null) {
+
+			final TypeParameters<Void> voidParameters =
+					typeParameters(getObject(), ValueType.VOID);
+
+			if (explicitParameters == null) {
+				return voidParameters;
+			}
+
+			return explicitParameters.refine(voidParameters);
+		}
+		if (explicitParameters == null) {
+			return parameters;
+		}
+
+		return explicitParameters.refine(parameters);
 	}
 
 }
