@@ -106,8 +106,9 @@ public class OddPathFragmentRemover implements PathWalker {
 	}
 
 	@Override
-	public void pathTrimmed(BoundPath path, Scope root) {
+	public boolean pathTrimmed(BoundPath path, Scope root) {
 		this.entries.clear();
+		return true;
 	}
 
 	@Override

@@ -62,7 +62,7 @@ public final class ResolutionRootFinder implements PathWalker {
 
 	@Override
 	public boolean root(BoundPath path, Scope root) {
-		this.root = this.root.getContext().getRoot();
+		this.root = root.toObject();
 		return false;
 	}
 
@@ -158,7 +158,8 @@ public final class ResolutionRootFinder implements PathWalker {
 	}
 
 	@Override
-	public void pathTrimmed(BoundPath path, Scope root) {
+	public boolean pathTrimmed(BoundPath path, Scope root) {
+		return root(path, root);
 	}
 
 	@Override
