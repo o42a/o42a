@@ -63,6 +63,7 @@ final class TypeParameterDeclaration
 		this.builder = null;
 		this.node = location.node;
 		this.definition = definition;
+		this.key = location.getKey();
 	}
 
 	public final MemberKey getKey() {

@@ -37,13 +37,13 @@ import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.type.DefinitionKind;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.param.TypeParameterMemberKey;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 
@@ -232,7 +232,7 @@ public final class FieldDeclarableVisitor
 								result.getLinkType().interfaceKey(
 										declaration.getContext()
 										.getIntrinsics()));
-				final TypeRef type = typeNode.accept(
+				final ParamTypeRef type = typeNode.accept(
 						ip().typeIp().typeVisitor(
 								new FieldNesting(result)
 								.toTypeConsumer()
@@ -240,7 +240,7 @@ public final class FieldDeclarableVisitor
 						result.distribute());
 
 				if (type != null) {
-					result = result.setType(type);
+					result = result.setType(type.parameterize());
 				}
 			}
 		}

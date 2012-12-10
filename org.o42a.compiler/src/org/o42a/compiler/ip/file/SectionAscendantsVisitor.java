@@ -32,6 +32,7 @@ import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.common.ref.ArbitraryTypeParameters;
+import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
@@ -75,8 +76,13 @@ final class SectionAscendantsVisitor
 					p);
 
 			if (ascendantRef != null) {
-				ascendants = ascendants.setAncestor(
-						ascendantRef.toTypeRef(typeParams));
+
+				final ParamTypeRef type =
+						this.consumer.consumeType(ascendantRef, typeParams);
+
+				if (type != null) {
+					ascendants = type.updateAncestor(ascendants);
+				}
 			}
 		}
 

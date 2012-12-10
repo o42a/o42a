@@ -26,8 +26,10 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 public final class DefaultFieldDefinition extends FieldDefinition {
@@ -76,7 +78,16 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(getValue(), this.ascendants.getAncestor());
+
+		final TypeRef ancestor = this.ascendants.getAncestor();
+		final TypeParametersBuilder typeParameters =
+				this.ascendants.getTypeParameters();
+
+		definer.setTargetRef(
+				getValue(),
+				typeParameters != null
+				? ancestor.setParameters(typeParameters)
+				: ancestor);
 	}
 
 	@Override

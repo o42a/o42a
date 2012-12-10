@@ -21,7 +21,7 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.value.TypeParametersBuilder.DEFAULT_TYPE_PARAMETERS;
+import static org.o42a.core.value.TypeParameters.defaultTypeParameters;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -35,6 +35,7 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 import org.o42a.util.log.Loggable;
@@ -46,7 +47,7 @@ public abstract class TypeRef implements ScopeInfo {
 		if (ref.isKnownStatic()) {
 			return ref.toStaticTypeRef(parameters);
 		}
-		return new DefaultTypeRef(ref, parameters(parameters));
+		return new DefaultTypeRef(ref, parameters(ref, parameters));
 	}
 
 	public static StaticTypeRef staticTypeRef(
@@ -55,15 +56,16 @@ public abstract class TypeRef implements ScopeInfo {
 		return new StaticTypeRef(
 				ref,
 				ref.toStatic(),
-				parameters(parameters));
+				parameters(ref, parameters));
 	}
 
 	private static TypeParametersBuilder parameters(
+			LocationInfo location,
 			TypeParametersBuilder parameters) {
 		if (parameters != null) {
 			return parameters;
 		}
-		return DEFAULT_TYPE_PARAMETERS;
+		return defaultTypeParameters(location);
 	}
 
 	private final Ref ref;
@@ -129,6 +131,10 @@ public abstract class TypeRef implements ScopeInfo {
 		return this.parameters;
 	}
 
+	public final TypeParametersBuilder copyParameters() {
+		return this.parametersBuilder;
+	}
+
 	public final TypeParameters<?> defaultParameters() {
 		return getRef().typeParameters(getScope());
 	}
@@ -140,7 +146,7 @@ public abstract class TypeRef implements ScopeInfo {
 		if (parameters != null) {
 			typeParameters = parameters;
 		} else {
-			typeParameters = DEFAULT_TYPE_PARAMETERS;
+			typeParameters = defaultTypeParameters(this);
 		}
 
 		return create(getIntactRef(), getRef(), typeParameters);

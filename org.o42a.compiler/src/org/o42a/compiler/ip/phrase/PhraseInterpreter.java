@@ -191,7 +191,7 @@ public final class PhraseInterpreter {
 			if (ancestor.isBodyReferred()) {
 				result = result.referBody();
 			}
-			result = result.setAncestor(ancestor.getAncestor());
+			result = ancestor.applyTo(result);
 		}
 
 		if (!node.hasSamples()) {

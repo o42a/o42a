@@ -101,11 +101,6 @@ final class LinkCopy extends KnownLink {
 	}
 
 	@Override
-	protected TargetRef buildTargetRef() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	protected Link findLinkIn(Scope enclosing) {
 		return this.copyOf.findIn(enclosing);
 	}

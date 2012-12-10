@@ -39,6 +39,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.util.log.Loggable;
 
 
 public class ArrayConstructor extends ObjectConstructor {
@@ -105,7 +106,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(ref);
+		return new ValueFieldDefinition(ref, typeParameters());
 	}
 
 	@Override
@@ -180,6 +181,21 @@ public class ArrayConstructor extends ObjectConstructor {
 		}
 
 		@Override
+		public CompilerContext getContext() {
+			return this.arrayRef.getContext();
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.arrayRef.getLoggable();
+		}
+
+		@Override
+		public boolean isDefaultTypeParameters() {
+			return false;
+		}
+
+		@Override
 		public TypeParametersBuilder prefixWith(PrefixPath prefix) {
 
 			final Ref arrayRef = this.arrayRef.prefixWith(prefix);
@@ -192,8 +208,7 @@ public class ArrayConstructor extends ObjectConstructor {
 		}
 
 		@Override
-		public TypeParameters<?> refine(
-				TypeParameters<?> defaultParameters) {
+		public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 			return this.arrayRef.typeParameters(this.arrayRef.getScope())
 					.refine(defaultParameters);
 		}

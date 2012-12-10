@@ -28,8 +28,6 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.value.TypeParametersBuilder;
 
 
 final class TempFieldDefinition extends FieldDefinition {
@@ -54,7 +52,13 @@ final class TempFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAncestor(ancestor(definer.getField().getEnclosingScope()));
+
+		final Scope enclosingScope = definer.getField().getEnclosingScope();
+
+		definer.setAncestor(LINK.typeRef(this.expansion, enclosingScope));
+		if (!this.condition) {
+			definer.setParameters(new ParentTypeParameters(enclosingScope));
+		}
 		definer.define(new ExpandMacroBlock(expansion()));
 	}
 
@@ -82,17 +86,6 @@ final class TempFieldDefinition extends FieldDefinition {
 			return this.expansion.toString();
 		}
 		return '=' + this.expansion.toString();
-	}
-
-	private StaticTypeRef ancestor(Scope scope) {
-		if (this.condition) {
-			return LINK.typeRef(this.expansion, scope);
-		}
-
-		final TypeParametersBuilder typeParameters =
-				new ParentTypeParameters(scope);
-
-		return LINK.typeRef(this, getScope(), typeParameters);
 	}
 
 	private Ref expansion() {

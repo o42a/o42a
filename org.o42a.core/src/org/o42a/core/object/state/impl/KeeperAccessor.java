@@ -27,6 +27,7 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public final class KeeperAccessor extends Obj {
@@ -69,8 +70,12 @@ public final class KeeperAccessor extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(
-				this.keeper.ancestor(this));
+
+		final TypeRef ancestor = this.keeper.ancestor(this);
+
+		return new Ascendants(this)
+		.setAncestor(ancestor)
+		.setParameters(ancestor.copyParameters());
 	}
 
 	@Override

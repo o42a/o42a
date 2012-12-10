@@ -51,7 +51,9 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.impl.StaticObjectStep;
 import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.ref.type.TypeRef;
@@ -755,15 +757,7 @@ public abstract class Obj
 			typeParameters = derivedTypeParameters;
 		}
 
-		if (typeParameters.isEmpty()) {
-			return typeParameters;
-		}
-
-		final Scope scope = getScope();
-		final PrefixPath prefix =
-				scope.getEnclosingScopePath().toPrefix(scope);
-
-		return typeParameters.prefixWith(prefix);
+		return typeParameters;
 	}
 
 	protected abstract Definitions explicitDefinitions();

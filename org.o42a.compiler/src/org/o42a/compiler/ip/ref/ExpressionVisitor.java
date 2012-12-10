@@ -104,7 +104,7 @@ public final class ExpressionVisitor
 				return super.visitAscendants(ascendants, p);
 			}
 
-			return ancestor.getAncestor().getRef();
+			return ancestor.getAncestor().getTypeRef().getRef();
 		}
 
 		return ip().phraseIp()

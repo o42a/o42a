@@ -80,8 +80,8 @@ final class ArrayObject extends ConstructedObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(
-				this.constructor.ancestor(this));
+		return new Ascendants(this)
+		.setAncestor(this.constructor.ancestor(this));
 	}
 
 	@Override

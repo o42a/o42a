@@ -52,6 +52,11 @@ public final class TypeParameters<T>
 		extends Location
 		implements TypeParametersBuilder {
 
+	public static TypeParametersBuilder defaultTypeParameters(
+			LocationInfo location) {
+		return new DefaultTypeParameters(location);
+	}
+
 	public static <T> TypeParameters<T> typeParameters(
 			LocationInfo location,
 			ValueType<T> valueType) {
@@ -65,10 +70,10 @@ public final class TypeParameters<T>
 			"Refined type parameters not specified";
 		assert refinement != null:
 			"Type parameters refinement not specified";
-		if (refinement == DEFAULT_TYPE_PARAMETERS) {
+		if (refinement.isDefaultTypeParameters()) {
 			return refined;
 		}
-		if (refined == DEFAULT_TYPE_PARAMETERS) {
+		if (refined.isDefaultTypeParameters()) {
 			return refinement;
 		}
 		return new RefinedTypeParameters(refined, refinement);
@@ -99,6 +104,11 @@ public final class TypeParameters<T>
 
 	public final ValueType<T> getValueType() {
 		return this.valueType;
+	}
+
+	@Override
+	public boolean isDefaultTypeParameters() {
+		return isEmpty() && getValueType().isVoid();
 	}
 
 	public TypeParameters<T> convertTo(ValueType<T> valueType) {

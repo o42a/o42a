@@ -49,36 +49,12 @@ public class ArbitraryTypeParameters
 	}
 
 	@Override
-	public ArbitraryTypeParameters prefixWith(PrefixPath prefix) {
-
-		final TypeRef[] oldParameters = getParameters();
-		TypeRef[] newParameters = null;
-
-		for (int i = 0; i < oldParameters.length; ++i) {
-
-			final TypeRef oldParameter = oldParameters[i];
-			final TypeRef newParameter = oldParameter.prefixWith(prefix);
-
-			if (oldParameter == newParameter) {
-				continue;
-			}
-			if (newParameters == null) {
-				newParameters = new TypeRef[oldParameters.length];
-				System.arraycopy(oldParameters, 0, newParameters, 0, i);
-			}
-			newParameters[i] = newParameter;
-		}
-
-		if (newParameters == null) {
-			return this;
-		}
-
-		return new ArbitraryTypeParameters(this, newParameters);
+	public boolean isDefaultTypeParameters() {
+		return this.parameters.length == 0;
 	}
 
 	@Override
-	public TypeParameters<?> refine(
-			TypeParameters<?> defaultParameters) {
+	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 
 		final TypeRef[] params = getParameters();
 
@@ -112,6 +88,34 @@ public class ArbitraryTypeParameters
 		}
 
 		return newParameters;
+	}
+
+	@Override
+	public ArbitraryTypeParameters prefixWith(PrefixPath prefix) {
+
+		final TypeRef[] oldParameters = getParameters();
+		TypeRef[] newParameters = null;
+
+		for (int i = 0; i < oldParameters.length; ++i) {
+
+			final TypeRef oldParameter = oldParameters[i];
+			final TypeRef newParameter = oldParameter.prefixWith(prefix);
+
+			if (oldParameter == newParameter) {
+				continue;
+			}
+			if (newParameters == null) {
+				newParameters = new TypeRef[oldParameters.length];
+				System.arraycopy(oldParameters, 0, newParameters, 0, i);
+			}
+			newParameters[i] = newParameter;
+		}
+
+		if (newParameters == null) {
+			return this;
+		}
+
+		return new ArbitraryTypeParameters(this, newParameters);
 	}
 
 	@Override

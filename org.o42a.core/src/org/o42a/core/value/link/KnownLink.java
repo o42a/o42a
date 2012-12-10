@@ -33,11 +33,6 @@ public abstract class KnownLink extends Link {
 
 	private final KnownLinkData data;
 
-	public KnownLink(LocationInfo location, Distributor distributor) {
-		super(location, distributor);
-		this.data = new KnownLinkData(this);
-	}
-
 	public KnownLink(
 			LocationInfo location,
 			Distributor distributor,
@@ -82,8 +77,6 @@ public abstract class KnownLink extends Link {
 
 	protected abstract KnownLink prefixWith(PrefixPath prefix);
 
-	protected abstract TargetRef buildTargetRef();
-
 	@Override
 	protected final Obj createTarget() {
 		return this.data.createTarget();
@@ -91,17 +84,13 @@ public abstract class KnownLink extends Link {
 
 	private static final class KnownLinkData extends LinkData<KnownLink> {
 
-		KnownLinkData(KnownLink link) {
-			super(link);
-		}
-
 		KnownLinkData(KnownLink link, TargetRef targetRef) {
 			super(link, targetRef);
 		}
 
 		@Override
 		protected TargetRef buildTargetRef() {
-			return getLink().buildTargetRef();
+			throw new UnsupportedOperationException();
 		}
 
 	}

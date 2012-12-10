@@ -81,7 +81,7 @@ public class LogicalExpression extends ObjectConstructor {
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(ref);
+		return new ValueFieldDefinition(ref, null);
 	}
 
 	@Override

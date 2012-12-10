@@ -35,9 +35,7 @@ final class TargetLink extends KnownLink {
 
 		final LinkValueType linkType = parameters.getValueType().toLinkType();
 		final TargetLink link = new TargetLink(
-				ref.toTargetRef(
-						linkType
-						.interfaceRef(parameters)),
+				ref.toTargetRef(linkType.interfaceRef(parameters)),
 				ref.distribute(),
 				linkType);
 		final ValueKnowledge knowledge = link.getKnowledge();
@@ -70,11 +68,6 @@ final class TargetLink extends KnownLink {
 	@Override
 	public LinkValueType getValueType() {
 		return this.linkType;
-	}
-
-	@Override
-	protected TargetRef buildTargetRef() {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

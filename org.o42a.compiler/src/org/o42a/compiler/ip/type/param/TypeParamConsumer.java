@@ -21,13 +21,13 @@ package org.o42a.compiler.ip.type.param;
 
 import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
 
+import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Scope;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.macro.MacroConsumer;
@@ -59,7 +59,9 @@ public class TypeParamConsumer extends TypeConsumer implements Consumer {
 	}
 
 	@Override
-	public TypeRef consumeType(Ref ref, TypeParametersBuilder typeParameters) {
+	public ParamTypeRef consumeType(
+			Ref ref,
+			TypeParametersBuilder typeParameters) {
 
 		final Ref consumption = ref.consume(this);
 
@@ -67,7 +69,7 @@ public class TypeParamConsumer extends TypeConsumer implements Consumer {
 			return null;
 		}
 
-		return consumption.toTypeRef(typeParameters);
+		return new ParamTypeRef(consumption.toTypeRef(), typeParameters);
 	}
 
 	@Override

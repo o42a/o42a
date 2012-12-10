@@ -23,7 +23,6 @@ import org.o42a.compiler.ip.type.param.TypeParamConsumer;
 import org.o42a.compiler.ip.type.param.TypeParameterKey;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParametersBuilder;
 
 
@@ -39,8 +38,10 @@ final class DefaultTypeConsumer extends TypeConsumer {
 	}
 
 	@Override
-	public TypeRef consumeType(Ref ref, TypeParametersBuilder typeParameters) {
-		return ref.toTypeRef(typeParameters);
+	public ParamTypeRef consumeType(
+			Ref ref,
+			TypeParametersBuilder typeParameters) {
+		return new ParamTypeRef(ref.toTypeRef(), typeParameters);
 	}
 
 }

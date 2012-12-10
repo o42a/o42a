@@ -19,26 +19,28 @@
 */
 package org.o42a.compiler.ip.type.ascendant;
 
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.type.ParamTypeRef;
+import org.o42a.core.member.field.AscendantsDefinition;
 
 
 public final class AncestorTypeRef {
 
-	public static AncestorTypeRef ancestorTypeRef(TypeRef ancestor) {
+	public static AncestorTypeRef ancestorTypeRef(ParamTypeRef ancestor) {
 		if (ancestor == null) {
 			return null;
 		}
 		return new AncestorTypeRef(ancestor, false, false);
 	}
 
-	public static AncestorTypeRef macroAncestorTypeRef(TypeRef ancestor) {
+	public static AncestorTypeRef macroAncestorTypeRef(ParamTypeRef ancestor) {
 		if (ancestor == null) {
 			return null;
 		}
 		return new AncestorTypeRef(ancestor, true, false);
 	}
 
-	public static AncestorTypeRef ancestorBodyTypeRef(TypeRef ancestor) {
+	public static AncestorTypeRef ancestorBodyTypeRef(ParamTypeRef ancestor) {
 		if (ancestor == null) {
 			return null;
 		}
@@ -49,12 +51,12 @@ public final class AncestorTypeRef {
 		return new AncestorTypeRef(null, false, true);
 	}
 
-	private final TypeRef ancestor;
+	private final ParamTypeRef ancestor;
 	private final boolean mactoExpanding;
 	private final boolean bodyRef;
 
 	private AncestorTypeRef(
-			TypeRef ancestor,
+			ParamTypeRef ancestor,
 			boolean macroExpanding,
 			boolean bodyRef) {
 		this.ancestor = ancestor;
@@ -74,8 +76,17 @@ public final class AncestorTypeRef {
 		return this.bodyRef;
 	}
 
-	public final TypeRef getAncestor() {
+	public final ParamTypeRef getAncestor() {
 		return this.ancestor;
+	}
+
+	public final AscendantsDefinition applyTo(
+			AscendantsDefinition ascendants) {
+		return getAncestor().updateAncestor(ascendants);
+	}
+
+	public final Phrase applyTo(Phrase phrase) {
+		return getAncestor().updateAncestor(phrase);
 	}
 
 	@Override
