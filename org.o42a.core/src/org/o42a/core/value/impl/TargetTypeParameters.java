@@ -62,7 +62,7 @@ public class TargetTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
+	public TargetTypeParameters prefixWith(PrefixPath prefix) {
 
 		final Ref target = this.target.prefixWith(prefix);
 
@@ -74,9 +74,23 @@ public class TargetTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParametersBuilder reproduce(Reproducer reproducer) {
-		// TODO Auto-generated method stub
-		return null;
+	public TargetTypeParameters reproduce(Reproducer reproducer) {
+
+		final Ref target = this.target.reproduce(reproducer);
+
+		if (target == null) {
+			return null;
+		}
+
+		return new TargetTypeParameters(target);
+	}
+
+	@Override
+	public String toString() {
+		if (this.target == null) {
+			return super.toString();
+		}
+		return "(`" + this.target + ')';
 	}
 
 }

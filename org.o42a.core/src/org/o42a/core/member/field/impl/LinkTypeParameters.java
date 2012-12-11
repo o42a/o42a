@@ -24,7 +24,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.KnownLink;
@@ -86,29 +85,11 @@ final class LinkTypeParameters
 	}
 
 	@Override
-	public ObjectTypeParameters reproduce(Reproducer reproducer) {
-
-		final TypeRef ancestor = this.ancestor.reproduce(reproducer);
-
-		if (ancestor == null) {
-			return null;
-		}
-
-		final Ref value = this.value.reproduce(reproducer);
-
-		if (value == null) {
-			return null;
-		}
-
-		return new LinkTypeParameters(this.linkType, ancestor, value);
-	}
-
-	@Override
 	public String toString() {
 		if (this.value == null) {
 			return super.toString();
 		}
-		return "`" + this.value;
+		return this.linkType + "(`" + this.value + ')';
 	}
 
 }
