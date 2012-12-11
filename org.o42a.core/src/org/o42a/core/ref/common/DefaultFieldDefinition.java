@@ -45,15 +45,27 @@ public abstract class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void overrideObject(ObjectDefiner definer) {
+	public final void overrideObject(ObjectDefiner definer) {
 
 		final DefinitionTarget target = getDefinitionTarget();
+		final DefinitionTarget definerTarget = definerTarget(definer);
 
-		if (target.isDefault() || target.is(definerTarget(definer))) {
-			defineObject(definer);
+		if (target.isDefault() || target.is(definerTarget)) {
+			overridePlainObject(definer);
 			return;
 		}
+		if (definerTarget.isLink()) {
+			overrideLink(definer);
+			return;
+		}
+		if (definerTarget.isMacro()) {
+			overrideMacro(definer);
+			return;
+		}
+		overridePlainObject(definer);
+	}
 
+	public void overridePlainObject(ObjectDefiner definer) {
 		pathAsValue(definer);
 	}
 
@@ -62,9 +74,17 @@ public abstract class DefaultFieldDefinition extends FieldDefinition {
 		definer.setTargetRef(getRef(), null);
 	}
 
+	public void overrideLink(ObjectDefiner definer) {
+		pathAsValue(definer);
+	}
+
 	@Override
 	public void defineMacro(MacroDefiner definer) {
 		definer.setRef(getRef());
+	}
+
+	public void overrideMacro(ObjectDefiner definer) {
+		pathAsValue(definer);
 	}
 
 	@Override
