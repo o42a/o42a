@@ -341,10 +341,13 @@ public abstract class TypeRef implements ScopeInfo {
 
 	@Override
 	public String toString() {
-		if (this.ref == null) {
+		if (this.parametersBuilder == null) {
 			return super.toString();
 		}
-		return this.ref.toString();
+		if (this.parametersBuilder.isDefaultTypeParameters()) {
+			return this.ref.toString();
+		}
+		return this.ref.toString() + ' ' + this.parametersBuilder.toString();
 	}
 
 	protected abstract TypeRef create(

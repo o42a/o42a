@@ -21,6 +21,7 @@ package org.o42a.common.ref;
 
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
@@ -88,6 +89,13 @@ public class ArbitraryTypeParameters
 		}
 
 		return newParameters;
+	}
+
+	@Override
+	public TypeParameters<?> refine(
+			Obj object,
+			TypeParameters<?> defaultParameters) {
+		return refine(defaultParameters);
 	}
 
 	@Override

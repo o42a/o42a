@@ -24,16 +24,17 @@ import static org.o42a.core.value.TypeParameters.typeParameters;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.ValueType;
 
 
 public final class TypeDefinition
 		extends Scoped
-		implements TypeParametersBuilder {
+		implements ObjectTypeParameters {
 
 	private final TypeParameterDeclaration[] parameters;
 
@@ -56,13 +57,15 @@ public final class TypeDefinition
 	}
 
 	@Override
-	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
+	public TypeParameters<?> refine(
+			Obj object,
+			TypeParameters<?> defaultParameters) {
 		return toTypeParameters(defaultParameters.getValueType())
-				.refine(defaultParameters);
+				.refine(object, defaultParameters);
 	}
 
 	@Override
-	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
+	public TypeDefinition prefixWith(PrefixPath prefix) {
 
 		final TypeParameterDeclaration[] newParameters =
 				new TypeParameterDeclaration[this.parameters.length];
@@ -75,7 +78,7 @@ public final class TypeDefinition
 	}
 
 	@Override
-	public TypeParametersBuilder reproduce(Reproducer reproducer) {
+	public TypeDefinition reproduce(Reproducer reproducer) {
 
 		final TypeParameterDeclaration[] newParameters =
 				new TypeParameterDeclaration[this.parameters.length];

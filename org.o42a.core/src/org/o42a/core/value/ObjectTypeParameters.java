@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,18 +19,28 @@
 */
 package org.o42a.core.value;
 
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public interface TypeParametersBuilder extends ObjectTypeParameters {
+public interface ObjectTypeParameters extends LocationInfo {
 
-	TypeParameters<?> refine(TypeParameters<?> defaultParameters);
+	boolean isDefaultTypeParameters();
 
-	@Override
-	TypeParametersBuilder prefixWith(PrefixPath prefix);
+	/**
+	 * Refines the default type parameters.
+	 *
+	 * @param object object to construct the type parameters for.
+	 * @param defaultParameters the type parameters to refine.
+	 *
+	 * @return the refined type parameters.
+	 */
+	TypeParameters<?> refine(Obj object, TypeParameters<?> defaultParameters);
 
-	@Override
-	TypeParametersBuilder reproduce(Reproducer reproducer);
+	ObjectTypeParameters prefixWith(PrefixPath prefix);
+
+	ObjectTypeParameters reproduce(Reproducer reproducer);
 
 }

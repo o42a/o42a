@@ -25,7 +25,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
 
 
 final class ObjectDefinerImpl implements ObjectDefiner {
@@ -60,7 +60,7 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	}
 
 	@Override
-	public ObjectDefiner setParameters(TypeParametersBuilder typeParameters) {
+	public ObjectDefiner setParameters(ObjectTypeParameters typeParameters) {
 		this.ascendants = this.ascendants.setParameters(typeParameters);
 		return this;
 	}

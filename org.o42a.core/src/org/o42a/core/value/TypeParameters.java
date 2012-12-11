@@ -27,6 +27,7 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
@@ -310,6 +311,14 @@ public final class TypeParameters<T>
 		}
 
 		return new TypeParameters<T>(this, getValueType(), newParameters);
+	}
+
+	@Override
+	public final TypeParameters<T> refine(
+			Obj object,
+			TypeParameters<?> defaultParameters) {
+		assert assertSameScope(object);
+		return refine(defaultParameters);
 	}
 
 	@Override

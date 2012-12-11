@@ -78,12 +78,16 @@ public class ArrayConstructor extends ObjectConstructor {
 		return this.ip;
 	}
 
-	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return ArrayValueType.ROW.typeRef(
 				location,
 				getScope(),
 				typeParameters());
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location, Ref ref) {
+		return ancestor(location);
 	}
 
 	@Override

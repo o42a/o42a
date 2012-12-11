@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
@@ -52,7 +53,21 @@ final class ArrayTypeParamsByItems implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
+	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
+		return this.arrayRef.typeParameters(this.arrayRef.getScope())
+				.refine(defaultParameters);
+	}
+
+	@Override
+	public TypeParameters<?> refine(
+			Obj object,
+			TypeParameters<?> defaultParameters) {
+		return this.arrayRef.typeParameters(this.arrayRef.getScope())
+				.refine(object, defaultParameters);
+	}
+
+	@Override
+	public ArrayTypeParamsByItems prefixWith(PrefixPath prefix) {
 
 		final Ref arrayRef = this.arrayRef.prefixWith(prefix);
 
@@ -64,13 +79,7 @@ final class ArrayTypeParamsByItems implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
-		return this.arrayRef.typeParameters(this.arrayRef.getScope())
-				.refine(defaultParameters);
-	}
-
-	@Override
-	public TypeParametersBuilder reproduce(Reproducer reproducer) {
+	public ArrayTypeParamsByItems reproduce(Reproducer reproducer) {
 
 		final Ref arrayRef = this.arrayRef.reproduce(reproducer);
 

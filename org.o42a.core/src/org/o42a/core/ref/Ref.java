@@ -45,6 +45,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.*;
+import org.o42a.core.value.impl.TargetTypeParameters;
 import org.o42a.core.value.link.TargetRef;
 import org.o42a.util.fn.Cancelable;
 
@@ -112,6 +113,10 @@ public class Ref extends Statement {
 				resolution.toObject().type().getParameters();
 
 		return typeParameters.prefixWith(getPath().toPrefix(scope));
+	}
+
+	public final TypeParametersBuilder typeParameters() {
+		return new TargetTypeParameters(this);
 	}
 
 	public final Resolution getResolution() {

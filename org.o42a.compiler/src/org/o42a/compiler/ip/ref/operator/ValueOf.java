@@ -59,7 +59,6 @@ public class ValueOf extends ObjectConstructor {
 		return this.operand;
 	}
 
-	@Override
 	public TypeRef ancestor(LocationInfo location) {
 
 		final TypeParameters<?> typeParameters =
@@ -67,6 +66,11 @@ public class ValueOf extends ObjectConstructor {
 
 		return typeParameters.getValueType()
 				.typeRef(location, getScope(), typeParameters);
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location, Ref ref) {
+		return ancestor(location);
 	}
 
 	@Override

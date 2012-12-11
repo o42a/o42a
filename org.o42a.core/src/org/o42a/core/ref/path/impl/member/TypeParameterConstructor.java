@@ -49,9 +49,13 @@ final class TypeParameterConstructor extends ObjectConstructor {
 		return this.parameterKey;
 	}
 
-	@Override
-	public TypeRef ancestor(LocationInfo location) {
+	public final TypeRef ancestor(LocationInfo location) {
 		return ValueType.MACRO.typeRef(location, getScope());
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location, Ref ref) {
+		return ancestor(location);
 	}
 
 	@Override

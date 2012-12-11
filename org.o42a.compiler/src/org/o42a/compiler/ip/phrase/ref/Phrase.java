@@ -45,7 +45,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.util.string.Name;
 
 
@@ -106,12 +106,11 @@ public class Phrase extends Placed {
 		return this;
 	}
 
-	public final TypeParametersBuilder getTypeParameters() {
+	public final ObjectTypeParameters getTypeParameters() {
 		return this.prefix.getTypeParameters();
 	}
 
-	public final Phrase setTypeParameters(
-			TypeParametersBuilder typeParameters) {
+	public final Phrase setTypeParameters(ObjectTypeParameters typeParameters) {
 		if (getTypeParameters() != null) {
 			getLogger().error(
 					"duplicate_type_parameters",

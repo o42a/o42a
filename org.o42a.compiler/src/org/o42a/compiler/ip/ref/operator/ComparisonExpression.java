@@ -93,7 +93,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationInfo location) {
+	public TypeRef ancestor(LocationInfo location, Ref ref) {
 		return ValueType.VOID.typeRef(location, getScope());
 	}
 

@@ -82,7 +82,7 @@ public class ObjectConstructorStep extends Step {
 
 		final PrefixPath prefix = ref.getPath().cut(1).toPrefix(ref.getScope());
 
-		return getConstructor().ancestor(location).prefixWith(prefix);
+		return getConstructor().ancestor(location, ref).prefixWith(prefix);
 	}
 
 	@Override

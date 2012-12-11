@@ -22,14 +22,14 @@ package org.o42a.core.object.type;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
 
 
 public interface AscendantsBuilder<A extends AscendantsBuilder<A>> {
 
 	A setAncestor(TypeRef explicitAncestor);
 
-	A setParameters(TypeParametersBuilder typeParameters);
+	A setParameters(ObjectTypeParameters typeParameters);
 
 	A addExplicitSample(StaticTypeRef explicitAscendant);
 

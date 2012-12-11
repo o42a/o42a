@@ -61,7 +61,7 @@ class PhraseConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationInfo location) {
+	public TypeRef ancestor(LocationInfo location, Ref ref) {
 		return this.ascendants.getAncestor();
 	}
 

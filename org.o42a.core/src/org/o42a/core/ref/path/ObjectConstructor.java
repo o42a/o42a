@@ -80,7 +80,7 @@ public abstract class ObjectConstructor extends Placed {
 		return false;
 	}
 
-	public abstract TypeRef ancestor(LocationInfo location);
+	public abstract TypeRef ancestor(LocationInfo location, Ref ref);
 
 	public final Obj resolve(Scope scope) {
 		if (scope.is(getScope())) {
