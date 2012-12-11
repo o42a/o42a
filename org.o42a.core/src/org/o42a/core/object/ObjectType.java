@@ -44,8 +44,8 @@ import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.ValueType;
 
 
@@ -657,7 +657,8 @@ public final class ObjectType implements UserInfo {
 				.getType()
 				.type()
 				.getParameters()
-				.upgradeScope(getObject().getScope()).refine(parameters);
+				.upgradeScope(getObject().getScope())
+				.refine(getObject(), parameters);
 	}
 
 	private TypeParameters<?> applySampleParameters(
@@ -666,13 +667,14 @@ public final class ObjectType implements UserInfo {
 		return sample.getObject()
 				.type()
 				.getParameters()
-				.upgradeScope(getObject().getScope()).refine(parameters);
+				.upgradeScope(getObject().getScope())
+				.refine(getObject(), parameters);
 	}
 
 	private TypeParameters<?> applyExplicitParameters(
 			TypeParameters<?> parameters) {
 
-		final TypeParametersBuilder explicitParameters =
+		final ObjectTypeParameters explicitParameters =
 				getAscendants().getExplicitParameters();
 
 		if (explicitParameters == null) {
@@ -682,7 +684,8 @@ public final class ObjectType implements UserInfo {
 		final Scope scope = getObject().getScope();
 		final PrefixPath prefix = scope.getEnclosingScopePath().toPrefix(scope);
 
-		return explicitParameters.prefixWith(prefix).refine(parameters);
+		return explicitParameters.prefixWith(prefix)
+				.refine(getObject(), parameters);
 	}
 
 }

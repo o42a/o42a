@@ -24,7 +24,7 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
 
 
 public final class PhrasePrefix extends PhrasePart {
@@ -45,12 +45,12 @@ public final class PhrasePrefix extends PhrasePart {
 		return this;
 	}
 
-	public final TypeParametersBuilder getTypeParameters() {
+	public final ObjectTypeParameters getTypeParameters() {
 		return this.ascendants.getTypeParameters();
 	}
 
 	public final PhrasePrefix setTypeParameters(
-			TypeParametersBuilder typeParameters) {
+			ObjectTypeParameters typeParameters) {
 		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
 		return this;
 	}

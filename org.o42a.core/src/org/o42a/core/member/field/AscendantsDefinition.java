@@ -34,8 +34,8 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.ArrayUtil;
 
 
@@ -44,7 +44,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	private static final StaticTypeRef[] NO_SAMPLES = new StaticTypeRef[0];
 
 	private TypeRef ancestor;
-	private TypeParametersBuilder typeParameters;
+	private ObjectTypeParameters typeParameters;
 	private StaticTypeRef[] samples = NO_SAMPLES;
 
 	public AscendantsDefinition(
@@ -112,12 +112,12 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		return clone;
 	}
 
-	public final TypeParametersBuilder getTypeParameters() {
+	public final ObjectTypeParameters getTypeParameters() {
 		return this.typeParameters;
 	}
 
 	public final AscendantsDefinition setTypeParameters(
-			TypeParametersBuilder typeParameters) {
+			ObjectTypeParameters typeParameters) {
 
 		final AscendantsDefinition clone = clone();
 

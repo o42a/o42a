@@ -29,7 +29,6 @@ import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.value.TypeParametersBuilder;
 
 
 public final class DefaultFieldDefinition extends FieldDefinition {
@@ -80,14 +79,12 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 	public void defineLink(LinkDefiner definer) {
 
 		final TypeRef ancestor = this.ascendants.getAncestor();
-		final TypeParametersBuilder typeParameters =
-				this.ascendants.getTypeParameters();
 
-		definer.setTargetRef(
-				getValue(),
-				typeParameters != null
-				? ancestor.setParameters(typeParameters)
-				: ancestor);
+		definer.setTargetRef(getValue(), ancestor);
+		definer.setParameters(new LinkTypeParameters(
+				definer.getField().getDeclaration().getLinkType(),
+				ancestor,
+				getValue()));
 	}
 
 	@Override

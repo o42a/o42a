@@ -54,6 +54,13 @@ final class ParentTypeParameters
 	}
 
 	@Override
+	public TypeParameters<?> refine(
+			Obj object,
+			TypeParameters<?> defaultParameters) {
+		return typeParameters().refine(object, defaultParameters);
+	}
+
+	@Override
 	public TypeParametersBuilder reproduce(Reproducer reproducer) {
 		this.scope.assertCompatibleScope(reproducer.getReproducingScope());
 		return new ParentTypeParameters(reproducer.getScope());

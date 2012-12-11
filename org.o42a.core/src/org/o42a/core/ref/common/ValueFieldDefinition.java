@@ -25,6 +25,7 @@ import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.link.LinkValueType;
 
 
 public class ValueFieldDefinition extends DefaultFieldDefinition {
@@ -61,9 +62,17 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(
-				getRef(),
-				getRef().getInterface().setParameters(this.typeParameters));
+		definer.setTargetRef(getRef(), null);
+
+		if (this.typeParameters != null) {
+
+			final LinkValueType linkType =
+					definer.getField().getDeclaration().getLinkType();
+
+			definer.setParameters(linkType.typeParameters(
+					getRef().getInterface().setParameters(
+							this.typeParameters)));
+		}
 	}
 
 	protected TypeRef ancestor() {

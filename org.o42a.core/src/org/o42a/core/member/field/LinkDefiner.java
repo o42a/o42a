@@ -21,10 +21,13 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ObjectTypeParameters;
 
 
 public interface LinkDefiner extends FieldDefiner {
 
 	void setTargetRef(Ref targetRef, TypeRef defaultType);
+
+	void setParameters(ObjectTypeParameters parameters);
 
 }

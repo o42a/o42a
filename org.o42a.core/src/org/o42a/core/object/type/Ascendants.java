@@ -40,8 +40,8 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 
@@ -53,7 +53,7 @@ public class Ascendants
 
 	private final Obj object;
 	private TypeRef explicitAncestor;
-	private TypeParametersBuilder explicitParameters;
+	private ObjectTypeParameters explicitParameters;
 	private TypeRef ancestor;
 	private Sample[] samples = NO_SAMPLES;
 	private Sample[] discardedSamples = NO_SAMPLES;
@@ -101,13 +101,13 @@ public class Ascendants
 		return clone;
 	}
 
-	public final TypeParametersBuilder getExplicitParameters() {
+	public final ObjectTypeParameters getExplicitParameters() {
 		return this.explicitParameters;
 	}
 
 	@Override
 	public final Ascendants setParameters(
-			TypeParametersBuilder typeParameters) {
+			ObjectTypeParameters typeParameters) {
 
 		final Ascendants clone = clone();
 

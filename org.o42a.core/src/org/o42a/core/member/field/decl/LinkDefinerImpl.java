@@ -25,6 +25,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.link.TargetRef;
 
@@ -56,6 +57,16 @@ final class LinkDefinerImpl implements LinkDefiner {
 	}
 
 	@Override
+	public void setParameters(ObjectTypeParameters parameters) {
+
+		final TypeRef explicitTypeRef = explicitTypeRef();
+
+		if (explicitTypeRef == null) {
+			this.ascendants = this.ascendants.setParameters(parameters);
+		}
+	}
+
+	@Override
 	public void define(BlockBuilder definitions) {
 		definitions.buildBlock(getField().getContent());
 	}
@@ -69,6 +80,15 @@ final class LinkDefinerImpl implements LinkDefiner {
 	}
 
 	final Ascendants getAscendants() {
+
+		final FieldDeclaration declaration = getField().getDeclaration();
+		final LinkValueType linkType = declaration.getLinkType();
+		final Ascendants ascendants = this.ascendants.setAncestor(
+				linkType.typeRef(declaration, declaration.getScope()));
+
+		if (ascendants.getExplicitParameters() != null) {
+			return ascendants;
+		}
 
 		final TypeRef targetType;
 
@@ -85,13 +105,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 			targetType = this.targetRef.getTypeRef();
 		}
 
-		final FieldDeclaration declaration = getField().getDeclaration();
-		final LinkValueType linkType = declaration.getLinkType();
-
-		return this.ascendants
-				.setAncestor(
-						linkType.typeRef(declaration, declaration.getScope()))
-				.setParameters(linkType.typeParameters(targetType));
+		return ascendants.setParameters(linkType.typeParameters(targetType));
 	}
 
 	private TypeRef explicitTypeRef() {

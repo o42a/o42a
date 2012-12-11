@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,52 +20,68 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.source.Location;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.util.log.Loggable;
 
 
-public final class DefaultTypeParameters
-		extends Location
-		implements TypeParametersBuilder {
+public class TargetTypeParameters implements TypeParametersBuilder {
 
-	public DefaultTypeParameters(LocationInfo location) {
-		super(location);
+	private final Ref target;
+
+	public TargetTypeParameters(Ref target) {
+		this.target = target;
+	}
+
+	@Override
+	public CompilerContext getContext() {
+		return this.target.getContext();
+	}
+
+	@Override
+	public Loggable getLoggable() {
+		return this.target.getLoggable();
 	}
 
 	@Override
 	public boolean isDefaultTypeParameters() {
-		return true;
-	}
-
-	@Override
-	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
-		return this;
-	}
-
-	@Override
-	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
-		return defaultParameters;
+		return false;
 	}
 
 	@Override
 	public TypeParameters<?> refine(
 			Obj object,
 			TypeParameters<?> defaultParameters) {
-		return defaultParameters;
+		return this.target.typeParameters(object.getScope())
+				.refine(object, defaultParameters);
+	}
+
+	@Override
+	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
+		return this.target.typeParameters(this.target.getScope())
+				.refine(defaultParameters);
+	}
+
+	@Override
+	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
+
+		final Ref target = this.target.prefixWith(prefix);
+
+		if (target == this.target) {
+			return this;
+		}
+
+		return new TargetTypeParameters(target);
 	}
 
 	@Override
 	public TypeParametersBuilder reproduce(Reproducer reproducer) {
-		return this;
-	}
-
-	@Override
-	public String toString() {
-		return "(`)";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

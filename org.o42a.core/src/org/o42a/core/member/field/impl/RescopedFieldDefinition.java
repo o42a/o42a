@@ -27,7 +27,7 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
 
 
 public final class RescopedFieldDefinition extends FieldDefinition {
@@ -122,9 +122,8 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public ObjectDefiner setParameters(TypeParametersBuilder typeParameters) {
-			this.definer.setParameters(
-					typeParameters.prefixWith(getPrefix()));
+		public ObjectDefiner setParameters(ObjectTypeParameters parameters) {
+			this.definer.setParameters(parameters.prefixWith(getPrefix()));
 			return this;
 		}
 
@@ -186,6 +185,11 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 					targetRef.prefixWith(getPrefix()),
 					defaultType != null
 					? defaultType.prefixWith(getPrefix()): null);
+		}
+
+		@Override
+		public void setParameters(ObjectTypeParameters parameters) {
+			this.definer.setParameters(parameters.prefixWith(getPrefix()));
 		}
 
 		@Override

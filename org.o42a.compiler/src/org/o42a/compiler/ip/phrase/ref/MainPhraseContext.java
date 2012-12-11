@@ -42,7 +42,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.util.string.Name;
 
 
@@ -367,7 +367,7 @@ final class MainPhraseContext extends PhraseContext {
 							+ " clause of phrase is an expression");
 				}
 
-				final TypeParametersBuilder typeParameters =
+				final ObjectTypeParameters typeParameters =
 						getPhrase().getTypeParameters();
 
 				if (typeParameters != null) {

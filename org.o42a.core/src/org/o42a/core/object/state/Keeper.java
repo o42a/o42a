@@ -56,7 +56,6 @@ public final class Keeper extends ObjectConstructor implements SubID {
 		return this.value;
 	}
 
-	@Override
 	public TypeRef ancestor(LocationInfo location) {
 
 		final TypeParameters<?> typeParameters =
@@ -64,6 +63,11 @@ public final class Keeper extends ObjectConstructor implements SubID {
 
 		return typeParameters.getValueType()
 				.typeRef(location, getScope(), typeParameters);
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location, Ref ref) {
+		return ancestor(location);
 	}
 
 	@Override
