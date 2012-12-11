@@ -59,11 +59,6 @@ final class LinkTypeParameters
 	}
 
 	@Override
-	public boolean isDefaultTypeParameters() {
-		return false;
-	}
-
-	@Override
 	public TypeParameters<?> refine(
 			Obj object,
 			TypeParameters<?> defaultParameters) {

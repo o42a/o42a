@@ -37,11 +37,6 @@ public final class DefaultTypeParameters
 	}
 
 	@Override
-	public boolean isDefaultTypeParameters() {
-		return true;
-	}
-
-	@Override
 	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
 		return this;
 	}

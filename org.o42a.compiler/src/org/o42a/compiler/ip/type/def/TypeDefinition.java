@@ -52,11 +52,6 @@ public final class TypeDefinition
 	}
 
 	@Override
-	public boolean isDefaultTypeParameters() {
-		return this.parameters.length == 0;
-	}
-
-	@Override
 	public TypeParameters<?> refine(
 			Obj object,
 			TypeParameters<?> defaultParameters) {

@@ -91,11 +91,6 @@ public final class TypeParameters<T>
 		return this.valueType;
 	}
 
-	@Override
-	public boolean isDefaultTypeParameters() {
-		return isEmpty() && getValueType().isVoid();
-	}
-
 	public TypeParameters<T> convertTo(ValueType<T> valueType) {
 		if (valueType.is(getValueType())) {
 			return this;

@@ -48,11 +48,6 @@ final class ArrayTypeParamsByItems implements TypeParametersBuilder {
 	}
 
 	@Override
-	public boolean isDefaultTypeParameters() {
-		return false;
-	}
-
-	@Override
 	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 		return this.arrayRef.typeParameters(this.arrayRef.getScope())
 				.refine(defaultParameters);

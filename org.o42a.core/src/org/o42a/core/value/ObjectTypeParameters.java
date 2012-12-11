@@ -27,8 +27,6 @@ import org.o42a.core.st.Reproducer;
 
 public interface ObjectTypeParameters extends LocationInfo {
 
-	boolean isDefaultTypeParameters();
-
 	/**
 	 * Refines the default type parameters.
 	 *

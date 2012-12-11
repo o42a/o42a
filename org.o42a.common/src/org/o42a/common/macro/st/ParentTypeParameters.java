@@ -44,11 +44,6 @@ final class ParentTypeParameters
 	}
 
 	@Override
-	public boolean isDefaultTypeParameters() {
-		return false;
-	}
-
-	@Override
 	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 		return typeParameters().refine(defaultParameters);
 	}
