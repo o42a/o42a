@@ -28,9 +28,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
-import org.o42a.core.ref.path.ObjectConstructor;
-import org.o42a.core.ref.path.PathReproducer;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -39,7 +37,6 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
-import org.o42a.util.log.Loggable;
 
 
 public class ArrayConstructor extends ObjectConstructor {
@@ -106,7 +103,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(ref, typeParameters());
+		return new ValueFieldDefinition(ref, rescopedTypeParameters(ref));
 	}
 
 	@Override
@@ -171,60 +168,18 @@ public class ArrayConstructor extends ObjectConstructor {
 		return this.typeParameters = new ArrayTypeParamsByItems(toRef());
 	}
 
-	private static final class ArrayTypeParamsByItems
-			implements TypeParametersBuilder {
+	private TypeParametersBuilder rescopedTypeParameters(Ref ref) {
 
-		private final Ref arrayRef;
+		final TypeParametersBuilder typeParameters = typeParameters();
+		final BoundPath path = ref.getPath();
 
-		public ArrayTypeParamsByItems(Ref arrayRef) {
-			this.arrayRef = arrayRef;
+		if (path.length() == 1) {
+			return typeParameters;
 		}
 
-		@Override
-		public CompilerContext getContext() {
-			return this.arrayRef.getContext();
-		}
+		final PrefixPath prefix = path.cut(1).toPrefix(path.cut(1).getOrigin());
 
-		@Override
-		public Loggable getLoggable() {
-			return this.arrayRef.getLoggable();
-		}
-
-		@Override
-		public boolean isDefaultTypeParameters() {
-			return false;
-		}
-
-		@Override
-		public TypeParametersBuilder prefixWith(PrefixPath prefix) {
-
-			final Ref arrayRef = this.arrayRef.prefixWith(prefix);
-
-			if (this.arrayRef == arrayRef) {
-				return this;
-			}
-
-			return new ArrayTypeParamsByItems(arrayRef);
-		}
-
-		@Override
-		public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
-			return this.arrayRef.typeParameters(this.arrayRef.getScope())
-					.refine(defaultParameters);
-		}
-
-		@Override
-		public TypeParametersBuilder reproduce(Reproducer reproducer) {
-
-			final Ref arrayRef = this.arrayRef.reproduce(reproducer);
-
-			if (arrayRef == null) {
-				return null;
-			}
-
-			return new ArrayTypeParamsByItems(arrayRef);
-		}
-
+		return typeParameters.prefixWith(prefix);
 	}
 
 }
