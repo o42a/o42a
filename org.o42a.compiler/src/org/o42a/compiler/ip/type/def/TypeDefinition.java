@@ -26,7 +26,6 @@ import org.o42a.core.Scoped;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
@@ -70,26 +69,6 @@ public final class TypeDefinition
 		}
 
 		return new TypeDefinition(this, prefix.getStart(), newParameters);
-	}
-
-	@Override
-	public TypeDefinition reproduce(Reproducer reproducer) {
-
-		final TypeParameterDeclaration[] newParameters =
-				new TypeParameterDeclaration[this.parameters.length];
-
-		for (int i = 0; i < newParameters.length; ++i) {
-
-			final TypeParameterDeclaration newParameter =
-					this.parameters[i].reproduce(reproducer);
-
-			if (newParameter == null) {
-				return null;
-			}
-			newParameters[i] = newParameter;
-		}
-
-		return new TypeDefinition(this, reproducer.getScope(), newParameters);
 	}
 
 	@Override

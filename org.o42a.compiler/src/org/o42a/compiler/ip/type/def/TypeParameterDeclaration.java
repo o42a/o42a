@@ -28,7 +28,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 
 
@@ -83,32 +82,6 @@ final class TypeParameterDeclaration
 		return new TypeParameterDeclaration(
 				this,
 				this.definition.prefixWith(prefix));
-	}
-
-	public final TypeParameterDeclaration reproduce(Reproducer reproducer) {
-
-		final MemberKey key = getKey();
-
-		if (!key.isValid()) {
-			return null;
-		}
-		if (!isOverride()) {
-			reproducer.getLogger().notReproducible(this);
-			return null;
-		}
-
-		final TypeRef definition = getDefinition().reproduce(reproducer);
-
-		if (definition == null) {
-			return null;
-		}
-
-		final TypeParameterDeclaration reproduction =
-				new TypeParameterDeclaration(this, definition);
-
-		reproduction.key = key;
-
-		return reproduction;
 	}
 
 	@Override

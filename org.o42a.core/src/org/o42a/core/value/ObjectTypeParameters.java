@@ -22,7 +22,6 @@ package org.o42a.core.value;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 public interface ObjectTypeParameters extends LocationInfo {
@@ -38,7 +37,5 @@ public interface ObjectTypeParameters extends LocationInfo {
 	TypeParameters<?> refine(Obj object, TypeParameters<?> defaultParameters);
 
 	ObjectTypeParameters prefixWith(PrefixPath prefix);
-
-	ObjectTypeParameters reproduce(Reproducer reproducer);
 
 }

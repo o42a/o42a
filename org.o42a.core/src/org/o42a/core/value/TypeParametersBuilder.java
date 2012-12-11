@@ -30,7 +30,6 @@ public interface TypeParametersBuilder extends ObjectTypeParameters {
 	@Override
 	TypeParametersBuilder prefixWith(PrefixPath prefix);
 
-	@Override
 	TypeParametersBuilder reproduce(Reproducer reproducer);
 
 }
