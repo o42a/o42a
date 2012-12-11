@@ -50,11 +50,6 @@ public class ArbitraryTypeParameters
 	}
 
 	@Override
-	public boolean isDefaultTypeParameters() {
-		return this.parameters.length == 0;
-	}
-
-	@Override
 	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 
 		final TypeRef[] params = getParameters();

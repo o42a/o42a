@@ -48,11 +48,6 @@ public class TargetTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public boolean isDefaultTypeParameters() {
-		return false;
-	}
-
-	@Override
 	public TypeParameters<?> refine(
 			Obj object,
 			TypeParameters<?> defaultParameters) {

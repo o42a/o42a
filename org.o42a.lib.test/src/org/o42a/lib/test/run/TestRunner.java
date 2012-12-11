@@ -188,7 +188,6 @@ final class TestRunner extends ConstructedObject {
 			this.name = name;
 		}
 
-		@Override
 		public TypeRef ancestor(LocationInfo location) {
 
 			final Scope localScope = getScope();
@@ -202,6 +201,11 @@ final class TestRunner extends ConstructedObject {
 
 			return testPath.bind(location, localScope)
 					.target(localScope.distribute()).toTypeRef();
+		}
+
+		@Override
+		public TypeRef ancestor(LocationInfo location, Ref ref) {
+			return ancestor(location);
 		}
 
 		@Override

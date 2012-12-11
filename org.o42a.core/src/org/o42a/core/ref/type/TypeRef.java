@@ -344,10 +344,7 @@ public abstract class TypeRef implements ScopeInfo {
 		if (this.parametersBuilder == null) {
 			return super.toString();
 		}
-		if (this.parametersBuilder.isDefaultTypeParameters()) {
-			return this.ref.toString();
-		}
-		return this.ref.toString() + ' ' + this.parametersBuilder.toString();
+		return this.ref.toString() + ' ' + this.parametersBuilder;
 	}
 
 	protected abstract TypeRef create(
