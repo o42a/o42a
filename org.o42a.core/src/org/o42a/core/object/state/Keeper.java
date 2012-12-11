@@ -24,11 +24,11 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.impl.KeeperAccessor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
-import org.o42a.core.ref.path.ObjectConstructor;
-import org.o42a.core.ref.path.PathReproducer;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.SubID;
 
@@ -68,9 +68,7 @@ public final class Keeper extends ObjectConstructor implements SubID {
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(
-				ref,
-				getValue().typeParameters(getScope()));
+		return new ValueFieldDefinition(ref, rescopedTypeParameters(ref));
 	}
 
 	@Override
@@ -122,6 +120,21 @@ public final class Keeper extends ObjectConstructor implements SubID {
 
 	final void setNext(Keeper next) {
 		this.next = next;
+	}
+
+	private TypeParametersBuilder rescopedTypeParameters(Ref ref) {
+
+		final TypeParametersBuilder typeParameters =
+				getValue().typeParameters(getScope());
+		final BoundPath path = ref.getPath();
+
+		if (path.length() == 1) {
+			return typeParameters;
+		}
+
+		final PrefixPath prefix = path.cut(1).toPrefix(path.cut(1).getOrigin());
+
+		return typeParameters.prefixWith(prefix);
 	}
 
 }
