@@ -51,11 +51,12 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	@Override
-	public void overrideObject(ObjectDefiner definer) {
+	public void overridePlainObject(ObjectDefiner definer) {
+		definer.setAncestor(ancestor());
 		if (this.typeParameters != null) {
 			definer.setParameters(this.typeParameters);
 		}
-		super.overrideObject(definer);
+		super.overridePlainObject(definer);
 	}
 
 	@Override
