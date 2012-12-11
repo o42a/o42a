@@ -34,13 +34,11 @@ import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueRequest;
-import org.o42a.core.value.ValueType;
 
 
 public final class DeclaredField extends Field implements FieldAscendants {
@@ -194,33 +192,12 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	private Ascendants macroAscendants(Ascendants implicitAscendants) {
 
-		final boolean needAncestor;
-		final TypeRef ancestor = implicitAscendants.getAncestor();
-
-		if (ancestor == null) {
-			needAncestor = true;
-		} else {
-			if (!ancestor.getValueType().isMacro()) {
-				getLogger().error(
-						"not_macro_field",
-						getDeclaration(),
-						"Not a macro field");
-				invalid();
-				return null;
-			}
-			needAncestor = false;
-		}
-
-		final MacroDefinerImpl definer = new MacroDefinerImpl(this);
+		final MacroDefinerImpl definer =
+				new MacroDefinerImpl(this, implicitAscendants);
 
 		getDefinition().defineMacro(definer);
 
-		if (!needAncestor) {
-			return implicitAscendants;
-		}
-
-		return implicitAscendants.setAncestor(
-				ValueType.MACRO.typeRef(getDeclaration(), getEnclosingScope()));
+		return definer.getAscendants();
 	}
 
 	private Ascendants objectAscendants(Ascendants implicitAscendants) {
