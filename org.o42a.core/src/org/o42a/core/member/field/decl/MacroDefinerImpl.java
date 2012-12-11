@@ -20,21 +20,49 @@
 package org.o42a.core.member.field.decl;
 
 import org.o42a.core.member.field.MacroDefiner;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.ValueType;
 
 
 final class MacroDefinerImpl implements MacroDefiner {
 
 	private final DeclaredField field;
+	private Ascendants ascendants;
 
-	MacroDefinerImpl(DeclaredField field) {
+	MacroDefinerImpl(DeclaredField field, Ascendants implicitAscendants) {
 		this.field = field;
+		this.ascendants = implicitAscendants;
 	}
 
 	@Override
 	public final DeclaredField getField() {
 		return this.field;
+	}
+
+	public final Ascendants getAscendants() {
+
+		final TypeRef ancestor = this.ascendants.getAncestor();
+
+		if (ancestor == null) {
+			this.ascendants = this.ascendants.setAncestor(
+					ValueType.MACRO.typeRef(
+							getField().getDeclaration(),
+							getField().getEnclosingScope()));
+		} else {
+			if (!ancestor.getValueType().isMacro()) {
+				getField().getLogger().error(
+						"not_macro_field",
+						getField().getDeclaration(),
+						"Not a macro field");
+				getField().invalid();
+				return null;
+			}
+		}
+
+		return this.ascendants;
 	}
 
 	@Override
