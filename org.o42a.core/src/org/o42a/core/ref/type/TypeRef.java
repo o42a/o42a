@@ -35,7 +35,6 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 import org.o42a.util.log.Loggable;
@@ -60,12 +59,12 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	private static TypeParametersBuilder parameters(
-			LocationInfo location,
+			Ref ref,
 			TypeParametersBuilder parameters) {
 		if (parameters != null) {
 			return parameters;
 		}
-		return defaultTypeParameters(location);
+		return defaultTypeParameters(ref, ref.getScope());
 	}
 
 	private final Ref ref;
@@ -140,16 +139,8 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public TypeRef setParameters(TypeParametersBuilder parameters) {
-
-		final TypeParametersBuilder typeParameters;
-
-		if (parameters != null) {
-			typeParameters = parameters;
-		} else {
-			typeParameters = defaultTypeParameters(this);
-		}
-
-		return create(getIntactRef(), getRef(), typeParameters);
+		parameters.assertSameScope(this);
+		return create(getIntactRef(), getRef(), parameters);
 	}
 
 	public final BoundPath getPath() {

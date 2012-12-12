@@ -23,7 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.integer;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
-import static org.o42a.compiler.ip.type.def.TypeDefInterpreter.typeDefinition;
+import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
 
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
@@ -126,10 +126,8 @@ final class PhrasePartVisitor
 			TypeDefinitionNode definition,
 			Phrase p) {
 
-		final TypeDefinition typeDefinition = typeDefinition(
-				definition,
-				p.distribute(),
-				p.getTypeConsumer());
+		final TypeDefinition typeDefinition =
+				typeDefinition(definition, p.getContext());
 
 		if (typeDefinition == null) {
 			return p;

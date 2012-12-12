@@ -75,7 +75,10 @@ public final class KeeperAccessor extends Obj {
 
 		return new Ascendants(this)
 		.setAncestor(ancestor)
-		.setParameters(ancestor.copyParameters());
+		.setParameters(
+				ancestor.copyParameters()
+				.rescope(getScope())
+				.toObjectTypeParameters());
 	}
 
 	@Override

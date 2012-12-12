@@ -73,8 +73,11 @@ public class LinkTarget extends Obj {
 		final TypeRef typeRef = this.linkData.getTypeRef();
 
 		return new Ascendants(this)
-				.setAncestor(typeRef)
-				.setParameters(typeRef.copyParameters());
+		.setAncestor(typeRef)
+		.setParameters(
+				typeRef.copyParameters()
+				.rescope(getScope())
+				.toObjectTypeParameters());
 	}
 
 	@Override

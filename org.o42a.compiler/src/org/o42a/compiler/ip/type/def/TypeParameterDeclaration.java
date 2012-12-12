@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.type.def;
 
-import static org.o42a.compiler.ip.type.def.TypeParameterNameVisitor.typeParameterNameVisitor;
+import static org.o42a.compiler.ip.type.def.TypeParameterKeyVisitor.typeParameterKeyVisitor;
 
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -70,7 +70,7 @@ final class TypeParameterDeclaration
 			return this.key;
 		}
 		return this.key = this.node.getDeclarable().accept(
-				typeParameterNameVisitor(isOverride()),
+				typeParameterKeyVisitor(isOverride()),
 				this.builder);
 	}
 

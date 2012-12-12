@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value.impl;
 
-import org.o42a.core.object.Obj;
+import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
@@ -29,7 +29,7 @@ import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.log.Loggable;
 
 
-public class TargetTypeParameters implements TypeParametersBuilder {
+public class TargetTypeParameters extends TypeParametersBuilder {
 
 	private final Ref target;
 
@@ -48,11 +48,8 @@ public class TargetTypeParameters implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParameters<?> refine(
-			Obj object,
-			TypeParameters<?> defaultParameters) {
-		return this.target.typeParameters(object.getScope())
-				.refine(object, defaultParameters);
+	public Scope getScope() {
+		return this.target.getScope();
 	}
 
 	@Override

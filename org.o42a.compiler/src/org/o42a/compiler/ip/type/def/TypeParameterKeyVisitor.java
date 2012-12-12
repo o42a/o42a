@@ -41,25 +41,25 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 
 
-final class TypeParameterNameVisitor
+final class TypeParameterKeyVisitor
 		extends AbstractDeclarableVisitor<MemberKey, TypeDefinitionBuilder> {
 
-	private static final TypeParameterNameVisitor
-	DECLARED_TYPE_PARAMETER_NAME_VISITOR = new TypeParameterNameVisitor(false);
-	private static final TypeParameterNameVisitor
-	OVERRIDDEN_TYPE_PARAMETER_NAME_VISITOR = new TypeParameterNameVisitor(true);
+	private static final TypeParameterKeyVisitor
+	DECLARED_TYPE_PARAMETER_KEY_VISITOR = new TypeParameterKeyVisitor(false);
+	private static final TypeParameterKeyVisitor
+	OVERRIDDEN_TYPE_PARAMETER_KEY_VISITOR = new TypeParameterKeyVisitor(true);
 
-	public static TypeParameterNameVisitor typeParameterNameVisitor(
+	public static TypeParameterKeyVisitor typeParameterKeyVisitor(
 			boolean override) {
 		if (override) {
-			return OVERRIDDEN_TYPE_PARAMETER_NAME_VISITOR;
+			return OVERRIDDEN_TYPE_PARAMETER_KEY_VISITOR;
 		}
-		return DECLARED_TYPE_PARAMETER_NAME_VISITOR;
+		return DECLARED_TYPE_PARAMETER_KEY_VISITOR;
 	}
 
 	private final boolean overridden;
 
-	private TypeParameterNameVisitor(boolean overridden) {
+	private TypeParameterKeyVisitor(boolean overridden) {
 		this.overridden = overridden;
 	}
 
@@ -94,10 +94,10 @@ final class TypeParameterNameVisitor
 				new Placed(p.getContext(), ref, p.distribute());
 
 		if (!this.overridden) {
-			return fieldName.key(p.getObject().getScope());
+			return fieldName.key(p.getScope());
 		}
 
-		final Obj object = p.getObject();
+		final Obj object = p.toObject();
 		final Ascendants ascendants = object.type().getAscendants();
 
 		for (Sample sample : ascendants.getSamples()) {

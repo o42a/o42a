@@ -21,28 +21,53 @@ package org.o42a.common.ref;
 
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
-import org.o42a.core.object.Obj;
+import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameter;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.util.log.Loggable;
 
 
-public class ArbitraryTypeParameters
-		extends Location
-		implements TypeParametersBuilder {
+public class ArbitraryTypeParameters extends TypeParametersBuilder {
 
+	private final CompilerContext context;
+	private final Loggable loggable;
+	private final Scope scope;
 	private final TypeRef[] parameters;
 
 	public ArbitraryTypeParameters(
 			LocationInfo location,
+			Scope scope,
 			TypeRef... parameters) {
-		super(location);
+		assert location != null :
+			"Location not specified";
+		assert scope != null :
+			"Scope not specified";
+		this.context = location.getContext();
+		this.loggable = location.getLoggable();
+		this.scope = scope;
 		this.parameters = parameters;
+		assert assertParametersHaveSameScope();
+	}
+
+	@Override
+	public final Scope getScope() {
+		return this.scope;
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return this.loggable;
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this.context;
 	}
 
 	public final TypeRef[] getParameters() {
@@ -87,14 +112,10 @@ public class ArbitraryTypeParameters
 	}
 
 	@Override
-	public TypeParameters<?> refine(
-			Obj object,
-			TypeParameters<?> defaultParameters) {
-		return refine(defaultParameters);
-	}
-
-	@Override
 	public ArbitraryTypeParameters prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
+			return this;
+		}
 
 		final TypeRef[] oldParameters = getParameters();
 		TypeRef[] newParameters = null;
@@ -118,11 +139,15 @@ public class ArbitraryTypeParameters
 			return this;
 		}
 
-		return new ArbitraryTypeParameters(this, newParameters);
+		return new ArbitraryTypeParameters(
+				this,
+				prefix.getStart(),
+				newParameters);
 	}
 
 	@Override
 	public TypeParametersBuilder reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
 
 		final TypeRef[] oldParameters = getParameters();
 		final TypeRef[] newParameters = new TypeRef[oldParameters.length];
@@ -138,7 +163,10 @@ public class ArbitraryTypeParameters
 			newParameters[i] = newParameter;
 		}
 
-		return new ArbitraryTypeParameters(this, newParameters);
+		return new ArbitraryTypeParameters(
+				this,
+				reproducer.getScope(),
+				newParameters);
 	}
 
 	@Override
@@ -162,8 +190,15 @@ public class ArbitraryTypeParameters
 		return out.toString();
 	}
 
+	private boolean assertParametersHaveSameScope() {
+		for (TypeRef parameter : this.parameters) {
+			parameter.assertSameScope(this);
+		}
+		return true;
+	}
+
 	private void redundantTypeParameter(TypeRef param) {
-		getLogger().error(
+		param.getLogger().error(
 				"redundant_type_parameter",
 				param,
 				"Redundant type parameter");

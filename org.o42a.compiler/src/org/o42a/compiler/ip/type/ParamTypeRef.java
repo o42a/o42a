@@ -62,7 +62,7 @@ public final class ParamTypeRef {
 			return result;
 		}
 
-		return result.setTypeParameters(parameters);
+		return result.setTypeParameters(parameters.toObjectTypeParameters());
 	}
 
 	public final Phrase updateAncestor(Phrase phrase) {
@@ -74,7 +74,7 @@ public final class ParamTypeRef {
 			return result;
 		}
 
-		return result.setTypeParameters(parameters);
+		return result.setTypeParameters(parameters.toObjectTypeParameters());
 	}
 
 	public final TypeRef parameterize() {

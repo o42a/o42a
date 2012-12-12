@@ -19,26 +19,41 @@
 */
 package org.o42a.core.value.impl;
 
-import org.o42a.core.object.Obj;
+import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.util.log.Loggable;
 
 
-public final class DefaultTypeParameters
-		extends Location
-		implements TypeParametersBuilder {
+public final class DefaultTypeParameters extends TypeParametersBuilder {
 
-	public DefaultTypeParameters(LocationInfo location) {
-		super(location);
+	private final CompilerContext context;
+	private final Loggable loggable;
+	private final Scope scope;
+
+	public DefaultTypeParameters(LocationInfo location, Scope scope) {
+		this.context = location.getContext();
+		this.loggable = location.getLoggable();
+		this.scope = scope;
 	}
 
 	@Override
-	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
-		return this;
+	public CompilerContext getContext() {
+		return this.context;
+	}
+
+	@Override
+	public Loggable getLoggable() {
+		return this.loggable;
+	}
+
+	@Override
+	public Scope getScope() {
+		return this.scope;
 	}
 
 	@Override
@@ -47,15 +62,17 @@ public final class DefaultTypeParameters
 	}
 
 	@Override
-	public TypeParameters<?> refine(
-			Obj object,
-			TypeParameters<?> defaultParameters) {
-		return defaultParameters;
+	public DefaultTypeParameters prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
+			return this;
+		}
+		return new DefaultTypeParameters(this, prefix.getStart());
 	}
 
 	@Override
-	public TypeParametersBuilder reproduce(Reproducer reproducer) {
-		return this;
+	public DefaultTypeParameters reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
+		return new DefaultTypeParameters(this, reproducer.getScope());
 	}
 
 	@Override

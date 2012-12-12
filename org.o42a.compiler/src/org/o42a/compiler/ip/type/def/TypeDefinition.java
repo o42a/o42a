@@ -19,94 +19,159 @@
 */
 package org.o42a.compiler.ip.type.def;
 
-import static org.o42a.core.value.TypeParameters.typeParameters;
+import static org.o42a.compiler.ip.type.def.TypeDefinitionVisitor.TYPE_DEFINITION_VISITOR;
 
-import org.o42a.core.Scope;
-import org.o42a.core.Scoped;
-import org.o42a.core.member.MemberKey;
+import org.o42a.ast.Node;
+import org.o42a.ast.phrase.TypeDefinitionNode;
+import org.o42a.ast.sentence.*;
+import org.o42a.ast.statement.StatementNode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.*;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.log.LogInfo;
 
 
 public final class TypeDefinition
-		extends Scoped
+		extends Location
 		implements ObjectTypeParameters {
 
-	private final TypeParameterDeclaration[] parameters;
-
-	TypeDefinition(TypeDefinitionBuilder builder) {
-		super(builder, builder.getScope());
-		this.parameters = builder.getParameters();
+	public static TypeDefinition typeDefinition(
+			Node node,
+			CompilerContext context,
+			SentenceNode[] definitions) {
+		return new TypeDefinition(
+				new Location(context, node),
+				definitions);
 	}
 
-	private TypeDefinition(
-			TypeDefinition location,
-			Scope scope,
-			TypeParameterDeclaration[] parameters) {
-		super(location, scope);
-		this.parameters = parameters;
+	public static TypeDefinition typeDefinition(
+			TypeDefinitionNode node,
+			CompilerContext context) {
+		return typeDefinition(
+				node,
+				context,
+				node.getDefinition().getContent());
+	}
+
+	public static void redundantTypeParameters(
+			CompilerLogger logger,
+			LogInfo location) {
+		logger.error(
+				"redundant_type_parameters",
+				location,
+				"Redundant type parameters");
+	}
+
+	private final SentenceNode[] definitions;
+
+	TypeDefinition(LocationInfo location, SentenceNode[] definitions) {
+		super(location);
+		this.definitions = definitions;
 	}
 
 	@Override
 	public TypeParameters<?> refine(
 			Obj object,
 			TypeParameters<?> defaultParameters) {
-		return toTypeParameters(defaultParameters.getValueType())
-				.refine(object, defaultParameters);
+		return buildTypeParameters(object, defaultParameters.getValueType())
+				.refine(defaultParameters);
 	}
 
 	@Override
 	public TypeDefinition prefixWith(PrefixPath prefix) {
-
-		final TypeParameterDeclaration[] newParameters =
-				new TypeParameterDeclaration[this.parameters.length];
-
-		for (int i = 0; i < newParameters.length; ++i) {
-			newParameters[i] = this.parameters[i].prefixWith(prefix);
-		}
-
-		return new TypeDefinition(this, prefix.getStart(), newParameters);
+		return this;
 	}
 
 	@Override
 	public String toString() {
-		if (this.parameters == null) {
+		if (this.definitions == null) {
 			return super.toString();
 		}
 
 		final StringBuilder out = new StringBuilder();
 
 		out.append("#(");
-		if (this.parameters.length != 0) {
-			this.parameters[0].toString(out);
-			for (int i = 1; i < this.parameters.length; ++i) {
-				out.append(". ");
-				this.parameters[i].toString(out);
+		if (this.definitions.length != 0) {
+			out.append('\n');
+			for (SentenceNode definition : this.definitions) {
+				out.append("  ");
+				definition.printContent(out);
+				out.append('\n');
 			}
 		}
-		out.append(')');
+		out.append(")");
 
 		return out.toString();
 	}
 
-	private TypeParameters<?> toTypeParameters(ValueType<?> valueType) {
+	private <T> TypeParameters<T> buildTypeParameters(
+			Obj object,
+			ValueType<T> valueType) {
 
-		TypeParameters<?> parameters = typeParameters(this, valueType);
+		final TypeDefinitionBuilder builder =
+				new TypeDefinitionBuilder(this, object);
 
-		for (TypeParameterDeclaration decl : this.parameters) {
+		addDefinitions(builder);
 
-			final MemberKey key = decl.getKey();
+		return builder.buildTypeParameters(valueType);
+	}
 
-			if (!key.isValid()) {
-				continue;
-			}
-			parameters = parameters.add(key, decl.getDefinition());
+	private void addDefinitions(TypeDefinitionBuilder builder) {
+		for (SentenceNode sentence : this.definitions) {
+			addSentence(builder, sentence);
+		}
+	}
+
+	private static void addSentence(
+			TypeDefinitionBuilder builder,
+			SentenceNode sentence) {
+		if (sentence.getType() != SentenceType.PROPOSITION) {
+			builder.getLogger().error(
+					"prohibited_type_definition_sentence_type",
+					sentence.getMark(),
+					"Only propositions allowed within type definition");
 		}
 
-		return parameters;
+		final AlternativeNode[] disjunction = sentence.getDisjunction();
+
+		if (disjunction.length == 0) {
+			return;
+		}
+		if (disjunction.length > 1) {
+			builder.getLogger().error(
+					"prohibited_type_definition_disjunction",
+					disjunction[1].getSeparator(),
+					"Disjunctions prohibited within type definition");
+		}
+
+		addAlt(builder, disjunction[0]);
+	}
+
+	private static void addAlt(
+			TypeDefinitionBuilder builder,
+			AlternativeNode alt) {
+
+		final SerialNode[] conjunction = alt.getConjunction();
+
+		if (conjunction.length > 1) {
+			builder.getLogger().error(
+					"prohibited_type_definition_conjunction",
+					conjunction[1].getSeparator(),
+					"Conjunctions prohibited within type definition");
+		}
+
+		for (SerialNode node : conjunction) {
+
+			final StatementNode statement = node.getStatement();
+
+			if (statement == null) {
+				continue;
+			}
+			statement.accept(TYPE_DEFINITION_VISITOR, builder);
+		}
 	}
 
 }

@@ -43,9 +43,7 @@ final class TypeParameterDefinitionVisitor
 	}
 
 	@Override
-	public TypeRef visitAscendants(
-			AscendantsNode ascendants,
-			Distributor p) {
+	public TypeRef visitAscendants(AscendantsNode ascendants, Distributor p) {
 		return typeRef(ascendants, p);
 	}
 

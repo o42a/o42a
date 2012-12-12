@@ -24,6 +24,7 @@ import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.link.LinkValueType;
 
@@ -46,7 +47,7 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAncestor(ancestor());
 		if (this.typeParameters != null) {
-			definer.setParameters(this.typeParameters);
+			definer.setParameters(typeParameters(definer));
 		}
 		pathAsValue(definer);
 	}
@@ -55,7 +56,7 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	public void overridePlainObject(ObjectDefiner definer) {
 		definer.setAncestor(ancestor());
 		if (this.typeParameters != null) {
-			definer.setParameters(this.typeParameters);
+			definer.setParameters(typeParameters(definer));
 		}
 		super.overridePlainObject(definer);
 	}
@@ -69,14 +70,24 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 			final LinkValueType linkType =
 					definer.getField().getDeclaration().getLinkType();
 
-			definer.setParameters(linkType.typeParameters(
-					getRef().getInterface().setParameters(
-							this.typeParameters)));
+			definer.setParameters(
+					linkType.typeParameters(
+							getRef()
+							.getInterface()
+							.setParameters(this.typeParameters)
+							.rescope(definer.getField()))
+					.toObjectTypeParameters());
 		}
 	}
 
 	protected TypeRef ancestor() {
 		return getRef().ancestor(this);
+	}
+
+	private ObjectTypeParameters typeParameters(ObjectDefiner definer) {
+		return this.typeParameters
+				.rescope(definer.getField())
+				.toObjectTypeParameters();
 	}
 
 }

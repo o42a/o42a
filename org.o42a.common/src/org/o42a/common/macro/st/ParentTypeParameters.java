@@ -21,54 +21,42 @@ package org.o42a.common.macro.st;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueType;
 
 
 final class ParentTypeParameters
 		extends Location
-		implements TypeParametersBuilder {
+		implements ObjectTypeParameters {
 
-	private final Scope scope;
-
-	ParentTypeParameters(Scope scope) {
-		super(scope);
-		this.scope = scope;
-	}
-
-	@Override
-	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
-		return typeParameters().refine(defaultParameters);
+	ParentTypeParameters(ObjectDefiner definer) {
+		super(definer.getField());
 	}
 
 	@Override
 	public TypeParameters<?> refine(
 			Obj object,
 			TypeParameters<?> defaultParameters) {
-		return typeParameters().refine(object, defaultParameters);
+		return typeParameters(object).refine(defaultParameters);
 	}
 
 	@Override
-	public TypeParametersBuilder reproduce(Reproducer reproducer) {
-		this.scope.assertCompatibleScope(reproducer.getReproducingScope());
-		return new ParentTypeParameters(reproducer.getScope());
+	public ObjectTypeParameters prefixWith(PrefixPath prefix) {
+		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public TypeParametersBuilder prefixWith(PrefixPath prefix) {
-		return typeParameters().prefixWith(prefix);
-	}
+	private TypeParameters<?> typeParameters(Obj object) {
 
-	private TypeParameters<?> typeParameters() {
-
-		final Obj parent = this.scope.toObject();
+		final Scope scope = object.getScope();
+		final Scope enclosingScope = scope.getEnclosingScope();
+		final Obj parent = enclosingScope.toObject();
 		final TypeParameters<?> parentTypeParameters =
 				parent.type().getParameters();
 		final ValueType<?> parentValueType = parent.type().getValueType();
@@ -76,7 +64,7 @@ final class ParentTypeParameters
 
 		if (parentLinkType != null) {
 			if (parentValueType.is(LinkValueType.LINK)) {
-				return parentTypeParameters;
+				return parentTypeParameters.rescope(scope);
 			}
 
 			final MemberKey interfaceKey =
@@ -84,15 +72,14 @@ final class ParentTypeParameters
 							parent.getContext().getIntrinsics());
 
 			return LinkValueType.LINK.typeParameters(
-					parentTypeParameters.parameter(interfaceKey).getTypeRef());
+					parentTypeParameters.parameter(interfaceKey)
+					.getTypeRef()
+					.rescope(scope));
 		}
 
 		final StaticTypeRef parentValueTypeRef =
-				parentValueType.typeRef(
-						this.scope,
-						this.scope.getEnclosingScope())
-				.setParameters(parentTypeParameters)
-				.rescope(this.scope);
+				parentValueType.typeRef(enclosingScope, scope)
+				.setParameters(parentTypeParameters.rescope(scope));
 
 		return LinkValueType.LINK.typeParameters(parentValueTypeRef);
 	}

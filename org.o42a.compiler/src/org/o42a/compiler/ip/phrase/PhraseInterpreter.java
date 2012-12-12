@@ -28,7 +28,6 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
-import org.o42a.common.ref.ArbitraryTypeParameters;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
@@ -39,6 +38,7 @@ import org.o42a.compiler.ip.type.ascendant.SampleSpecVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 public final class PhraseInterpreter {
@@ -224,7 +224,7 @@ public final class PhraseInterpreter {
 			TypeParametersNode node) {
 		phrase.referBody();
 
-		final ArbitraryTypeParameters typeParams =
+		final TypeParametersBuilder typeParams =
 				phrase.ip().typeIp().typeParameters(
 						node.getParameters(),
 						phrase.distribute(),
@@ -233,7 +233,7 @@ public final class PhraseInterpreter {
 
 		if (ascendantNode == null) {
 			return phrase.setImpliedAncestor(location(phrase, node))
-					.setTypeParameters(typeParams);
+					.setTypeParameters(typeParams.toObjectTypeParameters());
 		}
 
 		return ascendantNode.accept(

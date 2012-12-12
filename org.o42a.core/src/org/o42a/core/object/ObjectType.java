@@ -42,7 +42,6 @@ import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
@@ -658,7 +657,7 @@ public final class ObjectType implements UserInfo {
 				.type()
 				.getParameters()
 				.upgradeScope(getObject().getScope())
-				.refine(getObject(), parameters);
+				.refine(parameters);
 	}
 
 	private TypeParameters<?> applySampleParameters(
@@ -668,7 +667,7 @@ public final class ObjectType implements UserInfo {
 				.type()
 				.getParameters()
 				.upgradeScope(getObject().getScope())
-				.refine(getObject(), parameters);
+				.refine(parameters);
 	}
 
 	private TypeParameters<?> applyExplicitParameters(
@@ -681,11 +680,12 @@ public final class ObjectType implements UserInfo {
 			return parameters;
 		}
 
-		final Scope scope = getObject().getScope();
-		final PrefixPath prefix = scope.getEnclosingScopePath().toPrefix(scope);
+		final TypeParameters<?> result =
+				explicitParameters.refine(getObject(), parameters);
 
-		return explicitParameters.prefixWith(prefix)
-				.refine(getObject(), parameters);
+		result.assertSameScope(getObject());
+
+		return result;
 	}
 
 }
