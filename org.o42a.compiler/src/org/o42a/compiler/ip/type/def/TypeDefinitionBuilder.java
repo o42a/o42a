@@ -20,8 +20,11 @@
 package org.o42a.compiler.ip.type.def;
 
 import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
+import static org.o42a.compiler.ip.type.def.TypeDefinitionVisitor.TYPE_DEFINITION_VISITOR;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
+import org.o42a.ast.sentence.*;
+import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.*;
 import org.o42a.core.member.Member;
@@ -148,10 +151,6 @@ public class TypeDefinitionBuilder
 				.findMember(user, accessor, memberId, declaredIn);
 	}
 
-	public final void addParameter(TypeParameterDeclaration parameter) {
-		this.parameters = ArrayUtil.append(this.parameters, parameter);
-	}
-
 	@Override
 	public final Distributor distribute() {
 		return Placed.distribute(this);
@@ -160,6 +159,16 @@ public class TypeDefinitionBuilder
 	@Override
 	public final Distributor distributeIn(Container container) {
 		return Placed.distributeIn(this, container);
+	}
+
+	final void addParameter(TypeParameterDeclaration parameter) {
+		this.parameters = ArrayUtil.append(this.parameters, parameter);
+	}
+
+	final void addDefinitions(SentenceNode[] definitions) {
+		for (SentenceNode sentence : definitions) {
+			addSentence(sentence);
+		}
 	}
 
 	final <T> TypeParameters<T> buildTypeParameters(ValueType<T> valueType) {
@@ -177,6 +186,51 @@ public class TypeDefinitionBuilder
 		}
 
 		return parameters;
+	}
+
+	private void addSentence(SentenceNode sentence) {
+		if (sentence.getType() != SentenceType.PROPOSITION) {
+			getLogger().error(
+					"prohibited_type_definition_sentence_type",
+					sentence.getMark(),
+					"Only propositions allowed within type definition");
+		}
+
+		final AlternativeNode[] disjunction = sentence.getDisjunction();
+
+		if (disjunction.length == 0) {
+			return;
+		}
+		if (disjunction.length > 1) {
+			getLogger().error(
+					"prohibited_type_definition_disjunction",
+					disjunction[1].getSeparator(),
+					"Disjunctions prohibited within type definition");
+		}
+
+		addAlt(disjunction[0]);
+	}
+
+	private void addAlt(AlternativeNode alt) {
+
+		final SerialNode[] conjunction = alt.getConjunction();
+
+		if (conjunction.length > 1) {
+			getLogger().error(
+					"prohibited_type_definition_conjunction",
+					conjunction[1].getSeparator(),
+					"Conjunctions prohibited within type definition");
+		}
+
+		for (SerialNode node : conjunction) {
+
+			final StatementNode statement = node.getStatement();
+
+			if (statement == null) {
+				continue;
+			}
+			statement.accept(TYPE_DEFINITION_VISITOR, this);
+		}
 	}
 
 	private MemberTypeParameter findTypeParameter(

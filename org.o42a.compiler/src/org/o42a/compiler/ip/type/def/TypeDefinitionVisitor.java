@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.type.def;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 
+import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
@@ -34,6 +35,12 @@ final class TypeDefinitionVisitor
 			new TypeDefinitionVisitor();
 
 	private TypeDefinitionVisitor() {
+	}
+
+	@Override
+	public Void visitBraces(BracesNode braces, TypeDefinitionBuilder p) {
+		p.addDefinitions(braces.getContent());
+		return null;
 	}
 
 	@Override
