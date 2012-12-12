@@ -23,8 +23,8 @@ import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 import static org.o42a.compiler.ip.st.StInterpreter.addSentence;
-import static org.o42a.compiler.ip.type.def.TypeDefInterpreter.redundantTypeParameters;
-import static org.o42a.compiler.ip.type.def.TypeDefInterpreter.typeDefinition;
+import static org.o42a.compiler.ip.type.def.TypeDefinition.redundantTypeParameters;
+import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.ast.file.SectionNode;
@@ -169,9 +169,8 @@ final class Section implements LogInfo {
 
 			final TypeDefinition typeDefinition = typeDefinition(
 					typeDefinitionNode,
-					typeDefinitionNode.getContent(),
-					ascendantsDistributor,
-					consumer);
+					this.enclosingBlock.getContext(),
+					typeDefinitionNode.getContent());
 
 			if (typeDefinition != null) {
 				ascendants = ascendants.setTypeParameters(typeDefinition);

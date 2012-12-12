@@ -752,7 +752,7 @@ public abstract class Obj
 		if (knownValueType != null) {
 			typeParameters =
 					typeParameters(this, knownValueType)
-					.refine(this, derivedTypeParameters);
+					.refine(derivedTypeParameters);
 		} else {
 			typeParameters = derivedTypeParameters;
 		}

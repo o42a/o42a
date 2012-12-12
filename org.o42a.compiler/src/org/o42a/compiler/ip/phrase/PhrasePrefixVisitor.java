@@ -29,10 +29,10 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
-import org.o42a.common.ref.ArbitraryTypeParameters;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.Distributor;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 final class PhrasePrefixVisitor
@@ -41,13 +41,13 @@ final class PhrasePrefixVisitor
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 			new PhrasePrefixVisitor();
 
-	private final ArbitraryTypeParameters typeParameters;
+	private final TypeParametersBuilder typeParameters;
 
 	private PhrasePrefixVisitor() {
 		this.typeParameters = null;
 	}
 
-	PhrasePrefixVisitor(ArbitraryTypeParameters typeParameters) {
+	PhrasePrefixVisitor(TypeParametersBuilder typeParameters) {
 		this.typeParameters = typeParameters;
 	}
 
@@ -84,8 +84,16 @@ final class PhrasePrefixVisitor
 						distributor);
 
 		if (ancestor == null || ancestor.isImplied()) {
-			return p.setImpliedAncestor(location(p, expression))
-					.setTypeParameters(this.typeParameters);
+
+			final Phrase result =
+					p.setImpliedAncestor(location(p, expression));
+
+			if (this.typeParameters == null) {
+				return result;
+			}
+
+			return result.setTypeParameters(
+					this.typeParameters.toObjectTypeParameters());
 		}
 
 		final Phrase phrase;

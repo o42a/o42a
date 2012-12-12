@@ -105,7 +105,10 @@ final class LinkDefinerImpl implements LinkDefiner {
 			targetType = this.targetRef.getTypeRef();
 		}
 
-		return ascendants.setParameters(linkType.typeParameters(targetType));
+		return ascendants.setParameters(
+				linkType.typeParameters(targetType)
+				.rescope(getField())
+				.toObjectTypeParameters());
 	}
 
 	private TypeRef explicitTypeRef() {

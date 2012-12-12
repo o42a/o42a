@@ -31,12 +31,12 @@ import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeParametersNode;
-import org.o42a.common.ref.ArbitraryTypeParameters;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.value.TypeParametersBuilder;
 
 
 final class SectionAscendantsVisitor
@@ -62,7 +62,7 @@ final class SectionAscendantsVisitor
 
 		AscendantsDefinition ascendants =
 				new AscendantsDefinition(location(p, parameters), p);
-		final ArbitraryTypeParameters typeParams =
+		final TypeParametersBuilder typeParams =
 				PLAIN_IP.typeIp().typeParameters(
 						parameters.getParameters(),
 						p,

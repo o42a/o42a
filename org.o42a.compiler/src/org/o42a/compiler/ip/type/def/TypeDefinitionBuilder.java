@@ -19,6 +19,9 @@
 */
 package org.o42a.compiler.ip.type.def;
 
+import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
+import static org.o42a.core.value.TypeParameters.typeParameters;
+
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.*;
 import org.o42a.core.member.Member;
@@ -31,6 +34,8 @@ import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 
 
@@ -41,31 +46,24 @@ public class TypeDefinitionBuilder
 	private static final TypeParameterDeclaration[] NO_PARAMETERS =
 			new TypeParameterDeclaration[0];
 
-	private final Container enclosing;
-	private final ScopePlace place;
+	private final Obj object;
 	private final TypeConsumer consumer;
-	private Path objectPath;
-	private Obj object;
 	private TypeParameterDeclaration[] parameters = NO_PARAMETERS;
 
-	public TypeDefinitionBuilder(
-			LocationInfo location,
-			Distributor enclosing,
-			TypeConsumer consumer) {
+	public TypeDefinitionBuilder(LocationInfo location, Obj object) {
 		super(location);
-		this.enclosing = enclosing.getContainer();
-		this.place = enclosing.getPlace();
-		this.consumer = consumer;
+		this.object = object;
+		this.consumer = typeConsumer(null);
 	}
 
 	@Override
 	public final Scope getScope() {
-		return getEnclosingContainer().getScope();
+		return this.object.getScope();
 	}
 
 	@Override
 	public final ScopePlace getPlace() {
-		return this.place;
+		return this.object.getPlace();
 	}
 
 	@Override
@@ -75,19 +73,11 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public final Container getEnclosingContainer() {
-		return this.enclosing;
+		return this.object.getEnclosingContainer();
 	}
 
 	public final TypeConsumer getConsumer() {
 		return this.consumer;
-	}
-
-	public final Obj getObject() {
-		if (this.object != null) {
-			return this.object;
-		}
-		return this.object =
-				getConsumer().getNesting().findObjectIn(getScope());
 	}
 
 	public final TypeParameterDeclaration[] getParameters() {
@@ -96,22 +86,22 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public final Member toMember() {
-		return getEnclosingContainer().toMember();
+		return this.object.toMember();
 	}
 
 	@Override
 	public final Obj toObject() {
-		return getEnclosingContainer().toObject();
+		return this.object;
 	}
 
 	@Override
 	public final Clause toClause() {
-		return getEnclosingContainer().toClause();
+		return this.object.toClause();
 	}
 
 	@Override
 	public final LocalScope toLocal() {
-		return getEnclosingContainer().toLocal();
+		return null;
 	}
 
 	@Override
@@ -121,21 +111,11 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public Member member(MemberKey memberKey) {
-		return getEnclosingContainer().member(memberKey);
+		return this.object.member(memberKey);
 	}
 
 	@Override
 	public Path member(
-			PlaceInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn) {
-		return getEnclosingContainer()
-				.member(user, accessor, memberId, declaredIn);
-	}
-
-	@Override
-	public Path findMember(
 			PlaceInfo user,
 			Accessor accessor,
 			MemberId memberId,
@@ -145,7 +125,23 @@ public class TypeDefinitionBuilder
 				findTypeParameter(memberId, declaredIn);
 
 		if (typeParameter != null) {
-			return objectPath().append(typeParameter.getMemberKey());
+			return typeParameter.getMemberKey().toPath();
+		}
+
+		return null;
+	}
+
+	@Override
+	public Path findMember(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
+
+		final Path found = member(user, accessor, memberId, declaredIn);
+
+		if (found != null) {
+			return found;
 		}
 
 		return getEnclosingContainer()
@@ -154,10 +150,6 @@ public class TypeDefinitionBuilder
 
 	public final void addParameter(TypeParameterDeclaration parameter) {
 		this.parameters = ArrayUtil.append(this.parameters, parameter);
-	}
-
-	public final TypeDefinition buildDefinition() {
-		return new TypeDefinition(this);
 	}
 
 	@Override
@@ -170,11 +162,21 @@ public class TypeDefinitionBuilder
 		return Placed.distributeIn(this, container);
 	}
 
-	private Path objectPath() {
-		if (this.objectPath != null) {
-			return this.objectPath;
+	final <T> TypeParameters<T> buildTypeParameters(ValueType<T> valueType) {
+
+		TypeParameters<T> parameters = typeParameters(this, valueType);
+
+		for (TypeParameterDeclaration decl : this.parameters) {
+
+			final MemberKey key = decl.getKey();
+
+			if (!key.isValid()) {
+				continue;
+			}
+			parameters = parameters.add(key, decl.getDefinition());
 		}
-		return this.objectPath = getConsumer().getNesting().toPath();
+
+		return parameters;
 	}
 
 	private MemberTypeParameter findTypeParameter(
@@ -182,7 +184,7 @@ public class TypeDefinitionBuilder
 			Obj declaredIn) {
 
 		final Member objectMember =
-				getObject().objectMember(Accessor.PUBLIC, memberId, declaredIn);
+				this.object.objectMember(Accessor.PUBLIC, memberId, declaredIn);
 
 		if (objectMember == null) {
 			return null;

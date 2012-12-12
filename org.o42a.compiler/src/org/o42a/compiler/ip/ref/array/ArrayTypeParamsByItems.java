@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
-import org.o42a.core.object.Obj;
+import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
@@ -29,7 +29,7 @@ import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.log.Loggable;
 
 
-final class ArrayTypeParamsByItems implements TypeParametersBuilder {
+final class ArrayTypeParamsByItems extends TypeParametersBuilder {
 
 	private final Ref arrayRef;
 
@@ -48,17 +48,14 @@ final class ArrayTypeParamsByItems implements TypeParametersBuilder {
 	}
 
 	@Override
-	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
-		return this.arrayRef.typeParameters(this.arrayRef.getScope())
-				.refine(defaultParameters);
+	public Scope getScope() {
+		return this.arrayRef.getScope();
 	}
 
 	@Override
-	public TypeParameters<?> refine(
-			Obj object,
-			TypeParameters<?> defaultParameters) {
+	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
 		return this.arrayRef.typeParameters(this.arrayRef.getScope())
-				.refine(object, defaultParameters);
+				.refine(defaultParameters);
 	}
 
 	@Override

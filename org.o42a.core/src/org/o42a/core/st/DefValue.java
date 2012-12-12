@@ -58,7 +58,7 @@ public final class DefValue {
 	}
 
 	public final DefValue upgradeScope(ScopeUpgrade upgrade) {
-		if (!hasValue() || getValue().getTypeParameters().isEmpty()) {
+		if (!hasValue()) {
 			return this;
 		}
 

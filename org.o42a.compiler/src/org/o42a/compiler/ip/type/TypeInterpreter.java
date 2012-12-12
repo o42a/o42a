@@ -81,7 +81,7 @@ public final class TypeInterpreter {
 				"Unknwon definition kind: " + definitionKind);
 	}
 
-	public final ArbitraryTypeParameters typeParameters(
+	public final TypeParametersBuilder typeParameters(
 			InterfaceNode ifaceNode,
 			Distributor p,
 			TypeConsumer consumer) {
@@ -115,7 +115,10 @@ public final class TypeInterpreter {
 			typeParams[i] = paramTypeRef.parameterize();
 		}
 
-		return new ArbitraryTypeParameters(location(p, ifaceNode), typeParams);
+		return new ArbitraryTypeParameters(
+				location(p, ifaceNode),
+				p.getScope(),
+				typeParams);
 	}
 
 	public final TypeNodeVisitor<ParamTypeRef, Distributor> typeVisitor(

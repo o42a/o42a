@@ -72,7 +72,10 @@ public final class RtLinkTarget extends Obj {
 
 		return new Ascendants(this)
 		.setAncestor(interfaceRef)
-		.setParameters(interfaceRef.copyParameters());
+		.setParameters(
+				interfaceRef.copyParameters()
+				.rescope(getScope())
+				.toObjectTypeParameters());
 	}
 
 	@Override

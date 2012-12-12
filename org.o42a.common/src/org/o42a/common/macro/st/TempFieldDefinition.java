@@ -57,7 +57,7 @@ final class TempFieldDefinition extends FieldDefinition {
 
 		definer.setAncestor(LINK.typeRef(this.expansion, enclosingScope));
 		if (!this.condition) {
-			definer.setParameters(new ParentTypeParameters(enclosingScope));
+			definer.setParameters(new ParentTypeParameters(definer));
 		}
 		definer.define(new ExpandMacroBlock(expansion()));
 	}

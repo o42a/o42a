@@ -27,7 +27,6 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
@@ -36,7 +35,7 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.ref.type.TypeRelation.Kind;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.array.Array;
@@ -47,44 +46,84 @@ import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.macro.impl.MacroValueAdapter;
 import org.o42a.core.value.voids.VoidValueAdapter;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.log.Loggable;
 
 
-public final class TypeParameters<T>
-		extends Location
-		implements TypeParametersBuilder {
+public final class TypeParameters<T> extends TypeParametersBuilder {
 
 	public static TypeParametersBuilder defaultTypeParameters(
-			LocationInfo location) {
-		return new DefaultTypeParameters(location);
+			LocationInfo location,
+			Scope scope) {
+		return new DefaultTypeParameters(location, scope);
+	}
+
+	public static TypeParametersBuilder defaultTypeParameters(
+			ScopeInfo location) {
+		return new DefaultTypeParameters(location, location.getScope());
+	}
+
+	public static <T> TypeParameters<T> typeParameters(
+			ScopeInfo location,
+			ValueType<T> valueType) {
+		return new TypeParameters<T>(location, location.getScope(), valueType);
 	}
 
 	public static <T> TypeParameters<T> typeParameters(
 			LocationInfo location,
+			Scope scope,
 			ValueType<T> valueType) {
-		return new TypeParameters<T>(location, valueType);
+		return new TypeParameters<T>(location, scope, valueType);
 	}
 
+	private final CompilerContext context;
+	private final Loggable loggable;
+	private final Scope scope;
 	private final ValueType<T> valueType;
 	private final TypeParameter[] parameters;
 
 	private TypeParameters(
 			LocationInfo location,
+			Scope scope,
 			ValueType<T> valueType) {
-		super(location);
+		assert location != null :
+			"Location not specified";
+		assert scope != null :
+			"Scope not specified";
 		assert valueType != null :
 			"Value type not specified";
+		this.context = location.getContext();
+		this.loggable = location.getLoggable();
+		this.scope = scope;
 		this.valueType = valueType;
 		this.parameters = new TypeParameter[0];
 	}
 
 	private TypeParameters(
 			LocationInfo location,
+			Scope scope,
 			ValueType<T> valueType,
 			TypeParameter[] parameters) {
-		super(location);
+		this.context = location.getContext();
+		this.loggable = location.getLoggable();
+		this.scope = scope;
 		this.valueType = valueType;
 		assert parametersHaveSameScope(parameters);
 		this.parameters = parameters;
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this.context;
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return this.loggable;
+	}
+
+	@Override
+	public final Scope getScope() {
+		return this.scope;
 	}
 
 	public final ValueType<T> getValueType() {
@@ -150,14 +189,13 @@ public final class TypeParameters<T>
 	}
 
 	public final TypeParameters<T> add(MemberKey key, TypeRef parameter) {
-		if (this.parameters.length != 0) {
-			parameter.assertSameScope(this.parameters[0]);
-		}
+		parameter.assertSameScope(this);
 
 		final TypeParameter param = new TypeParameter(key, parameter);
 
 		return new TypeParameters<T>(
 				this,
+				getScope(),
 				getValueType(),
 				ArrayUtil.append(this.parameters, param));
 	}
@@ -268,6 +306,7 @@ public final class TypeParameters<T>
 
 	@Override
 	public final TypeParameters<T> refine(TypeParameters<?> defaultParameters) {
+		assertSameScope(defaultParameters);
 		assert defaultParameters.getValueType().isVoid()
 		|| getValueType().is(defaultParameters.getValueType()) :
 			this + " value type is not compatible with "
@@ -284,11 +323,10 @@ public final class TypeParameters<T>
 			// Value type updated from VOID to something else.
 			return new TypeParameters<T>(
 					this,
+					getScope(),
 					getValueType(),
 					defaultParameters.all());
 		}
-
-		assertSameScope(defaultParameters.all()[0]);
 
 		TypeParameter[] newParameters = all();
 
@@ -305,87 +343,63 @@ public final class TypeParameters<T>
 			return this;
 		}
 
-		return new TypeParameters<T>(this, getValueType(), newParameters);
-	}
-
-	@Override
-	public final TypeParameters<T> refine(
-			Obj object,
-			TypeParameters<?> defaultParameters) {
-		assert assertSameScope(object);
-		return refine(defaultParameters);
+		return new TypeParameters<T>(
+				this,
+				getScope(),
+				getValueType(),
+				newParameters);
 	}
 
 	@Override
 	public final TypeParameters<T> prefixWith(PrefixPath prefix) {
-
-		final TypeParameter[] oldParameters = all();
-		TypeParameter[] newParameters = null;
-
-		for (int i = 0; i < oldParameters.length; ++i) {
-
-			final TypeParameter oldParameter = oldParameters[i];
-			final TypeParameter newParameter = oldParameter.prefixWith(prefix);
-
-			if (oldParameter == newParameter) {
-				continue;
-			}
-			if (newParameters == null) {
-				newParameters = new TypeParameter[oldParameters.length];
-				System.arraycopy(oldParameters, 0, newParameters, 0, i);
-			}
-			newParameters[i] = newParameter;
-		}
-
-		if (newParameters == null) {
+		if (prefix.emptyFor(this)) {
 			return this;
 		}
 
-		return new TypeParameters<T>(this, getValueType(), newParameters);
+		final TypeParameter[] oldParameters = all();
+		final TypeParameter[] newParameters =
+				new TypeParameter[oldParameters.length];
+
+		for (int i = 0; i < oldParameters.length; ++i) {
+			newParameters[i] = oldParameters[i].prefixWith(prefix);
+		}
+
+		return new TypeParameters<T>(
+				this,
+				prefix.getStart(),
+				getValueType(),
+				newParameters);
 	}
 
 	public final TypeParameters<T> upgradeScope(Scope toScope) {
-		if (isEmpty()) {
+		if (getScope().is(toScope)) {
 			return this;
 		}
+		return prefixWith(upgradePrefix(this.scope, toScope));
+	}
 
-		final Scope scope = all()[0].getScope();
-
-		if (scope.is(toScope)) {
-			return this;
-		}
-
-		return prefixWith(upgradePrefix(scope, toScope));
+	@SuppressWarnings("unchecked")
+	@Override
+	public final TypeParameters<T> rescope(Scope toScope) {
+		return (TypeParameters<T>) super.rescope(toScope);
 	}
 
 	public TypeParameters<T> rebuildIn(Scope scope) {
-		if (isEmpty()) {
-			return this;
-		}
+		assertCompatible(scope);
 
 		final TypeParameter[] oldParameters = all();
-		TypeParameter[] newParameters = null;
+		final TypeParameter[] newParameters =
+				new TypeParameter[oldParameters.length];
 
 		for (int i = 0; i < oldParameters.length; ++i) {
-
-			final TypeParameter oldParameter = oldParameters[i];
-			final TypeParameter newParameter = oldParameter.rebuildIn(scope);
-
-			if (oldParameter == newParameter) {
-				continue;
-			}
-			if (newParameters == null) {
-				newParameters = new TypeParameter[oldParameters.length];
-				System.arraycopy(oldParameters, 0, newParameters, 0, i);
-			}
-			newParameters[i] = newParameter;
+			newParameters[i] = oldParameters[i].rebuildIn(scope);
 		}
 
-		if (newParameters == null) {
-			return this;
-		}
-
-		return new TypeParameters<T>(this, getValueType(), newParameters);
+		return new TypeParameters<T>(
+				this,
+				getScope(),
+				getValueType(),
+				newParameters);
 	}
 
 	public final TypeParameters<KnownLink> toLinkParameters() {
@@ -412,6 +426,7 @@ public final class TypeParameters<T>
 
 	@Override
 	public TypeParameters<T> reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
 
 		final TypeParameter[] oldParameters = all();
 		final TypeParameter[] newParameters =
@@ -428,7 +443,11 @@ public final class TypeParameters<T>
 			newParameters[i] = newParameter;
 		}
 
-		return new TypeParameters<T>(this, getValueType(), newParameters);
+		return new TypeParameters<T>(
+				this,
+				reproducer.getScope(),
+				getValueType(),
+				newParameters);
 	}
 
 	public final void resolveAll(FullResolver resolver) {
@@ -444,13 +463,6 @@ public final class TypeParameters<T>
 	public final boolean assertAssignableFrom(TypeParameters<?> parameters) {
 		assert assignableFrom(parameters) :
 			this + " is not assignable from " + parameters;
-		return true;
-	}
-
-	public final boolean assertSameScope(ScopeInfo scope) {
-		if (!isEmpty()) {
-			this.parameters[0].assertSameScope(scope);
-		}
 		return true;
 	}
 
@@ -491,17 +503,10 @@ public final class TypeParameters<T>
 		return true;
 	}
 
-	private static boolean parametersHaveSameScope(TypeParameter[] parameters) {
-		if (parameters.length <= 1) {
-			return true;
-		}
-
-		final TypeParameter first = parameters[0];
-
+	private boolean parametersHaveSameScope(TypeParameter[] parameters) {
 		for (int i = 1; i < parameters.length; ++i) {
-			parameters[i].assertSameScope(first);
+			parameters[i].assertSameScope(this);
 		}
-
 		return true;
 	}
 

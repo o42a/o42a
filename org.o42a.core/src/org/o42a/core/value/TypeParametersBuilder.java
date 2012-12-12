@@ -19,17 +19,59 @@
 */
 package org.o42a.core.value;
 
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.impl.ObjectTypeParametersBuilder;
 
 
-public interface TypeParametersBuilder extends ObjectTypeParameters {
+public abstract class TypeParametersBuilder implements ScopeInfo {
 
-	TypeParameters<?> refine(TypeParameters<?> defaultParameters);
+	public abstract TypeParameters<?> refine(
+			TypeParameters<?> defaultParameters);
+
+	public ObjectTypeParameters toObjectTypeParameters() {
+		return new ObjectTypeParametersBuilder(this);
+	}
+
+	public abstract TypeParametersBuilder prefixWith(PrefixPath prefix);
+
+	public TypeParametersBuilder rescope(Scope toScope) {
+
+		final Scope scope = getScope();
+
+		if (scope.is(toScope)) {
+			return this;
+		}
+
+		final PrefixPath prefix =
+				toScope.pathTo(scope).bind(this).toPrefix(toScope);
+
+		return prefixWith(prefix);
+	}
+
+	public abstract TypeParametersBuilder reproduce(Reproducer reproducer);
 
 	@Override
-	TypeParametersBuilder prefixWith(PrefixPath prefix);
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
 
-	TypeParametersBuilder reproduce(Reproducer reproducer);
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
 
 }

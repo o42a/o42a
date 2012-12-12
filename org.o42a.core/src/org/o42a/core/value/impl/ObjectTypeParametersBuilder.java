@@ -17,80 +17,61 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field.impl;
+package org.o42a.core.value.impl;
 
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.link.KnownLink;
-import org.o42a.core.value.link.LinkValueType;
+import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.log.Loggable;
 
 
-final class LinkTypeParameters implements ObjectTypeParameters {
+public final class ObjectTypeParametersBuilder implements ObjectTypeParameters {
 
-	private final LinkValueType linkType;
-	private final TypeRef ancestor;
-	private final Ref value;
+	private final TypeParametersBuilder builder;
 
-	LinkTypeParameters(
-			LinkValueType linkType,
-			TypeRef ancestor,
-			Ref value) {
-		this.linkType = linkType;
-		this.ancestor = ancestor;
-		this.value = value;
+	public ObjectTypeParametersBuilder(TypeParametersBuilder builder) {
+		this.builder = builder;
 	}
 
 	@Override
 	public CompilerContext getContext() {
-		return this.value.getContext();
+		return this.builder.getContext();
 	}
 
 	@Override
 	public Loggable getLoggable() {
-		return this.value.getLoggable();
+		return this.builder.getLoggable();
 	}
 
 	@Override
 	public TypeParameters<?> refine(
 			Obj object,
 			TypeParameters<?> defaultParameters) {
-
-		final TypeRef interfaceRef =
-				this.ancestor.setParameters(
-						this.value.typeParameters(
-								object.getScope().getEnclosingScope()));
-		final TypeParameters<KnownLink> linkParameters =
-				this.linkType.typeParameters(
-						interfaceRef.rescope(object.getScope()));
-
-		return linkParameters.refine(defaultParameters);
+		return this.builder.rescope(object.getScope())
+				.refine(defaultParameters);
 	}
 
 	@Override
-	public ObjectTypeParameters prefixWith(PrefixPath prefix) {
+	public ObjectTypeParametersBuilder prefixWith(PrefixPath prefix) {
 
-		final TypeRef ancestor = this.ancestor.prefixWith(prefix);
-		final Ref value = this.value.prefixWith(prefix);
+		final TypeParametersBuilder builder = this.builder.prefixWith(prefix);
 
-		if (this.ancestor == ancestor && this.value == value) {
+		if (builder == this.builder) {
 			return this;
 		}
 
-		return new LinkTypeParameters(this.linkType, ancestor, value);
+		return new ObjectTypeParametersBuilder(builder);
 	}
 
 	@Override
 	public String toString() {
-		if (this.value == null) {
+		if (this.builder == null) {
 			return super.toString();
 		}
-		return this.linkType + "(`" + this.value + ')';
+		return this.builder.toString();
 	}
 
 }
