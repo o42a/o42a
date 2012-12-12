@@ -32,7 +32,7 @@ import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
 public final class TypeVisitor
@@ -40,7 +40,7 @@ public final class TypeVisitor
 
 	private final TypeInterpreter typeIp;
 	private final TypeConsumer consumer;
-	private final TypeParametersBuilder typeParameters;
+	private final TypeRefParameters typeParameters;
 
 	public TypeVisitor(TypeInterpreter ip, TypeConsumer consumer) {
 		this.typeIp = ip;
@@ -51,7 +51,7 @@ public final class TypeVisitor
 	private TypeVisitor(
 			TypeInterpreter ip,
 			TypeConsumer consumer,
-			TypeParametersBuilder typeParameters) {
+			TypeRefParameters typeParameters) {
 		this.typeIp = ip;
 		this.typeParameters = typeParameters;
 		this.consumer = consumer;
@@ -97,7 +97,7 @@ public final class TypeVisitor
 			return super.visitTypeParameters(parameters, p);
 		}
 
-		final TypeParametersBuilder typeParameters;
+		final TypeRefParameters typeParameters;
 		final InterfaceNode ifaceNode = parameters.getParameters();
 
 		if (this.typeParameters != null) {

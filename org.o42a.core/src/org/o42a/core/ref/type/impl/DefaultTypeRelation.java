@@ -17,19 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.type;
+package org.o42a.core.ref.type.impl;
 
 import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.ObjectType;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.TypeParameters;
 
 
-final class DefaultTypeRelation extends TypeRelation {
+public final class DefaultTypeRelation extends TypeRelation {
 
-	DefaultTypeRelation(TypeRef of, TypeRef to) {
+	public DefaultTypeRelation(TypeRef of, TypeRef to) {
 		super(of, to);
 	}
 

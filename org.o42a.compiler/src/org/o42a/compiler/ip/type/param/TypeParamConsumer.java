@@ -28,8 +28,8 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.ScopedLogger;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.macro.MacroConsumer;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
@@ -61,7 +61,7 @@ public class TypeParamConsumer extends TypeConsumer implements Consumer {
 	@Override
 	public ParamTypeRef consumeType(
 			Ref ref,
-			TypeParametersBuilder typeParameters) {
+			TypeRefParameters typeParameters) {
 
 		final Ref consumption = ref.consume(this);
 

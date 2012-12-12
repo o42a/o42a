@@ -17,15 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.type;
+package org.o42a.core.ref.type.impl;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
-final class DefaultTypeRef extends TypeRef {
+public final class DefaultTypeRef extends TypeRef {
 
-	DefaultTypeRef(Ref ref, TypeParametersBuilder typeParameters) {
+	public DefaultTypeRef(Ref ref, TypeRefParameters typeParameters) {
 		super(ref, typeParameters);
 	}
 
@@ -43,7 +44,7 @@ final class DefaultTypeRef extends TypeRef {
 	protected TypeRef create(
 			Ref intactRef,
 			Ref ref,
-			TypeParametersBuilder parameters) {
+			TypeRefParameters parameters) {
 		assert intactRef == ref :
 			intactRef + " should be the same as " + intactRef;
 		return new DefaultTypeRef(ref, parameters);

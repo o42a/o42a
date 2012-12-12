@@ -32,15 +32,16 @@ import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.ref.type.*;
 import org.o42a.core.ref.type.TypeRelation.Kind;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
-import org.o42a.core.value.impl.*;
+import org.o42a.core.value.impl.CompilerValue;
+import org.o42a.core.value.impl.FalseValue;
+import org.o42a.core.value.impl.RuntimeValue;
 import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.macro.impl.MacroValueAdapter;
@@ -49,18 +50,7 @@ import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.Loggable;
 
 
-public final class TypeParameters<T> extends TypeParametersBuilder {
-
-	public static TypeParametersBuilder defaultTypeParameters(
-			LocationInfo location,
-			Scope scope) {
-		return new DefaultTypeParameters(location, scope);
-	}
-
-	public static TypeParametersBuilder defaultTypeParameters(
-			ScopeInfo location) {
-		return new DefaultTypeParameters(location, location.getScope());
-	}
+public final class TypeParameters<T> extends TypeRefParameters {
 
 	public static <T> TypeParameters<T> typeParameters(
 			ScopeInfo location,

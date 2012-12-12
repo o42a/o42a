@@ -24,14 +24,14 @@ import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
 public final class StaticAncestorVisitor extends AncestorVisitor {
 
 	public StaticAncestorVisitor(
 			Interpreter ip,
-			TypeParametersBuilder typeParameters,
+			TypeRefParameters typeParameters,
 			Referral referral,
 			TypeConsumer typeConsumer) {
 		super(ip, typeParameters, referral, typeConsumer);

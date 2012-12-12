@@ -17,17 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.ref.type;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.impl.DefaultTypeRefParameters;
+import org.o42a.core.ref.type.impl.ObjectTypeParametersBuilder;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.impl.ObjectTypeParametersBuilder;
+import org.o42a.core.value.ObjectTypeParameters;
+import org.o42a.core.value.TypeParameters;
 
 
-public abstract class TypeParametersBuilder implements ScopeInfo {
+public abstract class TypeRefParameters implements ScopeInfo {
+
+	public static TypeRefParameters defaultTypeRefParameters(
+			ScopeInfo location) {
+		return new DefaultTypeRefParameters(location, location.getScope());
+	}
+
+	public static TypeRefParameters defaultTypeRefParameters(
+			LocationInfo location,
+			Scope scope) {
+		return new DefaultTypeRefParameters(location, scope);
+	}
 
 	public abstract TypeParameters<?> refine(
 			TypeParameters<?> defaultParameters);
@@ -36,9 +51,9 @@ public abstract class TypeParametersBuilder implements ScopeInfo {
 		return new ObjectTypeParametersBuilder(this);
 	}
 
-	public abstract TypeParametersBuilder prefixWith(PrefixPath prefix);
+	public abstract TypeRefParameters prefixWith(PrefixPath prefix);
 
-	public TypeParametersBuilder rescope(Scope toScope) {
+	public TypeRefParameters rescope(Scope toScope) {
 
 		final Scope scope = getScope();
 
@@ -52,7 +67,7 @@ public abstract class TypeParametersBuilder implements ScopeInfo {
 		return prefixWith(prefix);
 	}
 
-	public abstract TypeParametersBuilder reproduce(Reproducer reproducer);
+	public abstract TypeRefParameters reproduce(Reproducer reproducer);
 
 	@Override
 	public final void assertScopeIs(Scope scope) {

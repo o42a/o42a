@@ -24,16 +24,16 @@ import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.value.ObjectTypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.core.value.link.LinkValueType;
 
 
 public class ValueFieldDefinition extends DefaultFieldDefinition {
 
-	private final TypeParametersBuilder typeParameters;
+	private final TypeRefParameters typeParameters;
 
-	public ValueFieldDefinition(Ref ref, TypeParametersBuilder typeParameters) {
+	public ValueFieldDefinition(Ref ref, TypeRefParameters typeParameters) {
 		super(ref);
 		this.typeParameters = typeParameters;
 	}

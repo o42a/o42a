@@ -38,7 +38,7 @@ import org.o42a.compiler.ip.type.ascendant.SampleSpecVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
 public final class PhraseInterpreter {
@@ -224,7 +224,7 @@ public final class PhraseInterpreter {
 			TypeParametersNode node) {
 		phrase.referBody();
 
-		final TypeParametersBuilder typeParams =
+		final TypeRefParameters typeParams =
 				phrase.ip().typeIp().typeParameters(
 						node.getParameters(),
 						phrase.distribute(),

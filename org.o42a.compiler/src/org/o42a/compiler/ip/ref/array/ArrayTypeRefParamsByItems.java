@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,67 +17,77 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.compiler.ip.ref.array;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.log.Loggable;
 
 
-public final class DefaultTypeParameters extends TypeParametersBuilder {
+final class ArrayTypeRefParamsByItems extends TypeRefParameters {
 
-	private final CompilerContext context;
-	private final Loggable loggable;
-	private final Scope scope;
+	private final Ref arrayRef;
 
-	public DefaultTypeParameters(LocationInfo location, Scope scope) {
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
-		this.scope = scope;
+	ArrayTypeRefParamsByItems(Ref arrayRef) {
+		this.arrayRef = arrayRef;
 	}
 
 	@Override
 	public CompilerContext getContext() {
-		return this.context;
+		return this.arrayRef.getContext();
 	}
 
 	@Override
 	public Loggable getLoggable() {
-		return this.loggable;
+		return this.arrayRef.getLoggable();
 	}
 
 	@Override
 	public Scope getScope() {
-		return this.scope;
+		return this.arrayRef.getScope();
 	}
 
 	@Override
 	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
-		return defaultParameters;
+		return this.arrayRef.typeParameters(this.arrayRef.getScope())
+				.refine(defaultParameters);
 	}
 
 	@Override
-	public DefaultTypeParameters prefixWith(PrefixPath prefix) {
-		if (prefix.emptyFor(this)) {
+	public ArrayTypeRefParamsByItems prefixWith(PrefixPath prefix) {
+
+		final Ref arrayRef = this.arrayRef.prefixWith(prefix);
+
+		if (this.arrayRef == arrayRef) {
 			return this;
 		}
-		return new DefaultTypeParameters(this, prefix.getStart());
+
+		return new ArrayTypeRefParamsByItems(arrayRef);
 	}
 
 	@Override
-	public DefaultTypeParameters reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-		return new DefaultTypeParameters(this, reproducer.getScope());
+	public ArrayTypeRefParamsByItems reproduce(Reproducer reproducer) {
+
+		final Ref arrayRef = this.arrayRef.reproduce(reproducer);
+
+		if (arrayRef == null) {
+			return null;
+		}
+
+		return new ArrayTypeRefParamsByItems(arrayRef);
 	}
 
 	@Override
 	public String toString() {
-		return "(`)";
+		if (this.arrayRef == null) {
+			return super.toString();
+		}
+		return "TypeParameters[" + this.arrayRef + ']';
 	}
 
 }

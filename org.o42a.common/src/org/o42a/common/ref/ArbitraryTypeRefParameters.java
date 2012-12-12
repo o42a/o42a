@@ -24,23 +24,23 @@ import static org.o42a.core.value.TypeParameters.typeParameters;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameter;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.log.Loggable;
 
 
-public class ArbitraryTypeParameters extends TypeParametersBuilder {
+public class ArbitraryTypeRefParameters extends TypeRefParameters {
 
 	private final CompilerContext context;
 	private final Loggable loggable;
 	private final Scope scope;
 	private final TypeRef[] parameters;
 
-	public ArbitraryTypeParameters(
+	public ArbitraryTypeRefParameters(
 			LocationInfo location,
 			Scope scope,
 			TypeRef... parameters) {
@@ -112,7 +112,7 @@ public class ArbitraryTypeParameters extends TypeParametersBuilder {
 	}
 
 	@Override
-	public ArbitraryTypeParameters prefixWith(PrefixPath prefix) {
+	public ArbitraryTypeRefParameters prefixWith(PrefixPath prefix) {
 		if (prefix.emptyFor(this)) {
 			return this;
 		}
@@ -139,14 +139,14 @@ public class ArbitraryTypeParameters extends TypeParametersBuilder {
 			return this;
 		}
 
-		return new ArbitraryTypeParameters(
+		return new ArbitraryTypeRefParameters(
 				this,
 				prefix.getStart(),
 				newParameters);
 	}
 
 	@Override
-	public TypeParametersBuilder reproduce(Reproducer reproducer) {
+	public TypeRefParameters reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final TypeRef[] oldParameters = getParameters();
@@ -163,7 +163,7 @@ public class ArbitraryTypeParameters extends TypeParametersBuilder {
 			newParameters[i] = newParameter;
 		}
 
-		return new ArbitraryTypeParameters(
+		return new ArbitraryTypeRefParameters(
 				this,
 				reproducer.getScope(),
 				newParameters);

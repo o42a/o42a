@@ -36,20 +36,20 @@ import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
 public class AncestorVisitor
 		extends AbstractExpressionVisitor<AncestorTypeRef, Distributor> {
 
 	private final Interpreter ip;
-	private final TypeParametersBuilder typeParameters;
+	private final TypeRefParameters typeParameters;
 	private final Referral referral;
 	private final TypeConsumer typeConsumer;
 
 	public AncestorVisitor(
 			Interpreter ip,
-			TypeParametersBuilder typeParameters,
+			TypeRefParameters typeParameters,
 			Referral referral,
 			TypeConsumer typeConsumer) {
 		this.ip = ip;
@@ -62,7 +62,7 @@ public class AncestorVisitor
 		return this.ip;
 	}
 
-	public final TypeParametersBuilder typeParameters() {
+	public final TypeRefParameters typeParameters() {
 		return this.typeParameters;
 	}
 
