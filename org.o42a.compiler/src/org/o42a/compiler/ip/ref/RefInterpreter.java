@@ -32,6 +32,7 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.value.ValueType.INTEGER;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.atom.DigitsNode;
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
@@ -109,14 +110,25 @@ public abstract class RefInterpreter {
 
 	public static Ref number(NumberNode number, Distributor distributor) {
 
+		final DigitsNode integer = number.getInteger();
+
+		if (integer == null) {
+			// No digits interpreted as zero.
+			return integer(distributor, 0L, number);
+		}
+
+		final String digits;
+
+		if (number.isNegative()) {
+			digits = '-' + integer.getDigits();
+		} else {
+			digits = integer.getDigits();
+		}
+
 		final long value;
 
 		try {
-			if (number.isNegative()) {
-				value = Long.parseLong('-' + number.getInteger().getDigits());
-			} else {
-				value = Long.parseLong(number.getInteger().getDigits());
-			}
+			value = Long.parseLong(digits, number.getRadix().getRadix());
 		} catch (NumberFormatException e) {
 			distributor.getContext().getLogger().error(
 					"not_number",
