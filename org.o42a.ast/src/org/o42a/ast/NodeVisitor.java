@@ -65,8 +65,12 @@ public abstract class NodeVisitor<R, P>
 	}
 
 	@Override
-	public R visitStringLiteral(StringNode string, P p) {
+	public R visitString(StringNode string, P p) {
 		return visitAtom(string, p);
+	}
+
+	public R visitDigits(DigitsNode digits, P p) {
+		return visitPart(digits, p);
 	}
 
 	@Override

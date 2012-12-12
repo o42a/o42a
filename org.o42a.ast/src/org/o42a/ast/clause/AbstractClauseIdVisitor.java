@@ -45,7 +45,7 @@ public abstract class AbstractClauseIdVisitor<R, P>
 	}
 
 	@Override
-	public R visitStringLiteral(StringNode string, P p) {
+	public R visitString(StringNode string, P p) {
 		return visitClauseId(string, p);
 	}
 

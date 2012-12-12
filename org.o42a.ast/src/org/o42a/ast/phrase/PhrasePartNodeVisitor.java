@@ -19,7 +19,7 @@
 */
 package org.o42a.ast.phrase;
 
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 
@@ -36,7 +36,7 @@ public interface PhrasePartNodeVisitor<R, P> {
 
 	R visitText(TextNode text, P p);
 
-	R visitDecimal(DecimalNode decimal, P p);
+	R visitNumber(NumberNode number, P p);
 
 	R visitTypeDefinition(TypeDefinitionNode definition, P p);
 

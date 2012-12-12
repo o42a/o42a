@@ -38,7 +38,7 @@ public class StringLiteralTest extends GrammarTestCase {
 
 	@Before
 	public void setup() {
-		this.parser = Grammar.stringLiteral();
+		this.parser = Grammar.string();
 	}
 
 	@Test

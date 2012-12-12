@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,49 +19,35 @@
 */
 package org.o42a.ast.atom;
 
-import org.o42a.ast.expression.AbstractExpressionNode;
-import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.phrase.PhrasePartNode;
-import org.o42a.ast.phrase.PhrasePartNodeVisitor;
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.NodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
-public class DecimalNode
-		extends AbstractExpressionNode
-		implements AtomNode, PhrasePartNode {
+public class DigitsNode extends AbstractNode {
 
-	private final String number;
+	private final String digits;
 
-	public DecimalNode(
+	public DigitsNode(
 			SourcePosition start,
 			SourcePosition end,
-			String number) {
+			String digits) {
 		super(start, end);
-		this.number = number;
+		this.digits = digits;
 	}
 
-	public String getNumber() {
-		return this.number;
-	}
-
-	@Override
-	public <R, P> R accept(AtomNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitDecimal(this, p);
+	public final String getDigits() {
+		return this.digits;
 	}
 
 	@Override
-	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitDecimal(this, p);
-	}
-
-	@Override
-	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitDecimal(this, p);
+	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
+		return visitor.visitDigits(this, p);
 	}
 
 	@Override
 	public void printContent(StringBuilder out) {
-		out.append(this.number);
+		out.append(this.digits);
 	}
 
 }

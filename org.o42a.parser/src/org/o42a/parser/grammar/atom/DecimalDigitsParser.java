@@ -21,36 +21,36 @@ package org.o42a.parser.grammar.atom;
 
 import static org.o42a.parser.Grammar.isDigit;
 
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.DigitsNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.SourceRange;
 
 
-public class DecimalParser implements Parser<DecimalNode> {
+final class DecimalDigitsParser implements Parser<DigitsNode> {
 
-	public static final DecimalParser DECIMAL = new DecimalParser();
+	static final DecimalDigitsParser DECIMAL_DIGITS = new DecimalDigitsParser();
 
-	private DecimalParser() {
+	private DecimalDigitsParser() {
 	}
 
 	@Override
-	public DecimalNode parse(ParserContext context) {
+	public DigitsNode parse(ParserContext context) {
 
 		SourcePosition spaceStart = null;
 		boolean wrongSpace = false;
 		SourcePosition start = null;
-		StringBuilder number = null;
+		StringBuilder digits = null;
 
 		for (;;) {
 
 			final int c = context.next();
 
 			if (isDigit(c)) {
-				if (number == null) {
+				if (digits == null) {
 					start = context.current().fix();
-					number = new StringBuilder();
+					digits = new StringBuilder();
 				} else {
 					if (wrongSpace) {
 						context.getLogger().invalidSpaceInNumber(
@@ -61,7 +61,7 @@ public class DecimalParser implements Parser<DecimalNode> {
 					}
 					spaceStart = null;
 				}
-				number.append((char) c);
+				digits.append((char) c);
 				continue;
 			}
 			if (Character.getType(c) == Character.SPACE_SEPARATOR) {
@@ -72,15 +72,15 @@ public class DecimalParser implements Parser<DecimalNode> {
 				}
 				continue;
 			}
-			if (number == null) {
+			if (digits == null) {
 				return null;
 			}
 			context.acceptButLast();
 
-			final DecimalNode result = new DecimalNode(
+			final DigitsNode result = new DigitsNode(
 					start,
 					context.firstUnaccepted().fix(),
-					number.toString());
+					digits.toString());
 
 			return context.acceptComments(false, result);
 		}

@@ -94,7 +94,7 @@ public class PhraseParser implements Parser<PhraseNode> {
 				return context.parse(text());
 			default:
 				if (isDigit(c)) {
-					return context.parse(decimal());
+					return context.parse(number());
 				}
 
 				final NameNode name = context.parse(name());

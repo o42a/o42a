@@ -25,7 +25,7 @@ import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
 import org.o42a.ast.Node;
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
@@ -210,7 +210,9 @@ public class SimpleExpressionTest extends GrammarTestCase {
 
 	@Test
 	public void decimalLiteral() {
-		assertThat(parse("123"), is(DecimalNode.class));
+		assertThat(parse("123"), is(NumberNode.class));
+		assertThat(parse("+ 123"), is(NumberNode.class));
+		assertThat(parse("- 123"), is(NumberNode.class));
 	}
 
 	private Node parse(String... text) {

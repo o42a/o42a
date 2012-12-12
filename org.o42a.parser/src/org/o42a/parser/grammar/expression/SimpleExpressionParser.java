@@ -22,6 +22,7 @@ package org.o42a.parser.grammar.expression;
 import static org.o42a.parser.Grammar.*;
 import static org.o42a.util.string.Characters.MINUS;
 
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.GroupNode;
 import org.o42a.ast.expression.PhraseNode;
@@ -82,6 +83,14 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '+':
 		case '-':
 		case MINUS:
+
+			final NumberNode number = context.parse(number());
+
+			if (number != null) {
+				return number;
+			}
+
+			return context.parse(unary());
 		case '/':
 			return context.parse(unary());
 		case '#':
@@ -104,7 +113,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			return context.parse(brackets());
 		default:
 			if (isDigit(c)) {
-				return context.parse(decimal());
+				return context.parse(number());
 			}
 
 			final RefNode ref = context.parse(ref());

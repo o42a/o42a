@@ -21,6 +21,7 @@ package org.o42a.parser.grammar.clause;
 
 import static org.o42a.parser.Grammar.*;
 import static org.o42a.parser.grammar.clause.UnaryClauseIdParser.UNARY_CLAUSE_ID;
+import static org.o42a.util.string.Characters.MINUS;
 
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.BinaryNode;
@@ -46,9 +47,10 @@ final class ClauseIdParser implements Parser<ClauseIdNode> {
 			return context.parse(braces());
 		case '+':
 		case '-':
+		case MINUS:
 			return context.parse(UNARY_CLAUSE_ID);
 		case '\'':
-			return context.parse(stringLiteral());
+			return context.parse(string());
 		}
 
 		final RefNode ref = context.parse(ref());

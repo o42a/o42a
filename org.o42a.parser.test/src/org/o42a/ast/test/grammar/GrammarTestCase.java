@@ -37,9 +37,7 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.test.grammar.matchers.MemberRefWithoutOwner;
-import org.o42a.ast.test.grammar.matchers.NodeHasNameMatcher;
-import org.o42a.ast.test.grammar.matchers.NodeRangeMatcher;
+import org.o42a.ast.test.grammar.matchers.*;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
@@ -90,6 +88,46 @@ public class GrammarTestCase {
 				GrammarTestCase.<T>memberRefWithoutOwner(),
 				GrammarTestCase.<T>memberRefWithoutRetention(),
 				GrammarTestCase.<T>hasName(name));
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> unsignedNumber() {
+		return (Matcher<T>) NumberNodeSignMatcher.UNSIGNED_NUMBER;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> positiveNumber() {
+		return (Matcher<T>) NumberNodeSignMatcher.POSITIVE_NUMBER;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> negativeNumber() {
+		return (Matcher<T>) NumberNodeSignMatcher.NEGATIVE_NUMBER;
+	}
+
+	public static <T extends Node> Matcher<T> integer(String digits) {
+		return new NumberNodeHasIntegerValueMatcher<T>(digits);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> unsignedInteger(String digits) {
+		return CoreMatchers.<T>allOf(
+				GrammarTestCase.<T>unsignedNumber(),
+				GrammarTestCase.<T>integer(digits));
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> positiveInteger(String digits) {
+		return CoreMatchers.<T>allOf(
+				GrammarTestCase.<T>positiveNumber(),
+				GrammarTestCase.<T>integer(digits));
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> negativeInteger(String digits) {
+		return CoreMatchers.<T>allOf(
+				GrammarTestCase.<T>negativeNumber(),
+				GrammarTestCase.<T>integer(digits));
 	}
 
 	public static <T extends StatementNode> T singleStatement(

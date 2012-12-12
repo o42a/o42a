@@ -19,7 +19,7 @@
 */
 package org.o42a.ast.expression;
 
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
@@ -31,8 +31,8 @@ public abstract class AbstractExpressionVisitor<R, P>
 		implements ExpressionNodeVisitor<R, P> {
 
 	@Override
-	public R visitDecimal(DecimalNode decimal, P p) {
-		return visitExpression(decimal, p);
+	public R visitNumber(NumberNode number, P p) {
+		return visitExpression(number, p);
 	}
 
 	@Override

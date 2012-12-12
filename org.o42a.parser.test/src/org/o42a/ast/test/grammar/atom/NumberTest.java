@@ -23,27 +23,21 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.parser.Grammar;
 
 
-public class DecimalTest extends GrammarTestCase {
+public class NumberTest extends GrammarTestCase {
 
 	@Test
-	public void simplyDecimal() {
-
-		final DecimalNode result = parse("12345");
-
-		assertThat(result.getNumber(), is("12345"));
+	public void unsignedDecimal() {
+		assertThat(parse("12345"), is(unsignedInteger("12345")));
 	}
 
 	@Test
 	public void spaceSeparated() {
-
-		final DecimalNode result = parse("1 234 567");
-
-		assertThat(result.getNumber(), is("1234567"));
+		assertThat(parse("1 234 567"), is(unsignedInteger("1234567")));
 	}
 
 	@Test
@@ -51,22 +45,35 @@ public class DecimalTest extends GrammarTestCase {
 		expectError("invalid_space_in_number");
 		expectError("invalid_space_in_number");
 
-		final DecimalNode result = parse("1  234  567    ");
+		final NumberNode result = parse("1  234  567    ");
 
-		assertThat(result.getNumber(), is("1234567"));
+		assertThat(result, is(unsignedInteger("1234567")));
 	}
 
 	@Test
 	public void nlAfterNumber() {
 
-		final DecimalNode result = parse("1 234\n 567    ");
+		final NumberNode result = parse("1 234\n 567    ");
 
-		assertThat(result.getNumber(), is("1234"));
+		assertThat(result, is(unsignedInteger("1234")));
 		assertThat(this.worker.position().offset(), is(5L));
 	}
 
-	private DecimalNode parse(String text) {
-		return parse(Grammar.decimal(), text);
+	@Test
+	public void positiveInteger() {
+		assertThat(parse("+ ~~comment~~ 12345"), is(positiveInteger("12345")));
+	}
+
+	@Test
+	public void negativeInteger() {
+		assertThat(parse("- ~~comment~~ 12345"), is(negativeInteger("12345")));
+		assertThat(
+				parse("\u2212 ~~comment~~ 12 345"),
+				is(negativeInteger("12345")));
+	}
+
+	private NumberNode parse(String text) {
+		return parse(Grammar.number(), text);
 	}
 
 }

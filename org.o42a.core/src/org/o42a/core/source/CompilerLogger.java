@@ -141,10 +141,6 @@ public class CompilerLogger implements Logger {
 		error("not_deried_from", location, "Not derived from %s", ascendant);
 	}
 
-	public void notInteger(LogInfo location, String literal) {
-		error("not_integer", location, "Not an integer: %s", literal);
-	}
-
 	public void notPath(LogInfo location) {
 		error("not_path", location, "Not a path");
 	}

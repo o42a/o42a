@@ -21,11 +21,11 @@ package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
-import static org.o42a.compiler.ip.ref.RefInterpreter.integer;
+import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
 
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.AbstractPhrasePartVisitor;
@@ -110,9 +110,9 @@ final class PhrasePartVisitor
 	}
 
 	@Override
-	public Phrase visitDecimal(DecimalNode decimal, Phrase p) {
+	public Phrase visitNumber(NumberNode number, Phrase p) {
 
-		final Ref integer = integer(decimal, p.distribute());
+		final Ref integer = number(number, p.distribute());
 
 		if (integer == null) {
 			return p;

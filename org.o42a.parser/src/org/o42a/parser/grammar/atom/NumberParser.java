@@ -1,5 +1,5 @@
 /*
-    Abstract Syntax Tree
+    Parser
     Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,31 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.clause;
+package org.o42a.parser.grammar.atom;
 
-import org.o42a.ast.atom.StringNode;
-import org.o42a.ast.expression.*;
-import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.ref.ScopeRefNode;
-import org.o42a.ast.statement.AssignmentNode;
+import static org.o42a.parser.grammar.atom.DecimalDigitsParser.DECIMAL_DIGITS;
+import static org.o42a.parser.grammar.atom.SignOfNumberParser.SIGN_OF_NUMBER;
+
+import org.o42a.ast.atom.*;
+import org.o42a.parser.Parser;
+import org.o42a.parser.ParserContext;
 
 
-public interface ClauseIdNodeVisitor<R, P> {
+public class NumberParser implements Parser<NumberNode> {
 
-	R visitMemberRef(MemberRefNode ref, P p);
+	public static final NumberParser NUMBER = new NumberParser();
 
-	R visitScopeRef(ScopeRefNode ref, P p);
+	private NumberParser() {
+	}
 
-	R visitBrackets(BracketsNode brackets, P p);
+	@Override
+	public NumberNode parse(ParserContext context) {
 
-	R visitString(StringNode string, P p);
+		final SignNode<SignOfNumber> sign = context.push(SIGN_OF_NUMBER);
+		final DigitsNode integer = context.parse(DECIMAL_DIGITS);
 
-	R visitBraces(BracesNode braces, P p);
+		if (integer == null) {
+			return null;
+		}
 
-	R visitUnary(UnaryNode unary, P p);
-
-	R visitBinary(BinaryNode binary, P p);
-
-	R visitAssignment(AssignmentNode assignment, P p);
+		return new NumberNode(sign, integer);
+	}
 
 }

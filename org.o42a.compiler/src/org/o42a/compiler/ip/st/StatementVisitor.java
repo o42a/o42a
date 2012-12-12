@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
@@ -62,8 +62,8 @@ public abstract class StatementVisitor
 	}
 
 	@Override
-	public Void visitDecimal(DecimalNode decimal, Statements<?, ?> p) {
-		invalidStatement(decimal);
+	public Void visitNumber(NumberNode number, Statements<?, ?> p) {
+		invalidStatement(number);
 		return null;
 	}
 
