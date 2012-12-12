@@ -19,6 +19,8 @@
 */
 package org.o42a.ast.atom;
 
+import static org.o42a.ast.atom.Radix.DECIMAL_RADIX;
+
 import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.phrase.PhrasePartNode;
@@ -30,11 +32,16 @@ public class NumberNode
 		implements AtomNode, PhrasePartNode {
 
 	private final SignNode<SignOfNumber> sign;
+	private final SignNode<Radix> radixPrefix;
 	private final DigitsNode integer;
 
-	public NumberNode(SignNode<SignOfNumber> sign, DigitsNode integer) {
-		super(sign, integer);
+	public NumberNode(
+			SignNode<SignOfNumber> sign,
+			SignNode<Radix> radixPrefix,
+			DigitsNode integer) {
+		super(sign, radixPrefix, integer);
 		this.sign = sign;
+		this.radixPrefix = radixPrefix;
 		this.integer = integer;
 	}
 
@@ -47,6 +54,17 @@ public class NumberNode
 		final SignNode<SignOfNumber> sign = getSign();
 
 		return sign != null && sign.getType().isNegative();
+	}
+
+	public final SignNode<Radix> getRadixPrefix() {
+		return this.radixPrefix;
+	}
+
+	public final Radix getRadix() {
+
+		final SignNode<Radix> radixPrefix = getRadixPrefix();
+
+		return radixPrefix != null ? radixPrefix.getType() : DECIMAL_RADIX;
 	}
 
 	public final DigitsNode getInteger() {

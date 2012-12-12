@@ -19,7 +19,9 @@
 */
 package org.o42a.parser.grammar.atom;
 
-import static org.o42a.parser.grammar.atom.DecimalDigitsParser.DECIMAL_DIGITS;
+import static org.o42a.ast.atom.Radix.DECIMAL_RADIX;
+import static org.o42a.parser.grammar.atom.DigitsParser.digitsParser;
+import static org.o42a.parser.grammar.atom.RadixParser.RADIX;
 import static org.o42a.parser.grammar.atom.SignOfNumberParser.SIGN_OF_NUMBER;
 
 import org.o42a.ast.atom.*;
@@ -38,13 +40,22 @@ public class NumberParser implements Parser<NumberNode> {
 	public NumberNode parse(ParserContext context) {
 
 		final SignNode<SignOfNumber> sign = context.push(SIGN_OF_NUMBER);
-		final DigitsNode integer = context.parse(DECIMAL_DIGITS);
+		final SignNode<Radix> radixPrefix = context.parse(RADIX);
+		final Radix radix =
+				radixPrefix == null ? DECIMAL_RADIX : radixPrefix.getType();
+		final DigitsNode integer = context.parse(digitsParser(radix));
 
 		if (integer == null) {
-			return null;
+			if (radixPrefix == null) {
+				return null;
+			}
+			context.getLogger().error(
+					"missing_digits",
+					radixPrefix,
+					"The number has no digits");
 		}
 
-		return new NumberNode(sign, integer);
+		return new NumberNode(sign, radixPrefix, integer);
 	}
 
 }
