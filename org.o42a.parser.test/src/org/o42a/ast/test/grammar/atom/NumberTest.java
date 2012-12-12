@@ -20,12 +20,15 @@
 package org.o42a.ast.test.grammar.atom;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.o42a.ast.atom.Radix.BINARY_RADIX;
+import static org.o42a.ast.atom.Radix.HEXADECIMAL_RADIX;
+import static org.o42a.parser.Grammar.number;
 
 import org.junit.Test;
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.parser.Grammar;
 
 
 public class NumberTest extends GrammarTestCase {
@@ -72,8 +75,47 @@ public class NumberTest extends GrammarTestCase {
 				is(negativeInteger("12345")));
 	}
 
+	@Test
+	public void hexInteger() {
+
+		final NumberNode number = parse("+ 0x001 fe");
+
+		assertThat(number, is(positiveInteger("001fe")));
+		assertThat(number.getRadix(), is(HEXADECIMAL_RADIX));
+	}
+
+	@Test
+	public void binInteger() {
+
+		final NumberNode number = parse("+ 0b001 10g");
+
+		assertThat(number, is(positiveInteger("00110")));
+		assertThat(number.getRadix(), is(BINARY_RADIX));
+	}
+
+	@Test
+	public void spaceAfterRadix() {
+		expectError("invalid_space_in_number");
+
+		final NumberNode number = parse("+ 0x fe");
+
+		assertThat(number, is(positiveInteger("fe")));
+		assertThat(number.getRadix(), is(HEXADECIMAL_RADIX));
+	}
+
+	@Test
+	public void missingDigits() {
+		expectError("missing_digits");
+
+		final NumberNode number = parse("0x");
+
+		assertThat(number.getSign(), is(nullValue()));
+		assertThat(number.getInteger(), is(nullValue()));
+		assertThat(number.getRadix(), is(HEXADECIMAL_RADIX));
+	}
+
 	private NumberNode parse(String text) {
-		return parse(Grammar.number(), text);
+		return parse(number(), text);
 	}
 
 }

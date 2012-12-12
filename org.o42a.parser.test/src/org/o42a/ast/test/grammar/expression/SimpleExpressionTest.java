@@ -209,10 +209,24 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void decimalLiteral() {
+	public void decimalInteger() {
 		assertThat(parse("123"), is(NumberNode.class));
 		assertThat(parse("+ 123"), is(NumberNode.class));
 		assertThat(parse("- 123"), is(NumberNode.class));
+	}
+
+	@Test
+	public void hexNumber() {
+		assertThat(parse("0xf123"), is(NumberNode.class));
+		assertThat(parse("+0x123"), is(NumberNode.class));
+		assertThat(parse("-0x123"), is(NumberNode.class));
+	}
+
+	@Test
+	public void binaryNumber() {
+		assertThat(parse("0b1001"), is(NumberNode.class));
+		assertThat(parse("+0x101"), is(NumberNode.class));
+		assertThat(parse("-0x001"), is(NumberNode.class));
 	}
 
 	private Node parse(String... text) {

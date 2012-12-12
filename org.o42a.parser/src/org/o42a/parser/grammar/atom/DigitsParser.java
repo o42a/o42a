@@ -19,20 +19,36 @@
 */
 package org.o42a.parser.grammar.atom;
 
-import static org.o42a.parser.Grammar.isDigit;
-
 import org.o42a.ast.atom.DigitsNode;
+import org.o42a.ast.atom.Radix;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.SourceRange;
 
 
-final class DecimalDigitsParser implements Parser<DigitsNode> {
+final class DigitsParser implements Parser<DigitsNode> {
 
-	static final DecimalDigitsParser DECIMAL_DIGITS = new DecimalDigitsParser();
+	private static final DigitsParser[] parsers;
 
-	private DecimalDigitsParser() {
+	static {
+
+		final Radix[] radixes = Radix.values();
+
+		parsers = new DigitsParser[radixes.length];
+		for (int i = 0; i < radixes.length; ++i) {
+			parsers[i] = new DigitsParser(radixes[i]);
+		}
+	}
+
+	static DigitsParser digitsParser(Radix radix) {
+		return parsers[radix.ordinal()];
+	}
+
+	private final Radix radix;
+
+	private DigitsParser(Radix radix) {
+		this.radix = radix;
 	}
 
 	@Override
@@ -47,19 +63,18 @@ final class DecimalDigitsParser implements Parser<DigitsNode> {
 
 			final int c = context.next();
 
-			if (isDigit(c)) {
+			if (this.radix.isDigit(c)) {
+				if (wrongSpace) {
+					context.getLogger().invalidSpaceInNumber(
+							new SourceRange(
+									spaceStart,
+									context.current().fix()));
+					wrongSpace = false;
+				}
+				spaceStart = null;
 				if (digits == null) {
 					start = context.current().fix();
 					digits = new StringBuilder();
-				} else {
-					if (wrongSpace) {
-						context.getLogger().invalidSpaceInNumber(
-								new SourceRange(
-										spaceStart,
-										context.current().fix()));
-						wrongSpace = false;
-					}
-					spaceStart = null;
 				}
 				digits.append((char) c);
 				continue;
@@ -67,6 +82,9 @@ final class DecimalDigitsParser implements Parser<DigitsNode> {
 			if (Character.getType(c) == Character.SPACE_SEPARATOR) {
 				if (spaceStart == null) {
 					spaceStart = context.current().fix();
+					if (digits == null) {
+						wrongSpace = true;
+					}
 				} else {
 					wrongSpace = true;
 				}
