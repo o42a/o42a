@@ -17,40 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.clause;
-
-import static org.o42a.parser.Grammar.ref;
-import static org.o42a.util.string.Characters.MINUS;
+package org.o42a.parser.grammar.atom;
 
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.UnaryNode;
-import org.o42a.ast.expression.UnaryOperator;
-import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.atom.SignOfNumber;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
+import org.o42a.util.string.Characters;
 
 
-final class UnaryClauseIdParser implements Parser<UnaryNode> {
+final class SignOfNumberParser
+		implements Parser<SignNode<SignOfNumber>> {
 
-	static final UnaryClauseIdParser UNARY_CLAUSE_ID =
-			new UnaryClauseIdParser();
+	static final SignOfNumberParser SIGN_OF_NUMBER = new SignOfNumberParser();
 
-	private UnaryClauseIdParser() {
+	private SignOfNumberParser() {
 	}
 
 	@Override
-	public UnaryNode parse(ParserContext context) {
+	public SignNode<SignOfNumber> parse(ParserContext context) {
 
-		final UnaryOperator operator;
+		final SignOfNumber sign;
 
 		switch (context.next()) {
 		case '+':
-			operator = UnaryOperator.PLUS;
+			sign = SignOfNumber.POSITIVE_NUMBER;
 			break;
+		case Characters.MINUS:
 		case '-':
-		case MINUS:
-			operator = UnaryOperator.MINUS;
+			sign = SignOfNumber.NEGATIVE_NUMBER;
 			break;
 		default:
 			return null;
@@ -60,20 +56,12 @@ final class UnaryClauseIdParser implements Parser<UnaryNode> {
 
 		context.acceptAll();
 
-		final SignNode<UnaryOperator> sign = context.acceptComments(
+		return context.acceptComments(
 				false,
-				new SignNode<UnaryOperator>(
+				new SignNode<SignOfNumber>(
 						start,
 						context.current().fix(),
-						operator));
-
-		final RefNode operand = context.parse(ref());
-
-		if (operand == null) {
-			context.getLogger().missingOperand(sign, operator.getSign());
-		}
-
-		return new UnaryNode(sign, operand);
+						sign));
 	}
 
 }

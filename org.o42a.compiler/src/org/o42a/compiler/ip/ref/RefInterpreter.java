@@ -32,7 +32,7 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.value.ValueType.INTEGER;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.IntrinsicRefNode;
@@ -107,20 +107,25 @@ public abstract class RefInterpreter {
 		return node.accept(RootVisitor.ROOT_VISITOR, null) != null;
 	}
 
-	public static Ref integer(DecimalNode decimal, Distributor distributor) {
+	public static Ref number(NumberNode number, Distributor distributor) {
 
 		final long value;
 
 		try {
-			value = Long.parseLong(decimal.getNumber());
+			if (number.isNegative()) {
+				value = Long.parseLong('-' + number.getInteger().getDigits());
+			} else {
+				value = Long.parseLong(number.getInteger().getDigits());
+			}
 		} catch (NumberFormatException e) {
-			distributor.getContext().getLogger().notInteger(
-					decimal,
-					decimal.getNumber());
-			return integer(distributor, 0L, decimal);
+			distributor.getContext().getLogger().error(
+					"not_number",
+					number,
+					"Not a number");
+			return integer(distributor, 0L, number);
 		}
 
-		return integer(distributor, value, decimal);
+		return integer(distributor, value, number);
 	}
 
 	private static boolean match(Name name, Container container) {

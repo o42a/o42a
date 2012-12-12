@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.o42a.ast.atom.StringBound.DOUBLE_QUOTED_LINE;
 import static org.o42a.ast.atom.StringBound.SINGLE_QUOTED_LINE;
-import static org.o42a.parser.Grammar.stringLiteral;
+import static org.o42a.parser.Grammar.string;
 
 import org.junit.Test;
 import org.o42a.ast.atom.StringNode;
@@ -158,7 +158,7 @@ public class TextBlockTest extends GrammarTestCase {
 	}
 
 	private StringNode parse(String... text) {
-		return parseLines(stringLiteral(), text);
+		return parseLines(string(), text);
 	}
 
 }

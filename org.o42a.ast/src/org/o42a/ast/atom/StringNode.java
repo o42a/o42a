@@ -74,12 +74,12 @@ public class StringNode extends AbstractAtomNode implements ClauseIdNode {
 
 	@Override
 	public <R, P> R accept(AtomNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitStringLiteral(this, p);
+		return visitor.visitString(this, p);
 	}
 
 	@Override
 	public <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitStringLiteral(this, p);
+		return visitor.visitString(this, p);
 	}
 
 	@Override

@@ -28,8 +28,8 @@ public interface AtomNodeVisitor<R, P> {
 
 	R visitName(NameNode name, P p);
 
-	R visitDecimal(DecimalNode decimal, P p);
+	R visitNumber(NumberNode number, P p);
 
-	R visitStringLiteral(StringNode string, P p);
+	R visitString(StringNode string, P p);
 
 }

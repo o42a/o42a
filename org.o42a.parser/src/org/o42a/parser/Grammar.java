@@ -84,12 +84,12 @@ public class Grammar {
 		return NameParser.NAME;
 	}
 
-	public static Parser<StringNode> stringLiteral() {
+	public static Parser<StringNode> string() {
 		return StringParser.STRING;
 	}
 
-	public static Parser<DecimalNode> decimal() {
-		return DecimalParser.DECIMAL;
+	public static Parser<NumberNode> number() {
+		return NumberParser.NUMBER;
 	}
 
 	public static Parser<ScopeRefNode> scopeRef() {

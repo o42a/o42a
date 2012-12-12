@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.clause;
-
-import org.o42a.ast.atom.StringNode;
-import org.o42a.ast.expression.*;
-import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.ref.ScopeRefNode;
-import org.o42a.ast.statement.AssignmentNode;
+package org.o42a.ast.atom;
 
 
-public interface ClauseIdNodeVisitor<R, P> {
+public enum SignOfNumber implements SignType {
 
-	R visitMemberRef(MemberRefNode ref, P p);
+	POSITIVE_NUMBER("+"),
+	NEGATIVE_NUMBER("-");
 
-	R visitScopeRef(ScopeRefNode ref, P p);
+	private final String sign;
 
-	R visitBrackets(BracketsNode brackets, P p);
+	SignOfNumber(String sign) {
+		this.sign = sign;
+	}
 
-	R visitString(StringNode string, P p);
+	public final boolean isNegative() {
+		return this == NEGATIVE_NUMBER;
+	}
 
-	R visitBraces(BracesNode braces, P p);
+	public final boolean isPositive() {
+		return this == POSITIVE_NUMBER;
+	}
 
-	R visitUnary(UnaryNode unary, P p);
-
-	R visitBinary(BinaryNode binary, P p);
-
-	R visitAssignment(AssignmentNode assignment, P p);
+	@Override
+	public final String getSign() {
+		return this.sign;
+	}
 
 }

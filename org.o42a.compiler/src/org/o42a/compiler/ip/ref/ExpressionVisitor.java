@@ -22,13 +22,13 @@ package org.o42a.compiler.ip.ref;
 import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.ref.RefInterpreter.integer;
+import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.value.ValueType.STRING;
 
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
@@ -77,8 +77,8 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitDecimal(DecimalNode decimal, Distributor p) {
-		return integer(decimal, p);
+	public Ref visitNumber(NumberNode number, Distributor p) {
+		return number(number, p);
 	}
 
 	@Override

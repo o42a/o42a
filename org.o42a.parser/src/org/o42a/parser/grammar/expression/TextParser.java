@@ -19,7 +19,7 @@
 */
 package org.o42a.parser.grammar.expression;
 
-import static org.o42a.parser.Grammar.stringLiteral;
+import static org.o42a.parser.Grammar.string;
 
 import java.util.ArrayList;
 
@@ -43,7 +43,7 @@ public class TextParser implements Parser<TextNode> {
 
 		for (;;) {
 
-			final StringNode literal = context.parse(stringLiteral());
+			final StringNode literal = context.parse(string());
 
 			if (literal == null) {
 				break;

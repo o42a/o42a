@@ -127,11 +127,11 @@ final class ClauseIdVisitor
 	}
 
 	@Override
-	public ClauseDeclaration visitStringLiteral(
+	public ClauseDeclaration visitString(
 			StringNode string,
 			Distributor p) {
 		if (string.isDoubleQuoted()) {
-			return super.visitStringLiteral(string, p);
+			return super.visitString(string, p);
 		}
 		return clauseDeclaration(
 				location(p, string),

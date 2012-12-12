@@ -19,7 +19,7 @@
 */
 package org.o42a.ast.expression;
 
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
@@ -27,7 +27,7 @@ import org.o42a.ast.type.TypeParametersNode;
 
 public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
-	R visitDecimal(DecimalNode decimal, P p);
+	R visitNumber(NumberNode number, P p);
 
 	R visitText(TextNode text, P p);
 

@@ -19,7 +19,7 @@
 */
 package org.o42a.ast.phrase;
 
-import org.o42a.ast.atom.DecimalNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 
@@ -53,8 +53,8 @@ public abstract class AbstractPhrasePartVisitor<R, P>
 	}
 
 	@Override
-	public R visitDecimal(DecimalNode decimal, P p) {
-		return visitPhrasePart(decimal, p);
+	public R visitNumber(NumberNode number, P p) {
+		return visitPhrasePart(number, p);
 	}
 
 	@Override
