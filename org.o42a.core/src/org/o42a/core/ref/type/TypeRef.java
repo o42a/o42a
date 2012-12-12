@@ -21,7 +21,7 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.value.TypeParameters.defaultTypeParameters;
+import static org.o42a.core.ref.type.TypeRefParameters.defaultTypeRefParameters;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -33,16 +33,20 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.impl.DefaultTypeRef;
+import org.o42a.core.ref.type.impl.DefaultTypeRelation;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
 public abstract class TypeRef implements ScopeInfo {
 
-	public static TypeRef typeRef(Ref ref, TypeParametersBuilder parameters) {
+	public static TypeRef typeRef(Ref ref, TypeRefParameters parameters) {
 		if (ref.isKnownStatic()) {
 			return ref.toStaticTypeRef(parameters);
 		}
@@ -51,32 +55,32 @@ public abstract class TypeRef implements ScopeInfo {
 
 	public static StaticTypeRef staticTypeRef(
 			Ref ref,
-			TypeParametersBuilder parameters) {
+			TypeRefParameters parameters) {
 		return new StaticTypeRef(
 				ref,
 				ref.toStatic(),
 				parameters(ref, parameters));
 	}
 
-	private static TypeParametersBuilder parameters(
+	private static TypeRefParameters parameters(
 			Ref ref,
-			TypeParametersBuilder parameters) {
+			TypeRefParameters parameters) {
 		if (parameters != null) {
 			return parameters;
 		}
-		return defaultTypeParameters(ref, ref.getScope());
+		return defaultTypeRefParameters(ref, ref.getScope());
 	}
 
 	private final Ref ref;
-	private final TypeParametersBuilder parametersBuilder;
+	private final TypeRefParameters typeRefParameters;
 	private TypeParameters<?> parameters;
 	private TypeRef ancestor;
 	private TypeHolder type;
 	private boolean allResolved;
 
-	public TypeRef(Ref ref, TypeParametersBuilder parameters) {
+	public TypeRef(Ref ref, TypeRefParameters parameters) {
 		this.ref = ref;
-		this.parametersBuilder = parameters;
+		this.typeRefParameters = parameters;
 	}
 
 	@Override
@@ -117,7 +121,7 @@ public abstract class TypeRef implements ScopeInfo {
 
 		final TypeParameters<?> defaultParameters = defaultParameters();
 		final TypeParameters<?> typeParameters =
-				this.parametersBuilder.refine(defaultParameters);
+				this.typeRefParameters.refine(defaultParameters);
 
 		if (typeParameters == null || typeParameters.isEmpty()) {
 			this.parameters = defaultParameters;
@@ -130,15 +134,15 @@ public abstract class TypeRef implements ScopeInfo {
 		return this.parameters;
 	}
 
-	public final TypeParametersBuilder copyParameters() {
-		return this.parametersBuilder;
+	public final TypeRefParameters copyParameters() {
+		return this.typeRefParameters;
 	}
 
 	public final TypeParameters<?> defaultParameters() {
 		return getRef().typeParameters(getScope());
 	}
 
-	public TypeRef setParameters(TypeParametersBuilder parameters) {
+	public TypeRef setParameters(TypeRefParameters parameters) {
 		parameters.assertSameScope(this);
 		return create(getIntactRef(), getRef(), parameters);
 	}
@@ -206,7 +210,7 @@ public abstract class TypeRef implements ScopeInfo {
 		return new StaticTypeRef(
 				getIntactRef(),
 				getRef(),
-				this.parametersBuilder);
+				this.typeRefParameters);
 	}
 
 	public TypeRef prefixWith(PrefixPath prefix) {
@@ -217,10 +221,10 @@ public abstract class TypeRef implements ScopeInfo {
 		final Ref oldRef = getRef();
 		final Ref newRef = oldRef.prefixWith(prefix);
 
-		final TypeParametersBuilder parameters =
-				this.parametersBuilder.prefixWith(prefix);
+		final TypeRefParameters parameters =
+				this.typeRefParameters.prefixWith(prefix);
 
-		if (oldRef == newRef && this.parametersBuilder == parameters) {
+		if (oldRef == newRef && this.typeRefParameters == parameters) {
 			return this;
 		}
 
@@ -290,8 +294,8 @@ public abstract class TypeRef implements ScopeInfo {
 			}
 		}
 
-		final TypeParametersBuilder parameters =
-				this.parametersBuilder.reproduce(reproducer);
+		final TypeRefParameters parameters =
+				this.typeRefParameters.reproduce(reproducer);
 
 		if (parameters == null) {
 			return null;
@@ -332,16 +336,16 @@ public abstract class TypeRef implements ScopeInfo {
 
 	@Override
 	public String toString() {
-		if (this.parametersBuilder == null) {
+		if (this.typeRefParameters == null) {
 			return super.toString();
 		}
-		return this.ref.toString() + ' ' + this.parametersBuilder;
+		return this.ref.toString() + ' ' + this.typeRefParameters;
 	}
 
 	protected abstract TypeRef create(
 			Ref intactRef,
 			Ref ref,
-			TypeParametersBuilder parameters);
+			TypeRefParameters parameters);
 
 	private TypeHolder get() {
 		if (this.type != null) {

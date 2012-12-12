@@ -17,16 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.type;
+package org.o42a.core.ref.type.impl;
 
 
 import org.o42a.core.object.ObjectType;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.CompilerLogger;
 
 
-final class StaticTypeRelation extends TypeRelation {
+public final class StaticTypeRelation extends TypeRelation {
 
-	StaticTypeRelation(TypeRef of, TypeRef to) {
+	public StaticTypeRelation(TypeRef of, TypeRef to) {
 		super(of, to);
 	}
 

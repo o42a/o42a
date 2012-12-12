@@ -22,13 +22,13 @@ package org.o42a.compiler.ip.type;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
 public final class ParamTypeRef {
 
 	private final TypeRef typeRef;
-	private final TypeParametersBuilder parameters;
+	private final TypeRefParameters parameters;
 
 	public ParamTypeRef(TypeRef typeRef) {
 		this(typeRef, null);
@@ -36,7 +36,7 @@ public final class ParamTypeRef {
 
 	public ParamTypeRef(
 			TypeRef typeRef,
-			TypeParametersBuilder parameters) {
+			TypeRefParameters parameters) {
 		assert typeRef != null :
 			"Type not specified";
 		this.typeRef = typeRef;
@@ -47,7 +47,7 @@ public final class ParamTypeRef {
 		return this.typeRef;
 	}
 
-	public final TypeParametersBuilder getParameters() {
+	public final TypeRefParameters getParameters() {
 		return this.parameters;
 	}
 
@@ -56,7 +56,7 @@ public final class ParamTypeRef {
 
 		final AscendantsDefinition result =
 				ascendants.setAncestor(getTypeRef());
-		final TypeParametersBuilder parameters = getParameters();
+		final TypeRefParameters parameters = getParameters();
 
 		if (parameters == null) {
 			return result;
@@ -68,7 +68,7 @@ public final class ParamTypeRef {
 	public final Phrase updateAncestor(Phrase phrase) {
 
 		final Phrase result = phrase.setAncestor(getTypeRef());
-		final TypeParametersBuilder parameters = getParameters();
+		final TypeRefParameters parameters = getParameters();
 
 		if (parameters == null) {
 			return result;
@@ -79,7 +79,7 @@ public final class ParamTypeRef {
 
 	public final TypeRef parameterize() {
 
-		final TypeParametersBuilder parameters = getParameters();
+		final TypeRefParameters parameters = getParameters();
 
 		if (parameters == null) {
 			return getTypeRef();

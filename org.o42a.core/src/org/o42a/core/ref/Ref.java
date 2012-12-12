@@ -40,12 +40,13 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
+import org.o42a.core.ref.type.impl.TargetTypeRefParameters;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.*;
-import org.o42a.core.value.impl.TargetTypeParameters;
 import org.o42a.core.value.link.TargetRef;
 import org.o42a.util.fn.Cancelable;
 
@@ -115,8 +116,8 @@ public class Ref extends Statement {
 		return typeParameters.prefixWith(getPath().toPrefix(scope));
 	}
 
-	public final TypeParametersBuilder typeParameters() {
-		return new TargetTypeParameters(this);
+	public final TypeRefParameters typeParameters() {
+		return new TargetTypeRefParameters(this);
 	}
 
 	public final Resolution getResolution() {
@@ -339,7 +340,7 @@ public class Ref extends Statement {
 		return toTypeRef(null);
 	}
 
-	public TypeRef toTypeRef(TypeParametersBuilder typeParameters) {
+	public TypeRef toTypeRef(TypeRefParameters typeParameters) {
 		return typeRef(this, typeParameters);
 	}
 
@@ -348,7 +349,7 @@ public class Ref extends Statement {
 	}
 
 	public final StaticTypeRef toStaticTypeRef(
-			TypeParametersBuilder typeParameters) {
+			TypeRefParameters typeParameters) {
 		return staticTypeRef(this, typeParameters);
 	}
 

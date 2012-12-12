@@ -32,7 +32,7 @@ import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.Distributor;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
 final class PhrasePrefixVisitor
@@ -41,13 +41,13 @@ final class PhrasePrefixVisitor
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 			new PhrasePrefixVisitor();
 
-	private final TypeParametersBuilder typeParameters;
+	private final TypeRefParameters typeParameters;
 
 	private PhrasePrefixVisitor() {
 		this.typeParameters = null;
 	}
 
-	PhrasePrefixVisitor(TypeParametersBuilder typeParameters) {
+	PhrasePrefixVisitor(TypeRefParameters typeParameters) {
 		this.typeParameters = typeParameters;
 	}
 

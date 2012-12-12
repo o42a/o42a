@@ -28,7 +28,7 @@ import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.*;
-import org.o42a.common.ref.ArbitraryTypeParameters;
+import org.o42a.common.ref.ArbitraryTypeRefParameters;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.*;
@@ -37,7 +37,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.value.link.LinkValueType;
 
 
@@ -81,7 +81,7 @@ public final class TypeInterpreter {
 				"Unknwon definition kind: " + definitionKind);
 	}
 
-	public final TypeParametersBuilder typeParameters(
+	public final TypeRefParameters typeParameters(
 			InterfaceNode ifaceNode,
 			Distributor p,
 			TypeConsumer consumer) {
@@ -115,7 +115,7 @@ public final class TypeInterpreter {
 			typeParams[i] = paramTypeRef.parameterize();
 		}
 
-		return new ArbitraryTypeParameters(
+		return new ArbitraryTypeRefParameters(
 				location(p, ifaceNode),
 				p.getScope(),
 				typeParams);
@@ -128,7 +128,7 @@ public final class TypeInterpreter {
 
 	public final ExpressionNodeVisitor<AncestorTypeRef, Distributor>
 	ancestorVisitor(
-			TypeParametersBuilder typeParameters,
+			TypeRefParameters typeParameters,
 			Referral referral,
 			TypeConsumer typeConsumer) {
 		if (typeParameters == null
@@ -145,7 +145,7 @@ public final class TypeInterpreter {
 
 	public final ExpressionNodeVisitor<AncestorTypeRef, Distributor>
 	staticAncestorVisitor(
-			TypeParametersBuilder typeParameters,
+			TypeRefParameters typeParameters,
 			Referral referral,
 			TypeConsumer typeConsumer) {
 		if (typeParameters == null
@@ -176,7 +176,7 @@ public final class TypeInterpreter {
 	public AncestorTypeRef parseAncestor(
 			Distributor distributor,
 			AscendantNode ascendantNode,
-			TypeParametersBuilder typeParameters,
+			TypeRefParameters typeParameters,
 			Referral referral) {
 
 		final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;

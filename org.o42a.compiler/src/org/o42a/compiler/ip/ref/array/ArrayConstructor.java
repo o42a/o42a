@@ -30,11 +30,14 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
 
@@ -46,7 +49,7 @@ public class ArrayConstructor extends ObjectConstructor {
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
 	private TypeParameters<Array> arrayParameters;
-	private TypeParametersBuilder typeParameters;
+	private TypeRefParameters typeParameters;
 
 	public ArrayConstructor(
 			Interpreter ip,
@@ -144,7 +147,7 @@ public class ArrayConstructor extends ObjectConstructor {
 		return this.arrayParameters == null;
 	}
 
-	private TypeParametersBuilder typeParameters() {
+	private TypeRefParameters typeParameters() {
 		if (this.typeParameters != null) {
 			return this.typeParameters;
 		}
@@ -169,12 +172,12 @@ public class ArrayConstructor extends ObjectConstructor {
 							voidRef(this, distribute()).toTypeRef());
 		}
 
-		return this.typeParameters = new ArrayTypeParamsByItems(toRef());
+		return this.typeParameters = new ArrayTypeRefParamsByItems(toRef());
 	}
 
-	private TypeParametersBuilder rescopedTypeParameters(Ref ref) {
+	private TypeRefParameters rescopedTypeParameters(Ref ref) {
 
-		final TypeParametersBuilder typeParameters = typeParameters();
+		final TypeRefParameters typeParameters = typeParameters();
 		final BoundPath path = ref.getPath();
 
 		if (path.length() == 1) {

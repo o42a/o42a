@@ -36,6 +36,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
@@ -132,7 +133,7 @@ public abstract class ValueType<T> {
 	public StaticTypeRef typeRef(
 			LocationInfo location,
 			Scope scope,
-			TypeParametersBuilder typeParameters) {
+			TypeRefParameters typeParameters) {
 		return path(location.getContext().getIntrinsics())
 				.bind(location, scope)
 				.staticTypeRef(scope.distribute(), typeParameters);

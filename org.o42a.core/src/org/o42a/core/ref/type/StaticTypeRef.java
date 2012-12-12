@@ -22,15 +22,15 @@ package org.o42a.core.ref.type;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.impl.StaticTypeRelation;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.TypeParametersBuilder;
 
 
 public final class StaticTypeRef extends TypeRef {
 
 	private final Ref intactRef;
 
-	StaticTypeRef(Ref intactRef, Ref ref, TypeParametersBuilder parameters) {
+	StaticTypeRef(Ref intactRef, Ref ref, TypeRefParameters parameters) {
 		super(ref, parameters);
 		this.intactRef = intactRef;
 	}
@@ -46,7 +46,7 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	public final StaticTypeRef setParameters(TypeParametersBuilder parameters) {
+	public final StaticTypeRef setParameters(TypeRefParameters parameters) {
 		return super.setParameters(parameters).toStatic();
 	}
 
@@ -83,7 +83,7 @@ public final class StaticTypeRef extends TypeRef {
 	protected TypeRef create(
 			Ref intactRef,
 			Ref ref,
-			TypeParametersBuilder parameters) {
+			TypeRefParameters parameters) {
 		return new StaticTypeRef(intactRef, ref, parameters);
 	}
 

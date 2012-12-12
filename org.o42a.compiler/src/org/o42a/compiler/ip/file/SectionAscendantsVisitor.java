@@ -36,7 +36,7 @@ import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.TypeParametersBuilder;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
 final class SectionAscendantsVisitor
@@ -62,7 +62,7 @@ final class SectionAscendantsVisitor
 
 		AscendantsDefinition ascendants =
 				new AscendantsDefinition(location(p, parameters), p);
-		final TypeParametersBuilder typeParams =
+		final TypeRefParameters typeParams =
 				PLAIN_IP.typeIp().typeParameters(
 						parameters.getParameters(),
 						p,

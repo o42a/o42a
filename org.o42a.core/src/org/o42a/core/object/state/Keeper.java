@@ -26,9 +26,9 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.SubID;
 
@@ -126,9 +126,9 @@ public final class Keeper extends ObjectConstructor implements SubID {
 		this.next = next;
 	}
 
-	private TypeParametersBuilder rescopedTypeParameters(Ref ref) {
+	private TypeRefParameters rescopedTypeParameters(Ref ref) {
 
-		final TypeParametersBuilder typeParameters =
+		final TypeRefParameters typeParameters =
 				getValue().typeParameters(getScope());
 		final BoundPath path = ref.getPath();
 

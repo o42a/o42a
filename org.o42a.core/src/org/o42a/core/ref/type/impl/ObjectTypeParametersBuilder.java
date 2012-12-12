@@ -17,77 +17,61 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.ref.type.impl;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.TypeParametersBuilder;
 import org.o42a.util.log.Loggable;
 
 
-public class TargetTypeParameters extends TypeParametersBuilder {
+public final class ObjectTypeParametersBuilder implements ObjectTypeParameters {
 
-	private final Ref target;
+	private final TypeRefParameters builder;
 
-	public TargetTypeParameters(Ref target) {
-		this.target = target;
+	public ObjectTypeParametersBuilder(TypeRefParameters builder) {
+		this.builder = builder;
 	}
 
 	@Override
 	public CompilerContext getContext() {
-		return this.target.getContext();
+		return this.builder.getContext();
 	}
 
 	@Override
 	public Loggable getLoggable() {
-		return this.target.getLoggable();
+		return this.builder.getLoggable();
 	}
 
 	@Override
-	public Scope getScope() {
-		return this.target.getScope();
-	}
-
-	@Override
-	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
-		return this.target.typeParameters(this.target.getScope())
+	public TypeParameters<?> refine(
+			Obj object,
+			TypeParameters<?> defaultParameters) {
+		return this.builder.rescope(object.getScope())
 				.refine(defaultParameters);
 	}
 
 	@Override
-	public TargetTypeParameters prefixWith(PrefixPath prefix) {
+	public ObjectTypeParametersBuilder prefixWith(PrefixPath prefix) {
 
-		final Ref target = this.target.prefixWith(prefix);
+		final TypeRefParameters builder = this.builder.prefixWith(prefix);
 
-		if (target == this.target) {
+		if (builder == this.builder) {
 			return this;
 		}
 
-		return new TargetTypeParameters(target);
-	}
-
-	@Override
-	public TargetTypeParameters reproduce(Reproducer reproducer) {
-
-		final Ref target = this.target.reproduce(reproducer);
-
-		if (target == null) {
-			return null;
-		}
-
-		return new TargetTypeParameters(target);
+		return new ObjectTypeParametersBuilder(builder);
 	}
 
 	@Override
 	public String toString() {
-		if (this.target == null) {
+		if (this.builder == null) {
 			return super.toString();
 		}
-		return "(`" + this.target + ')';
+		return this.builder.toString();
 	}
 
 }
