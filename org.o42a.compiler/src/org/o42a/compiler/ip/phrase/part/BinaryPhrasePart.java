@@ -90,41 +90,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 	private NextClause findFirst(PhraseContext context) {
 
 		final BinaryOperator operator = this.node.getOperator();
-		final ClauseId clauseId;
-
-		if (operator.isArithmetic() || operator.isCompare()) {
-			switch (operator) {
-			case ADD:
-				clauseId = ClauseId.ADD;
-				break;
-			case SUBTRACT:
-				clauseId = ClauseId.SUBTRACT;
-				break;
-			case MULTIPLY:
-				clauseId = ClauseId.MULTIPLY;
-				break;
-			case DIVIDE:
-				clauseId = ClauseId.DIVIDE;
-				break;
-			case COMPARE:
-				clauseId = ClauseId.COMPARE;
-				break;
-			default:
-				clauseId = null;
-				break;
-			}
-		} else {
-			if (operator.isEquality()) {
-				this.comparisonOperator = equalityOperator(operator);
-			} else {
-				this.comparisonOperator = comparisonOperator(operator);
-			}
-			if (this.comparisonOperator != null) {
-				clauseId = this.comparisonOperator.getClauseId();
-			} else {
-				clauseId = null;
-			}
-		}
+		final ClauseId clauseId = firstClauseId(operator);
 
 		if (clauseId == null) {
 			getLogger().error(
@@ -136,6 +102,40 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		}
 
 		return context.clauseById(this, clauseId);
+	}
+
+	private ClauseId firstClauseId(final BinaryOperator operator) {
+		switch (operator) {
+		case ADD:
+			return ClauseId.ADD;
+		case SUBTRACT:
+			return ClauseId.SUBTRACT;
+		case MULTIPLY:
+			return ClauseId.MULTIPLY;
+		case DIVIDE:
+			return ClauseId.DIVIDE;
+		case COMPARE:
+			return ClauseId.COMPARE;
+		case EQUAL:
+		case NOT_EQUAL:
+			this.comparisonOperator = equalityOperator(operator);
+			if (this.comparisonOperator == null) {
+				return null;
+			}
+			return this.comparisonOperator.getClauseId();
+		case GREATER:
+		case GREATER_OR_EQUAL:
+		case LESS:
+		case LESS_OR_EQUAL:
+			this.comparisonOperator = comparisonOperator(operator);
+			if (this.comparisonOperator == null) {
+				return null;
+			}
+			return this.comparisonOperator.getClauseId();
+		case SUFFIX:
+			return null;
+		}
+		return null;
 	}
 
 	private NextClause findSecond(PhraseContext context) {

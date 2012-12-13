@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.operator;
 
+import org.o42a.ast.expression.UnaryOperator;
 import org.o42a.common.builtin.BuiltinObject;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -53,24 +54,26 @@ final class LogicalResult extends BuiltinObject {
 			return type().getParameters().runtimeValue();
 		}
 
-		switch (this.logical.getNode().getOperator()) {
-		case NOT:
+		final UnaryOperator operator = this.logical.getNode().getOperator();
+
+		if (operator == UnaryOperator.NOT) {
 			if (value.getKnowledge().isFalse()) {
 				return ValueType.VOID.cast(type().getParameters())
 						.compilerValue(Void.VOID);
 			}
 			return type().getParameters().falseValue();
-		case IS_TRUE:
+		}
+		if (operator == UnaryOperator.IS_TRUE) {
 			if (value.getKnowledge().isFalse()) {
 				return type().getParameters().falseValue();
 			}
 			return ValueType.VOID.cast(type().getParameters())
 					.compilerValue(Void.VOID);
-		default:
-			throw new IllegalStateException(
-					"Unsupported logical operator: "
-					+ this.logical.getNode().getOperator().getSign());
 		}
+
+		throw new IllegalStateException(
+				"Unsupported logical operator: "
+				+ this.logical.getNode().getOperator().getSign());
 	}
 
 	@Override

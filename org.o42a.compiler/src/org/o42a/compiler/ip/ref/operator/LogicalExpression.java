@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref.operator;
 
 import org.o42a.ast.expression.UnaryNode;
+import org.o42a.ast.expression.UnaryOperator;
 import org.o42a.codegen.code.Block;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
@@ -113,9 +114,9 @@ public class LogicalExpression extends ObjectConstructor {
 
 		final CodeBuilder builder = dirs.getBuilder();
 		final Block code = dirs.code();
+		final UnaryOperator operator = this.node.getOperator();
 
-		switch (this.node.getOperator()) {
-		case NOT:
+		if (operator == UnaryOperator.NOT) {
 
 			final Block operandFalse = dirs.addBlock("operand_false");
 
@@ -130,11 +131,9 @@ public class LogicalExpression extends ObjectConstructor {
 			if (operandFalse.exists()) {
 				operandFalse.go(code.tail());
 			}
-			break;
-		case IS_TRUE:
+		} else if (operator == UnaryOperator.IS_TRUE) {
 			writeCond(dirs.dirs(), host, op, inlineOp);
-			break;
-		default:
+		} else {
 			throw new IllegalStateException(
 					"Unsupported logical operator: "
 					+ this.node.getOperator().getSign());

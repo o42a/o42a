@@ -84,9 +84,12 @@ enum ClauseVisibility {
 				return IMPLICIT_CLAUSE;
 			case SELF:
 				return INTERNAL_CLAUSE;
-			default:
-				return null;
+			case ROOT:
+			case MODULE:
+			case PARENT:
+			case MACROS:
 			}
+			return null;
 		}
 
 		@Override

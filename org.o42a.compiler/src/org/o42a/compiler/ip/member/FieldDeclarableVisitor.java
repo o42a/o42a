@@ -346,9 +346,12 @@ public final class FieldDeclarableVisitor
 				return p.setVisibility(Visibility.PRIVATE);
 			case PARENT:
 				return p.setVisibility(Visibility.PROTECTED);
-			default:
-				return super.visitScopeRef(ref, p);
+			case ROOT:
+			case MODULE:
+			case MACROS:
+			case IMPLIED:
 			}
+			return super.visitScopeRef(ref, p);
 		}
 
 		@Override
