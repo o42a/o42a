@@ -1,10 +1,10 @@
 syntax: glob
 */bin
 */.settings
-*/auto-build.log
 **/*.ll
-**/*.s
+**/*.log
 **/*.o
+**/*.s
 **/*.so
 *.tar*
 
