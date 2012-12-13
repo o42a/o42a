@@ -148,6 +148,10 @@ public class BinaryParser implements Parser<BinaryNode> {
 					return null;
 				}
 				break;
+			case '~':
+				operator = BinaryOperator.SUFFIX;
+				context.acceptAll();
+				break;
 			default:
 				return null;
 			}

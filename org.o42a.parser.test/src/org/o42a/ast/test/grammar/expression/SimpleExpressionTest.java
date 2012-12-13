@@ -216,6 +216,13 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void floatNumber() {
+		assertThat(parse("123.456"), is(NumberNode.class));
+		assertThat(parse("+ 123e123"), is(NumberNode.class));
+		assertThat(parse("- 123.4e-56"), is(NumberNode.class));
+	}
+
+	@Test
 	public void hexNumber() {
 		assertThat(parse("0xf123"), is(NumberNode.class));
 		assertThat(parse("+0x123"), is(NumberNode.class));

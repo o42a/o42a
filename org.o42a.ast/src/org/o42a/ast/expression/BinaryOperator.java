@@ -34,7 +34,8 @@ public enum BinaryOperator implements SignType {
 	ADD("+", 2),
 	SUBTRACT("-", 2),
 	MULTIPLY("*", 3),
-	DIVIDE("/", 3);
+	DIVIDE("/", 3),
+	SUFFIX("~", 4);
 
 	private final String sign;
 	private final int priority;
