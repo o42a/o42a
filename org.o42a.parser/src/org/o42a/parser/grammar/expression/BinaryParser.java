@@ -63,7 +63,7 @@ public class BinaryParser implements Parser<BinaryNode> {
 
 			if (right != null &&
 					operator.getPriority()
-					> right.getOperator().getPriority()) {
+					>= right.getOperator().getPriority()) {
 
 				final BinaryNode expression = new BinaryNode(
 						new BinaryNode(
