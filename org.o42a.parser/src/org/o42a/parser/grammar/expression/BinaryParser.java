@@ -59,27 +59,53 @@ public class BinaryParser implements Parser<BinaryNode> {
 					operator.getSign());
 		} else {
 
-			final BinaryNode right = rightOperand.toBinary();
+			final BinaryNode updated =
+					updatePriority(sign, operator, rightOperand);
 
-			if (right != null &&
-					operator.getPriority()
-					>= right.getOperator().getPriority()) {
-
-				final BinaryNode expression = new BinaryNode(
-						new BinaryNode(
-								this.leftOperand,
-								sign,
-								right.getLeftOperand()),
-						right.getSign(),
-						right.getRightOperand());
-
-				expression.addComments(right.getComments());
-
-				return expression;
+			if (updated != null) {
+				return updated;
 			}
 		}
 
 		return new BinaryNode(this.leftOperand, sign, rightOperand);
+	}
+
+	private BinaryNode updatePriority(
+			SignNode<BinaryOperator> sign,
+			BinaryOperator operator,
+			ExpressionNode rightOperand) {
+		if (operator.alwaysLeftAssociative()) {
+			// Always left-associative operator.
+			// Do not change anything.
+			return null;
+		}
+
+		final BinaryNode right = rightOperand.toBinary();
+
+		if (right == null) {
+			// Right operand is not a binary operator.
+			// Do not change anything.
+			return null;
+		}
+		if (operator.getPriority() < right.getOperator().getPriority()) {
+			// Left operator's priority is less than the right's one.
+			// Do not regroup operands.
+			return null;
+		}
+
+		// Left operator's priority is higher or equal to the right's one.
+		// Regroup operands from `a ~ (b ~ c)` to `(a ~ b) ~ c`.
+		final BinaryNode expression = new BinaryNode(
+				new BinaryNode(
+						this.leftOperand,
+						sign,
+						right.getLeftOperand()),
+				right.getSign(),
+				right.getRightOperand());
+
+		expression.addComments(right.getComments());
+
+		return expression;
 	}
 
 	private static final class OperatorParser
