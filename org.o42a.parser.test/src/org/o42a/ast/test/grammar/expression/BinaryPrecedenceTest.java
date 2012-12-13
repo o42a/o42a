@@ -87,6 +87,15 @@ public class BinaryPrecedenceTest extends GrammarTestCase {
 				BinaryOperator.COMPARE);
 	}
 
+	@Test
+	public void leftPrecedesRight() {
+		checkPrecedence(
+				parse("a + b - c"),
+				BinaryOperator.SUBTRACT,
+				true,
+				BinaryOperator.ADD);
+	}
+
 	private static void checkPrecedence(
 			BinaryNode outer,
 			BinaryOperator outerOperator,
