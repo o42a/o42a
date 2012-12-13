@@ -67,25 +67,6 @@ public final class PhrasePrefix extends PhrasePart {
 		return this.ascendants;
 	}
 
-	public String phraseString() {
-
-		final StringBuilder out = new StringBuilder();
-		out.append("<[");
-		PhrasePart part = this;
-
-		for (;;) {
-			out.append(part);
-			part = part.getFollowing();
-			if (part == null) {
-				break;
-			}
-			out.append(' ');
-		}
-		out.append("]>");
-
-		return out.toString();
-	}
-
 	public void append(PhraseContinuation next) {
 		setFollowing(next);
 	}

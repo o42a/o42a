@@ -30,6 +30,7 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
+import org.o42a.compiler.ip.phrase.part.SuffixedByPhrase;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.operator.ComparisonExpression;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -58,16 +59,14 @@ public final class PhraseInterpreter {
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Phrase phrase = new Phrase(
-				ip(),
-				location(distributor, node),
-				distributor,
-				typeConsumer);
-		final Phrase prefixed = node.getPrefix().accept(
-				PHRASE_PREFIX_VISITOR,
-				phrase);
+		final Phrase prefixed =
+				prefixedPhrase(node, distributor, typeConsumer);
 
-		return addClauses(prefixed, node);
+		if (prefixed == null) {
+			return null;
+		}
+
+		return addParts(prefixed, node);
 	}
 
 	public Phrase ascendantsPhrase(
@@ -128,14 +127,34 @@ public final class PhraseInterpreter {
 
 		final BinaryOperator operator = node.getOperator();
 
-		if (operator.isArithmetic() || operator.isCompare()) {
+		switch (operator) {
+		case COMPARE:
+		case ADD:
+		case SUBTRACT:
+		case MULTIPLY:
+		case DIVIDE:
 			return binaryPhrase(node, distributor, typeConsumer)
 					.getPhrase()
 					.toRef();
+		case GREATER:
+		case GREATER_OR_EQUAL:
+		case LESS:
+		case LESS_OR_EQUAL:
+		case NOT_EQUAL:
+		case EQUAL:
+			return new ComparisonExpression(
+					ip(),
+					node,
+					distributor,
+					typeConsumer)
+			.toRef();
+		case SUFFIX:
+			return suffixPhrase(node, distributor, typeConsumer)
+					.getPhrase()
+					.toRef();
+		default:
+			return null;
 		}
-
-		return new ComparisonExpression(ip(), node, distributor, typeConsumer)
-		.toRef();
 	}
 
 	public BinaryPhrasePart binaryPhrase(
@@ -175,6 +194,31 @@ public final class PhraseInterpreter {
 		phrase.operand(right);
 
 		return binary;
+	}
+
+	final Phrase prefixedPhrase(
+			PhraseNode node,
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
+
+		final Phrase phrase = new Phrase(
+				ip(),
+				location(distributor, node),
+				distributor,
+				typeConsumer);
+
+		return node.getPrefix().accept(PHRASE_PREFIX_VISITOR, phrase);
+	}
+
+	static Phrase addParts(Phrase phrase, PhraseNode node) {
+
+		Phrase result = phrase;
+
+		for (PhrasePartNode clause : node.getClauses()) {
+			result = clause.accept(PHRASE_PART_VISITOR, result);
+		}
+
+		return result;
 	}
 
 	static Phrase prefixByAscendants(Phrase phrase, AscendantsNode node) {
@@ -241,15 +285,20 @@ public final class PhraseInterpreter {
 				phrase);
 	}
 
-	private static Phrase addClauses(Phrase phrase, PhraseNode node) {
+	private SuffixedByPhrase suffixPhrase(
+			BinaryNode node,
+			Distributor distributor,
+			TypeConsumer consumer) {
 
-		Phrase result = phrase;
+		final ExpressionNode rightOperand = node.getRightOperand();
 
-		for (PhrasePartNode clause : node.getClauses()) {
-			result = clause.accept(PHRASE_PART_VISITOR, result);
+		if (rightOperand == null) {
+			return null;
 		}
 
-		return result;
+		return rightOperand.accept(
+				new SuffixVisitor(this, consumer, node),
+				distributor);
 	}
 
 }

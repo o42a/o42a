@@ -53,6 +53,7 @@ public class Phrase extends Placed {
 
 	private final Interpreter ip;
 	private final TypeConsumer typeConsumer;
+	private SuffixedByPhrase suffixed;
 	private PhrasePrefix prefix;
 	private PhrasePart last;
 	private MainPhraseContext mainContext;
@@ -154,6 +155,10 @@ public class Phrase extends Placed {
 	public final Phrase referBody() {
 		this.bodyReferred = true;
 		return this;
+	}
+
+	public final SuffixedByPhrase suffix(LocationInfo location, Ref prefix) {
+		return append(this.suffixed = this.last.suffix(location, prefix));
 	}
 
 	public final PhraseName name(LocationInfo location, Name name) {
@@ -262,7 +267,26 @@ public class Phrase extends Placed {
 
 	@Override
 	public String toString() {
-		return this.prefix.phraseString();
+
+		final StringBuilder out = new StringBuilder();
+
+		PhrasePart part;
+
+		if (this.suffixed != null) {
+			out.append(this.suffixed).append(getPrefix());
+			part = this.suffixed.getFollowing();
+		} else {
+			part = getPrefix();
+			out.append(part);
+			part = part.getFollowing();
+		}
+
+		while (part != null) {
+			out.append(' ').append(part);
+			part = part.getFollowing();
+		}
+
+		return out.toString();
 	}
 
 	final MainPhraseContext getMainContext() {

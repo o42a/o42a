@@ -164,7 +164,15 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitBinary(BinaryNode expression, Distributor p) {
-		return ip().phraseIp().binary(expression, p, this.typeConsumer);
+
+		final Ref binary =
+				ip().phraseIp().binary(expression, p, this.typeConsumer);
+
+		if (binary != null) {
+			return binary;
+		}
+
+		return super.visitBinary(expression, p);
 	}
 
 	@Override
