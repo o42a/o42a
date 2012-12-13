@@ -24,18 +24,18 @@ import org.o42a.ast.atom.SignType;
 
 public enum BinaryOperator implements SignType {
 
-	GREATER(">", -4),
-	GREATER_OR_EQUAL(">=", -4),
-	LESS("<", -4),
-	LESS_OR_EQUAL("<=", -4),
-	NOT_EQUAL("<>", -4),
-	EQUAL("==", -4),
-	COMPARE("<=>", -3),
-	ADD("+", -2),
-	SUBTRACT("-", -2),
-	MULTIPLY("*", -1),
-	DIVIDE("/", -1),
-	SUFFIX("~", 0);
+	GREATER(">", 0),
+	GREATER_OR_EQUAL(">=", 0),
+	LESS("<", 0),
+	LESS_OR_EQUAL("<=", 0),
+	NOT_EQUAL("<>", 0),
+	EQUAL("==", 0),
+	COMPARE("<=>", 1),
+	ADD("+", 2),
+	SUBTRACT("-", 2),
+	MULTIPLY("*", 3),
+	DIVIDE("/", 3),
+	SUFFIX("~", 4);
 
 	private final String sign;
 	private final int priority;
@@ -66,25 +66,9 @@ public enum BinaryOperator implements SignType {
 	}
 
 	/**
-	 * Whether this operator is always left-associative.
-	 *
-	 * @return <code>true</code> if this operator always has a higher priority
-	 * than a following one, or <code>false</code> if operator's priorities
-	 * priorities are determined according to their {@link #getPriority()
-	 * priority values}.</p>
-	 */
-	public final boolean alwaysLeftAssociative() {
-		return this.priority >= 0;
-	}
-
-	/**
 	 * Binary operator's priority.
 	 *
 	 * <p>The bigger this number, the higher priority this operator has.</p>
-	 *
-	 * <p>The priority values are typically negative. The non-negative value
-	 * means the operator is {@link #alwaysLeftAssociative() always
-	 * left-associative}.</p>
 	 *
 	 * @return priority value.
 	 */

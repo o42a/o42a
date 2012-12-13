@@ -74,11 +74,6 @@ public class BinaryParser implements Parser<BinaryNode> {
 			SignNode<BinaryOperator> sign,
 			BinaryOperator operator,
 			ExpressionNode rightOperand) {
-		if (operator.alwaysLeftAssociative()) {
-			// Always left-associative operator.
-			// Do not change anything.
-			return null;
-		}
 
 		final BinaryNode right = rightOperand.toBinary();
 

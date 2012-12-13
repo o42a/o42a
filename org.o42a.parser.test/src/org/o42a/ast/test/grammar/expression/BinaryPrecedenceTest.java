@@ -32,21 +32,17 @@ import org.o42a.ast.test.grammar.GrammarTestCase;
 public class BinaryPrecedenceTest extends GrammarTestCase {
 
 	@Test
-	public void leadingPrecedesSuffix() {
+	public void suffixPrecedesDivide() {
 		checkPrecedence(
 				parse("a / b ~ c"),
 				BinaryOperator.DIVIDE,
 				false,
 				BinaryOperator.SUFFIX);
-	}
-
-	@Test
-	public void suffixPrecedesLeading() {
 		checkPrecedence(
 				parse("a ~ b / c"),
-				BinaryOperator.SUFFIX,
-				false,
-				BinaryOperator.DIVIDE);
+				BinaryOperator.DIVIDE,
+				true,
+				BinaryOperator.SUFFIX);
 	}
 
 	@Test
@@ -103,13 +99,13 @@ public class BinaryPrecedenceTest extends GrammarTestCase {
 	private static void checkPrecedence(
 			BinaryNode outer,
 			BinaryOperator outerOperator,
-			boolean leftToRight,
+			boolean innerLeft,
 			BinaryOperator innerOperator) {
 		assertThat(outer.getOperator(), is(outerOperator));
 
 		final BinaryNode inner = to(
 				BinaryNode.class,
-				leftToRight ? outer.getLeftOperand() : outer.getRightOperand());
+				innerLeft ? outer.getLeftOperand() : outer.getRightOperand());
 
 		assertThat(inner.getOperator(), is(innerOperator));
 	}
