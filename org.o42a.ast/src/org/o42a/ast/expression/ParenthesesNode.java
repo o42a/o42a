@@ -21,9 +21,13 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.ParenthesisSign;
 import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.util.io.SourcePosition;
 
 
@@ -75,6 +79,31 @@ public class ParenthesesNode
 	@Override
 	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitParentheses(this, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final TypeNode toType() {
+		return null;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
+	}
+
+	@Override
+	public final BinaryNode toBinary() {
+		return null;
 	}
 
 	@Override

@@ -20,7 +20,11 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.PhrasePartNode;
+import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.TypeNode;
 
 
 public class PhraseNode extends AbstractExpressionNode {
@@ -45,6 +49,36 @@ public class PhraseNode extends AbstractExpressionNode {
 	}
 
 	@Override
+	public final <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitPhrase(this, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final TypeNode toType() {
+		return null;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
+	}
+
+	@Override
+	public final BinaryNode toBinary() {
+		return null;
+	}
+
+	@Override
 	public void printContent(StringBuilder out) {
 		if (this.prefix != null) {
 			this.prefix.printContent(out);
@@ -64,11 +98,6 @@ public class PhraseNode extends AbstractExpressionNode {
 			}
 			clause.printContent(out);
 		}
-	}
-
-	@Override
-	public final <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitPhrase(this, p);
 	}
 
 }

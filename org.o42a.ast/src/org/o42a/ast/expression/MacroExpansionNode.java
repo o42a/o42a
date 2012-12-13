@@ -22,6 +22,7 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
+import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeNodeVisitor;
 
@@ -49,6 +50,21 @@ public class MacroExpansionNode
 	@Override
 	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitMacroExpansion(this, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return this;
+	}
+
+	@Override
+	public final MemberRefNode toMemberRef() {
+		return null;
+	}
+
+	@Override
+	public final MacroExpansionNode toMacroExpansion() {
+		return this;
 	}
 
 }

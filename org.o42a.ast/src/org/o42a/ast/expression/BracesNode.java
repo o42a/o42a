@@ -25,6 +25,7 @@ import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
@@ -76,6 +77,16 @@ public class BracesNode
 	@Override
 	public <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitBraces(this, p);
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return this;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
 	}
 
 	@Override

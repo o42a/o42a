@@ -21,10 +21,15 @@ package org.o42a.ast.atom;
 
 import static org.o42a.ast.atom.Radix.DECIMAL_RADIX;
 
+import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.AbstractExpressionNode;
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
+import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.TypeNode;
 
 
 public class NumberNode
@@ -98,6 +103,31 @@ public class NumberNode
 	@Override
 	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitNumber(this, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final TypeNode toType() {
+		return null;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
+	}
+
+	@Override
+	public final BinaryNode toBinary() {
+		return null;
 	}
 
 	@Override

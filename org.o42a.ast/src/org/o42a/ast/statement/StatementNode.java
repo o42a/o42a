@@ -20,10 +20,16 @@
 package org.o42a.ast.statement;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.ref.RefNode;
 
 
 public interface StatementNode extends Node {
 
 	<R, P> R accept(StatementNodeVisitor<R, P> visitor, P p);
+
+	ClauseIdNode toClauseId();
+
+	RefNode toRef();
 
 }

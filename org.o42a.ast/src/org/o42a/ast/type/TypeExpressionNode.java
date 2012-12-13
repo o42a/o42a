@@ -21,8 +21,12 @@ package org.o42a.ast.type;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 
 
@@ -57,6 +61,31 @@ public class TypeExpressionNode extends AbstractNode implements TypeNode {
 	@Override
 	public <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
 		return getExpression().accept(visitor, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final TypeNode toType() {
+		return this;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
+	}
+
+	@Override
+	public final BinaryNode toBinary() {
+		return null;
 	}
 
 	@Override
