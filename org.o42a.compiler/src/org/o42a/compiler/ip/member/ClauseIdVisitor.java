@@ -152,16 +152,9 @@ final class ClauseIdVisitor
 	@Override
 	public ClauseDeclaration visitUnary(UnaryNode unary, Distributor p) {
 
-		final ClauseId clauseId;
+		final ClauseId clauseId = unaryClauseId(unary);
 
-		switch (unary.getOperator()) {
-		case PLUS:
-			clauseId = ClauseId.PLUS;
-			break;
-		case MINUS:
-			clauseId = ClauseId.MINUS;
-			break;
-		default:
+		if (clauseId == null) {
 			return super.visitUnary(unary, p);
 		}
 
@@ -175,28 +168,9 @@ final class ClauseIdVisitor
 	@Override
 	public ClauseDeclaration visitBinary(BinaryNode binary, Distributor p) {
 
-		final ClauseId clauseId;
+		final ClauseId clauseId = binaryClauseId(binary);
 
-		switch (binary.getOperator()) {
-		case ADD:
-			clauseId = ClauseId.ADD;
-			break;
-		case SUBTRACT:
-			clauseId = ClauseId.SUBTRACT;
-			break;
-		case MULTIPLY:
-			clauseId = ClauseId.MULTIPLY;
-			break;
-		case DIVIDE:
-			clauseId = ClauseId.DIVIDE;
-			break;
-		case EQUAL:
-			clauseId = ClauseId.EQUALS;
-			break;
-		case COMPARE:
-			clauseId = ClauseId.COMPARE;
-			break;
-		default:
+		if (clauseId == null) {
 			return super.visitBinary(binary, p);
 		}
 
@@ -234,6 +208,48 @@ final class ClauseIdVisitor
 			ClauseIdNode clauseId,
 			Distributor p) {
 		p.getLogger().invalidDeclaration(clauseId);
+		return null;
+	}
+
+	private ClauseId unaryClauseId(UnaryNode unary) {
+		switch (unary.getOperator()) {
+		case PLUS:
+			return ClauseId.PLUS;
+		case MINUS:
+			return ClauseId.MINUS;
+		case IS_TRUE:
+		case NOT:
+		case MACRO_EXPANSION:
+		case VALUE_OF:
+		case KEEP_VALUE:
+			return null;
+		}
+		return null;
+	}
+
+	private static ClauseId binaryClauseId(BinaryNode binary) {
+		switch (binary.getOperator()) {
+		case ADD:
+			return ClauseId.ADD;
+		case SUBTRACT:
+			return ClauseId.SUBTRACT;
+		case MULTIPLY:
+			return ClauseId.MULTIPLY;
+		case DIVIDE:
+			return ClauseId.DIVIDE;
+		case EQUAL:
+			return ClauseId.EQUALS;
+		case COMPARE:
+			return ClauseId.COMPARE;
+		case SUFFIX:
+			return ClauseId.SUFFIX;
+		case GREATER:
+		case GREATER_OR_EQUAL:
+		case LESS:
+		case LESS_OR_EQUAL:
+		case NOT_EQUAL:
+			return null;
+		}
 		return null;
 	}
 

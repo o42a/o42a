@@ -33,8 +33,19 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void argument() {
 		compile(
-				"A := void(<[arg]> integer)",
-				"B := a[2]");
+				"A := void (<[Arg]> integer)",
+				"B := a [2]");
+
+		final Field b = field("b");
+
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
+	}
+
+	@Test
+	public void suffix() {
+		compile(
+				"A := void (<Suffix ~ *> integer)",
+				"B := 2 ~ a");
 
 		final Field b = field("b");
 
@@ -44,11 +55,11 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void name() {
 		compile(
-				"A :=> void(",
+				"A :=> void (",
 				"  Foo :=< integer ",
 				"  <Name> Foo = *",
 				")",
-				"B := a_name(= 2)");
+				"B := a _name (= 2)");
 
 		final Field bFoo = field("b", "foo");
 
@@ -58,7 +69,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void string() {
 		compile(
-				"A := void(<'arg'>)",
+				"A := void (<'Arg'>)",
 				"B := a 'b'");
 
 		final Field b = field("b");
@@ -69,7 +80,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void stringInBrackets() {
 		compile(
-				"A := void(<'arg'>)",
+				"A := void (<'Arg'>)",
 				"B := a ['b']");
 
 		final Field b = field("b");
@@ -80,7 +91,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void doubleQuotedStringArgument() {
 		compile(
-				"A := void(<[arg]>)",
+				"A := void (<[Arg]>)",
 				"B := a \"b\"");
 
 		final Field b = field("b");
@@ -91,7 +102,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void implicit() {
 		compile(
-				"A := string(<*implicit> = string(<''> ()))",
+				"A := string (<*Implicit> = string(<''> ()))",
 				"B := a 'b'");
 
 		final Field b = field("b");
@@ -102,10 +113,10 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void abstractOverrider() {
 		compile(
-				"A :=> void(",
+				"A :=> void (",
 				"  Foo :=< \"a\"",
-				"  <*implicit> A(",
-				"    <[arg]> foo = string",
+				"  <*Implicit> A (",
+				"    <[Arg]> foo = string",
 				"  )",
 				")",
 				"B := a \"b\"");
