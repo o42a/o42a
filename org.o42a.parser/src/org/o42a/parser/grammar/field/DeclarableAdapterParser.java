@@ -59,13 +59,19 @@ public class DeclarableAdapterParser implements Parser<DeclarableAdapterNode> {
 
 		final RefNode ref = context.push(ref());
 
-		if (!(ref instanceof MemberRefNode)) {
+		if (ref == null) {
+			return null;
+		}
+
+		final MemberRefNode memberRef = ref.toMemberRef();
+
+		if (memberRef == null) {
 			return null;
 		}
 
 		context.acceptAll();
 
-		return new DeclarableAdapterNode(prefix, (MemberRefNode) ref);
+		return new DeclarableAdapterNode(prefix, memberRef);
 	}
 
 }

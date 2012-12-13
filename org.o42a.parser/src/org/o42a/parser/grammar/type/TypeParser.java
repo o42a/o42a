@@ -94,9 +94,11 @@ public class TypeParser implements Parser<TypeNode> {
 		if (ref == null) {
 			return null;
 		}
-		if (ref instanceof MemberRefNode) {
 
-			final MemberRefNode memberRef = (MemberRefNode) ref;
+		final MemberRefNode memberRef = ref.toMemberRef();
+
+		if (memberRef != null) {
+
 			final SignNode<Qualifier> qualifier = memberRef.getQualifier();
 
 			if (qualifier != null && qualifier.getType() == Qualifier.MACRO) {
@@ -128,8 +130,11 @@ public class TypeParser implements Parser<TypeNode> {
 		if (expression == null) {
 			return null;
 		}
-		if (expression instanceof TypeNode) {
-			return (TypeNode) expression;
+
+		final TypeNode type = expression.toType();
+
+		if (type != null) {
+			return type;
 		}
 
 		return new TypeExpressionNode(expression);

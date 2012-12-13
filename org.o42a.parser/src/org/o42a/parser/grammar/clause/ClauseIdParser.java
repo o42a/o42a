@@ -74,11 +74,8 @@ final class ClauseIdParser implements Parser<ClauseIdNode> {
 		if (binary != null) {
 			return binary;
 		}
-		if (ref instanceof ClauseIdNode) {
-			return (ClauseIdNode) ref;
-		}
 
-		return null;
+		return ref.toClauseId();
 	}
 
 }

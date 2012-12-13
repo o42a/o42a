@@ -74,12 +74,15 @@ final class AssignmentClauseIdParser implements Parser<AssignmentNode> {
 
 		final RefNode value = context.push(ref());
 
-		if (!(value instanceof ScopeRefNode)) {
+		if (value == null) {
 			return null;
 		}
 
-		final ScopeRefNode scopeRef = (ScopeRefNode) value;
+		final ScopeRefNode scopeRef = value.toScopeRef();
 
+		if (scopeRef == null) {
+			return null;
+		}
 		if (scopeRef.getType() != ScopeType.IMPLIED) {
 			return null;
 		}

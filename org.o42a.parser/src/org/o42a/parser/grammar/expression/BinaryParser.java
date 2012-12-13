@@ -57,11 +57,13 @@ public class BinaryParser implements Parser<BinaryNode> {
 			context.getLogger().missingRightOperand(
 					context.current(),
 					operator.getSign());
-		} else if (rightOperand instanceof BinaryNode) {
+		} else {
 
-			final BinaryNode right = (BinaryNode) rightOperand;
+			final BinaryNode right = rightOperand.toBinary();
 
-			if (operator.getPriority() > right.getOperator().getPriority()) {
+			if (right != null &&
+					operator.getPriority()
+					> right.getOperator().getPriority()) {
 
 				final BinaryNode expression = new BinaryNode(
 						new BinaryNode(

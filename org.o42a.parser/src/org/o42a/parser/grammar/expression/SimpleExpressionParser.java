@@ -232,16 +232,20 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				return expression;
 			default:
-				if (next == '(' && expression instanceof TypeNode) {
+				if (next == '(') {
 
-					final TypeNode ascendant = (TypeNode) expression;
-					final TypeParametersNode typeParameters =
-							context.parse(typeParameters(ascendant));
+					final TypeNode type = expression.toType();
 
-					if (typeParameters != null) {
-						expression = typeParameters;
-						next = context.pendingOrNext();
-						continue;
+					if (type != null) {
+
+						final TypeParametersNode typeParameters =
+								context.parse(typeParameters(type));
+
+						if (typeParameters != null) {
+							expression = typeParameters;
+							next = context.pendingOrNext();
+							continue;
+						}
 					}
 				}
 
