@@ -27,6 +27,7 @@ import org.o42a.util.string.Name;
 
 public enum ClauseId {
 
+
 	NAME("named", false) {
 
 		@Override
@@ -35,6 +36,18 @@ public enum ClauseId {
 				return "<anonymous>";
 			}
 			return memberId.toString();
+		}
+
+	},
+
+	SUFFIX("suffix", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "* ~ *";
+			}
+			return name.toString() + " ~ *";
 		}
 
 	},

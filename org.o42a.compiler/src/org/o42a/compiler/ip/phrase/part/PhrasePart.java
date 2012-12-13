@@ -55,12 +55,16 @@ public abstract class PhrasePart extends Location {
 		return this.following;
 	}
 
+	public final SuffixedByPhrase suffix(LocationInfo location, Ref prefix) {
+		return setFollowing(new SuffixedByPhrase(location, this, prefix));
+	}
+
 	public final PhraseName name(LocationInfo location, Name name) {
 		return setFollowing(new PhraseName(location, this, name));
 	}
 
 	public final PhraseArgument argument(LocationInfo location, Ref value) {
-		return setFollowing(new PhraseArgument(this, location, value));
+		return setFollowing(new PhraseArgument(location, this, value));
 	}
 
 	public final PhraseArray array(ArrayConstructor array) {

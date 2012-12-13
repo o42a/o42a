@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -28,28 +28,28 @@ import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
 
-public class PhraseArgument extends PhraseContinuation {
+public class SuffixedByPhrase extends PhraseContinuation {
 
-	private final Ref value;
+	private final Ref prefix;
 
-	PhraseArgument(LocationInfo location, PhrasePart preceding, Ref value) {
+	SuffixedByPhrase(LocationInfo location, PhrasePart preceding, Ref prefix) {
 		super(location, preceding);
-		this.value = value;
+		this.prefix = prefix;
 	}
 
-	public final Ref getValue() {
-		return this.value;
+	public final Ref getPrefix() {
+		return this.prefix;
 	}
 
 	@Override
 	public NextClause nextClause(PhraseContext context) {
 
-		final NextClause next = context.clauseById(this, ClauseId.ARGUMENT);
+		final NextClause next = context.clauseById(this, ClauseId.SUFFIX);
 
 		if (next.found()) {
 			return next;
 		}
-		if (this.value == null) {
+		if (this.prefix == null) {
 			return next;
 		}
 		if (!context.isObject()) {
@@ -61,30 +61,30 @@ public class PhraseArgument extends PhraseContinuation {
 
 	@Override
 	public Ref substitute(Distributor distributor) {
-		if (this.value == null) {
+		if (this.prefix == null) {
 			return null;
 		}
-		return this.value.rescope(distributor.getScope());
+		return this.prefix.rescope(distributor.getScope());
 	}
 
 	@Override
 	public void define(Block<?, ?> definition) {
-		if (this.value == null) {
+		if (this.prefix == null) {
 			return;// Do not assign any value.
 		}
 
 		final Statements<?, ?> statements =
 				definition.propose(this).alternative(this);
 
-		statements.selfAssign(this.value);
+		statements.selfAssign(this.prefix);
 	}
 
 	@Override
 	public String toString() {
-		if (this.value == null) {
-			return "[]";
+		if (this.prefix == null) {
+			return "~";
 		}
-		return '[' + this.value.toString() + ']';
+		return this.prefix.toString() + '~';
 	}
 
 }
