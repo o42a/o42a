@@ -106,6 +106,10 @@ final class BinaryClauseIdParser implements Parser<BinaryNode> {
 				operator = BinaryOperator.EQUAL;
 				context.acceptAll();
 				break;
+			case '~':
+				operator = BinaryOperator.SUFFIX;
+				context.acceptAll();
+				break;
 			default:
 				return null;
 			}

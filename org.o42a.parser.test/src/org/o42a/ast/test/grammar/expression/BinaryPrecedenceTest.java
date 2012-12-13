@@ -32,6 +32,20 @@ import org.o42a.ast.test.grammar.GrammarTestCase;
 public class BinaryPrecedenceTest extends GrammarTestCase {
 
 	@Test
+	public void suffixPrecedesDivision() {
+		checkPrecedence(
+				parse("a / b ~ c"),
+				BinaryOperator.DIVIDE,
+				false,
+				BinaryOperator.SUFFIX);
+		checkPrecedence(
+				parse("a ~ b / c"),
+				BinaryOperator.DIVIDE,
+				true,
+				BinaryOperator.SUFFIX);
+	}
+
+	@Test
 	public void multiplyPrecedesAdd() {
 		checkPrecedence(
 				parse("a + b * c"),

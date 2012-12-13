@@ -97,6 +97,11 @@ public class BinaryExpressionTest extends GrammarTestCase {
 		assertOperator(BinaryOperator.GREATER_OR_EQUAL, ">=");
 	}
 
+	@Test
+	public void suffix() {
+		assertOperator(BinaryOperator.SUFFIX, "~");
+	}
+
 	private void assertOperator(BinaryOperator operator, String sign) {
 
 		final BinaryNode result = parse("foo " + sign + " bar ");
