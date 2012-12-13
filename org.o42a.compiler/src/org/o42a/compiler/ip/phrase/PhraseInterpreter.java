@@ -152,9 +152,9 @@ public final class PhraseInterpreter {
 			return suffixPhrase(node, distributor, typeConsumer)
 					.getPhrase()
 					.toRef();
-		default:
-			return null;
 		}
+
+		return null;
 	}
 
 	public BinaryPhrasePart binaryPhrase(
