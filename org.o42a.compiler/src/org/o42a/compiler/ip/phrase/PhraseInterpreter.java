@@ -60,7 +60,7 @@ public final class PhraseInterpreter {
 			TypeConsumer typeConsumer) {
 
 		final Phrase prefixed =
-				prefixedPhrase(node, distributor, typeConsumer);
+				phraseWithPrefix(node, distributor, typeConsumer);
 
 		if (prefixed == null) {
 			return null;
@@ -196,7 +196,7 @@ public final class PhraseInterpreter {
 		return binary;
 	}
 
-	final Phrase prefixedPhrase(
+	final Phrase phraseWithPrefix(
 			PhraseNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
