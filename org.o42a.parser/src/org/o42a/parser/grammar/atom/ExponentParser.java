@@ -19,47 +19,54 @@
 */
 package org.o42a.parser.grammar.atom;
 
-import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignOfNumber;
+import static org.o42a.ast.atom.ExponentSymbol.LETTER_E;
+import static org.o42a.parser.grammar.atom.DigitsParser.DECIMAL_DIGITS;
+import static org.o42a.parser.grammar.atom.SignOfNumberParser.SIGN_OF_NUMBER;
+import static org.o42a.util.string.Characters.isDigit;
+
+import org.o42a.ast.atom.*;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
-import org.o42a.util.string.Characters;
 
 
-final class SignOfNumberParser
-		implements Parser<SignNode<SignOfNumber>> {
+final class ExponentParser implements Parser<ExponentNode> {
 
-	static final SignOfNumberParser SIGN_OF_NUMBER = new SignOfNumberParser();
+	static final ExponentParser EXPONENT = new ExponentParser();
 
-	private SignOfNumberParser() {
+	private ExponentParser() {
 	}
 
 	@Override
-	public SignNode<SignOfNumber> parse(ParserContext context) {
+	public ExponentNode parse(ParserContext context) {
 
-		final SignOfNumber sign;
+		final int first = context.next();
 
-		switch (context.next()) {
-		case '+':
-			sign = SignOfNumber.POSITIVE_NUMBER;
-			break;
-		case Characters.MINUS:
-		case '-':
-			sign = SignOfNumber.NEGATIVE_NUMBER;
-			break;
-		default:
+		if (first != 'e' && first != 'E') {
 			return null;
 		}
 
 		final SourcePosition start = context.current().fix();
 
-		context.acceptAll();
+		context.skip();
 
-		return new SignNode<SignOfNumber>(
+		final SignNode<ExponentSymbol> symbol = new SignNode<ExponentSymbol>(
 				start,
 				context.current().fix(),
-				sign);
+				LETTER_E);
+		final SignNode<SignOfNumber> sign = context.push(SIGN_OF_NUMBER);
+
+		if (!isDigit(context.pendingOrNext())) {
+			return null;
+		}
+
+		final DigitsNode digits = context.parse(DECIMAL_DIGITS);
+
+		if (digits == null) {
+			return null;
+		}
+
+		return new ExponentNode(symbol, sign, digits);
 	}
 
 }

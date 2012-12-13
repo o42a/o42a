@@ -32,7 +32,7 @@ import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 
 
-public class StringLiteralTest extends GrammarTestCase {
+public class StringTest extends GrammarTestCase {
 
 	private Parser<StringNode> parser;
 

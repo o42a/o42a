@@ -19,51 +19,17 @@
 */
 package org.o42a.ast.atom;
 
-import org.o42a.util.string.Characters;
 
+public enum RadixPoint implements SignType {
 
-public enum Radix implements SignType {
+	COMMA_RADIX_POINT(","),
+	DOT_RADIX_POINT(".");
 
-	DECIMAL_RADIX(10, "") {
-
-		@Override
-		public boolean isDigit(int c) {
-			return Characters.isDigit(c);
-		}
-
-	},
-
-	HEXADECIMAL_RADIX(16, "0x") {
-
-		@Override
-		public boolean isDigit(int c) {
-			return Characters.isHexDigit(c);
-		}
-
-	},
-
-	BINARY_RADIX(2, "0b") {
-
-		@Override
-		public boolean isDigit(int c) {
-			return c == '0' || c == '1';
-		}
-
-	};
-
-	private final int radix;
 	private final String sign;
 
-	Radix(int radix, String sign) {
-		this.radix = radix;
+	RadixPoint(String sign) {
 		this.sign = sign;
 	}
-
-	public final int getRadix() {
-		return this.radix;
-	}
-
-	public abstract boolean isDigit(int c);
 
 	@Override
 	public final String getSign() {

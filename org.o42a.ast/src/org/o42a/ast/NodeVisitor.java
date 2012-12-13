@@ -73,6 +73,14 @@ public abstract class NodeVisitor<R, P>
 		return visitPart(digits, p);
 	}
 
+	public R visitFractionalPart(FractionalPartNode fractional, P p) {
+		return visitPart(fractional, p);
+	}
+
+	public R visitExponent(ExponentNode exponent, P p) {
+		return visitPart(exponent, p);
+	}
+
 	@Override
 	public R visitTypeExpression(TypeExpressionNode type, P p) {
 		return type.getExpression().accept(this, p);

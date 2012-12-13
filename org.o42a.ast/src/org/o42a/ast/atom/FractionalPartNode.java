@@ -19,55 +19,38 @@
 */
 package org.o42a.ast.atom;
 
-import org.o42a.util.string.Characters;
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.NodeVisitor;
 
 
-public enum Radix implements SignType {
+public class FractionalPartNode extends AbstractNode {
 
-	DECIMAL_RADIX(10, "") {
+	private final SignNode<RadixPoint> point;
+	private final DigitsNode digits;
 
-		@Override
-		public boolean isDigit(int c) {
-			return Characters.isDigit(c);
-		}
-
-	},
-
-	HEXADECIMAL_RADIX(16, "0x") {
-
-		@Override
-		public boolean isDigit(int c) {
-			return Characters.isHexDigit(c);
-		}
-
-	},
-
-	BINARY_RADIX(2, "0b") {
-
-		@Override
-		public boolean isDigit(int c) {
-			return c == '0' || c == '1';
-		}
-
-	};
-
-	private final int radix;
-	private final String sign;
-
-	Radix(int radix, String sign) {
-		this.radix = radix;
-		this.sign = sign;
+	public FractionalPartNode(SignNode<RadixPoint> point, DigitsNode digits) {
+		super(point.getStart(), digits.getEnd());
+		this.point = point;
+		this.digits = digits;
 	}
 
-	public final int getRadix() {
-		return this.radix;
+	public final SignNode<RadixPoint> getPoint() {
+		return this.point;
 	}
 
-	public abstract boolean isDigit(int c);
+	public final DigitsNode getDigits() {
+		return this.digits;
+	}
 
 	@Override
-	public final String getSign() {
-		return this.sign;
+	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
+		return visitor.visitFractionalPart(this, p);
+	}
+
+	@Override
+	public void printContent(StringBuilder out) {
+		this.point.printContent(out);
+		this.digits.printContent(out);
 	}
 
 }

@@ -21,6 +21,7 @@ package org.o42a.parser.grammar.phrase;
 
 import static org.o42a.parser.Grammar.*;
 import static org.o42a.parser.grammar.phrase.TypeDefinitionParser.TYPE_DEFINITION;
+import static org.o42a.util.string.Characters.isDigit;
 
 import java.util.ArrayList;
 

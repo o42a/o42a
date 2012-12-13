@@ -34,15 +34,21 @@ public class NumberNode
 	private final SignNode<SignOfNumber> sign;
 	private final SignNode<Radix> radixPrefix;
 	private final DigitsNode integer;
+	private final FractionalPartNode fractional;
+	private final ExponentNode exponent;
 
 	public NumberNode(
 			SignNode<SignOfNumber> sign,
 			SignNode<Radix> radixPrefix,
-			DigitsNode integer) {
+			DigitsNode integer,
+			FractionalPartNode fractional,
+			ExponentNode exponent) {
 		super(sign, radixPrefix, integer);
 		this.sign = sign;
 		this.radixPrefix = radixPrefix;
 		this.integer = integer;
+		this.fractional = fractional;
+		this.exponent = exponent;
 	}
 
 	public final SignNode<SignOfNumber> getSign() {
@@ -71,6 +77,14 @@ public class NumberNode
 		return this.integer;
 	}
 
+	public final FractionalPartNode getFractional() {
+		return this.fractional;
+	}
+
+	public final ExponentNode getExponent() {
+		return this.exponent;
+	}
+
 	@Override
 	public <R, P> R accept(AtomNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitNumber(this, p);
@@ -91,7 +105,15 @@ public class NumberNode
 		if (this.sign != null) {
 			this.sign.printContent(out);
 		}
-		this.integer.printContent(out);
+		if (this.integer != null) {
+			this.integer.printContent(out);
+		}
+		if (this.fractional != null) {
+			this.fractional.printContent(out);
+		}
+		if (this.exponent != null) {
+			this.exponent.printContent(out);
+		}
 	}
 
 }

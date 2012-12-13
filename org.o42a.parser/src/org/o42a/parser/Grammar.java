@@ -214,10 +214,6 @@ public class Grammar {
 		return new DeclaratorParser(declarable);
 	}
 
-	public static boolean isDigit(int c) {
-		return '0' <= c && c <= '9';
-	}
-
 	private final Parser<StatementNode> statement;
 	private final Parser<ClauseDeclaratorNode> clauseDeclarator;
 	private final Parser<ParenthesesNode> parentheses;

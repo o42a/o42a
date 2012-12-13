@@ -19,6 +19,8 @@
 */
 package org.o42a.parser.grammar.atom;
 
+import static org.o42a.ast.atom.Radix.DECIMAL_RADIX;
+
 import org.o42a.ast.atom.DigitsNode;
 import org.o42a.ast.atom.Radix;
 import org.o42a.parser.Parser;
@@ -40,6 +42,9 @@ final class DigitsParser implements Parser<DigitsNode> {
 			parsers[i] = new DigitsParser(radixes[i]);
 		}
 	}
+
+	static final DigitsParser DECIMAL_DIGITS =
+			digitsParser(DECIMAL_RADIX);
 
 	static DigitsParser digitsParser(Radix radix) {
 		return parsers[radix.ordinal()];
@@ -65,10 +70,12 @@ final class DigitsParser implements Parser<DigitsNode> {
 
 			if (this.radix.isDigit(c)) {
 				if (wrongSpace) {
-					context.getLogger().invalidSpaceInNumber(
+					context.getLogger().warning(
+							"invalid_space_in_number",
 							new SourceRange(
 									spaceStart,
-									context.current().fix()));
+									context.current().fix()),
+							"Only a single space character allowed in number");
 					wrongSpace = false;
 				}
 				spaceStart = null;
@@ -95,12 +102,10 @@ final class DigitsParser implements Parser<DigitsNode> {
 			}
 			context.acceptButLast();
 
-			final DigitsNode result = new DigitsNode(
+			return new DigitsNode(
 					start,
 					context.firstUnaccepted().fix(),
 					digits.toString());
-
-			return context.acceptComments(false, result);
 		}
 	}
 

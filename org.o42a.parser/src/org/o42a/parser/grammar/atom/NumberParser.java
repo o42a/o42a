@@ -19,19 +19,30 @@
 */
 package org.o42a.parser.grammar.atom;
 
-import static org.o42a.ast.atom.Radix.DECIMAL_RADIX;
+import static org.o42a.parser.grammar.atom.DigitsParser.DECIMAL_DIGITS;
 import static org.o42a.parser.grammar.atom.DigitsParser.digitsParser;
+import static org.o42a.parser.grammar.atom.ExponentParser.EXPONENT;
+import static org.o42a.parser.grammar.atom.FractionalPartParser.FRACTIONAL_PART;
 import static org.o42a.parser.grammar.atom.RadixParser.RADIX;
 import static org.o42a.parser.grammar.atom.SignOfNumberParser.SIGN_OF_NUMBER;
 
 import org.o42a.ast.atom.*;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.parser.ParserLogger;
+import org.o42a.util.log.LogInfo;
 
 
 public class NumberParser implements Parser<NumberNode> {
 
 	public static final NumberParser NUMBER = new NumberParser();
+
+	static void missingDigits(ParserLogger logger, LogInfo location) {
+		logger.error(
+				"missing_digits",
+				location,
+				"The number has no digits");
+	}
 
 	private NumberParser() {
 	}
@@ -40,22 +51,33 @@ public class NumberParser implements Parser<NumberNode> {
 	public NumberNode parse(ParserContext context) {
 
 		final SignNode<SignOfNumber> sign = context.push(SIGN_OF_NUMBER);
-		final SignNode<Radix> radixPrefix = context.parse(RADIX);
-		final Radix radix =
-				radixPrefix == null ? DECIMAL_RADIX : radixPrefix.getType();
-		final DigitsNode integer = context.parse(digitsParser(radix));
 
-		if (integer == null) {
-			if (radixPrefix == null) {
-				return null;
-			}
-			context.getLogger().error(
-					"missing_digits",
-					radixPrefix,
-					"The number has no digits");
+		if (sign != null) {
+			context.skipComments(false, sign);
 		}
 
-		return new NumberNode(sign, radixPrefix, integer);
+		final SignNode<Radix> radix = context.parse(RADIX);
+		final DigitsNode integer = context.parse(
+				radix != null
+				? digitsParser(radix.getType())
+				: DECIMAL_DIGITS);
+
+		if (integer == null) {
+			if (radix == null) {
+				return null;
+			}
+			missingDigits(context.getLogger(), radix);
+		}
+		if (radix != null) {
+			return new NumberNode(sign, radix, integer, null, null);
+		}
+
+		final FractionalPartNode fractional = context.parse(FRACTIONAL_PART);
+		final ExponentNode exponent = context.parse(EXPONENT);
+
+		return context.acceptComments(
+				false,
+				new NumberNode(sign, radix, integer, fractional, exponent));
 	}
 
 }

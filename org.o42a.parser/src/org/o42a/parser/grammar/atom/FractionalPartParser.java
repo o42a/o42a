@@ -19,34 +19,36 @@
 */
 package org.o42a.parser.grammar.atom;
 
-import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignOfNumber;
+import static org.o42a.ast.atom.RadixPoint.COMMA_RADIX_POINT;
+import static org.o42a.ast.atom.RadixPoint.DOT_RADIX_POINT;
+import static org.o42a.parser.grammar.atom.DigitsParser.DECIMAL_DIGITS;
+import static org.o42a.util.string.Characters.isDigit;
+
+import org.o42a.ast.atom.*;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
-import org.o42a.util.string.Characters;
 
 
-final class SignOfNumberParser
-		implements Parser<SignNode<SignOfNumber>> {
+final class FractionalPartParser implements Parser<FractionalPartNode> {
 
-	static final SignOfNumberParser SIGN_OF_NUMBER = new SignOfNumberParser();
+	public static final FractionalPartParser FRACTIONAL_PART =
+			new FractionalPartParser();
 
-	private SignOfNumberParser() {
+	private FractionalPartParser() {
 	}
 
 	@Override
-	public SignNode<SignOfNumber> parse(ParserContext context) {
+	public FractionalPartNode parse(ParserContext context) {
 
-		final SignOfNumber sign;
+		final RadixPoint radixPoint;
 
 		switch (context.next()) {
-		case '+':
-			sign = SignOfNumber.POSITIVE_NUMBER;
+		case '.':
+			radixPoint = DOT_RADIX_POINT;
 			break;
-		case Characters.MINUS:
-		case '-':
-			sign = SignOfNumber.NEGATIVE_NUMBER;
+		case ',':
+			radixPoint = COMMA_RADIX_POINT;
 			break;
 		default:
 			return null;
@@ -54,12 +56,23 @@ final class SignOfNumberParser
 
 		final SourcePosition start = context.current().fix();
 
-		context.acceptAll();
+		if (!isDigit(context.next())) {
+			// No space allowed between radix point and next digit,
+			// but digits parser generally allows it.
+			return null;
+		}
 
-		return new SignNode<SignOfNumber>(
+		final SignNode<RadixPoint> point = new SignNode<RadixPoint>(
 				start,
 				context.current().fix(),
-				sign);
+				radixPoint);
+		final DigitsNode digits = context.parse(DECIMAL_DIGITS);
+
+		if (digits == null) {
+			return null;
+		}
+
+		return new FractionalPartNode(point, digits);
 	}
 
 }
