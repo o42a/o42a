@@ -19,11 +19,19 @@
 */
 package org.o42a.ast.expression;
 
+import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.type.TypeNode;
 
 
 public interface ExpressionNode extends StatementNode {
 
 	<R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p);
+
+	DeclarableNode toDeclarable();
+
+	TypeNode toType();
+
+	BinaryNode toBinary();
 
 }

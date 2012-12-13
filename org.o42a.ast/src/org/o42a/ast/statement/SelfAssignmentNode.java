@@ -20,7 +20,9 @@
 package org.o42a.ast.statement;
 
 import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.ref.RefNode;
 
 
 public class SelfAssignmentNode extends AbstractStatementNode {
@@ -47,6 +49,16 @@ public class SelfAssignmentNode extends AbstractStatementNode {
 	@Override
 	public <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitSelfAssignment(this, p);
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
 	}
 
 	@Override

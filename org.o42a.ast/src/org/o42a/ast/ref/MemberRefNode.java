@@ -25,6 +25,7 @@ import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
 
@@ -85,6 +86,36 @@ public class MemberRefNode
 	@Override
 	public final <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitMemberRef(this, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return this;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return this;
+	}
+
+	@Override
+	public final ScopeRefNode toScopeRef() {
+		return null;
+	}
+
+	@Override
+	public final MemberRefNode toMemberRef() {
+		return this;
+	}
+
+	@Override
+	public final AdapterRefNode toAdapterRef() {
+		return null;
+	}
+
+	@Override
+	public final MacroExpansionNode toMacroExpansion() {
+		return null;
 	}
 
 	@Override

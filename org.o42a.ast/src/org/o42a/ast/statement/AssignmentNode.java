@@ -23,6 +23,7 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.ref.RefNode;
 
 
 public class AssignmentNode
@@ -65,6 +66,16 @@ public class AssignmentNode
 	@Override
 	public <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitAssignment(this, p);
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return this;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
 	}
 
 	@Override

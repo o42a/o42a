@@ -22,6 +22,8 @@ package org.o42a.ast.statement;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.ref.RefNode;
 
 
 public class EllipsisNode extends AbstractStatementNode {
@@ -46,6 +48,16 @@ public class EllipsisNode extends AbstractStatementNode {
 	@Override
 	public <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitEllipsis(this, p);
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
 	}
 
 	@Override

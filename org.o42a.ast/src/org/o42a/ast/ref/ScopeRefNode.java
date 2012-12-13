@@ -23,8 +23,11 @@ import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
@@ -67,6 +70,46 @@ public class ScopeRefNode extends SignNode<ScopeType>
 	@Override
 	public final <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitScopeRef(this, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return this;
+	}
+
+	@Override
+	public final TypeNode toType() {
+		return this;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return this;
+	}
+
+	@Override
+	public final ScopeRefNode toScopeRef() {
+		return this;
+	}
+
+	@Override
+	public final MemberRefNode toMemberRef() {
+		return null;
+	}
+
+	@Override
+	public final AdapterRefNode toAdapterRef() {
+		return null;
+	}
+
+	@Override
+	public final BinaryNode toBinary() {
+		return null;
 	}
 
 }

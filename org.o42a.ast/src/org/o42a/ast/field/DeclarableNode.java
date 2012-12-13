@@ -20,10 +20,16 @@
 package org.o42a.ast.field;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.expression.MacroExpansionNode;
+import org.o42a.ast.ref.MemberRefNode;
 
 
 public interface DeclarableNode extends Node {
 
 	<R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p);
+
+	MemberRefNode toMemberRef();
+
+	MacroExpansionNode toMacroExpansion();
 
 }

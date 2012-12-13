@@ -21,7 +21,9 @@ package org.o42a.ast.ref;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclarableNode;
 
 
 public class BodyRefNode extends AbstractRefNode {
@@ -52,6 +54,31 @@ public class BodyRefNode extends AbstractRefNode {
 	public void printContent(StringBuilder out) {
 		this.owner.printContent(out);
 		this.suffix.printContent(out);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final ScopeRefNode toScopeRef() {
+		return null;
+	}
+
+	@Override
+	public final MemberRefNode toMemberRef() {
+		return null;
+	}
+
+	@Override
+	public final AdapterRefNode toAdapterRef() {
+		return null;
 	}
 
 	public static enum Suffix implements SignType {

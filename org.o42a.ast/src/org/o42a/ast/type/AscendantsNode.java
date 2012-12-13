@@ -19,8 +19,12 @@
 */
 package org.o42a.ast.type;
 
+import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.AbstractExpressionNode;
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.ref.RefNode;
 
 
 public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
@@ -54,6 +58,31 @@ public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
 	@Override
 	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitAscendants(this, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final TypeNode toType() {
+		return this;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
+	}
+
+	@Override
+	public final BinaryNode toBinary() {
+		return null;
 	}
 
 	@Override

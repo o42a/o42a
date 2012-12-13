@@ -22,6 +22,8 @@ package org.o42a.ast.ref;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.field.DeclarableNode;
 
 
 public class IntrinsicRefNode extends AbstractRefNode {
@@ -61,6 +63,31 @@ public class IntrinsicRefNode extends AbstractRefNode {
 	public void printContent(StringBuilder out) {
 		this.name.printContent(out);
 		this.suffix.printContent(out);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final ScopeRefNode toScopeRef() {
+		return null;
+	}
+
+	@Override
+	public final MemberRefNode toMemberRef() {
+		return null;
+	}
+
+	@Override
+	public final AdapterRefNode toAdapterRef() {
+		return null;
 	}
 
 	public enum Boundary implements SignType {

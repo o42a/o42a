@@ -21,6 +21,7 @@ package org.o42a.ast.clause;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
@@ -108,6 +109,16 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 	@Override
 	public <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitClauseDeclarator(this, p);
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
 	}
 
 	@Override

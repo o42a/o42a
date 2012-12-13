@@ -19,7 +19,9 @@
 */
 package org.o42a.ast.ref;
 
+import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclarableNode;
 
 
 public class AdapterRefNode extends AbstractRefNode {
@@ -61,6 +63,31 @@ public class AdapterRefNode extends AbstractRefNode {
 	@Override
 	public <R, P> R accept(RefNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitAdapterRef(this, p);
+	}
+
+	@Override
+	public final DeclarableNode toDeclarable() {
+		return null;
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final ScopeRefNode toScopeRef() {
+		return null;
+	}
+
+	@Override
+	public final MemberRefNode toMemberRef() {
+		return null;
+	}
+
+	@Override
+	public final AdapterRefNode toAdapterRef() {
+		return this;
 	}
 
 	@Override

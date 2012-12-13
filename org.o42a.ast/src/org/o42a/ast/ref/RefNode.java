@@ -26,4 +26,10 @@ public interface RefNode extends TypeNode {
 
 	<R, P> R accept(RefNodeVisitor<R, P> visitor, P p);
 
+	ScopeRefNode toScopeRef();
+
+	MemberRefNode toMemberRef();
+
+	AdapterRefNode toAdapterRef();
+
 }

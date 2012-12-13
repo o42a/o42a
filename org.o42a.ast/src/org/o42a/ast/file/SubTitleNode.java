@@ -20,7 +20,9 @@
 package org.o42a.ast.file;
 
 import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 
@@ -56,6 +58,16 @@ public class SubTitleNode extends AbstractStatementNode {
 	@Override
 	public <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitSubTitle(this, p);
+	}
+
+	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
 	}
 
 	@Override
