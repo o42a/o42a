@@ -29,11 +29,11 @@ import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.value.ValueType.FLOAT;
 import static org.o42a.core.value.ValueType.INTEGER;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.atom.DigitsNode;
-import org.o42a.ast.atom.NumberNode;
+import org.o42a.ast.atom.*;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.IntrinsicRefNode;
@@ -114,30 +114,103 @@ public abstract class RefInterpreter {
 
 		if (integer == null) {
 			// No digits interpreted as zero.
-			return integer(distributor, 0L, number);
+			return integerConstant(number, distributor, 0L);
 		}
 
-		final String digits;
+		final String integerDigits = digits(number.getSign(), integer);
+		final FractionalPartNode fractional = number.getFractional();
+		final ExponentNode exponent = number.getExponent();
 
-		if (number.isNegative()) {
-			digits = '-' + integer.getDigits();
-		} else {
-			digits = integer.getDigits();
+		if (fractional == null && exponent == null) {
+			return integerNumber(number, distributor, integerDigits);
 		}
+
+		final StringBuilder digits = new StringBuilder(integerDigits);
+
+		if (fractional != null) {
+			digits.append('.').append(fractional.getDigits().getDigits());
+		}
+		if (exponent != null) {
+			digits.append('e');
+			digits.append(digits(exponent.getSign(), exponent.getDigits()));
+		}
+
+		return floatNumber(number, distributor, digits.toString());
+	}
+
+	private static String digits(
+			SignNode<SignOfNumber> sign,
+			DigitsNode digits) {
+
+		final String result = digits.getDigits();
+
+		if (sign != null && sign.getType().isNegative()) {
+			return '-' + result;
+		}
+
+		return result;
+	}
+
+	private static Ref integerNumber(
+			NumberNode number,
+			Distributor distributor,
+			String digits) {
 
 		final long value;
 
 		try {
-			value = Long.parseLong(digits, number.getRadix().getRadix());
+			value = Long.parseLong(
+					digits,
+					number.getRadix().getRadix());
 		} catch (NumberFormatException e) {
 			distributor.getContext().getLogger().error(
 					"not_number",
 					number,
 					"Not a number");
-			return integer(distributor, 0L, number);
+			return integerConstant(number, distributor, 0L);
 		}
 
-		return integer(distributor, value, number);
+		return integerConstant(number, distributor, value);
+	}
+
+	private static final Ref integerConstant(
+			Node node,
+			Distributor p,
+			long value) {
+
+		final Location location = location(p, node);
+
+		return INTEGER.constantRef(location, p, value);
+	}
+
+	private static Ref floatNumber(
+			NumberNode number,
+			Distributor distributor,
+			String digits) {
+
+		final Double value;
+
+		try {
+			value = Double.parseDouble(digits);
+		} catch (NumberFormatException e) {
+			distributor.getContext().getLogger().error(
+					"not_number",
+					number,
+					"Not a number");
+			return floatConstant(number, distributor, 0.0d);
+		}
+
+		return floatConstant(number, distributor, value);
+	}
+
+	private static final Ref floatConstant(
+			Node node,
+			Distributor p,
+			double value) {
+
+		final Location location = location(p, node);
+
+		return FLOAT.constantRef(location, p, value);
 	}
 
 	private static boolean match(Name name, Container container) {
@@ -290,13 +363,6 @@ public abstract class RefInterpreter {
 		// Top-level expression clause
 		// shouldn't have access to enclosing prototype.
 		return prototypeExpressionClause(nested);
-	}
-
-	private static final Ref integer(Distributor p, long value, Node node) {
-
-		final Location location = location(p, node);
-
-		return INTEGER.constantRef(location, p, value);
 	}
 
 	private static final class PlainRefIp extends RefInterpreter {
