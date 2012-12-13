@@ -21,6 +21,7 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.*;
 import static org.o42a.util.string.Characters.MINUS;
+import static org.o42a.util.string.Characters.isDigit;
 
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.ExpressionNode;

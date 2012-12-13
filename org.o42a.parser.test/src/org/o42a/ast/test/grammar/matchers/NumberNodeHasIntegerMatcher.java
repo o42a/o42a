@@ -22,15 +22,16 @@ package org.o42a.ast.test.grammar.matchers;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.o42a.ast.Node;
+import org.o42a.ast.atom.DigitsNode;
 import org.o42a.ast.atom.NumberNode;
 
 
-public final class NumberNodeHasIntegerValueMatcher<T extends Node>
+public final class NumberNodeHasIntegerMatcher<T extends Node>
 		extends BaseMatcher<T> {
 
 	private final String value;
 
-	public NumberNodeHasIntegerValueMatcher(String value) {
+	public NumberNodeHasIntegerMatcher(String value) {
 		this.value = value;
 	}
 
@@ -41,11 +42,9 @@ public final class NumberNodeHasIntegerValueMatcher<T extends Node>
 		}
 
 		final NumberNode number = (NumberNode) item;
+		final DigitsNode integer = number.getInteger();
 
-		return number.getInteger()
-				.getDigits()
-				.toString()
-				.equals(this.value);
+		return integer != null && integer.getDigits().equals(this.value);
 	}
 
 	@Override

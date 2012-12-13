@@ -31,7 +31,7 @@ import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
-public class NumberTest extends GrammarTestCase {
+public class IntegerTest extends GrammarTestCase {
 
 	@Test
 	public void unsignedDecimal() {

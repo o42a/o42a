@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.o42a.ast.test.grammar.matchers.IntegerNumberNodeMatcher.INTEGER_NUMBER;
 import static org.o42a.util.string.NameEncoder.NAME_ENCODER;
 
 import org.hamcrest.CoreMatchers;
@@ -105,8 +106,20 @@ public class GrammarTestCase {
 		return (Matcher<T>) NumberNodeSignMatcher.NEGATIVE_NUMBER;
 	}
 
+	public static <T extends Node> Matcher<T> hasInteger(String digits) {
+		return new NumberNodeHasIntegerMatcher<T>(digits);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> Matcher<T> isInteger() {
+		return (Matcher<T>) INTEGER_NUMBER;
+	}
+
+	@SuppressWarnings("unchecked")
 	public static <T extends Node> Matcher<T> integer(String digits) {
-		return new NumberNodeHasIntegerValueMatcher<T>(digits);
+		return CoreMatchers.<T>allOf(
+				GrammarTestCase.<T>hasInteger(digits),
+				GrammarTestCase.<T>isInteger());
 	}
 
 	@SuppressWarnings("unchecked")

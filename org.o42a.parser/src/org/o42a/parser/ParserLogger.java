@@ -69,13 +69,6 @@ public abstract class ParserLogger implements Logger {
 				"Invalid target: expected either block name or nothing");
 	}
 
-	public void invalidSpaceInNumber(LogInfo location) {
-		warning(
-				"invalid_space_in_number",
-				location,
-				"Only a single space character allowed in number");
-	}
-
 	public void ioError(LogInfo location, String message) {
 		fatal("io_error", location, "I/O error: %s", message);
 	}

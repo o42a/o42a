@@ -20,10 +20,10 @@
 package org.o42a.parser.grammar.atom;
 
 import static java.lang.Character.isLetter;
-import static org.o42a.parser.Grammar.isDigit;
 import static org.o42a.parser.Grammar.whitespace;
 import static org.o42a.util.string.Characters.HYPHEN;
 import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
+import static org.o42a.util.string.Characters.isDigit;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.parser.Parser;
