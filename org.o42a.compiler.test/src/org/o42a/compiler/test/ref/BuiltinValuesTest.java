@@ -51,6 +51,26 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void positiveIntegerValue() {
+		compile("Integer value := +12345678900");
+
+		final Obj field = field("integer value").toObject();
+
+		assertEquals(ValueType.INTEGER, field.type().getValueType());
+		assertThat(definiteValue(field, ValueType.INTEGER), is(12345678900L));
+	}
+
+	@Test
+	public void negativeIntegerValue() {
+		compile("Integer value := -12345678900");
+
+		final Obj field = field("integer value").toObject();
+
+		assertEquals(ValueType.INTEGER, field.type().getValueType());
+		assertThat(definiteValue(field, ValueType.INTEGER), is(-12345678900L));
+	}
+
+	@Test
 	public void integerByStringValue() {
 		compile("Integer value := integer '12345678900'");
 
@@ -82,7 +102,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 	@Test
 	public void floatValue() {
-		compile("Float value := float '1234567890.25'");
+		compile("Float value := 1234567890.25");
 
 		final Obj field = field("float value").toObject();
 
@@ -92,7 +112,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 	@Test
 	public void positiveFloatValue() {
-		compile("Float value := float '+1234567890.25'");
+		compile("Float value := +1234567890,25");
 
 		final Obj field = field("float value").toObject();
 
@@ -102,6 +122,36 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 	@Test
 	public void negativeFloatValue() {
+		compile("Float value := -123,25e10");
+
+		final Obj field = field("float value").toObject();
+
+		assertEquals(ValueType.FLOAT, field.type().getValueType());
+		assertThat(definiteValue(field, ValueType.FLOAT), is(-123.25e10d));
+	}
+
+	@Test
+	public void floatValueByString() {
+		compile("Float value := float '1234567890.25'");
+
+		final Obj field = field("float value").toObject();
+
+		assertEquals(ValueType.FLOAT, field.type().getValueType());
+		assertThat(definiteValue(field, ValueType.FLOAT), is(1234567890.25d));
+	}
+
+	@Test
+	public void positiveFloatValueByString() {
+		compile("Float value := float '+1234567890.25'");
+
+		final Obj field = field("float value").toObject();
+
+		assertEquals(ValueType.FLOAT, field.type().getValueType());
+		assertThat(definiteValue(field, ValueType.FLOAT), is(1234567890.25d));
+	}
+
+	@Test
+	public void negativeFloatValueByString() {
 		compile("Float value := float '-1234567890.25'");
 
 		final Obj field = field("float value").toObject();
