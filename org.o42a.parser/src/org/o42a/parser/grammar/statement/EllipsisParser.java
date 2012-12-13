@@ -25,6 +25,7 @@ import static org.o42a.util.string.Characters.HORIZONTAL_ELLIPSIS;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.EllipsisNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Parser;
@@ -69,30 +70,36 @@ public class EllipsisParser implements Parser<EllipsisNode> {
 
 		context.acceptComments(false, mark);
 
-		final NameNode target;
+		return new EllipsisNode(mark, target(context));
+	}
+
+	private NameNode target(ParserContext context) {
+
 		final StatementNode suffix = context.parse(IMPERATIVE.statement());
 
 		if (suffix == null) {
-			target = null;
-		} else if (!(suffix instanceof MemberRefNode)) {
-			context.getLogger().invalidEllipsisTarget(suffix);
-			target = null;
-		} else {
-
-			final MemberRefNode ref = (MemberRefNode) suffix;
-
-			if (ref.getOwner() != null || ref.getDeclaredIn() != null) {
-				context.getLogger().invalidEllipsisTarget(suffix);
-				target = null;
-			} else {
-				target = ref.getName();
-				if (target == null) {
-					context.getLogger().invalidEllipsisTarget(suffix);
-				}
-			}
+			return null;
 		}
 
-		return new EllipsisNode(mark, target);
+		final RefNode ref = suffix.toRef();
+		final MemberRefNode memberRef = ref == null ? null : ref.toMemberRef();
+
+		if (memberRef == null) {
+			context.getLogger().invalidEllipsisTarget(suffix);
+			return null;
+		}
+		if (memberRef.getOwner() != null || memberRef.getDeclaredIn() != null) {
+			context.getLogger().invalidEllipsisTarget(suffix);
+			return null;
+		}
+
+		final NameNode name = memberRef.getName();
+
+		if (name == null) {
+			context.getLogger().invalidEllipsisTarget(suffix);
+		}
+
+		return name;
 	}
 
 }

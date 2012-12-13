@@ -29,6 +29,7 @@ import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.NamedBlockNode;
 import org.o42a.ast.statement.StatementNode;
@@ -181,26 +182,30 @@ public class StatementParser implements Parser<StatementNode> {
 	private StatementNode startWithDeclarable(
 			ParserContext context,
 			ExpressionNode expression) {
-		if (!(expression instanceof DeclarableNode)) {
+
+		final DeclarableNode declarable = expression.toDeclarable();
+
+		if (declarable == null) {
 			return expression;
 		}
 
-		final DeclarableNode declarable = (DeclarableNode) expression;
 		final NamedBlockNode namedBlock =
 				parseNamedBlock(context, declarable);
 
 		if (namedBlock != null) {
 			return namedBlock;
 		}
-		if (declarable instanceof MacroExpansionNode) {
+
+		final MacroExpansionNode expansion = declarable.toMacroExpansion();
+
+		if (expansion != null) {
 			if (this.grammar.isImperative()) {
 				return expression;
 			}
 
-			final MacroExpansionNode expansion =
-					(MacroExpansionNode) declarable;
+			final RefNode expandedRef = expansion.getOperand().toRef();
 
-			if (!(expansion.getOperand() instanceof MemberRefNode)) {
+			if (expandedRef == null || expandedRef.toMemberRef() == null) {
 				return expression;
 			}
 		}
@@ -217,17 +222,17 @@ public class StatementParser implements Parser<StatementNode> {
 	private NamedBlockNode parseNamedBlock(
 			ParserContext context,
 			DeclarableNode declarable) {
-		if (!(declarable instanceof MemberRefNode)) {
+
+		final MemberRefNode memberRef = declarable.toMemberRef();
+
+		if (memberRef == null) {
+			return null;
+		}
+		if (memberRef.getOwner() != null || memberRef.getDeclaredIn() != null) {
 			return null;
 		}
 
-		final MemberRefNode ref = (MemberRefNode) declarable;
-
-		if (ref.getOwner() != null || ref.getDeclaredIn() != null) {
-			return null;
-		}
-
-		final NameNode name = ref.getName();
+		final NameNode name = memberRef.getName();
 
 		if (name == null) {
 			return null;
@@ -236,7 +241,7 @@ public class StatementParser implements Parser<StatementNode> {
 		final NamedBlockNode namedBlock = context.parse(namedBlock(name));
 
 		if (namedBlock != null) {
-			name.addComments(ref.getComments());
+			name.addComments(memberRef.getComments());
 		}
 
 		return namedBlock;

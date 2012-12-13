@@ -57,16 +57,15 @@ public class AdapterRefParser implements Parser<AdapterRefNode> {
 			return new AdapterRefNode(this.owner, adapterId, membership);
 		}
 
-		if (type instanceof MemberRefNode) {
+		final MemberRefNode memberRef = type.toMemberRef();
 
-			final MemberRefNode fieldRef = (MemberRefNode) type;
-
-			if (fieldRef.getMembership() != null) {
+		if (memberRef != null) {
+			if (memberRef.getMembership() != null) {
 
 				final MemberRefNode newType = new MemberRefNode(
-						fieldRef.getOwner(),
-						fieldRef.getQualifier(),
-						fieldRef.getName(),
+						memberRef.getOwner(),
+						memberRef.getQualifier(),
+						memberRef.getName(),
 						null);
 				final AdapterIdNode newAdapterId = new AdapterIdNode(
 						adapterId.getPrefix(),
@@ -79,27 +78,29 @@ public class AdapterRefParser implements Parser<AdapterRefNode> {
 				return new AdapterRefNode(
 						this.owner,
 						newAdapterId,
-						fieldRef.getMembership());
+						memberRef.getMembership());
 			}
-		} else if (type instanceof AdapterRefNode) {
+		} else {
 
-			final AdapterRefNode adapterRef = (AdapterRefNode) type;
+			final AdapterRefNode adapterRef = type.toAdapterRef();
 
-			return new AdapterRefNode(
-					new AdapterRefNode(
-							this.owner,
-							new AdapterIdNode(
-									adapterId.getPrefix(),
-									null,
-									(RefNode) adapterRef.getOwner(),
-									null),
-							null),
-					new AdapterIdNode(
-							adapterRef.getAdapterId().getPrefix(),
-							adapterRef.getAdapterId().getOpening(),
-							adapterRef.getType(),
-							adapterRef.getAdapterId().getClosing()),
-					adapterRef.getMembership());
+			if (adapterRef != null) {
+				return new AdapterRefNode(
+						new AdapterRefNode(
+								this.owner,
+								new AdapterIdNode(
+										adapterId.getPrefix(),
+										null,
+										adapterRef.getOwner().toRef(),
+										null),
+								null),
+						new AdapterIdNode(
+								adapterRef.getAdapterId().getPrefix(),
+								adapterRef.getAdapterId().getOpening(),
+								adapterRef.getType(),
+								adapterRef.getAdapterId().getClosing()),
+						adapterRef.getMembership());
+			}
 		}
 
 		final MembershipNode membership = context.parse(MEMBERSHIP);
