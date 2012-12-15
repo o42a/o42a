@@ -35,10 +35,15 @@ public final class ObjectScopeIR extends ScopeIR {
 		super(generator, object.getScope());
 	}
 
-
 	@Override
 	public void allocate() {
-		getScope().toObject().ir(getGenerator()).allocate();
+
+		final Obj object = getScope().toObject();
+
+		if (!object.getConstructionMode().isRuntime()
+				|| object.getDereferencedLink() == null) {
+			object.ir(getGenerator()).allocate();
+		}
 	}
 
 	@Override

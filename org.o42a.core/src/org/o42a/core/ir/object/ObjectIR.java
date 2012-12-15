@@ -77,11 +77,15 @@ public class ObjectIR  {
 		return getObject().getScope().ir(getGenerator());
 	}
 
+	public final ObjectIR definitionIR() {
+		if (isExact()) {
+			return this;
+		}
+		return getObject().type().getLastDefinition().ir(getGenerator());
+	}
+
 	public final ObjectIRBody getBodyType() {
-
-		final Obj lastDefinition = getObject().type().getLastDefinition();
-
-		return lastDefinition.ir(getGenerator()).getMainBodyIR();
+		return definitionIR().getMainBodyIR();
 	}
 
 	public final ObjectIRBody getMainBodyIR() {

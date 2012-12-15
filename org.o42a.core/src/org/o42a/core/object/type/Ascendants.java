@@ -129,10 +129,10 @@ public class Ascendants
 			//return this.constructionMode;
 		}
 
-		final ConstructionMode enclosingMode = enclosingConstructionMode();
+		ConstructionMode constructionMode = enclosingConstructionMode();
 
-		if (enclosingMode.isRuntime()) {
-			return enclosingMode;
+		if (constructionMode.isRuntime()) {
+			return constructionMode;
 		}
 
 		final TypeRef ancestor = getExplicitAncestor();
@@ -142,13 +142,28 @@ public class Ascendants
 			final ConstructionMode ancestorMode =
 					ancestor.getConstructionMode();
 
-			if (enclosingMode.ordinal() > ancestorMode.ordinal()
-					&& !ancestorMode.isProhibited()) {
+			if (ancestorMode.isRuntime() || ancestorMode.isProhibited()) {
 				return ancestorMode;
+			}
+			if (constructionMode.ordinal() < ancestorMode.ordinal()) {
+				constructionMode = ancestorMode;
 			}
 		}
 
-		return enclosingMode;
+		for (Sample sample : getSamples()) {
+
+			final ConstructionMode sampleMode =
+					sample.getObject().getConstructionMode();
+
+			if (sampleMode.isRuntime() || sampleMode.isProhibited()) {
+				return sampleMode;
+			}
+			if (constructionMode.ordinal() < sampleMode.ordinal()) {
+				constructionMode = sampleMode;
+			}
+		}
+
+		return constructionMode;
 	}
 
 	public final boolean isEmpty() {

@@ -27,7 +27,9 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.MemberFldOp;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
@@ -68,7 +70,6 @@ public class ScopeFldOp extends MemberFldOp {
 		}
 
 		final Block code = dirs.code();
-		final ObjectIRBody target = fld().getTarget();
 		final DataOp targetPtr = ptr().object(code).load(null, code);
 
 		return holder.hold(
@@ -76,7 +77,7 @@ public class ScopeFldOp extends MemberFldOp {
 				anonymousObject(
 						getBuilder(),
 						targetPtr,
-						target.getAscendant()));
+						fld().getAscendant()));
 	}
 
 	@Override

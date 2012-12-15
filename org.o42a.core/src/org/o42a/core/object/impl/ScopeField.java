@@ -139,10 +139,9 @@ public final class ScopeField extends ObjectField {
 		protected ScopeFld declare(ObjectIRBodyData data) {
 
 			final ScopeFld fld = new ScopeFld(getField());
+			final Obj target = getField().toObject();
 
-			fld.declare(
-					data,
-					getField().toObject().ir(getGenerator()).getMainBodyIR());
+			fld.declare(data, target);
 
 			return fld;
 		}
