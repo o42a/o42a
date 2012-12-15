@@ -31,6 +31,7 @@ import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.MemberFld;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
@@ -40,6 +41,7 @@ public final class ScopeFld
 
 	public static final Type SCOPE_FLD = new Type();
 
+	private Obj ascendant;
 	private ObjectIRBody target;
 
 	public ScopeFld(Field field) {
@@ -61,6 +63,10 @@ public final class ScopeFld
 		return (Type) super.getInstance();
 	}
 
+	public final Obj getAscendant() {
+		return this.ascendant;
+	}
+
 	public final ObjectIRBody getTarget() {
 		return this.target;
 	}
@@ -73,8 +79,13 @@ public final class ScopeFld
 				isOmitted() ? null : host.ptr().field(code, getInstance()));
 	}
 
-	public final void declare(ObjectIRBodyData data, ObjectIRBody target) {
-		this.target = target;
+	public final void declare(ObjectIRBodyData data, Obj target) {
+		this.ascendant = target;
+		if (!target.getConstructionMode().isRuntime()) {
+			this.target = target.ir(data.getGenerator()).getMainBodyIR();
+		} else {
+			this.target = null;
+		}
 		allocate(data);
 	}
 
@@ -84,8 +95,16 @@ public final class ScopeFld
 
 	@Override
 	public void fill(Type instance) {
-		instance.object().setConstant(true).setValue(
-				this.target.pointer(instance.getGenerator()).toData());
+
+		final DataRec objectRec = instance.object().setConstant(true);
+		final ObjectIRBody target = getTarget();
+
+		if (target != null) {
+			objectRec.setValue(
+					target.pointer(instance.getGenerator()).toData());
+		} else {
+			objectRec.setNull();
+		}
 	}
 
 	@Override
