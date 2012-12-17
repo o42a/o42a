@@ -35,8 +35,8 @@ Static := test (
    
   List := row list (`integer) [[1, 2, 3]]
 
-  ~~Assert [list: size == 3] "Wrong static row list size"
-  Assert [list [1] == 2] "Wrong static row list element"
-  ~~Assert [--list [-1]] "Invalid static row list element accessed"
-  ~~Assert [--list [3]] "Non-existing static row list element accessed"
+  Assert [list: size == 3] "Wrong size"
+  Assert [list [1] == 2] "Wrong element"
+  Assert [--list [-1]] "Invalid element accessed"
+  Assert [--list [3]] "Non-existing element accessed"
 )
