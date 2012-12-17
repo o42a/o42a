@@ -27,6 +27,7 @@ import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE
 import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
 import static org.o42a.core.object.type.TypeUsage.RUNTIME_TYPE_USAGE;
 import static org.o42a.core.object.type.TypeUsage.STATIC_TYPE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.RUNTIME_VALUE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.STATIC_VALUE_USAGE;
 import static org.o42a.core.value.TypeParameters.typeParameters;
@@ -275,18 +276,7 @@ public final class ObjectType implements UserInfo {
 		derivationUses().useBy(
 				derived.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
-		if (derived.meta().isUpdated()) {
-			trackAscendantDefsUsage(derived);
-
-			final LinkUses linkUses = linkUses();
-
-			if (linkUses != null) {
-				linkUses.useAsAncestor(derived);
-			}
-			if (derived.getWrapped() == null) {
-				registerDerivative(new Inheritor(derived));
-			}
-		}
+		trackUpdatesByAncestor(derived);
 	}
 
 	protected void useAsSample(Sample sample) {
@@ -300,19 +290,9 @@ public final class ObjectType implements UserInfo {
 		derivationUses().useBy(
 				derived.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
-		if (derived.meta().isUpdated()) {
-			trackAscendantDefsUsage(derived);
-			trackAncestorDefsUpdates(derived);
 
-			final LinkUses linkUses = linkUses();
-
-			if (linkUses != null) {
-				linkUses.useAsSample(sample);
-			}
-			if (derived.getWrapped() == null) {
-				registerDerivative(sample);
-			}
-		}
+		trackUpdatesBySample(sample);
+		trackImplicitSampleRtDerivation(sample);
 	}
 
 	final void setKnownValueType(ValueType<?> valueType) {
@@ -549,6 +529,79 @@ public final class ObjectType implements UserInfo {
 				sampleTypeRef.getType().type().useAsSample(sample);
 			}
 		}
+	}
+
+	private void trackUpdatesByAncestor(Obj derived) {
+		if (!derived.meta().isUpdated()) {
+			return;
+		}
+
+		trackAscendantDefsUsage(derived);
+
+		final LinkUses linkUses = linkUses();
+
+		if (linkUses != null) {
+			linkUses.useAsAncestor(derived);
+		}
+		if (derived.getWrapped() == null) {
+			registerDerivative(new Inheritor(derived));
+		}
+	}
+
+	private void trackUpdatesBySample(Sample sample) {
+
+		final Obj derived = sample.getDerivedObject();
+
+		if (!derived.meta().isUpdated()) {
+			return;
+		}
+
+		trackAscendantDefsUsage(derived);
+		trackAncestorDefsUpdates(derived);
+
+		final LinkUses linkUses = linkUses();
+
+		if (linkUses != null) {
+			linkUses.useAsSample(sample);
+		}
+		if (derived.getWrapped() == null) {
+			registerDerivative(sample);
+		}
+	}
+
+	private void trackImplicitSampleRtDerivation(Sample sample) {
+		if (sample.isExplicit()) {
+			return;
+		}
+
+		// Run time derivation of implicit sample means
+		// the owner object may be constructed at run time.
+		final Obj derived = sample.getDerivedObject();
+		final Obj enclosingObject = sample.getScope().toObject();
+
+		if (enclosingObject != null
+				&& sample.getOverriddenMember() != null) {
+			// Run time field override means the owner object
+			// can be derived at run time.
+			enclosingObject.type()
+			.uses()
+			.useBy(derived.type().rtDerivation(), RUNTIME_TYPE_USAGE);
+			return;
+		}
+
+		// Implicit sample run time construction means the owner object's
+		// value can be constructed at run time.
+		final Obj owner;
+
+		if (enclosingObject != null) {
+			owner = enclosingObject;
+		} else {
+			owner = sample.getScope().toLocal().getOwner();
+		}
+
+		owner.value().uses().useBy(
+				derived.type().rtDerivation(),
+				EXPLICIT_RUNTIME_VALUE_USAGE);
 	}
 
 	private void trackAscendantDefsUsage(Obj derived) {
