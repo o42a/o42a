@@ -106,9 +106,9 @@ Char := test (
   Name = "Char"
   Print error '    ' [name] nl
 
-  Assert [(rt-string 'abc')[1] == "b"] "Wrong char #1"
-  Assert [rt-string 'abc': char[0] == "a"] "Wrong first char"
-  Assert [rt-string 'abc': char[2] == "c"] "Wrong last char"
-  Assert [--rt-string 'abc': char[-1]] "Char at negative index"
-  Assert [--rt-string 'abc': char[3]] "Char at invalid index"
+  Assert [rt-string 'abc' [1] == "b"] "Wrong char #1"
+  Assert [rt-string 'abc' [0] == "a"] "Wrong first char"
+  Assert [rt-string 'abc' [2] == "c"] "Wrong last char"
+  Assert [--rt-string 'abc' [-1]] "Char at negative index"
+  Assert [--rt-string 'abc' [3]] "Char at invalid index"
 )

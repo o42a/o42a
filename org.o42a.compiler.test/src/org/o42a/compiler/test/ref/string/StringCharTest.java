@@ -81,7 +81,7 @@ public class StringCharTest extends CompilerTestCase {
 	public void runtimeString() {
 		compile(
 				"Use namespace 'Test'",
-				"Chr := rt-string 'abc': char[0]");
+				"Chr := rt-string 'abc' [0]");
 
 		assertRuntimeValue(valueOf(field("chr"), ValueType.STRING));
 	}
