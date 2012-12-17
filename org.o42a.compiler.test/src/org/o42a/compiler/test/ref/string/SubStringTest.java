@@ -31,28 +31,21 @@ public class SubStringTest extends CompilerTestCase {
 
 	@Test
 	public void substring() {
-		compile("Sub := \"asubc\": substring _ from [1] to [4]");
-
-		assertThat(definiteValue(field("sub"), ValueType.STRING), is("sub"));
-	}
-
-	@Test
-	public void shortForm() {
-		compile("Sub := \"asubc\": substring [1, 4]");
+		compile("Sub := \"asubc\": substring _from [1] to [4]");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("sub"));
 	}
 
 	@Test
 	public void leadingSubstring() {
-		compile("Sub := \"asubc\": substring _ to [4]");
+		compile("Sub := \"asubc\": substring _to [4]");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("asub"));
 	}
 
 	@Test
 	public void trailingSubstring() {
-		compile("Sub := \"asubc\": substring _ from [1]");
+		compile("Sub := \"asubc\": substring _from [1]");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("subc"));
 	}

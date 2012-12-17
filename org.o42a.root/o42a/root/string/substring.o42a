@@ -21,10 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Substring :=> string
 ====================
 
-<*Range start> (
-  <[] | to*> From = ()
-)
-
 <From ...> (
   <[] | to> From = ()
 )
