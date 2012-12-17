@@ -106,7 +106,8 @@ public class Namespace extends AbstractContainer {
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
-		return this.enclosing.member(user, accessor, memberId, declaredIn);
+		return getEnclosingContainer()
+				.member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
@@ -115,13 +116,21 @@ public class Namespace extends AbstractContainer {
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
+
+		final Path foundInEnclosing =
+				getEnclosingContainer()
+				.member(user, accessor, memberId, declaredIn);
+
+		if (foundInEnclosing != null) {
+			return foundInEnclosing;
+		}
 		if (accessibleBy(accessor)) {
 
-			final BoundPath found =
+			final BoundPath foundInNS =
 					findInNs(user, accessor, memberId, declaredIn);
 
-			if (found != null) {
-				return found.getPath();
+			if (foundInNS != null) {
+				return foundInNS.getPath();
 			}
 		}
 
