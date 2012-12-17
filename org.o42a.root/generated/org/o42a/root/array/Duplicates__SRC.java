@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link DuplicatesArray}.
+ * o42a sources for {@link Duplicates}.
  * 
- * File: root/duplicates_array.o42a
+ * File: root/duplicates.o42a
  */
-public final class DuplicatesArray__SRC implements AnnotatedSources {
+public final class Duplicates__SRC implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public DuplicatesArray__SRC(AnnotatedSources parent) {
+	public Duplicates__SRC(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,7 +28,7 @@ public final class DuplicatesArray__SRC implements AnnotatedSources {
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"duplicates_array.o42a");
+				"duplicates.o42a");
 	}
 
 	@Override

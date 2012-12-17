@@ -47,8 +47,8 @@ import org.o42a.root.Root;
 import org.o42a.util.fn.Cancelable;
 
 
-@SourcePath(relativeTo = Root.class, value = "duplicates_array.o42a")
-public class DuplicatesArray extends AnnotatedBuiltin {
+@SourcePath(relativeTo = Root.class, value = "duplicates.o42a")
+public class Duplicates extends AnnotatedBuiltin {
 
 	private static final MemberName SIZE =
 			fieldName(CASE_INSENSITIVE.canonicalName("size"));
@@ -58,7 +58,7 @@ public class DuplicatesArray extends AnnotatedBuiltin {
 	private Ref size;
 	private Ref duplicate;
 
-	public DuplicatesArray(MemberOwner owner, AnnotatedSources sources) {
+	public Duplicates(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 
@@ -198,12 +198,12 @@ public class DuplicatesArray extends AnnotatedBuiltin {
 
 	private static final class DuplicatesArrayEval extends InlineEval {
 
-		private final DuplicatesArray array;
+		private final Duplicates array;
 		private final InlineValue inlineSize;
 		private final InlineValue inlineDuplicate;
 
 		DuplicatesArrayEval(
-				DuplicatesArray array,
+				Duplicates array,
 				InlineValue inlineSize,
 				InlineValue inlineDuplicate) {
 			super(null);

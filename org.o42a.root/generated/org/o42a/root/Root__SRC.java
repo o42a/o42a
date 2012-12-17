@@ -60,9 +60,9 @@ public final class Root__SRC implements AnnotatedSources {
 					owner,
 					new org.o42a.root.DirectiveValueTypeObject__SRC(this))
 			.getScope().toField(),
-			new org.o42a.root.array.DuplicatesArray(
+			new org.o42a.root.array.Duplicates(
 					owner,
-					new org.o42a.root.array.DuplicatesArray__SRC(this))
+					new org.o42a.root.array.Duplicates__SRC(this))
 			.getScope().toField(),
 			new org.o42a.root.numeric.FloatValueTypeObject(
 					owner,
