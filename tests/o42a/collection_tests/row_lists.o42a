@@ -40,3 +40,15 @@ Static := test (
   Assert [--list [-1]] "Invalid element accessed"
   Assert [--list [3]] "Non-existing element accessed"
 )
+
+Runtime := test (
+  Name = "Runtime"
+  Print error '  ' [name] nl
+
+  List := row list (`string) [[rt-string 'a', rt-string 'b']]
+
+  Assert [list: size == 2] "Wrong size"
+  Assert [list [1] == "b"] "Wrong element"
+  Assert [--list [-10]] "Invalid element accessed"
+  Assert [--list [13]] "Non-existing element accessed"
+)
