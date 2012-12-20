@@ -28,10 +28,12 @@ import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import java.util.Arrays;
 
 import org.o42a.analysis.use.UserInfo;
+import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.DefinitionTarget;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.*;
 import org.o42a.core.object.type.impl.ExplicitSample;
 import org.o42a.core.object.type.impl.ImplicitSample;
@@ -392,8 +394,27 @@ public class Ascendants
 			FieldAscendants fieldAscendants) {
 
 		Ascendants ascendants = this;
-		final ObjectType containerType =
-				member.getContainer().toObject().type();
+		final Container container = member.getContainer();
+		final LocalScope localContainer = container.toLocal();
+
+		if (localContainer != null) {
+			assert isEmpty() :
+				"Can not explicitly override a local member " + member;
+
+			final Member overridden =
+					localContainer.getPropagatedFrom()
+					.member(member.getMemberKey());
+
+			assert overridden != null :
+				"Overridden member not found: " + member;
+
+			ascendants = ascendants.addMemberOverride(overridden);
+
+			return fieldAscendants.updateAscendants(ascendants);
+		}
+
+		final Obj containerObject = container.toObject();
+		final ObjectType containerType = containerObject.type();
 		final TypeRef ancestor = containerType.getAncestor();
 
 		if (ancestor != null) {

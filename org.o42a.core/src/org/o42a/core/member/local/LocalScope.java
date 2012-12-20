@@ -29,10 +29,12 @@ import org.o42a.core.*;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
+import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.impl.ExplicitLocalScope;
 import org.o42a.core.member.local.impl.LocalOwnerStep;
+import org.o42a.core.object.Accessor;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.SourceInfo;
@@ -68,6 +70,7 @@ public abstract class LocalScope
 	private Set<Scope> enclosingScopes;
 	private ID id;
 	private int anonymousSeq;
+	private boolean allResolved;
 
 	public LocalScope(MemberLocal member) {
 		this.member = member;
@@ -87,6 +90,8 @@ public abstract class LocalScope
 	public final Obj getOwner() {
 		return this.owner;
 	}
+
+	public abstract LocalScope getPropagatedFrom();
 
 	public abstract Name getName();
 
@@ -177,6 +182,15 @@ public abstract class LocalScope
 	@Override
 	public final ConstructionMode getConstructionMode() {
 		return AbstractScope.constructionMode(this);
+	}
+
+	@Override
+	public final Path findMember(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
+		return member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
@@ -299,7 +313,20 @@ public abstract class LocalScope
 		return Placed.distributeIn(this, container);
 	}
 
-	public abstract void resolveAll();
+	public void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			for (Member member : getMembers()) {
+				member.resolveAll();
+			}
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
 
 	@Override
 	public final ID nextAnonymousId() {
@@ -352,7 +379,7 @@ public abstract class LocalScope
 		return this.resolverFactory;
 	}
 
-	final OwningLocal toOwner() {
+	protected final OwningLocal toOwner() {
 		return this.owningLocal;
 	}
 

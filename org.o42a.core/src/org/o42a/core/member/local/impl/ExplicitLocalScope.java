@@ -49,7 +49,6 @@ public final class ExplicitLocalScope extends LocalScope {
 	private ImperativeBlock block;
 	private LocalIR ir;
 	private byte hasSubClauses;
-	private boolean allResolved;
 
 	public ExplicitLocalScope(
 			LocationInfo location,
@@ -75,6 +74,11 @@ public final class ExplicitLocalScope extends LocalScope {
 				owner.toMemberOwner()));
 		this.name = reproducedFrom.getName();
 		((ExplicitMemberLocal) toMember()).initReproduced(this, reproducedFrom);
+	}
+
+	@Override
+	public final LocalScope getPropagatedFrom() {
+		return null;
 	}
 
 	@Override
@@ -188,36 +192,11 @@ public final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path findMember(
-			PlaceInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn) {
-		return member(user, accessor, memberId, declaredIn);
-	}
-
-	@Override
 	public Member member(MemberKey memberKey) {
 		if (memberKey.getOrigin() != this) {
 			return null;
 		}
 		return this.members.get(memberKey.getMemberId());
-	}
-
-	@Override
-	public void resolveAll() {
-		if (this.allResolved) {
-			return;
-		}
-		this.allResolved = true;
-		getContext().fullResolution().start();
-		try {
-			for (Member member : getMembers()) {
-				member.resolveAll();
-			}
-		} finally {
-			getContext().fullResolution().end();
-		}
 	}
 
 	@Override
