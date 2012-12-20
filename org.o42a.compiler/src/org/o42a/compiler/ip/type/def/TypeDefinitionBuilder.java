@@ -140,15 +140,7 @@ public class TypeDefinitionBuilder
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
-
-		final Path found = member(user, accessor, memberId, declaredIn);
-
-		if (found != null) {
-			return found;
-		}
-
-		return getEnclosingContainer()
-				.findMember(user, accessor, memberId, declaredIn);
+		return member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
