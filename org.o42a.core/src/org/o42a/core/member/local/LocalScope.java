@@ -68,7 +68,6 @@ public abstract class LocalScope
 	private final
 	ResolverFactory<LocalResolver, FullLocalResolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
-	private ID id;
 	private int anonymousSeq;
 	private boolean allResolved;
 
@@ -81,10 +80,7 @@ public abstract class LocalScope
 
 	@Override
 	public final ID getId() {
-		if (this.id != null) {
-			return this.id;
-		}
-		return toMember().getMemberKey().toID();
+		return this.member.getId();
 	}
 
 	public final Obj getOwner() {
