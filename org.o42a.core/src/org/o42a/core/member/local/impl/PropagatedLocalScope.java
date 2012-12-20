@@ -20,6 +20,7 @@
 package org.o42a.core.member.local.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.PlaceInfo;
@@ -39,17 +40,26 @@ import org.o42a.util.string.Name;
 public final class PropagatedLocalScope extends LocalScope {
 
 	private final ExplicitLocalScope explicit;
+	private HashMap<MemberKey, Member> members;
+	private boolean allMembersPropagated;
+	private LocalScope propagatedFrom;
 
 	public PropagatedLocalScope(
 			PropagatedMemberLocal member,
 			LocalScope propagatedFrom) {
 		super(member);
+		this.propagatedFrom = propagatedFrom;
 		this.explicit = explicitLocal(propagatedFrom);
 	}
 
 	@Override
+	public final LocalScope getPropagatedFrom() {
+		return this.propagatedFrom;
+	}
+
+	@Override
 	public Obj getSource() {
-		return this.explicit.getSource();
+		return explicit().getSource();
 	}
 
 	@Override
@@ -59,22 +69,59 @@ public final class PropagatedLocalScope extends LocalScope {
 
 	@Override
 	public ImperativeBlock getBlock() {
-		return this.explicit.getBlock();
+		return explicit().getBlock();
 	}
 
 	@Override
 	public Collection<Member> getMembers() {
-		return this.explicit.getMembers();
+		if (this.allMembersPropagated) {
+			return this.members.values();
+		}
+
+		final Collection<Member> explicitMembers = explicit().getMembers();
+
+		if (this.members == null) {
+			this.members =
+					new HashMap<MemberKey, Member>(explicitMembers.size());
+		}
+
+		for (Member member : explicitMembers) {
+			member(member.getMemberKey());
+		}
+		this.allMembersPropagated = true;
+
+		return explicitMembers;
 	}
 
 	@Override
 	public MemberClause[] getImplicitClauses() {
-		return this.explicit.getImplicitClauses();
+		return explicit().getImplicitClauses();
 	}
 
 	@Override
 	public Member member(MemberKey memberKey) {
-		return this.explicit.member(memberKey);
+		if (this.members != null) {
+
+			final Member found = this.members.get(memberKey);
+
+			if (found != null) {
+				return found;
+			}
+		} else {
+			this.members = new HashMap<MemberKey, Member>();
+		}
+
+		final Member sample = getPropagatedFrom().member(memberKey);
+
+		if (sample == null) {
+			return null;
+		}
+
+		final Member propagated = sample.propagateTo(toOwner());
+
+		this.members.put(sample.getMemberKey(), propagated);
+
+		return propagated;
 	}
 
 	@Override
@@ -83,31 +130,17 @@ public final class PropagatedLocalScope extends LocalScope {
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
-		return this.explicit.member(user, accessor, memberId, declaredIn);
+		return explicit().member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
 	public boolean hasSubClauses() {
-		return this.explicit.hasSubClauses();
+		return explicit().hasSubClauses();
 	}
 
 	@Override
 	public MemberClause clause(MemberId memberId, Obj declaredIn) {
-		return this.explicit.clause(memberId, declaredIn);
-	}
-
-	@Override
-	public Path findMember(
-			PlaceInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn) {
-		return this.explicit.findMember(user, accessor, memberId, declaredIn);
-	}
-
-	@Override
-	public void resolveAll() {
-		this.explicit.resolveAll();
+		return explicit().clause(memberId, declaredIn);
 	}
 
 	@Override
