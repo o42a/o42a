@@ -26,13 +26,12 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
-import org.o42a.core.ref.path.ObjectConstructor;
-import org.o42a.core.ref.path.PathReproducer;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.TypeParameters;
 
 
 public class ValueOf extends ObjectConstructor {
@@ -59,23 +58,16 @@ public class ValueOf extends ObjectConstructor {
 		return this.operand;
 	}
 
-	public TypeRef ancestor(LocationInfo location) {
-
-		final TypeParameters<?> typeParameters =
-				operand().typeParameters(getScope());
-
-		return typeParameters.getValueType()
-				.typeRef(location, getScope(), typeParameters);
-	}
-
 	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		return ancestor(location);
+		return operand()
+				.getValueType()
+				.typeRef(location, getScope());
 	}
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(ref, null);
+		return new ValueFieldDefinition(ref, rescopedTypeParameters(ref));
 	}
 
 	@Override
@@ -101,6 +93,20 @@ public class ValueOf extends ObjectConstructor {
 	@Override
 	protected Obj createObject() {
 		return new ValueObject(this);
+	}
+
+	private TypeRefParameters rescopedTypeParameters(Ref ref) {
+
+		final TypeRefParameters typeParameters = operand().typeParameters();
+		final BoundPath path = ref.getPath();
+
+		if (path.rawLength() == 1) {
+			return typeParameters;
+		}
+
+		final PrefixPath prefix = path.cut(1).toPrefix(ref.getScope());
+
+		return typeParameters.prefixWith(prefix);
 	}
 
 }
