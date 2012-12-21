@@ -190,7 +190,7 @@ public abstract class Step {
 	 *
 	 * <p>This method is called on the last step of the path.</p>
 	 *
-	 * @param ref the reference to build an ancestorinterface of.
+	 * @param ref the reference to build an ancestor interface of.
 	 *
 	 * @return an interface type reference.
 	 */
