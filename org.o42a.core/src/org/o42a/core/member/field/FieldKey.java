@@ -29,7 +29,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -157,11 +156,6 @@ public final class FieldKey implements Nesting {
 				enclosing.getContainer().member(this.memberKey).toField();
 
 		return field.object(dummyUser());
-	}
-
-	@Override
-	public final Path toPath() {
-		return getMemberKey().toPath();
 	}
 
 	@Override
