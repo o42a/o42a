@@ -136,7 +136,7 @@ public final class Keeper extends ObjectConstructor implements SubID {
 			return typeParameters;
 		}
 
-		final PrefixPath prefix = path.cut(1).toPrefix(path.cut(1).getOrigin());
+		final PrefixPath prefix = path.cut(1).toPrefix(ref.getScope());
 
 		return typeParameters.prefixWith(prefix);
 	}
