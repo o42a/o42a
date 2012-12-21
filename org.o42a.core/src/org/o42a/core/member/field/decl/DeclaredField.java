@@ -221,7 +221,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 		getDefinition().defineLink(definer);
 
-		return this.ascendants = definer.getAscendants();
+		return definer.getAscendants();
 	}
 
 	private final class Registry extends ObjectMemberRegistry {

@@ -29,7 +29,7 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.util.log.Loggable;
 
 
-public class TargetTypeRefParameters extends TypeRefParameters {
+public final class TargetTypeRefParameters extends TypeRefParameters {
 
 	private final Ref target;
 
@@ -38,24 +38,23 @@ public class TargetTypeRefParameters extends TypeRefParameters {
 	}
 
 	@Override
-	public CompilerContext getContext() {
+	public final CompilerContext getContext() {
 		return this.target.getContext();
 	}
 
 	@Override
-	public Loggable getLoggable() {
+	public final Loggable getLoggable() {
 		return this.target.getLoggable();
 	}
 
 	@Override
-	public Scope getScope() {
+	public final Scope getScope() {
 		return this.target.getScope();
 	}
 
 	@Override
 	public TypeParameters<?> refine(TypeParameters<?> defaultParameters) {
-		return this.target.typeParameters(this.target.getScope())
-				.refine(defaultParameters);
+		return this.target.typeParameters(getScope()).refine(defaultParameters);
 	}
 
 	@Override
