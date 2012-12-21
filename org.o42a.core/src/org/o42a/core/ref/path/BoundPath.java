@@ -493,6 +493,8 @@ public class BoundPath extends RefPath {
 			PathResolver originalResolver,
 			PathWalker walker,
 			boolean expand) {
+		assert !expand || path.isTemplate() || path.getTemplate() == null :
+			"The template should be expanded instead of templated path";
 		this.path = path;
 
 		final PathResolver resolver =
@@ -583,7 +585,6 @@ public class BoundPath extends RefPath {
 					return noResolution(tracker, null, null);
 				}
 
-				final Step[] replacementSteps = replacement.getSteps();
 				final Path template;
 
 				if (fragment.isTemplate()) {
@@ -596,13 +597,10 @@ public class BoundPath extends RefPath {
 					// The template should remain intact.
 					template = this.path.getTemplate();
 				} else {
-					// The path is either template itself, or isn't templated.
-					// In either case the new template is not needed.
-					assert (this.path.isTemplate()
-							|| this.path.getTemplate() == null) :
-						"Template lost";
-					template = null;
+					template = replacementTemplate(steps, i, replacement);
 				}
+
+				final Step[] replacementSteps = replacement.getSteps();
 
 				if (replacement.isAbsolute()) {
 					// Replacement is an absolute path.
@@ -660,6 +658,51 @@ public class BoundPath extends RefPath {
 		}
 
 		return pathResolutionError(this);
+	}
+
+	private Path replacementTemplate(
+			Step[] steps,
+			int stepIndex,
+			Path replacement) {
+		if (this.path.isTemplate()) {
+			// The path is template by itself.
+			// No additional template needed.
+			return null;
+		}
+
+		assert this.path.getTemplate() == null :
+			"Template lost";
+
+		final Path template = replacement.getTemplate();
+
+		if (template == null) {
+			return null;
+		}
+
+		assert stepIndex == steps.length - 1 :
+			"Only the last step may expand to template";
+
+		final Step[] replacementSteps = template.getSteps();
+
+		if (template.isAbsolute()) {
+			return new Path(
+					PathKind.ABSOLUTE_PATH,
+					true,
+					null,
+					replacementSteps);
+		}
+
+		final Step[] templateSteps = ArrayUtil.replace(
+				steps,
+				stepIndex,
+				stepIndex + 1,
+				replacementSteps);
+
+		return new Path(
+				this.path.getKind(),
+				this.path.isStatic() || template.isStatic(),
+				null,
+				templateSteps);
 	}
 
 	private PathResolution noResolution(
