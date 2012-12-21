@@ -40,7 +40,6 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -312,11 +311,6 @@ public class Phrase extends Placed {
 		@Override
 		public Obj findObjectIn(Scope enclosing) {
 			return this.phrase.toRef().resolve(enclosing.resolver()).toObject();
-		}
-
-		@Override
-		public Path toPath() {
-			return this.phrase.toRef().getPath().getPath();
 		}
 
 		@Override

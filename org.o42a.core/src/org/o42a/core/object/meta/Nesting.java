@@ -22,7 +22,6 @@ package org.o42a.core.object.meta;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.impl.NoNesting;
-import org.o42a.core.ref.path.Path;
 
 
 public interface Nesting {
@@ -30,7 +29,5 @@ public interface Nesting {
 	Nesting NO_NESTING = NoNesting.INSTANCE;
 
 	Obj findObjectIn(Scope enclosing);
-
-	Path toPath();
 
 }

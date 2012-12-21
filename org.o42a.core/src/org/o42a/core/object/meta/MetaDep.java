@@ -27,7 +27,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolution;
 
 
@@ -235,11 +234,6 @@ public abstract class MetaDep {
 					.member(this.memberKey)
 					.substance(dummyUser())
 					.getScope());
-		}
-
-		@Override
-		public Path toPath() {
-			return this.memberKey.toPath().append(this.nesting.toPath());
 		}
 
 		@Override
