@@ -671,7 +671,7 @@ public abstract class Obj
 	}
 
 	public final void assertDerivedFrom(Obj type) {
-		assert type().derivedFrom(type.type()) :
+		assert is(type) || type().derivedFrom(type.type()) :
 			this + " is not derived from " + type;
 	}
 
