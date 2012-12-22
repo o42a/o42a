@@ -35,16 +35,17 @@ Results to false if no more elements left to iterate over.
 ~~~
 
 For each :=> void (
-~~~
-Perfroms the given action for each element left to iterate.
-~~~
+  ~~~
+  Performs the given action for each element left to iterate.
+  ~~~
   Do :=> void (
-  ~~~
-  An action to perform for each iterated element.
+    ~~~
+    An action to perform for each iterated element.
 
-  This prototype is inherited for each element and then it's value taken. If the
-  value is false, the iteration is over.
-  ~~~
+    This prototype is inherited for each element and then it's value taken.
+    If the value is false, the iteration is over.
+    ~~~
+
     It :=< link (`#element type)
     ~~~
     A link to the current element of iterator to perform the action for.
