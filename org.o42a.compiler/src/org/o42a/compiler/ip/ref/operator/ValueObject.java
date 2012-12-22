@@ -19,15 +19,13 @@
 */
 package org.o42a.compiler.ip.ref.operator;
 
-import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.value.TypeParameters;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class ValueObject extends Obj {
@@ -56,17 +54,15 @@ final class ValueObject extends Obj {
 	@Override
 	protected Ascendants buildAscendants() {
 
-		final Scope enclosingScope = getScope().getEnclosingScope();
-		final TypeParameters<?> typeParameters =
-				this.valueOf.operand().typeParameters(enclosingScope);
-		final StaticTypeRef ancestor =
-				typeParameters.getValueType().typeRef(this, enclosingScope);
+		final TypeRef ancestor = this.valueOf.getValueTypeInterface();
 
 		return new Ascendants(this)
-				.setAncestor(ancestor)
-				.setParameters(
-						typeParameters.rescope(getScope())
-						.toObjectTypeParameters());
+		.setAncestor(ancestor)
+		.setParameters(
+				ancestor.copyParameters()
+				.rescope(getScope())
+				.removeIncompatible()
+				.toObjectTypeParameters());
 	}
 
 	@Override
