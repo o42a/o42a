@@ -52,3 +52,13 @@ Runtime := test (
   Assert [--list [-10]] "Invalid element accessed"
   Assert [--list [13]] "Non-existing element accessed"
 )
+
+Iteration := test (
+  Name = "Runtime"
+  Print error '  ' [name] nl
+
+  List := row list (`string) [["1", "2", "3"]]
+  List: iterate (): for each {
+    Print [it] nl
+  }
+)
