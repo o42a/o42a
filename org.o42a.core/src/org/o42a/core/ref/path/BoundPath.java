@@ -678,6 +678,11 @@ public class BoundPath extends RefPath {
 		if (template == null) {
 			return null;
 		}
+		if (replacement.isTemplate()) {
+			// The replacement is template by itself,
+			// so the expanded path will be a template too.
+			return null;
+		}
 
 		assert stepIndex == steps.length - 1 :
 			"Only the last step may expand to template";
