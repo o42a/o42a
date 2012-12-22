@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
 import static org.o42a.core.ref.type.TypeRef.typeRef;
+import static org.o42a.core.ref.type.impl.ValueTypeInterface.valueTypeInterfaceOf;
 import static org.o42a.core.value.link.TargetRef.targetRef;
 
 import org.o42a.analysis.Analyzer;
@@ -207,6 +208,10 @@ public class Ref extends Statement {
 		final RefPath path = getPath();
 
 		return path.iface(this, false);
+	}
+
+	public final TypeRef getValueTypeInterface() {
+		return valueTypeInterfaceOf(this);
 	}
 
 	/**
