@@ -42,6 +42,17 @@ public class KeepValueTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void keepLink() {
+		compile(
+				"A := `5",
+				"B := //a`");
+
+		assertThat(
+				definiteValue(linkTarget(field("b")), ValueType.INTEGER),
+				is(5L));
+	}
+
+	@Test
 	public void linkByValue() {
 		compile(
 				"A := 5",

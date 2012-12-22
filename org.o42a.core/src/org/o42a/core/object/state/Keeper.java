@@ -28,7 +28,6 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.SubID;
 
@@ -39,6 +38,7 @@ public final class Keeper extends ObjectConstructor implements SubID {
 	private final Ref value;
 	private final ID id;
 	private Keeper next;
+	private TypeRef valueTypeInterface;
 
 	Keeper(Obj declaredIn, LocationInfo location, Ref value, ID id) {
 		super(location, value.distribute());
@@ -56,23 +56,23 @@ public final class Keeper extends ObjectConstructor implements SubID {
 		return this.value;
 	}
 
-	public TypeRef ancestor(LocationInfo location) {
-
-		final TypeParameters<?> typeParameters =
-				getValue().typeParameters(getScope());
-
-		return typeParameters.getValueType()
-				.typeRef(location, getScope(), typeParameters);
+	public final TypeRef getValueTypeInterface() {
+		if (this.valueTypeInterface != null) {
+			return this.valueTypeInterface;
+		}
+		return this.valueTypeInterface = getValue().getValueTypeInterface();
 	}
 
 	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		return ancestor(location);
+		return getValueTypeInterface();
 	}
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(ref, rescopedTypeParameters(ref));
+		return new ValueFieldDefinition(
+				ref,
+				rescopedTypeParameters(ref));
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public final class Keeper extends ObjectConstructor implements SubID {
 	private TypeRefParameters rescopedTypeParameters(Ref ref) {
 
 		final TypeRefParameters typeParameters =
-				getValue().typeParameters(getScope());
+				getValueTypeInterface().copyParameters();
 		final BoundPath path = ref.getPath();
 
 		if (path.length() == 1) {
