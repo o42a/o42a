@@ -37,6 +37,7 @@ import org.o42a.core.source.LocationInfo;
 public class ValueOf extends ObjectConstructor {
 
 	private final Ref operand;
+	private TypeRef valueTypeInterface;
 
 	public ValueOf(
 			Interpreter ip,
@@ -58,16 +59,23 @@ public class ValueOf extends ObjectConstructor {
 		return this.operand;
 	}
 
+	public final TypeRef getValueTypeInterface() {
+		return operand().getValueTypeInterface();
+	}
+
 	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		return operand()
-				.getValueType()
-				.typeRef(location, getScope());
+		if (this.valueTypeInterface != null) {
+			return this.valueTypeInterface;
+		}
+		return this.valueTypeInterface = getValueTypeInterface();
 	}
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(ref, rescopedTypeParameters(ref));
+		return new ValueFieldDefinition(
+				ref,
+				rescopedTypeParameters(ref).removeIncompatible());
 	}
 
 	@Override
@@ -97,7 +105,8 @@ public class ValueOf extends ObjectConstructor {
 
 	private TypeRefParameters rescopedTypeParameters(Ref ref) {
 
-		final TypeRefParameters typeParameters = operand().typeParameters();
+		final TypeRefParameters typeParameters =
+				getValueTypeInterface().copyParameters();
 		final BoundPath path = ref.getPath();
 
 		if (path.rawLength() == 1) {
