@@ -162,8 +162,7 @@ public final class Dep extends Step implements SubID {
 				usage = CONTAINER_REF_USAGE;
 			}
 
-			this.ref.resolveAll(
-					localResolver.fullResolver(resolver, usage));
+			getRef().resolveAll(localResolver.fullResolver(resolver, usage));
 
 			final ObjectDeps deps = getDeclaredIn().deps();
 
@@ -282,7 +281,7 @@ public final class Dep extends Step implements SubID {
 		assert local != null :
 			this.declaredIn + " is not a local object";
 
-		final Obj target = this.ref.resolve(local.resolver()).toObject();
+		final Obj target = getRef().resolve(local.resolver()).toObject();
 
 		if (!target.getConstructionMode().isRuntime()
 				|| target.getConstructionMode().isPredefined()) {

@@ -71,13 +71,14 @@ public final class KeeperAccessor extends Obj {
 	@Override
 	protected Ascendants buildAscendants() {
 
-		final TypeRef ancestor = this.keeper.ancestor(this);
+		final TypeRef ancestor = this.keeper.getValueTypeInterface();
 
 		return new Ascendants(this)
 		.setAncestor(ancestor)
 		.setParameters(
 				ancestor.copyParameters()
 				.rescope(getScope())
+				.removeIncompatible()
 				.toObjectTypeParameters());
 	}
 
