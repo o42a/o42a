@@ -33,6 +33,14 @@ import org.o42a.core.value.directive.Directive;
 import org.o42a.util.log.Loggable;
 
 
+/**
+ * {@link Ref Reference} resolution.
+ *
+ * <p>Note that the {@link Ref#resolve(Resolver)} method this object returned
+ * from does not actually resolve the reference. The actual resolution is
+ * deferred until acually needed. Call {@link #resolve()} or one of
+ * {@code isXXX} or {@code toXXX} methods to perform the actual resolution.</p>
+ */
 public final class Resolution implements ScopeInfo {
 
 	private final Ref ref;
@@ -65,11 +73,11 @@ public final class Resolution implements ScopeInfo {
 
 	@Override
 	public final Scope getScope() {
-		return getResolved().getScope();
+		return resolve().getScope();
 	}
 
 	public final boolean isError() {
-		getResolved();
+		resolve();
 		return this.error;
 	}
 
@@ -88,11 +96,11 @@ public final class Resolution implements ScopeInfo {
 	}
 
 	public final Clause toClause() {
-		return getResolved().toClause();
+		return resolve().toClause();
 	}
 
 	public final Obj toObject() {
-		return getResolved().toObject();
+		return resolve().toObject();
 	}
 
 	public Directive toDirective() {
@@ -118,6 +126,18 @@ public final class Resolution implements ScopeInfo {
 		}
 
 		return value.getCompilerValue();
+	}
+
+	/**
+	 * Eagerly resolves a reference.
+	 *
+	 * @return a container the reference resolved to.
+	 */
+	public final Container resolve() {
+		if (this.resolved != null) {
+			return this.resolved;
+		}
+		return this.resolved = resolve(getResolver().toPathResolver());
 	}
 
 	@Override
@@ -156,13 +176,6 @@ public final class Resolution implements ScopeInfo {
 		resolver.getRefUsage().fullyResolve(resolver, resolved);
 
 		return this;
-	}
-
-	private final Container getResolved() {
-		if (this.resolved != null) {
-			return this.resolved;
-		}
-		return this.resolved = resolve(getResolver().toPathResolver());
 	}
 
 	private final Container resolve(PathResolver pathResolver) {
