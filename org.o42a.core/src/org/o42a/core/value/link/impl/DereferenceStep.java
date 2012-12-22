@@ -21,6 +21,7 @@ package org.o42a.core.value.link.impl;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.core.value.link.impl.LinkInterface.linkInterfaceOf;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -48,8 +49,6 @@ import org.o42a.core.value.link.LinkValueType;
 
 public class DereferenceStep extends Step {
 
-	private static final LinkInterface LINK_INTERFACE = new LinkInterface();
-
 	private ObjectStepUses uses;
 
 	@Override
@@ -74,11 +73,7 @@ public class DereferenceStep extends Step {
 
 	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
-		return ref.getPath()
-				.cut(1)
-				.setLocation(location)
-				.append(LINK_INTERFACE)
-				.typeRef(ref.distribute());
+		return linkInterfaceOf(location, ref);
 	}
 
 	@Override
@@ -215,37 +210,6 @@ public class DereferenceStep extends Step {
 		}
 
 		return false;
-	}
-
-	private static final class LinkInterface extends PathFragment {
-
-		@Override
-		public Path expand(PathExpander expander, int index, Scope start) {
-
-			final TypeParameters<?> typeParameters =
-					start.toObject().type().getParameters();
-			final LinkValueType linkType =
-					typeParameters.getValueType().toLinkType();
-			final TypeRef interfaceRef = linkType.interfaceRef(typeParameters);
-
-			return interfaceRef.getPath().getPath();
-		}
-
-		@Override
-		public FieldDefinition fieldDefinition(Ref ref) {
-			return defaultFieldDefinition(ref);
-		}
-
-		@Override
-		public TypeRef iface(Ref ref) {
-			return defaultInterface(ref);
-		}
-
-		@Override
-		public String toString() {
-			return "^^";
-		}
-
 	}
 
 	private final class Op extends StepOp<DereferenceStep> {
