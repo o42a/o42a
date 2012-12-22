@@ -30,48 +30,49 @@ import org.o42a.util.log.Loggable;
 
 public final class ObjectTypeParametersBuilder implements ObjectTypeParameters {
 
-	private final TypeRefParameters builder;
+	private final TypeRefParameters typeRefParameters;
 
-	public ObjectTypeParametersBuilder(TypeRefParameters builder) {
-		this.builder = builder;
+	public ObjectTypeParametersBuilder(TypeRefParameters typeRefParameters) {
+		this.typeRefParameters = typeRefParameters;
 	}
 
 	@Override
 	public CompilerContext getContext() {
-		return this.builder.getContext();
+		return this.typeRefParameters.getContext();
 	}
 
 	@Override
 	public Loggable getLoggable() {
-		return this.builder.getLoggable();
+		return this.typeRefParameters.getLoggable();
 	}
 
 	@Override
 	public TypeParameters<?> refine(
 			Obj object,
 			TypeParameters<?> defaultParameters) {
-		return this.builder.rescope(object.getScope())
+		return this.typeRefParameters.rescope(object.getScope())
 				.refine(defaultParameters);
 	}
 
 	@Override
 	public ObjectTypeParametersBuilder prefixWith(PrefixPath prefix) {
 
-		final TypeRefParameters builder = this.builder.prefixWith(prefix);
+		final TypeRefParameters typeRefParameters =
+				this.typeRefParameters.prefixWith(prefix);
 
-		if (builder == this.builder) {
+		if (typeRefParameters == this.typeRefParameters) {
 			return this;
 		}
 
-		return new ObjectTypeParametersBuilder(builder);
+		return new ObjectTypeParametersBuilder(typeRefParameters);
 	}
 
 	@Override
 	public String toString() {
-		if (this.builder == null) {
+		if (this.typeRefParameters == null) {
 			return super.toString();
 		}
-		return this.builder.toString();
+		return this.typeRefParameters.toString();
 	}
 
 }

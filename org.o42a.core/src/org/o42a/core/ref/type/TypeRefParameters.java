@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.impl.CompatibleTypeRefParameters;
 import org.o42a.core.ref.type.impl.DefaultTypeRefParameters;
 import org.o42a.core.ref.type.impl.ObjectTypeParametersBuilder;
 import org.o42a.core.source.LocationInfo;
@@ -46,6 +47,10 @@ public abstract class TypeRefParameters implements ScopeInfo {
 
 	public abstract TypeParameters<?> refine(
 			TypeParameters<?> defaultParameters);
+
+	public TypeRefParameters removeIncompatible() {
+		return new CompatibleTypeRefParameters(this);
+	}
 
 	public ObjectTypeParameters toObjectTypeParameters() {
 		return new ObjectTypeParametersBuilder(this);
