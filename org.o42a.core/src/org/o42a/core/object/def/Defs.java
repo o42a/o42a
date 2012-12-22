@@ -330,6 +330,9 @@ public final class Defs {
 			if (defTypeParameters == null) {
 				continue;
 			}
+			if (typeParameters.getValueType().isVoid()) {
+				continue;
+			}
 			if (!typeParameters.assignableFrom(defTypeParameters)) {
 				definitions.getLogger().incompatible(def, typeParameters);
 			}
