@@ -86,7 +86,8 @@ public class ValueTypeInterface extends PathFragment {
 
 		this.origin = origin;
 
-		return origin.toTypeRef(ref.typeParameters().removeIncompatible());
+		return origin.toTypeRef(
+				new ValueTypeInterfaceParameters(ref.typeParameters()));
 	}
 
 	private static Path valueTypeRef(PathExpander expander, Scope start) {

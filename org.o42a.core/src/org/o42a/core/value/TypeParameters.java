@@ -340,36 +340,6 @@ public final class TypeParameters<T> extends TypeRefParameters {
 				newParameters);
 	}
 
-	public final TypeParameters<?> refineCompatible(
-			TypeParameters<?> defaultParameters) {
-
-		final TypeParameter[] newParameters = defaultParameters.all();
-		boolean updated = false;
-
-		for (int i = 0; i < newParameters.length; ++i) {
-
-			final TypeParameter defaultParam = newParameters[i];
-			final TypeParameter newParam = parameter(defaultParam.getKey());
-
-			if (newParam != null) {
-				// Do only apply parameters present in default type.
-				newParameters[i] = newParam;
-				updated = true;
-			}
-		}
-
-		if (!updated) {
-			// Default parameters didn't changed.
-			return defaultParameters;
-		}
-
-		return new TypeParameters<T>(
-				this,
-				getScope(),
-				getValueType(),
-				newParameters);
-	}
-
 	@Override
 	public final TypeParameters<T> prefixWith(PrefixPath prefix) {
 		if (prefix.emptyFor(this)) {

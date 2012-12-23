@@ -61,7 +61,6 @@ final class ValueObject extends Obj {
 		.setParameters(
 				ancestor.copyParameters()
 				.rescope(getScope())
-				.removeIncompatible()
 				.toObjectTypeParameters());
 	}
 
