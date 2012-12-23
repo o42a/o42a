@@ -174,6 +174,10 @@ public class BoundPath extends RefPath {
 		return getRawPath().append(fragment).bind(this, getOrigin());
 	}
 
+	public final BoundPath append(BoundFragment fragment) {
+		return fragment.appendTo(this);
+	}
+
 	public final BoundPath dereference() {
 		return getRawPath().dereference().bind(this, getOrigin());
 	}

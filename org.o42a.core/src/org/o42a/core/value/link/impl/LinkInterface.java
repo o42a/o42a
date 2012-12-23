@@ -22,36 +22,30 @@ package org.o42a.core.value.link.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundFragment;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
-import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.LinkValueType;
 
 
-final class LinkInterface extends PathFragment {
+final class LinkInterface extends BoundFragment {
 
 	static TypeRef linkInterfaceOf(LocationInfo location, Ref ref) {
-		return new LinkInterface().create(location, ref);
+		return ref.getPath()
+				.cut(1)
+				.setLocation(location)
+				.append(new LinkInterface())
+				.typeRef(ref.distribute());
 	}
-
-	private Ref origin;
-	private Path expansion;
 
 	private LinkInterface() {
 	}
 
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
-		if (this.expansion != null) {
-			return this.expansion;
-		}
-		if (this.origin.getPath() != expander.getPath()) {
-			this.origin.getResolution().resolve();
-			return this.expansion;
-		}
 
 		final TypeParameters<?> typeParameters =
 				start.toObject().type().getParameters();
@@ -59,7 +53,7 @@ final class LinkInterface extends PathFragment {
 				typeParameters.getValueType().toLinkType();
 		final TypeRef interfaceRef = linkType.interfaceRef(typeParameters);
 
-		return this.expansion = interfaceRef.getPath().getPath();
+		return interfaceRef.getPath().getPath();
 	}
 
 	@Override
@@ -75,19 +69,6 @@ final class LinkInterface extends PathFragment {
 	@Override
 	public String toString() {
 		return "^^";
-	}
-
-	private TypeRef create(LocationInfo location, Ref ref) {
-
-		final Ref origin = ref.getPath()
-				.cut(1)
-				.setLocation(location)
-				.append(this)
-				.target(ref.distribute());
-
-		this.origin = origin;
-
-		return origin.toTypeRef();
 	}
 
 }
