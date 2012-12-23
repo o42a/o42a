@@ -197,7 +197,7 @@ public final class Path {
 	public final Path append(PathFragment fragment) {
 		assert fragment != null :
 			"Path fragment not specified";
-		return append(new PathFragmentStep(fragment));
+		return append(fragment.toStep());
 	}
 
 	public final Path dereference() {

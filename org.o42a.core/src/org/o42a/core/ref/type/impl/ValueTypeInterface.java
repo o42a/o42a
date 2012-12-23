@@ -29,40 +29,32 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameters;
 
 
-public class ValueTypeInterface extends PathFragment {
+public class ValueTypeInterface extends BoundFragment {
 
 	private static final TemplateValueType TEMPLATE_VALUE_TYPE =
 			new TemplateValueType();
 
 	public static TypeRef valueTypeInterfaceOf(Ref ref) {
-		return new ValueTypeInterface().create(ref);
+		return ref.getPath()
+				.append(new ValueTypeInterface())
+				.typeRef(
+						ref.distribute(),
+						new ValueTypeInterfaceParameters(ref.typeParameters()));
 	}
-
-	private Ref origin;
-	private Path expansion;
 
 	private ValueTypeInterface() {
 	}
 
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
-		if (this.expansion != null) {
-			return this.expansion;
-		}
-		if (expander.getPath() != this.origin.getPath()) {
-			// Not an original path expansion.
-			// Initiate one to construct the expansion.
-			this.origin.getResolution().resolve();
-			return this.expansion;
-		}
 
 		final ObjectType type = start.toObject().type();
 
 		if (type.getAncestor().getPath().getPath().getTemplate() != null) {
-			return this.expansion = TEMPLATE_VALUE_TYPE.toPath();
+			return TEMPLATE_VALUE_TYPE.toPath();
 		}
 
-		return this.expansion = valueTypeRef(expander, start);
+		return valueTypeRef(expander, start);
 	}
 
 	@Override
@@ -78,16 +70,6 @@ public class ValueTypeInterface extends PathFragment {
 	@Override
 	public String toString() {
 		return "/";
-	}
-
-	private TypeRef create(Ref ref) {
-
-		final Ref origin = ref.getPath().append(this).target(ref.distribute());
-
-		this.origin = origin;
-
-		return origin.toTypeRef(
-				new ValueTypeInterfaceParameters(ref.typeParameters()));
 	}
 
 	private static Path valueTypeRef(PathExpander expander, Scope start) {
