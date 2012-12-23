@@ -73,9 +73,7 @@ public class ValueOf extends ObjectConstructor {
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(
-				ref,
-				rescopedTypeParameters(ref).removeIncompatible());
+		return new ValueFieldDefinition(ref, rescopedTypeParameters(ref));
 	}
 
 	@Override

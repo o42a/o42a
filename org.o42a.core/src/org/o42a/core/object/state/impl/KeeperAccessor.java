@@ -78,7 +78,6 @@ public final class KeeperAccessor extends Obj {
 		.setParameters(
 				ancestor.copyParameters()
 				.rescope(getScope())
-				.removeIncompatible()
 				.toObjectTypeParameters());
 	}
 

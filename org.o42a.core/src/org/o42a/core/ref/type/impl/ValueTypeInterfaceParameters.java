@@ -22,20 +22,22 @@ package org.o42a.core.ref.type.impl;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.TypeParameter;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
-public final class CompatibleTypeRefParameters extends TypeRefParameters {
+final class ValueTypeInterfaceParameters extends TypeRefParameters {
 
 	private final TypeRefParameters parameters;
 
-	public CompatibleTypeRefParameters(TypeRefParameters parameters) {
+	ValueTypeInterfaceParameters(TypeRefParameters parameters) {
 		this.parameters = parameters;
 	}
 
@@ -60,16 +62,11 @@ public final class CompatibleTypeRefParameters extends TypeRefParameters {
 		final TypeParameters<?> parameters =
 				this.parameters.refine(typeParameters(this, ValueType.VOID));
 
-		return parameters.refineCompatible(defaultParameters);
+		return refineCompatible(parameters, defaultParameters);
 	}
 
 	@Override
-	public TypeRefParameters removeIncompatible() {
-		return this;
-	}
-
-	@Override
-	public CompatibleTypeRefParameters prefixWith(PrefixPath prefix) {
+	public ValueTypeInterfaceParameters prefixWith(PrefixPath prefix) {
 
 		final TypeRefParameters parameters = this.parameters.prefixWith(prefix);
 
@@ -77,11 +74,11 @@ public final class CompatibleTypeRefParameters extends TypeRefParameters {
 			return this;
 		}
 
-		return new CompatibleTypeRefParameters(parameters);
+		return new ValueTypeInterfaceParameters(parameters);
 	}
 
 	@Override
-	public CompatibleTypeRefParameters reproduce(Reproducer reproducer) {
+	public ValueTypeInterfaceParameters reproduce(Reproducer reproducer) {
 
 		final TypeRefParameters parameters =
 				this.parameters.reproduce(reproducer);
@@ -90,7 +87,7 @@ public final class CompatibleTypeRefParameters extends TypeRefParameters {
 			return null;
 		}
 
-		return new CompatibleTypeRefParameters(parameters);
+		return new ValueTypeInterfaceParameters(parameters);
 	}
 
 	@Override
@@ -99,6 +96,29 @@ public final class CompatibleTypeRefParameters extends TypeRefParameters {
 			return super.toString();
 		}
 		return '*' + this.parameters.toString();
+	}
+
+	public final <T> TypeParameters<T> refineCompatible(
+			TypeParameters<?> refinement,
+			TypeParameters<T> defaultParameters) {
+		if (refinement.isEmpty()) {
+			return defaultParameters;
+		}
+
+		TypeParameters<T> newParameters =
+				typeParameters(refinement, defaultParameters.getValueType());
+
+		for (TypeParameter defaultParam : defaultParameters.all()) {
+
+			final MemberKey key = defaultParam.getKey();
+			final TypeParameter refinedParam = refinement.parameter(key);
+			final TypeParameter newParam =
+					refinedParam != null ? refinedParam : defaultParam;
+
+			newParameters = newParameters.add(key, newParam.getTypeRef());
+		}
+
+		return newParameters;
 	}
 
 }
