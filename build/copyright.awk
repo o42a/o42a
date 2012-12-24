@@ -26,13 +26,20 @@ function print_mpl() {
 	print indent "file, You can obtain one at http://mozilla.org/MPL/2.0/."
 }
 
+function print_public_domain() {
+	print indent "Any copyright is dedicated to the Public Domain."
+	print indent "http://creativecommons.org/publicdomain/zero/1.0/"
+}
+
 function print_copyright() {
 	if (o42a) {
 		print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	} else {
 		print "/*"
 	}
-	if (MPL) {
+	if (public_domain) {
+		print_public_domain()
+	} else if (MPL) {
 		print_mpl()
 	} else {
 		print_gpl()
@@ -46,16 +53,23 @@ function print_copyright() {
 
 
 BEGIN {
+	public_domain = license ~ "^PUB"
+	MPL = license ~ "^MPL"
+
+	no_copyright=public_domain
+
+	year = "2012"
+	author = "Ruslan Lopatin"
+
+	o42a = license ~ ".o42a$"
+	indent = o42a ? "" : "    "
+
+	# Set if the license should be changed.
+	license_change=0
+
 	buffer = ""
 	skip = 0
 	comment = 0
-	o42a = license ~ ".o42a$"
-	MPL = license ~ "^MPL"
-	indent = o42a ? "" : "    "
-	year = "2012"
-	author = "Ruslan Lopatin"
-	# Set if the license should be changed.
-	license_change=0
 }
 
 skip {
@@ -96,6 +110,9 @@ comment && /^[ \t]*Copyright/ {
 }
 
 comment && (o42a && /~~~/ || !o42a && /\*\//) {
+	if (!license_change) {
+		exit 0
+	}
 	print_copyright()
 	comment = 0
 	buffer = ""
