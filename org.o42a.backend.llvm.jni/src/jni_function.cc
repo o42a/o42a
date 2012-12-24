@@ -23,10 +23,10 @@
 #include "o42ac/llvm/debug.h"
 #include "o42ac/llvm/util.h"
 
+#include "llvm/IRBuilder.h"
 #include "llvm/Function.h"
 #include "llvm/Module.h"
 #include "llvm/Analysis/Verifier.h"
-#include "llvm/Support/IRBuilder.h"
 
 using namespace llvm;
 
@@ -93,7 +93,7 @@ jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
 			StringRef(from_ptr<char>(id), idLen),
 			module);
 
-	function->setDoesNotThrow(true);
+	function->setDoesNotThrow();
 
 	return to_ptr<Value>(function);
 }
