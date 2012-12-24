@@ -24,11 +24,11 @@
 #include "o42ac/llvm/util.h"
 
 #include "llvm/BasicBlock.h"
+#include "llvm/DataLayout.h"
 #include "llvm/Function.h"
+#include "llvm/IRBuilder.h"
 #include "llvm/Module.h"
 #include "llvm/Value.h"
-#include "llvm/Support/IRBuilder.h"
-#include "llvm/Target/TargetData.h"
 
 using namespace llvm;
 
@@ -195,7 +195,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allOnesPtr(
 	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
 	Constant *result = ConstantExpr::getIntToPtr(
 			ConstantInt::get(
-					module->getTargetData().getIntPtrType(module->getContext()),
+					module->getTargetDataLayout()->getIntPtrType(
+							module->getContext()),
 					~0L,
 					false),
 			Type::getInt8PtrTy(module->getContext()));
@@ -241,7 +242,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocatePtr(
 			0,
 			StringRef(from_ptr<char>(id), idLen));
 
-	result->setAlignment(module->getTargetData().getPointerPrefAlignment());
+	result->setAlignment(
+			module->getTargetDataLayout()->getPointerPrefAlignment());
 
 	return to_instr_ptr(result);
 }
@@ -264,7 +266,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
 			0,
 			StringRef(from_ptr<char>(id), idLen));
 
-	result->setAlignment(module->getTargetData().getPointerPrefAlignment());
+	result->setAlignment(
+			module->getTargetDataLayout()->getPointerPrefAlignment());
 
 	return to_instr_ptr(result);
 }

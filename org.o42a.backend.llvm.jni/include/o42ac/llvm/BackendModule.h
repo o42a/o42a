@@ -30,7 +30,7 @@ namespace llvm {
 class Constant;
 class Function;
 class FunctionPassManager;
-class TargetData;
+class DataLayout;
 
 }
 
@@ -38,7 +38,7 @@ namespace o42ac {
 
 class BackendModule : public Module {
 
-	mutable TargetData *targetData;
+	mutable llvm::DataLayout *targetDataLayout;
 	mutable FunctionPassManager *functionPassManager;
 	Constant *stackSaveFunc;
 	Constant *stackRestoreFunc;
@@ -64,7 +64,7 @@ public:
 
 	static BackendModule *createBackend(StringRef &ModuleID);
 
-	const TargetData &getTargetData() const;
+	const llvm::DataLayout *getTargetDataLayout() const;
 
 	Constant *getStackSaveFunc();
 

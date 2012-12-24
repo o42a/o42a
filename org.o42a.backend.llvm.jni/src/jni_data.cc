@@ -26,9 +26,9 @@
 #include "o42ac/llvm/util.h"
 
 #include "llvm/Constants.h"
+#include "llvm/DataLayout.h"
 #include "llvm/DerivedTypes.h"
 #include "llvm/Module.h"
-#include "llvm/Target/TargetData.h"
 
 #include "o42a/memory/gc.h"
 
@@ -304,11 +304,11 @@ static inline jint typeLayout(
 		const o42ac::BackendModule *module,
 		Type *type) {
 
-	const TargetData &targetData = module->getTargetData();
+	const DataLayout *dataLayout = module->getTargetDataLayout();
 
 	return o42a_layout(
-			targetData.getABITypeAlignment(type),
-			targetData.getTypeStoreSize(type));
+			dataLayout->getABITypeAlignment(type),
+			dataLayout->getTypeStoreSize(type));
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_intLayout(
@@ -399,9 +399,9 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_dumpStructLayout(
 
 	const o42ac::BackendModule *module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
-	const TargetData &targetData = module->getTargetData();
+	const DataLayout *dataLayout = module->getTargetDataLayout();
 	StructType *type = from_ptr<StructType>(typePtr);
-	const StructLayout *layout = targetData.getStructLayout(type);
+	const StructLayout *layout = dataLayout->getStructLayout(type);
 	const unsigned numElements = type->getNumElements();
 
 	for (unsigned i = 0; i < numElements; ++i) {
@@ -431,7 +431,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_allOnesPtr(
 
 	return to_ptr<Value>(ConstantExpr::getIntToPtr(
 			ConstantInt::get(
-					module->getTargetData().getIntPtrType(module->getContext()),
+					module->getTargetDataLayout()->getIntPtrType(
+							module->getContext()),
 					~0L,
 					false),
 			Type::getInt8PtrTy(module->getContext())));
@@ -501,7 +502,7 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
 				from_ptr<std::vector<Constant*> >(structPtr);
 	IntegerType *int64type = Type::getInt64Ty(module->getContext());
 	uint64_t ptrSize =
-			module->getTargetData().getTypeSizeInBits(ptr->getType());
+			module->getTargetDataLayout()->getTypeSizeInBits(ptr->getType());
 
 	// Bit-cast pointer to integer.
 	Constant *result = ConstantExpr::getPtrToInt(
@@ -512,7 +513,7 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
 	if (sizeDiff) {
 	    // Extend to 64-bit integer if necessary.
 		result = ConstantExpr::getIntegerCast(result, int64type, false);
-		if (module->getTargetData().isBigEndian()) {
+		if (module->getTargetDataLayout()->isBigEndian()) {
 			// If the target is big-endian, move the pointer data so that
 			// it become available at int64 address.
 			result = ConstantExpr::getExactLShr(

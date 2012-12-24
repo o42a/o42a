@@ -21,6 +21,7 @@
 
 #include "o42ac/llvm/debug.h"
 
+#include "llvm/DataLayout.h"
 #include "llvm/DerivedTypes.h"
 #include "llvm/LLVMContext.h"
 #include "llvm/PassManager.h"
@@ -35,7 +36,6 @@
 #include "llvm/Support/Host.h"
 #include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/TargetSelect.h"
-#include "llvm/Target/TargetData.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/Transforms/Scalar.h"
 
@@ -121,7 +121,7 @@ static cl::opt<cl::boolOrDefault> Normalize(
 
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
-		targetData(),
+		targetDataLayout(),
 		functionPassManager(),
 		stackSaveFunc(),
 		stackRestoreFunc(),
@@ -129,8 +129,8 @@ BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 }
 
 BackendModule::~BackendModule() {
-	if (this->targetData) {
-		delete this->targetData;
+	if (this->targetDataLayout) {
+		delete this->targetDataLayout;
 	}
 	if (this->functionPassManager) {
 		delete this->functionPassManager;
@@ -191,19 +191,20 @@ BackendModule *BackendModule::createBackend(StringRef &ModuleID) {
 		backend->setTargetTriple(sys::getDefaultTargetTriple());
 	}
 
-	backend->setDataLayout(backend->getTargetData().getStringRepresentation());
+	backend->setDataLayout(
+			backend->getTargetDataLayout()->getStringRepresentation());
 
 	return backend;
 }
 
-const TargetData &BackendModule::getTargetData() const {
-	if (this->targetData) {
-		return *this->targetData;
+const DataLayout *BackendModule::getTargetDataLayout() const {
+	if (this->targetDataLayout) {
+		return this->targetDataLayout;
 	}
 
-	this->targetData = new TargetData(this);
+	this->targetDataLayout = new llvm::DataLayout(this);
 
-	return *this->targetData;
+	return this->targetDataLayout;
 }
 
 Constant *BackendModule::getStackSaveFunc() {
@@ -247,7 +248,8 @@ bool BackendModule::validateFunction(Function *const function) {
 
 	if (!this->functionPassManager) {
 		this->functionPassManager = new FunctionPassManager(this);
-		this->functionPassManager->add(new TargetData(this->getTargetData()));
+		this->functionPassManager->add(
+				new llvm::DataLayout(*this->getTargetDataLayout()));
 		// Do simple "peephole" optimizations and bit-twiddling optzns.
 		this->functionPassManager->add(createInstructionCombiningPass());
 		// Reassociate expressions.

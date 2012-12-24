@@ -24,11 +24,11 @@
 #include "o42ac/llvm/util.h"
 
 #include "llvm/BasicBlock.h"
+#include "llvm/DataLayout.h"
 #include "llvm/Function.h"
+#include "llvm/IRBuilder.h"
 #include "llvm/Module.h"
 #include "llvm/Value.h"
-#include "llvm/Support/IRBuilder.h"
-#include "llvm/Target/TargetData.h"
 
 using namespace llvm;
 
@@ -87,7 +87,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 
 	o42ac::BackendModule *module = static_cast<o42ac::BackendModule *>(
 			builder.GetInsertBlock()->getParent()->getParent());
-	const TargetData &targetData = module->getTargetData();
+	const DataLayout *dataLayout = module->getTargetDataLayout();
 	Type *storeType = pointer->getType()->getContainedType(0);
 	LoadInst *result;
 
@@ -100,7 +100,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 
 		IntegerType *intType = IntegerType::get(
 				module->getContext(),
-				targetData.getTypeSizeInBits(storeType));
+				dataLayout->getTypeSizeInBits(storeType));
 
 		result = builder.CreateLoad(
 				builder.CreatePointerCast(pointer, intType->getPointerTo()));
@@ -109,7 +109,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 	// Guarantee the data loaded one piece.
 	result->setAtomic(LOAD_ORDERINGS[atomicity]);
 	// Atomic operations require alignment.
-	result->setAlignment(targetData.getTypeStoreSize(storeType));
+	result->setAlignment(dataLayout->getTypeStoreSize(storeType));
 
 	if (!storeType->isPointerTy()) {
 		return to_instr_ptr(result);
@@ -147,7 +147,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 
 	o42ac::BackendModule *module = static_cast<o42ac::BackendModule *>(
 			builder.GetInsertBlock()->getParent()->getParent());
-	const TargetData &targetData = module->getTargetData();
+	const DataLayout *dataLayout = module->getTargetDataLayout();
 	Type *storeType = pointer->getType()->getContainedType(0);
 	Value *ptr;
 	Value *val;
@@ -160,7 +160,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 
 		IntegerType *intType = IntegerType::get(
 				module->getContext(),
-				targetData.getTypeSizeInBits(storeType));
+				dataLayout->getTypeSizeInBits(storeType));
 
 		ptr = builder.CreatePointerCast(pointer, intType->getPointerTo());
 		val = builder.CreatePtrToInt(value, intType);
@@ -171,7 +171,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 	// Guarantee the data stored one piece.
 	result->setAtomic(STORE_ORDERINGS[atomicity]);
 	// Atomic operations require alignment.
-	result->setAlignment(targetData.getTypeStoreSize(storeType));
+	result->setAlignment(dataLayout->getTypeStoreSize(storeType));
 
 	return to_instr_ptr(result);
 }
@@ -194,7 +194,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 
 	o42ac::BackendModule *module = static_cast<o42ac::BackendModule *>(
 			builder.GetInsertBlock()->getParent()->getParent());
-	const TargetData &targetData = module->getTargetData();
+	const DataLayout *dataLayout = module->getTargetDataLayout();
 	Type *storeType = pointer->getType()->getContainedType(0);
 
 	// Atomic operations support only integers.
@@ -213,7 +213,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 
 	IntegerType *intType = IntegerType::get(
 			module->getContext(),
-			targetData.getTypeSizeInBits(storeType));
+			dataLayout->getTypeSizeInBits(storeType));
 	AtomicCmpXchgInst *result = builder.CreateAtomicCmpXchg(
 			builder.CreatePointerCast(pointer, intType->getPointerTo()),
 			builder.CreatePtrToInt(expected, intType),
