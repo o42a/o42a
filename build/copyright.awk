@@ -18,24 +18,12 @@ function print_gpl() {
 	print indent "along with this program.  If not, see <http://www.gnu.org/licenses/>."
 }
 
-function print_lgpl() {
-	print indent (progname ? progname : "o42a Programming Language")
+function print_mpl() {
 	print indent "Copyright (C)", year, author
 	print ""
-	print indent "This file is part of o42a."
-	print ""
-	print indent "o42a is free software: you can redistribute it and/or modify"
-	print indent "it under the terms of the GNU Lesser General Public License"
-	print indent "as published by the Free Software Foundation, either version 3"
-	print indent "of the License, or (at your option) any later version."
-	print ""
-	print indent "o42a is distributed in the hope that it will be useful,"
-	print indent "but WITHOUT ANY WARRANTY; without even the implied warranty of"
-	print indent "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
-	print indent "GNU General Public License for more details."
-	print ""
-	print indent "You should have received a copy of the GNU Lesser General Public License"
-	print indent "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+	print indent "This Source Code Form is subject to the terms of the Mozilla Public"
+	print indent "License, v. 2.0. If a copy of the MPL was not distributed with this"
+	print indent "file, You can obtain one at http://mozilla.org/MPL/2.0/."
 }
 
 function print_copyright() {
@@ -44,8 +32,8 @@ function print_copyright() {
 	} else {
 		print "/*"
 	}
-	if (LGPL) {
-		print_lgpl()
+	if (MPL) {
+		print_mpl()
 	} else {
 		print_gpl()
 	}
@@ -61,11 +49,13 @@ BEGIN {
 	buffer = ""
 	skip = 0
 	comment = 0
-	o42a = license ~ "-o42a$"
-	LGPL = license ~ "^LGPL" 
+	o42a = license ~ ".o42a$"
+	MPL = license ~ "^MPL"
 	indent = o42a ? "" : "    "
 	year = "2012"
 	author = "Ruslan Lopatin"
+	# Set if the license should be changed.
+	license_change=0
 }
 
 skip {
@@ -88,7 +78,10 @@ skip {
 
 comment && /^[ \t]*Copyright/ {
 	if ($3 ~ year) {
-		skip=1
+		if (license_change) {
+			year = $3
+			next
+		}
 		exit 0
 	}
 	year_str=gensub("^([^,-]*)[,-].*", "\\1-" year, "g", $3)
@@ -99,7 +92,6 @@ comment && /^[ \t]*Copyright/ {
 	print indent "Copyright (C)", year_str, author
 	comment = 0
 	buffer = ""
-	skip = 1
 	next
 }
 
@@ -114,10 +106,4 @@ comment && (o42a && /~~~/ || !o42a && /\*\//) {
 comment {
 	buffer = buffer $0 "\n"
 	next
-}
-
-END {
-	if (!skip) {
-		print_copyright()
-	}
 }
