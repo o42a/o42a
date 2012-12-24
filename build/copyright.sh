@@ -28,8 +28,9 @@ write_if_not_empty() {
 
 process_file() {
 	local filepath="$2"
-	awk -v license="$1" -v progname="$3" -f "${dirname}/copyright.awk" "${filepath}" | \
-		write_if_not_empty "${filepath}"
+	awk -v license="$1" -v progname="$3" -f "${dirname}/copyright.awk" \
+		"${filepath}" | \
+			write_if_not_empty "${filepath}"
 }
 
 process_list() {
@@ -40,41 +41,67 @@ process_list() {
 
 assign_copyright() {
 	local license="$1"
-	local dir="$2"
-	local name="$3"
-	local pattern="$4"
+	local file_extension="$2"
+	local dir="$3"
+	local name="$4"
+	local pattern="*.${file_extension}"
 	echo "Processing ${blue}${dir}${white}" >&2
-	find "${dirname}/../${dir}" -name "$pattern" | process_list "${license}" "${name}"
+	find "${dirname}/../${dir}" -name "$pattern" | \
+		process_list "${license}.${file_extension}" "${name}"
 }
 
-assign_copyright GPL       org.o42a.analysis/src "Compilation Analysis" "*.java"
-assign_copyright GPL       org.o42a.ast/src "Abstract Syntax Tree" "*.java"
-assign_copyright GPL       org.o42a.backend.constant/src "Constant Handler Compiler Back-end" "*.java"
-assign_copyright GPL       org.o42a.backend.llvm/src "Compiler LLVM Back-end" "*.java"
-assign_copyright GPL       org.o42a.backend.llvm.jni/include "Compiler JNI Bindings to LLVM" "*.h"
-assign_copyright GPL       org.o42a.backend.llvm.jni/src "Compiler JNI Bindings to LLVM" "*.cc"
-assign_copyright GPL       org.o42a.cl/src "Compiler Command-Line Interface" "*.java"
-assign_copyright GPL       org.o42a.codegen/src "Compiler Code Generator" "*.java"
-assign_copyright GPL       org.o42a.common/src "Modules Commons" "*.java"
-assign_copyright GPL       org.o42a.compiler/src "Compiler" "*.java"
-assign_copyright GPL       org.o42a.compiler.test/src "Compiler Tests" "*.java"
-assign_copyright GPL       org.o42a.core/src "Compiler Core" "*.java"
-assign_copyright GPL       org.o42a.intrinsic/src "Intrinsics" "*.java"
-assign_copyright GPL       org.o42a.root/src "Root Object Definition" "*.java"
-assign_copyright LGPL-o42a org.o42a.root/o42a "Root Object Definition" "*.o42a"
-assign_copyright GPL       org.o42a.lib.collections/src "Collections Library" "*.java"
-assign_copyright LGPL-o42a org.o42a.lib.collections/o42a "Collections Library" "*.o42a"
-assign_copyright GPL       org.o42a.lib.console/src "Console Module" "*.java"
-assign_copyright LGPL-o42a org.o42a.lib.console/o42a "Console Module" "*.o42a"
-assign_copyright GPL       org.o42a.lib.macros/src "Standard Macros" "*.java"
-assign_copyright LGPL-o42a org.o42a.lib.macros/o42a "Standard Macros" "*.o42a"
-assign_copyright GPL       org.o42a.lib.test/src "Test Framework" "*.java"
-assign_copyright LGPL-o42a org.o42a.lib.test/o42a "Test Framework" "*.o42a"
-assign_copyright GPL       org.o42a.parser/src "Parser" "*.java"
-assign_copyright GPL       org.o42a.parser.test/src "Parser Tests" "*.java"
-assign_copyright GPL       org.o42a.tools/src "Build Tools" "*.java"
-assign_copyright GPL       org.o42a.util/src "Utilities" "*.java"
-assign_copyright LGPL      runtime/include "Run-Time Library" "*.h"
-assign_copyright LGPL      runtime/src "Run-Time Library" "*.c"
-assign_copyright GPL       runtime/test "Run-Time Library Tests" "*.c"
-assign_copyright GPL-o42a  tests/o42a "Tests" "*.o42a"
+assign_copyright GPL java org.o42a.analysis/src \
+	"Compilation Analysis"
+assign_copyright GPL java org.o42a.ast/src \
+	"Abstract Syntax Tree"
+assign_copyright GPL java org.o42a.backend.constant/src \
+	"Constant Handler Compiler Back-end"
+assign_copyright GPL java org.o42a.backend.llvm/src \
+	"Compiler LLVM Back-end"
+assign_copyright GPL h    org.o42a.backend.llvm.jni/include \
+	"Compiler JNI Bindings to LLVM"
+assign_copyright GPL cc   org.o42a.backend.llvm.jni/src \
+	"Compiler JNI Bindings to LLVM"
+assign_copyright GPL java org.o42a.cl/src \
+	"Compiler Command-Line Interface"
+assign_copyright GPL java org.o42a.codegen/src \
+	"Compiler Code Generator"
+assign_copyright GPL java org.o42a.common/src \
+	"Modules Commons"
+assign_copyright GPL java org.o42a.compiler/src \
+	"Compiler"
+assign_copyright GPL java org.o42a.compiler.test/src \
+	"Compiler Tests"
+assign_copyright GPL java org.o42a.core/src \
+	"Compiler Core"
+assign_copyright GPL java org.o42a.intrinsic/src \
+	"Intrinsics"
+assign_copyright GPL java org.o42a.root/src \
+	"Root Object Definition"
+assign_copyright MPL o42a org.o42a.root/o42a
+assign_copyright GPL java org.o42a.lib.collections/src \
+	"Collections Library"
+assign_copyright MPL o42a org.o42a.lib.collections/o42a
+assign_copyright GPL java org.o42a.lib.console/src \
+	"Console Module"
+assign_copyright MPL o42a org.o42a.lib.console/o42a
+assign_copyright GPL java org.o42a.lib.macros/src \
+	"Standard Macros"
+assign_copyright MPL o42a org.o42a.lib.macros/o42a
+assign_copyright GPL java org.o42a.lib.test/src \
+	"Test Framework"
+assign_copyright MPL o42a org.o42a.lib.test/o42a
+assign_copyright GPL java org.o42a.parser/src \
+	"Parser"
+assign_copyright GPL java org.o42a.parser.test/src \
+	"Parser Tests"
+assign_copyright GPL java org.o42a.tools/src \
+	"Build Tools"
+assign_copyright GPL java org.o42a.util/src \
+	"Utilities"
+assign_copyright MPL h    runtime/include
+assign_copyright MPL c    runtime/src
+assign_copyright GPL c    runtime/test \
+	"Run-Time Library Tests"
+assign_copyright GPL o42a tests/o42a \
+	"Tests"
