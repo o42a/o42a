@@ -50,6 +50,7 @@ assign_copyright() {
 		process_list "${license}.${file_extension}" "${name}"
 }
 
+assign_copyright PUB o42a examples/o42a
 assign_copyright GPL java org.o42a.analysis/src "Compilation Analysis"
 assign_copyright GPL java org.o42a.ast/src "Abstract Syntax Tree"
 assign_copyright GPL java org.o42a.backend.constant/src "Constant Handler Compiler Back-end"
