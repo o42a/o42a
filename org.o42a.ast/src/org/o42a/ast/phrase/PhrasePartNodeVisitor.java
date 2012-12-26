@@ -19,8 +19,8 @@
 */
 package org.o42a.ast.phrase;
 
-import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 
 
