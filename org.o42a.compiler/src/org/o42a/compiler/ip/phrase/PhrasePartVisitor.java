@@ -25,8 +25,8 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
 
-import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.AbstractPhrasePartVisitor;
 import org.o42a.ast.phrase.PhrasePartNode;
