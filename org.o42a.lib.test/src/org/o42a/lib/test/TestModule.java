@@ -59,14 +59,14 @@ public class TestModule extends AnnotatedModule {
 		final Member member = member(memberId);
 
 		if (member == null) {
-			getLogger().unresolved(this, toString() + ':' + memberId);
+			getLogger().unresolved(getLocation(), toString() + ':' + memberId);
 			return getContext().getNone();
 		}
 
 		final Obj object = member.substance(user).toObject();
 
 		if (object == null) {
-			getLogger().notObject(this, toString() + ':' + memberId);
+			getLogger().notObject(getLocation(), toString() + ':' + memberId);
 			return getContext().getNone();
 		}
 

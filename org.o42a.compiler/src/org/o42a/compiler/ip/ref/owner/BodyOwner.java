@@ -20,18 +20,24 @@
 package org.o42a.compiler.ip.ref.owner;
 
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
-final class BodyOwner extends Owner {
+final class BodyOwner extends Owner implements LocationInfo {
 
-	private final LocationInfo location;
+	private final Location location;
 	private final LocationInfo bodyRef;
 
 	BodyOwner(LocationInfo location, LocationInfo bodyRef, Ref ownerRef) {
 		super(ownerRef);
-		this.location = location;
+		this.location = location.getLocation();
 		this.bodyRef = bodyRef;
+	}
+
+	@Override
+	public final Location getLocation() {
+		return this.location;
 	}
 
 	@Override
@@ -48,7 +54,7 @@ final class BodyOwner extends Owner {
 
 	@Override
 	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		redundantBodyRef(this.ownerRef.getLogger(), bodyRef);
+		redundantBodyRef(this.ownerRef.getLogger(), bodyRef.getLocation());
 		return this;
 	}
 
@@ -59,7 +65,7 @@ final class BodyOwner extends Owner {
 
 	@Override
 	public Ref bodyRef() {
-		redundantBodyRef(this.ownerRef.getLogger(), this.location);
+		redundantBodyRef(this.ownerRef.getLogger(), getLocation());
 		return targetRef();
 	}
 

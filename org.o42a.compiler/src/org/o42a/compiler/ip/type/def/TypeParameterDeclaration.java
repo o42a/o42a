@@ -27,12 +27,12 @@ import org.o42a.compiler.ip.type.param.TypeParameterKey;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.Located;
 import org.o42a.core.value.TypeParameters;
 
 
 final class TypeParameterDeclaration
-		extends Location
+		extends Located
 		implements TypeParameterKey {
 
 	private final TypeDefinitionBuilder builder;

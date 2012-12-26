@@ -325,8 +325,10 @@ public final class ObjectType implements UserInfo {
 			this.resolution = ObjectResolution.POST_RESOLVED;
 		} else if (this.resolution == ObjectResolution.RESOLVING_TYPE) {
 			if (!skipIfResolving) {
-				getObject().getLogger().recursiveResolution(
+				getObject().getLogger().error(
+						"recursive_resolution",
 						getObject(),
+						"Infinite recursion when resolving %s",
 						getObject());
 			}
 			return false;

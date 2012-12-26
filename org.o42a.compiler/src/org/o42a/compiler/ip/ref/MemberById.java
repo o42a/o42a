@@ -153,7 +153,7 @@ public class MemberById extends PlacedPathFragment {
 				}
 			}
 
-			getLogger().unresolved(this, this.memberId);
+			getLogger().unresolved(getLocation(), this.memberId);
 
 			return null;
 		}
@@ -206,8 +206,8 @@ public class MemberById extends PlacedPathFragment {
 
 		if (getScope().is(container.getScope())) {
 			accessor = Accessor.OWNER;
-		} else if (container.getContext().declarationsVisibleFrom(
-				getContext())) {
+		} else if (container.getLocation().getContext().declarationsVisibleFrom(
+				getLocation().getContext())) {
 			accessor = Accessor.DECLARATION;
 		} else {
 			accessor = Accessor.ENCLOSED;

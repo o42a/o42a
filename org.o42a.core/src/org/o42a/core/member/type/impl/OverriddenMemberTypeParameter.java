@@ -33,7 +33,8 @@ public final class OverriddenMemberTypeParameter extends MemberTypeParameter {
 			Obj owner,
 			MemberTypeParameter propagatedFrom) {
 		super(
-				addDeclaration(owner, propagatedFrom.getLastDefinition()),
+				owner.getLocation().setDeclaration(
+						propagatedFrom.getLastDefinition()),
 				propagatedFrom.distributeIn(owner.getContainer()),
 				owner);
 		this.propagatedFrom = propagatedFrom;

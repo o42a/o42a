@@ -57,7 +57,7 @@ import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.impl.StaticObjectStep;
 import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.impl.ObjectEnv;
@@ -67,7 +67,6 @@ import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.fn.Holder;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class Obj
@@ -972,7 +971,7 @@ public abstract class Obj
 	private void abstractNotOverridden(MemberField member) {
 		getLogger().error(
 				"abstract_not_overridden",
-				this,
+				getLocation(),
 				"Abstract field '%s' not overridden",
 				member.getDisplayName());
 	}
@@ -1033,13 +1032,8 @@ public abstract class Obj
 		}
 
 		@Override
-		public Loggable getLoggable() {
-			return this.placed.getLoggable();
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.placed.getContext();
+		public Location getLocation() {
+			return this.placed.getLocation();
 		}
 
 		@Override

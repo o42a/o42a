@@ -24,6 +24,7 @@ import static org.o42a.core.ref.common.RoleResolver.expectedRoleOf;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -60,9 +61,10 @@ public enum Role {
 
 		@Override
 		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
-			user.getContext().getLogger().forbiddenAccess(
-					user,
-					target);
+
+			final Location location = user.getLocation();
+
+			location.getLogger().forbiddenAccess(location, target);
 		}
 
 	},
@@ -75,7 +77,10 @@ public enum Role {
 
 		@Override
 		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
-			user.getContext().getLogger().cantInherit(user, target);
+
+			final Location location = user.getLocation();
+
+			location.getLogger().cantInherit(location, target);
 		}
 
 	},
@@ -87,7 +92,10 @@ public enum Role {
 
 		@Override
 		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
-			user.getContext().getLogger().notObject(user, target);
+
+			final Location location = user.getLocation();
+
+			location.getLogger().notObject(location, target);
 		}
 
 	};

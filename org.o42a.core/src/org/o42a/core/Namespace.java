@@ -152,7 +152,7 @@ public class Namespace extends AbstractContainer {
 		final Obj container = resolution.toObject();
 
 		if (container == null) {
-			getContext().getLogger().notObject(ref, resolution);
+			getContext().getLogger().notObject(ref.getLocation(), resolution);
 			return getContext().getNone();
 		}
 		if (!Role.INSTANCE.checkUseBy(ref, ref)) {
@@ -191,7 +191,7 @@ public class Namespace extends AbstractContainer {
 			if (result != null) {
 				if (resultPriority == priority) {
 					getContext().getLogger().ambiguousMember(
-							user,
+							user.getLocation(),
 							memberId.toString());
 					return null;
 				}
@@ -240,7 +240,7 @@ public class Namespace extends AbstractContainer {
 				return null;
 			}
 
-			this.ref.getLogger().notPath(this.ref);
+			this.ref.getLogger().error("not_path", this.ref, "Not a path");
 
 			this.container = this.ref.getContext().getNone();
 

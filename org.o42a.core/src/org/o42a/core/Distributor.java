@@ -23,13 +23,17 @@ import static org.o42a.core.ScopePlace.scopePlace;
 
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.Location;
 
 
 public abstract class Distributor implements PlaceInfo {
 
 	public static Distributor declarativeDistributor(Container container) {
 		return new DeclarativeDistributor(container);
+	}
+
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	public final CompilerLogger getLogger() {
@@ -90,13 +94,8 @@ public abstract class Distributor implements PlaceInfo {
 		}
 
 		@Override
-		public Loggable getLoggable() {
-			return this.container.getLoggable();
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.container.getContext();
+		public Location getLocation() {
+			return this.container.getLocation();
 		}
 
 		@Override

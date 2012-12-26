@@ -53,7 +53,7 @@ final class Section implements LogInfo {
 	private SectionNode sectionNode;
 	private final SectionTitle title;
 	private final SectionTag tag;
-	private LocationInfo location;
+	private Location location;
 	private DeclarativeBlock enclosingBlock;
 
 	Section(
@@ -106,7 +106,7 @@ final class Section implements LogInfo {
 		return getLocation().getContext();
 	}
 
-	public final LocationInfo getLocation() {
+	public final Location getLocation() {
 		assert isUsed() :
 			"Section never used";
 		return this.location;
@@ -156,7 +156,7 @@ final class Section implements LogInfo {
 						&& ascendants.getTypeParameters() != null) {
 					redundantTypeParameters(
 							getLogger(),
-							ascendants.getTypeParameters());
+							ascendants.getTypeParameters().getLocation());
 				}
 			}
 		}

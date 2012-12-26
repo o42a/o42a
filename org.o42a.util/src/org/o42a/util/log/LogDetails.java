@@ -74,6 +74,7 @@ public class LogDetails extends Loggable implements Iterable<LogDetail> {
 		return new LogDetails(this.location, details);
 	}
 
+	@Override
 	public final LogLocation detail(LogDetail detail) {
 		return this.details.get(detail);
 	}

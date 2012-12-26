@@ -117,7 +117,7 @@ public enum Interpreter {
 	}
 
 	public static Location location(ScopeInfo p, Node node) {
-		return new Location(p.getContext(), node);
+		return new Location(p.getLocation().getContext(), node);
 	}
 
 	public static ExpressionNode unwrap(BlockNode<?> block) {

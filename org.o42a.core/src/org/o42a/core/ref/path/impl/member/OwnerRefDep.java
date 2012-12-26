@@ -74,7 +74,7 @@ final class OwnerRefDep extends RefDep<ObjectMetaDep> {
 	public void invalidRef(Ref ref) {
 		unresolvedTypeParameter(
 				ref.getLogger(),
-				ref,
+				ref.getLocation(),
 				this.parameterKey);
 	}
 

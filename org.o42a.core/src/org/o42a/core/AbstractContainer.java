@@ -22,12 +22,12 @@ package org.o42a.core;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogInfo;
 
 
-public abstract class AbstractContainer extends Location implements Container {
+public abstract class AbstractContainer extends Located implements Container {
 
 	public static Container parentContainer(Container container) {
 

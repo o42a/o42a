@@ -25,9 +25,8 @@ import org.o42a.core.Scoped;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.log.Loggable;
 
 
 public final class TypeParameter implements ScopeInfo {
@@ -45,13 +44,8 @@ public final class TypeParameter implements ScopeInfo {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return getTypeRef().getLoggable();
-	}
-
-	@Override
-	public final CompilerContext getContext() {
-		return getTypeRef().getContext();
+	public final Location getLocation() {
+		return getTypeRef().getLocation();
 	}
 
 	@Override

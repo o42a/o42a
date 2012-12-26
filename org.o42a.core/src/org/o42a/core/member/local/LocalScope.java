@@ -46,9 +46,9 @@ import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
-import org.o42a.util.log.Loggable;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
@@ -101,8 +101,8 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return this.member.getLoggable();
+	public final Location getLocation() {
+		return this.member.getLocation();
 	}
 
 	@Override

@@ -109,7 +109,7 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 		}
 
 		if (this.ascendants.isEmpty()) {
-			getLogger().noDefinition(this);
+			getLogger().noDefinition(getLocation());
 		}
 
 		return this.value = new Call(

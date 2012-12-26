@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,46 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref.owner;
+package org.o42a.core.source;
 
-import org.o42a.core.ref.Ref;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.util.log.LogInfo;
 
 
-class NonLinkOwner extends Owner {
+public abstract class Located implements LocationInfo {
 
-	NonLinkOwner(Ref ownerRef) {
-		super(ownerRef);
+	private final Location location;
+
+	public Located(LocationInfo location) {
+		this.location = location.getLocation();
+	}
+
+	public Located(CompilerContext context, LogInfo logInfo) {
+		this.location = new Location(context, logInfo);
 	}
 
 	@Override
-	public final boolean isBodyReferred() {
-		return true;
+	public final Location getLocation() {
+		return this.location;
 	}
 
-	@Override
-	public Ref targetRef() {
-		return this.ownerRef;
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
-	@Override
-	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		redundantBodyRef(this.ownerRef.getLogger(), bodyRef.getLocation());
-		return this;
-	}
-
-	@Override
-	public Owner deref(LocationInfo location, LocationInfo deref) {
-		this.ownerRef.getLogger().error(
-				"redundant_deref",
-				deref,
-				"Redundant link dereference");
-		return this;
-	}
-
-	@Override
-	public Ref bodyRef() {
-		return targetRef();
+	public final CompilerLogger getLogger() {
+		return getContext().getLogger();
 	}
 
 }

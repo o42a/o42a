@@ -23,16 +23,15 @@ import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.ScopePlace.scopePlace;
 
 import org.o42a.core.*;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Sentence;
 import org.o42a.util.Place.Trace;
-import org.o42a.util.log.Loggable;
 
 
 public final class StatementsDistributor extends Distributor {
 
-	private final LocationInfo location;
+	private final Location location;
 	private final Sentence<?, ?> sentence;
 	private final ScopePlace place;
 
@@ -40,7 +39,7 @@ public final class StatementsDistributor extends Distributor {
 			LocationInfo location,
 			Sentence<?, ?> sentence,
 			Trace trace) {
-		this.location = location;
+		this.location = location.getLocation();
 		this.sentence = sentence;
 		if (trace == null) {
 			this.place = scopePlace(getScope());
@@ -52,13 +51,8 @@ public final class StatementsDistributor extends Distributor {
 	}
 
 	@Override
-	public Loggable getLoggable() {
-		return this.location.getLoggable();
-	}
-
-	@Override
-	public CompilerContext getContext() {
-		return this.location.getContext();
+	public final Location getLocation() {
+		return this.location;
 	}
 
 	@Override

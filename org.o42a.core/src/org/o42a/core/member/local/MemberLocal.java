@@ -42,7 +42,8 @@ public abstract class MemberLocal extends Member {
 
 	protected MemberLocal(MemberOwner owner, MemberLocal propagatedFrom) {
 		super(
-				addDeclaration(owner, propagatedFrom.getLastDefinition()),
+				owner.getLocation().setDeclaration(
+						propagatedFrom.getLastDefinition()),
 				propagatedFrom.distributeIn(owner.getContainer()),
 				owner);
 	}

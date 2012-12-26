@@ -29,15 +29,13 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectScope;
 import org.o42a.core.ref.Prediction;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class StandaloneObjectScope extends ObjectScope {
 
-	private final CompilerContext context;
-	private final Loggable loggable;
+	private final Location location;
 	private final Container enclosingContainer;
 	private final ScopePlace place;
 
@@ -46,20 +44,14 @@ public abstract class StandaloneObjectScope extends ObjectScope {
 	protected StandaloneObjectScope(
 			LocationInfo location,
 			Distributor enclosing) {
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
+		this.location = location.getLocation();
 		this.enclosingContainer = enclosing.getContainer();
 		this.place = enclosing.getPlace();
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.context;
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.loggable;
+	public final Location getLocation() {
+		return this.location;
 	}
 
 	@Override

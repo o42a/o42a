@@ -32,7 +32,7 @@ import org.o42a.util.log.LogInfo;
 
 
 public final class TypeDefinition
-		extends Location
+		extends Located
 		implements ObjectTypeParameters {
 
 	public static TypeDefinition typeDefinition(

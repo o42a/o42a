@@ -19,32 +19,33 @@
 */
 package org.o42a.core.source;
 
-import static org.o42a.core.source.CompilerLogger.DECLARATION_LOG_DETAIL;
+import static org.o42a.util.log.LogDetail.logDetail;
 
+import org.o42a.util.log.LogDetail;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 
 
-public class Location implements LocationInfo {
+public final class Location implements LocationInfo, LogInfo {
 
-	public static Location addDeclaration(
-			LocationInfo location,
-			LogInfo declaration) {
-		return new Location(
-				location.getContext(),
-				location.getLoggable().addDetail(
-						DECLARATION_LOG_DETAIL,
-						declaration));
-	}
+	public static final LogDetail ANOTHER_LOG_DETAIL =
+			logDetail("compiler.another", "Another location");
+
+	public static final LogDetail DECLARATION_LOG_DETAIL =
+			logDetail("compiler.declration", "Declaration");
 
 	private final CompilerContext context;
 	private final Loggable loggable;
 
-	public Location(LocationInfo location) {
+	public Location(Location location) {
 		assert location != null :
 			"Location not specified";
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
+	}
+
+	public Location(LocationInfo location) {
+		this(location.getLocation());
 	}
 
 	public Location(CompilerContext context, LogInfo logInfo) {
@@ -57,17 +58,37 @@ public class Location implements LocationInfo {
 	}
 
 	@Override
+	public final Location getLocation() {
+		return this;
+	}
+
 	public final CompilerContext getContext() {
 		return this.context;
 	}
 
 	@Override
-	public Loggable getLoggable() {
+	public final Loggable getLoggable() {
 		return this.loggable;
 	}
 
 	public final CompilerLogger getLogger() {
 		return getContext().getLogger();
+	}
+
+	public final Location setDeclaration(LocationInfo declaration) {
+		return setDeclaration(declaration.getLocation().getLoggable());
+	}
+
+	public final Location setDeclaration(LogInfo declaration) {
+		return addDetailLocation(DECLARATION_LOG_DETAIL, declaration);
+	}
+
+	public final Location addAnother(LocationInfo another) {
+		return addAnother(another.getLocation().getLoggable());
+	}
+
+	public final Location addAnother(LogInfo another) {
+		return addDetail(ANOTHER_LOG_DETAIL, another);
 	}
 
 	@Override
@@ -88,6 +109,18 @@ public class Location implements LocationInfo {
 		}
 
 		return out.toString();
+	}
+
+	private Location addDetail(LogDetail detail, LogInfo location) {
+		return new Location(
+				getContext(),
+				getLoggable().addDetail(detail, location));
+	}
+
+	private Location addDetailLocation(LogDetail detail, LogInfo location) {
+		return new Location(
+				getContext(),
+				getLoggable().addDetailLocation(detail, location));
 	}
 
 }

@@ -229,16 +229,16 @@ public final class FieldDeclaration extends Placed implements Cloneable {
 
 		if (fieldDeclaration.isAdapter() != isAdapter()) {
 			if (isAdapter()) {
-				field.getLogger().unexpectedAdapter(this);
+				field.getLogger().unexpectedAdapter(getLocation());
 			} else {
-				field.getLogger().notAdapter(this);
+				field.getLogger().notAdapter(getLocation());
 			}
 			ok = false;
 		}
 
 		if (fieldDeclaration.getVisibility() != getVisibility()) {
 			field.getLogger().unexpectedVisibility(
-					this,
+					getLocation(),
 					getDisplayName(),
 					getVisibility(),
 					fieldDeclaration.getVisibility());
@@ -247,18 +247,18 @@ public final class FieldDeclaration extends Placed implements Cloneable {
 
 		if (fieldDeclaration.isPrototype() != isPrototype()) {
 			if (isPrototype()) {
-				field.getLogger().unexpectedPrototype(this);
+				field.getLogger().unexpectedPrototype(getLocation());
 			} else {
-				field.getLogger().notPrototype(this);
+				field.getLogger().notPrototype(getLocation());
 			}
 			ok = false;
 		}
 
 		if (fieldDeclaration.isAbstract() != isAbstract()) {
 			if (isAbstract()) {
-				field.getLogger().unexpectedAbstract(this);
+				field.getLogger().unexpectedAbstract(getLocation());
 			} else {
-				field.getLogger().notAbstract(this);
+				field.getLogger().notAbstract(getLocation());
 			}
 			ok = false;
 		}

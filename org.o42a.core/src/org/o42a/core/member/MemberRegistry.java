@@ -160,7 +160,7 @@ public abstract class MemberRegistry {
 		}
 
 		protected void reportDeclaration(LocationInfo location) {
-			location.getContext().getLogger().error(
+			location.getLocation().getLogger().error(
 					"prohibited_declaration",
 					location,
 					"Declarations prohibited here");

@@ -48,7 +48,7 @@ final class DerefOwner extends Owner {
 
 	@Override
 	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		redundantBodyRef(this.ownerRef.getLogger(), bodyRef);
+		redundantBodyRef(this.ownerRef.getLogger(), bodyRef.getLocation());
 		return this;
 	}
 

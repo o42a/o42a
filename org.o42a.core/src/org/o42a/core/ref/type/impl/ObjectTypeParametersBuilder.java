@@ -22,10 +22,9 @@ package org.o42a.core.ref.type.impl;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRefParameters;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.util.log.Loggable;
 
 
 public final class ObjectTypeParametersBuilder implements ObjectTypeParameters {
@@ -37,13 +36,8 @@ public final class ObjectTypeParametersBuilder implements ObjectTypeParameters {
 	}
 
 	@Override
-	public CompilerContext getContext() {
-		return this.typeRefParameters.getContext();
-	}
-
-	@Override
-	public Loggable getLoggable() {
-		return this.typeRefParameters.getLoggable();
+	public final Location getLocation() {
+		return this.typeRefParameters.getLocation();
 	}
 
 	@Override

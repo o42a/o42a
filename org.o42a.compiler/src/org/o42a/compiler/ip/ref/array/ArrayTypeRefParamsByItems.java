@@ -23,10 +23,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRefParameters;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.util.log.Loggable;
 
 
 final class ArrayTypeRefParamsByItems extends TypeRefParameters {
@@ -38,13 +37,8 @@ final class ArrayTypeRefParamsByItems extends TypeRefParameters {
 	}
 
 	@Override
-	public CompilerContext getContext() {
-		return this.arrayRef.getContext();
-	}
-
-	@Override
-	public Loggable getLoggable() {
-		return this.arrayRef.getLoggable();
+	public final Location getLocation() {
+		return this.arrayRef.getLocation();
 	}
 
 	@Override

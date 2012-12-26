@@ -23,12 +23,11 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
-import org.o42a.util.log.Loggable;
 
 
 final class LinkTypeParameters implements ObjectTypeParameters {
@@ -47,13 +46,8 @@ final class LinkTypeParameters implements ObjectTypeParameters {
 	}
 
 	@Override
-	public CompilerContext getContext() {
-		return this.value.getContext();
-	}
-
-	@Override
-	public Loggable getLoggable() {
-		return this.value.getLoggable();
+	public final Location getLocation() {
+		return this.value.getLocation();
 	}
 
 	@Override

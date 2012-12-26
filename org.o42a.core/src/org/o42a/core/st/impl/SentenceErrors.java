@@ -27,28 +27,28 @@ import org.o42a.core.st.DefTargets;
 public final class SentenceErrors {
 
 	public static void prohibitedIssueField(LocationInfo location) {
-		location.getContext().getLogger().error(
+		location.getLocation().getLogger().error(
 				"prohibited_issue_field",
 				location,
 				"Field declarations prohibited inside issues");
 	}
 
 	public static void prohibitedIssueClause(LocationInfo location) {
-		location.getContext().getLogger().error(
+		location.getLocation().getLogger().error(
 				"prohibited_issue_clause",
 				location,
 				"Clause declarations prohibited inside issues");
 	}
 
 	public static void prohibitedIssueBraces(LocationInfo location) {
-		location.getContext().getLogger().error(
+		location.getLocation().getLogger().error(
 				"prohibited_issue_braces",
 				location,
 				"Issue can not contain braces");
 	}
 
 	public static void prohibitedIssueAssignment(LocationInfo location) {
-		location.getContext().getLogger().error(
+		location.getLocation().getLogger().error(
 				"prohibited_issue_assignment",
 				location,
 				"Assignments are prohibited within issue");

@@ -35,8 +35,7 @@ import org.o42a.core.member.field.decl.PropagatedFieldObject;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectScope;
 import org.o42a.core.ref.Prediction;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.Location;
 import org.o42a.util.string.ID;
 
 
@@ -52,13 +51,8 @@ public abstract class Field extends ObjectScope {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.member.getContext();
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.member.getLoggable();
+	public final Location getLocation() {
+		return this.member.getLocation();
 	}
 
 	@Override

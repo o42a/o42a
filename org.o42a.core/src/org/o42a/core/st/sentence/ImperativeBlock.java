@@ -31,14 +31,13 @@ import org.o42a.core.ScopePlace;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.*;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.fn.Lambda;
-import org.o42a.util.log.Loggable;
 import org.o42a.util.string.Name;
 
 
@@ -288,22 +287,17 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	public static final class BlockDistributor extends Distributor {
 
-		private final LocationInfo location;
+		private final Location location;
 		private final LocalScope scope;
 
 		public BlockDistributor(LocationInfo location, LocalScope scope) {
-			this.location = location;
+			this.location = location.getLocation();
 			this.scope = scope;
 		}
 
 		@Override
-		public Loggable getLoggable() {
-			return this.location.getLoggable();
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.location.getContext();
+		public final Location getLocation() {
+			return this.location;
 		}
 
 		@Override

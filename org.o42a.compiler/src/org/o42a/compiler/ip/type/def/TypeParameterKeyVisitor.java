@@ -126,7 +126,7 @@ final class TypeParameterKeyVisitor
 			}
 		}
 
-		p.getLogger().unresolved(location, name.getName());
+		p.getLogger().unresolved(location.getLocation(), name.getName());
 
 		return brokenMemberKey();
 	}

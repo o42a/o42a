@@ -19,11 +19,10 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.util.log.LogInfo;
 
 
-public interface LocationInfo extends LogInfo {
+public interface LocationInfo {
 
-	CompilerContext getContext();
+	Location getLocation();
 
 }

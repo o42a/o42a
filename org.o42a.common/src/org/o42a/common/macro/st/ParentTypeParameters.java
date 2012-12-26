@@ -25,7 +25,7 @@ import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.Located;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
@@ -33,7 +33,7 @@ import org.o42a.core.value.link.LinkValueType;
 
 
 final class ParentTypeParameters
-		extends Location
+		extends Located
 		implements ObjectTypeParameters {
 
 	ParentTypeParameters(ObjectDefiner definer) {

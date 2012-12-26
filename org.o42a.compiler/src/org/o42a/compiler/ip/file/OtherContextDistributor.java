@@ -21,29 +21,24 @@ package org.o42a.compiler.ip.file;
 
 import org.o42a.core.*;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.Location;
 
 
 final class OtherContextDistributor extends Distributor {
 
-	private final CompilerContext context;
+	private final Location location;
 	private final Distributor distributor;
 
 	OtherContextDistributor(
 			CompilerContext context,
 			Distributor distributor) {
-		this.context = context;
+		this.location = new Location(context, distributor.getLocation());
 		this.distributor = distributor;
 	}
 
 	@Override
-	public CompilerContext getContext() {
-		return this.context;
-	}
-
-	@Override
-	public Loggable getLoggable() {
-		return this.distributor.getLoggable();
+	public Location getLocation() {
+		return this.location;
 	}
 
 	@Override

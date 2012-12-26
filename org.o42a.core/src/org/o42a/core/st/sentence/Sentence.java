@@ -27,12 +27,11 @@ import java.util.List;
 
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class Sentence<
@@ -234,12 +233,12 @@ public abstract class Sentence<
 
 	private static final class SentenceDistributor extends Distributor {
 
-		private final LocationInfo location;
+		private final Location location;
 		private final Block<?, ?> block;
 		private final ScopePlace place;
 
 		SentenceDistributor(LocationInfo location, Block<?, ?> block) {
-			this.location = location;
+			this.location = location.getLocation();
 			this.block = block;
 
 			final ImperativeBlock imperativeBlock =
@@ -255,13 +254,8 @@ public abstract class Sentence<
 		}
 
 		@Override
-		public Loggable getLoggable() {
-			return this.location.getLoggable();
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.location.getContext();
+		public Location getLocation() {
+			return this.location;
 		}
 
 		@Override

@@ -26,11 +26,10 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.macro.MacroExpander;
-import org.o42a.util.log.Loggable;
 
 
 final class PrefixedMacro implements Macro {
@@ -144,13 +143,8 @@ final class PrefixedMacro implements Macro {
 		}
 
 		@Override
-		public CompilerContext getContext() {
-			return this.expander.getContext();
-		}
-
-		@Override
-		public Loggable getLoggable() {
-			return this.expander.getLoggable();
+		public Location getLocation() {
+			return this.expander.getLocation();
 		}
 
 		@Override

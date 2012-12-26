@@ -179,7 +179,7 @@ public abstract class AbstractMemberStep extends Step {
 
 	private Container unresolved(BoundPath path, int index, Scope start) {
 		start.getContext().getLogger().unresolved(
-				path,
+				path.getLocation(),
 				path.toString(index + 1));
 		return null;
 	}

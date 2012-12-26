@@ -19,16 +19,14 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.core.source.CompilerLogger.ANOTHER_LOG_DETAIL;
-
 import java.util.HashMap;
 
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.core.source.DefinitionSource;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.SectionTag;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.util.log.Loggable;
 
 
 public class FileDefinitionCompiler
@@ -100,9 +98,8 @@ public class FileDefinitionCompiler
 
 			sections.put(tag, existing);
 
-			final Loggable location = section.getLoggable().addDetail(
-					ANOTHER_LOG_DETAIL,
-					existing);
+			final Location location =
+					section.getLocation().addAnother(existing);
 
 			if (tag.isImplicit()) {
 				getLogger().error(

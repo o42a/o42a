@@ -25,12 +25,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRefParameters;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameter;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.log.Loggable;
 
 
 final class ValueTypeInterfaceParameters extends TypeRefParameters {
@@ -42,18 +41,13 @@ final class ValueTypeInterfaceParameters extends TypeRefParameters {
 	}
 
 	@Override
-	public Scope getScope() {
+	public final Location getLocation() {
+		return this.parameters.getLocation();
+	}
+
+	@Override
+	public final Scope getScope() {
 		return this.parameters.getScope();
-	}
-
-	@Override
-	public CompilerContext getContext() {
-		return this.parameters.getContext();
-	}
-
-	@Override
-	public Loggable getLoggable() {
-		return this.parameters.getLoggable();
 	}
 
 	@Override

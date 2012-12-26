@@ -31,14 +31,11 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.TargetResolver;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class Def implements SourceInfo {
@@ -65,7 +62,7 @@ public abstract class Def implements SourceInfo {
 
 	private final ScopeUpgrade scopeUpgrade;
 	private final Obj source;
-	private final LocationInfo location;
+	private final Location location;
 	private DefValue constantValue;
 	private boolean claim;
 	private boolean allResolved;
@@ -83,7 +80,7 @@ public abstract class Def implements SourceInfo {
 			ScopeUpgrade scopeUpgrade,
 			boolean claim) {
 		this.scopeUpgrade = scopeUpgrade;
-		this.location = location;
+		this.location = location.getLocation();
 		this.source = source;
 		this.claim = claim;
 	}
@@ -109,13 +106,12 @@ public abstract class Def implements SourceInfo {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return this.location.getLoggable();
+	public final Location getLocation() {
+		return this.location;
 	}
 
-	@Override
 	public final CompilerContext getContext() {
-		return this.location.getContext();
+		return getLocation().getContext();
 	}
 
 	public final CompilerLogger getLogger() {
@@ -319,10 +315,6 @@ public abstract class Def implements SourceInfo {
 	}
 
 	protected abstract void fullyResolve(FullResolver resolver);
-
-	protected final LocationInfo getLocation() {
-		return this.location;
-	}
 
 	final Def upgradeScope(ScopeUpgrade upgrade) {
 

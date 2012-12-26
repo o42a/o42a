@@ -38,6 +38,7 @@ import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.string.ID;
 
@@ -166,6 +167,11 @@ public abstract class AbstractScope implements Scope {
 
 	public AbstractScope() {
 		this.resolverFactory = Resolver.resolverFactory(this);
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	@Override

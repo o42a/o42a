@@ -118,8 +118,8 @@ public class Compiler implements SourceCompiler {
 							scope.distribute()));
 		}
 
-		final SourcePosition pos =
-				new SourcePosition(location.getContext().getSource());
+		final SourcePosition pos = new SourcePosition(
+				location.getLocation().getContext().getSource());
 		final MemberRefNode ownerNode = new MemberRefNode(
 				null,
 				null,
@@ -221,13 +221,15 @@ public class Compiler implements SourceCompiler {
 			CompilerLogger logger,
 			String string) {
 
-		final DetailedLogger log =
-				new DetailedLogger(logger, LOCATION_LOG_DETAIL, location);
+		final DetailedLogger log = new DetailedLogger(
+				logger,
+				LOCATION_LOG_DETAIL,
+				location.getLocation());
 		final RefNode node =
 				parse(parser, log, new StringSource(string, string));
 
 		if (node == null) {
-			logger.invalidReference(location);
+			logger.invalidReference(location.getLocation());
 		}
 
 		return node;

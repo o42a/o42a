@@ -23,10 +23,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
-import org.o42a.util.log.Loggable;
 import org.o42a.util.string.Name;
 
 
@@ -39,13 +39,12 @@ public abstract class Action implements ScopeInfo {
 	}
 
 	@Override
-	public Loggable getLoggable() {
-		return this.statement.getLoggable();
+	public final Location getLocation() {
+		return this.statement.getLocation();
 	}
 
-	@Override
 	public final CompilerContext getContext() {
-		return this.statement.getContext();
+		return getLocation().getContext();
 	}
 
 	@Override

@@ -127,7 +127,9 @@ public final class DeclaredPlainClause extends PlainClause {
 	}
 
 	protected void merge(Clause clause) {
-		getContext().getLogger().ambiguousClause(clause, getDisplayName());
+		getContext().getLogger().ambiguousClause(
+				clause.getLocation(),
+				getDisplayName());
 	}
 
 	@Override

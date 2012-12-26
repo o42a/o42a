@@ -334,7 +334,9 @@ public final class Defs {
 				continue;
 			}
 			if (!typeParameters.assignableFrom(defTypeParameters)) {
-				definitions.getLogger().incompatible(def, typeParameters);
+				definitions.getLogger().incompatible(
+						def.getLocation(),
+						typeParameters);
 			}
 		}
 
@@ -393,7 +395,7 @@ public final class Defs {
 			}
 			if (!typeParameters.assignableFrom(defTypeParameters)) {
 				def.getContext().getLogger().incompatible(
-						def,
+						def.getLocation(),
 						typeParameters);
 			}
 		}

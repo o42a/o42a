@@ -27,7 +27,6 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class AbstractObjectCompiler
@@ -35,7 +34,7 @@ public abstract class AbstractObjectCompiler
 		implements ObjectCompiler {
 
 	private Section section;
-	private Loggable loggable;
+	private Location location;
 	private DeclarativeBlock enclosingBlock;
 
 	public AbstractObjectCompiler(ObjectSource source, FileNode node) {
@@ -48,11 +47,12 @@ public abstract class AbstractObjectCompiler
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		if (this.loggable != null) {
-			return this.loggable;
+	public final Location getLocation() {
+		if (this.location != null) {
+			return this.location;
 		}
-		return this.loggable = getSection().getLoggable().getLoggable();
+		return this.location =
+				new Location(getContext(), getSection().getLoggable());
 	}
 
 	public final Section getSection() {
@@ -101,7 +101,7 @@ public abstract class AbstractObjectCompiler
 
 	@Override
 	public void done() {
-		getLoggable();
+		getLocation();
 		this.section = null;
 	}
 

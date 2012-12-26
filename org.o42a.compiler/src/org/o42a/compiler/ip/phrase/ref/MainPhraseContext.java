@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.phrase.ref;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.phrase.part.NextClause.clauseNotFound;
 import static org.o42a.core.member.MemberName.clauseName;
-import static org.o42a.core.source.CompilerLogger.DECLARATION_LOG_DETAIL;
 
 import java.util.LinkedList;
 
@@ -263,7 +262,7 @@ final class MainPhraseContext extends PhraseContext {
 
 		if (continuation == null) {
 			// Phrase with only prefix and no parts.
-			// It probably has a type prameters.
+			// It probably has a type parameters.
 			// It creates an object.
 			this.createsObject = 1;
 			return;
@@ -285,9 +284,7 @@ final class MainPhraseContext extends PhraseContext {
 				if (clause != null && clause.requiresContinuation()) {
 					getLogger().error(
 							"incomplete_phrase",
-							continuation.getLoggable().addDetail(
-									DECLARATION_LOG_DETAIL,
-									clause),
+							continuation.getLocation().addAnother(clause),
 							"Incomplete phrase");
 					break;
 				}

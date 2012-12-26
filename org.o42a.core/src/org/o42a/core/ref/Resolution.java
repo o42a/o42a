@@ -28,9 +28,9 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.directive.Directive;
-import org.o42a.util.log.Loggable;
 
 
 /**
@@ -62,13 +62,12 @@ public final class Resolution implements ScopeInfo {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return getResolver().getContext();
+	public final Location getLocation() {
+		return getResolver().getLocation();
 	}
 
-	@Override
-	public final Loggable getLoggable() {
-		return getResolver().getLoggable();
+	public final CompilerContext getContext() {
+		return getResolver().getContext();
 	}
 
 	@Override

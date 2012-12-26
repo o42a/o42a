@@ -134,7 +134,7 @@ public abstract class ValueType<T> {
 			LocationInfo location,
 			Scope scope,
 			TypeRefParameters typeParameters) {
-		return path(location.getContext().getIntrinsics())
+		return path(location.getLocation().getContext().getIntrinsics())
 				.bind(location, scope)
 				.staticTypeRef(scope.distribute(), typeParameters);
 	}

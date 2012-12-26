@@ -67,8 +67,11 @@ public class LocalRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public ClauseBuilder newClause(Statements<?, ?> statements, ClauseDeclaration declaration) {
-		declaration.getLogger().prohibitedClauseDeclaration(declaration);
+	public ClauseBuilder newClause(
+			Statements<?, ?> statements,
+			ClauseDeclaration declaration) {
+		declaration.getLogger()
+		.prohibitedClauseDeclaration(declaration.getLocation());
 		return null;
 	}
 

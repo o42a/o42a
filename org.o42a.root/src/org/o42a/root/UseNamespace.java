@@ -55,7 +55,7 @@ public class UseNamespace extends DirectiveObject {
 
 		if (namespace == null) {
 			directive.getLogger().prohibitedDirective(
-					directive,
+					directive.getLocation(),
 					"Use namespace");
 			return;
 		}
@@ -65,7 +65,9 @@ public class UseNamespace extends DirectiveObject {
 		final Value<?> moduleValue = module().value(resolver);
 
 		if (!moduleValue.getKnowledge().isKnown()) {
-			directive.getLogger().unresolvedValue(directive, "module");
+			directive.getLogger().unresolvedValue(
+					directive.getLocation(),
+					"module");
 			return;
 		}
 
@@ -74,7 +76,9 @@ public class UseNamespace extends DirectiveObject {
 		final Value<?> objectValue = object().value(resolver);
 
 		if (!objectValue.getKnowledge().isKnown()) {
-			directive.getLogger().unresolvedValue(directive, "object");
+			directive.getLogger().unresolvedValue(
+					directive.getLocation(),
+					"object");
 			return;
 		}
 

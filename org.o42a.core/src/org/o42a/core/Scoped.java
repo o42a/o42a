@@ -20,13 +20,13 @@
 package org.o42a.core;
 
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 
 
-public class Scoped extends Location implements ScopeInfo {
+public class Scoped extends Located implements ScopeInfo {
 
 	public static final void assertScopeIs(ScopeInfo scoped, Scope scope) {
 		assert scoped.getScope().is(scope) :
@@ -110,7 +110,7 @@ public class Scoped extends Location implements ScopeInfo {
 		out.append(getClass().getSimpleName()).append('[');
 		out.append(getScope()).append('@').append(getContext());
 
-		final Loggable loggable = getLoggable();
+		final Loggable loggable = getLocation().getLoggable();
 
 		if (loggable != null) {
 			out.append("]:[");

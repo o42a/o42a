@@ -36,9 +36,9 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.log.Loggable;
 import org.o42a.util.string.Name;
 
 
@@ -84,13 +84,12 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.declaration.getContext();
+	public final Location getLocation() {
+		return this.declaration.getLocation();
 	}
 
-	@Override
-	public Loggable getLoggable() {
-		return this.declaration.getLoggable();
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	@Override

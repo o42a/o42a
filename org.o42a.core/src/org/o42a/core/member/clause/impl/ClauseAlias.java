@@ -48,7 +48,7 @@ public final class ClauseAlias extends Alias {
 
 	private ClauseAlias(MemberOwner owner, ClauseAlias prototype) {
 		super(
-				addDeclaration(owner, prototype),
+				owner.getLocation().setDeclaration(prototype),
 				prototype.distributeIn(owner.getContainer()),
 				owner);
 		this.memberId = prototype.getMemberId();

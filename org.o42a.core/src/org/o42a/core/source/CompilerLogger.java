@@ -19,19 +19,11 @@
 */
 package org.o42a.core.source;
 
-import static org.o42a.util.log.LogDetail.logDetail;
-
 import org.o42a.core.member.Visibility;
 import org.o42a.util.log.*;
 
 
 public class CompilerLogger implements Logger {
-
-	public static final LogDetail ANOTHER_LOG_DETAIL =
-			logDetail("compiler.another", "Another location");
-
-	public static final LogDetail DECLARATION_LOG_DETAIL =
-			logDetail("compiler.declration", "Declaration");
 
 	private final Logger logger;
 	private final Object source;
@@ -133,16 +125,12 @@ public class CompilerLogger implements Logger {
 		error("not_clause_declaration", location, "Not a clause declaration");
 	}
 
-	public void notCondition(LocationInfo location) {
+	public void notCondition(LogInfo location) {
 		error("not_condition", location, "Not a condition");
 	}
 
 	public void notDerivedFrom(LogInfo location, Object ascendant) {
 		error("not_deried_from", location, "Not derived from %s", ascendant);
-	}
-
-	public void notPath(LogInfo location) {
-		error("not_path", location, "Not a path");
 	}
 
 	public void notPrototype(LogInfo location) {
@@ -178,13 +166,6 @@ public class CompilerLogger implements Logger {
 				"prohibited_declared_in",
 				location,
 				"Field scope declaration is prohibited here");
-	}
-
-	public void prohibitedDeclarativeEllipsis(LogInfo location) {
-		error(
-				"prohibited_declarative_ellipsis",
-				location,
-				"Ellipsis is only allowed within imperative block");
 	}
 
 	public void prohibitedDirective(LogInfo location, String directiveName) {
@@ -228,14 +209,6 @@ public class CompilerLogger implements Logger {
 				location,
 				"Private field '%s' can not be abstract",
 				fieldName);
-	}
-
-	public void recursiveResolution(LogInfo location, Object resolvable) {
-		error(
-				"recursive_resolution",
-				location,
-				"Infinite recursion when resolving %s",
-				resolvable);
 	}
 
 	public void unexpectedAbstract(LogInfo location) {
@@ -288,10 +261,50 @@ public class CompilerLogger implements Logger {
 
 	public final void error(
 			String code,
+			LocationInfo location,
+			String defaultMessage,
+			Object... args) {
+		error(
+				code,
+				location.getLocation().getLoggable(),
+				defaultMessage,
+				args);
+	}
+
+	public final void error(
+			String code,
+			Location location,
+			String defaultMessage,
+			Object... args) {
+		error(code, location.getLoggable(), defaultMessage, args);
+	}
+
+	public final void error(
+			String code,
 			LogInfo location,
 			String defaultMessage,
 			Object... args) {
 		log(Severity.ERROR, code, location, defaultMessage, args);
+	}
+
+	public final void warning(
+			String code,
+			LocationInfo location,
+			String defaultMessage,
+			Object... args) {
+		warning(
+				code,
+				location.getLocation().getLoggable(),
+				defaultMessage,
+				args);
+	}
+
+	public final void warning(
+			String code,
+			Location location,
+			String defaultMessage,
+			Object... args) {
+		warning(code, location.getLoggable(), defaultMessage, args);
 	}
 
 	public final void warning(
