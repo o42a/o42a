@@ -110,7 +110,7 @@ public final class BracesWithinDeclaratives extends Statement {
 					new ImperativeBlock.BlockDistributor(
 							new Location(
 									reproducedScope.getContext(),
-									reproducingBlock),
+									reproducingBlock.getLocation()),
 							reproducedScope));
 			this.reproducer = reproducer;
 			this.localRegistry = new LocalRegistry(

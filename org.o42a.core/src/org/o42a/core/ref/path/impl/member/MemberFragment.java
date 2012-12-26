@@ -72,7 +72,7 @@ public class MemberFragment extends PathFragment {
 		if (typeRef == null) {
 			unresolvedTypeParameter(
 					expander.getLogger(),
-					expander.getPath(),
+					expander.getPath().getLocation(),
 					this.memberKey);
 			return null;
 		}

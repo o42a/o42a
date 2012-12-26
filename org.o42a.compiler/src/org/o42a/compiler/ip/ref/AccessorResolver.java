@@ -152,8 +152,8 @@ final class AccessorResolver implements PathWalker {
 			this.owner = false;
 		}
 		return this.declaration =
-				container.getContext().declarationsVisibleFrom(
-						current.getContext());
+				container.getLocation().getContext().declarationsVisibleFrom(
+						current.getLocation().getContext());
 	}
 
 	private boolean updateEnclosed(Container current, Container container) {

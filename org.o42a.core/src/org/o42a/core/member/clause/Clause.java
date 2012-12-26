@@ -29,9 +29,9 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.log.Loggable;
 import org.o42a.util.string.Name;
 
 
@@ -86,7 +86,7 @@ public abstract class Clause implements PlaceInfo {
 
 		explicitClauses.put(memberId, conflicting);
 		clause.getContext().getLogger().ambiguousClause(
-				clause,
+				clause.getLocation(),
 				clause.getDisplayName());
 
 		return false;
@@ -104,13 +104,12 @@ public abstract class Clause implements PlaceInfo {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.member.getContext();
+	public final Location getLocation() {
+		return this.member.getLocation();
 	}
 
-	@Override
-	public Loggable getLoggable() {
-		return this.member.getLoggable();
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	@Override

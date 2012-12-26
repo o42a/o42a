@@ -54,7 +54,7 @@ abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 		} catch (ArithmeticException e) {
 			if (reportError(resolver)) {
 				resolver.getLogger().arithmeticError(
-						resolver.getScope(),
+						resolver.getLocation(),
 						e.getMessage());
 			}
 			return null;

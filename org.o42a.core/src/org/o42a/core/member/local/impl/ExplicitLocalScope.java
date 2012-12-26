@@ -234,10 +234,12 @@ public final class ExplicitLocalScope extends LocalScope {
 		final MemberField field = old.toField();
 
 		if (field != null) {
-			getLogger().ambiguousMember(member, field.getDisplayName());
+			getLogger().ambiguousMember(
+					member.getLocation(),
+					field.getDisplayName());
 		} else {
 			getLogger().ambiguousClause(
-					member,
+					member.getLocation(),
 					member.toClause().getDisplayName());
 		}
 

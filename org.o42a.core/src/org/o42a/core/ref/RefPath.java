@@ -22,14 +22,14 @@ package org.o42a.core.ref;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 
 
-public abstract class RefPath extends Location {
+public abstract class RefPath extends Located {
 
 	public RefPath(LocationInfo location) {
 		super(location);

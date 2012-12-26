@@ -73,7 +73,7 @@ public class ObjectMemberRegistry extends MemberRegistry {
 				&& !getOwner().isPrototype()
 				&& !getOwner().isAbstract()) {
 			getOwner().getLogger().prohibitedAbstract(
-					declaration,
+					declaration.getLocation(),
 					declaration.getDisplayName());
 			return null;
 		}

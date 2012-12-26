@@ -29,10 +29,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.common.RoleResolver;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.*;
 
 
 public class Resolver implements LocationInfo {
@@ -56,11 +53,10 @@ public class Resolver implements LocationInfo {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return this.scope.getLoggable();
+	public final Location getLocation() {
+		return this.scope.getLocation();
 	}
 
-	@Override
 	public final CompilerContext getContext() {
 		return this.scope.getContext();
 	}

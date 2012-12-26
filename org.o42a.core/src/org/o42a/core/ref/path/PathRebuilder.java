@@ -22,10 +22,9 @@ package org.o42a.core.ref.path;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.log.Loggable;
 
 
 public final class PathRebuilder implements LocationInfo {
@@ -53,13 +52,8 @@ public final class PathRebuilder implements LocationInfo {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return getPath().getLoggable();
-	}
-
-	@Override
-	public final CompilerContext getContext() {
-		return getPath().getContext();
+	public final Location getLocation() {
+		return getPath().getLocation();
 	}
 
 	public final boolean isStatic() {

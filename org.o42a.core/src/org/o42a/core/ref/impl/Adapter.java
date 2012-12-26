@@ -35,16 +35,14 @@ import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.Loggable;
 
 
 public final class Adapter extends PathFragment implements LocationInfo {
 
-	private final CompilerContext context;
-	private final Loggable loggable;
+	private final Location location;
 	private final StaticTypeRef adapterType;
 	private final CompilerLogger logger;
 
@@ -52,20 +50,14 @@ public final class Adapter extends PathFragment implements LocationInfo {
 			LocationInfo location,
 			StaticTypeRef adapterType,
 			CompilerLogger logger) {
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
+		this.location = location.getLocation();
 		this.adapterType = adapterType;
 		this.logger = logger;
 	}
 
 	@Override
-	public Loggable getLoggable() {
-		return this.loggable;
-	}
-
-	@Override
-	public CompilerContext getContext() {
-		return this.context;
+	public final Location getLocation() {
+		return this.location;
 	}
 
 	public final StaticTypeRef getAdapterType() {
@@ -85,7 +77,7 @@ public final class Adapter extends PathFragment implements LocationInfo {
 				objectType.getObject().member(adapterId(this.adapterType));
 
 		if (adapterMember == null) {
-			this.logger.incompatible(this.loggable, this.adapterType);
+			this.logger.incompatible(this.location, this.adapterType);
 			return null;
 		}
 

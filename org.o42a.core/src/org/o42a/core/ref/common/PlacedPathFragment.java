@@ -23,8 +23,8 @@ import org.o42a.core.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
@@ -33,26 +33,19 @@ public abstract class PlacedPathFragment
 		extends PathFragment
 		implements PlaceInfo {
 
-	private final CompilerContext context;
-	private final Loggable loggable;
+	private final Location location;
 	private final ScopePlace place;
 	private final Container container;
 
 	public PlacedPathFragment(LocationInfo location, Distributor distributor) {
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
+		this.location = location.getLocation();
 		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.context;
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.loggable;
+	public final Location getLocation() {
+		return this.location;
 	}
 
 	@Override
@@ -71,7 +64,7 @@ public abstract class PlacedPathFragment
 	}
 
 	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
+		return getLocation().getLogger();
 	}
 
 	@Override
@@ -118,9 +111,9 @@ public abstract class PlacedPathFragment
 		final StringBuilder out = new StringBuilder();
 
 		out.append(getClass().getSimpleName()).append('[');
-		out.append(getScope()).append('@').append(getContext());
+		out.append(getScope()).append('@').append(this.location.getContext());
 
-		final Loggable loggable = getLoggable();
+		final Loggable loggable = this.location.getLoggable();
 
 		if (loggable != null) {
 			out.append("]:[");

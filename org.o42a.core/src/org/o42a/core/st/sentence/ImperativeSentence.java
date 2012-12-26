@@ -136,7 +136,7 @@ public abstract class ImperativeSentence
 			return result;
 		}
 
-		return result.add(exitCommand(this));
+		return result.add(exitCommand(getLocation()));
 	}
 
 }

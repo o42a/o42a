@@ -107,7 +107,7 @@ class HeaderStatement extends Statement {
 			final Directive directive = ref.resolve(resolver).toDirective();
 
 			if (directive == null) {
-				notDirective(getLogger(), this);
+				notDirective(getLogger(), getLocation());
 				return SKIP_INSTRUCTION;
 			}
 

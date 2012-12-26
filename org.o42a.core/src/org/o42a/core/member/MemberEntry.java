@@ -126,11 +126,11 @@ final class MemberEntry {
 
 		if (member.toClause() != null) {
 			member.getLogger().ambiguousClause(
-					member,
+					member.getLocation(),
 					member.getDisplayName());
 		} else {
 			member.getLogger().ambiguousMember(
-					member,
+					member.getLocation(),
 					member.getDisplayName());
 		}
 	}

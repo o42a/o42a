@@ -25,10 +25,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.impl.PathTracker;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.*;
 
 
 public final class StepResolver implements LocationInfo, UserInfo {
@@ -67,13 +64,12 @@ public final class StepResolver implements LocationInfo, UserInfo {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return getPath().getLoggable();
+	public final Location getLocation() {
+		return getPath().getLocation();
 	}
 
-	@Override
 	public final CompilerContext getContext() {
-		return getPath().getContext();
+		return getLocation().getContext();
 	}
 
 	public final Scope getPathStart() {
@@ -89,7 +85,7 @@ public final class StepResolver implements LocationInfo, UserInfo {
 	}
 
 	public final CompilerLogger getLogger() {
-		return getPath().getContext().getLogger();
+		return getContext().getLogger();
 	}
 
 	@Override

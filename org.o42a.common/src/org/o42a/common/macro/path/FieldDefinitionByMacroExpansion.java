@@ -98,14 +98,14 @@ final class FieldDefinitionByMacroExpansion extends FieldDefinition {
 
 		if (declaration.isMacro()) {
 			// Macro can not be defined by macro expansion.
-			prohibitedExpansion(getLogger(), declaration);
+			prohibitedExpansion(getLogger(), declaration.getLocation());
 			this.invalid = true;
 			return;
 		}
 		if (declaration.getLinkType() != null
 				&& declaration.getType() == null) {
 			// Link without interface can not be defined by macro expansion.
-			prohibitedExpansion(getLogger(), declaration);
+			prohibitedExpansion(getLogger(), declaration.getLocation());
 			this.invalid = true;
 			return;
 		}

@@ -35,7 +35,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.Location;
 import org.o42a.util.string.ID;
 
 
@@ -51,13 +51,8 @@ public final class Top extends AbstractScope implements MemberContainer {
 	}
 
 	@Override
-	public CompilerContext getContext() {
-		return this.context;
-	}
-
-	@Override
-	public Loggable getLoggable() {
-		return this.context.getLoggable();
+	public final Location getLocation() {
+		return this.context.getLocation();
 	}
 
 	@Override

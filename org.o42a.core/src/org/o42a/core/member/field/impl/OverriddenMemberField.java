@@ -35,7 +35,8 @@ public abstract class OverriddenMemberField<F extends Field>
 			MemberOwner owner,
 			MemberField propagatedFrom) {
 		super(
-				addDeclaration(owner, propagatedFrom.getLastDefinition()),
+				owner.getLocation().setDeclaration(
+						propagatedFrom.getLastDefinition()),
 				owner,
 				propagatedFrom);
 		this.propagatedFrom = propagatedFrom;

@@ -36,12 +36,12 @@ import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.util.ArrayUtil;
 
 
-public final class ClauseInstance {
+public final class ClauseInstance implements LocationInfo {
 
 	private static final PhraseContinuation[] NO_CONTENT =
 			new PhraseContinuation[0];
 
-	private final LocationInfo location;
+	private final Location location;
 	private final PhraseContext context;
 	private final HashMap<MemberKey, PhraseSubContext> subContexts =
 			new HashMap<MemberKey, PhraseSubContext>();
@@ -54,11 +54,12 @@ public final class ClauseInstance {
 	}
 
 	ClauseInstance(PhraseContext context, LocationInfo location) {
-		this.location = location;
+		this.location = location.getLocation();
 		this.context = context;
 	}
 
-	public final LocationInfo getLocation() {
+	@Override
+	public final Location getLocation() {
 		return this.location;
 	}
 

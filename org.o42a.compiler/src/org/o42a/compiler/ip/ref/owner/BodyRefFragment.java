@@ -30,6 +30,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -46,10 +47,10 @@ final class BodyRefFragment extends PathFragment {
 		return object.type().getValueType().isLink();
 	}
 
-	private final LocationInfo location;
+	private final Location location;
 
 	BodyRefFragment(LocationInfo location) {
-		this.location = location;
+		this.location = location.getLocation();
 	}
 
 	@Override

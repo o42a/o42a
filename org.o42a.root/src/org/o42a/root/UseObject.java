@@ -60,7 +60,9 @@ public class UseObject extends DirectiveObject {
 		final Namespace namespace = directive.getContainer().toNamespace();
 
 		if (namespace == null) {
-			getLogger().prohibitedDirective(directive, "Use object");
+			getLogger().prohibitedDirective(
+					directive.getLocation(),
+					"Use object");
 			return;
 		}
 
@@ -69,7 +71,9 @@ public class UseObject extends DirectiveObject {
 		final Value<?> moduleValue = module().value(resolver);
 
 		if (!moduleValue.getKnowledge().isKnown()) {
-			directive.getLogger().unresolvedValue(directive, "module");
+			directive.getLogger().unresolvedValue(
+					directive.getLocation(),
+					"module");
 			return;
 		}
 
@@ -78,7 +82,9 @@ public class UseObject extends DirectiveObject {
 		final Value<?> objectValue = object().value(resolver);
 
 		if (!objectValue.getKnowledge().isKnown()) {
-			directive.getLogger().unresolvedValue(directive, "object");
+			directive.getLogger().unresolvedValue(
+					directive.getLocation(),
+					"object");
 			return;
 		}
 
@@ -101,7 +107,9 @@ public class UseObject extends DirectiveObject {
 		final Value<?> aliasValue = alias().value(resolver);
 
 		if (!aliasValue.getKnowledge().isKnown()) {
-			directive.getLogger().unresolvedValue(directive, "alias");
+			directive.getLogger().unresolvedValue(
+					directive.getLocation(),
+					"alias");
 			return;
 		}
 

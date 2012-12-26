@@ -184,7 +184,7 @@ public abstract class Control {
 	}
 
 	private void unresolvedBlock(LocationInfo location, Name name) {
-		location.getContext().getLogger().error(
+		location.getLocation().getLogger().error(
 				"unresolved_block",
 				location,
 				"Block '%s' not found",

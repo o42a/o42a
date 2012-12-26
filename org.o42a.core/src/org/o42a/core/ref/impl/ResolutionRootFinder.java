@@ -71,7 +71,7 @@ public final class ResolutionRootFinder implements PathWalker {
 		if (!path.isStatic()) {
 			return true;
 		}
-		this.root = this.root.getContext().getRoot();
+		this.root = this.root.getLocation().getContext().getRoot();
 		return false;
 	}
 
@@ -82,7 +82,7 @@ public final class ResolutionRootFinder implements PathWalker {
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
-		this.root = this.root.getContext().getRoot();
+		this.root = this.root.getLocation().getContext().getRoot();
 		return false;
 	}
 

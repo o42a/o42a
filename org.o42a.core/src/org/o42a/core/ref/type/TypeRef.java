@@ -37,11 +37,11 @@ import org.o42a.core.ref.type.impl.DefaultTypeRef;
 import org.o42a.core.ref.type.impl.DefaultTypeRelation;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class TypeRef implements ScopeInfo {
@@ -84,13 +84,12 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return getRef().getContext();
+	public final Location getLocation() {
+		return getRef().getLocation();
 	}
 
-	@Override
-	public final Loggable getLoggable() {
-		return getRef().getLoggable();
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import org.o42a.core.*;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.Location;
 
 
 public abstract class MemberOwner implements PlaceInfo {
@@ -35,13 +35,12 @@ public abstract class MemberOwner implements PlaceInfo {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.container.getContext();
+	public final Location getLocation() {
+		return this.container.getLocation();
 	}
 
-	@Override
-	public final Loggable getLoggable() {
-		return this.container.getLoggable();
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	@Override

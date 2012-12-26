@@ -35,6 +35,7 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.*;
 import org.o42a.core.ref.type.TypeRelation.Kind;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.array.Array;
@@ -47,7 +48,6 @@ import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.macro.impl.MacroValueAdapter;
 import org.o42a.core.value.voids.VoidValueAdapter;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.log.Loggable;
 
 
 public final class TypeParameters<T> extends TypeRefParameters {
@@ -65,8 +65,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 		return new TypeParameters<T>(location, scope, valueType);
 	}
 
-	private final CompilerContext context;
-	private final Loggable loggable;
+	private final Location location;
 	private final Scope scope;
 	private final ValueType<T> valueType;
 	private final TypeParameter[] parameters;
@@ -81,8 +80,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			"Scope not specified";
 		assert valueType != null :
 			"Value type not specified";
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
+		this.location = location.getLocation();
 		this.scope = scope;
 		this.valueType = valueType;
 		this.parameters = new TypeParameter[0];
@@ -93,8 +91,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			Scope scope,
 			ValueType<T> valueType,
 			TypeParameter[] parameters) {
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
+		this.location = location.getLocation();
 		this.scope = scope;
 		this.valueType = valueType;
 		assert parametersHaveSameScope(parameters);
@@ -102,13 +99,12 @@ public final class TypeParameters<T> extends TypeRefParameters {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.context;
+	public final Location getLocation() {
+		return this.location;
 	}
 
-	@Override
-	public final Loggable getLoggable() {
-		return this.loggable;
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	@Override

@@ -36,9 +36,37 @@ public abstract class Loggable implements LogInfo, Formattable {
 
 	public abstract LogDetails addDetail(LogDetail detail, LogInfo location);
 
+	public final LogDetails addDetailLocation(
+			LogDetail detail,
+			LogInfo location) {
+		return addDetail(detail, location.getLoggable().detailLocation(detail));
+	}
+
 	public abstract LogDetails toDetails();
 
 	public abstract void print(StringBuilder out);
+
+	public Loggable detail(LogDetail detail) {
+
+		final LogDetails details = toDetails();
+
+		if (details == null) {
+			return null;
+		}
+
+		return details.detail(detail);
+	}
+
+	public final Loggable detailLocation(LogDetail detail) {
+
+		final Loggable detailLocation = detail(detail);
+
+		if (detailLocation != null) {
+			return detailLocation;
+		}
+
+		return this;
+	}
 
 	@Override
 	public String toString() {

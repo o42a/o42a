@@ -25,18 +25,16 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameter;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.util.log.Loggable;
 
 
 public class ArbitraryTypeRefParameters extends TypeRefParameters {
 
-	private final CompilerContext context;
-	private final Loggable loggable;
+	private final Location location;
 	private final Scope scope;
 	private final TypeRef[] parameters;
 
@@ -48,8 +46,7 @@ public class ArbitraryTypeRefParameters extends TypeRefParameters {
 			"Location not specified";
 		assert scope != null :
 			"Scope not specified";
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
+		this.location = location.getLocation();
 		this.scope = scope;
 		this.parameters = parameters;
 		assert assertParametersHaveSameScope();
@@ -61,13 +58,8 @@ public class ArbitraryTypeRefParameters extends TypeRefParameters {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return this.loggable;
-	}
-
-	@Override
-	public final CompilerContext getContext() {
-		return this.context;
+	public final Location getLocation() {
+		return this.location;
 	}
 
 	public final TypeRef[] getParameters() {

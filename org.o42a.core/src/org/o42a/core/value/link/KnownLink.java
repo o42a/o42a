@@ -43,7 +43,7 @@ public abstract class KnownLink extends Link {
 
 	protected KnownLink(KnownLink prototype, TargetRef targetRef) {
 		this(
-				addDeclaration(targetRef.getScope(), prototype),
+				targetRef.getScope().getLocation().setDeclaration(prototype),
 				prototype.distributeIn(targetRef.getScope().getContainer()),
 				targetRef);
 	}

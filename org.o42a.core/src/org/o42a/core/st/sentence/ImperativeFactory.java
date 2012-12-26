@@ -62,7 +62,7 @@ public class ImperativeFactory extends SentenceFactory<
 			Group group,
 			Distributor distributor,
 			MemberRegistry memberRegistry) {
-		group.getLogger().prohibitedClauseDeclaration(group);
+		group.getLogger().prohibitedClauseDeclaration(group.getLocation());
 		return null;
 	}
 
@@ -88,7 +88,7 @@ public class ImperativeFactory extends SentenceFactory<
 			Distributor distributor,
 			Name name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
-		group.getLogger().prohibitedClauseDeclaration(group);
+		group.getLogger().prohibitedClauseDeclaration(group.getLocation());
 		return null;
 	}
 

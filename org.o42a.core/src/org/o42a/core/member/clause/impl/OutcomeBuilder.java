@@ -34,18 +34,18 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.link.Link;
 
 
 public class OutcomeBuilder implements PathWalker {
 
-	private final LocationInfo location;
+	private final Location location;
 	private Container container;
 	private Path outcome;
 
 	public OutcomeBuilder(Ref location) {
-		this.location = location;
+		this.location = location.getLocation();
 		this.container = location.getContainer();
 	}
 

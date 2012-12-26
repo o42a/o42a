@@ -73,7 +73,7 @@ public class ClauseInterpreter {
 				final Obj object = scope.toObject();
 
 				if (object == null) {
-					location.getContext().getLogger().error(
+					location.getLocation().getLogger().error(
 							"unresolved_object_intrinsic",
 							location,
 							"Enclosing object not found");
@@ -103,7 +103,7 @@ public class ClauseInterpreter {
 			final Obj object = of.toObject();
 
 			if (object == null) {
-				location.getContext().getLogger().error(
+				location.getLocation().getLogger().error(
 						"unresolved_object_intrinsic",
 						location,
 						"Enclosing object not found");

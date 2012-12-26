@@ -30,8 +30,8 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.Value;
-import org.o42a.util.log.Loggable;
 
 
 public final class TargetRef implements ScopeInfo {
@@ -54,13 +54,12 @@ public final class TargetRef implements ScopeInfo {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return getRef().getContext();
+	public final Location getLocation() {
+		return getRef().getLocation();
 	}
 
-	@Override
-	public final Loggable getLoggable() {
-		return getRef().getLoggable();
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	@Override

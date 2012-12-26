@@ -84,7 +84,9 @@ public final class LocalFactory {
 		final Obj owner = this.memberRegistry.getOwner();
 
 		if (owner == null) {
-			location.getContext().getLogger().prohibitedLocal(location);
+			location.getLocation()
+			.getLogger()
+			.prohibitedLocal(location.getLocation());
 		}
 
 		return owner;

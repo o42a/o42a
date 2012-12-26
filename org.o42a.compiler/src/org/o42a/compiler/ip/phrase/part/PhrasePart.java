@@ -25,13 +25,13 @@ import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.util.string.Name;
 
 
-public abstract class PhrasePart extends Location {
+public abstract class PhrasePart extends Located {
 
 	private final Phrase phrase;
 	private final PhrasePart preceding;

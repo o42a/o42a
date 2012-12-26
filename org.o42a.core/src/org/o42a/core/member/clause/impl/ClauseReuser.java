@@ -35,19 +35,19 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.link.Link;
 
 
 final class ClauseReuser implements PathWalker {
 
-	private final LocationInfo location;
+	private final Location location;
 	private final boolean reuseContents;
 	private Container container;
 	private ReusedClause reused;
 
 	ClauseReuser(Ref location, boolean reuseContents) {
-		this.location = location;
+		this.location = location.getLocation();
 		this.reuseContents = reuseContents;
 		this.container = location.getContainer();
 	}

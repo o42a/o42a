@@ -51,7 +51,7 @@ public abstract class Inclusions {
 
 		@Override
 		public boolean include(LocationInfo location, Name tag) {
-			location.getContext().getLogger().error(
+			location.getLocation().getLogger().error(
 					"prohibited_inclusion",
 					location,
 					"Inclusions not allowed here");

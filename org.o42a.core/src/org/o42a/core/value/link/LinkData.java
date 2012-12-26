@@ -33,10 +33,10 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.link.impl.LinkTarget;
 import org.o42a.core.value.link.impl.RtLinkTarget;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class LinkData<L extends Link> implements PlaceInfo {
@@ -57,13 +57,12 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return getLink().getContext();
+	public final Location getLocation() {
+		return getLink().getLocation();
 	}
 
-	@Override
-	public final Loggable getLoggable() {
-		return getLink().getLoggable();
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	@Override
@@ -221,7 +220,9 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 
 		if (!relation.isAscendant()) {
 			if (!relation.isError()) {
-				getLogger().notDerivedFrom(this.targetRef, typeRef);
+				getLogger().notDerivedFrom(
+						this.targetRef.getLocation(),
+						typeRef);
 			}
 		}
 	}

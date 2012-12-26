@@ -25,9 +25,9 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class Implication<L extends Implication<L>>
@@ -44,13 +44,12 @@ public abstract class Implication<L extends Implication<L>>
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return getStatement().getContext();
+	public final Location getLocation() {
+		return getStatement().getLocation();
 	}
 
-	@Override
-	public final Loggable getLoggable() {
-		return getStatement().getLoggable();
+	public final CompilerContext getContext() {
+		return getLocation().getContext();
 	}
 
 	public final CompilerLogger getLogger() {

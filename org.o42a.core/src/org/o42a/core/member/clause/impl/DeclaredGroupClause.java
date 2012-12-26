@@ -32,13 +32,11 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.*;
-import org.o42a.util.log.Loggable;
 import org.o42a.util.string.Name;
 
 
@@ -217,7 +215,9 @@ public final class DeclaredGroupClause
 	}
 
 	protected void merge(Clause clause) {
-		getContext().getLogger().ambiguousClause(clause, getDisplayName());
+		getContext().getLogger().ambiguousClause(
+				clause.getLocation(),
+				getDisplayName());
 	}
 
 	@Override
@@ -250,13 +250,8 @@ public final class DeclaredGroupClause
 		}
 
 		@Override
-		public CompilerContext getContext() {
-			return this.clause.getContext();
-		}
-
-		@Override
-		public Loggable getLoggable() {
-			return this.clause.getLoggable();
+		public Location getLocation() {
+			return this.clause.getLocation();
 		}
 
 		@Override
@@ -290,7 +285,7 @@ public final class DeclaredGroupClause
 					new ImperativeBlock.BlockDistributor(
 							new Location(
 									reproducedScope.getContext(),
-									reproducingClause),
+									reproducingClause.getLocation()),
 							reproducedScope));
 			this.reproducer = reproducer;
 			this.localRegistry = new LocalRegistry(

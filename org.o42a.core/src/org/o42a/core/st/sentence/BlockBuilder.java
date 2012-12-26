@@ -21,12 +21,12 @@ package org.o42a.core.st.sentence;
 
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogInfo;
 
 
-public abstract class BlockBuilder extends Location {
+public abstract class BlockBuilder extends Located {
 
 	public static BlockBuilder emptyBlock(LocationInfo location) {
 		return new EmptyBlock(location);

@@ -234,7 +234,7 @@ public abstract class RefInterpreter {
 	}
 
 	private static void unresolvedParent(LocationInfo location, Name name) {
-		location.getContext().getLogger().error(
+		location.getLocation().getLogger().error(
 				"unresolved_parent",
 				location,
 				"Enclosing member '%s' can not be found",

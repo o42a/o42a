@@ -105,7 +105,10 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	public void ellipsis(LocationInfo location, Name name) {
 		dropStatement();
-		getLogger().prohibitedDeclarativeEllipsis(location);
+		getLogger().error(
+				"prohibited_declarative_ellipsis",
+				location,
+				"Ellipsis is only allowed within imperative block");
 	}
 
 	@Override

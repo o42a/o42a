@@ -125,7 +125,7 @@ public class MacroExpansionStep extends Step {
 
 	@Override
 	protected Container resolve(StepResolver resolver) {
-		prohibitedExpansion(resolver.getLogger(), resolver);
+		prohibitedExpansion(resolver.getLogger(), resolver.getLocation());
 		return null;
 	}
 

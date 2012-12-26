@@ -373,7 +373,7 @@ public abstract class Statements<
 				if (!this.incompatibilityReported) {
 					this.incompatibilityReported = true;
 					scope.getLogger().incompatible(
-							implication,
+							implication.getLocation(),
 							expectedParameters);
 				}
 				return null;

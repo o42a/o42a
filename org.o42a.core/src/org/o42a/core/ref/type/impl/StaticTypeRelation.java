@@ -63,7 +63,7 @@ public final class StaticTypeRelation extends TypeRelation {
 			return Kind.DERIVATIVE;
 		}
 		if (logger != null) {
-			logger.incompatible(to(), of());
+			logger.incompatible(to().getLocation(), of());
 		}
 
 		return Kind.INCOMPATIBLE;

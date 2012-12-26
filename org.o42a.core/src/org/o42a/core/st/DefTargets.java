@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st;
 
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogInfo;
 
 
@@ -31,6 +32,10 @@ public final class DefTargets extends ImplicationTargets<DefTargets> {
 
 	DefTargets(LogInfo loggable, int mask) {
 		super(loggable, mask);
+	}
+
+	DefTargets(LocationInfo location, int mask) {
+		super(location.getLocation(), mask);
 	}
 
 	public final boolean isClaim() {

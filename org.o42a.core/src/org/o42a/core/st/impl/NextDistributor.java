@@ -22,10 +22,9 @@ package org.o42a.core.st.impl;
 import static org.o42a.core.ScopePlace.localPlace;
 
 import org.o42a.core.*;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.Place;
-import org.o42a.util.log.Loggable;
 
 
 public final class NextDistributor extends Distributor {
@@ -44,13 +43,8 @@ public final class NextDistributor extends Distributor {
 	}
 
 	@Override
-	public CompilerContext getContext() {
-		return this.statements.getContext();
-	}
-
-	@Override
-	public Loggable getLoggable() {
-		return this.statements.getLoggable();
+	public Location getLocation() {
+		return this.statements.getLocation();
 	}
 
 	@Override

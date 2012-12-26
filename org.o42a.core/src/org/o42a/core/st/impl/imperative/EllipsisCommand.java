@@ -92,7 +92,7 @@ abstract class EllipsisCommand extends Command {
 
 		@Override
 		public CommandTargets getCommandTargets() {
-			return exitCommand(this);
+			return exitCommand(getLocation());
 		}
 
 		@Override

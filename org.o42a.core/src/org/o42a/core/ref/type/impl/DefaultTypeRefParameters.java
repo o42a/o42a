@@ -22,37 +22,29 @@ package org.o42a.core.ref.type.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRefParameters;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.util.log.Loggable;
 
 
 public final class DefaultTypeRefParameters extends TypeRefParameters {
 
-	private final CompilerContext context;
-	private final Loggable loggable;
+	private final Location location;
 	private final Scope scope;
 
 	public DefaultTypeRefParameters(LocationInfo location, Scope scope) {
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
+		this.location = location.getLocation();
 		this.scope = scope;
 	}
 
 	@Override
-	public CompilerContext getContext() {
-		return this.context;
+	public final Location getLocation() {
+		return this.location;
 	}
 
 	@Override
-	public Loggable getLoggable() {
-		return this.loggable;
-	}
-
-	@Override
-	public Scope getScope() {
+	public final Scope getScope() {
 		return this.scope;
 	}
 

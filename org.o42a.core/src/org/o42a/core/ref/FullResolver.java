@@ -26,10 +26,7 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathResolver;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.*;
 
 
 public class FullResolver implements UserInfo, LocationInfo {
@@ -48,13 +45,12 @@ public class FullResolver implements UserInfo, LocationInfo {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return getResolver().getLoggable();
+	public final Location getLocation() {
+		return getResolver().getLocation();
 	}
 
-	@Override
 	public final CompilerContext getContext() {
-		return getResolver().getContext();
+		return getLocation().getContext();
 	}
 
 	public final Container getContainer() {

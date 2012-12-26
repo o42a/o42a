@@ -64,7 +64,9 @@ public final class DefaultTypeRelation extends TypeRelation {
 						of().getParameters().relationTo(to().getParameters());
 
 				if (logger != null && structRelation == Kind.INCOMPATIBLE) {
-					logger.incompatible(to(), of().getParameters());
+					logger.incompatible(
+							to().getLocation(),
+							of().getParameters());
 				}
 
 				return structRelation;
@@ -74,7 +76,7 @@ public final class DefaultTypeRelation extends TypeRelation {
 			}
 			if (checkDerivationOnly) {
 				if (logger != null) {
-					logger.notDerivedFrom(of(), to());
+					logger.notDerivedFrom(of().getLocation(), to());
 				}
 				return Kind.INCOMPATIBLE;
 			}
@@ -82,7 +84,7 @@ public final class DefaultTypeRelation extends TypeRelation {
 				return checkAscendant(logger);
 			}
 			if (logger != null) {
-				logger.incompatible(to(), of());
+				logger.incompatible(to().getLocation(), of());
 			}
 			return Kind.INCOMPATIBLE;
 		}
@@ -92,13 +94,13 @@ public final class DefaultTypeRelation extends TypeRelation {
 				return checkDerivative(logger);
 			}
 			if (logger != null) {
-				logger.notDerivedFrom(of(), to());
+				logger.notDerivedFrom(of().getLocation(), to());
 			}
 			return Kind.INCOMPATIBLE;
 		}
 		if (checkDerivationOnly) {
 			if (logger != null) {
-				logger.notDerivedFrom(of(), to());
+				logger.notDerivedFrom(of().getLocation(), to());
 			}
 			return Kind.INCOMPATIBLE;
 		}
@@ -108,13 +110,13 @@ public final class DefaultTypeRelation extends TypeRelation {
 				return checkAscendant(logger);
 			}
 			if (logger != null) {
-				logger.notDerivedFrom(to(), of());
+				logger.notDerivedFrom(to().getLocation(), of());
 			}
 			return Kind.INCOMPATIBLE;
 		}
 
 		if (logger != null) {
-			logger.incompatible(to(), of());
+			logger.incompatible(to().getLocation(), of());
 		}
 
 		return Kind.INCOMPATIBLE;
@@ -123,7 +125,7 @@ public final class DefaultTypeRelation extends TypeRelation {
 	private Kind checkAscendant(CompilerLogger logger) {
 		if (!assignable(of(), to())) {
 			if (logger != null) {
-				logger.incompatible(to(), of().getParameters());
+				logger.incompatible(to().getLocation(), of().getParameters());
 			}
 			return Kind.INCOMPATIBLE;
 		}
@@ -133,7 +135,7 @@ public final class DefaultTypeRelation extends TypeRelation {
 	private Kind checkDerivative(CompilerLogger logger) {
 		if (!assignable(to(), of())) {
 			if (logger != null) {
-				logger.incompatible(of(), to().getParameters());
+				logger.incompatible(of().getLocation(), to().getParameters());
 			}
 			return Kind.INCOMPATIBLE;
 		}

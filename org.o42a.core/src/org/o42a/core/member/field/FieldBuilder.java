@@ -25,8 +25,7 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.decl.DeclaredMemberField;
 import org.o42a.core.member.field.decl.FieldDeclarationStatement;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.source.Location;
 
 
 public final class FieldBuilder implements PlaceInfo {
@@ -58,13 +57,8 @@ public final class FieldBuilder implements PlaceInfo {
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.declaration.getContext();
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.declaration.getLoggable();
+	public final Location getLocation() {
+		return this.declaration.getLocation();
 	}
 
 	@Override

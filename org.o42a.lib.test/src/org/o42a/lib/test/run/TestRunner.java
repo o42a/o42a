@@ -120,7 +120,7 @@ final class TestRunner extends ConstructedObject {
 		final Value<?> nameValue = nameObject.value().getValue();
 
 		if (!nameValue.getKnowledge().isKnown()) {
-			statements.getLogger().indefiniteValue(nameObject);
+			statements.getLogger().indefiniteValue(nameObject.getLocation());
 		} else {
 			if (!nameValue.getKnowledge().isFalse()) {
 

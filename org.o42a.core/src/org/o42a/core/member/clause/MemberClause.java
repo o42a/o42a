@@ -39,7 +39,8 @@ public abstract class MemberClause extends Member {
 
 	protected MemberClause(MemberOwner owner, MemberClause propagatedFrom) {
 		super(
-				addDeclaration(owner, propagatedFrom.getLastDefinition()),
+				owner.getLocation().setDeclaration(
+						propagatedFrom.getLastDefinition()),
 				propagatedFrom.distributeIn(owner.getContainer()),
 				owner);
 		this.key = propagatedFrom.getMemberKey();
