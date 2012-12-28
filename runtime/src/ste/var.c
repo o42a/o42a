@@ -11,69 +11,29 @@
 
 
 #ifndef NDEBUG
-const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_ste_var = {
+const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_ste_var = {
 	.type_code = 0x042a0200 | O42A_STE_VAR,
 	.field_num = 2,
 	.name = "o42a_ste_var",
 	.fields = {
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_ste_var, bound),
-			.name = "bound",
+			.offset = offsetof(o42a_ste_var, object),
+			.name = "object",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
-		},
-		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_ste_var, assigner_f),
-			.name = "assigner_f",
 		},
 	},
 };
 #endif /* NDEBUG */
 
-void o42a_ste_var_propagate(o42a_obj_ctable_t *const ctable) {
+void o42a_ste_var_derive(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	const o42a_ste_var *const from = &ctable->from.fld->ste_var;
 	o42a_ste_var *const to = &ctable->to.fld->ste_var;
 
-	to->bound = NULL;
-	to->assigner_f = from->assigner_f;
-
-	O42A_RETURN;
-}
-
-void o42a_ste_var_inherit(o42a_obj_ctable_t *const ctable) {
-	O42A_ENTER(return);
-
-	const o42a_ste_var *const from = &ctable->from.fld->ste_var;
-	o42a_ste_var *const to = &ctable->to.fld->ste_var;
-
-	to->bound = NULL;
-
-	o42a_obj_overrider_t *const overrider =
-			O42A(o42a_obj_field_overrider(ctable->sample_type, ctable->field));
-
-	if (overrider) {// Field is overridden.
-		if (!O42A(o42a_obj_ascendant_of_type(
-				&ctable->ancestor_type->type.data,
-				overrider->defined_in))) {
-			// The body overrider defined isn't present in ancestor
-			// and thus not overridden there.
-			// Use definition from overrider.
-
-			const o42a_fld_var *const ovr =
-					O42A(&o42a_fld_by_overrider(overrider)->var);
-
-			to->assigner_f = ovr->assigner_f;
-
-			O42A_RETURN;
-		}
-	}
-
-	// Use definition from ancestor.
-	to->assigner_f = from->assigner_f;
+	to->object = NULL;
 
 	O42A_RETURN;
 }
@@ -82,13 +42,13 @@ void o42a_ste_var_mark(o42a_fld *const field) {
 	O42A_ENTER(return);
 
 	volatile o42a_ste_var *const fld = &field->ste_var;
-	o42a_obj_stype_t *const bound = fld->bound;
+	o42a_obj_t *const object = fld->object;
 
-	if (bound) {
+	if (object) {
 
-		o42a_obj_data_t *const data = &bound->data;
+		o42a_obj_data_t *const data = O42A(&o42a_obj_type(object)->type.data);
 
-		O42A(o42a_gc_mark(o42a_gc_blockof(((char *) data) + data->start)));
+		O42A(o42a_gc_mark(o42a_gc_blockof((char *) data + data->start)));
 	}
 
 	O42A_RETURN;

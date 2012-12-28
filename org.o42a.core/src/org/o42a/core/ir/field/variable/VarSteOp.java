@@ -20,28 +20,23 @@
 package org.o42a.core.ir.field.variable;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
-import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CondBlock;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.util.string.ID;
 
 
 public final class VarSteOp extends FldOp {
@@ -112,50 +107,20 @@ public final class VarSteOp extends FldOp {
 		return holder.holdVolatile(resultCode, target);
 	}
 
-	void assignValue(Block code, ObjectOp object) {
-
-		final DataRecOp objectRec = ptr().object(null, code);
-
-		objectRec.store(code, object.toData(null, code), ACQUIRE_RELEASE);
-	}
-
 	private void assign(CodeDirs dirs, HostOp value) {
 
 		final Block code = dirs.code();
+
+		tempObjHolder(code.getAllocator()).holdVolatile(code, host());
+
 		final ObjectOp valueObject =
 				value.materialize(dirs, tempObjHolder(code.getAllocator()));
-		final StructRecOp<ObjectIRTypeOp> boundRec = ptr().bound(null, code);
-		final ObjectIRTypeOp knownBound = boundRec.load(null, code, VOLATILE);
 
-		// Bound is already known.
-		final CondBlock boundUnknown =
-				knownBound.isNull(null, code)
-				.branch(code, "bound_unknown", "bound_known");
-		final Block boundKnown = boundUnknown.otherwise();
-
-		boundKnown.dumpName("Known bound: ", knownBound);
-
-		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
-		final ObjectOp castObject = valueObject.dynamicCast(
-				ID.id("cast_target"),
-				boundKnownDirs,
-				knownBound.op(getBuilder(), DERIVED),
-				fld().interfaceType(),
-				true);
-
-		assignValue(boundKnown, castObject);
-
-		boundKnown.dump("Assigned: ", this);
-		boundKnown.go(code.tail());
-
-		// Bound is not known yet.
-		final VariableAssignerFunc assigner =
-				ptr().assigner(null, boundUnknown).load(null, boundUnknown);
-		final BoolOp assigned =
-				assigner.assign(boundUnknown, host(), valueObject);
-
-		assigned.goUnless(boundUnknown, dirs.falseDir());
-		boundUnknown.go(code.tail());
+		ptr().object(null, code).store(
+				code,
+				valueObject.toData(null, code),
+				ACQUIRE_RELEASE);
+		code.dump("Assigned: ", this);
 	}
 
 	private static final class VarSteValueOp implements HostValueOp {

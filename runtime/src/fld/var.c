@@ -11,7 +11,7 @@
 
 
 #ifndef NDEBUG
-const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_var = {
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_fld_var = {
 	.type_code = 0x042a0200 | O42A_FLD_VAR,
 	.field_num = 4,
 	.name = "o42a_fld_var",
@@ -26,18 +26,6 @@ const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_var = {
 			.offset = offsetof(o42a_fld_var, constructor),
 			.name = "constructor",
 		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_fld_var, bound),
-			.name = "bound",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
-		},
-		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_fld_var, assigner_f),
-			.name = "assigner_f",
-		},
 	},
 };
 #endif /* NDEBUG */
@@ -50,8 +38,6 @@ void o42a_fld_var_propagate(o42a_obj_ctable_t *const ctable) {
 
 	to->object = NULL;
 	to->constructor = from->constructor;
-	to->bound = NULL;
-	to->assigner_f = from->assigner_f;
 
 	O42A_RETURN;
 }
@@ -63,7 +49,6 @@ void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 	o42a_fld_var *const to = &ctable->to.fld->var;
 
 	to->object = NULL;
-	to->bound = NULL;
 
 	o42a_obj_overrider_t *const overrider =
 			O42A(o42a_obj_field_overrider(
@@ -82,7 +67,6 @@ void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 					O42A(&o42a_fld_by_overrider(overrider)->var);
 
 			to->constructor = ovr->constructor;
-			to->assigner_f = ovr->assigner_f;
 
 			O42A_RETURN;
 		}
@@ -90,7 +74,6 @@ void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 
 	// Use definition from ancestor.
 	to->constructor = from->constructor;
-	to->assigner_f = from->assigner_f;
 
 	O42A_RETURN;
 }
@@ -99,15 +82,6 @@ void o42a_fld_var_mark(o42a_fld *const field) {
 	O42A_ENTER(return);
 
 	volatile o42a_fld_var *const fld = &field->var;
-	o42a_obj_stype_t *const bound = fld->bound;
-
-	if (bound) {
-
-		o42a_obj_data_t *const data = &bound->data;
-
-		O42A(o42a_gc_mark(o42a_gc_blockof(((char *) data) + data->start)));
-	}
-
 	o42a_obj_t *const object = fld->object;
 
 	if (object) {
