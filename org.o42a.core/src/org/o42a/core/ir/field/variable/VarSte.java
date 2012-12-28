@@ -19,24 +19,21 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
-import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.code.op.StructRecOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.DataRec;
+import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
@@ -53,12 +50,9 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 
 	public static final Type VAR_STE = new Type();
 
-	static final ID CAST_TARGET_ID = ID.id("cast_target");
-
 	private static final Name VAR_STE_NAME = CASE_SENSITIVE.name("V");
 	private static final ID VAR_STE_ID = VAR_STE_NAME.toID();
 	private static final MemberName VAR_STE_MEMBER = fieldName(VAR_STE_NAME);
-	private static final ID ASSIGNER_SUFFIX = ID.id("assigner");
 
 	public static MemberKey varSteKey(CompilerContext context) {
 		return VAR_STE_MEMBER.key(variableObject(context).getScope());
@@ -70,7 +64,6 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 
 	private MemberKey key;
 	private Obj definedIn;
-	private FuncPtr<VariableAssignerFunc> assigner;
 
 	@Override
 	public MemberKey getKey() {
@@ -95,23 +88,6 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 	@Override
 	public final Type getInstance() {
 		return (Type) super.getInstance();
-	}
-
-	public final FuncPtr<VariableAssignerFunc> getAssigner() {
-		if (this.assigner != null) {
-			return this.assigner;
-		}
-
-		final FuncPtr<VariableAssignerFunc> reusedAssigner = reusedAssigner();
-
-		if (reusedAssigner != null) {
-			return this.assigner = reusedAssigner;
-		}
-
-		return this.assigner = getGenerator().newFunction().create(
-				getObjectIR().getId().detail(ASSIGNER_SUFFIX),
-				VARIABLE_ASSIGNER,
-				new VarSteAssignerBuilder(this)).getPointer();
 	}
 
 	@Override
@@ -161,12 +137,6 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 
 	@Override
 	public void fill(Type instance) {
-
-		final ObjectTypeIR typeIR =
-				interfaceType().ir(getGenerator()).getStaticTypeIR();
-
-		instance.bound().setValue(typeIR.getInstance().pointer(getGenerator()));
-		getInstance().assigner().setConstant(true).setValue(getAssigner());
 	}
 
 	@Override
@@ -258,20 +228,6 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 		return object;
 	}
 
-	private FuncPtr<VariableAssignerFunc> reusedAssigner() {
-
-		final Obj definedIn = getDefinedIn();
-
-		if (getObject().is(definedIn)) {
-			return null;
-		}
-
-		final VarSte definedFld =
-				(VarSte) definedIn.ir(getGenerator()).fld(getKey());
-
-		return definedFld.getAssigner();
-	}
-
 	public static final class Op extends Fld.Op<Op> {
 
 		Op(StructWriter<Op> writer) {
@@ -287,21 +243,11 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 			return ptr(id, code, getType().object());
 		}
 
-		public final StructRecOp<ObjectIRTypeOp> bound(ID id, Code code) {
-			return ptr(id, code, getType().bound());
-		}
-
-		public final FuncOp<VariableAssignerFunc> assigner(ID id, Code code) {
-			return func(id, code, getType().assigner());
-		}
-
 	}
 
 	public static final class Type extends Fld.Type<Op> {
 
 		private DataRec object;
-		private StructRec<ObjectIRTypeOp> bound;
-		private FuncRec<VariableAssignerFunc> assigner;
 
 		Type() {
 			super(ID.rawId("o42a_ste_var"));
@@ -309,14 +255,6 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 
 		public final DataRec object() {
 			return this.object;
-		}
-
-		public final StructRec<ObjectIRTypeOp> bound() {
-			return this.bound;
-		}
-
-		public final FuncRec<VariableAssignerFunc> assigner() {
-			return this.assigner;
 		}
 
 		@Override
@@ -327,57 +265,11 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.object = data.addDataPtr("object");
-			this.bound = data.addPtr("bound", OBJECT_TYPE);
-			this.assigner =
-					data.addFuncPtr("assigner_f", VARIABLE_ASSIGNER)
-					.setConstant(true);
 		}
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
 			return externalTypeInfo(0x042a0200 | FldKind.VAR_STATE.code());
-		}
-
-	}
-
-	private static final class VarSteAssignerBuilder
-			extends AssignerBuilder<VarSteOp> {
-
-		private final VarSte fld;
-
-		VarSteAssignerBuilder(VarSte fld) {
-			this.fld = fld;
-		}
-
-		@Override
-		protected TypeRef getInterfaceRef() {
-			return this.fld.interfaceRef();
-		}
-
-		@Override
-		protected ObjectIRBody getBodyIR() {
-			return this.fld.getBodyIR();
-		}
-
-		@Override
-		protected VarSteOp op(Code code, ObjOp host) {
-			return this.fld.op(code, host);
-		}
-
-		@Override
-		protected void storeBound(
-				Code code,
-				VarSteOp fld,
-				ObjectIRTypeOp bound) {
-			fld.ptr().bound(null, code).store(code, bound, VOLATILE);
-		}
-
-		@Override
-		protected void storeObject(
-				Block code,
-				VarSteOp fld,
-				ObjectOp object) {
-			fld.assignValue(code, object);
 		}
 
 	}

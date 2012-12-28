@@ -21,42 +21,33 @@ package org.o42a.core.ir.field.variable;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
-import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.FuncRec;
-import org.o42a.codegen.data.StructRec;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.field.link.AbstractLinkFld;
 import org.o42a.core.ir.field.object.FldCtrOp;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjBuilder;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.TypeRelation;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.ID;
 
 
 public class VarFld extends AbstractLinkFld {
 
 	public static final Type VAR_FLD = new Type();
-
-	private FuncPtr<VariableAssignerFunc> assigner;
 
 	public VarFld(Field field, Obj target) {
 		super(field, target);
@@ -91,35 +82,6 @@ public class VarFld extends AbstractLinkFld {
 	}
 
 	@Override
-	protected void allocateMethods() {
-		super.allocateMethods();
-
-		final FuncPtr<VariableAssignerFunc> reusedAssigner = reusedAssigner();
-
-		if (reusedAssigner != null) {
-			this.assigner = reusedAssigner;
-			return;
-		}
-
-		this.assigner = getGenerator().newFunction().create(
-				getField().getId().detail("assigner"),
-				VARIABLE_ASSIGNER,
-				new VarFldAssignerBuilder(this)).getPointer();
-	}
-
-	@Override
-	protected void fill() {
-		super.fill();
-
-		final Obj type = getInterfaceRef().getType();
-		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
-
-		getInstance().bound().setValue(
-				typeIR.getInstance().pointer(getGenerator()));
-		getInstance().assigner().setConstant(true).setValue(this.assigner);
-	}
-
-	@Override
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
@@ -149,47 +111,6 @@ public class VarFld extends AbstractLinkFld {
 		res.returnValue(code);
 	}
 
-	private FuncPtr<VariableAssignerFunc> reusedAssigner() {
-		for (Field overridden : getField().getOverridden()) {
-
-			final TypeRelation relation =
-					interfaceRef(overridden)
-					.upgradeScope(getField())
-					.relationTo(getInterfaceRef());
-
-			if (relation.isSame()) {
-				// Variable has the same interface type as one
-				// of the overridden fields. Reuse assigner.
-				final Obj overriddenOwner =
-						overridden.getEnclosingScope().toObject();
-				final ObjectIR overriddenOwnerIR =
-						overriddenOwner.ir(getGenerator())
-						.getBodyType()
-						.getObjectIR();
-				final VarFld overriddenFld =
-						(VarFld) overriddenOwnerIR.fld(getField().getKey());
-
-				return overriddenFld.assigner;
-			}
-		}
-
-		return null;
-	}
-
-	private static TypeRef interfaceRef(Field field) {
-
-		final TypeParameters<?> typeParameters =
-				field.toObject().type().getParameters();
-
-		return typeParameters.getValueType()
-				.toLinkType()
-				.interfaceRef(typeParameters);
-	}
-
-	private final TypeRef getInterfaceRef() {
-		return interfaceRef(getField());
-	}
-
 	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {
 
 		private Op(StructWriter<Op> writer) {
@@ -199,14 +120,6 @@ public class VarFld extends AbstractLinkFld {
 		@Override
 		public final Type getType() {
 			return (Type) super.getType();
-		}
-
-		public final StructRecOp<ObjectIRTypeOp> bound(ID id, Code code) {
-			return ptr(id, code, getType().bound());
-		}
-
-		public final FuncOp<VariableAssignerFunc> assigner(ID id, Code code) {
-			return func(id, code, getType().assigner());
 		}
 
 		@Override
@@ -221,9 +134,6 @@ public class VarFld extends AbstractLinkFld {
 
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
-		private StructRec<ObjectIRTypeOp> bound;
-		private FuncRec<VariableAssignerFunc> assigner;
-
 		private Type() {
 			super(ID.rawId("o42a_fld_var"));
 		}
@@ -233,24 +143,9 @@ public class VarFld extends AbstractLinkFld {
 			return false;
 		}
 
-		public final StructRec<ObjectIRTypeOp> bound() {
-			return this.bound;
-		}
-
-		public final FuncRec<VariableAssignerFunc> assigner() {
-			return this.assigner;
-		}
-
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected void allocate(SubData<Op> data) {
-			super.allocate(data);
-			this.bound = data.addPtr("bound", OBJECT_TYPE);
-			this.assigner = data.addFuncPtr("assigner_f", VARIABLE_ASSIGNER);
 		}
 
 		@Override
@@ -268,46 +163,6 @@ public class VarFld extends AbstractLinkFld {
 			return getGenerator()
 					.externalFunction()
 					.link("o42a_obj_ref_stub", OBJECT_REF);
-		}
-
-	}
-
-	private static final class VarFldAssignerBuilder
-			extends AssignerBuilder<VarFldOp> {
-
-		private final VarFld fld;
-
-		VarFldAssignerBuilder(VarFld fld) {
-			this.fld = fld;
-		}
-
-		@Override
-		protected TypeRef getInterfaceRef() {
-			return this.fld.getInterfaceRef();
-		}
-
-		@Override
-		protected ObjectIRBody getBodyIR() {
-			return this.fld.getBodyIR();
-		}
-
-		@Override
-		protected VarFldOp op(Code code, ObjOp host) {
-			return this.fld.op(code, host);
-		}
-
-		@Override
-		protected void storeBound(
-				Code code,
-				VarFldOp fld,
-				ObjectIRTypeOp bound) {
-			fld.ptr().bound(null, code).store(code, bound, VOLATILE);
-		}
-
-		@Override
-		protected void storeObject(Block code, VarFldOp fld, ObjectOp object) {
-			fld.ptr().object(null, code)
-			.store(code, object.toData(null, code), VOLATILE);
 		}
 
 	}

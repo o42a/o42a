@@ -20,27 +20,18 @@
 package org.o42a.core.ir.field.variable;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.variable.VarSte.CAST_TARGET_ID;
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CondBlock;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.field.link.AbstractLinkFldValueOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.object.Obj;
-import org.o42a.core.value.TypeParameters;
 
 
 public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
@@ -84,57 +75,18 @@ public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 	private void assign(CodeDirs dirs, HostOp value) {
 
-		final Obj object = fld().getField().toObject();
-		final TypeParameters<?> typeParameters =
-				object.type().getParameters();
-		final Obj targetType =
-				typeParameters.getValueType()
-				.toLinkType()
-				.interfaceRef(typeParameters).getType();
-
 		final Block code = dirs.code();
 
 		tempObjHolder(code.getAllocator()).holdVolatile(code, host());
 
 		final ObjectOp valueObject =
 				value.materialize(dirs, tempObjHolder(code.getAllocator()));
-		final StructRecOp<ObjectIRTypeOp> boundRec = ptr().bound(null, code);
 
-		code.acquireBarrier();
-
-		final ObjectIRTypeOp knownBound = boundRec.load(null, code, ATOMIC);
-
-		// Bound is already known.
-		final CondBlock boundUnknown =
-				knownBound.isNull(null, code)
-				.branch(code, "bound_unknown", "bound_known");
-		final Block boundKnown = boundUnknown.otherwise();
-
-		boundKnown.dumpName("Known bound: ", knownBound);
-
-		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
-		final ObjectOp castObject = valueObject.dynamicCast(
-				CAST_TARGET_ID,
-				boundKnownDirs,
-				knownBound.op(getBuilder(), DERIVED),
-				targetType,
-				true);
-
-		ptr().object(null, boundKnown).store(
-				boundKnown,
-				castObject.toData(null, boundKnown),
+		ptr().object(null, code).store(
+				code,
+				valueObject.toData(null, code),
 				ACQUIRE_RELEASE);
-		boundKnown.dump("Assigned: ", this);
-		boundKnown.go(code.tail());
-
-		// Bound is not known yet.
-		final VariableAssignerFunc assigner =
-				ptr().assigner(null, boundUnknown).load(null, boundUnknown);
-		final BoolOp assigned =
-				assigner.assign(boundUnknown, host(), valueObject);
-
-		assigned.goUnless(boundUnknown, dirs.falseDir());
-		boundUnknown.go(code.tail());
+		code.dump("Assigned: ", this);
 	}
 
 	private static final class VarFldValueOp

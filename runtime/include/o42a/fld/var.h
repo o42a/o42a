@@ -23,15 +23,11 @@ typedef struct {
 
 	o42a_obj_ref_ft *constructor;
 
-	o42a_obj_stype_t *bound;
-
-	o42a_obj_assigner_ft *assigner_f;
-
 } o42a_fld_var;
 
 
 #ifndef NDEBUG
-extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_var;
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_fld_var;
 #endif /* NDEBUG */
 
 void o42a_fld_var_propagate(o42a_obj_ctable_t*);

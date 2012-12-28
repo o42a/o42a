@@ -71,16 +71,6 @@ typedef void o42a_fld_copy_ft(o42a_obj_ctable_t *);
 typedef o42a_obj_t *o42a_obj_ref_ft(o42a_obj_t *);
 
 /**
- * Variable assigner function.
- *
- * \param object[in] object pointer.
- * \param value[out] value to assign.
- *
- * \return O42A_TRUE on success or O42A_FALSE on failure.
- */
-typedef o42a_bool_t o42a_obj_assigner_ft(o42a_obj_t *, o42a_obj_t *);
-
-/**
  * The descriptor of the field kind.
  */
 typedef const struct o42a_fld_desc {
