@@ -27,7 +27,6 @@ import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathResolution.pathResolutionError;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
-import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
@@ -350,8 +349,9 @@ public class BoundPath extends RefPath {
 		final Step lastStep = lastRawStep();
 
 		if (lastStep == null) {
-			return ANCESTOR_FRAGMENT.toPath()
-					.bind(location, ref.getScope())
+			return Path.SELF_PATH.
+					bind(location, ref.getScope())
+					.append(new AncestorFragment())
 					.typeRef(ref.distribute());
 		}
 

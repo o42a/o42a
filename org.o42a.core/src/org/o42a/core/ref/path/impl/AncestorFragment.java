@@ -25,21 +25,15 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundFragment;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
-import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.link.Link;
 
 
-public class AncestorFragment extends PathFragment {
-
-	public static final AncestorFragment ANCESTOR_FRAGMENT =
-			new AncestorFragment();
-
-	private AncestorFragment() {
-	}
+public class AncestorFragment extends BoundFragment {
 
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
