@@ -21,7 +21,6 @@ package org.o42a.core.ref.type.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -30,9 +29,6 @@ import org.o42a.core.value.TypeParameters;
 
 
 public class ValueTypeInterface extends BoundFragment {
-
-	private static final TemplateValueType TEMPLATE_VALUE_TYPE =
-			new TemplateValueType();
 
 	public static TypeRef valueTypeInterfaceOf(Ref ref) {
 		return ref.getPath()
@@ -48,13 +44,16 @@ public class ValueTypeInterface extends BoundFragment {
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
 
-		final ObjectType type = start.toObject().type();
+		final TypeParameters<?> typeParameters =
+				start.toObject().type().getParameters();
+		final BoundPath path = expander.getPath();
+		final StaticTypeRef valueTypeRef =
+				typeParameters.getValueType().typeRef(
+						path,
+						start,
+						typeParameters);
 
-		if (type.getAncestor().getPath().getPath().getTemplate() != null) {
-			return TEMPLATE_VALUE_TYPE.toPath();
-		}
-
-		return valueTypeRef(expander, start);
+		return valueTypeRef.getPath().getPath();
 	}
 
 	@Override
@@ -70,44 +69,6 @@ public class ValueTypeInterface extends BoundFragment {
 	@Override
 	public String toString() {
 		return "/";
-	}
-
-	private static Path valueTypeRef(PathExpander expander, Scope start) {
-
-		final TypeParameters<?> typeParameters =
-				start.toObject().type().getParameters();
-		final BoundPath path = expander.getPath();
-		final StaticTypeRef valueTypeRef =
-				typeParameters.getValueType().typeRef(
-						path,
-						start,
-						typeParameters);
-
-		return valueTypeRef.getPath().getPath();
-	}
-
-	private static final class TemplateValueType extends PathTemplate {
-
-		@Override
-		public Path expand(PathExpander expander, int index, Scope start) {
-			return valueTypeRef(expander, start);
-		}
-
-		@Override
-		public FieldDefinition fieldDefinition(Ref ref) {
-			return defaultFieldDefinition(ref);
-		}
-
-		@Override
-		public TypeRef iface(Ref ref) {
-			return defaultInterface(ref);
-		}
-
-		@Override
-		public String toString() {
-			return "/#";
-		}
-
 	}
 
 }

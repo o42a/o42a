@@ -65,7 +65,7 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"  T := void",
 				") (",
 				"  F :=< link (`#t)",
-				"  G := `/f",
+				"  G := /f`",
 				")",
 				"B := a (`integer) (",
 				"  F = 23",
@@ -88,6 +88,49 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"  T := void",
 				") (",
 				"  F :=< variable (`#t)",
+				"  G := /f`",
+				")",
+				"B := a (`integer) (",
+				"  F = 23",
+				")");
+
+		assertThat(
+				LinkValueType.VARIABLE.interfaceRef(
+						field("b", "g").toObject().type().getParameters())
+				.getType(),
+				is(this.context.getIntrinsics().getInteger()));
+	}
+
+	@Test
+	public void linkTargetValue() {
+		compile(
+				"A :=> void #(",
+				"  T := void",
+				") (",
+				"  F :=< link (`#t)",
+				"  G := `/f",
+				")",
+				"B := a (`integer) (",
+				"  F = 23",
+				")");
+
+		assertThat(
+				definiteValue(linkTarget(field("b", "g")), ValueType.INTEGER),
+				is(23L));
+		assertThat(
+				LinkValueType.LINK.interfaceRef(
+						field("b", "g").toObject().type().getParameters())
+						.getType(),
+						is(this.context.getIntrinsics().getVoid()));
+	}
+
+	@Test
+	public void variableTargetValue() {
+		compile(
+				"A :=> void #(",
+				"  T := void",
+				") (",
+				"  F :=< variable (`#t)",
 				"  G := `/f",
 				")",
 				"B := a (`integer) (",
@@ -98,7 +141,7 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				LinkValueType.LINK.interfaceRef(
 						field("b", "g").toObject().type().getParameters())
 				.getType(),
-				is(this.context.getIntrinsics().getInteger()));
+				is(this.context.getIntrinsics().getVoid()));
 	}
 
 	@Test
@@ -108,7 +151,7 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"  T := void",
 				") (",
 				"  F :=< link (`#t)",
-				"  G := `//f",
+				"  G := //f`",
 				")",
 				"B := a (`integer) (",
 				"  F = 23",
@@ -131,6 +174,49 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"  T := void",
 				") (",
 				"  F :=< variable (`#t)",
+				"  G := //f`",
+				")",
+				"B := a (`integer) (",
+				"  F = 23",
+				")");
+
+		assertThat(
+				LinkValueType.VARIABLE.interfaceRef(
+						field("b", "g").toObject().type().getParameters())
+				.getType(),
+				is(this.context.getIntrinsics().getInteger()));
+	}
+
+	@Test
+	public void keepLinkTarget() {
+		compile(
+				"A :=> void #(",
+				"  T := void",
+				") (",
+				"  F :=< link (`#t)",
+				"  G := `//f",
+				")",
+				"B := a (`integer) (",
+				"  F = 23",
+				")");
+
+		assertThat(
+				definiteValue(linkTarget(field("b", "g")), ValueType.INTEGER),
+				is(23L));
+		assertThat(
+				LinkValueType.LINK.interfaceRef(
+						field("b", "g").toObject().type().getParameters())
+						.getType(),
+						is(this.context.getIntrinsics().getVoid()));
+	}
+
+	@Test
+	public void keepVariableTarget() {
+		compile(
+				"A :=> void #(",
+				"  T := void",
+				") (",
+				"  F :=< variable (`#t)",
 				"  G := `//f",
 				")",
 				"B := a (`integer) (",
@@ -141,7 +227,7 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				LinkValueType.LINK.interfaceRef(
 						field("b", "g").toObject().type().getParameters())
 				.getType(),
-				is(this.context.getIntrinsics().getInteger()));
+				is(this.context.getIntrinsics().getVoid()));
 	}
 
 }
