@@ -301,7 +301,7 @@ public class Ref extends Statement {
 
 		final Adapter adapter = new Adapter(location, adapterType, logger);
 
-		return getPath().append(adapter.toPath()).target(distribute());
+		return getPath().append(adapter).target(distribute());
 	}
 
 	public final Ref prefixWith(PrefixPath prefix) {
