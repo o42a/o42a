@@ -30,9 +30,9 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundFragment;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
-import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
@@ -40,7 +40,7 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class Adapter extends PathFragment implements LocationInfo {
+public final class Adapter extends BoundFragment implements LocationInfo {
 
 	private final Location location;
 	private final StaticTypeRef adapterType;
