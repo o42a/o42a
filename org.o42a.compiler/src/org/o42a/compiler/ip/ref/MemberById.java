@@ -40,7 +40,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.PlacedPathFragment;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathResolution;
@@ -49,7 +48,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public class MemberById extends PlacedPathFragment {
+public class MemberById extends PlacedFragment {
 
 	private static final MemberName VOID_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("void"));

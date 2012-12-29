@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,27 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.common;
+package org.o42a.compiler.ip.ref;
 
 import org.o42a.core.*;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PathFragment;
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.path.BoundFragment;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class PlacedPathFragment
-		extends PathFragment
+public abstract class PlacedFragment
+		extends BoundFragment
 		implements PlaceInfo {
 
 	private final Location location;
 	private final ScopePlace place;
 	private final Container container;
 
-	public PlacedPathFragment(LocationInfo location, Distributor distributor) {
+	public PlacedFragment(LocationInfo location, Distributor distributor) {
 		this.location = location.getLocation();
 		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
@@ -77,12 +77,11 @@ public abstract class PlacedPathFragment
 		return Placed.distributeIn(this, container);
 	}
 
-	public Ref toRef() {
-		return toPath().bind(this, getScope()).target(distribute());
-	}
-
-	public TypeRef toTypeRef() {
-		return toPath().bind(this, getScope()).typeRef(distribute());
+	public final Ref toRef() {
+		return Path.SELF_PATH
+				.bind(this, getScope())
+				.append(this)
+				.target(distribute());
 	}
 
 	@Override
