@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
-
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -30,6 +28,7 @@ import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.impl.cond.RefCondition;
+import org.o42a.core.ref.path.impl.AncestorFragment;
 import org.o42a.core.ref.path.impl.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -235,7 +234,7 @@ public abstract class Step {
 	protected final TypeRef defaultAncestor(LocationInfo location, Ref ref) {
 		return ref.getPath()
 				.setLocation(location)
-				.append(ANCESTOR_FRAGMENT)
+				.append(new AncestorFragment())
 				.typeRef(ref.distribute());
 	}
 
