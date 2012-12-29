@@ -41,7 +41,7 @@ For each :=> void (
   )
 
   {
-    Next item := `//next
+    Next item := //next`
     Do (It = next item)... 
   }
 
