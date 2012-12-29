@@ -39,7 +39,7 @@ Runtime := test (
 )
 
 Iteration := test (
-  Name = "Runtime"
+  Name = "Iteration"
   Print error '  ' [name] nl
 
   List := row list (`string) [["1", "2", "3"]]
