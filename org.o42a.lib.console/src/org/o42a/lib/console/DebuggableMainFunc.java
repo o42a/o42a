@@ -1,6 +1,6 @@
 /*
     Console Module
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2010-2013 Ruslan Lopatin
 
     This file is part of o42a.
 
