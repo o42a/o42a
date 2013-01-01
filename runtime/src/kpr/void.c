@@ -11,7 +11,7 @@
 #ifndef NDEBUG
 const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_kpr_void = {
 	.type_code = 0x042a0200 | O42A_KPR_VOID,
-	.field_num = 2,
+	.field_num = 1,
 	.name = "o42a_kpr_void",
 	.fields = {
 		{
