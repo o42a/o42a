@@ -13,7 +13,7 @@
 #ifndef NDEBUG
 const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_fld_var = {
 	.type_code = 0x042a0200 | O42A_FLD_VAR,
-	.field_num = 4,
+	.field_num = 2,
 	.name = "o42a_fld_var",
 	.fields = {
 		{
