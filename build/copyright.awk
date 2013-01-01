@@ -58,7 +58,7 @@ BEGIN {
 
 	no_copyright=public_domain
 
-	year = "2012"
+	year = "2013"
 	author = "Ruslan Lopatin"
 
 	o42a = license ~ ".o42a$"
@@ -105,6 +105,7 @@ comment && /^[ \t]*Copyright/ {
 	printf "%s", buffer
 	print indent "Copyright (C)", year_str, author
 	comment = 0
+	skip = 1
 	buffer = ""
 	next
 }
