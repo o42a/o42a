@@ -22,7 +22,7 @@ as main priorities. This achieved by
 
 > See the [Mission Statement][].  
 > Take a look at the [feature list][] for overall language description.  
-> Read [documentation][] for the details.
+> Read the [documentation][] for the details.
 
 Development Status
 ------------------
@@ -42,7 +42,7 @@ Here is a "Hello, World!" program written in o42a:
 
     Use namespace 'Console'.
 
-    @Main := *{
+    @Main := * {
       Print "Hello, World!" nl.
     }
 
