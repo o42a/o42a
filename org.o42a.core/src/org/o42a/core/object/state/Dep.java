@@ -75,7 +75,11 @@ public final class Dep extends Step implements SubID {
 	}
 
 	public final Object getDepKey() {
-		return this.ref.getPath().getPath();
+
+		final Path path = this.ref.getPath().getPath();
+		final Path template = path.getTemplate();
+
+		return template != null ? template : path;
 	}
 
 	public final Obj getDepTarget() {
