@@ -122,6 +122,7 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 	}
 
 	public void fill(CodeBuilder builder, CodeDirs dirs) {
+		dirs.code().debug("Fill " + getDep());
 
 		final DataRecOp objectRec = ptr().object(dirs.code());
 		final Block noDep = dirs.addBlock("no_dep");
@@ -131,7 +132,7 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 		final Block code = depDirs.code();
 
 		objectRec.store(code, object);
-		code.dump(getDep() + ": ", this);
+		code.dump(getDep() + " := ", this);
 
 		if (noDep.exists()) {
 
