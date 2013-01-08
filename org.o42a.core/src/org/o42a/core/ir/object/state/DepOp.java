@@ -122,7 +122,7 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 	}
 
 	public void fill(CodeBuilder builder, CodeDirs dirs) {
-		dirs.code().debug("Fill " + getDep());
+		dirs.code().debug("Depends on " + getDep().getRef());
 
 		final DataRecOp objectRec = ptr().object(dirs.code());
 		final Block noDep = dirs.addBlock("no_dep");

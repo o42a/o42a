@@ -94,12 +94,9 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public void fillDeps(CodeDirs dirs, Obj sample) {
 		for (Dep dep : sample.deps()) {
-			if (dep.isDisabled()) {
-				continue;
+			if (!dep.isDisabled()) {
+				fillDep(dirs, dep);
 			}
-			dep(dirs, dep).fill(
-					getBuilder().host().toLocal().getBuilder(),
-					dirs);
 		}
 	}
 
@@ -311,6 +308,17 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				null,
 				code,
 				getWellKnownType().ir(getGenerator()).getBodyType());
+	}
+
+	private final void fillDep(CodeDirs dirs, Dep dep) {
+
+		final CodeDirs depDirs = dirs.begin(getId(), "Fill " + dep);
+
+		dep(depDirs, dep).fill(
+				getBuilder().host().toLocal().getBuilder(),
+				depDirs);
+
+		depDirs.done();
 	}
 
 }
