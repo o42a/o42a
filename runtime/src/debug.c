@@ -173,11 +173,12 @@ void o42a_dbg_mem_name(
 		fputs("NULL\n", dbg_env->output);
 		return;
 	}
+	fprintf(dbg_env->output, "<0x%lx> ", (long) ptr);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
 	dbg_mem_name(header);
-	fprintf(dbg_env->output, " <0x%lx>: %s\n", (long) ptr, header->type_info->name);
+	fprintf(dbg_env->output, ": %s\n", header->type_info->name);
 }
 
 union ptr_and_func {
@@ -407,15 +408,12 @@ void o42a_dbg_dump_mem(
 		const void *const ptr,
 		const uint32_t depth) {
 	o42a_dbg_print(prefix);
+	fprintf(dbg_env->output, "<0x%lx> ", (long) ptr);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
 	dbg_mem_name(header);
-	fprintf(
-			dbg_env->output,
-			" <0x%lx>: %s = {\n",
-			(long) ptr,
-			header->type_info->name);
+	fprintf(dbg_env->output, ": %s = {\n", header->type_info->name);
 	dbg_struct(header, depth, 1);
 	dbg_indent(0);
 	fputs("}\n", dbg_env->output);
