@@ -185,6 +185,9 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.ancestorBody = data.addRelPtr("ancestor_body");
 		this.methods = data.addDataPtr("methods");
 		this.flags = data.addInt32("flags");
+		// FIXME: Fix the addressing of fields added after alignment gaps.
+		// Then remove the placeholder.
+		data.addInt32("PLACEHOLDER").setValue(0);
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
 
