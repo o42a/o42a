@@ -121,6 +121,7 @@ static cl::opt<cl::boolOrDefault> Normalize(
 
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
+		targetMachine(),
 		targetDataLayout(),
 		functionPassManager(),
 		stackSaveFunc(),
@@ -129,7 +130,9 @@ BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 }
 
 BackendModule::~BackendModule() {
-	if (this->targetDataLayout) {
+	if (this->targetMachine) {
+		delete this->targetMachine;
+	} else if (this->targetDataLayout) {
 		delete this->targetDataLayout;
 	}
 	if (this->functionPassManager) {
@@ -197,14 +200,61 @@ BackendModule *BackendModule::createBackend(StringRef &ModuleID) {
 	return backend;
 }
 
-const DataLayout *BackendModule::getTargetDataLayout() const {
+TargetMachine *BackendModule::getTargetMachine() const {
+	if (this->targetMachine) {
+		return this->targetMachine;
+	}
+
+	std::string triple = getTargetTriple();
+	std::string features;
+	std::string CPU;
+
+	if (this->hostMachine) {
+		CPU = sys::getHostCPUName();
+
+		StringMap<bool> featureMap;
+		SubtargetFeatures f;
+
+		f.getDefaultSubtargetFeatures(Triple(triple));
+		if (sys::getHostCPUFeatures(featureMap)) {
+			for (StringMapIterator<bool> it = featureMap.begin();
+					it != featureMap.end();) {
+				f.AddFeature(it->getKey(), it->getValue());
+			}
+		}
+
+		features = f.getString();
+	}
+
+	std::string error = std::string("Target not supported: ").append(triple);
+
+	ODEBUG("Emitting code for " << triple << " (" << features << ")\n");
+
+	const Target *const target = TargetRegistry::lookupTarget(triple, error);
+
+	if (!target) {
+		return NULL;
+	}
+
+	return this->targetMachine = target->createTargetMachine(
+			getTargetTriple(),
+			CPU,
+			features,
+			TargetOptions());
+}
+
+const llvm::DataLayout *BackendModule::getTargetDataLayout() const {
 	if (this->targetDataLayout) {
 		return this->targetDataLayout;
 	}
 
-	this->targetDataLayout = new llvm::DataLayout(this);
+	TargetMachine *const machine = getTargetMachine();
 
-	return this->targetDataLayout;
+	if (!machine) {
+		return this->targetDataLayout = new llvm::DataLayout(this);
+	}
+
+	return this->targetDataLayout = machine->getDataLayout();
 }
 
 Constant *BackendModule::getStackSaveFunc() {
@@ -322,46 +372,9 @@ bool BackendModule::writeCode() {
 		pm.add(createPrintModulePass(out, false));
 	} else {
 
-		std::string triple = getTargetTriple();
-		std::string features;
-		std::string CPU;
+		TargetMachine *const machine = getTargetMachine();
 
-		if (this->hostMachine) {
-			CPU = sys::getHostCPUName();
-
-			StringMap<bool> featureMap;
-			SubtargetFeatures f;
-
-			f.getDefaultSubtargetFeatures(Triple(triple));
-			if (sys::getHostCPUFeatures(featureMap)) {
-				for (StringMapIterator<bool> it = featureMap.begin();
-						it != featureMap.end();) {
-					f.AddFeature(it->getKey(), it->getValue());
-				}
-			}
-
-			features = f.getString();
-		}
-
-		std::string error =
-				std::string("Target not supported: ").append(triple);
-
-		ODEBUG("Emitting code for " << triple << " (" << features << ")\n");
-
-		const Target *const target =
-				TargetRegistry::lookupTarget(triple, error);
-
-		if (!target) {
-			return false;
-		}
-
-		TargetMachine *const machine = target->createTargetMachine(
-				getTargetTriple(),
-				CPU,
-				features,
-				TargetOptions());
-
-		if (machine->addPassesToEmitFile(
+		if (!machine || machine->addPassesToEmitFile(
 				pm,
 				*out,
 				fileType,

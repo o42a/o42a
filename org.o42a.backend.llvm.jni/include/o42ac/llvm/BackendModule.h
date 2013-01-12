@@ -28,9 +28,10 @@ using namespace llvm;
 namespace llvm {
 
 class Constant;
+class DataLayout;
 class Function;
 class FunctionPassManager;
-class DataLayout;
+class TargetMachine;
 
 }
 
@@ -38,7 +39,8 @@ namespace o42ac {
 
 class BackendModule : public Module {
 
-	mutable llvm::DataLayout *targetDataLayout;
+	mutable llvm::TargetMachine *targetMachine;
+	mutable const llvm::DataLayout *targetDataLayout;
 	mutable FunctionPassManager *functionPassManager;
 	Constant *stackSaveFunc;
 	Constant *stackRestoreFunc;
@@ -63,6 +65,8 @@ public:
 	static int normalizationEnabled();
 
 	static BackendModule *createBackend(StringRef &ModuleID);
+
+	TargetMachine *getTargetMachine() const;
 
 	const llvm::DataLayout *getTargetDataLayout() const;
 
