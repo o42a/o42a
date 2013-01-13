@@ -35,9 +35,7 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.impl.DefaultTypeRef;
 import org.o42a.core.ref.type.impl.DefaultTypeRelation;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
@@ -184,6 +182,8 @@ public abstract class TypeRef implements ScopeInfo {
 
 		return holder.getObject().getConstructionMode();
 	}
+
+	public abstract TypeRef setLocation(LocationInfo location);
 
 	public final CompilerLogger getLogger() {
 		return getContext().getLogger();

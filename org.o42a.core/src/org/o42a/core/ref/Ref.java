@@ -108,6 +108,10 @@ public class Ref extends Statement {
 		return typeParameters != null ? typeParameters.getValueType() : null;
 	}
 
+	public final Ref setLocation(LocationInfo location) {
+		return getPath().setLocation(location).target(distribute());
+	}
+
 	public final TypeParameters<?> typeParameters(Scope scope) {
 
 		final Resolution resolution = resolve(scope.resolver());

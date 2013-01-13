@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.impl.StaticTypeRelation;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
@@ -48,6 +49,26 @@ public final class StaticTypeRef extends TypeRef {
 	@Override
 	public final StaticTypeRef setParameters(TypeRefParameters parameters) {
 		return super.setParameters(parameters).toStatic();
+	}
+
+	@Override
+	public StaticTypeRef setLocation(LocationInfo location) {
+
+		final Ref oldRef = getRef();
+		final Ref oldIntactRef = getIntactRef();
+		final Ref newRef = oldRef.setLocation(location);
+		final Ref newIntactRef;
+
+		if (oldRef != oldIntactRef) {
+			newIntactRef = oldIntactRef.setLocation(location);
+		} else {
+			newIntactRef = newRef;
+		}
+
+		return new StaticTypeRef(
+				newIntactRef,
+				newRef,
+				copyParameters());
 	}
 
 	@Override
