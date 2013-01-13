@@ -26,14 +26,15 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.state.KeeperOp;
+import org.o42a.core.object.state.Keeper;
 
 
 final class KeptValueEval implements Eval {
 
-	private final KeptValueDef def;
+	private final Keeper keeper;
 
-	KeptValueEval(KeptValueDef def) {
-		this.def = def;
+	KeptValueEval(Keeper keeper) {
+		this.keeper = keeper;
 	}
 
 	@Override
@@ -43,17 +44,17 @@ final class KeptValueEval implements Eval {
 				dirs.dirs(),
 				tempObjHolder(dirs.getAllocator()));
 		final KeeperOp keeper =
-				object.keeper(dirs.dirs(), this.def.getKeeper());
+				object.keeper(dirs.dirs(), this.keeper);
 
 		dirs.returnValue(keeper.writeValue(dirs.valDirs()));
 	}
 
 	@Override
 	public String toString() {
-		if (this.def == null) {
+		if (this.keeper == null) {
 			return super.toString();
 		}
-		return this.def.getKeeper().toString();
+		return this.keeper.getValue().toString();
 	}
 
 }
