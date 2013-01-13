@@ -22,6 +22,7 @@ package org.o42a.core.ref.type.impl;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
+import org.o42a.core.source.LocationInfo;
 
 
 public final class DefaultTypeRef extends TypeRef {
@@ -38,6 +39,13 @@ public final class DefaultTypeRef extends TypeRef {
 	@Override
 	public final Ref getIntactRef() {
 		return getRef();
+	}
+
+	@Override
+	public TypeRef setLocation(LocationInfo location) {
+		return new DefaultTypeRef(
+				getRef().setLocation(location),
+				copyParameters());
 	}
 
 	@Override
