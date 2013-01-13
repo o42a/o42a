@@ -40,7 +40,7 @@ final class StringKeeperEval extends KeeperEval {
 	private ValFlagsOp flags;
 
 	StringKeeperEval(KeeperOp keeper, StringKeeperIROp op) {
-		super(keeper);
+		super(IndefIsFalse.INDEF_IS_FALSE, keeper);
 		this.op = op;
 	}
 

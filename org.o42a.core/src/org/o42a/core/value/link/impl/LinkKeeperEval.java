@@ -43,7 +43,7 @@ final class LinkKeeperEval extends KeeperEval {
 	private DataOp object;
 
 	LinkKeeperEval(KeeperOp keeper, LinkKeeperIROp op) {
-		super(keeper);
+		super(IndefIsFalse.INDEF_NOT_FALSE, keeper);
 		this.op = op;
 	}
 

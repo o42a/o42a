@@ -39,7 +39,7 @@ final class ArrayKeeperEval extends KeeperEval {
 	private ValFlagsOp flags;
 
 	ArrayKeeperEval(KeeperOp keeper, ArrayKeeperIROp op) {
-		super(keeper);
+		super(IndefIsFalse.INDEF_IS_FALSE, keeper);
 		this.op = op;
 	}
 
