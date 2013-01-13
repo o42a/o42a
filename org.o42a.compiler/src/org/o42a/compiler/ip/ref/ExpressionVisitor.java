@@ -36,7 +36,7 @@ import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
-import org.o42a.compiler.ip.ref.operator.KeepValue;
+import org.o42a.compiler.ip.ref.keeper.KeepValue;
 import org.o42a.compiler.ip.ref.operator.LogicalExpression;
 import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
