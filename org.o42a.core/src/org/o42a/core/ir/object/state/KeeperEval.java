@@ -41,9 +41,11 @@ public abstract class KeeperEval {
 
 	private static final ID FLD_CTR_ID = ID.id("fld_ctr");
 
+	private final IndefIsFalse indefIsFalse;
 	private final KeeperOp keeper;
 
-	public KeeperEval(KeeperOp keeper) {
+	public KeeperEval(IndefIsFalse indefIsFalse, KeeperOp keeper) {
+		this.indefIsFalse = indefIsFalse;
 		this.keeper = keeper;
 	}
 
@@ -71,26 +73,7 @@ public abstract class KeeperEval {
 	}
 
 	public final ValOp writeValue(ValDirs dirs) {
-
-		final ValOp value = dirs.value();
-		final Block code = dirs.code();
-
-		start(code);
-
-		final CondBlock isSet =
-				loadCondition(code).branch(code, "is_set", "not_set");
-
-		// A non-false value is already stored in keeper.
-		value.store(isSet, loadValue(dirs, isSet));
-		isSet.go(code.tail());
-
-		// Value is either indefinite or false.
-		final Block notSet = isSet.otherwise();
-
-		eval(dirs, notSet);
-		notSet.go(code.tail());
-
-		return value;
+		return this.indefIsFalse.writeKeeperValue(this, dirs);
 	}
 
 	/**
@@ -122,8 +105,6 @@ public abstract class KeeperEval {
 	protected abstract void updateCondition(Code code, boolean condition);
 
 	private void eval(ValDirs dirs, Block code) {
-		// Evaluate if value is indefinite, or false otherwise.
-		loadIndefinite(code).goUnless(code, dirs.falseDir());
 
 		final FldCtrOp ctr =
 				code.getAllocator()
@@ -171,6 +152,73 @@ public abstract class KeeperEval {
 		loadCondition(code).goUnless(code, dirs.falseDir());
 		// Return the value if condition is not false.
 		dirs.value().store(code, loadValue(dirs, code));
+	}
+
+	protected enum IndefIsFalse {
+
+		INDEF_IS_FALSE() {
+
+			@Override
+			ValOp writeKeeperValue(KeeperEval eval, ValDirs dirs) {
+
+				final ValOp value = dirs.value();
+				final Block code = dirs.code();
+
+				eval.start(code);
+
+				final CondBlock isSet =
+						eval.loadCondition(code)
+						.branch(code, "is_set", "not_set");
+
+				// A non-false value is already stored in keeper.
+				value.store(isSet, eval.loadValue(dirs, isSet));
+				isSet.go(code.tail());
+
+				// Value is either indefinite or false.
+				final Block notSet = isSet.otherwise();
+
+				// Evaluate if value is indefinite, or false otherwise.
+				eval.loadIndefinite(notSet).goUnless(notSet, dirs.falseDir());
+				eval.eval(dirs, notSet);
+				notSet.go(code.tail());
+
+				return value;
+			}
+
+		},
+
+		INDEF_NOT_FALSE() {
+
+			@Override
+			ValOp writeKeeperValue(KeeperEval eval, ValDirs dirs) {
+
+				final ValOp value = dirs.value();
+				final Block code = dirs.code();
+
+				eval.start(code);
+
+				final CondBlock indef =
+						eval.loadIndefinite(code)
+						.branch(code, "indef", "def");
+				final Block def = indef.otherwise();
+
+				// A value is already defined.
+				// Value is false.
+				eval.loadCondition(def).goUnless(def, dirs.falseDir());
+				// Value is not false.
+				value.store(def, eval.loadValue(dirs, def));
+				def.go(code.tail());
+
+				// Value is indefinite. Evaluate it.
+				eval.eval(dirs, indef);
+				indef.go(code.tail());
+
+				return value;
+			}
+
+		};
+
+		abstract ValOp writeKeeperValue(KeeperEval eval, ValDirs dirs);
 	}
 
 }

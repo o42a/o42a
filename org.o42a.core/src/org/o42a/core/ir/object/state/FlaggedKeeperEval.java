@@ -36,7 +36,7 @@ public abstract class FlaggedKeeperEval extends KeeperEval {
 	private Int8op flags;
 
 	public FlaggedKeeperEval(KeeperOp keeper) {
-		super(keeper);
+		super(IndefIsFalse.INDEF_IS_FALSE, keeper);
 	}
 
 	protected final Int8op flags() {
