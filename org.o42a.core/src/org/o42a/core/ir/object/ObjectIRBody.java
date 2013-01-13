@@ -322,7 +322,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 			final KeeperIR<?, ?> keeperIR =
 					keeper.getValue()
-					.typeParameters(keeper.getScope())
+					.typeParameters(keeper.getValue().getScope())
 					.keeperIR(this, keeper);
 
 			keeperIR.allocate(data);
