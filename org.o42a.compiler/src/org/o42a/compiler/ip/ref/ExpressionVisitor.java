@@ -36,7 +36,9 @@ import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
-import org.o42a.compiler.ip.ref.operator.*;
+import org.o42a.compiler.ip.ref.operator.KeepValue;
+import org.o42a.compiler.ip.ref.operator.LogicalExpression;
+import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -44,7 +46,6 @@ import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.Location;
 import org.o42a.util.log.LogInfo;
 
 
@@ -254,13 +255,7 @@ public final class ExpressionVisitor
 			return null;
 		}
 
-		final Location location = location(p, expression.getSign());
-
-		if (p.getScope().toLocal() != null) {
-			return new KeptLocalValue(location, value).toRef();
-		}
-
-		return new KeptObjectValue(location, value).toRef();
+		return new KeepValue(location(p, expression.getSign()), value).toRef();
 	}
 
 	private Ref macroExpansion(UnaryNode expression, Distributor p) {
