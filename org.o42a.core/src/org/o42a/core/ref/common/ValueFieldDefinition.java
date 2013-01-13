@@ -49,7 +49,7 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 		if (this.typeParameters != null) {
 			definer.setParameters(typeParameters(definer));
 		}
-		pathAsValue(definer);
+		refAsValue(definer);
 	}
 
 	@Override

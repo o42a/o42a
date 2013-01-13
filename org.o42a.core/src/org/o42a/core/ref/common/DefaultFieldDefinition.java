@@ -19,25 +19,16 @@
 */
 package org.o42a.core.ref.common;
 
-import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
-
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 
 
-public abstract class DefaultFieldDefinition extends FieldDefinition {
-
-	private final Ref ref;
+public abstract class DefaultFieldDefinition extends BaseFieldDefinition {
 
 	public DefaultFieldDefinition(Ref ref) {
 		super(ref);
-		assertSameScope(ref);
-		this.ref = ref;
-	}
-
-	public final Ref getRef() {
-		return this.ref;
 	}
 
 	@Override
@@ -45,58 +36,8 @@ public abstract class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public final void overrideObject(ObjectDefiner definer) {
-
-		final DefinitionTarget target = getDefinitionTarget();
-		final DefinitionTarget definerTarget = definerTarget(definer);
-
-		if (target.isDefault() || target.is(definerTarget)) {
-			overridePlainObject(definer);
-			return;
-		}
-		if (definerTarget.isLink()) {
-			overrideLink(definer);
-			return;
-		}
-		if (definerTarget.isMacro()) {
-			overrideMacro(definer);
-			return;
-		}
-		overridePlainObject(definer);
-	}
-
 	public void overridePlainObject(ObjectDefiner definer) {
-		pathAsValue(definer);
-	}
-
-	@Override
-	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(getRef(), null);
-	}
-
-	public void overrideLink(ObjectDefiner definer) {
-		pathAsValue(definer);
-	}
-
-	@Override
-	public void defineMacro(MacroDefiner definer) {
-		definer.setRef(getRef());
-	}
-
-	public void overrideMacro(ObjectDefiner definer) {
-		pathAsValue(definer);
-	}
-
-	@Override
-	public String toString() {
-		if (this.ref == null) {
-			return super.toString();
-		}
-		return this.ref.toString();
-	}
-
-	protected void pathAsValue(ObjectDefiner definer) {
-		definer.define(valueBlock(getRef()));
+		refAsValue(definer);
 	}
 
 }

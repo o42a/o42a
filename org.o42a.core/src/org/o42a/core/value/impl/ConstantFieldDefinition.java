@@ -57,7 +57,7 @@ final class ConstantFieldDefinition extends DefaultFieldDefinition {
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAncestor(
 				this.constant.getValueType().typeRef(this, getScope()));
-		pathAsValue(definer);
+		refAsValue(definer);
 	}
 
 	@Override
