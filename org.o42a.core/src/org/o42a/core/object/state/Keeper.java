@@ -19,33 +19,27 @@
 */
 package org.o42a.core.object.state;
 
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.state.impl.KeeperAccessor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.ValueFieldDefinition;
-import org.o42a.core.ref.path.*;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.TypeRefParameters;
+import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.SubID;
 
 
-public final class Keeper extends ObjectConstructor implements SubID {
+public final class Keeper extends Located implements SubID {
 
 	private final Obj declaredIn;
 	private final Ref value;
 	private final ID id;
 	private Keeper next;
-	private TypeRef valueTypeInterface;
 
 	Keeper(Obj declaredIn, LocationInfo location, Ref value, ID id) {
-		super(location, value.distribute());
+		super(location);
 		this.declaredIn = declaredIn;
 		this.id = id;
 		this.value = value;
-		value.assertSameScope(this);
+		value.assertSameScope(declaredIn);
 	}
 
 	public final Obj getDeclaredIn() {
@@ -54,38 +48,6 @@ public final class Keeper extends ObjectConstructor implements SubID {
 
 	public final Ref getValue() {
 		return this.value;
-	}
-
-	public final TypeRef getValueTypeInterface() {
-		if (this.valueTypeInterface != null) {
-			return this.valueTypeInterface;
-		}
-		return this.valueTypeInterface = getValue().getValueTypeInterface();
-	}
-
-	@Override
-	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		return getValueTypeInterface();
-	}
-
-	@Override
-	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(
-				ref,
-				rescopedTypeParameters(ref));
-	}
-
-	@Override
-	public final Keeper reproduce(PathReproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref value = getValue().reproduce(reproducer.getReproducer());
-
-		if (value == null) {
-			return null;
-		}
-
-		return reproducer.getScope().toObject().keepers().keep(this, value);
 	}
 
 	@Override
@@ -113,32 +75,12 @@ public final class Keeper extends ObjectConstructor implements SubID {
 		return this.id.toString();
 	}
 
-	@Override
-	protected Obj createObject() {
-		return new KeeperAccessor(this);
-	}
-
 	final Keeper getNext() {
 		return this.next;
 	}
 
 	final void setNext(Keeper next) {
 		this.next = next;
-	}
-
-	private TypeRefParameters rescopedTypeParameters(Ref ref) {
-
-		final TypeRefParameters typeParameters =
-				getValueTypeInterface().copyParameters();
-		final BoundPath path = ref.getPath();
-
-		if (path.length() == 1) {
-			return typeParameters;
-		}
-
-		final PrefixPath prefix = path.cut(1).toPrefix(ref.getScope());
-
-		return typeParameters.prefixWith(prefix);
 	}
 
 }

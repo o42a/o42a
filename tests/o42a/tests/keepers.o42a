@@ -19,7 +19,7 @@ Keep constant := test (
   
   Kept := //1
   Assert [kept == 1] 'Wrong initial constant keeper value'
-  Assert [kept == 1] 'Wrong subsequent constant keeper value' 
+  Assert [kept == 1] 'Wrong subsequent constant keeper value'
 )
 
 Keep variable target := test (
