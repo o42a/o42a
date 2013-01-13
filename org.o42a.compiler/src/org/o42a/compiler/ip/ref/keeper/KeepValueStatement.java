@@ -19,22 +19,22 @@
 */
 package org.o42a.compiler.ip.ref.keeper;
 
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.Obj;
+import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.ObjectConstructor;
-import org.o42a.core.ref.path.PathReproducer;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.*;
 
 
-public class KeepValue extends ObjectConstructor {
+final class KeepValueStatement extends Statement {
 
-	private Ref value;
+	private final Ref value;
 
-	public KeepValue(LocationInfo location, Ref value) {
-		super(location, value.distribute());
-		this.value = value;
+	KeepValueStatement(
+			LocationInfo location,
+			Distributor distributor,
+			Ref value) {
+		super(location, distributor);
+		this.value = value.rescope(getScope());
 	}
 
 	public final Ref getValue() {
@@ -42,26 +42,27 @@ public class KeepValue extends ObjectConstructor {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		return this.value.getValueTypeInterface().setLocation(ref);
+	public Definer define(DefinerEnv env) {
+		return new KeptValueDefiner(this, env);
 	}
 
 	@Override
-	public FieldDefinition fieldDefinition(Ref ref) {
-		return new KeptValueFieldDefinition(ref, this);
+	public Command command(CommandEnv env) {
+		throw new UnsupportedOperationException(
+				"Value can not be kept inside the imperative code");
 	}
 
 	@Override
-	public ObjectConstructor reproduce(PathReproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
+	public Statement reproduce(Reproducer reproducer) {
+		assertCompatibleScope(reproducer.getReproducingScope());
 
-		final Ref value = getValue().reproduce(reproducer.getReproducer());
+		final Ref value = this.value.reproduce(reproducer);
 
 		if (value == null) {
 			return null;
 		}
 
-		return new KeepValue(this, value);
+		return new KeepValueStatement(this, reproducer.distribute(), value);
 	}
 
 	@Override
@@ -69,12 +70,7 @@ public class KeepValue extends ObjectConstructor {
 		if (this.value == null) {
 			return super.toString();
 		}
-		return "//" + this.value;
-	}
-
-	@Override
-	protected Obj createObject() {
-		return new KeptValue(this);
+		return "= //" + this.value;
 	}
 
 }

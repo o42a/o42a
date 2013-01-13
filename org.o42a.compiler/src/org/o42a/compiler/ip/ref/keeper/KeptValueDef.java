@@ -77,7 +77,7 @@ final class KeptValueDef extends Def {
 
 	@Override
 	public Eval eval() {
-		return new KeptValueEval(this);
+		return new KeptValueEval(getKeeper());
 	}
 
 	@Override
