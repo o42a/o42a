@@ -42,6 +42,9 @@ import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.link.KnownLink;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
@@ -137,6 +140,40 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 
 	@Override
 	public void fill(Type instance) {
+
+		final Value<?> value = getObject().value().getValue();
+
+		if (!value.getKnowledge().isInitiallyKnown()) {
+			instance.object().setNull();
+		} else if (value.getKnowledge().isFalse()) {
+
+			final ObjectIR noneIR =
+					getObject().getContext().getNone().ir(getGenerator());
+
+			instance.object().setValue(
+					noneIR.getMainBodyIR().pointer(getGenerator()).toData());
+		} else {
+
+
+			final LinkValueType linkType =
+					getObject().type().getValueType().toLinkType();
+			final KnownLink link =
+					linkType.cast(value).getCompilerValue();
+			final Obj target = link.getTarget().getWrapped();
+
+			if (target.getConstructionMode().isRuntime()) {
+				instance.object().setNull();
+			} else {
+
+				final ObjectIR targetIR = target.ir(getGenerator());
+
+				instance.object().setValue(
+						targetIR.getMainBodyIR()
+						.pointer(getGenerator())
+						.toData());
+			}
+		}
+
 	}
 
 	@Override
