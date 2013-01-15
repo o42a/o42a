@@ -181,27 +181,21 @@ public final class RefLclOp extends LclOp {
 
 		@Override
 		public void writeCond(CodeDirs dirs) {
-			loadObject(dirs);
+			loadObject(dirs).value().writeCond(dirs);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-
-			final DataOp object = loadObject(dirs.dirs());
-			final Block code = dirs.code();
-
-			return dirs.value().store(code, object.toAny(null, code));
+			return loadObject(dirs.dirs()).value().writeValue(dirs);
 		}
 
 		@Override
 		public void assign(CodeDirs dirs, HostOp value) {
 
-			final Code code = dirs.code();
 			final ObjectOp object =
-					value.materialize(dirs, tempObjHolder(code.getAllocator()));
+					this.lcl.target(dirs, tempObjHolder(dirs.getAllocator()));
 
-			this.lcl.ptr().object(code)
-			.store(code, object.toData(null, code));
+			object.value().assign(dirs, value);
 		}
 
 		@Override
@@ -212,15 +206,16 @@ public final class RefLclOp extends LclOp {
 			return this.lcl.toString();
 		}
 
-		private DataOp loadObject(CodeDirs dirs) {
+		private ObjectOp loadObject(CodeDirs dirs) {
 
-			final Block code = dirs.code();
-			final DataOp object =
-					this.lcl.ptr().object(code).load(null, code);
+			final ObjectOp object =
+					this.lcl.target(dirs, tempObjHolder(dirs.getAllocator()));
 
-			object.isNull(null, code).go(code, dirs.falseDir());
+			if (!object.getWellKnownType().type().getValueType().isLink()) {
+				return object;
+			}
 
-			return object;
+			return object.dereference(dirs, tempObjHolder(dirs.getAllocator()));
 		}
 
 	}
