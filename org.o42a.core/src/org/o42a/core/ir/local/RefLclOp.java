@@ -39,6 +39,7 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -181,21 +182,17 @@ public final class RefLclOp extends LclOp {
 
 		@Override
 		public void writeCond(CodeDirs dirs) {
-			loadObject(dirs).value().writeCond(dirs);
+			value(dirs).writeCond(dirs);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			return loadObject(dirs.dirs()).value().writeValue(dirs);
+			return value(dirs.dirs()).writeValue(dirs);
 		}
 
 		@Override
 		public void assign(CodeDirs dirs, HostOp value) {
-
-			final ObjectOp object =
-					this.lcl.target(dirs, tempObjHolder(dirs.getAllocator()));
-
-			object.value().assign(dirs, value);
+			value(dirs).assign(dirs, value);
 		}
 
 		@Override
@@ -206,16 +203,12 @@ public final class RefLclOp extends LclOp {
 			return this.lcl.toString();
 		}
 
+		private ValueOp value(CodeDirs dirs) {
+			return loadObject(dirs).value();
+		}
+
 		private ObjectOp loadObject(CodeDirs dirs) {
-
-			final ObjectOp object =
-					this.lcl.target(dirs, tempObjHolder(dirs.getAllocator()));
-
-			if (!object.getWellKnownType().type().getValueType().isLink()) {
-				return object;
-			}
-
-			return object.dereference(dirs, tempObjHolder(dirs.getAllocator()));
+			return this.lcl.target(dirs, tempObjHolder(dirs.getAllocator()));
 		}
 
 	}
