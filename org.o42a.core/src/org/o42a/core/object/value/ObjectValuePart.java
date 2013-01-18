@@ -97,12 +97,12 @@ public final class ObjectValuePart implements UserInfo {
 
 	public final void updateAncestorDefsBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			ancestorDefsUpdatedBy().useBy(user, SIMPLE_USAGE);
+			ancestorDefsUpdateUses().useBy(user, SIMPLE_USAGE);
 		}
 	}
 
-	public final UserInfo ancestorDefsUpdatedByUser() {
-		return ancestorDefsUpdatedBy();
+	public final UserInfo ancestorDefsUpdatesUser() {
+		return ancestorDefsUpdateUses();
 	}
 
 	public final FullResolver fullResolver() {
@@ -119,8 +119,8 @@ public final class ObjectValuePart implements UserInfo {
 		uses().useBy(
 				wrapPart.uses().usageUser(VALUE_PART_ACCESS),
 				VALUE_PART_ACCESS);
-		ancestorDefsUpdatedBy().useBy(
-				wrapPart.ancestorDefsUpdatedBy(),
+		ancestorDefsUpdateUses().useBy(
+				wrapPart.ancestorDefsUpdateUses(),
 				SIMPLE_USAGE);
 	}
 
@@ -158,16 +158,19 @@ public final class ObjectValuePart implements UserInfo {
 		return this.uses;
 	}
 
-	final Usable<SimpleUsage> ancestorDefsUpdatedBy() {
+	private final Usable<SimpleUsage> ancestorDefsUpdateUses() {
 		if (this.ancestorDefsUpdates != null) {
 			return this.ancestorDefsUpdates;
 		}
 
 		final String name = isClaim() ? "Claim" : "Proposition";
 
-		return this.ancestorDefsUpdates = simpleUsable(
-				"Ancestor " + name + "UpdatesOf",
+		this.ancestorDefsUpdates = simpleUsable(
+				name + "AncestorDefsUpdates",
 				getObject());
+		this.ancestorDefsUpdates.useBy(getObjectValue().rtUses(), SIMPLE_USAGE);
+
+		return this.ancestorDefsUpdates;
 	}
 
 }
