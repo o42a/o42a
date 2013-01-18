@@ -136,6 +136,7 @@ final class ArrayAsRow extends AnnotatedBuiltin {
 		}
 
 		dirs.returnValue(
+				code,
 				dirs.value().store(
 						code,
 						arrayVal.value(null, code)
