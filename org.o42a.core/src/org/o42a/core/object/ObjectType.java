@@ -678,7 +678,7 @@ public final class ObjectType implements UserInfo {
 				since.value().part(claim);
 
 		sampleValuePart.updateAncestorDefsBy(
-				sinceValuePart.ancestorDefsUpdatedByUser());
+				sinceValuePart.ancestorDefsUpdatesUser());
 		if (newAncestorValue.part(claim).getDefs().updatedSince(
 				oldAncestorObject)) {
 			sampleValuePart.updateAncestorDefsBy(sinceValuePart);
