@@ -25,12 +25,14 @@ import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 import static org.o42a.core.object.value.ValuePartUsage.ALL_VALUE_PART_USAGES;
+import static org.o42a.core.object.value.ValueUsage.ANY_RUNTIME_VALUE_USAGE;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectSignature;
+import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
@@ -41,11 +43,15 @@ import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public abstract class ObjectValuePartFnIR
 		extends AbstractObjectValueFnIR<ObjectValFunc>
 		implements FunctionBuilder<ObjectValFunc> {
+
+	private static final ID SAME_VALUE_TYPE = ID.rawId("same_value_type");
 
 	ObjectValuePartFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -137,9 +143,7 @@ public abstract class ObjectValuePartFnIR
 		if (!isConstantValue(constant)) {
 			return constant;
 		}
-		if (!part().ancestorDefsUpdates().isUsed(
-				getGenerator().getAnalyzer(),
-				ALL_SIMPLE_USAGES)) {
+		if (!ancestorDefsUpdated()) {
 			return constant;
 		}
 
@@ -148,7 +152,7 @@ public abstract class ObjectValuePartFnIR
 
 	@Override
 	protected DefValue determineFinal() {
-		if (!canStub()) {
+		if (partUsed() && !getObject().getConstructionMode().isPredefined()) {
 			return RUNTIME_DEF_VALUE;
 		}
 		return defs().value(getObject().getScope().resolver());
@@ -166,7 +170,7 @@ public abstract class ObjectValuePartFnIR
 
 	@Override
 	protected boolean canStub() {
-		if (part().isUsed(getGenerator().getAnalyzer(), ALL_VALUE_PART_USAGES)) {
+		if (partUsed()) {
 			return false;
 		}
 		return !getObject().getConstructionMode().isPredefined();
@@ -225,13 +229,16 @@ public abstract class ObjectValuePartFnIR
 			if (ancestor == null) {
 				return;
 			}
-			if (part().ancestorDefsUpdates().isUsed(
-					getGenerator().getAnalyzer(),
-					ALL_SIMPLE_USAGES)) {
+			if (ancestorDefsUpdated()) {
 				return;
 			}
 
 			reuseFrom = ancestor.getType().type().getLastDefinition();
+		}
+		if (!getObject().type().getValueType().is(
+				reuseFrom.type().getValueType())) {
+			// Do not reuse the value of different type.
+			return;
 		}
 		if (defs().updatedSince(reuseFrom)) {
 			return;
@@ -275,6 +282,27 @@ public abstract class ObjectValuePartFnIR
 		writeExplicitDefs(dirs, host, collector);
 	}
 
+	private boolean partUsed() {
+		return part().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_VALUE_PART_USAGES);
+	}
+
+	private boolean rtUsed() {
+		return getObject().value().isUsed(
+				getGenerator().getAnalyzer(),
+				ANY_RUNTIME_VALUE_USAGE);
+	}
+
+	private boolean ancestorDefsUpdated() {
+		if (rtUsed()) {
+			return true;
+		}
+		return part().ancestorDefsUpdates().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_SIMPLE_USAGES);
+	}
+
 	private void writeExplicitDefs(
 			DefDirs dirs,
 			ObjOp host,
@@ -298,13 +326,13 @@ public abstract class ObjectValuePartFnIR
 		}
 	}
 
-	private void writeAncestorDef(DefDirs dirs, ObjOp host) {
+	private void writeAncestorDef(
+			DefDirs dirs,
+			ObjOp host) {
 
 		final Block code = dirs.code();
 
-		if (!part().ancestorDefsUpdates().isUsed(
-				getGenerator().getAnalyzer(),
-				ALL_SIMPLE_USAGES)) {
+		if (!ancestorDefsUpdated()) {
 
 			final TypeRef ancestor = getObject().type().getAncestor();
 
@@ -323,7 +351,7 @@ public abstract class ObjectValuePartFnIR
 					.op(null, code)
 					.op(dirs.getBuilder(), EXACT);
 
-			writeAncestorDef(dirs, ancestorBody, ancestorType);
+			writeAncestorDef(dirs, host, ancestorBody, ancestorType);
 
 			return;
 		}
@@ -339,25 +367,78 @@ public abstract class ObjectValuePartFnIR
 				.load(null, code)
 				.op(host.getBuilder(), DERIVED);
 
-		writeAncestorDef(dirs, ancestorBody, ancestorType);
+		writeAncestorDef(dirs, host, ancestorBody, ancestorType);
 
 		noAncestor.debug("No ancestor " + suffix());
+		writeVoid(noAncestor, dirs, host);
+
 		noAncestor.go(code.tail());
+	}
+
+	private void writeVoid(Block code, DefDirs dirs, ObjOp host) {
+		if (isClaim()) {
+			return;
+		}
+		if (!dirs.getValueType().isVoid()) {
+			return;
+		}
+
+		final ValueTypeDescOp hostValueType =
+				host.objectType(code)
+				.ptr()
+				.data(code)
+				.valueType(code)
+				.load(null, code);
+		final Block voidVal = code.addBlock("void_val");
+
+		hostValueType.eq(
+				null,
+				code,
+				ValueType.VOID.ir(getGenerator())
+				.getValueTypeDesc()
+				.op(null, code))
+				.go(code, voidVal.head());
+		if (voidVal.exists()) {
+			voidVal.debug("Void ancestor");
+			dirs.returnValue(voidVal, dirs.getBuilder().voidVal(voidVal));
+		}
 	}
 
 	private void writeAncestorDef(
 			DefDirs dirs,
+			ObjOp host,
 			ObjectOp ancestorBody,
 			ObjectTypeOp ancestorType) {
 
 		final DefDirs defDirs = dirs.begin(null, "Ancestor " + suffix());
+		final Block code = defDirs.code();
 
-		defDirs.code().dumpName("Ancestor: ", ancestorBody);
+		code.dumpName("Ancestor: ", ancestorBody);
+
+		final Block diffValueType = code.addBlock("diff_value_type");
+
+		final ValueTypeDescOp hostValueType =
+				host.objectType(code)
+				.ptr()
+				.data(code)
+				.valueType(code)
+				.load(null, code);
+		final ValueTypeDescOp ancestorValueType =
+				ancestorType.ptr().data(code).valueType(code).load(null, code);
+
+		hostValueType.eq(SAME_VALUE_TYPE, code, ancestorValueType)
+		.goUnless(code, diffValueType.head());
 
 		if (isClaim()) {
 			ancestorType.writeClaim(defDirs, ancestorBody);
 		} else {
 			ancestorType.writeProposition(defDirs, ancestorBody);
+		}
+
+		if (diffValueType.exists()) {
+			diffValueType.dumpName("Ancestor value type: ", ancestorValueType);
+			diffValueType.dumpName("      difffers from: ", hostValueType);
+			diffValueType.go(code.tail());
 		}
 
 		defDirs.done();

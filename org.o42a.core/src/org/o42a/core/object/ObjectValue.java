@@ -270,7 +270,7 @@ public final class ObjectValue extends ObjectValueParts {
 		getDefinitions().normalize(normalizer);
 	}
 
-	public final User<?> rtUses() {
+	public final User<ValueUsage> rtUses() {
 		return uses().selectiveUser(ANY_RUNTIME_VALUE_USAGE);
 	}
 
