@@ -39,6 +39,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
@@ -114,6 +115,27 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		}
 
 		return Kind.values()[value.get().intValue() & KIND_MASK];
+	}
+
+	public ObjectIRBody getAncestorBodyIR() {
+		if (isMain()) {
+			return getObjectIR().getAncestorBodyIR();
+		}
+
+		final TypeRef ancestorRef =
+				getAscendant().type().getAncestor();
+
+		if (ancestorRef == null) {
+			return null;
+		}
+
+		final Obj ancestor = ancestorRef.getType();
+
+		if (ancestor.is(ancestor.getContext().getVoid())) {
+			return null;
+		}
+
+		return getObjectIR().bodyIR(ancestor);
 	}
 
 	public ObjectIRMethods getMethodsIR() {
@@ -205,7 +227,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 				objectType.data(generator).getPointer().relativeTo(
 						data(generator).getPointer()));
 
-		final ObjectIRBody ancestorBodyIR = getObjectIR().getAncestorBodyIR();
+		final ObjectIRBody ancestorBodyIR = getAncestorBodyIR();
 
 		if (ancestorBodyIR != null) {
 			this.ancestorBody.setConstant(true).setValue(
