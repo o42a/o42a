@@ -1031,58 +1031,6 @@ static inline size_t fill_sample_data(
 	O42A_RETURN num_samples;
 }
 
-static inline size_t new_sample_body(
-		const sample_data_t *const sample_data,
-		const uint32_t num_samples,
-		const o42a_obj_stype_t *const type) {
-	for (uint32_t i = 0; i < num_samples; ++i) {
-
-		const sample_data_t *const s = sample_data + i;
-		o42a_obj_body_t *const old_body = s->old_body;
-
-		if (!old_body) {
-			continue;
-		}
-		if (old_body->methods->object_type == type) {
-			return s->new_body;
-		}
-	}
-	return 0;
-}
-
-static inline o42a_obj_body_t *new_ancestor_body(
-		char *mem,
-		const sample_data_t *const sample_data,
-		const uint32_t num_samples,
-		o42a_obj_body_t *const old_body,
-		o42a_obj_body_t *const default_ancestor_body) {
-	O42A_ENTER(return NULL);
-
-	if (!old_body->ancestor_body) {
-		// Old body had no ancestor.
-		O42A_RETURN default_ancestor_body;
-	}
-
-	// Find an ancestor body in new object.
-	o42a_obj_body_t *const old_ancestor_body =
-			(o42a_obj_body_t *)
-			(((char *) old_body) + old_body->ancestor_body);
-	const o42a_obj_stype_t *const old_ancestor =
-			old_ancestor_body->methods->object_type;
-	size_t new_ancestor_body =
-			new_sample_body(sample_data, num_samples, old_ancestor);
-
-	if (!new_ancestor_body) {
-		// An ancestor body is inherited from object ancestor.
-		// Update an ancestor body to the main body of ancestor.
-		O42A_RETURN default_ancestor_body;
-	}
-
-	// An ancestor body is propagated from sample.
-	// Update it to a new one.
-	O42A_RETURN (o42a_obj_body_t *) (mem + new_ancestor_body);
-}
-
 static inline void propagate_samples(
 		o42a_obj_ctable_t *const ctable,
 		char *const mem,
@@ -1140,13 +1088,7 @@ static inline void propagate_samples(
 		ctable->from.body = old_body;
 		ctable->to.body = new_body;
 
-		o42a_obj_body_t *sample_ancestor_body = O42A(new_ancestor_body(
-				mem,
-				sample_data,
-				sample_idx,
-				old_body,
-				ancestor_body));
-		O42A(derive_object_body(ctable, sample_ancestor_body, DK_PROPAGATE));
+		O42A(derive_object_body(ctable, ancestor_body, DK_PROPAGATE));
 
 		++sample_idx;
 		++sample;
@@ -1347,13 +1289,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	ctable.from.body = O42A(o42a_obj_by_data(sdata));
 	ctable.to.body = object;
 
-	o42a_obj_body_t *sample_ancestor_body = O42A(new_ancestor_body(
-			mem,
-			sample_data,
-			sdata->samples.size,
-			ctable.from.body,
-			ancestor_body));
-	O42A(derive_object_body(&ctable, sample_ancestor_body, DK_MAIN));
+	O42A(derive_object_body(&ctable, ancestor_body, DK_MAIN));
 
 #ifndef NDEBUG
 	O42A(fill_field_infos(type, type_info));
