@@ -21,20 +21,20 @@ package org.o42a.codegen.data;
 
 import static org.o42a.codegen.data.Struct.structContent;
 
-import java.util.Iterator;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.collect.ReadonlyIterable;
+import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.string.ID;
 
 
 public abstract class SubData<S extends StructOp<S>>
 		extends Data<S>
-		implements Iterable<Data<?>> {
+		implements ReadonlyIterable<Data<?>> {
 
 	private final Type<S> instance;
 	private final DataChain data = new DataChain();
@@ -182,7 +182,7 @@ public abstract class SubData<S extends StructOp<S>>
 	}
 
 	@Override
-	public Iterator<Data<?>> iterator() {
+	public ReadonlyIterator<Data<?>> iterator() {
 		return this.data.iterator();
 	}
 
