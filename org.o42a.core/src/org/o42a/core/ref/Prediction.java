@@ -23,9 +23,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.impl.prediction.ExactPrediction;
 import org.o42a.core.ref.impl.prediction.InitialPrediction;
 import org.o42a.core.ref.impl.prediction.Unpredicted;
+import org.o42a.util.collect.ReadonlyIterable;
 
 
-public abstract class Prediction implements Iterable<Pred> {
+public abstract class Prediction implements ReadonlyIterable<Pred> {
 
 	public static Prediction exactPrediction(
 			Prediction basePrediction,

@@ -21,7 +21,6 @@ package org.o42a.core.ref.impl.prediction;
 
 import static org.o42a.core.ref.impl.prediction.PredictionWalker.predictRef;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -31,6 +30,8 @@ import org.o42a.core.ref.Pred;
 import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.collect.Iterators;
+import org.o42a.util.collect.ReadonlyIterator;
 
 
 final class ObjectImplementations extends Prediction {
@@ -53,12 +54,12 @@ final class ObjectImplementations extends Prediction {
 	}
 
 	@Override
-	public Iterator<Pred> iterator() {
+	public ReadonlyIterator<Pred> iterator() {
 
 		final Prediction ancestorPrediction = getAncestorPrediction();
 
 		if (!ancestorPrediction.isPredicted()) {
-			return Collections.<Pred>emptyList().iterator();
+			return Iterators.emptyIterator();
 		}
 		if (ancestorPrediction.isExact()) {
 			return this.object.iterator();
@@ -95,7 +96,7 @@ final class ObjectImplementations extends Prediction {
 				predictRef(this.basePrediction, ancestor.getRef());
 	}
 
-	private static final class Itr implements Iterator<Pred> {
+	private static final class Itr extends ReadonlyIterator<Pred> {
 
 		private final Pred object;
 		private final Iterator<Pred> ancestors;
@@ -125,11 +126,6 @@ final class ObjectImplementations extends Prediction {
 			this.next = null;
 
 			return next;
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
 		}
 
 		private final Obj object() {

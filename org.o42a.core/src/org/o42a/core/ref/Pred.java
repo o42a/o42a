@@ -19,11 +19,10 @@
 */
 package org.o42a.core.ref;
 
-import static java.util.Collections.singletonList;
-
-import java.util.Iterator;
+import static org.o42a.util.collect.Iterators.singletonIterator;
 
 import org.o42a.core.Scope;
+import org.o42a.util.collect.ReadonlyIterator;
 
 
 public abstract class Pred {
@@ -59,8 +58,8 @@ public abstract class Pred {
 		return new AnotherScopePred(scope, this);
 	}
 
-	public final Iterator<Pred> iterator() {
-		return singletonList(this).iterator();
+	public final ReadonlyIterator<Pred> iterator() {
+		return singletonIterator(this);
 	}
 
 	public final Scope revert() {

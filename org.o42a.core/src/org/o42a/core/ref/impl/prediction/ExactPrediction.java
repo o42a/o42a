@@ -19,10 +19,9 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
-import java.util.Iterator;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ref.*;
+import org.o42a.util.collect.ReadonlyIterator;
 
 
 public final class ExactPrediction extends Prediction {
@@ -40,7 +39,7 @@ public final class ExactPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Pred> iterator() {
+	public ReadonlyIterator<Pred> iterator() {
 
 		final Pred base = this.basePrediction.iterator().next();
 
