@@ -19,9 +19,12 @@
 */
 package org.o42a.util;
 
-import java.util.Collections;
-import java.util.Iterator;
+import static org.o42a.util.collect.Iterators.emptyIterator;
+
 import java.util.NoSuchElementException;
+
+import org.o42a.util.collect.ReadonlyIterable;
+import org.o42a.util.collect.ReadonlyIterator;
 
 
 /**
@@ -31,7 +34,7 @@ import java.util.NoSuchElementException;
  *
  * @param <T> item type.
  */
-public abstract class Chain<T> implements Iterable<T> {
+public abstract class Chain<T> implements ReadonlyIterable<T> {
 
 	private T first;
 	private T last;
@@ -139,9 +142,9 @@ public abstract class Chain<T> implements Iterable<T> {
 	}
 
 	@Override
-	public Iterator<T> iterator() {
+	public ReadonlyIterator<T> iterator() {
 		if (isEmpty()) {
-			return Collections.<T>emptyList().iterator();
+			return emptyIterator();
 		}
 		return new Iter();
 	}
@@ -175,7 +178,7 @@ public abstract class Chain<T> implements Iterable<T> {
 		return out.toString();
 	}
 
-	private final class Iter implements Iterator<T> {
+	private final class Iter extends ReadonlyIterator<T> {
 
 		private T next = Chain.this.first;
 
@@ -196,12 +199,6 @@ public abstract class Chain<T> implements Iterable<T> {
 			this.next = Chain.this.next(result);
 
 			return result;
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException(
-					"Can not remove items from chain");
 		}
 
 	}
