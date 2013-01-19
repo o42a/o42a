@@ -27,6 +27,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.Chain;
+import org.o42a.util.collect.ReadonlyIterable;
+import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.string.ID;
 
 
@@ -47,7 +49,7 @@ public abstract class ObjectKeepers {
 		return this.declaredKeepers;
 	}
 
-	public final Iterable<Keeper> allKeepers() {
+	public final ReadonlyIterable<Keeper> allKeepers() {
 		return new AllKeepers(this);
 	}
 
@@ -87,7 +89,7 @@ public abstract class ObjectKeepers {
 
 	}
 
-	private static final class AllKeepers implements Iterable<Keeper> {
+	private static final class AllKeepers implements ReadonlyIterable<Keeper> {
 
 		private final ObjectKeepers keepers;
 
@@ -96,7 +98,7 @@ public abstract class ObjectKeepers {
 		}
 
 		@Override
-		public Iterator<Keeper> iterator() {
+		public ReadonlyIterator<Keeper> iterator() {
 			return new AllKeepersIterator(this.keepers);
 		}
 
@@ -110,7 +112,8 @@ public abstract class ObjectKeepers {
 
 	}
 
-	private static final class AllKeepersIterator implements Iterator<Keeper> {
+	private static final class AllKeepersIterator
+			extends ReadonlyIterator<Keeper> {
 
 		private final Iterator<Scope> ascendants;
 		private Keeper nextKeeper;
@@ -141,11 +144,6 @@ public abstract class ObjectKeepers {
 			nextKeeper();
 
 			return nextKeeper;
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
 		}
 
 		private void nextKeeper() {
