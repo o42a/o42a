@@ -87,7 +87,9 @@ public final class AnonymousObjOp extends ObjectOp {
 
 	@Override
 	public ObjOp cast(ID id, CodeDirs dirs, Obj ascendant) {
-		getWellKnownType().assertDerivedFrom(ascendant);
+		assert (getWellKnownType().type().derivedFrom(ascendant.type())
+				|| ascendant.type().derivedFrom(getWellKnownType().type()))
+			: "Can not cast " + getWellKnownType() + " to " + ascendant;
 		if (ascendant.is(getContext().getVoid())) {
 			// Everything is compatible with void.
 
