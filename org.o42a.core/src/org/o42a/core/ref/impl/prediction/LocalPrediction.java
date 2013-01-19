@@ -25,6 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
+import org.o42a.util.collect.ReadonlyIterator;
 
 
 public class LocalPrediction extends Prediction {
@@ -60,7 +61,7 @@ public class LocalPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Pred> iterator() {
+	public ReadonlyIterator<Pred> iterator() {
 		return new Itr(this);
 	}
 
@@ -76,14 +77,15 @@ public class LocalPrediction extends Prediction {
 		return "LocalPrediction[" + scope + ']';
 	}
 
-	private static final class Itr implements Iterator<Pred> {
+	private static final class Itr extends ReadonlyIterator<Pred> {
 
 		private final Iterator<Pred> bases;
 		private final MemberKey key;
 
 		public Itr(LocalPrediction prediction) {
 			this.bases = prediction.basePrediction.iterator();
-			this.key = prediction.getScope().toLocal().toMember().getMemberKey();
+			this.key =
+					prediction.getScope().toLocal().toMember().getMemberKey();
 		}
 
 		@Override
@@ -108,11 +110,6 @@ public class LocalPrediction extends Prediction {
 					.local();
 
 			return new LocalPred(base, local);
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
 		}
 
 	}

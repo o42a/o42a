@@ -19,13 +19,16 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
+import static org.o42a.util.collect.Iterators.singletonIterator;
+
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Derivative;
 import org.o42a.core.ref.*;
+import org.o42a.util.collect.ReadonlyIterator;
+import org.o42a.util.collect.SubIterator;
 
 
 public class ObjectPrediction extends Prediction {
@@ -61,7 +64,7 @@ public class ObjectPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Pred> iterator() {
+	public ReadonlyIterator<Pred> iterator() {
 		return new Itr(this.basePrediction, getScope().toObject());
 	}
 
@@ -77,105 +80,43 @@ public class ObjectPrediction extends Prediction {
 		return "ObjectPrediction[" + scope + ']';
 	}
 
-	private static final class Itr implements Iterator<Pred> {
+	private static final class Itr extends SubIterator<Pred, Pred> {
 
 		private final Prediction basePrediction;
-		private final Iterator<Pred> bases;
 		private final Obj object;
-		private Iterator<Pred> overriders;
 
 		Itr(Prediction basePrediction, Obj object) {
+			super(basePrediction.iterator());
 			this.basePrediction = basePrediction;
-			this.bases = basePrediction.iterator();
 			this.object = object;
 		}
 
 		@Override
-		public boolean hasNext() {
-			if (this.overriders == null || !this.overriders.hasNext()) {
-				return findNext();
+		protected Iterator<Pred> nestedIterator(Pred nextBase) {
+			if (!nextBase.isPredicted()) {
+				return nextBase.iterator();
 			}
-			return this.overriders.hasNext();
-		}
 
-		@Override
-		public Pred next() {
-			if (this.overriders == null || !this.overriders.hasNext()) {
-				if (!findNext()) {
-					throw new NoSuchElementException();
-				}
-			}
-			return this.overriders.next();
-		}
+			final Obj start =
+					this.object.meta().findIn(nextBase.getScope());
 
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-
-		private boolean findNext() {
-			do {
-				if (!this.bases.hasNext()) {
-					return false;
-				}
-
-				final Pred nextBase = this.bases.next();
-
-				if (!nextBase.isPredicted()) {
-					this.overriders = nextBase.iterator();
-					return true;
-				}
-
-				this.overriders = new ObjItr(
-						this.basePrediction,
-						nextBase,
-						new DerivativesIterator(
-								this.object.meta().findIn(
-										nextBase.getScope())));
-			} while (this.overriders == null || !this.overriders.hasNext());
-			return true;
+			return new ObjectPredIterator(
+					this.basePrediction,
+					nextBase,
+					singletonIterator(start)
+					.then(new DerivativesIterator(start)));
 		}
 
 	}
 
-	private static final class DerivativesIterator implements Iterator<Obj> {
+	private static final class DerivativesIterator
+			extends SubIterator<Obj, Derivative> {
 
 		private final Obj start;
-		private Iterator<Derivative> derivatives;
-		private DerivativesIterator sub;
 
 		DerivativesIterator(Obj start) {
+			super(start.type().allDerivatives().iterator());
 			this.start = start;
-		}
-
-		@Override
-		public boolean hasNext() {
-			if (this.derivatives == null) {
-				return true;
-			}
-			if (this.sub != null && this.sub.hasNext()) {
-				return true;
-			}
-			return this.derivatives.hasNext();
-		}
-
-		@Override
-		public Obj next() {
-			if (this.derivatives == null) {
-				this.derivatives =
-						this.start.type().allDerivatives().iterator();
-				return this.start;
-			}
-			if (this.sub == null || !this.sub.hasNext()) {
-				this.sub = new DerivativesIterator(
-						this.derivatives.next().getDerivedObject());
-			}
-			return this.sub.next();
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override
@@ -186,67 +127,43 @@ public class ObjectPrediction extends Prediction {
 			return "DerivativesIterator[" + this.start + ']';
 		}
 
+		@Override
+		protected Iterator<Obj> nestedIterator(Derivative baseElement) {
+
+			final Obj derivedObject = baseElement.getDerivedObject();
+
+			return singletonIterator(derivedObject)
+					.then(new DerivativesIterator(derivedObject));
+		}
+
 	}
 
-	private static final class ObjItr implements Iterator<Pred> {
+	private static final class ObjectPredIterator
+			extends SubIterator<Pred, Obj> {
 
 		private final Prediction basePrediction;
 		private final Pred base;
-		private final DerivativesIterator derivatives;
-		private Iterator<Pred> impls;
 
-		ObjItr(
+		ObjectPredIterator(
 				Prediction basePrediction,
 				Pred base,
-				DerivativesIterator derivatives) {
+				ReadonlyIterator<Obj> derivatives) {
+			super(derivatives);
 			this.basePrediction = basePrediction;
 			this.base = base;
-			this.derivatives = derivatives;
 		}
 
 		@Override
-		public boolean hasNext() {
-			if (this.impls == null || !this.impls.hasNext()) {
-				return nextImpl();
-			}
-			return true;
-		}
+		protected Iterator<Pred> nestedIterator(Obj object) {
+			object.getScope().getEnclosingScope().assertDerivedFrom(
+					this.base.getScope());
 
-		@Override
-		public Pred next() {
-			if (this.impls == null || !this.impls.hasNext()) {
-				if (!nextImpl()) {
-					throw new NoSuchElementException();
-				}
-			}
-			return this.impls.next();
-		}
+			final ObjectImplementations impls =
+					new ObjectImplementations(
+							this.basePrediction,
+							new ObjectPred(this.base, object));
 
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-
-		private boolean nextImpl() {
-			do {
-				if (!this.derivatives.hasNext()) {
-					return false;
-				}
-
-				final Obj object = this.derivatives.next();
-
-				object.getScope().getEnclosingScope().assertDerivedFrom(
-						this.base.getScope());
-
-				final ObjectImplementations impls =
-						new ObjectImplementations(
-								this.basePrediction,
-								new ObjectPred(this.base, object));
-
-				this.impls = impls.iterator();
-			} while (this.impls == null || !this.impls.hasNext());
-
-			return true;
+			return impls.iterator();
 		}
 
 	}

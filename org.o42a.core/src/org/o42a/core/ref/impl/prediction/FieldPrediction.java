@@ -20,15 +20,17 @@
 package org.o42a.core.ref.impl.prediction;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.util.collect.Iterators.singletonIterator;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldReplacement;
 import org.o42a.core.ref.*;
+import org.o42a.util.collect.ReadonlyIterator;
+import org.o42a.util.collect.SubIterator;
 
 
 public class FieldPrediction extends Prediction {
@@ -65,7 +67,7 @@ public class FieldPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Pred> iterator() {
+	public ReadonlyIterator<Pred> iterator() {
 		return new Itr(this.basePrediction, getScope().toField());
 	}
 
@@ -81,40 +83,15 @@ public class FieldPrediction extends Prediction {
 		return "FieldPrediction[" + scope + ']';
 	}
 
-	private static final class Itr implements Iterator<Pred> {
+	private static final class Itr extends SubIterator<Pred, Pred> {
 
 		private final Prediction basePrediction;
-		private final Iterator<Pred> bases;
 		private final MemberKey fieldKey;
-		private Iterator<Pred> overriders;
 
 		Itr(Prediction basePrediction, Field field) {
+			super(basePrediction.iterator());
 			this.basePrediction = basePrediction;
 			this.fieldKey = field.getKey();
-			this.bases = basePrediction.iterator();
-		}
-
-		@Override
-		public boolean hasNext() {
-			if (this.overriders == null || !this.overriders.hasNext()) {
-				return findNext();
-			}
-			return this.overriders.hasNext();
-		}
-
-		@Override
-		public Pred next() {
-			if (this.overriders == null || !this.overriders.hasNext()) {
-				if (!findNext()) {
-					throw new NoSuchElementException();
-				}
-			}
-			return this.overriders.next();
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override
@@ -125,20 +102,12 @@ public class FieldPrediction extends Prediction {
 			return "FieldIterator[" + this.fieldKey + ']';
 		}
 
-		private boolean findNext() {
-			do {
-				if (!this.bases.hasNext()) {
-					return false;
-				}
-
-				final Pred nextBase = this.bases.next();
-
+		@Override
+		protected Iterator<? extends Pred> nestedIterator(Pred nextBase) {
 				if (!nextBase.isPredicted()) {
-					this.overriders = nextBase.iterator();
-					return true;
+					return nextBase.iterator();
 				}
-
-				this.overriders = new OverridersItr(
+				return new OverridersItr(
 						this.basePrediction,
 						nextBase,
 						nextBase.getScope()
@@ -146,123 +115,71 @@ public class FieldPrediction extends Prediction {
 						.member(this.fieldKey)
 						.toField()
 						.field(dummyUser()));
-			} while (this.overriders == null || !this.overriders.hasNext());
-			return true;
 		}
 
 	}
 
-	private static final class OverridersItr implements Iterator<Pred> {
+	private static final class OverridersItr
+			extends SubIterator<Pred, Field> {
 
 		private final Prediction basePrediction;
 		private final Pred base;
-		private final ReplacementsItr replacements;
-		private Iterator<Pred> impls;
+		private final Field start;
 
 		OverridersItr(Prediction basePrediction, Pred base, Field start) {
+			super(
+					singletonIterator(start)
+					.then(new ReplacementsIterator(start)));
+			this.start = start;
 			this.basePrediction = basePrediction;
 			this.base = base;
-			this.replacements = new ReplacementsItr(start);
 			start.getEnclosingScope().assertDerivedFrom(
 					basePrediction.getScope());
 		}
 
 		@Override
-		public boolean hasNext() {
-			if (this.impls == null || !this.impls.hasNext()) {
-				return findNext();
-			}
-			return true;
-		}
-
-		@Override
-		public Pred next() {
-			if (this.impls == null || !this.impls.hasNext()) {
-				if (!findNext()) {
-					throw new NoSuchElementException();
-				}
-			}
-			return this.impls.next();
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public String toString() {
-			if (this.replacements == null) {
+			if (this.start == null) {
 				return super.toString();
 			}
-			return "OverridersIterator[" + this.replacements.start + ']';
+			return "OverridersIterator[" + this.start + ']';
 		}
 
-		private boolean findNext() {
-			do {
-				if (!this.replacements.hasNext()) {
-					return false;
-				}
+		@Override
+		protected Iterator<? extends Pred> nestedIterator(Field field) {
 
-				final Field field = this.replacements.next();
-				final Prediction basePrediction = new SinglePrediction(
-						this.basePrediction,
-						this.base.setScope(field.getEnclosingScope()));
-				final ObjectImplementations impls =
-						new ObjectImplementations(
-								basePrediction,
-								new FieldPred(this.base, field));
+			final Prediction basePrediction = new SinglePrediction(
+					this.basePrediction,
+					this.base.setScope(field.getEnclosingScope()));
+			final ObjectImplementations impls =
+					new ObjectImplementations(
+							basePrediction,
+							new FieldPred(this.base, field));
 
-				this.impls = impls.iterator();
-			} while (this.impls == null || !this.impls.hasNext());
-
-			return true;
+			return impls.iterator();
 		}
 
 	}
 
-	private static final class ReplacementsItr implements Iterator<Field> {
+	private static final class ReplacementsIterator
+			extends SubIterator<Field, FieldReplacement> {
 
 		private final Field start;
-		private Iterator<FieldReplacement> replacements;
-		private ReplacementsItr sub;
 
-		ReplacementsItr(Field start) {
+		ReplacementsIterator(Field start) {
+			super(start.toMember().allReplacements().iterator());
 			this.start = start;
 		}
 
 		@Override
-		public boolean hasNext() {
-			if (this.replacements == null) {
-				return true;
-			}
-			if (this.sub != null && this.sub.hasNext()) {
-				return true;
-			}
-			return this.replacements.hasNext();
-		}
+		protected Iterator<? extends Field> nestedIterator(
+				FieldReplacement replacement) {
 
-		@Override
-		public Field next() {
-			if (this.replacements == null) {
-				this.replacements =
-						this.start.toMember().allReplacements().iterator();
-				return this.start;
-			}
-			if (this.sub == null || !this.sub.hasNext()) {
+			final Field replacingField =
+					replacement.toField().field(dummyUser());
 
-				final FieldReplacement replacement = this.replacements.next();
-
-				this.sub = new ReplacementsItr(
-						replacement.toField().field(dummyUser()));
-			}
-
-			return this.sub.next();
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
+			return singletonIterator(replacingField)
+					.then(new ReplacementsIterator(replacingField));
 		}
 
 		@Override

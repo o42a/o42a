@@ -29,6 +29,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolution;
+import org.o42a.util.collect.ReadonlyIterator;
 
 
 public class EnclosingPrediction extends Prediction {
@@ -71,7 +72,7 @@ public class EnclosingPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Pred> iterator() {
+	public ReadonlyIterator<Pred> iterator() {
 		return new Itr(this);
 	}
 
@@ -88,7 +89,7 @@ public class EnclosingPrediction extends Prediction {
 		return "EnclosingPrediction[" + this.basePrediction + ']';
 	}
 
-	private static final class Itr implements Iterator<Pred> {
+	private static final class Itr extends ReadonlyIterator<Pred> {
 
 		private final EnclosingPrediction prediction;
 		private final Iterator<Pred> bases;
@@ -122,11 +123,6 @@ public class EnclosingPrediction extends Prediction {
 					base,
 					resolution.getResult().getScope(),
 					this.prediction.reversePath);
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
 		}
 
 	}
