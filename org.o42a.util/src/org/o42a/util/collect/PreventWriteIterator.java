@@ -22,26 +22,32 @@ package org.o42a.util.collect;
 import java.util.Iterator;
 
 
-public final class Iterators {
+final class PreventWriteIterator<T> extends ReadonlyIterator<T> {
 
-	@SuppressWarnings("rawtypes")
-	private static final EmptyIterator<?> EMPTY_ITERATOR = new EmptyIterator();
+	private final Iterator<? extends T> iterator;
 
-	@SuppressWarnings("unchecked")
-	public static <T> ReadonlyIterator<T> emptyIterator() {
-		return (ReadonlyIterator<T>) EMPTY_ITERATOR;
+	PreventWriteIterator(Iterator<? extends T> iterator) {
+		assert iterator != null :
+			"Iterator not specified";
+		this.iterator = iterator;
 	}
 
-	public static <T> ReadonlyIterator<T> singletonIterator(T element) {
-		return new SingletonIterator<T>(element);
+	@Override
+	public boolean hasNext() {
+		return this.iterator.hasNext();
 	}
 
-	public static <T> ReadonlyIterator<T> readonlyIterator(
-			Iterator<? extends T> iterator) {
-		return new PreventWriteIterator<T>(iterator);
+	@Override
+	public T next() {
+		return this.iterator.next();
 	}
 
-	private Iterators() {
+	@Override
+	public String toString() {
+		if (this.iterator == null) {
+			return super.toString();
+		}
+		return this.iterator.toString();
 	}
 
 }
