@@ -27,19 +27,18 @@ import org.o42a.util.collect.ReadonlyIterator;
 
 public final class SinglePrediction extends Prediction {
 
-	private final Prediction prediction;
+	private final Prediction basePrediction;
 	private final Pred pred;
 
-	public SinglePrediction(Prediction prediction, Pred pred) {
+	public SinglePrediction(Prediction basePrediction, Pred pred) {
 		super(pred.getScope());
-		pred.getScope().assertDerivedFrom(prediction.getScope());
-		this.prediction = prediction;
+		this.basePrediction = basePrediction;
 		this.pred = pred;
 	}
 
 	@Override
 	public final Predicted getPredicted() {
-		return this.prediction.getPredicted();
+		return this.basePrediction.getPredicted();
 	}
 
 	@Override

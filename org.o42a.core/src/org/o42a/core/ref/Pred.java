@@ -22,6 +22,8 @@ package org.o42a.core.ref;
 import static org.o42a.util.collect.Iterators.singletonIterator;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ref.impl.prediction.InitialPrediction;
+import org.o42a.core.ref.impl.prediction.Unpredicted;
 import org.o42a.util.collect.ReadonlyIterator;
 
 
@@ -64,6 +66,13 @@ public abstract class Pred {
 
 	public final Scope revert() {
 		return revert(getScope());
+	}
+
+	public final Prediction toScopePrediction() {
+		if (!isPredicted()) {
+			return new Unpredicted(getScope());
+		}
+		return new InitialPrediction(getScope());
 	}
 
 	@Override

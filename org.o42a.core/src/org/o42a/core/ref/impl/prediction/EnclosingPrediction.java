@@ -94,7 +94,7 @@ public class EnclosingPrediction extends Prediction {
 		private final EnclosingPrediction prediction;
 		private final Iterator<Pred> bases;
 
-		public Itr(EnclosingPrediction prediction) {
+		Itr(EnclosingPrediction prediction) {
 			this.prediction = prediction;
 			this.bases = prediction.basePrediction.iterator();
 		}
@@ -138,6 +138,12 @@ public class EnclosingPrediction extends Prediction {
 
 		@Override
 		protected Scope baseOf(Scope derived) {
+			if (!derived.derivedFrom(getScope())) {
+				// The reverse resolution may result to ascendant scope.
+				// Report the scope itself.
+				assert getScope().assertDerivedFrom(derived);
+				return this.revertPath.revert(getScope());
+			}
 			return this.revertPath.revert(derived);
 		}
 

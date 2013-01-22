@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
+import static org.o42a.core.ref.impl.prediction.ObjectImplementations.objectImplementations;
 import static org.o42a.util.collect.Iterators.singletonIterator;
 
 import java.util.Iterator;
@@ -34,28 +35,28 @@ import org.o42a.util.collect.SubIterator;
 public class ObjectPrediction extends Prediction {
 
 	public static Prediction predictObject(
-			Prediction basePrediction,
+			Prediction enclosing,
 			Obj object) {
-		assert basePrediction.assertEncloses(object.getScope());
+		assert enclosing.assertEncloses(object.getScope());
 
-		switch (basePrediction.getPredicted()) {
+		switch (enclosing.getPredicted()) {
 		case EXACTLY_PREDICTED:
-			return exactPrediction(basePrediction, object.getScope());
+			return exactPrediction(enclosing, object.getScope());
 		case UNPREDICTED:
 			return unpredicted(object.getScope());
 		case PREDICTED:
-			return new ObjectPrediction(basePrediction, object);
+			return new ObjectPrediction(enclosing, object);
 		}
 
 		throw new IllegalArgumentException(
-				"Unsupported prediction: " + basePrediction.getPredicted());
+				"Unsupported prediction: " + enclosing.getPredicted());
 	}
 
-	private final Prediction basePrediction;
+	private final Prediction enclosing;
 
-	private ObjectPrediction(Prediction basePrediction, Obj object) {
+	private ObjectPrediction(Prediction enclosing, Obj object) {
 		super(object.getScope());
-		this.basePrediction = basePrediction;
+		this.enclosing = enclosing;
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class ObjectPrediction extends Prediction {
 
 	@Override
 	public ReadonlyIterator<Pred> iterator() {
-		return new Itr(this.basePrediction, getScope().toObject());
+		return new Itr(this.enclosing, getScope().toObject());
 	}
 
 	@Override
@@ -82,12 +83,10 @@ public class ObjectPrediction extends Prediction {
 
 	private static final class Itr extends SubIterator<Pred, Pred> {
 
-		private final Prediction basePrediction;
 		private final Obj object;
 
 		Itr(Prediction basePrediction, Obj object) {
 			super(basePrediction.iterator());
-			this.basePrediction = basePrediction;
 			this.object = object;
 		}
 
@@ -101,7 +100,6 @@ public class ObjectPrediction extends Prediction {
 					this.object.meta().findIn(nextBase.getScope());
 
 			return new ObjectPredIterator(
-					this.basePrediction,
 					nextBase,
 					singletonIterator(start)
 					.then(new DerivativesIterator(start)));
@@ -141,15 +139,10 @@ public class ObjectPrediction extends Prediction {
 	private static final class ObjectPredIterator
 			extends SubIterator<Pred, Obj> {
 
-		private final Prediction basePrediction;
 		private final Pred base;
 
-		ObjectPredIterator(
-				Prediction basePrediction,
-				Pred base,
-				ReadonlyIterator<Obj> derivatives) {
+		ObjectPredIterator(Pred base, ReadonlyIterator<Obj> derivatives) {
 			super(derivatives);
-			this.basePrediction = basePrediction;
 			this.base = base;
 		}
 
@@ -158,12 +151,9 @@ public class ObjectPrediction extends Prediction {
 			object.getScope().getEnclosingScope().assertDerivedFrom(
 					this.base.getScope());
 
-			final ObjectImplementations impls =
-					new ObjectImplementations(
-							this.basePrediction,
-							new ObjectPred(this.base, object));
+			final ObjectPred pred = new ObjectPred(this.base, object);
 
-			return impls.iterator();
+			return objectImplementations(pred);
 		}
 
 	}
@@ -177,7 +167,7 @@ public class ObjectPrediction extends Prediction {
 		@Override
 		protected Scope baseOf(Scope derived) {
 			if (!derived.derivedFrom(getScope())) {
-				getScope().assertDerivedFrom(derived);
+				assert getScope().assertDerivedFrom(derived);
 				return getScope().getEnclosingScope();
 			}
 			return derived.getEnclosingScope();

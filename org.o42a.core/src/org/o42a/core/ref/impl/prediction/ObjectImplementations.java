@@ -19,156 +19,98 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
+import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.impl.prediction.PredictionWalker.predictRef;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Pred;
-import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.collect.Iterators;
 import org.o42a.util.collect.ReadonlyIterator;
+import org.o42a.util.collect.SubIterator;
 
 
-final class ObjectImplementations extends Prediction {
+final class ObjectImplementations extends SubIterator<Pred, Pred> {
 
-	private final Prediction basePrediction;
+	public static ReadonlyIterator<Pred> objectImplementations(Pred object) {
+		if (!object.isPredicted()) {
+			return object.iterator();
+		}
+		return new ObjectImplementations(object);
+	}
+
 	private final Pred object;
-	private Prediction ancestorPrediction;
 
-	ObjectImplementations(Prediction basePrediction, Pred object) {
-		super(object.getScope());
-		this.basePrediction = basePrediction;
+	private ObjectImplementations(Pred object) {
+		super(object.iterator());
 		this.object = object;
-		object.getScope().getEnclosingScope().assertDerivedFrom(
-				basePrediction.getScope());
 	}
 
 	@Override
-	public Predicted getPredicted() {
-		return getAncestorPrediction().getPredicted();
-	}
-
-	@Override
-	public ReadonlyIterator<Pred> iterator() {
-
-		final Prediction ancestorPrediction = getAncestorPrediction();
-
-		if (!ancestorPrediction.isPredicted()) {
-			return Iterators.emptyIterator();
+	protected Iterator<? extends Pred> nestedIterator(Pred base) {
+		if (!base.isPredicted()) {
+			return base.iterator();
 		}
-		if (ancestorPrediction.isExact()) {
-			return this.object.iterator();
-		}
-
-		return new Itr(this.object, ancestorPrediction);
+		return new RevertedAncestors(
+				ancestorPrediction(base).iterator(),
+				this.object);
 	}
 
 	@Override
 	public String toString() {
-
-		final Scope scope = getScope();
-
-		if (scope == null) {
+		if (this.object == null) {
 			return super.toString();
 		}
-
-		return "ObjectImplementations[" + scope + ']';
+		return "ObjectImplementations[" + this.object + ']';
 	}
 
-	private Prediction getAncestorPrediction() {
-		if (this.ancestorPrediction != null) {
-			return this.ancestorPrediction;
-		}
+	private static Prediction ancestorPrediction(Pred base) {
 
-		final TypeRef ancestor = getScope().toObject().type().getAncestor();
+		final Scope scope = base.getScope();
+		final Obj object = scope.toObject();
+		final TypeRef ancestor = object.type().getAncestor();
+		final Prediction objectPrediction = base.toScopePrediction();
 
 		if (ancestor == null || ancestor.isStatic()) {
-			return this.ancestorPrediction =
-					exactPrediction(this.basePrediction, getScope());
+			return exactPrediction(objectPrediction, scope);
 		}
 
-		return this.ancestorPrediction =
-				predictRef(this.basePrediction, ancestor.getRef());
+		return predictRef(
+				objectPrediction,
+				ancestor.getRef().prefixWith(
+						scope.getEnclosingScopePath().toPrefix(scope)));
 	}
 
-	private static final class Itr extends ReadonlyIterator<Pred> {
+	private static final class RevertedAncestors
+			extends SubIterator<Pred, Pred> {
 
 		private final Pred object;
-		private final Iterator<Pred> ancestors;
-		private Pred next;
-		private boolean objectReported;
 
-		Itr(Pred object, Prediction ancestorPrediction) {
+		RevertedAncestors(Iterator<Pred> ancestors, Pred object) {
+			super(ancestors);
 			this.object = object;
-			this.ancestors = ancestorPrediction.iterator();
 		}
 
 		@Override
-		public boolean hasNext() {
-			return this.next != null || findNext();
-		}
-
-		@Override
-		public Pred next() {
-			if (this.next == null) {
-				if (!findNext()) {
-					throw new NoSuchElementException();
-				}
+		protected Iterator<? extends Pred> nestedIterator(Pred ancestor) {
+			if (!ancestor.isPredicted()) {
+				return ancestor.iterator();
 			}
 
-			final Pred next = this.next;
+			final Scope reverted = ancestor.revert();
 
-			this.next = null;
-
-			return next;
-		}
-
-		private final Obj object() {
-			return this.object.getScope().toObject();
-		}
-
-		private boolean findNext() {
-
-			final Scope objectEnclosing =
-					this.object.getScope().getEnclosingScope();
-
-			while (this.ancestors.hasNext()) {
-
-				final Pred ancestor = this.ancestors.next();
-
-				if (!ancestor.isPredicted()) {
-					this.next = ancestor;
-					return true;
-				}
-
-				final Scope base = ancestor.revert();
-
-				if (!base.derivedFrom(objectEnclosing)) {
-					// The inherited ancestor may resolve to incompatible scope.
-					// Report the object itself, if not reported already.
-					if (this.objectReported) {
-						continue;
-					}
-					this.next = this.object;
-					this.objectReported = true;
-					return true;
-				}
-
-				final Obj object = object();
-				final Obj nextObject = object.meta().findIn(base);
-
-				this.next = this.object.setScope(nextObject.getScope());
-				this.objectReported |= nextObject.is(object);
-
-				return true;
+			if (!reverted.derivedFrom(this.object.getScope())) {
+				// The reverted ancestor may resolve to incompatible scope.
+				// Report the object itself.
+				return this.object.iterator();
 			}
 
-			return false;
+			final Obj nextObject = reverted.toObject();
+
+			return this.object.setScope(nextObject.getScope()).iterator();
 		}
 
 	}
