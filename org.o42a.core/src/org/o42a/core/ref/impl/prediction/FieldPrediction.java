@@ -20,6 +20,7 @@
 package org.o42a.core.ref.impl.prediction;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.impl.prediction.ObjectImplementations.objectImplementations;
 import static org.o42a.util.collect.Iterators.singletonIterator;
 
 import java.util.Iterator;
@@ -104,34 +105,32 @@ public class FieldPrediction extends Prediction {
 
 		@Override
 		protected Iterator<? extends Pred> nestedIterator(Pred nextBase) {
-				if (!nextBase.isPredicted()) {
-					return nextBase.iterator();
-				}
-				return new OverridersItr(
-						this.basePrediction,
-						nextBase,
-						nextBase.getScope()
-						.getContainer()
-						.member(this.fieldKey)
-						.toField()
-						.field(dummyUser()));
+			if (!nextBase.isPredicted()) {
+				return nextBase.iterator();
+			}
+			return new OverridersIterator(
+					this.basePrediction,
+					nextBase,
+					nextBase.getScope()
+					.getContainer()
+					.member(this.fieldKey)
+					.toField()
+					.field(dummyUser()));
 		}
 
 	}
 
-	private static final class OverridersItr
+	private static final class OverridersIterator
 			extends SubIterator<Pred, Field> {
 
-		private final Prediction basePrediction;
 		private final Pred base;
 		private final Field start;
 
-		OverridersItr(Prediction basePrediction, Pred base, Field start) {
+		OverridersIterator(Prediction basePrediction, Pred base, Field start) {
 			super(
 					singletonIterator(start)
 					.then(new ReplacementsIterator(start)));
 			this.start = start;
-			this.basePrediction = basePrediction;
 			this.base = base;
 			start.getEnclosingScope().assertDerivedFrom(
 					basePrediction.getScope());
@@ -147,16 +146,7 @@ public class FieldPrediction extends Prediction {
 
 		@Override
 		protected Iterator<? extends Pred> nestedIterator(Field field) {
-
-			final Prediction basePrediction = new SinglePrediction(
-					this.basePrediction,
-					this.base.setScope(field.getEnclosingScope()));
-			final ObjectImplementations impls =
-					new ObjectImplementations(
-							basePrediction,
-							new FieldPred(this.base, field));
-
-			return impls.iterator();
+			return objectImplementations(new FieldPred(this.base, field));
 		}
 
 	}
