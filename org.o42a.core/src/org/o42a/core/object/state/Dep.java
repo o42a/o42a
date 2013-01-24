@@ -55,6 +55,7 @@ public final class Dep extends Step implements SubID {
 	private final Obj target;
 	private ObjectStepUses uses;
 	private byte disabled;
+	private byte compileTimeOnly;
 
 	Dep(Obj declaredIn, Ref ref, ID id) {
 		this.declaredIn = declaredIn;
@@ -87,7 +88,10 @@ public final class Dep extends Step implements SubID {
 	}
 
 	public final boolean isDisabled() {
-		return this.disabled > 0;
+		if (this.disabled != 0) {
+			return this.disabled > 0;
+		}
+		return this.compileTimeOnly > 0;
 	}
 
 	@Override
@@ -155,6 +159,7 @@ public final class Dep extends Step implements SubID {
 		final LocalResolver localResolver = enclosingLocal.resolver();
 
 		if (resolver.isFullResolution()) {
+			compileTimeOnly(resolver.getUsage().isCompileTimeOnly());
 			uses().useBy(resolver);
 
 			final RefUsage usage;
@@ -274,6 +279,14 @@ public final class Dep extends Step implements SubID {
 
 	private void enableDep() {
 		this.disabled = -1;
+	}
+
+	private void compileTimeOnly(boolean compileTimeOnly) {
+		if (!compileTimeOnly) {
+			this.compileTimeOnly = -1;
+		} else if (this.compileTimeOnly == 0) {
+			this.compileTimeOnly = 1;
+		}
 	}
 
 	private Obj target() {
