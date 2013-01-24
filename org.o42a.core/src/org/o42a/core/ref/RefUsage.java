@@ -39,6 +39,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			new ResolutionUsage("DerefValue", Role.INSTANCE);
 	public static final RefUsage TYPE_REF_USAGE =
 			new TypeUsage("RefType");
+	public static final RefUsage TYPE_PARAMETER_REF_USAGE =
+			new TypeParameterUsage("RefTypeParameter");
 	public static final RefUsage CONTAINER_REF_USAGE =
 			new ResolutionUsage("RefContainer", Role.INSTANCE);
 	public static final RefUsage TARGET_REF_USAGE =
@@ -81,6 +83,10 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		return this.role;
 	}
 
+	public boolean isCompileTimeOnly() {
+		return false;
+	}
+
 	public void fullyResolve(FullResolver resolver, Container resolved) {
 		resolveObject(resolved.toObject(), resolver);
 	}
@@ -100,10 +106,28 @@ public abstract class RefUsage extends Usage<RefUsage> {
 
 	}
 
-	private static final class TypeUsage extends RefUsage {
+	private static class TypeUsage extends RefUsage {
 
 		TypeUsage(String name) {
 			super(name, Role.PROTOTYPE);
+		}
+
+		@Override
+		protected void resolveObject(Obj object, UserInfo user) {
+			object.type().useBy(user);
+		}
+
+	}
+
+	private static final class TypeParameterUsage extends RefUsage {
+
+		TypeParameterUsage(String name) {
+			super(name, Role.PROTOTYPE);
+		}
+
+		@Override
+		public boolean isCompileTimeOnly() {
+			return true;
 		}
 
 		@Override

@@ -22,7 +22,7 @@ package org.o42a.core.object;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.value.ValueUsage.*;
-import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
+import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -252,7 +252,7 @@ public final class ObjectValue extends ObjectValueParts {
 			object.type().getParameters().resolveAll(
 					object.getScope()
 					.resolver()
-					.fullResolver(uses(), TYPE_REF_USAGE));
+					.fullResolver(uses(), TYPE_PARAMETER_REF_USAGE));
 		} finally {
 			fullResolution.end();
 		}
