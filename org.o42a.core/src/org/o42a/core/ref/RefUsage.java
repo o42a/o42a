@@ -38,15 +38,16 @@ public abstract class RefUsage extends Usage<RefUsage> {
 	public static final RefUsage DEREF_USAGE =
 			new ResolutionUsage("DerefValue", Role.INSTANCE);
 	public static final RefUsage TYPE_REF_USAGE =
-			new TypeUsage("RefType");
+			new TypeUsage("TypeRef");
 	public static final RefUsage TYPE_PARAMETER_REF_USAGE =
-			new TypeParameterUsage("RefTypeParameter");
+			new TypeParameterUsage("TypeParameterRef");
 	public static final RefUsage CONTAINER_REF_USAGE =
-			new ResolutionUsage("RefContainer", Role.INSTANCE);
+			new ResolutionUsage("ContainerRef", Role.INSTANCE);
 	public static final RefUsage TARGET_REF_USAGE =
-			new ResolutionUsage("RefTarget", Role.INSTANCE);
+			new ResolutionUsage("TargetRef", Role.INSTANCE);
 	public static final RefUsage ASSIGNEE_REF_USAGE =
-			new ResolutionUsage("RefAssignee", Role.INSTANCE);
+			new ResolutionUsage("AssigneeRef", Role.INSTANCE);
+	public static final RefUsage TEMP_REF_USAGE = new TempUsage();
 
 	public static final UseSelector<RefUsage> VALUE_REF_USAGES =
 			CONDITION_REF_USAGE.or(VALUE_REF_USAGE);
@@ -158,6 +159,24 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		@Override
 		protected void resolveObject(Obj object, UserInfo user) {
 			object.resolveAll();
+			object.type().useBy(user);
+		}
+
+	}
+
+	private static final class TempUsage extends RefUsage {
+
+		TempUsage() {
+			super("TempRef", Role.ANY);
+		}
+
+		@Override
+		public boolean isCompileTimeOnly() {
+			return true;
+		}
+
+		@Override
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.type().useBy(user);
 		}
 

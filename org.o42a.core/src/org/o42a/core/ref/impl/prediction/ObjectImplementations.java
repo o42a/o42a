@@ -19,7 +19,9 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Prediction.exactPrediction;
+import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
 import static org.o42a.core.ref.impl.prediction.PredictionWalker.predictRef;
 
 import java.util.Iterator;
@@ -28,6 +30,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Pred;
 import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.collect.SubIterator;
@@ -78,10 +81,22 @@ final class ObjectImplementations extends SubIterator<Pred, Pred> {
 			return exactPrediction(objectPrediction, scope);
 		}
 
-		return predictRef(
-				objectPrediction,
-				ancestor.getRef().prefixWith(
-						scope.getEnclosingScopePath().toPrefix(scope)));
+		final Ref ancestorRef = ancestorRef(scope, ancestor);
+
+		return predictRef(objectPrediction, ancestorRef);
+	}
+
+	private static Ref ancestorRef(Scope scope, TypeRef ancestor) {
+
+		final Ref ancestorRef = ancestor.getRef().prefixWith(
+				scope.getEnclosingScopePath().toPrefix(scope));
+
+		// Fully resolve as temporary reference to prevent assertions failures
+		// and to not create extra entities such as Deps.
+		ancestorRef.resolveAll(
+				scope.resolver().fullResolver(dummyUser(), TEMP_REF_USAGE));
+
+		return ancestorRef;
 	}
 
 	private static final class RevertedAncestors
