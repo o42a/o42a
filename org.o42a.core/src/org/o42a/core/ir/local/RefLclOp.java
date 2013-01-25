@@ -112,12 +112,9 @@ public final class RefLclOp extends LclOp {
 		final CodeDirs dirs =
 				control.getBuilder().dirs(code, control.falseDir());
 		final Obj object = getObject();
-
-		// New objects are created for the whole duration of the function.
 		final ObjectOp newObject = getBuilder().newObject(
 				dirs,
-				tempObjHolder(
-						control.getBuilder().getFunction().getAllocator()),
+				tempObjHolder(code.getAllocator()),
 				null,
 				getBuilder().objectAncestor(dirs, object),
 				object);

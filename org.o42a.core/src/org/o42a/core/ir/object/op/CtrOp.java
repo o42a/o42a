@@ -64,25 +64,6 @@ public class CtrOp extends IROp {
 			CodeDirs dirs,
 			ObjHolder holder,
 			ObjectOp owner,
-			ObjectOp ancestor,
-			ObjectOp sample) {
-
-		final Block code = dirs.code();
-
-		return newObject(
-				dirs,
-				holder,
-				owner,
-				ancestor != null
-				? ancestor.objectType(code).ptr()
-				: code.nullPtr(OBJECT_TYPE),
-				sample);
-	}
-
-	public ObjectOp newObject(
-			CodeDirs dirs,
-			ObjHolder holder,
-			ObjectOp owner,
 			ObjectIRTypeOp ancestorType,
 			ObjectOp sample) {
 
