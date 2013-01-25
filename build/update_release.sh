@@ -32,5 +32,6 @@ update_mf lib.macros
 update_mf lib.test
 update_mf parser
 update_mf parser.test
+update_mf root
 update_mf tools
 update_mf util
