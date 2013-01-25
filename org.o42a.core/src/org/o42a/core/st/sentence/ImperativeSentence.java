@@ -111,7 +111,8 @@ public abstract class ImperativeSentence
 
 			final boolean mayBeNonBreaking =
 					(result.breaking() || targets.breaking())
-					&& result.breaking() != targets.breaking();
+					&& result.unconditionallyBreaking()
+					!= targets.unconditionallyBreaking();
 
 			if (mayBeNonBreaking) {
 				result = result.addPrerequisite();
