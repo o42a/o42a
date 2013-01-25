@@ -93,6 +93,10 @@ public abstract class ImplicationTargets<T extends ImplicationTargets<T>>
 		return (mask() & BREAKING_MASK) != 0;
 	}
 
+	public final boolean unconditionallyBreaking() {
+		return breaking() && !conditional();
+	}
+
 	public final T addPrerequisite() {
 		return addMask(PREREQUISITE_MASK);
 	}
