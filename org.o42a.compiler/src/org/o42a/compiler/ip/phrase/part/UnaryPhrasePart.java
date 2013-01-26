@@ -34,7 +34,7 @@ public class UnaryPhrasePart extends PhraseContinuation {
 
 	private final UnaryNode node;
 
-	public UnaryPhrasePart(UnaryNode node, PhrasePart preceding) {
+	UnaryPhrasePart(UnaryNode node, PhrasePart preceding) {
 		super(location(preceding.getPhrase(), node.getSign()), preceding);
 		this.node = node;
 	}

@@ -60,8 +60,7 @@ final class CustomAssignment extends AssignmentKind {
 				EXPRESSION_TYPE_CONSUMER);
 
 		phrase.setAncestor(statement.getDestination().toTypeRef());
-		phrase.assign(statement.getNode());
-		phrase.operand(statement.getValue());
+		phrase.assign(statement.getNode(), statement.getValue());
 
 		return new CustomAssignment(statement, phrase.toRef());
 	}
