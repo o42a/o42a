@@ -20,9 +20,9 @@ prototype.
 ::Value := variable (`property #interface) ~~ Property value.
 
 Set :=> void (
-~~~
-Value setter.
-~~~
+  ~~~
+  Value setter.
+  ~~~
   New value :=< link (`property #interface) ~~ New property value.
   {
     Value = new value
@@ -31,13 +31,13 @@ Value setter.
 
 = value
 
-<Set = *> Set (
-~~~
-Value assignment clause.
+<*Set> Set (
+  ~~~
+  Value assignment clause.
 
-It assigns new property value with <set> prototype.
-~~~
-  <[New value]> New value = ()
+  It assigns new property value with <set> prototype.
+  ~~~
+  <New value = *> New value = ()
 )
 
 <[]!> Value = () ~~ Property initializer.

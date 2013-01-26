@@ -27,15 +27,21 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.sentence.Statements;
 
 
 public class PhraseAssignment extends PhraseContinuation {
 
 	private final AssignmentNode node;
+	private final Ref value;
 
-	public PhraseAssignment(AssignmentNode node, PhrasePart preceding) {
+	PhraseAssignment(
+			AssignmentNode node,
+			PhrasePart preceding,
+			Ref value) {
 		super(location(preceding.getPhrase(), node.getOperator()), preceding);
 		this.node = node;
+		this.value = value;
 	}
 
 	@Override
@@ -45,17 +51,30 @@ public class PhraseAssignment extends PhraseContinuation {
 
 	@Override
 	public Ref substitute(Distributor distributor) {
-		return getPhrase().getAncestor().getRef().rescope(
-				distributor.getScope());
+		if (this.value == null) {
+			return null;
+		}
+		return this.value.rescope(distributor.getScope());
 	}
 
 	@Override
 	public void define(Block<?, ?> definition) {
+		if (this.value == null) {
+			return;// Do not assign any value.
+		}
+
+		final Statements<?, ?> statements =
+				definition.propose(this).alternative(this);
+
+		statements.selfAssign(this.value);
 	}
 
 	@Override
 	public String toString() {
-		return this.node.getOperator().getType().getSign();
+		if (this.node == null) {
+			return super.toString();
+		}
+		return this.node.getOperator().getType().getSign() + this.value;
 	}
 
 }
