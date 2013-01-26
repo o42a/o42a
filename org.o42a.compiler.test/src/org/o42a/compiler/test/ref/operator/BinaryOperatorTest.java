@@ -125,4 +125,29 @@ public class BinaryOperatorTest extends CompilerTestCase {
 		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
+	@Test
+	public void suffix() {
+		compile(
+				"Compute :=> void (",
+				"  Left :=< link (`string)",
+				"  Right :=< link (`integer)",
+				")",
+				"A := string (",
+				"  = \"prefix\"",
+				"  <*Eval> Compute (",
+				"    <*Left | right> Left = $prefix$",
+				"    <:Right> (",
+				"      <* ~ *> Right = ()",
+				"    )",
+				"  )",
+				")",
+				"B := 3~a");
+
+		final Obj leftTarget = linkTarget(field("b", "left"));
+		final Obj rightTarget = linkTarget(field("b", "right"));
+
+		assertThat(definiteValue(leftTarget, ValueType.STRING), is("prefix"));
+		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
+	}
+
 }
