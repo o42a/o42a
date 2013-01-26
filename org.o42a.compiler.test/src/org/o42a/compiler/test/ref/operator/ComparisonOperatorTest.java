@@ -14,15 +14,14 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	public void equals() {
 		compile(
 				"Compare :=> void (",
-				"  Left :=< `void",
+				"  Right :=< link (`integer)",
 				")",
 				"A := void (",
 				"  <*Cmp> Compare (",
-				"    <* == * | cmp> Left = void",
-				"    <[]> ()",
+				"    <* == *> Right = ()",
 				"  )",
 				")",
-				"B := a == void");
+				"B := a == 23");
 
 		assertTrueVoid(field("b"));
 	}
@@ -31,15 +30,14 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	public void notEquals() {
 		compile(
 				"Compare :=> void (",
-				"  Left :=< `void",
+				"  Right :=< link (`integer)",
 				")",
 				"A := void (",
 				"  <*Cmp> Compare (",
-				"    <* == * | cmp> Left = void",
-				"    <[]> ()",
+				"    <* == *> Right = ()",
 				"  )",
 				")",
-				"B := a <> void");
+				"B := a <> 44");
 
 		assertFalseVoid(field("b"));
 	}
@@ -47,14 +45,8 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	@Test
 	public void less() {
 		compile(
-				"Compare :=> integer (",
-				"  Left :=< `void",
-				")",
 				"A := void (",
-				"  <*Cmp> Compare (",
-				"    <* <=> * | cmp> Left = void",
-				"    <[]> ()",
-				"  )",
+				"  <* <=> *> Integer ()",
 				")",
 				"B := a < 2");
 
@@ -64,14 +56,8 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	@Test
 	public void lessOrEquals() {
 		compile(
-				"Compare :=> integer (",
-				"  Left :=< `void",
-				")",
 				"A := void (",
-				"  <*Cmp> Compare (",
-				"    <* <=> * | cmp> Left = void",
-				"    <[]> ()",
-				"  )",
+				"  <* <=> *> Integer ()",
 				")",
 				"B := a <= 2");
 
@@ -81,14 +67,8 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	@Test
 	public void greater() {
 		compile(
-				"Compare :=> integer (",
-				"  Left :=< `void",
-				")",
 				"A := void (",
-				"  <*Cmp> Compare (",
-				"    <* <=> * | cmp> Left = void",
-				"    <[]> ()",
-				"  )",
+				"  <* <=> *> Integer ()",
 				")",
 				"B := a > 2");
 
@@ -98,14 +78,8 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	@Test
 	public void greaterOrEquals() {
 		compile(
-				"Compare :=> integer (",
-				"  Left :=< `void",
-				")",
 				"A := void (",
-				"  <*Cmp> Compare (",
-				"    <* <=> * | cmp> Left = void",
-				"    <[]> ()",
-				"  )",
+				"  <* <=> *> Integer ()",
 				")",
 				"B := a >= 2");
 
@@ -115,14 +89,8 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	@Test
 	public void compareEquals() {
 		compile(
-				"Compare :=> integer (",
-				"  Left :=< `void",
-				")",
 				"A := void (",
-				"  <*Cmp> Compare (",
-				"    <* <=> * | cmp> Left = void",
-				"    <[]> ()",
-				"  )",
+				"  <* <=> *> Integer ()",
 				")",
 				"B := a == 2");
 
@@ -132,14 +100,8 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	@Test
 	public void compareNotEquals() {
 		compile(
-				"Compare :=> integer (",
-				"  Left :=< `void",
-				")",
 				"A := void (",
-				"  <*Cmp> Compare (",
-				"    <* <=> * | cmp> Left = void",
-				"    <[]> ()",
-				"  )",
+				"  <* <=> *> Integer ()",
 				")",
 				"B := a <> 2");
 
