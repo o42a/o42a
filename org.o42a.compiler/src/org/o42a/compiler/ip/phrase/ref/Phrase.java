@@ -202,10 +202,6 @@ public class Phrase extends Placed {
 		return append(this.last.assign(node, value));
 	}
 
-	public final OperandPhrasePart operand(Ref value) {
-		return append(this.last.operand(value));
-	}
-
 	public final Ref toRef() {
 		if (this.ref != null) {
 			return this.ref;

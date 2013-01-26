@@ -95,10 +95,6 @@ public abstract class PhrasePart extends Located {
 		return setFollowing(new PhraseAssignment(node, this, value));
 	}
 
-	public final OperandPhrasePart operand(Ref value) {
-		return setFollowing(new OperandPhrasePart(value, this));
-	}
-
 	<P extends PhraseContinuation> P setFollowing(P following) {
 		assert this.following == null :
 			this + " already followed by " + this.following;
