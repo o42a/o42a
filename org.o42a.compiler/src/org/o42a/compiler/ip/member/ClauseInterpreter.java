@@ -44,6 +44,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.*;
+import org.o42a.core.st.sentence.Group;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 
@@ -163,17 +164,27 @@ public class ClauseInterpreter {
 			content.accept(
 					new ClauseContentVisitor(declaration, declarator),
 					statements);
-		} else {
+		} else if (declaration.getClauseId() != ClauseId.IMPERATIVE) {
 
 			final ClauseBuilder builder = statements.clause(declaration);
 
 			if (builder == null) {
 				return;
 			}
+			builder.setSubstitution(VALUE_SUBSTITUTION);
+			declare(builder, declarator).build();
+		} else {
 
-			declare(
-					builder.setSubstitution(VALUE_SUBSTITUTION),
-					declarator).build();
+			final Group group = statements.group(
+					declaration,
+					declaration.setKind(ClauseKind.GROUP));
+
+			if (group == null) {
+				return;
+			}
+
+			declare(group.getBuilder(), declarator);
+			group.parentheses();
 		}
 	}
 

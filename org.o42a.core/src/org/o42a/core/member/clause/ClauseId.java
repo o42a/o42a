@@ -27,7 +27,6 @@ import org.o42a.util.string.Name;
 
 public enum ClauseId {
 
-
 	NAME("named", false) {
 
 		@Override
