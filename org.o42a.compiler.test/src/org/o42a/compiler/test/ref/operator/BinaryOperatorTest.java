@@ -19,13 +19,16 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void add() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`void)",
+				"  Left :=< link (`string)",
 				"  Right :=< link (`integer)",
 				")",
-				"A := void (",
+				"A := string (",
+				"  = \"left\"",
 				"  <*Eval> Compute (",
-				"    <* + * | eval> Left = $prefix$",
-				"    <[]> Right = ()",
+				"    <*Left | right> Left = $prefix$",
+				"    <:Right> (",
+				"      <* + *> Right = ()",
+				"    )",
 				"  )",
 				")",
 				"B := a + 3");
@@ -33,7 +36,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 		final Obj leftTarget = linkTarget(field("b", "left"));
 		final Obj rightTarget = linkTarget(field("b", "right"));
 
-		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(leftTarget, ValueType.STRING), is("left"));
 		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
@@ -41,13 +44,16 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void subtract() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`void)",
+				"  Left :=< link (`string)",
 				"  Right :=< link (`integer)",
 				")",
-				"A := void (",
+				"A := string (",
+				"  = \"left\"",
 				"  <*Eval> Compute (",
-				"    <* - * | eval> Left = $prefix$",
-				"    <[]> Right = ()",
+				"    <*Left | right> Left = $prefix$",
+				"    <:Right> (",
+				"      <* - *> Right = ()",
+				"    )",
 				"  )",
 				")",
 				"B := a - 3");
@@ -55,7 +61,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 		final Obj leftTarget = linkTarget(field("b", "left"));
 		final Obj rightTarget = linkTarget(field("b", "right"));
 
-		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(leftTarget, ValueType.STRING), is("left"));
 		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
@@ -63,13 +69,16 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void multiply() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`void)",
+				"  Left :=< link (`string)",
 				"  Right :=< link (`integer)",
 				")",
-				"A := void (",
+				"A := string (",
+				"  = \"left\"",
 				"  <*Eval> Compute (",
-				"    <* * * | eval> Left = $prefix$",
-				"    <[]> Right = ()",
+				"    <*Left | right> Left = $prefix$",
+				"    <:Right> (",
+				"      <* * *> Right = ()",
+				"    )",
 				"  )",
 				")",
 				"B := a * 3");
@@ -77,7 +86,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 		final Obj leftTarget = linkTarget(field("b", "left"));
 		final Obj rightTarget = linkTarget(field("b", "right"));
 
-		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(leftTarget, ValueType.STRING), is("left"));
 		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
@@ -85,13 +94,16 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void divide() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`void)",
+				"  Left :=< link (`string)",
 				"  Right :=< link (`integer)",
 				")",
-				"A := void (",
+				"A := string (",
+				"  = \"left\"",
 				"  <*Eval> Compute (",
-				"    <* / * | eval> Left = $prefix$",
-				"    <[]> Right = ()",
+				"    <*Left | right> Left = $prefix$",
+				"    <:Right> (",
+				"      <* / *> Right = ()",
+				"    )",
 				"  )",
 				")",
 				"B := a / 3");
@@ -99,7 +111,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 		final Obj leftTarget = linkTarget(field("b", "left"));
 		final Obj rightTarget = linkTarget(field("b", "right"));
 
-		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(leftTarget, ValueType.STRING), is("left"));
 		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
@@ -107,13 +119,16 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void compare() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`void)",
+				"  Left :=< link (`string)",
 				"  Right :=< link (`integer)",
 				")",
-				"A := void (",
+				"A := string (",
+				"  = \"left\"",
 				"  <*Eval> Compute (",
-				"    <* <=> * | eval> Left = $prefix$",
-				"    <[]> Right = ()",
+				"    <*Left | right> Left = $prefix$",
+				"    <:Right> (",
+				"      <* <=> *> Right = ()",
+				"    )",
 				"  )",
 				")",
 				"B := a <=> 3");
@@ -121,7 +136,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 		final Obj leftTarget = linkTarget(field("b", "left"));
 		final Obj rightTarget = linkTarget(field("b", "right"));
 
-		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(leftTarget, ValueType.STRING), is("left"));
 		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 

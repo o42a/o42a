@@ -67,7 +67,8 @@ public abstract class Clause implements PlaceInfo {
 			HashMap<MemberId, MemberClause> explicitClauses,
 			MemberClause clause) {
 
-		final MemberId memberId = clause.getMemberKey().getMemberId().getLocalId();
+		final MemberId memberId =
+				clause.getMemberKey().getMemberId().getLocalId();
 
 		if (!memberId.isValid()) {
 			return true;

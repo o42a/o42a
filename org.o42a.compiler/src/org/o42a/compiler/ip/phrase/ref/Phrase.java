@@ -194,8 +194,8 @@ public class Phrase extends Placed {
 		return append(this.last.unary(node));
 	}
 
-	public final BinaryPhrasePart binary(BinaryNode node) {
-		return append(this.last.binary(node));
+	public final BinaryPhrasePart binary(BinaryNode node, Ref rightOperand) {
+		return append(this.last.binary(node, rightOperand));
 	}
 
 	public final PhraseAssignment assign(AssignmentNode node) {

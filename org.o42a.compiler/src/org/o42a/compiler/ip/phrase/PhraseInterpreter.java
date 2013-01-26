@@ -174,9 +174,8 @@ public final class PhraseInterpreter {
 				ip(),
 				location(distributor, node),
 				distributor,
-				typeConsumer);
-		final BinaryPhrasePart binary =
-				phrase.setAncestor(left.toTypeRef()).binary(node);
+				typeConsumer)
+				.setAncestor(left.toTypeRef());
 
 		final ExpressionNode rightOperand = node.getRightOperand();
 
@@ -191,9 +190,7 @@ public final class PhraseInterpreter {
 			return null;
 		}
 
-		phrase.operand(right);
-
-		return binary;
+		return phrase.binary(node, right);
 	}
 
 	final Phrase phraseWithPrefix(

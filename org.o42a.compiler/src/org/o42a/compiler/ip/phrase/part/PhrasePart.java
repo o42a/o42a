@@ -87,8 +87,8 @@ public abstract class PhrasePart extends Located {
 		return setFollowing(new UnaryPhrasePart(node, this));
 	}
 
-	public final BinaryPhrasePart binary(BinaryNode node) {
-		return setFollowing(new BinaryPhrasePart(node, this));
+	public final BinaryPhrasePart binary(BinaryNode node, Ref rightOperand) {
+		return setFollowing(new BinaryPhrasePart(node, this, rightOperand));
 	}
 
 	public final PhraseAssignment assign(AssignmentNode node) {

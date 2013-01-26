@@ -32,16 +32,22 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.sentence.Statements;
 
 
 public class BinaryPhrasePart extends PhraseContinuation {
 
 	private final BinaryNode node;
+	private final Ref rightOperand;
 	private ComparisonOperator comparisonOperator;
 
-	public BinaryPhrasePart(BinaryNode node, PhrasePart preceding) {
+	BinaryPhrasePart(
+			BinaryNode node,
+			PhrasePart preceding,
+			Ref rightOperand) {
 		super(location(preceding.getPhrase(), node.getSign()), preceding);
 		this.node = node;
+		this.rightOperand = rightOperand;
 	}
 
 	public final ComparisonOperator getComparisonOperator() {
@@ -74,17 +80,30 @@ public class BinaryPhrasePart extends PhraseContinuation {
 
 	@Override
 	public Ref substitute(Distributor distributor) {
-		return getPhrase().getAncestor().getRef().rescope(
-				distributor.getScope());
+		if (this.rightOperand == null) {
+			return null;
+		}
+		return this.rightOperand.rescope(distributor.getScope());
 	}
 
 	@Override
 	public void define(Block<?, ?> definition) {
+		if (this.rightOperand == null) {
+			return;// Do not assign any value.
+		}
+
+		final Statements<?, ?> statements =
+				definition.propose(this).alternative(this);
+
+		statements.selfAssign(this.rightOperand);
 	}
 
 	@Override
 	public String toString() {
-		return this.node.getOperator().getSign();
+		if (this.node == null) {
+			return super.toString();
+		}
+		return this.node.getOperator().getSign() + this.rightOperand;
 	}
 
 	private NextClause findFirst(PhraseContext context) {

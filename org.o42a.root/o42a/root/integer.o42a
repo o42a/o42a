@@ -12,44 +12,44 @@ Integer :=> $$number
 <*Minus> Integers: minus (<-*> Operand = $prefix$)
 
 <*Addition> Integers: add (
-  <* + * | summand> Left operand = $prefix$
-  <:Summand> (
-    <[]> Right operand = ()
+  <*Left summand | right summand> Left operand = $prefix$
+  <:Right summand> (
+    <* + *> Right operand = ()
   )
 )
 
 <*Subtraction> Integers: subtract (
-  <* - * | subtrahend> Left operand = $prefix$
+  <*Minuend | subtrahend> Left operand = $prefix$
   <:Subtrahend> (
-    <[]> Right operand = ()
+    <* - *> Right operand = ()
   )
 )
 
 <*Multiplication> Integers: multiply (
-  <* * * | multiplier> Left operand = $prefix$
-  <:Multiplier> (
-    <[]> Right operand = ()
+  <*Left factor | right factor> Left operand = $prefix$
+  <:Right factor> (
+    <* * *> Right operand = ()
   )
 )
 
 <*Division> Integers: divide (
-  <* / * | divisor> Left operand = $prefix$
+  <*Dividend | divisor> Left operand = $prefix$
   <:Divisor> (
-    <[]> Right operand = ()
+    <* / *> Right operand = ()
   )
 )
 
 <*Equality> Integers: equals (
-  <* == * | equals to> What = $prefix$
+  <*What equals | equals to> What = $prefix$
   <:Equals to> (
-    <[]> To = ()
+    <* == *> To = ()
   )
 )
 
 <*Comparison> Integers: compare (
-  <* <=> * | compare with> What = $prefix$
+  <*Compare what | compare with> What = $prefix$
   <:Compare with> (
-    <[]> With = ()
+    <* <=> *> With = ()
   )
 )
 
