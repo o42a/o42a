@@ -42,6 +42,7 @@ public final class Root__SRC implements AnnotatedSources {
 				base(),
 				"root.o42a");
 
+		this.sourceTree.add("assignable.o42a");
 		this.sourceTree.add("number.o42a");
 		this.sourceTree.add("indexed.o42a");
 		this.sourceTree.add("property.o42a");
