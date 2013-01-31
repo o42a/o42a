@@ -51,6 +51,7 @@ import org.o42a.util.io.URLSource;
 
 @SourcePath("root.o42a")
 @RelatedSources({
+	"assignable.o42a",
 	"number.o42a",
 	"indexed.o42a",
 	"property.o42a"
