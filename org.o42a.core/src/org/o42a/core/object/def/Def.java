@@ -30,6 +30,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.type.Derivation;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.*;
 import org.o42a.core.st.DefValue;
@@ -149,7 +150,23 @@ public abstract class Def implements SourceInfo {
 	public abstract boolean unconditional();
 
 	public final boolean isExplicit() {
-		return getSource().is(sourceOf(getScope().toObject()));
+		return getSource().is(getScope().toObject());
+	}
+
+	public final boolean isInherited() {
+
+		final Obj source = getSource();
+		final Obj object = getScope().toObject();
+
+		if (source.is(object)) {
+			// Explicit definition.
+			return false;
+		}
+
+		// Declared in ancestor.
+		return object.type().derivedFrom(
+				source.type(),
+				Derivation.INHERITANCE);
 	}
 
 	public final Def upgradeScope(Scope toScope) {

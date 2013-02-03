@@ -75,6 +75,14 @@ public abstract class KnownLink extends Link {
 		this.data.resolveAll(resolver);
 	}
 
+	@Override
+	public String toString() {
+		if (this.data == null) {
+			return super.toString();
+		}
+		return this.data.getTargetRef().toString();
+	}
+
 	protected abstract KnownLink prefixWith(PrefixPath prefix);
 
 	@Override

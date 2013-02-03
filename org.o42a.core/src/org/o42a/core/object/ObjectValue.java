@@ -291,10 +291,36 @@ public final class ObjectValue extends ObjectValueParts {
 			this.uses.useBy(
 					getObject().type().rtDerivation(),
 					RUNTIME_VALUE_USAGE);
+			// Use an ancestor value, as it is involved
+			// into this object's value evaluation.
+			useAncestorValue();
 		}
 		getObject().content().useBy(this.uses);
 
 		return this.uses;
+	}
+
+	private void useAncestorValue() {
+
+		final ObjectType objectType = getObject().type();
+		final TypeRef ancestorRef = objectType.getAncestor();
+
+		if (ancestorRef == null) {
+			return;
+		}
+
+		final Obj ancestor = ancestorRef.getType();
+
+		if (ancestor == null) {
+			return;
+		}
+
+		final Usable<ValueUsage> ancestorUses = ancestor.value().uses();
+
+		ancestorUses.useBy(
+				uses().selectiveUser(ANY_STATIC_VALUE_USAGE),
+				STATIC_VALUE_USAGE);
+		ancestorUses.useBy(rtUses(), RUNTIME_VALUE_USAGE);
 	}
 
 	private Definitions getAncestorDefinitions() {
