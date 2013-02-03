@@ -80,6 +80,18 @@ final class RtLink extends Link {
 	}
 
 	@Override
+	public String toString() {
+
+		final Scope scope = getScope();
+
+		if (scope == null) {
+			return super.toString();
+		}
+
+		return scope + "->";
+	}
+
+	@Override
 	protected Obj createTarget() {
 		return new RtLinkTarget(this);
 	}

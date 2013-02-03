@@ -19,27 +19,13 @@
 */
 package org.o42a.core.ir.object.value;
 
-
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Defs;
-import org.o42a.core.object.def.SourceInfo;
-import org.o42a.core.object.type.Derivation;
 import org.o42a.core.ref.type.TypeRef;
 
 
 final class DefCollector {
-
-	public static boolean explicitDef(Obj object, SourceInfo sourceInfo) {
-
-		final Obj source = sourceInfo.getSource();
-
-		if (source.is(object)) {
-			return true;
-		}
-
-		return object.type().derivedFrom(source.type(), Derivation.PROPAGATION);
-	}
 
 	private final Obj object;
 	private final Obj ancestor;
@@ -81,7 +67,7 @@ final class DefCollector {
 	}
 
 	public final void addDef(Def def) {
-		if (explicitDef(this.object, def)) {
+		if (!def.isInherited()) {
 			explicitDef(def);
 			return;
 		}
