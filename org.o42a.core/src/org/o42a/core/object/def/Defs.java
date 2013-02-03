@@ -64,6 +64,23 @@ public final class Defs {
 		return this.defs.length == 0;
 	}
 
+	public final boolean hasInherited() {
+
+		boolean passThrough = true;// May request an ancestor value?
+
+		for (Def def : this.defs) {
+			if (def.isInherited()) {
+				return true;
+			}
+			if (def.unconditional()) {
+				// Return unconditionally. Do not request an ancestor value.
+				passThrough = false;
+			}
+		}
+
+		return passThrough;
+	}
+
 	public final int length() {
 		return this.defs.length;
 	}
