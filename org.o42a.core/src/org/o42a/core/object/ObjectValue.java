@@ -253,6 +253,9 @@ public final class ObjectValue extends ObjectValueParts {
 					object.getScope()
 					.resolver()
 					.fullResolver(uses(), TYPE_PARAMETER_REF_USAGE));
+			// Use an ancestor value, as it is involved
+			// into this object's value evaluation.
+			useAncestorValue();
 		} finally {
 			fullResolution.end();
 		}
@@ -291,9 +294,6 @@ public final class ObjectValue extends ObjectValueParts {
 			this.uses.useBy(
 					getObject().type().rtDerivation(),
 					RUNTIME_VALUE_USAGE);
-			// Use an ancestor value, as it is involved
-			// into this object's value evaluation.
-			useAncestorValue();
 		}
 		getObject().content().useBy(this.uses);
 
@@ -312,6 +312,9 @@ public final class ObjectValue extends ObjectValueParts {
 		final Obj ancestor = ancestorRef.getType();
 
 		if (ancestor == null) {
+			return;
+		}
+		if (!getDefinitions().hasInherited()) {
 			return;
 		}
 

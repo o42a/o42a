@@ -187,6 +187,10 @@ public class Definitions extends Scoped {
 		return claims().isEmpty();
 	}
 
+	public final boolean hasInherited() {
+		return claims().hasInherited() || propositions().hasInherited();
+	}
+
 	public Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
