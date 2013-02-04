@@ -12,7 +12,7 @@ Array list :=> mutable list
 An array represented as <mutable list>.
 ~~~
 
-Data := link (`array (`#element type)) ~~ An array represented by this list.
+Data :=< link (`array (`#element type)) ~~ An array represented by this list.
 
 Size = /data: length
 
@@ -28,7 +28,7 @@ Item => * (
 Constructs a list by the given row.
 ~~~
 
-<Create...> (
+<Of...> (
   ~~~
   Constructs a list by the given array.
   ~~~
