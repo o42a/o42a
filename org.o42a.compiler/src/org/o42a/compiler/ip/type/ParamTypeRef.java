@@ -54,27 +54,27 @@ public final class ParamTypeRef {
 	public final AscendantsDefinition updateAncestor(
 			AscendantsDefinition ascendants) {
 
-		final AscendantsDefinition result =
-				ascendants.setAncestor(getTypeRef());
 		final TypeRefParameters parameters = getParameters();
 
 		if (parameters == null) {
-			return result;
+			return ascendants.setAncestor(getTypeRef());
 		}
 
-		return result.setTypeParameters(parameters.toObjectTypeParameters());
+		return ascendants
+				.setAncestor(getTypeRef().setParameters(parameters))
+				.setTypeParameters(parameters.toObjectTypeParameters());
 	}
 
 	public final Phrase updateAncestor(Phrase phrase) {
 
-		final Phrase result = phrase.setAncestor(getTypeRef());
 		final TypeRefParameters parameters = getParameters();
 
 		if (parameters == null) {
-			return result;
+			return phrase.setAncestor(getTypeRef());
 		}
 
-		return result.setTypeParameters(parameters.toObjectTypeParameters());
+		return phrase.setAncestor(getTypeRef().setParameters(parameters))
+				.setTypeParameters(parameters.toObjectTypeParameters());
 	}
 
 	public final TypeRef parameterize() {

@@ -78,4 +78,22 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 		assertThat(definiteValue(dBarTarget, ValueType.INTEGER), is(2L));
 	}
 
+	@Test
+	public void linkAncestorUpgrade() {
+		compile(
+				"A := void (",
+				"  F := link (`integer) 3",
+				")",
+				"Lnk :=> link` (",
+				"  G := 12",
+				")",
+				"B := a (",
+				"  F = lnk (`integer)",
+				")");
+
+		assertThat(
+				definiteValue(field("b", "f", "g"), ValueType.INTEGER),
+				is(12L));
+	}
+
 }
