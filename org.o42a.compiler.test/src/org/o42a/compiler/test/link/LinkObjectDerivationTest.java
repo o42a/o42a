@@ -84,11 +84,47 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				"A := void (",
 				"  F := link (`integer) 3",
 				")",
+				"Lnk :=> link (`integer) (",
+				"  G := 12",
+				")",
+				"B := a (",
+				"  F = lnk` ()",
+				")");
+
+		assertThat(
+				definiteValue(field("b", "f", "g"), ValueType.INTEGER),
+				is(12L));
+	}
+
+	@Test
+	public void parameterizedLinkAncestorUpgrade() {
+		compile(
+				"A := void (",
+				"  F := link (`integer) 3",
+				")",
 				"Lnk :=> link` (",
 				"  G := 12",
 				")",
 				"B := a (",
 				"  F = lnk (`integer)",
+				")");
+
+		assertThat(
+				definiteValue(field("b", "f", "g"), ValueType.INTEGER),
+				is(12L));
+	}
+
+	@Test
+	public void linkPrototypeAncestorUpgrade() {
+		compile(
+				"A :=> void (",
+				"  F :=<> link (`integer) 3",
+				")",
+				"Lnk :=> link (`integer) (",
+				"  G := 12",
+				")",
+				"B :=> a (",
+				"  F =<> lnk` ()",
 				")");
 
 		assertThat(

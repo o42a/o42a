@@ -242,9 +242,9 @@ public class Ascendants
 		return addSample(new MemberOverride(overriddenMember, this));
 	}
 
-	public void resolveAll() {
+	public void resolveAll(ObjectType objectType) {
 		validate();
-		validateOverriddenAncestors();
+		validateOverriddenAncestors(objectType);
 
 		final UserInfo user = getObject().type();
 		final TypeRef ancestor = getExplicitAncestor();
@@ -476,15 +476,27 @@ public class Ascendants
 		return result;
 	}
 
-	private void validateOverriddenAncestors() {
+	private void validateOverriddenAncestors(ObjectType objectType) {
 
-		final TypeRef ancestor = getAncestor();
+		final TypeRef ancestor = objectType.getAncestor();
 
 		if (ancestor == null) {
 			return;
 		}
+
+		final TypeParameters<?> parameters = objectType.getParameters();
+		final TypeRef parameterizedAncestor;
+
+		if (parameters.isEmpty()) {
+			parameterizedAncestor = ancestor;
+		} else {
+			parameterizedAncestor =
+					ancestor.rescope(parameters.getScope())
+					.setParameters(parameters);
+		}
+
 		for (Sample sample : getSamples()) {
-			validateSampleAncestor(sample, ancestor, true);
+			validateSampleAncestor(sample, parameterizedAncestor);
 		}
 	}
 
@@ -560,14 +572,10 @@ public class Ascendants
 		return true;
 	}
 
-	private int validateSampleAncestor(
-			Sample sample,
-			TypeRef ancestor,
-			boolean overriddenAncestor) {
+	private int validateSampleAncestor(Sample sample, TypeRef ancestor) {
 
 		final TypeRef sampleAncestor =
-				overriddenAncestor
-				? sample.overriddenAncestor() : sample.getAncestor();
+				sample.overriddenAncestor().rescope(ancestor.getScope());
 		final boolean explicit = sample.isExplicit();
 		final TypeRef first;
 		final TypeRef second;

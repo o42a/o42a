@@ -249,7 +249,7 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public void resolveAll() {
-		getAscendants().resolveAll();
+		getAscendants().resolveAll(this);
 		registerInAncestor();
 		registerSamples();
 
