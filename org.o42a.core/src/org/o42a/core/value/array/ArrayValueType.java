@@ -22,6 +22,7 @@ package org.o42a.core.value.array;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 import static org.o42a.core.value.array.impl.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -33,14 +34,17 @@ import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
+import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.impl.ArrayKeeperIR;
@@ -173,6 +177,40 @@ public class ArrayValueType extends ValueType<Array> {
 					request.getExpectedParameters().toArrayParameters());
 		}
 		return super.defaultAdapter(ref, parameters, request);
+	}
+
+	@Override
+	protected Ref adapterRef(
+			Ref ref,
+			TypeRef expectedTypeRef,
+			CompilerLogger logger) {
+
+		final ArrayValueType expectedType =
+				expectedTypeRef.getType().type().getValueType().toArrayType();
+
+		if (expectedType == null || !expectedType.convertibleFrom(this)) {
+			return super.adapterRef(ref, expectedTypeRef, logger);
+		}
+		if (expectedType.is(this)) {
+			return super.adapterRef(ref, expectedTypeRef, logger);
+		}
+
+		final AscendantsDefinition ascendants = new AscendantsDefinition(
+				ref,
+				ref.distribute(),
+				expectedType.typeRef(ref, ref.getScope()));
+		final ObjectTypeParameters convertedParameters =
+				ref.typeParameters(ref.getScope())
+				.toArrayParameters()
+				.convertTo(expectedType)
+				.toObjectTypeParameters();
+		final Call arrayConstructor = new Call(
+				ref,
+				ref.distribute(),
+				ascendants.setTypeParameters(convertedParameters),
+				valueBlock(ref));
+
+		return arrayConstructor.toRef();
 	}
 
 	@Override
