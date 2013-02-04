@@ -9,10 +9,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Row list :=> list
 =================
 ~~~
-A row represened as <list>. 
+A row represented as <list>. 
 ~~~
 
-Data := link (`row (`#element type)) ~~ A row represented by this list.
+Data :=< link (`row (`#element type)) ~~ A row represented by this list.
 
 Size = /data: length
 
@@ -25,7 +25,7 @@ Item => * (
 Constructs a list by the given row.
 ~~~
 
-<Create...> (
+<Of...> (
   ~~~
   Constructs a list by the given row.
   ~~~

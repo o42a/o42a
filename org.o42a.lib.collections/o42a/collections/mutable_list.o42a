@@ -12,4 +12,4 @@ Mutable list :=> list
 A mutable list of elements.
 ~~~
 
-Item =<> assignable`
+Item =<> assignable (`#element type) ()
