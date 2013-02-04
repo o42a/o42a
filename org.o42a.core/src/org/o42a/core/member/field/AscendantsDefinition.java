@@ -78,7 +78,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 
 			final TypeParameters<?> typeParameters = ancestor.getParameters();
 
-			if (typeParameters.getValueType().isVoid()) {
+			if (!typeParameters.getValueType().isVoid()) {
 				return definitionTarget(typeParameters);
 			}
 		}
