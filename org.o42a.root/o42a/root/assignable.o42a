@@ -17,7 +17,7 @@ Set :=<> void (
   Value setter.
   ~~~
   
-  New value :=< link (`property #interface) ~~ New value to assign.
+  New value :=< link (`assignable #interface) ~~ New value to assign.
 )
 
 <*Set> Set (
