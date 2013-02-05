@@ -56,7 +56,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(shl(
+				llvm.instr(nextPtr, shl(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -85,7 +85,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(lshr(
+				llvm.instr(nextPtr, lshr(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -114,7 +114,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(ashr(
+				llvm.instr(nextPtr, ashr(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -143,7 +143,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(and(
+				llvm.instr(nextPtr, and(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -164,7 +164,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(or(
+				llvm.instr(nextPtr, or(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -185,7 +185,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(xor(
+				llvm.instr(nextPtr, xor(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -205,7 +205,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(neg(
+				llvm.instr(nextPtr, neg(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -225,7 +225,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(add(
+				llvm.instr(nextPtr, add(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -246,7 +246,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(sub(
+				llvm.instr(nextPtr, sub(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -267,7 +267,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(mul(
+				llvm.instr(nextPtr, mul(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -288,7 +288,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(div(
+				llvm.instr(nextPtr, div(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -309,7 +309,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(rem(
+				llvm.instr(nextPtr, rem(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -329,7 +329,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(eq(
+				llvm.instr(nextPtr, eq(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -349,7 +349,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(ne(
+				llvm.instr(nextPtr, ne(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -369,7 +369,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(gt(
+				llvm.instr(nextPtr, gt(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -389,7 +389,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(ge(
+				llvm.instr(nextPtr, ge(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -409,7 +409,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(lt(
+				llvm.instr(nextPtr, lt(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -429,7 +429,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(le(
+				llvm.instr(nextPtr, le(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -449,7 +449,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Int8llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(int2int(
+				llvm.instr(nextPtr, int2int(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -469,7 +469,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Int16llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(int2int(
+				llvm.instr(nextPtr, int2int(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -489,7 +489,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Int32llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(int2int(
+				llvm.instr(nextPtr, int2int(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -509,7 +509,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Int64llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(int2int(
+				llvm.instr(nextPtr, int2int(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -529,7 +529,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Fp32llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(intToFp32(
+				llvm.instr(nextPtr, intToFp32(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -548,7 +548,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Fp64llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(intToFp64(
+				llvm.instr(nextPtr, intToFp64(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -567,7 +567,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(lowestBit(
+				llvm.instr(nextPtr, lowestBit(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),

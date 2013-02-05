@@ -303,7 +303,7 @@ public abstract class LLCode implements CodeWriter {
 				AUTO_ALLOC_CLASS,
 				type,
 				nextPtr,
-				instr(allocateStruct(
+				instr(nextPtr, allocateStruct(
 						nextPtr,
 						nextInstr(),
 						ids.write(id),
@@ -322,7 +322,7 @@ public abstract class LLCode implements CodeWriter {
 				id,
 				AUTO_ALLOC_CLASS,
 				nextPtr,
-				instr(allocatePtr(
+				instr(nextPtr, allocatePtr(
 						nextPtr,
 						nextInstr(),
 						ids.write(id),
@@ -344,7 +344,7 @@ public abstract class LLCode implements CodeWriter {
 				AUTO_ALLOC_CLASS,
 				alloc.getType(),
 				nextPtr,
-				instr(allocateStructPtr(
+				instr(nextPtr, allocateStructPtr(
 						nextPtr,
 						nextInstr(),
 						ids.write(id),
@@ -381,7 +381,7 @@ public abstract class LLCode implements CodeWriter {
 		return o1.create(
 				resultId,
 				nextPtr,
-				instr(phi2(
+				instr(nextPtr, phi2(
 						nextPtr,
 						nextInstr(),
 						ids.write(resultId),
@@ -394,17 +394,26 @@ public abstract class LLCode implements CodeWriter {
 
 	@Override
 	public void acquireBarrier() {
-		instr(acquireBarrier(nextPtr(), nextInstr()));
+
+		final long nextPtr = nextPtr();
+
+		instr(nextPtr, acquireBarrier(nextPtr, nextInstr()));
 	}
 
 	@Override
 	public void releaseBarrier() {
-		instr(releaseBarrier(nextPtr(), nextInstr()));
+
+		final long nextPtr = nextPtr();
+
+		instr(nextPtr, releaseBarrier(nextPtr, nextInstr()));
 	}
 
 	@Override
 	public void fullBarrier() {
-		instr(fullBarrier(nextPtr(), nextInstr()));
+
+		final long nextPtr = nextPtr();
+
+		instr(nextPtr, fullBarrier(nextPtr, nextInstr()));
 	}
 
 	public <O extends Op> O select(
@@ -423,7 +432,7 @@ public abstract class LLCode implements CodeWriter {
 		return trueOp.create(
 				selectId,
 				nextPtr,
-				instr(select(
+				instr(nextPtr, select(
 						nextPtr,
 						nextInstr(),
 						ids.write(selectId),
@@ -433,12 +442,12 @@ public abstract class LLCode implements CodeWriter {
 						falseOp.getNativePtr())));
 	}
 
-	public final long instr(long instr) {
+	public final long instr(long blockPtr, long instr) {
 
 		final long realInstr = instr & ~1;
 
 		if (instr == realInstr) {
-			addInstr(instr);
+			addInstr(blockPtr, instr);
 		}
 
 		return realInstr;
@@ -449,9 +458,9 @@ public abstract class LLCode implements CodeWriter {
 		return getId().toString();
 	}
 
-	protected void addInstr(long instr) {
+	protected void addInstr(long blockPtr, long instr) {
 		if (this.lastInset != null) {
-			this.lastInset.nextInstr(instr);
+			this.lastInset.nextInstr(blockPtr, instr);
 			this.lastInset = null;
 		}
 	}

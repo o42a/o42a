@@ -52,7 +52,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_shl(
 			numBits,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lshr(
@@ -73,7 +73,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lshr(
 			numBits,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ashr(
@@ -94,7 +94,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ashr(
 			numBits,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_and(
@@ -115,7 +115,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_and(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_or(
@@ -136,7 +136,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_or(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_xor(
@@ -157,7 +157,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_xor(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_neg(
@@ -175,7 +175,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_neg(
 			value,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_add(
@@ -196,7 +196,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_add(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_sub(
@@ -217,7 +217,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_sub(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_mul(
@@ -238,7 +238,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_mul(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_div(
@@ -259,7 +259,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_div(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_rem(
@@ -280,7 +280,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_rem(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong JNICALL Java_org_o42a_backend_llvm_code_op_IntLLOp_eq(
@@ -301,7 +301,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_op_IntLLOp_eq(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ne(
@@ -322,7 +322,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ne(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_gt(
@@ -343,7 +343,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_gt(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ge(
@@ -364,7 +364,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ge(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lt(
@@ -385,7 +385,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lt(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_le(
@@ -406,7 +406,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_le(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_int2int(
@@ -427,7 +427,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_int2int(
 			true,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp32(
@@ -446,7 +446,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp32(
 			builder.getFloatTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp64(
@@ -465,7 +465,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp64(
 			builder.getDoubleTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lowestBit(
@@ -485,5 +485,5 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lowestBit(
 			false,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }

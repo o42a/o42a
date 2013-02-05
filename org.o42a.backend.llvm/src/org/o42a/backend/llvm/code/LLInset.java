@@ -58,11 +58,13 @@ class LLInset extends LLCode {
 	}
 
 	@Override
-	protected void addInstr(long instr) {
-		super.addInstr(instr);
+	protected void addInstr(long blockPtr, long instr) {
+		assert this.blockPtr == blockPtr :
+			"An attempt to add instruction from another block";
+		super.addInstr(blockPtr, instr);
 		this.exists = true;
 		if (this.prevInset != null) {
-			this.prevInset.nextInstr(instr);
+			this.prevInset.nextInstr(blockPtr, instr);
 			this.prevInset = null;
 		}
 	}
@@ -73,10 +75,12 @@ class LLInset extends LLCode {
 		this.prevInset = prevInset;
 	}
 
-	final void nextInstr(long nextInstr) {
+	final void nextInstr(long blockPtr, long nextInstr) {
+		assert this.blockPtr == blockPtr :
+			"An attempt to add instruction from another block";
 		this.nextInstr = nextInstr;
 		if (this.prevInset != null) {
-			this.prevInset.nextInstr(nextInstr);
+			this.prevInset.nextInstr(blockPtr, nextInstr);
 		}
 	}
 

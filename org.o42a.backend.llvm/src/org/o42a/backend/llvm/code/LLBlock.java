@@ -71,7 +71,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 		if (prevPtr != 0L) {
 			endBlock();
 			nextPtr = nextPtr();
-			instr(go(prevPtr, nextInstr(), nextPtr));
+			instr(nextPtr, go(prevPtr, nextInstr(), nextPtr));
 		} else {
 			nextPtr = nextPtr();
 		}
@@ -105,14 +105,18 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	@Override
 	public Disposal startAllocation(Allocator allocator) {
 
-		final long stackPtr = instr(stackSave(nextPtr(), nextInstr()));
+		final long nextPtr = nextPtr();
+		final long stackPtr = instr(nextPtr, stackSave(nextPtr, nextInstr()));
 
 		return new StackRestore(stackPtr);
 	}
 
 	@Override
 	public void go(CodePos pos) {
-		instr(go(nextPtr(), nextInstr(), blockPtr(pos)));
+
+		final long nextPtr = nextPtr();
+
+		instr(nextPtr, go(nextPtr, nextInstr(), blockPtr(pos)));
 		endBlock();
 	}
 
@@ -139,23 +143,31 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 			falsePtr = llvmFalse.getBlockPtr();
 		}
 
-		instr(choose(
+		instr(
 				blockPtr,
-				nextInstr(),
-				nativePtr(condition),
-				truePtr,
-				falsePtr));
+				choose(
+						blockPtr,
+						nextInstr(),
+						nativePtr(condition),
+						truePtr,
+						falsePtr));
 	}
 
 	@Override
 	public void returnVoid() {
 		getFunction().beforeReturn(block());
-		instr(returnVoid(nextPtr(), nextInstr()));
+
+		final long nextPtr = nextPtr();
+
+		instr(nextPtr, returnVoid(nextPtr, nextInstr()));
 	}
 
 	public void returnValue(LLOp<?> result) {
 		getFunction().beforeReturn(block());
-		instr(returnValue(nextPtr(), nextInstr(),result.getNativePtr()));
+
+		final long nextPtr = nextPtr();
+
+		instr(nextPtr, returnValue(nextPtr, nextInstr(),result.getNativePtr()));
 	}
 
 	protected final void init() {
@@ -205,11 +217,14 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 		public void dispose(Code code) {
 
 			final LLCode llvm = llvm(code);
+			final long nextPtr = llvm.nextPtr();
 
-			llvm.instr(stackRestore(
-					llvm.nextPtr(),
-					llvm.nextInstr(),
-					this.stackPtr));
+			llvm.instr(
+					nextPtr,
+					stackRestore(
+							nextPtr,
+							llvm.nextInstr(),
+							this.stackPtr));
 		}
 
 	}
