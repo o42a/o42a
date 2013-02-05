@@ -61,7 +61,7 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 		return createLoaded(
 				resultId,
 				nextPtr,
-				llvm.instr(load(
+				llvm.instr(nextPtr, load(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -78,13 +78,16 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 	public final void store(Code code, O value, Atomicity atomicity) {
 
 		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
-		llvm.instr(store(
-				llvm.nextPtr(),
-				llvm.nextInstr(),
-				getNativePtr(),
-				nativePtr(value),
-				atomicity.code()));
+		llvm.instr(
+				nextPtr,
+				store(
+						nextPtr,
+						llvm.nextInstr(),
+						getNativePtr(),
+						nativePtr(value),
+						atomicity.code()));
 	}
 
 	protected abstract O createLoaded(ID id, long blockPtr, long nativePtr);

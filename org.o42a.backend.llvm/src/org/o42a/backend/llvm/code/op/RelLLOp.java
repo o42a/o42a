@@ -69,7 +69,7 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 				resultId,
 				from.getAllocClass(),// Points to the same allocation unit.
 				nextPtr,
-				llvm.instr(offsetBy(
+				llvm.instr(nextPtr, offsetBy(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),

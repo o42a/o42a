@@ -59,7 +59,7 @@ public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
 		return createLoaded(
 				resultId,
 				nextPtr,
-				llvm.instr(atomicRMW(
+				llvm.instr(nextPtr, atomicRMW(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),

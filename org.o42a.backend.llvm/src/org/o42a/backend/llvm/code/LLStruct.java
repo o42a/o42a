@@ -290,13 +290,18 @@ public class LLStruct<S extends StructOp<S>>
 		final NativeBuffer ids = code.getModule().ids();
 
 		if (enclosing.getTypePtr() == this.type.getTypePtr()) {
-			return code.instr(field(
-					code.nextPtr(),
-					code.nextInstr(),
-					ids.write(id),
-					ids.length(),
-					getNativePtr(),
-					allocation.llvmId().getIndex()));
+
+			final long nextPtr = code.nextPtr();
+
+			return code.instr(
+					nextPtr,
+					field(
+							nextPtr,
+							code.nextInstr(),
+							ids.write(id),
+							ids.length(),
+							getNativePtr(),
+							allocation.llvmId().getIndex()));
 		}
 
 		final ID enclosingId =
@@ -309,14 +314,17 @@ public class LLStruct<S extends StructOp<S>>
 		}
 
 		final int index = allocation.llvmId().getIndex();
+		final long nextPtr = code.nextPtr();
 
-		return code.instr(field(
-				code.nextPtr(),
-				code.nextInstr(),
-				ids.write(enclosingId.anonymous(index)),
-				ids.length(),
-				enclosingField,
-				index));
+		return code.instr(
+				nextPtr,
+				field(
+						nextPtr,
+						code.nextInstr(),
+						ids.write(enclosingId.anonymous(index)),
+						ids.length(),
+						enclosingField,
+						index));
 	}
 
 }

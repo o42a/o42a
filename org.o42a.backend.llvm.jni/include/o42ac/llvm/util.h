@@ -36,15 +36,31 @@ template<typename T> inline jlong to_ptr(T *const object) {
 	return reinterpret_cast<jlong>(object);
 }
 
-inline jlong to_instr_ptr(Value *const value) {
+inline jlong to_instr_ptr(
+		const BasicBlock *const block,
+		const Value *const value) {
 
-	const jlong ptr = to_ptr<Value>(value);
+	const jlong ptr = to_ptr<const Value>(value);
+	const Instruction *const instr = dyn_cast<const Instruction>(value);
 
-	return isa<Instruction>(value) ? ptr : ptr | 1;
+	if (instr && instr->getParent() == block) {
+		return ptr;
+	}
+
+	return ptr | 1;
 }
 
-inline jlong to_instr_ptr(Instruction *const instr) {
-	return to_ptr<Value>(instr);
+inline jlong to_instr_ptr(
+		const BasicBlock *const block,
+		const Instruction *const instr) {
+
+	const jlong ptr = to_ptr<const Value>(instr);
+
+	if (instr->getParent() == block) {
+		return ptr;
+	}
+
+	return ptr | 1;
 }
 
 

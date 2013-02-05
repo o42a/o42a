@@ -64,7 +64,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				llvm.instr(toPtr(
+				llvm.instr(nextPtr, toPtr(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -84,7 +84,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				llvm.instr(toInt(
+				llvm.instr(nextPtr, toInt(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -105,7 +105,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				llvm.instr(toInt(
+				llvm.instr(nextPtr, toInt(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -126,7 +126,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				llvm.instr(toInt(
+				llvm.instr(nextPtr, toInt(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -147,7 +147,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				llvm.instr(toInt(
+				llvm.instr(nextPtr, toInt(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -168,7 +168,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				llvm.instr(toFp32(
+				llvm.instr(nextPtr, toFp32(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -188,7 +188,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				llvm.instr(toFp64(
+				llvm.instr(nextPtr, toFp64(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -208,7 +208,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				llvm.instr(toRelPtr(
+				llvm.instr(nextPtr, toRelPtr(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),

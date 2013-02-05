@@ -66,7 +66,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_stackSave(
 					builder.GetInsertBlock()->getParent()->getParent());
 	Value *stackState = builder.CreateCall(module->getStackSaveFunc(), "stack");
 
-	return to_instr_ptr(stackState);
+	return to_instr_ptr(builder.GetInsertBlock(), stackState);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_stackRestore(
@@ -82,9 +82,11 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_stackRestore(
 					builder.GetInsertBlock()->getParent()->getParent());
 	Value *stackState = from_ptr<Value>(stackPtr);
 
-	return to_ptr<Value>(builder.CreateCall(
-			module->getStackRestoreFunc(),
-			stackState));
+	return to_instr_ptr(
+			builder.GetInsertBlock(),
+			builder.CreateCall(
+					module->getStackRestoreFunc(),
+					stackState));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_go(
@@ -97,7 +99,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_go(
 	MAKE_BUILDER;
 	BasicBlock *target = from_ptr<BasicBlock>(targetPtr);
 
-	return to_instr_ptr(builder.CreateBr(target));
+	return to_instr_ptr(builder.GetInsertBlock(), builder.CreateBr(target));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_choose(
@@ -114,7 +116,9 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_choose(
 	BasicBlock *trueBlock = from_ptr<BasicBlock>(truePtr);
 	BasicBlock *falseBlock = from_ptr<BasicBlock>(falsePtr);
 
-	return to_instr_ptr(builder.CreateCondBr(condition, trueBlock, falseBlock));
+	return to_instr_ptr(
+			builder.GetInsertBlock(),
+			builder.CreateCondBr(condition, trueBlock, falseBlock));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_integer(
@@ -245,7 +249,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocatePtr(
 	result->setAlignment(
 			module->getTargetDataLayout()->getPointerPrefAlignment());
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
@@ -269,7 +273,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
 	result->setAlignment(
 			module->getTargetDataLayout()->getPointerPrefAlignment());
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
@@ -282,6 +286,13 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 		jlong typePtr,
 		jshort alignment) {
 
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	Instruction *instr = static_cast<Instruction*>(from_ptr<Value>(instrPtr));
+
+	if (instr && instr->getParent() != block) {
+		errs() << instr->getParent()->getName() << " != " << block->getName() << "\n";
+	}
+
 	MAKE_BUILDER;
 	Type *type = from_ptr<Type>(typePtr);
 	AllocaInst *result = builder.CreateAlloca(
@@ -291,7 +302,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 
 	result->setAlignment(alignment);
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
@@ -319,7 +330,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 	phi->addIncoming(value1, block1);
 	phi->addIncoming(value2, block2);
 
-	return to_instr_ptr(phi);
+	return to_instr_ptr(builder.GetInsertBlock(), phi);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_acquireBarrier(
@@ -328,7 +339,9 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_acquireBarrier(
 		jlong blockPtr,
 		jlong instrPtr) {
 	MAKE_BUILDER;
-	return to_instr_ptr(builder.CreateFence(Acquire));
+	return to_instr_ptr(
+			builder.GetInsertBlock(),
+			builder.CreateFence(Acquire));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_releaseBarrier(
@@ -337,7 +350,9 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_releaseBarrier(
 		jlong blockPtr,
 		jlong instrPtr) {
 	MAKE_BUILDER;
-	return to_instr_ptr(builder.CreateFence(Release));
+	return to_instr_ptr(
+			builder.GetInsertBlock(),
+			builder.CreateFence(Release));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_fullBarrier(
@@ -346,7 +361,9 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_fullBarrier(
 		jlong blockPtr,
 		jlong instrPtr) {
 	MAKE_BUILDER;
-	return to_instr_ptr(builder.CreateFence(SequentiallyConsistent));
+	return to_instr_ptr(
+			builder.GetInsertBlock(),
+			builder.CreateFence(SequentiallyConsistent));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_select(
@@ -370,7 +387,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_select(
 			value2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_instr_ptr(result);
+	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_returnVoid(
@@ -378,10 +395,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_returnVoid(
 		jclass,
 		jlong blockPtr,
 		jlong instrPtr) {
-
 	MAKE_BUILDER;
-
-	return to_instr_ptr(builder.CreateRetVoid());
+	return to_instr_ptr(builder.GetInsertBlock(), builder.CreateRetVoid());
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_returnValue(
@@ -394,5 +409,5 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_returnValue(
 	MAKE_BUILDER;
 	Value *result = from_ptr<Value>(resultPtr);
 
-	return to_instr_ptr(builder.CreateRet(result));
+	return to_instr_ptr(builder.GetInsertBlock(), builder.CreateRet(result));
 }
