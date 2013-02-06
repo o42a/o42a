@@ -20,7 +20,7 @@
 package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.expression;
-import static org.o42a.util.string.Characters.MINUS_SIGN;
+import static org.o42a.util.string.Characters.*;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BinaryNode;
@@ -119,10 +119,14 @@ public class BinaryParser implements Parser<BinaryNode> {
 				context.acceptAll();
 				break;
 			case '*':
+			case MULTIPLICATION_SIGN:
+			case DOT_OPERATOR:
 				operator = BinaryOperator.MULTIPLY;
 				context.acceptAll();
 				break;
 			case '/':
+			case DIVISION_SIGN:
+			case DIVISION_SLASH:
 				operator = BinaryOperator.DIVIDE;
 				context.acceptAll();
 				break;
@@ -173,6 +177,18 @@ public class BinaryParser implements Parser<BinaryNode> {
 				break;
 			case '~':
 				operator = BinaryOperator.SUFFIX;
+				context.acceptAll();
+				break;
+			case NOT_EQUAL_TO:
+				operator = BinaryOperator.NOT_EQUAL;
+				context.acceptAll();
+				break;
+			case LESS_THAN_OR_EQUAL_TO:
+				operator = BinaryOperator.LESS_OR_EQUAL;
+				context.acceptAll();
+				break;
+			case GREATER_THAN_OR_EQUAL_TO:
+				operator = BinaryOperator.GREATER_OR_EQUAL;
 				context.acceptAll();
 				break;
 			default:

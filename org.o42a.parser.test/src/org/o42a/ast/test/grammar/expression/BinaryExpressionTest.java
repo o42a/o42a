@@ -28,23 +28,23 @@ public class BinaryExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void hyphenSubtract() {
-		assertOperator(BinaryOperator.SUBTRACT, "-");
-	}
-
-	@Test
 	public void subtract() {
+		assertOperator(BinaryOperator.SUBTRACT, "-");
 		assertOperator(BinaryOperator.SUBTRACT, "\u2212");
 	}
 
 	@Test
 	public void multiply() {
 		assertOperator(BinaryOperator.MULTIPLY, "*");
+		assertOperator(BinaryOperator.MULTIPLY, "\u00d7");
+		assertOperator(BinaryOperator.MULTIPLY, "\u22c5");
 	}
 
 	@Test
 	public void divide() {
 		assertOperator(BinaryOperator.DIVIDE, "/");
+		assertOperator(BinaryOperator.DIVIDE, "\u00f7");
+		assertOperator(BinaryOperator.DIVIDE, "\u2215");
 	}
 
 	@Test
@@ -60,6 +60,7 @@ public class BinaryExpressionTest extends GrammarTestCase {
 	@Test
 	public void notEqual() {
 		assertOperator(BinaryOperator.NOT_EQUAL, "<>");
+		assertOperator(BinaryOperator.NOT_EQUAL, "\u2260");
 	}
 
 	@Test
@@ -70,6 +71,7 @@ public class BinaryExpressionTest extends GrammarTestCase {
 	@Test
 	public void lessOrEqual() {
 		assertOperator(BinaryOperator.LESS_OR_EQUAL, "<=");
+		assertOperator(BinaryOperator.LESS_OR_EQUAL, "\u2264");
 	}
 
 	@Test
@@ -80,6 +82,7 @@ public class BinaryExpressionTest extends GrammarTestCase {
 	@Test
 	public void greaterOrEqual() {
 		assertOperator(BinaryOperator.GREATER_OR_EQUAL, ">=");
+		assertOperator(BinaryOperator.GREATER_OR_EQUAL, "\u2265");
 	}
 
 	@Test

@@ -62,6 +62,17 @@ public class UnaryExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void notSign() {
+
+		final UnaryNode result = parse("\u00acfoo");
+
+		assertEquals(UnaryOperator.NOT, result.getOperator());
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 4));
+		assertThat(result.getSign(), hasRange(0, 1));
+	}
+
+	@Test
 	public void isTrue() {
 
 		final UnaryNode result = parse("++foo");
