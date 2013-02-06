@@ -107,9 +107,10 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	public void unaryExpression() {
 		assertThat(parse("+foo"), is(UnaryNode.class));
 		assertThat(parse("-foo"), is(UnaryNode.class));
-		assertThat(parse("\u2212 foo"), is(UnaryNode.class));
+		assertThat(parse("−foo"), is(UnaryNode.class));
 		assertThat(parse("++foo"), is(UnaryNode.class));
 		assertThat(parse("--foo"), is(UnaryNode.class));
+		assertThat(parse("¬foo"), is(UnaryNode.class));
 		assertThat(parse("/foo"), is(UnaryNode.class));
 		assertThat(parse("//foo"), is(UnaryNode.class));
 		assertThat(parse("+foo\\ bar"), is(UnaryNode.class));
@@ -198,6 +199,7 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("123"), is(NumberNode.class));
 		assertThat(parse("+ 123"), is(NumberNode.class));
 		assertThat(parse("- 123"), is(NumberNode.class));
+		assertThat(parse("− 123"), is(NumberNode.class));
 	}
 
 	@Test
@@ -205,6 +207,7 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("123.456"), is(NumberNode.class));
 		assertThat(parse("+ 123e123"), is(NumberNode.class));
 		assertThat(parse("- 123.4e-56"), is(NumberNode.class));
+		assertThat(parse("− 123.4e-56"), is(NumberNode.class));
 	}
 
 	@Test
@@ -212,6 +215,7 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("0xf123"), is(NumberNode.class));
 		assertThat(parse("+0x123"), is(NumberNode.class));
 		assertThat(parse("-0x123"), is(NumberNode.class));
+		assertThat(parse("−0x123"), is(NumberNode.class));
 	}
 
 	@Test
@@ -219,6 +223,7 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("0b1001"), is(NumberNode.class));
 		assertThat(parse("+0x101"), is(NumberNode.class));
 		assertThat(parse("-0x001"), is(NumberNode.class));
+		assertThat(parse("−0x001"), is(NumberNode.class));
 	}
 
 	private Node parse(String... text) {

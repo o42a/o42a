@@ -20,7 +20,7 @@
 package org.o42a.parser.grammar.clause;
 
 import static org.o42a.parser.Grammar.ref;
-import static org.o42a.util.string.Characters.MINUS_SIGN;
+import static org.o42a.util.string.Characters.*;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BinaryNode;
@@ -78,10 +78,14 @@ final class BinaryClauseIdParser implements Parser<BinaryNode> {
 				context.acceptAll();
 				break;
 			case '*':
+			case MULTIPLICATION_SIGN:
+			case DOT_OPERATOR:
 				operator = BinaryOperator.MULTIPLY;
 				context.acceptAll();
 				break;
 			case '/':
+			case DIVISION_SIGN:
+			case DIVISION_SLASH:
 				operator = BinaryOperator.DIVIDE;
 				context.acceptAll();
 				break;

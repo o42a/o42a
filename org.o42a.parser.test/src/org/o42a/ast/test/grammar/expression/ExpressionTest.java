@@ -84,6 +84,28 @@ public class ExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void binary() {
+		to(BinaryNode.class, parse("a + b"));
+		to(BinaryNode.class, parse("a - b"));
+		to(BinaryNode.class, parse("a − b"));
+		to(BinaryNode.class, parse("a * b"));
+		to(BinaryNode.class, parse("a × b"));
+		to(BinaryNode.class, parse("a ⋅ b"));
+		to(BinaryNode.class, parse("a / b"));
+		to(BinaryNode.class, parse("a ÷ b"));
+		to(BinaryNode.class, parse("a ∕ b"));
+		to(BinaryNode.class, parse("a == b"));
+		to(BinaryNode.class, parse("a <> b"));
+		to(BinaryNode.class, parse("a ≠ b"));
+		to(BinaryNode.class, parse("a > b"));
+		to(BinaryNode.class, parse("a >= b"));
+		to(BinaryNode.class, parse("a ≥ b"));
+		to(BinaryNode.class, parse("a < b"));
+		to(BinaryNode.class, parse("a <= b"));
+		to(BinaryNode.class, parse("a ≤ b"));
+	}
+
+	@Test
 	public void binaryWithMacroExpansion() {
 		to(BinaryNode.class, parse("#a + b"));
 		to(BinaryNode.class, parse("a + #b"));

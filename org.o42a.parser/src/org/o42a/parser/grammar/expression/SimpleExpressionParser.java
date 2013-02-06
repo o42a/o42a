@@ -21,6 +21,7 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.*;
 import static org.o42a.util.string.Characters.MINUS_SIGN;
+import static org.o42a.util.string.Characters.NOT_SIGN;
 import static org.o42a.util.string.Characters.isDigit;
 
 import org.o42a.ast.atom.NumberNode;
@@ -93,6 +94,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 			return context.parse(unary());
 		case '/':
+		case NOT_SIGN:
 			return context.parse(unary());
 		case '#':
 

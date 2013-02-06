@@ -22,6 +22,7 @@ package org.o42a.parser.grammar.expression;
 import static org.o42a.parser.Grammar.macroExpansion;
 import static org.o42a.parser.Grammar.simpleExpression;
 import static org.o42a.util.string.Characters.MINUS_SIGN;
+import static org.o42a.util.string.Characters.NOT_SIGN;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -78,6 +79,10 @@ public class UnaryParser implements Parser<UnaryNode> {
 			break;
 		case '#':
 			return context.parse(macroExpansion());
+		case NOT_SIGN:
+			operator = UnaryOperator.NOT;
+			context.acceptAll();
+			break;
 		default:
 			return null;
 		}
