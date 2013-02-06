@@ -44,7 +44,7 @@ public class ContentTest extends GrammarTestCase {
 
 		final DeclaratorNode decl1 = singleStatement(
 				DeclaratorNode.class,
-				singleClause(ParenthesesNode.class, call1));
+				singlePhrasePart(ParenthesesNode.class, call1));
 
 		assertThat(decl1.getDeclarable(), isName("foo"));
 		assertThat(decl1.getDefinition(), isName("bar"));
@@ -55,7 +55,7 @@ public class ContentTest extends GrammarTestCase {
 
 		final DeclaratorNode decl2 = singleStatement(
 				DeclaratorNode.class,
-				singleClause(ParenthesesNode.class, call2));
+				singlePhrasePart(ParenthesesNode.class, call2));
 
 		assertThat(decl2.getDeclarable(), isName("bar"));
 		assertThat(decl2.getDefinition(), isName("foo"));

@@ -16,6 +16,8 @@ import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.o42a.ast.Node;
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.atom.SignType;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.phrase.PhrasePartNode;
@@ -140,6 +142,10 @@ public class GrammarTestCase {
 		return statement(type, sentence, 0, 1);
 	}
 
+	public static <S extends SignType> S signType(SignNode<S> node) {
+		return node == null ? null : node.getType();
+	}
+
 	public static SentenceNode singleSentence(BlockNode<?> block) {
 
 		final SentenceNode[] sentences = block.getContent();
@@ -184,26 +190,26 @@ public class GrammarTestCase {
 		return to(type, conjunction[index].getStatement());
 	}
 
-	public static <T extends PhrasePartNode> T singleClause(
+	public static <T extends PhrasePartNode> T singlePhrasePart(
 			Class<? extends T> type,
 			PhraseNode phrase) {
-		return clause(type, phrase, 0, 1);
+		return phrasePart(type, phrase, 0, 1);
 	}
 
-	public static <T extends PhrasePartNode> T clause(
+	public static <T extends PhrasePartNode> T phrasePart(
 			Class<? extends T> type,
 			PhraseNode phrase,
 			int index,
 			int length) {
 
-		final PhrasePartNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] parts = phrase.getParts();
 
 		assertEquals(
-				"Wrong numer of phrase clauses: " + phrase,
+				"Wrong numer of phrase parts: " + phrase,
 				length,
-				clauses.length);
+				parts.length);
 
-		return to(type, clauses[index]);
+		return to(type, parts[index]);
 	}
 
 	@Rule

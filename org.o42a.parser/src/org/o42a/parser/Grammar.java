@@ -27,6 +27,7 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.InclusionNode;
+import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
@@ -42,6 +43,7 @@ import org.o42a.parser.grammar.field.DeclarableAdapterParser;
 import org.o42a.parser.grammar.field.DeclaratorParser;
 import org.o42a.parser.grammar.file.FileParser;
 import org.o42a.parser.grammar.file.InclusionParser;
+import org.o42a.parser.grammar.phrase.IntervalParser;
 import org.o42a.parser.grammar.phrase.PhraseParser;
 import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
@@ -182,6 +184,10 @@ public class Grammar {
 
 	public static final Parser<PhraseNode> phrase(ExpressionNode prefix) {
 		return new PhraseParser(prefix);
+	}
+
+	public static final Parser<IntervalNode> interval() {
+		return IntervalParser.INTERVAL;
 	}
 
 	public static final Parser<UnaryNode> unary() {

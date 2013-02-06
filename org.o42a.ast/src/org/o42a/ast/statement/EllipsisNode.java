@@ -19,25 +19,25 @@
 */
 package org.o42a.ast.statement;
 
+import org.o42a.ast.atom.HorizontalEllipsis;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.ref.RefNode;
 
 
 public class EllipsisNode extends AbstractStatementNode {
 
-	private final SignNode<Mark> mark;
+	private final SignNode<HorizontalEllipsis> mark;
 	private final NameNode target;
 
-	public EllipsisNode(SignNode<Mark> mark, NameNode target) {
+	public EllipsisNode(SignNode<HorizontalEllipsis> mark, NameNode target) {
 		super(mark.getStart(), end(mark, target));
 		this.mark = mark;
 		this.target = target;
 	}
 
-	public final SignNode<Mark> getMark() {
+	public final SignNode<HorizontalEllipsis> getMark() {
 		return this.mark;
 	}
 
@@ -66,18 +66,5 @@ public class EllipsisNode extends AbstractStatementNode {
 		if (this.target != null) {
 			this.target.printContent(out);
 		}
-	}
-
-	public enum Mark implements SignType {
-
-		ELLIPSIS() {
-
-			@Override
-			public String getSign() {
-				return "...";
-			}
-
-		}
-
 	}
 }

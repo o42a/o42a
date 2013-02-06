@@ -76,11 +76,11 @@ class ClauseExpressionVisitor
 	@Override
 	public ClauseBuilder visitPhrase(PhraseNode phrase, ClauseBuilder p) {
 
-		final PhrasePartNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] parts = phrase.getParts();
 
-		if (clauses.length == 1) {
+		if (parts.length == 1) {
 
-			final ParenthesesNode parentheses = extractParentheses(clauses[0]);
+			final ParenthesesNode parentheses = extractParentheses(parts[0]);
 
 			if (parentheses != null) {
 

@@ -30,6 +30,7 @@ import org.o42a.ast.field.DeclarableNodeVisitor;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.file.SectionTypeDefinitionNode;
+import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.ref.TypeRefNode;
@@ -92,6 +93,11 @@ public abstract class NodeVisitor<R, P>
 
 	public R visitArgument(ArgumentNode argument, P p) {
 		return visitPart(argument, p);
+	}
+
+	@Override
+	public R visitInterval(IntervalNode interval, P p) {
+		return visitPart(interval, p);
 	}
 
 	@Override

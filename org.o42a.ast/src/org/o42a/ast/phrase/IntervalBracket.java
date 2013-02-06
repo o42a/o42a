@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,27 +19,45 @@
 */
 package org.o42a.ast.phrase;
 
-import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.atom.NumberNode;
-import org.o42a.ast.expression.*;
+import org.o42a.ast.atom.SignType;
 
 
-public interface PhrasePartNodeVisitor<R, P> {
+public enum IntervalBracket implements SignType {
 
-	R visitName(NameNode name, P p);
+	LEFT_OPEN_BRACKET() {
 
-	R visitBraces(BracesNode braces, P p);
+		@Override
+		public String getSign() {
+			return "(";
+		}
 
-	R visitParentheses(ParenthesesNode parentheses, P p);
+	},
 
-	R visitBrackets(BracketsNode brackets, P p);
+	LEFT_CLOSED_BRACKET() {
 
-	R visitText(TextNode text, P p);
+		@Override
+		public String getSign() {
+			return "[";
+		}
 
-	R visitNumber(NumberNode number, P p);
+	},
 
-	R visitInterval(IntervalNode interval, P p);
+	RIGHT_OPEN_BRACKET() {
 
-	R visitTypeDefinition(TypeDefinitionNode definition, P p);
+		@Override
+		public String getSign() {
+			return ")";
+		}
+
+	},
+
+	RIGHT_CLOSED_BRACKET() {
+
+		@Override
+		public String getSign() {
+			return "]";
+		}
+
+	}
 
 }

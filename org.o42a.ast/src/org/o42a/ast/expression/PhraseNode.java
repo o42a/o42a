@@ -30,22 +30,22 @@ import org.o42a.ast.type.TypeNode;
 public class PhraseNode extends AbstractExpressionNode {
 
 	private final ExpressionNode prefix;
-	private final PhrasePartNode[] clauses;
+	private final PhrasePartNode[] parts;
 
 	public PhraseNode(
 			ExpressionNode prefix,
-			PhrasePartNode[] clauses) {
-		super(prefix.getStart(), lastNode(clauses).getEnd());
+			PhrasePartNode[] parts) {
+		super(prefix.getStart(), lastNode(parts).getEnd());
 		this.prefix = prefix;
-		this.clauses = clauses;
+		this.parts = parts;
 	}
 
 	public final ExpressionNode getPrefix() {
 		return this.prefix;
 	}
 
-	public final PhrasePartNode[] getClauses() {
-		return this.clauses;
+	public final PhrasePartNode[] getParts() {
+		return this.parts;
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class PhraseNode extends AbstractExpressionNode {
 
 		boolean prevName = true;
 
-		for (PhrasePartNode clause : this.clauses) {
+		for (PhrasePartNode clause : this.parts) {
 			if (clause instanceof NameNode) {
 				if (prevName) {
 					out.append(" _ ");

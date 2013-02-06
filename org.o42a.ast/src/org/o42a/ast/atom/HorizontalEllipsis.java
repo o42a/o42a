@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,29 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.phrase;
-
-import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.atom.NumberNode;
-import org.o42a.ast.expression.*;
+package org.o42a.ast.atom;
 
 
-public interface PhrasePartNodeVisitor<R, P> {
+public enum HorizontalEllipsis implements SignType {
 
-	R visitName(NameNode name, P p);
+	HORIZONTAL_ELLIPSIS() {
 
-	R visitBraces(BracesNode braces, P p);
+		@Override
+		public String getSign() {
+			return "...";
+		}
 
-	R visitParentheses(ParenthesesNode parentheses, P p);
-
-	R visitBrackets(BracketsNode brackets, P p);
-
-	R visitText(TextNode text, P p);
-
-	R visitNumber(NumberNode number, P p);
-
-	R visitInterval(IntervalNode interval, P p);
-
-	R visitTypeDefinition(TypeDefinitionNode definition, P p);
+	}
 
 }

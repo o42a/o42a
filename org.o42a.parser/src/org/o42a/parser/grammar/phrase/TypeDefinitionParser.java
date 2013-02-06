@@ -30,9 +30,9 @@ import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class TypeDefinitionParser implements Parser<TypeDefinitionNode> {
+final class TypeDefinitionParser implements Parser<TypeDefinitionNode> {
 
-	public static final TypeDefinitionParser TYPE_DEFINITION =
+	static final TypeDefinitionParser TYPE_DEFINITION =
 			new TypeDefinitionParser();
 
 	private TypeDefinitionParser() {
