@@ -26,6 +26,8 @@ import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.atom.SignType;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
@@ -53,6 +55,10 @@ public enum Interpreter {
 	PATH_COMPILER_IP(PATH_COMPILER_REF_IP),
 	CLAUSE_DEF_IP(CLAUSE_DEF_REF_IP),
 	CLAUSE_DECL_IP(CLAUSE_DECL_REF_IP);
+
+	public static <S extends SignType> S signType(SignNode<S> node) {
+		return node != null ? node.getType() : null;
+	}
 
 	private final RefInterpreter refIp;
 	private final TypeInterpreter typeIp = new TypeInterpreter(this);

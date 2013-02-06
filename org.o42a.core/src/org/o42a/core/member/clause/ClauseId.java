@@ -99,6 +99,102 @@ public enum ClauseId {
 
 	},
 
+	OPEN_INTERVAL_START("open interval start", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "(*...)";
+			}
+			return '(' + name.toString() + "...)";
+		}
+
+	},
+
+	LEFT_OPEN_INTERVAL_START("left-open interval start", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "(*...]";
+			}
+			return '(' + name.toString() + "...]";
+		}
+
+	},
+
+	RIGHT_OPEN_INTERVAL_START("right-open interval start", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "[*...)";
+			}
+			return '[' + name.toString() + "...)";
+		}
+
+	},
+
+	CLOSED_INTERVAL_START("closed interval start", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "[*...]";
+			}
+			return '[' + name.toString() + "...]";
+		}
+
+	},
+
+	OPEN_INTERVAL_END("open interval end", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "(...*)";
+			}
+			return "(..." + name + ')';
+		}
+
+	},
+
+	LEFT_OPEN_INTERVAL_END("left-open interval end", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "(...*]";
+			}
+			return "(..." + name + ']';
+		}
+
+	},
+
+	RIGHT_OPEN_INTERVAL_END("right-open interval end", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "[...*)";
+			}
+			return "[..." + name + ')';
+		}
+
+	},
+
+	CLOSED_INTERVAL_END("closed interval end", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "[...*]";
+			}
+			return "[..." + name + ']';
+		}
+
+	},
+
 	PLUS("unary plus operator", true) {
 
 		@Override
