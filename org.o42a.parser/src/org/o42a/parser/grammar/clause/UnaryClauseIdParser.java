@@ -20,7 +20,7 @@
 package org.o42a.parser.grammar.clause;
 
 import static org.o42a.parser.Grammar.ref;
-import static org.o42a.util.string.Characters.MINUS;
+import static org.o42a.util.string.Characters.MINUS_SIGN;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.UnaryNode;
@@ -49,7 +49,7 @@ final class UnaryClauseIdParser implements Parser<UnaryNode> {
 			operator = UnaryOperator.PLUS;
 			break;
 		case '-':
-		case MINUS:
+		case MINUS_SIGN:
 			operator = UnaryOperator.MINUS;
 			break;
 		default:

@@ -20,7 +20,7 @@
 package org.o42a.parser.grammar.clause;
 
 import static org.o42a.parser.Grammar.ref;
-import static org.o42a.util.string.Characters.MINUS;
+import static org.o42a.util.string.Characters.MINUS_SIGN;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BinaryNode;
@@ -73,7 +73,7 @@ final class BinaryClauseIdParser implements Parser<BinaryNode> {
 
 			switch (context.next()) {
 			case '-':
-			case MINUS:
+			case MINUS_SIGN:
 				operator = BinaryOperator.SUBTRACT;
 				context.acceptAll();
 				break;
