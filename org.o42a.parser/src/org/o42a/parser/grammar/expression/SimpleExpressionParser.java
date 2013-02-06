@@ -20,7 +20,7 @@
 package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.*;
-import static org.o42a.util.string.Characters.MINUS;
+import static org.o42a.util.string.Characters.MINUS_SIGN;
 import static org.o42a.util.string.Characters.isDigit;
 
 import org.o42a.ast.atom.NumberNode;
@@ -83,7 +83,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		switch (c) {
 		case '+':
 		case '-':
-		case MINUS:
+		case MINUS_SIGN:
 
 			final NumberNode number = context.parse(number());
 

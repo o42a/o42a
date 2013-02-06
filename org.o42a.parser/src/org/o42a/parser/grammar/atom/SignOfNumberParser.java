@@ -44,7 +44,7 @@ final class SignOfNumberParser
 		case '+':
 			sign = SignOfNumber.POSITIVE_NUMBER;
 			break;
-		case Characters.MINUS:
+		case Characters.MINUS_SIGN:
 		case '-':
 			sign = SignOfNumber.NEGATIVE_NUMBER;
 			break;

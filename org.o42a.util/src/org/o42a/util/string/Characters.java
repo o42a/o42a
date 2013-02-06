@@ -22,10 +22,54 @@ package org.o42a.util.string;
 
 public final class Characters {
 
+	public static final int EXCLAMATION_MARK = '!';
+	public static final int QUOTATION_MARK = '"';
+	public static final int NUMBER_SIGN = '#';
+	public static final int DOLLAR_SIGN = '$';
+	public static final int PERCENT_SIGN = '%';
+	public static final int AMPERSAND = '&';
+	public static final int APOSTROPHE = '\'';
+	public static final int LEFT_PARENTHESIS = '(';
+	public static final int RIGHT_PARENTHESIS = ')';
+	public static final int ASTERISK = '*';
+	public static final int PLUS_SIGN = '+';
+	public static final int COMMA = ',';
+	public static final int HYPHEN_MINUS = '-';
+	public static final int FULL_STOP = '.';
+	public static final int SOLIDUS = '/';
+	public static final int COLON = ':';
+	public static final int SEMICOLON = ';';
+	public static final int LESS_THAN_SIGN = '<';
+	public static final int EQUALS_SIGN = '=';
+	public static final int GREATER_THAN_SIGN = '>';
+	public static final int QUESTION_MARK = '?';
+	public static final int COMMERCIAL_AT = '@';
+	public static final int LEFT_SQUARE_BRACKET = '[';
+	public static final int REVERSE_SOLIDUS = '\\';
+	public static final int RIGHT_SQUARE_BRACKET = ']';
+	public static final int CIRCUMFLEX_ACCENT = '^';
+	public static final int LOW_LINE = '_';
+	public static final int GRAVE_ACCENT = '`';
+	public static final int LEFT_CURLY_BRACKET = '{';
+	public static final int VERTICAL_LINE = '|';
+	public static final int RIGHT_CURLY_BRACKET = '}';
+	public static final int TILDE = '~';
+
 	public static final int HYPHEN = 0x2010;
 	public static final int NON_BREAKING_HYPHEN = 0x2011;
 	public static final int HORIZONTAL_ELLIPSIS = 0x2026;
-	public static final int MINUS = 0x2212;
+
+	public static final int NOT_SIGN = 0x00ac;
+	public static final int MULTIPLICATION_SIGN = 0x00d7;
+	public static final int DOT_OPERATOR = 0x22c5;
+	public static final int DIVISION_SIGN = 0x00f7;
+	public static final int DIVISION_SLASH = 0x2215;
+	public static final int MINUS_SIGN = 0x2212;
+
+	public static final int NOT_EQUAL_TO = 0x2260;
+	public static final int LESS_THAN_OR_EQUAL_TO = 0x2264;
+	public static final int GREATER_THAN_OR_EQUAL_TO = 0x2265;
+
 
 	public static boolean isDigit(int c) {
 		return '0' <= c && c <= '9';

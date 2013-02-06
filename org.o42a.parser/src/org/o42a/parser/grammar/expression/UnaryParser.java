@@ -21,7 +21,7 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.macroExpansion;
 import static org.o42a.parser.Grammar.simpleExpression;
-import static org.o42a.util.string.Characters.MINUS;
+import static org.o42a.util.string.Characters.MINUS_SIGN;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -58,7 +58,7 @@ public class UnaryParser implements Parser<UnaryNode> {
 			}
 			break;
 		case '-':
-		case MINUS:
+		case MINUS_SIGN:
 			if (context.next() == '-') {
 				operator = UnaryOperator.NOT;
 				context.acceptAll();
