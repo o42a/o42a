@@ -25,6 +25,7 @@ import static org.o42a.util.string.Characters.MINUS_SIGN;
 
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.BinaryNode;
+import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.parser.Parser;
@@ -42,7 +43,16 @@ final class ClauseIdParser implements Parser<ClauseIdNode> {
 	public ClauseIdNode parse(ParserContext context) {
 		switch (context.next()) {
 		case '[':
+
+			final IntervalNode leftClosedInterval = context.parse(interval());
+
+			if (leftClosedInterval != null) {
+				return leftClosedInterval;
+			}
+
 			return context.parse(brackets());
+		case '(':
+			return context.parse(interval());
 		case '{':
 			return context.parse(braces());
 		case '+':

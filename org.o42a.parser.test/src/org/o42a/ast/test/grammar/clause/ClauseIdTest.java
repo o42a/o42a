@@ -8,6 +8,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.o42a.ast.phrase.IntervalBracket.*;
 import static org.o42a.ast.test.grammar.clause.ClauseDeclaratorTest.checkNothingReused;
 import static org.o42a.ast.test.grammar.clause.ClauseDeclaratorTest.checkParentheses;
 import static org.o42a.parser.Grammar.DECLARATIVE;
@@ -16,6 +17,7 @@ import org.junit.Test;
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
@@ -315,6 +317,42 @@ public class ClauseIdTest extends GrammarTestCase {
 				ScopeType.IMPLIED,
 				to(ScopeRefNode.class, result.getClauseId()).getType());
 		assertThat(result.getContent(), isName("foo"));
+		checkNothingReused(result);
+		checkParentheses(result);
+	}
+
+	@Test
+	public void openInterval() {
+
+		final ClauseDeclaratorNode result = parse("<(...)> bar");
+		final IntervalNode interval =
+				to(IntervalNode.class, result.getClauseId());
+
+		assertFalse(result.requiresContinuation());
+		assertThat(result.getContent(), isName("bar"));
+		assertThat(signType(interval.getLeftBracket()), is(LEFT_OPEN_BRACKET));
+		assertThat(
+				signType(interval.getRightBracket()),
+				is(RIGHT_OPEN_BRACKET));
+		checkNothingReused(result);
+		checkParentheses(result);
+	}
+
+	@Test
+	public void closedInterval() {
+
+		final ClauseDeclaratorNode result = parse("<[foo...*]> bar");
+		final IntervalNode interval =
+				to(IntervalNode.class, result.getClauseId());
+
+		assertFalse(result.requiresContinuation());
+		assertThat(result.getContent(), isName("bar"));
+		assertThat(
+				signType(interval.getLeftBracket()),
+				is(LEFT_CLOSED_BRACKET));
+		assertThat(
+				signType(interval.getRightBracket()),
+				is(RIGHT_CLOSED_BRACKET));
 		checkNothingReused(result);
 		checkParentheses(result);
 	}

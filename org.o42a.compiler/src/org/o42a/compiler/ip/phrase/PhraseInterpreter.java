@@ -211,8 +211,8 @@ public final class PhraseInterpreter {
 
 		Phrase result = phrase;
 
-		for (PhrasePartNode clause : node.getClauses()) {
-			result = clause.accept(PHRASE_PART_VISITOR, result);
+		for (PhrasePartNode part : node.getParts()) {
+			result = part.accept(PHRASE_PART_VISITOR, result);
 		}
 
 		return result;

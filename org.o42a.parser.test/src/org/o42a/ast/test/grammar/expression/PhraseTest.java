@@ -29,7 +29,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(singleStatement(
 		MemberRefNode.class,
-		singleClause(ParenthesesNode.class, result)), isName("bar"));
+		singlePhrasePart(ParenthesesNode.class, result)), isName("bar"));
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class PhraseTest extends GrammarTestCase {
 				"bar");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(1));
+		assertThat(result.getParts().length, is(1));
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class PhraseTest extends GrammarTestCase {
 				"_ bar");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(2));
+		assertThat(result.getParts().length, is(2));
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(singleStatement(
 		MemberRefNode.class,
-		singleClause(BracesNode.class, result)), isName("bar"));
+		singlePhrasePart(BracesNode.class, result)), isName("bar"));
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class PhraseTest extends GrammarTestCase {
 				"bar");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(1));
+		assertThat(result.getParts().length, is(1));
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class PhraseTest extends GrammarTestCase {
 				"_ bar");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(2));
+		assertThat(result.getParts().length, is(2));
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class PhraseTest extends GrammarTestCase {
 		assertThat(result.getPrefix(), isName("foo"));
 
 		final ArgumentNode[] arguments =
-				singleClause(BracketsNode.class, result).getArguments();
+				singlePhrasePart(BracketsNode.class, result).getArguments();
 
 		assertEquals(1, arguments.length);
 		assertThat(arguments[0].getValue(), isName("bar"));
@@ -110,7 +110,7 @@ public class PhraseTest extends GrammarTestCase {
 				"bar");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(1));
+		assertThat(result.getParts().length, is(1));
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class PhraseTest extends GrammarTestCase {
 				"_ bar");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(2));
+		assertThat(result.getParts().length, is(2));
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class PhraseTest extends GrammarTestCase {
 		assertThat(result.getPrefix(), isName("foo"));
 
 		final StringNode[] literals =
-				singleClause(TextNode.class, result).getLiterals();
+				singlePhrasePart(TextNode.class, result).getLiterals();
 
 		assertEquals(2, literals.length);
 
@@ -148,7 +148,7 @@ public class PhraseTest extends GrammarTestCase {
 				"baz");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(1));
+		assertThat(result.getParts().length, is(1));
 	}
 
 	@Test
@@ -159,7 +159,7 @@ public class PhraseTest extends GrammarTestCase {
 				"_ baz");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(2));
+		assertThat(result.getParts().length, is(2));
 	}
 
 	@Test
@@ -170,12 +170,12 @@ public class PhraseTest extends GrammarTestCase {
 		assertThat(result.getPrefix(), isName("foo"));
 
 		final ArgumentNode[] arguments =
-				clause(BracketsNode.class, result, 0, 2).getArguments();
+				phrasePart(BracketsNode.class, result, 0, 2).getArguments();
 
 		assertThat(arguments.length, is(1));
 		assertThat(arguments[0].getValue(), isName("bar"));
 
-		final NameNode name = clause(NameNode.class, result, 1, 2);
+		final NameNode name = phrasePart(NameNode.class, result, 1, 2);
 
 		assertThat(canonicalName(name), is("baz"));
 	}
@@ -187,12 +187,12 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(result.getPrefix(), isName("foo"));
 
-		final NameNode name = clause(NameNode.class, result, 0, 2);
+		final NameNode name = phrasePart(NameNode.class, result, 0, 2);
 
 		assertThat(canonicalName(name), is("bar"));
 
 		final ArgumentNode[] arguments =
-				clause(BracketsNode.class, result, 1, 2).getArguments();
+				phrasePart(BracketsNode.class, result, 1, 2).getArguments();
 
 		assertThat(arguments.length, is(1));
 		assertThat(arguments[0].getValue(), isName("baz"));
@@ -205,11 +205,11 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(result.getPrefix(), isName("foo"));
 
-		final NameNode name1 = clause(NameNode.class, result, 0, 2);
+		final NameNode name1 = phrasePart(NameNode.class, result, 0, 2);
 
 		assertThat(canonicalName(name1), is("bar"));
 
-		final NameNode name2 = clause(NameNode.class, result, 1, 2);
+		final NameNode name2 = phrasePart(NameNode.class, result, 1, 2);
 
 		assertThat(canonicalName(name2), is("baz"));
 	}
@@ -222,7 +222,7 @@ public class PhraseTest extends GrammarTestCase {
 				"(baz)");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(1));
+		assertThat(result.getParts().length, is(1));
 	}
 
 	@Test
@@ -234,7 +234,7 @@ public class PhraseTest extends GrammarTestCase {
 				"_ (baz)");
 
 		assertThat(result.getPrefix(), isName("foo"));
-		assertThat(result.getClauses().length, is(2));
+		assertThat(result.getParts().length, is(2));
 	}
 
 	@Test
@@ -244,10 +244,10 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(result.getPrefix(), isName("foo"));
 
-		final PhrasePartNode[] clauses = result.getClauses();
+		final PhrasePartNode[] parts = result.getParts();
 
-		assertThat(clauses.length, is(1));
-		assertThat(clauses[0], is(unsignedInteger("42")));
+		assertThat(parts.length, is(1));
+		assertThat(parts[0], is(unsignedInteger("42")));
 	}
 
 	@Test
@@ -257,11 +257,11 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(result.getPrefix(), isName("foo"));
 
-		final PhrasePartNode[] clauses = result.getClauses();
+		final PhrasePartNode[] parts = result.getParts();
 
-		assertThat(clauses.length, is(2));
-		to(TextNode.class, clauses[0]);
-		assertThat(clauses[1], is(unsignedInteger("42")));
+		assertThat(parts.length, is(2));
+		to(TextNode.class, parts[0]);
+		assertThat(parts[1], is(unsignedInteger("42")));
 	}
 
 	@Test
@@ -271,11 +271,11 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertThat(result.getPrefix(), isName("foo"));
 
-		final PhrasePartNode[] clauses = result.getClauses();
+		final PhrasePartNode[] parts = result.getParts();
 
-		assertThat(clauses.length, is(2));
-		to(ParenthesesNode.class, clauses[0]);
-		assertThat(clauses[1], is(unsignedInteger("123456")));
+		assertThat(parts.length, is(2));
+		to(ParenthesesNode.class, parts[0]);
+		assertThat(parts[1], is(unsignedInteger("123456")));
 	}
 
 	private PhraseNode parse(String... lines) {

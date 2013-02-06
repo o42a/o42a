@@ -19,13 +19,10 @@
 */
 package org.o42a.parser.grammar.phrase;
 
-import static org.o42a.parser.Grammar.*;
-import static org.o42a.parser.grammar.phrase.TypeDefinitionParser.TYPE_DEFINITION;
-import static org.o42a.util.string.Characters.isDigit;
+import static org.o42a.parser.grammar.phrase.PhrasePartParser.PHRASE_PART;
 
 import java.util.ArrayList;
 
-import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.phrase.PhrasePartNode;
@@ -34,8 +31,6 @@ import org.o42a.parser.ParserContext;
 
 
 public class PhraseParser implements Parser<PhraseNode> {
-
-	private static final ClauseParser CLAUSE = new ClauseParser();
 
 	private final ExpressionNode prefix;
 
@@ -46,20 +41,21 @@ public class PhraseParser implements Parser<PhraseNode> {
 	@Override
 	public PhraseNode parse(ParserContext context) {
 
-		final ArrayList<PhrasePartNode> clauses = new ArrayList<PhrasePartNode>();
+		final ArrayList<PhrasePartNode> parts =
+				new ArrayList<PhrasePartNode>();
 
 		for (;;) {
 
-			final PhrasePartNode clause = context.parse(CLAUSE);
+			final PhrasePartNode part = context.parse(PHRASE_PART);
 
-			if (clause == null) {
+			if (part == null) {
 				break;
 			}
 
-			clauses.add(clause);
+			parts.add(part);
 		}
 
-		final int size = clauses.size();
+		final int size = parts.size();
 
 		if (size == 0) {
 			return null;
@@ -67,47 +63,7 @@ public class PhraseParser implements Parser<PhraseNode> {
 
 		return new PhraseNode(
 				this.prefix,
-				clauses.toArray(new PhrasePartNode[size]));
-	}
-
-	private static final class ClauseParser implements Parser<PhrasePartNode> {
-
-		ClauseParser() {
-		}
-
-		@Override
-		public PhrasePartNode parse(ParserContext context) {
-
-			final int c = context.next();
-
-			switch (c) {
-			case '[':
-				return context.parse(brackets());
-			case '(':
-				return context.parse(DECLARATIVE.parentheses());
-			case '{':
-				return context.parse(braces());
-			case '#':
-				return context.parse(TYPE_DEFINITION);
-			case '\\':
-			case '\'':
-			case '"':
-				return context.parse(text());
-			default:
-				if (isDigit(c)) {
-					return context.parse(number());
-				}
-
-				final NameNode name = context.parse(name());
-
-				if (name == null) {
-					return null;
-				}
-
-				return context.acceptComments(false, name);
-			}
-		}
-
+				parts.toArray(new PhrasePartNode[size]));
 	}
 
 }

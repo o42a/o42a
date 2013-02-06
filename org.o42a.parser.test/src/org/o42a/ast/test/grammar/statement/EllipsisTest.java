@@ -9,6 +9,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.o42a.ast.atom.HorizontalEllipsis;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SentenceType;
@@ -31,7 +32,7 @@ public class EllipsisTest extends GrammarTestCase {
 		assertThat(ellipsis.getTarget(), nullValue());
 		assertThat(
 				ellipsis.getMark().getType(),
-				is(EllipsisNode.Mark.ELLIPSIS));
+				is(HorizontalEllipsis.HORIZONTAL_ELLIPSIS));
 	}
 
 	@Test
@@ -46,7 +47,7 @@ public class EllipsisTest extends GrammarTestCase {
 		assertThat(ellipsis.getTarget(), nullValue());
 		assertThat(
 				ellipsis.getMark().getType(),
-				is(EllipsisNode.Mark.ELLIPSIS));
+				is(HorizontalEllipsis.HORIZONTAL_ELLIPSIS));
 	}
 
 	@Test

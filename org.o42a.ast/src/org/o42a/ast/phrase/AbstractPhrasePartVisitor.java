@@ -58,6 +58,11 @@ public abstract class AbstractPhrasePartVisitor<R, P>
 	}
 
 	@Override
+	public R visitInterval(IntervalNode interval, P p) {
+		return visitPhrasePart(interval, p);
+	}
+
+	@Override
 	public R visitTypeDefinition(TypeDefinitionNode definition, P p) {
 		return visitPhrasePart(definition, p);
 	}

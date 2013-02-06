@@ -21,6 +21,7 @@ package org.o42a.ast.clause;
 
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.statement.AssignmentNode;
@@ -67,6 +68,11 @@ public abstract class AbstractClauseIdVisitor<R, P>
 	@Override
 	public R visitAssignment(AssignmentNode assignment, P p) {
 		return visitClauseId(assignment, p);
+	}
+
+	@Override
+	public R visitInterval(IntervalNode interval, P p) {
+		return visitClauseId(interval, p);
 	}
 
 	protected abstract R visitClauseId(ClauseIdNode clauseId, P p);

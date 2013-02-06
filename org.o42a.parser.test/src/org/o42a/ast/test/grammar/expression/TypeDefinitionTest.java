@@ -22,13 +22,13 @@ public class TypeDefinitionTest extends GrammarTestCase {
 	public void typeDefinition() {
 
 		final PhraseNode phrase = parse("A #(Foo := bar)");
-		final PhrasePartNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] parts = phrase.getParts();
 
 		assertThat(phrase.getPrefix(), isName("a"));
-		assertThat(clauses.length, is(1));
+		assertThat(parts.length, is(1));
 
 		final TypeDefinitionNode definition =
-				to(TypeDefinitionNode.class, clauses[0]);
+				to(TypeDefinitionNode.class, parts[0]);
 
 		assertThat(
 				definition.getPrefix().getType(),
@@ -40,7 +40,7 @@ public class TypeDefinitionTest extends GrammarTestCase {
 	public void ascendantsDefinition() {
 
 		final PhraseNode phrase = parse("A & b #(Foo := bar)");
-		final PhrasePartNode[] clauses = phrase.getClauses();
+		final PhrasePartNode[] parts = phrase.getParts();
 		final AscendantsNode ascendants =
 				to(AscendantsNode.class, phrase.getPrefix());
 
@@ -49,7 +49,7 @@ public class TypeDefinitionTest extends GrammarTestCase {
 		assertThat(ascendants.getSamples()[0].getSpec(), isName("b"));
 
 		final TypeDefinitionNode definition =
-				to(TypeDefinitionNode.class, clauses[0]);
+				to(TypeDefinitionNode.class, parts[0]);
 
 		assertThat(
 				definition.getPrefix().getType(),

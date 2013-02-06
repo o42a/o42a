@@ -42,6 +42,10 @@ public final class SeparatorNodes {
 		this.continuation = continuation;
 	}
 
+	public final boolean isWhitespace() {
+		return !lineContinuation() && !haveComments();
+	}
+
 	public final boolean lineContinuation() {
 		return this.continuation;
 	}
