@@ -19,10 +19,14 @@
 */
 package org.o42a.compiler.ip.member;
 
+import static org.o42a.ast.phrase.IntervalBracket.LEFT_CLOSED_BRACKET;
+import static org.o42a.ast.phrase.IntervalBracket.RIGHT_CLOSED_BRACKET;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.Interpreter.signType;
 import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByName;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
+import static org.o42a.core.member.clause.ClauseId.*;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.o42a.ast.atom.NameNode;
@@ -30,6 +34,7 @@ import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.clause.AbstractClauseIdVisitor;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
@@ -204,6 +209,28 @@ final class ClauseIdVisitor
 	}
 
 	@Override
+	public ClauseDeclaration visitInterval(
+			IntervalNode interval,
+			Distributor p) {
+
+		final ExpressionNode bound = intervalBound(interval, p);
+
+		if (bound == null) {
+			return null;
+		}
+
+		final Name name = bound.accept(
+				NAME_OR_IMPLIED_EXTRACTOR,
+				p.getContext());
+
+		return clauseDeclaration(
+				location(p, interval),
+				p,
+				name,
+				intervalClauseId(interval));
+	}
+
+	@Override
 	protected ClauseDeclaration visitClauseId(
 			ClauseIdNode clauseId,
 			Distributor p) {
@@ -373,6 +400,54 @@ final class ClauseIdVisitor
 				name);
 
 		return null;
+	}
+
+	private ExpressionNode intervalBound(IntervalNode interval, Distributor p) {
+
+		final ExpressionNode leftBound = interval.getLeftBound();
+		final ExpressionNode rightBound = interval.getRightBound();
+
+		if (leftBound != null) {
+			if (rightBound == null) {
+				return leftBound;
+			}
+		} else if (rightBound != null) {
+			return rightBound;
+		}
+
+		p.getLogger().error(
+				"invalid_interval_clause_id",
+				interval,
+				"Exactly one interval bound (either left or right one)"
+						+ " can be specified here");
+		return null;
+	}
+
+	private ClauseId intervalClauseId(IntervalNode interval) {
+		if (interval.getLeftBound() != null) {
+			if (interval.getLeftBracket().getType() == LEFT_CLOSED_BRACKET) {
+				if (signType(interval.getRightBracket())
+						== RIGHT_CLOSED_BRACKET) {
+					return CLOSED_INTERVAL_START;
+				}
+				return RIGHT_OPEN_INTERVAL_START;
+			}
+			if (signType(interval.getRightBracket()) == RIGHT_CLOSED_BRACKET) {
+				return LEFT_OPEN_INTERVAL_START;
+			}
+			return OPEN_INTERVAL_START;
+		}
+		if (interval.getLeftBracket().getType() == LEFT_CLOSED_BRACKET) {
+			if (signType(interval.getRightBracket())
+					== RIGHT_CLOSED_BRACKET) {
+				return CLOSED_INTERVAL_END;
+			}
+			return RIGHT_OPEN_INTERVAL_END;
+		}
+		if (signType(interval.getRightBracket()) == RIGHT_CLOSED_BRACKET) {
+			return LEFT_OPEN_INTERVAL_END;
+		}
+		return OPEN_INTERVAL_END;
 	}
 
 	private static final class NameExtractor
