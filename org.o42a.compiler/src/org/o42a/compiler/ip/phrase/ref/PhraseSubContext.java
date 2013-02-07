@@ -134,8 +134,6 @@ class PhraseSubContext extends PhraseContext {
 		final ClauseInstance instance = getInstances()[0];
 		final Distributor distributor = statements.nextDistributor();
 		final LocationInfo location = instance.getLocation();
-		final FieldDeclaration declaration =
-				createDeclaration(location, distributor);
 		final FieldDefinition definition =
 				fieldDefinition(location, distributor);
 
@@ -143,6 +141,8 @@ class PhraseSubContext extends PhraseContext {
 			return;
 		}
 
+		final FieldDeclaration declaration =
+				createDeclaration(location, distributor);
 		final FieldBuilder builder =
 				statements.field(declaration, definition);
 
@@ -162,7 +162,8 @@ class PhraseSubContext extends PhraseContext {
 		switch (substitution) {
 		case VALUE_SUBSTITUTION:
 
-			final Ref valueSubstitutution = substituteValue(distributor);
+			final Ref valueSubstitutution =
+					getInstances()[0].substituteValue(distributor);
 
 			if (valueSubstitutution == null) {
 				return null;
@@ -186,21 +187,6 @@ class PhraseSubContext extends PhraseContext {
 
 		throw new IllegalStateException(
 				"Unsupported clause substitution: " + substitution);
-	}
-
-	private Ref substituteValue(Distributor distributor) {
-
-		final ClauseInstance instance = getInstances()[0];
-		final Ref substitution = instance.substituteValue(distributor);
-
-		if (substitution == null) {
-			getLogger().error(
-					"missing_clause_value",
-					instance.getLocation(),
-					"Value required here");
-		}
-
-		return substitution;
 	}
 
 	private void instantiateObjects(Statements<?, ?> statements) {

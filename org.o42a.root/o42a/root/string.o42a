@@ -26,3 +26,8 @@ String :=> void
     <* <=> *> With = ()
   )
 )
+
+<*Substring> Substring (
+  <[From...) | to> From = ()
+  <[...To)> To = ()
+)
