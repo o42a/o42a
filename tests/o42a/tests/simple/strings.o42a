@@ -97,3 +97,13 @@ Char := test (
   Assert [--rt-string 'abc' [-1]] "Char at negative index"
   Assert [--rt-string 'abc' [3]] "Char at invalid index"
 )
+
+Substrings := test (
+  Name = "Substrings"
+  Print error '    ' [name] nl
+
+  Assert [rt-string 'abcdef' [1...4) == "bcd"] "Wrong substring"
+  Assert [rt-string 'abcdef' [1...) == "bcdef"] "Wrong rest of string"
+  Assert [rt-string 'abcdef' [...4) == "abcd"] "Wrong string beginning"
+  Assert [--rt-string 'abcdef' [...9)] "Wrong substring calculated"
+)

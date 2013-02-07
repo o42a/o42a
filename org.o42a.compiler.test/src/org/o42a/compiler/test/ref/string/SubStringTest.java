@@ -16,28 +16,28 @@ public class SubStringTest extends CompilerTestCase {
 
 	@Test
 	public void substring() {
-		compile("Sub := \"asubc\": substring _from [1] to [4]");
+		compile("Sub := \"asubc\" [1...4)");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("sub"));
 	}
 
 	@Test
 	public void leadingSubstring() {
-		compile("Sub := \"asubc\": substring _to [4]");
+		compile("Sub := \"asubc\" [...4)");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("asub"));
 	}
 
 	@Test
 	public void trailingSubstring() {
-		compile("Sub := \"asubc\": substring _from [1]");
+		compile("Sub := \"asubc\" [1...)");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("subc"));
 	}
 
 	@Test
 	public void fullSubstring() {
-		compile("Sub := \"asubc\": substring()");
+		compile("Sub := \"asubc\" [...)");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("asubc"));
 	}
@@ -46,7 +46,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void invalidRange() {
 		expectError("compiler.invalid_substr_range");
 
-		compile("Sub := \"asubc\": substring _ from [4] to [3]");
+		compile("Sub := \"asubc\" [4...3)");
 
 		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
 	}
@@ -55,7 +55,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void negativeFrom() {
 		expectError("compiler.invalid_substr_from");
 
-		compile("Sub := \"asubc\": substring _ from [-1] to [4]");
+		compile("Sub := \"asubc\" [-1...4)");
 
 		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
 	}
@@ -64,7 +64,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void invalidTo() {
 		expectError("compiler.invalid_substr_to");
 
-		compile("Sub := \"asubc\": substring _ from [1] to [6]");
+		compile("Sub := \"asubc\" [1...6)");
 
 		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
 	}
@@ -73,9 +73,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void falseString() {
 		compile(
 				"Use namespace 'Test'",
-				"Sub := string(False): substring",
-				"_ from [rt-integer '1']",
-				"_ to [rt-integer '4']");
+				"Sub := string (False)\\ [rt-integer '1'...rt-integer '4')");
 
 		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
 	}
@@ -84,9 +82,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void runtimeString() {
 		compile(
 				"Use namespace 'Test'",
-				"Sub := rt-string 'asubc': substring",
-				"_ from [1]",
-				"_ to [4]");
+				"Sub := rt-string 'asubc' [1...4)");
 
 		assertRuntimeValue(valueOf(field("sub"), ValueType.STRING));
 	}
@@ -95,9 +91,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void falseFrom() {
 		compile(
 				"Use namespace 'Test'",
-				"Sub := rt-string 'asubc': substring",
-				"_ from [integer(False)]",
-				"_ to [rt-integer '4']");
+				"Sub := rt-string 'asubc' [integer(False)...rt-integer '4')");
 
 		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
 	}
@@ -106,9 +100,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void runtimeFrom() {
 		compile(
 				"Use namespace 'Test'",
-				"Sub := \"asubc\": substring",
-				"_ from [rt-integer '1']",
-				"_ to [4]");
+				"Sub := \"asubc\" [rt-integer '1'...4)");
 
 		assertRuntimeValue(valueOf(field("sub"), ValueType.STRING));
 	}
@@ -117,9 +109,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void falseTo() {
 		compile(
 				"Use namespace 'Test'",
-				"Sub := rt-string 'asubc': substring",
-				"_ from [rt-integer '1']",
-				"_ to [integer(False)]");
+				"Sub := rt-string 'asubc' [rt-integer '1'...integer(False))");
 
 		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
 	}
@@ -128,9 +118,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void runtimeTo() {
 		compile(
 				"Use namespace 'Test'",
-				"Sub := \"asubc\": substring",
-				"_ from [1]",
-				"_ to [rt-integer '4']");
+				"Sub := \"asubc\" [1...rt-integer '4')");
 
 		assertRuntimeValue(valueOf(field("sub"), ValueType.STRING));
 	}
