@@ -190,6 +190,23 @@ public class Phrase extends Placed {
 		return append(this.last.imperative(imperatives));
 	}
 
+	public final IntervalBound interval(
+			LocationInfo leftLocation,
+			Ref leftBound,
+			boolean leftOpen,
+			LocationInfo rightLocation,
+			Ref rightBound,
+			boolean rightOpen) {
+		return append(
+				this.last.interval(
+						leftLocation,
+						leftBound,
+						leftOpen,
+						rightLocation,
+						rightBound,
+						rightOpen));
+	}
+
 	public final UnaryPhrasePart unary(UnaryNode node) {
 		return append(this.last.unary(node));
 	}

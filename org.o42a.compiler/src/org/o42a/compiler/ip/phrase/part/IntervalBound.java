@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import static org.o42a.core.member.clause.ClauseId.*;
+
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
@@ -28,13 +30,25 @@ import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
 
-public class PhraseArgument extends PhraseContinuation {
+public class IntervalBound extends PhraseContinuation {
 
 	private final Ref value;
+	private final boolean leftOpen;
+	private final boolean rightOpen;
+	private final boolean leftBound;
 
-	PhraseArgument(LocationInfo location, PhrasePart preceding, Ref value) {
+	IntervalBound(
+			LocationInfo location,
+			PhrasePart preceding,
+			Ref value,
+			boolean leftOpen,
+			boolean rightOpen,
+			boolean leftBound) {
 		super(location, preceding);
 		this.value = value;
+		this.leftOpen = leftOpen;
+		this.rightOpen = rightOpen;
+		this.leftBound = leftBound;
 	}
 
 	public final Ref getValue() {
@@ -43,7 +57,7 @@ public class PhraseArgument extends PhraseContinuation {
 
 	@Override
 	public NextClause nextClause(PhraseContext context) {
-		return context.clauseById(this, ClauseId.ARGUMENT);
+		return context.clauseById(this, clauseId());
 	}
 
 	@Override
@@ -68,10 +82,49 @@ public class PhraseArgument extends PhraseContinuation {
 
 	@Override
 	public String toString() {
-		if (this.value == null) {
-			return "[]";
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append(this.leftOpen ? '(' : '[');
+		if (!this.leftBound) {
+			out.append('?');
+		} else if (this.value != null) {
+			out.append(this.value);
 		}
-		return '[' + this.value.toString() + ']';
+		out.append("...");
+		if (this.leftBound) {
+			out.append('?');
+		} else if (this.value != null) {
+			out.append(this.value);
+		}
+		out.append(this.rightOpen ? ')' : ']');
+
+		return out.toString();
+	}
+
+	private ClauseId clauseId() {
+		if (this.leftBound) {
+			if (this.leftOpen) {
+				if (this.rightOpen) {
+					return OPEN_INTERVAL_START;
+				}
+				return LEFT_OPEN_INTERVAL_START;
+			}
+			if (this.rightOpen) {
+				return RIGHT_OPEN_INTERVAL_START;
+			}
+			return CLOSED_INTERVAL_START;
+		}
+		if (this.leftOpen) {
+			if (this.rightOpen) {
+				return OPEN_INTERVAL_END;
+			}
+			return LEFT_OPEN_INTERVAL_END;
+		}
+		if (this.rightOpen) {
+			return RIGHT_OPEN_INTERVAL_END;
+		}
+		return CLOSED_INTERVAL_END;
 	}
 
 }
