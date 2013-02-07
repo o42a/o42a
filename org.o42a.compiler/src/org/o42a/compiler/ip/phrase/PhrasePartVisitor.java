@@ -19,7 +19,10 @@
 */
 package org.o42a.compiler.ip.phrase;
 
+import static org.o42a.ast.phrase.IntervalBracket.LEFT_CLOSED_BRACKET;
+import static org.o42a.ast.phrase.IntervalBracket.RIGHT_CLOSED_BRACKET;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.Interpreter.signType;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
@@ -28,13 +31,12 @@ import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.phrase.AbstractPhrasePartVisitor;
-import org.o42a.ast.phrase.PhrasePartNode;
-import org.o42a.ast.phrase.TypeDefinitionNode;
+import org.o42a.ast.phrase.*;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.type.def.TypeDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 
 
 final class PhrasePartVisitor
@@ -119,6 +121,55 @@ final class PhrasePartVisitor
 		}
 
 		return p.argument(integer).getPhrase();
+	}
+
+	@Override
+	public Phrase visitInterval(IntervalNode interval, Phrase p) {
+
+		final ExpressionNode leftBoundNode = interval.getLeftBound();
+		final LocationInfo leftLocation;
+		final Ref leftBound;
+
+		if (leftBoundNode == null) {
+			leftBound = null;
+			leftLocation = location(p, interval);
+		} else {
+			leftBound = leftBoundNode.accept(
+					p.ip().targetExVisitor(),
+					p.distribute());
+			if (leftBound != null) {
+				leftLocation = leftBound;
+			} else {
+				leftLocation = location(p, leftBoundNode);
+			}
+		}
+
+		final ExpressionNode rightBoundNode = interval.getRightBound();
+		final LocationInfo rightLocation;
+		final Ref rightBound;
+
+		if (rightBoundNode == null) {
+			rightBound = null;
+			rightLocation = null;
+		} else {
+			rightBound = rightBoundNode.accept(
+					p.ip().targetExVisitor(),
+					p.distribute());
+			if (rightBound != null) {
+				rightLocation = rightBound;
+			} else {
+				rightLocation = location(p, rightBoundNode);
+			}
+		}
+
+		return p.interval(
+				leftLocation,
+				leftBound,
+				signType(interval.getLeftBracket()) != LEFT_CLOSED_BRACKET,
+				rightLocation,
+				rightBound,
+				signType(interval.getRightBracket()) != RIGHT_CLOSED_BRACKET)
+				.getPhrase();
 	}
 
 	@Override

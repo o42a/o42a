@@ -83,6 +83,38 @@ public abstract class PhrasePart extends Located {
 		return setFollowing(new PhraseImperative(this, imperatives));
 	}
 
+	public final IntervalBound interval(
+			LocationInfo leftLocation,
+			Ref leftBound,
+			boolean leftOpen,
+			LocationInfo rightLocation,
+			Ref rightBound,
+			boolean rightOpen) {
+		
+		final IntervalBound left = new IntervalBound(
+				leftLocation,
+				this, 
+				leftBound, 
+				leftOpen, 
+				rightOpen, 
+				true);
+		
+		setFollowing(left);
+		if (rightBound == null) {
+			return left;
+		}
+		
+		final IntervalBound right = new IntervalBound(
+				rightLocation, 
+				left, 
+				rightBound, 
+				leftOpen, 
+				rightOpen, 
+				false);
+		
+		return left.setFollowing(right);
+	}
+
 	public final UnaryPhrasePart unary(UnaryNode node) {
 		return setFollowing(new UnaryPhrasePart(node, this));
 	}
@@ -90,7 +122,7 @@ public abstract class PhrasePart extends Located {
 	public final BinaryPhrasePart binary(BinaryNode node, Ref rightOperand) {
 		return setFollowing(new BinaryPhrasePart(node, this, rightOperand));
 	}
-
+	
 	public final PhraseAssignment assign(AssignmentNode node, Ref value) {
 		return setFollowing(new PhraseAssignment(node, this, value));
 	}
