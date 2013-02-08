@@ -90,29 +90,46 @@ public abstract class PhrasePart extends Located {
 			LocationInfo rightLocation,
 			Ref rightBound,
 			boolean rightOpen) {
-		
+
 		final IntervalBound left = new IntervalBound(
 				leftLocation,
-				this, 
-				leftBound, 
-				leftOpen, 
-				rightOpen, 
+				this,
+				leftBound,
+				leftOpen,
+				rightOpen,
 				true);
-		
+
 		setFollowing(left);
-		if (rightBound == null) {
-			return left;
-		}
-		
+
 		final IntervalBound right = new IntervalBound(
-				rightLocation, 
-				left, 
-				rightBound, 
-				leftOpen, 
-				rightOpen, 
+				rightLocation,
+				left,
+				rightBound,
+				leftOpen,
+				rightOpen,
 				false);
-		
+
 		return left.setFollowing(right);
+	}
+
+	public final HalfBoundedInterval halfBoundedInterval(
+			LocationInfo location,
+			Ref bound,
+			boolean open,
+			boolean leftBounded) {
+
+		final HalfBoundedInterval interval = new HalfBoundedInterval(
+				location,
+				this,
+				bound,
+				open,
+				leftBounded);
+
+		return setFollowing(interval);
+	}
+
+	public final UnboundedInterval unboundedInterval(LocationInfo location) {
+		return setFollowing(new UnboundedInterval(location, this));
 	}
 
 	public final UnaryPhrasePart unary(UnaryNode node) {
@@ -122,7 +139,7 @@ public abstract class PhrasePart extends Located {
 	public final BinaryPhrasePart binary(BinaryNode node, Ref rightOperand) {
 		return setFollowing(new BinaryPhrasePart(node, this, rightOperand));
 	}
-	
+
 	public final PhraseAssignment assign(AssignmentNode node, Ref value) {
 		return setFollowing(new PhraseAssignment(node, this, value));
 	}

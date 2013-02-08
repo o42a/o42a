@@ -51,6 +51,24 @@ import org.o42a.util.log.LogInfo;
 
 public class ClauseInterpreter {
 
+	public static void invalidClauseName(
+			CompilerContext context,
+			LogInfo location) {
+		context.getLogger().error(
+				"invalid_clause_name",
+				location,
+				"Clause name expected here");
+	}
+
+	public static void invalidClauseId(
+			CompilerContext context,
+			LogInfo location) {
+		context.getLogger().error(
+				"invalid_clause_id",
+				location,
+				"Unrecognized clause identifier");
+	}
+
 	public static void invalidClauseContent(
 			CompilerLogger logger,
 			LogInfo location) {

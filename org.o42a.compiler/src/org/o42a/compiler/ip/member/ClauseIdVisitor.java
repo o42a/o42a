@@ -19,14 +19,13 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.ast.phrase.IntervalBracket.LEFT_CLOSED_BRACKET;
-import static org.o42a.ast.phrase.IntervalBracket.RIGHT_CLOSED_BRACKET;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.Interpreter.signType;
+import static org.o42a.compiler.ip.member.ClauseInterpreter.invalidClauseName;
 import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByName;
+import static org.o42a.compiler.ip.member.NameExtractor.extractName;
+import static org.o42a.compiler.ip.member.NameExtractor.extractNameOrImplied;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
-import static org.o42a.core.member.clause.ClauseId.*;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.o42a.ast.atom.NameNode;
@@ -57,9 +56,6 @@ final class ClauseIdVisitor
 
 	static final ClauseIdVisitor CLAUSE_ID_VISITOR = new ClauseIdVisitor();
 
-	private static final NameExtractor NAME_EXTRACTOR = new NameExtractor();
-	private static final NameOrImpliedExtractor NAME_OR_IMPLIED_EXTRACTOR =
-			new NameOrImpliedExtractor();
 	private static final AsteriskChecker ASTERISK_CHECKER =
 			new AsteriskChecker();
 	private static final BracketsExtractor BRACKETS_EXTRACTOR =
@@ -163,9 +159,9 @@ final class ClauseIdVisitor
 			return super.visitUnary(unary, p);
 		}
 
-		final Name name = unary.getOperand().accept(
-				NAME_OR_IMPLIED_EXTRACTOR,
-				p.getContext());
+		final Name name = extractNameOrImplied(
+				p.getContext(),
+				unary.getOperand());
 
 		return clauseDeclaration(location(p, unary), p, name, clauseId);
 	}
@@ -179,9 +175,9 @@ final class ClauseIdVisitor
 			return super.visitBinary(binary, p);
 		}
 
-		final Name name = binary.getLeftOperand().accept(
-				NAME_OR_IMPLIED_EXTRACTOR,
-				p.getContext());
+		final Name name = extractNameOrImplied(
+				p.getContext(),
+				binary.getLeftOperand());
 
 		final ExpressionNode rightOperand = binary.getRightOperand();
 
@@ -197,9 +193,9 @@ final class ClauseIdVisitor
 			AssignmentNode assignment,
 			Distributor p) {
 
-		final Name name = assignment.getDestination().accept(
-				NAME_OR_IMPLIED_EXTRACTOR,
-				p.getContext());
+		final Name name = extractNameOrImplied(
+				p.getContext(),
+				assignment.getDestination());
 
 		return clauseDeclaration(
 				location(p, assignment),
@@ -212,22 +208,7 @@ final class ClauseIdVisitor
 	public ClauseDeclaration visitInterval(
 			IntervalNode interval,
 			Distributor p) {
-
-		final ExpressionNode bound = intervalBound(interval, p);
-
-		if (bound == null) {
-			return null;
-		}
-
-		final Name name = bound.accept(
-				NAME_OR_IMPLIED_EXTRACTOR,
-				p.getContext());
-
-		return clauseDeclaration(
-				location(p, interval),
-				p,
-				name,
-				intervalClauseId(interval));
+		return IntervalInterpreter.intervalClauseDeclaration(interval, p);
 	}
 
 	@Override
@@ -280,15 +261,6 @@ final class ClauseIdVisitor
 		return null;
 	}
 
-	private static void expectedClauseName(
-			CompilerContext context,
-			LogInfo location) {
-		context.getLogger().error(
-				"expected_clause_name",
-				location,
-				"Clause name expected here");
-	}
-
 	private static BracketsNode rowFromBrackets(BracketsNode brackets) {
 
 		final ArgumentNode[] arguments = brackets.getArguments();
@@ -319,7 +291,7 @@ final class ClauseIdVisitor
 			return null;
 		}
 		if (arguments.length != 1) {
-			expectedClauseName(context, brackets);
+			invalidClauseName(context, brackets);
 			return null;
 		}
 
@@ -329,7 +301,7 @@ final class ClauseIdVisitor
 			return null;
 		}
 
-		return value.accept(NAME_EXTRACTOR, context);
+		return extractName(context, value);
 	}
 
 	private static Name nameFromBlock(
@@ -340,7 +312,7 @@ final class ClauseIdVisitor
 
 		if (sentences.length != 1) {
 			if (sentences.length != 0) {
-				expectedClauseName(context, block);
+				invalidClauseName(context, block);
 			}
 			return null;
 		}
@@ -348,7 +320,7 @@ final class ClauseIdVisitor
 		final SentenceNode sentence = sentences[0];
 
 		if (sentence.getMark() != null) {
-			expectedClauseName(context, block);
+			invalidClauseName(context, block);
 			return null;
 		}
 
@@ -356,7 +328,7 @@ final class ClauseIdVisitor
 
 		if (disjunction.length != 1) {
 			if (disjunction.length != 0) {
-				expectedClauseName(context, block);
+				invalidClauseName(context, block);
 			}
 			return null;
 		}
@@ -365,7 +337,7 @@ final class ClauseIdVisitor
 
 		if (conjunction.length != 1) {
 			if (conjunction.length != 0) {
-				expectedClauseName(context, block);
+				invalidClauseName(context, block);
 			}
 			return null;
 		}
@@ -376,7 +348,7 @@ final class ClauseIdVisitor
 			return null;
 		}
 
-		return statement.accept(NAME_EXTRACTOR, context);
+		return extractName(context, statement);
 	}
 
 	private static Name buildClauseName(
@@ -400,114 +372,6 @@ final class ClauseIdVisitor
 				name);
 
 		return null;
-	}
-
-	private ExpressionNode intervalBound(IntervalNode interval, Distributor p) {
-
-		final ExpressionNode leftBound = interval.getLeftBound();
-		final ExpressionNode rightBound = interval.getRightBound();
-
-		if (leftBound != null) {
-			if (rightBound == null) {
-				return leftBound;
-			}
-		} else if (rightBound != null) {
-			return rightBound;
-		}
-
-		p.getLogger().error(
-				"invalid_interval_clause_id",
-				interval,
-				"Exactly one interval bound (either left or right one)"
-						+ " can be specified here");
-		return null;
-	}
-
-	private ClauseId intervalClauseId(IntervalNode interval) {
-		if (interval.getLeftBound() != null) {
-			if (interval.getLeftBracket().getType() == LEFT_CLOSED_BRACKET) {
-				if (signType(interval.getRightBracket())
-						== RIGHT_CLOSED_BRACKET) {
-					return CLOSED_INTERVAL_START;
-				}
-				return RIGHT_OPEN_INTERVAL_START;
-			}
-			if (signType(interval.getRightBracket()) == RIGHT_CLOSED_BRACKET) {
-				return LEFT_OPEN_INTERVAL_START;
-			}
-			return OPEN_INTERVAL_START;
-		}
-		if (interval.getLeftBracket().getType() == LEFT_CLOSED_BRACKET) {
-			if (signType(interval.getRightBracket())
-					== RIGHT_CLOSED_BRACKET) {
-				return CLOSED_INTERVAL_END;
-			}
-			return RIGHT_OPEN_INTERVAL_END;
-		}
-		if (signType(interval.getRightBracket()) == RIGHT_CLOSED_BRACKET) {
-			return LEFT_OPEN_INTERVAL_END;
-		}
-		return OPEN_INTERVAL_END;
-	}
-
-	private static final class NameExtractor
-			extends AbstractStatementVisitor<Name, CompilerContext> {
-
-		@Override
-		public Name visitMemberRef(MemberRefNode ref, CompilerContext p) {
-			if (ref.getDeclaredIn() != null) {
-				p.getLogger().prohibitedDeclaredIn(ref.getDeclaredIn());
-				return null;
-			}
-			if (ref.getOwner() != null) {
-				expectedClauseName(p, ref);
-				return null;
-			}
-
-			final NameNode name = ref.getName();
-
-			if (name == null) {
-				expectedClauseName(p, ref);
-				return null;
-			}
-
-			return name.getName();
-		}
-
-		@Override
-		protected Name visitStatement(
-				StatementNode statement,
-				CompilerContext p) {
-			expectedClauseName(p, statement);
-			return null;
-		}
-
-	}
-
-	private static final class NameOrImpliedExtractor
-			extends AbstractExpressionVisitor<Name, CompilerContext> {
-
-		@Override
-		public Name visitScopeRef(ScopeRefNode ref, CompilerContext p) {
-			if (ref.getType() == ScopeType.IMPLIED) {
-				return null;
-			}
-			return super.visitScopeRef(ref, p);
-		}
-
-		@Override
-		public Name visitMemberRef(MemberRefNode ref, CompilerContext p) {
-			return ref.accept(NAME_EXTRACTOR, p);
-		}
-
-		@Override
-		protected Name visitExpression(
-				ExpressionNode expression,
-				CompilerContext p) {
-			expectedClauseName(p, expression);
-			return null;
-		}
-
 	}
 
 	private static final class AsteriskChecker

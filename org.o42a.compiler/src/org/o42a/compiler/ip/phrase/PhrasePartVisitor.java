@@ -19,10 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.ast.phrase.IntervalBracket.LEFT_CLOSED_BRACKET;
-import static org.o42a.ast.phrase.IntervalBracket.RIGHT_CLOSED_BRACKET;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.Interpreter.signType;
+import static org.o42a.compiler.ip.member.IntervalInterpreter.invalidIntervalBracket;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
@@ -126,15 +124,27 @@ final class PhrasePartVisitor
 	@Override
 	public Phrase visitInterval(IntervalNode interval, Phrase p) {
 
-		final ExpressionNode leftBoundNode = interval.getLeftBound();
+		final BoundNode leftBoundNode = interval.getLeftBound();
 		final LocationInfo leftLocation;
 		final Ref leftBound;
+		final boolean leftOpen;
 
-		if (leftBoundNode == null) {
+		if (!interval.isLeftBounded()) {
 			leftBound = null;
-			leftLocation = location(p, interval);
+			leftOpen = true;
+			if (!interval.isLeftOpen()) {
+				invalidIntervalBracket(
+						p.getLogger(),
+						interval.getLeftBracket());
+			}
+			if (leftBoundNode != null) {
+				leftLocation = location(p, leftBoundNode);
+			} else {
+				leftLocation = location(p, interval.getEllipsis().getStart());
+			}
 		} else {
-			leftBound = leftBoundNode.accept(
+			leftOpen = interval.isLeftOpen();
+			leftBound = leftBoundNode.toExpression().accept(
 					p.ip().targetExVisitor(),
 					p.distribute());
 			if (leftBound != null) {
@@ -144,15 +154,27 @@ final class PhrasePartVisitor
 			}
 		}
 
-		final ExpressionNode rightBoundNode = interval.getRightBound();
+		final BoundNode rightBoundNode = interval.getRightBound();
 		final LocationInfo rightLocation;
 		final Ref rightBound;
+		final boolean rightOpen;
 
-		if (rightBoundNode == null) {
+		if (!interval.isRightBounded()) {
 			rightBound = null;
-			rightLocation = null;
+			rightOpen = true;
+			if (!interval.isRightOpen()) {
+				invalidIntervalBracket(
+						p.getLogger(),
+						interval.getRightBracket());
+			}
+			if (rightBoundNode != null) {
+				rightLocation = location(p, rightBoundNode);
+			} else {
+				rightLocation = location(p, interval.getEllipsis().getEnd());
+			}
 		} else {
-			rightBound = rightBoundNode.accept(
+			rightOpen = interval.isRightOpen();
+			rightBound = rightBoundNode.toExpression().accept(
 					p.ip().targetExVisitor(),
 					p.distribute());
 			if (rightBound != null) {
@@ -162,13 +184,32 @@ final class PhrasePartVisitor
 			}
 		}
 
+		if (!interval.isLeftBounded()) {
+			if (!interval.isRightBounded()) {
+				return p.unboundedInterval(location(p, interval)).getPhrase();
+			}
+			return p.halfBoundedInterval(
+					location(p, interval),
+					rightBound,
+					rightOpen,
+					false)
+					.getPhrase();
+		} else if (!interval.isRightBounded()) {
+			return p.halfBoundedInterval(
+					location(p, interval),
+					leftBound,
+					leftOpen,
+					true)
+					.getPhrase();
+		}
+
 		return p.interval(
 				leftLocation,
 				leftBound,
-				signType(interval.getLeftBracket()) != LEFT_CLOSED_BRACKET,
+				leftOpen,
 				rightLocation,
 				rightBound,
-				signType(interval.getRightBracket()) != RIGHT_CLOSED_BRACKET)
+				rightOpen)
 				.getPhrase();
 	}
 
