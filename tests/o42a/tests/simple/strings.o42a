@@ -35,7 +35,8 @@ Equality := test (
 
   Assert [rt-string '' == ""] "Empty strings not equal"
   Assert [rt-string 'abc' == "abc"] "Short strings equality failed"
-  Assert [rt-string 'Hello, World!' == "Hello, World!"] "Strings equality failed"
+  Assert [rt-string 'Hello, World!' == "Hello, World!"]
+  _"Strings equality failed"
   Assert [--(rt-string 'abc' == "c")] "Non-equal strings are equal"
 )
 
@@ -104,6 +105,6 @@ Substrings := test (
 
   Assert [rt-string 'abcdef' [1...4) == "bcd"] "Wrong substring"
   Assert [rt-string 'abcdef' [1...) == "bcdef"] "Wrong rest of string"
-  Assert [rt-string 'abcdef' [...4) == "abcd"] "Wrong string beginning"
-  Assert [--rt-string 'abcdef' [...9)] "Wrong substring calculated"
+  Assert [rt-string 'abcdef' (...4) == "abcd"] "Wrong string beginning"
+  Assert [--rt-string 'abcdef' (...9)] "Wrong substring calculated"
 )

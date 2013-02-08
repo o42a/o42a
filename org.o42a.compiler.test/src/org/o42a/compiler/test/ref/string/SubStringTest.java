@@ -23,7 +23,7 @@ public class SubStringTest extends CompilerTestCase {
 
 	@Test
 	public void leadingSubstring() {
-		compile("Sub := \"asubc\" [...4)");
+		compile("Sub := \"asubc\" (...4)");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("asub"));
 	}
@@ -37,7 +37,7 @@ public class SubStringTest extends CompilerTestCase {
 
 	@Test
 	public void fullSubstring() {
-		compile("Sub := \"asubc\" [...)");
+		compile("Sub := \"asubc\" (...)");
 
 		assertThat(definiteValue(field("sub"), ValueType.STRING), is("asubc"));
 	}
