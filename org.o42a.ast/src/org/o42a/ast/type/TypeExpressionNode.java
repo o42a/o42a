@@ -26,6 +26,7 @@ import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.phrase.NoBoundNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 
@@ -84,7 +85,17 @@ public class TypeExpressionNode extends AbstractNode implements TypeNode {
 	}
 
 	@Override
+	public final ExpressionNode toExpression() {
+		return null;
+	}
+
+	@Override
 	public final BinaryNode toBinary() {
+		return null;
+	}
+
+	@Override
+	public final NoBoundNode toNoBound() {
 		return null;
 	}
 

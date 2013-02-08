@@ -23,6 +23,7 @@ import org.o42a.ast.atom.HorizontalEllipsis;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
 
 
@@ -52,6 +53,11 @@ public class EllipsisNode extends AbstractStatementNode {
 
 	@Override
 	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final ExpressionNode toExpression() {
 		return null;
 	}
 

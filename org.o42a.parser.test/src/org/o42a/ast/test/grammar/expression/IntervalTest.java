@@ -8,6 +8,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.ast.atom.HorizontalEllipsis.HORIZONTAL_ELLIPSIS;
+import static org.o42a.ast.phrase.BoundSign.NO_BOUND;
 import static org.o42a.ast.phrase.IntervalBracket.*;
 import static org.o42a.parser.Grammar.expression;
 
@@ -95,7 +96,24 @@ public class IntervalTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void leftBbounded() {
+	public void leftBoundedWithInfinity() {
+
+		final IntervalNode interval = parse("foo (a ... ∞)");
+
+		assertThat(
+				signType(interval.getLeftBracket()),
+				is(LEFT_OPEN_BRACKET));
+		assertThat(interval.getLeftBound(), isName("a"));
+		assertThat(
+				interval.getRightBound().toNoBound().getType(),
+				is(NO_BOUND));
+		assertThat(
+				signType(interval.getRightBracket()),
+				is(RIGHT_OPEN_BRACKET));
+	}
+
+	@Test
+	public void leftBounded() {
 
 		final IntervalNode interval = parse("foo (a ...)");
 
@@ -118,6 +136,23 @@ public class IntervalTest extends GrammarTestCase {
 				signType(interval.getLeftBracket()),
 				is(LEFT_OPEN_BRACKET));
 		assertThat(interval.getLeftBound(), nullValue());
+		assertThat(interval.getRightBound(), isName("b"));
+		assertThat(
+				signType(interval.getRightBracket()),
+				is(RIGHT_CLOSED_BRACKET));
+	}
+
+	@Test
+	public void rightBoundedWithHyphen() {
+
+		final IntervalNode interval = parse("foo (- ... b]");
+
+		assertThat(
+				signType(interval.getLeftBracket()),
+				is(LEFT_OPEN_BRACKET));
+		assertThat(
+				interval.getLeftBound().toNoBound().getType(),
+				is(NO_BOUND));
 		assertThat(interval.getRightBound(), isName("b"));
 		assertThat(
 				signType(interval.getRightBracket()),

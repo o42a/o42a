@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,22 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.statement;
+package org.o42a.ast.phrase;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.ref.RefNode;
 
 
-public interface StatementNode extends Node {
-
-	<R, P> R accept(StatementNodeVisitor<R, P> visitor, P p);
-
-	ClauseIdNode toClauseId();
+public interface BoundNode extends Node {
 
 	ExpressionNode toExpression();
 
-	RefNode toRef();
+	NoBoundNode toNoBound();
 
 }

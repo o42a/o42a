@@ -24,8 +24,10 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.expression.BinaryNode;
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.phrase.NoBoundNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeNodeVisitor;
@@ -88,6 +90,11 @@ public class ScopeRefNode extends SignNode<ScopeType>
 	}
 
 	@Override
+	public final ExpressionNode toExpression() {
+		return null;
+	}
+
+	@Override
 	public final RefNode toRef() {
 		return this;
 	}
@@ -109,6 +116,11 @@ public class ScopeRefNode extends SignNode<ScopeType>
 
 	@Override
 	public final BinaryNode toBinary() {
+		return null;
+	}
+
+	@Override
+	public final NoBoundNode toNoBound() {
 		return null;
 	}
 
