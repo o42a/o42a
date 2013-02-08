@@ -22,6 +22,7 @@ package org.o42a.ast.file;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
@@ -62,6 +63,11 @@ public class InclusionNode extends AbstractStatementNode {
 
 	@Override
 	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final ExpressionNode toExpression() {
 		return null;
 	}
 

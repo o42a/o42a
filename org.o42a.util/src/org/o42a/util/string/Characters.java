@@ -70,6 +70,7 @@ public final class Characters {
 	public static final int LESS_THAN_OR_EQUAL_TO = 0x2264;
 	public static final int GREATER_THAN_OR_EQUAL_TO = 0x2265;
 
+	public static final int INFINITY = 0x221E;
 
 	public static boolean isDigit(int c) {
 		return '0' <= c && c <= '9';

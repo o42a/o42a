@@ -85,6 +85,11 @@ public class BracesNode
 	}
 
 	@Override
+	public final ExpressionNode toExpression() {
+		return null;
+	}
+
+	@Override
 	public final RefNode toRef() {
 		return null;
 	}

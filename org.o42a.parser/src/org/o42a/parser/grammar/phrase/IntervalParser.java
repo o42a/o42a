@@ -19,14 +19,14 @@
 */
 package org.o42a.parser.grammar.phrase;
 
-import static org.o42a.parser.Grammar.expression;
 import static org.o42a.parser.Grammar.separator;
+import static org.o42a.parser.grammar.phrase.BoundParser.BOUND;
 import static org.o42a.util.string.Characters.HORIZONTAL_ELLIPSIS;
 
 import org.o42a.ast.atom.HorizontalEllipsis;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.phrase.IntervalBracket;
 import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.parser.Parser;
@@ -57,14 +57,14 @@ public final class IntervalParser implements Parser<IntervalNode> {
 			return null;
 		}
 
-		final ExpressionNode leftBound = leftBound(context);
+		final BoundNode leftBound = context.push(BOUND);
 		final SignNode<HorizontalEllipsis> ellipsis = context.parse(ELLIPSIS);
 
 		if (ellipsis == null) {
 			return null;
 		}
 
-		ExpressionNode rightBound = null;
+		BoundNode rightBound = null;
 		SourcePosition firstUnexpected = null;
 
 		// An ellipsis present.
@@ -91,7 +91,7 @@ public final class IntervalParser implements Parser<IntervalNode> {
 
 			// Attempt to parse the right bound if not known yet.
 			if (rightBound == null) {
-				rightBound = rightBound(context);
+				rightBound = context.parse(BOUND);
 				if (rightBound != null) {
 					if (firstUnexpected != null) {
 						context.logUnexpected(firstUnexpected, start);
@@ -136,28 +136,6 @@ public final class IntervalParser implements Parser<IntervalNode> {
 			}
 			context.next();
 		}
-	}
-
-	private ExpressionNode leftBound(ParserContext context) {
-
-		final ExpressionNode leftBound = context.push(expression());
-
-		if (leftBound != null) {
-			context.skipComments(true, leftBound);
-		}
-
-		return leftBound;
-	}
-
-	private ExpressionNode rightBound(ParserContext context) {
-
-		ExpressionNode rightBound = context.parse(expression());
-
-		if (rightBound != null) {
-			context.acceptComments(true, rightBound);
-		}
-
-		return rightBound;
 	}
 
 	private static final class LeftBracketParser

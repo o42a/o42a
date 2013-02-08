@@ -20,6 +20,7 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.phrase.NoBoundNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 import org.o42a.util.io.SourcePosition;
@@ -40,6 +41,16 @@ public abstract class AbstractExpressionNode
 	@Override
 	public final <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
 		return accept((ExpressionNodeVisitor<R, P>) visitor, p);
+	}
+
+	@Override
+	public final ExpressionNode toExpression() {
+		return this;
+	}
+
+	@Override
+	public final NoBoundNode toNoBound() {
+		return null;
 	}
 
 }

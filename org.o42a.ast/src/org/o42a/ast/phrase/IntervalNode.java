@@ -19,13 +19,15 @@
 */
 package org.o42a.ast.phrase;
 
+import static org.o42a.ast.phrase.IntervalBracket.LEFT_CLOSED_BRACKET;
+import static org.o42a.ast.phrase.IntervalBracket.RIGHT_CLOSED_BRACKET;
+
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.HorizontalEllipsis;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
-import org.o42a.ast.expression.ExpressionNode;
 
 
 public final class IntervalNode
@@ -33,16 +35,16 @@ public final class IntervalNode
 		implements PhrasePartNode, ClauseIdNode {
 
 	private final SignNode<IntervalBracket> leftBracket;
-	private final ExpressionNode leftBound;
+	private final BoundNode leftBound;
 	private final SignNode<HorizontalEllipsis> ellipsis;
-	private final ExpressionNode rightBound;
+	private final BoundNode rightBound;
 	private final SignNode<IntervalBracket> rightBracket;
 
 	public IntervalNode(
 			SignNode<IntervalBracket> leftBracket,
-			ExpressionNode leftBound,
+			BoundNode leftBound,
 			SignNode<HorizontalEllipsis> ellipsis,
-			ExpressionNode rightBound,
+			BoundNode rightBound,
 			SignNode<IntervalBracket> rightBracket) {
 		super(leftBracket.getStart(), end(ellipsis, rightBound, rightBracket));
 		this.leftBracket = leftBracket;
@@ -56,20 +58,39 @@ public final class IntervalNode
 		return this.leftBracket;
 	}
 
-	public final ExpressionNode getLeftBound() {
+	public final boolean isLeftOpen() {
+		return this.leftBracket.getType() != LEFT_CLOSED_BRACKET;
+	}
+
+	public final BoundNode getLeftBound() {
 		return this.leftBound;
+	}
+
+	public final boolean isLeftBounded() {
+		return this.leftBound != null && this.leftBound.toNoBound() == null;
 	}
 
 	public final SignNode<HorizontalEllipsis> getEllipsis() {
 		return this.ellipsis;
 	}
 
-	public final ExpressionNode getRightBound() {
+	public final BoundNode getRightBound() {
 		return this.rightBound;
+	}
+
+	public final boolean isRightBounded() {
+		return this.rightBound != null && this.rightBound.toNoBound() == null;
 	}
 
 	public final SignNode<IntervalBracket> getRightBracket() {
 		return this.rightBracket;
+	}
+
+	public final boolean isRightOpen() {
+		if (this.rightBracket == null) {
+			return true;
+		}
+		return this.rightBracket.getType() != RIGHT_CLOSED_BRACKET;
 	}
 
 	@Override
