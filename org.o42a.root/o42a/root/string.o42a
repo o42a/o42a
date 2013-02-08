@@ -29,5 +29,16 @@ String :=> void
 
 <*Substring> Substring (
   <[From...) | to> From = ()
-  <[...To)> To = ()
+  <[...To)!> To = ()
 )
+
+<*Leading substring> Substring (
+  <(-...To)!> To = ()
+)
+
+<*Trailing substring> Substring (
+  <[From...-)!> From = ()
+)
+
+<(...)!>
+ 
