@@ -162,14 +162,13 @@ class PhraseSubContext extends PhraseContext {
 		switch (substitution) {
 		case VALUE_SUBSTITUTION:
 
-			final Ref valueSubstitutution =
-					getInstances()[0].substituteValue(distributor);
+			final Ref valueSubstitution = substituteValue(distributor);
 
-			if (valueSubstitutution == null) {
+			if (valueSubstitution == null) {
 				return null;
 			}
 
-			return valueSubstitutution.toFieldDefinition();
+			return valueSubstitution.toFieldDefinition();
 		case PREFIX_SUBSITUTION:
 
 			final Ref prefix = getPhrase().substitutePrefix(distributor);
@@ -187,6 +186,21 @@ class PhraseSubContext extends PhraseContext {
 
 		throw new IllegalStateException(
 				"Unsupported clause substitution: " + substitution);
+	}
+
+	private Ref substituteValue(Distributor distributor) {
+
+		final ClauseInstance instance = getInstances()[0];
+		final Ref substitution = instance.substituteValue(distributor);
+
+		if (substitution == null) {
+			getLogger().error(
+					"missing_clause_value",
+					instance.getLocation(),
+					"Value required here");
+		}
+
+		return substitution;
 	}
 
 	private void instantiateObjects(Statements<?, ?> statements) {

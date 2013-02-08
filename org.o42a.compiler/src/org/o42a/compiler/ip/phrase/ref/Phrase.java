@@ -207,6 +207,23 @@ public class Phrase extends Placed {
 						rightOpen));
 	}
 
+	public final HalfBoundedInterval halfBoundedInterval(
+			LocationInfo location,
+			Ref bound,
+			boolean open,
+			boolean leftBounded) {
+		return append(
+				this.last.halfBoundedInterval(
+						location,
+						bound,
+						open,
+						leftBounded));
+	}
+
+	public final UnboundedInterval unboundedInterval(LocationInfo location) {
+		return append(this.last.unboundedInterval(location));
+	}
+
 	public final UnaryPhrasePart unary(UnaryNode node) {
 		return append(this.last.unary(node));
 	}

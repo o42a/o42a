@@ -25,7 +25,6 @@ import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
-import org.o42a.ast.Node;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.expression.BlockNode;
@@ -47,6 +46,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
+import org.o42a.util.log.LogInfo;
 
 
 public enum Interpreter {
@@ -122,7 +122,7 @@ public enum Interpreter {
 		return new DefinitionVisitor(this, typeConsumer);
 	}
 
-	public static Location location(ScopeInfo p, Node node) {
+	public static Location location(ScopeInfo p, LogInfo node) {
 		return new Location(p.getLocation().getContext(), node);
 	}
 
