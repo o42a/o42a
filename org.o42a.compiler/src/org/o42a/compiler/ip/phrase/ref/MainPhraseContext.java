@@ -259,6 +259,7 @@ final class MainPhraseContext extends PhraseContext {
 		final PhrasePrefix prefix = getPhrase().getPrefix();
 		PhraseContext context = this;
 		PhraseContinuation continuation = prefix.getFollowing();
+		boolean hasParts = false;
 
 		if (continuation == null) {
 			// Phrase with only prefix and no parts.
@@ -299,7 +300,7 @@ final class MainPhraseContext extends PhraseContext {
 			}
 
 			if (context.isObject()
-					&& !context.isMain()
+					&& hasParts
 					&& !nextClause.requiresInstance()) {
 				// Expression clause after declaration part.
 				// Construct object and use this constructor as a new phrase
@@ -308,6 +309,7 @@ final class MainPhraseContext extends PhraseContext {
 				break;
 			}
 
+			hasParts = true;
 			for (NextClause implicit : nextClause.getImplicit()) {
 				context = nextContext(stack, continuation, implicit);
 			}

@@ -73,7 +73,7 @@ public class SubStringTest extends CompilerTestCase {
 	public void falseString() {
 		compile(
 				"Use namespace 'Test'",
-				"Sub := string (False)\\ [rt-integer '1'...rt-integer '4')");
+				"Sub := string (False) [rt-integer '1'...rt-integer '4')");
 
 		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
 	}

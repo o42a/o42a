@@ -122,6 +122,9 @@ public class NextClause implements Cloneable {
 	}
 
 	public boolean requiresInstance() {
+		if (this.implicit.length != 0) {
+			return this.implicit[0].requiresInstance();
+		}
 		if (getClause() == null) {
 			// Next clause is an object itself.
 			// New object will be constructed.
