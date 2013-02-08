@@ -195,6 +195,66 @@ public enum ClauseId {
 
 	},
 
+	LEFT_BOUNDED_OPEN_INTERVAL("left-bounded open interval", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "(*...-)";
+			}
+			return "(" + name + "...-)";
+		}
+
+	},
+
+	LEFT_BOUNDED_CLOSED_INTERVAL("left-bounded closed interval", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "[*...-)";
+			}
+			return "[" + name + "...-)";
+		}
+
+	},
+
+	RIGHT_BOUNDED_OPEN_INTERVAL("right-bounded open interval", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "(-...*)";
+			}
+			return "(-..." + name + ')';
+		}
+
+	},
+
+	RIGHT_BOUNDED_CLOSED_INTERVAL("right-bounded closed interval", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "(-...*]";
+			}
+			return "(-..." + name + ']';
+		}
+
+	},
+
+	UNBOUNDED_INTERVAL("unbounded interval", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "(-...-)";
+			}
+			return "(-" + name + "...-)";
+		}
+
+	},
+
 	PLUS("unary plus operator", true) {
 
 		@Override
