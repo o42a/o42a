@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
@@ -72,6 +74,7 @@ public class Ref extends Statement {
 	}
 
 	private final BoundPath path;
+	private TypeRef iface;
 
 	public Ref(LocationInfo location, Distributor distributor, BoundPath path) {
 		super(location, distributor);
@@ -154,7 +157,18 @@ public class Ref extends Statement {
 
 	public final Resolution resolveAll(FullResolver resolver) {
 		assertCompatible(resolver.getScope());
-		return resolve(resolver.getResolver()).resolveAll(resolver);
+
+		final Resolution resolution =
+				resolve(resolver.getResolver()).resolveAll(resolver);
+
+		if (this.iface != null && !this.iface.isFullyResolved()) {
+			this.iface.resolveAll(
+					getScope()
+					.resolver()
+					.fullResolver(dummyUser(), TYPE_PARAMETER_REF_USAGE));
+		}
+
+		return resolution;
 	}
 
 	public final Value<?> getValue() {
@@ -208,10 +222,13 @@ public class Ref extends Statement {
 	 * @return ancestor interface type reference.
 	 */
 	public final TypeRef getInterface() {
+		if (this.iface != null) {
+			return this.iface;
+		}
 
 		final RefPath path = getPath();
 
-		return path.iface(this, false);
+		return this.iface = path.iface(this, false);
 	}
 
 	public final TypeRef getValueTypeInterface() {
