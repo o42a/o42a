@@ -47,3 +47,14 @@ Iteration := test (
     Print error '    ' [it] nl
   }
 )
+
+Assignment := test (
+  Name = "Assignment"
+  Print error '  ' [name] nl
+
+  List := array list (`string) [["value 1", "value 2"]]
+  {
+    List [1] = "value 3"
+  }
+  Assert [list [1] == "value 3"] "Assignment failed"
+)
