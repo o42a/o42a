@@ -74,7 +74,7 @@ public abstract class TypeRef implements ScopeInfo {
 	private TypeParameters<?> parameters;
 	private TypeRef ancestor;
 	private TypeHolder type;
-	private boolean allResolved;
+	private boolean fullyResolved;
 
 	public TypeRef(Ref ref, TypeRefParameters parameters) {
 		this.ref = ref;
@@ -99,6 +99,10 @@ public abstract class TypeRef implements ScopeInfo {
 
 	public final Ref getRef() {
 		return this.ref;
+	}
+
+	public final boolean isFullyResolved() {
+		return this.fullyResolved;
 	}
 
 	public abstract Ref getIntactRef();
@@ -261,8 +265,8 @@ public abstract class TypeRef implements ScopeInfo {
 		return ref.toTypeRef(getParameters().rebuildIn(scope));
 	}
 
-	public void resolveAll(FullResolver resolver) {
-		this.allResolved = true;
+	public final void resolveAll(FullResolver resolver) {
+		this.fullyResolved = true;
 		getContext().fullResolution().start();
 		try {
 			getRef().resolveAll(resolver);
@@ -328,7 +332,7 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public final boolean assertFullyResolved() {
-		assert this.allResolved :
+		assert this.fullyResolved :
 			this + " is not fully resolved";
 		return true;
 	}
