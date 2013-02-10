@@ -45,7 +45,7 @@ Sublist :=> &list (#element type) (
   A value one greater than index of the last list element
   represented by this sublist.
 
-  Equals to list size by default.
+  Equals to the list size by default.
   ~~~
 
   Size = /(to - from)
@@ -76,8 +76,8 @@ Sublist :=> &list (#element type) (
   Constructs a leading sublist by the given open right-bounded 
   list indices interval.
   ~~~
-  <(...To)!> To = ()
+  <(-...To)!> To = ()
 )
 
-<(-Full sublist...-)> ~~ Returns a list itself when unbounded list indices
+<(-Full sublist...-)!> ~~ Returns a list itself when unbounded list indices
                       ~~ interval provided.
