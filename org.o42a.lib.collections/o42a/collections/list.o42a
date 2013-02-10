@@ -27,3 +27,57 @@ Iterate => * (
     = List:: [last index]
   )
 )
+
+Sublist :=> &list (#element type) (
+  ~~~
+  A sublist representing a slice of original list.
+  ~~~
+
+  From := link (`integer) 0
+  ~~~
+  An index of the first list element represented by this sublist.
+
+  Zero by default.
+  ~~~
+
+  To := link (`integer) [list:: size]
+  ~~~
+  A value one greater than index of the last list element
+  represented by this sublist.
+
+  Equals to list size by default.
+  ~~~
+
+  Size = /(to - from)
+  
+  Item => * (
+    Index < size? = List:: [from + index]
+  )
+)
+
+<*Sublist> Sublist (
+  ~~~
+  Constructs a sublist by the given right-open list indices interval.
+  ~~~
+  <[From...) | to> From = ()
+  <[...To)!> To = ()
+)
+
+<*Trailing sublist> Sublist (
+  ~~~
+  Constructs a trailing sublist by the given closed left-bounded
+  list indices interval.
+  ~~~
+  <[From...-)!> From = ()
+)
+
+<*Leading sublist> Sublist (
+  ~~~
+  Constructs a leading sublist by the given open right-bounded 
+  list indices interval.
+  ~~~
+  <(...To)!> To = ()
+)
+
+<(-Full sublist...-)> ~~ Returns a list itself when unbounded list indices
+                      ~~ interval provided.

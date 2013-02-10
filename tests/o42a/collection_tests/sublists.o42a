@@ -1,0 +1,29 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Any copyright is dedicated to the Public Domain.
+http://creativecommons.org/publicdomain/zero/1.0/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use namespace 'Collections'
+Use namespace 'Console'
+Use namespace 'Test'
+
+Sublists := test
+================
+
+Name = "Sublists"
+Print error [name] nl
+
+Run tests
+
+Simple := test (
+  Name = "Simple"
+  Print error '  ' [name] nl
+  
+  List := row list (`string) [["a", "b", "c", "d", "e", "f"]]
+  Sublist := list [1...4)
+
+  Assert [sublist: size == 3] 'Wrong size'
+  Assert [sublist [0] == "b"] 'Wrong first element'
+  Assert [sublist [1] == "c"] 'Wrong second element'
+  Assert [sublist [2] == "d"] 'Wrong last element'
+  Assert [--sublist [3]] 'Wrong element accessed'
+)
