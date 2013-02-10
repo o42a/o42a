@@ -74,6 +74,7 @@ final class URLSourceReader extends SourceReader {
 					"Source already read. Can't seek");
 		}
 		this.stream.skip(offset);
+		this.offset = offset;
 		this.bytes.position(0);
 		this.bytes.limit(0);
 		this.chars.clear();
