@@ -53,7 +53,14 @@ final class PhrasePrefixVisitor
 
 	@Override
 	public Phrase visitAscendants(AscendantsNode ascendants, Phrase p) {
-		return prefixByAscendants(p, ascendants);
+
+		final Phrase phrase = prefixByAscendants(p, ascendants);
+
+		if (phrase == null) {
+			return phrase;
+		}
+
+		return applyTypeParameters(phrase);
 	}
 
 	@Override
@@ -61,13 +68,13 @@ final class PhrasePrefixVisitor
 			TypeParametersNode parameters,
 			Phrase p) {
 
-		final Phrase result = prefixByTypeParameters(p, parameters);
+		final Phrase phrase = prefixByTypeParameters(p, parameters);
 
-		if (result == null) {
+		if (phrase == null) {
 			return null;
 		}
 
-		return result.referBody();
+		return applyTypeParameters(phrase.referBody());
 	}
 
 	@Override
@@ -85,15 +92,10 @@ final class PhrasePrefixVisitor
 
 		if (ancestor == null || ancestor.isImplied()) {
 
-			final Phrase result =
+			final Phrase phrase =
 					p.setImpliedAncestor(location(p, expression));
 
-			if (this.typeParameters == null) {
-				return result;
-			}
-
-			return result.setTypeParameters(
-					this.typeParameters.toObjectTypeParameters());
+			return applyTypeParameters(phrase);
 		}
 
 		final Phrase phrase;
@@ -111,6 +113,14 @@ final class PhrasePrefixVisitor
 		}
 
 		return result.expandMacro();
+	}
+
+	private Phrase applyTypeParameters(Phrase phrase) {
+		if (this.typeParameters == null) {
+			return phrase;
+		}
+		return phrase.setTypeParameters(
+				this.typeParameters.toObjectTypeParameters());
 	}
 
 }
