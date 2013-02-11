@@ -26,7 +26,7 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.member.field.impl.DefaultFieldDefinition;
+import org.o42a.core.member.field.impl.AscendantsFieldDefinition;
 import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -245,7 +245,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	public final FieldDefinition fieldDefinition(
 			LocationInfo location,
 			BlockBuilder definition) {
-		return new DefaultFieldDefinition(
+		return new AscendantsFieldDefinition(
 				location,
 				distribute(),
 				this,

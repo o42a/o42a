@@ -31,13 +31,13 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-public final class DefaultFieldDefinition extends FieldDefinition {
+public final class AscendantsFieldDefinition extends FieldDefinition {
 
 	private final AscendantsDefinition ascendants;
 	private final BlockBuilder definitions;
 	private Ref value;
 
-	public DefaultFieldDefinition(
+	public AscendantsFieldDefinition(
 			LocationInfo location,
 			Distributor scope,
 			AscendantsDefinition ascendants,
