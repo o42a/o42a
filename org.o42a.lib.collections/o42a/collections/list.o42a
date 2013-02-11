@@ -28,7 +28,7 @@ Iterate => * (
   )
 )
 
-Sublist :=> &list (#element type) (
+Sublist :=> &list (`#element type) (
   ~~~
   A sublist representing a slice of original list.
   ~~~
