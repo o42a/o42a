@@ -13,3 +13,11 @@ A mutable list of elements.
 ~~~
 
 Item =<> assignable (`#element type) ()
+
+Sublist => &mutable list (
+  Item => * (
+    Set => * ({
+      Index < size? Mutable list [from + index] = new value
+    })
+  )
+)
