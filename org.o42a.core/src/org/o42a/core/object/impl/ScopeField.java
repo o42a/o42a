@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
@@ -33,9 +32,7 @@ import org.o42a.core.ir.field.scope.ScopeFldOp;
 import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBodyData;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.Visibility;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
@@ -45,6 +42,30 @@ import org.o42a.core.ref.path.Path;
 
 
 public final class ScopeField extends ObjectField {
+
+	static Obj objectScope(Obj object, MemberKey scopeFieldKey) {
+
+		final ObjectType newOwnerType = object.type();
+		final Obj ancestor = newOwnerType.getAncestor().getType();
+		final Member ancestorMember = ancestor.member(scopeFieldKey);
+
+		if (ancestorMember != null) {
+			// Scope field present in ancestor.
+			// Preserve an ancestor`s scope.
+			return ancestorMember.substance(dummyUser()).toObject();
+		}
+
+		final ObjectType origin =
+				scopeFieldKey.getOrigin().toObject().type();
+
+		if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
+			// Scope field declared in implicit sample.
+			// Update owner with an actual one.
+			return object.getEnclosingContainer().toObject();
+		}
+
+		return null;
+	}
 
 	private final ScopeField overridden;
 
@@ -84,30 +105,11 @@ public final class ScopeField extends ObjectField {
 			return object;
 		}
 
-		final UserInfo user = dummyUser();
-		final Obj newObject;
-		final Obj newOwner = getEnclosingContainer().toObject();
-		final ObjectType newOwnerType = newOwner.type();
-		final Obj ancestor = newOwnerType.getAncestor().getType();
-		final Member ancestorMember = ancestor.member(getKey());
-
-		if (ancestorMember != null) {
-			// Scope field present in ancestor.
-			// Preserve an ancestor`s scope.
-			newObject = ancestorMember.substance(user).toObject();
-		} else {
-
-			final ObjectType origin = getKey().getOrigin().toObject().type();
-
-			if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
-				// Scope field declared in implicit sample.
-				// Update owner with an actual one.
-				newObject = newOwner.getEnclosingContainer().toObject();
-			} else {
-				// In the rest of the cases preserve an old scope.
-				newObject = this.overridden.toObject();
-			}
-		}
+		final Obj objectScope =
+				objectScope(getEnclosingContainer().toObject(), getKey());
+		// Preserve an old scope by default.
+		final Obj newObject =
+				objectScope != null ? objectScope : this.overridden.toObject();
 
 		setScopeObject(newObject);
 

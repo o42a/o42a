@@ -20,6 +20,7 @@
 package org.o42a.core.object.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.object.impl.ScopeField.objectScope;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
@@ -32,6 +33,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.impl.normalizer.InlineValueStep;
@@ -61,39 +63,27 @@ public final class ParentObjectStep
 	@Override
 	protected Container resolve(StepResolver resolver) {
 
-		final Obj object = resolver.getStart().toObject();
+		final Scope start = resolver.getStart();
+		final Obj object = start.toObject();
 
 		if (resolver.isFullResolution()) {
 			uses().useBy(resolver);
 		} else if (!object.membersResolved()) {
-			// Members not resolved yet.
-			if (resolver.getStart().getEnclosingScopePath().getSteps()[0]
-					.equals(this)) {
-				// Workaround to access the enclosing scope
-				// before the scope field created.
-				final Container result =
-						resolver.getStart().getEnclosingScope().getContainer();
 
-				resolver.getWalker().up(object, this, result, this);
+			final Container result = resolveWhenMembersNotResolved(object);
 
-				return result;
+			if (result != null) {
+				return reportToWalker(resolver, object, result);
 			}
 		}
 
-		final Member member = resolveMember(
-				resolver.getPath(),
-				resolver.getIndex(),
-				resolver.getStart());
+		final Container result = findParentObject(resolver);
 
-		if (member == null) {
-			return null;
+		if (result == null) {
+			return result;
 		}
 
-		final Container result = member.substance(resolver);
-
-		resolver.getWalker().up(object, this, result, this);
-
-		return result;
+		return reportToWalker(resolver, object, result);
 	}
 
 	@Override
@@ -144,6 +134,49 @@ public final class ParentObjectStep
 			return this.uses;
 		}
 		return this.uses = new ObjectStepUses(this);
+	}
+
+	private Container resolveWhenMembersNotResolved(Obj object) {
+
+		final ObjectType type = object.type();
+
+		if (type.isResolved()) {
+			return objectScope(object, getMemberKey());
+		}
+		if (isEnclosingScopePath(object)) {
+			return object.getScope().getEnclosingScope().getContainer();
+		}
+
+		return null;
+	}
+
+	private boolean isEnclosingScopePath(Obj start) {
+		return start.getScope()
+				.getEnclosingScopePath()
+				.getSteps()[0]
+				.equals(this);
+	}
+
+	private Container findParentObject(StepResolver resolver) {
+
+		final Member member = resolveMember(
+				resolver.getPath(),
+				resolver.getIndex(),
+				resolver.getStart());
+
+		if (member == null) {
+			return null;
+		}
+
+		return member.substance(resolver);
+	}
+
+	private Container reportToWalker(
+			StepResolver resolver,
+			Obj object,
+			Container objectScope) {
+		resolver.getWalker().up(object, this, objectScope, this);
+		return objectScope;
 	}
 
 	private void normalizeParent(PathNormalizer normalizer) {

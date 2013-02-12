@@ -154,6 +154,10 @@ public final class ObjectType implements UserInfo {
 		return this.parameters = parameters;
 	}
 
+	public final boolean isResolved() {
+		return getResolution().typeResolved();
+	}
+
 	public boolean inherits(ObjectType other) {
 		if (getObject().is(other.getObject())) {
 			return true;
