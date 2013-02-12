@@ -27,17 +27,26 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueType;
 
 
 public final class DefaultTypeRelation extends TypeRelation {
 
-	public DefaultTypeRelation(TypeRef of, TypeRef to) {
-		super(of, to);
+	public DefaultTypeRelation(
+			TypeRef of,
+			TypeRef to,
+			boolean parametersIgnored) {
+		super(of, to, parametersIgnored);
+	}
+
+	@Override
+	public TypeRelation ignoreParameters() {
+		return new DefaultTypeRelation(of(), to(), true);
 	}
 
 	@Override
 	public TypeRelation revert() {
-		return new DefaultTypeRelation(to(), of());
+		return new DefaultTypeRelation(to(), of(), parametersIgnored());
 	}
 
 	@Override
@@ -142,14 +151,23 @@ public final class DefaultTypeRelation extends TypeRelation {
 		return Kind.DERIVATIVE;
 	}
 
-	private static boolean assignable(TypeRef dest, TypeRef value) {
+	private boolean assignable(TypeRef dest, TypeRef value) {
+
+		final ValueType<?> destValueType = dest.getValueType();
+
+		if (parametersIgnored()) {
+			if (destValueType.is(value.getValueType())) {
+				return true;
+			}
+			return destValueType.isVoid();
+		}
 
 		final TypeParameters<?> destParameters = dest.getParameters();
 
 		if (destParameters.assignableFrom(value.getParameters())) {
 			return true;
 		}
-		if (dest.getValueType().isVoid()) {
+		if (destValueType.isVoid()) {
 			return true;
 		}
 
