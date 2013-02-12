@@ -469,6 +469,7 @@ public class Ascendants
 				continue;
 			}
 			result = result.relationTo(ancestor)
+					.ignoreParameters()
 					.check(getScope().getLogger())
 					.commonDerivative();
 		}
