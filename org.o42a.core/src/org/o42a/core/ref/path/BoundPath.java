@@ -118,11 +118,11 @@ public class BoundPath extends RefPath {
 	}
 
 	public final Path getTemplate() {
-		return getRawPath().getTemplate();
+		return getPath().getTemplate();
 	}
 
 	public final boolean hasTemplate(PathTemplate template) {
-		return getTemplate().hasTemplate(template);
+		return getRawPath().getTemplate().hasTemplate(template);
 	}
 
 	public final Step[] getSteps() {
@@ -739,16 +739,16 @@ public class BoundPath extends RefPath {
 	}
 
 	private Path rebuildPath() {
-
-		final Path path = getRawPath();
-		final Path template = getTemplate();
-
-		removeOddFragments(template != null ? template : path);
-
+		removeOddFragments();
 		return this.path = combineSteps();
 	}
 
-	private void removeOddFragments(Path path) {
+	private void removeOddFragments() {
+
+		final Path rawPath = getRawPath();
+		final Path oldTemplate = rawPath.getTemplate();
+		final Path path = oldTemplate != null ? oldTemplate : rawPath;
+
 		if (path.getSteps().length == 0) {
 			this.path = path;
 			return;
@@ -773,19 +773,18 @@ public class BoundPath extends RefPath {
 		this.path = new Path(
 				getKind(),
 				isStatic(),
-				removeOddFragmentsFromTemplate(remover),
+				removeOddFragmentsFromTemplate(remover, oldTemplate),
 				newSteps);
 	}
 
-	private Path removeOddFragmentsFromTemplate(
-			OddPathFragmentRemover remover) {
-
-		final Path oldTemplate = getPath().getTemplate();
-
+	private static Path removeOddFragmentsFromTemplate(
+			OddPathFragmentRemover remover,
+			Path oldTemplate) {
 		if (oldTemplate == null) {
 			return null;
 		}
-		// Up to this point the path and its template has the same prefix.
+		// Up to this point the path and its template have the same prefix.
+		// Remove the odd steps from that prefix from template too.
 		final Step[] oldTemplateSteps = oldTemplate.getSteps();
 		final Step[] newTemplateSteps =
 				remover.removeOddFragments(oldTemplateSteps);
