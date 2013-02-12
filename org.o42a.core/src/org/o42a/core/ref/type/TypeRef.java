@@ -202,7 +202,7 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public final TypeRelation relationTo(TypeRef other) {
-		return new DefaultTypeRelation(this, other);
+		return new DefaultTypeRelation(this, other, false);
 	}
 
 	public final boolean derivedFrom(TypeRef other) {

@@ -27,19 +27,25 @@ public abstract class TypeRelation {
 	private final TypeRef of;
 	private final TypeRef to;
 	private Kind kind;
+	private final boolean parametersIgnored;
 
-	public TypeRelation(TypeRef of, TypeRef to) {
+	public TypeRelation(TypeRef of, TypeRef to, boolean parametersIgnored) {
 		this.of = of;
 		this.to = to;
+		this.parametersIgnored = parametersIgnored;
 		of.assertSameScope(to);
 	}
 
-	public TypeRef of() {
+	public final TypeRef of() {
 		return this.of;
 	}
 
-	public TypeRef to() {
+	public final TypeRef to() {
 		return this.to;
+	}
+
+	public final boolean parametersIgnored() {
+		return this.parametersIgnored;
 	}
 
 	public Kind getKind() {
@@ -72,6 +78,8 @@ public abstract class TypeRelation {
 	public final boolean isSame() {
 		return getKind().isSame();
 	}
+
+	public abstract TypeRelation ignoreParameters();
 
 	public final TypeRelation revert(boolean revert) {
 		return revert ? revert() : this;

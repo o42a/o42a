@@ -97,7 +97,7 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	public final TypeRelation relationTo(StaticTypeRef other) {
-		return new StaticTypeRelation(this, other);
+		return new StaticTypeRelation(this, other, false);
 	}
 
 	@Override

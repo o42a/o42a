@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.type.impl;
 
-
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -28,13 +27,21 @@ import org.o42a.core.source.CompilerLogger;
 
 public final class StaticTypeRelation extends TypeRelation {
 
-	public StaticTypeRelation(TypeRef of, TypeRef to) {
-		super(of, to);
+	public StaticTypeRelation(
+			TypeRef of,
+			TypeRef to,
+			boolean parametersIgnored) {
+		super(of, to, parametersIgnored);
+	}
+
+	@Override
+	public TypeRelation ignoreParameters() {
+		return new StaticTypeRelation(of(), to(), true);
 	}
 
 	@Override
 	public TypeRelation revert() {
-		return new StaticTypeRelation(to(), of());
+		return new StaticTypeRelation(to(), of(), parametersIgnored());
 	}
 
 	@Override
