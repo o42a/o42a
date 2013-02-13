@@ -26,6 +26,7 @@ import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
+import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.Collection;
@@ -921,7 +922,8 @@ public abstract class Obj
 	private void resolveAllMembers() {
 
 		final LinkUses linkUses = type().linkUses();
-		final boolean abstractAllowed = abstractAllowed();
+		final boolean abstractAllowed = abstractsAllowedIn(this);
+		OverrideRequirement overrideRequirement = null;
 
 		for (Member member : getMembers()) {
 
@@ -937,7 +939,12 @@ public abstract class Obj
 					linkUses.fieldChanged(field);
 				}
 				if (!abstractAllowed && field.isAbstract()) {
-					abstractNotOverridden(field);
+					if (overrideRequirement == null) {
+						overrideRequirement = new OverrideRequirement(this);
+					}
+					if (overrideRequirement.overrideRequired(field)) {
+						abstractNotOverridden(field);
+					}
 				}
 			}
 
@@ -974,16 +981,6 @@ public abstract class Obj
 				getLocation(),
 				"Abstract field '%s' not overridden",
 				member.getDisplayName());
-	}
-
-	private boolean abstractAllowed() {
-		if (isAbstract() || isPrototype()) {
-			return true;
-		}
-		if (toClause() != null) {
-			return true;
-		}
-		return isWrapper() || getDereferencedLink() != null;
 	}
 
 	private void normalizeFields(Analyzer analyzer) {
