@@ -141,7 +141,7 @@ public class EnclosingPrediction extends Prediction {
 			if (!derived.derivedFrom(getScope())) {
 				// The reverse resolution may result to ascendant scope.
 				// Report the scope itself.
-				assert getScope().assertDerivedFrom(derived);
+				// assert getScope().assertDerivedFrom(derived);
 				return this.revertPath.revert(getScope());
 			}
 			return this.revertPath.revert(derived);
