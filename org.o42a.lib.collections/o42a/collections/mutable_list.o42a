@@ -14,7 +14,7 @@ A mutable list of elements.
 
 Item =<> assignable (`#element type) ()
 
-Sublist => &mutable list (
+Sublist => &mutable list (`#element type) (
   Item => * (
     Set => * ({
       Index < size? Mutable list [from + index] = new value
