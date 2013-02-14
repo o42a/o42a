@@ -27,3 +27,18 @@ Simple := test (
   Assert [sublist [2] == "d"] 'Wrong last element'
   Assert [--sublist [3]] 'Wrong element accessed'
 )
+
+Mutable := test (
+  Name ="Mutable"
+  Print error '  ' [name] nl
+
+  List := array list (`string) [["a", "b", "c", "d", "e", "f"]]
+  Sublist := list [1...4)
+
+  {
+    Sublist [1] = "ff"
+  }
+
+  Assert [sublist [1] == "ff"] 'Sublist value not assigned'
+  Assert [list [2] == "ff"] 'Wrong value stored in list'
+)
