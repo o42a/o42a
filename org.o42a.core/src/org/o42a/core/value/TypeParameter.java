@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
@@ -33,14 +34,16 @@ public final class TypeParameter implements ScopeInfo {
 
 	private final MemberKey key;
 	private final TypeRef typeRef;
+	private final Obj origin;
 
-	TypeParameter(MemberKey key, TypeRef typeRef) {
+	TypeParameter(MemberKey key, TypeRef typeRef, Obj origin) {
 		assert typeRef != null :
 			"Type parameter not specified";
 		assert key != null :
 			"Type parameter key not specified";
 		this.key = key;
 		this.typeRef = typeRef;
+		this.origin = origin;
 	}
 
 	@Override
@@ -53,20 +56,24 @@ public final class TypeParameter implements ScopeInfo {
 		return getTypeRef().getScope();
 	}
 
-	public final boolean isValid() {
-		return getTypeRef().isValid();
-	}
-
-	public final boolean validateAll() {
-		return getTypeRef().validateAll();
-	}
-
 	public final MemberKey getKey() {
 		return this.key;
 	}
 
 	public final TypeRef getTypeRef() {
 		return this.typeRef;
+	}
+
+	public final Obj getOrigin() {
+		return this.origin;
+	}
+
+	public final boolean isValid() {
+		return getTypeRef().isValid();
+	}
+
+	public final boolean validateAll() {
+		return getTypeRef().validateAll();
 	}
 
 	public final TypeParameter prefixWith(PrefixPath prefix) {
@@ -78,7 +85,7 @@ public final class TypeParameter implements ScopeInfo {
 			return this;
 		}
 
-		return new TypeParameter(getKey(), newTypeRef);
+		return new TypeParameter(getKey(), newTypeRef, getOrigin());
 	}
 
 	public TypeParameter rebuildIn(Scope scope) {
@@ -90,7 +97,7 @@ public final class TypeParameter implements ScopeInfo {
 			return this;
 		}
 
-		return new TypeParameter(getKey(), newTypeRef);
+		return new TypeParameter(getKey(), newTypeRef, getOrigin());
 	}
 
 	public final TypeParameter reproduce(Reproducer reproducer) {
@@ -101,7 +108,7 @@ public final class TypeParameter implements ScopeInfo {
 			return null;
 		}
 
-		return new TypeParameter(getKey(), typeRef);
+		return new TypeParameter(getKey(), typeRef, null);
 	}
 
 	@Override
@@ -130,6 +137,13 @@ public final class TypeParameter implements ScopeInfo {
 			return super.toString();
 		}
 		return this.typeRef.toString();
+	}
+
+	final TypeParameter suggestOrigin(Obj origin) {
+		if (this.origin != null) {
+			return this;
+		}
+		return new TypeParameter(getKey(), getTypeRef(), origin);
 	}
 
 }

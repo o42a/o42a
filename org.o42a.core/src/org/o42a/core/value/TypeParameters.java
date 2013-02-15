@@ -27,6 +27,8 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.FullResolver;
@@ -68,6 +70,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 	private final Location location;
 	private final Scope scope;
 	private final ValueType<T> valueType;
+	private final Obj explicitlyRefinedFor;
 	private final TypeParameter[] parameters;
 
 	private TypeParameters(
@@ -83,6 +86,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 		this.location = location.getLocation();
 		this.scope = scope;
 		this.valueType = valueType;
+		this.explicitlyRefinedFor = null;
 		this.parameters = new TypeParameter[0];
 	}
 
@@ -90,10 +94,12 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			LocationInfo location,
 			Scope scope,
 			ValueType<T> valueType,
+			Obj explicitlyRefinedFor,
 			TypeParameter[] parameters) {
 		this.location = location.getLocation();
 		this.scope = scope;
 		this.valueType = valueType;
+		this.explicitlyRefinedFor = explicitlyRefinedFor;
 		assert parametersHaveSameScope(parameters);
 		this.parameters = parameters;
 	}
@@ -137,6 +143,34 @@ public final class TypeParameters<T> extends TypeRefParameters {
 		return this.parameters.length == 0;
 	}
 
+	public final Obj getExplicitlyRefinedFor() {
+		return this.explicitlyRefinedFor;
+	}
+
+	public final TypeParameters<T> explicitlyRefineFor(Obj object) {
+		if (getExplicitlyRefinedFor() == object) {
+			return this;
+		}
+		return new TypeParameters<T>(
+				this,
+				getScope(),
+				getValueType(),
+				object,
+				all());
+	}
+
+	public final TypeParameters<T> declaredIn(Obj origin) {
+		if (isEmpty()) {
+			return this;
+		}
+		return new TypeParameters<T>(
+				this,
+				getScope(),
+				getValueType(),
+				null,
+				suggestOrigin(origin));
+	}
+
 	public final boolean isValid() {
 		for (TypeParameter parameter : all()) {
 			if (!parameter.isValid()) {
@@ -177,12 +211,14 @@ public final class TypeParameters<T> extends TypeRefParameters {
 	public final TypeParameters<T> add(MemberKey key, TypeRef parameter) {
 		parameter.assertSameScope(this);
 
-		final TypeParameter param = new TypeParameter(key, parameter);
+		final TypeParameter param =
+				new TypeParameter(key, parameter, getExplicitlyRefinedFor());
 
 		return new TypeParameters<T>(
 				this,
 				getScope(),
 				getValueType(),
+				getExplicitlyRefinedFor(),
 				ArrayUtil.append(this.parameters, param));
 	}
 
@@ -298,9 +334,23 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			this + " value type is not compatible with "
 			+ defaultParameters.getValueType();
 
+		final Obj explicitlyRefinedFor =
+				defaultParameters.getExplicitlyRefinedFor();
+
 		if (defaultParameters.isEmpty()) {
 			// Always override the empty parameters.
-			return this;
+			if (explicitlyRefinedFor == null) {
+				return this;
+			}
+			if (isEmpty()) {
+				return explicitlyRefineFor(explicitlyRefinedFor);
+			}
+			return new TypeParameters<T>(
+					this,
+					getScope(),
+					getValueType(),
+					explicitlyRefinedFor,
+					suggestOrigin(explicitlyRefinedFor));
 		}
 		if (isEmpty()) {
 			if (defaultParameters.getValueType().is(getValueType())) {
@@ -311,28 +361,74 @@ public final class TypeParameters<T> extends TypeRefParameters {
 					this,
 					getScope(),
 					getValueType(),
-					defaultParameters.all());
+					explicitlyRefinedFor,
+					defaultParameters.suggestOrigin(explicitlyRefinedFor));
 		}
 
-		TypeParameter[] newParameters = all();
+		TypeParameter[] newParameters =
+				suggestOrigin(explicitlyRefinedFor);
 
 		for (TypeParameter defaultParam : defaultParameters.all()) {
-			if (parameter(defaultParam.getKey()) == null) {
-				// Do only apply the default type parameter if it's not present
-				// in this type parameters.
+
+			final int index = parameterIndex(defaultParam.getKey());
+
+			if (index < 0) {
+				// Append the default type parameter if it's not refined.
 				newParameters = ArrayUtil.append(newParameters, defaultParam);
+				continue;
 			}
+
+			final ObjectType defaultOrigin =
+					defaultParam.getOrigin() != null
+					? defaultParam.getOrigin().type()
+					: null;
+			final TypeParameter refinement = newParameters[index];
+			final ObjectType refinementOrigin =
+					refinement.getOrigin() != null
+					? refinement.getOrigin().type()
+					: null;
+
+			if (defaultOrigin == null) {
+				// Ignore the default parameter without origin.
+				// It is probably the same as an explicit one.
+				continue;
+			}
+			if (refinementOrigin == null) {
+				// Refinement has no origin, while the default parameter has.
+				// Ignore the refinement.
+				newParameters[index] = defaultParam;
+				continue;
+			}
+			if (explicitlyRefinedFor != null
+					&& refinementOrigin.getObject().is(explicitlyRefinedFor)) {
+				// Explicitly declared parameter.
+				// Apply the refinement.
+				continue;
+			}
+			if (refinementOrigin.derivedFrom(defaultOrigin)) {
+				// The refinement is declared after the default parameter.
+				// Apply the refinement.
+				continue;
+			}
+			if (defaultOrigin.derivedFrom(refinementOrigin)) {
+				// The default parameter is declared after refinement.
+				// Apply the default parameter.
+				newParameters[index] = defaultParam;
+				continue;
+			}
+			// Apply the refinement in all other cases.
 		}
 
 		if (newParameters.length == size()) {
 			// This type parameters completely override the default ones.
-			return this;
+			return explicitlyRefineFor(getExplicitlyRefinedFor());
 		}
 
 		return new TypeParameters<T>(
 				this,
 				getScope(),
 				getValueType(),
+				defaultParameters.getExplicitlyRefinedFor(),
 				newParameters);
 	}
 
@@ -354,6 +450,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 				this,
 				prefix.getStart(),
 				getValueType(),
+				null,
 				newParameters);
 	}
 
@@ -385,6 +482,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 				this,
 				getScope(),
 				getValueType(),
+				null,
 				newParameters);
 	}
 
@@ -433,6 +531,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 				this,
 				reproducer.getScope(),
 				getValueType(),
+				null,
 				newParameters);
 	}
 
@@ -494,6 +593,34 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			parameters[i].assertSameScope(this);
 		}
 		return true;
+	}
+
+	private int parameterIndex(MemberKey key) {
+		for (int i = 0; i < this.parameters.length; ++i) {
+
+			final TypeParameter parameter = this.parameters[i];
+
+			if (parameter.getKey().equals(key)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	private TypeParameter[] suggestOrigin(Obj origin) {
+		if (origin == null || isEmpty()) {
+			return all();
+		}
+
+		final TypeParameter[] parameters =
+				new TypeParameter[this.parameters.length];
+
+		for (int i = 0; i < parameters.length; ++i) {
+			parameters[i] = this.parameters[i].suggestOrigin(origin);
+		}
+
+		return parameters;
 	}
 
 	private Kind parametersRelation(TypeParameters<?> other) {
