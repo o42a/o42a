@@ -151,7 +151,7 @@ public final class ObjectType implements UserInfo {
 
 		parameters.assertSameScope(getObject());
 
-		return this.parameters = parameters;
+		return this.parameters = parameters.declaredIn(getObject());
 	}
 
 	public final boolean isResolved() {
@@ -740,7 +740,9 @@ public final class ObjectType implements UserInfo {
 		}
 
 		final TypeParameters<?> result =
-				explicitParameters.refine(getObject(), parameters);
+				explicitParameters.refine(
+						getObject(),
+						parameters.explicitlyRefineFor(getObject()));
 
 		result.assertSameScope(getObject());
 
