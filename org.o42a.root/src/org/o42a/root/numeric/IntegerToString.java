@@ -51,7 +51,7 @@ public class IntegerToString extends ToString<Long> {
 
 		final Block code = stringDirs.code();
 		final FuncPtr<IntegerStringFunc> fn =
-				code.getGenerator().externalFunction().sideEffects(true).link(
+				code.getGenerator().externalFunction().sideEffects().link(
 						"o42a_int_to_str",
 						IntegerStringFunc.INTEGER_STRING);
 
