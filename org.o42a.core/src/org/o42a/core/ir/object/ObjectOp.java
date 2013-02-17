@@ -102,65 +102,6 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public abstract ObjOp cast(ID id, CodeDirs dirs, Obj ascendant);
 
-	public ObjectOp dynamicCast(
-			ID id,
-			CodeDirs dirs,
-			ObjectTypeOp type,
-			Obj wellKnownType,
-			boolean reportError) {
-
-		final CodeDirs subDirs = dirs.begin(
-				id != null ? id : CAST_ID,
-				"Dynamic cast " + this + " to " + wellKnownType);
-
-		final Block code = subDirs.code();
-
-		code.dumpName("To", type);
-
-		final DataOp castResult =
-				castFunc(reportError)
-				.op(null, code)
-				.cast(
-						id != null ? id.detail("ptr") : null,
-						code,
-						this,
-						type);
-
-		final DataOp resultPtr;
-
-		if (!reportError) {
-			resultPtr = castResult;
-
-			final Block castNull = code.addBlock("cast_null");
-
-			castResult.isNull(null, code).go(code, castNull.head());
-
-			if (castNull.exists()) {
-				castNull.debug("Cast failed");
-				castNull.go(subDirs.falseDir());
-			}
-		} else {
-
-			final DataOp nonePtr =
-					getContext()
-					.getNone()
-					.ir(getGenerator())
-					.op(getBuilder(), code)
-					.toData(null, code);
-
-			resultPtr =
-					castResult.isNull(null, code)
-					.select(null, code, nonePtr, castResult);
-		}
-
-		final ObjectOp result =
-				anonymousObject(getBuilder(), resultPtr, wellKnownType);
-
-		subDirs.done();
-
-		return result;
-	}
-
 	@Override
 	public abstract ValueOp value();
 
@@ -266,7 +207,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
 		final DataOp resultPtr =
-				castFunc(false)
+				castFunc()
 				.op(null, code)
 				.cast(
 						id != null ? id.detail("ptr") : null,
@@ -293,14 +234,11 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return this.objectType;
 	}
 
-	private FuncPtr<CastObjectFunc> castFunc(boolean reportError) {
+	private FuncPtr<CastObjectFunc> castFunc() {
 		return getGenerator()
 				.externalFunction()
-				.sideEffects(false)
-				.link(
-						reportError
-						? "o42a_obj_cast_or_error" : "o42a_obj_cast",
-						CAST_OBJECT);
+				.noSideEffects()
+				.link("o42a_obj_cast", CAST_OBJECT);
 	}
 
 	private final ObjectIRBodyOp body(Code code) {

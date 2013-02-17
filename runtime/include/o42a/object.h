@@ -709,22 +709,6 @@ o42a_obj_body_t *o42a_obj_cast(
 		const o42a_obj_stype_t *);
 
 /**
- * Searches for the object's body of the given type.
- *
- * In contrast to o42a_obj_cast this function never returns NULL and reports
- * cast error.
- *
- * \param object[in] object to cast.
- * \param type[in] static type to cast to.
- *
- * \return object body pointer corresponding to the given type or false if
- * object is not derived from it.
- */
-o42a_obj_body_t *o42a_obj_cast_or_error(
-		o42a_obj_t *,
-		const o42a_obj_stype_t *);
-
-/**
  * Instantiates a new object.
  *
  * \param ctr[in] filled-in construction data.
