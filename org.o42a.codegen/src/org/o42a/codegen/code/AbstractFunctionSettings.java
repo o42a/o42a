@@ -51,6 +51,14 @@ abstract class AbstractFunctionSettings<S extends AbstractFunctionSettings<S>>
 		return (this.flags & NO_SIDE_EFFECTS) == 0;
 	}
 
+	public final S noSideEffects() {
+		return sideEffects(false);
+	}
+
+	public final S sideEffects() {
+		return sideEffects(true);
+	}
+
 	public final S sideEffects(boolean sideEffects) {
 		if (sideEffects) {
 			this.flags &= ~NO_SIDE_EFFECTS;
