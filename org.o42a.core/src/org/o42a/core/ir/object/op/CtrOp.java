@@ -100,7 +100,7 @@ public class CtrOp extends IROp {
 	private FuncPtr<NewObjectFunc> newFunc() {
 		return getGenerator()
 				.externalFunction()
-				.sideEffects(false)
+				.noSideEffects()
 				.link("o42a_obj_new", NEW_OBJECT);
 	}
 

@@ -105,7 +105,7 @@ public class ArrayConstructorBuilder
 		final FuncPtr<ValAllocFunc> func =
 				dirs.getGenerator()
 				.externalFunction()
-				.sideEffects(false)
+				.noSideEffects()
 				.link("o42a_array_alloc", VAL_ALLOC);
 		AnyRecOp data = func.op(null, code)
 				.allocate(dirs, items.length)
