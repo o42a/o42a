@@ -68,6 +68,28 @@ void o42a_array_copy(const o42a_val_t *, o42a_val_t *);
  */
 void o42a_array_of_duplicates(o42a_val_t *, uint32_t, o42a_array_t);
 
+/**
+ * Copies elements from one array to another.
+ *
+ * \param source[in] an array value to copy elements from.
+ * Should never be false.
+ * \param source_from[in] an index of first element of source to copy.
+ * \param source_to[in] an index one greater than the one of the last element
+ * of source to copy.
+ * \param target[out] an array value to copy elements to.
+ * Should never be false.
+ * \param target_start[in] an index of first element of target to copy to.
+ *
+ * \return O42A_TRUE if copying succeed, or O42A_FALSE if array element indexes
+ * are not valid.
+ */
+o42a_bool_t o42a_array_copy_elements(
+		const o42a_val_t *,
+		int64_t,
+		int64_t,
+		o42a_val_t *,
+		int64_t);
+
 void o42a_array_mark(const volatile o42a_val_t *);
 
 void o42a_array_start_use(o42a_val_t *);

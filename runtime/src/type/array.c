@@ -122,6 +122,45 @@ void o42a_array_of_duplicates(
 	O42A_RETURN;
 }
 
+o42a_bool_t o42a_array_copy_elements(
+		const o42a_val_t *const source,
+		const int64_t source_from,
+		const int64_t source_to,
+		o42a_val_t *const target,
+		const int64_t target_start) {
+	O42A_ENTER(return O42A_FALSE);
+
+	const uint32_t source_len = source->length;
+	const uint32_t target_len = target->length;
+
+	if (source_from < 0 || source_to > source_len) {
+		O42A_RETURN O42A_FALSE;
+	}
+	if (target_start < 0 || target_start >= target_len) {
+		O42A_RETURN O42A_FALSE;
+	}
+
+	const int64_t elements_to_copy = source_to - source_from;
+
+	if (elements_to_copy <= 0) {
+		if (!elements_to_copy) {
+			// Nothing to copy.
+			O42A_RETURN O42A_TRUE;
+		}
+		O42A_RETURN O42A_FALSE;
+	}
+
+	const o42a_array_t *const source_data = source->value.v_ptr;
+	o42a_array_t *const target_data = target->value.v_ptr;
+
+	O42A(memmove(
+			target_data + target_start,
+			source_data + source_from,
+			(size_t) (elements_to_copy * sizeof(o42a_array_t))));
+
+	O42A_RETURN O42A_TRUE;
+}
+
 void o42a_array_mark(const volatile o42a_val_t *const value) {
 	O42A_ENTER(return);
 
