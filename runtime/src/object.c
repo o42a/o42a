@@ -466,20 +466,6 @@ o42a_obj_body_t *o42a_obj_cast(
 }
 
 
-o42a_obj_body_t *o42a_obj_cast_or_error(
-		o42a_obj_t *const object,
-		const o42a_obj_stype_t *const type) {
-	O42A_ENTER(return NULL);
-
-	o42a_obj_body_t *const result = O42A(o42a_obj_cast(object, type));
-
-	if (!result) {
-		o42a_error_print("Cast failure");
-	}
-
-	O42A_RETURN result;
-}
-
 static inline void copy_ancestor_ascendants(
 		const o42a_obj_data_t *const ancestor_data,
 		o42a_obj_ascendant_t *ascendants,
