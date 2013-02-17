@@ -34,6 +34,10 @@ public final class RowValueTypeObject__SRC implements AnnotatedSources {
 	@Override
 	public Field[] fields(MemberOwner owner) {
 		return new Field[] {
+			new org.o42a.root.array.CopyRowElements(
+					owner,
+					new org.o42a.root.array.CopyRowElements__SRC(this))
+			.getScope().toField(),
 			new org.o42a.root.array.RowItem(
 					owner,
 					new org.o42a.root.array.RowItem__SRC(this))

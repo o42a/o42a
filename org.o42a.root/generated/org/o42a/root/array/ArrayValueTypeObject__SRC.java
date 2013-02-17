@@ -38,6 +38,10 @@ public final class ArrayValueTypeObject__SRC implements AnnotatedSources {
 					owner,
 					new org.o42a.root.array.ArrayAsRow__SRC(this))
 			.getScope().toField(),
+			new org.o42a.root.array.CopyArrayElements(
+					owner,
+					new org.o42a.root.array.CopyArrayElements__SRC(this))
+			.getScope().toField(),
 			new org.o42a.root.array.ArrayItem(
 					owner,
 					new org.o42a.root.array.ArrayItem__SRC(this))

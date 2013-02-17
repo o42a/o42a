@@ -1,0 +1,59 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Copyright (C) 2013 Ruslan Lopatin
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Copy :=> void
+=============
+~~~
+Copies array elements to another array.
+
+Takes a sequence of array elements starting from <from> (inclusively)
+and ending with <to> (exclusively) and replaces by them a <target> array
+elements starting with <target start>.
+
+Results to void if and only if the copying succeed. 
+
+If any of parameters is false, <from> greater than <to>,
+<from> or <target start> is negative, <to> greater than source array length,
+or <target start> greater or equal to target array length, then does nothing
+and results to false.
+~~~
+
+From := link (`integer) 0
+~~~
+An index of first element to copy.
+
+Zero by default.
+~~~
+
+To := link (`integer) [length]
+~~~
+An index one greater than the last element to copy.
+
+Equals to array length by default.
+~~~ 
+
+Target :=< array (`#item type) ~~ An array to copy elements to.
+
+Target start := link (`integer) 0
+~~~
+An index of first element of target array to copy at.
+
+Zero by default.
+~~~
+
+<*Interval to copy> Copy (
+  <[Copy from...) | copy to> From = ()
+  <[...Copy to) | to...> To = ()
+  <[Copy trailing...-) | to...> From = ()
+  <(-...Copy leading) | to...> To = ()
+  <To...> (
+    <[] | at> Target = *
+  )
+  <At...> (
+    <[]> Target start = ()
+  )
+)
