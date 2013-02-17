@@ -51,7 +51,7 @@ public class FloatToString extends ToString<Double> {
 
 		final Block code = stringDirs.code();
 		final FuncPtr<FloatStringFunc> fn =
-				code.getGenerator().externalFunction().sideEffects(true).link(
+				code.getGenerator().externalFunction().sideEffects().link(
 						"o42a_float_to_str",
 						FloatStringFunc.FLOAT_TO_STRING);
 

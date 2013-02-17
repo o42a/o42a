@@ -59,7 +59,7 @@ final class CompareStrings extends BinaryResult<Long, String, String> {
 		final FuncPtr<CompareFunc> funcPtr =
 				code.getGenerator()
 				.externalFunction()
-				.sideEffects(false)
+				.noSideEffects()
 				.link("o42a_str_compare", COMPARE);
 		final CompareFunc func = funcPtr.op(null, code);
 		final Int64op result = func.compare(code, leftVal, rightVal);
