@@ -51,7 +51,7 @@ Zero by default.
   <[Copy trailing...-) | to...> From = ()
   <(-...Copy leading) | to...> To = ()
   <To...> (
-    <[] | at> Target = *
+    <[] | at> Target = ()
   )
   <At...> (
     <[]> Target start = ()
