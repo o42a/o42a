@@ -36,7 +36,7 @@ An index one greater than the last element to copy.
 Equals to row length by default.
 ~~~ 
 
-Target :=< array (`#item type) ~~ An array to copy elements to.
+Target :=< link (`array (`#item type)) ~~ An array to copy elements to.
 
 Target start := link (`integer) 0
 ~~~
