@@ -162,7 +162,8 @@ abstract class AbstractCopyArrayElements extends AnnotatedBuiltin {
 		final Path path =
 				member(TARGET_MEMBER, Accessor.DECLARATION)
 				.getMemberKey()
-				.toPath();
+				.toPath()
+				.dereference();
 
 		return this.target = path.bind(this, getScope()).target(distribute());
 	}
