@@ -9,10 +9,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Array list :=> mutable list
 ===========================
 ~~~
-An array represented as <mutable list>.
+A <mutable list> storing its elements in array.
 ~~~
 
-Data :=< array (`#element type) ~~ An array represented by this list.
+Data :=< variable (`array (`#element type))
+~~ An array variable storing elements of this list.
 
 Size = /data: length
 
