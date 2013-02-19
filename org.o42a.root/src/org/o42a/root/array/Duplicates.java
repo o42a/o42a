@@ -133,45 +133,17 @@ public class Duplicates extends AnnotatedBuiltin {
 				"size",
 				ValueType.INTEGER,
 				TEMP_VAL_HOLDER);
-		final ValOp sizeVal;
+		final ValOp sizeVal = eval(sizeDirs, host, size(), inlineSize);
 
-		if (inlineSize != null) {
-			sizeVal = inlineSize.writeValue(sizeDirs, host);
-		} else {
-			sizeVal = size().op(host).writeValue(sizeDirs);
-		}
-
-		final Block noDuplicate = sizeDirs.addBlock("no_duplicate");
 		final ValDirs dupDirs =
 				sizeDirs.dirs()
-				.setFalseDir(noDuplicate.head())
+				.nested()
 				.value(
 						"duplicate",
 						duplicate().getValueType(),
 						TEMP_VAL_HOLDER);
-		final ValOp dupVal;
-
-		if (inlineDuplicate != null) {
-			dupVal = inlineDuplicate.writeValue(dupDirs, host);
-		} else {
-			dupVal = duplicate().op(host).writeValue(dupDirs);
-		}
-
 		final Block code = dupDirs.code();
-		final AnyOp foundDuplicate =
-				dupVal.value(null, code).toPtr(null, code).load(null, code);
-		final AnyOp duplicate;
-
-		if (!noDuplicate.exists()) {
-			duplicate = foundDuplicate;
-		} else {
-
-			final AnyOp nullDuplicate = noDuplicate.nullPtr();
-
-			noDuplicate.go(code.tail());
-
-			duplicate = code.phi(null, foundDuplicate, nullDuplicate);
-		}
+		final AnyOp duplicate = evalDup(dupDirs, host, inlineDuplicate);
 
 		final FuncPtr<ArrayOfDuplicatesFunc> func =
 				dirs.getGenerator().externalFunction().link(
@@ -194,6 +166,55 @@ public class Duplicates extends AnnotatedBuiltin {
 
 		dupDirs.done();
 		sizeDirs.done();
+	}
+
+	private AnyOp evalDup(
+			ValDirs dupDirs,
+			HostOp host,
+			InlineValue inlineDuplicate) {
+
+		final Block noDuplicate = dupDirs.addBlock("no_duplicate");
+		final ValDirs dirs =
+				dupDirs.dirs()
+				.setFalseDir(noDuplicate.head())
+				.value(dupDirs);
+		final ValOp dupVal = eval(
+				dirs,
+				host,
+				duplicate(),
+				inlineDuplicate);
+
+		final Block code = dirs.code();
+		final AnyOp foundDuplicate =
+				dupVal.value(null, code)
+				.toPtr(null, code)
+				.load(null, code);
+		final AnyOp duplicate;
+
+		if (!noDuplicate.exists()) {
+			duplicate = foundDuplicate;
+		} else {
+
+			final AnyOp nullDuplicate = noDuplicate.nullPtr();
+
+			noDuplicate.go(code.tail());
+			duplicate = code.phi(null, foundDuplicate, nullDuplicate);
+		}
+
+		dirs.done();
+
+		return duplicate;
+	}
+
+	private static ValOp eval(
+			ValDirs dirs,
+			HostOp host,
+			Ref value,
+			InlineValue inlineValue) {
+		if (inlineValue != null) {
+			return inlineValue.writeValue(dirs, host);
+		}
+		return value.op(host).writeValue(dirs);
 	}
 
 	private static final class DuplicatesArrayEval extends InlineEval {
