@@ -14,10 +14,49 @@ A mutable list of elements.
 
 Item =<> assignable` ()
 
-Sublist => &mutable list (
-  Item => * (
-    Set => * ({
-      Index < size? Mutable list [from + index] = new value
-    })
+Add :=<> void (
+  ~~~
+  Adds a new element to the list.
+  ~~~
+
+  New element :=< link (`#element type) ~~ Element to add.
+
+  <*Add> Add (
+    ~~~
+    Adds to this list an element specified in square brackets.
+    ~~~
+
+    <[New element]> New element = ()
+  )
+)
+
+Insert :=<> void (
+  ~~~
+  Inserts a new element at the given position.
+  ~~~
+
+  Index :=< link (`integer)
+  ~~~
+  Element index to insert element at.
+
+  Should be non-negative and less than or equal to the list size.
+  ~~~
+
+  New element :=< link (`#element type) ~~ Element to insert.
+
+  <*Insert> Insert (
+    ~~~
+    Inserts an element specified to the given position of the list.
+
+    Syntax: `list: insert [element] at [index]`\
+            `list: insert [element, index]`
+    ~~~
+
+    <[New element] | insertion point...> New element = () 
+    ~~ The <new element> to insert.
+    <:Insertion point> (
+      <At | index...> ()   ~~ An optional `at` clause.
+      <[Index]> Index = () ~~ Insertion <index>.
+    )
   )
 )

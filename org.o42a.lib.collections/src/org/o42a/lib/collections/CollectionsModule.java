@@ -30,6 +30,7 @@ import org.o42a.core.source.CompilerContext;
 	"iterator.o42a",
 	"list.o42a",
 	"mutable_list.o42a",
+	"mutable_list/sublist.o42a",
 	"row_list.o42a",
 })
 public class CollectionsModule extends AnnotatedModule {
