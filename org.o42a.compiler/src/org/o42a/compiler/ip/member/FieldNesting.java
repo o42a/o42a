@@ -23,7 +23,9 @@ import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
 
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Scope;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 
@@ -38,9 +40,25 @@ public final class FieldNesting implements Nesting {
 
 	@Override
 	public Obj findObjectIn(Scope enclosing) {
-		// Delay the field key construction until it's really required.
-		return this.declaration.getFieldKey().findObjectIn(enclosing);
+
+		final LocalScope local = this.declaration.getScope().toLocal();
+
+		if (local == null) {
+			return findInScope(enclosing);
+		}
+		if (enclosing.toLocal() != null) {
+			return findInScope(enclosing);
+		}
+
+		final Member enclosingLocal =
+				enclosing.toObject().member(local.toMember().getMemberKey());
+
+		assert enclosingLocal != null :
+			local + " not found in " + enclosing;
+
+		return findInScope(enclosingLocal.toLocal().local());
 	}
+
 
 	public final TypeConsumer toTypeConsumer() {
 		return typeConsumer(this);
@@ -52,6 +70,11 @@ public final class FieldNesting implements Nesting {
 			return super.toString();
 		}
 		return this.declaration.toString();
+	}
+
+	private Obj findInScope(Scope enclosing) {
+		// Delay the field key construction until it's really required.
+		return this.declaration.getFieldKey().findObjectIn(enclosing);
 	}
 
 }
