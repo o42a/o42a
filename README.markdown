@@ -30,9 +30,8 @@ A prototype of compiler is under development. This compiler is written in
 Java and uses [LLVM](http://llvm.org/) for executable code generation.
 
 All documented language features are implemented. The development currently
-focused on core libraries implementation, compiler stability and implementation
-of additional language features, necessary to make the libraries handy and
-efficient.
+focused on core libraries implementation, compiler stability, and implementation
+of additional language features necessary to make libraries handy and efficient.
 
 > See the detailed [development][] status and plan.
 
