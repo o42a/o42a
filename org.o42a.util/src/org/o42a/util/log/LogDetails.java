@@ -124,7 +124,7 @@ public class LogDetails extends Loggable implements Iterable<LogDetail> {
 			final String format;
 
 			if (!comma) {
-				format = "% is here: %s";
+				format = "%s is here: %s";
 			} else {
 				format = ", %s is here: %s";
 			}
