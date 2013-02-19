@@ -32,7 +32,7 @@ Item :=<> $$link (`#item type) (
   Fails when <index> is negative or greater or equals to indexed <length>.
   ~~~
 
-  Index :=< $$link (`integer) ~~ Item index.
+  Index :=< $$link (`$$integer) ~~ Item index.
 )
 
 <*Item by index> Item` (
