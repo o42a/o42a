@@ -68,8 +68,9 @@ public final class Adapter extends BoundFragment implements LocationInfo {
 	public Path expand(PathExpander expander, int index, Scope start) {
 
 		final ObjectType objectType = start.toObject().type();
+		final ObjectType adapterType = this.adapterType.getType().type();
 
-		if (objectType.derivedFrom(this.adapterType.getType().type())) {
+		if (objectType.derivedFrom(adapterType)) {
 			return Path.SELF_PATH;
 		}
 
