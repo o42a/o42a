@@ -152,10 +152,12 @@ public final class FieldKey implements Nesting {
 	@Override
 	public Obj findObjectIn(Scope enclosing) {
 
-		final MemberField field =
-				enclosing.getContainer().member(this.memberKey).toField();
+		final Member member = enclosing.getContainer().member(this.memberKey);
 
-		return field.object(dummyUser());
+		assert member != null :
+			this.memberKey + " not found in " + enclosing;
+
+		return member.toField().object(dummyUser());
 	}
 
 	@Override
