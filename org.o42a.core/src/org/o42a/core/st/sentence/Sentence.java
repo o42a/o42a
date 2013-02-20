@@ -41,7 +41,7 @@ public abstract class Sentence<
 
 	private final Block<S, L> block;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
-	private final ArrayList<S> alternatives = new ArrayList<S>();
+	private final ArrayList<S> alternatives = new ArrayList<>(1);
 	private Sentence<S, L> prerequisite;
 	private boolean statementDropped;
 	private boolean instructionsExecuted;

@@ -35,7 +35,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 	public static final Type REL_LIST_TYPE = new Type();
 
-	private final ArrayList<T> content = new ArrayList<T>();
+	private final ArrayList<T> content = new ArrayList<>();
 	private Ptr<?> firstItem;
 	private Type instance;
 

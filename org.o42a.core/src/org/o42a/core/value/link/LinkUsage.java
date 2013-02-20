@@ -25,7 +25,7 @@ import org.o42a.analysis.use.*;
 public class LinkUsage extends Usage<LinkUsage> {
 
 	public static final AllUsages<LinkUsage> ALL_LINK_USAGES =
-			new AllUsages<LinkUsage>(LinkUsage.class);
+			new AllUsages<>(LinkUsage.class);
 
 	/**
 	 * The link is explicitly derived.

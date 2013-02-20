@@ -34,7 +34,7 @@ import org.o42a.util.string.ID;
 
 public abstract class ExternStaticsIR<T> extends CachingStaticsIR<T> {
 
-	private final HashMap<T, Val> valueCache = new HashMap<T, Val>();
+	private final HashMap<T, Val> valueCache = new HashMap<>();
 
 	public ExternStaticsIR(ValueTypeIR<T> valueTypeIR) {
 		super(valueTypeIR);

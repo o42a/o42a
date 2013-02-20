@@ -76,7 +76,7 @@ public final class Constant<T> extends ObjectConstructor {
 				&& !request.getExpectedType().is(getValueType())) {
 			return super.valueAdapter(ref, request);
 		}
-		return new ConstantValueAdapter<T>(ref, getValueType(), this.constant);
+		return new ConstantValueAdapter<>(ref, getValueType(), this.constant);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public final class Constant<T> extends ObjectConstructor {
 	@Override
 	public Constant<T> reproduce(PathReproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		return new Constant<T>(
+		return new Constant<>(
 				this,
 				reproducer.distribute(),
 				getValueType(),
@@ -96,7 +96,7 @@ public final class Constant<T> extends ObjectConstructor {
 
 	@Override
 	public PathOp op(PathOp host) {
-		return new Op<T>(host, this);
+		return new Op<>(host, this);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public final class Constant<T> extends ObjectConstructor {
 
 	@Override
 	protected Obj createObject() {
-		return new ConstantObject<T>(
+		return new ConstantObject<>(
 				this,
 				distribute(),
 				getValueType(),

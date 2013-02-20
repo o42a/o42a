@@ -85,7 +85,7 @@ public abstract class ObjectMeta {
 		final Meta meta = meta();
 
 		if (this.tripped == null) {
-			this.tripped = new IdentityHashMap<MetaDep, Boolean>();
+			this.tripped = new IdentityHashMap<>();
 		} else {
 
 			final Boolean cached = this.tripped.get(dep);

@@ -70,7 +70,7 @@ final class ConstantObject<T> extends ConstructedObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return new ConstantDef<T>(this).toDefinitions(type().getParameters());
+		return new ConstantDef<>(this).toDefinitions(type().getParameters());
 	}
 
 }

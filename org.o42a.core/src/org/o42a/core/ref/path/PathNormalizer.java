@@ -537,7 +537,7 @@ public final class PathNormalizer {
 
 		NormalizedSteps(Normalizer normalizer, int length) {
 			super(normalizer);
-			this.steps = new ArrayList<NormalStep>(length);
+			this.steps = new ArrayList<>(length);
 		}
 
 		@Override

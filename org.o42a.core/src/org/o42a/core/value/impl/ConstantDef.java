@@ -90,7 +90,7 @@ final class ConstantDef<T> extends Def {
 	protected ConstantDef<T> create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new ConstantDef<T>(this, upgrade);
+		return new ConstantDef<>(this, upgrade);
 	}
 
 	@Override

@@ -56,7 +56,7 @@ final class PredefObjValues {
 
 	private final Generator generator;
 	private final HashMap<PredefKey, FuncPtr<ObjectValueFunc>> cache =
-			new HashMap<PredefKey, FuncPtr<ObjectValueFunc>>();
+			new HashMap<>();
 
 	private PredefObjValues(Generator generator) {
 		this.generator = generator;

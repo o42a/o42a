@@ -56,13 +56,11 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private ObjectIRMethods methodsIR;
 
-	private final ArrayList<Fld> fieldList = new ArrayList<Fld>();
-	private final HashMap<MemberKey, Fld> fieldMap =
-			new HashMap<MemberKey, Fld>();
-	private final LinkedHashMap<Dep, DepIR> deps =
-			new LinkedHashMap<Dep, DepIR>();
+	private final ArrayList<Fld> fieldList = new ArrayList<>();
+	private final HashMap<MemberKey, Fld> fieldMap = new HashMap<>();
+	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
 	private final LinkedHashMap<Keeper, KeeperIR<?, ?>> keepers =
-			new LinkedHashMap<Keeper, KeeperIR<?, ?>>();
+			new LinkedHashMap<>();
 
 	private RelRec objectType;
 	private RelRec ancestorBody;

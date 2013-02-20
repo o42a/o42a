@@ -158,13 +158,13 @@ final class BlockDefinitions {
 			boolean claim) {
 		if (claim) {
 			if (this.claims == null) {
-				this.claims = new ArrayList<DeclarativeSentence>(
+				this.claims = new ArrayList<>(
 						getBlock().getSentences().size() - index);
 			}
 			this.claims.add(sentence);
 		} else {
 			if (this.propositions == null) {
-				this.propositions = new ArrayList<DeclarativeSentence>(
+				this.propositions = new ArrayList<>(
 						getBlock().getSentences().size() - index);
 			}
 			this.propositions.add(sentence);

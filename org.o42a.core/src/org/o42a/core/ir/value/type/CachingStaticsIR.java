@@ -29,8 +29,7 @@ import org.o42a.util.string.ID;
 
 public abstract class CachingStaticsIR<T> extends StaticsIR<T> {
 
-	private final HashMap<T, Ptr<ValType.Op>> constCache =
-			new HashMap<T, Ptr<ValType.Op>>();
+	private final HashMap<T, Ptr<ValType.Op>> constCache = new HashMap<>();
 
 	public CachingStaticsIR(ValueTypeIR<T> valueTypeIR) {
 		super(valueTypeIR);

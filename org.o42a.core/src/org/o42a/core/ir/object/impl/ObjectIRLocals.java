@@ -40,7 +40,7 @@ public final class ObjectIRLocals {
 
 	public void addLocal(LocalFnIR local) {
 		if (this.locals == null) {
-			this.locals = new ArrayList<LocalFnIR>();
+			this.locals = new ArrayList<>();
 			this.locals.add(local);
 			this.valueIR.getObjectIR().allocate();
 		} else {

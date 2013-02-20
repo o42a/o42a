@@ -73,7 +73,7 @@ public abstract class AbstractScope implements Scope {
 		final Set<? extends Scope> enclosingScopes =
 				enclosingScope.getEnclosingScopes();
 		final HashSet<Scope> result =
-				new HashSet<Scope>(enclosingScopes.size() + 1);
+				new HashSet<>(enclosingScopes.size() + 1);
 
 		result.addAll(enclosingScopes);
 		result.add(scope);

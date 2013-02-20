@@ -235,15 +235,16 @@ public abstract class Member extends Placed {
 		}
 
 		if (ancestorMember != null) {
-			overridden = new ArrayList<Member>(containerSamples.length + 1);
+			overridden = new ArrayList<>(containerSamples.length + 1);
 		} else {
-			overridden = new ArrayList<Member>(containerSamples.length);
+			overridden = new ArrayList<>(containerSamples.length);
 		}
 
 		for (Sample containerSample : containerSamples) {
 
 			final Member sampleMember =
-					containerSample.typeObject(dummyUser()).member(getMemberKey());
+					containerSample.typeObject(dummyUser())
+					.member(getMemberKey());
 
 			if (sampleMember == null) {
 				continue;

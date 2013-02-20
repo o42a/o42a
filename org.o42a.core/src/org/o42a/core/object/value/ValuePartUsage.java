@@ -25,7 +25,7 @@ import org.o42a.analysis.use.*;
 public class ValuePartUsage extends Usage<ValuePartUsage> {
 
 	public static final AllUsages<ValuePartUsage> ALL_VALUE_PART_USAGES =
-			new AllUsages<ValuePartUsage>(ValuePartUsage.class);
+			new AllUsages<>(ValuePartUsage.class);
 
 	public static final ValuePartUsage VALUE_PART_USAGE =
 			new ValuePartUsage("ValuePartUsage");

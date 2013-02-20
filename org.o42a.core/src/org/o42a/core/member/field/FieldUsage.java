@@ -25,7 +25,7 @@ import org.o42a.analysis.use.*;
 public class FieldUsage extends Usage<FieldUsage> {
 
 	public static final AllUsages<FieldUsage> ALL_FIELD_USAGES =
-			new AllUsages<FieldUsage>(FieldUsage.class);
+			new AllUsages<>(FieldUsage.class);
 
 	public static final FieldUsage FIELD_ACCESS =
 			new FieldUsage("FieldAccess");

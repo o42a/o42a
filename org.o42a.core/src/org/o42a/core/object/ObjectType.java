@@ -464,8 +464,7 @@ public final class ObjectType implements UserInfo {
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {
 
-		final HashMap<Scope, Derivation> allAscendants =
-				new HashMap<Scope, Derivation>();
+		final HashMap<Scope, Derivation> allAscendants = new HashMap<>();
 
 		allAscendants.put(getObject().getScope(), Derivation.SAME);
 
@@ -691,7 +690,7 @@ public final class ObjectType implements UserInfo {
 
 	private void registerDerivative(Derivative derivative) {
 		if (this.allDerivatives == null) {
-			this.allDerivatives = new ArrayList<Derivative>();
+			this.allDerivatives = new ArrayList<>();
 		}
 		this.allDerivatives.add(derivative);
 		if (!getObject().meta().isUpdated()) {

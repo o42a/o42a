@@ -57,14 +57,14 @@ public final class TypeParameters<T> extends TypeRefParameters {
 	public static <T> TypeParameters<T> typeParameters(
 			ScopeInfo location,
 			ValueType<T> valueType) {
-		return new TypeParameters<T>(location, location.getScope(), valueType);
+		return new TypeParameters<>(location, location.getScope(), valueType);
 	}
 
 	public static <T> TypeParameters<T> typeParameters(
 			LocationInfo location,
 			Scope scope,
 			ValueType<T> valueType) {
-		return new TypeParameters<T>(location, scope, valueType);
+		return new TypeParameters<>(location, scope, valueType);
 	}
 
 	private final Location location;
@@ -151,7 +151,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 		if (getExplicitlyRefinedFor() == object) {
 			return this;
 		}
-		return new TypeParameters<T>(
+		return new TypeParameters<>(
 				this,
 				getScope(),
 				getValueType(),
@@ -163,7 +163,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 		if (isEmpty()) {
 			return this;
 		}
-		return new TypeParameters<T>(
+		return new TypeParameters<>(
 				this,
 				getScope(),
 				getValueType(),
@@ -214,7 +214,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 		final TypeParameter param =
 				new TypeParameter(key, parameter, getExplicitlyRefinedFor());
 
-		return new TypeParameters<T>(
+		return new TypeParameters<>(
 				this,
 				getScope(),
 				getValueType(),
@@ -250,15 +250,15 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			"Incomplete knowledge (" + knowledge
 			+ ") about value " + getValueType().valueString(value);
 
-		return new CompilerValue<T>(this, knowledge, value);
+		return new CompilerValue<>(this, knowledge, value);
 	}
 
 	public final Value<T> runtimeValue() {
-		return new RuntimeValue<T>(this);
+		return new RuntimeValue<>(this);
 	}
 
 	public final Value<T> falseValue() {
-		return new FalseValue<T>(this);
+		return new FalseValue<>(this);
 	}
 
 	public final boolean assignableFrom(TypeParameters<?> other) {
@@ -345,7 +345,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			if (isEmpty()) {
 				return explicitlyRefineFor(explicitlyRefinedFor);
 			}
-			return new TypeParameters<T>(
+			return new TypeParameters<>(
 					this,
 					getScope(),
 					getValueType(),
@@ -357,7 +357,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 				return getValueType().cast(defaultParameters);
 			}
 			// Value type updated from VOID to something else.
-			return new TypeParameters<T>(
+			return new TypeParameters<>(
 					this,
 					getScope(),
 					getValueType(),
@@ -424,7 +424,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			return explicitlyRefineFor(getExplicitlyRefinedFor());
 		}
 
-		return new TypeParameters<T>(
+		return new TypeParameters<>(
 				this,
 				getScope(),
 				getValueType(),
@@ -446,7 +446,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			newParameters[i] = oldParameters[i].prefixWith(prefix);
 		}
 
-		return new TypeParameters<T>(
+		return new TypeParameters<>(
 				this,
 				prefix.getStart(),
 				getValueType(),
@@ -478,7 +478,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			newParameters[i] = oldParameters[i].rebuildIn(scope);
 		}
 
-		return new TypeParameters<T>(
+		return new TypeParameters<>(
 				this,
 				getScope(),
 				getValueType(),
@@ -527,7 +527,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 			newParameters[i] = newParameter;
 		}
 
-		return new TypeParameters<T>(
+		return new TypeParameters<>(
 				this,
 				reproducer.getScope(),
 				getValueType(),
