@@ -1,5 +1,5 @@
 #    Compiler JNI Bindings to LLVM Build Script
-#    Copyright (C) 2010-2012 Ruslan Lopatin
+#    Copyright (C) 2010-2013 Ruslan Lopatin
 #
 #    This file is part of o42a.
 #
@@ -26,6 +26,7 @@ srcdir = src
 java_classes_dir = ../org.o42a.backend.llvm/bin
 java_package_dir = $(java_classes_dir)/org/o42a/backend/llvm
 java_package = org.o42a.backend.llvm
+javah_classpath = ../org.o42a.util/bin:../org.o42a.codegen/bin:$(java_classes_dir)
 build_dir = ../build
 default_mk = $(build_dir)/llvm.default.mk
 common_mk = $(build_dir)/llvm.mk
@@ -195,7 +196,7 @@ $(srcdir)/jni_%.o : $(srcdir)/jni_%.cc $(srcdir)/jni_%.h
 # JNI header generation routine.
 define make_javah
 	@rm -f $@
-	$(javah) -classpath $(java_classes_dir) -o $@ \
+	$(javah) -classpath $(javah_classpath) -o $@ \
 		$(subst /,.,$(patsubst $(java_classes_dir)/%.class,%,$+))
 endef
 
