@@ -19,8 +19,7 @@ import org.o42a.util.log.Logger;
 
 final class TestErrors extends TestWatcher implements Logger, CompileErrors {
 
-	private final LinkedList<String> expectedErrors =
-			new LinkedList<String>();
+	private final LinkedList<String> expectedErrors = new LinkedList<>();
 	private boolean hasErrors;
 
 	@Override

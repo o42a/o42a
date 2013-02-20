@@ -21,7 +21,7 @@ public class TestSourceTree extends SourceTree<TestSource> {
 
 		final HashMap<String, TestSource> subSources = source.getSubSources();
 
-		this.subTrees = new ArrayList<TestSourceTree>(subSources.size());
+		this.subTrees = new ArrayList<>(subSources.size());
 		for (TestSource s : subSources.values()) {
 			this.subTrees.add(new TestSourceTree(s));
 		}

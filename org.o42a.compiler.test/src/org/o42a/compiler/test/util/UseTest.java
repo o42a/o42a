@@ -200,7 +200,7 @@ public class UseTest {
 		TestUsable() {
 			super(ALL_SIMPLE_USAGES);
 			this.id = "Usable" + (++UseTest.this.usableIdSeq);
-			this.user = new UsableUser<SimpleUsage>(this);
+			this.user = new UsableUser<>(this);
 		}
 
 		@Override
