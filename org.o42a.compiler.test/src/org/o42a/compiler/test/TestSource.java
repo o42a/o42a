@@ -33,7 +33,7 @@ public class TestSource extends StringSource {
 	private TestSource(String shortName, String name, String string) {
 		super(name, string);
 		this.shortName = shortName;
-		this.subSources = new HashMap<String, TestSource>();
+		this.subSources = new HashMap<>();
 	}
 
 	public String getShortName() {
