@@ -178,7 +178,7 @@ enum SystemTypeInfo {
 
 			final SystemTypeInfo[] all = values();
 
-			types = new HashMap<String, SystemTypeInfo>(all.length);
+			types = new HashMap<>(all.length);
 			for (SystemTypeInfo info : all) {
 				types.put(info.getId(), info);
 			}

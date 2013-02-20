@@ -47,14 +47,14 @@ public class LLVMCodeBackend implements CodeBackend {
 	@Override
 	public <F extends Func<F>> SignatureWriter<F> addSignature(
 			Signature<F> signature) {
-		return new LLSignatureWriter<F>(this.module, signature);
+		return new LLSignatureWriter<>(this.module, signature);
 	}
 
 	@Override
 	public <F extends Func<F>> LLFunction<F> addFunction(
 			Function<F> function,
 			BeforeReturn beforeReturn) {
-		return new LLFunction<F>(this.module, function, beforeReturn);
+		return new LLFunction<>(this.module, function, beforeReturn);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class LLVMCodeBackend implements CodeBackend {
 				ids.length(),
 				getModule().nativePtr(signature));
 
-		return new LLFAlloc<F>(
+		return new LLFAlloc<>(
 				this.module,
 				extenFuncId(id, functionPtr),
 				signature);

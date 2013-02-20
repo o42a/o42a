@@ -50,7 +50,7 @@ public final class LLFunction<F extends Func<F>>
 		this.beforeReturn = beforeReturn;
 		init();
 		getBlockPtr();
-		this.allocation = new LLFAlloc<F>(
+		this.allocation = new LLFAlloc<>(
 				module,
 				functionId(this),
 				function.getSignature());
@@ -156,7 +156,7 @@ public final class LLFunction<F extends Func<F>>
 			Code code,
 			Arg<S> arg,
 			Type<S> type) {
-		return type.op(new LLStruct<S>(
+		return type.op(new LLStruct<>(
 				arg.getId(),
 				null,
 				type,
@@ -169,7 +169,7 @@ public final class LLFunction<F extends Func<F>>
 			Code code,
 			Arg<FF> arg,
 			Signature<FF> signature) {
-		return signature.op(new LLFunc<FF>(
+		return signature.op(new LLFunc<>(
 				arg.getId(),
 				signature,
 				llvm(code).nextPtr(),
@@ -178,10 +178,10 @@ public final class LLFunction<F extends Func<F>>
 
 	@Override
 	public void done() {
-		/*if (!validate(getFunctionPtr())) {
+		if (!validate(getFunctionPtr())) {
 			throw new IllegalStateException(
 					"Invalid function generated: " + this);
-		}*/
+		}
 	}
 
 	@Override

@@ -94,7 +94,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		final NativeBuffer ids = getModule().ids();
 
-		return new TypeLLAlloc<S>(
+		return new TypeLLAlloc<>(
 				getModule(),
 				createType(
 						getModulePtr(),
@@ -127,7 +127,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			typeDataPtr = createTypeData(getModulePtr());
 		}
 
-		return new GlobalLLDAlloc<S>(
+		return new GlobalLLDAlloc<>(
 				getModule(),
 				typePtr,
 				typeDataPtr,
@@ -158,7 +158,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			typeDataPtr = createTypeData(getModulePtr());
 		}
 
-		return new StructLLDAlloc<S>(
+		return new StructLLDAlloc<>(
 				typePtr,
 				typeDataPtr,
 				container(enclosing),
@@ -334,7 +334,7 @@ public class LLVMDataAllocator implements DataAllocator {
 					typeDataPtr(enclosing),
 					getModule().nativePtr(signature));
 		}
-		return new FuncRecLLDAlloc<F>(container(enclosing), type, signature);
+		return new FuncRecLLDAlloc<>(container(enclosing), type, signature);
 	}
 
 	@Override
@@ -376,7 +376,7 @@ public class LLVMDataAllocator implements DataAllocator {
 					llvmStruct.getTypePtr());
 		}
 
-		return new StructRecLLDAlloc<S>(
+		return new StructRecLLDAlloc<>(
 				container(enclosing),
 				type,
 				llvmStruct.getType());
@@ -400,7 +400,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			GlobalAttributes attributes) {
 
 		final ContainerLLDAlloc<S> typeAlloc = (ContainerLLDAlloc<S>) type;
-		final GlobalLLDAlloc<S> global = new GlobalLLDAlloc<S>(
+		final GlobalLLDAlloc<S> global = new GlobalLLDAlloc<>(
 				getModule(),
 				typeAlloc.getTypePtr(),
 				0L,

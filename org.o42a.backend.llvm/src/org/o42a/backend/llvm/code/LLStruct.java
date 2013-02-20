@@ -196,7 +196,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		final LLCode llvm = llvm(code);
 
-		return new StructRecLLOp<SS>(
+		return new StructRecLLOp<>(
 				id,
 				null,
 				field.getType(),
@@ -224,7 +224,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		final LLCode llvm = llvm(code);
 
-		return field.op(new LLStruct<SS>(
+		return field.op(new LLStruct<>(
 				id,
 				getAllocClass(),
 				field,
@@ -240,7 +240,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		final LLCode llvm = llvm(code);
 
-		return new FuncLLOp<F>(
+		return new FuncLLOp<>(
 				id,
 				getAllocClass(),
 				llvm.nextPtr(),
@@ -250,7 +250,7 @@ public class LLStruct<S extends StructOp<S>>
 
 	@Override
 	public S create(ID id, long blockPtr, long nativePtr) {
-		return getType().op(new LLStruct<S>(
+		return getType().op(new LLStruct<>(
 				id,
 				null,
 				this.type,

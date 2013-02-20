@@ -166,7 +166,7 @@ final class LLSignatureWriter<F extends Func<F>>
 
 		final long signaturePtr = createSignature(this.returnType, this.params);
 
-		return new LLSignature<F>(this.signature, signaturePtr);
+		return new LLSignature<>(this.signature, signaturePtr);
 	}
 
 	private void addParam(long param) {

@@ -63,7 +63,7 @@ public final class FuncLLOp<F extends Func<F>>
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
 
-		return new FuncLLOp<FF>(
+		return new FuncLLOp<>(
 				id,
 				getAllocClass(),
 				nextPtr,
@@ -79,7 +79,7 @@ public final class FuncLLOp<F extends Func<F>>
 
 	@Override
 	protected F createLoaded(ID id, long blockPtr, long nativePtr) {
-		return getSignature().op(new LLFunc<F>(
+		return getSignature().op(new LLFunc<>(
 				id,
 				getSignature(),
 				blockPtr,
@@ -88,7 +88,7 @@ public final class FuncLLOp<F extends Func<F>>
 
 	@Override
 	public FuncLLOp<F> create(ID id, long blockPtr, long nativePtr) {
-		return new FuncLLOp<F>(id, null, blockPtr, nativePtr, getSignature());
+		return new FuncLLOp<>(id, null, blockPtr, nativePtr, getSignature());
 	}
 
 	@Override

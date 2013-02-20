@@ -77,7 +77,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	@Override
 	public F create(ID id, long blockPtr, long nativePtr) {
 		return getSignature().op(
-				new LLFunc<F>(id, this.signature, blockPtr, getNativePtr()));
+				new LLFunc<>(id, this.signature, blockPtr, getNativePtr()));
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final LLCode llvm = llvm(code);
 
-		return type.op(new LLStruct<S>(
+		return type.op(new LLStruct<>(
 				id,
 				null,
 				type,

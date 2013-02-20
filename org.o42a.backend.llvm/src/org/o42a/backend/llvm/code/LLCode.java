@@ -268,7 +268,7 @@ public abstract class LLCode implements CodeWriter {
 		final ContainerLLDAlloc<S> allocation =
 				(ContainerLLDAlloc<S>) type;
 
-		return allocation.getType().op(new LLStruct<S>(
+		return allocation.getType().op(new LLStruct<>(
 				code().getOpNames().opId(null),
 				CONSTANT_ALLOC_CLASS,
 				allocation,
@@ -281,7 +281,7 @@ public abstract class LLCode implements CodeWriter {
 
 		final LLSignature<F> allocation = llvm(getModule(), signature);
 
-		return new LLFunc<F>(
+		return new LLFunc<>(
 				code().getOpNames().opId(null),
 				signature,
 				nextPtr(),
@@ -298,7 +298,7 @@ public abstract class LLCode implements CodeWriter {
 		final long nextPtr = nextPtr();
 		final NativeBuffer ids = getModule().ids();
 
-		return type.getType().op(new LLStruct<S>(
+		return type.getType().op(new LLStruct<>(
 				id,
 				AUTO_ALLOC_CLASS,
 				type,
@@ -339,7 +339,7 @@ public abstract class LLCode implements CodeWriter {
 		final long nextPtr = nextPtr();
 		final NativeBuffer ids = getModule().ids();
 
-		return new StructRecLLOp<S>(
+		return new StructRecLLOp<>(
 				id,
 				AUTO_ALLOC_CLASS,
 				alloc.getType(),

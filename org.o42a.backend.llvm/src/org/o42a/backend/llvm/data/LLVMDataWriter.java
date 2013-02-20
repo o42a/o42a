@@ -80,7 +80,7 @@ public class LLVMDataWriter implements DataWriter {
 				.getAllocation();
 		final long nativePtr = nullStructPtr(typeAlloc.getTypePtr());
 
-		return new NullStructLLDAlloc<S>(
+		return new NullStructLLDAlloc<>(
 				getModule(),
 				nativePtr,
 				type);
@@ -91,7 +91,7 @@ public class LLVMDataWriter implements DataWriter {
 
 		final Signature<F> signature = pointer.getSignature();
 
-		return new LLFAlloc<F>(
+		return new LLFAlloc<>(
 				this.module,
 				nullFuncPtr(getModule().nativePtr(signature)),
 				signature);
