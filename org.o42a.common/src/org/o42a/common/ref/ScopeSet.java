@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.resolution;
+package org.o42a.common.ref;
 
 import static org.o42a.core.object.type.Derivation.IMPLICIT_SAMPLE;
 
