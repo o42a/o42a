@@ -601,7 +601,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	protected abstract int cmp(T value1, T value2);
 
 	protected final OpBE<U> constant(ID id, CCode<?> code, T constant) {
-		return new NumConstBE<U, T>(id, code, constant, this);
+		return new NumConstBE<>(id, code, constant, this);
 	}
 
 	private static final class NumConstBE<

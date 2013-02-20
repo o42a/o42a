@@ -40,7 +40,7 @@ public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 				data,
 				typeAllocation,
 				typeAllocation != null ? null
-				: new CType<S>(enclosing.getBackend(), data.getInstance()));
+				: new CType<>(enclosing.getBackend(), data.getInstance()));
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
 		nest();

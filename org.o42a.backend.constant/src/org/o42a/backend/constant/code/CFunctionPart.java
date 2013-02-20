@@ -41,7 +41,7 @@ final class CFunctionPart<F extends Func<F>> extends CBlockPart {
 
 	@Override
 	protected CBlockPart newNextPart(int index) {
-		return new CFunctionPart<F>(function(), index);
+		return new CFunctionPart<>(function(), index);
 	}
 
 	@Override

@@ -113,69 +113,69 @@ public class CSignatureWriter<F extends Func<F>>
 
 	@Override
 	public void addInt8(Arg<Int8op> arg) {
-		arg(new SimpleCArg<Int8op>(CArgType.INT8, arg));
+		arg(new SimpleCArg<>(CArgType.INT8, arg));
 	}
 
 	@Override
 	public void addInt16(Arg<Int16op> arg) {
-		arg(new SimpleCArg<Int16op>(CArgType.INT16, arg));
+		arg(new SimpleCArg<>(CArgType.INT16, arg));
 	}
 
 	@Override
 	public void addInt32(Arg<Int32op> arg) {
-		arg(new SimpleCArg<Int32op>(CArgType.INT32, arg));
+		arg(new SimpleCArg<>(CArgType.INT32, arg));
 	}
 
 	@Override
 	public void addInt64(Arg<Int64op> arg) {
-		arg(new SimpleCArg<Int64op>(CArgType.INT64, arg));
+		arg(new SimpleCArg<>(CArgType.INT64, arg));
 	}
 
 	@Override
 	public void addFp32(Arg<Fp32op> arg) {
-		arg(new SimpleCArg<Fp32op>(CArgType.FP32, arg));
+		arg(new SimpleCArg<>(CArgType.FP32, arg));
 	}
 
 	@Override
 	public void addFp64(Arg<Fp64op> arg) {
-		arg(new SimpleCArg<Fp64op>(CArgType.FP64, arg));
+		arg(new SimpleCArg<>(CArgType.FP64, arg));
 	}
 
 	@Override
 	public void addBool(Arg<BoolOp> arg) {
-		arg(new SimpleCArg<BoolOp>(CArgType.BOOL, arg));
+		arg(new SimpleCArg<>(CArgType.BOOL, arg));
 	}
 
 	@Override
 	public void addRelPtr(Arg<RelOp> arg) {
-		arg(new SimpleCArg<RelOp>(CArgType.REL, arg));
+		arg(new SimpleCArg<>(CArgType.REL, arg));
 	}
 
 	@Override
 	public void addPtr(Arg<AnyOp> arg) {
-		arg(new SimpleCArg<AnyOp>(CArgType.ANY, arg));
+		arg(new SimpleCArg<>(CArgType.ANY, arg));
 	}
 
 	@Override
 	public void addData(Arg<DataOp> arg) {
-		arg(new SimpleCArg<DataOp>(CArgType.DATA, arg));
+		arg(new SimpleCArg<>(CArgType.DATA, arg));
 	}
 
 	@Override
 	public <S extends StructOp<S>> void addPtr(Arg<S> arg, Type<S> type) {
-		arg(new PtrCArg<S>(getBackend().underlying(type), arg));
+		arg(new PtrCArg<>(getBackend().underlying(type), arg));
 	}
 
 	@Override
 	public <FF extends Func<FF>> void addFuncPtr(
 			Arg<FF> arg,
 			Signature<FF> signature) {
-		arg(new FuncPtrCArg<FF>(getBackend().underlying(signature), arg));
+		arg(new FuncPtrCArg<>(getBackend().underlying(signature), arg));
 	}
 
 	@Override
 	public SignatureAllocation<F> done() {
-		return new CSignature<F>(this);
+		return new CSignature<>(this);
 	}
 
 	final CArg<?>[] getArgs() {

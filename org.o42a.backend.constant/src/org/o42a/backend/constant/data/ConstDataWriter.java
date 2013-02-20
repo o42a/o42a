@@ -100,7 +100,7 @@ public final class ConstDataWriter implements DataWriter {
 	public final <S extends StructOp<S>> StructCDAlloc<S> nullPtr(
 			final Ptr<S> pointer,
 			final Type<S> type) {
-		return new StructCDAlloc<S>(
+		return new StructCDAlloc<>(
 				getBackend(),
 				pointer,
 				new UnderAlloc<S>() {
@@ -118,7 +118,7 @@ public final class ConstDataWriter implements DataWriter {
 
 	@Override
 	public final <F extends Func<F>> CFAlloc<F> nullPtr(FuncPtr<F> pointer) {
-		return new NullCFAlloc<F>(getBackend(), pointer);
+		return new NullCFAlloc<>(getBackend(), pointer);
 	}
 
 	@Override

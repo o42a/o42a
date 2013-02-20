@@ -77,7 +77,7 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 	protected StructRecOp<S> op(
 			OpBE<StructRecOp<S>> backend,
 			AllocClass allocClass) {
-		return new StructRecCOp<S>(
+		return new StructRecCOp<>(
 				backend,
 				allocRecStore(allocClass),
 				getType(),

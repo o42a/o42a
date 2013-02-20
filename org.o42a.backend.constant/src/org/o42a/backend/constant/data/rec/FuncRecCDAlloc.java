@@ -73,7 +73,9 @@ public final class FuncRecCDAlloc<F extends Func<F>>
 
 	@Override
 	protected FuncOp<F> op(OpBE<FuncOp<F>> backend, AllocClass allocClass) {
-		return new FuncCOp<F>(backend, allocRecStore(allocClass), getSignature());
+		return new FuncCOp<>(
+				backend,
+				allocRecStore(allocClass), getSignature());
 	}
 
 }

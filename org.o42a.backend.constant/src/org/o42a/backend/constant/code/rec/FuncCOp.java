@@ -64,7 +64,7 @@ public final class FuncCOp<F extends Func<F>>
 			final ID id,
 			final Code code,
 			final Signature<FF> signature) {
-		return new FuncCOp<FF>(
+		return new FuncCOp<>(
 				new OpBE<FuncOp<FF>>(id, cast(code)) {
 					@Override
 					public void prepare() {
@@ -84,13 +84,13 @@ public final class FuncCOp<F extends Func<F>>
 
 	@Override
 	public FuncOp<F> create(OpBE<FuncOp<F>> backend, Ptr<FuncOp<F>> constant) {
-		return new FuncCOp<F>(backend, null, getSignature(), constant);
+		return new FuncCOp<>(backend, null, getSignature(), constant);
 	}
 
 	@Override
 	protected F loaded(OpBE<F> backend, FuncPtr<F> constant) {
 		return getSignature().op(
-				new CFunc<F>(backend, getSignature(), constant));
+				new CFunc<>(backend, getSignature(), constant));
 	}
 
 	@Override

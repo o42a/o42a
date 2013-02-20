@@ -84,7 +84,7 @@ public class AutoStructStore extends StructStore {
 			final int size = this.struct.getType().size(
 					this.struct.getBackend().getGenerator());
 
-			this.storeUses = new HashMap<Ptr<?>, Usable<SimpleUsage>>(size);
+			this.storeUses = new HashMap<>(size);
 		} else {
 
 			final Usable<SimpleUsage> found = this.storeUses.get(field);

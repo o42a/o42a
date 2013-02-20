@@ -62,7 +62,7 @@ public final class CFunc<F extends Func<F>>
 	@Override
 	public F create(OpBE<F> backend, FuncPtr<F> constant) {
 		return getSignature().op(
-				new CFunc<F>(backend, getSignature(), constant));
+				new CFunc<>(backend, getSignature(), constant));
 	}
 
 	@Override
@@ -323,7 +323,7 @@ public final class CFunc<F extends Func<F>>
 			final Code code,
 			final Type<S> type,
 			final Op... args) {
-		return type.op(new CStruct<S>(
+		return type.op(new CStruct<>(
 				new OpBE<S>(id, cast(code)) {
 					@Override
 					public void prepare() {
