@@ -51,3 +51,10 @@ Insert => * ({
   Data: copy [index ...) to [new data] at [index + 1]
   Data = new data
 })
+
+Remove => * ({
+  New data := (size - 1)~duplicates (`#element type)
+  Data: copy [0 ... index) to [new data]
+  Data: copy [index + 1 ...) to [new data] at [index]
+  Data = new data
+})
