@@ -44,7 +44,7 @@ public final class ClauseInstance implements LocationInfo {
 	private final Location location;
 	private final PhraseContext context;
 	private final HashMap<MemberKey, PhraseSubContext> subContexts =
-			new HashMap<MemberKey, PhraseSubContext>();
+			new HashMap<>();
 	private PhraseContinuation[] content = NO_CONTENT;
 	private boolean complete;
 	private Definition definition;

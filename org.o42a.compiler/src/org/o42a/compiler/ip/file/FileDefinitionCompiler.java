@@ -77,7 +77,7 @@ public class FileDefinitionCompiler
 
 		final SectionNode[] sectionNodes = getNode().getSections();
 		final HashMap<SectionTag, Section> sections =
-				new HashMap<SectionTag, Section>(sectionNodes.length);
+				new HashMap<>(sectionNodes.length);
 		SectionTitle aboveTitle = null;
 
 		for (SectionNode sectionNode : sectionNodes) {
