@@ -34,7 +34,7 @@ public class ScopeSet {
 
 	public boolean add(Scope scope) {
 		if (this.scopes == null) {
-			this.scopes = new HashSet<Scope>(1);
+			this.scopes = new HashSet<>(1);
 			this.scopes.add(scope);
 			return true;
 		}

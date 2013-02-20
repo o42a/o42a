@@ -155,7 +155,7 @@ public class URLSources extends URLSourceTree {
 		assert !getSource().isEmpty() || getSource().isDirectory() :
 			this + " is empty";
 		if (this.subTrees == null) {
-			this.subTrees = new HashMap<String, URLSources>();
+			this.subTrees = new HashMap<>();
 		}
 	}
 

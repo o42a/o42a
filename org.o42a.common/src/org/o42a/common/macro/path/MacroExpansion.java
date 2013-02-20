@@ -148,7 +148,7 @@ public class MacroExpansion extends PathFragment {
 
 		// Find a cached expansion.
 		if (this.expansions == null) {
-			this.expansions = new IdentityHashMap<Scope, Path>(4);
+			this.expansions = new IdentityHashMap<>(4);
 		} else if (this.expansions.containsKey(start)) {
 			return this.expansions.get(start);
 		}

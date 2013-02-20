@@ -58,13 +58,13 @@ public abstract class SourceTree<S extends Source> {
 	public abstract Iterator<? extends SourceTree<S>> subTrees();
 
 	public final TreeCompilerContext<S> context(CompilerContext parentContext) {
-		return new TreeCompilerContext<S>(parentContext, this);
+		return new TreeCompilerContext<>(parentContext, this);
 	}
 
 	public final TreeCompilerContext<S> context(
 			CompilerContext parentContext,
 			Logger logger) {
-		return new TreeCompilerContext<S>(parentContext, this, logger);
+		return new TreeCompilerContext<>(parentContext, this, logger);
 	}
 
 	public final CompiledField field(MemberOwner owner) {

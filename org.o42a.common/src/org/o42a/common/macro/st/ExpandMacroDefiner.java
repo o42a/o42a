@@ -41,7 +41,7 @@ import org.o42a.core.value.link.TargetResolver;
 final class ExpandMacroDefiner extends Definer {
 
 	private final IdentityHashMap<Scope, ValueAdapter> adapters =
-			new IdentityHashMap<Scope, ValueAdapter>(1);
+			new IdentityHashMap<>(1);
 
 	ExpandMacroDefiner(ExpandMacroStatement statement, DefinerEnv env) {
 		super(statement, env);
