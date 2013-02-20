@@ -19,11 +19,11 @@
 */
 package org.o42a.root.numeric;
 
-import org.o42a.common.adapter.FloatByString;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.root.Root;
+import org.o42a.root.adapter.FloatByString;
 
 
 @SourcePath(relativeTo = Root.class, value = "floats/by_string.o42a")

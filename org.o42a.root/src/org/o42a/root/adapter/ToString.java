@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Root Object Definition
     Copyright (C) 2012,2013 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.adapter;
+package org.o42a.root.adapter;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.member.MemberOwner;
