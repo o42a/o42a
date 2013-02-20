@@ -161,7 +161,7 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 
 		final LLCode code = (LLCode) writer;
 
-		return getType().op(new LLStruct<S>(
+		return getType().op(new LLStruct<>(
 				id,
 				allocClass,
 				getType(),

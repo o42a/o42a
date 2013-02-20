@@ -45,7 +45,7 @@ public final class StructRecLLOp<S extends StructOp<S>>
 
 	@Override
 	public StructRecLLOp<S> create(ID id, long blockPtr, long nativePtr) {
-		return new StructRecLLOp<S>(
+		return new StructRecLLOp<>(
 				id,
 				null,
 				this.type,
@@ -55,7 +55,7 @@ public final class StructRecLLOp<S extends StructOp<S>>
 
 	@Override
 	protected S createLoaded(ID id, long blockPtr, long nativePtr) {
-		return this.type.op(new LLStruct<S>(
+		return this.type.op(new LLStruct<>(
 				id,
 				null,
 				this.type,

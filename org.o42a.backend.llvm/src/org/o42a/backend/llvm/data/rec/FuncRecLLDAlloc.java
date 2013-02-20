@@ -56,7 +56,7 @@ public final class FuncRecLLDAlloc<F extends Func<F>>
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
-		return new FuncLLOp<F>(
+		return new FuncLLOp<>(
 				id,
 				allocClass,
 				blockPtr,

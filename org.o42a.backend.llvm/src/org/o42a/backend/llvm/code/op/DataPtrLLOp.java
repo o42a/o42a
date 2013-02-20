@@ -127,7 +127,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 		final long nextPtr = llvm.nextPtr();
 		final ID castId = code.getOpNames().castId(id, type.getId(), this);
 
-		return type.op(new LLStruct<SS>(
+		return type.op(new LLStruct<>(
 				castId,
 				getAllocClass(),
 				type,

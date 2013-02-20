@@ -56,7 +56,7 @@ public final class StructRecLLDAlloc<S extends StructOp<S>>
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
-		return new StructRecLLOp<S>(
+		return new StructRecLLOp<>(
 				id,
 				allocClass,
 				this.type,
