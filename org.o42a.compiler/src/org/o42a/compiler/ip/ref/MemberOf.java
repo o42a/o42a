@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import org.o42a.common.resolution.CompoundPathWalker;
+import org.o42a.common.ref.CompoundPathWalker;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberContainer;
