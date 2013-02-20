@@ -84,7 +84,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 		final CFAlloc<F> alloc = cast(allocation);
 
-		return new CFunc<F>(
+		return new CFunc<>(
 				new OpBE<F>(id, this) {
 					@Override
 					public void prepare() {
@@ -208,7 +208,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final ContainerCDAlloc<S> typeAlloc = (ContainerCDAlloc<S>) type;
 		final Type<S> originalType = typeAlloc.getType();
 
-		return originalType.op(new CStruct<S>(
+		return originalType.op(new CStruct<>(
 				new OpBE<S>(code().getOpNames().opId(null), this) {
 					@Override
 					public void prepare() {
@@ -231,7 +231,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public final <F extends Func<F>> CFunc<F> nullPtr(
 			final Signature<F> signature) {
-		return new CFunc<F>(
+		return new CFunc<>(
 				new OpBE<F>(code().getOpNames().opId(null), this) {
 					@Override
 					public void prepare() {
@@ -275,7 +275,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final ContainerCDAlloc<S> typeAlloc =
 				(ContainerCDAlloc<S>) typeAllocation;
 
-		return allocated(new StructRecCOp<S>(
+		return allocated(new StructRecCOp<>(
 				new OpBE<StructRecOp<S>>(id, this) {
 					@Override
 					public void prepare() {
@@ -300,7 +300,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				(ContainerCDAlloc<S>) typeAllocation;
 		final Type<S> type = typeAlloc.getType();
 
-		return type.op(allocated(new CStruct<S>(
+		return type.op(allocated(new CStruct<>(
 				new OpBE<S>(id, this) {
 					@Override
 					public void prepare() {
@@ -325,7 +325,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final COp res = cop;
 
 		return (O) res.create(
-				new AliasBE<O>(id, this, cop.backend()),
+				new AliasBE<>(id, this, cop.backend()),
 				cop.getConstant());
 	}
 

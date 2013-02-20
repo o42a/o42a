@@ -31,7 +31,7 @@ abstract class CInset<C extends Code> extends CCode<C> {
 	CInset(CCode<?> enclosing, C code) {
 		super(enclosing.getBackend(), enclosing.getFunction(), code);
 		this.block = enclosing.block();
-		this.part = new CInsetPart<C>(this);
+		this.part = new CInsetPart<>(this);
 		this.enclosingPart = enclosing.inset(this);
 	}
 

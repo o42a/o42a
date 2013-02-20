@@ -60,12 +60,12 @@ public class StructRecCOp<S extends StructOp<S>>
 	public StructRecOp<S> create(
 			OpBE<StructRecOp<S>> backend,
 			Ptr<StructRecOp<S>> constant) {
-		return new StructRecCOp<S>(backend, null, getType(), constant);
+		return new StructRecCOp<>(backend, null, getType(), constant);
 	}
 
 	@Override
 	protected S loaded(OpBE<S> backend, Ptr<S> constant) {
-		return getType().op(new CStruct<S>(backend, null, getType(), constant));
+		return getType().op(new CStruct<>(backend, null, getType(), constant));
 	}
 
 	@Override

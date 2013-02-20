@@ -75,7 +75,7 @@ public class ConstDataAllocator implements DataAllocator {
 	public <S extends StructOp<S>> DataAllocation<S> begin(
 			SubData<S> data,
 			Type<S> type) {
-		return new TypeCDAlloc<S>(getBackend(), data, type);
+		return new TypeCDAlloc<>(getBackend(), data, type);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class ConstDataAllocator implements DataAllocator {
 			SubData<S> data,
 			DataAllocation<S> type,
 			Global<S, ?> global) {
-		return new GlobalCDAlloc<S>(
+		return new GlobalCDAlloc<>(
 				getBackend(),
 				data,
 				(ContainerCDAlloc<S>) type,
@@ -95,7 +95,7 @@ public class ConstDataAllocator implements DataAllocator {
 			DataAllocation<?> enclosing,
 			SubData<S> data,
 			DataAllocation<S> type) {
-		return new StructCDAlloc<S>(
+		return new StructCDAlloc<>(
 				enclosing(enclosing),
 				data,
 				(ContainerCDAlloc<S>) type);
@@ -208,7 +208,7 @@ public class ConstDataAllocator implements DataAllocator {
 			FuncRec<F> data,
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature) {
-		return new FuncRecCDAlloc<F>(
+		return new FuncRecCDAlloc<>(
 				enclosing(enclosing),
 				data,
 				(FuncRecCDAlloc<F>) type,
@@ -243,7 +243,7 @@ public class ConstDataAllocator implements DataAllocator {
 			StructRec<S> data,
 			DataAllocation<StructRecOp<S>> type,
 			DataAllocation<S> struct) {
-		return new StructRecCDAlloc<S>(
+		return new StructRecCDAlloc<>(
 				enclosing(enclosing),
 				data,
 				(StructRecCDAlloc<S>) type,
@@ -266,7 +266,7 @@ public class ConstDataAllocator implements DataAllocator {
 			Ptr<S> pointer,
 			DataAllocation<S> type,
 			GlobalAttributes attributes) {
-		return new ExternCDAlloc<S>(
+		return new ExternCDAlloc<>(
 				getBackend(),
 				pointer,
 				((ContainerCDAlloc<S>) type).getType(),

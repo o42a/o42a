@@ -243,7 +243,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 
 		final ID castId = code.getOpNames().castId(id, type.getId(), this);
 
-		return type.op(new CStruct<S>(
+		return type.op(new CStruct<>(
 				new OpBE<S>(castId, cast(code)) {
 					@Override
 					public void prepare() {

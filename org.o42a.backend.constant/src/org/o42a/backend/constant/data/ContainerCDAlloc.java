@@ -38,8 +38,7 @@ import org.o42a.util.string.ID;
 public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		extends DCDAlloc<S, SubData<S>> {
 
-	private final ArrayList<DCDAlloc<?, ?>> nested =
-			new ArrayList<DCDAlloc<?,?>>();
+	private final ArrayList<DCDAlloc<?, ?>> nested = new ArrayList<>();
 	private final CType<S> underlyingStruct;
 	private Allocated<S, ?> underlyingAllocated;
 	private ContainerCDAlloc<S> declaringType;
@@ -137,7 +136,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 			type = getTypeAllocation().getUnderlyingInstance().getOriginal();
 		}
 
-		return type.op(new CStruct<S>(
+		return type.op(new CStruct<>(
 				new OpBE<S>(id, ccode) {
 					@Override
 					public void prepare() {

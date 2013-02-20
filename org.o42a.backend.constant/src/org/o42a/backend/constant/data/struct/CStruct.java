@@ -416,7 +416,7 @@ public final class CStruct<S extends StructOp<S>>
 		final StructRecCDAlloc<SS> fld =
 				(StructRecCDAlloc<SS>) field.getPointer().getAllocation();
 
-		return new StructRecCOp<SS>(
+		return new StructRecCOp<>(
 				new OpBE<StructRecOp<SS>>(id, ccode) {
 					@Override
 					public void prepare() {
@@ -496,7 +496,7 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final CType<SS> fld = getBackend().underlying(field);
 
-		return field.op(new CStruct<SS>(
+		return field.op(new CStruct<>(
 				new OpBE<SS>(id, ccode) {
 					@Override
 					public void prepare() {
@@ -536,7 +536,7 @@ public final class CStruct<S extends StructOp<S>>
 		final FuncRecCDAlloc<F> fld =
 				(FuncRecCDAlloc<F>) field.getPointer().getAllocation();
 
-		return new FuncCOp<F>(
+		return new FuncCOp<>(
 				new OpBE<FuncOp<F>>(id, ccode) {
 					@Override
 					public void prepare() {
@@ -580,7 +580,7 @@ public final class CStruct<S extends StructOp<S>>
 
 		final CCode<?> ccode = cast(code);
 
-		return type.op(new CStruct<SS>(
+		return type.op(new CStruct<>(
 				new OpBE<SS>(id, ccode) {
 					@Override
 					public void prepare() {
@@ -601,7 +601,7 @@ public final class CStruct<S extends StructOp<S>>
 
 	@Override
 	public S create(OpBE<S> backend, Ptr<S> constant) {
-		return getType().op(new CStruct<S>(backend, null, getType(), constant));
+		return getType().op(new CStruct<>(backend, null, getType(), constant));
 	}
 
 	@Override

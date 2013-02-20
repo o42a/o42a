@@ -33,7 +33,7 @@ public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
 
 	public TypeCDAlloc(ConstBackend backend, SubData<S> data, Type<S> type) {
 		super(backend, data, null, null);
-		this.underlyingType = new CType<S>(backend, type);
+		this.underlyingType = new CType<>(backend, type);
 	}
 
 	@SuppressWarnings("unchecked")

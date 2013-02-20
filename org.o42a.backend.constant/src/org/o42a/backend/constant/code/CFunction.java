@@ -73,7 +73,7 @@ public class CFunction<F extends Func<F>>
 		if (this.allocation != null) {
 			return this.allocation;
 		}
-		return this.allocation = new FunctionCFAlloc<F>(this);
+		return this.allocation = new FunctionCFAlloc<>(this);
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public class CFunction<F extends Func<F>>
 			final Code code,
 			final Arg<S> arg,
 			final Type<S> type) {
-		return type.op(new CStruct<S>(
+		return type.op(new CStruct<>(
 				new OpBE<S>(arg.getId(), cast(code)) {
 					@Override
 					public void prepare() {
@@ -256,7 +256,7 @@ public class CFunction<F extends Func<F>>
 			final Code code,
 			final Arg<FF> arg,
 			final Signature<FF> signature) {
-		return signature.op(new CFunc<FF>(
+		return signature.op(new CFunc<>(
 				new OpBE<FF>(arg.getId(), cast(code)) {
 					@Override
 					public void prepare() {
@@ -290,7 +290,7 @@ public class CFunction<F extends Func<F>>
 
 	@Override
 	protected CBlockPart createFirstBlock() {
-		return new CFunctionPart<F>(this);
+		return new CFunctionPart<>(this);
 	}
 
 	private void emit() {

@@ -65,7 +65,7 @@ public final class ExternCDAlloc<S extends StructOp<S>> extends CDAlloc<S> {
 
 		final CCode<?> ccode = cast(writer);
 
-		return this.type.op(new CStruct<S>(
+		return this.type.op(new CStruct<>(
 				new OpBE<S>(id, ccode) {
 					@Override
 					public void prepare() {

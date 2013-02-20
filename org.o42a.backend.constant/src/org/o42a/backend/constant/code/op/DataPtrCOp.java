@@ -105,7 +105,7 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 				return (P) this;
 			}
 			return create(
-					new AliasBE<P>(resultId, ccode, backend()),
+					new AliasBE<>(resultId, ccode, backend()),
 					getConstant());
 		}
 
