@@ -57,12 +57,9 @@ public class Debug {
 	private FuncPtr<DebugEnterFunc> enterFunc;
 	private FuncPtr<DebugExitFunc> exitFunc;
 
-	private final HashMap<String, Ptr<AnyOp>> names =
-			new HashMap<String, Ptr<AnyOp>>();
-	private final HashMap<String, Ptr<AnyOp>> messages =
-			new HashMap<String, Ptr<AnyOp>>();
-	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo =
-			new HashMap<Ptr<?>, DebugTypeInfo>();
+	private final HashMap<String, Ptr<AnyOp>> names = new HashMap<>();
+	private final HashMap<String, Ptr<AnyOp>> messages = new HashMap<>();
+	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo = new HashMap<>();
 
 	public Debug(AbstractGenerator generator) {
 		this.generator = generator;

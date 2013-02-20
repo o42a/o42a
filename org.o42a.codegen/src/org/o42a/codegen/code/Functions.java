@@ -31,10 +31,8 @@ import org.o42a.util.string.ID;
 
 public abstract class Functions {
 
-	private final HashMap<String, FuncPtr<?>> externals =
-			new HashMap<String, FuncPtr<?>>();
-	private final LinkedList<Function<?>> functions =
-			new LinkedList<Function<?>>();
+	private final HashMap<String, FuncPtr<?>> externals = new HashMap<>();
+	private final LinkedList<Function<?>> functions = new LinkedList<>();
 
 	private final Generator generator;
 
@@ -48,7 +46,7 @@ public abstract class Functions {
 
 	public final <F extends Func<F>> FuncPtr<F> nullPtr(
 			Signature<F> signature) {
-		return new NullFuncPtr<F>(allocate(signature));
+		return new NullFuncPtr<>(allocate(signature));
 	}
 
 	public final FunctionSettings newFunction() {
@@ -108,7 +106,7 @@ public abstract class Functions {
 
 		final ID id = ID.rawId(name);
 		final ExternFuncPtr<F> extern =
-				new ExternFuncPtr<F>(id, allocate(signature), settings);
+				new ExternFuncPtr<>(id, allocate(signature), settings);
 
 		this.externals.put(name, extern);
 		addFunction(id, signature, extern);

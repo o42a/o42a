@@ -87,7 +87,7 @@ public abstract class SubData<S extends StructOp<S>>
 
 	public final <F extends Func<F>>
 	FuncRec<F> addFuncPtr(String name, Signature<F> signature) {
-		return add(new FuncRec<F>(
+		return add(new FuncRec<>(
 				this,
 				ID.id(name),
 				getGenerator().getFunctions().allocate(signature)));
@@ -103,7 +103,7 @@ public abstract class SubData<S extends StructOp<S>>
 
 	public final <SS extends StructOp<SS>>
 	StructRec<SS> addPtr(String name, Type<SS> type) {
-		return add(new StructRec<SS>(this, ID.id(name), type));
+		return add(new StructRec<>(this, ID.id(name), type));
 	}
 
 	public final RelRec addRelPtr(String name) {
@@ -162,7 +162,7 @@ public abstract class SubData<S extends StructOp<S>>
 		instanceData.startAllocation(
 				getGenerator().getGlobals().dataAllocator());
 
-		return new Allocated<SS, T>(instance, type, instanceData);
+		return new Allocated<>(instance, type, instanceData);
 	}
 
 	public final <SS extends StructOp<SS>, T extends Type<SS>>
@@ -174,7 +174,7 @@ public abstract class SubData<S extends StructOp<S>>
 		instanceData.startAllocation(
 				getGenerator().getGlobals().dataAllocator());
 
-		return new Allocated<SS, T>(struct, struct, instanceData);
+		return new Allocated<>(struct, struct, instanceData);
 	}
 
 	public final int size() {

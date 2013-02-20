@@ -37,11 +37,10 @@ public abstract class Globals {
 	private final Generator generator;
 
 	private final DataChain globals = new DataChain();
-	private final HashMap<String, Ptr<?>> externals =
-			new HashMap<String, Ptr<?>>();
+	private final HashMap<String, Ptr<?>> externals = new HashMap<>();
 	private int typesAllocating;
 	private final LinkedList<AbstractTypeData<?>> scheduled =
-			new LinkedList<AbstractTypeData<?>>();
+			new LinkedList<>();
 
 	private Ptr<AnyOp> nullPtr;
 	private Ptr<AnyOp> allOnesPtr;
@@ -132,7 +131,7 @@ public abstract class Globals {
 			"Failed to allocate type " + type;
 		data.startAllocation(dataAllocator());
 
-		return new Allocated<S, T>(type, type, type.getInstanceData());
+		return new Allocated<>(type, type, type.getInstanceData());
 	}
 
 	public final GlobalSettings newGlobal() {
@@ -200,7 +199,7 @@ public abstract class Globals {
 			Content<T> content) {
 
 		final Global<S, T> global =
-				new Global<S, T>(settings, id, type, instance, content);
+				new Global<>(settings, id, type, instance, content);
 		final SubData<S> data = global.getInstance().getInstanceData();
 
 		data.allocateType(false);
@@ -213,7 +212,7 @@ public abstract class Globals {
 			GlobalSettings settings,
 			ST struct) {
 
-		final Global<S, ST> global = new Global<S, ST>(settings, struct);
+		final Global<S, ST> global = new Global<>(settings, struct);
 		final SubData<S> instanceData = struct.setGlobal(global);
 
 		instanceData.allocateType(false);
