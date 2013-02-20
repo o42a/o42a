@@ -24,8 +24,7 @@ import java.util.ArrayList;
 
 final class PendingTypeSources implements RelTypeSources {
 
-	private final ArrayList<RelTypeSource> sources =
-			new ArrayList<RelTypeSource>();
+	private final ArrayList<RelTypeSource> sources = new ArrayList<>();
 
 	@Override
 	public void add(RelTypeSource source) {
