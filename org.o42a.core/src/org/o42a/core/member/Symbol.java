@@ -33,10 +33,9 @@ public final class Symbol {
 
 	private final MemberId memberId;
 	private final EnumMap<Accessor, Member> members =
-			new EnumMap<Accessor, Member>(Accessor.class);
+			new EnumMap<>(Accessor.class);
 	private final EnumMap<Accessor, IdentityHashMap<Scope, Member>> all =
-			new EnumMap<Accessor, IdentityHashMap<Scope, Member>>(
-					Accessor.class);
+			new EnumMap<>(Accessor.class);
 
 	Symbol(MemberId memberId, Member member) {
 		this.memberId = memberId;
@@ -151,7 +150,7 @@ public final class Symbol {
 		if (members != null) {
 			newMembers = members;
 		} else {
-			newMembers = new IdentityHashMap<Scope, Member>();
+			newMembers = new IdentityHashMap<>();
 			this.all.put(accessor, newMembers);
 		}
 

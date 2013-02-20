@@ -41,7 +41,7 @@ import org.o42a.util.string.Name;
 public class Namespace extends AbstractContainer {
 
 	private final Container enclosing;
-	private final ArrayList<NsUse> uses = new ArrayList<NsUse>();
+	private final ArrayList<NsUse> uses = new ArrayList<>();
 
 	public Namespace(LocationInfo location, Container enclosing) {
 		super(location);

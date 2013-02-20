@@ -40,7 +40,7 @@ public final class PathNormalizationDoubt extends Doubt {
 	public PathNormalizationDoubt(BoundPath path) {
 		this.path = path;
 		this.uses = ALL_SIMPLE_USAGES.usable(path);
-		this.user = new ProxyUser<SimpleUsage>(this.uses.toUser());
+		this.user = new ProxyUser<>(this.uses.toUser());
 	}
 
 	public final PathResolver wrapResolutionUser(
@@ -61,7 +61,7 @@ public final class PathNormalizationDoubt extends Doubt {
 		if (this.normalUser != null) {
 			return this.normalUser;
 		}
-		return this.normalUser = new ProxyUser<SimpleUsage>(dummyUser());
+		return this.normalUser = new ProxyUser<>(dummyUser());
 	}
 
 	public final void abortNormalization() {

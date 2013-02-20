@@ -29,7 +29,7 @@ import org.o42a.core.object.Role;
 public abstract class RefUsage extends Usage<RefUsage> {
 
 	public static final AllUsages<RefUsage> ALL_REF_USAGES =
-			new AllUsages<RefUsage>(RefUsage.class);
+			new AllUsages<>(RefUsage.class);
 
 	public static final RefUsage CONDITION_REF_USAGE =
 			new ValueUsage("RefCondition");

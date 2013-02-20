@@ -42,7 +42,7 @@ public abstract class AbstractInclusions extends Inclusions {
 	@Override
 	public boolean include(LocationInfo location, Name tag) {
 		if (this.inclusions == null) {
-			this.inclusions = new HashMap<Name, LocationInfo>();
+			this.inclusions = new HashMap<>();
 		}
 
 		final LocationInfo previousLocation =

@@ -42,8 +42,7 @@ public abstract class Clause implements PlaceInfo {
 	public static boolean validateImplicitSubClauses(
 			MemberClause[] subClauses) {
 
-		final HashMap<MemberId, MemberClause> explicitClauses =
-				new HashMap<MemberId, MemberClause>();
+		final HashMap<MemberId, MemberClause> explicitClauses = new HashMap<>();
 
 		return validateImplicitSubClauses(explicitClauses, subClauses);
 	}

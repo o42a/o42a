@@ -243,7 +243,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	private void registerReplacement(FieldReplacement replacement) {
 		if (this.allReplacements == null) {
-			this.allReplacements = new ArrayList<FieldReplacement>();
+			this.allReplacements = new ArrayList<>();
 		}
 		this.allReplacements.add(replacement);
 		if (!isUpdated()) {

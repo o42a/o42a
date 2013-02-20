@@ -38,7 +38,7 @@ final class DirectiveValueTypeIR extends ValueTypeIR<Directive> {
 
 	@Override
 	protected StaticsIR<Directive> createStaticsIR() {
-		return new VoidStaticsIR<Directive>(this);
+		return new VoidStaticsIR<>(this);
 	}
 
 }

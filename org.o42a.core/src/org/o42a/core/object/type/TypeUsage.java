@@ -25,7 +25,7 @@ import org.o42a.analysis.use.*;
 public class TypeUsage extends Usage<TypeUsage> {
 
 	public static final AllUsages<TypeUsage> ALL_TYPE_USAGES =
-			new AllUsages<TypeUsage>(TypeUsage.class);
+			new AllUsages<>(TypeUsage.class);
 
 	public static final TypeUsage STATIC_TYPE_USAGE =
 			new TypeUsage("StaticType");

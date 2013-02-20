@@ -25,7 +25,7 @@ import org.o42a.analysis.use.*;
 public final class DerivationUsage extends Usage<DerivationUsage> {
 
 	public static final AllUsages<DerivationUsage> ALL_DERIVATION_USAGES =
-			new AllUsages<DerivationUsage>(DerivationUsage.class);
+			new AllUsages<>(DerivationUsage.class);
 
 	public static final DerivationUsage STATIC_DERIVATION_USAGE =
 			new DerivationUsage("StaticDerivation");

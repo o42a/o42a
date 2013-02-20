@@ -50,7 +50,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 	private final ObjectIRStruct objectIRStruct;
 	private final HashMap<MemberKey, FieldDescIR> fieldDescs =
-			new HashMap<MemberKey, FieldDescIR>();
+			new HashMap<>();
 	private final ID id;
 	private ObjectIRType instance;
 

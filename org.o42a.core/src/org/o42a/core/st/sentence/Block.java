@@ -38,8 +38,7 @@ public abstract class Block<
 				extends Statement {
 
 	private final Statements<?, ?> enclosing;
-	private final ArrayList<Sentence<S, L>> sentences =
-			new ArrayList<Sentence<S, L>>();
+	private final ArrayList<Sentence<S, L>> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
 	private boolean instructionsExecuted;

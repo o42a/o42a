@@ -81,8 +81,7 @@ public final class PropagatedLocalScope extends LocalScope {
 		final Collection<Member> explicitMembers = explicit().getMembers();
 
 		if (this.members == null) {
-			this.members =
-					new HashMap<MemberKey, Member>(explicitMembers.size());
+			this.members = new HashMap<>(explicitMembers.size());
 		}
 
 		for (Member member : explicitMembers) {
@@ -108,7 +107,7 @@ public final class PropagatedLocalScope extends LocalScope {
 				return found;
 			}
 		} else {
-			this.members = new HashMap<MemberKey, Member>();
+			this.members = new HashMap<>();
 		}
 
 		final Member sample = getPropagatedFrom().member(memberKey);

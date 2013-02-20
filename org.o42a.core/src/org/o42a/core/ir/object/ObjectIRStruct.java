@@ -48,9 +48,8 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	private final ObjectTypeIR typeIR;
 	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
-			new LinkedHashMap<Obj, ObjectIRBody>();
-	private final ArrayList<ObjectIRBody> sampleBodyIRs =
-			new ArrayList<ObjectIRBody>();
+			new LinkedHashMap<>();
+	private final ArrayList<ObjectIRBody> sampleBodyIRs = new ArrayList<>();
 	private final ObjectIRBody mainBodyIR;
 
 	public ObjectIRStruct(ObjectIR objectIR) {

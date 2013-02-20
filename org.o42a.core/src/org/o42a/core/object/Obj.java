@@ -90,10 +90,8 @@ public abstract class Obj
 	private Keepers keepers;
 	private Deps deps;
 
-	private final HashMap<MemberKey, Member> members =
-			new HashMap<MemberKey, Member>();
-	private final HashMap<MemberId, Symbol> symbols =
-			new HashMap<MemberId, Symbol>();
+	private final HashMap<MemberKey, Member> members = new HashMap<>();
+	private final HashMap<MemberId, Symbol> symbols = new HashMap<>();
 
 	private ObjectMembers objectMembers;
 	private MemberClause[] explicitClauses;
@@ -183,7 +181,7 @@ public abstract class Obj
 
 		final Obj cloneOf = findCloneOf();
 
-		this.cloneOf = new Holder<Obj>(cloneOf);
+		this.cloneOf = new Holder<>(cloneOf);
 
 		return cloneOf;
 	}

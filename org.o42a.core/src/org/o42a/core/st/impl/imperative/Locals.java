@@ -41,7 +41,7 @@ public class Locals {
 
 	public boolean declareBlock(LocationInfo location, Name name) {
 		if (this.blocks == null) {
-			this.blocks = new HashMap<Name, LocationInfo>();
+			this.blocks = new HashMap<>();
 		}
 
 		final LocationInfo previousLocation = this.blocks.put(name, location);

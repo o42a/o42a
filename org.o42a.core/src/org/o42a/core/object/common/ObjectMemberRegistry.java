@@ -40,7 +40,7 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	private int tempMemberIndex;
 	private int localScopeIndex;
 
-	private final ArrayList<Member> pending = new ArrayList<Member>();
+	private final ArrayList<Member> pending = new ArrayList<>();
 	private ObjectMembers members;
 
 	public ObjectMemberRegistry(Inclusions inclusions, Obj owner) {

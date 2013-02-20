@@ -152,7 +152,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 
 	@Override
 	protected Content<Type<?, C>> content() {
-		return new FldContent<Type<?, C>, C>(this);
+		return new FldContent<>(this);
 	}
 
 	private void fillTarget() {

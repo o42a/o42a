@@ -55,8 +55,7 @@ public final class DeclaredPlainClause extends PlainClause {
 			DeclaredPlainClause propagatedFrom) {
 		super(clause, propagatedFrom);
 		this.builder = propagatedFrom.builder;
-		this.definition =
-				new Holder<ClauseDefinition>(propagatedFrom.getDefinition());
+		this.definition = new Holder<>(propagatedFrom.getDefinition());
 		this.overridden = propagatedFrom.getOverridden();
 		this.reused = propagatedFrom.getReusedClauses();
 	}
@@ -161,7 +160,7 @@ public final class DeclaredPlainClause extends PlainClause {
 			definition = createExpressionDefinition();
 		}
 
-		this.definition = new Holder<ClauseDefinition>(definition);
+		this.definition = new Holder<>(definition);
 		setClauseObject(definition);
 
 		return definition;

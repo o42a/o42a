@@ -53,7 +53,7 @@ public abstract class Statements<
 				extends Placed {
 
 	private final Sentence<S, L> sentence;
-	private final ArrayList<L> implications = new ArrayList<L>(1);
+	private final ArrayList<L> implications = new ArrayList<>(1);
 	private boolean statementDropped;
 	private boolean instructionsExecuted;
 	private boolean incompatibilityReported;

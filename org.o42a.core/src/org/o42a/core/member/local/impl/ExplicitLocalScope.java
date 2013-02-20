@@ -43,8 +43,7 @@ import org.o42a.util.string.Name;
 public final class ExplicitLocalScope extends LocalScope {
 
 	private final Name name;
-	private final HashMap<MemberId, Member> members =
-			new HashMap<MemberId, Member>();
+	private final HashMap<MemberId, Member> members = new HashMap<>();
 	private MemberClause[] implicitClauses;
 	private ImperativeBlock block;
 	private LocalIR ir;

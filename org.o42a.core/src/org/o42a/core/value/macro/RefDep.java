@@ -33,7 +33,7 @@ public abstract class RefDep<D extends MetaDep> {
 		}
 
 		final RefDepBuilder<D> builder =
-				new RefDepBuilder<D>(this, ref, template);
+				new RefDepBuilder<>(this, ref, template);
 
 		return builder.buildDep();
 	}

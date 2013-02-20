@@ -25,7 +25,7 @@ import org.o42a.analysis.use.*;
 public class ValueUsage extends Usage<ValueUsage> {
 
 	public static final AllUsages<ValueUsage> ALL_VALUE_USAGES =
-			new AllUsages<ValueUsage>(ValueUsage.class);
+			new AllUsages<>(ValueUsage.class);
 
 	public static final ValueUsage STATIC_VALUE_USAGE =
 			new ValueUsage("StaticValue");

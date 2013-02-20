@@ -186,8 +186,7 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 
 	private static final class UsedBy extends UseTracker {
 
-		private final HashMap<Uses<?>, Object> usedBy =
-				new HashMap<Uses<?>, Object>();
+		private final HashMap<Uses<?>, Object> usedBy = new HashMap<>();
 		private SelectiveUser<FieldUsage> user;
 
 		public final Set<Uses<?>> getUsedBy() {
@@ -222,7 +221,7 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 			if (this.user != null) {
 				return this.user;
 			}
-			return this.user = new SelectiveUser<FieldUsage>(uses, usage);
+			return this.user = new SelectiveUser<>(uses, usage);
 		}
 
 	}

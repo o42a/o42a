@@ -36,8 +36,7 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 	private static final ID DEP_PREFIX =
 			ID.id(ID.id("D").setDescription("Dependency #"));
 
-	private LinkedHashMap<Object, Dep> deps =
-			new LinkedHashMap<Object, Dep>();
+	private LinkedHashMap<Object, Dep> deps = new LinkedHashMap<>();
 	private int depNameSeq;
 
 	Deps(Obj object) {

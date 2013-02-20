@@ -129,7 +129,7 @@ public abstract class ObjectConstructor extends Placed {
 				return cached;
 			}
 		} else {
-			this.propagated = new IdentityHashMap<Scope, Obj>();
+			this.propagated = new IdentityHashMap<>();
 		}
 
 		final Obj propagated = propagateObject(scope);

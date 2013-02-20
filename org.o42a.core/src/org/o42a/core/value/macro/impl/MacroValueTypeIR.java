@@ -38,7 +38,7 @@ final class MacroValueTypeIR extends ValueTypeIR<Macro> {
 
 	@Override
 	protected StaticsIR<Macro> createStaticsIR() {
-		return new VoidStaticsIR<Macro>(this);
+		return new VoidStaticsIR<>(this);
 	}
 
 }
