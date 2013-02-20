@@ -158,7 +158,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		final String key = name.getKey();
 
 		if (this.subEntries == null) {
-			this.subEntries = new TreeMap<String, TypeWithSource>();
+			this.subEntries = new TreeMap<>();
 			existing = null;
 		} else {
 			existing = this.subEntries.get(key);
@@ -327,7 +327,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		}
 
 		if (this.usedNames == null) {
-			this.usedNames = new HashMap<String, Integer>();
+			this.usedNames = new HashMap<>();
 		}
 
 		final Integer counter =
@@ -348,7 +348,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		}
 
 		final ArrayList<Element> originatingElements =
-				new ArrayList<Element>(this.subEntries.size());
+				new ArrayList<>(this.subEntries.size());
 
 		appendOriginatingElementsTo(originatingElements);
 

@@ -63,8 +63,7 @@ public class TypesWithSources {
 	private final ProcessingEnvironment processingEnv;
 
 	private TypeWithSource module;
-	private final HashMap<Name, RelTypeSources> relative =
-			new HashMap<Name, RelTypeSources>();
+	private final HashMap<Name, RelTypeSources> relative = new HashMap<>();
 
 	public TypesWithSources(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
