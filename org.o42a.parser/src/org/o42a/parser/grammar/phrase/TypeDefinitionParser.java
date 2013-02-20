@@ -63,7 +63,7 @@ final class TypeDefinitionParser implements Parser<TypeDefinitionNode> {
 
 		return context.skipComments(
 				false,
-				new SignNode<TypeDefinitionNode.Prefix>(
+				new SignNode<>(
 						start,
 						context.current().fix(),
 						TypeDefinitionNode.Prefix.HASH));

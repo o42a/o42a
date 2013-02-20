@@ -66,7 +66,7 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 				ancestor = ascendant;
 			} else {
 				if (samples == null) {
-					samples = new ArrayList<AscendantNode>();
+					samples = new ArrayList<>();
 				}
 				samples.add(ascendant);
 			}
@@ -105,11 +105,10 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 
 			context.acceptAll();
 
-			final SignNode<Separator> separator =
-					new SignNode<Separator>(
-							start,
-							context.current().fix(),
-							Separator.SAMPLE);
+			final SignNode<Separator> separator = new SignNode<>(
+					start,
+					context.current().fix(),
+					Separator.SAMPLE);
 
 			context.acceptComments(false, separator);
 

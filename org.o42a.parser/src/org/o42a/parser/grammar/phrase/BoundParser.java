@@ -80,11 +80,10 @@ final class BoundParser implements Parser<BoundNode> {
 				bound = minus;
 			} else {
 
-				final SignNode<UnaryOperator> sign =
-						new SignNode<UnaryOperator>(
-								minus.getStart(),
-								minus.getEnd(),
-								UnaryOperator.MINUS);
+				final SignNode<UnaryOperator> sign = new SignNode<>(
+						minus.getStart(),
+						minus.getEnd(),
+						UnaryOperator.MINUS);
 
 				sign.addComments(minus.getComments());
 

@@ -68,7 +68,7 @@ public abstract class LineParser<L extends LineType>
 
 		context.acceptButLast();
 
-		return context.acceptComments(false, new SignNode<L>(start, end, line));
+		return context.acceptComments(false, new SignNode<>(start, end, line));
 	}
 
 	protected abstract L createLine(int length);

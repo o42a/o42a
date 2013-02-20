@@ -51,11 +51,10 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 		}
 		context.acceptButLast();
 
-		final SignNode<AssignmentOperator> operator =
-				new SignNode<AssignmentOperator>(
-						operatorStart,
-						context.current().fix(),
-						AssignmentOperator.ASSIGN);
+		final SignNode<AssignmentOperator> operator = new SignNode<>(
+				operatorStart,
+				context.current().fix(),
+				AssignmentOperator.ASSIGN);
 
 		context.acceptComments(false, operator);
 

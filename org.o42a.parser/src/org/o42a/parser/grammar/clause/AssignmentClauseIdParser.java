@@ -55,7 +55,7 @@ final class AssignmentClauseIdParser implements Parser<AssignmentNode> {
 		final SignNode<AssignmentOperator> operator =
 				context.skipComments(
 						false,
-						new SignNode<AssignmentOperator>(
+						new SignNode<>(
 								start,
 								context.current().fix(),
 								AssignmentOperator.ASSIGN));

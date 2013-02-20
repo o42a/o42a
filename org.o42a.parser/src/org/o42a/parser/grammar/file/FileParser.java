@@ -42,7 +42,7 @@ public final class FileParser implements Parser<FileNode> {
 	@Override
 	public FileNode parse(ParserContext context) {
 
-		final ArrayList<SectionNode> sections = new ArrayList<SectionNode>();
+		final ArrayList<SectionNode> sections = new ArrayList<>();
 		SentenceNode title = null;
 		SubTitleNode subTitle = context.parse(SUB_TITLE);
 

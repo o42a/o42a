@@ -62,10 +62,7 @@ final class UnaryClauseIdParser implements Parser<UnaryNode> {
 
 		final SignNode<UnaryOperator> sign = context.acceptComments(
 				false,
-				new SignNode<UnaryOperator>(
-						start,
-						context.current().fix(),
-						operator));
+				new SignNode<>(start, context.current().fix(), operator));
 
 		final RefNode operand = context.parse(ref());
 

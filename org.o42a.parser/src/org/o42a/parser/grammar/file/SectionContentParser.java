@@ -48,7 +48,7 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 	@Override
 	public ContentWithNextTitle parse(ParserContext context) {
 
-		final ArrayList<SentenceNode> sentences = new ArrayList<SentenceNode>();
+		final ArrayList<SentenceNode> sentences = new ArrayList<>();
 		SectionTypeDefinitionNode typeDefinition = null;
 
 		for (;;) {

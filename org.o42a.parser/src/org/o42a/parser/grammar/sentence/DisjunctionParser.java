@@ -42,8 +42,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 	public AlternativeNode[] parse(ParserContext context) {
 
 		final Expectations expectations = context.expect(';');
-		final ArrayList<AlternativeNode> alternatives =
-				new ArrayList<AlternativeNode>();
+		final ArrayList<AlternativeNode> alternatives = new ArrayList<>();
 		SignNode<Separator> separatorSign = null;
 
 		for (;;) {
@@ -85,7 +84,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 			final SourcePosition separatorStart = context.current().fix();
 
 			context.acceptAll();
-			separatorSign = new SignNode<Separator>(
+			separatorSign = new SignNode<>(
 					separatorStart,
 					context.current().fix(),
 					separator);

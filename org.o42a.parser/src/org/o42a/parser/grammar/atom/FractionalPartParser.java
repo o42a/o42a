@@ -62,7 +62,7 @@ final class FractionalPartParser implements Parser<FractionalPartNode> {
 			return null;
 		}
 
-		final SignNode<RadixPoint> point = new SignNode<RadixPoint>(
+		final SignNode<RadixPoint> point = new SignNode<>(
 				start,
 				context.current().fix(),
 				radixPoint);

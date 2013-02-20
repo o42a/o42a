@@ -41,8 +41,7 @@ public class PhraseParser implements Parser<PhraseNode> {
 	@Override
 	public PhraseNode parse(ParserContext context) {
 
-		final ArrayList<PhrasePartNode> parts =
-				new ArrayList<PhrasePartNode>();
+		final ArrayList<PhrasePartNode> parts = new ArrayList<>();
 
 		for (;;) {
 

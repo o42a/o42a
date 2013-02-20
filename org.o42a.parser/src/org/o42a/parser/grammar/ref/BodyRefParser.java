@@ -46,7 +46,7 @@ public class BodyRefParser implements Parser<BodyRefNode> {
 
 		context.acceptAll();
 
-		final SignNode<Suffix> suffix = new SignNode<BodyRefNode.Suffix>(
+		final SignNode<Suffix> suffix = new SignNode<>(
 				suffixStart,
 				context.current().fix(),
 				BodyRefNode.Suffix.BACKQUOTE);

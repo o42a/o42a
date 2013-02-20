@@ -56,10 +56,7 @@ final class SignOfNumberParser
 
 		context.acceptAll();
 
-		return new SignNode<SignOfNumber>(
-				start,
-				context.current().fix(),
-				sign);
+		return new SignNode<>(start, context.current().fix(), sign);
 	}
 
 }

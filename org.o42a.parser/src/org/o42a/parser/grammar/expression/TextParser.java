@@ -49,7 +49,7 @@ public class TextParser implements Parser<TextNode> {
 				break;
 			}
 			if (literals == null) {
-				literals = new ArrayList<StringNode>();
+				literals = new ArrayList<>();
 			}
 			literals.add(literal);
 		}

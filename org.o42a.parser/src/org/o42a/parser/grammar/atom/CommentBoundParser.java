@@ -74,7 +74,7 @@ final class CommentBoundParser implements Parser<SignNode<CommentBound>> {
 
 		context.acceptButLast();
 
-		return new SignNode<CommentBound>(
+		return new SignNode<>(
 				start,
 				context.firstUnaccepted().fix(),
 				bound(len, startsAtNewLine));

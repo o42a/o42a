@@ -22,7 +22,6 @@ package org.o42a.parser.grammar.expression;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.GroupNode;
-import org.o42a.ast.expression.GroupNode.Separator;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -46,11 +45,10 @@ public class GroupParser implements Parser<GroupNode> {
 
 		context.acceptAll();
 
-		final SignNode<Separator> separator =
-				new SignNode<GroupNode.Separator>(
-						start,
-						context.current().fix(),
-						GroupNode.Separator.BACKSLASH);
+		final SignNode<GroupNode.Separator> separator = new SignNode<>(
+				start,
+				context.current().fix(),
+				GroupNode.Separator.BACKSLASH);
 		final GroupNode group = new GroupNode(this.expression, separator);
 
 		return context.acceptComments(false, group);

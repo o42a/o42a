@@ -19,6 +19,8 @@
 */
 package org.o42a.parser.grammar.ref;
 
+import static org.o42a.ast.ref.AdapterIdSign.TYPE_REF;
+
 import org.o42a.ast.atom.ParenthesisSign;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.AdapterIdNode;
@@ -65,10 +67,7 @@ final class AdapterIdParser
 
 			return context.acceptComments(
 					false,
-					new SignNode<AdapterIdSign>(
-							start,
-							context.current().fix(),
-							AdapterIdSign.TYPE_REF));
+					new SignNode<>(start, context.current().fix(), TYPE_REF));
 		}
 
 	}

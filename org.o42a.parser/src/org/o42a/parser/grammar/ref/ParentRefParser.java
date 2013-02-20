@@ -60,11 +60,10 @@ public class ParentRefParser implements Parser<ParentRefNode> {
 
 		context.acceptButLast();
 
-		final SignNode<ParentRefNode.Qualifier> qualifier =
-				new SignNode<ParentRefNode.Qualifier>(
-						start,
-						context.current().fix(),
-						ParentRefNode.Qualifier.PARENT);
+		final SignNode<ParentRefNode.Qualifier> qualifier = new SignNode<>(
+				start,
+				context.current().fix(),
+				ParentRefNode.Qualifier.PARENT);
 
 		return context.acceptComments(
 				false,

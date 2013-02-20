@@ -50,7 +50,7 @@ public class DerefParser implements Parser<DerefNode> {
 		context.acceptAll();
 
 		final SignNode<DerefNode.Suffix> suffix =
-				new SignNode<DerefNode.Suffix>(
+				new SignNode<>(
 						start,
 						context.current().fix(),
 						DerefNode.Suffix.ARROW);

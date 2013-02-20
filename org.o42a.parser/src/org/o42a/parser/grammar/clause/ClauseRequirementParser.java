@@ -72,10 +72,7 @@ final class ClauseRequirementParser
 
 		return context.acceptComments(
 				true,
-				new SignNode<ClauseDeclaratorNode.Requirement>(
-						start,
-						context.current().fix(),
-						requirement));
+				new SignNode<>(start, context.current().fix(), requirement));
 	}
 
 }

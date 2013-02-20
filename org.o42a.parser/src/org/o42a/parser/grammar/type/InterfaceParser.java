@@ -67,19 +67,17 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 
 		context.skip();
 
-		final SignNode<ParenthesisSign> opening =
-				new SignNode<ParenthesisSign>(
-						start,
-						context.current().fix(),
-						OPENING_PARENTHESIS);
+		final SignNode<ParenthesisSign> opening = new SignNode<>(
+				start,
+				context.current().fix(),
+				OPENING_PARENTHESIS);
 		final SignNode<DefinitionKind> kind = context.push(DEFINITION_KIND);
 
 		if (kind == null) {
 			return null;
 		}
 
-		final ArrayList<TypeParameterNode> parameters =
-				new ArrayList<TypeParameterNode>();
+		final ArrayList<TypeParameterNode> parameters = new ArrayList<>();
 		SignNode<ParenthesisSign> closing = null;
 		SignNode<CommaSign> separator = null;
 		SeparatorNodes prevSeparators = null;
@@ -113,7 +111,7 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 
 				context.acceptAll();
 
-				closing = new SignNode<ParenthesisSign>(
+				closing = new SignNode<>(
 						closingStart,
 						context.current().fix(),
 						CLOSING_PARENTHESIS);
@@ -143,7 +141,7 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			final SourcePosition separatorStart = context.current().fix();
 
 			context.acceptAll();
-			separator = new SignNode<CommaSign>(
+			separator = new SignNode<>(
 					separatorStart,
 					context.current().fix(),
 					CommaSign.COMMA);
@@ -192,11 +190,10 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 				context.acceptButLast();
 			}
 
-			final SignNode<DefinitionKind> result =
-					new SignNode<DefinitionKind>(
-							start,
-							context.firstUnaccepted().fix(),
-							targetKind);
+			final SignNode<DefinitionKind> result = new SignNode<>(
+					start,
+					context.firstUnaccepted().fix(),
+					targetKind);
 
 			return context.acceptComments(false, result);
 		}

@@ -57,7 +57,7 @@ public class SeparatorParser implements Parser<SeparatorNodes> {
 
 			if (comment != null) {
 				if (comments == null) {
-					comments = new ArrayList<CommentNode>(1);
+					comments = new ArrayList<>(1);
 				}
 				comments.add(comment);
 			} else {

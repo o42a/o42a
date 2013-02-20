@@ -49,7 +49,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 		}
 
 		final SignNode<BracketSign> opening = opening(context);
-		final ArrayList<ArgumentNode> arguments = new ArrayList<ArgumentNode>();
+		final ArrayList<ArgumentNode> arguments = new ArrayList<>();
 		SignNode<BracketSign> closing = null;
 		SignNode<CommaSign> separator = null;
 		SeparatorNodes prevSeparators = null;
@@ -83,7 +83,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 				context.acceptAll();
 
-				closing = new SignNode<BracketSign>(
+				closing = new SignNode<>(
 						closingStart,
 						context.current().fix(),
 						CLOSING_BRACKET);
@@ -113,7 +113,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 			final SourcePosition separatorStart = context.current().fix();
 
 			context.acceptAll();
-			separator = new SignNode<CommaSign>(
+			separator = new SignNode<>(
 					separatorStart,
 					context.current().fix(),
 					CommaSign.COMMA);
@@ -139,7 +139,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 		return context.acceptComments(
 				true,
-				new SignNode<BracketSign>(
+				new SignNode<>(
 						start,
 						context.current().fix(),
 						OPENING_BRACKET));
