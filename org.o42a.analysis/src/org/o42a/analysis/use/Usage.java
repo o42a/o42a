@@ -57,7 +57,7 @@ public abstract class Usage<U extends Usage<U>> extends UseSelector<U> {
 		if (all().size() == 1) {
 			return user;
 		}
-		return new SelectiveUser<U>(user, this);
+		return new SelectiveUser<>(user, this);
 	}
 
 	@Override

@@ -30,7 +30,7 @@ final class SimpleUsable<U extends Usage<U>> extends Usable<U> {
 		super(allUsages);
 		this.name = name;
 		this.used = used;
-		this.user = new UsableUser<U>(this);
+		this.user = new UsableUser<>(this);
 	}
 
 	public final String name() {

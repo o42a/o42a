@@ -33,8 +33,7 @@ import java.util.ArrayList;
  */
 public class UseDump<U extends Usage<U>> {
 
-	private static final ArrayList<UseDump<?>> uses =
-			new ArrayList<UseDump<?>>();
+	private static final ArrayList<UseDump<?>> uses = new ArrayList<>();
 	private static boolean enabled = true;
 
 	public static boolean isEnabled() {
@@ -52,7 +51,7 @@ public class UseDump<U extends Usage<U>> {
 		if (!isEnabled()) {
 			return;
 		}
-		uses.add(new UseDump<U>(what.toString(), user, usage));
+		uses.add(new UseDump<>(what.toString(), user, usage));
 	}
 
 	public static void dumpSeparator(String what) {

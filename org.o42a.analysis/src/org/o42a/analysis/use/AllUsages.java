@@ -60,29 +60,29 @@ public final class AllUsages<U extends Usage<U>> extends UseSelector<U> {
 		if (this.alwaysUsed != null) {
 			return this.alwaysUsed;
 		}
-		return this.alwaysUsed = new AlwaysUsed<U>(this);
+		return this.alwaysUsed = new AlwaysUsed<>(this);
 	}
 
 	public final Uses<U> neverUsed() {
 		if (this.neverUsed != null) {
 			return this.neverUsed;
 		}
-		return this.neverUsed = new NeverUsed<U>(this);
+		return this.neverUsed = new NeverUsed<>(this);
 	}
 
 	public final User<U> dummyUser() {
 		if (this.dummyUser != null) {
 			return this.dummyUser;
 		}
-		return this.dummyUser = new DummyUser<U>(this);
+		return this.dummyUser = new DummyUser<>(this);
 	}
 
 	public final Usable<U> usable(Object used) {
-		return new SimpleUsable<U>(this, null, used);
+		return new SimpleUsable<>(this, null, used);
 	}
 
 	public final Usable<U> usable(String name, Object used) {
-		return new SimpleUsable<U>(this, name, used);
+		return new SimpleUsable<>(this, name, used);
 	}
 
 	@Override

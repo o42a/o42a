@@ -30,7 +30,7 @@ public class ProxyUsable<U extends Usage<U>> extends ProxyUser<U> {
 
 	public ProxyUsable(AllUsages<U> allUsages, String name, Object used) {
 		super(allUsages);
-		this.usable = new SimpleUsable<U>(allUsages, name, used);
+		this.usable = new SimpleUsable<>(allUsages, name, used);
 		setProxied(this.usable.toUser());
 	}
 
@@ -40,7 +40,7 @@ public class ProxyUsable<U extends Usage<U>> extends ProxyUser<U> {
 
 	public ProxyUsable(User<U> proxied, String name, Object used) {
 		super(proxied);
-		this.usable = new SimpleUsable<U>(allUsages(), name, used);
+		this.usable = new SimpleUsable<>(allUsages(), name, used);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class ProxyUsable<U extends Usage<U>> extends ProxyUser<U> {
 			// Recreate it to mark unused.
 			// The old usable instance remain unchanged and may be utilized
 			// outside the proxy.
-			this.usable = new SimpleUsable<U>(
+			this.usable = new SimpleUsable<>(
 					allUsages(),
 					this.usable.name(),
 					this.usable.used());

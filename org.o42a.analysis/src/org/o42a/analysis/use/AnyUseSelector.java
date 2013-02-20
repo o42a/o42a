@@ -28,6 +28,7 @@ final class AnyUseSelector<U extends Usage<U>> extends UseSelector<U> {
 
 	private final UseSelector<U>[] selectors;
 
+	@SafeVarargs
 	AnyUseSelector(UseSelector<U>... selectors) {
 		this.selectors = selectors;
 	}
@@ -109,7 +110,7 @@ final class AnyUseSelector<U extends Usage<U>> extends UseSelector<U> {
 				return this;
 			}
 		}
-		return new AnyUseSelector<U>(
+		return new AnyUseSelector<>(
 				ArrayUtil.append(this.selectors, selector));
 	}
 
