@@ -33,12 +33,12 @@ public final class Iterators {
 	}
 
 	public static <T> ReadonlyIterator<T> singletonIterator(T element) {
-		return new SingletonIterator<T>(element);
+		return new SingletonIterator<>(element);
 	}
 
 	public static <T> ReadonlyIterator<T> readonlyIterator(
 			Iterator<? extends T> iterator) {
-		return new PreventWriteIterator<T>(iterator);
+		return new PreventWriteIterator<>(iterator);
 	}
 
 	private Iterators() {

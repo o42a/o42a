@@ -25,7 +25,7 @@ import java.util.Iterator;
 public abstract class ReadonlyIterator<T> implements Iterator<T> {
 
 	public final ReadonlyIterator<T> then(Iterator<? extends T> continuation) {
-		return new CombinedIterator<T>(this, continuation);
+		return new CombinedIterator<>(this, continuation);
 	}
 
 	@Override
