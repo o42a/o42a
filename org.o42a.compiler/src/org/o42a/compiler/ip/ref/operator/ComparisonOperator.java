@@ -42,7 +42,7 @@ public abstract class ComparisonOperator {
 			new NotEqualsOperator();
 
 	private static final EnumMap<BinaryOperator, CompareOperator> operators =
-			new EnumMap<BinaryOperator, CompareOperator>(BinaryOperator.class);
+			new EnumMap<>(BinaryOperator.class);
 
 	static {
 		operators.put(NOT_EQUAL, new CompareNotEqualOperator());

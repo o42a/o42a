@@ -255,7 +255,7 @@ final class MainPhraseContext extends PhraseContext {
 			return;
 		}
 
-		final LinkedList<PhraseContext> stack = new LinkedList<PhraseContext>();
+		final LinkedList<PhraseContext> stack = new LinkedList<>();
 		final PhrasePrefix prefix = getPhrase().getPrefix();
 		PhraseContext context = this;
 		PhraseContinuation continuation = prefix.getFollowing();

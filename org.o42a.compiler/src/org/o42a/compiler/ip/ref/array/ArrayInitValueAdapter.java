@@ -114,7 +114,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 			return this.value = createArray(scope);
 		}
 		if (this.cache == null) {
-			this.cache = new IdentityHashMap<Scope, Value<Array>>();
+			this.cache = new IdentityHashMap<>();
 		} else {
 
 			final Value<Array> cached = this.cache.get(scope);
