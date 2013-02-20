@@ -51,8 +51,7 @@ public class LogDetails extends Loggable implements Iterable<LogDetail> {
 		final HashMap<LogDetail, LogLocation> details;
 
 		if (oldLocation == null) {
-			details = new HashMap<LogDetail, LogLocation>(
-					this.details.size() + 1);
+			details = new HashMap<>(this.details.size() + 1);
 		} else if (oldLocation.equals(newLocation)) {
 			return this;
 		} else {
@@ -65,7 +64,7 @@ public class LogDetails extends Loggable implements Iterable<LogDetail> {
 						singletonMap(detail, newLocation));
 			}
 
-			details = new HashMap<LogDetail, LogLocation>(oldSize);
+			details = new HashMap<>(oldSize);
 		}
 
 		details.putAll(this.details);
