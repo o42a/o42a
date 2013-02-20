@@ -143,7 +143,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	}
 
 	public final User<U> selectiveUser(UseSelector<U> selector) {
-		return new SelectiveUser<U>(this, selector);
+		return new SelectiveUser<>(this, selector);
 	}
 
 	public final User<U> usageUser(U usage) {
@@ -181,7 +181,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 			return existing;
 		}
 
-		final UsedBy<U> usedBy = new UsedBy<U>();
+		final UsedBy<U> usedBy = new UsedBy<>();
 
 		this.usedBy[ordinal] = usedBy;
 
@@ -190,8 +190,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 
 	private static final class UsedBy<U extends Usage<U>> extends UseTracker {
 
-		private final HashMap<User<?>, Object> usedBy =
-				new HashMap<User<?>, Object>();
+		private final HashMap<User<?>, Object> usedBy = new HashMap<>();
 		private SelectiveUser<U> user;
 
 		public final Set<User<?>> getUsedBy() {
@@ -226,7 +225,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 			if (this.user != null) {
 				return this.user;
 			}
-			return this.user = new SelectiveUser<U>(usable, usage);
+			return this.user = new SelectiveUser<>(usable, usage);
 		}
 
 	}

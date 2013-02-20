@@ -23,7 +23,7 @@ package org.o42a.analysis.use;
 public final class SimpleUsage extends Usage<SimpleUsage> {
 
 	public static final AllUsages<SimpleUsage> ALL_SIMPLE_USAGES =
-			new AllUsages<SimpleUsage>(SimpleUsage.class);
+			new AllUsages<>(SimpleUsage.class);
 
 	public static final SimpleUsage SIMPLE_USAGE = new SimpleUsage();
 

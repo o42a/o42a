@@ -28,10 +28,9 @@ public abstract class UseSelector<U extends Usage<U>> {
 		if (equals(other)) {
 			return this;
 		}
-		return new CompoundUseSelector<U>(this, other);
+		return new CompoundUseSelector<>(this, other);
 	}
 
-	@SuppressWarnings("unchecked")
 	public UseSelector<U> or(UseSelector<U> other) {
 		if (equals(other)) {
 			return this;
@@ -39,11 +38,11 @@ public abstract class UseSelector<U extends Usage<U>> {
 		if (other.getClass() == AnyUseSelector.class) {
 			return ((AnyUseSelector<U>) other).append(this);
 		}
-		return new AnyUseSelector<U>(this, other);
+		return new AnyUseSelector<>(this, other);
 	}
 
 	public UseSelector<U> not() {
-		return new NegatedUseSelector<U>(this);
+		return new NegatedUseSelector<>(this);
 	}
 
 }
