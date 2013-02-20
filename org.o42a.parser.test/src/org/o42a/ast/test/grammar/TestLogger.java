@@ -19,7 +19,7 @@ import org.o42a.util.log.Logger;
 
 final class TestLogger extends TestWatcher implements Logger {
 
-	private final LinkedList<String> expectedErrors = new LinkedList<String>();
+	private final LinkedList<String> expectedErrors = new LinkedList<>();
 
 	public void expectError(String code) {
 		this.expectedErrors.addLast("parser." + code);

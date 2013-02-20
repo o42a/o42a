@@ -53,11 +53,11 @@ public class GrammarTestCase {
 	}
 
 	public static <T extends Node> Matcher<T> hasRange(long from, long to) {
-		return new NodeRangeMatcher<T>(from, to);
+		return new NodeRangeMatcher<>(from, to);
 	}
 
 	public static <T extends Node> Matcher<T> hasName(String name) {
-		return new NodeHasNameMatcher<T>(name);
+		return new NodeHasNameMatcher<>(name);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,7 +94,7 @@ public class GrammarTestCase {
 	}
 
 	public static <T extends Node> Matcher<T> hasInteger(String digits) {
-		return new NumberNodeHasIntegerMatcher<T>(digits);
+		return new NumberNodeHasIntegerMatcher<>(digits);
 	}
 
 	@SuppressWarnings("unchecked")
