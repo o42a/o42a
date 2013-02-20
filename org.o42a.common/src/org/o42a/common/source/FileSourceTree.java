@@ -78,7 +78,7 @@ public class FileSourceTree extends SourceTree<FileSource> {
 		}
 
 		final HashMap<String, FileSourceTree> sources =
-				new HashMap<String, FileSourceTree>(list.length);
+				new HashMap<>(list.length);
 
 		for (File file : list) {
 			if (!containsSource(file)) {

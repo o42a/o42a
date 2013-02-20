@@ -81,12 +81,12 @@ public class TreeCompilerContext<S extends Source>
 
 	@Override
 	public ModuleCompiler compileModule() {
-		return getCompiler().compileModule(new TreeObjectSource<S>(this));
+		return getCompiler().compileModule(new TreeObjectSource<>(this));
 	}
 
 	@Override
 	public FieldCompiler compileField() {
-		return getCompiler().compileField(new TreeObjectSource<S>(this));
+		return getCompiler().compileField(new TreeObjectSource<>(this));
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class TreeCompilerContext<S extends Source>
 
 			final SourceTree<S> tree = childTrees.next();
 			final TreeDefinitionSource<S> definitionSource =
-					new TreeDefinitionSource<S>(this, tree);
+					new TreeDefinitionSource<>(this, tree);
 			final DefinitionCompiler definitionCompiler =
 					compiler.compileDefinition(definitionSource);
 
@@ -113,7 +113,7 @@ public class TreeCompilerContext<S extends Source>
 	protected TreeCompilerContext<S> sectionContext(
 			SectionTag tag,
 			SourceTree<S> sourceTree) {
-		return new TreeCompilerContext<S>(this, sourceTree, tag, null);
+		return new TreeCompilerContext<>(this, sourceTree, tag, null);
 	}
 
 }
