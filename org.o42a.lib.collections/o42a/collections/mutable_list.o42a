@@ -60,3 +60,19 @@ Insert :=<> void (
     )
   )
 )
+
+Remove :=<> void (
+  ~~~
+  Removes an element at the given position from list.
+  ~~~
+
+  Index :=< link (`integer) ~~ An index of element to remove.
+
+  <*Remove> Remove (
+    ~~~
+    Removes an element, which index is specified in square brackets.
+    ~~~
+
+    <[]> Index = () ~~ An <index> of element to remove.
+  )
+)

@@ -22,3 +22,7 @@ Add => * (
 Insert => * (
   Index < size? Mutable list:: insert [new element] at [from + index]
 )
+
+Remove => * (
+  Index < size? Mutable list:: remove [from + index]
+)
