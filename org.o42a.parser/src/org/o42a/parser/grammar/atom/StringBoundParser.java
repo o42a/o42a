@@ -77,7 +77,7 @@ public final class StringBoundParser implements Parser<SignNode<StringBound>> {
 
 		context.acceptAll();
 
-		return new SignNode<StringBound>(
+		return new SignNode<>(
 				start,
 				context.firstUnaccepted().fix(),
 				doubleQuoted ? DOUBLE_QUOTE : SINGLE_QUOTE);
@@ -122,7 +122,7 @@ public final class StringBoundParser implements Parser<SignNode<StringBound>> {
 
 			context.acceptAll();
 
-			return new SignNode<StringBound>(
+			return new SignNode<>(
 					start,
 					context.firstUnaccepted().fix(),
 					this.quote == '"'

@@ -38,7 +38,7 @@ public class ContentParser implements Parser<SentenceNode[]> {
 	@Override
 	public SentenceNode[] parse(ParserContext context) {
 
-		final ArrayList<SentenceNode> sentences = new ArrayList<SentenceNode>();
+		final ArrayList<SentenceNode> sentences = new ArrayList<>();
 
 		for (;;) {
 

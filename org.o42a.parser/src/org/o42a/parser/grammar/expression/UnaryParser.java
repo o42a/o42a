@@ -87,7 +87,7 @@ public class UnaryParser implements Parser<UnaryNode> {
 			return null;
 		}
 
-		final SignNode<UnaryOperator> sign = new SignNode<UnaryOperator>(
+		final SignNode<UnaryOperator> sign = new SignNode<>(
 				start,
 				context.firstUnaccepted().fix(),
 				operator);

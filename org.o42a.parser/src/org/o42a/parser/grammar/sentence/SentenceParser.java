@@ -98,7 +98,7 @@ public class SentenceParser implements Parser<SentenceNode> {
 
 			context.acceptAll();
 
-			final SignNode<SentenceType> result = new SignNode<SentenceType>(
+			final SignNode<SentenceType> result = new SignNode<>(
 					start,
 					context.current().fix(),
 					sentenceType);

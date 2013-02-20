@@ -195,11 +195,10 @@ public class BinaryParser implements Parser<BinaryNode> {
 				return null;
 			}
 
-			final SignNode<BinaryOperator> result =
-					new SignNode<BinaryOperator>(
-							start,
-							context.current().fix(),
-							operator);
+			final SignNode<BinaryOperator> result = new SignNode<>(
+					start,
+					context.current().fix(),
+					operator);
 
 			return context.acceptComments(false, result);
 		}

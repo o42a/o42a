@@ -54,7 +54,7 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 			expectations = context.expect(',');
 		}
 
-		final ArrayList<SerialNode> statements = new ArrayList<SerialNode>();
+		final ArrayList<SerialNode> statements = new ArrayList<>();
 		SignNode<Separator> separator = null;
 
 		for (;;) {
@@ -99,7 +99,7 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 				final SourcePosition separatorStart = context.current().fix();
 
 				context.acceptAll();
-				separator = new SignNode<Separator>(
+				separator = new SignNode<>(
 						separatorStart,
 						context.current().fix(),
 						Separator.THEN);

@@ -67,7 +67,7 @@ public class MembershipParser
 
 			return context.acceptComments(
 					false,
-					new SignNode<MembershipSign>(
+					new SignNode<>(
 							start,
 							context.current().fix(),
 							MembershipSign.DECLARED_IN));

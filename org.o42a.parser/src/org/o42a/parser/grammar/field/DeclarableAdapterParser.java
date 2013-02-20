@@ -50,7 +50,7 @@ public class DeclarableAdapterParser implements Parser<DeclarableAdapterNode> {
 
 		context.skip();
 
-		final SignNode<MembershipSign> prefix = new SignNode<MembershipSign>(
+		final SignNode<MembershipSign> prefix = new SignNode<>(
 				start,
 				context.current().fix(),
 				DECLARED_IN);

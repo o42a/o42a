@@ -50,7 +50,7 @@ final class ExponentParser implements Parser<ExponentNode> {
 
 		context.skip();
 
-		final SignNode<ExponentSymbol> symbol = new SignNode<ExponentSymbol>(
+		final SignNode<ExponentSymbol> symbol = new SignNode<>(
 				start,
 				context.current().fix(),
 				LETTER_E);

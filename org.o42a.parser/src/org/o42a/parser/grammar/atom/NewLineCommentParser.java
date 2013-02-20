@@ -66,7 +66,7 @@ public class NewLineCommentParser implements Parser<CommentNode> {
 		// Not a block comment despite the number of opening tildes.
 		return inlineComment(
 				context,
-				new SignNode<CommentBound>(
+				new SignNode<>(
 						opening.getStart(),
 						opening.getEnd(),
 						INLINE_COMMENT));

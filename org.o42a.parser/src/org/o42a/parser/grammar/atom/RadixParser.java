@@ -60,7 +60,7 @@ final class RadixParser implements Parser<SignNode<Radix>> {
 
 		context.acceptAll();
 
-		return new SignNode<Radix>(start, context.current().fix(), radix);
+		return new SignNode<>(start, context.current().fix(), radix);
 	}
 
 }

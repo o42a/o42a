@@ -84,7 +84,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		context.skip();
 
 		final SignNode<ClauseDeclaratorNode.Parenthesis> opening =
-				new SignNode<ClauseDeclaratorNode.Parenthesis>(
+				new SignNode<>(
 						start,
 						context.current().fix(),
 						ClauseDeclaratorNode.Parenthesis.OPENING);
@@ -123,7 +123,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		context.acceptAll();
 
 		final SignNode<ClauseDeclaratorNode.Parenthesis> closing =
-				new SignNode<ClauseDeclaratorNode.Parenthesis>(
+				new SignNode<>(
 						start,
 						context.current().fix(),
 						ClauseDeclaratorNode.Parenthesis.CLOSING);

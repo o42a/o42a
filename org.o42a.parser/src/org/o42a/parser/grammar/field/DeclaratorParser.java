@@ -167,11 +167,10 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 				context.acceptButLast();
 			}
 
-			final SignNode<DeclarationTarget> assignment =
-					new SignNode<DeclarationTarget>(
-							start,
-							context.firstUnaccepted().fix(),
-							type);
+			final SignNode<DeclarationTarget> assignment = new SignNode<>(
+					start,
+					context.firstUnaccepted().fix(),
+					type);
 
 			return context.acceptComments(false, assignment);
 		}

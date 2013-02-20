@@ -48,7 +48,7 @@ final class OutcomeParser implements Parser<OutcomeNode> {
 
 		final SignNode<OutcomeNode.Prefix> prefix = context.acceptComments(
 				true,
-				new SignNode<OutcomeNode.Prefix>(
+				new SignNode<>(
 						start,
 						context.current().fix(),
 						OutcomeNode.Prefix.IS));

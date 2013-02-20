@@ -63,11 +63,10 @@ public class EllipsisParser implements Parser<EllipsisNode> {
 
 		context.acceptAll();
 
-		final SignNode<HorizontalEllipsis> mark =
-				new SignNode<HorizontalEllipsis>(
-						start,
-						context.current().fix(),
-						HorizontalEllipsis.HORIZONTAL_ELLIPSIS);
+		final SignNode<HorizontalEllipsis> mark = new SignNode<>(
+				start,
+				context.current().fix(),
+				HorizontalEllipsis.HORIZONTAL_ELLIPSIS);
 
 		context.acceptComments(false, mark);
 

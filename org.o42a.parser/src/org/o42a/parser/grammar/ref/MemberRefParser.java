@@ -103,10 +103,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 
 			return context.acceptComments(
 					false,
-					new SignNode<Qualifier>(
-							start,
-							context.current().fix(),
-							qualifier));
+					new SignNode<>(start, context.current().fix(), qualifier));
 		}
 
 	}

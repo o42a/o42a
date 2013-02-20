@@ -48,7 +48,7 @@ public class MacroExpansionParser implements Parser<MacroExpansionNode> {
 
 		context.skip();
 
-		final SignNode<UnaryOperator> sign = new SignNode<UnaryOperator>(
+		final SignNode<UnaryOperator> sign = new SignNode<>(
 				start,
 				context.current().fix(),
 				UnaryOperator.MACRO_EXPANSION);

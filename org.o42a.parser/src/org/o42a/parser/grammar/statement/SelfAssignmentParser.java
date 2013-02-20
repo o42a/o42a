@@ -48,11 +48,10 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 
 		context.skip();
 
-		final SignNode<AssignmentOperator> prefix =
-				new SignNode<AssignmentOperator>(
-						start,
-						context.current().fix(),
-						AssignmentOperator.ASSIGN);
+		final SignNode<AssignmentOperator> prefix = new SignNode<>(
+				start,
+				context.current().fix(),
+				AssignmentOperator.ASSIGN);
 
 		if (context.next() == '=') {
 			return null;

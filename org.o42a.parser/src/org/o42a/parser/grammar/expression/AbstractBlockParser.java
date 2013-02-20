@@ -53,7 +53,7 @@ public abstract class AbstractBlockParser<
 		context.skip();
 
 		final SignNode<S> opening =
-				new SignNode<S>(start, context.current().fix(), this.opening);
+				new SignNode<>(start, context.current().fix(), this.opening);
 
 		context.skipComments(true, opening);
 
@@ -76,7 +76,7 @@ public abstract class AbstractBlockParser<
 
 			context.acceptAll();
 
-			final SignNode<S> closing = new SignNode<S>(
+			final SignNode<S> closing = new SignNode<>(
 					closingStart,
 					context.current().fix(),
 					this.closing);

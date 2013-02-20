@@ -82,7 +82,7 @@ public abstract class TypeRefParser<
 			context.acceptAll();
 			opening = context.acceptComments(
 					true,
-					new SignNode<ParenthesisSign>(
+					new SignNode<>(
 							start,
 							context.current().fix(),
 							OPENING_PARENTHESIS));
@@ -129,7 +129,7 @@ public abstract class TypeRefParser<
 
 		context.acceptAll();
 
-		return new SignNode<ParenthesisSign>(
+		return new SignNode<>(
 				start,
 				context.current().fix(),
 				CLOSING_PARENTHESIS);

@@ -163,10 +163,7 @@ public final class IntervalParser implements Parser<IntervalNode> {
 
 			return context.acceptComments(
 					true,
-					new SignNode<IntervalBracket>(
-							start,
-							context.current().fix(),
-							bracket));
+					new SignNode<>(start, context.current().fix(), bracket));
 		}
 
 	}
@@ -196,10 +193,7 @@ public final class IntervalParser implements Parser<IntervalNode> {
 
 			return context.acceptComments(
 					false,
-					new SignNode<IntervalBracket>(
-							start,
-							context.current().fix(),
-							bracket));
+					new SignNode<>(start, context.current().fix(), bracket));
 		}
 
 	}
@@ -233,7 +227,7 @@ public final class IntervalParser implements Parser<IntervalNode> {
 
 			return context.acceptComments(
 					true,
-					new SignNode<HorizontalEllipsis>(
+					new SignNode<>(
 							start,
 							context.current().fix(),
 							HorizontalEllipsis.HORIZONTAL_ELLIPSIS));

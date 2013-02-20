@@ -47,7 +47,7 @@ final class ReusedClauseParser implements Parser<ReusedClauseNode> {
 		context.acceptAll();
 
 		final SignNode<ReusedClauseNode.Separator> separator =
-				new SignNode<ReusedClauseNode.Separator>(
+				new SignNode<>(
 						start,
 						context.current().fix(),
 						ReusedClauseNode.Separator.OR);
@@ -65,7 +65,7 @@ final class ReusedClauseParser implements Parser<ReusedClauseNode> {
 					new ReusedClauseNode(
 							separator,
 							null,
-							new SignNode<ReusedClauseNode.ReuseContents>(
+							new SignNode<>(
 									asteriskStart,
 									context.current().fix(),
 									ReusedClauseNode.ReuseContents.ASTERISK)));
@@ -88,7 +88,7 @@ final class ReusedClauseParser implements Parser<ReusedClauseNode> {
 					new ReusedClauseNode(
 							separator,
 							clause,
-							new SignNode<ReusedClauseNode.ReuseContents>(
+							new SignNode<>(
 									asteriskStart,
 									context.current().fix(),
 									ReusedClauseNode.ReuseContents.ASTERISK)));

@@ -70,11 +70,10 @@ final class InlineStringParser implements Parser<StringNode> {
 
 				context.acceptAll();
 
-				final SignNode<StringBound> closingBound =
-						new SignNode<StringBound>(
-								closingStart,
-								context.current().fix(),
-								this.openingBound.getType());
+				final SignNode<StringBound> closingBound = new SignNode<>(
+						closingStart,
+						context.current().fix(),
+						this.openingBound.getType());
 				final StringNode string = new StringNode(
 						this.openingBound,
 						text.toString(),
