@@ -58,8 +58,7 @@ public class CompilerIntrinsics extends Intrinsics {
 	private final Obj none;
 	private final Root root;
 
-	private final HashMap<Name, ModuleUse> modules =
-			new HashMap<Name, ModuleUse>();
+	private final HashMap<Name, ModuleUse> modules = new HashMap<>();
 	private ModuleUse mainModule;
 	private ConsoleModule consoleModule;
 
