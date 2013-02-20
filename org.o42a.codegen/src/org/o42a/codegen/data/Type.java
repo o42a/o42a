@@ -186,7 +186,7 @@ public abstract class Type<S extends StructOp<S>>
 	}
 
 	final SubData<S> setGlobal(Global<S, ?> global) {
-		return this.data = new GlobalStructData<S>(global, this);
+		return this.data = new GlobalStructData<>(global, this);
 	}
 
 	final DataAllocation<S> getAllocation() {
@@ -211,7 +211,7 @@ public abstract class Type<S extends StructOp<S>>
 		}
 
 		typeInstance.data =
-				new TypeInstanceData<S>(enclosing, id, typeInstance, content);
+				new TypeInstanceData<>(enclosing, id, typeInstance, content);
 
 		return typeInstance;
 	}
@@ -233,13 +233,13 @@ public abstract class Type<S extends StructOp<S>>
 		}
 
 		typeInstance.data =
-				new GlobalInstanceData<S>(global, typeInstance, content);
+				new GlobalInstanceData<>(global, typeInstance, content);
 
 		return typeInstance;
 	}
 
 	final SubData<S> setStruct(SubData<?> enclosing, ID name) {
-		return this.data = new StructData<S>(enclosing, this, name);
+		return this.data = new StructData<>(enclosing, this, name);
 	}
 
 	final SubData<S> getInstanceData() {
@@ -260,7 +260,7 @@ public abstract class Type<S extends StructOp<S>>
 	}
 
 	private final SubData<S> initTypeData(Generator generator) {
-		this.data = new TypeData<S>(generator, this);
+		this.data = new TypeData<>(generator, this);
 		allocateTypeDependencies(generator);
 		return this.data;
 	}

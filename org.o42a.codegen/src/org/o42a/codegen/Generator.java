@@ -38,8 +38,7 @@ public abstract class Generator {
 
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
-	private final HashMap<Class<?>, Object> features =
-			new HashMap<Class<?>, Object>();
+	private final HashMap<Class<?>, Object> features = new HashMap<>();
 	private boolean proxied;
 
 	Generator() {

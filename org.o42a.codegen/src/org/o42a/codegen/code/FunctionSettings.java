@@ -48,8 +48,7 @@ public final class FunctionSettings
 			ID id,
 			Signature<F> signature) {
 
-		final Function<F> function =
-				new Function<F>(this, id, signature, null);
+		final Function<F> function = new Function<>(this, id, signature, null);
 
 		functions().addFunction(id, signature, function.getPointer());
 
@@ -62,7 +61,7 @@ public final class FunctionSettings
 			FunctionBuilder<F> builder) {
 
 		final Function<F> function =
-				new Function<F>(this, id, signature, builder);
+				new Function<>(this, id, signature, builder);
 
 		functions().addFunction(function);
 
