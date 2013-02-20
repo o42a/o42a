@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Test Framework Build Script
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2011-2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,12 +22,12 @@
 <project name="org.o42a.lib.test" default="package">
 
 	<filelist id="project.deps" dir="..">
-		<file name="org.o42a.common"/>
+		<file name="org.o42a.root"/>
 	</filelist>
 
 	<property
 		name="compile.deps"
-		value="org.o42a.util,org.o42a.analysis,org.o42a.codegen,org.o42a.core"/>
+		value="org.o42a.util,org.o42a.analysis,org.o42a.codegen,org.o42a.core,org.o42a.common"/>
 
 	<import file="../build/module.build.xml"/>
 	

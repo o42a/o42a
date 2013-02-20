@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Root Object Definition
     Copyright (C) 2011-2013 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.adapter;
+package org.o42a.root.adapter;
 
-import static org.o42a.common.adapter.ParseWithRadixFunc.PARSE_WITH_RADIX;
+import static org.o42a.root.adapter.ParseWithRadixFunc.PARSE_WITH_RADIX;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;

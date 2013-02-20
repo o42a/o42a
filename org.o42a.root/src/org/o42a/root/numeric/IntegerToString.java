@@ -21,7 +21,6 @@ package org.o42a.root.numeric;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.common.adapter.ToString;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
@@ -29,6 +28,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.root.adapter.ToString;
 
 
 @SourcePath(relativeTo = IntegerValueTypeObject.class, value = "@string.o42a")

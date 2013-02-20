@@ -5,4 +5,5 @@ Bundle-SymbolicName: org.o42a.root
 Bundle-Version: 0.2.6
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.o42a.common;bundle-version="0.2.6"
-Export-Package: org.o42a.root
+Export-Package: org.o42a.root,
+ org.o42a.root.adapter

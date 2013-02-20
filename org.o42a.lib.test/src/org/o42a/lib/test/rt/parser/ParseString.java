@@ -19,7 +19,6 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import org.o42a.common.adapter.ByString;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;
@@ -36,6 +35,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.lib.test.TestModule;
+import org.o42a.root.adapter.ByString;
 import org.o42a.util.fn.Cancelable;
 
 

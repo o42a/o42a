@@ -19,7 +19,6 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import org.o42a.common.adapter.IntegerByString;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
@@ -28,6 +27,7 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.lib.test.TestModule;
+import org.o42a.root.adapter.IntegerByString;
 
 
 @SourcePath(relativeTo = TestModule.class, value = "parser/integer.o42a")
