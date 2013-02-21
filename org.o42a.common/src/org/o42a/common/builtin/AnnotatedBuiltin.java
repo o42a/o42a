@@ -23,6 +23,7 @@ import org.o42a.common.object.AnnotatedObject;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.value.TypeParameters;
 
 
 public abstract class AnnotatedBuiltin
@@ -36,6 +37,11 @@ public abstract class AnnotatedBuiltin
 	@Override
 	public boolean isConstantBuiltin() {
 		return false;
+	}
+
+	@Override
+	public TypeParameters<?> getDefTypeParameters() {
+		return type().getParameters();
 	}
 
 	@Override

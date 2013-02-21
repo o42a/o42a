@@ -49,6 +49,12 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public TypeParameters<T> getDefTypeParameters() {
+		return (TypeParameters<T>) type().getParameters();
+	}
+
+	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 
 		final Value<?> objectValue = object().value(resolver);
@@ -71,12 +77,7 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 			return type().getParameters().falseValue();
 		}
 
-		return getTypeParameters().compilerValue(converted);
-	}
-
-	@SuppressWarnings("unchecked")
-	private TypeParameters<T> getTypeParameters() {
-		return (TypeParameters<T>) type().getParameters();
+		return getDefTypeParameters().compilerValue(converted);
 	}
 
 	@Override

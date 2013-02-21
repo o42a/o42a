@@ -27,12 +27,15 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 
 
 public interface Builtin extends LocationInfo {
 
 	boolean isConstantBuiltin();
+
+	TypeParameters<?> getDefTypeParameters();
 
 	Obj toObject();
 
