@@ -19,8 +19,11 @@
 */
 package org.o42a.root.array;
 
+import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
+import static org.o42a.core.value.array.ArrayValueType.ARRAY;
 import static org.o42a.root.array.ArrayOfDuplicatesFunc.ARRAY_OF_DUPLICATES;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -29,6 +32,8 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.common.builtin.AnnotatedBuiltin;
+import org.o42a.common.macro.type.TypeParamMacroDep;
+import org.o42a.common.macro.type.TypeParameterMemberKey;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;
@@ -41,8 +46,12 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.*;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.array.Array;
 import org.o42a.root.Root;
 import org.o42a.util.fn.Cancelable;
 
@@ -57,20 +66,43 @@ public class Duplicates extends AnnotatedBuiltin {
 
 	private Ref size;
 	private Ref duplicate;
+	private TypeParameters<Array> typeParameters;
 
 	public Duplicates(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 
 	@Override
+	public TypeParameters<Array> getBuiltinTypeParameters() {
+		if (this.typeParameters != null) {
+			return this.typeParameters;
+		}
+
+		final MemberKey itemTypeKey =
+				ARRAY.itemTypeKey(getContext().getIntrinsics());
+		final BoundPath itemTypePath =
+				expandMacro(itemTypeKey.toPath().bind(this, getScope()));
+		final TypeParamMacroDep macroDep = new TypeParamMacroDep(
+				null,
+				new TypeParameterMemberKey(itemTypeKey),
+				0);
+		final TypeRef itemTypeRef =
+				itemTypePath.target(distribute()).consume(macroDep).toTypeRef();
+
+		return this.typeParameters = ARRAY.typeParameters(itemTypeRef);
+	}
+
+	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return type().getParameters()
+		return getBuiltinTypeParameters()
 				.upgradeScope(resolver.getScope())
 				.runtimeValue();
 	}
 
 	@Override
 	public void resolveBuiltin(FullResolver resolver) {
+		getBuiltinTypeParameters().resolveAll(
+				resolver.setRefUsage(TYPE_PARAMETER_REF_USAGE));
 		size().resolveAll(resolver);
 		duplicate().resolveAll(resolver);
 	}
