@@ -20,6 +20,8 @@
 package org.o42a.core.object.meta;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import org.o42a.core.Scope;
@@ -130,17 +132,26 @@ public abstract class MetaDep {
 		final Obj enclosingObject = enclosingScope.toObject();
 
 		if (enclosingObject != null) {
-			return this.parentPath =
-					scope.getEnclosingScopePath().bind(scope, scope);
+			return setParentPath(
+					scope.getEnclosingScopePath().bind(scope, scope));
 		}
 
 		assert enclosingScope.toMember() != null :
 			"Wrong enclosing scope: " + enclosingScope;
 
-		return this.parentPath =
+		return setParentPath(
 				scope.getEnclosingScopePath()
 				.append(enclosingScope.getEnclosingScopePath())
-				.bind(scope, scope);
+				.bind(scope, scope));
+	}
+
+	private BoundPath setParentPath(BoundPath path) {
+
+		final Scope scope = getDeclaredIn().getObject().getScope();
+
+		path.resolve(fullPathResolver(scope, dummyUser(), TEMP_REF_USAGE));
+
+		return this.parentPath = path;
 	}
 
 	private final Nesting nesting() {
