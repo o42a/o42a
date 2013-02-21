@@ -40,7 +40,7 @@ public abstract class AnnotatedBuiltin
 	}
 
 	@Override
-	public TypeParameters<?> getDefTypeParameters() {
+	public TypeParameters<?> getBuiltinTypeParameters() {
 		return type().getParameters();
 	}
 

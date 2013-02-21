@@ -50,7 +50,7 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public TypeParameters<T> getDefTypeParameters() {
+	public TypeParameters<T> getBuiltinTypeParameters() {
 		return (TypeParameters<T>) type().getParameters();
 	}
 
@@ -77,7 +77,7 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 			return type().getParameters().falseValue();
 		}
 
-		return getDefTypeParameters().compilerValue(converted);
+		return getBuiltinTypeParameters().compilerValue(converted);
 	}
 
 	@Override
