@@ -19,20 +19,16 @@
 */
 package org.o42a.compiler.ip.type.param;
 
-import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
-
+import org.o42a.common.macro.type.TypeParamMacroDep;
+import org.o42a.common.macro.type.TypeParameterKey;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.Scope;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRefParameters;
-import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.macro.MacroConsumer;
-import org.o42a.util.log.LogRecord;
-import org.o42a.util.log.Logger;
 
 
 public class TypeParamConsumer extends TypeConsumer implements Consumer {
@@ -77,81 +73,7 @@ public class TypeParamConsumer extends TypeConsumer implements Consumer {
 			Ref macroRef,
 			PathTemplate template,
 			Ref expansion) {
-		return new TypeParamMacroConsumer(this.macroDep, macroRef, template);
-	}
-
-	private static final class TypeParamMacroConsumer
-			implements MacroConsumer {
-
-		private final TypeParamMacroDep macroDep;
-		private final Ref macroRef;
-		private final PathTemplate template;
-		private final TypeParamExpansionLogger expansionLogger;
-		private boolean dependencyRegistered;
-
-		TypeParamMacroConsumer(
-				TypeParamMacroDep macroDep,
-				Ref macroRef,
-				PathTemplate template) {
-			this.macroDep = macroDep;
-			this.macroRef = macroRef;
-			this.template = template;
-			this.expansionLogger = new TypeParamExpansionLogger(macroDep);
-		}
-
-		@Override
-		public ScopedLogger getExpansionLogger() {
-			return this.expansionLogger;
-		}
-
-		@Override
-		public Ref expandMacro(Ref macroExpansion) {
-			if (this.dependencyRegistered) {
-				return macroExpansion;
-			}
-			this.dependencyRegistered = true;
-
-			final TypeParamMetaDep dep =
-					this.macroDep.buildDep(this.macroRef, this.template);
-
-			if (dep != null) {
-				dep.register();
-			}
-
-			return macroExpansion;
-		}
-
-	}
-
-	private static final class TypeParamExpansionLogger extends ScopedLogger {
-
-		private final TypeParamMacroDep dep;
-
-		TypeParamExpansionLogger(TypeParamMacroDep dep) {
-			this.dep = dep;
-		}
-
-		@Override
-		public void log(
-				Scope scope,
-				Logger logger,
-				LogRecord message) {
-			DEFAULT_MACRO_EXPANSION_LOGGER.log(
-					reportScope(scope),
-					logger,
-					message);
-		}
-
-		private Scope reportScope(Scope scope) {
-
-			final Nesting nesting = this.dep.getNesting();
-
-			if (nesting == null) {
-				return scope;
-			}
-
-			return nesting.findObjectIn(scope).getScope();
-		}
+		return this.macroDep.expandMacro(macroRef, template);
 	}
 
 }

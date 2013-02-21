@@ -8,6 +8,7 @@ Require-Bundle: org.o42a.core;bundle-version="0.2.6";visibility:=reexport,
  org.o42a.codegen;bundle-version="0.2.6";visibility:=reexport
 Export-Package: org.o42a.common.builtin,
  org.o42a.common.macro,
+ org.o42a.common.macro.type,
  org.o42a.common.object,
  org.o42a.common.ref,
  org.o42a.common.source

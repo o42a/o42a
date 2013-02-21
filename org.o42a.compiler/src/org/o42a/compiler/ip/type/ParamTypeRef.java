@@ -34,9 +34,7 @@ public final class ParamTypeRef {
 		this(typeRef, null);
 	}
 
-	public ParamTypeRef(
-			TypeRef typeRef,
-			TypeRefParameters parameters) {
+	public ParamTypeRef(TypeRef typeRef, TypeRefParameters parameters) {
 		assert typeRef != null :
 			"Type not specified";
 		this.typeRef = typeRef;

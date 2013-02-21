@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012,2013 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,31 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.param;
+package org.o42a.common.macro.type;
 
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.value.TypeParameters;
+import org.o42a.core.object.Meta;
+import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.object.meta.NestedMetaDep;
 
 
-public class TypeParameterMemberKey implements TypeParameterKey {
+final class TypeParametersUpdate extends NestedMetaDep {
 
-	private final MemberKey parameterKey;
-
-	public TypeParameterMemberKey(MemberKey parameterKey) {
-		this.parameterKey = parameterKey;
+	TypeParametersUpdate(TypeParamMetaDep parent, Meta declaredIn) {
+		super(parent, declaredIn);
 	}
 
 	@Override
-	public MemberKey typeParameterKey(TypeParameters<?> parameters) {
-		return this.parameterKey;
+	public MetaDep nestedDep() {
+		return null;
 	}
 
 	@Override
-	public String toString() {
-		if (this.parameterKey == null) {
-			return super.toString();
-		}
-		return this.parameterKey.toString();
+	protected boolean changed(Meta meta) {
+
+		final TypeParamMetaDep parent =
+				(TypeParamMetaDep) parentDep();
+
+		return parent.typeParamChanged(meta);
 	}
 
 }

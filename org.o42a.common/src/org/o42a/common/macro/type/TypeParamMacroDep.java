@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012,2013 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,29 +17,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.param;
+package org.o42a.common.macro.type;
 
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.value.macro.MacroConsumer;
 import org.o42a.core.value.macro.MacroDep;
 
 
-final class TypeParamMacroDep extends MacroDep<TypeParamMetaDep> {
+public final class TypeParamMacroDep
+		extends MacroDep<TypeParamMetaDep>
+		implements Consumer {
 
 	private final Nesting nesting;
 	private final TypeParameterKey parameterKey;
 	private final int depth;
 
-	TypeParamMacroDep(
+	public TypeParamMacroDep(
 			Nesting nesting,
 			TypeParameterKey parameterKey,
 			int depth) {
 		this.nesting = nesting;
 		this.parameterKey = parameterKey;
 		this.depth = depth;
+	}
+
+	public MacroConsumer expandMacro(
+			Ref macroRef,
+			PathTemplate template) {
+		return new TypeParamMacroConsumer(this, macroRef, template);
+	}
+
+	@Override
+	public final MacroConsumer expandMacro(
+			Ref macroRef,
+			PathTemplate template,
+			Ref expansion) {
+		return expandMacro(macroRef, template);
 	}
 
 	public final Nesting getNesting() {
