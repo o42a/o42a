@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.type.param;
 
+import org.o42a.common.macro.type.TypeParameterKey;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.value.TypeParameters;
 
