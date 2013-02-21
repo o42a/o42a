@@ -51,7 +51,7 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	}
 
 	@Override
-	public TypeParameters<?> getDefTypeParameters() {
+	public TypeParameters<?> getBuiltinTypeParameters() {
 		return type().getParameters();
 	}
 

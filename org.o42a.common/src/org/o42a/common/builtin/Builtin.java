@@ -35,7 +35,7 @@ public interface Builtin extends LocationInfo {
 
 	boolean isConstantBuiltin();
 
-	TypeParameters<?> getDefTypeParameters();
+	TypeParameters<?> getBuiltinTypeParameters();
 
 	Obj toObject();
 
