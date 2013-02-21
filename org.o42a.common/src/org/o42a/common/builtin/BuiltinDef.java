@@ -87,7 +87,7 @@ public class BuiltinDef extends Def {
 
 	@Override
 	protected TypeParameters<?> typeParameters(Scope scope) {
-		return this.builtin.toObject().type().getParameters();
+		return this.builtin.getDefTypeParameters();
 	}
 
 	@Override

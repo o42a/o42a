@@ -26,6 +26,7 @@ import org.o42a.core.object.ObjectScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 
 
@@ -47,6 +48,11 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	@Override
 	public boolean isConstantBuiltin() {
 		return false;
+	}
+
+	@Override
+	public TypeParameters<?> getDefTypeParameters() {
+		return type().getParameters();
 	}
 
 	@Override
