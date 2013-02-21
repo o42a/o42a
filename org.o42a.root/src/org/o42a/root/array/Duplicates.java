@@ -194,7 +194,7 @@ public class Duplicates extends AnnotatedBuiltin {
 				duplicate.toData(null, code));
 		result.holder().hold(code);
 
-		dirs.returnValue(result);
+		dirs.returnValue(code, result);
 
 		dupDirs.done();
 		sizeDirs.done();
