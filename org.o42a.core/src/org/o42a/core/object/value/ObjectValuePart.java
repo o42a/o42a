@@ -32,6 +32,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.Defs;
 import org.o42a.core.ref.FullResolver;
+import org.o42a.core.ref.RefUser;
 
 
 public final class ObjectValuePart implements UserInfo {
@@ -40,6 +41,7 @@ public final class ObjectValuePart implements UserInfo {
 	private final boolean claim;
 	private Usable<ValuePartUsage> uses;
 	private Usable<SimpleUsage> ancestorDefsUpdates;
+	private RefUser refUser;
 
 	ObjectValuePart(ObjectValue objectValue, boolean claim) {
 		this.objectValue = objectValue;
@@ -109,7 +111,7 @@ public final class ObjectValuePart implements UserInfo {
 		return getObject()
 				.getScope()
 				.resolver()
-				.fullResolver(uses(), VALUE_REF_USAGE);
+				.fullResolver(refUser(), VALUE_REF_USAGE);
 	}
 
 	public final void wrapBy(ObjectValuePart wrapPart) {
@@ -156,6 +158,13 @@ public final class ObjectValuePart implements UserInfo {
 				VALUE_PART_USAGE);
 
 		return this.uses;
+	}
+
+	private RefUser refUser() {
+		if (this.refUser != null) {
+			return this.refUser;
+		}
+		return this.refUser = new RefUser(uses(), getObjectValue().rtUses());
 	}
 
 	private final Usable<SimpleUsage> ancestorDefsUpdateUses() {

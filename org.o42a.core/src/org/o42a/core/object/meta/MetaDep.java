@@ -21,6 +21,7 @@ package org.o42a.core.object.meta;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
+import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
@@ -74,7 +75,7 @@ public abstract class MetaDep {
 		}
 
 		final PathResolution parentResolution = parentPath.resolve(
-				pathResolver(meta.getObject().getScope(), dummyUser()));
+				pathResolver(meta.getObject().getScope(), dummyRefUser()));
 		final Meta parentMeta = parentResolution.getObject().meta();
 
 		if (!meta.getParentMeta().is(parentMeta)) {
@@ -149,7 +150,7 @@ public abstract class MetaDep {
 
 		final Scope scope = getDeclaredIn().getObject().getScope();
 
-		path.resolve(fullPathResolver(scope, dummyUser(), TEMP_REF_USAGE));
+		path.resolve(fullPathResolver(scope, dummyRefUser(), TEMP_REF_USAGE));
 
 		return this.parentPath = path;
 	}

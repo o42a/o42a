@@ -19,11 +19,9 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
-import org.o42a.analysis.use.User;
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.common.RoleResolver;
@@ -78,17 +76,17 @@ public class Resolver implements LocationInfo {
 	}
 
 	public final PathResolver toPathResolver() {
-		return pathResolver(getScope(), dummyUser());
+		return pathResolver(getScope(), dummyRefUser());
 	}
 
 	@SuppressWarnings("unchecked")
-	public FullResolver fullResolver(UserInfo user, RefUsage usage) {
+	public FullResolver fullResolver(RefUser user, RefUsage usage) {
 
 		final Resolver resolver =
 				this.factory.walkingResolver(
 						new RoleResolver(this, usage.getRole()));
 
-		return factory().createFullResolver(resolver, user.toUser(), usage);
+		return factory().createFullResolver(resolver, user, usage);
 	}
 
 	@Override
@@ -119,9 +117,9 @@ public class Resolver implements LocationInfo {
 		@Override
 		protected FullResolver createFullResolver(
 				Resolver resolver,
-				User<?> user,
-				RefUsage refUsage) {
-			return new FullResolver(resolver, user, refUsage);
+				RefUser user,
+				RefUsage usage) {
+			return new FullResolver(resolver, user, usage);
 		}
 
 	}

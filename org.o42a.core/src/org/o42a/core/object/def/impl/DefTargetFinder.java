@@ -19,7 +19,7 @@
 */
 package org.o42a.core.object.def.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
@@ -61,7 +61,7 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 		final DefTargetFinder finder = new DefTargetFinder(getScope());
 
 		path.walk(
-				pathResolver(path.getOrigin().getScope(), dummyUser()),
+				pathResolver(path.getOrigin().getScope(), dummyRefUser()),
 				finder);
 
 		return finder.getTarget();

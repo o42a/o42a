@@ -170,7 +170,7 @@ public class ConsoleModule extends AnnotatedModule {
 			final FullResolver resolver =
 					this.main.getScope()
 					.resolver()
-					.fullResolver(this.user, VALUE_REF_USAGE);
+					.fullResolver(new RefUser(this.user), VALUE_REF_USAGE);
 
 			this.main.resolveAll(resolver);
 		}

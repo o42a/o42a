@@ -21,27 +21,25 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 
-import org.o42a.analysis.use.User;
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.source.*;
 
 
-public class FullResolver implements UserInfo, LocationInfo {
+public class FullResolver implements LocationInfo {
 
 	private final Resolver resolver;
-	private final User<?> user;
-	private final RefUsage refUsage;
+	private final RefUser user;
+	private final RefUsage usage;
 
 	protected FullResolver(
 			Resolver resolver,
-			User<?> user,
-			RefUsage refUsage) {
+			RefUser user,
+			RefUsage usage) {
 		this.resolver = resolver;
 		this.user = user;
-		this.refUsage = refUsage;
+		this.usage = usage;
 	}
 
 	@Override
@@ -65,12 +63,16 @@ public class FullResolver implements UserInfo, LocationInfo {
 		return this.resolver;
 	}
 
-	public final RefUsage getRefUsage() {
-		return this.refUsage;
+	public RefUser refUser() {
+		return this.user;
+	}
+
+	public final RefUsage refUsage() {
+		return this.usage;
 	}
 
 	public FullResolver setRefUsage(RefUsage refUsage) {
-		if (getRefUsage() == refUsage) {
+		if (refUsage() == refUsage) {
 			return this;
 		}
 		return getResolver().fullResolver(this.user, refUsage);
@@ -80,13 +82,8 @@ public class FullResolver implements UserInfo, LocationInfo {
 		return getResolver().getLogger();
 	}
 
-	@Override
-	public final User<?> toUser() {
-		return this.user;
-	}
-
 	public final PathResolver toPathResolver() {
-		return fullPathResolver(getScope(), this, getRefUsage());
+		return fullPathResolver(getScope(), refUser(), refUsage());
 	}
 
 	@Override
@@ -95,8 +92,8 @@ public class FullResolver implements UserInfo, LocationInfo {
 			return super.toString();
 		}
 		return "FullResolver[" + getScope()
-				+ " by " + toUser()
-				+ " for " + getRefUsage()  + ']';
+				+ " by " + refUser()
+				+ " for " + refUsage()  + ']';
 	}
 
 }

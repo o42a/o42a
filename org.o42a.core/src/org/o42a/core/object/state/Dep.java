@@ -159,19 +159,20 @@ public final class Dep extends Step implements SubID {
 		final LocalResolver localResolver = enclosingLocal.resolver();
 
 		if (resolver.isFullResolution()) {
-			compileTimeOnly(resolver.getUsage().isCompileTimeOnly());
+			compileTimeOnly(resolver.refUsage().isCompileTimeOnly());
 			uses().useBy(resolver);
 
 			final RefUsage usage;
 
 			if (resolver.isLastStep()) {
 				// Resolve only the last value.
-				usage = resolver.getUsage();
+				usage = resolver.refUsage();
 			} else {
 				usage = CONTAINER_REF_USAGE;
 			}
 
-			getRef().resolveAll(localResolver.fullResolver(resolver, usage));
+			getRef().resolveAll(
+					localResolver.fullResolver(resolver.refUser(), usage));
 
 			final ObjectDeps deps = getDeclaredIn().deps();
 

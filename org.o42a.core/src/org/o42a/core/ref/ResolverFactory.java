@@ -21,7 +21,6 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
-import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathWalker;
 
@@ -67,7 +66,7 @@ public abstract class ResolverFactory<
 
 	protected abstract F createFullResolver(
 			R resolver,
-			User<?> user,
-			RefUsage refUsage);
+			RefUser user,
+			RefUsage usage);
 
 }

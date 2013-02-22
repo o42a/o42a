@@ -168,7 +168,7 @@ public final class ParentObjectStep
 			return null;
 		}
 
-		return member.substance(resolver);
+		return member.substance(resolver.refUser());
 	}
 
 	private Container reportToWalker(

@@ -83,7 +83,7 @@ final class KeptValueDefiner extends Definer {
 
 		final Obj object = resolver.getScope().toObject();
 
-		object.type().useBy(resolver);
+		object.type().useBy(resolver.refUser());
 	}
 
 	@Override

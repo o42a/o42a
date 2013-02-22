@@ -27,6 +27,7 @@ import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
+import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.Collection;
@@ -814,7 +815,7 @@ public abstract class Obj
 		}
 		resolveAllMembers();
 		validateImplicitSubClauses(getExplicitClauses());
-		value().resolveAll(dummyUser());
+		value().resolveAll(dummyRefUser());
 	}
 
 	protected void fullyResolveDefinitions() {

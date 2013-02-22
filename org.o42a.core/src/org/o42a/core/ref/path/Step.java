@@ -67,7 +67,7 @@ public abstract class Step {
 	 * previous step.
 	 *
 	 * <p>This is applied by the previous step in the path. For the last step of
-	 * the path {@link PathResolver#getUsage()} will be applied.</p>
+	 * the path {@link PathResolver#refUsage()} will be applied.</p>
 	 *
 	 * @return preceding object usage.
 	 */
