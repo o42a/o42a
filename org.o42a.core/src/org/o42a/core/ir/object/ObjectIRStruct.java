@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectIRBody.BODY_ID;
 import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
@@ -116,7 +115,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		final Sample[] samples = objectType.getSamples();
 
 		for (int i = samples.length - 1; i >= 0; --i) {
-			deriveBodyIRs(data, samples[i].typeObject(dummyUser()), false);
+			deriveBodyIRs(data, samples[i].getObject(), false);
 		}
 
 		allocateBodyIR(data, this.mainBodyIR, null, false);

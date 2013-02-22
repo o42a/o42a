@@ -325,7 +325,7 @@ public abstract class Obj
 			return ancestor.getType().hasSubClauses();
 		}
 		for (Sample sample : type().getSamples()) {
-			if (sample.typeObject(dummyUser()).hasSubClauses()) {
+			if (sample.getObject().hasSubClauses()) {
 				return true;
 			}
 		}
@@ -350,7 +350,7 @@ public abstract class Obj
 		for (Sample sample : type().getSamples()) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
-					sample.typeObject(dummyUser()).getImplicitClauses());
+					sample.getObject().getImplicitClauses());
 		}
 
 		final TypeRef ancestor = type().getAncestor();
@@ -780,7 +780,7 @@ public abstract class Obj
 		}
 
 		final Sample sample = samples[0];
-		final Obj sampleObject = sample.typeObject(dummyUser());
+		final Obj sampleObject = sample.getObject();
 
 		if (sampleObject == null) {
 			return null;

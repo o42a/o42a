@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.impl.MemberPropagatedFromID.memberScopePrefix;
 
 import java.util.ArrayList;
@@ -243,7 +242,7 @@ public abstract class Member extends Placed {
 		for (Sample containerSample : containerSamples) {
 
 			final Member sampleMember =
-					containerSample.typeObject(dummyUser())
+					containerSample.getObject()
 					.member(getMemberKey());
 
 			if (sampleMember == null) {

@@ -21,28 +21,22 @@ package org.o42a.core.object;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.impl.ObjectResolution.NOT_RESOLVED;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
-import static org.o42a.core.object.type.TypeUsage.RUNTIME_TYPE_USAGE;
-import static org.o42a.core.object.type.TypeUsage.STATIC_TYPE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
-import static org.o42a.core.object.value.ValueUsage.RUNTIME_VALUE_USAGE;
-import static org.o42a.core.object.value.ValueUsage.STATIC_VALUE_USAGE;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.*;
 
-import org.o42a.analysis.Analyzer;
-import org.o42a.analysis.use.*;
+import org.o42a.analysis.use.Usable;
+import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
-import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ObjectTypeParameters;
@@ -50,12 +44,11 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 
 
-public final class ObjectType implements UserInfo {
+public final class ObjectType {
 
 	private final Obj object;
 	private Obj lastDefinition;
 	private TypeParameters<?> parameters;
-	private Usable<TypeUsage> uses;
 	private Usable<DerivationUsage> derivationUses;
 	private LinkUses linkUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
@@ -95,28 +88,8 @@ public final class ObjectType implements UserInfo {
 				|| !object.meta().isUpdated();
 	}
 
-	@Override
-	public final User<TypeUsage> toUser() {
-		return uses().toUser();
-	}
-
 	public final RefUser refUser() {
-		return new RefUser(uses(), uses().usageUser(RUNTIME_TYPE_USAGE));
-	}
-
-	public final UseFlag selectUse(
-			Analyzer analyzer,
-			UseSelector<TypeUsage> selector) {
-		if (this.uses == null) {
-			return analyzer.toUseCase().unusedFlag();
-		}
-		return this.uses.selectUse(analyzer, selector);
-	}
-
-	public final boolean isUsed(
-			Analyzer analyzer,
-			UseSelector<TypeUsage> selector) {
-		return selectUse(analyzer, selector).isUsed();
+		return new RefUser(derivationUses(), rtDerivation());
 	}
 
 	public final Ascendants getAscendants() {
@@ -198,23 +171,9 @@ public final class ObjectType implements UserInfo {
 		return this.allDerivatives;
 	}
 
-	public final ObjectType useBy(UserInfo user) {
-		if (!user.toUser().isDummy()) {
-			uses().useBy(
-					user,
-					!getObject().meta().isUpdated()
-					? RUNTIME_TYPE_USAGE : STATIC_TYPE_USAGE);
-		}
-		return this;
-	}
-
 	public final ObjectType useBy(RefUser user) {
-		if (!user.toUser().isDummy()) {
-			useBy(user.toUser());
-			if (user.hasRtUser()) {
-				uses().useBy(user.rtUser(), RUNTIME_TYPE_USAGE);
-				derivationUses().useBy(user.rtUser(), RUNTIME_DERIVATION_USAGE);
-			}
+		if (user.hasRtUser()) {
+			derivationUses().useBy(user.rtUser(), RUNTIME_DERIVATION_USAGE);
 		}
 		return this;
 	}
@@ -264,7 +223,6 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public final void wrapBy(ObjectType type) {
-		useBy(type);
 		derivationUses().useBy(type.rtDerivation(), RUNTIME_DERIVATION_USAGE);
 	}
 
@@ -380,32 +338,6 @@ public final class ObjectType implements UserInfo {
 		return applyExplicitParameters(parameters);
 	}
 
-	private final Usable<TypeUsage> uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			this.uses = cloneOf.type().uses();
-		} else {
-			this.uses = TypeUsage.usable(this);
-
-			final Usable<ValueUsage> valueUses = getObject().value().uses();
-
-			this.uses.useBy(
-					valueUses.usageUser(RUNTIME_VALUE_USAGE),
-					RUNTIME_TYPE_USAGE);
-			this.uses.useBy(
-					valueUses.usageUser(STATIC_VALUE_USAGE),
-					STATIC_TYPE_USAGE);
-		}
-		getObject().content().useBy(this.uses);
-
-		return this.uses;
-	}
-
 	private final Usable<DerivationUsage> derivationUses() {
 		if (this.derivationUses != null) {
 			return this.derivationUses;
@@ -513,7 +445,7 @@ public final class ObjectType implements UserInfo {
 			Sample[] samples) {
 		for (Sample sample : samples) {
 
-			final ObjectType type = sample.type(dummyUser());
+			final ObjectType type = sample.getObject().type();
 
 			for (Map.Entry<Scope, Derivation> e
 					: type.allAscendants().entrySet()) {
@@ -604,9 +536,6 @@ public final class ObjectType implements UserInfo {
 				&& sample.getOverriddenMember() != null) {
 			// Run time field override means the owner object
 			// can be derived at run time.
-			enclosingObject.type()
-			.uses()
-			.useBy(derived.type().rtDerivation(), RUNTIME_TYPE_USAGE);
 			return;
 		}
 

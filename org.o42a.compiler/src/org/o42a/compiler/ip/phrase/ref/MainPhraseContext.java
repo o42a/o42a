@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.phrase.ref;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.phrase.part.NextClause.clauseNotFound;
 import static org.o42a.core.member.MemberName.clauseName;
 
@@ -178,7 +177,7 @@ final class MainPhraseContext extends PhraseContext {
 			for (Sample sample : implicitAscendants.getSamples()) {
 
 				final NextClause found = findClause(
-						sample.typeObject(dummyUser()),
+						sample.getObject(),
 						location,
 						memberId,
 						what);
