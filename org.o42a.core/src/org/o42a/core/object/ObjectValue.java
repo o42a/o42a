@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.value.ValueUsage.*;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
@@ -182,16 +181,8 @@ public final class ObjectValue extends ObjectValueParts {
 			definitions = emptyDefinitions(object, object.getScope());
 		}
 
-		final ObjectType type;
-
-		if (scope.is(object.getScope())) {
-			type = object.type().useBy(dummyUser());
-		} else {
-			type = object.type().useBy(scope.toObject().value().uses());
-		}
-
 		boolean hasExplicitAncestor =
-				type.getAscendants().getExplicitAncestor() != null;
+				object.type().getAscendants().getExplicitAncestor() != null;
 		final Sample[] samples = object.type().getSamples();
 
 		for (int i = samples.length - 1; i >= 0; --i) {

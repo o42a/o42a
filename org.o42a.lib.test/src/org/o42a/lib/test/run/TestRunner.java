@@ -68,7 +68,7 @@ final class TestRunner extends ConstructedObject {
 
 		final ObjectType testType = module.test(user);
 
-		if (test.type().useBy(user).derivedFrom(testType)) {
+		if (test.type().derivedFrom(testType)) {
 			run(statements, testName(statements, field, test), field);
 			return;
 		}

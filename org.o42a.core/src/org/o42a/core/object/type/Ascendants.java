@@ -432,8 +432,8 @@ public class Ascendants
 		for (int i = containerSamples.length - 1; i >= 0; --i) {
 
 			final Member overridden =
-					containerSamples[i].type(dummyUser())
-					.getObject().member(member.getMemberKey());
+					containerSamples[i].getObject()
+					.member(member.getMemberKey());
 
 			if (overridden != null) {
 				ascendants = ascendants.addMemberOverride(overridden);

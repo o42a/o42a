@@ -19,13 +19,11 @@
 */
 package org.o42a.core.object.type;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -74,14 +72,6 @@ public abstract class Sample extends Scoped implements Derivative {
 	@Override
 	public final Inheritor toInheritor() {
 		return null;
-	}
-
-	public final ObjectType type(UserInfo user) {
-		return getObject().type().useBy(user);
-	}
-
-	public final Obj typeObject(UserInfo user) {
-		return type(user).getObject();
 	}
 
 	public final void deriveMembers(ObjectMembers members) {

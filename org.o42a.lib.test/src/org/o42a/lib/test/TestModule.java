@@ -51,7 +51,7 @@ public class TestModule extends AnnotatedModule {
 	}
 
 	public ObjectType test(UserInfo user) {
-		return objectById(user, TEST_MEMBER).type().useBy(user);
+		return objectById(user, TEST_MEMBER).type();
 	}
 
 	private Obj objectById(UserInfo user, MemberId memberId) {
