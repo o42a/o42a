@@ -114,7 +114,7 @@ final class KeptValueDef extends Def {
 
 		final Obj object = resolver.getScope().toObject();
 
-		object.type().useBy(resolver);
+		object.type().useBy(resolver.refUser());
 	}
 
 }

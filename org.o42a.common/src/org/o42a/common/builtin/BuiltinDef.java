@@ -102,7 +102,7 @@ public class BuiltinDef extends Def {
 		final Obj builtin = this.builtin.toObject();
 
 		if (builtin != object) {
-			builtin.value().resolveAll(resolver);
+			builtin.value().resolveAll(resolver.refUser());
 		}
 		object.resolveAll();
 		this.builtin.resolveBuiltin(

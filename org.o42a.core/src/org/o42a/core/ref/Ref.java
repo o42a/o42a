@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
+import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
@@ -165,7 +165,7 @@ public class Ref extends Statement {
 			this.iface.resolveAll(
 					getScope()
 					.resolver()
-					.fullResolver(dummyUser(), TYPE_PARAMETER_REF_USAGE));
+					.fullResolver(dummyRefUser(), TYPE_PARAMETER_REF_USAGE));
 		}
 
 		return resolution;

@@ -43,6 +43,7 @@ import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
+import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
@@ -97,6 +98,10 @@ public final class ObjectType implements UserInfo {
 	@Override
 	public final User<TypeUsage> toUser() {
 		return uses().toUser();
+	}
+
+	public final RefUser refUser() {
+		return new RefUser(uses(), uses().usageUser(RUNTIME_TYPE_USAGE));
 	}
 
 	public final UseFlag selectUse(
@@ -199,6 +204,17 @@ public final class ObjectType implements UserInfo {
 					user,
 					!getObject().meta().isUpdated()
 					? RUNTIME_TYPE_USAGE : STATIC_TYPE_USAGE);
+		}
+		return this;
+	}
+
+	public final ObjectType useBy(RefUser user) {
+		if (!user.toUser().isDummy()) {
+			useBy(user.toUser());
+			if (user.hasRtUser()) {
+				uses().useBy(user.rtUser(), RUNTIME_TYPE_USAGE);
+				derivationUses().useBy(user.rtUser(), RUNTIME_DERIVATION_USAGE);
+			}
 		}
 		return this;
 	}

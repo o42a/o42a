@@ -27,12 +27,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.o42a.analysis.Analyzer;
-import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.RefUser;
 import org.o42a.core.source.FullResolution;
 
 
@@ -99,7 +99,7 @@ final class NormalizedPath implements NormalPath {
 	public final NormalPath done(Analyzer analyzer, boolean done) {
 
 		// Inform the doubt that the path is normalized.
-		final User<?> user = this.path.doubt(analyzer).pathNormalized();
+		final RefUser user = this.path.doubt(analyzer).pathNormalized();
 
 		if (done) {
 			// Build the normal path.
@@ -142,7 +142,7 @@ final class NormalizedPath implements NormalPath {
 		}
 	}
 
-	private NormalPath build(User<?> user) {
+	private NormalPath build(RefUser user) {
 
 		InlineStep precedingInline = null;
 		Path path;

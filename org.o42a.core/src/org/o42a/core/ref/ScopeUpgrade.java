@@ -78,8 +78,8 @@ public abstract class ScopeUpgrade {
 		}
 
 		return newResolver.fullResolver(
-				fullResolver,
-				fullResolver.getRefUsage());
+				fullResolver.refUser(),
+				fullResolver.refUsage());
 	}
 
 	public abstract ScopeUpgrade and(ScopeUpgrade other);

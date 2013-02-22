@@ -19,11 +19,7 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.analysis.use.User;
-import org.o42a.analysis.use.UserInfo;
-import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ResolverFactory;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PathWalker;
 
 
@@ -41,7 +37,7 @@ public class LocalResolver extends Resolver {
 	}
 
 	@Override
-	public final FullLocalResolver fullResolver(UserInfo user, RefUsage usage) {
+	public final FullLocalResolver fullResolver(RefUser user, RefUsage usage) {
 		return (FullLocalResolver) super.fullResolver(user, usage);
 	}
 
@@ -68,9 +64,9 @@ public class LocalResolver extends Resolver {
 		@Override
 		protected FullLocalResolver createFullResolver(
 				LocalResolver resolver,
-				User<?> user,
-				RefUsage refUsage) {
-			return new FullLocalResolver(resolver, user, refUsage);
+				RefUser user,
+				RefUsage usage) {
+			return new FullLocalResolver(resolver, user, usage);
 		}
 
 	}

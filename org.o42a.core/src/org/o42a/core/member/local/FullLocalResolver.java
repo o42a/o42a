@@ -19,15 +19,15 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.analysis.use.User;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.RefUser;
 
 
 public final class FullLocalResolver extends FullResolver {
 
-	FullLocalResolver(LocalResolver resolver, User<?> user, RefUsage refUsage) {
-		super(resolver, user, refUsage);
+	FullLocalResolver(LocalResolver resolver, RefUser user, RefUsage usage) {
+		super(resolver, user, usage);
 	}
 
 	public final LocalResolver getLocalResolver() {
@@ -49,8 +49,8 @@ public final class FullLocalResolver extends FullResolver {
 			return super.toString();
 		}
 		return "FullLocalResolver[" + getScope()
-				+ " by " + toUser()
-				+ " for " + getRefUsage()  + ']';
+				+ " by " + refUser()
+				+ " for " + refUsage()  + ']';
 	}
 
 }

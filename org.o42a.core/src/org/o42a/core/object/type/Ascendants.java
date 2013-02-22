@@ -27,7 +27,6 @@ import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import java.util.Arrays;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
@@ -39,6 +38,7 @@ import org.o42a.core.object.type.impl.ExplicitSample;
 import org.o42a.core.object.type.impl.ImplicitSample;
 import org.o42a.core.object.type.impl.MemberOverride;
 import org.o42a.core.ref.FullResolver;
+import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -246,7 +246,7 @@ public class Ascendants
 		validate();
 		validateOverriddenAncestors(objectType);
 
-		final UserInfo user = getObject().type();
+		final RefUser user = getObject().type().refUser();
 		final TypeRef ancestor = getExplicitAncestor();
 		final FullResolver resolver =
 				getScope()
