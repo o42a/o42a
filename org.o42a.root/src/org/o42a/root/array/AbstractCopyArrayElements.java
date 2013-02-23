@@ -239,6 +239,7 @@ abstract class AbstractCopyArrayElements extends AnnotatedBuiltin {
 				toVal.rawValue(null, code).load(null, code),
 				targetVal,
 				targetStartVal.rawValue(null, code).load(null, code));
+		dirs.returnValue(code, dirs.getBuilder().voidVal(code));
 
 		targetStartDirs.done();
 		targetDirs.done();
