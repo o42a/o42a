@@ -19,8 +19,6 @@
 */
 package org.o42a.core.object.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
@@ -119,13 +117,13 @@ public class OverrideRequirement implements PathWalker {
 		final MemberField field = member.toField();
 
 		if (field != null) {
-			return checkParent(field.toField().object(dummyUser()));
+			return true;
 		}
 
 		final MemberLocal local = member.toLocal();
 
 		if (local != null) {
-			return checkParent(local.getOwner());
+			return true;
 		}
 
 		if (member.toClause() != null) {
@@ -167,7 +165,12 @@ public class OverrideRequirement implements PathWalker {
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		throw new UnsupportedOperationException();
+		if (this.top == null) {
+			if (!setTop(object.getScope().getEnclosingScope().getContainer())) {
+				return false;
+			}
+		}
+		return requireAbstractsOverride();
 	}
 
 	@Override
@@ -186,10 +189,6 @@ public class OverrideRequirement implements PathWalker {
 
 	private boolean setTop(Container top) {
 		this.top = top;
-		return checkParent(top);
-	}
-
-	private boolean checkParent(Container top) {
 
 		final Obj topObject = objectOf(top);
 
