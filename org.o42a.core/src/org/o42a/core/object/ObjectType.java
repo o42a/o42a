@@ -528,19 +528,9 @@ public final class ObjectType {
 		}
 
 		// Run time derivation of implicit sample means
-		// the owner object may be constructed at run time.
+		// the owner object's value can be constructed at run time.
 		final Obj derived = sample.getDerivedObject();
 		final Obj enclosingObject = sample.getScope().toObject();
-
-		if (enclosingObject != null
-				&& sample.getOverriddenMember() != null) {
-			// Run time field override means the owner object
-			// can be derived at run time.
-			return;
-		}
-
-		// Implicit sample run time construction means the owner object's
-		// value can be constructed at run time.
 		final Obj owner;
 
 		if (enclosingObject != null) {
