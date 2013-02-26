@@ -48,8 +48,8 @@ Iteration := test (
   }
 )
 
-Assignment := test (
-  Name = "Assignment"
+Update element := test (
+  Name = "Update element"
   Print error '  ' [name] nl
 
   List := array list (`string) [["value 1", "value 2"]]
@@ -57,4 +57,35 @@ Assignment := test (
     List [1] = "value 3"
   }
   Assert [list [1] == "value 3"] "Assignment failed"
+)
+
+Add element := test (
+  Name = "Add element"
+  Print error '  ' [name] nl
+
+  List := array list (`integer) [[1, 2]]
+  List: add [3]
+  Assert [list: size == 3] "Wrong length"
+  Assert [list [2] == 3] "Wrong element added"
+)
+
+Insert element := test (
+  Name = "Insert element"
+  Print error '  ' [name] nl
+
+  List := array list (`integer) [[1, 2]]
+  List: insert [3] at [1]
+  Assert [list: size == 3] "Wrong length"
+  Assert [list [1] == 3] "Wrong element inserted"
+)
+
+Remove element := test (
+  Name = "Remove element"
+  Print error '  ' [name] nl
+
+  List := array list (`integer) [[1, 2, 3]]
+  List: remove [1]
+  Assert [list: size == 2] "Wrong length"
+  Assert [list [0] == 1] "Wrong element removed"
+  Assert [list [1] == 3] "Wrong element removed"
 )
