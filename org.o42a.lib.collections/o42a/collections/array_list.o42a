@@ -19,9 +19,11 @@ Size = /data: length
 
 Item => * (
   = Data [index]
-  Set => * ({
-    Data [index] = new value
-  })
+  Set => * (
+    Element assignment: {
+      Data [index] = new value
+    }
+  )
 )
 
 <[[Items]]!> Data = *
