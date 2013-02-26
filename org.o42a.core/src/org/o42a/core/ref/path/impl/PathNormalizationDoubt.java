@@ -22,6 +22,7 @@ package org.o42a.core.ref.path.impl;
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.RefUser.rtRefUser;
 
 import org.o42a.analysis.Doubt;
 import org.o42a.analysis.use.ProxyUser;
@@ -51,7 +52,7 @@ public final class PathNormalizationDoubt extends Doubt {
 		this.rtUses = ALL_SIMPLE_USAGES.usable("Runtime uses of " + path);
 		this.user = new ProxyUser<>(this.uses.toUser());
 		this.rtUser = new ProxyUser<>(this.rtUses.toUser());
-		this.refUser = new RefUser(this.user, this.rtUser);
+		this.refUser = rtRefUser(this.user, this.rtUser);
 	}
 
 	public final PathResolver wrapResolutionUser(
@@ -78,7 +79,7 @@ public final class PathNormalizationDoubt extends Doubt {
 		this.normalUser = new ProxyUser<>(dummyUser());
 		this.normalRtUser = new ProxyUser<>(dummyUser());
 		return this.normalRefUser =
-				new RefUser(this.normalUser, this.normalRtUser);
+				rtRefUser(this.normalUser, this.normalRtUser);
 	}
 
 	public final void abortNormalization() {

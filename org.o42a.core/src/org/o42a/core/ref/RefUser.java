@@ -29,25 +29,43 @@ public final class RefUser implements UserInfo {
 
 	private static final RefUser DUMMY_REF_USER = new RefUser(dummyUser());
 
-	public static final RefUser dummyRefUser() {
+	public static RefUser dummyRefUser() {
 		return DUMMY_REF_USER;
 	}
 
-	private final UserInfo user;
-	private final UserInfo rtUser;
+	public static RefUser refUser(UserInfo user) {
 
-	public RefUser(UserInfo user) {
-		assert user != null :
-			"Reference user not specified";
+		final User<?> usr = user.toUser();
+
+		if (usr.isDummy()) {
+			return dummyRefUser();
+		}
+
+		return new RefUser(usr);
+	}
+
+	public static RefUser rtRefUser(UserInfo user, UserInfo rtUser) {
+
+		final User<?> usr = user.toUser();
+
+		if (usr.isDummy()) {
+			return dummyRefUser();
+		}
+
+		return new RefUser(usr, rtUser.toUser());
+	}
+
+	private final User<?> user;
+	private final User<?> rtUser;
+
+	RefUser(User<?> user) {
 		this.user = user;
 		this.rtUser = dummyUser();
 	}
 
-	public RefUser(UserInfo user, UserInfo rtUser) {
-		assert user != null :
-			"Reference user not specified";
+	RefUser(User<?> user, User<?> rtUser) {
 		this.user = user;
-		this.rtUser = rtUser != null ? rtUser : dummyUser();
+		this.rtUser = rtUser;
 	}
 
 	public final boolean isDummy() {

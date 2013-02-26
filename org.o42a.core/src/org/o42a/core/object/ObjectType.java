@@ -25,6 +25,7 @@ import static org.o42a.core.object.impl.ObjectResolution.NOT_RESOLVED;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
+import static org.o42a.core.ref.RefUser.rtRefUser;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.*;
@@ -89,7 +90,7 @@ public final class ObjectType {
 	}
 
 	public final RefUser refUser() {
-		return new RefUser(derivationUses(), rtDerivation());
+		return rtRefUser(derivationUses(), rtDerivation());
 	}
 
 	public final Ascendants getAscendants() {
