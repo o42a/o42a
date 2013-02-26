@@ -25,6 +25,7 @@ import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_USAGE;
 import static org.o42a.core.object.value.ValueUsage.*;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
+import static org.o42a.core.ref.RefUser.rtRefUser;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -164,7 +165,7 @@ public final class ObjectValuePart implements UserInfo {
 		if (this.refUser != null) {
 			return this.refUser;
 		}
-		return this.refUser = new RefUser(uses(), getObjectValue().rtUses());
+		return this.refUser = rtRefUser(uses(), getObjectValue().rtUses());
 	}
 
 	private final Usable<SimpleUsage> ancestorDefsUpdateUses() {

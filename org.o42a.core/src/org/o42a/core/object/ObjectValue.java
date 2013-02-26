@@ -22,6 +22,7 @@ package org.o42a.core.object;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.value.ValueUsage.*;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
+import static org.o42a.core.ref.RefUser.refUser;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -247,9 +248,7 @@ public final class ObjectValue extends ObjectValueParts {
 			object.type().getParameters().resolveAll(
 					object.getScope()
 					.resolver()
-					.fullResolver(
-							new RefUser(uses()),
-							TYPE_PARAMETER_REF_USAGE));
+					.fullResolver(refUser(uses()), TYPE_PARAMETER_REF_USAGE));
 			// Use an ancestor value, as it is involved
 			// into this object's value evaluation.
 			useAncestorValue();
