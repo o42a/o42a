@@ -22,22 +22,14 @@ package org.o42a.core.object;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.object.impl.ObjectResolution.NOT_RESOLVED;
-import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
-import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
-import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
-import static org.o42a.core.ref.RefUser.rtRefUser;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.*;
 
-import org.o42a.analysis.use.Usable;
 import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
-import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ObjectTypeParameters;
@@ -48,9 +40,9 @@ import org.o42a.core.value.ValueType;
 public final class ObjectType {
 
 	private final Obj object;
+	private final DerivationUses derivationUses;
 	private Obj lastDefinition;
 	private TypeParameters<?> parameters;
-	private Usable<DerivationUsage> derivationUses;
 	private LinkUses linkUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
@@ -60,6 +52,7 @@ public final class ObjectType {
 
 	ObjectType(Obj object) {
 		this.object = object;
+		this.derivationUses = new DerivationUses(this);
 	}
 
 	public final Obj getObject() {
@@ -90,7 +83,7 @@ public final class ObjectType {
 	}
 
 	public final RefUser refUser() {
-		return rtRefUser(derivationUses(), rtDerivation());
+		return derivationUses().refUser();
 	}
 
 	public final Ascendants getAscendants() {
@@ -173,9 +166,7 @@ public final class ObjectType {
 	}
 
 	public final ObjectType useBy(RefUser user) {
-		if (user.hasRtUser()) {
-			derivationUses().useBy(user.rtUser(), RUNTIME_DERIVATION_USAGE);
-		}
+		derivationUses().useBy(user);
 		return this;
 	}
 
@@ -184,11 +175,11 @@ public final class ObjectType {
 	}
 
 	public final User<DerivationUsage> rtDerivation() {
-		return derivationUses().usageUser(RUNTIME_DERIVATION_USAGE);
+		return derivationUses().rtUser();
 	}
 
 	public final User<DerivationUsage> staticDerivation() {
-		return derivationUses().usageUser(STATIC_DERIVATION_USAGE);
+		return derivationUses().staticUser();
 	}
 
 	public final boolean derivedFrom(ObjectType other) {
@@ -224,13 +215,12 @@ public final class ObjectType {
 	}
 
 	public final void wrapBy(ObjectType type) {
-		derivationUses().useBy(type.rtDerivation(), RUNTIME_DERIVATION_USAGE);
+		derivationUses().wrapBy(type.derivationUses());
 	}
 
 	public void resolveAll() {
 		getAscendants().resolveAll(this);
-		registerInAncestor();
-		registerSamples();
+		derivationUses().resolveAll();
 
 		final LinkUses linkUses = linkUses();
 
@@ -247,31 +237,8 @@ public final class ObjectType {
 		return "ObjectType[" + this.object + ']';
 	}
 
-	protected void useAsAncestor(Obj derived) {
-		derivationUses().useBy(
-				derived.content(),
-				!derived.meta().isUpdated()
-				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
-		derivationUses().useBy(
-				derived.type().rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
-		trackUpdatesByAncestor(derived);
-	}
-
-	protected void useAsSample(Sample sample) {
-
-		final Obj derived = sample.getDerivedObject();
-
-		derivationUses().useBy(
-				derived.content(),
-				!derived.meta().isUpdated()
-				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
-		derivationUses().useBy(
-				derived.type().rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
-
-		trackUpdatesBySample(sample);
-		trackImplicitSampleRtDerivation(sample);
+	final DerivationUses derivationUses() {
+		return this.derivationUses;
 	}
 
 	final void setKnownValueType(ValueType<?> valueType) {
@@ -339,76 +306,23 @@ public final class ObjectType {
 		return applyExplicitParameters(parameters);
 	}
 
-	private final Usable<DerivationUsage> derivationUses() {
-		if (this.derivationUses != null) {
-			return this.derivationUses;
+	void registerDerivative(Derivative derivative) {
+		if (this.allDerivatives == null) {
+			this.allDerivatives = new ArrayList<>();
 		}
+		this.allDerivatives.add(derivative);
+		if (!getObject().meta().isUpdated()) {
+			// Clone is explicitly derived.
+			// Update the derivation tree.
+			final Sample[] samples = getSamples();
 
-		final Obj object = getObject();
+			if (samples.length != 0) {
 
-		if (!object.meta().isUpdated()) {
-			return this.derivationUses =
-					object.getCloneOf().type().derivationUses();
+				final Sample sample = getSamples()[0];
+
+				sample.getObject().type().registerDerivative(sample);
+			}
 		}
-
-		this.derivationUses = DerivationUsage.usable("DerivationOf", object);
-
-		final Member member = object.toMember();
-
-		if (member != null) {
-			detectFieldRtDerivation(member);
-		} else {
-			detectStandaloneObjectRtDerivation();
-		}
-
-		return this.derivationUses;
-	}
-
-	private void detectFieldRtDerivation(final Member member) {
-
-		// Detect run time construction mode by member.
-		final MemberField field = member.toField();
-
-		if (field == null) {
-			return;
-		}
-
-		this.derivationUses.useBy(
-				field.getAnalysis().rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
-		this.derivationUses.useBy(
-				field.getAnalysis().staticDerivation(),
-				STATIC_DERIVATION_USAGE);
-	}
-
-	private void detectStandaloneObjectRtDerivation() {
-		if (getObject().getScope().getEnclosingScope().isTopScope()) {
-			return;
-		}
-
-		// Stand-alone object is constructed at run time, if it's ever derived.
-		this.derivationUses.useBy(
-				staticDerivation(),
-				RUNTIME_DERIVATION_USAGE);
-
-		// Stand-alone object is constructed at run time
-		// if its owner's value is ever used at runtime.
-		this.derivationUses.useBy(
-				getOwner().value().rtUses(),
-				RUNTIME_DERIVATION_USAGE);
-	}
-
-	private Obj getOwner() {
-
-		final Scope enclosingScope =
-				getObject().getScope().getEnclosingScope();
-		final Obj enclosingObject = enclosingScope.toObject();
-
-		if (enclosingObject != null) {
-			return enclosingObject;
-		}
-
-		return enclosingScope.toMember().getMemberOwner().getOwner();
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {
@@ -461,184 +375,6 @@ public final class ObjectType {
 					continue;
 				}
 				allAscendants.put(scope, derivations.union(traversed));
-			}
-		}
-	}
-
-	private void registerInAncestor() {
-
-		final TypeRef ancestor = getAncestor();
-
-		if (ancestor != null && ancestor.isValid()) {
-			ancestor.getType().type().useAsAncestor(getObject());
-		}
-	}
-
-	private void registerSamples() {
-		for (Sample sample : getSamples()) {
-
-			final TypeRef sampleTypeRef = sample.getTypeRef();
-
-			if (sampleTypeRef.isValid()) {
-				sampleTypeRef.getType().type().useAsSample(sample);
-			}
-		}
-	}
-
-	private void trackUpdatesByAncestor(Obj derived) {
-		if (!derived.meta().isUpdated()) {
-			return;
-		}
-
-		trackAscendantDefsUsage(derived);
-
-		final LinkUses linkUses = linkUses();
-
-		if (linkUses != null) {
-			linkUses.useAsAncestor(derived);
-		}
-		if (derived.getWrapped() == null) {
-			registerDerivative(new Inheritor(derived));
-		}
-	}
-
-	private void trackUpdatesBySample(Sample sample) {
-
-		final Obj derived = sample.getDerivedObject();
-
-		if (!derived.meta().isUpdated()) {
-			return;
-		}
-
-		trackAscendantDefsUsage(derived);
-		trackAncestorDefsUpdates(derived);
-
-		final LinkUses linkUses = linkUses();
-
-		if (linkUses != null) {
-			linkUses.useAsSample(sample);
-		}
-		if (derived.getWrapped() == null) {
-			registerDerivative(sample);
-		}
-	}
-
-	private void trackImplicitSampleRtDerivation(Sample sample) {
-		if (sample.isExplicit()) {
-			return;
-		}
-
-		// Run time derivation of implicit sample means
-		// the owner object's value can be constructed at run time.
-		final Obj derived = sample.getDerivedObject();
-		final Obj enclosingObject = sample.getScope().toObject();
-		final Obj owner;
-
-		if (enclosingObject != null) {
-			owner = enclosingObject;
-		} else {
-			owner = sample.getScope().toLocal().getOwner();
-		}
-
-		owner.value().uses().useBy(
-				derived.type().rtDerivation(),
-				EXPLICIT_RUNTIME_VALUE_USAGE);
-	}
-
-	private void trackAscendantDefsUsage(Obj derived) {
-
-		final Obj ancestor = getObject();
-		final ObjectValue ascendantValue = getObject().value();
-		final ObjectValue derivedValue = derived.value();
-
-		trackAscendantPartUsage(
-				ancestor,
-				ascendantValue,
-				derivedValue,
-				true);
-		trackAscendantPartUsage(
-				ancestor,
-				ascendantValue,
-				derivedValue,
-				false);
-	}
-
-	private void trackAscendantPartUsage(
-			final Obj ancestor,
-			final ObjectValue ascendantValue,
-			final ObjectValue derivedValue,
-			final boolean claim) {
-
-		final ObjectValuePart derivedPart = derivedValue.part(claim);
-
-		if (derivedPart.getDefs().presentIn(ancestor)) {
-			ascendantValue.part(claim).accessBy(derivedPart);
-		}
-	}
-
-	private void trackAncestorDefsUpdates(Obj since) {
-
-		final TypeRef newAncestor = since.type().getAncestor();
-
-		if (newAncestor == null) {
-			return;
-		}
-
-		final TypeRef oldAncestor = getAncestor();
-
-		if (oldAncestor == null) {
-			return;
-		}
-
-		final ObjectValue newAncestorValue = newAncestor.getType().value();
-		final Obj oldAncestorObject = oldAncestor.getType();
-
-		trackAncestorPartUpdates(
-				since,
-				newAncestorValue,
-				oldAncestorObject,
-				true);
-		trackAncestorPartUpdates(
-				since,
-				newAncestorValue,
-				oldAncestorObject,
-				false);
-	}
-
-	private void trackAncestorPartUpdates(
-			final Obj since,
-			final ObjectValue newAncestorValue,
-			final Obj oldAncestorObject,
-			final boolean claim) {
-
-		final ObjectValuePart sampleValuePart =
-				getObject().value().part(claim);
-		final ObjectValuePart sinceValuePart =
-				since.value().part(claim);
-
-		sampleValuePart.updateAncestorDefsBy(
-				sinceValuePart.ancestorDefsUpdatesUser());
-		if (newAncestorValue.part(claim).getDefs().updatedSince(
-				oldAncestorObject)) {
-			sampleValuePart.updateAncestorDefsBy(sinceValuePart);
-		}
-	}
-
-	private void registerDerivative(Derivative derivative) {
-		if (this.allDerivatives == null) {
-			this.allDerivatives = new ArrayList<>();
-		}
-		this.allDerivatives.add(derivative);
-		if (!getObject().meta().isUpdated()) {
-			// Clone is explicitly derived.
-			// Update the derivation tree.
-			final Sample[] samples = getSamples();
-
-			if (samples.length != 0) {
-
-				final Sample sample = getSamples()[0];
-
-				sample.getObject().type().registerDerivative(sample);
 			}
 		}
 	}
