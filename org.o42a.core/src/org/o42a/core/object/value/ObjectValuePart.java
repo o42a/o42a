@@ -21,11 +21,7 @@ package org.o42a.core.object.value;
 
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
-import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
-import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_USAGE;
-import static org.o42a.core.object.value.ValueUsage.*;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
-import static org.o42a.core.ref.RefUser.rtRefUser;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -33,20 +29,19 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.Defs;
 import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.RefUser;
 
 
 public final class ObjectValuePart implements UserInfo {
 
 	private final ObjectValue objectValue;
+	private final ValuePartUses partUses;
 	private final boolean claim;
-	private Usable<ValuePartUsage> uses;
 	private Usable<SimpleUsage> ancestorDefsUpdates;
-	private RefUser refUser;
 
 	ObjectValuePart(ObjectValue objectValue, boolean claim) {
 		this.objectValue = objectValue;
 		this.claim = claim;
+		this.partUses = new ValuePartUses(this);
 	}
 
 	public final Obj getObject() {
@@ -77,25 +72,17 @@ public final class ObjectValuePart implements UserInfo {
 
 	@Override
 	public final User<ValuePartUsage> toUser() {
-		return uses().toUser();
-	}
-
-	public final UseFlag selectUse(
-			Analyzer analyzer,
-			UseSelector<ValuePartUsage> selector) {
-		return uses().selectUse(analyzer, selector);
+		return partUses().toUser();
 	}
 
 	public final boolean isUsed(
 			Analyzer analyzer,
 			UseSelector<ValuePartUsage> selector) {
-		return selectUse(analyzer, selector).isUsed();
+		return this.partUses.isUsed(analyzer, selector);
 	}
 
 	public final void accessBy(UserInfo user) {
-		if (!user.toUser().isDummy()) {
-			uses().useBy(user, VALUE_PART_ACCESS);
-		}
+		partUses().useBy(user);
 	}
 
 	public final void updateAncestorDefsBy(UserInfo user) {
@@ -112,16 +99,11 @@ public final class ObjectValuePart implements UserInfo {
 		return getObject()
 				.getScope()
 				.resolver()
-				.fullResolver(refUser(), VALUE_REF_USAGE);
+				.fullResolver(partUses().refUser(), VALUE_REF_USAGE);
 	}
 
 	public final void wrapBy(ObjectValuePart wrapPart) {
-		uses().useBy(
-				wrapPart.uses().usageUser(VALUE_PART_USAGE),
-				VALUE_PART_USAGE);
-		uses().useBy(
-				wrapPart.uses().usageUser(VALUE_PART_ACCESS),
-				VALUE_PART_ACCESS);
+		partUses().wrapBy(wrapPart.partUses());
 		ancestorDefsUpdateUses().useBy(
 				wrapPart.ancestorDefsUpdateUses(),
 				SIMPLE_USAGE);
@@ -135,37 +117,8 @@ public final class ObjectValuePart implements UserInfo {
 		return (isClaim() ? "ClaimOf[" : "PropositionOf[") + getObject() + ']';
 	}
 
-	final Usable<ValuePartUsage> uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-
-		this.uses = ValuePartUsage.usable(this);
-
-		final ObjectValueParts objectValue = getObjectValue();
-		final Usable<ValueUsage> valueUses = objectValue.uses();
-		final boolean runtimeConstructed =
-				getObjectValue().isRuntimeConstructed();
-
-		valueUses.useBy(
-				this.uses,
-				runtimeConstructed
-				? RUNTIME_VALUE_USAGE : STATIC_VALUE_USAGE);
-		this.uses.useBy(
-				valueUses.selectiveUser(
-						runtimeConstructed
-						? ANY_RUNTIME_VALUE_USAGE
-						: ANY_STATIC_VALUE_USAGE),
-				VALUE_PART_USAGE);
-
-		return this.uses;
-	}
-
-	private RefUser refUser() {
-		if (this.refUser != null) {
-			return this.refUser;
-		}
-		return this.refUser = rtRefUser(uses(), getObjectValue().rtUses());
+	private ValuePartUses partUses() {
+		return this.partUses;
 	}
 
 	private final Usable<SimpleUsage> ancestorDefsUpdateUses() {
