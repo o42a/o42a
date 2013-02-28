@@ -37,29 +37,42 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rlist = {
 static __thread o42a_dbg_env_t *dbg_env;
 
 static const char *dbg_thread_getenv(
-		const struct o42a_dbg_env *env,
-		const char *envname) {
+		const char *const thread_name,
+		const char *const envname) {
 
-	const size_t name_len = strlen(env->thread_name);
-	const size_t envname_len = strlen(envname);
-	char env_name[14 + envname_len + name_len];
+	const ssize_t tname_len = thread_name ? strlen(thread_name) : 0;
+	const size_t ename_len = strlen(envname);
+	char env_name[14 + ename_len + tname_len];
 	char *str = env_name;
 
 	memcpy(str, "O42A_THREAD_", 12);
-	memcpy(str += 12, envname, envname_len);
-	str += envname_len;
-	*str = '_';
-	memcpy(str + 1, env->thread_name, name_len + 1);
 
-	return getenv(env_name);
+	if (!thread_name) {
+		memcpy(str + 12, envname, ename_len + 1);
+		return getenv(env_name);
+	}
+
+	memcpy(str += 12, envname, ename_len);
+	str += ename_len;
+	*str = '_';
+	memcpy(str + 1, thread_name, tname_len + 1);
+
+	const char *result = getenv(env_name);
+
+	if (result) {
+		return result;
+	}
+	// No value for the given thread.
+	// Retrieve the default value.
+	return dbg_thread_getenv(NULL, envname);
 }
 
 static o42a_bool_t dbg_thread_isenv(
-		const struct o42a_dbg_env *env,
-		const char *envname,
+		const char *const thread_name,
+		const char *const envname,
 		o42a_bool_t default_val) {
 
-	const char *value = dbg_thread_getenv(env, envname);
+	const char *value = dbg_thread_getenv(thread_name, envname);
 
 	if (!value) {
 		return default_val;
@@ -95,41 +108,32 @@ void o42a_dbg_start_thread(struct o42a_dbg_env *env) {
 	env->output = stderr;
 	dbg_env = env;
 
-	if (env->thread_name) {
-		// Set the output according to the environment variable.
-		const char *const file = dbg_thread_getenv(env, "LOG");
+	// Set the output according to the environment variable.
+	const char *const file = dbg_thread_getenv(env->thread_name, "LOG");
 
-		if (file) {
-			env->output = fopen(file, "w");
-			if (env->output) {
-				setvbuf(env->output, (char *) NULL, _IOLBF, 0);
-			} else {
-				env->output = stderr;
-				fprintf(stderr, "Cannot write to log file: %s\n", file);
-			}
+	if (file) {
+		env->output = fopen(file, "w");
+		if (env->output) {
+			setvbuf(env->output, (char *) NULL, _IOLBF, 0);
+		} else {
+			env->output = stderr;
+			fprintf(stderr, "Cannot write to log file: %s\n", file);
 		}
-
-		env->options.no_debug_messages = dbg_thread_isenv(
-				env,
-				"NO_DEBUG_MESSAGES",
-				o42a_dbg_default_options.no_debug_messages);
-		env->options.debug_blocks_omitted = dbg_thread_isenv(
-				env,
-				"DEBUG_BLOCKS_OMITTED",
-				o42a_dbg_default_options.debug_blocks_omitted);
-		env->options.silent_calls = dbg_thread_isenv(
-				env,
-				"SILENT_CALLS",
-				o42a_dbg_default_options.silent_calls);
-
-		fprintf(
-				stderr,
-				"%s: %d, %d, %d\n",
-				env->thread_name,
-				env->options.no_debug_messages,
-				env->options.debug_blocks_omitted,
-				env->options.silent_calls);
 	}
+
+	// Set the debug options.
+	env->options.no_debug_messages = dbg_thread_isenv(
+			env->thread_name,
+			"NO_DEBUG_MESSAGES",
+			o42a_dbg_default_options.no_debug_messages);
+	env->options.debug_blocks_omitted = dbg_thread_isenv(
+			env->thread_name,
+			"DEBUG_BLOCKS_OMITTED",
+			o42a_dbg_default_options.debug_blocks_omitted);
+	env->options.silent_calls = dbg_thread_isenv(
+			env->thread_name,
+			"SILENT_CALLS",
+			o42a_dbg_default_options.silent_calls);
 }
 
 static volatile sig_atomic_t program_error_in_progress = 0;
