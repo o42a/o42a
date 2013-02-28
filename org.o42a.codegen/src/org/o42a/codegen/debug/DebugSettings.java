@@ -23,6 +23,7 @@ package org.o42a.codegen.debug;
 final class DebugSettings {
 
 	private boolean debug;
+	private boolean debugBlocksOmitted;
 
 	public final boolean isDebug() {
 		return this.debug;
@@ -30,6 +31,14 @@ final class DebugSettings {
 
 	public final void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public final boolean isDebugBlocksOmitted() {
+		return this.debugBlocksOmitted;
+	}
+
+	public final void setDebugBlocksOmitted(boolean debugBlocksOmitted) {
+		this.debugBlocksOmitted = debugBlocksOmitted;
 	}
 
 }

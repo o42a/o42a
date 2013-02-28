@@ -87,6 +87,14 @@ public class Debug {
 		this.settings.setDebug(debug);
 	}
 
+	public final boolean isDebugBlocksOmitted() {
+		return this.settings.isDebugBlocksOmitted();
+	}
+
+	public final void setDebugBlocksOmitted(boolean debugBlocksOmitted) {
+		this.settings.setDebugBlocksOmitted(debugBlocksOmitted);
+	}
+
 	public <F extends Func<F>> void addFunction(ID id, FuncPtr<F> functionPtr) {
 		if (isProxied()) {
 			return;
