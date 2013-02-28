@@ -43,7 +43,8 @@ public final class TaskBlock {
 	}
 
 	public final Block end() {
-		if (!code().isDebug()) {
+		if (!code().isDebug()
+				|| code().getGenerator().getDebug().isDebugBlocksOmitted()) {
 			return this.block;
 		}
 
