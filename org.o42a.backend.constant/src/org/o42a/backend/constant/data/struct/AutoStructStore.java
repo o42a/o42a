@@ -21,7 +21,6 @@ package org.o42a.backend.constant.data.struct;
 
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import java.util.HashMap;
 
@@ -41,8 +40,8 @@ public class AutoStructStore extends StructStore {
 	private HashMap<Ptr<?>, Usable<SimpleUsage>> storeUses;
 	private Usable<SimpleUsage> allUses;
 
-	AutoStructStore() {
-		super(AUTO_ALLOC_CLASS);
+	AutoStructStore(AllocPlace allocPlace) {
+		super(allocPlace);
 	}
 
 	@Override
@@ -110,7 +109,7 @@ public class AutoStructStore extends StructStore {
 		private Usable<SimpleUsage> allUses;
 
 		FieldStore(AutoStructStore enclosing, Rec<?, ?> field) {
-			super(AUTO_ALLOC_CLASS);
+			super(enclosing.getAllocPlace());
 			this.enclosing = enclosing;
 			this.field = field;
 		}
@@ -162,7 +161,7 @@ public class AutoStructStore extends StructStore {
 		private final SystemData field;
 
 		SystemFieldScore(AutoStructStore enclosing, SystemData field) {
-			super(AUTO_ALLOC_CLASS);
+			super(enclosing.getAllocPlace());
 			this.enclosing = enclosing;
 			this.field = field;
 		}
@@ -194,6 +193,7 @@ public class AutoStructStore extends StructStore {
 		private final AutoStructStore enclosing;
 
 		SubStore(AutoStructStore enclosing) {
+			super(enclosing.getAllocPlace());
 			this.enclosing = enclosing;
 		}
 

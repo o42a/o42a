@@ -27,7 +27,7 @@ import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
@@ -35,15 +35,15 @@ import org.o42a.util.string.ID;
 
 public final class DataCOp extends DataPtrCOp<DataOp> implements DataOp {
 
-	public DataCOp(OpBE<DataOp> backend, AllocClass allocClass) {
-		super(backend, allocClass);
+	public DataCOp(OpBE<DataOp> backend, AllocPlace allocPlace) {
+		super(backend, allocPlace);
 	}
 
 	public DataCOp(
 			OpBE<DataOp> backend,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			Ptr<DataOp> constant) {
-		super(backend, allocClass, constant);
+		super(backend, allocPlace, constant);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public final class DataCOp extends DataPtrCOp<DataOp> implements DataOp {
 								getBackend().underlying(type));
 					}
 				},
-				allocStructStore(getAllocClass()),
+				allocStructStore(getAllocPlace()),
 				type));
 	}
 

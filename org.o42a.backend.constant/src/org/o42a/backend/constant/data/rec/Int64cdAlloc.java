@@ -80,8 +80,8 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	}
 
 	@Override
-	protected Int64recOp op(OpBE<Int64recOp> backend, AllocClass allocClass) {
-		return new Int64recCOp(backend, allocRecStore(allocClass), getPointer());
+	protected Int64recOp op(OpBE<Int64recOp> backend, AllocPlace allocPlace) {
+		return new Int64recCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
 	private static final class UnderlyingNativePtr implements Getter<Ptr<AnyOp>> {

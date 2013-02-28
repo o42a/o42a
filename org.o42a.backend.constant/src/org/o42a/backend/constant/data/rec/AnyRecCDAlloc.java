@@ -55,8 +55,8 @@ public final class AnyRecCDAlloc
 	}
 
 	@Override
-	protected AnyRecOp op(OpBE<AnyRecOp> backend, AllocClass allocClass) {
-		return new AnyRecCOp(backend, allocRecStore(allocClass), getPointer());
+	protected AnyRecOp op(OpBE<AnyRecOp> backend, AllocPlace allocPlace) {
+		return new AnyRecCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
 }

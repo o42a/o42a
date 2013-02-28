@@ -23,7 +23,7 @@ import static org.o42a.backend.llvm.code.LLCode.llvm;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -31,10 +31,10 @@ public final class DataLLOp extends DataPtrLLOp<DataOp> implements DataOp {
 
 	public DataLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 	}
 
 	@Override

@@ -47,9 +47,9 @@ public class SystemCOp extends AllocPtrCOp<SystemOp> implements SystemOp {
 			SystemStore store,
 			CSystemType underlyingType,
 			Ptr<SystemOp> constant) {
-		super(backend, store != null ? store.getAllocClass() : null, constant);
+		super(backend, store != null ? store.getAllocPlace() : null, constant);
 		this.underlyingType = underlyingType;
-		this.store = store != null ? store : allocSystemStore(getAllocClass());
+		this.store = store != null ? store : allocSystemStore(getAllocPlace());
 		this.explicitUses = this.store.init(this, allUses());
 	}
 

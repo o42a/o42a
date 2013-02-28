@@ -23,7 +23,7 @@ import org.o42a.backend.llvm.code.op.AnyLLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
@@ -51,10 +51,10 @@ public final class AnyLLDAlloc extends SimpleLLDAlloc<AnyOp> {
 	@Override
 	protected AnyLLOp op(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		return new AnyLLOp(id, allocClass, blockPtr, nativePtr);
+		return new AnyLLOp(id, allocPlace, blockPtr, nativePtr);
 	}
 
 }

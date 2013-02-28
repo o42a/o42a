@@ -24,13 +24,13 @@ import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.op.InstrBE;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 
 
 final class AllocRecStore extends RecStore {
 
-	AllocRecStore(AllocClass allocClass) {
-		super(allocClass);
+	AllocRecStore(AllocPlace allocPlace) {
+		super(allocPlace);
 	}
 
 	@Override

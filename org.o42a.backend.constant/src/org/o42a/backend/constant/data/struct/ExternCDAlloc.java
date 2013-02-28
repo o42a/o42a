@@ -77,7 +77,7 @@ public final class ExternCDAlloc<S extends StructOp<S>> extends CDAlloc<S> {
 								part().underlying());
 					}
 				},
-				allocStructStore(allocClass),
+				allocStructStore(allocClass.allocPlace(ccode.code())),
 				this.type,
 				getPointer()));
 	}

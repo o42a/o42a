@@ -21,13 +21,13 @@ package org.o42a.backend.constant.code.op;
 
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 
 
 final class AllocSystemStore extends SystemStore {
 
-	AllocSystemStore(AllocClass allocClass) {
-		super(allocClass);
+	AllocSystemStore(AllocPlace allocPlace) {
+		super(allocPlace);
 	}
 
 	@Override

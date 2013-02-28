@@ -28,7 +28,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.IntOp;
 import org.o42a.codegen.code.op.IntRecOp;
 import org.o42a.codegen.code.op.RMWKind;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -38,10 +38,10 @@ public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
 
 	public IntRecLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 	}
 
 	@Override

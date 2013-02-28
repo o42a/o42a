@@ -25,21 +25,15 @@ import org.o42a.util.string.ID;
 
 class CodeBlock extends Block {
 
-	private final Code enclosing;
 	BlockWriter writer;
 
 	CodeBlock(Code enclosing, ID name) {
 		super(enclosing, name);
-		this.enclosing = enclosing;
 	}
 
 	@Override
 	public final Allocator getAllocator() {
 		return getEnclosing().getAllocator();
-	}
-
-	public final Code getEnclosing() {
-		return this.enclosing;
 	}
 
 	@Override

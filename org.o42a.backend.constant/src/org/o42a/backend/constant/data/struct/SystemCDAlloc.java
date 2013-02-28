@@ -22,6 +22,7 @@ package org.o42a.backend.constant.data.struct;
 import static org.o42a.backend.constant.code.op.SystemStore.allocSystemStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.op.SystemCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -70,8 +71,11 @@ public final class SystemCDAlloc extends DCDAlloc<SystemOp, SystemData>  {
 
 	@Override
 	public SystemOp op(ID id, AllocClass allocClass, CodeWriter writer) {
+
+		final CCode<?> ccode = cast(writer);
+
 		return new SystemCOp(
-				new OpBE<SystemOp>(id, cast(writer)) {
+				new OpBE<SystemOp>(id, ccode) {
 					@Override
 					public void prepare() {
 					}
@@ -82,7 +86,7 @@ public final class SystemCDAlloc extends DCDAlloc<SystemOp, SystemData>  {
 								part().underlying());
 					}
 				},
-				allocSystemStore(allocClass),
+				allocSystemStore(allocClass.allocPlace(ccode.code())),
 				getUnderlyingType());
 	}
 

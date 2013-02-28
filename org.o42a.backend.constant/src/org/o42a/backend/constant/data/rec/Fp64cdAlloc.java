@@ -25,7 +25,7 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Fp64recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Fp64recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Fp64rec;
 import org.o42a.codegen.data.SubData;
 
@@ -51,8 +51,8 @@ public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
 	}
 
 	@Override
-	protected Fp64recOp op(OpBE<Fp64recOp> backend, AllocClass allocClass) {
-		return new Fp64recCOp(backend, allocRecStore(allocClass), getPointer());
+	protected Fp64recOp op(OpBE<Fp64recOp> backend, AllocPlace allocPlace) {
+		return new Fp64recCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
 }

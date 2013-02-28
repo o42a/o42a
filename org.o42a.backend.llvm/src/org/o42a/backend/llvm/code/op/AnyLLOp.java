@@ -26,7 +26,7 @@ import org.o42a.backend.llvm.code.rec.*;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -34,10 +34,10 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 	public AnyLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 		return new AnyRecLLOp(
 				resultId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toPtr(
 						nextPtr,
@@ -82,7 +82,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 		return new Int8recLLOp(
 				resultId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toInt(
 						nextPtr,
@@ -103,7 +103,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 		return new Int16recLLOp(
 				resultId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toInt(
 						nextPtr,
@@ -124,7 +124,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 		return new Int32recLLOp(
 				resultId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toInt(
 						nextPtr,
@@ -145,7 +145,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 		return new Int64recLLOp(
 				resultId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toInt(
 						nextPtr,
@@ -166,7 +166,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 		return new Fp32recLLOp(
 				resultId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toFp32(
 						nextPtr,
@@ -186,7 +186,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 		return new Fp64recLLOp(
 				resultId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toFp64(
 						nextPtr,
@@ -206,7 +206,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 		return new RelRecLLOp(
 				resultId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toRelPtr(
 						nextPtr,

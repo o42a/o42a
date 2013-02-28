@@ -163,7 +163,7 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 
 		return getType().op(new LLStruct<>(
 				id,
-				allocClass,
+				allocClass.allocPlace(code.code()),
 				getType(),
 				code.nextPtr(),
 				llvmId().expression(code.getModule())));

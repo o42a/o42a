@@ -21,15 +21,14 @@ package org.o42a.backend.constant.data.rec;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.DCDAlloc;
 import org.o42a.backend.constant.data.TopLevelCDAlloc;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AllocPtrOp;
-import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.Rec;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
@@ -82,8 +81,11 @@ public abstract class RecCDAlloc<
 
 	@Override
 	public final P op(ID id, AllocClass allocClass, CodeWriter writer) {
+
+		final CCode<?> ccode = cast(writer);
+
 		return op(
-				new OpBE<P>(id, cast(writer)) {
+				new OpBE<P>(id, ccode) {
 					@Override
 					public void prepare() {
 					}
@@ -94,7 +96,7 @@ public abstract class RecCDAlloc<
 								part().underlying());
 					}
 				},
-				allocClass);
+				allocClass.allocPlace(ccode.code()));
 	}
 
 	@Override
@@ -112,6 +114,6 @@ public abstract class RecCDAlloc<
 
 	protected abstract R allocateUnderlying(SubData<?> container, String name);
 
-	protected abstract P op(OpBE<P> backend, AllocClass allocClass);
+	protected abstract P op(OpBE<P> backend, AllocPlace allocPlace);
 
 }

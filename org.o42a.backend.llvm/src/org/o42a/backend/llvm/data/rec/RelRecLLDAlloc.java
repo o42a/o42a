@@ -23,7 +23,7 @@ import org.o42a.backend.llvm.code.rec.RelRecLLOp;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.RelRecOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
@@ -46,10 +46,10 @@ public final class RelRecLLDAlloc extends SimpleLLDAlloc<RelRecOp> {
 	@Override
 	protected RelRecLLOp op(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		return new RelRecLLOp(id, allocClass, blockPtr, nativePtr);
+		return new RelRecLLOp(id, allocPlace, blockPtr, nativePtr);
 	}
 
 }

@@ -25,7 +25,7 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Fp32recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Fp32recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Fp32rec;
 import org.o42a.codegen.data.SubData;
 
@@ -51,8 +51,8 @@ public final class Fp32cdAlloc extends RecCDAlloc<Fp32rec, Fp32recOp, Float> {
 	}
 
 	@Override
-	protected Fp32recOp op(OpBE<Fp32recOp> backend, AllocClass allocClass) {
-		return new Fp32recCOp(backend, allocRecStore(allocClass), getPointer());
+	protected Fp32recOp op(OpBE<Fp32recOp> backend, AllocPlace allocPlace) {
+		return new Fp32recCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
 }

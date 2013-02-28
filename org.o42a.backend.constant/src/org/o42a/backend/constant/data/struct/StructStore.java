@@ -19,43 +19,59 @@
 */
 package org.o42a.backend.constant.data.struct;
 
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.UNKNOWN_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
+import static org.o42a.codegen.data.AllocPlace.staticAllocPlace;
+import static org.o42a.codegen.data.AllocPlace.unknownAllocPlace;
+
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.op.SystemStore;
 import org.o42a.backend.constant.code.rec.RecStore;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.*;
 
 
 public abstract class StructStore {
 
-	private static final StructStore[] ALLOC_STORES;
+	private static final AllocStructStore[] ALLOC_STORES =
+			new AllocStructStore[AllocClass.values().length];
 
 	static {
+		ALLOC_STORES[UNKNOWN_ALLOC_CLASS.ordinal()] =
+				new AllocStructStore(unknownAllocPlace());
+		ALLOC_STORES[STATIC_ALLOC_CLASS.ordinal()] =
+				new AllocStructStore(staticAllocPlace());
+		ALLOC_STORES[CONSTANT_ALLOC_CLASS.ordinal()] =
+				new AllocStructStore(constantAllocPlace());
+	}
 
-		final AllocClass[] allocClasses = AllocClass.values();
+	public static StructStore autoStructStore(Code code) {
+		return new AutoStructStore(code.getAllocator().getAllocPlace());
+	}
 
-		ALLOC_STORES = new StructStore[allocClasses.length];
-		for (int i = 0; i < allocClasses.length; ++i) {
-			ALLOC_STORES[i] = new AllocStructStore(allocClasses[i]);
+	public static StructStore allocStructStore(AllocPlace allocPlace) {
+
+		final AllocClass allocClass = allocPlace.getAllocClass();
+		final AllocStructStore store = ALLOC_STORES[allocClass.ordinal()];
+
+		if (store != null) {
+			return store;
 		}
+
+		return new AllocStructStore(allocPlace);
 	}
 
-	public static StructStore autoStructStore() {
-		return new AutoStructStore();
+	private final AllocPlace allocPlace;
+
+	StructStore(AllocPlace allocPlace) {
+		this.allocPlace = allocPlace;
 	}
 
-	public static StructStore allocStructStore(AllocClass allocClass) {
-		return ALLOC_STORES[allocClass.ordinal()];
-	}
-
-	private final AllocClass allocClass;
-
-	public StructStore(AllocClass allocClass) {
-		this.allocClass = allocClass;
-	}
-
-	public final AllocClass getAllocClass() {
-		return this.allocClass;
+	public final AllocPlace getAllocPlace() {
+		return this.allocPlace;
 	}
 
 	public abstract RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field);
@@ -68,7 +84,7 @@ public abstract class StructStore {
 
 	@Override
 	public String toString() {
-		return String.valueOf(this.allocClass);
+		return String.valueOf(this.allocPlace);
 	}
 
 	protected abstract Usable<SimpleUsage> init(

@@ -35,15 +35,18 @@ public abstract class DebugCodeBase extends CodeBase {
 
 	private final Generator generator;
 	private final Function<?> function;
+	private final Code enclosing;
 
 	public DebugCodeBase(Code enclosing) {
 		this.generator = enclosing.getGenerator();
 		this.function = enclosing.getFunction();
+		this.enclosing = enclosing;
 	}
 
 	public DebugCodeBase(Generator generator) {
 		this.generator = generator;
 		this.function = (Function<?>) this;
+		this.enclosing = null;
 	}
 
 	public final Generator getGenerator() {
@@ -52,6 +55,10 @@ public abstract class DebugCodeBase extends CodeBase {
 
 	public final Function<?> getFunction() {
 		return this.function;
+	}
+
+	public final Code getEnclosing() {
+		return this.enclosing;
 	}
 
 	public final boolean isDebug() {

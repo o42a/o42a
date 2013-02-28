@@ -25,6 +25,7 @@ import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.string.ID;
 
@@ -66,14 +67,14 @@ public abstract class SimpleLLDAlloc<P extends PtrOp<P>> extends LLDAlloc<P> {
 
 		return op(
 				id,
-				allocClass,
+				allocClass.allocPlace(code.code()),
 				code.nextPtr(),
 				llvmId().expression(code.getModule()));
 	}
 
 	protected abstract P op(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr);
 

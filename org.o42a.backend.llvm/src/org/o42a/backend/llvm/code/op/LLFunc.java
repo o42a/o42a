@@ -21,7 +21,7 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
@@ -64,7 +64,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		return new AnyLLOp(
 				castId,
-				CONSTANT_ALLOC_CLASS,
+				constantAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toAny(
 						nextPtr,

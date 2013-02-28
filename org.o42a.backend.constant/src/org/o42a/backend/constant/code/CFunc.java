@@ -20,7 +20,7 @@
 package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
 
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.struct.CStruct;
@@ -366,7 +366,7 @@ public final class CFunc<F extends Func<F>>
 								part().underlying());
 					}
 				},
-				CONSTANT_ALLOC_CLASS);
+				constantAllocPlace());
 	}
 
 	private void useArgs(InstrBE instr, final Op[] args) {

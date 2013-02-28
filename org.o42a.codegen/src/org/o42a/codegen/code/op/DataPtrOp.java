@@ -20,13 +20,13 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
 public interface DataPtrOp<P extends DataPtrOp<P>> extends PtrOp<P> {
 
-	AllocClass getAllocClass();
+	AllocPlace getAllocPlace();
 
 	P offset(ID id, Code code, IntOp<?> index);
 

@@ -23,7 +23,7 @@ import static org.o42a.backend.constant.code.rec.RecStore.autoRecStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.struct.StructStore.autoStructStore;
 import static org.o42a.codegen.code.op.Op.PHI_ID;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
 
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
@@ -166,7 +166,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						return part().underlying().nullPtr();
 					}
 				},
-				CONSTANT_ALLOC_CLASS,
+				constantAllocPlace(),
 				getBackend().getGenerator().getGlobals().nullPtr());
 	}
 
@@ -182,7 +182,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						return part().underlying().allOnesPtr();
 					}
 				},
-				CONSTANT_ALLOC_CLASS,
+				constantAllocPlace(),
 				getBackend().getGenerator().getGlobals().allOnesPtr());
 	}
 
@@ -198,7 +198,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						return part().underlying().nullDataPtr();
 					}
 				},
-				CONSTANT_ALLOC_CLASS,
+				constantAllocPlace(),
 				getBackend().getGenerator().getGlobals().nullDataPtr());
 	}
 
@@ -222,7 +222,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						return part().underlying().nullPtr(underlyingType);
 					}
 				},
-				autoStructStore(),
+				autoStructStore(code()),
 				originalType,
 				getBackend().getGenerator().getGlobals().nullPtr(
 						originalType)));
@@ -264,7 +264,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 								.allocatePtr(getId());
 					}
 				},
-				autoRecStore()));
+				autoRecStore(code())));
 	}
 
 	@Override
@@ -287,7 +287,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 								typeAlloc.getUnderlyingPtr().getAllocation());
 					}
 				},
-				autoRecStore(),
+				autoRecStore(code()),
 				typeAlloc.getType()));
 	}
 
@@ -312,7 +312,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 								typeAlloc.getUnderlyingPtr().getAllocation());
 					}
 				},
-				autoStructStore(),
+				autoStructStore(code()),
 				type)));
 	}
 

@@ -23,7 +23,7 @@ import org.o42a.backend.llvm.code.rec.Int64recLLOp;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.Int64recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
@@ -46,10 +46,10 @@ public final class Int64lldAlloc extends SimpleLLDAlloc<Int64recOp> {
 	@Override
 	protected Int64recLLOp op(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		return new Int64recLLOp(id, allocClass, blockPtr, nativePtr);
+		return new Int64recLLOp(id, allocPlace, blockPtr, nativePtr);
 	}
 
 }

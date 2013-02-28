@@ -54,9 +54,9 @@ public final class CStruct<S extends StructOp<S>>
 			StructStore store,
 			Type<S> type,
 			Ptr<S> constant) {
-		super(backend, store != null ? store.getAllocClass() : null, constant);
+		super(backend, store != null ? store.getAllocPlace() : null, constant);
 		this.type = type;
-		this.store = store != null ? store : allocStructStore(getAllocClass());
+		this.store = store != null ? store : allocStructStore(getAllocPlace());
 		this.explicitUses = this.store.init(this, allUses());
 	}
 
@@ -569,7 +569,7 @@ public final class CStruct<S extends StructOp<S>>
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				getAllocPlace());
 	}
 
 	@Override
@@ -594,7 +594,7 @@ public final class CStruct<S extends StructOp<S>>
 								getBackend().underlying(type));
 					}
 				},
-				allocStructStore(getAllocClass()),
+				allocStructStore(getAllocPlace()),
 				type,
 				null));
 	}

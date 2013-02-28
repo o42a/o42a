@@ -19,15 +19,50 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
+import static org.o42a.codegen.data.AllocPlace.staticAllocPlace;
+import static org.o42a.codegen.data.AllocPlace.unknownAllocPlace;
+
+import org.o42a.codegen.code.Code;
+
 
 public enum AllocClass {
 
-	UNKNOWN_ALLOC_CLASS,
-	AUTO_ALLOC_CLASS,
-	STATIC_ALLOC_CLASS,
-	CONSTANT_ALLOC_CLASS;
+	UNKNOWN_ALLOC_CLASS() {
 
-	public static final AllocClass DEFAULT_ALLOC_CLASS = UNKNOWN_ALLOC_CLASS;
+		@Override
+		public AllocPlace allocPlace(Code code) {
+			return unknownAllocPlace();
+		}
+
+	},
+
+	AUTO_ALLOC_CLASS() {
+
+		@Override
+		public AllocPlace allocPlace(Code code) {
+			return code.getAllocator().getAllocPlace();
+		}
+
+	},
+
+	STATIC_ALLOC_CLASS() {
+
+		@Override
+		public AllocPlace allocPlace(Code code) {
+			return staticAllocPlace();
+		}
+
+	},
+
+	CONSTANT_ALLOC_CLASS() {
+
+		@Override
+		public AllocPlace allocPlace(Code code) {
+			return constantAllocPlace();
+		}
+
+	};
 
 	public final boolean isStatic() {
 		return ordinal() >= STATIC_ALLOC_CLASS.ordinal();
@@ -36,5 +71,7 @@ public enum AllocClass {
 	public final boolean isAuto() {
 		return this == AUTO_ALLOC_CLASS;
 	}
+
+	public abstract AllocPlace allocPlace(Code code);
 
 }

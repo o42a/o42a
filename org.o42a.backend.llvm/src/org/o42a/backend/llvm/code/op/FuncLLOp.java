@@ -28,7 +28,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -40,11 +40,11 @@ public final class FuncLLOp<F extends Func<F>>
 
 	public FuncLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr,
 			Signature<F> signature) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 		this.signature = signature;
 	}
 
@@ -65,7 +65,7 @@ public final class FuncLLOp<F extends Func<F>>
 
 		return new FuncLLOp<>(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, castFuncTo(
 						nextPtr,

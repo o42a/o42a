@@ -42,8 +42,8 @@ public abstract class StructOp<S extends StructOp<S>>
 	}
 
 	@Override
-	public final AllocClass getAllocClass() {
-		return writer().getAllocClass();
+	public final AllocPlace getAllocPlace() {
+		return writer().getAllocPlace();
 	}
 
 	public Type<S> getType() {

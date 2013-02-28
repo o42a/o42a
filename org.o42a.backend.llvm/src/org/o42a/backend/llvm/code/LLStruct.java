@@ -49,23 +49,23 @@ public class LLStruct<S extends StructOp<S>>
 
 	public LLStruct(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			ContainerLLDAlloc<S> type,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 		this.type = type;
 	}
 
 	public LLStruct(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			Type<S> type,
 			long blockPtr,
 			long nativePtr) {
 		this(
 				id,
-				allocClass,
+				allocPlace,
 				(ContainerLLDAlloc<S>) type.pointer(type.getGenerator())
 				.getAllocation(),
 				blockPtr,
@@ -84,7 +84,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new Int8recLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -96,7 +96,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new Int16recLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -108,7 +108,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new Int32recLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -120,7 +120,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new Int64recLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -132,7 +132,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new Fp32recLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -144,7 +144,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new Fp64recLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -158,7 +158,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new SystemLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				typeAlloc.exists() ? field(id, llvm, field) : 0L,
 				typeAlloc);
@@ -171,7 +171,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new AnyRecLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -183,7 +183,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new DataRecLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -211,7 +211,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new RelRecLLOp(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
 	}
@@ -226,7 +226,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return field.op(new LLStruct<>(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				field,
 				llvm.nextPtr(),
 				field(id, llvm, field.pointer(code.getGenerator()))));
@@ -242,7 +242,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new FuncLLOp<>(
 				id,
-				getAllocClass(),
+				getAllocPlace(),
 				llvm.nextPtr(),
 				field(id, llvm, field),
 				field.getSignature());
