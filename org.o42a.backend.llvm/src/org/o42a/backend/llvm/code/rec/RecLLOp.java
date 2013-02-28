@@ -52,6 +52,7 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 	}
 
 	public final O load(ID id, Code code, Atomicity atomicity) {
+		assert getAllocPlace().ensureAccessibleFrom(code);
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
@@ -76,6 +77,7 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 	}
 
 	public final void store(Code code, O value, Atomicity atomicity) {
+		assert getAllocPlace().ensureAccessibleFrom(code);
 
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
