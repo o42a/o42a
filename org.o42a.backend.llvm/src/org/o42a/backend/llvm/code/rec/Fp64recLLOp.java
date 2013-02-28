@@ -22,7 +22,7 @@ package org.o42a.backend.llvm.code.rec;
 import org.o42a.backend.llvm.code.op.Fp64llOp;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.Fp64recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -32,10 +32,10 @@ public final class Fp64recLLOp
 
 	public Fp64recLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 	}
 
 	@Override

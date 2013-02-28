@@ -53,8 +53,8 @@ public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
 	}
 
 	@Override
-	protected RelRecOp op(OpBE<RelRecOp> backend, AllocClass allocClass) {
-		return new RelRecCOp(backend, allocRecStore(allocClass), getPointer());
+	protected RelRecOp op(OpBE<RelRecOp> backend, AllocPlace allocPlace) {
+		return new RelRecCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
 }

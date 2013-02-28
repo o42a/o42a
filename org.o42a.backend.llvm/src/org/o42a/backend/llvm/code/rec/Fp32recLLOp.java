@@ -22,7 +22,7 @@ package org.o42a.backend.llvm.code.rec;
 import org.o42a.backend.llvm.code.op.Fp32llOp;
 import org.o42a.codegen.code.op.Fp32op;
 import org.o42a.codegen.code.op.Fp32recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -32,10 +32,10 @@ public final class Fp32recLLOp
 
 	public Fp32recLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 	}
 
 	@Override

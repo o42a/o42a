@@ -76,10 +76,10 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 	@Override
 	protected StructRecOp<S> op(
 			OpBE<StructRecOp<S>> backend,
-			AllocClass allocClass) {
+			AllocPlace allocPlace) {
 		return new StructRecCOp<>(
 				backend,
-				allocRecStore(allocClass),
+				allocRecStore(allocPlace),
 				getType(),
 				getPointer());
 	}

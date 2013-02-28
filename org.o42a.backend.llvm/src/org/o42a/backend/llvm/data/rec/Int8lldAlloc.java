@@ -23,7 +23,7 @@ import org.o42a.backend.llvm.code.rec.Int8recLLOp;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.Int8recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
@@ -46,10 +46,10 @@ public final class Int8lldAlloc extends SimpleLLDAlloc<Int8recOp> {
 	@Override
 	protected Int8recLLOp op(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		return new Int8recLLOp(id, allocClass, blockPtr, nativePtr);
+		return new Int8recLLOp(id, allocPlace, blockPtr, nativePtr);
 	}
 
 }

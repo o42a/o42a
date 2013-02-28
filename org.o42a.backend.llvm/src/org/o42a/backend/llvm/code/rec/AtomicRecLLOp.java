@@ -27,7 +27,7 @@ import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AtomicRecOp;
 import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -37,10 +37,10 @@ public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
 
 	public AtomicRecLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 	}
 
 	@Override

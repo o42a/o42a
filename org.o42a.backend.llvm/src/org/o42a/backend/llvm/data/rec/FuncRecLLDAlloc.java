@@ -25,7 +25,7 @@ import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
@@ -53,12 +53,12 @@ public final class FuncRecLLDAlloc<F extends Func<F>>
 	@Override
 	protected FuncOp<F> op(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
 		return new FuncLLOp<>(
 				id,
-				allocClass,
+				allocPlace,
 				blockPtr,
 				nativePtr,
 				this.signature);

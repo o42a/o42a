@@ -24,7 +24,7 @@ import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.DataLayout;
@@ -53,12 +53,12 @@ public final class StructRecLLDAlloc<S extends StructOp<S>>
 	@Override
 	protected StructRecOp<S> op(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
 		return new StructRecLLOp<>(
 				id,
-				allocClass,
+				allocPlace,
 				this.type,
 				blockPtr,
 				nativePtr);

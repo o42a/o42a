@@ -25,7 +25,7 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int32recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Int32recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Int32rec;
 import org.o42a.codegen.data.SubData;
 
@@ -52,8 +52,8 @@ public final class Int32cdAlloc
 	}
 
 	@Override
-	protected Int32recOp op(OpBE<Int32recOp> backend, AllocClass allocClass) {
-		return new Int32recCOp(backend, allocRecStore(allocClass), getPointer());
+	protected Int32recOp op(OpBE<Int32recOp> backend, AllocPlace allocPlace) {
+		return new Int32recCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
 }

@@ -19,7 +19,10 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.codegen.data.AllocPlace.autoAllocPlace;
+
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -27,6 +30,7 @@ public abstract class Allocator extends Block {
 
 	static final Disposal NO_DISPOSAL = new NoDisposal();
 
+	private final AllocPlace allocPlace = autoAllocPlace(this);
 	private Code allocation;
 	private Disposal lastDisposal = NO_DISPOSAL;
 	private Disposal disposal = NO_DISPOSAL;
@@ -37,6 +41,10 @@ public abstract class Allocator extends Block {
 
 	Allocator(Generator generator, ID id) {
 		super(generator, id);
+	}
+
+	public final AllocPlace getAllocPlace() {
+		return this.allocPlace;
 	}
 
 	public final void addDisposal(Disposal disposal) {

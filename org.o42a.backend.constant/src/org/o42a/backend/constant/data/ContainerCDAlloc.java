@@ -148,7 +148,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 								part().underlying());
 					}
 				},
-				allocStructStore(allocClass),
+				allocStructStore(allocClass.allocPlace(ccode.code())),
 				type,
 				getPointer()));
 	}

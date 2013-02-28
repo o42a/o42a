@@ -19,46 +19,61 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.UNKNOWN_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
+import static org.o42a.codegen.data.AllocPlace.staticAllocPlace;
+import static org.o42a.codegen.data.AllocPlace.unknownAllocPlace;
 
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.op.InstrBE;
 import org.o42a.backend.constant.code.op.OpBE;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 
 
 public abstract class RecStore {
 
-	private static final RecStore[] ALLOC_STORES;
+	private static final AllocRecStore[] ALLOC_STORES =
+			new AllocRecStore[AllocClass.values().length];
 
 	static {
+		ALLOC_STORES[UNKNOWN_ALLOC_CLASS.ordinal()] =
+				new AllocRecStore(unknownAllocPlace());
+		ALLOC_STORES[STATIC_ALLOC_CLASS.ordinal()] =
+				new AllocRecStore(staticAllocPlace());
+		ALLOC_STORES[CONSTANT_ALLOC_CLASS.ordinal()] =
+				new AllocRecStore(constantAllocPlace());
+	}
 
-		final AllocClass[] allocClasses = AllocClass.values();
+	public static RecStore autoRecStore(Code code) {
+		return new AllocRecStore(code.getAllocator().getAllocPlace());
+	}
 
-		ALLOC_STORES = new RecStore[allocClasses.length];
-		for (int i = 0; i < allocClasses.length; ++i) {
-			ALLOC_STORES[i] = new AllocRecStore(allocClasses[i]);
+	public static RecStore allocRecStore(AllocPlace allocPlace) {
+
+		final AllocRecStore store =
+				ALLOC_STORES[allocPlace.getAllocClass().ordinal()];
+
+		if (store != null) {
+			return store;
 		}
+
+		return new AllocRecStore(allocPlace);
 	}
 
-	public static RecStore autoRecStore() {
-		return allocRecStore(AUTO_ALLOC_CLASS);
+	private final AllocPlace allocPlace;
+
+	public RecStore(AllocPlace allocPlace) {
+		this.allocPlace = allocPlace;
 	}
 
-	public static RecStore allocRecStore(AllocClass allocClass) {
-		return ALLOC_STORES[allocClass.ordinal()];
-	}
-
-	private final AllocClass allocClass;
-
-	public RecStore(AllocClass allocClass) {
-		this.allocClass = allocClass;
-	}
-
-	public final AllocClass getAllocClass() {
-		return this.allocClass;
+	public final AllocPlace getAllocPlace() {
+		return this.allocPlace;
 	}
 
 	public abstract <O extends Op> void store(
@@ -72,7 +87,7 @@ public abstract class RecStore {
 
 	@Override
 	public String toString() {
-		return String.valueOf(this.allocClass);
+		return String.valueOf(this.allocPlace);
 	}
 
 	protected abstract Usable<SimpleUsage> init(

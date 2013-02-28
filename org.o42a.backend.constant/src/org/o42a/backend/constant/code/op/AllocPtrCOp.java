@@ -22,7 +22,7 @@ package org.o42a.backend.constant.code.op;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -30,15 +30,15 @@ public abstract class AllocPtrCOp<P extends AllocPtrOp<P>>
 		extends DataPtrCOp<P>
 		implements AllocPtrOp<P> {
 
-	public AllocPtrCOp(OpBE<P> backend, AllocClass allocClass) {
-		super(backend, allocClass);
+	public AllocPtrCOp(OpBE<P> backend, AllocPlace allocPlace) {
+		super(backend, allocPlace);
 	}
 
 	public AllocPtrCOp(
 			OpBE<P> backend,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			Ptr<P> constant) {
-		super(backend, allocClass, constant);
+		super(backend, allocPlace, constant);
 	}
 
 	@Override

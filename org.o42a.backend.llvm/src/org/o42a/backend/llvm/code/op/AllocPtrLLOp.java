@@ -22,7 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -32,10 +32,10 @@ public abstract class AllocPtrLLOp<P extends AllocPtrOp<P>>
 
 	public AllocPtrLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 	}
 
 	@Override

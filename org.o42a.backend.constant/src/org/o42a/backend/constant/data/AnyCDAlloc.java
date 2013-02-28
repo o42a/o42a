@@ -21,6 +21,7 @@ package org.o42a.backend.constant.data;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.AnyCOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.backend.CodeWriter;
@@ -41,8 +42,11 @@ public final class AnyCDAlloc extends CDAlloc<AnyOp> {
 
 	@Override
 	public AnyCOp op(ID id, AllocClass allocClass, CodeWriter writer) {
+
+		final CCode<?> ccode = cast(writer);
+
 		return new AnyCOp(
-				new OpBE<AnyOp>(id, cast(writer)) {
+				new OpBE<AnyOp>(id, ccode) {
 					@Override
 					public void prepare() {
 					}
@@ -53,7 +57,7 @@ public final class AnyCDAlloc extends CDAlloc<AnyOp> {
 								part().underlying());
 					}
 				},
-				allocClass,
+				allocClass.allocPlace(ccode.code()),
 				getPointer());
 	}
 

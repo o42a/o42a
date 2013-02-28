@@ -55,8 +55,8 @@ public final class DataRecCDAlloc
 	}
 
 	@Override
-	protected DataRecOp op(OpBE<DataRecOp> backend, AllocClass allocClass) {
-		return new DataRecCOp(backend, allocRecStore(allocClass), getPointer());
+	protected DataRecOp op(OpBE<DataRecOp> backend, AllocPlace allocPlace) {
+		return new DataRecCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
 }

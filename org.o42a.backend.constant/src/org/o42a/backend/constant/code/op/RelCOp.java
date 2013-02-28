@@ -84,7 +84,7 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 								cast(from).backend().underlying());
 					}
 				},
-				from.getAllocClass()/* Points to the same allocation unit. */);
+				from.getAllocPlace()/* Points to the same allocation unit. */);
 	}
 
 	@Override

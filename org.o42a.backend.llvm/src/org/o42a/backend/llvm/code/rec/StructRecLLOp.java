@@ -22,7 +22,7 @@ package org.o42a.backend.llvm.code.rec;
 import org.o42a.backend.llvm.code.LLStruct;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
@@ -35,11 +35,11 @@ public final class StructRecLLOp<S extends StructOp<S>>
 
 	public StructRecLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			Type<S> type,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 		this.type = type;
 	}
 

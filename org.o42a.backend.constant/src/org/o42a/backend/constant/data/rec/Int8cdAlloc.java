@@ -25,7 +25,7 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int8recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Int8recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Int8rec;
 import org.o42a.codegen.data.SubData;
 
@@ -51,8 +51,8 @@ public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
 	}
 
 	@Override
-	protected Int8recOp op(OpBE<Int8recOp> backend, AllocClass allocClass) {
-		return new Int8recCOp(backend, allocRecStore(allocClass), getPointer());
+	protected Int8recOp op(OpBE<Int8recOp> backend, AllocPlace allocPlace) {
+		return new Int8recCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
 }

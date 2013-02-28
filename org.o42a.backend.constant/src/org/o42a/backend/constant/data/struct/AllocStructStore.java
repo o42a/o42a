@@ -30,18 +30,18 @@ import org.o42a.codegen.data.*;
 
 final class AllocStructStore extends StructStore {
 
-	public AllocStructStore(AllocClass allocClass) {
-		super(allocClass);
+	AllocStructStore(AllocPlace allocPlace) {
+		super(allocPlace);
 	}
 
 	@Override
 	public RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field) {
-		return new FieldStore(getAllocClass(), struct);
+		return new FieldStore(getAllocPlace(), struct);
 	}
 
 	@Override
 	public SystemStore systemStore(CStruct<?> struct, SystemData field) {
-		return new SystemFieldStore(getAllocClass(), struct);
+		return new SystemFieldStore(getAllocPlace(), struct);
 	}
 
 	@Override
@@ -61,10 +61,10 @@ final class AllocStructStore extends StructStore {
 		private final CStruct<?> enclosing;
 		private final RecStore recStore;
 
-		FieldStore(AllocClass allocClass, CStruct<?> struct) {
-			super(allocClass);
+		FieldStore(AllocPlace allocPlace, CStruct<?> struct) {
+			super(allocPlace);
 			this.enclosing = struct;
-			this.recStore = allocRecStore(allocClass);
+			this.recStore = allocRecStore(allocPlace);
 		}
 
 		@Override
@@ -95,10 +95,10 @@ final class AllocStructStore extends StructStore {
 		private final CStruct<?> enclosing;
 		private final SystemStore systemStore;
 
-		SystemFieldStore(AllocClass allocClass, CStruct<?> struct) {
-			super(allocClass);
+		SystemFieldStore(AllocPlace allocPlace, CStruct<?> struct) {
+			super(allocPlace);
 			this.enclosing = struct;
-			this.systemStore = allocSystemStore(allocClass);
+			this.systemStore = allocSystemStore(allocPlace);
 		}
 
 		@Override
@@ -117,7 +117,7 @@ final class AllocStructStore extends StructStore {
 		private final AllocStructStore structStore;
 
 		SubStore(AllocStructStore allocStore, CStruct<?> enclosing) {
-			super(allocStore.getAllocClass());
+			super(allocStore.getAllocPlace());
 			this.enclosing = enclosing;
 			this.structStore = allocStore;
 		}

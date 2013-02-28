@@ -22,39 +22,48 @@ package org.o42a.backend.constant.code.op;
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 
 
 public abstract class SystemStore {
 
-	private static final SystemStore[] ALLOC_STORES;
+	private static final AllocSystemStore[] ALLOC_STORES =
+			new AllocSystemStore[AllocClass.values().length];
 
 	static {
+		ALLOC_STORES[AllocClass.UNKNOWN_ALLOC_CLASS.ordinal()] =
+				new AllocSystemStore(AllocPlace.unknownAllocPlace());
+		ALLOC_STORES[AllocClass.STATIC_ALLOC_CLASS.ordinal()] =
+				new AllocSystemStore(AllocPlace.staticAllocPlace());
+		ALLOC_STORES[AllocClass.CONSTANT_ALLOC_CLASS.ordinal()] =
+				new AllocSystemStore(AllocPlace.constantAllocPlace());
+	}
 
-		final AllocClass[] allocClasses = AllocClass.values();
+	public static SystemStore allocSystemStore(AllocPlace allocPlace) {
 
-		ALLOC_STORES = new SystemStore[allocClasses.length];
-		for (int i = 0; i < allocClasses.length; ++i) {
-			ALLOC_STORES[i] = new AllocSystemStore(allocClasses[i]);
+		final AllocSystemStore store =
+				ALLOC_STORES[allocPlace.getAllocClass().ordinal()];
+
+		if (store != null) {
+			return store;
 		}
+
+		return new AllocSystemStore(allocPlace);
 	}
 
-	public static SystemStore allocSystemStore(AllocClass allocClass) {
-		return ALLOC_STORES[allocClass.ordinal()];
+	private final AllocPlace allocPlace;
+
+	public SystemStore(AllocPlace allocPlace) {
+		this.allocPlace = allocPlace;
 	}
 
-	private final AllocClass allocClass;
-
-	public SystemStore(AllocClass allocClass) {
-		this.allocClass = allocClass;
-	}
-
-	public final AllocClass getAllocClass() {
-		return this.allocClass;
+	public final AllocPlace getAllocPlace() {
+		return this.allocPlace;
 	}
 
 	@Override
 	public String toString() {
-		return String.valueOf(this.allocClass);
+		return String.valueOf(this.allocPlace);
 	}
 
 	protected abstract Usable<SimpleUsage> init(

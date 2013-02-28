@@ -27,7 +27,7 @@ import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
@@ -37,13 +37,13 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 
 	public AnyCOp(
 			OpBE<AnyOp> backend,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			Ptr<AnyOp> constant) {
-		super(backend, allocClass, constant);
+		super(backend, allocPlace, constant);
 	}
 
-	public AnyCOp(OpBE<AnyOp> backend, AllocClass allocClass) {
-		super(backend, allocClass);
+	public AnyCOp(OpBE<AnyOp> backend, AllocPlace allocPlace) {
+		super(backend, allocPlace);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				allocRecStore(getAllocClass()));
+				allocRecStore(getAllocPlace()));
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				allocRecStore(getAllocClass()));
+				allocRecStore(getAllocPlace()));
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				allocRecStore(getAllocClass()));
+				allocRecStore(getAllocPlace()));
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				allocRecStore(getAllocClass()));
+				allocRecStore(getAllocPlace()));
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				allocRecStore(getAllocClass()));
+				allocRecStore(getAllocPlace()));
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				allocRecStore(getAllocClass()));
+				allocRecStore(getAllocPlace()));
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				allocRecStore(getAllocClass()));
+				allocRecStore(getAllocPlace()));
 	}
 
 	@Override
@@ -211,7 +211,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				allocRecStore(getAllocClass()));
+				allocRecStore(getAllocPlace()));
 	}
 
 	@Override
@@ -232,7 +232,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				getAllocPlace());
 	}
 
 	@Override
@@ -257,13 +257,13 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 								getBackend().underlying(type));
 					}
 				},
-				allocStructStore(getAllocClass()),
+				allocStructStore(getAllocPlace()),
 				type));
 	}
 
 	@Override
 	public AnyCOp create(OpBE<AnyOp> backend, Ptr<AnyOp> constant) {
-		return new AnyCOp(backend, getAllocClass(), constant);
+		return new AnyCOp(backend, getAllocPlace(), constant);
 	}
 
 }

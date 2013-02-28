@@ -22,7 +22,7 @@ package org.o42a.backend.llvm.code.rec;
 import org.o42a.backend.llvm.code.op.Int16llOp;
 import org.o42a.codegen.code.op.Int16op;
 import org.o42a.codegen.code.op.Int16recOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
@@ -32,10 +32,10 @@ public final class Int16recLLOp
 
 	public Int16recLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		super(id, allocClass, blockPtr, nativePtr);
+		super(id, allocPlace, blockPtr, nativePtr);
 	}
 
 	@Override

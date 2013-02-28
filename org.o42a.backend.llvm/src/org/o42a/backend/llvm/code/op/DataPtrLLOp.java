@@ -22,7 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLCode.typePtr;
-import static org.o42a.codegen.data.AllocClass.DEFAULT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocPlace.defaultAllocPlace;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
@@ -31,7 +31,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.code.op.IntOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
@@ -40,20 +40,20 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 		extends PtrLLOp<P>
 		implements DataPtrOp<P> {
 
-	private final AllocClass allocClass;
+	private final AllocPlace allocPlace;
 
 	public DataPtrLLOp(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
 		super(id, blockPtr, nativePtr);
-		this.allocClass = allocClass != null ? allocClass : DEFAULT_ALLOC_CLASS;
+		this.allocPlace = allocPlace != null ? allocPlace : defaultAllocPlace();
 	}
 
 	@Override
-	public final AllocClass getAllocClass() {
-		return this.allocClass;
+	public final AllocPlace getAllocPlace() {
+		return this.allocPlace;
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 
 		return new AnyLLOp(
 				castId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(nextPtr, toAny(
 						nextPtr,
@@ -105,7 +105,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 
 		return new DataLLOp(
 				castId,
-				getAllocClass(),
+				getAllocPlace(),
 				nextPtr,
 				llvm.instr(
 						nextPtr,
@@ -129,7 +129,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 
 		return type.op(new LLStruct<>(
 				castId,
-				getAllocClass(),
+				getAllocPlace(),
 				type,
 				nextPtr,
 				llvm.instr(nextPtr, castStructTo(

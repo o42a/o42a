@@ -20,16 +20,16 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
-import static org.o42a.codegen.data.AllocClass.DEFAULT_ALLOC_CLASS;
-import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
+import static org.o42a.codegen.data.AllocPlace.defaultAllocPlace;
+import static org.o42a.codegen.data.AllocPlace.staticAllocPlace;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.code.op.IntOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.util.string.ID;
 
@@ -38,37 +38,37 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 		extends PtrCOp<P, Ptr<P>>
 		implements DataPtrOp<P> {
 
-	private final AllocClass allocClass;
+	private final AllocPlace allocPlace;
 
-	public DataPtrCOp(OpBE<P> backend, AllocClass allocClass) {
+	public DataPtrCOp(OpBE<P> backend, AllocPlace allocPlace) {
 		super(backend);
-		if (allocClass != null) {
-			this.allocClass = allocClass;
+		if (allocPlace != null) {
+			this.allocPlace = allocPlace;
 		} else {
-			this.allocClass = DEFAULT_ALLOC_CLASS;
+			this.allocPlace = defaultAllocPlace();
 		}
 	}
 
-	public DataPtrCOp(OpBE<P> backend, AllocClass allocClass, Ptr<P> constant) {
+	public DataPtrCOp(OpBE<P> backend, AllocPlace allocPlace, Ptr<P> constant) {
 		super(backend, constant);
 		if (constant != null) {
 			if (constant.isPtrToConstant()) {
-				this.allocClass = CONSTANT_ALLOC_CLASS;
+				this.allocPlace = constantAllocPlace();
 			} else {
-				this.allocClass = STATIC_ALLOC_CLASS;
+				this.allocPlace = staticAllocPlace();
 			}
 		} else {
-			if (allocClass != null) {
-				this.allocClass = allocClass;
+			if (allocPlace != null) {
+				this.allocPlace = allocPlace;
 			} else {
-				this.allocClass = DEFAULT_ALLOC_CLASS;
+				this.allocPlace = defaultAllocPlace();
 			}
 		}
 	}
 
 	@Override
-	public final AllocClass getAllocClass() {
-		return this.allocClass;
+	public final AllocPlace getAllocPlace() {
+		return this.allocPlace;
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				getAllocPlace());
 	}
 
 	@SuppressWarnings("unchecked")

@@ -23,7 +23,7 @@ import org.o42a.backend.llvm.code.op.DataLLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
@@ -51,10 +51,10 @@ public final class DataLLDAlloc extends SimpleLLDAlloc<DataOp> {
 	@Override
 	protected DataLLOp op(
 			ID id,
-			AllocClass allocClass,
+			AllocPlace allocPlace,
 			long blockPtr,
 			long nativePtr) {
-		return new DataLLOp(id, allocClass, blockPtr, nativePtr);
+		return new DataLLOp(id, allocPlace, blockPtr, nativePtr);
 	}
 
 }

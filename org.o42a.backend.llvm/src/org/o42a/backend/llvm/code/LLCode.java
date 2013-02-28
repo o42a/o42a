@@ -20,8 +20,7 @@
 package org.o42a.backend.llvm.code;
 
 import static org.o42a.codegen.code.op.Op.PHI_ID;
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.code.rec.AnyRecLLOp;
@@ -239,7 +238,7 @@ public abstract class LLCode implements CodeWriter {
 	public AnyLLOp nullPtr() {
 		return new AnyLLOp(
 				code().getOpNames().opId(null),
-				CONSTANT_ALLOC_CLASS,
+				constantAllocPlace(),
 				nextPtr(),
 				nullPtr(getModule().getNativePtr()));
 	}
@@ -248,7 +247,7 @@ public abstract class LLCode implements CodeWriter {
 	public AnyLLOp allOnesPtr() {
 		return new AnyLLOp(
 				code().getOpNames().opId(null),
-				CONSTANT_ALLOC_CLASS,
+				constantAllocPlace(),
 				nextPtr(),
 				allOnesPtr(getModule().getNativePtr()));
 	}
@@ -257,7 +256,7 @@ public abstract class LLCode implements CodeWriter {
 	public DataLLOp nullDataPtr() {
 		return new DataLLOp(
 				code().getOpNames().opId(null),
-				CONSTANT_ALLOC_CLASS,
+				constantAllocPlace(),
 				nextPtr(),
 				nullPtr(getModule().getNativePtr()));
 	}
@@ -270,7 +269,7 @@ public abstract class LLCode implements CodeWriter {
 
 		return allocation.getType().op(new LLStruct<>(
 				code().getOpNames().opId(null),
-				CONSTANT_ALLOC_CLASS,
+				constantAllocPlace(),
 				allocation,
 				nextPtr(),
 				nullStructPtr(allocation.getTypePtr())));
@@ -300,16 +299,18 @@ public abstract class LLCode implements CodeWriter {
 
 		return type.getType().op(new LLStruct<>(
 				id,
-				AUTO_ALLOC_CLASS,
+				code().getAllocator().getAllocPlace(),
 				type,
 				nextPtr,
-				instr(nextPtr, allocateStruct(
+				instr(
 						nextPtr,
-						nextInstr(),
-						ids.write(id),
-						ids.length(),
-						type.getTypePtr(),
-						type.getLayout().alignment().getBytes()))));
+						allocateStruct(
+								nextPtr,
+								nextInstr(),
+								ids.write(id),
+								ids.length(),
+								type.getTypePtr(),
+								type.getLayout().alignment().getBytes()))));
 	}
 
 	@Override
@@ -320,13 +321,15 @@ public abstract class LLCode implements CodeWriter {
 
 		return new AnyRecLLOp(
 				id,
-				AUTO_ALLOC_CLASS,
+				code().getAllocator().getAllocPlace(),
 				nextPtr,
-				instr(nextPtr, allocatePtr(
+				instr(
 						nextPtr,
-						nextInstr(),
-						ids.write(id),
-						ids.length())));
+						allocatePtr(
+								nextPtr,
+								nextInstr(),
+								ids.write(id),
+								ids.length())));
 	}
 
 	@Override
@@ -341,15 +344,16 @@ public abstract class LLCode implements CodeWriter {
 
 		return new StructRecLLOp<>(
 				id,
-				AUTO_ALLOC_CLASS,
+				code().getAllocator().getAllocPlace(),
 				alloc.getType(),
 				nextPtr,
-				instr(nextPtr, allocateStructPtr(
+				instr(nextPtr,
+						allocateStructPtr(
 						nextPtr,
-						nextInstr(),
-						ids.write(id),
-						ids.length(),
-						alloc.getTypePtr())));
+								nextInstr(),
+								ids.write(id),
+								ids.length(),
+								alloc.getTypePtr())));
 	}
 
 	@Override

@@ -30,7 +30,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.AllocPlace;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
 
@@ -72,10 +72,10 @@ public final class FuncRecCDAlloc<F extends Func<F>>
 	}
 
 	@Override
-	protected FuncOp<F> op(OpBE<FuncOp<F>> backend, AllocClass allocClass) {
+	protected FuncOp<F> op(OpBE<FuncOp<F>> backend, AllocPlace allocPlace) {
 		return new FuncCOp<>(
 				backend,
-				allocRecStore(allocClass), getSignature());
+				allocRecStore(allocPlace), getSignature());
 	}
 
 }
