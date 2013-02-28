@@ -121,19 +121,25 @@ void o42a_dbg_start_thread(struct o42a_dbg_env *env) {
 		}
 	}
 
-	// Set the debug options.
+	// Set debug options.
+	const o42a_bool_t quiet = dbg_thread_isenv(
+			env->thread_name,
+			"QUIET",
+			o42a_dbg_default_options.quiet);
+
+	env->options.quiet = quiet;
 	env->options.no_debug_messages = dbg_thread_isenv(
 			env->thread_name,
 			"NO_DEBUG_MESSAGES",
-			o42a_dbg_default_options.no_debug_messages);
+			quiet || o42a_dbg_default_options.no_debug_messages);
 	env->options.debug_blocks_omitted = dbg_thread_isenv(
 			env->thread_name,
 			"DEBUG_BLOCKS_OMITTED",
-			o42a_dbg_default_options.debug_blocks_omitted);
+			quiet || o42a_dbg_default_options.debug_blocks_omitted);
 	env->options.silent_calls = dbg_thread_isenv(
 			env->thread_name,
 			"SILENT_CALLS",
-			o42a_dbg_default_options.silent_calls);
+			quiet || o42a_dbg_default_options.silent_calls);
 }
 
 static volatile sig_atomic_t program_error_in_progress = 0;

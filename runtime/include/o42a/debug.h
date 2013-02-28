@@ -44,6 +44,8 @@ struct o42a_dbg_stack_frame {
 
 typedef struct o42a_dbg_options {
 
+	o42a_bool_t quiet;
+
 	o42a_bool_t no_debug_messages;
 
 	o42a_bool_t debug_blocks_omitted;

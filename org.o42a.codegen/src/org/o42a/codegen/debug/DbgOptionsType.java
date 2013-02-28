@@ -13,6 +13,7 @@ public class DbgOptionsType extends Type<DbgOptionsType.Op> {
 
 	public static final DbgOptionsType DBG_OPTIONS_TYPE = new DbgOptionsType();
 
+	private Int8rec quiet;
 	private Int8rec noDebugMessages;
 	private Int8rec debugBlocksOmitted;
 	private Int8rec silentCalls;
@@ -26,12 +27,16 @@ public class DbgOptionsType extends Type<DbgOptionsType.Op> {
 		return true;
 	}
 
-	public final Int8rec debugBlocksOmitted() {
-		return this.debugBlocksOmitted;
+	public final Int8rec quiet() {
+		return this.quiet;
 	}
 
 	public final Int8rec noDebugMessages() {
 		return this.noDebugMessages;
+	}
+
+	public final Int8rec debugBlocksOmitted() {
+		return this.debugBlocksOmitted;
 	}
 
 	public final Int8rec silentCalls() {
@@ -45,6 +50,7 @@ public class DbgOptionsType extends Type<DbgOptionsType.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
+		this.quiet = data.addInt8("quiet");
 		this.noDebugMessages = data.addInt8("no_debug_messages");
 		this.debugBlocksOmitted = data.addInt8("debug_blocks_omitted");
 		this.silentCalls = data.addInt8("silent_calls");
