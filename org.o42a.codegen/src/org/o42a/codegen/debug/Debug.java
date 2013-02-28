@@ -20,6 +20,7 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
+import static org.o42a.codegen.debug.DbgOptionsType.DBG_OPTIONS_TYPE;
 import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
 import static org.o42a.codegen.debug.DebugExitFunc.DEBUG_EXIT;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
@@ -40,7 +41,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.util.string.ID;
 
 
-public class Debug {
+public final class Debug {
 
 	public static final ID DEBUG_ID = ID.id("DEBUG");
 	private static final ID FUNC_NAME_ID = DEBUG_ID.sub("func_name");
@@ -101,6 +102,31 @@ public class Debug {
 
 	public final void setDebugBlocksOmitted(boolean debugBlocksOmitted) {
 		this.settings.setDebugBlocksOmitted(debugBlocksOmitted);
+	}
+
+	public final boolean isSilentCalls() {
+		return this.settings.isSilentCalls();
+	}
+
+	public final void setSilentCalls(boolean silent) {
+		this.settings.setSilentCalls(silent);
+	}
+
+	public void write() {
+		if (!isDebug()) {
+			return;
+		}
+
+		final Generator generator = getGenerator();
+
+		if (generator.isProxied()) {
+			return;
+		}
+
+		generator.newGlobal().export().setConstant().newInstance(
+				ID.rawId("o42a_dbg_default_options"),
+				DBG_OPTIONS_TYPE,
+				this.settings).getPointer();
 	}
 
 	public <F extends Func<F>> void addFunction(ID id, FuncPtr<F> functionPtr) {

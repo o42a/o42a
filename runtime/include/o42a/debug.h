@@ -42,6 +42,16 @@ struct o42a_dbg_stack_frame {
 
 };
 
+typedef struct o42a_dbg_options {
+
+	o42a_bool_t no_debug_messages;
+
+	o42a_bool_t debug_blocks_omitted;
+
+	o42a_bool_t silent_calls;
+
+} o42a_dbg_options_t;
+
 struct o42a_dbg_env {
 
 	const char *thread_name;
@@ -54,6 +64,7 @@ struct o42a_dbg_env {
 
 	uint8_t indent;
 
+	o42a_dbg_options_t options;
 };
 
 
@@ -129,6 +140,8 @@ typedef struct o42a_dbg_type_info5f {
 
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rlist;
+
+extern const o42a_dbg_options_t o42a_dbg_default_options;
 
 void o42a_dbg_start_thread(struct o42a_dbg_env *);
 

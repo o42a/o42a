@@ -112,6 +112,7 @@ public abstract class Generator {
 	public abstract NameEncoder nameEncoder();
 
 	public void write() {
+		getDebug().write();
 		for (;;) {
 
 			final boolean hadGlobals = getGlobals().write();
