@@ -88,6 +88,7 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 			final ID id,
 			final Code code,
 			final Atomicity atomicity) {
+		assert getAllocPlace().ensureAccessibleFrom(code);
 
 		final ID derefId = code.getOpNames().derefId(id, this);
 		final CCode<?> ccode = cast(code);
@@ -127,6 +128,7 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 			final Code code,
 			final O value,
 			final Atomicity atomicity) {
+		assert getAllocPlace().ensureAccessibleFrom(code);
 
 		final COp<O, ?> cValue = cast(value);
 
