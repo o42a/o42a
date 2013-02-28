@@ -24,6 +24,7 @@ final class DebugSettings {
 
 	private boolean debug;
 	private boolean debugBlocksOmitted;
+	private boolean noDebugMessages;
 
 	public final boolean isDebug() {
 		return this.debug;
@@ -33,8 +34,16 @@ final class DebugSettings {
 		this.debug = debug;
 	}
 
+	public final boolean isNoDebugMessages() {
+		return !isDebug() || this.noDebugMessages;
+	}
+
+	public final void setNoDebugMessages(boolean quiet) {
+		this.noDebugMessages = quiet;
+	}
+
 	public final boolean isDebugBlocksOmitted() {
-		return this.debugBlocksOmitted;
+		return !isDebug() || this.debugBlocksOmitted;
 	}
 
 	public final void setDebugBlocksOmitted(boolean debugBlocksOmitted) {

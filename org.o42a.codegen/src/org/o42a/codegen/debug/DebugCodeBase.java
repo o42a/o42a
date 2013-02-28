@@ -71,7 +71,7 @@ public abstract class DebugCodeBase extends CodeBase {
 
 	public void debug(String message, boolean nl) {
 		assert assertIncomplete();
-		if (!getGenerator().isDebug()) {
+		if (getGenerator().getDebug().isNoDebugMessages()) {
 			return;
 		}
 
@@ -87,7 +87,7 @@ public abstract class DebugCodeBase extends CodeBase {
 
 	public final void dumpName(String prefix, Dumpable data) {
 		assert assertIncomplete();
-		if (!getGenerator().isDebug()) {
+		if (getGenerator().getDebug().isNoDebugMessages()) {
 			return;
 		}
 
@@ -106,7 +106,7 @@ public abstract class DebugCodeBase extends CodeBase {
 		assert assertIncomplete();
 		assert func.getSignature().isDebuggable() :
 			"Can not dump " + func + " name: it is not debuggable";
-		if (!getGenerator().isDebug()) {
+		if (getGenerator().getDebug().isNoDebugMessages()) {
 			return;
 		}
 
@@ -127,7 +127,7 @@ public abstract class DebugCodeBase extends CodeBase {
 
 	public final void dump(String message, Dumpable data, int depth) {
 		assert assertIncomplete();
-		if (!getGenerator().isDebug()) {
+		if (getGenerator().getDebug().isNoDebugMessages()) {
 			return;
 		}
 

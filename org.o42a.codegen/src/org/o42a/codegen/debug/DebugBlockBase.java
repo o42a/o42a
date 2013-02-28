@@ -45,7 +45,7 @@ public abstract class DebugBlockBase extends OpBlockBase {
 
 		final Block block = block();
 
-		if (!isDebug() || getGenerator().getDebug().isDebugBlocksOmitted()) {
+		if (getGenerator().getDebug().isDebugBlocksOmitted()) {
 			return new TaskBlock(block, block);
 		}
 

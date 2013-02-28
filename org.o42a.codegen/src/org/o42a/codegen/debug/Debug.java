@@ -87,6 +87,14 @@ public class Debug {
 		this.settings.setDebug(debug);
 	}
 
+	public final boolean isNoDebugMessages() {
+		return this.settings.isNoDebugMessages();
+	}
+
+	public final void setNoDebugMessages(boolean quiet) {
+		this.settings.setNoDebugMessages(quiet);
+	}
+
 	public final boolean isDebugBlocksOmitted() {
 		return this.settings.isDebugBlocksOmitted();
 	}
