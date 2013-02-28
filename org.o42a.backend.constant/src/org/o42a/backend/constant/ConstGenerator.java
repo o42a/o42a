@@ -39,6 +39,7 @@ public final class ConstGenerator extends ProxyGenerator {
 
 	@Override
 	public void write() {
+		getDebug().write();
 
 		final Generator underlyingGenerator =
 				this.backend.getUnderlyingGenerator();

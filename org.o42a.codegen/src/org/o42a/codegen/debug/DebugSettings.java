@@ -19,12 +19,15 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.data.Content;
 
-final class DebugSettings {
+
+final class DebugSettings implements Content<DbgOptionsType> {
 
 	private boolean debug;
-	private boolean debugBlocksOmitted;
 	private boolean noDebugMessages;
+	private boolean debugBlocksOmitted;
+	private boolean silentCalls;
 
 	public final boolean isDebug() {
 		return this.debug;
@@ -48,6 +51,32 @@ final class DebugSettings {
 
 	public final void setDebugBlocksOmitted(boolean debugBlocksOmitted) {
 		this.debugBlocksOmitted = debugBlocksOmitted;
+	}
+
+	public final boolean isSilentCalls() {
+		return !isDebug() || this.silentCalls;
+	}
+
+	public final void setSilentCalls(boolean silentCalls) {
+		this.silentCalls = silentCalls;
+	}
+
+	@Override
+	public void allocated(DbgOptionsType instance) {
+	}
+
+	@Override
+	public void fill(DbgOptionsType instance) {
+		instance.noDebugMessages().setValue(toInt8(isNoDebugMessages()));
+		instance.debugBlocksOmitted().setValue(toInt8(isDebugBlocksOmitted()));
+		instance.silentCalls().setValue(toInt8(isSilentCalls()));
+	}
+
+	private static byte toInt8(boolean value) {
+		if (value) {
+			return 1;
+		}
+		return 0;
 	}
 
 }

@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
 #include "unicode/ustdio.h"
 
@@ -35,31 +36,100 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rlist = {
 
 static __thread o42a_dbg_env_t *dbg_env;
 
+static const char *dbg_thread_getenv(
+		const struct o42a_dbg_env *env,
+		const char *envname) {
+
+	const size_t name_len = strlen(env->thread_name);
+	const size_t envname_len = strlen(envname);
+	char env_name[14 + envname_len + name_len];
+	char *str = env_name;
+
+	memcpy(str, "O42A_THREAD_", 12);
+	memcpy(str += 12, envname, envname_len);
+	str += envname_len;
+	*str = '_';
+	memcpy(str + 1, env->thread_name, name_len + 1);
+
+	return getenv(env_name);
+}
+
+static o42a_bool_t dbg_thread_isenv(
+		const struct o42a_dbg_env *env,
+		const char *envname,
+		o42a_bool_t default_val) {
+
+	const char *value = dbg_thread_getenv(env, envname);
+
+	if (!value) {
+		return default_val;
+	}
+
+	if (default_val) {
+		if (!strcmp(value, "0")) {
+			return O42A_FALSE;
+		}
+		if (!strcasecmp(value, "off")) {
+			return O42A_FALSE;
+		}
+		if (!strcasecmp(value, "false")) {
+			return O42A_FALSE;
+		}
+	} else {
+		if (!strcmp(value, "1")) {
+			return O42A_TRUE;
+		}
+		if (!strcasecmp(value, "on")) {
+			return O42A_TRUE;
+		}
+		if (!strcasecmp(value, "true")) {
+			return O42A_TRUE;
+		}
+	}
+
+	return default_val;
+}
+
 void o42a_dbg_start_thread(struct o42a_dbg_env *env) {
+	env->options = o42a_dbg_default_options;
+	env->output = stderr;
 	dbg_env = env;
 
 	if (env->thread_name) {
 		// Set the output according to the environment variable.
-
-		const size_t name_len = strlen(env->thread_name);
-		char env_name[name_len + 17];
-
-		memcpy(env_name, "O42A_THREAD_LOG_", 16);
-		memcpy(env_name + 16, env->thread_name, name_len + 1);
-
-		const char *const file = getenv(env_name);
+		const char *const file = dbg_thread_getenv(env, "LOG");
 
 		if (file) {
 			env->output = fopen(file, "w");
 			if (env->output) {
 				setvbuf(env->output, (char *) NULL, _IOLBF, 0);
-				return;
+			} else {
+				env->output = stderr;
+				fprintf(stderr, "Cannot write to log file: %s\n", file);
 			}
-			fprintf(stderr, "Cannot write to log file: %s\n", file);
 		}
-	}
 
-	env->output = stderr;
+		env->options.no_debug_messages = dbg_thread_isenv(
+				env,
+				"NO_DEBUG_MESSAGES",
+				o42a_dbg_default_options.no_debug_messages);
+		env->options.debug_blocks_omitted = dbg_thread_isenv(
+				env,
+				"DEBUG_BLOCKS_OMITTED",
+				o42a_dbg_default_options.debug_blocks_omitted);
+		env->options.silent_calls = dbg_thread_isenv(
+				env,
+				"SILENT_CALLS",
+				o42a_dbg_default_options.silent_calls);
+
+		fprintf(
+				stderr,
+				"%s: %d, %d, %d\n",
+				env->thread_name,
+				env->options.no_debug_messages,
+				env->options.debug_blocks_omitted,
+				env->options.silent_calls);
+	}
 }
 
 static volatile sig_atomic_t program_error_in_progress = 0;
@@ -133,7 +203,15 @@ static inline void dbg_print_prefix() {
 	fprintf(dbg_env->output, "[%s] ", dbg_env->stack_frame->name);
 }
 
+static inline void dbg_print(const char *const message) {
+	dbg_print_prefix();
+	fputs(message, dbg_env->output);
+}
+
 void o42a_dbg_print(const char *const message) {
+	if (dbg_env->options.no_debug_messages) {
+		return;
+	}
 	dbg_print_prefix();
 	fputs(message, dbg_env->output);
 }
@@ -142,7 +220,21 @@ void o42a_dbg_print_wo_prefix(const char *const message) {
 	fputs(message, dbg_env->output);
 }
 
+static inline void dbg_printf(const char *format, ...) {
+	va_list args;
+
+	va_start(args, format);
+	dbg_print_prefix();
+
+	vfprintf(dbg_env->output, format, args);
+
+	va_end(args);
+}
+
 void o42a_dbg_printf(const char *format, ...) {
+	if (dbg_env->options.no_debug_messages) {
+		return;
+	}
 	va_list args;
 
 	va_start(args, format);
@@ -168,7 +260,10 @@ static inline void dbg_mem_name(const o42a_dbg_header_t *const header) {
 void o42a_dbg_mem_name(
 		const char *const prefix,
 		const void *const ptr) {
-	o42a_dbg_print(prefix);
+	if (dbg_env->options.no_debug_messages) {
+		return;
+	}
+	dbg_print(prefix);
 	if (!ptr) {
 		fputs("NULL\n", dbg_env->output);
 		return;
@@ -204,7 +299,10 @@ static void dbg_func_name(const void *const ptr) {
 }
 
 void o42a_dbg_func_name(const char *const prefix, const void *const ptr) {
-	o42a_dbg_print(prefix);
+	if (dbg_env->options.no_debug_messages) {
+		return;
+	}
+	dbg_print(prefix);
 	dbg_func_name(ptr);
 	fputc('\n', dbg_env->output);
 }
@@ -407,7 +505,10 @@ void o42a_dbg_dump_mem(
 		const char *const prefix,
 		const void *const ptr,
 		const uint32_t depth) {
-	o42a_dbg_print(prefix);
+	if (dbg_env->options.no_debug_messages) {
+		return;
+	}
+	dbg_print(prefix);
 	fprintf(dbg_env->output, "<0x%lx> ", (long) ptr);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
@@ -455,20 +556,24 @@ o42a_bool_t o42a_dbg_enter(o42a_dbg_stack_frame_t *const stack_frame) {
 		dbg_exit(env, O42A_FALSE);
 		return O42A_FALSE;
 	}
-
-	dbg_indent(0);
-	fprintf(env->output, "<< %s <<\n", env->stack_frame->name);
+	if (!dbg_env->options.silent_calls) {
+		dbg_indent(0);
+		fprintf(env->output, "<< %s <<\n", env->stack_frame->name);
+	}
 
 	return O42A_TRUE;
 }
 
 void o42a_dbg_exit() {
-	dbg_exit(dbg_env, O42A_TRUE);
+	dbg_exit(dbg_env, !dbg_env->options.silent_calls);
 }
 
 void o42a_dbg_do(
 		o42a_dbg_stack_frame_t *const stack_frame,
 		const char *const comment) {
+	if (dbg_env->options.debug_blocks_omitted) {
+		return;
+	}
 
 	o42a_dbg_env_t *const env = dbg_env;
 	o42a_dbg_stack_frame_t *const prev = env->stack_frame;
@@ -478,32 +583,35 @@ void o42a_dbg_do(
 	prev->line = stack_frame->line;
 	prev->comment = comment;
 	if (stack_frame->file) {
-		o42a_dbg_printf(
+		dbg_printf(
 				"((( /* %s */ (%s:%lu)\n",
 				comment,
 				stack_frame->file,
 				(unsigned long) stack_frame->line);
 	} else {
-		o42a_dbg_printf("((( /* %s */\n", comment);
+		dbg_printf("((( /* %s */\n", comment);
 	}
 	env->stack_frame = stack_frame;
 	++env->indent;
 }
 
 void o42a_dbg_done(const uint32_t line) {
+	if (dbg_env->options.debug_blocks_omitted) {
+		return;
+	}
 
 	o42a_dbg_env_t *const env = dbg_env;
 
 	--env->indent;
 	o42a_dbg_stack_frame_t *const prev = env->stack_frame->prev;
 	if (env->stack_frame->file) {
-		o42a_dbg_printf(
+		dbg_printf(
 				"))) /* %s */ (%s:%lu)\n",
 				prev->comment,
 				prev->file,
 				(unsigned long) line);
 	} else {
-		o42a_dbg_printf("))) /* %s */\n", prev->comment);
+		dbg_printf("))) /* %s */\n", prev->comment);
 	}
 	prev->line = line;
 	prev->comment = NULL;
