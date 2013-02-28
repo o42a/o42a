@@ -60,6 +60,9 @@ public abstract class StructStore {
 		if (store != null) {
 			return store;
 		}
+		if (allocClass.isAuto()) {
+			return new AutoStructStore(allocPlace);
+		}
 
 		return new AllocStructStore(allocPlace);
 	}
