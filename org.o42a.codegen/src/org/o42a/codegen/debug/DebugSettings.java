@@ -25,6 +25,7 @@ import org.o42a.codegen.data.Content;
 final class DebugSettings implements Content<DbgOptionsType> {
 
 	private boolean debug;
+	private boolean quiet;
 	private boolean noDebugMessages;
 	private boolean debugBlocksOmitted;
 	private boolean silentCalls;
@@ -37,8 +38,16 @@ final class DebugSettings implements Content<DbgOptionsType> {
 		this.debug = debug;
 	}
 
+	public final boolean isQuiet() {
+		return !isDebug() || this.quiet;
+	}
+
+	public final void setQuiet(boolean quiet) {
+		this.quiet = quiet;
+	}
+
 	public final boolean isNoDebugMessages() {
-		return !isDebug() || this.noDebugMessages;
+		return isQuiet() || this.noDebugMessages;
 	}
 
 	public final void setNoDebugMessages(boolean quiet) {
@@ -46,7 +55,7 @@ final class DebugSettings implements Content<DbgOptionsType> {
 	}
 
 	public final boolean isDebugBlocksOmitted() {
-		return !isDebug() || this.debugBlocksOmitted;
+		return isQuiet() || this.debugBlocksOmitted;
 	}
 
 	public final void setDebugBlocksOmitted(boolean debugBlocksOmitted) {
@@ -54,7 +63,7 @@ final class DebugSettings implements Content<DbgOptionsType> {
 	}
 
 	public final boolean isSilentCalls() {
-		return !isDebug() || this.silentCalls;
+		return isQuiet() || this.silentCalls;
 	}
 
 	public final void setSilentCalls(boolean silentCalls) {
@@ -67,6 +76,7 @@ final class DebugSettings implements Content<DbgOptionsType> {
 
 	@Override
 	public void fill(DbgOptionsType instance) {
+		instance.quiet().setValue(toInt8(isQuiet()));
 		instance.noDebugMessages().setValue(toInt8(isNoDebugMessages()));
 		instance.debugBlocksOmitted().setValue(toInt8(isDebugBlocksOmitted()));
 		instance.silentCalls().setValue(toInt8(isSilentCalls()));

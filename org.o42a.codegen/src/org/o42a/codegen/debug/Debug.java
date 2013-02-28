@@ -88,6 +88,14 @@ public final class Debug {
 		this.settings.setDebug(debug);
 	}
 
+	public final boolean isQuiet() {
+		return this.settings.isQuiet();
+	}
+
+	public final void setQuiet(boolean quiet) {
+		this.settings.setQuiet(quiet);
+	}
+
 	public final boolean isNoDebugMessages() {
 		return this.settings.isNoDebugMessages();
 	}
