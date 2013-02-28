@@ -227,6 +227,9 @@ void o42a_dbg_print(const char *const message) {
 }
 
 void o42a_dbg_print_wo_prefix(const char *const message) {
+	if (dbg_env->options.no_debug_messages) {
+		return;
+	}
 	fputs(message, dbg_env->output);
 }
 
