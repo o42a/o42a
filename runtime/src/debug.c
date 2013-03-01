@@ -222,15 +222,15 @@ void o42a_dbg_print(const char *const message) {
 	if (dbg_env->options.no_debug_messages) {
 		return;
 	}
-	dbg_print_prefix();
-	fputs(message, dbg_env->output);
+	dbg_print(message);
 }
 
-void o42a_dbg_print_wo_prefix(const char *const message) {
+void o42a_dbg_print_nl(const char *const message) {
 	if (dbg_env->options.no_debug_messages) {
 		return;
 	}
-	fputs(message, dbg_env->output);
+	dbg_print(message);
+	fputs("\n", dbg_env->output);
 }
 
 static inline void dbg_printf(const char *format, ...) {

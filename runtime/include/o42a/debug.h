@@ -156,7 +156,7 @@ const o42a_dbg_header_t *o42a_dbg_header(const void *);
 
 void o42a_dbg_print(const char *);
 
-void o42a_dbg_print_wo_prefix(const char *);
+void o42a_dbg_print_nl(const char *);
 
 __attribute__ ((format(printf, 1, 2)))
 void o42a_dbg_printf(const char *, ...);
