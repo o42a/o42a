@@ -48,9 +48,11 @@ public final class ValCopyFunc extends Func<ValCopyFunc> {
 	public void copy(DefDirs dirs, ValOp from) {
 
 		final ValOp to = dirs.value();
+		final Block code = dirs.code();
 
-		invoke(null, dirs.code(), VAL_COPY.result(), from.ptr(), to.ptr());
-		to.go(dirs.code(), dirs.valDirs());
+		invoke(null, code, VAL_COPY.result(), from.ptr(), to.ptr());
+		to.go(code, dirs.valDirs());
+		to.holder().hold(code);
 		dirs.returnValue(to);
 	}
 
