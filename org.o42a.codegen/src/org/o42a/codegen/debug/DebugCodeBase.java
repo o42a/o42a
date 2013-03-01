@@ -74,15 +74,9 @@ public abstract class DebugCodeBase extends CodeBase {
 		if (getGenerator().getDebug().isNoDebugMessages()) {
 			return;
 		}
-
-		printFunc(getGenerator()).op(null, code()).call(
+		printFunc(getGenerator(), nl).op(null, code()).call(
 				code(),
 				binaryMessage(getGenerator(), message).op(null, code()));
-		if (nl) {
-			printWoPrefixFunc(getGenerator()).op(null, code()).call(
-					code(),
-					binaryMessage(getGenerator(), "\n").op(null, code()));
-		}
 	}
 
 	public final void dumpName(String prefix, Dumpable data) {
@@ -145,14 +139,11 @@ public abstract class DebugCodeBase extends CodeBase {
 	}
 
 	protected static final FuncPtr<DebugPrintFunc> printFunc(
-			Generator generator) {
-		return generator.externalFunction().link("o42a_dbg_print", DEBUG_PRINT);
-	}
-
-	protected static final FuncPtr<DebugPrintFunc> printWoPrefixFunc(
-			Generator generator) {
-		return generator.externalFunction()
-				.link("o42a_dbg_print_wo_prefix", DEBUG_PRINT);
+			Generator generator,
+			boolean nl) {
+		return generator.externalFunction().link(
+				nl ? "o42a_dbg_print_nl" : "o42a_dbg_print",
+				DEBUG_PRINT);
 	}
 
 	protected static final Ptr<AnyOp> binaryMessage(
