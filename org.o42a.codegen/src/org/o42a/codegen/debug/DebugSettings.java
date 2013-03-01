@@ -26,9 +26,9 @@ final class DebugSettings implements Content<DbgOptionsType> {
 
 	private boolean debug;
 	private boolean quiet;
-	private boolean noDebugMessages;
-	private boolean debugBlocksOmitted;
-	private boolean silentCalls;
+	private byte noDebugMessages;
+	private byte debugBlocksOmitted;
+	private byte silentCalls;
 
 	public final boolean isDebug() {
 		return this.debug;
@@ -47,27 +47,27 @@ final class DebugSettings implements Content<DbgOptionsType> {
 	}
 
 	public final boolean isNoDebugMessages() {
-		return isQuiet() || this.noDebugMessages;
+		return enabled(this.noDebugMessages);
 	}
 
 	public final void setNoDebugMessages(boolean quiet) {
-		this.noDebugMessages = quiet;
+		this.noDebugMessages = newValue(quiet);
 	}
 
 	public final boolean isDebugBlocksOmitted() {
-		return isQuiet() || this.debugBlocksOmitted;
+		return enabled(this.debugBlocksOmitted);
 	}
 
 	public final void setDebugBlocksOmitted(boolean debugBlocksOmitted) {
-		this.debugBlocksOmitted = debugBlocksOmitted;
+		this.debugBlocksOmitted = newValue(debugBlocksOmitted);
 	}
 
 	public final boolean isSilentCalls() {
-		return isQuiet() || this.silentCalls;
+		return enabled(this.silentCalls);
 	}
 
 	public final void setSilentCalls(boolean silentCalls) {
-		this.silentCalls = silentCalls;
+		this.silentCalls = newValue(silentCalls);
 	}
 
 	@Override
@@ -76,14 +76,38 @@ final class DebugSettings implements Content<DbgOptionsType> {
 
 	@Override
 	public void fill(DbgOptionsType instance) {
-		instance.quiet().setValue(toInt8(isQuiet()));
-		instance.noDebugMessages().setValue(toInt8(isNoDebugMessages()));
-		instance.debugBlocksOmitted().setValue(toInt8(isDebugBlocksOmitted()));
-		instance.silentCalls().setValue(toInt8(isSilentCalls()));
+		instance.quiet().setValue(toInt8(this.quiet));
+		instance.noDebugMessages().setValue(toInt8(this.noDebugMessages));
+		instance.debugBlocksOmitted().setValue(toInt8(this.debugBlocksOmitted));
+		instance.silentCalls().setValue(toInt8(this.silentCalls));
 	}
 
-	private static byte toInt8(boolean value) {
+	private boolean enabled(byte flag) {
+		if (!isDebug()) {
+			return true;
+		}
+		if (isQuiet()) {
+			return flag >= 0;
+		}
+		return flag > 0;
+	}
+
+	private static byte newValue(boolean value) {
 		if (value) {
+			return 1;
+		}
+		return -1;
+	}
+
+	private static byte toInt8(boolean flag) {
+		if (flag) {
+			return 1;
+		}
+		return 0;
+	}
+
+	private static byte toInt8(byte flag) {
+		if (flag > 0) {
 			return 1;
 		}
 		return 0;
