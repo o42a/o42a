@@ -18,7 +18,19 @@ extern "C" {
 #endif
 
 
-enum {
+#ifndef O42A_DEBUG_TYPE
+#define O42A_DEBUG_TYPE O42A_DBG_TYPE_DEFAULT
+#endif
+
+enum o42a_dbg_types {
+
+	O42A_DBG_TYPE_ALL = ~1,
+	O42A_DBG_TYPE_DEFAULT = 0x1,
+	O42A_DBG_TYPE_GC = 0x2,
+
+};
+
+enum o42a_dbg_commands {
 
 	O42A_DBG_CMD_EXEC = 0,
 	O42A_DBG_CMD_REPORT = 1,
@@ -67,6 +79,9 @@ struct o42a_dbg_env {
 	uint8_t indent;
 
 	o42a_dbg_options_t options;
+
+	uint32_t enabled_debug_types;
+
 };
 
 
@@ -144,6 +159,8 @@ typedef struct o42a_dbg_type_info5f {
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rlist;
 
 extern const o42a_dbg_options_t o42a_dbg_default_options;
+
+o42a_bool_t o42a_dbg_ison(uint32_t);
 
 void o42a_dbg_start_thread(struct o42a_dbg_env *);
 

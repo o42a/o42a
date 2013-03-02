@@ -162,8 +162,10 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_RETURN O42A(o42a_dbg_exit()); return
 
+#define o42a_debug_ison o42a_dbg_ison(O42A_DEBUG_TYPE)
+
 #define O42A_DEBUG(format, ...) \
-	o42a_dbg_printf(format, ## __VA_ARGS__)
+	if (o42a_debug_ison) o42a_dbg_printf(format, ## __VA_ARGS__)
 
 #define _O42A_DO_(_sf, _comment) \
 	o42a_dbg_stack_frame_t _sf = { \
@@ -184,16 +186,17 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_DONE o42a_dbg_done(__LINE__)
 
 
-#define o42a_debug(message) O42A(o42a_dbg_print(message))
+#define o42a_debug(message) \
+	if (o42a_debug_ison) O42A(o42a_dbg_print(message))
 
 #define o42a_debug_mem_name(prefix, ptr) \
-	O42A(o42a_dbg_mem_name(prefix, ptr))
+	if (o42a_debug_ison) O42A(o42a_dbg_mem_name(prefix, ptr))
 
 #define o42a_debug_func_name(prefix, ptr) \
-	O42A(o42a_dbg_func_name(prefix, ptr))
+	if (o42a_debug_ison) O42A(o42a_dbg_func_name(prefix, ptr))
 
 #define o42a_debug_dump_mem(prefix, ptr, depth) \
-	O42A(o42a_dbg_dump_mem(prefix, ptr, depth))
+	if (o42a_debug_ison) O42A(o42a_dbg_dump_mem(prefix, ptr, depth))
 
 
 #include "o42a/debug.h"
