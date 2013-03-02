@@ -91,6 +91,8 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 					.link("o42a_obj_gc_desc", GC_DESC_TYPE));
 			instance.prev().setNull();
 			instance.next().setNull();
+			instance.size().setValue(
+					instance.layout(instance.getGenerator()).size());
 		}
 
 	}

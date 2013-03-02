@@ -46,6 +46,7 @@ public final class GCBlockOp extends StructOp<GCBlockOp> {
 		private StructRec<GCDescOp> desc;
 		private StructRec<GCBlockOp> prev;
 		private StructRec<GCBlockOp> next;
+		private Int32rec size;
 
 		private Type() {
 			super(ID.rawId("o42a_gc_block_t"));
@@ -84,6 +85,10 @@ public final class GCBlockOp extends StructOp<GCBlockOp> {
 			return this.next;
 		}
 
+		public final Int32rec size() {
+			return this.size;
+		}
+
 		@Override
 		public GCBlockOp op(StructWriter<GCBlockOp> writer) {
 			return null;
@@ -98,6 +103,7 @@ public final class GCBlockOp extends StructOp<GCBlockOp> {
 			this.desc = data.addPtr("desc", GCDescOp.GC_DESC_TYPE);
 			this.prev = data.addPtr("prev", GC_BLOCK_TYPE);
 			this.next = data.addPtr("next", GC_BLOCK_TYPE);
+			this.size = data.addInt32("size");
 			data.addSystem("padding", GC_BLOCK_PADDING_SYSTEM_TYPE);
 		}
 

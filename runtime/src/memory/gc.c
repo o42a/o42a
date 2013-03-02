@@ -132,13 +132,21 @@ static inline void* o42a_gc_dataof(o42a_gc_block_t *block) {
 	return (void*) &blk->data;
 }
 
-o42a_gc_block_t *o42a_gc_balloc(
+static inline o42a_gc_block_t *gc_balloc(
 		const o42a_gc_desc_t *const desc,
 		const size_t size) {
 	O42A_ENTER(return NULL);
 
-	o42a_gc_block_t *const block =
-			O42A(malloc(sizeof(struct _o42a_gc_block) + size));
+	size_t mem_size = sizeof(struct _o42a_gc_block) + size;
+
+#ifndef NDEBUG
+	const o42a_layout_t dump_layout = O42A_LAYOUT(o42a_dbg_stack_dump_t);
+	o42a_dbg_stack_dump_t stack_dump = o42a_dbg_stack_dump(2);
+	const size_t dump_offset = o42a_layout_pad(mem_size, dump_layout);
+	mem_size = dump_offset + stack_dump.size;
+#endif /* NDEBUG */
+
+	o42a_gc_block_t *const block = O42A(malloc(mem_size));
 
 	if (!block) {
 		O42A(o42a_error_print("Can not allocate memory\n"));
@@ -153,14 +161,28 @@ o42a_gc_block_t *o42a_gc_balloc(
 	block->prev = NULL;
 	block->next = NULL;
 
+#ifndef NDEBUG
+	block->size = dump_offset;
+	o42a_dbg_fill_stack_dump(&stack_dump, ((char *) block) + dump_offset);
+#else
+	block->size = mem_size;
+#endif /* NDEBUG */
+
 	O42A_RETURN block;
+}
+
+o42a_gc_block_t *o42a_gc_balloc(
+		const o42a_gc_desc_t *const desc,
+		const size_t size) {
+	O42A_ENTER(return NULL);
+	O42A_RETURN(gc_balloc(desc, size));
 }
 
 inline void *o42a_gc_alloc(
 		const o42a_gc_desc_t *const desc,
 		const size_t size) {
 	O42A_ENTER(return NULL);
-	O42A_RETURN o42a_gc_dataof(o42a_gc_balloc(desc, size));
+	O42A_RETURN o42a_gc_dataof(gc_balloc(desc, size));
 }
 
 #define valid_lock(_block) !(_block->lock & ~1)
@@ -180,6 +202,7 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 #ifndef NDEBUG
 	block->lock = ~1;
 	block->list = ~1;
+	o42a_dbg_print_stack_dump(((char *) block) + block->size);
 #endif /* NDEBUG */
 	O42A(free(block));
 	O42A_RETURN;

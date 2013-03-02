@@ -25,9 +25,7 @@ extern "C" {
 
 #define O42A_HEADER_SIZE sizeof(o42a_dbg_header_t)
 
-
 #define O42A(exp) (o42a_dbg_set_line(__LINE__), exp)
-
 
 #define O42A_START_THREAD(_thread_name) \
 	struct o42a_dbg_env __thread_dbg_env__ = { \
@@ -48,7 +46,6 @@ extern "C" {
 	if (!o42a_dbg_enter(&__o42a_dbg_stack_frame__)) { \
 		return_null; \
 	}
-
 
 #define O42A_RETURN O42A(o42a_dbg_exit()); return
 
@@ -74,7 +71,6 @@ extern "C" {
 #define O42A_DO(comment) _O42A_DO(__LINE__, __, (comment))
 
 #define O42A_DONE o42a_dbg_done(__LINE__)
-
 
 #define o42a_debug(message) \
 	if (o42a_debug_ison) O42A(o42a_dbg_print(message))
@@ -222,6 +218,30 @@ typedef struct o42a_dbg_type_info5f {
 	o42a_dbg_field_info_t fields[5];
 } o42a_dbg_type_info5f_t;
 
+/**
+ * A dump of the call stack.
+ *
+ * Can be obtained with o42a_dbg_stack_dump.
+ */
+typedef struct o42a_dbg_stack_dump {
+
+	/**
+	 * Number of frames to skip.
+	 */
+	size_t skip_frames;
+
+	/**
+	 * The size of the dump, i.e. a number of bytes to allocate
+	 * before attempting to fill it with o42a_dbg_fill_stack_dump.
+	 */
+	size_t size;
+
+	/**
+	 * A top-level stack frame.
+	 */
+	const o42a_dbg_stack_frame_t *stack_frame;
+
+} o42a_dbg_stack_dump_t;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rlist;
 
@@ -282,6 +302,29 @@ void o42a_dbg_fill_field_info(
 		const o42a_dbg_header_t *,
 		o42a_dbg_field_info_t *);
 
+/**
+ * Creates a dump of the call stack.
+ *
+ * \param skip_frame number of frames to skip.
+ */
+o42a_dbg_stack_dump_t o42a_dbg_stack_dump(size_t);
+
+/**
+ * Fills a dump of the stack with data.
+ *
+ * \param in stack_dump a pointer to the stack dump previously created by
+ * o42a_dbg_stack_dump.
+ * \param data a pointer to the memory to fill. The size of this memory block
+ * should be at least stack_dump->size bytes.
+ */
+void o42a_dbg_fill_stack_dump(const o42a_dbg_stack_dump_t *, void *);
+
+/**
+ * Prints a stack frame data to the given file.
+ *
+ * \param data stack dump data filled with o42a_dbg_fill_stack_dump.
+ */
+void o42a_dbg_print_stack_dump(void *);
 
 #ifdef __cplusplus
 } /* extern "C" */
