@@ -163,20 +163,27 @@ inline void *o42a_gc_alloc(
 	O42A_RETURN o42a_gc_dataof(o42a_gc_balloc(desc, size));
 }
 
+#define valid_lock(_block) !(_block->lock & ~1)
+
 inline void o42a_gc_free(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 	O42A_DEBUG("Free: %#lx\n", (long) block);
+	assert(valid_lock(block) && "Wrong GC block");
+	assert(block->list >= O42A_GC_LIST_MIN && "Wrong GC list identifier");
+	assert(block->list <= O42A_GC_LIST_MAX && "Wrong GC list identifier");
 	assert(
 			block->list != O42A_GC_LIST_NEW_STATIC
 			&& "Attempt to free a static memory block");
 	assert(
 			block->list != O42A_GC_LIST_STATIC
 			&& "Attempt to free a static memory block");
+#ifndef NDEBUG
+	block->lock = ~1;
+	block->list = ~1;
+#endif /* NDEBUG */
 	O42A(free(block));
 	O42A_RETURN;
 }
-
-#define valid_lock(_block) !(_block->lock & ~1)
 
 inline void o42a_gc_lock_block(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
