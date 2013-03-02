@@ -56,6 +56,8 @@ typedef uint32_t o42a_layout_t;
 		__alignof__ (target), \
 		sizeof (target))
 
+
+// Need it here for IDE to see it independently from NDEBUG.
 enum o42a_data_types {
 
 	O42A_TYPE_VOID = ~0x7fffffff,
@@ -76,7 +78,6 @@ enum o42a_data_types {
 	O42A_TYPE_FP64 = 0x21 | (3 << 8),
 
 };
-
 
 typedef struct o42a_dbg_env o42a_dbg_env_t;
 typedef struct o42a_dbg_type_info o42a_dbg_type_info_t;
@@ -128,79 +129,13 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define __o42a_dbg_env_p__ ((o42a_dbg_env_t*) NULL)
 
+
 #else /* NDEBUG */
 
-
+// Need it here to use inside "types.h".
 #define O42A_HEADER o42a_dbg_header_t __o42a_dbg_header__;
 
-#define O42A_HEADER_SIZE sizeof(o42a_dbg_header_t)
-
-
-#define O42A(exp) (o42a_dbg_set_line(__LINE__), exp)
-
-
-#define O42A_START_THREAD(_thread_name) \
-	struct o42a_dbg_env __thread_dbg_env__ = { \
-		.thread_name = (_thread_name), \
-		.stack_frame = NULL, \
-		.command = O42A_DBG_CMD_EXEC, \
-		.indent = 0, \
-	}; \
-	o42a_dbg_start_thread(&__thread_dbg_env__)
-
-#define O42A_ENTER(return_null) \
-	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = { \
-		.name = __func__, \
-		.comment = NULL, \
-		.file = __FILE__, \
-		.line = __LINE__, \
-	}; \
-	if (!o42a_dbg_enter(&__o42a_dbg_stack_frame__)) { \
-		return_null; \
-	}
-
-
-#define O42A_RETURN O42A(o42a_dbg_exit()); return
-
-#define o42a_debug_ison o42a_dbg_ison(O42A_DEBUG_TYPE)
-
-#define O42A_DEBUG(format, ...) \
-	if (o42a_debug_ison) o42a_dbg_printf(format, ## __VA_ARGS__)
-
-#define _O42A_DO_(_sf, _comment) \
-	o42a_dbg_stack_frame_t _sf = { \
-		.comment = NULL, \
-		.file = __FILE__, \
-		.line = __LINE__, \
-	}; \
-	o42a_dbg_do(&_sf, _comment)
-
-#define __O42A_DO(_sf, _sfend, _comment) \
-	_O42A_DO_(__o42a_dbg_stack_frame_##_sf##_sfend, _comment)
-
-#define _O42A_DO(_sf, _sfend, _comment) \
-	__O42A_DO(_sf, _sfend, _comment)
-
-#define O42A_DO(comment) _O42A_DO(__LINE__, __, (comment))
-
-#define O42A_DONE o42a_dbg_done(__LINE__)
-
-
-#define o42a_debug(message) \
-	if (o42a_debug_ison) O42A(o42a_dbg_print(message))
-
-#define o42a_debug_mem_name(prefix, ptr) \
-	if (o42a_debug_ison) O42A(o42a_dbg_mem_name(prefix, ptr))
-
-#define o42a_debug_func_name(prefix, ptr) \
-	if (o42a_debug_ison) O42A(o42a_dbg_func_name(prefix, ptr))
-
-#define o42a_debug_dump_mem(prefix, ptr, depth) \
-	if (o42a_debug_ison) O42A(o42a_dbg_dump_mem(prefix, ptr, depth))
-
-
 #include "o42a/debug.h"
-
 
 #endif /* NDEBUG */
 
