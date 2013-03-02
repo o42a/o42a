@@ -36,49 +36,53 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rlist = {
 
 static __thread o42a_dbg_env_t *dbg_env;
 
+inline o42a_bool_t o42a_dbg_ison(uint32_t debug_type) {
+	return dbg_env->enabled_debug_types & debug_type;
+}
+
 static const char *dbg_thread_getenv(
 		const char *const thread_name,
-		const char *const envname) {
+		const char *const env_name) {
 
 	const ssize_t tname_len = thread_name ? strlen(thread_name) : 0;
-	const size_t ename_len = strlen(envname);
-	char env_name[14 + ename_len + tname_len];
-	char *str = env_name;
+	const size_t ename_len = strlen(env_name);
+	char full_env_name[14 + ename_len + tname_len];
+	char *str = full_env_name;
 
 	memcpy(str, "O42A_THREAD_", 12);
 
 	if (!thread_name) {
-		memcpy(str + 12, envname, ename_len + 1);
-		return getenv(env_name);
+		memcpy(str + 12, env_name, ename_len + 1);
+		return getenv(full_env_name);
 	}
 
-	memcpy(str += 12, envname, ename_len);
+	memcpy(str += 12, env_name, ename_len);
 	str += ename_len;
 	*str = '_';
 	memcpy(str + 1, thread_name, tname_len + 1);
 
-	const char *result = getenv(env_name);
+	const char *result = getenv(full_env_name);
 
 	if (result) {
 		return result;
 	}
 	// No value for the given thread.
 	// Retrieve the default value.
-	return dbg_thread_getenv(NULL, envname);
+	return dbg_thread_getenv(NULL, env_name);
 }
 
 static o42a_bool_t dbg_thread_isenv(
 		const char *const thread_name,
-		const char *const envname,
-		o42a_bool_t default_val) {
+		const char *const env_name,
+		o42a_bool_t default_value) {
 
-	const char *value = dbg_thread_getenv(thread_name, envname);
+	const char *value = dbg_thread_getenv(thread_name, env_name);
 
 	if (!value) {
-		return default_val;
+		return default_value;
 	}
 
-	if (default_val) {
+	if (default_value) {
 		if (!strcmp(value, "0")) {
 			return O42A_FALSE;
 		}
@@ -100,12 +104,93 @@ static o42a_bool_t dbg_thread_isenv(
 		}
 	}
 
-	return default_val;
+	return default_value;
+}
+
+static o42a_bool_t dbg_flag_enabled(
+		const char *const value,
+		const char *const flag_name,
+		size_t flag_name_len,
+		o42a_bool_t default_value) {
+	fprintf(stderr, "(!) flag: %s in %s\n", flag_name, value);
+
+	const char *found = strstr(value, flag_name);
+
+	if (!found) {
+		fprintf(stderr, "(!) not found: %d\n", default_value);
+		// The flag is not found.
+		return default_value;
+	}
+	if (!flag_name_len) {
+		flag_name_len = strlen(flag_name);
+	}
+
+	const char suffix = *(found + flag_name_len);
+
+	if (suffix == '\0' || suffix == ',' || suffix == ' ') {
+		// Flag name is not a prefix of another flag name.
+		if (found == value) {
+			// The flag is the very first one in the list.
+			fputs("(!) first\n", stderr);
+			return O42A_TRUE;
+		}
+
+		const char prefix = *(found - 1);
+
+		if (prefix == '-') {
+			// The flag is disabled.
+			fputs("(!) disabled\n", stderr);
+			return O42A_FALSE;
+		}
+		if (prefix == '+' || prefix == ',' || prefix == ' ') {
+			// The flag is enabled.
+			fputs("(!) enabled\n", stderr);
+			return O42A_TRUE;
+		}
+	}
+
+	// Wrong flag (i.e. suffix or prefix of another flag name).
+	// Search for the flag after the next colon.
+	const char *colon = index(value + flag_name_len, ',');
+
+	if (!colon) {
+		// That was a last flag.
+		fputs("(!) last\n", stderr);
+		return default_value;
+	}
+
+	return dbg_flag_enabled(
+			colon + 1,
+			flag_name,
+			flag_name_len,
+			default_value);
+}
+
+static uint32_t dbg_thread_debug_types(const char *const thread_name) {
+
+	const char *value = dbg_thread_getenv(thread_name, "DEBUG");
+
+	if (!value) {
+		return O42A_DBG_TYPE_ALL;
+	}
+
+	uint32_t debug_types = 0;
+	const o42a_bool_t all = dbg_flag_enabled(value, "all", 3, O42A_FALSE);
+
+	if (dbg_flag_enabled(value, "default", 7, all)) {
+		debug_types |= O42A_DBG_TYPE_DEFAULT;
+	}
+	if (dbg_flag_enabled(value, "gc", 2, all)) {
+		debug_types |= O42A_DBG_TYPE_GC;
+	}
+
+	return debug_types;
 }
 
 void o42a_dbg_start_thread(struct o42a_dbg_env *env) {
 	env->options = o42a_dbg_default_options;
 	env->output = stderr;
+	env->enabled_debug_types = O42A_DBG_TYPE_ALL;
 	dbg_env = env;
 
 	// Set the output according to the environment variable.
@@ -140,6 +225,8 @@ void o42a_dbg_start_thread(struct o42a_dbg_env *env) {
 			env->thread_name,
 			"SILENT_CALLS",
 			quiet || o42a_dbg_default_options.silent_calls);
+	env->enabled_debug_types = dbg_thread_debug_types(env->thread_name);
+	fprintf(env->output, "(!) %s: %.x\n", env->thread_name, env->enabled_debug_types);
 }
 
 static volatile sig_atomic_t program_error_in_progress = 0;
