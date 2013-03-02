@@ -715,34 +715,37 @@ void o42a_dbg_set_line(uint32_t line) {
 	dbg_env->stack_frame->line = line;
 }
 
-inline void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t *const frame) {
-
-	const o42a_dbg_env_t *const env = dbg_env;
-
-	fputs(frame->name, env->output);
+static inline void dbg_print_stack_frame(
+		FILE *const out,
+		o42a_dbg_stack_frame_t *const frame) {
+	fputs(frame->name, out);
 	if (frame->file) {
-		fputs(" (", env->output);
-		fputs(frame->file, env->output);
+		fputs(" (", out);
+		fputs(frame->file, out);
 		if (frame->line) {
-			fprintf(env->output, ":%lu", (long) frame->line);
+			fprintf(out, ":%lu", (long) frame->line);
 		}
-		fputc(')', env->output);
+		fputc(')', out);
 	}
 	if (frame->comment) {
-		fputs(" /* ", env->output);
-		fputs(frame->comment, env->output);
-		fputs(" */", env->output);
+		fputs(" /* ", out);
+		fputs(frame->comment, out);
+		fputs(" */", out);
 	}
+}
+
+void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t *const frame) {
+	dbg_print_stack_frame(dbg_env->output, frame);
 }
 
 void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *frame) {
 
-	const o42a_dbg_env_t *const env = dbg_env;
+	FILE *const out = dbg_env->output;
 
 	while (frame) {
-		fputs("  ", env->output);
-		o42a_dbg_print_stack_frame(frame);
-		fputc('\n', env->output);
+		fputs("  ", out);
+		dbg_print_stack_frame(out, frame);
+		fputc('\n', out);
 		frame = frame->prev;
 	}
 }
@@ -855,4 +858,116 @@ inline void o42a_dbg_fill_field_info(
 	field_info->offset = -header->enclosing;
 	field_info->name = header->name;
 	field_info->type_info = header->type_info;
+}
+
+typedef struct stack_dump_data_frame {
+
+	const char *name;
+
+	const char *comment;
+
+	const char *file;
+
+	uint32_t line;
+
+} stack_dump_data_frame_t;
+
+typedef struct stack_dump_data {
+
+	size_t size;
+
+	stack_dump_data_frame_t frames[];
+
+} stack_dump_data_t;
+
+o42a_dbg_stack_dump_t o42a_dbg_stack_dump(size_t skip_frames) {
+
+	const o42a_dbg_stack_frame_t *frame = dbg_env->stack_frame;
+	o42a_dbg_stack_dump_t dump = {
+		.skip_frames = skip_frames,
+		.stack_frame = NULL,
+	};
+
+	// Calculate the number of stack frames.
+	size_t num_frames = 0;
+
+	while (frame) {
+		if (skip_frames > 0) {
+			--skip_frames;
+		} else {
+			if (!num_frames) {
+				dump.stack_frame = frame;
+			}
+			++num_frames;
+		}
+		frame = frame->prev;
+	}
+
+	// Calculate the dump data size.
+	dump.size =
+			sizeof(stack_dump_data_t)
+			+ sizeof(stack_dump_data_frame_t) * num_frames;
+
+	return dump;
+}
+
+void o42a_dbg_fill_stack_dump(
+		const o42a_dbg_stack_dump_t *const dump,
+		void *data) {
+
+	stack_dump_data_t *const dump_data = data;
+	size_t skip_frames = dump->skip_frames;
+	size_t frame_num = 0;
+	const o42a_dbg_stack_frame_t *frame = dump->stack_frame;
+
+	while (frame) {
+		if (skip_frames > 0) {
+			--skip_frames;
+		} else {
+
+			stack_dump_data_frame_t *const data_frame =
+					dump_data->frames + frame_num;
+
+			data_frame->name = frame->name;
+			data_frame->comment = frame->comment;
+			data_frame->file = frame->file;
+			data_frame->line = frame->line;
+			++frame_num;
+		}
+		frame = frame->prev;
+	}
+
+	dump_data->size = frame_num;
+}
+
+static inline void dbg_print_stack_dump_frame(
+		FILE *const out,
+		const stack_dump_data_frame_t *const frame) {
+	fputs(frame->name, out);
+	if (frame->file) {
+		fputs(" (", out);
+		fputs(frame->file, out);
+		if (frame->line) {
+			fprintf(out, ":%lu", (long) frame->line);
+		}
+		fputc(')', out);
+	}
+	if (frame->comment) {
+		fputs(" /* ", out);
+		fputs(frame->comment, out);
+		fputs(" */", out);
+	}
+}
+
+void o42a_dbg_print_stack_dump(void *data) {
+
+	FILE *const out = dbg_env->output;
+	const stack_dump_data_t *const dump_data = data;
+	size_t num_frames = dump_data->size;
+
+	for (size_t i = 0; i < num_frames; ++i) {
+		fputs("  ", out);
+		dbg_print_stack_dump_frame(out, dump_data->frames + i);
+		fputc('\n', out);
+	}
 }

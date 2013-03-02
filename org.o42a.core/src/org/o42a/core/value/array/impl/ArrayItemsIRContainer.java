@@ -98,6 +98,8 @@ public final class ArrayItemsIRContainer extends Struct<ArrayItemsIRContainer.Op
 					.link("o42a_array_gc_desc", GC_DESC_TYPE));
 			instance.prev().setNull();
 			instance.next().setNull();
+			instance.size().setValue(
+					instance.layout(instance.getGenerator()).size());
 		}
 
 	}

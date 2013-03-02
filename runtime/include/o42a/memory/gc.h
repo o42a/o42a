@@ -100,6 +100,11 @@ struct o42a_gc_block {
 	 */
 	o42a_gc_block_t *next;
 
+	/**
+	 * Data size.
+	 */
+	uint32_t size;
+
 };
 
 struct _o42a_gc_block {
