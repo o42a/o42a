@@ -112,12 +112,10 @@ static o42a_bool_t dbg_flag_enabled(
 		const char *const flag_name,
 		size_t flag_name_len,
 		o42a_bool_t default_value) {
-	fprintf(stderr, "(!) flag: %s in %s\n", flag_name, value);
 
 	const char *found = strstr(value, flag_name);
 
 	if (!found) {
-		fprintf(stderr, "(!) not found: %d\n", default_value);
 		// The flag is not found.
 		return default_value;
 	}
@@ -131,7 +129,6 @@ static o42a_bool_t dbg_flag_enabled(
 		// Flag name is not a prefix of another flag name.
 		if (found == value) {
 			// The flag is the very first one in the list.
-			fputs("(!) first\n", stderr);
 			return O42A_TRUE;
 		}
 
@@ -139,12 +136,10 @@ static o42a_bool_t dbg_flag_enabled(
 
 		if (prefix == '-') {
 			// The flag is disabled.
-			fputs("(!) disabled\n", stderr);
 			return O42A_FALSE;
 		}
 		if (prefix == '+' || prefix == ',' || prefix == ' ') {
 			// The flag is enabled.
-			fputs("(!) enabled\n", stderr);
 			return O42A_TRUE;
 		}
 	}
@@ -155,7 +150,6 @@ static o42a_bool_t dbg_flag_enabled(
 
 	if (!colon) {
 		// That was a last flag.
-		fputs("(!) last\n", stderr);
 		return default_value;
 	}
 
@@ -226,7 +220,6 @@ void o42a_dbg_start_thread(struct o42a_dbg_env *env) {
 			"SILENT_CALLS",
 			quiet || o42a_dbg_default_options.silent_calls);
 	env->enabled_debug_types = dbg_thread_debug_types(env->thread_name);
-	fprintf(env->output, "(!) %s: %.x\n", env->thread_name, env->enabled_debug_types);
 }
 
 static volatile sig_atomic_t program_error_in_progress = 0;
