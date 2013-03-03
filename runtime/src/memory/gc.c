@@ -164,6 +164,7 @@ static inline o42a_gc_block_t *gc_balloc(
 #ifndef NDEBUG
 	block->size = dump_offset;
 	o42a_dbg_fill_stack_dump(&stack_dump, ((char *) block) + dump_offset);
+	O42A_DEBUG("Allocated: %#lx (%zd bytes)\n", (long) block, size);
 #else
 	block->size = mem_size;
 #endif /* NDEBUG */
@@ -200,14 +201,14 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 			block->list != O42A_GC_LIST_STATIC
 			&& "Attempt to free a static memory block");
 #ifndef NDEBUG
-	block->lock = ~1;
-	block->list = ~1;
+	block->lock = ~0;
+	block->list = ~0;
 	if (o42a_debug_ison) {
-		o42a_debug("Allocated at: ");
+		o42a_debug("Allocated at:\n");
 		o42a_dbg_print_stack_dump(((char *) block) + block->size);
 	}
 #endif /* NDEBUG */
-	O42A(free(block));
+	//O42A(free(block));
 	O42A_RETURN;
 }
 
@@ -589,7 +590,7 @@ void o42a_gc_signal() {
 
 void o42a_gc_static(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
-
+	O42A_DEBUG("Static block: %#lx\n", (long) block);
 	if (block->list == O42A_GC_LIST_STATIC) {
 		// Block already registered. Do nothing.
 		O42A_RETURN;
@@ -636,6 +637,7 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 		// Not initialized yet. Add to used list.
 		block->use_count = 1;
 
+		O42A_DEBUG("First use of new block: %#lx\n", (long) block);
 		O42A(o42a_gc_lock());
 		O42A(o42a_gc_list_add(block, O42A_GC_LIST_USED));
 		O42A(o42a_gc_unlock());
@@ -650,6 +652,7 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 	case O42A_GC_LIST_USED:
 		// Already used by some thread. Increase the uses count.
 		++block->use_count;
+		O42A_DEBUG("%d use block: %#lx\n", block->use_count, (long) block);
 		O42A(o42a_gc_unlock_block(block));
 		O42A_RETURN;
 	}
@@ -662,6 +665,7 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 
 	// Drop the checked flag for the next oddity.
 	O42A(o42a_gc_block_uncheck(block));
+	O42A_DEBUG("First use of block: %#lx\n", (long) block);
 	block->use_count = 1;
 
 	O42A(o42a_gc_list_add(block, O42A_GC_LIST_USED));
@@ -677,20 +681,26 @@ void o42a_gc_unuse(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 
 	if (block->list == O42A_GC_LIST_STATIC) {
+		O42A_DEBUG("Don't unuse a static block %#lx\n", (long) block);
 		// Skip static blocks.
 		O42A_RETURN;
 	}
 
 	// The block will be moved to the "white" list by GC thread if use count
 	// drops to zero.
+	O42A_DEBUG("Unuse block %#lx\n", (long) block);
 	O42A(o42a_gc_lock_block(block));
 	if (block->list != O42A_GC_LIST_USED) {
 		assert(
 				((block->list & O42A_GC_LIST_GREY_FLAG)
 						|| block->list == O42A_GC_LIST_NEW_STATIC)
 				&& "The block is not in a \"grey\" list");
+		o42a_debug("Grey block\n");
 	} else if (!(--block->use_count)) {
 		gc_has_white = O42A_TRUE;
+		o42a_debug("Not used any more\n");
+	} else {
+		O42A_DEBUG("Still used %d times\n", block->use_count);
 	}
 	O42A(o42a_gc_unlock_block(block));
 
@@ -706,6 +716,7 @@ void o42a_gc_unuse(o42a_gc_block_t *const block) {
 void o42a_gc_mark(o42a_gc_block_t *block) {
 	O42A_ENTER(return);
 
+	O42A_DEBUG("Mark used: %#lx\n", (long) block);
 	O42A(o42a_gc_lock_block(block));
 
 	if (block->list < O42A_GC_LIST_MIN) {
@@ -714,12 +725,9 @@ void o42a_gc_mark(o42a_gc_block_t *block) {
 			// Add static block to static list.
 			O42A(o42a_gc_static(block));
 		} else {
-			// Add newly allocated block to the next oddity white list.
-			O42A(o42a_gc_lock());
-			O42A(o42a_gc_list_add(
-					block,
-					O42A_GC_LIST_WHITE_FLAG | gc_next_oddity));
-			O42A(o42a_gc_unlock());
+			// Skip a newly allocated block.
+			O42A(o42a_gc_unlock_block(block));
+			O42A_RETURN;
 		}
 	}
 
