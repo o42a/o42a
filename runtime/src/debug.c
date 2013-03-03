@@ -969,7 +969,7 @@ void o42a_dbg_print_stack_dump(void *data) {
 	size_t num_frames = dump_data->size;
 
 	for (size_t i = 0; i < num_frames; ++i) {
-		fputs("  ", out);
+		dbg_indent(1);
 		dbg_print_stack_dump_frame(out, dump_data->frames + i);
 		fputc('\n', out);
 	}
