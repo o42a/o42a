@@ -29,6 +29,7 @@
 #include "llvm/Module.h"
 #include "llvm/Support/CommandLine.h"
 
+#include <unistd.h>
 #include <sys/ioctl.h>
 
 using namespace llvm;
