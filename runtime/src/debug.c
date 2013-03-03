@@ -960,6 +960,9 @@ static inline void dbg_print_stack_dump_frame(
 }
 
 void o42a_dbg_print_stack_dump(void *data) {
+	if (dbg_env->options.no_debug_messages) {
+		return;
+	}
 
 	FILE *const out = dbg_env->output;
 	const stack_dump_data_t *const dump_data = data;
