@@ -87,7 +87,7 @@ extern "C" {
 
 enum o42a_dbg_types {
 
-	O42A_DBG_TYPE_ALL = ~1,
+	O42A_DBG_TYPE_ALL = ~0,
 	O42A_DBG_TYPE_DEFAULT = 0x1,
 	O42A_DBG_TYPE_GC = 0x2,
 
