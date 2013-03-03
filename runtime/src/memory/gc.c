@@ -202,7 +202,10 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 #ifndef NDEBUG
 	block->lock = ~1;
 	block->list = ~1;
-	o42a_dbg_print_stack_dump(((char *) block) + block->size);
+	if (o42a_debug_ison) {
+		o42a_debug("Allocated at: ");
+		o42a_dbg_print_stack_dump(((char *) block) + block->size);
+	}
 #endif /* NDEBUG */
 	O42A(free(block));
 	O42A_RETURN;
