@@ -208,7 +208,7 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 		o42a_dbg_print_stack_dump(((char *) block) + block->size);
 	}
 #endif /* NDEBUG */
-	//O42A(free(block));
+	O42A(free(block));
 	O42A_RETURN;
 }
 
