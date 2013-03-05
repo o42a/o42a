@@ -785,6 +785,7 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 				o42a_fld *const fld = O42A(o42a_fld_by_field(body, field));
 				o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
 
+				o42a_debug_mem_name("Mark field: ", fld);
 				O42A(desc->mark(fld));
 
 				if (!(--num_fields)) {
