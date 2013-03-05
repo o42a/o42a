@@ -116,6 +116,17 @@ enum o42a_gc_block_flags {
 	 */
 	O42A_GC_BLOCK_CHECKED = 0x01,
 
+	/**
+	 * The data blocks links to other data blocks.
+	 *
+	 * This is only valid for O42A_GC_LIST_USED list. The block with this flag
+	 * sent won't be deallocated even though the block's use count is zero.
+	 *
+	 * This flag is set by o42a_gc_link and dropped as soon as the block
+	 * is used for the first time.
+	 */
+	O42A_GC_BLOCK_LINKING = 0x04,
+
 };
 
 typedef struct o42a_gc_list {
@@ -176,14 +187,16 @@ o42a_gc_block_t *o42a_gc_balloc(
 		const o42a_gc_desc_t *const desc,
 		const size_t size) {
 	O42A_ENTER(return NULL);
-	O42A_RETURN(gc_balloc(desc, size));
+	o42a_gc_block_t *const block = gc_balloc(desc, size);
+	O42A_RETURN block;
 }
 
 inline void *o42a_gc_alloc(
 		const o42a_gc_desc_t *const desc,
 		const size_t size) {
 	O42A_ENTER(return NULL);
-	O42A_RETURN o42a_gc_dataof(gc_balloc(desc, size));
+	o42a_gc_block_t *const block = gc_balloc(desc, size);
+	O42A_RETURN o42a_gc_dataof(block);
 }
 
 #define valid_lock(_block) !(_block->lock & ~1)
@@ -258,7 +271,6 @@ static inline void o42a_gc_unlock() {
 	__sync_lock_release(&gc_lock);
 	O42A_RETURN;
 }
-
 
 /**
  * Next GC oddity, i.e. which of the "white" lists will be processed next.
@@ -340,6 +352,28 @@ static inline void o42a_gc_list_remove(o42a_gc_block_t *const block) {
 	O42A_RETURN;
 }
 
+void o42a_gc_link(o42a_gc_block_t *const block) {
+	O42A_ENTER(return);
+
+	O42A_DEBUG("Link: %#lx\n", (long) block);
+	O42A(o42a_gc_lock_block(block));
+	if (block->list == O42A_GC_LIST_NEW_STATIC) {
+		// New static block. Register it.
+		o42a_gc_static(block);
+	} else if (block->list == O42A_GC_LIST_NEW_ALLOCATED) {
+		// Newly allocated block.
+		// Mark it as linking and move it to the list of used blocks.
+		O42A_DEBUG("Linking block: %#lx\n", (long) block);
+		block->flags |= O42A_GC_BLOCK_LINKING;
+		O42A(o42a_gc_lock());
+		O42A(o42a_gc_list_add(block, O42A_GC_LIST_USED));
+		O42A(o42a_gc_unlock());
+	}
+	O42A(o42a_gc_unlock_block(block));
+
+	O42A_RETURN;
+}
+
 static o42a_bool_t o42a_gc_do_mark(o42a_gc_block_t *block) {
 	O42A_ENTER(return O42A_FALSE);
 
@@ -395,7 +429,7 @@ static inline void o42a_gc_thread_mark_used() {
 		O42A(o42a_gc_lock_block(block));
 
 		next = block->next;
-		if (!block->use_count) {
+		if (!block->use_count && !(block->flags && O42A_GC_BLOCK_LINKING)) {
 			assert(block->list == O42A_GC_LIST_USED);
 
 			// Block were used, but its use count dropped to zero.
@@ -626,6 +660,7 @@ void o42a_gc_discard(o42a_gc_block_t *const block) {
 void o42a_gc_use(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 
+	O42A_DEBUG("Use block: %#lx\n", (long) block);
 	assert(block->list <= O42A_GC_LIST_MAX && "Wrong GC list");
 	O42A(o42a_gc_lock_block(block));
 
@@ -652,9 +687,12 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 		O42A(o42a_gc_unlock_block(block));
 		O42A_RETURN;
 	case O42A_GC_LIST_USED:
-		// Already used by some thread. Increase the uses count.
+		// Already used by some thread.
+		// Drop the linking flag.
+		block->flags &= ~O42A_GC_BLOCK_LINKING;
+		// Increase the uses count.
 		++block->use_count;
-		O42A_DEBUG("%d use block: %#lx\n", block->use_count, (long) block);
+		O42A_DEBUG("Use #%d of %#lx\n", block->use_count, (long) block);
 		O42A(o42a_gc_unlock_block(block));
 		O42A_RETURN;
 	}
@@ -698,11 +736,14 @@ void o42a_gc_unuse(o42a_gc_block_t *const block) {
 						|| block->list == O42A_GC_LIST_NEW_STATIC)
 				&& "The block is not in a \"grey\" list");
 		o42a_debug("Grey block\n");
-	} else if (!(--block->use_count)) {
-		gc_has_white = O42A_TRUE;
-		o42a_debug("Not used any more\n");
 	} else {
-		O42A_DEBUG("Still used %d times\n", block->use_count);
+		assert(block->use_count && "Block not used");
+		if (!(--block->use_count)) {
+			gc_has_white = O42A_TRUE;
+			o42a_debug("Not used any more\n");
+		} else {
+			O42A_DEBUG("Still used %d times\n", block->use_count);
+		}
 	}
 	O42A(o42a_gc_unlock_block(block));
 
@@ -722,12 +763,9 @@ void o42a_gc_mark(o42a_gc_block_t *block) {
 	O42A(o42a_gc_lock_block(block));
 
 	if (block->list < O42A_GC_LIST_MIN) {
-		// Block is not initialized yet.
-		if (block->list == O42A_GC_LIST_NEW_STATIC) {
-			// Add static block to static list.
-			O42A(o42a_gc_static(block));
-		}
-		// Consider the newly allocated block as used.
+		// The new block is linked by some other one.
+		// It also can link to other blocks.
+		O42A(o42a_gc_link(block));
 	}
 
 	o42a_bool_t mark = O42A(o42a_gc_do_mark(block));
@@ -735,7 +773,10 @@ void o42a_gc_mark(o42a_gc_block_t *block) {
 
 	// Mark the linked blocks.
 	if (mark) {
+		O42A_DEBUG("Mark contents: %#lx\n", (long) block);
 		O42A(block->desc->mark(o42a_gc_dataof(block)));
+	} else {
+		O42A_DEBUG("Already marked: %#lx\n", (long) block);
 	}
 
 	O42A_RETURN;

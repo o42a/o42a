@@ -152,6 +152,19 @@ void *o42a_gc_alloc(const o42a_gc_desc_t *, size_t);
 void o42a_gc_free(o42a_gc_block_t *);
 
 /**
+ * Marks a newly allocated garbage-collected data block as having links to
+ * other data blocks.
+ *
+ * If the block is already present in some list, then does nothing.
+ * If the block is static, then registers it in static GC list.
+ * If the block is newly allocated, then registers it in the list of used
+ * blocks. It wont be freed even though the use count is zero.
+ *
+ * \param block target data block.
+ */
+void o42a_gc_link(o42a_gc_block_t *);
+
+/**
  * Locks the GC data block.
  */
 void o42a_gc_lock_block(o42a_gc_block_t *);
