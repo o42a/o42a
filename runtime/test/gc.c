@@ -321,6 +321,13 @@ static int32_t run_tests(int32_t argc, char **argv) {
 	O42A_RETURN EXIT_SUCCESS;
 }
 
+const o42a_dbg_options_t o42a_dbg_default_options = {
+	.quiet = 0,
+	.no_debug_messages = 0,
+	.debug_blocks_omitted = 0,
+	.silent_calls = 0,
+};
+
 int main(int argc, char **argv) {
 	return o42a_dbg_exec_main(&run_tests, argc, argv);
 }
