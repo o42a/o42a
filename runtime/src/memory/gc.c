@@ -482,12 +482,16 @@ static inline void o42a_gc_thread_mark_used() {
 			}
 		}
 
-		block = next;
-		if (!next) {
+		o42a_gc_block_t *const processed = block;
+
+		if (next) {
+			block = next;
+		} else {
 			// Handle blocks added during processing.
-			O42A(o42a_gc_lock());
-			block = list->first;
-			O42A(o42a_gc_unlock());
+			o42a_gc_block_t *const processed = block;
+			O42A(o42a_gc_lock_block(processed));
+			block = block->next;
+			O42A(o42a_gc_unlock_block(processed));
 		}
 	}
 
@@ -522,12 +526,14 @@ static inline void o42a_gc_thread_mark_static() {
 			O42A(block->desc->mark(o42a_gc_dataof(block)));
 		}
 
-		block = next;
-		if (!block) {
+		if (next) {
+			block = next;
+		} else {
 			// Handle blocks added during processing.
-			O42A(o42a_gc_lock());
-			block = list->first;
-			O42A(o42a_gc_unlock());
+			o42a_gc_block_t *const processed = block;
+			O42A(o42a_gc_lock_block(processed));
+			block = block->next;
+			O42A(o42a_gc_unlock_block(processed));
 		}
 	}
 
