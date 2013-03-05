@@ -352,11 +352,10 @@ static inline void o42a_gc_list_remove(o42a_gc_block_t *const block) {
 	O42A_RETURN;
 }
 
-void o42a_gc_link(o42a_gc_block_t *const block) {
+static inline void gc_link(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 
 	O42A_DEBUG("Link: %#lx\n", (long) block);
-	O42A(o42a_gc_lock_block(block));
 	if (block->list == O42A_GC_LIST_NEW_STATIC) {
 		// New static block. Register it.
 		o42a_gc_static(block);
@@ -369,8 +368,15 @@ void o42a_gc_link(o42a_gc_block_t *const block) {
 		O42A(o42a_gc_list_add(block, O42A_GC_LIST_USED));
 		O42A(o42a_gc_unlock());
 	}
-	O42A(o42a_gc_unlock_block(block));
 
+	O42A_RETURN;
+}
+
+void o42a_gc_link(o42a_gc_block_t *const block) {
+	O42A_ENTER(return);
+	O42A(o42a_gc_lock_block(block));
+	gc_link(block);
+	O42A(o42a_gc_unlock_block(block));
 	O42A_RETURN;
 }
 
@@ -765,7 +771,7 @@ void o42a_gc_mark(o42a_gc_block_t *block) {
 	if (block->list < O42A_GC_LIST_MIN) {
 		// The new block is linked by some other one.
 		// It also can link to other blocks.
-		O42A(o42a_gc_link(block));
+		O42A(gc_link(block));
 	}
 
 	o42a_bool_t mark = O42A(o42a_gc_do_mark(block));
