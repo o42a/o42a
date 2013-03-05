@@ -79,11 +79,13 @@ final class ArrayValueOp extends StatefulValueOp {
 
 		@Override
 		public ValOp loadValue(ValDirs dirs, Code code) {
-			return this.value.op(
-					code.getAllocator(),
-					dirs.getBuilder(),
-					getValueType(),
-					TEMP_VAL_HOLDER);
+			return dirs.value().store(
+					code,
+					this.value.op(
+							code.getAllocator(),
+							dirs.getBuilder(),
+							getValueType(),
+							TEMP_VAL_HOLDER));
 		}
 
 		@Override
