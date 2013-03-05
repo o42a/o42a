@@ -60,8 +60,7 @@ public class ArrayConstructorBuilder
 
 		final Array array = this.arrayIR.getArray();
 		final Obj owner = array.getOwner();
-		final ObjectIR ownerIR =
-				owner.ir(function.getGenerator());
+		final ObjectIR ownerIR = owner.ir(function.getGenerator());
 		final Block failure = function.addBlock("failure");
 		final ObjBuilder builder = new ObjBuilder(
 				function,
@@ -69,12 +68,11 @@ public class ArrayConstructorBuilder
 				ownerIR.getMainBodyIR(),
 				owner,
 				ownerIR.isExact() ? EXACT : DERIVED);
-		final ValOp value =
-				function.arg(function, OBJECT_VAL.value()).op(
-						function,
-						builder,
-						array.getValueType(),
-						VAL_TRAP);
+		final ValOp value = function.arg(function, OBJECT_VAL.value()).op(
+				function,
+				builder,
+				array.getValueType(),
+				VAL_TRAP);
 
 		if (array.isEmpty()) {
 			value.storeNull(function);
@@ -133,7 +131,7 @@ public class ArrayConstructorBuilder
 				item.getValueRef().op(dirs.getBuilder().host());
 		final ObjectOp itemValue =
 				itemOp.target(dirs)
-				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
+				.materialize(dirs, tempObjHolder(arrayDirs.getAllocator()));
 
 		data.store(code, itemValue.toAny(null, code));
 
