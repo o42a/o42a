@@ -444,33 +444,26 @@ static inline void gc_thread_mark_used(
 
 		next = block->next;
 		if (!block->use_count && !(block->flags & O42A_GC_BLOCK_LINKING)) {
+			// Block were used, but its use count dropped to zero.
+			// Move it to the next oddity "white" list.
+			// The next oddity should be used, because this block can be linked
+			// by the block, which was added while garbage collection is in
+			// process. Such block won't be processed during current iteration,
+			// an thus we can't say for sure whether this block is linked to
+			// until the next iteration.
 			assert(block->list == O42A_GC_LIST_USED);
 
-			// Block were used, but its use count dropped to zero.
 			O42A(gc_lock());
 
-			// Remove the block from the used list.
 			O42A_DEBUG("Not used any more: %#lx\n", (long) block);
 			O42A(gc_list_remove(block));
+			O42A(gc_block_uncheck(block));
+			O42A(gc_list_add(
+					block,
+					O42A_GC_LIST_WHITE_FLAG | (oddity ^ 1)));
 
-			if (block->flags & (O42A_GC_BLOCK_CHECKED << oddity)) {
-				// The block is already marked as linked to.
-				// Move it to the next oddity "white" list.
-				O42A(gc_block_uncheck(block));
-				O42A(gc_list_add(
-						block,
-						O42A_GC_LIST_WHITE_FLAG | (oddity ^ 1)));
-				// Process the next oddity unconditionally.
-				gc_has_white = O42A_TRUE;
-				O42A_DEBUG("Already linked to: %#lx\n", (long) block);
-			} else {
-				// The block isn't marked as linked to yet.
-				// Move it to the current "white" list.
-				O42A(gc_list_add(
-						block,
-						O42A_GC_LIST_WHITE_FLAG | oddity));
-				O42A_DEBUG("Not linked to: %#lx\n", (long) block);
-			}
+			// Process the next oddity unconditionally.
+			gc_has_white = O42A_TRUE;
 
 			O42A(gc_unlock());
 
