@@ -109,7 +109,7 @@ enum o42a_gc_lists {
 enum o42a_gc_block_flags {
 
 	/**
-	 * The data block is checked a some iteration.
+	 * The data block is checked at some iteration.
 	 *
 	 * Shift this flag left by oddity bits to get the flag value for the
 	 * corresponding "even" or "odd" list.
@@ -398,7 +398,7 @@ static inline void o42a_gc_thread_mark_used() {
 		if (!block->use_count) {
 			assert(block->list == O42A_GC_LIST_USED);
 
-			// Block were used, but it's use count dropped to zero.
+			// Block were used, but its use count dropped to zero.
 			O42A(o42a_gc_lock());
 
 			// Remove the block from the used list.
@@ -408,7 +408,7 @@ static inline void o42a_gc_thread_mark_used() {
 			const unsigned oddity = gc_next_oddity ^ 1;
 
 			if (block->flags & (O42A_GC_BLOCK_CHECKED << oddity)) {
-				// Block already marked as used.
+				// The block is already marked as linked to.
 				// Move it to the next oddity "white" list.
 				O42A(o42a_gc_block_uncheck(block));
 				O42A(o42a_gc_list_add(
@@ -416,10 +416,12 @@ static inline void o42a_gc_thread_mark_used() {
 						O42A_GC_LIST_WHITE_FLAG | gc_next_oddity));
 				// Process the next oddity unconditionally.
 				gc_has_white = O42A_TRUE;
+				O42A_DEBUG("Already linked to: %#lx\n", (long) block);
 			} else {
-				// Block not marked as used yet.
+				// The block isn't marked as linked to yet.
 				// Move it to the current "white" list.
 				O42A(o42a_gc_list_add(block, O42A_GC_LIST_WHITE_FLAG | oddity));
+				O42A_DEBUG("Not linked to: %#lx\n", (long) block);
 			}
 
 			O42A(o42a_gc_unlock());
@@ -724,17 +726,14 @@ void o42a_gc_mark(o42a_gc_block_t *block) {
 		if (block->list == O42A_GC_LIST_NEW_STATIC) {
 			// Add static block to static list.
 			O42A(o42a_gc_static(block));
-		} else {
-			// Skip a newly allocated block.
-			O42A(o42a_gc_unlock_block(block));
-			O42A_RETURN;
 		}
+		// Consider the newly allocated block as used.
 	}
 
 	o42a_bool_t mark = O42A(o42a_gc_do_mark(block));
 	O42A(o42a_gc_unlock_block(block));
 
-	// Mark the referenced data.
+	// Mark the linked blocks.
 	if (mark) {
 		O42A(block->desc->mark(o42a_gc_dataof(block)));
 	}
