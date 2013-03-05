@@ -226,11 +226,6 @@ typedef struct o42a_dbg_type_info5f {
 typedef struct o42a_dbg_stack_dump {
 
 	/**
-	 * Number of frames to skip.
-	 */
-	size_t skip_frames;
-
-	/**
 	 * The size of the dump, i.e. a number of bytes to allocate
 	 * before attempting to fill it with o42a_dbg_fill_stack_dump.
 	 */
