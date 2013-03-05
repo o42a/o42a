@@ -422,10 +422,12 @@ static pthread_cond_t gc_cond = PTHREAD_COND_INITIALIZER;
 static inline void o42a_gc_thread_mark_used() {
 	O42A_ENTER(return);
 
+	o42a_gc_list_t *const list =
+			gc_lists + O42A_GC_LIST_USED - O42A_GC_LIST_MIN;
 	o42a_gc_block_t *block;
 
 	O42A(o42a_gc_lock());
-	block = gc_lists[O42A_GC_LIST_USED - O42A_GC_LIST_MIN].first;
+	block = list->first;
 	O42A(o42a_gc_unlock());
 
 	while (block) {
@@ -467,23 +469,26 @@ static inline void o42a_gc_thread_mark_used() {
 			O42A(o42a_gc_unlock());
 
 			O42A(o42a_gc_unlock_block(block));
+		} else {
 
-			block = next;
+			// Mark the block.
+			o42a_bool_t mark = O42A(o42a_gc_do_mark(block));
 
-			continue;
-		}
+			O42A(o42a_gc_unlock_block(block));
 
-		// Mark the block.
-		o42a_bool_t mark = O42A(o42a_gc_do_mark(block));
-
-		O42A(o42a_gc_unlock_block(block));
-
-		// Mark the referenced data.
-		if (mark) {
-			O42A(block->desc->mark(o42a_gc_dataof(block)));
+			// Mark the referenced data.
+			if (mark) {
+				O42A(block->desc->mark(o42a_gc_dataof(block)));
+			}
 		}
 
 		block = next;
+		if (!next) {
+			// Handle blocks added during processing.
+			O42A(o42a_gc_lock());
+			block = list->first;
+			O42A(o42a_gc_unlock());
+		}
 	}
 
 	O42A_RETURN;
@@ -492,10 +497,12 @@ static inline void o42a_gc_thread_mark_used() {
 static inline void o42a_gc_thread_mark_static() {
 	O42A_ENTER(return);
 
+	o42a_gc_list_t *const list =
+			gc_lists + O42A_GC_LIST_STATIC - O42A_GC_LIST_MIN;
 	o42a_gc_block_t *block;
 
 	O42A(o42a_gc_lock());
-	block = gc_lists[O42A_GC_LIST_STATIC - O42A_GC_LIST_MIN].first;
+	block = list->first;
 	O42A(o42a_gc_unlock());
 
 	while (block) {
@@ -516,6 +523,12 @@ static inline void o42a_gc_thread_mark_static() {
 		}
 
 		block = next;
+		if (!block) {
+			// Handle blocks added during processing.
+			O42A(o42a_gc_lock());
+			block = list->first;
+			O42A(o42a_gc_unlock());
+		}
 	}
 
 	O42A_RETURN;
