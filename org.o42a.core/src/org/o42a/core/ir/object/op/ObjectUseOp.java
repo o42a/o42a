@@ -71,7 +71,7 @@ public final class ObjectUseOp extends IROp {
 	}
 
 	void setUsed(Code code, ObjectOp object) {
-		code.dumpName("Trapped object cought: ", object);
+		code.dumpName("Trapped object caught: ", object);
 
 		final ObjectIRDataOp data = object.objectType(code).ptr().data(code);
 

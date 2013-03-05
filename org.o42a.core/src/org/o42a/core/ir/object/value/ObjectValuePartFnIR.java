@@ -437,7 +437,7 @@ public abstract class ObjectValuePartFnIR
 
 		if (diffValueType.exists()) {
 			diffValueType.dumpName("Ancestor value type: ", ancestorValueType);
-			diffValueType.dumpName("      difffers from: ", hostValueType);
+			diffValueType.dumpName("       differs from: ", hostValueType);
 			diffValueType.go(code.tail());
 		}
 
