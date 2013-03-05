@@ -280,6 +280,9 @@ void o42a_fld_finish(o42a_obj_data_t *const data, o42a_fld_ctr_t *const ctr) {
 		data->fld_ctrs = ctr->next;
 	}// Not in the list otherwise.
 
+	// The object can link to garbage-collected data blocks now.
+	O42A(o42a_gc_link(o42a_gc_blockof((char *) data + data->start)));
+
 	// Inform others the field is constructed.
 	O42A(o42a_obj_broadcast(data));
 
