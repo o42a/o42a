@@ -884,7 +884,6 @@ o42a_dbg_stack_dump_t o42a_dbg_stack_dump(size_t skip_frames) {
 
 	const o42a_dbg_stack_frame_t *frame = dbg_env->stack_frame;
 	o42a_dbg_stack_dump_t dump = {
-		.skip_frames = skip_frames,
 		.stack_frame = NULL,
 	};
 
@@ -892,7 +891,7 @@ o42a_dbg_stack_dump_t o42a_dbg_stack_dump(size_t skip_frames) {
 	size_t num_frames = 0;
 
 	while (frame) {
-		if (skip_frames > 0) {
+		if (skip_frames) {
 			--skip_frames;
 		} else {
 			if (!num_frames) {
@@ -916,24 +915,19 @@ void o42a_dbg_fill_stack_dump(
 		void *data) {
 
 	stack_dump_data_t *const dump_data = data;
-	size_t skip_frames = dump->skip_frames;
 	size_t frame_num = 0;
 	const o42a_dbg_stack_frame_t *frame = dump->stack_frame;
 
 	while (frame) {
-		if (skip_frames > 0) {
-			--skip_frames;
-		} else {
 
-			stack_dump_data_frame_t *const data_frame =
-					dump_data->frames + frame_num;
+		stack_dump_data_frame_t *const data_frame =
+				dump_data->frames + frame_num;
 
-			data_frame->name = frame->name;
-			data_frame->comment = frame->comment;
-			data_frame->file = frame->file;
-			data_frame->line = frame->line;
-			++frame_num;
-		}
+		data_frame->name = frame->name;
+		data_frame->comment = frame->comment;
+		data_frame->file = frame->file;
+		data_frame->line = frame->line;
+		++frame_num;
 		frame = frame->prev;
 	}
 
