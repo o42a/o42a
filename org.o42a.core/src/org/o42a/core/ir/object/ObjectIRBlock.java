@@ -21,21 +21,15 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_ID;
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
-import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectIRStruct.OBJECT_ID;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.gc.GCBlockOp;
-import org.o42a.core.ir.gc.GCBlockOp.Type;
 
 
 public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
-
-	private static final ObjectGCBlock OBJECT_GC_BLOCK = new ObjectGCBlock();
 
 	private final ObjectIRStruct struct;
 
@@ -55,7 +49,7 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, OBJECT_GC_BLOCK);
+		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, this.struct);
 		data.addStruct(OBJECT_ID, this.struct);
 	}
 
@@ -67,32 +61,6 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 		private Op(StructWriter<Op> writer) {
 			super(writer);
-		}
-
-	}
-
-	private static final class ObjectGCBlock
-			implements Content<GCBlockOp.Type> {
-
-		@Override
-		public void allocated(Type instance) {
-		}
-
-		@Override
-		public void fill(Type instance) {
-			instance.lock().setValue((byte) 0);
-			instance.list().setValue((byte) 0);
-			instance.flags().setValue((short) 0);
-			instance.useCount().setValue(0);
-			instance.desc().setConstant(true).setValue(
-					instance.getGenerator()
-					.externalGlobal()
-					.setConstant()
-					.link("o42a_obj_gc_desc", GC_DESC_TYPE));
-			instance.prev().setNull();
-			instance.next().setNull();
-			instance.size().setValue(
-					instance.layout(instance.getGenerator()).size());
 		}
 
 	}
