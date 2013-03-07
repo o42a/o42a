@@ -13,25 +13,20 @@
 #include "o42a/memory/gc.h"
 
 
-// Last array items consists of all ones.
-#define O42A_ARRAY_END ((const o42a_array_t) ~0L)
-
 const o42a_val_type_t o42a_val_type_array = O42A_VAL_TYPE("array");
-
 const o42a_val_type_t o42a_val_type_row = O42A_VAL_TYPE("row");
 
-static void o42a_array_gc_marker(void *data) {
+static void o42a_array_gc_marker(void *const data) {
 	O42A_ENTER(return);
 
+	o42a_gc_block_t *const block = o42a_gc_blockof(data);
+	o42a_array_t *const end = (o42a_array_t *) ((char *) data + block->size);
 	o42a_obj_t *volatile *items = data;
 
-	while (1) {
+	while (items < end) {
 
 		o42a_obj_t *const item = *items;
 
-		if (item == O42A_ARRAY_END) {
-			break;
-		}
 		if (item) {
 
 			o42a_obj_data_t *const item_data = &o42a_obj_type(item)->type.data;
@@ -55,7 +50,7 @@ o42a_array_t *o42a_array_alloc(o42a_val_t *value, const uint32_t size) {
 
 	o42a_array_t *const array = O42A(o42a_gc_alloc(
 			&o42a_array_gc_desc,
-			sizeof(o42a_array_t) * (size + 1)));
+			sizeof(o42a_array_t) * size));
 
 	if (!array) {
 		value->flags = O42A_FALSE;
@@ -65,7 +60,6 @@ o42a_array_t *o42a_array_alloc(o42a_val_t *value, const uint32_t size) {
 		O42A_RETURN NULL;
 	}
 
-	array[size] = O42A_ARRAY_END;
 	value->value.v_ptr = array;
 	value->length = size;
 	value->flags = O42A_TRUE;
@@ -89,7 +83,7 @@ void o42a_array_copy(const o42a_val_t *const from, o42a_val_t *const to) {
 		O42A_RETURN;
 	}
 
-	memcpy(dest, from->value.v_ptr, (size + 1) * sizeof(o42a_array_t));
+	memcpy(dest, from->value.v_ptr, size * sizeof(o42a_array_t));
 
 	O42A_RETURN;
 }
