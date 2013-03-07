@@ -121,7 +121,7 @@ final class VariableIR extends ValueIR {
 
 			final DataOp target =
 					value.value(null, code)
-					.toPtr(null, code)
+					.toRec(null, code)
 					.load(null, code)
 					.toData(null, code);
 

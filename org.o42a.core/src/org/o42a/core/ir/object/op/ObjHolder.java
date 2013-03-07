@@ -35,16 +35,16 @@ public abstract class ObjHolder {
 		return new TempObjHolder(allocator);
 	}
 
-	public static ObjHolder objTrap() {
-		return ObjTrap.OBJ_TRAP;
-	}
-
-	public final DataOp useVar(Code code, DataRecOp var) {
+	public static DataOp useVar(Code code, DataRecOp var) {
 		return code.getGenerator()
 				.externalFunction()
 				.link("o42a_obj_use_mutable", VARIABLE_USE)
 				.op(null, code)
 				.use(code, var);
+	}
+
+	public static ObjHolder objTrap() {
+		return ObjTrap.OBJ_TRAP;
 	}
 
 	public final <O extends ObjectOp> O set(Block code, O object) {

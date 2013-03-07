@@ -26,7 +26,9 @@ import org.o42a.util.string.ID;
 
 public interface AnyOp extends DataPtrOp<AnyOp> {
 
-	AnyRecOp toPtr(ID id, Code code);
+	AnyRecOp toRec(ID id, Code code);
+
+	DataRecOp toDataRec(ID id, Code code);
 
 	Int8recOp toInt8(ID id, Code code);
 

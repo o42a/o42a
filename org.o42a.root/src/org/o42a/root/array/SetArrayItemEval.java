@@ -149,9 +149,9 @@ final class SetArrayItemEval extends InlineEval {
 		final Code code = dirs.code();
 		final AnyRecOp items =
 				arrayVal.value(ITEMS_REC_PTR_ID, code)
-				.toPtr(null, code)
+				.toRec(null, code)
 				.load(ITEMS_REC_ID, code)
-				.toPtr(null, code);
+				.toRec(null, code);
 
 		return items.offset(ITEM_REC_ID, code, index.toInt32(null, code));
 	}
@@ -177,7 +177,7 @@ final class SetArrayItemEval extends InlineEval {
 
 			newPtr =
 					newVal.value(NEW_VAL_REC_ID, code)
-					.toPtr(null, code)
+					.toRec(null, code)
 					.load(NEW_VAL_ID, code);
 		} else {
 			newValDirs = null;

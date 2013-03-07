@@ -107,7 +107,7 @@ public class ArrayConstructorBuilder
 				.link("o42a_array_alloc", VAL_ALLOC);
 		AnyRecOp data = func.op(null, code)
 				.allocate(dirs, items.length)
-				.toPtr(ITEMS_ID, code);
+				.toRec(ITEMS_ID, code);
 
 		allocateItem(arrayDirs, data, items[0], 0);
 		for (int i = 1; i < items.length; ++i) {
