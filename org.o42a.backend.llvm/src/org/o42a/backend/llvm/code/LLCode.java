@@ -244,15 +244,6 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public AnyLLOp allOnesPtr() {
-		return new AnyLLOp(
-				code().getOpNames().opId(null),
-				constantAllocPlace(),
-				nextPtr(),
-				allOnesPtr(getModule().getNativePtr()));
-	}
-
-	@Override
 	public DataLLOp nullDataPtr() {
 		return new DataLLOp(
 				code().getOpNames().opId(null),
@@ -521,8 +512,6 @@ public abstract class LLCode implements CodeWriter {
 	private static native long bool(long modulePtr, boolean value);
 
 	private static native long nullPtr(long modulePtr);
-
-	private static native long allOnesPtr(long modulePtr);
 
 	private static native long nullStructPtr(long typePtr);
 

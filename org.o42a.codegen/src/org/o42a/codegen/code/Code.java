@@ -120,11 +120,6 @@ public abstract class Code extends DebugCodeBase {
 		return writer().nullPtr();
 	}
 
-	public final AnyOp allOnesPtr() {
-		assert assertIncomplete();
-		return writer().allOnesPtr();
-	}
-
 	public final DataOp nullDataPtr() {
 		assert assertIncomplete();
 		return writer().nullDataPtr();

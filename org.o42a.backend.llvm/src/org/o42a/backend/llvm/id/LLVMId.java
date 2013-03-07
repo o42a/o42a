@@ -35,10 +35,6 @@ public abstract class LLVMId {
 		return new NullLLVMId(nativePtr, function);
 	}
 
-	public static LLVMId allOnesId(long nativePtr, boolean function) {
-		return new AllOnesLLVMId(nativePtr, function);
-	}
-
 	public static LLVMId typeId(TypeLLAlloc<?> typeAllocation) {
 		return new TypeLLVMId(typeAllocation);
 	}

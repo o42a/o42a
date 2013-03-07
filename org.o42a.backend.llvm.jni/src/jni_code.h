@@ -89,14 +89,6 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_nullPtr
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
- * Method:    allOnesPtr
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_allOnesPtr
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    nullStructPtr
  * Signature: (J)J
  */

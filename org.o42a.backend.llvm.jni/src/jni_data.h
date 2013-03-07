@@ -258,14 +258,6 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullPtr
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
- * Method:    allOnesPtr
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_allOnesPtr
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
  * Method:    nullStructPtr
  * Signature: (J)J
  */
