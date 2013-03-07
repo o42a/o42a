@@ -137,12 +137,20 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 			return null;
 		}
 
-		return new IndexedItemEval(this, inlineArray, inlineIndex);
+		return new IndexedItemEval(
+				this,
+				inlineArray,
+				inlineIndex,
+				!type().getValueType().isVariable());
 	}
 
 	@Override
 	public Eval evalBuiltin() {
-		return new IndexedItemEval(this, null, null);
+		return new IndexedItemEval(
+				this,
+				null,
+				null,
+				!type().getValueType().isVariable());
 	}
 
 	final Ref array() {
