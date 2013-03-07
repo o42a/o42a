@@ -47,7 +47,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	}
 
 	@Override
-	public final AnyRecCOp toPtr(ID id, Code code) {
+	public final AnyRecCOp toRec(ID id, Code code) {
 
 		final ID castId = code.getOpNames().castId(id, ANY_ID, this);
 
@@ -59,7 +59,28 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 					}
 					@Override
 					protected AnyRecOp write() {
-						return backend().underlying().toPtr(
+						return backend().underlying().toRec(
+								getId(),
+								part().underlying());
+					}
+				},
+				allocRecStore(getAllocPlace()));
+	}
+
+	@Override
+	public DataRecOp toDataRec(ID id, Code code) {
+
+		final ID castId = code.getOpNames().castId(id, DATA_ID, this);
+
+		return new DataRecCOp(
+				new OpBE<DataRecOp>(castId, cast(code)) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
+					protected DataRecOp write() {
+						return backend().underlying().toDataRec(
 								getId(),
 								part().underlying());
 					}

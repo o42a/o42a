@@ -219,7 +219,7 @@ public class Duplicates extends AnnotatedBuiltin {
 		final Block code = dirs.code();
 		final AnyOp foundDuplicate =
 				dupVal.value(null, code)
-				.toPtr(null, code)
+				.toRec(null, code)
 				.load(null, code);
 		final AnyOp duplicate;
 

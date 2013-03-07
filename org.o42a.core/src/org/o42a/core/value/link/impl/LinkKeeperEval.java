@@ -74,7 +74,7 @@ final class LinkKeeperEval extends KeeperEval {
 
 		final DataOp newObjectPtr =
 				newValue.value(null, code)
-				.toPtr(null, code)
+				.toRec(null, code)
 				.load(null, code)
 				.toData(null, code);
 

@@ -80,7 +80,7 @@ final class LinkKeeperIROp extends KeeperIROp<LinkKeeperIROp> {
 		final ValOp value = writeValue(keeper, valDirs);
 		final DataOp objectPtr =
 				value.value(null, valCode)
-				.toPtr(null, valCode)
+				.toRec(null, valCode)
 				.load(null, valCode)
 				.toData(null, valCode);
 

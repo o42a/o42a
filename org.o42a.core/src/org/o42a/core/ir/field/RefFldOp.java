@@ -22,6 +22,7 @@ package org.o42a.core.ir.field;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.object.op.ObjHolder.useVar;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
@@ -107,7 +108,7 @@ public abstract class RefFldOp<
 		final DataOp existing;
 
 		if (trappingConstructor) {
-			existing = holder.useVar(code, objectRec);
+			existing = useVar(code, objectRec);
 		} else {
 			existing = objectRec.load(null, code, ATOMIC);
 		}

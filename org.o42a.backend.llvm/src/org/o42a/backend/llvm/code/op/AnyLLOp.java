@@ -53,7 +53,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 	}
 
 	@Override
-	public AnyRecLLOp toPtr(ID id, Code code) {
+	public AnyRecLLOp toRec(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
@@ -64,12 +64,36 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toPtr(
+				llvm.instr(
 						nextPtr,
-						llvm.nextInstr(),
-						ids.write(resultId),
-						ids.length(),
-						getNativePtr())));
+						toPtr(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr())));
+	}
+
+	@Override
+	public DataRecLLOp toDataRec(ID id, Code code) {
+
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
+		final ID resultId = code.getOpNames().castId(id, DATA_ID, this);
+
+		return new DataRecLLOp(
+				resultId,
+				getAllocPlace(),
+				nextPtr,
+				llvm.instr(
+						nextPtr,
+						toPtr(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr())));
 	}
 
 	@Override
@@ -84,13 +108,15 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toInt(
+				llvm.instr(
 						nextPtr,
-						llvm.nextInstr(),
-						ids.write(resultId),
-						ids.length(),
-						getNativePtr(),
-						(byte) 8)));
+						toInt(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr(),
+								(byte) 8)));
 	}
 
 	@Override
@@ -105,13 +131,15 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toInt(
+				llvm.instr(
 						nextPtr,
-						llvm.nextInstr(),
-						ids.write(resultId),
-						ids.length(),
-						getNativePtr(),
-						(byte) 16)));
+						toInt(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr(),
+								(byte) 16)));
 	}
 
 	@Override
@@ -126,13 +154,15 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toInt(
+				llvm.instr(
 						nextPtr,
-						llvm.nextInstr(),
-						ids.write(resultId),
-						ids.length(),
-						getNativePtr(),
-						(byte) 32)));
+						toInt(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr(),
+								(byte) 32)));
 	}
 
 	@Override
@@ -147,13 +177,15 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toInt(
+				llvm.instr(
 						nextPtr,
-						llvm.nextInstr(),
-						ids.write(resultId),
-						ids.length(),
-						getNativePtr(),
-						(byte) 64)));
+						toInt(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr(),
+								(byte) 64)));
 	}
 
 	@Override
@@ -168,12 +200,14 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toFp32(
+				llvm.instr(
 						nextPtr,
-						llvm.nextInstr(),
-						ids.write(resultId),
-						ids.length(),
-						getNativePtr())));
+						toFp32(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr())));
 	}
 
 	@Override
@@ -188,12 +222,14 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toFp64(
+				llvm.instr(
 						nextPtr,
-						llvm.nextInstr(),
-						ids.write(resultId),
-						ids.length(),
-						getNativePtr())));
+						toFp64(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr())));
 	}
 
 	@Override
@@ -208,12 +244,14 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toRelPtr(
+				llvm.instr(
 						nextPtr,
-						llvm.nextInstr(),
-						ids.write(resultId),
-						ids.length(),
-						getNativePtr())));
+						toRelPtr(
+								nextPtr,
+								llvm.nextInstr(),
+								ids.write(resultId),
+								ids.length(),
+								getNativePtr())));
 	}
 
 	@Override

@@ -140,7 +140,7 @@ public abstract class ValOp extends IROp {
 		final Block notExternal = whenExternal.otherwise();
 
 		final AnyOp result1 =
-				value.toPtr(null, whenExternal).load(null, whenExternal);
+				value.toRec(null, whenExternal).load(null, whenExternal);
 
 		whenExternal.go(code.tail());
 
@@ -194,7 +194,7 @@ public abstract class ValOp extends IROp {
 
 		if (pointer != null) {
 			value(null, code)
-			.toPtr(null, code)
+			.toRec(null, code)
 			.store(code, pointer.op(null, code));
 		} else {
 			rawValue(null, code).store(code, code.int64(value.getValue()));
@@ -264,7 +264,7 @@ public abstract class ValOp extends IROp {
 		if (getDesc().hasLength()) {
 			length(null, code).store(code, code.int32(0));
 		}
-		value(null, code).toPtr(null, code).store(code, code.nullPtr());
+		value(null, code).toRec(null, code).store(code, code.nullPtr());
 
 		return this;
 	}
@@ -275,7 +275,7 @@ public abstract class ValOp extends IROp {
 		assert !getDesc().hasLength() :
 			"Can not store pointer without length to " + getValueType();
 
-		value(null, code).toPtr(null, code).store(code, pointer);
+		value(null, code).toRec(null, code).store(code, pointer);
 		flags(code).store(code, VAL_CONDITION);
 
 		holder().hold(code);
@@ -299,7 +299,7 @@ public abstract class ValOp extends IROp {
 				Val.VAL_CONDITION | Val.VAL_EXTERNAL
 				| (alignment.getShift() << 8));
 		length(null, code).store(code, length);
-		value(null, code).toPtr(null, code).store(code, pointer);
+		value(null, code).toRec(null, code).store(code, pointer);
 
 		holder().hold(code);
 
@@ -318,7 +318,7 @@ public abstract class ValOp extends IROp {
 
 		flags(code).store(code, Val.VAL_CONDITION);
 		length(null, code).store(code, length);
-		value(null, code).toPtr(null, code).store(code, pointer);
+		value(null, code).toRec(null, code).store(code, pointer);
 
 		holder().hold(code);
 

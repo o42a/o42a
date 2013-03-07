@@ -94,7 +94,7 @@ public final class VarSteOp extends FldOp {
 
 		final DataOp targetPtr =
 				value.value(null, code)
-				.toPtr(null, code)
+				.toRec(null, code)
 				.load(null, code)
 				.toData(null, code);
 		final ObjectOp target = anonymousObject(

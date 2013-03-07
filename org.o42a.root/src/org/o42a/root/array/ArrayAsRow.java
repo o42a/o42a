@@ -140,7 +140,7 @@ final class ArrayAsRow extends AnnotatedBuiltin {
 				dirs.value().store(
 						code,
 						arrayVal.value(null, code)
-						.toPtr(null, code)
+						.toRec(null, code)
 						.load(null, code),
 						arrayVal.loadLength(null, code)));
 
