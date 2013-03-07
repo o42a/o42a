@@ -36,6 +36,7 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
 import org.o42a.core.value.array.ArrayValueType;
+import org.o42a.util.fn.Getter;
 
 
 public final class ArrayItemsIR
@@ -81,13 +82,21 @@ public final class ArrayItemsIR
 		instance.flags().setValue((short) 0);
 		instance.useCount().setValue(0);
 		instance.desc().setConstant(true).setValue(
-				instance.getGenerator()
+				getGenerator()
 				.externalGlobal()
 				.setConstant()
 				.link("o42a_array_gc_desc", GC_DESC_TYPE));
 		instance.prev().setNull();
 		instance.next().setNull();
-		instance.size().setValue(layout(instance.getGenerator()).size());
+		instance.size()
+		.setConstant(true)
+		.setLowLevel(true)
+		.setValue(new Getter<Integer>() {
+			@Override
+			public Integer get() {
+				return layout(getGenerator()).size();
+			}
+		});
 	}
 
 	@Override

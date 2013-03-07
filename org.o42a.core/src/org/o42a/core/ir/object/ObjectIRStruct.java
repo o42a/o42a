@@ -39,6 +39,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
@@ -104,13 +105,21 @@ final class ObjectIRStruct
 		instance.flags().setValue((short) 0);
 		instance.useCount().setValue(0);
 		instance.desc().setConstant(true).setValue(
-				instance.getGenerator()
+				getGenerator()
 				.externalGlobal()
 				.setConstant()
 				.link("o42a_obj_gc_desc", GC_DESC_TYPE));
 		instance.prev().setNull();
 		instance.next().setNull();
-		instance.size().setValue(layout(instance.getGenerator()).size());
+		instance.size()
+		.setConstant(true)
+		.setLowLevel(true)
+		.setValue(new Getter<Integer>() {
+			@Override
+			public Integer get() {
+				return layout(getGenerator()).size();
+			}
+		});
 	}
 
 	@Override
