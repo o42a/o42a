@@ -21,22 +21,18 @@ package org.o42a.core.value.array.impl;
 
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_ID;
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
-import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.gc.GCBlockOp;
-import org.o42a.core.ir.gc.GCBlockOp.Type;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.util.string.ID;
 
 
-public final class ArrayItemsIRContainer extends Struct<ArrayItemsIRContainer.Op> {
+public final class ArrayItemsIRContainer
+		extends Struct<ArrayItemsIRContainer.Op> {
 
-	private static final ArrayGCBlock ARRAY_GC_BLOCK = new ArrayGCBlock();
 	private static final ID ITEMS_ID = ID.id("items");
 
 	private final ArrayItemsIR items;
@@ -66,7 +62,7 @@ public final class ArrayItemsIRContainer extends Struct<ArrayItemsIRContainer.Op
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, ARRAY_GC_BLOCK);
+		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, this.items);
 		data.addStruct(ITEMS_ID, this.items);
 	}
 
@@ -74,32 +70,6 @@ public final class ArrayItemsIRContainer extends Struct<ArrayItemsIRContainer.Op
 
 		private Op(StructWriter<Op> writer) {
 			super(writer);
-		}
-
-	}
-
-	private static final class ArrayGCBlock
-			implements Content<GCBlockOp.Type> {
-
-		@Override
-		public void allocated(Type instance) {
-		}
-
-		@Override
-		public void fill(Type instance) {
-			instance.lock().setValue((byte) 0);
-			instance.list().setValue((byte) 0);
-			instance.flags().setValue((short) 0);
-			instance.useCount().setValue(0);
-			instance.desc().setConstant(true).setValue(
-					instance.getGenerator()
-					.externalGlobal()
-					.setConstant()
-					.link("o42a_array_gc_desc", GC_DESC_TYPE));
-			instance.prev().setNull();
-			instance.next().setNull();
-			instance.size().setValue(
-					instance.layout(instance.getGenerator()).size());
 		}
 
 	}

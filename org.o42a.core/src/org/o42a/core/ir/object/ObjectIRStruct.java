@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectIRBody.BODY_ID;
 import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
@@ -29,8 +30,11 @@ import java.util.LinkedHashMap;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.gc.GCBlockOp;
+import org.o42a.core.ir.gc.GCBlockOp.Type;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
@@ -38,7 +42,9 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
 
-final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
+final class ObjectIRStruct
+		extends Struct<ObjectIRStruct.Op>
+		implements Content<GCBlockOp.Type> {
 
 	static final ID OBJECT_ID = ID.id("object");
 	private static final ID BODY_PREFIX_ID = ID.id().detail(BODY_ID);
@@ -85,6 +91,26 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	@Override
 	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
+	}
+
+	@Override
+	public void allocated(Type instance) {
+	}
+
+	@Override
+	public void fill(Type instance) {
+		instance.lock().setValue((byte) 0);
+		instance.list().setValue((byte) 0);
+		instance.flags().setValue((short) 0);
+		instance.useCount().setValue(0);
+		instance.desc().setConstant(true).setValue(
+				instance.getGenerator()
+				.externalGlobal()
+				.setConstant()
+				.link("o42a_obj_gc_desc", GC_DESC_TYPE));
+		instance.prev().setNull();
+		instance.next().setNull();
+		instance.size().setValue(layout(instance.getGenerator()).size());
 	}
 
 	@Override
