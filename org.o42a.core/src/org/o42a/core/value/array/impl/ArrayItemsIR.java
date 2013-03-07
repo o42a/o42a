@@ -49,7 +49,7 @@ public final class ArrayItemsIR
 		super(arrayIR.getId().detail("items"));
 		this.arrayIR = arrayIR;
 		// Reserve one pointer for terminator.
-		this.items = new DataRec[arrayIR.getArray().getItems().length + 1];
+		this.items = new DataRec[arrayIR.getArray().getItems().length];
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public final class ArrayItemsIR
 	}
 
 	public final int length() {
-		return this.items.length - 1;
+		return this.items.length;
 	}
 
 	public final DataRec[] getItems() {
@@ -98,7 +98,6 @@ public final class ArrayItemsIR
 		for (int i = 0; i < length; ++i) {
 			this.items[i] = data.addDataPtr(Integer.toString(i));
 		}
-		this.items[length] = data.addDataPtr("END");
 	}
 
 	@Override
@@ -125,13 +124,6 @@ public final class ArrayItemsIR
 
 			this.items[i].setValue(itemBodyIR.pointer(getGenerator()).toData());
 		}
-
-		// Last element is always all-ones pointer.
-		this.items[length].setValue(
-				getGenerator()
-				.getGlobals()
-				.allOnesPtr()
-				.toData());
 	}
 
 	public static final class Op extends StructOp<Op> {
