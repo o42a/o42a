@@ -19,6 +19,7 @@
 */
 package org.o42a.root.array;
 
+import static org.o42a.core.ir.object.op.ObjHolder.useVar;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
@@ -50,15 +51,18 @@ final class IndexedItemEval extends InlineEval {
 	private final IndexedItem item;
 	private final InlineValue inlineArray;
 	private final InlineValue inlineIndex;
+	private final boolean row;
 
 	IndexedItemEval(
 			IndexedItem item,
 			InlineValue inlineArray,
-			InlineValue inlineIndex) {
+			InlineValue inlineIndex,
+			boolean row) {
 		super(null);
 		this.item = item;
 		this.inlineArray = inlineArray;
 		this.inlineIndex = inlineIndex;
+		this.row = row;
 	}
 
 	@Override
@@ -126,7 +130,7 @@ final class IndexedItemEval extends InlineEval {
 		.go(code, dirs.falseDir());
 	}
 
-	private AnyRecOp itemRec(ValDirs dirs, HostOp host, Int64op index) {
+	private DataRecOp itemRec(ValDirs dirs, HostOp host, Int64op index) {
 
 		final ValOp arrayVal;
 
@@ -139,11 +143,11 @@ final class IndexedItemEval extends InlineEval {
 		checkIndex(dirs.dirs(), index, arrayVal);
 
 		final Code code = dirs.code();
-		final AnyRecOp items =
+		final DataRecOp items =
 				arrayVal.value(ITEMS_REC_PTR_ID, code)
 				.toRec(null, code)
 				.load(ITEMS_REC_ID, code)
-				.toRec(null, code);
+				.toDataRec(null, code);
 
 		return items.offset(ITEM_REC_ID, code, index.toInt32(null, code));
 	}
@@ -155,14 +159,26 @@ final class IndexedItemEval extends InlineEval {
 			Int64op index) {
 
 		final Block code = itemsDirs.code();
-		final AnyRecOp itemRec = itemRec(itemsDirs, host, index);
-		final AnyOp itemPtr = itemRec.load(ITEM_ID, code);
+		final DataRecOp itemRec = itemRec(itemsDirs, host, index);
+		final DataOp itemPtr;
+
+		if (this.row) {
+			itemPtr = itemRec.load(null, code);
+		} else {
+			itemPtr = useVar(code, itemRec);
+		}
 
 		itemPtr.isNull(null, code).go(code, itemsDirs.falseDir());
 
-		dirs.returnValue(
-				itemsDirs.code(),
-				dirs.value().store(itemsDirs.code(), itemPtr));
+		final ValOp value = dirs.value();
+
+		if (this.row) {
+			value.store(code, itemPtr.toAny(null, code));
+		} else {
+			value.set(code, itemPtr.toAny(null, code));
+		}
+
+		dirs.returnValue(code, value);
 	}
 
 }
