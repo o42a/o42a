@@ -171,22 +171,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public AnyOp allOnesPtr() {
-		return new AnyCOp(
-				new OpBE<AnyOp>(code().getOpNames().opId(null), this) {
-					@Override
-					public void prepare() {
-					}
-					@Override
-					protected AnyOp write() {
-						return part().underlying().allOnesPtr();
-					}
-				},
-				constantAllocPlace(),
-				getBackend().getGenerator().getGlobals().allOnesPtr());
-	}
-
-	@Override
 	public final DataCOp nullDataPtr() {
 		return new DataCOp(
 				new OpBE<DataOp>(code().getOpNames().opId(null), this) {

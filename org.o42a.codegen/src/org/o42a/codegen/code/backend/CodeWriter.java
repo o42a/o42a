@@ -60,8 +60,6 @@ public interface CodeWriter {
 
 	AnyOp nullPtr();
 
-	AnyOp allOnesPtr();
-
 	DataOp nullDataPtr();
 
 	<S extends StructOp<S>> S nullPtr(DataAllocation<S> type);

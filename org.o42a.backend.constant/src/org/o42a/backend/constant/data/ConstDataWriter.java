@@ -63,23 +63,6 @@ public final class ConstDataWriter implements DataWriter {
 	}
 
 	@Override
-	public DataAllocation<AnyOp> allOnesPtr(Ptr<AnyOp> pointer) {
-		return new AnyCDAlloc(
-				getBackend(),
-				pointer,
-				new UnderAlloc<AnyOp>() {
-					@Override
-					public Ptr<AnyOp> allocateUnderlying(
-							CDAlloc<AnyOp> alloc) {
-						return alloc.getBackend()
-								.getUnderlyingGenerator()
-								.getGlobals()
-								.allOnesPtr();
-					}
-				});
-	}
-
-	@Override
 	public final DataCDAlloc nullDataPtr(Ptr<DataOp> pointer) {
 		return new DataCDAlloc(
 				getBackend(),

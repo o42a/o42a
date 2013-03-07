@@ -30,8 +30,6 @@ public interface DataWriter {
 
 	DataAllocation<AnyOp> nullPtr(Ptr<AnyOp> pointer);
 
-	DataAllocation<AnyOp> allOnesPtr(Ptr<AnyOp> pointer);
-
 	DataAllocation<DataOp> nullDataPtr(Ptr<DataOp> pointer);
 
 	<S extends StructOp<S>> DataAllocation<S> nullPtr(
