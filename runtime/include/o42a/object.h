@@ -805,6 +805,14 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use;
 void o42a_obj_use(o42a_obj_data_t *);
 
 /**
+ * Declares the indirectly pointed object is used by current thread.
+ *
+ * Performs the same as o42a_obj_use with respect to GC and mutability
+ * by invoking o42a_gc_use_mutable method.
+ */
+o42a_obj_t *o42a_obj_use_mutable(o42a_obj_t **);
+
+/**
  * Declares the static object is used.
  *
  * This function submits the static object to GC.

@@ -1410,6 +1410,23 @@ void o42a_obj_use(o42a_obj_data_t *const data) {
 	O42A_RETURN;
 }
 
+static inline o42a_gc_block_t *gc_block_by_object(void *const ptr) {
+	O42A_ENTER(return NULL);
+
+	o42a_obj_t *const obj = ptr;
+	o42a_obj_type_t *const type = o42a_obj_type(obj);
+	o42a_obj_data_t *const data = &type->type.data;
+
+	O42A_RETURN o42a_gc_blockof((char *) data + data->start);
+}
+
+o42a_obj_t *o42a_obj_use_mutable(o42a_obj_t **const var) {
+	O42A_ENTER(return NULL);
+	o42a_obj_t *const result =
+			O42A(o42a_gc_use_mutable((void **) var, &gc_block_by_object));
+	O42A_RETURN result;
+}
+
 void o42a_obj_use_static(o42a_obj_data_t *const data) {
 	O42A_ENTER(return);
 
