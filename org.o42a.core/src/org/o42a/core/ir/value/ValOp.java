@@ -270,16 +270,14 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp store(Code code, AnyOp pointer) {
-		assert getDesc().hasValue() :
-			"Can not store value to " + getValueType();
-		assert !getDesc().hasLength() :
-			"Can not store pointer without length to " + getValueType();
-
-		value(null, code).toRec(null, code).store(code, pointer);
-		flags(code).store(code, VAL_CONDITION);
-
+		storeNoHold(code, pointer);
 		holder().hold(code);
+		return this;
+	}
 
+	public final ValOp set(Code code, AnyOp pointer) {
+		storeNoHold(code, pointer);
+		holder().set(code);
 		return this;
 	}
 
@@ -389,6 +387,15 @@ public abstract class ValOp extends IROp {
 
 	public final void unuseArrayPointer(Code code) {
 		ptr().unuseArrayPointer(code);
+	}
+
+	private final void storeNoHold(Code code, AnyOp pointer) {
+		assert getDesc().hasValue() :
+			"Can not store value to " + getValueType();
+		assert !getDesc().hasLength() :
+			"Can not store pointer without length to " + getValueType();
+		value(null, code).toRec(null, code).store(code, pointer);
+		flags(code).store(code, VAL_CONDITION);
 	}
 
 }
