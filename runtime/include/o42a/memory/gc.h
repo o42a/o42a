@@ -115,6 +115,13 @@ struct _o42a_gc_block {
 
 };
 
+/**
+ * A function, which finds a garbage-collected data block the given address
+ * belongs to.
+ *
+ * \param ptr a pointer inside a target GC data block.
+ */
+typedef o42a_gc_block_t *o42a_gc_block_reader_ft(void *);
 
 /**
  * Allocates a garbage-collected block of data.
@@ -207,6 +214,29 @@ void o42a_gc_discard(o42a_gc_block_t *);
  * thread.
  */
 void o42a_gc_use(o42a_gc_block_t *);
+
+/**
+ * Declares the indirectly pointed data block is used by current thread.
+ *
+ * This function does the same as o42a_gc_use, but it accesses the data block
+ * indirectly, through pointer, and in coordination with garbage collector.
+ * It ensures that GC reads exactly the same value as a client code if they read
+ * it simultaneously. This is essential when reading a mutable variables, i.e.
+ * if the data block pointer can be mutated by another thread. Without
+ * precautions made by this method it may happen that the data block read would
+ * be freed by GC in between the reading of its address and marking it used,
+ * which will lead to failure on attempt to use it.
+ *
+ * \param var an address of the variable containing the pointer to garbage
+ * collected data. It is not necessarily a pointer to data block start.
+ * \param reader a function, which finds a garbage-collected data block the
+ * address read from var belongs to. It won't be invoked if that address
+ * is NULL.
+ *
+ * \return an address read from var. Note, that it will be returned unchanged,
+ * i.e. it wont be converted by reader.
+ */
+void *o42a_gc_use_mutable(void **, o42a_gc_block_reader_ft *);
 
 /**
  * Releases the use of data block.

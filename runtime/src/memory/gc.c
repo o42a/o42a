@@ -277,6 +277,70 @@ static inline void gc_unlock() {
 	O42A_RETURN;
 }
 
+typedef struct gc_read gc_read_t;
+
+struct gc_read {
+
+	o42a_bool_t read;
+	gc_read_t *prev;
+	gc_read_t *next;
+	void **const var;
+	o42a_gc_block_reader_ft *const reader;
+	void *result;
+
+};
+
+static int gc_reads_lock;
+static gc_read_t *gc_first_read;
+static gc_read_t *gc_last_read;
+
+static inline void gc_lock_reads() {
+	O42A_ENTER(return);
+	while (__sync_lock_test_and_set(&gc_reads_lock, 1)) {
+		O42A(sched_yield());
+	}
+	O42A_RETURN;
+}
+
+static inline void gc_unlock_reads() {
+	O42A_ENTER(return);
+	__sync_lock_release(&gc_reads_lock);
+	O42A_RETURN;
+}
+
+static inline void *gc_read(gc_read_t *const read) {
+	O42A_ENTER(return NULL);
+
+	void *result;
+
+	if (read->read) {
+		// Already read.
+		result = read->result;
+	} else {
+		// Read the pointer.
+		result = *read->var;
+		read->result = result;
+		read->read = O42A_TRUE;
+
+		// Unregister the read.
+		gc_read_t *const prev = read->prev;
+		gc_read_t *const next = read->next;
+
+		if (next) {
+			next->prev = prev;
+		} else {
+			gc_last_read = prev;
+		}
+		if (prev) {
+			prev->next = next;
+		} else {
+			gc_first_read = next;
+		}
+	}
+
+	O42A_RETURN result;
+}
+
 /**
  * Next GC oddity, i.e. which of the "white" lists will be processed next.
  *
@@ -527,6 +591,36 @@ static inline void gc_thread_mark_static(
 	O42A_RETURN;
 }
 
+static inline void gc_thread_mark_reads() {
+	O42A_ENTER(return);
+
+	while (1) {
+
+		// Perform the first mutable read and remove it from the list.
+		O42A(gc_lock_reads());
+		gc_read_t *const read = gc_first_read;
+		void *address;
+		o42a_gc_block_reader_ft *reader;
+		if (read) {
+			address = O42A(gc_read(read));
+			reader = read->reader;
+		}
+		O42A(gc_unlock_reads());
+
+		if (!read) {
+			// No pending reads.
+			O42A_RETURN;
+		}
+
+		if (address) {
+			// Mark the read block.
+			O42A(o42a_gc_mark(reader(address)));
+		}
+	}
+
+	O42A_RETURN;
+}
+
 static inline void gc_thread_sweep(unsigned oddity) {
 	O42A_ENTER(return);
 
@@ -583,6 +677,7 @@ static inline void gc_mark_and_sweep() {
 	if (first_static) {
 		O42A(gc_thread_mark_static(first_static, last_static));
 	}
+	O42A(gc_thread_mark_reads());
 	O42A(gc_thread_sweep(oddity));
 
 	O42A_RETURN;
@@ -743,6 +838,42 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 	O42A(o42a_gc_unlock_block(block));
 
 	O42A_RETURN;
+}
+
+void *o42a_gc_use_mutable(
+		void **const var,
+		o42a_gc_block_reader_ft *const reader) {
+	O42A_ENTER(return NULL);
+
+	gc_read_t read = {
+		.read = O42A_FALSE,
+		.prev = NULL,
+		.next = NULL,
+		.var = var,
+		.reader = reader,
+		.result = NULL,
+	};
+
+	// Register the mutable read.
+	O42A(gc_lock_reads());
+	if (!gc_last_read) {
+		gc_first_read = &read;
+	} else {
+		read.prev = gc_last_read;
+		gc_last_read->next = &read;
+	}
+	gc_last_read = &read;
+	O42A(gc_unlock_reads());
+
+	// Perform the read and unregister it.
+	O42A(gc_lock_reads());
+	void *const result = O42A(gc_read(&read));
+	if (result) {
+		O42A(o42a_gc_use(reader(result)));
+	}
+	O42A(gc_unlock_reads());
+
+	O42A_RETURN result;
 }
 
 void o42a_gc_unuse(o42a_gc_block_t *const block) {
