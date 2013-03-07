@@ -146,6 +146,16 @@ static inline void* o42a_gc_dataof(o42a_gc_block_t *block) {
 	return (void*) &blk->data;
 }
 
+#ifndef NDEBUG
+static inline size_t gc_dump_offset(size_t size) {
+
+	const size_t mem_size = sizeof(struct _o42a_gc_block) + size;
+	const o42a_layout_t dump_layout = O42A_LAYOUT(o42a_dbg_stack_dump_t);
+
+	return o42a_layout_pad(mem_size, dump_layout);
+}
+#endif /* NDEBUG */
+
 static inline o42a_gc_block_t *gc_balloc(
 		const o42a_gc_desc_t *const desc,
 		const size_t size) {
@@ -156,7 +166,7 @@ static inline o42a_gc_block_t *gc_balloc(
 #ifndef NDEBUG
 	const o42a_layout_t dump_layout = O42A_LAYOUT(o42a_dbg_stack_dump_t);
 	o42a_dbg_stack_dump_t stack_dump = o42a_dbg_stack_dump(2);
-	const size_t dump_offset = o42a_layout_pad(mem_size, dump_layout);
+	const size_t dump_offset = gc_dump_offset(size);
 	mem_size = dump_offset + stack_dump.size;
 #endif /* NDEBUG */
 
@@ -174,13 +184,11 @@ static inline o42a_gc_block_t *gc_balloc(
 	block->desc = desc;
 	block->prev = NULL;
 	block->next = NULL;
+	block->size = size;
 
 #ifndef NDEBUG
-	block->size = dump_offset;
 	o42a_dbg_fill_stack_dump(&stack_dump, ((char *) block) + dump_offset);
 	O42A_DEBUG("Allocated: %#lx (%zd bytes)\n", (long) block, size);
-#else
-	block->size = mem_size;
 #endif /* NDEBUG */
 
 	O42A_RETURN block;
@@ -223,7 +231,8 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 	block->list = ~0;
 	if (o42a_debug_ison) {
 		o42a_debug("Allocated at:\n");
-		o42a_dbg_print_stack_dump(((char *) block) + block->size);
+		o42a_dbg_print_stack_dump(
+				((char *) block) + gc_dump_offset(block->size));
 	}
 #endif /* NDEBUG */
 	O42A(free(block));
