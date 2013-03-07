@@ -104,7 +104,14 @@ public abstract class RefFldOp<
 
 		code.acquireBarrier();
 
-		final DataOp existing = objectRec.load(null, code, ATOMIC);
+		final DataOp existing;
+
+		if (trappingConstructor) {
+			existing = holder.useVar(code, objectRec);
+		} else {
+			existing = objectRec.load(null, code, ATOMIC);
+		}
+
 		final CondBlock noTarget =
 				existing.isNull(null, code)
 				.branch(code, "no_target", "has_target");
@@ -115,7 +122,7 @@ public abstract class RefFldOp<
 		final DataOp ptr1 = hasTarget.phi(null, existing);
 
 		if (trappingConstructor) {
-			holder.hold(hasTarget, createObject(hasTarget, ptr1));
+			holder.set(hasTarget, createObject(hasTarget, ptr1));
 		}
 
 		hasTarget.go(code.tail());

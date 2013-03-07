@@ -19,8 +19,13 @@
 */
 package org.o42a.core.ir.object.op;
 
+import static org.o42a.core.ir.object.impl.VariableUseFunc.VARIABLE_USE;
+
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.object.ObjectOp;
 
 
@@ -32,6 +37,14 @@ public abstract class ObjHolder {
 
 	public static ObjHolder objTrap() {
 		return ObjTrap.OBJ_TRAP;
+	}
+
+	public final DataOp useVar(Code code, DataRecOp var) {
+		return code.getGenerator()
+				.externalFunction()
+				.link("o42a_obj_use_mutable", VARIABLE_USE)
+				.op(null, code)
+				.use(code, var);
 	}
 
 	public final <O extends ObjectOp> O set(Block code, O object) {
