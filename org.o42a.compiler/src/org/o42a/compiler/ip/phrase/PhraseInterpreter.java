@@ -22,6 +22,8 @@ package org.o42a.compiler.ip.phrase;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
+import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
+import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
@@ -97,6 +99,51 @@ public final class PhraseInterpreter {
 		final Phrase prefixed = prefixByTypeParameters(phrase, node);
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
+	}
+
+	public static Phrase expressionPhrase(
+			ExpressionNode expression,
+			Phrase phrase,
+			TypeRefParameters typeParameters) {
+
+		final Distributor distributor = phrase.distribute();
+		final AncestorTypeRef ancestor =
+				expression.accept(
+						phrase.ip().typeIp().ancestorVisitor(
+								typeParameters,
+								typeParameters == null
+								? TARGET_REFERRAL : BODY_REFERRAL,
+								phrase.getTypeConsumer()),
+						distributor);
+
+		if (ancestor == null || ancestor.isImplied()) {
+
+			final Phrase result =
+					phrase.setImpliedAncestor(location(phrase, expression));
+
+			if (typeParameters == null) {
+				return result;
+			}
+
+			return result.setTypeParameters(
+					typeParameters.toObjectTypeParameters());
+		}
+
+		final Phrase bodied;
+
+		if (typeParameters != null || ancestor.isBodyReferred()) {
+			bodied = phrase.referBody();
+		} else {
+			bodied = phrase;
+		}
+
+		final Phrase result = ancestor.applyTo(bodied);
+
+		if (!ancestor.isMacroExpanding()) {
+			return result;
+		}
+
+		return result.expandMacro();
 	}
 
 	public Phrase unary(

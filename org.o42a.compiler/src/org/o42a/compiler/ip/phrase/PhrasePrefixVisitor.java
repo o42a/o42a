@@ -19,19 +19,15 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.expressionPhrase;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByAscendants;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByTypeParameters;
-import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
-import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
-import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
@@ -79,40 +75,7 @@ final class PhrasePrefixVisitor
 
 	@Override
 	protected Phrase visitExpression(ExpressionNode expression, Phrase p) {
-
-		final Distributor distributor = p.distribute();
-		final AncestorTypeRef ancestor =
-				expression.accept(
-						p.ip().typeIp().ancestorVisitor(
-								this.typeParameters,
-								this.typeParameters == null
-								? TARGET_REFERRAL : BODY_REFERRAL,
-								p.getTypeConsumer()),
-						distributor);
-
-		if (ancestor == null || ancestor.isImplied()) {
-
-			final Phrase phrase =
-					p.setImpliedAncestor(location(p, expression));
-
-			return applyTypeParameters(phrase);
-		}
-
-		final Phrase phrase;
-
-		if (this.typeParameters != null || ancestor.isBodyReferred()) {
-			phrase = p.referBody();
-		} else {
-			phrase = p;
-		}
-
-		final Phrase result = ancestor.applyTo(phrase);
-
-		if (!ancestor.isMacroExpanding()) {
-			return result;
-		}
-
-		return result.expandMacro();
+		return expressionPhrase(expression, p, this.typeParameters);
 	}
 
 	private Phrase applyTypeParameters(Phrase phrase) {
