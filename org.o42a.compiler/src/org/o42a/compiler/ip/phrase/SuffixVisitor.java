@@ -20,9 +20,7 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.addParts;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByAscendants;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByTypeParameters;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
@@ -112,23 +110,13 @@ final class SuffixVisitor
 			ExpressionNode expression,
 			Distributor p) {
 
-		final ExpressionNodeVisitor<Ref, Distributor> visitor =
-				ip().targetExVisitor(this.typeConsumer);
-		final Ref suffix = expression.accept(visitor, p);
-
-		if (suffix == null) {
-			return null;
-		}
-
 		final Phrase phrase = new Phrase(
 				ip(),
 				location(p, this.node),
 				p,
 				this.typeConsumer);
 
-		phrase.setAncestor(suffix.toTypeRef());
-
-		return suffixByPhrase(phrase);
+		return suffixByPhrase(expressionPhrase(expression, phrase, null));
 	}
 
 	private SuffixedByPhrase suffixByPhrase(Phrase suffix) {
