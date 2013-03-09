@@ -84,26 +84,31 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 		@Override
 		public SignNode<Qualifier> parse(ParserContext context) {
 
+			final SourcePosition start = context.current().fix();
 			final Qualifier qualifier;
 
 			switch (context.next()) {
 			case ':':
 				qualifier = Qualifier.MEMBER;
+				context.acceptAll();
 				break;
 			case '#':
+				if (context.next() == '#') {
+					return null;
+				}
+				context.acceptButLast();
 				qualifier = Qualifier.MACRO;
 				break;
 			default:
 				return null;
 			}
 
-			final SourcePosition start = context.current().fix();
-
-			context.acceptAll();
-
 			return context.acceptComments(
 					false,
-					new SignNode<>(start, context.current().fix(), qualifier));
+					new SignNode<>(
+							start,
+							context.firstUnaccepted().fix(),
+							qualifier));
 		}
 
 	}

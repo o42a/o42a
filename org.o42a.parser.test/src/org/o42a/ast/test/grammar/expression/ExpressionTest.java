@@ -4,6 +4,7 @@
 */
 package org.o42a.ast.test.grammar.expression;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.expression;
@@ -118,6 +119,16 @@ public class ExpressionTest extends GrammarTestCase {
 		to(BinaryNode.class, parse("a + b\\"));
 		to(BinaryNode.class, parse("a\\ + b\\"));
 		to(BinaryNode.class, parse("a\\ f + b\\ g"));
+	}
+
+	@Test
+	public void implicitSuffix() {
+		assertThat(
+				to(BinaryNode.class, parse("a ##b")).getOperator(),
+				is(BinaryOperator.SUFFIX));
+		assertThat(
+				to(BinaryNode.class, parse("a ##foo [bar]")).getOperator(),
+				is(BinaryOperator.SUFFIX));
 	}
 
 	private ExpressionNode parse(String text) {

@@ -20,12 +20,15 @@
 package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.expression;
+import static org.o42a.parser.Grammar.scopeRef;
 import static org.o42a.util.string.Characters.*;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.ref.ScopeType;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -47,6 +50,9 @@ public class BinaryParser implements Parser<BinaryNode> {
 		final SignNode<BinaryOperator> sign = context.parse(OPERATOR);
 
 		if (sign == null) {
+			if (context.next() == '#') {
+				return macrosSuffix(context);
+			}
 			return null;
 		}
 
@@ -68,6 +74,27 @@ public class BinaryParser implements Parser<BinaryNode> {
 		}
 
 		return new BinaryNode(this.leftOperand, sign, rightOperand);
+	}
+
+	private BinaryNode macrosSuffix(ParserContext context) {
+
+		final BinaryNode suffix =
+				context.parse(new MacrosSuffixParser(this.leftOperand));
+
+		if (suffix == null) {
+			return null;
+		}
+
+		final BinaryNode updated = updatePriority(
+				suffix.getSign(),
+				suffix.getOperator(),
+				suffix.getRightOperand());
+
+		if (updated != null) {
+			return updated;
+		}
+
+		return suffix;
 	}
 
 	private BinaryNode updatePriority(
@@ -197,10 +224,48 @@ public class BinaryParser implements Parser<BinaryNode> {
 
 			final SignNode<BinaryOperator> result = new SignNode<>(
 					start,
-					context.current().fix(),
+					context.firstUnaccepted().fix(),
 					operator);
 
 			return context.acceptComments(false, result);
+		}
+
+	}
+
+	private static final class MacrosSuffixParser
+			implements Parser<BinaryNode> {
+
+		private final ExpressionNode leftOperand;
+
+		MacrosSuffixParser(ExpressionNode leftOperand) {
+			this.leftOperand = leftOperand;
+		}
+
+		@Override
+		public BinaryNode parse(ParserContext context) {
+			if (context.next() != '#') {
+				return null;
+			}
+
+			final ScopeRefNode scopeRef = context.push(scopeRef());
+
+			if (scopeRef == null || scopeRef.getType() != ScopeType.MACROS) {
+				return null;
+			}
+
+			final ExpressionNode rightOperand = context.parse(expression());
+
+			if (rightOperand == null) {
+				return null;
+			}
+
+			return new BinaryNode(
+					this.leftOperand,
+					new SignNode<>(
+							scopeRef.getStart(),
+							scopeRef.getEnd(),
+							BinaryOperator.SUFFIX),
+					rightOperand);
 		}
 
 	}

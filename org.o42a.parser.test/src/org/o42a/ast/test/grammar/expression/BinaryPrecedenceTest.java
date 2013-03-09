@@ -31,6 +31,20 @@ public class BinaryPrecedenceTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void macroExpandingSuffixPrecedesDivide() {
+		checkPrecedence(
+				parse("a / b ##c [d]"),
+				BinaryOperator.DIVIDE,
+				false,
+				BinaryOperator.SUFFIX);
+		checkPrecedence(
+				parse("a ##b [d] / c"),
+				BinaryOperator.DIVIDE,
+				true,
+				BinaryOperator.SUFFIX);
+	}
+
+	@Test
 	public void multiplyPrecedesAdd() {
 		checkPrecedence(
 				parse("a + b * c"),
