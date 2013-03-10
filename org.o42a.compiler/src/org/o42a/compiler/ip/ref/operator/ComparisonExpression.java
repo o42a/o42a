@@ -19,16 +19,13 @@
 */
 package org.o42a.compiler.ip.ref.operator;
 
-import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.phrase.PhraseBuilder;
+import org.o42a.compiler.ip.phrase.part.BinaryPhraseOperator;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
-import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.InlineValue;
@@ -53,25 +50,24 @@ public final class ComparisonExpression extends ObjectConstructor {
 	static final MemberId COMPARISON_MEMBER =
 			fieldName(CASE_SENSITIVE.canonicalName("_cmp"));
 
-	private final Interpreter ip;
-	private final BinaryNode node;
-	private final TypeConsumer typeConsumer;
 	private final ComparisonExpression prototype;
 	private final Reproducer reproducer;
-	private ComparisonOperator operator;
+	private final BinaryPhraseOperator operator;
+	private final Ref leftOperand;
+	private final Ref rightOperand;
+	private ComparisonOperator comparisonOperator;
 	private Ref phrase;
 	private byte error;
 
-
 	public ComparisonExpression(
-			Interpreter ip,
-			BinaryNode node,
-			Distributor distributor,
-			TypeConsumer typeConsumer) {
-		super(location(distributor, node), distributor);
-		this.ip = ip;
-		this.node = node;
-		this.typeConsumer = typeConsumer;
+			LocationInfo location,
+			BinaryPhraseOperator operator,
+			Ref leftOperand,
+			Ref rightOperand) {
+		super(location, leftOperand.distribute());
+		this.operator = operator;
+		this.leftOperand = leftOperand;
+		this.rightOperand = rightOperand;
 		this.prototype = null;
 		this.reproducer = null;
 	}
@@ -80,17 +76,13 @@ public final class ComparisonExpression extends ObjectConstructor {
 			ComparisonExpression prototype,
 			Reproducer reproducer) {
 		super(prototype, reproducer.distribute());
-		this.ip = prototype.ip;
-		this.node = prototype.node;
-		this.typeConsumer = null;
+		this.operator = prototype.operator;
+		this.leftOperand = prototype.leftOperand;
+		this.rightOperand = prototype.rightOperand;
 		this.prototype = prototype;
 		this.reproducer = reproducer;
-		this.operator = prototype.getOperator();
+		this.comparisonOperator = prototype.getComparisonOperator();
 		this.error = prototype.error;
-	}
-
-	public final Interpreter ip() {
-		return this.ip;
 	}
 
 	@Override
@@ -102,7 +94,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 		if (this.error != 0) {
 			return this.error > 0;
 		}
-		if (this.operator.checkError(this.phrase)) {
+		if (this.comparisonOperator.checkError(this.phrase)) {
 			this.error = 1;
 			return true;
 		}
@@ -122,12 +114,12 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 	@Override
 	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		this.node.printContent(out);
-
-		return out.toString();
+		if (this.rightOperand == null) {
+			return super.toString();
+		}
+		return this.leftOperand
+				+ this.operator.getSign()
+				+ this.rightOperand.toString();
 	}
 
 	@Override
@@ -135,10 +127,10 @@ public final class ComparisonExpression extends ObjectConstructor {
 		return new ComparisonResult(this);
 	}
 
-	protected final ComparisonOperator getOperator() {
-		assert this.operator != null :
+	protected final ComparisonOperator getComparisonOperator() {
+		assert this.comparisonOperator != null :
 			"Phrase didn't built yet";
-		return this.operator;
+		return this.comparisonOperator;
 	}
 
 	protected final Ref getPhrase() {
@@ -153,16 +145,18 @@ public final class ComparisonExpression extends ObjectConstructor {
 		}
 		if (this.prototype == null) {
 
-			final PhraseBuilder phrase = new PhraseBuilder(
-					ip(),
-					location(distributor, this.node),
-					distributor,
-					this.typeConsumer);
-			final BinaryPhrasePart binary = phrase.binaryPart(this.node);
+			final Phrase phrase = new Phrase(this, distributor);
 
-			this.operator = binary.getComparisonOperator();
+			phrase.setAncestor(
+					this.leftOperand.rescope(distributor.getScope())
+					.toTypeRef());
 
-			if (this.operator == null) {
+			final BinaryPhrasePart binary =
+					phrase.binary(this, this.operator, this.rightOperand);
+
+			this.comparisonOperator = binary.getComparisonOperator();
+
+			if (this.comparisonOperator == null) {
 				this.error = 1;
 			}
 
@@ -177,7 +171,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 	ValOp write(ValDirs dirs, HostOp host, RefOp cmp, InlineValue inlineCmp) {
 
-		final ComparisonOperator operator = getOperator();
+		final ComparisonOperator operator = getComparisonOperator();
 		final ValDirs cmpDirs = dirs.dirs().nested().value(
 				"cmp",
 				operator.getValueType(),

@@ -72,7 +72,7 @@ final class ComparisonResult extends BuiltinObject {
 			return type().getParameters().runtimeValue();
 		}
 
-		if (!this.comparison.getOperator().result(value)) {
+		if (!this.comparison.getComparisonOperator().result(value)) {
 			return type().getParameters().falseValue();
 		}
 
