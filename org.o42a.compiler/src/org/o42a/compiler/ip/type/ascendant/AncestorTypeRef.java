@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.type.ascendant;
 
-import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.common.phrase.Phrase;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.core.member.field.AscendantsDefinition;
 
