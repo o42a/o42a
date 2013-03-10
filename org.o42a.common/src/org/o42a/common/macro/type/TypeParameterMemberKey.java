@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Compiler Commons
     Copyright (C) 2012,2013 Ruslan Lopatin
 
     This file is part of o42a.
