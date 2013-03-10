@@ -26,6 +26,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.phrase.part.BinaryPhraseOperator;
 import org.o42a.compiler.ip.ref.operator.ComparisonExpression;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
@@ -116,17 +117,26 @@ public final class PhraseInterpreter {
 		case DIVIDE:
 			return binaryPhrase(node, distributor, typeConsumer).toRef();
 		case GREATER:
+			return comparison(node, distributor, BinaryPhraseOperator.GREATER);
 		case GREATER_OR_EQUAL:
-		case LESS:
-		case LESS_OR_EQUAL:
-		case NOT_EQUAL:
-		case EQUAL:
-			return new ComparisonExpression(
-					ip(),
+			return comparison(
 					node,
 					distributor,
-					typeConsumer)
-			.toRef();
+					BinaryPhraseOperator.GREATER_OR_EQUAL);
+		case LESS:
+			return comparison(node, distributor, BinaryPhraseOperator.LESS);
+		case LESS_OR_EQUAL:
+			return comparison(
+					node,
+					distributor,
+					BinaryPhraseOperator.LESS_OR_EQUAL);
+		case NOT_EQUAL:
+			return comparison(
+					node,
+					distributor,
+					BinaryPhraseOperator.NOT_EQUALS);
+		case EQUAL:
+			return comparison(node, distributor, BinaryPhraseOperator.EQUALS);
 		case SUFFIX:
 			return suffixPhrase(node, distributor, typeConsumer).toRef();
 		}
@@ -160,6 +170,39 @@ public final class PhraseInterpreter {
 				typeConsumer);
 
 		return phrase.binary(node);
+	}
+
+	private Ref comparison(
+			BinaryNode node,
+			Distributor distributor,
+			BinaryPhraseOperator operator) {
+
+		final Ref left = node.getLeftOperand().accept(
+				ip().targetExVisitor(),
+				distributor);
+
+		if (left == null) {
+			return null;
+		}
+
+		final ExpressionNode rightOperand = node.getRightOperand();
+
+		if (rightOperand == null) {
+			return null;
+		}
+
+		final Ref right =
+				rightOperand.accept(ip().targetExVisitor(), distributor);
+
+		if (right == null) {
+			return null;
+		}
+
+		return new ComparisonExpression(
+				location(distributor, node),
+				operator,
+				left,
+				right).toRef();
 	}
 
 	private PhraseBuilder suffixPhrase(

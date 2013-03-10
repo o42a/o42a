@@ -38,7 +38,6 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.BinaryPhraseOperator;
-import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.part.UnaryPhraseOperator;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
@@ -445,13 +444,6 @@ public final class PhraseBuilder extends Placed {
 
 	public PhraseBuilder binary(BinaryNode node) {
 
-		final BinaryPhrasePart part = binaryPart(node);
-
-		return part != null ? this : null;
-	}
-
-	public BinaryPhrasePart binaryPart(BinaryNode node) {
-
 		final BinaryPhraseOperator operator = binaryPhraseOperator(node);
 
 		if (operator == null) {
@@ -482,10 +474,12 @@ public final class PhraseBuilder extends Placed {
 			return null;
 		}
 
-		return phrase().binary(
+		phrase().binary(
 				location(distributor, node.getSign()),
 				operator,
 				right);
+
+		return this;
 	}
 
 	public PhraseBuilder suffix(BinaryNode node) {
