@@ -26,6 +26,7 @@ import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
@@ -152,11 +153,12 @@ public final class ComparisonExpression extends ObjectConstructor {
 		}
 		if (this.prototype == null) {
 
-			final BinaryPhrasePart binary =
-					ip().phraseIp().binaryPhrase(
-							this.node,
-							distributor,
-							this.typeConsumer);
+			final PhraseBuilder phrase = new PhraseBuilder(
+					ip(),
+					location(distributor, this.node),
+					distributor,
+					this.typeConsumer);
+			final BinaryPhrasePart binary = phrase.binaryPart(this.node);
 
 			this.operator = binary.getComparisonOperator();
 

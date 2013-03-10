@@ -20,28 +20,16 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
-import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
-import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
-import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
-import org.o42a.ast.phrase.PhrasePartNode;
-import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
-import org.o42a.compiler.ip.phrase.part.SuffixedByPhrase;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.operator.ComparisonExpression;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.compiler.ip.type.ascendant.SampleSpecVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRefParameters;
 
 
 public final class PhraseInterpreter {
@@ -56,115 +44,61 @@ public final class PhraseInterpreter {
 		return this.ip;
 	}
 
-	public Phrase phrase(
+	public PhraseBuilder phrase(
 			PhraseNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Phrase prefixed =
+		final PhraseBuilder prefixed =
 				phraseWithPrefix(node, distributor, typeConsumer);
 
 		if (prefixed == null) {
 			return null;
 		}
 
-		return addParts(prefixed, node);
+		return prefixed.addParts(node);
 	}
 
-	public Phrase ascendantsPhrase(
+	public PhraseBuilder ascendantsPhrase(
 			AscendantsNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Phrase phrase = new Phrase(
+		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
 				location(distributor, node),
 				distributor,
 				typeConsumer);
-		final Phrase prefixed = prefixByAscendants(phrase, node);
 
-		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
+		return phrase.prefixByAscendants(node).noDeclarations();
 	}
 
-	public Phrase typeParametersPhrase(
+	public PhraseBuilder typeParametersPhrase(
 			TypeParametersNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Phrase phrase = new Phrase(
+		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
 				location(distributor, node),
 				distributor,
 				typeConsumer);
-		final Phrase prefixed = prefixByTypeParameters(phrase, node);
 
-		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
+		return phrase.prefixByTypeParameters(node).noDeclarations();
 	}
 
-	public static Phrase expressionPhrase(
-			ExpressionNode expression,
-			Phrase phrase,
-			TypeRefParameters typeParameters) {
-
-		final Distributor distributor = phrase.distribute();
-		final AncestorTypeRef ancestor =
-				expression.accept(
-						phrase.ip().typeIp().ancestorVisitor(
-								typeParameters,
-								typeParameters == null
-								? TARGET_REFERRAL : BODY_REFERRAL,
-								phrase.getTypeConsumer()),
-						distributor);
-
-		if (ancestor == null || ancestor.isImplied()) {
-
-			final Phrase result =
-					phrase.setImpliedAncestor(location(phrase, expression));
-
-			if (typeParameters == null) {
-				return result;
-			}
-
-			return result.setTypeParameters(
-					typeParameters.toObjectTypeParameters());
-		}
-
-		final Phrase bodied;
-
-		if (typeParameters != null || ancestor.isBodyReferred()) {
-			bodied = phrase.referBody();
-		} else {
-			bodied = phrase;
-		}
-
-		final Phrase result = ancestor.applyTo(bodied);
-
-		if (!ancestor.isMacroExpanding()) {
-			return result;
-		}
-
-		return result.expandMacro();
-	}
-
-	public Phrase unary(
+	public PhraseBuilder unary(
 			UnaryNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Phrase phrase = new Phrase(
+		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
 				location(distributor, node),
 				distributor,
 				typeConsumer);
-		final Ref operand = node.getOperand().accept(
-				ip().targetExVisitor(phrase.getTypeConsumer().noConsumption()),
-				distributor);
 
-		if (operand == null) {
-			return null;
-		}
-
-		return phrase.setAncestor(operand.toTypeRef()).unary(node).getPhrase();
+		return phrase.unary(node);
 	}
 
 	public Ref binary(
@@ -180,9 +114,7 @@ public final class PhraseInterpreter {
 		case SUBTRACT:
 		case MULTIPLY:
 		case DIVIDE:
-			return binaryPhrase(node, distributor, typeConsumer)
-					.getPhrase()
-					.toRef();
+			return binaryPhrase(node, distributor, typeConsumer).toRef();
 		case GREATER:
 		case GREATER_OR_EQUAL:
 		case LESS:
@@ -196,56 +128,18 @@ public final class PhraseInterpreter {
 					typeConsumer)
 			.toRef();
 		case SUFFIX:
-			return suffixPhrase(node, distributor, typeConsumer)
-					.getPhrase()
-					.toRef();
+			return suffixPhrase(node, distributor, typeConsumer).toRef();
 		}
 
 		return null;
 	}
 
-	public BinaryPhrasePart binaryPhrase(
-			BinaryNode node,
-			Distributor distributor,
-			TypeConsumer typeConsumer) {
-
-		final Ref left = node.getLeftOperand().accept(
-				ip().targetExVisitor(),
-				distributor);
-
-		if (left == null) {
-			return null;
-		}
-
-		final Phrase phrase = new Phrase(
-				ip(),
-				location(distributor, node),
-				distributor,
-				typeConsumer)
-				.setAncestor(left.toTypeRef());
-
-		final ExpressionNode rightOperand = node.getRightOperand();
-
-		if (rightOperand == null) {
-			return null;
-		}
-
-		final Ref right =
-				rightOperand.accept(ip().targetExVisitor(), distributor);
-
-		if (right == null) {
-			return null;
-		}
-
-		return phrase.binary(node, right);
-	}
-
-	final Phrase phraseWithPrefix(
+	final PhraseBuilder phraseWithPrefix(
 			PhraseNode node,
 			Distributor distributor,
 			TypeConsumer typeConsumer) {
 
-		final Phrase phrase = new Phrase(
+		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
 				location(distributor, node),
 				distributor,
@@ -254,82 +148,21 @@ public final class PhraseInterpreter {
 		return node.getPrefix().accept(PHRASE_PREFIX_VISITOR, phrase);
 	}
 
-	static Phrase addParts(Phrase phrase, PhraseNode node) {
+	private PhraseBuilder binaryPhrase(
+			BinaryNode node,
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 
-		Phrase result = phrase;
+		final PhraseBuilder phrase = new PhraseBuilder(
+				ip(),
+				location(distributor, node),
+				distributor,
+				typeConsumer);
 
-		for (PhrasePartNode part : node.getParts()) {
-			result = part.accept(PHRASE_PART_VISITOR, result);
-		}
-
-		return result;
+		return phrase.binary(node);
 	}
 
-	static Phrase prefixByAscendants(Phrase phrase, AscendantsNode node) {
-
-		final Distributor distributor = phrase.distribute();
-		final AncestorTypeRef ancestor =
-				phrase.ip().typeIp().parseAncestor(node, distributor);
-		Phrase result = phrase;
-
-		if (ancestor.isImplied()) {
-			result = result.setImpliedAncestor(
-					location(phrase, node.getAncestor()));
-		} else {
-			if (ancestor.isBodyReferred()) {
-				result = result.referBody();
-			}
-			result = ancestor.applyTo(result);
-		}
-
-		if (!node.hasSamples()) {
-			return result;
-		}
-
-		final SampleSpecVisitor sampleSpecVisitor =
-				new SampleSpecVisitor(phrase.ip());
-
-		for (AscendantNode sampleNode : node.getSamples()) {
-
-			final RefNode specNode = sampleNode.getSpec();
-
-			if (specNode != null) {
-
-				final StaticTypeRef sample =
-						specNode.accept(sampleSpecVisitor, distributor);
-
-				if (sample != null) {
-					result = result.addSamples(sample);
-				}
-			}
-		}
-
-		return result;
-	}
-
-	static Phrase prefixByTypeParameters(
-			Phrase phrase,
-			TypeParametersNode node) {
-		phrase.referBody();
-
-		final TypeRefParameters typeParams =
-				phrase.ip().typeIp().typeParameters(
-						node.getParameters(),
-						phrase.distribute(),
-						phrase.getTypeConsumer());
-		final TypeNode ascendantNode = node.getType();
-
-		if (ascendantNode == null) {
-			return phrase.setImpliedAncestor(location(phrase, node))
-					.setTypeParameters(typeParams.toObjectTypeParameters());
-		}
-
-		return ascendantNode.accept(
-				new PhrasePrefixVisitor(typeParams),
-				phrase);
-	}
-
-	private SuffixedByPhrase suffixPhrase(
+	private PhraseBuilder suffixPhrase(
 			BinaryNode node,
 			Distributor distributor,
 			TypeConsumer consumer) {

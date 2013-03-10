@@ -19,34 +19,28 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
-import static org.o42a.compiler.ip.ref.operator.ComparisonOperator.comparisonOperator;
-import static org.o42a.compiler.ip.ref.operator.ComparisonOperator.equalityOperator;
-
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.compiler.ip.ref.operator.ComparisonOperator;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
 
 public class BinaryPhrasePart extends PhraseContinuation {
 
-	private final BinaryNode node;
+	private final BinaryPhraseOperator operator;
 	private final Ref rightOperand;
 	private ComparisonOperator comparisonOperator;
 
 	BinaryPhrasePart(
-			BinaryNode node,
+			LocationInfo location,
+			BinaryPhraseOperator operator,
 			PhrasePart preceding,
 			Ref rightOperand) {
-		super(location(preceding.getPhrase(), node.getSign()), preceding);
-		this.node = node;
+		super(location, preceding);
+		this.operator = operator;
 		this.rightOperand = rightOperand;
 	}
 
@@ -60,22 +54,23 @@ public class BinaryPhrasePart extends PhraseContinuation {
 	@Override
 	public NextClause nextClause(PhraseContext context) {
 
-		final NextClause first = findFirst(context);
+		final NextBinaryClause first =
+				this.operator.findFirst(this, context);
 
-		if (first == null) {
-			return errorClause(this.node);
-		}
-		if (first.found()) {
-			return first;
-		}
-
-		final NextClause second = findSecond(context);
-
-		if (second != null && second.found()) {
-			return second;
+		this.comparisonOperator = first.getComparisonOperator();
+		if (first.getNextClause().found()) {
+			return first.getNextClause();
 		}
 
-		return first;
+		final NextBinaryClause second =
+				this.operator.findSecond(this, context);
+
+		if (second == null || !second.found()) {
+			return first.getNextClause();
+		}
+		this.comparisonOperator = second.getComparisonOperator();
+
+		return second.getNextClause();
 	}
 
 	@Override
@@ -100,84 +95,10 @@ public class BinaryPhrasePart extends PhraseContinuation {
 
 	@Override
 	public String toString() {
-		if (this.node == null) {
+		if (this.operator == null) {
 			return super.toString();
 		}
-		return this.node.getOperator().getSign() + this.rightOperand;
-	}
-
-	private NextClause findFirst(PhraseContext context) {
-
-		final BinaryOperator operator = this.node.getOperator();
-		final ClauseId clauseId = firstClauseId(operator);
-
-		if (clauseId == null) {
-			getLogger().error(
-					"unsupported_binary",
-					this.node.getSign(),
-					"Binary operator '%s' is not supported",
-					this.node.getOperator().getSign());
-			return null;
-		}
-
-		return context.clauseById(this, clauseId);
-	}
-
-	private ClauseId firstClauseId(final BinaryOperator operator) {
-		switch (operator) {
-		case ADD:
-			return ClauseId.ADD;
-		case SUBTRACT:
-			return ClauseId.SUBTRACT;
-		case MULTIPLY:
-			return ClauseId.MULTIPLY;
-		case DIVIDE:
-			return ClauseId.DIVIDE;
-		case COMPARE:
-			return ClauseId.COMPARE;
-		case EQUAL:
-		case NOT_EQUAL:
-			this.comparisonOperator = equalityOperator(operator);
-			if (this.comparisonOperator == null) {
-				return null;
-			}
-			return this.comparisonOperator.getClauseId();
-		case GREATER:
-		case GREATER_OR_EQUAL:
-		case LESS:
-		case LESS_OR_EQUAL:
-			this.comparisonOperator = comparisonOperator(operator);
-			if (this.comparisonOperator == null) {
-				return null;
-			}
-			return this.comparisonOperator.getClauseId();
-		case SUFFIX:
-			return null;
-		}
-		return null;
-	}
-
-	private NextClause findSecond(PhraseContext context) {
-
-		final BinaryOperator operator = this.node.getOperator();
-
-		if (!operator.isEquality()) {
-			return null;
-		}
-
-		final ComparisonOperator comparisonOperator =
-				comparisonOperator(operator);
-
-		if (comparisonOperator == null) {
-			return null;
-		}
-
-		final NextClause found =
-				context.clauseById(this, comparisonOperator.getClauseId());
-
-		this.comparisonOperator = comparisonOperator;
-
-		return found;
+		return this.operator.getSign() + this.rightOperand;
 	}
 
 }

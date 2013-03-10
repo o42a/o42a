@@ -19,36 +19,28 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
-
-import org.o42a.ast.expression.UnaryNode;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 
 
 public class UnaryPhrasePart extends PhraseContinuation {
 
-	private final UnaryNode node;
+	private final UnaryPhraseOperator operator;
 
-	UnaryPhrasePart(UnaryNode node, PhrasePart preceding) {
-		super(location(preceding.getPhrase(), node.getSign()), preceding);
-		this.node = node;
+	UnaryPhrasePart(
+			LocationInfo location,
+			UnaryPhraseOperator operator,
+			PhrasePart preceding) {
+		super(location, preceding);
+		this.operator = operator;
 	}
 
 	@Override
 	public NextClause nextClause(PhraseContext context) {
-
-		final ClauseId clauseId = clauseId();
-
-		if (clauseId == null) {
-			return errorClause(this.node);
-		}
-
-		return context.clauseById(this, clauseId);
+		return context.clauseById(this, this.operator.getClauseId());
 	}
 
 	@Override
@@ -63,29 +55,10 @@ public class UnaryPhrasePart extends PhraseContinuation {
 
 	@Override
 	public String toString() {
-		return this.node.getOperator().getSign();
-	}
-
-	private ClauseId clauseId() {
-		switch (this.node.getOperator()) {
-		case PLUS:
-			return ClauseId.PLUS;
-		case MINUS:
-			return ClauseId.MINUS;
-		case IS_TRUE:
-		case NOT:
-		case VALUE_OF:
-		case KEEP_VALUE:
-		case MACRO_EXPANSION:
+		if (this.operator == null) {
+			return super.toString();
 		}
-
-		getLogger().error(
-				"unsupported_unary",
-				this.node.getSign(),
-				"Unary operator '%s' is not supported",
-				this.node.getOperator().getSign());
-
-		return null;
+		return this.operator.getSign();
 	}
 
 }

@@ -19,20 +19,15 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.expressionPhrase;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByAscendants;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefixByTypeParameters;
-
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
 final class PhrasePrefixVisitor
-		extends AbstractExpressionVisitor<Phrase, Phrase> {
+		extends AbstractExpressionVisitor<PhraseBuilder, PhraseBuilder> {
 
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 			new PhrasePrefixVisitor();
@@ -48,9 +43,11 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	public Phrase visitAscendants(AscendantsNode ascendants, Phrase p) {
+	public PhraseBuilder visitAscendants(
+			AscendantsNode ascendants,
+			PhraseBuilder p) {
 
-		final Phrase phrase = prefixByAscendants(p, ascendants);
+		final PhraseBuilder phrase = p.prefixByAscendants(ascendants);
 
 		if (phrase == null) {
 			return phrase;
@@ -60,11 +57,11 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	public Phrase visitTypeParameters(
+	public PhraseBuilder visitTypeParameters(
 			TypeParametersNode parameters,
-			Phrase p) {
+			PhraseBuilder p) {
 
-		final Phrase phrase = prefixByTypeParameters(p, parameters);
+		final PhraseBuilder phrase = p.prefixByTypeParameters(parameters);
 
 		if (phrase == null) {
 			return null;
@@ -74,11 +71,13 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	protected Phrase visitExpression(ExpressionNode expression, Phrase p) {
-		return expressionPhrase(expression, p, this.typeParameters);
+	protected PhraseBuilder visitExpression(
+			ExpressionNode expression,
+			PhraseBuilder p) {
+		return p.expressionPhrase(expression, this.typeParameters);
 	}
 
-	private Phrase applyTypeParameters(Phrase phrase) {
+	private PhraseBuilder applyTypeParameters(PhraseBuilder phrase) {
 		if (this.typeParameters == null) {
 			return phrase;
 		}

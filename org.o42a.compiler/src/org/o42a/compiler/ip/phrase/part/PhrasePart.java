@@ -19,11 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.ast.expression.UnaryNode;
-import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
-import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
@@ -67,7 +63,7 @@ public abstract class PhrasePart extends Located {
 		return setFollowing(new PhraseArgument(location, this, value));
 	}
 
-	public final PhraseArray array(ArrayConstructor array) {
+	public final PhraseArray array(Ref array) {
 		return setFollowing(new PhraseArray(this, array));
 	}
 
@@ -132,16 +128,22 @@ public abstract class PhrasePart extends Located {
 		return setFollowing(new UnboundedInterval(location, this));
 	}
 
-	public final UnaryPhrasePart unary(UnaryNode node) {
-		return setFollowing(new UnaryPhrasePart(node, this));
+	public final UnaryPhrasePart unary(
+			LocationInfo location,
+			UnaryPhraseOperator operator) {
+		return setFollowing(new UnaryPhrasePart(location, operator, this));
 	}
 
-	public final BinaryPhrasePart binary(BinaryNode node, Ref rightOperand) {
-		return setFollowing(new BinaryPhrasePart(node, this, rightOperand));
+	public final BinaryPhrasePart binary(
+			LocationInfo location,
+			BinaryPhraseOperator operator,
+			Ref rightOperand) {
+		return setFollowing(
+				new BinaryPhrasePart(location, operator, this, rightOperand));
 	}
 
-	public final PhraseAssignment assign(AssignmentNode node, Ref value) {
-		return setFollowing(new PhraseAssignment(node, this, value));
+	public final PhraseAssignment assign(LocationInfo location, Ref value) {
+		return setFollowing(new PhraseAssignment(location, this, value));
 	}
 
 	<P extends PhraseContinuation> P setFollowing(P following) {

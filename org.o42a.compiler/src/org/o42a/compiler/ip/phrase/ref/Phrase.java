@@ -20,23 +20,11 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import static org.o42a.compiler.ip.ref.owner.MayDereferenceFragment.mayDereference;
-import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
-import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
-import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
 
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.ast.expression.UnaryNode;
-import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.common.macro.Macros;
-import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.*;
-import org.o42a.compiler.ip.ref.array.ArrayConstructor;
-import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.Scope;
-import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
@@ -50,8 +38,6 @@ import org.o42a.util.string.Name;
 
 public class Phrase extends Placed {
 
-	private final Interpreter ip;
-	private final TypeConsumer typeConsumer;
 	private SuffixedByPhrase suffixed;
 	private PhrasePrefix prefix;
 	private PhrasePart last;
@@ -60,26 +46,8 @@ public class Phrase extends Placed {
 	private boolean macroExpansion;
 	private boolean bodyReferred;
 
-	public Phrase(
-			Interpreter ip,
-			LocationInfo location,
-			Distributor distributor,
-			TypeConsumer typeConsumer) {
+	public Phrase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
-		this.ip = ip;
-		if (typeConsumer != EXPRESSION_TYPE_CONSUMER) {
-			this.typeConsumer = typeConsumer;
-		} else {
-			this.typeConsumer = typeConsumer(new StandalonePhraseNesting(this));
-		}
-	}
-
-	public final Interpreter ip() {
-		return this.ip;
-	}
-
-	public final TypeConsumer getTypeConsumer() {
-		return this.typeConsumer;
 	}
 
 	public final PhrasePrefix getPrefix() {
@@ -173,7 +141,7 @@ public class Phrase extends Placed {
 		return append(this.last.argument(value, value));
 	}
 
-	public final PhraseArray array(ArrayConstructor array) {
+	public final PhraseArray array(Ref array) {
 		array.assertSameScope(this);
 		return append(this.last.array(array));
 	}
@@ -224,16 +192,21 @@ public class Phrase extends Placed {
 		return append(this.last.unboundedInterval(location));
 	}
 
-	public final UnaryPhrasePart unary(UnaryNode node) {
-		return append(this.last.unary(node));
+	public final UnaryPhrasePart unary(
+			LocationInfo location,
+			UnaryPhraseOperator operator) {
+		return append(this.last.unary(location, operator));
 	}
 
-	public final BinaryPhrasePart binary(BinaryNode node, Ref rightOperand) {
-		return append(this.last.binary(node, rightOperand));
+	public final BinaryPhrasePart binary(
+			LocationInfo location,
+			BinaryPhraseOperator operator,
+			Ref rightOperand) {
+		return append(this.last.binary(location, operator, rightOperand));
 	}
 
-	public final PhraseAssignment assign(AssignmentNode node, Ref value) {
-		return append(this.last.assign(node, value));
+	public final PhraseAssignment assign(LocationInfo location, Ref value) {
+		return append(this.last.assign(location, value));
 	}
 
 	public final Ref toRef() {
@@ -282,8 +255,7 @@ public class Phrase extends Placed {
 
 	public Phrase asPrefix(Ref prefix, PhraseContinuation nextPart) {
 
-		final Phrase newPhrase =
-				new Phrase(this.ip, this, distribute(), NO_TYPE_CONSUMER);
+		final Phrase newPhrase = new Phrase(this, distribute());
 
 		newPhrase.setAncestor(prefix.toTypeRef());
 		newPhrase.prefix.append(nextPart);
@@ -328,29 +300,6 @@ public class Phrase extends Placed {
 	private final <P extends PhrasePart> P append(P part) {
 		this.last = part;
 		return part;
-	}
-
-	private static final class StandalonePhraseNesting implements Nesting {
-
-		private final Phrase phrase;
-
-		StandalonePhraseNesting(Phrase phrase) {
-			this.phrase = phrase;
-		}
-
-		@Override
-		public Obj findObjectIn(Scope enclosing) {
-			return this.phrase.toRef().resolve(enclosing.resolver()).toObject();
-		}
-
-		@Override
-		public String toString() {
-			if (this.phrase == null) {
-				return super.toString();
-			}
-			return this.phrase.toString();
-		}
-
 	}
 
 }
