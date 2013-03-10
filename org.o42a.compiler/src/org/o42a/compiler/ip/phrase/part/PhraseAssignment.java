@@ -19,28 +19,24 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.compiler.ip.Interpreter.location;
-
-import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
 
 public class PhraseAssignment extends PhraseContinuation {
 
-	private final AssignmentNode node;
 	private final Ref value;
 
 	PhraseAssignment(
-			AssignmentNode node,
+			LocationInfo location,
 			PhrasePart preceding,
 			Ref value) {
-		super(location(preceding.getPhrase(), node.getOperator()), preceding);
-		this.node = node;
+		super(location, preceding);
 		this.value = value;
 	}
 
@@ -71,10 +67,11 @@ public class PhraseAssignment extends PhraseContinuation {
 
 	@Override
 	public String toString() {
-		if (this.node == null) {
+		if (this.value == null) {
 			return super.toString();
 		}
-		return this.node.getOperator().getType().getSign() + this.value;
+		return getPhrase().getAncestor().getRef().toString()
+				+ '=' + this.value;
 	}
 
 }

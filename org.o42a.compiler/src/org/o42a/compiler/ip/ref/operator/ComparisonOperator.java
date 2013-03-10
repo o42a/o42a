@@ -19,11 +19,6 @@
 */
 package org.o42a.compiler.ip.ref.operator;
 
-import static org.o42a.ast.expression.BinaryOperator.*;
-
-import java.util.EnumMap;
-
-import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.RefOp;
@@ -37,36 +32,19 @@ import org.o42a.core.value.ValueType;
 
 public abstract class ComparisonOperator {
 
-	private static final ComparisonOperator EQUALS = new EqualsOperator();
-	private static final ComparisonOperator NOT_EQUALS =
+	public static final ComparisonOperator EQUALS = new EqualsOperator();
+	public static final ComparisonOperator NOT_EQUALS =
 			new NotEqualsOperator();
-
-	private static final EnumMap<BinaryOperator, CompareOperator> operators =
-			new EnumMap<>(BinaryOperator.class);
-
-	static {
-		operators.put(NOT_EQUAL, new CompareNotEqualOperator());
-		operators.put(EQUAL, new CompareEqualOperator());
-		operators.put(GREATER, new GreaterOperator());
-		operators.put(GREATER_OR_EQUAL, new GreaterOrEqualOperator());
-		operators.put(LESS, new LessOperator());
-		operators.put(LESS_OR_EQUAL, new LessOrEqualOperator());
-	}
-
-	public static ComparisonOperator comparisonOperator(
-			BinaryOperator operator) {
-		return operators.get(operator);
-	}
-
-	public static ComparisonOperator equalityOperator(BinaryOperator operator) {
-		if (operator == EQUAL) {
-			return EQUALS;
-		}
-		if (operator == NOT_EQUAL) {
-			return NOT_EQUALS;
-		}
-		return null;
-	}
+	public static final ComparisonOperator COMPARE_EQUAL =
+			new CompareEqualOperator();
+	public static final ComparisonOperator COMPARE_NOT_EQUAL =
+			new CompareNotEqualOperator();
+	public static final ComparisonOperator GREATER = new GreaterOperator();
+	public static final ComparisonOperator GREATER_OR_EQUAL =
+			new GreaterOrEqualOperator();
+	public static final ComparisonOperator LESS = new LessOperator();
+	public static final ComparisonOperator LESS_OR_EQUAL =
+			new LessOrEqualOperator();
 
 	private final ClauseId clauseId;
 

@@ -22,12 +22,11 @@ package org.o42a.compiler.ip.phrase;
 import static org.o42a.compiler.ip.Interpreter.location;
 
 import org.o42a.ast.expression.*;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
-import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.ref.Ref;
 
 
-final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
+final class ArgumentVisitor
+		extends AbstractExpressionVisitor<PhraseBuilder, PhraseBuilder> {
 
 	public static final ArgumentVisitor ARGUMENT_VISITOR =
 			new ArgumentVisitor();
@@ -36,37 +35,32 @@ final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
 	}
 
 	@Override
-	public Phrase visitBrackets(BracketsNode brackets, Phrase p) {
-
-		final ArrayConstructor array = new ArrayConstructor(
-				p.ip(),
-				p.getContext(),
-				brackets,
-				p.distribute());
-
-		return p.array(array).getPhrase();
+	public PhraseBuilder visitBrackets(BracketsNode brackets, PhraseBuilder p) {
+		return p.array(brackets);
 	}
 
 	@Override
-	public Phrase visitText(TextNode text, Phrase p) {
+	public PhraseBuilder visitText(TextNode text, PhraseBuilder p) {
 		if (text.isDoubleQuoted()) {
 			return super.visitText(text, p);
 		}
-		return p.string(location(p, text), text.getText()).getPhrase();
+		return p.string(text);
 	}
 
 	@Override
-	protected Phrase visitExpression(ExpressionNode expression, Phrase p) {
+	protected PhraseBuilder visitExpression(
+			ExpressionNode expression,
+			PhraseBuilder p) {
 
 		final Ref value = expression.accept(
 				p.ip().targetExVisitor(),
 				p.distribute());
 
 		if (value != null) {
-			return p.argument(value).getPhrase();
+			return p.argument(value);
 		}
 
-		return p.emptyArgument(location(p, expression)).getPhrase();
+		return p.emptyArgument(location(p, expression));
 	}
 
 }

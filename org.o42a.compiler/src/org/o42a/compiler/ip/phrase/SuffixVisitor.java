@@ -20,22 +20,17 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
-import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.phrase.part.SuffixedByPhrase;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
-import org.o42a.core.ref.Ref;
 
 
 final class SuffixVisitor
-		extends AbstractExpressionVisitor<SuffixedByPhrase, Distributor> {
+		extends AbstractExpressionVisitor<PhraseBuilder, Distributor> {
 
 	private final PhraseInterpreter phraseIp;
 	private final TypeConsumer typeConsumer;
@@ -55,81 +50,62 @@ final class SuffixVisitor
 	}
 
 	@Override
-	public SuffixedByPhrase visitAscendants(
+	public PhraseBuilder visitAscendants(
 			AscendantsNode ascendants,
 			Distributor p) {
 
-		final Phrase phrase = new Phrase(
+		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
 				location(p, this.node),
 				p,
 				this.typeConsumer);
-		final Phrase prefixed = prefixByAscendants(phrase, ascendants);
 
-		prefixed.declarations(emptyBlock(phrase));
-
-		return suffixByPhrase(prefixed);
+		return phrase.prefixByAscendants(ascendants)
+				.noDeclarations()
+				.suffix(this.node);
 	}
 
 	@Override
-	public SuffixedByPhrase visitTypeParameters(
+	public PhraseBuilder visitTypeParameters(
 			TypeParametersNode parameters,
 			Distributor p) {
 
-		final Phrase phrase = new Phrase(
+		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
 				location(p, this.node),
 				p,
 				this.typeConsumer);
-		final Phrase prefixed = prefixByTypeParameters(phrase, parameters);
 
-		prefixed.declarations(emptyBlock(phrase));
-
-		return suffixByPhrase(prefixed);
+		return phrase.prefixByTypeParameters(parameters)
+				.noDeclarations()
+				.suffix(this.node);
 	}
 
 	@Override
-	public SuffixedByPhrase visitPhrase(PhraseNode phrase, Distributor p) {
+	public PhraseBuilder visitPhrase(PhraseNode phrase, Distributor p) {
 
-		final Phrase prefixed =
+		final PhraseBuilder prefixed =
 				this.phraseIp.phraseWithPrefix(phrase, p, this.typeConsumer);
 
 		if (prefixed == null) {
 			return null;
 		}
 
-		final SuffixedByPhrase result = suffixByPhrase(prefixed);
-
-		addParts(prefixed, phrase);
-
-		return result;
+		return prefixed.suffix(this.node).addParts(phrase);
 	}
 
 	@Override
-	protected SuffixedByPhrase visitExpression(
+	protected PhraseBuilder visitExpression(
 			ExpressionNode expression,
 			Distributor p) {
 
-		final Phrase phrase = new Phrase(
+		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
 				location(p, this.node),
 				p,
 				this.typeConsumer);
 
-		return suffixByPhrase(expressionPhrase(expression, phrase, null));
-	}
-
-	private SuffixedByPhrase suffixByPhrase(Phrase suffix) {
-
-		final Ref prefix = this.node.getLeftOperand().accept(
-				ip().targetExVisitor(),
-				suffix.distribute());
-
-		if (prefix == null) {
-			return null;
-		}
-
-		return suffix.suffix(location(suffix, this.node.getSign()), prefix);
+		return phrase.expressionPhrase(expression, null).suffix(this.node);
 	}
 
 }

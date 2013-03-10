@@ -34,7 +34,7 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.ref.keeper.KeepValue;
 import org.o42a.compiler.ip.ref.operator.LogicalExpression;
@@ -118,7 +118,7 @@ public final class ExpressionVisitor
 			TypeParametersNode parameters,
 			Distributor p) {
 
-		final Phrase phrase =
+		final PhraseBuilder phrase =
 				ip()
 				.phraseIp()
 				.typeParametersPhrase(parameters, p, this.typeConsumer);
@@ -200,7 +200,7 @@ public final class ExpressionVisitor
 	@Override
 	public Ref visitPhrase(PhraseNode phrase, Distributor p) {
 
-		final Phrase result =
+		final PhraseBuilder result =
 				ip().phraseIp().phrase(phrase, p, this.typeConsumer);
 
 		if (!this.referral.isBodyReferral()) {
@@ -236,7 +236,7 @@ public final class ExpressionVisitor
 
 	private Ref unaryPhrase(UnaryNode expression, Distributor p) {
 
-		final Phrase phrase =
+		final PhraseBuilder phrase =
 				ip().phraseIp().unary(expression, p, this.typeConsumer);
 
 		if (phrase == null) {

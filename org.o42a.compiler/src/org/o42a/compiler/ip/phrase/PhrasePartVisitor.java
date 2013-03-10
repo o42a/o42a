@@ -20,25 +20,19 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.IntervalInterpreter.invalidIntervalBracket;
-import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.number;
-import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.*;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
-import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.type.def.TypeDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.LocationInfo;
 
 
 final class PhrasePartVisitor
-		extends AbstractPhrasePartVisitor<Phrase, Phrase> {
+		extends AbstractPhrasePartVisitor<PhraseBuilder, PhraseBuilder> {
 
 	public static final PhrasePartVisitor PHRASE_PART_VISITOR =
 			new PhrasePartVisitor();
@@ -47,70 +41,46 @@ final class PhrasePartVisitor
 	}
 
 	@Override
-	public Phrase visitName(NameNode name, Phrase p) {
-		return p.name(location(p, name), name.getName()).getPhrase();
+	public PhraseBuilder visitName(NameNode name, PhraseBuilder p) {
+		return p.name(name);
 	}
 
 	@Override
-	public Phrase visitBraces(BracesNode braces, Phrase p) {
-		return p.imperative(contentBuilder(
-				new DefaultStatementVisitor(p.ip(), p.getContext()),
-				braces)).getPhrase();
+	public PhraseBuilder visitBraces(BracesNode braces, PhraseBuilder p) {
+		return p.imperative(braces);
 	}
 
 	@Override
-	public Phrase visitParentheses(ParenthesesNode parentheses, Phrase p) {
-		return p.declarations(contentBuilder(
-				new DefaultStatementVisitor(p.ip(), p.getContext()),
-				parentheses)).getPhrase();
+	public PhraseBuilder visitParentheses(
+			ParenthesesNode parentheses,
+			PhraseBuilder p) {
+		return p.declarations(parentheses);
 	}
 
 	@Override
-	public Phrase visitBrackets(BracketsNode brackets, Phrase p) {
-
-		final ArgumentNode[] arguments = brackets.getArguments();
-
-		if (arguments.length == 0) {
-			return p.emptyArgument(location(p, brackets)).getPhrase();
-		}
-
-		Phrase phrase = p;
-
-		for (ArgumentNode arg : arguments) {
-
-			final ExpressionNode value = arg.getValue();
-
-			if (value != null) {
-				phrase = value.accept(ARGUMENT_VISITOR, phrase);
-				continue;
-			}
-			if (arguments.length == 1) {
-				return phrase.emptyArgument(
-						location(phrase, brackets)).getPhrase();
-			}
-			phrase = phrase.emptyArgument(location(phrase, arg)).getPhrase();
-		}
-
-		return phrase;
+	public PhraseBuilder visitBrackets(
+			BracketsNode brackets,
+			PhraseBuilder p) {
+		return p.arguments(brackets);
 	}
 
 	@Override
-	public Phrase visitText(TextNode text, Phrase p) {
+	public PhraseBuilder visitText(TextNode text, PhraseBuilder p) {
 		if (!text.isDoubleQuoted()) {
-			return p.string(location(p, text), text.getText()).getPhrase();
+			return p.string(text);
 		}
 
 		final Ref value = text.accept(p.ip().bodyExVisitor(), p.distribute());
 
 		if (value != null) {
-			return p.argument(value).getPhrase();
+			return p.argument(value);
 		}
 
-		return p.emptyArgument(location(p, text)).getPhrase();
+		return p.emptyArgument(location(p, text));
 	}
 
 	@Override
-	public Phrase visitNumber(NumberNode number, Phrase p) {
+	public PhraseBuilder visitNumber(NumberNode number, PhraseBuilder p) {
 
 		final Ref integer = number(number, p.distribute());
 
@@ -118,105 +88,20 @@ final class PhrasePartVisitor
 			return p;
 		}
 
-		return p.argument(integer).getPhrase();
+		return p.argument(integer);
 	}
 
 	@Override
-	public Phrase visitInterval(IntervalNode interval, Phrase p) {
-
-		final BoundNode leftBoundNode = interval.getLeftBound();
-		final LocationInfo leftLocation;
-		final Ref leftBound;
-		final boolean leftOpen;
-
-		if (!interval.isLeftBounded()) {
-			leftBound = null;
-			leftOpen = true;
-			if (!interval.isLeftOpen()) {
-				invalidIntervalBracket(
-						p.getLogger(),
-						interval.getLeftBracket());
-			}
-			if (leftBoundNode != null) {
-				leftLocation = location(p, leftBoundNode);
-			} else {
-				leftLocation = location(p, interval.getEllipsis().getStart());
-			}
-		} else {
-			leftOpen = interval.isLeftOpen();
-			leftBound = leftBoundNode.toExpression().accept(
-					p.ip().targetExVisitor(),
-					p.distribute());
-			if (leftBound != null) {
-				leftLocation = leftBound;
-			} else {
-				leftLocation = location(p, leftBoundNode);
-			}
-		}
-
-		final BoundNode rightBoundNode = interval.getRightBound();
-		final LocationInfo rightLocation;
-		final Ref rightBound;
-		final boolean rightOpen;
-
-		if (!interval.isRightBounded()) {
-			rightBound = null;
-			rightOpen = true;
-			if (!interval.isRightOpen()) {
-				invalidIntervalBracket(
-						p.getLogger(),
-						interval.getRightBracket());
-			}
-			if (rightBoundNode != null) {
-				rightLocation = location(p, rightBoundNode);
-			} else {
-				rightLocation = location(p, interval.getEllipsis().getEnd());
-			}
-		} else {
-			rightOpen = interval.isRightOpen();
-			rightBound = rightBoundNode.toExpression().accept(
-					p.ip().targetExVisitor(),
-					p.distribute());
-			if (rightBound != null) {
-				rightLocation = rightBound;
-			} else {
-				rightLocation = location(p, rightBoundNode);
-			}
-		}
-
-		if (!interval.isLeftBounded()) {
-			if (!interval.isRightBounded()) {
-				return p.unboundedInterval(location(p, interval)).getPhrase();
-			}
-			return p.halfBoundedInterval(
-					location(p, interval),
-					rightBound,
-					rightOpen,
-					false)
-					.getPhrase();
-		} else if (!interval.isRightBounded()) {
-			return p.halfBoundedInterval(
-					location(p, interval),
-					leftBound,
-					leftOpen,
-					true)
-					.getPhrase();
-		}
-
-		return p.interval(
-				leftLocation,
-				leftBound,
-				leftOpen,
-				rightLocation,
-				rightBound,
-				rightOpen)
-				.getPhrase();
+	public PhraseBuilder visitInterval(
+			IntervalNode interval,
+			PhraseBuilder p) {
+		return p.interval(interval);
 	}
 
 	@Override
-	public Phrase visitTypeDefinition(
+	public PhraseBuilder visitTypeDefinition(
 			TypeDefinitionNode definition,
-			Phrase p) {
+			PhraseBuilder p) {
 
 		final TypeDefinition typeDefinition =
 				typeDefinition(definition, p.getContext());
@@ -229,7 +114,9 @@ final class PhrasePartVisitor
 	}
 
 	@Override
-	protected Phrase visitPhrasePart(PhrasePartNode part, Phrase p) {
+	protected PhraseBuilder visitPhrasePart(
+			PhrasePartNode part,
+			PhraseBuilder p) {
 		p.getLogger().invalidClause(part);
 		return p;
 	}
