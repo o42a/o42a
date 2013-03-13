@@ -1,0 +1,13 @@
+EQ :=> macro
+============
+~~~
+An equality comparison macro.
+~~~
+
+What :=< macro ~~ What to compare.
+To :=< macro ~~ What to compare to for equality.
+
+<What~* | to> What = ()
+<:To> (
+  <[To]> To = ()
+)
