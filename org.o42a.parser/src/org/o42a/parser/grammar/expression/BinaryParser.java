@@ -28,6 +28,7 @@ import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.ref.ScopeType;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -249,6 +250,12 @@ public class BinaryParser implements Parser<BinaryNode> {
 			final ScopeRefNode scopeRef = context.checkFor(scopeRef());
 
 			if (scopeRef == null) {
+				return null;
+			}
+
+			final ScopeType scopeType = scopeRef.getType();
+
+			if (scopeType != ScopeType.MACROS && scopeType != ScopeType.ROOT) {
 				return null;
 			}
 
