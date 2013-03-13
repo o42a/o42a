@@ -81,6 +81,10 @@ public final class ParserContext {
 		return push(parser, getExpectations());
 	}
 
+	public final <T> T checkFor(Parser<T> parser) {
+		return checkFor(parser, getExpectations());
+	}
+
 	public final void acceptAll() {
 		acceptBut(0);
 	}
@@ -337,11 +341,15 @@ public final class ParserContext {
 				+ "), current(" + this.current + ")]";
 	}
 	protected <T> T parse(Parser<T> parser, Expectations expectations) {
-		return parse(parser, expectations, this.firstUnaccepted);
+		return parse(parser, expectations, this.firstUnaccepted, false);
 	}
 
 	protected <T> T push(Parser<T> parser, Expectations expectations) {
-		return parse(parser, expectations, this.firstUnaccepted.clone());
+		return parse(parser, expectations, this.firstUnaccepted.clone(), false);
+	}
+
+	protected <T> T checkFor(Parser<T> parser, Expectations expectations) {
+		return parse(parser, expectations, this.firstUnaccepted.clone(), true);
 	}
 
 	private boolean isFailed() {
@@ -351,7 +359,8 @@ public final class ParserContext {
 	private <T> T parse(
 			Parser<T> parser,
 			Expectations expectations,
-			WorkerPos firstUnaccepted) {
+			WorkerPos firstUnaccepted,
+			boolean ignoreResult) {
 		if (isEOF()) {
 			return null;
 		}
@@ -369,10 +378,14 @@ public final class ParserContext {
 		try {
 			result = parser.parse(context);
 		} finally {
-			accepted = pop(context, start);
+			if (ignoreResult) {
+				accepted = 0L;
+			} else {
+				accepted = pop(context, start);
+			}
 		}
 
-		if (accepted == 0 && result != null) {
+		if (!ignoreResult && accepted == 0 && result != null) {
 			context.getLogger().notAccepted(current());
 		}
 
