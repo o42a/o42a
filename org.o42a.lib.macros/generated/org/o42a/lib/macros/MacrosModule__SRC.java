@@ -44,7 +44,32 @@ public final class MacrosModule__SRC implements AnnotatedSources {
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
-		return new Field[0];
+		return new Field[] {
+			new org.o42a.lib.macros.cmp.EqMacro(
+					owner,
+					new org.o42a.lib.macros.cmp.EqMacro__SRC(this))
+			.getScope().toField(),
+			new org.o42a.lib.macros.cmp.GeMacro(
+					owner,
+					new org.o42a.lib.macros.cmp.GeMacro__SRC(this))
+			.getScope().toField(),
+			new org.o42a.lib.macros.cmp.GtMacro(
+					owner,
+					new org.o42a.lib.macros.cmp.GtMacro__SRC(this))
+			.getScope().toField(),
+			new org.o42a.lib.macros.cmp.LeMacro(
+					owner,
+					new org.o42a.lib.macros.cmp.LeMacro__SRC(this))
+			.getScope().toField(),
+			new org.o42a.lib.macros.cmp.LtMacro(
+					owner,
+					new org.o42a.lib.macros.cmp.LtMacro__SRC(this))
+			.getScope().toField(),
+			new org.o42a.lib.macros.cmp.NeMacro(
+					owner,
+					new org.o42a.lib.macros.cmp.NeMacro__SRC(this))
+			.getScope().toField(),
+		};
 	}
 
 }
