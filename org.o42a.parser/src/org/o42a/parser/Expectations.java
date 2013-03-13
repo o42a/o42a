@@ -70,6 +70,10 @@ public class Expectations {
 		return this.context.push(parser, this);
 	}
 
+	public final <T> T checkFor(Parser<T> parser) {
+		return this.context.checkFor(parser, this);
+	}
+
 	@Override
 	public String toString() {
 		return "Expectations" + Arrays.toString(this.expectations);
