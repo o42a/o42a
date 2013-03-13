@@ -28,7 +28,6 @@ import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.ScopeRefNode;
-import org.o42a.ast.ref.ScopeType;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -50,10 +49,7 @@ public class BinaryParser implements Parser<BinaryNode> {
 		final SignNode<BinaryOperator> sign = context.parse(OPERATOR);
 
 		if (sign == null) {
-			if (context.next() == '#') {
-				return macrosSuffix(context);
-			}
-			return null;
+			return implicitSuffix(context);
 		}
 
 		final BinaryOperator operator = sign.getType();
@@ -76,10 +72,16 @@ public class BinaryParser implements Parser<BinaryNode> {
 		return new BinaryNode(this.leftOperand, sign, rightOperand);
 	}
 
-	private BinaryNode macrosSuffix(ParserContext context) {
+	private BinaryNode implicitSuffix(ParserContext context) {
 
-		final BinaryNode suffix =
-				context.parse(new MacrosSuffixParser(this.leftOperand));
+		final int next = context.next();
+
+		if (next != '#' && next != '$') {
+			return null;
+		}
+
+		final BinaryNode suffix = context.parse(
+				new ImplicitSuffixParser(this.leftOperand));
 
 		if (suffix == null) {
 			return null;
@@ -232,24 +234,21 @@ public class BinaryParser implements Parser<BinaryNode> {
 
 	}
 
-	private static final class MacrosSuffixParser
+	private static final class ImplicitSuffixParser
 			implements Parser<BinaryNode> {
 
 		private final ExpressionNode leftOperand;
 
-		MacrosSuffixParser(ExpressionNode leftOperand) {
+		ImplicitSuffixParser(ExpressionNode leftOperand) {
 			this.leftOperand = leftOperand;
 		}
 
 		@Override
 		public BinaryNode parse(ParserContext context) {
-			if (context.next() != '#') {
-				return null;
-			}
 
-			final ScopeRefNode scopeRef = context.push(scopeRef());
+			final ScopeRefNode scopeRef = context.checkFor(scopeRef());
 
-			if (scopeRef == null || scopeRef.getType() != ScopeType.MACROS) {
+			if (scopeRef == null) {
 				return null;
 			}
 
