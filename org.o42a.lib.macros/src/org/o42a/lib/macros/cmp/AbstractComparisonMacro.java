@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.macros.cmp;
 
-import static org.o42a.common.macro.Macros.expandMacro;
+import static org.o42a.common.macro.Macros.expandMacroField;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -79,26 +79,18 @@ public abstract class AbstractComparisonMacro extends AnnotatedMacro {
 		if (this.left != null) {
 			return this.left;
 		}
-		return this.left =
-				expandMacro(
-						fieldName(leftName())
-						.key(getScope())
-						.toPath()
-						.bind(this, getScope()))
-				.target(distribute());
+		return this.left = expandMacroField(
+				fieldName(leftName()).key(getScope()),
+				distribute());
 	}
 
 	private Ref right() {
 		if (this.right != null) {
 			return this.right;
 		}
-		return this.left =
-				expandMacro(
-						fieldName(rightName())
-						.key(getScope())
-						.toPath()
-						.bind(this, getScope()))
-				.target(distribute());
+		return this.right = expandMacroField(
+				fieldName(rightName()).key(getScope()),
+				distribute());
 	}
 
 }
