@@ -23,7 +23,11 @@ import static org.o42a.common.macro.path.MacroExpansionStep.MACRO_EXPANSION_STEP
 import static org.o42a.common.macro.path.MacroExpansionStep.MACRO_REEXPANSION_STEP;
 import static org.o42a.common.macro.st.StatementConsumer.consumeStatement;
 
+import org.o42a.common.macro.field.MacroFieldConsumer;
 import org.o42a.common.macro.path.RequireMacroStep;
+import org.o42a.core.Distributor;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
@@ -34,11 +38,27 @@ import org.o42a.util.log.LogInfo;
 
 public final class Macros {
 
+	public static final Consumer MACRO_FIELD_CONSUMER =
+			MacroFieldConsumer.INSTANCE;
+
 	public static Ref expandMacro(Ref ref) {
 
 		final BoundPath path = removeMacroRequirement(ref.getPath());
 
 		return expandMacro(path).target(ref.distribute());
+	}
+
+	public static Ref expandMacroField(
+			MemberKey macroFieldKey,
+			Distributor distributor) {
+
+		final BoundPath path =
+				macroFieldKey.toPath()
+				.bind(distributor, distributor.getScope());
+
+		return expandMacro(path)
+				.target(distributor)
+				.consume(MACRO_FIELD_CONSUMER);
 	}
 
 	public static BoundPath expandMacro(BoundPath path) {
