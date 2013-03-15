@@ -40,12 +40,13 @@ import org.o42a.core.ref.common.ValueFieldDefinition;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
 
-public final class ComparisonExpression extends ObjectConstructor {
+public class ComparisonExpression extends ObjectConstructor {
 
 	static final MemberId COMPARISON_MEMBER =
 			fieldName(CASE_SENSITIVE.canonicalName("_cmp"));
@@ -55,6 +56,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 	private final BinaryPhraseOperator operator;
 	private final Ref leftOperand;
 	private final Ref rightOperand;
+	private CompilerLogger resolutionLogger;
 	private ComparisonOperator comparisonOperator;
 	private Ref phrase;
 	private byte error;
@@ -85,21 +87,36 @@ public final class ComparisonExpression extends ObjectConstructor {
 		this.error = prototype.error;
 	}
 
+	public final BinaryPhraseOperator getOperator() {
+		return this.operator;
+	}
+
+	public final Ref getLeftOperand() {
+		return this.leftOperand;
+	}
+
+	public final Ref getRightOperand() {
+		return this.rightOperand;
+	}
+
 	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
 		return ValueType.VOID.typeRef(location, getScope());
 	}
 
-	public final boolean hasError() {
-		if (this.error != 0) {
-			return this.error > 0;
-		}
-		if (this.comparisonOperator.checkError(this.phrase)) {
-			this.error = 1;
-			return true;
-		}
-		this.error = -1;
-		return false;
+	public final CompilerLogger getResolutionLogger() {
+		return this.resolutionLogger != null
+				? this.resolutionLogger : getLogger();
+	}
+
+	public final boolean hasResolutionLogger() {
+		return this.resolutionLogger != null;
+	}
+
+	public final ComparisonExpression setResolutionLogger(
+			CompilerLogger resolutionLogger) {
+		this.resolutionLogger = resolutionLogger;
+		return this;
 	}
 
 	@Override
@@ -139,6 +156,18 @@ public final class ComparisonExpression extends ObjectConstructor {
 		return this.phrase;
 	}
 
+	final boolean hasErrors() {
+		if (this.error != 0) {
+			return this.error > 0;
+		}
+		if (checkForErrors()) {
+			this.error = 1;
+			return true;
+		}
+		this.error = -1;
+		return false;
+	}
+
 	final Ref phrase(Distributor distributor) {
 		if (this.phrase != null) {
 			return this.phrase;
@@ -147,6 +176,9 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 			final Phrase phrase = new Phrase(this, distributor);
 
+			if (hasResolutionLogger()) {
+				phrase.setResolutionLogger(getResolutionLogger());
+			}
 			phrase.setAncestor(
 					this.leftOperand.rescope(distributor.getScope())
 					.toTypeRef());
@@ -191,6 +223,12 @@ public final class ComparisonExpression extends ObjectConstructor {
 		cmpDirs.done();
 
 		return result;
+	}
+
+	private boolean checkForErrors() {
+		return this.comparisonOperator.checkForErrors(
+				getPhrase(),
+				getResolutionLogger());
 	}
 
 }

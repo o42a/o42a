@@ -28,6 +28,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
@@ -48,7 +49,7 @@ abstract class CompareOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public boolean checkError(Ref phrase) {
+	public boolean checkForErrors(Ref phrase, CompilerLogger resolutionLogger) {
 
 		final Resolution resolution = phrase.getResolution();
 
@@ -62,7 +63,7 @@ abstract class CompareOperator extends ComparisonOperator {
 			return false;
 		}
 
-		phrase.getLogger().error(
+		resolutionLogger.error(
 				"comparison_not_integer",
 				phrase,
 				"Comparison expected to return integer value");

@@ -26,6 +26,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -62,11 +63,12 @@ public abstract class ComparisonOperator {
 	 * Validate the phrase against operator considerations.
 	 *
 	 * @param phrase the phrase to validate.
+	 * @param resolutionLogger a logger to report resolution errors to.
 	 *
 	 * @return <code>true</code> if error found,
 	 * or <code>false</code> otherwise.
 	 */
-	public boolean checkError(Ref phrase) {
+	public boolean checkForErrors(Ref phrase, CompilerLogger resolutionLogger) {
 		return false;
 	}
 
