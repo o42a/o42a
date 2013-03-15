@@ -112,6 +112,10 @@ public abstract class PhraseContext {
 		return getPhrase().getLogger();
 	}
 
+	protected final CompilerLogger getResolutionLogger() {
+		return getPhrase().getResolutionLogger();
+	}
+
 	protected abstract void define(
 			ClauseInstance instance,
 			Block<?, ?> definition);
