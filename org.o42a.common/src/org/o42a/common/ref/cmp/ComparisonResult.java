@@ -60,7 +60,7 @@ final class ComparisonResult extends BuiltinObject {
 	public Value<?> calculateBuiltin(Resolver resolver) {
 		resolveMembers(false);// Initialize comparisonKey.
 
-		if (this.comparison.hasError()) {
+		if (this.comparison.hasErrors()) {
 			return type().getParameters().falseValue();
 		}
 
@@ -90,7 +90,7 @@ final class ComparisonResult extends BuiltinObject {
 
 	@Override
 	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
-		if (this.comparison.hasError()) {
+		if (this.comparison.hasErrors()) {
 			return falseInlineEval();
 		}
 
@@ -105,7 +105,7 @@ final class ComparisonResult extends BuiltinObject {
 
 	@Override
 	public Eval evalBuiltin() {
-		if (this.comparison.hasError()) {
+		if (this.comparison.hasErrors()) {
 			return Eval.FALSE_EVAL;
 		}
 		return new ComparisonEval(this.comparison, this.cmp);
