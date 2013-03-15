@@ -30,6 +30,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.ObjectTypeParameters;
@@ -38,6 +39,7 @@ import org.o42a.util.string.Name;
 
 public class Phrase extends Placed {
 
+	private CompilerLogger resolutionLogger;
 	private SuffixedByPhrase suffixed;
 	private PhrasePrefix prefix;
 	private PhrasePart last;
@@ -48,6 +50,20 @@ public class Phrase extends Placed {
 
 	public Phrase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
+	}
+
+	public final CompilerLogger getResolutionLogger() {
+		return this.resolutionLogger != null
+				? this.resolutionLogger : getLogger();
+	}
+
+	public final boolean hasResolutionLogger() {
+		return this.resolutionLogger != null;
+	}
+
+	public final Phrase setResolutionLogger(CompilerLogger resolutionLogger) {
+		this.resolutionLogger = resolutionLogger;
+		return this;
 	}
 
 	public final PhrasePrefix getPrefix() {

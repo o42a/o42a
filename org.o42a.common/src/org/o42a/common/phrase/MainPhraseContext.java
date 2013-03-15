@@ -289,7 +289,7 @@ final class MainPhraseContext extends PhraseContext {
 					break;
 				}
 				if (!nextClause.isError()) {
-					getLogger().error(
+					getResolutionLogger().error(
 							"unresolved_clause",
 							continuation,
 							"Unsupported clause: %s",
