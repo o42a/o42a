@@ -27,9 +27,12 @@ import org.o42a.common.macro.AnnotatedMacro;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.ref.cmp.ComparisonExpression;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.value.macro.MacroExpander;
 import org.o42a.util.string.Name;
 
@@ -67,11 +70,20 @@ public abstract class AbstractComparisonMacro extends AnnotatedMacro {
 	protected abstract Name rightName();
 
 	private Path compare(MacroExpander expander) {
+
+		final Scope macroScope = expander.getMacroObject().getScope();
+		final CompilerContext context = expander.getLocation().getContext();
+		final Ref left = left();
+		final Ref right = right();
+
 		return new ComparisonExpression(
 				expander,
 				this.operator,
-				left(),
-				right())
+				left.rebuildIn(macroScope)
+				.setLocation(new Location(context, left.getLocation())),
+				right.rebuildIn(macroScope)
+				.setLocation(new Location(context, right.getLocation())))
+				.setResolutionLogger(expander.getLogger())
 				.toPath();
 	}
 
