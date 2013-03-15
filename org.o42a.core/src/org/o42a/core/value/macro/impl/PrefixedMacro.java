@@ -41,7 +41,7 @@ final class PrefixedMacro implements Macro {
 
 		final PrefixedMacro prefixed = (PrefixedMacro) macro;
 		final PrefixPath oldPrefix = prefixed.prefix;
-		final PrefixPath newPrefix = prefix.and(oldPrefix);
+		final PrefixPath newPrefix = oldPrefix.and(prefix);
 
 		if (newPrefix == oldPrefix) {
 			return prefixed;
