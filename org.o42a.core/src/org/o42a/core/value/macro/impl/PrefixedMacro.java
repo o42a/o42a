@@ -28,6 +28,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
+import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.macro.MacroExpander;
 
@@ -165,6 +166,11 @@ final class PrefixedMacro implements Macro {
 		@Override
 		public CompilerLogger getLogger() {
 			return this.expander.getLogger();
+		}
+
+		@Override
+		public ScopedLogger getExpansionLogger() {
+			return this.expander.getExpansionLogger();
 		}
 
 		@Override
