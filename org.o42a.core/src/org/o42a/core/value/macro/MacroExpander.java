@@ -24,6 +24,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.ScopedLogger;
 
 
 /**
@@ -59,12 +60,20 @@ public interface MacroExpander extends LocationInfo {
 	 * Conditional logger.
 	 *
 	 * <p>This logger uses the {@link MacroConsumer#getExpansionLogger()
-	 * expansion logger} to coinditionally log the messages with
+	 * expansion logger} to conditionally log the messages with
 	 * {@link #getExplicitLogger() explicit logger}.</p>
 	 *
 	 * @return logger.
 	 */
 	CompilerLogger getLogger();
+
+	/**
+	 * Returns a macro expansion logger, which is used to construct the
+	 * {@link #getLogger() conditional logger}.
+	 *
+	 * @return scoped logger.
+	 */
+	ScopedLogger getExpansionLogger();
 
 	/**
 	 * Explicit logger.

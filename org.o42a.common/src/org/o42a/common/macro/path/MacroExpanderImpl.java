@@ -25,6 +25,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
+import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.macro.MacroExpander;
 
 
@@ -77,6 +78,11 @@ final class MacroExpanderImpl implements MacroExpander {
 	@Override
 	public final CompilerLogger getLogger() {
 		return this.logger;
+	}
+
+	@Override
+	public final ScopedLogger getExpansionLogger() {
+		return this.expansion.getExpansionLogger();
 	}
 
 	@Override
