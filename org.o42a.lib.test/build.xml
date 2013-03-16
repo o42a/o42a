@@ -31,10 +31,4 @@
 
 	<import file="../build/module.build.xml"/>
 	
-	<target name="copy-resources">
-		<copy todir="${output..}" taskname="${ant.project.name}">
-			<fileset dir="o42a"/>
-		</copy>
-	</target>
-
 </project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Root Object Definition Build Script
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2010-2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -30,11 +30,5 @@
 		value="org.o42a.util,org.o42a.analysis,org.o42a.codegen,org.o42a.core"/>
 
 	<import file="../build/module.build.xml" />
-
-	<target name="copy-resources">
-		<copy todir="${output..}" taskname="${ant.project.name}">
-			<fileset dir="o42a"/>
-		</copy>
-	</target>
 
 </project>
