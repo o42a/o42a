@@ -12,9 +12,9 @@ A less-or-equal comparison macro.
 ~~~
 
 What :=< macro ~~ What to compare.
-With :=< macro ~~ What to compare with.
+Than :=< macro ~~ What to compare with.
 
-<What~* | with> What = ()
-<:With> (
-  <[With]> With = ()
+<What~* | than> What = ()
+<:Than> (
+  <[Than]> Than = ()
 )
