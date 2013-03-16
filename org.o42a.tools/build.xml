@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Built Tools Build Script
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011-2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -31,7 +31,7 @@
 
 	<import file="../build/common.build.xml"/>
 	
-	<target name="copy-resources">
+	<target name="copy-service-descriptors" extensionOf="copy-resources">
 		<copy todir="${output..}" taskname="${ant.project.name}">
 			<fileset dir="src" includes="META-INF/**"/>
 		</copy>
