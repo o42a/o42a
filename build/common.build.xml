@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2010-2013 Ruslan Lopatin
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -98,8 +98,7 @@
 		</subant>
 	</target>
 
-	<target name="copy-resources">
-	</target>
+	<extension-point name="copy-resources"/>
 
 	<target name="compile" depends="compile-deps" unless="auto-build">
 		<mkdir taskname="${ant.project.name}" dir="${output..}"/>
