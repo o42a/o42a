@@ -26,6 +26,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.gc.GCBlock;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.util.string.ID;
 
@@ -62,7 +63,10 @@ public final class ArrayItemsIRContainer
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, this.items);
+		data.addInstance(
+				GC_BLOCK_ID,
+				GC_BLOCK_TYPE,
+				new GCBlock(this.items, "o42a_array_gc_desc"));
 		data.addStruct(ITEMS_ID, this.items);
 	}
 

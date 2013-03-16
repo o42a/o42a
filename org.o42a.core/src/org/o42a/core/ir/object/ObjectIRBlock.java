@@ -27,6 +27,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.gc.GCBlock;
 
 
 public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
@@ -49,7 +50,10 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, this.struct);
+		data.addInstance(
+				GC_BLOCK_ID,
+				GC_BLOCK_TYPE,
+				new GCBlock(this.struct, "o42a_obj_gc_desc"));
 		data.addStruct(OBJECT_ID, this.struct);
 	}
 

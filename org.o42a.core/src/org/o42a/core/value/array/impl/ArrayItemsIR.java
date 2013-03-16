@@ -19,15 +19,13 @@
 */
 package org.o42a.core.value.array.impl;
 
-import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.*;
-import org.o42a.core.ir.gc.GCBlockOp;
-import org.o42a.core.ir.gc.GCBlockOp.Type;
+import org.o42a.codegen.data.DataRec;
+import org.o42a.codegen.data.Struct;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.value.array.ArrayIR;
@@ -36,12 +34,9 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
 import org.o42a.core.value.array.ArrayValueType;
-import org.o42a.util.fn.Getter;
 
 
-public final class ArrayItemsIR
-		extends Struct<ArrayItemsIR.Op>
-		implements Content<GCBlockOp.Type> {
+public final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
 
 	private final ArrayIR arrayIR;
 	private final DataRec[] items;
@@ -69,34 +64,6 @@ public final class ArrayItemsIR
 	@Override
 	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
-	}
-
-	@Override
-	public void allocated(Type instance) {
-	}
-
-	@Override
-	public void fill(Type instance) {
-		instance.lock().setValue((byte) 0);
-		instance.list().setValue((byte) 0);
-		instance.flags().setValue((short) 0);
-		instance.useCount().setValue(0);
-		instance.desc().setConstant(true).setValue(
-				getGenerator()
-				.externalGlobal()
-				.setConstant()
-				.link("o42a_array_gc_desc", GC_DESC_TYPE));
-		instance.prev().setNull();
-		instance.next().setNull();
-		instance.size()
-		.setConstant(true)
-		.setLowLevel(true)
-		.setValue(new Getter<Integer>() {
-			@Override
-			public Integer get() {
-				return layout(getGenerator()).size();
-			}
-		});
 	}
 
 	@Override
