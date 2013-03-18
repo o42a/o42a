@@ -20,14 +20,11 @@
 package org.o42a.ast.ref;
 
 
-
 public interface RefNodeVisitor<R, P> {
 
 	R visitScopeRef(ScopeRefNode ref, P p);
 
 	R visitParentRef(ParentRefNode ref, P p);
-
-	R visitIntrinsicRef(IntrinsicRefNode ref, P p);
 
 	R visitMemberRef(MemberRefNode ref, P p);
 

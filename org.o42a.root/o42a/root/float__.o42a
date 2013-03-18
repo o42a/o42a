@@ -9,45 +9,45 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Float :=> $$number
 ==================
 
-<*Minus> Floats: minus (<-*> Operand = $prefix$)
+<*Minus> Floats: minus (<-*> Operand = $prefix)
 
 <*Addition> Floats: add (
-  <*Left summand | right summand> Left operand = $prefix$
+  <*Left summand | right summand> Left operand = $prefix
   <:Right summand> (
     <* + *> Right operand = ()
   )
 )
 
 <*Subtraction> Floats: subtract (
-  <*Minuend | subtrahend> Left operand = $prefix$
+  <*Minuend | subtrahend> Left operand = $prefix
   <:Subtrahend> (
     <* - *> Right operand = ()
   )
 )
 
 <*Multiplication> Floats: multiply (
-  <*Left factor | right factor> Left operand = $prefix$
+  <*Left factor | right factor> Left operand = $prefix
   <:Right factor> (
     <* * *> Right operand = ()
   )
 )
 
 <*Division> Floats: divide (
-  <*Dividend | divisor> Left operand = $prefix$
+  <*Dividend | divisor> Left operand = $prefix
   <:Divisor> (
     <* / *> Right operand = ()
   )
 )
 
 <*Equality> Floats: equals (
-  <*What equals | equals to> What = $prefix$
+  <*What equals | equals to> What = $prefix
   <:Equals to> (
     <* == *> To = ()
   )
 )
 
 <*Comparison> Floats: compare (
-  <*Compare what | compare with> What = $prefix$
+  <*Compare what | compare with> What = $prefix
   <:Compare with> (
     <* <=> *> With = ()
   )
