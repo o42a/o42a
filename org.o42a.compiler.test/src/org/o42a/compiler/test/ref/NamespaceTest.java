@@ -37,7 +37,7 @@ public class NamespaceTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void useObject() {
+	public void useObjectDirective() {
 		compile(
 				"Use object 'ns: used'",
 				"Ns := void(",
