@@ -48,11 +48,13 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberName;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.Module;
 import org.o42a.util.string.Name;
 
 
@@ -214,14 +216,14 @@ public abstract class RefInterpreter {
 	}
 
 	private static boolean match(Name name, Container container) {
+		if (name == null) {
+			return true;
+		}
 
 		final Member member = container.toMember();
 
 		if (member == null) {
-			return false;
-		}
-		if (name == null) {
-			return true;
+			return matchModule(name, container);
 		}
 
 		final MemberName memberName = member.getMemberKey().getMemberName();
@@ -231,6 +233,34 @@ public abstract class RefInterpreter {
 		}
 
 		return name.is(memberName.getName());
+	}
+
+	static boolean matchModule(Name name, Container container) {
+
+		final Obj object = container.toObject();
+
+		if (object == null) {
+			return false;
+		}
+
+		final Scope enclosing = object.getScope().getEnclosingScope();
+
+		if (enclosing == null || !enclosing.getScope().isTopScope()) {
+			// No a module.
+			return false;
+		}
+
+		// The container is module.
+		// Check whether its name fits the requested one.
+		final Module module =
+				enclosing.getContext().getIntrinsics().getModule(name);
+
+		if (module == null) {
+			// There is no module with such name.
+			return false;
+		}
+
+		return module.is(object);
 	}
 
 	private static void unresolvedParent(LocationInfo location, Name name) {

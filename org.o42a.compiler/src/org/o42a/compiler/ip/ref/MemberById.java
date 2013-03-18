@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
+import static org.o42a.compiler.ip.ref.RefInterpreter.matchModule;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
@@ -157,6 +158,14 @@ public class MemberById extends PlacedFragment {
 			return null;
 		}
 
+		final Scope enclosingScope = enclosing.getScope();
+
+		if (enclosingScope.isTopScope() && declaredIn == null) {
+			if (isModule(container)) {
+				return SELF_PATH;
+			}
+		}
+
 		// Top-level expression clause
 		// shouldn't have access to enclosing prototype.
 		final boolean excludeEnclosingContainer =
@@ -172,8 +181,6 @@ public class MemberById extends PlacedFragment {
 		if (found.isAbsolute()) {
 			return found;
 		}
-
-		final Scope enclosingScope = enclosing.getScope();
 
 		if (enclosingScope.is(container.getScope())) {
 			return found;
@@ -215,5 +222,18 @@ public class MemberById extends PlacedFragment {
 		return container.findMember(this, accessor, this.memberId, declaredIn);
 	}
 
+	private boolean isModule(Container container) {
+
+		final MemberName memberName = this.memberId.toMemberName();
+
+		if (memberName == null) {
+			return false;
+		}
+		if (memberName.getEnclosingId() != null) {
+			return false;
+		}
+
+		return matchModule(memberName.getName(), container);
+	}
 
 }

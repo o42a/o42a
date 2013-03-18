@@ -43,7 +43,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	public static final ModuleRefVisitor SAME_MODULE_REF_VISITOR =
 			new SameModuleRefVisitor();
 
-	private final OwnerVisitor ownerVisitor = new OwnerVisitor();
+	private final ModuleOwnerVisitor ownerVisitor = new ModuleOwnerVisitor();
 
 	ModuleRefVisitor() {
 	}
@@ -94,7 +94,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	}
 
-	private final class OwnerVisitor
+	private final class ModuleOwnerVisitor
 			extends AbstractExpressionVisitor<Owner, Distributor> {
 
 		@Override
