@@ -99,11 +99,6 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void intrinsicRef() {
-		assertThat(parse("$foo$"), is(IntrinsicRefNode.class));
-	}
-
-	@Test
 	public void unaryExpression() {
 		assertThat(parse("+foo"), is(UnaryNode.class));
 		assertThat(parse("-foo"), is(UnaryNode.class));

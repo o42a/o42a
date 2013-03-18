@@ -14,14 +14,14 @@ String :=> void
 )
 
 <*Addition> Strings: concat (
-  <*Concat what | concat with> What = $prefix$
+  <*Concat what | concat with> What = $prefix
   <:Concat with> (
     <* + *> With = ()
   )
 )
 
 <*Comparison> Strings: compare (
-  <*Compare what | compare with> What = $prefix$
+  <*Compare what | compare with> What = $prefix
   <:Compare with> (
     <* <=> *> With = ()
   )

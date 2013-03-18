@@ -33,11 +33,6 @@ public abstract class AbstractRefVisitor<R, P> implements RefNodeVisitor<R, P> {
 	}
 
 	@Override
-	public R visitIntrinsicRef(IntrinsicRefNode ref, P p) {
-		return visitRef(ref, p);
-	}
-
-	@Override
 	public R visitMemberRef(MemberRefNode ref, P p) {
 		return visitRef(ref, p);
 	}

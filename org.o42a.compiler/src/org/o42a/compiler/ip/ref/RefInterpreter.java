@@ -36,9 +36,7 @@ import org.o42a.ast.Node;
 import org.o42a.ast.atom.*;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.ref.IntrinsicRefNode;
-import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.ref.RefNodeVisitor;
+import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.OwnerFactory;
@@ -52,9 +50,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.source.Location;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.source.Module;
+import org.o42a.core.source.*;
 import org.o42a.util.string.Name;
 
 
@@ -107,7 +103,52 @@ public abstract class RefInterpreter {
 	}
 
 	public static boolean isRootRef(ExpressionNode node) {
-		return node.accept(RootVisitor.ROOT_VISITOR, null) != null;
+
+		final RefNode ref = node.toRef();
+
+		if (ref == null) {
+			return false;
+		}
+
+		final ScopeRefNode scopeRef = ref.toScopeRef();
+
+		if (scopeRef == null) {
+			return false;
+		}
+
+		return scopeRef.getType() == ScopeType.ROOT;
+	}
+
+	public static Name tempName(MemberRefNode ref, CompilerLogger logger) {
+
+		final ExpressionNode owner = ref.getOwner();
+
+		if (owner == null) {
+			return null;
+		}
+
+		final RefNode ownerRef = owner.toRef();
+
+		if (ownerRef == null) {
+			return null;
+		}
+
+		final ScopeRefNode ownerScope = ownerRef.toScopeRef();
+
+		if (ownerScope == null || ownerScope.getType() != ScopeType.TEMP) {
+			return null;
+		}
+		if (logger != null && ref.getMembership() != null) {
+			logger.prohibitedDeclaredIn(ref.getMembership());
+		}
+
+		final NameNode name = ref.getName();
+
+		if (name == null) {
+			return null;
+		}
+
+		return name.getName();
 	}
 
 	public static Ref number(NumberNode number, Distributor distributor) {
@@ -303,7 +344,7 @@ public abstract class RefInterpreter {
 		return this.ownerFactory;
 	}
 
-	public Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
+	public Ref intrinsicObject(MemberRefNode ref, Distributor p) {
 		p.getLogger().error(
 				"prohibited_object_intrinsic",
 				ref,
@@ -438,7 +479,7 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
+		public Ref intrinsicObject(MemberRefNode ref, Distributor p) {
 
 			final Location location = location(p, ref);
 			final Path path = clauseObjectPath(location, p.getScope());

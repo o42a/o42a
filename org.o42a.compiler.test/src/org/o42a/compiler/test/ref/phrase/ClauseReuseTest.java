@@ -20,7 +20,7 @@ public class ClauseReuseTest extends CompilerTestCase {
 		compile(
 				"A := string (",
 				"  Foo := 1",
-				"  <[Foo value] | $object$> foo = *",
+				"  <[Foo value] | $object> foo = *",
 				"  <Bar> (<'Value'> ())",
 				")",
 				"B := a[2] bar 'b'");

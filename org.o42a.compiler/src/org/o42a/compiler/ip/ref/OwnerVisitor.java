@@ -20,8 +20,8 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
 import static org.o42a.compiler.ip.ref.RefInterpreter.isRootRef;
+import static org.o42a.compiler.ip.ref.RefInterpreter.tempName;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.Ref.falseRef;
@@ -84,14 +84,10 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 		case MACROS:
 			return owner(MACROS_PATH.bind(location, p.getScope()).target(p))
 					.expandMacro(ref);
-		case MODULE:
-			return nonLinkOwner(
-					enclosingModulePath(p.getContainer())
-					.bind(location, p.getScope())
-					.target(p));
 		case ROOT:
 			return nonLinkOwner(
 					ROOT_PATH.bind(location, p.getScope()).target(p));
+		case TEMP:
 		}
 
 		p.getContext().getLogger().unresolvedScope(ref, type.getSign());
@@ -112,15 +108,13 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 	}
 
 	@Override
-	public final Owner visitIntrinsicRef(IntrinsicRefNode ref, Distributor p) {
-		if (OBJECT_NAME.is(ref.getName().getName())) {
-			return owner(ip().objectIntrinsic(ref, p));
-		}
-		return super.visitIntrinsicRef(ref, p);
-	}
-
-	@Override
 	public Owner visitMemberRef(MemberRefNode ref, Distributor p) {
+
+		final Name tempName = tempName(ref, p.getLogger());
+
+		if (OBJECT_NAME.is(tempName)) {
+			return owner(ip().intrinsicObject(ref, p));
+		}
 
 		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
 

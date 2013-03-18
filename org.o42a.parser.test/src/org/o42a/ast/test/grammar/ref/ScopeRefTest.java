@@ -70,7 +70,7 @@ public class ScopeRefTest extends GrammarTestCase {
 
 		final ScopeRefNode ref = parse("$ ");
 
-		assertEquals(ScopeType.MODULE, ref.getType());
+		assertEquals(ScopeType.TEMP, ref.getType());
 		assertThat(ref, hasRange(0, 1));
 		assertEquals(2, this.worker.position().offset());
 	}

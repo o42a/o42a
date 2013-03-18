@@ -85,7 +85,7 @@ enum ClauseVisibility {
 			case SELF:
 				return INTERNAL_CLAUSE;
 			case ROOT:
-			case MODULE:
+			case TEMP:
 			case PARENT:
 			case MACROS:
 			}

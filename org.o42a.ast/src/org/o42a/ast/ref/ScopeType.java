@@ -28,7 +28,7 @@ public enum ScopeType implements SignType {
 	SELF(":"),
 	PARENT("::"),
 	MACROS("##"),
-	MODULE("$"),
+	TEMP("$"),
 	ROOT("$$");
 
 	private final String sign;
