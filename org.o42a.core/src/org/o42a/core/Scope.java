@@ -101,7 +101,7 @@ public interface Scope extends PlaceInfo {
 
     Obj toObject();
 
-	LocalScope toLocal();
+	LocalScope toLocalScope();
 
 	ConstructionMode getConstructionMode();
 

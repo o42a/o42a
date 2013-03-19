@@ -32,13 +32,13 @@ public final class ObjectIRLocals {
 		this.valueIR = valueIR;
 	}
 
-	private ArrayList<LocalFnIR> locals;
+	private ArrayList<LocalScopeFnIR> locals;
 
 	public final ObjectValueIR getValueIR() {
 		return this.valueIR;
 	}
 
-	public void addLocal(LocalFnIR local) {
+	public void addLocal(LocalScopeFnIR local) {
 		if (this.locals == null) {
 			this.locals = new ArrayList<>();
 			this.locals.add(local);

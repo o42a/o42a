@@ -23,7 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalRegistry;
+import org.o42a.core.member.local.LocalScopeRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
@@ -99,7 +99,7 @@ public final class BracesWithinDeclaratives extends Statement {
 	private static final class ImperativeReproducer extends Reproducer {
 
 		private final Reproducer reproducer;
-		private final LocalRegistry localRegistry;
+		private final LocalScopeRegistry localRegistry;
 
 		ImperativeReproducer(
 				ImperativeBlock reproducingBlock,
@@ -113,7 +113,7 @@ public final class BracesWithinDeclaratives extends Statement {
 									reproducingBlock.getLocation()),
 							reproducedScope));
 			this.reproducer = reproducer;
-			this.localRegistry = new LocalRegistry(
+			this.localRegistry = new LocalScopeRegistry(
 					reproducedScope,
 					reproducer.getMemberRegistry());
 		}

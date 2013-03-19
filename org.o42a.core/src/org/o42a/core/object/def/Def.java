@@ -53,7 +53,7 @@ public abstract class Def implements SourceInfo {
 			return object;
 		}
 
-		final LocalScope local = container.toLocal();
+		final LocalScope local = container.toLocalScope();
 
 		assert local != null :
 			"Definition can be created only inside object or local scope";

@@ -155,7 +155,7 @@ final class ClauseReuser implements PathWalker {
 	public boolean dep(Obj object, Step step, Ref dependency) {
 
 		final LocalScope enclosing =
-				object.getScope().getEnclosingScope().toLocal();
+				object.getScope().getEnclosingScope().toLocalScope();
 
 		assert enclosing != null :
 			"Enclosing scope is not local: " + enclosing;

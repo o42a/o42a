@@ -36,12 +36,12 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.CompilerContext;
 
 
-public final class LocalOp implements HostOp {
+public final class LocalScopeOp implements HostOp {
 
 	private final CodeBuilder builder;
 	private final LocalScope scope;
 
-	public LocalOp(CodeBuilder builder, LocalScope scope) {
+	public LocalScopeOp(CodeBuilder builder, LocalScope scope) {
 		this.builder = builder;
 		this.scope = scope;
 	}
@@ -71,7 +71,7 @@ public final class LocalOp implements HostOp {
 	}
 
 	@Override
-	public final LocalOp toLocal() {
+	public final LocalScopeOp toLocalScope() {
 		return this;
 	}
 

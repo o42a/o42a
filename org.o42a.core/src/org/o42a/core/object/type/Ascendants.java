@@ -395,7 +395,7 @@ public class Ascendants
 
 		Ascendants ascendants = this;
 		final Container container = member.getContainer();
-		final LocalScope localContainer = container.toLocal();
+		final LocalScope localContainer = container.toLocalScope();
 
 		if (localContainer != null) {
 			assert isEmpty() :

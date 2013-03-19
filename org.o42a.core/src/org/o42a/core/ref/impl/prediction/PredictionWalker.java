@@ -147,7 +147,7 @@ public class PredictionWalker implements PathWalker {
 	public boolean dep(Obj object, Step step, Ref dependency) {
 
 		final LocalScope local =
-				object.getScope().getEnclosingScope().toLocal();
+				object.getScope().getEnclosingScope().toLocalScope();
 
 		if (getPrediction().isExact()) {
 

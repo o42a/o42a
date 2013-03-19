@@ -134,8 +134,8 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public final LocalScope toLocal() {
-		return getEnclosingContainer().toLocal();
+	public final LocalScope toLocalScope() {
+		return getEnclosingContainer().toLocalScope();
 	}
 
 	@Override

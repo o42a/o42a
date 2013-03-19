@@ -31,7 +31,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.local.InlineControl;
-import org.o42a.core.ir.local.LocalIR;
+import org.o42a.core.ir.local.LocalScopeIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.member.local.LocalScope;
@@ -125,7 +125,7 @@ public final class ImperativeDefiner extends Definer {
 	public DefValue value(Resolver resolver) {
 
 		final LocalScope local =
-				getLocalPrefix().rescope(resolver.getScope()).toLocal();
+				getLocalPrefix().rescope(resolver.getScope()).toLocalScope();
 
 		assert local != null :
 			"Not a local scope: " + resolver;
@@ -193,14 +193,14 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public Eval eval(CodeBuilder builder, Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new LocalEval(getBlock(), getCommand());
+		return new ImperativeEval(getBlock(), getCommand());
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 
 		final LocalScope local =
-				getLocalPrefix().rescope(resolver.getScope()).toLocal();
+				getLocalPrefix().rescope(resolver.getScope()).toLocalScope();
 
 		getCommand().resolveAll(
 				local.walkingResolver(resolver.getResolver())
@@ -241,12 +241,12 @@ public final class ImperativeDefiner extends Definer {
 
 	}
 
-	private static final class LocalEval implements Eval {
+	private static final class ImperativeEval implements Eval {
 
 		private final ImperativeBlock block;
 		private final Command command;
 
-		LocalEval(ImperativeBlock block, Command command) {
+		ImperativeEval(ImperativeBlock block, Command command) {
 			this.block = block;
 			this.command = command;
 		}
@@ -257,11 +257,11 @@ public final class ImperativeDefiner extends Definer {
 			final ObjectOp ownerObject = host.materialize(
 					dirs.dirs(),
 					tempObjHolder(dirs.getAllocator()));
-			final LocalScope scope = getBlock().getScope().toLocal();
+			final LocalScope scope = getBlock().getScope().toLocalScope();
 			final Obj ownerType = scope.getOwner();
 			final ObjOp ownerBody =
 					ownerObject.cast(OWNER_ID, dirs.dirs(), ownerType);
-			final LocalIR ir = scope.ir(host.getGenerator());
+			final LocalScopeIR ir = scope.ir(host.getGenerator());
 
 			ir.write(dirs, ownerBody, null, this.command);
 		}

@@ -24,7 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -120,7 +120,7 @@ public class OverrideRequirement implements PathWalker {
 			return true;
 		}
 
-		final MemberLocal local = member.toLocal();
+		final MemberLocalScope local = member.toLocalScope();
 
 		if (local != null) {
 			return true;
@@ -151,7 +151,7 @@ public class OverrideRequirement implements PathWalker {
 		}
 
 		final LocalScope local =
-				object.getScope().getEnclosingScope().toLocal();
+				object.getScope().getEnclosingScope().toLocalScope();
 
 		if (!setTop(local)) {
 			return false;
@@ -243,7 +243,7 @@ public class OverrideRequirement implements PathWalker {
 			return object;
 		}
 
-		return container.toLocal().getOwner();
+		return container.toLocalScope().getOwner();
 	}
 
 }

@@ -33,7 +33,7 @@ public class LocalResolver extends Resolver {
 	}
 
 	public final LocalScope getLocal() {
-		return getScope().toLocal();
+		return getScope().toLocalScope();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class LocalResolver extends Resolver {
 
 		@Override
 		protected LocalResolver createResolver(PathWalker walker) {
-			return new LocalResolver(this, getScope().toLocal(), walker);
+			return new LocalResolver(this, getScope().toLocalScope(), walker);
 		}
 
 		@Override

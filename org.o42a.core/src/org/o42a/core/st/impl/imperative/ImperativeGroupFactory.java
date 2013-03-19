@@ -75,7 +75,7 @@ public final class ImperativeGroupFactory extends ImperativeFactory {
 				group.getStatements(),
 				false,
 				name,
-				memberRegistry.get(distributor.getScope().toLocal()),
+				memberRegistry.get(distributor.getScope().toLocalScope()),
 				IMPERATIVE_GROUP_FACTORY);
 	}
 

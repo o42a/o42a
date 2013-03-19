@@ -238,7 +238,7 @@ final class DerivationUses {
 		if (enclosingObject != null) {
 			owner = enclosingObject;
 		} else {
-			owner = sample.getScope().toLocal().getOwner();
+			owner = sample.getScope().toLocalScope().getOwner();
 		}
 
 		owner.value().uses().useBy(

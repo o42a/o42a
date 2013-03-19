@@ -31,7 +31,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -88,7 +88,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public final LocalOp toLocal() {
+	public final LocalScopeOp toLocalScope() {
 		return null;
 	}
 
@@ -253,7 +253,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final CodeDirs depDirs = dirs.begin(getId(), "Fill " + dep);
 
 		dep(depDirs, dep).fill(
-				getBuilder().host().toLocal().getBuilder(),
+				getBuilder().host().toLocalScope().getBuilder(),
 				depDirs);
 
 		depDirs.done();

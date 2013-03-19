@@ -103,7 +103,7 @@ public class TypeDefinitionBuilder
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocalScope() {
 		return null;
 	}
 

@@ -23,13 +23,13 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectLocalIR;
+import org.o42a.core.ir.object.ObjectLocalScopeIR;
 import org.o42a.core.member.local.LocalScope;
 
 
-public final class LocalIR extends ObjectLocalIR {
+public final class LocalScopeIR extends ObjectLocalScopeIR {
 
-	public LocalIR(Generator generator, LocalScope scope) {
+	public LocalScopeIR(Generator generator, LocalScope scope) {
 		super(generator, scope);
 		scope.assertExplicit();
 	}
@@ -49,8 +49,8 @@ public final class LocalIR extends ObjectLocalIR {
 	}
 
 	@Override
-	public LocalOp op(CodeBuilder builder, Code code) {
-		return (LocalOp) super.op(builder, code);
+	public LocalScopeOp op(CodeBuilder builder, Code code) {
+		return (LocalScopeOp) super.op(builder, code);
 	}
 
 	@Override
@@ -59,8 +59,8 @@ public final class LocalIR extends ObjectLocalIR {
 	}
 
 	@Override
-	protected LocalOp createOp(CodeBuilder builder, Code code) {
-		return new LocalOp(builder, getScope());
+	protected LocalScopeOp createOp(CodeBuilder builder, Code code) {
+		return new LocalScopeOp(builder, getScope());
 	}
 
 }

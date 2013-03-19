@@ -138,7 +138,7 @@ final class TestRunner extends ConstructedObject {
 
 	private static Path testPath(Field field, Scope scope) {
 
-		final LocalScope localScope = scope.toLocal();
+		final LocalScope localScope = scope.toLocalScope();
 
 		if (localScope == null) {
 			return field.getKey().toPath();
@@ -192,7 +192,7 @@ final class TestRunner extends ConstructedObject {
 
 			final Scope localScope = getScope();
 
-			assert localScope.toLocal() != null :
+			assert localScope.toLocalScope() != null :
 				this + " should be inside of local scope, but is inside of "
 				+ localScope;
 

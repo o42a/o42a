@@ -28,11 +28,11 @@ import org.o42a.core.ref.*;
 import org.o42a.util.collect.ReadonlyIterator;
 
 
-public class LocalPrediction extends Prediction {
+public class LocalScopePrediction extends Prediction {
 
 	private final Prediction basePrediction;
 
-	public static Prediction predictLocal(
+	public static Prediction predictLocalScope(
 			Prediction basePrediction,
 			LocalScope local) {
 		assert basePrediction.assertEncloses(local);
@@ -43,14 +43,14 @@ public class LocalPrediction extends Prediction {
 		case UNPREDICTED:
 			return unpredicted(local);
 		case PREDICTED:
-			return new LocalPrediction(basePrediction, local);
+			return new LocalScopePrediction(basePrediction, local);
 		}
 
 		throw new IllegalArgumentException(
 				"Unsupported prediction: " + basePrediction.getPredicted());
 	}
 
-	private LocalPrediction(Prediction basePrediction, LocalScope local) {
+	private LocalScopePrediction(Prediction basePrediction, LocalScope local) {
 		super(local);
 		this.basePrediction = basePrediction;
 	}
@@ -82,10 +82,10 @@ public class LocalPrediction extends Prediction {
 		private final Iterator<Pred> bases;
 		private final MemberKey key;
 
-		public Itr(LocalPrediction prediction) {
+		public Itr(LocalScopePrediction prediction) {
 			this.bases = prediction.basePrediction.iterator();
 			this.key =
-					prediction.getScope().toLocal().toMember().getMemberKey();
+					prediction.getScope().toLocalScope().toMember().getMemberKey();
 		}
 
 		@Override
@@ -106,23 +106,23 @@ public class LocalPrediction extends Prediction {
 					base.getScope()
 					.toObject()
 					.member(this.key)
-					.toLocal()
-					.local();
+					.toLocalScope()
+					.localScope();
 
-			return new LocalPred(base, local);
+			return new LocalScopePred(base, local);
 		}
 
 	}
 
-	private static final class LocalPred extends DerivedPred {
+	private static final class LocalScopePred extends DerivedPred {
 
-		LocalPred(Pred base, Scope scope) {
+		LocalScopePred(Pred base, Scope scope) {
 			super(base, scope);
 		}
 
 		@Override
 		protected Scope baseOf(Scope derived) {
-			return derived.toLocal().getOwner().getScope();
+			return derived.toLocalScope().getOwner().getScope();
 		}
 
 	}

@@ -30,7 +30,7 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.MemberPropagatedFromID;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
@@ -112,7 +112,7 @@ public abstract class Member extends Placed {
 
 	public abstract MemberClause toClause();
 
-	public abstract MemberLocal toLocal();
+	public abstract MemberLocalScope toLocalScope();
 
 	public abstract Alias toAlias();
 
@@ -207,7 +207,7 @@ public abstract class Member extends Placed {
 		}
 
 		final Container container = getContainer();
-		final LocalScope local = container.toLocal();
+		final LocalScope local = container.toLocalScope();
 
 		if (local != null) {
 

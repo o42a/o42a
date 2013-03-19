@@ -115,7 +115,7 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocalScope() {
 		return null;
 	}
 

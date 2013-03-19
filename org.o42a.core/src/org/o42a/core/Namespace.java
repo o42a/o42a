@@ -86,8 +86,8 @@ public class Namespace extends AbstractContainer {
 	}
 
 	@Override
-	public final LocalScope toLocal() {
-		return this.enclosing.toLocal();
+	public final LocalScope toLocalScope() {
+		return this.enclosing.toLocalScope();
 	}
 
 	@Override

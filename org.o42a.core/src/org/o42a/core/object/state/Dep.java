@@ -150,7 +150,7 @@ public final class Dep extends Step implements SubID {
 			+ resolver.getStart();
 
 		final LocalScope enclosingLocal =
-				object.getScope().getEnclosingContainer().toLocal();
+				object.getScope().getEnclosingContainer().toLocalScope();
 
 		assert enclosingLocal != null :
 			object + " is inside " + object.getScope().getEnclosingContainer()
@@ -192,7 +192,7 @@ public final class Dep extends Step implements SubID {
 		final Obj object = normalizer.lastPrediction().getScope().toObject();
 		final Scope objectScope = object.getScope();
 		final LocalScope enclosingLocal =
-				objectScope.getEnclosingContainer().toLocal();
+				objectScope.getEnclosingContainer().toLocalScope();
 
 		if (!normalizer.up(
 				enclosingLocal,
@@ -294,7 +294,7 @@ public final class Dep extends Step implements SubID {
 
 		final Container container =
 				this.declaredIn.getScope().getEnclosingContainer();
-		final LocalScope local = container.toLocal();
+		final LocalScope local = container.toLocalScope();
 
 		assert local != null :
 			this.declaredIn + " is not a local object";
