@@ -20,17 +20,17 @@
 package org.o42a.core.member.local.impl;
 
 import org.o42a.core.member.*;
-import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.local.MemberLocalScope;
 
 
-public final class PropagatedMemberLocal extends MemberLocal {
+public final class PropagatedMemberLocalScope extends MemberLocalScope {
 
-	private final MemberLocal propagatedFrom;
+	private final MemberLocalScope propagatedFrom;
 	private PropagatedLocalScope local;
 
-	public PropagatedMemberLocal(
+	public PropagatedMemberLocalScope(
 			MemberOwner owner,
-			MemberLocal propagatedFrom) {
+			MemberLocalScope propagatedFrom) {
 		super(owner, propagatedFrom);
 		this.propagatedFrom = propagatedFrom;
 	}
@@ -51,13 +51,13 @@ public final class PropagatedMemberLocal extends MemberLocal {
 	}
 
 	@Override
-	public final PropagatedLocalScope local() {
+	public final PropagatedLocalScope localScope() {
 		if (this.local != null) {
 			return this.local;
 		}
 		return this.local = new PropagatedLocalScope(
 				this,
-				getPropagatedFrom().toLocal().local());
+				getPropagatedFrom().toLocalScope().localScope());
 	}
 
 }

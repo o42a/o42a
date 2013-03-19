@@ -46,7 +46,7 @@ public abstract class LclOp extends IROp implements HostOp {
 	public abstract Op<?> ptr();
 
 	@Override
-	public final LocalOp toLocal() {
+	public final LocalScopeOp toLocalScope() {
 		return null;
 	}
 

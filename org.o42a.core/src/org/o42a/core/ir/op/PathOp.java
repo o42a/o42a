@@ -25,7 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.value.ValOp;
@@ -87,7 +87,7 @@ public abstract class PathOp implements HostOp {
 	}
 
 	@Override
-	public LocalOp toLocal() {
+	public LocalScopeOp toLocalScope() {
 		return null;
 	}
 
@@ -162,8 +162,8 @@ public abstract class PathOp implements HostOp {
 		}
 
 		@Override
-		public LocalOp toLocal() {
-			return host().toLocal();
+		public LocalScopeOp toLocalScope() {
+			return host().toLocalScope();
 		}
 
 		@Override

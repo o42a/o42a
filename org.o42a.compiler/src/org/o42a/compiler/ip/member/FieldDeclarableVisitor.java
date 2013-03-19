@@ -251,7 +251,7 @@ public final class FieldDeclarableVisitor
 			result = result.override();
 		}
 		if (target.isAbstract()) {
-			if (declaration.getScope().toLocal() != null) {
+			if (declaration.getScope().toLocalScope() != null) {
 				declaration.getLogger().prohibitedLocalAbstract(
 						declarator.getDefinitionAssignment(),
 						declaration.getDisplayName());
@@ -336,7 +336,7 @@ public final class FieldDeclarableVisitor
 		public FieldDeclaration visitScopeRef(
 				ScopeRefNode ref,
 				FieldDeclaration p) {
-			if (p.getScope().toLocal() != null) {
+			if (p.getScope().toLocalScope() != null) {
 				p.getLogger().prohibitedLocalVisibility(
 						ref,
 						p.getDisplayName());

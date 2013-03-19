@@ -29,7 +29,7 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -82,7 +82,7 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 	}
 
 	@Override
-	public final LocalOp toLocal() {
+	public final LocalScopeOp toLocalScope() {
 		return null;
 	}
 

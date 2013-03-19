@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
-import org.o42a.core.ir.local.LocalIR;
+import org.o42a.core.ir.local.LocalScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -46,7 +46,7 @@ public final class ExplicitLocalScope extends LocalScope {
 	private final HashMap<MemberId, Member> members = new HashMap<>();
 	private MemberClause[] implicitClauses;
 	private ImperativeBlock block;
-	private LocalIR ir;
+	private LocalScopeIR ir;
 	private byte hasSubClauses;
 
 	public ExplicitLocalScope(
@@ -54,12 +54,12 @@ public final class ExplicitLocalScope extends LocalScope {
 			Distributor distributor,
 			Obj owner,
 			Name name) {
-		super(new ExplicitMemberLocal(
+		super(new ExplicitMemberLocalScope(
 				location,
 				distributor,
 				owner.toMemberOwner()));
 		this.name = name;
-		((ExplicitMemberLocal) toMember()).init(this);
+		((ExplicitMemberLocalScope) toMember()).init(this);
 	}
 
 	public ExplicitLocalScope(
@@ -67,12 +67,12 @@ public final class ExplicitLocalScope extends LocalScope {
 			Distributor distributor,
 			Obj owner,
 			ExplicitLocalScope reproducedFrom) {
-		super(new ExplicitMemberLocal(
+		super(new ExplicitMemberLocalScope(
 				location,
 				distributor,
 				owner.toMemberOwner()));
 		this.name = reproducedFrom.getName();
-		((ExplicitMemberLocal) toMember()).initReproduced(this, reproducedFrom);
+		((ExplicitMemberLocalScope) toMember()).initReproduced(this, reproducedFrom);
 	}
 
 	@Override
@@ -199,9 +199,9 @@ public final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public LocalIR ir(Generator generator) {
+	public LocalScopeIR ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = new LocalIR(generator, this);
+			this.ir = new LocalScopeIR(generator, this);
 		}
 		return this.ir;
 	}

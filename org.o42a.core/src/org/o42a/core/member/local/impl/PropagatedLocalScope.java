@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.PlaceInfo;
-import org.o42a.core.ir.local.LocalIR;
+import org.o42a.core.ir.local.LocalScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -45,7 +45,7 @@ public final class PropagatedLocalScope extends LocalScope {
 	private LocalScope propagatedFrom;
 
 	public PropagatedLocalScope(
-			PropagatedMemberLocal member,
+			PropagatedMemberLocalScope member,
 			LocalScope propagatedFrom) {
 		super(member);
 		this.propagatedFrom = propagatedFrom;
@@ -143,7 +143,7 @@ public final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public LocalIR ir(Generator generator) {
+	public LocalScopeIR ir(Generator generator) {
 		return explicit().ir(generator);
 	}
 

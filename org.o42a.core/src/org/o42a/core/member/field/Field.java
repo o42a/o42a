@@ -75,7 +75,7 @@ public abstract class Field extends ObjectScope {
 	}
 
 	public final boolean isLocal() {
-		return getEnclosingContainer().toLocal() != null;
+		return getEnclosingContainer().toLocalScope() != null;
 	}
 
 	public final boolean isPropagated() {

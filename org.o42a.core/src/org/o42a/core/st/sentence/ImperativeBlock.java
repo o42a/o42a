@@ -29,7 +29,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopePlace;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalRegistry;
+import org.o42a.core.member.local.LocalScopeRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -65,7 +65,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		if (memberRegistry != null) {
 			registry = memberRegistry.get(scope);
 		} else {
-			registry = new LocalRegistry(scope, enclosing.getMemberRegistry());
+			registry = new LocalScopeRegistry(scope, enclosing.getMemberRegistry());
 		}
 
 		return new ImperativeBlock(
@@ -135,7 +135,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 			ImperativeFactory sentenceFactory) {
 		super(location, distributor, memberRegistry, sentenceFactory);
 		this.parentheses = false;
-		this.name = distributor.getScope().toLocal().getName();
+		this.name = distributor.getScope().toLocalScope().getName();
 		this.topLevel = true;
 		this.trace = getPlace().nestedTrace();
 
@@ -158,7 +158,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	@Override
 	public LocalScope getScope() {
-		return super.getScope().toLocal();
+		return super.getScope().toLocalScope();
 	}
 
 	@Override

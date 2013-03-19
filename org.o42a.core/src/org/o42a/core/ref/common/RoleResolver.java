@@ -182,7 +182,7 @@ public class RoleResolver implements PathWalker {
 		}
 
 		final LocalScope local =
-				object.getScope().getEnclosingScope().toLocal();
+				object.getScope().getEnclosingScope().toLocalScope();
 		final LocalResolver resolver = local.walkingResolver(this);
 		final Resolution resolution = dependency.resolve(resolver);
 

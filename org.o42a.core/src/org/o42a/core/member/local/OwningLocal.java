@@ -35,7 +35,7 @@ class OwningLocal extends MemberOwner {
 	}
 
 	public final LocalScope getLocal() {
-		return getContainer().toLocal();
+		return getContainer().toLocalScope();
 	}
 
 }

@@ -27,7 +27,7 @@ import org.o42a.core.*;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.*;
-import org.o42a.core.member.local.LocalRegistry;
+import org.o42a.core.member.local.LocalScopeRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -143,7 +143,7 @@ public final class DeclaredGroupClause
 				statements.getSentenceFactory();
 		final ImperativeBlock definition;
 
-		if (group.getScope().toLocal() != null) {
+		if (group.getScope().toLocalScope() != null) {
 			definition = sentenceFactory.groupBraces(
 					group,
 					new BlockDistributor(group, this),
@@ -274,7 +274,7 @@ public final class DeclaredGroupClause
 	private static final class ImperativeReproducer extends Reproducer {
 
 		private final Reproducer reproducer;
-		private final LocalRegistry localRegistry;
+		private final LocalScopeRegistry localRegistry;
 
 		ImperativeReproducer(
 				DeclaredGroupClause reproducingClause,
@@ -288,7 +288,7 @@ public final class DeclaredGroupClause
 									reproducingClause.getLocation()),
 							reproducedScope));
 			this.reproducer = reproducer;
-			this.localRegistry = new LocalRegistry(
+			this.localRegistry = new LocalScopeRegistry(
 					reproducedScope,
 					reproducer.getMemberRegistry());
 		}

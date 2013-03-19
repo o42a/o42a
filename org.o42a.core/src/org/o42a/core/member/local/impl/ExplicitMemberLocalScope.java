@@ -26,18 +26,18 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.object.OwningObject;
 import org.o42a.core.source.LocationInfo;
 
 
-final class ExplicitMemberLocal extends MemberLocal {
+final class ExplicitMemberLocalScope extends MemberLocalScope {
 
 	private LocalScope local;
 	private MemberId id;
 	private MemberKey key;
 
-	ExplicitMemberLocal(
+	ExplicitMemberLocalScope(
 			LocationInfo localation,
 			Distributor distributor,
 			OwningObject owner) {
@@ -60,7 +60,7 @@ final class ExplicitMemberLocal extends MemberLocal {
 	}
 
 	@Override
-	public LocalScope local() {
+	public LocalScope localScope() {
 		return this.local;
 	}
 

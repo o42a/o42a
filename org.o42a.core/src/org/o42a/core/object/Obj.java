@@ -214,7 +214,7 @@ public abstract class Obj
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocalScope() {
 		return null;
 	}
 
@@ -573,7 +573,7 @@ public abstract class Obj
 		} else {
 			// Enclosing local path.
 			// Will be replaced with dependency during path rebuild.
-			assert enclosing.toLocal() != null :
+			assert enclosing.toLocalScope() != null :
 				"Unsupported kind of enclosing scope " + enclosing;
 			scopePathStep = new ParentLocalStep(this);
 		}

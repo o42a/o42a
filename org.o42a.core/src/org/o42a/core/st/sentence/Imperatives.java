@@ -40,7 +40,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	@Override
 	public final LocalScope getScope() {
-		return super.getScope().toLocal();
+		return super.getScope().toLocalScope();
 	}
 
 	@Override

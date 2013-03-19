@@ -41,12 +41,12 @@ public final class FieldNesting implements Nesting {
 	@Override
 	public Obj findObjectIn(Scope enclosing) {
 
-		final LocalScope local = this.declaration.getScope().toLocal();
+		final LocalScope local = this.declaration.getScope().toLocalScope();
 
 		if (local == null) {
 			return findInScope(enclosing);
 		}
-		if (enclosing.toLocal() != null) {
+		if (enclosing.toLocalScope() != null) {
 			return findInScope(enclosing);
 		}
 
@@ -56,7 +56,7 @@ public final class FieldNesting implements Nesting {
 		assert enclosingLocal != null :
 			local + " not found in " + enclosing;
 
-		return findInScope(enclosingLocal.toLocal().local());
+		return findInScope(enclosingLocal.toLocalScope().localScope());
 	}
 
 

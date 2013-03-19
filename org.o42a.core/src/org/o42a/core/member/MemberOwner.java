@@ -64,8 +64,8 @@ public abstract class MemberOwner implements PlaceInfo {
 		return getContainer().toObject();
 	}
 
-	public final LocalScope toLocal() {
-		return getContainer().toLocal();
+	public final LocalScope toLocalScope() {
+		return getContainer().toLocalScope();
 	}
 
 	@Override

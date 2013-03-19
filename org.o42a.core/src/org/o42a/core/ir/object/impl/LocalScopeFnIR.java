@@ -34,17 +34,17 @@ import org.o42a.core.st.Command;
 import org.o42a.util.string.ID;
 
 
-public final class LocalFnIR
+public final class LocalScopeFnIR
 		extends ObjectFnIR
 		implements FunctionBuilder<ObjectValFunc> {
 
-	private final LocalIR localIR;
+	private final LocalScopeIR localIR;
 	private final ID id;
 	private Function<ObjectValFunc> function;
 	private final ObjectIRLocals locals;
 	private Command command;
 
-	public LocalFnIR(LocalIR localIR, ObjectIRLocals locals) {
+	public LocalScopeFnIR(LocalScopeIR localIR, ObjectIRLocals locals) {
 		super(localIR.getOwnerIR());
 		this.localIR = localIR;
 		this.locals = locals;

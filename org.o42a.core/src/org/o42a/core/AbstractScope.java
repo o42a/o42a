@@ -98,7 +98,7 @@ public abstract class AbstractScope implements Scope {
 
 		final Container container = scope.getContainer();
 
-		if (container.toLocal() != null) {
+		if (container.toLocalScope() != null) {
 			return STRICT_CONSTRUCTION;
 		}
 
@@ -228,7 +228,7 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocalScope() {
 		return null;
 	}
 

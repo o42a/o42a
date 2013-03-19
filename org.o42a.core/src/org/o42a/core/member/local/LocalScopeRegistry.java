@@ -32,12 +32,12 @@ import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.Name;
 
 
-public class LocalRegistry extends MemberRegistry {
+public class LocalScopeRegistry extends MemberRegistry {
 
 	private final LocalScope scope;
 	private final MemberRegistry ownerRegistry;
 
-	public LocalRegistry(LocalScope scope, MemberRegistry ownerRegistry) {
+	public LocalScopeRegistry(LocalScope scope, MemberRegistry ownerRegistry) {
 		super(noInclusions());
 		this.scope = scope;
 		this.ownerRegistry = ownerRegistry;

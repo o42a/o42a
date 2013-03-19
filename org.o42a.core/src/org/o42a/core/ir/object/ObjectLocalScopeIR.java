@@ -22,17 +22,17 @@ package org.o42a.core.ir.object;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.local.LocalIR;
-import org.o42a.core.ir.object.impl.LocalFnIR;
+import org.o42a.core.ir.local.LocalScopeIR;
+import org.o42a.core.ir.object.impl.LocalScopeFnIR;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.Command;
 
 
-public abstract class ObjectLocalIR extends ScopeIR {
+public abstract class ObjectLocalScopeIR extends ScopeIR {
 
-	private LocalFnIR function;
+	private LocalScopeFnIR function;
 
-	public ObjectLocalIR(Generator generator, LocalScope scope) {
+	public ObjectLocalScopeIR(Generator generator, LocalScope scope) {
 		super(generator, scope);
 	}
 
@@ -44,15 +44,15 @@ public abstract class ObjectLocalIR extends ScopeIR {
 		function().call(dirs, owner, ownerBody, command);
 	}
 
-	private final LocalFnIR function() {
+	private final LocalScopeFnIR function() {
 		if (this.function != null) {
 			return this.function;
 		}
 
-		final LocalIR localIR = (LocalIR) this;
+		final LocalScopeIR localIR = (LocalScopeIR) this;
 		final ObjectValueIR ownerValueIR =
 				localIR.getOwnerIR().getObjectValueIR();
 
-		return this.function = new LocalFnIR(localIR, ownerValueIR.getLocals());
+		return this.function = new LocalScopeFnIR(localIR, ownerValueIR.getLocals());
 	}
 }

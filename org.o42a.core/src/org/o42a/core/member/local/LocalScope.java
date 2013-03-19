@@ -20,20 +20,20 @@
 package org.o42a.core.member.local;
 
 import static org.o42a.core.AbstractContainer.parentContainer;
-import static org.o42a.core.ref.impl.prediction.LocalPrediction.predictLocal;
+import static org.o42a.core.ref.impl.prediction.LocalScopePrediction.predictLocalScope;
 
 import java.util.Set;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
-import org.o42a.core.ir.local.LocalIR;
+import org.o42a.core.ir.local.LocalScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.impl.ExplicitLocalScope;
-import org.o42a.core.member.local.impl.LocalOwnerStep;
+import org.o42a.core.member.local.impl.LocalScopeOwnerStep;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
@@ -61,7 +61,7 @@ public abstract class LocalScope
 		return localScope.explicit();
 	}
 
-	private final MemberLocal member;
+	private final MemberLocalScope member;
 	private final Obj owner;
 	private final OwningLocal owningLocal = new OwningLocal(this);
 	private final Path ownerScopePath;
@@ -71,10 +71,10 @@ public abstract class LocalScope
 	private int anonymousSeq;
 	private boolean allResolved;
 
-	public LocalScope(MemberLocal member) {
+	public LocalScope(MemberLocalScope member) {
 		this.member = member;
 		this.owner = member.getContainer().toObject();
-		this.ownerScopePath = new LocalOwnerStep(this).toPath();
+		this.ownerScopePath = new LocalScopeOwnerStep(this).toPath();
 		this.resolverFactory = new LocalResolver.LocalResolverFactory(this);
 	}
 
@@ -205,7 +205,7 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final MemberLocal toMember() {
+	public final MemberLocalScope toMember() {
 		return this.member;
 	}
 
@@ -215,7 +215,7 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocalScope() {
 		return this;
 	}
 
@@ -266,7 +266,7 @@ public abstract class LocalScope
 
 	@Override
 	public final Prediction predict(Prediction enclosing) {
-		return predictLocal(enclosing, this);
+		return predictLocalScope(enclosing, this);
 	}
 
 	@Override
@@ -275,7 +275,7 @@ public abstract class LocalScope
 			return true;
 		}
 
-		final LocalScope otherLocal = other.toLocal();
+		final LocalScope otherLocal = other.toLocalScope();
 
 		if (otherLocal == null) {
 			return false;
@@ -355,7 +355,7 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public abstract LocalIR ir(Generator generator);
+	public abstract LocalScopeIR ir(Generator generator);
 
 	public final void assertExplicit() {
 		assert isExplicit() :

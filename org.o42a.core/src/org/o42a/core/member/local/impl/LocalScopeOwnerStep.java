@@ -25,7 +25,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
@@ -40,11 +40,11 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class LocalOwnerStep extends Step implements ReversePath {
+public final class LocalScopeOwnerStep extends Step implements ReversePath {
 
 	private final LocalScope local;
 
-	public LocalOwnerStep(LocalScope local) {
+	public LocalScopeOwnerStep(LocalScope local) {
 		this.local = local;
 	}
 
@@ -61,7 +61,9 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 	@Override
 	public Scope revert(Scope target) {
 		return target.toObject().member(
-				this.local.toMember().getMemberKey()).toLocal().local();
+				this.local.toMember().getMemberKey())
+				.toLocalScope()
+				.localScope();
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 	@Override
 	protected Container resolve(StepResolver resolver) {
 
-		final LocalScope local = resolver.getStart().toLocal();
+		final LocalScope local = resolver.getStart().toLocalScope();
 
 		local.assertDerivedFrom(this.local);
 
@@ -103,14 +105,14 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 			LocationInfo location,
 			PathReproducer reproducer) {
 		return reproducedPath(
-				reproducer.getScope().toLocal().getEnclosingScopePath());
+				reproducer.getScope().toLocalScope().getEnclosingScopePath());
 	}
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizer.up(
 				normalizer.lastPrediction().getScope()
-				.toLocal().getOwner().getScope(),
+				.toLocalScope().getOwner().getScope(),
 				toPath(),
 				this);
 	}
@@ -125,9 +127,9 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 		return new Op(start, this);
 	}
 
-	private static final class Op extends StepOp<LocalOwnerStep> {
+	private static final class Op extends StepOp<LocalScopeOwnerStep> {
 
-		Op(PathOp start, LocalOwnerStep step) {
+		Op(PathOp start, LocalScopeOwnerStep step) {
 			super(start, step);
 		}
 
@@ -139,7 +141,7 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 		@Override
 		public HostOp target(CodeDirs dirs) {
 
-			final LocalOp local = start().toLocal();
+			final LocalScopeOp local = start().toLocalScope();
 
 			assert local != null :
 				start() + " is not local";

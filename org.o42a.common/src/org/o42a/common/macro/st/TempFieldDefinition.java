@@ -90,7 +90,7 @@ final class TempFieldDefinition extends FieldDefinition {
 
 	private Ref expansion() {
 
-		final LocalScope local = this.expansion.getScope().toLocal();
+		final LocalScope local = this.expansion.getScope().toLocalScope();
 
 		if (local == null) {
 			return this.expansion;

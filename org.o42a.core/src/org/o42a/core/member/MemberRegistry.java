@@ -29,8 +29,8 @@ import org.o42a.core.member.clause.ClauseFactory;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalFactory;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalScopeFactory;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -54,12 +54,12 @@ public abstract class MemberRegistry {
 
 	private final Inclusions inclusions;
 	private final ClauseFactory clauseFactory;
-	private final LocalFactory localFactory;
+	private final LocalScopeFactory localScopeFactory;
 
 	public MemberRegistry(Inclusions inclusions) {
 		this.inclusions = inclusions;
 		this.clauseFactory = new ClauseFactory(this);
-		this.localFactory = new LocalFactory(this);
+		this.localScopeFactory = new LocalScopeFactory(this);
 	}
 
 	public abstract Obj getOwner();
@@ -84,13 +84,13 @@ public abstract class MemberRegistry {
 			LocationInfo location,
 			Distributor distributor,
 			Name name) {
-		return localFactory().newLocalScope(location, distributor, name);
+		return localScopeFactory().newLocalScope(location, distributor, name);
 	}
 
 	public LocalScope reproduceLocalScope(
 			Reproducer reproducer,
 			LocalScope scope) {
-		return localFactory().reproduceLocalScope(reproducer, scope);
+		return localScopeFactory().reproduceLocalScope(reproducer, scope);
 	}
 
 	public abstract void declareMember(Member member);
@@ -103,8 +103,8 @@ public abstract class MemberRegistry {
 		return this.clauseFactory;
 	}
 
-	protected final LocalFactory localFactory() {
-		return this.localFactory;
+	protected final LocalScopeFactory localScopeFactory() {
+		return this.localScopeFactory;
 	}
 
 	private static class NoDeclarations extends MemberRegistry {

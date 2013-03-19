@@ -41,7 +41,7 @@ public interface Container extends ScopeInfo {
 
 	Clause toClause();
 
-	LocalScope toLocal();
+	LocalScope toLocalScope();
 
 	Namespace toNamespace();
 

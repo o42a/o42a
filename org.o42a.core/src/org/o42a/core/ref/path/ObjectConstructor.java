@@ -30,7 +30,7 @@ import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -191,7 +191,7 @@ public abstract class ObjectConstructor extends Placed {
 		private HostOp exactObject(CodeDirs dirs) {
 
 			final Obj sample = getConstructed();
-			final LocalOp local = host().toLocal();
+			final LocalScopeOp local = host().toLocalScope();
 			final ObjOp target = sample.ir(dirs.getGenerator()).op(
 					getBuilder(),
 					dirs.code());
@@ -208,7 +208,7 @@ public abstract class ObjectConstructor extends Placed {
 
 			final ObjectOp owner;
 			final HostOp ancestorHost;
-			final LocalOp local = host().toLocal();
+			final LocalScopeOp local = host().toLocalScope();
 
 			if (local != null) {
 				owner = null;

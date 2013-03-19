@@ -24,23 +24,25 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.impl.PropagatedMemberLocal;
+import org.o42a.core.member.local.impl.PropagatedMemberLocalScope;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.OwningObject;
 import org.o42a.core.source.LocationInfo;
 
 
-public abstract class MemberLocal extends Member {
+public abstract class MemberLocalScope extends Member {
 
-	public MemberLocal(
+	public MemberLocalScope(
 			LocationInfo location,
 			Distributor distributor,
 			OwningObject owner) {
 		super(location, distributor, owner);
 	}
 
-	protected MemberLocal(MemberOwner owner, MemberLocal propagatedFrom) {
+	protected MemberLocalScope(
+			MemberOwner owner,
+			MemberLocalScope propagatedFrom) {
 		super(
 				owner.getLocation().setDeclaration(
 						propagatedFrom.getLastDefinition()),
@@ -72,7 +74,7 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final MemberLocal toLocal() {
+	public final MemberLocalScope toLocalScope() {
 		return this;
 	}
 
@@ -81,11 +83,11 @@ public abstract class MemberLocal extends Member {
 		return null;
 	}
 
-	public abstract LocalScope local();
+	public abstract LocalScope localScope();
 
 	@Override
 	public final LocalScope substance(UserInfo user) {
-		return local();
+		return localScope();
 	}
 
 	@Override
@@ -102,19 +104,19 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final MemberLocal propagateTo(MemberOwner owner) {
+	public final MemberLocalScope propagateTo(MemberOwner owner) {
 
 		final Obj ownerObject = owner.getContainer().toObject();
 
 		assert ownerObject != null :
 			ownerObject + " is not object";
 
-		return new PropagatedMemberLocal(owner, this);
+		return new PropagatedMemberLocalScope(owner, this);
 	}
 
 	@Override
 	public void resolveAll() {
-		local().resolveAll();
+		localScope().resolveAll();
 	}
 
 }

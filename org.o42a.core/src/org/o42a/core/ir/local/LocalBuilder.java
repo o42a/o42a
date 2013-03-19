@@ -36,19 +36,19 @@ import org.o42a.core.object.Obj;
 
 public class LocalBuilder extends CodeBuilder {
 
-	private final LocalOp host;
+	private final LocalScopeOp host;
 	private final ObjectOp owner;
 
 	public LocalBuilder(
 			Function<? extends ObjectFunc<?>> function,
-			LocalIR scopeIR) {
+			LocalScopeIR scopeIR) {
 		super(scopeIR.getScope().getContext(), function);
 		this.host = scopeIR.op(this, function);
 		this.owner = owner(function, scopeIR);
 	}
 
 	@Override
-	public final LocalOp host() {
+	public final LocalScopeOp host() {
 		return this.host;
 	}
 
@@ -81,7 +81,7 @@ public class LocalBuilder extends CodeBuilder {
 		return new DefaultMainControl(this, code, exit, falseDir, result);
 	}
 
-	private ObjectOp owner(Code code, LocalIR scopeIR) {
+	private ObjectOp owner(Code code, LocalScopeIR scopeIR) {
 
 		final Obj owner = scopeIR.getScope().getOwner();
 		final ObjectIR ownerIR = owner.ir(getGenerator());

@@ -28,11 +28,11 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.util.string.Name;
 
 
-public final class LocalFactory {
+public final class LocalScopeFactory {
 
 	private final MemberRegistry memberRegistry;
 
-	public LocalFactory(MemberRegistry memberRegistry) {
+	public LocalScopeFactory(MemberRegistry memberRegistry) {
 		this.memberRegistry = memberRegistry;
 	}
 

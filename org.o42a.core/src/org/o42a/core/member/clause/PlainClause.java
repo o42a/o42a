@@ -242,7 +242,7 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocalScope() {
 		return null;
 	}
 
