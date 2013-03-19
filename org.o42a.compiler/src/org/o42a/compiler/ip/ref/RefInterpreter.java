@@ -119,7 +119,7 @@ public abstract class RefInterpreter {
 		return scopeRef.getType() == ScopeType.ROOT;
 	}
 
-	public static Name tempName(MemberRefNode ref, CompilerLogger logger) {
+	public static Name localName(MemberRefNode ref, CompilerLogger logger) {
 
 		final ExpressionNode owner = ref.getOwner();
 
@@ -135,7 +135,7 @@ public abstract class RefInterpreter {
 
 		final ScopeRefNode ownerScope = ownerRef.toScopeRef();
 
-		if (ownerScope == null || ownerScope.getType() != ScopeType.TEMP) {
+		if (ownerScope == null || ownerScope.getType() != ScopeType.LOCAL) {
 			return null;
 		}
 		if (logger != null && ref.getMembership() != null) {
@@ -348,7 +348,7 @@ public abstract class RefInterpreter {
 		p.getLogger().error(
 				"prohibited_object_intrinsic",
 				ref,
-				"$object$ intrinsic is allowed only within clauses");
+				"$Object reference is allowed only within clauses");
 		return errorRef(location(p, ref), p);
 	}
 

@@ -348,7 +348,7 @@ public final class FieldDeclarableVisitor
 			case PARENT:
 				return p.setVisibility(Visibility.PROTECTED);
 			case ROOT:
-			case TEMP:
+			case LOCAL:
 			case MACROS:
 			case IMPLIED:
 			}

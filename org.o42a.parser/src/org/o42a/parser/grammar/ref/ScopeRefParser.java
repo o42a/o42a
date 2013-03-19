@@ -61,7 +61,7 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 				context.acceptAll();
 				break;
 			}
-			type = ScopeType.TEMP;
+			type = ScopeType.LOCAL;
 			context.acceptButLast();
 			break;
 		case ':':
