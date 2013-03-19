@@ -24,7 +24,7 @@ public class ScopeFieldTest extends GrammarTestCase {
 
 		assertThat(
 				to(ScopeRefNode.class, ref.getOwner()).getType(),
-				is(ScopeType.TEMP));
+				is(ScopeType.LOCAL));
 		assertThat(canonicalName(ref.getName()), is("foo"));
 	}
 

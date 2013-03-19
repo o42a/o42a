@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.isRootRef;
-import static org.o42a.compiler.ip.ref.RefInterpreter.tempName;
+import static org.o42a.compiler.ip.ref.RefInterpreter.localName;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.Ref.falseRef;
@@ -87,7 +87,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 		case ROOT:
 			return nonLinkOwner(
 					ROOT_PATH.bind(location, p.getScope()).target(p));
-		case TEMP:
+		case LOCAL:
 		}
 
 		p.getContext().getLogger().unresolvedScope(ref, type.getSign());
@@ -110,9 +110,9 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 	@Override
 	public Owner visitMemberRef(MemberRefNode ref, Distributor p) {
 
-		final Name tempName = tempName(ref, p.getLogger());
+		final Name localName = localName(ref, p.getLogger());
 
-		if (OBJECT_NAME.is(tempName)) {
+		if (OBJECT_NAME.is(localName)) {
 			return owner(ip().intrinsicObject(ref, p));
 		}
 
