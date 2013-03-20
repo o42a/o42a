@@ -31,6 +31,7 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -106,6 +107,14 @@ final class AccessorResolver implements PathWalker {
 	public boolean dereference(Obj linkObject, Step step, Link link) {
 		this.owner = false;
 		updateDeclaration(linkObject, link.getTarget());
+		this.enclosed = false;
+		this.inheritant = false;
+		return true;
+	}
+
+	@Override
+	public boolean local(Scope scope, Local local) {
+		this.owner = false;
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;

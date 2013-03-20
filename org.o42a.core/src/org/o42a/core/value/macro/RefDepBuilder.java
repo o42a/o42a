@@ -32,6 +32,7 @@ import org.o42a.core.object.meta.ParentMetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.ArrayUtil;
 
@@ -98,6 +99,11 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
+		return invalidRef();
+	}
+
+	@Override
+	public boolean local(Scope scope, Local local) {
 		return invalidRef();
 	}
 

@@ -30,13 +30,13 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.*;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -152,20 +152,22 @@ final class ClauseReuser implements PathWalker {
 	}
 
 	@Override
+	public boolean local(Scope scope, Local local) {
+		return invalidClauseReused();
+	}
+
+	@Override
 	public boolean dep(Obj object, Step step, Ref dependency) {
 
-		final LocalScope enclosing =
-				object.getScope().getEnclosingScope().toLocalScope();
-
-		assert enclosing != null :
-			"Enclosing scope is not local: " + enclosing;
+		final Container enclosing =
+				object.getScope().getEnclosingContainer();
 
 		if (!up(object, step, enclosing, null)) {
 			return false;
 		}
 
 		final PathResolution resolution = dependency.getPath().walk(
-				pathResolver(enclosing, dummyRefUser()),
+				pathResolver(enclosing.getScope(), dummyRefUser()),
 				this);
 
 		return resolution.isResolved();

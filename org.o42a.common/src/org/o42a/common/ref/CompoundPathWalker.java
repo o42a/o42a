@@ -28,6 +28,7 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -128,6 +129,18 @@ public class CompoundPathWalker implements PathWalker {
 
 		for (PathWalker walker : getWalkers()) {
 			proceed = walker.dereference(linkObject, step, link) & proceed;
+		}
+
+		return proceed;
+	}
+
+	@Override
+	public boolean local(Scope scope, Local local) {
+
+		boolean proceed = true;
+
+		for (PathWalker walker : getWalkers()) {
+			proceed = walker.local(scope, local) & proceed;
 		}
 
 		return proceed;

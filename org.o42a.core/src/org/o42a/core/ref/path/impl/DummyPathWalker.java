@@ -28,6 +28,7 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -74,6 +75,11 @@ public final class DummyPathWalker implements PathWalker {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
+		return true;
+	}
+
+	@Override
+	public boolean local(Scope scope, Local local) {
 		return true;
 	}
 

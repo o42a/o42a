@@ -35,6 +35,7 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -149,6 +150,11 @@ public class OutcomeBuilder implements PathWalker {
 		}
 		this.outcome = this.outcome.dereference();
 		return true;
+	}
+
+	@Override
+	public boolean local(Scope scope, Local local) {
+		return invalidOutcome();
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -124,6 +125,18 @@ public class PathRecorder extends PathTracker {
 			@Override
 			public boolean replay(PathWalker walker) {
 				return walker.dereference(linkObject, step, link);
+			}
+		});
+	}
+
+	@Override
+	public boolean local(
+			final Scope scope,
+			final Local local) {
+		return record(new Record() {
+			@Override
+			public boolean replay(PathWalker walker) {
+				return walker.local(scope, local);
 			}
 		});
 	}

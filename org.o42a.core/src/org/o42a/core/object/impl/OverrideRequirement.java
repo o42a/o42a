@@ -23,7 +23,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -33,6 +32,7 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -145,22 +145,28 @@ public class OverrideRequirement implements PathWalker {
 	}
 
 	@Override
+	public boolean local(Scope scope, Local local) {
+		return local.getRef().resolve(scope.walkingResolver(this)).isResolved();
+	}
+
+	@Override
 	public boolean dep(Obj object, Step step, Ref dependency) {
 		if (this.top != null) {
 			return requireAbstractsOverride();
 		}
 
-		final LocalScope local =
-				object.getScope().getEnclosingScope().toLocalScope();
+		final Scope enclosingScope = object.getScope().getEnclosingScope();
+		final Container enclosing = enclosingScope.getContainer();
 
-		if (!setTop(local)) {
+		if (!setTop(enclosing)) {
 			return false;
 		}
 		if (dependency.isStatic()) {
 			return requireAbstractsOverride();
 		}
 
-		return dependency.resolve(local.walkingResolver(this)).isResolved();
+		return dependency.resolve(enclosingScope.walkingResolver(this))
+				.isResolved();
 	}
 
 	@Override

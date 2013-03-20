@@ -26,6 +26,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -65,6 +66,11 @@ public class SimplePathTracker extends PathTracker {
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
 		return walk(walker().dereference(linkObject, step, link));
+	}
+
+	@Override
+	public boolean local(Scope scope, Local local) {
+		return walk(walker().local(scope, local));
 	}
 
 	@Override
