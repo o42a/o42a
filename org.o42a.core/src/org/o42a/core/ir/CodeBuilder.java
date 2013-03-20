@@ -121,7 +121,7 @@ public abstract class CodeBuilder {
 				sample);
 	}
 
-	public ObjectOp newObject(
+	public final ObjectOp newObject(
 			CodeDirs dirs,
 			ObjHolder holder,
 			ObjectOp owner,
@@ -130,13 +130,16 @@ public abstract class CodeBuilder {
 
 		final Code alloc = dirs.code().getAllocator().allocation();
 		final CtrOp.Op ctr = alloc.allocate(CTR_ID, CTR_TYPE);
-
-		return ctr.op(this).newObject(
+		final ObjectOp newObject = ctr.op(this).newObject(
 				dirs,
 				holder,
 				owner,
 				ancestor,
 				sample.ir(getGenerator()).op(this, dirs.code()));
+
+		newObject.fillDeps(dirs, sample);
+
+		return newObject;
 	}
 
 	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
