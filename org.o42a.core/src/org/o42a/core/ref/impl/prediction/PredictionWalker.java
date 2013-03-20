@@ -31,6 +31,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.impl.ParentLocalStep;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.sentence.Local;
@@ -149,14 +150,14 @@ public class PredictionWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Dep dep) {
 
 		final Scope enclosingScope = object.getScope().getEnclosingScope();
 
 		if (getPrediction().isExact()) {
 
 			final Resolution resolution =
-					dependency.resolve(enclosingScope.resolver());
+					dep.getRef().resolve(enclosingScope.resolver());
 
 			if (resolution.isError()) {
 				return set(unpredicted(resolution.getScope()));
@@ -179,7 +180,7 @@ public class PredictionWalker implements PathWalker {
 						enclosingScope.getScope(),
 						enclosingPath,
 						ownerStep),
-				dependency));
+				dep.getRef()));
 	}
 
 	@Override

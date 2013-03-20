@@ -30,6 +30,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
@@ -158,7 +159,7 @@ public class OutcomeBuilder implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Dep dep) {
 		return invalidOutcome();
 	}
 

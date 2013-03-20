@@ -23,7 +23,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.sentence.Local;
@@ -74,8 +74,8 @@ public class SimplePathTracker extends PathTracker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
-		return walk(walker().dep(object, step, dependency));
+	public boolean dep(Obj object, Dep dep) {
+		return walk(walker().dep(object, dep));
 	}
 
 	@Override
