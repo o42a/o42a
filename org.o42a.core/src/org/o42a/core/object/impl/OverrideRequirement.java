@@ -25,6 +25,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.ReversePath;
@@ -150,7 +151,7 @@ public class OverrideRequirement implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Dep dep) {
 		if (this.top != null) {
 			return requireAbstractsOverride();
 		}
@@ -161,6 +162,9 @@ public class OverrideRequirement implements PathWalker {
 		if (!setTop(enclosing)) {
 			return false;
 		}
+
+		final Ref dependency = dep.getRef();
+
 		if (dependency.isStatic()) {
 			return requireAbstractsOverride();
 		}

@@ -25,10 +25,9 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
@@ -181,18 +180,17 @@ public class RoleResolver implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Dep dep) {
 		if (!mayProceedInsidePrototype()) {
-			getExpectedRole().reportMisuseBy(dependency, object);
+			getExpectedRole().reportMisuseBy(dep.getRef(), object);
 			return false;
 		}
 
-		final LocalScope local =
-				object.getScope().getEnclosingScope().toLocalScope();
-		final LocalResolver resolver = local.walkingResolver(this);
-		final Resolution resolution = dependency.resolve(resolver);
+		final Scope enclosingScope = object.getScope().getEnclosingScope();
 
-		return resolution.isResolved();
+		return dep.getRef()
+				.resolve(enclosingScope.walkingResolver(this))
+				.isResolved();
 	}
 
 	@Override

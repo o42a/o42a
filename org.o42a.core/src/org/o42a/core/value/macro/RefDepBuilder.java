@@ -29,6 +29,7 @@ import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.ParentMetaDep;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
@@ -108,7 +109,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Dep dep) {
 		return invalidRef();
 	}
 

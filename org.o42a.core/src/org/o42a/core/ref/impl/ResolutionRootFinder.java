@@ -25,7 +25,9 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.*;
+import org.o42a.core.object.state.Dep;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
@@ -131,16 +133,15 @@ public final class ResolutionRootFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Dep dep) {
 
 		final Scope enclosingScope = object.getScope().getEnclosingScope();
 
 		this.root = enclosingScope.getContainer();
 
-		final Resolver resolver = enclosingScope.walkingResolver(this);
-		final Resolution resolution = dependency.resolve(resolver);
-
-		return resolution.isResolved();
+		return dep.getRef()
+				.resolve(enclosingScope.walkingResolver(this))
+				.isResolved();
 	}
 
 	@Override

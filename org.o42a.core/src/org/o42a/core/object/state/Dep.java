@@ -168,7 +168,7 @@ public final class Dep extends Step implements SubID {
 
 		final Obj resolution = getRef().resolve(enclosingResolver).toObject();
 
-		resolver.getWalker().dep(object, this, getRef());
+		resolver.getWalker().dep(object, this);
 
 		return resolution.toObject();
 	}
