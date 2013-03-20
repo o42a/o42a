@@ -24,14 +24,13 @@ import static org.o42a.analysis.use.User.dummyUser;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -127,17 +126,21 @@ public final class ResolutionRootFinder implements PathWalker {
 	}
 
 	@Override
+	public boolean local(Scope scope, Local local) {
+		return local.getRef().resolve(scope.walkingResolver(this)).isResolved();
+	}
+
+	@Override
 	public boolean dep(Obj object, Step step, Ref dependency) {
 
-		final LocalScope local =
-				object.getScope().getEnclosingScope().toLocalScope();
+		final Scope enclosingScope = object.getScope().getEnclosingScope();
 
-		this.root = local;
+		this.root = enclosingScope.getContainer();
 
-		final LocalResolver resolver = local.walkingResolver(this);
+		final Resolver resolver = enclosingScope.walkingResolver(this);
 		final Resolution resolution = dependency.resolve(resolver);
 
-		return !resolution.isNone();
+		return resolution.isResolved();
 	}
 
 	@Override
@@ -151,10 +154,7 @@ public final class ResolutionRootFinder implements PathWalker {
 			return false;
 		}
 
-		final Resolution ancestorResolution =
-				ancestor.getRef().resolve(ancestorResolver);
-
-		return !ancestorResolution.isNone();
+		return ancestor.getRef().resolve(ancestorResolver).isResolved();
 	}
 
 	@Override

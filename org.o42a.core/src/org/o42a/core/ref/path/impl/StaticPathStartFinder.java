@@ -31,6 +31,7 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -103,6 +104,11 @@ public final class StaticPathStartFinder implements PathWalker {
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
 		return abort();// Dereferenced object can not be used as static start.
+	}
+
+	@Override
+	public boolean local(Scope scope, Local local) {
+		return abort();// Local can not be statically referenced.
 	}
 
 	@Override

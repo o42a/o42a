@@ -143,11 +143,6 @@ public final class Dep extends Step implements SubID {
 			+ resolver.getStart();
 
 		final Scope enclosingScope = object.getScope().getEnclosingScope();
-
-		assert enclosingScope != null :
-			object + " is inside " + object.getScope().getEnclosingContainer()
-			+ ", which is not a local scope";
-
 		final Resolver enclosingResolver = enclosingScope.resolver();
 
 		if (resolver.isFullResolution()) {

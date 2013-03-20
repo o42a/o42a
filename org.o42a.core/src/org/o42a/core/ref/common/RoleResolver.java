@@ -32,6 +32,7 @@ import org.o42a.core.object.Role;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -175,6 +176,11 @@ public class RoleResolver implements PathWalker {
 	}
 
 	@Override
+	public boolean local(Scope scope, Local local) {
+		return local.getRef().resolve(scope.walkingResolver(this)).isResolved();
+	}
+
+	@Override
 	public boolean dep(Obj object, Step step, Ref dependency) {
 		if (!mayProceedInsidePrototype()) {
 			getExpectedRole().reportMisuseBy(dependency, object);
@@ -186,7 +192,7 @@ public class RoleResolver implements PathWalker {
 		final LocalResolver resolver = local.walkingResolver(this);
 		final Resolution resolution = dependency.resolve(resolver);
 
-		return resolution.isResolved() && !resolution.isError();
+		return resolution.isResolved();
 	}
 
 	@Override

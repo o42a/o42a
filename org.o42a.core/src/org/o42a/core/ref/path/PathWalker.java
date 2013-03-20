@@ -26,6 +26,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.impl.DummyPathWalker;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -50,6 +51,8 @@ public interface PathWalker {
 	boolean member(Container container, Step step, Member member);
 
 	boolean dereference(Obj linkObject, Step step, Link link);
+
+	boolean local(Scope scope, Local local);
 
 	boolean dep(Obj object, Step step, Ref dependency);
 
