@@ -56,7 +56,7 @@ public final class Local extends Step {
 		return this.name;
 	}
 
-	public final Ref getRef() {
+	public final Ref ref() {
 		return this.ref;
 	}
 
@@ -88,17 +88,17 @@ public final class Local extends Step {
 
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
-		return getRef().toFieldDefinition().prefixWith(refPrefix(ref));
+		return ref().toFieldDefinition().prefixWith(refPrefix(ref));
 	}
 
 	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
-		return getRef().ancestor(location).prefixWith(refPrefix(ref));
+		return ref().ancestor(location).prefixWith(refPrefix(ref));
 	}
 
 	@Override
 	protected TypeRef iface(Ref ref) {
-		return getRef().getInterface().prefixWith(refPrefix(ref));
+		return ref().getInterface().prefixWith(refPrefix(ref));
 	}
 
 	@Override
@@ -120,11 +120,11 @@ public final class Local extends Step {
 				usage = CONTAINER_REF_USAGE;
 			}
 
-			getRef().resolveAll(
+			ref().resolveAll(
 					enclosingResolver.fullResolver(resolver.refUser(), usage));
 		}
 
-		final Obj resolution = getRef().resolve(enclosingResolver).toObject();
+		final Obj resolution = ref().resolve(enclosingResolver).toObject();
 
 		resolver.getWalker().local(start, this);
 
@@ -144,12 +144,12 @@ public final class Local extends Step {
 
 	@Override
 	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
-		return getRef().getPath().getPath();
+		return ref().getPath().getPath();
 	}
 
 	@Override
 	protected void normalizeStep(Analyzer analyzer) {
-		getRef().normalize(analyzer);
+		ref().normalize(analyzer);
 	}
 
 	@Override

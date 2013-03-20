@@ -67,7 +67,7 @@ public final class Dep extends Step implements SubID {
 		return this.declaredIn;
 	}
 
-	public final Ref getRef() {
+	public final Ref ref() {
 		return this.ref;
 	}
 
@@ -120,17 +120,17 @@ public final class Dep extends Step implements SubID {
 
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
-		return getRef().toFieldDefinition().prefixWith(refPrefix(ref));
+		return ref().toFieldDefinition().prefixWith(refPrefix(ref));
 	}
 
 	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
-		return getRef().ancestor(location).prefixWith(refPrefix(ref));
+		return ref().ancestor(location).prefixWith(refPrefix(ref));
 	}
 
 	@Override
 	protected TypeRef iface(Ref ref) {
-		return getRef().getInterface().prefixWith(refPrefix(ref));
+		return ref().getInterface().prefixWith(refPrefix(ref));
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public final class Dep extends Step implements SubID {
 				usage = CONTAINER_REF_USAGE;
 			}
 
-			getRef().resolveAll(
+			ref().resolveAll(
 					enclosingResolver.fullResolver(resolver.refUser(), usage));
 
 			final ObjectDeps deps = getDeclaredIn().deps();
@@ -166,7 +166,7 @@ public final class Dep extends Step implements SubID {
 			deps.depResolved(this);
 		}
 
-		final Obj resolution = getRef().resolve(enclosingResolver).toObject();
+		final Obj resolution = ref().resolve(enclosingResolver).toObject();
 
 		resolver.getWalker().dep(object, this);
 
@@ -194,7 +194,7 @@ public final class Dep extends Step implements SubID {
 
 		normalizer.skip(normalizer.lastPrediction(), new DepDisabler());
 		normalizer.append(
-				getRef().getPath(),
+				ref().getPath(),
 				uses().nestedNormalizer(normalizer));
 	}
 
@@ -206,12 +206,12 @@ public final class Dep extends Step implements SubID {
 
 	@Override
 	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
-		return getRef().getPath().getPath();
+		return ref().getPath().getPath();
 	}
 
 	@Override
 	protected void normalizeStep(Analyzer analyzer) {
-		getRef().normalize(analyzer);
+		ref().normalize(analyzer);
 	}
 
 	@Override
@@ -219,7 +219,7 @@ public final class Dep extends Step implements SubID {
 			LocationInfo location,
 			PathReproducer reproducer) {
 
-		final Ref ref = getRef().reproduce(reproducer.getReproducer());
+		final Ref ref = ref().reproduce(reproducer.getReproducer());
 
 		if (ref == null) {
 			return null;
@@ -281,7 +281,7 @@ public final class Dep extends Step implements SubID {
 		final Scope enclosingScope =
 				this.declaredIn.getScope().getEnclosingScope();
 		final Obj target =
-				getRef().resolve(enclosingScope.resolver()).toObject();
+				ref().resolve(enclosingScope.resolver()).toObject();
 
 		if (!target.getConstructionMode().isRuntime()
 				|| target.getConstructionMode().isPredefined()) {
