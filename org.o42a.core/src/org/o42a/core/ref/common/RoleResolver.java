@@ -176,19 +176,19 @@ public class RoleResolver implements PathWalker {
 
 	@Override
 	public boolean local(Scope scope, Local local) {
-		return local.getRef().resolve(scope.walkingResolver(this)).isResolved();
+		return local.ref().resolve(scope.walkingResolver(this)).isResolved();
 	}
 
 	@Override
 	public boolean dep(Obj object, Dep dep) {
 		if (!mayProceedInsidePrototype()) {
-			getExpectedRole().reportMisuseBy(dep.getRef(), object);
+			getExpectedRole().reportMisuseBy(dep.ref(), object);
 			return false;
 		}
 
 		final Scope enclosingScope = object.getScope().getEnclosingScope();
 
-		return dep.getRef()
+		return dep.ref()
 				.resolve(enclosingScope.walkingResolver(this))
 				.isResolved();
 	}

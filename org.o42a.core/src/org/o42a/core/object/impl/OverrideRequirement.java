@@ -147,7 +147,7 @@ public class OverrideRequirement implements PathWalker {
 
 	@Override
 	public boolean local(Scope scope, Local local) {
-		return local.getRef().resolve(scope.walkingResolver(this)).isResolved();
+		return local.ref().resolve(scope.walkingResolver(this)).isResolved();
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public class OverrideRequirement implements PathWalker {
 			return false;
 		}
 
-		final Ref dependency = dep.getRef();
+		final Ref dependency = dep.ref();
 
 		if (dependency.isStatic()) {
 			return requireAbstractsOverride();

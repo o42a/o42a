@@ -129,7 +129,7 @@ public final class ResolutionRootFinder implements PathWalker {
 
 	@Override
 	public boolean local(Scope scope, Local local) {
-		return local.getRef().resolve(scope.walkingResolver(this)).isResolved();
+		return local.ref().resolve(scope.walkingResolver(this)).isResolved();
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public final class ResolutionRootFinder implements PathWalker {
 
 		this.root = enclosingScope.getContainer();
 
-		return dep.getRef()
+		return dep.ref()
 				.resolve(enclosingScope.walkingResolver(this))
 				.isResolved();
 	}

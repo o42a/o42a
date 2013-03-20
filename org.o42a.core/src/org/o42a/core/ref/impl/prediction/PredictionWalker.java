@@ -146,7 +146,7 @@ public class PredictionWalker implements PathWalker {
 
 	@Override
 	public boolean local(Scope scope, Local local) {
-		return set(predictRef(getPrediction(), local.getRef()));
+		return set(predictRef(getPrediction(), local.ref()));
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class PredictionWalker implements PathWalker {
 		if (getPrediction().isExact()) {
 
 			final Resolution resolution =
-					dep.getRef().resolve(enclosingScope.resolver());
+					dep.ref().resolve(enclosingScope.resolver());
 
 			if (resolution.isError()) {
 				return set(unpredicted(resolution.getScope()));
@@ -180,7 +180,7 @@ public class PredictionWalker implements PathWalker {
 						enclosingScope.getScope(),
 						enclosingPath,
 						ownerStep),
-				dep.getRef()));
+				dep.ref()));
 	}
 
 	@Override

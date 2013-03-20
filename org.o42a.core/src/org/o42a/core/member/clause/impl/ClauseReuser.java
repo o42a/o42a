@@ -154,7 +154,7 @@ final class ClauseReuser implements PathWalker {
 
 	@Override
 	public boolean local(Scope scope, Local local) {
-		return local.getRef().resolve(scope.walkingResolver(this)).isResolved();
+		return local.ref().resolve(scope.walkingResolver(this)).isResolved();
 	}
 
 	@Override
@@ -167,7 +167,7 @@ final class ClauseReuser implements PathWalker {
 			return false;
 		}
 
-		return dep.getRef()
+		return dep.ref()
 				.resolve(enclosing.getScope().walkingResolver(this))
 				.isResolved();
 	}
