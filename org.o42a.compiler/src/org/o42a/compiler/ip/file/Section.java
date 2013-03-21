@@ -236,7 +236,7 @@ final class Section implements LogInfo {
 		final Declaratives statements =
 				definition.propose(location).alternative(location);
 		final Namespace namespace =
-				new Namespace(location, statements.getContainer());
+				new Namespace(location, statements.nextContainer());
 		final DeclarativeBlock enclosingBlock =
 				statements.parentheses(location, namespace);
 

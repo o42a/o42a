@@ -22,8 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 
 import org.o42a.analysis.Analyzer;
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -33,21 +32,24 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.Name;
 
 
-public final class Local extends Step {
+public final class Local extends Step implements PlaceInfo {
 
+	private final Location location;
 	private final Name name;
 	private final Ref ref;
 	private ObjectStepUses uses;
 
-	Local(Name name, Ref ref) {
+	Local(LocationInfo location, Name name, Ref ref) {
 		assert name != null :
 			"Local name not specified";
 		assert ref != null :
 			"Local reference not specified";
+		this.location = location.getLocation();
 		this.name = name;
 		this.ref = ref;
 	}
@@ -66,8 +68,58 @@ public final class Local extends Step {
 	}
 
 	@Override
-	public RefUsage getObjectUsage() {
+	public final RefUsage getObjectUsage() {
 		return RefUsage.CONTAINER_REF_USAGE;
+	}
+
+	@Override
+	public final Location getLocation() {
+		return this.location;
+	}
+
+	@Override
+	public final Scope getScope() {
+		return ref().getScope();
+	}
+
+	@Override
+	public final ScopePlace getPlace() {
+		return ref().getPlace();
+	}
+
+	@Override
+	public final Container getContainer() {
+		return ref().getContainer();
+	}
+
+	@Override
+	public final Distributor distribute() {
+		return Placed.distribute(this);
+	}
+
+	@Override
+	public final Distributor distributeIn(Container container) {
+		return Placed.distributeIn(this, container);
+	}
+
+	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

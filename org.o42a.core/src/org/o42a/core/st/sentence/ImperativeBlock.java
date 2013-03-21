@@ -29,8 +29,8 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopePlace;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalScopeRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalScopeRegistry;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -103,7 +103,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	private final SentencesEnv sentencesEnv = new SentencesEnv();
 	private final boolean topLevel;
 	private final Trace trace;
-	private Locals locals;
+	private NamedBlocks namedBlocks;
 	private ImplicationEnv initialEnv;
 	private boolean loop;
 
@@ -256,12 +256,12 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	}
 
 	@Override
-	Locals getLocals() {
-		if (this.locals != null) {
-			return this.locals;
+	NamedBlocks getNamedBlocks() {
+		if (this.namedBlocks != null) {
+			return this.namedBlocks;
 		}
-		return this.locals =
-				getEnclosing().getSentence().getBlock().getLocals();
+		return this.namedBlocks =
+				getEnclosing().getSentence().getBlock().getNamedBlocks();
 	}
 
 	final CommandEnv sentencesEnv() {

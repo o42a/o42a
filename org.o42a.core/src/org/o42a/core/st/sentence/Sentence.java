@@ -222,6 +222,7 @@ public abstract class Sentence<
 	}
 
 	private S createAlt(LocationInfo location) {
+		getBlock().ensureNoLocals();
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -235,11 +236,13 @@ public abstract class Sentence<
 
 		private final Location location;
 		private final Block<?, ?> block;
+		private final Container container;
 		private final ScopePlace place;
 
 		SentenceDistributor(LocationInfo location, Block<?, ?> block) {
 			this.location = location.getLocation();
 			this.block = block;
+			this.container = block.nextContainer();
 
 			final ImperativeBlock imperativeBlock =
 					this.block.toImperativeBlock();
@@ -265,7 +268,7 @@ public abstract class Sentence<
 
 		@Override
 		public Container getContainer() {
-			return this.block.getContainer();
+			return this.container;
 		}
 
 		@Override

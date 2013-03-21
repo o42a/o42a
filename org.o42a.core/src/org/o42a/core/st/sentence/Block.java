@@ -22,13 +22,16 @@ package org.o42a.core.st.sentence;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.impl.imperative.Locals;
+import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.core.st.impl.local.LocalInsides;
+import org.o42a.core.st.impl.local.Locals;
 import org.o42a.util.Place.Trace;
 
 
@@ -41,6 +44,8 @@ public abstract class Block<
 	private final ArrayList<Sentence<S, L>> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
+	private Locals locals;
+	private Container nextContainer;
 	private boolean instructionsExecuted;
 
 	protected Block(
@@ -52,6 +57,7 @@ public abstract class Block<
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
+		this.nextContainer = getContainer();
 	}
 
 	Block(
@@ -64,6 +70,7 @@ public abstract class Block<
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
+		this.nextContainer = getContainer();
 	}
 
 	public Statements<?, ?> getEnclosing() {
@@ -83,7 +90,7 @@ public abstract class Block<
 		return enclosing != null && enclosing.isInsideIssue();
 	}
 
-	public MemberRegistry getMemberRegistry() {
+	public final MemberRegistry getMemberRegistry() {
 		return this.memberRegistry;
 	}
 
@@ -208,7 +215,36 @@ public abstract class Block<
 
 	abstract Trace getTrace();
 
-	abstract Locals getLocals();
+	final Locals getLocals() {
+		if (this.locals != null) {
+			return this.locals;
+		}
+
+		final Statements<?, ?> enclosing = getEnclosing();
+
+		if (enclosing == null) {
+			return this.locals = new Locals(null);
+		}
+
+		return this.locals =
+				new Locals(enclosing.getSentence().getBlock().getLocals());
+	}
+
+	final Container nextContainer() {
+		return this.nextContainer;
+	}
+
+	final void localAdded(Local local) {
+		this.nextContainer = new LocalInsides(local);
+	}
+
+	final void ensureNoLocals() {
+		if (this.locals != null) {
+			this.locals.ensureNoLocals();
+		}
+	}
+
+	abstract NamedBlocks getNamedBlocks();
 
 	private Sentence<S, L> addSentence(Sentence<S, L> sentence) {
 		if (sentence == null) {

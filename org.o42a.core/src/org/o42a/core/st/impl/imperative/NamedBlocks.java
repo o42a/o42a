@@ -21,17 +21,18 @@ package org.o42a.core.st.impl.imperative;
 
 import java.util.HashMap;
 
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.string.Name;
 
 
-public class Locals {
+public class NamedBlocks {
 
 	private final DeclarativeBlock block;
-	private HashMap<Name, LocationInfo> blocks;
+	private HashMap<Name, Location> blocks;
 
-	public Locals(DeclarativeBlock block) {
+	public NamedBlocks(DeclarativeBlock block) {
 		this.block = block;
 	}
 
@@ -44,7 +45,8 @@ public class Locals {
 			this.blocks = new HashMap<>();
 		}
 
-		final LocationInfo previousLocation = this.blocks.put(name, location);
+		final Location previousLocation =
+				this.blocks.put(name, location.getLocation());
 
 		if (previousLocation == null) {
 			return true;
