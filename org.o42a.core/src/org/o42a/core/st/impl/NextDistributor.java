@@ -39,7 +39,8 @@ public final class NextDistributor extends Distributor {
 			Place place) {
 		this.statements = statements;
 		this.container = container;
-		this.place = localPlace(this.statements.getScope().toLocalScope(), place);
+		this.place =
+				localPlace(this.statements.getScope().toLocalScope(), place);
 	}
 
 	@Override

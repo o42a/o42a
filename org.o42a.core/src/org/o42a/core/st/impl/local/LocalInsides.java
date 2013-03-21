@@ -88,6 +88,13 @@ public class LocalInsides extends AbstractContainer {
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
+
+		final Path local = local(accessor, memberId, declaredIn);
+
+		if (local != null) {
+			return local;
+		}
+
 		return getEnclosingContainer()
 				.member(user, accessor, memberId, declaredIn);
 	}
@@ -99,15 +106,10 @@ public class LocalInsides extends AbstractContainer {
 			MemberId memberId,
 			Obj declaredIn) {
 
-		final Path foundInEnclosing =
-				getEnclosingContainer()
-				.member(user, accessor, memberId, declaredIn);
+		final Path local = local(accessor, memberId, declaredIn);
 
-		if (foundInEnclosing != null) {
-			return foundInEnclosing;
-		}
-		if (accessibleBy(accessor) && matchLocal(memberId, declaredIn)) {
-			return getLocal().toPath();
+		if (local != null) {
+			return local;
 		}
 
 		return getEnclosingContainer()
@@ -120,6 +122,13 @@ public class LocalInsides extends AbstractContainer {
 			return super.toString();
 		}
 		return this.local.toString();
+	}
+
+	private Path local(Accessor accessor, MemberId memberId, Obj declaredIn) {
+		if (accessibleBy(accessor) && matchLocal(memberId, declaredIn)) {
+			return getLocal().toPath();
+		}
+		return null;
 	}
 
 	private boolean accessibleBy(Accessor accessor) {

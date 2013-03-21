@@ -19,12 +19,15 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.*;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -208,8 +211,18 @@ public final class Local extends Step implements PlaceInfo {
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final Path path =
+				reproducer.getReproducer()
+				.getContainer()
+				.member(this, Accessor.OWNER, fieldName(getName()), null);
+
+		assert path != null :
+			"Can not find reproduced local";
+
+		final Local local = (Local) path.lastStep();
+
+		return reproducedPath(local.toPath());
 	}
 
 	@Override

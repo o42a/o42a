@@ -19,11 +19,12 @@
 */
 package org.o42a.core.st.impl.local;
 
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Local;
 
 
-public class LocalDeclaration extends Statement {
+public final class LocalDeclaration extends Statement {
 
 	private final Local local;
 
@@ -50,7 +51,16 @@ public class LocalDeclaration extends Statement {
 
 	@Override
 	public Statement reproduce(Reproducer reproducer) {
-		// TODO reproduce the local declaration
+
+		final Local local = getLocal();
+		final Ref ref = local.ref().reproduce(reproducer);
+
+		if (ref == null) {
+			return null;
+		}
+
+		reproducer.getStatements().local(this, local.getName(), ref);
+
 		return null;
 	}
 
