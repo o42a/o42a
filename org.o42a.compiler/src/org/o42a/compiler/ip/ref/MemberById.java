@@ -34,6 +34,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberKind;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.PlainClause;
@@ -230,6 +231,9 @@ public class MemberById extends PlacedFragment {
 			return false;
 		}
 		if (memberName.getEnclosingId() != null) {
+			return false;
+		}
+		if (memberName.getKind() != MemberKind.FIELD) {
 			return false;
 		}
 
