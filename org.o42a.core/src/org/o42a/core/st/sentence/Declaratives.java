@@ -92,14 +92,14 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	@Override
 	public final DeclarativeBlock parentheses(LocationInfo location) {
-		return parentheses(location, getContainer());
+		return super.parentheses(location).toDeclarativeBlock();
 	}
 
 	@Override
 	public final DeclarativeBlock parentheses(
 			LocationInfo location,
 			Container container) {
-		return (DeclarativeBlock) super.parentheses(location, container);
+		return super.parentheses(location, container).toDeclarativeBlock();
 	}
 
 	@Override

@@ -41,7 +41,8 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
-import org.o42a.core.st.impl.imperative.Locals;
+import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.core.st.impl.local.LocalDeclaration;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.string.Name;
@@ -161,7 +162,7 @@ public abstract class Statements<
 	}
 
 	public Block<S, L> parentheses(LocationInfo location) {
-		return parentheses(location, getContainer());
+		return parentheses(location, nextContainer());
 	}
 
 	public Block<S, L> parentheses(LocationInfo location, Container container) {
@@ -172,11 +173,11 @@ public abstract class Statements<
 	}
 
 	public final ImperativeBlock braces(LocationInfo location) {
-		return braces(location, null, getContainer());
+		return braces(location, null, nextContainer());
 	}
 
 	public final ImperativeBlock braces(LocationInfo location, Name name) {
-		return braces(location, name, getContainer());
+		return braces(location, name, nextContainer());
 	}
 
 	public final ImperativeBlock braces(
@@ -190,9 +191,10 @@ public abstract class Statements<
 		}
 		if (name != null) {
 
-			final Locals locals = getSentence().getBlock().getLocals();
+			final NamedBlocks namedBlocks =
+					getSentence().getBlock().getNamedBlocks();
 
-			if (!locals.declareBlock(location, name)) {
+			if (!namedBlocks.declareBlock(location, name)) {
 				return null;
 			}
 		}
@@ -214,30 +216,35 @@ public abstract class Statements<
 		return braces;
 	}
 
+	public final Local local(LocationInfo location, Name name, Ref ref) {
+
+		final Sentence<S, L> sentence = getSentence();
+		final Block<S, L> block = sentence.getBlock();
+
+		if (sentence.getAlternatives().size() != 1) {
+			block.getLocals().prohibitedLocal(location);
+		}
+
+		block.getLocals().declareLocal(location, name);
+
+		final Local local = new Local(location, name, ref);
+
+		block.localAdded(local);
+		statement(new LocalDeclaration(local));
+
+		return local;
+	}
+
 	public abstract void ellipsis(LocationInfo location, Name name);
 
 	public abstract void include(LocationInfo location, Name name);
 
-	public final Distributor nextDistributor() {
-
-		final Trace trace = getTrace();
-
-		if (trace == null) {
-			return distribute();
-		}
-
-		return new NextDistributor(this, getContainer(), trace.next());
+	public final Container nextContainer() {
+		return getSentence().getBlock().nextContainer();
 	}
 
-	public final Distributor nextDistributor(Container container) {
-
-		final Trace trace = getTrace();
-
-		if (trace == null) {
-			return distributeIn(container);
-		}
-
-		return new NextDistributor(this, container, trace.next());
+	public final Distributor nextDistributor() {
+		return nextDistributor(nextContainer());
 	}
 
 	public final void statement(Statement statement) {
@@ -397,6 +404,17 @@ public abstract class Statements<
 	@SuppressWarnings("unchecked")
 	private final S self() {
 		return (S) this;
+	}
+
+	private final Distributor nextDistributor(Container container) {
+
+		final Trace trace = getTrace();
+
+		if (trace == null) {
+			return distributeIn(container);
+		}
+
+		return new NextDistributor(this, container, trace.next());
 	}
 
 }

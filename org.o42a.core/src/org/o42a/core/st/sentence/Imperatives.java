@@ -63,14 +63,14 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	@Override
 	public final ImperativeBlock parentheses(LocationInfo location) {
-		return parentheses(location, getContainer());
+		return super.parentheses(location).toImperativeBlock();
 	}
 
 	@Override
 	public final ImperativeBlock parentheses(
 			LocationInfo location,
 			Container container) {
-		return (ImperativeBlock) super.parentheses(location, container);
+		return super.parentheses(location, container).toImperativeBlock();
 	}
 
 	@Override

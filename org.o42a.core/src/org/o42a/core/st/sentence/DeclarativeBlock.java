@@ -32,7 +32,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.BlockDefiner;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
-import org.o42a.core.st.impl.imperative.Locals;
+import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.Place.Trace;
 
 
@@ -52,7 +52,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 				false);
 	}
 
-	private Locals locals;
+	private NamedBlocks namedBlocks;
 	private BlockDefiner definer;
 
 	public DeclarativeBlock(
@@ -198,18 +198,19 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	@Override
-	Locals getLocals() {
-		if (this.locals != null) {
-			return this.locals;
+	NamedBlocks getNamedBlocks() {
+		if (this.namedBlocks != null) {
+			return this.namedBlocks;
 		}
 
 		final Declaratives enclosing = getEnclosing();
 
 		if (enclosing == null) {
-			return this.locals = new Locals(this);
+			return this.namedBlocks = new NamedBlocks(this);
 		}
 
-		return this.locals = enclosing.getSentence().getBlock().getLocals();
+		return this.namedBlocks =
+				enclosing.getSentence().getBlock().getNamedBlocks();
 	}
 
 	private void addImplicitInclusions() {
