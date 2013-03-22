@@ -110,7 +110,7 @@ public final class RefLclOp extends LclOp {
 		final CodeDirs dirs =
 				control.getBuilder().dirs(code, control.falseDir());
 		final Obj object = getObject();
-		final CodeObjects objects = getBuilder().objects();
+		final ObjectsCode objects = getBuilder().objects();
 		final ObjectOp newObject = objects.newObject(
 				dirs,
 				tempObjHolder(code.getAllocator()),

@@ -34,7 +34,7 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.CodeObjects;
+import org.o42a.core.ir.ObjectsCode;
 import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -127,7 +127,7 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().type());
 		}
 
-		public final CtrOp op(CodeObjects objects) {
+		public final CtrOp op(ObjectsCode objects) {
 			return new CtrOp(objects.getBuilder(), this);
 		}
 

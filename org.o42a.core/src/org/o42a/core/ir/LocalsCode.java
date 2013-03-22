@@ -25,11 +25,11 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.st.sentence.Local;
 
 
-public final class CodeLocals {
+public final class LocalsCode {
 
 	private IdentityHashMap<Local, RefOp> locals;
 
-	CodeLocals() {
+	LocalsCode() {
 	}
 
 	public final RefOp get(Local local) {
