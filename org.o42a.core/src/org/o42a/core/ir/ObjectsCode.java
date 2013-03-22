@@ -35,7 +35,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public final class CodeObjects {
+public final class ObjectsCode {
 
 	public static ObjectOp objectAncestor(
 			CodeDirs dirs,
@@ -56,7 +56,7 @@ public final class CodeObjects {
 
 	private final CodeBuilder builder;
 
-	CodeObjects(CodeBuilder builder) {
+	ObjectsCode(CodeBuilder builder) {
 		this.builder = builder;
 	}
 
