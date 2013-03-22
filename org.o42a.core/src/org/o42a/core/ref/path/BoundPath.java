@@ -388,7 +388,9 @@ public class BoundPath extends RefPath {
 	}
 
 	@Override
-	protected Statement toCondition(Ref condition, Statements<?, ?> statements) {
+	protected Statement toCondition(
+			Ref condition,
+			Statements<?, ?> statements) {
 
 		final Step lastStep = lastRawStep();
 

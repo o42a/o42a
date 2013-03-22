@@ -23,8 +23,6 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
@@ -35,7 +33,6 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.link.TargetResolver;
-import org.o42a.util.fn.Cancelable;
 
 
 final class RefConditionDefiner extends Definer {
@@ -73,6 +70,9 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
+		if (getRefCondition().isLocal()) {
+			return null;
+		}
 
 		final Directive directive = getRef().resolve(resolver).toDirective();
 
@@ -107,11 +107,13 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		if (!getRefCondition().isLocal()) {
 
-		final InlineValue value = getRef().inline(normalizer, origin);
+			final InlineValue value = getRef().inline(normalizer, origin);
 
-		if (value != null) {
-			return new Inline(value);
+			if (value != null) {
+				return new InlineRefCondition(value);
+			}
 		}
 
 		getRef().normalize(normalizer.getAnalyzer());
@@ -127,60 +129,12 @@ final class RefConditionDefiner extends Definer {
 	@Override
 	public Eval eval(CodeBuilder builder, Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new CondEval(getRefCondition());
+		return new RefConditionEval(getRefCondition());
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
-	}
-
-	private static final class Inline extends InlineEval {
-
-		private final InlineValue value;
-
-		Inline(InlineValue value) {
-			super(null);
-			this.value = value;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			this.value.writeCond(dirs.dirs(), host);
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
-	}
-
-	private static final class CondEval implements Eval {
-
-		private final RefCondition refCondition;
-
-		CondEval(RefCondition refCondition) {
-			this.refCondition = refCondition;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			ref().op(host).writeCond(dirs.dirs());
-		}
-
-		@Override
-		public String toString() {
-			if (this.refCondition == null) {
-				return super.toString();
-			}
-			return this.refCondition.toString();
-		}
-
-		private final Ref ref() {
-			return this.refCondition.getRef();
-		}
-
 	}
 
 }

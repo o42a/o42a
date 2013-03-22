@@ -72,6 +72,7 @@ public abstract class CodeBuilder {
 	private final Function<?> function;
 	private boolean signalGC;
 	private int nameSeq;
+	private CodeLocals locals;
 
 	protected CodeBuilder(CompilerContext context, Function<?> function) {
 		this.context = context;
@@ -97,6 +98,13 @@ public abstract class CodeBuilder {
 	public abstract HostOp host();
 
 	public abstract ObjectOp owner();
+
+	public final CodeLocals locals() {
+		if (this.locals != null) {
+			return this.locals;
+		}
+		return this.locals = new CodeLocals();
+	}
 
 	public final ID nextId() {
 		return getFunction().getId().anonymous(++this.nameSeq);

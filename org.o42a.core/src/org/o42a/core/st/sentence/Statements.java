@@ -35,6 +35,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
@@ -42,7 +43,6 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
-import org.o42a.core.st.impl.local.LocalDeclaration;
 import org.o42a.core.st.impl.local.LocalInsides;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.util.Place.Trace;
@@ -229,7 +229,7 @@ public abstract class Statements<
 		final Local local = new Local(location, name, ref);
 
 		this.nextContainer = new LocalInsides(local);
-		statement(new LocalDeclaration(local));
+		statement(new RefCondition(local));
 
 		return local;
 	}
