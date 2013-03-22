@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir;
 
-import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.object.ObjectOp;
@@ -37,8 +35,6 @@ import org.o42a.util.string.ID;
 
 public abstract class CodeBuilder {
 
-	private static final SignalGC SIGNAL_GC = new SignalGC();
-
 	public static CodeBuilder defaultBuilder(Function<?> function, Obj object) {
 		return new DefaultBuilder(function, object);
 	}
@@ -46,14 +42,16 @@ public abstract class CodeBuilder {
 	private final CompilerContext context;
 	private final Function<?> function;
 	private final CodeObjects objects;
-	private CodeLocals locals;
-	private boolean signalGC;
+	private final GCCode gc;
+	private final CodeLocals locals;
 	private int nameSeq;
 
 	protected CodeBuilder(CompilerContext context, Function<?> function) {
 		this.context = context;
 		this.function = function;
 		this.objects = new CodeObjects(this);
+		this.locals = new CodeLocals();
+		this.gc = new GCCode(this);
 	}
 
 	public final Generator getGenerator() {
@@ -80,11 +78,12 @@ public abstract class CodeBuilder {
 		return this.objects;
 	}
 
+	public final GCCode gc() {
+		return this.gc;
+	}
+
 	public final CodeLocals locals() {
-		if (this.locals != null) {
-			return this.locals;
-		}
-		return this.locals = new CodeLocals();
+		return this.locals;
 	}
 
 	public final ID nextId() {
@@ -95,38 +94,12 @@ public abstract class CodeBuilder {
 		return CodeDirs.codeDirs(this, code, falseDir);
 	}
 
-	public final void signalGC() {
-		if (this.signalGC) {
-			return;
-		}
-		this.signalGC = true;
-		getFunction().addLastDisposal(SIGNAL_GC);
-	}
-
 	public ValOp voidVal(Code code) {
 		return ValueType.VOID
 				.ir(getGenerator()).staticsIR()
 				.valPtr(Void.VOID)
 				.op(null, code)
 				.op(this, Val.VOID_VAL);
-	}
-
-	private static final class SignalGC implements Disposal {
-
-		@Override
-		public void dispose(Code code) {
-			code.getGenerator()
-			.externalFunction()
-			.link("o42a_gc_signal", NO_ARG)
-			.op(null, code)
-			.call(code);
-		}
-
-		@Override
-		public String toString() {
-			return "SignalGC";
-		}
-
 	}
 
 }
