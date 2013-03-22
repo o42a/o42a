@@ -23,9 +23,7 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
@@ -37,7 +35,6 @@ import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.link.TargetResolver;
-import org.o42a.util.fn.Cancelable;
 
 
 final class RefConditionCommand extends Command {
@@ -104,11 +101,13 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+		if (!getRefCondition().isLocal()) {
 
-		final InlineValue value = getRef().inline(normalizer, origin);
+			final InlineValue value = getRef().inline(normalizer, origin);
 
-		if (value != null) {
-			return new Inline(value);
+			if (value != null) {
+				return new InlineRefConditionCmd(value);
+			}
 		}
 
 		getRef().normalize(normalizer.getAnalyzer());
@@ -127,98 +126,14 @@ final class RefConditionCommand extends Command {
 	public Cmd cmd() {
 		assert getStatement().assertFullyResolved();
 		if (this.normal == null) {
-			return new CondCmd(getRefCondition());
+			return new RefConditionCmd(getRefCondition());
 		}
-		return new NormalCondCmd(this.normal);
+		return new InlineRefConditionCmd(this.normal);
 	}
 
 	@Override
 	protected void fullyResolve(FullLocalResolver resolver) {
 		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
-	}
-
-	private static final class Inline extends InlineCmd {
-
-		private final InlineValue value;
-
-		Inline(InlineValue value) {
-			super(null);
-			this.value = value;
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final CodeDirs dirs = control.getBuilder().dirs(
-					control.code(),
-					control.falseDir());
-
-			this.value.writeCond(dirs, control.host());
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return "(++" + this.value + ")";
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
-	}
-
-	private static final class NormalCondCmd implements Cmd {
-
-		private final InlineValue value;
-
-		NormalCondCmd(InlineValue value) {
-			this.value = value;
-		}
-
-		@Override
-		public void write(Control control) {
-			this.value.writeCond(control.dirs(), control.host());
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return this.value.toString();
-		}
-
-	}
-
-	private static final class CondCmd implements Cmd {
-
-		private final RefCondition statement;
-
-		CondCmd(RefCondition statement) {
-			this.statement = statement;
-		}
-
-		@Override
-		public void write(Control control) {
-			ref().op(control.host()).writeCond(control.dirs());
-		}
-
-		@Override
-		public String toString() {
-			if (this.statement == null) {
-				return super.toString();
-			}
-			return this.statement.toString();
-		}
-
-		private final Ref ref() {
-			return this.statement.getRef();
-		}
-
 	}
 
 }

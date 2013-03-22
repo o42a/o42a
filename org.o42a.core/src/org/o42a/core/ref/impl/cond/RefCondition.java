@@ -21,20 +21,36 @@ package org.o42a.core.ref.impl.cond;
 
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.Local;
 
 
 public final class RefCondition extends Statement {
 
 	private final Ref ref;
-	private DefinerEnv conditionalEnv;
+	private final Local local;
 
 	public RefCondition(Ref ref) {
 		super(ref, ref.distribute());
 		this.ref = ref;
+		this.local = null;
+	}
+
+	public RefCondition(Local local) {
+		super(local, local.distribute());
+		this.ref = local.ref();
+		this.local = local;
 	}
 
 	public final Ref getRef() {
 		return this.ref;
+	}
+
+	public final boolean isLocal() {
+		return this.local != null;
+	}
+
+	public final Local getLocal() {
+		return this.local;
 	}
 
 	@Override
@@ -57,16 +73,26 @@ public final class RefCondition extends Statement {
 			return null;
 		}
 
-		return new RefCondition(ref);
+		final Local local = getLocal();
+
+		if (local == null) {
+			return new RefCondition(ref);
+		}
+
+		reproducer.getStatements().local(this, local.getName(), ref);
+
+		return null;
 	}
 
 	@Override
 	public String toString() {
+		if (this.ref == null) {
+			return super.toString();
+		}
+		if (this.local != null) {
+			return this.local.toString();
+		}
 		return this.ref.toString();
-	}
-
-	final DefinerEnv getConditionalEnv() {
-		return this.conditionalEnv;
 	}
 
 }

@@ -25,7 +25,10 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.*;
-import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.HostValueOp;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
@@ -188,8 +191,6 @@ public final class Local extends Step implements PlaceInfo {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -217,18 +218,25 @@ public final class Local extends Step implements PlaceInfo {
 				.getContainer()
 				.member(this, Accessor.OWNER, fieldName(getName()), null);
 
-		assert path != null :
-			"Can not find reproduced local";
+		if (path == null) {
+			return null;
+		}
 
-		final Local local = (Local) path.lastStep();
+		final Step lastStep = path.lastStep();
 
-		return reproducedPath(local.toPath());
+		if (lastStep instanceof Local) {
+
+			final Local local = (Local) lastStep;
+
+			return reproducedPath(local.toPath());
+		}
+
+		return null;
 	}
 
 	@Override
 	protected PathOp op(PathOp start) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Op(start, start.getBuilder().locals().get(this));
 	}
 
 	private final ObjectStepUses uses() {
@@ -240,6 +248,50 @@ public final class Local extends Step implements PlaceInfo {
 
 	private PrefixPath refPrefix(Ref ref) {
 		return ref.getPath().cut(1).toPrefix(ref.getScope());
+	}
+
+	private static final class Op extends PathOp implements HostValueOp {
+
+		private final RefOp op;
+
+		public Op(PathOp start, RefOp op) {
+			super(start);
+			this.op = op;
+		}
+
+		@Override
+		public HostValueOp value() {
+			return this;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			this.op.writeCond(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return this.op.writeValue(dirs);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			targetValueOp().assign(dirs, value);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+			return this.op.target(dirs);
+		}
+
+		@Override
+		public String toString() {
+			if (this.op == null) {
+				return super.toString();
+			}
+			return this.op.toString();
+		}
+
 	}
 
 }
