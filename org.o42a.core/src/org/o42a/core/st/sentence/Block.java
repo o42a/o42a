@@ -30,7 +30,6 @@ import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
-import org.o42a.core.st.impl.local.LocalInsides;
 import org.o42a.core.st.impl.local.Locals;
 import org.o42a.util.Place.Trace;
 
@@ -45,7 +44,6 @@ public abstract class Block<
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
 	private Locals locals;
-	private Container nextContainer;
 	private boolean instructionsExecuted;
 
 	protected Block(
@@ -57,7 +55,6 @@ public abstract class Block<
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
-		this.nextContainer = getContainer();
 	}
 
 	Block(
@@ -70,7 +67,6 @@ public abstract class Block<
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
-		this.nextContainer = getContainer();
 	}
 
 	public Statements<?, ?> getEnclosing() {
@@ -231,17 +227,40 @@ public abstract class Block<
 	}
 
 	final Container nextContainer() {
-		return this.nextContainer;
-	}
 
-	final void localAdded(Local local) {
-		this.nextContainer = new LocalInsides(local);
-	}
+		final List<? extends Sentence<S, L>> sentences = getSentences();
+		final int numSentences = sentences.size();
 
-	final void ensureNoLocals() {
-		if (this.locals != null) {
-			this.locals.ensureNoLocals();
+		if (numSentences == 0) {
+			return getContainer();
 		}
+
+		final Sentence<S, L> last = sentences.get(numSentences - 1);
+		final List<S> alts = last.getAlternatives();
+		final int numAlts = alts.size();
+
+		if (numAlts > 1) {
+			// Locals declared within alternative are visible only inside
+			// this alternative, unless the sentence has a single alternative.
+			return last.getContainer();
+		}
+		if (last.getPrerequisite() != null && !last.isIssue()) {
+			// The sentence has prerequisite and is not a prerequisite
+			// of another sentence. The locals are not exported, neither from
+			// the sentence itself, nor from its prerequisites.
+			return last.firstPrerequisite().getContainer();
+		}
+		if (numAlts == 0) {
+			// Empty sentence without prerequisites.
+			// The next sentence will see the same locals as this one.
+			return last.getContainer();
+		}
+		// The sentence has only one alternative and has no prerequisites.
+		// The locals declared in it are visible in the next sentences.
+		// Even if this sentence is a prerequisite for the next one.
+		final S singleAlt = alts.get(0);
+
+		return singleAlt.nextContainer();
 	}
 
 	abstract NamedBlocks getNamedBlocks();
