@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ir.CodeBuilder.objectAncestor;
+import static org.o42a.core.ir.CodeObjects.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
@@ -228,7 +228,7 @@ public abstract class ObjectConstructor extends Placed {
 				ancestorHost = ownerObject;
 			}
 
-			return getBuilder().newObject(
+			return getBuilder().objects().newObject(
 					dirs,
 					tempObjHolder(dirs.getAllocator()),
 					owner,

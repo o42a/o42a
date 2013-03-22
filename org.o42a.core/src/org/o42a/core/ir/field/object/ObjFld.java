@@ -36,6 +36,7 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.core.ir.CodeObjects;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.*;
@@ -206,7 +207,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final CodeDirs ancDirs = dirs.sub(code);
 		final ObjectIRTypeOp ancestorType =
-				builder.objectAncestor(ancDirs, getField().toObject())
+				builder.objects()
+				.objectAncestor(ancDirs, getField().toObject())
 				.objectType(code)
 				.ptr();
 
@@ -223,13 +225,16 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			ObjectIRTypeOp ancestorType) {
 
 		final Obj object = getField().toObject();
+		final CodeObjects objects = builder.objects();
 
-		return builder.newObject(
+		return objects.newObject(
 				dirs,
 				holder,
 				builder.host(),
 				ancestorType != null ? ancestorType :
-				builder.objectAncestor(dirs, object).objectType(dirs.code()).ptr(),
+				objects.objectAncestor(dirs, object)
+				.objectType(dirs.code())
+				.ptr(),
 				object);
 	}
 
@@ -257,7 +262,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		// Set it to a temporary holder, to automatically release.
 		tempObjHolder(dirs.getAllocator()).set(code, ancestor);
 
-		return builder.newObject(
+		return builder.objects().newObject(
 				dirs,
 				holder,
 				builder.host(),

@@ -19,24 +19,16 @@
 */
 package org.o42a.core.ir;
 
-import static org.o42a.core.ir.object.op.CtrOp.CTR_ID;
-import static org.o42a.core.ir.object.op.CtrOp.CTR_TYPE;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.CtrOp;
-import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
@@ -51,32 +43,17 @@ public abstract class CodeBuilder {
 		return new DefaultBuilder(function, object);
 	}
 
-	public static ObjectOp objectAncestor(
-			CodeDirs dirs,
-			HostOp host,
-			Obj object) {
-
-		final TypeRef ancestorType = object.type().getAncestor();
-
-		if (ancestorType == null) {
-			return null;
-		}
-
-		final RefOp ancestor = ancestorType.op(host);
-
-		return ancestor.target(dirs)
-				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
-	}
-
 	private final CompilerContext context;
 	private final Function<?> function;
+	private final CodeObjects objects;
+	private CodeLocals locals;
 	private boolean signalGC;
 	private int nameSeq;
-	private CodeLocals locals;
 
 	protected CodeBuilder(CompilerContext context, Function<?> function) {
 		this.context = context;
 		this.function = function;
+		this.objects = new CodeObjects(this);
 	}
 
 	public final Generator getGenerator() {
@@ -99,6 +76,10 @@ public abstract class CodeBuilder {
 
 	public abstract ObjectOp owner();
 
+	public final CodeObjects objects() {
+		return this.objects;
+	}
+
 	public final CodeLocals locals() {
 		if (this.locals != null) {
 			return this.locals;
@@ -112,46 +93,6 @@ public abstract class CodeBuilder {
 
 	public final CodeDirs dirs(Block code, CodePos falseDir) {
 		return CodeDirs.codeDirs(this, code, falseDir);
-	}
-
-	public final ObjectOp newObject(
-			CodeDirs dirs,
-			ObjHolder holder,
-			ObjectOp owner,
-			ObjectOp ancestor,
-			Obj sample) {
-		return newObject(
-				dirs,
-				holder,
-				owner,
-				ancestor == null
-				? null : ancestor.objectType(dirs.code()).ptr(),
-				sample);
-	}
-
-	public final ObjectOp newObject(
-			CodeDirs dirs,
-			ObjHolder holder,
-			ObjectOp owner,
-			ObjectIRTypeOp ancestor,
-			Obj sample) {
-
-		final Code alloc = dirs.code().getAllocator().allocation();
-		final CtrOp.Op ctr = alloc.allocate(CTR_ID, CTR_TYPE);
-		final ObjectOp newObject = ctr.op(this).newObject(
-				dirs,
-				holder,
-				owner,
-				ancestor,
-				sample.ir(getGenerator()).op(this, dirs.code()));
-
-		newObject.fillDeps(dirs, sample);
-
-		return newObject;
-	}
-
-	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
-		return objectAncestor(dirs, host(), object);
 	}
 
 	public final void signalGC() {
