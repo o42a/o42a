@@ -54,7 +54,7 @@ public final class ObjectUseOp extends IROp {
 		this.objectData = ptr().objectData(null, code);
 		this.objectData.store(code, code.nullPtr(OBJECT_DATA_TYPE));
 		allocator.addDisposal(new UnuseObject(this));
-		getBuilder().signalGC();
+		getBuilder().gc().signal();
 	}
 
 	@Override
