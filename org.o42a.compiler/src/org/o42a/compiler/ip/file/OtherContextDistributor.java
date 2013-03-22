@@ -24,12 +24,21 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 
 
-final class OtherContextDistributor extends Distributor {
+public final class OtherContextDistributor extends Distributor {
+
+	public static Distributor distributeIn(
+			Distributor distributor,
+			CompilerContext context) {
+		if (distributor.getContext() == context) {
+			return distributor;
+		}
+		return new OtherContextDistributor(context, distributor);
+	}
 
 	private final Location location;
 	private final Distributor distributor;
 
-	OtherContextDistributor(
+	private OtherContextDistributor(
 			CompilerContext context,
 			Distributor distributor) {
 		this.location = new Location(context, distributor.getLocation());
