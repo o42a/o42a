@@ -168,6 +168,26 @@ public abstract class Sentence<
 		return out.toString();
 	}
 
+	final Sentence<S, L> firstPrerequisite() {
+
+		Sentence<S, L> prerequisite = getPrerequisite();
+
+		if (prerequisite == null) {
+			return null;
+		}
+		for (;;) {
+
+			final Sentence<S, L> prePrerequisite =
+					prerequisite.getPrerequisite();
+
+			if (prePrerequisite == null) {
+				return prerequisite;
+			}
+
+			prerequisite = prePrerequisite;
+		}
+	}
+
 	final void executeInstructions() {
 		if (this.instructionsExecuted) {
 			return;
@@ -222,7 +242,6 @@ public abstract class Sentence<
 	}
 
 	private S createAlt(LocationInfo location) {
-		getBlock().ensureNoLocals();
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();

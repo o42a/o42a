@@ -43,6 +43,7 @@ import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.LocalDeclaration;
+import org.o42a.core.st.impl.local.LocalInsides;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.string.Name;
@@ -58,6 +59,7 @@ public abstract class Statements<
 	private boolean statementDropped;
 	private boolean instructionsExecuted;
 	private boolean incompatibilityReported;
+	private Container nextContainer;
 
 	Statements(LocationInfo location, Sentence<S, L> sentence) {
 		super(
@@ -67,6 +69,7 @@ public abstract class Statements<
 						sentence,
 						sentence.getBlock().getTrace()));
 		this.sentence = sentence;
+		this.nextContainer = getContainer();
 	}
 
 	public Sentence<S, L> getSentence() {
@@ -221,15 +224,11 @@ public abstract class Statements<
 		final Sentence<S, L> sentence = getSentence();
 		final Block<S, L> block = sentence.getBlock();
 
-		if (sentence.getAlternatives().size() != 1) {
-			block.getLocals().prohibitedLocal(location);
-		}
-
 		block.getLocals().declareLocal(location, name);
 
 		final Local local = new Local(location, name, ref);
 
-		block.localAdded(local);
+		this.nextContainer = new LocalInsides(local);
 		statement(new LocalDeclaration(local));
 
 		return local;
@@ -240,7 +239,7 @@ public abstract class Statements<
 	public abstract void include(LocationInfo location, Name name);
 
 	public final Container nextContainer() {
-		return getSentence().getBlock().nextContainer();
+		return this.nextContainer;
 	}
 
 	public final Distributor nextDistributor() {

@@ -29,7 +29,6 @@ import org.o42a.util.string.Name;
 public final class Locals {
 
 	private final Locals enclosing;
-	private boolean errorReported;
 	private Location first;
 	private HashMap<Name, Location> locals;
 
@@ -61,23 +60,6 @@ public final class Locals {
 		this.locals.put(name, location.getLocation());
 
 		return true;
-	}
-
-	public void prohibitedLocal(LocationInfo location) {
-		if (this.errorReported) {
-			return;
-		}
-		this.errorReported = true;
-		location.getLocation().getLogger().error(
-				"prohibited_local",
-				location,
-				"Local can not be declared here");
-	}
-
-	public void ensureNoLocals() {
-		if (this.first != null) {
-			prohibitedLocal(this.first);
-		}
 	}
 
 	private Location localByName(Name name) {
