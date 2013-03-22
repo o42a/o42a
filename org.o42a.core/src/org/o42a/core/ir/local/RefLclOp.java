@@ -29,9 +29,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.HostValueOp;
+import org.o42a.core.ir.*;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -112,11 +110,12 @@ public final class RefLclOp extends LclOp {
 		final CodeDirs dirs =
 				control.getBuilder().dirs(code, control.falseDir());
 		final Obj object = getObject();
-		final ObjectOp newObject = getBuilder().newObject(
+		final CodeObjects objects = getBuilder().objects();
+		final ObjectOp newObject = objects.newObject(
 				dirs,
 				tempObjHolder(code.getAllocator()),
 				null,
-				getBuilder().objectAncestor(dirs, object),
+				objects.objectAncestor(dirs, object),
 				object);
 
 		ptr().object(code).store(code, newObject.toData(null, code));
