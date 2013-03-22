@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.st;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.clause;
 import static org.o42a.compiler.ip.member.FieldInterpreter.field;
+import static org.o42a.compiler.ip.st.LocalInterpreter.local;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 
 import org.o42a.ast.atom.NameNode;
@@ -37,9 +38,7 @@ import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.st.sentence.*;
 
 
 public class DefaultStatementVisitor extends StatementVisitor {
@@ -153,7 +152,15 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 	@Override
 	public Void visitDeclarator(DeclaratorNode declarator, Statements<?, ?> p) {
+
+		final Local local = local(ip(), getContext(), p, declarator);
+
+		if (local != null) {
+			return null;
+		}
+
 		field(ip(), getContext(), declarator, p);
+
 		return null;
 	}
 
