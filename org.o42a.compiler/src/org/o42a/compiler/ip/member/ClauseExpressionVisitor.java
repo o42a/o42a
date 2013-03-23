@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.member.ParenthesesVisitor.extractParentheses;
 import static org.o42a.compiler.ip.member.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
-import static org.o42a.compiler.ip.ref.RefInterpreter.localName;
+import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -49,12 +49,13 @@ class ClauseExpressionVisitor
 
 	@Override
 	public ClauseBuilder visitMemberRef(MemberRefNode ref, ClauseBuilder p) {
+		if (ref.getMembership() == null) {
 
-		final Name localName = localName(ref, null);
+			final Name localName = localName(ref);
 
-		if (PREFIX_NAME.is(localName)) {
-			localName(ref, p.getLogger());// Report errors.
-			return p.setSubstitution(PREFIX_SUBSITUTION);
+			if (PREFIX_NAME.is(localName)) {
+				return p.setSubstitution(PREFIX_SUBSITUTION);
+			}
 		}
 
 		return super.visitMemberRef(ref, p);
