@@ -19,9 +19,10 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberName.localName;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.*;
@@ -29,6 +30,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
@@ -45,8 +47,14 @@ import org.o42a.util.string.Name;
 
 public final class Local extends Step implements PlaceInfo {
 
+	public static final Name ANONYMOUS_LOCAL_NAME =
+			CASE_SENSITIVE.canonicalName("L");
+	public static final MemberName ANONYMOUS_LOCAL_MEMBER =
+			localName(ANONYMOUS_LOCAL_NAME);
+
 	private final Location location;
 	private final Name name;
+	private final MemberName memberId;
 	private final Ref ref;
 	private ObjectStepUses uses;
 
@@ -58,10 +66,15 @@ public final class Local extends Step implements PlaceInfo {
 		this.location = location.getLocation();
 		this.name = name;
 		this.ref = ref;
+		this.memberId = localName(name);
 	}
 
 	public final Name getName() {
 		return this.name;
+	}
+
+	public final MemberName getMemberId() {
+		return this.memberId;
 	}
 
 	public final Ref ref() {
@@ -216,7 +229,11 @@ public final class Local extends Step implements PlaceInfo {
 		final Path path =
 				reproducer.getReproducer()
 				.getContainer()
-				.member(this, Accessor.OWNER, fieldName(getName()), null);
+				.member(
+						this,
+						Accessor.OWNER,
+						localName(getName()),
+						reproducer.getScope().toObject());
 
 		if (path == null) {
 			return null;

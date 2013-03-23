@@ -138,9 +138,6 @@ public class LocalInsides extends AbstractContainer {
 	}
 
 	private boolean matchLocal(MemberId memberId, Obj declaredIn) {
-		if (declaredIn != null) {
-			return false;
-		}
 
 		final MemberName memberName = memberId.toMemberName();
 
@@ -150,11 +147,25 @@ public class LocalInsides extends AbstractContainer {
 		if (memberName.getEnclosingId() != null) {
 			return false;
 		}
-		if (memberName.getKind() != MemberKind.FIELD) {
+
+		final MemberKind memberKind = memberName.getKind();
+
+		if (memberKind == MemberKind.FIELD) {
+			if (declaredIn != null) {
+				// `foo @bar` is always a field lookup.
+				return false;
+			}
+		} else if (memberKind != MemberKind.LOCAL) {
 			return false;
 		}
+		if (!memberName.getName().is(getLocal().getName())) {
+			return false;
+		}
+		if (declaredIn == null) {
+			return true;
+		}
 
-		return memberName.getName().is(getLocal().getName());
+		return getLocal().getScope().is(declaredIn.getScope());
 	}
 
 }
