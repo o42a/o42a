@@ -20,16 +20,16 @@
 package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.file.OtherContextDistributor.distributeIn;
-import static org.o42a.compiler.ip.ref.RefInterpreter.localName;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.ref.Ref.errorRef;
 
+import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.*;
 import org.o42a.ast.type.InterfaceNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
@@ -47,6 +47,44 @@ import org.o42a.util.string.Name;
 
 
 public final class LocalInterpreter {
+
+	public static boolean isLocalRef(MemberRefNode ref) {
+
+		final ExpressionNode owner = ref.getOwner();
+
+		if (owner == null) {
+			return false;
+		}
+
+		return isLocalScopeRef(owner);
+	}
+
+	public static boolean isLocalScopeRef(ExpressionNode ref) {
+
+		final RefNode ownerRef = ref.toRef();
+
+		if (ownerRef == null) {
+			return false;
+		}
+
+		final ScopeRefNode ownerScope = ownerRef.toScopeRef();
+
+		return ownerScope != null && ownerScope.getType() == ScopeType.LOCAL;
+	}
+
+	public static Name localName(MemberRefNode ref) {
+		if (!isLocalRef(ref)) {
+			return null;
+		}
+
+		final NameNode name = ref.getName();
+
+		if (name == null) {
+			return null;
+		}
+
+		return name.getName();
+	}
 
 	public static Local local(
 			Interpreter ip,
@@ -86,7 +124,16 @@ public final class LocalInterpreter {
 			return null;
 		}
 
-		return localName(memberRef, logger);
+		final Name localName = localName(memberRef);
+
+		if (localName == null) {
+			return null;
+		}
+		if (memberRef.getMembership() != null) {
+			logger.prohibitedDeclaredIn(memberRef.getMembership());
+		}
+
+		return localName;
 	}
 
 	private static Ref localRef(
