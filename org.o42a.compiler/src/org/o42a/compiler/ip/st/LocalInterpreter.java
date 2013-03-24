@@ -94,6 +94,7 @@ public final class LocalInterpreter {
 
 		final Name name = declaredLocalName(
 				declarator.getDeclarable(),
+				statements,
 				context.getLogger());
 
 		if (name == null) {
@@ -116,6 +117,7 @@ public final class LocalInterpreter {
 
 	private static Name declaredLocalName(
 			DeclarableNode declarable,
+			Statements<?, ?> statements,
 			CompilerLogger logger) {
 
 		final MemberRefNode memberRef = declarable.toMemberRef();
@@ -124,7 +126,7 @@ public final class LocalInterpreter {
 			return null;
 		}
 
-		final Name localName = localName(memberRef);
+		final Name localName = extractLocalName(memberRef, statements);
 
 		if (localName == null) {
 			return null;
@@ -134,6 +136,27 @@ public final class LocalInterpreter {
 		}
 
 		return localName;
+	}
+
+	private static Name extractLocalName(
+			MemberRefNode memberRef,
+			Statements<?, ?> statements) {
+		if (!isLocalRef(memberRef)) {
+			if (statements.getSentenceFactory().isDeclarative()) {
+				return null;
+			}
+			if (memberRef.getOwner() != null) {
+				return null;
+			}
+		}
+
+		final NameNode nameNode = memberRef.getName();
+
+		if (nameNode == null) {
+			return null;
+		}
+
+		return nameNode.getName();
 	}
 
 	private static Ref localRef(
