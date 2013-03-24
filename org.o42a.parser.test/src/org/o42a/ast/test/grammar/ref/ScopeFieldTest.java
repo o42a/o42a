@@ -18,13 +18,24 @@ import org.o42a.parser.Grammar;
 public class ScopeFieldTest extends GrammarTestCase {
 
 	@Test
-	public void moduleFieldRef() {
+	public void localRef() {
 
 		final MemberRefNode ref = parse("$foo");
 
 		assertThat(
 				to(ScopeRefNode.class, ref.getOwner()).getType(),
 				is(ScopeType.LOCAL));
+		assertThat(canonicalName(ref.getName()), is("foo"));
+	}
+
+	@Test
+	public void anonymousRef() {
+
+		final MemberRefNode ref = parse("$:foo");
+
+		assertThat(
+				to(ScopeRefNode.class, ref.getOwner()).getType(),
+				is(ScopeType.ANONYMOUS));
 		assertThat(canonicalName(ref.getName()), is("foo"));
 	}
 
