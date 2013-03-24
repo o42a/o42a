@@ -91,6 +91,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 			return nonLinkOwner(
 					ROOT_PATH.bind(location, p.getScope()).target(p));
 		case LOCAL:
+		case ANONYMOUS:
 			return owner(new MemberById(
 					ip().ip(),
 					location,

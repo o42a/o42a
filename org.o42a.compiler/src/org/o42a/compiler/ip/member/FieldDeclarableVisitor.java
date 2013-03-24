@@ -349,6 +349,7 @@ public final class FieldDeclarableVisitor
 				return p.setVisibility(Visibility.PROTECTED);
 			case ROOT:
 			case LOCAL:
+			case ANONYMOUS:
 			case MACROS:
 			case IMPLIED:
 			}
