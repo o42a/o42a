@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object;
 
+import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
+import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.util.collect.Iterators.readonlyIterator;
 
 import java.util.LinkedHashMap;
@@ -50,6 +52,10 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 
 	public Dep addDep(Ref ref) {
 		assert getObject().getContext().fullResolution().assertIncomplete();
+
+		ref.resolveAll(
+				ref.getScope().resolver()
+				.fullResolver(dummyRefUser(), TEMP_REF_USAGE));
 
 		final int newDepId = this.depNameSeq + 1;
 		final Dep newDep = newDep(
