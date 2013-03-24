@@ -34,6 +34,8 @@ public abstract class Statement extends Placed {
 		super(location, distributor);
 	}
 
+	public abstract boolean isValid();
+
 	public DeclarativeBlock toDeclarativeBlock() {
 		return null;
 	}

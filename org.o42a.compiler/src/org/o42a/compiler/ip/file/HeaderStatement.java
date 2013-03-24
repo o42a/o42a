@@ -56,6 +56,11 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
+	public boolean isValid() {
+		return getRef().isValid();
+	}
+
+	@Override
 	public Definer define(DefinerEnv env) {
 		return new HeaderDefiner(this, env);
 	}

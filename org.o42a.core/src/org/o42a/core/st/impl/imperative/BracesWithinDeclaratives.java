@@ -50,6 +50,11 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
+	public boolean isValid() {
+		return getBlock().isValid();
+	}
+
+	@Override
 	public Definer define(DefinerEnv env) {
 		return getBlock().define(env);
 	}
