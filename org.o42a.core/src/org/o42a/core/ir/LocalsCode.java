@@ -37,7 +37,7 @@ public final class LocalsCode {
 		final RefOp op = this.locals != null ? this.locals.get(local) : null;
 
 		assert op != null :
-			"Local " + local + " did not evaluated yet";
+			"Local `" + local + "` did not evaluated yet";
 
 		return op;
 	}
