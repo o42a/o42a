@@ -66,13 +66,23 @@ public class ScopeRefTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void module() {
+	public void local() {
 
 		final ScopeRefNode ref = parse("$ ");
 
 		assertEquals(ScopeType.LOCAL, ref.getType());
 		assertThat(ref, hasRange(0, 1));
 		assertEquals(2, this.worker.position().offset());
+	}
+
+	@Test
+	public void anonymous() {
+
+		final ScopeRefNode ref = parse("$: ");
+
+		assertEquals(ScopeType.ANONYMOUS, ref.getType());
+		assertThat(ref, hasRange(0, 2));
+		assertEquals(3, this.worker.position().offset());
 	}
 
 	@Test
