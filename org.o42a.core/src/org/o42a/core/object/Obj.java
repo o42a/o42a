@@ -555,7 +555,7 @@ public abstract class Obj
 
 		final Scope scope = getScope();
 		final Step scopePathStep;
-		final Container enclosing = scope.getEnclosingContainer();
+		final Scope enclosing = scope.getEnclosingScope();
 
 		if (enclosing.toObject() != null) {
 
@@ -574,7 +574,7 @@ public abstract class Obj
 			// Enclosing local path.
 			// Will be replaced with dependency during path rebuild.
 			assert enclosing.toLocalScope() != null :
-				"Unsupported kind of enclosing scope " + enclosing;
+				"Unsupported kind of enclosing scope: " + enclosing;
 			scopePathStep = new ParentLocalStep(this);
 		}
 
