@@ -21,6 +21,8 @@ package org.o42a.codegen.code;
 
 import static org.o42a.codegen.data.AllocPlace.autoAllocPlace;
 
+import java.util.HashMap;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
@@ -34,6 +36,7 @@ public abstract class Allocator extends Block {
 	private Code allocation;
 	private Disposal lastDisposal = NO_DISPOSAL;
 	private Disposal disposal = NO_DISPOSAL;
+	private HashMap<Class<?>, Object> data;
 
 	Allocator(Block enclosing, ID name) {
 		super(enclosing, name);
@@ -82,12 +85,43 @@ public abstract class Allocator extends Block {
 		return this.allocation = inset("alloc");
 	}
 
+	public final <T> T get(Class<? extends T> klass) {
+
+		final T found = find(klass);
+
+		if (found != null) {
+			return found;
+		}
+
+		final Allocator enclosing = getEnclosingAllocator();
+
+		if (enclosing == null) {
+			return null;
+		}
+
+		return enclosing.get(klass);
+	}
+
+	public final <T> void put(Class<? extends T> klass, T value) {
+		if (this.data == null) {
+			this.data = new HashMap<>(1);
+		}
+		this.data.put(klass, value);
+	}
+
 	protected abstract Disposal disposal();
 
 	final void dispose(Block code) {
 		this.disposal.dispose(code);
 		this.lastDisposal.dispose(code);
 		disposal().dispose(code);
+	}
+
+	private <T> T find(Class<? extends T> klass) {
+		if (this.data == null) {
+			return null;
+		}
+		return klass.cast(this.data.get(klass));
 	}
 
 	private static final class NoDisposal implements Disposal {
