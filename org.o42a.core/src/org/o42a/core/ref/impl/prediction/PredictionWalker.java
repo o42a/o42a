@@ -30,7 +30,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.impl.ParentLocalStep;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
@@ -170,9 +169,9 @@ public class PredictionWalker implements PathWalker {
 		final Step[] steps = enclosingPath.getSteps();
 
 		assert steps.length == 1 :
-			"Wrong local object owner path";
+			"Wrong object owner path";
 
-		final ParentLocalStep ownerStep = (ParentLocalStep) steps[0];
+		final ReversePath ownerStep = (ReversePath) steps[0];
 
 		return set(predictRef(
 				enclosingPrediction(
