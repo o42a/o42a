@@ -28,7 +28,10 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.core.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.FieldDefinition;
@@ -252,7 +255,7 @@ public final class Local extends Step implements PlaceInfo {
 
 	@Override
 	protected PathOp op(PathOp start) {
-		return new Op(start, start.getBuilder().locals().get(this));
+		return new Op(start, this);
 	}
 
 	private final ObjectStepUses uses() {
@@ -268,11 +271,12 @@ public final class Local extends Step implements PlaceInfo {
 
 	private static final class Op extends PathOp implements HostValueOp {
 
-		private final RefOp op;
+		private final Local local;
+		private LocalOp ref;
 
-		public Op(PathOp start, RefOp op) {
+		public Op(PathOp start, Local local) {
 			super(start);
-			this.op = op;
+			this.local = local;
 		}
 
 		@Override
@@ -282,12 +286,12 @@ public final class Local extends Step implements PlaceInfo {
 
 		@Override
 		public void writeCond(CodeDirs dirs) {
-			this.op.writeCond(dirs);
+			ref(dirs).writeCond(dirs);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			return this.op.writeValue(dirs);
+			return ref(dirs.dirs()).writeValue(dirs);
 		}
 
 		@Override
@@ -297,15 +301,22 @@ public final class Local extends Step implements PlaceInfo {
 
 		@Override
 		public HostOp target(CodeDirs dirs) {
-			return this.op.target(dirs);
+			return ref(dirs).target(dirs);
 		}
 
 		@Override
 		public String toString() {
-			if (this.op == null) {
+			if (this.local == null) {
 				return super.toString();
 			}
-			return this.op.toString();
+			return this.local.toString();
+		}
+
+		private LocalOp ref(CodeDirs dirs) {
+			if (this.ref != null) {
+				return this.ref;
+			}
+			return this.ref = dirs.locals().get(this.local);
 		}
 
 	}

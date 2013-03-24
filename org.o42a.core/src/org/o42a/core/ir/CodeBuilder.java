@@ -21,6 +21,7 @@ package org.o42a.core.ir;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
+import org.o42a.core.ir.local.LocalsCode;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
@@ -50,7 +51,7 @@ public abstract class CodeBuilder {
 		this.context = context;
 		this.function = function;
 		this.objects = new ObjectsCode(this);
-		this.locals = new LocalsCode();
+		this.locals = new FunctionLocals();
 		this.gc = new GCCode(this);
 	}
 

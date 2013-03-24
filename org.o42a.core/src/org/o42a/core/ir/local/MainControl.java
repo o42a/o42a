@@ -47,6 +47,11 @@ abstract class MainControl extends Control {
 	}
 
 	@Override
+	public final LocalsCode locals() {
+		return this.builder.locals();
+	}
+
+	@Override
 	public final Block code() {
 		return this.code;
 	}

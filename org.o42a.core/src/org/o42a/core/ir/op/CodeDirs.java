@@ -23,6 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.debug.TaskBlock;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.local.LocalsCode;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
@@ -62,6 +63,17 @@ public class CodeDirs {
 
 	public final CodeBuilder getBuilder() {
 		return this.builder;
+	}
+
+	public final LocalsCode locals() {
+
+		final LocalsCode locals = getAllocator().get(LocalsCode.class);
+
+		if (locals != null) {
+			return locals;
+		}
+
+		return getBuilder().locals();
 	}
 
 	public final boolean isDebug() {

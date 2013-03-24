@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,48 +17,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.cond;
+package org.o42a.core.ir;
 
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
+import java.util.IdentityHashMap;
+
+import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.local.LocalsCode;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Local;
 
 
-final class RefConditionCmd implements Cmd {
+final class FunctionLocals extends LocalsCode {
 
-	private final RefCondition statement;
+	private IdentityHashMap<Local, LocalOp> locals;
 
-	RefConditionCmd(RefCondition statement) {
-		this.statement = statement;
+	@Override
+	public final LocalOp get(Local local) {
+
+		final LocalOp op = this.locals != null ? this.locals.get(local) : null;
+
+		assert op != null :
+			"Local `" + local + "` did not evaluated yet";
+
+		return op;
 	}
 
 	@Override
-	public void write(Control control) {
-
-		final RefOp op = ref().op(control.host());
-		final Local local = this.statement.getLocal();
-		final CodeDirs dirs = control.dirs();
-
-		if (local == null) {
-			op.writeCond(dirs);
-		} else {
-			control.locals().set(dirs, local, op);
+	public final LocalOp set(CodeDirs dirs, Local local, RefOp ref) {
+		if (this.locals == null) {
+			this.locals = new IdentityHashMap<>();
 		}
-	}
 
-	@Override
-	public String toString() {
-		if (this.statement == null) {
-			return super.toString();
-		}
-		return this.statement.toString();
-	}
+		final LocalOp op = allocate(dirs, local, ref);
+		final LocalOp old = this.locals.put(local, op);
 
-	private final Ref ref() {
-		return this.statement.getRef();
+		assert old == null :
+			"Local " + local + " already evaluated";
+
+		return op;
 	}
 
 }

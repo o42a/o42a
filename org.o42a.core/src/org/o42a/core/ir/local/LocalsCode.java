@@ -17,40 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir;
+package org.o42a.core.ir.local;
 
-import java.util.IdentityHashMap;
+import static org.o42a.core.ir.local.LocalOp.allocateLocal;
 
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.st.sentence.Local;
 
 
-public final class LocalsCode {
+public abstract class LocalsCode {
 
-	private IdentityHashMap<Local, RefOp> locals;
+	public abstract LocalOp get(Local local);
 
-	LocalsCode() {
-	}
+	public abstract LocalOp set(CodeDirs dirs, Local local, RefOp ref);
 
-	public final RefOp get(Local local) {
-
-		final RefOp op = this.locals != null ? this.locals.get(local) : null;
-
-		assert op != null :
-			"Local `" + local + "` did not evaluated yet";
-
-		return op;
-	}
-
-	public final void set(Local local, RefOp op) {
-		if (this.locals == null) {
-			this.locals = new IdentityHashMap<>();
-		}
-
-		final RefOp old = this.locals.put(local, op);
-
-		assert old == null :
-			"Local " + local + " already evaluated";
+	protected LocalOp allocate(CodeDirs dirs, Local local, RefOp ref) {
+		return allocateLocal(dirs, local, ref);
 	}
 
 }
