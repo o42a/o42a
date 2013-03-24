@@ -69,6 +69,11 @@ public abstract class Block<
 		this.sentenceFactory = sentenceFactory;
 	}
 
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
 	public Statements<?, ?> getEnclosing() {
 		return this.enclosing;
 	}

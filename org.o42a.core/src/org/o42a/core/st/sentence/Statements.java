@@ -368,6 +368,9 @@ public abstract class Statements<
 
 		// Statements contain at most one value.
 		for (Implication<?> implication : getImplications()) {
+			if (!implication.getStatement().isValid()) {
+				continue;
+			}
 
 			final TypeParameters<?> typeParameters =
 					implication.typeParameters(scope);

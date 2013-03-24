@@ -32,6 +32,11 @@ public abstract class Inclusion extends Statement {
 		super(location, statements.nextDistributor());
 	}
 
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
 	public final DefinerEnv getInitialEnv() {
 		return this.definer.env();
 	}

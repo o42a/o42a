@@ -81,6 +81,11 @@ public class Ref extends Statement {
 		this.path = path;
 	}
 
+	@Override
+	public boolean isValid() {
+		return !getResolution().isError();
+	}
+
 	public final boolean isConstant() {
 		if (!isStatic()) {
 			return false;

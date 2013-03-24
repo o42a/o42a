@@ -54,6 +54,11 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
+	public boolean isValid() {
+		return getRef().isValid();
+	}
+
+	@Override
 	public Definer define(DefinerEnv env) {
 		return new RefConditionDefiner(this, env);
 	}
