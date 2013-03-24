@@ -72,6 +72,7 @@ public final class LocalOp {
 	}
 
 	public final ObjectOp target(CodeDirs dirs) {
+		this.ptr.getAllocPlace().ensureAccessibleFrom(dirs.code());
 
 		final Block code = dirs.code();
 		final DataOp objectPtr = this.ptr.load(null, code).toData(null, code);
