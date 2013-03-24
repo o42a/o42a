@@ -49,6 +49,7 @@ import org.o42a.compiler.ip.type.ascendant.SampleSpecVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
@@ -584,7 +585,26 @@ public final class PhraseBuilder extends Placed {
 
 		@Override
 		public Obj findObjectIn(Scope enclosing) {
-			return this.phrase.toRef().resolve(enclosing.resolver()).toObject();
+
+			final Scope resolveAgainst;
+			final LocalScope localScope =
+					this.phrase.getScope().toLocalScope();
+
+			if (localScope == null) {
+				resolveAgainst = enclosing;
+			} else if (enclosing.toLocalScope() != null) {
+				resolveAgainst = enclosing;
+			} else {
+				resolveAgainst =
+						enclosing.getContainer()
+						.member(localScope.toMember().getMemberKey())
+						.toLocalScope()
+						.localScope();
+			}
+
+			return this.phrase.toRef()
+					.resolve(resolveAgainst.resolver())
+					.toObject();
 		}
 
 		@Override
