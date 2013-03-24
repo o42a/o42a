@@ -41,11 +41,11 @@ final class RefConditionEval implements Eval {
 		final RefOp op = ref().op(host);
 		final Local local = this.refCondition.getLocal();
 
-		if (local != null) {
-			dirs.getBuilder().locals().set(local, op);
+		if (local == null) {
+			op.writeCond(dirs.dirs());
+		} else {
+			dirs.dirs().locals().set(dirs.dirs(), local, op);
 		}
-
-		op.writeCond(dirs.dirs());
 	}
 
 	@Override

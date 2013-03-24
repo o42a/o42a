@@ -56,6 +56,8 @@ public abstract class Control {
 		return getBuilder().owner();
 	}
 
+	public abstract LocalsCode locals();
+
 	public final ValOp result() {
 		return main().mainResult();
 	}

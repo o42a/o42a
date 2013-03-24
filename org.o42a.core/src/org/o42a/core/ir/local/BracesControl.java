@@ -32,6 +32,7 @@ final class BracesControl extends Control {
 	private final Control parent;
 	private final BracesControl enclosing;
 	private final Name name;
+	private final BraceLocals locals;
 	private final CodePos done;
 	private final Block enclosingBlock;
 	private final Allocator allocator;
@@ -44,8 +45,10 @@ final class BracesControl extends Control {
 		this.main = parent.main();
 		this.parent = parent;
 		this.enclosing = parent.braces();
+		this.locals = new BraceLocals(parent.locals());
 		this.enclosingBlock = enclosingBlock;
 		this.allocator = enclosingBlock.allocator(BRACES_ID);
+		this.allocator.put(LocalsCode.class, this.locals);
 		this.name = name;
 		this.done = next;
 	}
@@ -56,6 +59,11 @@ final class BracesControl extends Control {
 
 	public final Name getName() {
 		return this.name;
+	}
+
+	@Override
+	public final LocalsCode locals() {
+		return this.locals;
 	}
 
 	@Override
