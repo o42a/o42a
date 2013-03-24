@@ -176,8 +176,7 @@ public final class Local extends Step implements PlaceInfo {
 	protected Container resolve(StepResolver resolver) {
 
 		final Scope start = resolver.getStart();
-		final Scope enclosingScope = start.getEnclosingScope();
-		final Resolver enclosingResolver = enclosingScope.resolver();
+		final Resolver refResolver = start.resolver();
 
 		if (resolver.isFullResolution()) {
 			uses().useBy(resolver);
@@ -192,10 +191,10 @@ public final class Local extends Step implements PlaceInfo {
 			}
 
 			ref().resolveAll(
-					enclosingResolver.fullResolver(resolver.refUser(), usage));
+					refResolver.fullResolver(resolver.refUser(), usage));
 		}
 
-		final Obj resolution = ref().resolve(enclosingResolver).toObject();
+		final Obj resolution = ref().resolve(refResolver).toObject();
 
 		resolver.getWalker().local(start, this);
 
