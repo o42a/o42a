@@ -117,9 +117,11 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.normal = getRef().inline(
-				normalizer.newNormalizer(),
-				normalizer.getNormalizedScope());
+		if (!getRefCondition().isLocal()) {
+			this.normal = getRef().inline(
+					normalizer.newNormalizer(),
+					normalizer.getNormalizedScope());
+		}
 	}
 
 	@Override

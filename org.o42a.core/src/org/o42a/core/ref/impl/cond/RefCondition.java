@@ -95,7 +95,7 @@ public final class RefCondition extends Statement {
 			return super.toString();
 		}
 		if (this.local != null) {
-			return this.local.toString();
+			return this.local.toString() + " = " + this.local.ref();
 		}
 		return this.ref.toString();
 	}
