@@ -328,14 +328,6 @@ public class Definitions extends Scoped {
 		propositions().resolveTargets(resolver);
 	}
 
-	public Definitions runtime() {
-		return new Definitions(
-				this,
-				getTypeParameters(),
-				claims().runtime(this),
-				propositions());
-	}
-
 	public final boolean updatedSince(Obj ascendant) {
 		if (claims().updatedSince(ascendant)) {
 			return true;
