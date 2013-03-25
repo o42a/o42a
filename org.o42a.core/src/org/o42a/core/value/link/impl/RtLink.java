@@ -31,8 +31,14 @@ import org.o42a.core.value.link.LinkValueType;
 
 final class RtLink extends Link {
 
-	RtLink(LocationInfo location, Scope linkScope) {
+	private final DereferenceStep dereference;
+
+	RtLink(
+			LocationInfo location,
+			DereferenceStep dereference,
+			Scope linkScope) {
 		super(location, linkScope.distribute());
+		this.dereference = dereference;
 	}
 
 	@Override
@@ -97,8 +103,8 @@ final class RtLink extends Link {
 	}
 
 	@Override
-	protected Link findLinkIn(Scope enclosing) {
-		return new RtLink(this, enclosing);
+	protected RtLink findLinkIn(Scope enclosing) {
+		return this.dereference.rtLink(this, enclosing);
 	}
 
 	private Obj linkObject() {
