@@ -20,6 +20,7 @@
 package org.o42a.core.ref.impl.cond;
 
 import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
+import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -134,7 +135,9 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
+		getRef().resolveAll(resolver.setRefUsage(
+				getRefCondition().isLocal() ?
+				TARGET_REF_USAGE : CONDITION_REF_USAGE));
 	}
 
 }
