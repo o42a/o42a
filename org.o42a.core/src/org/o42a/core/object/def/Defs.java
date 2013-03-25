@@ -32,7 +32,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.impl.InlineDefs;
-import org.o42a.core.object.def.impl.RuntimeDef;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
@@ -130,6 +129,9 @@ public final class Defs {
 	}
 
 	public final DefValue value(Resolver resolver) {
+		if (resolver.getScope().toObject().getConstructionMode().isRuntime()) {
+			return DefValue.RUNTIME_DEF_VALUE;
+		}
 		for (Def def : get()) {
 
 			final DefValue value = def.value(resolver);
@@ -324,14 +326,6 @@ public final class Defs {
 		}
 
 		return new InlineDefs(inlines);
-	}
-
-	final Defs runtime(Definitions definitions) {
-		return new Defs(
-				isClaims(),
-				ArrayUtil.prepend(
-						new RuntimeDef(definitions, true),
-						this.defs));
 	}
 
 	boolean upgradeTypeParameters(

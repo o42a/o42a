@@ -112,11 +112,7 @@ public final class ObjectValue extends ObjectValueParts {
 				getOverriddenDefinitions())
 				.upgradeTypeParameters(getObject().type().getParameters());
 
-		if (!object.getConstructionMode().isRuntime()) {
-			return this.definitions = definitions;
-		}
-
-		return this.definitions = definitions.runtime();
+		return this.definitions = definitions;
 	}
 
 	public final Definitions getExplicitDefinitions() {
