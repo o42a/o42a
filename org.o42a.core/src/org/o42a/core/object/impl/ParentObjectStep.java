@@ -71,7 +71,7 @@ public final class ParentObjectStep
 				rebuilder.restPath(enclosingContainer.getScope())
 				.target(this.object.distributeIn(enclosingContainer));
 
-		rebuilder.replaceRest(this.object.deps().addDep(ref));
+		rebuilder.replaceRest(this.object.deps().addDep(local.getName(), ref));
 	}
 
 	@Override

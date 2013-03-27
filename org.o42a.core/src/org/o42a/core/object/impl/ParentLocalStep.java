@@ -38,6 +38,7 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.Local;
 
 
 public final class ParentLocalStep extends Step implements ReversePath {
@@ -91,6 +92,18 @@ public final class ParentLocalStep extends Step implements ReversePath {
 	}
 
 	@Override
+	protected void combineWithLocal(PathRebuilder rebuilder, Local local) {
+
+		final Container enclosingContainer =
+				this.object.getEnclosingContainer();
+		final Ref ref =
+				rebuilder.restPath(enclosingContainer.getScope())
+				.target(this.object.distributeIn(enclosingContainer));
+
+		rebuilder.replaceRest(this.object.deps().addDep(local.getName(), ref));
+	}
+
+	@Override
 	protected void combineWith(PathRebuilder rebuilder, Step next) {
 		if (rebuilder.isStatic()) {
 			return;
@@ -102,7 +115,7 @@ public final class ParentLocalStep extends Step implements ReversePath {
 				rebuilder.restPath(enclosingContainer.getScope())
 				.target(this.object.distributeIn(enclosingContainer));
 
-		rebuilder.replaceRest(this.object.deps().addDep(ref));
+		rebuilder.replaceRest(this.object.deps().addDep(null, ref));
 	}
 
 	@Override

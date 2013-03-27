@@ -40,6 +40,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.string.ID;
+import org.o42a.util.string.Name;
 import org.o42a.util.string.SubID;
 
 
@@ -47,15 +48,17 @@ public final class Dep extends Step implements SubID {
 
 	private final Obj declaredIn;
 	private final Ref ref;
+	private final Name name;
 	private final ID id;
 	private final Obj target;
 	private ObjectStepUses uses;
 	private byte disabled;
 	private byte compileTimeOnly;
 
-	Dep(Obj declaredIn, Ref ref, ID id) {
+	Dep(Obj declaredIn, Ref ref, Name name, ID id) {
 		this.declaredIn = declaredIn;
 		this.ref = ref;
+		this.name = name;
 		this.id = id;
 		this.target = target();
 		assert !this.target.getConstructionMode().isRuntime()
@@ -65,6 +68,10 @@ public final class Dep extends Step implements SubID {
 
 	public final Obj getDeclaredIn() {
 		return this.declaredIn;
+	}
+
+	public final Name getName() {
+		return this.name;
 	}
 
 	public final Ref ref() {
@@ -226,7 +233,7 @@ public final class Dep extends Step implements SubID {
 		}
 
 		final Dep reproduction =
-				reproducer.getScope().toObject().deps().addDep(ref);
+				reproducer.getScope().toObject().deps().addDep(getName(), ref);
 
 		return reproducedPath(reproduction.toPath());
 	}
