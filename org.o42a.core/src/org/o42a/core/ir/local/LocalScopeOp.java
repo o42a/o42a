@@ -19,19 +19,15 @@
 */
 package org.o42a.core.ir.local;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.CompilerContext;
 
@@ -80,13 +76,8 @@ public final class LocalScopeOp implements HostOp {
 	}
 
 	@Override
-	public LclOp field(CodeDirs dirs, MemberKey memberKey) {
-
-		final Field field =
-				getScope().member(memberKey).toField().field(dummyUser());
-		final FieldIR fieldIR = field.ir(getGenerator());
-
-		return fieldIR.getLocal();
+	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+		throw new UnsupportedOperationException("Local fields do not exist");
 	}
 
 	@Override

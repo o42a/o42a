@@ -25,11 +25,9 @@ import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.scope.ScopeFld;
 import org.o42a.core.ir.field.scope.ScopeFldOp;
-import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.*;
@@ -146,11 +144,6 @@ public final class ScopeField extends ObjectField {
 			fld.declare(data, target);
 
 			return fld;
-		}
-
-		@Override
-		protected LclOp allocateLocal(CodeBuilder builder, Code code) {
-			throw new UnsupportedOperationException();
 		}
 
 	}

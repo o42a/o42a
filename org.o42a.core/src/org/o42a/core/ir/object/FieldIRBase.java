@@ -24,14 +24,14 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.local.LocalFieldIRBase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
-public abstract class FieldIRBase extends LocalFieldIRBase {
+public abstract class FieldIRBase extends ScopeIR {
 
 	private Fld fld;
 	private boolean targetAllocated;
@@ -40,8 +40,11 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 		super(generator, field);
 	}
 
+	public final Field getField() {
+		return getScope().toField();
+	}
+
 	public FldOp field(Code code, ObjOp host) {
-		assertNotLocal();
 		return this.fld.op(code, host);
 	}
 
@@ -71,7 +74,6 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
-		assertNotLocal();
 
 		final Obj owner = getField().getEnclosingContainer().toObject();
 		final ObjOp host = owner.ir(getGenerator()).op(builder, code);
@@ -80,7 +82,6 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 	}
 
 	void allocate(ObjectIRBodyData data) {
-		assertNotLocal();
 
 		final Fld fld = declare(data);
 
