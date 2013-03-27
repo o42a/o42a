@@ -74,12 +74,14 @@ public final class ObjectsCode {
 
 	public final ObjectOp newObject(
 			CodeDirs dirs,
+			HostOp host,
 			ObjHolder holder,
 			ObjectOp owner,
 			ObjectOp ancestor,
 			Obj sample) {
 		return newObject(
 				dirs,
+				host,
 				holder,
 				owner,
 				ancestor == null
@@ -89,6 +91,7 @@ public final class ObjectsCode {
 
 	public final ObjectOp newObject(
 			CodeDirs dirs,
+			HostOp host,
 			ObjHolder holder,
 			ObjectOp owner,
 			ObjectIRTypeOp ancestor,
@@ -103,7 +106,9 @@ public final class ObjectsCode {
 				ancestor,
 				sample.ir(getGenerator()).op(getBuilder(), dirs.code()));
 
-		newObject.fillDeps(dirs, sample);
+		if (host != null) {
+			newObject.fillDeps(dirs, host, sample);
+		}
 
 		return newObject;
 	}
