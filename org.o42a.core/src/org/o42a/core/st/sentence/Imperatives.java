@@ -140,7 +140,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 		getLogger().error(
 				"unresolved_block",
 				location,
-				"Imperative block with name '%' does not exist",
+				"Imperative block with name '%s' does not exist",
 				name);
 
 		return null;
