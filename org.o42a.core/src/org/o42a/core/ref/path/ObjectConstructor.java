@@ -191,15 +191,12 @@ public abstract class ObjectConstructor extends Placed {
 		private HostOp exactObject(CodeDirs dirs) {
 
 			final Obj sample = getConstructed();
-			final LocalScopeOp local = host().toLocalScope();
 			final ObjOp target = sample.ir(dirs.getGenerator()).op(
 					getBuilder(),
 					dirs.code());
 
 			dirs.code().dumpName("Static object: ", target);
-			if (local != null) {
-				target.fillDeps(dirs, sample);
-			}
+			target.fillDeps(dirs, host(), sample);
 
 			return target;
 		}
@@ -207,12 +204,12 @@ public abstract class ObjectConstructor extends Placed {
 		private HostOp newObject(CodeDirs dirs) {
 
 			final ObjectOp owner;
-			final HostOp ancestorHost;
+			final HostOp host;
 			final LocalScopeOp local = host().toLocalScope();
 
 			if (local != null) {
 				owner = null;
-				ancestorHost = local;
+				host = local;
 			} else {
 
 				final ObjectOp ownerObject = host().materialize(
@@ -225,14 +222,15 @@ public abstract class ObjectConstructor extends Placed {
 				} else {
 					owner = ownerObject;
 				}
-				ancestorHost = ownerObject;
+				host = ownerObject;
 			}
 
 			return getBuilder().objects().newObject(
 					dirs,
+					host,
 					tempObjHolder(dirs.getAllocator()),
 					owner,
-					objectAncestor(dirs, ancestorHost, getConstructed()),
+					objectAncestor(dirs, host, getConstructed()),
 					getConstructed());
 		}
 

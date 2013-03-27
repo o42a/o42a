@@ -229,6 +229,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		return objects.newObject(
 				dirs,
+				builder.host(),
 				holder,
 				builder.host(),
 				ancestorType != null ? ancestorType :
@@ -264,6 +265,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		return builder.objects().newObject(
 				dirs,
+				null,
 				holder,
 				builder.host(),
 				ancestor,
