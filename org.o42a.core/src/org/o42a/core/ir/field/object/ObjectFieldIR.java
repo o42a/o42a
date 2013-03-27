@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.field.object;
 
-import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
@@ -29,7 +27,6 @@ import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.link.LinkFld;
 import org.o42a.core.ir.field.variable.VarFld;
-import org.o42a.core.ir.local.RefLclOp;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.LinkUses;
@@ -118,11 +115,6 @@ public final class ObjectFieldIR extends FieldIR {
 		fld.allocate(data, ascendant);
 
 		return fld;
-	}
-
-	@Override
-	protected RefLclOp allocateLocal(CodeBuilder builder, Code code) {
-		return code.allocate(null, REF_LCL).op(builder, this);
 	}
 
 }
