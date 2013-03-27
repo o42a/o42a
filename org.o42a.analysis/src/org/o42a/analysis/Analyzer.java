@@ -29,6 +29,8 @@ import org.o42a.analysis.use.User;
 
 public class Analyzer implements UseCaseInfo {
 
+	public static final boolean TRACK_RUNTIME_USES = false;
+
 	private final Doubts doubts = new Doubts();
 	private UseCase useCase;
 	private boolean normalizationEnabled = true;
