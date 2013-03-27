@@ -273,7 +273,10 @@ inline const o42a_dbg_header_t *o42a_dbg_header(const void *const ptr) {
 	const o42a_dbg_type_info_t *const type_info = header->type_info;
 
 	if (header->type_code != type_info->type_code) {
-		fprintf(dbg_env->output, "Wrong debug header at <0x%lx>\n", (long) header);
+		fprintf(
+				dbg_env->output,
+				"Wrong debug header at <%#lx>\n",
+				(long) header);
 		exit(EXIT_FAILURE);
 	}
 
@@ -361,7 +364,7 @@ void o42a_dbg_mem_name(
 		fputs("NULL\n", dbg_env->output);
 		return;
 	}
-	fprintf(dbg_env->output, "<0x%lx> ", (long) ptr);
+	fprintf(dbg_env->output, "<%#lx> ", (long) ptr);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
@@ -422,7 +425,7 @@ static void dbg_struct(
 
 		const void *field_ptr = ((char *) data) + field_info->offset;
 
-		fprintf(dbg_env->output, " <0x%lx>", (long) field_ptr);
+		fprintf(dbg_env->output, " <%#lx>", (long) field_ptr);
 		dbg_field_value(field_ptr, field_info, depth, indent);
 		fputc('\n', dbg_env->output);
 		++field_info;
@@ -499,7 +502,7 @@ static void dbg_field_value(
 			fputs("NULL", dbg_env->output);
 			break;
 		}
-		fprintf(dbg_env->output, "<0x%lx>", (long) func_ptr);
+		fprintf(dbg_env->output, "<%#lx>", (long) func_ptr);
 
 		break;
 	}
@@ -530,7 +533,7 @@ static void dbg_field_value(
 			break;
 		}
 
-		fprintf(dbg_env->output, "<0x%lx>", (long) data_ptr);
+		fprintf(dbg_env->output, "<%#lx>", (long) data_ptr);
 
 		break;
 	case O42A_TYPE_DATA_PTR: {
@@ -549,6 +552,8 @@ static void dbg_field_value(
 			fputs("NULL", dbg_env->output);
 			break;
 		}
+
+		fprintf(dbg_env->output, "<%#lx> ", (long) data_ptr);
 
 		const o42a_dbg_header_t *const data_header =
 				o42a_dbg_header(data_ptr);
@@ -602,7 +607,7 @@ void o42a_dbg_dump_mem(
 		return;
 	}
 	dbg_print(prefix);
-	fprintf(dbg_env->output, "<0x%lx> ", (long) ptr);
+	fprintf(dbg_env->output, "<%#lx> ", (long) ptr);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
