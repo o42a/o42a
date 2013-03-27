@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.CodeBuilder;
@@ -40,7 +39,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.ref.Ref;
 import org.o42a.util.string.ID;
 
 
@@ -155,13 +153,10 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 
 	private DataOp createObject(CodeBuilder builder, CodeDirs dirs) {
 
-		final Code code = dirs.code();
-		final Ref depRef = getDep().ref();
-		final HostOp refTarget = depRef.op(builder.host()).target(dirs);
+		final HostOp target = getDep().ref().op(builder.host()).target(dirs);
 
-		return refTarget.materialize(
-				dirs,
-				tempObjHolder(dirs.getAllocator())).toData(null, code);
+		return target.materialize(dirs, tempObjHolder(dirs.getAllocator()))
+				.toData(null, dirs.code());
 	}
 
 	private ObjectOp object(final Block code) {

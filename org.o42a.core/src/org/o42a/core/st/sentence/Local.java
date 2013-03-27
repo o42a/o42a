@@ -162,12 +162,12 @@ public final class Local extends Step implements PlaceInfo {
 
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
-		return ref().toFieldDefinition().prefixWith(refPrefix(ref));
+		return defaultFieldDefinition(ref);
 	}
 
 	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
-		return ref().ancestor(location).prefixWith(refPrefix(ref));
+		return defaultAncestor(location, ref);
 	}
 
 	@Override
