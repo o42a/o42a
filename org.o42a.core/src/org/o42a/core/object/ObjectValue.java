@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object;
 
+import static org.o42a.analysis.Analyzer.TRACK_RUNTIME_USES;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.value.ValueUsage.*;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
@@ -286,6 +287,14 @@ public final class ObjectValue extends ObjectValueParts {
 			this.uses.useBy(
 					getObject().type().rtDerivation(),
 					RUNTIME_VALUE_USAGE);
+			if (!TRACK_RUNTIME_USES) {
+				this.uses.useBy(
+						this.uses.usageUser(EXPLICIT_STATIC_VALUE_USAGE),
+						EXPLICIT_RUNTIME_VALUE_USAGE);
+				this.uses.useBy(
+						this.uses.usageUser(STATIC_VALUE_USAGE),
+						RUNTIME_VALUE_USAGE);
+			}
 		}
 		getObject().content().useBy(this.uses);
 
