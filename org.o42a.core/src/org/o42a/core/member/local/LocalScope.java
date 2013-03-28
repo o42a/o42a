@@ -40,7 +40,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.SourceInfo;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
@@ -65,7 +64,6 @@ public abstract class LocalScope
 	private final Obj owner;
 	private final OwningLocal owningLocal = new OwningLocal(this);
 	private final Path ownerScopePath;
-	private final ResolverFactory resolverFactory;
 	private Set<Scope> enclosingScopes;
 	private int anonymousSeq;
 	private boolean allResolved;
@@ -74,7 +72,6 @@ public abstract class LocalScope
 		this.member = member;
 		this.owner = member.getContainer().toObject();
 		this.ownerScopePath = new LocalScopeOwnerStep(this).toPath();
-		this.resolverFactory = Resolver.resolverFactory(this);
 	}
 
 	@Override
@@ -190,7 +187,7 @@ public abstract class LocalScope
 
 	@Override
 	public final Resolver resolver() {
-		return resolverFactory().resolver();
+		return new Resolver(this);
 	}
 
 	@Override
@@ -200,7 +197,7 @@ public abstract class LocalScope
 
 	@Override
 	public final Resolver walkingResolver(PathWalker walker) {
-		return resolverFactory().walkingResolver(walker);
+		return new Resolver(this, walker);
 	}
 
 	@Override
@@ -367,10 +364,6 @@ public abstract class LocalScope
 			return super.toString();
 		}
 		return this.member.toString();
-	}
-
-	protected final ResolverFactory resolverFactory() {
-		return this.resolverFactory;
 	}
 
 	protected final OwningLocal toOwner() {

@@ -33,7 +33,6 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
@@ -160,13 +159,8 @@ public abstract class AbstractScope implements Scope {
 		return null;
 	}
 
-	private final ResolverFactory resolverFactory;
 	private Set<Scope> enclosingScopes;
 	private int anonymousSeq;
-
-	public AbstractScope() {
-		this.resolverFactory = Resolver.resolverFactory(this);
-	}
 
 	@Override
 	public final CompilerContext getContext() {
@@ -203,7 +197,7 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final Resolver resolver() {
-		return this.resolverFactory.resolver();
+		return new Resolver(this);
 	}
 
 	@Override
@@ -213,7 +207,7 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final Resolver walkingResolver(PathWalker walker) {
-		return this.resolverFactory.walkingResolver(walker);
+		return new Resolver(this, walker);
 	}
 
 	@Override

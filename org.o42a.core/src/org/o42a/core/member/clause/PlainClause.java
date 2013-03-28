@@ -40,7 +40,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
@@ -51,8 +50,6 @@ public abstract class PlainClause
 		extends Clause
 		implements Scope, ClauseContainer {
 
-	private final ResolverFactory resolverFactory =
-			Resolver.resolverFactory(this);
 	private Nesting definitionNesting;
 	private Obj clauseObject;
 	private Path enclosingScopePath;
@@ -150,7 +147,7 @@ public abstract class PlainClause
 
 	@Override
 	public final Resolver resolver() {
-		return this.resolverFactory.resolver();
+		return new Resolver(this);
 	}
 
 	@Override
@@ -160,7 +157,7 @@ public abstract class PlainClause
 
 	@Override
 	public final Resolver walkingResolver(PathWalker walker) {
-		return this.resolverFactory.walkingResolver(walker);
+		return new Resolver(this, walker);
 	}
 
 	@Override
