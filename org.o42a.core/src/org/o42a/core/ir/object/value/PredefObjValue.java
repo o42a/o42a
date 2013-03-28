@@ -95,7 +95,7 @@ public enum PredefObjValue {
 		public void write(DefDirs dirs, ObjectIRDataOp data) {
 
 			final Block code = dirs.code();
-			final ObjectOp owner = dirs.getBuilder().owner();
+			final ObjectOp owner = dirs.getBuilder().host();
 
 			data.claimFunc(code).load(null, code).call(dirs, owner);
 			data.propositionFunc(code).load(null, code).call(dirs, owner);

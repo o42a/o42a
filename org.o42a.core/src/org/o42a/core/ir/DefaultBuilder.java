@@ -34,12 +34,7 @@ final class DefaultBuilder extends CodeBuilder {
 	}
 
 	@Override
-	public HostOp host() {
-		return this.host;
-	}
-
-	@Override
-	public ObjectOp owner() {
+	public ObjectOp host() {
 		return this.host;
 	}
 

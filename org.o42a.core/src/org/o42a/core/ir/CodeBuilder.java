@@ -71,9 +71,7 @@ public abstract class CodeBuilder {
 		return (ObjectSignature<?>) this.function.getSignature();
 	}
 
-	public abstract HostOp host();
-
-	public abstract ObjectOp owner();
+	public abstract ObjectOp host();
 
 	public final ObjectsCode objects() {
 		return this.objects;
