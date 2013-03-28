@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.ir.local.InlineControl.inlineControl;
+import static org.o42a.core.ir.local.Control.mainControl;
 import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.Scope;
@@ -28,8 +28,8 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.ir.local.InlineControl;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -168,7 +168,7 @@ public final class ImperativeDefiner extends Definer {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final InlineControl control = inlineControl(dirs);
+			final Control control = mainControl(dirs);
 
 			this.cmd.write(control);
 
@@ -201,7 +201,7 @@ public final class ImperativeDefiner extends Definer {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final InlineControl control = inlineControl(dirs);
+			final Control control = mainControl(dirs);
 
 			this.command.cmd().write(control);
 

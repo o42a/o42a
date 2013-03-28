@@ -23,37 +23,35 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.string.ID;
 
 
-abstract class MainControl extends Control {
+final class MainControl extends Control {
 
-	private final CodeBuilder builder;
-	private final Block code;
-	private final CodePos exit;
-	private final CodePos falseDir;
+	private final DefDirs dirs;
+	private final Block continuation;
+
 	private int seq;
+	private Block returnCode;
+	private ValOp finalResult;
+	private Code singleResultInset;
+	private byte results;
 
-	MainControl(
-			CodeBuilder builder,
-			Block code,
-			CodePos exit,
-			CodePos falseDir) {
-		this.code = code;
-		this.builder = builder;
-		this.exit = exit;
-		this.falseDir = falseDir;
+	MainControl(DefDirs dirs, Block continuation) {
+		this.dirs = dirs;
+		this.continuation = continuation;
 	}
 
 	@Override
 	public final LocalsCode locals() {
-		return this.builder.locals();
+		return builder().locals();
 	}
 
 	@Override
 	public final Block code() {
-		return this.code;
+		return this.dirs.code();
 	}
 
 	@Override
@@ -64,23 +62,35 @@ abstract class MainControl extends Control {
 
 	@Override
 	public final CodePos exit() {
-		return this.exit;
+		return this.continuation.head();
 	}
 
 	@Override
 	public final CodePos falseDir() {
-		return this.falseDir;
+		return this.dirs.falseDir();
+	}
+
+	public final ValOp finalResult() {
+		return this.finalResult != null ? this.finalResult : result();
 	}
 
 	@Override
 	public void end() {
+		if (this.continuation.exists()) {
+			this.continuation.go(code().tail());
+		}
+		if (this.returnCode != null) {
+			this.dirs.returnValue(this.returnCode, finalResult());
+		}
 	}
 
 	final CodeBuilder builder() {
-		return this.builder;
+		return this.dirs.getBuilder();
 	}
 
-	abstract ValOp mainResult();
+	final ValOp mainResult() {
+		return this.dirs.value();
+	}
 
 	@Override
 	final MainControl main() {
@@ -92,10 +102,41 @@ abstract class MainControl extends Control {
 		return null;
 	}
 
+	@Override
+	CodePos returnDir() {
+		if (this.returnCode == null) {
+			this.returnCode = code().addBlock("return");
+		}
+		return this.returnCode.head();
+	}
+
 	final ID anonymousName() {
 		return ID.id(Integer.toString(++this.seq));
 	}
 
-	abstract void storeResult(Block code, ValOp value);
+	void storeResult(Block code, ValOp value) {
+		if (this.results == 0 && valueAccessibleBy(code)) {
+			this.singleResultInset = code.inset("sgl_res");
+			this.finalResult = value;
+			this.results = 1;
+			return;
+		}
+		if (this.results == 1) {
+			if (this.singleResultInset != null) {
+				result().store(this.singleResultInset, this.finalResult);
+				this.singleResultInset = null;
+			}
+			this.results = 2;
+			this.finalResult = result();
+		}
+		result().store(code, value);
+	}
+
+	private boolean valueAccessibleBy(Code code) {
+		if (!this.dirs.value().isStackAllocated()) {
+			return true;
+		}
+		return code.getAllocator() == this.dirs.code().getAllocator();
+	}
 
 }
