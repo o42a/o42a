@@ -40,7 +40,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.LocalInsides;
@@ -64,10 +63,7 @@ public abstract class Statements<
 	Statements(LocationInfo location, Sentence<S, L> sentence) {
 		super(
 				location,
-				new StatementsDistributor(
-						location,
-						sentence,
-						sentence.getBlock().getTrace()));
+				new StatementsDistributor(location, sentence));
 		this.sentence = sentence;
 		this.nextContainer = getContainer();
 	}
@@ -409,14 +405,7 @@ public abstract class Statements<
 	}
 
 	private final Distributor nextDistributor(Container container) {
-
-		final Trace trace = getTrace();
-
-		if (trace == null) {
-			return distributeIn(container);
-		}
-
-		return new NextDistributor(this, container, trace.next());
+		return distributeIn(container);
 	}
 
 }

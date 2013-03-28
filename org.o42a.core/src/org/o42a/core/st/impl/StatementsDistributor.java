@@ -19,14 +19,12 @@
 */
 package org.o42a.core.st.impl;
 
-import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.ScopePlace.scopePlace;
 
 import org.o42a.core.*;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Sentence;
-import org.o42a.util.Place.Trace;
 
 
 public final class StatementsDistributor extends Distributor {
@@ -37,17 +35,12 @@ public final class StatementsDistributor extends Distributor {
 
 	public StatementsDistributor(
 			LocationInfo location,
-			Sentence<?, ?> sentence,
-			Trace trace) {
+			Sentence<?, ?> sentence) {
 		this.location = location.getLocation();
 		this.sentence = sentence;
-		if (trace == null) {
-			this.place = scopePlace(getScope());
-		} else {
-			this.place = localPlace(
-					sentence.getBlock().toImperativeBlock().getScope(),
-					trace.next());
-		}
+		this.place = scopePlace(getScope());
+		assert getScope() != null :
+			"Scope not set";
 	}
 
 	@Override

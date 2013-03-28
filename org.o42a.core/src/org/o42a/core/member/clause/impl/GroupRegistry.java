@@ -21,6 +21,7 @@ package org.o42a.core.member.clause.impl;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
 
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.ProxyMemberRegistry;
@@ -29,14 +30,13 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.fn.Lambda;
 
 
 final class GroupRegistry
 		extends ProxyMemberRegistry
-		implements Lambda<MemberRegistry, LocalScope> {
+		implements Lambda<MemberRegistry, Scope> {
 
 	private final DeclaredGroupClause group;
 
@@ -68,7 +68,7 @@ final class GroupRegistry
 	}
 
 	@Override
-	public MemberRegistry get(LocalScope arg) {
+	public MemberRegistry get(Scope arg) {
 		return this;
 	}
 

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.ScopePlace.scopePlace;
 
 import java.util.ArrayList;
@@ -262,17 +261,7 @@ public abstract class Sentence<
 			this.location = location.getLocation();
 			this.block = block;
 			this.container = block.nextContainer();
-
-			final ImperativeBlock imperativeBlock =
-					this.block.toImperativeBlock();
-
-			if (imperativeBlock == null) {
-				this.place = scopePlace(getScope());
-			} else {
-				this.place = localPlace(
-						imperativeBlock.getScope(),
-						imperativeBlock.getTrace().next());
-			}
+			this.place = scopePlace(getScope());
 		}
 
 		@Override

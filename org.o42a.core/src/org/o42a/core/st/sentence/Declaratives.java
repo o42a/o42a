@@ -31,7 +31,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
-import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
@@ -121,10 +120,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	@Override
 	protected void braces(ImperativeBlock braces) {
-		statement(new BracesWithinDeclaratives(
-				braces,
-				nextDistributor(),
-				braces));
+		statement(braces);
 	}
 
 	@Override

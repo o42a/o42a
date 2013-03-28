@@ -23,10 +23,8 @@ import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.*;
-import org.o42a.util.fn.Lambda;
 import org.o42a.util.string.Name;
 
 
@@ -68,14 +66,14 @@ public final class ImperativeGroupFactory extends ImperativeFactory {
 			Group group,
 			Distributor distributor,
 			Name name,
-			Lambda<MemberRegistry, LocalScope> memberRegistry) {
+			MemberRegistry memberRegistry) {
 		return nestedImperativeBlock(
 				group,
 				distributor,
 				group.getStatements(),
 				false,
 				name,
-				memberRegistry.get(distributor.getScope().toLocalScope()),
+				memberRegistry,
 				IMPERATIVE_GROUP_FACTORY);
 	}
 
