@@ -19,12 +19,13 @@ Item type = #element type
 Length = * (= size!)
 
 Iterate => * (
-  ::Last index := ``-1
+  ::Next index := ``0
   Next = * (
+    $Index := next index 
     {
-      Last index = last index + 1
+      Next index = index + 1
     }
-    = List:: [last index]
+    = List:: [index]
   )
 )
 
