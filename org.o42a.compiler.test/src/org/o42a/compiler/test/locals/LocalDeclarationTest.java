@@ -64,6 +64,23 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void linkBody() {
+		compile(
+				"A := `\"123\"",
+				"B := link (`string) (",
+				"  $Local := a`",
+				"  = $local`",
+				")");
+
+		assertThat(
+				definiteValue(linkTarget(field("b")), ValueType.STRING),
+				is("123"));
+		assertThat(
+				linkTarget(field("b")).getWrapped(),
+				is(linkTarget(field("a")).getWrapped()));
+	}
+
+	@Test
 	public void localVariable() {
 		compile(
 				"A := \"123\"",
