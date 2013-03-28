@@ -225,9 +225,7 @@ public final class LocalInterpreter {
 					distributor);
 		}
 
-		final Ref value = definition.accept(
-					ip.targetExVisitor(),
-					distributor);
+		final Ref value = definition.accept(ip.targetExVisitor(), distributor);
 
 		if (value != null) {
 			return value;
