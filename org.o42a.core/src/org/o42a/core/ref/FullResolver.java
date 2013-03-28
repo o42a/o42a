@@ -27,16 +27,13 @@ import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.source.*;
 
 
-public class FullResolver implements LocationInfo {
+public final class FullResolver implements LocationInfo {
 
 	private final Resolver resolver;
 	private final RefUser user;
 	private final RefUsage usage;
 
-	protected FullResolver(
-			Resolver resolver,
-			RefUser user,
-			RefUsage usage) {
+	FullResolver(Resolver resolver, RefUser user, RefUsage usage) {
 		this.resolver = resolver;
 		this.user = user;
 		this.usage = usage;

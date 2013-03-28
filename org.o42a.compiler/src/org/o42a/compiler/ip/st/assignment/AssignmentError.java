@@ -24,7 +24,7 @@ import static org.o42a.core.ir.local.Cmd.NO_CMD;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.FullLocalResolver;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Reproducer;
@@ -42,7 +42,7 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public void resolve(FullLocalResolver resolver) {
+	public void resolve(FullResolver resolver) {
 	}
 
 	@Override

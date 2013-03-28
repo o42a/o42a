@@ -22,12 +22,9 @@ package org.o42a.compiler.ip.st.assignment;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -106,7 +103,7 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(FullLocalResolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		getAssignmentKind().resolve(resolver);
 	}
 

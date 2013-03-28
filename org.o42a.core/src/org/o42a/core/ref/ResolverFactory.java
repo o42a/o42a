@@ -25,9 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathWalker;
 
 
-public abstract class ResolverFactory<
-		R extends Resolver,
-		F extends FullResolver> {
+public abstract class ResolverFactory<R extends Resolver> {
 
 	private final Scope scope;
 	private R resolver;
@@ -63,10 +61,5 @@ public abstract class ResolverFactory<
 	}
 
 	protected abstract R createResolver(PathWalker walker);
-
-	protected abstract F createFullResolver(
-			R resolver,
-			RefUser user,
-			RefUsage usage);
 
 }

@@ -30,11 +30,8 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
@@ -78,7 +75,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void resolve(FullLocalResolver resolver) {
+	public void resolve(FullResolver resolver) {
 		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
 	}
 

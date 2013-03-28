@@ -26,7 +26,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
@@ -135,7 +134,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(FullLocalResolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		getRef().resolveAll(resolver.setRefUsage(
 				getRefCondition().isLocal() ?
 				TARGET_REF_USAGE : CONDITION_REF_USAGE));
