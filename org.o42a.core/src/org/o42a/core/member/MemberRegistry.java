@@ -107,6 +107,13 @@ public abstract class MemberRegistry {
 		return this.localScopeFactory;
 	}
 
+	protected final void prohibitedDeclaration(LocationInfo location) {
+		location.getLocation().getLogger().error(
+				"prohibited_declaration",
+				location,
+				"Declarations prohibited here");
+	}
+
 	private static class NoDeclarations extends MemberRegistry {
 
 		NoDeclarations() {
@@ -160,10 +167,7 @@ public abstract class MemberRegistry {
 		}
 
 		protected void reportDeclaration(LocationInfo location) {
-			location.getLocation().getLogger().error(
-					"prohibited_declaration",
-					location,
-					"Declarations prohibited here");
+			prohibitedDeclaration(location);
 		}
 
 	}
