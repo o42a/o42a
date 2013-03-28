@@ -44,7 +44,7 @@ Repeat := test (
   Name = "Repeat"
   Print error '    ' [name] nl
 
-  Counter := ``3
+  $Counter := ``3
   {
     Print error '    .. ' [counter] nl
     Counter = counter - 1
