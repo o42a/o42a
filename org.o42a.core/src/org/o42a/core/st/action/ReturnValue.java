@@ -22,7 +22,7 @@ package org.o42a.core.st.action;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
@@ -31,13 +31,10 @@ import org.o42a.core.value.ValueType;
 
 public class ReturnValue extends Action {
 
-	private final LocalResolver resolver;
+	private final Resolver resolver;
 	private final Value<?> value;
 
-	public ReturnValue(
-			ScopeInfo statement,
-			LocalResolver resolver,
-			Value<?> value) {
+	public ReturnValue(ScopeInfo statement, Resolver resolver, Value<?> value) {
 		super(statement);
 		this.resolver = resolver;
 		this.value = value;

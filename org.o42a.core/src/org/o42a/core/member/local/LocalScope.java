@@ -65,7 +65,7 @@ public abstract class LocalScope
 	private final Obj owner;
 	private final OwningLocal owningLocal = new OwningLocal(this);
 	private final Path ownerScopePath;
-	private final ResolverFactory<LocalResolver> resolverFactory;
+	private final ResolverFactory resolverFactory;
 	private Set<Scope> enclosingScopes;
 	private int anonymousSeq;
 	private boolean allResolved;
@@ -74,7 +74,7 @@ public abstract class LocalScope
 		this.member = member;
 		this.owner = member.getContainer().toObject();
 		this.ownerScopePath = new LocalScopeOwnerStep(this).toPath();
-		this.resolverFactory = new LocalResolver.LocalResolverFactory(this);
+		this.resolverFactory = Resolver.resolverFactory(this);
 	}
 
 	@Override
@@ -189,17 +189,17 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final LocalResolver resolver() {
+	public final Resolver resolver() {
 		return resolverFactory().resolver();
 	}
 
 	@Override
-	public final LocalResolver walkingResolver(Resolver user) {
+	public final Resolver walkingResolver(Resolver user) {
 		return walkingResolver(user.getWalker());
 	}
 
 	@Override
-	public final LocalResolver walkingResolver(PathWalker walker) {
+	public final Resolver walkingResolver(PathWalker walker) {
 		return resolverFactory().walkingResolver(walker);
 	}
 
@@ -369,7 +369,7 @@ public abstract class LocalScope
 		return this.member.toString();
 	}
 
-	protected final ResolverFactory<LocalResolver> resolverFactory() {
+	protected final ResolverFactory resolverFactory() {
 		return this.resolverFactory;
 	}
 

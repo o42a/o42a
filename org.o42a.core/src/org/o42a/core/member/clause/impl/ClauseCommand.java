@@ -23,7 +23,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -53,12 +52,12 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(LocalResolver resolver) {
+	public Action initialValue(Resolver resolver) {
 		return command().initialValue(resolver);
 	}
 
 	@Override
-	public Action initialCond(LocalResolver resolver) {
+	public Action initialCond(Resolver resolver) {
 		return command().initialCond(resolver);
 	}
 
@@ -147,12 +146,12 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public Action initialValue(LocalResolver resolver) {
+		public Action initialValue(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Action initialCond(LocalResolver resolver) {
+		public Action initialCond(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -213,12 +212,12 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public Action initialValue(LocalResolver resolver) {
+		public Action initialValue(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Action initialCond(LocalResolver resolver) {
+		public Action initialCond(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

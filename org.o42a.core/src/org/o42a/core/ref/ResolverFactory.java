@@ -25,10 +25,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathWalker;
 
 
-public abstract class ResolverFactory<R extends Resolver> {
+public abstract class ResolverFactory {
 
 	private final Scope scope;
-	private R resolver;
+	private Resolver resolver;
 
 	public ResolverFactory(Scope scope) {
 		this.scope = scope;
@@ -38,14 +38,14 @@ public abstract class ResolverFactory<R extends Resolver> {
 		return this.scope;
 	}
 
-	public final R resolver() {
+	public final Resolver resolver() {
 		if (this.resolver != null) {
 			return this.resolver;
 		}
 		return this.resolver = createResolver(DUMMY_PATH_WALKER);
 	}
 
-	public final R walkingResolver(PathWalker walker) {
+	public final Resolver walkingResolver(PathWalker walker) {
 		if (walker == null || walker == DUMMY_PATH_WALKER) {
 			return resolver();
 		}
@@ -60,6 +60,6 @@ public abstract class ResolverFactory<R extends Resolver> {
 		return "ResolverFactory[" + this.scope + ']';
 	}
 
-	protected abstract R createResolver(PathWalker walker);
+	protected abstract Resolver createResolver(PathWalker walker);
 
 }
