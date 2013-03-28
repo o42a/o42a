@@ -31,7 +31,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
@@ -100,11 +99,6 @@ public class TypeDefinitionBuilder
 	@Override
 	public final Clause toClause() {
 		return this.object.toClause();
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
-		return null;
 	}
 
 	@Override

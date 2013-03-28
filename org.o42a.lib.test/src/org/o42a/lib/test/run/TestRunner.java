@@ -30,7 +30,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.ObjectType;
@@ -105,7 +104,8 @@ final class TestRunner extends ConstructedObject {
 		final Scope scope = statements.getScope();
 
 		statements.expression(
-				testPath(field, scope)
+				field.getKey()
+				.toPath()
 				.bind(statements, scope)
 				.target(statements.nextDistributor()));
 	}
@@ -134,17 +134,6 @@ final class TestRunner extends ConstructedObject {
 		}
 
 		return field.getDisplayName().replace('_', ' ');
-	}
-
-	private static Path testPath(Field field, Scope scope) {
-
-		final LocalScope localScope = scope.toLocalScope();
-
-		if (localScope == null) {
-			return field.getKey().toPath();
-		}
-
-		return localScope.getEnclosingScopePath().append(field.getKey());
 	}
 
 	private final RunTest runTest;
@@ -190,17 +179,12 @@ final class TestRunner extends ConstructedObject {
 
 		public TypeRef ancestor(LocationInfo location) {
 
-			final Scope localScope = getScope();
-
-			assert localScope.toLocalScope() != null :
-				this + " should be inside of local scope, but is inside of "
-				+ localScope;
-
-			final Path objectPath = localScope.getEnclosingScopePath();
+			final Scope scope = getScope();
+			final Path objectPath = scope.getEnclosingScopePath();
 			final Path testPath = objectPath.append(this.testKey);
 
-			return testPath.bind(location, localScope)
-					.target(localScope.distribute()).toTypeRef();
+			return testPath.bind(location, scope)
+					.target(scope.distribute()).toTypeRef();
 		}
 
 		@Override

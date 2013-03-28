@@ -25,7 +25,6 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.member.type.impl.OverriddenMemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
@@ -69,11 +68,6 @@ public abstract class MemberTypeParameter extends Member {
 
 	@Override
 	public final MemberClause toClause() {
-		return null;
-	}
-
-	@Override
-	public final MemberLocalScope toLocalScope() {
 		return null;
 	}
 

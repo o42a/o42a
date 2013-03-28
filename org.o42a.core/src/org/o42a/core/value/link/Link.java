@@ -24,7 +24,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
@@ -111,11 +110,6 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 
 	@Override
 	public final Clause toClause() {
-		return null;
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
 		return null;
 	}
 

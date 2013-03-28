@@ -24,10 +24,8 @@ import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.*;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PrefixPath;
 
 
 final class TempFieldDefinition extends FieldDefinition {
@@ -59,7 +57,7 @@ final class TempFieldDefinition extends FieldDefinition {
 		if (!this.condition) {
 			definer.setParameters(new ParentTypeParameters(definer));
 		}
-		definer.define(new ExpandMacroBlock(expansion()));
+		definer.define(new ExpandMacroBlock(this.expansion));
 	}
 
 	@Override
@@ -86,23 +84,6 @@ final class TempFieldDefinition extends FieldDefinition {
 			return this.expansion.toString();
 		}
 		return '=' + this.expansion.toString();
-	}
-
-	private Ref expansion() {
-
-		final LocalScope local = this.expansion.getScope().toLocalScope();
-
-		if (local == null) {
-			return this.expansion;
-		}
-
-		final PrefixPath prefix =
-				local.toMember()
-				.getMemberKey()
-				.toPath()
-				.toPrefix(local.getEnclosingScope());
-
-		return this.expansion.prefixWith(prefix);
 	}
 
 }

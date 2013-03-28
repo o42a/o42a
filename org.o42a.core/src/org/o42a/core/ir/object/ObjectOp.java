@@ -31,7 +31,6 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -85,11 +84,6 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public final ObjectPrecision getPrecision() {
 		return this.precision;
-	}
-
-	@Override
-	public final LocalScopeOp toLocalScope() {
-		return null;
 	}
 
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {

@@ -176,33 +176,6 @@ public class CompilerLogger implements Logger {
 				directiveName);
 	}
 
-	public void prohibitedLocal(LogInfo location) {
-		error(
-				"prohibited_local",
-				location,
-				"Local scope declaration is prohibited here");
-	}
-
-	public void prohibitedLocalAbstract(LogInfo location, String fieldName) {
-		error(
-				"prohibited_local_abstract",
-				location,
-				"Local field '%s' can no be abstract",
-				fieldName);
-	}
-
-	public void prohibitedLocalAdapter(LogInfo location) {
-		error("prohibited_local_adapter", location, "Adapter can not be local");
-	}
-
-	public void prohibitedLocalVisibility(LogInfo location, String fieldName) {
-		error(
-				"prohibited_local_visibility",
-				location,
-				"Local field '%s' can not have visibility",
-				fieldName);
-	}
-
 	public void prohibitedPrivateAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_private_abstract",

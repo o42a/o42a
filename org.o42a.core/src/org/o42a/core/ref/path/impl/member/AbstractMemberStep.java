@@ -200,11 +200,6 @@ public abstract class AbstractMemberStep extends Step {
 
 			final Member firstDeclaration = getStep().firstDeclaration();
 
-			if (firstDeclaration.toLocalScope() != null) {
-				// Member is a local scope.
-				return host().toLocalScope();
-			}
-
 			assert firstDeclaration.toField() != null :
 				"Field expected: " + firstDeclaration;
 

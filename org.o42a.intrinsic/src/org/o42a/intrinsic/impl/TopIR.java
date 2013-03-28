@@ -23,7 +23,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.*;
-import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -81,11 +80,6 @@ final class TopIR extends ScopeIR {
 		@Override
 		public HostValueOp value() {
 			return this;
-		}
-
-		@Override
-		public LocalScopeOp toLocalScope() {
-			return null;
 		}
 
 		@Override

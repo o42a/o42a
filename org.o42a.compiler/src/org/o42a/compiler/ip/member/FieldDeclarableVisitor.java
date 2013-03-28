@@ -99,10 +99,6 @@ public final class FieldDeclarableVisitor
 	public FieldDeclaration visitDeclarableAdapter(
 			DeclarableAdapterNode adapterNode,
 			Distributor p) {
-		if (p.getPlace().isImperative()) {
-			p.getLogger().prohibitedLocalAdapter(adapterNode.getPrefix());
-			return null;
-		}
 
 		final MemberRefNode memberNode = adapterNode.getMember();
 
@@ -251,12 +247,6 @@ public final class FieldDeclarableVisitor
 			result = result.override();
 		}
 		if (target.isAbstract()) {
-			if (declaration.getScope().toLocalScope() != null) {
-				declaration.getLogger().prohibitedLocalAbstract(
-						declarator.getDefinitionAssignment(),
-						declaration.getDisplayName());
-				return null;
-			}
 			if (!declaration.getVisibility().isOverridable()) {
 				declaration.getLogger().prohibitedPrivateAbstract(
 						declarator.getDefinitionAssignment(),
@@ -336,12 +326,6 @@ public final class FieldDeclarableVisitor
 		public FieldDeclaration visitScopeRef(
 				ScopeRefNode ref,
 				FieldDeclaration p) {
-			if (p.getScope().toLocalScope() != null) {
-				p.getLogger().prohibitedLocalVisibility(
-						ref,
-						p.getDisplayName());
-				return p.setVisibility(Visibility.PRIVATE);
-			}
 			switch (ref.getType()) {
 			case SELF:
 				return p.setVisibility(Visibility.PRIVATE);
