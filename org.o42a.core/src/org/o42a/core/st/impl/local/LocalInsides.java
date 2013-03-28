@@ -22,7 +22,6 @@ package org.o42a.core.st.impl.local;
 import org.o42a.core.*;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.Local;
@@ -77,37 +76,29 @@ public class LocalInsides extends AbstractContainer {
 	}
 
 	@Override
-	public Path member(
-			ContainerInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn) {
+	public Path member(Access access, MemberId memberId, Obj declaredIn) {
 
-		final Path local = local(accessor, memberId, declaredIn);
+		final Path local = local(access, memberId, declaredIn);
 
 		if (local != null) {
 			return local;
 		}
 
 		return getEnclosingContainer()
-				.member(user, accessor, memberId, declaredIn);
+				.member(access, memberId, declaredIn);
 	}
 
 	@Override
-	public Path findMember(
-			ContainerInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn) {
+	public Path findMember(Access access, MemberId memberId, Obj declaredIn) {
 
-		final Path local = local(accessor, memberId, declaredIn);
+		final Path local = local(access, memberId, declaredIn);
 
 		if (local != null) {
 			return local;
 		}
 
 		return getEnclosingContainer()
-				.findMember(user, accessor, memberId, declaredIn);
+				.findMember(access, memberId, declaredIn);
 	}
 
 	@Override
@@ -118,14 +109,20 @@ public class LocalInsides extends AbstractContainer {
 		return this.local.toString();
 	}
 
-	private Path local(Accessor accessor, MemberId memberId, Obj declaredIn) {
-		if (accessibleBy(accessor) && matchLocal(memberId, declaredIn)) {
+	private Path local(Access access, MemberId memberId, Obj declaredIn) {
+		if (accessibleBy(access) && matchLocal(memberId, declaredIn)) {
 			return getLocal().toPath();
 		}
 		return null;
 	}
 
-	private boolean accessibleBy(Accessor accessor) {
+	private boolean accessibleBy(Access access) {
+		if (access.isLocalsIgnored()) {
+			return false;
+		}
+
+		final Accessor accessor = access.getAccessor();
+
 		return accessor == Accessor.DECLARATION
 				|| accessor == Accessor.OWNER
 				|| accessor == Accessor.ENCLOSED;

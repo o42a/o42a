@@ -23,8 +23,8 @@ import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.member.Accessor;
 import org.o42a.core.member.Member;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.ReversePath;

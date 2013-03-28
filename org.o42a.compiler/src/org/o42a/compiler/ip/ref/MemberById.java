@@ -33,13 +33,10 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKind;
-import org.o42a.core.member.MemberName;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -220,7 +217,10 @@ public class MemberById extends ContainedFragment {
 			accessor = Accessor.ENCLOSED;
 		}
 
-		return container.findMember(this, accessor, this.memberId, declaredIn);
+		return container.findMember(
+				accessor.accessBy(this),
+				this.memberId,
+				declaredIn);
 	}
 
 	private boolean isModule(Container container) {

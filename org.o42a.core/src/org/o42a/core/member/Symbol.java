@@ -25,7 +25,6 @@ import java.util.EnumMap;
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Scope;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 
 

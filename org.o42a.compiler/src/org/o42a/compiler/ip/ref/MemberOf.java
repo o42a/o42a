@@ -64,8 +64,7 @@ public class MemberOf extends ContainedFragment {
 
 		final MemberContainer container = owner.getContainer();
 		final Path memberPath = container.member(
-				this,
-				accessorResolver.getAccessor(),
+				accessorResolver.getAccessor().accessBy(this),
 				this.memberId,
 				this.declaredIn != null
 				? this.declaredIn.getType() : null);

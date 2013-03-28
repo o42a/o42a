@@ -24,7 +24,6 @@ import static org.o42a.core.member.MemberKey.brokenMemberKey;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.meta.Nesting;

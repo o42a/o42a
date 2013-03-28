@@ -451,11 +451,11 @@ public abstract class Obj
 
 	@Override
 	public final Path member(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
+		final Accessor accessor = access.getAccessor();
 		final Member found = objectMember(accessor, memberId, declaredIn);
 
 		if (found != null) {
@@ -505,12 +505,11 @@ public abstract class Obj
 
 	@Override
 	public final Path findMember(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
-		final Path found = member(user, accessor, memberId, declaredIn);
+		final Path found = member(access, memberId, declaredIn);
 
 		if (found != null) {
 			return found;
