@@ -61,9 +61,8 @@ public class LocalScopeRegistry extends MemberRegistry {
 	public FieldBuilder newField(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
-		assert declaration.getPlace().isImperative() :
-			"Imperative field declaration expected: " + declaration;
-		return new FieldBuilder(this, declaration, definition);
+		prohibitedDeclaration(declaration);
+		return null;
 	}
 
 	@Override
