@@ -40,7 +40,6 @@ import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.sentence.Local;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.Name;
@@ -86,7 +85,7 @@ public final class LocalInterpreter {
 		return name.getName();
 	}
 
-	public static Local local(
+	public static boolean local(
 			Interpreter ip,
 			CompilerContext context,
 			Statements<?, ?> statements,
@@ -98,7 +97,7 @@ public final class LocalInterpreter {
 				context.getLogger());
 
 		if (name == null) {
-			return null;
+			return false;
 		}
 		if (declarator.getTarget() != DeclarationTarget.VALUE) {
 			context.getLogger().error(
@@ -109,10 +108,12 @@ public final class LocalInterpreter {
 
 		final Ref ref = localRef(ip, context, statements, declarator);
 
-		return statements.local(
+		statements.local(
 				new Location(context, declarator.getDeclarable()),
 				name,
 				ref);
+
+		return true;
 	}
 
 	private static Name declaredLocalName(
@@ -180,10 +181,10 @@ public final class LocalInterpreter {
 				new Location(context, declarator.getDeclarable()),
 				distributor,
 				EXPRESSION_TYPE_CONSUMER);
-
 		final LinkValueType linkType =
 				definitionLinkType(iface.getKind().getType());
 
+		phrase.referBody();
 		phrase.setAncestor(linkType.typeRef(
 				new Location(context, iface),
 				statements.getScope()));
@@ -199,6 +200,10 @@ public final class LocalInterpreter {
 							phrase.typeConsumer());
 
 			phrase.setTypeParameters(typeParams.toObjectTypeParameters());
+		} else {
+			phrase.setTypeParameters(
+					linkType.typeParameters(value.getInterface())
+					.toObjectTypeParameters());
 		}
 
 		phrase.argument(value);
