@@ -19,7 +19,6 @@
 */
 package org.o42a.core;
 
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.util.Place;
 import org.o42a.util.Place.Trace;
 
@@ -28,14 +27,6 @@ public class ScopePlace {
 
 	public static ScopePlace scopePlace(Scope appearedIn) {
 		return new ScopePlace(appearedIn);
-	}
-
-	public static LocalPlace localPlace(LocalScope appearedIn, Place place) {
-		assert appearedIn != null :
-			"The imperative place not specified";
-		assert place != null :
-			"Place not specified";
-		return new LocalPlace(appearedIn, place);
 	}
 
 	public static final ScopePlace TOP_PLACE = new ScopePlace();
@@ -78,10 +69,6 @@ public class ScopePlace {
 			return this.place.nestedTrace();
 		}
 		return Place.newTrace();
-	}
-
-	public LocalPlace toLocal() {
-		return null;
 	}
 
 	@Override

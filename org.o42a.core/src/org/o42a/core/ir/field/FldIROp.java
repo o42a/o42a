@@ -20,7 +20,6 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.IROp;
 
@@ -42,11 +41,6 @@ public abstract class FldIROp extends IROp implements HostOp {
 
 	public FldIR fld() {
 		return this.fld;
-	}
-
-	@Override
-	public final LocalScopeOp toLocalScope() {
-		return null;
 	}
 
 }

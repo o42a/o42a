@@ -23,7 +23,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -40,8 +39,6 @@ public interface Container extends ScopeInfo {
 	Obj toObject();
 
 	Clause toClause();
-
-	LocalScope toLocalScope();
 
 	Namespace toNamespace();
 

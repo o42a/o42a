@@ -30,7 +30,6 @@ import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -204,25 +203,14 @@ public abstract class ObjectConstructor extends Placed {
 		private HostOp newObject(CodeDirs dirs) {
 
 			final ObjectOp owner;
-			final HostOp host;
-			final LocalScopeOp local = host().toLocalScope();
+			final ObjectOp host = host().materialize(
+					dirs,
+					tempObjHolder(dirs.getAllocator()));
 
-			if (local != null) {
+			if (host == null || host.getPrecision().isExact()) {
 				owner = null;
-				host = local;
 			} else {
-
-				final ObjectOp ownerObject = host().materialize(
-						dirs,
-						tempObjHolder(dirs.getAllocator()));
-
-				if (ownerObject == null
-						|| ownerObject.getPrecision().isExact()) {
-					owner = null;
-				} else {
-					owner = ownerObject;
-				}
-				host = ownerObject;
+				owner = host;
 			}
 
 			return getBuilder().objects().newObject(

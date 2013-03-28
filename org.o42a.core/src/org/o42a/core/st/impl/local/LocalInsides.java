@@ -22,7 +22,6 @@ package org.o42a.core.st.impl.local;
 import org.o42a.core.*;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -65,11 +64,6 @@ public class LocalInsides extends AbstractContainer {
 	@Override
 	public final Clause toClause() {
 		return getEnclosingContainer().toClause();
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
-		return null;
 	}
 
 	@Override

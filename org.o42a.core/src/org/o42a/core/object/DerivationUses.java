@@ -238,14 +238,7 @@ final class DerivationUses {
 		// Run time derivation of implicit sample means
 		// the owner object's value can be constructed at run time.
 		final Obj derived = sample.getDerivedObject();
-		final Obj enclosingObject = sample.getScope().toObject();
-		final Obj owner;
-
-		if (enclosingObject != null) {
-			owner = enclosingObject;
-		} else {
-			owner = sample.getScope().toLocalScope().getOwner();
-		}
+		final Obj owner = sample.getScope().toObject();
 
 		owner.value().uses().useBy(
 				derived.type().rtDerivation(),

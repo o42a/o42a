@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
@@ -83,11 +82,6 @@ public class Namespace extends AbstractContainer {
 	@Override
 	public final Clause toClause() {
 		return this.enclosing.toClause();
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
-		return this.enclosing.toLocalScope();
 	}
 
 	@Override

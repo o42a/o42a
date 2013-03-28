@@ -29,7 +29,6 @@ import java.util.List;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
-import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
@@ -178,11 +177,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	@Override
 	public final MemberClause toClause() {
-		return null;
-	}
-
-	@Override
-	public final MemberLocalScope toLocalScope() {
 		return null;
 	}
 

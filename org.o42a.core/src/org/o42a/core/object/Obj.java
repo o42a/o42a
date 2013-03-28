@@ -45,7 +45,6 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldUses;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.type.impl.DeclaredMemberTypeParameter;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
@@ -210,11 +209,6 @@ public abstract class Obj
 
 	@Override
 	public Clause toClause() {
-		return null;
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
 		return null;
 	}
 
@@ -554,29 +548,22 @@ public abstract class Obj
 	public Path scopePath() {
 
 		final Scope scope = getScope();
-		final Step scopePathStep;
 		final Scope enclosing = scope.getEnclosingScope();
 
-		if (enclosing.toObject() != null) {
+		assert enclosing.toObject() != null :
+			"No enclosing object found";
 
-			final Obj propagatedFrom = getPropagatedFrom();
+		final Obj propagatedFrom = getPropagatedFrom();
 
-			if (propagatedFrom != null) {
-				// Reuse enclosing scope path from object
-				// this one is propagated from.
-				return propagatedFrom.getScope().getEnclosingScopePath();
-			}
-
-			// New scope field is to be created.
-			scopePathStep =
-					new ParentObjectStep(this, SCOPE_FIELD_ID.key(scope));
-		} else {
-			// Enclosing local path.
-			// Will be replaced with dependency during path rebuild.
-			assert enclosing.toLocalScope() != null :
-				"Unsupported kind of enclosing scope: " + enclosing;
-			scopePathStep = new ParentLocalStep(this);
+		if (propagatedFrom != null) {
+			// Reuse enclosing scope path from object
+			// this one is propagated from.
+			return propagatedFrom.getScope().getEnclosingScopePath();
 		}
+
+		// New scope field is to be created.
+		final Step scopePathStep =
+				new ParentObjectStep(this, SCOPE_FIELD_ID.key(scope));
 
 		return scopePathStep.toPath();
 	}

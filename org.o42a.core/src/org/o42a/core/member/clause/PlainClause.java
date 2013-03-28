@@ -34,7 +34,6 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
@@ -238,11 +237,6 @@ public abstract class PlainClause
 	@Override
 	public final Obj toObject() {
 		return getObject();
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
-		return null;
 	}
 
 	@Override

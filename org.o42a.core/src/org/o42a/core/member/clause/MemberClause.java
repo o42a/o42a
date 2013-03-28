@@ -23,7 +23,6 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.member.type.MemberTypeParameter;
 
 
@@ -87,11 +86,6 @@ public abstract class MemberClause extends Member {
 	@Override
 	public final MemberClause toClause() {
 		return this;
-	}
-
-	@Override
-	public final MemberLocalScope toLocalScope() {
-		return null;
 	}
 
 	@Override

@@ -29,8 +29,6 @@ import org.o42a.core.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.MemberPropagatedFromID;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
@@ -111,8 +109,6 @@ public abstract class Member extends Placed {
 	public abstract MemberField toField();
 
 	public abstract MemberClause toClause();
-
-	public abstract MemberLocalScope toLocalScope();
 
 	public abstract Alias toAlias();
 
@@ -207,19 +203,6 @@ public abstract class Member extends Placed {
 		}
 
 		final Container container = getContainer();
-		final LocalScope local = container.toLocalScope();
-
-		if (local != null) {
-
-			final Member overridden =
-					local.getPropagatedFrom().member(getMemberKey());
-
-			assert overridden != null :
-				"Overridden local field " + this + " not found";
-
-			return new Member[] {overridden};
-		}
-
 		final ObjectType containerType = container.toObject().type();
 		final Sample[] containerSamples = containerType.getSamples();
 		final ArrayList<Member> overridden;

@@ -20,7 +20,6 @@
 package org.o42a.core.member;
 
 import org.o42a.core.*;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -62,10 +61,6 @@ public abstract class MemberOwner implements PlaceInfo {
 
 	public final Obj toObject() {
 		return getContainer().toObject();
-	}
-
-	public final LocalScope toLocalScope() {
-		return getContainer().toLocalScope();
 	}
 
 	@Override

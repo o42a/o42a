@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
@@ -95,11 +94,6 @@ public abstract class AbstractScope implements Scope {
 		}
 
 		final Container container = scope.getContainer();
-
-		if (container.toLocalScope() != null) {
-			return STRICT_CONSTRUCTION;
-		}
-
 		final Obj object = container.toObject();
 
 		if (object != null) {
@@ -218,11 +212,6 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public Obj toObject() {
 		return getContainer().toObject();
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
-		return null;
 	}
 
 	@Override
