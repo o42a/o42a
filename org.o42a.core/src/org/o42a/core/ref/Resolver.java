@@ -30,19 +30,18 @@ import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.*;
 
 
-public class Resolver implements LocationInfo {
+public final class Resolver implements LocationInfo {
 
-	public static ResolverFactory<Resolver> resolverFactory(
-			Scope scope) {
+	public static ResolverFactory resolverFactory(Scope scope) {
 		return new DefaultResolverFactory(scope);
 	}
 
-	private final ResolverFactory<?> factory;
+	private final ResolverFactory factory;
 	private final Scope scope;
 	private final PathWalker walker;
 
-	protected Resolver(
-			ResolverFactory<?> factory,
+	Resolver(
+			ResolverFactory factory,
 			Scope scope,
 			PathWalker walker) {
 		this.factory = factory;
@@ -96,13 +95,12 @@ public class Resolver implements LocationInfo {
 		return "Resolver[" + this.scope + ']';
 	}
 
-	@SuppressWarnings("rawtypes")
 	final ResolverFactory factory() {
 		return this.factory;
 	}
 
 	private static final class DefaultResolverFactory
-			extends ResolverFactory<Resolver> {
+			extends ResolverFactory {
 
 		DefaultResolverFactory(Scope scope) {
 			super(scope);

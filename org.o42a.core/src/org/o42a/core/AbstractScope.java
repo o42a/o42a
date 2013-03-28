@@ -160,7 +160,7 @@ public abstract class AbstractScope implements Scope {
 		return null;
 	}
 
-	private final ResolverFactory<Resolver> resolverFactory;
+	private final ResolverFactory resolverFactory;
 	private Set<Scope> enclosingScopes;
 	private int anonymousSeq;
 

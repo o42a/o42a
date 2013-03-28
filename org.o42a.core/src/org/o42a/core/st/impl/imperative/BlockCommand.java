@@ -27,7 +27,6 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -126,14 +125,14 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(LocalResolver resolver) {
+	public Action initialValue(Resolver resolver) {
 		if (getCommandTargets().isEmpty()) {
 			return new ExecuteCommand(this, Condition.TRUE);
 		}
 
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 
-			final Action action = initialValue(sentence, resolver);
+			final Action action = sentenceValue(sentence, resolver);
 			final LoopAction loopAction = action.toLoopAction(getBlock());
 
 			switch (loopAction) {
@@ -155,7 +154,7 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public Action initialCond(LocalResolver resolver) {
+	public Action initialCond(Resolver resolver) {
 		return initialValue(resolver).toInitialCondition();
 	}
 
@@ -239,9 +238,9 @@ public final class BlockCommand extends Command {
 		return targets.removeLooping();
 	}
 
-	private Action initialValue(
+	private Action sentenceValue(
 			ImperativeSentence sentence,
-			LocalResolver resolver) {
+			Resolver resolver) {
 		if (sentence.getCommandTargets().isEmpty()) {
 			return new ExecuteCommand(this, Condition.TRUE);
 		}
@@ -250,7 +249,7 @@ public final class BlockCommand extends Command {
 
 		if (prerequisite != null) {
 
-			final Action action = initialValue(prerequisite, resolver);
+			final Action action = sentenceValue(prerequisite, resolver);
 
 			assert !action.isAbort() :
 				"Prerequisite can not abort execution";
@@ -274,7 +273,7 @@ public final class BlockCommand extends Command {
 		for (int i = 0; i < size; ++i) {
 
 			final Imperatives alt = alternatives.get(i);
-			final Action action = initialValue(alt, resolver);
+			final Action action = altValue(alt, resolver);
 
 			if (action.isAbort()) {
 				return action;
@@ -303,7 +302,7 @@ public final class BlockCommand extends Command {
 		return new ExecuteCommand(sentence, Condition.TRUE);
 	}
 
-	private Action initialValue(Imperatives alt, LocalResolver resolver) {
+	private Action altValue(Imperatives alt, Resolver resolver) {
 
 		Action result = null;
 

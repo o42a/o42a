@@ -51,7 +51,7 @@ public abstract class PlainClause
 		extends Clause
 		implements Scope, ClauseContainer {
 
-	private final ResolverFactory<Resolver> resolverFactory =
+	private final ResolverFactory resolverFactory =
 			Resolver.resolverFactory(this);
 	private Nesting definitionNesting;
 	private Obj clauseObject;
