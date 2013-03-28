@@ -38,7 +38,9 @@ import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.st.sentence.*;
+import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.st.sentence.Statements;
 
 
 public class DefaultStatementVisitor extends StatementVisitor {
@@ -152,10 +154,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 	@Override
 	public Void visitDeclarator(DeclaratorNode declarator, Statements<?, ?> p) {
-
-		final Local local = local(ip(), getContext(), p, declarator);
-
-		if (local != null) {
+		if (local(ip(), getContext(), p, declarator)) {
 			return null;
 		}
 
