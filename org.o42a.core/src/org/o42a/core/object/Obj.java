@@ -71,7 +71,7 @@ import org.o42a.util.fn.Holder;
 
 
 public abstract class Obj
-		extends Placed
+		extends Contained
 		implements MemberContainer, ClauseContainer {
 
 	private final OwningObject owningObject = new OwningObject(this);
@@ -451,7 +451,7 @@ public abstract class Obj
 
 	@Override
 	public final Path member(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -505,7 +505,7 @@ public abstract class Obj
 
 	@Override
 	public final Path findMember(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -1007,21 +1007,16 @@ public abstract class Obj
 	private static final class ObjectDistributor extends Distributor {
 
 		private final Scope scope;
-		private final PlaceInfo placed;
+		private final LocationInfo location;
 
-		ObjectDistributor(Scope scope, PlaceInfo placed) {
+		ObjectDistributor(Scope scope, LocationInfo location) {
 			this.scope = scope;
-			this.placed = placed;
+			this.location = location;
 		}
 
 		@Override
 		public Location getLocation() {
-			return this.placed.getLocation();
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.placed.getPlace();
+			return this.location.getLocation();
 		}
 
 		@Override

@@ -19,11 +19,11 @@
 */
 package org.o42a.core.st.sentence;
 
-import org.o42a.core.PlaceInfo;
+import org.o42a.core.ContainerInfo;
 import org.o42a.util.string.Name;
 
 
-public abstract class ClauseBuilderBase implements PlaceInfo {
+public abstract class ClauseBuilderBase implements ContainerInfo {
 
 	protected abstract Block<?, ?> parentheses(Group group);
 

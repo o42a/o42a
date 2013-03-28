@@ -29,17 +29,15 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class PlacedFragment
+public abstract class ContainedFragment
 		extends BoundFragment
-		implements PlaceInfo {
+		implements ContainerInfo {
 
 	private final Location location;
-	private final ScopePlace place;
 	private final Container container;
 
-	public PlacedFragment(LocationInfo location, Distributor distributor) {
+	public ContainedFragment(LocationInfo location, Distributor distributor) {
 		this.location = location.getLocation();
-		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
 	}
 
@@ -54,11 +52,6 @@ public abstract class PlacedFragment
 	}
 
 	@Override
-	public final ScopePlace getPlace() {
-		return this.place;
-	}
-
-	@Override
 	public final Container getContainer() {
 		return this.container;
 	}
@@ -69,12 +62,12 @@ public abstract class PlacedFragment
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	public final Ref toRef() {

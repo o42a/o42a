@@ -22,7 +22,9 @@ package org.o42a.core.object.common;
 import static org.o42a.core.ref.impl.prediction.ObjectPrediction.predictObject;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
@@ -37,7 +39,6 @@ public abstract class StandaloneObjectScope extends ObjectScope {
 
 	private final Location location;
 	private final Container enclosingContainer;
-	private final ScopePlace place;
 
 	private ScopeIR ir;
 
@@ -46,17 +47,11 @@ public abstract class StandaloneObjectScope extends ObjectScope {
 			Distributor enclosing) {
 		this.location = location.getLocation();
 		this.enclosingContainer = enclosing.getContainer();
-		this.place = enclosing.getPlace();
 	}
 
 	@Override
 	public final Location getLocation() {
 		return this.location;
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.place;
 	}
 
 	@Override

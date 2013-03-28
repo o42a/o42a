@@ -43,7 +43,7 @@ import org.o42a.util.ArrayUtil;
 
 public class TypeDefinitionBuilder
 		extends AbstractContainer
-		implements PlaceInfo{
+		implements ContainerInfo{
 
 	private static final TypeParameterDeclaration[] NO_PARAMETERS =
 			new TypeParameterDeclaration[0];
@@ -61,11 +61,6 @@ public class TypeDefinitionBuilder
 	@Override
 	public final Scope getScope() {
 		return this.object.getScope();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.object.getPlace();
 	}
 
 	@Override
@@ -113,7 +108,7 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public Path member(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -130,7 +125,7 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -139,12 +134,12 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	final void addParameter(TypeParameterDeclaration parameter) {

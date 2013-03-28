@@ -50,7 +50,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public class MemberById extends PlacedFragment {
+public class MemberById extends ContainedFragment {
 
 	private static final MemberName VOID_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("void"));

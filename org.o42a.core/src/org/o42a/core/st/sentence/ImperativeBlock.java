@@ -30,7 +30,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.*;
 import org.o42a.core.value.ValueRequest;
-import org.o42a.util.Place.Trace;
 import org.o42a.util.string.Name;
 
 
@@ -93,7 +92,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	private final Name name;
 	private final SentencesEnv sentencesEnv = new SentencesEnv();
 	private final boolean topLevel;
-	private final Trace trace;
 	private NamedBlocks namedBlocks;
 	private ImplicationEnv initialEnv;
 	private boolean loop;
@@ -116,7 +114,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		this.parentheses = parentheses;
 		this.name = name;
 		this.topLevel = topLevel;
-		this.trace = getPlace().nestedTrace();
 	}
 
 	private ImperativeBlock(
@@ -128,7 +125,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		this.parentheses = false;
 		this.name = prototype.getName();
 		this.topLevel = true;
-		this.trace = getPlace().nestedTrace();
 	}
 
 	public final boolean isTopLevel() {
@@ -219,11 +215,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		reproduceSentences(reproducer, reproduction);
 
 		return reproduction;
-	}
-
-	@Override
-	Trace getTrace() {
-		return this.trace;
 	}
 
 	@Override

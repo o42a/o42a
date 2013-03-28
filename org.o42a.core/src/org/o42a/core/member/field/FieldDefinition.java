@@ -26,8 +26,8 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.impl.InvalidFieldDefinition;
 import org.o42a.core.member.field.impl.RescopedFieldDefinition;
@@ -41,7 +41,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
 
 
-public abstract class FieldDefinition extends Placed {
+public abstract class FieldDefinition extends Contained {
 
 	public static FieldDefinition invalidDefinition(
 			LocationInfo location,

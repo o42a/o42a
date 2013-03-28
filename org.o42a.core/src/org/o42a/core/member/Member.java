@@ -37,7 +37,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.ID;
 
 
-public abstract class Member extends Placed {
+public abstract class Member extends Contained {
 
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 

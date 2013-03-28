@@ -31,7 +31,6 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.Locals;
-import org.o42a.util.Place.Trace;
 
 
 public abstract class Block<
@@ -213,8 +212,6 @@ public abstract class Block<
 
 		return out.toString();
 	}
-
-	abstract Trace getTrace();
 
 	final Locals getLocals() {
 		if (this.locals != null) {

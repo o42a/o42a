@@ -20,7 +20,6 @@
 package org.o42a.intrinsic.impl;
 
 import static java.util.Collections.emptyList;
-import static org.o42a.core.ScopePlace.TOP_PLACE;
 
 import java.util.Collection;
 
@@ -73,11 +72,6 @@ public final class Top extends AbstractScope implements MemberContainer {
 	@Override
 	public boolean isTopScope() {
 		return true;
-	}
-
-	@Override
-	public ScopePlace getPlace() {
-		return TOP_PLACE;
 	}
 
 	@Override
@@ -137,7 +131,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public Path member(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -146,7 +140,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {

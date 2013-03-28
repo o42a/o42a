@@ -35,7 +35,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public class MemberOf extends PlacedFragment {
+public class MemberOf extends ContainedFragment {
 
 	private final MemberId memberId;
 	private final StaticTypeRef declaredIn;

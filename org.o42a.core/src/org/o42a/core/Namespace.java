@@ -96,7 +96,7 @@ public class Namespace extends AbstractContainer {
 
 	@Override
 	public Path member(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -106,7 +106,7 @@ public class Namespace extends AbstractContainer {
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -157,7 +157,7 @@ public class Namespace extends AbstractContainer {
 	}
 
 	private BoundPath findInNs(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -255,7 +255,7 @@ public class Namespace extends AbstractContainer {
 		}
 
 		public BoundPath findField(
-				PlaceInfo user,
+				ContainerInfo user,
 				Accessor accessor,
 				MemberId memberId,
 				Obj declaredIn) {
@@ -296,7 +296,7 @@ public class Namespace extends AbstractContainer {
 
 		@Override
 		public BoundPath findField(
-				PlaceInfo user,
+				ContainerInfo user,
 				Accessor accessor,
 				MemberId memberId,
 				Obj declaredIn) {

@@ -20,9 +20,7 @@
 package org.o42a.core;
 
 
-public interface PlaceInfo extends ScopeInfo {
-
-	ScopePlace getPlace();
+public interface ContainerInfo extends ScopeInfo {
 
 	Container getContainer();
 

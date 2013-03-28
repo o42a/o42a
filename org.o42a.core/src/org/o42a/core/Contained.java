@@ -25,24 +25,22 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogInfo;
 
 
-public class Placed extends Scoped implements PlaceInfo {
+public class Contained extends Scoped implements ContainerInfo {
 
-	public static Distributor distribute(PlaceInfo placed) {
-		return new PlaceDistributor(placed);
+	public static Distributor distribute(ContainerInfo contained) {
+		return new ContainedDistributor(contained);
 	}
 
 	public static Distributor distributeIn(
-			PlaceInfo placed,
+			LocationInfo location,
 			Container container) {
-		return new OtherContainerDistributor(container, placed);
+		return new OtherContainerDistributor(container, location);
 	}
 
-	private final ScopePlace place;
 	private final Container container;
 
-	public Placed(LocationInfo location, Distributor distributor) {
+	public Contained(LocationInfo location, Distributor distributor) {
 		super(location, distributor.getScope());
-		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
 		if (this.container != null) {
 			assert this.container.getScope().is(getScope()) :
@@ -50,22 +48,16 @@ public class Placed extends Scoped implements PlaceInfo {
 		}
 	}
 
-	public Placed(
+	public Contained(
 			CompilerContext context,
 			LogInfo location,
 			Distributor distributor) {
 		super(context, location, distributor.getScope());
-		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
 		if (this.container != null) {
 			assert this.container.getScope().is(getScope()) :
 				this.container + " should be in scope " + getScope();
 		}
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.place;
 	}
 
 	@Override
@@ -83,32 +75,27 @@ public class Placed extends Scoped implements PlaceInfo {
 		return distributeIn(this, container);
 	}
 
-	private static final class PlaceDistributor extends Distributor {
+	private static final class ContainedDistributor extends Distributor {
 
-		private final PlaceInfo placed;
+		private final ContainerInfo contained;
 
-		private PlaceDistributor(PlaceInfo placed) {
-			this.placed = placed;
+		private ContainedDistributor(ContainerInfo contained) {
+			this.contained = contained;
 		}
 
 		@Override
 		public Location getLocation() {
-			return this.placed.getLocation();
+			return this.contained.getLocation();
 		}
 
 		@Override
 		public Scope getScope() {
-			return this.placed.getScope();
+			return this.contained.getScope();
 		}
 
 		@Override
 		public Container getContainer() {
-			return this.placed.getContainer();
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.placed.getPlace();
+			return this.contained.getContainer();
 		}
 
 	}
@@ -116,16 +103,16 @@ public class Placed extends Scoped implements PlaceInfo {
 	private static final class OtherContainerDistributor extends Distributor {
 
 		private final Container container;
-		private final PlaceInfo placed;
+		private final Location location;
 
-		OtherContainerDistributor(Container container, PlaceInfo placed) {
+		OtherContainerDistributor(Container container, LocationInfo location) {
 			this.container = container;
-			this.placed = placed;
+			this.location = location.getLocation();
 		}
 
 		@Override
 		public Location getLocation() {
-			return this.placed.getLocation();
+			return this.location.getLocation();
 		}
 
 		@Override
@@ -136,11 +123,6 @@ public class Placed extends Scoped implements PlaceInfo {
 		@Override
 		public Container getContainer() {
 			return this.container;
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.placed.getPlace();
 		}
 
 	}

@@ -25,8 +25,8 @@ import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE
 
 import java.util.IdentityHashMap;
 
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
@@ -45,7 +45,7 @@ import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 
 
-public abstract class ObjectConstructor extends Placed {
+public abstract class ObjectConstructor extends Contained {
 
 	private final Construction construction = new Construction(this);
 	private Obj constructed;

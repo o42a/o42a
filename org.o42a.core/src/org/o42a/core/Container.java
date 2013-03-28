@@ -58,7 +58,7 @@ public interface Container extends ScopeInfo {
 	 * @return member path or <code>null</code> if member not found.
 	 */
 	Path member(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn);
@@ -66,7 +66,7 @@ public interface Container extends ScopeInfo {
 	/**
 	 * Searches for the member in current container.
 	 *
-	 * <p>In contrast to {@link #member(PlaceInfo, Accessor, MemberId, Obj)}
+	 * <p>In contrast to {@link #member(ContainerInfo, Accessor, MemberId, Obj)}
 	 * the result is not necessarily belongs to this container. For example,
 	 * it may return a path to member from used name space or to clause inside
 	 * a group.</p>
@@ -80,7 +80,7 @@ public interface Container extends ScopeInfo {
 	 * @return member path or <code>null</code> if member not found.
 	 */
 	Path findMember(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn);

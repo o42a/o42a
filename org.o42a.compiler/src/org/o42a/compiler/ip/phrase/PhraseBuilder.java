@@ -46,8 +46,8 @@ import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.ascendant.SampleSpecVisitor;
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
@@ -59,7 +59,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ObjectTypeParameters;
 
 
-public final class PhraseBuilder extends Placed {
+public final class PhraseBuilder extends Contained {
 
 	private final Interpreter ip;
 	private final Phrase phrase;

@@ -78,7 +78,7 @@ public class LocalInsides extends AbstractContainer {
 
 	@Override
 	public Path member(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -95,7 +95,7 @@ public class LocalInsides extends AbstractContainer {
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {

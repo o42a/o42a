@@ -23,7 +23,9 @@ import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.*;
@@ -240,11 +242,6 @@ public final class DeclaredGroupClause
 		@Override
 		public Location getLocation() {
 			return this.clause.getLocation();
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.enclosingDistributor.getPlace();
 		}
 
 		@Override

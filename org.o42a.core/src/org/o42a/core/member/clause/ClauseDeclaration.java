@@ -21,8 +21,8 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.member.MemberName.clauseName;
 
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -31,7 +31,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.Name;
 
 
-public class ClauseDeclaration extends Placed implements Cloneable {
+public class ClauseDeclaration extends Contained implements Cloneable {
 
 	public static ClauseDeclaration clauseDeclaration(
 			LocationInfo location,

@@ -23,8 +23,8 @@ import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueKnowledge.*;
 
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
@@ -37,7 +37,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
 
 
-public final class Array extends Placed {
+public final class Array extends Contained {
 
 	private final Array origin;
 	private final PrefixPath prefix;

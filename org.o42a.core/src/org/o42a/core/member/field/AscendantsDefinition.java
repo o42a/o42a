@@ -24,8 +24,8 @@ import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.member.field.impl.AscendantsFieldDefinition;
 import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.ref.path.PrefixPath;
@@ -39,7 +39,7 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.util.ArrayUtil;
 
 
-public class AscendantsDefinition extends Placed implements Cloneable {
+public class AscendantsDefinition extends Contained implements Cloneable {
 
 	private static final StaticTypeRef[] NO_SAMPLES = new StaticTypeRef[0];
 

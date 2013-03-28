@@ -44,14 +44,13 @@ import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.LocalInsides;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.util.Place.Trace;
 import org.o42a.util.string.Name;
 
 
 public abstract class Statements<
 		S extends Statements<S, L>,
 		L extends Implication<L>>
-				extends Placed {
+				extends Contained {
 
 	private final Sentence<S, L> sentence;
 	private final ArrayList<L> implications = new ArrayList<>(1);
@@ -305,10 +304,6 @@ public abstract class Statements<
 	}
 
 	protected abstract L implicate(Statement statement);
-
-	final Trace getTrace() {
-		return getSentence().getBlock().getTrace();
-	}
 
 	void reproduce(Sentence<S, L> sentence, Reproducer reproducer) {
 
