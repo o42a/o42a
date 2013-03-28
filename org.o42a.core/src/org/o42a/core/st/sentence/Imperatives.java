@@ -22,7 +22,6 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.Command.noCommands;
 
 import org.o42a.core.Container;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.BlockCommandEnv;
@@ -36,11 +35,6 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	Imperatives(LocationInfo location, ImperativeSentence sentence) {
 		super(location, sentence);
-	}
-
-	@Override
-	public final LocalScope getScope() {
-		return super.getScope().toLocalScope();
 	}
 
 	@Override

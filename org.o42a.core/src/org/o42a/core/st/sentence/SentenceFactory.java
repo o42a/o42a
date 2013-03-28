@@ -21,13 +21,11 @@ package org.o42a.core.st.sentence;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.impl.declarative.DeclarativeIssueFactory;
 import org.o42a.core.st.impl.imperative.ImperativeGroupFactory;
 import org.o42a.core.st.impl.imperative.ImperativeIssueFactory;
-import org.o42a.util.fn.Lambda;
 import org.o42a.util.string.Name;
 
 
@@ -75,7 +73,7 @@ public abstract class SentenceFactory<
 			Group group,
 			Distributor distributor,
 			Name name,
-			Lambda<MemberRegistry, LocalScope> memberRegistry);
+			MemberRegistry memberRegistry);
 
 	public abstract T propose(LocationInfo location, B block);
 

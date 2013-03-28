@@ -20,7 +20,6 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.ir.local.InlineControl.inlineControl;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.Scope;
@@ -31,14 +30,8 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.local.InlineControl;
-import org.o42a.core.ir.local.LocalScopeIR;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
@@ -47,28 +40,16 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
-import org.o42a.util.string.ID;
 
 
 public final class ImperativeDefiner extends Definer {
 
-	private static final ID OWNER_ID = ID.id("owner");
-
-	private final PrefixPath localPrefix;
 	private final Command command;
 
 	public ImperativeDefiner(ImperativeBlock block, DefinerEnv env) {
 		super(block, env);
-
-		final LocalScope localScope = block.getScope();
-		final Scope ownerScope = localScope.getEnclosingScope();
-
-		this.localPrefix =
-				localScope.toMember()
-				.getMemberKey()
-				.toPath()
-				.toPrefix(ownerScope);
-		this.command = block.command(new ImperativeDefinerCommandEnv(this, env));
+		this.command =
+				block.command(new ImperativeDefinerCommandEnv(env));
 	}
 
 	public final ImperativeBlock getBlock() {
@@ -79,10 +60,6 @@ public final class ImperativeDefiner extends Definer {
 		return this.command;
 	}
 
-	public final PrefixPath getLocalPrefix() {
-		return this.localPrefix;
-	}
-
 	@Override
 	public DefTargets getDefTargets() {
 		return this.command.getCommandTargets().toDefTargets();
@@ -91,8 +68,7 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public DefTarget toTarget(Scope origin) {
 
-		final Scope localScope = getLocalPrefix().rescope(origin);
-		final DefTarget target = getCommand().toTarget(localScope);
+		final DefTarget target = getCommand().toTarget(origin);
 
 		if (target == null) {
 			return null;
@@ -104,41 +80,25 @@ public final class ImperativeDefiner extends Definer {
 			return target;
 		}
 
-		return new DefTarget(ref.prefixWith(getLocalPrefix()));
+		return new DefTarget(ref);
 	}
 
 	@Override
 	public TypeParameters<?> typeParameters(Scope scope) {
-
-		final Scope localScope = getLocalPrefix().rescope(scope);
-		final TypeParameters<?> typeParameters =
-				getCommand().typeParameters(localScope);
-
-		if (typeParameters == null) {
-			return null;
-		}
-
-		return typeParameters.prefixWith(getLocalPrefix());
+		return getCommand().typeParameters(scope);
 	}
 
 	@Override
 	public DefValue value(Resolver resolver) {
 
-		final LocalScope local =
-				getLocalPrefix().rescope(resolver.getScope()).toLocalScope();
-
-		assert local != null :
-			"Not a local scope: " + resolver;
-
-		final Action initialValue = getCommand()
-				.initialValue(local.walkingResolver(resolver));
+		final Action initialValue = getCommand().initialValue(resolver);
 
 		if (initialValue.isAbort()) {
 
 			final Value<?> value = initialValue.getValue();
 
 			if (value != null) {
-				return defValue(value.prefixWith(getLocalPrefix()));
+				return defValue(value);
 			}
 
 			return initialValue.getCondition().toDefValue();
@@ -154,24 +114,19 @@ public final class ImperativeDefiner extends Definer {
 
 	@Override
 	public void resolveTargets(TargetResolver resolver, Scope origin) {
-
-		final Scope localScope = getLocalPrefix().rescope(origin);
-
-		getCommand().resolveTargets(resolver, localScope);
+		getCommand().resolveTargets(resolver, origin);
 	}
 
 	@Override
 	public InlineEval inline(Normalizer normalizer, Scope origin) {
 
-		final InlineCmd inline = getCommand().inline(
-				normalizer,
-				getLocalPrefix().rescope(origin));
+		final InlineCmd inline = getCommand().inline(normalizer, origin);
 
 		if (inline == null) {
 			return null;
 		}
 
-		return new InlineLocal(inline);
+		return new InlineImperative(inline);
 	}
 
 	@Override
@@ -193,25 +148,19 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public Eval eval(CodeBuilder builder, Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new ImperativeEval(getBlock(), getCommand());
+		return new ImperativeEval(getCommand());
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-
-		final LocalScope local =
-				getLocalPrefix().rescope(resolver.getScope()).toLocalScope();
-
-		getCommand().resolveAll(
-				local.walkingResolver(resolver.getResolver())
-				.fullResolver(resolver.refUser(), resolver.refUsage()));
+		getCommand().resolveAll(resolver);
 	}
 
-	private static final class InlineLocal extends InlineEval {
+	private static final class InlineImperative extends InlineEval {
 
 		private final InlineCmd cmd;
 
-		InlineLocal(InlineCmd cmd) {
+		InlineImperative(InlineCmd cmd) {
 			super(null);
 			this.cmd = cmd;
 		}
@@ -243,27 +192,20 @@ public final class ImperativeDefiner extends Definer {
 
 	private static final class ImperativeEval implements Eval {
 
-		private final ImperativeBlock block;
 		private final Command command;
 
-		ImperativeEval(ImperativeBlock block, Command command) {
-			this.block = block;
+		ImperativeEval(Command command) {
 			this.command = command;
 		}
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ObjectOp ownerObject = host.materialize(
-					dirs.dirs(),
-					tempObjHolder(dirs.getAllocator()));
-			final LocalScope scope = getBlock().getScope().toLocalScope();
-			final Obj ownerType = scope.getOwner();
-			final ObjOp ownerBody =
-					ownerObject.cast(OWNER_ID, dirs.dirs(), ownerType);
-			final LocalScopeIR ir = scope.ir(host.getGenerator());
+			final InlineControl control = inlineControl(dirs);
 
-			ir.write(dirs, ownerBody, null, this.command);
+			this.command.cmd().write(control);
+
+			control.end();
 		}
 
 		@Override
@@ -272,10 +214,6 @@ public final class ImperativeDefiner extends Definer {
 				return super.toString();
 			}
 			return this.command.toString();
-		}
-
-		private final ImperativeBlock getBlock() {
-			return this.block;
 		}
 
 	}

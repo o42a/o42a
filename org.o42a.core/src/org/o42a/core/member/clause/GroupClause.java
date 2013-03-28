@@ -76,8 +76,6 @@ public abstract class GroupClause extends Clause implements Container {
 
 	public abstract boolean isImperative();
 
-	public abstract LocalScope getLocalScope();
-
 	@Override
 	public final PlainClause toPlainClause() {
 		return null;
@@ -92,9 +90,6 @@ public abstract class GroupClause extends Clause implements Container {
 	public MemberClause[] getSubClauses() {
 		if (this.subClauses != null) {
 			return this.subClauses;
-		}
-		if (getLocalScope() != null) {
-			return this.subClauses = new MemberClause[0];
 		}
 
 		MemberClause[] subClauses = new MemberClause[0];
@@ -154,10 +149,6 @@ public abstract class GroupClause extends Clause implements Container {
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
-		if (getLocalScope() != null) {
-			return null;
-		}
-
 		if (memberId.getEnclosingId() == null) {
 			return getEnclosingContainer().member(
 					user,
@@ -179,10 +170,6 @@ public abstract class GroupClause extends Clause implements Container {
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
-		if (getLocalScope() != null) {
-			return null;
-		}
-
 		if (memberId.getEnclosingId() == null) {
 
 			final Path foundInGroup = getEnclosingContainer().findMember(
@@ -208,29 +195,6 @@ public abstract class GroupClause extends Clause implements Container {
 
 	@Override
 	protected void fullyResolve() {
-	}
-
-	@Override
-	protected Path buildPathInObject() {
-
-		final Path pathInObject = super.buildPathInObject();
-		final LocalScope localScope = getLocalScope();
-
-		if (localScope == null) {
-			return pathInObject;
-		}
-
-		final Member member = localScope.toMember();
-		final Scope enclosingScope = getEnclosingScope();
-		final Clause enclosingClause = enclosingScope.getContainer().toClause();
-
-		if (enclosingClause == null) {
-			assert enclosingScope.toObject() != null :
-				this + " is not inside of object";
-			return member.getMemberKey().toPath();
-		}
-
-		return enclosingClause.pathInObject().append(member.getMemberKey());
 	}
 
 	protected MemberClause groupClause(MemberId memberId, Obj declaredIn) {

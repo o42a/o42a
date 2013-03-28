@@ -78,7 +78,7 @@ public class Scoped extends Located implements ScopeInfo {
 	}
 
 	@Override
-	public Scope getScope() {
+	public final Scope getScope() {
 		return this.scope;
 	}
 
