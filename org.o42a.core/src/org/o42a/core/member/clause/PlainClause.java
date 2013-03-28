@@ -38,7 +38,9 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
@@ -49,7 +51,7 @@ public abstract class PlainClause
 		extends Clause
 		implements Scope, ClauseContainer {
 
-	private final ResolverFactory<Resolver, FullResolver> resolverFactory =
+	private final ResolverFactory<Resolver> resolverFactory =
 			Resolver.resolverFactory(this);
 	private Nesting definitionNesting;
 	private Obj clauseObject;

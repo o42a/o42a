@@ -28,7 +28,6 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
@@ -148,7 +147,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(FullLocalResolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		getValueAdapter().resolveAll(resolver);
 	}
 

@@ -27,12 +27,9 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
@@ -196,7 +193,7 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(FullLocalResolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		getCommandTargets();
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 			resolveSentence(resolver, sentence);
@@ -396,7 +393,7 @@ public final class BlockCommand extends Command {
 	}
 
 	private static void resolveSentence(
-			FullLocalResolver resolver,
+			FullResolver resolver,
 			ImperativeSentence sentence) {
 
 		final ImperativeSentence prerequisite = sentence.getPrerequisite();
@@ -410,7 +407,7 @@ public final class BlockCommand extends Command {
 	}
 
 	private static void resolveStatements(
-			FullLocalResolver resolver,
+			FullResolver resolver,
 			Imperatives imperatives) {
 		assert imperatives.assertInstructionsExecuted();
 		for (Command command : imperatives.getImplications()) {
