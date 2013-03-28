@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.ScopePlace.scopePlace;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +34,7 @@ import org.o42a.core.value.TypeParameters;
 public abstract class Sentence<
 		S extends Statements<S, L>,
 		L extends Implication<L>>
-				extends Placed {
+				extends Contained {
 
 	private final Block<S, L> block;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
@@ -255,13 +253,11 @@ public abstract class Sentence<
 		private final Location location;
 		private final Block<?, ?> block;
 		private final Container container;
-		private final ScopePlace place;
 
 		SentenceDistributor(LocationInfo location, Block<?, ?> block) {
 			this.location = location.getLocation();
 			this.block = block;
 			this.container = block.nextContainer();
-			this.place = scopePlace(getScope());
 		}
 
 		@Override
@@ -277,11 +273,6 @@ public abstract class Sentence<
 		@Override
 		public Container getContainer() {
 			return this.container;
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.place;
 		}
 
 	}

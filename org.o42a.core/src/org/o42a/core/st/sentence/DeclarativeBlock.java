@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.Distributor.containerDistributor;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
@@ -33,7 +33,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.BlockDefiner;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
-import org.o42a.util.Place.Trace;
 
 
 public final class DeclarativeBlock extends Block<Declaratives, Definer> {
@@ -61,7 +60,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 			MemberRegistry memberRegistry) {
 		this(
 				location,
-				declarativeDistributor(container),
+				containerDistributor(container),
 				memberRegistry);
 	}
 
@@ -162,7 +161,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 		if (enclosing == null) {
 			reproduction = new DeclarativeBlock(
 					this,
-					declarativeDistributor(reproducer.getContainer()),
+					containerDistributor(reproducer.getContainer()),
 					null,
 					reproducer.getMemberRegistry(),
 					DECLARATIVE_FACTORY,
@@ -190,11 +189,6 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 
 	public final DefinerEnv getInitialEnv() {
 		return this.definer.env();
-	}
-
-	@Override
-	final Trace getTrace() {
-		return null;
 	}
 
 	@Override

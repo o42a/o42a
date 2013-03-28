@@ -21,13 +21,13 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
 
-import org.o42a.core.Placed;
+import org.o42a.core.Contained;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.Name;
 
 
-public final class Group extends Placed {
+public final class Group extends Contained {
 
 	private final ClauseBuilder builder;
 	private final Statements<?, ?> statements;

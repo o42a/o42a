@@ -36,8 +36,8 @@ import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.object.Obj;
@@ -160,7 +160,7 @@ public class ClauseInterpreter {
 			Statements<?, ?> statements) {
 
 		final Distributor distributor =
-				new Placed(context, declarator, statements.nextDistributor())
+				new Contained(context, declarator, statements.nextDistributor())
 				.distribute();
 		ClauseDeclaration declaration = declarator.getClauseId().accept(
 				CLAUSE_ID_VISITOR,

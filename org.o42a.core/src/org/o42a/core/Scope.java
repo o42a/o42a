@@ -38,7 +38,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.string.ID;
 
 
-public interface Scope extends PlaceInfo {
+public interface Scope extends ContainerInfo {
 
 	CompilerContext getContext();
 

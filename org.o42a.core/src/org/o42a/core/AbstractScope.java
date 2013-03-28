@@ -226,12 +226,12 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	@Override

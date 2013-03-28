@@ -28,7 +28,7 @@ import org.o42a.ast.field.AbstractDeclarableVisitor;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.core.Placed;
+import org.o42a.core.Contained;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
@@ -90,8 +90,8 @@ final class TypeParameterKeyVisitor
 				declaredInRef != null ? declaredInRef.getType() : null;
 
 		final MemberName fieldName = fieldName(name.getName());
-		final Placed location =
-				new Placed(p.getContext(), ref, p.distribute());
+		final Contained location =
+				new Contained(p.getContext(), ref, p.distribute());
 
 		if (!this.overridden) {
 			return fieldName.key(p.getScope());

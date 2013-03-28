@@ -19,9 +19,9 @@
 */
 package org.o42a.core.st.impl;
 
-import static org.o42a.core.ScopePlace.scopePlace;
-
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Sentence;
@@ -31,16 +31,12 @@ public final class StatementsDistributor extends Distributor {
 
 	private final Location location;
 	private final Sentence<?, ?> sentence;
-	private final ScopePlace place;
 
 	public StatementsDistributor(
 			LocationInfo location,
 			Sentence<?, ?> sentence) {
 		this.location = location.getLocation();
 		this.sentence = sentence;
-		this.place = scopePlace(getScope());
-		assert getScope() != null :
-			"Scope not set";
 	}
 
 	@Override
@@ -56,11 +52,6 @@ public final class StatementsDistributor extends Distributor {
 	@Override
 	public Container getContainer() {
 		return this.sentence.getContainer();
-	}
-
-	@Override
-	public ScopePlace getPlace() {
-		return this.place;
 	}
 
 }

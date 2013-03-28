@@ -48,7 +48,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.Name;
 
 
-public final class Local extends Step implements PlaceInfo {
+public final class Local extends Step implements ContainerInfo {
 
 	public static final Name ANONYMOUS_LOCAL_NAME =
 			CASE_SENSITIVE.canonicalName("L");
@@ -105,23 +105,18 @@ public final class Local extends Step implements PlaceInfo {
 	}
 
 	@Override
-	public final ScopePlace getPlace() {
-		return ref().getPlace();
-	}
-
-	@Override
 	public final Container getContainer() {
 		return ref().getContainer();
 	}
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	@Override

@@ -139,7 +139,7 @@ public abstract class GroupClause extends Clause implements Container {
 
 	@Override
 	public Path member(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -160,7 +160,7 @@ public abstract class GroupClause extends Clause implements Container {
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
+			ContainerInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
