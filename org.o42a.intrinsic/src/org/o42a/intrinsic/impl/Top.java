@@ -28,7 +28,6 @@ import org.o42a.core.*;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Prediction;
@@ -131,8 +130,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public Path member(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return null;
@@ -140,8 +138,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public Path findMember(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return null;

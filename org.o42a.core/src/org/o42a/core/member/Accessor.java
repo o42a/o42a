@@ -17,7 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object;
+package org.o42a.core.member;
+
+import org.o42a.core.ContainerInfo;
 
 
 public enum Accessor {
@@ -84,5 +86,9 @@ public enum Accessor {
 	};
 
 	public abstract boolean implies(Accessor accessor);
+
+	public final Access accessBy(ContainerInfo user) {
+		return new Access(user, this);
+	}
 
 }

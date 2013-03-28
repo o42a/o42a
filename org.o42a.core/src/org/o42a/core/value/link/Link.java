@@ -20,11 +20,8 @@
 package org.o42a.core.value.link;
 
 import org.o42a.core.*;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.FullResolver;
@@ -118,26 +115,22 @@ public abstract class Link extends AbstractContainer implements ContainerInfo {
 
 	@Override
 	public final Path member(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return getEnclosingContainer().member(
-				user,
-				accessor,
+				access,
 				memberId,
 				declaredIn);
 	}
 
 	@Override
 	public Path findMember(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return getEnclosingContainer().findMember(
-				user,
-				accessor,
+				access,
 				memberId,
 				declaredIn);
 	}

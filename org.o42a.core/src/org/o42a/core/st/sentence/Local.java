@@ -33,9 +33,9 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -227,8 +227,7 @@ public final class Local extends Step implements ContainerInfo {
 				reproducer.getReproducer()
 				.getContainer()
 				.member(
-						this,
-						Accessor.OWNER,
+						Accessor.OWNER.accessBy(this),
 						localName(getName()),
 						reproducer.getScope().toObject());
 

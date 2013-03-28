@@ -27,12 +27,9 @@ import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.*;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.type.MemberTypeParameter;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -108,8 +105,7 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public Path member(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
@@ -125,11 +121,10 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public Path findMember(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-		return member(user, accessor, memberId, declaredIn);
+		return member(access, memberId, declaredIn);
 	}
 
 	@Override

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
 import org.o42a.core.ref.Ref;
@@ -96,39 +95,36 @@ public class Namespace extends AbstractContainer {
 
 	@Override
 	public Path member(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return getEnclosingContainer()
-				.member(user, accessor, memberId, declaredIn);
+				.member(access, memberId, declaredIn);
 	}
 
 	@Override
 	public Path findMember(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
 		final Path foundInEnclosing =
 				getEnclosingContainer()
-				.member(user, accessor, memberId, declaredIn);
+				.member(access, memberId, declaredIn);
 
 		if (foundInEnclosing != null) {
 			return foundInEnclosing;
 		}
-		if (accessibleBy(accessor)) {
+		if (accessibleBy(access.getAccessor())) {
 
-			final BoundPath foundInNS =
-					findInNs(user, accessor, memberId, declaredIn);
+			final BoundPath foundInNS = findInNs(access, memberId, declaredIn);
 
 			if (foundInNS != null) {
 				return foundInNS.getPath();
 			}
 		}
 
-		return this.enclosing.findMember(user, accessor, memberId, declaredIn);
+		return this.enclosing.findMember(access, memberId, declaredIn);
 	}
 
 	@Override
@@ -157,8 +153,7 @@ public class Namespace extends AbstractContainer {
 	}
 
 	private BoundPath findInNs(
-			ContainerInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
@@ -173,8 +168,7 @@ public class Namespace extends AbstractContainer {
 
 		for (NsUse use : this.uses) {
 
-			final BoundPath found =
-					use.findField(user, accessor, memberId, declaredIn);
+			final BoundPath found = use.findField(access, memberId, declaredIn);
 
 			if (found == null) {
 				continue;
@@ -185,7 +179,7 @@ public class Namespace extends AbstractContainer {
 			if (result != null) {
 				if (resultPriority == priority) {
 					getContext().getLogger().ambiguousMember(
-							user.getLocation(),
+							access.getLocation(),
 							memberId.toString());
 					return null;
 				}
@@ -255,14 +249,12 @@ public class Namespace extends AbstractContainer {
 		}
 
 		public BoundPath findField(
-				ContainerInfo user,
-				Accessor accessor,
+				Access access,
 				MemberId memberId,
 				Obj declaredIn) {
 
 			final Path found = getContainer().findMember(
-					user,
-					accessor,
+					access,
 					memberId,
 					declaredIn);
 
@@ -296,8 +288,7 @@ public class Namespace extends AbstractContainer {
 
 		@Override
 		public BoundPath findField(
-				ContainerInfo user,
-				Accessor accessor,
+				Access access,
 				MemberId memberId,
 				Obj declaredIn) {
 			if (declaredIn != null) {
