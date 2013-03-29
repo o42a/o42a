@@ -23,6 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.IntervalInterpreter.invalidIntervalBracket;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
+import static org.o42a.compiler.ip.ref.AccessDistributor.accessDistributor;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
@@ -40,15 +41,16 @@ import org.o42a.common.phrase.Phrase;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.phrase.part.UnaryPhraseOperator;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.ascendant.SampleSpecVisitor;
-import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
+import org.o42a.core.Contained;
 import org.o42a.core.Scope;
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
@@ -59,19 +61,22 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ObjectTypeParameters;
 
 
-public final class PhraseBuilder extends Placed {
+public final class PhraseBuilder extends Contained {
 
 	private final Interpreter ip;
 	private final Phrase phrase;
+	private final AccessSource accessSource;
 	private final TypeConsumer typeConsumer;
 
 	public PhraseBuilder(
 			Interpreter ip,
-			Phrase phrase,
+			LocationInfo location,
+			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
-		super(phrase, phrase.distribute());
+		super(location, distributor);
 		this.ip = ip;
-		this.phrase = phrase;
+		this.accessSource = distributor.getAccessSource();
+		this.phrase = new Phrase(location, distributor);
 		if (typeConsumer != EXPRESSION_TYPE_CONSUMER) {
 			this.typeConsumer = typeConsumer;
 		} else {
@@ -80,16 +85,12 @@ public final class PhraseBuilder extends Placed {
 		}
 	}
 
-	public PhraseBuilder(
-			Interpreter ip,
-			LocationInfo location,
-			Distributor distributor,
-			TypeConsumer typeConsumer) {
-		this(ip, new Phrase(location, distributor), typeConsumer);
-	}
-
 	public final Interpreter ip() {
 		return this.ip;
+	}
+
+	public final AccessSource getAccessSource() {
+		return this.accessSource;
 	}
 
 	public final Phrase phrase() {
@@ -133,7 +134,7 @@ public final class PhraseBuilder extends Placed {
 
 	public PhraseBuilder prefixByAscendants(AscendantsNode node) {
 
-		final Distributor distributor = distribute();
+		final AccessDistributor distributor = distributeAccess();
 		final AncestorTypeRef ancestor =
 				ip().typeIp().parseAncestor(node, distributor);
 
@@ -202,7 +203,7 @@ public final class PhraseBuilder extends Placed {
 								typeParameters == null
 								? TARGET_REFERRAL : BODY_REFERRAL,
 								typeConsumer()),
-						distribute());
+						distributeAccess());
 
 		if (ancestor == null || ancestor.isImplied()) {
 			setImpliedAncestor(location(this, expression));
@@ -304,7 +305,7 @@ public final class PhraseBuilder extends Placed {
 			return this;
 		}
 
-		final Ref value = text.accept(ip().bodyExVisitor(), distribute());
+		final Ref value = text.accept(ip().bodyExVisitor(), distributeAccess());
 
 		if (value != null) {
 			return argument(value);
@@ -319,7 +320,7 @@ public final class PhraseBuilder extends Placed {
 				ip(),
 				getContext(),
 				brackets,
-				distribute());
+				distributeAccess());
 
 		phrase().array(array.toRef());
 
@@ -351,7 +352,7 @@ public final class PhraseBuilder extends Placed {
 			leftOpen = interval.isLeftOpen();
 			leftBound = leftBoundNode.toExpression().accept(
 					ip().targetExVisitor(),
-					distribute());
+					distributeAccess());
 			if (leftBound != null) {
 				leftLocation = leftBound;
 			} else {
@@ -381,7 +382,7 @@ public final class PhraseBuilder extends Placed {
 			rightOpen = interval.isRightOpen();
 			rightBound = rightBoundNode.toExpression().accept(
 					ip().targetExVisitor(),
-					distribute());
+					distributeAccess());
 			if (rightBound != null) {
 				rightLocation = rightBound;
 			} else {
@@ -430,7 +431,7 @@ public final class PhraseBuilder extends Placed {
 
 		final Ref operand = node.getOperand().accept(
 				ip().targetExVisitor(typeConsumer().noConsumption()),
-				distribute());
+				distributeAccess());
 
 		if (operand == null) {
 			return null;
@@ -450,7 +451,7 @@ public final class PhraseBuilder extends Placed {
 			return null;
 		}
 
-		final Distributor distributor = distribute();
+		final AccessDistributor distributor = distributeAccess();
 		final Ref left = node.getLeftOperand().accept(
 				ip().targetExVisitor(),
 				distributor);
@@ -475,7 +476,7 @@ public final class PhraseBuilder extends Placed {
 		}
 
 		phrase().binary(
-				location(distributor, node.getSign()),
+				location(this, node.getSign()),
 				operator,
 				right);
 
@@ -486,7 +487,7 @@ public final class PhraseBuilder extends Placed {
 
 		final Ref prefix = node.getLeftOperand().accept(
 				ip().targetExVisitor(),
-				distribute());
+				distributeAccess());
 
 		if (prefix == null) {
 			return null;
@@ -502,6 +503,10 @@ public final class PhraseBuilder extends Placed {
 				location(this, statement.getNode().getOperator()),
 				statement.getValue());
 		return this;
+	}
+
+	public final AccessDistributor distributeAccess() {
+		return accessDistributor(distribute(), getAccessSource());
 	}
 
 	public final Ref toRef() {
@@ -584,7 +589,9 @@ public final class PhraseBuilder extends Placed {
 
 		@Override
 		public Obj findObjectIn(Scope enclosing) {
-			return this.phrase.toRef().resolve(enclosing.resolver()).toObject();
+			return this.phrase.toRef()
+					.resolve(enclosing.resolver())
+					.toObject();
 		}
 
 		@Override

@@ -22,7 +22,7 @@ package org.o42a.intrinsic.impl;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.core.Namespace;
-import org.o42a.core.object.Accessor;
+import org.o42a.core.member.Accessor;
 import org.o42a.core.source.Intrinsics;
 
 

@@ -23,8 +23,8 @@ import static org.o42a.common.ref.MayDereferenceFragment.mayDereference;
 
 import org.o42a.common.macro.Macros;
 import org.o42a.common.phrase.part.*;
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
@@ -37,7 +37,7 @@ import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.util.string.Name;
 
 
-public class Phrase extends Placed {
+public class Phrase extends Contained {
 
 	private CompilerLogger resolutionLogger;
 	private SuffixedByPhrase suffixed;

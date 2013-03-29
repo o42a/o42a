@@ -51,7 +51,7 @@ public enum ConstructionMode {
 	 * Strict object construction mode.
 	 *
 	 * <p>This mode applied when object can not be {@link #FULL_CONSTRUCTION
-	 * fully constructed} and object is not inherited from variable.</p>
+	 * fully constructed} and object is not inherited from variable target.</p>
 	 *
 	 * <p>Strict object construction can not change interface of the object.
 	 * The following restrictions apply to strictly constructed object:
@@ -59,11 +59,10 @@ public enum ConstructionMode {
 	 * <li>object can not have samples;</li>
 	 * <li>new adapters can not be declared;</li>
 	 * <li>object field ancestors can not be upgraded;</li>
-	 * <li>link and variable interface types can not be upgraded;</li>
-	 * <li>array item types can not be upgraded.</li>
+	 * <li>type parameters can not be changed.</li>
 	 * <ul>
 	 *
-	 * <p>Object is strictly constructed e.g. when it's ancestor is link.
+	 * <p>Object is strictly constructed e.g. when it's ancestor is link target.
 	 * In some cases, the value of strictly constructed object can be determined
 	 * at compile time.</p>
 	 */

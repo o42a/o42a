@@ -27,12 +27,10 @@ import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import java.util.Arrays;
 
-import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.DefinitionTarget;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.*;
 import org.o42a.core.object.type.impl.ExplicitSample;
 import org.o42a.core.object.type.impl.ImplicitSample;
@@ -128,13 +126,13 @@ public class Ascendants
 
 	public ConstructionMode getConstructionMode() {
 		if (this.constructionMode != null) {
-			//return this.constructionMode;
+			return this.constructionMode;
 		}
 
 		ConstructionMode constructionMode = enclosingConstructionMode();
 
 		if (constructionMode.isRuntime()) {
-			return constructionMode;
+			return this.constructionMode = constructionMode;
 		}
 
 		final TypeRef ancestor = getExplicitAncestor();
@@ -145,7 +143,7 @@ public class Ascendants
 					ancestor.getConstructionMode();
 
 			if (ancestorMode.isRuntime() || ancestorMode.isProhibited()) {
-				return ancestorMode;
+				return this.constructionMode = ancestorMode;
 			}
 			if (constructionMode.ordinal() < ancestorMode.ordinal()) {
 				constructionMode = ancestorMode;
@@ -158,14 +156,14 @@ public class Ascendants
 					sample.getObject().getConstructionMode();
 
 			if (sampleMode.isRuntime() || sampleMode.isProhibited()) {
-				return sampleMode;
+				return this.constructionMode = sampleMode;
 			}
 			if (constructionMode.ordinal() < sampleMode.ordinal()) {
 				constructionMode = sampleMode;
 			}
 		}
 
-		return constructionMode;
+		return this.constructionMode = constructionMode;
 	}
 
 	public final boolean isEmpty() {
@@ -394,26 +392,7 @@ public class Ascendants
 			FieldAscendants fieldAscendants) {
 
 		Ascendants ascendants = this;
-		final Container container = member.getContainer();
-		final LocalScope localContainer = container.toLocalScope();
-
-		if (localContainer != null) {
-			assert isEmpty() :
-				"Can not explicitly override a local member " + member;
-
-			final Member overridden =
-					localContainer.getPropagatedFrom()
-					.member(member.getMemberKey());
-
-			assert overridden != null :
-				"Overridden member not found: " + member;
-
-			ascendants = ascendants.addMemberOverride(overridden);
-
-			return fieldAscendants.updateAscendants(ascendants);
-		}
-
-		final Obj containerObject = container.toObject();
+		final Obj containerObject = member.getContainer().toObject();
 		final ObjectType containerType = containerObject.type();
 		final TypeRef ancestor = containerType.getAncestor();
 

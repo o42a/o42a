@@ -86,6 +86,7 @@ enum ClauseVisibility {
 				return INTERNAL_CLAUSE;
 			case ROOT:
 			case LOCAL:
+			case ANONYMOUS:
 			case PARENT:
 			case MACROS:
 			}

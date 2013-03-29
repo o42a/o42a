@@ -19,24 +19,15 @@
 */
 package org.o42a.core.ir;
 
-import static org.o42a.core.ir.object.op.CtrOp.CTR_ID;
-import static org.o42a.core.ir.object.op.CtrOp.CTR_TYPE;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
+import org.o42a.core.ir.local.LocalsCode;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.CtrOp;
-import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
@@ -45,37 +36,23 @@ import org.o42a.util.string.ID;
 
 public abstract class CodeBuilder {
 
-	private static final SignalGC SIGNAL_GC = new SignalGC();
-
 	public static CodeBuilder defaultBuilder(Function<?> function, Obj object) {
 		return new DefaultBuilder(function, object);
 	}
 
-	public static ObjectOp objectAncestor(
-			CodeDirs dirs,
-			HostOp host,
-			Obj object) {
-
-		final TypeRef ancestorType = object.type().getAncestor();
-
-		if (ancestorType == null) {
-			return null;
-		}
-
-		final RefOp ancestor = ancestorType.op(host);
-
-		return ancestor.target(dirs)
-				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
-	}
-
 	private final CompilerContext context;
 	private final Function<?> function;
-	private boolean signalGC;
+	private final ObjectsCode objects;
+	private final GCCode gc;
+	private final LocalsCode locals;
 	private int nameSeq;
 
 	protected CodeBuilder(CompilerContext context, Function<?> function) {
 		this.context = context;
 		this.function = function;
+		this.objects = new ObjectsCode(this);
+		this.locals = new FunctionLocals();
+		this.gc = new GCCode(this);
 	}
 
 	public final Generator getGenerator() {
@@ -94,9 +71,19 @@ public abstract class CodeBuilder {
 		return (ObjectSignature<?>) this.function.getSignature();
 	}
 
-	public abstract HostOp host();
+	public abstract ObjectOp host();
 
-	public abstract ObjectOp owner();
+	public final ObjectsCode objects() {
+		return this.objects;
+	}
+
+	public final GCCode gc() {
+		return this.gc;
+	}
+
+	public final LocalsCode locals() {
+		return this.locals;
+	}
 
 	public final ID nextId() {
 		return getFunction().getId().anonymous(++this.nameSeq);
@@ -106,75 +93,12 @@ public abstract class CodeBuilder {
 		return CodeDirs.codeDirs(this, code, falseDir);
 	}
 
-	public final ObjectOp newObject(
-			CodeDirs dirs,
-			ObjHolder holder,
-			ObjectOp owner,
-			ObjectOp ancestor,
-			Obj sample) {
-		return newObject(
-				dirs,
-				holder,
-				owner,
-				ancestor == null
-				? null : ancestor.objectType(dirs.code()).ptr(),
-				sample);
-	}
-
-	public ObjectOp newObject(
-			CodeDirs dirs,
-			ObjHolder holder,
-			ObjectOp owner,
-			ObjectIRTypeOp ancestor,
-			Obj sample) {
-
-		final Code alloc = dirs.code().getAllocator().allocation();
-		final CtrOp.Op ctr = alloc.allocate(CTR_ID, CTR_TYPE);
-
-		return ctr.op(this).newObject(
-				dirs,
-				holder,
-				owner,
-				ancestor,
-				sample.ir(getGenerator()).op(this, dirs.code()));
-	}
-
-	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
-		return objectAncestor(dirs, host(), object);
-	}
-
-	public final void signalGC() {
-		if (this.signalGC) {
-			return;
-		}
-		this.signalGC = true;
-		getFunction().addLastDisposal(SIGNAL_GC);
-	}
-
 	public ValOp voidVal(Code code) {
 		return ValueType.VOID
 				.ir(getGenerator()).staticsIR()
 				.valPtr(Void.VOID)
 				.op(null, code)
 				.op(this, Val.VOID_VAL);
-	}
-
-	private static final class SignalGC implements Disposal {
-
-		@Override
-		public void dispose(Code code) {
-			code.getGenerator()
-			.externalFunction()
-			.link("o42a_gc_signal", NO_ARG)
-			.op(null, code)
-			.call(code);
-		}
-
-		@Override
-		public String toString() {
-			return "SignalGC";
-		}
-
 	}
 
 }

@@ -20,7 +20,6 @@
 package org.o42a.intrinsic.impl;
 
 import static java.util.Collections.emptyList;
-import static org.o42a.core.ScopePlace.TOP_PLACE;
 
 import java.util.Collection;
 
@@ -29,7 +28,6 @@ import org.o42a.core.*;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Prediction;
@@ -73,11 +71,6 @@ public final class Top extends AbstractScope implements MemberContainer {
 	@Override
 	public boolean isTopScope() {
 		return true;
-	}
-
-	@Override
-	public ScopePlace getPlace() {
-		return TOP_PLACE;
 	}
 
 	@Override
@@ -137,8 +130,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public Path member(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return null;
@@ -146,8 +138,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return null;

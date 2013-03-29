@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
@@ -30,11 +31,8 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
@@ -56,7 +54,7 @@ final class CustomAssignment extends AssignmentKind {
 		final PhraseBuilder phrase = new PhraseBuilder(
 				PLAIN_IP,
 				statement,
-				statement.distribute(),
+				fromDefinition(statement),
 				EXPRESSION_TYPE_CONSUMER);
 
 		phrase.setAncestor(statement.getDestination().toTypeRef());
@@ -78,7 +76,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void resolve(FullLocalResolver resolver) {
+	public void resolve(FullResolver resolver) {
 		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
 	}
 

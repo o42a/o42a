@@ -22,7 +22,6 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.Command.noCommands;
 
 import org.o42a.core.Container;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.BlockCommandEnv;
@@ -36,11 +35,6 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	Imperatives(LocationInfo location, ImperativeSentence sentence) {
 		super(location, sentence);
-	}
-
-	@Override
-	public final LocalScope getScope() {
-		return super.getScope().toLocalScope();
 	}
 
 	@Override
@@ -63,14 +57,14 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	@Override
 	public final ImperativeBlock parentheses(LocationInfo location) {
-		return parentheses(location, getContainer());
+		return super.parentheses(location).toImperativeBlock();
 	}
 
 	@Override
 	public final ImperativeBlock parentheses(
 			LocationInfo location,
 			Container container) {
-		return (ImperativeBlock) super.parentheses(location, container);
+		return super.parentheses(location, container).toImperativeBlock();
 	}
 
 	@Override
@@ -140,7 +134,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 		getLogger().error(
 				"unresolved_block",
 				location,
-				"Imperative block with name '%' does not exist",
+				"Imperative block with name '%s' does not exist",
 				name);
 
 		return null;

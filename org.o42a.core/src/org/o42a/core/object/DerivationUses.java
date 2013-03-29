@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object;
 
+import static org.o42a.analysis.Analyzer.TRACK_RUNTIME_USES;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
@@ -142,6 +143,11 @@ final class DerivationUses {
 		}
 
 		this.uses = DerivationUsage.usable("DerivationOf", object);
+		if (!TRACK_RUNTIME_USES) {
+			this.uses.useBy(
+					this.uses.usageUser(STATIC_DERIVATION_USAGE),
+					RUNTIME_DERIVATION_USAGE);
+		}
 
 		final Member member = object.toMember();
 
@@ -232,14 +238,7 @@ final class DerivationUses {
 		// Run time derivation of implicit sample means
 		// the owner object's value can be constructed at run time.
 		final Obj derived = sample.getDerivedObject();
-		final Obj enclosingObject = sample.getScope().toObject();
-		final Obj owner;
-
-		if (enclosingObject != null) {
-			owner = enclosingObject;
-		} else {
-			owner = sample.getScope().toLocalScope().getOwner();
-		}
+		final Obj owner = sample.getScope().toObject();
 
 		owner.value().uses().useBy(
 				derived.type().rtDerivation(),

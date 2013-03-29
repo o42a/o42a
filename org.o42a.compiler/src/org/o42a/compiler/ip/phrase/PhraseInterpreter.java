@@ -28,8 +28,8 @@ import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.ref.cmp.ComparisonExpression;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 
 
@@ -47,7 +47,7 @@ public final class PhraseInterpreter {
 
 	public PhraseBuilder phrase(
 			PhraseNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
 
 		final PhraseBuilder prefixed =
@@ -62,7 +62,7 @@ public final class PhraseInterpreter {
 
 	public PhraseBuilder ascendantsPhrase(
 			AscendantsNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
@@ -76,7 +76,7 @@ public final class PhraseInterpreter {
 
 	public PhraseBuilder typeParametersPhrase(
 			TypeParametersNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
@@ -90,7 +90,7 @@ public final class PhraseInterpreter {
 
 	public PhraseBuilder unary(
 			UnaryNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
@@ -104,7 +104,7 @@ public final class PhraseInterpreter {
 
 	public Ref binary(
 			BinaryNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
 
 		final BinaryOperator operator = node.getOperator();
@@ -146,7 +146,7 @@ public final class PhraseInterpreter {
 
 	final PhraseBuilder phraseWithPrefix(
 			PhraseNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
@@ -160,7 +160,7 @@ public final class PhraseInterpreter {
 
 	private PhraseBuilder binaryPhrase(
 			BinaryNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
@@ -174,7 +174,7 @@ public final class PhraseInterpreter {
 
 	private Ref comparison(
 			BinaryNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			BinaryPhraseOperator operator) {
 
 		final Ref left = node.getLeftOperand().accept(
@@ -207,7 +207,7 @@ public final class PhraseInterpreter {
 
 	private PhraseBuilder suffixPhrase(
 			BinaryNode node,
-			Distributor distributor,
+			AccessDistributor distributor,
 			TypeConsumer consumer) {
 
 		final ExpressionNode rightOperand = node.getRightOperand();

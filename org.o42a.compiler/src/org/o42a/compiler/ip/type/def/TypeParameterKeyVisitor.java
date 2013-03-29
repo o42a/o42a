@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.type.def;
 
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PLAIN_REF_IP;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.core.member.MemberName.fieldName;
@@ -28,11 +29,8 @@ import org.o42a.ast.field.AbstractDeclarableVisitor;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.core.Placed;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.MemberName;
-import org.o42a.core.object.Accessor;
+import org.o42a.core.Contained;
+import org.o42a.core.member.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
@@ -90,8 +88,8 @@ final class TypeParameterKeyVisitor
 				declaredInRef != null ? declaredInRef.getType() : null;
 
 		final MemberName fieldName = fieldName(name.getName());
-		final Placed location =
-				new Placed(p.getContext(), ref, p.distribute());
+		final Contained location =
+				new Contained(p.getContext(), ref, p.distribute());
 
 		if (!this.overridden) {
 			return fieldName.key(p.getScope());
@@ -158,7 +156,7 @@ final class TypeParameterKeyVisitor
 
 		final Ref declaredIn = declaredInNode.accept(
 				PLAIN_REF_IP.bodyRefVisitor(),
-				p.distribute());
+				fromDeclaration(p));
 
 		if (declaredIn == null) {
 			return null;

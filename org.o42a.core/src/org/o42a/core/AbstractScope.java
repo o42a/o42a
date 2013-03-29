@@ -29,12 +29,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
@@ -97,11 +94,6 @@ public abstract class AbstractScope implements Scope {
 		}
 
 		final Container container = scope.getContainer();
-
-		if (container.toLocalScope() != null) {
-			return STRICT_CONSTRUCTION;
-		}
-
 		final Obj object = container.toObject();
 
 		if (object != null) {
@@ -161,13 +153,8 @@ public abstract class AbstractScope implements Scope {
 		return null;
 	}
 
-	private final ResolverFactory<Resolver, FullResolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
 	private int anonymousSeq;
-
-	public AbstractScope() {
-		this.resolverFactory = Resolver.resolverFactory(this);
-	}
 
 	@Override
 	public final CompilerContext getContext() {
@@ -204,7 +191,7 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final Resolver resolver() {
-		return this.resolverFactory.resolver();
+		return new Resolver(this);
 	}
 
 	@Override
@@ -214,7 +201,7 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final Resolver walkingResolver(PathWalker walker) {
-		return this.resolverFactory.walkingResolver(walker);
+		return new Resolver(this, walker);
 	}
 
 	@Override
@@ -225,11 +212,6 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public Obj toObject() {
 		return getContainer().toObject();
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
-		return null;
 	}
 
 	@Override
@@ -244,12 +226,12 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	@Override

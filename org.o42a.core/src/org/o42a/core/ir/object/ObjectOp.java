@@ -31,7 +31,6 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -87,15 +86,10 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return this.precision;
 	}
 
-	@Override
-	public final LocalScopeOp toLocalScope() {
-		return null;
-	}
-
-	public void fillDeps(CodeDirs dirs, Obj sample) {
+	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
 		for (Dep dep : sample.deps()) {
 			if (!dep.isDisabled()) {
-				fillDep(dirs, dep);
+				fillDep(dirs, host, dep);
 			}
 		}
 	}
@@ -248,13 +242,11 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				getWellKnownType().ir(getGenerator()).getBodyType());
 	}
 
-	private final void fillDep(CodeDirs dirs, Dep dep) {
+	private final void fillDep(CodeDirs dirs, HostOp host, Dep dep) {
 
 		final CodeDirs depDirs = dirs.begin(getId(), "Fill " + dep);
 
-		dep(depDirs, dep).fill(
-				getBuilder().host().toLocalScope().getBuilder(),
-				depDirs);
+		dep(depDirs, dep).fill(depDirs, host);
 
 		depDirs.done();
 	}

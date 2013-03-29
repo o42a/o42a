@@ -27,9 +27,10 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -125,8 +126,13 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
-		return appendIfExist(step);
+	public boolean local(Scope scope, Local local) {
+		return appendIfExist(local);
+	}
+
+	@Override
+	public boolean dep(Obj object, Dep dep) {
+		return appendIfExist(dep);
 	}
 
 	@Override

@@ -21,23 +21,23 @@ package org.o42a.core.member.clause.impl;
 
 import static org.o42a.core.member.clause.impl.GroupRegistry.prohibitedContinuation;
 
+import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
-import org.o42a.core.member.local.LocalScopeRegistry;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.st.sentence.Group;
+import org.o42a.core.st.impl.imperative.ImperativeMemberRegistry;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.util.fn.Lambda;
 
 
-final class ImperativeGroupRegistry extends LocalScopeRegistry {
+final class ImperativeGroupRegistry extends ImperativeMemberRegistry {
 
-	private final Group group;
+	private final DeclaredGroupClause group;
 
-	private ImperativeGroupRegistry(LocalScope scope, Group group) {
-		super(scope, group.getStatements().getMemberRegistry());
+	ImperativeGroupRegistry(
+			DeclaredGroupClause group,
+			MemberRegistry registry) {
+		super(registry);
 		this.group = group;
 	}
 
@@ -45,7 +45,7 @@ final class ImperativeGroupRegistry extends LocalScopeRegistry {
 	public ClauseBuilder newClause(
 			Statements<?, ?> statements,
 			ClauseDeclaration declaration) {
-		if (this.group.getBuilder().getDeclaration().isTerminator()) {
+		if (this.group.isTerminator()) {
 			prohibitedContinuation(declaration);
 			return null;
 		}
@@ -56,22 +56,17 @@ final class ImperativeGroupRegistry extends LocalScopeRegistry {
 					"Overrider clause is prohibited here");
 			return null;
 		}
-		return clauseFactory().newClause(statements, declaration);
+		return registry().newClause(
+				statements,
+				declaration.inGroup(getGroupId()));
 	}
 
-	static final class Builder implements Lambda<MemberRegistry, LocalScope> {
+	private final MemberId getGroupId() {
 
-		private final Group group;
+		final MemberId memberId = this.group.getDeclaration().getMemberId();
+		final MemberId[] ids = memberId.getIds();
 
-		Builder(Group group) {
-			this.group = group;
-		}
-
-		@Override
-		public MemberRegistry get(LocalScope arg) {
-			return new ImperativeGroupRegistry(arg, this.group);
-		}
-
+		return ids[ids.length - 1];
 	}
 
 }

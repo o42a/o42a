@@ -93,11 +93,6 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	}
 
 	@Override
-	public final ScopePlace getPlace() {
-		return this.declaration.getPlace();
-	}
-
-	@Override
 	public final Container getContainer() {
 		return this.declaration.getContainer();
 	}
@@ -284,12 +279,12 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	@Override

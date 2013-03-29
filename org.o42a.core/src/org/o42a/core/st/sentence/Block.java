@@ -22,14 +22,15 @@ package org.o42a.core.st.sentence;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.util.Place.Trace;
+import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.core.st.impl.local.Locals;
 
 
 public abstract class Block<
@@ -41,6 +42,7 @@ public abstract class Block<
 	private final ArrayList<Sentence<S, L>> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
+	private Locals locals;
 	private boolean instructionsExecuted;
 
 	protected Block(
@@ -66,6 +68,11 @@ public abstract class Block<
 		this.sentenceFactory = sentenceFactory;
 	}
 
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
 	public Statements<?, ?> getEnclosing() {
 		return this.enclosing;
 	}
@@ -83,7 +90,7 @@ public abstract class Block<
 		return enclosing != null && enclosing.isInsideIssue();
 	}
 
-	public MemberRegistry getMemberRegistry() {
+	public final MemberRegistry getMemberRegistry() {
 		return this.memberRegistry;
 	}
 
@@ -206,9 +213,59 @@ public abstract class Block<
 		return out.toString();
 	}
 
-	abstract Trace getTrace();
+	final Locals getLocals() {
+		if (this.locals != null) {
+			return this.locals;
+		}
 
-	abstract Locals getLocals();
+		final Statements<?, ?> enclosing = getEnclosing();
+
+		if (enclosing == null) {
+			return this.locals = new Locals(null);
+		}
+
+		return this.locals =
+				new Locals(enclosing.getSentence().getBlock().getLocals());
+	}
+
+	final Container nextContainer() {
+
+		final List<? extends Sentence<S, L>> sentences = getSentences();
+		final int numSentences = sentences.size();
+
+		if (numSentences == 0) {
+			return getContainer();
+		}
+
+		final Sentence<S, L> last = sentences.get(numSentences - 1);
+		final List<S> alts = last.getAlternatives();
+		final int numAlts = alts.size();
+
+		if (numAlts > 1) {
+			// Locals declared within alternative are visible only inside
+			// this alternative, unless the sentence has a single alternative.
+			return last.getContainer();
+		}
+		if (last.getPrerequisite() != null && !last.isIssue()) {
+			// The sentence has prerequisite and is not a prerequisite
+			// of another sentence. The locals are not exported, neither from
+			// the sentence itself, nor from its prerequisites.
+			return last.firstPrerequisite().getContainer();
+		}
+		if (numAlts == 0) {
+			// Empty sentence without prerequisites.
+			// The next sentence will see the same locals as this one.
+			return last.getContainer();
+		}
+		// The sentence has only one alternative and has no prerequisites.
+		// The locals declared in it are visible in the next sentences.
+		// Even if this sentence is a prerequisite for the next one.
+		final S singleAlt = alts.get(0);
+
+		return singleAlt.nextContainer();
+	}
+
+	abstract NamedBlocks getNamedBlocks();
 
 	private Sentence<S, L> addSentence(Sentence<S, L> sentence) {
 		if (sentence == null) {

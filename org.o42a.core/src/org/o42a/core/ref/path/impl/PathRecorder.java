@@ -25,9 +25,10 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -129,14 +130,25 @@ public class PathRecorder extends PathTracker {
 	}
 
 	@Override
-	public boolean dep(
-			final Obj object,
-			final Step step,
-			final Ref dependency) {
+	public boolean local(
+			final Scope scope,
+			final Local local) {
 		return record(new Record() {
 			@Override
 			public boolean replay(PathWalker walker) {
-				return walker.dep(object, step, dependency);
+				return walker.local(scope, local);
+			}
+		});
+	}
+
+	@Override
+	public boolean dep(
+			final Obj object,
+			final Dep dep) {
+		return record(new Record() {
+			@Override
+			public boolean replay(PathWalker walker) {
+				return walker.dep(object, dep);
 			}
 		});
 	}

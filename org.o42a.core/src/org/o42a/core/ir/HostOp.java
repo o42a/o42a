@@ -20,7 +20,6 @@
 package org.o42a.core.ir;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
@@ -40,8 +39,6 @@ public interface HostOp {
 	CompilerContext getContext();
 
 	HostValueOp value();
-
-	LocalScopeOp toLocalScope();
 
 	HostOp field(CodeDirs dirs, MemberKey memberKey);
 

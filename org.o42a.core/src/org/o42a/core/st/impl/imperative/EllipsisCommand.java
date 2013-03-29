@@ -23,12 +23,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.FullLocalResolver;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
@@ -63,7 +59,7 @@ abstract class EllipsisCommand extends Command {
 	}
 
 	@Override
-	public Action initialCond(LocalResolver resolver) {
+	public Action initialCond(Resolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -81,7 +77,7 @@ abstract class EllipsisCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(FullLocalResolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 	}
 
 	static class ExitCommand extends EllipsisCommand {
@@ -96,7 +92,7 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public Action initialValue(LocalResolver resolver) {
+		public Action initialValue(Resolver resolver) {
 			return new ExitLoop(this, getEllipsis().getName());
 		}
 
@@ -120,7 +116,7 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public Action initialValue(LocalResolver resolver) {
+		public Action initialValue(Resolver resolver) {
 			return new RepeatLoop(this, getEllipsis().getName());
 		}
 

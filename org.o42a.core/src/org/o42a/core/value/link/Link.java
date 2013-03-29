@@ -20,12 +20,8 @@
 package org.o42a.core.value.link;
 
 import org.o42a.core.*;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.FullResolver;
@@ -35,10 +31,9 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
 
 
-public abstract class Link extends AbstractContainer implements PlaceInfo {
+public abstract class Link extends AbstractContainer implements ContainerInfo {
 
 	private final Container enclosing;
-	private final ScopePlace place;
 	private final LinkTargetNesting targetNesting = new LinkTargetNesting(this);
 	private TypeParameters<KnownLink> typeParameters;
 	private Obj target;
@@ -46,7 +41,6 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	public Link(LocationInfo location, Distributor distributor) {
 		super(location);
 		this.enclosing = distributor.getContainer();
-		this.place = distributor.getPlace();
 	}
 
 	@Override
@@ -57,11 +51,6 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	@Override
 	public final Container getEnclosingContainer() {
 		return this.enclosing;
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.place;
 	}
 
 	@Override
@@ -115,11 +104,6 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	}
 
 	@Override
-	public final LocalScope toLocalScope() {
-		return null;
-	}
-
-	@Override
 	public final Namespace toNamespace() {
 		return null;
 	}
@@ -131,26 +115,22 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 
 	@Override
 	public final Path member(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return getEnclosingContainer().member(
-				user,
-				accessor,
+				access,
 				memberId,
 				declaredIn);
 	}
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		return getEnclosingContainer().findMember(
-				user,
-				accessor,
+				access,
 				memberId,
 				declaredIn);
 	}
@@ -169,12 +149,12 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	protected abstract Obj createTarget();

@@ -19,14 +19,15 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
 
 class NonLinkOwner extends Owner {
 
-	NonLinkOwner(Ref ownerRef) {
-		super(ownerRef);
+	NonLinkOwner(AccessSource accessSource, Ref ownerRef) {
+		super(accessSource, ownerRef);
 	}
 
 	@Override
@@ -36,18 +37,18 @@ class NonLinkOwner extends Owner {
 
 	@Override
 	public Ref targetRef() {
-		return this.ownerRef;
+		return ownerRef();
 	}
 
 	@Override
 	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		redundantBodyRef(this.ownerRef.getLogger(), bodyRef.getLocation());
+		redundantBodyRef(getLogger(), bodyRef.getLocation());
 		return this;
 	}
 
 	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
-		this.ownerRef.getLogger().error(
+		getLogger().error(
 				"redundant_deref",
 				deref,
 				"Redundant link dereference");

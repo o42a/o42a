@@ -21,12 +21,8 @@ package org.o42a.core.member;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.FullLocalResolver;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Instruction;
@@ -55,7 +51,7 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public final Action initialCond(LocalResolver resolver) {
+	public final Action initialCond(Resolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -74,7 +70,7 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	protected final void fullyResolve(FullLocalResolver resolver) {
+	protected final void fullyResolve(FullResolver resolver) {
 	}
 
 }

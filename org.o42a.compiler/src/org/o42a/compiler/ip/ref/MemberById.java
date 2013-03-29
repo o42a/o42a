@@ -31,14 +31,11 @@ import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberName;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -49,7 +46,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public class MemberById extends PlacedFragment {
+public class MemberById extends ContainedFragment {
 
 	private static final MemberName VOID_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("void"));
@@ -80,17 +77,19 @@ public class MemberById extends PlacedFragment {
 	}
 
 	private final Interpreter ip;
+	private final AccessSource accessSource;
 	private final StaticTypeRef declaredIn;
 	private final MemberId memberId;
 
 	public MemberById(
 			Interpreter ip,
 			LocationInfo location,
-			Distributor distributor,
+			AccessDistributor distributor,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {
 		super(location, distributor);
 		this.ip = ip;
+		this.accessSource = distributor.getAccessSource();
 		this.memberId = memberId;
 		this.declaredIn = declaredIn;
 	}
@@ -219,7 +218,10 @@ public class MemberById extends PlacedFragment {
 			accessor = Accessor.ENCLOSED;
 		}
 
-		return container.findMember(this, accessor, this.memberId, declaredIn);
+		return container.findMember(
+				accessor.accessBy(this, this.accessSource),
+				this.memberId,
+				declaredIn);
 	}
 
 	private boolean isModule(Container container) {
@@ -230,6 +232,9 @@ public class MemberById extends PlacedFragment {
 			return false;
 		}
 		if (memberName.getEnclosingId() != null) {
+			return false;
+		}
+		if (memberName.getKind() != MemberKind.FIELD) {
 			return false;
 		}
 

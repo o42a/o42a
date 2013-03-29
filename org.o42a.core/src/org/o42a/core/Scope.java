@@ -26,7 +26,6 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Prediction;
@@ -39,7 +38,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.string.ID;
 
 
-public interface Scope extends PlaceInfo {
+public interface Scope extends ContainerInfo {
 
 	CompilerContext getContext();
 
@@ -100,8 +99,6 @@ public interface Scope extends PlaceInfo {
     Field toField();
 
     Obj toObject();
-
-	LocalScope toLocalScope();
 
 	ConstructionMode getConstructionMode();
 

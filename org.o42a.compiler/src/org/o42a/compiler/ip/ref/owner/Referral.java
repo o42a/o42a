@@ -24,9 +24,9 @@ import static org.o42a.common.macro.Macros.expandMacro;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 
 
@@ -35,7 +35,8 @@ public abstract class Referral {
 	public static final Referral TARGET_REFERRAL = new TargetReferral();
 	public static final Referral BODY_REFERRAL = new BodyReferral();
 
-	public final RefNodeVisitor<Ref, Distributor> refVisitor(Interpreter ip) {
+	public final RefNodeVisitor<Ref, AccessDistributor> refVisitor(
+			Interpreter ip) {
 		return refVisitor(ip.refIp());
 	}
 
@@ -43,10 +44,11 @@ public abstract class Referral {
 		return this == BODY_REFERRAL;
 	}
 
-	public abstract RefNodeVisitor<Ref, Distributor> refVisitor(
+	public abstract RefNodeVisitor<Ref, AccessDistributor> refVisitor(
 			RefInterpreter ip);
 
-	public abstract ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
+	public abstract
+	ExpressionNodeVisitor<Ref, AccessDistributor> expressionVisitor(
 			Interpreter ip,
 			TypeConsumer typeConsumer);
 
@@ -71,12 +73,12 @@ public abstract class Referral {
 	private static final class TargetReferral extends Referral {
 
 		@Override
-		public RefNodeVisitor<Ref, Distributor> refVisitor(RefInterpreter ip) {
+		public RefNodeVisitor<Ref, AccessDistributor> refVisitor(RefInterpreter ip) {
 			return ip.targetRefVisitor();
 		}
 
 		@Override
-		public ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
+		public ExpressionNodeVisitor<Ref, AccessDistributor> expressionVisitor(
 				Interpreter ip,
 				TypeConsumer typeConsumer) {
 			return ip.targetExVisitor(typeConsumer);
@@ -92,12 +94,12 @@ public abstract class Referral {
 	private static final class BodyReferral extends Referral {
 
 		@Override
-		public RefNodeVisitor<Ref, Distributor> refVisitor(RefInterpreter ip) {
+		public RefNodeVisitor<Ref, AccessDistributor> refVisitor(RefInterpreter ip) {
 			return ip.bodyRefVisitor();
 		}
 
 		@Override
-		public ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
+		public ExpressionNodeVisitor<Ref, AccessDistributor> expressionVisitor(
 				Interpreter ip,
 				TypeConsumer typeConsumer) {
 			return ip.bodyExVisitor(typeConsumer);

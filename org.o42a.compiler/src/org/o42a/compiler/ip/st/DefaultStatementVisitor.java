@@ -22,6 +22,8 @@ package org.o42a.compiler.ip.st;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.clause;
 import static org.o42a.compiler.ip.member.FieldInterpreter.field;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
+import static org.o42a.compiler.ip.st.LocalInterpreter.local;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 
 import org.o42a.ast.atom.NameNode;
@@ -33,8 +35,8 @@ import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.sentence.Block;
@@ -100,7 +102,8 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			return null;
 		}
 
-		final Distributor distributor = p.nextDistributor();
+		final AccessDistributor distributor =
+				fromDefinition(p.nextDistributor());
 		final Ref destination = destinationNode.accept(
 				ip().bodyExVisitor(),
 				distributor);
@@ -141,7 +144,8 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			return null;
 		}
 
-		final Distributor distributor = p.nextDistributor();
+		final AccessDistributor distributor =
+				fromDefinition(p.nextDistributor());
 		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 
 		if (value != null) {
@@ -153,7 +157,12 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 	@Override
 	public Void visitDeclarator(DeclaratorNode declarator, Statements<?, ?> p) {
+		if (local(ip(), getContext(), p, declarator)) {
+			return null;
+		}
+
 		field(ip(), getContext(), declarator, p);
+
 		return null;
 	}
 
@@ -194,7 +203,8 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			ExpressionNode expression,
 			Statements<?, ?> p) {
 
-		final Distributor distributor = p.nextDistributor();
+		final AccessDistributor distributor =
+				fromDefinition(p.nextDistributor());
 		final Ref ref = expression.accept(expressionVisitor(), distributor);
 
 		if (ref != null) {

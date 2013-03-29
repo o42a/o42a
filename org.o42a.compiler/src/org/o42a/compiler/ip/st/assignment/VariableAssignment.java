@@ -26,7 +26,6 @@ import static org.o42a.core.value.link.LinkValueType.VARIABLE;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
@@ -77,7 +76,7 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void resolve(FullLocalResolver resolver) {
+	public void resolve(FullResolver resolver) {
 
 		final Ref destination = getStatement().getDestination();
 		final Ref value = getStatement().getValue();
@@ -88,7 +87,7 @@ final class VariableAssignment extends AssignmentKind {
 				destination.getPath()
 				.dereference()
 				.target(destination.distribute());
-		final FullLocalResolver targetResolver =
+		final FullResolver targetResolver =
 				resolver.setRefUsage(TARGET_REF_USAGE);
 		final Resolution val = value.resolveAll(targetResolver);
 		final Resolution dest = destTarget.resolveAll(targetResolver);

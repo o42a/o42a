@@ -32,6 +32,11 @@ public abstract class DeclarationStatement extends Statement {
 		super(location, distributor);
 	}
 
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
 	public abstract Member toMember();
 
 }

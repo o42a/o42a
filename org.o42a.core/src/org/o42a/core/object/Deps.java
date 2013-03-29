@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object;
 
+import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
+import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.util.collect.Iterators.readonlyIterator;
 
 import java.util.LinkedHashMap;
@@ -29,6 +31,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.util.collect.ReadonlyIterable;
 import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.string.ID;
+import org.o42a.util.string.Name;
 
 
 public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
@@ -48,21 +51,25 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 		return readonlyIterator(this.deps.values().iterator());
 	}
 
-	public Dep addDep(Ref ref) {
+	public Dep addDep(Name name, Ref ref) {
 		assert getObject().getContext().fullResolution().assertIncomplete();
 
-		final int newDepId = this.depNameSeq + 1;
-		final Dep newDep = newDep(
-				ref,
-				DEP_PREFIX.suffix(Integer.toString(newDepId)));
+		ref.resolveAll(
+				ref.getScope().resolver()
+				.fullResolver(dummyRefUser(), TEMP_REF_USAGE));
+
+		final Dep newDep = newDep(ref, name, newDepId(name));
 		final Dep dep = addDep(newDep);
 
 		if (dep != newDep) {
 			// The old dependency reused.
 			return dep;
 		}
-		// The new dependency added.
-		this.depNameSeq = newDepId;
+		if (name == null) {
+			// An anonymous dependency added.
+			// Increase the identifier.
+			++this.depNameSeq;
+		}
 
 		return dep;
 	}
@@ -75,6 +82,13 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 		if (linkUses != null) {
 			linkUses.depAdded();
 		}
+	}
+
+	private ID newDepId(Name name) {
+		if (name != null) {
+			return DEP_PREFIX.sub(name);
+		}
+		return DEP_PREFIX.suffix(Integer.toString(this.depNameSeq + 1));
 	}
 
 	private Dep addDep(Dep dep) {

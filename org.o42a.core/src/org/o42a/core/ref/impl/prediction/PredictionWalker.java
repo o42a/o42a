@@ -29,11 +29,11 @@ import static org.o42a.core.ref.impl.prediction.EnclosingPrediction.enclosingPre
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.impl.ParentLocalStep;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
@@ -144,14 +144,19 @@ public class PredictionWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
+	public boolean local(Scope scope, Local local) {
+		return set(predictRef(getPrediction(), local.ref()));
+	}
 
-		final LocalScope local =
-				object.getScope().getEnclosingScope().toLocalScope();
+	@Override
+	public boolean dep(Obj object, Dep dep) {
+
+		final Scope enclosingScope = object.getScope().getEnclosingScope();
 
 		if (getPrediction().isExact()) {
 
-			final Resolution resolution = dependency.resolve(local.resolver());
+			final Resolution resolution =
+					dep.ref().resolve(enclosingScope.resolver());
 
 			if (resolution.isError()) {
 				return set(unpredicted(resolution.getScope()));
@@ -164,17 +169,17 @@ public class PredictionWalker implements PathWalker {
 		final Step[] steps = enclosingPath.getSteps();
 
 		assert steps.length == 1 :
-			"Wrong local object owner path";
+			"Wrong object owner path";
 
-		final ParentLocalStep ownerStep = (ParentLocalStep) steps[0];
+		final ReversePath ownerStep = (ReversePath) steps[0];
 
 		return set(predictRef(
 				enclosingPrediction(
 						getPrediction(),
-						local.getScope(),
+						enclosingScope.getScope(),
 						enclosingPath,
 						ownerStep),
-				dependency));
+				dep.ref()));
 	}
 
 	@Override

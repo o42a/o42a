@@ -19,18 +19,17 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ir.CodeBuilder.objectAncestor;
+import static org.o42a.core.ir.ObjectsCode.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
 import java.util.IdentityHashMap;
 
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -46,7 +45,7 @@ import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 
 
-public abstract class ObjectConstructor extends Placed {
+public abstract class ObjectConstructor extends Contained {
 
 	private final Construction construction = new Construction(this);
 	private Obj constructed;
@@ -191,15 +190,12 @@ public abstract class ObjectConstructor extends Placed {
 		private HostOp exactObject(CodeDirs dirs) {
 
 			final Obj sample = getConstructed();
-			final LocalScopeOp local = host().toLocalScope();
 			final ObjOp target = sample.ir(dirs.getGenerator()).op(
 					getBuilder(),
 					dirs.code());
 
 			dirs.code().dumpName("Static object: ", target);
-			if (local != null) {
-				target.fillDeps(dirs, sample);
-			}
+			target.fillDeps(dirs, host(), sample);
 
 			return target;
 		}
@@ -207,32 +203,22 @@ public abstract class ObjectConstructor extends Placed {
 		private HostOp newObject(CodeDirs dirs) {
 
 			final ObjectOp owner;
-			final HostOp ancestorHost;
-			final LocalScopeOp local = host().toLocalScope();
+			final ObjectOp host = host().materialize(
+					dirs,
+					tempObjHolder(dirs.getAllocator()));
 
-			if (local != null) {
+			if (host == null || host.getPrecision().isExact()) {
 				owner = null;
-				ancestorHost = local;
 			} else {
-
-				final ObjectOp ownerObject = host().materialize(
-						dirs,
-						tempObjHolder(dirs.getAllocator()));
-
-				if (ownerObject == null
-						|| ownerObject.getPrecision().isExact()) {
-					owner = null;
-				} else {
-					owner = ownerObject;
-				}
-				ancestorHost = ownerObject;
+				owner = host;
 			}
 
-			return getBuilder().newObject(
+			return getBuilder().objects().newObject(
 					dirs,
+					host,
 					tempObjHolder(dirs.getAllocator()),
 					owner,
-					objectAncestor(dirs, ancestorHost, getConstructed()),
+					objectAncestor(dirs, host, getConstructed()),
 					getConstructed());
 		}
 

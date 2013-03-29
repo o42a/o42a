@@ -22,11 +22,11 @@ package org.o42a.compiler.ip.ref;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 
 
-final class TargetRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
+final class TargetRefVisitor
+		extends AbstractRefVisitor<Ref, AccessDistributor> {
 
 	private final RefInterpreter interpreter;
 
@@ -35,7 +35,7 @@ final class TargetRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	@Override
-	protected Ref visitRef(RefNode ref, Distributor p) {
+	protected Ref visitRef(RefNode ref, AccessDistributor p) {
 
 		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
 

@@ -27,13 +27,9 @@ import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.*;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.type.MemberTypeParameter;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -44,7 +40,7 @@ import org.o42a.util.ArrayUtil;
 
 public class TypeDefinitionBuilder
 		extends AbstractContainer
-		implements PlaceInfo{
+		implements ContainerInfo{
 
 	private static final TypeParameterDeclaration[] NO_PARAMETERS =
 			new TypeParameterDeclaration[0];
@@ -62,11 +58,6 @@ public class TypeDefinitionBuilder
 	@Override
 	public final Scope getScope() {
 		return this.object.getScope();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.object.getPlace();
 	}
 
 	@Override
@@ -103,11 +94,6 @@ public class TypeDefinitionBuilder
 	}
 
 	@Override
-	public final LocalScope toLocalScope() {
-		return null;
-	}
-
-	@Override
 	public Namespace toNamespace() {
 		return null;
 	}
@@ -119,8 +105,7 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public Path member(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
@@ -136,21 +121,20 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-		return member(user, accessor, memberId, declaredIn);
+		return member(access, memberId, declaredIn);
 	}
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	final void addParameter(TypeParameterDeclaration parameter) {

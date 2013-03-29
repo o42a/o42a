@@ -23,13 +23,11 @@ import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.impl.imperative.ImperativeClaim;
 import org.o42a.core.st.impl.imperative.ImperativeIssue;
 import org.o42a.core.st.impl.imperative.ImperativeProposition;
-import org.o42a.util.fn.Lambda;
 import org.o42a.util.string.Name;
 
 
@@ -87,7 +85,7 @@ public class ImperativeFactory extends SentenceFactory<
 			Group group,
 			Distributor distributor,
 			Name name,
-			Lambda<MemberRegistry, LocalScope> memberRegistry) {
+			MemberRegistry memberRegistry) {
 		group.getLogger().prohibitedClauseDeclaration(group.getLocation());
 		return null;
 	}

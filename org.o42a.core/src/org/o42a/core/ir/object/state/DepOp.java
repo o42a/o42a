@@ -23,13 +23,10 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalScopeOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -40,7 +37,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.ref.Ref;
 import org.o42a.util.string.ID;
 
 
@@ -82,11 +78,6 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 	}
 
 	@Override
-	public final LocalScopeOp toLocalScope() {
-		return null;
-	}
-
-	@Override
 	public void writeCond(CodeDirs dirs) {
 		object(dirs.code()).value().writeCond(dirs);
 	}
@@ -121,14 +112,15 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 		throw new UnsupportedOperationException();
 	}
 
-	public void fill(CodeBuilder builder, CodeDirs dirs) {
-		dirs.code().debug("Depends on " + getDep().getRef());
+	public void fill(CodeDirs dirs, HostOp host) {
+		dirs.code().debug("Depends on " + getDep().ref());
 
 		final DataRecOp objectRec = ptr().object(dirs.code());
 		final Block noDep = dirs.addBlock("no_dep");
-		final CodeDirs depDirs = builder.dirs(dirs.code(), noDep.head());
+		final CodeDirs depDirs =
+				dirs.getBuilder().dirs(dirs.code(), noDep.head());
 
-		final DataOp object = createObject(builder, depDirs);
+		final DataOp object = createObject(depDirs, host);
 		final Block code = depDirs.code();
 
 		objectRec.store(code, object);
@@ -153,15 +145,12 @@ public class DepOp extends IROp implements HostOp, HostValueOp {
 		return "DepOp[" + getDep() + '@' + host() + ']';
 	}
 
-	private DataOp createObject(CodeBuilder builder, CodeDirs dirs) {
+	private DataOp createObject(CodeDirs dirs, HostOp owner) {
 
-		final Code code = dirs.code();
-		final Ref depRef = getDep().getRef();
-		final HostOp refTarget = depRef.op(builder.host()).target(dirs);
+		final HostOp target = getDep().ref().op(owner).target(dirs);
 
-		return refTarget.materialize(
-				dirs,
-				tempObjHolder(dirs.getAllocator())).toData(null, code);
+		return target.materialize(dirs, tempObjHolder(dirs.getAllocator()))
+				.toData(null, dirs.code());
 	}
 
 	private ObjectOp object(final Block code) {

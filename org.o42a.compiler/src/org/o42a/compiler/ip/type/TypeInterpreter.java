@@ -30,6 +30,7 @@ import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.*;
 import org.o42a.common.ref.ArbitraryTypeRefParameters;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.*;
 import org.o42a.compiler.ip.type.param.TypeParameterIndex;
@@ -46,10 +47,10 @@ public final class TypeInterpreter {
 	private final Interpreter ip;
 	private final ExpressionNodeVisitor<
 			AncestorTypeRef,
-			Distributor> ancestorVisitor;
+			AccessDistributor> ancestorVisitor;
 	private final ExpressionNodeVisitor<
 			AncestorTypeRef,
-			Distributor> staticAncestorVisitor;
+			AccessDistributor> staticAncestorVisitor;
 
 	public TypeInterpreter(Interpreter ip) {
 		this.ip = ip;
@@ -126,7 +127,7 @@ public final class TypeInterpreter {
 		return new TypeVisitor(this, consumer);
 	}
 
-	public final ExpressionNodeVisitor<AncestorTypeRef, Distributor>
+	public final ExpressionNodeVisitor<AncestorTypeRef, AccessDistributor>
 	ancestorVisitor(
 			TypeRefParameters typeParameters,
 			Referral referral,
@@ -143,7 +144,7 @@ public final class TypeInterpreter {
 				typeConsumer);
 	}
 
-	public final ExpressionNodeVisitor<AncestorTypeRef, Distributor>
+	public final ExpressionNodeVisitor<AncestorTypeRef, AccessDistributor>
 	staticAncestorVisitor(
 			TypeRefParameters typeParameters,
 			Referral referral,
@@ -162,7 +163,7 @@ public final class TypeInterpreter {
 
 	public AncestorTypeRef parseAncestor(
 			AscendantsNode ascendantsNode,
-			Distributor distributor) {
+			AccessDistributor distributor) {
 
 		final AscendantNode ancestorNode = ascendantsNode.getAncestor();
 
@@ -174,12 +175,13 @@ public final class TypeInterpreter {
 	}
 
 	public AncestorTypeRef parseAncestor(
-			Distributor distributor,
+			AccessDistributor distributor,
 			AscendantNode ascendantNode,
 			TypeRefParameters typeParameters,
 			Referral referral) {
 
-		final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;
+		final
+		RefNodeVisitor<AncestorTypeRef, AccessDistributor> ancestorVisitor;
 
 		if (ascendantNode.getSeparator() == null) {
 			ancestorVisitor = ancestorVisitor(
@@ -201,7 +203,7 @@ public final class TypeInterpreter {
 
 	public AscendantsDefinition parseAscendants(
 			AscendantsNode node,
-			Distributor distributor) {
+			AccessDistributor distributor) {
 
 		final SampleSpecVisitor sampleSpecVisitor = new SampleSpecVisitor(ip());
 		AscendantsDefinition ascendants = new AscendantsDefinition(

@@ -75,12 +75,20 @@ public final class Location implements LocationInfo, LogInfo {
 		return getContext().getLogger();
 	}
 
+	public final Location setDeclaration(Location declaration) {
+		return setDeclaration(declaration.getLoggable());
+	}
+
 	public final Location setDeclaration(LocationInfo declaration) {
 		return setDeclaration(declaration.getLocation().getLoggable());
 	}
 
 	public final Location setDeclaration(LogInfo declaration) {
 		return addDetailLocation(DECLARATION_LOG_DETAIL, declaration);
+	}
+
+	public final Location addAnother(Location another) {
+		return addAnother(another.getLoggable());
 	}
 
 	public final Location addAnother(LocationInfo another) {

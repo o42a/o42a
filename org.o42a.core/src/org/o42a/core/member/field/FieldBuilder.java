@@ -28,7 +28,7 @@ import org.o42a.core.member.field.decl.FieldDeclarationStatement;
 import org.o42a.core.source.Location;
 
 
-public final class FieldBuilder implements PlaceInfo {
+public final class FieldBuilder implements ContainerInfo {
 
 	private final MemberRegistry memberRegistry;
 	private final FieldDeclaration declaration;
@@ -64,11 +64,6 @@ public final class FieldBuilder implements PlaceInfo {
 	@Override
 	public final Scope getScope() {
 		return this.declaration.getScope();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.declaration.getPlace();
 	}
 
 	@Override

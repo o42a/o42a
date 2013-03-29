@@ -39,7 +39,7 @@ import org.o42a.core.value.link.impl.LinkTarget;
 import org.o42a.core.value.link.impl.RtLinkTarget;
 
 
-public abstract class LinkData<L extends Link> implements PlaceInfo {
+public abstract class LinkData<L extends Link> implements ContainerInfo {
 
 	private final L link;
 	private TargetRef targetRef;
@@ -63,11 +63,6 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 
 	public final CompilerContext getContext() {
 		return getLocation().getContext();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return getLink().getPlace();
 	}
 
 	@Override
@@ -141,12 +136,12 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	public void resolveAll(FullResolver resolver) {

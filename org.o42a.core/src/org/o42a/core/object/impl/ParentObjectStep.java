@@ -35,12 +35,14 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.impl.normalizer.InlineValueStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.Local;
 
 
 public final class ParentObjectStep
@@ -58,6 +60,18 @@ public final class ParentObjectStep
 	@Override
 	public Scope revert(Scope target) {
 		return this.object.meta().findIn(target).getScope();
+	}
+
+	@Override
+	protected void combineWithLocal(PathRebuilder rebuilder, Local local) {
+
+		final Container enclosingContainer =
+				this.object.getEnclosingContainer();
+		final Ref ref =
+				rebuilder.restPath(enclosingContainer.getScope())
+				.target(this.object.distributeIn(enclosingContainer));
+
+		rebuilder.replaceRest(this.object.deps().addDep(local.getName(), ref));
 	}
 
 	@Override

@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref.operator;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -43,11 +44,11 @@ public class ValueOf extends ObjectConstructor {
 			Interpreter ip,
 			CompilerContext context,
 			UnaryNode node,
-			Distributor distributor) {
+			AccessDistributor distributor) {
 		super(new Location(context, node), distributor);
 		this.operand = node.getOperand().accept(
 				ip.targetExVisitor(),
-				distribute());
+				distributor);
 	}
 
 	private ValueOf(ValueOf prototype, Distributor distributor, Ref operand) {

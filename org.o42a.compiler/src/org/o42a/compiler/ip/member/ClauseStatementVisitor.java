@@ -25,8 +25,8 @@ import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDecla
 
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
@@ -48,7 +48,7 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 		}
 
 		final Distributor distributor =
-				new Placed(getContext(), declarator, p.nextDistributor())
+				new Contained(getContext(), declarator, p.nextDistributor())
 				.distribute();
 		final ClauseDeclaration declaration = anonymousClauseDeclaration(
 				new Location(getContext(), declarator.getDeclarable()),

@@ -19,9 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.ScopePlace.localPlace;
-import static org.o42a.core.ScopePlace.scopePlace;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +34,7 @@ import org.o42a.core.value.TypeParameters;
 public abstract class Sentence<
 		S extends Statements<S, L>,
 		L extends Implication<L>>
-				extends Placed {
+				extends Contained {
 
 	private final Block<S, L> block;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
@@ -168,6 +165,26 @@ public abstract class Sentence<
 		return out.toString();
 	}
 
+	final Sentence<S, L> firstPrerequisite() {
+
+		Sentence<S, L> prerequisite = getPrerequisite();
+
+		if (prerequisite == null) {
+			return null;
+		}
+		for (;;) {
+
+			final Sentence<S, L> prePrerequisite =
+					prerequisite.getPrerequisite();
+
+			if (prePrerequisite == null) {
+				return prerequisite;
+			}
+
+			prerequisite = prePrerequisite;
+		}
+	}
+
 	final void executeInstructions() {
 		if (this.instructionsExecuted) {
 			return;
@@ -235,22 +252,12 @@ public abstract class Sentence<
 
 		private final Location location;
 		private final Block<?, ?> block;
-		private final ScopePlace place;
+		private final Container container;
 
 		SentenceDistributor(LocationInfo location, Block<?, ?> block) {
 			this.location = location.getLocation();
 			this.block = block;
-
-			final ImperativeBlock imperativeBlock =
-					this.block.toImperativeBlock();
-
-			if (imperativeBlock == null) {
-				this.place = scopePlace(getScope());
-			} else {
-				this.place = localPlace(
-						imperativeBlock.getScope(),
-						imperativeBlock.getTrace().next());
-			}
+			this.container = block.nextContainer();
 		}
 
 		@Override
@@ -265,12 +272,7 @@ public abstract class Sentence<
 
 		@Override
 		public Container getContainer() {
-			return this.block.getContainer();
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.place;
+			return this.container;
 		}
 
 	}

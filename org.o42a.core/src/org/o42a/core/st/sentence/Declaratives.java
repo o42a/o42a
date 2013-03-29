@@ -31,7 +31,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
-import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
@@ -92,14 +91,14 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	@Override
 	public final DeclarativeBlock parentheses(LocationInfo location) {
-		return parentheses(location, getContainer());
+		return super.parentheses(location).toDeclarativeBlock();
 	}
 
 	@Override
 	public final DeclarativeBlock parentheses(
 			LocationInfo location,
 			Container container) {
-		return (DeclarativeBlock) super.parentheses(location, container);
+		return super.parentheses(location, container).toDeclarativeBlock();
 	}
 
 	@Override
@@ -121,10 +120,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	@Override
 	protected void braces(ImperativeBlock braces) {
-		statement(new BracesWithinDeclaratives(
-				braces,
-				nextDistributor(),
-				braces));
+		statement(braces);
 	}
 
 	@Override

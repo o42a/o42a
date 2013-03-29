@@ -24,7 +24,6 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -37,6 +36,10 @@ import org.o42a.util.string.Name;
 
 public abstract class Control {
 
+	public static Control mainControl(DefDirs dirs) {
+		return new MainControl(dirs, dirs.addBlock("continuation"));
+	}
+
 	Control() {
 	}
 
@@ -48,13 +51,11 @@ public abstract class Control {
 		return main().builder();
 	}
 
-	public final HostOp host() {
+	public final ObjectOp host() {
 		return getBuilder().host();
 	}
 
-	public final ObjectOp owner() {
-		return getBuilder().owner();
-	}
+	public abstract LocalsCode locals();
 
 	public final ValOp result() {
 		return main().mainResult();

@@ -53,6 +53,11 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	@Override
 	public Definer define(DefinerEnv env) {
 		throw new UnsupportedOperationException();
 	}

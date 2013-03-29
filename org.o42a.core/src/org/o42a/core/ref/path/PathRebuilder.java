@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.o42a.core.Scope;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.util.ArrayUtil;
 
 
@@ -84,6 +85,10 @@ public final class PathRebuilder implements LocationInfo {
 	public final void replaceRest(Step rebuilt) {
 		this.rebuiltSteps[this.rebuiltIdx] = this.previousStep = rebuilt;
 		this.replacement = 2;
+	}
+
+	public final void combinePreviousWithLocal(Local local) {
+		getPreviousStep().combineWithLocal(this, local);
 	}
 
 	@Override

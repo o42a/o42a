@@ -25,11 +25,12 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.ArrayUtil;
 
@@ -96,7 +97,12 @@ public class OddPathFragmentRemover implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, Step step, Ref dependency) {
+	public boolean local(Scope scope, Local local) {
+		return skip();
+	}
+
+	@Override
+	public boolean dep(Obj object, Dep dep) {
 		return skip();
 	}
 

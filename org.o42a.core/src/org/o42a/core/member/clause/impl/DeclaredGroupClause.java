@@ -23,12 +23,12 @@ import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.*;
-import org.o42a.core.member.local.LocalScopeRegistry;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -36,6 +36,7 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
+import org.o42a.core.st.impl.imperative.ImperativeMemberRegistry;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.string.Name;
 
@@ -54,7 +55,6 @@ public final class DeclaredGroupClause
 	private ReusedClause[] reused;
 	private Block<?, ?> definition;
 	private ImperativeBlock imperative;
-	private LocalScope localScope;
 
 	DeclaredGroupClause(
 			DeclaredGroupClauseMember member,
@@ -70,7 +70,6 @@ public final class DeclaredGroupClause
 		this.builder = propagatedFrom.builder;
 		this.definition = propagatedFrom.definition;
 		this.imperative = propagatedFrom.imperative;
-		this.localScope = propagatedFrom.localScope;
 	}
 
 	@Override
@@ -84,26 +83,27 @@ public final class DeclaredGroupClause
 	}
 
 	@Override
-	public boolean isImperative() {
+	public final boolean isImperative() {
 		return this.imperative != null;
 	}
 
-	@Override
-	public LocalScope getLocalScope() {
-		return this.localScope;
+	public final boolean isTopLevelImperative() {
+		if (this.imperative == null) {
+			return false;
+		}
+		return this.imperative.getEnclosing()
+				.getSentenceFactory()
+				.isDeclarative();
 	}
 
 	@Override
-	public boolean hasSubClauses() {
-		if (this.localScope != null) {
-			return this.localScope.hasSubClauses();
-		}
+	public final boolean hasSubClauses() {
 		return getSubClauses().length != 0;
 	}
 
 	@Override
 	public ClauseContainer getClauseContainer() {
-		return this.localScope != null ? this.localScope : this;
+		return this;
 	}
 
 	@Override
@@ -123,6 +123,9 @@ public final class DeclaredGroupClause
 	}
 
 	public Block<?, ?> parentheses(Group group) {
+		if (isImperative()) {
+			return braces(group, null);
+		}
 
 		final SentenceFactory<?, ?, ?, ?> sentenceFactory =
 				group.getStatements().getSentenceFactory();
@@ -143,7 +146,7 @@ public final class DeclaredGroupClause
 				statements.getSentenceFactory();
 		final ImperativeBlock definition;
 
-		if (group.getScope().toLocalScope() != null) {
+		if (isImperative()) {
 			definition = sentenceFactory.groupBraces(
 					group,
 					new BlockDistributor(group, this),
@@ -156,12 +159,9 @@ public final class DeclaredGroupClause
 					group,
 					new BlockDistributor(group, this),
 					name,
-					new ImperativeGroupRegistry.Builder(group));
-			this.localScope = definition.getScope();
-
-			final LocalScopeClauseBase local = this.localScope;
-
-			local.setClause(this);
+					new ImperativeGroupRegistry(
+							this,
+							group.getStatements().getMemberRegistry()));
 		}
 
 		this.imperative = definition;
@@ -177,7 +177,7 @@ public final class DeclaredGroupClause
 
 	@Override
 	public void define(Reproducer reproducer) {
-		if (this.localScope == null) {
+		if (!isTopLevelImperative()) {
 
 			final Statement reproduction =
 					this.definition.reproduce(reproducer);
@@ -194,24 +194,14 @@ public final class DeclaredGroupClause
 			return;
 		}
 
-		final LocalScope reproducedScope =
-				reproducer.getMemberRegistry().reproduceLocalScope(
-						reproducer,
-						this.localScope);
-
-		if (reproducedScope == null) {
-			return;
-		}
-
 		final ImperativeBlock reproduction = this.imperative.reproduce(
-				new ImperativeReproducer(this, reproducedScope, reproducer));
+				new ImperativeReproducer(reproducer));
 
 		if (reproduction == null) {
 			return;
 		}
 
-		reproducer.getStatements().statement(
-				reproduction.wrap(reproducer.distribute()));
+		reproducer.getStatements().statement(reproduction);
 	}
 
 	protected void merge(Clause clause) {
@@ -255,11 +245,6 @@ public final class DeclaredGroupClause
 		}
 
 		@Override
-		public ScopePlace getPlace() {
-			return this.enclosingDistributor.getPlace();
-		}
-
-		@Override
 		public Container getContainer() {
 			return this.clause;
 		}
@@ -274,22 +259,14 @@ public final class DeclaredGroupClause
 	private static final class ImperativeReproducer extends Reproducer {
 
 		private final Reproducer reproducer;
-		private final LocalScopeRegistry localRegistry;
+		private final ImperativeMemberRegistry registry;
 
-		ImperativeReproducer(
-				DeclaredGroupClause reproducingClause,
-				LocalScope reproducedScope,
-				Reproducer reproducer) {
+		ImperativeReproducer(Reproducer reproducer) {
 			super(
-					reproducingClause.localScope,
-					new ImperativeBlock.BlockDistributor(
-							new Location(
-									reproducedScope.getContext(),
-									reproducingClause.getLocation()),
-							reproducedScope));
+					reproducer.getReproducingScope(),
+					reproducer.distribute());
 			this.reproducer = reproducer;
-			this.localRegistry = new LocalScopeRegistry(
-					reproducedScope,
+			this.registry = new ImperativeMemberRegistry(
 					reproducer.getMemberRegistry());
 		}
 
@@ -305,7 +282,7 @@ public final class DeclaredGroupClause
 
 		@Override
 		public MemberRegistry getMemberRegistry() {
-			return this.localRegistry;
+			return this.registry;
 		}
 
 		@Override

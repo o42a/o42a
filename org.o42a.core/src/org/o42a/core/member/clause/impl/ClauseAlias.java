@@ -24,7 +24,6 @@ import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.MemberLocalScope;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.ref.path.Path;
 
@@ -116,11 +115,6 @@ public final class ClauseAlias extends Alias {
 	@Override
 	public MemberClause toClause() {
 		return getAliasedClause();
-	}
-
-	@Override
-	public MemberLocalScope toLocalScope() {
-		return null;
 	}
 
 	private MemberKey getAliasedKey() {

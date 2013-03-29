@@ -25,7 +25,6 @@ import static org.o42a.core.ref.impl.prediction.FieldPrediction.predictField;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ScopePlace;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.object.ObjectFieldIR;
 import org.o42a.core.member.Member;
@@ -56,11 +55,6 @@ public abstract class Field extends ObjectScope {
 	}
 
 	@Override
-	public final ScopePlace getPlace() {
-		return this.member.getPlace();
-	}
-
-	@Override
 	public final Container getEnclosingContainer() {
 		return this.member.getContainer();
 	}
@@ -72,10 +66,6 @@ public abstract class Field extends ObjectScope {
 
 	public boolean isScopeField() {
 		return false;
-	}
-
-	public final boolean isLocal() {
-		return getEnclosingContainer().toLocalScope() != null;
 	}
 
 	public final boolean isPropagated() {

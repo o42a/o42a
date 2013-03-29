@@ -19,12 +19,8 @@
 */
 package org.o42a.core;
 
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 
@@ -41,8 +37,6 @@ public interface Container extends ScopeInfo {
 
 	Clause toClause();
 
-	LocalScope toLocalScope();
-
 	Namespace toNamespace();
 
 	Member member(MemberKey memberKey);
@@ -52,40 +46,28 @@ public interface Container extends ScopeInfo {
 	 *
 	 * <p>This includes access to object adapter's field.</p>
 	 *
-	 * @param user user accessing this container.
-	 * @param accessor accessor of this container.
+	 * @param access member access information.
 	 * @param memberId identifier of member to access.
 	 * @param declaredIn the object member declared in or <code>null</code>
 	 * if unknown.
-	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path member(
-			PlaceInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn);
+	Path member(Access access, MemberId memberId, Obj declaredIn);
 
 	/**
 	 * Searches for the member in current container.
 	 *
-	 * <p>In contrast to {@link #member(PlaceInfo, Accessor, MemberId, Obj)}
+	 * <p>In contrast to {@link #member(Access, MemberId, Obj)}
 	 * the result is not necessarily belongs to this container. For example,
 	 * it may return a path to member from used name space or to clause inside
 	 * a group.</p>
 	 *
-	 * @param user user accessing this container.
-	 * @param accessor accessor of this container.
+	 * @param access member access information.
 	 * @param memberId identifier of member to find.
 	 * @param declaredIn the object member declared in or <code>null</code>
 	 * if unknown.
-	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path findMember(
-			PlaceInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn);
+	Path findMember(Access access, MemberId memberId, Obj declaredIn);
 
 }

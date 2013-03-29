@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 
 
@@ -29,20 +30,20 @@ public abstract class OwnerFactory {
 	public static final OwnerFactory NON_LINK_OWNER_FACTORY =
 			new NonLinkOwnerFactory();
 
-	public abstract Owner owner(Ref ownerRef);
+	public abstract Owner owner(AccessSource accessSource, Ref ownerRef);
 
-	public abstract Owner nonLinkOwner(Ref ownerRef);
+	public abstract Owner nonLinkOwner(AccessSource accessSource, Ref ownerRef);
 
 	private static final class DefaultOwnerFactory extends OwnerFactory {
 
 		@Override
-		public Owner owner(Ref ownerRef) {
-			return new DefaultOwner(ownerRef);
+		public Owner owner(AccessSource accessSource, Ref ownerRef) {
+			return new DefaultOwner(accessSource, ownerRef);
 		}
 
 		@Override
-		public Owner nonLinkOwner(Ref ownerRef) {
-			return new NonLinkOwner(ownerRef);
+		public Owner nonLinkOwner(AccessSource accessSource, Ref ownerRef) {
+			return new NonLinkOwner(accessSource, ownerRef);
 		}
 
 	}
@@ -50,13 +51,13 @@ public abstract class OwnerFactory {
 	private static final class NonLinkOwnerFactory extends OwnerFactory {
 
 		@Override
-		public Owner owner(Ref ownerRef) {
-			return new NeverDerefOwner(ownerRef);
+		public Owner owner(AccessSource accessSource, Ref ownerRef) {
+			return new NeverDerefOwner(accessSource, ownerRef);
 		}
 
 		@Override
-		public Owner nonLinkOwner(Ref ownerRef) {
-			return new NeverDerefOwner(ownerRef);
+		public Owner nonLinkOwner(AccessSource accessSource, Ref ownerRef) {
+			return new NeverDerefOwner(accessSource, ownerRef);
 		}
 
 	}

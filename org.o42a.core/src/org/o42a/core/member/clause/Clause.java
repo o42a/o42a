@@ -35,7 +35,7 @@ import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.Name;
 
 
-public abstract class Clause implements PlaceInfo {
+public abstract class Clause implements ContainerInfo {
 
 	protected static final ReusedClause[] NOTHING_REUSED = new ReusedClause[0];
 
@@ -110,11 +110,6 @@ public abstract class Clause implements PlaceInfo {
 
 	public final CompilerContext getContext() {
 		return getLocation().getContext();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.member.getPlace();
 	}
 
 	public final CompilerLogger getLogger() {
@@ -276,12 +271,12 @@ public abstract class Clause implements PlaceInfo {
 
 	@Override
 	public Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	@Override
