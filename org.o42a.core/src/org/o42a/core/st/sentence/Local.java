@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.MemberName.localName;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
@@ -227,7 +228,7 @@ public final class Local extends Step implements ContainerInfo {
 				reproducer.getReproducer()
 				.getContainer()
 				.member(
-						Accessor.OWNER.accessBy(this),
+						Accessor.OWNER.accessBy(this, FROM_DECLARATION),
 						localName(getName()),
 						reproducer.getScope().toObject());
 

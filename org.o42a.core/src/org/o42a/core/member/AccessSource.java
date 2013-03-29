@@ -1,6 +1,6 @@
 /*
-    Compiler
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Compiler Core
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,29 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
-
-import org.o42a.ast.ref.AbstractRefVisitor;
-import org.o42a.ast.ref.RefNode;
-import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.core.ref.Ref;
+package org.o42a.core.member;
 
 
-final class TargetRefVisitor
-		extends AbstractRefVisitor<Ref, AccessDistributor> {
+/**
+ * The source of member access.
+ *
+ * <p>It affect members visibility. For example, a field declaration can not
+ * see locals declared in the owning object's definition.</p>
+ */
+public enum AccessSource {
 
-	private final RefInterpreter interpreter;
+	/**
+	 * Members accessed from some declaration.
+	 *
+	 * <p>E.g. field declaration.</p>
+	 */
+	FROM_DECLARATION,
 
-	TargetRefVisitor(RefInterpreter interpreter) {
-		this.interpreter = interpreter;
-	}
-
-	@Override
-	protected Ref visitRef(RefNode ref, AccessDistributor p) {
-
-		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
-
-		return result != null ? result.targetRef() : null;
-	}
+	/**
+	 * Members accessed from value definition.
+	 */
+	FROM_DEFINITION
 
 }

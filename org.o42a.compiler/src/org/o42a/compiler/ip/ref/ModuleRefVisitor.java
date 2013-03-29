@@ -31,12 +31,12 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 
 
-public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
+public class ModuleRefVisitor
+		extends AbstractRefVisitor<Ref, AccessDistributor> {
 
 	public static final ModuleRefVisitor MODULE_REF_VISITOR =
 			new ModuleRefVisitor();
@@ -49,7 +49,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	@Override
-	public Ref visitMemberRef(MemberRefNode ref, Distributor p) {
+	public Ref visitMemberRef(MemberRefNode ref, AccessDistributor p) {
 
 		final Owner result = ref.accept(this.ownerVisitor, p);
 
@@ -57,7 +57,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	@Override
-	public Ref visitAdapterRef(AdapterRefNode ref, Distributor p) {
+	public Ref visitAdapterRef(AdapterRefNode ref, AccessDistributor p) {
 
 		final Owner result = ref.accept(this.ownerVisitor, p);
 
@@ -65,19 +65,21 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	@Override
-	protected Ref visitRef(RefNode ref, Distributor p) {
+	protected Ref visitRef(RefNode ref, AccessDistributor p) {
 		p.getContext().getLogger().invalidReference(ref);
 		return falseRef(location(p, ref), p);
 	}
 
-	protected StaticTypeRef declaredIn(RefNode declaredInNode, Distributor p) {
+	protected StaticTypeRef declaredIn(
+			RefNode declaredInNode,
+			AccessDistributor p) {
 		if (declaredInNode == null) {
 			return null;
 		}
 		return PATH_COMPILER_REF_IP.declaredIn(declaredInNode, p);
 	}
 
-	protected Ref moduleRef(MemberRefNode moduleRef, Distributor p) {
+	protected Ref moduleRef(MemberRefNode moduleRef, AccessDistributor p) {
 		return modulePath(moduleRef.getName().getName())
 				.bind(location(p, moduleRef), p.getScope())
 				.target(p);
@@ -86,7 +88,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	private static final class SameModuleRefVisitor extends ModuleRefVisitor {
 
 		@Override
-		protected Ref moduleRef(MemberRefNode moduleRef, Distributor p) {
+		protected Ref moduleRef(MemberRefNode moduleRef, AccessDistributor p) {
 			return enclosingModulePath(p.getContainer())
 					.bind(location(p, moduleRef), p.getScope())
 					.target(p);
@@ -95,10 +97,10 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	private final class ModuleOwnerVisitor
-			extends AbstractExpressionVisitor<Owner, Distributor> {
+			extends AbstractExpressionVisitor<Owner, AccessDistributor> {
 
 		@Override
-		public Owner visitMemberRef(MemberRefNode ref, Distributor p) {
+		public Owner visitMemberRef(MemberRefNode ref, AccessDistributor p) {
 
 			final Owner owner;
 			final ExpressionNode ownerNode = ref.getOwner();
@@ -122,11 +124,13 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 						declaredIn);
 			}
 
-			return NON_LINK_OWNER_FACTORY.owner(moduleRef(ref, p));
+			return NON_LINK_OWNER_FACTORY.owner(
+					p.getAccessSource(),
+					moduleRef(ref, p));
 		}
 
 		@Override
-		public Owner visitAdapterRef(AdapterRefNode ref, Distributor p) {
+		public Owner visitAdapterRef(AdapterRefNode ref, AccessDistributor p) {
 
 			final Owner owner = ref.getOwner().accept(this, p);
 
@@ -149,7 +153,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		@Override
 		protected Owner visitExpression(
 				ExpressionNode expression,
-				Distributor p) {
+				AccessDistributor p) {
 			p.getContext().getLogger().invalidReference(expression);
 			return null;
 		}

@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.file;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
@@ -52,7 +53,8 @@ final class SectionAscendantsVisitor
 	public AscendantsDefinition visitAscendants(
 			AscendantsNode ascendants,
 			Distributor p) {
-		return PLAIN_IP.typeIp().parseAscendants(ascendants, p);
+		return PLAIN_IP.typeIp()
+				.parseAscendants(ascendants, fromDeclaration(p));
 	}
 
 	@Override
@@ -73,7 +75,7 @@ final class SectionAscendantsVisitor
 
 			final Ref ascendantRef = ascendantNode.accept(
 					PLAIN_IP.targetExVisitor(),
-					p);
+					fromDeclaration(p));
 
 			if (ascendantRef != null) {
 
@@ -116,7 +118,9 @@ final class SectionAscendantsVisitor
 			ExpressionNode expression,
 			Distributor p) {
 
-		final Ref ref = expression.accept(PLAIN_IP.targetExVisitor(), p);
+		final Ref ref = expression.accept(
+				PLAIN_IP.targetExVisitor(),
+				fromDeclaration(p));
 
 		if (ref == null) {
 			return null;

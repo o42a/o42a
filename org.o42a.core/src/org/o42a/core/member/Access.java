@@ -34,24 +34,24 @@ public final class Access implements ContainerInfo {
 
 	private final ContainerInfo user;
 	private final Accessor accessor;
-	private final boolean localsIgnored;
+	private final AccessSource source;
 
-	Access(ContainerInfo user, Accessor accessor) {
+	Access(ContainerInfo user, Accessor accessor, AccessSource source) {
 		this.user = user;
 		this.accessor = accessor;
-		this.localsIgnored = false;
+		this.source = source;
 	}
 
 	private Access(Access prototype, Accessor accessor) {
 		this.user = prototype.user;
 		this.accessor = accessor;
-		this.localsIgnored = prototype.localsIgnored;
+		this.source = prototype.source;
 	}
 
-	private Access(Access prototype, boolean localsIgnored) {
+	private Access(Access prototype, AccessSource source) {
 		this.user = prototype.user;
 		this.accessor = prototype.accessor;
-		this.localsIgnored = localsIgnored;
+		this.source = source;
 	}
 
 	public final Accessor getAccessor() {
@@ -59,15 +59,19 @@ public final class Access implements ContainerInfo {
 	}
 
 	public final Access setAccessor(Accessor accessor) {
+		assert accessor != null :
+			"Accessor not specified";
 		return new Access(this, accessor);
 	}
 
-	public final boolean isLocalsIgnored() {
-		return this.localsIgnored;
+	public final AccessSource getSource() {
+		return this.source;
 	}
 
-	public final Access ignoreLocals() {
-		return new Access(this, true);
+	public final Access setSource(AccessSource source) {
+		assert source != null :
+			"Access source not specified";
+		return new Access(this, source);
 	}
 
 	@Override

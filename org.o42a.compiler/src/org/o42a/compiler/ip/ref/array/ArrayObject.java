@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
+import static org.o42a.compiler.ip.ref.AccessDistributor.accessDistributor;
 import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.core.object.ObjectMembers;
@@ -106,7 +107,9 @@ final class ArrayObject extends ConstructedObject {
 
 	private Array createArray() {
 		return new Builder(this).createArray(
-				distributeIn(getEnclosingContainer()),
+				accessDistributor(
+						distributeIn(getEnclosingContainer()),
+						this.constructor.getAccessSource()),
 				getScope());
 	}
 

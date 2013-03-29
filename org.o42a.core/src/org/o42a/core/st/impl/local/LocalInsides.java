@@ -19,6 +19,9 @@
 */
 package org.o42a.core.st.impl.local;
 
+import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
+import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
+
 import org.o42a.core.*;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -110,22 +113,105 @@ public class LocalInsides extends AbstractContainer {
 	}
 
 	private Path local(Access access, MemberId memberId, Obj declaredIn) {
-		if (accessibleBy(access) && matchLocal(memberId, declaredIn)) {
-			return getLocal().toPath();
+		if (!accessibleBy(access.getAccessor())) {
+			return null;
 		}
-		return null;
+		if (!matchLocal(memberId, declaredIn)) {
+			return null;
+		}
+		if (!localsVisibleBy(access.getContainer(), access.getSource())) {
+			return null;
+		}
+		return getLocal().toPath();
 	}
 
-	private boolean accessibleBy(Access access) {
-		if (access.isLocalsIgnored()) {
-			return false;
-		}
-
-		final Accessor accessor = access.getAccessor();
-
+	private boolean accessibleBy(Accessor accessor) {
 		return accessor == Accessor.DECLARATION
 				|| accessor == Accessor.OWNER
 				|| accessor == Accessor.ENCLOSED;
+	}
+
+	private boolean localsVisibleBy(Container by, AccessSource source) {
+
+		final Clause clause = by.toClause();
+
+		if (clause != null) {
+			return localsVisibleByClause(clause, source);
+		}
+
+		return localsVisibleByScope(by.getScope(), source);
+	}
+
+	private boolean localsVisibleByClause(Clause by, AccessSource source) {
+
+		final Clause clause = toClause();
+
+		if (clause == null) {
+			// Clause can not see any locals declared outside top-level clause.
+			return false;
+		}
+		if (clause == by) {
+			// Access from the same clause.
+			// Locals are visible only from value definition.
+			return source == FROM_DEFINITION;
+		}
+
+		final Clause enclosing = clause.getEnclosingClause();
+
+		if (enclosing == null) {
+			return false;
+		}
+
+		switch (clause.getKind()) {
+		case OVERRIDER:
+			// A field overrider is a declaration.
+			return localsVisibleByClause(enclosing, FROM_DECLARATION);
+		case EXPRESSION:
+		case GROUP:
+			return localsVisibleByClause(enclosing, FROM_DEFINITION);
+		}
+
+		throw new IllegalStateException(
+				"Unexpected kind of clause: " + clause.getKind());
+	}
+
+	private boolean localsVisibleByScope(Scope by, AccessSource source) {
+		if (getScope().is(by)) {
+			// Access from the same scope.
+			// Locals are visible only from value definition.
+			return source == FROM_DEFINITION;
+		}
+
+		final Container enclosingContainer = by.getEnclosingContainer();
+
+		if (enclosingContainer == null) {
+			return false;
+		}
+
+		final Clause enclosingClause = enclosingContainer.toClause();
+
+		if (enclosingClause != null) {
+			if (by.toField() != null) {
+				// A field declared inside clauses.
+				return localsVisibleByClause(enclosingClause, FROM_DECLARATION);
+			}
+			// An expression inside clause.
+			return localsVisibleByClause(enclosingClause, FROM_DEFINITION);
+		}
+
+		// Determine accessibility for enclosing scope.
+		final Scope enclosing = enclosingContainer.getScope();
+
+		if (enclosing.isTopScope()) {
+			return false;
+		}
+		if (by.toField() != null) {
+			// This scope is a field, i.e. a declaration.
+			return localsVisibleByScope(enclosing, FROM_DECLARATION);
+		}
+
+		// Otherwise, this scope is declared inside a value definition.
+		return localsVisibleByScope(enclosing, FROM_DEFINITION);
 	}
 
 	private boolean matchLocal(MemberId memberId, Obj declaredIn) {

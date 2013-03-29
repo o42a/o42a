@@ -87,8 +87,12 @@ public enum Accessor {
 
 	public abstract boolean implies(Accessor accessor);
 
-	public final Access accessBy(ContainerInfo user) {
-		return new Access(user, this);
+	public final Access accessBy(ContainerInfo user, AccessSource source) {
+		assert user != null :
+			"Accessing user not specified";
+		assert source != null :
+			"Access source not specified";
+		return new Access(user, this, source);
 	}
 
 }

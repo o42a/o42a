@@ -20,8 +20,8 @@
 package org.o42a.compiler.ip.ref;
 
 import org.o42a.common.ref.CompoundPathWalker;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.field.FieldDefinition;
@@ -37,15 +37,17 @@ import org.o42a.core.source.LocationInfo;
 
 public class MemberOf extends ContainedFragment {
 
+	private final AccessSource accessSource;
 	private final MemberId memberId;
 	private final StaticTypeRef declaredIn;
 
 	public MemberOf(
 			LocationInfo location,
-			Distributor distributor,
+			AccessDistributor distributor,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {
 		super(location, distributor);
+		this.accessSource = distributor.getAccessSource();
 		this.memberId = memberId;
 		this.declaredIn = declaredIn;
 	}
@@ -64,7 +66,8 @@ public class MemberOf extends ContainedFragment {
 
 		final MemberContainer container = owner.getContainer();
 		final Path memberPath = container.member(
-				accessorResolver.getAccessor().accessBy(this),
+				accessorResolver.getAccessor()
+				.accessBy(this, this.accessSource),
 				this.memberId,
 				this.declaredIn != null
 				? this.declaredIn.getType() : null);

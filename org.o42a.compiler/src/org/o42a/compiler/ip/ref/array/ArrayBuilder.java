@@ -23,6 +23,7 @@ import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
@@ -47,7 +48,7 @@ abstract class ArrayBuilder {
 		return this.constructor;
 	}
 
-	public Array createArray(Distributor enclosing, Scope scope) {
+	public Array createArray(AccessDistributor enclosing, Scope scope) {
 
 		final boolean typeByItems = typeByItems();
 		final Distributor distributor = scope.distribute();

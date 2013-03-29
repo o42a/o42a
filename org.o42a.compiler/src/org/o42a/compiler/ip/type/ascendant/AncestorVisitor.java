@@ -30,17 +30,17 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
 public class AncestorVisitor
-		extends AbstractExpressionVisitor<AncestorTypeRef, Distributor> {
+		extends AbstractExpressionVisitor<AncestorTypeRef, AccessDistributor> {
 
 	private final Interpreter ip;
 	private final TypeRefParameters typeParameters;
@@ -77,7 +77,7 @@ public class AncestorVisitor
 	@Override
 	public AncestorTypeRef visitParentheses(
 			ParenthesesNode parentheses,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final ExpressionNode unwrapped = unwrap(parentheses);
 
@@ -89,7 +89,7 @@ public class AncestorVisitor
 	}
 
 	@Override
-	public AncestorTypeRef visitScopeRef(ScopeRefNode ref, Distributor p) {
+	public AncestorTypeRef visitScopeRef(ScopeRefNode ref, AccessDistributor p) {
 		if (ref.getType() == ScopeType.IMPLIED) {
 			return impliedAncestorTypeRef();
 		}
@@ -97,7 +97,7 @@ public class AncestorVisitor
 	}
 
 	@Override
-	protected AncestorTypeRef visitRef(RefNode ref, Distributor p) {
+	protected AncestorTypeRef visitRef(RefNode ref, AccessDistributor p) {
 		if (typeParameters() != null) {
 			return super.visitRef(ref, p);
 		}
@@ -127,7 +127,7 @@ public class AncestorVisitor
 	@Override
 	protected AncestorTypeRef visitExpression(
 			ExpressionNode expression,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final Ref ref = expression.accept(
 				referral().expressionVisitor(ip(), this.typeConsumer),
