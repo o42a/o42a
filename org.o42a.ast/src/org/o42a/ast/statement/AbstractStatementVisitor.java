@@ -53,6 +53,11 @@ public abstract class AbstractStatementVisitor<R, P>
 	}
 
 	@Override
+	public R visitLocalScope(LocalScopeNode scope, P p) {
+		return visitStatement(scope, p);
+	}
+
+	@Override
 	public R visitClauseDeclarator(ClauseDeclaratorNode declarator, P p) {
 		return visitStatement(declarator, p);
 	}

@@ -122,6 +122,9 @@ public class DeclaratorNode extends AbstractStatementNode {
 		this.definitionAssignment.printContent(out);
 		if (this.iface != null) {
 			this.iface.printContent(out);
+			if (this.iface.getOpening() != null) {
+				out.append(' ');
+			}
 		}
 		this.definition.printContent(out);
 	}

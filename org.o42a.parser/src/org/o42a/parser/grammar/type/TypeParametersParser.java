@@ -19,7 +19,7 @@
 */
 package org.o42a.parser.grammar.type;
 
-import static org.o42a.parser.grammar.type.InterfaceParser.INTERFACE;
+import static org.o42a.parser.Grammar.iface;
 
 import org.o42a.ast.type.InterfaceNode;
 import org.o42a.ast.type.TypeNode;
@@ -42,7 +42,7 @@ public class TypeParametersParser implements Parser<TypeParametersNode> {
 			return null;
 		}
 
-		final InterfaceNode parameters = context.parse(INTERFACE);
+		final InterfaceNode parameters = context.parse(iface());
 
 		if (parameters == null) {
 			return null;
