@@ -32,13 +32,13 @@ import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-class LocalParser implements Parser<LocalNode> {
+public class LocalParser implements Parser<LocalNode> {
 
-	static final LocalParser LOCAL = new LocalParser();
+	public static final LocalParser LOCAL = new LocalParser();
 
 	private final ExpressionNode expression;
 
-	LocalParser(ExpressionNode expression) {
+	public LocalParser(ExpressionNode expression) {
 		this.expression = expression;
 	}
 

@@ -23,6 +23,7 @@ import static org.o42a.parser.Grammar.expression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.statement.AssignableNode;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.parser.Parser;
@@ -32,9 +33,9 @@ import org.o42a.util.io.SourcePosition;
 
 public class AssignmentParser implements Parser<AssignmentNode> {
 
-	private final ExpressionNode destination;
+	private final AssignableNode destination;
 
-	public AssignmentParser(ExpressionNode destination) {
+	public AssignmentParser(AssignableNode destination) {
 		this.destination = destination;
 	}
 
