@@ -195,7 +195,7 @@ final class ClauseIdVisitor
 
 		final Name name = extractNameOrImplied(
 				p.getContext(),
-				assignment.getDestination());
+				assignment.getDestination().toExpression());
 
 		return clauseDeclaration(
 				location(p, assignment),

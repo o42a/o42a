@@ -162,26 +162,23 @@ public class StatementParser implements Parser<StatementNode> {
 			result = parentheses;
 		}
 
-		final AssignmentNode assignment = parseAssignment(context, result);
-
-		if (assignment != null) {
-			return assignment;
-		}
-
-		return result;
+		return startWithExpression(context, result);
 	}
 
 	private StatementNode startWithExpression(
 			ParserContext context,
 			ExpressionNode expression) {
 
-		final StatementNode assignment = parseAssignment(context, expression);
+		final LocalNode local = context.parse(local(expression));
+		final StatementNode assignment =
+				parseAssignment(context, local, expression);
 
 		if (assignment != null) {
 			return assignment;
 		}
 
-		final LocalScopeNode localScope = parseLocalScope(context, expression);
+		final LocalScopeNode localScope =
+				parseLocalScope(context, local, expression);
 
 		if (localScope != null) {
 			return localScope;
@@ -192,18 +189,23 @@ public class StatementParser implements Parser<StatementNode> {
 
 	private AssignmentNode parseAssignment(
 			ParserContext context,
+			LocalNode local,
 			ExpressionNode expression) {
-		if (!assignmentsAllowed() || context.pendingOrNext() != '=') {
+		if (local == null && !assignmentsAllowed()) {
 			return null;
 		}
-		return context.parse(assignment(expression));
+		if (context.pendingOrNext() != '=') {
+			return null;
+		}
+		return context.parse(assignment(local != null ? local : expression));
 	}
 
 	private LocalScopeNode parseLocalScope(
 			ParserContext context,
+			LocalNode local,
 			ExpressionNode expression) {
-		if (context.pendingOrNext() != '$') {
-			return null;
+		if (local != null) {
+			return context.parse(this.grammar.localScope(local));
 		}
 		return context.parse(this.grammar.localScope(expression));
 	}

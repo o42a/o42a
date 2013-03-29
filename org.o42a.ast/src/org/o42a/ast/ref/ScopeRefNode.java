@@ -28,6 +28,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.NoBoundNode;
+import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeNodeVisitor;
@@ -91,6 +92,11 @@ public class ScopeRefNode extends SignNode<ScopeType>
 
 	@Override
 	public final ExpressionNode toExpression() {
+		return this;
+	}
+
+	@Override
+	public LocalNode toLocal() {
 		return null;
 	}
 

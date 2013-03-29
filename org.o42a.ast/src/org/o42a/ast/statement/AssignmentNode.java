@@ -30,12 +30,12 @@ public class AssignmentNode
 		extends AbstractStatementNode
 		implements ClauseIdNode {
 
-	private final ExpressionNode destination;
+	private final AssignableNode destination;
 	private final SignNode<AssignmentOperator> operator;
 	private final ExpressionNode value;
 
 	public AssignmentNode(
-			ExpressionNode destination,
+			AssignableNode destination,
 			SignNode<AssignmentOperator> operator,
 			ExpressionNode value) {
 		super(
@@ -46,7 +46,7 @@ public class AssignmentNode
 		this.value = value;
 	}
 
-	public ExpressionNode getDestination() {
+	public AssignableNode getDestination() {
 		return this.destination;
 	}
 

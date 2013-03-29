@@ -22,6 +22,7 @@ package org.o42a.ast.expression;
 import org.o42a.ast.Node;
 import org.o42a.ast.phrase.NoBoundNode;
 import org.o42a.ast.statement.AbstractStatementNode;
+import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
@@ -46,6 +47,11 @@ public abstract class AbstractExpressionNode
 	@Override
 	public final ExpressionNode toExpression() {
 		return this;
+	}
+
+	@Override
+	public final LocalNode toLocal() {
+		return null;
 	}
 
 	@Override

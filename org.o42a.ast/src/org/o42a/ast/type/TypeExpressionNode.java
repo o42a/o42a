@@ -28,6 +28,7 @@ import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.NoBoundNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 
 
@@ -86,6 +87,11 @@ public class TypeExpressionNode extends AbstractNode implements TypeNode {
 
 	@Override
 	public final ExpressionNode toExpression() {
+		return null;
+	}
+
+	@Override
+	public final LocalNode toLocal() {
 		return null;
 	}
 

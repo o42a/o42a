@@ -4,6 +4,8 @@
 */
 package org.o42a.ast.test.grammar.statement;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.IMPERATIVE;
@@ -11,7 +13,10 @@ import static org.o42a.parser.Grammar.IMPERATIVE;
 import org.junit.Test;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
+import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.statement.AssignmentNode;
+import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -53,6 +58,23 @@ public class AssignmentTest extends GrammarTestCase {
 		assertThat(destination.getLeftOperand(), isName("foo"));
 		assertThat(destination.getRightOperand(), isName("bar"));
 		assertThat(assignment.getValue(), isName("baz"));
+	}
+
+	@Test
+	public void localAssignment() {
+
+		final AssignmentNode assignment = parse("A $= b + $");
+		final LocalNode local = assignment.getDestination().toLocal();
+
+		assertThat(local.getExpression(), isName("a"));
+		assertThat(local.getName(), nullValue());
+
+		final BinaryNode value = to(BinaryNode.class, assignment.getValue());
+
+		assertThat(value.getLeftOperand(), isName("b"));
+		assertThat(
+				to(ScopeRefNode.class, value.getRightOperand()).getType(),
+				is(ScopeType.LOCAL));
 	}
 
 	private AssignmentNode parse(String text) {

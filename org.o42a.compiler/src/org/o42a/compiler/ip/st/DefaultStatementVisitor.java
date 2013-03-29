@@ -95,7 +95,8 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	public Void visitAssignment(AssignmentNode assignment, Statements<?, ?> p) {
 
-		final ExpressionNode destinationNode = assignment.getDestination();
+		final ExpressionNode destinationNode =
+				assignment.getDestination().toExpression();
 		final ExpressionNode valueNode = assignment.getValue();
 
 		if (valueNode == null || destinationNode == null) {

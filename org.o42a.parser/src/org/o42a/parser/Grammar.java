@@ -139,8 +139,16 @@ public class Grammar {
 		return BracesParser.BRACES;
 	}
 
+	public static Parser<LocalNode> local() {
+		return LocalParser.LOCAL;
+	}
+
+	public static Parser<LocalNode> local(ExpressionNode expression) {
+		return new LocalParser(expression);
+	}
+
 	public static Parser<AssignmentNode> assignment(
-			ExpressionNode destination) {
+			AssignableNode destination) {
 		return new AssignmentParser(destination);
 	}
 

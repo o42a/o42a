@@ -27,7 +27,7 @@ import org.o42a.ast.atom.SignType;
 import org.o42a.ast.expression.ExpressionNode;
 
 
-public class LocalNode extends AbstractNode {
+public class LocalNode extends AbstractNode implements AssignableNode {
 
 	private final ExpressionNode expression;
 	private final SignNode<Separator> separator;
@@ -53,6 +53,16 @@ public class LocalNode extends AbstractNode {
 
 	public final NameNode getName() {
 		return this.name;
+	}
+
+	@Override
+	public final ExpressionNode toExpression() {
+		return null;
+	}
+
+	@Override
+	public final LocalNode toLocal() {
+		return this;
 	}
 
 	@Override

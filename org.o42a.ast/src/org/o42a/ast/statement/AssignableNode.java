@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,24 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
+package org.o42a.ast.statement;
 
-import org.o42a.ast.field.DeclarableNode;
-import org.o42a.ast.phrase.BoundNode;
-import org.o42a.ast.statement.AssignableNode;
-import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.Node;
+import org.o42a.ast.expression.ExpressionNode;
 
 
-public interface ExpressionNode
-		extends StatementNode, AssignableNode, BoundNode {
+public interface AssignableNode extends Node {
 
-	<R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p);
+	ExpressionNode toExpression();
 
-	DeclarableNode toDeclarable();
-
-	TypeNode toType();
-
-	BinaryNode toBinary();
+	LocalNode toLocal();
 
 }
