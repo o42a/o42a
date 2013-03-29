@@ -30,9 +30,7 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.statement.AssignmentNode;
-import org.o42a.ast.statement.NamedBlockNode;
-import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.statement.*;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -42,9 +40,11 @@ import org.o42a.util.io.SourcePosition;
 public class StatementParser implements Parser<StatementNode> {
 
 	private final Grammar grammar;
+	private final boolean local;
 
-	public StatementParser(Grammar grammar) {
+	public StatementParser(Grammar grammar, boolean local) {
 		this.grammar = grammar;
+		this.local = local;
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class StatementParser implements Parser<StatementNode> {
 		for (;;) {
 
 			final SourcePosition start = context.current().fix();
-			final StatementNode statement = parseStatement(context);
+			final StatementNode statement = parseNonExpression(context);
 
 			if (statement != null) {
 				context.logUnexpected(firstUnexpected, start);
@@ -100,7 +100,11 @@ public class StatementParser implements Parser<StatementNode> {
 		}
 	}
 
-	private StatementNode parseStatement(ParserContext context) {
+	private StatementNode parseNonExpression(ParserContext context) {
+		if (this.local) {
+			return parseLocalStatement(context);
+		}
+
 		switch (context.next()) {
 		case '=':
 			return context.parse(selfAssignment());
@@ -125,6 +129,17 @@ public class StatementParser implements Parser<StatementNode> {
 				return context.parse(inclusion());
 			}
 		}
+
+		return null;
+	}
+
+	private StatementNode parseLocalStatement(ParserContext context) {
+		switch (context.next()) {
+		case '{':
+			return context.parse(braces());
+		case '(':
+			return parseParentheses(context);
+		}
 		return null;
 	}
 
@@ -147,7 +162,13 @@ public class StatementParser implements Parser<StatementNode> {
 			result = parentheses;
 		}
 
-		return parseAssignment(context, result);
+		final AssignmentNode assignment = parseAssignment(context, result);
+
+		if (assignment != null) {
+			return assignment;
+		}
+
+		return result;
 	}
 
 	private StatementNode startWithExpression(
@@ -156,27 +177,39 @@ public class StatementParser implements Parser<StatementNode> {
 
 		final StatementNode assignment = parseAssignment(context, expression);
 
-		if (assignment != expression) {
+		if (assignment != null) {
 			return assignment;
+		}
+
+		final LocalScopeNode localScope = parseLocalScope(context, expression);
+
+		if (localScope != null) {
+			return localScope;
 		}
 
 		return startWithDeclarable(context, expression);
 	}
 
-	private StatementNode parseAssignment(
+	private AssignmentNode parseAssignment(
 			ParserContext context,
 			ExpressionNode expression) {
-		if (this.grammar.isImperative() && context.next() == '=') {
-
-			final AssignmentNode assignment =
-					context.parse(assignment(expression));
-
-			if (assignment != null) {
-				return assignment;
-			}
+		if (!assignmentsAllowed() || context.pendingOrNext() != '=') {
+			return null;
 		}
+		return context.parse(assignment(expression));
+	}
 
-		return expression;
+	private LocalScopeNode parseLocalScope(
+			ParserContext context,
+			ExpressionNode expression) {
+		if (context.pendingOrNext() != '$') {
+			return null;
+		}
+		return context.parse(this.grammar.localScope(expression));
+	}
+
+	private boolean assignmentsAllowed() {
+		return this.local || this.grammar.isImperative();
 	}
 
 	private StatementNode startWithDeclarable(
@@ -194,6 +227,11 @@ public class StatementParser implements Parser<StatementNode> {
 
 		if (namedBlock != null) {
 			return namedBlock;
+		}
+
+		if (this.local) {
+			// Declarations not allowed inside local scope.
+			return expression;
 		}
 
 		final MacroExpansionNode expansion = declarable.toMacroExpansion();

@@ -33,9 +33,7 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
-import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.*;
 import org.o42a.parser.grammar.atom.*;
 import org.o42a.parser.grammar.clause.ClauseDeclaratorParser;
 import org.o42a.parser.grammar.expression.*;
@@ -49,6 +47,7 @@ import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
 import org.o42a.parser.grammar.type.AscendantsParser;
+import org.o42a.parser.grammar.type.InterfaceParser;
 import org.o42a.parser.grammar.type.TypeParametersParser;
 
 
@@ -211,12 +210,17 @@ public class Grammar {
 		return SelfAssignmentParser.SELF_ASSIGNMENT;
 	}
 
+	public static final Parser<InterfaceNode> iface() {
+		return InterfaceParser.INTERFACE;
+	}
+
 	public static final Parser<DeclaratorNode> declarator(
 			DeclarableNode declarable) {
 		return new DeclaratorParser(declarable);
 	}
 
 	private final Parser<StatementNode> statement;
+	private final Parser<StatementNode> localStatement;
 	private final Parser<ClauseDeclaratorNode> clauseDeclarator;
 	private final Parser<ParenthesesNode> parentheses;
 	private final Parser<SentenceNode[]> content;
@@ -226,7 +230,8 @@ public class Grammar {
 
 	private Grammar() {
 		this.clauseDeclarator = new ClauseDeclaratorParser(this);
-		this.statement = new StatementParser(this);
+		this.statement = new StatementParser(this, false);
+		this.localStatement = new StatementParser(this, true);
 		this.parentheses = new ParenthesesParser(this);
 		this.content = new ContentParser(this);
 		this.sentence = new SentenceParser(this);
@@ -244,6 +249,18 @@ public class Grammar {
 
 	public final Parser<StatementNode> statement() {
 		return this.statement;
+	}
+
+	public final Parser<StatementNode> localStatement() {
+		return this.localStatement;
+	}
+
+	public final Parser<LocalScopeNode> localScope(ExpressionNode expression) {
+		return new LocalScopeParser(this, expression);
+	}
+
+	public final Parser<LocalScopeNode> localScope(LocalNode local) {
+		return new LocalScopeParser(this, local);
 	}
 
 	public final Parser<ClauseDeclaratorNode> clauseDeclarator() {

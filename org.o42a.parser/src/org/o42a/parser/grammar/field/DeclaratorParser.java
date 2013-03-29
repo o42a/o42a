@@ -21,7 +21,7 @@ package org.o42a.parser.grammar.field;
 
 import static org.o42a.ast.field.DeclarationTarget.*;
 import static org.o42a.parser.Grammar.expression;
-import static org.o42a.parser.grammar.type.InterfaceParser.INTERFACE;
+import static org.o42a.parser.Grammar.iface;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -61,7 +61,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 
 		switch (c) {
 		case '`':
-			iface = context.parse(INTERFACE);
+			iface = context.parse(iface());
 			break;
 		case '(':
 			iface = parseTypeParameters(context);
@@ -85,7 +85,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 
 	private InterfaceNode parseTypeParameters(ParserContext context) {
 
-		final InterfaceNode iface = context.parse(INTERFACE);
+		final InterfaceNode iface = context.parse(iface());
 
 		if (iface == null) {
 			return null;

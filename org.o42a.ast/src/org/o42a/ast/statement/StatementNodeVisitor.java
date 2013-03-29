@@ -38,6 +38,8 @@ public interface StatementNodeVisitor<R, P>
 
 	R visitDeclarator(DeclaratorNode declarator, P p);
 
+	R visitLocalScope(LocalScopeNode scope, P p);
+
 	R visitClauseDeclarator(ClauseDeclaratorNode declarator, P p);
 
 	R visitNamedBlock(NamedBlockNode block, P p);
