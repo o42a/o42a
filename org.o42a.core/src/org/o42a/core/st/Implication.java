@@ -31,7 +31,7 @@ import org.o42a.core.value.link.TargetResolver;
 
 
 public abstract class Implication<L extends Implication<L>>
-		implements PlaceInfo {
+		implements ContainerInfo {
 
 	private final Statement statement;
 
@@ -59,11 +59,6 @@ public abstract class Implication<L extends Implication<L>>
 	@Override
 	public final Scope getScope() {
 		return getStatement().getScope();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return getStatement().getPlace();
 	}
 
 	@Override
@@ -106,12 +101,12 @@ public abstract class Implication<L extends Implication<L>>
 
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	@Override

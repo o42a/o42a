@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
@@ -63,7 +64,7 @@ public final class DefinitionVisitor
 
 		final Ref definition = expression.accept(
 				ip().targetExVisitor(this.typeConsumer),
-				p.distribute());
+				fromDeclaration(p));
 
 		if (definition == null) {
 			return null;

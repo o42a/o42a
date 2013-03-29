@@ -19,25 +19,17 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
-import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.ScopePlace;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalScopeRegistry;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.*;
 import org.o42a.core.value.ValueRequest;
-import org.o42a.util.Place.Trace;
-import org.o42a.util.fn.Lambda;
 import org.o42a.util.string.Name;
 
 
@@ -49,12 +41,9 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 			Statements<?, ?> enclosing,
 			Name name,
 			ImperativeFactory sentenceFactory,
-			Lambda<MemberRegistry, LocalScope> memberRegistry) {
+			MemberRegistry memberRegistry) {
 
-		final LocalScope scope = enclosing.getMemberRegistry().newLocalScope(
-				location,
-				distributor,
-				name);
+		final Scope scope = enclosing.getScope();
 
 		if (scope == null) {
 			return null;
@@ -63,17 +52,18 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		final MemberRegistry registry;
 
 		if (memberRegistry != null) {
-			registry = memberRegistry.get(scope);
+			registry = memberRegistry;
 		} else {
-			registry = new LocalScopeRegistry(scope, enclosing.getMemberRegistry());
+			registry =
+					new ImperativeMemberRegistry(enclosing.getMemberRegistry());
 		}
 
 		return new ImperativeBlock(
 				location,
-				new BlockDistributor(location, scope),
+				distributor,
 				enclosing,
 				false,
-				scope.getName(),
+				name,
 				registry,
 				sentenceFactory,
 				true);
@@ -102,8 +92,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	private final Name name;
 	private final SentencesEnv sentencesEnv = new SentencesEnv();
 	private final boolean topLevel;
-	private final Trace trace;
-	private Locals locals;
+	private NamedBlocks namedBlocks;
 	private ImplicationEnv initialEnv;
 	private boolean loop;
 
@@ -125,40 +114,25 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		this.parentheses = parentheses;
 		this.name = name;
 		this.topLevel = topLevel;
-		this.trace = getPlace().nestedTrace();
 	}
 
 	private ImperativeBlock(
-			LocationInfo location,
+			ImperativeBlock prototype,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
-		super(location, distributor, memberRegistry, sentenceFactory);
+		super(prototype, distributor, memberRegistry, sentenceFactory);
 		this.parentheses = false;
-		this.name = distributor.getScope().toLocalScope().getName();
+		this.name = prototype.getName();
 		this.topLevel = true;
-		this.trace = getPlace().nestedTrace();
-
-		final LocalScopeBase scope = getScope();
-
-		scope.setBlock(this);
 	}
 
 	public final boolean isTopLevel() {
 		return this.topLevel;
 	}
 
-	public final LocalScope getLocalScope() {
-		return getScope();
-	}
-
 	public final boolean isLoop() {
 		return this.loop;
-	}
-
-	@Override
-	public LocalScope getScope() {
-		return super.getScope().toLocalScope();
 	}
 
 	@Override
@@ -243,25 +217,13 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		return reproduction;
 	}
 
-	public Statement wrap(Distributor distributor) {
-		if (!isTopLevel()) {
-			return this;
-		}
-		return new BracesWithinDeclaratives(this, distributor, this);
-	}
-
 	@Override
-	Trace getTrace() {
-		return this.trace;
-	}
-
-	@Override
-	Locals getLocals() {
-		if (this.locals != null) {
-			return this.locals;
+	NamedBlocks getNamedBlocks() {
+		if (this.namedBlocks != null) {
+			return this.namedBlocks;
 		}
-		return this.locals =
-				getEnclosing().getSentence().getBlock().getLocals();
+		return this.namedBlocks =
+				getEnclosing().getSentence().getBlock().getNamedBlocks();
 	}
 
 	final CommandEnv sentencesEnv() {
@@ -281,38 +243,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		@Override
 		public ValueRequest getValueRequest() {
 			return getInitialEnv().getValueRequest();
-		}
-
-	}
-
-	public static final class BlockDistributor extends Distributor {
-
-		private final Location location;
-		private final LocalScope scope;
-
-		public BlockDistributor(LocationInfo location, LocalScope scope) {
-			this.location = location.getLocation();
-			this.scope = scope;
-		}
-
-		@Override
-		public final Location getLocation() {
-			return this.location;
-		}
-
-		@Override
-		public LocalScope getScope() {
-			return this.scope;
-		}
-
-		@Override
-		public Container getContainer() {
-			return this.scope;
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return localPlace(getScope(), FIRST_PLACE);
 		}
 
 	}

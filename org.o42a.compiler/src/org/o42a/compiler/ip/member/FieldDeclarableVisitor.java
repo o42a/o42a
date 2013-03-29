@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.member.AdapterId.adapterId;
@@ -99,10 +100,6 @@ public final class FieldDeclarableVisitor
 	public FieldDeclaration visitDeclarableAdapter(
 			DeclarableAdapterNode adapterNode,
 			Distributor p) {
-		if (p.getPlace().isImperative()) {
-			p.getLogger().prohibitedLocalAdapter(adapterNode.getPrefix());
-			return null;
-		}
 
 		final MemberRefNode memberNode = adapterNode.getMember();
 
@@ -112,7 +109,7 @@ public final class FieldDeclarableVisitor
 
 		final Ref adapterId = adapterNode.getMember().accept(
 				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
-				p);
+				fromDeclaration(p));
 
 		if (adapterId == null) {
 			return null;
@@ -170,7 +167,7 @@ public final class FieldDeclarableVisitor
 		return null;
 	}
 
-	static StaticTypeRef declaredIn(
+	private static StaticTypeRef declaredIn(
 			Interpreter ip,
 			MemberRefNode memberRef,
 			Distributor distributor) {
@@ -181,7 +178,9 @@ public final class FieldDeclarableVisitor
 			return null;
 		}
 
-		final Ref declaredIn = node.accept(ip.bodyRefVisitor(), distributor);
+		final Ref declaredIn = node.accept(
+				ip.bodyRefVisitor(),
+				fromDeclaration(distributor));
 
 		if (declaredIn == null) {
 			return null;
@@ -251,12 +250,6 @@ public final class FieldDeclarableVisitor
 			result = result.override();
 		}
 		if (target.isAbstract()) {
-			if (declaration.getScope().toLocalScope() != null) {
-				declaration.getLogger().prohibitedLocalAbstract(
-						declarator.getDefinitionAssignment(),
-						declaration.getDisplayName());
-				return null;
-			}
 			if (!declaration.getVisibility().isOverridable()) {
 				declaration.getLogger().prohibitedPrivateAbstract(
 						declarator.getDefinitionAssignment(),
@@ -336,12 +329,6 @@ public final class FieldDeclarableVisitor
 		public FieldDeclaration visitScopeRef(
 				ScopeRefNode ref,
 				FieldDeclaration p) {
-			if (p.getScope().toLocalScope() != null) {
-				p.getLogger().prohibitedLocalVisibility(
-						ref,
-						p.getDisplayName());
-				return p.setVisibility(Visibility.PRIVATE);
-			}
 			switch (ref.getType()) {
 			case SELF:
 				return p.setVisibility(Visibility.PRIVATE);
@@ -349,6 +336,7 @@ public final class FieldDeclarableVisitor
 				return p.setVisibility(Visibility.PROTECTED);
 			case ROOT:
 			case LOCAL:
+			case ANONYMOUS:
 			case MACROS:
 			case IMPLIED:
 			}

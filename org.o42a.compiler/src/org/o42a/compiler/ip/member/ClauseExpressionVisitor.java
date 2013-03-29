@@ -22,7 +22,8 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.member.ParenthesesVisitor.extractParentheses;
 import static org.o42a.compiler.ip.member.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
-import static org.o42a.compiler.ip.ref.RefInterpreter.localName;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
+import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -31,7 +32,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.core.Distributor;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
@@ -49,12 +50,13 @@ class ClauseExpressionVisitor
 
 	@Override
 	public ClauseBuilder visitMemberRef(MemberRefNode ref, ClauseBuilder p) {
+		if (ref.getMembership() == null) {
 
-		final Name localName = localName(ref, null);
+			final Name localName = localName(ref);
 
-		if (PREFIX_NAME.is(localName)) {
-			localName(ref, p.getLogger());// Report errors.
-			return p.setSubstitution(PREFIX_SUBSITUTION);
+			if (PREFIX_NAME.is(localName)) {
+				return p.setSubstitution(PREFIX_SUBSITUTION);
+			}
 		}
 
 		return super.visitMemberRef(ref, p);
@@ -68,7 +70,7 @@ class ClauseExpressionVisitor
 		final AscendantsDefinition ascendantsDefinition =
 				CLAUSE_DEF_IP.typeIp().parseAscendants(
 						ascendants,
-						p.distribute());
+						fromDefinition(p));
 
 		if (ascendantsDefinition == null) {
 			return null;
@@ -105,7 +107,7 @@ class ClauseExpressionVisitor
 			ExpressionNode expression,
 			ClauseBuilder p) {
 
-		final Distributor distributor = p.distribute();
+		final AccessDistributor distributor = fromDefinition(p);
 		final Ref ref = expression.accept(
 				CLAUSE_DEF_IP.targetExVisitor(),
 				distributor);

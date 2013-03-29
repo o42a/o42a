@@ -33,6 +33,7 @@ import org.o42a.core.ref.path.impl.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
@@ -170,6 +171,15 @@ public abstract class Step {
 	 * @param next the next step to combine this one with.
 	 */
 	protected void combineWith(PathRebuilder rebuilder, Step next) {
+	}
+
+	/**
+	 * Combines the step with the local following this step in the path.
+	 *
+	 * @param rebuilder path rebuilder.
+	 * @param local the local to combine this one with.
+	 */
+	protected void combineWithLocal(PathRebuilder rebuilder, Local local) {
 	}
 
 	/**

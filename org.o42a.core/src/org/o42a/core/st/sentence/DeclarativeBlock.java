@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.Distributor.containerDistributor;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
@@ -32,8 +32,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.BlockDefiner;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
-import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.util.Place.Trace;
+import org.o42a.core.st.impl.imperative.NamedBlocks;
 
 
 public final class DeclarativeBlock extends Block<Declaratives, Definer> {
@@ -52,7 +51,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 				false);
 	}
 
-	private Locals locals;
+	private NamedBlocks namedBlocks;
 	private BlockDefiner definer;
 
 	public DeclarativeBlock(
@@ -61,7 +60,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 			MemberRegistry memberRegistry) {
 		this(
 				location,
-				declarativeDistributor(container),
+				containerDistributor(container),
 				memberRegistry);
 	}
 
@@ -162,7 +161,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 		if (enclosing == null) {
 			reproduction = new DeclarativeBlock(
 					this,
-					declarativeDistributor(reproducer.getContainer()),
+					containerDistributor(reproducer.getContainer()),
 					null,
 					reproducer.getMemberRegistry(),
 					DECLARATIVE_FACTORY,
@@ -193,23 +192,19 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	@Override
-	final Trace getTrace() {
-		return null;
-	}
-
-	@Override
-	Locals getLocals() {
-		if (this.locals != null) {
-			return this.locals;
+	NamedBlocks getNamedBlocks() {
+		if (this.namedBlocks != null) {
+			return this.namedBlocks;
 		}
 
 		final Declaratives enclosing = getEnclosing();
 
 		if (enclosing == null) {
-			return this.locals = new Locals(this);
+			return this.namedBlocks = new NamedBlocks(this);
 		}
 
-		return this.locals = enclosing.getSentence().getBlock().getLocals();
+		return this.namedBlocks =
+				enclosing.getSentence().getBlock().getNamedBlocks();
 	}
 
 	private void addImplicitInclusions() {

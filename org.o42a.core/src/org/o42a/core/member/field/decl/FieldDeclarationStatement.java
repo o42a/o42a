@@ -19,23 +19,15 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.LocalFieldCmd;
-import org.o42a.core.member.*;
+import org.o42a.core.member.DeclarationCommand;
+import org.o42a.core.member.DeclarationDefiner;
+import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.Obj;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.value.Condition;
-import org.o42a.core.value.link.TargetResolver;
 
 
 public final class FieldDeclarationStatement extends DeclarationStatement {
@@ -68,7 +60,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 
 	@Override
 	public DeclarationCommand command(CommandEnv env) {
-		return new Command(this, env);
+		throw new UnsupportedOperationException("Local fields do not exist");
 	}
 
 	@Override
@@ -126,52 +118,6 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		@Override
 		public DefTargets getDefTargets() {
 			return fieldDef();
-		}
-
-	}
-
-	private static final class Command extends DeclarationCommand {
-
-		Command(DeclarationStatement statement, CommandEnv env) {
-			super(statement, env);
-		}
-
-		@Override
-		public CommandTargets getCommandTargets() {
-			return actionCommand();
-		}
-
-		@Override
-		public Action initialValue(LocalResolver resolver) {
-
-			final Member member =
-					resolver.getLocal().member(
-							getDeclarationStatement()
-							.toMember()
-							.getMemberKey());
-			final Obj object = member.toField().object(dummyUser());
-			final Condition condition =
-					object.value()
-					.getValue()
-					.getKnowledge()
-					.getCondition();
-
-			return new ExecuteCommand(this, condition);
-		}
-
-		@Override
-		public void resolveTargets(TargetResolver resolver, Scope origin) {
-		}
-
-		@Override
-		public Cmd cmd() {
-			assert getStatement().assertFullyResolved();
-
-			final FieldDeclarationStatement statement =
-					(FieldDeclarationStatement) getStatement();
-
-			return new LocalFieldCmd(
-					statement.member.toField().field(dummyUser()));
 		}
 
 	}

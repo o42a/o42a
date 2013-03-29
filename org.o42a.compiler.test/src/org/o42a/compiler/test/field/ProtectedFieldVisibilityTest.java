@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.object.Accessor;
+import org.o42a.core.member.Accessor;
 import org.o42a.core.value.ValueType;
 
 

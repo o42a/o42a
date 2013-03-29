@@ -23,7 +23,8 @@ import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.core.Distributor;
+import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -46,6 +47,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	private final Interpreter ip;
 	private final BracketsNode node;
+	private final AccessSource accessSource;
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
 	private TypeParameters<Array> arrayParameters;
@@ -55,10 +57,11 @@ public class ArrayConstructor extends ObjectConstructor {
 			Interpreter ip,
 			CompilerContext context,
 			BracketsNode node,
-			Distributor distributor) {
+			AccessDistributor distributor) {
 		super(new Location(context, node), distributor);
 		this.ip = ip;
 		this.node = node;
+		this.accessSource = distributor.getAccessSource();
 		this.reproducer = null;
 		this.reproducedFrom = null;
 	}
@@ -69,16 +72,21 @@ public class ArrayConstructor extends ObjectConstructor {
 		super(reproducedFrom, reproducer.distribute());
 		this.ip = reproducedFrom.ip;
 		this.node = reproducedFrom.node;
+		this.accessSource = reproducedFrom.accessSource;
 		this.reproducer = reproducer;
 		this.reproducedFrom = reproducedFrom;
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
 	}
 
 	public final BracketsNode getNode() {
 		return this.node;
 	}
 
-	public final Interpreter ip() {
-		return this.ip;
+	public final AccessSource getAccessSource() {
+		return this.accessSource;
 	}
 
 	public TypeRef ancestor(LocationInfo location) {

@@ -28,7 +28,6 @@ import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import org.o42a.core.*;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Derivation;
 import org.o42a.core.ref.*;
@@ -49,16 +48,10 @@ public abstract class Def implements SourceInfo {
 
 		final Obj object = container.toObject();
 
-		if (object != null) {
-			return object;
-		}
+		assert object != null :
+			"Definition can be created only inside object";
 
-		final LocalScope local = container.toLocalScope();
-
-		assert local != null :
-			"Definition can be created only inside object or local scope";
-
-		return local.getOwner();
+		return object;
 	}
 
 	private final ScopeUpgrade scopeUpgrade;

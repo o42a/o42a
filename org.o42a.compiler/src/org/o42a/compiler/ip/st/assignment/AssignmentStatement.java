@@ -75,6 +75,11 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
+	public boolean isValid() {
+		return !getAssignmentKind().isError();
+	}
+
+	@Override
 	public Definer define(DefinerEnv env) {
 		throw new UnsupportedOperationException();
 	}

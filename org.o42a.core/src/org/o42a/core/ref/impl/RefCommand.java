@@ -28,8 +28,6 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.local.FullLocalResolver;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -80,7 +78,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(LocalResolver resolver) {
+	public Action initialValue(Resolver resolver) {
 		return new ReturnValue(
 				this,
 				resolver,
@@ -88,7 +86,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public Action initialCond(LocalResolver resolver) {
+	public Action initialCond(Resolver resolver) {
 		return new ExecuteCommand(
 				this,
 				getValueAdapter()
@@ -148,7 +146,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(FullLocalResolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		getValueAdapter().resolveAll(resolver);
 	}
 

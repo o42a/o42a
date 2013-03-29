@@ -19,20 +19,22 @@
 */
 package org.o42a.core.st;
 
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
-public abstract class Statement extends Placed {
+public abstract class Statement extends Contained {
 
 	private boolean fullyResolved;
 
 	public Statement(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
+
+	public abstract boolean isValid();
 
 	public DeclarativeBlock toDeclarativeBlock() {
 		return null;

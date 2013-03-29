@@ -36,11 +36,11 @@ import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.phrase.PhraseInterpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.ExpressionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.TypeInterpreter;
-import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
@@ -63,7 +63,7 @@ public enum Interpreter {
 	private final RefInterpreter refIp;
 	private final TypeInterpreter typeIp = new TypeInterpreter(this);
 	private final PhraseInterpreter phraseIp = new PhraseInterpreter(this);
-	private final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor;
+	private final ExpressionNodeVisitor<Ref, AccessDistributor> targetExVisitor;
 	private final ExpressionVisitor bodyExVisitor;
 
 	Interpreter(RefInterpreter refInterpreter) {
@@ -84,19 +84,20 @@ public enum Interpreter {
 		return this.phraseIp;
 	}
 
-	public final RefNodeVisitor<Ref, Distributor> targetRefVisitor() {
+	public final RefNodeVisitor<Ref, AccessDistributor> targetRefVisitor() {
 		return refIp().targetRefVisitor();
 	}
 
-	public final RefNodeVisitor<Ref, Distributor> bodyRefVisitor() {
+	public final RefNodeVisitor<Ref, AccessDistributor> bodyRefVisitor() {
 		return refIp().bodyRefVisitor();
 	}
 
-	public final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor() {
+	public final
+	ExpressionNodeVisitor<Ref, AccessDistributor> targetExVisitor() {
 		return this.targetExVisitor;
 	}
 
-	public final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor(
+	public final ExpressionNodeVisitor<Ref, AccessDistributor> targetExVisitor(
 			TypeConsumer typeConsumer) {
 		if (typeConsumer == NO_TYPE_CONSUMER) {
 			return targetExVisitor();
@@ -104,11 +105,11 @@ public enum Interpreter {
 		return new ExpressionVisitor(this, TARGET_REFERRAL, typeConsumer);
 	}
 
-	public final ExpressionNodeVisitor<Ref, Distributor> bodyExVisitor() {
+	public final ExpressionNodeVisitor<Ref, AccessDistributor> bodyExVisitor() {
 		return this.bodyExVisitor;
 	}
 
-	public final ExpressionNodeVisitor<Ref, Distributor> bodyExVisitor(
+	public final ExpressionNodeVisitor<Ref, AccessDistributor> bodyExVisitor(
 			TypeConsumer typeConsumer) {
 		if (typeConsumer == NO_TYPE_CONSUMER) {
 			return bodyExVisitor();

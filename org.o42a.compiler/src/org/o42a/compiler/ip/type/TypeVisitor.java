@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.type;
 
 import static org.o42a.common.macro.Macros.expandMacro;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 
 import org.o42a.ast.Node;
@@ -74,7 +75,7 @@ public final class TypeVisitor
 		}
 
 		final AncestorTypeRef ancestor = typeIp().parseAncestor(
-				p,
+				fromDeclaration(p),
 				ascendants.getAncestor(),
 				this.typeParameters,
 				BODY_REFERRAL);
@@ -135,7 +136,9 @@ public final class TypeVisitor
 			return null;
 		}
 
-		final Ref macroRef = operandNode.accept(ip().bodyExVisitor(), p);
+		final Ref macroRef = operandNode.accept(
+				ip().bodyExVisitor(),
+				fromDeclaration(p));
 
 		if (macroRef == null) {
 			return null;
@@ -153,7 +156,7 @@ public final class TypeVisitor
 
 		final Ref ref = type.getExpression().accept(
 				ip().bodyExVisitor(this.consumer),
-				p);
+				fromDeclaration(p));
 
 		if (ref == null) {
 			return null;
@@ -165,7 +168,8 @@ public final class TypeVisitor
 	@Override
 	protected ParamTypeRef visitRef(RefNode node, Distributor p) {
 
-		final Owner ref = node.accept(ip().refIp().ownerVisitor(), p);
+		final Owner ref =
+				node.accept(ip().refIp().ownerVisitor(), fromDeclaration(p));
 
 		if (ref == null) {
 			return null;

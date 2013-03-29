@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.PlaceInfo;
+import org.o42a.core.ContainerInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.HostOp;
@@ -89,7 +89,7 @@ public final class PrefixPath {
 		return getPrefix().bind(location, getStart());
 	}
 
-	public final Ref target(PlaceInfo location) {
+	public final Ref target(ContainerInfo location) {
 		return bind(location)
 				.target(location.distributeIn(getStart().getContainer()));
 	}

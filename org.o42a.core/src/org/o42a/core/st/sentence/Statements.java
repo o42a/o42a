@@ -35,37 +35,36 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
-import org.o42a.core.st.impl.imperative.Locals;
+import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.core.st.impl.local.LocalInsides;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.util.Place.Trace;
 import org.o42a.util.string.Name;
 
 
 public abstract class Statements<
 		S extends Statements<S, L>,
 		L extends Implication<L>>
-				extends Placed {
+				extends Contained {
 
 	private final Sentence<S, L> sentence;
 	private final ArrayList<L> implications = new ArrayList<>(1);
 	private boolean statementDropped;
 	private boolean instructionsExecuted;
 	private boolean incompatibilityReported;
+	private Container nextContainer;
 
 	Statements(LocationInfo location, Sentence<S, L> sentence) {
 		super(
 				location,
-				new StatementsDistributor(
-						location,
-						sentence,
-						sentence.getBlock().getTrace()));
+				new StatementsDistributor(location, sentence));
 		this.sentence = sentence;
+		this.nextContainer = getContainer();
 	}
 
 	public Sentence<S, L> getSentence() {
@@ -161,7 +160,7 @@ public abstract class Statements<
 	}
 
 	public Block<S, L> parentheses(LocationInfo location) {
-		return parentheses(location, getContainer());
+		return parentheses(location, nextContainer());
 	}
 
 	public Block<S, L> parentheses(LocationInfo location, Container container) {
@@ -172,11 +171,11 @@ public abstract class Statements<
 	}
 
 	public final ImperativeBlock braces(LocationInfo location) {
-		return braces(location, null, getContainer());
+		return braces(location, null, nextContainer());
 	}
 
 	public final ImperativeBlock braces(LocationInfo location, Name name) {
-		return braces(location, name, getContainer());
+		return braces(location, name, nextContainer());
 	}
 
 	public final ImperativeBlock braces(
@@ -190,9 +189,10 @@ public abstract class Statements<
 		}
 		if (name != null) {
 
-			final Locals locals = getSentence().getBlock().getLocals();
+			final NamedBlocks namedBlocks =
+					getSentence().getBlock().getNamedBlocks();
 
-			if (!locals.declareBlock(location, name)) {
+			if (!namedBlocks.declareBlock(location, name)) {
 				return null;
 			}
 		}
@@ -214,30 +214,31 @@ public abstract class Statements<
 		return braces;
 	}
 
+	public final Local local(LocationInfo location, Name name, Ref ref) {
+
+		final Sentence<S, L> sentence = getSentence();
+		final Block<S, L> block = sentence.getBlock();
+
+		block.getLocals().declareLocal(location, name);
+
+		final Local local = new Local(location, name, ref);
+
+		this.nextContainer = new LocalInsides(local);
+		statement(new RefCondition(local));
+
+		return local;
+	}
+
 	public abstract void ellipsis(LocationInfo location, Name name);
 
 	public abstract void include(LocationInfo location, Name name);
 
-	public final Distributor nextDistributor() {
-
-		final Trace trace = getTrace();
-
-		if (trace == null) {
-			return distribute();
-		}
-
-		return new NextDistributor(this, getContainer(), trace.next());
+	public final Container nextContainer() {
+		return this.nextContainer;
 	}
 
-	public final Distributor nextDistributor(Container container) {
-
-		final Trace trace = getTrace();
-
-		if (trace == null) {
-			return distributeIn(container);
-		}
-
-		return new NextDistributor(this, container, trace.next());
+	public final Distributor nextDistributor() {
+		return nextDistributor(nextContainer());
 	}
 
 	public final void statement(Statement statement) {
@@ -304,10 +305,6 @@ public abstract class Statements<
 
 	protected abstract L implicate(Statement statement);
 
-	final Trace getTrace() {
-		return getSentence().getBlock().getTrace();
-	}
-
 	void reproduce(Sentence<S, L> sentence, Reproducer reproducer) {
 
 		final S reproduction = sentence.alternative(this);
@@ -362,6 +359,9 @@ public abstract class Statements<
 
 		// Statements contain at most one value.
 		for (Implication<?> implication : getImplications()) {
+			if (!implication.getStatement().isValid()) {
+				continue;
+			}
 
 			final TypeParameters<?> typeParameters =
 					implication.typeParameters(scope);
@@ -397,6 +397,10 @@ public abstract class Statements<
 	@SuppressWarnings("unchecked")
 	private final S self() {
 		return (S) this;
+	}
+
+	private final Distributor nextDistributor(Container container) {
+		return distributeIn(container);
 	}
 
 }

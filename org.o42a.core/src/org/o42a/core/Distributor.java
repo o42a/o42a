@@ -19,17 +19,15 @@
 */
 package org.o42a.core;
 
-import static org.o42a.core.ScopePlace.scopePlace;
-
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 
 
-public abstract class Distributor implements PlaceInfo {
+public abstract class Distributor implements ContainerInfo {
 
-	public static Distributor declarativeDistributor(Container container) {
-		return new DeclarativeDistributor(container);
+	public static Distributor containerDistributor(Container container) {
+		return new ContainerDistributor(container);
 	}
 
 	public final CompilerContext getContext() {
@@ -47,7 +45,7 @@ public abstract class Distributor implements PlaceInfo {
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	@Override
@@ -72,25 +70,15 @@ public abstract class Distributor implements PlaceInfo {
 
 	@Override
 	public String toString() {
-
-		final Scope scope = getScope();
-		final ScopePlace place = getPlace();
-
-		if (scope.is(place.getAppearedIn())) {
-			return "Distributor[" + place + ']';
-		}
-
-		return "Distributor[" + place + " in " + scope + ']';
+		return "Distributor[" + getContainer() + ']';
 	}
 
-	private static final class DeclarativeDistributor extends Distributor {
+	private static final class ContainerDistributor extends Distributor {
 
-		private final ScopePlace place;
 		private final Container container;
 
-		DeclarativeDistributor(Container container) {
+		ContainerDistributor(Container container) {
 			this.container = container;
-			this.place = scopePlace(container.getScope());
 		}
 
 		@Override
@@ -100,17 +88,12 @@ public abstract class Distributor implements PlaceInfo {
 
 		@Override
 		public Scope getScope() {
-			return this.place.getAppearedIn();
+			return this.container.getScope();
 		}
 
 		@Override
 		public Container getContainer() {
 			return this.container;
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.place;
 		}
 
 	}

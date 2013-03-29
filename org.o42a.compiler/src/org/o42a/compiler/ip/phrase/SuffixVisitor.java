@@ -25,12 +25,12 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.Distributor;
 
 
 final class SuffixVisitor
-		extends AbstractExpressionVisitor<PhraseBuilder, Distributor> {
+		extends AbstractExpressionVisitor<PhraseBuilder, AccessDistributor> {
 
 	private final PhraseInterpreter phraseIp;
 	private final TypeConsumer typeConsumer;
@@ -52,7 +52,7 @@ final class SuffixVisitor
 	@Override
 	public PhraseBuilder visitAscendants(
 			AscendantsNode ascendants,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
@@ -68,7 +68,7 @@ final class SuffixVisitor
 	@Override
 	public PhraseBuilder visitTypeParameters(
 			TypeParametersNode parameters,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),
@@ -82,7 +82,7 @@ final class SuffixVisitor
 	}
 
 	@Override
-	public PhraseBuilder visitPhrase(PhraseNode phrase, Distributor p) {
+	public PhraseBuilder visitPhrase(PhraseNode phrase, AccessDistributor p) {
 
 		final PhraseBuilder prefixed =
 				this.phraseIp.phraseWithPrefix(phrase, p, this.typeConsumer);
@@ -97,7 +97,7 @@ final class SuffixVisitor
 	@Override
 	protected PhraseBuilder visitExpression(
 			ExpressionNode expression,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
 				ip(),

@@ -22,18 +22,14 @@ package org.o42a.core.member;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberId.BROKEN_MEMBER_ID;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseFactory;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.member.local.LocalScopeFactory;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.Name;
 
@@ -54,12 +50,10 @@ public abstract class MemberRegistry {
 
 	private final Inclusions inclusions;
 	private final ClauseFactory clauseFactory;
-	private final LocalScopeFactory localScopeFactory;
 
 	public MemberRegistry(Inclusions inclusions) {
 		this.inclusions = inclusions;
 		this.clauseFactory = new ClauseFactory(this);
-		this.localScopeFactory = new LocalScopeFactory(this);
 	}
 
 	public abstract Obj getOwner();
@@ -80,19 +74,6 @@ public abstract class MemberRegistry {
 		return clauseFactory().newClause(statements, declaration);
 	}
 
-	public LocalScope newLocalScope(
-			LocationInfo location,
-			Distributor distributor,
-			Name name) {
-		return localScopeFactory().newLocalScope(location, distributor, name);
-	}
-
-	public LocalScope reproduceLocalScope(
-			Reproducer reproducer,
-			LocalScope scope) {
-		return localScopeFactory().reproduceLocalScope(reproducer, scope);
-	}
-
 	public abstract void declareMember(Member member);
 
 	public abstract MemberId tempMemberId();
@@ -103,8 +84,11 @@ public abstract class MemberRegistry {
 		return this.clauseFactory;
 	}
 
-	protected final LocalScopeFactory localScopeFactory() {
-		return this.localScopeFactory;
+	protected final void prohibitedDeclaration(LocationInfo location) {
+		location.getLocation().getLogger().error(
+				"prohibited_declaration",
+				location,
+				"Declarations prohibited here");
 	}
 
 	private static class NoDeclarations extends MemberRegistry {
@@ -160,10 +144,7 @@ public abstract class MemberRegistry {
 		}
 
 		protected void reportDeclaration(LocationInfo location) {
-			location.getLocation().getLogger().error(
-					"prohibited_declaration",
-					location,
-					"Declarations prohibited here");
+			prohibitedDeclaration(location);
 		}
 
 	}

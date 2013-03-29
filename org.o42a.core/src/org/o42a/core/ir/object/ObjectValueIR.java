@@ -23,7 +23,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.impl.ObjectIRLocals;
 import org.o42a.core.ir.object.value.*;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.object.Obj;
@@ -32,14 +31,12 @@ import org.o42a.core.object.Obj;
 public class ObjectValueIR {
 
 	private final ObjectIR objectIR;
-	private final ObjectIRLocals locals;
 	private final ObjectValueFnIR value;
 	private final ObjectClaimFnIR claim;
 	private final ObjectPropositionFnIR proposition;
 
 	protected ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
-		this.locals = new ObjectIRLocals(this);
 		this.value = new ObjectValueFnIR(this);
 		this.claim = new ObjectClaimFnIR(this);
 		this.proposition = new ObjectPropositionFnIR(this);
@@ -97,10 +94,6 @@ public class ObjectValueIR {
 		this.value.allocate(typeIR);
 		this.claim.allocate(typeIR);
 		this.proposition.allocate(typeIR);
-	}
-
-	final ObjectIRLocals getLocals() {
-		return this.locals;
 	}
 
 }

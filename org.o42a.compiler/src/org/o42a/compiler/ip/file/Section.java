@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.file;
 
 import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.file.OtherContextDistributor.distributeIn;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 import static org.o42a.compiler.ip.st.StInterpreter.addSentence;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.redundantTypeParameters;
@@ -141,9 +142,7 @@ final class Section implements LogInfo {
 	public AscendantsDefinition ascendants(TypeConsumer consumer) {
 
 		final Distributor ascendantsDistributor =
-				new OtherContextDistributor(
-						getContext(),
-						this.enclosingBlock.distribute());
+				distributeIn(this.enclosingBlock.distribute(), getContext());
 		final SectionTypeDefinitionNode typeDefinitionNode =
 				getSectionNode().getTypeDefinition();
 		final SectionTitle title = getTitle();
@@ -236,7 +235,7 @@ final class Section implements LogInfo {
 		final Declaratives statements =
 				definition.propose(location).alternative(location);
 		final Namespace namespace =
-				new Namespace(location, statements.getContainer());
+				new Namespace(location, statements.nextContainer());
 		final DeclarativeBlock enclosingBlock =
 				statements.parentheses(location, namespace);
 

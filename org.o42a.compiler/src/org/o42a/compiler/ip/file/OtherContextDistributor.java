@@ -19,17 +19,28 @@
 */
 package org.o42a.compiler.ip.file;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 
 
-final class OtherContextDistributor extends Distributor {
+public final class OtherContextDistributor extends Distributor {
+
+	public static Distributor distributeIn(
+			Distributor distributor,
+			CompilerContext context) {
+		if (distributor.getContext() == context) {
+			return distributor;
+		}
+		return new OtherContextDistributor(context, distributor);
+	}
 
 	private final Location location;
 	private final Distributor distributor;
 
-	OtherContextDistributor(
+	private OtherContextDistributor(
 			CompilerContext context,
 			Distributor distributor) {
 		this.location = new Location(context, distributor.getLocation());
@@ -39,11 +50,6 @@ final class OtherContextDistributor extends Distributor {
 	@Override
 	public Location getLocation() {
 		return this.location;
-	}
-
-	@Override
-	public ScopePlace getPlace() {
-		return this.distributor.getPlace();
 	}
 
 	@Override

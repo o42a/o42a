@@ -45,7 +45,6 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldUses;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.type.impl.DeclaredMemberTypeParameter;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
@@ -72,7 +71,7 @@ import org.o42a.util.fn.Holder;
 
 
 public abstract class Obj
-		extends Placed
+		extends Contained
 		implements MemberContainer, ClauseContainer {
 
 	private final OwningObject owningObject = new OwningObject(this);
@@ -210,11 +209,6 @@ public abstract class Obj
 
 	@Override
 	public Clause toClause() {
-		return null;
-	}
-
-	@Override
-	public final LocalScope toLocalScope() {
 		return null;
 	}
 
@@ -457,11 +451,11 @@ public abstract class Obj
 
 	@Override
 	public final Path member(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
+		final Accessor accessor = access.getAccessor();
 		final Member found = objectMember(accessor, memberId, declaredIn);
 
 		if (found != null) {
@@ -511,12 +505,11 @@ public abstract class Obj
 
 	@Override
 	public final Path findMember(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
-		final Path found = member(user, accessor, memberId, declaredIn);
+		final Path found = member(access, memberId, declaredIn);
 
 		if (found != null) {
 			return found;
@@ -554,29 +547,22 @@ public abstract class Obj
 	public Path scopePath() {
 
 		final Scope scope = getScope();
-		final Step scopePathStep;
-		final Container enclosing = scope.getEnclosingContainer();
+		final Scope enclosing = scope.getEnclosingScope();
 
-		if (enclosing.toObject() != null) {
+		assert enclosing.toObject() != null :
+			"No enclosing object found";
 
-			final Obj propagatedFrom = getPropagatedFrom();
+		final Obj propagatedFrom = getPropagatedFrom();
 
-			if (propagatedFrom != null) {
-				// Reuse enclosing scope path from object
-				// this one is propagated from.
-				return propagatedFrom.getScope().getEnclosingScopePath();
-			}
-
-			// New scope field is to be created.
-			scopePathStep =
-					new ParentObjectStep(this, SCOPE_FIELD_ID.key(scope));
-		} else {
-			// Enclosing local path.
-			// Will be replaced with dependency during path rebuild.
-			assert enclosing.toLocalScope() != null :
-				"Unsupported kind of enclosing scope " + enclosing;
-			scopePathStep = new ParentLocalStep(this);
+		if (propagatedFrom != null) {
+			// Reuse enclosing scope path from object
+			// this one is propagated from.
+			return propagatedFrom.getScope().getEnclosingScopePath();
 		}
+
+		// New scope field is to be created.
+		final Step scopePathStep =
+				new ParentObjectStep(this, SCOPE_FIELD_ID.key(scope));
 
 		return scopePathStep.toPath();
 	}
@@ -1020,21 +1006,16 @@ public abstract class Obj
 	private static final class ObjectDistributor extends Distributor {
 
 		private final Scope scope;
-		private final PlaceInfo placed;
+		private final LocationInfo location;
 
-		ObjectDistributor(Scope scope, PlaceInfo placed) {
+		ObjectDistributor(Scope scope, LocationInfo location) {
 			this.scope = scope;
-			this.placed = placed;
+			this.location = location;
 		}
 
 		@Override
 		public Location getLocation() {
-			return this.placed.getLocation();
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.placed.getPlace();
+			return this.location.getLocation();
 		}
 
 		@Override

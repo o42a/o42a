@@ -23,6 +23,8 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.value.link.impl.LinkInterface.linkInterfaceOf;
 
+import java.util.HashMap;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -50,6 +52,7 @@ import org.o42a.core.value.link.LinkValueType;
 public class DereferenceStep extends Step {
 
 	private ObjectStepUses uses;
+	private HashMap<Scope, RtLink> rtLinks;
 
 	@Override
 	public PathKind getPathKind() {
@@ -109,9 +112,9 @@ public class DereferenceStep extends Step {
 		final Link link;
 
 		if (!value.getKnowledge().isKnownToCompiler()) {
-			link = new RtLink(resolver.getPath(), resolver.getStart());
+			link = rtLink(resolver);
 		} else if (value.getKnowledge().isFalse()) {
-			link = new RtLink(resolver.getPath(), resolver.getStart());
+			link = rtLink(resolver);
 		} else if (!value.getKnowledge().isFalse()) {
 			link = linkType.cast(value.getCompilerValue());
 		} else {
@@ -151,11 +154,34 @@ public class DereferenceStep extends Step {
 		return new Op(start, this);
 	}
 
+	RtLink rtLink(LocationInfo location, Scope enclosing) {
+		if (this.rtLinks == null) {
+			this.rtLinks = new HashMap<>(1);
+		} else {
+
+			final RtLink existing = this.rtLinks.get(enclosing);
+
+			if (existing != null) {
+				return existing;
+			}
+		}
+
+		final RtLink rtLink = new RtLink(location, this, enclosing);
+
+		this.rtLinks.put(enclosing, rtLink);
+
+		return rtLink;
+	}
+
 	private final ObjectStepUses uses() {
 		if (this.uses != null) {
 			return this.uses;
 		}
 		return this.uses = new ObjectStepUses(this);
+	}
+
+	private RtLink rtLink(StepResolver resolver) {
+		return rtLink(resolver.getPath(), resolver.getStart());
 	}
 
 	private void normalizeDeref(final PathNormalizer normalizer) {

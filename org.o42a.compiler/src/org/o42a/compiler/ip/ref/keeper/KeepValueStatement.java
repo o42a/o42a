@@ -42,6 +42,11 @@ final class KeepValueStatement extends Statement {
 	}
 
 	@Override
+	public boolean isValid() {
+		return getValue().isValid();
+	}
+
+	@Override
 	public Definer define(DefinerEnv env) {
 		return new KeptValueDefiner(this, env);
 	}

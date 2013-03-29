@@ -37,6 +37,11 @@ final class ExpandMacroStatement extends Statement {
 	}
 
 	@Override
+	public boolean isValid() {
+		return getExpansion().isValid();
+	}
+
+	@Override
 	public Definer define(DefinerEnv env) {
 		return new ExpandMacroDefiner(this, env);
 	}

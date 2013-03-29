@@ -32,18 +32,15 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.ReversePath;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.string.ID;
+import org.o42a.util.string.Name;
 import org.o42a.util.string.SubID;
 
 
@@ -51,15 +48,17 @@ public final class Dep extends Step implements SubID {
 
 	private final Obj declaredIn;
 	private final Ref ref;
+	private final Name name;
 	private final ID id;
 	private final Obj target;
 	private ObjectStepUses uses;
 	private byte disabled;
 	private byte compileTimeOnly;
 
-	Dep(Obj declaredIn, Ref ref, ID id) {
+	Dep(Obj declaredIn, Ref ref, Name name, ID id) {
 		this.declaredIn = declaredIn;
 		this.ref = ref;
+		this.name = name;
 		this.id = id;
 		this.target = target();
 		assert !this.target.getConstructionMode().isRuntime()
@@ -71,7 +70,11 @@ public final class Dep extends Step implements SubID {
 		return this.declaredIn;
 	}
 
-	public final Ref getRef() {
+	public final Name getName() {
+		return this.name;
+	}
+
+	public final Ref ref() {
 		return this.ref;
 	}
 
@@ -124,20 +127,17 @@ public final class Dep extends Step implements SubID {
 
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
-		return getRef()
-				.toFieldDefinition()
-				.prefixWith(refPrefix(ref))
-				.upgradeScope(ref.getScope());
+		return ref().toFieldDefinition().prefixWith(refPrefix(ref));
 	}
 
 	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
-		return getRef().ancestor(location).prefixWith(refPrefix(ref));
+		return ref().ancestor(location).prefixWith(refPrefix(ref));
 	}
 
 	@Override
 	protected TypeRef iface(Ref ref) {
-		return getRef().getInterface().prefixWith(refPrefix(ref));
+		return ref().getInterface().prefixWith(refPrefix(ref));
 	}
 
 	@Override
@@ -149,14 +149,8 @@ public final class Dep extends Step implements SubID {
 			"Dependency should be resolved against object, but were not: "
 			+ resolver.getStart();
 
-		final LocalScope enclosingLocal =
-				object.getScope().getEnclosingContainer().toLocalScope();
-
-		assert enclosingLocal != null :
-			object + " is inside " + object.getScope().getEnclosingContainer()
-			+ ", which is not a local scope";
-
-		final LocalResolver localResolver = enclosingLocal.resolver();
+		final Scope enclosingScope = object.getScope().getEnclosingScope();
+		final Resolver enclosingResolver = enclosingScope.resolver();
 
 		if (resolver.isFullResolution()) {
 			compileTimeOnly(resolver.refUsage().isCompileTimeOnly());
@@ -171,17 +165,17 @@ public final class Dep extends Step implements SubID {
 				usage = CONTAINER_REF_USAGE;
 			}
 
-			getRef().resolveAll(
-					localResolver.fullResolver(resolver.refUser(), usage));
+			ref().resolveAll(
+					enclosingResolver.fullResolver(resolver.refUser(), usage));
 
 			final ObjectDeps deps = getDeclaredIn().deps();
 
 			deps.depResolved(this);
 		}
 
-		final Obj resolution = getRef().resolve(localResolver).toObject();
+		final Obj resolution = ref().resolve(enclosingResolver).toObject();
 
-		resolver.getWalker().dep(object, this, getRef());
+		resolver.getWalker().dep(object, this);
 
 		return resolution.toObject();
 	}
@@ -191,11 +185,10 @@ public final class Dep extends Step implements SubID {
 
 		final Obj object = normalizer.lastPrediction().getScope().toObject();
 		final Scope objectScope = object.getScope();
-		final LocalScope enclosingLocal =
-				objectScope.getEnclosingContainer().toLocalScope();
+		final Scope enclosingScope = objectScope.getEnclosingScope();
 
 		if (!normalizer.up(
-				enclosingLocal,
+				enclosingScope,
 				objectScope.getEnclosingScopePath(),
 				new ReversePath() {
 					@Override
@@ -208,7 +201,7 @@ public final class Dep extends Step implements SubID {
 
 		normalizer.skip(normalizer.lastPrediction(), new DepDisabler());
 		normalizer.append(
-				getRef().getPath(),
+				ref().getPath(),
 				uses().nestedNormalizer(normalizer));
 	}
 
@@ -220,12 +213,12 @@ public final class Dep extends Step implements SubID {
 
 	@Override
 	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
-		return getRef().getPath().getPath();
+		return ref().getPath().getPath();
 	}
 
 	@Override
 	protected void normalizeStep(Analyzer analyzer) {
-		getRef().normalize(analyzer);
+		ref().normalize(analyzer);
 	}
 
 	@Override
@@ -233,14 +226,14 @@ public final class Dep extends Step implements SubID {
 			LocationInfo location,
 			PathReproducer reproducer) {
 
-		final Ref ref = getRef().reproduce(reproducer.getReproducer());
+		final Ref ref = ref().reproduce(reproducer.getReproducer());
 
 		if (ref == null) {
 			return null;
 		}
 
 		final Dep reproduction =
-				reproducer.getScope().toObject().deps().addDep(ref);
+				reproducer.getScope().toObject().deps().addDep(getName(), ref);
 
 		return reproducedPath(reproduction.toPath());
 	}
@@ -292,14 +285,10 @@ public final class Dep extends Step implements SubID {
 
 	private Obj target() {
 
-		final Container container =
-				this.declaredIn.getScope().getEnclosingContainer();
-		final LocalScope local = container.toLocalScope();
-
-		assert local != null :
-			this.declaredIn + " is not a local object";
-
-		final Obj target = getRef().resolve(local.resolver()).toObject();
+		final Scope enclosingScope =
+				this.declaredIn.getScope().getEnclosingScope();
+		final Obj target =
+				ref().resolve(enclosingScope.resolver()).toObject();
 
 		if (!target.getConstructionMode().isRuntime()
 				|| target.getConstructionMode().isPredefined()) {

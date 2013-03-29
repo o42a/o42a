@@ -19,7 +19,7 @@
 */
 package org.o42a.core.source;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.Distributor.containerDistributor;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
@@ -132,7 +132,7 @@ public class Module extends Obj {
 		final Namespace moduleNamespace =
 				compiler.getContext().getIntrinsics().getModuleNamespace();
 		final Namespace namespace = new Namespace(compiler, moduleNamespace);
-		final Distributor distributor = declarativeDistributor(namespace);
+		final Distributor distributor = containerDistributor(namespace);
 		final DeclarativeBlock enclosingBlock =
 				new DeclarativeBlock(compiler, distributor, noDeclarations());
 

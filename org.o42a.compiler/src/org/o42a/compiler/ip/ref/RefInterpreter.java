@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.member.ClauseInterpreter.clauseObjectPath;
 import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
+import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -50,7 +51,9 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.source.*;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.Module;
 import org.o42a.util.string.Name;
 
 
@@ -117,38 +120,6 @@ public abstract class RefInterpreter {
 		}
 
 		return scopeRef.getType() == ScopeType.ROOT;
-	}
-
-	public static Name localName(MemberRefNode ref, CompilerLogger logger) {
-
-		final ExpressionNode owner = ref.getOwner();
-
-		if (owner == null) {
-			return null;
-		}
-
-		final RefNode ownerRef = owner.toRef();
-
-		if (ownerRef == null) {
-			return null;
-		}
-
-		final ScopeRefNode ownerScope = ownerRef.toScopeRef();
-
-		if (ownerScope == null || ownerScope.getType() != ScopeType.LOCAL) {
-			return null;
-		}
-		if (logger != null && ref.getMembership() != null) {
-			logger.prohibitedDeclaredIn(ref.getMembership());
-		}
-
-		final NameNode name = ref.getName();
-
-		if (name == null) {
-			return null;
-		}
-
-		return name.getName();
 	}
 
 	public static Ref number(NumberNode number, Distributor distributor) {
@@ -326,15 +297,16 @@ public abstract class RefInterpreter {
 
 	public abstract Interpreter ip();
 
-	public final RefNodeVisitor<Ref, Distributor> targetRefVisitor() {
+	public final RefNodeVisitor<Ref, AccessDistributor> targetRefVisitor() {
 		return this.targetRefVisitor;
 	}
 
-	public final RefNodeVisitor<Ref, Distributor> bodyRefVisitor() {
+	public final RefNodeVisitor<Ref, AccessDistributor> bodyRefVisitor() {
 		return this.bodyRefVisitor;
 	}
 
-	public final ExpressionNodeVisitor<Owner, Distributor> ownerVisitor() {
+	public final
+	ExpressionNodeVisitor<Owner, AccessDistributor> ownerVisitor() {
 		return this.ownerVisitor;
 	}
 
@@ -344,20 +316,29 @@ public abstract class RefInterpreter {
 		return this.ownerFactory;
 	}
 
+	/**
+	 * Constructs a reference, which is {@code $object} expression resolved to.
+	 *
+	 * @param ref a source expression AST node.
+	 * @param p a constructed reference distributor.
+	 *
+	 * @return resolution reference, or <code>null</code> if {@code $object}
+	 * expression has no predefined resolution.
+	 */
 	public Ref intrinsicObject(MemberRefNode ref, Distributor p) {
-		p.getLogger().error(
-				"prohibited_object_intrinsic",
-				ref,
-				"$Object reference is allowed only within clauses");
-		return errorRef(location(p, ref), p);
+		return null;
 	}
 
-	public StaticTypeRef declaredIn(RefNode declaredInNode, Distributor p) {
+	public StaticTypeRef declaredIn(
+			RefNode declaredInNode,
+			AccessDistributor p) {
 		if (declaredInNode == null) {
 			return null;
 		}
 
-		final Ref declaredIn = declaredInNode.accept(bodyRefVisitor(), p);
+		final Ref declaredIn = declaredInNode.accept(
+				bodyRefVisitor(),
+				p.setAccessSource(FROM_DECLARATION));
 
 		if (declaredIn == null) {
 			return null;
@@ -366,7 +347,7 @@ public abstract class RefInterpreter {
 		return declaredIn.toStaticTypeRef();
 	}
 
-	public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+	public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
 		return bodyRefVisitor();
 	}
 
@@ -510,7 +491,7 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+		public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
 			return PLAIN_REF_IP.adapterTypeVisitor();
 		}
 
@@ -551,12 +532,14 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public StaticTypeRef declaredIn(RefNode declaredInNode, Distributor p) {
+		public StaticTypeRef declaredIn(
+				RefNode declaredInNode,
+				AccessDistributor p) {
 			return null;
 		}
 
 		@Override
-		public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+		public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
 			return PLAIN_REF_IP.adapterTypeVisitor();
 		}
 

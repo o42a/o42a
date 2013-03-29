@@ -25,10 +25,7 @@ import static org.o42a.core.st.ImplicationTargets.*;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.FullLocalResolver;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.util.log.LogInfo;
 
@@ -56,11 +53,11 @@ public abstract class Command extends Implication<Command> {
 		return this.env;
 	}
 
-	public abstract Action initialValue(LocalResolver resolver);
+	public abstract Action initialValue(Resolver resolver);
 
-	public abstract Action initialCond(LocalResolver resolver);
+	public abstract Action initialCond(Resolver resolver);
 
-	public final void resolveAll(FullLocalResolver resolver) {
+	public final void resolveAll(FullResolver resolver) {
 		getStatement().fullyResolved();
 		getContext().fullResolution().start();
 		try {
@@ -76,7 +73,7 @@ public abstract class Command extends Implication<Command> {
 
 	public abstract Cmd cmd();
 
-	protected abstract void fullyResolve(FullLocalResolver resolver);
+	protected abstract void fullyResolve(FullResolver resolver);
 
 	protected final CommandTargets actionCommand() {
 		return new CommandTargets(

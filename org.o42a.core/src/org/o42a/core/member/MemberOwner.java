@@ -20,13 +20,12 @@
 package org.o42a.core.member;
 
 import org.o42a.core.*;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 
 
-public abstract class MemberOwner implements PlaceInfo {
+public abstract class MemberOwner implements ContainerInfo {
 
 	private final Container container;
 
@@ -53,29 +52,20 @@ public abstract class MemberOwner implements PlaceInfo {
 		return this.container.getScope();
 	}
 
-	@Override
-	public final ScopePlace getPlace() {
-		return getScope().getPlace();
-	}
-
 	public abstract Obj getOwner();
 
 	public final Obj toObject() {
 		return getContainer().toObject();
 	}
 
-	public final LocalScope toLocalScope() {
-		return getContainer().toLocalScope();
-	}
-
 	@Override
 	public final Distributor distribute() {
-		return Placed.distribute(this);
+		return Contained.distribute(this);
 	}
 
 	@Override
 	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
+		return Contained.distributeIn(this, container);
 	}
 
 	@Override

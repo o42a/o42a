@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.type.ascendant;
 
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
+
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.compiler.ip.Interpreter;
@@ -39,7 +41,9 @@ public class SampleSpecVisitor
 	@Override
 	protected StaticTypeRef visitRef(RefNode ref, Distributor p) {
 
-		final Ref sampleRef = ref.accept(this.ip.bodyRefVisitor(), p);
+		final Ref sampleRef = ref.accept(
+				this.ip.bodyRefVisitor(),
+				fromDeclaration(p));
 
 		if (sampleRef == null) {
 			return null;

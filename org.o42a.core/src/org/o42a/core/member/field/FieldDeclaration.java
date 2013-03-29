@@ -21,8 +21,8 @@ package org.o42a.core.member.field;
 
 import static org.o42a.core.member.field.FieldKey.fieldKey;
 
+import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.decl.DeclaredField;
@@ -33,7 +33,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.link.LinkValueType;
 
 
-public final class FieldDeclaration extends Placed implements Cloneable {
+public final class FieldDeclaration extends Contained implements Cloneable {
 
 	public static FieldDeclaration fieldDeclaration(
 			LocationInfo location,

@@ -23,12 +23,10 @@ import static org.o42a.core.AbstractContainer.parentContainer;
 
 import java.util.Collection;
 
-import org.o42a.core.*;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.object.Accessor;
+import org.o42a.core.Container;
+import org.o42a.core.Namespace;
+import org.o42a.core.Scope;
+import org.o42a.core.member.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.ArrayUtil;
@@ -76,8 +74,6 @@ public abstract class GroupClause extends Clause implements Container {
 
 	public abstract boolean isImperative();
 
-	public abstract LocalScope getLocalScope();
-
 	@Override
 	public final PlainClause toPlainClause() {
 		return null;
@@ -92,9 +88,6 @@ public abstract class GroupClause extends Clause implements Container {
 	public MemberClause[] getSubClauses() {
 		if (this.subClauses != null) {
 			return this.subClauses;
-		}
-		if (getLocalScope() != null) {
-			return this.subClauses = new MemberClause[0];
 		}
 
 		MemberClause[] subClauses = new MemberClause[0];
@@ -134,11 +127,6 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public final LocalScope toLocalScope() {
-		return getEnclosingContainer().toLocalScope();
-	}
-
-	@Override
 	public final Namespace toNamespace() {
 		return null;
 	}
@@ -150,44 +138,31 @@ public abstract class GroupClause extends Clause implements Container {
 
 	@Override
 	public Path member(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-		if (getLocalScope() != null) {
-			return null;
-		}
-
 		if (memberId.getEnclosingId() == null) {
 			return getEnclosingContainer().member(
-					user,
-					accessor,
+					access,
 					toMember().getMemberId().append(memberId),
 					declaredIn);
 		}
 
 		return getEnclosingContainer().member(
-				user,
-				accessor,
+				access,
 				memberId,
 				declaredIn);
 	}
 
 	@Override
 	public Path findMember(
-			PlaceInfo user,
-			Accessor accessor,
+			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-		if (getLocalScope() != null) {
-			return null;
-		}
-
 		if (memberId.getEnclosingId() == null) {
 
 			final Path foundInGroup = getEnclosingContainer().findMember(
-					user,
-					accessor,
+					access,
 					toMember().getMemberId().append(memberId),
 					declaredIn);
 
@@ -200,37 +175,13 @@ public abstract class GroupClause extends Clause implements Container {
 		}
 
 		return getEnclosingContainer().findMember(
-				user,
-				accessor,
+				access,
 				memberId,
 				declaredIn);
 	}
 
 	@Override
 	protected void fullyResolve() {
-	}
-
-	@Override
-	protected Path buildPathInObject() {
-
-		final Path pathInObject = super.buildPathInObject();
-		final LocalScope localScope = getLocalScope();
-
-		if (localScope == null) {
-			return pathInObject;
-		}
-
-		final Member member = localScope.toMember();
-		final Scope enclosingScope = getEnclosingScope();
-		final Clause enclosingClause = enclosingScope.getContainer().toClause();
-
-		if (enclosingClause == null) {
-			assert enclosingScope.toObject() != null :
-				this + " is not inside of object";
-			return member.getMemberKey().toPath();
-		}
-
-		return enclosingClause.pathInObject().append(member.getMemberKey());
 	}
 
 	protected MemberClause groupClause(MemberId memberId, Obj declaredIn) {
