@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
@@ -53,7 +54,7 @@ final class CustomAssignment extends AssignmentKind {
 		final PhraseBuilder phrase = new PhraseBuilder(
 				PLAIN_IP,
 				statement,
-				statement.distribute(),
+				fromDefinition(statement),
 				EXPRESSION_TYPE_CONSUMER);
 
 		phrase.setAncestor(statement.getDestination().toTypeRef());

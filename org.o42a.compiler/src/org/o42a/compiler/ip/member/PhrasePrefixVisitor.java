@@ -21,13 +21,14 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.core.Distributor;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
@@ -58,7 +59,7 @@ final class PhrasePrefixVisitor
 			AscendantsNode ascendants,
 			ClauseBuilder p) {
 
-		final Distributor distributor = p.distribute();
+		final AccessDistributor distributor = fromDefinition(p);
 		final AscendantsDefinition ascendantsDefinition =
 				CLAUSE_DEF_IP.typeIp().parseAscendants(ascendants, distributor);
 
@@ -76,7 +77,7 @@ final class PhrasePrefixVisitor
 			ExpressionNode expression,
 			ClauseBuilder p) {
 
-		final Distributor distributor = p.distribute();
+		final AccessDistributor distributor = fromDefinition(p);
 		final Ref ancestor = expression.accept(
 				CLAUSE_DEF_IP.targetExVisitor(),
 				distributor);

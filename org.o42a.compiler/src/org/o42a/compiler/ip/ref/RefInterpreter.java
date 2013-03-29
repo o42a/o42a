@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.member.ClauseInterpreter.clauseObjectPath;
 import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
+import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -296,15 +297,16 @@ public abstract class RefInterpreter {
 
 	public abstract Interpreter ip();
 
-	public final RefNodeVisitor<Ref, Distributor> targetRefVisitor() {
+	public final RefNodeVisitor<Ref, AccessDistributor> targetRefVisitor() {
 		return this.targetRefVisitor;
 	}
 
-	public final RefNodeVisitor<Ref, Distributor> bodyRefVisitor() {
+	public final RefNodeVisitor<Ref, AccessDistributor> bodyRefVisitor() {
 		return this.bodyRefVisitor;
 	}
 
-	public final ExpressionNodeVisitor<Owner, Distributor> ownerVisitor() {
+	public final
+	ExpressionNodeVisitor<Owner, AccessDistributor> ownerVisitor() {
 		return this.ownerVisitor;
 	}
 
@@ -327,12 +329,16 @@ public abstract class RefInterpreter {
 		return null;
 	}
 
-	public StaticTypeRef declaredIn(RefNode declaredInNode, Distributor p) {
+	public StaticTypeRef declaredIn(
+			RefNode declaredInNode,
+			AccessDistributor p) {
 		if (declaredInNode == null) {
 			return null;
 		}
 
-		final Ref declaredIn = declaredInNode.accept(bodyRefVisitor(), p);
+		final Ref declaredIn = declaredInNode.accept(
+				bodyRefVisitor(),
+				p.setAccessSource(FROM_DECLARATION));
 
 		if (declaredIn == null) {
 			return null;
@@ -341,7 +347,7 @@ public abstract class RefInterpreter {
 		return declaredIn.toStaticTypeRef();
 	}
 
-	public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+	public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
 		return bodyRefVisitor();
 	}
 
@@ -485,7 +491,7 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+		public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
 			return PLAIN_REF_IP.adapterTypeVisitor();
 		}
 
@@ -526,12 +532,14 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public StaticTypeRef declaredIn(RefNode declaredInNode, Distributor p) {
+		public StaticTypeRef declaredIn(
+				RefNode declaredInNode,
+				AccessDistributor p) {
 			return null;
 		}
 
 		@Override
-		public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+		public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
 			return PLAIN_REF_IP.adapterTypeVisitor();
 		}
 

@@ -19,8 +19,11 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
+import static org.o42a.compiler.ip.ref.AccessDistributor.accessDistributor;
+
 import org.o42a.compiler.ip.ref.MemberOf;
 import org.o42a.core.Distributor;
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
@@ -39,12 +42,24 @@ public abstract class Owner {
 				"Redundant link body reference");
 	}
 
-	protected final Ref ownerRef;
+	private final AccessSource accessSource;
+	private final Ref ownerRef;
 
-	Owner(Ref ownerRef) {
+	Owner(AccessSource accessSource, Ref ownerRef) {
+		assert accessSource != null :
+			"Access source not specified";
 		assert ownerRef != null :
-			"Owner did not specified";
+			"Owner reference not specified";
+		this.accessSource = accessSource;
 		this.ownerRef = ownerRef;
+	}
+
+	public final AccessSource accessSource() {
+		return this.accessSource;
+	}
+
+	public final Ref ownerRef() {
+		return this.ownerRef;
 	}
 
 	public boolean isMacroExpanding() {
@@ -67,10 +82,10 @@ public abstract class Owner {
 			StaticTypeRef declaredIn) {
 
 		final Ref owner = targetRef();
-		final Distributor distributor = this.ownerRef.distribute();
+		final Distributor distributor = distribute();
 		final MemberOf memberOf = new MemberOf(
 				location,
-				distributor,
+				accessDistributor(distributor, accessSource()),
 				memberId,
 				declaredIn);
 		final BoundPath path = owner.getPath().append(memberOf);
@@ -84,16 +99,27 @@ public abstract class Owner {
 	}
 
 	public final Owner plainOwner() {
-		return new NonLinkOwner(this.ownerRef);
+		return new NonLinkOwner(accessSource(), ownerRef());
+	}
+
+	public final CompilerLogger getLogger() {
+		return ownerRef().getLogger();
+	}
+
+	public final Distributor distribute() {
+		return ownerRef().distribute();
 	}
 
 	@Override
 	public String toString() {
-		return String.valueOf(this.ownerRef);
+		if (this.ownerRef == null) {
+			return super.toString();
+		}
+		return this.ownerRef.toString();
 	}
 
 	protected Owner memberOwner(Ref ref) {
-		return new DefaultOwner(ref);
+		return new DefaultOwner(accessSource(), ref);
 	}
 
 }

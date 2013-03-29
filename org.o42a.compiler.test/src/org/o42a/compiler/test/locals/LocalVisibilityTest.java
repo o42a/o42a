@@ -15,6 +15,16 @@ import org.o42a.core.value.ValueType;
 public class LocalVisibilityTest extends CompilerTestCase {
 
 	@Test
+	public void notVisibleBeforeDeclaration() {
+		expectError("compiler.unresolved");
+
+		compile(
+				"A := integer (",
+				"  L, $l := 2",
+				")");
+	}
+
+	@Test
 	public void notVisibleFromAnotherAlt() {
 		expectError("compiler.unresolved");
 
@@ -66,6 +76,49 @@ public class LocalVisibilityTest extends CompilerTestCase {
 				"  Void? $L := 2",
 				"  = L",
 				")");
+	}
+
+	@Test
+	public void fieldCantReferLocal() {
+		expectError("compiler.unresolved");
+
+		compile(
+				"$Local := 1",
+				"A := local");
+	}
+
+	@Test
+	public void fieldDefinitionCantReferLocal() {
+		expectError("compiler.unresolved");
+
+		compile(
+				"$Local := 1",
+				"A := integer (= local)");
+	}
+
+	@Test
+	public void fieldOfFieldCantReferLocal() {
+		expectError("compiler.unresolved");
+
+		compile(
+				"$Local := 1",
+				"A := void (",
+				"  B := local",
+				")");
+	}
+
+	@Test
+	public void nestedObjectFieldCanReferLocal() {
+		compile(
+				"A := integer (",
+				"  $Local := 1",
+				"  = Integers: add (",
+				"    Left operand = 1",
+				"    Right operand = $local",
+				"  )",
+				")");
+
+		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(2L));
 	}
 
 }

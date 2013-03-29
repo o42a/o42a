@@ -43,14 +43,13 @@ import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.log.LogInfo;
 
 
 public final class ExpressionVisitor
-		extends AbstractExpressionVisitor<Ref, Distributor> {
+		extends AbstractExpressionVisitor<Ref, AccessDistributor> {
 
 	private final Interpreter ip;
 	private final Referral referral;
@@ -78,12 +77,12 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitNumber(NumberNode number, Distributor p) {
+	public Ref visitNumber(NumberNode number, AccessDistributor p) {
 		return number(number, p);
 	}
 
 	@Override
-	public Ref visitText(TextNode textNode, Distributor p) {
+	public Ref visitText(TextNode textNode, AccessDistributor p) {
 
 		final String text = textNode.getText();
 
@@ -95,7 +94,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitAscendants(AscendantsNode ascendants, Distributor p) {
+	public Ref visitAscendants(AscendantsNode ascendants, AccessDistributor p) {
 		if (!ascendants.hasSamples()) {
 
 			final AncestorTypeRef ancestor =
@@ -116,7 +115,7 @@ public final class ExpressionVisitor
 	@Override
 	public Ref visitTypeParameters(
 			TypeParametersNode parameters,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final PhraseBuilder phrase =
 				ip()
@@ -131,12 +130,12 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitGroup(GroupNode group, Distributor p) {
+	public Ref visitGroup(GroupNode group, AccessDistributor p) {
 		return group.getExpression().accept(this, p);
 	}
 
 	@Override
-	public Ref visitUnary(UnaryNode expression, Distributor p) {
+	public Ref visitUnary(UnaryNode expression, AccessDistributor p) {
 		if (expression.getOperand() == null) {
 			return null;
 		}
@@ -164,7 +163,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitBinary(BinaryNode expression, Distributor p) {
+	public Ref visitBinary(BinaryNode expression, AccessDistributor p) {
 
 		final Ref binary =
 				ip().phraseIp().binary(expression, p, this.typeConsumer);
@@ -177,7 +176,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitBrackets(BracketsNode brackets, Distributor p) {
+	public Ref visitBrackets(BracketsNode brackets, AccessDistributor p) {
 		return new ArrayConstructor(
 				ip(),
 				p.getContext(),
@@ -186,7 +185,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitParentheses(ParenthesesNode parentheses, Distributor p) {
+	public Ref visitParentheses(ParenthesesNode parentheses, AccessDistributor p) {
 
 		final ExpressionNode unwrapped = unwrap(parentheses);
 
@@ -198,7 +197,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitPhrase(PhraseNode phrase, Distributor p) {
+	public Ref visitPhrase(PhraseNode phrase, AccessDistributor p) {
 
 		final PhraseBuilder result =
 				ip().phraseIp().phrase(phrase, p, this.typeConsumer);
@@ -211,7 +210,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	protected Ref visitRef(RefNode ref, Distributor p) {
+	protected Ref visitRef(RefNode ref, AccessDistributor p) {
 
 		final Owner owner = ref.accept(ip().refIp().ownerVisitor(), p);
 
@@ -223,7 +222,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	protected Ref visitExpression(ExpressionNode expression, Distributor p) {
+	protected Ref visitExpression(ExpressionNode expression, AccessDistributor p) {
 		invalidExpression(p.getLogger(), expression);
 		return errorRef(location(p, expression), p);
 	}
@@ -234,7 +233,7 @@ public final class ExpressionVisitor
 		logger.error("invalid_expression", location, "Not a valid expression");
 	}
 
-	private Ref unaryPhrase(UnaryNode expression, Distributor p) {
+	private Ref unaryPhrase(UnaryNode expression, AccessDistributor p) {
 
 		final PhraseBuilder phrase =
 				ip().phraseIp().unary(expression, p, this.typeConsumer);
@@ -246,7 +245,7 @@ public final class ExpressionVisitor
 		return phrase.toRef();
 	}
 
-	private Ref keepValue(UnaryNode expression, Distributor p) {
+	private Ref keepValue(UnaryNode expression, AccessDistributor p) {
 
 		final Ref value =
 				expression.getOperand().accept(ip().targetExVisitor(), p);
@@ -258,7 +257,7 @@ public final class ExpressionVisitor
 		return new KeepValue(location(p, expression.getSign()), value).toRef();
 	}
 
-	private Ref macroExpansion(UnaryNode expression, Distributor p) {
+	private Ref macroExpansion(UnaryNode expression, AccessDistributor p) {
 
 		final Ref operand =
 				expression.getOperand().accept(ip().targetExVisitor(), p);

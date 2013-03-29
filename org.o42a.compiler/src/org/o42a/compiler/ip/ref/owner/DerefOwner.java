@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
@@ -28,8 +29,12 @@ final class DerefOwner extends Owner {
 	private final LocationInfo location;
 	private final LocationInfo deref;
 
-	DerefOwner(LocationInfo location, LocationInfo deref, Ref ownerRef) {
-		super(ownerRef);
+	DerefOwner(
+			LocationInfo location,
+			LocationInfo deref,
+			AccessSource accessSource,
+			Ref ownerRef) {
+		super(accessSource, ownerRef);
 		this.location = location;
 		this.deref = deref;
 	}
@@ -41,25 +46,29 @@ final class DerefOwner extends Owner {
 
 	@Override
 	public Ref targetRef() {
-		return this.ownerRef.getPath()
+		return ownerRef().getPath()
 				.append(new DerefFragment(this.deref))
-				.target(this.location, this.ownerRef.distribute());
+				.target(this.location, distribute());
 	}
 
 	@Override
 	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		redundantBodyRef(this.ownerRef.getLogger(), bodyRef.getLocation());
+		redundantBodyRef(getLogger(), bodyRef.getLocation());
 		return this;
 	}
 
 	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
-		return new DerefOwner(location, deref, this.ownerRef);
+		return new DerefOwner(
+				location,
+				deref,
+				accessSource(),
+				ownerRef());
 	}
 
 	@Override
 	public Ref bodyRef() {
-		return this.ownerRef;
+		return ownerRef();
 	}
 
 }

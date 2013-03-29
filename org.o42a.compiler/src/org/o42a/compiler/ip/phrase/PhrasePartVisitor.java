@@ -70,7 +70,8 @@ final class PhrasePartVisitor
 			return p.string(text);
 		}
 
-		final Ref value = text.accept(p.ip().bodyExVisitor(), p.distribute());
+		final Ref value =
+				text.accept(p.ip().bodyExVisitor(), p.distributeAccess());
 
 		if (value != null) {
 			return p.argument(value);

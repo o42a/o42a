@@ -54,7 +54,7 @@ final class ArgumentVisitor
 
 		final Ref value = expression.accept(
 				p.ip().targetExVisitor(),
-				p.distribute());
+				p.distributeAccess());
 
 		if (value != null) {
 			return p.argument(value);

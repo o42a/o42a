@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.file.OtherContextDistributor.distributeIn;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -34,7 +35,7 @@ import org.o42a.ast.type.InterfaceNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
-import org.o42a.core.Distributor;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
@@ -166,8 +167,8 @@ public final class LocalInterpreter {
 			Statements<?, ?> statements,
 			DeclaratorNode declarator) {
 
-		final Distributor distributor =
-				distributeIn(statements.nextDistributor(), context);
+		final AccessDistributor distributor = fromDeclaration(
+				distributeIn(statements.nextDistributor(), context));
 		final Ref value =
 				localValue(ip, context, declarator, distributor);
 		final InterfaceNode iface = declarator.getInterface();
@@ -215,7 +216,7 @@ public final class LocalInterpreter {
 			Interpreter ip,
 			CompilerContext context,
 			DeclaratorNode declarator,
-			Distributor distributor) {
+			AccessDistributor distributor) {
 
 		final ExpressionNode definition = declarator.getDefinition();
 

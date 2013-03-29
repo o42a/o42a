@@ -26,12 +26,11 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.core.Distributor;
 import org.o42a.util.log.LogInfo;
 
 
 final class MemberOwnerVisitor
-		extends AbstractExpressionVisitor<Owner, Distributor> {
+		extends AbstractExpressionVisitor<Owner, AccessDistributor> {
 
 	private final OwnerVisitor visitor;
 	private LogInfo macroExpansion;
@@ -41,38 +40,42 @@ final class MemberOwnerVisitor
 	}
 
 	@Override
-	public Owner visitScopeRef(ScopeRefNode ref, Distributor p) {
+	public Owner visitScopeRef(ScopeRefNode ref, AccessDistributor p) {
 		if (ref.getType() == ScopeType.MACROS) {
 			this.macroExpansion = ref;
 			return this.visitor
-					.owner(MACROS_PATH.bind(location(p, ref), p.getScope())
+					.owner(
+							p.getAccessSource(),
+							MACROS_PATH.bind(location(p, ref), p.getScope())
 					.target(p));
 		}
 		return super.visitScopeRef(ref, p);
 	}
 
 	@Override
-	public Owner visitMemberRef(MemberRefNode ref, Distributor p) {
+	public Owner visitMemberRef(MemberRefNode ref, AccessDistributor p) {
 		return this.visitor.memberRef(ref, p, this);
 	}
 
 	@Override
-	public Owner visitAdapterRef(AdapterRefNode ref, Distributor p) {
+	public Owner visitAdapterRef(AdapterRefNode ref, AccessDistributor p) {
 		return this.visitor.adapterRef(ref, p, this);
 	}
 
 	@Override
-	public Owner visitBodyRef(BodyRefNode ref, Distributor p) {
+	public Owner visitBodyRef(BodyRefNode ref, AccessDistributor p) {
 		return this.visitor.bodyRef(ref, p, this);
 	}
 
 	@Override
-	public Owner visitDeref(DerefNode ref, Distributor p) {
+	public Owner visitDeref(DerefNode ref, AccessDistributor p) {
 		return this.visitor.deref(ref, p, this);
 	}
 
 	@Override
-	protected Owner visitExpression(ExpressionNode expression, Distributor p) {
+	protected Owner visitExpression(
+			ExpressionNode expression,
+			AccessDistributor p) {
 		return this.visitor.visitExpression(expression, p);
 	}
 

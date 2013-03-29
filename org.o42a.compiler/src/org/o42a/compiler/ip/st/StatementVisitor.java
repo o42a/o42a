@@ -26,7 +26,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.core.Distributor;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -49,7 +49,8 @@ public abstract class StatementVisitor
 		return this.ip;
 	}
 
-	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor() {
+	public final
+	ExpressionNodeVisitor<Ref, AccessDistributor> expressionVisitor() {
 		return ip().targetExVisitor();
 	}
 

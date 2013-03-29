@@ -15,15 +15,6 @@ import org.o42a.core.value.ValueType;
 public class LocalsTest extends CompilerTestCase {
 
 	@Test
-	public void fieldRefersLocalFromSeparateSentence() {
-		compile(
-				"$L := 1",
-				"A := l");
-
-		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));
-	}
-
-	@Test
 	public void declareInSeparateSentence() {
 		compile(
 				"A := integer (",

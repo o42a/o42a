@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.member.AdapterId.adapterId;
@@ -108,7 +109,7 @@ public final class FieldDeclarableVisitor
 
 		final Ref adapterId = adapterNode.getMember().accept(
 				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
-				p);
+				fromDeclaration(p));
 
 		if (adapterId == null) {
 			return null;
@@ -166,7 +167,7 @@ public final class FieldDeclarableVisitor
 		return null;
 	}
 
-	static StaticTypeRef declaredIn(
+	private static StaticTypeRef declaredIn(
 			Interpreter ip,
 			MemberRefNode memberRef,
 			Distributor distributor) {
@@ -177,7 +178,9 @@ public final class FieldDeclarableVisitor
 			return null;
 		}
 
-		final Ref declaredIn = node.accept(ip.bodyRefVisitor(), distributor);
+		final Ref declaredIn = node.accept(
+				ip.bodyRefVisitor(),
+				fromDeclaration(distributor));
 
 		if (declaredIn == null) {
 			return null;

@@ -31,7 +31,6 @@ import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -78,17 +77,19 @@ public class MemberById extends ContainedFragment {
 	}
 
 	private final Interpreter ip;
+	private final AccessSource accessSource;
 	private final StaticTypeRef declaredIn;
 	private final MemberId memberId;
 
 	public MemberById(
 			Interpreter ip,
 			LocationInfo location,
-			Distributor distributor,
+			AccessDistributor distributor,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {
 		super(location, distributor);
 		this.ip = ip;
+		this.accessSource = distributor.getAccessSource();
 		this.memberId = memberId;
 		this.declaredIn = declaredIn;
 	}
@@ -218,7 +219,7 @@ public class MemberById extends ContainedFragment {
 		}
 
 		return container.findMember(
-				accessor.accessBy(this),
+				accessor.accessBy(this, this.accessSource),
 				this.memberId,
 				declaredIn);
 	}

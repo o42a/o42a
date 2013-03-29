@@ -22,21 +22,22 @@ package org.o42a.compiler.ip.type.ascendant;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.core.Distributor;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 
 
 public final class AncestorSpecVisitor
-		extends AbstractRefVisitor<AncestorTypeRef, Distributor> {
+		extends AbstractRefVisitor<AncestorTypeRef, AccessDistributor> {
 
-	private final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;
+	private final
+	RefNodeVisitor<AncestorTypeRef, AccessDistributor> ancestorVisitor;
 
 	public AncestorSpecVisitor(
-			RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor) {
+			RefNodeVisitor<AncestorTypeRef, AccessDistributor> ancestorVisitor) {
 		this.ancestorVisitor = ancestorVisitor;
 	}
 
 	@Override
-	protected AncestorTypeRef visitRef(RefNode ref, Distributor p) {
+	protected AncestorTypeRef visitRef(RefNode ref, AccessDistributor p) {
 		return ref.accept(this.ancestorVisitor, p);
 	}
 
