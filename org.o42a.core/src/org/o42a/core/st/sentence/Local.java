@@ -140,6 +140,10 @@ public final class Local extends Step implements ContainerInfo {
 		Scoped.assertCompatibleScope(this, other);
 	}
 
+	public Ref toRef() {
+		return toPath().bind(this, getScope()).target(distribute());
+	}
+
 	@Override
 	public String toString() {
 		if (this.name == null) {

@@ -118,7 +118,7 @@ final class PhrasePartVisitor
 	protected PhraseBuilder visitPhrasePart(
 			PhrasePartNode part,
 			PhraseBuilder p) {
-		p.getLogger().invalidClause(part);
+		p.getLogger().error("invalid_phrase_part", part, "Invalid phrase part");
 		return p;
 	}
 

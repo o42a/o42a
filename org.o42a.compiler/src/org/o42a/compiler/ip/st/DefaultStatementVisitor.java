@@ -36,9 +36,9 @@ import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.AccessDistributor;
-import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Statements;
@@ -95,41 +95,29 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	public Void visitAssignment(AssignmentNode assignment, Statements<?, ?> p) {
 
-		final ExpressionNode destinationNode =
-				assignment.getDestination().toExpression();
-		final ExpressionNode valueNode = assignment.getValue();
+		final AssignableNode destinationNode = assignment.getDestination();
 
-		if (valueNode == null || destinationNode == null) {
+		if (!validateAssignment(assignment)) {
 			return null;
 		}
 
-		final AccessDistributor distributor =
-				fromDefinition(p.nextDistributor());
-		final Ref destination = destinationNode.accept(
+		final LocalNode local = destinationNode.toLocal();
+
+		if (local != null) {
+
+			final Statements<?, ?> statements = addLocalBlock(p, local);
+
+			new LocalStatementVisitor(this)
+			.addLocalAssignment(statements, assignment, local);
+
+			return null;
+		}
+
+		final Ref destination = destinationNode.toExpression().accept(
 				ip().bodyExVisitor(),
-				distributor);
-		final Ref value = valueNode.accept(expressionVisitor(), distributor);
+				fromDefinition(p.nextDistributor()));
 
-		if (destination == null || value == null) {
-			return null;
-		}
-
-		if (p.getSentence().getSentenceFactory().isDeclarative()) {
-			getLogger().error(
-					"prohibited_declarative_assignment",
-					assignment.getOperator(),
-					"Location is not allowed within declarative block");
-			return null;
-		}
-		if (p.getSentence().isIssue()) {
-			getLogger().error(
-					"prohibited_issue_assignment",
-					assignment.getOperator(),
-					"Assignment is prohibited within issue");
-			return null;
-		}
-
-		p.statement(new AssignmentStatement(assignment, destination, value));
+		addAssignment(p, assignment, destination);
 
 		return null;
 	}
@@ -163,6 +151,19 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		}
 
 		field(ip(), getContext(), declarator, p);
+
+		return null;
+	}
+
+	@Override
+	public Void visitLocalScope(LocalScopeNode scope, Statements<?, ?> p) {
+		if (!validateLocalScope(scope)) {
+			return null;
+		}
+
+		final Statements<?, ?> statements = addLocalBlock(p, scope.getLocal());
+
+		new LocalStatementVisitor(this).addLocalScope(statements, scope);
 
 		return null;
 	}
@@ -213,6 +214,23 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		}
 
 		return null;
+	}
+
+	private static Statements<?, ?> addLocalBlock(
+			Statements<?, ?> statements,
+			LocalNode local) {
+
+		final Location blockLocation;
+
+		if (local.getName() != null) {
+			blockLocation = location(statements, local.getName());
+		} else {
+			blockLocation = location(statements, local.getSeparator());
+		}
+
+		return statements.parentheses(blockLocation)
+				.propose(blockLocation)
+				.alternative(blockLocation);
 	}
 
 }

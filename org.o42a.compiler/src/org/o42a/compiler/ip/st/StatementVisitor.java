@@ -20,13 +20,14 @@
 package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.Interpreter.unwrap;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
 
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.statement.AbstractStatementVisitor;
-import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -36,6 +37,22 @@ import org.o42a.util.log.LogInfo;
 
 public abstract class StatementVisitor
 		extends AbstractStatementVisitor<Void, Statements<?, ?>> {
+
+	static void invalidStatement(CompilerLogger logger, LogInfo location) {
+		logger.error(
+				"invalid_statement",
+				location,
+				"Not a valid statement");
+	}
+
+	static boolean validateAssignment(AssignmentNode assignment) {
+		return assignment.getValue() != null
+				&& assignment.getDestination() != null;
+	}
+
+	static boolean validateLocalScope(LocalScopeNode scope) {
+		return scope.getContent() != null;
+	}
 
 	private final Interpreter ip;
 	private final CompilerContext context;
@@ -100,11 +117,26 @@ public abstract class StatementVisitor
 		return null;
 	}
 
-	private void invalidStatement(LogInfo location) {
-		getLogger().error(
-				"invalid_statement",
-				location,
-				"Not a valid statement");
+	void invalidStatement(LogInfo location) {
+		invalidStatement(getLogger(), location);
+	}
+
+	void addAssignment(
+			Statements<?, ?> statements,
+			AssignmentNode assignment,
+			Ref destination) {
+
+		final AccessDistributor distributor =
+				fromDefinition(statements.nextDistributor());
+		final Ref value =
+				assignment.getValue().accept(expressionVisitor(), distributor);
+
+		if (destination == null || value == null) {
+			return;
+		}
+
+		statements.statement(
+				new AssignmentStatement(assignment, destination, value));
 	}
 
 }

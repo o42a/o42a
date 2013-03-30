@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.ref.Ref.errorRef;
+import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_NAME;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -31,8 +32,10 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.*;
+import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.type.InterfaceNode;
 import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.TypeParameterNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.compiler.ip.ref.AccessDistributor;
@@ -41,8 +44,10 @@ import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.link.LinkValueType;
+import org.o42a.util.log.LogInfo;
 import org.o42a.util.string.Name;
 
 
@@ -107,7 +112,13 @@ public final class LocalInterpreter {
 					"A local can be declared only with `:=` sign");
 		}
 
-		final Ref ref = localRef(ip, context, statements, declarator);
+		final Ref ref = localRef(
+				ip,
+				context,
+				statements,
+				declarator.getDeclarable(),
+				declarator.getInterface(),
+				declarator.getDefinition());
 
 		statements.local(
 				new Location(context, declarator.getDeclarable()),
@@ -115,6 +126,35 @@ public final class LocalInterpreter {
 				ref);
 
 		return true;
+	}
+
+	public static Local local(
+			Interpreter ip,
+			CompilerContext context,
+			Statements<?, ?> statements,
+			InterfaceNode iface,
+			LocalNode local) {
+
+		final LogInfo location;
+		final Name name;
+
+		if (local.getName() != null) {
+			location = local.getName();
+			name = local.getName().getName();
+		} else {
+			location = local.getSeparator();
+			name = ANONYMOUS_LOCAL_NAME;
+		}
+
+		final Ref ref = localRef(
+				ip,
+				context,
+				statements,
+				location,
+				iface,
+				local.getExpression());
+
+		return statements.local(new Location(context, location), name, ref);
 	}
 
 	private static Name declaredLocalName(
@@ -165,13 +205,14 @@ public final class LocalInterpreter {
 			Interpreter ip,
 			CompilerContext context,
 			Statements<?, ?> statements,
-			DeclaratorNode declarator) {
+			LogInfo location,
+			InterfaceNode iface,
+			ExpressionNode definition) {
 
 		final AccessDistributor distributor = fromDeclaration(
 				distributeIn(statements.nextDistributor(), context));
 		final Ref value =
-				localValue(ip, context, declarator, distributor);
-		final InterfaceNode iface = declarator.getInterface();
+				localValue(ip, context, location, definition, distributor);
 
 		if (iface == null) {
 			return value;
@@ -179,7 +220,7 @@ public final class LocalInterpreter {
 
 		final PhraseBuilder phrase = new PhraseBuilder(
 				ip,
-				new Location(context, declarator.getDeclarable()),
+				new Location(context, location),
 				distributor,
 				EXPRESSION_TYPE_CONSUMER);
 		final LinkValueType linkType =
@@ -190,7 +231,7 @@ public final class LocalInterpreter {
 				new Location(context, iface),
 				statements.getScope()));
 
-		final TypeNode type = declarator.getDefinitionType();
+		final TypeNode type = interfaceType(iface);
 
 		if (type != null) {
 
@@ -215,15 +256,11 @@ public final class LocalInterpreter {
 	private static Ref localValue(
 			Interpreter ip,
 			CompilerContext context,
-			DeclaratorNode declarator,
+			LogInfo location,
+			ExpressionNode definition,
 			AccessDistributor distributor) {
-
-		final ExpressionNode definition = declarator.getDefinition();
-
 		if (definition == null) {
-			return errorRef(
-					new Location(context, declarator.getDeclarable()),
-					distributor);
+			return errorRef(new Location(context, location), distributor);
 		}
 
 		final Ref value = definition.accept(ip.targetExVisitor(), distributor);
@@ -233,6 +270,17 @@ public final class LocalInterpreter {
 		}
 
 		return errorRef(new Location(context, definition), distributor);
+	}
+
+	private static TypeNode interfaceType(InterfaceNode iface) {
+
+		final TypeParameterNode[] parameters = iface.getParameters();
+
+		if (parameters.length == 0) {
+			return null;
+		}
+
+		return parameters[0].getType();
 	}
 
 	private LocalInterpreter() {
