@@ -66,6 +66,12 @@ public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		throw new UnsupportedOperationException(
+				"Link field can not be materialized");
+	}
+
+	@Override
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
 
 		final Block code = dirs.code();

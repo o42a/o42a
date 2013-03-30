@@ -55,6 +55,11 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	}
 
 	@Override
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
+	}
+
+	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.dereference(dirs, holder);

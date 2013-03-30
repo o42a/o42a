@@ -69,6 +69,12 @@ public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		throw new UnsupportedOperationException(
+				"Variable field can not be materialized");
+	}
+
+	@Override
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
 		return loadOrConstructTarget(dirs, holder, true);
 	}

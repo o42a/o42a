@@ -88,11 +88,6 @@ public abstract class RefFldOp<
 		return findTarget(dirs, holder);
 	}
 
-	@Override
-	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
-		return target(dirs, holder);
-	}
-
 	protected abstract ObjectOp findTarget(CodeDirs dirs, ObjHolder holder);
 
 	protected final ObjectOp loadOrConstructTarget(
