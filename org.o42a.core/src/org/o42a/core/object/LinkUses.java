@@ -26,6 +26,7 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.Usable;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.type.Sample;
+import org.o42a.core.ref.RefUser;
 import org.o42a.core.value.link.LinkUsage;
 
 
@@ -49,6 +50,10 @@ public class LinkUses {
 
 	public final boolean simplifiedLink(Analyzer analyzer) {
 		return !uses().isUsed(analyzer, ALL_LINK_USAGES);
+	}
+
+	public void useBodyBy(RefUser user) {
+		uses().useBy(user, COMPLEX_LINK_TARGET);
 	}
 
 	@Override

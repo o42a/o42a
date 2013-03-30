@@ -22,6 +22,7 @@ package org.o42a.core.ref;
 import org.o42a.analysis.use.*;
 import org.o42a.core.Container;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.object.LinkUses;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
 
@@ -44,9 +45,9 @@ public abstract class RefUsage extends Usage<RefUsage> {
 	public static final RefUsage CONTAINER_REF_USAGE =
 			new ResolutionUsage("ContainerRef", Role.INSTANCE);
 	public static final RefUsage TARGET_REF_USAGE =
-			new ResolutionUsage("TargetRef", Role.INSTANCE);
+			new BodyUsage("TargetRef", Role.INSTANCE);
 	public static final RefUsage ASSIGNEE_REF_USAGE =
-			new ResolutionUsage("AssigneeRef", Role.INSTANCE);
+			new BodyUsage("AssigneeRef", Role.INSTANCE);
 	public static final RefUsage TEMP_REF_USAGE = new TempUsage();
 
 	public static final UseSelector<RefUsage> VALUE_REF_USAGES =
@@ -160,6 +161,26 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		protected void resolveObject(Obj object, RefUser user) {
 			object.resolveAll();
 			object.type().useBy(user);
+		}
+
+	}
+
+	private static final class BodyUsage extends RefUsage {
+
+		BodyUsage(String name, Role role) {
+			super(name, role);
+		}
+
+		@Override
+		protected void resolveObject(Obj object, RefUser user) {
+			object.resolveAll();
+			object.type().useBy(user);
+
+			final LinkUses linkUses = object.type().linkUses();
+
+			if (linkUses != null) {
+				linkUses.useBodyBy(user);
+			}
 		}
 
 	}
