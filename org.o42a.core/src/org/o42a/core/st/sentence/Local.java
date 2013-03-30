@@ -285,9 +285,7 @@ public final class Local extends Step implements ContainerInfo {
 
 		@Override
 		public void writeCond(CodeDirs dirs) {
-			dirs.code().debug("(!) ================================");
 			ref(dirs).writeCond(dirs);
-			dirs.code().debug("(!) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		}
 
 		@Override

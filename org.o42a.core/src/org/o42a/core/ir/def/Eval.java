@@ -26,6 +26,8 @@ public interface Eval {
 
 	Eval FALSE_EVAL = FalseEval.INSTANCE;
 
+	Eval NO_EVAL = NoInlineEval.NO_INLINE_EVAL;
+
 	Eval MACRO_EVAL = MacroEval.INSTANCE;
 
 	void write(DefDirs dirs, HostOp host);
