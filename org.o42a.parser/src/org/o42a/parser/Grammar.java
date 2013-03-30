@@ -229,6 +229,7 @@ public class Grammar {
 
 	private final Parser<StatementNode> statement;
 	private final Parser<StatementNode> localStatement;
+	private final Parser<LocalScopeNode> localScope;
 	private final Parser<ClauseDeclaratorNode> clauseDeclarator;
 	private final Parser<ParenthesesNode> parentheses;
 	private final Parser<SentenceNode[]> content;
@@ -240,6 +241,7 @@ public class Grammar {
 		this.clauseDeclarator = new ClauseDeclaratorParser(this);
 		this.statement = new StatementParser(this, false);
 		this.localStatement = new StatementParser(this, true);
+		this.localScope = new LocalScopeParser(this);
 		this.parentheses = new ParenthesesParser(this);
 		this.content = new ContentParser(this);
 		this.sentence = new SentenceParser(this);
@@ -261,6 +263,10 @@ public class Grammar {
 
 	public final Parser<StatementNode> localStatement() {
 		return this.localStatement;
+	}
+
+	public final Parser<LocalScopeNode> localScope() {
+		return this.localScope;
 	}
 
 	public final Parser<LocalScopeNode> localScope(ExpressionNode expression) {
