@@ -89,10 +89,6 @@ public class CompilerLogger implements Logger {
 		error("indefinite_value", location, "Indefinite value access");
 	}
 
-	public void invalidClause(LogInfo location) {
-		error("invalid_clause", location, "Invalid clause");
-	}
-
 	public void invalidDeclaration(LogInfo location) {
 		error("invalid_declaration", location, "Invalid declaration");
 	}

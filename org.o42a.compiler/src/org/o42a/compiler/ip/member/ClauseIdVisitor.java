@@ -193,9 +193,16 @@ final class ClauseIdVisitor
 			AssignmentNode assignment,
 			Distributor p) {
 
-		final Name name = extractNameOrImplied(
-				p.getContext(),
-				assignment.getDestination().toExpression());
+		final Name name;
+		final ExpressionNode expression =
+				assignment.getDestination().toExpression();
+
+		if (expression == null) {
+			invalidClauseName(p.getContext(), assignment.getDestination());
+			name = null;
+		} else {
+			name = extractNameOrImplied(p.getContext(), expression);
+		}
 
 		return clauseDeclaration(
 				location(p, assignment),

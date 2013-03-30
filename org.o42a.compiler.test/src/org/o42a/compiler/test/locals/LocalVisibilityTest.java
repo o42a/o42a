@@ -121,4 +121,15 @@ public class LocalVisibilityTest extends CompilerTestCase {
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(2L));
 	}
 
+	@Test
+	public void localScopeNotPropagated() {
+		expectError("compiler.unresolved");
+
+		compile(
+				"A := integer (",
+				"  1 $ local: local",
+				"  = $local",
+				")");
+	}
+
 }
