@@ -75,6 +75,12 @@ public abstract class StatementVisitor
 	}
 
 	@Override
+	public Void visitBrackets(BracketsNode brackets, Statements<?, ?> p) {
+		invalidStatement(brackets);
+		return null;
+	}
+
+	@Override
 	public Void visitParentheses(
 			ParenthesesNode parentheses,
 			Statements<?, ?> p) {
