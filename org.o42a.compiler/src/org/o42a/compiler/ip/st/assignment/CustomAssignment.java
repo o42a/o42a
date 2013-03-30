@@ -26,6 +26,11 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
@@ -33,7 +38,11 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ExecuteCommand;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -76,12 +85,49 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
+	public DefValue value(Resolver resolver) {
+
+		final Value<?> value = getRef().value(resolver);
+
+		return value.getKnowledge().getCondition().toDefValue();
+	}
+
+	@Override
+	public Action initialValue(Resolver resolver) {
+		return new ExecuteCommand(
+				getStatement(),
+				getRef().value(resolver).getKnowledge().getCondition());
+	}
+
+	@Override
 	public void resolve(FullResolver resolver) {
 		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+
+		final InlineValue inlineRef = getRef().inline(normalizer, origin);
+
+		if (inlineRef == null) {
+			return null;
+		}
+
+		return new InlineAssignEval(inlineRef);
+	}
+
+	@Override
+	public Eval eval(CodeBuilder builder, Scope origin) {
+		return new AssignEval(getRef());
+	}
+
+	@Override
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), origin);
+	}
+
+	@Override
+	public InlineCmd inlineCommand(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);
 
@@ -90,11 +136,11 @@ final class CustomAssignment extends AssignmentKind {
 			return null;
 		}
 
-		return new Inline(value);
+		return new InlineAssignCmd(value);
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
+	public void normalizeCommand(RootNormalizer normalizer) {
 		this.normal = this.ref.inline(
 				normalizer.newNormalizer(),
 				normalizer.getNormalizedScope());
@@ -122,11 +168,40 @@ final class CustomAssignment extends AssignmentKind {
 		return new NormalAssignCmd(this.normal);
 	}
 
-	private static final class Inline extends InlineCmd {
+	private static final class InlineAssignEval extends InlineEval {
 
 		private final InlineValue value;
 
-		Inline(InlineValue value) {
+		InlineAssignEval(InlineValue value) {
+			super(null);
+			this.value = value;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			this.value.writeCond(dirs.dirs(), host);
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return "(++" + this.value + ")";
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
+	}
+
+	private static final class InlineAssignCmd extends InlineCmd {
+
+		private final InlineValue value;
+
+		InlineAssignCmd(InlineValue value) {
 			super(null);
 			this.value = value;
 		}
@@ -152,6 +227,29 @@ final class CustomAssignment extends AssignmentKind {
 		@Override
 		protected Cancelable cancelable() {
 			return null;
+		}
+
+	}
+
+	public static final class AssignEval implements Eval {
+
+		private final Ref ref;
+
+		AssignEval(Ref ref) {
+			this.ref = ref;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			this.ref.op(host).writeCond(dirs.dirs());
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

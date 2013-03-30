@@ -25,11 +25,11 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.op.CodeDirs;
 
 
-final class AssignmentCmd implements Cmd {
+final class VariableAssignmentCmd implements Cmd {
 
 	private final AssignmentStatement assignment;
 
-	AssignmentCmd(AssignmentStatement assignment) {
+	VariableAssignmentCmd(AssignmentStatement assignment) {
 		this.assignment = assignment;
 	}
 

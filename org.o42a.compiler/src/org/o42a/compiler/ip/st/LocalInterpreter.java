@@ -21,7 +21,9 @@ package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.file.OtherContextDistributor.distributeIn;
 import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
+import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_NAME;
@@ -39,6 +41,7 @@ import org.o42a.ast.type.TypeParameterNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
@@ -118,7 +121,8 @@ public final class LocalInterpreter {
 				statements,
 				declarator.getDeclarable(),
 				declarator.getInterface(),
-				declarator.getDefinition());
+				declarator.getDefinition(),
+				TARGET_REFERRAL);
 
 		statements.local(
 				new Location(context, declarator.getDeclarable()),
@@ -133,7 +137,8 @@ public final class LocalInterpreter {
 			CompilerContext context,
 			Statements<?, ?> statements,
 			InterfaceNode iface,
-			LocalNode local) {
+			LocalNode local,
+			Referral referral) {
 
 		final LogInfo location;
 		final Name name;
@@ -152,7 +157,8 @@ public final class LocalInterpreter {
 				statements,
 				location,
 				iface,
-				local.getExpression());
+				local.getExpression(),
+				referral);
 
 		return statements.local(new Location(context, location), name, ref);
 	}
@@ -207,12 +213,18 @@ public final class LocalInterpreter {
 			Statements<?, ?> statements,
 			LogInfo location,
 			InterfaceNode iface,
-			ExpressionNode definition) {
+			ExpressionNode definition,
+			Referral referral) {
 
 		final AccessDistributor distributor = fromDeclaration(
 				distributeIn(statements.nextDistributor(), context));
-		final Ref value =
-				localValue(ip, context, location, definition, distributor);
+		final Ref value = localValue(
+				ip,
+				context,
+				location,
+				definition,
+				distributor,
+				referral);
 
 		if (iface == null) {
 			return value;
@@ -258,12 +270,15 @@ public final class LocalInterpreter {
 			CompilerContext context,
 			LogInfo location,
 			ExpressionNode definition,
-			AccessDistributor distributor) {
+			AccessDistributor distributor,
+			Referral referral) {
 		if (definition == null) {
 			return errorRef(new Location(context, location), distributor);
 		}
 
-		final Ref value = definition.accept(ip.targetExVisitor(), distributor);
+		final Ref value = definition.accept(
+				referral.expressionVisitor(ip, NO_TYPE_CONSUMER),
+				distributor);
 
 		if (value != null) {
 			return value;

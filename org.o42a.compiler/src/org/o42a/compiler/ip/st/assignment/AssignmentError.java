@@ -19,15 +19,22 @@
 */
 package org.o42a.compiler.ip.st.assignment;
 
+import static org.o42a.core.ir.def.Eval.NO_EVAL;
 import static org.o42a.core.ir.local.Cmd.NO_CMD;
+import static org.o42a.core.st.DefValue.FALSE_DEF_VALUE;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ExecuteCommand;
+import org.o42a.core.value.Condition;
 
 
 final class AssignmentError extends AssignmentKind {
@@ -42,16 +49,41 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
+	public DefValue value(Resolver resolver) {
+		return FALSE_DEF_VALUE;
+	}
+
+	@Override
+	public Action initialValue(Resolver resolver) {
+		return new ExecuteCommand(getStatement(), Condition.FALSE);
+	}
+
+	@Override
 	public void resolve(FullResolver resolver) {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
+	public Eval eval(CodeBuilder builder, Scope origin) {
+		return NO_EVAL;
+	}
+
+	@Override
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+		return null;
+	}
+
+	@Override
+	public InlineCmd inlineCommand(Normalizer normalizer, Scope origin) {
+		return null;
+	}
+
+	@Override
+	public void normalizeCommand(RootNormalizer normalizer) {
 	}
 
 	@Override
