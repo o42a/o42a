@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.st.assignment;
 
-import static org.o42a.core.ref.RefUsage.ASSIGNEE_REF_USAGE;
+import static org.o42a.core.ref.RefUsage.ASSIGNABLE_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.value.link.LinkValueType.VARIABLE;
@@ -114,7 +114,7 @@ final class VariableAssignment extends AssignmentKind {
 		final Ref destination = getStatement().getDestination();
 		final Ref value = getStatement().getValue();
 
-		destination.resolveAll(resolver.setRefUsage(ASSIGNEE_REF_USAGE));
+		destination.resolveAll(resolver.setRefUsage(ASSIGNABLE_REF_USAGE));
 
 		final Ref destTarget =
 				destination.getPath()

@@ -46,8 +46,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			new ResolutionUsage("ContainerRef", Role.INSTANCE);
 	public static final RefUsage TARGET_REF_USAGE =
 			new BodyUsage("TargetRef", Role.INSTANCE);
-	public static final RefUsage ASSIGNEE_REF_USAGE =
-			new BodyUsage("AssigneeRef", Role.INSTANCE);
+	public static final RefUsage ASSIGNABLE_REF_USAGE =
+			new ResolutionUsage("AssignableRef", Role.INSTANCE);
 	public static final RefUsage TEMP_REF_USAGE = new TempUsage();
 
 	public static final UseSelector<RefUsage> VALUE_REF_USAGES =
