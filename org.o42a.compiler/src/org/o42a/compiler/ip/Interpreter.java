@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip;
 
-import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.*;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
@@ -34,6 +33,7 @@ import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
+import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.phrase.PhraseInterpreter;
 import org.o42a.compiler.ip.ref.AccessDistributor;
@@ -153,7 +153,13 @@ public enum Interpreter {
 			return null;
 		}
 
-		return conjunction[0].getStatement().accept(UNWRAP_VISITOR, null);
+		final StatementNode statement = conjunction[0].getStatement();
+
+		if (statement == null) {
+			return null;
+		}
+
+		return statement.toExpression();
 	}
 
 }
