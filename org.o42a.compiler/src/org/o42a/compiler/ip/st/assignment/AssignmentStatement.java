@@ -81,7 +81,7 @@ public class AssignmentStatement extends Statement {
 
 	@Override
 	public Definer define(DefinerEnv env) {
-		throw new UnsupportedOperationException();
+		return new AssignmentDefiner(this, env);
 	}
 
 	@Override

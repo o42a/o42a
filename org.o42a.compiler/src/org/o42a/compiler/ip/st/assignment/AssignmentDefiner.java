@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,19 +20,19 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
-final class AssignmentCommand extends Command {
+final class AssignmentDefiner extends Definer {
 
-	AssignmentCommand(AssignmentStatement statement, CommandEnv env) {
+	AssignmentDefiner(AssignmentStatement statement, DefinerEnv env) {
 		super(statement, env);
 	}
 
@@ -45,8 +45,8 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public CommandTargets getCommandTargets() {
-		return actionCommand();
+	public DefTargets getDefTargets() {
+		return expressionDef();
 	}
 
 	@Override
@@ -55,13 +55,23 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(Resolver resolver) {
-		return getAssignmentKind().initialValue(resolver);
+	public DefValue value(Resolver resolver) {
+		return getAssignmentKind().value(resolver);
 	}
 
 	@Override
-	public Action initialCond(Resolver resolver) {
-		throw new UnsupportedOperationException();
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		return getAssignmentKind().inline(normalizer, origin);
+	}
+
+	@Override
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+		return getAssignmentKind().normalize(normalizer, origin);
+	}
+
+	@Override
+	public Eval eval(CodeBuilder builder, Scope origin) {
+		return getAssignmentKind().eval(builder, origin);
 	}
 
 	@Override
@@ -76,22 +86,6 @@ final class AssignmentCommand extends Command {
 
 	@Override
 	public void resolveTargets(TargetResolver resolver, Scope origin) {
-	}
-
-	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
-		return getAssignmentKind().inlineCommand(normalizer, origin);
-	}
-
-	@Override
-	public void normalize(RootNormalizer normalizer) {
-		getAssignmentKind().normalizeCommand(normalizer);
-	}
-
-	@Override
-	public Cmd cmd() {
-		assert getStatement().assertFullyResolved();
-		return getAssignmentKind().cmd();
 	}
 
 	@Override
