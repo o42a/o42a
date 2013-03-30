@@ -23,34 +23,43 @@ package org.o42a.core.source;
 public final class FullResolution {
 
 	private int started;
-	private int finished;
+	private boolean initiated;
 
 	FullResolution() {
 	}
 
-	private final boolean isStarted() {
-		return this.started != 0;
+	private final boolean isInitiated() {
+		return this.initiated;
 	}
 
 	public final boolean isComplete() {
-		return this.started != 0 && this.started == this.finished;
+		return this.initiated && this.started == 0;
+	}
+
+	public final void initiate() {
+		this.initiated = true;
+		++this.started;
 	}
 
 	public final void start() {
 		assert assertIncomplete();
-		++this.started;
+		if (this.initiated) {
+			++this.started;
+		}
 	}
 
 	public final void end() {
-		++this.finished;
+		if (this.initiated) {
+			--this.started;
+		}
 	}
 
 	public final void reset() {
-		this.started = this.finished = 0;
+		this.started = 0;
 	}
 
 	public final boolean assertIncomplete() {
-		assert this.started == 0 || this.started != this.finished :
+		assert !this.initiated  || this.started > 0:
 			"Full resolution is already complete";
 		return true;
 	}
@@ -61,12 +70,12 @@ public final class FullResolution {
 		final StringBuilder out = new StringBuilder();
 
 		out.append("FullResolution[");
-		if (!isStarted()) {
-			out.append("NOT STARTED");
+		if (!isInitiated()) {
+			out.append("NOT INITIATED");
 		} else if (isComplete()) {
 			out.append("COMPLETE");
 		} else {
-			out.append("STARTED");
+			out.append("IN PROGRESS");
 		}
 		out.append(']');
 

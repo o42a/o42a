@@ -200,7 +200,7 @@ public class CompilerIntrinsics extends Intrinsics {
 		final FullResolution fullResolution =
 				this.root.getContext().fullResolution();
 
-		fullResolution.start();
+		fullResolution.initiate();
 		try {
 			this.none.resolveAll();
 			this.root.resolveAll();
