@@ -20,7 +20,7 @@
 package org.o42a.root.array;
 
 import static org.o42a.core.member.MemberName.fieldName;
-import static org.o42a.core.ref.RefUsage.ASSIGNEE_REF_USAGE;
+import static org.o42a.core.ref.RefUsage.ASSIGNABLE_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.root.array.IndexedItem.indexPath;
@@ -74,7 +74,7 @@ final class SetArrayItem extends AnnotatedBuiltin {
 		final Ref item = item();
 		final Ref newValue = newValue();
 
-		item.resolveAll(resolver.setRefUsage(ASSIGNEE_REF_USAGE));
+		item.resolveAll(resolver.setRefUsage(ASSIGNABLE_REF_USAGE));
 
 		final Ref destTarget =
 				item.getPath()
