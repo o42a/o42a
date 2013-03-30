@@ -185,7 +185,9 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitParentheses(ParenthesesNode parentheses, AccessDistributor p) {
+	public Ref visitParentheses(
+			ParenthesesNode parentheses,
+			AccessDistributor p) {
 
 		final ExpressionNode unwrapped = unwrap(parentheses);
 
