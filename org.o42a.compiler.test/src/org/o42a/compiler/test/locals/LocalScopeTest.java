@@ -36,6 +36,16 @@ public class LocalScopeTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void imperativeLocalScope() {
+		compile(
+				"A := integer (",
+				"  3 $ local {= $Local}",
+				")");
+
+		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(3L));
+	}
+
+	@Test
 	public void localLink() {
 		compile(
 				"A := \"123\"",
