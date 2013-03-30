@@ -101,11 +101,24 @@ public class StatementParser implements Parser<StatementNode> {
 	}
 
 	private StatementNode parseNonExpression(ParserContext context) {
-		if (this.local) {
-			return parseLocalStatement(context);
+
+		final int next = context.next();
+
+		if (next == '`') {
+
+			final LocalScopeNode localScope =
+					context.parse(this.grammar.localScope());
+
+			if (localScope != null) {
+				return localScope;
+			}
 		}
 
-		switch (context.next()) {
+		if (this.local) {
+			return parseLocalStatement(context, next);
+		}
+
+		switch (next) {
 		case '=':
 			return context.parse(selfAssignment());
 		case '@':
@@ -133,8 +146,8 @@ public class StatementParser implements Parser<StatementNode> {
 		return null;
 	}
 
-	private StatementNode parseLocalStatement(ParserContext context) {
-		switch (context.next()) {
+	private StatementNode parseLocalStatement(ParserContext context, int next) {
+		switch (next) {
 		case '{':
 			return context.parse(braces());
 		case '(':
@@ -144,6 +157,13 @@ public class StatementParser implements Parser<StatementNode> {
 	}
 
 	private StatementNode parseParentheses(ParserContext context) {
+
+		final LocalScopeNode localScope =
+				context.parse(this.grammar.localScope());
+
+		if (localScope != null) {
+			return localScope;
+		}
 
 		final ParenthesesNode parentheses =
 				context.parse(this.grammar.parentheses());

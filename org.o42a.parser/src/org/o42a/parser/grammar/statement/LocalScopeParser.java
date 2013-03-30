@@ -37,15 +37,15 @@ import org.o42a.util.io.SourcePosition;
 
 public class LocalScopeParser implements Parser<LocalScopeNode> {
 
-	public static final LocalScopeParser DECLARATIVE_LOCAL_SCOPE =
-			new LocalScopeParser(Grammar.DECLARATIVE);
-	public static final LocalScopeParser IMPERATIVE_LOCAL_SCOPE =
-			new LocalScopeParser(Grammar.IMPERATIVE);
-
 	private final Grammar grammar;
 	private final ExpressionNode expression;
 	private final LocalNode local;
 
+	public LocalScopeParser(Grammar grammar) {
+		this.grammar = grammar;
+		this.expression = null;
+		this.local = null;
+	}
 
 	public LocalScopeParser(Grammar grammar, ExpressionNode expression) {
 		this.grammar = grammar;
@@ -57,12 +57,6 @@ public class LocalScopeParser implements Parser<LocalScopeNode> {
 		this.grammar = grammar;
 		this.expression = null;
 		this.local = local;
-	}
-
-	private LocalScopeParser(Grammar grammar) {
-		this.grammar = grammar;
-		this.expression = null;
-		this.local = null;
 	}
 
 	@Override
