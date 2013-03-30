@@ -74,7 +74,7 @@ public abstract class AbstractStatementVisitor<R, P>
 
 	@Override
 	public R visitInclusion(InclusionNode inclusion, P p) {
-		return visitInclusion(inclusion, p);
+		return visitStatement(inclusion, p);
 	}
 
 	@Override
