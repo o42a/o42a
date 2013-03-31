@@ -355,7 +355,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		final Obj ascendant = getAscendant();
 
 		for (Dep dep : ascendant.deps()) {
-			if (dep.isDisabled()) {
+			if (!dep.exists()) {
 				continue;
 			}
 

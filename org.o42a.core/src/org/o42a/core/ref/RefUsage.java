@@ -44,6 +44,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			new TypeParameterUsage("TypeParameterRef");
 	public static final RefUsage CONTAINER_REF_USAGE =
 			new ResolutionUsage("ContainerRef", Role.INSTANCE);
+	public static final RefUsage BODY_REF_USAGE =
+			new BodyUsage("BodyRef", Role.PROTOTYPE);
 	public static final RefUsage TARGET_REF_USAGE =
 			new BodyUsage("TargetRef", Role.INSTANCE);
 	public static final RefUsage ASSIGNABLE_REF_USAGE =

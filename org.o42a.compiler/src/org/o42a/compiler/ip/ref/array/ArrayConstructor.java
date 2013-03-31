@@ -97,6 +97,11 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	public boolean mayContainDeps() {
+		return this.node.getArguments().length != 0;
+	}
+
+	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
 		return ancestor(location);
 	}

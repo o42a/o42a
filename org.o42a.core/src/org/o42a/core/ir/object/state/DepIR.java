@@ -47,8 +47,8 @@ public class DepIR implements FldIR {
 	private Type instance;
 
 	public DepIR(ObjectIRBody bodyIR, Dep dep) {
-		assert !dep.isDisabled() :
-			dep + " is disabled";
+		assert dep.exists() :
+			dep + " does not exist";
 		this.bodyIR = bodyIR;
 		this.dep = dep;
 	}

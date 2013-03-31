@@ -45,6 +45,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 	private final PathTemplate template;
 	private Meta[] parentMeta;
 	private Path depPath;
+	private boolean nested;
 
 	RefDepBuilder(RefDep<D> dep, Ref ref, PathTemplate template) {
 		this.dep = dep;
@@ -61,6 +62,9 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 	public boolean start(BoundPath path, Scope start) {
 		if (path.isStatic()) {
 			return false;
+		}
+		if (this.nested) {
+			return true;
 		}
 		return appendParentMeta(start);
 	}
@@ -110,7 +114,26 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 
 	@Override
 	public boolean dep(Obj object, Dep dep) {
-		return invalidRef();
+
+		final Scope start = object.getScope();
+		final boolean oldNested = this.nested;
+
+		this.nested = true;
+
+		final boolean result;
+		final Scope enclosing = dep.walkToEnclosingScope(start, this);
+
+		if (enclosing == null) {
+			result = false;
+		} else {
+			result = dep.ref()
+					.resolve(enclosing.walkingResolver(this))
+					.isResolved();
+		}
+
+		this.nested = oldNested;
+
+		return result;
 	}
 
 	@Override

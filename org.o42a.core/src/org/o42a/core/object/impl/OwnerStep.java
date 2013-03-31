@@ -34,6 +34,8 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.state.Dep;
+import org.o42a.core.object.state.SyntheticDep;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
@@ -43,18 +45,28 @@ import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Local;
+import org.o42a.util.string.Name;
 
 
-public final class ParentObjectStep
+public final class OwnerStep
 		extends AbstractMemberStep
 		implements ReversePath {
+
+	private static final SyntheticConstructor SYNTHETIC_CONSTRUCTOR =
+			new SyntheticConstructor();
 
 	private final Obj object;
 	private ObjectStepUses uses;
 
-	public ParentObjectStep(Obj object, MemberKey memberKey) {
+	public OwnerStep(Obj object, MemberKey memberKey) {
 		super(memberKey);
 		this.object = object;
+	}
+
+	private OwnerStep(OwnerStep step) {
+		super(step.getMemberKey());
+		this.object = step.object;
+		this.uses = step.uses();
 	}
 
 	@Override
@@ -63,15 +75,22 @@ public final class ParentObjectStep
 	}
 
 	@Override
+	protected void combineWithConstructor(
+			PathRebuilder rebuilder,
+			Step step,
+			ObjectConstructor constructor) {
+		if (!constructor.mayContainDeps()) {
+			return;
+		}
+
+		final Dep dep = replaceWithDep(rebuilder, null);
+
+		dep.setSynthetic(SYNTHETIC_CONSTRUCTOR);
+	}
+
+	@Override
 	protected void combineWithLocal(PathRebuilder rebuilder, Local local) {
-
-		final Container enclosingContainer =
-				this.object.getEnclosingContainer();
-		final Ref ref =
-				rebuilder.restPath(enclosingContainer.getScope())
-				.target(this.object.distributeIn(enclosingContainer));
-
-		rebuilder.replaceRest(this.object.deps().addDep(local.getName(), ref));
+		replaceWithDep(rebuilder, local.getName());
 	}
 
 	@Override
@@ -111,6 +130,11 @@ public final class ParentObjectStep
 	}
 
 	@Override
+	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
+		return false;
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer,
@@ -127,7 +151,6 @@ public final class ParentObjectStep
 			return outOfClausePath(
 					scope.getEnclosingScopePath(),
 					toPath());
-
 		}
 
 		final Clause enclosingClause = fromClause.getEnclosingClause();
@@ -143,6 +166,22 @@ public final class ParentObjectStep
 		return reproducedPath(scope.getEnclosingScopePath());
 	}
 
+	private Dep replaceWithDep(PathRebuilder rebuilder, Name name) {
+
+		final Container enclosingContainer =
+				this.object.getEnclosingContainer();
+		final Ref ref =
+				rebuilder.restPath(enclosingContainer.getScope())
+				.target(this.object.distributeIn(enclosingContainer));
+		final Dep dep = this.object.deps().addDep(
+				name,
+				ref);
+
+		rebuilder.replaceRest(dep);
+
+		return dep;
+	}
+
 	private final ObjectStepUses uses() {
 		if (this.uses != null) {
 			return this.uses;
@@ -154,21 +193,21 @@ public final class ParentObjectStep
 
 		final ObjectType type = object.type();
 
-		if (type.isResolved()) {
-			return objectScope(object, getMemberKey());
-		}
 		if (isEnclosingScopePath(object)) {
 			return object.getScope().getEnclosingScope().getContainer();
+		}
+		if (type.isResolved()) {
+			return objectScope(object, getMemberKey());
 		}
 
 		return null;
 	}
 
 	private boolean isEnclosingScopePath(Obj start) {
-		return start.getScope()
+		return equals(
+				start.getScope()
 				.getEnclosingScopePath()
-				.getSteps()[0]
-				.equals(this);
+				.lastStep());
 	}
 
 	private Container findParentObject(StepResolver resolver) {
@@ -232,6 +271,25 @@ public final class ParentObjectStep
 		}
 
 		normalizer.inline(prediction, new InlineValueStep(inline));
+	}
+
+	private static final class SyntheticConstructor implements SyntheticDep {
+
+		@Override
+		public boolean isSynthetic(Dep dep) {
+
+			final Obj object = dep.ref().getResolution().toObject();
+
+			if (object.getConstructionMode().isRuntime()) {
+				return false;
+			}
+			if (!object.getWrapped().is(object)) {
+				return false;
+			}
+
+			return !object.hasDeps();
+		}
+
 	}
 
 }

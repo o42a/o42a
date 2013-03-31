@@ -104,7 +104,7 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(	StepResolver resolver) {
+	protected Container resolve(StepResolver resolver) {
 
 		final Module module =
 				resolver.getContext()
@@ -135,6 +135,11 @@ public final class ModuleStep extends Step {
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
 		normalizer.skipStep();
+	}
+
+	@Override
+	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
+		return false;
 	}
 
 	@Override

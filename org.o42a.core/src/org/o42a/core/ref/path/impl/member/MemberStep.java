@@ -88,6 +88,11 @@ final class MemberStep extends AbstractMemberStep {
 	}
 
 	@Override
+	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
+		return false;
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer,

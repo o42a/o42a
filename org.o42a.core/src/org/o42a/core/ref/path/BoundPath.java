@@ -65,6 +65,7 @@ public class BoundPath extends RefPath {
 	private Scope startObjectScope;
 	private Obj startObject;
 	private int startIndex;
+	private boolean rebuilding;
 
 	BoundPath(LocationInfo location, Scope origin, Path rawPath) {
 		super(location);
@@ -239,6 +240,10 @@ public class BoundPath extends RefPath {
 	public final PathResolution walk(PathResolver resolver, PathWalker walker) {
 
 		final Path path = getPath();
+
+		assert !this.rebuilding :
+			"Path not rebuilt: " + this;
+
 		final Path template = path.getTemplate();
 
 		return walkPath(
@@ -741,8 +746,18 @@ public class BoundPath extends RefPath {
 	}
 
 	private Path rebuildPath() {
-		removeOddFragments();
-		return this.path = combineSteps();
+
+		final Path rebuilt;
+
+		this.rebuilding = true;
+		try {
+			removeOddFragments();
+			rebuilt = combineSteps();
+		} finally {
+			this.rebuilding = false;
+		}
+
+		return rebuilt;
 	}
 
 	private void removeOddFragments() {

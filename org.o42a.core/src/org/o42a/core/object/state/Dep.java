@@ -20,10 +20,16 @@
 package org.o42a.core.object.state;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.core.ref.RefUser.rtRefUser;
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.ProxyUser;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -52,8 +58,11 @@ public final class Dep extends Step implements SubID {
 	private final ID id;
 	private final Obj target;
 	private ObjectStepUses uses;
-	private byte disabled;
+	private ProxyUser<RefUsage> depUser;
+	private byte enabled;
 	private byte compileTimeOnly;
+	private SyntheticDep synthetic;
+	private byte isSynthetic;
 
 	Dep(Obj declaredIn, Ref ref, Name name, ID id) {
 		this.declaredIn = declaredIn;
@@ -78,6 +87,20 @@ public final class Dep extends Step implements SubID {
 		return this.ref;
 	}
 
+	public final Scope enclosingScope(Scope scope) {
+		if (getDeclaredIn().getScope().is(scope)) {
+			return scope.getEnclosingScope();
+		}
+		return walkToEnclosingScope(scope, DUMMY_PATH_WALKER);
+	}
+
+	public Scope walkToEnclosingScope(Scope scope, PathWalker walker) {
+
+		final PathResolver resolver = pathResolver(scope, dummyRefUser());
+
+		return walkToEnclosingScope(resolver, walker);
+	}
+
 	public final Object getDepKey() {
 
 		final Path path = this.ref.getPath().getPath();
@@ -90,11 +113,19 @@ public final class Dep extends Step implements SubID {
 		return this.target;
 	}
 
-	public final boolean isDisabled() {
-		if (this.disabled != 0) {
-			return this.disabled > 0;
+	public final boolean exists() {
+		return isEnabled() && !isSynthetic();
+	}
+
+	public final boolean isEnabled() {
+		if (this.enabled != 0) {
+			return this.enabled > 0;
 		}
-		return this.compileTimeOnly > 0;
+		return this.compileTimeOnly < 0;
+	}
+
+	public final void setSynthetic(SyntheticDep synthetic) {
+		this.synthetic = synthetic;
 	}
 
 	@Override
@@ -149,12 +180,21 @@ public final class Dep extends Step implements SubID {
 			"Dependency should be resolved against object, but were not: "
 			+ resolver.getStart();
 
-		final Scope enclosingScope = object.getScope().getEnclosingScope();
+		final Scope enclosingScope = up(resolver);
 		final Resolver enclosingResolver = enclosingScope.resolver();
 
 		if (resolver.isFullResolution()) {
 			compileTimeOnly(resolver.refUsage().isCompileTimeOnly());
 			uses().useBy(resolver);
+
+			if (!resolver.refUsage().isCompileTimeOnly()
+					&& this.depUser == null) {
+				this.depUser = new ProxyUser<>(uses().uses().toUser());
+				ref().resolveAll(
+						enclosingResolver.fullResolver(
+								rtRefUser(this.depUser, this.depUser),
+						BODY_REF_USAGE));
+			}
 
 			final RefUsage usage;
 
@@ -185,7 +225,7 @@ public final class Dep extends Step implements SubID {
 
 		final Obj object = normalizer.lastPrediction().getScope().toObject();
 		final Scope objectScope = object.getScope();
-		final Scope enclosingScope = objectScope.getEnclosingScope();
+		final Scope enclosingScope = enclosingScope(objectScope);
 
 		if (!normalizer.up(
 				enclosingScope,
@@ -217,6 +257,12 @@ public final class Dep extends Step implements SubID {
 	}
 
 	@Override
+	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
+		return normalizer.cancelIncompleteNormalization(
+				ref().getPath().getPath());
+	}
+
+	@Override
 	protected void normalizeStep(Analyzer analyzer) {
 		ref().normalize(analyzer);
 	}
@@ -225,24 +271,24 @@ public final class Dep extends Step implements SubID {
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
-
-		final Ref ref = ref().reproduce(reproducer.getReproducer());
-
-		if (ref == null) {
-			return null;
-		}
-
-		final Dep reproduction =
-				reproducer.getScope().toObject().deps().addDep(getName(), ref);
-
-		return reproducedPath(reproduction.toPath());
+		reproducer.getLogger().notReproducible(ref().getLocation());
+		return null;
 	}
 
 	@Override
 	protected final PathOp op(PathOp start) {
-		assert !isDisabled() :
-			this + " is disabled";
+		if (isSynthetic()) {
+			return new SyntheticOp(start, this);
+		}
+		assert exists() :
+			this + " does not exist";
 		return new Op(start, this);
+	}
+
+	final void reuseDep() {
+		if (this.enabled < 0) {
+			this.enabled = 0;
+		}
 	}
 
 	private PrefixPath refPrefix(Ref ref) {
@@ -259,20 +305,67 @@ public final class Dep extends Step implements SubID {
 		return this.uses = new ObjectStepUses(this);
 	}
 
-	final void reuseDep() {
-		if (this.disabled > 0) {
-			this.disabled = 0;
+	private boolean isSynthetic() {
+		if (this.isSynthetic != 0) {
+			return this.isSynthetic > 0;
 		}
+		if (this.synthetic == null) {
+			this.isSynthetic = -1;
+			return false;
+		}
+		if (!this.synthetic.isSynthetic(this)) {
+			this.isSynthetic = -1;
+			return false;
+		}
+		this.isSynthetic = 1;
+		if (this.depUser != null) {
+			this.depUser.setProxied(null);
+		}
+		return true;
+	}
+
+	private Scope up(StepResolver resolver) {
+
+		final PathResolver pathResolver;
+
+		if (resolver.isFullResolution()) {
+			pathResolver = fullPathResolver(
+					resolver.getStart(),
+					resolver.refUser(),
+					CONTAINER_REF_USAGE);
+		} else {
+			pathResolver = pathResolver(
+					resolver.getStart(),
+					resolver.refUser());
+		}
+
+		return walkToEnclosingScope(pathResolver, DUMMY_PATH_WALKER);
+	}
+
+	private Scope walkToEnclosingScope(
+			PathResolver resolver,
+			PathWalker walker) {
+		getDeclaredIn().assertCompatible(resolver.getPathStart());
+
+		final Path enclosingPath =
+				getDeclaredIn().getScope().getEnclosingScopePath();
+		final PathResolution enclosing =
+				enclosingPath.bind(ref(), resolver.getPathStart())
+				.walk(resolver, walker);
+
+		return enclosing.getResult().getScope();
 	}
 
 	private void ignoreDep() {
-		if (this.disabled == 0) {
-			this.disabled = 1;
+		if (this.enabled == 0) {
+			this.enabled = -1;
+			this.depUser.setProxied(null);
 		}
 	}
 
 	private void enableDep() {
-		this.disabled = -1;
+		this.enabled = 1;
+		this.depUser.setProxied(uses().uses().toUser());
 	}
 
 	private void compileTimeOnly(boolean compileTimeOnly) {
@@ -345,6 +438,34 @@ public final class Dep extends Step implements SubID {
 			return start()
 					.materialize(dirs, tempObjHolder(dirs.getAllocator()))
 					.dep(dirs, getStep());
+		}
+
+	}
+
+	private static final class SyntheticOp extends StepOp<Dep> {
+
+		private final Dep dep;
+
+		SyntheticOp(PathOp start, Dep dep) {
+			super(start, dep);
+			this.dep = dep;
+		}
+
+		@Override
+		public HostValueOp value() {
+			return targetValueOp();
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final Scope declaredIn = this.dep.getDeclaredIn().getScope();
+			final PathOp enclosing =
+					declaredIn.getEnclosingScopePath()
+					.bind(this.dep.ref(), declaredIn)
+					.op(dirs, start());
+
+			return this.dep.ref().op(enclosing).target(dirs);
 		}
 
 	}

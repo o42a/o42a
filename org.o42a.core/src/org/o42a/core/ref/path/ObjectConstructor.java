@@ -55,6 +55,18 @@ public abstract class ObjectConstructor extends Contained {
 		super(location, distributor);
 	}
 
+	/**
+	 * Whether a constructed object may contain dependencies.
+	 *
+	 * <p>If the object may contain dependencies, then another object depending
+	 * on this one will hold it as a dependency too.</p>
+	 *
+	 * @return <code>true</code> by default.
+	 */
+	public boolean mayContainDeps() {
+		return true;
+	}
+
 	public final Nesting getNesting() {
 		return this.construction;
 	}

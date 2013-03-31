@@ -160,15 +160,14 @@ final class ClauseReuser implements PathWalker {
 	@Override
 	public boolean dep(Obj object, Dep dep) {
 
-		final Container enclosing =
-				object.getScope().getEnclosingContainer();
+		final Scope enclosing = dep.enclosingScope(object.getScope());
 
-		if (!up(object, dep, enclosing, null)) {
+		if (!up(object, dep, enclosing.getContainer(), null)) {
 			return false;
 		}
 
 		return dep.ref()
-				.resolve(enclosing.getScope().walkingResolver(this))
+				.resolve(enclosing.walkingResolver(this))
 				.isResolved();
 	}
 
