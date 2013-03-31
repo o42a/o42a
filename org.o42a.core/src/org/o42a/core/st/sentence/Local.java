@@ -206,6 +206,7 @@ public final class Local extends Step implements ContainerInfo {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
+		normalizer.cancel();
 	}
 
 	@Override
@@ -214,8 +215,8 @@ public final class Local extends Step implements ContainerInfo {
 	}
 
 	@Override
-	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
-		return ref().getPath().getPath();
+	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
+		return true;
 	}
 
 	@Override

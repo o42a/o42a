@@ -135,7 +135,7 @@ public final class ResolutionRootFinder implements PathWalker {
 	@Override
 	public boolean dep(Obj object, Dep dep) {
 
-		final Scope enclosingScope = object.getScope().getEnclosingScope();
+		final Scope enclosingScope = dep.enclosingScope(object.getScope());
 
 		this.root = enclosingScope.getContainer();
 

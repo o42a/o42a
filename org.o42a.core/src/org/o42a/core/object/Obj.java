@@ -256,6 +256,10 @@ public abstract class Obj
 		return this.keepers = new Keepers(this);
 	}
 
+	public final boolean hasDeps() {
+		return this.deps != null && this.deps.hasDeps();
+	}
+
 	public final Deps deps() {
 		if (this.deps != null) {
 			return this.deps;
@@ -562,7 +566,7 @@ public abstract class Obj
 
 		// New scope field is to be created.
 		final Step scopePathStep =
-				new ParentObjectStep(this, SCOPE_FIELD_ID.key(scope));
+				new OwnerStep(this, SCOPE_FIELD_ID.key(scope));
 
 		return scopePathStep.toPath();
 	}

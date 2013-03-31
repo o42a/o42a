@@ -58,6 +58,11 @@ public final class Constant<T> extends ObjectConstructor {
 	}
 
 	@Override
+	public boolean mayContainDeps() {
+		return false;
+	}
+
+	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
 		return this.valueType.typeRef(location, getScope());
 	}

@@ -144,7 +144,7 @@ public class OverrideRequirement implements PathWalker {
 			return requireAbstractsOverride();
 		}
 
-		final Scope enclosingScope = object.getScope().getEnclosingScope();
+		final Scope enclosingScope = dep.enclosingScope(object.getScope());
 		final Container enclosing = enclosingScope.getContainer();
 
 		if (!setTop(enclosing)) {

@@ -104,7 +104,7 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(	StepResolver resolver) {
+	protected Container resolve(StepResolver resolver) {
 		getExpectedScope().assertCompatible(resolver.getStart());
 
 		resolver.getWalker().staticScope(this, getFinalScope());
@@ -125,6 +125,11 @@ final class StaticStep extends Step {
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
 		normalizer.finish();
+	}
+
+	@Override
+	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
+		return false;
 	}
 
 	@Override

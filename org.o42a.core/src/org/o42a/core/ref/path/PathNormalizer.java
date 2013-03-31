@@ -204,7 +204,8 @@ public final class PathNormalizer {
 
 			final Prediction lastPrediction = lastPrediction();
 
-			this.normalizedSteps.addNormalStep(new NormalPathStep(enclosingPath));
+			this.normalizedSteps.addNormalStep(
+					new NormalPathStep(enclosingPath));
 			overrideNonIgnored();
 
 			this.stepPrediction = enclosingPrediction(
@@ -287,6 +288,10 @@ public final class PathNormalizer {
 		this.stepNormalized = false;
 	}
 
+	public final boolean cancelIncompleteNormalization(Path path) {
+		return cancelIncompleteNormalization(path, 0);
+	}
+
 	public final boolean finish() {
 		if (!isNormalizationStarted()) {
 			cancel();
@@ -316,7 +321,8 @@ public final class PathNormalizer {
 	}
 
 	NormalPath normalize() {
-		this.normalizedSteps = new NormalizedSteps(getNormalizer(), this.path.length());
+		this.normalizedSteps =
+				new NormalizedSteps(getNormalizer(), this.path.length());
 		if (isStatic()) {
 			return normalizeStatic();
 		}
@@ -355,6 +361,9 @@ public final class PathNormalizer {
 
 			steps[this.stepIndex].normalize(this);
 			if (isNormalizationFinished()) {
+				if (cancelationRequired()) {
+					return unnormalized();
+				}
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
@@ -411,6 +420,9 @@ public final class PathNormalizer {
 
 			steps[this.stepIndex].normalizeStatic(this);
 			if (isNormalizationFinished()) {
+				if (cancelationRequired()) {
+					return unnormalized();
+				}
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
@@ -439,6 +451,25 @@ public final class PathNormalizer {
 		}
 
 		return unnormalized();
+	}
+
+	private boolean cancelationRequired() {
+		return cancelIncompleteNormalization(
+				getPath().getPath(),
+				this.stepIndex + 1);
+	}
+
+	private boolean cancelIncompleteNormalization(Path path, int fromIndex) {
+
+		final Step[] steps = path.getSteps();
+
+		for (int i = fromIndex; i < steps.length; ++i) {
+			if (steps[i].cancelIncompleteNormalization(this)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private boolean upTo(Scope scope) {

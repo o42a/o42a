@@ -78,6 +78,13 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
+	protected void rebuild(PathRebuilder rebuilder) {
+		if (!rebuilder.getPath().isStatic()) {
+			rebuilder.combinePreviousWithConstructor(this, getConstructor());
+		}
+	}
+
+	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
 
 		final PrefixPath prefix = ref.getPath().cut(1).toPrefix(ref.getScope());
@@ -120,6 +127,11 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
 		normalizeConstructor(normalizer);
+	}
+
+	@Override
+	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
+		return false;
 	}
 
 	@Override

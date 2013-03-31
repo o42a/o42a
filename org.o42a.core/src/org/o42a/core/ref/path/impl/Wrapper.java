@@ -108,6 +108,11 @@ public class Wrapper extends Step {
 	}
 
 	@Override
+	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
+		return true;
+	}
+
+	@Override
 	protected PathOp op(PathOp start) {
 		throw new UnsupportedOperationException();
 	}

@@ -174,6 +174,20 @@ public abstract class Step {
 	}
 
 	/**
+	 * Combines the step with an object constructor following this step in the
+	 * path.
+	 *
+	 * @param rebuilder path rebuilder.
+	 * @param step the object construction step.
+	 * @param constructor the object constructor.
+	 */
+	protected void combineWithConstructor(
+			PathRebuilder rebuilder,
+			Step step,
+			ObjectConstructor constructor) {
+	}
+
+	/**
 	 * Combines the step with the local following this step in the path.
 	 *
 	 * @param rebuilder path rebuilder.
@@ -214,7 +228,7 @@ public abstract class Step {
 	/**
 	 * Return the non-normalized path remainder.
 	 *
-	 * <p>This method is called when the  {@link PathNormalizer#up(Scope, Path,
+	 * <p>This method is called when the {@link PathNormalizer#up(Scope, Path,
 	 * org.o42a.core.ref.ReversePath)} call leads out of the
 	 * {@link PathNormalizer#getOrigin() normalized path origin}.</p>
 	 *
@@ -225,6 +239,9 @@ public abstract class Step {
 	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
 		return Path.SELF_PATH;
 	}
+
+	protected abstract boolean cancelIncompleteNormalization(
+			PathNormalizer normalizer);
 
 	/**
 	 * Normalize the step.

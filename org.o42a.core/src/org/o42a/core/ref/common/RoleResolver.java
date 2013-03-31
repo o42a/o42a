@@ -186,7 +186,7 @@ public class RoleResolver implements PathWalker {
 			return false;
 		}
 
-		final Scope enclosingScope = object.getScope().getEnclosingScope();
+		final Scope enclosingScope = dep.enclosingScope(object.getScope());
 
 		return dep.ref()
 				.resolve(enclosingScope.walkingResolver(this))
