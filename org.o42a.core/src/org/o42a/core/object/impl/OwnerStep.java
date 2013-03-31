@@ -35,7 +35,6 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.object.state.SyntheticDep;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
@@ -51,9 +50,6 @@ import org.o42a.util.string.Name;
 public final class OwnerStep
 		extends AbstractMemberStep
 		implements ReversePath {
-
-	private static final SyntheticConstructor SYNTHETIC_CONSTRUCTOR =
-			new SyntheticConstructor();
 
 	private final Obj object;
 	private ObjectStepUses uses;
@@ -85,7 +81,7 @@ public final class OwnerStep
 
 		final Dep dep = replaceWithDep(rebuilder, null);
 
-		dep.setSynthetic(SYNTHETIC_CONSTRUCTOR);
+		dep.setSynthetic(constructor);
 	}
 
 	@Override
@@ -271,25 +267,6 @@ public final class OwnerStep
 		}
 
 		normalizer.inline(prediction, new InlineValueStep(inline));
-	}
-
-	private static final class SyntheticConstructor implements SyntheticDep {
-
-		@Override
-		public boolean isSynthetic(Dep dep) {
-
-			final Obj object = dep.ref().getResolution().toObject();
-
-			if (object.getConstructionMode().isRuntime()) {
-				return false;
-			}
-			if (!object.getWrapped().is(object)) {
-				return false;
-			}
-
-			return !object.hasDeps();
-		}
-
 	}
 
 }

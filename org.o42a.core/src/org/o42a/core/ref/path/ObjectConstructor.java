@@ -37,6 +37,8 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.state.Dep;
+import org.o42a.core.object.state.SyntheticDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.ObjectConstructorStep;
 import org.o42a.core.ref.type.TypeRef;
@@ -45,7 +47,9 @@ import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 
 
-public abstract class ObjectConstructor extends Contained {
+public abstract class ObjectConstructor
+		extends Contained
+		implements SyntheticDep {
 
 	private final Construction construction = new Construction(this);
 	private Obj constructed;
@@ -119,6 +123,11 @@ public abstract class ObjectConstructor extends Contained {
 	}
 
 	public abstract ObjectConstructor reproduce(PathReproducer reproducer);
+
+	@Override
+	public boolean isSynthetic(Dep dep) {
+		return !getConstructed().hasDeps();
+	}
 
 	public PathOp op(PathOp host) {
 		return new Op(host);
