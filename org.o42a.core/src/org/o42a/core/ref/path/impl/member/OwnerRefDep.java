@@ -33,7 +33,6 @@ import org.o42a.core.value.macro.RefDep;
 
 final class OwnerRefDep extends RefDep<ObjectMetaDep> {
 
-
 	static Ref ownerRef(TypeParameterMacro macro) {
 
 		final TypeParameterObject object = macro.getObject();

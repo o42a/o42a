@@ -67,8 +67,9 @@ final class TypeParameterMacro implements Macro {
 
 	private Path typeParameter(MacroExpander expander) {
 
+		final Ref ownerRef = owner();
 		final Obj owner =
-				owner()
+				ownerRef
 				.resolve(expander.getMacroObject().getScope().resolver())
 				.toObject();
 		final TypeRef typeRef =
@@ -76,7 +77,8 @@ final class TypeParameterMacro implements Macro {
 				.getParameters()
 				.typeRef(this.object.getParameterKey());
 
-		return typeRef.getPath().getPath();
+		return ownerRef.getPath().getPath().append(
+				typeRef.getPath().getPath());
 	}
 
 	private Ref owner() {
