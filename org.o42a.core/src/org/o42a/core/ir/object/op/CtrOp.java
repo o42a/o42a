@@ -69,8 +69,7 @@ public class CtrOp extends IROp {
 
 		final CodeDirs subDirs = dirs.begin(
 				"new_object",
-				"New object: sample=" + sample
-				+ ", ancestor=" + ancestorType);
+				"New object: sample=" + sample);
 		final Block code = subDirs.code();
 
 		if (owner != null) {
