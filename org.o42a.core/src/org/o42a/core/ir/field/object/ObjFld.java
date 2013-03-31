@@ -265,7 +265,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		return builder.objects().newObject(
 				dirs,
-				null,
+				builder.host(),
 				holder,
 				builder.host(),
 				ancestor,
