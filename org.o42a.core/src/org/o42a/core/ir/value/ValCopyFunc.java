@@ -23,8 +23,7 @@ import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValType.Op;
 import org.o42a.util.string.ID;
 
@@ -37,25 +36,13 @@ public final class ValCopyFunc extends Func<ValCopyFunc> {
 		super(caller);
 	}
 
-	public void copy(ValDirs dirs, ValOp from) {
+	public void copy(CodeDirs dirs, ValOp from, ValOp to) {
 
-		final ValOp to = dirs.value();
 		final Block code = dirs.code();
 
 		invoke(null, code, VAL_COPY.result(), from.ptr(), to.ptr());
 		to.go(code, dirs);
 		to.holder().hold(code);
-	}
-
-	public void copy(DefDirs dirs, ValOp from) {
-
-		final ValOp to = dirs.value();
-		final Block code = dirs.code();
-
-		invoke(null, code, VAL_COPY.result(), from.ptr(), to.ptr());
-		to.go(code, dirs.valDirs());
-		to.holder().hold(code);
-		dirs.returnValue(to);
 	}
 
 	public static final class Signature
