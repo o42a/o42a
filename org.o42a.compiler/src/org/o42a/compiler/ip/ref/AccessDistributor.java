@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
+import static org.o42a.core.member.AccessSource.FROM_TYPE;
 
 import org.o42a.core.*;
 import org.o42a.core.member.AccessSource;
@@ -39,7 +40,7 @@ public final class AccessDistributor extends Distributor {
 	}
 
 	public static AccessDistributor fromType(Distributor distributor) {
-		return accessDistributor(distributor, FROM_DECLARATION);
+		return accessDistributor(distributor, FROM_TYPE);
 	}
 
 	public static AccessDistributor fromDeclaration(Distributor distributor) {
@@ -51,7 +52,7 @@ public final class AccessDistributor extends Distributor {
 	}
 
 	public static AccessDistributor fromType(AccessDistributor distributor) {
-		return distributor.setAccessSource(FROM_DECLARATION);
+		return distributor.setAccessSource(FROM_TYPE);
 	}
 
 	public static AccessDistributor fromDeclaration(
