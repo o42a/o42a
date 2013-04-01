@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.file;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.core.member.MemberName.fieldName;
 
 import org.o42a.ast.expression.ExpressionNode;
@@ -134,7 +135,7 @@ final class SectionTitle implements LogInfo {
 
 		return definition.accept(
 				new SectionAscendantsVisitor(consumer),
-				distributor);
+				fromDeclaration(distributor));
 	}
 
 	static Loggable titleLoggable(SectionNode sectionNode) {
@@ -183,7 +184,9 @@ final class SectionTitle implements LogInfo {
 		final DeclarableNode declarableNode =
 				getDeclaratorNode().getDeclarable();
 
-		return validate(declarableNode.accept(visitor, distributor));
+		return validate(declarableNode.accept(
+				visitor,
+				fromDeclaration(distributor)));
 	}
 
 	private Name fieldNameByFileName() {

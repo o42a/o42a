@@ -52,7 +52,7 @@ final class TypeParameterDeclaration
 
 		this.definition = node.getDefinition().accept(
 				new TypeParameterDefinitionVisitor(consumer),
-				builder.distribute());
+				builder.distributeAccess());
 	}
 
 	private TypeParameterDeclaration(
