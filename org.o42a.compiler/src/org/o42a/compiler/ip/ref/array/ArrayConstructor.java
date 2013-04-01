@@ -24,7 +24,7 @@ import static org.o42a.core.ref.Ref.voidRef;
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.AccessDistributor;
-import org.o42a.core.member.AccessSource;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -47,7 +47,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	private final Interpreter ip;
 	private final BracketsNode node;
-	private final AccessSource accessSource;
+	private final AccessRules accessRules;
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
 	private TypeParameters<Array> arrayParameters;
@@ -61,7 +61,7 @@ public class ArrayConstructor extends ObjectConstructor {
 		super(new Location(context, node), distributor);
 		this.ip = ip;
 		this.node = node;
-		this.accessSource = distributor.getAccessSource();
+		this.accessRules = distributor.getAccessRules();
 		this.reproducer = null;
 		this.reproducedFrom = null;
 	}
@@ -72,7 +72,7 @@ public class ArrayConstructor extends ObjectConstructor {
 		super(reproducedFrom, reproducer.distribute());
 		this.ip = reproducedFrom.ip;
 		this.node = reproducedFrom.node;
-		this.accessSource = reproducedFrom.accessSource;
+		this.accessRules = reproducedFrom.accessRules;
 		this.reproducer = reproducer;
 		this.reproducedFrom = reproducedFrom;
 	}
@@ -85,8 +85,8 @@ public class ArrayConstructor extends ObjectConstructor {
 		return this.node;
 	}
 
-	public final AccessSource getAccessSource() {
-		return this.accessSource;
+	public final AccessRules getAccessRules() {
+		return this.accessRules;
 	}
 
 	public TypeRef ancestor(LocationInfo location) {
@@ -129,6 +129,10 @@ public class ArrayConstructor extends ObjectConstructor {
 	@Override
 	public ArrayConstructor reproduce(PathReproducer reproducer) {
 		return new ArrayConstructor(this, reproducer.getReproducer());
+	}
+
+	public final AccessDistributor distributeAccess() {
+		return this.accessRules.distribute(distribute());
 	}
 
 	@Override

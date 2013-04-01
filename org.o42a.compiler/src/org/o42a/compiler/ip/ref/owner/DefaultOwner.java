@@ -21,15 +21,15 @@ package org.o42a.compiler.ip.ref.owner;
 
 import static org.o42a.common.ref.MayDereferenceFragment.mayDereference;
 
-import org.o42a.core.member.AccessSource;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
 
 final class DefaultOwner extends Owner {
 
-	DefaultOwner(AccessSource accessSource, Ref ownerRef) {
-		super(accessSource, ownerRef);
+	DefaultOwner(AccessRules accessRules, Ref ownerRef) {
+		super(accessRules, ownerRef);
 	}
 
 	@Override
@@ -44,20 +44,12 @@ final class DefaultOwner extends Owner {
 
 	@Override
 	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		return new BodyOwner(
-				location,
-				bodyRef,
-				accessSource(),
-				ownerRef());
+		return new BodyOwner(location, bodyRef, getAccessRules(), ownerRef());
 	}
 
 	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
-		return new DerefOwner(
-				location,
-				deref,
-				accessSource(),
-				targetRef());
+		return new DerefOwner(location, deref, getAccessRules(), targetRef());
 	}
 
 	@Override

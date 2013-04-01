@@ -125,7 +125,7 @@ public class ModuleRefVisitor
 			}
 
 			return NON_LINK_OWNER_FACTORY.owner(
-					p.getAccessSource(),
+					p.getAccessRules(),
 					moduleRef(ref, p));
 		}
 

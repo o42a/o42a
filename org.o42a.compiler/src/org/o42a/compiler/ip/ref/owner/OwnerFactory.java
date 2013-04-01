@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import org.o42a.core.member.AccessSource;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.ref.Ref;
 
 
@@ -30,20 +30,20 @@ public abstract class OwnerFactory {
 	public static final OwnerFactory NON_LINK_OWNER_FACTORY =
 			new NonLinkOwnerFactory();
 
-	public abstract Owner owner(AccessSource accessSource, Ref ownerRef);
+	public abstract Owner owner(AccessRules accessRules, Ref ownerRef);
 
-	public abstract Owner nonLinkOwner(AccessSource accessSource, Ref ownerRef);
+	public abstract Owner nonLinkOwner(AccessRules accessRules, Ref ownerRef);
 
 	private static final class DefaultOwnerFactory extends OwnerFactory {
 
 		@Override
-		public Owner owner(AccessSource accessSource, Ref ownerRef) {
-			return new DefaultOwner(accessSource, ownerRef);
+		public Owner owner(AccessRules accessRules, Ref ownerRef) {
+			return new DefaultOwner(accessRules, ownerRef);
 		}
 
 		@Override
-		public Owner nonLinkOwner(AccessSource accessSource, Ref ownerRef) {
-			return new NonLinkOwner(accessSource, ownerRef);
+		public Owner nonLinkOwner(AccessRules accessRules, Ref ownerRef) {
+			return new NonLinkOwner(accessRules, ownerRef);
 		}
 
 	}
@@ -51,13 +51,13 @@ public abstract class OwnerFactory {
 	private static final class NonLinkOwnerFactory extends OwnerFactory {
 
 		@Override
-		public Owner owner(AccessSource accessSource, Ref ownerRef) {
-			return new NeverDerefOwner(accessSource, ownerRef);
+		public Owner owner(AccessRules accessRules, Ref ownerRef) {
+			return new NeverDerefOwner(accessRules, ownerRef);
 		}
 
 		@Override
-		public Owner nonLinkOwner(AccessSource accessSource, Ref ownerRef) {
-			return new NeverDerefOwner(accessSource, ownerRef);
+		public Owner nonLinkOwner(AccessRules accessRules, Ref ownerRef) {
+			return new NeverDerefOwner(accessRules, ownerRef);
 		}
 
 	}

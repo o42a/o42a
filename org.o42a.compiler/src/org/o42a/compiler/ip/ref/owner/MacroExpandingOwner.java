@@ -32,7 +32,7 @@ final class MacroExpandingOwner extends Owner {
 	private final LogInfo expansion;
 
 	MacroExpandingOwner(Owner owner, LogInfo expansion) {
-		super(owner.accessSource(), owner.ownerRef());
+		super(owner.getAccessRules(), owner.ownerRef());
 		this.owner = owner;
 		this.expansion = expansion;
 	}

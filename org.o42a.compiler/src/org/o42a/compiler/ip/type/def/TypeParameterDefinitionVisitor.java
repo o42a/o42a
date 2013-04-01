@@ -80,7 +80,14 @@ final class TypeParameterDefinitionVisitor
 	}
 
 	private TypeRef typeRef(TypeNode node, AccessDistributor p) {
-		return node.accept(this.typeVisitor, p).parameterize();
+
+		final ParamTypeRef param = node.accept(this.typeVisitor, p);
+
+		if (param == null) {
+			return null;
+		}
+
+		return param.parameterize();
 	}
 
 }

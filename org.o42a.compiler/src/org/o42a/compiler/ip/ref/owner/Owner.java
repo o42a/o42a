@@ -19,11 +19,9 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import static org.o42a.compiler.ip.ref.AccessDistributor.accessDistributor;
-
+import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.compiler.ip.ref.MemberOf;
-import org.o42a.core.Distributor;
-import org.o42a.core.member.AccessSource;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
@@ -42,20 +40,20 @@ public abstract class Owner {
 				"Redundant link body reference");
 	}
 
-	private final AccessSource accessSource;
+	private final AccessRules accessRules;
 	private final Ref ownerRef;
 
-	Owner(AccessSource accessSource, Ref ownerRef) {
-		assert accessSource != null :
+	Owner(AccessRules accessRules, Ref ownerRef) {
+		assert accessRules != null :
 			"Access source not specified";
 		assert ownerRef != null :
 			"Owner reference not specified";
-		this.accessSource = accessSource;
+		this.accessRules = accessRules;
 		this.ownerRef = ownerRef;
 	}
 
-	public final AccessSource accessSource() {
-		return this.accessSource;
+	public final AccessRules getAccessRules() {
+		return this.accessRules;
 	}
 
 	public final Ref ownerRef() {
@@ -82,12 +80,9 @@ public abstract class Owner {
 			StaticTypeRef declaredIn) {
 
 		final Ref owner = targetRef();
-		final Distributor distributor = distribute();
-		final MemberOf memberOf = new MemberOf(
-				location,
-				accessDistributor(distributor, accessSource()),
-				memberId,
-				declaredIn);
+		final AccessDistributor distributor = distribute();
+		final MemberOf memberOf =
+				new MemberOf(location, distributor, memberId, declaredIn);
 		final BoundPath path = owner.getPath().append(memberOf);
 		final Ref ref = path.setLocation(location).target(distributor);
 
@@ -99,15 +94,15 @@ public abstract class Owner {
 	}
 
 	public final Owner plainOwner() {
-		return new NonLinkOwner(accessSource(), ownerRef());
+		return new NonLinkOwner(getAccessRules(), ownerRef());
 	}
 
 	public final CompilerLogger getLogger() {
 		return ownerRef().getLogger();
 	}
 
-	public final Distributor distribute() {
-		return ownerRef().distribute();
+	public final AccessDistributor distribute() {
+		return getAccessRules().distribute(ownerRef().distribute());
 	}
 
 	@Override
@@ -119,7 +114,7 @@ public abstract class Owner {
 	}
 
 	protected Owner memberOwner(Ref ref) {
-		return new DefaultOwner(accessSource(), ref);
+		return new DefaultOwner(getAccessRules(), ref);
 	}
 
 }
