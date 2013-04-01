@@ -100,19 +100,7 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 		if (this.path != null) {
 			return append(step);
 		}
-		if (enclosing.getScope() != getScope()) {
-			this.path = null;
-			return false;
-		}
-		if (this.originalPath.isStatic()) {
-			this.path = SELF_PATH.bindStatically(
-					this.originalPath,
-					getScope());
-		} else {
-			this.path = SELF_PATH.bind(this.originalPath, getScope());
-		}
-
-		return true;
+		return initialUp(enclosing.getScope());
 	}
 
 	@Override
@@ -132,7 +120,14 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 
 	@Override
 	public boolean dep(Obj object, Dep dep) {
-		return appendIfExist(dep);
+		if (this.path != null) {
+			return append(dep);
+		}
+		if (!initialUp(dep.enclosingScope(object.getScope()))) {
+			return false;
+		}
+		this.path = this.path.append(dep.ref().getPath().getPath());
+		return true;
 	}
 
 	@Override
@@ -164,6 +159,23 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 
 	private boolean append(Step step) {
 		this.path = this.path.append(step);
+		return true;
+	}
+
+	private boolean initialUp(Scope enclosing) {
+		assert this.path == null :
+			"Not initial up";
+		if (!enclosing.is(getScope())) {
+			this.path = null;
+			return false;
+		}
+		if (this.originalPath.isStatic()) {
+			this.path = SELF_PATH.bindStatically(
+					this.originalPath,
+					getScope());
+		} else {
+			this.path = SELF_PATH.bind(this.originalPath, getScope());
+		}
 		return true;
 	}
 

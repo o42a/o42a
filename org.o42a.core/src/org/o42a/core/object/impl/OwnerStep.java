@@ -169,9 +169,7 @@ public final class OwnerStep
 		final Ref ref =
 				rebuilder.restPath(enclosingContainer.getScope())
 				.target(this.object.distributeIn(enclosingContainer));
-		final Dep dep = this.object.deps().addDep(
-				name,
-				ref);
+		final Dep dep = this.object.deps().addDep(name, ref);
 
 		rebuilder.replaceRest(dep);
 
