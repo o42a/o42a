@@ -25,12 +25,12 @@ Var := ``1
 
 Var object := variable (`integer) 1
 
-{
+(
   Print error "    Object declaration" nl
   
-  Var object = 2
+  Var object $= 2
   Assert [var object == 2] "Wrong value assigned to variable object"
-  Var object = 3
+  Var object $= $ + 1
   Assert [var object == 3]
   _ "Wrong value assigned to variable object for the second time"
-}
+)
