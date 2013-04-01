@@ -19,19 +19,19 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import org.o42a.core.member.AccessSource;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.ref.Ref;
 
 
 final class NeverDerefOwner extends NonLinkOwner {
 
-	NeverDerefOwner(AccessSource accessSource, Ref ownerRef) {
-		super(accessSource, ownerRef);
+	NeverDerefOwner(AccessRules accessRules, Ref ownerRef) {
+		super(accessRules, ownerRef);
 	}
 
 	@Override
 	protected Owner memberOwner(Ref ref) {
-		return new NeverDerefOwner(accessSource(), ref);
+		return new NeverDerefOwner(getAccessRules(), ref);
 	}
 
 }

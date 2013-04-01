@@ -45,7 +45,7 @@ final class MemberOwnerVisitor
 			this.macroExpansion = ref;
 			return this.visitor
 					.owner(
-							p.getAccessSource(),
+							p.getAccessRules(),
 							MACROS_PATH.bind(location(p, ref), p.getScope())
 					.target(p));
 		}

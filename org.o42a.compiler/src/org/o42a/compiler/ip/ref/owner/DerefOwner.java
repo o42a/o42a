@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import org.o42a.core.member.AccessSource;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
@@ -32,9 +32,9 @@ final class DerefOwner extends Owner {
 	DerefOwner(
 			LocationInfo location,
 			LocationInfo deref,
-			AccessSource accessSource,
+			AccessRules accessRules,
 			Ref ownerRef) {
-		super(accessSource, ownerRef);
+		super(accessRules, ownerRef);
 		this.location = location;
 		this.deref = deref;
 	}
@@ -62,7 +62,7 @@ final class DerefOwner extends Owner {
 		return new DerefOwner(
 				location,
 				deref,
-				accessSource(),
+				getAccessRules(),
 				ownerRef());
 	}
 

@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.*;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.clauseObjectPath;
-import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
@@ -44,15 +43,14 @@ import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberName;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
 import org.o42a.util.string.Name;
 
@@ -69,6 +67,29 @@ public abstract class RefInterpreter {
 			new ClauseDeclRefIp();
 	public static final RefInterpreter ADAPTER_FIELD_REF_IP =
 			new AdapterFieldRefIp();
+
+	public static boolean prototypeExpressionClause(Container container) {
+
+		final Clause clause = container.toClause();
+
+		if (clause == null) {
+			return false;
+		}
+
+		final PlainClause plainClause = clause.toPlainClause();
+
+		if (plainClause == null || plainClause.isAssignment()) {
+			return false;
+		}
+
+		final Container parentContainer = container.getParentContainer();
+
+		if (parentContainer.toClause() != null) {
+			return false;
+		}
+
+		return parentContainer.toObject().isPrototype();
+	}
 
 	public static Path enclosingModulePath(Container of) {
 
@@ -227,26 +248,6 @@ public abstract class RefInterpreter {
 		return FLOAT.constantRef(location, p, value);
 	}
 
-	private static boolean match(Name name, Container container) {
-		if (name == null) {
-			return true;
-		}
-
-		final Member member = container.toMember();
-
-		if (member == null) {
-			return matchModule(name, container);
-		}
-
-		final MemberName memberName = member.getMemberKey().getMemberName();
-
-		if (memberName == null) {
-			return false;
-		}
-
-		return name.is(memberName.getName());
-	}
-
 	static boolean matchModule(Name name, Container container) {
 
 		final Obj object = container.toObject();
@@ -273,14 +274,6 @@ public abstract class RefInterpreter {
 		}
 
 		return module.is(object);
-	}
-
-	private static void unresolvedParent(LocationInfo location, Name name) {
-		location.getLocation().getLogger().error(
-				"unresolved_parent",
-				location,
-				"Enclosing member '%s' can not be found",
-				name);
 	}
 
 	private final OwnerFactory ownerFactory;
@@ -349,72 +342,6 @@ public abstract class RefInterpreter {
 
 	public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
 		return bodyRefVisitor();
-	}
-
-	public Path parentPath(LocationInfo location, Name name, Container of) {
-
-		Path path = SELF_PATH;
-		Path parentPath = SELF_PATH;
-		Container nested = null;
-		Container container = of;
-
-		for (;;) {
-			if (match(name, container) && !skip(nested)) {
-				return path.append(parentPath);
-			}
-
-			nested = container;
-
-			final Container parent = container.getParentContainer();
-
-			if (parent == null) {
-				unresolvedParent(location, name);
-				return null;
-			}
-
-			final Scope scope = container.getScope();
-			final Path enclosingScopePath = scope.getEnclosingScopePath();
-
-			if (enclosingScopePath == null) {
-				unresolvedParent(location, name);
-				return null;
-			}
-
-			if (scope.is(parent.getScope())) {
-
-				final Member parentMember = parent.toMember();
-
-				if (parentMember == null
-						|| scope.getContainer().toMember()
-						== parentMember) {
-					parentPath = SELF_PATH;
-				} else {
-					parentPath = parentMember.getMemberKey().toPath();
-				}
-				container = parent;
-				continue;
-			}
-
-			container = parent;
-			parentPath = SELF_PATH;
-			if (path != null) {
-				path = path.append(enclosingScopePath);
-			} else {
-				path = enclosingScopePath;
-			}
-		}
-	}
-
-	private boolean skip(Container nested) {
-		if (nested == null) {
-			return false;
-		}
-		if (this == CLAUSE_DECL_REF_IP) {
-			return false;
-		}
-		// Top-level expression clause
-		// shouldn't have access to enclosing prototype.
-		return prototypeExpressionClause(nested);
 	}
 
 	private static final class PlainRefIp extends RefInterpreter {

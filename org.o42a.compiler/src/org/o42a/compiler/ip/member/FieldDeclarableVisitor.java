@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.member.AdapterId.adapterId;
@@ -90,7 +89,7 @@ public final class FieldDeclarableVisitor
 				fieldName(nameNode.getName()));
 
 		declaration = setVisibility(declaration, memberNode);
-		declaration = update(declaration, this.declarator);
+		declaration = update(declaration, p, this.declarator);
 		declaration = setDeclaredIn(declaration, p, memberNode);
 
 		return declaration;
@@ -120,7 +119,7 @@ public final class FieldDeclarableVisitor
 				p,
 				adapterId(adapterId.toStaticTypeRef()));
 
-		declaration = update(declaration, this.declarator);
+		declaration = update(declaration, p, this.declarator);
 		declaration = setDeclaredIn(declaration, p, memberNode);
 
 		return declaration;
@@ -211,6 +210,7 @@ public final class FieldDeclarableVisitor
 
 	private FieldDeclaration update(
 			FieldDeclaration declaration,
+			AccessDistributor distributor,
 			DeclaratorNode declarator) {
 		if (declaration == null) {
 			return null;
@@ -236,7 +236,7 @@ public final class FieldDeclarableVisitor
 								new FieldNesting(result)
 								.toTypeConsumer()
 								.paramConsumer(parameterKey)),
-						fromDeclaration(result.distribute()));
+								distributor);
 
 				if (type != null) {
 					result = result.setType(type.parameterize());

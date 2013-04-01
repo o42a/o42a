@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
+import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.upgradeScope;
@@ -137,7 +137,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	private Value<Array> createArray(Scope scope) {
 
 		final Array array = new ArrayInitBuilder(this).createArray(
-				fromDefinition(
+				ACCESS_FROM_DEFINITION.distribute(
 						this.constructor.distributeIn(
 								scope.getEnclosingContainer())),
 				scope);
