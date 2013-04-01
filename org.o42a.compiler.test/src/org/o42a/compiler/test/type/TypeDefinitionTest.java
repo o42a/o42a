@@ -67,18 +67,4 @@ public class TypeDefinitionTest extends CompilerTestCase {
 				is(this.context.getIntrinsics().getInteger()));
 	}
 
-	@Test
-	public void prohibitSelfRef() {
-		expectError("compiler.prohibited_type_object_ref");
-
-		compile("A :=> void #(T := :)");
-	}
-
-	@Test
-	public void prohibitPArentRef() {
-		expectError("compiler.prohibited_type_object_ref");
-
-		compile("A :=> void #(T := ::)");
-	}
-
 }

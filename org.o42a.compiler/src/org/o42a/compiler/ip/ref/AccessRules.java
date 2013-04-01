@@ -19,15 +19,23 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
+import static org.o42a.compiler.ip.ref.RefInterpreter.matchModule;
+import static org.o42a.compiler.ip.ref.RefInterpreter.prototypeExpressionClause;
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.AccessSource;
+import org.o42a.core.Scope;
+import org.o42a.core.member.*;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public abstract class AccessRules {
@@ -53,11 +61,42 @@ public abstract class AccessRules {
 
 	public abstract Ref selfRef(
 			Interpreter ip,
-			LocationInfo location, AccessDistributor distributor);
+			LocationInfo location,
+			AccessDistributor distributor);
 
-	public abstract Ref parentRef(
+	public final Ref parentRef(
 			Interpreter ip,
-			LocationInfo location, AccessDistributor distributor);
+			LocationInfo location,
+			AccessDistributor distributor,
+			Name name) {
+
+		final Path path = parentPath(ip, location, distributor, name);
+
+		if (path == null) {
+			return null;
+		}
+
+		return path.bind(location, distributor.getScope()).target(distributor);
+	}
+
+	public Ref memberById(
+			Interpreter ip,
+			LocationInfo location,
+			AccessDistributor distributor,
+			MemberId memberId,
+			StaticTypeRef declaredIn) {
+		return new MemberById(
+				ip,
+				location,
+				distributor,
+				memberId,
+				declaredIn).toRef();
+	}
+
+	public abstract boolean checkAccessibility(
+			LocationInfo location,
+			AccessDistributor distributor,
+			Container to);
 
 	public final AccessDistributor distribute(Distributor distributor) {
 		if (distributor.getClass() != AccessDistributor.class) {
@@ -89,14 +128,108 @@ public abstract class AccessRules {
 				.target(distributor);
 	}
 
-	protected final Ref defaultParentRef(
+	private Path parentPath(
 			Interpreter ip,
 			LocationInfo location,
-			AccessDistributor distributor) {
-				return ip.refIp()
-						.parentPath(location, null, distributor.getContainer())
-						.bind(location, distributor.getScope())
-						.target(distributor);
+			AccessDistributor distributor,
+			Name name) {
+
+		Path path = SELF_PATH;
+		Path parentPath = SELF_PATH;
+		Container nested = null;
+		Container container = distributor.getContainer();
+
+		for (;;) {
+
+			if (containerHasName(container, name)) {
+				if (!checkAccessibility(location, distributor, container)) {
+					return null;
+				}
+				if (!skip(ip, nested)) {
+					return path.append(parentPath);
+				}
 			}
+
+			nested = container;
+
+			final Container parent = container.getParentContainer();
+
+			if (parent == null) {
+				unresolvedParent(location, name);
+				return null;
+			}
+
+			final Scope scope = container.getScope();
+			final Path enclosingScopePath = scope.getEnclosingScopePath();
+
+			if (enclosingScopePath == null) {
+				unresolvedParent(location, name);
+				return null;
+			}
+
+			if (scope.is(parent.getScope())) {
+
+				final Member parentMember = parent.toMember();
+
+				if (parentMember == null
+						|| scope.getContainer().toMember()
+						== parentMember) {
+					parentPath = SELF_PATH;
+				} else {
+					parentPath = parentMember.getMemberKey().toPath();
+				}
+				container = parent;
+				continue;
+			}
+
+			container = parent;
+			parentPath = SELF_PATH;
+			if (path != null) {
+				path = path.append(enclosingScopePath);
+			} else {
+				path = enclosingScopePath;
+			}
+		}
+	}
+
+	private boolean containerHasName(Container container, Name name) {
+		if (name == null) {
+			return true;
+		}
+
+		final Member member = container.toMember();
+
+		if (member == null) {
+			return matchModule(name, container);
+		}
+
+		final MemberName memberName = member.getMemberKey().getMemberName();
+
+		if (memberName == null) {
+			return false;
+		}
+
+		return name.is(memberName.getName());
+	}
+
+	private static boolean skip(Interpreter ip, Container nested) {
+		if (nested == null) {
+			return false;
+		}
+		if (ip == CLAUSE_DECL_IP) {
+			return false;
+		}
+		// Top-level expression clause
+		// shouldn't have access to enclosing prototype.
+		return prototypeExpressionClause(nested);
+	}
+
+	private static void unresolvedParent(LocationInfo location, Name name) {
+		location.getLocation().getLogger().error(
+				"unresolved_parent",
+				location,
+				"Enclosing member '%s' can not be found",
+				name);
+	}
 
 }

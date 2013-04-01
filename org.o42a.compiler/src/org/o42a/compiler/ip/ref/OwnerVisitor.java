@@ -88,7 +88,7 @@ final class OwnerVisitor
 		case PARENT:
 
 			final Ref parentRef =
-					p.getAccessRules().parentRef(ip().ip(), location, p);
+					p.getAccessRules().parentRef(ip().ip(), location, p, null);
 
 			if (parentRef == null) {
 				return null;
@@ -108,13 +108,12 @@ final class OwnerVisitor
 		case ANONYMOUS:
 			return owner(
 					p.getAccessRules(),
-					new MemberById(
+					p.getAccessRules().memberById(
 							ip().ip(),
 							location,
 							p,
 							ANONYMOUS_LOCAL_MEMBER,
-							null)
-					.toRef());
+							null));
 		}
 
 		p.getContext().getLogger().unresolvedScope(ref, type.getSign());
@@ -126,14 +125,17 @@ final class OwnerVisitor
 	public final Owner visitParentRef(ParentRefNode ref, AccessDistributor p) {
 
 		final Location location = location(p, ref);
-		final Path parentPath = ip().parentPath(
+		final Ref parentRef = p.getAccessRules().parentRef(
+				ip().ip(),
 				location,
-				ref.getName().getName(),
-				p.getContainer());
+				p,
+				ref.getName().getName());
 
-		return owner(
-				p.getAccessRules(),
-				parentPath.bind(location, p.getScope()).target(p));
+		if (parentRef == null) {
+			return null;
+		}
+
+		return owner(p.getAccessRules(), parentRef);
 	}
 
 	@Override
@@ -271,13 +273,12 @@ final class OwnerVisitor
 
 		return owner(
 				p.getAccessRules(),
-				new MemberById(
+				p.getAccessRules().memberById(
 						ip().ip(),
 						location(p, ref.getName()),
 						p,
 						ip().memberName(ref.getName().getName()),
-						declaredIn)
-				.toRef());
+						declaredIn));
 	}
 
 	Owner adapterRef(
@@ -344,13 +345,12 @@ final class OwnerVisitor
 
 		return owner(
 				p.getAccessRules(),
-				new MemberById(
+				p.getAccessRules().memberById(
 						ip().ip(),
 						location(p, ref),
 						p,
 						localName(nameNode.getName()),
-						declaredIn)
-				.toRef());
+						declaredIn));
 	}
 
 	private final Owner nonLinkOwner(AccessRules accessRules, Ref ownerRef) {

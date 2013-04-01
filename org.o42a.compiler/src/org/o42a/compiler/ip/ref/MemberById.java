@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.matchModule;
+import static org.o42a.compiler.ip.ref.RefInterpreter.prototypeExpressionClause;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
@@ -33,8 +34,6 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -53,31 +52,8 @@ public class MemberById extends ContainedFragment {
 	private static final MemberName FALSE_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("false"));
 
-	public static boolean prototypeExpressionClause(Container container) {
-
-		final Clause clause = container.toClause();
-
-		if (clause == null) {
-			return false;
-		}
-
-		final PlainClause plainClause = clause.toPlainClause();
-
-		if (plainClause == null || plainClause.isAssignment()) {
-			return false;
-		}
-
-		final Container parentContainer = container.getParentContainer();
-
-		if (parentContainer.toClause() != null) {
-			return false;
-		}
-
-		return parentContainer.toObject().isPrototype();
-	}
-
 	private final Interpreter ip;
-	private final AccessSource accessSource;
+	private final AccessRules accessRules;
 	private final StaticTypeRef declaredIn;
 	private final MemberId memberId;
 
@@ -89,7 +65,7 @@ public class MemberById extends ContainedFragment {
 			StaticTypeRef declaredIn) {
 		super(location, distributor);
 		this.ip = ip;
-		this.accessSource = distributor.getAccessSource();
+		this.accessRules = distributor.getAccessRules();
 		this.memberId = memberId;
 		this.declaredIn = declaredIn;
 	}
@@ -181,10 +157,6 @@ public class MemberById extends ContainedFragment {
 			return found;
 		}
 
-		if (enclosingScope.is(container.getScope())) {
-			return found;
-		}
-
 		final PathResolution pathResolution =
 				found.bind(this, enclosingScope).resolve(
 						pathResolver(enclosingScope, dummyRefUser()));
@@ -192,7 +164,19 @@ public class MemberById extends ContainedFragment {
 		if (!pathResolution.isResolved()) {
 			return null;
 		}
-		if (pathResolution.getResult().getScope().is(container.getScope())) {
+
+		final Container result = pathResolution.getResult();
+
+		if (!this.accessRules.checkAccessibility(
+				this,
+				this.accessRules.distribute(distribute()),
+				result)) {
+			return null;
+		}
+		if (enclosingScope.is(container.getScope())) {
+			return found;
+		}
+		if (result.getScope().is(container.getScope())) {
 			return SELF_PATH;
 		}
 
@@ -219,7 +203,7 @@ public class MemberById extends ContainedFragment {
 		}
 
 		return container.findMember(
-				accessor.accessBy(this, this.accessSource),
+				accessor.accessBy(this, this.accessRules.getSource()),
 				this.memberId,
 				declaredIn);
 	}
