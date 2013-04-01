@@ -19,15 +19,15 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import org.o42a.core.member.AccessSource;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
 
 class NonLinkOwner extends Owner {
 
-	NonLinkOwner(AccessSource accessSource, Ref ownerRef) {
-		super(accessSource, ownerRef);
+	NonLinkOwner(AccessRules accessRules, Ref ownerRef) {
+		super(accessRules, ownerRef);
 	}
 
 	@Override

@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.type.def;
 
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromType;
+import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_TYPE;
 import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
 import static org.o42a.compiler.ip.type.def.TypeDefinitionVisitor.TYPE_DEFINITION_VISITOR;
 import static org.o42a.core.value.TypeParameters.typeParameters;
@@ -123,8 +123,8 @@ public class TypeDefinitionBuilder
 		return member(access, memberId, declaredIn);
 	}
 
-	public AccessDistributor distributeAccess() {
-		return fromType(distribute());
+	public final AccessDistributor distributeAccess() {
+		return ACCESS_FROM_TYPE.distribute(distribute());
 	}
 
 	@Override

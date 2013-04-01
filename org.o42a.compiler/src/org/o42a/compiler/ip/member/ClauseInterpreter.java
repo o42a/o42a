@@ -25,7 +25,7 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseIdVisitor.CLAUSE_ID_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
+import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.core.member.clause.ClauseKind.EXPRESSION;
 import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
@@ -267,7 +267,7 @@ public class ClauseInterpreter {
 
 		return builder.setOutcome(outcomeValueNode.accept(
 				CLAUSE_DEF_IP.targetRefVisitor(),
-				fromDeclaration(builder)));
+				ACCESS_FROM_DECLARATION.distribute(builder.distribute())));
 	}
 
 	private static ClauseBuilder reuseClauses(
@@ -314,7 +314,7 @@ public class ClauseInterpreter {
 
 			reusedRef = clauseNode.accept(
 					CLAUSE_DECL_IP.targetRefVisitor(),
-					fromDeclaration(builder));
+					ACCESS_FROM_DECLARATION.distribute(builder.distribute()));
 
 			if (reusedRef == null) {
 				continue;

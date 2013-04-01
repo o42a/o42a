@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,21 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref.owner;
+package org.o42a.compiler.ip.ref;
 
-import org.o42a.compiler.ip.ref.AccessRules;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.member.AccessSource;
 
 
-final class NeverDerefOwner extends NonLinkOwner {
+final class SimpleAccessRules extends AccessRules {
 
-	NeverDerefOwner(AccessRules accessRules, Ref ownerRef) {
-		super(accessRules, ownerRef);
+	SimpleAccessRules(AccessSource source) {
+		super(source);
 	}
 
 	@Override
-	protected Owner memberOwner(Ref ref) {
-		return new NeverDerefOwner(getAccessRules(), ref);
+	public AccessRules setSource(AccessSource source) {
+		if (getSource().ordinal() <= source.ordinal()) {
+			return this;
+		}
+		return new SimpleAccessRules(source);
+	}
+
+	@Override
+	public String toString() {
+
+		final AccessSource source = getSource();
+
+		if (source == null) {
+			return super.toString();
+		}
+
+		return source.toString();
 	}
 
 }

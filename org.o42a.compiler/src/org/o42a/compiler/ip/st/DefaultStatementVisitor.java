@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.st;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.clause;
 import static org.o42a.compiler.ip.member.FieldInterpreter.field;
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
+import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.st.LocalInterpreter.local;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 
@@ -115,7 +115,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 		final Ref destination = destinationNode.toExpression().accept(
 				ip().bodyExVisitor(),
-				fromDefinition(p.nextDistributor()));
+				ACCESS_FROM_DEFINITION.distribute(p.nextDistributor()));
 
 		addAssignment(p, assignment, destination);
 
@@ -134,7 +134,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		}
 
 		final AccessDistributor distributor =
-				fromDefinition(p.nextDistributor());
+				ACCESS_FROM_DEFINITION.distribute(p.nextDistributor());
 		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 
 		if (value != null) {
@@ -206,7 +206,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			Statements<?, ?> p) {
 
 		final AccessDistributor distributor =
-				fromDefinition(p.nextDistributor());
+				ACCESS_FROM_DEFINITION.distribute(p.nextDistributor());
 		final Ref ref = expression.accept(expressionVisitor(), distributor);
 
 		if (ref != null) {

@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
+import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
@@ -127,7 +127,7 @@ public abstract class StatementVisitor
 			Ref destination) {
 
 		final AccessDistributor distributor =
-				fromDefinition(statements.nextDistributor());
+				ACCESS_FROM_DEFINITION.distribute(statements.nextDistributor());
 		final Ref value =
 				assignment.getValue().accept(expressionVisitor(), distributor);
 

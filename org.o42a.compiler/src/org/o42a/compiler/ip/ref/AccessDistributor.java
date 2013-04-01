@@ -20,82 +20,49 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
-import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
-import static org.o42a.core.member.AccessSource.FROM_TYPE;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.AccessSource;
 import org.o42a.core.source.Location;
 
 
 public final class AccessDistributor extends Distributor {
 
-	public static AccessDistributor accessDistributor(
-			Distributor distributor,
-			AccessSource accessSource) {
-		if (distributor.getClass() != AccessDistributor.class) {
-			return new AccessDistributor(distributor, accessSource);
-		}
-		return ((AccessDistributor) distributor).setAccessSource(accessSource);
-	}
-
-	public static AccessDistributor fromType(Distributor distributor) {
-		return accessDistributor(distributor, FROM_TYPE);
-	}
-
-	public static AccessDistributor fromDeclaration(Distributor distributor) {
-		return accessDistributor(distributor, FROM_DECLARATION);
-	}
-
-	public static AccessDistributor fromDefinition(Distributor distributor) {
-		return accessDistributor(distributor, FROM_DEFINITION);
-	}
-
-	public static AccessDistributor fromType(AccessDistributor distributor) {
-		return distributor.setAccessSource(FROM_TYPE);
-	}
-
-	public static AccessDistributor fromDeclaration(
-			AccessDistributor distributor) {
-		return distributor.setAccessSource(FROM_DECLARATION);
-	}
-
-	public static AccessDistributor fromDefinition(
-			AccessDistributor distributor) {
-		return distributor.setAccessSource(FROM_DEFINITION);
-	}
-
-	public static AccessDistributor fromType(ContainerInfo contained) {
-		return fromType(contained.distribute());
-	}
-
-	public static AccessDistributor fromDeclaration(ContainerInfo contained) {
-		return fromDeclaration(contained.distribute());
-	}
-
-	public static AccessDistributor fromDefinition(ContainerInfo contained) {
-		return fromDefinition(contained.distribute());
-	}
-
 	private final Distributor distributor;
-	private final AccessSource accessSource;
+	private final AccessRules accessRules;
 
-	private AccessDistributor(
-			Distributor distributor,
-			AccessSource accessSource) {
+	AccessDistributor(Distributor distributor, AccessRules accessRules) {
 		this.distributor = distributor;
-		this.accessSource = accessSource;
+		this.accessRules = accessRules;
+	}
+
+	public final AccessRules getAccessRules() {
+		return this.accessRules;
+	}
+
+	public final AccessDistributor setAccessRules(AccessRules accessRules) {
+		if (this.accessRules == accessRules) {
+			return this;
+		}
+		return new AccessDistributor(this.distributor, accessRules);
 	}
 
 	public final AccessSource getAccessSource() {
-		return this.accessSource;
+		return getAccessRules().getSource();
 	}
 
 	public final AccessDistributor setAccessSource(AccessSource accessSource) {
-		if (this.accessSource.ordinal() <= accessSource.ordinal()) {
+
+		final AccessRules oldRules = getAccessRules();
+		final AccessRules newRules = oldRules.setSource(accessSource);
+
+		if (oldRules == newRules) {
 			return this;
 		}
-		return new AccessDistributor(this.distributor, accessSource);
+
+		return new AccessDistributor(this.distributor, newRules);
 	}
 
 	public final AccessDistributor fromDeclaration() {
