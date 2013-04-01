@@ -53,3 +53,16 @@ Repeat := test (
   
   Assert [counter == 0] "Loop terminated unexpectedly"
 )
+
+Repeat local scope := test (
+  Name = "Repeat local scope"
+  Print error '    ' [name] nl
+
+  ``3 $ counter {
+    Print error '    .. ' [counter] nl
+    Counter = counter - 1
+    Counter > 0? ...
+    Assert [counter == 0] "Loop terminated unexpectedly"
+  }
+  
+)
