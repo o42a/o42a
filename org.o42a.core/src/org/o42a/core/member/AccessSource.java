@@ -29,7 +29,12 @@ package org.o42a.core.member;
 public enum AccessSource {
 
 	/**
-	 * Members accessed from some declaration.
+	 * Members accessed from type definition.
+	 */
+	FROM_TYPE,
+
+	/**
+	 * Members accessed from object declaration.
 	 *
 	 * <p>E.g. field declaration.</p>
 	 */

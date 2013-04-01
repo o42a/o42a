@@ -39,8 +39,8 @@ import org.o42a.ast.type.DefinitionKind;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.common.macro.type.TypeParameterMemberKey;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.type.ParamTypeRef;
-import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
@@ -50,7 +50,7 @@ import org.o42a.core.source.CompilerLogger;
 
 
 public final class FieldDeclarableVisitor
-		extends AbstractDeclarableVisitor<FieldDeclaration, Distributor> {
+		extends AbstractDeclarableVisitor<FieldDeclaration, AccessDistributor> {
 
 	private static final VisibilityVisitor VISIBILITY_VISITOR =
 			new VisibilityVisitor();
@@ -75,7 +75,7 @@ public final class FieldDeclarableVisitor
 	@Override
 	public FieldDeclaration visitMemberRef(
 			MemberRefNode memberNode,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final NameNode nameNode = memberNode.getName();
 
@@ -91,7 +91,7 @@ public final class FieldDeclarableVisitor
 
 		declaration = setVisibility(declaration, memberNode);
 		declaration = update(declaration, this.declarator);
-		declaration = setDeclaredIn(declaration, memberNode);
+		declaration = setDeclaredIn(declaration, p, memberNode);
 
 		return declaration;
 	}
@@ -99,7 +99,7 @@ public final class FieldDeclarableVisitor
 	@Override
 	public FieldDeclaration visitDeclarableAdapter(
 			DeclarableAdapterNode adapterNode,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final MemberRefNode memberNode = adapterNode.getMember();
 
@@ -109,7 +109,7 @@ public final class FieldDeclarableVisitor
 
 		final Ref adapterId = adapterNode.getMember().accept(
 				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
-				fromDeclaration(p));
+				p.fromDeclaration());
 
 		if (adapterId == null) {
 			return null;
@@ -121,7 +121,7 @@ public final class FieldDeclarableVisitor
 				adapterId(adapterId.toStaticTypeRef()));
 
 		declaration = update(declaration, this.declarator);
-		declaration = setDeclaredIn(declaration, memberNode);
+		declaration = setDeclaredIn(declaration, p, memberNode);
 
 		return declaration;
 	}
@@ -129,7 +129,7 @@ public final class FieldDeclarableVisitor
 	@Override
 	public FieldDeclaration visitMacroExpansion(
 			MacroExpansionNode expansion,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final ExpressionNode operand = expansion.getOperand();
 
@@ -162,7 +162,7 @@ public final class FieldDeclarableVisitor
 	@Override
 	protected FieldDeclaration visitDeclarable(
 			DeclarableNode declarable,
-			Distributor p) {
+			AccessDistributor p) {
 		getLogger().invalidDeclaration(declarable);
 		return null;
 	}
@@ -170,7 +170,7 @@ public final class FieldDeclarableVisitor
 	private static StaticTypeRef declaredIn(
 			Interpreter ip,
 			MemberRefNode memberRef,
-			Distributor distributor) {
+			AccessDistributor distributor) {
 
 		final RefNode node = memberRef.getDeclaredIn();
 
@@ -180,7 +180,7 @@ public final class FieldDeclarableVisitor
 
 		final Ref declaredIn = node.accept(
 				ip.bodyRefVisitor(),
-				fromDeclaration(distributor));
+				distributor.fromDeclaration());
 
 		if (declaredIn == null) {
 			return null;
@@ -236,7 +236,7 @@ public final class FieldDeclarableVisitor
 								new FieldNesting(result)
 								.toTypeConsumer()
 								.paramConsumer(parameterKey)),
-						result.distribute());
+						fromDeclaration(result.distribute()));
 
 				if (type != null) {
 					result = result.setType(type.parameterize());
@@ -279,13 +279,14 @@ public final class FieldDeclarableVisitor
 
 	private FieldDeclaration setDeclaredIn(
 			FieldDeclaration declaration,
+			AccessDistributor distributor,
 			MemberRefNode memberRef) {
 		if (declaration == null) {
 			return null;
 		}
 
 		final StaticTypeRef declaredIn =
-				declaredIn(this.ip, memberRef, declaration.distribute());
+				declaredIn(this.ip, memberRef, distributor);
 
 		if (declaredIn == null) {
 			return declaration;
@@ -301,19 +302,19 @@ public final class FieldDeclarableVisitor
 	}
 
 	private final class MacroNameVisitor
-			extends AbstractExpressionVisitor<FieldDeclaration, Distributor> {
+			extends AbstractExpressionVisitor<FieldDeclaration, AccessDistributor> {
 
 		@Override
 		public FieldDeclaration visitMemberRef(
 				MemberRefNode ref,
-				Distributor p) {
+				AccessDistributor p) {
 			return ref.accept(FieldDeclarableVisitor.this, p);
 		}
 
 		@Override
 		protected FieldDeclaration visitExpression(
 				ExpressionNode expression,
-				Distributor p) {
+				AccessDistributor p) {
 			getLogger().invalidDeclaration(expression);
 			return null;
 		}

@@ -97,7 +97,7 @@ public abstract class GroupClause extends Clause implements Container {
 				getEnclosingScope().getContainer().getMembers();
 
 		for (Member member : members) {
-			if (member.isTypeParameter() || member.toAlias() != null) {
+			if (member.isTypeMember() || member.toAlias() != null) {
 				continue;
 			}
 

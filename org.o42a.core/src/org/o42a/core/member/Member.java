@@ -84,12 +84,24 @@ public abstract class Member extends Contained {
 	}
 
 	/**
+	 * Whether this is a member of type.
+	 *
+	 * <p>Type members can be accessed even if the owner object is prototype.
+	 * </p>
+	 *
+	 * @return return <code>true</code> if this is a type member,
+	 * or <code>false</code> otherwise.
+	 */
+	public final boolean isTypeMember() {
+		return isTypeParameter();
+	}
+
+	/**
 	 * Whether this member is type parameter.
 	 *
-	 * <p>A type parameter member can be accessed even if the owner object is
-	 * prototype.</p>
+	 * <p>Type parameters are {@link #isTypeMember() type members}.</p>
 	 *
-	 * <p>Type parameters can only be declared or overridden inside the type
+	 * <p>Type parameters can only be declared or overridden inside a type
 	 * definition block like this:
 	 * <pre><code>
 	 * Prefix #(

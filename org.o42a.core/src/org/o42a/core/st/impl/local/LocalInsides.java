@@ -113,7 +113,7 @@ public class LocalInsides extends AbstractContainer {
 	}
 
 	private Path local(Access access, MemberId memberId, Obj declaredIn) {
-		if (!accessibleBy(access.getAccessor())) {
+		if (!accessibleBy(access)) {
 			return null;
 		}
 		if (!matchLocal(memberId, declaredIn)) {
@@ -125,10 +125,21 @@ public class LocalInsides extends AbstractContainer {
 		return getLocal().toPath();
 	}
 
-	private boolean accessibleBy(Accessor accessor) {
-		return accessor == Accessor.DECLARATION
-				|| accessor == Accessor.OWNER
-				|| accessor == Accessor.ENCLOSED;
+	private boolean accessibleBy(Access access) {
+		if (access.getSource() == AccessSource.FROM_TYPE) {
+			return false;
+		}
+
+		switch (access.getAccessor()) {
+		case DECLARATION:
+		case OWNER:
+		case ENCLOSED:
+			return true;
+		case INHERITANT:
+		case PUBLIC:
+		}
+
+		return false;
 	}
 
 	private boolean localsVisibleBy(Container by, AccessSource source) {
