@@ -27,49 +27,51 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.type.TypeRef;
 
 
 final class TypeParameterDefinitionVisitor
-		extends AbstractExpressionVisitor<TypeRef, Distributor> {
+		extends AbstractExpressionVisitor<TypeRef, AccessDistributor> {
 
-	private final TypeNodeVisitor<ParamTypeRef, Distributor> typeVisitor;
+	private final TypeNodeVisitor<ParamTypeRef, AccessDistributor> typeVisitor;
 
 	TypeParameterDefinitionVisitor(TypeConsumer consumer) {
 		this.typeVisitor = PLAIN_IP.typeIp().typeVisitor(consumer);
 	}
 
 	@Override
-	public TypeRef visitAscendants(AscendantsNode ascendants, Distributor p) {
+	public TypeRef visitAscendants(
+			AscendantsNode ascendants,
+			AccessDistributor p) {
 		return typeRef(ascendants, p);
 	}
 
 	@Override
 	public TypeRef visitTypeParameters(
 			TypeParametersNode parameters,
-			Distributor p) {
+			AccessDistributor p) {
 		return typeRef(parameters, p);
 	}
 
 	@Override
-	protected TypeRef visitRef(RefNode ref, Distributor p) {
+	protected TypeRef visitRef(RefNode ref, AccessDistributor p) {
 		return typeRef(ref, p);
 	}
 
 	@Override
 	public TypeRef visitMacroExpansion(
 			MacroExpansionNode expansion,
-			Distributor p) {
+			AccessDistributor p) {
 		return typeRef(expansion, p);
 	}
 
 	@Override
 	protected TypeRef visitExpression(
 			ExpressionNode expression,
-			Distributor p) {
+			AccessDistributor p) {
 		p.getLogger().error(
 				"invalid_type_parameter_definition",
 				location(p, expression),
@@ -77,7 +79,7 @@ final class TypeParameterDefinitionVisitor
 		return null;
 	}
 
-	private TypeRef typeRef(TypeNode node, Distributor p) {
+	private TypeRef typeRef(TypeNode node, AccessDistributor p) {
 		return node.accept(this.typeVisitor, p).parameterize();
 	}
 

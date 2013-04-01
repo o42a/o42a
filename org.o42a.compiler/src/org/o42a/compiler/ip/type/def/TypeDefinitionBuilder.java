@@ -19,12 +19,14 @@
 */
 package org.o42a.compiler.ip.type.def;
 
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromType;
 import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
 import static org.o42a.compiler.ip.type.def.TypeDefinitionVisitor.TYPE_DEFINITION_VISITOR;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.*;
 import org.o42a.core.member.*;
@@ -40,7 +42,7 @@ import org.o42a.util.ArrayUtil;
 
 public class TypeDefinitionBuilder
 		extends AbstractContainer
-		implements ContainerInfo{
+		implements ContainerInfo {
 
 	private static final TypeParameterDeclaration[] NO_PARAMETERS =
 			new TypeParameterDeclaration[0];
@@ -104,10 +106,7 @@ public class TypeDefinitionBuilder
 	}
 
 	@Override
-	public Path member(
-			Access access,
-			MemberId memberId,
-			Obj declaredIn) {
+	public Path member(Access access, MemberId memberId, Obj declaredIn) {
 
 		final MemberTypeParameter typeParameter =
 				findTypeParameter(memberId, declaredIn);
@@ -120,11 +119,12 @@ public class TypeDefinitionBuilder
 	}
 
 	@Override
-	public Path findMember(
-			Access access,
-			MemberId memberId,
-			Obj declaredIn) {
+	public Path findMember(Access access, MemberId memberId, Obj declaredIn) {
 		return member(access, memberId, declaredIn);
+	}
+
+	public AccessDistributor distributeAccess() {
+		return fromType(distribute());
 	}
 
 	@Override

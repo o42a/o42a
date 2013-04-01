@@ -178,7 +178,7 @@ public final class PhraseBuilder extends Contained {
 		final TypeRefParameters typeParams =
 				ip().typeIp().typeParameters(
 						node.getParameters(),
-						distribute(),
+						distributeAccess().fromDeclaration(),
 						typeConsumer());
 		final TypeNode ascendantNode = node.getType();
 
