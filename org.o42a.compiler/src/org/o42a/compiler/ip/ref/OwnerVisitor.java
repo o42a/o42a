@@ -29,7 +29,6 @@ import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
-import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_MEMBER;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -77,15 +76,25 @@ final class OwnerVisitor
 		case IMPLIED:
 			break;
 		case SELF:
-			return owner(
-					p.getAccessRules(),
-					SELF_PATH.bind(location, p.getScope()).target(p));
+
+			final Ref selfRef =
+					p.getAccessRules().selfRef(ip().ip(), location, p);
+
+			if (selfRef == null) {
+				return null;
+			}
+
+			return owner(p.getAccessRules(), selfRef);
 		case PARENT:
-			return owner(
-					p.getAccessRules(),
-					ip().parentPath(location, null, p.getContainer())
-					.bind(location, p.getScope())
-					.target(p));
+
+			final Ref parentRef =
+					p.getAccessRules().parentRef(ip().ip(), location, p);
+
+			if (parentRef == null) {
+				return null;
+			}
+
+			return owner(p.getAccessRules(), parentRef);
 		case MACROS:
 			return owner(
 					p.getAccessRules(),
