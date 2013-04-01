@@ -183,17 +183,17 @@ final class ArrayValueAdapter extends ValueAdapter {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final Block code = dirs.code();
 			final ValDirs fromDirs = dirs.dirs().nested().value(
 					getRef().getValueType(),
 					TEMP_VAL_HOLDER);
+			final Block code = fromDirs.code();
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 			final FuncPtr<ValCopyFunc> func =
 					dirs.getGenerator()
 					.externalFunction()
 					.link("o42a_array_copy", VAL_COPY);
 
-			func.op(null, code).copy(dirs, from);
+			func.op(null, code).copy(fromDirs.dirs(), from, dirs.value());
 			fromDirs.done();
 		}
 
