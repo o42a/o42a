@@ -59,12 +59,6 @@ public final class OwnerStep
 		this.object = object;
 	}
 
-	private OwnerStep(OwnerStep step) {
-		super(step.getMemberKey());
-		this.object = step.object;
-		this.uses = step.uses();
-	}
-
 	@Override
 	public Scope revert(Scope target) {
 		return this.object.meta().findIn(target).getScope();
