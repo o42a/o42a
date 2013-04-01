@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.core.Container;
 import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
@@ -50,11 +51,11 @@ final class SimpleAccessRules extends AccessRules {
 	}
 
 	@Override
-	public Ref parentRef(
-			Interpreter ip,
+	public boolean checkAccessibility(
 			LocationInfo location,
-			AccessDistributor distributor) {
-		return defaultParentRef(ip, location, distributor);
+			AccessDistributor distributor,
+			Container to) {
+		return true;
 	}
 
 }

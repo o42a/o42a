@@ -24,6 +24,7 @@ import static org.o42a.core.member.AccessSource.FROM_TYPE;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.AccessRules;
+import org.o42a.core.Container;
 import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
@@ -47,16 +48,20 @@ final class TypeDefinitionAccessRules extends AccessRules {
 	}
 
 	@Override
-	public Ref parentRef(
-			Interpreter ip,
-			LocationInfo location,
-			AccessDistributor distributor) {
-		return prohibitObjectRef(location, distributor);
+	public AccessRules setSource(AccessSource source) {
+		return this;
 	}
 
 	@Override
-	public AccessRules setSource(AccessSource source) {
-		return this;
+	public boolean checkAccessibility(
+			LocationInfo location,
+			AccessDistributor distributor,
+			Container to) {
+		if (distributor.getScope().is(to.getScope())) {
+			prohibitObjectRef(location, distributor);
+			return false;
+		}
+		return true;
 	}
 
 	private Ref prohibitObjectRef(
