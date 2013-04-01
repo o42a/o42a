@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.member.ParenthesesVisitor.extractParentheses;
 import static org.o42a.compiler.ip.member.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
+import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
@@ -70,7 +70,7 @@ class ClauseExpressionVisitor
 		final AscendantsDefinition ascendantsDefinition =
 				CLAUSE_DEF_IP.typeIp().parseAscendants(
 						ascendants,
-						fromDefinition(p));
+						ACCESS_FROM_DEFINITION.distribute(p.distribute()));
 
 		if (ascendantsDefinition == null) {
 			return null;
@@ -107,7 +107,8 @@ class ClauseExpressionVisitor
 			ExpressionNode expression,
 			ClauseBuilder p) {
 
-		final AccessDistributor distributor = fromDefinition(p);
+		final AccessDistributor distributor =
+				ACCESS_FROM_DEFINITION.distribute(p.distribute());
 		final Ref ref = expression.accept(
 				CLAUSE_DEF_IP.targetExVisitor(),
 				distributor);

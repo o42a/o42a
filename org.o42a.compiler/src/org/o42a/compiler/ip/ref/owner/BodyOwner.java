@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import org.o42a.core.member.AccessSource;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -33,9 +33,9 @@ final class BodyOwner extends Owner implements LocationInfo {
 	BodyOwner(
 			LocationInfo location,
 			LocationInfo bodyRef,
-			AccessSource accessSource,
+			AccessRules accessRules,
 			Ref ownerRef) {
-		super(accessSource, ownerRef);
+		super(accessRules, ownerRef);
 		this.location = location.getLocation();
 		this.bodyRef = bodyRef;
 	}
@@ -65,11 +65,7 @@ final class BodyOwner extends Owner implements LocationInfo {
 
 	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
-		return new DerefOwner(
-				location,
-				deref,
-				accessSource(),
-				ownerRef());
+		return new DerefOwner(location, deref, getAccessRules(), ownerRef());
 	}
 
 	@Override

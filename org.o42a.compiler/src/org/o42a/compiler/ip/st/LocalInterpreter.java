@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.file.OtherContextDistributor.distributeIn;
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromDefinition;
+import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
@@ -216,8 +216,9 @@ public final class LocalInterpreter {
 			ExpressionNode definition,
 			Referral referral) {
 
-		final AccessDistributor distributor = fromDefinition(
-				distributeIn(statements.nextDistributor(), context));
+		final AccessDistributor distributor =
+				ACCESS_FROM_DEFINITION.distribute(
+						distributeIn(statements.nextDistributor(), context));
 		final Ref value = localValue(
 				ip,
 				context,

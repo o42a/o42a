@@ -23,7 +23,6 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.IntervalInterpreter.invalidIntervalBracket;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
-import static org.o42a.compiler.ip.ref.AccessDistributor.accessDistributor;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
@@ -42,6 +41,7 @@ import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.phrase.part.UnaryPhraseOperator;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
@@ -50,7 +50,6 @@ import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.ascendant.SampleSpecVisitor;
 import org.o42a.core.Contained;
 import org.o42a.core.Scope;
-import org.o42a.core.member.AccessSource;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
@@ -65,7 +64,7 @@ public final class PhraseBuilder extends Contained {
 
 	private final Interpreter ip;
 	private final Phrase phrase;
-	private final AccessSource accessSource;
+	private final AccessRules accessRules;
 	private final TypeConsumer typeConsumer;
 
 	public PhraseBuilder(
@@ -75,7 +74,7 @@ public final class PhraseBuilder extends Contained {
 			TypeConsumer typeConsumer) {
 		super(location, distributor);
 		this.ip = ip;
-		this.accessSource = distributor.getAccessSource();
+		this.accessRules = distributor.getAccessRules();
 		this.phrase = new Phrase(location, distributor);
 		if (typeConsumer != EXPRESSION_TYPE_CONSUMER) {
 			this.typeConsumer = typeConsumer;
@@ -89,8 +88,8 @@ public final class PhraseBuilder extends Contained {
 		return this.ip;
 	}
 
-	public final AccessSource getAccessSource() {
-		return this.accessSource;
+	public final AccessRules getAccessRules() {
+		return this.accessRules;
 	}
 
 	public final Phrase phrase() {
@@ -506,7 +505,7 @@ public final class PhraseBuilder extends Contained {
 	}
 
 	public final AccessDistributor distributeAccess() {
-		return accessDistributor(distribute(), getAccessSource());
+		return getAccessRules().distribute(distribute());
 	}
 
 	public final Ref toRef() {
