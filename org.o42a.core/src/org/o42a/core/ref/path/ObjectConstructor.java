@@ -25,6 +25,7 @@ import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE
 
 import java.util.IdentityHashMap;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -125,8 +126,8 @@ public abstract class ObjectConstructor
 	public abstract ObjectConstructor reproduce(PathReproducer reproducer);
 
 	@Override
-	public boolean isSynthetic(Dep dep) {
-		return !getConstructed().hasDeps();
+	public boolean isSynthetic(Analyzer analyzer, Dep dep) {
+		return !getConstructed().hasDeps(analyzer);
 	}
 
 	public PathOp op(PathOp host) {

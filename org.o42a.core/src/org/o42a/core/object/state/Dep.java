@@ -62,7 +62,8 @@ public final class Dep extends Step implements SubID {
 	private byte enabled;
 	private byte compileTimeOnly;
 	private SyntheticDep synthetic;
-	private byte isSynthetic;
+	private Analyzer syntheticAnalyzer;
+	private boolean isSynthetic;
 
 	Dep(Obj declaredIn, Ref ref, Name name, ID id) {
 		this.declaredIn = declaredIn;
@@ -113,8 +114,8 @@ public final class Dep extends Step implements SubID {
 		return this.target;
 	}
 
-	public final boolean exists() {
-		return isEnabled() && !isSynthetic();
+	public final boolean exists(Analyzer analyzer) {
+		return isEnabled() && !isSynthetic(analyzer);
 	}
 
 	public final boolean isEnabled() {
@@ -277,10 +278,10 @@ public final class Dep extends Step implements SubID {
 
 	@Override
 	protected final PathOp op(PathOp start) {
-		if (isSynthetic()) {
+		if (isSynthetic(start.getGenerator().getAnalyzer())) {
 			return new SyntheticOp(start, this);
 		}
-		assert exists() :
+		assert exists(start.getGenerator().getAnalyzer()) :
 			this + " does not exist";
 		return new Op(start, this);
 	}
@@ -305,19 +306,18 @@ public final class Dep extends Step implements SubID {
 		return this.uses = new ObjectStepUses(this);
 	}
 
-	private boolean isSynthetic() {
-		if (this.isSynthetic != 0) {
-			return this.isSynthetic > 0;
+	private boolean isSynthetic(Analyzer analyzer) {
+		if (this.syntheticAnalyzer == analyzer) {
+			return this.isSynthetic;
 		}
+		this.syntheticAnalyzer = analyzer;
 		if (this.synthetic == null) {
-			this.isSynthetic = -1;
-			return false;
+			return this.isSynthetic = false;
 		}
-		if (!this.synthetic.isSynthetic(this)) {
-			this.isSynthetic = -1;
-			return false;
+		if (!this.synthetic.isSynthetic(analyzer, this)) {
+			return this.isSynthetic = false;
 		}
-		this.isSynthetic = 1;
+		this.isSynthetic = true;
 		if (this.depUser != null) {
 			this.depUser.setProxied(null);
 		}

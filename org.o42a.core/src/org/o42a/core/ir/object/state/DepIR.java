@@ -47,7 +47,7 @@ public class DepIR implements FldIR {
 	private Type instance;
 
 	public DepIR(ObjectIRBody bodyIR, Dep dep) {
-		assert dep.exists() :
+		assert dep.exists(bodyIR.getGenerator().getAnalyzer()) :
 			dep + " does not exist";
 		this.bodyIR = bodyIR;
 		this.dep = dep;

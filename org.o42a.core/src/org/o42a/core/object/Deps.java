@@ -23,6 +23,7 @@ import static org.o42a.util.collect.Iterators.readonlyIterator;
 
 import java.util.LinkedHashMap;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.state.ObjectDeps;
 import org.o42a.core.ref.Ref;
@@ -83,12 +84,12 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 		}
 	}
 
-	boolean hasDeps() {
+	boolean hasDeps(Analyzer analyzer) {
 		if (this.deps == null || this.deps.isEmpty()) {
 			return false;
 		}
 		for (Dep dep : this) {
-			if (dep.exists()) {
+			if (dep.exists(analyzer)) {
 				return true;
 			}
 		}

@@ -25,6 +25,7 @@ import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
 import java.util.*;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
@@ -352,10 +353,11 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private void allocateDeps(ObjectIRBodyData data) {
 
+		final Analyzer analyzer = getGenerator().getAnalyzer();
 		final Obj ascendant = getAscendant();
 
 		for (Dep dep : ascendant.deps()) {
-			if (!dep.exists()) {
+			if (!dep.exists(analyzer)) {
 				continue;
 			}
 

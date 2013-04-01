@@ -256,8 +256,8 @@ public abstract class Obj
 		return this.keepers = new Keepers(this);
 	}
 
-	public final boolean hasDeps() {
-		return this.deps != null && this.deps.hasDeps();
+	public final boolean hasDeps(Analyzer analyzer) {
+		return this.deps != null && this.deps.hasDeps(analyzer);
 	}
 
 	public final Deps deps() {
