@@ -19,9 +19,11 @@
 */
 package org.o42a.core.object.state;
 
+import org.o42a.analysis.Analyzer;
+
 
 public interface SyntheticDep {
 
-	boolean isSynthetic(Dep dep);
+	boolean isSynthetic(Analyzer analyzer, Dep dep);
 
 }

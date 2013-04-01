@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -87,8 +88,11 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
+
+		final Analyzer analyzer = getGenerator().getAnalyzer();
+
 		for (Dep dep : sample.deps()) {
-			if (dep.exists()) {
+			if (dep.exists(analyzer)) {
 				fillDep(dirs, host, dep);
 			}
 		}
