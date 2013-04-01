@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.type;
 
 import static org.o42a.common.macro.Macros.expandMacro;
-import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 
 import org.o42a.ast.Node;
@@ -29,15 +28,15 @@ import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
 public final class TypeVisitor
-		extends AbstractTypeVisitor<ParamTypeRef, Distributor> {
+		extends AbstractTypeVisitor<ParamTypeRef, AccessDistributor> {
 
 	private final TypeInterpreter typeIp;
 	private final TypeConsumer consumer;
@@ -69,13 +68,13 @@ public final class TypeVisitor
 	@Override
 	public ParamTypeRef visitAscendants(
 			AscendantsNode ascendants,
-			Distributor p) {
+			AccessDistributor p) {
 		if (ascendants.hasSamples()) {
 			return super.visitAscendants(ascendants, p);
 		}
 
 		final AncestorTypeRef ancestor = typeIp().parseAncestor(
-				fromDeclaration(p),
+				p.fromDeclaration(),
 				ascendants.getAncestor(),
 				this.typeParameters,
 				BODY_REFERRAL);
@@ -90,7 +89,7 @@ public final class TypeVisitor
 	@Override
 	public ParamTypeRef visitTypeParameters(
 			TypeParametersNode parameters,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final TypeNode ascendantNode = parameters.getType();
 
@@ -128,7 +127,7 @@ public final class TypeVisitor
 	@Override
 	public ParamTypeRef visitMacroExpansion(
 			MacroExpansionNode expansion,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final ExpressionNode operandNode = expansion.getOperand();
 
@@ -138,7 +137,7 @@ public final class TypeVisitor
 
 		final Ref macroRef = operandNode.accept(
 				ip().bodyExVisitor(),
-				fromDeclaration(p));
+				p.fromDeclaration());
 
 		if (macroRef == null) {
 			return null;
@@ -152,11 +151,11 @@ public final class TypeVisitor
 	@Override
 	public ParamTypeRef visitTypeExpression(
 			TypeExpressionNode type,
-			Distributor p) {
+			AccessDistributor p) {
 
 		final Ref ref = type.getExpression().accept(
 				ip().bodyExVisitor(this.consumer),
-				fromDeclaration(p));
+				p.fromDeclaration());
 
 		if (ref == null) {
 			return null;
@@ -166,10 +165,10 @@ public final class TypeVisitor
 	}
 
 	@Override
-	protected ParamTypeRef visitRef(RefNode node, Distributor p) {
+	protected ParamTypeRef visitRef(RefNode node, AccessDistributor p) {
 
 		final Owner ref =
-				node.accept(ip().refIp().ownerVisitor(), fromDeclaration(p));
+				node.accept(ip().refIp().ownerVisitor(), p.fromDeclaration());
 
 		if (ref == null) {
 			return null;
@@ -187,7 +186,7 @@ public final class TypeVisitor
 	}
 
 	@Override
-	protected ParamTypeRef visitType(Node type, Distributor p) {
+	protected ParamTypeRef visitType(Node type, AccessDistributor p) {
 		p.getContext().getLogger().invalidType(type);
 		return null;
 	}

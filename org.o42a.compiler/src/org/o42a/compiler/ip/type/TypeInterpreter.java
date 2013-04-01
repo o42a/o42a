@@ -34,7 +34,6 @@ import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.*;
 import org.o42a.compiler.ip.type.param.TypeParameterIndex;
-import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -84,7 +83,7 @@ public final class TypeInterpreter {
 
 	public final TypeRefParameters typeParameters(
 			InterfaceNode ifaceNode,
-			Distributor p,
+			AccessDistributor p,
 			TypeConsumer consumer) {
 		if (ifaceNode.getKind().getType() != DefinitionKind.LINK) {
 			p.getLogger().error(
@@ -107,7 +106,7 @@ public final class TypeInterpreter {
 			final ParamTypeRef paramTypeRef = type.accept(
 					typeVisitor(
 							consumer.paramConsumer(new TypeParameterIndex(i))),
-					p);
+					p.fromDeclaration());
 
 			if (paramTypeRef == null) {
 				return null;
@@ -122,7 +121,7 @@ public final class TypeInterpreter {
 				typeParams);
 	}
 
-	public final TypeNodeVisitor<ParamTypeRef, Distributor> typeVisitor(
+	public final TypeNodeVisitor<ParamTypeRef, AccessDistributor> typeVisitor(
 			TypeConsumer consumer) {
 		return new TypeVisitor(this, consumer);
 	}

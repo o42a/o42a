@@ -38,12 +38,34 @@ public final class AccessDistributor extends Distributor {
 		return ((AccessDistributor) distributor).setAccessSource(accessSource);
 	}
 
+	public static AccessDistributor fromType(Distributor distributor) {
+		return accessDistributor(distributor, FROM_DECLARATION);
+	}
+
 	public static AccessDistributor fromDeclaration(Distributor distributor) {
 		return accessDistributor(distributor, FROM_DECLARATION);
 	}
 
 	public static AccessDistributor fromDefinition(Distributor distributor) {
 		return accessDistributor(distributor, FROM_DEFINITION);
+	}
+
+	public static AccessDistributor fromType(AccessDistributor distributor) {
+		return distributor.setAccessSource(FROM_DECLARATION);
+	}
+
+	public static AccessDistributor fromDeclaration(
+			AccessDistributor distributor) {
+		return distributor.setAccessSource(FROM_DECLARATION);
+	}
+
+	public static AccessDistributor fromDefinition(
+			AccessDistributor distributor) {
+		return distributor.setAccessSource(FROM_DEFINITION);
+	}
+
+	public static AccessDistributor fromType(ContainerInfo contained) {
+		return fromType(contained.distribute());
 	}
 
 	public static AccessDistributor fromDeclaration(ContainerInfo contained) {
@@ -69,10 +91,14 @@ public final class AccessDistributor extends Distributor {
 	}
 
 	public final AccessDistributor setAccessSource(AccessSource accessSource) {
-		if (this.accessSource == accessSource) {
+		if (this.accessSource.ordinal() <= accessSource.ordinal()) {
 			return this;
 		}
 		return new AccessDistributor(this.distributor, accessSource);
+	}
+
+	public final AccessDistributor fromDeclaration() {
+		return setAccessSource(FROM_DECLARATION);
 	}
 
 	@Override

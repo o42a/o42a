@@ -19,10 +19,12 @@
 */
 package org.o42a.compiler.ip.member;
 
+import static org.o42a.compiler.ip.ref.AccessDistributor.fromDeclaration;
+
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.core.Distributor;
+import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
@@ -38,7 +40,8 @@ public class FieldInterpreter {
 			DeclaratorNode declarator,
 			Statements<?, ?> p) {
 
-		final Distributor distributor = p.nextDistributor();
+		final AccessDistributor distributor =
+				fromDeclaration(p.nextDistributor());
 		final FieldDeclaration declaration = declarator.getDeclarable().accept(
 				new FieldDeclarableVisitor(ip, context, declarator),
 				distributor);
