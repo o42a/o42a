@@ -17,28 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
+package org.o42a.compiler.ip.type.def;
+
+import static org.o42a.core.member.AccessSource.FROM_TYPE;
 
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
 
-final class SimpleAccessRules extends AccessRules {
+final class TypeDefinitionAccessRules extends AccessRules {
 
-	SimpleAccessRules(AccessSource source) {
-		super(source);
-	}
+	public static final AccessRules ACCESS_FROM_TYPE =
+			new TypeDefinitionAccessRules();
 
-	@Override
-	public AccessRules setSource(AccessSource source) {
-		assert source.ordinal() > AccessSource.FROM_TYPE.ordinal() :
-			"Can not use a simple access rules for type definition";
-		if (getSource().ordinal() <= source.ordinal()) {
-			return this;
-		}
-		return new SimpleAccessRules(source);
+	private TypeDefinitionAccessRules() {
+		super(FROM_TYPE);
 	}
 
 	@Override
@@ -46,7 +43,7 @@ final class SimpleAccessRules extends AccessRules {
 			Interpreter ip,
 			LocationInfo location,
 			AccessDistributor distributor) {
-		return defaultSelfRef(location, distributor);
+		return prohibitObjectRef(location, distributor);
 	}
 
 	@Override
@@ -54,7 +51,22 @@ final class SimpleAccessRules extends AccessRules {
 			Interpreter ip,
 			LocationInfo location,
 			AccessDistributor distributor) {
-		return defaultParentRef(ip, location, distributor);
+		return prohibitObjectRef(location, distributor);
+	}
+
+	@Override
+	public AccessRules setSource(AccessSource source) {
+		return this;
+	}
+
+	private Ref prohibitObjectRef(
+			LocationInfo location,
+			AccessDistributor distributor) {
+		distributor.getLogger().error(
+				"prohibited_type_object_ref",
+				location,
+				"Can not refer the object from its type definition");
+		return null;
 	}
 
 }
