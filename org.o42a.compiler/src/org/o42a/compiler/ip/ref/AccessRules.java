@@ -35,6 +35,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.CheckResult;
 import org.o42a.util.string.Name;
 
 
@@ -93,7 +94,7 @@ public abstract class AccessRules {
 				declaredIn).toRef();
 	}
 
-	public abstract boolean checkAccessibility(
+	public abstract CheckResult checkAccessibility(
 			LocationInfo location,
 			AccessDistributor distributor,
 			Container to);
@@ -142,10 +143,14 @@ public abstract class AccessRules {
 		for (;;) {
 
 			if (containerHasName(container, name)) {
-				if (!checkAccessibility(location, distributor, container)) {
+
+				final CheckResult checkResult =
+						checkAccessibility(location, distributor, container);
+
+				if (checkResult.isError()) {
 					return null;
 				}
-				if (!skip(ip, nested)) {
+				if (checkResult.isOk() && !skip(ip, nested)) {
 					return path.append(parentPath);
 				}
 			}

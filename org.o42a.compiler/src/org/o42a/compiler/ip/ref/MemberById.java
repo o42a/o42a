@@ -43,6 +43,7 @@ import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.CheckResult;
 
 
 public class MemberById extends ContainedFragment {
@@ -112,7 +113,16 @@ public class MemberById extends ContainedFragment {
 					memberOfContainer(container, declaredIn);
 
 			if (memberOfContainer != null) {
-				return memberOfContainer;
+
+				final CheckResult checkResult =
+						checkMemberAccessibility(container, memberOfContainer);
+
+				if (checkResult.isError()) {
+					return null;
+				}
+				if (checkResult.isOk()) {
+					return memberOfContainer;
+				}
 			}
 		}
 
@@ -167,12 +177,6 @@ public class MemberById extends ContainedFragment {
 
 		final Container result = pathResolution.getResult();
 
-		if (!this.accessRules.checkAccessibility(
-				this,
-				this.accessRules.distribute(distribute()),
-				result)) {
-			return null;
-		}
 		if (enclosingScope.is(container.getScope())) {
 			return found;
 		}
@@ -206,6 +210,30 @@ public class MemberById extends ContainedFragment {
 				accessor.accessBy(this, this.accessRules.getSource()),
 				this.memberId,
 				declaredIn);
+	}
+
+	private CheckResult checkMemberAccessibility(
+			Container container,
+			Path pathToMember) {
+		if (pathToMember.isAbsolute()) {
+			return CheckResult.CHECK_OK;
+		}
+
+		final Scope scope = container.getScope();
+		final PathResolution pathResolution =
+				pathToMember.bind(this, scope).resolve(
+						pathResolver(scope, dummyRefUser()));
+
+		if (!pathResolution.isResolved()) {
+			return CheckResult.CHECK_ERROR;
+		}
+
+		final Container result = pathResolution.getResult();
+
+		return this.accessRules.checkAccessibility(
+				this,
+				this.accessRules.distribute(distribute()),
+				result);
 	}
 
 	private boolean isModule(Container container) {
