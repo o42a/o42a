@@ -28,6 +28,7 @@ import org.o42a.core.Container;
 import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.CheckResult;
 
 
 final class TypeDefinitionAccessRules extends AccessRules {
@@ -53,15 +54,15 @@ final class TypeDefinitionAccessRules extends AccessRules {
 	}
 
 	@Override
-	public boolean checkAccessibility(
+	public CheckResult checkAccessibility(
 			LocationInfo location,
 			AccessDistributor distributor,
 			Container to) {
 		if (distributor.getScope().is(to.getScope())) {
 			prohibitObjectRef(location, distributor);
-			return false;
+			return CheckResult.CHECK_ERROR;
 		}
-		return true;
+		return CheckResult.CHECK_OK;
 	}
 
 	private Ref prohibitObjectRef(
