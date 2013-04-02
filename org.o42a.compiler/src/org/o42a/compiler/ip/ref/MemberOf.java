@@ -128,10 +128,8 @@ public class MemberOf extends ContainedFragment {
 			return null;
 		}
 
-		final MemberPath adapterPath = container.member(
-				access,
-				adapterId(this.declaredIn),
-				null);
+		final MemberPath adapterPath =
+				container.member(access, adapterId(this.declaredIn), null);
 
 		if (adapterPath == null) {
 			return null;
@@ -158,7 +156,8 @@ public class MemberOf extends ContainedFragment {
 			return null;
 		}
 
-		return memberOfAdapter.pathToMember();
+		return adapterPath.pathToMember().append(
+				memberOfAdapter.pathToMember());
 	}
 
 }
