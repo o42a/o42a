@@ -519,7 +519,7 @@ public abstract class Obj
 			return found;
 		}
 		if (declaredIn != null) {
-			return memberOfAdapter(access.getAccessor(), memberId, declaredIn);
+			return null;
 		}
 
 		final Field field = getScope().toField();
@@ -848,37 +848,6 @@ public abstract class Obj
 
 	final Map<MemberId, Symbol> symbols() {
 		return Obj.this.symbols;
-	}
-
-	private MemberPath memberOfAdapter(
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn) {
-		if (declaredIn == null) {
-			return null;
-		}
-
-		final Member adapter = member(adapterId(declaredIn));
-
-		if (adapter == null) {
-			return null;
-		}
-
-		final Obj adapterObject = adapter.substance(dummyUser()).toObject();
-
-		if (adapterObject != null) {
-
-			final Member memberOfAdapter =
-					adapterObject.objectMember(accessor, memberId, declaredIn);
-
-			if (memberOfAdapter == null) {
-				return null;
-			}
-
-			return new AdapterMember(adapter, memberOfAdapter);
-		}
-
-		return null;
 	}
 
 	private void declareMembers() {

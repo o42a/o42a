@@ -41,10 +41,9 @@ public interface Container extends ScopeInfo {
 	Member member(MemberKey memberKey);
 
 	/**
-	 * Access member of this container.
+	 * Access the member of this container.
 	 *
-	 * <p>This includes access to object adapter's fields, or members of the
-	 * same scope.</p>
+	 * <p>This may include any member of the same scope.</p>
 	 *
 	 * @param access member access information.
 	 * @param memberId identifier of member to access.
