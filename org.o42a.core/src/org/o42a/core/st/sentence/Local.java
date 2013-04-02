@@ -34,8 +34,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.Accessor;
-import org.o42a.core.member.MemberName;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -49,7 +48,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.Name;
 
 
-public final class Local extends Step implements ContainerInfo {
+public final class Local extends Step implements ContainerInfo, MemberPath {
 
 	public static final Name ANONYMOUS_LOCAL_NAME =
 			CASE_SENSITIVE.canonicalName("L");
@@ -110,6 +109,25 @@ public final class Local extends Step implements ContainerInfo {
 		return ref().getContainer();
 	}
 
+	public Ref toRef() {
+		return toPath().bind(this, getScope()).target(distribute());
+	}
+
+	@Override
+	public final Path pathToMember() {
+		return toPath();
+	}
+
+	@Override
+	public final Member toMember() {
+		return null;
+	}
+
+	@Override
+	public final Local toLocal() {
+		return this;
+	}
+
 	@Override
 	public final Distributor distribute() {
 		return Contained.distribute(this);
@@ -138,10 +156,6 @@ public final class Local extends Step implements ContainerInfo {
 	@Override
 	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
-	}
-
-	public Ref toRef() {
-		return toPath().bind(this, getScope()).target(distribute());
 	}
 
 	@Override
@@ -229,7 +243,7 @@ public final class Local extends Step implements ContainerInfo {
 			LocationInfo location,
 			PathReproducer reproducer) {
 
-		final Path path =
+		final MemberPath path =
 				reproducer.getReproducer()
 				.getContainer()
 				.member(
@@ -241,12 +255,9 @@ public final class Local extends Step implements ContainerInfo {
 			return null;
 		}
 
-		final Step lastStep = path.lastStep();
+		final Local local = path.toLocal();
 
-		if (lastStep instanceof Local) {
-
-			final Local local = (Local) lastStep;
-
+		if (local != null) {
 			return reproducedPath(local.toPath());
 		}
 

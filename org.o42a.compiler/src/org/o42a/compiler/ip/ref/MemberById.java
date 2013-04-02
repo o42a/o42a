@@ -206,10 +206,16 @@ public class MemberById extends ContainedFragment {
 			accessor = Accessor.ENCLOSED;
 		}
 
-		return container.findMember(
+		final MemberPath found = container.findMember(
 				accessor.accessBy(this, this.accessRules.getSource()),
 				this.memberId,
 				declaredIn);
+
+		if (found == null) {
+			return null;
+		}
+
+		return found.pathToMember();
 	}
 
 	private CheckResult checkMemberAccessibility(

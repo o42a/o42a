@@ -22,7 +22,6 @@ package org.o42a.core;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
 
 
 public interface Container extends ScopeInfo {
@@ -44,15 +43,17 @@ public interface Container extends ScopeInfo {
 	/**
 	 * Access member of this container.
 	 *
-	 * <p>This includes access to object adapter's field.</p>
+	 * <p>This includes access to object adapter's fields, or members of the
+	 * same scope.</p>
 	 *
 	 * @param access member access information.
 	 * @param memberId identifier of member to access.
 	 * @param declaredIn the object member declared in or <code>null</code>
 	 * if unknown.
+	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path member(Access access, MemberId memberId, Obj declaredIn);
+	MemberPath member(Access access, MemberId memberId, Obj declaredIn);
 
 	/**
 	 * Searches for the member in current container.
@@ -66,8 +67,9 @@ public interface Container extends ScopeInfo {
 	 * @param memberId identifier of member to find.
 	 * @param declaredIn the object member declared in or <code>null</code>
 	 * if unknown.
+	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path findMember(Access access, MemberId memberId, Obj declaredIn);
+	MemberPath findMember(Access access, MemberId memberId, Obj declaredIn);
 
 }

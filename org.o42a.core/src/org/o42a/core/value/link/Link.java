@@ -25,7 +25,6 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
@@ -114,7 +113,7 @@ public abstract class Link extends AbstractContainer implements ContainerInfo {
 	}
 
 	@Override
-	public final Path member(
+	public final MemberPath member(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -125,7 +124,7 @@ public abstract class Link extends AbstractContainer implements ContainerInfo {
 	}
 
 	@Override
-	public Path findMember(
+	public MemberPath findMember(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {

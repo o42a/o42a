@@ -129,7 +129,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 	}
 
 	@Override
-	public Path member(
+	public MemberPath member(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -137,7 +137,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 	}
 
 	@Override
-	public Path findMember(
+	public MemberPath findMember(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {

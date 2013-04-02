@@ -32,12 +32,14 @@ import org.o42a.core.member.impl.MemberPropagatedFromID;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.util.string.ID;
 
 
-public abstract class Member extends Contained {
+public abstract class Member extends Contained implements MemberPath {
 
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
@@ -79,6 +81,11 @@ public abstract class Member extends Contained {
 
 	public abstract MemberKey getMemberKey();
 
+	@Override
+	public final Path pathToMember() {
+		return getMemberKey().toPath();
+	}
+
 	public final String getDisplayName() {
 		return getMemberId().toString();
 	}
@@ -114,6 +121,16 @@ public abstract class Member extends Contained {
 	 */
 	public final boolean isTypeParameter() {
 		return toTypeParameter() != null;
+	}
+
+	@Override
+	public final Member toMember() {
+		return this;
+	}
+
+	@Override
+	public final Local toLocal() {
+		return null;
 	}
 
 	public abstract MemberTypeParameter toTypeParameter();
