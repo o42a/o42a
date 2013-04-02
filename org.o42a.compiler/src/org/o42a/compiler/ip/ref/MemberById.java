@@ -19,9 +19,11 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.matchModule;
 import static org.o42a.compiler.ip.ref.RefInterpreter.prototypeExpressionClause;
+import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
@@ -44,6 +46,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.CheckResult;
+import org.o42a.util.fn.Holder;
 
 
 public class MemberById extends ContainedFragment {
@@ -109,20 +112,11 @@ public class MemberById extends ContainedFragment {
 			boolean excludeContainer) {
 		if (!excludeContainer) {
 
-			final Path memberOfContainer =
+			final Holder<Path> memberOfContainer =
 					memberOfContainer(container, declaredIn);
 
 			if (memberOfContainer != null) {
-
-				final CheckResult checkResult =
-						checkMemberAccessibility(container, memberOfContainer);
-
-				if (checkResult.isError()) {
-					return null;
-				}
-				if (checkResult.isOk()) {
-					return memberOfContainer;
-				}
+				return memberOfContainer.get();
 			}
 		}
 
@@ -193,7 +187,9 @@ public class MemberById extends ContainedFragment {
 		return enclosingScopePath.append(found);
 	}
 
-	private Path memberOfContainer(Container container, Obj declaredIn) {
+	private Holder<Path> memberOfContainer(
+			Container container,
+			Obj declaredIn) {
 
 		final Accessor accessor;
 
@@ -206,23 +202,80 @@ public class MemberById extends ContainedFragment {
 			accessor = Accessor.ENCLOSED;
 		}
 
-		final MemberPath found = container.findMember(
-				accessor.accessBy(this, this.accessRules.getSource()),
-				this.memberId,
-				declaredIn);
+		final Access access =
+				accessor.accessBy(this, this.accessRules.getSource());
+		final MemberPath found =
+				container.findMember(access, this.memberId, declaredIn);
 
-		if (found == null) {
+		if (found != null) {
+			return checkMemberAccessibility(container, found.pathToMember());
+		}
+
+		return memberOfAdapter(container, access);
+	}
+
+	private Holder<Path> memberOfAdapter(Container container, Access access) {
+		if (this.declaredIn == null) {
 			return null;
 		}
 
-		return found.pathToMember();
+		final MemberPath adapterPath =
+				container.member(access, adapterId(this.declaredIn), null);
+
+		if (adapterPath == null) {
+			return null;
+		}
+
+		final Member adapterMember = adapterPath.toMember();
+
+		if (adapterMember == null) {
+			return null;
+		}
+
+		final Container adapter = adapterMember.substance(dummyUser());
+
+		if (adapter == null) {
+			return null;
+		}
+
+		final Holder<Path> checkedAdapter =
+				checkMemberAccessibility(container, adapterPath.pathToMember());
+
+		if (checkedAdapter == null || checkedAdapter.get() == null) {
+			return checkedAdapter;
+		}
+
+		final Accessor memberOfAdapterAccessor;
+
+		if (adapter.getLocation().getContext().declarationsVisibleFrom(
+				getLocation().getContext())) {
+			memberOfAdapterAccessor = Accessor.DECLARATION;
+		} else {
+			memberOfAdapterAccessor = Accessor.PUBLIC;
+		}
+
+		final MemberPath memberOfAdapter = adapter.member(
+				memberOfAdapterAccessor.accessBy(
+						this,
+						this.accessRules.getSource()),
+				this.memberId,
+				null);
+
+		if (memberOfAdapter == null) {
+			return null;
+		}
+
+		return checkMemberAccessibility(
+				container,
+				adapterPath.pathToMember().append(
+						memberOfAdapter.pathToMember()));
 	}
 
-	private CheckResult checkMemberAccessibility(
+	private Holder<Path> checkMemberAccessibility(
 			Container container,
 			Path pathToMember) {
 		if (pathToMember.isAbsolute()) {
-			return CheckResult.CHECK_OK;
+			return new Holder<>(pathToMember);
 		}
 
 		final Scope scope = container.getScope();
@@ -231,15 +284,23 @@ public class MemberById extends ContainedFragment {
 						pathResolver(scope, dummyRefUser()));
 
 		if (!pathResolution.isResolved()) {
-			return CheckResult.CHECK_ERROR;
+			return new Holder<>(null);
 		}
 
 		final Container result = pathResolution.getResult();
-
-		return this.accessRules.checkAccessibility(
+		final CheckResult checkResult = this.accessRules.checkAccessibility(
 				this,
 				this.accessRules.distribute(distribute()),
 				result);
+
+		if (checkResult.isError()) {
+			return new Holder<>(null);
+		}
+		if (!checkResult.isOk()) {
+			return null;
+		}
+
+		return new Holder<>(pathToMember);
 	}
 
 	private boolean isModule(Container container) {

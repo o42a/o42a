@@ -58,4 +58,20 @@ public class AdapterRefTest extends CompilerTestCase {
 		assertThat(definiteValue(field("c"), ValueType.INTEGER), is(2L));
 	}
 
+	@Test
+	public void memberOfAdapterOfEnclosingField() {
+		compile(
+				"A := void (",
+				"  F := 1",
+				")",
+				"B := integer (",
+				"  @a := * (",
+				"    F = 2",
+				"  )",
+				"  = F @a",
+				")");
+
+		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(2L));
+	}
+
 }
