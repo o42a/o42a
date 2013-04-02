@@ -33,7 +33,6 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
@@ -106,20 +105,15 @@ public class TypeDefinitionBuilder
 	}
 
 	@Override
-	public Path member(Access access, MemberId memberId, Obj declaredIn) {
-
-		final MemberTypeParameter typeParameter =
-				findTypeParameter(memberId, declaredIn);
-
-		if (typeParameter != null) {
-			return typeParameter.getMemberKey().toPath();
-		}
-
-		return null;
+	public MemberPath member(Access access, MemberId memberId, Obj declaredIn) {
+		return findTypeParameter(memberId, declaredIn);
 	}
 
 	@Override
-	public Path findMember(Access access, MemberId memberId, Obj declaredIn) {
+	public MemberPath findMember(
+			Access access,
+			MemberId memberId,
+			Obj declaredIn) {
 		return member(access, memberId, declaredIn);
 	}
 

@@ -26,7 +26,6 @@ import org.o42a.core.*;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.Local;
 
 
@@ -79,9 +78,9 @@ public class LocalInsides extends AbstractContainer {
 	}
 
 	@Override
-	public Path member(Access access, MemberId memberId, Obj declaredIn) {
+	public MemberPath member(Access access, MemberId memberId, Obj declaredIn) {
 
-		final Path local = local(access, memberId, declaredIn);
+		final Local local = local(access, memberId, declaredIn);
 
 		if (local != null) {
 			return local;
@@ -92,9 +91,12 @@ public class LocalInsides extends AbstractContainer {
 	}
 
 	@Override
-	public Path findMember(Access access, MemberId memberId, Obj declaredIn) {
+	public MemberPath findMember(
+			Access access,
+			MemberId memberId,
+			Obj declaredIn) {
 
-		final Path local = local(access, memberId, declaredIn);
+		final Local local = local(access, memberId, declaredIn);
 
 		if (local != null) {
 			return local;
@@ -112,7 +114,7 @@ public class LocalInsides extends AbstractContainer {
 		return this.local.toString();
 	}
 
-	private Path local(Access access, MemberId memberId, Obj declaredIn) {
+	private Local local(Access access, MemberId memberId, Obj declaredIn) {
 		if (!accessibleBy(access)) {
 			return null;
 		}
@@ -122,7 +124,7 @@ public class LocalInsides extends AbstractContainer {
 		if (!localsVisibleBy(access.getContainer(), access.getSource())) {
 			return null;
 		}
-		return getLocal().toPath();
+		return getLocal();
 	}
 
 	private boolean accessibleBy(Access access) {

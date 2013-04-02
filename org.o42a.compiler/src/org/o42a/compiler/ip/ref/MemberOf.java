@@ -21,9 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import org.o42a.common.ref.CompoundPathWalker;
 import org.o42a.core.Scope;
-import org.o42a.core.member.AccessSource;
-import org.o42a.core.member.MemberContainer;
-import org.o42a.core.member.MemberId;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Role;
 import org.o42a.core.ref.Ref;
@@ -65,7 +63,7 @@ public class MemberOf extends ContainedFragment {
 		}
 
 		final MemberContainer container = owner.getContainer();
-		final Path memberPath = container.member(
+		final MemberPath memberPath = container.member(
 				accessorResolver.getAccessor()
 				.accessBy(this, this.accessSource),
 				this.memberId,
@@ -82,7 +80,7 @@ public class MemberOf extends ContainedFragment {
 			return null;
 		}
 
-		return memberPath;
+		return memberPath.pathToMember();
 	}
 
 	@Override

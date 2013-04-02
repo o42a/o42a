@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
+import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
@@ -454,7 +455,7 @@ public abstract class Obj
 	}
 
 	@Override
-	public final Path member(
+	public final MemberPath member(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -463,7 +464,7 @@ public abstract class Obj
 		final Member found = objectMember(accessor, memberId, declaredIn);
 
 		if (found != null) {
-			return found.getMemberKey().toPath();
+			return found;
 		}
 		if (declaredIn == null) {
 			return null;
@@ -475,19 +476,18 @@ public abstract class Obj
 			return null;
 		}
 
-		final Path adapterPath = adapter.getMemberKey().toPath();
 		final Obj adapterObject = adapter.substance(dummyUser()).toObject();
 
 		if (adapterObject != null) {
 
-			final Member foundInAdapterObject =
+			final Member memberOfAdapter =
 					adapterObject.objectMember(accessor, memberId, declaredIn);
 
-			if (foundInAdapterObject == null) {
+			if (memberOfAdapter == null) {
 				return null;
 			}
 
-			return adapterPath.append(foundInAdapterObject.getMemberKey());
+			return new AdapterMember(adapter, memberOfAdapter);
 		}
 
 		return null;
@@ -508,18 +508,18 @@ public abstract class Obj
 	}
 
 	@Override
-	public final Path findMember(
+	public final MemberPath findMember(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
-		final Path found = member(access, memberId, declaredIn);
+		final MemberPath found = member(access, memberId, declaredIn);
 
 		if (found != null) {
 			return found;
 		}
 		if (declaredIn != null) {
-			return null;
+			return memberOfAdapter(access.getAccessor(), memberId, declaredIn);
 		}
 
 		final Field field = getScope().toField();
@@ -528,7 +528,7 @@ public abstract class Obj
 			return null;
 		}
 		if (field.getKey().getMemberId().equals(memberId)) {
-			return Path.SELF_PATH;
+			return SELF_MEMBER_PATH;
 		}
 
 		return null;
@@ -848,6 +848,37 @@ public abstract class Obj
 
 	final Map<MemberId, Symbol> symbols() {
 		return Obj.this.symbols;
+	}
+
+	private MemberPath memberOfAdapter(
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
+		if (declaredIn == null) {
+			return null;
+		}
+
+		final Member adapter = member(adapterId(declaredIn));
+
+		if (adapter == null) {
+			return null;
+		}
+
+		final Obj adapterObject = adapter.substance(dummyUser()).toObject();
+
+		if (adapterObject != null) {
+
+			final Member memberOfAdapter =
+					adapterObject.objectMember(accessor, memberId, declaredIn);
+
+			if (memberOfAdapter == null) {
+				return null;
+			}
+
+			return new AdapterMember(adapter, memberOfAdapter);
+		}
+
+		return null;
 	}
 
 	private void declareMembers() {

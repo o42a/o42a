@@ -20,6 +20,7 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.AbstractContainer.parentContainer;
+import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 
 import java.util.Collection;
 
@@ -28,7 +29,6 @@ import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
 import org.o42a.util.ArrayUtil;
 
 
@@ -137,7 +137,7 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Path member(
+	public MemberPath member(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -155,13 +155,13 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Path findMember(
+	public MemberPath findMember(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 		if (memberId.getEnclosingId() == null) {
 
-			final Path foundInGroup = getEnclosingContainer().findMember(
+			final MemberPath foundInGroup = getEnclosingContainer().findMember(
 					access,
 					toMember().getMemberId().append(memberId),
 					declaredIn);
@@ -170,7 +170,7 @@ public abstract class GroupClause extends Clause implements Container {
 				return foundInGroup;
 			}
 			if (toMember().getMemberId().equals(memberId)) {
-				return Path.SELF_PATH;
+				return SELF_MEMBER_PATH;
 			}
 		}
 

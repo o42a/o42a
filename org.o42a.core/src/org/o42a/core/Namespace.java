@@ -33,6 +33,7 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.util.string.Name;
 
 
@@ -94,7 +95,7 @@ public class Namespace extends AbstractContainer {
 	}
 
 	@Override
-	public Path member(
+	public MemberPath member(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -103,12 +104,12 @@ public class Namespace extends AbstractContainer {
 	}
 
 	@Override
-	public Path findMember(
+	public MemberPath findMember(
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
 
-		final Path foundInEnclosing =
+		final MemberPath foundInEnclosing =
 				getEnclosingContainer()
 				.member(access, memberId, declaredIn);
 
@@ -120,7 +121,7 @@ public class Namespace extends AbstractContainer {
 			final BoundPath foundInNS = findInNs(access, memberId, declaredIn);
 
 			if (foundInNS != null) {
-				return foundInNS.getPath();
+				return new NsPath(foundInNS);
 			}
 		}
 
@@ -195,6 +196,39 @@ public class Namespace extends AbstractContainer {
 		return result;
 	}
 
+	private static final class NsPath implements MemberPath {
+
+		private final BoundPath path;
+
+		NsPath(BoundPath path) {
+			this.path = path;
+		}
+
+		@Override
+		public Path pathToMember() {
+			return this.path.getPath();
+		}
+
+		@Override
+		public Member toMember() {
+			return null;
+		}
+
+		@Override
+		public Local toLocal() {
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			if (this.path == null) {
+				return super.toString();
+			}
+			return this.path.toString();
+		}
+
+	}
+
 	private class NsUse {
 
 		protected final Ref ref;
@@ -253,12 +287,13 @@ public class Namespace extends AbstractContainer {
 				MemberId memberId,
 				Obj declaredIn) {
 
-			final Path found = getContainer().findMember(
+			final MemberPath found = getContainer().findMember(
 					access,
 					memberId,
 					declaredIn);
 
-			return found != null ? getPath().append(found) : null;
+			return found != null
+					? getPath().append(found.pathToMember()) : null;
 		}
 
 		@Override
