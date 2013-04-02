@@ -24,6 +24,7 @@ import org.o42a.core.Container;
 import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.CheckResult;
 
 
 final class SimpleAccessRules extends AccessRules {
@@ -51,11 +52,11 @@ final class SimpleAccessRules extends AccessRules {
 	}
 
 	@Override
-	public boolean checkAccessibility(
+	public CheckResult checkAccessibility(
 			LocationInfo location,
 			AccessDistributor distributor,
 			Container to) {
-		return true;
+		return CheckResult.CHECK_OK;
 	}
 
 }
