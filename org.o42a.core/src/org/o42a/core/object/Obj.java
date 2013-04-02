@@ -21,7 +21,6 @@ package org.o42a.core.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.AbstractContainer.parentContainer;
-import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
@@ -459,38 +458,7 @@ public abstract class Obj
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-
-		final Accessor accessor = access.getAccessor();
-		final Member found = objectMember(accessor, memberId, declaredIn);
-
-		if (found != null) {
-			return found;
-		}
-		if (declaredIn == null) {
-			return null;
-		}
-
-		final Member adapter = member(adapterId(declaredIn));
-
-		if (adapter == null) {
-			return null;
-		}
-
-		final Obj adapterObject = adapter.substance(dummyUser()).toObject();
-
-		if (adapterObject != null) {
-
-			final Member memberOfAdapter =
-					adapterObject.objectMember(accessor, memberId, declaredIn);
-
-			if (memberOfAdapter == null) {
-				return null;
-			}
-
-			return new AdapterMember(adapter, memberOfAdapter);
-		}
-
-		return null;
+		return objectMember(access.getAccessor(), memberId, declaredIn);
 	}
 
 	@Override
