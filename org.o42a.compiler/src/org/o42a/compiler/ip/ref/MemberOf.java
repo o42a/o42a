@@ -19,7 +19,11 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.AdapterId.adapterId;
+
 import org.o42a.common.ref.CompoundPathWalker;
+import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldDefinition;
@@ -63,24 +67,34 @@ public class MemberOf extends ContainedFragment {
 		}
 
 		final MemberContainer container = owner.getContainer();
-		final MemberPath memberPath = container.member(
+		final Access access =
 				accessorResolver.getAccessor()
-				.accessBy(this, this.accessSource),
+				.accessBy(this, this.accessSource);
+		final MemberPath memberPath = container.member(
+				access,
 				this.memberId,
 				this.declaredIn != null
 				? this.declaredIn.getType() : null);
 
-		if (memberPath == null) {
-			getLogger().error(
-					"undefined_member",
-					this,
-					"Member '%s' is not defined in '%s'",
-					this.memberId,
-					container);
-			return null;
+		if (memberPath != null) {
+			return memberPath.pathToMember();
 		}
 
-		return memberPath.pathToMember();
+		final Path memberOfAdapter =
+				memberOfAdapter(access, accessorResolver, container);
+
+		if (memberOfAdapter != null) {
+			return memberOfAdapter;
+		}
+
+		getLogger().error(
+				"undefined_member",
+				this,
+				"Member '%s' is not defined in '%s'",
+				this.memberId,
+				container);
+
+		return null;
 	}
 
 	@Override
@@ -104,6 +118,47 @@ public class MemberOf extends ContainedFragment {
 		}
 
 		return out.toString();
+	}
+
+	private Path memberOfAdapter(
+			Access access,
+			AccessorResolver accessResolver,
+			MemberContainer container) {
+		if (this.declaredIn == null) {
+			return null;
+		}
+
+		final MemberPath adapterPath = container.member(
+				access,
+				adapterId(this.declaredIn),
+				null);
+
+		if (adapterPath == null) {
+			return null;
+		}
+
+		final Member adapterMember = adapterPath.toMember();
+
+		if (adapterMember == null) {
+			return null;
+		}
+
+		final Container adapter = adapterMember.substance(dummyUser());
+
+		if (adapter == null) {
+			return null;
+		}
+
+		final MemberPath memberOfAdapter = adapter.member(
+				accessResolver.getAccessor().accessBy(this, this.accessSource),
+				this.memberId,
+				null);
+
+		if (memberOfAdapter == null) {
+			return null;
+		}
+
+		return memberOfAdapter.pathToMember();
 	}
 
 }

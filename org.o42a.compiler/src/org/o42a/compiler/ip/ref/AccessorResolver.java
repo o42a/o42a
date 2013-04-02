@@ -96,6 +96,10 @@ final class AccessorResolver implements PathWalker {
 
 	@Override
 	public boolean member(Container container, Step step, Member member) {
+		return member(container, member);
+	}
+
+	public boolean member(Container container, Member member) {
 		this.owner = false;
 		updateDeclaration(container, member.substance(dummyUser()));
 		this.enclosed = false;
