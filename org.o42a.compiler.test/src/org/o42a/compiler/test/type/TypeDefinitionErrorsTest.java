@@ -38,4 +38,18 @@ public class TypeDefinitionErrorsTest extends CompilerTestCase {
 		compile("A :=> void #(T := a::)");
 	}
 
+	@Test
+	public void prohibitObjectRefByName() {
+		expectError("compiler.prohibited_type_object_ref");
+
+		compile("A :=> void #(T := a)");
+	}
+
+	@Test
+	public void prohibitObjectRefByQualifiedName() {
+		expectError("compiler.prohibited_type_object_ref");
+
+		compile("A :=> void #(T := a @prohibit object ref by qualified name)");
+	}
+
 }
