@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.field;
 
 import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
 

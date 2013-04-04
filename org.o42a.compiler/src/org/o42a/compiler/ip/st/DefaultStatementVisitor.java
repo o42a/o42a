@@ -20,8 +20,8 @@
 package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.ClauseInterpreter.clause;
-import static org.o42a.compiler.ip.member.FieldInterpreter.field;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.clause;
+import static org.o42a.compiler.ip.field.FieldInterpreter.field;
 import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.st.LocalInterpreter.local;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;

@@ -17,13 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.ClauseInterpreter.invalidClauseName;
-import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByName;
-import static org.o42a.compiler.ip.member.NameExtractor.extractName;
-import static org.o42a.compiler.ip.member.NameExtractor.extractNameOrImplied;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.invalidClauseName;
+import static org.o42a.compiler.ip.clause.ClauseVisibility.clauseVisibilityByName;
+import static org.o42a.compiler.ip.clause.NameExtractor.extractName;
+import static org.o42a.compiler.ip.clause.NameExtractor.extractNameOrImplied;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 import static org.o42a.util.string.Name.caseInsensitiveName;

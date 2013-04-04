@@ -17,10 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
-import static org.o42a.compiler.ip.member.ClauseInterpreter.invalidClauseContent;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.invalidClauseContent;
 import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
