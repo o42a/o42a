@@ -30,10 +30,11 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.member.*;
+import org.o42a.core.member.AccessSource;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.CheckResult;
 import org.o42a.util.string.Name;
@@ -80,24 +81,40 @@ public abstract class AccessRules {
 		return path.bind(location, distributor.getScope()).target(distributor);
 	}
 
-	public Ref memberById(
-			Interpreter ip,
+	/**
+	 * Checks whether the given enclosing container is accessible from the
+	 * nested one.
+	 *
+	 * <p>This method can report error if access is explicitly prohibited,
+	 * such as in case of attempt to access an object from its type definition.
+	 * </p>
+	 *
+	 * @param location an accessing reference location.
+	 * @param from an accessing reference container.
+	 * @param to the accessed enclosing container.
+	 *
+	 * @return the result of the check.
+	 */
+	public abstract CheckResult checkContainerAccessibility(
 			LocationInfo location,
-			AccessDistributor distributor,
-			MemberId memberId,
-			StaticTypeRef declaredIn) {
-		return new MemberById(
-				ip,
-				location,
-				distributor,
-				memberId,
-				declaredIn).toRef();
-	}
-
-	public abstract CheckResult checkAccessibility(
-			LocationInfo location,
-			AccessDistributor distributor,
+			Container from,
 			Container to);
+
+	/**
+	 * Checks whether the given enclosing container is visible from the nested
+	 * one.
+	 *
+	 * <p>In contrast to {@link #checkContainerAccessibility(LocationInfo,
+	 * Container, Container)} method, this one does not report errors.
+	 * It is used to check the visibility of intermediate enclosing container
+	 * instead of a final one.</p>
+	 *
+	 * @param from an accessing reference container.
+	 * @param to the accessed enclosing container.
+	 *
+	 * @return the result of the check.
+	 */
+	public abstract boolean containerIsVisible(Container from, Container to);
 
 	public final AccessDistributor distribute(Distributor distributor) {
 		if (distributor.getClass() != AccessDistributor.class) {
@@ -135,17 +152,17 @@ public abstract class AccessRules {
 			AccessDistributor distributor,
 			Name name) {
 
+		final Container from = distributor.getContainer();
 		Path path = SELF_PATH;
 		Path parentPath = SELF_PATH;
 		Container nested = null;
-		Container container = distributor.getContainer();
+		Container container = from;
 
 		for (;;) {
-
 			if (containerHasName(container, name)) {
 
 				final CheckResult checkResult =
-						checkAccessibility(location, distributor, container);
+						checkContainerAccessibility(location, from, container);
 
 				if (checkResult.isError()) {
 					return null;
