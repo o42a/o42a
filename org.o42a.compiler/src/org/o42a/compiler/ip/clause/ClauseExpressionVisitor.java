@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
-import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.clause.ClauseAccessRules.ACCESS_FROM_CLAUSE_CONTENT;
 import static org.o42a.compiler.ip.clause.ParenthesesVisitor.extractParentheses;
 import static org.o42a.compiler.ip.clause.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
@@ -71,7 +70,7 @@ class ClauseExpressionVisitor
 		final AscendantsDefinition ascendantsDefinition =
 				CLAUSE_DEF_IP.typeIp().parseAscendants(
 						ascendants,
-						ACCESS_FROM_DEFINITION.distribute(p.distribute()));
+						ACCESS_FROM_CLAUSE_CONTENT.distribute(p.distribute()));
 
 		if (ascendantsDefinition == null) {
 			return null;
@@ -110,7 +109,7 @@ class ClauseExpressionVisitor
 			ClauseBuilder p) {
 
 		final AccessDistributor distributor =
-				ACCESS_FROM_DEFINITION.distribute(p.distribute());
+				ACCESS_FROM_CLAUSE_CONTENT.distribute(p.distribute());
 		final Ref ref = expression.accept(
 				CLAUSE_DEF_IP.targetExVisitor(),
 				distributor);

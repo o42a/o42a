@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.field;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
@@ -29,13 +28,12 @@ import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 
 
 public final class DefinitionVisitor
-		extends AbstractExpressionVisitor<FieldDefinition, FieldDeclaration> {
+		extends AbstractExpressionVisitor<FieldDefinition, FieldAccess> {
 
 	private final Interpreter ip;
 	private final TypeConsumer typeConsumer;
@@ -50,7 +48,7 @@ public final class DefinitionVisitor
 	}
 
 	@Override
-	public FieldDefinition visitScopeRef(ScopeRefNode ref, FieldDeclaration p) {
+	public FieldDefinition visitScopeRef(ScopeRefNode ref, FieldAccess p) {
 		if (ref.getType() == ScopeType.IMPLIED) {
 			return impliedDefinition(location(p, ref), p.distribute());
 		}
@@ -60,11 +58,11 @@ public final class DefinitionVisitor
 	@Override
 	protected FieldDefinition visitExpression(
 			ExpressionNode expression,
-			FieldDeclaration p) {
+			FieldAccess p) {
 
 		final Ref definition = expression.accept(
 				ip().targetExVisitor(this.typeConsumer),
-				ACCESS_FROM_DECLARATION.distribute(p.distribute()));
+				p.distributeAccess());
 
 		if (definition == null) {
 			return null;

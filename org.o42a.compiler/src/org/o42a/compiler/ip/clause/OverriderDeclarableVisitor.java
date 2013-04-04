@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
-import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DECLARATION;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_PLACEMENT;
 import static org.o42a.compiler.ip.clause.ClauseInterpreter.invalidClauseContent;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
@@ -70,7 +70,7 @@ final class OverriderDeclarableVisitor
 		final MemberRefNode memberNode = adapter.getMember();
 		final Ref adapterId = memberNode.accept(
 				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
-				ACCESS_FROM_DECLARATION.distribute(p.distribute()));
+				ACCESS_FROM_PLACEMENT.distribute(p.distribute()));
 
 		if (adapterId == null) {
 			return null;
@@ -102,7 +102,7 @@ final class OverriderDeclarableVisitor
 
 		final Ref declaredIn = declaredInNode.accept(
 				CLAUSE_DEF_IP.bodyRefVisitor(),
-				ACCESS_FROM_DECLARATION.distribute(builder.distribute()));
+				ACCESS_FROM_PLACEMENT.distribute(builder.distribute()));
 
 		if (declaredIn == null) {
 			return builder;

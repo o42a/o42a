@@ -36,13 +36,13 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.field.DefinitionVisitor;
+import org.o42a.compiler.ip.field.FieldAccess;
 import org.o42a.compiler.ip.phrase.PhraseInterpreter;
 import org.o42a.compiler.ip.ref.ExpressionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.TypeInterpreter;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
@@ -119,7 +119,7 @@ public enum Interpreter {
 
 	public final ExpressionNodeVisitor<
 			FieldDefinition,
-			FieldDeclaration> definitionVisitor(TypeConsumer typeConsumer) {
+			FieldAccess> definitionVisitor(TypeConsumer typeConsumer) {
 		return new DefinitionVisitor(this, typeConsumer);
 	}
 

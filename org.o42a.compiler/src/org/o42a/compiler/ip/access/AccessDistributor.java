@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.access;
 
-import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_PLACEMENT;
 
 import org.o42a.compiler.ip.file.OtherContextDistributor;
 import org.o42a.core.Container;
@@ -55,20 +55,35 @@ public final class AccessDistributor extends Distributor {
 		return getAccessRules().getSource();
 	}
 
-	public final AccessDistributor setAccessSource(AccessSource accessSource) {
+	public final AccessDistributor fromType() {
 
-		final AccessRules oldRules = getAccessRules();
-		final AccessRules newRules = oldRules.setSource(accessSource);
+		final AccessRules accessRules = getAccessRules();
+		final AccessRules typeRules = accessRules.typeRules();
 
-		if (oldRules == newRules) {
+		if (accessRules == typeRules) {
 			return this;
 		}
 
-		return new AccessDistributor(this.distributor, newRules);
+		return typeRules.distribute(this.distributor);
 	}
 
 	public final AccessDistributor fromDeclaration() {
-		return setAccessSource(FROM_DECLARATION);
+
+		final AccessRules accessRules = getAccessRules();
+		final AccessRules declarationRules = accessRules.declarationRules();
+
+		if (accessRules == declarationRules) {
+			return this;
+		}
+
+		return declarationRules.distribute(this.distributor);
+	}
+
+	public final AccessDistributor fromPlacement() {
+		if (getAccessRules() == ACCESS_FROM_PLACEMENT) {
+			return this;
+		}
+		return ACCESS_FROM_PLACEMENT.distribute(this);
 	}
 
 	public final AccessDistributor distributeIn(CompilerContext context) {

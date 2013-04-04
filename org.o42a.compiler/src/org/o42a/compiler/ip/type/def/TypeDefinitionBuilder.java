@@ -20,20 +20,19 @@
 package org.o42a.compiler.ip.type.def;
 
 import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
-import static org.o42a.compiler.ip.type.def.TypeDefinitionAccessRules.ACCESS_FROM_TYPE;
 import static org.o42a.compiler.ip.type.def.TypeDefinitionVisitor.TYPE_DEFINITION_VISITOR;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.*;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
@@ -46,12 +45,15 @@ public class TypeDefinitionBuilder
 	private static final TypeParameterDeclaration[] NO_PARAMETERS =
 			new TypeParameterDeclaration[0];
 
+	private final AccessRules accessRules;
 	private final Obj object;
 	private final TypeConsumer consumer;
 	private TypeParameterDeclaration[] parameters = NO_PARAMETERS;
 
-	public TypeDefinitionBuilder(LocationInfo location, Obj object) {
-		super(location);
+
+	TypeDefinitionBuilder(TypeDefinition definition, Obj object) {
+		super(definition);
+		this.accessRules = definition.getAccessRules();
 		this.object = object;
 		this.consumer = typeConsumer(null);
 	}
@@ -132,7 +134,7 @@ public class TypeDefinitionBuilder
 	}
 
 	public final AccessDistributor distributeAccess() {
-		return ACCESS_FROM_TYPE.distribute(distribute());
+		return this.accessRules.distribute(distribute());
 	}
 
 	@Override
