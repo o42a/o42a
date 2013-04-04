@@ -19,22 +19,20 @@
 */
 package org.o42a.core.member.field.decl;
 
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.field.impl.OverriddenMemberField;
+import org.o42a.core.object.Obj;
 
 
 final class OverriddenDeclaredMemberField extends OverriddenMemberField<Field> {
 
-	OverriddenDeclaredMemberField(
-			MemberOwner owner,
-			MemberField propagatedFrom) {
+	OverriddenDeclaredMemberField(Obj owner, MemberField propagatedFrom) {
 		super(owner, propagatedFrom);
 	}
 
 	@Override
-	public OverriddenDeclaredMemberField propagateTo(MemberOwner owner) {
+	public OverriddenDeclaredMemberField propagateTo(Obj owner) {
 		return new OverriddenDeclaredMemberField(owner, this);
 	}
 

@@ -22,7 +22,9 @@ package org.o42a.core.member.type;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Alias;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.Visibility;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.type.impl.OverriddenMemberTypeParameter;
@@ -37,7 +39,7 @@ public abstract class MemberTypeParameter extends Member {
 			LocationInfo location,
 			Distributor distributor,
 			Obj owner) {
-		super(location, distributor, owner.toMemberOwner());
+		super(location, distributor, owner);
 	}
 
 	public final TypeParameter getTypeParameter() {
@@ -90,7 +92,7 @@ public abstract class MemberTypeParameter extends Member {
 	public abstract MemberTypeParameter getPropagatedFrom();
 
 	@Override
-	public final MemberTypeParameter propagateTo(MemberOwner owner) {
+	public final MemberTypeParameter propagateTo(Obj owner) {
 		return new OverriddenMemberTypeParameter(owner.toObject(), this);
 	}
 

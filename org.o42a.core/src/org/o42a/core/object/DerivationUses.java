@@ -127,7 +127,7 @@ final class DerivationUses {
 			return enclosingObject;
 		}
 
-		return enclosingScope.toMember().getMemberOwner().getOwner();
+		return enclosingScope.toMember().getMemberOwner();
 	}
 
 	private final Usable<DerivationUsage> uses() {

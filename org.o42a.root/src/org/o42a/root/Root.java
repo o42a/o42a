@@ -229,7 +229,7 @@ public class Root extends Obj {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		this.memberRegistry.registerMembers(members);
-		for (Field field : this.sources.fields(toMemberOwner())) {
+		for (Field field : this.sources.fields(this)) {
 			members.addMember(field.toMember());
 		}
 	}

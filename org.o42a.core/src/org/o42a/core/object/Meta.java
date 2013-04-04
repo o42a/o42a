@@ -51,7 +51,7 @@ public final class Meta extends ObjectMeta {
 		final Member enclosingMember = enclosingScope.toMember();
 
 		if (enclosingMember != null) {
-			return enclosingMember.getMemberOwner().getOwner().meta();
+			return enclosingMember.getMemberOwner().meta();
 		}
 
 		return null;

@@ -28,7 +28,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.ref.cmp.ComparisonExpression;
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
@@ -48,7 +48,7 @@ public abstract class AbstractComparisonMacro extends AnnotatedMacro {
 	private Ref right;
 
 	public AbstractComparisonMacro(
-			MemberOwner owner,
+			Obj owner,
 			AnnotatedSources sources,
 			BinaryPhraseOperator operator) {
 		super(owner, sources);

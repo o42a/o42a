@@ -147,8 +147,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 				// The dependency affects the member owner.
 				final Member topMember = enclosingScope.toMember();
 
-				appendParentMeta(
-						topMember.getMemberOwner().getOwner().getScope());
+				appendParentMeta(topMember.getScope());
 
 				// The dependency path starts with this member access.
 				this.depPath = topMember.getMemberKey().toPath();

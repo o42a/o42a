@@ -20,14 +20,14 @@
 package org.o42a.common.object;
 
 import org.o42a.common.source.URLSourceTree;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 
 
 public interface AnnotatedSources {
 
 	URLSourceTree getSourceTree();
 
-	Field[] fields(MemberOwner owner);
+	Field[] fields(Obj owner);
 
 }

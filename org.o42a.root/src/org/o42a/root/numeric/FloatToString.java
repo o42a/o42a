@@ -25,7 +25,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.root.adapter.ToString;
@@ -34,7 +34,7 @@ import org.o42a.root.adapter.ToString;
 @SourcePath(relativeTo = FloatValueTypeObject.class, value = "@string.o42a")
 public class FloatToString extends ToString<Double> {
 
-	public FloatToString(MemberOwner owner, AnnotatedSources sources) {
+	public FloatToString(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

@@ -21,7 +21,7 @@ package org.o42a.common.object;
 
 import static org.o42a.core.value.ValueType.DIRECTIVE;
 
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.directive.Directive;
@@ -31,7 +31,7 @@ public abstract class DirectiveObject
 		extends AnnotatedObject
 		implements Directive {
 
-	public DirectiveObject(MemberOwner owner, AnnotatedSources sources) {
+	public DirectiveObject(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

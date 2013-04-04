@@ -33,7 +33,10 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Accessor;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberName;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -50,7 +53,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 
 	private Ref input;
 
-	public ByString(MemberOwner owner, AnnotatedSources sources) {
+	public ByString(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

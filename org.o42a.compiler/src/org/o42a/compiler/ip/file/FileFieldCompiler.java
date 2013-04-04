@@ -23,8 +23,8 @@ import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
 
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ObjectSource;
@@ -39,7 +39,7 @@ public class FileFieldCompiler
 	}
 
 	@Override
-	public FieldDeclaration declare(MemberOwner owner) {
+	public FieldDeclaration declare(Obj owner) {
 		return getSection().getTitle().fieldDeclaration(
 				getEnclosingBlock().distribute());
 	}

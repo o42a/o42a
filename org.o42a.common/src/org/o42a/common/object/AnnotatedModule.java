@@ -63,7 +63,7 @@ public abstract class AnnotatedModule extends Module {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
-		for (Field field : getSources().fields(toMemberOwner())) {
+		for (Field field : getSources().fields(this)) {
 			members.addMember(field.toMember());
 		}
 	}

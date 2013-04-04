@@ -58,8 +58,6 @@ public abstract class MemberRegistry {
 
 	public abstract Obj getOwner();
 
-	public abstract MemberOwner getMemberOwner();
-
 	public final Inclusions inclusions() {
 		return this.inclusions;
 	}
@@ -95,11 +93,6 @@ public abstract class MemberRegistry {
 
 		NoDeclarations() {
 			super(noInclusions());
-		}
-
-		@Override
-		public MemberOwner getMemberOwner() {
-			return null;
 		}
 
 		@Override

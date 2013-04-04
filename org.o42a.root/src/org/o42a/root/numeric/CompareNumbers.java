@@ -24,7 +24,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.StaticsIR;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.root.operator.BinaryResult;
@@ -39,7 +39,7 @@ abstract class CompareNumbers<P extends Number>
 	static final ID NOT_GREATER_ID = ID.id("not_greater");
 
 	CompareNumbers(
-			MemberOwner owner,
+			Obj owner,
 			AnnotatedSources sources,
 			ValueType<P> operandType) {
 		super(owner, sources, "what", operandType, "with", operandType);

@@ -20,7 +20,7 @@
 package org.o42a.common.object;
 
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.ValueType;
 
@@ -28,14 +28,14 @@ import org.o42a.core.value.ValueType;
 public abstract class ValueTypeObject extends AnnotatedObject {
 
 	public ValueTypeObject(
-			MemberOwner owner,
+			Obj owner,
 			AnnotatedSources sources,
 			ValueType<?> valueType) {
 		super(owner, sources);
 		setValueType(valueType);
 	}
 
-	protected ValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
+	protected ValueTypeObject(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 
