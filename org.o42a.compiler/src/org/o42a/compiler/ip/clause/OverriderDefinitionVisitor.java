@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
@@ -25,7 +25,6 @@ import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;
 
 
@@ -39,21 +38,25 @@ final class OverriderDefinitionVisitor
 	}
 
 	@Override
-	public ClauseBuilder visitScopeRef(ScopeRefNode ref, ClauseBuilder p) {
+	public ClauseAccess visitScopeRef(ScopeRefNode ref, ClauseAccess p) {
 		if (ref.getType() != ScopeType.IMPLIED) {
 			return super.visitScopeRef(ref, p);
 		}
-		return p.setAscendants(new AscendantsDefinition(
+
+		p.get().setAscendants(new AscendantsDefinition(
 				location(p, ref),
 				p.distribute()));
+
+		return p;
 	}
 
 	@Override
-	public ClauseBuilder visitParentheses(
+	public ClauseAccess visitParentheses(
 			ParenthesesNode parentheses,
-			ClauseBuilder p) {
+			ClauseAccess p) {
 		if (parentheses.getContent().length == 0) {
-			return p.setSubstitution(VALUE_SUBSTITUTION);
+			p.get().setSubstitution(VALUE_SUBSTITUTION);
+			return p;
 		}
 		return super.visitParentheses(parentheses, p);
 	}

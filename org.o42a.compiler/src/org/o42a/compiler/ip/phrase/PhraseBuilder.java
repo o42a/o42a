@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.IntervalInterpreter.invalidIntervalBracket;
+import static org.o42a.compiler.ip.clause.IntervalInterpreter.invalidIntervalBracket;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
@@ -40,8 +40,8 @@ import org.o42a.common.phrase.Phrase;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.phrase.part.UnaryPhraseOperator;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
-import org.o42a.compiler.ip.ref.AccessRules;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
@@ -249,6 +249,7 @@ public final class PhraseBuilder extends Contained {
 
 	public final PhraseBuilder declarations(ParenthesesNode node) {
 		phrase().declarations(contentBuilder(
+				getAccessRules().contentRules(),
 				new DefaultStatementVisitor(ip(), getContext()),
 				node));
 		return this;
@@ -256,6 +257,7 @@ public final class PhraseBuilder extends Contained {
 
 	public final PhraseBuilder imperative(BracesNode node) {
 		phrase().imperative(contentBuilder(
+				getAccessRules().contentRules(),
 				new DefaultStatementVisitor(ip(), getContext()),
 				node));
 		return this;

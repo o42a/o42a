@@ -17,22 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
-import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.buildOverrider;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
+import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.sentence.Statements;
 
 
 final class ClauseStatementVisitor extends DefaultStatementVisitor {
@@ -42,7 +41,7 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 	}
 
 	@Override
-	public Void visitDeclarator(DeclaratorNode declarator, Statements<?, ?> p) {
+	public Void visitDeclarator(DeclaratorNode declarator, StatementsAccess p) {
 		if (!declarator.getTarget().isOverride()) {
 			return super.visitDeclarator(declarator, p);
 		}
@@ -54,11 +53,11 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 				new Location(getContext(), declarator.getDeclarable()),
 				distributor)
 				.setKind(ClauseKind.OVERRIDER);
-		final ClauseBuilder builder =
+		final ClauseAccess builder =
 				buildOverrider(declaration, declarator, p);
 
 		if (builder != null) {
-			builder.mandatory().build();
+			builder.get().mandatory().build();
 		}
 
 		return null;

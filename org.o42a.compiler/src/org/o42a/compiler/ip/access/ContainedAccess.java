@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,29 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
+package org.o42a.compiler.ip.access;
 
-import org.o42a.ast.ref.AbstractRefVisitor;
-import org.o42a.ast.ref.RefNode;
-import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.*;
 
 
-final class BodyRefVisitor extends AbstractRefVisitor<Ref, AccessDistributor> {
+public abstract class ContainedAccess<T extends ContainerInfo>
+		extends AbstractAccess<T>
+		implements ContainerInfo {
 
-	private final RefInterpreter interpreter;
-
-	BodyRefVisitor(RefInterpreter interpreter) {
-		this.interpreter = interpreter;
+	public ContainedAccess(AccessRules rules, T target) {
+		super(rules, target);
 	}
 
 	@Override
-	protected Ref visitRef(RefNode ref, AccessDistributor p) {
+	public final Container getContainer() {
+		return get().getContainer();
+	}
 
-		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
+	@Override
+	public final Distributor distribute() {
+		return Contained.distribute(this);
+	}
 
-		return result != null ? result.bodyRef() : null;
+	public final AccessDistributor distributeAccess() {
+		return getRules().distribute(distribute());
+	}
+
+	@Override
+	public final Distributor distributeIn(Container container) {
+		return Contained.distributeIn(this, container);
 	}
 
 }

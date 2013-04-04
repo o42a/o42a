@@ -24,7 +24,7 @@ import static org.o42a.common.macro.Macros.expandMacro;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.ref.Ref;

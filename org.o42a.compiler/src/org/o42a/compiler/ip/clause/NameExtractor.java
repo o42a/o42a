@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
-import static org.o42a.compiler.ip.member.ClauseInterpreter.invalidClauseName;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.invalidClauseName;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;

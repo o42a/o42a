@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.type.def;
 
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_PLACEMENT;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PLAIN_REF_IP;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.core.member.MemberName.fieldName;
@@ -156,7 +156,7 @@ final class TypeParameterKeyVisitor
 
 		final Ref declaredIn = declaredInNode.accept(
 				PLAIN_REF_IP.bodyRefVisitor(),
-				ACCESS_FROM_DECLARATION.distribute(p.distribute()));
+				ACCESS_FROM_PLACEMENT.distribute(p.distribute()));
 
 		if (declaredIn == null) {
 			return null;

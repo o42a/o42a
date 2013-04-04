@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.field;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
@@ -38,7 +38,7 @@ import org.o42a.ast.type.DefinitionKind;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.common.macro.type.TypeParameterMemberKey;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;

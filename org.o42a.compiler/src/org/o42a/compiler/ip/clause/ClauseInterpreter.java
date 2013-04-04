@@ -17,15 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.ClauseIdVisitor.CLAUSE_ID_VISITOR;
-import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
-import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
+import static org.o42a.compiler.ip.clause.ClauseIdVisitor.CLAUSE_ID_VISITOR;
+import static org.o42a.compiler.ip.clause.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
+import static org.o42a.compiler.ip.clause.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
 import static org.o42a.core.member.clause.ClauseKind.EXPRESSION;
 import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
@@ -37,8 +36,9 @@ import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.Contained;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.object.Obj;
@@ -46,7 +46,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.Group;
-import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 
 
@@ -158,11 +157,15 @@ public class ClauseInterpreter {
 	public static void clause(
 			CompilerContext context,
 			ClauseDeclaratorNode declarator,
-			Statements<?, ?> statements) {
+			StatementsAccess statements) {
 
-		final Distributor distributor =
-				new Contained(context, declarator, statements.nextDistributor())
-				.distribute();
+		final AccessDistributor distributor =
+				statements.getRules().distribute(
+						new Contained(
+								context,
+								declarator,
+								statements.get().nextDistributor())
+						.distribute());
 		ClauseDeclaration declaration = declarator.getClauseId().accept(
 				CLAUSE_ID_VISITOR,
 				distributor);
@@ -185,16 +188,19 @@ public class ClauseInterpreter {
 					statements);
 		} else if (declaration.getClauseId() != ClauseId.IMPERATIVE) {
 
-			final ClauseBuilder builder = statements.clause(declaration);
+			final ClauseBuilder builder = statements.get().clause(declaration);
 
 			if (builder == null) {
 				return;
 			}
 			builder.setSubstitution(VALUE_SUBSTITUTION);
-			declare(builder, declarator).build();
+			declare(
+					new ClauseAccess(statements.getRules(), builder),
+					declarator);
+			builder.build();
 		} else {
 
-			final Group group = statements.group(
+			final Group group = statements.get().group(
 					declaration,
 					declaration.setKind(ClauseKind.GROUP));
 
@@ -202,15 +208,17 @@ public class ClauseInterpreter {
 				return;
 			}
 
-			declare(group.getBuilder(), declarator);
+			declare(
+					new ClauseAccess(statements.getRules(), group.getBuilder()),
+					declarator);
 			group.parentheses();
 		}
 	}
 
-	static ClauseBuilder buildOverrider(
+	static ClauseAccess buildOverrider(
 			ClauseDeclaration declaration,
 			DeclaratorNode declarator,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
 		final DeclarationTarget target = declarator.getTarget();
 
@@ -228,7 +236,7 @@ public class ClauseInterpreter {
 		}
 
 		final ClauseBuilder builder =
-				p.clause(declaration.setKind(ClauseKind.OVERRIDER));
+				p.get().clause(declaration.setKind(ClauseKind.OVERRIDER));
 
 		declarator.getDeclarable().accept(
 				OVERRIDER_DECLARABLE_VISITOR,
@@ -240,17 +248,19 @@ public class ClauseInterpreter {
 			builder.prototype();
 		}
 
-		return definition.accept(OVERRIDER_DEFINITION_VISITOR, builder);
+		return definition.accept(
+				OVERRIDER_DEFINITION_VISITOR,
+				new ClauseAccess(p.getRules(), builder));
 	}
 
-	static ClauseBuilder declare(
-			ClauseBuilder builder,
+	static ClauseAccess declare(
+			ClauseAccess builder,
 			ClauseDeclaratorNode declarator) {
 		return reuseClauses(setOutcome(builder, declarator), declarator);
 	}
 
-	private static ClauseBuilder setOutcome(
-			ClauseBuilder builder,
+	private static ClauseAccess setOutcome(
+			ClauseAccess builder,
 			ClauseDeclaratorNode declarator) {
 
 		final OutcomeNode outcomeNode = declarator.getOutcome();
@@ -265,13 +275,15 @@ public class ClauseInterpreter {
 			return builder;
 		}
 
-		return builder.setOutcome(outcomeValueNode.accept(
+		builder.get().setOutcome(outcomeValueNode.accept(
 				CLAUSE_DEF_IP.targetRefVisitor(),
-				ACCESS_FROM_DECLARATION.distribute(builder.distribute())));
+				builder.distributeAccess().fromDeclaration()));
+
+		return builder;
 	}
 
-	private static ClauseBuilder reuseClauses(
-			ClauseBuilder builder,
+	private static ClauseAccess reuseClauses(
+			ClauseAccess builder,
 			ClauseDeclaratorNode declarator) {
 
 		final ReusedClauseNode[] reusedNodes = declarator.getReused();
@@ -304,7 +316,7 @@ public class ClauseInterpreter {
 						continue;
 					}
 
-					builder.reuseClause(
+					builder.get().reuseClause(
 							objectPath.bind(location, builder.getScope())
 							.target(builder.distribute()),
 							true);
@@ -314,13 +326,13 @@ public class ClauseInterpreter {
 
 			reusedRef = clauseNode.accept(
 					CLAUSE_DECL_IP.targetRefVisitor(),
-					ACCESS_FROM_DECLARATION.distribute(builder.distribute()));
+					builder.distributeAccess().fromClauseReuse());
 
 			if (reusedRef == null) {
 				continue;
 			}
 
-			builder.reuseClause(
+			builder.get().reuseClause(
 					reusedRef,
 					reusedNode.getReuseContents() != null);
 		}
