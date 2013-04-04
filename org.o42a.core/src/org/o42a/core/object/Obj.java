@@ -22,7 +22,6 @@ package org.o42a.core.object;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
-import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
@@ -486,20 +485,14 @@ public abstract class Obj
 		if (found != null) {
 			return found;
 		}
-		if (declaredIn != null) {
+
+		final Member member = toMember();
+
+		if (member == null) {
 			return null;
 		}
 
-		final Field field = getScope().toField();
-
-		if (field == null) {
-			return null;
-		}
-		if (field.getKey().getMemberId().equals(memberId)) {
-			return SELF_MEMBER_PATH;
-		}
-
-		return null;
+		return member.matchingPath(memberId, declaredIn);
 	}
 
 	public Definitions overrideDefinitions(

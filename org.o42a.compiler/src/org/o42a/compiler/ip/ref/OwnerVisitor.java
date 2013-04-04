@@ -108,12 +108,12 @@ final class OwnerVisitor
 		case ANONYMOUS:
 			return owner(
 					p.getAccessRules(),
-					p.getAccessRules().memberById(
+					new MemberById(
 							ip().ip(),
 							location,
 							p,
 							ANONYMOUS_LOCAL_MEMBER,
-							null));
+							null).toRef());
 		}
 
 		p.getContext().getLogger().unresolvedScope(ref, type.getSign());
@@ -273,12 +273,12 @@ final class OwnerVisitor
 
 		return owner(
 				p.getAccessRules(),
-				p.getAccessRules().memberById(
+				new MemberById(
 						ip().ip(),
 						location(p, ref.getName()),
 						p,
 						ip().memberName(ref.getName().getName()),
-						declaredIn));
+						declaredIn).toRef());
 	}
 
 	Owner adapterRef(
@@ -345,12 +345,12 @@ final class OwnerVisitor
 
 		return owner(
 				p.getAccessRules(),
-				p.getAccessRules().memberById(
+				new MemberById(
 						ip().ip(),
 						location(p, ref),
 						p,
 						localName(nameNode.getName()),
-						declaredIn));
+						declaredIn).toRef());
 	}
 
 	private final Owner nonLinkOwner(AccessRules accessRules, Ref ownerRef) {
