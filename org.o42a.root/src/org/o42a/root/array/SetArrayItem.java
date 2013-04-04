@@ -33,7 +33,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
@@ -52,7 +54,7 @@ final class SetArrayItem extends AnnotatedBuiltin {
 	private Ref index;
 	private Ref newValue;
 
-	SetArrayItem(MemberOwner owner, AnnotatedSources sources) {
+	SetArrayItem(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 		setValueType(ValueType.VOID);
 	}

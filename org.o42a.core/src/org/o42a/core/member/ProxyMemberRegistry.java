@@ -46,11 +46,6 @@ public abstract class ProxyMemberRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public MemberOwner getMemberOwner() {
-		return registry().getMemberOwner();
-	}
-
-	@Override
 	public Obj getOwner() {
 		return registry().getOwner();
 	}

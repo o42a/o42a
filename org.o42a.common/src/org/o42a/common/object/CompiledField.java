@@ -19,7 +19,6 @@
 */
 package org.o42a.common.object;
 
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
@@ -32,7 +31,7 @@ public final class CompiledField extends ObjectField {
 	private final FieldCompiler compiler;
 
 	CompiledField(
-			MemberOwner owner,
+			Obj owner,
 			FieldDeclaration declaration,
 			FieldCompiler compiler) {
 		super(owner, declaration);

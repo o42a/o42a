@@ -23,7 +23,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.lib.test.TestModule;
@@ -33,7 +33,7 @@ import org.o42a.root.adapter.FloatByString;
 @SourcePath(relativeTo = TestModule.class, value = "parser/float.o42a")
 public final class ParseFloat extends FloatByString {
 
-	public ParseFloat(MemberOwner owner, AnnotatedSources sources) {
+	public ParseFloat(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

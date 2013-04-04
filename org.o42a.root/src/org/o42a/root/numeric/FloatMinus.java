@@ -29,7 +29,7 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.root.Root;
 import org.o42a.root.operator.UnaryResult;
@@ -38,7 +38,7 @@ import org.o42a.root.operator.UnaryResult;
 @SourcePath(relativeTo = Root.class, value = "floats/minus.o42a")
 public final class FloatMinus extends UnaryResult<Double, Double> {
 
-	public FloatMinus(MemberOwner owner, AnnotatedSources sources) {
+	public FloatMinus(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, "operand", ValueType.FLOAT);
 	}
 

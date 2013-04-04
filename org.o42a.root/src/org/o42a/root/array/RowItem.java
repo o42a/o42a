@@ -21,13 +21,13 @@ package org.o42a.root.array;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 
 
 @SourcePath(relativeTo = RowValueTypeObject.class, value = "item.o42a")
 final class RowItem extends IndexedItem {
 
-	RowItem(MemberOwner owner, AnnotatedSources sources) {
+	RowItem(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

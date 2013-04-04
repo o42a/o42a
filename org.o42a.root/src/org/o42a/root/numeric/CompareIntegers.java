@@ -32,7 +32,7 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.root.Root;
 
@@ -40,7 +40,7 @@ import org.o42a.root.Root;
 @SourcePath(relativeTo = Root.class, value = "integers/compare.o42a")
 public final class CompareIntegers extends CompareNumbers<Long> {
 
-	public CompareIntegers(MemberOwner owner, AnnotatedSources sources) {
+	public CompareIntegers(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, ValueType.INTEGER);
 	}
 

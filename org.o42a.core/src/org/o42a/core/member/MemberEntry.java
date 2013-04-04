@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member;
 
+import org.o42a.core.object.Obj;
+
 
 final class MemberEntry {
 
@@ -59,7 +61,7 @@ final class MemberEntry {
 		return this.propagated || this.member.isOverride();
 	}
 
-	public final Member createMember(MemberOwner owner) {
+	public final Member createMember(Obj owner) {
 		if (!this.propagated) {
 			return this.member;
 		}

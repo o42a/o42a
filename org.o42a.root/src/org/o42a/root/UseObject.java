@@ -28,7 +28,7 @@ import org.o42a.common.object.DirectiveObject;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -50,7 +50,7 @@ public class UseObject extends DirectiveObject {
 	private Ref object;
 	private Ref alias;
 
-	public UseObject(MemberOwner owner, AnnotatedSources sources) {
+	public UseObject(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

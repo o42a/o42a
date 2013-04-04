@@ -28,7 +28,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
@@ -42,7 +42,7 @@ public class RtFalse extends AnnotatedBuiltin {
 
 	private static final RtFalseEval RT_FALSE_EVAL = new RtFalseEval();
 
-	public RtFalse(MemberOwner owner, AnnotatedSources sources) {
+	public RtFalse(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

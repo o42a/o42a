@@ -28,6 +28,7 @@ import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.DerivationUsage;
 
 
@@ -158,14 +159,14 @@ public class FieldAnalysis {
 		this.derivationUses =
 				DerivationUsage.usable("DerivationOf", getMember());
 
-		final Obj owner = member.getMemberOwner().getOwner();
+		final ObjectType ownerType = member.getMemberOwner().type();
 
 		// If owner derived then member derived too.
 		this.derivationUses.useBy(
-				owner.type().staticDerivation(),
+				ownerType.staticDerivation(),
 				STATIC_DERIVATION_USAGE);
 		this.derivationUses.useBy(
-				owner.type().rtDerivation(),
+				ownerType.rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
 
 		final MemberField firstDeclaration = member.getFirstDeclaration();

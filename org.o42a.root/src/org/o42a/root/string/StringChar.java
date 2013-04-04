@@ -44,7 +44,7 @@ import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
@@ -72,7 +72,7 @@ final class StringChar extends AnnotatedBuiltin {
 	private Ref string;
 	private Ref index;
 
-	public StringChar(MemberOwner owner, AnnotatedSources sources) {
+	public StringChar(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

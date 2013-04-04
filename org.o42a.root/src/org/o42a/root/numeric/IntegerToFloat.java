@@ -25,7 +25,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.root.adapter.BuiltinConverter;
@@ -34,7 +34,7 @@ import org.o42a.root.adapter.BuiltinConverter;
 @SourcePath(relativeTo = IntegerValueTypeObject.class, value = "@float.o42a")
 public class IntegerToFloat extends BuiltinConverter<Long, Double> {
 
-	public IntegerToFloat(MemberOwner owner, AnnotatedSources sources) {
+	public IntegerToFloat(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

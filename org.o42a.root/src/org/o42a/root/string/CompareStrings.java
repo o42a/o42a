@@ -28,7 +28,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.root.operator.BinaryResult;
@@ -37,7 +37,7 @@ import org.o42a.root.operator.BinaryResult;
 @SourcePath(relativeTo = Strings.class, value = "compare.o42a")
 final class CompareStrings extends BinaryResult<Long, String, String> {
 
-	CompareStrings(MemberOwner owner, AnnotatedSources sources) {
+	CompareStrings(Obj owner, AnnotatedSources sources) {
 		super(
 				owner,
 				sources,

@@ -27,7 +27,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.root.Root;
 
@@ -35,7 +35,7 @@ import org.o42a.root.Root;
 @SourcePath(relativeTo = Root.class, value = "floats/equals.o42a")
 public final class FloatsEqual extends NumbersEqual<Double> {
 
-	public FloatsEqual(MemberOwner owner, AnnotatedSources sources) {
+	public FloatsEqual(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, ValueType.FLOAT);
 	}
 

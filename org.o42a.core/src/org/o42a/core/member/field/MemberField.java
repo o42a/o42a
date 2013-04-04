@@ -43,18 +43,18 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	private FieldAnalysis analysis;
 	private ArrayList<FieldReplacement> allReplacements;
 
-	public MemberField(MemberOwner owner, FieldDeclaration declaration) {
+	public MemberField(Obj owner, FieldDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
 		this.declaration = declaration;
 	}
 
 	protected MemberField(
 			LocationInfo location,
-			MemberOwner owner,
+			Obj owner,
 			MemberField propagatedFrom) {
 		super(
 				location,
-				propagatedFrom.distributeIn(owner.getContainer()),
+				propagatedFrom.distributeIn(owner),
 				owner);
 		this.declaration =
 				new FieldDeclaration(
@@ -110,10 +110,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		if (this.field != null) {
 			return this.field.isUpdated();
 		}
-
-		final Obj owner = getMemberOwner().getOwner();
-
-		if (!owner.meta().isUpdated()) {
+		if (!getMemberOwner().meta().isUpdated()) {
 			// Field can not be updated without owner to be updated also.
 			return false;
 		}
@@ -201,7 +198,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	@Override
-	public abstract MemberField propagateTo(MemberOwner owner);
+	public abstract MemberField propagateTo(Obj owner);
 
 	@Override
 	public void resolveAll() {

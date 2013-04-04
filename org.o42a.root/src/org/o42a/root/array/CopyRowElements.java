@@ -21,13 +21,13 @@ package org.o42a.root.array;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 
 
 @SourcePath(relativeTo = RowValueTypeObject.class, value = "copy.o42a")
 public class CopyRowElements extends AbstractCopyArrayElements {
 
-	public CopyRowElements(MemberOwner owner, AnnotatedSources sources) {
+	public CopyRowElements(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

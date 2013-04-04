@@ -21,7 +21,7 @@ package org.o42a.root.array;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 
 
 @SourcePath(
@@ -29,7 +29,7 @@ import org.o42a.core.member.MemberOwner;
 		value = "length.o42a")
 final class ArrayLength extends IndexedLength {
 
-	ArrayLength(MemberOwner owner, AnnotatedSources sources) {
+	ArrayLength(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

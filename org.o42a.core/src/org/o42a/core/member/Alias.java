@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 
@@ -29,7 +30,7 @@ public abstract class Alias extends Member {
 	public Alias(
 			LocationInfo location,
 			Distributor distributor,
-			MemberOwner owner) {
+			Obj owner) {
 		super(location, distributor, owner);
 	}
 
