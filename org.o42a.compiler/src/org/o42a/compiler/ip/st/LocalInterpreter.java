@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.st;
 
-import static org.o42a.compiler.ip.file.OtherContextDistributor.distributeIn;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
@@ -39,8 +37,8 @@ import org.o42a.ast.type.InterfaceNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeParameterNode;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
-import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRefParameters;
@@ -48,7 +46,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.Local;
-import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.string.Name;
@@ -97,7 +94,7 @@ public final class LocalInterpreter {
 	public static boolean local(
 			Interpreter ip,
 			CompilerContext context,
-			Statements<?, ?> statements,
+			StatementsAccess statements,
 			DeclaratorNode declarator) {
 
 		final Name name = declaredLocalName(
@@ -124,7 +121,7 @@ public final class LocalInterpreter {
 				declarator.getDefinition(),
 				TARGET_REFERRAL);
 
-		statements.local(
+		statements.get().local(
 				new Location(context, declarator.getDeclarable()),
 				name,
 				ref);
@@ -135,7 +132,7 @@ public final class LocalInterpreter {
 	public static Local local(
 			Interpreter ip,
 			CompilerContext context,
-			Statements<?, ?> statements,
+			StatementsAccess statements,
 			InterfaceNode iface,
 			LocalNode local,
 			Referral referral) {
@@ -160,12 +157,13 @@ public final class LocalInterpreter {
 				local.getExpression(),
 				referral);
 
-		return statements.local(new Location(context, location), name, ref);
+		return statements.get()
+				.local(new Location(context, location), name, ref);
 	}
 
 	private static Name declaredLocalName(
 			DeclarableNode declarable,
-			Statements<?, ?> statements,
+			StatementsAccess statements,
 			CompilerLogger logger) {
 
 		final MemberRefNode memberRef = declarable.toMemberRef();
@@ -188,9 +186,9 @@ public final class LocalInterpreter {
 
 	private static Name extractLocalName(
 			MemberRefNode memberRef,
-			Statements<?, ?> statements) {
+			StatementsAccess statements) {
 		if (!isLocalRef(memberRef)) {
-			if (statements.getSentenceFactory().isDeclarative()) {
+			if (statements.isDeclarative()) {
 				return null;
 			}
 			if (memberRef.getOwner() != null) {
@@ -210,15 +208,14 @@ public final class LocalInterpreter {
 	private static Ref localRef(
 			Interpreter ip,
 			CompilerContext context,
-			Statements<?, ?> statements,
+			StatementsAccess statements,
 			LogInfo location,
 			InterfaceNode iface,
 			ExpressionNode definition,
 			Referral referral) {
 
 		final AccessDistributor distributor =
-				ACCESS_FROM_DEFINITION.distribute(
-						distributeIn(statements.nextDistributor(), context));
+				statements.nextDistributor().distributeIn(context);
 		final Ref value = localValue(
 				ip,
 				context,

@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,29 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
+package org.o42a.compiler.ip.clause;
 
-import org.o42a.ast.ref.AbstractRefVisitor;
-import org.o42a.ast.ref.RefNode;
-import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.core.ref.Ref;
+import org.o42a.compiler.ip.access.AccessRules;
 
 
-final class BodyRefVisitor extends AbstractRefVisitor<Ref, AccessDistributor> {
+public class ClauseAccessRules {
 
-	private final RefInterpreter interpreter;
-
-	BodyRefVisitor(RefInterpreter interpreter) {
-		this.interpreter = interpreter;
-	}
-
-	@Override
-	protected Ref visitRef(RefNode ref, AccessDistributor p) {
-
-		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
-
-		return result != null ? result.bodyRef() : null;
-	}
+	public static final AccessRules ACCESS_FROM_CLAUSE_CONTENT =
+			AccessRules.ACCESS_FROM_DEFINITION;
+	public static final AccessRules ACCESS_FROM_CLAUSE_DECL =
+			AccessRules.ACCESS_FROM_DECLARATION;
 
 }

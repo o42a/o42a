@@ -23,7 +23,7 @@ import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;

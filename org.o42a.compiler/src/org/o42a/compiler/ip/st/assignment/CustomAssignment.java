@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 

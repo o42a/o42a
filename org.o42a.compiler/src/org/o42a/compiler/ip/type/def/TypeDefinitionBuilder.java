@@ -26,7 +26,7 @@ import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.*;
 import org.o42a.core.member.*;

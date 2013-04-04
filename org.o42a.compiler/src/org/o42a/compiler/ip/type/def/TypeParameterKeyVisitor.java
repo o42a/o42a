@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.type.def;
 
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PLAIN_REF_IP;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.core.member.MemberName.fieldName;

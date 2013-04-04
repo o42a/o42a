@@ -19,8 +19,8 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import org.o42a.compiler.ip.ref.AccessDistributor;
-import org.o42a.compiler.ip.ref.AccessRules;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.compiler.ip.ref.MemberOf;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;

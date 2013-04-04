@@ -23,7 +23,7 @@ import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.expression.UnaryOperator;
 import org.o42a.codegen.code.Block;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;

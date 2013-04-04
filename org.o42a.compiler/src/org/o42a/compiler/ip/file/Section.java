@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.file;
 
 import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.file.OtherContextDistributor.distributeIn;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 import static org.o42a.compiler.ip.st.StInterpreter.addSentence;
@@ -181,6 +182,7 @@ final class Section implements LogInfo {
 
 	public void define(DeclarativeBlock definition) {
 		addContent(
+				ACCESS_FROM_DEFINITION,
 				new DefaultStatementVisitor(PLAIN_IP, getContext()),
 				definition,
 				getSectionNode());
@@ -306,7 +308,12 @@ final class Section implements LogInfo {
 						sentence.getMark(),
 						"Only propositions allowed in file header");
 			}
-			addSentence(visitor, enclosingBlock, sentence, PROPOSITION);
+			addSentence(
+					ACCESS_FROM_DEFINITION,
+					visitor,
+					enclosingBlock,
+					sentence,
+					PROPOSITION);
 		}
 
 		enclosingBlock.executeInstructions();
