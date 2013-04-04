@@ -20,7 +20,6 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.AbstractContainer.parentContainer;
-import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 
 import java.util.Collection;
 
@@ -169,9 +168,13 @@ public abstract class GroupClause extends Clause implements Container {
 			if (foundInGroup != null) {
 				return foundInGroup;
 			}
-			if (toMember().getMemberId().equals(memberId)) {
-				return SELF_MEMBER_PATH;
-			}
+		}
+
+		final MemberPath matchingPath =
+				toMember().matchingPath(memberId, declaredIn);
+
+		if (matchingPath != null) {
+			return matchingPath;
 		}
 
 		return getEnclosingContainer().findMember(

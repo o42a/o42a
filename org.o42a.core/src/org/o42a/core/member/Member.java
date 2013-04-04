@@ -30,6 +30,7 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.MemberPropagatedFromID;
 import org.o42a.core.member.type.MemberTypeParameter;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.path.Path;
@@ -80,6 +81,43 @@ public abstract class Member extends Contained implements MemberPath {
 	public abstract MemberId getMemberId();
 
 	public abstract MemberKey getMemberKey();
+
+	/**
+	 * Determines whether this member matches the given identifier and optional
+	 * placement and returns the member path leading to this member if so.
+	 *
+	 * <p>This method can be called from {@link Container#findMember(Access,
+	 * MemberId, Obj)} if the given container is member.</p>
+	 *
+	 * @param memberId target member identifier.
+	 * @param declaredIn the object member should be declared in
+	 * or <code>null</code> if unknown.
+	 *
+	 * @return a path to this member or <code>null</code> if it does not match
+	 * the request.
+	 */
+	public final MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
+		if (declaredIn != null && declaredIn.member(getMemberKey()) == null) {
+			// The given object does not contain this member.
+			return null;
+		}
+		if (memberId.getEnclosingId() == null) {
+
+			final MemberId enclosingId = getMemberId().getEnclosingId();
+
+			if (!getMemberId().getLocalId().equals(memberId)) {
+				return null;
+			}
+			if (enclosingId == null) {
+				return SELF_MEMBER_PATH;
+			}
+			return this;
+		}
+		if (!getMemberId().equals(memberId)) {
+			return null;
+		}
+		return this;
+	}
 
 	@Override
 	public final Path pathToMember() {
