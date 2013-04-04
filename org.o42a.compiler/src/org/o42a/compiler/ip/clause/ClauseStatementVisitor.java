@@ -25,6 +25,7 @@ import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDecla
 
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
+import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -32,7 +33,6 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.sentence.Statements;
 
 
 final class ClauseStatementVisitor extends DefaultStatementVisitor {
@@ -42,7 +42,7 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 	}
 
 	@Override
-	public Void visitDeclarator(DeclaratorNode declarator, Statements<?, ?> p) {
+	public Void visitDeclarator(DeclaratorNode declarator, StatementsAccess p) {
 		if (!declarator.getTarget().isOverride()) {
 			return super.visitDeclarator(declarator, p);
 		}

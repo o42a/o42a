@@ -39,6 +39,8 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.ref.MemberRefNode.Qualifier;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;

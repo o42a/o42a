@@ -33,6 +33,8 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;

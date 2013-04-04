@@ -22,10 +22,10 @@ package org.o42a.compiler.ip.clause;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.compiler.ip.clause.ClauseIdVisitor.CLAUSE_ID_VISITOR;
 import static org.o42a.compiler.ip.clause.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.clause.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.core.member.clause.ClauseKind.EXPRESSION;
 import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
@@ -37,8 +37,9 @@ import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.Contained;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.object.Obj;
@@ -46,7 +47,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.Group;
-import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 
 
@@ -158,11 +158,15 @@ public class ClauseInterpreter {
 	public static void clause(
 			CompilerContext context,
 			ClauseDeclaratorNode declarator,
-			Statements<?, ?> statements) {
+			StatementsAccess statements) {
 
-		final Distributor distributor =
-				new Contained(context, declarator, statements.nextDistributor())
-				.distribute();
+		final AccessDistributor distributor =
+				statements.getRules().distribute(
+						new Contained(
+								context,
+								declarator,
+								statements.get().nextDistributor())
+						.distribute());
 		ClauseDeclaration declaration = declarator.getClauseId().accept(
 				CLAUSE_ID_VISITOR,
 				distributor);
@@ -185,7 +189,7 @@ public class ClauseInterpreter {
 					statements);
 		} else if (declaration.getClauseId() != ClauseId.IMPERATIVE) {
 
-			final ClauseBuilder builder = statements.clause(declaration);
+			final ClauseBuilder builder = statements.get().clause(declaration);
 
 			if (builder == null) {
 				return;
@@ -194,7 +198,7 @@ public class ClauseInterpreter {
 			declare(builder, declarator).build();
 		} else {
 
-			final Group group = statements.group(
+			final Group group = statements.get().group(
 					declaration,
 					declaration.setKind(ClauseKind.GROUP));
 
@@ -210,7 +214,7 @@ public class ClauseInterpreter {
 	static ClauseBuilder buildOverrider(
 			ClauseDeclaration declaration,
 			DeclaratorNode declarator,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
 		final DeclarationTarget target = declarator.getTarget();
 
@@ -228,7 +232,7 @@ public class ClauseInterpreter {
 		}
 
 		final ClauseBuilder builder =
-				p.clause(declaration.setKind(ClauseKind.OVERRIDER));
+				p.get().clause(declaration.setKind(ClauseKind.OVERRIDER));
 
 		declarator.getDeclarable().accept(
 				OVERRIDER_DECLARABLE_VISITOR,

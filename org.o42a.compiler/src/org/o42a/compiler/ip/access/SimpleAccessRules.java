@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
+package org.o42a.compiler.ip.access;
 
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
@@ -62,6 +62,11 @@ final class SimpleAccessRules extends AccessRules {
 	@Override
 	public boolean containerIsVisible(Container from, Container to) {
 		return true;
+	}
+
+	@Override
+	public AccessRules contentRules() {
+		return ACCESS_FROM_DEFINITION;
 	}
 
 }

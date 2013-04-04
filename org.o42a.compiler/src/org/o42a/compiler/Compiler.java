@@ -20,7 +20,7 @@
 package org.o42a.compiler;
 
 import static org.o42a.compiler.ip.Interpreter.PATH_COMPILER_IP;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.compiler.ip.ref.ModuleRefVisitor.MODULE_REF_VISITOR;
 import static org.o42a.compiler.ip.ref.ModuleRefVisitor.SAME_MODULE_REF_VISITOR;
 import static org.o42a.core.ref.path.Path.modulePath;

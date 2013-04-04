@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.st;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
 
@@ -29,21 +30,29 @@ import org.o42a.core.st.sentence.*;
 public final class StInterpreter {
 
 	public static BlockBuilder contentBuilder(
+			AccessRules accessRules,
 			StatementVisitor statementVisitor,
 			BlockNode<?> node) {
-		return new ContentBuilder(statementVisitor, node);
+		return new ContentBuilder(accessRules, statementVisitor, node);
 	}
 
 	public static void addContent(
+			AccessRules accessRules,
 			StatementVisitor statementVisitor,
 			Block<?, ?> block,
 			BlockNode<?> blockNode) {
 		for (SentenceNode sentence : blockNode.getContent()) {
-			addSentence(statementVisitor, block, sentence, sentence.getType());
+			addSentence(
+					accessRules,
+					statementVisitor,
+					block,
+					sentence,
+					sentence.getType());
 		}
 	}
 
 	public static Sentence<?, ?> addSentence(
+			AccessRules accessRules,
 			StatementVisitor statementVisitor,
 			Block<?, ?> block,
 			SentenceNode node,
@@ -69,16 +78,17 @@ public final class StInterpreter {
 		}
 
 		if (sentence != null) {
-			fillSentence(statementVisitor, sentence, node);
+			fillSentence(accessRules, statementVisitor, sentence, node);
 		}
 
 		return sentence;
 	}
 
 	private static void fillSentence(
-			final StatementVisitor statementVisitor,
-			final Sentence<?, ?> sentence,
-			final SentenceNode node) {
+			AccessRules accessRules,
+			StatementVisitor statementVisitor,
+			Sentence<?, ?> sentence,
+			SentenceNode node) {
 
 		int i = 0;
 		final AlternativeNode[] disjunction = node.getDisjunction();
@@ -93,22 +103,23 @@ public final class StInterpreter {
 					sentence.alternative(location);
 
 			if (alt != null) {
-				fillStatements(statementVisitor, altNode, alt);
+				fillStatements(accessRules, statementVisitor, altNode, alt);
 			}
 			i = next;
 		}
 	}
 
 	private static void fillStatements(
-			final StatementVisitor statementVisitor,
-			final AlternativeNode altNode,
-			final Statements<?, ?> alt) {
+			AccessRules accessRules,
+			StatementVisitor statementVisitor,
+			AlternativeNode altNode,
+			Statements<?, ?> alt) {
 		for (SerialNode stat : altNode.getConjunction()) {
 
 			final StatementNode st = stat.getStatement();
 
 			if (st != null) {
-				st.accept(statementVisitor, alt);
+				st.accept(statementVisitor, accessRules.statements(alt));
 			}
 		}
 	}

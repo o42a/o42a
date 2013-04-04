@@ -25,6 +25,7 @@ import static org.o42a.compiler.ip.ref.OwnerVisitor.MACROS_PATH;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.util.log.LogInfo;
 

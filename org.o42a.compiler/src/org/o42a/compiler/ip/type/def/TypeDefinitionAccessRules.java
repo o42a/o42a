@@ -22,8 +22,8 @@ package org.o42a.compiler.ip.type.def;
 import static org.o42a.core.member.AccessSource.FROM_TYPE;
 
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
-import org.o42a.compiler.ip.ref.AccessRules;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.Container;
 import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
@@ -68,6 +68,11 @@ final class TypeDefinitionAccessRules extends AccessRules {
 	@Override
 	public boolean containerIsVisible(Container from, Container to) {
 		return true;
+	}
+
+	@Override
+	public AccessRules contentRules() {
+		return this;
 	}
 
 	private Ref prohibitObjectRef(LocationInfo location) {

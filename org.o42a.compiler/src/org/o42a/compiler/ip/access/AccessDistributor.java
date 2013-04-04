@@ -17,14 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
+package org.o42a.compiler.ip.access;
 
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 
+import org.o42a.compiler.ip.file.OtherContextDistributor;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AccessSource;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 
 
@@ -67,6 +69,16 @@ public final class AccessDistributor extends Distributor {
 
 	public final AccessDistributor fromDeclaration() {
 		return setAccessSource(FROM_DECLARATION);
+	}
+
+	public final AccessDistributor distributeIn(CompilerContext context) {
+		if (getContext() == context) {
+			return this;
+		}
+		return getAccessRules().distribute(
+				OtherContextDistributor.distributeIn(
+						this.distributor,
+						context));
 	}
 
 	@Override

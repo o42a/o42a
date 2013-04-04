@@ -38,6 +38,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Container;
@@ -67,6 +68,34 @@ public abstract class RefInterpreter {
 			new ClauseDeclRefIp();
 	public static final RefInterpreter ADAPTER_FIELD_REF_IP =
 			new AdapterFieldRefIp();
+
+	public static boolean matchModule(Name name, Container container) {
+
+		final Obj object = container.toObject();
+
+		if (object == null) {
+			return false;
+		}
+
+		final Scope enclosing = object.getScope().getEnclosingScope();
+
+		if (enclosing == null || !enclosing.getScope().isTopScope()) {
+			// No a module.
+			return false;
+		}
+
+		// The container is module.
+		// Check whether its name fits the requested one.
+		final Module module =
+				enclosing.getContext().getIntrinsics().getModule(name);
+
+		if (module == null) {
+			// There is no module with such name.
+			return false;
+		}
+
+		return module.is(object);
+	}
 
 	public static boolean prototypeExpressionClause(Container container) {
 
@@ -246,34 +275,6 @@ public abstract class RefInterpreter {
 		final Location location = location(p, node);
 
 		return FLOAT.constantRef(location, p, value);
-	}
-
-	static boolean matchModule(Name name, Container container) {
-
-		final Obj object = container.toObject();
-
-		if (object == null) {
-			return false;
-		}
-
-		final Scope enclosing = object.getScope().getEnclosingScope();
-
-		if (enclosing == null || !enclosing.getScope().isTopScope()) {
-			// No a module.
-			return false;
-		}
-
-		// The container is module.
-		// Check whether its name fits the requested one.
-		final Module module =
-				enclosing.getContext().getIntrinsics().getModule(name);
-
-		if (module == null) {
-			// There is no module with such name.
-			return false;
-		}
-
-		return module.is(object);
 	}
 
 	private final OwnerFactory ownerFactory;

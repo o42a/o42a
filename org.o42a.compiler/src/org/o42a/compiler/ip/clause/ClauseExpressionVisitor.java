@@ -20,9 +20,10 @@
 package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DEFINITION;
+import static org.o42a.compiler.ip.clause.ClauseAccessRules.ACCESS_FROM_CLAUSE_CONTENT;
 import static org.o42a.compiler.ip.clause.ParenthesesVisitor.extractParentheses;
 import static org.o42a.compiler.ip.clause.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
@@ -32,7 +33,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
@@ -94,6 +95,7 @@ class ClauseExpressionVisitor
 						phrase.getPrefix().accept(PHRASE_PREFIX_VISITOR, p);
 
 				return prefixed.setDeclarations(contentBuilder(
+						ACCESS_FROM_CLAUSE_CONTENT,
 						new ClauseStatementVisitor(p.getContext()),
 						parentheses));
 			}

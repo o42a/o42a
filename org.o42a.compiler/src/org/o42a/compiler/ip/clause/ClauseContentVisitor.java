@@ -31,17 +31,17 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.statement.*;
+import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.Group;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.Statements;
 
 
 final class ClauseContentVisitor
-		extends AbstractStatementVisitor<Void, Statements<?, ?>> {
+		extends AbstractStatementVisitor<Void, StatementsAccess> {
 
 	private final ClauseDeclaration declaration;
 	private final ClauseDeclaratorNode node;
@@ -56,9 +56,9 @@ final class ClauseContentVisitor
 	@Override
 	public Void visitParentheses(
 			ParenthesesNode parentheses,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
-		final Group group = p.group(
+		final Group group = p.get().group(
 				location(this.declaration, parentheses),
 				this.declaration.setKind(ClauseKind.GROUP));
 
@@ -68,6 +68,7 @@ final class ClauseContentVisitor
 
 		declare(group.getBuilder());
 		addContent(
+				p.getRules(),
 				new ClauseStatementVisitor(p.getContext()),
 				group.parentheses(),
 				parentheses);
@@ -76,9 +77,9 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public Void visitBraces(BracesNode braces, Statements<?, ?> p) {
+	public Void visitBraces(BracesNode braces, StatementsAccess p) {
 
-		final Group group = p.group(
+		final Group group = p.get().group(
 				location(this.declaration, braces),
 				this.declaration.setKind(ClauseKind.GROUP));
 
@@ -92,6 +93,7 @@ final class ClauseContentVisitor
 
 		if (bracesBlock != null) {
 			addContent(
+					p.getRules(),
 					new ClauseStatementVisitor(p.getContext()),
 					bracesBlock,
 					braces);
@@ -101,10 +103,10 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public Void visitNamedBlock(NamedBlockNode block, Statements<?, ?> p) {
+	public Void visitNamedBlock(NamedBlockNode block, StatementsAccess p) {
 
 		final BracesNode braces = block.getBlock();
-		final Group group = p.group(
+		final Group group = p.get().group(
 				location(this.declaration, block.getName()),
 				this.declaration.setKind(ClauseKind.GROUP));
 
@@ -119,6 +121,7 @@ final class ClauseContentVisitor
 
 		if (bracesBlock != null) {
 			addContent(
+					p.getRules(),
 					new ClauseStatementVisitor(p.getContext()),
 					bracesBlock,
 					braces);
@@ -128,9 +131,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public Void visitDeclarator(
-			DeclaratorNode declarator,
-			Statements<?, ?> p) {
+	public Void visitDeclarator(DeclaratorNode declarator, StatementsAccess p) {
 
 		final ClauseBuilder builder =
 				buildOverrider(this.declaration, declarator, p);
@@ -145,7 +146,7 @@ final class ClauseContentVisitor
 	@Override
 	public Void visitSelfAssignment(
 			SelfAssignmentNode assignment,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
 		final ExpressionNode value = assignment.getValue();
 
@@ -173,7 +174,7 @@ final class ClauseContentVisitor
 	@Override
 	protected Void visitExpression(
 			ExpressionNode expression,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
 		final ClauseBuilder builder = builder(p, this.declaration);
 
@@ -187,7 +188,7 @@ final class ClauseContentVisitor
 	@Override
 	protected Void visitStatement(
 			StatementNode statement,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 		invalidClauseContent(getLogger(), statement);
 		return null;
 	}
@@ -201,10 +202,10 @@ final class ClauseContentVisitor
 	}
 
 	private ClauseBuilder builder(
-			Statements<?, ?> p,
+			StatementsAccess p,
 			ClauseDeclaration declaration) {
 
-		final ClauseBuilder builder = p.clause(declaration);
+		final ClauseBuilder builder = p.get().clause(declaration);
 
 		if (builder == null) {
 			return null;

@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.field;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;

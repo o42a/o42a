@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.st;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.clause.ClauseInterpreter.clause;
 import static org.o42a.compiler.ip.field.FieldInterpreter.field;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.st.LocalInterpreter.local;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 
@@ -35,7 +34,7 @@ import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -53,33 +52,35 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	public Void visitParentheses(
 			ParenthesesNode parentheses,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
-		final Block<?, ?> block = p.parentheses(location(p, parentheses));
+		final Block<?, ?> block =
+				p.get().parentheses(location(p, parentheses));
 
-		addContent(this, block, parentheses);
+		addContent(p.getRules(), this, block, parentheses);
 
 		return null;
 	}
 
 	@Override
-	public Void visitBraces(BracesNode braces, Statements<?, ?> p) {
+	public Void visitBraces(BracesNode braces, StatementsAccess p) {
 
-		final ImperativeBlock block = p.braces(location(p, braces));
+		final ImperativeBlock block =
+				p.get().braces(location(p, braces));
 
 		if (block == null) {
 			return null;
 		}
 
-		addContent(this, block, braces);
+		addContent(p.getRules(), this, block, braces);
 
 		return null;
 	}
 
 	@Override
-	public Void visitNamedBlock(NamedBlockNode namedBlock, Statements<?, ?> p) {
+	public Void visitNamedBlock(NamedBlockNode namedBlock, StatementsAccess p) {
 
-		final ImperativeBlock block = p.braces(
+		final ImperativeBlock block = p.get().braces(
 				location(p, namedBlock.getName()),
 				namedBlock.getName().getName());
 
@@ -87,13 +88,13 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			return null;
 		}
 
-		addContent(this, block, namedBlock.getBlock());
+		addContent(p.getRules(), this, block, namedBlock.getBlock());
 
 		return null;
 	}
 
 	@Override
-	public Void visitAssignment(AssignmentNode assignment, Statements<?, ?> p) {
+	public Void visitAssignment(AssignmentNode assignment, StatementsAccess p) {
 
 		final AssignableNode destinationNode = assignment.getDestination();
 
@@ -105,7 +106,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 		if (local != null) {
 
-			final Statements<?, ?> statements = addLocalBlock(p, local);
+			final StatementsAccess statements = addLocalBlock(p, local);
 
 			new LocalStatementVisitor(this)
 			.addLocalAssignment(statements, assignment, local);
@@ -115,7 +116,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 		final Ref destination = destinationNode.toExpression().accept(
 				ip().bodyExVisitor(),
-				ACCESS_FROM_DEFINITION.distribute(p.nextDistributor()));
+				p.nextDistributor());
 
 		addAssignment(p, assignment, destination);
 
@@ -125,7 +126,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	public Void visitSelfAssignment(
 			SelfAssignmentNode assignment,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
 		final ExpressionNode valueNode = assignment.getValue();
 
@@ -133,19 +134,18 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			return null;
 		}
 
-		final AccessDistributor distributor =
-				ACCESS_FROM_DEFINITION.distribute(p.nextDistributor());
+		final AccessDistributor distributor = p.nextDistributor();
 		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 
 		if (value != null) {
-			p.selfAssign(location(p, assignment.getPrefix()), value);
+			p.get().selfAssign(location(p, assignment.getPrefix()), value);
 		}
 
 		return null;
 	}
 
 	@Override
-	public Void visitDeclarator(DeclaratorNode declarator, Statements<?, ?> p) {
+	public Void visitDeclarator(DeclaratorNode declarator, StatementsAccess p) {
 		if (local(ip(), getContext(), p, declarator)) {
 			return null;
 		}
@@ -156,12 +156,12 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitLocalScope(LocalScopeNode scope, Statements<?, ?> p) {
+	public Void visitLocalScope(LocalScopeNode scope, StatementsAccess p) {
 		if (!validateLocalScope(scope)) {
 			return null;
 		}
 
-		final Statements<?, ?> statements = addLocalBlock(p, scope.getLocal());
+		final StatementsAccess statements = addLocalBlock(p, scope.getLocal());
 
 		new LocalStatementVisitor(this).addLocalScope(statements, scope);
 
@@ -171,17 +171,17 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	public Void visitClauseDeclarator(
 			ClauseDeclaratorNode declarator,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 		clause(getContext(), declarator, p);
 		return null;
 	}
 
 	@Override
-	public Void visitEllipsis(EllipsisNode ellipsis, Statements<?, ?> p) {
+	public Void visitEllipsis(EllipsisNode ellipsis, StatementsAccess p) {
 
 		final NameNode target = ellipsis.getTarget();
 
-		p.ellipsis(
+		p.get().ellipsis(
 				location(p, ellipsis),
 				target != null ? target.getName() : null);
 
@@ -189,12 +189,12 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitInclusion(InclusionNode inclusion, Statements<?, ?> p) {
+	public Void visitInclusion(InclusionNode inclusion, StatementsAccess p) {
 
 		final NameNode tag = inclusion.getTag();
 
 		if (tag != null) {
-			p.include(location(p, inclusion), tag.getName());
+			p.get().include(location(p, inclusion), tag.getName());
 		}
 
 		return null;
@@ -203,21 +203,20 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	protected Void visitExpression(
 			ExpressionNode expression,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
-		final AccessDistributor distributor =
-				ACCESS_FROM_DEFINITION.distribute(p.nextDistributor());
+		final AccessDistributor distributor = p.nextDistributor();
 		final Ref ref = expression.accept(expressionVisitor(), distributor);
 
 		if (ref != null) {
-			p.expression(ref);
+			p.get().expression(ref);
 		}
 
 		return null;
 	}
 
-	private static Statements<?, ?> addLocalBlock(
-			Statements<?, ?> statements,
+	private static StatementsAccess addLocalBlock(
+			StatementsAccess statements,
 			LocalNode local) {
 
 		final Location blockLocation;
@@ -228,9 +227,13 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			blockLocation = location(statements, local.getSeparator());
 		}
 
-		return statements.parentheses(blockLocation)
+		final Statements<?, ?> alt =
+				statements.get()
+				.parentheses(blockLocation)
 				.propose(blockLocation)
 				.alternative(blockLocation);
+
+		return statements.getRules().statements(alt);
 	}
 
 }

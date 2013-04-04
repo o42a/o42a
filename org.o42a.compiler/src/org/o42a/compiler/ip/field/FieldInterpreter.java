@@ -19,17 +19,15 @@
 */
 package org.o42a.compiler.ip.field;
 
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
-
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.st.sentence.Statements;
 
 
 public class FieldInterpreter {
@@ -38,10 +36,10 @@ public class FieldInterpreter {
 			Interpreter ip,
 			CompilerContext context,
 			DeclaratorNode declarator,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
 		final AccessDistributor distributor =
-				ACCESS_FROM_DECLARATION.distribute(p.nextDistributor());
+				p.nextDistributor().fromDeclaration();
 		final FieldDeclaration declaration = declarator.getDeclarable().accept(
 				new FieldDeclarableVisitor(ip, context, declarator),
 				distributor);
@@ -55,7 +53,7 @@ public class FieldInterpreter {
 
 	private static void setDefinition(
 			Interpreter ip,
-			Statements<?, ?> p,
+			StatementsAccess p,
 			DeclaratorNode node,
 			FieldDeclaration declaration) {
 		if (declaration == null) {
@@ -75,7 +73,7 @@ public class FieldInterpreter {
 
 		if (definition != null) {
 
-			final FieldBuilder builder = p.field(declaration, definition);
+			final FieldBuilder builder = p.get().field(declaration, definition);
 
 			if (builder == null) {
 				return;
