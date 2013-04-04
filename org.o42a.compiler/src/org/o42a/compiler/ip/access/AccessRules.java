@@ -44,10 +44,20 @@ import org.o42a.util.string.Name;
 
 public abstract class AccessRules {
 
+	public static final AccessRules ACCESS_FROM_TYPE =
+			new TypeDefinitionAccessRules();
 	public static final AccessRules ACCESS_FROM_DECLARATION =
 			new SimpleAccessRules(FROM_DECLARATION);
 	public static final AccessRules ACCESS_FROM_DEFINITION =
 			new SimpleAccessRules(FROM_DEFINITION);
+	public static final AccessRules ACCESS_FROM_PLACEMENT =
+			ACCESS_FROM_DECLARATION;
+	public static final AccessRules ACCESS_FROM_TITLE =
+			ACCESS_FROM_DECLARATION;
+	public static final AccessRules ACCESS_FROM_HEADER =
+			ACCESS_FROM_DEFINITION;
+	public static final AccessRules ACCESS_FROM_PATH_COMPILER =
+			ACCESS_FROM_DECLARATION;
 
 	private final AccessSource source;
 
@@ -60,8 +70,6 @@ public abstract class AccessRules {
 	public final AccessSource getSource() {
 		return this.source;
 	}
-
-	public abstract AccessRules setSource(AccessSource source);
 
 	public abstract Ref selfRef(
 			Interpreter ip,
@@ -117,6 +125,10 @@ public abstract class AccessRules {
 	 * @return the result of the check.
 	 */
 	public abstract boolean containerIsVisible(Container from, Container to);
+
+	public abstract AccessRules typeRules();
+
+	public abstract AccessRules declarationRules();
 
 	public abstract AccessRules contentRules();
 

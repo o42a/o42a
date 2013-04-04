@@ -23,7 +23,6 @@ import static org.o42a.compiler.ip.Interpreter.*;
 import static org.o42a.compiler.ip.clause.ClauseInterpreter.clauseObjectPath;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
-import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -330,9 +329,8 @@ public abstract class RefInterpreter {
 			return null;
 		}
 
-		final Ref declaredIn = declaredInNode.accept(
-				bodyRefVisitor(),
-				p.setAccessSource(FROM_DECLARATION));
+		final Ref declaredIn =
+				declaredInNode.accept(bodyRefVisitor(), p.fromDeclaration());
 
 		if (declaredIn == null) {
 			return null;

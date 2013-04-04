@@ -24,6 +24,8 @@ import static org.o42a.compiler.ip.st.assignment.CustomAssignment.customAssignme
 import static org.o42a.compiler.ip.st.assignment.VariableAssignment.variableAssignment;
 
 import org.o42a.ast.statement.AssignmentNode;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -33,18 +35,21 @@ import org.o42a.core.st.*;
 public class AssignmentStatement extends Statement {
 
 	private final AssignmentNode node;
+	private final AccessRules accessRules;
 	private final Ref destination;
 	private final Ref value;
 	private AssignmentKind assignmentKind;
 
 	public AssignmentStatement(
 			AssignmentNode node,
+			AccessRules accessRules,
 			Ref destination,
 			Ref value) {
 		super(
 				location(destination, node.getOperator()),
 				destination.distribute());
 		this.node = node;
+		this.accessRules = accessRules;
 		this.destination = destination;
 		this.value = value;
 	}
@@ -55,7 +60,8 @@ public class AssignmentStatement extends Statement {
 			Ref destination,
 			Ref value) {
 		super(prototype, reproducer.distribute());
-		this.node = prototype.node;
+		this.node = prototype.getNode();
+		this.accessRules = prototype.getAccessRules();
 		this.destination = destination;
 		this.value = value;
 		this.assignmentKind =
@@ -64,6 +70,10 @@ public class AssignmentStatement extends Statement {
 
 	public final AssignmentNode getNode() {
 		return this.node;
+	}
+
+	public final AccessRules getAccessRules() {
+		return this.accessRules;
 	}
 
 	public final Ref getDestination() {
@@ -104,6 +114,10 @@ public class AssignmentStatement extends Statement {
 		}
 
 		return new AssignmentStatement(this, reproducer, destination, value);
+	}
+
+	public final AccessDistributor distributeAccess() {
+		return getAccessRules().distribute(distribute());
 	}
 
 	@Override

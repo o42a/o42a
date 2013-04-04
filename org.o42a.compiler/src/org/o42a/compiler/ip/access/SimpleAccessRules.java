@@ -34,16 +34,6 @@ final class SimpleAccessRules extends AccessRules {
 	}
 
 	@Override
-	public AccessRules setSource(AccessSource source) {
-		assert source.ordinal() > AccessSource.FROM_TYPE.ordinal() :
-			"Can not use a simple access rules for type definition";
-		if (getSource().ordinal() <= source.ordinal()) {
-			return this;
-		}
-		return new SimpleAccessRules(source);
-	}
-
-	@Override
 	public Ref selfRef(
 			Interpreter ip,
 			LocationInfo location,
@@ -62,6 +52,16 @@ final class SimpleAccessRules extends AccessRules {
 	@Override
 	public boolean containerIsVisible(Container from, Container to) {
 		return true;
+	}
+
+	@Override
+	public AccessRules typeRules() {
+		return ACCESS_FROM_TYPE;
+	}
+
+	@Override
+	public AccessRules declarationRules() {
+		return ACCESS_FROM_DECLARATION;
 	}
 
 	@Override

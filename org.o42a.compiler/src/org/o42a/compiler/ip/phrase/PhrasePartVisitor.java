@@ -105,7 +105,7 @@ final class PhrasePartVisitor
 			PhraseBuilder p) {
 
 		final TypeDefinition typeDefinition =
-				typeDefinition(definition, p.getContext());
+				typeDefinition(p.getAccessRules(), definition, p.getContext());
 
 		if (typeDefinition == null) {
 			return p;

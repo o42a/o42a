@@ -133,7 +133,11 @@ public abstract class StatementVisitor
 		}
 
 		statements.statement(
-				new AssignmentStatement(assignment, destination, value));
+				new AssignmentStatement(
+						assignment,
+						statements.getRules(),
+						destination,
+						value));
 	}
 
 }

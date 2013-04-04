@@ -17,31 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.st;
+package org.o42a.compiler.ip.access;
 
-import org.o42a.compiler.ip.access.AbstractAccess;
-import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.access.AccessRules;
-import org.o42a.core.st.Statement;
-import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.*;
 
 
-public final class StatementsAccess extends AbstractAccess<Statements<?, ?>> {
+public abstract class ContainedAccess<T extends ContainerInfo>
+		extends AbstractAccess<T>
+		implements ContainerInfo {
 
-	public StatementsAccess(AccessRules rules, Statements<?, ?> statements) {
-		super(rules.contentRules(), statements);
+	public ContainedAccess(AccessRules rules, T target) {
+		super(rules, target);
 	}
 
-	public final boolean isDeclarative() {
-		return get().getSentenceFactory().isDeclarative();
+	@Override
+	public final Container getContainer() {
+		return get().getContainer();
 	}
 
-	public final AccessDistributor nextDistributor() {
-		return getRules().distribute(get().nextDistributor());
+	@Override
+	public final Distributor distribute() {
+		return Contained.distribute(this);
 	}
 
-	public final void statement(Statement statement) {
-		get().statement(statement);
+	public final AccessDistributor distributeAccess() {
+		return getRules().distribute(distribute());
+	}
+
+	@Override
+	public final Distributor distributeIn(Container container) {
+		return Contained.distributeIn(this, container);
 	}
 
 }

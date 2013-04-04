@@ -17,31 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.st;
+package org.o42a.compiler.ip.field;
 
-import org.o42a.compiler.ip.access.AbstractAccess;
-import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.access.AccessRules;
-import org.o42a.core.st.Statement;
-import org.o42a.core.st.sentence.Statements;
+import org.o42a.compiler.ip.access.ContainedAccess;
+import org.o42a.core.member.field.FieldDeclaration;
 
 
-public final class StatementsAccess extends AbstractAccess<Statements<?, ?>> {
+public class FieldAccess extends ContainedAccess<FieldDeclaration> {
 
-	public StatementsAccess(AccessRules rules, Statements<?, ?> statements) {
-		super(rules.contentRules(), statements);
-	}
-
-	public final boolean isDeclarative() {
-		return get().getSentenceFactory().isDeclarative();
-	}
-
-	public final AccessDistributor nextDistributor() {
-		return getRules().distribute(get().nextDistributor());
-	}
-
-	public final void statement(Statement statement) {
-		get().statement(statement);
+	FieldAccess(AccessRules rules, FieldDeclaration target) {
+		super(rules.declarationRules(), target);
 	}
 
 }
