@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.clause;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.clause.ClauseAccessRules.ACCESS_FROM_CLAUSE_DECL;
 import static org.o42a.compiler.ip.clause.ClauseIdVisitor.CLAUSE_ID_VISITOR;
 import static org.o42a.compiler.ip.clause.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.clause.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
@@ -195,7 +194,10 @@ public class ClauseInterpreter {
 				return;
 			}
 			builder.setSubstitution(VALUE_SUBSTITUTION);
-			declare(builder, declarator).build();
+			declare(
+					new ClauseAccess(statements.getRules(), builder),
+					declarator);
+			builder.build();
 		} else {
 
 			final Group group = statements.get().group(
@@ -206,12 +208,14 @@ public class ClauseInterpreter {
 				return;
 			}
 
-			declare(group.getBuilder(), declarator);
+			declare(
+					new ClauseAccess(statements.getRules(), group.getBuilder()),
+					declarator);
 			group.parentheses();
 		}
 	}
 
-	static ClauseBuilder buildOverrider(
+	static ClauseAccess buildOverrider(
 			ClauseDeclaration declaration,
 			DeclaratorNode declarator,
 			StatementsAccess p) {
@@ -244,17 +248,19 @@ public class ClauseInterpreter {
 			builder.prototype();
 		}
 
-		return definition.accept(OVERRIDER_DEFINITION_VISITOR, builder);
+		return definition.accept(
+				OVERRIDER_DEFINITION_VISITOR,
+				new ClauseAccess(p.getRules(), builder));
 	}
 
-	static ClauseBuilder declare(
-			ClauseBuilder builder,
+	static ClauseAccess declare(
+			ClauseAccess builder,
 			ClauseDeclaratorNode declarator) {
 		return reuseClauses(setOutcome(builder, declarator), declarator);
 	}
 
-	private static ClauseBuilder setOutcome(
-			ClauseBuilder builder,
+	private static ClauseAccess setOutcome(
+			ClauseAccess builder,
 			ClauseDeclaratorNode declarator) {
 
 		final OutcomeNode outcomeNode = declarator.getOutcome();
@@ -269,13 +275,15 @@ public class ClauseInterpreter {
 			return builder;
 		}
 
-		return builder.setOutcome(outcomeValueNode.accept(
+		builder.get().setOutcome(outcomeValueNode.accept(
 				CLAUSE_DEF_IP.targetRefVisitor(),
-				ACCESS_FROM_CLAUSE_DECL.distribute(builder.distribute())));
+				builder.distributeAccess().fromDeclaration()));
+
+		return builder;
 	}
 
-	private static ClauseBuilder reuseClauses(
-			ClauseBuilder builder,
+	private static ClauseAccess reuseClauses(
+			ClauseAccess builder,
 			ClauseDeclaratorNode declarator) {
 
 		final ReusedClauseNode[] reusedNodes = declarator.getReused();
@@ -308,7 +316,7 @@ public class ClauseInterpreter {
 						continue;
 					}
 
-					builder.reuseClause(
+					builder.get().reuseClause(
 							objectPath.bind(location, builder.getScope())
 							.target(builder.distribute()),
 							true);
@@ -318,13 +326,13 @@ public class ClauseInterpreter {
 
 			reusedRef = clauseNode.accept(
 					CLAUSE_DECL_IP.targetRefVisitor(),
-					ACCESS_FROM_CLAUSE_DECL.distribute(builder.distribute()));
+					builder.distributeAccess().fromClauseReuse());
 
 			if (reusedRef == null) {
 				continue;
 			}
 
-			builder.reuseClause(
+			builder.get().reuseClause(
 					reusedRef,
 					reusedNode.getReuseContents() != null);
 		}

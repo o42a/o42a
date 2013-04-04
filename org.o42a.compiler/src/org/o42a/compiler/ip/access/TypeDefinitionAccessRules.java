@@ -39,7 +39,8 @@ final class TypeDefinitionAccessRules extends AccessRules {
 			Interpreter ip,
 			LocationInfo location,
 			AccessDistributor distributor) {
-		return prohibitObjectRef(location);
+		prohibitObjectRef(location);
+		return null;
 	}
 
 	@Override
@@ -55,7 +56,7 @@ final class TypeDefinitionAccessRules extends AccessRules {
 	}
 
 	@Override
-	public boolean containerIsVisible(Container from, Container to) {
+	public boolean containerIsVisible(Container by, Container what) {
 		return true;
 	}
 
@@ -74,12 +75,16 @@ final class TypeDefinitionAccessRules extends AccessRules {
 		return this;
 	}
 
-	private Ref prohibitObjectRef(LocationInfo location) {
+	@Override
+	public AccessRules clauseReuseRules() {
+		return this;
+	}
+
+	private void prohibitObjectRef(LocationInfo location) {
 		location.getLocation().getLogger().error(
 				"prohibited_type_object_ref",
 				location,
 				"Can not refer the object from its type definition");
-		return null;
 	}
 
 }

@@ -28,7 +28,6 @@ import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.source.CompilerContext;
@@ -54,11 +53,11 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 				new Location(getContext(), declarator.getDeclarable()),
 				distributor)
 				.setKind(ClauseKind.OVERRIDER);
-		final ClauseBuilder builder =
+		final ClauseAccess builder =
 				buildOverrider(declaration, declarator, p);
 
 		if (builder != null) {
-			builder.mandatory().build();
+			builder.get().mandatory().build();
 		}
 
 		return null;

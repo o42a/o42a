@@ -50,7 +50,7 @@ final class SimpleAccessRules extends AccessRules {
 	}
 
 	@Override
-	public boolean containerIsVisible(Container from, Container to) {
+	public boolean containerIsVisible(Container by, Container what) {
 		return true;
 	}
 
@@ -67,6 +67,11 @@ final class SimpleAccessRules extends AccessRules {
 	@Override
 	public AccessRules contentRules() {
 		return ACCESS_FROM_DEFINITION;
+	}
+
+	@Override
+	public AccessRules clauseReuseRules() {
+		return ACCESS_FROM_CLAUSE_REUSE;
 	}
 
 }

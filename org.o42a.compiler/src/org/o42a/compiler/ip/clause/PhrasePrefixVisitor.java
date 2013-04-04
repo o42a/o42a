@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.clause.ClauseAccessRules.ACCESS_FROM_CLAUSE_CONTENT;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
@@ -29,13 +28,12 @@ import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 
 
 final class PhrasePrefixVisitor
-		extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
+		extends AbstractExpressionVisitor<ClauseAccess, ClauseAccess> {
 
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 			new PhrasePrefixVisitor();
@@ -44,57 +42,61 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	public ClauseBuilder visitScopeRef(ScopeRefNode ref, ClauseBuilder p) {
+	public ClauseAccess visitScopeRef(ScopeRefNode ref, ClauseAccess p) {
 		if (ref.getType() != ScopeType.IMPLIED) {
 			return super.visitScopeRef(ref, p);
 		}
 
-		return p.setAscendants(new AscendantsDefinition(
+		p.get().setAscendants(new AscendantsDefinition(
 				location(p, ref),
 				p.distribute()));
+
+		return p;
 	}
 
 	@Override
-	public ClauseBuilder visitAscendants(
+	public ClauseAccess visitAscendants(
 			AscendantsNode ascendants,
-			ClauseBuilder p) {
+			ClauseAccess p) {
 
-		final AccessDistributor distributor =
-				ACCESS_FROM_CLAUSE_CONTENT.distribute(p.distribute());
+		final AccessDistributor distributor = p.distributeAccess();
 		final AscendantsDefinition ascendantsDefinition =
 				CLAUSE_DEF_IP.typeIp().parseAscendants(ascendants, distributor);
 
 		if (ascendantsDefinition == null) {
-			return p.setAscendants(new AscendantsDefinition(
+			p.get().setAscendants(new AscendantsDefinition(
 					location(p, ascendants),
 					distributor));
+		} else {
+			p.get().setAscendants(ascendantsDefinition);
 		}
 
-		return p.setAscendants(ascendantsDefinition);
+		return p;
 	}
 
 	@Override
-	protected ClauseBuilder visitExpression(
+	protected ClauseAccess visitExpression(
 			ExpressionNode expression,
-			ClauseBuilder p) {
+			ClauseAccess p) {
 
-		final AccessDistributor distributor =
-				ACCESS_FROM_CLAUSE_CONTENT.distribute(p.distribute());
+		final AccessDistributor distributor = p.distributeAccess();
 		final Ref ancestor = expression.accept(
 				CLAUSE_DEF_IP.targetExVisitor(),
 				distributor);
 
 		if (ancestor == null) {
-			return p.setAscendants(new AscendantsDefinition(
+			p.get().setAscendants(new AscendantsDefinition(
 					location(p, expression),
 					distributor));
+		} else {
+			p.get().setAscendants(
+					new AscendantsDefinition(
+							ancestor,
+							distributor,
+						ancestor.toTypeRef()));
 		}
 
-		return p.setAscendants(
-				new AscendantsDefinition(
-						ancestor,
-						distributor,
-						ancestor.toTypeRef()));
+		return p;
 	}
 
 }
