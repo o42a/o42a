@@ -27,7 +27,6 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.DirectiveObject;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -40,7 +39,7 @@ import org.o42a.lib.test.TestModule;
 @SourcePath(relativeTo = TestModule.class, value = "run_tests.o42a")
 public class RunTests extends DirectiveObject {
 
-	public RunTests(MemberOwner owner, AnnotatedSources sources) {
+	public RunTests(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

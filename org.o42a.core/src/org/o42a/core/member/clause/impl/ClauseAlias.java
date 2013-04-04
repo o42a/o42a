@@ -25,6 +25,7 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.type.MemberTypeParameter;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 
 
@@ -45,7 +46,7 @@ public final class ClauseAlias extends Alias {
 		this.aliasedClause = aliasedMember;
 	}
 
-	private ClauseAlias(MemberOwner owner, ClauseAlias prototype) {
+	private ClauseAlias(Obj owner, ClauseAlias prototype) {
 		super(
 				owner.getLocation().setDeclaration(prototype),
 				prototype.distributeIn(owner.getContainer()),
@@ -94,7 +95,7 @@ public final class ClauseAlias extends Alias {
 	}
 
 	@Override
-	public Member propagateTo(MemberOwner owner) {
+	public Member propagateTo(Obj owner) {
 		return new ClauseAlias(owner, this);
 	}
 

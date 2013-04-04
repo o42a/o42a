@@ -44,7 +44,10 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberName;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.TypeRef;
@@ -68,7 +71,7 @@ public class Duplicates extends AnnotatedBuiltin {
 	private Ref duplicate;
 	private TypeParameters<Array> typeParameters;
 
-	public Duplicates(MemberOwner owner, AnnotatedSources sources) {
+	public Duplicates(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

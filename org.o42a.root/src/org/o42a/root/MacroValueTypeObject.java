@@ -23,7 +23,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -35,9 +35,7 @@ import org.o42a.core.value.macro.MacroExpander;
 @SourcePath(relativeTo = Root.class, value = "macro.o42a")
 public class MacroValueTypeObject extends ValueTypeObject implements Macro {
 
-	public MacroValueTypeObject(
-			MemberOwner owner,
-			AnnotatedSources sources) {
+	public MacroValueTypeObject(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, ValueType.MACRO);
 	}
 

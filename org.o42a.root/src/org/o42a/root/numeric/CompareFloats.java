@@ -30,7 +30,7 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.root.Root;
 
@@ -38,7 +38,7 @@ import org.o42a.root.Root;
 @SourcePath(relativeTo = Root.class, value = "floats/compare.o42a")
 public final class CompareFloats extends CompareNumbers<Double> {
 
-	public CompareFloats(MemberOwner owner, AnnotatedSources sources) {
+	public CompareFloats(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, ValueType.FLOAT);
 	}
 

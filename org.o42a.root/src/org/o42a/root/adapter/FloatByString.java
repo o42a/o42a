@@ -26,7 +26,7 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 
@@ -47,7 +47,7 @@ public abstract strictfp class FloatByString extends ByString<Double> {
 	private static final byte PARSE_EXPONENT_SIGN = 3;
 	private static final byte PARSE_EXPONENT = 4;
 
-	public FloatByString(MemberOwner owner, AnnotatedSources sources) {
+	public FloatByString(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

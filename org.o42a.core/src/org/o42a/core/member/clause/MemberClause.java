@@ -24,6 +24,7 @@ import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.type.MemberTypeParameter;
+import org.o42a.core.object.Obj;
 
 
 public abstract class MemberClause extends Member {
@@ -31,16 +32,16 @@ public abstract class MemberClause extends Member {
 	private final ClauseDeclaration declaration;
 	private MemberKey key;
 
-	public MemberClause(MemberOwner owner, ClauseDeclaration declaration) {
+	public MemberClause(Obj owner, ClauseDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
 		this.declaration = declaration;
 	}
 
-	protected MemberClause(MemberOwner owner, MemberClause propagatedFrom) {
+	protected MemberClause(Obj owner, MemberClause propagatedFrom) {
 		super(
 				owner.getLocation().setDeclaration(
 						propagatedFrom.getLastDefinition()),
-				propagatedFrom.distributeIn(owner.getContainer()),
+				propagatedFrom.distributeIn(owner),
 				owner);
 		this.key = propagatedFrom.getMemberKey();
 		this.declaration = propagatedFrom.declaration.overrideBy(this);
@@ -117,7 +118,7 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public abstract MemberClause propagateTo(MemberOwner owner);
+	public abstract MemberClause propagateTo(Obj owner);
 
 	@Override
 	public void resolveAll() {

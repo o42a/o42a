@@ -20,7 +20,7 @@
 package org.o42a.root.numeric;
 
 import org.o42a.common.object.AnnotatedSources;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
@@ -31,7 +31,7 @@ abstract class NumbersEqual<P extends Number>
 		extends BinaryResult<org.o42a.core.value.Void, P, P> {
 
 	NumbersEqual(
-			MemberOwner owner,
+			Obj owner,
 			AnnotatedSources sources,
 			ValueType<P> operandType) {
 		super(owner, sources, "what", operandType, "to", operandType);

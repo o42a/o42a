@@ -20,7 +20,6 @@
 package org.o42a.core.object.common;
 
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
@@ -33,7 +32,7 @@ public abstract class ObjectField extends Field {
 		super(member);
 	}
 
-	public ObjectField(MemberOwner owner, FieldDeclaration declaration) {
+	public ObjectField(Obj owner, FieldDeclaration declaration) {
 		super(new MemberObjectField(owner, declaration));
 		((MemberObjectField) toMember()).init(this);
 	}

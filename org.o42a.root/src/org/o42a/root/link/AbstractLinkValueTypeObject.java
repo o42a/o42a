@@ -21,14 +21,14 @@ package org.o42a.root.link;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.ValueTypeObject;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.link.LinkValueType;
 
 
 public abstract class AbstractLinkValueTypeObject extends ValueTypeObject {
 
 	public AbstractLinkValueTypeObject(
-			MemberOwner owner,
+			Obj owner,
 			AnnotatedSources sources,
 			LinkValueType linkType) {
 		super(owner, sources);

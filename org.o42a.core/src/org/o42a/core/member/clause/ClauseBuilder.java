@@ -27,9 +27,12 @@ import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueAssignment;
 import static org.o42a.util.ArrayUtil.append;
 
 import org.o42a.core.*;
-import org.o42a.core.member.*;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberName;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.impl.*;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -74,8 +77,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this.statements;
 	}
 
-	public final MemberOwner getMemberOwner() {
-		return this.memberRegistry.getMemberOwner();
+	public final Obj getMemberOwner() {
+		return this.memberRegistry.getOwner();
 	}
 
 	@Override

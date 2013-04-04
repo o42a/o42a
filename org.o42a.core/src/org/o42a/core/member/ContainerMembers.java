@@ -21,25 +21,21 @@ package org.o42a.core.member;
 
 import java.util.Map;
 
-import org.o42a.core.Container;
+import org.o42a.core.object.Obj;
 
 
 public abstract class ContainerMembers {
 
-	private final MemberOwner owner;
+	private final Obj owner;
 	private final MemberEntries members = new MemberEntries();
 	private final MemberEntries adapters = new MemberEntries();
 
-	public ContainerMembers(MemberOwner owner) {
+	public ContainerMembers(Obj owner) {
 		this.owner = owner;
 	}
 
-	public final MemberOwner getOwner() {
+	public final Obj getOwner() {
 		return this.owner;
-	}
-
-	public final Container getContainer() {
-		return this.owner.getContainer();
 	}
 
 	public final void addMember(Member member) {

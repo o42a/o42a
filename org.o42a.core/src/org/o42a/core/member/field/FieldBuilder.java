@@ -21,10 +21,10 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.*;
 import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.decl.DeclaredMemberField;
 import org.o42a.core.member.field.decl.FieldDeclarationStatement;
+import org.o42a.core.object.Obj;
 import org.o42a.core.source.Location;
 
 
@@ -44,8 +44,8 @@ public final class FieldBuilder implements ContainerInfo {
 		declaration.assertSameScope(definition);
 	}
 
-	public final MemberOwner getMemberOwner() {
-		return this.memberRegistry.getMemberOwner();
+	public final Obj getMemberOwner() {
+		return this.memberRegistry.getOwner();
 	}
 
 	public final FieldDeclaration getDeclaration() {

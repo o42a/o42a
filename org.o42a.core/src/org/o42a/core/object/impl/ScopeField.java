@@ -69,7 +69,7 @@ public final class ScopeField extends ObjectField {
 
 	public ScopeField(Obj owner, MemberId memberId) {
 		super(
-				owner.toMemberOwner(),
+				owner,
 				fieldDeclaration(
 						owner,
 						owner.distributeIn(owner),

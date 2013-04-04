@@ -21,7 +21,7 @@ package org.o42a.common.builtin;
 
 import org.o42a.common.object.AnnotatedObject;
 import org.o42a.common.object.AnnotatedSources;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.TypeParameters;
 
@@ -30,7 +30,7 @@ public abstract class AnnotatedBuiltin
 		extends AnnotatedObject
 		implements Builtin {
 
-	public AnnotatedBuiltin(MemberOwner owner, AnnotatedSources sources) {
+	public AnnotatedBuiltin(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

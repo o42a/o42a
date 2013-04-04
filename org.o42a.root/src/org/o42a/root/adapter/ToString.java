@@ -20,13 +20,13 @@
 package org.o42a.root.adapter;
 
 import org.o42a.common.object.AnnotatedSources;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 
 
 public abstract class ToString<T> extends BuiltinConverter<T, String> {
 
-	public ToString(MemberOwner owner, AnnotatedSources sources) {
+	public ToString(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 		setValueType(ValueType.STRING);
 	}

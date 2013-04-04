@@ -193,7 +193,7 @@ public abstract class Field extends ObjectScope {
 			return object.meta().isUpdated();
 		}
 
-		final Obj owner = toMember().getMemberOwner().getOwner();
+		final Obj owner = toMember().getMemberOwner();
 
 		if (!owner.meta().isUpdated()) {
 			// Field can not be updated without owner to be updated also.

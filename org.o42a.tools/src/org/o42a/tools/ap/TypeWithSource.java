@@ -382,8 +382,8 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 
 		out.println("import org.o42a.common.object.AnnotatedSources;");
 		out.println("import org.o42a.common.source.*;");
-		out.println("import org.o42a.core.member.MemberOwner;");
 		out.println("import org.o42a.core.member.field.Field;");
+		out.println("import org.o42a.core.object.Obj;");
 
 		out.println();
 		out.println();
@@ -623,7 +623,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		out.println("\t@Override");
 		out.println(
 				"\tpublic Field[]"
-				+ " fields(MemberOwner owner) {");
+				+ " fields(Obj owner) {");
 
 		if (this.subEntries == null) {
 			out.println("\t\treturn new Field[0];");

@@ -19,12 +19,12 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.object.Obj;
 
 
 public interface FieldCompiler extends ObjectCompiler {
 
-	FieldDeclaration declare(MemberOwner owner);
+	FieldDeclaration declare(Obj owner);
 
 }

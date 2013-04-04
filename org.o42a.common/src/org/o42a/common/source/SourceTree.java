@@ -24,7 +24,6 @@ import static org.o42a.common.object.CompiledObject.compileField;
 import java.util.Iterator;
 
 import org.o42a.common.object.CompiledField;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
@@ -67,20 +66,12 @@ public abstract class SourceTree<S extends Source> {
 		return new TreeCompilerContext<>(parentContext, this, logger);
 	}
 
-	public final CompiledField field(MemberOwner owner) {
+	public final CompiledField field(Obj owner) {
 		return compileField(owner, context(owner.getContext()));
 	}
 
-	public final CompiledField field(Obj owner) {
-		return field(owner.toMemberOwner());
-	}
-
-	public final MemberField member(MemberOwner owner) {
-		return field(owner).toMember();
-	}
-
 	public final MemberField member(Obj owner) {
-		return member(owner.toMemberOwner());
+		return field(owner).toMember();
 	}
 
 	@Override

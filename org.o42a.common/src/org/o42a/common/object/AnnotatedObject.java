@@ -20,8 +20,8 @@
 package org.o42a.common.object;
 
 import org.o42a.common.source.URLSourceTree;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 
 
@@ -29,7 +29,7 @@ public class AnnotatedObject extends CompiledObject {
 
 	private final AnnotatedSources sources;
 
-	public AnnotatedObject(MemberOwner owner, AnnotatedSources sources) {
+	public AnnotatedObject(Obj owner, AnnotatedSources sources) {
 		super(compileField(owner, sources.getSourceTree()));
 		this.sources = sources;
 	}
@@ -45,7 +45,7 @@ public class AnnotatedObject extends CompiledObject {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
-		for (Field field : getSources().fields(toMemberOwner())) {
+		for (Field field : getSources().fields(this)) {
 			members.addMember(field.toMember());
 		}
 	}

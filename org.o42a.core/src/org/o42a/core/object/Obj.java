@@ -73,8 +73,6 @@ public abstract class Obj
 		extends Contained
 		implements MemberContainer, ClauseContainer {
 
-	private final OwningObject owningObject = new OwningObject(this);
-
 	private ObjectContent content;
 	private ObjectContent clonesContent;
 	private Ref self;
@@ -187,10 +185,6 @@ public abstract class Obj
 
 	public ConstructionMode getConstructionMode() {
 		return type().getAscendants().getConstructionMode();
-	}
-
-	public final OwningObject toMemberOwner() {
-		return this.owningObject;
 	}
 
 	@Override
