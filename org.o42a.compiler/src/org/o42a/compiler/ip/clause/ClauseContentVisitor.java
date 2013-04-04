@@ -66,9 +66,12 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		declare(group.getBuilder());
+		final ClauseAccess builder =
+				new ClauseAccess(p.getRules(), group.getBuilder());
+
+		declare(builder);
 		addContent(
-				p.getRules(),
+				builder.getRules().contentRules(),
 				new ClauseStatementVisitor(p.getContext()),
 				group.parentheses(),
 				parentheses);
@@ -87,13 +90,16 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		declare(group.getBuilder());
+		final ClauseAccess builder =
+				new ClauseAccess(p.getRules(), group.getBuilder());
+
+		declare(builder);
 
 		final ImperativeBlock bracesBlock = group.braces(null);
 
 		if (bracesBlock != null) {
 			addContent(
-					p.getRules(),
+					builder.getRules().contentRules(),
 					new ClauseStatementVisitor(p.getContext()),
 					bracesBlock,
 					braces);
@@ -114,14 +120,17 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		declare(group.getBuilder());
+		final ClauseAccess builder =
+				new ClauseAccess(p.getRules(), group.getBuilder());
+
+		declare(builder);
 
 		final ImperativeBlock bracesBlock =
 				group.braces(block.getName().getName());
 
 		if (bracesBlock != null) {
 			addContent(
-					p.getRules(),
+					builder.getRules().contentRules(),
 					new ClauseStatementVisitor(p.getContext()),
 					bracesBlock,
 					braces);
@@ -133,11 +142,12 @@ final class ClauseContentVisitor
 	@Override
 	public Void visitDeclarator(DeclaratorNode declarator, StatementsAccess p) {
 
-		final ClauseBuilder builder =
+		final ClauseAccess builder =
 				buildOverrider(this.declaration, declarator, p);
 
 		if (builder != null) {
-			declare(builder).build();
+			declare(builder);
+			builder.get().build();
 		}
 
 		return null;
@@ -154,19 +164,14 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		final ClauseBuilder builder = builder(p, this.declaration);
+		final ClauseAccess builder = builder(p, this.declaration);
 
 		if (builder == null) {
 			return null;
 		}
 
-		final ClauseBuilder assignmentBuilder = builder.assignment();
-
-		if (assignmentBuilder == null) {
-			return null;
-		}
-
-		buildExpression(assignmentBuilder, value, CLAUSE_EXPRESSION_VISITOR);
+		builder.get().assignment();
+		buildExpression(builder, value, CLAUSE_EXPRESSION_VISITOR);
 
 		return null;
 	}
@@ -176,7 +181,7 @@ final class ClauseContentVisitor
 			ExpressionNode expression,
 			StatementsAccess p) {
 
-		final ClauseBuilder builder = builder(p, this.declaration);
+		final ClauseAccess builder = builder(p, this.declaration);
 
 		if (builder != null) {
 			buildExpression(builder, expression, CLAUSE_EXPRESSION_VISITOR);
@@ -197,32 +202,34 @@ final class ClauseContentVisitor
 		return this.declaration.getContext().getLogger();
 	}
 
-	private final ClauseBuilder declare(ClauseBuilder builder) {
+	private final ClauseAccess declare(ClauseAccess builder) {
 		return ClauseInterpreter.declare(builder, this.node);
 	}
 
-	private ClauseBuilder builder(
-			StatementsAccess p,
+	private ClauseAccess builder(
+			StatementsAccess statements,
 			ClauseDeclaration declaration) {
 
-		final ClauseBuilder builder = p.get().clause(declaration);
+		final ClauseBuilder builder = statements.get().clause(declaration);
 
 		if (builder == null) {
 			return null;
 		}
 
-		return declare(builder);
+		return declare(new ClauseAccess(statements.getRules(), builder));
 	}
 
 	private void buildExpression(
-			ClauseBuilder builder,
+			ClauseAccess builder,
 			ExpressionNode expression,
 			ClauseExpressionVisitor visitor) {
 
-		final ClauseBuilder result = expression.accept(visitor, builder);
+		final ClauseAccess result = expression.accept(
+				visitor,
+				builder);
 
 		if (result != null) {
-			result.build();
+			result.get().build();
 		}
 	}
 

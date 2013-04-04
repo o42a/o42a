@@ -79,6 +79,18 @@ public final class AccessDistributor extends Distributor {
 		return declarationRules.distribute(this.distributor);
 	}
 
+	public final AccessDistributor fromClauseReuse() {
+
+		final AccessRules accessRules = getAccessRules();
+		final AccessRules declarationRules = accessRules.clauseReuseRules();
+
+		if (accessRules == declarationRules) {
+			return this;
+		}
+
+		return declarationRules.distribute(this.distributor);
+	}
+
 	public final AccessDistributor fromPlacement() {
 		if (getAccessRules() == ACCESS_FROM_PLACEMENT) {
 			return this;

@@ -19,9 +19,8 @@
 */
 package org.o42a.compiler.ip.access;
 
-import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.matchModule;
-import static org.o42a.compiler.ip.ref.RefInterpreter.prototypeExpressionClause;
+import static org.o42a.core.member.AccessSource.FROM_CLAUSE_REUSE;
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
@@ -48,6 +47,8 @@ public abstract class AccessRules {
 			new TypeDefinitionAccessRules();
 	public static final AccessRules ACCESS_FROM_DECLARATION =
 			new SimpleAccessRules(FROM_DECLARATION);
+	public static final AccessRules ACCESS_FROM_CLAUSE_REUSE =
+			new SimpleAccessRules(FROM_CLAUSE_REUSE);
 	public static final AccessRules ACCESS_FROM_DEFINITION =
 			new SimpleAccessRules(FROM_DEFINITION);
 	public static final AccessRules ACCESS_FROM_PLACEMENT =
@@ -77,12 +78,11 @@ public abstract class AccessRules {
 			AccessDistributor distributor);
 
 	public final Ref parentRef(
-			Interpreter ip,
 			LocationInfo location,
 			AccessDistributor distributor,
 			Name name) {
 
-		final Path path = parentPath(ip, location, distributor, name);
+		final Path path = parentPath(location, distributor, name);
 
 		if (path == null) {
 			return null;
@@ -119,18 +119,20 @@ public abstract class AccessRules {
 	 * It is used to check the visibility of intermediate enclosing container
 	 * instead of a final one.</p>
 	 *
-	 * @param from an accessing reference container.
-	 * @param to the accessed enclosing container.
+	 * @param by an accessing reference container.
+	 * @param what the accessed enclosing container.
 	 *
 	 * @return the result of the check.
 	 */
-	public abstract boolean containerIsVisible(Container from, Container to);
+	public abstract boolean containerIsVisible(Container by, Container what);
 
 	public abstract AccessRules typeRules();
 
 	public abstract AccessRules declarationRules();
 
 	public abstract AccessRules contentRules();
+
+	public abstract AccessRules clauseReuseRules();
 
 	public StatementsAccess statements(Statements<?, ?> statements) {
 		return new StatementsAccess(this, statements);
@@ -167,7 +169,6 @@ public abstract class AccessRules {
 	}
 
 	private Path parentPath(
-			Interpreter ip,
 			LocationInfo location,
 			AccessDistributor distributor,
 			Name name) {
@@ -175,7 +176,6 @@ public abstract class AccessRules {
 		final Container from = distributor.getContainer();
 		Path path = SELF_PATH;
 		Path parentPath = SELF_PATH;
-		Container nested = null;
 		Container container = from;
 
 		for (;;) {
@@ -187,12 +187,10 @@ public abstract class AccessRules {
 				if (checkResult.isError()) {
 					return null;
 				}
-				if (checkResult.isOk() && !skip(ip, nested)) {
+				if (checkResult.isOk()) {
 					return path.append(parentPath);
 				}
 			}
-
-			nested = container;
 
 			final Container parent = container.getParentContainer();
 
@@ -252,18 +250,6 @@ public abstract class AccessRules {
 		}
 
 		return name.is(memberName.getName());
-	}
-
-	private static boolean skip(Interpreter ip, Container nested) {
-		if (nested == null) {
-			return false;
-		}
-		if (ip == CLAUSE_DECL_IP) {
-			return false;
-		}
-		// Top-level expression clause
-		// shouldn't have access to enclosing prototype.
-		return prototypeExpressionClause(nested);
 	}
 
 	private static void unresolvedParent(LocationInfo location, Name name) {

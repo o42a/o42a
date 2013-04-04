@@ -20,9 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.matchModule;
-import static org.o42a.compiler.ip.ref.RefInterpreter.prototypeExpressionClause;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
@@ -32,7 +30,6 @@ import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
-import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.Container;
@@ -58,19 +55,16 @@ public class MemberById extends ContainedFragment {
 	private static final MemberName FALSE_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("false"));
 
-	private final Interpreter ip;
 	private final AccessRules accessRules;
 	private final StaticTypeRef declaredIn;
 	private final MemberId memberId;
 
 	public MemberById(
-			Interpreter ip,
 			LocationInfo location,
 			AccessDistributor distributor,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {
 		super(location, distributor);
-		this.ip = ip;
 		this.accessRules = distributor.getAccessRules();
 		this.memberId = memberId;
 		this.declaredIn = declaredIn;
@@ -87,7 +81,7 @@ public class MemberById extends ContainedFragment {
 			declaredIn = null;
 		}
 
-		return path(getContainer(), declaredIn, false);
+		return path(getContainer(), declaredIn);
 	}
 
 	@Override
@@ -108,18 +102,13 @@ public class MemberById extends ContainedFragment {
 		return this.memberId.toString();
 	}
 
-	private Path path(
-			Container container,
-			Obj declaredIn,
-			boolean excludeContainer) {
-		if (!excludeContainer) {
+	private Path path(Container container, Obj declaredIn) {
 
-			final Holder<Path> memberOfContainer =
-					memberOfContainer(container, declaredIn);
+		final Holder<Path> memberOfContainer =
+				memberOfContainer(container, declaredIn);
 
-			if (memberOfContainer != null) {
-				return memberOfContainer.get();
-			}
+		if (memberOfContainer != null) {
+			return memberOfContainer.get();
 		}
 
 		final Container enclosing = container.getEnclosingContainer();
@@ -147,14 +136,7 @@ public class MemberById extends ContainedFragment {
 			}
 		}
 
-		// Top-level expression clause
-		// shouldn't have access to enclosing prototype.
-		final boolean excludeEnclosingContainer =
-				this.ip != CLAUSE_DECL_IP
-				&& prototypeExpressionClause(container);
-
-		final Path found =
-				path(enclosing, declaredIn, excludeEnclosingContainer);
+		final Path found = path(enclosing, declaredIn);
 
 		if (found == null) {
 			return null;

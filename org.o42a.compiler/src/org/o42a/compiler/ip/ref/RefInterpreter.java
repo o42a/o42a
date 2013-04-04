@@ -44,8 +44,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -94,29 +92,6 @@ public abstract class RefInterpreter {
 		}
 
 		return module.is(object);
-	}
-
-	public static boolean prototypeExpressionClause(Container container) {
-
-		final Clause clause = container.toClause();
-
-		if (clause == null) {
-			return false;
-		}
-
-		final PlainClause plainClause = clause.toPlainClause();
-
-		if (plainClause == null || plainClause.isAssignment()) {
-			return false;
-		}
-
-		final Container parentContainer = container.getParentContainer();
-
-		if (parentContainer.toClause() != null) {
-			return false;
-		}
-
-		return parentContainer.toObject().isPrototype();
 	}
 
 	public static Path enclosingModulePath(Container of) {

@@ -90,7 +90,7 @@ final class OwnerVisitor
 		case PARENT:
 
 			final Ref parentRef =
-					p.getAccessRules().parentRef(ip().ip(), location, p, null);
+					p.getAccessRules().parentRef(location, p, null);
 
 			if (parentRef == null) {
 				return null;
@@ -111,7 +111,6 @@ final class OwnerVisitor
 			return owner(
 					p.getAccessRules(),
 					new MemberById(
-							ip().ip(),
 							location,
 							p,
 							ANONYMOUS_LOCAL_MEMBER,
@@ -128,7 +127,6 @@ final class OwnerVisitor
 
 		final Location location = location(p, ref);
 		final Ref parentRef = p.getAccessRules().parentRef(
-				ip().ip(),
 				location,
 				p,
 				ref.getName().getName());
@@ -276,7 +274,6 @@ final class OwnerVisitor
 		return owner(
 				p.getAccessRules(),
 				new MemberById(
-						ip().ip(),
 						location(p, ref.getName()),
 						p,
 						ip().memberName(ref.getName().getName()),
@@ -348,7 +345,6 @@ final class OwnerVisitor
 		return owner(
 				p.getAccessRules(),
 				new MemberById(
-						ip().ip(),
 						location(p, ref),
 						p,
 						localName(nameNode.getName()),
