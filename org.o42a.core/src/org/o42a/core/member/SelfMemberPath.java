@@ -40,4 +40,9 @@ final class SelfMemberPath implements MemberPath {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return ":";
+	}
+
 }
