@@ -34,7 +34,7 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.compiler.ip.member.DefinitionVisitor;
+import org.o42a.compiler.ip.field.DefinitionVisitor;
 import org.o42a.compiler.ip.phrase.PhraseInterpreter;
 import org.o42a.compiler.ip.ref.AccessDistributor;
 import org.o42a.compiler.ip.ref.ExpressionVisitor;

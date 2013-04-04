@@ -17,10 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
-import static org.o42a.compiler.ip.member.BoundNameVisitor.BOUND_NAME_VISITOR;
-import static org.o42a.compiler.ip.member.IntervalInterpreter.invalidIntervalBracket;
+import static org.o42a.compiler.ip.clause.BoundNameVisitor.BOUND_NAME_VISITOR;
+import static org.o42a.compiler.ip.clause.IntervalInterpreter.invalidIntervalBracket;
 
 import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.phrase.IntervalNode;

@@ -17,12 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.CLAUSE_EXPRESSION_VISITOR;
-import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
-import static org.o42a.compiler.ip.member.ClauseInterpreter.invalidClauseContent;
+import static org.o42a.compiler.ip.clause.ClauseExpressionVisitor.CLAUSE_EXPRESSION_VISITOR;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.buildOverrider;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.invalidClauseContent;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 
 import org.o42a.ast.clause.ClauseDeclaratorNode;

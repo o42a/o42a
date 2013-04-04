@@ -33,7 +33,7 @@ import org.o42a.ast.file.SectionTypeDefinitionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.compiler.ip.member.FieldNesting;
+import org.o42a.compiler.ip.field.FieldNesting;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.def.TypeDefinition;

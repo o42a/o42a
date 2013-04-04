@@ -17,14 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.ClauseIdVisitor.CLAUSE_ID_VISITOR;
-import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
-import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
+import static org.o42a.compiler.ip.clause.ClauseIdVisitor.CLAUSE_ID_VISITOR;
+import static org.o42a.compiler.ip.clause.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
+import static org.o42a.compiler.ip.clause.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
 import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
 import static org.o42a.core.member.clause.ClauseKind.EXPRESSION;
 import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;

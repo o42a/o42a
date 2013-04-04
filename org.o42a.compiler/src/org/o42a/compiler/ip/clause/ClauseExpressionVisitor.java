@@ -17,11 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
-import static org.o42a.compiler.ip.member.ParenthesesVisitor.extractParentheses;
-import static org.o42a.compiler.ip.member.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
+import static org.o42a.compiler.ip.clause.ParenthesesVisitor.extractParentheses;
+import static org.o42a.compiler.ip.clause.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;

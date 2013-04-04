@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.IntervalInterpreter.invalidIntervalBracket;
+import static org.o42a.compiler.ip.clause.IntervalInterpreter.invalidIntervalBracket;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;

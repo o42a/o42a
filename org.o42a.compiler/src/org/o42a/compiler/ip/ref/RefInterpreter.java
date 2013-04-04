@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.*;
-import static org.o42a.compiler.ip.member.ClauseInterpreter.clauseObjectPath;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.clauseObjectPath;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
