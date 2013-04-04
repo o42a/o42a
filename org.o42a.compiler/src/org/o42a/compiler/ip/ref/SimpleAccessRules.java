@@ -52,11 +52,16 @@ final class SimpleAccessRules extends AccessRules {
 	}
 
 	@Override
-	public CheckResult checkAccessibility(
+	public CheckResult checkContainerAccessibility(
 			LocationInfo location,
-			AccessDistributor distributor,
+			Container from,
 			Container to) {
 		return CheckResult.CHECK_OK;
+	}
+
+	@Override
+	public boolean containerIsVisible(Container from, Container to) {
+		return true;
 	}
 
 }

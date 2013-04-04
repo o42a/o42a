@@ -114,7 +114,21 @@ public class TypeDefinitionBuilder
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-		return member(access, memberId, declaredIn);
+
+		final MemberTypeParameter typeParameter =
+				findTypeParameter(memberId, declaredIn);
+
+		if (typeParameter != null) {
+			return typeParameter;
+		}
+
+		final Member member = toMember();
+
+		if (member == null) {
+			return null;
+		}
+
+		return member.matchingPath(memberId, declaredIn);
 	}
 
 	public final AccessDistributor distributeAccess() {
@@ -129,6 +143,14 @@ public class TypeDefinitionBuilder
 	@Override
 	public final Distributor distributeIn(Container container) {
 		return Contained.distributeIn(this, container);
+	}
+
+	@Override
+	public String toString() {
+		if (this.object == null) {
+			return super.toString();
+		}
+		return "TypeDefinition[" + this.object + ']';
 	}
 
 	final void addParameter(TypeParameterDeclaration parameter) {

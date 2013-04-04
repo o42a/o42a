@@ -62,6 +62,10 @@ public interface Container extends ScopeInfo {
 	 * it may return a path to member from used name space or to clause inside
 	 * a group.</p>
 	 *
+	 * <p>This method also determines if this container is a member
+	 * {@link Member#matchingPath(MemberId, Obj) matching} the given identifier.
+	 * </p>
+	 *
 	 * @param access member access information.
 	 * @param memberId identifier of member to find.
 	 * @param declaredIn the object member declared in or <code>null</code>

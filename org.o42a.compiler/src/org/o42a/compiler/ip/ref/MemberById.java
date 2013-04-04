@@ -190,6 +190,9 @@ public class MemberById extends ContainedFragment {
 	private Holder<Path> memberOfContainer(
 			Container container,
 			Obj declaredIn) {
+		if (!this.accessRules.containerIsVisible(getContainer(), container)) {
+			return null;
+		}
 
 		final Accessor accessor;
 
@@ -208,10 +211,35 @@ public class MemberById extends ContainedFragment {
 				container.findMember(access, this.memberId, declaredIn);
 
 		if (found != null) {
-			return checkMemberAccessibility(container, found.pathToMember());
+			return checkMemberAccessibility(container, found);
 		}
 
 		return memberOfAdapter(container, access);
+	}
+
+	private Holder<Path> checkMemberAccessibility(
+			Container container,
+			MemberPath found) {
+
+		final Path pathToMember = found.pathToMember();
+
+		if (pathToMember.isSelf()) {
+			// Check access to the same container.
+			final CheckResult accessibilityCheck =
+					this.accessRules.checkContainerAccessibility(
+							this,
+							getContainer(),
+							container);
+
+			if (accessibilityCheck.isError()) {
+				return new Holder<>(null);
+			}
+			if (!accessibilityCheck.isOk()) {
+				return null;
+			}
+		}
+
+		return new Holder<>(pathToMember);
 	}
 
 	private Holder<Path> memberOfAdapter(Container container, Access access) {
@@ -238,13 +266,6 @@ public class MemberById extends ContainedFragment {
 			return null;
 		}
 
-		final Holder<Path> checkedAdapter =
-				checkMemberAccessibility(container, adapterPath.pathToMember());
-
-		if (checkedAdapter == null || checkedAdapter.get() == null) {
-			return checkedAdapter;
-		}
-
 		final Accessor memberOfAdapterAccessor;
 
 		if (adapter.getLocation().getContext().declarationsVisibleFrom(
@@ -265,42 +286,9 @@ public class MemberById extends ContainedFragment {
 			return null;
 		}
 
-		return checkMemberAccessibility(
-				container,
-				adapterPath.pathToMember().append(
-						memberOfAdapter.pathToMember()));
-	}
-
-	private Holder<Path> checkMemberAccessibility(
-			Container container,
-			Path pathToMember) {
-		if (pathToMember.isAbsolute()) {
-			return new Holder<>(pathToMember);
-		}
-
-		final Scope scope = container.getScope();
-		final PathResolution pathResolution =
-				pathToMember.bind(this, scope).resolve(
-						pathResolver(scope, dummyRefUser()));
-
-		if (!pathResolution.isResolved()) {
-			return new Holder<>(null);
-		}
-
-		final Container result = pathResolution.getResult();
-		final CheckResult checkResult = this.accessRules.checkAccessibility(
-				this,
-				this.accessRules.distribute(distribute()),
-				result);
-
-		if (checkResult.isError()) {
-			return new Holder<>(null);
-		}
-		if (!checkResult.isOk()) {
-			return null;
-		}
-
-		return new Holder<>(pathToMember);
+		return new Holder<>(
+				adapterPath.pathToMember()
+				.append(memberOfAdapter.pathToMember()));
 	}
 
 	private boolean isModule(Container container) {
