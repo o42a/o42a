@@ -21,14 +21,14 @@ package org.o42a.root.array;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.ValueTypeObject;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.array.ArrayValueType;
 
 
 public abstract class IndexedValueTypeObject extends ValueTypeObject {
 
 	public IndexedValueTypeObject(
-			MemberOwner owner,
+			Obj owner,
 			AnnotatedSources sources,
 			ArrayValueType arrayType) {
 		super(owner, sources);

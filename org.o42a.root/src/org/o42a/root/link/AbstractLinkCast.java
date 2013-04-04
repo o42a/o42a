@@ -21,8 +21,8 @@ package org.o42a.root.link;
 
 import org.o42a.common.macro.AnnotatedMacro;
 import org.o42a.common.object.AnnotatedSources;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Meta;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -34,7 +34,7 @@ abstract class AbstractLinkCast extends AnnotatedMacro {
 
 	private EnclosingLinkMetaDep linkDep;
 
-	AbstractLinkCast(MemberOwner owner, AnnotatedSources sources) {
+	AbstractLinkCast(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

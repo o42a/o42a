@@ -22,7 +22,7 @@ package org.o42a.root.string;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.common.object.ValueTypeObject;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.root.Root;
 
@@ -30,7 +30,7 @@ import org.o42a.root.Root;
 @SourcePath(relativeTo = Root.class, value = "string.o42a")
 public class StringValueTypeObject extends ValueTypeObject {
 
-	public StringValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
+	public StringValueTypeObject(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, ValueType.STRING);
 	}
 

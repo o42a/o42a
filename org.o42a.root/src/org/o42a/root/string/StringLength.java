@@ -35,7 +35,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
@@ -48,7 +48,7 @@ final class StringLength extends AnnotatedBuiltin {
 
 	private Ref string;
 
-	public StringLength(MemberOwner owner, AnnotatedSources sources) {
+	public StringLength(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

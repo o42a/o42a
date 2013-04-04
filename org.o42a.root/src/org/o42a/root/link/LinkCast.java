@@ -21,13 +21,13 @@ package org.o42a.root.link;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 
 
 @SourcePath(relativeTo = LinkValueTypeObject.class, value = "cast.o42a")
 final class LinkCast extends AbstractLinkCast {
 
-	LinkCast(MemberOwner owner, AnnotatedSources sources) {
+	LinkCast(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

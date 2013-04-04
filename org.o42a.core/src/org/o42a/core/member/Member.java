@@ -44,7 +44,7 @@ public abstract class Member extends Contained implements MemberPath {
 
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
-	private final MemberOwner owner;
+	private final Obj owner;
 
 	private Member firstDeclaration;
 	private Member lastDefinition;
@@ -54,7 +54,7 @@ public abstract class Member extends Contained implements MemberPath {
 	public Member(
 			LocationInfo location,
 			Distributor distributor,
-			MemberOwner owner) {
+			Obj owner) {
 		super(location, distributor);
 		this.owner = owner;
 	}
@@ -74,7 +74,7 @@ public abstract class Member extends Contained implements MemberPath {
 				ID.id(getMemberId()).suffix(new MemberPropagatedFromID(this)));
 	}
 
-	public final MemberOwner getMemberOwner() {
+	public final Obj getMemberOwner() {
 		return this.owner;
 	}
 
@@ -97,7 +97,8 @@ public abstract class Member extends Contained implements MemberPath {
 	 * the request.
 	 */
 	public final MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
-		if (declaredIn != null && declaredIn.member(getMemberKey()) == null) {
+		if (declaredIn != null
+				&& !getMemberOwner().type().derivedFrom(declaredIn.type())) {
 			// The given object does not contain this member.
 			return null;
 		}
@@ -252,7 +253,7 @@ public abstract class Member extends Contained implements MemberPath {
 		return getScope().derivedFrom(other.getDefinedIn());
 	}
 
-	public abstract Member propagateTo(MemberOwner owner);
+	public abstract Member propagateTo(Obj owner);
 
 	public abstract void resolveAll();
 

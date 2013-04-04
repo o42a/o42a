@@ -25,14 +25,14 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.root.Root;
 
 
 @SourcePath(relativeTo = Root.class, value = "integers/multiply.o42a")
 public final class MultiplyIntegers extends BinaryInteger {
 
-	public MultiplyIntegers(MemberOwner owner, AnnotatedSources sources) {
+	public MultiplyIntegers(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, "left operand", "right operand");
 	}
 

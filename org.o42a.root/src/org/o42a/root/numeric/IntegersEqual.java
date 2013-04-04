@@ -29,7 +29,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.root.Root;
 
@@ -37,7 +37,7 @@ import org.o42a.root.Root;
 @SourcePath(relativeTo = Root.class, value = "integers/equals.o42a")
 public final class IntegersEqual extends NumbersEqual<Long> {
 
-	public IntegersEqual(MemberOwner owner, AnnotatedSources sources) {
+	public IntegersEqual(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, ValueType.INTEGER);
 	}
 

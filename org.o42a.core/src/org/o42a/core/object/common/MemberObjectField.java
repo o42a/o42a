@@ -21,16 +21,16 @@ package org.o42a.core.object.common;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.field.impl.OverriddenMemberField;
+import org.o42a.core.object.Obj;
 
 
 final class MemberObjectField extends MemberField {
 
-	MemberObjectField(MemberOwner owner, FieldDeclaration declaration) {
+	MemberObjectField(Obj owner, FieldDeclaration declaration) {
 		super(owner, declaration);
 	}
 
@@ -40,7 +40,7 @@ final class MemberObjectField extends MemberField {
 	}
 
 	@Override
-	public MemberField propagateTo(MemberOwner owner) {
+	public MemberField propagateTo(Obj owner) {
 		return new Propagated(owner, this);
 	}
 
@@ -56,12 +56,12 @@ final class MemberObjectField extends MemberField {
 	private static final class Propagated
 			extends OverriddenMemberField<ObjectField> {
 
-		Propagated(MemberOwner owner, MemberField propagatedFrom) {
+		Propagated(Obj owner, MemberField propagatedFrom) {
 			super(owner, propagatedFrom);
 		}
 
 		@Override
-		public Propagated propagateTo(MemberOwner owner) {
+		public Propagated propagateTo(Obj owner) {
 			return new Propagated(owner, this);
 		}
 

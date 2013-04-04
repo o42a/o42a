@@ -21,10 +21,10 @@ package org.o42a.core.member.field.decl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.Obj;
 
 
 public final class DeclaredMemberField extends MemberField {
@@ -43,7 +43,7 @@ public final class DeclaredMemberField extends MemberField {
 	}
 
 	@Override
-	public MemberField propagateTo(MemberOwner owner) {
+	public MemberField propagateTo(Obj owner) {
 		return new OverriddenDeclaredMemberField(owner, this);
 	}
 

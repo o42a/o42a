@@ -26,12 +26,8 @@ import org.o42a.core.member.*;
 
 public class ObjectMembers extends ContainerMembers {
 
-	ObjectMembers(Obj object) {
-		super(object.toMemberOwner());
-	}
-
-	public final Obj getObject() {
-		return (Obj) getContainer();
+	ObjectMembers(Obj owner) {
+		super(owner);
 	}
 
 	public final void addTypeParameter(Member typeParameter) {
@@ -50,12 +46,12 @@ public class ObjectMembers extends ContainerMembers {
 
 	@Override
 	protected final Map<MemberKey, Member> members() {
-		return getObject().members();
+		return getOwner().members();
 	}
 
 	@Override
 	protected final Map<MemberId, Symbol> symbols() {
-		return getObject().symbols();
+		return getOwner().symbols();
 	}
 
 }

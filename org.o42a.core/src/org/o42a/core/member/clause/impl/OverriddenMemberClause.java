@@ -20,9 +20,9 @@
 package org.o42a.core.member.clause.impl;
 
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
+import org.o42a.core.object.Obj;
 
 
 public abstract class OverriddenMemberClause<C extends Clause>
@@ -31,9 +31,7 @@ public abstract class OverriddenMemberClause<C extends Clause>
 	private final MemberClause propagatedFrom;
 	private C clause;
 
-	public OverriddenMemberClause(
-			MemberOwner owner,
-			MemberClause propagatedFrom) {
+	public OverriddenMemberClause(Obj owner, MemberClause propagatedFrom) {
 		super(owner, propagatedFrom);
 		this.propagatedFrom = propagatedFrom;
 	}

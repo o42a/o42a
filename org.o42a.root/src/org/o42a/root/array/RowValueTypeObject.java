@@ -21,7 +21,7 @@ package org.o42a.root.array;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.root.Root;
 
@@ -29,9 +29,7 @@ import org.o42a.root.Root;
 @SourcePath(relativeTo = Root.class, value = "row.o42a")
 public class RowValueTypeObject extends IndexedValueTypeObject {
 
-	public RowValueTypeObject(
-			MemberOwner owner,
-			AnnotatedSources sources) {
+	public RowValueTypeObject(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, ArrayValueType.ROW);
 	}
 

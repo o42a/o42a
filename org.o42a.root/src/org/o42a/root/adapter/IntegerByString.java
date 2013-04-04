@@ -26,7 +26,7 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 
@@ -37,7 +37,7 @@ public abstract class IntegerByString extends ByString<Long> {
 	private static final int HYPHEN_MINUS = 0x002d;
 	private static final int MINUS_SIGN = 0x2212;
 
-	public IntegerByString(MemberOwner owner, AnnotatedSources sources) {
+	public IntegerByString(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

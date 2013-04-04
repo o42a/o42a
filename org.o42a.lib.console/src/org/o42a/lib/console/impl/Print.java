@@ -21,14 +21,14 @@ package org.o42a.lib.console.impl;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.lib.console.ConsoleModule;
 
 
 @SourcePath(relativeTo = ConsoleModule.class, value = "print.o42a")
 public class Print extends AbstractPrint {
 
-	public Print(MemberOwner owner, AnnotatedSources sources) {
+	public Print(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, "o42a_io_print_str");
 	}
 

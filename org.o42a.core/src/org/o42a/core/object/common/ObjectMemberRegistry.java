@@ -30,7 +30,6 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
-import org.o42a.core.object.OwningObject;
 import org.o42a.util.string.Name;
 
 
@@ -53,11 +52,6 @@ public class ObjectMemberRegistry extends MemberRegistry {
 
 	protected ObjectMemberRegistry(Inclusions inclusions) {
 		super(inclusions);
-	}
-
-	@Override
-	public OwningObject getMemberOwner() {
-		return getOwner().toMemberOwner();
 	}
 
 	@Override

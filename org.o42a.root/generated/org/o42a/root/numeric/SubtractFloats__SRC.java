@@ -3,8 +3,8 @@ package org.o42a.root.numeric;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.source.*;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 
 
 /**
@@ -32,7 +32,7 @@ public final class SubtractFloats__SRC implements AnnotatedSources {
 	}
 
 	@Override
-	public Field[] fields(MemberOwner owner) {
+	public Field[] fields(Obj owner) {
 		return new Field[0];
 	}
 

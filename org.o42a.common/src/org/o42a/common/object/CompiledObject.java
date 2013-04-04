@@ -27,7 +27,6 @@ import org.o42a.common.source.SourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AbstractInclusions;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.object.Obj;
@@ -49,12 +48,6 @@ public class CompiledObject extends Obj {
 	public static CompiledField compileField(
 			Obj owner,
 			CompilerContext context) {
-		return compileField(owner.toMemberOwner(), context);
-	}
-
-	public static CompiledField compileField(
-			MemberOwner owner,
-			CompilerContext context) {
 
 		final FieldCompiler compiler = context.compileField();
 		final Namespace namespace =
@@ -71,12 +64,6 @@ public class CompiledObject extends Obj {
 
 	public static CompiledField compileField(
 			Obj owner,
-			SourceTree<?> sourceTree) {
-		return compileField(owner.toMemberOwner(), sourceTree);
-	}
-
-	public static CompiledField compileField(
-			MemberOwner owner,
 			SourceTree<?> sourceTree) {
 		return compileField(owner, sourceTree.context(owner.getContext()));
 	}

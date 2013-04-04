@@ -19,9 +19,9 @@
 */
 package org.o42a.core.member.clause.impl;
 
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.MemberClause;
+import org.o42a.core.object.Obj;
 
 
 final class DeclaredGroupClauseMember extends MemberClause {
@@ -39,19 +39,19 @@ final class DeclaredGroupClauseMember extends MemberClause {
 	}
 
 	@Override
-	public MemberClause propagateTo(MemberOwner owner) {
+	public MemberClause propagateTo(Obj owner) {
 		return new Propagated(owner, this);
 	}
 
 	private static final class Propagated
 			extends OverriddenMemberClause<DeclaredGroupClause> {
 
-		private Propagated(MemberOwner owner, MemberClause propagatedFrom) {
+		private Propagated(Obj owner, MemberClause propagatedFrom) {
 			super(owner, propagatedFrom);
 		}
 
 		@Override
-		public MemberClause propagateTo(MemberOwner owner) {
+		public MemberClause propagateTo(Obj owner) {
 			return new Propagated(owner, this);
 		}
 

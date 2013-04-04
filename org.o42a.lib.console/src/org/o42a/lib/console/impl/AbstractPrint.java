@@ -39,7 +39,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
@@ -59,10 +59,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 	private final String funcName;
 	private Ref text;
 
-	public AbstractPrint(
-			MemberOwner owner,
-			AnnotatedSources sources,
-			String funcName) {
+	public AbstractPrint(Obj owner, AnnotatedSources sources, String funcName) {
 		super(owner, sources);
 		this.funcName = funcName;
 	}

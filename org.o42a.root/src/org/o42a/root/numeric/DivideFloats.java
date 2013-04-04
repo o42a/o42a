@@ -25,14 +25,14 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.root.Root;
 
 
 @SourcePath(relativeTo = Root.class, value = "floats/divide.o42a")
 public final class DivideFloats extends BinaryFloat {
 
-	public DivideFloats(MemberOwner owner, AnnotatedSources sources) {
+	public DivideFloats(Obj owner, AnnotatedSources sources) {
 		super(owner, sources, "left operand", "right operand");
 	}
 

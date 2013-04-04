@@ -31,7 +31,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -44,7 +44,7 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 
 	private Ref object;
 
-	public BuiltinConverter(MemberOwner owner, AnnotatedSources sources) {
+	public BuiltinConverter(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 

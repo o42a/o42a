@@ -21,9 +21,9 @@ package org.o42a.core.member.field.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.Obj;
 
 
 public abstract class OverriddenMemberField<F extends Field>
@@ -31,9 +31,7 @@ public abstract class OverriddenMemberField<F extends Field>
 
 	private final MemberField propagatedFrom;
 
-	public OverriddenMemberField(
-			MemberOwner owner,
-			MemberField propagatedFrom) {
+	public OverriddenMemberField(Obj owner, MemberField propagatedFrom) {
 		super(
 				owner.getLocation().setDeclaration(
 						propagatedFrom.getLastDefinition()),
@@ -48,7 +46,7 @@ public abstract class OverriddenMemberField<F extends Field>
 	}
 
 	@Override
-	public abstract OverriddenMemberField<F> propagateTo(MemberOwner owner);
+	public abstract OverriddenMemberField<F> propagateTo(Obj owner);
 
 	@Override
 	protected final F createField() {
