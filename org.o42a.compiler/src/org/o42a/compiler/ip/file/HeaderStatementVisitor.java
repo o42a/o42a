@@ -21,15 +21,14 @@ package org.o42a.compiler.ip.file;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.file.HeaderStatement.notDirective;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DECLARATION;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.st.StatementVisitor;
+import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.st.sentence.Statements;
 
 
 final class HeaderStatementVisitor extends StatementVisitor {
@@ -41,10 +40,10 @@ final class HeaderStatementVisitor extends StatementVisitor {
 	@Override
 	protected Void visitExpression(
 			ExpressionNode expression,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
 		final AccessDistributor distributor =
-				ACCESS_FROM_DECLARATION.distribute(p.nextDistributor());
+				p.nextDistributor().fromDeclaration();
 		final Ref ref = expression.accept(expressionVisitor(), distributor);
 
 		if (ref != null) {
@@ -57,7 +56,7 @@ final class HeaderStatementVisitor extends StatementVisitor {
 	@Override
 	protected Void visitStatement(
 			StatementNode statement,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 		notDirective(getLogger(), statement);
 		return null;
 	}

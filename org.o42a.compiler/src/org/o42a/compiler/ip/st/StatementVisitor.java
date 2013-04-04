@@ -20,23 +20,21 @@
 package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
 
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 
 
 public abstract class StatementVisitor
-		extends AbstractStatementVisitor<Void, Statements<?, ?>> {
+		extends AbstractStatementVisitor<Void, StatementsAccess> {
 
 	static void invalidStatement(CompilerLogger logger, LogInfo location) {
 		logger.error(
@@ -80,19 +78,19 @@ public abstract class StatementVisitor
 	}
 
 	@Override
-	public Void visitNumber(NumberNode number, Statements<?, ?> p) {
+	public Void visitNumber(NumberNode number, StatementsAccess p) {
 		invalidStatement(number);
 		return null;
 	}
 
 	@Override
-	public Void visitText(TextNode text, Statements<?, ?> p) {
+	public Void visitText(TextNode text, StatementsAccess p) {
 		invalidStatement(text);
 		return null;
 	}
 
 	@Override
-	public Void visitBrackets(BracketsNode brackets, Statements<?, ?> p) {
+	public Void visitBrackets(BracketsNode brackets, StatementsAccess p) {
 		invalidStatement(brackets);
 		return null;
 	}
@@ -100,7 +98,7 @@ public abstract class StatementVisitor
 	@Override
 	public Void visitParentheses(
 			ParenthesesNode parentheses,
-			Statements<?, ?> p) {
+			StatementsAccess p) {
 
 		final ExpressionNode unwrapped = unwrap(parentheses);
 
@@ -112,7 +110,7 @@ public abstract class StatementVisitor
 	}
 
 	@Override
-	protected Void visitStatement(StatementNode statement, Statements<?, ?> p) {
+	protected Void visitStatement(StatementNode statement, StatementsAccess p) {
 		invalidStatement(statement);
 		return null;
 	}
@@ -122,12 +120,11 @@ public abstract class StatementVisitor
 	}
 
 	void addAssignment(
-			Statements<?, ?> statements,
+			StatementsAccess statements,
 			AssignmentNode assignment,
 			Ref destination) {
 
-		final AccessDistributor distributor =
-				ACCESS_FROM_DEFINITION.distribute(statements.nextDistributor());
+		final AccessDistributor distributor = statements.nextDistributor();
 		final Ref value =
 				assignment.getValue().accept(expressionVisitor(), distributor);
 
@@ -136,7 +133,11 @@ public abstract class StatementVisitor
 		}
 
 		statements.statement(
-				new AssignmentStatement(assignment, destination, value));
+				new AssignmentStatement(
+						assignment,
+						statements.getRules(),
+						destination,
+						value));
 	}
 
 }

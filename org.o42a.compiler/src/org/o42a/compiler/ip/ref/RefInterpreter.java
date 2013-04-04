@@ -20,10 +20,9 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.*;
-import static org.o42a.compiler.ip.member.ClauseInterpreter.clauseObjectPath;
+import static org.o42a.compiler.ip.clause.ClauseInterpreter.clauseObjectPath;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
-import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -38,14 +37,13 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -68,27 +66,32 @@ public abstract class RefInterpreter {
 	public static final RefInterpreter ADAPTER_FIELD_REF_IP =
 			new AdapterFieldRefIp();
 
-	public static boolean prototypeExpressionClause(Container container) {
+	public static boolean matchModule(Name name, Container container) {
 
-		final Clause clause = container.toClause();
+		final Obj object = container.toObject();
 
-		if (clause == null) {
+		if (object == null) {
 			return false;
 		}
 
-		final PlainClause plainClause = clause.toPlainClause();
+		final Scope enclosing = object.getScope().getEnclosingScope();
 
-		if (plainClause == null || plainClause.isAssignment()) {
+		if (enclosing == null || !enclosing.getScope().isTopScope()) {
+			// No a module.
 			return false;
 		}
 
-		final Container parentContainer = container.getParentContainer();
+		// The container is module.
+		// Check whether its name fits the requested one.
+		final Module module =
+				enclosing.getContext().getIntrinsics().getModule(name);
 
-		if (parentContainer.toClause() != null) {
+		if (module == null) {
+			// There is no module with such name.
 			return false;
 		}
 
-		return parentContainer.toObject().isPrototype();
+		return module.is(object);
 	}
 
 	public static Path enclosingModulePath(Container of) {
@@ -248,34 +251,6 @@ public abstract class RefInterpreter {
 		return FLOAT.constantRef(location, p, value);
 	}
 
-	static boolean matchModule(Name name, Container container) {
-
-		final Obj object = container.toObject();
-
-		if (object == null) {
-			return false;
-		}
-
-		final Scope enclosing = object.getScope().getEnclosingScope();
-
-		if (enclosing == null || !enclosing.getScope().isTopScope()) {
-			// No a module.
-			return false;
-		}
-
-		// The container is module.
-		// Check whether its name fits the requested one.
-		final Module module =
-				enclosing.getContext().getIntrinsics().getModule(name);
-
-		if (module == null) {
-			// There is no module with such name.
-			return false;
-		}
-
-		return module.is(object);
-	}
-
 	private final OwnerFactory ownerFactory;
 	private final TargetRefVisitor targetRefVisitor;
 	private final BodyRefVisitor bodyRefVisitor;
@@ -329,9 +304,8 @@ public abstract class RefInterpreter {
 			return null;
 		}
 
-		final Ref declaredIn = declaredInNode.accept(
-				bodyRefVisitor(),
-				p.setAccessSource(FROM_DECLARATION));
+		final Ref declaredIn =
+				declaredInNode.accept(bodyRefVisitor(), p.fromDeclaration());
 
 		if (declaredIn == null) {
 			return null;

@@ -41,6 +41,11 @@ public enum AccessSource {
 	FROM_DECLARATION,
 
 	/**
+	 * Members accessed from clause reuse declaration.
+	 */
+	FROM_CLAUSE_REUSE,
+
+	/**
 	 * Members accessed from value definition.
 	 */
 	FROM_DEFINITION

@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,29 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
+package org.o42a.compiler.ip.st;
 
-import org.o42a.ast.ref.AbstractRefVisitor;
-import org.o42a.ast.ref.RefNode;
+import org.o42a.compiler.ip.access.AbstractAccess;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.core.ref.Ref;
+import org.o42a.compiler.ip.access.AccessRules;
+import org.o42a.core.st.Statement;
+import org.o42a.core.st.sentence.Statements;
 
 
-final class BodyRefVisitor extends AbstractRefVisitor<Ref, AccessDistributor> {
+public final class StatementsAccess extends AbstractAccess<Statements<?, ?>> {
 
-	private final RefInterpreter interpreter;
-
-	BodyRefVisitor(RefInterpreter interpreter) {
-		this.interpreter = interpreter;
+	public StatementsAccess(AccessRules rules, Statements<?, ?> statements) {
+		super(rules.contentRules(), statements);
 	}
 
-	@Override
-	protected Ref visitRef(RefNode ref, AccessDistributor p) {
+	public final boolean isDeclarative() {
+		return get().getSentenceFactory().isDeclarative();
+	}
 
-		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
+	public final AccessDistributor nextDistributor() {
+		return getRules().distribute(get().nextDistributor());
+	}
 
-		return result != null ? result.bodyRef() : null;
+	public final void statement(Statement statement) {
+		get().statement(statement);
 	}
 
 }

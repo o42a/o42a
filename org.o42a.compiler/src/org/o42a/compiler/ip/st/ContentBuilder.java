@@ -22,24 +22,30 @@ package org.o42a.compiler.ip.st;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 
 import org.o42a.ast.expression.BlockNode;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
 final class ContentBuilder extends BlockBuilder {
 
+	private final AccessRules accessRules;
 	private final StatementVisitor statementVisitor;
 	private final BlockNode<?> block;
 
-	ContentBuilder(StatementVisitor statementVisitor, BlockNode<?> block) {
+	ContentBuilder(
+			AccessRules accessRules,
+			StatementVisitor statementVisitor,
+			BlockNode<?> block) {
 		super(statementVisitor.getContext(), block);
+		this.accessRules = accessRules;
 		this.statementVisitor = statementVisitor;
 		this.block = block;
 	}
 
 	@Override
 	public void buildBlock(Block<?,?> block) {
-		addContent(this.statementVisitor, block, this.block);
+		addContent(this.accessRules, this.statementVisitor, block, this.block);
 	}
 
 	@Override

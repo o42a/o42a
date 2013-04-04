@@ -28,7 +28,7 @@ import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.ref.cmp.ComparisonExpression;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.ref.Ref;
 

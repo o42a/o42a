@@ -21,6 +21,8 @@ package org.o42a.compiler.ip.file;
 
 import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_HEADER;
+import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_TYPE;
 import static org.o42a.compiler.ip.file.OtherContextDistributor.distributeIn;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 import static org.o42a.compiler.ip.st.StInterpreter.addSentence;
@@ -33,7 +35,7 @@ import org.o42a.ast.file.SectionTypeDefinitionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.compiler.ip.member.FieldNesting;
+import org.o42a.compiler.ip.field.FieldNesting;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.def.TypeDefinition;
@@ -167,6 +169,7 @@ final class Section implements LogInfo {
 		if (typeDefinitionNode != null) {
 
 			final TypeDefinition typeDefinition = typeDefinition(
+					ACCESS_FROM_TYPE,
 					typeDefinitionNode,
 					this.enclosingBlock.getContext(),
 					typeDefinitionNode.getContent());
@@ -181,6 +184,7 @@ final class Section implements LogInfo {
 
 	public void define(DeclarativeBlock definition) {
 		addContent(
+				ACCESS_FROM_HEADER,
 				new DefaultStatementVisitor(PLAIN_IP, getContext()),
 				definition,
 				getSectionNode());
@@ -306,7 +310,12 @@ final class Section implements LogInfo {
 						sentence.getMark(),
 						"Only propositions allowed in file header");
 			}
-			addSentence(visitor, enclosingBlock, sentence, PROPOSITION);
+			addSentence(
+					ACCESS_FROM_HEADER,
+					visitor,
+					enclosingBlock,
+					sentence,
+					PROPOSITION);
 		}
 
 		enclosingBlock.executeInstructions();

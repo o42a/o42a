@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.type.ascendant;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.compiler.ip.ref.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessDistributor;
 
 
 public final class AncestorSpecVisitor

@@ -17,15 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.def;
+package org.o42a.compiler.ip.access;
 
 import static org.o42a.core.member.AccessSource.FROM_TYPE;
 
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
-import org.o42a.compiler.ip.ref.AccessRules;
 import org.o42a.core.Container;
-import org.o42a.core.member.AccessSource;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.CheckResult;
@@ -33,10 +30,7 @@ import org.o42a.util.CheckResult;
 
 final class TypeDefinitionAccessRules extends AccessRules {
 
-	public static final AccessRules ACCESS_FROM_TYPE =
-			new TypeDefinitionAccessRules();
-
-	private TypeDefinitionAccessRules() {
+	TypeDefinitionAccessRules() {
 		super(FROM_TYPE);
 	}
 
@@ -45,12 +39,8 @@ final class TypeDefinitionAccessRules extends AccessRules {
 			Interpreter ip,
 			LocationInfo location,
 			AccessDistributor distributor) {
-		return prohibitObjectRef(location);
-	}
-
-	@Override
-	public AccessRules setSource(AccessSource source) {
-		return this;
+		prohibitObjectRef(location);
+		return null;
 	}
 
 	@Override
@@ -66,16 +56,35 @@ final class TypeDefinitionAccessRules extends AccessRules {
 	}
 
 	@Override
-	public boolean containerIsVisible(Container from, Container to) {
+	public boolean containerIsVisible(Container by, Container what) {
 		return true;
 	}
 
-	private Ref prohibitObjectRef(LocationInfo location) {
+	@Override
+	public AccessRules typeRules() {
+		return this;
+	}
+
+	@Override
+	public AccessRules declarationRules() {
+		return this;
+	}
+
+	@Override
+	public AccessRules contentRules() {
+		return this;
+	}
+
+	@Override
+	public AccessRules clauseReuseRules() {
+		return this;
+	}
+
+	private void prohibitObjectRef(LocationInfo location) {
 		location.getLocation().getLogger().error(
 				"prohibited_type_object_ref",
 				location,
 				"Can not refer the object from its type definition");
-		return null;
 	}
 
 }

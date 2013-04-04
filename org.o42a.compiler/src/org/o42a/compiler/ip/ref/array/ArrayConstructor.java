@@ -23,8 +23,8 @@ import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.AccessDistributor;
-import org.o42a.compiler.ip.ref.AccessRules;
+import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;

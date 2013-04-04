@@ -17,12 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
-import static org.o42a.compiler.ip.member.ParenthesesVisitor.extractParentheses;
-import static org.o42a.compiler.ip.member.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
-import static org.o42a.compiler.ip.ref.AccessRules.ACCESS_FROM_DEFINITION;
+import static org.o42a.compiler.ip.clause.ParenthesesVisitor.extractParentheses;
+import static org.o42a.compiler.ip.clause.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
@@ -32,15 +31,14 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.compiler.ip.ref.AccessDistributor;
-import org.o42a.core.member.clause.ClauseBuilder;
+import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.util.string.Name;
 
 
 class ClauseExpressionVisitor
-		extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
+		extends AbstractExpressionVisitor<ClauseAccess, ClauseAccess> {
 
 	static final ClauseExpressionVisitor CLAUSE_EXPRESSION_VISITOR =
 			new ClauseExpressionVisitor();
@@ -49,13 +47,14 @@ class ClauseExpressionVisitor
 			CASE_INSENSITIVE.canonicalName("prefix");
 
 	@Override
-	public ClauseBuilder visitMemberRef(MemberRefNode ref, ClauseBuilder p) {
+	public ClauseAccess visitMemberRef(MemberRefNode ref, ClauseAccess p) {
 		if (ref.getMembership() == null) {
 
 			final Name localName = localName(ref);
 
 			if (PREFIX_NAME.is(localName)) {
-				return p.setSubstitution(PREFIX_SUBSITUTION);
+				p.get().setSubstitution(PREFIX_SUBSITUTION);
+				return p;
 			}
 		}
 
@@ -63,24 +62,26 @@ class ClauseExpressionVisitor
 	}
 
 	@Override
-	public ClauseBuilder visitAscendants(
+	public ClauseAccess visitAscendants(
 			AscendantsNode ascendants,
-			ClauseBuilder p) {
+			ClauseAccess p) {
 
 		final AscendantsDefinition ascendantsDefinition =
 				CLAUSE_DEF_IP.typeIp().parseAscendants(
 						ascendants,
-						ACCESS_FROM_DEFINITION.distribute(p.distribute()));
+						p.distributeAccess());
 
 		if (ascendantsDefinition == null) {
 			return null;
 		}
 
-		return p.setAscendants(ascendantsDefinition);
+		p.get().setAscendants(ascendantsDefinition);
+
+		return p;
 	}
 
 	@Override
-	public ClauseBuilder visitPhrase(PhraseNode phrase, ClauseBuilder p) {
+	public ClauseAccess visitPhrase(PhraseNode phrase, ClauseAccess p) {
 
 		final PhrasePartNode[] parts = phrase.getParts();
 
@@ -90,12 +91,13 @@ class ClauseExpressionVisitor
 
 			if (parentheses != null) {
 
-				final ClauseBuilder prefixed =
-						phrase.getPrefix().accept(PHRASE_PREFIX_VISITOR, p);
-
-				return prefixed.setDeclarations(contentBuilder(
+				phrase.getPrefix().accept(PHRASE_PREFIX_VISITOR, p);
+				p.get().setDeclarations(contentBuilder(
+						p.getRules(),
 						new ClauseStatementVisitor(p.getContext()),
 						parentheses));
+
+				return p;
 			}
 		}
 
@@ -103,12 +105,11 @@ class ClauseExpressionVisitor
 	}
 
 	@Override
-	protected ClauseBuilder visitExpression(
+	protected ClauseAccess visitExpression(
 			ExpressionNode expression,
-			ClauseBuilder p) {
+			ClauseAccess p) {
 
-		final AccessDistributor distributor =
-				ACCESS_FROM_DEFINITION.distribute(p.distribute());
+		final AccessDistributor distributor = p.distributeAccess();
 		final Ref ref = expression.accept(
 				CLAUSE_DEF_IP.targetExVisitor(),
 				distributor);
@@ -117,8 +118,10 @@ class ClauseExpressionVisitor
 			return null;
 		}
 
-		return p.setAscendants(
+		p.get().setAscendants(
 				new AscendantsDefinition(ref, distributor, ref.toTypeRef()));
+
+		return p;
 	}
 
 }

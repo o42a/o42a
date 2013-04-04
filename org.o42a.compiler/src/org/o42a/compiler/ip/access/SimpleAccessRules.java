@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
+package org.o42a.compiler.ip.access;
 
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
@@ -31,16 +31,6 @@ final class SimpleAccessRules extends AccessRules {
 
 	SimpleAccessRules(AccessSource source) {
 		super(source);
-	}
-
-	@Override
-	public AccessRules setSource(AccessSource source) {
-		assert source.ordinal() > AccessSource.FROM_TYPE.ordinal() :
-			"Can not use a simple access rules for type definition";
-		if (getSource().ordinal() <= source.ordinal()) {
-			return this;
-		}
-		return new SimpleAccessRules(source);
 	}
 
 	@Override
@@ -60,8 +50,28 @@ final class SimpleAccessRules extends AccessRules {
 	}
 
 	@Override
-	public boolean containerIsVisible(Container from, Container to) {
+	public boolean containerIsVisible(Container by, Container what) {
 		return true;
+	}
+
+	@Override
+	public AccessRules typeRules() {
+		return ACCESS_FROM_TYPE;
+	}
+
+	@Override
+	public AccessRules declarationRules() {
+		return ACCESS_FROM_DECLARATION;
+	}
+
+	@Override
+	public AccessRules contentRules() {
+		return ACCESS_FROM_DEFINITION;
+	}
+
+	@Override
+	public AccessRules clauseReuseRules() {
+		return ACCESS_FROM_CLAUSE_REUSE;
 	}
 
 }

@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.type.def;
 import org.o42a.ast.Node;
 import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.*;
@@ -36,18 +37,22 @@ public final class TypeDefinition
 		implements ObjectTypeParameters {
 
 	public static TypeDefinition typeDefinition(
+			AccessRules accessRules,
 			Node node,
 			CompilerContext context,
 			SentenceNode[] definitions) {
 		return new TypeDefinition(
+				accessRules.typeRules(),
 				new Location(context, node),
 				definitions);
 	}
 
 	public static TypeDefinition typeDefinition(
+			AccessRules accessRules,
 			TypeDefinitionNode node,
 			CompilerContext context) {
 		return typeDefinition(
+				accessRules,
 				node,
 				context,
 				node.getDefinition().getContent());
@@ -62,11 +67,20 @@ public final class TypeDefinition
 				"Redundant type parameters");
 	}
 
+	private final AccessRules accessRules;
 	private final SentenceNode[] definitions;
 
-	TypeDefinition(LocationInfo location, SentenceNode[] definitions) {
+	private TypeDefinition(
+			AccessRules accessRules,
+			LocationInfo location,
+			SentenceNode[] definitions) {
 		super(location);
+		this.accessRules = accessRules;
 		this.definitions = definitions;
+	}
+
+	public final AccessRules getAccessRules() {
+		return this.accessRules;
 	}
 
 	@Override

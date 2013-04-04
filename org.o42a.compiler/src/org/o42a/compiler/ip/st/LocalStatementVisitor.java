@@ -27,11 +27,10 @@ import static org.o42a.compiler.ip.st.StatementVisitor.validateLocalScope;
 
 import org.o42a.ast.statement.*;
 import org.o42a.core.st.sentence.Local;
-import org.o42a.core.st.sentence.Statements;
 
 
 final class LocalStatementVisitor
-		extends AbstractStatementVisitor<Void, Statements<?, ?>> {
+		extends AbstractStatementVisitor<Void, StatementsAccess> {
 
 	private final StatementVisitor visitor;
 
@@ -40,7 +39,7 @@ final class LocalStatementVisitor
 	}
 
 	@Override
-	public Void visitAssignment(AssignmentNode assignment, Statements<?, ?> p) {
+	public Void visitAssignment(AssignmentNode assignment, StatementsAccess p) {
 		if (!validateAssignment(assignment)) {
 			return null;
 		}
@@ -57,7 +56,7 @@ final class LocalStatementVisitor
 	}
 
 	@Override
-	public Void visitLocalScope(LocalScopeNode scope, Statements<?, ?> p) {
+	public Void visitLocalScope(LocalScopeNode scope, StatementsAccess p) {
 		if (!validateLocalScope(scope)) {
 			return null;
 		}
@@ -68,11 +67,11 @@ final class LocalStatementVisitor
 	}
 
 	@Override
-	protected Void visitStatement(StatementNode statement, Statements<?, ?> p) {
+	protected Void visitStatement(StatementNode statement, StatementsAccess p) {
 		return statement.accept(this.visitor, p);
 	}
 
-	void addLocalScope(Statements<?, ?> statements, LocalScopeNode scope) {
+	void addLocalScope(StatementsAccess statements, LocalScopeNode scope) {
 		local(
 				this.visitor.ip(),
 				this.visitor.getContext(),
@@ -84,7 +83,7 @@ final class LocalStatementVisitor
 	}
 
 	void addLocalAssignment(
-			Statements<?, ?> statements,
+			StatementsAccess statements,
 			AssignmentNode assignment,
 			LocalNode localNode) {
 
