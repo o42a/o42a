@@ -24,7 +24,7 @@ import static org.o42a.core.ref.Ref.errorRef;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.core.Distributor;
+import org.o42a.compiler.ip.access.ParentAccessRules;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
@@ -50,8 +50,12 @@ abstract class ArrayBuilder {
 
 	public Array createArray(AccessDistributor enclosing, Scope scope) {
 
+		final ParentAccessRules accessRules = new ParentAccessRules(
+				enclosing.getContainer(),
+				enclosing.getAccessRules());
+		final AccessDistributor distributor = accessRules.distribute(
+				enclosing.distributeIn(scope.getContainer()));
 		final boolean typeByItems = typeByItems();
-		final Distributor distributor = scope.distribute();
 		final TypeParameters<Array> typeParams;
 		TypeRef arrayItemType;
 
@@ -81,12 +85,11 @@ abstract class ArrayBuilder {
 
 				final Ref itemRef = itemNode.accept(
 						this.constructor.ip().targetExVisitor(),
-						enclosing);
+						distributor);
 
 				if (itemRef != null) {
 
-					final Ref rescopedItemRef = itemRef.rescope(scope);
-					final TypeRef itemType = rescopedItemRef.getInterface();
+					final TypeRef itemType = itemRef.getInterface();
 
 					if (arrayItemType == null) {
 						arrayItemType = itemType;
@@ -100,7 +103,7 @@ abstract class ArrayBuilder {
 								.commonAscendant();
 					}
 
-					items[i] = new ArrayItem(i, rescopedItemRef);
+					items[i] = new ArrayItem(i, itemRef);
 
 					continue;
 				}
