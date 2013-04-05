@@ -98,6 +98,18 @@ public final class AccessDistributor extends Distributor {
 		return ACCESS_FROM_PLACEMENT.distribute(this);
 	}
 
+	public final AccessDistributor distributeAccessIn(Container container) {
+
+		final Distributor distributor =
+				this.distributor.distributeIn(container);
+
+		if (this.distributor == distributor) {
+			return this;
+		}
+
+		return getAccessRules().distribute(distributor);
+	}
+
 	public final AccessDistributor distributeIn(CompilerContext context) {
 		if (getContext() == context) {
 			return this;

@@ -212,8 +212,7 @@ public abstract class AccessRules {
 				final Member parentMember = parent.toMember();
 
 				if (parentMember == null
-						|| scope.getContainer().toMember()
-						== parentMember) {
+						|| scope.getContainer().toMember() == parentMember) {
 					parentPath = SELF_PATH;
 				} else {
 					parentPath = parentMember.getMemberKey().toPath();

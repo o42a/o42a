@@ -25,6 +25,7 @@ import static org.o42a.util.CheckResult.CHECK_ERROR;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.access.AccessRules;
+import org.o42a.compiler.ip.access.ProxyAccessRules;
 import org.o42a.core.Container;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
@@ -33,7 +34,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.CheckResult;
 
 
-public final class ClauseAccessRules extends AccessRules {
+public final class ClauseAccessRules extends ProxyAccessRules {
 
 	public static AccessRules clauseAccessRules(
 			ClauseDeclaration declaration,
@@ -50,14 +51,12 @@ public final class ClauseAccessRules extends AccessRules {
 		return new ClauseAccessRules(declaration, accessRules);
 	}
 
-	private final AccessRules wrappedRules;
 	private final ClauseDeclaration topLevelClause;
 
 	private ClauseAccessRules(
 			ClauseDeclaration topLevelClause,
-			AccessRules wrappedRules) {
-		super(wrappedRules.getSource());
-		this.wrappedRules = wrappedRules;
+			AccessRules wrapped) {
+		super(wrapped);
 		this.topLevelClause = topLevelClause;
 	}
 
@@ -82,7 +81,7 @@ public final class ClauseAccessRules extends AccessRules {
 			prohibitObjectReuse(location);
 			return CHECK_ERROR;
 		}
-		return this.wrappedRules.checkContainerAccessibility(
+		return getWrapped().checkContainerAccessibility(
 				location,
 				from,
 				to);
@@ -93,66 +92,12 @@ public final class ClauseAccessRules extends AccessRules {
 		if (isProhibitedObjectAccess(what)) {
 			return false;
 		}
-		return this.wrappedRules.containerIsVisible(by, what);
+		return getWrapped().containerIsVisible(by, what);
 	}
 
 	@Override
-	public AccessRules typeRules() {
-
-		final AccessRules typeRules = this.wrappedRules.typeRules();
-
-		if (this.wrappedRules == typeRules) {
-			return this;
-		}
-
-		return new ClauseAccessRules(this.topLevelClause, typeRules);
-	}
-
-	@Override
-	public AccessRules declarationRules() {
-
-		final AccessRules declarationRules =
-				this.wrappedRules.declarationRules();
-
-		if (this.wrappedRules == declarationRules) {
-			return this;
-		}
-
-		return new ClauseAccessRules(this.topLevelClause, declarationRules);
-	}
-
-	@Override
-	public AccessRules contentRules() {
-
-		final AccessRules contentRules =
-				this.wrappedRules.contentRules();
-
-		if (this.wrappedRules == contentRules) {
-			return this;
-		}
-
-		return new ClauseAccessRules(this.topLevelClause, contentRules);
-	}
-
-	@Override
-	public AccessRules clauseReuseRules() {
-
-		final AccessRules clauseReuseRules =
-				this.wrappedRules.clauseReuseRules();
-
-		if (this.wrappedRules == clauseReuseRules) {
-			return this;
-		}
-
-		return new ClauseAccessRules(this.topLevelClause, clauseReuseRules);
-	}
-
-	@Override
-	public String toString() {
-		if (this.wrappedRules == null) {
-			return super.toString();
-		}
-		return "FromClause[" + this.wrappedRules + ']';
+	protected ClauseAccessRules wrap(AccessRules wrapped) {
+		return new ClauseAccessRules(this.topLevelClause, wrapped);
 	}
 
 	private boolean isProhibitedObjectAccess(Container target) {
