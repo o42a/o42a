@@ -35,6 +35,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
@@ -87,27 +88,45 @@ public abstract class Statements<
 		return getSentence().getMemberRegistry();
 	}
 
-	public final void expression(Ref expression) {
-		assert expression.getContext() == getContext() :
-			expression + " has wrong context: " + expression.getContext()
-			+ ", but " + getContext() + " expected";
-		statement(expression.rescope(getScope()).toCondition(this));
+	public final void expression(RefBuilder expression) {
+		assert checkSameContext(expression);
+
+		final Ref ref = expression.buildRef(nextDistributor());
+
+		if (ref == null) {
+			dropStatement();
+			return;
+		}
+
+		assert checkSameContext(ref);
+
+		statement(ref.toCondition(this));
 	}
 
-	public final void selfAssign(Ref value) {
+	public final void selfAssign(RefBuilder value) {
 		selfAssign(value, value);
 	}
 
-	public final void selfAssign(LocationInfo location, Ref value) {
-		assert value.getContext() == getContext() :
-			value + " has wrong context: " + value.getContext()
-			+ ", but " + getContext() + " expected";
+	public final void selfAssign(LocationInfo location, RefBuilder value) {
+		assert checkSameContext(location);
+		assert checkSameContext(value);
+
 		if (isInsideIssue()) {
 			prohibitedIssueAssignment(location);
 			dropStatement();
 			return;
 		}
-		statement(value.rescope(getScope()).toValue(location, this));
+
+		final Ref ref = value.buildRef(nextDistributor());
+
+		if (ref == null) {
+			dropStatement();
+			return;
+		}
+
+		assert checkSameContext(ref);
+
+		statement(ref.toValue(location, this));
 	}
 
 	public FieldBuilder field(
@@ -289,6 +308,7 @@ public abstract class Statements<
 	protected final void addStatement(Statement statement) {
 		assert !this.instructionsExecuted :
 			"Instructions already executed. Can not add statement " + statement;
+	statement.assertSameScope(this);
 		this.implications.add(implicate(statement));
 	}
 
@@ -397,6 +417,14 @@ public abstract class Statements<
 	@SuppressWarnings("unchecked")
 	private final S self() {
 		return (S) this;
+	}
+
+	private boolean checkSameContext(LocationInfo location) {
+		assert location.getLocation().getContext() == getContext() :
+			location + " has wrong context: "
+				+ location.getLocation().getContext()
+			+ ", but " + getContext() + " expected";
+		return true;
 	}
 
 	private final Distributor nextDistributor(Container container) {
