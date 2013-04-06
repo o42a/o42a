@@ -69,18 +69,34 @@ final class VariableAssignment extends AssignmentKind {
 		final TypeRef destTypeRef =
 				destLinkType.interfaceRef(destParams).prefixWith(prefix);
 
-		if (!statement.getValue()
-				.toTypeRef()
+		final Ref value = statement.getValue().buildRef(statement.distribute());
+
+		if (value == null || value.getResolution().isError()) {
+			return new AssignmentError(statement);
+		}
+
+		if (!value.toTypeRef()
 				.relationTo(destTypeRef)
 				.checkDerived(statement.getLogger())) {
 			return new AssignmentError(statement);
 		}
 
-		return new VariableAssignment(statement);
+		return new VariableAssignment(statement, value);
 	}
 
-	private VariableAssignment(AssignmentStatement statement) {
+	private final Ref value;
+
+	private VariableAssignment(AssignmentStatement statement, Ref value) {
 		super(statement);
+		this.value = value;
+	}
+
+	private VariableAssignment(Ref value) {
+		this.value = value;
+	}
+
+	public final Ref getValue() {
+		return this.value;
 	}
 
 	@Override
@@ -95,7 +111,7 @@ final class VariableAssignment extends AssignmentKind {
 
 	@Override
 	public Eval eval(CodeBuilder builder, Scope origin) {
-		return new VariableAssignmentEval(getStatement());
+		return new VariableAssignmentEval(this);
 	}
 
 	@Override
@@ -112,7 +128,6 @@ final class VariableAssignment extends AssignmentKind {
 	public void resolve(FullResolver resolver) {
 
 		final Ref destination = getStatement().getDestination();
-		final Ref value = getStatement().getValue();
 
 		destination.resolveAll(resolver.setRefUsage(ASSIGNABLE_REF_USAGE));
 
@@ -122,7 +137,7 @@ final class VariableAssignment extends AssignmentKind {
 				.target(destination.distribute());
 		final FullResolver targetResolver =
 				resolver.setRefUsage(TARGET_REF_USAGE);
-		final Resolution val = value.resolveAll(targetResolver);
+		final Resolution val = getValue().resolveAll(targetResolver);
 		final Resolution dest = destTarget.resolveAll(targetResolver);
 
 		if (dest.isError() || val.isError()) {
@@ -146,15 +161,35 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public AssignmentKind reproduce(
-			AssignmentStatement statement,
-			Reproducer reproducer) {
-		return new VariableAssignment(statement);
+	public AssignmentStatement reproduce(
+			Reproducer reproducer,
+			AssignmentStatement prototype) {
+
+		final Ref destination =
+				getStatement().getDestination().reproduce(reproducer);
+		final Ref value = getValue().reproduce(reproducer);
+
+		if (destination == null || value == null) {
+			return null;
+		}
+
+		return new AssignmentStatement(
+				prototype,
+				reproducer,
+				new VariableAssignment(value), destination, value);
 	}
 
 	@Override
 	public Cmd cmd() {
-		return new VariableAssignmentCmd(getStatement());
+		return new VariableAssignmentCmd(this);
+	}
+
+	@Override
+	public String toString() {
+		if (this.value == null) {
+			return super.toString();
+		}
+		return getStatement().getDestination() + "=" + this.value;
 	}
 
 }

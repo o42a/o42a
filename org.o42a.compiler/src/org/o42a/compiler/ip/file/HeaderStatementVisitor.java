@@ -44,7 +44,7 @@ final class HeaderStatementVisitor extends StatementVisitor {
 
 		final AccessDistributor distributor =
 				p.nextDistributor().fromDeclaration();
-		final Ref ref = expression.accept(expressionVisitor(), distributor);
+		final Ref ref = expression.accept(ip().targetExVisitor(), distributor);
 
 		if (ref != null) {
 			p.statement(new HeaderStatement(ref));

@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
 
@@ -66,36 +65,23 @@ final class PhrasePartVisitor
 
 	@Override
 	public PhraseBuilder visitText(TextNode text, PhraseBuilder p) {
-		if (!text.isDoubleQuoted()) {
-			return p.string(text);
-		}
-
-		final Ref value =
-				text.accept(p.ip().bodyExVisitor(), p.distributeAccess());
-
-		if (value != null) {
-			return p.argument(value);
-		}
-
-		return p.emptyArgument(location(p, text));
+		return p.string(text);
 	}
 
 	@Override
 	public PhraseBuilder visitNumber(NumberNode number, PhraseBuilder p) {
 
-		final Ref integer = number(number, p.distribute());
+		final Ref value = number(number, p.distribute());
 
-		if (integer == null) {
+		if (value == null) {
 			return p;
 		}
 
-		return p.argument(integer);
+		return p.argument(value);
 	}
 
 	@Override
-	public PhraseBuilder visitInterval(
-			IntervalNode interval,
-			PhraseBuilder p) {
+	public PhraseBuilder visitInterval(IntervalNode interval, PhraseBuilder p) {
 		return p.interval(interval);
 	}
 

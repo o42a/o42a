@@ -27,9 +27,9 @@ import org.o42a.core.ir.op.CodeDirs;
 
 final class VariableAssignmentEval implements Eval {
 
-	private final AssignmentStatement assignment;
+	private final VariableAssignment assignment;
 
-	VariableAssignmentEval(AssignmentStatement assignment) {
+	VariableAssignmentEval(VariableAssignment assignment) {
 		this.assignment = assignment;
 	}
 
@@ -40,7 +40,7 @@ final class VariableAssignmentEval implements Eval {
 				dirs.dirs().begin("assign", this.assignment.toString());
 
 		final HostOp destination =
-				this.assignment.getDestination()
+				this.assignment.getStatement().getDestination()
 				.op(host)
 				.target(subDirs);
 		final HostOp value =

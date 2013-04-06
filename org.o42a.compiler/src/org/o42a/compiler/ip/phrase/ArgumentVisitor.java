@@ -19,10 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.Interpreter.location;
-
 import org.o42a.ast.expression.*;
-import org.o42a.core.ref.Ref;
 
 
 final class ArgumentVisitor
@@ -51,16 +48,10 @@ final class ArgumentVisitor
 	protected PhraseBuilder visitExpression(
 			ExpressionNode expression,
 			PhraseBuilder p) {
-
-		final Ref value = expression.accept(
-				p.ip().targetExVisitor(),
-				p.distributeAccess());
-
-		if (value != null) {
-			return p.argument(value);
-		}
-
-		return p.emptyArgument(location(p, expression));
+		return p.argument(
+				expression.accept(
+						p.ip().targetBuildVisitor(),
+						p.distributeAccess()));
 	}
 
 }

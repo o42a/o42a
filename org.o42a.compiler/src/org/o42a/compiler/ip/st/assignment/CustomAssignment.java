@@ -79,6 +79,10 @@ final class CustomAssignment extends AssignmentKind {
 		this.ref = ref;
 	}
 
+	private CustomAssignment(Ref ref) {
+		this.ref = ref;
+	}
+
 	public final Ref getRef() {
 		return this.ref;
 	}
@@ -146,17 +150,21 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public AssignmentKind reproduce(
-			AssignmentStatement statement,
-			Reproducer reproducer) {
-
-		final Ref ref = this.ref.reproduce(reproducer);
-
-		if (ref == null) {
-			return new AssignmentError(statement);
+	public AssignmentStatement reproduce(
+			Reproducer reproducer,
+			AssignmentStatement prototype) {
+		if (this.ref == null) {
+			return null;
 		}
 
-		return new CustomAssignment(statement, ref);
+		final CustomAssignment customAssignment = new CustomAssignment(this.ref);
+
+		return new AssignmentStatement(
+				prototype,
+				reproducer,
+				customAssignment,
+				null,
+				null);
 	}
 
 	@Override
@@ -165,6 +173,14 @@ final class CustomAssignment extends AssignmentKind {
 			return new AssignCmd(this.ref);
 		}
 		return new NormalAssignCmd(this.normal);
+	}
+
+	@Override
+	public String toString() {
+		if (this.ref == null) {
+			return super.toString();
+		}
+		return this.ref.toString();
 	}
 
 	private static final class InlineAssignEval extends InlineEval {

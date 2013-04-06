@@ -53,6 +53,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
@@ -268,7 +269,7 @@ public final class PhraseBuilder extends Contained {
 		return this;
 	}
 
-	public final PhraseBuilder argument(Ref value) {
+	public final PhraseBuilder argument(RefBuilder value) {
 		phrase().argument(value);
 		return this;
 	}
@@ -332,7 +333,7 @@ public final class PhraseBuilder extends Contained {
 
 		final BoundNode leftBoundNode = interval.getLeftBound();
 		final LocationInfo leftLocation;
-		final Ref leftBound;
+		final RefBuilder leftBound;
 		final boolean leftOpen;
 
 		if (!interval.isLeftBounded()) {
@@ -352,7 +353,7 @@ public final class PhraseBuilder extends Contained {
 		} else {
 			leftOpen = interval.isLeftOpen();
 			leftBound = leftBoundNode.toExpression().accept(
-					ip().targetExVisitor(),
+					ip().targetBuildVisitor(),
 					distributeAccess());
 			if (leftBound != null) {
 				leftLocation = leftBound;
@@ -363,7 +364,7 @@ public final class PhraseBuilder extends Contained {
 
 		final BoundNode rightBoundNode = interval.getRightBound();
 		final LocationInfo rightLocation;
-		final Ref rightBound;
+		final RefBuilder rightBound;
 		final boolean rightOpen;
 
 		if (!interval.isRightBounded()) {
@@ -382,7 +383,7 @@ public final class PhraseBuilder extends Contained {
 		} else {
 			rightOpen = interval.isRightOpen();
 			rightBound = rightBoundNode.toExpression().accept(
-					ip().targetExVisitor(),
+					ip().targetBuildVisitor(),
 					distributeAccess());
 			if (rightBound != null) {
 				rightLocation = rightBound;
@@ -469,8 +470,8 @@ public final class PhraseBuilder extends Contained {
 			return null;
 		}
 
-		final Ref right =
-				rightOperand.accept(ip().targetExVisitor(), distributor);
+		final RefBuilder right =
+				rightOperand.accept(ip().targetBuildVisitor(), distributor);
 
 		if (right == null) {
 			return null;
@@ -486,8 +487,8 @@ public final class PhraseBuilder extends Contained {
 
 	public PhraseBuilder suffix(BinaryNode node) {
 
-		final Ref prefix = node.getLeftOperand().accept(
-				ip().targetExVisitor(),
+		final RefBuilder prefix = node.getLeftOperand().accept(
+				ip().targetBuildVisitor(),
 				distributeAccess());
 
 		if (prefix == null) {

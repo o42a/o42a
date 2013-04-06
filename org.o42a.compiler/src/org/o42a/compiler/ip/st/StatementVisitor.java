@@ -28,6 +28,7 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.log.LogInfo;
@@ -62,11 +63,6 @@ public abstract class StatementVisitor
 
 	public final Interpreter ip() {
 		return this.ip;
-	}
-
-	public final
-	ExpressionNodeVisitor<Ref, AccessDistributor> expressionVisitor() {
-		return ip().targetExVisitor();
 	}
 
 	public final CompilerContext getContext() {
@@ -125,8 +121,9 @@ public abstract class StatementVisitor
 			Ref destination) {
 
 		final AccessDistributor distributor = statements.nextDistributor();
-		final Ref value =
-				assignment.getValue().accept(expressionVisitor(), distributor);
+		final RefBuilder value = assignment.getValue().accept(
+				ip().targetBuildVisitor(),
+				distributor);
 
 		if (destination == null || value == null) {
 			return;
