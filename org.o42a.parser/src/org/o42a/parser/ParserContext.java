@@ -337,8 +337,20 @@ public final class ParserContext {
 
 	@Override
 	public String toString() {
-		return "ParserContext[first unaccepted(" + this.firstUnaccepted
-				+ "), current(" + this.current + ")]";
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append("ParserContext[first unaccepted(");
+		out.append(this.firstUnaccepted);
+		out.append("), current(");
+		out.append(this.current);
+		if (!isLineStart()) {
+			out.append(")]");
+		} else {
+			out.append("), line start]");
+		}
+
+		return out.toString();
 	}
 	protected <T> T parse(Parser<T> parser, Expectations expectations) {
 		return parse(parser, expectations, this.firstUnaccepted, false);
