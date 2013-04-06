@@ -24,9 +24,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Consumer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.path.impl.AncestorFragment;
 import org.o42a.core.ref.path.impl.PathFieldDefinition;
@@ -91,8 +89,8 @@ public abstract class Step {
 	 * Converts a reference to condition statement.
 	 *
 	 * <p>This method is called for the last step of the reference path when
-	 * the reference is used as an {@link Statements#expression(Ref) expression
-	 * statement}.</p>
+	 * the reference is used as an {@link Statements#expression(RefBuilder)
+	 * expression statement}.</p>
 	 *
 	 * <p>By default the logical value of {@code condition} is used as condition.
 	 * </p>
@@ -110,7 +108,7 @@ public abstract class Step {
 	 * Converts a reference to value statement.
 	 *
 	 * <p>This method is called for the last step of the reference path when
-	 * the reference is used as a {@link Statements#selfAssign(Ref)
+	 * the reference is used as a {@link Statements#selfAssign(RefBuilder)
 	 * self-assignment statement}.</p>
 	 *
 	 * <p>By default this method returns the reference itself.</p>
