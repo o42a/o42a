@@ -54,7 +54,7 @@ import org.o42a.core.value.link.TargetRef;
 import org.o42a.util.fn.Cancelable;
 
 
-public class Ref extends Statement {
+public class Ref extends Statement implements RefBuilder {
 
 	public static Ref voidRef(LocationInfo location, Distributor distributor) {
 		return VOID_PATH.bind(location, distributor.getScope()).target(
@@ -250,6 +250,11 @@ public class Ref extends Statement {
 		final RefPath path = getPath();
 
 		return path.iface(this, true);
+	}
+
+	@Override
+	public final Ref buildRef(Distributor distributor) {
+		return rescope(distributor.getScope());
 	}
 
 	@Override
