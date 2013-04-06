@@ -45,7 +45,9 @@ import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Local;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.string.Name;
@@ -206,26 +208,25 @@ public final class LocalInterpreter {
 	}
 
 	private static Ref localRef(
-			Interpreter ip,
-			CompilerContext context,
+			final Interpreter ip,
+			final CompilerContext context,
 			StatementsAccess statements,
 			LogInfo location,
 			InterfaceNode iface,
 			ExpressionNode definition,
-			Referral referral) {
+			final Referral referral) {
 
 		final AccessDistributor distributor =
 				statements.nextDistributor().distributeIn(context);
-		final Ref value = localValue(
-				ip,
-				context,
-				location,
-				definition,
-				distributor,
-				referral);
 
 		if (iface == null) {
-			return value;
+			return localValue(
+					ip,
+					context,
+					location,
+					definition,
+					distributor,
+					referral);
 		}
 
 		final PhraseBuilder phrase = new PhraseBuilder(
@@ -253,12 +254,42 @@ public final class LocalInterpreter {
 
 			phrase.setTypeParameters(typeParams.toObjectTypeParameters());
 		} else {
+
+			final Ref value = localValue(
+					ip,
+					context,
+					location,
+					definition,
+					distributor,
+					referral);
+
 			phrase.setTypeParameters(
 					linkType.typeParameters(value.getInterface())
 					.toObjectTypeParameters());
 		}
 
-		phrase.argument(value);
+		final BlockAccess<ExpressionNode> block =
+				new BlockAccess<ExpressionNode>(definition, distributor) {
+			@Override
+			public void buildBlock(Block<?, ?> block) {
+
+				final Statements<?, ?> statements =
+						block.propose(this).alternative(this);
+				final Ref value = localValue(
+						ip,
+						block.getContext(),
+						getNode(),
+						getNode(),
+						distribute(statements.nextDistributor()),
+						referral);
+
+				if (value != null) {
+					statements.selfAssign(value);
+				}
+			}
+		};
+
+		phrase.phrase().declarations(block);
 
 		return phrase.toRef();
 	}

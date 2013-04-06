@@ -28,6 +28,7 @@ import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.*;
 
@@ -37,14 +38,14 @@ public class AssignmentStatement extends Statement {
 	private final AssignmentNode node;
 	private final AccessRules accessRules;
 	private final Ref destination;
-	private final Ref value;
+	private final RefBuilder value;
 	private AssignmentKind assignmentKind;
 
 	public AssignmentStatement(
 			AssignmentNode node,
 			AccessRules accessRules,
 			Ref destination,
-			Ref value) {
+			RefBuilder value) {
 		super(
 				location(destination, node.getOperator()),
 				destination.distribute());
@@ -54,18 +55,19 @@ public class AssignmentStatement extends Statement {
 		this.value = value;
 	}
 
-	private AssignmentStatement(
+	AssignmentStatement(
 			AssignmentStatement prototype,
 			Reproducer reproducer,
+			AssignmentKind assignmentKind,
 			Ref destination,
-			Ref value) {
+			RefBuilder value) {
 		super(prototype, reproducer.distribute());
 		this.node = prototype.getNode();
 		this.accessRules = prototype.getAccessRules();
 		this.destination = destination;
 		this.value = value;
-		this.assignmentKind =
-				prototype.getAssignmentKind().reproduce(this, reproducer);
+		this.assignmentKind = assignmentKind;
+		assignmentKind.init(this);
 	}
 
 	public final AssignmentNode getNode() {
@@ -80,7 +82,7 @@ public class AssignmentStatement extends Statement {
 		return this.destination;
 	}
 
-	public final Ref getValue() {
+	public final RefBuilder getValue() {
 		return this.value;
 	}
 
@@ -102,18 +104,7 @@ public class AssignmentStatement extends Statement {
 	@Override
 	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		if (getAssignmentKind().isError()) {
-			return null;
-		}
-
-		final Ref destination = this.destination.reproduce(reproducer);
-		final Ref value = this.value.reproduce(reproducer);
-
-		if (destination == null || value == null) {
-			return null;
-		}
-
-		return new AssignmentStatement(this, reproducer, destination, value);
+		return getAssignmentKind().reproduce(reproducer, this);
 	}
 
 	public final AccessDistributor distributeAccess() {
@@ -125,15 +116,15 @@ public class AssignmentStatement extends Statement {
 		if (this.value == null) {
 			return super.toString();
 		}
+		if (this.assignmentKind != null) {
+			return this.assignmentKind.toString();
+		}
 		return this.destination + " = " + this.value;
 	}
 
 	public AssignmentKind getAssignmentKind() {
 		if (this.assignmentKind != null) {
 			return this.assignmentKind;
-		}
-		if (this.value.getResolution().isError()) {
-			return this.assignmentKind = new AssignmentError(this);
 		}
 
 		final Resolution destResolution = this.destination.getResolution();

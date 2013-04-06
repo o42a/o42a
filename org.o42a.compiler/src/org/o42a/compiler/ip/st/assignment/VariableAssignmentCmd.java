@@ -27,9 +27,9 @@ import org.o42a.core.ir.op.CodeDirs;
 
 final class VariableAssignmentCmd implements Cmd {
 
-	private final AssignmentStatement assignment;
+	private final VariableAssignment assignment;
 
-	VariableAssignmentCmd(AssignmentStatement assignment) {
+	VariableAssignmentCmd(VariableAssignment assignment) {
 		this.assignment = assignment;
 	}
 
@@ -43,7 +43,7 @@ final class VariableAssignmentCmd implements Cmd {
 				dirs.begin("assign", this.assignment.toString());
 
 		final HostOp destination =
-				this.assignment.getDestination()
+				this.assignment.getStatement().getDestination()
 				.op(control.host())
 				.target(subDirs);
 		final HostOp value =

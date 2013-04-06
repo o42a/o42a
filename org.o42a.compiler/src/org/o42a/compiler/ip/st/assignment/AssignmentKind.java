@@ -33,10 +33,14 @@ import org.o42a.core.st.action.Action;
 
 abstract class AssignmentKind {
 
-	private final AssignmentStatement statement;
+	private AssignmentStatement statement;
 
 	AssignmentKind(AssignmentStatement statement) {
 		this.statement = statement;
+	}
+
+	AssignmentKind() {
+		this.statement = null;
 	}
 
 	public final AssignmentStatement getStatement() {
@@ -53,9 +57,9 @@ abstract class AssignmentKind {
 
 	public abstract void resolve(FullResolver resolver);
 
-	public abstract AssignmentKind reproduce(
-			AssignmentStatement statement,
-			Reproducer reproducer);
+	public abstract AssignmentStatement reproduce(
+			Reproducer reproducer,
+			AssignmentStatement prototype);
 
 	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
 
@@ -73,12 +77,8 @@ abstract class AssignmentKind {
 
 	public abstract Cmd cmd();
 
-	@Override
-	public String toString() {
-		if (this.statement == null) {
-			return super.toString();
-		}
-		return this.statement.toString();
+	void init(AssignmentStatement statement) {
+		this.statement = statement;
 	}
 
 }

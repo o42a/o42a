@@ -87,15 +87,20 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public AssignmentKind reproduce(
-			AssignmentStatement statement,
-			Reproducer reproducer) {
-		return new AssignmentError(statement);
+	public AssignmentStatement reproduce(
+			Reproducer reproducer,
+			AssignmentStatement prototype) {
+		return null;
 	}
 
 	@Override
 	public Cmd cmd() {
 		return NO_CMD;
+	}
+
+	@Override
+	public String toString() {
+		return "ASSIGNMENT ERROR";
 	}
 
 }

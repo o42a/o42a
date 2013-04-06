@@ -135,7 +135,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		}
 
 		final AccessDistributor distributor = p.nextDistributor();
-		final Ref value = valueNode.accept(expressionVisitor(), distributor);
+		final Ref value = valueNode.accept(ip().targetExVisitor(), distributor);
 
 		if (value != null) {
 			p.get().selfAssign(location(p, assignment.getPrefix()), value);
@@ -206,7 +206,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			StatementsAccess p) {
 
 		final AccessDistributor distributor = p.nextDistributor();
-		final Ref ref = expression.accept(expressionVisitor(), distributor);
+		final Ref ref = expression.accept(ip().targetExVisitor(), distributor);
 
 		if (ref != null) {
 			p.get().expression(ref);
