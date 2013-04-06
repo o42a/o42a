@@ -25,29 +25,46 @@ import java.util.Collection;
 import java.util.List;
 
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.io.SourcePosition;
 
 
 public final class SeparatorNodes {
 
+	private final SourcePosition lineContinuation;
 	private final List<CommentNode> comments;
-	private final boolean continuation;
+	private final boolean haveUnderscores;
 
-	public SeparatorNodes(boolean continuation, List<CommentNode> comments) {
+	public SeparatorNodes(
+			SourcePosition lineContinuation,
+			boolean haveUnderscores,
+			List<CommentNode> comments) {
+		this.lineContinuation = lineContinuation;
+		this.haveUnderscores = haveUnderscores;
 		this.comments = comments;
-		this.continuation = continuation;
 	}
 
-	public SeparatorNodes(boolean continuation) {
+	public SeparatorNodes(
+			SourcePosition lineContinuation,
+			boolean haveUnderscores) {
+		this.lineContinuation = lineContinuation;
+		this.haveUnderscores = haveUnderscores;
 		this.comments = emptyList();
-		this.continuation = continuation;
 	}
 
 	public final boolean isWhitespace() {
-		return !lineContinuation() && !haveComments();
+		return !haveUnderscores() && !haveComments();
 	}
 
-	public final boolean lineContinuation() {
-		return this.continuation;
+	public final boolean haveUnderscores() {
+		return this.haveUnderscores;
+	}
+
+	public final SourcePosition getLineContinuation() {
+		return this.lineContinuation;
+	}
+
+	public final boolean isLineContinuation() {
+		return this.lineContinuation != null;
 	}
 
 	public final boolean haveComments() {
@@ -70,10 +87,6 @@ public final class SeparatorNodes {
 
 		boolean separate = false;
 
-		if (this.continuation) {
-			out.append('_');
-			separate = true;
-		}
 		for (CommentNode comment : this.comments) {
 			if (separate) {
 				out.append(' ');
@@ -81,6 +94,9 @@ public final class SeparatorNodes {
 				separate = true;
 			}
 			comment.printContent(out);
+		}
+		if (isLineContinuation()) {
+			out.append('_');
 		}
 	}
 
