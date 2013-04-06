@@ -130,11 +130,6 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
-		return false;
-	}
-
-	@Override
 	protected void normalizeStep(Analyzer analyzer) {
 		getConstructor().getConstructed().normalize(analyzer);
 	}

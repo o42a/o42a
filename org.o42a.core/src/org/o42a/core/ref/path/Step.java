@@ -240,9 +240,6 @@ public abstract class Step {
 		return Path.SELF_PATH;
 	}
 
-	protected abstract boolean cancelIncompleteNormalization(
-			PathNormalizer normalizer);
-
 	/**
 	 * Normalize the step.
 	 *

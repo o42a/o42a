@@ -109,11 +109,6 @@ public class FalseStep extends Step {
 	}
 
 	@Override
-	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
-		return false;
-	}
-
-	@Override
 	protected PathOp op(PathOp start) {
 		return new FalseOp(start, this);
 	}

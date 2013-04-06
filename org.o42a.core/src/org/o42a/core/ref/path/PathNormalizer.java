@@ -257,7 +257,6 @@ public final class PathNormalizer {
 		final NormalPath normalPath = normalizer.normalize();
 
 		if (!normalPath.isNormalized()) {
-			this.normalizer.cancelAll();
 			cancel();
 			return;
 		}
@@ -287,10 +286,6 @@ public final class PathNormalizer {
 
 	public final void cancel() {
 		this.stepNormalized = false;
-	}
-
-	public final boolean cancelIncompleteNormalization(Path path) {
-		return cancelIncompleteNormalization(path, 0);
 	}
 
 	public final boolean finish() {
@@ -362,9 +357,6 @@ public final class PathNormalizer {
 
 			steps[this.stepIndex].normalize(this);
 			if (isNormalizationFinished()) {
-				if (cancelationRequired()) {
-					return unnormalized();
-				}
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
@@ -421,9 +413,6 @@ public final class PathNormalizer {
 
 			steps[this.stepIndex].normalizeStatic(this);
 			if (isNormalizationFinished()) {
-				if (cancelationRequired()) {
-					return unnormalized();
-				}
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
@@ -452,28 +441,6 @@ public final class PathNormalizer {
 		}
 
 		return unnormalized();
-	}
-
-	private boolean cancelationRequired() {
-		if (this.normalizer.isCancelled()) {
-			return true;
-		}
-		return cancelIncompleteNormalization(
-				getPath().getPath(),
-				this.stepIndex + 1);
-	}
-
-	private boolean cancelIncompleteNormalization(Path path, int fromIndex) {
-
-		final Step[] steps = path.getSteps();
-
-		for (int i = fromIndex; i < steps.length; ++i) {
-			if (steps[i].cancelIncompleteNormalization(this)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private boolean upTo(Scope scope) {

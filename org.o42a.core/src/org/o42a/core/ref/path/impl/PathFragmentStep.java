@@ -91,11 +91,6 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
-	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
-		throw unresolved();
-	}
-
-	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
