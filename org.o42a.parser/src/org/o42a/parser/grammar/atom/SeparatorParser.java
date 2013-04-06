@@ -117,7 +117,9 @@ public class SeparatorParser implements Parser<SeparatorNodes> {
 				break;
 			}
 			if (c == '"' || c == '\'') {
-				lineContinuation = context.current().fix();
+				if (lineContinuation == null && lineStart) {
+					lineContinuation = context.current().fix();
+				}
 				context.acceptButLast();
 				break;
 			}
