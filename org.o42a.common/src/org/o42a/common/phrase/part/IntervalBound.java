@@ -25,6 +25,7 @@ import org.o42a.common.phrase.PhraseContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
@@ -32,7 +33,7 @@ import org.o42a.core.st.sentence.Statements;
 
 public class IntervalBound extends PhraseContinuation {
 
-	private final Ref value;
+	private final RefBuilder value;
 	private final boolean leftOpen;
 	private final boolean rightOpen;
 	private final boolean leftBound;
@@ -40,7 +41,7 @@ public class IntervalBound extends PhraseContinuation {
 	IntervalBound(
 			LocationInfo location,
 			PhrasePart preceding,
-			Ref value,
+			RefBuilder value,
 			boolean leftOpen,
 			boolean rightOpen,
 			boolean leftBound) {
@@ -49,10 +50,6 @@ public class IntervalBound extends PhraseContinuation {
 		this.leftOpen = leftOpen;
 		this.rightOpen = rightOpen;
 		this.leftBound = leftBound;
-	}
-
-	public final Ref getValue() {
-		return this.value;
 	}
 
 	@Override
@@ -65,7 +62,7 @@ public class IntervalBound extends PhraseContinuation {
 		if (this.value == null) {
 			return null;
 		}
-		return this.value.rescope(distributor.getScope());
+		return this.value.buildRef(distributor);
 	}
 
 	@Override

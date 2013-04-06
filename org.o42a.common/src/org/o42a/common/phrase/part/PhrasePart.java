@@ -20,7 +20,7 @@
 package org.o42a.common.phrase.part;
 
 import org.o42a.common.phrase.Phrase;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -51,7 +51,9 @@ public abstract class PhrasePart extends Located {
 		return this.following;
 	}
 
-	public final SuffixedByPhrase suffix(LocationInfo location, Ref prefix) {
+	public final SuffixedByPhrase suffix(
+			LocationInfo location,
+			RefBuilder prefix) {
 		return setFollowing(new SuffixedByPhrase(location, this, prefix));
 	}
 
@@ -59,11 +61,13 @@ public abstract class PhrasePart extends Located {
 		return setFollowing(new PhraseName(location, this, name));
 	}
 
-	public final PhraseArgument argument(LocationInfo location, Ref value) {
+	public final PhraseArgument argument(
+			LocationInfo location,
+			RefBuilder value) {
 		return setFollowing(new PhraseArgument(location, this, value));
 	}
 
-	public final PhraseArray array(Ref array) {
+	public final PhraseArray array(RefBuilder array) {
 		return setFollowing(new PhraseArray(this, array));
 	}
 
@@ -81,10 +85,10 @@ public abstract class PhrasePart extends Located {
 
 	public final IntervalBound interval(
 			LocationInfo leftLocation,
-			Ref leftBound,
+			RefBuilder leftBound,
 			boolean leftOpen,
 			LocationInfo rightLocation,
-			Ref rightBound,
+			RefBuilder rightBound,
 			boolean rightOpen) {
 
 		final IntervalBound left = new IntervalBound(
@@ -110,7 +114,7 @@ public abstract class PhrasePart extends Located {
 
 	public final HalfBoundedInterval halfBoundedInterval(
 			LocationInfo location,
-			Ref bound,
+			RefBuilder bound,
 			boolean open,
 			boolean leftBounded) {
 
@@ -137,12 +141,14 @@ public abstract class PhrasePart extends Located {
 	public final BinaryPhrasePart binary(
 			LocationInfo location,
 			BinaryPhraseOperator operator,
-			Ref rightOperand) {
+			RefBuilder rightOperand) {
 		return setFollowing(
 				new BinaryPhrasePart(location, operator, this, rightOperand));
 	}
 
-	public final PhraseAssignment assign(LocationInfo location, Ref value) {
+	public final PhraseAssignment assign(
+			LocationInfo location,
+			RefBuilder value) {
 		return setFollowing(new PhraseAssignment(location, this, value));
 	}
 

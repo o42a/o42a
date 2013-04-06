@@ -23,6 +23,7 @@ import org.o42a.common.phrase.PhraseContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
@@ -30,15 +31,14 @@ import org.o42a.core.st.sentence.Statements;
 
 public class SuffixedByPhrase extends PhraseContinuation {
 
-	private final Ref prefix;
+	private final RefBuilder prefix;
 
-	SuffixedByPhrase(LocationInfo location, PhrasePart preceding, Ref prefix) {
+	SuffixedByPhrase(
+			LocationInfo location,
+			PhrasePart preceding,
+			RefBuilder prefix) {
 		super(location, preceding);
 		this.prefix = prefix;
-	}
-
-	public final Ref getPrefix() {
-		return this.prefix;
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class SuffixedByPhrase extends PhraseContinuation {
 		if (this.prefix == null) {
 			return null;
 		}
-		return this.prefix.rescope(distributor.getScope());
+		return this.prefix.buildRef(distributor);
 	}
 
 	@Override

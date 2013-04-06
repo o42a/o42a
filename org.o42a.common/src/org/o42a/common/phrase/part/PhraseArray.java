@@ -23,15 +23,16 @@ import org.o42a.common.phrase.PhraseContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
 
 public class PhraseArray extends PhraseContinuation {
 
-	private final Ref array;
+	private final RefBuilder array;
 
-	PhraseArray(PhrasePart preceding, Ref array) {
+	PhraseArray(PhrasePart preceding, RefBuilder array) {
 		super(array, preceding);
 		this.array = array;
 	}
@@ -43,7 +44,7 @@ public class PhraseArray extends PhraseContinuation {
 
 	@Override
 	public Ref substitute(Distributor distributor) {
-		return this.array.rescope(distributor.getScope());
+		return this.array.buildRef(distributor);
 	}
 
 	@Override

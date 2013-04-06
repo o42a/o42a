@@ -27,6 +27,7 @@ import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -140,7 +141,9 @@ public class Phrase extends Contained {
 		return this;
 	}
 
-	public final SuffixedByPhrase suffix(LocationInfo location, Ref prefix) {
+	public final SuffixedByPhrase suffix(
+			LocationInfo location,
+			RefBuilder prefix) {
 		return append(this.suffixed = this.last.suffix(location, prefix));
 	}
 
@@ -152,13 +155,11 @@ public class Phrase extends Contained {
 		return append(this.last.argument(location, null));
 	}
 
-	public final PhraseArgument argument(Ref value) {
-		value.assertSameScope(this);
+	public final PhraseArgument argument(RefBuilder value) {
 		return append(this.last.argument(value, value));
 	}
 
-	public final PhraseArray array(Ref array) {
-		array.assertSameScope(this);
+	public final PhraseArray array(RefBuilder array) {
 		return append(this.last.array(array));
 	}
 
@@ -176,10 +177,10 @@ public class Phrase extends Contained {
 
 	public final IntervalBound interval(
 			LocationInfo leftLocation,
-			Ref leftBound,
+			RefBuilder leftBound,
 			boolean leftOpen,
 			LocationInfo rightLocation,
-			Ref rightBound,
+			RefBuilder rightBound,
 			boolean rightOpen) {
 		return append(
 				this.last.interval(
@@ -193,7 +194,7 @@ public class Phrase extends Contained {
 
 	public final HalfBoundedInterval halfBoundedInterval(
 			LocationInfo location,
-			Ref bound,
+			RefBuilder bound,
 			boolean open,
 			boolean leftBounded) {
 		return append(
@@ -217,11 +218,13 @@ public class Phrase extends Contained {
 	public final BinaryPhrasePart binary(
 			LocationInfo location,
 			BinaryPhraseOperator operator,
-			Ref rightOperand) {
+			RefBuilder rightOperand) {
 		return append(this.last.binary(location, operator, rightOperand));
 	}
 
-	public final PhraseAssignment assign(LocationInfo location, Ref value) {
+	public final PhraseAssignment assign(
+			LocationInfo location,
+			RefBuilder value) {
 		return append(this.last.assign(location, value));
 	}
 

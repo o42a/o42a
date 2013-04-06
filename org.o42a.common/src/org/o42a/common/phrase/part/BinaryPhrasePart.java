@@ -23,6 +23,7 @@ import org.o42a.common.phrase.PhraseContext;
 import org.o42a.common.ref.cmp.ComparisonOperator;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
@@ -31,14 +32,14 @@ import org.o42a.core.st.sentence.Statements;
 public class BinaryPhrasePart extends PhraseContinuation {
 
 	private final BinaryPhraseOperator operator;
-	private final Ref rightOperand;
+	private final RefBuilder rightOperand;
 	private ComparisonOperator comparisonOperator;
 
 	BinaryPhrasePart(
 			LocationInfo location,
 			BinaryPhraseOperator operator,
 			PhrasePart preceding,
-			Ref rightOperand) {
+			RefBuilder rightOperand) {
 		super(location, preceding);
 		this.operator = operator;
 		this.rightOperand = rightOperand;
@@ -78,7 +79,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		if (this.rightOperand == null) {
 			return null;
 		}
-		return this.rightOperand.rescope(distributor.getScope());
+		return this.rightOperand.buildRef(distributor);
 	}
 
 	@Override
