@@ -127,9 +127,11 @@ final class NormalizedPath implements NormalPath {
 
 		final Iterator<NormalStep> steps = this.normalSteps.iterator();
 
-		out.append(steps.next());
-		while (steps.hasNext()) {
-			out.append('/').append(steps.next());
+		if (steps.hasNext()) {
+			out.append(steps.next());
+			while (steps.hasNext()) {
+				out.append('/').append(steps.next());
+			}
 		}
 		out.append('>');
 
