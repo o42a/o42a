@@ -21,10 +21,10 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void sameLine() {
 
-		final SeparatorNodes result = parse(false, "  \n");
+		final SeparatorNodes separators = parse(false, "  \n");
 
-		assertTrue(result.isWhitespace());
-		assertFalse(result.isLineContinuation());
+		assertTrue(separators.isWhitespace());
+		assertFalse(separators.isLineContinuation());
 		assertThat(this.worker.position().line(), is(1));
 		assertThat(this.worker.position().column(), is(3));
 		assertThat(this.worker.position().offset(), is(2L));
@@ -33,10 +33,10 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void newLine() {
 
-		final SeparatorNodes result = parse(true, "  \n");
+		final SeparatorNodes separators = parse(true, "  \n");
 
-		assertTrue(result.isWhitespace());
-		assertFalse(result.isLineContinuation());
+		assertTrue(separators.isWhitespace());
+		assertFalse(separators.isLineContinuation());
 		assertThat(this.worker.position().line(), is(2));
 		assertThat(this.worker.position().column(), is(1));
 		assertThat(this.worker.position().offset(), is(3L));
@@ -45,12 +45,12 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void lineContinuation() {
 
-		final SeparatorNodes result = parse(false, "  \n _ ");
+		final SeparatorNodes separators = parse(false, "  \n _ ");
 
-		assertTrue(result.haveUnderscores());
-		assertFalse(result.haveComments());
-		assertTrue(result.isLineContinuation());
-		assertThat(result.getLineContinuation().getOffset(), is(4L));
+		assertTrue(separators.haveUnderscores());
+		assertFalse(separators.haveComments());
+		assertTrue(separators.isLineContinuation());
+		assertThat(separators.getLineContinuation().getOffset(), is(4L));
 
 		assertThat(this.worker.position().line(), is(2));
 		assertThat(this.worker.position().column(), is(4));
@@ -60,14 +60,14 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void inlineComment() {
 
-		final SeparatorNodes result =
+		final SeparatorNodes separators =
 				parse(false, "~~comment1\n~~comment2");
 
-		assertFalse(result.haveUnderscores());
-		assertTrue(result.haveComments());
-		assertFalse(result.isLineContinuation());
+		assertFalse(separators.haveUnderscores());
+		assertTrue(separators.haveComments());
+		assertFalse(separators.isLineContinuation());
 
-		final CommentNode[] comments = result.getComments();
+		final CommentNode[] comments = separators.getComments();
 
 		assertThat(comments.length, is(1));
 		assertThat(comments[0].getText(), is("comment1"));
@@ -78,14 +78,14 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void inlineCommentsWithUnderscope() {
 
-		final SeparatorNodes result =
+		final SeparatorNodes separators =
 				parse(true, "~~comment1\n  _~~comment2\n  ");
 
-		assertTrue(result.haveUnderscores());
-		assertTrue(result.haveComments());
-		assertFalse(result.isLineContinuation());
+		assertTrue(separators.haveUnderscores());
+		assertTrue(separators.haveComments());
+		assertFalse(separators.isLineContinuation());
 
-		final CommentNode[] comments = result.getComments();
+		final CommentNode[] comments = separators.getComments();
 
 		assertThat(comments.length, is(2));
 		assertThat(comments[0].getText(), is("comment1"));
@@ -98,15 +98,15 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void lineContinuationWithComment() {
 
-		final SeparatorNodes result =
+		final SeparatorNodes separators =
 				parse(false, "  __ ~~comment~~");
 
-		assertTrue(result.haveUnderscores());
-		assertTrue(result.haveComments());
-		assertTrue(result.isLineContinuation());
-		assertThat(result.getLineContinuation().getColumn(), is(3));
+		assertTrue(separators.haveUnderscores());
+		assertTrue(separators.haveComments());
+		assertTrue(separators.isLineContinuation());
+		assertThat(separators.getLineContinuation().getColumn(), is(3));
 
-		final CommentNode[] comments = result.getComments();
+		final CommentNode[] comments = separators.getComments();
 
 		assertThat(comments.length, is(1));
 		assertThat(comments[0].getText(), is("comment"));
@@ -117,14 +117,14 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void notLineContinuation() {
 
-		final SeparatorNodes result =
+		final SeparatorNodes separators =
 				parse(true, "_ ~~comment\n  ");
 
-		assertTrue(result.haveUnderscores());
-		assertTrue(result.haveComments());
-		assertFalse(result.isLineContinuation());
+		assertTrue(separators.haveUnderscores());
+		assertTrue(separators.haveComments());
+		assertFalse(separators.isLineContinuation());
 
-		final CommentNode[] comments = result.getComments();
+		final CommentNode[] comments = separators.getComments();
 
 		assertThat(comments.length, is(1));
 		assertThat(comments[0].getText(), is("comment"));
@@ -135,14 +135,14 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void inineCommentNL() {
 
-		final SeparatorNodes result =
+		final SeparatorNodes separators =
 				parse(true, "~~comment1\n  ");
 
-		assertFalse(result.haveUnderscores());
-		assertTrue(result.haveComments());
-		assertFalse(result.isLineContinuation());
+		assertFalse(separators.haveUnderscores());
+		assertTrue(separators.haveComments());
+		assertFalse(separators.isLineContinuation());
 
-		final CommentNode[] comments = result.getComments();
+		final CommentNode[] comments = separators.getComments();
 
 		assertThat(comments.length, is(1));
 		assertThat(comments[0].getText(), is("comment1"));
@@ -153,14 +153,14 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void inineCommentsNL() {
 
-		final SeparatorNodes result =
+		final SeparatorNodes separators =
 				parse(true, "~~comment1\n  ~~comment2\n  ");
 
-		assertFalse(result.haveUnderscores());
-		assertTrue(result.haveComments());
-		assertFalse(result.isLineContinuation());
+		assertFalse(separators.haveUnderscores());
+		assertTrue(separators.haveComments());
+		assertFalse(separators.isLineContinuation());
 
-		final CommentNode[] comments = result.getComments();
+		final CommentNode[] comments = separators.getComments();
 
 		assertThat(comments.length, is(2));
 		assertThat(comments[0].getText(), is("comment1"));
@@ -173,7 +173,7 @@ public class SeparatorsTest extends GrammarTestCase {
 	@Test
 	public void blockComments() {
 
-		final SeparatorNodes result = parseLines(
+		final SeparatorNodes separators = parseLines(
 				separator(true),
 				"   ",
 				"~~~~~~",
@@ -182,11 +182,11 @@ public class SeparatorsTest extends GrammarTestCase {
 				" ",
 				"~~~ comment2\n  ");
 
-		assertFalse(result.haveUnderscores());
-		assertTrue(result.haveComments());
-		assertFalse(result.isLineContinuation());
+		assertFalse(separators.haveUnderscores());
+		assertTrue(separators.haveComments());
+		assertFalse(separators.isLineContinuation());
 
-		final CommentNode[] comments = result.getComments();
+		final CommentNode[] comments = separators.getComments();
 
 		assertThat(comments.length, is(2));
 		assertThat(comments[0].getText(), is("comment1\n"));
@@ -194,6 +194,43 @@ public class SeparatorsTest extends GrammarTestCase {
 		assertThat(comments[1].getText(), is(" comment2"));
 		assertThat(comments[1], hasRange(26, 38));
 		assertThat(this.worker.position().offset(), is(42L));
+	}
+
+	@Test
+	public void stringOnTheNextLine() {
+
+		final SeparatorNodes separators = parse(false, "  \n \"abc\" ");
+
+		assertFalse(separators.haveUnderscores());
+		assertFalse(separators.haveComments());
+		assertTrue(separators.isLineContinuation());
+
+		assertThat(separators.getLineContinuation().getOffset(), is(4L));
+	}
+
+	@Test
+	public void stringAfterUnderscore() {
+
+		final SeparatorNodes separators = parse(false, "  \n __ \"abc\" ");
+
+		assertTrue(separators.haveUnderscores());
+		assertFalse(separators.haveComments());
+		assertTrue(separators.isLineContinuation());
+
+		assertThat(separators.getLineContinuation().getOffset(), is(4L));
+	}
+
+	@Test
+	public void stringOnNewLineAfterComment() {
+
+		final SeparatorNodes separators =
+				parse(false, "~~comment\n\n\"abc\" ");
+
+		assertFalse(separators.haveUnderscores());
+		assertTrue(separators.haveComments());
+		assertTrue(separators.isLineContinuation());
+
+		assertThat(separators.getLineContinuation().getLine(), is(3));
 	}
 
 	private SeparatorNodes parse(boolean allowNewLine, String text) {
