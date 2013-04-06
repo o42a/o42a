@@ -258,12 +258,6 @@ public final class Dep extends Step implements SubID {
 	}
 
 	@Override
-	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
-		return normalizer.cancelIncompleteNormalization(
-				ref().getPath().getPath());
-	}
-
-	@Override
 	protected void normalizeStep(Analyzer analyzer) {
 		ref().normalize(analyzer);
 	}

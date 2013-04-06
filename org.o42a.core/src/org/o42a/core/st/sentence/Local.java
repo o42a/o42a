@@ -229,11 +229,6 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 	}
 
 	@Override
-	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
-		return true;
-	}
-
-	@Override
 	protected void normalizeStep(Analyzer analyzer) {
 		ref().normalize(analyzer);
 	}

@@ -82,11 +82,6 @@ public final class RequireMacroStep extends Step {
 	}
 
 	@Override
-	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
-		return true;
-	}
-
-	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

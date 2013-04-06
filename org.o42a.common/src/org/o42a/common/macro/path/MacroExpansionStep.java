@@ -138,11 +138,6 @@ public class MacroExpansionStep extends Step {
 	}
 
 	@Override
-	protected boolean cancelIncompleteNormalization(PathNormalizer normalizer) {
-		return true;
-	}
-
-	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
