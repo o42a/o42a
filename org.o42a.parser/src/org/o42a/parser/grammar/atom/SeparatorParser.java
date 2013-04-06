@@ -23,11 +23,14 @@ import static org.o42a.parser.Grammar.comment;
 import static org.o42a.parser.Grammar.whitespace;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class SeparatorParser implements Parser<SeparatorNodes> {
@@ -46,49 +49,76 @@ public class SeparatorParser implements Parser<SeparatorNodes> {
 	@Override
 	public SeparatorNodes parse(ParserContext context) {
 
-		boolean allowNewLine = this.allowNewLine;
-		boolean continuation = false;
-		Object whitespacePresent = context.parse(whitespace(allowNewLine));
-		ArrayList<CommentNode> comments = null;
+		boolean haveUnderscores = false;
+		SourcePosition lineContinuation = null;
+		Object whitespacePresent = context.parse(whitespace(this.allowNewLine));
+		List<CommentNode> comments = null;
 
 		for (;;) {
 
-			final CommentNode comment = context.parse(comment(allowNewLine));
+			final CommentNode comment =
+					context.parse(comment(this.allowNewLine));
 
 			if (comment != null) {
 				if (comments == null) {
 					comments = new ArrayList<>(1);
 				}
 				comments.add(comment);
+				if (lineContinuation != null
+						&& lineContinuation.getLine()
+						!= context.current().line()) {
+					lineContinuation = null;
+				}
 			} else {
 				context.parse(whitespace(false));
 			}
 
+			final boolean lineStart = context.isLineStart();
 			final int c = context.next();
 
 			if (c == '_') {
+				if (lineStart) {
+					lineContinuation = context.current().fix();
+				}
 				context.acceptAll();
-				context.parse(whitespace(true));
-				allowNewLine = continuation = true;
+				context.parse(whitespace(false));
+				haveUnderscores = true;
 				continue;
 			}
 			if (c == '\n') {
 
 				final SeparatorNodes separators = context.push(SEPARATOR_NL);
 
-				if (!separators.lineContinuation()) {
+				if (!separators.isLineContinuation()) {
 					break;
 				}
+
 				context.acceptAll();
-				if (comments == null) {
+
+				if (comments != null) {
+					separators.appendCommentsTo(comments);
+				} else if (lineContinuation == null) {
 					return separators;
+				} else {
+					comments = Arrays.asList(separators.getComments());
 				}
-				separators.appendCommentsTo(comments);
-				return new SeparatorNodes(true, comments);
+				if (lineContinuation == null) {
+					lineContinuation = separators.getLineContinuation();
+				} else {
+
+					final SourcePosition continuation =
+							separators.getLineContinuation();
+
+					if (continuation.getLine() != lineContinuation.getLine()) {
+						lineContinuation = continuation;
+					}
+				}
+				haveUnderscores |= separators.haveUnderscores();
+				break;
 			}
 			if (c == '"' || c == '\'') {
+				lineContinuation = context.current().fix();
 				context.acceptButLast();
-				continuation = true;
 				break;
 			}
 			if (comment == null) {
@@ -96,13 +126,16 @@ public class SeparatorParser implements Parser<SeparatorNodes> {
 			}
 		}
 		if (comments != null) {
-			return new SeparatorNodes(continuation, comments);
+			return new SeparatorNodes(
+					lineContinuation,
+					haveUnderscores,
+					comments);
 		}
 		if (whitespacePresent == null) {
 			return null;
 		}
 
-		return new SeparatorNodes(continuation);
+		return new SeparatorNodes(lineContinuation, haveUnderscores);
 	}
 
 
