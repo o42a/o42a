@@ -257,6 +257,7 @@ public final class PathNormalizer {
 		final NormalPath normalPath = normalizer.normalize();
 
 		if (!normalPath.isNormalized()) {
+			this.normalizer.cancelAll();
 			cancel();
 			return;
 		}
@@ -454,6 +455,9 @@ public final class PathNormalizer {
 	}
 
 	private boolean cancelationRequired() {
+		if (this.normalizer.isCancelled()) {
+			return true;
+		}
 		return cancelIncompleteNormalization(
 				getPath().getPath(),
 				this.stepIndex + 1);
