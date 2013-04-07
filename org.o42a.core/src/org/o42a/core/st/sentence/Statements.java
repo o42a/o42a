@@ -55,10 +55,10 @@ public abstract class Statements<
 
 	private final Sentence<S, L> sentence;
 	private final ArrayList<L> implications = new ArrayList<>(1);
-	private boolean statementDropped;
-	private boolean instructionsExecuted;
-	private boolean incompatibilityReported;
 	private Container nextContainer;
+	private boolean statementDropped;
+	private boolean incompatibilityReported;
+	private int instructionsExecuted;
 
 	Statements(LocationInfo location, Sentence<S, L> sentence) {
 		super(
@@ -269,7 +269,7 @@ public abstract class Statements<
 	}
 
 	public final boolean assertInstructionsExecuted() {
-		assert this.instructionsExecuted :
+		assert this.instructionsExecuted == getImplications().size() :
 			"Instructions not executed yet";
 		return true;
 	}
@@ -306,9 +306,7 @@ public abstract class Statements<
 	protected abstract void braces(ImperativeBlock braces);
 
 	protected final void addStatement(Statement statement) {
-		assert !this.instructionsExecuted :
-			"Instructions already executed. Can not add statement " + statement;
-	statement.assertSameScope(this);
+		statement.assertSameScope(this);
 		this.implications.add(implicate(statement));
 	}
 
@@ -364,11 +362,15 @@ public abstract class Statements<
 		return parentheses;
 	}
 
-	void executeInstructions() {
-		if (this.instructionsExecuted) {
-			return;
-		}
-		this.instructionsExecuted = true;
+	final int getInstructionsExecuted() {
+		return this.instructionsExecuted;
+	}
+
+	final void setInstructionsExecuted(int instructionsExecuted) {
+		this.instructionsExecuted = instructionsExecuted;
+	}
+
+	final void executeInstructions() {
 		new InstructionExecutor(this).executeAll();
 	}
 
