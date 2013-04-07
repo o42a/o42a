@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_MEMBER;
+
 import org.o42a.util.string.ID;
 import org.o42a.util.string.SubID;
 
@@ -92,6 +94,9 @@ public enum MemberKind {
 
 		@Override
 		ID toDisplayID(MemberName memberName) {
+			if (memberName.equals(ANONYMOUS_LOCAL_MEMBER)) {
+				return ANONYMOUS_LOCAL_DISPLAY_ID;
+			}
 			return LOCAL_DISPLAY_PREFIX
 					.suffix(memberName.getName())
 					.suffix(DISPLAY_SUFFIX);
@@ -105,8 +110,10 @@ public enum MemberKind {
 
 	private static final ID CLAUSE_DISPLAY_PREFIX =
 			ID.id(ID.displayText("Clause '"));
+	private static final ID ANONYMOUS_LOCAL_DISPLAY_ID =
+			ID.id(ID.displayText("$"));
 	private static final ID LOCAL_DISPLAY_PREFIX =
-			ID.id(ID.displayText("Block '"));
+			ID.id(ID.displayText("Local '"));
 	private static final SubID DISPLAY_SUFFIX =
 			ID.displayText("'");
 
