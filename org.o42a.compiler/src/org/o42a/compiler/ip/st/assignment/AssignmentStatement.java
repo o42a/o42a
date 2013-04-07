@@ -43,14 +43,14 @@ public class AssignmentStatement extends Statement {
 
 	public AssignmentStatement(
 			AssignmentNode node,
-			AccessRules accessRules,
+			AccessDistributor distributor,
 			Ref destination,
 			RefBuilder value) {
 		super(
 				location(destination, node.getOperator()),
-				destination.distribute());
+				distributor);
 		this.node = node;
-		this.accessRules = accessRules;
+		this.accessRules = distributor.getAccessRules();
 		this.destination = destination;
 		this.value = value;
 	}
