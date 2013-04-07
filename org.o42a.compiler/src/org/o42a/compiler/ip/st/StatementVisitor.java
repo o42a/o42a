@@ -132,7 +132,7 @@ public abstract class StatementVisitor
 		statements.statement(
 				new AssignmentStatement(
 						assignment,
-						statements.getRules(),
+						distributor,
 						destination,
 						value));
 	}
