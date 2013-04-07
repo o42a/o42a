@@ -19,8 +19,7 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.st.CommandTargets.NO_COMMANDS;
-import static org.o42a.core.st.ImplicationTargets.*;
+import static org.o42a.core.st.CommandTargets.*;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
@@ -46,8 +45,6 @@ public abstract class Command extends Implication<Command> {
 		super(statement, env);
 	}
 
-	public abstract CommandTargets getCommandTargets();
-
 	public abstract Action initialValue(Resolver resolver);
 
 	public abstract InlineCmd inlineCmd(Normalizer normalizer, Scope origin);
@@ -57,25 +54,5 @@ public abstract class Command extends Implication<Command> {
 			Scope origin);
 
 	public abstract Cmd cmd();
-
-	protected final CommandTargets actionCommand() {
-		return new CommandTargets(
-				this,
-				PRECONDITION_MASK | NON_CONSTANT_MASK);
-	}
-
-	protected final CommandTargets exitCommand() {
-		return new CommandTargets(this, EXIT_MASK);
-	}
-
-	protected final CommandTargets repeatCommand() {
-		return new CommandTargets(this, REPEAT_MASK);
-	}
-
-	protected final CommandTargets returnCommand() {
-		return new CommandTargets(
-				this,
-				PRECONDITION_MASK | VALUE_MASK | NON_CONSTANT_MASK);
-	}
 
 }

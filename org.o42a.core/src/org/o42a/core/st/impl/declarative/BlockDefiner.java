@@ -100,7 +100,7 @@ public final class BlockDefiner
 			Scope origin,
 			DeclarativeSentences sentences) {
 
-		final DefTargets defTargets = sentences.getDefTargets();
+		final CommandTargets defTargets = sentences.getTargets();
 
 		if (!defTargets.defining()) {
 			return null;
@@ -133,7 +133,7 @@ public final class BlockDefiner
 			TargetResolver resolver,
 			Scope scope,
 			DeclarativeSentences sentences) {
-		if (!sentences.getDefTargets().haveValue()) {
+		if (!sentences.getTargets().haveValue()) {
 			return;
 		}
 		for (DeclarativeSentence sentence : sentences.getSentences()) {
@@ -153,7 +153,7 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public final DefTargets getDefTargets() {
+	public final CommandTargets getTargets() {
 		return getBlockDefinitions().getTargets();
 	}
 
@@ -211,7 +211,7 @@ public final class BlockDefiner
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-		getDefTargets();
+		getTargets();
 		resolveSentences(resolver, this);
 	}
 
@@ -226,7 +226,7 @@ public final class BlockDefiner
 			Scope origin,
 			DeclarativeSentence sentence) {
 
-		final DefTargets defTargets = sentence.getDefTargets();
+		final CommandTargets defTargets = sentence.getDefTargets();
 
 		if (!defTargets.defining()) {
 			return null;
@@ -252,7 +252,7 @@ public final class BlockDefiner
 			Scope origin,
 			Declaratives statements) {
 
-		final DefTargets defTargets = statements.getDefTargets();
+		final CommandTargets defTargets = statements.getDefTargets();
 
 		if (!defTargets.defining()) {
 			return null;

@@ -83,7 +83,7 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public CommandTargets getCommandTargets() {
+		public CommandTargets getTargets() {
 			return exitCommand(getLocation());
 		}
 
@@ -107,7 +107,7 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public CommandTargets getCommandTargets() {
+		public CommandTargets getTargets() {
 			return repeatCommand();
 		}
 

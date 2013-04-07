@@ -53,7 +53,7 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public CommandTargets getCommandTargets() {
+	public CommandTargets getTargets() {
 		if (this.commandTargets != null) {
 			return this.commandTargets;
 		}
@@ -66,7 +66,7 @@ public final class BlockCommand extends Command {
 	@Override
 	public DefTarget toTarget(Scope origin) {
 
-		final CommandTargets targets = getCommandTargets();
+		final CommandTargets targets = getTargets();
 
 		if (targets.isEmpty()) {
 			return null;
@@ -126,7 +126,7 @@ public final class BlockCommand extends Command {
 
 	@Override
 	public Action initialValue(Resolver resolver) {
-		if (getCommandTargets().isEmpty()) {
+		if (getTargets().isEmpty()) {
 			return new ExecuteCommand(this, Condition.TRUE);
 		}
 
@@ -155,7 +155,7 @@ public final class BlockCommand extends Command {
 
 	@Override
 	public void resolveTargets(TargetResolver resolver, Scope origin) {
-		if (!getCommandTargets().haveValue()) {
+		if (!getTargets().haveValue()) {
 			return;
 		}
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
@@ -190,7 +190,7 @@ public final class BlockCommand extends Command {
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-		getCommandTargets();
+		getTargets();
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 			resolveSentence(resolver, sentence);
 		}

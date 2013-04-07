@@ -34,7 +34,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
-import org.o42a.core.st.DefTargets;
+import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
@@ -46,14 +46,14 @@ import org.o42a.util.fn.Holder;
 final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	private final BlockDefiner definer;
-	private final DefTargets targets;
+	private final CommandTargets targets;
 	private final List<DeclarativeSentence> sentences;
 	private InlineDeclarativeSentences normal;
 	private Holder<DefTarget> defTarget;
 
 	DeclarativePart(
 			BlockDefiner definer,
-			DefTargets targets,
+			CommandTargets targets,
 			List<DeclarativeSentence> sentences,
 			boolean claim) {
 		super(
@@ -81,7 +81,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	}
 
 	@Override
-	public final DefTargets getDefTargets() {
+	public final CommandTargets getTargets() {
 		return this.targets;
 	}
 
@@ -159,7 +159,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	protected boolean hasConstantValue() {
-		return getDefTargets().isConstant();
+		return getTargets().isConstant();
 	}
 
 	@Override

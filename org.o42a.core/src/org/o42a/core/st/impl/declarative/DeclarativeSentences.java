@@ -21,13 +21,13 @@ package org.o42a.core.st.impl.declarative;
 
 import java.util.List;
 
-import org.o42a.core.st.DefTargets;
+import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 
 
 public interface DeclarativeSentences {
 
-	DefTargets getDefTargets();
+	CommandTargets getTargets();
 
 	List<DeclarativeSentence> getSentences();
 

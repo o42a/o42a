@@ -45,8 +45,8 @@ final class AssignmentDefiner extends Definer {
 	}
 
 	@Override
-	public DefTargets getDefTargets() {
-		return expressionDef();
+	public CommandTargets getTargets() {
+		return actionCommand();
 	}
 
 	@Override

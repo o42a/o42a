@@ -56,8 +56,8 @@ final class ExpandMacroDefiner extends Definer {
 	}
 
 	@Override
-	public DefTargets getDefTargets() {
-		return valueDef();
+	public CommandTargets getTargets() {
+		return returnCommand();
 	}
 
 	@Override

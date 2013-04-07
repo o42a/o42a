@@ -116,7 +116,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		}
 
 		@Override
-		public DefTargets getDefTargets() {
+		public CommandTargets getTargets() {
 			return fieldDef();
 		}
 
