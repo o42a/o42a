@@ -20,12 +20,13 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
 
-public class ExecuteCommand extends ConditionAction {
+public class ExecuteCommand extends Action {
 
 	private final Condition condition;
 
@@ -55,6 +56,11 @@ public class ExecuteCommand extends ConditionAction {
 			return LoopAction.CONTINUE;
 		}
 		return LoopAction.EXIT;
+	}
+
+	@Override
+	public DefValue toDefValue() {
+		return getCondition().toDefValue();
 	}
 
 }

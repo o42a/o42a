@@ -79,7 +79,6 @@ public final class RefCommand extends Command {
 	public Action initialValue(Resolver resolver) {
 		return new ReturnValue(
 				this,
-				resolver,
 				getValueAdapter().value(resolver));
 	}
 

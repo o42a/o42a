@@ -19,9 +19,8 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueAssignment;
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueField;
+import static org.o42a.core.st.Implication.noCommands;
+import static org.o42a.core.st.impl.SentenceErrors.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Implication;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.*;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.LocalInsides;
@@ -59,6 +56,7 @@ public abstract class Statements<
 	private boolean statementDropped;
 	private boolean incompatibilityReported;
 	private int instructionsExecuted;
+	private CommandTargets targets;
 
 	Statements(LocationInfo location, Sentence<S, L> sentence) {
 		super(
@@ -86,6 +84,14 @@ public abstract class Statements<
 
 	public final MemberRegistry getMemberRegistry() {
 		return getSentence().getMemberRegistry();
+	}
+
+	public final CommandTargets getTargets() {
+		if (this.targets != null) {
+			return this.targets;
+		}
+		executeInstructions();
+		return this.targets = determineTargets();
 	}
 
 	public final void expression(RefBuilder expression) {
@@ -431,6 +437,64 @@ public abstract class Statements<
 
 	private final Distributor nextDistributor(Container container) {
 		return distributeIn(container);
+	}
+
+	private CommandTargets determineTargets() {
+
+		CommandTargets result = noCommands();
+		CommandTargets prev = noCommands();
+		CommandTargets firstDeclaring = null;
+
+		for (Implication<?> command : getImplications()) {
+
+			final CommandTargets targets = command.getTargets();
+
+			if (targets.declaring()) {
+				if (firstDeclaring != null) {
+					if (!result.haveError()) {
+						declarationNotAlone(getLogger(), targets);
+						result = result.addError();
+					}
+					continue;
+				}
+				firstDeclaring = targets;
+				if (result.defining() && !result.haveError()) {
+					declarationNotAlone(getLogger(), firstDeclaring);
+					result = result.addError();
+				}
+				continue;
+			}
+			if (firstDeclaring != null && !targets.isEmpty()) {
+				if (!result.haveError()) {
+					declarationNotAlone(getLogger(), firstDeclaring);
+					result = result.addError();
+				}
+				continue;
+			}
+			if (!prev.breaking() || prev.havePrerequisite()) {
+				if (targets.breaking()) {
+					prev = targets;
+				} else {
+					prev = targets.toPreconditions();
+				}
+				result = result.add(prev);
+				continue;
+			}
+			if (result.haveError()) {
+				continue;
+			}
+			result = result.addError();
+			getLogger().error(
+					"unreachable_statement",
+					targets,
+					"Unreachable statement");
+		}
+
+		if (firstDeclaring != null && result.isEmpty()) {
+			return result.add(firstDeclaring);
+		}
+
+		return result;
 	}
 
 }

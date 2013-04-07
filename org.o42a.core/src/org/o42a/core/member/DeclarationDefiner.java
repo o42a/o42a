@@ -83,7 +83,7 @@ public abstract class DeclarationDefiner extends Definer {
 
 	@Override
 	public final Eval eval(CodeBuilder builder, Scope origin) {
-		return null;
+		return Eval.NO_EVAL;
 	}
 
 	@Override

@@ -22,13 +22,18 @@ package org.o42a.core.member;
 import static org.o42a.core.ir.local.InlineCmd.NO_INLINE_CMD;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Instruction;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ExecuteCommand;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.link.TargetResolver;
 
 
 public abstract class DeclarationCommand extends Command {
@@ -52,13 +57,29 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
+	public final Action initialValue(Resolver resolver) {
+		return new ExecuteCommand(this, Condition.TRUE);
+	}
+
+	@Override
+	public final void resolveTargets(TargetResolver resolver, Scope origin) {
+	}
+
+	@Override
 	public final InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
 		return NO_INLINE_CMD;
 	}
 
 	@Override
-	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+	public final InlineCmd normalizeCmd(
+			RootNormalizer normalizer,
+			Scope origin) {
 		return null;
+	}
+
+	@Override
+	public final Cmd cmd() {
+		return Cmd.NO_CMD;
 	}
 
 	@Override
