@@ -43,7 +43,8 @@ public abstract class Block<
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
 	private Locals locals;
-	private boolean instructionsExecuted;
+	private int instructionsExecuted;
+	private boolean executingInstructions;
 
 	protected Block(
 			LocationInfo location,
@@ -154,12 +155,20 @@ public abstract class Block<
 	}
 
 	public final void executeInstructions() {
-		if (this.instructionsExecuted) {
+		if (this.executingInstructions) {
 			return;
 		}
-		this.instructionsExecuted = true;
-		for (Sentence<S, L> sentence : getSentences()) {
-			sentence.executeInstructions();
+
+		this.executingInstructions = true;
+		try {
+			final List<? extends Sentence<S, L>> sentences = getSentences();
+
+			for (int i = this.instructionsExecuted; i < sentences.size(); ++i) {
+				this.instructionsExecuted = i + 1;
+				sentences.get(i).executeInstructions();
+			}
+		} finally {
+			this.executingInstructions = false;
 		}
 	}
 

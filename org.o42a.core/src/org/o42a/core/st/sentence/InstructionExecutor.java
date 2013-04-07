@@ -31,7 +31,6 @@ final class InstructionExecutor implements InstructionContext {
 
 	private final Statements<?, ?> statements;
 	private final Resolver resolver;
-	private int index;
 	private Implication<?> implication;
 	private Block<?, ?> block;
 	private boolean doNotRemove;
@@ -55,7 +54,7 @@ final class InstructionExecutor implements InstructionContext {
 		this.doNotRemove = true;
 
 		return this.block = this.statements.parentheses(
-				this.index,
+				this.statements.getInstructionsExecuted(),
 				this.implication,
 				this.implication.distribute());
 	}
@@ -75,18 +74,24 @@ final class InstructionExecutor implements InstructionContext {
 		final List<? extends Implication<?>> implications =
 				this.statements.getImplications();
 
-		while (this.index < implications.size()) {
-			execute(implications.get(this.index));
+		for (;;) {
+
+			final int index = this.statements.getInstructionsExecuted();
+
+			if (index >= implications.size()) {
+				break;
+			}
+			execute(index, implications.get(index));
 		}
 	}
 
-	private final void execute(Implication<?> implication) {
+	private final void execute(int index, Implication<?> implication) {
 
 		final Instruction instruction =
 				implication.toInstruction(getResolver());
 
 		if (instruction == null) {
-			++this.index;
+			this.statements.setInstructionsExecuted(index + 1);
 			return;
 		}
 
@@ -94,9 +99,9 @@ final class InstructionExecutor implements InstructionContext {
 		try {
 			instruction.execute(this);
 			if (!this.doNotRemove) {
-				this.statements.removeStatement(this.index);
+				this.statements.removeStatement(index);
 			} else {
-				++this.index;
+				this.statements.setInstructionsExecuted(index + 1);
 			}
 		} finally {
 			this.block = null;
