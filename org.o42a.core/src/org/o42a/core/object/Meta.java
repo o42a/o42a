@@ -59,13 +59,8 @@ public final class Meta extends ObjectMeta {
 
 	@Override
 	public boolean isUpdated() {
-
 		getObject().resolveMembers(true);
-
-		final ObjectType type = getObject().type();
-
-		type.resolve(false);
-
+		getObject().type().resolve(false);
 		return super.isUpdated();
 	}
 

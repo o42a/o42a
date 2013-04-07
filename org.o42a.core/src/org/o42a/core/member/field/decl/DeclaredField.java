@@ -35,6 +35,7 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
 import org.o42a.core.st.DefinerEnv;
+import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
 import org.o42a.core.value.TypeParameters;
@@ -49,6 +50,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private DeclarativeBlock content;
 	private MainDefiner definer;
 	private boolean invalid;
+	private BlockBuilder definitions;
 
 	DeclaredField(DeclaredMemberField member, FieldDefinition definition) {
 		super(member);
@@ -106,7 +108,63 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return new FieldInclusions(this);
 	}
 
-	public DeclarativeBlock getContent() {
+	final boolean initDefinition(Obj object) {
+
+		final Ascendants ascendants =
+				new Ascendants(object).declareField(NO_FIELD_ASCENDANTS);
+		final FieldDefinition definition = getDefinition();
+
+		definition.init(this, ascendants);
+
+		return definition.isValid();
+	}
+
+	final ObjectMemberRegistry getMemberRegistry() {
+		if (this.memberRegistry == null) {
+			this.memberRegistry = new Registry();
+		}
+		return this.memberRegistry;
+	}
+
+	final void addDefinitions(BlockBuilder definitions) {
+		assert this.definitions == null :
+			"Field already defined";
+		this.definitions = definitions;
+	}
+
+	final Definitions createDefinitions() {
+		return getContentDefiner().createDefinitions();
+	}
+
+	final void updateMembers() {
+		definedContent().executeInstructions();
+	}
+
+	final void invalid() {
+		this.invalid = true;
+	}
+
+	final boolean validate() {
+		if (!getDefinition().isValid()) {
+			return false;
+		}
+		return !this.invalid;
+	}
+
+	final DeclarativeBlock definedContent() {
+
+		final DeclarativeBlock content = getContent();
+		final BlockBuilder definitions = this.definitions;
+
+		if (definitions != null) {
+			this.definitions = null;
+			definitions.buildBlock(content);
+		}
+
+		return content;
+	}
+
+	private DeclarativeBlock getContent() {
 		if (this.content != null) {
 			return this.content;
 		}
@@ -128,46 +186,9 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return this.content;
 	}
 
-	final boolean initDefinition(Obj object) {
-
-		final Ascendants ascendants =
-				new Ascendants(object).declareField(NO_FIELD_ASCENDANTS);
-		final FieldDefinition definition = getDefinition();
-
-		definition.init(this, ascendants);
-
-		return definition.isValid();
-	}
-
-	final ObjectMemberRegistry getMemberRegistry() {
-		if (this.memberRegistry == null) {
-			this.memberRegistry = new Registry();
-		}
-		return this.memberRegistry;
-	}
-
-	final Definitions createDefinitions() {
-		return getContentDefiner().createDefinitions();
-	}
-
-	final void updateMembers() {
-		getContent().executeInstructions();
-	}
-
-	final void invalid() {
-		this.invalid = true;
-	}
-
-	final boolean validate() {
-		if (!getDefinition().isValid()) {
-			return false;
-		}
-		return !this.invalid;
-	}
-
 	private MainDefiner getContentDefiner() {
 		if (this.definer == null) {
-			getContent();
+			definedContent();
 		}
 		return this.definer;
 	}
