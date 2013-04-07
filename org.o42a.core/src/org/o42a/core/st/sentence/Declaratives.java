@@ -120,7 +120,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	DefValue value(Resolver resolver) {
 		for (Definer definer : getImplications()) {
 
-			final DefValue value = definer.value(resolver);
+			final DefValue value = definer.action(resolver).toDefValue();
 
 			if (value.hasValue()) {
 				return value;

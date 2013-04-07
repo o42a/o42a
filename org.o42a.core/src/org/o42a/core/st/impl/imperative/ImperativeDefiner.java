@@ -32,6 +32,7 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.TypeParameters;
@@ -86,8 +87,8 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return getCommand().initialValue(resolver).toDefValue();
+	public Action action(Resolver resolver) {
+		return getCommand().action(resolver);
 	}
 
 	@Override

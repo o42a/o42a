@@ -26,7 +26,6 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.*;
-import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 
@@ -51,9 +50,7 @@ abstract class AssignmentKind {
 		return false;
 	}
 
-	public abstract DefValue value(Resolver resolver);
-
-	public abstract Action initialValue(Resolver resolver);
+	public abstract Action action(Resolver resolver);
 
 	public abstract void resolve(FullResolver resolver);
 

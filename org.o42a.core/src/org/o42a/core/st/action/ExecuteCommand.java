@@ -21,7 +21,7 @@ package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
@@ -51,7 +51,7 @@ public class ExecuteCommand extends Action {
 	}
 
 	@Override
-	public LoopAction toLoopAction(ImperativeBlock block) {
+	public LoopAction toLoopAction(Block<?, ?> block) {
 		if (getCondition().isTrue()) {
 			return LoopAction.CONTINUE;
 		}

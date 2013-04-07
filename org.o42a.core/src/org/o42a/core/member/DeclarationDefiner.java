@@ -20,7 +20,6 @@
 package org.o42a.core.member;
 
 import static org.o42a.core.ir.def.InlineEval.noInlineEval;
-import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -28,7 +27,12 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
-import org.o42a.core.st.*;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Definer;
+import org.o42a.core.st.Instruction;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ExecuteCommand;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -61,8 +65,8 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public final DefValue value(Resolver resolver) {
-		return TRUE_DEF_VALUE;
+	public final Action action(Resolver resolver) {
+		return new ExecuteCommand(this, Condition.TRUE);
 	}
 
 	@Override

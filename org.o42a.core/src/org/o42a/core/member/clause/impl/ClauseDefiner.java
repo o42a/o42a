@@ -30,6 +30,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.st.action.Action;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -55,8 +56,8 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return definer().value(resolver);
+	public Action action(Resolver resolver) {
+		return definer().action(resolver);
 	}
 
 	@Override
@@ -160,7 +161,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefValue value(Resolver resolver) {
+		public Action action(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -218,7 +219,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefValue value(Resolver resolver) {
+		public Action action(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -279,7 +280,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefValue value(Resolver resolver) {
+		public Action action(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

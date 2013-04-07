@@ -76,7 +76,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(Resolver resolver) {
+	public Action action(Resolver resolver) {
 		return new ReturnValue(
 				this,
 				getValueAdapter().value(resolver));
