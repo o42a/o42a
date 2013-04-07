@@ -42,8 +42,8 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public CommandTargets getCommandTargets() {
-		return command().getCommandTargets();
+	public CommandTargets getTargets() {
+		return command().getTargets();
 	}
 
 	@Override
@@ -131,7 +131,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public CommandTargets getCommandTargets() {
+		public CommandTargets getTargets() {
 			return actionCommand();
 		}
 
@@ -192,8 +192,8 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public CommandTargets getCommandTargets() {
-			return this.command.getCommandTargets();
+		public CommandTargets getTargets() {
+			return this.command.getTargets();
 		}
 
 		@Override

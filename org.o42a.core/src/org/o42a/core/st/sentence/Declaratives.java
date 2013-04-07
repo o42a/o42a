@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.st.Definer.noDefs;
+import static org.o42a.core.st.Definer.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import org.o42a.core.Container;
@@ -38,7 +38,7 @@ import org.o42a.util.string.Name;
 public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	private final DeclarativesEnv env = new DeclarativesEnv(this);
-	private DefTargets targets;
+	private CommandTargets targets;
 
 	Declaratives(LocationInfo location, DeclarativeSentence sentence) {
 		super(location, sentence);
@@ -58,7 +58,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 		return super.getSentenceFactory().toDeclarativeFactory();
 	}
 
-	public final DefTargets getDefTargets() {
+	public final CommandTargets getDefTargets() {
 		if (this.targets != null) {
 			return this.targets;
 		}
@@ -143,15 +143,15 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 		return TRUE_DEF_VALUE;
 	}
 
-	private DefTargets definerTargets() {
+	private CommandTargets definerTargets() {
 
-		DefTargets result = noDefs();
-		DefTargets prev = noDefs();
-		DefTargets firstDeclaring = null;
+		CommandTargets result = noCommands();
+		CommandTargets prev = noCommands();
+		CommandTargets firstDeclaring = null;
 
 		for (Definer definer : getImplications()) {
 
-			final DefTargets targets = definer.getDefTargets();
+			final CommandTargets targets = definer.getTargets();
 
 			if (targets.declaring()) {
 				if (firstDeclaring != null) {

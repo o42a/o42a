@@ -21,7 +21,7 @@ package org.o42a.core.st.impl;
 
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.DefTargets;
+import org.o42a.core.st.CommandTargets;
 
 
 public final class SentenceErrors {
@@ -56,7 +56,7 @@ public final class SentenceErrors {
 
 	public static void declarationNotAlone(
 			CompilerLogger logger,
-			DefTargets targets) {
+			CommandTargets targets) {
 		if (targets.haveClause()) {
 			logger.error(
 					"not_alone_clause",

@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.st.Definer.noDefs;
+import static org.o42a.core.st.Definer.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import org.o42a.core.ref.Resolver;
@@ -34,7 +34,7 @@ public abstract class DeclarativeSentence
 		extends Sentence<Declaratives, Definer> {
 
 	private final AltEnv altEnv = new AltEnv(this);
-	private DefTargets targets;
+	private CommandTargets targets;
 	private boolean ignored;
 
 	protected DeclarativeSentence(
@@ -66,7 +66,7 @@ public abstract class DeclarativeSentence
 		return getBlock().isInsideClaim();
 	}
 
-	public DefTargets getDefTargets() {
+	public CommandTargets getDefTargets() {
 		if (this.targets != null) {
 			return this.targets;
 		}
@@ -128,25 +128,25 @@ public abstract class DeclarativeSentence
 		return this.altEnv;
 	}
 
-	private DefTargets prerequisiteTargets() {
+	private CommandTargets prerequisiteTargets() {
 
 		final DeclarativeSentence prerequisite = getPrerequisite();
 
 		if (prerequisite == null) {
-			return noDefs();
+			return noCommands();
 		}
 
 		return prerequisite.getDefTargets().toPrerequisites();
 	}
 
-	private DefTargets altTargets() {
+	private CommandTargets altTargets() {
 
-		DefTargets result = noDefs();
+		CommandTargets result = noCommands();
 		Declaratives first = null;
 
 		for (Declaratives alt : getAlternatives()) {
 
-			final DefTargets targets = alt.getDefTargets();
+			final CommandTargets targets = alt.getDefTargets();
 
 			if (first == null) {
 				first = alt;
@@ -187,9 +187,9 @@ public abstract class DeclarativeSentence
 		return result;
 	}
 
-	private DefTargets addSentenceTargets(DefTargets targets) {
+	private CommandTargets addSentenceTargets(CommandTargets targets) {
 
-		final DefTargets result;
+		final CommandTargets result;
 
 		if (isIssue() && targets.isEmpty() && !targets.haveError()) {
 			reportEmptyIssue();

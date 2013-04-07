@@ -45,8 +45,8 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public DefTargets getDefTargets() {
-		return definer().getDefTargets();
+	public CommandTargets getTargets() {
+		return definer().getTargets();
 	}
 
 	@Override
@@ -135,7 +135,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefTargets getDefTargets() {
+		public CommandTargets getTargets() {
 			return clauseDef();
 		}
 
@@ -150,8 +150,8 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefTargets getDefTargets() {
-			return expressionDef();
+		public CommandTargets getTargets() {
+			return actionCommand();
 		}
 
 		@Override
@@ -208,7 +208,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefTargets getDefTargets() {
+		public CommandTargets getTargets() {
 			return fieldDef();
 		}
 
@@ -269,8 +269,8 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefTargets getDefTargets() {
-			return this.definer.getDefTargets();
+		public CommandTargets getTargets() {
+			return this.definer.getTargets();
 		}
 
 		@Override

@@ -48,11 +48,11 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	public DefTargets getDefTargets() {
+	public CommandTargets getTargets() {
 		if (!getValueAdapter().isConstant()) {
-			return valueDef();
+			return returnCommand();
 		}
-		return valueDef().setConstant();
+		return returnCommand().setConstant();
 	}
 
 	public ValueAdapter getValueAdapter() {

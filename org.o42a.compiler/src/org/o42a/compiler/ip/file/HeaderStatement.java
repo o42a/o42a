@@ -101,8 +101,8 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		public DefTargets getDefTargets() {
-			return noDefs();
+		public CommandTargets getTargets() {
+			return noCommands();
 		}
 
 		@Override

@@ -19,9 +19,6 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.st.DefTargets.NO_DEFS;
-import static org.o42a.core.st.ImplicationTargets.*;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
@@ -33,15 +30,9 @@ import org.o42a.core.ref.RootNormalizer;
 
 public abstract class Definer extends Implication<Definer> {
 
-	public static DefTargets noDefs() {
-		return NO_DEFS;
-	}
-
 	public Definer(Statement statement, CommandEnv env) {
 		super(statement, env);
 	}
-
-	public abstract DefTargets getDefTargets();
 
 	public abstract DefValue value(Resolver resolver);
 
@@ -52,23 +43,5 @@ public abstract class Definer extends Implication<Definer> {
 			Scope origin);
 
 	public abstract Eval eval(CodeBuilder builder, Scope origin);
-
-	protected final DefTargets expressionDef() {
-		return new DefTargets(this, PRECONDITION_MASK | NON_CONSTANT_MASK);
-	}
-
-	protected final DefTargets valueDef() {
-		return new DefTargets(
-				this,
-				PRECONDITION_MASK | VALUE_MASK | NON_CONSTANT_MASK);
-	}
-
-	protected final DefTargets fieldDef() {
-		return new DefTargets(this, FIELD_MASK);
-	}
-
-	protected final DefTargets clauseDef() {
-		return new DefTargets(this, CLAUSE_MASK);
-	}
 
 }

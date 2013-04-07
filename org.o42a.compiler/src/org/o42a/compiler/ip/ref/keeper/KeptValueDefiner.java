@@ -48,11 +48,11 @@ final class KeptValueDefiner extends Definer {
 	}
 
 	@Override
-	public DefTargets getDefTargets() {
+	public CommandTargets getTargets() {
 		if (!getValue().isConstant()) {
-			return valueDef();
+			return returnCommand();
 		}
-		return valueDef().setConstant();
+		return returnCommand().setConstant();
 	}
 
 	@Override

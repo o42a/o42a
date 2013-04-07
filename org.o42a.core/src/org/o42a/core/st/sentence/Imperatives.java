@@ -147,7 +147,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 		for (Command command : getImplications()) {
 
-			final CommandTargets targets = command.getCommandTargets();
+			final CommandTargets targets = command.getTargets();
 
 			if (!prev.breaking() || prev.havePrerequisite()) {
 				if (targets.breaking()) {

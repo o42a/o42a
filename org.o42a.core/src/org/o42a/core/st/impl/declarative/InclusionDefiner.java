@@ -51,8 +51,8 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public final DefTargets getDefTargets() {
-		return noDefs();
+	public final CommandTargets getTargets() {
+		return noCommands();
 	}
 
 	@Override

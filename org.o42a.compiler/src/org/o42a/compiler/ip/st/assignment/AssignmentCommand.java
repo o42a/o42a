@@ -45,7 +45,7 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public CommandTargets getCommandTargets() {
+	public CommandTargets getTargets() {
 		return actionCommand();
 	}
 

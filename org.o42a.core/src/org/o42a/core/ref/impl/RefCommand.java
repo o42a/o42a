@@ -53,7 +53,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public final CommandTargets getCommandTargets() {
+	public final CommandTargets getTargets() {
 		if (!getRef().isConstant()) {
 			return returnCommand();
 		}

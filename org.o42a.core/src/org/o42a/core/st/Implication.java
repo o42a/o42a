@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st;
 
+import static org.o42a.core.st.CommandTargets.*;
+
 import org.o42a.core.*;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
@@ -33,6 +35,10 @@ import org.o42a.core.value.link.TargetResolver;
 
 public abstract class Implication<L extends Implication<L>>
 		implements ContainerInfo {
+
+	public static CommandTargets noCommands() {
+		return NO_COMMANDS;
+	}
 
 	private final Statement statement;
 	private final CommandEnv env;
@@ -72,6 +78,8 @@ public abstract class Implication<L extends Implication<L>>
 	public final Container getContainer() {
 		return getStatement().getContainer();
 	}
+
+	public abstract CommandTargets getTargets();
 
 	/**
 	 * Called to replace the statement with another one.
@@ -155,5 +163,31 @@ public abstract class Implication<L extends Implication<L>>
 	}
 
 	protected abstract void fullyResolve(FullResolver resolver);
+
+	protected final CommandTargets actionCommand() {
+		return new CommandTargets(this, PRECONDITION_MASK | NON_CONSTANT_MASK);
+	}
+
+	protected final CommandTargets exitCommand() {
+		return new CommandTargets(this, EXIT_MASK);
+	}
+
+	protected final CommandTargets repeatCommand() {
+		return new CommandTargets(this, REPEAT_MASK);
+	}
+
+	protected final CommandTargets returnCommand() {
+		return new CommandTargets(
+				this,
+				PRECONDITION_MASK | VALUE_MASK | NON_CONSTANT_MASK);
+	}
+
+	protected final CommandTargets fieldDef() {
+		return new CommandTargets(this, FIELD_MASK);
+	}
+
+	protected final CommandTargets clauseDef() {
+		return new CommandTargets(this, CLAUSE_MASK);
+	}
 
 }
