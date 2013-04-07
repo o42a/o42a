@@ -21,7 +21,7 @@ package org.o42a.core.member.clause.impl;
 
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
-import static org.o42a.core.st.DefinerEnv.defaultEnv;
+import static org.o42a.core.st.CommandEnv.defaultEnv;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;

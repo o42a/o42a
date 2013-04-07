@@ -40,7 +40,7 @@ final class RefConditionDefiner extends Definer {
 
 	private Definer replacement;
 
-	RefConditionDefiner(RefCondition statement, DefinerEnv env) {
+	RefConditionDefiner(RefCondition statement, CommandEnv env) {
 		super(statement, env);
 	}
 

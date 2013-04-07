@@ -142,7 +142,7 @@ public class Ref extends Statement implements RefBuilder {
 	}
 
 	@Override
-	public final Definer define(DefinerEnv env) {
+	public final Definer define(CommandEnv env) {
 		return new RefDefiner(this, env);
 	}
 
@@ -151,7 +151,7 @@ public class Ref extends Statement implements RefBuilder {
 		return new RefCommand(this, env);
 	}
 
-	public final Definitions toDefinitions(DefinerEnv env) {
+	public final Definitions toDefinitions(CommandEnv env) {
 		return new RefDefiner(this, env).createDefinitions();
 	}
 

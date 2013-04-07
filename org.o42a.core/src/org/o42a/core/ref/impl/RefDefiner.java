@@ -39,7 +39,7 @@ public final class RefDefiner extends Definer {
 
 	private ValueAdapter valueAdapter;
 
-	public RefDefiner(Ref ref, DefinerEnv env) {
+	public RefDefiner(Ref ref, CommandEnv env) {
 		super(ref, env);
 	}
 

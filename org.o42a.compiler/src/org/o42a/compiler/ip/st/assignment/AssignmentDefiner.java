@@ -32,7 +32,7 @@ import org.o42a.core.value.link.TargetResolver;
 
 final class AssignmentDefiner extends Definer {
 
-	AssignmentDefiner(AssignmentStatement statement, DefinerEnv env) {
+	AssignmentDefiner(AssignmentStatement statement, CommandEnv env) {
 		super(statement, env);
 	}
 

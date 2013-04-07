@@ -19,7 +19,38 @@
 */
 package org.o42a.core.st;
 
+import static org.o42a.core.value.ValueRequest.noValueRequest;
 
-public abstract class CommandEnv extends ImplicationEnv {
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.value.ValueRequest;
+
+
+public abstract class CommandEnv {
+
+	public static CommandEnv defaultEnv(CompilerLogger logger) {
+		return new DefaultEnv(logger);
+	}
+
+	public abstract ValueRequest getValueRequest();
+
+	private static final class DefaultEnv extends CommandEnv {
+
+		private final ValueRequest valueRequest;
+
+		DefaultEnv(CompilerLogger logger) {
+			this.valueRequest = noValueRequest(logger);
+		}
+
+		@Override
+		public ValueRequest getValueRequest() {
+			return this.valueRequest;
+		}
+
+		@Override
+		public String toString() {
+			return "DefaultEnv";
+		}
+
+	}
 
 }

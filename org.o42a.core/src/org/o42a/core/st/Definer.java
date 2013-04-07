@@ -35,16 +35,16 @@ public abstract class Definer extends Implication<Definer> {
 		return NO_DEFS;
 	}
 
-	private final DefinerEnv env;
+	private final CommandEnv env;
 
-	public Definer(Statement statement, DefinerEnv env) {
+	public Definer(Statement statement, CommandEnv env) {
 		super(statement);
 		this.env = env;
 	}
 
 	public abstract DefTargets getDefTargets();
 
-	public final DefinerEnv env() {
+	public final CommandEnv env() {
 		return this.env;
 	}
 

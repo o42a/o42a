@@ -20,11 +20,11 @@
 package org.o42a.core.st.impl;
 
 import org.o42a.core.object.Obj;
-import org.o42a.core.st.DefinerEnv;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.value.ValueRequest;
 
 
-public final class ObjectEnv extends DefinerEnv {
+public final class ObjectEnv extends CommandEnv {
 
 	private final Obj object;
 	private ValueRequest valueRequest;

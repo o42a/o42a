@@ -61,7 +61,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
+	public Definer define(CommandEnv env) {
 		return new HeaderDefiner(this, env);
 	}
 
@@ -92,7 +92,7 @@ class HeaderStatement extends Statement {
 
 	private static final class HeaderDefiner extends Definer {
 
-		HeaderDefiner(HeaderStatement header, DefinerEnv env) {
+		HeaderDefiner(HeaderStatement header, CommandEnv env) {
 			super(header, env);
 		}
 

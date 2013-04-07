@@ -37,7 +37,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 
 	private Definer replacement;
 
-	InclusionDefiner(I inclusion, DefinerEnv env) {
+	InclusionDefiner(I inclusion, CommandEnv env) {
 		super(inclusion, env);
 	}
 

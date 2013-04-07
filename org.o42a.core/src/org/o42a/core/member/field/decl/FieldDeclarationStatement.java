@@ -49,12 +49,12 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		return this.member;
 	}
 
-	public final DefinerEnv getInitialEnv() {
+	public final CommandEnv getInitialEnv() {
 		return this.definer.env();
 	}
 
 	@Override
-	public DeclarationDefiner define(DefinerEnv env) {
+	public DeclarationDefiner define(CommandEnv env) {
 		return this.definer = new Definer(this, env);
 	}
 
@@ -111,7 +111,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 
 	private static final class Definer extends DeclarationDefiner {
 
-		Definer(FieldDeclarationStatement statement, DefinerEnv env) {
+		Definer(FieldDeclarationStatement statement, CommandEnv env) {
 			super(statement, env);
 		}
 

@@ -34,7 +34,7 @@ import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
-import org.o42a.core.st.DefinerEnv;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
@@ -264,7 +264,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	}
 
-	private static final class DeclarationEnv extends DefinerEnv {
+	private static final class DeclarationEnv extends CommandEnv {
 
 		private final DeclaredField field;
 		private ValueRequest valueRequest;

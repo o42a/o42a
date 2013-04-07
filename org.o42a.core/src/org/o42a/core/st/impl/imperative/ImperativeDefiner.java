@@ -46,7 +46,7 @@ public final class ImperativeDefiner extends Definer {
 
 	private final Command command;
 
-	public ImperativeDefiner(ImperativeBlock block, DefinerEnv env) {
+	public ImperativeDefiner(ImperativeBlock block, CommandEnv env) {
 		super(block, env);
 		this.command =
 				block.command(new ImperativeDefinerCommandEnv(env));

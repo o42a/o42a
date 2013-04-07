@@ -20,13 +20,13 @@
 package org.o42a.core.st.sentence;
 
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Definer;
-import org.o42a.core.st.DefinerEnv;
 
 
 public abstract class MainDefiner extends Definer {
 
-	public MainDefiner(DeclarativeBlock block, DefinerEnv env) {
+	public MainDefiner(DeclarativeBlock block, CommandEnv env) {
 		super(block, env);
 	}
 
