@@ -90,16 +90,11 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public Action initialCond(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void resolveTargets(TargetResolver resolver, Scope origin) {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
 		if (!getRefCondition().isLocal()) {
 
 			final InlineValue value = getRef().inline(normalizer, origin);
@@ -115,8 +110,8 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(normalizer.newNormalizer(), origin);
+	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+		return inlineCmd(normalizer.newNormalizer(), origin);
 	}
 
 	@Override

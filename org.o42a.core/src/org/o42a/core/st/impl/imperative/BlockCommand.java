@@ -154,11 +154,6 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public Action initialCond(Resolver resolver) {
-		return initialValue(resolver).toInitialCondition();
-	}
-
-	@Override
 	public void resolveTargets(TargetResolver resolver, Scope origin) {
 		if (!getCommandTargets().haveValue()) {
 			return;
@@ -169,7 +164,7 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
 		return inlineBlock(
 				normalizer.getRoot(),
 				normalizer,
@@ -178,7 +173,7 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
 		return inlineBlock(normalizer, null, origin, getBlock());
 	}
 

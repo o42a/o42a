@@ -22,6 +22,7 @@ package org.o42a.core.st;
 import org.o42a.core.*;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -34,13 +35,19 @@ public abstract class Implication<L extends Implication<L>>
 		implements ContainerInfo {
 
 	private final Statement statement;
+	private final CommandEnv env;
 
-	public Implication(Statement statement) {
+	public Implication(Statement statement, CommandEnv env) {
 		this.statement = statement;
+		this.env = env;
 	}
 
 	public final Statement getStatement() {
 		return this.statement;
+	}
+
+	public final CommandEnv env() {
+		return this.env;
 	}
 
 	@Override
@@ -97,6 +104,16 @@ public abstract class Implication<L extends Implication<L>>
 
 	public abstract DefTarget toTarget(Scope origin);
 
+	public final void resolveAll(FullResolver resolver) {
+		getStatement().fullyResolved();
+		getContext().fullResolution().start();
+		try {
+			fullyResolve(resolver);
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
 	public abstract void resolveTargets(TargetResolver resolver, Scope origin);
 
 	@Override
@@ -136,5 +153,7 @@ public abstract class Implication<L extends Implication<L>>
 		}
 		return this.statement.toString();
 	}
+
+	protected abstract void fullyResolve(FullResolver resolver);
 
 }

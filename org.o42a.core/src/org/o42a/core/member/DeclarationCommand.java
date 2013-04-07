@@ -28,7 +28,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Instruction;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.value.TypeParameters;
 
 
@@ -53,17 +52,12 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public final Action initialCond(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public final InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
 		return NO_INLINE_CMD;
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
 		return null;
 	}
 

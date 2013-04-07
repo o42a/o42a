@@ -26,7 +26,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.RootNormalizer;
 
 
 public abstract class Definer extends Implication<Definer> {
@@ -35,30 +37,13 @@ public abstract class Definer extends Implication<Definer> {
 		return NO_DEFS;
 	}
 
-	private final CommandEnv env;
-
 	public Definer(Statement statement, CommandEnv env) {
-		super(statement);
-		this.env = env;
+		super(statement, env);
 	}
 
 	public abstract DefTargets getDefTargets();
 
-	public final CommandEnv env() {
-		return this.env;
-	}
-
 	public abstract DefValue value(Resolver resolver);
-
-	public final void resolveAll(FullResolver resolver) {
-		getStatement().fullyResolved();
-		getContext().fullResolution().start();
-		try {
-			fullyResolve(resolver);
-		} finally {
-			getContext().fullResolution().end();
-		}
-	}
 
 	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
 
@@ -85,7 +70,5 @@ public abstract class Definer extends Implication<Definer> {
 	protected final DefTargets clauseDef() {
 		return new DefTargets(this, CLAUSE_MASK);
 	}
-
-	protected abstract void fullyResolve(FullResolver resolver);
 
 }

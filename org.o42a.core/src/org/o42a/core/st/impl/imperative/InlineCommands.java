@@ -46,12 +46,12 @@ final class InlineCommands {
 			final InlineCmd inline;
 
 			if (normalizer != null) {
-				inline = command.inline(normalizer, origin);
+				inline = command.inlineCmd(normalizer, origin);
 				if (inline == null) {
 					normalizer.cancelAll();
 				}
 			} else {
-				inline = command.normalize(rootNormalizer, origin);
+				inline = command.normalizeCmd(rootNormalizer, origin);
 			}
 
 			inlines[i++] = inline;
