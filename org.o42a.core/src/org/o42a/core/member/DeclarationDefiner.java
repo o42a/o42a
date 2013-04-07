@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.core.ir.def.InlineEval.noInlineEval;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
 import org.o42a.core.Scope;
@@ -70,7 +71,7 @@ public abstract class DeclarationDefiner extends Definer {
 
 	@Override
 	public final InlineEval inline(Normalizer normalizer, Scope origin) {
-		return InlineEval.noInlineEval();
+		return noInlineEval();
 	}
 
 	@Override

@@ -25,6 +25,8 @@ import org.o42a.core.ref.Normalizer;
 
 public abstract class InlineCmd extends Normal implements Cmd {
 
+	public static final InlineCmd NO_INLINE_CMD = new NoCmd();
+
 	public InlineCmd(Normalizer normalizer) {
 		super(normalizer);
 	}

@@ -44,7 +44,6 @@ import org.o42a.util.fn.Cancelable;
 public final class RefCommand extends Command {
 
 	private ValueAdapter valueAdapter;
-	private InlineValue normal;
 
 	public RefCommand(Ref ref, CommandEnv env) {
 		super(ref, env);
@@ -108,15 +107,13 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver, Scope origin) {
-		getValueAdapter().resolveTargets(resolver);
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		this.normal = getValueAdapter().inline(
-				normalizer.newNormalizer(),
-				normalizer.getNormalizedScope());
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
+		getValueAdapter().resolveTargets(resolver);
 	}
 
 	@Override
@@ -139,10 +136,7 @@ public final class RefCommand extends Command {
 	@Override
 	public final Cmd cmd() {
 		assert getStatement().assertFullyResolved();
-		if (this.normal == null) {
-			return new RefCmd(getValueAdapter().eval());
-		}
-		return new NormalRefCmd(this.normal);
+		return new RefCmd(getValueAdapter().eval());
 	}
 
 	@Override
@@ -174,34 +168,6 @@ public final class RefCommand extends Command {
 				return super.toString();
 			}
 			return this.eval.toString();
-		}
-
-	}
-
-	private static final class NormalRefCmd implements Cmd {
-
-		private final InlineValue value;
-
-		NormalRefCmd(InlineValue value) {
-			this.value = value;
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final ValDirs dirs = control.valDirs();
-			final ValOp result = this.value.writeValue(dirs, control.host());
-
-			dirs.done();
-			control.returnValue(result);
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return this.value.toString();
 		}
 
 	}

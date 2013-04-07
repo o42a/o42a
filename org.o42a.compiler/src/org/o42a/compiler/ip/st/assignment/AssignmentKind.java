@@ -73,7 +73,9 @@ abstract class AssignmentKind {
 			Normalizer normalizer,
 			Scope origin);
 
-	public abstract void normalizeCommand(RootNormalizer normalizer);
+	public abstract InlineCmd normalizeCommand(
+			RootNormalizer normalizer,
+			Scope origin);
 
 	public abstract Cmd cmd();
 
