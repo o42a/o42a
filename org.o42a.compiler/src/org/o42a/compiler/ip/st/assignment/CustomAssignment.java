@@ -72,7 +72,6 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	private final Ref ref;
-	private InlineValue normal;
 
 	private CustomAssignment(AssignmentStatement statement, Ref ref) {
 		super(statement);
@@ -143,10 +142,8 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void normalizeCommand(RootNormalizer normalizer) {
-		this.normal = this.ref.inline(
-				normalizer.newNormalizer(),
-				normalizer.getNormalizedScope());
+	public InlineCmd normalizeCommand(RootNormalizer normalizer, Scope origin) {
+		return inlineCommand(normalizer.newNormalizer(), origin);
 	}
 
 	@Override
@@ -169,10 +166,7 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public Cmd cmd() {
-		if (this.normal == null) {
-			return new AssignCmd(this.ref);
-		}
-		return new NormalAssignCmd(this.normal);
+		return new AssignCmd(this.ref);
 	}
 
 	@Override
@@ -288,29 +282,6 @@ final class CustomAssignment extends AssignmentKind {
 				return super.toString();
 			}
 			return this.ref.toString();
-		}
-
-	}
-
-	private static final class NormalAssignCmd implements Cmd {
-
-		private final InlineValue value;
-
-		NormalAssignCmd(InlineValue value) {
-			this.value = value;
-		}
-
-		@Override
-		public void write(Control control) {
-			this.value.writeCond(control.dirs(), control.host());
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return this.value.toString();
 		}
 
 	}

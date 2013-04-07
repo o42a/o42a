@@ -19,10 +19,13 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.util.fn.Cancelable;
 
-final class NoCmd implements Cmd {
 
-	NoCmd() {
+final class NoCmd extends InlineCmd {
+
+	public NoCmd() {
+		super(null);
 	}
 
 	@Override
@@ -32,6 +35,11 @@ final class NoCmd implements Cmd {
 	@Override
 	public String toString() {
 		return "_";
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

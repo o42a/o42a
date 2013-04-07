@@ -157,7 +157,8 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void normalizeCommand(RootNormalizer normalizer) {
+	public InlineCmd normalizeCommand(RootNormalizer normalizer, Scope origin) {
+		return null;
 	}
 
 	@Override

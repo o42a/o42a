@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.core.ir.local.InlineCmd.NO_INLINE_CMD;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
@@ -57,11 +59,12 @@ public abstract class DeclarationCommand extends Command {
 
 	@Override
 	public final InlineCmd inline(Normalizer normalizer, Scope origin) {
-		return null;
+		return NO_INLINE_CMD;
 	}
 
 	@Override
-	public final void normalize(RootNormalizer normalizer) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return null;
 	}
 
 	@Override

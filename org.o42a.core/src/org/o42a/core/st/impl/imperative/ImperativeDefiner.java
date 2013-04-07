@@ -131,18 +131,14 @@ public final class ImperativeDefiner extends Definer {
 
 	@Override
 	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		if (origin != getBlock().getScope().getEnclosingScope()) {
-			// Normalize only an explicit scope.
+
+		final InlineCmd inline = getCommand().normalize(normalizer, origin);
+
+		if (inline == null) {
 			return null;
 		}
 
-		final RootNormalizer localNormalizer = new RootNormalizer(
-				normalizer.getAnalyzer(),
-				getBlock().getScope());
-
-		getCommand().normalize(localNormalizer);
-
-		return null;
+		return new InlineImperative(inline);
 	}
 
 	@Override

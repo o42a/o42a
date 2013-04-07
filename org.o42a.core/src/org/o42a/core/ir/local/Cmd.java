@@ -22,7 +22,7 @@ package org.o42a.core.ir.local;
 
 public interface Cmd {
 
-	Cmd NO_CMD = new NoCmd();
+	Cmd NO_CMD = InlineCmd.NO_INLINE_CMD;
 
 	void write(Control control);
 
