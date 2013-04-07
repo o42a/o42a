@@ -40,7 +40,7 @@ final class ClauseDefiner extends Definer {
 
 	ClauseDefiner(
 			ClauseDeclarationStatement statement,
-			DefinerEnv env) {
+			CommandEnv env) {
 		super(statement, env);
 	}
 
@@ -130,7 +130,7 @@ final class ClauseDefiner extends Definer {
 
 		ClauseDeclarationDefiner(
 				ClauseDeclarationStatement statement,
-				DefinerEnv env) {
+				CommandEnv env) {
 			super(statement, env);
 		}
 
@@ -145,7 +145,7 @@ final class ClauseDefiner extends Definer {
 
 		ExpressionClauseDefiner(
 				ClauseDeclarationStatement statement,
-				DefinerEnv env) {
+				CommandEnv env) {
 			super(statement, env);
 		}
 
@@ -203,7 +203,7 @@ final class ClauseDefiner extends Definer {
 
 		OverriderClauseDefiner(
 				ClauseDeclarationStatement statement,
-				DefinerEnv env) {
+				CommandEnv env) {
 			super(statement, env);
 		}
 
@@ -263,7 +263,7 @@ final class ClauseDefiner extends Definer {
 
 		GroupClauseDefiner(
 				ClauseDeclarationStatement statement,
-				DefinerEnv env) {
+				CommandEnv env) {
 			super(statement, env);
 			this.definer = declaration().getDefinition().define(env());
 		}

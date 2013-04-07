@@ -20,15 +20,14 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.st.CommandEnv;
-import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.value.ValueRequest;
 
 
 final class ImperativeDefinerCommandEnv extends CommandEnv {
 
-	private final DefinerEnv initialEnv;
+	private final CommandEnv initialEnv;
 
-	ImperativeDefinerCommandEnv(DefinerEnv env) {
+	ImperativeDefinerCommandEnv(CommandEnv env) {
 		this.initialEnv = env;
 	}
 

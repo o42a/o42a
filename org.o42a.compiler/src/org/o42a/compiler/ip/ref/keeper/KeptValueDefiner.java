@@ -36,7 +36,7 @@ final class KeptValueDefiner extends Definer {
 
 	private final Keeper keeper;
 
-	KeptValueDefiner(KeepValueStatement statement, DefinerEnv env) {
+	KeptValueDefiner(KeepValueStatement statement, CommandEnv env) {
 		super(statement, env);
 		this.keeper = getScope().toObject().keepers().keep(
 				this,

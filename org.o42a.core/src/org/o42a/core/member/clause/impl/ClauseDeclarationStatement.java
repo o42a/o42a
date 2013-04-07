@@ -52,7 +52,7 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
+	public Definer define(CommandEnv env) {
 		return new ClauseDefiner(this, env);
 	}
 

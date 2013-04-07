@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.Distributor.containerDistributor;
-import static org.o42a.core.st.DefinerEnv.defaultEnv;
+import static org.o42a.core.st.CommandEnv.defaultEnv;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
 import java.util.List;
@@ -178,7 +178,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	@Override
-	public final MainDefiner define(DefinerEnv env) {
+	public final MainDefiner define(CommandEnv env) {
 		return this.definer = new BlockDefiner(this, env);
 	}
 
@@ -187,7 +187,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 		throw new UnsupportedOperationException();
 	}
 
-	public final DefinerEnv getInitialEnv() {
+	public final CommandEnv getInitialEnv() {
 		return this.definer.env();
 	}
 

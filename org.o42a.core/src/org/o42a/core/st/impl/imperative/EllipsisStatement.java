@@ -58,7 +58,7 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
+	public Definer define(CommandEnv env) {
 		throw new UnsupportedOperationException();
 	}
 

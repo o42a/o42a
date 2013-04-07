@@ -44,7 +44,7 @@ public abstract class Statement extends Contained {
 		return null;
 	}
 
-	public abstract Definer define(DefinerEnv env);
+	public abstract Definer define(CommandEnv env);
 
 	public abstract Command command(CommandEnv env);
 

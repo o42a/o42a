@@ -201,7 +201,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 		return result;
 	}
 
-	private static final class DeclarativesEnv extends DefinerEnv {
+	private static final class DeclarativesEnv extends CommandEnv {
 
 		private final Declaratives statements;
 

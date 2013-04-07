@@ -37,7 +37,7 @@ public abstract class DeclarationDefiner extends Definer {
 
 	public DeclarationDefiner(
 			DeclarationStatement statement,
-			DefinerEnv env) {
+			CommandEnv env) {
 		super(statement, env);
 	}
 

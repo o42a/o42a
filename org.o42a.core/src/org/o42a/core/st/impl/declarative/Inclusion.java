@@ -37,12 +37,12 @@ public abstract class Inclusion extends Statement {
 		return true;
 	}
 
-	public final DefinerEnv getInitialEnv() {
+	public final CommandEnv getInitialEnv() {
 		return this.definer.env();
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
+	public Definer define(CommandEnv env) {
 		return this.definer = createDefiner(env);
 	}
 
@@ -56,6 +56,6 @@ public abstract class Inclusion extends Statement {
 		throw new UnsupportedOperationException();
 	}
 
-	protected abstract InclusionDefiner<?> createDefiner(DefinerEnv env);
+	protected abstract InclusionDefiner<?> createDefiner(CommandEnv env);
 
 }

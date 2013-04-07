@@ -59,7 +59,7 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
+	public Definer define(CommandEnv env) {
 		return new RefConditionDefiner(this, env);
 	}
 

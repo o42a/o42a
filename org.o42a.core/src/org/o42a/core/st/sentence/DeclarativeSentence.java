@@ -124,7 +124,7 @@ public abstract class DeclarativeSentence
 		return result;
 	}
 
-	final DefinerEnv getAltEnv() {
+	final CommandEnv getAltEnv() {
 		return this.altEnv;
 	}
 
@@ -204,7 +204,7 @@ public abstract class DeclarativeSentence
 		return result.claim();
 	}
 
-	private static final class AltEnv extends DefinerEnv {
+	private static final class AltEnv extends CommandEnv {
 
 		private final DeclarativeSentence sentence;
 

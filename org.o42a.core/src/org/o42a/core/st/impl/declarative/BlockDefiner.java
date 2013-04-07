@@ -143,7 +143,7 @@ public final class BlockDefiner
 
 	private BlockDefinitions blockDefinitions;
 
-	public BlockDefiner(DeclarativeBlock block, DefinerEnv env) {
+	public BlockDefiner(DeclarativeBlock block, CommandEnv env) {
 		super(block, env);
 	}
 

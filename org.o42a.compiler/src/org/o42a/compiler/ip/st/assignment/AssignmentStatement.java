@@ -92,7 +92,7 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
+	public Definer define(CommandEnv env) {
 		return new AssignmentDefiner(this, env);
 	}
 

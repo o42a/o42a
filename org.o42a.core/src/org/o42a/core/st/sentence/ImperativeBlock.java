@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefinerEnv.defaultEnv;
+import static org.o42a.core.st.CommandEnv.defaultEnv;
 
 import java.util.List;
 
@@ -93,7 +93,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	private final SentencesEnv sentencesEnv = new SentencesEnv();
 	private final boolean topLevel;
 	private NamedBlocks namedBlocks;
-	private ImplicationEnv initialEnv;
+	private CommandEnv initialEnv;
 	private boolean loop;
 
 	private ImperativeBlock(
@@ -176,7 +176,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	}
 
 	@Override
-	public final Definer define(DefinerEnv env) {
+	public final Definer define(CommandEnv env) {
 		this.initialEnv = env;
 		assert isTopLevel() :
 			"Not a top-level imperative block";
@@ -234,7 +234,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		this.loop = true;
 	}
 
-	private final ImplicationEnv getInitialEnv() {
+	private final CommandEnv getInitialEnv() {
 		return this.initialEnv;
 	}
 

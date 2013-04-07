@@ -43,7 +43,7 @@ final class ExpandMacroDefiner extends Definer {
 	private final IdentityHashMap<Scope, ValueAdapter> adapters =
 			new IdentityHashMap<>(1);
 
-	ExpandMacroDefiner(ExpandMacroStatement statement, DefinerEnv env) {
+	ExpandMacroDefiner(ExpandMacroStatement statement, CommandEnv env) {
 		super(statement, env);
 	}
 
