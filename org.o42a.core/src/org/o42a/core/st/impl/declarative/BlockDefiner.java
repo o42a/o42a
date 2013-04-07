@@ -226,7 +226,7 @@ public final class BlockDefiner
 			Scope origin,
 			DeclarativeSentence sentence) {
 
-		final CommandTargets defTargets = sentence.getDefTargets();
+		final CommandTargets defTargets = sentence.getTargets();
 
 		if (!defTargets.defining()) {
 			return null;
@@ -252,7 +252,7 @@ public final class BlockDefiner
 			Scope origin,
 			Declaratives statements) {
 
-		final CommandTargets defTargets = statements.getDefTargets();
+		final CommandTargets defTargets = statements.getTargets();
 
 		if (!defTargets.defining()) {
 			return null;
@@ -301,7 +301,7 @@ public final class BlockDefiner
 			TargetResolver resolver,
 			Scope scope,
 			DeclarativeSentence sentence) {
-		if (!sentence.getDefTargets().haveValue()) {
+		if (!sentence.getTargets().haveValue()) {
 			return;
 		}
 		for (Declaratives alt : sentence.getAlternatives()) {

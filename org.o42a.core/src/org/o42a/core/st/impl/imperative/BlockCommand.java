@@ -202,7 +202,7 @@ public final class BlockCommand extends Command {
 
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 
-			final CommandTargets targets = sentence.getCommandTargets();
+			final CommandTargets targets = sentence.getTargets();
 
 			if (!result.breaking() || result.havePrerequisite()) {
 				if (!targets.breaking()) {
@@ -238,7 +238,7 @@ public final class BlockCommand extends Command {
 	private Action sentenceValue(
 			ImperativeSentence sentence,
 			Resolver resolver) {
-		if (sentence.getCommandTargets().isEmpty()) {
+		if (sentence.getTargets().isEmpty()) {
 			return new ExecuteCommand(this, Condition.TRUE);
 		}
 
@@ -328,7 +328,7 @@ public final class BlockCommand extends Command {
 			Scope origin,
 			ImperativeSentence sentence) {
 
-		final CommandTargets targets = sentence.getCommandTargets();
+		final CommandTargets targets = sentence.getTargets();
 
 		if (targets.isEmpty()) {
 			return null;
@@ -360,7 +360,7 @@ public final class BlockCommand extends Command {
 			Scope origin,
 			Imperatives statements) {
 
-		final CommandTargets targets = statements.getCommandTargets();
+		final CommandTargets targets = statements.getTargets();
 
 		if (targets.isEmpty()) {
 			return null;
@@ -415,7 +415,7 @@ public final class BlockCommand extends Command {
 			TargetResolver resolver,
 			Scope origin,
 			ImperativeSentence sentence) {
-		if (!sentence.getCommandTargets().haveValue()) {
+		if (!sentence.getTargets().haveValue()) {
 			return;
 		}
 		for (Imperatives alt : sentence.getAlternatives()) {

@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.st.Definer.noCommands;
+import static org.o42a.core.st.Implication.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import org.o42a.core.ref.Resolver;
@@ -66,7 +66,8 @@ public abstract class DeclarativeSentence
 		return getBlock().isInsideClaim();
 	}
 
-	public CommandTargets getDefTargets() {
+	@Override
+	public CommandTargets getTargets() {
 		if (this.targets != null) {
 			return this.targets;
 		}
@@ -136,7 +137,7 @@ public abstract class DeclarativeSentence
 			return noCommands();
 		}
 
-		return prerequisite.getDefTargets().toPrerequisites();
+		return prerequisite.getTargets().toPrerequisites();
 	}
 
 	private CommandTargets altTargets() {
@@ -146,7 +147,7 @@ public abstract class DeclarativeSentence
 
 		for (Declaratives alt : getAlternatives()) {
 
-			final CommandTargets targets = alt.getDefTargets();
+			final CommandTargets targets = alt.getTargets();
 
 			if (first == null) {
 				first = alt;

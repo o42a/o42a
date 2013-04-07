@@ -30,7 +30,7 @@ import org.o42a.core.st.CommandTargets;
 public abstract class ImperativeSentence
 		extends Sentence<Imperatives, Command> {
 
-	private CommandTargets commandTargets;
+	private CommandTargets targets;
 
 	protected ImperativeSentence(
 			LocationInfo location,
@@ -54,11 +54,12 @@ public abstract class ImperativeSentence
 		return (ImperativeSentence) super.getPrerequisite();
 	}
 
-	public CommandTargets getCommandTargets() {
-		if (this.commandTargets != null) {
-			return this.commandTargets;
+	@Override
+	public CommandTargets getTargets() {
+		if (this.targets != null) {
+			return this.targets;
 		}
-		return this.commandTargets = applyExitTargets(
+		return this.targets = applyExitTargets(
 				prerequisiteTargets().add(altTargets()));
 	}
 
@@ -70,7 +71,7 @@ public abstract class ImperativeSentence
 			return noCommands();
 		}
 
-		return prerequisite.getCommandTargets().toPrerequisites();
+		return prerequisite.getTargets().toPrerequisites();
 	}
 
 	private CommandTargets altTargets() {
@@ -80,7 +81,7 @@ public abstract class ImperativeSentence
 
 		for (Imperatives alt : getAlternatives()) {
 
-			final CommandTargets targets = alt.getCommandTargets();
+			final CommandTargets targets = alt.getTargets();
 
 			if (first == null) {
 				first = alt;

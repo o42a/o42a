@@ -20,13 +20,14 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.util.string.Name;
 
 
-public class ExitLoop extends ConditionAction {
+public class ExitLoop extends Action {
 
 	private final Name blockName;
 
@@ -60,6 +61,11 @@ public class ExitLoop extends ConditionAction {
 			return LoopAction.EXIT;
 		}
 		return LoopAction.PULL;
+	}
+
+	@Override
+	public DefValue toDefValue() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

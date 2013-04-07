@@ -20,8 +20,6 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.st.Definer.noCommands;
-import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import org.o42a.core.Container;
 import org.o42a.core.member.field.FieldBuilder;
@@ -38,7 +36,6 @@ import org.o42a.util.string.Name;
 public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	private final DeclarativesEnv env = new DeclarativesEnv(this);
-	private CommandTargets targets;
 
 	Declaratives(LocationInfo location, DeclarativeSentence sentence) {
 		super(location, sentence);
@@ -56,14 +53,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	public final DeclarativeFactory getSentenceFactory() {
 		return super.getSentenceFactory().toDeclarativeFactory();
-	}
-
-	public final CommandTargets getDefTargets() {
-		if (this.targets != null) {
-			return this.targets;
-		}
-		executeInstructions();
-		return this.targets = definerTargets();
 	}
 
 	@Override
@@ -141,64 +130,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 			}
 		}
 		return TRUE_DEF_VALUE;
-	}
-
-	private CommandTargets definerTargets() {
-
-		CommandTargets result = noCommands();
-		CommandTargets prev = noCommands();
-		CommandTargets firstDeclaring = null;
-
-		for (Definer definer : getImplications()) {
-
-			final CommandTargets targets = definer.getTargets();
-
-			if (targets.declaring()) {
-				if (firstDeclaring != null) {
-					if (!result.haveError()) {
-						declarationNotAlone(getLogger(), targets);
-						result = result.addError();
-					}
-					continue;
-				}
-				firstDeclaring = targets;
-				if (result.defining() && !result.haveError()) {
-					declarationNotAlone(getLogger(), firstDeclaring);
-					result = result.addError();
-				}
-				continue;
-			}
-			if (firstDeclaring != null && !targets.isEmpty()) {
-				if (!result.haveError()) {
-					declarationNotAlone(getLogger(), firstDeclaring);
-					result = result.addError();
-				}
-				continue;
-			}
-			if (!prev.breaking() || prev.havePrerequisite()) {
-				if (targets.breaking()) {
-					prev = targets;
-				} else {
-					prev = targets.toPreconditions();
-				}
-				result = result.add(prev);
-				continue;
-			}
-			if (result.haveError()) {
-				continue;
-			}
-			result = result.addError();
-			getLogger().error(
-					"redundant_statement",
-					targets,
-					"Redundant statement");
-		}
-
-		if (firstDeclaring != null && result.isEmpty()) {
-			return result.add(firstDeclaring);
-		}
-
-		return result;
 	}
 
 	private static final class DeclarativesEnv extends CommandEnv {

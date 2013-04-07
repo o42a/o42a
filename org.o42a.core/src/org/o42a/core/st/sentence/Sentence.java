@@ -26,6 +26,7 @@ import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
@@ -90,6 +91,8 @@ public abstract class Sentence<
 		}
 		return getBlock().isConditional();
 	}
+
+	public abstract CommandTargets getTargets();
 
 	public final S alternative(LocationInfo location) {
 

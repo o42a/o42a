@@ -22,6 +22,7 @@ package org.o42a.core.member.clause.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.member.DeclarationCommand;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
@@ -104,8 +105,10 @@ final class ClauseCommand extends Command {
 		final ClauseDeclarationStatement declaration = declaration();
 		final Clause clause = declaration.getClause();
 
-		assert !clause.isTopLevel() :
-			"Top-level clause can not be a command" + clause;
+		if (clause.isTopLevel()) {
+			return this.command =
+					new ClauseDeclarationCommand(declaration, env());
+		}
 
 		switch (clause.getKind()) {
 		case EXPRESSION:
@@ -120,6 +123,22 @@ final class ClauseCommand extends Command {
 
 		throw new IllegalStateException(
 				"Unknown kind of clause: " + clause.getKind());
+	}
+
+	private static final class ClauseDeclarationCommand
+			extends DeclarationCommand {
+
+		ClauseDeclarationCommand(
+				ClauseDeclarationStatement statement,
+				CommandEnv env) {
+			super(statement, env);
+		}
+
+		@Override
+		public CommandTargets getTargets() {
+			return clauseDef();
+		}
+
 	}
 
 	private static final class ExpressionClauseCommand extends Command {

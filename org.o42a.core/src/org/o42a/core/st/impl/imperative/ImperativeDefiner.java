@@ -20,7 +20,6 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.ir.local.Control.mainControl;
-import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -33,11 +32,9 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 
@@ -90,21 +87,7 @@ public final class ImperativeDefiner extends Definer {
 
 	@Override
 	public DefValue value(Resolver resolver) {
-
-		final Action initialValue = getCommand().initialValue(resolver);
-
-		if (initialValue.isAbort()) {
-
-			final Value<?> value = initialValue.getValue();
-
-			if (value != null) {
-				return defValue(value);
-			}
-
-			return initialValue.getCondition().toDefValue();
-		}
-
-		return initialValue.getCondition().toDefValue();
+		return getCommand().initialValue(resolver).toDefValue();
 	}
 
 	@Override

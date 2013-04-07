@@ -19,19 +19,17 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.Command.noCommands;
-
 import org.o42a.core.Container;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.imperative.BlockCommandEnv;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
 import org.o42a.util.string.Name;
 
 
 public final class Imperatives extends Statements<Imperatives, Command> {
-
-	private CommandTargets commandTargets;
 
 	Imperatives(LocationInfo location, ImperativeSentence sentence) {
 		super(location, sentence);
@@ -45,14 +43,6 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 	@Override
 	public final ImperativeFactory getSentenceFactory() {
 		return super.getSentenceFactory().toImperativeFactory();
-	}
-
-	public CommandTargets getCommandTargets() {
-		if (this.commandTargets != null) {
-			return this.commandTargets;
-		}
-		executeInstructions();
-		return this.commandTargets = commandTargets();
 	}
 
 	@Override
@@ -138,37 +128,6 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 				name);
 
 		return null;
-	}
-
-	private CommandTargets commandTargets() {
-
-		CommandTargets result = noCommands();
-		CommandTargets prev = noCommands();
-
-		for (Command command : getImplications()) {
-
-			final CommandTargets targets = command.getTargets();
-
-			if (!prev.breaking() || prev.havePrerequisite()) {
-				if (targets.breaking()) {
-					prev = targets;
-				} else {
-					prev = targets.toPreconditions();
-				}
-				result = result.add(prev);
-				continue;
-			}
-			if (result.haveError()) {
-				continue;
-			}
-			result = result.addError();
-			getLogger().error(
-					"unreachable_command",
-					targets,
-					"Unreachable command");
-		}
-
-		return result;
 	}
 
 }

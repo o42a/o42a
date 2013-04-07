@@ -12,7 +12,7 @@ public class DeclarativeStatementErrorTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterValue() {
-		expectError("compiler.redundant_statement");
+		expectError("compiler.unreachable_statement");
 		compile(
 				"A := integer (",
 				"  = 1,",
@@ -22,7 +22,7 @@ public class DeclarativeStatementErrorTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterBlockWithValue() {
-		expectError("compiler.redundant_statement");
+		expectError("compiler.unreachable_statement");
 		compile(
 				"A := integer (",
 				"  (= 2),",
@@ -32,7 +32,7 @@ public class DeclarativeStatementErrorTest extends CompilerTestCase {
 
 	@Test
 	public void ambiguousSequentialValue() {
-		expectError("compiler.redundant_statement");
+		expectError("compiler.unreachable_statement");
 		compile(
 				"A := integer (",
 				"  = 1,",

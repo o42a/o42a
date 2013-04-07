@@ -114,7 +114,7 @@ final class BlockDefinitions {
 		for (DeclarativeSentence sentence : getBlock().getSentences()) {
 			++index;
 
-			final CommandTargets targets = sentence.getDefTargets();
+			final CommandTargets targets = sentence.getTargets();
 
 			if (!targets.defining()) {
 				continue;

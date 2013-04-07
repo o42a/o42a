@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.action;
+package org.o42a.core.member.field.decl;
 
-import org.o42a.core.ScopeInfo;
+import org.o42a.core.member.DeclarationCommand;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.CommandTargets;
 
 
-public abstract class ConditionAction extends Action {
+final class FieldDeclarationCommand extends DeclarationCommand {
 
-	public ConditionAction(ScopeInfo statement) {
-		super(statement);
+	FieldDeclarationCommand(
+			FieldDeclarationStatement statement,
+			CommandEnv env) {
+		super(statement, env);
 	}
 
 	@Override
-	public Action toInitialCondition() {
-		return this;
+	public CommandTargets getTargets() {
+		return fieldDef();
 	}
 
 }
