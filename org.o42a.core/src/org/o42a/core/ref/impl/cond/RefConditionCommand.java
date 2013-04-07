@@ -83,7 +83,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(Resolver resolver) {
+	public Action action(Resolver resolver) {
 		return new ExecuteCommand(
 				this,
 				getRef().value(resolver).getKnowledge().getCondition());

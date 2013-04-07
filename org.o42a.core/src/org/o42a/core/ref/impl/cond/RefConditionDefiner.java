@@ -30,8 +30,9 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -95,11 +96,10 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-
-		final Value<?> value = getRef().value(resolver);
-
-		return value.getKnowledge().getCondition().toDefValue();
+	public Action action(Resolver resolver) {
+		return new ExecuteCommand(
+				this,
+				getRef().value(resolver).getKnowledge().getCondition());
 	}
 
 	@Override

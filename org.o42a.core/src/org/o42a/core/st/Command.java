@@ -19,15 +19,14 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.st.CommandTargets.*;
+import static org.o42a.core.st.CommandTargets.EXIT_MASK;
+import static org.o42a.core.st.CommandTargets.NO_COMMANDS;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.st.action.Action;
 import org.o42a.util.log.LogInfo;
 
 
@@ -44,8 +43,6 @@ public abstract class Command extends Implication<Command> {
 	public Command(Statement statement, CommandEnv env) {
 		super(statement, env);
 	}
-
-	public abstract Action initialValue(Resolver resolver);
 
 	public abstract InlineCmd inlineCmd(Normalizer normalizer, Scope origin);
 

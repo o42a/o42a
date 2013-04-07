@@ -24,7 +24,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 
 
@@ -33,8 +32,6 @@ public abstract class Definer extends Implication<Definer> {
 	public Definer(Statement statement, CommandEnv env) {
 		super(statement, env);
 	}
-
-	public abstract DefValue value(Resolver resolver);
 
 	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
 

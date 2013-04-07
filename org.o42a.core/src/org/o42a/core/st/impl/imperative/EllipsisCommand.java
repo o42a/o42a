@@ -88,7 +88,7 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public Action initialValue(Resolver resolver) {
+		public Action action(Resolver resolver) {
 			return new ExitLoop(this, getEllipsis().getName());
 		}
 
@@ -112,7 +112,7 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public Action initialValue(Resolver resolver) {
+		public Action action(Resolver resolver) {
 			return new RepeatLoop(this, getEllipsis().getName());
 		}
 

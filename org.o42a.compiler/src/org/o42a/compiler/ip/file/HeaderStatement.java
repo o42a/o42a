@@ -29,6 +29,7 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
+import org.o42a.core.st.action.Action;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.link.TargetResolver;
@@ -135,7 +136,7 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		public DefValue value(Resolver resolver) {
+		public Action action(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

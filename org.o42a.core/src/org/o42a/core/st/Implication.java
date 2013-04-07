@@ -29,6 +29,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.action.Action;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -107,6 +108,8 @@ public abstract class Implication<L extends Implication<L>>
 	 * does not produce any values.
 	 */
 	public abstract TypeParameters<?> typeParameters(Scope scope);
+
+	public abstract Action action(Resolver resolver);
 
 	public abstract Instruction toInstruction(Resolver resolver);
 

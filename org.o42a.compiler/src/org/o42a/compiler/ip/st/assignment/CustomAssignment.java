@@ -37,11 +37,9 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
-import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -87,15 +85,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-
-		final Value<?> value = getRef().value(resolver);
-
-		return value.getKnowledge().getCondition().toDefValue();
-	}
-
-	@Override
-	public Action initialValue(Resolver resolver) {
+	public Action action(Resolver resolver) {
 		return new ExecuteCommand(
 				getStatement(),
 				getRef().value(resolver).getKnowledge().getCondition());

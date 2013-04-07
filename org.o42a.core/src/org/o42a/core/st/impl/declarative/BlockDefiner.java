@@ -36,7 +36,9 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
+import org.o42a.core.st.impl.imperative.BlockCommand;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
@@ -179,8 +181,8 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return sentencesValue(resolver, this);
+	public Action action(Resolver resolver) {
+		return BlockCommand.blockAction(getBlock(), this, resolver);
 	}
 
 	@Override

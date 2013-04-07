@@ -32,6 +32,8 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
@@ -66,8 +68,10 @@ final class ExpandMacroDefiner extends Definer {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return valueAdapter(resolver.getScope()).value(resolver).toDefValue();
+	public Action action(Resolver resolver) {
+		return new ReturnValue(
+				this,
+				valueAdapter(resolver.getScope()).value(resolver));
 	}
 
 	@Override

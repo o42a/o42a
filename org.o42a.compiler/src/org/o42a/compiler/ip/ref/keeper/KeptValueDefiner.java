@@ -28,6 +28,8 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -56,8 +58,8 @@ final class KeptValueDefiner extends Definer {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return DefValue.defValue(getValue().value(resolver));
+	public Action action(Resolver resolver) {
+		return new ReturnValue(this, getValue().value(resolver));
 	}
 
 	@Override

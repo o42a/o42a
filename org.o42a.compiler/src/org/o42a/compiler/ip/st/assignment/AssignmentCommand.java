@@ -55,8 +55,8 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(Resolver resolver) {
-		return getAssignmentKind().initialValue(resolver);
+	public Action action(Resolver resolver) {
+		return getAssignmentKind().action(resolver);
 	}
 
 	@Override

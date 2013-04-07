@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.core.ref.RefUsage.ASSIGNABLE_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
-import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.value.link.LinkValueType.VARIABLE;
 
 import org.o42a.core.Scope;
@@ -34,7 +33,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -100,8 +98,8 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return RUNTIME_DEF_VALUE;
+	public Action action(Resolver resolver) {
+		return new ExecuteCommand(getStatement(), Condition.RUNTIME);
 	}
 
 	@Override
@@ -117,11 +115,6 @@ final class VariableAssignment extends AssignmentKind {
 	@Override
 	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
 		return null;
-	}
-
-	@Override
-	public Action initialValue(Resolver resolver) {
-		return new ExecuteCommand(getStatement(), Condition.RUNTIME);
 	}
 
 	@Override

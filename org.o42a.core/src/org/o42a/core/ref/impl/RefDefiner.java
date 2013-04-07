@@ -29,6 +29,8 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
@@ -79,8 +81,8 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return getValueAdapter().value(resolver).toDefValue();
+	public Action action(Resolver resolver) {
+		return new ReturnValue(this, getValueAdapter().value(resolver));
 	}
 
 	@Override

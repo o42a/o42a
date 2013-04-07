@@ -32,15 +32,44 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeSentence;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
 public final class BlockCommand extends Command {
+
+	public static Action blockAction(
+			Block<?, ?> block,
+			Implication<?> implication,
+			Resolver resolver) {
+		if (implication.getTargets().isEmpty()) {
+			return new ExecuteCommand(implication, Condition.TRUE);
+		}
+
+		for (Sentence<?, ?> sentence : block.getSentences()) {
+
+			final Action action = sentenceAction(sentence, resolver);
+			final LoopAction loopAction = action.toLoopAction(block);
+
+			switch (loopAction) {
+			case CONTINUE:
+				continue;
+			case PULL:
+				return action;
+			case EXIT:
+				return new ExecuteCommand(action, action.getCondition());
+			case REPEAT:
+				// Repeating is not supported at compile time.
+				return new ExecuteCommand(implication, Condition.RUNTIME);
+			}
+
+			throw new IllegalStateException("Unhandled action: " + action);
+		}
+
+		return new ExecuteCommand(implication, Condition.TRUE);
+	}
 
 	private CommandTargets commandTargets;
 
@@ -125,32 +154,8 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(Resolver resolver) {
-		if (getTargets().isEmpty()) {
-			return new ExecuteCommand(this, Condition.TRUE);
-		}
-
-		for (ImperativeSentence sentence : getBlock().getSentences()) {
-
-			final Action action = sentenceValue(sentence, resolver);
-			final LoopAction loopAction = action.toLoopAction(getBlock());
-
-			switch (loopAction) {
-			case CONTINUE:
-				continue;
-			case PULL:
-				return action;
-			case EXIT:
-				return new ExecuteCommand(action, action.getCondition());
-			case REPEAT:
-				// Repeating is not supported at compile time.
-				return new ExecuteCommand(this, Condition.RUNTIME);
-			}
-
-			throw new IllegalStateException("Unhandled action: " + action);
-		}
-
-		return new ExecuteCommand(this, Condition.TRUE);
+	public Action action(Resolver resolver) {
+		return blockAction(getBlock(), this, resolver);
 	}
 
 	@Override
@@ -235,18 +240,18 @@ public final class BlockCommand extends Command {
 		return targets.removeLooping();
 	}
 
-	private Action sentenceValue(
-			ImperativeSentence sentence,
+	private static Action sentenceAction(
+			Sentence<?, ?> sentence,
 			Resolver resolver) {
 		if (sentence.getTargets().isEmpty()) {
-			return new ExecuteCommand(this, Condition.TRUE);
+			return new ExecuteCommand(sentence, Condition.TRUE);
 		}
 
-		final ImperativeSentence prerequisite = sentence.getPrerequisite();
+		final Sentence<?, ?> prerequisite = sentence.getPrerequisite();
 
 		if (prerequisite != null) {
 
-			final Action action = sentenceValue(prerequisite, resolver);
+			final Action action = sentenceAction(prerequisite, resolver);
 
 			assert !action.isAbort() :
 				"Prerequisite can not abort execution";
@@ -263,14 +268,15 @@ public final class BlockCommand extends Command {
 			}
 		}
 
-		final List<Imperatives> alternatives = sentence.getAlternatives();
+		final List<? extends Statements<?, ?>> alternatives =
+				sentence.getAlternatives();
 		final int size = alternatives.size();
 		Action result = null;
 
 		for (int i = 0; i < size; ++i) {
 
-			final Imperatives alt = alternatives.get(i);
-			final Action action = altValue(alt, resolver);
+			final Statements<?, ?> alt = alternatives.get(i);
+			final Action action = altAction(alt, resolver);
 
 			if (action.isAbort()) {
 				return action;
@@ -289,8 +295,10 @@ public final class BlockCommand extends Command {
 			result = action;
 		}
 
-		if (sentence.isClaim()) {
-			return new ExitLoop(sentence, null);
+		if (!sentence.getSentenceFactory().isDeclarative()) {
+			if (sentence.isClaim()) {
+				return new ExitLoop(sentence, null);
+			}
 		}
 		if (result != null) {
 			return result;
@@ -299,18 +307,18 @@ public final class BlockCommand extends Command {
 		return new ExecuteCommand(sentence, Condition.TRUE);
 	}
 
-	private Action altValue(Imperatives alt, Resolver resolver) {
+	private static Action altAction(Statements<?, ?> alt, Resolver resolver) {
 
 		Action result = null;
 
-		for (Command command : alt.getImplications()) {
+		for (Implication<?> command : alt.getImplications()) {
 
-			final Action action = command.initialValue(resolver);
+			final Action action = command.action(resolver);
 
 			if (action.isAbort()) {
 				return action;
 			}
-			if (!action.getCondition().isFalse()) {
+			if (action.getCondition().isFalse()) {
 				return action;
 			}
 

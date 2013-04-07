@@ -57,7 +57,7 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public final Action initialValue(Resolver resolver) {
+	public final Action action(Resolver resolver) {
 		return new ExecuteCommand(this, Condition.TRUE);
 	}
 
