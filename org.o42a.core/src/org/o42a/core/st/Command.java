@@ -25,7 +25,9 @@ import static org.o42a.core.st.ImplicationTargets.*;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.action.Action;
 import org.o42a.util.log.LogInfo;
 
@@ -40,42 +42,21 @@ public abstract class Command extends Implication<Command> {
 		return new CommandTargets(loggable, EXIT_MASK);
 	}
 
-	private final CommandEnv env;
-
 	public Command(Statement statement, CommandEnv env) {
-		super(statement);
-		this.env = env;
+		super(statement, env);
 	}
 
 	public abstract CommandTargets getCommandTargets();
 
-	public final CommandEnv env() {
-		return this.env;
-	}
-
 	public abstract Action initialValue(Resolver resolver);
 
-	public abstract Action initialCond(Resolver resolver);
+	public abstract InlineCmd inlineCmd(Normalizer normalizer, Scope origin);
 
-	public final void resolveAll(FullResolver resolver) {
-		getStatement().fullyResolved();
-		getContext().fullResolution().start();
-		try {
-			fullyResolve(resolver);
-		} finally {
-			getContext().fullResolution().end();
-		}
-	}
-
-	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
-
-	public abstract InlineCmd normalize(
+	public abstract InlineCmd normalizeCmd(
 			RootNormalizer normalizer,
 			Scope origin);
 
 	public abstract Cmd cmd();
-
-	protected abstract void fullyResolve(FullResolver resolver);
 
 	protected final CommandTargets actionCommand() {
 		return new CommandTargets(

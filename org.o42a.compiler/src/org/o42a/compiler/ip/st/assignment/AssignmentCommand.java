@@ -60,11 +60,6 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public Action initialCond(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return null;
 	}
@@ -79,12 +74,12 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
 		return getAssignmentKind().inlineCommand(normalizer, origin);
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
 		return getAssignmentKind().normalizeCommand(normalizer, origin);
 	}
 

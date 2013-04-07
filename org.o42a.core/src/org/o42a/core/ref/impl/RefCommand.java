@@ -32,7 +32,6 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueAdapter;
@@ -85,17 +84,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public Action initialCond(Resolver resolver) {
-		return new ExecuteCommand(
-				this,
-				getValueAdapter()
-				.value(resolver)
-				.getKnowledge()
-				.getCondition());
-	}
-
-	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
 
 		final InlineValue inline = getValueAdapter().inline(normalizer, origin);
 
@@ -107,8 +96,8 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(normalizer.newNormalizer(), origin);
+	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+		return inlineCmd(normalizer.newNormalizer(), origin);
 	}
 
 	@Override

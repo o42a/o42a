@@ -120,7 +120,7 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public InlineEval inline(Normalizer normalizer, Scope origin) {
 
-		final InlineCmd inline = getCommand().inline(normalizer, origin);
+		final InlineCmd inline = getCommand().inlineCmd(normalizer, origin);
 
 		if (inline == null) {
 			return null;
@@ -132,7 +132,7 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
 
-		final InlineCmd inline = getCommand().normalize(normalizer, origin);
+		final InlineCmd inline = getCommand().normalizeCmd(normalizer, origin);
 
 		if (inline == null) {
 			return null;
