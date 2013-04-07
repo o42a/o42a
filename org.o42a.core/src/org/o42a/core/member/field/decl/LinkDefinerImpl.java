@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.field.decl;
 
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.object.type.Ascendants;
@@ -53,7 +55,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 
 		this.targetRef = ref.toTargetRef(
 				explicitTypeRef != null ? explicitTypeRef : defaultType);
-		this.field.getContent().propose(ref).alternative(ref).selfAssign(ref);
+		this.field.addDefinitions(valueBlock(ref));
 	}
 
 	@Override
@@ -68,7 +70,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 
 	@Override
 	public void define(BlockBuilder definitions) {
-		definitions.buildBlock(getField().getContent());
+		getField().addDefinitions(definitions);
 	}
 
 	@Override

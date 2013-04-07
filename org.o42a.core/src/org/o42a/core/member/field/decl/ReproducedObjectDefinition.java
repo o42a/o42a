@@ -72,7 +72,7 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 		}
 
 		definer.define(new ReproducedContent(
-				this.field.getContent(),
+				this.field.definedContent(),
 				this.reproducer));
 	}
 

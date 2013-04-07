@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.field.decl;
 
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+
 import org.o42a.core.member.field.MacroDefiner;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
@@ -67,12 +69,12 @@ final class MacroDefinerImpl implements MacroDefiner {
 
 	@Override
 	public void setRef(Ref ref) {
-		this.field.getContent().propose(ref).alternative(ref).selfAssign(ref);
+		getField().addDefinitions(valueBlock(ref));
 	}
 
 	@Override
 	public void define(BlockBuilder definitions) {
-		definitions.buildBlock(getField().getContent());
+		getField().addDefinitions(definitions);
 	}
 
 	@Override
