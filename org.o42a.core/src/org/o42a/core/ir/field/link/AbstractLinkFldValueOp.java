@@ -67,7 +67,7 @@ public abstract class AbstractLinkFldValueOp<F extends RefFldOp<?, ?>>
 	}
 
 	protected final ObjectOp object(CodeDirs dirs) {
-		return this.fld.materialize(
+		return this.fld.target(
 				dirs,
 				tempObjHolder(dirs.getAllocator()));
 	}
