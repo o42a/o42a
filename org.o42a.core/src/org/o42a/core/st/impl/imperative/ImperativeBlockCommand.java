@@ -20,8 +20,7 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.st.impl.cmd.InlineSentences.inlineSentences;
-import static org.o42a.core.st.impl.cmd.SentencesUtil.*;
+import static org.o42a.core.st.impl.cmd.BlockUtil.sentencesAction;
 
 import java.util.List;
 
@@ -41,8 +40,9 @@ import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.string.Name;
 
 
-public final class ImperativeBlockCommand extends Command implements Sentences {
+public final class ImperativeBlockCommand extends Command {
 
+	private final ImperativeSentences sentences = new ImperativeSentences(this);
 	private CommandTargets commandTargets;
 
 	public ImperativeBlockCommand(ImperativeBlock block, CommandEnv env) {
@@ -51,21 +51,6 @@ public final class ImperativeBlockCommand extends Command implements Sentences {
 
 	public final ImperativeBlock getBlock() {
 		return (ImperativeBlock) getStatement();
-	}
-
-	@Override
-	public Name getName() {
-		return getBlock().getName();
-	}
-
-	@Override
-	public boolean isParentheses() {
-		return false;
-	}
-
-	@Override
-	public List<? extends Sentence<?, ?>> getSentences() {
-		return getBlock().getSentences();
 	}
 
 	@Override
@@ -118,7 +103,7 @@ public final class ImperativeBlockCommand extends Command implements Sentences {
 				.getExpectedParameters()
 				.upgradeScope(scope);
 
-		return sentencesTypeParameters(scope, this, expectedParameters);
+		return this.sentences.typeParameters(scope, expectedParameters);
 	}
 
 	@Override
@@ -131,17 +116,17 @@ public final class ImperativeBlockCommand extends Command implements Sentences {
 		if (!getTargets().haveValue()) {
 			return;
 		}
-		resolveSentencesTargets(resolver, origin, this);
+		this.sentences.resolveTargets(resolver, origin);
 	}
 
 	@Override
 	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
-		return inlineSentences(normalizer.getRoot(), normalizer, origin, this);
+		return this.sentences.inline(normalizer.getRoot(), normalizer, origin);
 	}
 
 	@Override
 	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
-		return inlineSentences(normalizer, null, origin, this);
+		return this.sentences.inline(normalizer, null, origin);
 	}
 
 	@Override
@@ -152,13 +137,13 @@ public final class ImperativeBlockCommand extends Command implements Sentences {
 	@Override
 	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new SentencesCmd(this, origin);
+		return new SentencesCmd(this.sentences, origin);
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getTargets();
-		resolveSentences(resolver, this);
+		this.sentences.resolveAll(resolver);
 	}
 
 	private CommandTargets sentenceTargets() {
@@ -262,6 +247,44 @@ public final class ImperativeBlockCommand extends Command implements Sentences {
 		}
 
 		return NO_DEF_TARGET;
+	}
+
+	private static final class ImperativeSentences extends Sentences {
+
+		private final ImperativeBlockCommand command;
+
+		ImperativeSentences(ImperativeBlockCommand command) {
+			this.command = command;
+		}
+
+		@Override
+		public Name getName() {
+			return this.command.getBlock().getName();
+		}
+
+		@Override
+		public boolean isParentheses() {
+			return this.command.getBlock().isParentheses();
+		}
+
+		@Override
+		public CommandTargets getTargets() {
+			return this.command.getTargets();
+		}
+
+		@Override
+		public List<? extends Sentence<?, ?>> getSentences() {
+			return this.command.getBlock().getSentences();
+		}
+
+		@Override
+		public String toString() {
+			if (this.command == null) {
+				return super.toString();
+			}
+			return this.command.toString();
+		}
+
 	}
 
 }
