@@ -48,7 +48,7 @@ final class ExpandMacroStatement extends Statement {
 
 	@Override
 	public Command command(CommandEnv env) {
-		throw new UnsupportedOperationException();
+		return new ExpandMacroCommand(this, env);
 	}
 
 	@Override
