@@ -41,25 +41,17 @@ import org.o42a.util.fn.Cancelable;
 
 public final class ImperativeDefiner extends Definer {
 
-	private final Command command;
-
 	public ImperativeDefiner(ImperativeBlock block, CommandEnv env) {
 		super(block, env);
-		this.command =
-				block.command(new ImperativeDefinerCommandEnv(env));
 	}
 
 	public final ImperativeBlock getBlock() {
 		return (ImperativeBlock) getStatement();
 	}
 
-	public final Command getCommand() {
-		return this.command;
-	}
-
 	@Override
 	public CommandTargets getTargets() {
-		return this.command.getTargets();
+		return getCommand().getTargets();
 	}
 
 	@Override
