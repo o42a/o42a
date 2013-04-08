@@ -39,7 +39,7 @@ final class SentencesOp {
 	private static final Name BLK_SUFFIX = AS_IS.name("_blk");
 	private static final Name NEXT_SUFFIX = AS_IS.name("_next");
 
-	public static void writeSentences(
+	static void writeSentences(
 			Control control,
 			Scope origin,
 			Sentences sentences,

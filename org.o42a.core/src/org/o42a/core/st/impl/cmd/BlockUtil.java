@@ -21,8 +21,6 @@ package org.o42a.core.st.impl.cmd;
 
 import java.util.List;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.action.*;
@@ -30,11 +28,9 @@ import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Sentence;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.Condition;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.link.TargetResolver;
 
 
-public class SentencesUtil {
+public class BlockUtil {
 
 	public static Action sentencesAction(
 			Block<?, ?> block,
@@ -65,54 +61,6 @@ public class SentencesUtil {
 		}
 
 		return new ExecuteCommand(implication, Condition.TRUE);
-	}
-
-	public static TypeParameters<?> sentencesTypeParameters(
-			Scope scope,
-			Sentences sentences,
-			TypeParameters<?> expectedParameters) {
-
-		TypeParameters<?> typeParameters = null;
-
-		for (Sentence<?, ?> sentence : sentences.getSentences()) {
-
-			final TypeParameters<?> sentenceParameters =
-					sentence.typeParameters(scope, expectedParameters);
-
-			if (sentenceParameters == null) {
-				continue;
-			}
-			if (typeParameters == null) {
-				typeParameters = sentenceParameters;
-				continue;
-			}
-			if (typeParameters.assignableFrom(sentenceParameters)) {
-				continue;
-			}
-			typeParameters = expectedParameters;
-		}
-
-		return typeParameters;
-	}
-
-	public static void resolveSentences(
-			FullResolver resolver,
-			Sentences sentences) {
-		for (Sentence<?, ?> sentence : sentences.getSentences()) {
-			resolveSentence(resolver, sentence);
-		}
-	}
-
-	public static void resolveSentencesTargets(
-			TargetResolver resolver,
-			Scope scope,
-			Sentences sentences) {
-		if (!sentences.getTargets().haveValue()) {
-			return;
-		}
-		for (Sentence<?, ?> sentence : sentences.getSentences()) {
-			resolveSentenceTargets(resolver, scope, sentence);
-		}
 	}
 
 	private static Action sentenceAction(
@@ -205,52 +153,7 @@ public class SentencesUtil {
 		return new ExecuteCommand(alt, Condition.TRUE);
 	}
 
-	private static void resolveSentence(
-			FullResolver resolver,
-			Sentence<?, ?> sentence) {
-
-		final Sentence<?, ?> prerequisite = sentence.getPrerequisite();
-
-		if (prerequisite != null) {
-			resolveSentence(resolver, prerequisite);
-		}
-		for (Statements<?, ?> alt : sentence.getAlternatives()) {
-			resolveStatements(resolver, alt);
-		}
-	}
-
-	private static void resolveStatements(
-			FullResolver resolver,
-			Statements<?, ?> statements) {
-		assert statements.assertInstructionsExecuted();
-		for (Implication<?> command : statements.getImplications()) {
-			command.resolveAll(resolver);
-		}
-	}
-
-	private static void resolveSentenceTargets(
-			TargetResolver resolver,
-			Scope scope,
-			Sentence<?, ?> sentence) {
-		if (!sentence.getTargets().haveValue()) {
-			return;
-		}
-		for (Statements<?, ?> alt : sentence.getAlternatives()) {
-			resolveStatementsTargets(resolver, scope, alt);
-		}
-	}
-
-	private static void resolveStatementsTargets(
-			TargetResolver resolver,
-			Scope scope,
-			Statements<?, ?> statements) {
-		assert statements.assertInstructionsExecuted();
-		for (Implication<?> command : statements.getImplications()) {
-			command.resolveTargets(resolver, scope);
-		}
-	}
-
-	private SentencesUtil() {
+	private BlockUtil() {
 	}
 
 }

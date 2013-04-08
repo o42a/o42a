@@ -19,11 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.impl.cmd.SentencesUtil.resolveSentences;
-import static org.o42a.core.st.impl.cmd.SentencesUtil.resolveSentencesTargets;
-import static org.o42a.core.st.impl.cmd.SentencesUtil.sentencesTypeParameters;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
-import static org.o42a.core.st.impl.declarative.DeclarativeUtil.sentencesTarget;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
 import java.util.List;
@@ -40,7 +36,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
-import org.o42a.core.st.impl.cmd.SentencesUtil;
+import org.o42a.core.st.impl.cmd.BlockUtil;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
@@ -48,10 +44,10 @@ import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.string.Name;
 
 
-public final class BlockDefiner
-		extends Definer
-		implements DeclarativeSentences, DefinitionsBuilder {
+public final class BlockDefiner extends Definer implements DefinitionsBuilder {
 
+	private final DeclarativeBlockSentences sentences =
+			new DeclarativeBlockSentences(this);
 	private BlockDefinitions blockDefinitions;
 
 	public BlockDefiner(DeclarativeBlock block, CommandEnv env) {
@@ -70,21 +66,6 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public Name getName() {
-		return null;
-	}
-
-	@Override
-	public boolean isParentheses() {
-		return true;
-	}
-
-	@Override
-	public final List<DeclarativeSentence> getSentences() {
-		return getBlock().getSentences();
-	}
-
-	@Override
 	public final CommandTargets getTargets() {
 		return getBlockDefinitions().getTargets();
 	}
@@ -96,7 +77,7 @@ public final class BlockDefiner
 
 	@Override
 	public DefTarget toTarget(Scope origin) {
-		return sentencesTarget(origin, this);
+		return this.sentences.target(origin);
 	}
 
 	@Override
@@ -108,12 +89,12 @@ public final class BlockDefiner
 				.getExpectedParameters()
 				.upgradeScope(scope);
 
-		return sentencesTypeParameters(scope, this, expectedParameters);
+		return this.sentences.typeParameters(scope, expectedParameters);
 	}
 
 	@Override
 	public Action action(Resolver resolver) {
-		return SentencesUtil.sentencesAction(getBlock(), this, resolver);
+		return BlockUtil.sentencesAction(getBlock(), this, resolver);
 	}
 
 	@Override
@@ -123,17 +104,21 @@ public final class BlockDefiner
 
 	@Override
 	public void resolveTargets(TargetResolver resolver, Scope origin) {
-		resolveSentencesTargets(resolver, origin, this);
+		this.sentences.resolveTargets(resolver, origin);
 	}
 
 	@Override
 	public InlineEval inline(Normalizer normalizer, Scope origin) {
-		return inlineBlock(normalizer.getRoot(), normalizer, origin, this);
+		return inlineBlock(
+				normalizer.getRoot(),
+				normalizer,
+				origin,
+				this.sentences);
 	}
 
 	@Override
 	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return inlineBlock(normalizer, null, origin, this);
+		return inlineBlock(normalizer, null, origin, this.sentences);
 	}
 
 	@Override
@@ -145,7 +130,46 @@ public final class BlockDefiner
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getTargets();
-		resolveSentences(resolver, this);
+		this.sentences.resolveAll(resolver);
+	}
+
+	private static final class DeclarativeBlockSentences
+			extends DeclarativeSentences {
+
+		private final BlockDefiner definer;
+
+		DeclarativeBlockSentences(BlockDefiner definer) {
+			this.definer = definer;
+		}
+
+		@Override
+		public Name getName() {
+			return null;
+		}
+
+		@Override
+		public boolean isParentheses() {
+			return true;
+		}
+
+		@Override
+		public List<DeclarativeSentence> getSentences() {
+			return this.definer.getBlock().getSentences();
+		}
+
+		@Override
+		public CommandTargets getTargets() {
+			return this.definer.getTargets();
+		}
+
+		@Override
+		public String toString() {
+			if (this.definer == null) {
+				return super.toString();
+			}
+			return this.definer.toString();
+		}
+
 	}
 
 	private static final class BlockEval implements Eval {
@@ -160,7 +184,12 @@ public final class BlockDefiner
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
-			writeSentences(dirs, host, this.origin, this.definer, null);
+			writeSentences(
+					dirs,
+					host,
+					this.origin,
+					this.definer.sentences,
+					null);
 		}
 
 		@Override

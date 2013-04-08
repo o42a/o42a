@@ -19,54 +19,21 @@
 */
 package org.o42a.core.st.impl.cmd;
 
-import static org.o42a.core.st.impl.cmd.InlineSentence.inlineSentence;
 import static org.o42a.core.st.impl.cmd.SentencesOp.writeSentences;
-
-import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.st.sentence.Sentence;
 import org.o42a.util.fn.Cancelable;
 
 
 public class InlineSentences extends InlineCmd {
 
-	public static InlineSentences inlineSentences(
-			RootNormalizer rootNormalizer,
-			Normalizer normalizer,
-			Scope origin,
-			Sentences sentences) {
-
-		final List<? extends Sentence<?, ?>> sentenceList =
-				sentences.getSentences();
-		final InlineSentence[] inlines =
-				new InlineSentence[sentenceList.size()];
-		int i = 0;
-
-		for (Sentence<?, ?> sentence : sentenceList) {
-			inlines[i++] = inlineSentence(
-					rootNormalizer,
-					normalizer,
-					origin,
-					sentence);
-		}
-
-		if (normalizer != null && normalizer.isCancelled()) {
-			return null;
-		}
-
-		return new InlineSentences(sentences, origin, inlines);
-	}
-
 	private final Sentences sentences;
 	private final Scope origin;
 	private final InlineSentence[] inlines;
 
-	private InlineSentences(
+	InlineSentences(
 			Sentences sentences,
 			Scope origin,
 			InlineSentence[] inlines) {

@@ -21,11 +21,7 @@ package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.st.impl.cmd.SentencesUtil.resolveSentences;
-import static org.o42a.core.st.impl.cmd.SentencesUtil.resolveSentencesTargets;
-import static org.o42a.core.st.impl.cmd.SentencesUtil.sentencesTypeParameters;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
-import static org.o42a.core.st.impl.declarative.DeclarativeUtil.sentencesTarget;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
 import java.util.List;
@@ -50,12 +46,11 @@ import org.o42a.util.fn.Holder;
 import org.o42a.util.string.Name;
 
 
-final class DeclarativePart extends Def implements DeclarativeSentences {
+final class DeclarativePart extends Def {
 
 	private final DeclarativeBlock block;
 	private final CommandEnv env;
-	private final CommandTargets targets;
-	private final List<DeclarativeSentence> sentences;
+	private final DeclarativePartSentences sentences;
 	private InlineDeclarativeSentences normal;
 	private Holder<DefTarget> defTarget;
 
@@ -72,8 +67,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 				claim);
 		this.block = block;
 		this.env = env;
-		this.sentences = sentences;
-		this.targets = targets;
+		this.sentences = new DeclarativePartSentences(this, targets, sentences);
 	}
 
 	private DeclarativePart(
@@ -82,33 +76,19 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 		super(prototype, scopeUpgrade);
 		this.block = prototype.block;
 		this.env = prototype.env;
-		this.targets = prototype.targets;
-		this.sentences = prototype.getSentences();
+		this.sentences = prototype.sentences;
 	}
 
 	@Override
 	public boolean unconditional() {
-		return this.targets.haveValue() && !this.targets.havePrerequisite();
+
+		final CommandTargets targets = this.sentences.getTargets();
+
+		return targets.haveValue() && !targets.havePrerequisite();
 	}
 
-	@Override
-	public final Name getName() {
-		return null;
-	}
-
-	@Override
-	public final boolean isParentheses() {
-		return true;
-	}
-
-	@Override
-	public final CommandTargets getTargets() {
-		return this.targets;
-	}
-
-	@Override
 	public final List<DeclarativeSentence> getSentences() {
-		return this.sentences;
+		return this.sentences.getSentences();
 	}
 
 	@Override
@@ -117,7 +97,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 			return this.defTarget.get();
 		}
 
-		final DefTarget defTarget = sentencesTarget(getScope(), this);
+		final DefTarget defTarget = this.sentences.target(getScope());
 
 		this.defTarget = Holder.holder(defTarget);
 
@@ -126,7 +106,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.normal = inlineBlock(normalizer, null, getScope(), this);
+		this.normal = inlineBlock(normalizer, null, getScope(), this.sentences);
 	}
 
 	@Override
@@ -136,7 +116,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 				normalizer.getRoot(),
 				normalizer,
 				getScope(),
-				this);
+				this.sentences);
 
 		if (inline == null) {
 			return null;
@@ -162,7 +142,9 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 			return "Propositions[" + this.block + ']';
 		}
 
-		final int len = this.sentences.size();
+		final List<DeclarativeSentence> sentences =
+				this.sentences.getSentences();
+		final int len = sentences.size();
 
 		if (len == 0) {
 			return isClaim() ? "!" : ".";
@@ -170,9 +152,9 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(this.sentences.get(0));
+		out.append(sentences.get(0));
 		for (int i = 1; i < len; ++i) {
-			out.append(' ').append(this.sentences.get(i));
+			out.append(' ').append(sentences.get(i));
 		}
 
 		return out.toString();
@@ -180,7 +162,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	protected boolean hasConstantValue() {
-		return getTargets().isConstant();
+		return this.sentences.getTargets().isConstant();
 	}
 
 	@Override
@@ -191,7 +173,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 				.getExpectedParameters()
 				.upgradeScope(scope);
 
-		return sentencesTypeParameters(scope, this, expectedParameters);
+		return this.sentences.typeParameters(scope, expectedParameters);
 	}
 
 	@Override
@@ -212,12 +194,12 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	protected void resolveTarget(TargetResolver resolver) {
-		resolveSentencesTargets(resolver, getScope(), this);
+		this.sentences.resolveTargets(resolver, getScope());
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-		resolveSentences(resolver, this);
+		this.sentences.resolveAll(resolver);
 	}
 
 	@Override
@@ -225,6 +207,52 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
 		return new DeclarativePart(this, upgrade);
+	}
+
+	private static final class DeclarativePartSentences
+			extends DeclarativeSentences {
+
+		private final DeclarativePart part;
+		private final CommandTargets targets;
+		private final List<DeclarativeSentence> sentences;
+
+		DeclarativePartSentences(
+				DeclarativePart part,
+				CommandTargets targets,
+				List<DeclarativeSentence> sentences) {
+			this.part = part;
+			this.targets = targets;
+			this.sentences = sentences;
+		}
+
+		@Override
+		public Name getName() {
+			return null;
+		}
+
+		@Override
+		public boolean isParentheses() {
+			return true;
+		}
+
+		@Override
+		public List<DeclarativeSentence> getSentences() {
+			return this.sentences;
+		}
+
+		@Override
+		public CommandTargets getTargets() {
+			return this.targets;
+		}
+
+		@Override
+		public String toString() {
+			if (this.part == null) {
+				return super.toString();
+			}
+			return this.part.toString();
+		}
+
 	}
 
 	private static final class DeclarativePartEval extends InlineEval {
@@ -249,7 +277,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 					dirs,
 					host,
 					this.origin,
-					this.part,
+					this.part.sentences,
 					this.inlineSentences);
 		}
 
