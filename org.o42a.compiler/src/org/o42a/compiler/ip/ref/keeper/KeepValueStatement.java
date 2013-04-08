@@ -53,8 +53,7 @@ final class KeepValueStatement extends Statement {
 
 	@Override
 	public Command command(CommandEnv env) {
-		throw new UnsupportedOperationException(
-				"Value can not be kept inside the imperative code");
+		return new KeptValueCommand(this, env);
 	}
 
 	@Override
