@@ -33,6 +33,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.BlockDefiner;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.util.string.Name;
 
 
 public final class DeclarativeBlock extends Block<Declaratives, Definer> {
@@ -114,8 +115,13 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	@Override
-	public boolean isParentheses() {
+	public final boolean isParentheses() {
 		return true;
+	}
+
+	@Override
+	public final Name getName() {
+		return null;
 	}
 
 	public final boolean isInsideClaim() {

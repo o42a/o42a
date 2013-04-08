@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.core.st.impl.cmd;
 
 import java.util.List;
 
@@ -25,8 +25,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.st.Command;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.Implication;
+import org.o42a.core.st.sentence.Statements;
 
 
 final class InlineCommands {
@@ -35,13 +35,14 @@ final class InlineCommands {
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			Scope origin,
-			Imperatives imperatives) {
+			Statements<?, ?> imperatives) {
 
-		final List<Command> commands = imperatives.getImplications();
+		final List<? extends Implication<?>> commands =
+				imperatives.getImplications();
 		final InlineCmd[] inlines = new InlineCmd[commands.size()];
 		int i = 0;
 
-		for (Command command : commands) {
+		for (Implication<?> command : commands) {
 
 			final InlineCmd inline;
 

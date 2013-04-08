@@ -151,6 +151,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		return this.parentheses;
 	}
 
+	@Override
 	public final Name getName() {
 		return this.name;
 	}
