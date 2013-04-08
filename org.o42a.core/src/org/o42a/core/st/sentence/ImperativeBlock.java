@@ -219,7 +219,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	@Override
 	Command createCommand(CommandEnv env) {
-		return new BlockCommand(this, env);
+		return new ImperativeBlockCommand(this, env);
 	}
 
 	final void loop() {

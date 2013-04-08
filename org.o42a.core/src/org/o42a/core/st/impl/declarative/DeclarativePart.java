@@ -20,8 +20,12 @@
 package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
-import static org.o42a.core.st.impl.declarative.BlockDefiner.*;
+import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
+import static org.o42a.core.st.impl.cmd.SentencesUtil.resolveSentences;
+import static org.o42a.core.st.impl.cmd.SentencesUtil.resolveSentencesTargets;
+import static org.o42a.core.st.impl.cmd.SentencesUtil.sentencesTypeParameters;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
+import static org.o42a.core.st.impl.declarative.DeclarativeUtil.sentencesTarget;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
 import java.util.List;
@@ -34,34 +38,40 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.fn.Holder;
+import org.o42a.util.string.Name;
 
 
 final class DeclarativePart extends Def implements DeclarativeSentences {
 
-	private final BlockDefiner definer;
+	private final DeclarativeBlock block;
+	private final CommandEnv env;
 	private final CommandTargets targets;
 	private final List<DeclarativeSentence> sentences;
 	private InlineDeclarativeSentences normal;
 	private Holder<DefTarget> defTarget;
 
 	DeclarativePart(
-			BlockDefiner definer,
+			DeclarativeBlock block,
+			CommandEnv env,
 			CommandTargets targets,
 			List<DeclarativeSentence> sentences,
 			boolean claim) {
 		super(
-				sourceOf(definer),
-				definer.getBlock(),
-				noScopeUpgrade(definer.getScope()),
+				sourceOf(block),
+				block,
+				noScopeUpgrade(block.getScope()),
 				claim);
-		this.definer = definer;
+		this.block = block;
+		this.env = env;
 		this.sentences = sentences;
 		this.targets = targets;
 	}
@@ -70,7 +80,8 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 			DeclarativePart prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.definer = prototype.definer;
+		this.block = prototype.block;
+		this.env = prototype.env;
 		this.targets = prototype.targets;
 		this.sentences = prototype.getSentences();
 	}
@@ -78,6 +89,16 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	@Override
 	public boolean unconditional() {
 		return this.targets.haveValue() && !this.targets.havePrerequisite();
+	}
+
+	@Override
+	public final Name getName() {
+		return null;
+	}
+
+	@Override
+	public final boolean isParentheses() {
+		return true;
 	}
 
 	@Override
@@ -96,7 +117,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 			return this.defTarget.get();
 		}
 
-		final DefTarget defTarget = sentencesTargets(getScope(), this);
+		final DefTarget defTarget = sentencesTarget(getScope(), this);
 
 		this.defTarget = Holder.holder(defTarget);
 
@@ -131,14 +152,14 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	public String toString() {
-		if (this.definer == null) {
+		if (this.block == null) {
 			return super.toString();
 		}
 		if (this.sentences == null) {
 			if (isClaim()) {
-				return "Claims[" + this.definer.getBlock() + ']';
+				return "Claims[" + this.block + ']';
 			}
-			return "Propositions[" + this.definer.getBlock() + ']';
+			return "Propositions[" + this.block + ']';
 		}
 
 		final int len = this.sentences.size();
@@ -166,17 +187,27 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	protected TypeParameters<?> typeParameters(Scope scope) {
 
 		final TypeParameters<?> expectedParameters =
-				this.definer.env()
-				.getValueRequest()
+				this.env.getValueRequest()
 				.getExpectedParameters()
 				.upgradeScope(scope);
 
-		return BlockDefiner.typeParameters(scope, this, expectedParameters);
+		return sentencesTypeParameters(scope, this, expectedParameters);
 	}
 
 	@Override
 	protected DefValue calculateValue(Resolver resolver) {
-		return sentencesValue(resolver, this);
+		for (DeclarativeSentence sentence : getSentences()) {
+
+			final DefValue value = sentence.value(resolver);
+
+			if (value.hasValue()) {
+				return value;
+			}
+			if (!value.getCondition().isTrue()) {
+				return value;
+			}
+		}
+		return TRUE_DEF_VALUE;
 	}
 
 	@Override

@@ -30,8 +30,11 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Definer;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.impl.declarative.BlockDefiner;
+import org.o42a.core.st.impl.declarative.DeclarativeBlockCommand;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.string.Name;
@@ -159,7 +162,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 
 	public DefinitionsBuilder definitions(CommandEnv env) {
 		init(env);
-		return createDefiner(env);
+		return createCommand(env);
 	}
 
 	@Override
@@ -210,8 +213,8 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	@Override
-	final Command createCommand(CommandEnv env) {
-		throw new UnsupportedOperationException();
+	final DeclarativeBlockCommand createCommand(CommandEnv env) {
+		return new DeclarativeBlockCommand(this, env);
 	}
 
 	private void addImplicitInclusions() {
