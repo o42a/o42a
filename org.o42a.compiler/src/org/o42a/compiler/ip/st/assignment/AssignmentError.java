@@ -60,7 +60,7 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public Eval eval(Scope origin) {
+	public Eval eval() {
 		return NO_EVAL;
 	}
 

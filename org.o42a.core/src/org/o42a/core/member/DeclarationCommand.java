@@ -78,7 +78,7 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public final Cmd cmd() {
+	public final Cmd cmd(Scope origin) {
 		return Cmd.NO_CMD;
 	}
 

@@ -127,7 +127,7 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public Eval eval(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new ImperativeEval(getCommand());
+		return new ImperativeEval(getCommand(), origin);
 	}
 
 	@Override
@@ -172,9 +172,11 @@ public final class ImperativeDefiner extends Definer {
 	private static final class ImperativeEval implements Eval {
 
 		private final Command command;
+		private final Scope origin;
 
-		ImperativeEval(Command command) {
+		ImperativeEval(Command command, Scope origin) {
 			this.command = command;
+			this.origin = origin;
 		}
 
 		@Override
@@ -182,7 +184,7 @@ public final class ImperativeDefiner extends Definer {
 
 			final Control control = mainControl(dirs);
 
-			this.command.cmd().write(control);
+			this.command.cmd(this.origin).write(control);
 
 			control.end();
 		}

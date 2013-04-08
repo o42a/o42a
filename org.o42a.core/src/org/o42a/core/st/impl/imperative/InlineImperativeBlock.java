@@ -59,17 +59,20 @@ public class InlineImperativeBlock extends InlineCmd {
 			return null;
 		}
 
-		return new InlineImperativeBlock(block, inlines);
+		return new InlineImperativeBlock(block, origin, inlines);
 	}
 
 	private final ImperativeBlock block;
+	private final Scope origin;
 	private final InlineImperativeSentence[] sentences;
 
 	private InlineImperativeBlock(
 			ImperativeBlock block,
+			Scope origin,
 			InlineImperativeSentence[] sentences) {
 		super(null);
 		this.block = block;
+		this.origin = origin;
 		this.sentences = sentences;
 	}
 
@@ -79,7 +82,7 @@ public class InlineImperativeBlock extends InlineCmd {
 
 	@Override
 	public void write(Control control) {
-		writeSentences(control, this.block, this);
+		writeSentences(control, this.origin, this.block, this);
 	}
 
 	@Override

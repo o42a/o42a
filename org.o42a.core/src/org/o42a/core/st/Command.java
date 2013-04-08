@@ -50,6 +50,6 @@ public abstract class Command extends Implication<Command> {
 			RootNormalizer normalizer,
 			Scope origin);
 
-	public abstract Cmd cmd();
+	public abstract Cmd cmd(Scope origin);
 
 }

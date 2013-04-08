@@ -188,9 +188,9 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd() {
+	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new ImperativeBlockCmd(getBlock());
+		return new ImperativeBlockCmd(getBlock(), origin);
 	}
 
 	@Override

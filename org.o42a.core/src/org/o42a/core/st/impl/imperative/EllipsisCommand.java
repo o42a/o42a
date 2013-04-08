@@ -93,7 +93,7 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd() {
+		public Cmd cmd(Scope origin) {
 			assert getStatement().assertFullyResolved();
 			return new ExitCmd(getEllipsis());
 		}
@@ -117,7 +117,7 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd() {
+		public Cmd cmd(Scope origin) {
 			assert getStatement().assertFullyResolved();
 			return new RepeatCmd(getEllipsis());
 		}

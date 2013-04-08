@@ -73,9 +73,9 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd() {
+	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return command().cmd();
+		return command().cmd(origin);
 	}
 
 	@Override
@@ -179,7 +179,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd() {
+		public Cmd cmd(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -240,7 +240,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd() {
+		public Cmd cmd(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

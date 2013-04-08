@@ -59,7 +59,7 @@ abstract class AssignmentKind {
 
 	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
 
-	public abstract Eval eval(Scope origin);
+	public abstract Eval eval();
 
 	public abstract InlineEval normalize(
 			RootNormalizer normalizer,

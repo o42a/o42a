@@ -115,7 +115,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd() {
+	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		if (this.normal == null) {
 			return new RefConditionCmd(getRefCondition());
