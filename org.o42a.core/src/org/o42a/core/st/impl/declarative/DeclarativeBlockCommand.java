@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,20 +19,15 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.impl.cmd.SentencesUtil.resolveSentences;
-import static org.o42a.core.st.impl.cmd.SentencesUtil.resolveSentencesTargets;
-import static org.o42a.core.st.impl.cmd.SentencesUtil.sentencesTypeParameters;
-import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
+import static org.o42a.core.st.impl.cmd.InlineSentences.inlineSentences;
+import static org.o42a.core.st.impl.cmd.SentencesUtil.*;
 import static org.o42a.core.st.impl.declarative.DeclarativeUtil.sentencesTarget;
-import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.DefinitionsBuilder;
@@ -40,7 +35,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
-import org.o42a.core.st.impl.cmd.SentencesUtil;
+import org.o42a.core.st.impl.cmd.SentencesCmd;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
@@ -48,13 +43,13 @@ import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.string.Name;
 
 
-public final class BlockDefiner
-		extends Definer
+public final class DeclarativeBlockCommand
+		extends Command
 		implements DeclarativeSentences, DefinitionsBuilder {
 
 	private BlockDefinitions blockDefinitions;
 
-	public BlockDefiner(DeclarativeBlock block, CommandEnv env) {
+	public DeclarativeBlockCommand(DeclarativeBlock block, CommandEnv env) {
 		super(block, env);
 	}
 
@@ -70,33 +65,23 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public Name getName() {
+	public final Name getName() {
 		return null;
 	}
 
 	@Override
-	public boolean isParentheses() {
+	public final boolean isParentheses() {
 		return true;
 	}
 
 	@Override
-	public final List<DeclarativeSentence> getSentences() {
+	public List<DeclarativeSentence> getSentences() {
 		return getBlock().getSentences();
 	}
 
 	@Override
-	public final CommandTargets getTargets() {
+	public CommandTargets getTargets() {
 		return getBlockDefinitions().getTargets();
-	}
-
-	@Override
-	public Definitions buildDefinitions() {
-		return getBlockDefinitions().buildDefinitions();
-	}
-
-	@Override
-	public DefTarget toTarget(Scope origin) {
-		return sentencesTarget(origin, this);
 	}
 
 	@Override
@@ -113,12 +98,12 @@ public final class BlockDefiner
 
 	@Override
 	public Action action(Resolver resolver) {
-		return SentencesUtil.sentencesAction(getBlock(), this, resolver);
+		return sentencesAction(getBlock(), this, resolver);
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return new ExecuteInstructions(getBlock());
+	public Definitions buildDefinitions() {
+		return getBlockDefinitions().buildDefinitions();
 	}
 
 	@Override
@@ -127,50 +112,34 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
-		return inlineBlock(normalizer.getRoot(), normalizer, origin, this);
+	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+		return inlineSentences(normalizer.getRoot(), normalizer, origin, this);
 	}
 
 	@Override
-	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return inlineBlock(normalizer, null, origin, this);
+	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+		return inlineSentences(normalizer, null, origin, this);
 	}
 
 	@Override
-	public Eval eval(Scope origin) {
-		assert getStatement().assertFullyResolved();
-		return new BlockEval(this, origin);
+	public Cmd cmd(Scope origin) {
+		return new SentencesCmd(this, origin);
+	}
+
+	@Override
+	public Instruction toInstruction(Resolver resolver) {
+		return new ExecuteInstructions(getBlock());
+	}
+
+	@Override
+	public DefTarget toTarget(Scope origin) {
+		return sentencesTarget(origin, this);
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getTargets();
 		resolveSentences(resolver, this);
-	}
-
-	private static final class BlockEval implements Eval {
-
-		private final BlockDefiner definer;
-		private final Scope origin;
-
-		BlockEval(BlockDefiner definer, Scope origin) {
-			this.definer = definer;
-			this.origin = origin;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			writeSentences(dirs, host, this.origin, this.definer, null);
-		}
-
-		@Override
-		public String toString() {
-			if (this.definer == null) {
-				return super.toString();
-			}
-			return this.definer.toString();
-		}
-
 	}
 
 }

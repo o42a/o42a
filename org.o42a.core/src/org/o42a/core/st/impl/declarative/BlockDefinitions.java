@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
@@ -33,20 +34,26 @@ import org.o42a.core.value.TypeParameters;
 
 final class BlockDefinitions {
 
-	private final BlockDefiner definer;
+	private final DeclarativeBlock block;
+	private final CommandEnv env;
 	private CommandTargets targets = noCommands();
 	private CommandTargets claimTargets = noCommands();
 	private CommandTargets propositionTargets = noCommands();
 	private ArrayList<DeclarativeSentence> claims;
 	private ArrayList<DeclarativeSentence> propositions;
 
-	BlockDefinitions(BlockDefiner definer) {
-		this.definer = definer;
+	BlockDefinitions(DeclarativeBlock block, CommandEnv env) {
+		this.block = block;
+		this.env = env;
 		build();
 	}
 
 	public final DeclarativeBlock getBlock() {
-		return this.definer.getBlock();
+		return this.block;
+	}
+
+	public final CommandEnv env() {
+		return this.env;
 	}
 
 	public final CommandTargets getTargets() {
@@ -68,7 +75,7 @@ final class BlockDefinitions {
 	public Definitions buildDefinitions() {
 
 		final TypeParameters<?> typeParameters =
-				this.definer.env().getValueRequest().getExpectedParameters();
+				env().getValueRequest().getExpectedParameters();
 		final Definitions claims;
 
 		if (this.claims == null) {
@@ -78,7 +85,8 @@ final class BlockDefinitions {
 		} else {
 			claims =
 					new DeclarativePart(
-							this.definer,
+							getBlock(),
+							env(),
 							this.claimTargets,
 							this.claims,
 							true)
@@ -91,7 +99,8 @@ final class BlockDefinitions {
 
 		return claims.refine(
 				new DeclarativePart(
-						this.definer,
+						getBlock(),
+						env(),
 						this.propositionTargets,
 						this.propositions,
 						false)
@@ -100,10 +109,10 @@ final class BlockDefinitions {
 
 	@Override
 	public String toString() {
-		if (this.definer == null) {
+		if (this.block == null) {
 			return super.toString();
 		}
-		return this.definer.toString();
+		return this.block.toString();
 	}
 
 	private void build() {
