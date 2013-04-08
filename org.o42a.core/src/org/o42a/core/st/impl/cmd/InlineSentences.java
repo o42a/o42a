@@ -17,10 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.core.st.impl.cmd;
 
-import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
-import static org.o42a.core.st.impl.imperative.InlineImperativeSentence.inlineSentence;
+import static org.o42a.core.st.impl.cmd.InlineSentence.inlineSentence;
+import static org.o42a.core.st.impl.cmd.SentencesOp.writeSentences;
 
 import java.util.List;
 
@@ -29,25 +29,25 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeSentence;
+import org.o42a.core.st.sentence.Sentence;
 import org.o42a.util.fn.Cancelable;
 
 
-public class InlineImperativeBlock extends InlineCmd {
+public class InlineSentences extends InlineCmd {
 
-	public static InlineImperativeBlock inlineBlock(
+	public static InlineSentences inlineSentences(
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			Scope origin,
-			ImperativeBlock block) {
+			Sentences sentences) {
 
-		final List<ImperativeSentence> sentences = block.getSentences();
-		final InlineImperativeSentence[] inlines =
-				new InlineImperativeSentence[sentences.size()];
+		final List<? extends Sentence<?, ?>> sentenceList =
+				sentences.getSentences();
+		final InlineSentence[] inlines =
+				new InlineSentence[sentenceList.size()];
 		int i = 0;
 
-		for (ImperativeSentence sentence : sentences) {
+		for (Sentence<?, ?> sentence : sentenceList) {
 			inlines[i++] = inlineSentence(
 					rootNormalizer,
 					normalizer,
@@ -59,48 +59,48 @@ public class InlineImperativeBlock extends InlineCmd {
 			return null;
 		}
 
-		return new InlineImperativeBlock(block, origin, inlines);
+		return new InlineSentences(sentences, origin, inlines);
 	}
 
-	private final ImperativeBlock block;
+	private final Sentences sentences;
 	private final Scope origin;
-	private final InlineImperativeSentence[] sentences;
+	private final InlineSentence[] inlines;
 
-	private InlineImperativeBlock(
-			ImperativeBlock block,
+	private InlineSentences(
+			Sentences sentences,
 			Scope origin,
-			InlineImperativeSentence[] sentences) {
+			InlineSentence[] inlines) {
 		super(null);
-		this.block = block;
-		this.origin = origin;
 		this.sentences = sentences;
+		this.origin = origin;
+		this.inlines = inlines;
 	}
 
-	public final InlineImperativeSentence get(int index) {
-		return this.sentences[index];
+	public final InlineSentence get(int index) {
+		return this.inlines[index];
 	}
 
 	@Override
 	public void write(Control control) {
-		writeSentences(control, this.origin, this.block, this);
+		writeSentences(control, this.origin, this.sentences, this);
 	}
 
 	@Override
 	public String toString() {
-		if (this.sentences == null) {
+		if (this.inlines == null) {
 			return super.toString();
 		}
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(this.block.isParentheses() ? '(' : '{');
-		if (this.sentences.length > 0) {
-			out.append(this.sentences[0]);
-			for (int i = 1; i < this.sentences.length; ++i) {
-				out.append(' ').append(this.sentences[i]);
+		out.append(this.sentences.isParentheses() ? '(' : '{');
+		if (this.inlines.length > 0) {
+			out.append(this.inlines[0]);
+			for (int i = 1; i < this.inlines.length; ++i) {
+				out.append(' ').append(this.inlines[i]);
 			}
 		}
-		out.append(this.block.isParentheses() ? ')' : '}');
+		out.append(this.sentences.isParentheses() ? ')' : '}');
 
 		return out.toString();
 	}

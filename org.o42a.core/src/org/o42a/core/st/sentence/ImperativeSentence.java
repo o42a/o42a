@@ -134,7 +134,7 @@ public abstract class ImperativeSentence
 		} else {
 			result = targets;
 		}
-		if (!isClaim()) {
+		if (!isExit()) {
 			return result;
 		}
 

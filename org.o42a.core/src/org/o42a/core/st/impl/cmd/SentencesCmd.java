@@ -17,37 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.core.st.impl.cmd;
 
-import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
+import static org.o42a.core.st.impl.cmd.SentencesOp.writeSentences;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.st.sentence.ImperativeBlock;
 
 
-public final class ImperativeBlockCmd implements Cmd {
+public final class SentencesCmd implements Cmd {
 
-	private final ImperativeBlock block;
+	private final Sentences sentences;
 	private final Scope origin;
 
-	public ImperativeBlockCmd(ImperativeBlock block, Scope origin) {
-		this.block = block;
+	public SentencesCmd(Sentences sentences, Scope origin) {
+		this.sentences = sentences;
 		this.origin = origin;
 	}
 
 	@Override
 	public void write(Control control) {
-		writeSentences(control, this.origin, this.block, null);
+		writeSentences(control, this.origin, this.sentences, null);
 	}
 
 	@Override
 	public String toString() {
-		if (this.block == null) {
+		if (this.sentences == null) {
 			return super.toString();
 		}
-		return this.block.toString();
+		return this.sentences.toString();
 	}
 
 }

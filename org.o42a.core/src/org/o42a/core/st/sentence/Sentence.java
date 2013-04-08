@@ -65,6 +65,10 @@ public abstract class Sentence<
 		return this.sentenceFactory;
 	}
 
+	public final boolean isExit() {
+		return isClaim() && !getSentenceFactory().isDeclarative();
+	}
+
 	public abstract boolean isClaim();
 
 	public abstract boolean isIssue();

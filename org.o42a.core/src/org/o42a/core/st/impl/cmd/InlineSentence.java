@@ -17,29 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.core.st.impl.cmd;
 
-import static org.o42a.core.st.impl.imperative.InlineCommands.inlineCommands;
+import static org.o42a.core.st.impl.cmd.InlineCommands.inlineCommands;
 
 import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.st.sentence.ImperativeSentence;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.sentence.Sentence;
+import org.o42a.core.st.sentence.Statements;
 
 
-final class InlineImperativeSentence {
+final class InlineSentence {
 
-	static InlineImperativeSentence inlineSentence(
+	static InlineSentence inlineSentence(
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			Scope origin,
-			ImperativeSentence sentence) {
+			Sentence<?, ?> sentence) {
 
-		final ImperativeSentence prereq = sentence.getPrerequisite();
-		final InlineImperativeSentence inlinePrereq;
+		final Sentence<?, ?> prereq = sentence.getPrerequisite();
+		final InlineSentence inlinePrereq;
 
 		if (prereq == null) {
 			inlinePrereq = null;
@@ -51,11 +51,12 @@ final class InlineImperativeSentence {
 					prereq);
 		}
 
-		final List<Imperatives> alts = sentence.getAlternatives();
+		final List<? extends Statements<?, ?>> alts =
+				sentence.getAlternatives();
 		final InlineCommands[] inlineAlts = new InlineCommands[alts.size()];
 		int i = 0;
 
-		for (Imperatives alt : alts) {
+		for (Statements<?, ?> alt : alts) {
 			inlineAlts[i++] = inlineCommands(
 					rootNormalizer,
 					normalizer,
@@ -67,23 +68,23 @@ final class InlineImperativeSentence {
 			return null;
 		}
 
-		return new InlineImperativeSentence(sentence, inlinePrereq, inlineAlts);
+		return new InlineSentence(sentence, inlinePrereq, inlineAlts);
 	}
 
-	private final ImperativeSentence sentence;
-	private final InlineImperativeSentence prerequisite;
+	private final Sentence<?, ?> sentence;
+	private final InlineSentence prerequisite;
 	private final InlineCommands[] alts;
 
-	private InlineImperativeSentence(
-			ImperativeSentence sentence,
-			InlineImperativeSentence prerequisite,
+	private InlineSentence(
+			Sentence<?, ?> sentence,
+			InlineSentence prerequisite,
 			InlineCommands[] alts) {
 		this.sentence = sentence;
 		this.prerequisite = prerequisite;
 		this.alts = alts;
 	}
 
-	public final InlineImperativeSentence getPrerequisite() {
+	public final InlineSentence getPrerequisite() {
 		return this.prerequisite;
 	}
 

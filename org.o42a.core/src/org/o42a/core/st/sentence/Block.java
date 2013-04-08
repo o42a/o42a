@@ -31,6 +31,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.Locals;
+import org.o42a.util.string.Name;
 
 
 public abstract class Block<
@@ -83,6 +84,8 @@ public abstract class Block<
 	}
 
 	public abstract boolean isParentheses();
+
+	public abstract Name getName();
 
 	public final boolean isInsideIssue() {
 

@@ -20,7 +20,7 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.st.impl.imperative.InlineImperativeBlock.inlineBlock;
+import static org.o42a.core.st.impl.cmd.InlineSentences.inlineSentences;
 
 import java.util.List;
 
@@ -32,13 +32,16 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
+import org.o42a.core.st.impl.cmd.Sentences;
+import org.o42a.core.st.impl.cmd.SentencesCmd;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
+import org.o42a.util.string.Name;
 
 
-public final class BlockCommand extends Command {
+public final class BlockCommand extends Command implements Sentences {
 
 	public static Action blockAction(
 			Block<?, ?> block,
@@ -79,6 +82,21 @@ public final class BlockCommand extends Command {
 
 	public final ImperativeBlock getBlock() {
 		return (ImperativeBlock) getStatement();
+	}
+
+	@Override
+	public Name getName() {
+		return getBlock().getName();
+	}
+
+	@Override
+	public boolean isParentheses() {
+		return false;
+	}
+
+	@Override
+	public List<? extends Sentence<?, ?>> getSentences() {
+		return getBlock().getSentences();
 	}
 
 	@Override
@@ -170,16 +188,12 @@ public final class BlockCommand extends Command {
 
 	@Override
 	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
-		return inlineBlock(
-				normalizer.getRoot(),
-				normalizer,
-				origin,
-				getBlock());
+		return inlineSentences(normalizer.getRoot(), normalizer, origin, this);
 	}
 
 	@Override
 	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
-		return inlineBlock(normalizer, null, origin, getBlock());
+		return inlineSentences(normalizer, null, origin, this);
 	}
 
 	@Override
@@ -190,7 +204,7 @@ public final class BlockCommand extends Command {
 	@Override
 	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new ImperativeBlockCmd(getBlock(), origin);
+		return new SentencesCmd(this, origin);
 	}
 
 	@Override
@@ -295,10 +309,8 @@ public final class BlockCommand extends Command {
 			result = action;
 		}
 
-		if (!sentence.getSentenceFactory().isDeclarative()) {
-			if (sentence.isClaim()) {
-				return new ExitLoop(sentence, null);
-			}
+		if (sentence.isExit()) {
+			return new ExitLoop(sentence, null);
 		}
 		if (result != null) {
 			return result;

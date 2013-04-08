@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.core.st.impl.cmd;
 
 import static org.o42a.util.string.Capitalization.AS_IS;
 
@@ -27,15 +27,14 @@ import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.st.Command;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeSentence;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.Implication;
+import org.o42a.core.st.sentence.Sentence;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
-final class ImperativeOp {
+final class SentencesOp {
 
 	private static final Name BLK_SUFFIX = AS_IS.name("_blk");
 	private static final Name NEXT_SUFFIX = AS_IS.name("_next");
@@ -43,26 +42,29 @@ final class ImperativeOp {
 	public static void writeSentences(
 			Control control,
 			Scope origin,
-			ImperativeBlock block,
-			InlineImperativeBlock inline) {
+			Sentences sentences,
+			InlineSentences inline) {
 
-		final ID name = control.name(block.getName()).suffix(BLK_SUFFIX);
+		final ID name = control.name(sentences.getName()).suffix(BLK_SUFFIX);
 		final Block code = control.addBlock(name);
 		final Block next = control.addBlock(name.suffix(NEXT_SUFFIX));
 		final Control blockControl;
 
-		if (block.isParentheses()) {
-			blockControl = control.parentheses(code, next.head());
+		if (sentences.isParentheses()) {
+			blockControl =
+					control.parentheses(code, next.head());
 		} else {
-			blockControl = control.braces(code, next.head(), block.getName());
+			blockControl =
+					control.braces(code, next.head(), sentences.getName());
 		}
 
-		final List<ImperativeSentence> sentences = block.getSentences();
-		final int len = sentences.size();
+		final List<? extends Sentence<?, ?>> sentenceList =
+				sentences.getSentences();
+		final int len = sentenceList.size();
 
 		for (int i = 0; i < len; ++i) {
 
-			final ImperativeSentence sentence = sentences.get(i);
+			final Sentence<?, ?> sentence = sentenceList.get(i);
 
 			writeSentence(
 					blockControl,
@@ -88,11 +90,11 @@ final class ImperativeOp {
 	private static void writeSentence(
 			Control control,
 			Scope origin,
-			ImperativeSentence sentence,
-			InlineImperativeSentence inline,
+			Sentence<?, ?> sentence,
+			InlineSentence inline,
 			String index) {
 
-		final ImperativeSentence prerequisite = sentence.getPrerequisite();
+		final Sentence<?, ?> prerequisite = sentence.getPrerequisite();
 		final Block prereqFailed;
 
 		if (prerequisite == null) {
@@ -113,7 +115,8 @@ final class ImperativeOp {
 			prereqControl.end();
 		}
 
-		final List<Imperatives> alternatives = sentence.getAlternatives();
+		final List<? extends Statements<?, ?>> alternatives =
+				sentence.getAlternatives();
 		final int len = alternatives.size();
 
 		if (len <= 1) {
@@ -142,7 +145,7 @@ final class ImperativeOp {
 		// fill code blocks
 		for (int i = 0; i < len; ++i) {
 
-			final Imperatives alt = alternatives.get(i);
+			final Statements<?, ?> alt = alternatives.get(i);
 			final Block altCode = blocks[i];
 			final Control altControl;
 			final int nextIdx = i + 1;
@@ -169,15 +172,16 @@ final class ImperativeOp {
 	private static void writeStatements(
 			Control control,
 			Scope origin,
-			Imperatives statements,
+			Statements<?, ?> statements,
 			InlineCommands inlines) {
 
-		final List<Command> commands = statements.getImplications();
+		final List<? extends Implication<?>> commands =
+				statements.getImplications();
 		final int size = commands.size();
 
 		for (int i = 0; i < size; ++i) {
 
-			final Command command = commands.get(i);
+			final Implication<?> command = commands.get(i);
 
 			if (inlines != null) {
 
@@ -201,11 +205,10 @@ final class ImperativeOp {
 	}
 
 	private static void endAlt(
-			ImperativeSentence sentence,
+			Sentence<?, ?> sentence,
 			Control mainControl,
 			Control control) {
-		if (sentence.isClaim()) {
-			// claim - exit block
+		if (sentence.isExit()) {
 			control.exitBraces();
 			return;
 		}
@@ -216,7 +219,7 @@ final class ImperativeOp {
 		}
 	}
 
-	private ImperativeOp() {
+	private SentencesOp() {
 	}
 
 }
