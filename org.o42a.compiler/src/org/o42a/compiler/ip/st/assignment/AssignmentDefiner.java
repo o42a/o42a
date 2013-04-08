@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
@@ -71,8 +70,8 @@ final class AssignmentDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
-		return getAssignmentKind().eval(builder, origin);
+	public Eval eval(Scope origin) {
+		return getAssignmentKind().eval(origin);
 	}
 
 	@Override

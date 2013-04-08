@@ -20,7 +20,6 @@
 package org.o42a.core.ref.impl;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
@@ -125,7 +124,7 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	public final Eval eval(CodeBuilder builder, Scope origin) {
+	public final Eval eval(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return getValueAdapter().eval();
 	}

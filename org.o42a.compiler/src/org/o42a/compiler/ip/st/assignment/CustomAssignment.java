@@ -25,7 +25,6 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -109,7 +108,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		return new AssignEval(getRef());
 	}
 

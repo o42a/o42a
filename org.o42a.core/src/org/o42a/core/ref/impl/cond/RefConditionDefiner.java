@@ -23,7 +23,6 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
@@ -128,7 +127,7 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return new RefConditionEval(getRefCondition());
 	}

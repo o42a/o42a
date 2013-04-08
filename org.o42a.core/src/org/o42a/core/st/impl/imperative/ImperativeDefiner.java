@@ -22,7 +22,6 @@ package org.o42a.core.st.impl.imperative;
 import static org.o42a.core.ir.local.Control.mainControl;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -126,7 +125,7 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return new ImperativeEval(getCommand());
 	}

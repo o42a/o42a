@@ -27,7 +27,6 @@ import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlin
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -206,7 +205,7 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return new BlockEval(this, origin);
 	}

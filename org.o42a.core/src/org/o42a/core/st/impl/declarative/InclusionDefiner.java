@@ -20,7 +20,6 @@
 package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
@@ -105,7 +104,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 

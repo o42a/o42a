@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.ref.keeper;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
@@ -75,7 +74,7 @@ final class KeptValueDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		return new KeptValueEval(this.keeper);
 	}
 

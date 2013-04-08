@@ -20,7 +20,6 @@
 package org.o42a.core.st;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
@@ -39,6 +38,6 @@ public abstract class Definer extends Implication<Definer> {
 			RootNormalizer normalizer,
 			Scope origin);
 
-	public abstract Eval eval(CodeBuilder builder, Scope origin);
+	public abstract Eval eval(Scope origin);
 
 }

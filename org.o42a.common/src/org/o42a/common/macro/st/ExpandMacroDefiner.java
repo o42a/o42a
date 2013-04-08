@@ -24,7 +24,6 @@ import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LO
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
@@ -98,7 +97,7 @@ final class ExpandMacroDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return valueAdapter(origin).eval();
 	}
