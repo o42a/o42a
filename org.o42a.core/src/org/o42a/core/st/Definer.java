@@ -22,14 +22,40 @@ package org.o42a.core.st;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 
 
 public abstract class Definer extends Implication<Definer> {
 
+	private Command command;
+
 	public Definer(Statement statement, CommandEnv env) {
 		super(statement, env);
+	}
+
+	public final Command getCommand() {
+		if (this.command != null) {
+			return this.command;
+		}
+		return this.command = getStatement().command(env());
+	}
+
+	@Override
+	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+		return getCommand().inlineCmd(normalizer, origin);
+	}
+
+	@Override
+	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+		return getCommand().normalizeCmd(normalizer, origin);
+	}
+
+	@Override
+	public Cmd cmd(Scope origin) {
+		return getCommand().cmd(origin);
 	}
 
 	public abstract InlineEval inline(Normalizer normalizer, Scope origin);

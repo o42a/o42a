@@ -22,10 +22,11 @@ package org.o42a.core.st;
 import static org.o42a.core.st.CommandTargets.*;
 
 import org.o42a.core.*;
+import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
@@ -136,6 +137,14 @@ public abstract class Implication<L extends Implication<L>>
 	public final Distributor distributeIn(Container container) {
 		return Contained.distributeIn(this, container);
 	}
+
+	public abstract InlineCmd inlineCmd(Normalizer normalizer, Scope origin);
+
+	public abstract InlineCmd normalizeCmd(
+			RootNormalizer normalizer,
+			Scope origin);
+
+	public abstract Cmd cmd(Scope origin);
 
 	@Override
 	public final void assertScopeIs(Scope scope) {
