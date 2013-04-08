@@ -20,8 +20,8 @@
 package org.o42a.compiler.ip.ref.keeper;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.state.Keeper;
@@ -33,11 +33,11 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
-final class KeptValueDefiner extends Definer {
+final class KeptValueCommand extends Command {
 
 	private final Keeper keeper;
 
-	KeptValueDefiner(KeepValueStatement statement, CommandEnv env) {
+	KeptValueCommand(KeepValueStatement statement, CommandEnv env) {
 		super(statement, env);
 		this.keeper = getScope().toObject().keepers().keep(
 				this,
@@ -95,20 +95,20 @@ final class KeptValueDefiner extends Definer {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
 		getValue().upgradeScope(normalizer.getNormalizedScope())
 		.normalize(normalizer.getAnalyzer());
 		return null;
 	}
 
 	@Override
-	public Eval eval(Scope origin) {
-		return new KeptValueEval(this.keeper);
+	public Cmd cmd(Scope origin) {
+		return new KeptValueCmd(this.keeper);
 	}
 
 	@Override
