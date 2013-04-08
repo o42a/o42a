@@ -20,13 +20,12 @@
 package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Declaratives;
 
 
 public abstract class Inclusion extends Statement {
-
-	private InclusionDefiner<?> definer;
 
 	public Inclusion(LocationInfo location, Declaratives statements) {
 		super(location, statements.nextDistributor());
@@ -37,25 +36,9 @@ public abstract class Inclusion extends Statement {
 		return true;
 	}
 
-	public final CommandEnv getInitialEnv() {
-		return this.definer.env();
-	}
-
-	@Override
-	public Definer define(CommandEnv env) {
-		return this.definer = createDefiner(env);
-	}
-
-	@Override
-	public Command command(CommandEnv env) {
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
 	public final Statement reproduce(Reproducer reproducer) {
 		throw new UnsupportedOperationException();
 	}
-
-	protected abstract InclusionDefiner<?> createDefiner(CommandEnv env);
 
 }
