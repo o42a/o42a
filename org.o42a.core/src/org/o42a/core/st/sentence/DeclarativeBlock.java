@@ -28,6 +28,7 @@ import java.util.List;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.BlockDefiner;
@@ -53,7 +54,6 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	private NamedBlocks namedBlocks;
-	private BlockDefiner definer;
 
 	public DeclarativeBlock(
 			LocationInfo location,
@@ -157,6 +157,11 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 		return (DeclarativeSentence) super.issue(location);
 	}
 
+	public DefinitionsBuilder definitions(CommandEnv env) {
+		init(env);
+		return createDefiner(env);
+	}
+
 	@Override
 	public DeclarativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
@@ -184,20 +189,6 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	@Override
-	public final MainDefiner define(CommandEnv env) {
-		return this.definer = new BlockDefiner(this, env);
-	}
-
-	@Override
-	public Command command(CommandEnv env) {
-		throw new UnsupportedOperationException();
-	}
-
-	public final CommandEnv getInitialEnv() {
-		return this.definer.env();
-	}
-
-	@Override
 	NamedBlocks getNamedBlocks() {
 		if (this.namedBlocks != null) {
 			return this.namedBlocks;
@@ -211,6 +202,16 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 
 		return this.namedBlocks =
 				enclosing.getSentence().getBlock().getNamedBlocks();
+	}
+
+	@Override
+	final BlockDefiner createDefiner(CommandEnv env) {
+		return new BlockDefiner(this, env);
+	}
+
+	@Override
+	final Command createCommand(CommandEnv env) {
+		throw new UnsupportedOperationException();
 	}
 
 	private void addImplicitInclusions() {

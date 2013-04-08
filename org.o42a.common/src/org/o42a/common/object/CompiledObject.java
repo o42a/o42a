@@ -33,6 +33,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Resolver;
@@ -40,7 +41,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ObjectCompiler;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.MainDefiner;
 
 
 public class CompiledObject extends Obj {
@@ -72,7 +72,7 @@ public class CompiledObject extends Obj {
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
 	private ScopeSet errorReportedAt;
-	private MainDefiner definer;
+	private DefinitionsBuilder definitionsBuilder;
 
 	public CompiledObject(CompiledField field) {
 		super(field);
@@ -115,7 +115,7 @@ public class CompiledObject extends Obj {
 				this,
 				new Namespace(this, this),
 				this.memberRegistry);
-		this.definer = this.definition.define(definitionEnv());
+		this.definitionsBuilder = this.definition.definitions(definitionEnv());
 
 		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
 	}
@@ -132,7 +132,7 @@ public class CompiledObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definer.createDefinitions();
+		return this.definitionsBuilder.buildDefinitions();
 	}
 
 	protected final boolean reportError(Resolver resolver) {

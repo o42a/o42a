@@ -32,12 +32,12 @@ import org.o42a.core.member.field.impl.FieldInclusions;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.MainDefiner;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueRequest;
 
@@ -48,7 +48,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private Ascendants ascendants;
 	private Registry memberRegistry;
 	private DeclarativeBlock content;
-	private MainDefiner definer;
+	private DefinitionsBuilder definitionsBuilder;
 	private boolean invalid;
 	private BlockBuilder definitions;
 
@@ -133,7 +133,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	}
 
 	final Definitions createDefinitions() {
-		return getContentDefiner().createDefinitions();
+		return getDefinitionsBuilder().buildDefinitions();
 	}
 
 	final void updateMembers() {
@@ -181,16 +181,17 @@ public final class DeclaredField extends Field implements FieldAscendants {
 				container,
 				container,
 				getMemberRegistry());
-		this.definer = this.content.define(new DeclarationEnv(this));
+		this.definitionsBuilder =
+				this.content.definitions(new DeclarationEnv(this));
 
 		return this.content;
 	}
 
-	private MainDefiner getContentDefiner() {
-		if (this.definer == null) {
+	private DefinitionsBuilder getDefinitionsBuilder() {
+		if (this.definitionsBuilder == null) {
 			definedContent();
 		}
-		return this.definer;
+		return this.definitionsBuilder;
 	}
 
 	private Ascendants buildAscendants(Ascendants implicitAscendants) {

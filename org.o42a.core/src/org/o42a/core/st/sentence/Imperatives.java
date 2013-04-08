@@ -24,7 +24,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.impl.imperative.BlockCommandEnv;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
 import org.o42a.util.string.Name;
 
@@ -93,9 +92,9 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 	@Override
 	protected Command implicate(Statement statement) {
 
-		final CommandEnv initialEnv = getSentence().getBlock().sentencesEnv();
+		final CommandEnv env = getSentence().getBlock().statementsEnv();
 
-		return statement.command(new BlockCommandEnv(initialEnv));
+		return statement.command(env);
 	}
 
 	private ImperativeBlock blockByName(LocationInfo location, Name name) {

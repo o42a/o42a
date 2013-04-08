@@ -25,15 +25,15 @@ import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.core.st.CommandTargets;
+import org.o42a.core.st.DefValue;
+import org.o42a.core.st.Definer;
 import org.o42a.core.value.Condition;
-import org.o42a.core.value.ValueRequest;
 
 
 public abstract class DeclarativeSentence
 		extends Sentence<Declaratives, Definer> {
 
-	private final AltEnv altEnv = new AltEnv(this);
 	private CommandTargets targets;
 	private boolean ignored;
 
@@ -125,10 +125,6 @@ public abstract class DeclarativeSentence
 		return result;
 	}
 
-	final CommandEnv getAltEnv() {
-		return this.altEnv;
-	}
-
 	private CommandTargets prerequisiteTargets() {
 
 		final DeclarativeSentence prerequisite = getPrerequisite();
@@ -203,29 +199,6 @@ public abstract class DeclarativeSentence
 		}
 
 		return result.claim();
-	}
-
-	private static final class AltEnv extends CommandEnv {
-
-		private final DeclarativeSentence sentence;
-
-		AltEnv(DeclarativeSentence sentence) {
-			this.sentence = sentence;
-		}
-
-		@Override
-		public ValueRequest getValueRequest() {
-			return this.sentence.getBlock().getInitialEnv().getValueRequest();
-		}
-
-		@Override
-		public String toString() {
-			if (this.sentence == null) {
-				return super.toString();
-			}
-			return this.sentence.toString();
-		}
-
 	}
 
 }
