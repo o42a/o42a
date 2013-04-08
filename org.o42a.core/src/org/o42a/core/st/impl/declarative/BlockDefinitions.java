@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.Definer.noCommands;
+import static org.o42a.core.st.Implication.noCommands;
 
 import java.util.ArrayList;
 
@@ -65,7 +65,7 @@ final class BlockDefinitions {
 		return getBlock().getLogger();
 	}
 
-	public Definitions createDefinitions() {
+	public Definitions buildDefinitions() {
 
 		final TypeParameters<?> typeParameters =
 				this.definer.env().getValueRequest().getExpectedParameters();

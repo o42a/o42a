@@ -26,11 +26,10 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Implication;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.Locals;
+import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
 
@@ -43,6 +42,8 @@ public abstract class Block<
 	private final ArrayList<Sentence<S, L>> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
+	private final StatementsEnv statementsEnv = new StatementsEnv();
+	private CommandEnv initialEnv;
 	private Locals locals;
 	private int instructionsExecuted;
 	private boolean executingInstructions;
@@ -194,7 +195,16 @@ public abstract class Block<
 	}
 
 	@Override
-	public abstract Statement reproduce(Reproducer reproducer);
+	public final Definer define(CommandEnv env) {
+		init(env);
+		return createDefiner(env);
+	}
+
+	@Override
+	public final Command command(CommandEnv env) {
+		init(env);
+		return createCommand(env);
+	}
 
 	public void reproduceSentences(
 			Reproducer reproducer,
@@ -279,6 +289,22 @@ public abstract class Block<
 
 	abstract NamedBlocks getNamedBlocks();
 
+	abstract Definer createDefiner(CommandEnv env);
+
+	abstract Command createCommand(CommandEnv env);
+
+	final CommandEnv statementsEnv() {
+		return this.statementsEnv;
+	}
+
+	final void init(CommandEnv env) {
+		this.initialEnv = env;
+	}
+
+	private final CommandEnv getInitialEnv() {
+		return this.initialEnv;
+	}
+
 	private Sentence<S, L> addSentence(Sentence<S, L> sentence) {
 		if (sentence == null) {
 			dropSentence();
@@ -311,6 +337,15 @@ public abstract class Block<
 		if (enclosing != null) {
 			enclosing.dropStatement();
 		}
+	}
+
+	private final class StatementsEnv extends CommandEnv {
+
+		@Override
+		public ValueRequest getValueRequest() {
+			return getInitialEnv().getValueRequest();
+		}
+
 	}
 
 }

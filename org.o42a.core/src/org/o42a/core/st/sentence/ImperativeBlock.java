@@ -29,7 +29,6 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.*;
-import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
 
@@ -90,10 +89,8 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	private final boolean parentheses;
 	private final Name name;
-	private final SentencesEnv sentencesEnv = new SentencesEnv();
 	private final boolean topLevel;
 	private NamedBlocks namedBlocks;
-	private CommandEnv initialEnv;
 	private boolean loop;
 
 	private ImperativeBlock(
@@ -177,20 +174,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	}
 
 	@Override
-	public final Definer define(CommandEnv env) {
-		this.initialEnv = env;
-		assert isTopLevel() :
-			"Not a top-level imperative block";
-		return new ImperativeDefiner(this, env);
-	}
-
-	@Override
-	public final Command command(CommandEnv env) {
-		this.initialEnv = env;
-		return new BlockCommand(this, env);
-	}
-
-	@Override
 	public ImperativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
@@ -227,25 +210,20 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 				getEnclosing().getSentence().getBlock().getNamedBlocks();
 	}
 
-	final CommandEnv sentencesEnv() {
-		return this.sentencesEnv;
+	@Override
+	Definer createDefiner(CommandEnv env) {
+		assert isTopLevel() :
+			"Not a top-level imperative block";
+		return new ImperativeDefiner(this, env);
+	}
+
+	@Override
+	Command createCommand(CommandEnv env) {
+		return new BlockCommand(this, env);
 	}
 
 	final void loop() {
 		this.loop = true;
-	}
-
-	private final CommandEnv getInitialEnv() {
-		return this.initialEnv;
-	}
-
-	private final class SentencesEnv extends CommandEnv {
-
-		@Override
-		public ValueRequest getValueRequest() {
-			return getInitialEnv().getValueRequest();
-		}
-
 	}
 
 }

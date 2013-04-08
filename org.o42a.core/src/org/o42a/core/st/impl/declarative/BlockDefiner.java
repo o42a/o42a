@@ -33,19 +33,22 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.impl.imperative.BlockCommand;
-import org.o42a.core.st.sentence.*;
+import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.DeclarativeSentence;
+import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
 public final class BlockDefiner
-		extends MainDefiner
-		implements DeclarativeSentences {
+		extends Definer
+		implements DeclarativeSentences, DefinitionsBuilder {
 
 	static TypeParameters<?> typeParameters(
 			Scope scope,
@@ -148,6 +151,17 @@ public final class BlockDefiner
 		super(block, env);
 	}
 
+	public final DeclarativeBlock getBlock() {
+		return (DeclarativeBlock) getStatement();
+	}
+
+	public BlockDefinitions getBlockDefinitions() {
+		if (this.blockDefinitions != null) {
+			return this.blockDefinitions;
+		}
+		return this.blockDefinitions = new BlockDefinitions(this);
+	}
+
 	@Override
 	public final List<DeclarativeSentence> getSentences() {
 		return getBlock().getSentences();
@@ -159,8 +173,8 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public Definitions createDefinitions() {
-		return getBlockDefinitions().createDefinitions();
+	public Definitions buildDefinitions() {
+		return getBlockDefinitions().buildDefinitions();
 	}
 
 	@Override
@@ -214,13 +228,6 @@ public final class BlockDefiner
 	protected void fullyResolve(FullResolver resolver) {
 		getTargets();
 		resolveSentences(resolver, this);
-	}
-
-	private BlockDefinitions getBlockDefinitions() {
-		if (this.blockDefinitions != null) {
-			return this.blockDefinitions;
-		}
-		return this.blockDefinitions = new BlockDefinitions(this);
 	}
 
 	private static DefTarget sentenceTarget(

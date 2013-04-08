@@ -27,15 +27,14 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.core.st.DefValue;
+import org.o42a.core.st.Definer;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
-import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
 
 public final class Declaratives extends Statements<Declaratives, Definer> {
-
-	private final DeclarativesEnv env = new DeclarativesEnv(this);
 
 	Declaratives(LocationInfo location, DeclarativeSentence sentence) {
 		super(location, sentence);
@@ -114,7 +113,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	@Override
 	protected Definer implicate(Statement statement) {
-		return statement.define(this.env);
+		return statement.define(getSentence().getBlock().statementsEnv());
 	}
 
 	DefValue value(Resolver resolver) {
@@ -130,29 +129,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 			}
 		}
 		return TRUE_DEF_VALUE;
-	}
-
-	private static final class DeclarativesEnv extends CommandEnv {
-
-		private final Declaratives statements;
-
-		DeclarativesEnv(Declaratives statements) {
-			this.statements = statements;
-		}
-
-		@Override
-		public ValueRequest getValueRequest() {
-			return this.statements.getSentence().getAltEnv().getValueRequest();
-		}
-
-		@Override
-		public String toString() {
-			if (this.statements == null) {
-				return super.toString();
-			}
-			return this.statements.toString();
-		}
-
 	}
 
 }

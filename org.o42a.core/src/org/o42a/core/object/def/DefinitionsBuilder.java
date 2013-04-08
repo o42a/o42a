@@ -17,23 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
-
-import org.o42a.core.object.def.Definitions;
-import org.o42a.core.st.CommandEnv;
-import org.o42a.core.st.Definer;
+package org.o42a.core.object.def;
 
 
-public abstract class MainDefiner extends Definer {
+public interface DefinitionsBuilder {
 
-	public MainDefiner(DeclarativeBlock block, CommandEnv env) {
-		super(block, env);
-	}
-
-	public final DeclarativeBlock getBlock() {
-		return (DeclarativeBlock) getStatement();
-	}
-
-	public abstract Definitions createDefinitions();
+	Definitions buildDefinitions();
 
 }
