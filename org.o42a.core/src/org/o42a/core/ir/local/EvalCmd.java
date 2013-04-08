@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,32 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.local;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Normal;
-import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
 
 
-public abstract class InlineValue extends Normal {
+public class EvalCmd implements Cmd {
 
-	public InlineValue(Normalizer normalizer) {
-		super(normalizer);
+	private final Eval eval;
+
+	public EvalCmd(Eval eval) {
+		this.eval = eval;
 	}
 
-	public abstract void writeCond(CodeDirs dirs, HostOp host);
+	@Override
+	public void write(Control control) {
 
-	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
+		final DefDirs dirs = control.defDirs();
 
-	public final InlineEval toInlineEval() {
-		return new InlineValueEval(this);
+		this.eval.write(dirs, control.host());
+
+		dirs.done();
 	}
 
-	public final InlineCmd toInlineCmd() {
-		return new InlineValueCmd(this);
+	@Override
+	public String toString() {
+		if (this.eval == null) {
+			return super.toString();
+		}
+		return this.eval.toString();
 	}
 
 }
