@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,30 +19,47 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Normal;
-import org.o42a.core.ref.Normalizer;
+import org.o42a.util.fn.Cancelable;
 
 
-public abstract class InlineValue extends Normal {
+final class InlineValueCmd extends InlineCmd {
 
-	public InlineValue(Normalizer normalizer) {
-		super(normalizer);
+	private final InlineValue inline;
+
+	InlineValueCmd(InlineValue inline) {
+		super(null);
+		this.inline = inline;
 	}
 
-	public abstract void writeCond(CodeDirs dirs, HostOp host);
+	@Override
+	public void write(Control control) {
 
-	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
+		final ValDirs dirs =
+				control.getBuilder().dirs(
+						control.code(),
+						control.falseDir())
+				.value(control.result());
+		final ValOp value = this.inline.writeValue(dirs, control.host());
 
-	public final InlineEval toInlineEval() {
-		return new InlineValueEval(this);
+		control.returnValue(dirs.code(), value);
+
+		dirs.done();
 	}
 
-	public final InlineCmd toInlineCmd() {
-		return new InlineValueCmd(this);
+	@Override
+	public String toString() {
+		if (this.inline == null) {
+			return super.toString();
+		}
+		return this.inline.toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

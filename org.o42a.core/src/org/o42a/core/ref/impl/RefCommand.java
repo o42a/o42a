@@ -20,14 +20,10 @@
 package org.o42a.core.ref.impl;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.local.EvalCmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -37,7 +33,6 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.core.value.link.TargetResolver;
-import org.o42a.util.fn.Cancelable;
 
 
 public final class RefCommand extends Command {
@@ -91,7 +86,7 @@ public final class RefCommand extends Command {
 			return null;
 		}
 
-		return new InlineRefCmd(inline);
+		return inline.toInlineCmd();
 	}
 
 	@Override
@@ -124,79 +119,12 @@ public final class RefCommand extends Command {
 	@Override
 	public final Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new RefCmd(getValueAdapter().eval());
+		return new EvalCmd(getValueAdapter().eval());
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getValueAdapter().resolveAll(resolver);
-	}
-
-	private static final class RefCmd implements Cmd {
-
-		private final Eval eval;
-
-		RefCmd(Eval eval) {
-			this.eval = eval;
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final DefDirs dirs = control.defDirs();
-
-			this.eval.write(dirs, control.host());
-
-			dirs.done();
-		}
-
-		@Override
-		public String toString() {
-			if (this.eval == null) {
-				return super.toString();
-			}
-			return this.eval.toString();
-		}
-
-	}
-
-	private static final class InlineRefCmd extends InlineCmd {
-
-		private final InlineValue inline;
-
-		InlineRefCmd(InlineValue inline) {
-			super(null);
-			this.inline = inline;
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final ValDirs dirs =
-					control.getBuilder().dirs(
-							control.code(),
-							control.falseDir())
-					.value(control.result());
-			final ValOp value = this.inline.writeValue(dirs, control.host());
-
-			control.returnValue(dirs.code(), value);
-
-			dirs.done();
-		}
-
-		@Override
-		public String toString() {
-			if (this.inline == null) {
-				return super.toString();
-			}
-			return this.inline.toString();
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
 	}
 
 }
