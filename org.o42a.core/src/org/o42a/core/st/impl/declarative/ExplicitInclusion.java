@@ -21,7 +21,9 @@ package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.SectionTag;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.util.string.Name;
@@ -44,8 +46,13 @@ public class ExplicitInclusion extends Inclusion {
 	}
 
 	@Override
-	protected ExplicitInclusionDefiner createDefiner(CommandEnv env) {
+	public Definer define(CommandEnv env) {
 		return new ExplicitInclusionDefiner(this, env);
+	}
+
+	@Override
+	public Command command(CommandEnv env) {
+		return new ExplicitInclusionCommand(this, env);
 	}
 
 	@Override
@@ -71,6 +78,27 @@ public class ExplicitInclusion extends Inclusion {
 			final SectionTag tag =
 					getContext().getSectionTag().append(
 							getInclusion().getTag());
+
+			getContext().include(block, tag);
+		}
+
+
+	}
+
+	private static final class ExplicitInclusionCommand
+			extends InclusionCommand<ExplicitInclusion> {
+
+		ExplicitInclusionCommand(ExplicitInclusion inclusion, CommandEnv env) {
+			super(inclusion, env);
+		}
+
+		@Override
+		protected void includeInto(DeclarativeBlock block) {
+
+			final SectionTag tag =
+					getContext()
+					.getSectionTag().
+					append(getInclusion().getTag());
 
 			getContext().include(block, tag);
 		}
