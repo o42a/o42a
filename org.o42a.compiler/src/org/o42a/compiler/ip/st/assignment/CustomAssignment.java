@@ -108,7 +108,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Eval eval(Scope origin) {
+	public Eval eval() {
 		return new AssignEval(getRef());
 	}
 

@@ -107,7 +107,7 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Eval eval(Scope origin) {
+	public Eval eval() {
 		return new VariableAssignmentEval(this);
 	}
 

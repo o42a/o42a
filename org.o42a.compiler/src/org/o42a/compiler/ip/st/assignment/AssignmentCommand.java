@@ -84,7 +84,7 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd() {
+	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return getAssignmentKind().cmd();
 	}

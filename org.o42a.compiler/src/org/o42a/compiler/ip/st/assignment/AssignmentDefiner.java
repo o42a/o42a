@@ -71,7 +71,7 @@ final class AssignmentDefiner extends Definer {
 
 	@Override
 	public Eval eval(Scope origin) {
-		return getAssignmentKind().eval(origin);
+		return getAssignmentKind().eval();
 	}
 
 	@Override

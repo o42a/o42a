@@ -24,6 +24,7 @@ import static org.o42a.util.string.Capitalization.AS_IS;
 import java.util.List;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.st.Command;
@@ -41,6 +42,7 @@ final class ImperativeOp {
 
 	public static void writeSentences(
 			Control control,
+			Scope origin,
 			ImperativeBlock block,
 			InlineImperativeBlock inline) {
 
@@ -64,6 +66,7 @@ final class ImperativeOp {
 
 			writeSentence(
 					blockControl,
+					origin,
 					sentence,
 					inline != null ? inline.get(i) : null,
 					Integer.toString(i));
@@ -84,6 +87,7 @@ final class ImperativeOp {
 
 	private static void writeSentence(
 			Control control,
+			Scope origin,
 			ImperativeSentence sentence,
 			InlineImperativeSentence inline,
 			String index) {
@@ -101,6 +105,7 @@ final class ImperativeOp {
 
 			writeSentence(
 					prereqControl,
+					origin,
 					prerequisite,
 					inline != null ? inline.getPrerequisite() : null,
 					index + "_prereq");
@@ -115,6 +120,7 @@ final class ImperativeOp {
 			if (len != 0) {
 				writeStatements(
 						control,
+						origin,
 						alternatives.get(0),
 						inline != null ? inline.get(0) : null);
 			}
@@ -150,6 +156,7 @@ final class ImperativeOp {
 
 			writeStatements(
 					altControl,
+					origin,
 					alt,
 					inline != null ? inline.get(i) : null);
 
@@ -161,6 +168,7 @@ final class ImperativeOp {
 
 	private static void writeStatements(
 			Control control,
+			Scope origin,
 			Imperatives statements,
 			InlineCommands inlines) {
 
@@ -181,7 +189,7 @@ final class ImperativeOp {
 				}
 			}
 
-			command.cmd().write(control);
+			command.cmd(origin).write(control);
 		}
 	}
 

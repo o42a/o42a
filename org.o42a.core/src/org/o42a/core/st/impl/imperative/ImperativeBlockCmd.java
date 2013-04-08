@@ -21,6 +21,7 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -29,14 +30,16 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 public final class ImperativeBlockCmd implements Cmd {
 
 	private final ImperativeBlock block;
+	private final Scope origin;
 
-	public ImperativeBlockCmd(ImperativeBlock block) {
+	public ImperativeBlockCmd(ImperativeBlock block, Scope origin) {
 		this.block = block;
+		this.origin = origin;
 	}
 
 	@Override
 	public void write(Control control) {
-		writeSentences(control, this.block, null);
+		writeSentences(control, this.origin, this.block, null);
 	}
 
 	@Override

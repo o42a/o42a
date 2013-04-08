@@ -122,7 +122,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public final Cmd cmd() {
+	public final Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return new RefCmd(getValueAdapter().eval());
 	}
