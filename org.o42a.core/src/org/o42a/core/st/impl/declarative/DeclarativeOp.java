@@ -175,7 +175,7 @@ final class DeclarativeOp {
 				}
 			}
 
-			definers.get(i).eval(dirs.getBuilder(), origin).write(dirs, host);
+			definers.get(i).eval(origin).write(dirs, host);
 		}
 	}
 

@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
@@ -60,7 +59,7 @@ abstract class AssignmentKind {
 
 	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
 
-	public abstract Eval eval(CodeBuilder builder, Scope origin);
+	public abstract Eval eval(Scope origin);
 
 	public abstract InlineEval normalize(
 			RootNormalizer normalizer,

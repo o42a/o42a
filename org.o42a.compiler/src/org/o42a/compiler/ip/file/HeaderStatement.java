@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.file;
 import static org.o42a.core.st.Instruction.SKIP_INSTRUCTION;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
@@ -151,7 +150,7 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		public Eval eval(CodeBuilder builder, Scope origin) {
+		public Eval eval(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

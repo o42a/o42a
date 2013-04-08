@@ -24,7 +24,6 @@ import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.value.link.LinkValueType.VARIABLE;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
@@ -108,7 +107,7 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		return new VariableAssignmentEval(this);
 	}
 

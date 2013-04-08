@@ -23,7 +23,6 @@ import static org.o42a.core.ir.def.Eval.NO_EVAL;
 import static org.o42a.core.ir.local.Cmd.NO_CMD;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
@@ -61,7 +60,7 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		return NO_EVAL;
 	}
 

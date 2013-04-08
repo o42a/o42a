@@ -22,7 +22,6 @@ package org.o42a.core.member.clause.impl;
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.DeclarationDefiner;
@@ -86,9 +85,9 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
+	public Eval eval(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return definer().eval(builder, origin);
+		return definer().eval(origin);
 	}
 
 	@Override
@@ -190,7 +189,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public Eval eval(CodeBuilder builder, Scope origin) {
+		public Eval eval(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -248,7 +247,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public Eval eval(CodeBuilder builder, Scope origin) {
+		public Eval eval(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -309,7 +308,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public Eval eval(CodeBuilder builder, Scope origin) {
+		public Eval eval(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

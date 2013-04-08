@@ -22,7 +22,6 @@ package org.o42a.core.member;
 import static org.o42a.core.ir.def.InlineEval.noInlineEval;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
@@ -86,7 +85,7 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public final Eval eval(CodeBuilder builder, Scope origin) {
+	public final Eval eval(Scope origin) {
 		return Eval.NO_EVAL;
 	}
 
