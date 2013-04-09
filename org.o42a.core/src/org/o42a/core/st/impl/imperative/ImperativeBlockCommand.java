@@ -24,31 +24,23 @@ import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.ref.*;
-import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.impl.ExecuteInstructions;
-import org.o42a.core.st.impl.cmd.Sentences;
-import org.o42a.core.st.sentence.*;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.link.TargetResolver;
-import org.o42a.util.string.Name;
+import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.CommandTargets;
+import org.o42a.core.st.impl.cmd.BlockCommand;
+import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.st.sentence.ImperativeSentence;
+import org.o42a.core.st.sentence.Imperatives;
 
 
-public final class ImperativeBlockCommand extends Command {
+public final class ImperativeBlockCommand
+		extends BlockCommand<ImperativeBlock> {
 
-	private final ImperativeSentences sentences = new ImperativeSentences(this);
 	private CommandTargets commandTargets;
 
 	public ImperativeBlockCommand(ImperativeBlock block, CommandEnv env) {
 		super(block, env);
-	}
-
-	public final ImperativeBlock getBlock() {
-		return (ImperativeBlock) getStatement();
 	}
 
 	@Override
@@ -90,58 +82,6 @@ public final class ImperativeBlockCommand extends Command {
 		}
 
 		return null;
-	}
-
-	@Override
-	public TypeParameters<?> typeParameters(Scope scope) {
-
-		final TypeParameters<?> expectedParameters =
-				env()
-				.getValueRequest()
-				.getExpectedParameters()
-				.upgradeScope(scope);
-
-		return this.sentences.typeParameters(scope, expectedParameters);
-	}
-
-	@Override
-	public Action action(Resolver resolver) {
-		return this.sentences.action(this, getBlock(), resolver);
-	}
-
-	@Override
-	public void resolveTargets(TargetResolver resolver, Scope origin) {
-		if (!getTargets().haveValue()) {
-			return;
-		}
-		this.sentences.resolveTargets(resolver, origin);
-	}
-
-	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
-		return this.sentences.inline(normalizer.getRoot(), normalizer, origin);
-	}
-
-	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return this.sentences.inline(normalizer, null, origin);
-	}
-
-	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return new ExecuteInstructions(getBlock());
-	}
-
-	@Override
-	public Cmd cmd(Scope origin) {
-		assert getStatement().assertFullyResolved();
-		return this.sentences.cmd(origin);
-	}
-
-	@Override
-	protected void fullyResolve(FullResolver resolver) {
-		getTargets();
-		this.sentences.resolveAll(resolver);
 	}
 
 	private CommandTargets sentenceTargets() {
@@ -245,44 +185,6 @@ public final class ImperativeBlockCommand extends Command {
 		}
 
 		return NO_DEF_TARGET;
-	}
-
-	private static final class ImperativeSentences extends Sentences {
-
-		private final ImperativeBlockCommand command;
-
-		ImperativeSentences(ImperativeBlockCommand command) {
-			this.command = command;
-		}
-
-		@Override
-		public Name getName() {
-			return this.command.getBlock().getName();
-		}
-
-		@Override
-		public boolean isParentheses() {
-			return this.command.getBlock().isParentheses();
-		}
-
-		@Override
-		public CommandTargets getTargets() {
-			return this.command.getTargets();
-		}
-
-		@Override
-		public List<? extends Sentence<?>> getSentences() {
-			return this.command.getBlock().getSentences();
-		}
-
-		@Override
-		public String toString() {
-			if (this.command == null) {
-				return super.toString();
-			}
-			return this.command.toString();
-		}
-
 	}
 
 }
