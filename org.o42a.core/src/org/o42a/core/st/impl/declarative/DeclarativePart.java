@@ -20,7 +20,6 @@
 package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
-import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
@@ -77,6 +76,10 @@ final class DeclarativePart extends Def {
 		this.block = prototype.block;
 		this.env = prototype.env;
 		this.sentences = prototype.sentences;
+	}
+
+	public final DeclarativeBlock getBlock() {
+		return this.block;
 	}
 
 	@Override
@@ -178,18 +181,7 @@ final class DeclarativePart extends Def {
 
 	@Override
 	protected DefValue calculateValue(Resolver resolver) {
-		for (DeclarativeSentence sentence : getSentences()) {
-
-			final DefValue value = sentence.value(resolver);
-
-			if (value.hasValue()) {
-				return value;
-			}
-			if (!value.getCondition().isTrue()) {
-				return value;
-			}
-		}
-		return TRUE_DEF_VALUE;
+		return this.sentences.action(this, getBlock(), resolver).toDefValue();
 	}
 
 	@Override

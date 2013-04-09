@@ -36,7 +36,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
-import org.o42a.core.st.impl.cmd.BlockUtil;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
@@ -94,7 +93,7 @@ public final class BlockDefiner extends Definer implements DefinitionsBuilder {
 
 	@Override
 	public Action action(Resolver resolver) {
-		return BlockUtil.sentencesAction(getBlock(), this, resolver);
+		return this.sentences.action(this, getBlock(), resolver);
 	}
 
 	@Override

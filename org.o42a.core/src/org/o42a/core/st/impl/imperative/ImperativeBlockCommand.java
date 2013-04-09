@@ -20,7 +20,6 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.st.impl.cmd.BlockUtil.sentencesAction;
 
 import java.util.List;
 
@@ -108,7 +107,7 @@ public final class ImperativeBlockCommand extends Command {
 
 	@Override
 	public Action action(Resolver resolver) {
-		return sentencesAction(getBlock(), this, resolver);
+		return this.sentences.action(this, getBlock(), resolver);
 	}
 
 	@Override

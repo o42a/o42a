@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.impl.cmd.BlockUtil.sentencesAction;
-
 import java.util.List;
 
 import org.o42a.core.Scope;
@@ -83,7 +81,7 @@ public final class DeclarativeBlockCommand
 
 	@Override
 	public Action action(Resolver resolver) {
-		return sentencesAction(getBlock(), this, resolver);
+		return this.sentences.action(this, getBlock(), resolver);
 	}
 
 	@Override
