@@ -25,6 +25,8 @@ import org.o42a.core.ir.local.EvalCmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -63,6 +65,14 @@ public final class RefCommand extends Command {
 		final ValueRequest valueRequest = env().getValueRequest();
 
 		return this.valueAdapter = getRef().valueAdapter(valueRequest);
+	}
+
+	public Definitions createDefinitions() {
+
+		final RefDef def = new RefDef(getRef());
+
+		return def.toDefinitions(
+				env().getValueRequest().getExpectedParameters());
 	}
 
 	@Override

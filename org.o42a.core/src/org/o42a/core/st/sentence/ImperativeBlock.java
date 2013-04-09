@@ -27,8 +27,12 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
-import org.o42a.core.st.impl.imperative.*;
+import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.impl.imperative.ImperativeBlockCommand;
+import org.o42a.core.st.impl.imperative.ImperativeMemberRegistry;
+import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.string.Name;
 
 
@@ -195,7 +199,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 				reproducer.getMemberRegistry(),
 				getSentenceFactory());
 
-		reproduction.define(defaultEnv(reproducer.getLogger()));
+		reproduction.command(defaultEnv(reproducer.getLogger()));
 		reproduceSentences(reproducer, reproduction);
 
 		return reproduction;
@@ -208,13 +212,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 		return this.namedBlocks =
 				getEnclosing().getSentence().getBlock().getNamedBlocks();
-	}
-
-	@Override
-	Definer createDefiner(CommandEnv env) {
-		assert isTopLevel() :
-			"Not a top-level imperative block";
-		return new ImperativeDefiner(this, env);
 	}
 
 	@Override

@@ -20,8 +20,6 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.*;
@@ -57,19 +55,9 @@ abstract class AssignmentKind {
 			Reproducer reproducer,
 			AssignmentStatement prototype);
 
-	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
+	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
 
-	public abstract Eval eval();
-
-	public abstract InlineEval normalize(
-			RootNormalizer normalizer,
-			Scope origin);
-
-	public abstract InlineCmd inlineCommand(
-			Normalizer normalizer,
-			Scope origin);
-
-	public abstract InlineCmd normalizeCommand(
+	public abstract InlineCmd normalize(
 			RootNormalizer normalizer,
 			Scope origin);
 

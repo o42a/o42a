@@ -192,12 +192,6 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	}
 
 	@Override
-	public final Definer define(CommandEnv env) {
-		init(env);
-		return createDefiner(env);
-	}
-
-	@Override
 	public final Command command(CommandEnv env) {
 		init(env);
 		return createCommand(env);
@@ -285,8 +279,6 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	}
 
 	abstract NamedBlocks getNamedBlocks();
-
-	abstract Definer createDefiner(CommandEnv env);
 
 	abstract Command createCommand(CommandEnv env);
 

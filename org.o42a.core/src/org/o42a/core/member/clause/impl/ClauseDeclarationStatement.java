@@ -52,11 +52,6 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Definer define(CommandEnv env) {
-		return new ClauseDefiner(this, env);
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
 		return new ClauseCommand(this, env);
 	}

@@ -58,11 +58,6 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(CommandEnv env) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
 		if (this.exit) {
 			return new EllipsisCommand.ExitCommand(this, env);

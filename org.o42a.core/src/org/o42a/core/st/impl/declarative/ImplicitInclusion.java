@@ -24,7 +24,9 @@ import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Instruction;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
 
@@ -41,11 +43,6 @@ public class ImplicitInclusion extends Inclusion {
 	@Override
 	public String toString() {
 		return "***";
-	}
-
-	@Override
-	public Definer define(CommandEnv env) {
-		return new ImplicitInclusionDefiner(this, env);
 	}
 
 	@Override
@@ -76,33 +73,6 @@ public class ImplicitInclusion extends Inclusion {
 		}
 
 		return true;
-	}
-
-	private static final class ImplicitInclusionDefiner
-			extends InclusionDefiner<ImplicitInclusion> {
-
-		ImplicitInclusionDefiner(
-				ImplicitInclusion inclusion,
-				CommandEnv env) {
-			super(inclusion, env);
-		}
-
-		@Override
-		public Instruction toInstruction(Resolver resolver) {
-			if (!getInclusion().include()) {
-				return SKIP_INSTRUCTION;
-			}
-			return super.toInstruction(resolver);
-		}
-
-		@Override
-		protected void includeInto(DeclarativeBlock block) {
-			if (!getInclusion().include()) {
-				return;
-			}
-			getContext().include(block, IMPLICIT_SECTION_TAG);
-		}
-
 	}
 
 	private static final class ImplicitInclusionCommand

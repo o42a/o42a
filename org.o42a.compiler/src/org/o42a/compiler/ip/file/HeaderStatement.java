@@ -51,11 +51,6 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(CommandEnv env) {
-		return new HeaderDefiner(this, env);
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
 		return new HeaderCommand(this, env);
 	}

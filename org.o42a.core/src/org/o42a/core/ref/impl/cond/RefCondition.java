@@ -59,11 +59,6 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public Definer define(CommandEnv env) {
-		return new RefConditionDefiner(this, env);
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
 		return new RefConditionCommand(this, env);
 	}

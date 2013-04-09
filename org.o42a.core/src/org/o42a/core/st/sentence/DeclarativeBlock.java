@@ -32,7 +32,6 @@ import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.impl.declarative.BlockDefiner;
 import org.o42a.core.st.impl.declarative.DeclarativeBlockCommand;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
@@ -179,7 +178,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 					reproducer.getMemberRegistry(),
 					DECLARATIVE_FACTORY,
 					true);
-			reproduction.define(defaultEnv(reproducer.getLogger()));
+			reproduction.command(defaultEnv(reproducer.getLogger()));
 			reproduceSentences(reproducer, reproduction);
 			return null;
 		}
@@ -204,11 +203,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 		return this.namedBlocks =
 				enclosing.getSentence().getBlock().getNamedBlocks();
-	}
-
-	@Override
-	final BlockDefiner createDefiner(CommandEnv env) {
-		return new BlockDefiner(this, env);
 	}
 
 	@Override
