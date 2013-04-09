@@ -127,9 +127,9 @@ final class KeptValueFieldDefinition extends BaseFieldDefinition {
 		}
 
 		@Override
-		public void buildBlock(Block<?, ?> block) {
+		public void buildBlock(Block<?> block) {
 
-			final Statements<?, ?> statements =
+			final Statements<?> statements =
 					block.propose(this).alternative(this);
 
 			statements.statement(new KeepValueStatement(

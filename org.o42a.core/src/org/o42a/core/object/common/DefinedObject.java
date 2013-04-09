@@ -25,9 +25,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.MainDefiner;
 
 
 public abstract class DefinedObject extends Obj {
@@ -35,7 +35,7 @@ public abstract class DefinedObject extends Obj {
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
 	private boolean definitionBuilt;
-	private MainDefiner definer;
+	private DefinitionsBuilder definitionsBuilder;
 
 	public DefinedObject(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
@@ -51,7 +51,7 @@ public abstract class DefinedObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getDefiner().createDefinitions();
+		return getDefinitionsBuilder().buildDefinitions();
 	}
 
 	protected abstract void buildDefinition(DeclarativeBlock definition);
@@ -79,7 +79,7 @@ public abstract class DefinedObject extends Obj {
 		final DeclarativeBlock definition =
 				new DeclarativeBlock(this, this, getMemberRegistry());
 
-		this.definer = definition.define(definitionEnv());
+		this.definitionsBuilder = definition.definitions(definitionEnv());
 
 		return this.definition = definition;
 	}
@@ -92,11 +92,11 @@ public abstract class DefinedObject extends Obj {
 		return this.memberRegistry;
 	}
 
-	private MainDefiner getDefiner() {
-		if (this.definer == null) {
+	private DefinitionsBuilder getDefinitionsBuilder() {
+		if (this.definitionsBuilder == null) {
 			getDefinition();
 		}
-		return this.definer;
+		return this.definitionsBuilder;
 	}
 
 }

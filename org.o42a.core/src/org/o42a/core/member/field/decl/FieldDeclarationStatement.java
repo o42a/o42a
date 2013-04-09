@@ -22,19 +22,19 @@ package org.o42a.core.member.field.decl;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import org.o42a.core.member.DeclarationCommand;
-import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.st.*;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
 
 
 public final class FieldDeclarationStatement extends DeclarationStatement {
 
 	private final FieldBuilder builder;
 	private final DeclaredMemberField member;
-	private Definer definer;
 
 	public FieldDeclarationStatement(
 			FieldBuilder builder,
@@ -49,18 +49,9 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		return this.member;
 	}
 
-	public final DefinerEnv getInitialEnv() {
-		return this.definer.env();
-	}
-
-	@Override
-	public DeclarationDefiner define(DefinerEnv env) {
-		return this.definer = new Definer(this, env);
-	}
-
 	@Override
 	public DeclarationCommand command(CommandEnv env) {
-		throw new UnsupportedOperationException("Local fields do not exist");
+		return new FieldDeclarationCommand(this, env);
 	}
 
 	@Override
@@ -107,19 +98,6 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		final DeclaredField field = this.member.toDeclaredField();
 
 		return new ReproducedObjectDefinition(field, reproducer);
-	}
-
-	private static final class Definer extends DeclarationDefiner {
-
-		Definer(FieldDeclarationStatement statement, DefinerEnv env) {
-			super(statement, env);
-		}
-
-		@Override
-		public DefTargets getDefTargets() {
-			return fieldDef();
-		}
-
 	}
 
 }

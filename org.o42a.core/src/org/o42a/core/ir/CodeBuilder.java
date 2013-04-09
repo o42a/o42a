@@ -21,7 +21,7 @@ package org.o42a.core.ir;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.core.ir.local.LocalsCode;
+import org.o42a.core.ir.cmd.LocalsCode;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;

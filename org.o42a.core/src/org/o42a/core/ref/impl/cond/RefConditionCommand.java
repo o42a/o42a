@@ -23,8 +23,8 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
@@ -37,8 +37,6 @@ import org.o42a.core.value.link.TargetResolver;
 
 
 final class RefConditionCommand extends Command {
-
-	private InlineValue normal;
 
 	RefConditionCommand(RefCondition ref, CommandEnv env) {
 		super(ref, env);
@@ -53,7 +51,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public CommandTargets getCommandTargets() {
+	public CommandTargets getTargets() {
 		if (!getRef().isConstant()) {
 			return actionCommand();
 		}
@@ -61,7 +59,15 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
+	public Command replaceWith(Statement statement) {
+		return statement.command(env());
+	}
+
+	@Override
 	public Instruction toInstruction(Resolver resolver) {
+		if (getRefCondition().isLocal()) {
+			return null;
+		}
 
 		final Directive directive = getRef().resolve(resolver).toDirective();
 
@@ -83,15 +89,10 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(Resolver resolver) {
+	public Action action(Resolver resolver) {
 		return new ExecuteCommand(
 				this,
 				getRef().value(resolver).getKnowledge().getCondition());
-	}
-
-	@Override
-	public Action initialCond(Resolver resolver) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -115,21 +116,14 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		if (!getRefCondition().isLocal()) {
-			this.normal = getRef().inline(
-					normalizer.newNormalizer(),
-					normalizer.getNormalizedScope());
-		}
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override
-	public Cmd cmd() {
+	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		if (this.normal == null) {
-			return new RefConditionCmd(getRefCondition());
-		}
-		return new InlineRefConditionCmd(this.normal);
+		return new RefConditionCmd(getRefCondition());
 	}
 
 	@Override

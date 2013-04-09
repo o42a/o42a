@@ -19,19 +19,9 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.core.st.Instruction.SKIP_INSTRUCTION;
-
-import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.directive.Directive;
-import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.log.LogInfo;
 
 
@@ -61,13 +51,8 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
-		return new HeaderDefiner(this, env);
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
-		throw new UnsupportedOperationException();
+		return new HeaderCommand(this, env);
 	}
 
 	@Override
@@ -88,77 +73,6 @@ class HeaderStatement extends Statement {
 			return super.toString();
 		}
 		return this.ref.toString();
-	}
-
-	private static final class HeaderDefiner extends Definer {
-
-		HeaderDefiner(HeaderStatement header, DefinerEnv env) {
-			super(header, env);
-		}
-
-		public final HeaderStatement getHeader() {
-			return (HeaderStatement) getStatement();
-		}
-
-		@Override
-		public DefTargets getDefTargets() {
-			return noDefs();
-		}
-
-		@Override
-		public Instruction toInstruction(Resolver resolver) {
-
-			final Ref ref = getHeader().getRef();
-			final Directive directive = ref.resolve(resolver).toDirective();
-
-			if (directive == null) {
-				notDirective(getLogger(), getLocation());
-				return SKIP_INSTRUCTION;
-			}
-
-			return new HeaderInstruction(ref, directive);
-		}
-
-		@Override
-		public DefTarget toTarget(Scope origin) {
-			return null;
-		}
-
-		@Override
-		public void resolveTargets(TargetResolver resolver, Scope origin) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public TypeParameters<?> typeParameters(Scope scope) {
-			return null;
-		}
-
-		@Override
-		public DefValue value(Resolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public InlineEval inline(Normalizer normalizer, Scope origin) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Eval eval(CodeBuilder builder, Scope origin) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void fullyResolve(FullResolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
 	}
 
 }

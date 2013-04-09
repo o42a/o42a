@@ -23,7 +23,7 @@ import static org.o42a.common.ref.cmp.ComparisonExpression.COMPARISON_MEMBER;
 import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.st.DefinerEnv.defaultEnv;
+import static org.o42a.core.st.CommandEnv.defaultEnv;
 
 import org.o42a.common.builtin.BuiltinObject;
 import org.o42a.core.Distributor;
@@ -147,7 +147,7 @@ final class ComparisonResult extends BuiltinObject {
 			return;
 		}
 
-		statement.define(defaultEnv(getContext().getLogger()));
+		statement.command(defaultEnv(getContext().getLogger()));
 
 		this.cmp = statement
 				.toMember()

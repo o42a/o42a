@@ -19,26 +19,16 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.st.Definer.noDefs;
-import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
-
 import org.o42a.core.Container;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
-import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
 
-public final class Declaratives extends Statements<Declaratives, Definer> {
-
-	private final DeclarativesEnv env = new DeclarativesEnv(this);
-	private DefTargets targets;
+public final class Declaratives extends Statements<Declaratives> {
 
 	Declaratives(LocationInfo location, DeclarativeSentence sentence) {
 		super(location, sentence);
@@ -56,14 +46,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	public final DeclarativeFactory getSentenceFactory() {
 		return super.getSentenceFactory().toDeclarativeFactory();
-	}
-
-	public final DefTargets getDefTargets() {
-		if (this.targets != null) {
-			return this.targets;
-		}
-		executeInstructions();
-		return this.targets = definerTargets();
 	}
 
 	@Override
@@ -121,107 +103,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	protected void braces(ImperativeBlock braces) {
 		statement(braces);
-	}
-
-	@Override
-	protected Definer implicate(Statement statement) {
-		return statement.define(this.env);
-	}
-
-	DefValue value(Resolver resolver) {
-		for (Definer definer : getImplications()) {
-
-			final DefValue value = definer.value(resolver);
-
-			if (value.hasValue()) {
-				return value;
-			}
-			if (!value.getCondition().isTrue()) {
-				return value;
-			}
-		}
-		return TRUE_DEF_VALUE;
-	}
-
-	private DefTargets definerTargets() {
-
-		DefTargets result = noDefs();
-		DefTargets prev = noDefs();
-		DefTargets firstDeclaring = null;
-
-		for (Definer definer : getImplications()) {
-
-			final DefTargets targets = definer.getDefTargets();
-
-			if (targets.declaring()) {
-				if (firstDeclaring != null) {
-					if (!result.haveError()) {
-						declarationNotAlone(getLogger(), targets);
-						result = result.addError();
-					}
-					continue;
-				}
-				firstDeclaring = targets;
-				if (result.defining() && !result.haveError()) {
-					declarationNotAlone(getLogger(), firstDeclaring);
-					result = result.addError();
-				}
-				continue;
-			}
-			if (firstDeclaring != null && !targets.isEmpty()) {
-				if (!result.haveError()) {
-					declarationNotAlone(getLogger(), firstDeclaring);
-					result = result.addError();
-				}
-				continue;
-			}
-			if (!prev.breaking() || prev.havePrerequisite()) {
-				if (targets.breaking()) {
-					prev = targets;
-				} else {
-					prev = targets.toPreconditions();
-				}
-				result = result.add(prev);
-				continue;
-			}
-			if (result.haveError()) {
-				continue;
-			}
-			result = result.addError();
-			getLogger().error(
-					"redundant_statement",
-					targets,
-					"Redundant statement");
-		}
-
-		if (firstDeclaring != null && result.isEmpty()) {
-			return result.add(firstDeclaring);
-		}
-
-		return result;
-	}
-
-	private static final class DeclarativesEnv extends DefinerEnv {
-
-		private final Declaratives statements;
-
-		DeclarativesEnv(Declaratives statements) {
-			this.statements = statements;
-		}
-
-		@Override
-		public ValueRequest getValueRequest() {
-			return this.statements.getSentence().getAltEnv().getValueRequest();
-		}
-
-		@Override
-		public String toString() {
-			if (this.statements == null) {
-				return super.toString();
-			}
-			return this.statements.toString();
-		}
-
 	}
 
 }

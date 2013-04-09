@@ -67,7 +67,7 @@ public abstract class MemberRegistry {
 			FieldDefinition definition);
 
 	public ClauseBuilder newClause(
-			Statements<?, ?> statements,
+			Statements<?> statements,
 			ClauseDeclaration declaration) {
 		return clauseFactory().newClause(statements, declaration);
 	}
@@ -110,7 +110,7 @@ public abstract class MemberRegistry {
 
 		@Override
 		public ClauseBuilder newClause(
-				Statements<?, ?> statements,
+				Statements<?> statements,
 				ClauseDeclaration declaration) {
 			reportDeclaration(declaration);
 			return null;

@@ -37,7 +37,7 @@ public final class EllipsisStatement extends Statement {
 			Name name) {
 		super(location, enclosing.nextDistributor());
 		this.name = name;
-		this.exit = enclosing.getSentence().isClaim();
+		this.exit = enclosing.getSentence().isExit();
 	}
 
 	private EllipsisStatement(
@@ -55,11 +55,6 @@ public final class EllipsisStatement extends Statement {
 	@Override
 	public boolean isValid() {
 		return true;
-	}
-
-	@Override
-	public Definer define(DefinerEnv env) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

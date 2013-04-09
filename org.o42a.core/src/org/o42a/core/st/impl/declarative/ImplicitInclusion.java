@@ -24,7 +24,8 @@ import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.DefinerEnv;
+import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
@@ -45,8 +46,8 @@ public class ImplicitInclusion extends Inclusion {
 	}
 
 	@Override
-	protected ImplicitInclusionDefiner createDefiner(DefinerEnv env) {
-		return new ImplicitInclusionDefiner(this, env);
+	public Command command(CommandEnv env) {
+		return new ImplicitInclusionCommand(this, env);
 	}
 
 	private final boolean include() {
@@ -74,12 +75,12 @@ public class ImplicitInclusion extends Inclusion {
 		return true;
 	}
 
-	private static final class ImplicitInclusionDefiner
-			extends InclusionDefiner<ImplicitInclusion> {
+	private static final class ImplicitInclusionCommand
+			extends InclusionCommand<ImplicitInclusion> {
 
-		ImplicitInclusionDefiner(
+		ImplicitInclusionCommand(
 				ImplicitInclusion inclusion,
-				DefinerEnv env) {
+				CommandEnv env) {
 			super(inclusion, env);
 		}
 

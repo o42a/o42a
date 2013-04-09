@@ -20,6 +20,7 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normal;
@@ -38,6 +39,10 @@ public abstract class InlineValue extends Normal {
 
 	public final InlineEval toInlineEval() {
 		return new InlineValueEval(this);
+	}
+
+	public final InlineCmd toInlineCmd() {
+		return new InlineValueCmd(this);
 	}
 
 }

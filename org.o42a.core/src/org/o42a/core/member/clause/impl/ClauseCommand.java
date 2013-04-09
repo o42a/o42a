@@ -19,9 +19,12 @@
 */
 package org.o42a.core.member.clause.impl;
 
+import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
+
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
+import org.o42a.core.member.DeclarationCommand;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
@@ -42,8 +45,8 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public CommandTargets getCommandTargets() {
-		return command().getCommandTargets();
+	public CommandTargets getTargets() {
+		return command().getTargets();
 	}
 
 	@Override
@@ -52,13 +55,8 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(Resolver resolver) {
-		return command().initialValue(resolver);
-	}
-
-	@Override
-	public Action initialCond(Resolver resolver) {
-		return command().initialCond(resolver);
+	public Action action(Resolver resolver) {
+		return command().action(resolver);
 	}
 
 	@Override
@@ -72,14 +70,14 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		command().normalize(normalizer);
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return command().normalize(normalizer, origin);
 	}
 
 	@Override
-	public Cmd cmd() {
+	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return command().cmd();
+		return command().cmd(origin);
 	}
 
 	@Override
@@ -109,22 +107,38 @@ final class ClauseCommand extends Command {
 		final ClauseDeclarationStatement declaration = declaration();
 		final Clause clause = declaration.getClause();
 
-		assert !clause.isTopLevel() :
-			"Top-level clause can not be a command" + clause;
+		if (clause.isTopLevel()) {
+			return this.command =
+					new ClauseDeclarationCommand(declaration, env());
+		}
 
 		switch (clause.getKind()) {
 		case EXPRESSION:
 			return new ExpressionClauseCommand(declaration, env());
 		case OVERRIDER:
-			throw new IllegalArgumentException(
-					"Overrider clause could not appear"
-					+ " in imperative statement");
+			return new OverriderClauseCommand(declaration, env());
 		case GROUP:
 			return new GroupClauseCommand(declaration, env());
 		}
 
 		throw new IllegalStateException(
 				"Unknown kind of clause: " + clause.getKind());
+	}
+
+	private static final class ClauseDeclarationCommand
+			extends DeclarationCommand {
+
+		ClauseDeclarationCommand(
+				ClauseDeclarationStatement statement,
+				CommandEnv env) {
+			super(statement, env);
+		}
+
+		@Override
+		public CommandTargets getTargets() {
+			return clauseDef();
+		}
+
 	}
 
 	private static final class ExpressionClauseCommand extends Command {
@@ -136,7 +150,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public CommandTargets getCommandTargets() {
+		public CommandTargets getTargets() {
 			return actionCommand();
 		}
 
@@ -146,12 +160,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public Action initialValue(Resolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Action initialCond(Resolver resolver) {
+		public Action action(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -165,12 +174,12 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public void normalize(RootNormalizer normalizer) {
+		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Cmd cmd() {
+		public Cmd cmd(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -190,6 +199,64 @@ final class ClauseCommand extends Command {
 
 	}
 
+	private static final class OverriderClauseCommand extends Command {
+
+		OverriderClauseCommand(
+				ClauseDeclarationStatement statement,
+				CommandEnv env) {
+			super(statement, env);
+		}
+
+		@Override
+		public CommandTargets getTargets() {
+			return fieldDef();
+		}
+
+		@Override
+		public TypeParameters<?> typeParameters(Scope scope) {
+			return null;
+		}
+
+		@Override
+		public Action action(Resolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Instruction toInstruction(Resolver resolver) {
+			return null;
+		}
+
+		@Override
+		public DefTarget toTarget(Scope origin) {
+			return NO_DEF_TARGET;
+		}
+
+		@Override
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
+		}
+
+		@Override
+		public InlineCmd inline(Normalizer normalizer, Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Cmd cmd(Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolve(FullResolver resolver) {
+		}
+
+	}
+
 	private static final class GroupClauseCommand extends Command {
 
 		private final Command command;
@@ -202,8 +269,8 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public CommandTargets getCommandTargets() {
-			return this.command.getCommandTargets();
+		public CommandTargets getTargets() {
+			return this.command.getTargets();
 		}
 
 		@Override
@@ -212,12 +279,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public Action initialValue(Resolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Action initialCond(Resolver resolver) {
+		public Action action(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -231,12 +293,12 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public void normalize(RootNormalizer normalizer) {
+		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Cmd cmd() {
+		public Cmd cmd(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

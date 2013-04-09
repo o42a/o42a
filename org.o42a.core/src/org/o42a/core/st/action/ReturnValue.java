@@ -19,24 +19,21 @@
 */
 package org.o42a.core.st.action;
 
-import static org.o42a.core.value.TypeParameters.typeParameters;
+import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.st.DefValue;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
 public class ReturnValue extends Action {
 
-	private final Resolver resolver;
 	private final Value<?> value;
 
-	public ReturnValue(ScopeInfo statement, Resolver resolver, Value<?> value) {
+	public ReturnValue(ScopeInfo statement, Value<?> value) {
 		super(statement);
-		this.resolver = resolver;
 		this.value = value;
 	}
 
@@ -56,16 +53,12 @@ public class ReturnValue extends Action {
 	}
 
 	@Override
-	public Action toInitialCondition() {
-		return new ReturnValue(
-				this,
-				this.resolver,
-				getValue().getKnowledge().getCondition().toValue(
-						typeParameters(this, ValueType.VOID)));
+	public DefValue toDefValue() {
+		return defValue(getValue());
 	}
 
 	@Override
-	public LoopAction toLoopAction(ImperativeBlock block) {
+	public LoopAction toLoopAction(Block<?> block) {
 		return LoopAction.PULL;
 	}
 

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;

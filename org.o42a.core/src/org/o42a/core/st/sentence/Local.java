@@ -29,7 +29,7 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.core.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.cmd.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.ValDirs;

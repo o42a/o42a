@@ -25,23 +25,19 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.Control;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
-import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -72,7 +68,6 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	private final Ref ref;
-	private InlineValue normal;
 
 	private CustomAssignment(AssignmentStatement statement, Ref ref) {
 		super(statement);
@@ -88,15 +83,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-
-		final Value<?> value = getRef().value(resolver);
-
-		return value.getKnowledge().getCondition().toDefValue();
-	}
-
-	@Override
-	public Action initialValue(Resolver resolver) {
+	public Action action(Resolver resolver) {
 		return new ExecuteCommand(
 				getStatement(),
 				getRef().value(resolver).getKnowledge().getCondition());
@@ -108,29 +95,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
-
-		final InlineValue inlineRef = getRef().inline(normalizer, origin);
-
-		if (inlineRef == null) {
-			return null;
-		}
-
-		return new InlineAssignEval(inlineRef);
-	}
-
-	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
-		return new AssignEval(getRef());
-	}
-
-	@Override
-	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(normalizer.newNormalizer(), origin);
-	}
-
-	@Override
-	public InlineCmd inlineCommand(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);
 
@@ -143,10 +108,8 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void normalizeCommand(RootNormalizer normalizer) {
-		this.normal = this.ref.inline(
-				normalizer.newNormalizer(),
-				normalizer.getNormalizedScope());
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override
@@ -169,10 +132,7 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public Cmd cmd() {
-		if (this.normal == null) {
-			return new AssignCmd(this.ref);
-		}
-		return new NormalAssignCmd(this.normal);
+		return new AssignCmd(this.ref);
 	}
 
 	@Override
@@ -181,35 +141,6 @@ final class CustomAssignment extends AssignmentKind {
 			return super.toString();
 		}
 		return this.ref.toString();
-	}
-
-	private static final class InlineAssignEval extends InlineEval {
-
-		private final InlineValue value;
-
-		InlineAssignEval(InlineValue value) {
-			super(null);
-			this.value = value;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			this.value.writeCond(dirs.dirs(), host);
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return "(++" + this.value + ")";
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
 	}
 
 	private static final class InlineAssignCmd extends InlineCmd {
@@ -288,29 +219,6 @@ final class CustomAssignment extends AssignmentKind {
 				return super.toString();
 			}
 			return this.ref.toString();
-		}
-
-	}
-
-	private static final class NormalAssignCmd implements Cmd {
-
-		private final InlineValue value;
-
-		NormalAssignCmd(InlineValue value) {
-			this.value = value;
-		}
-
-		@Override
-		public void write(Control control) {
-			this.value.writeCond(control.dirs(), control.host());
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return this.value.toString();
 		}
 
 	}

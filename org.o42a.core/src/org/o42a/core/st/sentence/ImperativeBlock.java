@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefinerEnv.defaultEnv;
+import static org.o42a.core.st.CommandEnv.defaultEnv;
 
 import java.util.List;
 
@@ -27,18 +27,21 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
-import org.o42a.core.st.impl.imperative.*;
-import org.o42a.core.value.ValueRequest;
+import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.impl.imperative.ImperativeBlockCommand;
+import org.o42a.core.st.impl.imperative.ImperativeMemberRegistry;
+import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.string.Name;
 
 
-public final class ImperativeBlock extends Block<Imperatives, Command> {
+public final class ImperativeBlock extends Block<Imperatives> {
 
 	public static ImperativeBlock topLevelImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Statements<?> enclosing,
 			Name name,
 			ImperativeFactory sentenceFactory,
 			MemberRegistry memberRegistry) {
@@ -72,7 +75,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	public static ImperativeBlock nestedImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Statements<?> enclosing,
 			boolean parentheses,
 			Name name,
 			MemberRegistry memberRegistry,
@@ -90,16 +93,14 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	private final boolean parentheses;
 	private final Name name;
-	private final SentencesEnv sentencesEnv = new SentencesEnv();
 	private final boolean topLevel;
 	private NamedBlocks namedBlocks;
-	private ImplicationEnv initialEnv;
 	private boolean loop;
 
 	private ImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Statements<?> enclosing,
 			boolean parentheses,
 			Name name,
 			MemberRegistry memberRegistry,
@@ -151,6 +152,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		return this.parentheses;
 	}
 
+	@Override
 	public final Name getName() {
 		return this.name;
 	}
@@ -176,24 +178,10 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	}
 
 	@Override
-	public final Definer define(DefinerEnv env) {
-		this.initialEnv = env;
-		assert isTopLevel() :
-			"Not a top-level imperative block";
-		return new ImperativeDefiner(this, env);
-	}
-
-	@Override
-	public final Command command(CommandEnv env) {
-		this.initialEnv = env;
-		return new BlockCommand(this, env);
-	}
-
-	@Override
 	public ImperativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Statements<?, ?> enclosing = reproducer.getStatements();
+		final Statements<?> enclosing = reproducer.getStatements();
 
 		if (enclosing != null) {
 
@@ -211,7 +199,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 				reproducer.getMemberRegistry(),
 				getSentenceFactory());
 
-		reproduction.define(defaultEnv(reproducer.getLogger()));
+		reproduction.command(defaultEnv(reproducer.getLogger()));
 		reproduceSentences(reproducer, reproduction);
 
 		return reproduction;
@@ -226,25 +214,13 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 				getEnclosing().getSentence().getBlock().getNamedBlocks();
 	}
 
-	final CommandEnv sentencesEnv() {
-		return this.sentencesEnv;
+	@Override
+	Command createCommand(CommandEnv env) {
+		return new ImperativeBlockCommand(this, env);
 	}
 
 	final void loop() {
 		this.loop = true;
-	}
-
-	private final ImplicationEnv getInitialEnv() {
-		return this.initialEnv;
-	}
-
-	private final class SentencesEnv extends CommandEnv {
-
-		@Override
-		public ValueRequest getValueRequest() {
-			return getInitialEnv().getValueRequest();
-		}
-
 	}
 
 }

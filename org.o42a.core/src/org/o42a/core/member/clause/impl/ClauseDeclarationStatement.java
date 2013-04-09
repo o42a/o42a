@@ -31,12 +31,12 @@ import org.o42a.core.st.sentence.Block;
 public final class ClauseDeclarationStatement extends DeclarationStatement {
 
 	private final Clause clause;
-	private final Block<?, ?> definition;
+	private final Block<?> definition;
 
 	public ClauseDeclarationStatement(
 			ClauseBuilder builder,
 			Clause clause,
-			Block<?, ?> definition) {
+			Block<?> definition) {
 		super(builder, builder.distribute());
 		this.clause = clause;
 		this.definition = definition;
@@ -52,11 +52,6 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
-		return new ClauseDefiner(this, env);
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
 		return new ClauseCommand(this, env);
 	}
@@ -68,7 +63,7 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 		return null;
 	}
 
-	final Block<?, ?> getDefinition() {
+	final Block<?> getDefinition() {
 		return this.definition;
 	}
 

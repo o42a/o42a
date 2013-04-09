@@ -20,8 +20,8 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -45,7 +45,7 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public CommandTargets getCommandTargets() {
+	public CommandTargets getTargets() {
 		return actionCommand();
 	}
 
@@ -55,13 +55,8 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public Action initialValue(Resolver resolver) {
-		return getAssignmentKind().initialValue(resolver);
-	}
-
-	@Override
-	public Action initialCond(Resolver resolver) {
-		throw new UnsupportedOperationException();
+	public Action action(Resolver resolver) {
+		return getAssignmentKind().action(resolver);
 	}
 
 	@Override
@@ -80,16 +75,16 @@ final class AssignmentCommand extends Command {
 
 	@Override
 	public InlineCmd inline(Normalizer normalizer, Scope origin) {
-		return getAssignmentKind().inlineCommand(normalizer, origin);
+		return getAssignmentKind().inline(normalizer, origin);
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		getAssignmentKind().normalizeCommand(normalizer);
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return getAssignmentKind().normalize(normalizer, origin);
 	}
 
 	@Override
-	public Cmd cmd() {
+	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return getAssignmentKind().cmd();
 	}

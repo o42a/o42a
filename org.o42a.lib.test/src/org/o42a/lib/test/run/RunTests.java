@@ -59,11 +59,11 @@ public class RunTests extends DirectiveObject {
 		runTests(context.getBlock().toDeclarativeBlock(), object);
 	}
 
-	private void runTests(Block<?, ?> definition, Obj object) {
+	private void runTests(Block<?> definition, Obj object) {
 
 		final TestModule module =
 				(TestModule) getField().getEnclosingScope().toObject();
-		final Statements<?, ?> statements =
+		final Statements<?> statements =
 				definition.propose(definition).alternative(definition);
 		final UserInfo user = dummyUser();
 
