@@ -393,7 +393,7 @@ public class Ref extends Statement implements RefBuilder {
 		return targetRef(this, typeRef);
 	}
 
-	public final Statement toCondition(Statements<?, ?> statements) {
+	public final Statement toCondition(Statements<?> statements) {
 
 		final RefPath path = getPath();
 
@@ -402,7 +402,7 @@ public class Ref extends Statement implements RefBuilder {
 
 	public final Statement toValue(
 			LocationInfo location,
-			Statements<?, ?> statements) {
+			Statements<?> statements) {
 
 		final RefPath path = getPath();
 

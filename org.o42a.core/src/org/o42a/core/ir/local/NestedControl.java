@@ -45,7 +45,14 @@ abstract class NestedControl extends Control {
 
 	@Override
 	public final LocalsCode locals() {
-		return braces().locals();
+
+		final BracesControl braces = braces();
+
+		if (braces != null) {
+			return braces.locals();
+		}
+
+		return main().locals();
 	}
 
 	@Override

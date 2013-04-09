@@ -45,12 +45,12 @@ public abstract class RefPath extends Located {
 
 	protected abstract Statement toCondition(
 			Ref condition,
-			Statements<?, ?> statements);
+			Statements<?> statements);
 
 	protected abstract Statement toValue(
 			LocationInfo location,
 			Ref value,
-			Statements<?, ?> statements);
+			Statements<?> statements);
 
 	protected abstract FieldDefinition toFieldDefinition(
 			Ref ref,

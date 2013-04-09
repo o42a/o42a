@@ -60,7 +60,7 @@ public abstract class Action implements ScopeInfo {
 
 	public abstract Value<?> getValue();
 
-	public abstract LoopAction toLoopAction(Block<?, ?> block);
+	public abstract LoopAction toLoopAction(Block<?> block);
 
 	public abstract DefValue toDefValue();
 
@@ -89,7 +89,7 @@ public abstract class Action implements ScopeInfo {
 		return getClass().getSimpleName() + '[' + this.statement + ']';
 	}
 
-	static final boolean blockMatchesName(Block<?, ?> block, Name blockName) {
+	static final boolean blockMatchesName(Block<?> block, Name blockName) {
 
 		final ImperativeBlock imperativeBlock = block.toImperativeBlock();
 

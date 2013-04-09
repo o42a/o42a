@@ -24,11 +24,9 @@ import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
-import org.o42a.core.st.Definer;
 
 
-public abstract class DeclarativeSentence
-		extends Sentence<Declaratives, Definer> {
+public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
 	private CommandTargets targets;
 	private boolean ignored;

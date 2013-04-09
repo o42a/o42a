@@ -25,8 +25,6 @@ import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.util.string.ID;
@@ -160,8 +158,9 @@ final class DeclarativeOp {
 			Scope origin,
 			Declaratives statements,
 			InlineDefiners inline) {
+		throw new UnsupportedOperationException();
 
-		final List<Definer> definers = statements.getImplications();
+		/*final List<Definer> definers = statements.getImplications();
 		final int size = definers.size();
 
 		for (int i = 0; i < size; ++i) {
@@ -176,7 +175,7 @@ final class DeclarativeOp {
 			}
 
 			definers.get(i).eval(origin).write(dirs, host);
-		}
+		}*/
 	}
 
 }

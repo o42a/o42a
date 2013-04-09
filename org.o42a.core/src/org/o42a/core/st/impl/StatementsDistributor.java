@@ -30,11 +30,11 @@ import org.o42a.core.st.sentence.Sentence;
 public final class StatementsDistributor extends Distributor {
 
 	private final Location location;
-	private final Sentence<?, ?> sentence;
+	private final Sentence<?> sentence;
 
 	public StatementsDistributor(
 			LocationInfo location,
-			Sentence<?, ?> sentence) {
+			Sentence<?> sentence) {
 		this.location = location.getLocation();
 		this.sentence = sentence;
 	}

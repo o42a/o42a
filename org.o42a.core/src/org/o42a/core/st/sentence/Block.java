@@ -33,15 +33,12 @@ import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
 
-public abstract class Block<
-		S extends Statements<S, L>,
-		L extends Implication<L>>
-				extends Statement {
+public abstract class Block<S extends Statements<S>> extends Statement {
 
-	private final Statements<?, ?> enclosing;
-	private final ArrayList<Sentence<S, L>> sentences = new ArrayList<>(1);
+	private final Statements<?> enclosing;
+	private final ArrayList<Sentence<S>> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
-	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
+	private final SentenceFactory<S, ?, ?> sentenceFactory;
 	private final StatementsEnv statementsEnv = new StatementsEnv();
 	private CommandEnv initialEnv;
 	private Locals locals;
@@ -52,7 +49,7 @@ public abstract class Block<
 			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
-			SentenceFactory<L, S, ?, ?> sentenceFactory) {
+			SentenceFactory<S, ?, ?> sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
@@ -62,9 +59,9 @@ public abstract class Block<
 	Block(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Statements<?> enclosing,
 			MemberRegistry memberRegistry,
-			SentenceFactory<L, S, ?, ?> sentenceFactory) {
+			SentenceFactory<S, ?, ?> sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
@@ -76,11 +73,11 @@ public abstract class Block<
 		return true;
 	}
 
-	public Statements<?, ?> getEnclosing() {
+	public Statements<?> getEnclosing() {
 		return this.enclosing;
 	}
 
-	public SentenceFactory<L, S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<S, ?, ?> getSentenceFactory() {
 		return this.sentenceFactory;
 	}
 
@@ -90,7 +87,7 @@ public abstract class Block<
 
 	public final boolean isInsideIssue() {
 
-		final Statements<?, ?> enclosing = getEnclosing();
+		final Statements<?> enclosing = getEnclosing();
 
 		return enclosing != null && enclosing.isInsideIssue();
 	}
@@ -101,27 +98,27 @@ public abstract class Block<
 
 	public final boolean isConditional() {
 
-		final Statements<?, ?> enclosing = getEnclosing();
+		final Statements<?> enclosing = getEnclosing();
 
 		return enclosing != null && enclosing.getSentence().isConditional();
 	}
 
-	public List<? extends Sentence<S, L>> getSentences() {
+	public List<? extends Sentence<S>> getSentences() {
 		return this.sentences;
 	}
 
-	public Sentence<S, L> propose(LocationInfo location) {
+	public Sentence<S> propose(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S, L> proposition =
+		final Sentence<S> proposition =
 				sentenceFactory.propose(location, this);
 
 		return addSentence(proposition);
 	}
 
-	public Sentence<S, L> claim(LocationInfo location) {
+	public Sentence<S> claim(LocationInfo location) {
 		if (isInsideIssue()) {
 			if (getSentenceFactory().isDeclarative()) {
 				getLogger().error(
@@ -141,17 +138,17 @@ public abstract class Block<
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S, L> claim = sentenceFactory.claim(location, this);
+		final Sentence<S> claim = sentenceFactory.claim(location, this);
 
 		return addSentence(claim);
 	}
 
-	public Sentence<S, L> issue(LocationInfo location) {
+	public Sentence<S> issue(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S, L> issue = sentenceFactory.issue(location, this);
+		final Sentence<S> issue = sentenceFactory.issue(location, this);
 
 		addSentence(issue);
 
@@ -165,7 +162,7 @@ public abstract class Block<
 
 		this.executingInstructions = true;
 		try {
-			final List<? extends Sentence<S, L>> sentences = getSentences();
+			final List<? extends Sentence<S>> sentences = getSentences();
 
 			for (int i = this.instructionsExecuted; i < sentences.size(); ++i) {
 				this.instructionsExecuted = i + 1;
@@ -176,21 +173,21 @@ public abstract class Block<
 		}
 	}
 
-	public boolean contains(Block<?, ?> block) {
+	public boolean contains(Block<?> block) {
 		if (block == this) {
 			return true;
 		}
 
-		final Statements<?, ?> enclosing = block.getEnclosing();
+		final Statements<?> enclosing = block.getEnclosing();
 
 		return enclosing != null && contains(enclosing);
 	}
 
-	public boolean contains(Statements<?, ?> statements) {
+	public boolean contains(Statements<?> statements) {
 		return contains(statements.getSentence());
 	}
 
-	public boolean contains(Sentence<?, ?> sentence) {
+	public boolean contains(Sentence<?> sentence) {
 		return contains(sentence.getBlock());
 	}
 
@@ -208,8 +205,8 @@ public abstract class Block<
 
 	public void reproduceSentences(
 			Reproducer reproducer,
-			Block<S, L> reproduction) {
-		for (Sentence<S, L> sentence : getSentences()) {
+			Block<S> reproduction) {
+		for (Sentence<S> sentence : getSentences()) {
 			sentence.reproduce(reproduction, reproducer);
 		}
 	}
@@ -222,7 +219,7 @@ public abstract class Block<
 		boolean space = false;
 
 		out.append(parentheses ? '(' : '{');
-		for (Sentence<S, L> sentence : getSentences()) {
+		for (Sentence<S> sentence : getSentences()) {
 			if (space) {
 				out.append(' ');
 			} else {
@@ -240,7 +237,7 @@ public abstract class Block<
 			return this.locals;
 		}
 
-		final Statements<?, ?> enclosing = getEnclosing();
+		final Statements<?> enclosing = getEnclosing();
 
 		if (enclosing == null) {
 			return this.locals = new Locals(null);
@@ -252,14 +249,14 @@ public abstract class Block<
 
 	final Container nextContainer() {
 
-		final List<? extends Sentence<S, L>> sentences = getSentences();
+		final List<? extends Sentence<S>> sentences = getSentences();
 		final int numSentences = sentences.size();
 
 		if (numSentences == 0) {
 			return getContainer();
 		}
 
-		final Sentence<S, L> last = sentences.get(numSentences - 1);
+		final Sentence<S> last = sentences.get(numSentences - 1);
 		final List<S> alts = last.getAlternatives();
 		final int numAlts = alts.size();
 
@@ -305,7 +302,7 @@ public abstract class Block<
 		return this.initialEnv;
 	}
 
-	private Sentence<S, L> addSentence(Sentence<S, L> sentence) {
+	private Sentence<S> addSentence(Sentence<S> sentence) {
 		if (sentence == null) {
 			dropSentence();
 			return null;
@@ -316,7 +313,7 @@ public abstract class Block<
 		if (size != 0) {
 
 			final int lastIdx = size - 1;
-			final Sentence<S, L> last = this.sentences.get(lastIdx);
+			final Sentence<S> last = this.sentences.get(lastIdx);
 
 			if (last.isIssue()) {
 				sentence.setPrerequisite(last);
@@ -332,7 +329,7 @@ public abstract class Block<
 
 	private void dropSentence() {
 
-		final Statements<?, ?> enclosing = getEnclosing();
+		final Statements<?> enclosing = getEnclosing();
 
 		if (enclosing != null) {
 			enclosing.dropStatement();

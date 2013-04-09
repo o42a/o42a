@@ -58,7 +58,7 @@ public class ReturnValue extends Action {
 	}
 
 	@Override
-	public LoopAction toLoopAction(Block<?, ?> block) {
+	public LoopAction toLoopAction(Block<?> block) {
 		return LoopAction.PULL;
 	}
 

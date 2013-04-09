@@ -56,7 +56,7 @@ public class RepeatLoop extends Action {
 	}
 
 	@Override
-	public LoopAction toLoopAction(Block<?, ?> block) {
+	public LoopAction toLoopAction(Block<?> block) {
 		if (blockMatchesName(block, getBlockName())) {
 			return LoopAction.REPEAT;
 		}

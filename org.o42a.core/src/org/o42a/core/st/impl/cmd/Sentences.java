@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Implication;
@@ -44,7 +45,7 @@ public abstract class Sentences {
 
 	public abstract boolean isParentheses();
 
-	public abstract List<? extends Sentence<?, ?>> getSentences();
+	public abstract List<? extends Sentence<?>> getSentences();
 
 	public abstract CommandTargets getTargets();
 
@@ -54,7 +55,7 @@ public abstract class Sentences {
 
 		TypeParameters<?> typeParameters = null;
 
-		for (Sentence<?, ?> sentence : getSentences()) {
+		for (Sentence<?> sentence : getSentences()) {
 
 			final TypeParameters<?> sentenceParameters =
 					sentence.typeParameters(scope, expectedParameters);
@@ -77,13 +78,13 @@ public abstract class Sentences {
 
 	public Action action(
 			ScopeInfo location,
-			Block<?, ?> block,
+			Block<?> block,
 			Resolver resolver) {
 		if (getTargets().isEmpty()) {
 			return new ExecuteCommand(location, Condition.TRUE);
 		}
 
-		for (Sentence<?, ?> sentence : getSentences()) {
+		for (Sentence<?> sentence : getSentences()) {
 
 			final Action action = sentenceAction(sentence, resolver);
 			final LoopAction loopAction = action.toLoopAction(block);
@@ -107,7 +108,7 @@ public abstract class Sentences {
 	}
 
 	public void resolveAll(FullResolver resolver) {
-		for (Sentence<?, ?> sentence : getSentences()) {
+		for (Sentence<?> sentence : getSentences()) {
 			resolveSentence(resolver, sentence);
 		}
 	}
@@ -116,7 +117,7 @@ public abstract class Sentences {
 		if (!getTargets().haveValue()) {
 			return;
 		}
-		for (Sentence<?, ?> sentence : getSentences()) {
+		for (Sentence<?> sentence : getSentences()) {
 			resolveSentenceTargets(resolver, scope, sentence);
 		}
 	}
@@ -126,13 +127,13 @@ public abstract class Sentences {
 			Normalizer normalizer,
 			Scope origin) {
 
-		final List<? extends Sentence<?, ?>> sentenceList =
+		final List<? extends Sentence<?>> sentenceList =
 				getSentences();
 		final InlineSentence[] inlines =
 				new InlineSentence[sentenceList.size()];
 		int i = 0;
 
-		for (Sentence<?, ?> sentence : sentenceList) {
+		for (Sentence<?> sentence : sentenceList) {
 			inlines[i++] = inlineSentence(
 					rootNormalizer,
 					normalizer,
@@ -147,14 +148,18 @@ public abstract class Sentences {
 		return new InlineSentences(this, origin, inlines);
 	}
 
+	public final Cmd cmd(Scope origin) {
+		return new SentencesCmd(this, origin);
+	}
+
 	private static Action sentenceAction(
-			Sentence<?, ?> sentence,
+			Sentence<?> sentence,
 			Resolver resolver) {
 		if (sentence.getTargets().isEmpty()) {
 			return new ExecuteCommand(sentence, Condition.TRUE);
 		}
 
-		final Sentence<?, ?> prerequisite = sentence.getPrerequisite();
+		final Sentence<?> prerequisite = sentence.getPrerequisite();
 
 		if (prerequisite != null) {
 
@@ -175,14 +180,14 @@ public abstract class Sentences {
 			}
 		}
 
-		final List<? extends Statements<?, ?>> alternatives =
+		final List<? extends Statements<?>> alternatives =
 				sentence.getAlternatives();
 		final int size = alternatives.size();
 		Action result = null;
 
 		for (int i = 0; i < size; ++i) {
 
-			final Statements<?, ?> alt = alternatives.get(i);
+			final Statements<?> alt = alternatives.get(i);
 			final Action action = altAction(alt, resolver);
 
 			if (action.isAbort()) {
@@ -212,7 +217,7 @@ public abstract class Sentences {
 		return new ExecuteCommand(sentence, Condition.TRUE);
 	}
 
-	private static Action altAction(Statements<?, ?> alt, Resolver resolver) {
+	private static Action altAction(Statements<?> alt, Resolver resolver) {
 
 		Action result = null;
 
@@ -239,21 +244,21 @@ public abstract class Sentences {
 
 	private static void resolveSentence(
 			FullResolver resolver,
-			Sentence<?, ?> sentence) {
+			Sentence<?> sentence) {
 
-		final Sentence<?, ?> prerequisite = sentence.getPrerequisite();
+		final Sentence<?> prerequisite = sentence.getPrerequisite();
 
 		if (prerequisite != null) {
 			resolveSentence(resolver, prerequisite);
 		}
-		for (Statements<?, ?> alt : sentence.getAlternatives()) {
+		for (Statements<?> alt : sentence.getAlternatives()) {
 			resolveStatements(resolver, alt);
 		}
 	}
 
 	private static void resolveStatements(
 			FullResolver resolver,
-			Statements<?, ?> statements) {
+			Statements<?> statements) {
 		assert statements.assertInstructionsExecuted();
 		for (Implication<?> command : statements.getImplications()) {
 			command.resolveAll(resolver);
@@ -263,11 +268,11 @@ public abstract class Sentences {
 	private static void resolveSentenceTargets(
 			TargetResolver resolver,
 			Scope scope,
-			Sentence<?, ?> sentence) {
+			Sentence<?> sentence) {
 		if (!sentence.getTargets().haveValue()) {
 			return;
 		}
-		for (Statements<?, ?> alt : sentence.getAlternatives()) {
+		for (Statements<?> alt : sentence.getAlternatives()) {
 			resolveStatementsTargets(resolver, scope, alt);
 		}
 	}
@@ -275,7 +280,7 @@ public abstract class Sentences {
 	private static void resolveStatementsTargets(
 			TargetResolver resolver,
 			Scope scope,
-			Statements<?, ?> statements) {
+			Statements<?> statements) {
 		assert statements.assertInstructionsExecuted();
 		for (Implication<?> command : statements.getImplications()) {
 			command.resolveTargets(resolver, scope);

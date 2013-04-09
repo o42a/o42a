@@ -26,12 +26,12 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 
 
-public final class SentencesCmd implements Cmd {
+final class SentencesCmd implements Cmd {
 
 	private final Sentences sentences;
 	private final Scope origin;
 
-	public SentencesCmd(Sentences sentences, Scope origin) {
+	SentencesCmd(Sentences sentences, Scope origin) {
 		this.sentences = sentences;
 		this.origin = origin;
 	}

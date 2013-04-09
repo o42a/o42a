@@ -38,8 +38,6 @@ import org.o42a.core.value.link.TargetResolver;
 
 final class RefConditionDefiner extends Definer {
 
-	private Definer replacement;
-
 	RefConditionDefiner(RefCondition statement, CommandEnv env) {
 		super(statement, env);
 	}
@@ -52,10 +50,6 @@ final class RefConditionDefiner extends Definer {
 		return (RefCondition) getStatement();
 	}
 
-	public final Definer getReplacement() {
-		return this.replacement;
-	}
-
 	@Override
 	public CommandTargets getTargets() {
 		if (!getRef().isConstant()) {
@@ -66,7 +60,7 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	public Definer replaceWith(Statement statement) {
-		return this.replacement = statement.define(env());
+		return statement.define(env());
 	}
 
 	@Override

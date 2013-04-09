@@ -109,7 +109,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 	}
 
 	@Override
-	public Statements<?, ?> getStatements() {
+	public Statements<?> getStatements() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -124,7 +124,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 	@Override
 	public void applyClause(
 			LocationInfo location,
-			Statements<?, ?> statements,
+			Statements<?> statements,
 			Clause clause) {
 		throw new UnsupportedOperationException();
 	}

@@ -25,7 +25,6 @@ import static org.o42a.core.st.sentence.ImperativeBlock.topLevelImperativeBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.impl.declarative.DeclarativeClaim;
 import org.o42a.core.st.impl.declarative.DeclarativeIssue;
 import org.o42a.core.st.impl.declarative.DeclarativeProposition;
@@ -33,7 +32,6 @@ import org.o42a.util.string.Name;
 
 
 public class DeclarativeFactory extends SentenceFactory<
-		Definer,
 		Declaratives,
 		DeclarativeSentence,
 		DeclarativeBlock> {
