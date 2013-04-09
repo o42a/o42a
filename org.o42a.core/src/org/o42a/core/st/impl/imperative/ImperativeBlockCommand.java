@@ -118,12 +118,12 @@ public final class ImperativeBlockCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return this.sentences.inline(normalizer.getRoot(), normalizer, origin);
 	}
 
 	@Override
-	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		return this.sentences.inline(normalizer, null, origin);
 	}
 
@@ -234,7 +234,7 @@ public final class ImperativeBlockCommand extends Command {
 			return NO_DEF_TARGET;
 		}
 
-		final List<Command> commands = statements.getImplications();
+		final List<Command> commands = statements.getCommands();
 		final int size = commands.size();
 
 		if (size != 1) {

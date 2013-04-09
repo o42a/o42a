@@ -26,7 +26,6 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Command;
-import org.o42a.core.st.Implication;
 import org.o42a.core.st.sentence.Statements;
 
 
@@ -38,21 +37,21 @@ final class InlineCommands {
 			Scope origin,
 			Statements<?> statements) {
 
-		final List<Command> commands = statements.getImplications();
+		final List<Command> commands = statements.getCommands();
 		final InlineCmd[] inlines = new InlineCmd[commands.size()];
 		int i = 0;
 
-		for (Implication<?> command : commands) {
+		for (Command command : commands) {
 
 			final InlineCmd inline;
 
 			if (normalizer != null) {
-				inline = command.inlineCmd(normalizer, origin);
+				inline = command.inline(normalizer, origin);
 				if (inline == null) {
 					normalizer.cancelAll();
 				}
 			} else {
-				inline = command.normalizeCmd(rootNormalizer, origin);
+				inline = command.normalize(rootNormalizer, origin);
 			}
 
 			inlines[i++] = inline;

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.Implication.noCommands;
+import static org.o42a.core.st.Command.noCommands;
 
 import java.util.ArrayList;
 

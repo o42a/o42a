@@ -27,8 +27,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ref.*;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandTargets;
-import org.o42a.core.st.Implication;
 import org.o42a.core.st.action.*;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Sentence;
@@ -221,7 +221,7 @@ public abstract class Sentences {
 
 		Action result = null;
 
-		for (Implication<?> command : alt.getImplications()) {
+		for (Command command : alt.getCommands()) {
 
 			final Action action = command.action(resolver);
 
@@ -260,7 +260,7 @@ public abstract class Sentences {
 			FullResolver resolver,
 			Statements<?> statements) {
 		assert statements.assertInstructionsExecuted();
-		for (Implication<?> command : statements.getImplications()) {
+		for (Command command : statements.getCommands()) {
 			command.resolveAll(resolver);
 		}
 	}
@@ -282,7 +282,7 @@ public abstract class Sentences {
 			Scope scope,
 			Statements<?> statements) {
 		assert statements.assertInstructionsExecuted();
-		for (Implication<?> command : statements.getImplications()) {
+		for (Command command : statements.getCommands()) {
 			command.resolveTargets(resolver, scope);
 		}
 	}

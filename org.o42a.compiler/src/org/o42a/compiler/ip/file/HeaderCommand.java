@@ -83,12 +83,12 @@ final class HeaderCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 

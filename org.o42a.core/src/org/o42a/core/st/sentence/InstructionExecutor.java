@@ -22,7 +22,7 @@ package org.o42a.core.st.sentence;
 import java.util.List;
 
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.Implication;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
 
@@ -31,7 +31,7 @@ final class InstructionExecutor implements InstructionContext {
 
 	private final Statements<?> statements;
 	private final Resolver resolver;
-	private Implication<?> implication;
+	private Command command;
 	private Block<?> block;
 	private boolean doNotRemove;
 
@@ -55,8 +55,8 @@ final class InstructionExecutor implements InstructionContext {
 
 		return this.block = this.statements.parentheses(
 				this.statements.getInstructionsExecuted(),
-				this.implication,
-				this.implication.distribute());
+				this.command,
+				this.command.distribute());
 	}
 
 	@Override
@@ -66,36 +66,35 @@ final class InstructionExecutor implements InstructionContext {
 
 	@Override
 	public String toString() {
-		return "InstructionContext[" + this.implication + ']';
+		return "InstructionContext[" + this.command + ']';
 	}
 
 	final void executeAll() {
 
-		final List<? extends Implication<?>> implications =
-				this.statements.getImplications();
+		final List<Command> commands = this.statements.getCommands();
 
 		for (;;) {
 
 			final int index = this.statements.getInstructionsExecuted();
 
-			if (index >= implications.size()) {
+			if (index >= commands.size()) {
 				break;
 			}
-			execute(index, implications.get(index));
+			execute(index, commands.get(index));
 		}
 	}
 
-	private final void execute(int index, Implication<?> implication) {
+	private final void execute(int index, Command command) {
 
 		final Instruction instruction =
-				implication.toInstruction(getResolver());
+				command.toInstruction(getResolver());
 
 		if (instruction == null) {
 			this.statements.setInstructionsExecuted(index + 1);
 			return;
 		}
 
-		this.implication = implication;
+		this.command = command;
 		try {
 			instruction.execute(this);
 			if (!this.doNotRemove) {

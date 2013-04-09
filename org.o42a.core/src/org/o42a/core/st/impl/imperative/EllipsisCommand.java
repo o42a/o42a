@@ -63,12 +63,12 @@ abstract class EllipsisCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		return null;
 	}
 

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.Implication.noCommands;
+import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.*;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public abstract class Statements<S extends Statements<S>>
 		return getSentence().isInsideIssue();
 	}
 
-	public final List<Command> getImplications() {
+	public final List<Command> getCommands() {
 		return this.commands;
 	}
 
@@ -273,7 +273,7 @@ public abstract class Statements<S extends Statements<S>>
 	}
 
 	public final boolean assertInstructionsExecuted() {
-		assert this.instructionsExecuted == getImplications().size() :
+		assert this.instructionsExecuted == getCommands().size() :
 			"Instructions not executed yet";
 		return true;
 	}
@@ -281,7 +281,7 @@ public abstract class Statements<S extends Statements<S>>
 	@Override
 	public String toString() {
 
-		final List<Command> commands = getImplications();
+		final List<Command> commands = getCommands();
 
 		if (commands.isEmpty()) {
 			return "<no statements>";
@@ -334,7 +334,7 @@ public abstract class Statements<S extends Statements<S>>
 		final Reproducer statementsReproducer =
 				reproducer.reproduceIn(reproduction);
 
-		for (Command command : getImplications()) {
+		for (Command command : getCommands()) {
 
 			final Statement statementReproduction =
 					command.getStatement().reproduce(
@@ -385,13 +385,13 @@ public abstract class Statements<S extends Statements<S>>
 		executeInstructions();
 
 		// Statements contain at most one value.
-		for (Implication<?> implication : getImplications()) {
-			if (!implication.getStatement().isValid()) {
+		for (Command command : getCommands()) {
+			if (!command.getStatement().isValid()) {
 				continue;
 			}
 
 			final TypeParameters<?> typeParameters =
-					implication.typeParameters(scope);
+					command.typeParameters(scope);
 
 			if (typeParameters == null) {
 				continue;
@@ -400,7 +400,7 @@ public abstract class Statements<S extends Statements<S>>
 				if (!this.incompatibilityReported) {
 					this.incompatibilityReported = true;
 					scope.getLogger().incompatible(
-							implication.getLocation(),
+							command.getLocation(),
 							expectedParameters);
 				}
 				return null;
@@ -444,7 +444,7 @@ public abstract class Statements<S extends Statements<S>>
 		CommandTargets prev = noCommands();
 		CommandTargets firstDeclaring = null;
 
-		for (Implication<?> command : getImplications()) {
+		for (Command command : getCommands()) {
 
 			final CommandTargets targets = command.getTargets();
 

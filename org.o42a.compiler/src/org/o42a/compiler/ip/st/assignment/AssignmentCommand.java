@@ -74,12 +74,12 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return getAssignmentKind().inline(normalizer, origin);
 	}
 
 	@Override
-	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		return getAssignmentKind().normalize(normalizer, origin);
 	}
 

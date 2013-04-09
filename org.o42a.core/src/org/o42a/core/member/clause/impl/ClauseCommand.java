@@ -65,13 +65,13 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
-		return command().inlineCmd(normalizer, origin);
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+		return command().inline(normalizer, origin);
 	}
 
 	@Override
-	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
-		return command().normalizeCmd(normalizer, origin);
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return command().normalize(normalizer, origin);
 	}
 
 	@Override
@@ -169,12 +169,12 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+		public InlineCmd inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -237,12 +237,12 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+		public InlineCmd inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -288,12 +288,12 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+		public InlineCmd inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

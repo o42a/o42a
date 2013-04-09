@@ -100,7 +100,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		if (!getRefCondition().isLocal()) {
 
 			final InlineValue value = getRef().inline(normalizer, origin);
@@ -116,8 +116,8 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
-		return inlineCmd(normalizer.newNormalizer(), origin);
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override

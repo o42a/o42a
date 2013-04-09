@@ -94,7 +94,7 @@ public final class DeclarativeBlockCommand
 	}
 
 	@Override
-	public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return this.sentences.inline(
 				normalizer.getRoot(),
 				normalizer,
@@ -102,7 +102,7 @@ public final class DeclarativeBlockCommand
 	}
 
 	@Override
-	public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		return this.sentences.inline(normalizer, null, origin);
 	}
 
