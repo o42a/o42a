@@ -38,6 +38,7 @@ import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.st.impl.cmd.InlineSentences;
+import org.o42a.core.st.impl.cmd.Sentences;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
@@ -102,7 +103,8 @@ final class DeclarativePart extends Def {
 			return this.defTarget.get();
 		}
 
-		final DefTarget defTarget = this.sentences.target(getScope());
+		final DefTarget defTarget =
+				this.sentences.declarativeTarget(getScope());
 
 		this.defTarget = Holder.holder(defTarget);
 
@@ -209,8 +211,7 @@ final class DeclarativePart extends Def {
 		return new DeclarativePart(this, upgrade);
 	}
 
-	private static final class DeclarativePartSentences
-			extends DeclarativeSentences {
+	private static final class DeclarativePartSentences extends Sentences {
 
 		private final DeclarativePart part;
 		private final CommandTargets targets;

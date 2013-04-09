@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.impl.cmd;
 
+import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.st.impl.cmd.InlineSentence.inlineSentence;
 
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandTargets;
@@ -105,6 +107,30 @@ public abstract class Sentences {
 		}
 
 		return new ExecuteCommand(location, Condition.TRUE);
+	}
+
+	public DefTarget declarativeTarget(Scope origin) {
+
+		final CommandTargets defTargets = getTargets();
+
+		if (!defTargets.defining()) {
+			return null;
+		}
+		if (defTargets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+
+		for (Sentence<?> sentence : getSentences()) {
+
+			final DefTarget sentenceTarget =
+					declarativeSentenceTarget(origin, sentence);
+
+			if (sentenceTarget != null) {
+				return sentenceTarget;
+			}
+		}
+
+		return null;
 	}
 
 	public void resolveAll(FullResolver resolver) {
@@ -240,6 +266,58 @@ public abstract class Sentences {
 		}
 
 		return new ExecuteCommand(alt, Condition.TRUE);
+	}
+
+	private static DefTarget declarativeSentenceTarget(
+			Scope origin,
+			Sentence<?> sentence) {
+
+		final CommandTargets defTargets = sentence.getTargets();
+
+		if (!defTargets.defining()) {
+			return null;
+		}
+		if (defTargets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+
+		final List<? extends Statements<?>> alts = sentence.getAlternatives();
+		final int size = alts.size();
+
+		if (size != 1) {
+			if (size == 0) {
+				return null;
+			}
+			return NO_DEF_TARGET;
+		}
+
+		return declarativesTarget(origin, alts.get(0));
+	}
+
+	private static DefTarget declarativesTarget(
+			Scope origin,
+			Statements<?> statements) {
+
+		final CommandTargets defTargets = statements.getTargets();
+
+		if (!defTargets.defining()) {
+			return null;
+		}
+		if (defTargets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+
+		final List<Command> commands = statements.getCommands();
+		final int size = commands.size();
+
+		if (size != 1) {
+			if (size == 0) {
+				return null;
+			}
+			return NO_DEF_TARGET;
+		}
+
+		return commands.get(0).toTarget(origin);
 	}
 
 	private static void resolveSentence(

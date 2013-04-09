@@ -19,39 +19,24 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import java.util.List;
-
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.DefinitionsBuilder;
-import org.o42a.core.ref.*;
-import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.impl.ExecuteInstructions;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.CommandTargets;
+import org.o42a.core.st.impl.cmd.BlockCommand;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.DeclarativeSentence;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.link.TargetResolver;
-import org.o42a.util.string.Name;
 
 
 public final class DeclarativeBlockCommand
-		extends Command
+		extends BlockCommand<DeclarativeBlock>
 		implements DefinitionsBuilder {
 
-	private final DeclarativeBlockSentences sentences =
-			new DeclarativeBlockSentences(this);
 	private BlockDefinitions blockDefinitions;
 
 	public DeclarativeBlockCommand(DeclarativeBlock block, CommandEnv env) {
 		super(block, env);
-	}
-
-	public final DeclarativeBlock getBlock() {
-		return (DeclarativeBlock) getStatement();
 	}
 
 	public BlockDefinitions getBlockDefinitions() {
@@ -67,104 +52,13 @@ public final class DeclarativeBlockCommand
 	}
 
 	@Override
-	public TypeParameters<?> typeParameters(Scope scope) {
-
-		final TypeParameters<?> expectedParameters =
-				env()
-				.getValueRequest()
-				.getExpectedParameters()
-				.upgradeScope(scope);
-
-		return this.sentences.typeParameters(scope, expectedParameters);
-	}
-
-	@Override
-	public Action action(Resolver resolver) {
-		return this.sentences.action(this, getBlock(), resolver);
-	}
-
-	@Override
 	public Definitions buildDefinitions() {
 		return getBlockDefinitions().buildDefinitions();
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver, Scope origin) {
-		this.sentences.resolveTargets(resolver, origin);
-	}
-
-	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
-		return this.sentences.inline(
-				normalizer.getRoot(),
-				normalizer,
-				origin);
-	}
-
-	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return this.sentences.inline(normalizer, null, origin);
-	}
-
-	@Override
-	public Cmd cmd(Scope origin) {
-		assert getStatement().assertFullyResolved();
-		return this.sentences.cmd(origin);
-	}
-
-	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return new ExecuteInstructions(getBlock());
-	}
-
-	@Override
 	public DefTarget toTarget(Scope origin) {
-		return this.sentences.target(origin);
-	}
-
-	@Override
-	protected void fullyResolve(FullResolver resolver) {
-		getTargets();
-		this.sentences.resolveAll(resolver);
-	}
-
-	private static final class DeclarativeBlockSentences
-			extends DeclarativeSentences {
-
-		private final DeclarativeBlockCommand command;
-
-		DeclarativeBlockSentences(DeclarativeBlockCommand command) {
-			this.command = command;
-		}
-
-		@Override
-		public Name getName() {
-			return null;
-		}
-
-		@Override
-		public boolean isParentheses() {
-			return true;
-		}
-
-		@Override
-		public List<DeclarativeSentence> getSentences() {
-			return this.command.getBlock().getSentences();
-		}
-
-		@Override
-		public CommandTargets getTargets() {
-			return this.command.getTargets();
-		}
-
-		@Override
-		public String toString() {
-			if (this.command == null) {
-				return super.toString();
-			}
-			return this.command.toString();
-		}
-
+		return getSentences().declarativeTarget(origin);
 	}
 
 }
