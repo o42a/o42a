@@ -19,16 +19,12 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.Implication.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
-import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Definer;
-import org.o42a.core.value.Condition;
 
 
 public abstract class DeclarativeSentence
@@ -81,48 +77,6 @@ public abstract class DeclarativeSentence
 
 	public final void ignore() {
 		this.ignored = true;
-	}
-
-	public DefValue value(Resolver resolver) {
-
-		final DeclarativeSentence prerequisite = getPrerequisite();
-
-		if (prerequisite != null) {
-
-			final DefValue prereqValue = prerequisite.value(resolver);
-
-			assert !prereqValue.hasValue() :
-				"Prerequisite can not have a value";
-
-			final Condition condition = prereqValue.getCondition();
-
-			if (!condition.isTrue()) {
-				return condition.negate().toDefValue();
-			}
-		}
-
-		DefValue result = TRUE_DEF_VALUE;
-
-		for (Declaratives alt : getAlternatives()) {
-
-			final DefValue value = alt.value(resolver);
-
-			if (value.hasValue()) {
-				return value;
-			}
-
-			final Condition condition = value.getCondition();
-
-			if (!condition.isTrue()) {
-				if (condition.isFalse()) {
-					result = value;
-					continue;
-				}
-				return value;
-			}
-		}
-
-		return result;
 	}
 
 	private CommandTargets prerequisiteTargets() {

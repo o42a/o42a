@@ -24,13 +24,15 @@ import static org.o42a.core.st.impl.cmd.InlineSentence.inlineSentence;
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Implication;
+import org.o42a.core.st.action.*;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Sentence;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.string.Name;
@@ -73,6 +75,37 @@ public abstract class Sentences {
 		return typeParameters;
 	}
 
+	public Action action(
+			ScopeInfo location,
+			Block<?, ?> block,
+			Resolver resolver) {
+		if (getTargets().isEmpty()) {
+			return new ExecuteCommand(location, Condition.TRUE);
+		}
+
+		for (Sentence<?, ?> sentence : getSentences()) {
+
+			final Action action = sentenceAction(sentence, resolver);
+			final LoopAction loopAction = action.toLoopAction(block);
+
+			switch (loopAction) {
+			case CONTINUE:
+				continue;
+			case PULL:
+				return action;
+			case EXIT:
+				return new ExecuteCommand(action, action.getCondition());
+			case REPEAT:
+				// Repeating is not supported at compile time.
+				return new ExecuteCommand(location, Condition.RUNTIME);
+			}
+
+			throw new IllegalStateException("Unhandled action: " + action);
+		}
+
+		return new ExecuteCommand(location, Condition.TRUE);
+	}
+
 	public void resolveAll(FullResolver resolver) {
 		for (Sentence<?, ?> sentence : getSentences()) {
 			resolveSentence(resolver, sentence);
@@ -112,6 +145,96 @@ public abstract class Sentences {
 		}
 
 		return new InlineSentences(this, origin, inlines);
+	}
+
+	private static Action sentenceAction(
+			Sentence<?, ?> sentence,
+			Resolver resolver) {
+		if (sentence.getTargets().isEmpty()) {
+			return new ExecuteCommand(sentence, Condition.TRUE);
+		}
+
+		final Sentence<?, ?> prerequisite = sentence.getPrerequisite();
+
+		if (prerequisite != null) {
+
+			final Action action = sentenceAction(prerequisite, resolver);
+
+			assert !action.isAbort() :
+				"Prerequisite can not abort execution";
+
+			final Condition condition = action.getCondition();
+
+			if (!condition.isConstant()) {
+				// Can not go on.
+				return action;
+			}
+			if (condition.isFalse()) {
+				// Skip this sentence, as it`s prerequisite not satisfied.
+				return new ExecuteCommand(sentence, Condition.TRUE);
+			}
+		}
+
+		final List<? extends Statements<?, ?>> alternatives =
+				sentence.getAlternatives();
+		final int size = alternatives.size();
+		Action result = null;
+
+		for (int i = 0; i < size; ++i) {
+
+			final Statements<?, ?> alt = alternatives.get(i);
+			final Action action = altAction(alt, resolver);
+
+			if (action.isAbort()) {
+				return action;
+			}
+
+			final Condition condition = action.getCondition();
+
+			if (!condition.isConstant()) {
+				// can not go on
+				return action;
+			}
+			if (result != null && !result.getCondition().isTrue()) {
+				return result;
+			}
+
+			result = action;
+		}
+
+		if (sentence.isExit()) {
+			return new ExitLoop(sentence, null);
+		}
+		if (result != null) {
+			return result;
+		}
+
+		return new ExecuteCommand(sentence, Condition.TRUE);
+	}
+
+	private static Action altAction(Statements<?, ?> alt, Resolver resolver) {
+
+		Action result = null;
+
+		for (Implication<?> command : alt.getImplications()) {
+
+			final Action action = command.action(resolver);
+
+			if (action.isAbort()) {
+				return action;
+			}
+			if (!action.getCondition().isTrue()) {
+				return action;
+			}
+
+			result = action;
+		}
+
+		if (result != null) {
+			return result;
+		}
+
+		return new ExecuteCommand(alt, Condition.TRUE);
 	}
 
 	private static void resolveSentence(

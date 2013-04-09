@@ -19,15 +19,11 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-
 import org.o42a.core.Container;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
@@ -114,21 +110,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	protected Definer implicate(Statement statement) {
 		return statement.define(getSentence().getBlock().statementsEnv());
-	}
-
-	DefValue value(Resolver resolver) {
-		for (Definer definer : getImplications()) {
-
-			final DefValue value = definer.action(resolver).toDefValue();
-
-			if (value.hasValue()) {
-				return value;
-			}
-			if (!value.getCondition().isTrue()) {
-				return value;
-			}
-		}
-		return TRUE_DEF_VALUE;
 	}
 
 }
