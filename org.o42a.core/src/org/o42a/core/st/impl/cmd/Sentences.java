@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;

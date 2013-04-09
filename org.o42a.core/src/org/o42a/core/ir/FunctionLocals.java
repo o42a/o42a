@@ -21,8 +21,8 @@ package org.o42a.core.ir;
 
 import java.util.IdentityHashMap;
 
-import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.local.LocalsCode;
+import org.o42a.core.ir.cmd.LocalOp;
+import org.o42a.core.ir.cmd.LocalsCode;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.st.sentence.Local;

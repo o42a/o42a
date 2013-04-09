@@ -21,9 +21,9 @@ package org.o42a.compiler.ip.ref.keeper;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.state.KeeperOp;
 import org.o42a.core.object.state.Keeper;

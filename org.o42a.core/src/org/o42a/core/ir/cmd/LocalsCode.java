@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,13 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.local;
+package org.o42a.core.ir.cmd;
+
+import static org.o42a.core.ir.cmd.LocalOp.allocateLocal;
+
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.st.sentence.Local;
 
 
-public interface Cmd {
+public abstract class LocalsCode {
 
-	Cmd NO_CMD = InlineCmd.NO_INLINE_CMD;
+	public abstract LocalOp get(Local local);
 
-	void write(Control control);
+	public abstract LocalOp set(CodeDirs dirs, Local local, RefOp ref);
+
+	protected LocalOp allocate(CodeDirs dirs, Local local, RefOp ref) {
+		return allocateLocal(dirs, local, ref);
+	}
 
 }

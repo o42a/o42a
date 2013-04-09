@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Control;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.sentence.Sentence;
 import org.o42a.core.st.sentence.Statements;

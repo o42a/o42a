@@ -22,7 +22,7 @@ package org.o42a.core.st.impl.cmd;
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Command;

@@ -20,8 +20,8 @@
 package org.o42a.compiler.ip.ref.keeper;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.state.Keeper;

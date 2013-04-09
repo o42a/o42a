@@ -23,7 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.debug.TaskBlock;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.LocalsCode;
+import org.o42a.core.ir.cmd.LocalsCode;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;

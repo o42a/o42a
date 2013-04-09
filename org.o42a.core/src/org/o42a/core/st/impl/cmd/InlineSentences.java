@@ -22,8 +22,8 @@ package org.o42a.core.st.impl.cmd;
 import static org.o42a.core.st.impl.cmd.SentencesOp.writeSentences;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Control;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.util.fn.Cancelable;
 
 
