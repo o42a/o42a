@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.Implication.noCommands;
+import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import org.o42a.core.source.LocationInfo;

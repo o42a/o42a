@@ -27,7 +27,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.st.Implication;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.sentence.Sentence;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.ID;
@@ -175,13 +175,12 @@ final class SentencesOp {
 			Statements<?> statements,
 			InlineCommands inlines) {
 
-		final List<? extends Implication<?>> commands =
-				statements.getImplications();
+		final List<Command> commands = statements.getCommands();
 		final int size = commands.size();
 
 		for (int i = 0; i < size; ++i) {
 
-			final Implication<?> command = commands.get(i);
+			final Command command = commands.get(i);
 
 			if (inlines != null) {
 
