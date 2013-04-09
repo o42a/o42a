@@ -24,8 +24,6 @@ import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.value.link.LinkValueType.VARIABLE;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.object.Obj;
@@ -102,21 +100,6 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
-		return null;
-	}
-
-	@Override
-	public Eval eval() {
-		return new VariableAssignmentEval(this);
-	}
-
-	@Override
-	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return null;
-	}
-
-	@Override
 	public void resolve(FullResolver resolver) {
 
 		final Ref destination = getStatement().getDestination();
@@ -144,12 +127,12 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd inlineCommand(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public InlineCmd normalizeCommand(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		return null;
 	}
 

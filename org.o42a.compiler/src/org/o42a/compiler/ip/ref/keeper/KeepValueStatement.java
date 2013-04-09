@@ -47,11 +47,6 @@ final class KeepValueStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(CommandEnv env) {
-		return new KeptValueDefiner(this, env);
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
 		return new KeptValueCommand(this, env);
 	}

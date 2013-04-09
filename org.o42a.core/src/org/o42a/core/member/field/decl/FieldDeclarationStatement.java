@@ -22,7 +22,6 @@ package org.o42a.core.member.field.decl;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import org.o42a.core.member.DeclarationCommand;
-import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -48,11 +47,6 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 	@Override
 	public final DeclaredMemberField toMember() {
 		return this.member;
-	}
-
-	@Override
-	public DeclarationDefiner define(CommandEnv env) {
-		return new FieldDeclarationDefiner(this, env);
 	}
 
 	@Override

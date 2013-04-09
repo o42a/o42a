@@ -28,7 +28,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
@@ -96,29 +95,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
-
-		final InlineValue inlineRef = getRef().inline(normalizer, origin);
-
-		if (inlineRef == null) {
-			return null;
-		}
-
-		return new InlineAssignEval(inlineRef);
-	}
-
-	@Override
-	public Eval eval() {
-		return new AssignEval(getRef());
-	}
-
-	@Override
-	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(normalizer.newNormalizer(), origin);
-	}
-
-	@Override
-	public InlineCmd inlineCommand(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);
 
@@ -131,8 +108,8 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd normalizeCommand(RootNormalizer normalizer, Scope origin) {
-		return inlineCommand(normalizer.newNormalizer(), origin);
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override
@@ -164,35 +141,6 @@ final class CustomAssignment extends AssignmentKind {
 			return super.toString();
 		}
 		return this.ref.toString();
-	}
-
-	private static final class InlineAssignEval extends InlineEval {
-
-		private final InlineValue value;
-
-		InlineAssignEval(InlineValue value) {
-			super(null);
-			this.value = value;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			this.value.writeCond(dirs.dirs(), host);
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return "(++" + this.value + ")";
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
 	}
 
 	private static final class InlineAssignCmd extends InlineCmd {

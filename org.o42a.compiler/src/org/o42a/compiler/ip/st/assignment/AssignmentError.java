@@ -19,12 +19,9 @@
 */
 package org.o42a.compiler.ip.st.assignment;
 
-import static org.o42a.core.ir.def.Eval.NO_EVAL;
 import static org.o42a.core.ir.local.Cmd.NO_CMD;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.*;
@@ -55,27 +52,12 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public Eval eval() {
-		return NO_EVAL;
-	}
-
-	@Override
-	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return null;
-	}
-
-	@Override
-	public InlineCmd inlineCommand(Normalizer normalizer, Scope origin) {
-		return null;
-	}
-
-	@Override
-	public InlineCmd normalizeCommand(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		return null;
 	}
 

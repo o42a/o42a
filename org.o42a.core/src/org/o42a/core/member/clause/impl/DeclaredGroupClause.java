@@ -215,7 +215,7 @@ public final class DeclaredGroupClause
 		super.fullyResolve();
 		validate();
 		if (isTopLevel()) {
-			this.definition.define(defaultEnv(getContext().getLogger()))
+			this.definition.command(defaultEnv(getContext().getLogger()))
 			.resolveAll(
 					getScope().resolver().fullResolver(
 							dummyRefUser(),

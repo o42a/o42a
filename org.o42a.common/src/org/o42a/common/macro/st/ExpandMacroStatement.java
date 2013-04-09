@@ -42,11 +42,6 @@ final class ExpandMacroStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(CommandEnv env) {
-		return new ExpandMacroDefiner(this, env);
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
 		return new ExpandMacroCommand(this, env);
 	}
