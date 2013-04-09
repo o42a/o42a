@@ -22,8 +22,8 @@ package org.o42a.core.st;
 import static org.o42a.core.st.CommandTargets.*;
 
 import org.o42a.core.*;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2013 Ruslan Lopatin
+    Copyright (C) 2011-2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,36 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.local;
+package org.o42a.core.ir.cmd;
 
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.Eval;
+import org.o42a.util.fn.Cancelable;
 
 
-public class EvalCmd implements Cmd {
+final class NoCmd extends InlineCmd {
 
-	private final Eval eval;
-
-	public EvalCmd(Eval eval) {
-		this.eval = eval;
+	public NoCmd() {
+		super(null);
 	}
 
 	@Override
 	public void write(Control control) {
-
-		final DefDirs dirs = control.defDirs();
-
-		this.eval.write(dirs, control.host());
-
-		dirs.done();
 	}
 
 	@Override
 	public String toString() {
-		if (this.eval == null) {
-			return super.toString();
-		}
-		return this.eval.toString();
+		return "_";
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

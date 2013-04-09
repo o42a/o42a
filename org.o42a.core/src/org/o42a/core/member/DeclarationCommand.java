@@ -19,11 +19,11 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.core.ir.local.InlineCmd.NO_INLINE_CMD;
+import static org.o42a.core.ir.cmd.InlineCmd.NO_INLINE_CMD;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Control;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.util.fn.Cancelable;
 

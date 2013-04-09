@@ -22,8 +22,8 @@ package org.o42a.core.member.clause.impl;
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.member.DeclarationCommand;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
