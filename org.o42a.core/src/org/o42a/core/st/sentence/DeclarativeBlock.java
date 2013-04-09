@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.Distributor.containerDistributor;
-import static org.o42a.core.st.DefinerEnv.defaultEnv;
+import static org.o42a.core.st.CommandEnv.defaultEnv;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
 import java.util.List;
@@ -28,14 +28,17 @@ import java.util.List;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
-import org.o42a.core.st.impl.declarative.BlockDefiner;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.impl.declarative.DeclarativeBlockCommand;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.util.string.Name;
 
 
-public final class DeclarativeBlock extends Block<Declaratives, Definer> {
+public final class DeclarativeBlock extends Block<Declaratives> {
 
 	static DeclarativeBlock nestedBlock(
 			LocationInfo location,
@@ -52,7 +55,6 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	private NamedBlocks namedBlocks;
-	private BlockDefiner definer;
 
 	public DeclarativeBlock(
 			LocationInfo location,
@@ -114,8 +116,13 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	@Override
-	public boolean isParentheses() {
+	public final boolean isParentheses() {
 		return true;
+	}
+
+	@Override
+	public final Name getName() {
+		return null;
 	}
 
 	public final boolean isInsideClaim() {
@@ -151,11 +158,16 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 		return (DeclarativeSentence) super.issue(location);
 	}
 
+	public DefinitionsBuilder definitions(CommandEnv env) {
+		init(env);
+		return createCommand(env);
+	}
+
 	@Override
 	public DeclarativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Statements<?, ?> enclosing = reproducer.getStatements();
+		final Statements<?> enclosing = reproducer.getStatements();
 		final DeclarativeBlock reproduction;
 
 		if (enclosing == null) {
@@ -166,7 +178,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 					reproducer.getMemberRegistry(),
 					DECLARATIVE_FACTORY,
 					true);
-			reproduction.define(defaultEnv(reproducer.getLogger()));
+			reproduction.command(defaultEnv(reproducer.getLogger()));
 			reproduceSentences(reproducer, reproduction);
 			return null;
 		}
@@ -175,20 +187,6 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 		reproduceSentences(reproducer, reproduction);
 
 		return null;
-	}
-
-	@Override
-	public final MainDefiner define(DefinerEnv env) {
-		return this.definer = new BlockDefiner(this, env);
-	}
-
-	@Override
-	public Command command(CommandEnv env) {
-		throw new UnsupportedOperationException();
-	}
-
-	public final DefinerEnv getInitialEnv() {
-		return this.definer.env();
 	}
 
 	@Override
@@ -205,6 +203,11 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 
 		return this.namedBlocks =
 				enclosing.getSentence().getBlock().getNamedBlocks();
+	}
+
+	@Override
+	final DeclarativeBlockCommand createCommand(CommandEnv env) {
+		return new DeclarativeBlockCommand(this, env);
 	}
 
 	private void addImplicitInclusions() {

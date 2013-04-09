@@ -92,11 +92,6 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(DefinerEnv env) {
-		return new AssignmentDefiner(this, env);
-	}
-
-	@Override
 	public Command command(CommandEnv env) {
 		return new AssignmentCommand(this, env);
 	}

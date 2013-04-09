@@ -75,7 +75,7 @@ public class MacroExpansionStep extends Step {
 	}
 
 	@Override
-	protected Statement condition(Ref condition, Statements<?, ?> statements) {
+	protected Statement condition(Ref condition, Statements<?> statements) {
 		return consumeCondition(statements, condition);
 	}
 
@@ -83,7 +83,7 @@ public class MacroExpansionStep extends Step {
 	protected Statement value(
 			LocationInfo location,
 			Ref value,
-			Statements<?, ?> statements) {
+			Statements<?> statements) {
 		return consumeSelfAssignment(statements, location, value);
 	}
 

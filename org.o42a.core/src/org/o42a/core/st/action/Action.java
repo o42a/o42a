@@ -24,6 +24,8 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.DefValue;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
@@ -58,9 +60,9 @@ public abstract class Action implements ScopeInfo {
 
 	public abstract Value<?> getValue();
 
-	public abstract Action toInitialCondition();
+	public abstract LoopAction toLoopAction(Block<?> block);
 
-	public abstract LoopAction toLoopAction(ImperativeBlock block);
+	public abstract DefValue toDefValue();
 
 	@Override
 	public void assertScopeIs(Scope scope) {
@@ -87,10 +89,15 @@ public abstract class Action implements ScopeInfo {
 		return getClass().getSimpleName() + '[' + this.statement + ']';
 	}
 
-	static final boolean blockMatchesName(
-			ImperativeBlock block,
-			Name blockName) {
-		return blockName == null || blockName.is(block.getName());
+	static final boolean blockMatchesName(Block<?> block, Name blockName) {
+
+		final ImperativeBlock imperativeBlock = block.toImperativeBlock();
+
+		if (imperativeBlock == null) {
+			return false;
+		}
+
+		return blockName == null || blockName.is(imperativeBlock.getName());
 	}
 
 }

@@ -21,20 +21,15 @@ package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.core.ref.RefUsage.ASSIGNABLE_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
-import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.value.link.LinkValueType.VARIABLE;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -100,27 +95,7 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return RUNTIME_DEF_VALUE;
-	}
-
-	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
-		return null;
-	}
-
-	@Override
-	public Eval eval(CodeBuilder builder, Scope origin) {
-		return new VariableAssignmentEval(this);
-	}
-
-	@Override
-	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return null;
-	}
-
-	@Override
-	public Action initialValue(Resolver resolver) {
+	public Action action(Resolver resolver) {
 		return new ExecuteCommand(getStatement(), Condition.RUNTIME);
 	}
 
@@ -152,12 +127,13 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd inlineCommand(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public void normalizeCommand(RootNormalizer normalizer) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return null;
 	}
 
 	@Override

@@ -19,9 +19,8 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueAssignment;
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueField;
+import static org.o42a.core.st.Command.noCommands;
+import static org.o42a.core.st.impl.SentenceErrors.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Implication;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.*;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.LocalInsides;
@@ -48,19 +45,18 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.Name;
 
 
-public abstract class Statements<
-		S extends Statements<S, L>,
-		L extends Implication<L>>
+public abstract class Statements<S extends Statements<S>>
 				extends Contained {
 
-	private final Sentence<S, L> sentence;
-	private final ArrayList<L> implications = new ArrayList<>(1);
+	private final Sentence<S> sentence;
+	private final ArrayList<Command> commands = new ArrayList<>(1);
 	private Container nextContainer;
 	private boolean statementDropped;
 	private boolean incompatibilityReported;
 	private int instructionsExecuted;
+	private CommandTargets targets;
 
-	Statements(LocationInfo location, Sentence<S, L> sentence) {
+	Statements(LocationInfo location, Sentence<S> sentence) {
 		super(
 				location,
 				new StatementsDistributor(location, sentence));
@@ -68,7 +64,7 @@ public abstract class Statements<
 		this.nextContainer = getContainer();
 	}
 
-	public Sentence<S, L> getSentence() {
+	public Sentence<S> getSentence() {
 		return this.sentence;
 	}
 
@@ -76,16 +72,24 @@ public abstract class Statements<
 		return getSentence().isInsideIssue();
 	}
 
-	public final List<L> getImplications() {
-		return this.implications;
+	public final List<Command> getCommands() {
+		return this.commands;
 	}
 
-	public SentenceFactory<L, S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<S, ?, ?> getSentenceFactory() {
 		return getSentence().getSentenceFactory();
 	}
 
 	public final MemberRegistry getMemberRegistry() {
 		return getSentence().getMemberRegistry();
+	}
+
+	public final CommandTargets getTargets() {
+		if (this.targets != null) {
+			return this.targets;
+		}
+		executeInstructions();
+		return this.targets = determineTargets();
 	}
 
 	public final void expression(RefBuilder expression) {
@@ -178,11 +182,11 @@ public abstract class Statements<
 		return new Group(location, this, builder);
 	}
 
-	public Block<S, L> parentheses(LocationInfo location) {
+	public Block<S> parentheses(LocationInfo location) {
 		return parentheses(location, nextContainer());
 	}
 
-	public Block<S, L> parentheses(LocationInfo location, Container container) {
+	public Block<S> parentheses(LocationInfo location, Container container) {
 		return parentheses(
 				-1,
 				location,
@@ -235,8 +239,8 @@ public abstract class Statements<
 
 	public final Local local(LocationInfo location, Name name, Ref ref) {
 
-		final Sentence<S, L> sentence = getSentence();
-		final Block<S, L> block = sentence.getBlock();
+		final Sentence<S> sentence = getSentence();
+		final Block<S> block = sentence.getBlock();
 
 		block.getLocals().declareLocal(location, name);
 
@@ -269,7 +273,7 @@ public abstract class Statements<
 	}
 
 	public final boolean assertInstructionsExecuted() {
-		assert this.instructionsExecuted == getImplications().size() :
+		assert this.instructionsExecuted == getCommands().size() :
 			"Instructions not executed yet";
 		return true;
 	}
@@ -277,22 +281,22 @@ public abstract class Statements<
 	@Override
 	public String toString() {
 
-		final List<L> implications = getImplications();
+		final List<Command> commands = getCommands();
 
-		if (implications.isEmpty()) {
+		if (commands.isEmpty()) {
 			return "<no statements>";
 		}
 
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		for (L implication : implications) {
+		for (Command command : commands) {
 			if (!comma) {
 				comma = true;
 			} else {
 				out.append(", ");
 			}
-			out.append(implication);
+			out.append(command);
 		}
 
 		return out.toString();
@@ -307,32 +311,33 @@ public abstract class Statements<
 
 	protected final void addStatement(Statement statement) {
 		statement.assertSameScope(this);
-		this.implications.add(implicate(statement));
+
+		final CommandEnv env = getSentence().getBlock().statementsEnv();
+
+		this.commands.add(statement.command(env));
 	}
 
 	protected final void replaceStatement(int index, Statement statement) {
 
-		final L old = this.implications.get(index);
+		final Command old = this.commands.get(index);
 
-		this.implications.set(index, old.replaceWith(statement));
+		this.commands.set(index, old.replaceWith(statement));
 	}
 
 	protected final void removeStatement(int index) {
-		this.implications.remove(index);
+		this.commands.remove(index);
 	}
 
-	protected abstract L implicate(Statement statement);
-
-	void reproduce(Sentence<S, L> sentence, Reproducer reproducer) {
+	void reproduce(Sentence<S> sentence, Reproducer reproducer) {
 
 		final S reproduction = sentence.alternative(this);
 		final Reproducer statementsReproducer =
 				reproducer.reproduceIn(reproduction);
 
-		for (L implication : getImplications()) {
+		for (Command command : getCommands()) {
 
 			final Statement statementReproduction =
-					implication.getStatement().reproduce(
+					command.getStatement().reproduce(
 							statementsReproducer.distributeBy(
 									reproduction.nextDistributor()));
 
@@ -342,12 +347,12 @@ public abstract class Statements<
 		}
 	}
 
-	Block<S, L> parentheses(
+	Block<S> parentheses(
 			int index,
 			LocationInfo location,
 			Distributor distributor) {
 
-		final Block<S, L> parentheses =
+		final Block<S> parentheses =
 				getSentence().getSentenceFactory().createParentheses(
 						location,
 						distributor,
@@ -380,13 +385,13 @@ public abstract class Statements<
 		executeInstructions();
 
 		// Statements contain at most one value.
-		for (Implication<?> implication : getImplications()) {
-			if (!implication.getStatement().isValid()) {
+		for (Command command : getCommands()) {
+			if (!command.getStatement().isValid()) {
 				continue;
 			}
 
 			final TypeParameters<?> typeParameters =
-					implication.typeParameters(scope);
+					command.typeParameters(scope);
 
 			if (typeParameters == null) {
 				continue;
@@ -395,7 +400,7 @@ public abstract class Statements<
 				if (!this.incompatibilityReported) {
 					this.incompatibilityReported = true;
 					scope.getLogger().incompatible(
-							implication.getLocation(),
+							command.getLocation(),
 							expectedParameters);
 				}
 				return null;
@@ -431,6 +436,64 @@ public abstract class Statements<
 
 	private final Distributor nextDistributor(Container container) {
 		return distributeIn(container);
+	}
+
+	private CommandTargets determineTargets() {
+
+		CommandTargets result = noCommands();
+		CommandTargets prev = noCommands();
+		CommandTargets firstDeclaring = null;
+
+		for (Command command : getCommands()) {
+
+			final CommandTargets targets = command.getTargets();
+
+			if (targets.declaring()) {
+				if (firstDeclaring != null) {
+					if (!result.haveError()) {
+						declarationNotAlone(getLogger(), targets);
+						result = result.addError();
+					}
+					continue;
+				}
+				firstDeclaring = targets;
+				if (result.defining() && !result.haveError()) {
+					declarationNotAlone(getLogger(), firstDeclaring);
+					result = result.addError();
+				}
+				continue;
+			}
+			if (firstDeclaring != null && !targets.isEmpty()) {
+				if (!result.haveError()) {
+					declarationNotAlone(getLogger(), firstDeclaring);
+					result = result.addError();
+				}
+				continue;
+			}
+			if (!prev.breaking() || prev.havePrerequisite()) {
+				if (targets.breaking()) {
+					prev = targets;
+				} else {
+					prev = targets.toPreconditions();
+				}
+				result = result.add(prev);
+				continue;
+			}
+			if (result.haveError()) {
+				continue;
+			}
+			result = result.addError();
+			getLogger().error(
+					"unreachable_statement",
+					targets,
+					"Unreachable statement");
+		}
+
+		if (firstDeclaring != null && result.isEmpty()) {
+			return result.add(firstDeclaring);
+		}
+
+		return result;
 	}
 
 }

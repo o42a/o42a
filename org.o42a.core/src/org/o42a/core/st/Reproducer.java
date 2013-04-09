@@ -62,7 +62,7 @@ public abstract class Reproducer {
 
 	public abstract MemberRegistry getMemberRegistry();
 
-	public abstract Statements<?, ?> getStatements();
+	public abstract Statements<?> getStatements();
 
 	public final void applyClause(LocationInfo location, Clause clause) {
 		applyClause(location, getStatements(), clause);
@@ -77,7 +77,7 @@ public abstract class Reproducer {
 		return new Wrap(this, getStatements(), distributor);
 	}
 
-	public Reproducer reproduceIn(Statements<?, ?> statements) {
+	public Reproducer reproduceIn(Statements<?> statements) {
 		statements.assertScopeIs(getScope());
 		return new Wrap(this, statements, this.distributor);
 	}
@@ -90,17 +90,17 @@ public abstract class Reproducer {
 
 	public abstract void applyClause(
 			LocationInfo location,
-			Statements<?, ?> statements,
+			Statements<?> statements,
 			Clause clause);
 
 	private static final class Wrap extends Reproducer {
 
 		private final Reproducer reproducer;
-		private final Statements<?, ?> statements;
+		private final Statements<?> statements;
 
 		Wrap(
 				Reproducer reproducer,
-				Statements<?, ?> statements,
+				Statements<?> statements,
 				Distributor distributor) {
 			super(reproducer.getReproducingScope(), distributor);
 			this.statements = statements;
@@ -123,7 +123,7 @@ public abstract class Reproducer {
 		}
 
 		@Override
-		public final Statements<?, ?> getStatements() {
+		public final Statements<?> getStatements() {
 			return this.statements;
 		}
 
@@ -133,7 +133,7 @@ public abstract class Reproducer {
 		}
 
 		@Override
-		public Reproducer reproduceIn(Statements<?, ?> statements) {
+		public Reproducer reproduceIn(Statements<?> statements) {
 			return new Wrap(this.reproducer, statements, distribute());
 		}
 
@@ -153,7 +153,7 @@ public abstract class Reproducer {
 		@Override
 		public void applyClause(
 				LocationInfo location,
-				Statements<?, ?> statements,
+				Statements<?> statements,
 				Clause clause) {
 			this.reproducer.applyClause(location, statements, clause);
 		}

@@ -59,7 +59,7 @@ import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.DefinerEnv;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.impl.ObjectEnv;
 import org.o42a.core.value.TypeParameter;
 import org.o42a.core.value.TypeParameters;
@@ -571,7 +571,7 @@ public abstract class Obj
 		return this.clonesContent = new ObjectContent(this, true);
 	}
 
-	public DefinerEnv definitionEnv() {
+	public CommandEnv definitionEnv() {
 		return new ObjectEnv(this);
 	}
 

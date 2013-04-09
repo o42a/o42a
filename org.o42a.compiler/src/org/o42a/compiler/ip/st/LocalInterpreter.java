@@ -271,9 +271,9 @@ public final class LocalInterpreter {
 		final BlockAccess<ExpressionNode> block =
 				new BlockAccess<ExpressionNode>(definition, distributor) {
 			@Override
-			public void buildBlock(Block<?, ?> block) {
+			public void buildBlock(Block<?> block) {
 
-				final Statements<?, ?> statements =
+				final Statements<?> statements =
 						block.propose(this).alternative(this);
 				final Ref value = localValue(
 						ip,

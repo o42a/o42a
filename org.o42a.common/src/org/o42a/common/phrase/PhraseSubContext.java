@@ -92,7 +92,7 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	@Override
-	protected void define(ClauseInstance instance, Block<?, ?> definition) {
+	protected void define(ClauseInstance instance, Block<?> definition) {
 
 		final DefinitionReproducer reproducer =
 				new DefinitionReproducer(this.clause, instance, definition);
@@ -105,7 +105,7 @@ class PhraseSubContext extends PhraseContext {
 		return this.mainContext;
 	}
 
-	void applyCause(Statements<?, ?> statements) {
+	void applyCause(Statements<?> statements) {
 
 		final Clause clause = getClause();
 
@@ -126,7 +126,7 @@ class PhraseSubContext extends PhraseContext {
 				+ " (" + clause + ")");
 	}
 
-	private void overrideField(Statements<?, ?> statements) {
+	private void overrideField(Statements<?> statements) {
 		assert getInstances().length == 1 :
 			"Exactly one instance of aliased field allowed, but "
 			+ getInstances().length + " found";
@@ -203,7 +203,7 @@ class PhraseSubContext extends PhraseContext {
 		return substitution;
 	}
 
-	private void instantiateObjects(Statements<?, ?> statements) {
+	private void instantiateObjects(Statements<?> statements) {
 
 		final PlainClause clause = getClause().toPlainClause();
 		final boolean assignment = clause.isAssignment();
@@ -224,10 +224,10 @@ class PhraseSubContext extends PhraseContext {
 		}
 	}
 
-	private void groupDefinition(Statements<?, ?> statements) {
+	private void groupDefinition(Statements<?> statements) {
 		for (ClauseInstance instance : getInstances()) {
 
-			final Block<?, ?> block =
+			final Block<?> block =
 					statements.parentheses(instance.getLocation());
 
 			instance.groupDefinition(block);
@@ -276,12 +276,12 @@ class PhraseSubContext extends PhraseContext {
 
 		private final ClauseInstance instance;
 		private MemberRegistry memberRegistry;
-		private Statements<?, ?> statements;
+		private Statements<?> statements;
 
 		DefinitionReproducer(
 				Clause clause,
 				ClauseInstance instance,
-				Block<?, ?> block) {
+				Block<?> block) {
 			super(clause.getScope(), block.distribute());
 			this.instance = instance;
 			this.memberRegistry = block.getMemberRegistry();
@@ -308,14 +308,14 @@ class PhraseSubContext extends PhraseContext {
 		}
 
 		@Override
-		public Statements<?, ?> getStatements() {
+		public Statements<?> getStatements() {
 			return this.statements;
 		}
 
 		@Override
 		public void applyClause(
 				LocationInfo location,
-				Statements<?, ?> statements,
+				Statements<?> statements,
 				Clause clause) {
 
 			PhraseSubContext subContext = this.instance.subContext(clause);

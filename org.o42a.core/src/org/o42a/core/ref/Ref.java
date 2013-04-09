@@ -38,7 +38,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.impl.Adapter;
 import org.o42a.core.ref.impl.RefCommand;
-import org.o42a.core.ref.impl.RefDefiner;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -142,17 +141,12 @@ public class Ref extends Statement implements RefBuilder {
 	}
 
 	@Override
-	public final Definer define(DefinerEnv env) {
-		return new RefDefiner(this, env);
-	}
-
-	@Override
 	public final Command command(CommandEnv env) {
 		return new RefCommand(this, env);
 	}
 
-	public final Definitions toDefinitions(DefinerEnv env) {
-		return new RefDefiner(this, env).createDefinitions();
+	public final Definitions toDefinitions(CommandEnv env) {
+		return new RefCommand(this, env).createDefinitions();
 	}
 
 	public final Resolution resolve(Resolver resolver) {
@@ -393,7 +387,7 @@ public class Ref extends Statement implements RefBuilder {
 		return targetRef(this, typeRef);
 	}
 
-	public final Statement toCondition(Statements<?, ?> statements) {
+	public final Statement toCondition(Statements<?> statements) {
 
 		final RefPath path = getPath();
 
@@ -402,7 +396,7 @@ public class Ref extends Statement implements RefBuilder {
 
 	public final Statement toValue(
 			LocationInfo location,
-			Statements<?, ?> statements) {
+			Statements<?> statements) {
 
 		final RefPath path = getPath();
 

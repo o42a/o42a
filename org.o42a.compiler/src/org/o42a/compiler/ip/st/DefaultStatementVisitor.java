@@ -54,8 +54,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			ParenthesesNode parentheses,
 			StatementsAccess p) {
 
-		final Block<?, ?> block =
-				p.get().parentheses(location(p, parentheses));
+		final Block<?> block = p.get().parentheses(location(p, parentheses));
 
 		addContent(p.getRules(), this, block, parentheses);
 
@@ -227,7 +226,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			blockLocation = location(statements, local.getSeparator());
 		}
 
-		final Statements<?, ?> alt =
+		final Statements<?> alt =
 				statements.get()
 				.parentheses(blockLocation)
 				.propose(blockLocation)

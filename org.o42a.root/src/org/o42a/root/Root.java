@@ -39,12 +39,12 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.MainDefiner;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.io.URLSource;
 
@@ -101,7 +101,7 @@ public class Root extends Obj {
 
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
-	private MainDefiner definer;
+	private DefinitionsBuilder definitionsBuilder;
 
 	private Root(
 			Scope topScope,
@@ -221,7 +221,7 @@ public class Root extends Obj {
 				this,
 				new Namespace(this, this),
 				this.memberRegistry);
-		this.definer = this.definition.define(definitionEnv());
+		this.definitionsBuilder = this.definition.definitions(definitionEnv());
 
 		this.compiler.define(this.definition, IMPLICIT_SECTION_TAG);
 	}
@@ -241,7 +241,7 @@ public class Root extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definer.createDefinitions();
+		return this.definitionsBuilder.buildDefinitions();
 	}
 
 }

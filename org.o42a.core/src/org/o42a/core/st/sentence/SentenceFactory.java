@@ -22,7 +22,6 @@ package org.o42a.core.st.sentence;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Implication;
 import org.o42a.core.st.impl.declarative.DeclarativeIssueFactory;
 import org.o42a.core.st.impl.imperative.ImperativeGroupFactory;
 import org.o42a.core.st.impl.imperative.ImperativeIssueFactory;
@@ -30,10 +29,9 @@ import org.o42a.util.string.Name;
 
 
 public abstract class SentenceFactory<
-		L extends Implication<L>,
-		S extends Statements<S, L>,
-		T extends Sentence<S, L>,
-		B extends Block<S, L>> {
+		S extends Statements<S>,
+		T extends Sentence<S>,
+		B extends Block<S>> {
 
 	public static final DeclarativeFactory DECLARATIVE_FACTORY =
 			new DeclarativeFactory();

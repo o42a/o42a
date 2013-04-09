@@ -6,9 +6,9 @@ Bundle-Version: 0.2.6
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.o42a.core,
  org.o42a.core.ir,
+ org.o42a.core.ir.cmd,
  org.o42a.core.ir.def,
  org.o42a.core.ir.field,
- org.o42a.core.ir.local,
  org.o42a.core.ir.object,
  org.o42a.core.ir.object.op,
  org.o42a.core.ir.object.state,

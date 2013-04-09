@@ -19,13 +19,14 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.Definer.noDefs;
+import static org.o42a.core.st.Command.noCommands;
 
 import java.util.ArrayList;
 
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.st.DefTargets;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
@@ -33,23 +34,29 @@ import org.o42a.core.value.TypeParameters;
 
 final class BlockDefinitions {
 
-	private final BlockDefiner definer;
-	private DefTargets targets = noDefs();
-	private DefTargets claimTargets = noDefs();
-	private DefTargets propositionTargets = noDefs();
+	private final DeclarativeBlock block;
+	private final CommandEnv env;
+	private CommandTargets targets = noCommands();
+	private CommandTargets claimTargets = noCommands();
+	private CommandTargets propositionTargets = noCommands();
 	private ArrayList<DeclarativeSentence> claims;
 	private ArrayList<DeclarativeSentence> propositions;
 
-	BlockDefinitions(BlockDefiner definer) {
-		this.definer = definer;
+	BlockDefinitions(DeclarativeBlock block, CommandEnv env) {
+		this.block = block;
+		this.env = env;
 		build();
 	}
 
 	public final DeclarativeBlock getBlock() {
-		return this.definer.getBlock();
+		return this.block;
 	}
 
-	public final DefTargets getTargets() {
+	public final CommandEnv env() {
+		return this.env;
+	}
+
+	public final CommandTargets getTargets() {
 		return this.targets;
 	}
 
@@ -65,10 +72,10 @@ final class BlockDefinitions {
 		return getBlock().getLogger();
 	}
 
-	public Definitions createDefinitions() {
+	public Definitions buildDefinitions() {
 
 		final TypeParameters<?> typeParameters =
-				this.definer.env().getValueRequest().getExpectedParameters();
+				env().getValueRequest().getExpectedParameters();
 		final Definitions claims;
 
 		if (this.claims == null) {
@@ -78,7 +85,8 @@ final class BlockDefinitions {
 		} else {
 			claims =
 					new DeclarativePart(
-							this.definer,
+							getBlock(),
+							env(),
 							this.claimTargets,
 							this.claims,
 							true)
@@ -91,7 +99,8 @@ final class BlockDefinitions {
 
 		return claims.refine(
 				new DeclarativePart(
-						this.definer,
+						getBlock(),
+						env(),
 						this.propositionTargets,
 						this.propositions,
 						false)
@@ -100,10 +109,10 @@ final class BlockDefinitions {
 
 	@Override
 	public String toString() {
-		if (this.definer == null) {
+		if (this.block == null) {
 			return super.toString();
 		}
-		return this.definer.toString();
+		return this.block.toString();
 	}
 
 	private void build() {
@@ -114,7 +123,7 @@ final class BlockDefinitions {
 		for (DeclarativeSentence sentence : getBlock().getSentences()) {
 			++index;
 
-			final DefTargets targets = sentence.getDefTargets();
+			final CommandTargets targets = sentence.getTargets();
 
 			if (!targets.defining()) {
 				continue;
@@ -153,7 +162,7 @@ final class BlockDefinitions {
 
 	private void addSentence(
 			DeclarativeSentence sentence,
-			DefTargets targets,
+			CommandTargets targets,
 			int index,
 			boolean claim) {
 		if (claim) {
@@ -186,7 +195,7 @@ final class BlockDefinitions {
 		}
 	}
 
-	private void addTargets(DefTargets targets, boolean claim) {
+	private void addTargets(CommandTargets targets, boolean claim) {
 		this.targets = this.targets.add(targets);
 		if (claim) {
 			this.claimTargets = this.claimTargets.add(targets);

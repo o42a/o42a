@@ -35,10 +35,10 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.MainDefiner;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
@@ -49,7 +49,7 @@ public class Module extends Obj {
 	private final Name moduleName;
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
-	private MainDefiner definer;
+	private DefinitionsBuilder definitionsBuilder;
 
 	public Module(CompilerContext context, Name moduleName) {
 		this(context.compileModule(), moduleName);
@@ -105,7 +105,7 @@ public class Module extends Obj {
 				this,
 				new Namespace(this, this),
 				this.memberRegistry);
-		this.definer = this.definition.define(definitionEnv());
+		this.definitionsBuilder = this.definition.definitions(definitionEnv());
 
 		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
 	}
@@ -122,7 +122,7 @@ public class Module extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definer.createDefinitions();
+		return this.definitionsBuilder.buildDefinitions();
 	}
 
 	private static ModuleScope moduleScope(

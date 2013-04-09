@@ -147,7 +147,7 @@ final class ClauseDefinition extends Obj {
 
 	void define(Reproducer reproducer) {
 
-		final Statements<?, ?> statements = reproducer.getStatements();
+		final Statements<?> statements = reproducer.getStatements();
 		final DeclarativeBlock reproduction = getDeclarations().reproduce(
 				reproducer.distributeBy(statements.nextDistributor()));
 
@@ -188,7 +188,9 @@ final class ClauseDefinition extends Obj {
 		}
 
 		@Override
-		public ClauseBuilder newClause(Statements<?, ?> statements, ClauseDeclaration declaration) {
+		public ClauseBuilder newClause(
+				Statements<?> statements,
+				ClauseDeclaration declaration) {
 			prohibitedContinuation(declaration);
 			return null;
 		}

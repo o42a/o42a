@@ -20,13 +20,9 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.InlineCmd;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ref.*;
-import org.o42a.core.st.DefValue;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 
@@ -51,9 +47,7 @@ abstract class AssignmentKind {
 		return false;
 	}
 
-	public abstract DefValue value(Resolver resolver);
-
-	public abstract Action initialValue(Resolver resolver);
+	public abstract Action action(Resolver resolver);
 
 	public abstract void resolve(FullResolver resolver);
 
@@ -61,19 +55,11 @@ abstract class AssignmentKind {
 			Reproducer reproducer,
 			AssignmentStatement prototype);
 
-	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
+	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
 
-	public abstract Eval eval(CodeBuilder builder, Scope origin);
-
-	public abstract InlineEval normalize(
+	public abstract InlineCmd normalize(
 			RootNormalizer normalizer,
 			Scope origin);
-
-	public abstract InlineCmd inlineCommand(
-			Normalizer normalizer,
-			Scope origin);
-
-	public abstract void normalizeCommand(RootNormalizer normalizer);
 
 	public abstract Cmd cmd();
 

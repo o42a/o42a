@@ -44,7 +44,7 @@ final class ContentBuilder extends BlockBuilder {
 	}
 
 	@Override
-	public void buildBlock(Block<?,?> block) {
+	public void buildBlock(Block<?> block) {
 		addContent(this.accessRules, this.statementVisitor, block, this.block);
 	}
 

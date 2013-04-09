@@ -44,7 +44,7 @@ public abstract class BlockBuilder extends Located {
 		super(location);
 	}
 
-	public abstract void buildBlock(Block<?, ?> block);
+	public abstract void buildBlock(Block<?> block);
 
 	private static final class EmptyBlock extends BlockBuilder {
 
@@ -53,7 +53,7 @@ public abstract class BlockBuilder extends Located {
 		}
 
 		@Override
-		public void buildBlock(Block<?, ?> block) {
+		public void buildBlock(Block<?> block) {
 		}
 
 		@Override
@@ -73,7 +73,7 @@ public abstract class BlockBuilder extends Located {
 		}
 
 		@Override
-		public void buildBlock(Block<?, ?> block) {
+		public void buildBlock(Block<?> block) {
 			block.propose(block).alternative(block).selfAssign(this.value);
 		}
 

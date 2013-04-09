@@ -19,22 +19,16 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.st.Definer.noDefs;
+import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
-import org.o42a.core.value.Condition;
-import org.o42a.core.value.ValueRequest;
+import org.o42a.core.st.CommandTargets;
 
 
-public abstract class DeclarativeSentence
-		extends Sentence<Declaratives, Definer> {
+public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
-	private final AltEnv altEnv = new AltEnv(this);
-	private DefTargets targets;
+	private CommandTargets targets;
 	private boolean ignored;
 
 	protected DeclarativeSentence(
@@ -66,7 +60,8 @@ public abstract class DeclarativeSentence
 		return getBlock().isInsideClaim();
 	}
 
-	public DefTargets getDefTargets() {
+	@Override
+	public CommandTargets getTargets() {
 		if (this.targets != null) {
 			return this.targets;
 		}
@@ -82,71 +77,25 @@ public abstract class DeclarativeSentence
 		this.ignored = true;
 	}
 
-	public DefValue value(Resolver resolver) {
-
-		final DeclarativeSentence prerequisite = getPrerequisite();
-
-		if (prerequisite != null) {
-
-			final DefValue prereqValue = prerequisite.value(resolver);
-
-			assert !prereqValue.hasValue() :
-				"Prerequisite can not have a value";
-
-			final Condition condition = prereqValue.getCondition();
-
-			if (!condition.isTrue()) {
-				return condition.negate().toDefValue();
-			}
-		}
-
-		DefValue result = TRUE_DEF_VALUE;
-
-		for (Declaratives alt : getAlternatives()) {
-
-			final DefValue value = alt.value(resolver);
-
-			if (value.hasValue()) {
-				return value;
-			}
-
-			final Condition condition = value.getCondition();
-
-			if (!condition.isTrue()) {
-				if (condition.isFalse()) {
-					result = value;
-					continue;
-				}
-				return value;
-			}
-		}
-
-		return result;
-	}
-
-	final DefinerEnv getAltEnv() {
-		return this.altEnv;
-	}
-
-	private DefTargets prerequisiteTargets() {
+	private CommandTargets prerequisiteTargets() {
 
 		final DeclarativeSentence prerequisite = getPrerequisite();
 
 		if (prerequisite == null) {
-			return noDefs();
+			return noCommands();
 		}
 
-		return prerequisite.getDefTargets().toPrerequisites();
+		return prerequisite.getTargets().toPrerequisites();
 	}
 
-	private DefTargets altTargets() {
+	private CommandTargets altTargets() {
 
-		DefTargets result = noDefs();
+		CommandTargets result = noCommands();
 		Declaratives first = null;
 
 		for (Declaratives alt : getAlternatives()) {
 
-			final DefTargets targets = alt.getDefTargets();
+			final CommandTargets targets = alt.getTargets();
 
 			if (first == null) {
 				first = alt;
@@ -187,9 +136,9 @@ public abstract class DeclarativeSentence
 		return result;
 	}
 
-	private DefTargets addSentenceTargets(DefTargets targets) {
+	private CommandTargets addSentenceTargets(CommandTargets targets) {
 
-		final DefTargets result;
+		final CommandTargets result;
 
 		if (isIssue() && targets.isEmpty() && !targets.haveError()) {
 			reportEmptyIssue();
@@ -202,29 +151,6 @@ public abstract class DeclarativeSentence
 		}
 
 		return result.claim();
-	}
-
-	private static final class AltEnv extends DefinerEnv {
-
-		private final DeclarativeSentence sentence;
-
-		AltEnv(DeclarativeSentence sentence) {
-			this.sentence = sentence;
-		}
-
-		@Override
-		public ValueRequest getValueRequest() {
-			return this.sentence.getBlock().getInitialEnv().getValueRequest();
-		}
-
-		@Override
-		public String toString() {
-			if (this.sentence == null) {
-				return super.toString();
-			}
-			return this.sentence.toString();
-		}
-
 	}
 
 }

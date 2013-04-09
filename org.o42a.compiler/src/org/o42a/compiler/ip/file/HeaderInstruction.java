@@ -53,7 +53,7 @@ final class HeaderInstruction implements Instruction, InstructionContext {
 	}
 
 	@Override
-	public Block<?, ?> getBlock() {
+	public Block<?> getBlock() {
 		prohibited();
 		return new DeclarativeBlock(
 				this.ref,
