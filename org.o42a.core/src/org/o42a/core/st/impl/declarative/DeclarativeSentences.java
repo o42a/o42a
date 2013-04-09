@@ -26,7 +26,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.st.CommandTargets;
-import org.o42a.core.st.Definer;
+import org.o42a.core.st.Implication;
 import org.o42a.core.st.impl.cmd.Sentences;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
@@ -99,7 +99,8 @@ public abstract class DeclarativeSentences extends Sentences {
 			return NO_DEF_TARGET;
 		}
 
-		final List<Definer> commands = statements.getImplications();
+		final List<? extends Implication<?>> commands =
+				statements.getImplications();
 		final int size = commands.size();
 
 		if (size != 1) {
