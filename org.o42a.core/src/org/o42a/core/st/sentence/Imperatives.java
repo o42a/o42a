@@ -21,14 +21,11 @@ package org.o42a.core.st.sentence;
 
 import org.o42a.core.Container;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Command;
-import org.o42a.core.st.CommandEnv;
-import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
 import org.o42a.util.string.Name;
 
 
-public final class Imperatives extends Statements<Imperatives, Command> {
+public final class Imperatives extends Statements<Imperatives> {
 
 	Imperatives(LocationInfo location, ImperativeSentence sentence) {
 		super(location, sentence);
@@ -89,14 +86,6 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 		statement(braces);
 	}
 
-	@Override
-	protected Command implicate(Statement statement) {
-
-		final CommandEnv env = getSentence().getBlock().statementsEnv();
-
-		return statement.command(env);
-	}
-
 	private ImperativeBlock blockByName(LocationInfo location, Name name) {
 		if (name == null) {
 			return getSentence().getBlock();
@@ -109,7 +98,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 				return block;
 			}
 
-			final Statements<?, ?> enclosing = block.getEnclosing();
+			final Statements<?> enclosing = block.getEnclosing();
 
 			if (enclosing == null) {
 				break;

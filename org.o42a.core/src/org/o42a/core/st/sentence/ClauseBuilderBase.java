@@ -25,7 +25,7 @@ import org.o42a.util.string.Name;
 
 public abstract class ClauseBuilderBase implements ContainerInfo {
 
-	protected abstract Block<?, ?> parentheses(Group group);
+	protected abstract Block<?> parentheses(Group group);
 
 	protected abstract ImperativeBlock braces(Group group, Name name);
 

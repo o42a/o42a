@@ -32,12 +32,12 @@ import org.o42a.core.st.impl.imperative.*;
 import org.o42a.util.string.Name;
 
 
-public final class ImperativeBlock extends Block<Imperatives, Command> {
+public final class ImperativeBlock extends Block<Imperatives> {
 
 	public static ImperativeBlock topLevelImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Statements<?> enclosing,
 			Name name,
 			ImperativeFactory sentenceFactory,
 			MemberRegistry memberRegistry) {
@@ -71,7 +71,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	public static ImperativeBlock nestedImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Statements<?> enclosing,
 			boolean parentheses,
 			Name name,
 			MemberRegistry memberRegistry,
@@ -96,7 +96,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	private ImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Statements<?> enclosing,
 			boolean parentheses,
 			Name name,
 			MemberRegistry memberRegistry,
@@ -177,7 +177,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	public ImperativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Statements<?, ?> enclosing = reproducer.getStatements();
+		final Statements<?> enclosing = reproducer.getStatements();
 
 		if (enclosing != null) {
 

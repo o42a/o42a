@@ -45,20 +45,18 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.Name;
 
 
-public abstract class Statements<
-		S extends Statements<S, L>,
-		L extends Implication<L>>
+public abstract class Statements<S extends Statements<S>>
 				extends Contained {
 
-	private final Sentence<S, L> sentence;
-	private final ArrayList<L> implications = new ArrayList<>(1);
+	private final Sentence<S> sentence;
+	private final ArrayList<Command> commands = new ArrayList<>(1);
 	private Container nextContainer;
 	private boolean statementDropped;
 	private boolean incompatibilityReported;
 	private int instructionsExecuted;
 	private CommandTargets targets;
 
-	Statements(LocationInfo location, Sentence<S, L> sentence) {
+	Statements(LocationInfo location, Sentence<S> sentence) {
 		super(
 				location,
 				new StatementsDistributor(location, sentence));
@@ -66,7 +64,7 @@ public abstract class Statements<
 		this.nextContainer = getContainer();
 	}
 
-	public Sentence<S, L> getSentence() {
+	public Sentence<S> getSentence() {
 		return this.sentence;
 	}
 
@@ -74,11 +72,11 @@ public abstract class Statements<
 		return getSentence().isInsideIssue();
 	}
 
-	public final List<L> getImplications() {
-		return this.implications;
+	public final List<Command> getImplications() {
+		return this.commands;
 	}
 
-	public SentenceFactory<L, S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<S, ?, ?> getSentenceFactory() {
 		return getSentence().getSentenceFactory();
 	}
 
@@ -184,11 +182,11 @@ public abstract class Statements<
 		return new Group(location, this, builder);
 	}
 
-	public Block<S, L> parentheses(LocationInfo location) {
+	public Block<S> parentheses(LocationInfo location) {
 		return parentheses(location, nextContainer());
 	}
 
-	public Block<S, L> parentheses(LocationInfo location, Container container) {
+	public Block<S> parentheses(LocationInfo location, Container container) {
 		return parentheses(
 				-1,
 				location,
@@ -241,8 +239,8 @@ public abstract class Statements<
 
 	public final Local local(LocationInfo location, Name name, Ref ref) {
 
-		final Sentence<S, L> sentence = getSentence();
-		final Block<S, L> block = sentence.getBlock();
+		final Sentence<S> sentence = getSentence();
+		final Block<S> block = sentence.getBlock();
 
 		block.getLocals().declareLocal(location, name);
 
@@ -283,22 +281,22 @@ public abstract class Statements<
 	@Override
 	public String toString() {
 
-		final List<L> implications = getImplications();
+		final List<Command> commands = getImplications();
 
-		if (implications.isEmpty()) {
+		if (commands.isEmpty()) {
 			return "<no statements>";
 		}
 
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		for (L implication : implications) {
+		for (Command command : commands) {
 			if (!comma) {
 				comma = true;
 			} else {
 				out.append(", ");
 			}
-			out.append(implication);
+			out.append(command);
 		}
 
 		return out.toString();
@@ -313,32 +311,33 @@ public abstract class Statements<
 
 	protected final void addStatement(Statement statement) {
 		statement.assertSameScope(this);
-		this.implications.add(implicate(statement));
+
+		final CommandEnv env = getSentence().getBlock().statementsEnv();
+
+		this.commands.add(statement.command(env));
 	}
 
 	protected final void replaceStatement(int index, Statement statement) {
 
-		final L old = this.implications.get(index);
+		final Command old = this.commands.get(index);
 
-		this.implications.set(index, old.replaceWith(statement));
+		this.commands.set(index, old.replaceWith(statement));
 	}
 
 	protected final void removeStatement(int index) {
-		this.implications.remove(index);
+		this.commands.remove(index);
 	}
 
-	protected abstract L implicate(Statement statement);
-
-	void reproduce(Sentence<S, L> sentence, Reproducer reproducer) {
+	void reproduce(Sentence<S> sentence, Reproducer reproducer) {
 
 		final S reproduction = sentence.alternative(this);
 		final Reproducer statementsReproducer =
 				reproducer.reproduceIn(reproduction);
 
-		for (L implication : getImplications()) {
+		for (Command command : getImplications()) {
 
 			final Statement statementReproduction =
-					implication.getStatement().reproduce(
+					command.getStatement().reproduce(
 							statementsReproducer.distributeBy(
 									reproduction.nextDistributor()));
 
@@ -348,12 +347,12 @@ public abstract class Statements<
 		}
 	}
 
-	Block<S, L> parentheses(
+	Block<S> parentheses(
 			int index,
 			LocationInfo location,
 			Distributor distributor) {
 
-		final Block<S, L> parentheses =
+		final Block<S> parentheses =
 				getSentence().getSentenceFactory().createParentheses(
 						location,
 						distributor,

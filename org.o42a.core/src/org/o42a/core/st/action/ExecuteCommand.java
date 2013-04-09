@@ -51,7 +51,7 @@ public class ExecuteCommand extends Action {
 	}
 
 	@Override
-	public LoopAction toLoopAction(Block<?, ?> block) {
+	public LoopAction toLoopAction(Block<?> block) {
 		if (getCondition().isTrue()) {
 			return LoopAction.CONTINUE;
 		}

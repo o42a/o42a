@@ -118,7 +118,7 @@ public abstract class PhraseContext {
 
 	protected abstract void define(
 			ClauseInstance instance,
-			Block<?, ?> definition);
+			Block<?> definition);
 
 	abstract MainPhraseContext getMainContext();
 

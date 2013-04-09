@@ -24,13 +24,11 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Definer;
-import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
 import org.o42a.util.string.Name;
 
 
-public final class Declaratives extends Statements<Declaratives, Definer> {
+public final class Declaratives extends Statements<Declaratives> {
 
 	Declaratives(LocationInfo location, DeclarativeSentence sentence) {
 		super(location, sentence);
@@ -105,11 +103,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	protected void braces(ImperativeBlock braces) {
 		statement(braces);
-	}
-
-	@Override
-	protected Definer implicate(Statement statement) {
-		return statement.define(getSentence().getBlock().statementsEnv());
 	}
 
 }

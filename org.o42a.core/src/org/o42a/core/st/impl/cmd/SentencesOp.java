@@ -58,13 +58,13 @@ final class SentencesOp {
 					control.braces(code, next.head(), sentences.getName());
 		}
 
-		final List<? extends Sentence<?, ?>> sentenceList =
+		final List<? extends Sentence<?>> sentenceList =
 				sentences.getSentences();
 		final int len = sentenceList.size();
 
 		for (int i = 0; i < len; ++i) {
 
-			final Sentence<?, ?> sentence = sentenceList.get(i);
+			final Sentence<?> sentence = sentenceList.get(i);
 
 			writeSentence(
 					blockControl,
@@ -90,11 +90,11 @@ final class SentencesOp {
 	private static void writeSentence(
 			Control control,
 			Scope origin,
-			Sentence<?, ?> sentence,
+			Sentence<?> sentence,
 			InlineSentence inline,
 			String index) {
 
-		final Sentence<?, ?> prerequisite = sentence.getPrerequisite();
+		final Sentence<?> prerequisite = sentence.getPrerequisite();
 		final Block prereqFailed;
 
 		if (prerequisite == null) {
@@ -115,7 +115,7 @@ final class SentencesOp {
 			prereqControl.end();
 		}
 
-		final List<? extends Statements<?, ?>> alternatives =
+		final List<? extends Statements<?>> alternatives =
 				sentence.getAlternatives();
 		final int len = alternatives.size();
 
@@ -145,7 +145,7 @@ final class SentencesOp {
 		// fill code blocks
 		for (int i = 0; i < len; ++i) {
 
-			final Statements<?, ?> alt = alternatives.get(i);
+			final Statements<?> alt = alternatives.get(i);
 			final Block altCode = blocks[i];
 			final Control altControl;
 			final int nextIdx = i + 1;
@@ -172,7 +172,7 @@ final class SentencesOp {
 	private static void writeStatements(
 			Control control,
 			Scope origin,
-			Statements<?, ?> statements,
+			Statements<?> statements,
 			InlineCommands inlines) {
 
 		final List<? extends Implication<?>> commands =
@@ -205,7 +205,7 @@ final class SentencesOp {
 	}
 
 	private static void endAlt(
-			Sentence<?, ?> sentence,
+			Sentence<?> sentence,
 			Control mainControl,
 			Control control) {
 		if (sentence.isExit()) {

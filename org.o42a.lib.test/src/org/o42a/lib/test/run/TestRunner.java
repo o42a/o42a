@@ -53,7 +53,7 @@ final class TestRunner extends ConstructedObject {
 	public static void runTest(
 			TestModule module,
 			UserInfo user,
-			Statements<?, ?> statements,
+			Statements<?> statements,
 			Field field) {
 		if (field.getVisibility() != Visibility.PUBLIC) {
 			return; // Only public fields recognized as tests.
@@ -89,7 +89,7 @@ final class TestRunner extends ConstructedObject {
 	}
 
 	private static void run(
-			Statements<?, ?> statements,
+			Statements<?> statements,
 			String name,
 			Field field) {
 		if (field.isPrototype()) {
@@ -111,7 +111,7 @@ final class TestRunner extends ConstructedObject {
 	}
 
 	private static String testName(
-			Statements<?, ?> statements,
+			Statements<?> statements,
 			Field field,
 			Obj test) {
 

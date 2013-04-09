@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause.impl;
 
+import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
@@ -114,9 +116,7 @@ final class ClauseCommand extends Command {
 		case EXPRESSION:
 			return new ExpressionClauseCommand(declaration, env());
 		case OVERRIDER:
-			throw new IllegalArgumentException(
-					"Overrider clause could not appear"
-					+ " in imperative statement");
+			return new OverriderClauseCommand(declaration, env());
 		case GROUP:
 			return new GroupClauseCommand(declaration, env());
 		}
@@ -195,6 +195,64 @@ final class ClauseCommand extends Command {
 		@Override
 		public DefTarget toTarget(Scope origin) {
 			return DefTarget.NO_DEF_TARGET;
+		}
+
+	}
+
+	private static final class OverriderClauseCommand extends Command {
+
+		OverriderClauseCommand(
+				ClauseDeclarationStatement statement,
+				CommandEnv env) {
+			super(statement, env);
+		}
+
+		@Override
+		public CommandTargets getTargets() {
+			return fieldDef();
+		}
+
+		@Override
+		public TypeParameters<?> typeParameters(Scope scope) {
+			return null;
+		}
+
+		@Override
+		public Action action(Resolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Instruction toInstruction(Resolver resolver) {
+			return null;
+		}
+
+		@Override
+		public DefTarget toTarget(Scope origin) {
+			return NO_DEF_TARGET;
+		}
+
+		@Override
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
+		}
+
+		@Override
+		public InlineCmd inlineCmd(Normalizer normalizer, Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public InlineCmd normalizeCmd(RootNormalizer normalizer, Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Cmd cmd(Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolve(FullResolver resolver) {
 		}
 
 	}

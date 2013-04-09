@@ -31,7 +31,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
-import org.o42a.core.st.impl.cmd.SentencesCmd;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
@@ -109,7 +108,8 @@ public final class DeclarativeBlockCommand
 
 	@Override
 	public Cmd cmd(Scope origin) {
-		return new SentencesCmd(this.sentences, origin);
+		assert getStatement().assertFullyResolved();
+		return this.sentences.cmd(origin);
 	}
 
 	@Override

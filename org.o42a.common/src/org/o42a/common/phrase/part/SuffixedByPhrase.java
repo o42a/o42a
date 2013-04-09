@@ -68,12 +68,12 @@ public class SuffixedByPhrase extends PhraseContinuation {
 	}
 
 	@Override
-	public void define(Block<?, ?> definition) {
+	public void define(Block<?> definition) {
 		if (this.prefix == null) {
 			return;// Do not assign any value.
 		}
 
-		final Statements<?, ?> statements =
+		final Statements<?> statements =
 				definition.propose(this).alternative(this);
 
 		statements.selfAssign(this.prefix);

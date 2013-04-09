@@ -23,12 +23,10 @@ import static org.o42a.core.st.Command.exitCommand;
 import static org.o42a.core.st.Command.noCommands;
 
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandTargets;
 
 
-public abstract class ImperativeSentence
-		extends Sentence<Imperatives, Command> {
+public abstract class ImperativeSentence extends Sentence<Imperatives> {
 
 	private CommandTargets targets;
 

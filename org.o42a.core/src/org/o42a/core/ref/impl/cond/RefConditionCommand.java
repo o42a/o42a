@@ -38,8 +38,6 @@ import org.o42a.core.value.link.TargetResolver;
 
 final class RefConditionCommand extends Command {
 
-	private InlineValue normal;
-
 	RefConditionCommand(RefCondition ref, CommandEnv env) {
 		super(ref, env);
 	}
@@ -61,7 +59,15 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
+	public Command replaceWith(Statement statement) {
+		return statement.command(env());
+	}
+
+	@Override
 	public Instruction toInstruction(Resolver resolver) {
+		if (getRefCondition().isLocal()) {
+			return null;
+		}
 
 		final Directive directive = getRef().resolve(resolver).toDirective();
 
@@ -117,10 +123,7 @@ final class RefConditionCommand extends Command {
 	@Override
 	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		if (this.normal == null) {
-			return new RefConditionCmd(getRefCondition());
-		}
-		return new InlineRefConditionCmd(this.normal);
+		return new RefConditionCmd(getRefCondition());
 	}
 
 	@Override

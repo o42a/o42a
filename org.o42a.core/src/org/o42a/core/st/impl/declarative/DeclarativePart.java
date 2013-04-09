@@ -19,9 +19,8 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import static org.o42a.core.ir.local.Control.mainControl;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
-import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
-import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
 import java.util.List;
 
@@ -30,12 +29,15 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.Control;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.st.impl.cmd.InlineSentences;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.TypeParameters;
@@ -50,7 +52,7 @@ final class DeclarativePart extends Def {
 	private final DeclarativeBlock block;
 	private final CommandEnv env;
 	private final DeclarativePartSentences sentences;
-	private InlineDeclarativeSentences normal;
+	private InlineSentences normal;
 	private Holder<DefTarget> defTarget;
 
 	DeclarativePart(
@@ -109,28 +111,34 @@ final class DeclarativePart extends Def {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.normal = inlineBlock(normalizer, null, getScope(), this.sentences);
+		this.normal = this.sentences.inline(normalizer, null, getScope());
 	}
 
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
 
-		final InlineDeclarativeSentences inline = inlineBlock(
-				normalizer.getRoot(),
-				normalizer,
-				getScope(),
-				this.sentences);
+		final InlineSentences inline =
+				this.sentences.inline(normalizer.getRoot(), normalizer, getScope());
 
 		if (inline == null) {
 			return null;
 		}
 
-		return new DeclarativePartEval(this, getScope(), inline);
+		return new CmdEval(inline);
 	}
 
 	@Override
 	public Eval eval() {
-		return new DeclarativePartEval(this, getScope(), this.normal);
+
+		final Cmd cmd;
+
+		if (this.normal != null) {
+			cmd = this.normal;
+		} else {
+			cmd = this.sentences.cmd(getScope());
+		}
+
+		return new CmdEval(cmd);
 	}
 
 	@Override
@@ -247,41 +255,31 @@ final class DeclarativePart extends Def {
 
 	}
 
-	private static final class DeclarativePartEval extends InlineEval {
+	private static final class CmdEval extends InlineEval {
 
-		private final DeclarativePart part;
-		private final Scope origin;
-		private final InlineDeclarativeSentences inlineSentences;
+		private final Cmd cmd;
 
-		DeclarativePartEval(
-				DeclarativePart part,
-				Scope origin,
-				InlineDeclarativeSentences inlineSentences) {
+		CmdEval(Cmd cmd) {
 			super(null);
-			this.part = part;
-			this.origin = origin;
-			this.inlineSentences = inlineSentences;
+			this.cmd = cmd;
 		}
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
-			writeSentences(
-					dirs,
-					host,
-					this.origin,
-					this.part.sentences,
-					this.inlineSentences);
+
+			final Control control = mainControl(dirs);
+
+			this.cmd.write(control);
+
+			control.end();
 		}
 
 		@Override
 		public String toString() {
-			if (this.part == null) {
+			if (this.cmd == null) {
 				return super.toString();
 			}
-			if (this.inlineSentences == null) {
-				return this.part.toString();
-			}
-			return this.inlineSentences.toString();
+			return this.cmd.toString();
 		}
 
 		@Override

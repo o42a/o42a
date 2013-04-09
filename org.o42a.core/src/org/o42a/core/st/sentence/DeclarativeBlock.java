@@ -31,7 +31,6 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandEnv;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.impl.declarative.BlockDefiner;
 import org.o42a.core.st.impl.declarative.DeclarativeBlockCommand;
@@ -40,7 +39,7 @@ import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.string.Name;
 
 
-public final class DeclarativeBlock extends Block<Declaratives, Definer> {
+public final class DeclarativeBlock extends Block<Declaratives> {
 
 	static DeclarativeBlock nestedBlock(
 			LocationInfo location,
@@ -169,7 +168,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	public DeclarativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Statements<?, ?> enclosing = reproducer.getStatements();
+		final Statements<?> enclosing = reproducer.getStatements();
 		final DeclarativeBlock reproduction;
 
 		if (enclosing == null) {

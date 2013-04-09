@@ -25,6 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.sentence.Statements;
 
@@ -35,10 +36,9 @@ final class InlineCommands {
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			Scope origin,
-			Statements<?, ?> imperatives) {
+			Statements<?> statements) {
 
-		final List<? extends Implication<?>> commands =
-				imperatives.getImplications();
+		final List<Command> commands = statements.getImplications();
 		final InlineCmd[] inlines = new InlineCmd[commands.size()];
 		int i = 0;
 

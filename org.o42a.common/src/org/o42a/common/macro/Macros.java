@@ -98,12 +98,12 @@ public final class Macros {
 	private Macros() {
 	}
 
-	public static Ref consumeCondition(Statements<?, ?> statements, Ref value) {
+	public static Ref consumeCondition(Statements<?> statements, Ref value) {
 		return consumeStatement(statements, value, value, true);
 	}
 
 	public static Ref consumeSelfAssignment(
-			Statements<?, ?> statements,
+			Statements<?> statements,
 			LocationInfo location,
 			Ref condition) {
 		return consumeStatement(statements, location, condition, false);

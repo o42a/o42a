@@ -95,7 +95,7 @@ public final class ClauseInstance implements LocationInfo {
 		return this.definition = new Definition(this);
 	}
 
-	public void groupDefinition(Block<?, ?> block) {
+	public void groupDefinition(Block<?> block) {
 		getContext().define(this, block);
 		for (PhraseContinuation content : getContent()) {
 			content.define(block);
@@ -176,7 +176,7 @@ public final class ClauseInstance implements LocationInfo {
 		}
 
 		@Override
-		public void buildBlock(Block<?, ?> block) {
+		public void buildBlock(Block<?> block) {
 			this.instance.getContext().define(this.instance, block);
 			for (PhraseContinuation content : this.instance.getContent()) {
 				content.define(block);

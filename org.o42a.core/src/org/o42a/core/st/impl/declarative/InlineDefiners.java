@@ -19,13 +19,10 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import java.util.List;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.Declaratives;
 
 
@@ -36,8 +33,9 @@ final class InlineDefiners {
 			Normalizer normalizer,
 			Scope origin,
 			Declaratives declaratives) {
+		throw new UnsupportedOperationException();
 
-		final List<Definer> definers = declaratives.getImplications();
+		/*final List<Definer> definers = declaratives.getImplications();
 		final InlineEval[] inlines = new InlineEval[definers.size()];
 		int i = 0;
 
@@ -61,7 +59,7 @@ final class InlineDefiners {
 			return null;
 		}
 
-		return new InlineDefiners(inlines);
+		return new InlineDefiners(inlines);*/
 	}
 
 	private final InlineEval[] definers;

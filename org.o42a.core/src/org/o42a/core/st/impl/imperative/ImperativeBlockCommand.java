@@ -32,7 +32,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.impl.cmd.Sentences;
-import org.o42a.core.st.impl.cmd.SentencesCmd;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
@@ -136,7 +135,7 @@ public final class ImperativeBlockCommand extends Command {
 	@Override
 	public Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new SentencesCmd(this.sentences, origin);
+		return this.sentences.cmd(origin);
 	}
 
 	@Override
@@ -272,7 +271,7 @@ public final class ImperativeBlockCommand extends Command {
 		}
 
 		@Override
-		public List<? extends Sentence<?, ?>> getSentences() {
+		public List<? extends Sentence<?>> getSentences() {
 			return this.command.getBlock().getSentences();
 		}
 
