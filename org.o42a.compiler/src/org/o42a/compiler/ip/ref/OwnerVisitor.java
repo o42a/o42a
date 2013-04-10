@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModuleRef;
 import static org.o42a.compiler.ip.ref.RefInterpreter.isRootRef;
 import static org.o42a.compiler.ip.st.LocalInterpreter.isLocalScopeRef;
 import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
@@ -102,6 +103,10 @@ final class OwnerVisitor
 					p.getAccessRules(),
 					MACROS_PATH.bind(location, p.getScope()).target(p))
 					.expandMacro(ref);
+		case MODULE:
+			return owner(
+					p.getAccessRules(),
+					enclosingModuleRef(location, p));
 		case ROOT:
 			return nonLinkOwner(
 					p.getAccessRules(),
