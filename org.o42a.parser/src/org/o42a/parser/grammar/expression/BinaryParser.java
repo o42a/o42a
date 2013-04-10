@@ -77,7 +77,7 @@ public class BinaryParser implements Parser<BinaryNode> {
 
 		final int next = context.next();
 
-		if (next != '#' && next != '$') {
+		if (next != '#') {
 			return null;
 		}
 
@@ -255,7 +255,7 @@ public class BinaryParser implements Parser<BinaryNode> {
 
 			final ScopeType scopeType = scopeRef.getType();
 
-			if (scopeType != ScopeType.MACROS && scopeType != ScopeType.ROOT) {
+			if (scopeType != ScopeType.MACROS) {
 				return null;
 			}
 

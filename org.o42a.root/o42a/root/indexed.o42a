@@ -18,21 +18,21 @@ can also base on this prototype.
 Item type := void ~~ An indexed items' type reference.
 #################
 
-Length :=< $$integer
+Length :=< //integer
 ~~~
 Indexed length.
 
 This is one less than a maximum index. 
 ~~~
 
-Item :=<> $$link (`#item type) (
+Item :=<> //link (`#item type) (
   ~~~
   A link to an item with the given index.
 
   Fails when <index> is negative or greater or equals to indexed <length>.
   ~~~
 
-  Index :=< $$link (`$$integer) ~~ Item index.
+  Index :=< //link (`//integer) ~~ Item index.
 )
 
 <*Item by index> Item` (

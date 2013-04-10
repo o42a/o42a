@@ -40,7 +40,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	@Test
 	public void arrayLength() {
 		compile(
-				"Array := `$$array (`integer) [[1, 2, 3]]",
+				"Array := `//array (`integer) [[1, 2, 3]]",
 				"Len := array: length");
 
 		assertThat(definiteValue(field("len"), ValueType.INTEGER), is(3L));
@@ -49,7 +49,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	@Test
 	public void emptyRowLength() {
 		compile(
-				"Array := $$row (`string) [[]]",
+				"Array := //row (`string) [[]]",
 				"Len := array: length");
 
 		assertThat(definiteValue(field("len"), ValueType.INTEGER), is(0L));
@@ -58,7 +58,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	@Test
 	public void emptyArrayLength() {
 		compile(
-				"Array := $$array (`string) [[]]",
+				"Array := //array (`string) [[]]",
 				"Len := array: length");
 
 		assertThat(definiteValue(field("len"), ValueType.INTEGER), is(0L));

@@ -9,8 +9,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Use namespace :=> directive
 ===========================
 
-Module := `$$string (False)
-Object := `$$string (False)
+Module := `//string (False)
+Object := `//string (False)
 
 <'' | object> Module = ()
 <[] | object> Module = ()

@@ -39,27 +39,9 @@ public class ImplicitSuffixTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void rootReference() {
-
-		final BinaryNode binary = parse("a $$b");
-
-		assertThat(binary.getOperator(), is(BinaryOperator.SUFFIX));
-		assertThat(binary.getSign(), hasRange(2, 4));
-		assertThat(binary.getLeftOperand(), isName("a"));
-
-		final MemberRefNode right =
-				to(MemberRefNode.class, binary.getRightOperand());
-
-		assertThat(right, hasName("b"));
-		assertThat(
-				to(ScopeRefNode.class, right.getOwner()).getType(),
-				is(ScopeType.ROOT));
-	}
-
-	@Test
 	public void macroExpression() {
 
-		final BinaryNode binary = parse("a $$foo [bar]");
+		final BinaryNode binary = parse("a ##foo [bar]");
 
 		assertThat(binary.getOperator(), is(BinaryOperator.SUFFIX));
 		assertThat(binary.getSign(), hasRange(2, 4));
@@ -73,7 +55,7 @@ public class ImplicitSuffixTest extends GrammarTestCase {
 		assertThat(prefix, hasName("foo"));
 		assertThat(
 				to(ScopeRefNode.class, prefix.getOwner()).getType(),
-				is(ScopeType.ROOT));
+				is(ScopeType.MACROS));
 	}
 
 	private BinaryNode parse(String text) {

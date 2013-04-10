@@ -56,17 +56,20 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 			}
 			return null;
 		case '$':
-			switch (context.next()) {
-			case '$':
-				type = ScopeType.ROOT;
-				context.acceptAll();
-				break;
-			case ':':
+			if (context.next() == ':') {
 				type = ScopeType.ANONYMOUS;
 				context.acceptAll();
-				break;
-			default:
+			} else {
 				type = ScopeType.LOCAL;
+				context.acceptButLast();
+			}
+			break;
+		case '/':
+			if (context.next() == '/') {
+				type = ScopeType.ROOT;
+				context.acceptAll();
+			} else {
+				type = ScopeType.MODULE;
 				context.acceptButLast();
 			}
 			break;

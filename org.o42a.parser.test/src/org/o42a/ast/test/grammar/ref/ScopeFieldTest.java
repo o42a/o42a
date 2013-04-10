@@ -18,7 +18,7 @@ import org.o42a.parser.Grammar;
 public class ScopeFieldTest extends GrammarTestCase {
 
 	@Test
-	public void localRef() {
+	public void local() {
 
 		final MemberRefNode ref = parse("$foo");
 
@@ -29,7 +29,7 @@ public class ScopeFieldTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void anonymousRef() {
+	public void anonymous() {
 
 		final MemberRefNode ref = parse("$:foo");
 
@@ -40,9 +40,20 @@ public class ScopeFieldTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void rootFieldRef() {
+	public void module() {
 
-		final MemberRefNode ref = parse("$$foo");
+		final MemberRefNode ref = parse("/foo");
+
+		assertThat(
+				to(ScopeRefNode.class, ref.getOwner()).getType(),
+				is(ScopeType.MODULE));
+		assertThat(canonicalName(ref.getName()), is("foo"));
+	}
+
+	@Test
+	public void root() {
+
+		final MemberRefNode ref = parse("//foo");
 
 		assertThat(
 				to(ScopeRefNode.class, ref.getOwner()).getType(),
@@ -51,7 +62,7 @@ public class ScopeFieldTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void fieldFieldRef() {
+	public void enclosingField() {
 
 		final MemberRefNode ref = parse("::foo");
 
@@ -62,7 +73,7 @@ public class ScopeFieldTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void impliedFieldRef() {
+	public void implied() {
 
 		final MemberRefNode ref = parse("*foo");
 
@@ -73,7 +84,7 @@ public class ScopeFieldTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void selfFieldRef() {
+	public void self() {
 
 		final MemberRefNode ref = parse(":foo");
 

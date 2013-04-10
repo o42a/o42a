@@ -26,7 +26,7 @@ public class BuiltinRefTest extends CompilerTestCase {
 
 	@Test
 	public void rootVoidRef() {
-		compile("A := `$$void");
+		compile("A := `//void");
 
 		final Obj aTarget = linkTarget(field("a"));
 
@@ -46,7 +46,7 @@ public class BuiltinRefTest extends CompilerTestCase {
 
 	@Test
 	public void rootFalseRef() {
-		compile("A := `$$false");
+		compile("A := `//false");
 
 		final Obj aTarget = linkTarget(field("a"));
 
