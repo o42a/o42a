@@ -9,5 +9,5 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Equals :=> void
 ===============
 
-What :=< $$link (`$$integer)
-To :=< $$link (`$$integer)
+What :=< //link (`//integer)
+To :=< //link (`//integer)

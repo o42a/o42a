@@ -57,7 +57,8 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse(":@@bar"), is(AdapterRefNode.class));
 		assertThat(parse("::@@bar"), is(AdapterRefNode.class));
 		assertThat(parse("$@@bar"), is(AdapterRefNode.class));
-		assertThat(parse("$$@@bar"), is(AdapterRefNode.class));
+		assertThat(parse("/@@bar"), is(AdapterRefNode.class));
+		assertThat(parse("//@@bar"), is(AdapterRefNode.class));
 	}
 
 	@Test

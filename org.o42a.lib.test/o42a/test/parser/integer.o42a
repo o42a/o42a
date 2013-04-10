@@ -9,4 +9,4 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Integer :=> rt-integer
 ======================
 
-Input :=< link (`$$string)
+Input :=< link (`//string)

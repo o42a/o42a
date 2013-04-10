@@ -86,9 +86,19 @@ public class ScopeRefTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void module() {
+
+		final ScopeRefNode ref = parse("/ ");
+
+		assertEquals(ScopeType.MODULE, ref.getType());
+		assertThat(ref, hasRange(0, 1));
+		assertEquals(2, this.worker.position().offset());
+	}
+
+	@Test
 	public void root() {
 
-		final ScopeRefNode ref = parse("$$ ");
+		final ScopeRefNode ref = parse("// ");
 
 		assertEquals(ScopeType.ROOT, ref.getType());
 		assertThat(ref, hasRange(0, 2));

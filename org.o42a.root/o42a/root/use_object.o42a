@@ -9,9 +9,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Use object :=> directive
 ========================
 
-Module := `$$string (False)
-Object := `$$string (False)
-Alias := `$$string (False)
+Module := `//string (False)
+Object := `//string (False)
+Alias := `//string (False)
 
 <'' | from | as ...> Object = ()
 <[] | from | as ...> Object = ()

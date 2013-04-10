@@ -12,7 +12,7 @@ Name = "Array as row"
 
 Print error '  ' [name] nl
 
-Array := $$array (`string) [["a", "b", "c"]]
+Array := //array (`string) [["a", "b", "c"]]
 Row := array: as row
 
 {

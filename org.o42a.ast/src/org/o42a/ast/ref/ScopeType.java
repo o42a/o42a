@@ -30,7 +30,8 @@ public enum ScopeType implements SignType {
 	MACROS("##"),
 	LOCAL("$"),
 	ANONYMOUS("$:"),
-	ROOT("$$");
+	MODULE("/"),
+	ROOT("//");
 
 	private final String sign;
 
