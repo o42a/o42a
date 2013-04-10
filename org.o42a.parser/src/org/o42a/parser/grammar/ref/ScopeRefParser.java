@@ -56,7 +56,7 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 			}
 			return null;
 		case '$':
-			if (context.next() == ':') {
+			if (context.next() == '$') {
 				type = ScopeType.ANONYMOUS;
 				context.acceptAll();
 			} else {

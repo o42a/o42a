@@ -78,7 +78,7 @@ public class ScopeRefTest extends GrammarTestCase {
 	@Test
 	public void anonymous() {
 
-		final ScopeRefNode ref = parse("$: ");
+		final ScopeRefNode ref = parse("$$ ");
 
 		assertEquals(ScopeType.ANONYMOUS, ref.getType());
 		assertThat(ref, hasRange(0, 2));

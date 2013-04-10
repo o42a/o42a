@@ -31,7 +31,7 @@ public class ScopeFieldTest extends GrammarTestCase {
 	@Test
 	public void anonymous() {
 
-		final MemberRefNode ref = parse("$:foo");
+		final MemberRefNode ref = parse("$$foo");
 
 		assertThat(
 				to(ScopeRefNode.class, ref.getOwner()).getType(),

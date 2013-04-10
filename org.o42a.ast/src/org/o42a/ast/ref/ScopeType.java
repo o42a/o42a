@@ -29,7 +29,7 @@ public enum ScopeType implements SignType {
 	PARENT("::"),
 	MACROS("##"),
 	LOCAL("$"),
-	ANONYMOUS("$:"),
+	ANONYMOUS("$$"),
 	MODULE("/"),
 	ROOT("//");
 
