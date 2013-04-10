@@ -86,12 +86,23 @@ public class UnaryExpressionTest extends GrammarTestCase {
 	@Test
 	public void valueOf() {
 
-		final UnaryNode result = parse("/foo");
+		final UnaryNode result = parse("\\foo");
 
 		assertEquals(UnaryOperator.VALUE_OF, result.getOperator());
 		assertThat(result.getOperand(), isName("foo"));
 		assertThat(result, hasRange(0, 4));
 		assertThat(result.getSign(), hasRange(0, 1));
+	}
+
+	@Test
+	public void keepValue() {
+
+		final UnaryNode result = parse("\\\\foo");
+
+		assertEquals(UnaryOperator.KEEP_VALUE, result.getOperator());
+		assertThat(result.getOperand(), isName("foo"));
+		assertThat(result, hasRange(0, 5));
+		assertThat(result.getSign(), hasRange(0, 2));
 	}
 
 	@Test

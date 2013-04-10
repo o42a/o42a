@@ -14,7 +14,7 @@ A row represented as <list>.
 
 Data :=< row (`#element type) ~~ A row represented by this list.
 
-Size = /data: length
+Size = \data: length
 
 Item => * (
   = Data [index]

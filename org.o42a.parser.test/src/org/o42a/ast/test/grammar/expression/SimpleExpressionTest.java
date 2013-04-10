@@ -106,8 +106,8 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("++foo"), is(UnaryNode.class));
 		assertThat(parse("--foo"), is(UnaryNode.class));
 		assertThat(parse("¬foo"), is(UnaryNode.class));
-		assertThat(parse("/foo"), is(UnaryNode.class));
-		assertThat(parse("//foo"), is(UnaryNode.class));
+		assertThat(parse("\\foo"), is(UnaryNode.class));
+		assertThat(parse("\\\\foo"), is(UnaryNode.class));
 		assertThat(parse("+foo\\ bar"), is(UnaryNode.class));
 	}
 

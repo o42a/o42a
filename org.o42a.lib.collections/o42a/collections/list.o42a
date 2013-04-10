@@ -49,7 +49,7 @@ Sublist :=> &list (`#element type) (
   Equals to the list size by default.
   ~~~
 
-  Size = /(to - from)
+  Size = \(to - from)
   
   Item => * (
     Index < size? = List:: [from + index]
