@@ -64,8 +64,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	public Void visitBraces(BracesNode braces, StatementsAccess p) {
 
-		final ImperativeBlock block =
-				p.get().braces(location(p, braces));
+		final ImperativeBlock block = p.get().braces(location(p, braces));
 
 		if (block == null) {
 			return null;

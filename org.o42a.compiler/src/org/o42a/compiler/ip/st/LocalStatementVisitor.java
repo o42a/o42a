@@ -19,13 +19,18 @@
 */
 package org.o42a.compiler.ip.st;
 
+import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.st.LocalInterpreter.local;
+import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 import static org.o42a.compiler.ip.st.StatementVisitor.validateAssignment;
 import static org.o42a.compiler.ip.st.StatementVisitor.validateLocalScope;
 
+import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.statement.*;
+import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Local;
 
 
@@ -33,6 +38,7 @@ final class LocalStatementVisitor
 		extends AbstractStatementVisitor<Void, StatementsAccess> {
 
 	private final StatementVisitor visitor;
+	private LocalNode localNode;
 
 	LocalStatementVisitor(StatementVisitor visitor) {
 		this.visitor = visitor;
@@ -67,6 +73,27 @@ final class LocalStatementVisitor
 	}
 
 	@Override
+	public Void visitBraces(BracesNode braces, StatementsAccess p) {
+
+		final NameNode localName = this.localNode.getName();
+		final ImperativeBlock block;
+
+		if (localName != null) {
+			block = p.get().braces(location(p, braces), localName.getName());
+		} else {
+			block = p.get().braces(location(p, braces));
+		}
+
+		if (block == null) {
+			return null;
+		}
+
+		addContent(p.getRules(), this.visitor, block, braces);
+
+		return null;
+	}
+
+	@Override
 	protected Void visitStatement(StatementNode statement, StatementsAccess p) {
 		return statement.accept(this.visitor, p);
 	}
@@ -79,6 +106,7 @@ final class LocalStatementVisitor
 				scope.getInterface(),
 				scope.getLocal(),
 				TARGET_REFERRAL);
+		this.localNode = scope.getLocal();
 		scope.getContent().accept(this, statements);
 	}
 
@@ -99,6 +127,7 @@ final class LocalStatementVisitor
 			return;
 		}
 
+		this.localNode = localNode;
 		this.visitor.addAssignment(statements, assignment, local.toRef());
 	}
 
