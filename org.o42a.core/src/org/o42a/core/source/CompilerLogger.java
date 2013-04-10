@@ -70,13 +70,6 @@ public class CompilerLogger implements Logger {
 				target);
 	}
 
-	public void illegalVisibility(LogInfo location) {
-		error(
-				"illegal_visibility",
-				location,
-				"Illegal field visibility qualifier");
-	}
-
 	public void ignored(LogInfo location) {
 		warning("ignored", location, "Statement ignored");
 	}

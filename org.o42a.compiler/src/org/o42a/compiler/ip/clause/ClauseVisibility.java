@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler.ip.clause;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.core.member.clause.ClauseDeclaration;
 
@@ -53,9 +53,6 @@ enum ClauseVisibility {
 
 	};
 
-	private static final VisibilityVisitor VISIBILITY_VISITOR =
-			new VisibilityVisitor();
-
 	public static ClauseVisibility clauseVisibilityByName(MemberRefNode ref) {
 
 		final ExpressionNode owner = ref.getOwner();
@@ -69,37 +66,34 @@ enum ClauseVisibility {
 
 	public static ClauseVisibility clauseVisibilityByPrefix(
 			ExpressionNode prefix) {
-		return prefix.accept(VISIBILITY_VISITOR, null);
+
+		final RefNode ref = prefix.toRef();
+
+		if (ref == null) {
+			return null;
+		}
+
+		final ScopeRefNode scopeRef = ref.toScopeRef();
+
+		if (scopeRef == null) {
+			return null;
+		}
+
+		switch (scopeRef.getType()) {
+		case IMPLIED:
+			return IMPLICIT_CLAUSE;
+		case SELF:
+			return INTERNAL_CLAUSE;
+		case MODULE:
+		case ROOT:
+		case LOCAL:
+		case ANONYMOUS:
+		case PARENT:
+		case MACROS:
+		}
+		return null;
 	}
 
 	public abstract ClauseDeclaration applyTo(ClauseDeclaration declaration);
-
-	private static final class VisibilityVisitor
-			extends AbstractExpressionVisitor<ClauseVisibility, Void> {
-
-		@Override
-		public ClauseVisibility visitScopeRef(ScopeRefNode ref, Void p) {
-			switch (ref.getType()) {
-			case IMPLIED:
-				return IMPLICIT_CLAUSE;
-			case SELF:
-				return INTERNAL_CLAUSE;
-			case ROOT:
-			case LOCAL:
-			case ANONYMOUS:
-			case PARENT:
-			case MACROS:
-			}
-			return null;
-		}
-
-		@Override
-		protected ClauseVisibility visitExpression(
-				ExpressionNode expression,
-				Void p) {
-			return null;
-		}
-
-}
 
 }

@@ -46,13 +46,11 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.util.log.LogInfo;
 
 
 public final class FieldDeclarableVisitor
 		extends AbstractDeclarableVisitor<FieldDeclaration, AccessDistributor> {
-
-	private static final VisibilityVisitor VISIBILITY_VISITOR =
-			new VisibilityVisitor();
 
 	private final Interpreter ip;
 	private final CompilerContext context;
@@ -205,7 +203,42 @@ public final class FieldDeclarableVisitor
 			return declaration;
 		}
 
-		return owner.accept(VISIBILITY_VISITOR, declaration);
+		final RefNode ref = owner.toRef();
+
+		if (ref == null) {
+			return illegalVisibility(declaration, member);
+		}
+
+		final ScopeRefNode scopeRef = ref.toScopeRef();
+
+		if (scopeRef == null) {
+			return illegalVisibility(declaration, member);
+		}
+
+		switch (scopeRef.getType()) {
+		case SELF:
+			return declaration.setVisibility(Visibility.PRIVATE);
+		case PARENT:
+			return declaration.setVisibility(Visibility.PROTECTED);
+		case MODULE:
+		case ROOT:
+		case LOCAL:
+		case ANONYMOUS:
+		case MACROS:
+		case IMPLIED:
+		}
+
+		return illegalVisibility(declaration, member);
+	}
+
+	private FieldDeclaration illegalVisibility(
+			FieldDeclaration declaration,
+			LogInfo location) {
+		declaration.getLogger().error(
+				"illegal_visibility",
+				location,
+				"Illegal field visibility qualifier");
+		return declaration;
 	}
 
 	private FieldDeclaration update(
@@ -316,39 +349,6 @@ public final class FieldDeclarableVisitor
 				ExpressionNode expression,
 				AccessDistributor p) {
 			getLogger().invalidDeclaration(expression);
-			return null;
-		}
-
-	}
-
-	private static final class VisibilityVisitor
-			extends AbstractExpressionVisitor<
-					FieldDeclaration,
-					FieldDeclaration> {
-
-		@Override
-		public FieldDeclaration visitScopeRef(
-				ScopeRefNode ref,
-				FieldDeclaration p) {
-			switch (ref.getType()) {
-			case SELF:
-				return p.setVisibility(Visibility.PRIVATE);
-			case PARENT:
-				return p.setVisibility(Visibility.PROTECTED);
-			case ROOT:
-			case LOCAL:
-			case ANONYMOUS:
-			case MACROS:
-			case IMPLIED:
-			}
-			return super.visitScopeRef(ref, p);
-		}
-
-		@Override
-		protected FieldDeclaration visitExpression(
-				ExpressionNode expression,
-				FieldDeclaration p) {
-			p.getLogger().illegalVisibility(expression);
 			return null;
 		}
 

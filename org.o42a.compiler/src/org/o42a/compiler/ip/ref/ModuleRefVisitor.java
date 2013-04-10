@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PATH_COMPILER_REF_IP;
-import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
+import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModuleRef;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.falseRef;
@@ -90,9 +90,7 @@ public class ModuleRefVisitor
 
 		@Override
 		protected Ref moduleRef(MemberRefNode moduleRef, AccessDistributor p) {
-			return enclosingModulePath(p.getContainer())
-					.bind(location(p, moduleRef), p.getScope())
-					.target(p);
+			return enclosingModuleRef(location(p, moduleRef), p);
 		}
 
 	}

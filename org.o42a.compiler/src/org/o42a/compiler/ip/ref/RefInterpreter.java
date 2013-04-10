@@ -49,6 +49,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
 import org.o42a.util.string.Name;
 
@@ -94,39 +95,13 @@ public abstract class RefInterpreter {
 		return module.is(object);
 	}
 
-	public static Path enclosingModulePath(Container of) {
+	public static Ref enclosingModuleRef(
+			LocationInfo location,
+			Distributor distributor) {
 
-		Container container = of;
+		final Path path = enclosingModulePath(distributor.getContainer());
 
-		if (container.getScope().isTopScope()) {
-			return ROOT_PATH;
-		}
-
-		Path result = null;
-
-		for (;;) {
-
-			final Container enclosing =
-					container.getScope().getEnclosingContainer();
-
-			if (enclosing.getScope().isTopScope()) {
-				if (result == null) {
-					return SELF_PATH;
-				}
-				return result;
-			}
-
-			final Path enclosingScopePath =
-					container.getScope().getEnclosingScopePath();
-
-			if (result == null) {
-				result = enclosingScopePath;
-			} else {
-				result = result.append(enclosingScopePath);
-			}
-
-			container = enclosing;
-		}
+		return path.bind(location, distributor.getScope()).target(distributor);
 	}
 
 	public static boolean isRootRef(ExpressionNode node) {
@@ -249,6 +224,41 @@ public abstract class RefInterpreter {
 		final Location location = location(p, node);
 
 		return FLOAT.constantRef(location, p, value);
+	}
+
+	private static Path enclosingModulePath(Container of) {
+
+		Container container = of;
+
+		if (container.getScope().isTopScope()) {
+			return ROOT_PATH;
+		}
+
+		Path result = null;
+
+		for (;;) {
+
+			final Container enclosing =
+					container.getScope().getEnclosingContainer();
+
+			if (enclosing.getScope().isTopScope()) {
+				if (result == null) {
+					return SELF_PATH;
+				}
+				return result;
+			}
+
+			final Path enclosingScopePath =
+					container.getScope().getEnclosingScopePath();
+
+			if (result == null) {
+				result = enclosingScopePath;
+			} else {
+				result = result.append(enclosingScopePath);
+			}
+
+			container = enclosing;
+		}
 	}
 
 	private final OwnerFactory ownerFactory;
