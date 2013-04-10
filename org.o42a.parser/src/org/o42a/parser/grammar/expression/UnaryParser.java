@@ -68,8 +68,8 @@ public class UnaryParser implements Parser<UnaryNode> {
 				context.acceptButLast();
 			}
 			break;
-		case '/':
-			if (context.next() == '/') {
+		case '\\':
+			if (context.next() == '\\') {
 				operator = UnaryOperator.KEEP_VALUE;
 				context.acceptAll();
 			} else {

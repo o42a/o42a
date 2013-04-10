@@ -54,7 +54,7 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  Foo := 1",
-				"  Bar := /foo",
+				"  Bar := \\foo",
 				")",
 				"B := a (Foo = 2)",
 				"C := b");
@@ -69,7 +69,7 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  Foo := 1",
-				"  Bar := //foo",
+				"  Bar := \\\\foo",
 				")",
 				"B := a (Foo = 2)",
 				"C := b");

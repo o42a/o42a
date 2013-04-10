@@ -32,7 +32,7 @@ public class UnaryExpressionDefinitionTest extends CompilerTestCase {
 
 	@Test
 	public void valueOf() {
-		compile("A := 1. B := integer(= /A).");
+		compile("A := 1. B := integer(= \\A).");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(1L));
@@ -40,7 +40,7 @@ public class UnaryExpressionDefinitionTest extends CompilerTestCase {
 
 	@Test
 	public void keepValue() {
-		compile("A := 1. B := integer(= //A).");
+		compile("A := 1. B := integer(= \\\\A).");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(1L));

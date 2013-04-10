@@ -15,7 +15,7 @@ A <mutable list> storing its elements in array.
 Data :=< variable (`array (`#element type))
 ~~ An array variable storing elements of this list.
 
-Size = /data: length
+Size = \data: length
 
 Item => * (
   = Data [index]
