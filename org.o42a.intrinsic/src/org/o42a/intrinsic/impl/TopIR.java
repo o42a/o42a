@@ -83,6 +83,11 @@ final class TopIR extends ScopeIR {
 		}
 
 		@Override
+		public TargetOp target(CodeDirs dirs) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
 			return null;
 		}

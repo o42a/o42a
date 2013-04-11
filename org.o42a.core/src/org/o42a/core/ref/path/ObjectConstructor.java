@@ -31,7 +31,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
@@ -192,7 +194,7 @@ public abstract class ObjectConstructor
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public ObjectOp pathTarget(CodeDirs dirs) {
 			if (!getConstructed().type().derivation().isUsed(
 					dirs.getGenerator().getAnalyzer(),
 					RUNTIME_DERIVATION_USAGE)) {
@@ -206,7 +208,7 @@ public abstract class ObjectConstructor
 			return String.valueOf(ObjectConstructor.this);
 		}
 
-		private HostOp exactObject(CodeDirs dirs) {
+		private ObjectOp exactObject(CodeDirs dirs) {
 
 			final Obj sample = getConstructed();
 			final ObjOp target = sample.ir(dirs.getGenerator()).op(
@@ -219,7 +221,7 @@ public abstract class ObjectConstructor
 			return target;
 		}
 
-		private HostOp newObject(CodeDirs dirs) {
+		private ObjectOp newObject(CodeDirs dirs) {
 
 			final ObjectOp owner;
 			final ObjectOp host = host().materialize(

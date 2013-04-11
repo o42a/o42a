@@ -157,7 +157,7 @@ public final class Constant<T> extends ObjectConstructor {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 
 			final ObjectIR ir =
 					this.constant.getConstructed().ir(getGenerator());

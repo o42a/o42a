@@ -27,8 +27,6 @@ import java.util.HashMap;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -246,12 +244,7 @@ public class DereferenceStep extends Step {
 		}
 
 		@Override
-		public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-			return target(dirs).dereference(dirs, holder);
-		}
-
-		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 			return start().dereference(
 					dirs,
 					tempObjHolder(dirs.getAllocator()));

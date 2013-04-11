@@ -20,11 +20,12 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.TargetOp;
 
 
-public abstract class FldIROp extends IROp implements HostOp {
+public abstract class FldIROp extends IROp implements TargetOp {
 
 	private final ObjOp host;
 	private final FldIR fld;
@@ -41,6 +42,11 @@ public abstract class FldIROp extends IROp implements HostOp {
 
 	public FldIR fld() {
 		return this.fld;
+	}
+
+	@Override
+	public final TargetOp target(CodeDirs dirs) {
+		return this;
 	}
 
 }

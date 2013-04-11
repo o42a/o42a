@@ -302,7 +302,7 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 			return ref(dirs).target(dirs);
 		}
 

@@ -167,7 +167,7 @@ public class VoidStep extends Step {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 
 			final Obj voidObject = getContext().getVoid();
 
