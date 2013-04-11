@@ -91,7 +91,7 @@ public final class KeeperOp extends FldIROp implements HostValueOp {
 	}
 
 	@Override
-	public final ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public final TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return ptr().dereference(this, dirs, holder);
 	}
 

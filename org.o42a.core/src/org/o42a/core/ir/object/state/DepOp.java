@@ -80,18 +80,17 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 
 	@Override
 	public void writeCond(CodeDirs dirs) {
-		object(dirs.code()).value().writeCond(dirs);
+		loadDep(dirs).value().writeCond(dirs);
 	}
 
 	@Override
 	public ValOp writeValue(ValDirs dirs) {
-		return object(dirs.code()).value().writeValue(dirs);
+		return loadDep(dirs.dirs()).value().writeValue(dirs);
 	}
 
 	@Override
 	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
-		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
-				.field(dirs, memberKey);
+		return loadDep(dirs).field(dirs, memberKey);
 	}
 
 	@Override
@@ -103,9 +102,8 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
-				.dereference(dirs, holder);
+	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return loadDep(dirs).dereference(dirs, holder);
 	}
 
 	@Override
@@ -144,6 +142,10 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 	@Override
 	public String toString() {
 		return "DepOp[" + getDep() + '@' + host() + ']';
+	}
+
+	private TargetOp loadDep(CodeDirs dirs) {
+		return materialize(dirs, tempObjHolder(dirs.getAllocator()));
 	}
 
 	private DataOp createObject(CodeDirs dirs, HostOp owner) {

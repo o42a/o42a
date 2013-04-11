@@ -60,7 +60,24 @@ public class ScopeFldOp extends MemberFldOp {
 		return objectFldValueOp();
 	}
 
-	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
+	@Override
+	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+		return scope(dirs, tempObjHolder(dirs.getAllocator()))
+				.field(dirs, memberKey);
+	}
+
+	@Override
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return scope(dirs, holder);
+	}
+
+	@Override
+	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return scope(dirs, tempObjHolder(dirs.getAllocator()))
+				.dereference(dirs, holder);
+	}
+
+	private ObjectOp scope(CodeDirs dirs, ObjHolder holder) {
 		if (isOmitted()) {
 
 			final Obj target = fld().getField().toObject();
@@ -78,23 +95,6 @@ public class ScopeFldOp extends MemberFldOp {
 						getBuilder(),
 						targetPtr,
 						fld().getAscendant()));
-	}
-
-	@Override
-	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
-		return target(dirs, tempObjHolder(dirs.getAllocator()))
-				.field(dirs, memberKey);
-	}
-
-	@Override
-	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
-		return target(dirs, holder);
-	}
-
-	@Override
-	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-		return target(dirs, tempObjHolder(dirs.getAllocator()))
-				.dereference(dirs, holder);
 	}
 
 }

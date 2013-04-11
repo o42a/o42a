@@ -25,7 +25,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -98,7 +97,7 @@ final class TopIR extends ScopeIR {
 		}
 
 		@Override
-		public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
 			throw new UnsupportedOperationException();
 		}
 
