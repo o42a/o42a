@@ -89,7 +89,7 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 	}
 
 	@Override
-	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
 		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}

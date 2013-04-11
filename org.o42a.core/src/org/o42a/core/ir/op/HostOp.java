@@ -42,7 +42,7 @@ public interface HostOp {
 
 	TargetOp target(CodeDirs dirs);
 
-	HostOp field(CodeDirs dirs, MemberKey memberKey);
+	TargetOp field(CodeDirs dirs, MemberKey memberKey);
 
 	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);
 
