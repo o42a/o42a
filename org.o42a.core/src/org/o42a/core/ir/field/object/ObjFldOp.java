@@ -23,11 +23,11 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostValueOp;
 
 
 public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {

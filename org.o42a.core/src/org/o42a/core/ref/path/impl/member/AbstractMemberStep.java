@@ -24,11 +24,7 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.HostValueOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.PathOp;
-import org.o42a.core.ir.op.StepOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;

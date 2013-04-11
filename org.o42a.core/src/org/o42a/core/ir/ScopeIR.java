@@ -23,6 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjectScopeIRBase;
+import org.o42a.core.ir.op.HostOp;
 
 
 public abstract class ScopeIR extends ObjectScopeIRBase {

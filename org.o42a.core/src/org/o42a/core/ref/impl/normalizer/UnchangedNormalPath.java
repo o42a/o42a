@@ -20,8 +20,8 @@
 package org.o42a.core.ref.impl.normalizer;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.path.BoundPath;

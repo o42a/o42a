@@ -21,12 +21,9 @@ package org.o42a.core.object.def.impl;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;

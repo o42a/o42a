@@ -25,13 +25,13 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;

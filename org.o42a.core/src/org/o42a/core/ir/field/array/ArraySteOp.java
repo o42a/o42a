@@ -19,12 +19,12 @@
 */
 package org.o42a.core.ir.field.array;
 
-import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 

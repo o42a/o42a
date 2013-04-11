@@ -25,10 +25,10 @@ import static org.o42a.core.value.link.impl.TargetLink.linkByValue;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
