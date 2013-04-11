@@ -42,15 +42,12 @@ import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.source.Module;
 import org.o42a.util.string.Name;
 
 
@@ -66,34 +63,6 @@ public abstract class RefInterpreter {
 			new ClauseDeclRefIp();
 	public static final RefInterpreter ADAPTER_FIELD_REF_IP =
 			new AdapterFieldRefIp();
-
-	public static boolean matchModule(Name name, Container container) {
-
-		final Obj object = container.toObject();
-
-		if (object == null) {
-			return false;
-		}
-
-		final Scope enclosing = object.getScope().getEnclosingScope();
-
-		if (enclosing == null || !enclosing.getScope().isTopScope()) {
-			// No a module.
-			return false;
-		}
-
-		// The container is module.
-		// Check whether its name fits the requested one.
-		final Module module =
-				enclosing.getContext().getIntrinsics().getModule(name);
-
-		if (module == null) {
-			// There is no module with such name.
-			return false;
-		}
-
-		return module.is(object);
-	}
 
 	public static Ref enclosingModuleRef(
 			LocationInfo location,

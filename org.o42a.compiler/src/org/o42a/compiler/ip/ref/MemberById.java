@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.compiler.ip.ref.RefInterpreter.matchModule;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
@@ -128,14 +127,6 @@ public class MemberById extends ContainedFragment {
 			return null;
 		}
 
-		final Scope enclosingScope = enclosing.getScope();
-
-		if (enclosingScope.isTopScope() && declaredIn == null) {
-			if (isModule(container)) {
-				return SELF_PATH;
-			}
-		}
-
 		final Path found = path(enclosing, declaredIn);
 
 		if (found == null) {
@@ -145,6 +136,7 @@ public class MemberById extends ContainedFragment {
 			return found;
 		}
 
+		final Scope enclosingScope = enclosing.getScope();
 		final PathResolution pathResolution =
 				found.bind(this, enclosingScope).resolve(
 						pathResolver(enclosingScope, dummyRefUser()));
@@ -273,23 +265,6 @@ public class MemberById extends ContainedFragment {
 		return new Holder<>(
 				adapterPath.pathToMember()
 				.append(memberOfAdapter.pathToMember()));
-	}
-
-	private boolean isModule(Container container) {
-
-		final MemberName memberName = this.memberId.toMemberName();
-
-		if (memberName == null) {
-			return false;
-		}
-		if (memberName.getEnclosingId() != null) {
-			return false;
-		}
-		if (memberName.getKind() != MemberKind.FIELD) {
-			return false;
-		}
-
-		return matchModule(memberName.getName(), container);
 	}
 
 }
