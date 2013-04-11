@@ -59,7 +59,7 @@ public final class RefOp {
 		target(dirs).value().writeCond(dirs);
 	}
 
-	public final HostOp target(CodeDirs dirs) {
+	public final PathOp target(CodeDirs dirs) {
 		return getRef().getPath().op(dirs, host());
 	}
 

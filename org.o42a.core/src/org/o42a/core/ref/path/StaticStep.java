@@ -153,7 +153,7 @@ final class StaticStep extends Step {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 			// This should only be called for object scope.
 
 			final ObjectIR ir =

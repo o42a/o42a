@@ -84,6 +84,13 @@ public abstract class PathOp implements HostOp {
 	}
 
 	@Override
+	public final TargetOp target(CodeDirs dirs) {
+		return pathTarget(dirs).target(dirs);
+	}
+
+	public abstract HostOp pathTarget(CodeDirs dirs);
+
+	@Override
 	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
 		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
@@ -91,15 +98,13 @@ public abstract class PathOp implements HostOp {
 
 	@Override
 	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
-		return target(dirs).materialize(dirs, holder);
+		return pathTarget(dirs).materialize(dirs, holder);
 	}
 
 	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-		return target(dirs).dereference(dirs, holder);
+		return pathTarget(dirs).dereference(dirs, holder);
 	}
-
-	public abstract HostOp target(CodeDirs dirs);
 
 	protected final HostValueOp targetValueOp() {
 		return new PathTargetValueOp(this);
@@ -137,7 +142,7 @@ public abstract class PathOp implements HostOp {
 		}
 
 		private HostValueOp targetValue(CodeDirs dirs) {
-			return this.path.target(dirs).value();
+			return this.path.pathTarget(dirs).value();
 		}
 
 	}
@@ -159,7 +164,7 @@ public abstract class PathOp implements HostOp {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 			return host();
 		}
 

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,33 +19,15 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.codegen.code.op.DumpablePtrOp;
+import org.o42a.codegen.debug.Dumpable;
 import org.o42a.util.string.ID;
 
 
-public interface HostOp {
+public interface TargetOp extends HostOp, Dumpable {
 
-	ID HOST_ID = ID.id("host");
+	ID getId();
 
-	Generator getGenerator();
-
-	CodeBuilder getBuilder();
-
-	CompilerContext getContext();
-
-	HostValueOp value();
-
-	TargetOp target(CodeDirs dirs);
-
-	HostOp field(CodeDirs dirs, MemberKey memberKey);
-
-	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);
-
-	ObjectOp dereference(CodeDirs dirs, ObjHolder holder);
+	DumpablePtrOp<?> ptr();
 
 }

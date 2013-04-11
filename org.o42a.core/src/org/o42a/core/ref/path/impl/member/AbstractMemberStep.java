@@ -192,7 +192,7 @@ public abstract class AbstractMemberStep extends Step {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 
 			final Member firstDeclaration = getStep().firstDeclaration();
 

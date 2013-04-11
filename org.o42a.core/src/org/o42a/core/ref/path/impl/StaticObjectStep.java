@@ -117,7 +117,7 @@ public class StaticObjectStep extends Step {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 
 			final ObjectIR objectIR = getStep().object.ir(getGenerator());
 

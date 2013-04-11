@@ -424,7 +424,7 @@ public final class Dep extends Step implements SubID {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 			return start()
 					.materialize(dirs, tempObjHolder(dirs.getAllocator()))
 					.dep(dirs, getStep());
@@ -447,7 +447,7 @@ public final class Dep extends Step implements SubID {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 
 			final Scope declaredIn = this.dep.getDeclaredIn().getScope();
 			final PathOp enclosing =

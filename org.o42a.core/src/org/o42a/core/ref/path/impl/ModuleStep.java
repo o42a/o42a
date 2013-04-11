@@ -157,7 +157,7 @@ public final class ModuleStep extends Step {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public HostOp pathTarget(CodeDirs dirs) {
 
 			final Obj module = getContext().getIntrinsics().getModule(
 					getStep().getModuleName());
