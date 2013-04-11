@@ -86,12 +86,10 @@ public abstract class Member extends Contained implements MemberPath {
 	 * Determines whether this member matches the given identifier and optional
 	 * placement and returns the member path leading to this member if so.
 	 *
-	 * <p>This method can be called from {@link Container#findMember(Access,
-	 * MemberId, Obj)} if the given container is member.</p>
-	 *
-	 * @param memberId target member identifier.
-	 * @param declaredIn the object member should be declared in
-	 * or <code>null</code> if unknown.
+	 * @param memberId target member identifier or <code>null</code> to match
+	 * unconditionally.
+	 * @param declaredIn the object this member should be declared in
+	 * or <code>null</code> to match against identifier only.
 	 *
 	 * @return a path to this member or <code>null</code> if it does not match
 	 * the request.

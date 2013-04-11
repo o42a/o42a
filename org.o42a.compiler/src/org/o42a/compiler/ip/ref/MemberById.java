@@ -187,35 +187,16 @@ public class MemberById extends ContainedFragment {
 				container.findMember(access, this.memberId, declaredIn);
 
 		if (found != null) {
-			return checkMemberAccessibility(container, found);
+			return new Holder<>(found.pathToMember());
 		}
 
-		return memberOfAdapter(container, access);
-	}
+		final Holder<Path> memberOfAdapter = memberOfAdapter(container, access);
 
-	private Holder<Path> checkMemberAccessibility(
-			Container container,
-			MemberPath found) {
-
-		final Path pathToMember = found.pathToMember();
-
-		if (pathToMember.isSelf()) {
-			// Check access to the same container.
-			final CheckResult accessibilityCheck =
-					this.accessRules.checkContainerAccessibility(
-							this,
-							getContainer(),
-							container);
-
-			if (accessibilityCheck.isError()) {
-				return new Holder<>(null);
-			}
-			if (!accessibilityCheck.isOk()) {
-				return null;
-			}
+		if (memberOfAdapter != null) {
+			return memberOfAdapter;
 		}
 
-		return new Holder<>(pathToMember);
+		return matchingContainer(container, declaredIn);
 	}
 
 	private Holder<Path> memberOfAdapter(Container container, Access access) {
@@ -265,6 +246,33 @@ public class MemberById extends ContainedFragment {
 		return new Holder<>(
 				adapterPath.pathToMember()
 				.append(memberOfAdapter.pathToMember()));
+	}
+
+	private Holder<Path> matchingContainer(
+			Container container,
+			Obj declaredIn) {
+
+		final MemberPath matchingPath =
+				container.matchingPath(this.memberId, declaredIn);
+
+		if (matchingPath == null) {
+			return null;
+		}
+
+		final CheckResult accessibilityCheck =
+				this.accessRules.checkContainerAccessibility(
+						this,
+						getContainer(),
+						container);
+
+		if (accessibilityCheck.isError()) {
+			return new Holder<>(null);
+		}
+
+		assert accessibilityCheck.isOk() :
+			"Wrong visibility check implementation";
+
+		return new Holder<>(matchingPath.pathToMember());
 	}
 
 }

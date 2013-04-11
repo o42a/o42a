@@ -109,12 +109,12 @@ public class Namespace extends AbstractContainer {
 			MemberId memberId,
 			Obj declaredIn) {
 
-		final MemberPath foundInEnclosing =
+		final MemberPath belongingToEnclosing =
 				getEnclosingContainer()
 				.member(access, memberId, declaredIn);
 
-		if (foundInEnclosing != null) {
-			return foundInEnclosing;
+		if (belongingToEnclosing != null) {
+			return belongingToEnclosing;
 		}
 		if (accessibleBy(access.getAccessor())) {
 
@@ -125,7 +125,7 @@ public class Namespace extends AbstractContainer {
 			}
 		}
 
-		return this.enclosing.findMember(access, memberId, declaredIn);
+		return getEnclosingContainer().findMember(access, memberId, declaredIn);
 	}
 
 	@Override
