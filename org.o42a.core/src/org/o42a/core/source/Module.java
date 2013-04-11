@@ -20,6 +20,7 @@
 package org.o42a.core.source;
 
 import static org.o42a.core.Distributor.containerDistributor;
+import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
@@ -30,6 +31,9 @@ import org.o42a.core.Namespace;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberName;
+import org.o42a.core.member.MemberPath;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
@@ -75,6 +79,30 @@ public class Module extends Obj {
 
 	public final ModuleCompiler getCompiler() {
 		return this.compiler;
+	}
+
+	@Override
+	public MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
+		if (declaredIn != null) {
+			return null;
+		}
+		if (memberId == null) {
+			return SELF_MEMBER_PATH;
+		}
+		if (memberId.getEnclosingId() != null) {
+			return null;
+		}
+
+		final MemberName memberName = memberId.toMemberName();
+
+		if (memberName == null) {
+			return null;
+		}
+		if (!memberName.getName().is(getModuleName())) {
+			return null;
+		}
+
+		return SELF_MEMBER_PATH;
 	}
 
 	@Override

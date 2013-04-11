@@ -54,6 +54,8 @@ public interface Container extends ScopeInfo {
 	 */
 	MemberPath member(Access access, MemberId memberId, Obj declaredIn);
 
+	MemberPath matchingPath(MemberId memberId, Obj declaredIn);
+
 	/**
 	 * Searches for the member in current container.
 	 *

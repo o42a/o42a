@@ -102,6 +102,9 @@ public abstract class Member extends Contained implements MemberPath {
 			// The given object does not contain this member.
 			return null;
 		}
+		if (memberId == null) {
+			return SELF_MEMBER_PATH;
+		}
 		if (memberId.getEnclosingId() == null) {
 
 			final MemberId enclosingId = getMemberId().getEnclosingId();
