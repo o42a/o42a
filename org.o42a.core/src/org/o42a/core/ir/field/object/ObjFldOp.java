@@ -28,6 +28,7 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.ir.op.TargetOp;
 
 
 public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
@@ -60,7 +61,7 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.dereference(dirs, holder);
 	}

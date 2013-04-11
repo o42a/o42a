@@ -46,6 +46,6 @@ public interface HostOp {
 
 	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);
 
-	ObjectOp dereference(CodeDirs dirs, ObjHolder holder);
+	TargetOp dereference(CodeDirs dirs, ObjHolder holder);
 
 }

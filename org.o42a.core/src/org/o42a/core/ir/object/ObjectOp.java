@@ -137,7 +137,7 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
 
 		final TypeParameters<?> typeParameters =
 				getWellKnownType().type().getParameters();

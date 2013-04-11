@@ -29,9 +29,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.ir.op.*;
 
 
 public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
@@ -59,7 +57,7 @@ public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, holder);
 	}
 

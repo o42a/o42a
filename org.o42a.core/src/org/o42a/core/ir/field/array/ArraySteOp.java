@@ -59,7 +59,7 @@ public final class ArraySteOp extends FldOp {
 	}
 
 	@Override
-	public final ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public final TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 

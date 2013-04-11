@@ -66,7 +66,7 @@ public final class VarSteOp extends FldOp {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 
