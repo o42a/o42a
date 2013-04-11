@@ -19,8 +19,8 @@
 */
 package org.o42a.core;
 
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
+import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
@@ -53,6 +53,26 @@ public abstract class AbstractContainer extends Located implements Container {
 		return parent.getContainer();
 	}
 
+	public static MemberPath matchingPath(
+			Container container,
+			MemberId memberId,
+			Obj declaredIn) {
+
+		final Member member = container.toMember();
+
+		if (member != null) {
+			return member.matchingPath(memberId, declaredIn);
+		}
+
+		final Container enclosing = container.getEnclosingContainer();
+
+		if (!enclosing.getScope().is(container.getScope())) {
+			return null;
+		}
+
+		return enclosing.matchingPath(memberId, declaredIn);
+	}
+
 	public AbstractContainer(CompilerContext context, LogInfo location) {
 		super(context, location);
 	}
@@ -64,6 +84,11 @@ public abstract class AbstractContainer extends Located implements Container {
 	@Override
 	public Container getParentContainer() {
 		return parentContainer(this);
+	}
+
+	@Override
+	public MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
+		return matchingPath(this, memberId, declaredIn);
 	}
 
 	@Override

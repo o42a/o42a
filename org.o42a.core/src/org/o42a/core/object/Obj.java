@@ -469,6 +469,11 @@ public abstract class Obj
 	}
 
 	@Override
+	public MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
+		return AbstractContainer.matchingPath(this, memberId, declaredIn);
+	}
+
+	@Override
 	public final MemberPath findMember(
 			Access access,
 			MemberId memberId,
@@ -480,13 +485,7 @@ public abstract class Obj
 			return found;
 		}
 
-		final Member member = toMember();
-
-		if (member == null) {
-			return null;
-		}
-
-		return member.matchingPath(memberId, declaredIn);
+		return matchingPath(memberId, declaredIn);
 	}
 
 	public Definitions overrideDefinitions(

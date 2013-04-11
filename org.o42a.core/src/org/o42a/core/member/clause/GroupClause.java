@@ -154,6 +154,11 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
+	public final MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
+		return toMember().matchingPath(memberId, declaredIn);
+	}
+
+	@Override
 	public MemberPath findMember(
 			Access access,
 			MemberId memberId,
@@ -170,8 +175,7 @@ public abstract class GroupClause extends Clause implements Container {
 			}
 		}
 
-		final MemberPath matchingPath =
-				toMember().matchingPath(memberId, declaredIn);
+		final MemberPath matchingPath = matchingPath(memberId, declaredIn);
 
 		if (matchingPath != null) {
 			return matchingPath;
