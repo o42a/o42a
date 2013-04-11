@@ -20,10 +20,7 @@
 package org.o42a.common.ref.cmp;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.value.Value;

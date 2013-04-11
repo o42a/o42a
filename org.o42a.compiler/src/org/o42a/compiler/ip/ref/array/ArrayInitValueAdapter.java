@@ -26,10 +26,10 @@ import static org.o42a.core.ref.ScopeUpgrade.upgradeScope;
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.array.ArrayIR;

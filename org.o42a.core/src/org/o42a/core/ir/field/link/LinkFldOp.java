@@ -21,14 +21,14 @@ package org.o42a.core.ir.field.link;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.HostValueOp;
 
 
 public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2012,2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,33 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir;
+package org.o42a.core.ir.op;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.util.string.ID;
+import org.o42a.core.ir.value.ValOp;
 
 
-public interface HostOp {
+public interface HostValueOp {
 
-	ID HOST_ID = ID.id("host");
+	void writeCond(CodeDirs dirs);
 
-	Generator getGenerator();
+	ValOp writeValue(ValDirs dirs);
 
-	CodeBuilder getBuilder();
-
-	CompilerContext getContext();
-
-	HostValueOp value();
-
-	HostOp field(CodeDirs dirs, MemberKey memberKey);
-
-	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);
-
-	ObjectOp dereference(CodeDirs dirs, ObjHolder holder);
+	void assign(CodeDirs dirs, HostOp value);
 
 }

@@ -21,7 +21,6 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 

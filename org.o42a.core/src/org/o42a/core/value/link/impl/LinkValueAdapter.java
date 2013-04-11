@@ -24,10 +24,10 @@ import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.value.link.impl.LinkCopy.linkValue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.RefOpEval;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;

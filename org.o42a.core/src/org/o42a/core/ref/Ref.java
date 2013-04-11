@@ -31,7 +31,6 @@ import static org.o42a.core.value.link.TargetRef.targetRef;
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;

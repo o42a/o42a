@@ -19,14 +19,11 @@
 */
 package org.o42a.core.ir.object.state;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.field.FldIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.state.Keeper;

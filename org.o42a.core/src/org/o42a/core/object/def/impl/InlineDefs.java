@@ -19,9 +19,9 @@
 */
 package org.o42a.core.object.def.impl;
 
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.util.fn.Cancelable;
 
 

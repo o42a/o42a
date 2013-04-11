@@ -23,10 +23,10 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 

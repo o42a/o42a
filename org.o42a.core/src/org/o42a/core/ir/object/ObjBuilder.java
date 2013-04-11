@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.HostOp.HOST_ID;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.op.HostOp.HOST_ID;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;

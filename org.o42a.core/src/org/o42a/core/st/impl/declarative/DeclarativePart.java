@@ -25,12 +25,12 @@ import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;

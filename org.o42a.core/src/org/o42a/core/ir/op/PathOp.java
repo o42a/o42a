@@ -23,8 +23,6 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.value.ValOp;

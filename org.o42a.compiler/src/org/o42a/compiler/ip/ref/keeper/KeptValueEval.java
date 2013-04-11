@@ -21,11 +21,11 @@ package org.o42a.compiler.ip.ref.keeper;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.state.KeeperOp;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.state.Keeper;
 
 

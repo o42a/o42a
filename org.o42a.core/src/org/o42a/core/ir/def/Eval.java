@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.def;
 
-import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.HostOp;
 
 
 public interface Eval {

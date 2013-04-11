@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.field;
 
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.IROp;
 
 

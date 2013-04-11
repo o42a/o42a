@@ -22,12 +22,8 @@ package org.o42a.core.ref.path.impl;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.HostValueOp;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.PathOp;
-import org.o42a.core.ir.op.StepOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;

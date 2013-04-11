@@ -30,6 +30,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;

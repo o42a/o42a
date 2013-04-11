@@ -26,7 +26,7 @@ import static org.o42a.core.ref.type.TypeRefParameters.defaultTypeRefParameters;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
-import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;

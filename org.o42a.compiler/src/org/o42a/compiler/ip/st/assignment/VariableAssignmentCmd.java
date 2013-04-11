@@ -19,10 +19,10 @@
 */
 package org.o42a.compiler.ip.st.assignment;
 
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostOp;
 
 
 final class VariableAssignmentCmd implements Cmd {
