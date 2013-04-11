@@ -21,6 +21,7 @@ package org.o42a.core.ir.field;
 
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.TargetOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.util.string.ID;
 
@@ -52,6 +53,6 @@ public abstract class FldOp extends FldIROp {
 	public abstract Fld.Op<?> ptr();
 
 	@Override
-	public abstract FldOp field(CodeDirs dirs, MemberKey memberKey);
+	public abstract TargetOp field(CodeDirs dirs, MemberKey memberKey);
 
 }

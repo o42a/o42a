@@ -80,7 +80,7 @@ public final class KeeperOp extends FldIROp implements HostValueOp {
 	}
 
 	@Override
-	public final HostOp field(CodeDirs dirs, MemberKey memberKey) {
+	public final TargetOp field(CodeDirs dirs, MemberKey memberKey) {
 		throw new UnsupportedOperationException("Keepers has no fields");
 	}
 

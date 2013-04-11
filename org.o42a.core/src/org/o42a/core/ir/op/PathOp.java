@@ -91,7 +91,7 @@ public abstract class PathOp implements HostOp {
 	public abstract HostOp pathTarget(CodeDirs dirs);
 
 	@Override
-	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
 		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}
@@ -159,7 +159,7 @@ public abstract class PathOp implements HostOp {
 		}
 
 		@Override
-		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+		public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
 			return host().field(dirs, memberKey);
 		}
 

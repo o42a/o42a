@@ -71,7 +71,7 @@ public final class VarSteOp extends FldOp {
 	}
 
 	@Override
-	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
+	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}

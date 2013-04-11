@@ -88,7 +88,7 @@ final class TopIR extends ScopeIR {
 		}
 
 		@Override
-		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+		public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
 			return null;
 		}
 

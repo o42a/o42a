@@ -34,6 +34,7 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.TargetOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -58,7 +59,7 @@ public abstract class RefFldOp<
 	public abstract S ptr();
 
 	@Override
-	public final FldOp field(CodeDirs dirs, MemberKey memberKey) {
+	public final TargetOp field(CodeDirs dirs, MemberKey memberKey) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}

@@ -30,7 +30,6 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -126,7 +125,7 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 	}
 
 	@Override
-	public abstract FldOp field(CodeDirs dirs, MemberKey memberKey);
+	public abstract TargetOp field(CodeDirs dirs, MemberKey memberKey);
 
 	public abstract DepOp dep(CodeDirs dirs, Dep dep);
 
