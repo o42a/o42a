@@ -19,10 +19,10 @@
 */
 package org.o42a.compiler.ip.access;
 
-import static org.o42a.compiler.ip.ref.RefInterpreter.matchModule;
 import static org.o42a.core.member.AccessSource.FROM_CLAUSE_REUSE;
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.compiler.ip.Interpreter;
@@ -31,8 +31,8 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AccessSource;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberName;
+import org.o42a.core.member.MemberPath;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -173,13 +173,17 @@ public abstract class AccessRules {
 			AccessDistributor distributor,
 			Name name) {
 
+		final MemberName memberName = name != null ? fieldName(name) : null;
 		final Container from = distributor.getContainer();
 		Path path = SELF_PATH;
-		Path parentPath = SELF_PATH;
 		Container container = from;
 
 		for (;;) {
-			if (containerHasName(container, name)) {
+
+			final MemberPath matchingPath =
+					container.matchingPath(memberName, null);
+
+			if (matchingPath != null) {
 
 				final CheckResult checkResult =
 						checkContainerAccessibility(location, from, container);
@@ -188,7 +192,7 @@ public abstract class AccessRules {
 					return null;
 				}
 				if (checkResult.isOk()) {
-					return path.append(parentPath);
+					return path.append(matchingPath.pathToMember());
 				}
 			}
 
@@ -207,48 +211,16 @@ public abstract class AccessRules {
 				return null;
 			}
 
-			if (scope.is(parent.getScope())) {
-
-				final Member parentMember = parent.toMember();
-
-				if (parentMember == null
-						|| scope.getContainer().toMember() == parentMember) {
-					parentPath = SELF_PATH;
-				} else {
-					parentPath = parentMember.getMemberKey().toPath();
-				}
-				container = parent;
-				continue;
-			}
-
 			container = parent;
-			parentPath = SELF_PATH;
-			if (path != null) {
-				path = path.append(enclosingScopePath);
-			} else {
-				path = enclosingScopePath;
+
+			if (!scope.is(parent.getScope())) {
+				if (path != null) {
+					path = path.append(enclosingScopePath);
+				} else {
+					path = enclosingScopePath;
+				}
 			}
 		}
-	}
-
-	private boolean containerHasName(Container container, Name name) {
-		if (name == null) {
-			return true;
-		}
-
-		final Member member = container.toMember();
-
-		if (member == null) {
-			return matchModule(name, container);
-		}
-
-		final MemberName memberName = member.getMemberKey().getMemberName();
-
-		if (memberName == null) {
-			return false;
-		}
-
-		return name.is(memberName.getName());
 	}
 
 	private static void unresolvedParent(LocationInfo location, Name name) {
