@@ -478,14 +478,7 @@ public abstract class Obj
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-
-		final MemberPath found = member(access, memberId, declaredIn);
-
-		if (found != null) {
-			return found;
-		}
-
-		return matchingPath(memberId, declaredIn);
+		return member(access, memberId, declaredIn);
 	}
 
 	public Definitions overrideDefinitions(

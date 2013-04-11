@@ -175,12 +175,6 @@ public abstract class GroupClause extends Clause implements Container {
 			}
 		}
 
-		final MemberPath matchingPath = matchingPath(memberId, declaredIn);
-
-		if (matchingPath != null) {
-			return matchingPath;
-		}
-
 		return getEnclosingContainer().findMember(
 				access,
 				memberId,

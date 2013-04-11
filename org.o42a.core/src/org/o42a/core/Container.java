@@ -54,6 +54,21 @@ public interface Container extends ScopeInfo {
 	 */
 	MemberPath member(Access access, MemberId memberId, Obj declaredIn);
 
+	/**
+	 * Determines whether this container matches the given identifier and
+	 * placement and returns the member path leading to this container if so.
+	 *
+	 * <p>This method can call from {@link Member#matchingPath(MemberId, Obj)}
+	 * if this container is a member.</p>
+	 *
+	 * @param memberId target member identifier or <code>null</code>
+	 * to match unconditionally.
+	 * @param declaredIn the object this member should be declared in
+	 * or <code>null</code> to match against identifier only.
+	 *
+	 * @return a path to this container or <code>null</code> if it does not
+	 * match the request.
+	 */
 	MemberPath matchingPath(MemberId memberId, Obj declaredIn);
 
 	/**
@@ -61,12 +76,8 @@ public interface Container extends ScopeInfo {
 	 *
 	 * <p>In contrast to {@link #member(Access, MemberId, Obj)}
 	 * the result is not necessarily belongs to this container. For example,
-	 * it may return a path to member from used name space or to clause inside
+	 * it may return a path to member from used namespace or to clause inside
 	 * a group.</p>
-	 *
-	 * <p>This method also determines if this container is a member
-	 * {@link Member#matchingPath(MemberId, Obj) matching} the given identifier.
-	 * </p>
 	 *
 	 * @param access member access information.
 	 * @param memberId identifier of member to find.

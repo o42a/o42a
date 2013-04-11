@@ -116,21 +116,7 @@ public class TypeDefinitionBuilder
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-
-		final MemberTypeParameter typeParameter =
-				findTypeParameter(memberId, declaredIn);
-
-		if (typeParameter != null) {
-			return typeParameter;
-		}
-
-		final Member member = toMember();
-
-		if (member == null) {
-			return null;
-		}
-
-		return member.matchingPath(memberId, declaredIn);
+		return findTypeParameter(memberId, declaredIn);
 	}
 
 	public final AccessDistributor distributeAccess() {
