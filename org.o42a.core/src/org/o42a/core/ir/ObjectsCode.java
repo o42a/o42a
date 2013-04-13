@@ -52,6 +52,7 @@ public final class ObjectsCode {
 		final RefOp ancestor = ancestorType.op(host);
 
 		return ancestor.target(dirs)
+				.target()
 				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
 	}
 

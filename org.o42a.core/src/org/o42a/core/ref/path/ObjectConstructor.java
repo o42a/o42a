@@ -227,7 +227,7 @@ public abstract class ObjectConstructor
 		private ObjectOp newObject(CodeDirs dirs) {
 
 			final ObjectOp owner;
-			final ObjectOp host = host().materialize(
+			final ObjectOp host = host().target().materialize(
 					dirs,
 					tempObjHolder(dirs.getAllocator()));
 

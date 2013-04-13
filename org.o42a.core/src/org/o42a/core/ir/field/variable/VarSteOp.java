@@ -111,7 +111,8 @@ public final class VarSteOp extends FldOp {
 		tempObjHolder(code.getAllocator()).holdVolatile(code, host());
 
 		final ObjectOp valueObject =
-				value.materialize(dirs, tempObjHolder(code.getAllocator()));
+				value.target()
+				.materialize(dirs, tempObjHolder(code.getAllocator()));
 
 		ptr().object(null, code).store(
 				code,

@@ -193,6 +193,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 			final ObjectOp arrayObject =
 					array.getPrefix()
 					.write(dirs.dirs(), host)
+					.target()
 					.materialize(
 							dirs.dirs(),
 							tempObjHolder(dirs.getAllocator()));

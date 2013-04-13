@@ -19,9 +19,19 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.member.MemberKey;
+
 
 public interface HostTargetOp {
 
 	TargetOp op(CodeDirs dirs);
+
+	TargetOp field(CodeDirs dirs, MemberKey memberKey);
+
+	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);
+
+	TargetOp dereference(CodeDirs dirs, ObjHolder holder);
 
 }

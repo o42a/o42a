@@ -205,7 +205,7 @@ public abstract class AbstractMemberStep extends Step {
 				"Field expected: " + firstDeclaration;
 
 			// Member is field.
-			return start().field(dirs, getStep().getMemberKey());
+			return start().target().field(dirs, getStep().getMemberKey());
 		}
 
 	}

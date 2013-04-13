@@ -149,13 +149,14 @@ public class DepOp extends IROp implements TargetOp, HostTargetOp, HostValueOp {
 		return "DepOp[" + getDep() + '@' + host() + ']';
 	}
 
-	private TargetOp loadDep(CodeDirs dirs) {
+	private ObjectOp loadDep(CodeDirs dirs) {
 		return materialize(dirs, tempObjHolder(dirs.getAllocator()));
 	}
 
 	private DataOp createObject(CodeDirs dirs, HostOp owner) {
 
-		final HostOp target = getDep().ref().op(owner).target(dirs);
+		final HostTargetOp target =
+				getDep().ref().op(owner).target(dirs).target();
 
 		return target.materialize(dirs, tempObjHolder(dirs.getAllocator()))
 				.toData(null, dirs.code());

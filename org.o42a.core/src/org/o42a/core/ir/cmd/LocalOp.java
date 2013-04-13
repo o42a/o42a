@@ -49,6 +49,7 @@ public final class LocalOp {
 		ptr.store(
 				code,
 				ref.target(dirs)
+				.target()
 				.materialize(dirs, tempObjHolder(allocator).toVolatile())
 				.toAny(null, code));
 

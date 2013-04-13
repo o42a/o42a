@@ -131,6 +131,7 @@ public class ArrayConstructorBuilder
 				item.getValueRef().op(dirs.getBuilder().host());
 		final ObjectOp itemValue =
 				itemOp.target(dirs)
+				.target()
 				.materialize(dirs, tempObjHolder(arrayDirs.getAllocator()));
 
 		data.store(code, itemValue.toAny(null, code));

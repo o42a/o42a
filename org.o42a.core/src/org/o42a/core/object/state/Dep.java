@@ -431,6 +431,7 @@ public final class Dep extends Step implements SubID {
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
 			return start()
+					.target()
 					.materialize(dirs, tempObjHolder(dirs.getAllocator()))
 					.dep(dirs, getStep());
 		}
