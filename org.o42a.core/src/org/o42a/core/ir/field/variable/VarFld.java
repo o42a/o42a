@@ -45,7 +45,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public class VarFld extends AbstractLinkFld {
+public class VarFld extends AbstractLinkFld<VarFld.Op> {
 
 	public static final Type VAR_FLD = new Type();
 

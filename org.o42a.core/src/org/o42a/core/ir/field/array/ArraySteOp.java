@@ -29,7 +29,7 @@ import org.o42a.core.ir.op.TargetOp;
 import org.o42a.core.member.MemberKey;
 
 
-public final class ArraySteOp extends FldOp {
+public final class ArraySteOp extends FldOp<ArraySte.Op> {
 
 	private final ArraySte.Op ptr;
 

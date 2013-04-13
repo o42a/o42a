@@ -37,7 +37,10 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
+public abstract class RefFld<
+		F extends RefFld.Op<F, C>,
+		C extends ObjectFunc<C>>
+				extends MemberFld<F> {
 
 	public static final ID FLD_CTR_ID = ID.id("fld_ctr");
 
@@ -66,8 +69,8 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Type<?, C> getInstance() {
-		return (Type<?, C>) super.getInstance();
+	public Type<F, C> getInstance() {
+		return (Type<F, C>) super.getInstance();
 	}
 
 	public final void allocate(ObjectIRBodyData data, Obj targetAscendant) {
@@ -87,10 +90,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 	}
 
 	@Override
-	public abstract RefFldOp<?, C> op(Code code, ObjOp host);
+	public abstract RefFldOp<F, C> op(Code code, ObjOp host);
 
 	@Override
-	protected abstract Type<?, C> getType();
+	protected abstract Type<F, C> getType();
 
 	@Override
 	protected void allocate(ObjectIRBodyData data) {
@@ -128,8 +131,8 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 		final ObjectIR overriddenOwnerIR =
 				overriddenOwner.ir(getGenerator()).getBodyType().getObjectIR();
 		@SuppressWarnings("unchecked")
-		final RefFld<C> overriddenFld =
-				(RefFld<C>) overriddenOwnerIR.fld(getField().getKey());
+		final RefFld<F, C> overriddenFld =
+				(RefFld<F, C>) overriddenOwnerIR.fld(getField().getKey());
 
 		return overriddenFld.constructor;
 	}
@@ -151,7 +154,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 	protected abstract Obj targetType(Obj bodyType);
 
 	@Override
-	protected Content<Type<?, C>> content() {
+	protected Content<Type<F, C>> content() {
 		return new FldContent<>(this);
 	}
 
@@ -246,9 +249,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 	}
 
 	public static abstract class Type<
-			S extends Op<S, C>,
+			F extends Op<F, C>,
 			C extends ObjectFunc<C>>
-					extends Fld.Type<S> {
+					extends Fld.Type<F> {
 
 		private DataRec object;
 		private FuncRec<C> constructor;
@@ -270,7 +273,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 		}
 
 		@Override
-		protected void allocate(SubData<S> data) {
+		protected void allocate(SubData<F> data) {
 			if (!isStateless()) {
 				this.object = data.addDataPtr("object");
 			}
@@ -286,17 +289,18 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends MemberFld {
 	}
 
 	private static class FldContent<
-			T extends Type<?, C>,
+			F extends Op<F, C>,
+			T extends Type<F, C>,
 			C extends ObjectFunc<C>>
 					implements Content<T> {
 
-		private final RefFld<C> fld;
+		private final RefFld<F, C> fld;
 
-		FldContent(RefFld<C> fld) {
+		FldContent(RefFld<F, C> fld) {
 			this.fld = fld;
 		}
 
-		public final RefFld<C> fld() {
+		public final RefFld<F, C> fld() {
 			return this.fld;
 		}
 

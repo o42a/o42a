@@ -161,9 +161,9 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return new ObjOp(builder, objectIR, this);
 	}
 
-	FldOp declaredField(Code code, ObjOp host, MemberKey memberKey) {
+	FldOp<?> declaredField(Code code, ObjOp host, MemberKey memberKey) {
 
-		final Fld declared = getType().fld(memberKey);
+		final Fld<?> declared = getType().fld(memberKey);
 
 		assert declared != null :
 			memberKey + " is not declared in " + this;

@@ -46,7 +46,7 @@ public final class ObjectIRBodyData {
 		return this.data;
 	}
 
-	public final void declareFld(Fld fld) {
+	public final void declareFld(Fld<?> fld) {
 		getBodyIR().declareFld(fld);
 	}
 

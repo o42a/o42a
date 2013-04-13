@@ -48,7 +48,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public class ObjFld extends RefFld<ObjectConstructorFunc> {
+public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 
 	public static final Type OBJ_FLD = new Type();
 

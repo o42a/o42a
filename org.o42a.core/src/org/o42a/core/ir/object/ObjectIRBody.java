@@ -57,8 +57,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private ObjectIRMethods methodsIR;
 
-	private final ArrayList<Fld> fieldList = new ArrayList<>();
-	private final HashMap<MemberKey, Fld> fieldMap = new HashMap<>();
+	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
+	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
 	private final LinkedHashMap<Keeper, KeeperIR<?, ?>> keepers =
 			new LinkedHashMap<>();
@@ -161,9 +161,9 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return new ObjectIRBody(inheritantIR, getAscendant());
 	}
 
-	public final Fld fld(MemberKey memberKey) {
+	public final Fld<?> fld(MemberKey memberKey) {
 
-		final Fld fld = findFld(memberKey);
+		final Fld<?> fld = findFld(memberKey);
 
 		assert fld != null :
 			fieldNotFound(memberKey);
@@ -171,7 +171,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return fld;
 	}
 
-	public final Fld findFld(MemberKey memberKey) {
+	public final Fld<?> findFld(MemberKey memberKey) {
 		return this.fieldMap.get(memberKey);
 	}
 
@@ -240,7 +240,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 				getMethodsIR().data(generator).getPointer().toData());
 	}
 
-	final List<Fld> getDeclaredFields() {
+	final List<Fld<?>> getDeclaredFields() {
 		return this.fieldList;
 	}
 
@@ -252,7 +252,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this.keepers.values();
 	}
 
-	final void declareFld(Fld fld) {
+	final void declareFld(Fld<?> fld) {
 		this.fieldList.add(fld);
 		this.fieldMap.put(fld.getKey(), fld);
 	}

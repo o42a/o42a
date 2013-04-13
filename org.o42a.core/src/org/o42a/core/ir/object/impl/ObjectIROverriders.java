@@ -39,7 +39,7 @@ public final class ObjectIROverriders extends RelList<OverriderDescIR> {
 			int index,
 			OverriderDescIR item) {
 
-		final Fld fld = item.fld();
+		final Fld<?> fld = item.fld();
 		final ID id = PREFIX_ID.detail(fld.getId());
 		final OverriderDescIR.Type desc =
 				data.addInstance(id, OVERRIDER_DESC_IR, item);

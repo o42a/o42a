@@ -34,7 +34,7 @@ import org.o42a.core.object.ObjectType;
 import org.o42a.util.string.ID;
 
 
-public abstract class MemberFld extends Fld {
+public abstract class MemberFld<F extends Fld.Op<F>> extends Fld<F> {
 
 	private final Field field;
 
@@ -93,7 +93,7 @@ public abstract class MemberFld extends Fld {
 	}
 
 	@Override
-	public abstract MemberFldOp op(Code code, ObjOp host);
+	public abstract MemberFldOp<F> op(Code code, ObjOp host);
 
 	@Override
 	public String toString() {

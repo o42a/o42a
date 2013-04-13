@@ -36,7 +36,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 
 
-public final class VarSteOp extends FldOp {
+public final class VarSteOp extends FldOp<VarSte.Op> {
 
 	private final VarSte.Op ptr;
 
