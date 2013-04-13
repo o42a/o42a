@@ -36,7 +36,7 @@ import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
-public class DepOp extends IROp implements TargetOp, HostTargetOp, HostValueOp {
+public class DepOp extends IROp implements TargetOp, HostValueOp {
 
 	public static final ID DEP_ID = ID.id("dep");
 
