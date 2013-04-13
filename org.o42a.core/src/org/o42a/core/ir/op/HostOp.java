@@ -40,7 +40,7 @@ public interface HostOp {
 
 	HostValueOp value();
 
-	TargetOp target(CodeDirs dirs);
+	HostTargetOp target();
 
 	TargetOp field(CodeDirs dirs, MemberKey memberKey);
 

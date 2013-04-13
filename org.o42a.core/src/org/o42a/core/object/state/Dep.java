@@ -420,7 +420,12 @@ public final class Dep extends Step implements SubID {
 
 		@Override
 		public HostValueOp value() {
-			return targetValueOp();
+			return pathValueOp();
+		}
+
+		@Override
+		public HostTargetOp target() {
+			return pathTargetOp();
 		}
 
 		@Override
@@ -443,7 +448,12 @@ public final class Dep extends Step implements SubID {
 
 		@Override
 		public HostValueOp value() {
-			return targetValueOp();
+			return pathValueOp();
+		}
+
+		@Override
+		public HostTargetOp target() {
+			return pathTargetOp();
 		}
 
 		@Override

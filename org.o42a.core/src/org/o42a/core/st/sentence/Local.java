@@ -274,7 +274,7 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 	private static final class Op extends PathOp implements HostValueOp {
 
 		private final Local local;
-		private LocalOp ref;
+		private LocalOp op;
 
 		public Op(PathOp start, Local local) {
 			super(start);
@@ -287,23 +287,28 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 		}
 
 		@Override
+		public HostTargetOp target() {
+			return pathTargetOp();
+		}
+
+		@Override
 		public void writeCond(CodeDirs dirs) {
-			ref(dirs).writeCond(dirs);
+			op(dirs).writeCond(dirs);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			return ref(dirs.dirs()).writeValue(dirs);
+			return op(dirs.dirs()).writeValue(dirs);
 		}
 
 		@Override
 		public void assign(CodeDirs dirs, HostOp value) {
-			targetValueOp().assign(dirs, value);
+			pathValueOp().assign(dirs, value);
 		}
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
-			return ref(dirs).target(dirs);
+			return op(dirs).target(dirs);
 		}
 
 		@Override
@@ -314,11 +319,11 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 			return this.local.toString();
 		}
 
-		private LocalOp ref(CodeDirs dirs) {
-			if (this.ref != null) {
-				return this.ref;
+		private LocalOp op(CodeDirs dirs) {
+			if (this.op != null) {
+				return this.op;
 			}
-			return this.ref = dirs.locals().get(this.local);
+			return this.op = dirs.locals().get(this.local);
 		}
 
 	}

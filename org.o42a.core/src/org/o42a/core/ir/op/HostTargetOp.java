@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,39 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
-
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.*;
+package org.o42a.core.ir.op;
 
 
-public abstract class FldIROp extends IROp implements HostTargetOp, TargetOp {
+public interface HostTargetOp {
 
-	private final ObjOp host;
-	private final FldIR fld;
-
-	public FldIROp(ObjOp host, FldIR fld) {
-		super(host.getBuilder());
-		this.host = host;
-		this.fld = fld;
-	}
-
-	public final ObjOp host() {
-		return this.host;
-	}
-
-	public FldIR fld() {
-		return this.fld;
-	}
-
-	@Override
-	public final HostTargetOp target() {
-		return this;
-	}
-
-	@Override
-	public final TargetOp op(CodeDirs dirs) {
-		return this;
-	}
+	TargetOp op(CodeDirs dirs);
 
 }

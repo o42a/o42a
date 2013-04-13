@@ -152,6 +152,11 @@ public class VoidStep extends Step {
 		}
 
 		@Override
+		public HostTargetOp target() {
+			return pathTargetOp();
+		}
+
+		@Override
 		public void writeCond(CodeDirs dirs) {
 		}
 

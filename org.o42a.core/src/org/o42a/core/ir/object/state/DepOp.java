@@ -36,7 +36,7 @@ import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
-public class DepOp extends IROp implements TargetOp, HostValueOp {
+public class DepOp extends IROp implements TargetOp, HostTargetOp, HostValueOp {
 
 	public static final ID DEP_ID = ID.id("dep");
 
@@ -74,7 +74,12 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 	}
 
 	@Override
-	public TargetOp target(CodeDirs dirs) {
+	public final HostTargetOp target() {
+		return this;
+	}
+
+	@Override
+	public final TargetOp op(CodeDirs dirs) {
 		return this;
 	}
 
