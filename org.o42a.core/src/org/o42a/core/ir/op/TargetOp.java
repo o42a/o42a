@@ -24,7 +24,7 @@ import org.o42a.codegen.debug.Dumpable;
 import org.o42a.util.string.ID;
 
 
-public interface TargetOp extends HostOp, Dumpable {
+public interface TargetOp extends HostOp, HostTargetOp, Dumpable {
 
 	ID getId();
 

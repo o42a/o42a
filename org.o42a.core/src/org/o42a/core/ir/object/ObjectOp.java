@@ -47,7 +47,7 @@ import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
 
 
-public abstract class ObjectOp extends IROp implements HostTargetOp, TargetOp {
+public abstract class ObjectOp extends IROp implements TargetOp {
 
 	protected static final ID CAST_ID = ID.id("cast");
 	protected static final ID TARGET_ID = ID.id("target");
