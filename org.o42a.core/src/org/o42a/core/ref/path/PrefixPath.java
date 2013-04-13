@@ -22,7 +22,6 @@ package org.o42a.core.ref.path;
 import org.o42a.core.ContainerInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -147,18 +146,11 @@ public final class PrefixPath {
 				.append(reproducedPart);
 	}
 
-	public HostOp write(CodeDirs dirs, HostOp host) {
+	public HostOp write(HostOp host) {
 		if (getPrefix().isSelf()) {
 			return host;
 		}
-
-		final CodeDirs subDirs =
-				dirs.begin("rescope_by_path", "Resccope to " + this.prefix);
-		final HostOp result = getBoundPath().op(subDirs, host);
-
-		subDirs.done();
-
-		return result;
+		return getBoundPath().op(host);
 	}
 
 	@Override

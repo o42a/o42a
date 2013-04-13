@@ -130,7 +130,7 @@ public class ArrayConstructorBuilder
 		final RefOp itemOp =
 				item.getValueRef().op(dirs.getBuilder().host());
 		final ObjectOp itemValue =
-				itemOp.target(dirs)
+				itemOp.path()
 				.target()
 				.materialize(dirs, tempObjHolder(arrayDirs.getAllocator()));
 
