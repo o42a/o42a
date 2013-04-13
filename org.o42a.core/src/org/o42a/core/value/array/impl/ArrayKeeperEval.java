@@ -32,13 +32,13 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
-final class ArrayKeeperEval extends KeeperEval {
+final class ArrayKeeperEval extends KeeperEval<ArrayKeeperIROp> {
 
 	private final ArrayKeeperIROp op;
 	private ValType.Op value;
 	private ValFlagsOp flags;
 
-	ArrayKeeperEval(KeeperOp keeper, ArrayKeeperIROp op) {
+	ArrayKeeperEval(KeeperOp<ArrayKeeperIROp> keeper, ArrayKeeperIROp op) {
 		super(IndefIsFalse.INDEF_IS_FALSE, keeper);
 		this.op = op;
 	}

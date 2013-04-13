@@ -47,18 +47,22 @@ final class StringKeeperIROp extends KeeperIROp<StringKeeperIROp> {
 	}
 
 	@Override
-	protected void writeCond(KeeperOp keeper, CodeDirs dirs) {
+	protected void writeCond(
+			KeeperOp<StringKeeperIROp> keeper,
+			CodeDirs dirs) {
 		new StringKeeperEval(keeper, this).writeCond(dirs);
 	}
 
 	@Override
-	protected ValOp writeValue(KeeperOp keeper, ValDirs dirs) {
+	protected ValOp writeValue(
+			KeeperOp<StringKeeperIROp> keeper,
+			ValDirs dirs) {
 		return new StringKeeperEval(keeper, this).writeValue(dirs);
 	}
 
 	@Override
 	protected ObjectOp dereference(
-			KeeperOp keeper,
+			KeeperOp<StringKeeperIROp> keeper,
 			CodeDirs dirs,
 			ObjHolder holder) {
 		throw new UnsupportedOperationException();

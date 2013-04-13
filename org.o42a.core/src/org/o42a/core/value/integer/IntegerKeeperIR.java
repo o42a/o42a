@@ -23,11 +23,9 @@ import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.value.integer.IntegerKeeperIRType.INTEGER_KEEPER_IR_TYPE;
 
-import org.o42a.codegen.data.Content;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.TypeParameters;
@@ -36,8 +34,7 @@ import org.o42a.core.value.ValueType;
 
 
 final class IntegerKeeperIR
-		extends KeeperIR<IntegerKeeperIROp, IntegerKeeperIRType>
-		implements Content<IntegerKeeperIRType> {
+		extends KeeperIR<IntegerKeeperIROp, IntegerKeeperIRType> {
 
 	IntegerKeeperIR(
 			TypeParameters<Long> typeParameters,
@@ -49,6 +46,11 @@ final class IntegerKeeperIR
 	@Override
 	public FldKind getKind() {
 		return FldKind.INTEGER_KEEPER;
+	}
+
+	@Override
+	public IntegerKeeperIRType getType() {
+		return INTEGER_KEEPER_IR_TYPE;
 	}
 
 	@Override
@@ -72,14 +74,6 @@ final class IntegerKeeperIR
 			instance.value().setValue(
 					ValueType.INTEGER.cast(value).getCompilerValue());
 		}
-	}
-
-	@Override
-	protected IntegerKeeperIRType allocateKeeper(ObjectIRBodyData data) {
-		return data.getData().addInstance(
-				getId(),
-				INTEGER_KEEPER_IR_TYPE,
-				this);
 	}
 
 }

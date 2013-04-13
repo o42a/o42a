@@ -39,12 +39,12 @@ public abstract class KeeperIROp<O extends KeeperIROp<O>> extends StructOp<O> {
 		return (KeeperIRType<O>) super.getType();
 	}
 
-	protected abstract void writeCond(KeeperOp keeper, CodeDirs dirs);
+	protected abstract void writeCond(KeeperOp<O> keeper, CodeDirs dirs);
 
-	protected abstract ValOp writeValue(KeeperOp keeper, ValDirs dirs);
+	protected abstract ValOp writeValue(KeeperOp<O> keeper, ValDirs dirs);
 
 	protected abstract ObjectOp dereference(
-			KeeperOp keeper,
+			KeeperOp<O> keeper,
 			CodeDirs dirs,
 			ObjHolder holder);
 

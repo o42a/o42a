@@ -134,7 +134,7 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 
 	public abstract DepOp dep(CodeDirs dirs, Dep dep);
 
-	public abstract KeeperOp keeper(CodeDirs dirs, Keeper keeper);
+	public abstract KeeperOp<?> keeper(CodeDirs dirs, Keeper keeper);
 
 	@Override
 	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {

@@ -24,11 +24,9 @@ import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.value.array.impl.ArrayKeeperIRType.ARRAY_KEEPER_IR_TYPE;
 
-import org.o42a.codegen.data.Content;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.object.state.Keeper;
@@ -39,8 +37,7 @@ import org.o42a.core.value.array.ArrayValueType;
 
 
 public final class ArrayKeeperIR
-		extends KeeperIR<ArrayKeeperIROp, ArrayKeeperIRType>
-		implements Content<ArrayKeeperIRType> {
+		extends KeeperIR<ArrayKeeperIROp, ArrayKeeperIRType> {
 
 	public ArrayKeeperIR(
 			TypeParameters<Array> typeParameters,
@@ -52,6 +49,11 @@ public final class ArrayKeeperIR
 	@Override
 	public FldKind getKind() {
 		return ARRAY_KEEPER;
+	}
+
+	@Override
+	public ArrayKeeperIRType getType() {
+		return ARRAY_KEEPER_IR_TYPE;
 	}
 
 	@Override
@@ -76,11 +78,6 @@ public final class ArrayKeeperIR
 
 			val.set(arrayType.ir(getGenerator()).staticsIR().val(array));
 		}
-	}
-
-	@Override
-	protected ArrayKeeperIRType allocateKeeper(ObjectIRBodyData data) {
-		return data.getData().addInstance(getId(), ARRAY_KEEPER_IR_TYPE, this);
 	}
 
 }

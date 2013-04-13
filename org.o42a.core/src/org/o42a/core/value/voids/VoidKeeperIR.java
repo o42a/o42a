@@ -24,11 +24,9 @@ import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.value.voids.VoidKeeperIRType.VOID_KEEPER_IR_TYPE;
 
-import org.o42a.codegen.data.Content;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.TypeParameters;
@@ -36,8 +34,7 @@ import org.o42a.core.value.Value;
 
 
 public final class VoidKeeperIR
-		extends KeeperIR<VoidKeeperIROp, VoidKeeperIRType>
-		implements Content<VoidKeeperIRType> {
+		extends KeeperIR<VoidKeeperIROp, VoidKeeperIRType> {
 
 	public VoidKeeperIR(
 			TypeParameters<?> typeParameters,
@@ -49,6 +46,11 @@ public final class VoidKeeperIR
 	@Override
 	public FldKind getKind() {
 		return VOID_KEEPER;
+	}
+
+	@Override
+	public VoidKeeperIRType getType() {
+		return VOID_KEEPER_IR_TYPE;
 	}
 
 	@Override
@@ -68,11 +70,6 @@ public final class VoidKeeperIR
 		} else {
 			instance.flags().setValue((byte) VAL_CONDITION);
 		}
-	}
-
-	@Override
-	protected VoidKeeperIRType allocateKeeper(ObjectIRBodyData data) {
-		return data.getData().addInstance(getId(), VOID_KEEPER_IR_TYPE, this);
 	}
 
 }

@@ -30,12 +30,12 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
 
-final class FloatKeeperEval extends FlaggedKeeperEval {
+final class FloatKeeperEval extends FlaggedKeeperEval<FloatKeeperIROp> {
 
 	private final FloatKeeperIROp op;
 	private Int64recOp value;
 
-	FloatKeeperEval(KeeperOp keeper, FloatKeeperIROp op) {
+	FloatKeeperEval(KeeperOp<FloatKeeperIROp> keeper, FloatKeeperIROp op) {
 		super(keeper);
 		this.op = op;
 	}

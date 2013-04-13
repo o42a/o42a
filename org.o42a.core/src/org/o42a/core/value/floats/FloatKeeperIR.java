@@ -23,11 +23,9 @@ import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.value.floats.FloatKeeperIRType.FLOAT_KEEPER_IR_TYPE;
 
-import org.o42a.codegen.data.Content;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.TypeParameters;
@@ -36,8 +34,7 @@ import org.o42a.core.value.ValueType;
 
 
 final class FloatKeeperIR
-		extends KeeperIR<FloatKeeperIROp, FloatKeeperIRType>
-		implements Content<FloatKeeperIRType> {
+		extends KeeperIR<FloatKeeperIROp, FloatKeeperIRType> {
 
 	FloatKeeperIR(
 			TypeParameters<Double> typeParameters,
@@ -49,6 +46,11 @@ final class FloatKeeperIR
 	@Override
 	public FldKind getKind() {
 		return FldKind.INTEGER_KEEPER;
+	}
+
+	@Override
+	public FloatKeeperIRType getType() {
+		return FLOAT_KEEPER_IR_TYPE;
 	}
 
 	@Override
@@ -72,11 +74,6 @@ final class FloatKeeperIR
 			instance.value().setValue(
 					ValueType.FLOAT.cast(value).getCompilerValue());
 		}
-	}
-
-	@Override
-	protected FloatKeeperIRType allocateKeeper(ObjectIRBodyData data) {
-		return data.getData().addInstance(getId(), FLOAT_KEEPER_IR_TYPE, this);
 	}
 
 }

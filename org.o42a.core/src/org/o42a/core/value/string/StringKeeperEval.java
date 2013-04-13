@@ -33,13 +33,13 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueType;
 
 
-final class StringKeeperEval extends KeeperEval {
+final class StringKeeperEval extends KeeperEval<StringKeeperIROp> {
 
 	private final StringKeeperIROp op;
 	private ValType.Op value;
 	private ValFlagsOp flags;
 
-	StringKeeperEval(KeeperOp keeper, StringKeeperIROp op) {
+	StringKeeperEval(KeeperOp<StringKeeperIROp> keeper, StringKeeperIROp op) {
 		super(IndefIsFalse.INDEF_IS_FALSE, keeper);
 		this.op = op;
 	}

@@ -185,7 +185,7 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	public KeeperOp keeper(CodeDirs dirs, Keeper keeper) {
+	public KeeperOp<?> keeper(CodeDirs dirs, Keeper keeper) {
 
 		final CodeDirs subDirs = dirs.begin(KEEPER_ID, keeper.toString());
 		final Code code = subDirs.code();
@@ -194,7 +194,7 @@ public final class ObjOp extends ObjectOp {
 				KEEPER_HOST_ID.sub(keeper),
 				subDirs,
 				keeper.getDeclaredIn());
-		final KeeperOp op = ir.op(code, host);
+		final KeeperOp<?> op = ir.op(code, host);
 
 		code.dumpName("Keeper: ", op);
 

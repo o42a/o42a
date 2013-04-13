@@ -25,11 +25,9 @@ import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.value.ValueType.STRING;
 import static org.o42a.core.value.string.StringKeeperIRType.STRING_KEEPER_IR_TYPE;
 
-import org.o42a.codegen.data.Content;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.object.state.Keeper;
@@ -38,8 +36,7 @@ import org.o42a.core.value.Value;
 
 
 final class StringKeeperIR
-		extends KeeperIR<StringKeeperIROp, StringKeeperIRType>
-		implements Content<StringKeeperIRType> {
+		extends KeeperIR<StringKeeperIROp, StringKeeperIRType> {
 
 	StringKeeperIR(
 			TypeParameters<String> typeParameters,
@@ -51,6 +48,11 @@ final class StringKeeperIR
 	@Override
 	public FldKind getKind() {
 		return STRING_KEEPER;
+	}
+
+	@Override
+	public StringKeeperIRType getType() {
+		return STRING_KEEPER_IR_TYPE;
 	}
 
 	@Override
@@ -74,11 +76,6 @@ final class StringKeeperIR
 
 			val.set(STRING.ir(getGenerator()).staticsIR().val(compilerValue));
 		}
-	}
-
-	@Override
-	protected StringKeeperIRType allocateKeeper(ObjectIRBodyData data) {
-		return data.getData().addInstance(getId(), STRING_KEEPER_IR_TYPE, this);
 	}
 
 }

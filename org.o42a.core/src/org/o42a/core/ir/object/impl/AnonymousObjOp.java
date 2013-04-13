@@ -144,14 +144,14 @@ public final class AnonymousObjOp extends ObjectOp {
 	}
 
 	@Override
-	public KeeperOp keeper(CodeDirs dirs, Keeper keeper) {
+	public KeeperOp<?> keeper(CodeDirs dirs, Keeper keeper) {
 
 		final CodeDirs subDirs = dirs.begin(KEEPER_ID, keeper.toString());
 		final ObjOp ascendant = cast(
 				KEEPER_HOST_ID.sub(keeper),
 				subDirs,
 				keeper.getDeclaredIn());
-		final KeeperOp op = ascendant.keeper(subDirs, keeper);
+		final KeeperOp<?> op = ascendant.keeper(subDirs, keeper);
 
 		subDirs.code().dumpName("Keeper: ", op);
 		subDirs.done();
