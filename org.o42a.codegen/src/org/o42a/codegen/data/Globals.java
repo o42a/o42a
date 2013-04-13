@@ -176,7 +176,7 @@ public abstract class Globals {
 			ID id,
 			T type,
 			T instance,
-			Content<T> content) {
+			Content<? extends T> content) {
 
 		final Global<S, T> global =
 				new Global<>(settings, id, type, instance, content);
