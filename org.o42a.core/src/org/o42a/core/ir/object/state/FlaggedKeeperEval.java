@@ -30,12 +30,13 @@ import org.o42a.codegen.code.op.Int8op;
 import org.o42a.codegen.code.op.Int8recOp;
 
 
-public abstract class FlaggedKeeperEval extends KeeperEval {
+public abstract class FlaggedKeeperEval<O extends KeeperIROp<O>>
+		extends KeeperEval<O> {
 
 	private Int8recOp flagsRec;
 	private Int8op flags;
 
-	public FlaggedKeeperEval(KeeperOp keeper) {
+	public FlaggedKeeperEval(KeeperOp<O> keeper) {
 		super(IndefIsFalse.INDEF_IS_FALSE, keeper);
 	}
 

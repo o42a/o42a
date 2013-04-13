@@ -47,18 +47,18 @@ final class ArrayKeeperIROp extends KeeperIROp<ArrayKeeperIROp> {
 	}
 
 	@Override
-	protected void writeCond(KeeperOp keeper, CodeDirs dirs) {
+	protected void writeCond(KeeperOp<ArrayKeeperIROp> keeper, CodeDirs dirs) {
 		new ArrayKeeperEval(keeper, this).writeCond(dirs);
 	}
 
 	@Override
-	protected ValOp writeValue(KeeperOp keeper, ValDirs dirs) {
+	protected ValOp writeValue(KeeperOp<ArrayKeeperIROp> keeper, ValDirs dirs) {
 		return new ArrayKeeperEval(keeper, this).writeValue(dirs);
 	}
 
 	@Override
 	protected ObjectOp dereference(
-			KeeperOp keeper,
+			KeeperOp<ArrayKeeperIROp> keeper,
 			CodeDirs dirs,
 			ObjHolder holder) {
 		throw new UnsupportedOperationException();

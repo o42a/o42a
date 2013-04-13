@@ -30,32 +30,36 @@ import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
-public final class KeeperOp extends FldIROp implements HostValueOp {
+public final class KeeperOp<O extends KeeperIROp<O>>
+		extends FldIROp
+		implements HostValueOp {
 
 	public static final ID KEEPER_ID = ID.id("keeper");
 
-	private final KeeperIROp<?> ptr;
+	private final KeeperIROp<O> ptr;
 
-	KeeperOp(ObjOp host, KeeperIR<?, ?> keeperIR, KeeperIROp<?> ptr) {
+	KeeperOp(ObjOp host, KeeperIR<O, ?> keeperIR, KeeperIROp<O> ptr) {
 		super(host, keeperIR);
 		this.ptr = ptr;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public final KeeperIR<?, ?> fld() {
-		return (KeeperIR<?, ?>) super.fld();
+	public final KeeperIR<O, ?> fld() {
+		return (KeeperIR<O, ?>) super.fld();
 	}
 
 	public final Keeper getKeeper() {
 		return keeperIR().getKeeper();
 	}
 
-	public final KeeperIR<?, ?> keeperIR() {
-		return (KeeperIR<?, ?>) super.fld();
+	@SuppressWarnings("unchecked")
+	public final KeeperIR<O, ?> keeperIR() {
+		return (KeeperIR<O, ?>) super.fld();
 	}
 
 	@Override
-	public final KeeperIROp<?> ptr() {
+	public final KeeperIROp<O> ptr() {
 		return this.ptr;
 	}
 
@@ -81,7 +85,7 @@ public final class KeeperOp extends FldIROp implements HostValueOp {
 
 	@Override
 	public final TargetOp field(CodeDirs dirs, MemberKey memberKey) {
-		throw new UnsupportedOperationException("Keepers has no fields");
+		throw new UnsupportedOperationException("Keepers have no fields");
 	}
 
 	@Override

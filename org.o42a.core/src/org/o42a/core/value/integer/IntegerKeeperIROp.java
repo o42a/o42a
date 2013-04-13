@@ -53,18 +53,22 @@ final class IntegerKeeperIROp extends KeeperIROp<IntegerKeeperIROp> {
 	}
 
 	@Override
-	protected void writeCond(KeeperOp keeper, CodeDirs dirs) {
+	protected void writeCond(
+			KeeperOp<IntegerKeeperIROp> keeper,
+			CodeDirs dirs) {
 		new IntegerKeeperEval(keeper, this).writeCond(dirs);
 	}
 
 	@Override
-	protected ValOp writeValue(KeeperOp keeper, ValDirs dirs) {
+	protected ValOp writeValue(
+			KeeperOp<IntegerKeeperIROp> keeper,
+			ValDirs dirs) {
 		return new IntegerKeeperEval(keeper, this).writeValue(dirs);
 	}
 
 	@Override
 	protected ObjectOp dereference(
-			KeeperOp keeper,
+			KeeperOp<IntegerKeeperIROp> keeper,
 			CodeDirs dirs,
 			ObjHolder holder) {
 		throw new UnsupportedOperationException();

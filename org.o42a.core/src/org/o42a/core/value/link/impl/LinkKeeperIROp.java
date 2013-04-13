@@ -54,18 +54,18 @@ final class LinkKeeperIROp extends KeeperIROp<LinkKeeperIROp> {
 	}
 
 	@Override
-	protected void writeCond(KeeperOp keeper, CodeDirs dirs) {
+	protected void writeCond(KeeperOp<LinkKeeperIROp> keeper, CodeDirs dirs) {
 		new LinkKeeperEval(keeper, this).writeCond(dirs);
 	}
 
 	@Override
-	protected ValOp writeValue(KeeperOp keeper, ValDirs dirs) {
+	protected ValOp writeValue(KeeperOp<LinkKeeperIROp> keeper, ValDirs dirs) {
 		return new LinkKeeperEval(keeper, this).writeValue(dirs);
 	}
 
 	@Override
 	protected ObjectOp dereference(
-			KeeperOp keeper,
+			KeeperOp<LinkKeeperIROp> keeper,
 			CodeDirs dirs,
 			ObjHolder holder) {
 

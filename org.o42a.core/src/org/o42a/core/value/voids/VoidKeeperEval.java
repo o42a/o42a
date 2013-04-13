@@ -30,11 +30,11 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
 
-final class VoidKeeperEval extends FlaggedKeeperEval {
+final class VoidKeeperEval extends FlaggedKeeperEval<VoidKeeperIROp> {
 
 	private final VoidKeeperIROp op;
 
-	VoidKeeperEval(KeeperOp keeper, VoidKeeperIROp op) {
+	VoidKeeperEval(KeeperOp<VoidKeeperIROp> keeper, VoidKeeperIROp op) {
 		super(keeper);
 		this.op = op;
 	}

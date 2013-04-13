@@ -43,7 +43,7 @@ final class KeptValueEval implements Eval {
 		final ObjectOp object = host.target().materialize(
 				dirs.dirs(),
 				tempObjHolder(dirs.getAllocator()));
-		final KeeperOp keeper =
+		final KeeperOp<?> keeper =
 				object.keeper(dirs.dirs(), this.keeper);
 
 		dirs.returnValue(keeper.writeValue(dirs.valDirs()));

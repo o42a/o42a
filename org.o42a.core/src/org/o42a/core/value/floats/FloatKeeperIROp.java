@@ -53,18 +53,18 @@ final class FloatKeeperIROp extends KeeperIROp<FloatKeeperIROp> {
 	}
 
 	@Override
-	protected void writeCond(KeeperOp keeper, CodeDirs dirs) {
+	protected void writeCond(KeeperOp<FloatKeeperIROp> keeper, CodeDirs dirs) {
 		new FloatKeeperEval(keeper, this).writeCond(dirs);
 	}
 
 	@Override
-	protected ValOp writeValue(KeeperOp keeper, ValDirs dirs) {
+	protected ValOp writeValue(KeeperOp<FloatKeeperIROp> keeper, ValDirs dirs) {
 		return new FloatKeeperEval(keeper, this).writeValue(dirs);
 	}
 
 	@Override
 	protected ObjectOp dereference(
-			KeeperOp keeper,
+			KeeperOp<FloatKeeperIROp> keeper,
 			CodeDirs dirs,
 			ObjHolder holder) {
 		throw new UnsupportedOperationException();

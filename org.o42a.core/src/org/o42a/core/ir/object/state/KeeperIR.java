@@ -21,6 +21,7 @@ package org.o42a.core.ir.object.state;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Data;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.object.ObjOp;
@@ -36,7 +37,7 @@ import org.o42a.util.string.ID;
 public abstract class KeeperIR<
 		O extends KeeperIROp<O>,
 		T extends KeeperIRType<O>>
-				implements FldIR {
+				implements FldIR, Content<T> {
 
 	private final TypeParameters<?> typeParameters;
 	private final ObjectIRBody bodyIR;
@@ -83,6 +84,8 @@ public abstract class KeeperIR<
 		return getKeeper().getDeclaredIn();
 	}
 
+	public abstract T getType();
+
 	public final T getInstance() {
 		return this.instance;
 	}
@@ -93,13 +96,13 @@ public abstract class KeeperIR<
 	}
 
 	public final void allocate(ObjectIRBodyData data) {
-		this.instance = allocateKeeper(data);
+		this.instance = data.getData().addInstance(getId(), getType(), this);
 	}
 
-	public final KeeperOp op(Code code, ObjOp host) {
+	public final KeeperOp<O> op(Code code, ObjOp host) {
 		assert getInstance() != null :
 			this + " is not allocated yet";
-		return new KeeperOp(
+		return new KeeperOp<>(
 				host,
 				this,
 				host.ptr().keeper(code, getInstance()));
@@ -112,7 +115,5 @@ public abstract class KeeperIR<
 		}
 		return this.keeper.toString();
 	}
-
-	protected abstract T allocateKeeper(ObjectIRBodyData data);
 
 }

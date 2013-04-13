@@ -48,18 +48,18 @@ final class VoidKeeperIROp extends KeeperIROp<VoidKeeperIROp> {
 	}
 
 	@Override
-	protected void writeCond(KeeperOp keeper, CodeDirs dirs) {
+	protected void writeCond(KeeperOp<VoidKeeperIROp> keeper, CodeDirs dirs) {
 		new VoidKeeperEval(keeper, this).writeCond(dirs);
 	}
 
 	@Override
-	protected ValOp writeValue(KeeperOp keeper, ValDirs dirs) {
+	protected ValOp writeValue(KeeperOp<VoidKeeperIROp> keeper, ValDirs dirs) {
 		return new VoidKeeperEval(keeper, this).writeValue(dirs);
 	}
 
 	@Override
 	protected ObjectOp dereference(
-			KeeperOp keeper,
+			KeeperOp<VoidKeeperIROp> keeper,
 			CodeDirs dirs,
 			ObjHolder holder) {
 		throw new UnsupportedOperationException();

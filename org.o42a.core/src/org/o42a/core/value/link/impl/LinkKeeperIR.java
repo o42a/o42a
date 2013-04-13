@@ -21,12 +21,10 @@ package org.o42a.core.value.link.impl;
 
 import static org.o42a.core.value.link.impl.LinkKeeperIRType.LINK_KEEPER_IR_TYPE;
 
-import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
@@ -36,8 +34,7 @@ import org.o42a.core.value.link.KnownLink;
 
 
 public final class LinkKeeperIR
-		extends KeeperIR<LinkKeeperIROp, LinkKeeperIRType>
-		implements Content<LinkKeeperIRType> {
+		extends KeeperIR<LinkKeeperIROp, LinkKeeperIRType> {
 
 	public LinkKeeperIR(
 			TypeParameters<KnownLink> typeParameters,
@@ -49,6 +46,11 @@ public final class LinkKeeperIR
 	@Override
 	public FldKind getKind() {
 		return FldKind.LINK_KEEPER;
+	}
+
+	@Override
+	public LinkKeeperIRType getType() {
+		return LINK_KEEPER_IR_TYPE;
 	}
 
 	@Override
@@ -88,11 +90,6 @@ public final class LinkKeeperIR
 					.pointer(getGenerator())
 					.toData());
 		}
-	}
-
-	@Override
-	protected LinkKeeperIRType allocateKeeper(ObjectIRBodyData data) {
-		return data.getData().addInstance(getId(), LINK_KEEPER_IR_TYPE, this);
 	}
 
 }

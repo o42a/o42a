@@ -44,7 +44,7 @@ final class KeptValueCmd implements Cmd {
 		final ObjectOp object = control.host().materialize(
 				dirs.dirs(),
 				tempObjHolder(dirs.getAllocator()));
-		final KeeperOp keeper =
+		final KeeperOp<?> keeper =
 				object.keeper(dirs.dirs(), this.keeper);
 
 		dirs.returnValue(keeper.writeValue(dirs.valDirs()));

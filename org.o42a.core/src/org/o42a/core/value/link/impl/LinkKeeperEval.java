@@ -36,13 +36,13 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-final class LinkKeeperEval extends KeeperEval {
+final class LinkKeeperEval extends KeeperEval<LinkKeeperIROp> {
 
 	private final LinkKeeperIROp op;
 	private DataRecOp objectRec;
 	private DataOp object;
 
-	LinkKeeperEval(KeeperOp keeper, LinkKeeperIROp op) {
+	LinkKeeperEval(KeeperOp<LinkKeeperIROp> keeper, LinkKeeperIROp op) {
 		super(IndefIsFalse.INDEF_NOT_FALSE, keeper);
 		this.op = op;
 	}

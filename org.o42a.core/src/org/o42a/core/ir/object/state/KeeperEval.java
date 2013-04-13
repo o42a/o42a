@@ -37,14 +37,14 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.util.string.ID;
 
 
-public abstract class KeeperEval {
+public abstract class KeeperEval<O extends KeeperIROp<O>> {
 
 	private static final ID FLD_CTR_ID = ID.id("fld_ctr");
 
 	private final IndefIsFalse indefIsFalse;
-	private final KeeperOp keeper;
+	private final KeeperOp<O> keeper;
 
-	public KeeperEval(IndefIsFalse indefIsFalse, KeeperOp keeper) {
+	public KeeperEval(IndefIsFalse indefIsFalse, KeeperOp<O> keeper) {
 		this.indefIsFalse = indefIsFalse;
 		this.keeper = keeper;
 	}
@@ -57,7 +57,7 @@ public abstract class KeeperEval {
 		return keeper().getContext();
 	}
 
-	public final KeeperOp keeper() {
+	public final KeeperOp<O> keeper() {
 		return this.keeper;
 	}
 
@@ -159,7 +159,7 @@ public abstract class KeeperEval {
 		INDEF_IS_FALSE() {
 
 			@Override
-			ValOp writeKeeperValue(KeeperEval eval, ValDirs dirs) {
+			ValOp writeKeeperValue(KeeperEval<?> eval, ValDirs dirs) {
 
 				final ValOp value = dirs.value();
 				final Block code = dirs.code();
@@ -190,7 +190,7 @@ public abstract class KeeperEval {
 		INDEF_NOT_FALSE() {
 
 			@Override
-			ValOp writeKeeperValue(KeeperEval eval, ValDirs dirs) {
+			ValOp writeKeeperValue(KeeperEval<?> eval, ValDirs dirs) {
 
 				final ValOp value = dirs.value();
 				final Block code = dirs.code();
@@ -218,7 +218,7 @@ public abstract class KeeperEval {
 
 		};
 
-		abstract ValOp writeKeeperValue(KeeperEval eval, ValDirs dirs);
+		abstract ValOp writeKeeperValue(KeeperEval<?> eval, ValDirs dirs);
 	}
 
 }
