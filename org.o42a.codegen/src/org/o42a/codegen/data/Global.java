@@ -36,7 +36,7 @@ public final class Global<S extends StructOp<S>, T extends Type<S>>
 			ID id,
 			T type,
 			T instance,
-			Content<T> content) {
+			Content<? extends T> content) {
 		this.settings = settings;
 		this.id = id;
 		this.instance = type.instantiate(this, instance, content);

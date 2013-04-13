@@ -198,7 +198,7 @@ public abstract class Type<S extends StructOp<S>>
 			SubData<?> enclosing,
 			ID id,
 			I instance,
-			Content<I> content) {
+			Content<? extends I> content) {
 		ensureTypeAllocated(enclosing.getGenerator(), true);
 
 		final I typeInstance;
@@ -220,7 +220,7 @@ public abstract class Type<S extends StructOp<S>>
 	final <I extends Type<S>> I instantiate(
 			Global<S, ?> global,
 			I instance,
-			Content<I> content) {
+			Content<? extends I> content) {
 		ensureTypeAllocated(global.getGenerator(), true);
 
 		final I typeInstance;
