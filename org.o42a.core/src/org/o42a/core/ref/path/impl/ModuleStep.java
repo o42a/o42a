@@ -153,7 +153,12 @@ public final class ModuleStep extends Step {
 
 		@Override
 		public HostValueOp value() {
-			return targetValueOp();
+			return pathValueOp();
+		}
+
+		@Override
+		public HostTargetOp target() {
+			return pathTargetOp();
 		}
 
 		@Override

@@ -160,6 +160,11 @@ public class NoneStep extends Step {
 		}
 
 		@Override
+		public HostTargetOp target() {
+			return pathTargetOp();
+		}
+
+		@Override
 		public void writeCond(CodeDirs dirs) {
 			dirs.code().go(dirs.falseDir());
 		}

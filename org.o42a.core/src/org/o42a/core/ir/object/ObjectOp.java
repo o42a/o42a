@@ -47,7 +47,7 @@ import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
 
 
-public abstract class ObjectOp extends IROp implements TargetOp {
+public abstract class ObjectOp extends IROp implements HostTargetOp, TargetOp {
 
 	protected static final ID CAST_ID = ID.id("cast");
 	protected static final ID TARGET_ID = ID.id("target");
@@ -100,7 +100,12 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 	public abstract ValueOp value();
 
 	@Override
-	public final TargetOp target(CodeDirs dirs) {
+	public HostTargetOp target() {
+		return this;
+	}
+
+	@Override
+	public final ObjectOp op(CodeDirs dirs) {
 		return this;
 	}
 

@@ -51,7 +51,8 @@ final class TopIR extends ScopeIR {
 		return new TopOp(builder, getScope());
 	}
 
-	private static final class TopOp implements HostOp, HostValueOp {
+	private static final class TopOp
+			implements HostOp, HostTargetOp, HostValueOp {
 
 		private final CodeBuilder builder;
 		private final Scope scope;
@@ -82,7 +83,12 @@ final class TopIR extends ScopeIR {
 		}
 
 		@Override
-		public TargetOp target(CodeDirs dirs) {
+		public HostTargetOp target() {
+			return this;
+		}
+
+		@Override
+		public TargetOp op(CodeDirs dirs) {
 			throw new UnsupportedOperationException();
 		}
 

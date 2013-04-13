@@ -31,9 +31,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.HostValueOp;
-import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
@@ -190,7 +188,12 @@ public abstract class ObjectConstructor
 
 		@Override
 		public HostValueOp value() {
-			return targetValueOp();
+			return pathValueOp();
+		}
+
+		@Override
+		public HostTargetOp target() {
+			return pathTargetOp();
 		}
 
 		@Override

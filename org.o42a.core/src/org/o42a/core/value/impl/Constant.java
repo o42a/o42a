@@ -132,6 +132,11 @@ public final class Constant<T> extends ObjectConstructor {
 		}
 
 		@Override
+		public HostTargetOp target() {
+			return pathTargetOp();
+		}
+
+		@Override
 		public void writeCond(CodeDirs dirs) {
 		}
 

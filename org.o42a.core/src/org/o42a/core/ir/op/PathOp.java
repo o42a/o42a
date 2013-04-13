@@ -83,11 +83,6 @@ public abstract class PathOp implements HostOp {
 		return host().getContext();
 	}
 
-	@Override
-	public final TargetOp target(CodeDirs dirs) {
-		return pathTarget(dirs).target(dirs);
-	}
-
 	public abstract HostOp pathTarget(CodeDirs dirs);
 
 	@Override
@@ -106,15 +101,46 @@ public abstract class PathOp implements HostOp {
 		return pathTarget(dirs).dereference(dirs, holder);
 	}
 
-	protected final HostValueOp targetValueOp() {
-		return new PathTargetValueOp(this);
+	protected final HostTargetOp pathTargetOp() {
+		return new PathTargetOp(this);
 	}
 
-	private static final class PathTargetValueOp implements HostValueOp {
+	protected final HostValueOp pathValueOp() {
+		return new PathValueOp(this);
+	}
+
+	private static final class PathTargetOp implements HostTargetOp {
 
 		private final PathOp path;
 
-		PathTargetValueOp(PathOp path) {
+		PathTargetOp(PathOp path) {
+			this.path = path;
+		}
+
+		@Override
+		public TargetOp op(CodeDirs dirs) {
+			return target(dirs).op(dirs);
+		}
+
+		@Override
+		public String toString() {
+			if (this.path == null) {
+				return super.toString();
+			}
+			return this.path.toString();
+		}
+
+		private HostTargetOp target(CodeDirs dirs) {
+			return this.path.pathTarget(dirs).target();
+		}
+
+	}
+
+	private static final class PathValueOp implements HostValueOp {
+
+		private final PathOp path;
+
+		PathValueOp(PathOp path) {
 			this.path = path;
 		}
 
@@ -151,6 +177,11 @@ public abstract class PathOp implements HostOp {
 
 		HostPathOp(BoundPath path, HostOp pathStart, HostOp host) {
 			super(path, pathStart, host);
+		}
+
+		@Override
+		public HostTargetOp target() {
+			return host().target();
 		}
 
 		@Override
