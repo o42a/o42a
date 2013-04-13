@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectOp;
@@ -85,22 +83,6 @@ public abstract class PathOp implements HostOp {
 
 	public abstract HostOp pathTarget(CodeDirs dirs);
 
-	@Override
-	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
-		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
-				.field(dirs, memberKey);
-	}
-
-	@Override
-	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
-		return pathTarget(dirs).materialize(dirs, holder);
-	}
-
-	@Override
-	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
-		return pathTarget(dirs).dereference(dirs, holder);
-	}
-
 	protected final HostTargetOp pathTargetOp() {
 		return new PathTargetOp(this);
 	}
@@ -120,6 +102,21 @@ public abstract class PathOp implements HostOp {
 		@Override
 		public TargetOp op(CodeDirs dirs) {
 			return target(dirs).op(dirs);
+		}
+
+		@Override
+		public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+			return target(dirs).field(dirs, memberKey);
+		}
+
+		@Override
+		public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+			return target(dirs).materialize(dirs, holder);
+		}
+
+		@Override
+		public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+			return target(dirs).dereference(dirs, holder);
 		}
 
 		@Override
@@ -187,11 +184,6 @@ public abstract class PathOp implements HostOp {
 		@Override
 		public HostValueOp value() {
 			return host().value();
-		}
-
-		@Override
-		public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
-			return host().field(dirs, memberKey);
 		}
 
 		@Override

@@ -40,7 +40,7 @@ final class KeptValueEval implements Eval {
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
 
-		final ObjectOp object = host.materialize(
+		final ObjectOp object = host.target().materialize(
 				dirs.dirs(),
 				tempObjHolder(dirs.getAllocator()));
 		final KeeperOp keeper =

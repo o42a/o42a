@@ -250,9 +250,9 @@ public class DereferenceStep extends Step {
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
-			return start().dereference(
-					dirs,
-					tempObjHolder(dirs.getAllocator()));
+			return start()
+					.target()
+					.dereference(dirs, tempObjHolder(dirs.getAllocator()));
 		}
 
 	}

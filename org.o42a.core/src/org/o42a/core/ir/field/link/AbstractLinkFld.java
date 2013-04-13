@@ -94,6 +94,7 @@ public abstract class AbstractLinkFld extends RefFld<ObjectRefFunc> {
 		return target.getRef()
 				.op(builder.host())
 				.target(dirs)
+				.target()
 				.materialize(dirs, objTrap())
 				.cast(
 						null,
