@@ -49,7 +49,8 @@ import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
-public class ArraySte extends Fld implements Content<ArraySte.Type> {
+public class ArraySte extends Fld<ArraySte.Op>
+		implements Content<ArraySte.Type> {
 
 	public static final Type ARRAY_STE = new Type();
 
@@ -155,7 +156,7 @@ public class ArraySte extends Fld implements Content<ArraySte.Type> {
 	}
 
 	@Override
-	protected Content<?> content() {
+	protected Content<ArraySte.Type> content() {
 		return this;
 	}
 

@@ -26,9 +26,9 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.util.string.ID;
 
 
-public abstract class FldOp extends FldIROp {
+public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
-	public FldOp(ObjOp host, Fld fld) {
+	public FldOp(ObjOp host, Fld<F> fld) {
 		super(host, fld);
 	}
 
@@ -44,13 +44,14 @@ public abstract class FldOp extends FldIROp {
 		return fld().getId();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Fld fld() {
-		return (Fld) super.fld();
+	public Fld<F> fld() {
+		return (Fld<F>) super.fld();
 	}
 
 	@Override
-	public abstract Fld.Op<?> ptr();
+	public abstract F ptr();
 
 	@Override
 	public abstract TargetOp field(CodeDirs dirs, MemberKey memberKey);

@@ -49,7 +49,7 @@ import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
-public class VarSte extends Fld implements Content<VarSte.Type> {
+public class VarSte extends Fld<VarSte.Op> implements Content<VarSte.Type> {
 
 	public static final Type VAR_STE = new Type();
 
@@ -193,7 +193,7 @@ public class VarSte extends Fld implements Content<VarSte.Type> {
 	}
 
 	@Override
-	protected Content<?> content() {
+	protected Content<VarSte.Type> content() {
 		return this;
 	}
 

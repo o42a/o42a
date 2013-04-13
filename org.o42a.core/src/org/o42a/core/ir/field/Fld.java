@@ -33,13 +33,13 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public abstract class Fld implements FldIR {
+public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 
 	public static final ID FIELD_ID = ID.id("field");
 	public static final ID FLD_ID = ID.id("fld");
 
 	private ObjectIRBody bodyIR;
-	private Type<?> instance;
+	private Type<F> instance;
 	private byte omitted;
 
 	public final Generator getGenerator() {
@@ -82,18 +82,17 @@ public abstract class Fld implements FldIR {
 
 	public abstract Obj getDefinedIn();
 
-	public Type<?> getInstance() {
+	public Type<F> getInstance() {
 		return this.instance;
 	}
 
-	public abstract FldOp op(Code code, ObjOp host);
+	public abstract FldOp<F> op(Code code, ObjOp host);
 
 	public void targetAllocated() {
 	}
 
 	protected abstract boolean mayOmit();
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void allocate(ObjectIRBodyData data) {
 		this.bodyIR = data.getBodyIR();
 		data.declareFld(this);
@@ -102,29 +101,29 @@ public abstract class Fld implements FldIR {
 		}
 		this.instance = data.getData().addInstance(
 				FLD_ID.detail(getId().getLocal()),
-				(Type) getType(),
-				(Content) content());
+				getType(),
+				content());
 	}
 
-	protected abstract Type<?> getType();
+	protected abstract Type<F> getType();
 
-	protected abstract Content<?> content();
+	protected abstract Content<? extends Type<F>> content();
 
-	public static abstract class Op<S extends Op<S>> extends StructOp<S> {
+	public static abstract class Op<F extends Op<F>> extends StructOp<F> {
 
-		public Op(StructWriter<S> writer) {
+		public Op(StructWriter<F> writer) {
 			super(writer);
 		}
 
 		@Override
-		public Type<S> getType() {
-			return (Type<S>) super.getType();
+		public Type<F> getType() {
+			return (Type<F>) super.getType();
 		}
 
 	}
 
-	public static abstract class Type<S extends Op<S>>
-			extends org.o42a.codegen.data.Type<S> {
+	public static abstract class Type<F extends Op<F>>
+			extends org.o42a.codegen.data.Type<F> {
 
 		public Type(ID id) {
 			super(id);

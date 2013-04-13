@@ -36,7 +36,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 
 
-public class ScopeFldOp extends MemberFldOp {
+public class ScopeFldOp extends MemberFldOp<ScopeFld.Op> {
 
 	private final ScopeFld.Op ptr;
 

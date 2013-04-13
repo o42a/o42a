@@ -115,7 +115,7 @@ public final class AnonymousObjOp extends ObjectOp {
 				hostId,
 				subDirs,
 				memberKey.getOrigin().toObject());
-		final FldOp op = ascendant.field(subDirs, memberKey);
+		final FldOp<?> op = ascendant.field(subDirs, memberKey);
 
 		if (!op.isOmitted()) {
 			subDirs.code().dumpName("Field: ", op);

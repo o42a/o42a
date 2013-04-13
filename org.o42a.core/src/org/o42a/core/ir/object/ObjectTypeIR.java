@@ -170,7 +170,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 		final RelList<FieldDescIR> fields = getObjectType().fields();
 
-		for (Fld fld : getObjectIR().getMainBodyIR().getDeclaredFields()) {
+		for (Fld<?> fld : getObjectIR().getMainBodyIR().getDeclaredFields()) {
 			if (fld.isOmitted()) {
 				continue;
 			}
@@ -217,7 +217,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				continue;
 			}
 
-			final Fld fld = getObjectIR().findFld(field.getMemberKey());
+			final Fld<?> fld = getObjectIR().findFld(field.getMemberKey());
 
 			if (fld == null || fld.isOmitted() || !fld.isOverrider()) {
 				continue;

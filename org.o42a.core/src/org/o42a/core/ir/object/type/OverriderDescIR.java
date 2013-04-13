@@ -41,13 +41,13 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 
 	public static final Type OVERRIDER_DESC_IR = new Type();
 
-	private final Fld fld;
+	private final Fld<?> fld;
 
-	public OverriderDescIR(Fld fld) {
+	public OverriderDescIR(Fld<?> fld) {
 		this.fld = fld;
 	}
 
-	public final Fld fld() {
+	public final Fld<?> fld() {
 		return this.fld;
 	}
 

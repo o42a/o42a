@@ -36,7 +36,7 @@ import org.o42a.util.string.ID;
 
 
 public final class ScopeFld
-		extends MemberFld
+		extends MemberFld<ScopeFld.Op>
 		implements Content<ScopeFld.Type> {
 
 	public static final Type SCOPE_FLD = new Type();
@@ -125,7 +125,7 @@ public final class ScopeFld
 	}
 
 	@Override
-	protected Content<?> content() {
+	protected Content<ScopeFld.Type> content() {
 		return this;
 	}
 

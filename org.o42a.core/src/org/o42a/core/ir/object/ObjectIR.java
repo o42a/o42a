@@ -166,7 +166,7 @@ public class ObjectIR  {
 		return getStruct().bodyIRs().get(ascendant);
 	}
 
-	public final Fld fld(MemberKey memberKey) {
+	public final Fld<?> fld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().toObject();
 		final ObjectIRBody bodyIR = bodyIR(origin);
@@ -174,7 +174,7 @@ public class ObjectIR  {
 		return bodyIR.fld(memberKey);
 	}
 
-	public final Fld findFld(MemberKey memberKey) {
+	public final Fld<?> findFld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().toObject();
 		final ObjectIRBody bodyIR = findBodyIR(origin);

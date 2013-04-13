@@ -36,9 +36,9 @@ import org.o42a.core.value.ValueType;
 
 public abstract class StateOp {
 
-	private final FldOp fld;
+	private final FldOp<?> fld;
 
-	public StateOp(FldOp fld) {
+	public StateOp(FldOp<?> fld) {
 		this.fld = fld;
 	}
 
@@ -64,7 +64,7 @@ public abstract class StateOp {
 				.getValueType();
 	}
 
-	public final FldOp fld() {
+	public final FldOp<?> fld() {
 		return this.fld;
 	}
 

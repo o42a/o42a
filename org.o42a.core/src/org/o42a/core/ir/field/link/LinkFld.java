@@ -39,7 +39,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public class LinkFld extends AbstractLinkFld {
+public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 
 	public static final Type LINK_FLD = new Type();
 
