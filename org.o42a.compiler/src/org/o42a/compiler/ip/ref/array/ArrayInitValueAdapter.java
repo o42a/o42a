@@ -192,7 +192,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 					array.ir(valueType.irGenerator(dirs.getGenerator()));
 			final ObjectOp arrayObject =
 					array.getPrefix()
-					.write(dirs.dirs(), host)
+					.write(host)
 					.target()
 					.materialize(
 							dirs.dirs(),

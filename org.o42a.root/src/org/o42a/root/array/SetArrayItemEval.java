@@ -183,7 +183,7 @@ final class SetArrayItemEval extends InlineEval {
 			final ObjectOp newObject =
 					this.setItem.newValue()
 					.op(host)
-					.target(itemsDirs.dirs())
+					.path()
 					.target()
 					.materialize(
 							itemsDirs.dirs(),

@@ -52,15 +52,15 @@ public final class RefOp {
 	}
 
 	public final ValOp writeValue(ValDirs dirs) {
-		return target(dirs.dirs()).value().writeValue(dirs);
+		return path().value().writeValue(dirs);
 	}
 
 	public final void writeCond(CodeDirs dirs) {
-		target(dirs).value().writeCond(dirs);
+		path().value().writeCond(dirs);
 	}
 
-	public final PathOp target(CodeDirs dirs) {
-		return getRef().getPath().op(dirs, host());
+	public final PathOp path() {
+		return getRef().getPath().op(host());
 	}
 
 	@Override

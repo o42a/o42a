@@ -29,14 +29,17 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -47,6 +50,7 @@ import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
@@ -320,9 +324,9 @@ public class BoundPath extends RefPath {
 		return getRawPath().bindStatically(this, this.origin);
 	}
 
-	public final PathOp op(CodeDirs dirs, HostOp start) {
+	public final PathOp op(HostOp start) {
 		if (isStatic()) {
-			return staticOp(dirs, start);
+			return staticOp(start);
 		}
 
 		final Step[] steps = getSteps();
@@ -856,13 +860,12 @@ public class BoundPath extends RefPath {
 		return path.getTemplate();
 	}
 
-	private final PathOp staticOp(CodeDirs dirs, HostOp start) {
+	private final PathOp staticOp(HostOp start) {
 
-		final CodeBuilder builder = dirs.getBuilder();
 		final ObjectIR firstObject =
-				startObject().ir(dirs.getGenerator());
+				startObject().ir(start.getGenerator());
 		PathOp found =
-				hostPathOp(this, start, firstObject.op(builder, dirs.code()));
+				hostPathOp(this, start, new StaticHostOp(start, firstObject));
 		final Step[] steps = getSteps();
 
 		for (int i = startIndex(); i < steps.length; ++i) {
@@ -873,6 +876,91 @@ public class BoundPath extends RefPath {
 		}
 
 		return found;
+	}
+
+	private static final class StaticHostOp
+			implements HostOp, HostTargetOp, HostValueOp {
+
+		private final HostOp start;
+		private final ObjectIR objectIR;
+
+		StaticHostOp(HostOp start, ObjectIR objectIR) {
+			this.start = start;
+			this.objectIR = objectIR;
+		}
+
+		@Override
+		public final Generator getGenerator() {
+			return this.start.getGenerator();
+		}
+
+		@Override
+		public final CodeBuilder getBuilder() {
+			return this.start.getBuilder();
+		}
+
+		@Override
+		public final CompilerContext getContext() {
+			return this.start.getContext();
+		}
+
+		@Override
+		public final HostValueOp value() {
+			return this;
+		}
+
+		@Override
+		public final HostTargetOp target() {
+			return this;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			object(dirs).value().writeCond(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return object(dirs.dirs()).value().writeValue(dirs);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			object(dirs).value().assign(dirs, value);
+		}
+
+		@Override
+		public TargetOp op(CodeDirs dirs) {
+			return object(dirs).target().op(dirs);
+		}
+
+		@Override
+		public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+			return object(dirs).target().field(dirs, memberKey);
+		}
+
+		@Override
+		public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+			return object(dirs);
+		}
+
+		@Override
+		public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+			return object(dirs).dereference(dirs, holder);
+		}
+
+		@Override
+		public String toString() {
+			if (this.objectIR == null) {
+				return super.toString();
+			}
+			return this.objectIR.toString();
+		}
+
+		private ObjOp object(CodeDirs dirs) {
+			return this.objectIR.op(getBuilder(), dirs.code());
+		}
+
 	}
 
 }

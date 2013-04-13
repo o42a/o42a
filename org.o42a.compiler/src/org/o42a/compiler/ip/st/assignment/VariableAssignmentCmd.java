@@ -45,9 +45,9 @@ final class VariableAssignmentCmd implements Cmd {
 		final HostOp destination =
 				this.assignment.getStatement().getDestination()
 				.op(control.host())
-				.target(subDirs);
+				.path();
 		final HostOp value =
-				this.assignment.getValue().op(control.host()).target(subDirs);
+				this.assignment.getValue().op(control.host()).path();
 
 		destination.value().assign(subDirs, value);
 

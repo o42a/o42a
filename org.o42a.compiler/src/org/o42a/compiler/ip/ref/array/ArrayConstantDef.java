@@ -161,7 +161,7 @@ final class ArrayConstantDef extends Def {
 					this.array.ir(valueType.irGenerator(dirs.getGenerator()));
 			final ObjectOp array =
 					this.array.getPrefix()
-					.write(dirs.dirs(), host)
+					.write(host)
 					.target()
 					.materialize(
 							dirs.dirs(),

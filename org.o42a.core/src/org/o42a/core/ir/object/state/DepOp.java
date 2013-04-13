@@ -156,7 +156,7 @@ public class DepOp extends IROp implements TargetOp, HostTargetOp, HostValueOp {
 	private DataOp createObject(CodeDirs dirs, HostOp owner) {
 
 		final HostTargetOp target =
-				getDep().ref().op(owner).target(dirs).target();
+				getDep().ref().op(owner).path().target();
 
 		return target.materialize(dirs, tempObjHolder(dirs.getAllocator()))
 				.toData(null, dirs.code());

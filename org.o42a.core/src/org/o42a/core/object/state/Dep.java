@@ -464,9 +464,9 @@ public final class Dep extends Step implements SubID {
 			final PathOp enclosing =
 					declaredIn.getEnclosingScopePath()
 					.bind(this.dep.ref(), declaredIn)
-					.op(dirs, start());
+					.op(start());
 
-			return this.dep.ref().op(enclosing).target(dirs);
+			return this.dep.ref().op(enclosing).path();
 		}
 
 	}
