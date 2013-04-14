@@ -19,9 +19,12 @@
 */
 package org.o42a.core.value.impl;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
+import org.o42a.core.ir.object.AbstractObjectStoreOp;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
@@ -36,6 +39,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
+import org.o42a.util.string.ID;
 
 
 public final class Constant<T> extends ObjectConstructor {
@@ -168,6 +172,36 @@ public final class Constant<T> extends ObjectConstructor {
 					this.constant.getConstructed().ir(getGenerator());
 
 			return ir.op(getBuilder(), dirs.code());
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return new ConstantStoreOp(id, code, this.constant);
+		}
+
+	}
+
+	private static final class ConstantStoreOp extends AbstractObjectStoreOp {
+
+		private final Constant<?> constant;
+
+		ConstantStoreOp(ID id, Code code, Constant<?> constant) {
+			super(id, code);
+			this.constant = constant;
+		}
+
+		@Override
+		public Obj getWellKnownType() {
+			return this.constant.getConstructed();
+		}
+
+		@Override
+		protected ObjectOp object(CodeDirs dirs) {
+
+			final ObjectIR ir =
+					this.constant.getConstructed().ir(dirs.getGenerator());
+
+			return ir.op(dirs.getBuilder(), dirs.code());
 		}
 
 	}

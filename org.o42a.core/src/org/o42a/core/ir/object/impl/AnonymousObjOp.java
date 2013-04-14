@@ -32,7 +32,6 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.state.DepOp;
 import org.o42a.core.ir.object.state.KeeperOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.TargetOp;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
@@ -106,7 +105,7 @@ public final class AnonymousObjOp extends ObjectOp {
 	}
 
 	@Override
-	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
 
 		final CodeDirs subDirs =
 				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);

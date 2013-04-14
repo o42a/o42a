@@ -21,10 +21,15 @@ package org.o42a.core.ir.object.state;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.object.state.DepIR.DEP_IR;
 
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -37,6 +42,10 @@ import org.o42a.util.string.ID;
 
 
 public class DepOp extends IROp implements TargetOp, HostValueOp {
+
+	public static DepOp createDep(DepOp prototype, DepIR.Op ptr) {
+		return new DepOp(prototype.host(), prototype.depIR(), ptr);
+	}
 
 	public static final ID DEP_ID = ID.id("dep");
 
@@ -94,7 +103,7 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 	}
 
 	@Override
-	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
 		return loadDep(dirs).field(dirs, memberKey);
 	}
 
@@ -107,8 +116,17 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 	}
 
 	@Override
-	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return loadDep(dirs).dereference(dirs, holder);
+	}
+
+	@Override
+	public TargetStoreOp allocateStore(ID id, Code code) {
+
+		final StructRecOp<DepIR.Op> ptr =
+				code.allocatePtr(null, DEP_IR);
+
+		return new DepStoreOp(this, code.getAllocator(), ptr);
 	}
 
 	@Override
@@ -167,6 +185,48 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 				getBuilder(),
 				ptr().object(code).load(null, code),
 				getDep().getDepTarget());
+	}
+
+	private static final class DepStoreOp implements TargetStoreOp {
+
+		private final DepOp dep;
+		private final Allocator allocator;
+		private final StructRecOp<DepIR.Op> ptr;
+
+		DepStoreOp(
+				DepOp dep,
+				Allocator allocator,
+				StructRecOp<DepIR.Op> ptr) {
+			this.dep = dep;
+			this.allocator = allocator;
+			this.ptr = ptr;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+
+			final Block code = dirs.code();
+
+			tempObjHolder(this.allocator).holdVolatile(code, this.dep.host());
+			this.ptr.store(code, this.dep.ptr());
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+
+			final DepIR.Op ptr = this.ptr.load(null, dirs.code());
+
+			return createDep(this.dep, ptr);
+		}
+
+		@Override
+		public String toString() {
+			if (this.ptr == null) {
+				return super.toString();
+			}
+			return this.ptr.toString();
+		}
+
 	}
 
 }

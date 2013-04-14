@@ -20,6 +20,8 @@
 package org.o42a.core.object.state;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.object.state.DepIR.DEP_IR;
+import static org.o42a.core.ir.object.state.DepOp.createDep;
 import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
@@ -30,8 +32,14 @@ import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.ProxyUser;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.state.DepIR;
+import org.o42a.core.ir.object.state.DepOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -429,11 +437,61 @@ public final class Dep extends Step implements SubID {
 		}
 
 		@Override
-		public HostOp pathTarget(CodeDirs dirs) {
+		public DepOp pathTarget(CodeDirs dirs) {
+
+			final ObjHolder holder = tempObjHolder(dirs.getAllocator());
+
+			return dep(dirs, holder);
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+
+			final StructRecOp<DepIR.Op> ptr =
+					code.allocatePtr(id, DEP_IR);
+
+			return new DepStepStoreOp(this, code.getAllocator(), ptr);
+		}
+
+		private DepOp dep(CodeDirs dirs, ObjHolder holder) {
 			return start()
 					.target()
-					.materialize(dirs, tempObjHolder(dirs.getAllocator()))
+					.materialize(dirs, holder)
 					.dep(dirs, getStep());
+		}
+
+	}
+
+	private static final class DepStepStoreOp implements TargetStoreOp {
+
+		private final Op op;
+		private final Allocator allocator;
+		private final StructRecOp<DepIR.Op> ptr;
+		private DepOp dep;
+
+		DepStepStoreOp(Op op, Allocator allocator, StructRecOp<DepIR.Op> ptr) {
+			this.op = op;
+			this.allocator = allocator;
+			this.ptr = ptr;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+			this.dep = this.op.dep(dirs, tempObjHolder(this.allocator));
+			this.ptr.store(dirs.code(), this.dep.ptr());
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			return createDep(this.dep, this.ptr.load(null, dirs.code()));
+		}
+
+		@Override
+		public String toString() {
+			if (this.ptr == null) {
+				return super.toString();
+			}
+			return this.ptr.toString();
 		}
 
 	}
@@ -459,6 +517,10 @@ public final class Dep extends Step implements SubID {
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
+			return path();
+		}
+
+		private PathOp path() {
 
 			final Scope declaredIn = this.dep.getDeclaredIn().getScope();
 			final PathOp enclosing =
@@ -469,6 +531,12 @@ public final class Dep extends Step implements SubID {
 			return this.dep.ref().op(enclosing).path();
 		}
 
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return path().target().allocateStore(id, code);
+		}
+
 	}
+
 
 }

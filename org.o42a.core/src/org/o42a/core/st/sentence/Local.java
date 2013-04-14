@@ -26,6 +26,7 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.ir.cmd.LocalOp;
 import org.o42a.core.ir.op.*;
@@ -41,6 +42,7 @@ import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
@@ -319,11 +321,47 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 			return this.local.toString();
 		}
 
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+
+			final LocalOp op =
+					getBuilder().localsOf(code.getAllocator()).get(this.local);
+
+			return new LocalStoreOp(op);
+		}
+
 		private LocalOp op(CodeDirs dirs) {
 			if (this.op != null) {
 				return this.op;
 			}
 			return this.op = dirs.locals().get(this.local);
+		}
+
+	}
+
+	private static final class LocalStoreOp implements TargetStoreOp {
+
+		private final LocalOp local;
+
+		LocalStoreOp(LocalOp local) {
+			this.local = local;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			return this.local.target(dirs);
+		}
+
+		@Override
+		public String toString() {
+			if (this.local == null) {
+				return super.toString();
+			}
+			return this.local.toString();
 		}
 
 	}

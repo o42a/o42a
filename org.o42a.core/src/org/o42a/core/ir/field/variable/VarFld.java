@@ -32,8 +32,8 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFld;
-import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.field.link.AbstractLinkFld;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
@@ -64,14 +64,6 @@ public class VarFld extends AbstractLinkFld<VarFld.Op> {
 	}
 
 	@Override
-	public VarFldOp op(Code code, ObjOp host) {
-		return new VarFldOp(
-				this,
-				host,
-				isOmitted() ? null : host.ptr().field(code, getInstance()));
-	}
-
-	@Override
 	protected Type getType() {
 		return VAR_FLD;
 	}
@@ -85,7 +77,7 @@ public class VarFld extends AbstractLinkFld<VarFld.Op> {
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final RefFldOp<?, ObjectRefFunc> fld = op(code, builder.host());
+		final FldOp<Op> fld = op(code, builder.host());
 		final FldCtrOp ctr =
 				code.getAllocator()
 				.allocation()
@@ -109,6 +101,11 @@ public class VarFld extends AbstractLinkFld<VarFld.Op> {
 		ctr.finish(code, fld);
 
 		res.returnValue(code);
+	}
+
+	@Override
+	protected VarFldOp op(Code code, ObjOp host, Op ptr) {
+		return new VarFldOp(this, host, ptr);
 	}
 
 	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {

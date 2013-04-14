@@ -25,7 +25,6 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
-import org.o42a.core.ir.op.TargetOp;
 import org.o42a.core.member.MemberKey;
 
 
@@ -54,17 +53,17 @@ public final class ArraySteOp extends FldOp<ArraySte.Op> {
 	}
 
 	@Override
+	public final FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public final TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+	public final ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 

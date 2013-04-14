@@ -30,10 +30,12 @@ import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -56,6 +58,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.string.ID;
 
 
 public class BoundPath extends RefPath {
@@ -935,7 +938,7 @@ public class BoundPath extends RefPath {
 		}
 
 		@Override
-		public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+		public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
 			return object(dirs).target().field(dirs, memberKey);
 		}
 
@@ -945,8 +948,13 @@ public class BoundPath extends RefPath {
 		}
 
 		@Override
-		public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+		public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 			return object(dirs).dereference(dirs, holder);
+		}
+
+		@Override
+		public TargetStoreOp allocateStore(ID id, Code code) {
+			return object(code).allocateStore(id, code);
 		}
 
 		@Override
@@ -958,7 +966,11 @@ public class BoundPath extends RefPath {
 		}
 
 		private ObjOp object(CodeDirs dirs) {
-			return this.objectIR.op(getBuilder(), dirs.code());
+			return object(dirs.code());
+		}
+
+		private ObjOp object(Code code) {
+			return this.objectIR.op(getBuilder(), code);
 		}
 
 	}

@@ -25,8 +25,12 @@ import static org.o42a.core.value.link.impl.LinkInterface.linkInterfaceOf;
 
 import java.util.HashMap;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.object.AbstractObjectStoreOp;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -41,12 +45,14 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.link.Link;
 import org.o42a.core.value.link.LinkValueType;
+import org.o42a.util.string.ID;
 
 
 public class DereferenceStep extends Step {
 
 	private ObjectStepUses uses;
 	private HashMap<Scope, RtLink> rtLinks;
+	private Obj iface;
 
 	@Override
 	public PathKind getPathKind() {
@@ -98,6 +104,10 @@ public class DereferenceStep extends Step {
 				linkObject.type().getParameters();
 		final LinkValueType linkType =
 				typeParameters.getValueType().toLinkType();
+
+		if (this.iface == null) {
+			this.iface = linkType.interfaceRef(typeParameters).getType();
+		}
 
 		assert linkType != null :
 			linkObject + " is not a link object";
@@ -249,10 +259,43 @@ public class DereferenceStep extends Step {
 		}
 
 		@Override
-		public HostOp pathTarget(CodeDirs dirs) {
-			return start()
-					.target()
-					.dereference(dirs, tempObjHolder(dirs.getAllocator()));
+		public TargetOp pathTarget(CodeDirs dirs) {
+
+			final ObjHolder holder = tempObjHolder(dirs.getAllocator());
+
+			return dereference(dirs, holder);
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return new DereferenceStoreOp(id, code, this);
+		}
+
+		private ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+			return start().target().dereference(dirs, holder);
+		}
+
+	}
+
+	private final class DereferenceStoreOp extends AbstractObjectStoreOp {
+
+		private final Op op;
+
+		DereferenceStoreOp(ID id, Code code, Op op) {
+			super(id, code);
+			this.op = op;
+		}
+
+		@Override
+		public Obj getWellKnownType() {
+			return DereferenceStep.this.iface;
+		}
+
+		@Override
+		protected ObjectOp object(CodeDirs dirs) {
+			return this.op.dereference(
+					dirs,
+					tempObjHolder(getAllocator()));
 		}
 
 	}

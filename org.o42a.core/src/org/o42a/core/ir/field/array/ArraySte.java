@@ -138,14 +138,6 @@ public class ArraySte extends Fld<ArraySte.Op>
 	}
 
 	@Override
-	public ArraySteOp op(Code code, ObjOp host) {
-		return new ArraySteOp(
-				host,
-				this,
-				host.ptr().field(code, getInstance()));
-	}
-
-	@Override
 	protected boolean mayOmit() {
 		return false;
 	}
@@ -158,6 +150,11 @@ public class ArraySte extends Fld<ArraySte.Op>
 	@Override
 	protected Content<ArraySte.Type> content() {
 		return this;
+	}
+
+	@Override
+	protected ArraySteOp op(Code code, ObjOp host, Op ptr) {
+		return new ArraySteOp(host, this, ptr);
 	}
 
 	final Obj getObject() {

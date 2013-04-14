@@ -19,9 +19,11 @@
 */
 package org.o42a.core.ref.path.impl.member;
 
+import static org.o42a.core.ir.op.HostTargetOp.ALLOC_STORE_SUFFIX;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.*;
@@ -33,6 +35,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 public abstract class AbstractMemberStep extends Step {
@@ -204,8 +207,52 @@ public abstract class AbstractMemberStep extends Step {
 			assert firstDeclaration.toField() != null :
 				"Field expected: " + firstDeclaration;
 
-			// Member is field.
 			return start().target().field(dirs, getStep().getMemberKey());
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+
+			final Code alloc = code.inset(id.detail(ALLOC_STORE_SUFFIX));
+
+			return new MemberStoreOp(id, alloc, this);
+		}
+
+	}
+
+	private static final class MemberStoreOp implements TargetStoreOp {
+
+		private final ID id;
+		private final Code alloc;
+		private final MemberOp member;
+		private TargetStoreOp store;
+
+		MemberStoreOp(ID id, Code alloc, MemberOp member) {
+			this.id = id;
+			this.alloc = alloc;
+			this.member = member;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+
+			final TargetOp field =
+					this.member.pathTarget(dirs).target().op(dirs);
+
+			this.store = field.allocateStore(this.id, this.alloc);
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			return this.store.loadTarget(dirs);
+		}
+
+		@Override
+		public String toString() {
+			if (this.id != null) {
+				return super.toString();
+			}
+			return this.id.toString();
 		}
 
 	}

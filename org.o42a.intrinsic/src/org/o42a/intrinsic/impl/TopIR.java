@@ -24,12 +24,15 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.util.string.ID;
 
 
 final class TopIR extends ScopeIR {
@@ -93,8 +96,8 @@ final class TopIR extends ScopeIR {
 		}
 
 		@Override
-		public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
-			return null;
+		public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
@@ -103,7 +106,12 @@ final class TopIR extends ScopeIR {
 		}
 
 		@Override
-		public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+		public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public TargetStoreOp allocateStore(ID id, Code code) {
 			throw new UnsupportedOperationException();
 		}
 

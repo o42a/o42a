@@ -177,14 +177,6 @@ public class VarSte extends Fld<VarSte.Op> implements Content<VarSte.Type> {
 	}
 
 	@Override
-	public VarSteOp op(Code code, ObjOp host) {
-		return new VarSteOp(
-				this,
-				host,
-				host.ptr().field(code, getInstance()));
-	}
-
-	@Override
 	public String toString() {
 		if (getBodyIR() == null) {
 			return "assigner";
@@ -205,6 +197,11 @@ public class VarSte extends Fld<VarSte.Op> implements Content<VarSte.Type> {
 	@Override
 	protected Type getType() {
 		return VAR_STE;
+	}
+
+	@Override
+	protected VarSteOp op(Code code, ObjOp host, Op ptr) {
+		return new VarSteOp(this, host, ptr);
 	}
 
 	final TypeRef interfaceRef() {

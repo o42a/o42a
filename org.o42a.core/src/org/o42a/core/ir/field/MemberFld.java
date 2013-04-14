@@ -93,9 +93,6 @@ public abstract class MemberFld<F extends Fld.Op<F>> extends Fld<F> {
 	}
 
 	@Override
-	public abstract MemberFldOp<F> op(Code code, ObjOp host);
-
-	@Override
 	public String toString() {
 		return getField().toString();
 	}
@@ -121,5 +118,8 @@ public abstract class MemberFld<F extends Fld.Op<F>> extends Fld<F> {
 				getGenerator().getAnalyzer(),
 				ALL_DERIVATION_USAGES);
 	}
+
+	@Override
+	protected abstract MemberFldOp<F> op(Code code, ObjOp host, F ptr);
 
 }

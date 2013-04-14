@@ -19,10 +19,16 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.TargetOp;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.ir.op.TargetStoreOp;
 import org.o42a.util.string.ID;
 
 
@@ -54,6 +60,82 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 	public abstract F ptr();
 
 	@Override
-	public abstract TargetOp field(CodeDirs dirs, MemberKey memberKey);
+	public TargetStoreOp allocateStore(ID id, Code code) {
+		if (fld().isOmitted()) {
+			return new OmittedFldStoreOp(this);
+		}
+
+		final StructRecOp<F> ptr = code.allocatePtr(id, fld().getType());
+
+		return new FldStoreOp<>(this, code.getAllocator(), ptr);
+	}
+
+	private static final class OmittedFldStoreOp implements TargetStoreOp {
+
+		private final FldOp<?> fld;
+
+		OmittedFldStoreOp(FldOp<?> fld) {
+			this.fld = fld;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			return this.fld;
+		}
+
+		@Override
+		public String toString() {
+			if (this.fld == null) {
+				return super.toString();
+			}
+			return this.fld.toString();
+		}
+
+	}
+
+	private static final class FldStoreOp<F extends Fld.Op<F>>
+			implements TargetStoreOp {
+
+		private final FldOp<F> fld;
+		private final Allocator allocator;
+		private final StructRecOp<F> ptr;
+
+		FldStoreOp(FldOp<F> fld, Allocator allocator, StructRecOp<F> ptr) {
+			this.fld = fld;
+			this.allocator = allocator;
+			this.ptr = ptr;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+
+			final Block code = dirs.code();
+
+			tempObjHolder(this.allocator).holdVolatile(code, this.fld.host());
+			this.ptr.store(code, this.fld.ptr());
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+
+			final Block code = dirs.code();
+			final F ptr = this.ptr.load(null, code);
+
+			return this.fld.fld().op(code, this.fld.host(), ptr);
+		}
+
+		@Override
+		public String toString() {
+			if (this.ptr == null) {
+				return super.toString();
+			}
+			return this.ptr.toString();
+		}
+
+	}
 
 }

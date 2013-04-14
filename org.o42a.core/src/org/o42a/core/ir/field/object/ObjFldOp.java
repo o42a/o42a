@@ -23,12 +23,13 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
-import org.o42a.core.ir.op.TargetOp;
+import org.o42a.core.member.MemberKey;
 
 
 public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
@@ -56,12 +57,18 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	}
 
 	@Override
+	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.field(dirs, memberKey);
+	}
+
+	@Override
 	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, holder);
 	}
 
 	@Override
-	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.dereference(dirs, holder);
 	}

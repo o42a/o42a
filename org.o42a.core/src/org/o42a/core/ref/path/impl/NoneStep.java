@@ -24,7 +24,10 @@ import static org.o42a.core.ir.value.Val.falseVal;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.impl.ConstValOp;
@@ -35,11 +38,13 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 public class NoneStep extends Step {
 
 	private static final Inline INLINE_NONE = new Inline();
+	private static final NoneStoreOp NONE_STORE = new NoneStoreOp();
 
 	@Override
 	public PathKind getPathKind() {
@@ -109,6 +114,14 @@ public class NoneStep extends Step {
 	@Override
 	protected PathOp op(PathOp start) {
 		return new NoneOp(start, this);
+	}
+
+	private static ObjOp noneObject(CodeDirs dirs) {
+
+		final CodeBuilder builder = dirs.getBuilder();
+		final Obj none = builder.getContext().getNone();
+
+		return none.ir(dirs.getGenerator()).op(builder, dirs.code());
 	}
 
 	private static final class Inline extends InlineStep {
@@ -187,10 +200,32 @@ public class NoneStep extends Step {
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
 			dirs.code().go(dirs.falseDir());
+			return noneObject(dirs);
+		}
 
-			final Obj none = getContext().getNone();
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return NONE_STORE;
+		}
 
-			return none.ir(getGenerator()).op(getBuilder(), dirs.code());
+	}
+
+	private static final class NoneStoreOp implements TargetStoreOp {
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+			dirs.code().go(dirs.falseDir());
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			dirs.code().go(dirs.falseDir());
+			return noneObject(dirs);
+		}
+
+		@Override
+		public String toString() {
+			return "NONE";
 		}
 
 	}

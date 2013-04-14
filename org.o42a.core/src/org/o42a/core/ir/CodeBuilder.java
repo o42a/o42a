@@ -85,6 +85,17 @@ public abstract class CodeBuilder {
 		return this.locals;
 	}
 
+	public final LocalsCode localsOf(Allocator allocator) {
+
+		final LocalsCode locals = allocator.get(LocalsCode.class);
+
+		if (locals != null) {
+			return locals;
+		}
+
+		return locals();
+	}
+
 	public final ID nextId() {
 		return getFunction().getId().anonymous(++this.nameSeq);
 	}

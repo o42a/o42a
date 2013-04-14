@@ -58,14 +58,6 @@ public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 	}
 
 	@Override
-	public LinkFldOp op(Code code, ObjOp host) {
-		return new LinkFldOp(
-				this,
-				host,
-				isOmitted() ? null : host.ptr().field(code, getInstance()));
-	}
-
-	@Override
 	protected Type getType() {
 		return LINK_FLD;
 	}
@@ -82,6 +74,11 @@ public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 		final ObjectOp result = construct(builder, dirs);
 
 		result.toData(null, code).returnValue(code);
+	}
+
+	@Override
+	protected LinkFldOp op(Code code, ObjOp host, Op ptr) {
+		return new LinkFldOp(this, host, ptr);
 	}
 
 	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {

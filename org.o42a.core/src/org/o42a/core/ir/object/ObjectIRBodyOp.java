@@ -79,7 +79,7 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return struct(null, code, instance);
 	}
 
-	public final <O extends KeeperIROp<O>> KeeperIROp<O> keeper(
+	public final <O extends KeeperIROp<O>> O keeper(
 			Code code,
 			KeeperIRType<O> instance) {
 		return struct(null, code, instance);

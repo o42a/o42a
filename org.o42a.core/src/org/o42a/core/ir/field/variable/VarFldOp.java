@@ -23,13 +23,17 @@ import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.field.link.AbstractLinkFldValueOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.member.MemberKey;
 
 
 public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
@@ -57,7 +61,12 @@ public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+		throw new UnsupportedOperationException("Variable field has no fields");
+	}
+
+	@Override
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, holder);
 	}
 
