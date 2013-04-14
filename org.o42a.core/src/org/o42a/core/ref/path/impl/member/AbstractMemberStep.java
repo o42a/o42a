@@ -240,6 +240,7 @@ public abstract class AbstractMemberStep extends Step {
 					this.member.pathTarget(dirs).target().op(dirs);
 
 			this.store = field.allocateStore(this.id, this.alloc);
+			this.store.storeTarget(dirs);
 		}
 
 		@Override
