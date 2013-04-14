@@ -90,9 +90,6 @@ public abstract class RefFld<
 	}
 
 	@Override
-	public abstract RefFldOp<F, C> op(Code code, ObjOp host);
-
-	@Override
 	protected abstract Type<F, C> getType();
 
 	@Override
@@ -157,6 +154,9 @@ public abstract class RefFld<
 	protected Content<Type<F, C>> content() {
 		return new FldContent<>(this);
 	}
+
+	@Override
+	protected abstract RefFldOp<F, C> op(Code code, ObjOp host, F ptr);
 
 	private void fillTarget() {
 		if (getType().isStateless()) {

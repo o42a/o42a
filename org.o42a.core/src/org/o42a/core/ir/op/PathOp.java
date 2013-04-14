@@ -20,13 +20,16 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.util.string.ID;
 
 
 public abstract class PathOp implements HostOp {
@@ -91,6 +94,8 @@ public abstract class PathOp implements HostOp {
 		return new PathValueOp(this);
 	}
 
+	protected abstract TargetStoreOp allocateStore(ID id, Code code);
+
 	private static final class PathTargetOp implements HostTargetOp {
 
 		private final PathOp path;
@@ -105,7 +110,7 @@ public abstract class PathOp implements HostOp {
 		}
 
 		@Override
-		public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+		public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
 			return target(dirs).field(dirs, memberKey);
 		}
 
@@ -115,8 +120,13 @@ public abstract class PathOp implements HostOp {
 		}
 
 		@Override
-		public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+		public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 			return target(dirs).dereference(dirs, holder);
+		}
+
+		@Override
+		public TargetStoreOp allocateStore(ID id, Code code) {
+			return this.path.allocateStore(id, code);
 		}
 
 		@Override
@@ -202,6 +212,12 @@ public abstract class PathOp implements HostOp {
 
 			return host.toString();
 		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return host().target().allocateStore(id, code);
+		}
+
 	}
 
 }

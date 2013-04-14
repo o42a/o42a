@@ -21,7 +21,6 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.object.op.ObjHolder.useVar;
 
 import org.o42a.codegen.code.Block;
@@ -34,8 +33,6 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.TargetOp;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
@@ -57,12 +54,6 @@ public abstract class RefFldOp<
 
 	@Override
 	public abstract F ptr();
-
-	@Override
-	public final TargetOp field(CodeDirs dirs, MemberKey memberKey) {
-		return target(dirs, tempObjHolder(dirs.getAllocator()))
-				.field(dirs, memberKey);
-	}
 
 	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
 

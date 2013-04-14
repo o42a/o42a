@@ -21,7 +21,9 @@ package org.o42a.core.ref.path.impl;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
@@ -31,6 +33,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 public class StaticObjectStep extends Step {
@@ -122,11 +125,20 @@ public class StaticObjectStep extends Step {
 		}
 
 		@Override
-		public HostOp pathTarget(CodeDirs dirs) {
+		public ObjOp pathTarget(CodeDirs dirs) {
+			return staticObject(dirs.code());
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return staticObject(code).allocateStore(id, code);
+		}
+
+		private ObjOp staticObject(Code code) {
 
 			final ObjectIR objectIR = getStep().object.ir(getGenerator());
 
-			return objectIR.op(getBuilder(), dirs.code());
+			return objectIR.op(getBuilder(), code);
 		}
 
 	}

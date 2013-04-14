@@ -19,26 +19,11 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.member.MemberKey;
-import org.o42a.util.string.ID;
 
+public interface TargetStoreOp {
 
-public interface HostTargetOp {
+	void storeTarget(CodeDirs dirs);
 
-	ID ALLOC_STORE_SUFFIX = ID.rawId("alloc_store");
-
-	TargetOp op(CodeDirs dirs);
-
-	FldOp<?> field(CodeDirs dirs, MemberKey memberKey);
-
-	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);
-
-	ObjectOp dereference(CodeDirs dirs, ObjHolder holder);
-
-	TargetStoreOp allocateStore(ID id, Code code);
+	TargetOp loadTarget(CodeDirs dirs);
 
 }

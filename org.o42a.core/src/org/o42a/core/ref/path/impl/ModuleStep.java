@@ -21,7 +21,9 @@ package org.o42a.core.ref.path.impl;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
@@ -32,6 +34,7 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
+import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
@@ -162,13 +165,22 @@ public final class ModuleStep extends Step {
 		}
 
 		@Override
-		public HostOp pathTarget(CodeDirs dirs) {
+		public ObjOp pathTarget(CodeDirs dirs) {
+			return module(dirs.code());
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return module(code).allocateStore(id, code);
+		}
+
+		private ObjOp module(Code code) {
 
 			final Obj module = getContext().getIntrinsics().getModule(
 					getStep().getModuleName());
 			final ObjectIR moduleIR = module.ir(getGenerator());
 
-			return moduleIR.op(getBuilder(), dirs.code());
+			return moduleIR.op(getBuilder(), code);
 		}
 
 	}

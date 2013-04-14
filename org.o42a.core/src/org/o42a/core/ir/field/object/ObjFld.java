@@ -67,14 +67,6 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 	}
 
 	@Override
-	public ObjFldOp op(Code code, ObjOp host) {
-		return new ObjFldOp(
-				this,
-				host,
-				isOmitted() ? null : host.ptr().field(code, getInstance()));
-	}
-
-	@Override
 	protected Type getType() {
 		return OBJ_FLD;
 	}
@@ -198,6 +190,11 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 		ctr.finish(code, ownFld);
 
 		result.returnValue(code);
+	}
+
+	@Override
+	protected ObjFldOp op(Code code, ObjOp host, Op ptr) {
+		return new ObjFldOp(this, host, ptr);
 	}
 
 	private ObjectIRTypeOp ancestorType(

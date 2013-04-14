@@ -26,11 +26,14 @@ import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE
 import java.util.IdentityHashMap;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.object.AbstractObjectStoreOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -43,6 +46,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
+import org.o42a.util.string.ID;
 
 
 public abstract class ObjectConstructor
@@ -198,17 +202,30 @@ public abstract class ObjectConstructor
 
 		@Override
 		public ObjectOp pathTarget(CodeDirs dirs) {
-			if (!getConstructed().type().derivation().isUsed(
-					dirs.getGenerator().getAnalyzer(),
-					RUNTIME_DERIVATION_USAGE)) {
-				return exactObject(dirs);
-			}
-			return newObject(dirs);
+			return createObject(dirs, tempObjHolder(dirs.getAllocator()));
 		}
 
 		@Override
 		public String toString() {
 			return String.valueOf(ObjectConstructor.this);
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return new NewObjectStoreOp(id, code, this);
+		}
+
+		private boolean isExact() {
+			return !getConstructed().type().derivation().isUsed(
+					getGenerator().getAnalyzer(),
+					RUNTIME_DERIVATION_USAGE);
+		}
+
+		private ObjectOp createObject(CodeDirs dirs, ObjHolder holder) {
+			if (isExact()) {
+				return exactObject(dirs);
+			}
+			return newObject(dirs, holder);
 		}
 
 		private ObjectOp exactObject(CodeDirs dirs) {
@@ -224,7 +241,7 @@ public abstract class ObjectConstructor
 			return target;
 		}
 
-		private ObjectOp newObject(CodeDirs dirs) {
+		private ObjectOp newObject(CodeDirs dirs, ObjHolder holder) {
 
 			final ObjectOp owner;
 			final ObjectOp host = host().target().materialize(
@@ -240,10 +257,31 @@ public abstract class ObjectConstructor
 			return getBuilder().objects().newObject(
 					dirs,
 					host,
-					tempObjHolder(dirs.getAllocator()),
+					holder,
 					owner,
 					objectAncestor(dirs, host, getConstructed()),
 					getConstructed());
+		}
+
+	}
+
+	private final class NewObjectStoreOp extends AbstractObjectStoreOp {
+
+		private final Op op;
+
+		NewObjectStoreOp(ID id, Code code, Op op) {
+			super(id, code);
+			this.op = op;
+		}
+
+		@Override
+		public Obj getWellKnownType() {
+			return getConstructed();
+		}
+
+		@Override
+		protected ObjectOp object(CodeDirs dirs) {
+			return this.op.createObject(dirs, tempObjHolder(getAllocator()));
 		}
 
 	}

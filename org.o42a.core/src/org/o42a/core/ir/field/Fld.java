@@ -86,7 +86,12 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 		return this.instance;
 	}
 
-	public abstract FldOp<F> op(Code code, ObjOp host);
+	public final FldOp<F> op(Code code, ObjOp host) {
+		return op(
+				code,
+				host,
+				isOmitted() ? null : host.ptr().field(code, getInstance()));
+	}
 
 	public void targetAllocated() {
 	}
@@ -108,6 +113,8 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 	protected abstract Type<F> getType();
 
 	protected abstract Content<? extends Type<F>> content();
+
+	protected abstract FldOp<F> op(Code code, ObjOp host, F ptr);
 
 	public static abstract class Op<F extends Op<F>> extends StructOp<F> {
 

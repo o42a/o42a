@@ -61,19 +61,18 @@ public final class VarSteOp extends FldOp<VarSte.Op> {
 	}
 
 	@Override
+	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, holder);
 	}
 
 	@Override
-	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
-		return target(dirs, tempObjHolder(dirs.getAllocator()))
-				.field(dirs, memberKey);
 	}
 
 	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {

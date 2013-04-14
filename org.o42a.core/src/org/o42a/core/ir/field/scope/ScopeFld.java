@@ -26,9 +26,7 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.field.MemberFld;
+import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
@@ -69,14 +67,6 @@ public final class ScopeFld
 
 	public final ObjectIRBody getTarget() {
 		return this.target;
-	}
-
-	@Override
-	public final ScopeFldOp op(Code code, ObjOp host) {
-		return new ScopeFldOp(
-				this,
-				host,
-				isOmitted() ? null : host.ptr().field(code, getInstance()));
 	}
 
 	public final void declare(ObjectIRBodyData data, Obj target) {
@@ -127,6 +117,11 @@ public final class ScopeFld
 	@Override
 	protected Content<ScopeFld.Type> content() {
 		return this;
+	}
+
+	@Override
+	protected MemberFldOp<Op> op(Code code, ObjOp host, Op ptr) {
+		return new ScopeFldOp(this, host, ptr);
 	}
 
 	public static final class Op extends Fld.Op<Op> {

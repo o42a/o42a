@@ -22,7 +22,9 @@ package org.o42a.core.ref.path.impl;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -32,6 +34,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 public class VoidStep extends Step {
@@ -173,10 +176,19 @@ public class VoidStep extends Step {
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
+			return voidObject(dirs.code());
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return voidObject(code).allocateStore(id, code);
+		}
+
+		private ObjOp voidObject(Code code) {
 
 			final Obj voidObject = getContext().getVoid();
 
-			return voidObject.ir(getGenerator()).op(getBuilder(), dirs.code());
+			return voidObject.ir(getGenerator()).op(getBuilder(), code);
 		}
 
 	}

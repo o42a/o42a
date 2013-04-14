@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.MemberFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
@@ -31,7 +32,6 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
-import org.o42a.core.ir.op.TargetOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 
@@ -61,7 +61,7 @@ public class ScopeFldOp extends MemberFldOp<ScopeFld.Op> {
 	}
 
 	@Override
-	public TargetOp field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
 		return scope(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}
@@ -72,7 +72,7 @@ public class ScopeFldOp extends MemberFldOp<ScopeFld.Op> {
 	}
 
 	@Override
-	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return scope(dirs, tempObjHolder(dirs.getAllocator()))
 				.dereference(dirs, holder);
 	}

@@ -22,8 +22,10 @@ package org.o42a.core.ref.path;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
@@ -33,6 +35,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 final class StaticStep extends Step {
@@ -158,13 +161,21 @@ final class StaticStep extends Step {
 		}
 
 		@Override
-		public HostOp pathTarget(CodeDirs dirs) {
-			// This should only be called for object scope.
+		public ObjOp pathTarget(CodeDirs dirs) {
+			return staticObject(dirs.code());
+		}
+
+		@Override
+		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return staticObject(code).allocateStore(id, code);
+		}
+
+		private ObjOp staticObject(Code code) {
 
 			final ObjectIR ir =
 					getStep().getFinalScope().toObject().ir(getGenerator());
 
-			return ir.op(getBuilder(), dirs.code());
+			return ir.op(getBuilder(), code);
 		}
 
 	}

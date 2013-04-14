@@ -66,14 +66,7 @@ public class CodeDirs {
 	}
 
 	public final LocalsCode locals() {
-
-		final LocalsCode locals = getAllocator().get(LocalsCode.class);
-
-		if (locals != null) {
-			return locals;
-		}
-
-		return getBuilder().locals();
+		return getBuilder().localsOf(getAllocator());
 	}
 
 	public final boolean isDebug() {

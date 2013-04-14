@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.analysis.Analyzer;
@@ -30,6 +31,7 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -130,7 +132,7 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 	}
 
 	@Override
-	public abstract TargetOp field(CodeDirs dirs, MemberKey memberKey);
+	public abstract FldOp<?> field(CodeDirs dirs, MemberKey memberKey);
 
 	public abstract DepOp dep(CodeDirs dirs, Dep dep);
 
@@ -142,7 +144,7 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 	}
 
 	@Override
-	public TargetOp dereference(CodeDirs dirs, ObjHolder holder) {
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 
 		final TypeParameters<?> typeParameters =
 				getWellKnownType().type().getParameters();
@@ -172,6 +174,14 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 		valDirs.done();
 
 		return result;
+	}
+
+	@Override
+	public TargetStoreOp allocateStore(ID id, Code code) {
+		if (getPrecision().isExact()) {
+			return new ExactObjectStoreOp(this);
+		}
+		return new ObjectStoreOp(id, code, this);
 	}
 
 	@Override
@@ -259,6 +269,56 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 		dep(depDirs, dep).fill(depDirs, host);
 
 		depDirs.done();
+	}
+
+	private static final class ObjectStoreOp extends AbstractObjectStoreOp {
+
+		private final ObjectOp object;
+
+		ObjectStoreOp(ID id, Code code, ObjectOp object) {
+			super(id, code);
+			this.object = object;
+		}
+
+		@Override
+		public Obj getWellKnownType() {
+			return this.object.getWellKnownType();
+		}
+
+		@Override
+		protected ObjectOp object(CodeDirs dirs) {
+			tempObjHolder(getAllocator())
+			.holdVolatile(dirs.code(), this.object);
+			return this.object;
+		}
+
+	}
+
+	private static final class ExactObjectStoreOp implements TargetStoreOp {
+
+		private final ObjectOp object;
+
+		ExactObjectStoreOp(ObjectOp object) {
+			this.object = object;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			return this.object;
+		}
+
+		@Override
+		public String toString() {
+			if (this.object == null) {
+				return super.toString();
+			}
+			return this.object.toString();
+		}
+
 	}
 
 }
