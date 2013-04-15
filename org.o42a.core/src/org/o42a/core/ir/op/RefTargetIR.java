@@ -19,16 +19,22 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.SubData;
+import org.o42a.util.string.ID;
 
 
 public interface RefTargetIR {
 
-	void allocate(SubData<?> data);
+	Data<?> allocate(ID id, SubData<?> data);
 
-	void storeTarget(HostOp start, StructOp<?> data);
+	DumpablePtrOp<?> ptr(Code code, StructOp<?> data);
 
-	void loadTarget(StructOp<?> data);
+	void storeTarget(CodeDirs dirs, PathOp start, StructOp<?> data);
+
+	TargetOp loadTarget(CodeDirs dirs, StructOp<?> data);
 
 }

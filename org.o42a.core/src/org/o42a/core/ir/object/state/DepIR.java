@@ -33,6 +33,7 @@ import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyData;
+import org.o42a.core.ir.op.RefIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
@@ -44,13 +45,15 @@ public class DepIR implements FldIR {
 
 	private final ObjectIRBody bodyIR;
 	private final Dep dep;
-	private Type instance;
+	private final RefIR refIR;
+	private Data<?> data;
 
 	public DepIR(ObjectIRBody bodyIR, Dep dep) {
 		assert dep.exists(bodyIR.getGenerator().getAnalyzer()) :
 			dep + " does not exist";
 		this.bodyIR = bodyIR;
 		this.dep = dep;
+		this.refIR = dep.ref().ir(getGenerator());
 	}
 
 	public final Generator getGenerator() {
@@ -59,10 +62,6 @@ public class DepIR implements FldIR {
 
 	public final Dep getDep() {
 		return this.dep;
-	}
-
-	public Type getInstance() {
-		return this.instance;
 	}
 
 	@Override
@@ -87,21 +86,15 @@ public class DepIR implements FldIR {
 
 	@Override
 	public final Data<?> data(Generator generator) {
-		return getInstance().data(generator);
+		return this.data;
 	}
 
 	public final void allocate(ObjectIRBodyData data) {
-		this.instance = data.getData().addInstance(getId(), DEP_IR);
-		this.instance.object().setNull();
+		this.data = this.refIR.allocate(getId(), data.getData());
 	}
 
 	public final DepOp op(Code code, ObjOp host) {
-		assert getInstance() != null :
-			this + " is not allocated yet";
-		return new DepOp(
-				host,
-				this,
-				host.ptr().dep(code, getInstance()));
+		return new DepOp(code, host, this);
 	}
 
 	@Override
@@ -110,6 +103,10 @@ public class DepIR implements FldIR {
 			return super.toString();
 		}
 		return this.dep.toString();
+	}
+
+	final RefIR refIR() {
+		return this.refIR;
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {

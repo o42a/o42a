@@ -23,6 +23,7 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.RefIR;
 import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.*;
@@ -267,9 +268,9 @@ public abstract class Step {
 
 	protected abstract PathOp op(PathOp start);
 
-	protected RefTargetIR targetIR() {
+	protected RefTargetIR targetIR(RefIR refIR) {
 		// TODO Implement target IR for each path step.
-		throw new UnsupportedOperationException();
+		return new DefaultRefTargetIR(refIR, this);
 	}
 
 }

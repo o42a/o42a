@@ -31,6 +31,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.directive.Directive;
+import org.o42a.core.value.link.Link;
 
 
 /**
@@ -125,6 +126,24 @@ public final class Resolution implements ScopeInfo {
 		}
 
 		return value.getCompilerValue();
+	}
+
+	public final Obj resolveTarget() {
+
+		final Obj target = toObject();
+
+		if (!target.getConstructionMode().isRuntime()
+				|| target.getConstructionMode().isPredefined()) {
+			return target;
+		}
+
+		final Link link = target.getDereferencedLink();
+
+		if (link != null) {
+			return link.getInterfaceRef().getType();
+		}
+
+		return target.type().getAncestor().getType();
 	}
 
 	/**

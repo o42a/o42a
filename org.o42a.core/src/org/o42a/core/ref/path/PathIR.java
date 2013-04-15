@@ -21,15 +21,13 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
 
-import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.ir.op.PathOp;
-import org.o42a.core.ir.op.RefTargetIR;
+import org.o42a.core.ir.op.*;
 
 
 public abstract class PathIR {
 
-	protected static RefTargetIR stepTargetIR(Step step) {
-		return step.targetIR();
+	protected static RefTargetIR stepTargetIR(RefIR refIR, Step step) {
+		return step.targetIR(refIR);
 	}
 
 	protected static PathOp pathOp(BoundPath path, HostOp start, int last) {
