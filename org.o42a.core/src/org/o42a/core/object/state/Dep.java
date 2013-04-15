@@ -20,8 +20,6 @@
 package org.o42a.core.object.state;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.object.state.DepIR.DEP_IR;
-import static org.o42a.core.ir.object.state.DepOp.createDep;
 import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
@@ -32,13 +30,10 @@ import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.ProxyUser;
-import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.object.state.DepIR;
 import org.o42a.core.ir.object.state.DepOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
@@ -447,10 +442,9 @@ public final class Dep extends Step implements SubID {
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
 
-			final StructRecOp<DepIR.Op> ptr =
-					code.allocatePtr(id, DEP_IR);
+			final Code alloc = code.inset(id);
 
-			return new DepStepStoreOp(this, code.getAllocator(), ptr);
+			return new DepStepStoreOp(id, alloc, this);
 		}
 
 		private DepOp dep(CodeDirs dirs, ObjHolder holder) {
@@ -464,34 +458,39 @@ public final class Dep extends Step implements SubID {
 
 	private static final class DepStepStoreOp implements TargetStoreOp {
 
+		private final ID id;
+		private final Code alloc;
 		private final Op op;
-		private final Allocator allocator;
-		private final StructRecOp<DepIR.Op> ptr;
-		private DepOp dep;
+		private TargetStoreOp store;
 
-		DepStepStoreOp(Op op, Allocator allocator, StructRecOp<DepIR.Op> ptr) {
+		DepStepStoreOp(ID id, Code alloc, Op op) {
+			this.id = id;
+			this.alloc = alloc;
 			this.op = op;
-			this.allocator = allocator;
-			this.ptr = ptr;
 		}
 
 		@Override
 		public void storeTarget(CodeDirs dirs) {
-			this.dep = this.op.dep(dirs, tempObjHolder(this.allocator));
-			this.ptr.store(dirs.code(), this.dep.ptr());
+
+			final DepOp dep = this.op.dep(
+					dirs,
+					tempObjHolder(this.alloc.getAllocator()));
+
+			this.store = dep.allocateStore(this.id, this.alloc);
+			this.store.storeTarget(dirs);
 		}
 
 		@Override
 		public TargetOp loadTarget(CodeDirs dirs) {
-			return createDep(this.dep, this.ptr.load(null, dirs.code()));
+			return this.store.loadTarget(dirs);
 		}
 
 		@Override
 		public String toString() {
-			if (this.ptr == null) {
+			if (this.id == null) {
 				return super.toString();
 			}
-			return this.ptr.toString();
+			return this.id.toString();
 		}
 
 	}
