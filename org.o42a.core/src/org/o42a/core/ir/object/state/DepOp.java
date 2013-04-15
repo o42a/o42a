@@ -38,13 +38,13 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 
 	private final ObjOp host;
 	private final DepIR depIR;
-	private final DumpablePtrOp<?> ptr;
+	private final RefIROp ptr;
 
 	DepOp(Code code, ObjOp host, DepIR depIR) {
 		super(host.getBuilder());
 		this.depIR = depIR;
 		this.host = host;
-		this.ptr = depIR.refIR().ptr(code, host.ptr());
+		this.ptr = depIR.refIR().op(code, host.ptr());
 	}
 
 	public final Dep getDep() {
@@ -61,7 +61,7 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 
 	@Override
 	public final DumpablePtrOp<?> ptr() {
-		return this.ptr;
+		return this.ptr.ptr();
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 	public void fill(CodeDirs dirs, HostOp host) {
 		dirs.code().debug("Depends on " + getDep().ref());
 		dirs.code().dump(getDep() + " := ", this);
-		depIR().refIR().storeTarget(dirs, host, host().ptr());
+		this.ptr.storeTarget(dirs, host);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class DepOp extends IROp implements TargetOp, HostValueOp {
 	}
 
 	private TargetOp loadDep(CodeDirs dirs) {
-		return depIR().refIR().loadTarget(dirs, host().ptr());
+		return this.ptr.loadTarget(dirs);
 	}
 
 	private static final class DepStoreOp implements TargetStoreOp {

@@ -21,12 +21,10 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathIR;
 import org.o42a.util.string.ID;
 
@@ -50,24 +48,12 @@ public final class RefIR extends PathIR {
 		return this.ref;
 	}
 
-	public Data<?> allocate(ID id, SubData<?> data) {
+	public final Data<?> allocate(ID id, SubData<?> data) {
 		return targetIR().allocate(id, data);
 	}
 
-	public DumpablePtrOp<?> ptr(Code code, StructOp<?> data) {
-		return targetIR().ptr(code, data);
-	}
-
-	public void storeTarget(CodeDirs dirs, HostOp start, StructOp<?> data) {
-
-		final BoundPath path = ref().getPath();
-		final PathOp lastStart = pathOp(path, start, path.length() - 1);
-
-		targetIR().storeTarget(dirs, lastStart, data);
-	}
-
-	public TargetOp loadTarget(CodeDirs dirs, StructOp<?> data) {
-		return targetIR().loadTarget(dirs, data);
+	public final RefIROp op(Code code, StructOp<?> data) {
+		return new RefIROp(this, targetIR().op(code, data));
 	}
 
 	@Override
@@ -78,7 +64,7 @@ public final class RefIR extends PathIR {
 		return this.ref.toString();
 	}
 
-	private RefTargetIR targetIR() {
+	final RefTargetIR targetIR() {
 		if (this.targetIR != null) {
 			return this.targetIR;
 		}
