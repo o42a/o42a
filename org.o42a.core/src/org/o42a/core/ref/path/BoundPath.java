@@ -27,6 +27,7 @@ import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathResolution.pathResolutionError;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+import static org.o42a.core.ref.path.PathIR.pathOp;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
@@ -331,18 +332,7 @@ public class BoundPath extends RefPath {
 		if (isStatic()) {
 			return staticOp(start);
 		}
-
-		final Step[] steps = getSteps();
-		PathOp found = hostPathOp(this, start, start);
-
-		for (int i = 0; i < steps.length; ++i) {
-			found = steps[i].op(found);
-			if (found == null) {
-				throw new IllegalStateException(toString(i + 1) + " not found");
-			}
-		}
-
-		return found;
+		return pathOp(this, start, length());
 	}
 
 	@Override
