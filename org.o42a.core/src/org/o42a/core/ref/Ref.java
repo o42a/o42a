@@ -29,6 +29,7 @@ import static org.o42a.core.ref.type.impl.ValueTypeInterface.valueTypeInterfaceO
 import static org.o42a.core.value.link.TargetRef.targetRef;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.*;
@@ -423,8 +424,12 @@ public class Ref extends Statement implements RefBuilder {
 		return path.consume(this, consumer);
 	}
 
-	public final RefOp op(HostOp host) {
+	public final RefIR ir(Generator generator) {
 		assert assertFullyResolved();
+		return new RefIR(generator, this);
+	}
+
+	public final RefOp op(HostOp host) {
 		return new RefOp(host, this);
 	}
 
