@@ -100,7 +100,7 @@ public final class Constant<T> extends ObjectConstructor {
 	}
 
 	@Override
-	public PathOp op(HostOp host) {
+	public HostOp op(HostOp host) {
 		return new ConstantOp<>(host, this);
 	}
 

@@ -26,6 +26,9 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.FldStoreOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -165,7 +168,7 @@ public abstract class AbstractMemberStep extends Step {
 	}
 
 	@Override
-	protected final PathOp op(HostOp host) {
+	protected final HostOp op(HostOp host) {
 		return new MemberOp(host, this);
 	}
 
@@ -193,7 +196,7 @@ public abstract class AbstractMemberStep extends Step {
 		}
 
 		@Override
-		public HostOp pathTarget(CodeDirs dirs) {
+		public FldOp<?> pathTarget(CodeDirs dirs) {
 			return host().target().field(dirs, getStep().getMemberKey());
 		}
 
@@ -207,12 +210,12 @@ public abstract class AbstractMemberStep extends Step {
 
 	}
 
-	private static final class MemberStoreOp implements TargetStoreOp {
+	private static final class MemberStoreOp implements FldStoreOp {
 
 		private final ID id;
 		private final Code alloc;
 		private final MemberOp member;
-		private TargetStoreOp store;
+		private FldStoreOp store;
 
 		MemberStoreOp(ID id, Code alloc, MemberOp member) {
 			this.id = id;
@@ -223,11 +226,15 @@ public abstract class AbstractMemberStep extends Step {
 		@Override
 		public void storeTarget(CodeDirs dirs) {
 
-			final TargetOp field =
-					this.member.pathTarget(dirs).target().op(dirs);
+			final FldOp<?> field = this.member.pathTarget(dirs);
 
 			this.store = field.allocateStore(this.id, this.alloc);
 			this.store.storeTarget(dirs);
+		}
+
+		@Override
+		public ObjectOp loadObject(CodeDirs dirs) {
+			return this.store.loadObject(dirs);
 		}
 
 		@Override

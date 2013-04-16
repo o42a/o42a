@@ -26,7 +26,11 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.*;
 import org.o42a.core.ir.cmd.LocalOp;
 import org.o42a.core.ir.op.*;
@@ -258,13 +262,13 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 	}
 
 	@Override
-	protected PathOp op(HostOp host) {
+	protected LocalStepOp op(HostOp host) {
 		return new LocalStepOp(host, this);
 	}
 
 	@Override
 	protected RefTargetIR targetIR(RefIR refIR) {
-		return defaultTargetIR(refIR);
+		return new LocalRefTargetIR(refIR.getGenerator(), this);
 	}
 
 	private final ObjectStepUses uses() {
@@ -359,6 +363,93 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 				return super.toString();
 			}
 			return this.local.toString();
+		}
+
+	}
+
+	private static final class LocalRefTargetIR
+			extends PathIR
+			implements RefTargetIR {
+
+		private final Local local;
+		private final RefTargetIR targetIR;
+
+		LocalRefTargetIR(Generator generator, Local local) {
+			this.local = local;
+
+			final Ref ref = this.local.ref();
+			final RefIR refIR = ref.ir(generator);
+			final Step lastStep = ref.getPath().lastStep();
+
+			this.targetIR = stepTargetIR(refIR, lastStep);
+		}
+
+		@Override
+		public Data<?> allocate(ID id, SubData<?> data) {
+			return this.targetIR.allocate(id, data);
+		}
+
+		@Override
+		public RefTargetOp op(Code code, StructOp<?> data) {
+			return new LocalRefTargetOp(this, this.targetIR.op(code, data));
+		}
+
+		@Override
+		public String toString() {
+			if (this.local == null) {
+				return super.toString();
+			}
+			return this.local.toString();
+		}
+
+	}
+
+	private static final class LocalRefTargetOp implements RefTargetOp {
+
+		private final LocalRefTargetIR ir;
+		private final RefTargetOp target;
+
+		LocalRefTargetOp(LocalRefTargetIR ir, RefTargetOp target) {
+			this.ir = ir;
+			this.target = target;
+		}
+
+		@Override
+		public DumpablePtrOp<?> ptr() {
+			return this.target.ptr();
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs, HostOp host) {
+
+			final LocalStepOp op = this.ir.local.op(host);
+			final TargetStoreOp store = op.op(dirs).getTargetStore();
+
+			this.target.copyTarget(dirs, store);
+		}
+
+		@Override
+		public void copyTarget(CodeDirs dirs, TargetStoreOp store) {
+
+			final LocalStoreOp localStore = (LocalStoreOp) store;
+			final TargetStoreOp st = localStore.local.getTargetStore();
+
+			this.target.copyTarget(dirs, st);
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			return this.target.loadTarget(dirs);
+		}
+
+		@Override
+		public DataOp toData(ID id, Code code) {
+			return ptr().toData(id, code);
+		}
+
+		@Override
+		public AnyOp toAny(ID id, Code code) {
+			return ptr().toAny(id, code);
 		}
 
 	}

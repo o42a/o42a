@@ -98,7 +98,7 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(HostOp host) {
+	protected HostOp op(HostOp host) {
 		throw unresolved();
 	}
 

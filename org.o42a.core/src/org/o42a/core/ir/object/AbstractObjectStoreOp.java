@@ -27,7 +27,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.TargetOp;
 import org.o42a.core.ir.op.TargetStoreOp;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -59,7 +58,7 @@ public abstract class AbstractObjectStoreOp implements TargetStoreOp {
 	}
 
 	@Override
-	public TargetOp loadTarget(CodeDirs dirs) {
+	public ObjectOp loadTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
 		final DataOp objectPtr = this.ptr.load(null, code).toData(null, code);

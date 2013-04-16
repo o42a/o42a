@@ -112,7 +112,7 @@ public class NoneStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(HostOp host) {
+	protected HostOp op(HostOp host) {
 		return new NoneOp(host, this);
 	}
 

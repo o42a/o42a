@@ -19,16 +19,18 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.TargetOp;
-import org.o42a.core.ir.op.TargetStoreOp;
 import org.o42a.util.string.ID;
 
 
@@ -60,17 +62,22 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 	public abstract F ptr();
 
 	@Override
-	public TargetStoreOp allocateStore(ID id, Code code) {
+	public FldStoreOp allocateStore(ID id, Code code) {
 		if (fld().isOmitted()) {
 			return new OmittedFldStoreOp(this);
 		}
 
+		final AnyRecOp hostPtr = code.allocatePtr(id.detail(HOST_ID));
 		final StructRecOp<F> ptr = code.allocatePtr(id, fld().getType());
 
-		return new FldStoreOp<>(this, code.getAllocator(), ptr);
+		return new RealFldStoreOp<>(
+				this,
+				code.getAllocator(),
+				hostPtr,
+				ptr);
 	}
 
-	private static final class OmittedFldStoreOp implements TargetStoreOp {
+	private static final class OmittedFldStoreOp implements FldStoreOp {
 
 		private final FldOp<?> fld;
 
@@ -80,6 +87,11 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 		@Override
 		public void storeTarget(CodeDirs dirs) {
+		}
+
+		@Override
+		public ObjectOp loadObject(CodeDirs dirs) {
+			throw new UnsupportedOperationException(this + " is omitted");
 		}
 
 		@Override
@@ -97,16 +109,22 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 	}
 
-	private static final class FldStoreOp<F extends Fld.Op<F>>
-			implements TargetStoreOp {
+	private static final class RealFldStoreOp<F extends Fld.Op<F>>
+			implements FldStoreOp {
 
 		private final FldOp<F> fld;
 		private final Allocator allocator;
+		private final AnyRecOp hostPtr;
 		private final StructRecOp<F> ptr;
 
-		FldStoreOp(FldOp<F> fld, Allocator allocator, StructRecOp<F> ptr) {
+		RealFldStoreOp(
+				FldOp<F> fld,
+				Allocator allocator,
+				AnyRecOp hostPtr,
+				StructRecOp<F> ptr) {
 			this.fld = fld;
 			this.allocator = allocator;
+			this.hostPtr = hostPtr;
 			this.ptr = ptr;
 		}
 
@@ -114,9 +132,22 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		public void storeTarget(CodeDirs dirs) {
 
 			final Block code = dirs.code();
+			final ObjOp host = this.fld.host();
 
-			tempObjHolder(this.allocator).holdVolatile(code, this.fld.host());
+			tempObjHolder(this.allocator).holdVolatile(code, host);
+			this.hostPtr.store(code, host.toAny(null, code));
 			this.ptr.store(code, this.fld.ptr());
+		}
+
+		@Override
+		public ObjectOp loadObject(CodeDirs dirs) {
+
+			final Block code = dirs.code();
+
+			return anonymousObject(
+					dirs.getBuilder(),
+					this.hostPtr.load(null, code).toData(null, code),
+					this.fld.fld().getDeclaredIn());
 		}
 
 		@Override

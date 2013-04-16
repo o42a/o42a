@@ -53,6 +53,11 @@ public final class RefIROp extends PathIR implements RefTargetOp {
 	}
 
 	@Override
+	public void copyTarget(CodeDirs dirs, TargetStoreOp store) {
+		this.targetOp.copyTarget(dirs, store);
+	}
+
+	@Override
 	public final TargetOp loadTarget(CodeDirs dirs) {
 		return this.targetOp.loadTarget(dirs);
 	}

@@ -17,20 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.field;
 
-import org.o42a.codegen.code.op.DumpablePtrOp;
-import org.o42a.codegen.debug.Dumpable;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.TargetStoreOp;
 
 
-public interface RefTargetOp extends Dumpable {
+public interface FldStoreOp extends TargetStoreOp {
 
-	DumpablePtrOp<?> ptr();
-
-	void storeTarget(CodeDirs dirs, HostOp host);
-
-	void copyTarget(CodeDirs dirs, TargetStoreOp store);
-
-	TargetOp loadTarget(CodeDirs dirs);
+	ObjectOp loadObject(CodeDirs dirs);
 
 }

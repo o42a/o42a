@@ -20,16 +20,13 @@
 package org.o42a.core.object.state;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
-import static org.o42a.core.ref.RefUser.rtRefUser;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.Analyzer;
-import org.o42a.analysis.use.ProxyUser;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -57,7 +54,6 @@ public final class Dep extends Step implements SubID {
 	private final ID id;
 	private final Obj target;
 	private ObjectStepUses uses;
-	private ProxyUser<RefUsage> depUser;
 	private byte enabled;
 	private byte compileTimeOnly;
 	private SyntheticDep synthetic;
@@ -187,15 +183,6 @@ public final class Dep extends Step implements SubID {
 			compileTimeOnly(resolver.refUsage().isCompileTimeOnly());
 			uses().useBy(resolver);
 
-			if (!resolver.refUsage().isCompileTimeOnly()
-					&& this.depUser == null) {
-				this.depUser = new ProxyUser<>(uses().uses().toUser());
-				ref().resolveAll(
-						enclosingResolver.fullResolver(
-								rtRefUser(this.depUser, this.depUser),
-						BODY_REF_USAGE));
-			}
-
 			final RefUsage usage;
 
 			if (resolver.isLastStep()) {
@@ -270,7 +257,7 @@ public final class Dep extends Step implements SubID {
 	}
 
 	@Override
-	protected final PathOp op(HostOp host) {
+	protected final HostOp op(HostOp host) {
 		if (isSynthetic(host.getGenerator().getAnalyzer())) {
 			return new SyntheticDepOp(host, this);
 		}
@@ -315,11 +302,7 @@ public final class Dep extends Step implements SubID {
 		if (!this.synthetic.isSynthetic(analyzer, this)) {
 			return this.isSynthetic = false;
 		}
-		this.isSynthetic = true;
-		if (this.depUser != null) {
-			this.depUser.setProxied(null);
-		}
-		return true;
+		return this.isSynthetic = true;
 	}
 
 	private Scope up(StepResolver resolver) {
@@ -357,13 +340,11 @@ public final class Dep extends Step implements SubID {
 	private void ignoreDep() {
 		if (this.enabled == 0) {
 			this.enabled = -1;
-			this.depUser.setProxied(null);
 		}
 	}
 
 	private void enableDep() {
 		this.enabled = 1;
-		this.depUser.setProxied(uses().uses().toUser());
 	}
 
 	private void compileTimeOnly(boolean compileTimeOnly) {

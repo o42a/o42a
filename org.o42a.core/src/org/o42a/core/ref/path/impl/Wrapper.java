@@ -108,7 +108,7 @@ public class Wrapper extends Step {
 	}
 
 	@Override
-	protected PathOp op(HostOp host) {
+	protected HostOp op(HostOp host) {
 		throw new UnsupportedOperationException();
 	}
 

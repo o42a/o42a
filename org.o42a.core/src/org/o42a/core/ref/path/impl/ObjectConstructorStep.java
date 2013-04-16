@@ -150,7 +150,7 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(HostOp host) {
+	protected HostOp op(HostOp host) {
 		return getConstructor().op(host);
 	}
 

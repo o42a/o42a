@@ -53,6 +53,10 @@ public final class LocalOp {
 		return this.local;
 	}
 
+	public final TargetStoreOp getTargetStore() {
+		return this.targetStore;
+	}
+
 	public final ValOp writeValue(ValDirs dirs) {
 		return target(dirs.dirs()).value().writeValue(dirs);
 	}
