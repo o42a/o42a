@@ -258,8 +258,8 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 	}
 
 	@Override
-	protected PathOp op(PathOp start) {
-		return new Op(start, this);
+	protected PathOp op(HostOp host) {
+		return new LocalStepOp(host, this);
 	}
 
 	@Override
@@ -278,14 +278,14 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 		return ref.getPath().cut(1).toPrefix(ref.getScope());
 	}
 
-	private static final class Op extends PathOp implements HostValueOp {
+	private static final class LocalStepOp
+			extends StepOp<Local>
+			implements HostValueOp {
 
-		private final Local local;
 		private LocalOp op;
 
-		public Op(PathOp start, Local local) {
-			super(start);
-			this.local = local;
+		public LocalStepOp(HostOp host, Local local) {
+			super(host, local);
 		}
 
 		@Override
@@ -319,18 +319,10 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 		}
 
 		@Override
-		public String toString() {
-			if (this.local == null) {
-				return super.toString();
-			}
-			return this.local.toString();
-		}
-
-		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
 
 			final LocalOp op =
-					getBuilder().localsOf(code.getAllocator()).get(this.local);
+					getBuilder().localsOf(code.getAllocator()).get(getStep());
 
 			return new LocalStoreOp(op);
 		}
@@ -339,7 +331,7 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 			if (this.op != null) {
 				return this.op;
 			}
-			return this.op = dirs.locals().get(this.local);
+			return this.op = dirs.locals().get(getStep());
 		}
 
 	}

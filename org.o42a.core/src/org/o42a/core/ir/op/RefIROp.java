@@ -23,13 +23,12 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DumpablePtrOp;
-import org.o42a.codegen.debug.Dumpable;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathIR;
 import org.o42a.util.string.ID;
 
 
-public final class RefIROp extends PathIR implements Dumpable {
+public final class RefIROp extends PathIR implements RefTargetOp {
 
 	private final RefIR ir;
 	private final RefTargetOp targetOp;
@@ -39,18 +38,21 @@ public final class RefIROp extends PathIR implements Dumpable {
 		this.targetOp = targetOp;
 	}
 
+	@Override
 	public final DumpablePtrOp<?> ptr() {
 		return this.targetOp.ptr();
 	}
 
+	@Override
 	public final void storeTarget(CodeDirs dirs, HostOp start) {
 
 		final BoundPath path = this.ir.ref().getPath();
-		final PathOp lastStart = pathOp(path, start, path.length() - 1);
+		final HostOp lastStart = pathOp(path, start, path.length() - 1);
 
 		this.targetOp.storeTarget(dirs, lastStart);
 	}
 
+	@Override
 	public final TargetOp loadTarget(CodeDirs dirs) {
 		return this.targetOp.loadTarget(dirs);
 	}

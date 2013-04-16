@@ -27,42 +27,16 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.string.ID;
 
 
 public abstract class PathOp implements HostOp {
 
-	public static PathOp hostPathOp(
-			BoundPath path,
-			HostOp pathStart,
-			HostOp host) {
-		return new HostPathOp(path, pathStart, host);
-	}
-
-	private final BoundPath path;
-	private final HostOp pathStart;
 	private final HostOp host;
 
-	public PathOp(BoundPath path, HostOp pathStart, HostOp host) {
-		this.path = path;
-		this.pathStart = pathStart;
+	public PathOp(HostOp host) {
 		this.host = host;
-	}
-
-	public PathOp(PathOp start) {
-		this.path = start.getPath();
-		this.pathStart = start.pathStart();
-		this.host = start;
-	}
-
-	public final BoundPath getPath() {
-		return this.path;
-	}
-
-	public final HostOp pathStart() {
-		return this.pathStart;
 	}
 
 	public final HostOp host() {
@@ -71,7 +45,7 @@ public abstract class PathOp implements HostOp {
 
 	@Override
 	public final Generator getGenerator() {
-		return this.host.getGenerator();
+		return host().getGenerator();
 	}
 
 	@Override
@@ -176,46 +150,6 @@ public abstract class PathOp implements HostOp {
 
 		private HostValueOp targetValue(CodeDirs dirs) {
 			return this.path.pathTarget(dirs).value();
-		}
-
-	}
-
-	private static final class HostPathOp extends PathOp {
-
-		HostPathOp(BoundPath path, HostOp pathStart, HostOp host) {
-			super(path, pathStart, host);
-		}
-
-		@Override
-		public HostTargetOp target() {
-			return host().target();
-		}
-
-		@Override
-		public HostValueOp value() {
-			return host().value();
-		}
-
-		@Override
-		public HostOp pathTarget(CodeDirs dirs) {
-			return host();
-		}
-
-		@Override
-		public String toString() {
-
-			final HostOp host = host();
-
-			if (host == null) {
-				return super.toString();
-			}
-
-			return host.toString();
-		}
-
-		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
-			return host().target().allocateStore(id, code);
 		}
 
 	}

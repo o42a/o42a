@@ -154,8 +154,8 @@ public class DereferenceStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(PathOp start) {
-		return new Op(start, this);
+	protected PathOp op(HostOp host) {
+		return new DereferenceOp(host, this);
 	}
 
 	@Override
@@ -247,10 +247,10 @@ public class DereferenceStep extends Step {
 		return false;
 	}
 
-	private final class Op extends StepOp<DereferenceStep> {
+	private final class DereferenceOp extends StepOp<DereferenceStep> {
 
-		Op(PathOp start, DereferenceStep step) {
-			super(start, step);
+		DereferenceOp(HostOp host, DereferenceStep step) {
+			super(host, step);
 		}
 
 		@Override
@@ -277,16 +277,16 @@ public class DereferenceStep extends Step {
 		}
 
 		private ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-			return start().target().dereference(dirs, holder);
+			return host().target().dereference(dirs, holder);
 		}
 
 	}
 
 	private final class DereferenceStoreOp extends AbstractObjectStoreOp {
 
-		private final Op op;
+		private final DereferenceOp op;
 
-		DereferenceStoreOp(ID id, Code code, Op op) {
+		DereferenceStoreOp(ID id, Code code, DereferenceOp op) {
 			super(id, code);
 			this.op = op;
 		}

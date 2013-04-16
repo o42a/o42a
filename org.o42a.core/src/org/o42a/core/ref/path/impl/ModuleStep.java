@@ -144,8 +144,8 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(PathOp start) {
-		return new ModuleOp(start, this);
+	protected PathOp op(HostOp host) {
+		return new ModuleOp(host, this);
 	}
 
 	@Override
@@ -155,8 +155,8 @@ public final class ModuleStep extends Step {
 
 	private static final class ModuleOp extends StepOp<ModuleStep> {
 
-		ModuleOp(PathOp start, ModuleStep step) {
-			super(start, step);
+		ModuleOp(HostOp host, ModuleStep step) {
+			super(host, step);
 		}
 
 		@Override

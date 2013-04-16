@@ -19,15 +19,14 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ir.op.PathOp.hostPathOp;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.core.ref.path.PathIR.pathOp;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
 import static org.o42a.core.ref.path.PathResolution.noPathResolutionError;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathResolution.pathResolutionError;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
-import static org.o42a.core.ref.path.PathIR.pathOp;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
@@ -328,7 +327,7 @@ public class BoundPath extends RefPath {
 		return getRawPath().bindStatically(this, this.origin);
 	}
 
-	public final PathOp op(HostOp start) {
+	public final HostOp op(HostOp start) {
 		if (isStatic()) {
 			return staticOp(start);
 		}
@@ -853,12 +852,11 @@ public class BoundPath extends RefPath {
 		return path.getTemplate();
 	}
 
-	private final PathOp staticOp(HostOp start) {
+	private final HostOp staticOp(HostOp start) {
 
 		final ObjectIR firstObject =
 				startObject().ir(start.getGenerator());
-		PathOp found =
-				hostPathOp(this, start, new StaticHostOp(start, firstObject));
+		HostOp found = new StaticHostOp(start, firstObject);
 		final Step[] steps = getSteps();
 
 		for (int i = startIndex(); i < steps.length; ++i) {

@@ -59,7 +59,7 @@ public final class RefOp {
 		path().value().writeCond(dirs);
 	}
 
-	public final PathOp path() {
+	public final HostOp path() {
 		return getRef().getPath().op(host());
 	}
 

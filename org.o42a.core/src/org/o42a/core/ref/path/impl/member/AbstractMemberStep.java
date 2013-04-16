@@ -165,8 +165,8 @@ public abstract class AbstractMemberStep extends Step {
 	}
 
 	@Override
-	protected final PathOp op(PathOp start) {
-		return new MemberOp(start, this);
+	protected final PathOp op(HostOp host) {
+		return new MemberOp(host, this);
 	}
 
 	private Container unresolved(BoundPath path, int index, Scope start) {
@@ -178,8 +178,8 @@ public abstract class AbstractMemberStep extends Step {
 
 	private static final class MemberOp extends StepOp<AbstractMemberStep> {
 
-		MemberOp(PathOp start, AbstractMemberStep step) {
-			super(start, step);
+		MemberOp(HostOp host, AbstractMemberStep step) {
+			super(host, step);
 		}
 
 		@Override
@@ -194,7 +194,7 @@ public abstract class AbstractMemberStep extends Step {
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
-			return start().target().field(dirs, getStep().getMemberKey());
+			return host().target().field(dirs, getStep().getMemberKey());
 		}
 
 		@Override

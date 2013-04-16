@@ -100,8 +100,8 @@ public final class Constant<T> extends ObjectConstructor {
 	}
 
 	@Override
-	public PathOp op(PathOp host) {
-		return new Op<>(host, this);
+	public PathOp op(HostOp host) {
+		return new ConstantOp<>(host, this);
 	}
 
 	@Override
@@ -121,12 +121,14 @@ public final class Constant<T> extends ObjectConstructor {
 				getConstant());
 	}
 
-	private static final class Op<T> extends PathOp implements HostValueOp {
+	private static final class ConstantOp<T>
+			extends PathOp
+			implements HostValueOp {
 
 		private final Constant<T> constant;
 
-		Op(PathOp start, Constant<T> constant) {
-			super(start);
+		ConstantOp(HostOp host, Constant<T> constant) {
+			super(host);
 			this.constant = constant;
 		}
 
