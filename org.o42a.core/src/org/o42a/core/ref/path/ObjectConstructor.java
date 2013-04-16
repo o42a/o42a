@@ -131,8 +131,8 @@ public abstract class ObjectConstructor
 		return !getConstructed().hasDeps(analyzer);
 	}
 
-	public PathOp op(PathOp host) {
-		return new Op(host);
+	public PathOp op(HostOp host) {
+		return new ObjectConstructorOp(host);
 	}
 
 	protected abstract Obj createObject();
@@ -184,10 +184,10 @@ public abstract class ObjectConstructor
 
 	}
 
-	private final class Op extends PathOp {
+	private final class ObjectConstructorOp extends PathOp {
 
-		Op(PathOp start) {
-			super(start);
+		ObjectConstructorOp(HostOp host) {
+			super(host);
 		}
 
 		@Override
@@ -267,9 +267,9 @@ public abstract class ObjectConstructor
 
 	private final class NewObjectStoreOp extends AbstractObjectStoreOp {
 
-		private final Op op;
+		private final ObjectConstructorOp op;
 
-		NewObjectStoreOp(ID id, Code code, Op op) {
+		NewObjectStoreOp(ID id, Code code, ObjectConstructorOp op) {
 			super(id, code);
 			this.op = op;
 		}

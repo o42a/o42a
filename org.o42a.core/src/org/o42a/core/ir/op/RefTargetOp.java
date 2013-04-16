@@ -27,7 +27,7 @@ public interface RefTargetOp extends Dumpable {
 
 	DumpablePtrOp<?> ptr();
 
-	void storeTarget(CodeDirs dirs, PathOp start);
+	void storeTarget(CodeDirs dirs, HostOp host);
 
 	TargetOp loadTarget(CodeDirs dirs);
 

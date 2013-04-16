@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ir.op.PathOp.hostPathOp;
-
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 
 
 public abstract class PathIR {
@@ -30,10 +30,10 @@ public abstract class PathIR {
 		return step.targetIR(refIR);
 	}
 
-	protected static PathOp pathOp(BoundPath path, HostOp start, int last) {
+	protected static HostOp pathOp(BoundPath path, HostOp start, int last) {
 
 		final Step[] steps = path.getSteps();
-		PathOp found = hostPathOp(path, start, start);
+		HostOp found = start;
 
 		for (int i = 0; i < last; ++i) {
 			found = steps[i].op(found);

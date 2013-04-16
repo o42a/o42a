@@ -58,14 +58,14 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 	public abstract Obj getWellKnownOwner();
 
 	@Override
-	public void storeTarget(CodeDirs dirs, PathOp start) {
+	public void storeTarget(CodeDirs dirs, HostOp host) {
 
 		final DataRecOp objectRec = this.ptr.object(dirs.code());
 		final Block noDep = dirs.addBlock("no_dep");
 		final CodeDirs depDirs =
 				dirs.getBuilder().dirs(dirs.code(), noDep.head());
 
-		final ObjectOp object = start.target().materialize(
+		final ObjectOp object = host.target().materialize(
 				depDirs,
 				tempObjHolder(depDirs.getAllocator()));
 		final Block code = depDirs.code();

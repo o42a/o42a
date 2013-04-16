@@ -112,8 +112,8 @@ public class NoneStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(PathOp start) {
-		return new NoneOp(start, this);
+	protected PathOp op(HostOp host) {
+		return new NoneOp(host, this);
 	}
 
 	@Override
@@ -168,8 +168,8 @@ public class NoneStep extends Step {
 			extends StepOp<NoneStep>
 			implements HostValueOp {
 
-		NoneOp(PathOp start, NoneStep step) {
-			super(start, step);
+		NoneOp(HostOp host, NoneStep step) {
+			super(host, step);
 		}
 
 		@Override

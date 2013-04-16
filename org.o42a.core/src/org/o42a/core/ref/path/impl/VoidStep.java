@@ -107,8 +107,8 @@ public class VoidStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(PathOp start) {
-		return new VoidOp(start, this);
+	protected PathOp op(HostOp host) {
+		return new VoidOp(host, this);
 	}
 
 	@Override
@@ -150,8 +150,8 @@ public class VoidStep extends Step {
 			extends StepOp<VoidStep>
 			implements HostValueOp {
 
-		VoidOp(PathOp start, VoidStep step) {
-			super(start, step);
+		VoidOp(HostOp host, VoidStep step) {
+			super(host, step);
 		}
 
 		@Override

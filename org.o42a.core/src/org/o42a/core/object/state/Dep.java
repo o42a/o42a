@@ -270,13 +270,13 @@ public final class Dep extends Step implements SubID {
 	}
 
 	@Override
-	protected final PathOp op(PathOp start) {
-		if (isSynthetic(start.getGenerator().getAnalyzer())) {
-			return new SyntheticOp(start, this);
+	protected final PathOp op(HostOp host) {
+		if (isSynthetic(host.getGenerator().getAnalyzer())) {
+			return new SyntheticDepOp(host, this);
 		}
-		assert exists(start.getGenerator().getAnalyzer()) :
+		assert exists(host.getGenerator().getAnalyzer()) :
 			this + " does not exist";
-		return new Op(start, this);
+		return new DepStepOp(host, this);
 	}
 
 	@Override
@@ -420,10 +420,10 @@ public final class Dep extends Step implements SubID {
 
 	}
 
-	private static final class Op extends StepOp<Dep> {
+	private static final class DepStepOp extends StepOp<Dep> {
 
-		Op(PathOp start, Dep step) {
-			super(start, step);
+		DepStepOp(HostOp host, Dep step) {
+			super(host, step);
 		}
 
 		@Override
@@ -453,7 +453,7 @@ public final class Dep extends Step implements SubID {
 		}
 
 		private DepOp dep(CodeDirs dirs, ObjHolder holder) {
-			return start()
+			return host()
 					.target()
 					.materialize(dirs, holder)
 					.dep(dirs, getStep());
@@ -465,10 +465,10 @@ public final class Dep extends Step implements SubID {
 
 		private final ID id;
 		private final Code alloc;
-		private final Op op;
+		private final DepStepOp op;
 		private TargetStoreOp store;
 
-		DepStepStoreOp(ID id, Code alloc, Op op) {
+		DepStepStoreOp(ID id, Code alloc, DepStepOp op) {
 			this.id = id;
 			this.alloc = alloc;
 			this.op = op;
@@ -500,12 +500,12 @@ public final class Dep extends Step implements SubID {
 
 	}
 
-	private static final class SyntheticOp extends StepOp<Dep> {
+	private static final class SyntheticDepOp extends StepOp<Dep> {
 
 		private final Dep dep;
 
-		SyntheticOp(PathOp start, Dep dep) {
-			super(start, dep);
+		SyntheticDepOp(HostOp host, Dep dep) {
+			super(host, dep);
 			this.dep = dep;
 		}
 
@@ -524,13 +524,13 @@ public final class Dep extends Step implements SubID {
 			return path();
 		}
 
-		private PathOp path() {
+		private HostOp path() {
 
 			final Scope declaredIn = this.dep.getDeclaredIn().getScope();
-			final PathOp enclosing =
+			final HostOp enclosing =
 					declaredIn.getEnclosingScopePath()
 					.bind(this.dep.ref(), declaredIn)
-					.op(start());
+					.op(host());
 
 			return this.dep.ref().op(enclosing).path();
 		}

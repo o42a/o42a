@@ -26,17 +26,13 @@ public abstract class StepOp<S extends Step> extends PathOp {
 
 	private final S step;
 
-	public StepOp(PathOp start, S step) {
-		super(start);
+	public StepOp(HostOp host, S step) {
+		super(host);
 		this.step = step;
 	}
 
 	public final S getStep() {
 		return this.step;
-	}
-
-	public final PathOp start() {
-		return (PathOp) host();
 	}
 
 	@Override

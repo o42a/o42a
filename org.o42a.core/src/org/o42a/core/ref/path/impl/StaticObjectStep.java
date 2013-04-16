@@ -104,8 +104,8 @@ public class StaticObjectStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(PathOp start) {
-		return new Op(start, this);
+	protected PathOp op(HostOp host) {
+		return new StaticObjectOp(host, this);
 	}
 
 	@Override
@@ -113,10 +113,10 @@ public class StaticObjectStep extends Step {
 		throw new UnsupportedOperationException();
 	}
 
-	private static final class Op extends StepOp<StaticObjectStep> {
+	private static final class StaticObjectOp extends StepOp<StaticObjectStep> {
 
-		Op(PathOp start, StaticObjectStep step) {
-			super(start, step);
+		StaticObjectOp(HostOp host, StaticObjectStep step) {
+			super(host, step);
 		}
 
 		@Override

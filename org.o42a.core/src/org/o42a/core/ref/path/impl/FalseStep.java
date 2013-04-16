@@ -110,8 +110,8 @@ public class FalseStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(PathOp start) {
-		return new FalseOp(start, this);
+	protected PathOp op(HostOp host) {
+		return new FalseOp(host, this);
 	}
 
 	@Override
@@ -158,8 +158,8 @@ public class FalseStep extends Step {
 			extends StepOp<FalseStep>
 			implements HostValueOp {
 
-		FalseOp(PathOp start, FalseStep step) {
-			super(start, step);
+		FalseOp(HostOp host, FalseStep step) {
+			super(host, step);
 		}
 
 		@Override

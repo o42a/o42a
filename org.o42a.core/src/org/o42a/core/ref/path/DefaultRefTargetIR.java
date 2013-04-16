@@ -78,14 +78,14 @@ final class DefaultRefTargetIR implements RefTargetIR {
 		}
 
 		@Override
-		public void storeTarget(CodeDirs dirs, PathOp start) {
+		public void storeTarget(CodeDirs dirs, HostOp host) {
 
 			final DataRecOp objectRec = this.ptr.object(dirs.code());
 			final Block noDep = dirs.addBlock("no_dep");
 			final CodeDirs depDirs =
 					dirs.getBuilder().dirs(dirs.code(), noDep.head());
 
-			final DataOp object = createObject(depDirs, start);
+			final DataOp object = createObject(depDirs, host);
 			final Block code = depDirs.code();
 
 			objectRec.store(code, object);
@@ -135,9 +135,9 @@ final class DefaultRefTargetIR implements RefTargetIR {
 			return this.ptr.toString();
 		}
 
-		private DataOp createObject(CodeDirs dirs, PathOp start) {
+		private DataOp createObject(CodeDirs dirs, HostOp host) {
 
-			final HostTargetOp target = this.ir.step.op(start).target();
+			final HostTargetOp target = this.ir.step.op(host).target();
 
 			return target.materialize(dirs, tempObjHolder(dirs.getAllocator()))
 					.toData(null, dirs.code());

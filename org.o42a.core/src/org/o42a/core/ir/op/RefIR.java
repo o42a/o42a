@@ -29,7 +29,7 @@ import org.o42a.core.ref.path.PathIR;
 import org.o42a.util.string.ID;
 
 
-public final class RefIR extends PathIR {
+public final class RefIR extends PathIR implements RefTargetIR {
 
 	private final Generator generator;
 	private final Ref ref;
@@ -48,10 +48,12 @@ public final class RefIR extends PathIR {
 		return this.ref;
 	}
 
+	@Override
 	public final Data<?> allocate(ID id, SubData<?> data) {
 		return targetIR().allocate(id, data);
 	}
 
+	@Override
 	public final RefIROp op(Code code, StructOp<?> data) {
 		return new RefIROp(this, targetIR().op(code, data));
 	}
