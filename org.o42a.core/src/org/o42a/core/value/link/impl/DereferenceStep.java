@@ -158,6 +158,11 @@ public class DereferenceStep extends Step {
 		return new Op(start, this);
 	}
 
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		return defaultTargetIR(refIR);
+	}
+
 	RtLink rtLink(LocationInfo location, Scope enclosing) {
 		if (this.rtLinks == null) {
 			this.rtLinks = new HashMap<>(1);

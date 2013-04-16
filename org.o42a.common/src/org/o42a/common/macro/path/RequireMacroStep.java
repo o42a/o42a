@@ -24,6 +24,8 @@ import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -90,6 +92,11 @@ public final class RequireMacroStep extends Step {
 
 	@Override
 	protected PathOp op(PathOp start) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -262,6 +262,11 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 		return new Op(start, this);
 	}
 
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		return defaultTargetIR(refIR);
+	}
+
 	private final ObjectStepUses uses() {
 		if (this.uses != null) {
 			return this.uses;

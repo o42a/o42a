@@ -21,6 +21,8 @@ package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -99,6 +101,11 @@ public final class PathFragmentStep extends Step {
 
 	@Override
 	protected PathOp op(PathOp start) {
+		throw unresolved();
+	}
+
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
 		throw unresolved();
 	}
 

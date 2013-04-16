@@ -108,6 +108,11 @@ public class StaticObjectStep extends Step {
 		return new Op(start, this);
 	}
 
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		throw new UnsupportedOperationException();
+	}
+
 	private static final class Op extends StepOp<StaticObjectStep> {
 
 		Op(PathOp start, StaticObjectStep step) {

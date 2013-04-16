@@ -148,6 +148,11 @@ public final class ModuleStep extends Step {
 		return new ModuleOp(start, this);
 	}
 
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		throw new UnsupportedOperationException();
+	}
+
 	private static final class ModuleOp extends StepOp<ModuleStep> {
 
 		ModuleOp(PathOp start, ModuleStep step) {

@@ -268,8 +268,9 @@ public abstract class Step {
 
 	protected abstract PathOp op(PathOp start);
 
-	protected RefTargetIR targetIR(RefIR refIR) {
-		// TODO Implement target IR for each path step.
+	protected abstract RefTargetIR targetIR(RefIR refIR);
+
+	protected final RefTargetIR defaultTargetIR(RefIR refIR) {
 		return new DefaultRefTargetIR(refIR, this);
 	}
 

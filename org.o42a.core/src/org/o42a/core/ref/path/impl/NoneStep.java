@@ -116,6 +116,11 @@ public class NoneStep extends Step {
 		return new NoneOp(start, this);
 	}
 
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		throw new UnsupportedOperationException();
+	}
+
 	private static ObjOp noneObject(CodeDirs dirs) {
 
 		final CodeBuilder builder = dirs.getBuilder();

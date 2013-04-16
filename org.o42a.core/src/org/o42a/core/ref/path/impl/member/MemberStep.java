@@ -26,7 +26,9 @@ import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.state.DepIR.Op;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -109,6 +111,11 @@ final class MemberStep extends AbstractMemberStep {
 		return reproducedPath(reproductionKey.toPath());
 	}
 
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		return new MemberRefTargetIR(this);
+	}
+
 	private final ObjectStepUses uses() {
 		if (this.uses != null) {
 			return this.uses;
@@ -174,6 +181,55 @@ final class MemberStep extends AbstractMemberStep {
 		}
 
 		normalizer.inline(prediction, new InlineValueStep(inline));
+	}
+
+	private static final class MemberRefTargetIR
+			extends AbstractRefFldTargetIR {
+
+		private final MemberStep member;
+
+		MemberRefTargetIR(MemberStep member) {
+			this.member = member;
+		}
+
+		@Override
+		protected AbstractRefFldTargetOp createOp(Op ptr) {
+			return new MemberRefTargetOp(this, ptr, this.member);
+		}
+
+		@Override
+		public String toString() {
+			if (this.member == null) {
+				return super.toString();
+			}
+			return this.member.toString();
+		}
+
+	}
+
+	private static final class MemberRefTargetOp
+			extends AbstractRefFldTargetOp {
+
+		private final MemberStep member;
+
+		MemberRefTargetOp(
+				AbstractRefFldTargetIR ir,
+				Op ptr,
+				MemberStep member) {
+			super(ir, ptr);
+			this.member = member;
+		}
+
+		@Override
+		public final Obj getWellKnownOwner() {
+			return this.member.getMemberKey().getOrigin().toObject();
+		}
+
+		@Override
+		protected TargetOp fldOf(CodeDirs dirs, ObjectOp owner) {
+			return owner.field(dirs, this.member.getMemberKey());
+		}
+
 	}
 
 }

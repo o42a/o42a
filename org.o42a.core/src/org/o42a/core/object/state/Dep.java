@@ -279,6 +279,11 @@ public final class Dep extends Step implements SubID {
 		return new Op(start, this);
 	}
 
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		throw new UnsupportedOperationException();
+	}
+
 	final void reuseDep() {
 		if (this.enabled < 0) {
 			this.enabled = 0;
