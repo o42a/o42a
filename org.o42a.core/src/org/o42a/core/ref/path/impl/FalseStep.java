@@ -114,6 +114,11 @@ public class FalseStep extends Step {
 		return new FalseOp(start, this);
 	}
 
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		throw new UnsupportedOperationException();
+	}
+
 	private static final class Inline extends InlineStep {
 
 		@Override

@@ -29,6 +29,8 @@ import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
@@ -149,6 +151,11 @@ public final class OwnerStep
 
 		// Update to actual enclosing scope path.
 		return reproducedPath(scope.getEnclosingScopePath());
+	}
+
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		return defaultTargetIR(refIR);
 	}
 
 	private Dep replaceWithDep(PathRebuilder rebuilder, Name name) {

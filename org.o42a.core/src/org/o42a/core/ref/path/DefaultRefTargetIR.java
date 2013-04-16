@@ -64,8 +64,8 @@ final class DefaultRefTargetIR implements RefTargetIR {
 
 	private static final class DefaultRefTargetOp implements RefTargetOp {
 
-		private final DepIR.Op ptr;
 		private final DefaultRefTargetIR ir;
+		private final DepIR.Op ptr;
 
 		DefaultRefTargetOp(DefaultRefTargetIR ir, Op ptr) {
 			this.ptr = ptr;

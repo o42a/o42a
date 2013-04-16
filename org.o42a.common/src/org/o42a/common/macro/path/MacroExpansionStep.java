@@ -25,6 +25,8 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
@@ -146,6 +148,11 @@ public class MacroExpansionStep extends Step {
 
 	@Override
 	protected PathOp op(PathOp start) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
 		throw new UnsupportedOperationException();
 	}
 

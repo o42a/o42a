@@ -24,6 +24,8 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -93,6 +95,12 @@ public class ErrorStep extends Step {
 
 	@Override
 	protected PathOp op(PathOp start) {
+		throw new UnsupportedOperationException(
+				"Error path step can not be written");
+	}
+
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
 		throw new UnsupportedOperationException(
 				"Error path step can not be written");
 	}

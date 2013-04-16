@@ -24,8 +24,7 @@ import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Prediction;
@@ -153,6 +152,11 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	protected PathOp op(PathOp start) {
 		return getConstructor().op(start);
+	}
+
+	@Override
+	protected RefTargetIR targetIR(RefIR refIR) {
+		return defaultTargetIR(refIR);
 	}
 
 	private final ObjectStepUses uses() {

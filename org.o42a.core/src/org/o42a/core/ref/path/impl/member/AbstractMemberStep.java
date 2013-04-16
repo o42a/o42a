@@ -169,13 +169,6 @@ public abstract class AbstractMemberStep extends Step {
 		return new MemberOp(start, this);
 	}
 
-	private final Member firstDeclaration() {
-
-		final Scope origin = this.memberKey.getOrigin();
-
-		return origin.getContainer().member(this.memberKey);
-	}
-
 	private Container unresolved(BoundPath path, int index, Scope start) {
 		start.getContext().getLogger().unresolved(
 				path.getLocation(),
@@ -201,12 +194,6 @@ public abstract class AbstractMemberStep extends Step {
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
-
-			final Member firstDeclaration = getStep().firstDeclaration();
-
-			assert firstDeclaration.toField() != null :
-				"Field expected: " + firstDeclaration;
-
 			return start().target().field(dirs, getStep().getMemberKey());
 		}
 
