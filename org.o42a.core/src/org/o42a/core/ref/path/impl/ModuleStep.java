@@ -144,7 +144,7 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(HostOp host) {
+	protected HostOp op(HostOp host) {
 		return new ModuleOp(host, this);
 	}
 

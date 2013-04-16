@@ -22,7 +22,9 @@ package org.o42a.core.ref.path;
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.impl.cond.RefCondition;
@@ -264,7 +266,7 @@ public abstract class Step {
 		return new PathFieldDefinition(ref);
 	}
 
-	protected abstract PathOp op(HostOp host);
+	protected abstract HostOp op(HostOp host);
 
 	protected abstract RefTargetIR targetIR(RefIR refIR);
 

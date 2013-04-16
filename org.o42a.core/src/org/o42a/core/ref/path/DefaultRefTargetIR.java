@@ -30,6 +30,7 @@ import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.state.DepIR;
 import org.o42a.core.ir.object.state.DepIR.Op;
 import org.o42a.core.ir.object.state.DepIR.Type;
@@ -94,7 +95,8 @@ final class DefaultRefTargetIR implements RefTargetIR {
 
 				final CodeBuilder builder = dirs.getBuilder();
 				final ObjectIR noneIR =
-						builder.getContext().getNone().ir(builder.getGenerator());
+						builder.getContext().getNone().ir(
+								builder.getGenerator());
 
 				objectRec.store(
 						noDep,
@@ -103,7 +105,17 @@ final class DefaultRefTargetIR implements RefTargetIR {
 			}
 
 			depDirs.done();
+		}
 
+		@Override
+		public void copyTarget(CodeDirs dirs, TargetStoreOp store) {
+
+			final Block code = dirs.code();
+			final DataRecOp objectRec = this.ptr.object(code);
+			final ObjectOp object =
+					store.loadTarget(dirs).materialize(dirs, tempObjHolder(dirs.getAllocator()));
+
+			objectRec.store(code, object.toData(null, code));
 		}
 
 		@Override

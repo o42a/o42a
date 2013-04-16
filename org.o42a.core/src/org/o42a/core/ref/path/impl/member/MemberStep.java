@@ -20,12 +20,20 @@
 package org.o42a.core.ref.path.impl.member;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.FldStoreOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.state.DepIR.Op;
 import org.o42a.core.ir.op.*;
@@ -42,6 +50,7 @@ import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 final class MemberStep extends AbstractMemberStep {
@@ -113,6 +122,18 @@ final class MemberStep extends AbstractMemberStep {
 
 	@Override
 	protected RefTargetIR targetIR(RefIR refIR) {
+
+		final Fld<?> fld =
+				getMemberKey()
+				.getOrigin()
+				.toObject()
+				.ir(refIR.getGenerator())
+				.fld(getMemberKey());
+
+		if (fld.isOmitted()) {
+			return new OmittedMemberRefTargetIR(this);
+		}
+
 		return new MemberRefTargetIR(this);
 	}
 
@@ -183,6 +204,89 @@ final class MemberStep extends AbstractMemberStep {
 		normalizer.inline(prediction, new InlineValueStep(inline));
 	}
 
+	private static final class OmittedMemberRefTargetIR implements RefTargetIR {
+
+		private final MemberStep member;
+
+		OmittedMemberRefTargetIR(MemberStep member) {
+			this.member = member;
+		}
+
+		@Override
+		public Data<?> allocate(ID id, SubData<?> data) {
+			return data;
+		}
+
+		@Override
+		public RefTargetOp op(Code code, StructOp<?> data) {
+			return new OmittedMemberRefTargetOp(this.member, data);
+		}
+
+		@Override
+		public String toString() {
+			if (this.member == null) {
+				return super.toString();
+			}
+			return this.member.toString();
+		}
+
+	}
+
+	private static final class OmittedMemberRefTargetOp implements RefTargetOp {
+
+		private final MemberStep member;
+		private final StructOp<?> object;
+
+		OmittedMemberRefTargetOp(MemberStep member, StructOp<?> object) {
+			this.member = member;
+			this.object = object;
+		}
+
+		@Override
+		public DumpablePtrOp<?> ptr() {
+			return this.object;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs, HostOp host) {
+		}
+
+		@Override
+		public void copyTarget(CodeDirs dirs, TargetStoreOp store) {
+		}
+
+		@Override
+		public FldOp<?> loadTarget(CodeDirs dirs) {
+
+			final MemberKey memberKey = this.member.getMemberKey();
+			final ObjectOp object = anonymousObject(
+					dirs.getBuilder(),
+					this.object.toData(null, dirs.code()),
+					memberKey.getOrigin().toObject());
+
+			return object.field(dirs, memberKey);
+		}
+
+		@Override
+		public DataOp toData(ID id, Code code) {
+			return ptr().toData(id, code);
+		}
+
+		@Override
+		public AnyOp toAny(ID id, Code code) {
+			return ptr().toAny(id, code);
+		}
+
+		@Override
+		public String toString() {
+			if (this.member == null) {
+				return super.toString();
+			}
+			return this.member.toString();
+		}
+
+	}
+
 	private static final class MemberRefTargetIR
 			extends AbstractRefFldTargetIR {
 
@@ -193,16 +297,16 @@ final class MemberStep extends AbstractMemberStep {
 		}
 
 		@Override
-		protected AbstractRefFldTargetOp createOp(Op ptr) {
-			return new MemberRefTargetOp(this, ptr, this.member);
-		}
-
-		@Override
 		public String toString() {
 			if (this.member == null) {
 				return super.toString();
 			}
 			return this.member.toString();
+		}
+
+		@Override
+		protected AbstractRefFldTargetOp createOp(Op ptr) {
+			return new MemberRefTargetOp(this, ptr, this.member);
 		}
 
 	}
@@ -223,6 +327,14 @@ final class MemberStep extends AbstractMemberStep {
 		@Override
 		public final Obj getWellKnownOwner() {
 			return this.member.getMemberKey().getOrigin().toObject();
+		}
+
+		@Override
+		protected ObjectOp copyObject(CodeDirs dirs, TargetStoreOp store) {
+
+			final FldStoreOp memberStore = (FldStoreOp) store;
+
+			return memberStore.loadObject(dirs);
 		}
 
 		@Override

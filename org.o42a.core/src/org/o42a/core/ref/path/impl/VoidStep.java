@@ -107,7 +107,7 @@ public class VoidStep extends Step {
 	}
 
 	@Override
-	protected PathOp op(HostOp host) {
+	protected HostOp op(HostOp host) {
 		return new VoidOp(host, this);
 	}
 

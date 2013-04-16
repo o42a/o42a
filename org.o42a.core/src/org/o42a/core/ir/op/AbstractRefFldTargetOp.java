@@ -88,7 +88,16 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 	}
 
 	@Override
-	public TargetOp loadTarget(CodeDirs dirs) {
+	public final void copyTarget(CodeDirs dirs, TargetStoreOp store) {
+
+		final Block code = dirs.code();
+		final DataRecOp objectRec = this.ptr.object(code);
+
+		objectRec.store(code, copyObject(dirs, store).toData(null, code));
+	}
+
+	@Override
+	public final TargetOp loadTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
 		final ObjectOp owner = anonymousObject(
@@ -118,5 +127,7 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 	}
 
 	protected abstract TargetOp fldOf(CodeDirs dirs, ObjectOp owner);
+
+	protected abstract ObjectOp copyObject(CodeDirs dirs, TargetStoreOp store);
 
 }
