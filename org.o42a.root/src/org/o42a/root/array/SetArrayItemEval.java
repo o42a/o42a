@@ -185,7 +185,7 @@ final class SetArrayItemEval extends InlineEval {
 					.op(host)
 					.path()
 					.target()
-					.materialize(
+					.dereference(
 							itemsDirs.dirs(),
 							tempObjHolder(itemsDirs.getAllocator()));
 
