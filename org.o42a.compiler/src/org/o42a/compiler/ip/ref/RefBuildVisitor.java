@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.ref;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 
 import org.o42a.ast.expression.*;
-import org.o42a.ast.ref.RefNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
@@ -50,18 +49,6 @@ public final class RefBuildVisitor
 		}
 
 		return super.visitParentheses(parentheses, p);
-	}
-
-	@Override
-	protected RefBuilder visitRef(RefNode ref, AccessDistributor p) {
-		return new RefAccess<ExpressionNode>(ref, p) {
-			@Override
-			public Ref accessRef(AccessDistributor distributor) {
-				return getNode().accept(
-						RefBuildVisitor.this.visitor,
-						distributor);
-			}
-		};
 	}
 
 	@Override
