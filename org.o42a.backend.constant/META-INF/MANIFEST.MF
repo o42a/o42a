@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Constant Handler Compiler Back-end Proxy.
 Bundle-SymbolicName: org.o42a.backend.constant;singleton:=true
-Bundle-Version: 0.2.6
+Bundle-Version: 0.2.7
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.o42a.util;bundle-version="0.2.6",
- org.o42a.codegen;bundle-version="0.2.6";visibility:=reexport
+Require-Bundle: org.o42a.util;bundle-version="0.2.7",
+ org.o42a.codegen;bundle-version="0.2.7";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Export-Package: org.o42a.backend.constant
