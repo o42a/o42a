@@ -27,6 +27,28 @@ public class ClauseTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void initializer() {
+		compile(
+				"A := void (<[= Arg]> integer)",
+				"B := a = 2");
+
+		final Field b = field("b");
+
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
+	}
+
+	@Test
+	public void explicitInitializer() {
+		compile(
+				"A := void (<[= Arg]> integer)",
+				"B := a [= 2]");
+
+		final Field b = field("b");
+
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
+	}
+
+	@Test
 	public void suffix() {
 		compile(
 				"A := void (<Suffix ~ *> integer)",
