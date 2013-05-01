@@ -20,8 +20,8 @@
 package org.o42a.parser.grammar.field;
 
 import static org.o42a.ast.field.DeclarationTarget.*;
-import static org.o42a.parser.Grammar.expression;
 import static org.o42a.parser.Grammar.iface;
+import static org.o42a.parser.Grammar.initializer;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -70,7 +70,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			iface = null;
 		}
 
-		final ExpressionNode definition = context.parse(expression());
+		final ExpressionNode definition = context.parse(initializer());
 
 		if (definition == null) {
 			context.getLogger().missingValue(context.current());

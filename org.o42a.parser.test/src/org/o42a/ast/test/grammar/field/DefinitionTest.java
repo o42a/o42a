@@ -4,14 +4,20 @@
 */
 package org.o42a.ast.test.grammar.field;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 import static org.o42a.parser.Grammar.declarator;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
+import org.o42a.ast.expression.ArgumentNode;
+import org.o42a.ast.expression.BracketsNode;
+import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.DefinitionKind;
@@ -94,6 +100,35 @@ public class DefinitionTest extends GrammarTestCase {
 		assertEquals(DefinitionKind.VARIABLE, result.getDefinitionKind());
 		assertThat(result.getDefinitionType(), isName("bar"));
 		assertThat(result.getDefinition(), isName("baz"));
+	}
+
+	@Test
+	public void initializer() {
+
+		final DeclaratorNode result = parse("foo := bar = baz");
+
+		assertThat(result.getTarget(), is(DeclarationTarget.VALUE));
+		assertThat(result.getDefinitionKind(), nullValue());
+		assertThat(result.getDefinitionType(), nullValue());
+
+		final PhraseNode definition =
+				to(PhraseNode.class, result.getDefinition());
+
+		assertThat(definition.getPrefix(), isName("bar"));
+		assertThat(definition.getParts().length, is(1));
+
+		final BracketsNode initializer =
+				to(BracketsNode.class, definition.getParts()[0]);
+
+		assertThat(initializer.getOpening(), nullValue());
+		assertThat(initializer.getArguments().length, is(1));
+		assertThat(initializer.getClosing(), nullValue());
+
+		final ArgumentNode arg = initializer.getArguments()[0];
+
+		assertThat(arg.getSeparator(), nullValue());
+		assertThat(arg.getInit().getType(), is(AssignmentOperator.ASSIGN));
+		assertThat(arg.getValue(), isName("baz"));
 	}
 
 	private DeclaratorNode parse(String text) {

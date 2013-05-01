@@ -114,13 +114,6 @@ public abstract class ParserLogger implements Logger {
 		error("missing_value", location, "Value is missing");
 	}
 
-	public void notAccepted(LogInfo location) {
-		warning(
-				"not_accepted",
-				location,
-				"Result produced, but no characters accepted");
-	}
-
 	public void notClosed(LogInfo location, String brace) {
 		error("not_closed", location, "'%s' not closed", brace);
 	}

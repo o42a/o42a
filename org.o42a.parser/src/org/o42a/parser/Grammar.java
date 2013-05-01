@@ -39,6 +39,7 @@ import org.o42a.parser.grammar.clause.ClauseDeclaratorParser;
 import org.o42a.parser.grammar.expression.*;
 import org.o42a.parser.grammar.field.DeclarableAdapterParser;
 import org.o42a.parser.grammar.field.DeclaratorParser;
+import org.o42a.parser.grammar.field.InitializerParser;
 import org.o42a.parser.grammar.file.FileParser;
 import org.o42a.parser.grammar.file.InclusionParser;
 import org.o42a.parser.grammar.phrase.IntervalParser;
@@ -225,6 +226,10 @@ public class Grammar {
 	public static final Parser<DeclaratorNode> declarator(
 			DeclarableNode declarable) {
 		return new DeclaratorParser(declarable);
+	}
+
+	public static final Parser<ExpressionNode> initializer() {
+		return InitializerParser.INITIALIZER;
 	}
 
 	private final Parser<StatementNode> statement;

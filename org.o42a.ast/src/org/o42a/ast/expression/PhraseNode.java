@@ -32,9 +32,7 @@ public class PhraseNode extends AbstractExpressionNode {
 	private final ExpressionNode prefix;
 	private final PhrasePartNode[] parts;
 
-	public PhraseNode(
-			ExpressionNode prefix,
-			PhrasePartNode[] parts) {
+	public PhraseNode(ExpressionNode prefix, PhrasePartNode... parts) {
 		super(prefix.getStart(), lastNode(parts).getEnd());
 		this.prefix = prefix;
 		this.parts = parts;

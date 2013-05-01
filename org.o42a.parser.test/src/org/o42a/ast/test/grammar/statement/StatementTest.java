@@ -59,13 +59,18 @@ public class StatementTest extends GrammarTestCase {
 	@Test
 	public void invalidDeclarator() {
 		expectError("syntax_error");
-		parse(DeclaratorNode.class, "A := boo () B = bar()");
+		parse(DeclaratorNode.class, "A := boo () B := bar ()");
 	}
 
 	@Test
 	public void invalidDeclarator2() {
 		expectError("syntax_error");
 		parse(DeclaratorNode.class, "A := boo: 42");
+	}
+
+	@Test
+	public void initializer() {
+		parse(DeclaratorNode.class, "A := boo () B = bar ()");
 	}
 
 	@Test
