@@ -63,6 +63,18 @@ public enum ClauseId {
 
 	},
 
+	INITIALIZER("initializer", true) {
+
+		@Override
+		public String toString(MemberId memberId, Name name) {
+			if (name == null) {
+				return "[=*]";
+			}
+			return "[=" + name + ']';
+		}
+
+	},
+
 	ROW("row", true) {
 
 		@Override
