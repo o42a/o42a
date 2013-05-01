@@ -314,7 +314,7 @@ final class ClauseIdVisitor
 			return null;
 		}
 
-		return extractName(context, value);
+		return extractNameOrImplied(context, value);
 	}
 
 	private static ClauseId bracketsClauseId(BracketsNode brackets) {
