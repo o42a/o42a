@@ -23,7 +23,7 @@ Var := ``1
   Assert [var == 3] "Wrong value assigned to variable for the second time"
 }
 
-Var object := variable (`integer) 1
+Var object := variable (`integer) = 1
 
 (
   Print error "    Object declaration" nl

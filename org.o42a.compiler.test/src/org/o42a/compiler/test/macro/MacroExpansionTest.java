@@ -30,7 +30,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 	public void linkObject() {
 		compile(
 				"#A := integer",
-				"B := link (`#a) 123");
+				"B := link (`#a) = 123");
 
 		final Obj b = field("b").toObject();
 

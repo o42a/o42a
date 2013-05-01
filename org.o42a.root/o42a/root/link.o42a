@@ -15,4 +15,4 @@ A link to an object.
 Interface := void ~~ An interface of the link.
 #################
 
-<[]!> ()
+<[=*]!> ()

@@ -20,7 +20,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	@Test
 	public void inheritLink() {
 		compile(
-				"A := link (`integer) 42",
+				"A := link (`integer) = 42",
 				"B := a (= 43)");
 
 		final Field a = field("a");
@@ -39,8 +39,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void linkPropagation() {
 		compile(
 				"A := void (",
-				"  Foo := link (`integer) [1]",
-				"  Bar := link (`integer) [foo]",
+				"  Foo := link (`integer) = 1",
+				"  Bar := link (`integer) = foo",
 				")",
 				"B := a (Foo = 2)");
 
@@ -59,7 +59,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 		compile(
 				"A :=> void (",
 				"  Foo :=< link (`&integer)",
-				"  Bar := link (`&integer) [foo]",
+				"  Bar := link (`&integer) = foo",
 				")",
 				"B := a (Foo = 2)",
 				"C := b",
@@ -82,7 +82,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void linkAncestorUpgrade() {
 		compile(
 				"A := void (",
-				"  F := link (`integer) 3",
+				"  F := link (`integer) = 3",
 				")",
 				"Lnk :=> link (`integer) (",
 				"  G := 12",
@@ -100,7 +100,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void parameterizedLinkAncestorUpgrade() {
 		compile(
 				"A := void (",
-				"  F := link (`integer) 3",
+				"  F := link (`integer) = 3",
 				")",
 				"Lnk :=> link` (",
 				"  G := 12",
@@ -118,7 +118,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void linkPrototypeAncestorUpgrade() {
 		compile(
 				"A :=> void (",
-				"  F :=<> link (`integer) 3",
+				"  F :=<> link (`integer) = 3",
 				")",
 				"Lnk :=> link (`integer) (",
 				"  G := 12",
