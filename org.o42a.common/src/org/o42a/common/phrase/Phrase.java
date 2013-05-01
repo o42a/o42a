@@ -151,12 +151,20 @@ public class Phrase extends Contained {
 		return append(this.last.name(location, name));
 	}
 
+	public final PhraseArgument argument(RefBuilder value) {
+		return append(this.last.argument(value, value));
+	}
+
 	public final PhraseArgument emptyArgument(LocationInfo location) {
 		return append(this.last.argument(location, null));
 	}
 
-	public final PhraseArgument argument(RefBuilder value) {
-		return append(this.last.argument(value, value));
+	public final PhraseInitializer initializer(RefBuilder value) {
+		return append(this.last.initializer(value, value));
+	}
+
+	public final PhraseInitializer emptyInitializer(LocationInfo location) {
+		return append(this.last.initializer(location, null));
 	}
 
 	public final PhraseArray array(RefBuilder array) {

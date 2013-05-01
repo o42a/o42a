@@ -67,6 +67,12 @@ public abstract class PhrasePart extends Located {
 		return setFollowing(new PhraseArgument(location, this, value));
 	}
 
+	public final PhraseInitializer initializer(
+			LocationInfo location,
+			RefBuilder value) {
+		return setFollowing(new PhraseInitializer(location, this, value));
+	}
+
 	public final PhraseArray array(RefBuilder array) {
 		return setFollowing(new PhraseArray(this, array));
 	}
