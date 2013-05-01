@@ -160,9 +160,9 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 		final SourcePosition start = context.current().fix();
 
-		context.skip();
+		context.acceptAll();
 
-		return context.skipComments(
+		return context.acceptComments(
 				true,
 				new SignNode<>(
 						start,
@@ -192,7 +192,6 @@ public final class BracketsParser implements Parser<BracketsNode> {
 					init = parseInit(context);
 					if (init != null) {
 						context.logUnexpected(firstUnexpected, start);
-						context.acceptUnexpected();
 						firstUnexpected = null;
 					}
 				}

@@ -61,6 +61,23 @@ public class ClauseIdTest extends GrammarTestCase {
 
 		assertThat(result.requiresContinuation(), is(false));
 		assertThat(arguments.length, is(1));
+		assertThat(arguments[0].isInitializer(), is(false));
+		assertThat(arguments[0].getValue(), isName("foo"));
+		assertThat(result.getContent(), isName("bar"));
+		checkNothingReused(result);
+		checkParentheses(result);
+	}
+
+	@Test
+	public void initializer() {
+
+		final ClauseDeclaratorNode result = parse("<[= foo]> bar");
+		final ArgumentNode[] arguments =
+				to(BracketsNode.class, result.getClauseId()).getArguments();
+
+		assertThat(result.requiresContinuation(), is(false));
+		assertThat(arguments.length, is(1));
+		assertThat(arguments[0].isInitializer(), is(true));
 		assertThat(arguments[0].getValue(), isName("foo"));
 		assertThat(result.getContent(), isName("bar"));
 		checkNothingReused(result);
