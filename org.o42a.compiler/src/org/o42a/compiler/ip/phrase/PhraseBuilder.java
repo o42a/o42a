@@ -274,6 +274,16 @@ public final class PhraseBuilder extends Contained {
 		return this;
 	}
 
+	public final PhraseBuilder emptyInitializer(LocationInfo location) {
+		phrase().emptyInitializer(location);
+		return this;
+	}
+
+	public final PhraseBuilder initializer(RefBuilder value) {
+		phrase().initializer(value);
+		return this;
+	}
+
 	public final PhraseBuilder arguments(BracketsNode node) {
 
 		final ArgumentNode[] arguments = node.getArguments();
@@ -288,12 +298,20 @@ public final class PhraseBuilder extends Contained {
 
 			final ExpressionNode value = arg.getValue();
 
+			if (arg.isInitializer()) {
+				if (value != null) {
+					phrase.initializer(
+							value.accept(
+									ip().targetBuildVisitor(),
+									distributeAccess()));
+					continue;
+				}
+				phrase = phrase.emptyInitializer(location(phrase, arg));
+				continue;
+			}
 			if (value != null) {
 				phrase = value.accept(ARGUMENT_VISITOR, phrase);
 				continue;
-			}
-			if (arguments.length == 1) {
-				return phrase.emptyArgument(location(phrase, node));
 			}
 			phrase = phrase.emptyArgument(location(phrase, arg));
 		}

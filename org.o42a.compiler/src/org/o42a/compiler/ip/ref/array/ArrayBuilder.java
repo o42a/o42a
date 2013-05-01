@@ -78,10 +78,13 @@ abstract class ArrayBuilder {
 
 			final ArgumentNode argNode = argNodes[i];
 			final ExpressionNode itemNode = argNode.getValue();
-			final Location location =
-					new Location(this.constructor.getContext(), itemNode);
 
-			if (itemNode != null) {
+			if (argNode.isInitializer()) {
+				getConstructor().getLogger().syntaxError(argNode.getInit());
+			}
+			if (itemNode == null) {
+				getConstructor().getLogger().noValue(argNode);
+			} else {
 
 				final Ref itemRef = itemNode.accept(
 						this.constructor.ip().targetExVisitor(),
@@ -109,7 +112,9 @@ abstract class ArrayBuilder {
 				}
 			}
 
-			items[i] = new ArrayItem(i, errorRef(location, distributor));
+			items[i] = new ArrayItem(i, errorRef(
+					new Location(this.constructor.getContext(), itemNode),
+					distributor));
 		}
 
 		final TypeParameters<Array> finalTypeParams;

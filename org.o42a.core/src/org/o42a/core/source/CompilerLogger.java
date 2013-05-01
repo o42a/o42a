@@ -94,6 +94,10 @@ public class CompilerLogger implements Logger {
 		error("invalid_type", location, "Not a valid type reference");
 	}
 
+	public void noValue(LogInfo location) {
+		error("no_value", location, "Value is missing");
+	}
+
 	public void noDefinition(LogInfo location) {
 		error("no_definition", location, "Definition is missing");
 	}
@@ -171,6 +175,10 @@ public class CompilerLogger implements Logger {
 				location,
 				"Private field '%s' can not be abstract",
 				fieldName);
+	}
+
+	public void syntaxError(LogInfo location) {
+		error("syntax_error", location, "Syntax error");
 	}
 
 	public void unexpectedAbstract(LogInfo location) {
