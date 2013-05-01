@@ -10,9 +10,9 @@ Sublist => &mutable list
 ========================
 
 Item => * (
-    Set => * ({
-      Index < size? Mutable list [from + index] = new value
-    })
+  Set => * ({
+    Index < size? Mutable list [from + index] = new value
+  })
 )
 
 Add => * (
