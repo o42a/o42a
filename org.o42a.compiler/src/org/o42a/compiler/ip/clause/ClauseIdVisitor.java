@@ -124,7 +124,7 @@ final class ClauseIdVisitor
 				location(p, brackets),
 				p,
 				nameFromBrackets(p.getContext(), brackets),
-				ClauseId.ARGUMENT);
+				bracketsClauseId(brackets));
 	}
 
 	@Override
@@ -279,7 +279,13 @@ final class ClauseIdVisitor
 			return null;
 		}
 
-		final ExpressionNode value = arguments[0].getValue();
+		final ArgumentNode argument = arguments[0];
+
+		if (argument.isInitializer()) {
+			return null;
+		}
+
+		final ExpressionNode value = argument.getValue();
 
 		if (value == null) {
 			return null;
@@ -309,6 +315,17 @@ final class ClauseIdVisitor
 		}
 
 		return extractName(context, value);
+	}
+
+	private static ClauseId bracketsClauseId(BracketsNode brackets) {
+
+		final ArgumentNode[] arguments = brackets.getArguments();
+
+		if (arguments.length != 0 && arguments[0].isInitializer()) {
+			return ClauseId.INITIALIZER;
+		}
+
+		return ClauseId.ARGUMENT;
 	}
 
 	private static Name nameFromBlock(
