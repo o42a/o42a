@@ -45,7 +45,7 @@ Target and body := test (
   Name = "Target and body"
   Print error '  ' [name] nl
   
-  Static link := link (`integer) [1]
+  Static link := link (`integer) = 1
   
   {
     Assert [static link`] "Static link body is false"
@@ -53,7 +53,7 @@ Target and body := test (
     Assert [static link == 1] "Wrong static link target"
   }
 
-  Runtime link := link (`integer) [rt-integer '2']
+  Runtime link := link (`integer) = rt-integer '2'
   
   {
     Assert [runtime link`] "Runtime link body is false"
