@@ -27,6 +27,7 @@ Item => * (
 )
 
 <[[Items]]!> Data = *
+<[= Init]!> Data = *
 ~~~
 Constructs a list by the given row.
 ~~~
