@@ -23,31 +23,46 @@ import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.CommaSign;
 import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.util.io.SourcePosition;
 
 
 public class ArgumentNode extends AbstractNode {
 
 	private final SignNode<CommaSign> separator;
+	private final SignNode<AssignmentOperator> init;
 	private final ExpressionNode value;
 
 	public ArgumentNode(SourcePosition start) {
 		super(start, start);
 		this.separator = null;
+		this.init = null;
 		this.value = null;
 	}
 
-	public ArgumentNode(SignNode<CommaSign> separator, ExpressionNode value) {
-		super(separator, value);
+	public ArgumentNode(
+			SignNode<CommaSign> separator,
+			SignNode<AssignmentOperator> init,
+			ExpressionNode value) {
+		super(separator, init, value);
 		this.separator = separator;
+		this.init = init;
 		this.value = value;
 	}
 
-	public SignNode<CommaSign> getSeparator() {
+	public final SignNode<CommaSign> getSeparator() {
 		return this.separator;
 	}
 
-	public ExpressionNode getValue() {
+	public final SignNode<AssignmentOperator> getInit() {
+		return this.init;
+	}
+
+	public final boolean isInitializer() {
+		return this.init != null;
+	}
+
+	public final ExpressionNode getValue() {
 		return this.value;
 	}
 
@@ -60,6 +75,9 @@ public class ArgumentNode extends AbstractNode {
 	public void printContent(StringBuilder out) {
 		if (this.separator != null) {
 			this.separator.printContent(out);
+		}
+		if (this.init != null) {
+			this.init.printContent(out);
 		}
 		if (this.value != null) {
 			this.value.printContent(out);

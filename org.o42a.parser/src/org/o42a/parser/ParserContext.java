@@ -398,7 +398,10 @@ public final class ParserContext {
 		}
 
 		if (!ignoreResult && accepted == 0 && result != null) {
-			context.getLogger().notAccepted(current());
+			context.getLogger().warning(
+					"not_accepted",
+					current(),
+					"Result produced, but no characters accepted");
 		}
 
 		return result;

@@ -21,6 +21,7 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.ast.atom.BracketSign.CLOSING_BRACKET;
 import static org.o42a.ast.atom.BracketSign.OPENING_BRACKET;
+import static org.o42a.ast.statement.AssignmentOperator.ASSIGN;
 import static org.o42a.parser.Grammar.expression;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import org.o42a.ast.atom.*;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.parser.Expectations;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -44,11 +46,13 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 	@Override
 	public BracketsNode parse(ParserContext context) {
-		if (context.next() != '[') {
+
+		final SignNode<BracketSign> opening = parseOpening(context);
+
+		if (opening == null) {
 			return null;
 		}
 
-		final SignNode<BracketSign> opening = opening(context);
 		final ArrayList<ArgumentNode> arguments = new ArrayList<>();
 		SignNode<BracketSign> closing = null;
 		SignNode<CommaSign> separator = null;
@@ -75,7 +79,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 			}
 
 			final SeparatorNodes separators = context.acceptComments(true);
-			final int c = context.next();
+			final int c = context.pendingOrNext();
 
 			if (c == ']') {
 
@@ -131,7 +135,10 @@ public final class BracketsParser implements Parser<BracketsNode> {
 						closing));
 	}
 
-	private SignNode<BracketSign> opening(ParserContext context) {
+	private static SignNode<BracketSign> parseOpening(ParserContext context) {
+		if (context.next() != '[') {
+			return null;
+		}
 
 		final SourcePosition start = context.current().fix();
 
@@ -145,6 +152,24 @@ public final class BracketsParser implements Parser<BracketsNode> {
 						OPENING_BRACKET));
 	}
 
+	private static SignNode<AssignmentOperator> parseInit(
+			ParserContext context) {
+		if (context.pendingOrNext() != '=') {
+			return null;
+		}
+
+		final SourcePosition start = context.current().fix();
+
+		context.skip();
+
+		return context.skipComments(
+				true,
+				new SignNode<>(
+						start,
+						context.current().fix(),
+						ASSIGN));
+	}
+
 	private static final class ArgumentParser implements Parser<ArgumentNode> {
 
 		private final SignNode<CommaSign> separator;
@@ -156,17 +181,28 @@ public final class BracketsParser implements Parser<BracketsNode> {
 		@Override
 		public ArgumentNode parse(ParserContext context) {
 
+			SignNode<AssignmentOperator> init = null;
 			SourcePosition firstUnexpected = null;
 
 			for (;;) {
 
 				final SourcePosition start = context.current().fix();
+
+				if (init == null) {
+					init = parseInit(context);
+					if (init != null) {
+						context.logUnexpected(firstUnexpected, start);
+						context.acceptUnexpected();
+						firstUnexpected = null;
+					}
+				}
+
 				final ExpressionNode value = context.parse(expression());
 
 				if (value != null) {
 					context.logUnexpected(firstUnexpected, start);
 					context.acceptUnexpected();
-					return new ArgumentNode(this.separator, value);
+					return new ArgumentNode(this.separator, init, value);
 				}
 
 				// Unexpected input before the argument.

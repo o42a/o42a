@@ -43,16 +43,29 @@ public class BracketsNode
 			ArgumentNode[] arguments,
 			SignNode<BracketSign> closing) {
 		super(
-				opening.getStart(),
+				start(opening, firstNode(arguments)),
 				end(opening, lastNode(arguments), closing));
 		this.opening = opening;
 		this.arguments = arguments;
 		this.closing = closing;
 	}
 
+	public BracketsNode(
+			SignNode<BracketSign> opening,
+			ArgumentNode argument,
+			SignNode<BracketSign> closing) {
+		super(
+				start(opening, argument),
+				end(opening, argument, closing));
+		this.opening = opening;
+		this.arguments = new ArgumentNode[] {argument};
+		this.closing = closing;
+	}
+
 	public final SignNode<BracketSign> getOpening() {
 		return this.opening;
 	}
+
 
 	public final ArgumentNode[] getArguments() {
 		return this.arguments;
