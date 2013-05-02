@@ -36,7 +36,7 @@ public enum IDSeparator {
 
 	},
 
-	TOP("$$", "$$", "") {
+	TOP("$$", "//", "") {
 
 		@Override
 		boolean discardsPrev(IDSeparator prev) {
