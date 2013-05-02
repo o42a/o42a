@@ -20,7 +20,9 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.compiler.ip.ref.RefInterpreter.linkTargetIsAccessibleFrom;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.common.ref.CompoundPathWalker;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -28,6 +30,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.RoleResolver;
@@ -36,6 +39,7 @@ import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.link.LinkValueType;
 
 
 public class MemberOf extends ContainedFragment {
@@ -71,21 +75,11 @@ public class MemberOf extends ContainedFragment {
 		final Access access =
 				accessorResolver.getAccessor()
 				.accessBy(this, this.accessSource);
-		final MemberPath memberPath = container.member(
-				access,
-				this.memberId,
-				this.declaredIn != null
-				? this.declaredIn.getType() : null);
 
-		if (memberPath != null) {
-			return memberPath.pathToMember();
-		}
+		final Path found = findMember(container, access);
 
-		final Path memberOfAdapter =
-				memberOfAdapter(access, accessorResolver, container);
-
-		if (memberOfAdapter != null) {
-			return memberOfAdapter;
+		if (found != null) {
+			return found;
 		}
 
 		getLogger().error(
@@ -121,9 +115,29 @@ public class MemberOf extends ContainedFragment {
 		return out.toString();
 	}
 
+	private Path findMember(MemberContainer container, Access access) {
+
+		final MemberPath memberPath = container.member(
+				access,
+				this.memberId,
+				this.declaredIn != null
+				? this.declaredIn.getType() : null);
+
+		if (memberPath != null) {
+			return memberPath.pathToMember();
+		}
+
+		final Path memberOfAdapter = memberOfAdapter(access, container);
+
+		if (memberOfAdapter != null) {
+			return memberOfAdapter;
+		}
+
+		return memberOfLinkTarget(container);
+	}
+
 	private Path memberOfAdapter(
 			Access access,
-			AccessorResolver accessResolver,
 			MemberContainer container) {
 		if (this.declaredIn == null) {
 			return null;
@@ -148,8 +162,17 @@ public class MemberOf extends ContainedFragment {
 			return null;
 		}
 
+		final Accessor memberOfAdapterAccessor;
+
+		if (adapter.getLocation().getContext().declarationsVisibleFrom(
+				getLocation().getContext())) {
+			memberOfAdapterAccessor = Accessor.DECLARATION;
+		} else {
+			memberOfAdapterAccessor = Accessor.PUBLIC;
+		}
+
 		final MemberPath memberOfAdapter = adapter.member(
-				accessResolver.getAccessor().accessBy(this, this.accessSource),
+				memberOfAdapterAccessor.accessBy(this, this.accessSource),
 				this.memberId,
 				null);
 
@@ -159,6 +182,37 @@ public class MemberOf extends ContainedFragment {
 
 		return adapterPath.pathToMember().append(
 				memberOfAdapter.pathToMember());
+	}
+
+	private Path memberOfLinkTarget(MemberContainer container) {
+		if (!linkTargetIsAccessibleFrom(this.accessSource)) {
+			return null;
+		}
+
+		final Obj object = container.toObject();
+
+		if (object == null) {
+			return null;
+		}
+
+		final LinkValueType linkType =
+				object.type().getValueType().toLinkType();
+
+		if (linkType == null) {
+			return null;
+		}
+
+		final Obj iface =
+				linkType.interfaceRef(object.type().getParameters()).getType();
+		final Path targetMember = findMember(
+				iface,
+				Accessor.PUBLIC.accessBy(this, this.accessSource));
+
+		if (targetMember == null) {
+			return null;
+		}
+
+		return SELF_PATH.dereference().append(targetMember);
 	}
 
 }

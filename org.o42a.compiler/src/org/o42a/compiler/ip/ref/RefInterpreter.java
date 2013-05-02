@@ -42,6 +42,7 @@ import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -88,6 +89,18 @@ public abstract class RefInterpreter {
 		}
 
 		return scopeRef.getType() == ScopeType.ROOT;
+	}
+
+	public static boolean linkTargetIsAccessibleFrom(AccessSource accessSource) {
+		switch (accessSource) {
+		case FROM_CLAUSE_REUSE:
+		case FROM_TYPE:
+			return false;
+		case FROM_DECLARATION:
+		case FROM_DEFINITION:
+			return true;
+		}
+		return true;
 	}
 
 	public static Ref number(NumberNode number, Distributor distributor) {
