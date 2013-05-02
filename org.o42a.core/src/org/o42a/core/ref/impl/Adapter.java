@@ -21,6 +21,7 @@ package org.o42a.core.ref.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
@@ -38,6 +39,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.TypeParameters;
 
 
 public final class Adapter extends BoundFragment implements LocationInfo {
@@ -70,15 +72,52 @@ public final class Adapter extends BoundFragment implements LocationInfo {
 		final ObjectType objectType = start.toObject().type();
 		final ObjectType adapterType = this.adapterType.getType().type();
 
+		return adapt(objectType, adapterType, true);
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return defaultInterface(ref);
+	}
+
+	@Override
+	public String toString() {
+		return "@@" + this.adapterType;
+	}
+
+	private Path adapt(
+			ObjectType objectType,
+			ObjectType adapterType,
+			boolean dereference) {
 		if (objectType.derivedFrom(adapterType)) {
-			return Path.SELF_PATH;
+			return SELF_PATH;
 		}
+
+		final Path memberAdapter = adaptByMember(objectType);
+
+		if (memberAdapter != null) {
+			return memberAdapter;
+		}
+		if (dereference && objectType.getValueType().isLink()) {
+			return adaptLink(objectType, adapterType);
+		}
+
+		this.logger.incompatible(this.location, this.adapterType);
+
+		return null;
+	}
+
+	private Path adaptByMember(ObjectType objectType) {
 
 		final Member adapterMember =
 				objectType.getObject().member(adapterId(this.adapterType));
 
 		if (adapterMember == null) {
-			this.logger.incompatible(this.location, this.adapterType);
 			return null;
 		}
 
@@ -101,8 +140,8 @@ public final class Adapter extends BoundFragment implements LocationInfo {
 				adapterObject.type().getParameters().getLinkDepth();
 
 		if (adapterLinkDepth - expectedLinkDepth  == 1) {
-			// Adapter was declared as a link.
-			// Use the link target as adapter.
+			// Adapter was declared as link.
+			// Use this link's target as adapter.
 			return key.toPath().dereference();
 		}
 
@@ -112,19 +151,22 @@ public final class Adapter extends BoundFragment implements LocationInfo {
 		return key.toPath();
 	}
 
-	@Override
-	public FieldDefinition fieldDefinition(Ref ref) {
-		return defaultFieldDefinition(ref);
-	}
+	private Path adaptLink(ObjectType objectType, ObjectType adapterType) {
 
-	@Override
-	public TypeRef iface(Ref ref) {
-		return defaultInterface(ref);
-	}
+		final TypeParameters<?> linkParameters = objectType.getParameters();
+		final ObjectType targetType =
+				linkParameters.getValueType()
+				.toLinkType()
+				.interfaceRef(linkParameters)
+				.getType()
+				.type();
+		final Path targetAdapter = adapt(targetType, adapterType, false);
 
-	@Override
-	public String toString() {
-		return "@@" + this.adapterType;
+		if (targetAdapter == null) {
+			return null;
+		}
+
+		return SELF_PATH.dereference().append(targetAdapter);
 	}
 
 }
