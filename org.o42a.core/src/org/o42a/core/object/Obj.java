@@ -385,7 +385,7 @@ public abstract class Obj
 			Obj declaredIn) {
 		resolveMembers(memberId.containsAdapterId());
 
-		final Symbol found = memberById(memberId);
+		final Symbol found = this.symbols.get(memberId);
 
 		if (found == null) {
 			return null;
@@ -939,11 +939,6 @@ public abstract class Obj
 
 			field.toObject().normalize(analyzer);
 		}
-	}
-
-	private Symbol memberById(MemberId memberId) {
-		resolveMembers(memberId.containsAdapterId());
-		return this.symbols.get(memberId);
 	}
 
 	private boolean assertImplicitSamples(Sample[] samples) {
