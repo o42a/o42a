@@ -31,6 +31,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.DefinitionTarget;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
@@ -41,6 +42,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ObjectTypeParameters;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.Name;
 
 
@@ -48,6 +50,7 @@ final class MainPhraseContext extends PhraseContext {
 
 	private int createsObject;
 	private boolean standalone;
+	private boolean firstClauseFound;
 	private PhraseContext nextContext;
 	private Ascendants implicitAscendants;
 	private PhraseContinuation nextPart;
@@ -161,6 +164,62 @@ final class MainPhraseContext extends PhraseContext {
 			"Object won't be constructed, so resolution of \"" + location
 			+ "\" is impossible";
 
+		if (!this.firstClauseFound) {
+			establishLinkTargetSearch();
+		}
+
+		final NextClause foundInSamples =
+				findClauseInSamples(location, memberId, what);
+
+		if (foundInSamples != null) {
+			return foundInSamples;
+		}
+
+		final Ascendants implicitAscendants = effectiveImplicitAscendants();
+		final NextClause foundInImplicitAscendants = findInImplicitSamples(
+				location,
+				memberId,
+				what,
+				implicitAscendants);
+
+		if (foundInImplicitAscendants != null) {
+			return foundInImplicitAscendants;
+		}
+
+		final NextClause foundInAncestor =
+				findInAncestor(location, memberId, what);
+
+		if (foundInAncestor != null) {
+			return foundInAncestor;
+		}
+
+		final NextClause foundInImplicitAncestor = findInImplicitAncestor(
+				location,
+				memberId,
+				what,
+				implicitAscendants);
+
+		if (foundInImplicitAncestor != null) {
+			return foundInImplicitAncestor;
+		}
+
+		return clauseNotFound(what);
+	}
+
+	private void establishLinkTargetSearch() {
+		if (effectiveImplicitAscendants() != null) {
+			this.firstClauseFound = true;
+		} else if (getAscendants().getSamples().length != 0) {
+			this.firstClauseFound = true;
+		} else if (getAscendants().getTypeParameters() != null) {
+			this.firstClauseFound = true;
+		}
+	}
+
+	private NextClause findClauseInSamples(
+			LocationInfo location,
+			MemberId memberId,
+			Object what) {
 		for (StaticTypeRef sample : getAscendants().getSamples()) {
 
 			final NextClause found =
@@ -170,57 +229,7 @@ final class MainPhraseContext extends PhraseContext {
 				return found;
 			}
 		}
-
-		final Ascendants implicitAscendants = effectiveImplicitAscendants();
-
-		if (implicitAscendants != null) {
-			for (Sample sample : implicitAscendants.getSamples()) {
-
-				final NextClause found = findClause(
-						sample.getObject(),
-						location,
-						memberId,
-						what);
-
-				if (found.found()) {
-					return found;
-				}
-			}
-		}
-
-		final TypeRef ancestor = getAscendants().getAncestor();
-
-		if (ancestor != null) {
-
-			final NextClause found = findClause(
-					ancestor.getType(),
-					location,
-					memberId,
-					what);
-
-			if (found.found()) {
-				return found;
-			}
-		} else if (implicitAscendants != null) {
-
-			final TypeRef implicitAncestor =
-					implicitAscendants.getExplicitAncestor();
-
-			if (implicitAncestor != null) {
-
-				final NextClause found = findClause(
-						implicitAncestor.getType(),
-						location,
-						memberId,
-						what);
-
-				if (found.found()) {
-					return found;
-				}
-			}
-		}
-
-		return clauseNotFound(what);
+		return null;
 	}
 
 	private Ascendants effectiveImplicitAscendants() {
@@ -246,6 +255,131 @@ final class MainPhraseContext extends PhraseContext {
 		// Declaring link or macro by value.
 		// Clauses should be looked for in the link target,
 		// but not in the link body
+		return null;
+	}
+
+	private NextClause findInImplicitSamples(
+			LocationInfo location,
+			MemberId memberId,
+			Object what,
+			Ascendants implicitAscendants) {
+		if (implicitAscendants == null) {
+			return null;
+		}
+		for (Sample sample : implicitAscendants.getSamples()) {
+
+			final NextClause found = findClause(
+					sample.getObject(),
+					location,
+					memberId,
+					what);
+
+			if (found.found()) {
+				return found;
+			}
+		}
+		return null;
+	}
+
+	private NextClause findInAncestor(
+			LocationInfo location,
+			MemberId memberId,
+			Object what) {
+
+		final TypeRef ancestorRef = getAscendants().getAncestor();
+
+		if (ancestorRef == null) {
+			return null;
+		}
+
+		final Obj ancestor = ancestorRef.getType();
+		final NextClause found = findClause(
+				ancestor,
+				location,
+				memberId,
+				what);
+
+		if (found.found()) {
+			return found;
+		}
+
+		final NextClause foundInTarget = finalInAncestorTarget(
+				location,
+				memberId,
+				what,
+				ancestorRef,
+				ancestor);
+
+		if (foundInTarget != null) {
+			return foundInTarget;
+		}
+
+		return clauseNotFound(what);// Prevent an implicit ancestor search.
+	}
+
+	private NextClause finalInAncestorTarget(
+			LocationInfo location,
+			MemberId memberId,
+			Object what,
+			TypeRef ancestorRef,
+			Obj ancestor) {
+		if (this.firstClauseFound) {
+			// This is only possible for the very first phrase part.
+			return null;
+		}
+		this.firstClauseFound = true;
+
+		final LinkValueType linkType =
+				ancestor.type().getValueType().toLinkType();
+
+		if (linkType == null) {
+			return null;
+		}
+
+		final TypeRef iface =
+				linkType.interfaceRef(ancestor.type().getParameters());
+		final NextClause foundInIface = findClause(
+				iface.getType(),
+				location,
+				memberId,
+				what);
+
+		if (!foundInIface.found()) {
+			return null;
+		}
+
+		getPhrase().getPrefix().setAncestor(
+				ancestorRef.getRef().dereference().toTypeRef());
+
+		return foundInIface;
+	}
+
+	private NextClause findInImplicitAncestor(
+			LocationInfo location,
+			MemberId memberId,
+			Object what,
+			Ascendants implicitAscendants) {
+		if (implicitAscendants == null) {
+			return null;
+		}
+
+		final TypeRef implicitAncestor =
+				implicitAscendants.getExplicitAncestor();
+
+		if (implicitAncestor == null) {
+			return null;
+		}
+
+		final NextClause found = findClause(
+				implicitAncestor.getType(),
+				location,
+				memberId,
+				what);
+
+		if (found.found()) {
+			return found;
+		}
+
 		return null;
 	}
 
