@@ -183,6 +183,7 @@ final class MainPhraseContext extends PhraseContext {
 				implicitAscendants);
 
 		if (foundInImplicitAscendants != null) {
+			this.firstClauseFound = true;
 			return foundInImplicitAscendants;
 		}
 
@@ -190,6 +191,9 @@ final class MainPhraseContext extends PhraseContext {
 				findInAncestor(location, memberId, what);
 
 		if (foundInAncestor != null) {
+			if (foundInAncestor.found()) {
+				this.firstClauseFound = true;
+			}
 			return foundInAncestor;
 		}
 
@@ -200,6 +204,7 @@ final class MainPhraseContext extends PhraseContext {
 				implicitAscendants);
 
 		if (foundInImplicitAncestor != null) {
+			this.firstClauseFound = true;
 			return foundInImplicitAncestor;
 		}
 
@@ -207,9 +212,7 @@ final class MainPhraseContext extends PhraseContext {
 	}
 
 	private void establishLinkTargetSearch() {
-		if (effectiveImplicitAscendants() != null) {
-			this.firstClauseFound = true;
-		} else if (getAscendants().getSamples().length != 0) {
+		if (getAscendants().getSamples().length != 0) {
 			this.firstClauseFound = true;
 		} else if (getAscendants().getTypeParameters() != null) {
 			this.firstClauseFound = true;
@@ -303,7 +306,7 @@ final class MainPhraseContext extends PhraseContext {
 			return found;
 		}
 
-		final NextClause foundInTarget = finalInAncestorTarget(
+		final NextClause foundInTarget = findInAncestorTarget(
 				location,
 				memberId,
 				what,
@@ -317,7 +320,7 @@ final class MainPhraseContext extends PhraseContext {
 		return clauseNotFound(what);// Prevent an implicit ancestor search.
 	}
 
-	private NextClause finalInAncestorTarget(
+	private NextClause findInAncestorTarget(
 			LocationInfo location,
 			MemberId memberId,
 			Object what,
@@ -327,7 +330,6 @@ final class MainPhraseContext extends PhraseContext {
 			// This is only possible for the very first phrase part.
 			return null;
 		}
-		this.firstClauseFound = true;
 
 		final LinkValueType linkType =
 				ancestor.type().getValueType().toLinkType();
