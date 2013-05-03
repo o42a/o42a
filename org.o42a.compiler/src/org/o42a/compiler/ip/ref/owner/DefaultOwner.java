@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import static org.o42a.common.ref.MayDereferenceFragment.mayDereference;
-
 import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
@@ -39,12 +37,7 @@ final class DefaultOwner extends Owner {
 
 	@Override
 	public Ref targetRef() {
-		return mayDereference(ownerRef());
-	}
-
-	@Override
-	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		return new BodyOwner(location, bodyRef, getAccessRules(), ownerRef());
+		return ownerRef();
 	}
 
 	@Override

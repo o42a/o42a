@@ -28,9 +28,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.RefOpEval;
-import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
@@ -40,6 +38,7 @@ import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.link.TargetResolver;
+import org.o42a.util.fn.Cancelable;
 
 
 public class LinkValueAdapter extends ValueAdapter {
@@ -95,7 +94,25 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	@Override
 	public InlineValue inline(Normalizer normalizer, Scope origin) {
-		return null;
+
+		final InlineValue inline = getAdaptedRef().inline(normalizer, origin);
+
+		if (inline == null) {
+			return null;
+		}
+
+		final TypeParameters<?> fromParameters =
+				getAdaptedRef()
+				.typeParameters(getAdaptedRef().getScope());
+
+		if (getExpectedParameters().assignableFrom(fromParameters)) {
+			return inline;
+		}
+
+		final LinkValueType linkType =
+				fromParameters.getValueType().toLinkType();
+
+		return new InlineLinkEval(inline, linkType);
 	}
 
 	@Override
@@ -118,6 +135,47 @@ public class LinkValueAdapter extends ValueAdapter {
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getAdaptedRef().resolveAll(resolver.setRefUsage(VALUE_REF_USAGE));
+	}
+
+	private static final class InlineLinkEval extends InlineValue {
+
+		private final InlineValue inline;
+		private final LinkValueType fromValueType;
+
+		InlineLinkEval(InlineValue inline, LinkValueType fromValueType) {
+			super(null);
+			this.inline = inline;
+			this.fromValueType = fromValueType;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.inline.writeCond(dirs, host);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final ValDirs fromDirs = dirs.dirs().nested().value(
+					this.fromValueType,
+					TEMP_VAL_HOLDER);
+
+			final ValOp from = this.inline.writeValue(fromDirs, host);
+			final Block code = fromDirs.code();
+			final ValOp converted = dirs.value().store(
+					code,
+					from.value(null, code).toRec(null, code).load(null, code));
+
+			fromDirs.done();
+
+			return converted;
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
 	}
 
 	private static final class LinkEval implements Eval {

@@ -25,12 +25,13 @@ import org.o42a.core.source.CompilerLogger;
 public final class ValueRequest {
 
 	public static ValueRequest noValueRequest(CompilerLogger logger) {
-		return new ValueRequest(null, logger, false);
+		return new ValueRequest(null, logger, false, false);
 	}
 
 	private final TypeParameters<?> expectedParameters;
 	private final CompilerLogger logger;
-	private final boolean transformAllowed;
+	private final boolean linkByValueAllowed;
+	private final boolean linkToLinkAllowed;
 
 	public ValueRequest(
 			TypeParameters<?> expectedParameters,
@@ -38,17 +39,24 @@ public final class ValueRequest {
 		assert expectedParameters != null :
 			"Expected type parameters not specified";
 		this.expectedParameters = expectedParameters;
-		this.transformAllowed = true;
+		this.linkByValueAllowed = true;
+		this.linkToLinkAllowed = true;
 		this.logger = logger;
 	}
 
 	private ValueRequest(
 			TypeParameters<?> expectedParameters,
 			CompilerLogger logger,
-			boolean transformAllowed) {
+			boolean linkByValueAllowed,
+			boolean linkToLinkAllowed) {
 		this.expectedParameters = expectedParameters;
 		this.logger = logger;
-		this.transformAllowed = transformAllowed;
+		this.linkByValueAllowed = linkByValueAllowed;
+		this.linkToLinkAllowed = linkToLinkAllowed;
+	}
+
+	public final boolean isValueExpected() {
+		return getExpectedParameters() != null;
 	}
 
 	public final ValueType<?> getExpectedType() {
@@ -59,26 +67,46 @@ public final class ValueRequest {
 		return this.expectedParameters;
 	}
 
-	public final boolean isTransformAllowed() {
-		return this.transformAllowed;
+	public final boolean isLinkByValueAllowed() {
+		return this.linkByValueAllowed;
+	}
+
+	public final boolean isLinkToLinkAllowed() {
+		return this.linkToLinkAllowed;
 	}
 
 	public final CompilerLogger getLogger() {
 		return this.logger;
 	}
 
-	public final ValueRequest dontTransofm() {
-		if (!isTransformAllowed()) {
+	public final ValueRequest noLinkByValue() {
+		if (!isLinkByValueAllowed()) {
 			return this;
 		}
-		return new ValueRequest(getExpectedParameters(), getLogger(), false);
+		return new ValueRequest(
+				getExpectedParameters(),
+				getLogger(),
+				false,
+				isLinkToLinkAllowed());
+	}
+
+	public final ValueRequest noLinkToLink() {
+		if (!isLinkToLinkAllowed()) {
+			return this;
+		}
+		return new ValueRequest(
+				getExpectedParameters(),
+				getLogger(),
+				isLinkByValueAllowed(),
+				false);
 	}
 
 	public final ValueRequest setLogger(CompilerLogger logger) {
 		return new ValueRequest(
 				getExpectedParameters(),
 				logger,
-				isTransformAllowed());
+				isLinkByValueAllowed(),
+				isLinkToLinkAllowed());
 	}
 
 	@Override
@@ -91,7 +119,7 @@ public final class ValueRequest {
 
 		out.append("ValueRequest[");
 		out.append(this.expectedParameters);
-		if (this.transformAllowed) {
+		if (this.linkByValueAllowed) {
 			out.append(", allow transform]");
 		} else {
 			out.append(", don't transform]");

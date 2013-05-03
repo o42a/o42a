@@ -108,14 +108,12 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	@Override
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
-		if (request.isTransformAllowed()) {
 
-			final TypeParameters<Array> arrayParameters =
-					request.getExpectedParameters().toArrayParameters();
+		final TypeParameters<Array> arrayParameters =
+				request.getExpectedParameters().toArrayParameters();
 
-			if (arrayParameters != null) {
-				return new ArrayInitValueAdapter(ref, this, arrayParameters);
-			}
+		if (arrayParameters != null) {
+			return new ArrayInitValueAdapter(ref, this, arrayParameters);
 		}
 
 		return super.valueAdapter(ref, request);

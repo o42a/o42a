@@ -23,16 +23,29 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				"A := link (`integer) = 42",
 				"B := a (= 43)");
 
-		final Field a = field("a");
-		final Field b = field("b");
+		final Obj a = field("a").toObject();
+		final Obj b = field("b").toObject();
 
-		final Obj aTarget = linkTarget(a);
+		assertThat(definiteValue(linkTarget(a), ValueType.INTEGER), is(42L));
+		assertThat(definiteValue(linkTarget(b), ValueType.INTEGER), is(43L));
+
+		assertTrue(b.type().inherits(a.type()));
+	}
+
+	@Test
+	public void inheritLinkTarget() {
+		compile(
+				"A := link (`integer) = 42",
+				"B := a-> (= 43)");
+
+		final Obj b = field("b").toObject();
+		final Obj aTarget = linkTarget(field("a").toObject());
 
 		assertThat(definiteValue(aTarget, ValueType.INTEGER), is(42L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(43L));
 
-		assertTrue(b.toObject().type().inherits(aTarget.type()));
-		assertTrue(b.toObject().getWrapped().type().inherits(aTarget.type()));
+		assertTrue(b.type().inherits(aTarget.type()));
+		assertTrue(b.getWrapped().type().inherits(aTarget.type()));
 	}
 
 	@Test

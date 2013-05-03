@@ -19,9 +19,9 @@ public class ImperativeDefinitionTest extends CompilerTestCase {
 		compile(
 				"A := integer (",
 				"  Condition := `void",
-				"  {Condition? = 1. = 0}",
+				"  {Condition->? = 1. = 0}",
 				")",
-				"B := a(Condition = false)",
+				"B := a (Condition = false)",
 				"C := b");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));
@@ -33,18 +33,18 @@ public class ImperativeDefinitionTest extends CompilerTestCase {
 	public void sign() {
 		compile(
 				"Sign :=> integer (",
-				"  Arg :=< integer.",
+				"  Arg :=< integer",
 				"  {",
 				"    Arg > 0? = 1",
 				"    Arg < 0? = -1",
 				"    = 0",
 				"  }",
 				")",
-				"A := sign(Arg = 10)",
-				"A1 := A(Arg = -9)",
+				"A := sign (Arg = 10)",
+				"A1 := A (Arg = -9)",
 				"A2 := A1",
-				"B := sign(Arg = -10)",
-				"C := sign(Arg = 0)");
+				"B := sign (Arg = -10)",
+				"C := sign (Arg = 0)");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(field("a1"), ValueType.INTEGER), is(-1L));
@@ -58,10 +58,10 @@ public class ImperativeDefinitionTest extends CompilerTestCase {
 		compile(
 				"A := integer (",
 				"  Condition := `void",
-				"  {Condition? = 1}",
+				"  {Condition->? = 1}",
 				"  = 0",
 				")",
-				"B := a(Condition = false)",
+				"B := a (Condition = false)",
 				"C := b");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(1L));

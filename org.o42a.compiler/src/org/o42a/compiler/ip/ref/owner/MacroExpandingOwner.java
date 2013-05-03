@@ -53,11 +53,6 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
-	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		return this.owner.body(location, bodyRef).expandMacro(this.expansion);
-	}
-
-	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
 		return this.owner.deref(location, deref).expandMacro(this.expansion);
 	}

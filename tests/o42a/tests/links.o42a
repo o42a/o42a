@@ -18,7 +18,7 @@ Reference := test (
   Print error '  ' [name] nl
 
   Value := ``1
-  Proxy := `value
+  Proxy := `value->
 
   {
     Assert [proxy == 1] "Wrong initial reference link value"
@@ -32,7 +32,7 @@ Expression := test (
   Print error '  ' [name] nl
 
   Value := ``1
-  Proxy := `value * 10
+  Proxy := `(value * 10)
 
   {
     Assert [proxy == 10] "Wrong initial expression link value"

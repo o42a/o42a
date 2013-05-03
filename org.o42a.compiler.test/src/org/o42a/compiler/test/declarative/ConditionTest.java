@@ -30,7 +30,7 @@ public class ConditionTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  Condition := (`void) false",
-				"  Value := void (--Condition)",
+				"  Value := void (--Condition->)",
 				")",
 				"B := a (Condition = void)",
 				"C := b");
