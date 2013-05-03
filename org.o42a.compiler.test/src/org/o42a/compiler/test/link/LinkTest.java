@@ -94,9 +94,9 @@ public class LinkTest extends CompilerTestCase {
 	public void linkToLink() {
 		compile(
 				"A := `1",
-				"B := `a`",
-				"C := b",
-				"D := b->");
+				"B := `a",
+				"C := b->",
+				"D := b->->");
 
 		assertThat(
 				definiteValue(linkTarget(field("a")), ValueType.INTEGER),

@@ -27,7 +27,7 @@ Keep variable target := test (
   Print error '  ' [name] nl
   
   Var := ``1
-  Kept := \\var
+  Kept := \\var->
   {
     Assert [kept == 1] 'Wrong variable value kept initially'
     Var = 2
@@ -48,6 +48,6 @@ Keep link := test (
   Print error '  ' [name] nl
   
   Lnk := `rt-string 'Kept'
-  Kept := \\Lnk`
+  Kept := \\Lnk
   Assert [kept == "Kept"] 'Wrong link kept'
 )

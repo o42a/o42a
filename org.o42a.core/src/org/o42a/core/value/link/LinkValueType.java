@@ -153,7 +153,7 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 		final TypeParameters<?> expectedParameters =
 				request.getExpectedParameters();
 
-		if (!request.isTransformAllowed()
+		if (!request.isLinkToLinkAllowed()
 				|| expectedParameters.convertibleFrom(parameters)) {
 			return new LinkValueAdapter(
 					ref,
@@ -161,8 +161,15 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 					? expectedParameters.toLinkParameters()
 					: ref.typeParameters(ref.getScope()).toLinkParameters());
 		}
-		if (expectedParameters.getLinkDepth()
-				- parameters.getLinkDepth() == 1) {
+
+		final int depsDiff =
+				expectedParameters.getLinkDepth()
+				- parameters.getLinkDepth();
+
+		if (depsDiff == 0) {
+			return ref.dereference().valueAdapter(request.noLinkToLink());
+		}
+		if (depsDiff == 1) {
 
 			final TypeParameters<KnownLink> expectedLinkParameters =
 					expectedParameters.toLinkParameters();
@@ -179,12 +186,10 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 
 		final Ref adapter = adapterRef(
 				ref,
-				expectedParameters.getValueType().typeRef(
-						ref,
-						ref.getScope()),
+				expectedParameters.getValueType().typeRef(ref, ref.getScope()),
 				request.getLogger());
 
-		return adapter.valueAdapter(request.dontTransofm());
+		return adapter.valueAdapter(request.noLinkToLink());
 	}
 
 	@Override

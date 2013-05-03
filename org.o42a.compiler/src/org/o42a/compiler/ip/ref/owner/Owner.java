@@ -68,8 +68,6 @@ public abstract class Owner {
 
 	public abstract Ref targetRef();
 
-	public abstract Owner body(LocationInfo location, LocationInfo bodyRef);
-
 	public abstract Owner deref(LocationInfo location, LocationInfo deref);
 
 	public abstract Ref bodyRef();

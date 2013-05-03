@@ -41,12 +41,6 @@ class NonLinkOwner extends Owner {
 	}
 
 	@Override
-	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		redundantBodyRef(getLogger(), bodyRef.getLocation());
-		return this;
-	}
-
-	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
 		getLogger().error(
 				"redundant_deref",

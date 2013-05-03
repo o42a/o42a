@@ -26,6 +26,7 @@ import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
 import static org.o42a.core.ref.type.TypeRef.typeRef;
 import static org.o42a.core.ref.type.impl.ValueTypeInterface.valueTypeInterfaceOf;
+import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.link.TargetRef.targetRef;
 
 import org.o42a.analysis.Analyzer;
@@ -183,6 +184,9 @@ public class Ref extends Statement implements RefBuilder {
 	}
 
 	public final ValueAdapter valueAdapter(ValueRequest request) {
+		if (!request.isValueExpected()) {
+			return rawValueAdapter(this);
+		}
 
 		final Step lastStep = getPath().lastStep();
 

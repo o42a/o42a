@@ -19,8 +19,6 @@
 */
 package org.o42a.common.phrase;
 
-import static org.o42a.common.ref.MayDereferenceFragment.mayDereference;
-
 import org.o42a.common.macro.Macros;
 import org.o42a.common.phrase.part.*;
 import org.o42a.core.Contained;
@@ -248,13 +246,7 @@ public class Phrase extends Contained {
 			return this.ref = Macros.expandMacro(path).target(distribute());
 		}
 
-		final Ref target = path.target(distribute());
-
-		if (isBodyReferred()) {
-			return this.ref = target;
-		}
-
-		return this.ref = mayDereference(target);
+		return path.target(distribute());
 	}
 
 	public final void build() {

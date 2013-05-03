@@ -312,14 +312,7 @@ final class OwnerVisitor
 			BodyRefNode ref,
 			AccessDistributor p,
 			MemberOwnerVisitor ownerVisitor) {
-
-		final Owner result = ref.getOwner().accept(ownerVisitor, p);
-
-		if (result == null) {
-			return null;
-		}
-
-		return result.body(location(p, ref), location(p, ref.getSuffix()));
+		return ref.getOwner().accept(ownerVisitor, p);
 	}
 
 	Owner deref(

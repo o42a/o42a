@@ -200,7 +200,7 @@ public abstract class ValueType<T> {
 				request.getExpectedParameters();
 		final ValueType<?> expectedType = expectedParameters.getValueType();
 
-		if (!request.isTransformAllowed()
+		if (!request.isLinkByValueAllowed()
 				|| expectedParameters.assignableFrom(parameters)) {
 			return rawValueAdapter(ref);
 		}
@@ -221,7 +221,7 @@ public abstract class ValueType<T> {
 				expectedParameters.getValueType().typeRef(ref, ref.getScope()),
 				request.getLogger());
 
-		return adapter.valueAdapter(request.dontTransofm());
+		return adapter.valueAdapter(request.noLinkByValue());
 	}
 
 	protected Ref adapterRef(
