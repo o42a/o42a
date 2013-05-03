@@ -26,8 +26,7 @@ public class AdapterTest extends CompilerTestCase {
 
 		final Ref adapter = this.a.selfRef().adapt(
 				this.a,
-				this.adapterType.selfRef().toStaticTypeRef(),
-				this.a.getContext().getLogger());
+				this.adapterType.selfRef().toStaticTypeRef());
 
 		assertThat(adapter, notNullValue());
 	}
