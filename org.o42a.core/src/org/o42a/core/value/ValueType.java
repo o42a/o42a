@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.impl.DefaultValueConverter.defaultValueConverter;
 
@@ -229,11 +230,17 @@ public abstract class ValueType<T> {
 			TypeRef expectedTypeRef,
 			CompilerLogger logger) {
 
-		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic(), logger);
+		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic());
 
-		adapter.toTypeRef()
-		.relationTo(expectedTypeRef)
-		.checkDerived(logger);
+		if (adapter == null) {
+			logger.incompatible(ref.getLocation(), expectedTypeRef);
+			return errorRef(ref, ref.distribute());
+		}
+		if (!adapter.toTypeRef()
+				.relationTo(expectedTypeRef)
+				.checkDerived(logger)) {
+			return errorRef(ref, ref.distribute());
+		}
 
 		return adapter;
 	}
