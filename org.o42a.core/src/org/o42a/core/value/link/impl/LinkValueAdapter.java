@@ -69,8 +69,11 @@ public class LinkValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public TypeParameters<?> typeParameters(Scope scope) {
-		return getAdaptedRef().typeParameters(scope);
+	public TypeParameters<KnownLink> typeParameters(Scope scope) {
+		return getAdaptedRef()
+				.typeParameters(scope)
+				.toLinkParameters()
+				.convertTo(this.expectedParameters.getValueType());
 	}
 
 	@Override
@@ -78,7 +81,7 @@ public class LinkValueAdapter extends ValueAdapter {
 		return linkValue(
 				getAdaptedRef(),
 				resolver,
-				getExpectedParameters());
+				typeParameters(resolver.getScope()));
 	}
 
 	@Override
