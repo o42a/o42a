@@ -23,6 +23,7 @@ import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.value.link.impl.LinkCopy.linkValue;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -139,9 +140,15 @@ public class LinkValueAdapter extends ValueAdapter {
 			final ValDirs fromDirs = dirs.dirs().nested().value(
 					this.fromValueType,
 					TEMP_VAL_HOLDER);
-			final ValOp from = getRef().op(host).writeValue(fromDirs);
 
-			dirs.returnValue(from);
+			final ValOp from = getRef().op(host).writeValue(fromDirs);
+			final Block code = fromDirs.code();
+			final ValOp converted = dirs.value().store(
+					code,
+					from.value(null, code).toRec(null, code).load(null, code));
+
+			dirs.returnValue(code, converted);
+
 			fromDirs.done();
 		}
 
