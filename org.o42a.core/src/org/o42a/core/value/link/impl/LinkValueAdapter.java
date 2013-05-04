@@ -30,11 +30,8 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.*;
 import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.core.value.link.TargetResolver;
@@ -44,6 +41,7 @@ import org.o42a.util.fn.Cancelable;
 public class LinkValueAdapter extends ValueAdapter {
 
 	private final TypeParameters<KnownLink> expectedParameters;
+	private Ref target;
 
 	public LinkValueAdapter(
 			Ref adaptedRef,
@@ -65,7 +63,10 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	@Override
 	public final Ref toTarget() {
-		return getAdaptedRef().dereference();
+		if (this.target != null) {
+			return this.target;
+		}
+		return this.target = getAdaptedRef().dereference();
 	}
 
 	@Override
@@ -86,10 +87,7 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	@Override
 	public void resolveTargets(TargetResolver resolver) {
-
-		final Obj object = getAdaptedRef().getResolution().toObject();
-
-		object.value().getDefinitions().resolveTargets(resolver);
+		resolver.resolveTarget(toTarget().getResolution().toObject());
 	}
 
 	@Override
@@ -101,35 +99,25 @@ public class LinkValueAdapter extends ValueAdapter {
 			return null;
 		}
 
-		final TypeParameters<?> fromParameters =
-				getAdaptedRef()
-				.typeParameters(getAdaptedRef().getScope());
+		final ValueType<?> fromType = getAdaptedRef().getValueType();
 
-		if (getExpectedParameters().assignableFrom(fromParameters)) {
+		if (getExpectedParameters().getValueType().is(fromType)) {
 			return inline;
 		}
 
-		final LinkValueType linkType =
-				fromParameters.getValueType().toLinkType();
-
-		return new InlineLinkEval(inline, linkType);
+		return new InlineLinkEval(inline, fromType.toLinkType());
 	}
 
 	@Override
 	public Eval eval() {
 
-		final TypeParameters<?> fromParameters =
-				getAdaptedRef()
-				.typeParameters(getAdaptedRef().getScope());
+		final ValueType<?> fromType = getAdaptedRef().getValueType();
 
-		if (getExpectedParameters().assignableFrom(fromParameters)) {
+		if (getExpectedParameters().getValueType().is(fromType)) {
 			return new RefOpEval(getAdaptedRef());
 		}
 
-		final LinkValueType linkType =
-				fromParameters.getValueType().toLinkType();
-
-		return new LinkEval(getAdaptedRef(), linkType);
+		return new LinkEval(getAdaptedRef(), fromType.toLinkType());
 	}
 
 	@Override
