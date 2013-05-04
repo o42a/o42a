@@ -13,7 +13,7 @@ Text :=< link (`string)
 
 <*Printer> Void (
   <*Content> Print to console (
-    <[] | *> Text = ()
+    <[] | *> Text = *
     <'' | *> Text = ()
     <NL | *> Text = "\n"
   )
