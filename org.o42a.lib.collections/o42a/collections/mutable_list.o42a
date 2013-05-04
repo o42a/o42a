@@ -12,7 +12,7 @@ Mutable list :=> list
 A mutable list of elements.
 ~~~
 
-Item =<> assignable` ()
+Item =<> assignable ()
 
 Add :=<> void (
   ~~~
@@ -26,7 +26,7 @@ Add :=<> void (
     Adds to this list an element specified in square brackets.
     ~~~
 
-    <[New element]> New element = ()
+    <[New element]> New element = *
   )
 )
 
@@ -52,11 +52,11 @@ Insert :=<> void (
             `list: insert [element, index]`
     ~~~
 
-    <[New element] | insertion point...> New element = () 
+    <[New element] | insertion point...> New element = *
     ~~ The <new element> to insert.
     <:Insertion point> (
-      <At | index...> ()   ~~ An optional `at` clause.
-      <[Index]> Index = () ~~ Insertion <index>.
+      <At | index...> ()  ~~ An optional `at` clause.
+      <[Index]> Index = * ~~ Insertion <index>.
     )
   )
 )
@@ -73,6 +73,6 @@ Remove :=<> void (
     Removes an element, which index is specified in square brackets.
     ~~~
 
-    <[]> Index = () ~~ An <index> of element to remove.
+    <[]> Index = * ~~ An <index> of element to remove.
   )
 )
