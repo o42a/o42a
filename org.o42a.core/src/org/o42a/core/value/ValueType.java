@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.impl.DefaultValueConverter.defaultValueConverter;
 
@@ -199,30 +198,59 @@ public abstract class ValueType<T> {
 
 		final TypeParameters<?> expectedParameters =
 				request.getExpectedParameters();
-		final ValueType<?> expectedType = expectedParameters.getValueType();
 
-		if (!request.isLinkByValueAllowed()
-				|| expectedParameters.assignableFrom(parameters)) {
+		if (expectedParameters.assignableFrom(parameters)) {
 			return rawValueAdapter(ref);
 		}
 
+		final ValueType<?> expectedType = expectedParameters.getValueType();
+
+		if (request.isLinkByValueAllowed()) {
+
+			final Ref adapterRef = adapterRef(
+					ref,
+					expectedType.typeRef(ref, ref.getScope()),
+					request.getLogger());
+
+			if (adapterRef != null) {
+				return adapterRef.valueAdapter(request.noLinkByValue());
+			}
+
+			final ValueAdapter linkByValue =
+					linkByValue(ref, request, expectedParameters, expectedType);
+
+			if (linkByValue != null) {
+				return linkByValue;
+			}
+		}
+
+		return null;
+	}
+
+	private ValueAdapter linkByValue(
+			Ref ref,
+			ValueRequest request,
+			TypeParameters<?> expectedParameters,
+			ValueType<?> expectedType) {
+
 		final LinkValueType expectedLinkType = expectedType.toLinkType();
 
-		if (expectedLinkType != null) {
-			return new LinkByValueAdapter(
-					adapterRef(
-							ref,
-							expectedLinkType.interfaceRef(expectedParameters),
-							request.getLogger()),
-					expectedLinkType.cast(expectedParameters));
+		if (expectedLinkType == null) {
+			return null;
 		}
 
 		final Ref adapter = adapterRef(
 				ref,
-				expectedParameters.getValueType().typeRef(ref, ref.getScope()),
+				expectedLinkType.interfaceRef(expectedParameters),
 				request.getLogger());
 
-		return adapter.valueAdapter(request.noLinkByValue());
+		if (adapter == null) {
+			return null;
+		}
+
+		return new LinkByValueAdapter(
+				adapter,
+				expectedLinkType.cast(expectedParameters));
 	}
 
 	protected Ref adapterRef(
@@ -233,13 +261,12 @@ public abstract class ValueType<T> {
 		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic());
 
 		if (adapter == null) {
-			logger.incompatible(ref.getLocation(), expectedTypeRef);
-			return errorRef(ref, ref.distribute());
+			return null;
 		}
 		if (!adapter.toTypeRef()
 				.relationTo(expectedTypeRef)
 				.checkDerived(logger)) {
-			return errorRef(ref, ref.distribute());
+			return null;
 		}
 
 		return adapter;

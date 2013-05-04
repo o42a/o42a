@@ -153,43 +153,47 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 		final TypeParameters<?> expectedParameters =
 				request.getExpectedParameters();
 
-		if (!request.isLinkToLinkAllowed()
-				|| expectedParameters.convertibleFrom(parameters)) {
+		if (expectedParameters.convertibleFrom(parameters)) {
 			return new LinkValueAdapter(
 					ref,
-					expectedParameters != null
-					? expectedParameters.toLinkParameters()
-					: ref.typeParameters(ref.getScope()).toLinkParameters());
+					expectedParameters.toLinkParameters());
+		}
+		if (request.isLinkToLinkAllowed()) {
+
+			final Ref adapterRef = adapterRef(
+					ref,
+					expectedParameters.getValueType()
+					.typeRef(ref, ref.getScope()),
+					request.getLogger());
+
+			if (adapterRef != null) {
+				return adapterRef.valueAdapter(request.noLinkToLink());
+			}
 		}
 
 		final int depsDiff =
 				expectedParameters.getLinkDepth()
 				- parameters.getLinkDepth();
 
-		if (depsDiff == 0) {
-			return ref.dereference().valueAdapter(request.noLinkToLink());
-		}
 		if (depsDiff == 1) {
 
 			final TypeParameters<KnownLink> expectedLinkParameters =
 					expectedParameters.toLinkParameters();
+			final Ref adapter = adapterRef(
+					ref,
+					expectedLinkParameters.getValueType()
+					.toLinkType()
+					.interfaceRef(expectedLinkParameters),
+					request.getLogger());
 
-			return new LinkByValueAdapter(
-					adapterRef(
-							ref,
-							expectedLinkParameters.getValueType()
-							.toLinkType()
-							.interfaceRef(expectedLinkParameters),
-							request.getLogger()),
-					expectedLinkParameters);
+			if (adapter != null) {
+				return new LinkByValueAdapter(
+						adapter,
+						expectedLinkParameters);
+			}
 		}
 
-		final Ref adapter = adapterRef(
-				ref,
-				expectedParameters.getValueType().typeRef(ref, ref.getScope()),
-				request.getLogger());
-
-		return adapter.valueAdapter(request.noLinkToLink());
+		return ref.dereference().valueAdapter(request.noLinkToLink());
 	}
 
 	@Override

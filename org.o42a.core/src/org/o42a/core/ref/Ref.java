@@ -193,6 +193,20 @@ public class Ref extends Statement implements RefBuilder {
 			return rawValueAdapter(this);
 		}
 
+		final ValueAdapter adapter = requestValueAdapter(request);
+
+		if (adapter == null) {
+			request.getLogger().incompatible(
+					getLocation(),
+					request.getExpectedParameters());
+			return rawValueAdapter(errorRef(this, distribute()));
+		}
+
+		return adapter;
+	}
+
+	private ValueAdapter requestValueAdapter(ValueRequest request) {
+
 		final Step lastStep = getPath().lastStep();
 
 		if (lastStep == null) {
