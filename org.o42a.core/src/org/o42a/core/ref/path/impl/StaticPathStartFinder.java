@@ -128,6 +128,7 @@ public final class StaticPathStartFinder implements PathWalker {
 
 	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
+		this.startObjectScope = last;
 	}
 
 	@Override
