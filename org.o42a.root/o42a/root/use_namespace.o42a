@@ -13,9 +13,9 @@ Module := `//string (False)
 Object := `//string (False)
 
 <'' | object> Module = ()
-<[] | object> Module = ()
+<[] | object> Module = *
 
 <Object ...> (
   <''> Object = ()
-  <[]> Object = ()
+  <[]> Object = *
 )
