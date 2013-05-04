@@ -35,7 +35,7 @@ Failure message.
   <*> {
     Print error (Text = "ERROR: ")
     <*> Print error (
-      <[]> Text = ()
+      <[]> Text = *
       <''> Text = ()
     )
     Print error _nl
@@ -71,6 +71,6 @@ to report when condition fails.
   <[] | error message> Condition = ()
   <:Error message> (
     <''> Message = ()
-    <[]> Message = ()
+    <[]> Message = *
   )
 )
