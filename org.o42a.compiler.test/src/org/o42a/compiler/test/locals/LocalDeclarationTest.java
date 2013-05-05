@@ -35,7 +35,7 @@ public class LocalDeclarationTest extends CompilerTestCase {
 				"A := \"123\"",
 				"B := link (`string) (",
 				"  $Local := `a",
-				"  = $local`",
+				"  = $local",
 				")");
 
 		assertThat(

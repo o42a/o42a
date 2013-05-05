@@ -64,11 +64,6 @@ final class MemberOwnerVisitor
 	}
 
 	@Override
-	public Owner visitBodyRef(BodyRefNode ref, AccessDistributor p) {
-		return this.visitor.bodyRef(ref, p, this);
-	}
-
-	@Override
 	public Owner visitDeref(DerefNode ref, AccessDistributor p) {
 		return this.visitor.deref(ref, p, this);
 	}

@@ -173,14 +173,6 @@ final class OwnerVisitor
 	}
 
 	@Override
-	public Owner visitBodyRef(BodyRefNode ref, AccessDistributor p) {
-
-		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
-
-		return ownerVisitor.expandMacro(bodyRef(ref, p, ownerVisitor));
-	}
-
-	@Override
 	public Owner visitDeref(DerefNode ref, AccessDistributor p) {
 
 		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
@@ -306,13 +298,6 @@ final class OwnerVisitor
 				location(p, ref),
 				adapterId(type.toStaticTypeRef()),
 				ip().declaredIn(ref.getDeclaredIn(), p));
-	}
-
-	Owner bodyRef(
-			BodyRefNode ref,
-			AccessDistributor p,
-			MemberOwnerVisitor ownerVisitor) {
-		return ref.getOwner().accept(ownerVisitor, p);
 	}
 
 	Owner deref(

@@ -155,26 +155,6 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 				next = context.pendingOrNext();
 
 				continue;
-			case '`':
-
-				final BodyRefNode bodyRef = context.parse(bodyRef(expression));
-
-				if (bodyRef == null) {
-					return expression;
-				}
-
-				final MemberRefNode bodyMemberRef =
-						context.parse(memberRef(bodyRef, false));
-
-				if (bodyMemberRef != null) {
-					expression = bodyMemberRef;
-				} else {
-					expression = bodyRef;
-				}
-
-				next = context.pendingOrNext();
-
-				continue;
 			case '-':
 
 				final DerefNode deref = context.parse(deref(expression));

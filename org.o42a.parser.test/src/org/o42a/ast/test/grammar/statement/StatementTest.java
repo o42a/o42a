@@ -14,7 +14,6 @@ import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.ref.BodyRefNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.SelfAssignmentNode;
@@ -50,7 +49,6 @@ public class StatementTest extends GrammarTestCase {
 		parse(PhraseNode.class, "(foo) bar");
 		parse(PhraseNode.class, "(foo)\n_(bar)");
 		parse(BinaryNode.class, "(foo) + bar");
-		parse(BodyRefNode.class, "(foo)`");
 		to(
 				AssignmentNode.class,
 				parse(IMPERATIVE.statement(), "(foo) = bar"));
@@ -78,10 +76,10 @@ public class StatementTest extends GrammarTestCase {
 		parse(DeclaratorNode.class, "A := boo (`bar) baz");
 		parse(DeclaratorNode.class, "A := boo (`bar) [baz]");
 		parse(DeclaratorNode.class, "A := boo (`integer) 42");
-		parse(DeclaratorNode.class, "A := boo` [42]");
-		parse(DeclaratorNode.class, "A := boo` 42");
+		parse(DeclaratorNode.class, "A := boo [= 42]");
+		parse(DeclaratorNode.class, "A := boo = 42");
 		parse(DeclaratorNode.class, "A := boo:: 42");
-		parse(DeclaratorNode.class, "A := boo_ 42");
+		parse(DeclaratorNode.class, "A := boo _42");
 	}
 
 	private <T> T parse(Class<? extends T> nodeType, String text) {

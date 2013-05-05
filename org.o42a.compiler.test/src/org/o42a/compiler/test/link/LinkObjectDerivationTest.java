@@ -101,7 +101,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				"  G := 12",
 				")",
 				"B := a (",
-				"  F = lnk` ()",
+				"  F = lnk ()",
 				")");
 
 		assertThat(
@@ -115,7 +115,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				"A := void (",
 				"  F := link (`integer) = 3",
 				")",
-				"Lnk :=> link` (",
+				"Lnk :=> link (",
 				"  G := 12",
 				")",
 				"B := a (",
@@ -137,7 +137,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				"  G := 12",
 				")",
 				"B :=> a (",
-				"  F =<> lnk` ()",
+				"  F =<> lnk ()",
 				")");
 
 		assertThat(

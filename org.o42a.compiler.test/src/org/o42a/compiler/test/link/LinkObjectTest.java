@@ -24,7 +24,7 @@ public class LinkObjectTest extends CompilerTestCase {
 	public void linkToField() {
 		compile(
 				"A := 1",
-				"B := link` = a");
+				"B := link = a");
 
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();
