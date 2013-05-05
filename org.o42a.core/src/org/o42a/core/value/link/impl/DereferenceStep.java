@@ -193,7 +193,7 @@ public class DereferenceStep extends Step {
 		return rtLink(resolver.getPath(), resolver.getStart());
 	}
 
-	private void normalizeDeref(final PathNormalizer normalizer) {
+	private void normalizeDeref(PathNormalizer normalizer) {
 
 		final Prediction nextPrediction = normalizer.nextPrediction();
 

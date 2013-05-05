@@ -56,8 +56,8 @@ Target and body := test (
   Runtime link := link (`integer) = rt-integer '2'
   
   {
-    Assert [runtime link`] "Runtime link body is false"
-    Assert [runtime link] "Runtime link target is false"
+    Assert [runtime link] "Runtime link body is false"
+    Assert [runtime link->] "Runtime link target is false"
     Assert [runtime link == 2] "Wrong runtime link target"
   }
 )

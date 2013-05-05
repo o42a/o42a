@@ -17,7 +17,7 @@ Var := ``1
 {
   Print error "    Simple declaration" nl
 
-  Assert [var] "Initial value of variable is false"
+  Assert [var->] "Initial value of variable is false"
   Assert [var == 1] "Wrong initial value of variable"
 }
 
@@ -26,6 +26,6 @@ Var object := variable (`integer) = 1
 {
   Print error "    Object declaration" nl
 
-  Assert [var object] "Initial value of variable object is false"
+  Assert [var object->] "Initial value of variable object is false"
   Assert [var object == 1] "Wrong initial value of variable object"
 }

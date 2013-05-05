@@ -154,9 +154,7 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 				request.getExpectedParameters();
 
 		if (expectedParameters.convertibleFrom(parameters)) {
-			return new LinkValueAdapter(
-					ref,
-					expectedParameters.toLinkParameters());
+			return ref.dereference().valueAdapter(request.noLinkToLink());
 		}
 		if (request.isLinkToLinkAllowed()) {
 
