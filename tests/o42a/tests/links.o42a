@@ -48,8 +48,8 @@ Target and body := test (
   Static link := link (`integer) = 1
   
   {
-    Assert [static link`] "Static link body is false"
-    Assert [static link] "Static link target is false"
+    Assert [static link] "Static link body is false"
+    Assert [static link->] "Static link target is false"
     Assert [static link == 1] "Wrong static link target"
   }
 
