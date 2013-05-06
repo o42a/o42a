@@ -67,7 +67,7 @@ final class PhrasePrefixVisitor
 			return null;
 		}
 
-		return applyTypeParameters(phrase.referBody());
+		return applyTypeParameters(phrase);
 	}
 
 	@Override

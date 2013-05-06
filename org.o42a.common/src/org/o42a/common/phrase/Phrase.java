@@ -45,7 +45,6 @@ public class Phrase extends Contained {
 	private MainPhraseContext mainContext;
 	private Ref ref;
 	private boolean macroExpansion;
-	private boolean bodyReferred;
 
 	public Phrase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
@@ -76,7 +75,6 @@ public class Phrase extends Contained {
 	public final Phrase setImpliedAncestor(LocationInfo location) {
 		if (this.prefix == null) {
 			this.last = this.prefix = new PhrasePrefix(location, this);
-			referBody();
 		}
 		return this;
 	}
@@ -102,7 +100,7 @@ public class Phrase extends Contained {
 			return this;
 		}
 		this.prefix.setTypeParameters(typeParameters);
-		return referBody();
+		return this;
 	}
 
 	public final StaticTypeRef[] getSamples() {
@@ -127,15 +125,6 @@ public class Phrase extends Contained {
 
 	public final Phrase expandMacro() {
 		this.macroExpansion = true;
-		return this;
-	}
-
-	public final boolean isBodyReferred() {
-		return this.bodyReferred;
-	}
-
-	public final Phrase referBody() {
-		this.bodyReferred = true;
 		return this;
 	}
 
@@ -280,7 +269,6 @@ public class Phrase extends Contained {
 		newPhrase.prefix.append(nextPart);
 		newPhrase.last = this.last;
 		newPhrase.macroExpansion = isMacroExpansion();
-		newPhrase.bodyReferred = isBodyReferred();
 
 		return newPhrase;
 	}

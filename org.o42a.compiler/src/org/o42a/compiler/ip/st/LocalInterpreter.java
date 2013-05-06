@@ -229,7 +229,6 @@ public final class LocalInterpreter {
 		final LinkValueType linkType =
 				definitionLinkType(iface.getKind().getType());
 
-		phrase.referBody();
 		phrase.setAncestor(linkType.typeRef(
 				new Location(context, iface),
 				statements.getScope()));
