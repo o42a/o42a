@@ -66,6 +66,12 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref, ref)
+				.setParameters(toSynthetic().toRef().typeParameters());
+	}
+
+	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
 		return new ClauseInstanceFieldDefinition(ref, this);
 	}

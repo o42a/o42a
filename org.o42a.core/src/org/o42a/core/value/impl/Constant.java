@@ -67,6 +67,11 @@ public final class Constant<T> extends ObjectConstructor {
 		return this.valueType.typeRef(location, getScope());
 	}
 
+	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
+	}
+
 	public final SingleValueType<T> getValueType() {
 		return this.valueType;
 	}

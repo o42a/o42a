@@ -107,6 +107,11 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref);
+	}
+
+	@Override
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
 
 		final TypeParameters<Array> arrayParameters =

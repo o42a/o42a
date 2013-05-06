@@ -188,6 +188,11 @@ final class TestRunner extends ConstructedObject {
 		}
 
 		@Override
+		public TypeRef iface(Ref ref) {
+			return ancestor(ref);
+		}
+
+		@Override
 		public TypeRef ancestor(LocationInfo location, Ref ref) {
 			return ancestor(location);
 		}

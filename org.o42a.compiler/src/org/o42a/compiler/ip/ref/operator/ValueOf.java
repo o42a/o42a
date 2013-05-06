@@ -61,15 +61,20 @@ public class ValueOf extends ObjectConstructor {
 	}
 
 	public final TypeRef getValueTypeInterface() {
-		return operand().getValueTypeInterface();
+		if (this.valueTypeInterface != null) {
+			return this.valueTypeInterface;
+		}
+		return this.valueTypeInterface = operand().getValueTypeInterface();
 	}
 
 	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		if (this.valueTypeInterface != null) {
-			return this.valueTypeInterface;
-		}
-		return this.valueTypeInterface = getValueTypeInterface();
+		return getValueTypeInterface();
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return getValueTypeInterface();
 	}
 
 	@Override
