@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.type;
 
 import static org.o42a.common.macro.Macros.expandMacro;
-import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.ExpressionNode;
@@ -76,8 +75,7 @@ public final class TypeVisitor
 		final AncestorTypeRef ancestor = typeIp().parseAncestor(
 				p.fromDeclaration(),
 				ascendants.getAncestor(),
-				this.typeParameters,
-				BODY_REFERRAL);
+				this.typeParameters);
 
 		if (ancestor.isImplied()) {
 			return super.visitAscendants(ascendants, p);
@@ -136,7 +134,7 @@ public final class TypeVisitor
 		}
 
 		final Ref macroRef = operandNode.accept(
-				ip().bodyExVisitor(),
+				ip().expressionVisitor(),
 				p.fromDeclaration());
 
 		if (macroRef == null) {
@@ -154,7 +152,7 @@ public final class TypeVisitor
 			AccessDistributor p) {
 
 		final Ref ref = type.getExpression().accept(
-				ip().bodyExVisitor(this.consumer),
+				ip().expressionVisitor(this.consumer),
 				p.fromDeclaration());
 
 		if (ref == null) {
@@ -176,12 +174,12 @@ public final class TypeVisitor
 
 		if (!ref.isMacroExpanding()) {
 			return this.consumer.consumeType(
-					ref.bodyRef(),
+					ref.targetRef(),
 					this.typeParameters);
 		}
 
 		return this.consumer.consumeType(
-				expandMacro(ref.bodyRef()),
+				expandMacro(ref.targetRef()),
 				this.typeParameters);
 	}
 

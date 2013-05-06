@@ -244,25 +244,19 @@ public abstract class RefInterpreter {
 	}
 
 	private final OwnerFactory ownerFactory;
-	private final TargetRefVisitor targetRefVisitor;
-	private final BodyRefVisitor bodyRefVisitor;
+	private final TargetRefVisitor refVisitor;
 	private final OwnerVisitor ownerVisitor;
 
 	RefInterpreter(OwnerFactory ownerFactory) {
 		this.ownerFactory = ownerFactory;
-		this.targetRefVisitor = new TargetRefVisitor(this);
-		this.bodyRefVisitor = new BodyRefVisitor(this);
+		this.refVisitor = new TargetRefVisitor(this);
 		this.ownerVisitor = new OwnerVisitor(this);
 	}
 
 	public abstract Interpreter ip();
 
-	public final RefNodeVisitor<Ref, AccessDistributor> targetRefVisitor() {
-		return this.targetRefVisitor;
-	}
-
-	public final RefNodeVisitor<Ref, AccessDistributor> bodyRefVisitor() {
-		return this.bodyRefVisitor;
+	public final RefNodeVisitor<Ref, AccessDistributor> refVisitor() {
+		return this.refVisitor;
 	}
 
 	public final
@@ -297,7 +291,7 @@ public abstract class RefInterpreter {
 		}
 
 		final Ref declaredIn =
-				declaredInNode.accept(bodyRefVisitor(), p.fromDeclaration());
+				declaredInNode.accept(refVisitor(), p.fromDeclaration());
 
 		if (declaredIn == null) {
 			return null;
@@ -307,7 +301,7 @@ public abstract class RefInterpreter {
 	}
 
 	public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
-		return bodyRefVisitor();
+		return refVisitor();
 	}
 
 	private static final class PlainRefIp extends RefInterpreter {

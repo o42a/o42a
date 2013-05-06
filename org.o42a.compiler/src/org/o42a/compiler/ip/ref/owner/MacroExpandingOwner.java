@@ -58,11 +58,6 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
-	public Ref bodyRef() {
-		return requireMacro(this.owner.bodyRef(), this.expansion);
-	}
-
-	@Override
 	public String toString() {
 		if (this.owner == null) {
 			return '#' + super.toString();

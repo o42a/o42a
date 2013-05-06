@@ -192,7 +192,7 @@ final class OwnerVisitor
 			AccessDistributor p) {
 		return owner(
 				p.getAccessRules(),
-				expression.accept(ip().ip().bodyExVisitor(), p));
+				expression.accept(ip().ip().expressionVisitor(), p));
 	}
 
 	final Owner owner(AccessRules accessRules, Ref ownerRef) {

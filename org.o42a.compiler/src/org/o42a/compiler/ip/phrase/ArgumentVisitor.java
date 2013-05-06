@@ -50,7 +50,7 @@ final class ArgumentVisitor
 			PhraseBuilder p) {
 		return p.argument(
 				expression.accept(
-						p.ip().targetBuildVisitor(),
+						p.ip().refBuildVisitor(),
 						p.distributeAccess()));
 	}
 

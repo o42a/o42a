@@ -70,8 +70,6 @@ public abstract class Owner {
 
 	public abstract Owner deref(LocationInfo location, LocationInfo deref);
 
-	public abstract Ref bodyRef();
-
 	public final Owner member(
 			LocationInfo location,
 			MemberId memberId,

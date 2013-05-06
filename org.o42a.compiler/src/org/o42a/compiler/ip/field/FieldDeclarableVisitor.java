@@ -105,7 +105,7 @@ public final class FieldDeclarableVisitor
 		}
 
 		final Ref adapterId = adapterNode.getMember().accept(
-				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
+				ADAPTER_FIELD_REF_IP.refVisitor(),
 				p.fromDeclaration());
 
 		if (adapterId == null) {
@@ -176,7 +176,7 @@ public final class FieldDeclarableVisitor
 		}
 
 		final Ref declaredIn = node.accept(
-				ip.bodyRefVisitor(),
+				ip.refVisitor(),
 				distributor.fromDeclaration());
 
 		if (declaredIn == null) {

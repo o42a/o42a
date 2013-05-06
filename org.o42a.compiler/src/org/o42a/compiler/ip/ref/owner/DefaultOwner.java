@@ -45,9 +45,4 @@ final class DefaultOwner extends Owner {
 		return new DerefOwner(location, deref, getAccessRules(), targetRef());
 	}
 
-	@Override
-	public Ref bodyRef() {
-		return ownerRef();
-	}
-
 }

@@ -122,7 +122,7 @@ public abstract class StatementVisitor
 
 		final AccessDistributor distributor = statements.nextDistributor();
 		final RefBuilder value = assignment.getValue().accept(
-				ip().targetBuildVisitor(),
+				ip().refBuildVisitor(),
 				distributor);
 
 		if (destination == null || value == null) {

@@ -39,7 +39,7 @@ final class BodyRefVisitor extends AbstractRefVisitor<Ref, AccessDistributor> {
 
 		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
 
-		return result != null ? result.bodyRef() : null;
+		return result != null ? result.targetRef() : null;
 	}
 
 }
