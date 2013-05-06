@@ -21,7 +21,7 @@ Length = * (= size!)
 Iterate => * (
   ::Next index := ``0
   Next = * (
-    $Index := next index 
+    $Index := next index->
     {
       Next index = index + 1
     }
