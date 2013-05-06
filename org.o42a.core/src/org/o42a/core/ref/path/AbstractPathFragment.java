@@ -19,12 +19,13 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.impl.RebuiltInterface.rebuiltInterface;
+
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.PathFragmentFieldDefinition;
 import org.o42a.core.ref.path.impl.PathFragmentStep;
-import org.o42a.core.ref.path.impl.RebuiltInterface;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -64,10 +65,7 @@ public abstract class AbstractPathFragment {
 	}
 
 	protected final TypeRef defaultInterface(Ref ref) {
-		return new RebuiltInterface(ref)
-		.toPath()
-		.bind(ref, ref.getScope())
-		.typeRef(ref.distribute());
+		return rebuiltInterface(ref);
 	}
 
 }
