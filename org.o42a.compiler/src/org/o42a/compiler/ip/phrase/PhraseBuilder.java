@@ -99,11 +99,6 @@ public final class PhraseBuilder extends Contained {
 		return this.typeConsumer;
 	}
 
-	public final PhraseBuilder referBody() {
-		phrase().referBody();
-		return this;
-	}
-
 	public final PhraseBuilder expandMacro() {
 		phrase().expandMacro();
 		return this;
@@ -168,7 +163,6 @@ public final class PhraseBuilder extends Contained {
 	}
 
 	public PhraseBuilder prefixByTypeParameters(TypeParametersNode node) {
-		referBody();
 
 		final TypeRefParameters typeParams =
 				ip().typeIp().typeParameters(
