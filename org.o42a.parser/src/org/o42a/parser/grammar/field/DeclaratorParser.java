@@ -60,9 +60,6 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 		final InterfaceNode iface;
 
 		switch (c) {
-		case '`':
-			iface = context.parse(iface());
-			break;
 		case '(':
 			iface = parseTypeParameters(context);
 			break;
