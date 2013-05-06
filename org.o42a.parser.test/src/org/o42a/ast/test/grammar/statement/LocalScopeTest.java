@@ -12,8 +12,7 @@ import static org.o42a.ast.atom.ParenthesisSign.OPENING_PARENTHESIS;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
-import org.o42a.ast.expression.BracesNode;
-import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.LocalScopeNode;
 import org.o42a.ast.statement.NamedBlockNode;
@@ -126,16 +125,13 @@ public class LocalScopeTest extends GrammarTestCase {
 	public void localLink() {
 
 		final LocalScopeNode scope = parse("`Expression $ local: statement");
-		final InterfaceNode iface = scope.getInterface();
+		final UnaryNode expression =
+				to(UnaryNode.class, scope.getLocal().getExpression());
 
-		checkExpressionIs(scope, "expression");
+		assertThat(expression.getOperator(), is(UnaryOperator.LINK));
+		assertThat(expression.getOperand(), isName("expression"));
 		checkLocalNameIs(scope, "local");
 		checkContentIs(scope, "statement");
-
-		assertThat(iface.getOpening(), nullValue());
-		assertThat(iface.getKind().getType(), is(DefinitionKind.LINK));
-		assertThat(iface.getParameters().length, is(0));
-		assertThat(iface.getClosing(), nullValue());
 	}
 
 	@Test
@@ -160,16 +156,13 @@ public class LocalScopeTest extends GrammarTestCase {
 	public void localVariable() {
 
 		final LocalScopeNode scope = parse("``Expression $ local: statement");
-		final InterfaceNode iface = scope.getInterface();
+		final UnaryNode expression =
+				to(UnaryNode.class, scope.getLocal().getExpression());
 
-		checkExpressionIs(scope, "expression");
+		assertThat(expression.getOperator(), is(UnaryOperator.VARIABLE));
+		assertThat(expression.getOperand(), isName("expression"));
 		checkLocalNameIs(scope, "local");
 		checkContentIs(scope, "statement");
-
-		assertThat(iface.getOpening(), nullValue());
-		assertThat(iface.getKind().getType(), is(DefinitionKind.VARIABLE));
-		assertThat(iface.getParameters().length, is(0));
-		assertThat(iface.getClosing(), nullValue());
 	}
 
 	@Test

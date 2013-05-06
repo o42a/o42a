@@ -78,7 +78,7 @@ public class LocalScopeParser implements Parser<LocalScopeNode> {
 
 			final int next = context.next();
 
-			if (next == '`' || next == '(') {
+			if (next == '(') {
 				iface = context.parse(iface());
 				if (iface == null) {
 					return null;
