@@ -30,38 +30,28 @@ public final class AncestorTypeRef {
 		if (ancestor == null) {
 			return null;
 		}
-		return new AncestorTypeRef(ancestor, false, false);
+		return new AncestorTypeRef(ancestor, false);
 	}
 
 	public static AncestorTypeRef macroAncestorTypeRef(ParamTypeRef ancestor) {
 		if (ancestor == null) {
 			return null;
 		}
-		return new AncestorTypeRef(ancestor, true, false);
-	}
-
-	public static AncestorTypeRef ancestorBodyTypeRef(ParamTypeRef ancestor) {
-		if (ancestor == null) {
-			return null;
-		}
-		return new AncestorTypeRef(ancestor, false, true);
+		return new AncestorTypeRef(ancestor, true);
 	}
 
 	public static AncestorTypeRef impliedAncestorTypeRef() {
-		return new AncestorTypeRef(null, false, true);
+		return new AncestorTypeRef(null, false);
 	}
 
 	private final ParamTypeRef ancestor;
 	private final boolean mactoExpanding;
-	private final boolean bodyRef;
 
 	private AncestorTypeRef(
 			ParamTypeRef ancestor,
-			boolean macroExpanding,
-			boolean bodyRef) {
+			boolean macroExpanding) {
 		this.ancestor = ancestor;
 		this.mactoExpanding = macroExpanding;
-		this.bodyRef = bodyRef;
 	}
 
 	public final boolean isImplied() {
@@ -70,10 +60,6 @@ public final class AncestorTypeRef {
 
 	public final boolean isMacroExpanding() {
 		return this.mactoExpanding;
-	}
-
-	public final boolean isBodyReferred() {
-		return this.bodyRef;
 	}
 
 	public final ParamTypeRef getAncestor() {

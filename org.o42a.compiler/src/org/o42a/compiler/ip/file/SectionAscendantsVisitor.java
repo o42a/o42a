@@ -75,7 +75,7 @@ final class SectionAscendantsVisitor
 		if (ascendantNode != null) {
 
 			final Ref ascendantRef = ascendantNode.accept(
-					PLAIN_IP.targetExVisitor(),
+					PLAIN_IP.expressionVisitor(),
 					p.fromDeclaration());
 
 			if (ascendantRef != null) {
@@ -120,7 +120,7 @@ final class SectionAscendantsVisitor
 			AccessDistributor p) {
 
 		final Ref ref = expression.accept(
-				PLAIN_IP.targetExVisitor(),
+				PLAIN_IP.expressionVisitor(),
 				p.fromDeclaration());
 
 		if (ref == null) {

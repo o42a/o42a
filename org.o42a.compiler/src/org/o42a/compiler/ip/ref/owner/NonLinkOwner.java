@@ -49,9 +49,4 @@ class NonLinkOwner extends Owner {
 		return this;
 	}
 
-	@Override
-	public Ref bodyRef() {
-		return targetRef();
-	}
-
 }

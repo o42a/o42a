@@ -61,9 +61,4 @@ final class DerefOwner extends Owner {
 				targetRef());
 	}
 
-	@Override
-	public Ref bodyRef() {
-		return targetRef();
-	}
-
 }

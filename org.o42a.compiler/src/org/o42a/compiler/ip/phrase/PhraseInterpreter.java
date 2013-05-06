@@ -178,7 +178,7 @@ public final class PhraseInterpreter {
 			BinaryPhraseOperator operator) {
 
 		final Ref left = node.getLeftOperand().accept(
-				ip().targetExVisitor(),
+				ip().expressionVisitor(),
 				distributor);
 
 		if (left == null) {
@@ -192,7 +192,7 @@ public final class PhraseInterpreter {
 		}
 
 		final Ref right =
-				rightOperand.accept(ip().targetExVisitor(), distributor);
+				rightOperand.accept(ip().expressionVisitor(), distributor);
 
 		if (right == null) {
 			return null;

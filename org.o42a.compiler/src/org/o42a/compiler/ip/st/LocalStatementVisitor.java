@@ -20,8 +20,6 @@
 package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
-import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.st.LocalInterpreter.local;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 import static org.o42a.compiler.ip.st.StatementVisitor.validateAssignment;
@@ -104,8 +102,7 @@ final class LocalStatementVisitor
 				this.visitor.getContext(),
 				statements,
 				scope.getInterface(),
-				scope.getLocal(),
-				TARGET_REFERRAL);
+				scope.getLocal());
 		this.localNode = scope.getLocal();
 		scope.getContent().accept(this, statements);
 	}
@@ -120,8 +117,7 @@ final class LocalStatementVisitor
 				this.visitor.getContext(),
 				statements,
 				null,
-				localNode,
-				BODY_REFERRAL);
+				localNode);
 
 		if (local == null) {
 			return;

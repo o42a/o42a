@@ -40,7 +40,7 @@ public class SampleSpecVisitor
 	protected StaticTypeRef visitRef(RefNode ref, AccessDistributor p) {
 
 		final Ref sampleRef =
-				ref.accept(this.ip.bodyRefVisitor(), p.fromDeclaration());
+				ref.accept(this.ip.refVisitor(), p.fromDeclaration());
 
 		if (sampleRef == null) {
 			return null;

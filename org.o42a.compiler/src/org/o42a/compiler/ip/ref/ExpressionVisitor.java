@@ -41,7 +41,6 @@ import org.o42a.compiler.ip.ref.keeper.KeepValue;
 import org.o42a.compiler.ip.ref.operator.LogicalExpression;
 import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.ref.Ref;
@@ -53,21 +52,15 @@ public final class ExpressionVisitor
 		extends AbstractExpressionVisitor<Ref, AccessDistributor> {
 
 	private final Interpreter ip;
-	private final Referral referral;
 	private final TypeConsumer typeConsumer;
 
-	public ExpressionVisitor(Interpreter ip, Referral referral) {
+	public ExpressionVisitor(Interpreter ip) {
 		this.ip = ip;
-		this.referral = referral;
 		this.typeConsumer = EXPRESSION_TYPE_CONSUMER;
 	}
 
-	public ExpressionVisitor(
-			Interpreter ip,
-			Referral referral,
-			TypeConsumer typeConsumer) {
+	public ExpressionVisitor(Interpreter ip, TypeConsumer typeConsumer) {
 		this.ip = ip;
-		this.referral = referral;
 		this.typeConsumer =
 				typeConsumer == NO_TYPE_CONSUMER
 				? EXPRESSION_TYPE_CONSUMER : typeConsumer;
@@ -205,11 +198,7 @@ public final class ExpressionVisitor
 		final PhraseBuilder result =
 				ip().phraseIp().phrase(phrase, p, this.typeConsumer);
 
-		if (!this.referral.isBodyReferral()) {
-			return result.toRef();
-		}
-
-		return result.referBody().toRef();
+		return result.toRef();
 	}
 
 	@Override
@@ -221,7 +210,13 @@ public final class ExpressionVisitor
 			return null;
 		}
 
-		return this.referral.expandIfMacro(owner);
+		final Ref result = owner.targetRef();
+
+		if (!owner.isMacroExpanding()) {
+			return result;
+		}
+
+		return expandMacro(result);
 	}
 
 	@Override
@@ -251,7 +246,7 @@ public final class ExpressionVisitor
 	private Ref keepValue(UnaryNode expression, AccessDistributor p) {
 
 		final Ref value =
-				expression.getOperand().accept(ip().targetExVisitor(), p);
+				expression.getOperand().accept(ip().expressionVisitor(), p);
 
 		if (value == null) {
 			return null;
@@ -263,7 +258,7 @@ public final class ExpressionVisitor
 	private Ref macroExpansion(UnaryNode expression, AccessDistributor p) {
 
 		final Ref operand =
-				expression.getOperand().accept(ip().targetExVisitor(), p);
+				expression.getOperand().accept(ip().expressionVisitor(), p);
 
 		if (operand == null) {
 			return null;

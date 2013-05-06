@@ -155,7 +155,7 @@ final class TypeParameterKeyVisitor
 		}
 
 		final Ref declaredIn = declaredInNode.accept(
-				PLAIN_REF_IP.bodyRefVisitor(),
+				PLAIN_REF_IP.refVisitor(),
 				ACCESS_FROM_PLACEMENT.distribute(p.distribute()));
 
 		if (declaredIn == null) {

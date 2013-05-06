@@ -19,9 +19,7 @@
 */
 package org.o42a.compiler.ip.st;
 
-import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
-import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_NAME;
@@ -39,7 +37,6 @@ import org.o42a.ast.type.TypeParameterNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
-import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
@@ -120,8 +117,7 @@ public final class LocalInterpreter {
 				statements,
 				declarator.getDeclarable(),
 				declarator.getInterface(),
-				declarator.getDefinition(),
-				TARGET_REFERRAL);
+				declarator.getDefinition());
 
 		statements.get().local(
 				new Location(context, declarator.getDeclarable()),
@@ -136,8 +132,7 @@ public final class LocalInterpreter {
 			CompilerContext context,
 			StatementsAccess statements,
 			InterfaceNode iface,
-			LocalNode local,
-			Referral referral) {
+			LocalNode local) {
 
 		final LogInfo location;
 		final Name name;
@@ -156,8 +151,7 @@ public final class LocalInterpreter {
 				statements,
 				location,
 				iface,
-				local.getExpression(),
-				referral);
+				local.getExpression());
 
 		return statements.get()
 				.local(new Location(context, location), name, ref);
@@ -213,8 +207,7 @@ public final class LocalInterpreter {
 			StatementsAccess statements,
 			LogInfo location,
 			InterfaceNode iface,
-			ExpressionNode definition,
-			final Referral referral) {
+			ExpressionNode definition) {
 
 		final AccessDistributor distributor =
 				statements.nextDistributor().distributeIn(context);
@@ -225,8 +218,7 @@ public final class LocalInterpreter {
 					context,
 					location,
 					definition,
-					distributor,
-					referral);
+					distributor);
 		}
 
 		final PhraseBuilder phrase = new PhraseBuilder(
@@ -260,8 +252,7 @@ public final class LocalInterpreter {
 					context,
 					location,
 					definition,
-					distributor,
-					referral);
+					distributor);
 
 			phrase.setTypeParameters(
 					linkType.typeParameters(value.getInterface())
@@ -280,8 +271,7 @@ public final class LocalInterpreter {
 						block.getContext(),
 						getNode(),
 						getNode(),
-						distribute(statements.nextDistributor()),
-						referral);
+						distribute(statements.nextDistributor()));
 
 				if (value != null) {
 					statements.selfAssign(value);
@@ -299,14 +289,13 @@ public final class LocalInterpreter {
 			CompilerContext context,
 			LogInfo location,
 			ExpressionNode definition,
-			AccessDistributor distributor,
-			Referral referral) {
+			AccessDistributor distributor) {
 		if (definition == null) {
 			return errorRef(new Location(context, location), distributor);
 		}
 
 		final Ref value = definition.accept(
-				referral.expressionVisitor(ip, NO_TYPE_CONSUMER),
+				ip.expressionVisitor(),
 				distributor);
 
 		if (value != null) {

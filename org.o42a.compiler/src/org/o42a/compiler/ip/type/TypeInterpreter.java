@@ -20,8 +20,6 @@
 package org.o42a.compiler.ip.type;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
-import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.expression.ExpressionNodeVisitor;
@@ -31,7 +29,6 @@ import org.o42a.ast.type.*;
 import org.o42a.common.ref.ArbitraryTypeRefParameters;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.*;
 import org.o42a.compiler.ip.type.param.TypeParameterIndex;
 import org.o42a.core.member.field.AscendantsDefinition;
@@ -56,12 +53,10 @@ public final class TypeInterpreter {
 		this.ancestorVisitor = new AncestorVisitor(
 				ip,
 				null,
-				TARGET_REFERRAL,
 				NO_TYPE_CONSUMER);
 		this.staticAncestorVisitor = new StaticAncestorVisitor(
 				ip,
 				null,
-				TARGET_REFERRAL,
 				NO_TYPE_CONSUMER);
 	}
 
@@ -129,34 +124,28 @@ public final class TypeInterpreter {
 	public final ExpressionNodeVisitor<AncestorTypeRef, AccessDistributor>
 	ancestorVisitor(
 			TypeRefParameters typeParameters,
-			Referral referral,
 			TypeConsumer typeConsumer) {
 		if (typeParameters == null
-				&& referral == TARGET_REFERRAL
 				&& typeConsumer == NO_TYPE_CONSUMER) {
 			return this.ancestorVisitor;
 		}
 		return new AncestorVisitor(
 				ip(),
 				typeParameters,
-				referral,
 				typeConsumer);
 	}
 
 	public final ExpressionNodeVisitor<AncestorTypeRef, AccessDistributor>
 	staticAncestorVisitor(
 			TypeRefParameters typeParameters,
-			Referral referral,
 			TypeConsumer typeConsumer) {
 		if (typeParameters == null
-				&& referral == TARGET_REFERRAL
 				&& typeConsumer == NO_TYPE_CONSUMER) {
 			return this.staticAncestorVisitor;
 		}
 		return new StaticAncestorVisitor(
 				ip(),
 				typeParameters,
-				referral,
 				typeConsumer);
 	}
 
@@ -169,15 +158,13 @@ public final class TypeInterpreter {
 		return parseAncestor(
 				distributor,
 				ancestorNode,
-				null,
-				ascendantsNode.hasSamples() ? BODY_REFERRAL : TARGET_REFERRAL);
+				null);
 	}
 
 	public AncestorTypeRef parseAncestor(
 			AccessDistributor distributor,
 			AscendantNode ascendantNode,
-			TypeRefParameters typeParameters,
-			Referral referral) {
+			TypeRefParameters typeParameters) {
 
 		final
 		RefNodeVisitor<AncestorTypeRef, AccessDistributor> ancestorVisitor;
@@ -185,12 +172,10 @@ public final class TypeInterpreter {
 		if (ascendantNode.getSeparator() == null) {
 			ancestorVisitor = ancestorVisitor(
 					typeParameters,
-					referral,
 					NO_TYPE_CONSUMER);
 		} else {
 			ancestorVisitor = staticAncestorVisitor(
 					typeParameters,
-					referral,
 					NO_TYPE_CONSUMER);
 		}
 

@@ -54,7 +54,7 @@ public class LogicalExpression extends ObjectConstructor {
 		super(new Location(context, node), distributor);
 		this.node = node;
 		this.operand = this.node.getOperand().accept(
-				ip.targetExVisitor(),
+				ip.expressionVisitor(),
 				distributor);
 	}
 

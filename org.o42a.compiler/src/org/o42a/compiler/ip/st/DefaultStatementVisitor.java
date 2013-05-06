@@ -113,7 +113,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		}
 
 		final Ref destination = destinationNode.toExpression().accept(
-				ip().bodyExVisitor(),
+				ip().expressionVisitor(),
 				p.nextDistributor());
 
 		addAssignment(p, assignment, destination);
@@ -133,7 +133,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		}
 
 		final AccessDistributor distributor = p.nextDistributor();
-		final Ref value = valueNode.accept(ip().targetExVisitor(), distributor);
+		final Ref value = valueNode.accept(ip().expressionVisitor(), distributor);
 
 		if (value != null) {
 			p.get().selfAssign(location(p, assignment.getPrefix()), value);
@@ -204,7 +204,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			StatementsAccess p) {
 
 		final AccessDistributor distributor = p.nextDistributor();
-		final Ref ref = expression.accept(ip().targetExVisitor(), distributor);
+		final Ref ref = expression.accept(ip().expressionVisitor(), distributor);
 
 		if (ref != null) {
 			p.get().expression(ref);

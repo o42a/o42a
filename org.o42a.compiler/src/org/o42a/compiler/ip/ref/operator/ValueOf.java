@@ -47,7 +47,7 @@ public class ValueOf extends ObjectConstructor {
 			AccessDistributor distributor) {
 		super(new Location(context, node), distributor);
 		this.operand = node.getOperand().accept(
-				ip.targetExVisitor(),
+				ip.expressionVisitor(),
 				distributor);
 	}
 
