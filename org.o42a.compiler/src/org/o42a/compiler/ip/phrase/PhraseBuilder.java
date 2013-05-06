@@ -540,6 +540,8 @@ public final class PhraseBuilder extends Contained {
 		case NOT:
 		case VALUE_OF:
 		case KEEP_VALUE:
+		case LINK:
+		case VARIABLE:
 		case MACRO_EXPANSION:
 		}
 

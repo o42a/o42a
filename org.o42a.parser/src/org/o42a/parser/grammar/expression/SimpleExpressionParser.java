@@ -93,6 +93,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			}
 
 			return context.parse(unary());
+		case '`':
 		case '\\':
 		case NOT_SIGN:
 			return context.parse(unary());
