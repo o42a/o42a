@@ -93,7 +93,10 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	protected TypeRef iface(Ref ref) {
-		return ancestor(ref, ref);
+
+		final PrefixPath prefix = ref.getPath().cut(1).toPrefix(ref.getScope());
+
+		return getConstructor().iface(ref).prefixWith(prefix);
 	}
 
 	@Override

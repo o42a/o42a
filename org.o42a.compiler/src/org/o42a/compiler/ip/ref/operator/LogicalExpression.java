@@ -81,6 +81,11 @@ public class LogicalExpression extends ObjectConstructor {
 	}
 
 	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
+	}
+
+	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
 		return new ValueFieldDefinition(ref, null);
 	}

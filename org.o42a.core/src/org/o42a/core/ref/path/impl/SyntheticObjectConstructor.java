@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,40 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path.impl.member;
+package org.o42a.core.ref.path.impl;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.ValueFieldDefinition;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
 
 
-final class TypeParameterConstructor extends ObjectConstructor {
+public class SyntheticObjectConstructor extends ObjectConstructor {
 
-	private final MemberKey parameterKey;
+	private final ObjectConstructor constructor;
 
-	TypeParameterConstructor(
-			LocationInfo location,
-			Distributor distributor,
-			MemberKey parameterKey) {
-		super(location, distributor);
-		this.parameterKey = parameterKey;
-	}
-
-	public final MemberKey getParameterKey() {
-		return this.parameterKey;
-	}
-
-	public final TypeRef ancestor(LocationInfo location) {
-		return ValueType.MACRO.typeRef(location, getScope());
+	public SyntheticObjectConstructor(ObjectConstructor constructor) {
+		super(constructor, constructor.distribute());
+		this.constructor = constructor;
 	}
 
 	@Override
@@ -59,50 +47,61 @@ final class TypeParameterConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public boolean isAllowedInsidePrototype() {
-		return true;
-	}
-
-	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		return ancestor(location);
+		return this.constructor.ancestor(location, ref);
 	}
 
 	@Override
 	public TypeRef iface(Ref ref) {
-		return ancestor(ref);
+		return this.constructor.iface(ref);
 	}
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(ref, null);
+		return this.constructor.fieldDefinition(ref);
 	}
 
 	@Override
 	public ObjectConstructor reproduce(PathReproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-		return new TypeParameterConstructor(
-				this,
-				reproducer.distribute(),
-				this.parameterKey);
+
+		final ObjectConstructor reproduced =
+				this.constructor.reproduce(reproducer);
+
+		if (reproduced == null) {
+			return null;
+		}
+
+		return new SyntheticObjectConstructor(reproduced);
+	}
+
+	@Override
+	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
+		throw new UnsupportedOperationException(
+				"Synthetic object's value shoule never be used");
+	}
+
+	@Override
+	public HostOp op(HostOp host) {
+		throw new UnsupportedOperationException(
+				"Synthetic object IR should never be constructed");
 	}
 
 	@Override
 	public String toString() {
-		if (this.parameterKey == null) {
+		if (this.constructor == null) {
 			return super.toString();
 		}
-		return this.parameterKey.toString();
+		return this.constructor.toString();
 	}
 
 	@Override
 	protected Obj createObject() {
-		return new TypeParameterObject(this);
+		return this.constructor.getConstructed();
 	}
 
 	@Override
 	protected Obj propagateObject(Scope scope) {
-		return new PropagatedTypeParameterObject(this, scope);
+		return this.constructor.resolve(scope);
 	}
 
 }
