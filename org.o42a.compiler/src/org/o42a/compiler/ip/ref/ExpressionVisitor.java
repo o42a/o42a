@@ -26,6 +26,7 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 import static org.o42a.core.value.ValueType.STRING;
 
 import org.o42a.ast.atom.NumberNode;
@@ -45,6 +46,8 @@ import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.log.LogInfo;
 
 
@@ -149,6 +152,10 @@ public final class ExpressionVisitor
 			return new ValueOf(ip(), p.getContext(), expression, p).toRef();
 		case KEEP_VALUE:
 			return keepValue(expression, p);
+		case LINK:
+			return link(expression, p, LinkValueType.LINK);
+		case VARIABLE:
+			return link(expression, p, LinkValueType.VARIABLE);
 		case MACRO_EXPANSION:
 			return macroExpansion(expression, p);
 		}
@@ -253,6 +260,35 @@ public final class ExpressionVisitor
 		}
 
 		return new KeepValue(location(p, expression.getSign()), value).toRef();
+	}
+
+	private Ref link(
+			UnaryNode expression,
+			AccessDistributor p,
+			LinkValueType linkType) {
+
+		final Ref value =
+				expression.getOperand().accept(ip().expressionVisitor(), p);
+
+		if (value == null) {
+			return null;
+		}
+
+		final PhraseBuilder phrase = new PhraseBuilder(
+				ip(),
+				new Location(p.getContext(), expression),
+				p,
+				this.typeConsumer);
+
+		phrase.setAncestor(linkType.typeRef(
+				new Location(p.getContext(), expression.getSign()),
+				p.getScope()));
+		phrase.setTypeParameters(
+				linkType.typeParameters(value.getInterface())
+				.toObjectTypeParameters());
+		phrase.phrase().declarations(valueBlock(value));
+
+		return phrase.toRef();
 	}
 
 	private Ref macroExpansion(UnaryNode expression, AccessDistributor p) {

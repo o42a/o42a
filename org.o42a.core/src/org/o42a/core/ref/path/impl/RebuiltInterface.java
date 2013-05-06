@@ -54,4 +54,12 @@ public class RebuiltInterface extends PathFragment {
 		return ref.toTypeRef();
 	}
 
+	@Override
+	public String toString() {
+		if (this.ref == null) {
+			return super.toString();
+		}
+		return "Interface[" + this.ref + ']';
+	}
+
 }
