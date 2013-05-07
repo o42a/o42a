@@ -205,20 +205,24 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 				return expression;
 			case '`':
 
-				final TypeNode argument =
-						expression.toType() != null
-						? expression.toType()
-						: new MacroExpressionNode(expression);
+				final TypeArgumentNode argument =
+						expression.toTypeArgument();
+
+				if (argument == null) {
+					return expression;
+				}
+
 				final TypeArgumentsNode typeArguments =
 						context.parse(typeArguments(argument));
 
-				if (typeArguments != null) {
-					expression = typeArguments;
-					next = context.pendingOrNext();
-					continue;
+				if (typeArguments == null) {
+					return expression;
 				}
 
-				return expression;
+				expression = typeArguments;
+				next = context.pendingOrNext();
+
+				continue;
 			default:
 				if (next == '(') {
 

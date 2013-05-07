@@ -24,6 +24,7 @@ import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.TypeArgumentNode;
 import org.o42a.ast.type.TypeNode;
 
 
@@ -74,6 +75,11 @@ public class UnaryNode
 
 	@Override
 	public final TypeNode toType() {
+		return null;
+	}
+
+	@Override
+	public final TypeArgumentNode toTypeArgument() {
 		return null;
 	}
 

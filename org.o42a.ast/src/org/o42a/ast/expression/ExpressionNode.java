@@ -23,6 +23,7 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.statement.AssignableNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.type.TypeArgumentNode;
 import org.o42a.ast.type.TypeNode;
 
 
@@ -34,6 +35,8 @@ public interface ExpressionNode
 	DeclarableNode toDeclarable();
 
 	TypeNode toType();
+
+	TypeArgumentNode toTypeArgument();
 
 	BinaryNode toBinary();
 

@@ -81,6 +81,11 @@ public class MacroExpressionNode extends AbstractNode implements TypeNode {
 	}
 
 	@Override
+	public final TypeArgumentNode toTypeArgument() {
+		return null;
+	}
+
+	@Override
 	public final RefNode toRef() {
 		return null;
 	}

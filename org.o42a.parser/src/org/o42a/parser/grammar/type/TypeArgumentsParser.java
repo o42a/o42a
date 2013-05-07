@@ -19,13 +19,12 @@
 */
 package org.o42a.parser.grammar.type;
 
-import static org.o42a.ast.type.TypeArgumentNode.TypeArgumentSuffix.BACKQUOTE;
+import static org.o42a.ast.type.TypeArgumentSuffix.BACKQUOTE;
 import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
-import org.o42a.ast.type.TypeArgumentNode.TypeArgumentSuffix;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.ArrayUtil;
@@ -38,17 +37,18 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 	private static final TypeArgumentParser TYPE_ARGUMENT =
 			new TypeArgumentParser();
 
-	private final TypeNode argument;
+	private final TypeArgumentNode argument;
 
-	public TypeArgumentsParser(TypeNode argument) {
+	public TypeArgumentsParser(TypeArgumentNode argument) {
 		this.argument = argument;
 	}
 
 	@Override
 	public TypeArgumentsNode parse(ParserContext context) {
 
-		TypeNode arg = this.argument;
-		TypeArgumentNode args[] = null;
+		TypeNode type = this.argument;
+		TypeArgumentNode argument = this.argument;
+		TypeArgNode args[] = null;
 
 		for (;;) {
 
@@ -57,18 +57,23 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 			if (suffix == null) {
 				break;
 			}
-			args = addArgument(args, arg, suffix);
+			args = addArgument(args, argument, suffix);
 
-			arg = context.parse(TYPE_ARGUMENT);
-			if (arg == null) {
+			type = context.parse(TYPE_ARGUMENT);
+			if (type == null) {
 				missingType(context, suffix);
 				break;
 			}
+			argument = type.toTypeArgument();
+			if (argument == null) {
+				break;
+			}
 
-			final AscendantsNode ascendants = parseAscendants(context, arg);
+			final AscendantsNode ascendants =
+					parseAscendants(context, argument);
 
 			if (ascendants != null) {
-				arg = ascendants;
+				type = ascendants;
 				break;
 			}
 		}
@@ -76,7 +81,7 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 			return null;
 		}
 
-		return new TypeArgumentsNode(args, arg);
+		return new TypeArgumentsNode(args, type);
 	}
 
 	private SignNode<TypeArgumentSuffix> parseSuffix(ParserContext context) {
@@ -96,7 +101,7 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 
 	private AscendantsNode parseAscendants(
 			ParserContext context,
-			TypeNode arg) {
+			TypeArgumentNode arg) {
 
 		final RefNode ref = arg.toRef();
 
@@ -107,18 +112,18 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 		return context.parse(ascendants(ref));
 	}
 
-	private static TypeArgumentNode[] addArgument(
-			TypeArgumentNode[] args,
-			TypeNode arg,
+	private static TypeArgNode[] addArgument(
+			TypeArgNode[] args,
+			TypeArgumentNode argument,
 			SignNode<TypeArgumentSuffix> suffix) {
 
-		final TypeArgumentNode argument = new TypeArgumentNode(arg, suffix);
+		final TypeArgNode arg = new TypeArgNode(argument, suffix);
 
 		if (args == null) {
-			return new TypeArgumentNode[] {argument};
+			return new TypeArgNode[] {arg};
 		}
 
-		return ArrayUtil.append(args, argument);
+		return ArrayUtil.append(args, arg);
 	}
 
 	private static void missingType(
@@ -130,8 +135,7 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 				"Type is missing");
 	}
 
-	private static final class TypeArgumentParser
-			implements Parser<TypeNode> {
+	private static final class TypeArgumentParser implements Parser<TypeNode> {
 
 		@Override
 		public TypeNode parse(ParserContext context) {

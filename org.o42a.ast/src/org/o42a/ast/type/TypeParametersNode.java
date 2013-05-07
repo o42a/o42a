@@ -74,6 +74,11 @@ public class TypeParametersNode
 	}
 
 	@Override
+	public final TypeArgumentNode toTypeArgument() {
+		return null;
+	}
+
+	@Override
 	public final RefNode toRef() {
 		return null;
 	}

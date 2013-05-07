@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,31 +19,18 @@
 */
 package org.o42a.ast.type;
 
+import org.o42a.ast.atom.SignType;
 
-public abstract class AbstractTypeVisitor<R, P>
-		extends AbstractTypeArgumentVisitor<R, P>
-		implements TypeNodeVisitor<R, P> {
 
-	@Override
-	public R visitTypeParameters(TypeParametersNode parameters, P p) {
-		return visitType(parameters, p);
+public enum TypeArgumentSuffix implements SignType {
+
+	BACKQUOTE() {
+
+		@Override
+		public String getSign() {
+			return "`";
+		}
+
 	}
-
-	@Override
-	public R visitTypeArguments(TypeArgumentsNode arguments, P p) {
-		return visitType(arguments, p);
-	}
-
-	@Override
-	public R visitMacroExpression(MacroExpressionNode expression, P p) {
-		return visitType(expression, p);
-	}
-
-	@Override
-	protected R visitTypeArgument(TypeArgumentNode argument, P p) {
-		return visitType(argument, p);
-	}
-
-	protected abstract R visitType(TypeNode type, P p);
 
 }
