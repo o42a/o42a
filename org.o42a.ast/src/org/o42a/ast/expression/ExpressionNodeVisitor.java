@@ -42,8 +42,6 @@ public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitUnary(UnaryNode expression, P p);
 
-	R visitMacroExpansion(MacroExpansionNode expansion, P p);
-
 	R visitBinary(BinaryNode expression, P p);
 
 	R visitBrackets(BracketsNode brackets, P p);

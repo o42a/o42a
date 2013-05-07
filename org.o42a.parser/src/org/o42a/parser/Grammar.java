@@ -192,10 +192,6 @@ public class Grammar {
 		return UnaryParser.UNARY;
 	}
 
-	public static final Parser<MacroExpansionNode> macroExpansion() {
-		return MacroExpansionParser.MACRO_EXPANSION;
-	}
-
 	public static final Parser<TypeNode> type() {
 		return TypeParser.TYPE;
 	}

@@ -19,7 +19,6 @@
 */
 package org.o42a.ast.field;
 
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.MemberRefNode;
 
 
@@ -34,11 +33,6 @@ public abstract class AbstractDeclarableVisitor<R, P>
 	@Override
 	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
 		return visitDeclarable(adapter, p);
-	}
-
-	@Override
-	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
-		return visitDeclarable(expansion, p);
 	}
 
 	protected abstract R visitDeclarable(DeclarableNode declarable, P p);

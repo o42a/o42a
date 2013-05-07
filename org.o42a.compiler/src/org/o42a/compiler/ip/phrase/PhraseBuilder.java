@@ -536,7 +536,6 @@ public final class PhraseBuilder extends Contained {
 		case KEEP_VALUE:
 		case LINK:
 		case VARIABLE:
-		case MACRO_EXPANSION:
 		}
 
 		getLogger().error(

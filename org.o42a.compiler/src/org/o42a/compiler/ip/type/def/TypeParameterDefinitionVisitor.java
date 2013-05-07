@@ -24,7 +24,6 @@ import static org.o42a.compiler.ip.Interpreter.location;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -59,13 +58,6 @@ final class TypeParameterDefinitionVisitor
 	@Override
 	protected TypeRef visitRef(RefNode ref, AccessDistributor p) {
 		return typeRef(ref, p);
-	}
-
-	@Override
-	public TypeRef visitMacroExpansion(
-			MacroExpansionNode expansion,
-			AccessDistributor p) {
-		return typeRef(expansion, p);
 	}
 
 	@Override

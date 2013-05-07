@@ -27,9 +27,7 @@ import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.field.*;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
@@ -81,6 +79,7 @@ public final class FieldDeclarableVisitor
 			return null;
 		}
 
+
 		FieldDeclaration declaration = fieldDeclaration(
 				location(p, memberNode),
 				p,
@@ -121,39 +120,6 @@ public final class FieldDeclarableVisitor
 		declaration = setDeclaredIn(declaration, p, memberNode);
 
 		return declaration;
-	}
-
-	@Override
-	public FieldDeclaration visitMacroExpansion(
-			MacroExpansionNode expansion,
-			AccessDistributor p) {
-
-		final ExpressionNode operand = expansion.getOperand();
-
-		if (operand == null) {
-			return null;
-		}
-
-		final FieldDeclaration declaration =
-				operand.accept(new MacroNameVisitor(), p);
-
-		if (declaration == null) {
-			return null;
-		}
-		if (declaration.isPrototype()) {
-			getLogger().error(
-					"porhibited_macro_prototype",
-					this.declarator.getDefinitionAssignment(),
-					"Macro can not be declared as prototype");
-		}
-		if (declaration.getLinkType() != null) {
-			getLogger().error(
-					"porhibited_macro_link",
-					this.declarator.getInterface(),
-					"Macro does not have an interface");
-		}
-
-		return declaration.macro();
 	}
 
 	@Override
@@ -220,6 +186,8 @@ public final class FieldDeclarableVisitor
 			return declaration.setVisibility(Visibility.PRIVATE);
 		case PARENT:
 			return declaration.setVisibility(Visibility.PROTECTED);
+		case MACRO:
+			return declareMacro(declaration);
 		case MODULE:
 		case ROOT:
 		case LOCAL:
@@ -229,6 +197,22 @@ public final class FieldDeclarableVisitor
 		}
 
 		return illegalVisibility(declaration, member);
+	}
+
+	private FieldDeclaration declareMacro(FieldDeclaration declaration) {
+		if (declaration.isPrototype()) {
+			getLogger().error(
+					"porhibited_macro_prototype",
+					this.declarator.getDefinitionAssignment(),
+					"Macro can not be declared as prototype");
+		}
+		if (declaration.getLinkType() != null) {
+			getLogger().error(
+					"porhibited_macro_link",
+					this.declarator.getInterface(),
+					"Macro does not have an interface");
+		}
+		return declaration.macro();
 	}
 
 	private FieldDeclaration illegalVisibility(
@@ -332,26 +316,6 @@ public final class FieldDeclarableVisitor
 		}
 
 		return declaration.setDeclaredIn(declaredIn);
-	}
-
-	private final class MacroNameVisitor
-			extends AbstractExpressionVisitor<FieldDeclaration, AccessDistributor> {
-
-		@Override
-		public FieldDeclaration visitMemberRef(
-				MemberRefNode ref,
-				AccessDistributor p) {
-			return ref.accept(FieldDeclarableVisitor.this, p);
-		}
-
-		@Override
-		protected FieldDeclaration visitExpression(
-				ExpressionNode expression,
-				AccessDistributor p) {
-			getLogger().invalidDeclaration(expression);
-			return null;
-		}
-
 	}
 
 }

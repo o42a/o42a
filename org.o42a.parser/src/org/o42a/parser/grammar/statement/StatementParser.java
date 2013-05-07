@@ -23,13 +23,11 @@ import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.*;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
@@ -254,20 +252,6 @@ public class StatementParser implements Parser<StatementNode> {
 		if (this.local) {
 			// Declarations not allowed inside local scope.
 			return expression;
-		}
-
-		final MacroExpansionNode expansion = declarable.toMacroExpansion();
-
-		if (expansion != null) {
-			if (this.grammar.isImperative()) {
-				return expression;
-			}
-
-			final RefNode expandedRef = expansion.getOperand().toRef();
-
-			if (expandedRef == null || expandedRef.toMemberRef() == null) {
-				return expression;
-			}
 		}
 
 		final DeclaratorNode declarator = context.parse(declarator(declarable));

@@ -22,7 +22,6 @@ package org.o42a.ast.field;
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.MembershipSign;
 
@@ -62,11 +61,6 @@ public class DeclarableAdapterNode
 
 	@Override
 	public final MemberRefNode toMemberRef() {
-		return null;
-	}
-
-	@Override
-	public final MacroExpansionNode toMacroExpansion() {
 		return null;
 	}
 

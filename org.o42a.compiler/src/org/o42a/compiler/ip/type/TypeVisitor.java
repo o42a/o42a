@@ -22,8 +22,6 @@ package org.o42a.compiler.ip.type;
 import static org.o42a.common.macro.Macros.expandMacro;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.Interpreter;
@@ -120,30 +118,6 @@ public final class TypeVisitor
 						this.consumer.noConsumption(),
 						typeParameters),
 				p);
-	}
-
-	@Override
-	public ParamTypeRef visitMacroExpansion(
-			MacroExpansionNode expansion,
-			AccessDistributor p) {
-
-		final ExpressionNode operandNode = expansion.getOperand();
-
-		if (operandNode == null) {
-			return null;
-		}
-
-		final Ref macroRef = operandNode.accept(
-				ip().expressionVisitor(),
-				p.fromDeclaration());
-
-		if (macroRef == null) {
-			return null;
-		}
-
-		return this.consumer.consumeType(
-				expandMacro(macroRef),
-				this.typeParameters);
 	}
 
 	@Override
