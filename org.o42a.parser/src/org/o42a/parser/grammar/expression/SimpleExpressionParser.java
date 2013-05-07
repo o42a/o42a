@@ -214,12 +214,10 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 				return expression;
 			case '`':
 
-				final TypeNode argument = expression.toType();
-
-				if (argument == null) {
-					return expression;
-				}
-
+				final TypeNode argument =
+						expression.toType() != null
+						? expression.toType()
+						: new MacroExpressionNode(expression);
 				final TypeArgumentNode typeArgument =
 						context.parse(typeArgument(argument));
 

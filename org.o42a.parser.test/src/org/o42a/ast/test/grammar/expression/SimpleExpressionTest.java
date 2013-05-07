@@ -213,8 +213,8 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("foo` bar"), is(TypeArgumentNode.class));
 		assertThat(parse("foo# bar` baz"), is(TypeArgumentNode.class));
 		assertThat(parse("(#foo)` bar"), is(TypeArgumentNode.class));
-		assertThat(parse("(##foo)` bar"), is(TypeArgumentNode.class));
-		assertThat(parse("(##foo [bar])` baz"), is(TypeArgumentNode.class));
+		assertThat(parse("##foo` bar"), is(TypeArgumentNode.class));
+		assertThat(parse("##foo [bar]` baz"), is(TypeArgumentNode.class));
 		assertThat(parse("(foo, bar)` baz"), is(TypeArgumentNode.class));
 	}
 
