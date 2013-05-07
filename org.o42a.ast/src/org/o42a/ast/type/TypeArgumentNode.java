@@ -19,55 +19,9 @@
 */
 package org.o42a.ast.type;
 
-import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
 
+public interface TypeArgumentNode extends TypeNode {
 
-public class TypeArgumentNode extends AbstractNode {
-
-	private final TypeNode argument;
-	private final SignNode<TypeArgumentSuffix> suffix;
-
-	public TypeArgumentNode(
-			TypeNode argument,
-			SignNode<TypeArgumentSuffix> suffix) {
-		super(argument.getStart(), suffix.getEnd());
-		this.argument = argument;
-		this.suffix = suffix;
-	}
-
-	public final TypeNode getArgument() {
-		return this.argument;
-	}
-
-	public final SignNode<TypeArgumentSuffix> getSuffix() {
-		return this.suffix;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeArgument(this, p);
-	}
-
-	@Override
-	public void printContent(StringBuilder out) {
-		this.argument.printContent(out);
-		this.suffix.printContent(out);
-	}
-
-	public enum TypeArgumentSuffix implements SignType {
-
-		BACKQUOTE() {
-
-			@Override
-			public String getSign() {
-				return "`";
-			}
-
-		}
-
-	}
+	<R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p);
 
 }

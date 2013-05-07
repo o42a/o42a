@@ -202,7 +202,7 @@ public class Grammar {
 	}
 
 	public static final Parser<TypeArgumentsNode> typeArguments(
-			TypeNode argument) {
+			TypeArgumentNode argument) {
 		return new TypeArgumentsParser(argument);
 	}
 

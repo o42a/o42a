@@ -31,18 +31,16 @@ public class TypeArgumentsNode
 		extends AbstractExpressionNode
 		implements TypeNode {
 
-	private final TypeArgumentNode[] arguments;
+	private final TypeArgNode[] arguments;
 	private final TypeNode type;
 
-	public TypeArgumentsNode(
-			TypeArgumentNode[] arguments,
-			TypeNode type) {
+	public TypeArgumentsNode(TypeArgNode[] arguments, TypeNode type) {
 		super(start(arguments), end(lastNode(arguments), type));
 		this.arguments = arguments;
 		this.type = type;
 	}
 
-	public final TypeArgumentNode[] getArguments() {
+	public final TypeArgNode[] getArguments() {
 		return this.arguments;
 	}
 
@@ -71,6 +69,11 @@ public class TypeArgumentsNode
 	}
 
 	@Override
+	public final TypeArgumentNode toTypeArgument() {
+		return null;
+	}
+
+	@Override
 	public final BinaryNode toBinary() {
 		return null;
 	}
@@ -87,7 +90,7 @@ public class TypeArgumentsNode
 
 	@Override
 	public void printContent(StringBuilder out) {
-		for (TypeArgumentNode argument : this.arguments) {
+		for (TypeArgNode argument : this.arguments) {
 			argument.printContent(out);
 			out.append('`');
 		}

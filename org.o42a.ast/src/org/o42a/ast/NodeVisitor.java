@@ -114,7 +114,7 @@ public abstract class NodeVisitor<R, P>
 		return visitPart(parameter, p);
 	}
 
-	public R visitTypeArgument(TypeArgumentNode argument, P p) {
+	public R visitTypeArgument(TypeArgNode argument, P p) {
 		return visitPart(argument, p);
 	}
 

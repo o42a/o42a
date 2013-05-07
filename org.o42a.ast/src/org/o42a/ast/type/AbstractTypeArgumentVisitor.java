@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,31 +19,30 @@
 */
 package org.o42a.ast.type;
 
+import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.ref.AbstractRefVisitor;
+import org.o42a.ast.ref.RefNode;
 
-public abstract class AbstractTypeVisitor<R, P>
-		extends AbstractTypeArgumentVisitor<R, P>
-		implements TypeNodeVisitor<R, P> {
+
+public abstract class AbstractTypeArgumentVisitor<R, P>
+		extends AbstractRefVisitor<R, P>
+		implements TypeArgumentNodeVisitor<R, P> {
 
 	@Override
-	public R visitTypeParameters(TypeParametersNode parameters, P p) {
-		return visitType(parameters, p);
+	public R visitAscendants(AscendantsNode ascendants, P p) {
+		return visitTypeArgument(ascendants, p);
 	}
 
 	@Override
-	public R visitTypeArguments(TypeArgumentsNode arguments, P p) {
-		return visitType(arguments, p);
+	public R visitParentheses(ParenthesesNode parentheses, P p) {
+		return visitParentheses(parentheses, p);
 	}
 
 	@Override
-	public R visitMacroExpression(MacroExpressionNode expression, P p) {
-		return visitType(expression, p);
+	protected R visitRef(RefNode ref, P p) {
+		return visitTypeArgument(ref, p);
 	}
 
-	@Override
-	protected R visitTypeArgument(TypeArgumentNode argument, P p) {
-		return visitType(argument, p);
-	}
-
-	protected abstract R visitType(TypeNode type, P p);
+	protected abstract R visitTypeArgument(TypeArgumentNode argument, P p);
 
 }

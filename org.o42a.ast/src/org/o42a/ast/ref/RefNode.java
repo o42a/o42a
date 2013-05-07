@@ -19,10 +19,10 @@
 */
 package org.o42a.ast.ref;
 
-import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.TypeArgumentNode;
 
 
-public interface RefNode extends TypeNode {
+public interface RefNode extends TypeArgumentNode {
 
 	<R, P> R accept(RefNodeVisitor<R, P> visitor, P p);
 

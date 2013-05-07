@@ -6,7 +6,7 @@ package org.o42a.ast.test.grammar.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.o42a.ast.type.TypeArgumentNode.TypeArgumentSuffix.BACKQUOTE;
+import static org.o42a.ast.type.TypeArgumentSuffix.BACKQUOTE;
 import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 
 
@@ -27,7 +27,7 @@ public class TypeArgumentsTest extends GrammarTestCase {
 
 		assertThat(args.getArguments().length, is(1));
 
-		final TypeArgumentNode arg = args.getArguments()[0];
+		final TypeArgNode arg = args.getArguments()[0];
 
 		assertThat(arg.getArgument(), isName("foo"));
 		assertThat(arg.getSuffix().getType(), is(BACKQUOTE));
@@ -41,7 +41,7 @@ public class TypeArgumentsTest extends GrammarTestCase {
 
 		assertThat(args.getArguments().length, is(1));
 
-		final TypeArgumentNode arg = args.getArguments()[0];
+		final TypeArgNode arg = args.getArguments()[0];
 		final ParenthesesNode arguments =
 				to(ParenthesesNode.class, arg.getArgument());
 
@@ -71,7 +71,7 @@ public class TypeArgumentsTest extends GrammarTestCase {
 
 		assertThat(args.getArguments().length, is(1));
 
-		final TypeArgumentNode arg = args.getArguments()[0];
+		final TypeArgNode arg = args.getArguments()[0];
 
 		assertThat(arg.getArgument(), isName("foo"));
 		assertThat(arg.getSuffix().getType(), is(BACKQUOTE));
