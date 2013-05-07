@@ -56,6 +56,16 @@ public class ScopeRefTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void macro() {
+
+		final ScopeRefNode ref = parse("# ");
+
+		assertEquals(ScopeType.MACRO, ref.getType());
+		assertThat(ref, hasRange(0, 1));
+		assertEquals(2, this.worker.position().offset());
+	}
+
+	@Test
 	public void macros() {
 
 		final ScopeRefNode ref = parse("## ");

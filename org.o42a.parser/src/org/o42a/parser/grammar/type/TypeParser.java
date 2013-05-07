@@ -78,7 +78,7 @@ public class TypeParser implements Parser<TypeNode> {
 		final RefNode macroRef = context.parse(ref());
 
 		if (macroRef == null) {
-			return context.parse(macroExpansion());
+			return null;
 		}
 
 		final TypeNode type = parseMacroExpression(context, macroRef);

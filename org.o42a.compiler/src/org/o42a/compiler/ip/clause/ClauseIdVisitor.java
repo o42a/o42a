@@ -238,7 +238,6 @@ final class ClauseIdVisitor
 		case KEEP_VALUE:
 		case LINK:
 		case VARIABLE:
-		case MACRO_EXPANSION:
 			return null;
 		}
 		return null;

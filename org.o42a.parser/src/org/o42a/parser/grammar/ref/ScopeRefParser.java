@@ -37,65 +37,64 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 	public ScopeRefNode parse(ParserContext context) {
 
 		final SourcePosition start = context.current().fix();
-		final ScopeType type;
+		final ScopeType type = parseType(context);
 
-		switch (context.next()) {
-		case '*':
-			type = ScopeType.IMPLIED;
-			context.acceptAll();
-			break;
-		case '#':
-			if (context.next() == '#') {
-				if (context.next() == '#') {
-					// The macros scope requires exactly two hashes.
-					return null;
-				}
-				type = ScopeType.MACROS;
-				context.acceptButLast();
-				break;
-			}
-			return null;
-		case '$':
-			if (context.next() == '$') {
-				type = ScopeType.ANONYMOUS;
-				context.acceptAll();
-			} else {
-				type = ScopeType.LOCAL;
-				context.acceptButLast();
-			}
-			break;
-		case '/':
-			if (context.next() == '/') {
-				type = ScopeType.ROOT;
-				context.acceptAll();
-			} else {
-				type = ScopeType.MODULE;
-				context.acceptButLast();
-			}
-			break;
-		case ':':
-			switch (context.next()) {
-			case ':':
-				type = ScopeType.PARENT;
-				if (context.next() == '=') {
-					return null;
-				}
-				context.acceptButLast();
-				break;
-			case '=':
-				return null;
-			default:
-				type = ScopeType.SELF;
-				context.acceptButLast();
-			}
-			break;
-		default:
+		if (type == null) {
 			return null;
 		}
 
 		return context.acceptComments(
 				false,
 				new ScopeRefNode(start, context.current().fix(), type));
+	}
+
+	private ScopeType parseType(ParserContext context) {
+		switch (context.next()) {
+		case '*':
+			context.acceptAll();
+			return ScopeType.IMPLIED;
+		case '#':
+			if (context.next() != '#') {
+				context.acceptButLast();
+				return ScopeType.MACRO;
+			}
+			if (context.next() == '#') {
+				// The macros scope requires exactly two hashes.
+				return null;
+			}
+			context.acceptButLast();
+			return ScopeType.MACROS;
+		case '$':
+			if (context.next() == '$') {
+				context.acceptAll();
+				return ScopeType.ANONYMOUS;
+			}
+			context.acceptButLast();
+			return ScopeType.LOCAL;
+		case '/':
+			if (context.next() == '/') {
+				context.acceptAll();
+				return ScopeType.ROOT;
+			}
+			context.acceptButLast();
+			return ScopeType.MODULE;
+		case ':':
+			switch (context.next()) {
+			case ':':
+				if (context.next() == '=') {
+					return null;
+				}
+				context.acceptButLast();
+				return ScopeType.PARENT;
+			case '=':
+				return null;
+			default:
+				context.acceptButLast();
+				return ScopeType.SELF;
+			}
+		default:
+			return null;
+		}
 	}
 
 }

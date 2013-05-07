@@ -19,7 +19,6 @@
 */
 package org.o42a.ast.type;
 
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 
@@ -31,8 +30,6 @@ public interface TypeNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 	R visitTypeParameters(TypeParametersNode parameters, P p);
 
 	R visitTypeArguments(TypeArgumentsNode arguments, P p);
-
-	R visitMacroExpansion(MacroExpansionNode expansion, P p);
 
 	R visitMacroExpression(MacroExpressionNode expression, P p);
 

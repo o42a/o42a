@@ -156,8 +156,6 @@ public final class ExpressionVisitor
 			return link(expression, p, LinkValueType.LINK);
 		case VARIABLE:
 			return link(expression, p, LinkValueType.VARIABLE);
-		case MACRO_EXPANSION:
-			return macroExpansion(expression, p);
 		}
 
 		return super.visitUnary(expression, p);
@@ -289,18 +287,6 @@ public final class ExpressionVisitor
 		phrase.phrase().declarations(valueBlock(value));
 
 		return phrase.toRef();
-	}
-
-	private Ref macroExpansion(UnaryNode expression, AccessDistributor p) {
-
-		final Ref operand =
-				expression.getOperand().accept(ip().expressionVisitor(), p);
-
-		if (operand == null) {
-			return null;
-		}
-
-		return expandMacro(operand);
 	}
 
 }

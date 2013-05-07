@@ -67,11 +67,6 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
-	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
-		return visitUnary(expansion, p);
-	}
-
-	@Override
 	public R visitBinary(BinaryNode expression, P p) {
 		return visitExpression(expression, p);
 	}

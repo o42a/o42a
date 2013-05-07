@@ -127,17 +127,6 @@ public class UnaryExpressionTest extends GrammarTestCase {
 		assertThat(result.getSign(), hasRange(0, 2));
 	}
 
-	@Test
-	public void macroExpansion() {
-
-		final UnaryNode result = parse("#foo");
-
-		assertEquals(UnaryOperator.MACRO_EXPANSION, result.getOperator());
-		assertThat(result.getOperand(), isName("foo"));
-		assertThat(result, hasRange(0, 4));
-		assertThat(result.getSign(), hasRange(0, 1));
-	}
-
 	private UnaryNode parse(String text) {
 		return parse(unary(), text);
 	}

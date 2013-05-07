@@ -91,6 +91,23 @@ public abstract class RefInterpreter {
 		return scopeRef.getType() == ScopeType.ROOT;
 	}
 
+	public static boolean isMacroRef(ExpressionNode node) {
+
+		final RefNode ref = node.toRef();
+
+		if (ref == null) {
+			return false;
+		}
+
+		final ScopeRefNode scopeRef = ref.toScopeRef();
+
+		if (scopeRef == null) {
+			return false;
+		}
+
+		return scopeRef.getType() == ScopeType.MACRO;
+	}
+
 	public static boolean linkTargetIsAccessibleFrom(AccessSource accessSource) {
 		switch (accessSource) {
 		case FROM_CLAUSE_REUSE:

@@ -95,15 +95,6 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '\\':
 		case NOT_SIGN:
 			return context.parse(unary());
-		case '#':
-
-			final RefNode macroRef = context.parse(ref());
-
-			if (macroRef != null) {
-				return macroRef;
-			}
-
-			return context.parse(macroExpansion());
 		case '(':
 			return context.parse(DECLARATIVE.parentheses());
 		case '&':
