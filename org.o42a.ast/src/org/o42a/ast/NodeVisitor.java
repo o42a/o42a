@@ -84,8 +84,8 @@ public abstract class NodeVisitor<R, P>
 	}
 
 	@Override
-	public R visitTypeExpression(TypeExpressionNode type, P p) {
-		return type.getExpression().accept(this, p);
+	public R visitMacroExpression(MacroExpressionNode expression, P p) {
+		return expression.getExpression().accept(this, p);
 	}
 
 	public R visitTypeRef(TypeRefNode<?> typeRef, P p) {

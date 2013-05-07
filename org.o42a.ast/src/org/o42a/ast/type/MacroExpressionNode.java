@@ -32,11 +32,11 @@ import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
 
 
-public class TypeExpressionNode extends AbstractNode implements TypeNode {
+public class MacroExpressionNode extends AbstractNode implements TypeNode {
 
 	private final ExpressionNode expression;
 
-	public TypeExpressionNode(ExpressionNode expression) {
+	public MacroExpressionNode(ExpressionNode expression) {
 		super(expression.getStart(), expression.getEnd());
 		this.expression = expression;
 	}
@@ -47,12 +47,12 @@ public class TypeExpressionNode extends AbstractNode implements TypeNode {
 
 	@Override
 	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeExpression(this, p);
+		return visitor.visitMacroExpression(this, p);
 	}
 
 	@Override
 	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeExpression(this, p);
+		return visitor.visitMacroExpression(this, p);
 	}
 
 	@Override
