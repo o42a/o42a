@@ -66,8 +66,13 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
+	protected Ref memberOwnerRef() {
+		return this.owner.memberOwnerRef();
+	}
+
+	@Override
 	protected Owner memberOwner(Ref ref) {
-		return this.owner.memberOwner(ref);
+		return this.owner.memberOwner(ref).expandMacro(this.expansion);
 	}
 
 }
