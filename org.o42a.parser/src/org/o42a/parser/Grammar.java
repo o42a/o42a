@@ -205,9 +205,9 @@ public class Grammar {
 		return new TypeParametersParser(type);
 	}
 
-	public static final Parser<TypeArgumentNode> typeArgument(
+	public static final Parser<TypeArgumentsNode> typeArguments(
 			TypeNode argument) {
-		return new TypeArgumentParser(argument);
+		return new TypeArgumentsParser(argument);
 	}
 
 	public static final Parser<BinaryNode> binary(ExpressionNode leftOperand) {

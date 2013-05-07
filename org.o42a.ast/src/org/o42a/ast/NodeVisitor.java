@@ -114,6 +114,10 @@ public abstract class NodeVisitor<R, P>
 		return visitPart(parameter, p);
 	}
 
+	public R visitTypeArgument(TypeArgumentNode argument, P p) {
+		return visitPart(argument, p);
+	}
+
 	@Override
 	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
 		return visitDeclarable(adapter, p);

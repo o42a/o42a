@@ -19,89 +19,45 @@
 */
 package org.o42a.ast.type;
 
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
-import org.o42a.ast.clause.ClauseIdNode;
-import org.o42a.ast.expression.AbstractExpressionNode;
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.field.DeclarableNode;
-import org.o42a.ast.ref.RefNode;
 
 
-public class TypeArgumentNode
-		extends AbstractExpressionNode
-		implements TypeNode {
+public class TypeArgumentNode extends AbstractNode {
 
 	private final TypeNode argument;
-	private final SignNode<TypeArgumentSeparator> separator;
-	private final TypeNode type;
+	private final SignNode<TypeArgumentSuffix> suffix;
 
 	public TypeArgumentNode(
 			TypeNode argument,
-			SignNode<TypeArgumentSeparator> separator,
-			TypeNode type) {
-		super(argument.getStart(), type.getEnd());
+			SignNode<TypeArgumentSuffix> suffix) {
+		super(argument.getStart(), suffix.getEnd());
 		this.argument = argument;
-		this.separator = separator;
-		this.type = type;
+		this.suffix = suffix;
 	}
 
 	public final TypeNode getArgument() {
 		return this.argument;
 	}
 
-	public final SignNode<TypeArgumentSeparator> getSeparator() {
-		return this.separator;
-	}
-
-	public final TypeNode getType() {
-		return this.type;
+	public final SignNode<TypeArgumentSuffix> getSuffix() {
+		return this.suffix;
 	}
 
 	@Override
-	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
 		return visitor.visitTypeArgument(this, p);
-	}
-
-	@Override
-	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeArgument(this, p);
-	}
-
-	@Override
-	public final DeclarableNode toDeclarable() {
-		return null;
-	}
-
-	@Override
-	public final TypeNode toType() {
-		return this;
-	}
-
-	@Override
-	public final BinaryNode toBinary() {
-		return null;
-	}
-
-	@Override
-	public final ClauseIdNode toClauseId() {
-		return null;
-	}
-
-	@Override
-	public final RefNode toRef() {
-		return null;
 	}
 
 	@Override
 	public void printContent(StringBuilder out) {
 		this.argument.printContent(out);
-		out.append("` ");
-		this.type.printContent(out);
+		this.suffix.printContent(out);
 	}
 
-	public enum TypeArgumentSeparator implements SignType {
+	public enum TypeArgumentSuffix implements SignType {
 
 		BACKQUOTE() {
 

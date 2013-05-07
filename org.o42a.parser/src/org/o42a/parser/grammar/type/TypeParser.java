@@ -49,7 +49,7 @@ public class TypeParser implements Parser<TypeNode> {
 			type = context.parse(samples());
 			break;
 		case '#':
-			type = parseMacroExpression(context);
+			type = parseMacroExpansion(context);
 			break;
 		case '(':
 			type = context.parse(DECLARATIVE.parentheses());
@@ -73,7 +73,7 @@ public class TypeParser implements Parser<TypeNode> {
 		return typeParameters;
 	}
 
-	private TypeNode parseMacroExpression(ParserContext context) {
+	private TypeNode parseMacroExpansion(ParserContext context) {
 
 		final RefNode macroRef = context.parse(ref());
 
