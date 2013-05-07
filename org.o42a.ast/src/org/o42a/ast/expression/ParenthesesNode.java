@@ -28,12 +28,13 @@ import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
 public class ParenthesesNode
 		extends AbstractExpressionNode
-		implements BlockNode<ParenthesisSign>, PhrasePartNode {
+		implements BlockNode<ParenthesisSign>, PhrasePartNode, TypeNode {
 
 	private final SignNode<ParenthesisSign> opening;
 	private final SentenceNode[] content;
@@ -82,6 +83,11 @@ public class ParenthesesNode
 	}
 
 	@Override
+	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitParentheses(this, p);
+	}
+
+	@Override
 	public final DeclarableNode toDeclarable() {
 		return null;
 	}
@@ -93,7 +99,7 @@ public class ParenthesesNode
 
 	@Override
 	public final TypeNode toType() {
-		return null;
+		return this;
 	}
 
 	@Override

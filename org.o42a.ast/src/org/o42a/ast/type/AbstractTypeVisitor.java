@@ -21,6 +21,7 @@ package org.o42a.ast.type;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.MacroExpansionNode;
+import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 
@@ -52,6 +53,11 @@ public abstract class AbstractTypeVisitor<R, P>
 	@Override
 	protected R visitRef(RefNode ref, P p) {
 		return visitType(ref, p);
+	}
+
+	@Override
+	public R visitParentheses(ParenthesesNode parentheses, P p) {
+		return visitType(parentheses, p);
 	}
 
 	protected abstract R visitType(Node type, P p);
