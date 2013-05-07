@@ -15,6 +15,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentNode;
 
 
 public class SimpleExpressionTest extends GrammarTestCase {
@@ -84,6 +85,8 @@ public class SimpleExpressionTest extends GrammarTestCase {
 
 	@Test
 	public void unaryExpression() {
+		assertThat(parse("`foo"), is(UnaryNode.class));
+		assertThat(parse("``foo"), is(UnaryNode.class));
 		assertThat(parse("+foo"), is(UnaryNode.class));
 		assertThat(parse("-foo"), is(UnaryNode.class));
 		assertThat(parse("−foo"), is(UnaryNode.class));
@@ -203,6 +206,16 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("+0x101"), is(NumberNode.class));
 		assertThat(parse("-0x001"), is(NumberNode.class));
 		assertThat(parse("−0x001"), is(NumberNode.class));
+	}
+
+	@Test
+	public void typeArgument() {
+		assertThat(parse("foo` bar"), is(TypeArgumentNode.class));
+		assertThat(parse("foo# bar` baz"), is(TypeArgumentNode.class));
+		assertThat(parse("(#foo)` bar"), is(TypeArgumentNode.class));
+		assertThat(parse("(##foo)` bar"), is(TypeArgumentNode.class));
+		assertThat(parse("(##foo [bar])` baz"), is(TypeArgumentNode.class));
+		assertThat(parse("(foo, bar)` baz"), is(TypeArgumentNode.class));
 	}
 
 	private Node parse(String... text) {

@@ -51,6 +51,9 @@ public class TypeParser implements Parser<TypeNode> {
 		case '#':
 			type = parseMacroExpression(context);
 			break;
+		case '(':
+			type = context.parse(DECLARATIVE.parentheses());
+			break;
 		default:
 			type = parseRef(context);
 		}
@@ -78,7 +81,7 @@ public class TypeParser implements Parser<TypeNode> {
 			return context.parse(macroExpansion());
 		}
 
-		final TypeNode type = parseTypeExpression(context, macroRef);
+		final TypeNode type = parseMacroExpression(context, macroRef);
 
 		if (type != null) {
 			return type;
@@ -103,7 +106,7 @@ public class TypeParser implements Parser<TypeNode> {
 
 			if (qualifier != null && qualifier.getType() == Qualifier.MACRO) {
 
-				final TypeNode type = parseTypeExpression(context, ref);
+				final TypeNode type = parseMacroExpression(context, ref);
 
 				if (type != null) {
 					return type;
@@ -120,7 +123,7 @@ public class TypeParser implements Parser<TypeNode> {
 		return ref;
 	}
 
-	private TypeNode parseTypeExpression(
+	private TypeNode parseMacroExpression(
 			ParserContext context,
 			RefNode prefix) {
 
@@ -137,7 +140,7 @@ public class TypeParser implements Parser<TypeNode> {
 			return type;
 		}
 
-		return new TypeExpressionNode(expression);
+		return new MacroExpressionNode(expression);
 	}
 
 	private void missingInterface(ParserContext context) {

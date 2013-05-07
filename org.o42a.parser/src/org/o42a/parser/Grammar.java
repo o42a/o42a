@@ -47,9 +47,7 @@ import org.o42a.parser.grammar.phrase.PhraseParser;
 import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
-import org.o42a.parser.grammar.type.AscendantsParser;
-import org.o42a.parser.grammar.type.InterfaceParser;
-import org.o42a.parser.grammar.type.TypeParametersParser;
+import org.o42a.parser.grammar.type.*;
 
 
 public class Grammar {
@@ -198,9 +196,18 @@ public class Grammar {
 		return MacroExpansionParser.MACRO_EXPANSION;
 	}
 
+	public static final Parser<TypeNode> type() {
+		return TypeParser.TYPE;
+	}
+
 	public static final Parser<TypeParametersNode> typeParameters(
 			TypeNode type) {
 		return new TypeParametersParser(type);
+	}
+
+	public static final Parser<TypeArgumentNode> typeArgument(
+			TypeNode argument) {
+		return new TypeArgumentParser(argument);
 	}
 
 	public static final Parser<BinaryNode> binary(ExpressionNode leftOperand) {

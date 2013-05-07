@@ -41,13 +41,18 @@ public abstract class AbstractTypeVisitor<R, P>
 	}
 
 	@Override
+	public R visitTypeArgument(TypeArgumentNode argument, P p) {
+		return visitType(argument, p);
+	}
+
+	@Override
 	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
 		return visitType(expansion, p);
 	}
 
 	@Override
-	public R visitTypeExpression(TypeExpressionNode type, P p) {
-		return visitType(type, p);
+	public R visitMacroExpression(MacroExpressionNode expression, P p) {
+		return visitType(expression, p);
 	}
 
 	@Override

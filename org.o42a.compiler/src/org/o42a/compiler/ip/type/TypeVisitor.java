@@ -147,11 +147,11 @@ public final class TypeVisitor
 	}
 
 	@Override
-	public ParamTypeRef visitTypeExpression(
-			TypeExpressionNode type,
+	public ParamTypeRef visitMacroExpression(
+			MacroExpressionNode expression,
 			AccessDistributor p) {
 
-		final Ref ref = type.getExpression().accept(
+		final Ref ref = expression.getExpression().accept(
 				ip().expressionVisitor(this.consumer),
 				p.fromDeclaration());
 

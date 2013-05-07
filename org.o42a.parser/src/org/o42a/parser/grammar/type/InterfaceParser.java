@@ -21,7 +21,7 @@ package org.o42a.parser.grammar.type;
 
 import static org.o42a.ast.atom.ParenthesisSign.CLOSING_PARENTHESIS;
 import static org.o42a.ast.atom.ParenthesisSign.OPENING_PARENTHESIS;
-import static org.o42a.parser.grammar.type.TypeParser.TYPE;
+import static org.o42a.parser.Grammar.type;
 
 import java.util.ArrayList;
 
@@ -217,7 +217,7 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			for (;;) {
 
 				final SourcePosition start = context.current().fix();
-				final TypeNode value = context.parse(TYPE);
+				final TypeNode value = context.parse(type());
 
 				if (value != null) {
 					context.logUnexpected(firstUnexpected, start);
