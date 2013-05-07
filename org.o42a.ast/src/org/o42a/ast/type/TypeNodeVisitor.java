@@ -30,7 +30,7 @@ public interface TypeNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitTypeParameters(TypeParametersNode parameters, P p);
 
-	R visitTypeArgument(TypeArgumentNode argument, P p);
+	R visitTypeArguments(TypeArgumentsNode arguments, P p);
 
 	R visitMacroExpansion(MacroExpansionNode expansion, P p);
 

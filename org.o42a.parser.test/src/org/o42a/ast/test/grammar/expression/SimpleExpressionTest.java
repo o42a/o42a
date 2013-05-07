@@ -15,7 +15,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 
 
 public class SimpleExpressionTest extends GrammarTestCase {
@@ -210,12 +210,12 @@ public class SimpleExpressionTest extends GrammarTestCase {
 
 	@Test
 	public void typeArgument() {
-		assertThat(parse("foo` bar"), is(TypeArgumentNode.class));
-		assertThat(parse("foo# bar` baz"), is(TypeArgumentNode.class));
-		assertThat(parse("(#foo)` bar"), is(TypeArgumentNode.class));
-		assertThat(parse("##foo` bar"), is(TypeArgumentNode.class));
-		assertThat(parse("##foo [bar]` baz"), is(TypeArgumentNode.class));
-		assertThat(parse("(foo, bar)` baz"), is(TypeArgumentNode.class));
+		assertThat(parse("foo` bar"), is(TypeArgumentsNode.class));
+		assertThat(parse("foo# bar` baz"), is(TypeArgumentsNode.class));
+		assertThat(parse("(#foo)` bar"), is(TypeArgumentsNode.class));
+		assertThat(parse("##foo` bar"), is(TypeArgumentsNode.class));
+		assertThat(parse("##foo [bar]` baz"), is(TypeArgumentsNode.class));
+		assertThat(parse("(foo, bar)` baz"), is(TypeArgumentsNode.class));
 	}
 
 	private Node parse(String... text) {

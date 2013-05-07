@@ -41,8 +41,8 @@ public abstract class AbstractTypeVisitor<R, P>
 	}
 
 	@Override
-	public R visitTypeArgument(TypeArgumentNode argument, P p) {
-		return visitType(argument, p);
+	public R visitTypeArguments(TypeArgumentsNode arguments, P p) {
+		return visitType(arguments, p);
 	}
 
 	@Override

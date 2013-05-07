@@ -218,11 +218,11 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 						expression.toType() != null
 						? expression.toType()
 						: new MacroExpressionNode(expression);
-				final TypeArgumentNode typeArgument =
-						context.parse(typeArgument(argument));
+				final TypeArgumentsNode typeArguments =
+						context.parse(typeArguments(argument));
 
-				if (typeArgument != null) {
-					expression = typeArgument;
+				if (typeArguments != null) {
+					expression = typeArguments;
 					next = context.pendingOrNext();
 					continue;
 				}
