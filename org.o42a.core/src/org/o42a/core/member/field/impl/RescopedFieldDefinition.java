@@ -66,11 +66,6 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void defineLink(LinkDefiner definer) {
-		this.definition.defineLink(new RescopedLinkDefiner(definer));
-	}
-
-	@Override
 	public void defineMacro(MacroDefiner definer) {
 		this.definition.defineMacro(new RescopedMacroDefiner(definer));
 	}
@@ -149,47 +144,6 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		public ObjectDefiner addMemberOverride(Member overriddenMember) {
 			this.definer.addMemberOverride(overriddenMember);
 			return this;
-		}
-
-		@Override
-		public void define(BlockBuilder definitions) {
-			this.definer.define(definitions);
-		}
-
-		@Override
-		public String toString() {
-			if (this.definer == null) {
-				return super.toString();
-			}
-			return this.definer.toString();
-		}
-
-	}
-
-	private final class RescopedLinkDefiner implements LinkDefiner {
-
-		private final LinkDefiner definer;
-
-		RescopedLinkDefiner(LinkDefiner definer) {
-			this.definer = definer;
-		}
-
-		@Override
-		public Field getField() {
-			return this.definer.getField();
-		}
-
-		@Override
-		public void setTargetRef(Ref targetRef, TypeRef defaultType) {
-			this.definer.setTargetRef(
-					targetRef.prefixWith(getPrefix()),
-					defaultType != null
-					? defaultType.prefixWith(getPrefix()): null);
-		}
-
-		@Override
-		public void setParameters(ObjectTypeParameters parameters) {
-			this.definer.setParameters(parameters.prefixWith(getPrefix()));
 		}
 
 		@Override

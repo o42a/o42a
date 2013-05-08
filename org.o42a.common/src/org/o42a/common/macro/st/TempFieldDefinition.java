@@ -66,11 +66,6 @@ final class TempFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void defineLink(LinkDefiner definer) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void defineMacro(MacroDefiner definer) {
 		throw new UnsupportedOperationException();
 	}

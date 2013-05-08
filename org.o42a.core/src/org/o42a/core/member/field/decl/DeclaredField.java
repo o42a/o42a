@@ -205,11 +205,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 			}
 		}
 
-		if (getDeclaration().getLinkType() == null) {
-			return this.ascendants = objectAscendants(implicitAscendants);
-		}
-
-		return this.ascendants = linkAscendants(implicitAscendants);
+		return this.ascendants = objectAscendants(implicitAscendants);
 	}
 
 	private Ascendants macroAscendants(Ascendants implicitAscendants) {
@@ -232,16 +228,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		} else {
 			getDefinition().defineObject(definer);
 		}
-
-		return definer.getAscendants();
-	}
-
-	private Ascendants linkAscendants(Ascendants implicitAscendants) {
-
-		final LinkDefinerImpl definer =
-				new LinkDefinerImpl(this, implicitAscendants);
-
-		getDefinition().defineLink(definer);
 
 		return definer.getAscendants();
 	}

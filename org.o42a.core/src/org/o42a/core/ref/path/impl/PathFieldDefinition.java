@@ -20,13 +20,9 @@
 package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.member.field.DefinitionTarget;
-import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.DefaultFieldDefinition;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.link.Link;
 
 
 public final class PathFieldDefinition extends DefaultFieldDefinition {
@@ -43,23 +39,6 @@ public final class PathFieldDefinition extends DefaultFieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAncestor(getRef().toTypeRef());
-	}
-
-	@Override
-	public void defineLink(LinkDefiner definer) {
-
-		final Ref target = getRef();
-		final Obj object = target.getResolution().toObject();
-		final Link dereferencedLink = object.getDereferencedLink();
-		final TypeRef typeRef;
-
-		if (dereferencedLink == null) {
-			typeRef = target.toTypeRef();
-		} else {
-			typeRef = target.getInterface();
-		}
-
-		definer.setTargetRef(target, typeRef);
 	}
 
 }
