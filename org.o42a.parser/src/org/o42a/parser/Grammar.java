@@ -47,7 +47,9 @@ import org.o42a.parser.grammar.phrase.PhraseParser;
 import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
-import org.o42a.parser.grammar.type.*;
+import org.o42a.parser.grammar.type.AscendantsParser;
+import org.o42a.parser.grammar.type.TypeArgumentsParser;
+import org.o42a.parser.grammar.type.TypeParser;
 
 
 public class Grammar {
@@ -196,11 +198,6 @@ public class Grammar {
 		return TypeParser.TYPE;
 	}
 
-	public static final Parser<TypeParametersNode> typeParameters(
-			TypeNode type) {
-		return new TypeParametersParser(type);
-	}
-
 	public static final Parser<TypeArgumentsNode> typeArguments(
 			TypeArgumentNode argument) {
 		return new TypeArgumentsParser(argument);
@@ -216,10 +213,6 @@ public class Grammar {
 
 	public static final Parser<SelfAssignmentNode> selfAssignment() {
 		return SelfAssignmentParser.SELF_ASSIGNMENT;
-	}
-
-	public static final Parser<InterfaceNode> iface() {
-		return InterfaceParser.INTERFACE;
 	}
 
 	public static final Parser<DeclaratorNode> declarator(

@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.type;
 
 import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.compiler.ip.type.TypeInterpreter.invalidType;
+import static org.o42a.compiler.ip.type.TypeInterpreter.redundantTypeArguments;
 
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
@@ -83,28 +84,24 @@ public final class TypeVisitor
 	}
 
 	@Override
-	public ParamTypeRef visitTypeParameters(
-			TypeParametersNode parameters,
+	public ParamTypeRef visitTypeArguments(
+			TypeArgumentsNode arguments,
 			AccessDistributor p) {
 
-		final TypeNode ascendantNode = parameters.getType();
+		final TypeNode ascendantNode = arguments.getType();
 
 		if (ascendantNode == null) {
-			return super.visitTypeParameters(parameters, p);
+			return super.visitTypeArguments(arguments, p);
 		}
 
 		final TypeRefParameters typeParameters;
-		final InterfaceNode ifaceNode = parameters.getParameters();
 
 		if (this.typeParameters != null) {
-			p.getLogger().error(
-					"redundant_value_type",
-					ifaceNode,
-					"Redundant value type");
+			redundantTypeArguments(p.getLogger(), arguments);
 			typeParameters = this.typeParameters;
 		} else {
-			typeParameters = typeIp().typeParameters(
-					ifaceNode,
+			typeParameters = typeIp().typeArguments(
+					arguments,
 					p,
 					this.consumer);
 			if (typeParameters == null) {

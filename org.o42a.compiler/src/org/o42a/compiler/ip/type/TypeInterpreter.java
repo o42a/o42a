@@ -26,14 +26,11 @@ import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.*;
-import org.o42a.common.ref.ArbitraryTypeRefParameters;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.ascendant.*;
-import org.o42a.compiler.ip.type.param.TypeParameterIndex;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.log.LogInfo;
@@ -43,6 +40,15 @@ public final class TypeInterpreter {
 
 	public static void invalidType(CompilerLogger logger, LogInfo location) {
 		logger.error("invalid_type", location, "Not a valid type reference");
+	}
+
+	public static void redundantTypeArguments(
+			CompilerLogger logger,
+			LogInfo location) {
+		logger.error(
+				"redundant_type_arguments",
+				location,
+				"Redundant type arguments");
 	}
 
 	private final Interpreter ip;
@@ -82,46 +88,6 @@ public final class TypeInterpreter {
 				args.length - 1,
 				p,
 				consumer);
-	}
-
-	public final TypeRefParameters typeParameters(
-			InterfaceNode ifaceNode,
-			AccessDistributor p,
-			TypeConsumer consumer) {
-		if (ifaceNode.getKind().getType() != DefinitionKind.LINK) {
-			p.getLogger().error(
-					"prohibited_type_mutability",
-					ifaceNode.getKind(),
-					"Mutability flag prohibited here. Use a single backquote");
-		}
-
-		final TypeParameterNode[] typeParamNodes = ifaceNode.getParameters();
-		final TypeRef[] typeParams = new TypeRef[typeParamNodes.length];
-
-		for (int i = 0; i < typeParams.length; ++i) {
-
-			final TypeNode type = typeParamNodes[i].getType();
-
-			if (type == null) {
-				return null;
-			}
-
-			final ParamTypeRef paramTypeRef = type.accept(
-					typeVisitor(
-							consumer.paramConsumer(new TypeParameterIndex(i))),
-					p.fromDeclaration());
-
-			if (paramTypeRef == null) {
-				return null;
-			}
-
-			typeParams[i] = paramTypeRef.parameterize();
-		}
-
-		return new ArbitraryTypeRefParameters(
-				location(p, ifaceNode),
-				p.getScope(),
-				typeParams);
 	}
 
 	public final TypeNodeVisitor<ParamTypeRef, AccessDistributor> typeVisitor(

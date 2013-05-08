@@ -23,7 +23,6 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
-import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
@@ -52,20 +51,6 @@ final class PhrasePrefixVisitor
 
 		if (phrase == null) {
 			return phrase;
-		}
-
-		return applyTypeParameters(phrase);
-	}
-
-	@Override
-	public PhraseBuilder visitTypeParameters(
-			TypeParametersNode parameters,
-			PhraseBuilder p) {
-
-		final PhraseBuilder phrase = p.prefixByTypeParameters(parameters);
-
-		if (phrase == null) {
-			return null;
 		}
 
 		return applyTypeParameters(phrase);

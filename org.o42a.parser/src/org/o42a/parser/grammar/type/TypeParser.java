@@ -26,7 +26,9 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.MemberRefNode.Qualifier;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.MacroExpressionNode;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -63,14 +65,7 @@ public class TypeParser implements Parser<TypeNode> {
 			return null;
 		}
 
-		final TypeParametersNode typeParameters =
-				context.parse(typeParameters(type));
-
-		if (typeParameters == null) {
-			return type;
-		}
-
-		return typeParameters;
+		return type;
 	}
 
 	private TypeNode parseMacroExpansion(ParserContext context) {

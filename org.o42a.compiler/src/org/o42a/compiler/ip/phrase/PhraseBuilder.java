@@ -162,25 +162,6 @@ public final class PhraseBuilder extends Contained {
 		return this;
 	}
 
-	public PhraseBuilder prefixByTypeParameters(TypeParametersNode node) {
-
-		final TypeRefParameters typeParams =
-				ip().typeIp().typeParameters(
-						node.getParameters(),
-						distributeAccess().fromDeclaration(),
-						typeConsumer());
-		final TypeNode ascendantNode = node.getType();
-
-		if (ascendantNode == null) {
-			return setImpliedAncestor(location(this, node))
-					.setTypeParameters(typeParams.toObjectTypeParameters());
-		}
-
-		return ascendantNode.accept(
-				new PhrasePrefixVisitor(typeParams),
-				this);
-	}
-
 	public PhraseBuilder prefixByTypeArguments(TypeArgumentsNode node) {
 
 		final TypeRefParameters typeArguments = ip().typeIp().typeArguments(

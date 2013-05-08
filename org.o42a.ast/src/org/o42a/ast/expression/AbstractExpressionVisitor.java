@@ -24,7 +24,6 @@ import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
-import org.o42a.ast.type.TypeParametersNode;
 
 
 public abstract class AbstractExpressionVisitor<R, P>
@@ -44,11 +43,6 @@ public abstract class AbstractExpressionVisitor<R, P>
 	@Override
 	public R visitAscendants(AscendantsNode ascendants, P p) {
 		return visitExpression(ascendants, p);
-	}
-
-	@Override
-	public R visitTypeParameters(TypeParametersNode parameters, P p) {
-		return visitExpression(parameters, p);
 	}
 
 	@Override

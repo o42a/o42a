@@ -25,7 +25,6 @@ import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISI
 import org.o42a.ast.expression.*;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
-import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.ref.cmp.ComparisonExpression;
 import org.o42a.compiler.ip.Interpreter;
@@ -73,20 +72,6 @@ public final class PhraseInterpreter {
 				typeConsumer);
 
 		return phrase.prefixByAscendants(node).noDeclarations();
-	}
-
-	public PhraseBuilder typeParametersPhrase(
-			TypeParametersNode node,
-			AccessDistributor distributor,
-			TypeConsumer typeConsumer) {
-
-		final PhraseBuilder phrase = new PhraseBuilder(
-				ip(),
-				location(distributor, node),
-				distributor,
-				typeConsumer);
-
-		return phrase.prefixByTypeParameters(node).noDeclarations();
 	}
 
 	public PhraseBuilder typeArgumentsPhrase(

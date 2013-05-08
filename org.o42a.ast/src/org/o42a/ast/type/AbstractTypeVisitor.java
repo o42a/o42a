@@ -25,11 +25,6 @@ public abstract class AbstractTypeVisitor<R, P>
 		implements TypeNodeVisitor<R, P> {
 
 	@Override
-	public R visitTypeParameters(TypeParametersNode parameters, P p) {
-		return visitType(parameters, p);
-	}
-
-	@Override
 	public R visitTypeArguments(TypeArgumentsNode arguments, P p) {
 		return visitType(arguments, p);
 	}
