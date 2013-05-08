@@ -9,6 +9,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.o42a.ast.test.grammar.matchers.IntegerNumberNodeMatcher.INTEGER_NUMBER;
+import static org.o42a.ast.test.grammar.matchers.MemberRefWithoutOwner.MEMBER_REF_WITHOUT_OWNER;
+import static org.o42a.ast.test.grammar.matchers.MemberRefWithoutRetention.MEMBER_REF_WITHOUT_RETENTION;
 import static org.o42a.util.string.NameEncoder.NAME_ENCODER;
 
 import org.hamcrest.CoreMatchers;
@@ -62,12 +64,12 @@ public class GrammarTestCase {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends Node> Matcher<T> memberRefWithoutOwner() {
-		return (Matcher<T>) MemberRefWithoutOwner.MEMBER_REF_WITHOUT_OWNER;
+		return (Matcher<T>) MEMBER_REF_WITHOUT_OWNER;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T extends Node> Matcher<T> memberRefWithoutRetention() {
-		return (Matcher<T>) MemberRefWithoutOwner.MEMBER_REF_WITHOUT_OWNER;
+		return (Matcher<T>) MEMBER_REF_WITHOUT_RETENTION;
 	}
 
 	@SuppressWarnings("unchecked")
