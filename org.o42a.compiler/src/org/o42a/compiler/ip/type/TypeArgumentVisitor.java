@@ -105,7 +105,7 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 			AscendantsNode ascendants,
 			AccessDistributor p) {
 		if (ascendants.hasSamples()) {
-			return invalidType(ascendants, p);
+			return invalidTypeArgument(ascendants, p);
 		}
 		return singleTypeArgument(ascendants, p);
 	}
@@ -118,7 +118,7 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 		final SerialNode[] args = singleAlt(parentheses);
 
 		if (args == null) {
-			return invalidType(parentheses, p);
+			return invalidTypeArgument(parentheses, p);
 		}
 		if (args.length <= 1) {
 			return typeArgumentInParenthesis(parentheses, p, args);
@@ -136,13 +136,16 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 	protected TypeRefParameters visitTypeArgument(
 			TypeArgumentNode argument,
 			AccessDistributor p) {
-		return invalidType(argument, p);
+		return invalidTypeArgument(argument, p);
 	}
 
-	private TypeRefParameters invalidType(
+	private TypeRefParameters invalidTypeArgument(
 			Node argument,
 			AccessDistributor p) {
-		TypeInterpreter.invalidType(p.getContext().getLogger(), argument);
+		p.getContext().getLogger().error(
+				"invalid_type_argument",
+				argument,
+				"Invalid type argument");
 		return null;
 	}
 
@@ -164,7 +167,7 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 			}
 		}
 
-		return invalidType(parentheses, p);
+		return invalidTypeArgument(parentheses, p);
 	}
 
 	private TypeRefParameters typeArgumentsList(
@@ -205,14 +208,14 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 		final StatementNode statement = serialNode.getStatement();
 
 		if (statement == null) {
-			invalidType(args[i], p);
+			invalidTypeArgument(args[i], p);
 			return null;
 		}
 
 		final ExpressionNode expression = statement.toExpression();
 
 		if (expression == null) {
-			invalidType(statement, p);
+			invalidTypeArgument(statement, p);
 			return null;
 		}
 

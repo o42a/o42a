@@ -38,10 +38,6 @@ import org.o42a.util.log.LogInfo;
 
 public final class TypeInterpreter {
 
-	public static void invalidType(CompilerLogger logger, LogInfo location) {
-		logger.error("invalid_type", location, "Not a valid type reference");
-	}
-
 	public static void redundantTypeArguments(
 			CompilerLogger logger,
 			LogInfo location) {
@@ -88,11 +84,6 @@ public final class TypeInterpreter {
 				args.length - 1,
 				p,
 				consumer);
-	}
-
-	public final TypeNodeVisitor<ParamTypeRef, AccessDistributor> typeVisitor(
-			TypeConsumer consumer) {
-		return new TypeVisitor(this, consumer);
 	}
 
 	public final ExpressionNodeVisitor<AncestorTypeRef, AccessDistributor>

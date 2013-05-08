@@ -33,7 +33,9 @@ import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.common.phrase.Phrase;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.phrase.part.UnaryPhraseOperator;
@@ -168,7 +170,7 @@ public final class PhraseBuilder extends Contained {
 				node,
 				distributeAccess().fromDeclaration(),
 				typeConsumer());
-		final TypeNode ascendantNode = node.getType();
+		final ExpressionNode ascendantNode = node.getType();
 
 		if (ascendantNode == null) {
 			return setImpliedAncestor(location(this, node))

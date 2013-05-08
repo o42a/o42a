@@ -24,7 +24,6 @@ import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.statement.AssignableNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.ast.type.TypeArgumentNode;
-import org.o42a.ast.type.TypeNode;
 
 
 public interface ExpressionNode
@@ -33,8 +32,6 @@ public interface ExpressionNode
 	<R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p);
 
 	DeclarableNode toDeclarable();
-
-	TypeNode toType();
 
 	TypeArgumentNode toTypeArgument();
 

@@ -20,21 +20,17 @@
 package org.o42a.ast.type;
 
 import org.o42a.ast.clause.ClauseIdNode;
-import org.o42a.ast.expression.AbstractExpressionNode;
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.RefNode;
 
 
-public class TypeArgumentsNode
-		extends AbstractExpressionNode
-		implements TypeNode {
+public class TypeArgumentsNode extends AbstractExpressionNode {
 
 	private final TypeArgNode[] arguments;
-	private final TypeNode type;
+	private final ExpressionNode type;
 
-	public TypeArgumentsNode(TypeArgNode[] arguments, TypeNode type) {
+	public TypeArgumentsNode(TypeArgNode[] arguments, ExpressionNode type) {
 		super(start(arguments), end(lastNode(arguments), type));
 		this.arguments = arguments;
 		this.type = type;
@@ -44,7 +40,7 @@ public class TypeArgumentsNode
 		return this.arguments;
 	}
 
-	public final TypeNode getType() {
+	public final ExpressionNode getType() {
 		return this.type;
 	}
 
@@ -54,18 +50,8 @@ public class TypeArgumentsNode
 	}
 
 	@Override
-	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeArguments(this, p);
-	}
-
-	@Override
 	public final DeclarableNode toDeclarable() {
 		return null;
-	}
-
-	@Override
-	public final TypeNode toType() {
-		return this;
 	}
 
 	@Override

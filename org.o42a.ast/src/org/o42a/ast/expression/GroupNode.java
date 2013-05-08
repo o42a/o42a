@@ -25,7 +25,6 @@ import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.TypeArgumentNode;
-import org.o42a.ast.type.TypeNode;
 
 
 public class GroupNode extends AbstractExpressionNode {
@@ -61,11 +60,6 @@ public class GroupNode extends AbstractExpressionNode {
 
 	@Override
 	public final ClauseIdNode toClauseId() {
-		return null;
-	}
-
-	@Override
-	public final TypeNode toType() {
 		return null;
 	}
 
