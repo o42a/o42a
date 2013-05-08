@@ -21,7 +21,7 @@ Var := ``1
   Assert [var == 1] "Wrong initial value of variable"
 }
 
-Var object := variable (`integer) = 1
+Var object := integer` variable = 1
 
 {
   Print error "    Object declaration" nl
