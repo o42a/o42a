@@ -9,7 +9,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Print to console :=> void
 ==========================
 
-Text :=< link (`string)
+Text :=< string` link
 
 <*Printer> Void (
   <*Content> Print to console (
