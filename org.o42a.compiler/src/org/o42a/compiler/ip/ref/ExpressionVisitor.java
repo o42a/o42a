@@ -34,7 +34,6 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
-import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
@@ -108,23 +107,6 @@ public final class ExpressionVisitor
 		return ip().phraseIp()
 				.ascendantsPhrase(ascendants, p, this.typeConsumer)
 				.toRef();
-	}
-
-	@Override
-	public Ref visitTypeParameters(
-			TypeParametersNode parameters,
-			AccessDistributor p) {
-
-		final PhraseBuilder phrase =
-				ip()
-				.phraseIp()
-				.typeParametersPhrase(parameters, p, this.typeConsumer);
-
-		if (phrase == null) {
-			return super.visitTypeParameters(parameters, p);
-		}
-
-		return phrase.toRef();
 	}
 
 	@Override

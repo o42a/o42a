@@ -49,10 +49,10 @@ final class TypeParameterDefinitionVisitor
 	}
 
 	@Override
-	public TypeRef visitTypeParameters(
-			TypeParametersNode parameters,
+	public TypeRef visitTypeArguments(
+			TypeArgumentsNode arguments,
 			AccessDistributor p) {
-		return typeRef(parameters, p);
+		return typeRef(arguments, p);
 	}
 
 	@Override

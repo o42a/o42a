@@ -110,10 +110,6 @@ public abstract class NodeVisitor<R, P>
 		return visitPart(sample, p);
 	}
 
-	public R visitTypeParameter(TypeParameterNode parameter, P p) {
-		return visitPart(parameter, p);
-	}
-
 	public R visitTypeArgument(TypeArgNode argument, P p) {
 		return visitPart(argument, p);
 	}
@@ -121,10 +117,6 @@ public abstract class NodeVisitor<R, P>
 	@Override
 	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
 		return visitDeclarable(adapter, p);
-	}
-
-	public R visitInterface(InterfaceNode iface, P p) {
-		return visitPart(iface, p);
 	}
 
 	public R visitLocal(LocalNode local, P p) {

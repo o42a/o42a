@@ -29,7 +29,9 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.GroupNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.*;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -224,22 +226,6 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				continue;
 			default:
-				if (next == '(') {
-
-					final TypeNode type = expression.toType();
-
-					if (type != null) {
-
-						final TypeParametersNode typeParameters =
-								context.parse(typeParameters(type));
-
-						if (typeParameters != null) {
-							expression = typeParameters;
-							next = context.pendingOrNext();
-							continue;
-						}
-					}
-				}
 
 				final PhraseNode phrase = context.parse(phrase(expression));
 

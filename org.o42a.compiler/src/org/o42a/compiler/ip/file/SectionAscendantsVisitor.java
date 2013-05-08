@@ -28,7 +28,9 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentsNode;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -54,40 +56,6 @@ final class SectionAscendantsVisitor
 			AccessDistributor p) {
 		return PLAIN_IP.typeIp()
 				.parseAscendants(ascendants, p.fromDeclaration());
-	}
-
-	@Override
-	public AscendantsDefinition visitTypeParameters(
-			TypeParametersNode parameters,
-			AccessDistributor p) {
-
-		AscendantsDefinition ascendants =
-				new AscendantsDefinition(location(p, parameters), p);
-		final TypeRefParameters typeParams =
-				PLAIN_IP.typeIp().typeParameters(
-						parameters.getParameters(),
-						p,
-						this.consumer);
-		final TypeNode ascendantNode = parameters.getType();
-
-		if (ascendantNode != null) {
-
-			final Ref ascendantRef = ascendantNode.accept(
-					PLAIN_IP.expressionVisitor(),
-					p.fromDeclaration());
-
-			if (ascendantRef != null) {
-
-				final ParamTypeRef type =
-						this.consumer.consumeType(ascendantRef, typeParams);
-
-				if (type != null) {
-					ascendants = type.updateAncestor(ascendants);
-				}
-			}
-		}
-
-		return ascendants;
 	}
 
 	@Override

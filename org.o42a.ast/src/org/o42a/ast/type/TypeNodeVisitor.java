@@ -22,8 +22,6 @@ package org.o42a.ast.type;
 
 public interface TypeNodeVisitor<R, P> extends TypeArgumentNodeVisitor<R, P> {
 
-	R visitTypeParameters(TypeParametersNode parameters, P p);
-
 	R visitTypeArguments(TypeArgumentsNode arguments, P p);
 
 	R visitMacroExpression(MacroExpressionNode expression, P p);

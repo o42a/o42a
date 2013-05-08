@@ -23,6 +23,7 @@ import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.singleAlt;
 import static org.o42a.compiler.ip.Interpreter.singleExpression;
+import static org.o42a.compiler.ip.type.TypeInterpreter.redundantTypeArguments;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.ExpressionNode;
@@ -171,10 +172,9 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 			AccessDistributor p,
 			SerialNode[] args) {
 		if (this.typeParameters != null) {
-			p.getLogger().error(
-					"redundant_type_arguments",
-					this.typeParameters,
-					"Redundant type arguments");
+			redundantTypeArguments(
+					p.getLogger(),
+					this.typeParameters.getLocation());
 		}
 
 		final TypeRef[] params = new TypeRef[args.length];

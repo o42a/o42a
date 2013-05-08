@@ -24,7 +24,6 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
-import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -62,22 +61,6 @@ final class SuffixVisitor
 				this.typeConsumer);
 
 		return phrase.prefixByAscendants(ascendants)
-				.noDeclarations()
-				.suffix(this.node);
-	}
-
-	@Override
-	public PhraseBuilder visitTypeParameters(
-			TypeParametersNode parameters,
-			AccessDistributor p) {
-
-		final PhraseBuilder phrase = new PhraseBuilder(
-				ip(),
-				location(p, this.node),
-				p,
-				this.typeConsumer);
-
-		return phrase.prefixByTypeParameters(parameters)
 				.noDeclarations()
 				.suffix(this.node);
 	}

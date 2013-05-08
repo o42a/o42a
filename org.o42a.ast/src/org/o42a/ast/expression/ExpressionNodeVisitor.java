@@ -23,7 +23,6 @@ import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
-import org.o42a.ast.type.TypeParametersNode;
 
 
 public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
@@ -33,8 +32,6 @@ public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 	R visitText(TextNode text, P p);
 
 	R visitAscendants(AscendantsNode ascendants, P p);
-
-	R visitTypeParameters(TypeParametersNode parameters, P p);
 
 	R visitTypeArguments(TypeArgumentsNode arguments, P p);
 
