@@ -142,26 +142,6 @@ public final class FileModuleCompiler
 					"Module can only declare new object (':='). "
 					+ "It can't declare prototype or override something");
 		}
-		if (declaratorNode.getDefinitionKind() != null) {
-			switch (declaratorNode.getDefinitionKind()) {
-			case LINK:
-				getLogger().error(
-						"prohibited_module_link",
-						declaratorNode.getInterface(),
-						"Module is object. It can't be a link");
-				break;
-			case VARIABLE:
-				getLogger().error(
-						"prohibited_module_variable",
-						declaratorNode.getInterface(),
-						"Module is object. It can't be variable");
-				break;
-			default:
-				throw new IllegalStateException(
-						"Unknown definition kind: "
-						+ declaratorNode.getDefinitionKind());
-			}
-		}
 
 		final DeclarableNode declarableNode = declaratorNode.getDeclarable();
 

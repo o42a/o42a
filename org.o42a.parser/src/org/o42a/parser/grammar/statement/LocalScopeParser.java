@@ -20,15 +20,13 @@
 package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.braces;
-import static org.o42a.parser.Grammar.iface;
-import static org.o42a.parser.grammar.statement.LocalParser.LOCAL;
+import static org.o42a.parser.Grammar.local;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.LocalScopeNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.InterfaceNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -62,32 +60,17 @@ public class LocalScopeParser implements Parser<LocalScopeNode> {
 	@Override
 	public LocalScopeNode parse(ParserContext context) {
 
-		final InterfaceNode iface;
 		final LocalNode local;
 
 		if (this.local != null) {
-			iface = null;
 			local = this.local;
 		} else if (this.expression != null) {
-			iface = null;
 			local = context.parse(new LocalParser(this.expression));
 			if (local == null) {
 				return null;
 			}
 		} else {
-
-			final int next = context.next();
-
-			if (next == '(') {
-				iface = context.parse(iface());
-				if (iface == null) {
-					return null;
-				}
-			} else {
-				iface = null;
-			}
-
-			local = context.parse(LOCAL);
+			local = context.parse(local());
 			if (local == null) {
 				return null;
 			}
@@ -120,7 +103,7 @@ public class LocalScopeParser implements Parser<LocalScopeNode> {
 			return null;
 		}
 
-		return new LocalScopeNode(iface, local, separator, content);
+		return new LocalScopeNode(local, separator, content);
 	}
 
 }

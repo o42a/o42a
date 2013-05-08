@@ -64,12 +64,6 @@ final class TypeDefinitionVisitor
 					location(p, declarator.getDefinitionAssignment()),
 					"Type parameter can not be abstract");
 		}
-		if (declarator.getInterface() != null) {
-			p.getLogger().error(
-					"prohibited_link_type_parameter",
-					location(p, declarator.getInterface()),
-					"Type parameter can not be a link");
-		}
 
 		final TypeParameterDeclaration parameter =
 				new TypeParameterDeclaration(p, declarator);

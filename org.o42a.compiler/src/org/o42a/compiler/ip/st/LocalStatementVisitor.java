@@ -101,7 +101,6 @@ final class LocalStatementVisitor
 				this.visitor.ip(),
 				this.visitor.getContext(),
 				statements,
-				scope.getInterface(),
 				scope.getLocal());
 		this.localNode = scope.getLocal();
 		scope.getContent().accept(this, statements);
@@ -116,7 +115,6 @@ final class LocalStatementVisitor
 				this.visitor.ip(),
 				this.visitor.getContext(),
 				statements,
-				null,
 				localNode);
 
 		if (local == null) {

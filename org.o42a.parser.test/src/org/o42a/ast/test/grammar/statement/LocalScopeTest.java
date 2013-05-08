@@ -7,8 +7,6 @@ package org.o42a.ast.test.grammar.statement;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.o42a.ast.atom.ParenthesisSign.CLOSING_PARENTHESIS;
-import static org.o42a.ast.atom.ParenthesisSign.OPENING_PARENTHESIS;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
@@ -17,8 +15,6 @@ import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.LocalScopeNode;
 import org.o42a.ast.statement.NamedBlockNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.DefinitionKind;
-import org.o42a.ast.type.InterfaceNode;
 
 
 public class LocalScopeTest extends GrammarTestCase {
@@ -135,24 +131,6 @@ public class LocalScopeTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void localLinkWithInterface() {
-
-		final LocalScopeNode scope =
-				parse("(`Type) expression $ local: statement");
-		final InterfaceNode iface = scope.getInterface();
-
-		checkExpressionIs(scope, "expression");
-		checkLocalNameIs(scope, "local");
-		checkContentIs(scope, "statement");
-
-		assertThat(iface.getOpening().getType(), is(OPENING_PARENTHESIS));
-		assertThat(iface.getKind().getType(), is(DefinitionKind.LINK));
-		assertThat(iface.getParameters().length, is(1));
-		assertThat(iface.getClosing().getType(), is(CLOSING_PARENTHESIS));
-		assertThat(iface.getParameters()[0].getType(), isName("type"));
-	}
-
-	@Test
 	public void localVariable() {
 
 		final LocalScopeNode scope = parse("``Expression $ local: statement");
@@ -163,24 +141,6 @@ public class LocalScopeTest extends GrammarTestCase {
 		assertThat(expression.getOperand(), isName("expression"));
 		checkLocalNameIs(scope, "local");
 		checkContentIs(scope, "statement");
-	}
-
-	@Test
-	public void localVariableWithInterface() {
-
-		final LocalScopeNode scope =
-				parse("(``Type) expression $ local: statement");
-		final InterfaceNode iface = scope.getInterface();
-
-		checkExpressionIs(scope, "expression");
-		checkLocalNameIs(scope, "local");
-		checkContentIs(scope, "statement");
-
-		assertThat(iface.getOpening().getType(), is(OPENING_PARENTHESIS));
-		assertThat(iface.getKind().getType(), is(DefinitionKind.VARIABLE));
-		assertThat(iface.getParameters().length, is(1));
-		assertThat(iface.getClosing().getType(), is(CLOSING_PARENTHESIS));
-		assertThat(iface.getParameters()[0].getType(), isName("type"));
 	}
 
 	private LocalScopeNode parse(String... text) {

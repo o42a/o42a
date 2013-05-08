@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.field;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
-import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
@@ -32,12 +31,8 @@ import org.o42a.ast.field.*;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
-import org.o42a.ast.type.DefinitionKind;
-import org.o42a.ast.type.TypeNode;
-import org.o42a.common.macro.type.TypeParameterMemberKey;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
@@ -86,7 +81,7 @@ public final class FieldDeclarableVisitor
 				fieldName(nameNode.getName()));
 
 		declaration = setVisibility(declaration, memberNode);
-		declaration = update(declaration, p, this.declarator);
+		declaration = update(declaration, this.declarator);
 		declaration = setDeclaredIn(declaration, p, memberNode);
 
 		return declaration;
@@ -116,7 +111,7 @@ public final class FieldDeclarableVisitor
 				p,
 				adapterId(adapterId.toStaticTypeRef()));
 
-		declaration = update(declaration, p, this.declarator);
+		declaration = update(declaration, this.declarator);
 		declaration = setDeclaredIn(declaration, p, memberNode);
 
 		return declaration;
@@ -206,12 +201,6 @@ public final class FieldDeclarableVisitor
 					this.declarator.getDefinitionAssignment(),
 					"Macro can not be declared as prototype");
 		}
-		if (declaration.getLinkType() != null) {
-			getLogger().error(
-					"porhibited_macro_link",
-					this.declarator.getInterface(),
-					"Macro does not have an interface");
-		}
 		return declaration.macro();
 	}
 
@@ -227,40 +216,12 @@ public final class FieldDeclarableVisitor
 
 	private FieldDeclaration update(
 			FieldDeclaration declaration,
-			AccessDistributor distributor,
 			DeclaratorNode declarator) {
 		if (declaration == null) {
 			return null;
 		}
 
 		FieldDeclaration result = declaration;
-		final DefinitionKind definitionKind = declarator.getDefinitionKind();
-
-		if (definitionKind != null) {
-			result = result.setLinkType(definitionLinkType(definitionKind));
-
-			final TypeNode typeNode = declarator.getDefinitionType();
-
-			if (typeNode != null) {
-
-				final TypeParameterMemberKey parameterKey =
-						new TypeParameterMemberKey(
-								result.getLinkType().interfaceKey(
-										declaration.getContext()
-										.getIntrinsics()));
-				final ParamTypeRef type = typeNode.accept(
-						ip().typeIp().typeVisitor(
-								new FieldNesting(result)
-								.toTypeConsumer()
-								.paramConsumer(parameterKey)),
-								distributor);
-
-				if (type != null) {
-					result = result.setType(type.parameterize());
-				}
-			}
-		}
-
 		final DeclarationTarget target = declarator.getTarget();
 
 		if (target.isOverride()) {
@@ -276,12 +237,7 @@ public final class FieldDeclarableVisitor
 			result = result.setAbstract();
 		}
 		if (target.isPrototype()) {
-			if (definitionKind != null) {
-				getLogger().error(
-						"prohibited_link_prototype",
-						declarator.getDefinitionAssignment(),
-						"Field can not be declared as prototype");
-			} else if (declaration.isAdapter()) {
+			if (declaration.isAdapter()) {
 				getLogger().error(
 						"prohibited_adapter_prototype",
 						declarator.getDefinitionAssignment(),
