@@ -19,7 +19,7 @@ Add :=<> void (
   Adds a new element to the list.
   ~~~
 
-  New element :=< link (`#element type) ~~ Element to add.
+  New element :=< #element type` link ~~ Element to add.
 
   <*Add> Add (
     ~~~
@@ -35,14 +35,14 @@ Insert :=<> void (
   Inserts a new element at the given position.
   ~~~
 
-  Index :=< link (`integer)
+  Index :=< integer` link
   ~~~
   Element index to insert element at.
 
   Should be non-negative and less than or equal to the list size.
   ~~~
 
-  New element :=< link (`#element type) ~~ Element to insert.
+  New element :=< #element type` link ~~ Element to insert.
 
   <*Insert> Insert (
     ~~~
@@ -66,7 +66,7 @@ Remove :=<> void (
   Removes an element at the given position from list.
   ~~~
 
-  Index :=< link (`integer) ~~ An index of element to remove.
+  Index :=< integer` link ~~ An index of element to remove.
 
   <*Remove> Remove (
     ~~~
