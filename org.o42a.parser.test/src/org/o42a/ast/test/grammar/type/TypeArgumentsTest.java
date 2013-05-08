@@ -12,7 +12,7 @@ import static org.o42a.parser.Grammar.simpleExpression;
 import org.junit.Test;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.ref.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgNode;
@@ -97,6 +97,25 @@ public class TypeArgumentsTest extends GrammarTestCase {
 		assertThat(phrase.getParts().length, is(1));
 		assertThat(args.getArguments().length, is(1));
 		assertThat(args.getArguments()[0].getArgument(), isName("foo"));
+		assertThat(args.getType(), isName("bar"));
+	}
+
+	@Test
+	public void macroExpansionArgument() {
+
+		final TypeArgumentsNode args = parse("#foo` bar");
+
+		assertThat(args.getArguments().length, is(1));
+
+		final MemberRefNode arg =
+				to(MemberRefNode.class, args.getArguments()[0].getArgument());
+
+		assertThat(
+				to(ScopeRefNode.class, arg.getOwner()).getType(),
+				is(ScopeType.MACRO));
+		assertThat(arg, hasName("foo"));
+		assertThat(arg, memberRefWithoutRetention());
+
 		assertThat(args.getType(), isName("bar"));
 	}
 
