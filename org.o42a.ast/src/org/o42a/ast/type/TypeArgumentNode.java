@@ -19,8 +19,10 @@
 */
 package org.o42a.ast.type;
 
+import org.o42a.ast.expression.ExpressionNode;
 
-public interface TypeArgumentNode extends TypeNode {
+
+public interface TypeArgumentNode extends ExpressionNode {
 
 	<R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p);
 

@@ -27,7 +27,8 @@ import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
@@ -84,11 +85,6 @@ public class ParenthesesNode
 	}
 
 	@Override
-	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitParentheses(this, p);
-	}
-
-	@Override
 	public <R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitParentheses(this, p);
 	}
@@ -101,11 +97,6 @@ public class ParenthesesNode
 	@Override
 	public final ClauseIdNode toClauseId() {
 		return null;
-	}
-
-	@Override
-	public final TypeNode toType() {
-		return this;
 	}
 
 	@Override

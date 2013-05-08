@@ -58,11 +58,6 @@ public class AscendantsNode
 	}
 
 	@Override
-	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitAscendants(this, p);
-	}
-
-	@Override
 	public <R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitAscendants(this, p);
 	}
@@ -75,11 +70,6 @@ public class AscendantsNode
 	@Override
 	public final ClauseIdNode toClauseId() {
 		return null;
-	}
-
-	@Override
-	public final TypeNode toType() {
-		return this;
 	}
 
 	@Override

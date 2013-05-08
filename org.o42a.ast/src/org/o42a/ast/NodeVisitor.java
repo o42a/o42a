@@ -42,12 +42,12 @@ import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.ast.type.AscendantNode;
 import org.o42a.ast.type.TypeArgNode;
-import org.o42a.ast.type.TypeNodeVisitor;
+import org.o42a.ast.type.TypeArgumentNodeVisitor;
 
 
 public abstract class NodeVisitor<R, P>
 		extends AbstractStatementVisitor<R, P>
-		implements TypeNodeVisitor<R, P>,
+		implements TypeArgumentNodeVisitor<R, P>,
 				AtomNodeVisitor<R, P>,
 				DeclarableNodeVisitor<R, P>,
 				ClauseIdNodeVisitor<R, P>,
@@ -107,7 +107,7 @@ public abstract class NodeVisitor<R, P>
 		return visitPart(sample, p);
 	}
 
-	public R visitTypeArgument(TypeArgNode argument, P p) {
+	public R visitTypeArg(TypeArgNode argument, P p) {
 		return visitPart(argument, p);
 	}
 

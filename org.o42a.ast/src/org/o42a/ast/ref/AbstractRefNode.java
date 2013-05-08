@@ -23,7 +23,8 @@ import org.o42a.ast.Node;
 import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
@@ -45,18 +46,8 @@ public abstract class AbstractRefNode
 	}
 
 	@Override
-	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
-	}
-
-	@Override
 	public <R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p) {
 		return accept((RefNodeVisitor<R, P>) visitor, p);
-	}
-
-	@Override
-	public final TypeNode toType() {
-		return this;
 	}
 
 	@Override

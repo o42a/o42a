@@ -47,7 +47,7 @@ public class TypeArgNode extends AbstractNode {
 
 	@Override
 	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeArgument(this, p);
+		return visitor.visitTypeArg(this, p);
 	}
 
 	@Override

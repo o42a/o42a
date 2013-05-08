@@ -26,7 +26,6 @@ import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.TypeArgumentNode;
-import org.o42a.ast.type.TypeNode;
 
 
 public class TextNode extends AbstractExpressionNode implements PhrasePartNode {
@@ -71,11 +70,6 @@ public class TextNode extends AbstractExpressionNode implements PhrasePartNode {
 
 	@Override
 	public final ClauseIdNode toClauseId() {
-		return null;
-	}
-
-	@Override
-	public final TypeNode toType() {
 		return null;
 	}
 

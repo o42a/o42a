@@ -30,7 +30,6 @@ import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
-import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -70,7 +69,7 @@ final class SectionAscendantsVisitor
 						arguments,
 						p,
 						this.consumer);
-		final TypeNode ascendantNode = arguments.getType();
+		final ExpressionNode ascendantNode = arguments.getType();
 
 		if (ascendantNode != null) {
 
