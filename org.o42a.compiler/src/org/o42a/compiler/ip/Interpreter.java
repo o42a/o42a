@@ -116,6 +116,13 @@ public enum Interpreter {
 
 	public static ExpressionNode unwrap(BlockNode<?> block) {
 
+		final SerialNode[] conjunction = singleAlt(block);
+
+		return singleExpression(conjunction);
+	}
+
+	public static SerialNode[] singleAlt(BlockNode<?> block) {
+
 		final SentenceNode[] content = block.getContent();
 
 		if (content.length != 1) {
@@ -134,8 +141,10 @@ public enum Interpreter {
 			return null;
 		}
 
-		final SerialNode[] conjunction = disjunction[0].getConjunction();
+		return disjunction[0].getConjunction();
+	}
 
+	public static ExpressionNode singleExpression(SerialNode[] conjunction) {
 		if (conjunction.length != 1) {
 			return null;
 		}

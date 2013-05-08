@@ -35,10 +35,28 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.link.LinkValueType;
+import org.o42a.util.log.LogInfo;
 
 
 public final class TypeInterpreter {
+
+	public static void invalidType(CompilerLogger logger, LogInfo location) {
+		logger.error("invalid_type", location, "Not a valid type reference");
+	}
+
+	public static LinkValueType definitionLinkType(
+			DefinitionKind definitionKind) {
+		switch (definitionKind) {
+		case LINK:
+			return LinkValueType.LINK;
+		case VARIABLE:
+			return LinkValueType.VARIABLE;
+		}
+		throw new IllegalArgumentException(
+				"Unknwon definition kind: " + definitionKind);
+	}
 
 	private final Interpreter ip;
 	private final ExpressionNodeVisitor<
@@ -64,16 +82,19 @@ public final class TypeInterpreter {
 		return this.ip;
 	}
 
-	public static LinkValueType definitionLinkType(
-			DefinitionKind definitionKind) {
-		switch (definitionKind) {
-		case LINK:
-			return LinkValueType.LINK;
-		case VARIABLE:
-			return LinkValueType.VARIABLE;
-		}
-		throw new IllegalArgumentException(
-				"Unknwon definition kind: " + definitionKind);
+	public TypeRefParameters typeArguments(
+			TypeArgumentsNode node,
+			AccessDistributor p,
+			TypeConsumer consumer) {
+
+		final TypeArgNode[] args = node.getArguments();
+
+		return TypeArgumentVisitor.typeArguments(
+				this,
+				args,
+				args.length - 1,
+				p,
+				consumer);
 	}
 
 	public final TypeRefParameters typeParameters(

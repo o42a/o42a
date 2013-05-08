@@ -33,6 +33,7 @@ import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.ast.type.TypeParametersNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -121,6 +122,23 @@ public final class ExpressionVisitor
 
 		if (phrase == null) {
 			return super.visitTypeParameters(parameters, p);
+		}
+
+		return phrase.toRef();
+	}
+
+	@Override
+	public Ref visitTypeArguments(
+			TypeArgumentsNode arguments,
+			AccessDistributor p) {
+
+		final PhraseBuilder phrase =
+				ip()
+				.phraseIp()
+				.typeArgumentsPhrase(arguments, p, this.typeConsumer);
+
+		if (phrase == null) {
+			return super.visitTypeArguments(arguments, p);
 		}
 
 		return phrase.toRef();
