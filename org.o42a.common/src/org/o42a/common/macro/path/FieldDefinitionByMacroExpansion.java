@@ -20,14 +20,12 @@
 package org.o42a.common.macro.path;
 
 import static org.o42a.common.macro.path.MacroExpansionStep.prohibitedExpansion;
-import static org.o42a.core.member.field.DefinitionTarget.linkDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 
 
 final class FieldDefinitionByMacroExpansion extends FieldDefinition {
@@ -54,14 +52,7 @@ final class FieldDefinitionByMacroExpansion extends FieldDefinition {
 
 	@Override
 	public DefinitionTarget getDefinitionTarget() {
-
-		final TypeRef type = this.field.getDeclaration().getType();
-
-		if (type == null) {
-			return objectDefinition();
-		}
-
-		return linkDefinition(type.getParameters().getLinkDepth());
+		return objectDefinition();
 	}
 
 	@Override
@@ -71,11 +62,6 @@ final class FieldDefinitionByMacroExpansion extends FieldDefinition {
 
 	@Override
 	public void overrideObject(ObjectDefiner definer) {
-		define(definer);
-	}
-
-	@Override
-	public void defineLink(LinkDefiner definer) {
 		define(definer);
 	}
 
@@ -98,13 +84,6 @@ final class FieldDefinitionByMacroExpansion extends FieldDefinition {
 
 		if (declaration.isMacro()) {
 			// Macro can not be defined by macro expansion.
-			prohibitedExpansion(getLogger(), declaration.getLocation());
-			this.invalid = true;
-			return;
-		}
-		if (declaration.getLinkType() != null
-				&& declaration.getType() == null) {
-			// Link without interface can not be defined by macro expansion.
 			prohibitedExpansion(getLogger(), declaration.getLocation());
 			this.invalid = true;
 			return;

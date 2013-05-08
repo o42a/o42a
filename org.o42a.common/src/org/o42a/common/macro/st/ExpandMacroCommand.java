@@ -64,7 +64,14 @@ final class ExpandMacroCommand extends Command {
 
 	@Override
 	public TypeParameters<?> typeParameters(Scope scope) {
-		return valueAdapter(scope).typeParameters(scope);
+
+		final ValueAdapter valueAdapter = valueAdapter(scope);
+
+		if (!valueAdapter.getAdaptedRef().isValid()) {
+			return null;
+		}
+
+		return valueAdapter.typeParameters(scope);
 	}
 
 	@Override

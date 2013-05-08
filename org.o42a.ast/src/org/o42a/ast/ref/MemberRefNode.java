@@ -25,7 +25,6 @@ import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
 
@@ -110,11 +109,6 @@ public class MemberRefNode
 
 	@Override
 	public final AdapterRefNode toAdapterRef() {
-		return null;
-	}
-
-	@Override
-	public final MacroExpansionNode toMacroExpansion() {
 		return null;
 	}
 

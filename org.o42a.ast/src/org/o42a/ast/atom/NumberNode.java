@@ -29,7 +29,7 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.TypeArgumentNode;
 
 
 public class NumberNode
@@ -116,7 +116,7 @@ public class NumberNode
 	}
 
 	@Override
-	public final TypeNode toType() {
+	public final TypeArgumentNode toTypeArgument() {
 		return null;
 	}
 

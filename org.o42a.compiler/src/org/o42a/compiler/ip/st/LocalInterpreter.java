@@ -19,10 +19,6 @@
 */
 package org.o42a.compiler.ip.st;
 
-import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
-import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
-import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
-import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_NAME;
 
@@ -33,22 +29,13 @@ import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.statement.LocalNode;
-import org.o42a.ast.type.InterfaceNode;
-import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.TypeParameterNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.phrase.PhraseBuilder;
-import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Local;
-import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.string.Name;
 
@@ -114,14 +101,12 @@ public final class LocalInterpreter {
 					"A local can be declared only with `:=` sign");
 		}
 
-		final Ref ref = localRef(
+		final Ref ref = localValue(
 				ip,
 				context,
-				statements,
 				declarator.getDeclarable(),
-				declarator.getInterface(),
 				declarator.getDefinition(),
-				TARGET_REFERRAL);
+				statements.nextDistributor().distributeIn(context));
 
 		statements.get().local(
 				new Location(context, declarator.getDeclarable()),
@@ -135,9 +120,7 @@ public final class LocalInterpreter {
 			Interpreter ip,
 			CompilerContext context,
 			StatementsAccess statements,
-			InterfaceNode iface,
-			LocalNode local,
-			Referral referral) {
+			LocalNode local) {
 
 		final LogInfo location;
 		final Name name;
@@ -150,14 +133,12 @@ public final class LocalInterpreter {
 			name = ANONYMOUS_LOCAL_NAME;
 		}
 
-		final Ref ref = localRef(
+		final Ref ref = localValue(
 				ip,
 				context,
-				statements,
 				location,
-				iface,
 				local.getExpression(),
-				referral);
+				statements.nextDistributor().distributeIn(context));
 
 		return statements.get()
 				.local(new Location(context, location), name, ref);
@@ -207,106 +188,18 @@ public final class LocalInterpreter {
 		return nameNode.getName();
 	}
 
-	private static Ref localRef(
-			final Interpreter ip,
-			final CompilerContext context,
-			StatementsAccess statements,
-			LogInfo location,
-			InterfaceNode iface,
-			ExpressionNode definition,
-			final Referral referral) {
-
-		final AccessDistributor distributor =
-				statements.nextDistributor().distributeIn(context);
-
-		if (iface == null) {
-			return localValue(
-					ip,
-					context,
-					location,
-					definition,
-					distributor,
-					referral);
-		}
-
-		final PhraseBuilder phrase = new PhraseBuilder(
-				ip,
-				new Location(context, location),
-				distributor,
-				EXPRESSION_TYPE_CONSUMER);
-		final LinkValueType linkType =
-				definitionLinkType(iface.getKind().getType());
-
-		phrase.referBody();
-		phrase.setAncestor(linkType.typeRef(
-				new Location(context, iface),
-				statements.getScope()));
-
-		final TypeNode type = interfaceType(iface);
-
-		if (type != null) {
-
-			final TypeRefParameters typeParams =
-					ip.typeIp().typeParameters(
-							iface,
-							distributor,
-							phrase.typeConsumer());
-
-			phrase.setTypeParameters(typeParams.toObjectTypeParameters());
-		} else {
-
-			final Ref value = localValue(
-					ip,
-					context,
-					location,
-					definition,
-					distributor,
-					referral);
-
-			phrase.setTypeParameters(
-					linkType.typeParameters(value.getInterface())
-					.toObjectTypeParameters());
-		}
-
-		final BlockAccess<ExpressionNode> block =
-				new BlockAccess<ExpressionNode>(definition, distributor) {
-			@Override
-			public void buildBlock(Block<?> block) {
-
-				final Statements<?> statements =
-						block.propose(this).alternative(this);
-				final Ref value = localValue(
-						ip,
-						block.getContext(),
-						getNode(),
-						getNode(),
-						distribute(statements.nextDistributor()),
-						referral);
-
-				if (value != null) {
-					statements.selfAssign(value);
-				}
-			}
-		};
-
-		phrase.phrase().declarations(block);
-
-		return phrase.toRef();
-	}
-
 	private static Ref localValue(
 			Interpreter ip,
 			CompilerContext context,
 			LogInfo location,
 			ExpressionNode definition,
-			AccessDistributor distributor,
-			Referral referral) {
+			AccessDistributor distributor) {
 		if (definition == null) {
 			return errorRef(new Location(context, location), distributor);
 		}
 
 		final Ref value = definition.accept(
-				referral.expressionVisitor(ip, NO_TYPE_CONSUMER),
+				ip.expressionVisitor(),
 				distributor);
 
 		if (value != null) {
@@ -314,17 +207,6 @@ public final class LocalInterpreter {
 		}
 
 		return errorRef(new Location(context, definition), distributor);
-	}
-
-	private static TypeNode interfaceType(InterfaceNode iface) {
-
-		final TypeParameterNode[] parameters = iface.getParameters();
-
-		if (parameters.length == 0) {
-			return null;
-		}
-
-		return parameters[0].getType();
 	}
 
 	private LocalInterpreter() {

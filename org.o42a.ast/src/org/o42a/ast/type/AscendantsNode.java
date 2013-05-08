@@ -27,7 +27,9 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.RefNode;
 
 
-public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
+public class AscendantsNode
+		extends AbstractExpressionNode
+		implements TypeArgumentNode {
 
 	private final AscendantNode ancestor;
 	private final AscendantNode[] samples;
@@ -56,7 +58,7 @@ public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
 	}
 
 	@Override
-	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitAscendants(this, p);
 	}
 
@@ -71,8 +73,11 @@ public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
 	}
 
 	@Override
-	public final TypeNode toType() {
-		return this;
+	public final TypeArgumentNode toTypeArgument() {
+		if (!hasSamples()) {
+			return this;
+		}
+		return null;
 	}
 
 	@Override

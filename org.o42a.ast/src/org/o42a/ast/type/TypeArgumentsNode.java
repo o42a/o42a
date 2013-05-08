@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,42 +20,33 @@
 package org.o42a.ast.type;
 
 import org.o42a.ast.clause.ClauseIdNode;
-import org.o42a.ast.expression.AbstractExpressionNode;
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.RefNode;
 
 
-public class TypeParametersNode
-		extends AbstractExpressionNode
-		implements TypeNode {
+public class TypeArgumentsNode extends AbstractExpressionNode {
 
-	private final TypeNode type;
-	private final InterfaceNode parameters;
+	private final TypeArgNode[] arguments;
+	private final ExpressionNode type;
 
-	public TypeParametersNode(TypeNode type, InterfaceNode parameters) {
-		super(type.getStart(), parameters.getEnd());
+	public TypeArgumentsNode(TypeArgNode[] arguments, ExpressionNode type) {
+		super(start(arguments), end(lastNode(arguments), type));
+		this.arguments = arguments;
 		this.type = type;
-		this.parameters = parameters;
 	}
 
-	public final TypeNode getType() {
+	public final TypeArgNode[] getArguments() {
+		return this.arguments;
+	}
+
+	public final ExpressionNode getType() {
 		return this.type;
-	}
-
-	public final InterfaceNode getParameters() {
-		return this.parameters;
 	}
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeParameters(this, p);
-	}
-
-	@Override
-	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeParameters(this, p);
+		return visitor.visitTypeArguments(this, p);
 	}
 
 	@Override
@@ -64,17 +55,7 @@ public class TypeParametersNode
 	}
 
 	@Override
-	public final ClauseIdNode toClauseId() {
-		return null;
-	}
-
-	@Override
-	public final TypeNode toType() {
-		return this;
-	}
-
-	@Override
-	public final RefNode toRef() {
+	public final TypeArgumentNode toTypeArgument() {
 		return null;
 	}
 
@@ -84,9 +65,24 @@ public class TypeParametersNode
 	}
 
 	@Override
+	public final ClauseIdNode toClauseId() {
+		return null;
+	}
+
+	@Override
+	public final RefNode toRef() {
+		return null;
+	}
+
+	@Override
 	public void printContent(StringBuilder out) {
-		this.type.printContent(out);
-		this.parameters.printContent(out);
+		for (TypeArgNode argument : this.arguments) {
+			argument.printContent(out);
+			out.append('`');
+		}
+		if (this.type != null) {
+			this.type.printContent(out);
+		}
 	}
 
 }

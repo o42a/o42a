@@ -90,10 +90,6 @@ public class CompilerLogger implements Logger {
 		error("invalid_reference", location, "Not a valid reference");
 	}
 
-	public void invalidType(LogInfo location) {
-		error("invalid_type", location, "Not a valid type reference");
-	}
-
 	public void noValue(LogInfo location) {
 		error("no_value", location, "Value is missing");
 	}

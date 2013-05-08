@@ -42,7 +42,6 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.*;
 import org.o42a.core.value.Void;
-import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -133,8 +132,7 @@ final class ComparisonResult extends BuiltinObject {
 		final Ref phrase = this.comparison.phrase(distributor);
 		final FieldBuilder builder = memberRegistry.newField(
 				fieldDeclaration(this, distributor, COMPARISON_MEMBER)
-				.setVisibility(Visibility.PRIVATE)
-				.setLinkType(LinkValueType.LINK),
+				.setVisibility(Visibility.PRIVATE),
 				phrase.toFieldDefinition());
 
 		if (builder == null) {
@@ -149,11 +147,9 @@ final class ComparisonResult extends BuiltinObject {
 
 		statement.command(defaultEnv(getContext().getLogger()));
 
-		this.cmp = statement
-				.toMember()
+		this.cmp = statement.toMember()
 				.getMemberKey()
 				.toPath()
-				.dereference()
 				.bind(this, getScope())
 				.target(distribute());
 

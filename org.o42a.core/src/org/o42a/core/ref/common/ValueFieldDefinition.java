@@ -20,13 +20,11 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.member.field.DefinitionTarget;
-import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.value.ObjectTypeParameters;
-import org.o42a.core.value.link.LinkValueType;
 
 
 public class ValueFieldDefinition extends DefaultFieldDefinition {
@@ -59,25 +57,6 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 			definer.setParameters(typeParameters(definer));
 		}
 		super.overridePlainObject(definer);
-	}
-
-	@Override
-	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(getRef(), null);
-
-		if (this.typeParameters != null) {
-
-			final LinkValueType linkType =
-					definer.getField().getDeclaration().getLinkType();
-
-			definer.setParameters(
-					linkType.typeParameters(
-							getRef()
-							.getInterface()
-							.setParameters(this.typeParameters)
-							.rescope(definer.getField()))
-					.toObjectTypeParameters());
-		}
 	}
 
 	protected TypeRef ancestor() {

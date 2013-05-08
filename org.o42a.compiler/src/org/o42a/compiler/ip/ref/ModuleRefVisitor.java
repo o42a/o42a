@@ -54,7 +54,7 @@ public class ModuleRefVisitor
 
 		final Owner result = ref.accept(this.ownerVisitor, p);
 
-		return result != null ? result.bodyRef() : null;
+		return result != null ? result.targetRef() : null;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class ModuleRefVisitor
 
 		final Owner result = ref.accept(this.ownerVisitor, p);
 
-		return result != null ? result.bodyRef() : null;
+		return result != null ? result.targetRef() : null;
 	}
 
 	@Override

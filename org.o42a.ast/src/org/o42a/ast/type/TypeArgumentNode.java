@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2011-2013 Ruslan Lopatin
+    Abstract Syntax Tree
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,17 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.ast.type;
 
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ObjectTypeParameters;
+import org.o42a.ast.expression.ExpressionNode;
 
 
-public interface LinkDefiner extends FieldDefiner {
+public interface TypeArgumentNode extends ExpressionNode {
 
-	void setTargetRef(Ref targetRef, TypeRef defaultType);
-
-	void setParameters(ObjectTypeParameters parameters);
+	<R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p);
 
 }

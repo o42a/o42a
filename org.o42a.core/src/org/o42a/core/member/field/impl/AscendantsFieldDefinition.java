@@ -26,7 +26,6 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -73,18 +72,6 @@ public final class AscendantsFieldDefinition extends FieldDefinition {
 		}
 
 		definer.define(valueBlock(getValue()));
-	}
-
-	@Override
-	public void defineLink(LinkDefiner definer) {
-
-		final TypeRef ancestor = this.ascendants.getAncestor();
-
-		definer.setTargetRef(getValue(), ancestor);
-		definer.setParameters(new LinkTypeParameters(
-				definer.getField().getDeclaration().getLinkType(),
-				ancestor,
-				getValue()));
 	}
 
 	@Override

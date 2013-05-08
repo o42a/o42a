@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,18 +19,18 @@
 */
 package org.o42a.ast.type;
 
-import org.o42a.ast.expression.MacroExpansionNode;
-import org.o42a.ast.ref.RefNodeVisitor;
+import org.o42a.ast.atom.SignType;
 
 
-public interface TypeNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
+public enum TypeArgumentSuffix implements SignType {
 
-	R visitAscendants(AscendantsNode ascendants, P p);
+	BACKQUOTE() {
 
-	R visitTypeParameters(TypeParametersNode parameters, P p);
+		@Override
+		public String getSign() {
+			return "`";
+		}
 
-	R visitMacroExpansion(MacroExpansionNode expansion, P p);
-
-	R visitTypeExpression(TypeExpressionNode type, P p);
+	}
 
 }

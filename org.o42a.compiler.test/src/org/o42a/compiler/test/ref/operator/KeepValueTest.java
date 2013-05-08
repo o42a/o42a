@@ -30,7 +30,7 @@ public class KeepValueTest extends CompilerTestCase {
 	public void keepLink() {
 		compile(
 				"A := `5",
-				"B := \\\\a`");
+				"B := \\\\a");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.INTEGER),
@@ -57,7 +57,7 @@ public class KeepValueTest extends CompilerTestCase {
 	public void linkByAdapterValue() {
 		compile(
 				"A := 5",
-				"B := (`string) \\\\a");
+				"B := string` link = \\\\a");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.STRING),
@@ -85,7 +85,7 @@ public class KeepValueTest extends CompilerTestCase {
 	public void linkByLink() {
 		compile(
 				"A := `5",
-				"B := `\\\\a");
+				"B := \\\\a");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.INTEGER),
@@ -101,7 +101,7 @@ public class KeepValueTest extends CompilerTestCase {
 	public void keepLinkTarget() {
 		compile(
 				"A := `5",
-				"B := \\\\a");
+				"B := \\\\a->");
 
 		assertThat(
 				definiteValue(field("b"), ValueType.INTEGER),
@@ -112,7 +112,7 @@ public class KeepValueTest extends CompilerTestCase {
 	public void linkByVariable() {
 		compile(
 				"A := ``5",
-				"B := `\\\\a");
+				"B := `\\\\a->");
 
 		assertThat(
 				LinkValueType.LINK.interfaceRef(

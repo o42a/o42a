@@ -18,8 +18,8 @@ public class StringAdaptersTest extends CompilerTestCase {
 	public void intToString() {
 		compile(
 				"A := 123 456 789",
-				"B := string(= A)",
-				"C := (`string) a",
+				"B := string (= A)",
+				"C := string` link = a",
 				"D := string (= 123)");
 
 		assertThat(
@@ -39,10 +39,10 @@ public class StringAdaptersTest extends CompilerTestCase {
 	@Test
 	public void floatToString() {
 		compile(
-				"A := float '123 456,789'",
-				"B := string(= A)",
-				"C := (`string) a",
-				"D := string (= float '123.456')");
+				"A := 123 456,789",
+				"B := string (= A)",
+				"C := string` link = a",
+				"D := string (= 123.456)");
 
 		assertThat(
 				definiteValue(field("a"), ValueType.FLOAT),

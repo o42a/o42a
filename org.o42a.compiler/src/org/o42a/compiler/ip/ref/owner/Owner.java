@@ -68,18 +68,14 @@ public abstract class Owner {
 
 	public abstract Ref targetRef();
 
-	public abstract Owner body(LocationInfo location, LocationInfo bodyRef);
-
 	public abstract Owner deref(LocationInfo location, LocationInfo deref);
-
-	public abstract Ref bodyRef();
 
 	public final Owner member(
 			LocationInfo location,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {
 
-		final Ref owner = targetRef();
+		final Ref owner = memberOwnerRef();
 		final AccessDistributor distributor = distribute();
 		final MemberOf memberOf =
 				new MemberOf(location, distributor, memberId, declaredIn);
@@ -111,6 +107,10 @@ public abstract class Owner {
 			return super.toString();
 		}
 		return this.ownerRef.toString();
+	}
+
+	protected Ref memberOwnerRef() {
+		return targetRef();
 	}
 
 	protected Owner memberOwner(Ref ref) {

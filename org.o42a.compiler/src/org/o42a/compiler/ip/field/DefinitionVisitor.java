@@ -61,7 +61,7 @@ public final class DefinitionVisitor
 			FieldAccess p) {
 
 		final Ref definition = expression.accept(
-				ip().targetExVisitor(this.typeConsumer),
+				ip().expressionVisitor(this.typeConsumer),
 				p.distributeAccess());
 
 		if (definition == null) {

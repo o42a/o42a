@@ -23,7 +23,7 @@ import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 
 
 public abstract class AbstractExpressionVisitor<R, P>
@@ -46,8 +46,8 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
-	public R visitTypeParameters(TypeParametersNode parameters, P p) {
-		return visitExpression(parameters, p);
+	public R visitTypeArguments(TypeArgumentsNode arguments, P p) {
+		return visitExpression(arguments, p);
 	}
 
 	@Override
@@ -58,11 +58,6 @@ public abstract class AbstractExpressionVisitor<R, P>
 	@Override
 	public R visitUnary(UnaryNode expression, P p) {
 		return visitExpression(expression, p);
-	}
-
-	@Override
-	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
-		return visitUnary(expansion, p);
 	}
 
 	@Override

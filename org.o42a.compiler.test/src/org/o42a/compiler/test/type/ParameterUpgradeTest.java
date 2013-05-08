@@ -21,10 +21,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< link (`#t)",
-				"  G := `f",
+				"  F :=< #t` link",
+				"  G := f",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -44,10 +44,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< variable (`#t)",
-				"  G := `f",
+				"  F :=< #t` variable",
+				"  G := `f->",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -64,10 +64,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< link (`#t)",
-				"  G := \\f`",
+				"  F :=< #t` link",
+				"  G := \\f",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -87,10 +87,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< variable (`#t)",
-				"  G := \\f`",
+				"  F :=< #t` variable",
+				"  G := \\f",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -107,10 +107,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< link (`#t)",
-				"  G := `\\f",
+				"  F :=< #t` link",
+				"  G := `\\f->",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -130,10 +130,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< variable (`#t)",
-				"  G := `\\f",
+				"  F :=< #t` variable",
+				"  G := `\\f->",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -150,10 +150,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< link (`#t)",
-				"  G := \\\\f`",
+				"  F :=< #t` link",
+				"  G := \\\\f",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -173,10 +173,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< variable (`#t)",
-				"  G := \\\\f`",
+				"  F :=< #t` variable",
+				"  G := \\\\f",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -193,10 +193,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< link (`#t)",
-				"  G := `\\\\f",
+				"  F :=< #t` link",
+				"  G := `\\\\f->",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 
@@ -216,10 +216,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				"A :=> void #(",
 				"  T := void",
 				") (",
-				"  F :=< variable (`#t)",
-				"  G := `\\\\f",
+				"  F :=< #t` variable",
+				"  G := `\\\\f->",
 				")",
-				"B := a (`integer) (",
+				"B := integer` a (",
 				"  F = 23",
 				")");
 

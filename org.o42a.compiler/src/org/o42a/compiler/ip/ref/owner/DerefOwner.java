@@ -46,15 +46,10 @@ final class DerefOwner extends Owner {
 
 	@Override
 	public Ref targetRef() {
-		return ownerRef().getPath()
+		return ownerRef()
+				.getPath()
 				.append(new DerefFragment(this.deref))
 				.target(this.location, distribute());
-	}
-
-	@Override
-	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		redundantBodyRef(getLogger(), bodyRef.getLocation());
-		return this;
 	}
 
 	@Override
@@ -63,12 +58,7 @@ final class DerefOwner extends Owner {
 				location,
 				deref,
 				getAccessRules(),
-				ownerRef());
-	}
-
-	@Override
-	public Ref bodyRef() {
-		return ownerRef();
+				targetRef());
 	}
 
 }

@@ -25,7 +25,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 	@Test
 	public void qualifiedRow() {
-		compile("A := `row (`integer) [[1, 2, 3]]");
+		compile("A := `integer` row [[1, 2, 3]]");
 
 		final Obj a = field("a").toObject();
 		final TypeParameters<Array> arrayParameters =
@@ -85,7 +85,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 	@Test
 	public void qualifiedArray() {
-		compile("A := `array (`integer) [[1, 2, 3]]");
+		compile("A := `integer` array [[1, 2, 3]]");
 
 		final Obj a = field("a").toObject();
 		final TypeParameters<Array> arrayParameters =

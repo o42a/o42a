@@ -18,11 +18,11 @@ public class ConditionalDefinitionTest extends CompilerTestCase {
 	public void conditionalValue() {
 		compile(
 				"A := void(",
-				"  Condition := `void.",
-				"  Value := integer(Condition? = 1. = 0).",
-				").",
-				"B := a(Condition = false).",
-				"C := b.");
+				"  Condition := `void",
+				"  Value := integer(Condition->? = 1. = 0)",
+				")",
+				"B := a (Condition = false)",
+				"C := b");
 
 		assertThat(
 				definiteValue(field("a", "value"), ValueType.INTEGER),
@@ -38,17 +38,17 @@ public class ConditionalDefinitionTest extends CompilerTestCase {
 	@Test
 	public void sign() {
 		compile(
-				"Sign :=> integer(",
-				"  Arg :=< integer.",
-				"  Arg > 0? = 1.",
-				"  Arg < 0? = -1.",
-				"  = 0.",
+				"Sign :=> integer (",
+				"  Arg :=< integer",
+				"  Arg > 0? = 1",
+				"  Arg < 0? = -1",
+				"  = 0",
 				").",
-				"A := sign(Arg = 10).",
-				"A1 := A(Arg = -9).",
-				"A2 := A1.",
-				"B := sign(Arg = -10).",
-				"C := sign(Arg = 0).");
+				"A := sign (Arg = 10)",
+				"A1 := A (Arg = -9)",
+				"A2 := A1",
+				"B := sign (Arg = -10)",
+				"C := sign (Arg = 0)");
 
 		assertThat(
 				definiteValue(field("a"), ValueType.INTEGER),
@@ -70,12 +70,12 @@ public class ConditionalDefinitionTest extends CompilerTestCase {
 	@Test
 	public void conditionalImperativeValue() {
 		compile(
-				"A := void(",
-				"  Condition := `void.",
-				"  Value := integer({Condition? = 1. = 0}).",
-				").",
-				"B := a(Condition = false).",
-				"C := b.");
+				"A := void (",
+				"  Condition := `void",
+				"  Value := integer({Condition->? = 1. = 0})",
+				")",
+				"B := a (Condition = false)",
+				"C := b");
 
 		assertThat(
 				definiteValue(field("a", "value"), ValueType.INTEGER),

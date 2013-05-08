@@ -25,30 +25,25 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
-import org.o42a.ast.type.*;
 
 
 public class DeclaratorNode extends AbstractStatementNode {
 
 	private final DeclarableNode declarable;
 	private final SignNode<DeclarationTarget> definitionAssignment;
-	private final InterfaceNode iface;
 	private final ExpressionNode definition;
 
 	public DeclaratorNode(
 			DeclarableNode declarable,
 			SignNode<DeclarationTarget> definitionAssignment,
-			InterfaceNode iface,
 			ExpressionNode definition) {
 		super(
 				declarable.getStart(),
 				end(
 						definitionAssignment,
-						iface,
 						definition));
 		this.declarable = declarable;
 		this.definitionAssignment = definitionAssignment;
-		this.iface = iface;
 		this.definition = definition;
 	}
 
@@ -62,34 +57,6 @@ public class DeclaratorNode extends AbstractStatementNode {
 
 	public final DeclarationTarget getTarget() {
 		return this.definitionAssignment.getType();
-	}
-
-	public final InterfaceNode getInterface() {
-		return this.iface;
-	}
-
-	public final DefinitionKind getDefinitionKind() {
-
-		final InterfaceNode iface = getInterface();
-
-		return iface != null ? iface.getKind().getType() : null;
-	}
-
-	public final TypeNode getDefinitionType() {
-
-		final InterfaceNode iface = getInterface();
-
-		if (iface == null) {
-			return null;
-		}
-
-		final TypeParameterNode[] parameters = iface.getParameters();
-
-		if (parameters.length == 0) {
-			return null;
-		}
-
-		return parameters[0].getType();
 	}
 
 	public ExpressionNode getDefinition() {
@@ -120,12 +87,6 @@ public class DeclaratorNode extends AbstractStatementNode {
 	public void printContent(StringBuilder out) {
 		this.declarable.printContent(out);
 		this.definitionAssignment.printContent(out);
-		if (this.iface != null) {
-			this.iface.printContent(out);
-			if (this.iface.getOpening() != null) {
-				out.append(' ');
-			}
-		}
 		this.definition.printContent(out);
 	}
 

@@ -47,6 +47,11 @@ public class KeepValue extends ObjectConstructor {
 	}
 
 	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
+	}
+
+	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
 		return new KeptValueFieldDefinition(ref, this);
 	}

@@ -49,9 +49,9 @@ public class LocalScopeTest extends CompilerTestCase {
 	public void localLink() {
 		compile(
 				"A := \"123\"",
-				"B := link (`string) (",
+				"B := string` link (",
 				"  `a $ Local (",
-				"    = $Local`",
+				"    = $Local",
 				"  )",
 				")");
 
@@ -59,7 +59,7 @@ public class LocalScopeTest extends CompilerTestCase {
 				definiteValue(linkTarget(field("b")), ValueType.STRING),
 				is("123"));
 		assertThat(
-				linkTarget(field("b")).getWrapped(),
+				linkTarget(field("b")).getWrapped().getWrapped(),
 				is(field("a").toObject()));
 	}
 

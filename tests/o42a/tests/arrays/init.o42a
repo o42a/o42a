@@ -32,7 +32,7 @@ Constant := test {
 }
 
 
-Var-array := //array (`integer) [[4, 5, 6, 7]]
+Var-array := integer` //array [[4, 5, 6, 7]]
 
 Variable := test {
   Print error "    Variable array init" nl

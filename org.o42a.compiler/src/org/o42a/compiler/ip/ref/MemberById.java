@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.compiler.ip.ref.RefInterpreter.linkTargetIsAccessibleFrom;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
@@ -43,6 +44,7 @@ import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.CheckResult;
 import org.o42a.util.fn.Holder;
 
@@ -104,7 +106,7 @@ public class MemberById extends ContainedFragment {
 	private Path path(Container container, Obj declaredIn) {
 
 		final Holder<Path> memberOfContainer =
-				memberOfContainer(container, declaredIn);
+				findInContainer(container, declaredIn);
 
 		if (memberOfContainer != null) {
 			return memberOfContainer.get();
@@ -113,13 +115,11 @@ public class MemberById extends ContainedFragment {
 		final Container enclosing = container.getEnclosingContainer();
 
 		if (enclosing == null) {
-			if (declaredIn == null) {
-				if (this.memberId.equals(VOID_MEMBER)) {
-					return VOID_PATH;
-				}
-				if (this.memberId.equals(FALSE_MEMBER)) {
-					return FALSE_PATH;
-				}
+
+			final Path topLevelObject = topLevelObject(declaredIn);
+
+			if (topLevelObject != null) {
+				return topLevelObject;
 			}
 
 			getLogger().unresolved(getLocation(), this.memberId);
@@ -163,23 +163,53 @@ public class MemberById extends ContainedFragment {
 		return enclosingScopePath.append(found);
 	}
 
-	private Holder<Path> memberOfContainer(
+	private Path topLevelObject(Obj declaredIn) {
+		if (declaredIn != null) {
+			return null;
+		}
+		if (this.memberId.equals(VOID_MEMBER)) {
+			return VOID_PATH;
+		}
+		if (this.memberId.equals(FALSE_MEMBER)) {
+			return FALSE_PATH;
+		}
+		return null;
+	}
+
+	private Holder<Path> findInContainer(
 			Container container,
 			Obj declaredIn) {
 		if (!this.accessRules.containerIsVisible(getContainer(), container)) {
 			return null;
 		}
 
-		final Accessor accessor;
+		final Holder<Path> memberOfContainer = memberOfContainer(
+				encosingAccessor(container),
+				container,
+				declaredIn);
 
-		if (getScope().is(container.getScope())) {
-			accessor = Accessor.OWNER;
-		} else if (container.getLocation().getContext().declarationsVisibleFrom(
-				getLocation().getContext())) {
-			accessor = Accessor.DECLARATION;
-		} else {
-			accessor = Accessor.ENCLOSED;
+		if (memberOfContainer != null) {
+			return memberOfContainer;
 		}
+
+		return memberOfLinkTarget(container, declaredIn);
+	}
+
+	private Accessor encosingAccessor(Container container) {
+		if (getScope().is(container.getScope())) {
+			return Accessor.OWNER;
+		}
+		if (container.getLocation().getContext().declarationsVisibleFrom(
+				getLocation().getContext())) {
+			return Accessor.DECLARATION;
+		}
+		return Accessor.ENCLOSED;
+	}
+
+	private Holder<Path> memberOfContainer(
+			Accessor accessor,
+			Container container,
+			Obj declaredIn) {
 
 		final Access access =
 				accessor.accessBy(this, this.accessRules.getSource());
@@ -190,7 +220,7 @@ public class MemberById extends ContainedFragment {
 			return new Holder<>(found.pathToMember());
 		}
 
-		final Holder<Path> memberOfAdapter = memberOfAdapter(container, access);
+		final Holder<Path> memberOfAdapter = memberOfAdapter(access, container);
 
 		if (memberOfAdapter != null) {
 			return memberOfAdapter;
@@ -199,7 +229,7 @@ public class MemberById extends ContainedFragment {
 		return matchingContainer(container, declaredIn);
 	}
 
-	private Holder<Path> memberOfAdapter(Container container, Access access) {
+	private Holder<Path> memberOfAdapter(Access access, Container container) {
 		if (this.declaredIn == null) {
 			return null;
 		}
@@ -223,19 +253,9 @@ public class MemberById extends ContainedFragment {
 			return null;
 		}
 
-		final Accessor memberOfAdapterAccessor;
-
-		if (adapter.getLocation().getContext().declarationsVisibleFrom(
-				getLocation().getContext())) {
-			memberOfAdapterAccessor = Accessor.DECLARATION;
-		} else {
-			memberOfAdapterAccessor = Accessor.PUBLIC;
-		}
-
 		final MemberPath memberOfAdapter = adapter.member(
-				memberOfAdapterAccessor.accessBy(
-						this,
-						this.accessRules.getSource()),
+				memberOfAdapterAccessor(adapter)
+				.accessBy(this, this.accessRules.getSource()),
 				this.memberId,
 				null);
 
@@ -246,6 +266,14 @@ public class MemberById extends ContainedFragment {
 		return new Holder<>(
 				adapterPath.pathToMember()
 				.append(memberOfAdapter.pathToMember()));
+	}
+
+	private Accessor memberOfAdapterAccessor(final Container adapter) {
+		if (adapter.getLocation().getContext().declarationsVisibleFrom(
+				getLocation().getContext())) {
+			return Accessor.DECLARATION;
+		}
+		return Accessor.PUBLIC;
 	}
 
 	private Holder<Path> matchingContainer(
@@ -273,6 +301,44 @@ public class MemberById extends ContainedFragment {
 			"Wrong visibility check implementation";
 
 		return new Holder<>(matchingPath.pathToMember());
+	}
+
+	private Holder<Path> memberOfLinkTarget(
+			Container container,
+			Obj declaredIn) {
+		if (!linkTargetIsAccessibleFrom(this.accessRules.getSource())) {
+			return null;
+		}
+
+		final Obj object = container.toObject();
+
+		if (object == null) {
+			return null;
+		}
+
+		final LinkValueType linkType =
+				object.type().getValueType().toLinkType();
+
+		if (linkType == null) {
+			return null;
+		}
+
+		final Obj iface =
+				linkType.interfaceRef(object.type().getParameters()).getType();
+		final Holder<Path> targetMember =
+				memberOfContainer(Accessor.PUBLIC, iface, declaredIn);
+
+		if (targetMember == null) {
+			return null;
+		}
+
+		final Path targetMemberPath = targetMember.get();
+
+		if (targetMemberPath == null) {
+			return targetMember;
+		}
+
+		return new Holder<>(SELF_PATH.dereference().append(targetMemberPath));
 	}
 
 }

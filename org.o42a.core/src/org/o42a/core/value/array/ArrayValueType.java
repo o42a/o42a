@@ -170,8 +170,7 @@ public class ArrayValueType extends ValueType<Array> {
 			Ref ref,
 			TypeParameters<Array> parameters,
 			ValueRequest request) {
-		if (!request.isTransformAllowed()
-				|| request.getExpectedParameters().convertibleFrom(parameters)) {
+		if (request.getExpectedParameters().convertibleFrom(parameters)) {
 			return new ArrayValueAdapter(
 					ref,
 					request.getExpectedParameters().toArrayParameters());

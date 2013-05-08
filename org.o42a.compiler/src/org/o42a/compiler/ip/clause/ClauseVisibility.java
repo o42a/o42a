@@ -89,6 +89,7 @@ enum ClauseVisibility {
 		case LOCAL:
 		case ANONYMOUS:
 		case PARENT:
+		case MACRO:
 		case MACROS:
 		}
 		return null;

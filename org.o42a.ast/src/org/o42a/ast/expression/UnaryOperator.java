@@ -30,7 +30,8 @@ public enum UnaryOperator implements SignType {
 	IS_TRUE("++"),
 	VALUE_OF("\\"),
 	KEEP_VALUE("\\\\"),
-	MACRO_EXPANSION("#");
+	LINK("`"),
+	VARIABLE("``");
 
 	private final String sign;
 

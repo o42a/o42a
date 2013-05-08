@@ -19,8 +19,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void add() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`string)",
-				"  Right :=< link (`integer)",
+				"  Left :=< string` link",
+				"  Right :=< integer` link",
 				")",
 				"A := string (",
 				"  = \"left\"",
@@ -44,8 +44,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void subtract() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`string)",
-				"  Right :=< link (`integer)",
+				"  Left :=< string` link",
+				"  Right :=< integer` link",
 				")",
 				"A := string (",
 				"  = \"left\"",
@@ -69,8 +69,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void multiply() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`string)",
-				"  Right :=< link (`integer)",
+				"  Left :=< string` link",
+				"  Right :=< integer` link",
 				")",
 				"A := string (",
 				"  = \"left\"",
@@ -94,8 +94,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void divide() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`string)",
-				"  Right :=< link (`integer)",
+				"  Left :=< string` link",
+				"  Right :=< integer` link",
 				")",
 				"A := string (",
 				"  = \"left\"",
@@ -119,8 +119,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void compare() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`string)",
-				"  Right :=< link (`integer)",
+				"  Left :=< string` link",
+				"  Right :=< integer` link",
 				")",
 				"A := string (",
 				"  = \"left\"",
@@ -144,8 +144,8 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	public void suffix() {
 		compile(
 				"Compute :=> void (",
-				"  Left :=< link (`string)",
-				"  Right :=< link (`integer)",
+				"  Left :=< string` link",
+				"  Right :=< integer` link",
 				")",
 				"A := string (",
 				"  = \"prefix\"",

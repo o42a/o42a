@@ -30,8 +30,8 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.NoBoundNode;
 import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
-import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.TypeNodeVisitor;
+import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
@@ -66,7 +66,7 @@ public class ScopeRefNode extends SignNode<ScopeType>
 	}
 
 	@Override
-	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitScopeRef(this, p);
 	}
 
@@ -86,7 +86,7 @@ public class ScopeRefNode extends SignNode<ScopeType>
 	}
 
 	@Override
-	public final TypeNode toType() {
+	public final TypeArgumentNode toTypeArgument() {
 		return this;
 	}
 

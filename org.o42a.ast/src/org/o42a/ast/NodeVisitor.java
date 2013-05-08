@@ -40,12 +40,14 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.TypeArgNode;
+import org.o42a.ast.type.TypeArgumentNodeVisitor;
 
 
 public abstract class NodeVisitor<R, P>
 		extends AbstractStatementVisitor<R, P>
-		implements TypeNodeVisitor<R, P>,
+		implements TypeArgumentNodeVisitor<R, P>,
 				AtomNodeVisitor<R, P>,
 				DeclarableNodeVisitor<R, P>,
 				ClauseIdNodeVisitor<R, P>,
@@ -83,11 +85,6 @@ public abstract class NodeVisitor<R, P>
 		return visitPart(exponent, p);
 	}
 
-	@Override
-	public R visitTypeExpression(TypeExpressionNode type, P p) {
-		return type.getExpression().accept(this, p);
-	}
-
 	public R visitTypeRef(TypeRefNode<?> typeRef, P p) {
 		return visitPart(typeRef, p);
 	}
@@ -110,17 +107,13 @@ public abstract class NodeVisitor<R, P>
 		return visitPart(sample, p);
 	}
 
-	public R visitTypeParameter(TypeParameterNode parameter, P p) {
-		return visitPart(parameter, p);
+	public R visitTypeArg(TypeArgNode argument, P p) {
+		return visitPart(argument, p);
 	}
 
 	@Override
 	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
 		return visitDeclarable(adapter, p);
-	}
-
-	public R visitInterface(InterfaceNode iface, P p) {
-		return visitPart(iface, p);
 	}
 
 	public R visitLocal(LocalNode local, P p) {

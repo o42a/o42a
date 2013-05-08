@@ -19,53 +19,116 @@
 */
 package org.o42a.compiler.ip.type.def;
 
+import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.RefInterpreter.PLAIN_REF_IP;
+import static org.o42a.compiler.ip.type.TypeInterpreter.redundantTypeArguments;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
 
 
 final class TypeParameterDefinitionVisitor
 		extends AbstractExpressionVisitor<TypeRef, AccessDistributor> {
 
-	private final TypeNodeVisitor<ParamTypeRef, AccessDistributor> typeVisitor;
+	private final TypeConsumer consumer;
+	private final TypeRefParameters typeParameters;
 
 	TypeParameterDefinitionVisitor(TypeConsumer consumer) {
-		this.typeVisitor = PLAIN_IP.typeIp().typeVisitor(consumer);
+		this.consumer = consumer;
+		this.typeParameters = null;
+	}
+
+	private TypeParameterDefinitionVisitor(
+			TypeConsumer consumer,
+			TypeRefParameters typeParameters) {
+		this.typeParameters = typeParameters;
+		this.consumer = consumer;
 	}
 
 	@Override
 	public TypeRef visitAscendants(
 			AscendantsNode ascendants,
 			AccessDistributor p) {
-		return typeRef(ascendants, p);
+		if (ascendants.hasSamples()) {
+			return super.visitAscendants(ascendants, p);
+		}
+
+		final AncestorTypeRef ancestor = PLAIN_IP.typeIp().parseAncestor(
+				p.fromDeclaration(),
+				ascendants.getAncestor(),
+				this.typeParameters);
+
+		if (ancestor.isImplied()) {
+			return super.visitAscendants(ascendants, p);
+		}
+
+		return typeRef(ancestor.getAncestor());
 	}
 
 	@Override
-	public TypeRef visitTypeParameters(
-			TypeParametersNode parameters,
+	public TypeRef visitTypeArguments(
+			TypeArgumentsNode arguments,
 			AccessDistributor p) {
-		return typeRef(parameters, p);
+
+		final ExpressionNode ascendantNode = arguments.getType();
+
+		if (ascendantNode == null) {
+			return super.visitTypeArguments(arguments, p);
+		}
+
+		final TypeRefParameters typeParameters;
+
+		if (this.typeParameters != null) {
+			redundantTypeArguments(p.getLogger(), arguments);
+			typeParameters = this.typeParameters;
+		} else {
+			typeParameters = PLAIN_IP.typeIp().typeArguments(
+					arguments,
+					p,
+					this.consumer);
+			if (typeParameters == null) {
+				return null;
+			}
+		}
+
+		return ascendantNode.accept(
+				new TypeParameterDefinitionVisitor(
+						this.consumer.noConsumption(),
+						typeParameters),
+				p);
 	}
 
 	@Override
-	protected TypeRef visitRef(RefNode ref, AccessDistributor p) {
-		return typeRef(ref, p);
-	}
+	protected TypeRef visitRef(RefNode node, AccessDistributor p) {
 
-	@Override
-	public TypeRef visitMacroExpansion(
-			MacroExpansionNode expansion,
-			AccessDistributor p) {
-		return typeRef(expansion, p);
+		final Owner ref =
+				node.accept(PLAIN_REF_IP.ownerVisitor(), p.fromDeclaration());
+
+		if (ref == null) {
+			return null;
+		}
+
+		if (!ref.isMacroExpanding()) {
+			return typeRef(this.consumer.consumeType(
+					ref.targetRef(),
+					this.typeParameters));
+		}
+
+		return typeRef(this.consumer.consumeType(
+				expandMacro(ref.targetRef()),
+				this.typeParameters));
 	}
 
 	@Override
@@ -73,20 +136,16 @@ final class TypeParameterDefinitionVisitor
 			ExpressionNode expression,
 			AccessDistributor p) {
 		p.getLogger().error(
-				"invalid_type_parameter_definition",
+				"invalid_type_parameter",
 				location(p, expression),
-				"Type parameter desfinition should be a type reference");
+				"Invalid type parameter definition");
 		return null;
 	}
 
-	private TypeRef typeRef(TypeNode node, AccessDistributor p) {
-
-		final ParamTypeRef param = node.accept(this.typeVisitor, p);
-
+	private static TypeRef typeRef(ParamTypeRef param) {
 		if (param == null) {
 			return null;
 		}
-
 		return param.parameterize();
 	}
 

@@ -69,7 +69,7 @@ final class OverriderDeclarableVisitor
 
 		final MemberRefNode memberNode = adapter.getMember();
 		final Ref adapterId = memberNode.accept(
-				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
+				ADAPTER_FIELD_REF_IP.refVisitor(),
 				ACCESS_FROM_PLACEMENT.distribute(p.distribute()));
 
 		if (adapterId == null) {
@@ -101,7 +101,7 @@ final class OverriderDeclarableVisitor
 		}
 
 		final Ref declaredIn = declaredInNode.accept(
-				CLAUSE_DEF_IP.bodyRefVisitor(),
+				CLAUSE_DEF_IP.refVisitor(),
 				ACCESS_FROM_PLACEMENT.distribute(builder.distribute()));
 
 		if (declaredIn == null) {

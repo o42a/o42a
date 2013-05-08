@@ -101,6 +101,11 @@ public class ComparisonExpression extends ObjectConstructor {
 		return ValueType.VOID.typeRef(location, getScope());
 	}
 
+	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
+	}
+
 	public final CompilerLogger getResolutionLogger() {
 		return this.resolutionLogger != null
 				? this.resolutionLogger : getLogger();

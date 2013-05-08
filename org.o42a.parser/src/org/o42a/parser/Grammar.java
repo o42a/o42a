@@ -33,7 +33,9 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.parser.grammar.atom.*;
 import org.o42a.parser.grammar.clause.ClauseDeclaratorParser;
 import org.o42a.parser.grammar.expression.*;
@@ -48,8 +50,7 @@ import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
 import org.o42a.parser.grammar.type.AscendantsParser;
-import org.o42a.parser.grammar.type.InterfaceParser;
-import org.o42a.parser.grammar.type.TypeParametersParser;
+import org.o42a.parser.grammar.type.TypeArgumentsParser;
 
 
 public class Grammar {
@@ -110,10 +111,6 @@ public class Grammar {
 
 	public static Parser<AdapterRefNode> adapterRef(ExpressionNode owner) {
 		return new AdapterRefParser(owner);
-	}
-
-	public static Parser<BodyRefNode> bodyRef(ExpressionNode owner) {
-		return new BodyRefParser(owner);
 	}
 
 	public static Parser<DerefNode> deref(ExpressionNode owner) {
@@ -198,13 +195,9 @@ public class Grammar {
 		return UnaryParser.UNARY;
 	}
 
-	public static final Parser<MacroExpansionNode> macroExpansion() {
-		return MacroExpansionParser.MACRO_EXPANSION;
-	}
-
-	public static final Parser<TypeParametersNode> typeParameters(
-			TypeNode type) {
-		return new TypeParametersParser(type);
+	public static final Parser<TypeArgumentsNode> typeArguments(
+			TypeArgumentNode argument) {
+		return new TypeArgumentsParser(argument);
 	}
 
 	public static final Parser<BinaryNode> binary(ExpressionNode leftOperand) {
@@ -217,10 +210,6 @@ public class Grammar {
 
 	public static final Parser<SelfAssignmentNode> selfAssignment() {
 		return SelfAssignmentParser.SELF_ASSIGNMENT;
-	}
-
-	public static final Parser<InterfaceNode> iface() {
-		return InterfaceParser.INTERFACE;
 	}
 
 	public static final Parser<DeclaratorNode> declarator(

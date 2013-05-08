@@ -58,10 +58,6 @@ public final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void defineLink(LinkDefiner definer) {
-	}
-
-	@Override
 	public void defineMacro(MacroDefiner definer) {
 	}
 

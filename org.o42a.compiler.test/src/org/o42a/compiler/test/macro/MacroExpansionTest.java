@@ -19,7 +19,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 	public void linkInterface() {
 		compile(
 				"#A := integer",
-				"B := (`#a) 123");
+				"B := #a` link = 123");
 
 		final Obj b = field("b").toObject();
 
@@ -30,7 +30,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 	public void linkObject() {
 		compile(
 				"#A := integer",
-				"B := link (`#a) = 123");
+				"B := #a` link = 123");
 
 		final Obj b = field("b").toObject();
 
@@ -77,7 +77,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 	public void linkTarget() {
 		compile(
 				"#A := 5",
-				"B := (`float) #a");
+				"B := float` link = #a");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.FLOAT),

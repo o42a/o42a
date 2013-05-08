@@ -20,8 +20,6 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.ref.RefInterpreter.*;
-import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
-import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.atom.SignNode;
@@ -64,16 +62,14 @@ public enum Interpreter {
 	private final RefInterpreter refIp;
 	private final TypeInterpreter typeIp = new TypeInterpreter(this);
 	private final PhraseInterpreter phraseIp = new PhraseInterpreter(this);
-	private final ExpressionVisitor targetExVisitor;
+	private final ExpressionVisitor expressionVisitor;
 	private final RefBuildVisitor targetBuildViisitor;
-	private final ExpressionVisitor bodyExVisitor;
 
 	Interpreter(RefInterpreter refInterpreter) {
 		this.refIp = refInterpreter;
-		this.targetExVisitor = new ExpressionVisitor(this, TARGET_REFERRAL);
+		this.expressionVisitor = new ExpressionVisitor(this);
 		this.targetBuildViisitor =
-				new RefBuildVisitor(this.targetExVisitor);
-		this.bodyExVisitor = new ExpressionVisitor(this, BODY_REFERRAL);
+				new RefBuildVisitor(this.expressionVisitor);
 	}
 
 	public final RefInterpreter refIp() {
@@ -88,38 +84,24 @@ public enum Interpreter {
 		return this.phraseIp;
 	}
 
-	public final RefNodeVisitor<Ref, AccessDistributor> targetRefVisitor() {
-		return refIp().targetRefVisitor();
+	public final RefNodeVisitor<Ref, AccessDistributor> refVisitor() {
+		return refIp().refVisitor();
 	}
 
-	public final RefNodeVisitor<Ref, AccessDistributor> bodyRefVisitor() {
-		return refIp().bodyRefVisitor();
+	public final ExpressionVisitor expressionVisitor() {
+		return this.expressionVisitor;
 	}
 
-	public final ExpressionVisitor targetExVisitor() {
-		return this.targetExVisitor;
-	}
-
-	public final RefBuildVisitor targetBuildVisitor() {
+	public final RefBuildVisitor refBuildVisitor() {
 		return this.targetBuildViisitor;
 	}
 
-	public final ExpressionVisitor targetExVisitor(TypeConsumer typeConsumer) {
+	public final ExpressionVisitor expressionVisitor(
+			TypeConsumer typeConsumer) {
 		if (typeConsumer == NO_TYPE_CONSUMER) {
-			return targetExVisitor();
+			return expressionVisitor();
 		}
-		return new ExpressionVisitor(this, TARGET_REFERRAL, typeConsumer);
-	}
-
-	public final ExpressionVisitor bodyExVisitor() {
-		return this.bodyExVisitor;
-	}
-
-	public final ExpressionVisitor bodyExVisitor(TypeConsumer typeConsumer) {
-		if (typeConsumer == NO_TYPE_CONSUMER) {
-			return bodyExVisitor();
-		}
-		return new ExpressionVisitor(this, BODY_REFERRAL, typeConsumer);
+		return new ExpressionVisitor(this, typeConsumer);
 	}
 
 	public final ExpressionNodeVisitor<
@@ -133,6 +115,13 @@ public enum Interpreter {
 	}
 
 	public static ExpressionNode unwrap(BlockNode<?> block) {
+
+		final SerialNode[] conjunction = singleAlt(block);
+
+		return singleExpression(conjunction);
+	}
+
+	public static SerialNode[] singleAlt(BlockNode<?> block) {
 
 		final SentenceNode[] content = block.getContent();
 
@@ -152,8 +141,10 @@ public enum Interpreter {
 			return null;
 		}
 
-		final SerialNode[] conjunction = disjunction[0].getConjunction();
+		return disjunction[0].getConjunction();
+	}
 
+	public static ExpressionNode singleExpression(SerialNode[] conjunction) {
 		if (conjunction.length != 1) {
 			return null;
 		}

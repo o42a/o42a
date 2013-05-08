@@ -29,8 +29,7 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -59,29 +58,29 @@ final class SectionAscendantsVisitor
 	}
 
 	@Override
-	public AscendantsDefinition visitTypeParameters(
-			TypeParametersNode parameters,
+	public AscendantsDefinition visitTypeArguments(
+			TypeArgumentsNode arguments,
 			AccessDistributor p) {
 
 		AscendantsDefinition ascendants =
-				new AscendantsDefinition(location(p, parameters), p);
-		final TypeRefParameters typeParams =
-				PLAIN_IP.typeIp().typeParameters(
-						parameters.getParameters(),
+				new AscendantsDefinition(location(p, arguments), p);
+		final TypeRefParameters typeArguments =
+				PLAIN_IP.typeIp().typeArguments(
+						arguments,
 						p,
 						this.consumer);
-		final TypeNode ascendantNode = parameters.getType();
+		final ExpressionNode ascendantNode = arguments.getType();
 
 		if (ascendantNode != null) {
 
 			final Ref ascendantRef = ascendantNode.accept(
-					PLAIN_IP.targetExVisitor(),
+					PLAIN_IP.expressionVisitor(),
 					p.fromDeclaration());
 
 			if (ascendantRef != null) {
 
 				final ParamTypeRef type =
-						this.consumer.consumeType(ascendantRef, typeParams);
+						this.consumer.consumeType(ascendantRef, typeArguments);
 
 				if (type != null) {
 					ascendants = type.updateAncestor(ascendants);
@@ -120,7 +119,7 @@ final class SectionAscendantsVisitor
 			AccessDistributor p) {
 
 		final Ref ref = expression.accept(
-				PLAIN_IP.targetExVisitor(),
+				PLAIN_IP.expressionVisitor(),
 				p.fromDeclaration());
 
 		if (ref == null) {

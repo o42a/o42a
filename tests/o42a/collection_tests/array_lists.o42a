@@ -18,7 +18,7 @@ Static := test (
   Name = "Static"
   Print error '  ' [name] nl
    
-  List := array list (`integer) [[1, 2, 3]]
+  List := integer` array list [[1, 2, 3]]
 
   Assert [list: size == 3] "Wrong size"
   Assert [list [1] == 2] "Wrong element"
@@ -30,7 +30,7 @@ Runtime := test (
   Name = "Runtime"
   Print error '  ' [name] nl
 
-  List := array list (`string) [[rt-string 'a', rt-string 'b']]
+  List := string` array list [[rt-string 'a', rt-string 'b']]
 
   Assert [list: size == 2] "Wrong size"
   Assert [list [1] == "b"] "Wrong element"
@@ -42,7 +42,7 @@ Iteration := test (
   Name = "Iteration"
   Print error '  ' [name] nl
 
-  List := array list (`string) [["1/3", "2/3", "3/3"]]
+  List := string` array list [["1/3", "2/3", "3/3"]]
   List: iterate (): for each {
     Print error '    ' [it] nl
   }
@@ -52,7 +52,7 @@ Update element := test (
   Name = "Update element"
   Print error '  ' [name] nl
 
-  List := array list (`string) [["value 1", "value 2"]]
+  List := string` array list [["value 1", "value 2"]]
   {
     List [1] = "value 3"
   }
@@ -63,7 +63,7 @@ Add element := test (
   Name = "Add element"
   Print error '  ' [name] nl
 
-  List := array list (`integer) [[1, 2]]
+  List := integer` array list [[1, 2]]
   List: add [3]
   Assert [list: size == 3] "Wrong length"
   Assert [list [2] == 3] "Wrong element added"
@@ -73,7 +73,7 @@ Insert element := test (
   Name = "Insert element"
   Print error '  ' [name] nl
 
-  List := array list (`integer) [[1, 2]]
+  List := integer` array list [[1, 2]]
   List: insert [3] at [1]
   Assert [list: size == 3] "Wrong length"
   Assert [list [1] == 3] "Wrong element inserted"
@@ -83,7 +83,7 @@ Remove element := test (
   Name = "Remove element"
   Print error '  ' [name] nl
 
-  List := array list (`integer) [[1, 2, 3]]
+  List := integer` array list [[1, 2, 3]]
   List: remove [1]
   Assert [list: size == 2] "Wrong length"
   Assert [list [0] == 1] "Wrong element removed"

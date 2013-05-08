@@ -6,7 +6,7 @@ package org.o42a.compiler.test.locals;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.o42a.core.value.ValueKnowledge.RUNTIME_VALUE;
+import static org.o42a.core.value.ValueKnowledge.VARIABLE_VALUE;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -33,16 +33,16 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	public void localLink() {
 		compile(
 				"A := \"123\"",
-				"B := link (`string) (",
+				"B := string` link (",
 				"  $Local := `a",
-				"  = $local`",
+				"  = $local",
 				")");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.STRING),
 				is("123"));
 		assertThat(
-				linkTarget(field("b")).getWrapped(),
+				linkTarget(field("b")).getWrapped().getWrapped(),
 				is(field("a").toObject()));
 	}
 
@@ -50,9 +50,9 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	public void linkTarget() {
 		compile(
 				"A := `\"123\"",
-				"B := link (`string) (",
+				"B := string` link (",
 				"  $Local := a",
-				"  = $local",
+				"  = $local->",
 				")");
 
 		assertThat(
@@ -67,16 +67,16 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	public void linkBody() {
 		compile(
 				"A := `\"123\"",
-				"B := link (`string) (",
-				"  $Local := a`",
-				"  = $local`",
+				"B := string` link (",
+				"  $Local := a",
+				"  = $local",
 				")");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.STRING),
 				is("123"));
 		assertThat(
-				linkTarget(field("b")).getWrapped(),
+				linkTarget(field("b")).getWrapped().getWrapped(),
 				is(linkTarget(field("a")).getWrapped()));
 	}
 
@@ -84,14 +84,14 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	public void localVariable() {
 		compile(
 				"A := \"123\"",
-				"B := variable (`string) (",
+				"B := string` variable (",
 				"  $Local := ``a",
-				"  = $local`",
+				"  = $local",
 				")");
 
 		final Value<?> value = field("b").toObject().value().getValue();
 
-		assertThat(value.getKnowledge(), is(RUNTIME_VALUE));
+		assertThat(value.getKnowledge(), is(VARIABLE_VALUE));
 	}
 
 }

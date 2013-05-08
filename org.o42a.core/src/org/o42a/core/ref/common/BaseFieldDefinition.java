@@ -62,11 +62,6 @@ public abstract class BaseFieldDefinition extends FieldDefinition {
 
 	public abstract void overridePlainObject(ObjectDefiner definer);
 
-	@Override
-	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(getRef(), null);
-	}
-
 	public void overrideLink(ObjectDefiner definer) {
 		refAsValue(definer);
 	}

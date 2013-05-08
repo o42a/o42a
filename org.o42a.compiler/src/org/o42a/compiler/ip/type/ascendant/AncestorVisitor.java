@@ -21,7 +21,9 @@ package org.o42a.compiler.ip.type.ascendant;
 
 import static org.o42a.common.macro.Macros.removeMacroRequirement;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.*;
+import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.ancestorTypeRef;
+import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.impliedAncestorTypeRef;
+import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.macroAncestorTypeRef;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
@@ -32,7 +34,6 @@ import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.ref.Ref;
@@ -44,17 +45,14 @@ public class AncestorVisitor
 
 	private final Interpreter ip;
 	private final TypeRefParameters typeParameters;
-	private final Referral referral;
 	private final TypeConsumer typeConsumer;
 
 	public AncestorVisitor(
 			Interpreter ip,
 			TypeRefParameters typeParameters,
-			Referral referral,
 			TypeConsumer typeConsumer) {
 		this.ip = ip;
 		this.typeParameters = typeParameters;
-		this.referral = referral;
 		this.typeConsumer = typeConsumer;
 	}
 
@@ -64,10 +62,6 @@ public class AncestorVisitor
 
 	public final TypeRefParameters typeParameters() {
 		return this.typeParameters;
-	}
-
-	public final Referral referral() {
-		return this.referral;
 	}
 
 	public final TypeConsumer typeConsumer() {
@@ -108,7 +102,7 @@ public class AncestorVisitor
 			return null;
 		}
 
-		final Ref result = this.referral.refer(owner);
+		final Ref result = owner.targetRef();
 
 		if (owner.isMacroExpanding()) {
 			return macroAncestorTypeRef(
@@ -118,7 +112,7 @@ public class AncestorVisitor
 		final ParamTypeRef typeRef = paramTypeRef(result);
 
 		if (owner.isBodyReferred()) {
-			return ancestorBodyTypeRef(typeRef);
+			return ancestorTypeRef(typeRef);
 		}
 
 		return ancestorTypeRef(typeRef);
@@ -130,7 +124,7 @@ public class AncestorVisitor
 			AccessDistributor p) {
 
 		final Ref ref = expression.accept(
-				referral().expressionVisitor(ip(), this.typeConsumer),
+				ip().expressionVisitor(this.typeConsumer),
 				p);
 
 		if (ref == null) {

@@ -53,18 +53,8 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
-	public Owner body(LocationInfo location, LocationInfo bodyRef) {
-		return this.owner.body(location, bodyRef).expandMacro(this.expansion);
-	}
-
-	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
 		return this.owner.deref(location, deref).expandMacro(this.expansion);
-	}
-
-	@Override
-	public Ref bodyRef() {
-		return requireMacro(this.owner.bodyRef(), this.expansion);
 	}
 
 	@Override
@@ -76,8 +66,13 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
+	protected Ref memberOwnerRef() {
+		return this.owner.memberOwnerRef();
+	}
+
+	@Override
 	protected Owner memberOwner(Ref ref) {
-		return this.owner.memberOwner(ref);
+		return this.owner.memberOwner(ref).expandMacro(this.expansion);
 	}
 
 }
