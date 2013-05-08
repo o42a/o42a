@@ -57,11 +57,6 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void defineLink(LinkDefiner definer) {
-		getDefinition().defineLink(definer);
-	}
-
-	@Override
 	public void defineMacro(MacroDefiner definer) {
 		getDefinition().defineMacro(definer);
 	}

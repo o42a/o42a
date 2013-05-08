@@ -123,11 +123,6 @@ class PhraseFragment extends PathFragment {
 		}
 
 		@Override
-		public void defineLink(LinkDefiner definer) {
-			this.definition.defineLink(definer);
-		}
-
-		@Override
 		public void defineMacro(MacroDefiner definer) {
 			this.definition.defineMacro(definer);
 		}
