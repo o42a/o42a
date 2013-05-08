@@ -53,7 +53,7 @@ public class TypeDefinitionTest extends CompilerTestCase {
 	public void overrideTypeParameter() {
 		compile(
 				"A := integer #(T := void) (= 1)",
-				"B := a (`integer)");
+				"B := integer` a");
 
 		final Member bt = member("b", "t");
 
