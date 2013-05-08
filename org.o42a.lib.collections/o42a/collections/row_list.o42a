@@ -12,7 +12,7 @@ Row list :=> list
 A row represented as <list>. 
 ~~~
 
-Data :=< row (`#element type) ~~ A row represented by this list.
+Data :=< #element type` row ~~ A row represented by this list.
 
 Size = \data: length
 

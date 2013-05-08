@@ -15,7 +15,7 @@ An abstract collection of elements.
 Element type := void ~~ The type of elements of this collection.
 ###
 
-Iterate :=<> iterator (`#element type)
+Iterate :=<> #element type` iterator
 ~~~
 Constructs an iterator over all collection elements.
 ~~~

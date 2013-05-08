@@ -29,19 +29,19 @@ Iterate => * (
   )
 )
 
-Sublist :=> &list (`#element type) (
+Sublist :=> #element type` &list (
   ~~~
   A sublist representing a slice of original list.
   ~~~
 
-  From := link (`integer) = 0
+  From := integer` link = 0
   ~~~
   An index of the first list element represented by this sublist.
 
   Zero by default.
   ~~~
 
-  To := link (`integer) = list:: size
+  To := integer` link = list:: size
   ~~~
   A value one greater than index of the last list element
   represented by this sublist.

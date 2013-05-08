@@ -12,7 +12,7 @@ Array list :=> mutable list
 A <mutable list> storing its elements in array.
 ~~~
 
-Data :=< variable (`array (`#element type))
+Data :=< #element type` array` variable
 ~~ An array variable storing elements of this list.
 
 Size = \data: length
@@ -41,14 +41,14 @@ Constructs a list by the given row.
 )
 
 Add => * ({
-  New data := (size + 1)~duplicates (`#element type)
+  New data := (size + 1)~#element type` duplicates
   Data: copy _to [new data]
   New data [size] = new element
   Data = new data
 })
 
 Insert => * ({
-  New data := (size + 1)~duplicates (`#element type)
+  New data := (size + 1)~#element type` duplicates
   Data: copy [0 ... index) to [new data]
   New data [index] = new element
   Data: copy [index ...) to [new data] at [index + 1]
@@ -56,7 +56,7 @@ Insert => * ({
 })
 
 Remove => * ({
-  New data := (size - 1)~duplicates (`#element type)
+  New data := (size - 1)~#element type` duplicates
   Data: copy [0 ... index) to [new data]
   Data: copy [index + 1 ...) to [new data] at [index]
   Data = new data
