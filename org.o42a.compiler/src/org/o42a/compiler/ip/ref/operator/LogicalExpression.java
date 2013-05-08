@@ -54,7 +54,7 @@ public class LogicalExpression extends ObjectConstructor {
 		super(new Location(context, node), distributor);
 		this.node = node;
 		this.operand = this.node.getOperand().accept(
-				ip.targetExVisitor(),
+				ip.expressionVisitor(),
 				distributor);
 	}
 
@@ -78,6 +78,11 @@ public class LogicalExpression extends ObjectConstructor {
 	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
 		return ValueType.VOID.typeRef(location, getScope());
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
 	}
 
 	@Override

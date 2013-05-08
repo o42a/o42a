@@ -20,7 +20,6 @@
 package org.o42a.parser.grammar.field;
 
 import static org.o42a.ast.field.DeclarationTarget.*;
-import static org.o42a.parser.Grammar.iface;
 import static org.o42a.parser.Grammar.initializer;
 
 import org.o42a.ast.atom.SignNode;
@@ -28,8 +27,6 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.type.InterfaceNode;
-import org.o42a.ast.type.TypeParameterNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -56,20 +53,6 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			return null;
 		}
 
-		int c = context.next();
-		final InterfaceNode iface;
-
-		switch (c) {
-		case '`':
-			iface = context.parse(iface());
-			break;
-		case '(':
-			iface = parseTypeParameters(context);
-			break;
-		default:
-			iface = null;
-		}
-
 		final ExpressionNode definition = context.parse(initializer());
 
 		if (definition == null) {
@@ -79,32 +62,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 		return new DeclaratorNode(
 				this.declarable,
 				definitionAssignment,
-				iface,
 				definition);
-	}
-
-	private InterfaceNode parseTypeParameters(ParserContext context) {
-
-		final InterfaceNode iface = context.parse(iface());
-
-		if (iface == null) {
-			return null;
-		}
-
-		final TypeParameterNode[] parameters = iface.getParameters();
-
-		if (parameters.length == 1) {
-			return iface;
-		}
-
-		if (iface.getParameters().length > 1) {
-			context.getLogger().error(
-					"redundant_type_parameter",
-					iface.getParameters()[1],
-					"Too many type parameters");
-		}
-
-		return null;
 	}
 
 	private static final class DefinitionAssignmentParser

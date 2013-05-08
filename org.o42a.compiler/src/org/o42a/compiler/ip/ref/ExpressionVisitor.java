@@ -26,13 +26,14 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 import static org.o42a.core.value.ValueType.STRING;
 
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
@@ -41,11 +42,12 @@ import org.o42a.compiler.ip.ref.keeper.KeepValue;
 import org.o42a.compiler.ip.ref.operator.LogicalExpression;
 import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
+import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.log.LogInfo;
 
 
@@ -53,21 +55,15 @@ public final class ExpressionVisitor
 		extends AbstractExpressionVisitor<Ref, AccessDistributor> {
 
 	private final Interpreter ip;
-	private final Referral referral;
 	private final TypeConsumer typeConsumer;
 
-	public ExpressionVisitor(Interpreter ip, Referral referral) {
+	public ExpressionVisitor(Interpreter ip) {
 		this.ip = ip;
-		this.referral = referral;
 		this.typeConsumer = EXPRESSION_TYPE_CONSUMER;
 	}
 
-	public ExpressionVisitor(
-			Interpreter ip,
-			Referral referral,
-			TypeConsumer typeConsumer) {
+	public ExpressionVisitor(Interpreter ip, TypeConsumer typeConsumer) {
 		this.ip = ip;
-		this.referral = referral;
 		this.typeConsumer =
 				typeConsumer == NO_TYPE_CONSUMER
 				? EXPRESSION_TYPE_CONSUMER : typeConsumer;
@@ -114,17 +110,17 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitTypeParameters(
-			TypeParametersNode parameters,
+	public Ref visitTypeArguments(
+			TypeArgumentsNode arguments,
 			AccessDistributor p) {
 
 		final PhraseBuilder phrase =
 				ip()
 				.phraseIp()
-				.typeParametersPhrase(parameters, p, this.typeConsumer);
+				.typeArgumentsPhrase(arguments, p, this.typeConsumer);
 
 		if (phrase == null) {
-			return super.visitTypeParameters(parameters, p);
+			return super.visitTypeArguments(arguments, p);
 		}
 
 		return phrase.toRef();
@@ -156,8 +152,10 @@ public final class ExpressionVisitor
 			return new ValueOf(ip(), p.getContext(), expression, p).toRef();
 		case KEEP_VALUE:
 			return keepValue(expression, p);
-		case MACRO_EXPANSION:
-			return macroExpansion(expression, p);
+		case LINK:
+			return link(expression, p, LinkValueType.LINK);
+		case VARIABLE:
+			return link(expression, p, LinkValueType.VARIABLE);
 		}
 
 		return super.visitUnary(expression, p);
@@ -205,11 +203,7 @@ public final class ExpressionVisitor
 		final PhraseBuilder result =
 				ip().phraseIp().phrase(phrase, p, this.typeConsumer);
 
-		if (!this.referral.isBodyReferral()) {
-			return result.toRef();
-		}
-
-		return result.referBody().toRef();
+		return result.toRef();
 	}
 
 	@Override
@@ -221,7 +215,13 @@ public final class ExpressionVisitor
 			return null;
 		}
 
-		return this.referral.expandIfMacro(owner);
+		final Ref result = owner.targetRef();
+
+		if (!owner.isMacroExpanding()) {
+			return result;
+		}
+
+		return expandMacro(result);
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public final class ExpressionVisitor
 	private Ref keepValue(UnaryNode expression, AccessDistributor p) {
 
 		final Ref value =
-				expression.getOperand().accept(ip().targetExVisitor(), p);
+				expression.getOperand().accept(ip().expressionVisitor(), p);
 
 		if (value == null) {
 			return null;
@@ -260,16 +260,33 @@ public final class ExpressionVisitor
 		return new KeepValue(location(p, expression.getSign()), value).toRef();
 	}
 
-	private Ref macroExpansion(UnaryNode expression, AccessDistributor p) {
+	private Ref link(
+			UnaryNode expression,
+			AccessDistributor p,
+			LinkValueType linkType) {
 
-		final Ref operand =
-				expression.getOperand().accept(ip().targetExVisitor(), p);
+		final Ref value =
+				expression.getOperand().accept(ip().expressionVisitor(), p);
 
-		if (operand == null) {
+		if (value == null) {
 			return null;
 		}
 
-		return expandMacro(operand);
+		final PhraseBuilder phrase = new PhraseBuilder(
+				ip(),
+				new Location(p.getContext(), expression),
+				p,
+				this.typeConsumer);
+
+		phrase.setAncestor(linkType.typeRef(
+				new Location(p.getContext(), expression.getSign()),
+				p.getScope()));
+		phrase.setTypeParameters(
+				linkType.typeParameters(value.getInterface())
+				.toObjectTypeParameters());
+		phrase.phrase().declarations(valueBlock(value));
+
+		return phrase.toRef();
 	}
 
 }

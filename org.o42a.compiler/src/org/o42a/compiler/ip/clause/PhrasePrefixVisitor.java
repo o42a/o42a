@@ -81,7 +81,7 @@ final class PhrasePrefixVisitor
 
 		final AccessDistributor distributor = p.distributeAccess();
 		final Ref ancestor = expression.accept(
-				CLAUSE_DEF_IP.targetExVisitor(),
+				CLAUSE_DEF_IP.expressionVisitor(),
 				distributor);
 
 		if (ancestor == null) {

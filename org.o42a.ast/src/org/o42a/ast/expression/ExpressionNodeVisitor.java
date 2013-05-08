@@ -22,7 +22,7 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 
 
 public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
@@ -33,13 +33,11 @@ public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitAscendants(AscendantsNode ascendants, P p);
 
-	R visitTypeParameters(TypeParametersNode parameters, P p);
+	R visitTypeArguments(TypeArgumentsNode arguments, P p);
 
 	R visitGroup(GroupNode group, P p);
 
 	R visitUnary(UnaryNode expression, P p);
-
-	R visitMacroExpansion(MacroExpansionNode expansion, P p);
 
 	R visitBinary(BinaryNode expression, P p);
 

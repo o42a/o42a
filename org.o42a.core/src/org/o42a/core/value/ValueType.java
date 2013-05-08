@@ -198,30 +198,59 @@ public abstract class ValueType<T> {
 
 		final TypeParameters<?> expectedParameters =
 				request.getExpectedParameters();
-		final ValueType<?> expectedType = expectedParameters.getValueType();
 
-		if (!request.isTransformAllowed()
-				|| expectedParameters.assignableFrom(parameters)) {
+		if (expectedParameters.assignableFrom(parameters)) {
 			return rawValueAdapter(ref);
 		}
 
+		final ValueType<?> expectedType = expectedParameters.getValueType();
+
+		if (request.isLinkByValueAllowed()) {
+
+			final Ref adapterRef = adapterRef(
+					ref,
+					expectedType.typeRef(ref, ref.getScope()),
+					request.getLogger());
+
+			if (adapterRef != null) {
+				return adapterRef.valueAdapter(request.noLinkByValue());
+			}
+
+			final ValueAdapter linkByValue =
+					linkByValue(ref, request, expectedParameters, expectedType);
+
+			if (linkByValue != null) {
+				return linkByValue;
+			}
+		}
+
+		return null;
+	}
+
+	private ValueAdapter linkByValue(
+			Ref ref,
+			ValueRequest request,
+			TypeParameters<?> expectedParameters,
+			ValueType<?> expectedType) {
+
 		final LinkValueType expectedLinkType = expectedType.toLinkType();
 
-		if (expectedLinkType != null) {
-			return new LinkByValueAdapter(
-					adapterRef(
-							ref,
-							expectedLinkType.interfaceRef(expectedParameters),
-							request.getLogger()),
-					expectedLinkType.cast(expectedParameters));
+		if (expectedLinkType == null) {
+			return null;
 		}
 
 		final Ref adapter = adapterRef(
 				ref,
-				expectedParameters.getValueType().typeRef(ref, ref.getScope()),
+				expectedLinkType.interfaceRef(expectedParameters),
 				request.getLogger());
 
-		return adapter.valueAdapter(request.dontTransofm());
+		if (adapter == null) {
+			return null;
+		}
+
+		return new LinkByValueAdapter(
+				adapter,
+				expectedLinkType.cast(expectedParameters));
 	}
 
 	protected Ref adapterRef(
@@ -229,11 +258,16 @@ public abstract class ValueType<T> {
 			TypeRef expectedTypeRef,
 			CompilerLogger logger) {
 
-		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic(), logger);
+		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic());
 
-		adapter.toTypeRef()
-		.relationTo(expectedTypeRef)
-		.checkDerived(logger);
+		if (adapter == null) {
+			return null;
+		}
+		if (!adapter.toTypeRef()
+				.relationTo(expectedTypeRef)
+				.checkDerived(logger)) {
+			return null;
+		}
 
 		return adapter;
 	}

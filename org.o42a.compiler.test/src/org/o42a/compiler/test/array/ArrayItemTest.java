@@ -18,7 +18,7 @@ public class ArrayItemTest extends CompilerTestCase {
 	public void shortRowItem() {
 		compile(
 				"Array := [1, 2, 3]",
-				"Item := array [1]");
+				"Item := array [1]->");
 
 		assertThat(definiteValue(field("item"), ValueType.INTEGER), is(2L));
 	}
@@ -27,7 +27,7 @@ public class ArrayItemTest extends CompilerTestCase {
 	public void fullRowItem() {
 		compile(
 				"Array := [1, 2, 3]",
-				"Item := array: item` (Index = 1)");
+				"Item := array: item (Index = 1)");
 
 		assertThat(
 				definiteValue(

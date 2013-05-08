@@ -19,13 +19,17 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
 import static org.o42a.core.ref.type.TypeRef.typeRef;
 import static org.o42a.core.ref.type.impl.ValueTypeInterface.valueTypeInterfaceOf;
+import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.link.TargetRef.targetRef;
 
 import org.o42a.analysis.Analyzer;
@@ -34,9 +38,12 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.impl.Adapter;
 import org.o42a.core.ref.impl.RefCommand;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
@@ -44,7 +51,6 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.ref.type.impl.TargetTypeRefParameters;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Statements;
@@ -183,6 +189,23 @@ public class Ref extends Statement implements RefBuilder {
 	}
 
 	public final ValueAdapter valueAdapter(ValueRequest request) {
+		if (!request.isValueExpected()) {
+			return rawValueAdapter(this);
+		}
+
+		final ValueAdapter adapter = requestValueAdapter(request);
+
+		if (adapter == null) {
+			request.getLogger().incompatible(
+					getLocation(),
+					request.getExpectedParameters());
+			return rawValueAdapter(errorRef(this, distribute()));
+		}
+
+		return adapter;
+	}
+
+	private ValueAdapter requestValueAdapter(ValueRequest request) {
 
 		final Step lastStep = getPath().lastStep();
 
@@ -319,14 +342,26 @@ public class Ref extends Statement implements RefBuilder {
 		return getPath().toStatic().target(distribute());
 	}
 
-	public final Ref adapt(
-			LocationInfo location,
-			StaticTypeRef adapterType,
-			CompilerLogger logger) {
+	public final Ref adapt(LocationInfo location, StaticTypeRef adapterType) {
 
-		final Adapter adapter = new Adapter(location, adapterType, logger);
+		final Resolution resolution = getResolution();
 
-		return getPath().append(adapter).target(distribute());
+		if (resolution.isNone()) {
+			return this;
+		}
+
+		final Obj object = resolution.toObject();
+		final Obj adaptTo = adapterType.getType();
+		final Path adapterPath = adapt(object, adaptTo, true);
+
+		if (adapterPath == null) {
+			return null;
+		}
+		if (adapterPath.isSelf()) {
+			return this;
+		}
+
+		return getPath().append(adapterPath).target(location, distribute());
 	}
 
 	public final Ref prefixWith(PrefixPath prefix) {
@@ -443,6 +478,79 @@ public class Ref extends Statement implements RefBuilder {
 
 	final void refFullyResolved() {
 		fullyResolved();
+	}
+
+	private Path adapt(Obj object, Obj adaptTo, boolean dereference) {
+		if (object.type().derivedFrom(adaptTo.type())) {
+			return SELF_PATH;
+		}
+
+		final Path memberAdapter = adaptByMember(object, adaptTo);
+
+		if (memberAdapter != null) {
+			return memberAdapter;
+		}
+		if (dereference && object.type().getValueType().isLink()) {
+			return adaptLink(object, adaptTo);
+		}
+
+		return null;
+	}
+
+	private Path adaptByMember(Obj object, Obj target) {
+
+		final Member adapterMember =
+				object.member(adapterId(target));
+
+		if (adapterMember == null) {
+			return null;
+		}
+
+		final MemberKey key = adapterMember.getMemberKey();
+		final MemberField adapterField = adapterMember.toField();
+
+		if (adapterField == null) {
+			return key.toPath();
+		}
+
+		// Select the adapter based on it's declaration.
+		// If the adapter field was transformed to a link when overridden,
+		// this fact will be ignored.
+		final MemberField adapterDecl = adapterField.getFirstDeclaration();
+		final Obj adapterObject = adapterDecl.substance(dummyUser());
+
+		final int expectedLinkDepth =
+				target.type().getParameters().getLinkDepth();
+		final int adapterLinkDepth =
+				adapterObject.type().getParameters().getLinkDepth();
+
+		if (adapterLinkDepth - expectedLinkDepth  == 1) {
+			// Adapter was declared as link.
+			// Use this link's target as adapter.
+			return key.toPath().dereference();
+		}
+
+		// Adapter was declared as a plain object or
+		// adapter to the link of the same depth.
+		// Use the field itself as adapter.
+		return key.toPath();
+	}
+
+	private Path adaptLink(Obj object, Obj adaptTo) {
+
+		final TypeParameters<?> linkParameters = object.type().getParameters();
+		final Obj targetType =
+				linkParameters.getValueType()
+				.toLinkType()
+				.interfaceRef(linkParameters)
+				.getType();
+		final Path targetAdapter = adapt(targetType, adaptTo, false);
+
+		if (targetAdapter == null) {
+			return null;
+		}
+
+		return SELF_PATH.dereference().append(targetAdapter);
 	}
 
 	private Ref reproducePart(Reproducer reproducer, Path path) {

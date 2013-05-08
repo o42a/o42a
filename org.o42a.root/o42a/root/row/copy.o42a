@@ -22,23 +22,23 @@ or <target start> greater or equal to target array length, then does nothing
 and results to false.
 ~~~
 
-From := //link (`//integer) = 0
+From := //integer` //link = 0
 ~~~
 An index of first element to copy.
 
 Zero by default.
 ~~~
 
-To := //link (`//integer) = length
+To := //integer` //link = length
 ~~~
 An index one greater than the last element to copy.
 
 Equals to row length by default.
 ~~~ 
 
-Target :=< //link (`//array (`#item type)) ~~ An array to copy elements to.
+Target :=< #item type` //array` //link ~~ An array to copy elements to.
 
-Target start := //link (`//integer) = 0
+Target start := //integer` //link = 0
 ~~~
 An index of first element of target array to copy at.
 
@@ -46,14 +46,14 @@ Zero by default.
 ~~~
 
 <*Interval to copy> Copy (
-  <[Copy from...) | copy to> From = ()
-  <[...Copy to) | to...> To = ()
-  <[Copy trailing...-) | to...> From = ()
-  <(-...Copy leading) | to...> To = ()
+  <[Copy from...) | copy to> From = *
+  <[...Copy to) | to...> To = *
+  <[Copy trailing...-) | to...> From = *
+  <(-...Copy leading) | to...> To = *
   <To...> (
-    <[] | at> Target = ()
+    <[] | at> Target = *
   )
   <At...> (
-    <[]> Target start = ()
+    <[]> Target start = *
   )
 )

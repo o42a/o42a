@@ -18,7 +18,7 @@ Reference := test (
   Print error '  ' [name] nl
 
   Value := ``1
-  Proxy := `value
+  Proxy := `value->
 
   {
     Assert [proxy == 1] "Wrong initial reference link value"
@@ -32,7 +32,7 @@ Expression := test (
   Print error '  ' [name] nl
 
   Value := ``1
-  Proxy := `value * 10
+  Proxy := `(value * 10)
 
   {
     Assert [proxy == 10] "Wrong initial expression link value"
@@ -45,19 +45,19 @@ Target and body := test (
   Name = "Target and body"
   Print error '  ' [name] nl
   
-  Static link := link (`integer) = 1
+  Static link := integer` link = 1
   
   {
-    Assert [static link`] "Static link body is false"
-    Assert [static link] "Static link target is false"
+    Assert [static link] "Static link body is false"
+    Assert [static link->] "Static link target is false"
     Assert [static link == 1] "Wrong static link target"
   }
 
-  Runtime link := link (`integer) = rt-integer '2'
+  Runtime link := integer` link = rt-integer '2'
   
   {
-    Assert [runtime link`] "Runtime link body is false"
-    Assert [runtime link] "Runtime link target is false"
+    Assert [runtime link] "Runtime link body is false"
+    Assert [runtime link->] "Runtime link target is false"
     Assert [runtime link == 2] "Wrong runtime link target"
   }
 )

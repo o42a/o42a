@@ -24,7 +24,7 @@ import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.TypeArgumentNode;
 
 
 public class PhraseNode extends AbstractExpressionNode {
@@ -62,7 +62,7 @@ public class PhraseNode extends AbstractExpressionNode {
 	}
 
 	@Override
-	public final TypeNode toType() {
+	public final TypeArgumentNode toTypeArgument() {
 		return null;
 	}
 

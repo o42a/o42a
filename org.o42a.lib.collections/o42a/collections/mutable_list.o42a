@@ -12,21 +12,21 @@ Mutable list :=> list
 A mutable list of elements.
 ~~~
 
-Item =<> assignable` ()
+Item =<> assignable ()
 
 Add :=<> void (
   ~~~
   Adds a new element to the list.
   ~~~
 
-  New element :=< link (`#element type) ~~ Element to add.
+  New element :=< #element type` link ~~ Element to add.
 
   <*Add> Add (
     ~~~
     Adds to this list an element specified in square brackets.
     ~~~
 
-    <[New element]> New element = ()
+    <[New element]> New element = *
   )
 )
 
@@ -35,14 +35,14 @@ Insert :=<> void (
   Inserts a new element at the given position.
   ~~~
 
-  Index :=< link (`integer)
+  Index :=< integer` link
   ~~~
   Element index to insert element at.
 
   Should be non-negative and less than or equal to the list size.
   ~~~
 
-  New element :=< link (`#element type) ~~ Element to insert.
+  New element :=< #element type` link ~~ Element to insert.
 
   <*Insert> Insert (
     ~~~
@@ -52,11 +52,11 @@ Insert :=<> void (
             `list: insert [element, index]`
     ~~~
 
-    <[New element] | insertion point...> New element = () 
+    <[New element] | insertion point...> New element = *
     ~~ The <new element> to insert.
     <:Insertion point> (
-      <At | index...> ()   ~~ An optional `at` clause.
-      <[Index]> Index = () ~~ Insertion <index>.
+      <At | index...> ()  ~~ An optional `at` clause.
+      <[Index]> Index = * ~~ Insertion <index>.
     )
   )
 )
@@ -66,13 +66,13 @@ Remove :=<> void (
   Removes an element at the given position from list.
   ~~~
 
-  Index :=< link (`integer) ~~ An index of element to remove.
+  Index :=< integer` link ~~ An index of element to remove.
 
   <*Remove> Remove (
     ~~~
     Removes an element, which index is specified in square brackets.
     ~~~
 
-    <[]> Index = () ~~ An <index> of element to remove.
+    <[]> Index = * ~~ An <index> of element to remove.
   )
 )

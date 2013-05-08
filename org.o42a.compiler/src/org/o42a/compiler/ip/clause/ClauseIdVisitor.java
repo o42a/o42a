@@ -234,9 +234,10 @@ final class ClauseIdVisitor
 			return ClauseId.MINUS;
 		case IS_TRUE:
 		case NOT:
-		case MACRO_EXPANSION:
 		case VALUE_OF:
 		case KEEP_VALUE:
+		case LINK:
+		case VARIABLE:
 			return null;
 		}
 		return null;

@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModuleRef;
+import static org.o42a.compiler.ip.ref.RefInterpreter.isMacroRef;
 import static org.o42a.compiler.ip.ref.RefInterpreter.isRootRef;
 import static org.o42a.compiler.ip.st.LocalInterpreter.isLocalScopeRef;
 import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
@@ -98,6 +99,12 @@ final class OwnerVisitor
 			}
 
 			return owner(p.getAccessRules(), parentRef);
+		case MACRO:
+			p.getLogger().error(
+					"indefinite_macro_ref",
+					ref,
+					"Indefinite macro reference");
+			return null;
 		case MACROS:
 			return owner(
 					p.getAccessRules(),
@@ -173,14 +180,6 @@ final class OwnerVisitor
 	}
 
 	@Override
-	public Owner visitBodyRef(BodyRefNode ref, AccessDistributor p) {
-
-		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
-
-		return ownerVisitor.expandMacro(bodyRef(ref, p, ownerVisitor));
-	}
-
-	@Override
 	public Owner visitDeref(DerefNode ref, AccessDistributor p) {
 
 		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
@@ -200,7 +199,7 @@ final class OwnerVisitor
 			AccessDistributor p) {
 		return owner(
 				p.getAccessRules(),
-				expression.accept(ip().ip().bodyExVisitor(), p));
+				expression.accept(ip().ip().expressionVisitor(), p));
 	}
 
 	final Owner owner(AccessRules accessRules, Ref ownerRef) {
@@ -218,6 +217,16 @@ final class OwnerVisitor
 		if (ownerNode != null) {
 			if (isLocalScopeRef(ownerNode)) {
 				return localRef(ref, p);
+			}
+			if (isMacroRef(ownerNode)) {
+
+				final Owner macroMember = memberOf(ref, p, null);
+
+				if (macroMember == null) {
+					return null;
+				}
+
+				return macroMember.expandMacro(ownerNode);
 			}
 			if (ref.getDeclaredIn() == null) {
 
@@ -247,6 +256,14 @@ final class OwnerVisitor
 		} else {
 			owner = null;
 		}
+
+		return memberOf(ref, p, owner);
+	}
+
+	private Owner memberOf(
+			MemberRefNode ref,
+			AccessDistributor p,
+			Owner owner) {
 
 		final StaticTypeRef declaredIn =
 				ip().declaredIn(ref.getDeclaredIn(), p);
@@ -306,20 +323,6 @@ final class OwnerVisitor
 				location(p, ref),
 				adapterId(type.toStaticTypeRef()),
 				ip().declaredIn(ref.getDeclaredIn(), p));
-	}
-
-	Owner bodyRef(
-			BodyRefNode ref,
-			AccessDistributor p,
-			MemberOwnerVisitor ownerVisitor) {
-
-		final Owner result = ref.getOwner().accept(ownerVisitor, p);
-
-		if (result == null) {
-			return null;
-		}
-
-		return result.body(location(p, ref), location(p, ref.getSuffix()));
 	}
 
 	Owner deref(

@@ -16,7 +16,7 @@ Iterator over a sequence.
 Element type := void ~~ The type of iterated elements.
 ###
 
-Next :=< link (`#element type)
+Next :=< #element type` link
 ~~~
 Returns the next element of the sequence on each value request.
 
@@ -35,14 +35,14 @@ For each :=> void (
     If the value is false, the iteration is over.
     ~~~
 
-    It :=< link (`#element type)
+    It :=< #element type` link
     ~~~
     A link to the current element of iterator to perform the action for.
     ~~~ 
   )
 
   {
-    Next item := \\next`, next item`? Do (It = next item)...
+    $Next item := \\next, $next item? Do (It = $next item)...
   }
 
   <{Action}!> Do => *

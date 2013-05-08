@@ -25,17 +25,17 @@ Indexed length.
 This is one less than a maximum index. 
 ~~~
 
-Item :=<> //link (`#item type) (
+Item :=<> #item type` //link (
   ~~~
   A link to an item with the given index.
 
   Fails when <index> is negative or greater or equals to indexed <length>.
   ~~~
 
-  Index :=< //link (`//integer) ~~ Item index.
+  Index :=< //integer` //link ~~ Item index.
 )
 
-<*Item by index> Item` (
-  <[Item index]!> Index = ()
+<*Item by index> Item (
+  <[Item index]!> Index = *
 )
  

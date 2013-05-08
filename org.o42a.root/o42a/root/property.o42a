@@ -6,8 +6,8 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Property :=> //assignable`
-==========================
+Property :=> //assignable
+=========================
 ~~~
 Property.
 
@@ -17,7 +17,7 @@ The property value is stored in the `value` field and can be modified by `set`
 prototype. 
 ~~~
 
-::Value := variable (`property #interface) ~~ Property value.
+::Value := property #interface` variable ~~ Property value.
 
 Set => void (
   ~~~
@@ -25,10 +25,10 @@ Set => void (
   ~~~
 
   {
-    Value = new value
+    Value = new value->
   }
 )
 
 = value
 
-<[]!> Value = () ~~ Property initializer.
+<[=*]!> Value = * ~~ Property initializer.

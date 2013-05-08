@@ -21,15 +21,20 @@ package org.o42a.core.ref.path.impl;
 
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 
 import org.o42a.core.Container;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueRequest;
 
 
 public class ErrorStep extends Step {
@@ -47,6 +52,11 @@ public class ErrorStep extends Step {
 	@Override
 	public RefUsage getObjectUsage() {
 		return null;
+	}
+
+	@Override
+	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
+		return rawValueAdapter(ref);
 	}
 
 	@Override

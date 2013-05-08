@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,50 +21,39 @@ package org.o42a.ast.type;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.atom.CommaSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.util.io.SourcePosition;
 
 
-public class TypeParameterNode extends AbstractNode {
+public class TypeArgNode extends AbstractNode {
 
-	private final SignNode<CommaSign> separator;
-	private final TypeNode type;
+	private final TypeArgumentNode argument;
+	private final SignNode<TypeArgumentSuffix> suffix;
 
-	public TypeParameterNode(SourcePosition start) {
-		super(start, start);
-		this.separator = null;
-		this.type = null;
+	public TypeArgNode(
+			TypeArgumentNode argument,
+			SignNode<TypeArgumentSuffix> suffix) {
+		super(argument.getStart(), suffix.getEnd());
+		this.argument = argument;
+		this.suffix = suffix;
 	}
 
-	public TypeParameterNode(SignNode<CommaSign> separator, TypeNode type) {
-		super(separator, type);
-		this.separator = separator;
-		this.type = type;
+	public final TypeArgumentNode getArgument() {
+		return this.argument;
 	}
 
-	public final SignNode<CommaSign> getSeparator() {
-		return this.separator;
-	}
-
-
-	public final TypeNode getType() {
-		return this.type;
+	public final SignNode<TypeArgumentSuffix> getSuffix() {
+		return this.suffix;
 	}
 
 	@Override
 	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeParameter(this, p);
+		return visitor.visitTypeArg(this, p);
 	}
 
 	@Override
 	public void printContent(StringBuilder out) {
-		if (this.separator != null) {
-			this.separator.printContent(out);
-		}
-		if (this.type != null) {
-			this.type.printContent(out);
-		}
+		this.argument.printContent(out);
+		this.suffix.printContent(out);
 	}
 
 }

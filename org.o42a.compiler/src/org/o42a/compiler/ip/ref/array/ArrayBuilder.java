@@ -87,7 +87,7 @@ abstract class ArrayBuilder {
 			} else {
 
 				final Ref itemRef = itemNode.accept(
-						this.constructor.ip().targetExVisitor(),
+						this.constructor.ip().expressionVisitor(),
 						distributor);
 
 				if (itemRef != null) {

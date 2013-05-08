@@ -29,8 +29,8 @@ public class ConditionTest extends CompilerTestCase {
 	public void not() {
 		compile(
 				"A := void (",
-				"  Condition := (`void) false",
-				"  Value := void (--Condition)",
+				"  Condition := void` link = false",
+				"  Value := void (--Condition->)",
 				")",
 				"B := a (Condition = void)",
 				"C := b");

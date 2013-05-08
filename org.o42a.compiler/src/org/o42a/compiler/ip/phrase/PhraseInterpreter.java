@@ -24,7 +24,7 @@ import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISI
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.ref.cmp.ComparisonExpression;
 import org.o42a.compiler.ip.Interpreter;
@@ -74,8 +74,8 @@ public final class PhraseInterpreter {
 		return phrase.prefixByAscendants(node).noDeclarations();
 	}
 
-	public PhraseBuilder typeParametersPhrase(
-			TypeParametersNode node,
+	public PhraseBuilder typeArgumentsPhrase(
+			TypeArgumentsNode node,
 			AccessDistributor distributor,
 			TypeConsumer typeConsumer) {
 
@@ -85,7 +85,7 @@ public final class PhraseInterpreter {
 				distributor,
 				typeConsumer);
 
-		return phrase.prefixByTypeParameters(node).noDeclarations();
+		return phrase.prefixByTypeArguments(node).noDeclarations();
 	}
 
 	public PhraseBuilder unary(
@@ -178,7 +178,7 @@ public final class PhraseInterpreter {
 			BinaryPhraseOperator operator) {
 
 		final Ref left = node.getLeftOperand().accept(
-				ip().targetExVisitor(),
+				ip().expressionVisitor(),
 				distributor);
 
 		if (left == null) {
@@ -192,7 +192,7 @@ public final class PhraseInterpreter {
 		}
 
 		final Ref right =
-				rightOperand.accept(ip().targetExVisitor(), distributor);
+				rightOperand.accept(ip().expressionVisitor(), distributor);
 
 		if (right == null) {
 			return null;

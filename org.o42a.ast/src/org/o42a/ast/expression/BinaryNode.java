@@ -24,7 +24,7 @@ import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.TypeArgumentNode;
 
 
 public class BinaryNode
@@ -84,7 +84,7 @@ public class BinaryNode
 	}
 
 	@Override
-	public final TypeNode toType() {
+	public final TypeArgumentNode toTypeArgument() {
 		return null;
 	}
 

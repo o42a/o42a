@@ -115,6 +115,8 @@ final class MainControl extends Control {
 	}
 
 	void storeResult(Block code, ValOp value) {
+		assert this.dirs.getValueType().is(value.getValueType()) :
+			"Can not store " + value + " in " + this;
 		if (this.results == 0 && valueAccessibleBy(code)) {
 			this.singleResultInset = code.inset("sgl_res");
 			this.finalResult = value;

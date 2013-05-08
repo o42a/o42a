@@ -18,7 +18,7 @@ Simple := test (
   Name = "Simple"
   Print error '  ' [name] nl
   
-  List := row list (`string) [["a", "b", "c", "d", "e", "f"]]
+  List := string` row list [["a", "b", "c", "d", "e", "f"]]
   Sublist := list [1...4)
 
   Assert [sublist: size == 3] 'Wrong size'
@@ -32,7 +32,7 @@ Mutable := test (
   Name ="Mutable"
   Print error '  ' [name] nl
 
-  List := array list (`string) [["a", "b", "c", "d", "e", "f"]]
+  List := string` array list [["a", "b", "c", "d", "e", "f"]]
   Sublist := list [1...4)
 
   {

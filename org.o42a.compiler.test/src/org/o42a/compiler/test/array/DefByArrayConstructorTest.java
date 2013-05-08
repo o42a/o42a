@@ -23,7 +23,7 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 	@Test
 	public void buildRow() {
 		compile(
-				"A := row (`string) [[",
+				"A := string` row [[",
 				"  \"a\", \"b\", \"c\"",
 				"]]");
 
@@ -55,7 +55,7 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 	@Test
 	public void buildArray() {
 		compile(
-				"A := array (`string) [[",
+				"A := string` array [[",
 				"  \"a\", \"b\", \"c\"",
 				"]]");
 

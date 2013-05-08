@@ -42,6 +42,7 @@ import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.state.SyntheticDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.ObjectConstructorStep;
+import org.o42a.core.ref.path.impl.SyntheticObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueAdapter;
@@ -99,6 +100,8 @@ public abstract class ObjectConstructor
 
 	public abstract TypeRef ancestor(LocationInfo location, Ref ref);
 
+	public abstract TypeRef iface(Ref ref);
+
 	public final Obj resolve(Scope scope) {
 		if (scope.is(getScope())) {
 			return getConstructed();
@@ -122,6 +125,13 @@ public abstract class ObjectConstructor
 
 	public final Ref toRef() {
 		return toPath().bind(this, getScope()).target(distribute());
+	}
+
+	public final ObjectConstructor toSynthetic() {
+		if (!mayContainDeps()) {
+			return this;
+		}
+		return new SyntheticObjectConstructor(this);
 	}
 
 	public abstract ObjectConstructor reproduce(PathReproducer reproducer);

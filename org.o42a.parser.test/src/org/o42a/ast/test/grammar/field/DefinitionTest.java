@@ -6,21 +6,20 @@ package org.o42a.ast.test.grammar.field;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.declarator;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
-import org.o42a.ast.expression.ArgumentNode;
-import org.o42a.ast.expression.BracketsNode;
-import org.o42a.ast.expression.PhraseNode;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.DefinitionKind;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
 
@@ -31,75 +30,41 @@ public class DefinitionTest extends GrammarTestCase {
 	public void link() {
 
 		final DeclaratorNode result = parse("foo := `bar");
+		final UnaryNode definition =
+				to(UnaryNode.class, result.getDefinition());
 
-		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
-		assertNull(result.getDefinitionType());
-		assertThat(result.getDefinition(), isName("bar"));
+		assertThat(result.getTarget(), is(DeclarationTarget.VALUE));
+		assertThat(definition.getOperator(), is(UnaryOperator.LINK));
+		assertThat(definition.getOperand(), isName("bar"));
 	}
 
 	@Test
 	public void staticLink() {
 
 		final DeclaratorNode result = parse("foo := `&bar");
+		final UnaryNode definition =
+				to(UnaryNode.class, result.getDefinition());
 
 		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
-		assertNull(result.getDefinitionType());
+		assertThat(definition.getOperator(), is(UnaryOperator.LINK));
 
 		final AscendantsNode ascendants =
-				to(AscendantsNode.class, result.getDefinition());
+				to(AscendantsNode.class, definition.getOperand());
 
 		assertFalse(ascendants.hasSamples());
 		assertThat(ascendants.getAncestor().getSpec(), isName("bar"));
 	}
 
 	@Test
-	public void linkInterface() {
-
-		final DeclaratorNode result = parse("foo := (`bar) baz");
-
-		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
-		assertThat(result.getDefinitionType(), isName("bar"));
-		assertThat(result.getDefinition(), isName("baz"));
-	}
-
-	@Test
-	public void staticLinkInterface() {
-
-		final DeclaratorNode result = parse("foo := (`&bar) baz");
-
-		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
-
-		final AscendantsNode ascendants =
-				to(AscendantsNode.class, result.getDefinitionType());
-
-		assertThat(ascendants.getAncestor().getSpec(), isName("bar"));
-		assertThat(result.getDefinition(), isName("baz"));
-	}
-
-	@Test
 	public void variable() {
 
 		final DeclaratorNode result = parse("foo := ``bar");
+		final UnaryNode definition =
+				to(UnaryNode.class, result.getDefinition());
 
-		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.VARIABLE, result.getDefinitionKind());
-		assertNull(result.getDefinitionType());
-		assertThat(result.getDefinition(), isName("bar"));
-	}
-
-	@Test
-	public void variableInterface() {
-
-		final DeclaratorNode result = parse("foo := (``bar) baz");
-
-		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.VARIABLE, result.getDefinitionKind());
-		assertThat(result.getDefinitionType(), isName("bar"));
-		assertThat(result.getDefinition(), isName("baz"));
+		assertThat(result.getTarget(), is(DeclarationTarget.VALUE));
+		assertThat(definition.getOperator(), is(UnaryOperator.VARIABLE));
+		assertThat(definition.getOperand(), isName("bar"));
 	}
 
 	@Test
@@ -108,8 +73,6 @@ public class DefinitionTest extends GrammarTestCase {
 		final DeclaratorNode result = parse("foo := bar = baz");
 
 		assertThat(result.getTarget(), is(DeclarationTarget.VALUE));
-		assertThat(result.getDefinitionKind(), nullValue());
-		assertThat(result.getDefinitionType(), nullValue());
 
 		final PhraseNode definition =
 				to(PhraseNode.class, result.getDefinition());

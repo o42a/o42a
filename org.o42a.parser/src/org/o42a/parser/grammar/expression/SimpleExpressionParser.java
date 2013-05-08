@@ -30,8 +30,8 @@ import org.o42a.ast.expression.GroupNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -93,18 +93,10 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			}
 
 			return context.parse(unary());
+		case '`':
 		case '\\':
 		case NOT_SIGN:
 			return context.parse(unary());
-		case '#':
-
-			final RefNode macroRef = context.parse(ref());
-
-			if (macroRef != null) {
-				return macroRef;
-			}
-
-			return context.parse(macroExpansion());
 		case '(':
 			return context.parse(DECLARATIVE.parentheses());
 		case '&':
@@ -152,26 +144,6 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 				}
 
 				expression = group;
-				next = context.pendingOrNext();
-
-				continue;
-			case '`':
-
-				final BodyRefNode bodyRef = context.parse(bodyRef(expression));
-
-				if (bodyRef == null) {
-					return expression;
-				}
-
-				final MemberRefNode bodyMemberRef =
-						context.parse(memberRef(bodyRef, false));
-
-				if (bodyMemberRef != null) {
-					expression = bodyMemberRef;
-				} else {
-					expression = bodyRef;
-				}
-
 				next = context.pendingOrNext();
 
 				continue;
@@ -233,23 +205,27 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 				}
 
 				return expression;
-			default:
-				if (next == '(') {
+			case '`':
 
-					final TypeNode type = expression.toType();
+				final TypeArgumentNode argument =
+						expression.toTypeArgument();
 
-					if (type != null) {
-
-						final TypeParametersNode typeParameters =
-								context.parse(typeParameters(type));
-
-						if (typeParameters != null) {
-							expression = typeParameters;
-							next = context.pendingOrNext();
-							continue;
-						}
-					}
+				if (argument == null) {
+					return expression;
 				}
+
+				final TypeArgumentsNode typeArguments =
+						context.parse(typeArguments(argument));
+
+				if (typeArguments == null) {
+					return expression;
+				}
+
+				expression = typeArguments;
+				next = context.pendingOrNext();
+
+				continue;
+			default:
 
 				final PhraseNode phrase = context.parse(phrase(expression));
 

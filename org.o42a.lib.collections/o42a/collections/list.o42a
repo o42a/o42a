@@ -21,7 +21,7 @@ Length = * (= size!)
 Iterate => * (
   ::Next index := ``0
   Next = * (
-    $Index := next index 
+    $Index := next index->
     {
       Next index = index + 1
     }
@@ -29,19 +29,19 @@ Iterate => * (
   )
 )
 
-Sublist :=> &list (`#element type) (
+Sublist :=> #element type` &list (
   ~~~
   A sublist representing a slice of original list.
   ~~~
 
-  From := link (`integer) = 0
+  From := integer` link = 0
   ~~~
   An index of the first list element represented by this sublist.
 
   Zero by default.
   ~~~
 
-  To := link (`integer) = list:: size
+  To := integer` link = list:: size
   ~~~
   A value one greater than index of the last list element
   represented by this sublist.
@@ -60,8 +60,8 @@ Sublist :=> &list (`#element type) (
   ~~~
   Constructs a sublist by the given right-open list indices interval.
   ~~~
-  <[From...) | to> From = ()
-  <[...To)!> To = ()
+  <[From...) | to> From = *
+  <[...To)!> To = *
 )
 
 <*Trailing sublist> Sublist (
@@ -69,7 +69,7 @@ Sublist :=> &list (`#element type) (
   Constructs a trailing sublist by the given closed left-bounded
   list indices interval.
   ~~~
-  <[From...-)!> From = ()
+  <[From...-)!> From = *
 )
 
 <*Leading sublist> Sublist (
@@ -77,8 +77,8 @@ Sublist :=> &list (`#element type) (
   Constructs a leading sublist by the given open right-bounded 
   list indices interval.
   ~~~
-  <(-...To)!> To = ()
+  <(-...To)!> To = *
 )
 
 <(-Full sublist...-)!> ~~ Returns a list itself when unbounded list indices
-                      ~~ interval provided.
+                       ~~ interval provided.

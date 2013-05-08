@@ -23,8 +23,6 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.clause.IntervalInterpreter.invalidIntervalBracket;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePartVisitor.PHRASE_PART_VISITOR;
-import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
-import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
@@ -35,7 +33,9 @@ import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.common.phrase.Phrase;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.phrase.part.UnaryPhraseOperator;
@@ -101,11 +101,6 @@ public final class PhraseBuilder extends Contained {
 		return this.typeConsumer;
 	}
 
-	public final PhraseBuilder referBody() {
-		phrase().referBody();
-		return this;
-	}
-
 	public final PhraseBuilder expandMacro() {
 		phrase().expandMacro();
 		return this;
@@ -141,9 +136,6 @@ public final class PhraseBuilder extends Contained {
 		if (ancestor.isImplied()) {
 			setImpliedAncestor(location(this, node.getAncestor()));
 		} else {
-			if (ancestor.isBodyReferred()) {
-				referBody();
-			}
 			ancestor.applyTo(phrase());
 		}
 
@@ -172,23 +164,21 @@ public final class PhraseBuilder extends Contained {
 		return this;
 	}
 
-	public PhraseBuilder prefixByTypeParameters(TypeParametersNode node) {
-		referBody();
+	public PhraseBuilder prefixByTypeArguments(TypeArgumentsNode node) {
 
-		final TypeRefParameters typeParams =
-				ip().typeIp().typeParameters(
-						node.getParameters(),
-						distributeAccess().fromDeclaration(),
-						typeConsumer());
-		final TypeNode ascendantNode = node.getType();
+		final TypeRefParameters typeArguments = ip().typeIp().typeArguments(
+				node,
+				distributeAccess().fromDeclaration(),
+				typeConsumer());
+		final ExpressionNode ascendantNode = node.getType();
 
 		if (ascendantNode == null) {
 			return setImpliedAncestor(location(this, node))
-					.setTypeParameters(typeParams.toObjectTypeParameters());
+					.setTypeParameters(typeArguments.toObjectTypeParameters());
 		}
 
 		return ascendantNode.accept(
-				new PhrasePrefixVisitor(typeParams),
+				new PhrasePrefixVisitor(typeArguments),
 				this);
 	}
 
@@ -200,8 +190,6 @@ public final class PhraseBuilder extends Contained {
 				expression.accept(
 						ip().typeIp().ancestorVisitor(
 								typeParameters,
-								typeParameters == null
-								? TARGET_REFERRAL : BODY_REFERRAL,
 								typeConsumer()),
 						distributeAccess());
 
@@ -213,10 +201,6 @@ public final class PhraseBuilder extends Contained {
 			}
 
 			return setTypeParameters(typeParameters.toObjectTypeParameters());
-		}
-
-		if (typeParameters != null || ancestor.isBodyReferred()) {
-			referBody();
 		}
 
 		ancestor.applyTo(phrase());
@@ -302,7 +286,7 @@ public final class PhraseBuilder extends Contained {
 				if (value != null) {
 					phrase.initializer(
 							value.accept(
-									ip().targetBuildVisitor(),
+									ip().refBuildVisitor(),
 									distributeAccess()));
 					continue;
 				}
@@ -325,7 +309,7 @@ public final class PhraseBuilder extends Contained {
 			return this;
 		}
 
-		final Ref value = text.accept(ip().bodyExVisitor(), distributeAccess());
+		final Ref value = text.accept(ip().expressionVisitor(), distributeAccess());
 
 		if (value != null) {
 			return argument(value);
@@ -371,7 +355,7 @@ public final class PhraseBuilder extends Contained {
 		} else {
 			leftOpen = interval.isLeftOpen();
 			leftBound = leftBoundNode.toExpression().accept(
-					ip().targetBuildVisitor(),
+					ip().refBuildVisitor(),
 					distributeAccess());
 			if (leftBound != null) {
 				leftLocation = leftBound;
@@ -401,7 +385,7 @@ public final class PhraseBuilder extends Contained {
 		} else {
 			rightOpen = interval.isRightOpen();
 			rightBound = rightBoundNode.toExpression().accept(
-					ip().targetBuildVisitor(),
+					ip().refBuildVisitor(),
 					distributeAccess());
 			if (rightBound != null) {
 				rightLocation = rightBound;
@@ -450,7 +434,7 @@ public final class PhraseBuilder extends Contained {
 		}
 
 		final Ref operand = node.getOperand().accept(
-				ip().targetExVisitor(typeConsumer().noConsumption()),
+				ip().expressionVisitor(typeConsumer().noConsumption()),
 				distributeAccess());
 
 		if (operand == null) {
@@ -473,7 +457,7 @@ public final class PhraseBuilder extends Contained {
 
 		final AccessDistributor distributor = distributeAccess();
 		final Ref left = node.getLeftOperand().accept(
-				ip().targetExVisitor(),
+				ip().expressionVisitor(),
 				distributor);
 
 		if (left == null) {
@@ -489,7 +473,7 @@ public final class PhraseBuilder extends Contained {
 		}
 
 		final RefBuilder right =
-				rightOperand.accept(ip().targetBuildVisitor(), distributor);
+				rightOperand.accept(ip().refBuildVisitor(), distributor);
 
 		if (right == null) {
 			return null;
@@ -506,7 +490,7 @@ public final class PhraseBuilder extends Contained {
 	public PhraseBuilder suffix(BinaryNode node) {
 
 		final RefBuilder prefix = node.getLeftOperand().accept(
-				ip().targetBuildVisitor(),
+				ip().refBuildVisitor(),
 				distributeAccess());
 
 		if (prefix == null) {
@@ -551,7 +535,8 @@ public final class PhraseBuilder extends Contained {
 		case NOT:
 		case VALUE_OF:
 		case KEEP_VALUE:
-		case MACRO_EXPANSION:
+		case LINK:
+		case VARIABLE:
 		}
 
 		getLogger().error(

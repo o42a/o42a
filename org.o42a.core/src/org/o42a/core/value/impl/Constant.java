@@ -67,6 +67,11 @@ public final class Constant<T> extends ObjectConstructor {
 		return this.valueType.typeRef(location, getScope());
 	}
 
+	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref, ref);
+	}
+
 	public final SingleValueType<T> getValueType() {
 		return this.valueType;
 	}
@@ -77,11 +82,13 @@ public final class Constant<T> extends ObjectConstructor {
 
 	@Override
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
-		if (request.isTransformAllowed()
-				&& !request.getExpectedType().is(getValueType())) {
-			return super.valueAdapter(ref, request);
+		if (request.getExpectedType().is(getValueType())) {
+			return new ConstantValueAdapter<>(
+					ref,
+					getValueType(),
+					this.constant);
 		}
-		return new ConstantValueAdapter<>(ref, getValueType(), this.constant);
+		return super.valueAdapter(ref, request);
 	}
 
 	@Override

@@ -24,33 +24,22 @@ import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.InterfaceNode;
 
 
 public class LocalScopeNode extends AbstractStatementNode {
 
-	private final InterfaceNode iface;
 	private final LocalNode local;
 	private final SignNode<Separator> separator;
 	private final StatementNode content;
 
-
 	public LocalScopeNode(
-			InterfaceNode iface,
 			LocalNode local,
 			SignNode<Separator> separator,
 			StatementNode content) {
-		super(
-				start(iface, local),
-				end(local, separator, content));
-		this.iface = iface;
+		super(local.getStart(), end(local, separator, content));
 		this.local = local;
 		this.separator = separator;
 		this.content = content;
-	}
-
-	public final InterfaceNode getInterface() {
-		return this.iface;
 	}
 
 	public final LocalNode getLocal() {
@@ -87,12 +76,6 @@ public class LocalScopeNode extends AbstractStatementNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		if (this.iface != null) {
-			this.iface.printContent(out);
-			if (this.iface.getOpening() != null) {
-				out.append(' ');
-			}
-		}
 		this.local.printContent(out);
 		if (this.separator != null) {
 			this.separator.printContent(out);

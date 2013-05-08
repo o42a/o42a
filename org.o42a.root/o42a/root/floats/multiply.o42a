@@ -9,5 +9,5 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Multiply :=> //float
 ====================
 
-Left operand :=< //link (`//float)
-Right operand :=< //link (`//float)
+Left operand :=< //float` //link
+Right operand :=< //float` //link

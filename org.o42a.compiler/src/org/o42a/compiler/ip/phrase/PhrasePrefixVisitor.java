@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.phrase;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.ast.type.TypeParametersNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
@@ -57,17 +57,17 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	public PhraseBuilder visitTypeParameters(
-			TypeParametersNode parameters,
+	public PhraseBuilder visitTypeArguments(
+			TypeArgumentsNode arguments,
 			PhraseBuilder p) {
 
-		final PhraseBuilder phrase = p.prefixByTypeParameters(parameters);
+		final PhraseBuilder phrase = p.prefixByTypeArguments(arguments);
 
 		if (phrase == null) {
 			return null;
 		}
 
-		return applyTypeParameters(phrase.referBody());
+		return applyTypeParameters(phrase);
 	}
 
 	@Override

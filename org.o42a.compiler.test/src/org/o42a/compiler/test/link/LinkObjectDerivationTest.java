@@ -20,27 +20,40 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	@Test
 	public void inheritLink() {
 		compile(
-				"A := link (`integer) = 42",
+				"A := integer` link = 42",
 				"B := a (= 43)");
 
-		final Field a = field("a");
-		final Field b = field("b");
+		final Obj a = field("a").toObject();
+		final Obj b = field("b").toObject();
 
-		final Obj aTarget = linkTarget(a);
+		assertThat(definiteValue(linkTarget(a), ValueType.INTEGER), is(42L));
+		assertThat(definiteValue(linkTarget(b), ValueType.INTEGER), is(43L));
+
+		assertTrue(b.type().inherits(a.type()));
+	}
+
+	@Test
+	public void inheritLinkTarget() {
+		compile(
+				"A := integer` link = 42",
+				"B := a-> (= 43)");
+
+		final Obj b = field("b").toObject();
+		final Obj aTarget = linkTarget(field("a").toObject());
 
 		assertThat(definiteValue(aTarget, ValueType.INTEGER), is(42L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(43L));
 
-		assertTrue(b.toObject().type().inherits(aTarget.type()));
-		assertTrue(b.toObject().getWrapped().type().inherits(aTarget.type()));
+		assertTrue(b.type().inherits(aTarget.type()));
+		assertTrue(b.getWrapped().type().inherits(aTarget.type()));
 	}
 
 	@Test
 	public void linkPropagation() {
 		compile(
 				"A := void (",
-				"  Foo := link (`integer) = 1",
-				"  Bar := link (`integer) = foo",
+				"  Foo := integer` link = 1",
+				"  Bar := integer` link = foo",
 				")",
 				"B := a (Foo = 2)");
 
@@ -58,8 +71,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void staticLinkPropagation() {
 		compile(
 				"A :=> void (",
-				"  Foo :=< link (`&integer)",
-				"  Bar := link (`&integer) = foo",
+				"  Foo :=< &integer` link",
+				"  Bar := &integer` link = foo",
 				")",
 				"B := a (Foo = 2)",
 				"C := b",
@@ -82,13 +95,13 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void linkAncestorUpgrade() {
 		compile(
 				"A := void (",
-				"  F := link (`integer) = 3",
+				"  F := integer` link = 3",
 				")",
-				"Lnk :=> link (`integer) (",
+				"Lnk :=> integer` link (",
 				"  G := 12",
 				")",
 				"B := a (",
-				"  F = lnk` ()",
+				"  F = lnk ()",
 				")");
 
 		assertThat(
@@ -100,13 +113,13 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void parameterizedLinkAncestorUpgrade() {
 		compile(
 				"A := void (",
-				"  F := link (`integer) = 3",
+				"  F := integer` link = 3",
 				")",
-				"Lnk :=> link` (",
+				"Lnk :=> link (",
 				"  G := 12",
 				")",
 				"B := a (",
-				"  F = lnk (`integer)",
+				"  F = integer` lnk",
 				")");
 
 		assertThat(
@@ -118,13 +131,13 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void linkPrototypeAncestorUpgrade() {
 		compile(
 				"A :=> void (",
-				"  F :=<> link (`integer) = 3",
+				"  F :=<> integer` link = 3",
 				")",
-				"Lnk :=> link (`integer) (",
+				"Lnk :=> integer` link (",
 				"  G := 12",
 				")",
 				"B :=> a (",
-				"  F =<> lnk` ()",
+				"  F =<> lnk ()",
 				")");
 
 		assertThat(

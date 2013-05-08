@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.type.ascendant;
 
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.ref.Ref;
@@ -32,9 +31,8 @@ public final class StaticAncestorVisitor extends AncestorVisitor {
 	public StaticAncestorVisitor(
 			Interpreter ip,
 			TypeRefParameters typeParameters,
-			Referral referral,
 			TypeConsumer typeConsumer) {
-		super(ip, typeParameters, referral, typeConsumer);
+		super(ip, typeParameters, typeConsumer);
 	}
 
 	@Override

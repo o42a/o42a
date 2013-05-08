@@ -27,10 +27,8 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.decl.DeclaredField;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.link.LinkValueType;
 
 
 public final class FieldDeclaration extends Contained implements Cloneable {
@@ -49,8 +47,6 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 	private boolean override;
 	private boolean isAbstract;
 	private boolean prototype;
-	private LinkValueType linkType;
-	private TypeRef type;
 	private StaticTypeRef declaredIn;
 
 	FieldDeclaration(
@@ -81,8 +77,6 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		this.override = sample.isOverride();
 		this.isAbstract = sample.isAbstract();
 		this.prototype = sample.isPrototype();
-		this.linkType = sample.getLinkType();
-		this.type = sample.getType();
 		this.declaredIn = sample.getDeclaredIn();
 	}
 
@@ -179,32 +173,6 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		final FieldDeclaration clone = clone();
 
 		clone.prototype = true;
-
-		return clone;
-	}
-
-	public final LinkValueType getLinkType() {
-		return this.linkType;
-	}
-
-	public final FieldDeclaration setLinkType(LinkValueType linkType) {
-
-		final FieldDeclaration clone = clone();
-
-		clone.linkType = linkType;
-
-		return clone;
-	}
-
-	public final TypeRef getType() {
-		return this.type;
-	}
-
-	public final FieldDeclaration setType(TypeRef type) {
-
-		final FieldDeclaration clone = clone();
-
-		clone.type = type;
 
 		return clone;
 	}

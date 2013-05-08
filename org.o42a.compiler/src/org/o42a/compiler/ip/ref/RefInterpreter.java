@@ -42,6 +42,7 @@ import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
+import org.o42a.core.member.AccessSource;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -88,6 +89,35 @@ public abstract class RefInterpreter {
 		}
 
 		return scopeRef.getType() == ScopeType.ROOT;
+	}
+
+	public static boolean isMacroRef(ExpressionNode node) {
+
+		final RefNode ref = node.toRef();
+
+		if (ref == null) {
+			return false;
+		}
+
+		final ScopeRefNode scopeRef = ref.toScopeRef();
+
+		if (scopeRef == null) {
+			return false;
+		}
+
+		return scopeRef.getType() == ScopeType.MACRO;
+	}
+
+	public static boolean linkTargetIsAccessibleFrom(AccessSource accessSource) {
+		switch (accessSource) {
+		case FROM_CLAUSE_REUSE:
+		case FROM_TYPE:
+			return false;
+		case FROM_DECLARATION:
+		case FROM_DEFINITION:
+			return true;
+		}
+		return true;
 	}
 
 	public static Ref number(NumberNode number, Distributor distributor) {
@@ -231,25 +261,19 @@ public abstract class RefInterpreter {
 	}
 
 	private final OwnerFactory ownerFactory;
-	private final TargetRefVisitor targetRefVisitor;
-	private final BodyRefVisitor bodyRefVisitor;
+	private final TargetRefVisitor refVisitor;
 	private final OwnerVisitor ownerVisitor;
 
 	RefInterpreter(OwnerFactory ownerFactory) {
 		this.ownerFactory = ownerFactory;
-		this.targetRefVisitor = new TargetRefVisitor(this);
-		this.bodyRefVisitor = new BodyRefVisitor(this);
+		this.refVisitor = new TargetRefVisitor(this);
 		this.ownerVisitor = new OwnerVisitor(this);
 	}
 
 	public abstract Interpreter ip();
 
-	public final RefNodeVisitor<Ref, AccessDistributor> targetRefVisitor() {
-		return this.targetRefVisitor;
-	}
-
-	public final RefNodeVisitor<Ref, AccessDistributor> bodyRefVisitor() {
-		return this.bodyRefVisitor;
+	public final RefNodeVisitor<Ref, AccessDistributor> refVisitor() {
+		return this.refVisitor;
 	}
 
 	public final
@@ -284,7 +308,7 @@ public abstract class RefInterpreter {
 		}
 
 		final Ref declaredIn =
-				declaredInNode.accept(bodyRefVisitor(), p.fromDeclaration());
+				declaredInNode.accept(refVisitor(), p.fromDeclaration());
 
 		if (declaredIn == null) {
 			return null;
@@ -294,7 +318,7 @@ public abstract class RefInterpreter {
 	}
 
 	public RefNodeVisitor<Ref, AccessDistributor> adapterTypeVisitor() {
-		return bodyRefVisitor();
+		return refVisitor();
 	}
 
 	private static final class PlainRefIp extends RefInterpreter {

@@ -59,8 +59,18 @@ final class TypeParameterConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	public boolean isAllowedInsidePrototype() {
+		return true;
+	}
+
+	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
 		return ancestor(location);
+	}
+
+	@Override
+	public TypeRef iface(Ref ref) {
+		return ancestor(ref);
 	}
 
 	@Override

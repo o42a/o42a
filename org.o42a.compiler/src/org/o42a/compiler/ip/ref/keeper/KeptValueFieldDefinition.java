@@ -19,7 +19,9 @@
 */
 package org.o42a.compiler.ip.ref.keeper;
 
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.DefinitionTarget;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.BaseFieldDefinition;
@@ -32,7 +34,6 @@ import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ObjectTypeParameters;
-import org.o42a.core.value.link.LinkValueType;
 
 
 final class KeptValueFieldDefinition extends BaseFieldDefinition {
@@ -63,22 +64,6 @@ final class KeptValueFieldDefinition extends BaseFieldDefinition {
 		definer.setAncestor(ancestor());
 		definer.setParameters(typeParameters(definer));
 		keepValue(definer);
-	}
-
-	@Override
-	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(getRef(), null);
-
-		final LinkValueType linkType =
-				definer.getField().getDeclaration().getLinkType();
-
-		definer.setParameters(
-				linkType.typeParameters(
-						getRef()
-						.getInterface()
-						.setParameters(rescopedTypeParameters())
-						.rescope(definer.getField()))
-				.toObjectTypeParameters());
 	}
 
 	@Override

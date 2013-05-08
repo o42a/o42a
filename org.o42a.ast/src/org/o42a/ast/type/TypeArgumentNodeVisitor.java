@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,23 +19,14 @@
 */
 package org.o42a.ast.type;
 
-import org.o42a.ast.atom.SignType;
+import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.ref.RefNodeVisitor;
 
 
-public enum DefinitionKind implements SignType {
+public interface TypeArgumentNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
-	LINK("`"),
-	VARIABLE("``");
+	R visitAscendants(AscendantsNode ascendants, P p);
 
-	private final String sign;
-
-	DefinitionKind(String sign) {
-		this.sign = sign;
-	}
-
-	@Override
-	public String getSign() {
-		return this.sign;
-	}
+	R visitParentheses(ParenthesesNode parentheses, P p);
 
 }

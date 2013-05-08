@@ -116,8 +116,6 @@ public abstract class FieldDefinition extends Contained {
 
 	public abstract void overrideObject(ObjectDefiner definer);
 
-	public abstract void defineLink(LinkDefiner definer);
-
 	public abstract void defineMacro(MacroDefiner definer);
 
 	public FieldDefinition prefixWith(PrefixPath prefix) {

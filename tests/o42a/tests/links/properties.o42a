@@ -11,7 +11,7 @@ Properties := test
 Name = "Properties"
 Print error '  ' [name] nl
 
-Prop := property (`string) "Initial value"
+Prop := string` property = "Initial value"
 
 {
   Assert [prop == "Initial value"] "Wrong initial property value"
