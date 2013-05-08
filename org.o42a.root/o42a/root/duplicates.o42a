@@ -12,9 +12,9 @@ Duplicates :=> //array
 An array prefilled with the same item.
 ~~~
 
-Size :=< //link (`//integer) ~~ The size of array.
+Size :=< //integer` //link ~~ The size of array.
 
-Duplicate := //link (`#item type)
+Duplicate := #item type` //link
 ~~~
 Array item to prefill the array with.
 

@@ -17,7 +17,7 @@ The property value is stored in the `value` field and can be modified by `set`
 prototype. 
 ~~~
 
-::Value := variable (`property #interface) ~~ Property value.
+::Value := property #interface` variable ~~ Property value.
 
 Set => void (
   ~~~

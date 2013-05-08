@@ -9,5 +9,5 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Equals :=> void
 ===============
 
-What :=< //link (`//float)
-To :=< //link (`//float)
+What :=< //float` //link
+To :=< //float` //link
