@@ -9,5 +9,5 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Compare :=> //integer
 ====================
 
-What :=< //link (`//string)
-With :=< //link (`//string)
+What :=< //string` //link
+With :=< //string` //link
