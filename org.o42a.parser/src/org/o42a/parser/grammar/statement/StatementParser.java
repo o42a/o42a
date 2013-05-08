@@ -102,16 +102,6 @@ public class StatementParser implements Parser<StatementNode> {
 
 		final int next = context.next();
 
-		if (next == '`') {
-
-			final LocalScopeNode localScope =
-					context.parse(this.grammar.localScope());
-
-			if (localScope != null) {
-				return localScope;
-			}
-		}
-
 		if (this.local) {
 			return parseLocalStatement(context, next);
 		}
@@ -155,13 +145,6 @@ public class StatementParser implements Parser<StatementNode> {
 	}
 
 	private StatementNode parseParentheses(ParserContext context) {
-
-		final LocalScopeNode localScope =
-				context.parse(this.grammar.localScope());
-
-		if (localScope != null) {
-			return localScope;
-		}
 
 		final ParenthesesNode parentheses =
 				context.parse(this.grammar.parentheses());

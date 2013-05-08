@@ -36,7 +36,6 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.log.LogInfo;
 
 
@@ -44,18 +43,6 @@ public final class TypeInterpreter {
 
 	public static void invalidType(CompilerLogger logger, LogInfo location) {
 		logger.error("invalid_type", location, "Not a valid type reference");
-	}
-
-	public static LinkValueType definitionLinkType(
-			DefinitionKind definitionKind) {
-		switch (definitionKind) {
-		case LINK:
-			return LinkValueType.LINK;
-		case VARIABLE:
-			return LinkValueType.VARIABLE;
-		}
-		throw new IllegalArgumentException(
-				"Unknwon definition kind: " + definitionKind);
 	}
 
 	private final Interpreter ip;
