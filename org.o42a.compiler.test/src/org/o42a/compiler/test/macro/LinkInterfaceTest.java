@@ -19,7 +19,7 @@ public class LinkInterfaceTest extends CompilerTestCase {
 	public void linkInterface() {
 		compile(
 				"A := `1",
-				"B := (`a #interface) 2");
+				"B := (a #interface)` link = 2");
 
 		assertThat(
 				LINK.interfaceRef(field("b").toObject().type().getParameters())
@@ -33,8 +33,8 @@ public class LinkInterfaceTest extends CompilerTestCase {
 	@Test
 	public void linkPrototypeInterface() {
 		compile(
-				"A :=> link (`integer)",
-				"B := (`a #interface) 2");
+				"A :=> integer` link",
+				"B := (a #interface)` link = 2");
 
 		assertThat(
 				LINK.interfaceRef(field("b").toObject().type().getParameters())

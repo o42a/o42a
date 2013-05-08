@@ -49,7 +49,7 @@ public class LocalScopeTest extends CompilerTestCase {
 	public void localLink() {
 		compile(
 				"A := \"123\"",
-				"B := link (`string) (",
+				"B := string` link (",
 				"  `a $ Local (",
 				"    = $Local",
 				"  )",

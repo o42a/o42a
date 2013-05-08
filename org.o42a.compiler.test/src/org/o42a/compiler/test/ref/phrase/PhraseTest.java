@@ -52,9 +52,9 @@ public class PhraseTest extends CompilerTestCase {
 	public void nestedFieldRef() {
 		compile(
 				"A :=> void (",
-				"  Val :=< link (`integer)",
+				"  Val :=< integer` link",
 				"  Sum :=> integer (",
-				"    Inc :=< link (`integer)",
+				"    Inc :=< integer` link",
 				"    = Val + inc",
 				"  )",
 				"  <*> Sum (",

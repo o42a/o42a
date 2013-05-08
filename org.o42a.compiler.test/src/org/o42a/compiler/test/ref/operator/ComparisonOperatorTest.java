@@ -14,7 +14,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	public void equals() {
 		compile(
 				"Compare :=> void (",
-				"  Right :=< link (`integer)",
+				"  Right :=< integer` link",
 				")",
 				"A := void (",
 				"  <*Cmp> Compare (",
@@ -30,7 +30,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	public void notEquals() {
 		compile(
 				"Compare :=> void (",
-				"  Right :=< link (`integer)",
+				"  Right :=< integer` link",
 				")",
 				"A := void (",
 				"  <*Cmp> Compare (",

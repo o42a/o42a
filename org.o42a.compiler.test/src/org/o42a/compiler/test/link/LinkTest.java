@@ -37,7 +37,7 @@ public class LinkTest extends CompilerTestCase {
 	public void typedLink() {
 		compile(
 				"A := 1",
-				"B := (`integer) a");
+				"B := integer` link = a");
 
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();

@@ -29,8 +29,8 @@ public class RuntimeValueTest extends CompilerTestCase {
 	public void runtimeIntegerLink() {
 		compile(
 				"Use namespace 'Test'",
-				"A := (`integer) rt-integer '5'",
-				"B := (`integer) a");
+				"A := integer` link = rt-integer '5'",
+				"B := integer` link = a");
 
 		assertRuntimeInteger(linkTarget(field("a")));
 		assertRuntimeInteger(linkTarget(field("b")));

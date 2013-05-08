@@ -20,7 +20,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	@Test
 	public void inheritLink() {
 		compile(
-				"A := link (`integer) = 42",
+				"A := integer` link = 42",
 				"B := a (= 43)");
 
 		final Obj a = field("a").toObject();
@@ -35,7 +35,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	@Test
 	public void inheritLinkTarget() {
 		compile(
-				"A := link (`integer) = 42",
+				"A := integer` link = 42",
 				"B := a-> (= 43)");
 
 		final Obj b = field("b").toObject();
@@ -52,8 +52,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void linkPropagation() {
 		compile(
 				"A := void (",
-				"  Foo := link (`integer) = 1",
-				"  Bar := link (`integer) = foo",
+				"  Foo := integer` link = 1",
+				"  Bar := integer` link = foo",
 				")",
 				"B := a (Foo = 2)");
 
@@ -71,8 +71,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void staticLinkPropagation() {
 		compile(
 				"A :=> void (",
-				"  Foo :=< link (`&integer)",
-				"  Bar := link (`&integer) = foo",
+				"  Foo :=< &integer` link",
+				"  Bar := &integer` link = foo",
 				")",
 				"B := a (Foo = 2)",
 				"C := b",
@@ -95,9 +95,9 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void linkAncestorUpgrade() {
 		compile(
 				"A := void (",
-				"  F := link (`integer) = 3",
+				"  F := integer` link = 3",
 				")",
-				"Lnk :=> link (`integer) (",
+				"Lnk :=> integer` link (",
 				"  G := 12",
 				")",
 				"B := a (",
@@ -113,7 +113,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void parameterizedLinkAncestorUpgrade() {
 		compile(
 				"A := void (",
-				"  F := link (`integer) = 3",
+				"  F := integer` link = 3",
 				")",
 				"Lnk :=> link (",
 				"  G := 12",
@@ -131,9 +131,9 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	public void linkPrototypeAncestorUpgrade() {
 		compile(
 				"A :=> void (",
-				"  F :=<> link (`integer) = 3",
+				"  F :=<> integer` link = 3",
 				")",
-				"Lnk :=> link (`integer) (",
+				"Lnk :=> integer` link (",
 				"  G := 12",
 				")",
 				"B :=> a (",

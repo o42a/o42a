@@ -56,7 +56,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 	@Test
 	public void deriveField() {
 		compile(
-				"A := void(",
+				"A := void (",
 				"  Field := [1, 2, 3]",
 				")",
 				"B := a");
@@ -92,12 +92,12 @@ public class ArrayDerivationTest extends CompilerTestCase {
 	@Test
 	public void expressionArrayItem() {
 		compile(
-				"A := void(",
+				"A := void (",
 				"  F := `1",
 				"  G := `2",
-				"  Field := row (`integer) [[f + g]]",
+				"  Field := integer` row [[f + g]]",
 				")",
-				"B := a(F = 2. G = 4)");
+				"B := a (F = 2. G = 4)");
 
 		final Obj bField = field("b", "field").toObject();
 

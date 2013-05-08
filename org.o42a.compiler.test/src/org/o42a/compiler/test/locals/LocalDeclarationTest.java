@@ -33,7 +33,7 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	public void localLink() {
 		compile(
 				"A := \"123\"",
-				"B := link (`string) (",
+				"B := string` link (",
 				"  $Local := `a",
 				"  = $local",
 				")");
@@ -50,7 +50,7 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	public void linkTarget() {
 		compile(
 				"A := `\"123\"",
-				"B := link (`string) (",
+				"B := string` link (",
 				"  $Local := a",
 				"  = $local->",
 				")");
@@ -67,7 +67,7 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	public void linkBody() {
 		compile(
 				"A := `\"123\"",
-				"B := link (`string) (",
+				"B := string` link (",
 				"  $Local := a",
 				"  = $local",
 				")");
@@ -84,7 +84,7 @@ public class LocalDeclarationTest extends CompilerTestCase {
 	public void localVariable() {
 		compile(
 				"A := \"123\"",
-				"B := variable (`string) (",
+				"B := string` variable (",
 				"  $Local := ``a",
 				"  = $local",
 				")");
