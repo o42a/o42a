@@ -42,7 +42,7 @@ public class LinkObjectTest extends CompilerTestCase {
 	public void typedLink() {
 		compile(
 				"A := 1",
-				"B := link (`integer) = a");
+				"B := integer` link = a");
 
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();
@@ -62,7 +62,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  Foo := 1.",
-				"  Bar := link (`foo) = foo",
+				"  Bar := foo` link = foo",
 				")",
 				"B := a (Foo = 2)");
 
@@ -87,7 +87,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  Foo := 1",
-				"  Bar := link (`&foo) = &foo",
+				"  Bar := &foo` link = &foo",
 				")",
 				"B := a (Foo = 2)");
 

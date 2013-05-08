@@ -18,7 +18,7 @@ public class ArrayAsRowTest extends CompilerTestCase {
 	@Test
 	public void arrayAsRow() {
 		compile(
-				"A := array (`integer) [[1, 2, 3]]",
+				"A := integer` array [[1, 2, 3]]",
 				"B := a: as row");
 
 		assertThat(valueOf(field("b")).getKnowledge(), is(RUNTIME_VALUE));
@@ -27,7 +27,7 @@ public class ArrayAsRowTest extends CompilerTestCase {
 	@Test
 	public void emptyArrayAsRow() {
 		compile(
-				"A := array (`integer) [[]]",
+				"A := integer` array [[]]",
 				"B := a: as row");
 
 		final Array array = definiteValue(field("b"));
@@ -38,7 +38,7 @@ public class ArrayAsRowTest extends CompilerTestCase {
 	@Test
 	public void falseArrayAsRow() {
 		compile(
-				"A := array (`integer) (False, = [1, 2, 3])",
+				"A := integer` array (False, = [1, 2, 3])",
 				"B := a: as row");
 
 		assertFalseValue(valueOf(field("b")));

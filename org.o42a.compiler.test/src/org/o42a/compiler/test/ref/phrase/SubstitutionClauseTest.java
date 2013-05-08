@@ -48,7 +48,7 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 		compile(
 				"Val := 1",
 				"A :=> integer (",
-				"  Foo :=< link (`integer)",
+				"  Foo :=< integer` link",
 				"  <[Arg]> Foo = ()",
 				")",
 				"B := a [val]");

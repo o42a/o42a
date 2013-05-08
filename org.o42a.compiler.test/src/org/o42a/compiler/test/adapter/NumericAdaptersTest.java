@@ -17,10 +17,10 @@ public class NumericAdaptersTest extends CompilerTestCase {
 	@Test
 	public void intToFloat() {
 		compile(
-				"A := float(= 456)",
+				"A := float (= 456)",
 				"B := 7890",
-				"C := float(= B)",
-				"D := (`float) b");
+				"C := float (= B)",
+				"D := float` link = b");
 
 		assertThat(definiteValue(field("a"), ValueType.FLOAT), is(456.0));
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(7890L));
@@ -33,10 +33,10 @@ public class NumericAdaptersTest extends CompilerTestCase {
 	@Test
 	public void operators() {
 		compile(
-				"A := float '0.12' + 42",
-				"B := float '0.1' * 42",
+				"A := 0.12 + 42",
+				"B := 0.1 * 42",
 				"C := float '9' / 2",
-				"D := float '12.12' - 2");
+				"D := 12.12 - 2");
 
 		assertThat(definiteValue(field("a"), ValueType.FLOAT), is(42.12));
 		assertThat(definiteValue(field("b"), ValueType.FLOAT), is(4.2));
@@ -47,10 +47,10 @@ public class NumericAdaptersTest extends CompilerTestCase {
 	@Test
 	public void comparison() {
 		compile(
-				"A := float '0.12' < 42",
-				"B := float '0.1' >= 42",
+				"A := 0.12 < 42",
+				"B := 0.1 >= 42",
 				"C := float '9' == 9",
-				"D := float '12.12' <> 12");
+				"D := 12.12 <> 12");
 
 		assertTrueVoid(field("a"));
 		assertFalseVoid(field("b"));

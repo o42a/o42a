@@ -17,7 +17,7 @@ public class LinkConversionTest extends CompilerTestCase {
 	@Test
 	public void convertToString() {
 		compile(
-				"A :=> void (L :=< link (`string))",
+				"A :=> void (L :=< string` link)",
 				"B := `2",
 				"C := a (L = b)");
 

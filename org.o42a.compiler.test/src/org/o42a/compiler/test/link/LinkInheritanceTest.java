@@ -73,7 +73,7 @@ public class LinkInheritanceTest extends CompilerTestCase {
 	public void linkPrototypePropagation() {
 		compile(
 				"A :=> void (",
-				"  Foo :=<> link (`integer) ()",
+				"  Foo :=<> integer` link ()",
 				")",
 				"B := a (Foo => *)");
 

@@ -21,7 +21,7 @@ public class MacroDerivationTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  #T := void",
-				"  F := (`#t) 1",
+				"  F := #t` link = 1",
 				")",
 				"B := a (",
 				"  T = integer",
@@ -48,7 +48,7 @@ public class MacroDerivationTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  #T := void",
-				"  F := (`#t) 1",
+				"  F := #t` link = 1",
 				")",
 				"B := a");
 
@@ -75,7 +75,7 @@ public class MacroDerivationTest extends CompilerTestCase {
 				"  Inner := void (",
 				"    #T := void",
 				"  )",
-				"  F := (`#inner: t) 1",
+				"  F := #inner: t` link = 1",
 				")",
 				"B := a");
 
