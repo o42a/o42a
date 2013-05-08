@@ -119,7 +119,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				"  G := 12",
 				")",
 				"B := a (",
-				"  F = lnk (`integer)",
+				"  F = integer` lnk",
 				")");
 
 		assertThat(
