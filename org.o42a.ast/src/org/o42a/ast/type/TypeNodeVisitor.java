@@ -24,6 +24,4 @@ public interface TypeNodeVisitor<R, P> extends TypeArgumentNodeVisitor<R, P> {
 
 	R visitTypeArguments(TypeArgumentsNode arguments, P p);
 
-	R visitMacroExpression(MacroExpressionNode expression, P p);
-
 }

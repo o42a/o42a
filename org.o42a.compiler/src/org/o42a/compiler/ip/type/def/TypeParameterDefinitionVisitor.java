@@ -24,8 +24,8 @@ import static org.o42a.compiler.ip.Interpreter.location;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -42,32 +42,21 @@ final class TypeParameterDefinitionVisitor
 	}
 
 	@Override
-	public TypeRef visitAscendants(
-			AscendantsNode ascendants,
-			AccessDistributor p) {
-		return typeRef(ascendants, p);
-	}
-
-	@Override
-	public TypeRef visitTypeArguments(
-			TypeArgumentsNode arguments,
-			AccessDistributor p) {
-		return typeRef(arguments, p);
-	}
-
-	@Override
-	protected TypeRef visitRef(RefNode ref, AccessDistributor p) {
-		return typeRef(ref, p);
-	}
-
-	@Override
 	protected TypeRef visitExpression(
 			ExpressionNode expression,
 			AccessDistributor p) {
+
+		final TypeNode type = expression.toType();
+
+		if (type != null) {
+			return typeRef(type, p);
+		}
+
 		p.getLogger().error(
 				"invalid_type_parameter_definition",
 				location(p, expression),
-				"Type parameter desfinition should be a type reference");
+				"Type parameter destinition should be a type reference");
+
 		return null;
 	}
 
