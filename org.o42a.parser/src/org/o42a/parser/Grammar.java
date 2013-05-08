@@ -33,7 +33,9 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.parser.grammar.atom.*;
 import org.o42a.parser.grammar.clause.ClauseDeclaratorParser;
 import org.o42a.parser.grammar.expression.*;
@@ -49,7 +51,6 @@ import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
 import org.o42a.parser.grammar.type.AscendantsParser;
 import org.o42a.parser.grammar.type.TypeArgumentsParser;
-import org.o42a.parser.grammar.type.TypeParser;
 
 
 public class Grammar {
@@ -192,10 +193,6 @@ public class Grammar {
 
 	public static final Parser<UnaryNode> unary() {
 		return UnaryParser.UNARY;
-	}
-
-	public static final Parser<TypeNode> type() {
-		return TypeParser.TYPE;
 	}
 
 	public static final Parser<TypeArgumentsNode> typeArguments(

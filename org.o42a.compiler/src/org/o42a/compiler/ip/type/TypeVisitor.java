@@ -29,18 +29,17 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
-public final class TypeVisitor
+final class TypeVisitor
 		extends AbstractTypeVisitor<ParamTypeRef, AccessDistributor> {
 
 	private final TypeInterpreter typeIp;
 	private final TypeConsumer consumer;
 	private final TypeRefParameters typeParameters;
 
-	public TypeVisitor(TypeInterpreter ip, TypeConsumer consumer) {
+	TypeVisitor(TypeInterpreter ip, TypeConsumer consumer) {
 		this.typeIp = ip;
 		this.typeParameters = null;
 		this.consumer = consumer;
@@ -115,22 +114,6 @@ public final class TypeVisitor
 						this.consumer.noConsumption(),
 						typeParameters),
 				p);
-	}
-
-	@Override
-	public ParamTypeRef visitMacroExpression(
-			MacroExpressionNode expression,
-			AccessDistributor p) {
-
-		final Ref ref = expression.getExpression().accept(
-				ip().expressionVisitor(this.consumer),
-				p.fromDeclaration());
-
-		if (ref == null) {
-			return null;
-		}
-
-		return this.consumer.consumeType(ref, this.typeParameters);
 	}
 
 	@Override

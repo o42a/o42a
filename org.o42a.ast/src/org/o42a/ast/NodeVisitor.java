@@ -40,7 +40,9 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.TypeArgNode;
+import org.o42a.ast.type.TypeNodeVisitor;
 
 
 public abstract class NodeVisitor<R, P>
@@ -81,11 +83,6 @@ public abstract class NodeVisitor<R, P>
 
 	public R visitExponent(ExponentNode exponent, P p) {
 		return visitPart(exponent, p);
-	}
-
-	@Override
-	public R visitMacroExpression(MacroExpressionNode expression, P p) {
-		return expression.getExpression().accept(this, p);
 	}
 
 	public R visitTypeRef(TypeRefNode<?> typeRef, P p) {
