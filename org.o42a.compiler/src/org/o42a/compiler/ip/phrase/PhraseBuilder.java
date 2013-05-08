@@ -181,6 +181,24 @@ public final class PhraseBuilder extends Contained {
 				this);
 	}
 
+	public PhraseBuilder prefixByTypeArguments(TypeArgumentsNode node) {
+
+		final TypeRefParameters typeArguments = ip().typeIp().typeArguments(
+				node,
+				distributeAccess().fromDeclaration(),
+				typeConsumer());
+		final TypeNode ascendantNode = node.getType();
+
+		if (ascendantNode == null) {
+			return setImpliedAncestor(location(this, node))
+					.setTypeParameters(typeArguments.toObjectTypeParameters());
+		}
+
+		return ascendantNode.accept(
+				new PhrasePrefixVisitor(typeArguments),
+				this);
+	}
+
 	public PhraseBuilder expressionPhrase(
 			ExpressionNode expression,
 			TypeRefParameters typeParameters) {

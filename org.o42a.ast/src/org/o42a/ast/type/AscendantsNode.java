@@ -84,7 +84,7 @@ public class AscendantsNode
 
 	@Override
 	public final TypeArgumentNode toTypeArgument() {
-		if (this.samples.length == 0) {
+		if (!hasSamples()) {
 			return this;
 		}
 		return null;

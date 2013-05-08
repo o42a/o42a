@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.type;
 
 import static org.o42a.common.macro.Macros.expandMacro;
+import static org.o42a.compiler.ip.type.TypeInterpreter.invalidType;
 
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
@@ -158,7 +159,7 @@ public final class TypeVisitor
 
 	@Override
 	protected ParamTypeRef visitType(TypeNode type, AccessDistributor p) {
-		p.getContext().getLogger().invalidType(type);
+		invalidType(p.getContext().getLogger(), type);
 		return null;
 	}
 
