@@ -52,16 +52,16 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return getType().getAscendant();
 	}
 
+	public final StructRecOp<ObjectIRTypeOp> declaredIn(Code code) {
+		return ptr(null, code, getType().declaredIn());
+	}
+
 	public final RelRecOp objectType(Code code) {
 		return relPtr(null, code, getType().objectType());
 	}
 
 	public final RelRecOp ancestorBody(Code code) {
 		return relPtr(null, code, getType().ancestorBody());
-	}
-
-	public final DataRecOp methods(Code code) {
-		return ptr(null, code, getType().methods());
 	}
 
 	public final Int32recOp flags(Code code) {
@@ -114,13 +114,6 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 				builder,
 				ancestorBodyPtr.toData(null, code),
 				ancestor);
-	}
-
-	public final ObjectIRMethodsOp loadMethods(Code code) {
-
-		final DataOp methodsPtr = methods(code).load(null, code);
-
-		return methodsPtr.to(null, code, getType().getMethodsIR());
 	}
 
 	@Override

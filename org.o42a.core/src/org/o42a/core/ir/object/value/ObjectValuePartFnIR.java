@@ -362,10 +362,7 @@ public abstract class ObjectValuePartFnIR
 
 		final ObjectOp ancestorBody = host.ancestor(code);
 		final ObjectTypeOp ancestorType =
-				ancestorBody.methods(code)
-				.objectType(code)
-				.load(null, code)
-				.op(host.getBuilder(), DERIVED);
+				ancestorBody.declaredIn(code).op(host.getBuilder(), DERIVED);
 
 		writeAncestorDef(dirs, host, ancestorBody, ancestorType);
 

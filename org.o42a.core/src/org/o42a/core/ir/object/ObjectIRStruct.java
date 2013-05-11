@@ -91,7 +91,6 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	protected final void allocate(SubData<Op> data) {
 		allocateBodyIRs(data);
 		this.typeIR.allocate(data);
-		allocateMethodsIRs(data);
 	}
 
 	@Override
@@ -174,12 +173,6 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			bodyIR.setKind(ObjectIRBody.Kind.PROPAGATED);
 		} else {
 			bodyIR.setKind(ObjectIRBody.Kind.EXPLICIT);
-		}
-	}
-
-	private void allocateMethodsIRs(SubData<?> data) {
-		for (ObjectIRBody bodyIR : bodyIRs().values()) {
-			bodyIR.allocateMethodsIR(data);
 		}
 	}
 

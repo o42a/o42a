@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.ObjectIRMethods.METHODS_ID;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
 import java.util.*;
@@ -55,17 +55,15 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private final ObjectIRStruct objectIRStruct;
 	private final Obj ascendant;
 
-	private ObjectIRMethods methodsIR;
-
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
 	private final LinkedHashMap<Keeper, KeeperIR<?, ?>> keepers =
 			new LinkedHashMap<>();
 
+	private StructRec<ObjectIRTypeOp> declaredIn;
 	private RelRec objectType;
 	private RelRec ancestorBody;
-	private DataRec methods;
 	private Int32rec flags;
 
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
@@ -137,8 +135,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return getObjectIR().bodyIR(ancestor);
 	}
 
-	public ObjectIRMethods getMethodsIR() {
-		return this.methodsIR;
+	public final StructRec<ObjectIRTypeOp> declaredIn() {
+		return this.declaredIn;
 	}
 
 	public final RelRec objectType() {
@@ -147,10 +145,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	public final RelRec ancestorBody() {
 		return this.ancestorBody;
-	}
-
-	public final DataRec methods() {
-		return this.methods;
 	}
 
 	public final Int32rec flags() {
@@ -202,9 +196,9 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
+		this.declaredIn = data.addPtr("declared_in", OBJECT_TYPE);
 		this.objectType = data.addRelPtr("object_type");
 		this.ancestorBody = data.addRelPtr("ancestor_body");
-		this.methods = data.addDataPtr("methods");
 		this.flags = data.addInt32("flags");
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
@@ -217,10 +211,22 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void fill() {
+		this.declaredIn.setConstant(true);
 
 		final Generator generator = getGenerator();
 		final ObjectIRType objectType =
 				getObjectIR().getTypeIR().getObjectType();
+
+		if (isMain()) {
+			this.declaredIn.setValue(objectType.data(generator).getPointer());
+		} else {
+			this.declaredIn.setValue(
+					getAscendant().ir(getGenerator())
+					.getTypeIR()
+					.getObjectType()
+					.data(generator)
+					.getPointer());
+		}
 
 		this.objectType.setConstant(true).setValue(
 				objectType.data(generator).getPointer().relativeTo(
@@ -235,9 +241,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		} else {
 			this.ancestorBody.setConstant(true).setNull();
 		}
-
-		this.methods.setConstant(true).setValue(
-				getMethodsIR().data(generator).getPointer().toData());
 	}
 
 	final List<Fld<?>> getDeclaredFields() {
@@ -255,21 +258,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	final void declareFld(Fld<?> fld) {
 		this.fieldList.add(fld);
 		this.fieldMap.put(fld.getKey(), fld);
-	}
-
-	void allocateMethodsIR(SubData<?> data) {
-		if (isMain()) {
-			this.methodsIR = new ObjectIRMethods(this);
-			data.addStruct(
-					METHODS_ID.detail(
-							getAscendant().ir(getGenerator()).getId()),
-					this.methodsIR);
-			return;
-		}
-		// Reuse methods from original type.
-		final ObjectIR ascendantIR = getAscendant().ir(getGenerator());
-
-		this.methodsIR = ascendantIR.getMainBodyIR().getMethodsIR();
 	}
 
 	private static ID buildId(ObjectIR ascendantIR) {
