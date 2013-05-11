@@ -111,6 +111,10 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 		return this;
 	}
 
+	public final ObjectIRTypeOp declaredIn(Code code) {
+		return body(code).declaredIn(code).load(null, code);
+	}
+
 	public final ObjectTypeOp objectType(Code code) {
 		if (this.objectType != null) {
 			return this.objectType;
@@ -125,10 +129,6 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 
 	public final ObjectOp ancestor(Code code) {
 		return body(code).loadAncestor(getBuilder(), code);
-	}
-
-	public final ObjectIRMethodsOp methods(Code code) {
-		return body(code).loadMethods(code);
 	}
 
 	@Override

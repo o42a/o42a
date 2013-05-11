@@ -444,7 +444,7 @@ o42a_obj_body_t *o42a_obj_cast(
 		O42A_DONE;
 		O42A_RETURN object;
 	}
-	if (object->methods->object_type == type) {
+	if (object->declared_in == type) {
 		// body of the necessary type
 		o42a_debug_mem_name("Cast not required: ", object);
 		o42a_debug_mem_name("     to: ", type);
@@ -538,7 +538,7 @@ static void derive_object_body(
 			kind < DK_PROPAGATE
 			? from_body->ancestor_body
 			: ((char *) ancestor_body) - ((char *) to_body);
-	to_body->methods = from_body->methods;
+	to_body->declared_in = from_body->declared_in;
 
 	uint32_t body_kind = O42A_OBJ_BODY_INHERITED;
 
@@ -992,8 +992,7 @@ static inline size_t fill_sample_data(
 
 		o42a_obj_body_t *const old_body =
 				O42A(o42a_obj_sample_body(old_sample));
-		const o42a_obj_stype_t *const body_type =
-				O42A(old_body->methods->object_type);
+		const o42a_obj_stype_t *const body_type = old_body->declared_in;
 
 		sample_data->sample = old_sample;
 		if (O42A(o42a_obj_ascendant_of_type(adata, body_type))) {
@@ -1049,7 +1048,7 @@ static inline void propagate_samples(
 				(o42a_obj_body_t *) (mem + sd->new_body);
 
 		sample->body = ((char *) new_body) - ((char *) sample);
-		ascendant->type = old_body->methods->object_type;
+		ascendant->type = old_body->declared_in;
 		ascendant->body = ((char *) new_body) - ((char *) ascendant);
 
 #ifndef NDEBUG
@@ -1065,13 +1064,13 @@ static inline void propagate_samples(
 		O42A(o42a_dbg_copy_header(
 				o42a_dbg_header(o42a_obj_ascendant_of_type(
 						&ctable->sample_type->data,
-						old_body->methods->object_type)),
+						old_body->declared_in)),
 				&ascendant->__o42a_dbg_header__,
 				(o42a_dbg_header_t*) mem));
 
 #endif
 
-		ctable->body_type = old_body->methods->object_type;
+		ctable->body_type = old_body->declared_in;
 		ctable->from.body = old_body;
 		ctable->to.body = new_body;
 
