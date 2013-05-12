@@ -19,21 +19,12 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
-
 import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.*;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.ObjBuilder;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRDataOp;
-import org.o42a.core.object.Obj;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.string.ID;
 
 
 final class PredefObjValues {
@@ -77,87 +68,12 @@ final class PredefObjValues {
 			return cached;
 		}
 
-		final ID id = value.getId();
-		final PredefValueBuilder builder =
-				new PredefValueBuilder(context, value, type);
 		final FuncPtr<ObjectValueFunc> function =
-				this.generator.newFunction().create(
-						value.isTypeAware() ? id.sub(type.getSystemId()) : id,
-						OBJECT_VALUE,
-						builder).getPointer();
+				value.valueFunction(context, this.generator, valueType);
 
 		this.cache.put(key, function);
 
 		return function;
-	}
-
-	private static final class PredefValueBuilder
-			extends AbstractObjectValueBuilder {
-
-		private final CompilerContext context;
-		private final PredefObjValue value;
-		private final ValueType<?> valueType;
-
-		PredefValueBuilder(
-				CompilerContext context,
-				PredefObjValue value,
-				ValueType<?> valueType) {
-			this.context = context;
-			this.value = value;
-			this.valueType = valueType;
-		}
-
-		@Override
-		public void build(Function<ObjectValueFunc> function) {
-			function.debug(this.value.toString());
-			super.build(function);
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return this.value.toString();
-		}
-
-		@Override
-		protected ValueType<?> getValueType() {
-			if (!this.value.isTypeAware()) {
-				return ValueType.VOID;
-			}
-			return typeObject().type().getValueType();
-		}
-
-		private Obj typeObject() {
-			return this.valueType.typeObject(this.context.getIntrinsics());
-		}
-
-		@Override
-		protected ObjBuilder createBuilder(
-				Function<ObjectValueFunc> function,
-				CodePos failureDir) {
-
-			final Obj typeObject = typeObject();
-
-			return new ObjBuilder(
-					function,
-					failureDir,
-					typeObject.ir(function.getGenerator()).getMainBodyIR(),
-					typeObject,
-					DERIVED);
-		}
-
-		@Override
-		protected ObjectIRDataOp data(Code code, Function<ObjectValueFunc> function) {
-			return function.arg(code, OBJECT_VALUE.data());
-		}
-
-		@Override
-		protected void writeValue(DefDirs dirs, ObjOp host, ObjectIRDataOp data) {
-			this.value.write(dirs, data);
-		}
-
 	}
 
 	private static final class PredefKey {
