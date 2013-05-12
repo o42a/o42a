@@ -19,9 +19,6 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_DATA_ID;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.value.PredefObjValue.*;
 
@@ -32,7 +29,6 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -103,7 +99,7 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected FunctionBuilder<ObjectValueFunc> builder() {
-		return new ObjectValueBuilder();
+		return new ObjectValueBuilder(this);
 	}
 
 	@Override
@@ -145,56 +141,6 @@ public final class ObjectValueFnIR
 				getObject().getContext(),
 				getGenerator(),
 				getValueType());
-	}
-
-	private final class ObjectValueBuilder extends AbstractObjectValueBuilder {
-
-		@Override
-		public String toString() {
-			return String.valueOf(ObjectValueFnIR.this);
-		}
-
-		@Override
-		protected ValueType<?> getValueType() {
-			return ObjectValueFnIR.this.getValueType();
-		}
-
-		@Override
-		protected ObjBuilder createBuilder(
-				Function<ObjectValueFunc> function,
-				CodePos failureDir) {
-			return new ObjBuilder(
-					function,
-					failureDir,
-					getObjectIR().getMainBodyIR(),
-					getObjectIR().getObject(),
-					getObjectIR().isExact() ? EXACT : DERIVED);
-		}
-
-		@Override
-		protected ObjectIRDataOp data(Code code, Function<ObjectValueFunc> function) {
-			if (!getObjectIR().isExact()) {
-				return function.arg(code, OBJECT_VALUE.data());
-			}
-			return getObjectIR()
-					.getTypeIR()
-					.getObjectData()
-					.pointer(getGenerator())
-					.op(OBJECT_DATA_ID, code);
-		}
-
-		@Override
-		protected void writeValue(DefDirs dirs, ObjOp host, ObjectIRDataOp data) {
-			if (getObjectIR().isExact()) {
-				dirs.code().debug("Exact host: " + getObjectIR().getId());
-			} else {
-				dirs.code().dumpName("Host: ", host);
-			}
-
-			getValueIR().writeClaim(dirs, host, null);
-			getValueIR().writeProposition(dirs, host, null);
-		}
-
 	}
 
 }

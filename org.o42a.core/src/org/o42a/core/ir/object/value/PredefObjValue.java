@@ -19,105 +19,44 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.IRNames.ERROR_ID;
+import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.value.PredefObjValues.predefObjValues;
-import static org.o42a.core.ir.op.PrintMessageFunc.PRINT_MESSAGE;
-
-import java.io.UnsupportedEncodingException;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.ObjectIRDataOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.PrintMessageFunc;
+import org.o42a.codegen.code.Function;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public enum PredefObjValue {
+public abstract class PredefObjValue {
 
-	FALSE_OBJ_VALUE(ID.id("_o42a_obj_value_false"), false) {
+	public static final PredefObjValue FALSE_OBJ_VALUE = new FalseObjValue();
 
-		@Override
-		public void write(DefDirs dirs, ObjectIRDataOp data) {
-			dirs.code().go(dirs.falseDir());
-		}
+	public static final PredefObjValue VOID_OBJ_VALUE = new VoidObjValue();
 
-	},
+	public static final PredefObjValue STUB_OBJ_VALUE = new StubObjValue();
 
-	VOID_OBJ_VALUE(ID.id("_o42a_obj_value_void"), false) {
+	public static final PredefObjValue DEFAULT_OBJ_VALUE =
+			new DefaultObjValue();
 
-		@Override
-		public void write(DefDirs dirs, ObjectIRDataOp data) {
-			dirs.returnValue(dirs.getBuilder().voidVal(dirs.code()));
-		}
+	private static final ID OBJ_VALUE_ID = ID.id("_o42a_obj_value");
 
-	},
-
-	STUB_OBJ_VALUE(ID.id("_o42a_obj_value_stub"), false) {
-
-		@Override
-		public void write(DefDirs dirs, ObjectIRDataOp data) {
-
-			final Generator generator = dirs.getGenerator();
-			final Ptr<AnyOp> message;
-
-			try {
-				message = generator.addBinary(
-						ERROR_ID.sub("object_value_stub"),
-						true,
-						"Object value stub accessed".getBytes("ASCII"));
-			} catch (UnsupportedEncodingException e) {
-				throw new Error("ASCII not supported", e);
-			}
-
-			final FuncPtr<PrintMessageFunc> fn =
-					generator.externalFunction().link(
-							"o42a_error_print",
-							PRINT_MESSAGE);
-
-			final Block code = dirs.code();
-
-			fn.op(null, code).print(code, message.op(null, code));
-			dirs.code().go(dirs.falseDir());
-		}
-
-	},
-
-	DEFAULT_OBJ_VALUE(ID.id("_o42a_obj_value"), true) {
-
-		@Override
-		public void write(DefDirs dirs, ObjectIRDataOp data) {
-
-			final Block code = dirs.code();
-			final ObjectOp owner = dirs.getBuilder().host();
-
-			data.claimFunc(code).load(null, code).call(dirs, owner);
-			data.propositionFunc(code).load(null, code).call(dirs, owner);
-		}
-
-	};
-
-	private final ID id;
 	private final boolean typeAware;
 
-	PredefObjValue(ID id, boolean typeAware) {
-		this.id = id;
+	PredefObjValue(boolean typeAware) {
 		this.typeAware = typeAware;
-	}
-
-	public final ID getId() {
-		return this.id;
 	}
 
 	public final boolean isTypeAware() {
 		return this.typeAware;
 	}
+
+	public abstract FuncPtr<ObjectValueFunc> valueFunction(
+			CompilerContext context,
+			Generator generator,
+			ValueType<?> valueType);
 
 	public final FuncPtr<ObjectValueFunc> get(
 			CompilerContext context,
@@ -126,6 +65,99 @@ public enum PredefObjValue {
 		return predefObjValues(generator).get(context, this, valueType);
 	}
 
-	public abstract void write(DefDirs dirs, ObjectIRDataOp data);
+	private static final class FalseObjValue extends PredefObjValue {
+
+		FalseObjValue() {
+			super(false);
+		}
+
+		@Override
+		public FuncPtr<ObjectValueFunc> valueFunction(
+				CompilerContext context,
+				Generator generator,
+				ValueType<?> valueType) {
+			return generator.externalFunction().link(
+					"o42a_obj_val_false",
+					OBJECT_VALUE);
+		}
+
+		@Override
+		public String toString() {
+			return "FALSE_OBJ_VALUE";
+		}
+
+	}
+
+	private static final class VoidObjValue extends PredefObjValue {
+
+		VoidObjValue() {
+			super(false);
+		}
+
+		@Override
+		public FuncPtr<ObjectValueFunc> valueFunction(
+				CompilerContext context,
+				Generator generator,
+				ValueType<?> valueType) {
+			return generator.externalFunction().link(
+					"o42a_obj_val_void",
+					OBJECT_VALUE);
+		}
+
+		@Override
+		public String toString() {
+			return "VOID_OBJ_VALUE";
+		}
+
+	}
+
+	private static final class StubObjValue extends PredefObjValue {
+
+		StubObjValue() {
+			super(false);
+		}
+
+		@Override
+		public FuncPtr<ObjectValueFunc> valueFunction(
+				CompilerContext context,
+				Generator generator,
+				ValueType<?> valueType) {
+			return generator.externalFunction().link(
+					"o42a_obj_val_stub",
+					OBJECT_VALUE);
+		}
+
+		@Override
+		public String toString() {
+			return "STUB_OBJ_VALUE";
+		}
+
+	}
+
+	private static final class DefaultObjValue extends PredefObjValue {
+
+		DefaultObjValue() {
+			super(true);
+		}
+
+		@Override
+		public FuncPtr<ObjectValueFunc> valueFunction(
+				CompilerContext context,
+				Generator generator,
+				ValueType<?> valueType) {
+
+			final ID id = OBJ_VALUE_ID.sub(valueType.getSystemId());
+			final PredefValueBuilder builder =
+					new PredefValueBuilder(context, id, valueType);
+			final Function<ObjectValueFunc> function =
+					generator.newFunction().create(
+							id,
+							OBJECT_VALUE,
+							builder);
+
+			return function.getPointer();
+		}
+
+	}
 
 }
