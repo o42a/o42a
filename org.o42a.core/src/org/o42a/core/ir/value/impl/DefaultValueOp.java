@@ -20,6 +20,7 @@
 package org.o42a.core.ir.value.impl;
 
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StatelessValueOp;
@@ -33,8 +34,13 @@ public final class DefaultValueOp extends StatelessValueOp {
 	}
 
 	@Override
-	public ValOp writeValue(ValDirs dirs) {
-		return defaultWrite(dirs);
+	public ValOp writeTypedValue(ValDirs dirs) {
+		return defaultValue(dirs);
+	}
+
+	@Override
+	protected void writeVoidValue(CodeDirs dirs) {
+		defaultCond(dirs);
 	}
 
 }

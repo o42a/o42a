@@ -20,6 +20,7 @@
 package org.o42a.core.ir.value.type;
 
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
@@ -33,8 +34,13 @@ public abstract class StatefulValueOp extends ValueOp {
 	}
 
 	@Override
-	public final ValOp writeValue(ValDirs dirs) {
+	public ValOp writeTypedValue(ValDirs dirs) {
 		return state(dirs.dirs()).writeValue(dirs);
+	}
+
+	@Override
+	protected void writeVoidValue(CodeDirs dirs) {
+		defaultVoid(dirs);
 	}
 
 }
