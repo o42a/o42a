@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object.value;
 
+import static org.o42a.core.ir.object.value.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.value.PredefObjValues.predefObjValues;
 
@@ -42,6 +43,7 @@ public abstract class PredefObjValue {
 			new DefaultObjValue();
 
 	private static final ID OBJ_VALUE_ID = ID.id("_o42a_obj_value");
+	private static final ID OBJ_COND_ID = ID.id("_o42a_obj_cond");
 
 	private final boolean typeAware;
 
@@ -53,17 +55,31 @@ public abstract class PredefObjValue {
 		return this.typeAware;
 	}
 
-	public abstract FuncPtr<ObjectValueFunc> valueFunction(
+	public final FuncPtr<ObjectValueFunc> valueFunction(
+			CompilerContext context,
+			Generator generator,
+			ValueType<?> valueType) {
+		return predefObjValues(generator)
+				.valueFunction(context, this, valueType);
+	}
+
+	public final FuncPtr<ObjectCondFunc> condFunction(
+			CompilerContext context,
+			Generator generator,
+			ValueType<?> valueType) {
+		return predefObjValues(generator)
+				.condFunction(context, this, valueType);
+	}
+
+	abstract FuncPtr<ObjectValueFunc> createValueFunction(
 			CompilerContext context,
 			Generator generator,
 			ValueType<?> valueType);
 
-	public final FuncPtr<ObjectValueFunc> get(
+	abstract FuncPtr<ObjectCondFunc> createCondFunction(
 			CompilerContext context,
 			Generator generator,
-			ValueType<?> valueType) {
-		return predefObjValues(generator).get(context, this, valueType);
-	}
+			ValueType<?> valueType);
 
 	private static final class FalseObjValue extends PredefObjValue {
 
@@ -72,18 +88,28 @@ public abstract class PredefObjValue {
 		}
 
 		@Override
-		public FuncPtr<ObjectValueFunc> valueFunction(
+		public String toString() {
+			return "FALSE_OBJ_VALUE";
+		}
+
+		@Override
+		FuncPtr<ObjectValueFunc> createValueFunction(
 				CompilerContext context,
 				Generator generator,
 				ValueType<?> valueType) {
 			return generator.externalFunction().link(
-					"o42a_obj_val_false",
+					"o42a_obj_value_false",
 					OBJECT_VALUE);
 		}
 
 		@Override
-		public String toString() {
-			return "FALSE_OBJ_VALUE";
+		FuncPtr<ObjectCondFunc> createCondFunction(
+				CompilerContext context,
+				Generator generator,
+				ValueType<?> valueType) {
+			return generator.externalFunction().link(
+					"o42a_obj_cond_false",
+					OBJECT_COND);
 		}
 
 	}
@@ -95,18 +121,28 @@ public abstract class PredefObjValue {
 		}
 
 		@Override
-		public FuncPtr<ObjectValueFunc> valueFunction(
+		public String toString() {
+			return "VOID_OBJ_VALUE";
+		}
+
+		@Override
+		FuncPtr<ObjectValueFunc> createValueFunction(
 				CompilerContext context,
 				Generator generator,
 				ValueType<?> valueType) {
 			return generator.externalFunction().link(
-					"o42a_obj_val_void",
+					"o42a_obj_value_void",
 					OBJECT_VALUE);
 		}
 
 		@Override
-		public String toString() {
-			return "VOID_OBJ_VALUE";
+		FuncPtr<ObjectCondFunc> createCondFunction(
+				CompilerContext context,
+				Generator generator,
+				ValueType<?> valueType) {
+			return generator.externalFunction().link(
+					"o42a_obj_cond_true",
+					OBJECT_COND);
 		}
 
 	}
@@ -118,18 +154,28 @@ public abstract class PredefObjValue {
 		}
 
 		@Override
-		public FuncPtr<ObjectValueFunc> valueFunction(
+		public String toString() {
+			return "STUB_OBJ_VALUE";
+		}
+
+		@Override
+		FuncPtr<ObjectValueFunc> createValueFunction(
 				CompilerContext context,
 				Generator generator,
 				ValueType<?> valueType) {
 			return generator.externalFunction().link(
-					"o42a_obj_val_stub",
+					"o42a_obj_value_stub",
 					OBJECT_VALUE);
 		}
 
 		@Override
-		public String toString() {
-			return "STUB_OBJ_VALUE";
+		FuncPtr<ObjectCondFunc> createCondFunction(
+				CompilerContext context,
+				Generator generator,
+				ValueType<?> valueType) {
+			return generator.externalFunction().link(
+					"o42a_obj_cond_stub",
+					OBJECT_COND);
 		}
 
 	}
@@ -141,7 +187,12 @@ public abstract class PredefObjValue {
 		}
 
 		@Override
-		public FuncPtr<ObjectValueFunc> valueFunction(
+		public String toString() {
+			return "DEFAULT_OBJ_VALUE";
+		}
+
+		@Override
+		FuncPtr<ObjectValueFunc> createValueFunction(
 				CompilerContext context,
 				Generator generator,
 				ValueType<?> valueType) {
@@ -154,6 +205,21 @@ public abstract class PredefObjValue {
 							id,
 							OBJECT_VALUE,
 							builder);
+
+			return function.getPointer();
+		}
+
+		@Override
+		FuncPtr<ObjectCondFunc> createCondFunction(
+				CompilerContext context,
+				Generator generator,
+				ValueType<?> valueType) {
+
+			final ID id = OBJ_COND_ID.sub(valueType.getSystemId());
+			final PredefCondBuilder builder =
+					new PredefCondBuilder(context, id, valueType);
+			final Function<ObjectCondFunc> function =
+					generator.newFunction().create(id, OBJECT_COND, builder);
 
 			return function.getPointer();
 		}

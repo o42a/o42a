@@ -46,34 +46,63 @@ final class PredefObjValues {
 	}
 
 	private final Generator generator;
-	private final HashMap<PredefKey, FuncPtr<ObjectValueFunc>> cache =
+	private final HashMap<PredefKey, FuncPtr<ObjectValueFunc>> valueFunctions =
+			new HashMap<>();
+	private final HashMap<PredefKey, FuncPtr<ObjectCondFunc>> condFunctions =
 			new HashMap<>();
 
 	private PredefObjValues(Generator generator) {
 		this.generator = generator;
 	}
 
-	FuncPtr<ObjectValueFunc> get(
+	final FuncPtr<ObjectValueFunc> valueFunction(
 			CompilerContext context,
 			PredefObjValue value,
 			ValueType<?> valueType) {
 
-		final ValueType<?> type =
-				value.isTypeAware() ? valueType : ValueType.VOID;
-		final PredefKey key = new PredefKey(value, type);
-
-		final FuncPtr<ObjectValueFunc> cached = this.cache.get(key);
+		final PredefKey key = prefefKey(value, valueType);
+		final FuncPtr<ObjectValueFunc> cached = this.valueFunctions.get(key);
 
 		if (cached != null) {
 			return cached;
 		}
 
 		final FuncPtr<ObjectValueFunc> function =
-				value.valueFunction(context, this.generator, valueType);
+				value.createValueFunction(context, this.generator, valueType);
 
-		this.cache.put(key, function);
+		this.valueFunctions.put(key, function);
 
 		return function;
+	}
+
+	final FuncPtr<ObjectCondFunc> condFunction(
+			CompilerContext context,
+			PredefObjValue value,
+			ValueType<?> valueType) {
+
+		final PredefKey key = prefefKey(value, valueType);
+		final FuncPtr<ObjectCondFunc> cached = this.condFunctions.get(key);
+
+		if (cached != null) {
+			return cached;
+		}
+
+		final FuncPtr<ObjectCondFunc> function =
+				value.createCondFunction(context, this.generator, valueType);
+
+		this.condFunctions.put(key, function);
+
+		return function;
+	}
+
+	private static PredefKey prefefKey(
+			PredefObjValue value,
+			ValueType<?> valueType) {
+
+		final ValueType<?> type =
+				value.isTypeAware() ? valueType : ValueType.VOID;
+
+		return new PredefKey(value, type);
 	}
 
 	private static final class PredefKey {

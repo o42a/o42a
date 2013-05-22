@@ -24,6 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.value.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.object.Obj;
 
@@ -32,12 +33,14 @@ public class ObjectValueIR {
 
 	private final ObjectIR objectIR;
 	private final ObjectValueFnIR value;
+	private final ObjectCondFnIR condition;
 	private final ObjectClaimFnIR claim;
 	private final ObjectPropositionFnIR proposition;
 
 	protected ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
 		this.value = new ObjectValueFnIR(this);
+		this.condition = new ObjectCondFnIR(this);
 		this.claim = new ObjectClaimFnIR(this);
 		this.proposition = new ObjectPropositionFnIR(this);
 	}
@@ -52,6 +55,14 @@ public class ObjectValueIR {
 
 	public final ObjectIR getObjectIR() {
 		return this.objectIR;
+	}
+
+	public final ObjectValueFnIR value() {
+		return this.value;
+	}
+
+	public final ObjectCondFnIR condition() {
+		return this.condition;
 	}
 
 	public final ObjectClaimFnIR claim() {
@@ -71,18 +82,22 @@ public class ObjectValueIR {
 	}
 
 	public final void writeValue(DefDirs dirs, ObjOp host) {
-		this.value.call(dirs, host);
+		value().call(dirs, host);
+	}
+
+	public final void writeCondition(CodeDirs dirs, ObjOp host) {
+		condition().call(dirs, host);
 	}
 
 	public final void writeClaim(DefDirs dirs, ObjOp host, ObjectOp body) {
-		this.claim.call(dirs, host, body);
+		claim().call(dirs, host, body);
 	}
 
 	public final void writeProposition(
 			DefDirs dirs,
 			ObjOp host,
 			ObjectOp body) {
-		this.proposition.call(dirs, host, body);
+		proposition().call(dirs, host, body);
 	}
 
 	@Override
@@ -91,9 +106,10 @@ public class ObjectValueIR {
 	}
 
 	protected void allocate(ObjectTypeIR typeIR) {
-		this.value.allocate(typeIR);
-		this.claim.allocate(typeIR);
-		this.proposition.allocate(typeIR);
+		value().allocate(typeIR);
+		condition().allocate(typeIR);
+		claim().allocate(typeIR);
+		proposition().allocate(typeIR);
 	}
 
 }
