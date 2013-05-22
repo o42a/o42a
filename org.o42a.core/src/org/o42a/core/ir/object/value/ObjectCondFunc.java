@@ -39,14 +39,18 @@ public final class ObjectCondFunc extends ObjectFunc<ObjectCondFunc> {
 	}
 
 	public final void call(CodeDirs dirs, ObjectOp object) {
+		call(dirs, object != null ? object.toData(null, dirs.code()) : null);
+	}
+
+	public final void call(CodeDirs dirs, DataOp object) {
 
 		final Block code = dirs.code();
+
 		final BoolOp result = invoke(
 				null,
 				code,
 				OBJECT_COND.result(),
-				object != null
-				? object.toData(null, code) : code.nullDataPtr());
+				object != null ? object : code.nullDataPtr());
 
 		result.goUnless(code, dirs.falseDir());
 	}

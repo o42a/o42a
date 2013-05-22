@@ -243,7 +243,12 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs) {
+		public StateOp state(CodeDirs dirs) {
+			return this.value.state(dirs);
+		}
+
+		@Override
+		public ValOp writeTypedValue(ValDirs dirs) {
 
 			final DefDirs defDirs = dirs.nested().def();
 
@@ -254,8 +259,8 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		@Override
-		public StateOp state(CodeDirs dirs) {
-			return this.value.state(dirs);
+		protected void writeVoidValue(CodeDirs dirs) {
+			defaultVoid(dirs);
 		}
 
 		private final ObjOp obj() {

@@ -40,7 +40,7 @@ abstract class AbstractObjectCondBuilder
 				codeDirs(builder, function, failure.head())
 				.value(getValueType(), TEMP_VAL_HOLDER);
 
-		builder.host().value().writeValue(dirs);
+		builder.host().value().writeTypedValue(dirs);
 
 		final Block success = dirs.done().code();
 

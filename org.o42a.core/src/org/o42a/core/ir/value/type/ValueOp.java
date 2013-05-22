@@ -23,15 +23,12 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.op.*;
-import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueType;
 
 
@@ -67,16 +64,24 @@ public abstract class ValueOp implements HostValueOp {
 
 	@Override
 	public final void writeCond(CodeDirs dirs) {
+		if (getValueType().isVoid()) {
+			writeVoidValue(dirs);
+			return;
+		}
 
-		final ValDirs valDirs =
-				dirs.nested().value(getValueType(), TEMP_VAL_HOLDER);
-
-		writeValue(valDirs);
-		valDirs.done();
+		defaultVoid(dirs);
 	}
 
 	@Override
-	public abstract ValOp writeValue(ValDirs dirs);
+	public final ValOp writeValue(ValDirs dirs) {
+		if (dirs.getValueType().isVoid() && getValueType().isVoid()) {
+			writeVoidValue(dirs.dirs());
+			return getBuilder().voidVal(dirs.code());
+		}
+		return writeTypedValue(dirs);
+	}
+
+	public abstract ValOp writeTypedValue(ValDirs dirs);
 
 	@Override
 	public final void assign(CodeDirs dirs, HostOp value) {
@@ -94,22 +99,31 @@ public abstract class ValueOp implements HostValueOp {
 	}
 
 	/**
-	 * Checks whether the object value is known to be false.
+	 * Writes a void value of this object.
 	 *
-	 * @param code code to perform the check inside of.
-	 * @param falseDir position to jump to if the value is false.
-	 * @param value value to check.
-	 * @param flags value flags to check.
+	 * <p>The object's value can be of any type. In this case the memory
+	 * occupied by calculated value should be freed in this method. The object's
+	 * {@link ObjectValueIR#condition() condition function} takes care of it.
+	 * </p>
+	 *
+	 * @param dirs code directions.
 	 */
-	protected void checkFalse(
-			Block code,
-			CodePos falseDir,
-			ValType.Op value,
-			ValFlagsOp flags) {
-		flags.condition(null, code).goUnless(code, falseDir);
+	protected abstract void writeVoidValue(CodeDirs dirs);
+
+	protected final void defaultVoid(CodeDirs dirs) {
+
+		final ValDirs valDirs =
+				dirs.nested().value(getValueType(), TEMP_VAL_HOLDER);
+
+		writeTypedValue(valDirs);
+		valDirs.done();
 	}
 
-	protected final ValOp defaultWrite(ValDirs dirs) {
+	protected final void defaultCond(CodeDirs dirs) {
+		object().objectType(dirs.code()).writeCond(dirs);
+	}
+
+	protected final ValOp defaultValue(ValDirs dirs) {
 
 		final DefDirs defDirs = dirs.nested().def();
 

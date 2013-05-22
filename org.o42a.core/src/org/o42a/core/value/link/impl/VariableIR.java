@@ -25,7 +25,6 @@ import static org.o42a.core.ir.field.variable.VarSte.varSteKey;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
@@ -35,9 +34,7 @@ import org.o42a.core.ir.field.variable.VarSteOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.*;
 
 
@@ -71,18 +68,6 @@ final class VariableIR extends ValueIR {
 					varSteKey(getBuilder().getContext()));
 
 			return new VarStateOp(fld);
-		}
-
-		@Override
-		protected void checkFalse(
-				Block code,
-				CodePos falseDir,
-				ValType.Op value,
-				ValFlagsOp flags) {
-			value.rawValue(null, code)
-			.load(null, code)
-			.eq(null, code, code.int64(0))
-			.go(code, falseDir);
 		}
 
 	}
