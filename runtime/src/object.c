@@ -19,7 +19,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 13,
+	.field_num = 14,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -56,6 +56,11 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.data_type = O42A_TYPE_FUNC_PTR,
 			.offset = offsetof(o42a_obj_data_t, value_f),
 			.name = "value_f",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_obj_data_t, cond_f),
+			.name = "cond_f",
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
@@ -924,6 +929,7 @@ static o42a_obj_rtype_t *propagate_object(
 	data->mutex_init = 0;
 
 	data->value_f = adata->value_f;
+	data->cond_f = adata->cond_f;
 	data->claim_f = adata->claim_f;
 	data->proposition_f = adata->proposition_f;
 	if (adata->value_type != &o42a_val_type_void) {
@@ -1229,6 +1235,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->mutex_init = 0;
 
 	data->value_f = sdata->value_f;
+	data->cond_f = sdata->cond_f;
 	data->claim_f = sdata->claim_f;
 	data->proposition_f = sdata->proposition_f;
 	if (sdata->value_type != &o42a_val_type_void) {
@@ -1286,17 +1293,48 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_RETURN object;
 }
 
+
 void o42a_obj_val_false(o42a_val_t *const result, o42a_obj_t *const object) {
 	O42A_ENTER(return);
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
 }
 
+void o42a_obj_value_false(
+		o42a_val_t *const result,
+		o42a_obj_data_t *const data,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	result->flags = O42A_FALSE;
+	O42A_RETURN;
+}
+
+o42a_bool_t o42a_obj_cond_false(o42a_obj_t *const object) {
+	O42A_ENTER(return O42A_FALSE);
+	O42A_RETURN O42A_FALSE;
+}
+
+
 void o42a_obj_val_void(o42a_val_t *const result, o42a_obj_t *const object) {
 	O42A_ENTER(return);
 	result->flags = O42A_TRUE;
 	O42A_RETURN;
 }
+
+void o42a_obj_value_void(
+		o42a_val_t *const result,
+		o42a_obj_data_t *const data,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	result->flags = O42A_TRUE;
+	O42A_RETURN;
+}
+
+o42a_bool_t o42a_obj_cond_true(o42a_obj_t *const object) {
+	O42A_ENTER(return O42A_FALSE);
+	O42A_RETURN O42A_TRUE;
+}
+
 
 void o42a_obj_val_unknown(o42a_val_t *const result, o42a_obj_t *const object) {
 	O42A_ENTER(return);
@@ -1308,6 +1346,22 @@ void o42a_obj_val_stub(o42a_val_t *const result, o42a_obj_t *const object) {
 	o42a_error_print("Object value part stub invoked");
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
+}
+
+void o42a_obj_value_stub(
+		o42a_val_t *const result,
+		o42a_obj_data_t *const data,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	o42a_error_print("Object value stub invoked");
+	result->flags = O42A_FALSE;
+	O42A_RETURN;
+}
+
+o42a_bool_t o42a_obj_cond_stub(o42a_obj_t *const object) {
+	O42A_ENTER(return O42A_FALSE);
+	o42a_error_print("Object condition stub invoked");
+	O42A_RETURN O42A_FALSE;
 }
 
 

@@ -19,38 +19,43 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.object.value.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.object.value.PredefObjValue.*;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.FunctionBuilder;
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.object.op.ObjectSignature;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.DefValue;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectValueFnIR
-		extends AbstractObjectValueFnIR<ObjectValueFunc> {
+public final class ObjectCondFnIR
+		extends AbstractObjectValueFnIR<ObjectCondFunc> {
 
-	public ObjectValueFnIR(ObjectValueIR valueIR) {
+	private static final ID SUFFIX = ID.id("condition");
+
+	public ObjectCondFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
-	public final void call(DefDirs dirs, ObjOp host) {
+	public final void call(CodeDirs dirs, ObjOp host) {
 
-		final DefDirs subDirs = dirs.begin(
-				null,
-				"Calculate value of " + getObjectIR().getId());
+		final CodeDirs subDirs = dirs.begin(
+				"cond",
+				"Calculate condition of " + getObjectIR().getId());
 		final Block code = subDirs.code();
 
 		final DefValue finalValue = getFinal();
 
 		if (!writeIfConstant(subDirs, finalValue)) {
 
-			final ObjectValueFunc func = get(host).op(suffix(), code);
+			final ObjectCondFunc func = get(host).op(suffix(), code);
 
 			func.call(subDirs, getObjectIR().isExact() ? null : host);
 		}
@@ -60,71 +65,56 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected ID suffix() {
-		return ValOp.VALUE_ID;
+		return SUFFIX;
 	}
 
 	@Override
-	protected FuncRec<ObjectValueFunc> func(ObjectIRData data) {
-		return data.valueFunc();
+	protected FuncRec<ObjectCondFunc> func(ObjectIRData data) {
+		return data.condFunc();
 	}
 
 	@Override
 	protected DefValue determineConstant() {
-
-		final DefValue claim = getValueIR().claim().getConstant();
-
-		if (claim.hasValue() || !claim.getCondition().isTrue()) {
-			return claim;
-		}
-
-		return getValueIR().proposition().getConstant();
+		return getValueIR().value().getConstant();
 	}
 
 	@Override
 	protected DefValue determineFinal() {
-
-		final DefValue claim = getValueIR().claim().getFinal();
-
-		if (claim.hasValue() || !claim.getCondition().isTrue()) {
-			return claim;
-		}
-
-		return getValueIR().proposition().getFinal();
+		return getValueIR().value().getFinal();
 	}
 
 	@Override
-	protected ObjectSignature<ObjectValueFunc> signature() {
-		return OBJECT_VALUE;
+	protected ObjectSignature<ObjectCondFunc> signature() {
+		return OBJECT_COND;
 	}
 
 	@Override
-	protected FunctionBuilder<ObjectValueFunc> builder() {
-		return new ObjectValueBuilder(this);
+	protected FunctionBuilder<ObjectCondFunc> builder() {
+		return new ObjectCondBuilder(this);
 	}
 
 	@Override
 	protected boolean canStub() {
-		return getValueIR().claim().canStub()
-				&& getValueIR().proposition().canStub();
+		return getValueIR().value().canStub();
 	}
 
 	@Override
-	protected FuncPtr<ObjectValueFunc> stubFunc() {
+	protected FuncPtr<ObjectCondFunc> stubFunc() {
 		return predefined(STUB_OBJ_VALUE);
 	}
 
 	@Override
-	protected FuncPtr<ObjectValueFunc> unknownValFunc() {
+	protected FuncPtr<ObjectCondFunc> unknownValFunc() {
 		return falseValFunc();
 	}
 
 	@Override
-	protected FuncPtr<ObjectValueFunc> falseValFunc() {
+	protected FuncPtr<ObjectCondFunc> falseValFunc() {
 		return predefined(FALSE_OBJ_VALUE);
 	}
 
 	@Override
-	protected FuncPtr<ObjectValueFunc> voidValFunc() {
+	protected FuncPtr<ObjectCondFunc> voidValFunc() {
 		return predefined(VOID_OBJ_VALUE);
 	}
 
@@ -136,11 +126,28 @@ public final class ObjectValueFnIR
 		reuse(predefined(DEFAULT_OBJ_VALUE));
 	}
 
-	private FuncPtr<ObjectValueFunc> predefined(PredefObjValue value) {
-		return value.valueFunction(
+	private FuncPtr<ObjectCondFunc> predefined(PredefObjValue value) {
+		return value.condFunction(
 				getObject().getContext(),
 				getGenerator(),
 				getValueType());
+	}
+
+	private boolean writeIfConstant(CodeDirs dirs, DefValue value) {
+		if (!isConstantValue(value)) {
+			return false;
+		}
+
+		final Block code = dirs.code();
+
+		code.debug(suffix() + " = " + value.getCondition());
+
+		if (value.getCondition().isFalse()) {
+			code.go(dirs.falseDir());
+			return true;
+		}
+
+		return true;
 	}
 
 }

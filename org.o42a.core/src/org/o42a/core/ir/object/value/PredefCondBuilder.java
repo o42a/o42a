@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,27 +20,23 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 
-import org.o42a.codegen.code.*;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.*;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.Function;
+import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-final class PredefValueBuilder extends AbstractObjectValueBuilder {
+final class PredefCondBuilder extends AbstractObjectCondBuilder {
 
 	private final CompilerContext context;
 	private final ID id;
 	private final ValueType<?> valueType;
 
-	PredefValueBuilder(
-			CompilerContext context,
-			ID id,
-			ValueType<?> valueType) {
+	PredefCondBuilder(CompilerContext context, ID id, ValueType<?> valueType) {
 		this.context = context;
 		this.id = id;
 		this.valueType = valueType;
@@ -61,7 +57,7 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 
 	@Override
 	protected ObjBuilder createBuilder(
-			Function<ObjectValueFunc> function,
+			Function<ObjectCondFunc> function,
 			CodePos failureDir) {
 
 		final Obj typeObject = typeObject();
@@ -72,26 +68,6 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 				typeObject.ir(function.getGenerator()).getMainBodyIR(),
 				typeObject,
 				DERIVED);
-	}
-
-	@Override
-	protected ObjectIRDataOp data(
-			Code code,
-			Function<ObjectValueFunc> function) {
-		return function.arg(code, OBJECT_VALUE.data());
-	}
-
-	@Override
-	protected void writeValue(
-			DefDirs dirs,
-			ObjOp host,
-			ObjectIRDataOp data) {
-
-		final Block code = dirs.code();
-		final ObjectOp owner = dirs.getBuilder().host();
-
-		data.claimFunc(code).load(null, code).call(dirs, owner);
-		data.propositionFunc(code).load(null, code).call(dirs, owner);
 	}
 
 	private Obj typeObject() {

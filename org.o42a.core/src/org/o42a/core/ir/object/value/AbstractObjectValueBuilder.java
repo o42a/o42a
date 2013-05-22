@@ -38,7 +38,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public abstract class AbstractObjectValueBuilder
+abstract class AbstractObjectValueBuilder
 		implements FunctionBuilder<ObjectValueFunc> {
 
 	private static final ID FLD_CTR_ID = ID.id("fld_ctr");

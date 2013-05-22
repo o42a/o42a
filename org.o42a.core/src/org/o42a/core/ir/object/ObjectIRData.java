@@ -22,6 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
+import static org.o42a.core.ir.object.value.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
@@ -33,6 +34,7 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.impl.ObjectIRAscendants;
 import org.o42a.core.ir.object.impl.ObjectIRSamples;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
+import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
@@ -56,6 +58,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private RelRec start;
 	private Int16rec flags;
 	private FuncRec<ObjectValueFunc> valueFunc;
+	private FuncRec<ObjectCondFunc> condFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
 	private StructRec<ValueTypeDescOp> valueType;
@@ -85,6 +88,10 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	public final FuncRec<ObjectValueFunc> valueFunc() {
 		return this.valueFunc;
+	}
+
+	public final FuncRec<ObjectCondFunc> condFunc() {
+		return this.condFunc;
 	}
 
 	public final FuncRec<ObjectValFunc> claimFunc() {
@@ -121,6 +128,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
+		this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
 		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);

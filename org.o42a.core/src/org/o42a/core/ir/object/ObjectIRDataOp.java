@@ -28,6 +28,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
+import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.util.string.ID;
@@ -71,6 +72,10 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 
 	public final FuncOp<ObjectValueFunc> valueFunc(Code code) {
 		return func(null, code, getType().valueFunc());
+	}
+
+	public final FuncOp<ObjectCondFunc> condFunc(Code code) {
+		return func(null, code, getType().condFunc());
 	}
 
 	public final FuncOp<ObjectValFunc> claimFunc(Code code) {
