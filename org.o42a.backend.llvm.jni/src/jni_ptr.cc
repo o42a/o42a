@@ -23,12 +23,12 @@
 #include "o42ac/llvm/debug.h"
 #include "o42ac/llvm/util.h"
 
-#include "llvm/BasicBlock.h"
-#include "llvm/DataLayout.h"
-#include "llvm/Function.h"
-#include "llvm/IRBuilder.h"
-#include "llvm/Module.h"
-#include "llvm/Value.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/DataLayout.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/Value.h"
 
 using namespace llvm;
 

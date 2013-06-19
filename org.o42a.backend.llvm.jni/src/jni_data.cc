@@ -25,10 +25,10 @@
 #include "o42ac/llvm/debug.h"
 #include "o42ac/llvm/util.h"
 
-#include "llvm/Constants.h"
-#include "llvm/DataLayout.h"
-#include "llvm/DerivedTypes.h"
-#include "llvm/Module.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/DataLayout.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Module.h"
 
 #include "o42a/memory/gc.h"
 
@@ -76,7 +76,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 			from_ptr<o42ac::BackendModule>(modulePtr);
 	jByteArray array(env, data);
 	size_t length = end - start;
-	Type *const itemType = Type::getInt8Ty(module->getContext());
+	IntegerType *const itemType = Type::getInt8Ty(module->getContext());
 	ArrayType *type = ArrayType::get(itemType, length);
 	GlobalVariable *const global =
 			cast<GlobalVariable>(module->getOrInsertGlobal(

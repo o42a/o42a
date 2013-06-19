@@ -23,10 +23,10 @@
 #include "o42ac/llvm/debug.h"
 #include "o42ac/llvm/util.h"
 
-#include "llvm/IRBuilder.h"
-#include "llvm/Function.h"
-#include "llvm/Module.h"
 #include "llvm/Analysis/Verifier.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/Module.h"
 
 using namespace llvm;
 

@@ -22,8 +22,8 @@
 
 #include <jni.h>
 
-#include "llvm/Instruction.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/IR/Instruction.h"
 
 
 using namespace llvm;
