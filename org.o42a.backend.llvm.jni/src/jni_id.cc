@@ -23,9 +23,9 @@
 #include "o42ac/llvm/debug.h"
 #include "o42ac/llvm/util.h"
 
-#include "llvm/Constants.h"
-#include "llvm/DerivedTypes.h"
-#include "llvm/Module.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Module.h"
 
 using namespace llvm;
 

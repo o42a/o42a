@@ -20,7 +20,7 @@
 #ifndef O42AC_LLVM_BACKEND_MODULE_H
 #define O42AC_LLVM_BACKEND_MODULE_H
 
-#include "llvm/Module.h"
+#include "llvm/IR/Module.h"
 
 
 using namespace llvm;
