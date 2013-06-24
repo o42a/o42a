@@ -35,18 +35,11 @@ enum o42a_val_flags {
 	O42A_VAL_INDEFINITE = 2,
 
 	/**
-	 * A bit meaning the value assignment is in progress.
+	 * Stateless value bit.
 	 *
-	 * This is only used by variables.
-	 *
-	 * When the code wishes to assign a new value, it should acquire the memory
-	 * barrier and atomically set this flag. If the flag already set, then
-	 * assignment should be canceled. Otherwise the code should:
-	 * - modify the value,
-	 * - release the memory barrier, and
-	 * - atomically drop this flag.
+	 * This is set when the object value is never meant to be stored.
 	 */
-	O42A_VAL_ASSIGN = 4,
+	O42A_VAL_STATELESS = 4,
 
 	/**
 	 * Value alignment mask.

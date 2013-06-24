@@ -31,6 +31,7 @@ import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
 
@@ -84,6 +85,10 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 
 	public final FuncOp<ObjectValFunc> propositionFunc(Code code) {
 		return func(null, code, getType().propositionFunc());
+	}
+
+	public final ValType.Op value(Code code) {
+		return struct(null, code, getType().value());
 	}
 
 	public final StructRecOp<ValueTypeDescOp> valueType(Code code) {

@@ -27,6 +27,7 @@ import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
@@ -38,6 +39,7 @@ import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
 
@@ -51,6 +53,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	public static final ObjectIRData OBJECT_DATA_TYPE = new ObjectIRData();
 
+	private static final ID VALUE_ID = ID.id("value");
 	private static final Type<?>[] TYPE_DEPENDENCIES =
 			new Type<?>[] {OBJECT_TYPE};
 
@@ -61,6 +64,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private FuncRec<ObjectCondFunc> condFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
+	private ValType value;
 	private StructRec<ValueTypeDescOp> valueType;
 	private RelList<ObjectIRBody> ascendants;
 	private RelList<ObjectIRBody> samples;
@@ -102,6 +106,10 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.propositionFunc;
 	}
 
+	public final ValType value() {
+		return this.value;
+	}
+
 	public final StructRec<ValueTypeDescOp> valueType() {
 		return this.valueType;
 	}
@@ -131,6 +139,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
+		this.value = data.addInstance(VALUE_ID, VAL_TYPE);
 		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
 		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");

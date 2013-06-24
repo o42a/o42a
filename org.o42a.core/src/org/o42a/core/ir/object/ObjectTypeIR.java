@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.value.Val.STATELESS_VAL;
 
 import java.util.HashMap;
 
@@ -111,7 +112,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		data.start().setConstant(true).setValue(
 				this.objectIRStruct.data(generator).getPointer().relativeTo(
 						data.data(generator).getPointer()));
-
 		instance.mainBodyLayout().setConstant(true).setLowLevel(true).setValue(
 				new Getter<Integer>() {
 					@Override
@@ -122,7 +122,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 								.toBinaryForm();
 					}
 				});
-
+		instance.data().value().set(STATELESS_VAL);
 		instance.data().valueType().setConstant(true).setValue(
 				getObjectIR()
 				.getValueIR()
