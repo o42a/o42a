@@ -270,7 +270,15 @@ struct o42a_obj_data {
 	o42a_obj_val_ft *proposition_f;
 
 	/**
-	 * Pointer to Object value type descriptor.
+	 * Object value.
+	 *
+	 * This is only used by stateful objects. Stateless ones have a
+	 * O42A_VAL_STATELESS flag set.
+	 */
+	o42a_val_t value;
+
+	/**
+	 * Pointer to object value type descriptor.
 	 */
 	o42a_val_type_t *value_type;
 
@@ -511,7 +519,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[14];
+	o42a_dbg_field_info_t fields[15];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_stype;

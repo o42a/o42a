@@ -19,7 +19,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 14,
+	.field_num = 15,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -71,6 +71,12 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.data_type = O42A_TYPE_FUNC_PTR,
 			.offset = offsetof(o42a_obj_data_t, proposition_f),
 			.name = "proposition_f",
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_data_t, value),
+			.name = "value",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -870,6 +876,7 @@ static o42a_obj_rtype_t *propagate_object(
 	O42A_ENTER(return NULL);
 
 	const o42a_obj_data_t *const adata = &atype->type.data;
+	const o42a_obj_data_t *const sdata = &sstype->data;
 	const size_t main_body_start = (size_t) (adata->object - adata->start);
 	const size_t data_start = -adata->start;
 	const size_t type_start = data_start - offsetof(o42a_obj_rtype_t, data);
@@ -932,10 +939,16 @@ static o42a_obj_rtype_t *propagate_object(
 	data->cond_f = adata->cond_f;
 	data->claim_f = adata->claim_f;
 	data->proposition_f = adata->proposition_f;
+	if ((sdata->value.flags & O42A_VAL_STATELESS)
+			&& (adata->value.flags & O42A_VAL_STATELESS)) {
+		data->value.flags = O42A_VAL_STATELESS;
+	} else {
+		data->value.flags = O42A_VAL_INDEFINITE;
+	}
 	if (adata->value_type != &o42a_val_type_void) {
 		data->value_type = adata->value_type;
 	} else {
-		data->value_type = sstype->data.value_type;
+		data->value_type = sdata->value_type;
 	}
 
 	data->fld_ctrs = NULL;
@@ -1128,7 +1141,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			O42A(o42a_obj_ascendant_of_type(adata, sstype));
 
 	if (consuming_ascendant) {
-		// Ancestor has a body of the same type as object.
+		// Ancestor has a body of the same type as sample.
 		// Propagate ancestor.
 		o42a_debug_mem_name("Sample consumed by ", consuming_ascendant);
 
@@ -1238,6 +1251,12 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->cond_f = sdata->cond_f;
 	data->claim_f = sdata->claim_f;
 	data->proposition_f = sdata->proposition_f;
+	if ((sdata->value.flags & O42A_VAL_STATELESS)
+			&& (adata->value.flags & O42A_VAL_STATELESS)) {
+		data->value.flags = O42A_VAL_STATELESS;
+	} else {
+		data->value.flags = O42A_VAL_INDEFINITE;
+	}
 	if (sdata->value_type != &o42a_val_type_void) {
 		data->value_type = sdata->value_type;
 	} else {

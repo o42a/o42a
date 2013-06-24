@@ -83,8 +83,8 @@ public final class ValFlagsOp {
 		return get(id, "static", code, VAL_STATIC);
 	}
 
-	public final BoolOp assigning(ID id, Code code) {
-		return get(id, "assigning", code, VAL_ASSIGN);
+	public final BoolOp stateless(ID id, Code code) {
+		return get(id, "stateless", code, VAL_STATELESS);
 	}
 
 	public final Int32op alignmentShift(ID id, Code code) {
