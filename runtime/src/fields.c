@@ -264,6 +264,75 @@ o42a_bool_t o42a_fld_start(
 	O42A_RETURN O42A_TRUE;
 }
 
+o42a_bool_t o42a_fld_val_start(
+		o42a_obj_data_t *const data,
+		o42a_fld_ctr_t *const ctr) {
+	O42A_ENTER(return O42A_FALSE);
+
+	O42A(o42a_obj_lock(data));
+
+	o42a_val_t *const value = ctr->fld = &data->value;
+
+	if (!(value->flags & O42A_VAL_INDEFINITE)) {
+		O42A(o42a_obj_unlock(data));
+		// Object already set.
+		O42A_RETURN O42A_FALSE;
+	}
+
+	o42a_fld_ctr_t *last_ctr = data->fld_ctrs;
+	pthread_t thread = O42A(pthread_self());
+
+	if (!last_ctr) {
+		// No fields currently constructing.
+		ctr->prev = NULL;
+		ctr->next = NULL;
+		ctr->thread = thread;
+		data->fld_ctrs = ctr;
+		O42A(o42a_obj_unlock(data));
+		O42A_RETURN O42A_TRUE;
+	}
+
+	// Find out if the field already constructing.
+	while (1) {
+		if (last_ctr->fld != value) {
+			// Check the next field.
+			o42a_fld_ctr_t *next_ctr = last_ctr->next;
+			if (!next_ctr) {
+				// No more fields to check.
+				break;
+			}
+			last_ctr = next_ctr;
+		}
+		// Field already constructing.
+		if (last_ctr->thread == thread) {
+			// A recursion during the field construction.
+			ctr->prev = NULL;
+			ctr->next = NULL;
+			ctr->thread = last_ctr->thread;
+			O42A(o42a_obj_unlock(data));
+			// Try to construct the field.
+			O42A_RETURN O42A_TRUE;
+		}
+		// Wait for another thread to construct the field.
+		while (value->flags & O42A_VAL_INDEFINITE) {
+			O42A(o42a_obj_wait(data));
+		}
+		// Field constructed.
+		O42A(o42a_obj_unlock(data));
+		O42A_RETURN O42A_FALSE;
+	}
+
+	// Append a construction info to the list.
+	last_ctr->next = ctr;
+	ctr->prev = last_ctr;
+	ctr->next = NULL;
+	ctr->thread = thread;
+	O42A(o42a_obj_unlock(data));
+
+	// Construct the field.
+	O42A_RETURN O42A_TRUE;
+}
+
 void o42a_fld_finish(o42a_obj_data_t *const data, o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return);
 
