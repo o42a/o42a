@@ -22,6 +22,7 @@ package org.o42a.core.value.link.impl;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.variable.VarSte.varSteKey;
+import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -50,6 +51,11 @@ final class VariableIR extends ValueIR {
 	}
 
 	@Override
+	public void setInitialValue(ObjectTypeIR data) {
+		data.getInstance().data().value().set(INDEFINITE_VAL);
+	}
+
+	@Override
 	public ValueOp op(ObjectOp object) {
 		return new VariableOp(this, object);
 	}
@@ -72,7 +78,7 @@ final class VariableIR extends ValueIR {
 
 	}
 
-	private static final class VarStateOp extends StateOp {
+	private static final class VarStateOp extends FldStateOp {
 
 		private DataRecOp objectRec;
 		private DataOp objectPtr;
@@ -83,12 +89,6 @@ final class VariableIR extends ValueIR {
 
 		public final VarSteOp var() {
 			return (VarSteOp) fld();
-		}
-
-		@Override
-		public void useByValueFunction(Code code) {
-			this.objectRec = var().ptr().object(null, code);
-			this.objectPtr = this.objectRec.load(null, code, ATOMIC);
 		}
 
 		@Override
@@ -121,6 +121,12 @@ final class VariableIR extends ValueIR {
 		@Override
 		public void assign(CodeDirs dirs, ObjectOp value) {
 			var().value().assign(dirs, value);
+		}
+
+		@Override
+		protected void initEval(Code code) {
+			this.objectRec = var().ptr().object(null, code);
+			this.objectPtr = this.objectRec.load(null, code, ATOMIC);
 		}
 
 		@Override

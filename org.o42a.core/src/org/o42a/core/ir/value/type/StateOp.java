@@ -22,10 +22,11 @@ package org.o42a.core.ir.value.type;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -36,39 +37,31 @@ import org.o42a.core.value.ValueType;
 
 public abstract class StateOp {
 
-	private final FldOp<?> fld;
+	private final ObjectOp host;
 
-	public StateOp(FldOp<?> fld) {
-		this.fld = fld;
+	public StateOp(ObjectOp host) {
+		this.host = host;
 	}
 
 	public final Generator getGenerator() {
-		return fld().getGenerator();
+		return host().getGenerator();
 	}
 
 	public final CompilerContext getContext() {
-		return fld().getContext();
+		return host().getContext();
 	}
 
 	public final CodeBuilder getBuilder() {
-		return fld().getBuilder();
+		return host().getBuilder();
 	}
 
-	public final ValueType<?> getValueType() {
-		return fld()
-				.fld()
-				.getBodyIR()
-				.getObjectIR()
-				.getObject()
-				.type()
-				.getValueType();
+	public final ObjectOp host() {
+		return this.host;
 	}
 
-	public final FldOp<?> fld() {
-		return this.fld;
-	}
+	public abstract ValueType<?> getValueType();
 
-	public abstract void useByValueFunction(Code code);
+	public abstract void startEval(Block code, CodePos failure, FldCtrOp ctr);
 
 	public final ValOp writeValue(ValDirs dirs) {
 
@@ -117,7 +110,7 @@ public abstract class StateOp {
 
 		final DefDirs defDirs = dirs.nested().def();
 
-		fld().host().objectType(defDirs.code()).writeValue(defDirs);
+		host().objectType(defDirs.code()).writeValue(defDirs);
 		defDirs.done();
 
 		return defDirs.result();

@@ -71,12 +71,10 @@ abstract class AbstractObjectValueBuilder
 
 			ctr = function.allocation().allocate(FLD_CTR_ID, FLD_CTR_TYPE);
 			state = value.state(dirs.dirs());
-			state.useByValueFunction(function);
 
 			final Block finish = function.addBlock("finish");
 
-			ctr.start(function, state.fld()).goUnless(function, finish.head());
-
+			state.startEval(function, finish.head(), ctr);
 			writeKeptValue(dirs, finish, state);
 			finish.returnVoid();
 
@@ -102,7 +100,7 @@ abstract class AbstractObjectValueBuilder
 			result.storeFalse(code);
 			if (state != null && ctr != null) {
 				state.initToFalse(code);
-				ctr.finish(code, state.fld());
+				ctr.finish(code, state.host());
 			}
 			code.returnVoid();
 		}
@@ -111,7 +109,7 @@ abstract class AbstractObjectValueBuilder
 			result.storeFalse(exit);
 			if (state != null && ctr != null) {
 				state.initToFalse(exit);
-				ctr.finish(exit, state.fld());
+				ctr.finish(exit, state.host());
 			}
 			exit.returnVoid();
 		}
@@ -119,7 +117,7 @@ abstract class AbstractObjectValueBuilder
 			result.store(done, dirs.result());
 			if (state != null && ctr != null) {
 				state.init(done, result);
-				ctr.finish(done, state.fld());
+				ctr.finish(done, state.host());
 			}
 			done.returnVoid();
 		}

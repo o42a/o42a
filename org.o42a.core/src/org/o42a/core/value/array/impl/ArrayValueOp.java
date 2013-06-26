@@ -20,21 +20,14 @@
 package org.o42a.core.value.array.impl;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.array.ArraySte.arraySteKey;
-import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.core.ir.field.array.ArraySteOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.StateOp;
 import org.o42a.core.ir.value.type.StatefulValueOp;
+import org.o42a.core.ir.value.type.ValueStateOp;
 
 
 final class ArrayValueOp extends StatefulValueOp {
@@ -45,86 +38,34 @@ final class ArrayValueOp extends StatefulValueOp {
 
 	@Override
 	public StateOp state(CodeDirs dirs) {
-
-		final ArraySteOp fld = (ArraySteOp) object().field(
-				dirs,
-				arraySteKey(getBuilder().getContext()));
-
-		return new ArrayStateOp(fld);
+		return new ArrayStateOp(object());
 	}
 
-	private static final class ArrayStateOp extends StateOp {
+	private static final class ArrayStateOp extends ValueStateOp {
 
-		private ValType.Op value;
-		private ValFlagsOp flags;
-
-		ArrayStateOp(ArraySteOp fld) {
-			super(fld);
-		}
-
-		public final ArraySteOp array() {
-			return (ArraySteOp) fld();
-		}
-
-		@Override
-		public void useByValueFunction(Code code) {
-			this.value = array().ptr().value(null, code);
-			this.flags = this.value.flags(code, ATOMIC);
-		}
-
-		@Override
-		public BoolOp loadCondition(Code code) {
-			return this.flags.condition(null, code);
-		}
-
-		@Override
-		public ValOp loadValue(ValDirs dirs, Code code) {
-			return dirs.value().store(
-					code,
-					this.value.op(
-							code.getAllocator(),
-							dirs.getBuilder(),
-							getValueType(),
-							TEMP_VAL_HOLDER));
+		ArrayStateOp(ObjectOp host) {
+			super(host);
 		}
 
 		@Override
 		public void init(Block code, ValOp value) {
-			this.value.length(null, code).store(
+			value().length(null, code).store(
 					code,
 					value.length(null, code).load(null, code),
 					ATOMIC);
-			this.value.rawValue(null, code).store(
+			value().rawValue(null, code).store(
 					code,
 					value.rawValue(null, code).load(null, code),
 					ATOMIC);
 
 			code.releaseBarrier();
 
-			this.flags.store(code, value.flags(code).get());
-		}
-
-		@Override
-		public void initToFalse(Block code) {
-			code.releaseBarrier();
-			this.flags.storeFalse(code);
+			flags().store(code, value.flags(code).get());
 		}
 
 		@Override
 		public void assign(CodeDirs dirs, ObjectOp value) {
 			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected BoolOp loadIndefinite(Code code) {
-			return this.flags.indefinite(null, code);
-		}
-
-		@Override
-		protected void start(Block code) {
-			this.value = array().ptr().value(null, code);
-			super.start(code);
-			this.flags = this.value.flags(code, ATOMIC);
 		}
 
 	}
