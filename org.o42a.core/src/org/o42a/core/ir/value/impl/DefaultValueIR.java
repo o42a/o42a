@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.value.impl;
 
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBodyData;
-import org.o42a.core.ir.object.ObjectOp;
+import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.ir.value.type.ValueTypeIR;
@@ -35,6 +35,11 @@ public final class DefaultValueIR extends ValueIR {
 
 	@Override
 	public void allocateBody(ObjectIRBodyData data) {
+	}
+
+	@Override
+	public void setInitialValue(ObjectTypeIR data) {
+		data.getInstance().data().value().set(INDEFINITE_VAL);
 	}
 
 	@Override

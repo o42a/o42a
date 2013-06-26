@@ -19,12 +19,17 @@
 */
 package org.o42a.core.value.array.impl;
 
-import org.o42a.core.ir.field.array.ArraySte;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBodyData;
-import org.o42a.core.ir.object.ObjectOp;
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
+import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueOp;
+import org.o42a.core.object.Obj;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.array.Array;
+import org.o42a.core.value.array.ArrayValueType;
 
 
 final class ArrayValueIR extends ValueIR {
@@ -35,7 +40,27 @@ final class ArrayValueIR extends ValueIR {
 
 	@Override
 	public void allocateBody(ObjectIRBodyData data) {
-		new ArraySte().declare(data);
+	}
+
+	@Override
+	public void setInitialValue(ObjectTypeIR type) {
+
+		final ValType val = type.getInstance().data().value();
+		final Obj object = type.getObjectIR().getObject();
+		final Value<?> value = object.value().getValue();
+
+		if (!value.getKnowledge().isInitiallyKnown()) {
+			val.set(INDEFINITE_VAL);
+		} else if (value.getKnowledge().isFalse()) {
+			val.set(FALSE_VAL);
+		} else {
+
+			final ArrayValueType arrayType = getValueType().toArrayType();
+			final Array array =
+					arrayType.cast(value).getCompilerValue();
+
+			val.set(arrayType.ir(getGenerator()).staticsIR().val(array));
+		}
 	}
 
 	@Override

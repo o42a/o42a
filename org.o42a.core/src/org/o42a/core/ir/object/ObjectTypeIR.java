@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.value.Val.STATELESS_VAL;
 
 import java.util.HashMap;
 
@@ -122,7 +121,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 								.toBinaryForm();
 					}
 				});
-		instance.data().value().set(STATELESS_VAL);
+		getObjectIR().getValueIR().setInitialValue(this);
 		instance.data().valueType().setConstant(true).setValue(
 				getObjectIR()
 				.getValueIR()

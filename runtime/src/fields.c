@@ -120,13 +120,6 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
-	[O42A_STE_ARRAY] = {// Array state.
-		.propagate = &o42a_kpr_value_derive,
-		.inherit = &o42a_kpr_value_derive,
-		.mark = &o42a_kpr_array_mark,
-		.sweep = &o42a_kpr_value_sweep,
-		.is_init = &o42a_kpr_value_is_init,
-	},
 	[O42A_KPR_VOID] = {// Void keeper.
 		.propagate = &o42a_kpr_void_derive,
 		.inherit = &o42a_kpr_void_derive,
