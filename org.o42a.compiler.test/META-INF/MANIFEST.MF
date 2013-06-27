@@ -4,7 +4,7 @@ Bundle-Name: o42 Compiler Tests
 Bundle-SymbolicName: org.o42a.compiler.test;singleton:=true
 Bundle-Version: 0.2.8
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit4;bundle-version="4.8.0",
+Require-Bundle: org.junit;bundle-version="4.11.0",
  org.o42a.common;bundle-version="0.2.8",
  org.o42a.codegen;bundle-version="0.2.8",
  org.o42a.compiler;bundle-version="0.2.8",

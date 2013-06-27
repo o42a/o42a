@@ -4,6 +4,7 @@
 */
 package org.o42a.ast.test.grammar.statement;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -27,7 +28,7 @@ public class LocalScopeTest extends GrammarTestCase {
 		checkExpressionIs(scope, "expression");
 		checkAnonymous(scope);
 		checkNoColon(scope);
-		assertThat(scope.getContent(), is(ParenthesesNode.class));
+		assertThat(scope.getContent(), instanceOf(ParenthesesNode.class));
 	}
 
 	@Test
@@ -38,7 +39,7 @@ public class LocalScopeTest extends GrammarTestCase {
 		checkExpressionIs(scope, "expression");
 		checkAnonymous(scope);
 		checkColon(scope);
-		assertThat(scope.getContent(), is(ParenthesesNode.class));
+		assertThat(scope.getContent(), instanceOf(ParenthesesNode.class));
 	}
 
 	@Test
@@ -49,7 +50,7 @@ public class LocalScopeTest extends GrammarTestCase {
 		checkExpressionIs(scope, "expression");
 		checkAnonymous(scope);
 		checkNoColon(scope);
-		assertThat(scope.getContent(), is(BracesNode.class));
+		assertThat(scope.getContent(), instanceOf(BracesNode.class));
 	}
 
 	@Test
@@ -60,7 +61,7 @@ public class LocalScopeTest extends GrammarTestCase {
 		checkExpressionIs(scope, "expression");
 		checkAnonymous(scope);
 		checkColon(scope);
-		assertThat(scope.getContent(), is(BracesNode.class));
+		assertThat(scope.getContent(), instanceOf(BracesNode.class));
 	}
 
 	@Test
