@@ -27,7 +27,6 @@ public enum FldKind {
 	VAR(2),
 	SCOPE(3),
 	DEP(4),
-	VAR_STATE(5),
 	VOID_KEEPER(7),
 	INTEGER_KEEPER(8),
 	FLOAT_KEEPER(9),

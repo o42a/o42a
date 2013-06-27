@@ -21,8 +21,6 @@
 #include "o42a/kpr/string.h"
 #include "o42a/kpr/void.h"
 
-#include "o42a/ste/var.h"
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,8 +43,6 @@ union o42a_fld {
 	o42a_fld_scope scope;
 
 	o42a_fld_dep dep;
-
-	o42a_ste_var ste_var;
 
 	o42a_kpr_void kpr_void;
 
