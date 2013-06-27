@@ -771,6 +771,13 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 	O42A_ENTER(return);
 
 	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
+	const volatile o42a_val_t *const value = &data->value;
+	const uint32_t flags = value->flags;
+
+	if (flags & O42A_VAL_CONDITION) {
+		data->value_type->mark(data);
+	}
+
 	uint32_t num_asc = data->ascendants.size;
 
 	if (!num_asc) {
@@ -819,6 +826,12 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 	O42A_ENTER(return);
 
 	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
+	const volatile o42a_val_t *const value = &data->value;
+	const uint32_t flags = value->flags;
+
+	if (flags & O42A_VAL_CONDITION) {
+		data->value_type->sweep(data);
+	}
 
 	o42a_debug_mem_name("Sweep object: ", (char *) data + data->start);
 	uint32_t num_asc = data->ascendants.size;

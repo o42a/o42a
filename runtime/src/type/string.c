@@ -10,9 +10,41 @@
 #include <string.h>
 
 #include "o42a/memory/refcount.h"
+#include "o42a/object.h"
 
 
-const o42a_val_type_t o42a_val_type_string = O42A_VAL_TYPE("string");
+static void sweep_str_val(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+
+	const volatile o42a_val_t *const value = &data->value;
+	const uint32_t flags = value->flags;
+
+	if (flags & O42A_VAL_STATIC) {
+		O42A_RETURN;
+	}
+	if (!(flags & O42A_VAL_EXTERNAL)) {
+		O42A_RETURN;
+	}
+
+	void *const ptr = value->value.v_ptr;
+
+	if (!ptr) {
+		O42A_RETURN;
+	}
+
+	o42a_refcount_block_t *const block = o42a_refcount_blockof(ptr);
+
+	if (!__sync_sub_and_fetch(&block->ref_count, 1)) {
+		O42A(o42a_refcount_free(block));
+	}
+
+	O42A_RETURN;
+}
+
+const o42a_val_type_t o42a_val_type_string = O42A_VAL_TYPE(
+		"string",
+		o42a_val_gc_none,
+		sweep_str_val);
 
 inline UChar32 o42a_str_cmask(const o42a_val_t *const val) {
 

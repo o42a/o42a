@@ -11,10 +11,22 @@
 
 #include "o42a/error.h"
 #include "o42a/memory/gc.h"
+#include "o42a/object.h"
 
+void mark_array_val(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	O42A(o42a_array_mark(&data->value));
+	O42A_RETURN;
+}
 
-const o42a_val_type_t o42a_val_type_array = O42A_VAL_TYPE("array");
-const o42a_val_type_t o42a_val_type_row = O42A_VAL_TYPE("row");
+const o42a_val_type_t o42a_val_type_array = O42A_VAL_TYPE(
+		"array",
+		mark_array_val,
+		o42a_val_gc_none);
+const o42a_val_type_t o42a_val_type_row = O42A_VAL_TYPE(
+		"row",
+		mark_array_val,
+		o42a_val_gc_none);
 
 static void o42a_array_gc_marker(void *const data) {
 	O42A_ENTER(return);

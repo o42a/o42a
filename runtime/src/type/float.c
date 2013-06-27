@@ -19,7 +19,10 @@
 #include "unicode/uchar.h"
 
 
-const o42a_val_type_t o42a_val_type_float = O42A_VAL_TYPE("float");
+const o42a_val_type_t o42a_val_type_float = O42A_VAL_TYPE(
+		"float",
+		o42a_val_gc_none,
+		o42a_val_gc_none);
 
 enum float_signs {
 
