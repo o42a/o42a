@@ -19,7 +19,10 @@
 /**
  * Float value type descriptor.
  */
-const o42a_val_type_t o42a_val_type_integer = O42A_VAL_TYPE("integer");
+const o42a_val_type_t o42a_val_type_integer = O42A_VAL_TYPE(
+		"integer",
+		o42a_val_gc_none,
+		o42a_val_gc_none);
 
 enum number_signs {
 

@@ -190,6 +190,7 @@ $(srcdir)/type/link.%.o : $(srcdir)/type/link.c
 
 $(srcdir)/type/string.*.o : $(common_deps)
 $(srcdir)/type/string.*.o : $(headersdir)/memory/refcount.h
+$(srcdir)/type/string.*.o : $(headersdir)/object.h
 $(srcdir)/type/string.*.o : $(headersdir)/type/string.h
 $(srcdir)/type/string.%.o : $(srcdir)/type/string.c
 	$(call compile)

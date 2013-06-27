@@ -86,20 +86,20 @@ typedef const struct o42a_fld_desc {
 	/**
 	 * GC marker function pointer.
 	 *
-	 * This function is called when the GC marks an object containing the field
+	 * This function is called when GC marks an object containing the field
 	 * to mark the GC data referenced by this field.
 	 *
-	 * \param field marking field pointer.
+	 * \param field marked field pointer.
 	 */
 	void (* mark) (o42a_fld *);
 
 	/**
-	 * GC marker function pointer.
+	 * GC sweep function pointer.
 	 *
-	 * This function is called when the GC marks an object containing the field
-	 * to mark the GC data referenced by this field.
+	 * This function is called when GC sweeps an object containing the field
+	 * to sweep the GC data referenced by this field.
 	 *
-	 * \param field marking field pointer.
+	 * \param field swept field pointer.
 	 */
 	void (* sweep) (o42a_fld *);
 

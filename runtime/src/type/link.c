@@ -11,6 +11,29 @@
 #include "o42a/object.h"
 
 
-const o42a_val_type_t o42a_val_type_link = O42A_VAL_TYPE("link");
+static void mark_link_val(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
 
-const o42a_val_type_t o42a_val_type_variable = O42A_VAL_TYPE("variable");
+	const volatile o42a_val_t *const value = &data->value;
+	o42a_obj_t *const target = value->value.v_ptr;
+
+	if (!target) {
+		O42A_RETURN;
+	}
+
+	o42a_obj_data_t *const tdata = O42A(&o42a_obj_type(target)->type.data);
+
+	O42A(o42a_gc_mark(o42a_gc_blockof((char *) tdata + tdata->start)));
+
+	O42A_RETURN;
+}
+
+const o42a_val_type_t o42a_val_type_link = O42A_VAL_TYPE(
+		"link",
+		mark_link_val,
+		o42a_val_gc_none);
+
+const o42a_val_type_t o42a_val_type_variable = O42A_VAL_TYPE(
+		"variable",
+		mark_link_val,
+		o42a_val_gc_none);

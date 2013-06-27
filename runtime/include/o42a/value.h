@@ -136,6 +136,26 @@ typedef struct o42a_val_type {
 	 */
 	const char *name;
 
+	/**
+	 * GC marker function pointer.
+	 *
+	 * This function is called when GC marks an object to mark the GC data
+	 * referenced by its value.
+	 *
+	 * \param data marked object data pointer.
+	 */
+	void (* mark) (struct o42a_obj_data *);
+
+	/**
+	 * GC sweep function pointer.
+	 *
+	 * This function is called when GC sweeps an object to sweep the GC data
+	 * referenced by its value.
+	 *
+	 * \param data swept object data pointer.
+	 */
+	void (* sweep) (struct o42a_obj_data *);
+
 } o42a_val_type_t;
 
 #ifdef NDEBUG
@@ -147,13 +167,15 @@ typedef struct o42a_val_type {
  * \param _mark mark function pointer.
  * \param _sweep sweep function pointer.
  */
-#define O42A_VAL_TYPE(_type_name) { \
+#define O42A_VAL_TYPE(_type_name, _mark, _sweep) { \
 	.name = _type_name, \
+	.mark = _mark, \
+	.sweep = _sweep, \
 }
 
 #else /* NDEBUG */
 
-#define O42A_VAL_TYPE(_type_name) { \
+#define O42A_VAL_TYPE(_type_name, _mark, _sweep) { \
 	.__o42a_dbg_header__ = { \
 		.type_code = 0x042a0003, \
 		.enclosing = 0, \
@@ -161,11 +183,13 @@ typedef struct o42a_val_type {
 		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type, \
 	}, \
 	.name = _type_name, \
+	.mark = _mark, \
+	.sweep = _sweep, \
 }
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val;
 
-extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_val_type;
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val_type;
 
 #endif /* NDEBUG */
 
@@ -203,6 +227,8 @@ inline void *o42a_val_data(const o42a_val_t *const val) {
 void o42a_val_use(o42a_val_t *);
 
 void o42a_val_unuse(o42a_val_t *);
+
+void o42a_val_gc_none(struct o42a_obj_data *);
 
 #ifdef __cplusplus
 } /* extern "C" */
