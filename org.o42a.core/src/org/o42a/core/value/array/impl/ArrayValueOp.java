@@ -27,7 +27,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
 import org.o42a.core.ir.value.type.StatefulValueOp;
-import org.o42a.core.ir.value.type.ValueStateOp;
 
 
 final class ArrayValueOp extends StatefulValueOp {
@@ -41,7 +40,7 @@ final class ArrayValueOp extends StatefulValueOp {
 		return new ArrayStateOp(object());
 	}
 
-	private static final class ArrayStateOp extends ValueStateOp {
+	private static final class ArrayStateOp extends StateOp {
 
 		ArrayStateOp(ObjectOp host) {
 			super(host);

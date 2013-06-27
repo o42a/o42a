@@ -100,7 +100,7 @@ final class VariableIR extends ValueIR {
 
 	}
 
-	private static final class VarStateOp extends ValueStateOp {
+	private static final class VarStateOp extends StateOp {
 
 		VarStateOp(ObjectOp host) {
 			super(host);
