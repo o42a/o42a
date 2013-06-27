@@ -72,7 +72,6 @@ public class GrammarTestCase {
 		return (Matcher<T>) MEMBER_REF_WITHOUT_RETENTION;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends Node> Matcher<T> isName(String name) {
 		return CoreMatchers.<T>allOf(
 				GrammarTestCase.<T>memberRefWithoutOwner(),
@@ -104,28 +103,24 @@ public class GrammarTestCase {
 		return (Matcher<T>) INTEGER_NUMBER;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends Node> Matcher<T> integer(String digits) {
 		return CoreMatchers.<T>allOf(
 				GrammarTestCase.<T>hasInteger(digits),
 				GrammarTestCase.<T>isInteger());
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends Node> Matcher<T> unsignedInteger(String digits) {
 		return CoreMatchers.<T>allOf(
 				GrammarTestCase.<T>unsignedNumber(),
 				GrammarTestCase.<T>integer(digits));
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends Node> Matcher<T> positiveInteger(String digits) {
 		return CoreMatchers.<T>allOf(
 				GrammarTestCase.<T>positiveNumber(),
 				GrammarTestCase.<T>integer(digits));
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends Node> Matcher<T> negativeInteger(String digits) {
 		return CoreMatchers.<T>allOf(
 				GrammarTestCase.<T>negativeNumber(),
