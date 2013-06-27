@@ -35,8 +35,6 @@ enum o42a_fld_kind {
 
 	O42A_FLD_DEP = 4,
 
-	O42A_STE_VAR = 5,
-
 	O42A_KPR_VOID = 7,
 
 	O42A_KPR_INTEGER = 8,

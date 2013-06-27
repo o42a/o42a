@@ -19,24 +19,23 @@
 */
 package org.o42a.core.value.link.impl;
 
-import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.variable.VarSte.varSteKey;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.field.variable.VarSte;
-import org.o42a.core.ir.field.variable.VarSteOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.*;
+import org.o42a.core.object.Obj;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.link.KnownLink;
+import org.o42a.core.value.link.LinkValueType;
 
 
 final class VariableIR extends ValueIR {
@@ -47,12 +46,40 @@ final class VariableIR extends ValueIR {
 
 	@Override
 	public void allocateBody(ObjectIRBodyData data) {
-		new VarSte().declare(data);
 	}
 
 	@Override
-	public void setInitialValue(ObjectTypeIR data) {
-		data.getInstance().data().value().set(INDEFINITE_VAL);
+	public void setInitialValue(ObjectTypeIR type) {
+
+		final Obj object = type.getObjectIR().getObject();
+		final Value<?> value = object.value().getValue();
+		final ValType objectVal = type.getInstance().data().value();
+
+		if (!value.getKnowledge().isInitiallyKnown()) {
+			objectVal.set(INDEFINITE_VAL);
+		} else if (value.getKnowledge().isFalse()) {
+			objectVal.set(FALSE_VAL);
+		} else {
+
+			final LinkValueType linkType = getValueType().toLinkType();
+			final KnownLink link =
+					linkType.cast(value).getCompilerValue();
+			final Obj target = link.getTarget().getWrapped();
+
+			if (target.getConstructionMode().isRuntime()) {
+				objectVal.set(INDEFINITE_VAL);
+			} else {
+
+				final ObjectIR targetIR = target.ir(getGenerator());
+
+				objectVal.flags().setValue(VAL_CONDITION);
+				objectVal.length().setValue(0);
+				objectVal.value().setNativePtr(
+						targetIR.getMainBodyIR()
+						.pointer(getGenerator())
+						.toAny());
+			}
+		}
 	}
 
 	@Override
@@ -68,37 +95,15 @@ final class VariableIR extends ValueIR {
 
 		@Override
 		public StateOp state(CodeDirs dirs) {
-
-			final VarSteOp fld = (VarSteOp) object().field(
-					dirs,
-					varSteKey(getBuilder().getContext()));
-
-			return new VarStateOp(fld);
+			return new VarStateOp(object());
 		}
 
 	}
 
-	private static final class VarStateOp extends FldStateOp {
+	private static final class VarStateOp extends ValueStateOp {
 
-		private DataRecOp objectRec;
-		private DataOp objectPtr;
-
-		VarStateOp(VarSteOp fld) {
-			super(fld);
-		}
-
-		public final VarSteOp var() {
-			return (VarSteOp) fld();
-		}
-
-		@Override
-		public BoolOp loadCondition(Code code) {
-			return this.objectPtr.ne(null, code, none(code));
-		}
-
-		@Override
-		public ValOp loadValue(ValDirs dirs, Code code) {
-			return dirs.value().store(code, this.objectPtr.toAny(null, code));
+		VarStateOp(ObjectOp host) {
+			super(host);
 		}
 
 		@Override
@@ -106,48 +111,42 @@ final class VariableIR extends ValueIR {
 
 			final DataOp target =
 					value.value(null, code)
-					.toRec(null, code)
-					.load(null, code)
-					.toData(null, code);
+					.toDataRec(null, code)
+					.load(null, code);
 
-			this.objectRec.store(code, target, ACQUIRE_RELEASE);
-		}
+			value().rawValue(null, code)
+					.toAny(null, code)
+					.toDataRec(null, code)
+					.store(code, target, ATOMIC);
 
-		@Override
-		public void initToFalse(Block code) {
-			this.objectRec.store(code, none(code), ACQUIRE_RELEASE);
+			code.releaseBarrier();
+
+			flags().store(code, VAL_CONDITION);
 		}
 
 		@Override
 		public void assign(CodeDirs dirs, ObjectOp value) {
-			var().value().assign(dirs, value);
-		}
 
-		@Override
-		protected void initEval(Code code) {
-			this.objectRec = var().ptr().object(null, code);
-			this.objectPtr = this.objectRec.load(null, code, ATOMIC);
-		}
+			final Block code = dirs.code();
 
-		@Override
-		protected void start(Block code) {
-			this.objectRec = var().ptr().object(null, code);
-			super.start(code);
-			this.objectPtr = this.objectRec.load(null, code, ATOMIC);
-		}
+			start(code);
+			tempObjHolder(code.getAllocator()).holdVolatile(code, host());
 
-		@Override
-		protected BoolOp loadIndefinite(Code code) {
-			return this.objectPtr.isNull(null, code);
-		}
+			final ObjectOp valueObject =
+					value.target()
+					.materialize(dirs, tempObjHolder(code.getAllocator()));
 
-		private DataOp none(Code code) {
+			value().rawValue(null, code)
+					.toAny(null, code)
+					.toDataRec(null, code)
+					.store(
+							code,
+							valueObject.toData(null, code),
+							ATOMIC);
+			code.releaseBarrier();
 
-			final ObjectIR noneIR = getContext().getNone().ir(getGenerator());
-			final Ptr<ObjectIRBodyOp> nonePtr =
-					noneIR.getMainBodyIR().pointer(getGenerator());
-
-			return nonePtr.op(null, code).toData(null, code);
+			flags().store(code, VAL_CONDITION);
+			code.dump("Assigned: ", value());
 		}
 
 	}

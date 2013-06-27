@@ -69,8 +69,6 @@ objects += $(srcdir)/kpr/link.o
 objects += $(srcdir)/kpr/string.o
 objects += $(srcdir)/kpr/void.o
 
-objects += $(srcdir)/ste/var.o
-
 objects += $(srcdir)/lib/io.o
 
 objects += $(srcdir)/memory/gc.o
