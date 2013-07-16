@@ -19,11 +19,15 @@
 */
 package org.o42a.core.value.floats;
 
+import static java.lang.Double.doubleToRawLongBits;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.type.StaticsIR;
-import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.core.ir.object.ObjectTypeIR;
+import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.type.*;
+import org.o42a.core.value.ValueType;
 
 
 final class FloatValueTypeIR extends ValueTypeIR<Double> {
@@ -34,12 +38,36 @@ final class FloatValueTypeIR extends ValueTypeIR<Double> {
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+		return new FloatValueIR(this, objectIR);
 	}
 
 	@Override
 	protected StaticsIR<Double> createStaticsIR() {
 		return new FloatStaticsIR(this);
+	}
+
+	private static final class FloatValueIR extends SimpleValueIR {
+
+		FloatValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
+			super(valueTypeIR, objectIR);
+		}
+
+		@Override
+		public void setInitialValue(ObjectTypeIR type) {
+
+			final double value = ValueType.FLOAT.cast(
+					getObjectIR().getObject()
+					.value()
+					.getValue()
+					.getCompilerValue())
+					.doubleValue();
+			final ValType val = type.getInstance().data().value();
+
+			val.flags().setValue(VAL_CONDITION);
+			val.length().setValue(0);
+			val.value().setValue(doubleToRawLongBits(value));
+		}
+
 	}
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2013 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,49 +17,68 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.array.impl;
+package org.o42a.core.ir.value.type;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.op.Int64op;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.type.StateOp;
-import org.o42a.core.ir.value.type.StatefulValueOp;
 
 
-final class ArrayValueOp extends StatefulValueOp {
+public abstract class SimpleValueIR extends ValueIR {
 
-	ArrayValueOp(ArrayValueIR valueIR, ObjectOp object) {
-		super(valueIR, object);
+	public SimpleValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
+		super(valueTypeIR, objectIR);
 	}
 
 	@Override
-	public StateOp state() {
-		return new ArrayStateOp(object());
+	public void allocateBody(ObjectIRBodyData data) {
 	}
 
-	private static final class ArrayStateOp extends StateOp {
+	@Override
+	public ValueOp op(ObjectOp object) {
+		return new SimpleValueOp(this, object);
+	}
 
-		ArrayStateOp(ObjectOp host) {
+	private static final class SimpleValueOp extends DefaultValueOp {
+
+		SimpleValueOp(ValueIR valueIR, ObjectOp object) {
+			super(valueIR, object);
+		}
+
+		@Override
+		public StateOp state() {
+			return new SimpleStateOp(object());
+		}
+
+	}
+
+	private static final class SimpleStateOp extends StateOp {
+
+		SimpleStateOp(ObjectOp host) {
 			super(host);
 		}
 
 		@Override
 		public void init(Block code, ValOp value) {
-			value().length(null, code).store(
-					code,
-					value.length(null, code).load(null, code),
-					ATOMIC);
-			value().rawValue(null, code).store(
-					code,
-					value.rawValue(null, code).load(null, code),
-					ATOMIC);
+
+			final Int64op target =
+					value.value(null, code)
+					.toInt64(null, code)
+					.load(null, code);
+
+			value().rawValue(null, code)
+					.store(code, target, ATOMIC);
 
 			code.releaseBarrier();
 
-			flags().store(code, value.flags(code).get());
+			flags().store(code, VAL_CONDITION);
 		}
 
 		@Override

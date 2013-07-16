@@ -36,10 +36,7 @@ public final class LinkValueTypeIR extends ValueTypeIR<KnownLink> {
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		if (getValueType().isVariable()) {
-			return new VariableIR(this, objectIR);
-		}
-		return new LinkIR(this, objectIR);
+		return new LinkValueIR(this, objectIR);
 	}
 
 	@Override

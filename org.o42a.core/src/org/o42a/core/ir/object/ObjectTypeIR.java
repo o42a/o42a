@@ -21,6 +21,8 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
+import static org.o42a.core.ir.value.Val.STATELESS_VAL;
 
 import java.util.HashMap;
 
@@ -35,10 +37,13 @@ import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.object.type.FieldDescIR;
 import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectValue;
+import org.o42a.core.value.ValueKnowledge;
 import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
@@ -121,7 +126,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 								.toBinaryForm();
 					}
 				});
-		getObjectIR().getValueIR().setInitialValue(this);
+		fillValue(instance);
 		instance.data().valueType().setConstant(true).setValue(
 				getObjectIR()
 				.getValueIR()
@@ -244,6 +249,26 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		}
 
 		return flags;
+	}
+
+	private void fillValue(ObjectIRType instance) {
+
+		final ObjectValue objectValue = getObjectIR().getObject().value();
+
+		if (objectValue.getStatefulness().isStateless()) {
+			instance.data().value().set(STATELESS_VAL);
+			return;
+		}
+
+		final ValueKnowledge knowledge = objectValue.getValue().getKnowledge();
+
+		if (!knowledge.isInitiallyKnown()) {
+			instance.data().value().set(Val.INDEFINITE_VAL);
+		} else if (knowledge.isFalse()) {
+			instance.data().value().set(FALSE_VAL);
+		} else {
+			getObjectIR().getValueIR().setInitialValue(this);
+		}
 	}
 
 }
