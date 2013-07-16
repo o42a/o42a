@@ -59,50 +59,37 @@ abstract class AbstractObjectValueBuilder
 		final ObjectIRDataOp data = data(function, function);
 		final StateOp state;
 		final FldCtrOp ctr;
+		final Block code;
 
-		if (!lock()) {
+		if (!getValueType().getDefaultStatefulness().isStateful()) {
+			code = function;
 			state = null;
 			ctr = null;
 		} else {
-
-			final Block alreadyFalse = function.addBlock("already_false");
-			final ValDirs dirs =
-					builder.dirs(function, alreadyFalse.head()).value(result);
-
-			ctr = function.allocation().allocate(FLD_CTR_ID, FLD_CTR_TYPE);
-			state = value.state(dirs.dirs());
-
-			final Block finish = function.addBlock("finish");
-
-			state.startEval(function, finish.head(), ctr);
-			writeKeptValue(dirs, finish, state);
-			finish.returnVoid();
-
-			if (alreadyFalse.exists()) {
-				result.storeFalse(alreadyFalse);
-				alreadyFalse.returnVoid();
-			}
+			code = function;
+			state = value.state();
+			ctr = writeKeptOrEval(code, state, result);
 		}
 
-		final Block done = function.addBlock("done");
-		final Block exit = function.addBlock("exit");
+		final Block done = code.addBlock("done");
+		final Block exit = code.addBlock("exit");
 		final DefDirs dirs =
-				builder.dirs(function, exit.head())
+				builder.dirs(code, exit.head())
 				.value(result)
 				.def(done.head());
 
 		writeValue(dirs, host, data);
 
-		final Block code = dirs.done().code();
+		final Block resultCode = dirs.done().code();
 
-		if (code.exists()) {
-			code.debug("Indefinite");
-			result.storeFalse(code);
+		if (resultCode.exists()) {
+			resultCode.debug("Indefinite");
+			result.storeFalse(resultCode);
 			if (state != null && ctr != null) {
-				state.initToFalse(code);
-				ctr.finish(code, state.host());
+				state.initToFalse(resultCode);
+				ctr.finish(resultCode, state.host());
 			}
-			code.returnVoid();
+			resultCode.returnVoid();
 		}
 		if (exit.exists()) {
 			exit.debug("False");
@@ -162,11 +149,41 @@ abstract class AbstractObjectValueBuilder
 		return builder;
 	}
 
-	private void writeKeptValue(ValDirs dirs, Block code, StateOp state) {
+	private FldCtrOp writeKeptOrEval(
+			Block code,
+			StateOp state,
+			ValOp result) {
+
+		final Block valueKept = code.addBlock("value_kept");
+		final FldCtrOp ctr = code.getAllocator().allocation().allocate(
+				FLD_CTR_ID,
+				FLD_CTR_TYPE);
+
+		state.startEval(code, valueKept.head(), ctr);
+		writeKept(valueKept, state, result);
+
+		return ctr;
+	}
+
+	private void writeKept(Block code, StateOp state, ValOp result) {
+
+		final Block falseKept = code.addBlock("false_kept");
+
 		// Check the condition.
-		state.loadCondition(code).goUnless(code, dirs.falseDir());
+		state.loadCondition(code).goUnless(code, falseKept.head());
+
 		// Return the value if condition is not false.
-		dirs.value().store(code, state.loadValue(dirs, code));
+		final ValDirs dirs =
+				state.getBuilder().dirs(code, falseKept.head())
+				.value(result);
+
+		state.loadValue(dirs, code);
+		dirs.done().code().returnVoid();
+
+		if (falseKept.exists()) {
+			result.storeFalse(falseKept);
+			falseKept.returnVoid();
+		}
 	}
 
 }

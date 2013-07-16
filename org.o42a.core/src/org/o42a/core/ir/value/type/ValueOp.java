@@ -85,13 +85,13 @@ public abstract class ValueOp implements HostValueOp {
 
 	@Override
 	public final void assign(CodeDirs dirs, HostOp value) {
-		state(dirs).assign(
+		state().assign(
 				dirs,
 				value.target()
 				.materialize(dirs, tempObjHolder(dirs.getAllocator())));
 	}
 
-	public abstract StateOp state(CodeDirs dirs);
+	public abstract StateOp state();
 
 	@Override
 	public String toString() {
