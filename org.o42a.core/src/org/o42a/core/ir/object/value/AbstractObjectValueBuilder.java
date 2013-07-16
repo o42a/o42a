@@ -126,7 +126,7 @@ abstract class AbstractObjectValueBuilder
 	protected abstract ValueType<?> getValueType();
 
 	protected boolean lock() {
-		return getValueType().isStateful();
+		return getValueType().getDefaultStatefulness().isStateful();
 	}
 
 	protected abstract ObjBuilder createBuilder(

@@ -50,6 +50,7 @@ import org.o42a.core.object.impl.*;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
@@ -694,6 +695,17 @@ public abstract class Obj
 		}
 
 		return typeParameters;
+	}
+
+	protected Statefulness determineStatefulness() {
+
+		final Statefulness derivedStatefulness = type().derivedStatefulness();
+
+		if (derivedStatefulness.isStateful()) {
+			return derivedStatefulness;
+		}
+
+		return type().getValueType().getDefaultStatefulness();
 	}
 
 	protected abstract Definitions explicitDefinitions();

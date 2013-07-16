@@ -30,6 +30,7 @@ import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -110,7 +111,7 @@ public abstract class ValueType<T> {
 		return toArrayType() != null;
 	}
 
-	public abstract boolean isStateful();
+	public abstract Statefulness getDefaultStatefulness();
 
 	public abstract boolean isVariable();
 

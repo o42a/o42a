@@ -20,6 +20,7 @@
 package org.o42a.core.value;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
@@ -37,8 +38,8 @@ public abstract class SingleValueType<T> extends ValueType<T> {
 	}
 
 	@Override
-	public boolean isStateful() {
-		return false;
+	public Statefulness getDefaultStatefulness() {
+		return Statefulness.STATELESS;
 	}
 
 	@Override

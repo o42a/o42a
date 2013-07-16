@@ -38,6 +38,7 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
@@ -75,8 +76,8 @@ public class ArrayValueType extends ValueType<Array> {
 	}
 
 	@Override
-	public boolean isStateful() {
-		return isVariable();
+	public Statefulness getDefaultStatefulness() {
+		return isVariable() ? Statefulness.STATEFUL : Statefulness.STATELESS;
 	}
 
 	@Override
