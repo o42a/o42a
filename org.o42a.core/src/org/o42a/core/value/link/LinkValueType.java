@@ -34,6 +34,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Keeper;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -78,8 +79,8 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 	}
 
 	@Override
-	public boolean isStateful() {
-		return isVariable();
+	public Statefulness getDefaultStatefulness() {
+		return isVariable() ? Statefulness.VARIABLE : Statefulness.STATELESS;
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValueParts;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.Resolver;
@@ -45,6 +46,7 @@ public final class ObjectValue extends ObjectValueParts {
 	private static final byte FULLY_RESOLVED = 1;
 	private static final byte NORMALIZED = 2;
 
+	private Statefulness statefulness;
 	private Value<?> value;
 	private Definitions definitions;
 	private Definitions explicitDefinitions;
@@ -57,6 +59,13 @@ public final class ObjectValue extends ObjectValueParts {
 		super(object);
 	}
 
+	public final Statefulness getStatefulness() {
+		if (this.statefulness != null) {
+			return this.statefulness;
+		}
+		return this.statefulness = getObject().determineStatefulness();
+	}
+
 	public final UseFlag selectUse(
 			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
@@ -67,7 +76,7 @@ public final class ObjectValue extends ObjectValueParts {
 	}
 
 	public final boolean isRuntimeConstructed() {
-		return !getObject().type().getValueType().isStateful()
+		return getObject().value().getStatefulness().isStateless()
 				|| getObject().type().isRuntimeConstructed();
 	}
 
