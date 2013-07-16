@@ -36,7 +36,7 @@ final class ArrayValueOp extends StatefulValueOp {
 	}
 
 	@Override
-	public StateOp state(CodeDirs dirs) {
+	public StateOp state() {
 		return new ArrayStateOp(object());
 	}
 

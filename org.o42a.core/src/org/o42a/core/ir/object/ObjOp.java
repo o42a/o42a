@@ -243,8 +243,8 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		@Override
-		public StateOp state(CodeDirs dirs) {
-			return this.value.state(dirs);
+		public StateOp state() {
+			return this.value.state();
 		}
 
 		@Override

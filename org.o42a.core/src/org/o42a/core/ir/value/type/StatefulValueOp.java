@@ -35,7 +35,7 @@ public abstract class StatefulValueOp extends ValueOp {
 
 	@Override
 	public ValOp writeTypedValue(ValDirs dirs) {
-		return state(dirs.dirs()).writeValue(dirs);
+		return state().writeValue(dirs);
 	}
 
 	@Override

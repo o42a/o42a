@@ -20,7 +20,6 @@
 package org.o42a.core.ir.value.type;
 
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 
 
 public abstract class StatelessValueOp extends ValueOp {
@@ -32,7 +31,7 @@ public abstract class StatelessValueOp extends ValueOp {
 	}
 
 	@Override
-	public final StateOp state(CodeDirs dirs) {
+	public final StateOp state() {
 		throw new UnsupportedOperationException(
 				"Value of type " + getValueType() + " has no state");
 	}

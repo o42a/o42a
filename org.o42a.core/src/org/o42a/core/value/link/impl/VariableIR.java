@@ -94,7 +94,7 @@ final class VariableIR extends ValueIR {
 		}
 
 		@Override
-		public StateOp state(CodeDirs dirs) {
+		public StateOp state() {
 			return new VarStateOp(object());
 		}
 
