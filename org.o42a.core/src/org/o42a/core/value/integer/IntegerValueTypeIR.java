@@ -19,11 +19,14 @@
 */
 package org.o42a.core.value.integer;
 
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.type.StaticsIR;
-import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.core.ir.object.ObjectTypeIR;
+import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.type.*;
+import org.o42a.core.value.ValueType;
 
 
 final class IntegerValueTypeIR extends ValueTypeIR<Long> {
@@ -34,12 +37,37 @@ final class IntegerValueTypeIR extends ValueTypeIR<Long> {
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+		return new IntegerValueIR(this, objectIR);
 	}
 
 	@Override
 	protected StaticsIR<Long> createStaticsIR() {
 		return new IntegerStaticsIR(this);
+	}
+
+	private static final class IntegerValueIR extends SimpleValueIR {
+
+		IntegerValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
+			super(valueTypeIR, objectIR);
+		}
+
+		@Override
+		public void setInitialValue(ObjectTypeIR data) {
+
+			final long value = ValueType.INTEGER.cast(
+					getObjectIR()
+					.getObject()
+					.value()
+					.getValue()
+					.getCompilerValue());
+
+			final ValType val = data.getInstance().data().value();
+
+			val.flags().setValue(VAL_CONDITION);
+			val.length().setValue(0);
+			val.value().setValue(value);
+		}
+
 	}
 
 }

@@ -33,7 +33,7 @@ final class DirectiveValueTypeIR extends ValueTypeIR<Directive> {
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+		return new VoidValueIR(this, objectIR);
 	}
 
 	@Override

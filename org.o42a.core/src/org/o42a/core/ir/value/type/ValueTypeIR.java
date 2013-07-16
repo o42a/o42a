@@ -25,7 +25,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
-import org.o42a.core.ir.value.impl.DefaultValueIR;
 import org.o42a.core.value.ValueType;
 
 
@@ -77,9 +76,5 @@ public abstract class ValueTypeIR<T> {
 	}
 
 	protected abstract StaticsIR<T> createStaticsIR();
-
-	protected final ValueIR defaultValueIR(ObjectIR objectIR) {
-		return new DefaultValueIR(this, objectIR);
-	}
 
 }

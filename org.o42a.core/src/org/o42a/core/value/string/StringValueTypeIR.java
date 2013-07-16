@@ -19,11 +19,15 @@
 */
 package org.o42a.core.value.string;
 
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.type.StaticsIR;
-import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.codegen.code.Block;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.type.*;
+import org.o42a.core.value.ValueType;
 
 
 final class StringValueTypeIR extends ValueTypeIR<String> {
@@ -34,12 +38,85 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+		return new StringValueIR(this, objectIR);
 	}
 
 	@Override
 	protected StaticsIR<String> createStaticsIR() {
 		return new StringStaticsIR(this);
+	}
+
+	private static final class StringValueIR extends ValueIR {
+
+		StringValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
+			super(valueTypeIR, objectIR);
+		}
+
+		@Override
+		public void allocateBody(ObjectIRBodyData data) {
+		}
+
+		@Override
+		public ValueOp op(ObjectOp object) {
+			return new StringValueOp(this, object);
+		}
+
+		@Override
+		public void setInitialValue(ObjectTypeIR type) {
+
+			final String value = ValueType.STRING.cast(
+					getObjectIR()
+					.getObject()
+					.value()
+					.getValue()
+					.getCompilerValue());
+
+			type.getInstance().data().value().set(
+					ValueType.STRING.ir(getGenerator()).staticsIR().val(value));
+		}
+
+	}
+
+	private static final class StringValueOp extends DefaultValueOp {
+
+		StringValueOp(ValueIR valueIR, ObjectOp object) {
+			super(valueIR, object);
+		}
+
+		@Override
+		public StateOp state() {
+			return new StringStateOp(object());
+		}
+
+	}
+
+	private static final class StringStateOp extends StateOp {
+
+		StringStateOp(ObjectOp host) {
+			super(host);
+		}
+
+		@Override
+		public void init(Block code, ValOp value) {
+			value().length(null, code).store(
+					code,
+					value.length(null, code).load(null, code),
+					ATOMIC);
+			value().rawValue(null, code).store(
+					code,
+					value.rawValue(null, code).load(null, code),
+					ATOMIC);
+
+			code.releaseBarrier();
+
+			flags().store(code, value.flags(code).get());
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, ObjectOp value) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

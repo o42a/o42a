@@ -17,20 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.impl;
+package org.o42a.core.ir.value.type;
 
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.type.StatelessValueOp;
-import org.o42a.core.ir.value.type.ValueIR;
 
 
-public final class DefaultValueOp extends StatelessValueOp {
+public abstract class DefaultValueOp extends ValueOp {
 
 	public DefaultValueOp(ValueIR valueIR, ObjectOp object) {
 		super(valueIR, object);
+		assert valueIR.getValueType().getDefaultStatefulness().isStateless() :
+			valueIR.getValueType() + " is stateful";
 	}
 
 	@Override

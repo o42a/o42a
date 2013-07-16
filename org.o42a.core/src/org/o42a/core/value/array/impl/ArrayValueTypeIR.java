@@ -19,10 +19,16 @@
 */
 package org.o42a.core.value.array.impl;
 
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.ir.value.type.ValueTypeIR;
+import org.o42a.codegen.code.Block;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.type.*;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayValueType;
 
@@ -35,15 +41,100 @@ public final class ArrayValueTypeIR extends ValueTypeIR<Array> {
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		if (!getValueType().isVariable()) {
-			return defaultValueIR(objectIR);
-		}
 		return new ArrayValueIR(this, objectIR);
 	}
 
 	@Override
 	protected ArrayStaticsIR createStaticsIR() {
 		return new ArrayStaticsIR(this);
+	}
+
+	private static final class ArrayValueIR extends ValueIR {
+
+		ArrayValueIR(ArrayValueTypeIR valueStructIR, ObjectIR objectIR) {
+			super(valueStructIR, objectIR);
+		}
+
+		@Override
+		public void allocateBody(ObjectIRBodyData data) {
+		}
+
+		@Override
+		public void setInitialValue(ObjectTypeIR type) {
+
+			final Obj object = type.getObjectIR().getObject();
+			final ArrayValueType arrayType = getValueType().toArrayType();
+			final Array array =
+					arrayType.cast(object.value().getValue()).getCompilerValue();
+			final Val arrayVal =
+					arrayType.ir(getGenerator()).staticsIR().val(array);
+
+			type.getInstance().data().value().set(arrayVal);
+		}
+
+		@Override
+		public ValueOp op(ObjectOp object) {
+			if (!getValueType().isVariable()) {
+				return new RowValueOp(this, object);
+			}
+			return new ArrayValueOp(this, object);
+		}
+
+	}
+
+	private static final class RowValueOp extends DefaultValueOp {
+
+		RowValueOp(ArrayValueIR valueIR, ObjectOp object) {
+			super(valueIR, object);
+		}
+
+		@Override
+		public StateOp state() {
+			return new ArrayStateOp(object());
+		}
+
+	}
+
+	private static final class ArrayValueOp extends StatefulValueOp {
+
+		ArrayValueOp(ArrayValueIR valueIR, ObjectOp object) {
+			super(valueIR, object);
+		}
+
+		@Override
+		public StateOp state() {
+			return new ArrayStateOp(object());
+		}
+
+	}
+
+	private static final class ArrayStateOp extends StateOp {
+
+		ArrayStateOp(ObjectOp host) {
+			super(host);
+		}
+
+		@Override
+		public void init(Block code, ValOp value) {
+			value().length(null, code).store(
+					code,
+					value.length(null, code).load(null, code),
+					ATOMIC);
+			value().rawValue(null, code).store(
+					code,
+					value.rawValue(null, code).load(null, code),
+					ATOMIC);
+
+			code.releaseBarrier();
+
+			flags().store(code, value.flags(code).get());
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, ObjectOp value) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

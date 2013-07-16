@@ -21,7 +21,6 @@ package org.o42a.core.value.link.impl;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
@@ -38,9 +37,9 @@ import org.o42a.core.value.link.KnownLink;
 import org.o42a.core.value.link.LinkValueType;
 
 
-final class VariableIR extends ValueIR {
+final class LinkValueIR extends ValueIR {
 
-	VariableIR(LinkValueTypeIR valueStructIR, ObjectIR objectIR) {
+	LinkValueIR(LinkValueTypeIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
 	}
 
@@ -55,42 +54,51 @@ final class VariableIR extends ValueIR {
 		final Value<?> value = object.value().getValue();
 		final ValType objectVal = type.getInstance().data().value();
 
-		if (!value.getKnowledge().isInitiallyKnown()) {
+		final LinkValueType linkType = getValueType().toLinkType();
+		final KnownLink link =
+				linkType.cast(value).getCompilerValue();
+		final Obj target = link.getTarget().getWrapped();
+
+		if (target.getConstructionMode().isRuntime()) {
 			objectVal.set(INDEFINITE_VAL);
-		} else if (value.getKnowledge().isFalse()) {
-			objectVal.set(FALSE_VAL);
 		} else {
 
-			final LinkValueType linkType = getValueType().toLinkType();
-			final KnownLink link =
-					linkType.cast(value).getCompilerValue();
-			final Obj target = link.getTarget().getWrapped();
+			final ObjectIR targetIR = target.ir(getGenerator());
 
-			if (target.getConstructionMode().isRuntime()) {
-				objectVal.set(INDEFINITE_VAL);
-			} else {
-
-				final ObjectIR targetIR = target.ir(getGenerator());
-
-				objectVal.flags().setValue(VAL_CONDITION);
-				objectVal.length().setValue(0);
-				objectVal.value().setNativePtr(
-						targetIR.getMainBodyIR()
-						.pointer(getGenerator())
-						.toAny());
-			}
+			objectVal.flags().setValue(VAL_CONDITION);
+			objectVal.length().setValue(0);
+			objectVal.value().setNativePtr(
+					targetIR.getMainBodyIR()
+					.pointer(getGenerator())
+					.toAny());
 		}
 	}
 
 	@Override
 	public ValueOp op(ObjectOp object) {
-		return new VariableOp(this, object);
+		if (!getValueType().isVariable()) {
+			return new LinkValueOp(this, object);
+		}
+		return new VarValueOp(this, object);
 	}
 
-	private static final class VariableOp extends StatefulValueOp {
+	private static final class LinkValueOp extends DefaultValueOp {
 
-		VariableOp(VariableIR variableIR, ObjectOp object) {
+		LinkValueOp(LinkValueIR variableIR, ObjectOp object) {
 			super(variableIR, object);
+		}
+
+		@Override
+		public StateOp state() {
+			return new LinkStateOp(object());
+		}
+
+	}
+
+	private static final class VarValueOp extends StatefulValueOp {
+
+		VarValueOp(ValueIR valueIR, ObjectOp object) {
+			super(valueIR, object);
 		}
 
 		@Override
@@ -100,9 +108,9 @@ final class VariableIR extends ValueIR {
 
 	}
 
-	private static final class VarStateOp extends StateOp {
+	private static abstract class AbstractLinkStateOp extends StateOp {
 
-		VarStateOp(ObjectOp host) {
+		AbstractLinkStateOp(ObjectOp host) {
 			super(host);
 		}
 
@@ -122,6 +130,27 @@ final class VariableIR extends ValueIR {
 			code.releaseBarrier();
 
 			flags().store(code, VAL_CONDITION);
+		}
+
+	}
+
+	private static final class LinkStateOp extends AbstractLinkStateOp {
+
+		LinkStateOp(ObjectOp host) {
+			super(host);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, ObjectOp value) {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
+	private static final class VarStateOp extends AbstractLinkStateOp {
+
+		VarStateOp(ObjectOp host) {
+			super(host);
 		}
 
 		@Override
