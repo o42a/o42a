@@ -25,6 +25,7 @@ import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
@@ -57,44 +58,54 @@ abstract class AbstractObjectValueBuilder
 			"Wrong value type";
 
 		final ObjectIRDataOp data = data(function, function);
-		final StateOp state;
+		final StateOp state = value.state();
 		final FldCtrOp ctr;
-		final Block code;
+		final BoolOp stateless;
 
-		if (!getValueType().getDefaultStatefulness().isStateful()) {
-			code = function;
-			state = null;
-			ctr = null;
+		state.startEval(function, data);
+		if (isStateful()) {
+			ctr = writeKeptOrContinue(function, state, result);
+			stateless = null;
 		} else {
-			code = function;
-			state = value.state();
-			ctr = writeKeptOrEval(code, state, result);
+
+			final Block stateful = function.addBlock("stateful");
+
+			stateless = state.flags().stateless(null, function);
+			stateless.goUnless(function, stateful.head());
+			if (!stateful.exists()) {
+				ctr = null;
+			} else {
+				ctr = writeKeptOrContinue(stateful, state, result);
+				stateful.go(function.tail());
+			}
 		}
 
-		final Block done = code.addBlock("done");
-		final Block exit = code.addBlock("exit");
+		final Block done = function.addBlock("done");
+		final Block exit = function.addBlock("exit");
 		final DefDirs dirs =
-				builder.dirs(code, exit.head())
+				builder.dirs(function, exit.head())
 				.value(result)
 				.def(done.head());
 
 		writeValue(dirs, host, data);
 
-		final Block resultCode = dirs.done().code();
+		final Block indefinite = dirs.done().code();
 
-		if (resultCode.exists()) {
-			resultCode.debug("Indefinite");
-			result.storeFalse(resultCode);
-			if (state != null && ctr != null) {
-				state.initToFalse(resultCode);
-				ctr.finish(resultCode, state.host());
+		if (indefinite.exists()) {
+			indefinite.debug("Indefinite");
+			result.storeFalse(indefinite);
+			if (ctr != null) {
+				returnIfStateless(indefinite, stateless);
+				state.initToFalse(indefinite);
+				ctr.finish(indefinite, state.host());
 			}
-			resultCode.returnVoid();
+			indefinite.returnVoid();
 		}
 		if (exit.exists()) {
 			exit.debug("False");
 			result.storeFalse(exit);
-			if (state != null && ctr != null) {
+			if (ctr != null) {
+				returnIfStateless(exit, stateless);
 				state.initToFalse(exit);
 				ctr.finish(exit, state.host());
 			}
@@ -102,7 +113,8 @@ abstract class AbstractObjectValueBuilder
 		}
 		if (done.exists()) {
 			result.store(done, dirs.result());
-			if (state != null && ctr != null) {
+			if (ctr != null) {
+				returnIfStateless(done, stateless);
 				state.init(done, result);
 				ctr.finish(done, state.host());
 			}
@@ -111,6 +123,8 @@ abstract class AbstractObjectValueBuilder
 	}
 
 	protected abstract ValueType<?> getValueType();
+
+	protected abstract boolean isStateful();
 
 	protected boolean lock() {
 		return getValueType().getDefaultStatefulness().isStateful();
@@ -149,7 +163,7 @@ abstract class AbstractObjectValueBuilder
 		return builder;
 	}
 
-	private FldCtrOp writeKeptOrEval(
+	private static FldCtrOp writeKeptOrContinue(
 			Block code,
 			StateOp state,
 			ValOp result) {
@@ -159,13 +173,13 @@ abstract class AbstractObjectValueBuilder
 				FLD_CTR_ID,
 				FLD_CTR_TYPE);
 
-		state.startEval(code, valueKept.head(), ctr);
+		ctr.start(code, state.data()).goUnless(code, valueKept.head());
 		writeKept(valueKept, state, result);
 
 		return ctr;
 	}
 
-	private void writeKept(Block code, StateOp state, ValOp result) {
+	private static void writeKept(Block code, StateOp state, ValOp result) {
 
 		final Block falseKept = code.addBlock("false_kept");
 
@@ -183,6 +197,19 @@ abstract class AbstractObjectValueBuilder
 		if (falseKept.exists()) {
 			result.storeFalse(falseKept);
 			falseKept.returnVoid();
+		}
+	}
+
+	private static void returnIfStateless(Block code, BoolOp stateless) {
+		if (stateless == null) {
+			return;
+		}
+
+		final Block ret = code.addBlock("return");
+
+		stateless.go(code, ret.head());
+		if (ret.exists()) {
+			ret.returnVoid();
 		}
 	}
 

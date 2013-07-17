@@ -36,14 +36,17 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 	private final CompilerContext context;
 	private final ID id;
 	private final ValueType<?> valueType;
+	private final boolean steteful;
 
 	PredefValueBuilder(
 			CompilerContext context,
 			ID id,
-			ValueType<?> valueType) {
+			ValueType<?> valueType,
+			boolean steteful) {
 		this.context = context;
 		this.id = id;
 		this.valueType = valueType;
+		this.steteful = steteful;
 	}
 
 	@Override
@@ -57,6 +60,11 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 	@Override
 	protected ValueType<?> getValueType() {
 		return this.valueType;
+	}
+
+	@Override
+	protected boolean isStateful() {
+		return this.steteful;
 	}
 
 	@Override
