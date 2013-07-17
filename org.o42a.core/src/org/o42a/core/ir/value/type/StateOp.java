@@ -25,11 +25,9 @@ import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -44,6 +42,7 @@ import org.o42a.core.value.ValueType;
 public abstract class StateOp {
 
 	private final ObjectOp host;
+	private ObjectIRDataOp data;
 	private ValType.Op value;
 	private ValFlagsOp flags;
 
@@ -79,13 +78,14 @@ public abstract class StateOp {
 		return this.flags;
 	}
 
-	public void startEval(Block code, CodePos failure, FldCtrOp ctr) {
+	public final ObjectIRDataOp data() {
+		return this.data;
+	}
 
-		final ObjectIRDataOp data = host().objectType(code).ptr().data(code);
-
-		this.value = data.value(code);
+	public void startEval(Block code, ObjectIRDataOp data) {
+		this.data = data;
+		this.value = this.data.value(code);
 		this.flags = this.value.flags(code, ATOMIC);
-		ctr.start(code, data).goUnless(code, failure);
 	}
 
 	public final ValOp writeValue(ValDirs dirs) {
@@ -139,10 +139,8 @@ public abstract class StateOp {
 	public abstract void assign(CodeDirs dirs, ObjectOp value);
 
 	protected void start(Block code) {
-
-		final ObjectIRDataOp data = host().objectType(code).ptr().data(code);
-
-		this.value = data.value(code);
+		this.data = host().objectType(code).ptr().data(code);
+		this.value = this.data.value(code);
 		code.acquireBarrier();
 		this.flags = this.value.flags(code, ATOMIC);
 	}

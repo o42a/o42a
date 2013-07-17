@@ -58,17 +58,21 @@ final class PredefObjValues {
 	final FuncPtr<ObjectValueFunc> valueFunction(
 			CompilerContext context,
 			PredefObjValue value,
-			ValueType<?> valueType) {
+			ValueType<?> valueType,
+			boolean stateful) {
 
-		final PredefKey key = prefefKey(value, valueType);
+		final PredefKey key = prefefKey(value, valueType, stateful);
 		final FuncPtr<ObjectValueFunc> cached = this.valueFunctions.get(key);
 
 		if (cached != null) {
 			return cached;
 		}
 
-		final FuncPtr<ObjectValueFunc> function =
-				value.createValueFunction(context, this.generator, valueType);
+		final FuncPtr<ObjectValueFunc> function = value.createValueFunction(
+				context,
+				this.generator,
+				valueType,
+				stateful);
 
 		this.valueFunctions.put(key, function);
 
@@ -80,7 +84,7 @@ final class PredefObjValues {
 			PredefObjValue value,
 			ValueType<?> valueType) {
 
-		final PredefKey key = prefefKey(value, valueType);
+		final PredefKey key = prefefKey(value, valueType, false);
 		final FuncPtr<ObjectCondFunc> cached = this.condFunctions.get(key);
 
 		if (cached != null) {
@@ -97,22 +101,28 @@ final class PredefObjValues {
 
 	private static PredefKey prefefKey(
 			PredefObjValue value,
-			ValueType<?> valueType) {
+			ValueType<?> valueType,
+			boolean stateful) {
 
 		final ValueType<?> type =
 				value.isTypeAware() ? valueType : ValueType.VOID;
 
-		return new PredefKey(value, type);
+		return new PredefKey(value, type, stateful);
 	}
 
 	private static final class PredefKey {
 
 		private final PredefObjValue value;
 		private final ValueType<?> valueType;
+		private final boolean stateful;
 
-		PredefKey(PredefObjValue value, ValueType<?> valueType) {
+		PredefKey(
+				PredefObjValue value,
+				ValueType<?> valueType,
+				boolean stateful) {
 			this.value = value;
 			this.valueType = valueType;
+			this.stateful = stateful;
 		}
 
 		@Override
@@ -121,6 +131,7 @@ final class PredefObjValues {
 			final int prime = 31;
 			int result = 1;
 
+			result = prime * result + (this.stateful ? 1231 : 1237);
 			result = prime * result + this.value.hashCode();
 			result = prime * result + this.valueType.hashCode();
 
@@ -141,11 +152,17 @@ final class PredefObjValues {
 
 			final PredefKey other = (PredefKey) obj;
 
-			if (this.value != other.value) {
+			if (this.stateful != other.stateful) {
+				return false;
+			}
+			if (!this.value.equals(other.value)) {
+				return false;
+			}
+			if (!this.valueType.equals(other.valueType)) {
 				return false;
 			}
 
-			return this.valueType == other.valueType;
+			return true;
 		}
 
 	}

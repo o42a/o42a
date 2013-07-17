@@ -22,10 +22,14 @@ package org.o42a.core.ir.object.value;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.value.PredefObjValue.*;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.FunctionBuilder;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
@@ -140,7 +144,8 @@ public final class ObjectValueFnIR
 		return value.valueFunction(
 				getObject().getContext(),
 				getGenerator(),
-				getValueType());
+				getValueType(),
+				getObject().value().getStatefulness().isStateful());
 	}
 
 }
