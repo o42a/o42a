@@ -49,6 +49,11 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 		return this.implicitAscendants;
 	}
 
+	@Override
+	public void makeStateful() {
+		this.field.makeStateful();
+	}
+
 	public final Ascendants getAscendants() {
 		return this.ascendants;
 	}

@@ -44,6 +44,11 @@ final class MacroDefinerImpl implements MacroDefiner {
 		return this.field;
 	}
 
+	@Override
+	public void makeStateful() {
+		this.field.makeStateful();
+	}
+
 	public final Ascendants getAscendants() {
 
 		final TypeRef ancestor = this.ascendants.getAncestor();

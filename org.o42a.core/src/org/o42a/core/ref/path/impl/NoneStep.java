@@ -87,6 +87,11 @@ public class NoneStep extends Step {
 	}
 
 	@Override
+	protected Ref statefulRef(Ref ref) {
+		return ref;// NONE is erroneous reference. No use in making it stateful.
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

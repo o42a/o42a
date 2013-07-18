@@ -97,7 +97,8 @@ final class TestRunner extends ConstructedObject {
 					statements,
 					statements.nextDistributor(),
 					name,
-					field.getKey()).toRef());
+					field.getKey(),
+					false).toRef());
 			return;
 		}
 
@@ -171,8 +172,9 @@ final class TestRunner extends ConstructedObject {
 				LocationInfo location,
 				Distributor distributor,
 				String name,
-				MemberKey testKey) {
-			super(location, distributor);
+				MemberKey testKey,
+				boolean stateful) {
+			super(location, distributor, stateful);
 			this.testKey = testKey;
 			this.name = name;
 		}
@@ -203,17 +205,28 @@ final class TestRunner extends ConstructedObject {
 		}
 
 		@Override
-		public ObjectConstructor reproduce(PathReproducer reproducer) {
+		public RunTest reproduce(PathReproducer reproducer) {
 			return new RunTest(
 					this,
 					reproducer.distribute(),
 					this.name,
-					this.testKey);
+					this.testKey,
+					isStateful());
 		}
 
 		@Override
 		public String toString() {
 			return "Run test[" + this.name + ']';
+		}
+
+		@Override
+		protected RunTest createStateful() {
+			return new RunTest(
+					this,
+					distribute(),
+					this.name,
+					this.testKey,
+					true);
 		}
 
 		@Override

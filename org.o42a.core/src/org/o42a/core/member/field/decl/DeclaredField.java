@@ -49,8 +49,9 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private Registry memberRegistry;
 	private DeclarativeBlock content;
 	private DefinitionsBuilder definitionsBuilder;
-	private boolean invalid;
 	private BlockBuilder definitions;
+	private boolean stateful;
+	private boolean invalid;
 
 	DeclaredField(DeclaredMemberField member, FieldDefinition definition) {
 		super(member);
@@ -63,6 +64,10 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	public final Ascendants getAscendants() {
 		return this.ascendants;
+	}
+
+	public final boolean isStateful() {
+		return this.stateful;
 	}
 
 	@Override
@@ -138,6 +143,10 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	final void updateMembers() {
 		definedContent().executeInstructions();
+	}
+
+	final void makeStateful() {
+		this.stateful = true;
 	}
 
 	final void invalid() {

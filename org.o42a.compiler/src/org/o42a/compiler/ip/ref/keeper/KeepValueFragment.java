@@ -19,54 +19,36 @@
 */
 package org.o42a.compiler.ip.ref.keeper;
 
+import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.ObjectConstructor;
-import org.o42a.core.ref.path.PathReproducer;
+import org.o42a.core.ref.path.BoundFragment;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.LocationInfo;
 
 
-public class KeepValue extends ObjectConstructor {
+public class KeepValueFragment extends BoundFragment {
 
-	private Ref value;
+	private final Ref value;
 
-	public KeepValue(LocationInfo location, Ref value) {
-		super(location, value.distribute(), true);
+	public KeepValueFragment(Ref value) {
 		this.value = value;
 	}
 
-	public final Ref getValue() {
-		return this.value;
-	}
-
 	@Override
-	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		return this.value.getValueTypeInterface().setLocation(ref);
-	}
-
-	@Override
-	public TypeRef iface(Ref ref) {
-		return ancestor(ref, ref);
+	public Path expand(PathExpander expander, int index, Scope start) {
+		return this.value.toStateful().getPath().getPath();
 	}
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new KeptValueFieldDefinition(ref, this);
+		return new StatefulFieldDefinition(ref, this.value);
 	}
 
 	@Override
-	public ObjectConstructor reproduce(PathReproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref value = getValue().reproduce(reproducer.getReproducer());
-
-		if (value == null) {
-			return null;
-		}
-
-		return new KeepValue(this, value);
+	public TypeRef iface(Ref ref) {
+		return this.value.getInterface();
 	}
 
 	@Override
@@ -74,17 +56,7 @@ public class KeepValue extends ObjectConstructor {
 		if (this.value == null) {
 			return super.toString();
 		}
-		return "//" + this.value;
-	}
-
-	@Override
-	protected ObjectConstructor createStateful() {
-		return this;
-	}
-
-	@Override
-	protected Obj createObject() {
-		return new KeptValue(this);
+		return "\\\\" + this.value;
 	}
 
 }

@@ -262,6 +262,24 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 	}
 
 	@Override
+	protected Ref statefulRef(Ref ref) {
+
+		final Ref oldRef = ref();
+		final Ref newRef = oldRef.toStateful();
+
+		if (oldRef == newRef) {
+			return ref;
+		}
+
+		final Local local = new Local(this, getName(), newRef);
+		final Path prefix = ref.getPath().getPath().cut(1);
+
+		return prefix.append(local)
+				.bind(ref, ref.getScope())
+				.target(ref.distribute());
+	}
+
+	@Override
 	protected LocalStepOp op(HostOp host) {
 		return new LocalStepOp(host, this);
 	}

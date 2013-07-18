@@ -438,6 +438,20 @@ public class Ref extends Statement implements RefBuilder {
 		return path.toValue(location, this, statements);
 	}
 
+	public final Ref toStateful() {
+
+		final RefPath path = getPath();
+
+		return path.toStateful(this);
+	}
+
+	public final Ref toStateful(boolean stateful) {
+		if (!stateful) {
+			return this;
+		}
+		return toStateful();
+	}
+
 	public final FieldDefinition toFieldDefinition() {
 
 		final RefPath path = getPath();

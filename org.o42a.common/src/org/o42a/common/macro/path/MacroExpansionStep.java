@@ -24,7 +24,9 @@ import static org.o42a.common.macro.Macros.consumeSelfAssignment;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
@@ -127,6 +129,12 @@ public class MacroExpansionStep extends Step {
 	protected Container resolve(StepResolver resolver) {
 		prohibitedExpansion(resolver.getLogger(), resolver.getLocation());
 		return null;
+	}
+
+	@Override
+	protected Ref statefulRef(Ref ref) {
+		prohibitedExpansion(ref.getLogger(), ref.getLocation());
+		return ref;
 	}
 
 	@Override

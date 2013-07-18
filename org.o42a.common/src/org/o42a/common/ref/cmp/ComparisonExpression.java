@@ -62,8 +62,9 @@ public class ComparisonExpression extends ObjectConstructor {
 			LocationInfo location,
 			BinaryPhraseOperator operator,
 			Ref leftOperand,
-			Ref rightOperand) {
-		super(location, leftOperand.distribute());
+			Ref rightOperand,
+			boolean stateful) {
+		super(location, leftOperand.distribute(), stateful);
 		this.operator = operator;
 		this.leftOperand = leftOperand;
 		this.rightOperand = rightOperand;
@@ -74,7 +75,7 @@ public class ComparisonExpression extends ObjectConstructor {
 	private ComparisonExpression(
 			ComparisonExpression prototype,
 			Reproducer reproducer) {
-		super(prototype, reproducer.distribute());
+		super(prototype, reproducer.distribute(), prototype.isStateful());
 		this.operator = prototype.operator;
 		this.leftOperand = prototype.leftOperand;
 		this.rightOperand = prototype.rightOperand;
@@ -139,6 +140,16 @@ public class ComparisonExpression extends ObjectConstructor {
 		return this.leftOperand
 				+ this.operator.getSign()
 				+ this.rightOperand.toString();
+	}
+
+	@Override
+	protected ComparisonExpression createStateful() {
+		return new ComparisonExpression(
+				this,
+				getOperator(),
+				getLeftOperand(),
+				getRightOperand(),
+				true);
 	}
 
 	@Override

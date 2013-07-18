@@ -91,4 +91,18 @@ public enum Statefulness {
 		return this == VARIABLE;
 	}
 
+	public final Statefulness setStateful(boolean stateful) {
+		if (!stateful) {
+			return this;
+		}
+		return makeStateful();
+	}
+
+	public final Statefulness makeStateful() {
+		if (isStateful()) {
+			return this;
+		}
+		return STATEFUL;
+	}
+
 }

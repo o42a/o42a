@@ -309,7 +309,9 @@ public final class PhraseBuilder extends Contained {
 			return this;
 		}
 
-		final Ref value = text.accept(ip().expressionVisitor(), distributeAccess());
+		final Ref value = text.accept(
+				ip().expressionVisitor(),
+				distributeAccess());
 
 		if (value != null) {
 			return argument(value);
@@ -324,7 +326,8 @@ public final class PhraseBuilder extends Contained {
 				ip(),
 				getContext(),
 				brackets,
-				distributeAccess());
+				distributeAccess(),
+				false);
 
 		phrase().array(array.toRef());
 

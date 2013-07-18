@@ -208,6 +208,21 @@ public final class Dep extends Step implements SubID {
 	}
 
 	@Override
+	protected Ref statefulRef(Ref ref) {
+
+		final Ref stateful = this.ref.toStateful();
+
+		if (stateful == this.ref) {
+			return ref;
+		}
+
+		final PrefixPath prefix =
+				ref.getPath().cut(1).toPrefix(ref.getScope());
+
+		return stateful.prefixWith(prefix);
+	}
+
+	@Override
 	protected final void normalize(PathNormalizer normalizer) {
 
 		final Obj object = normalizer.lastPrediction().getScope().toObject();

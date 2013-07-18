@@ -55,11 +55,16 @@ public abstract class ObjectConstructor
 		implements SyntheticDep {
 
 	private final Construction construction = new Construction(this);
+	private final boolean stateful;
 	private Obj constructed;
 	private IdentityHashMap<Scope, Obj> propagated;
 
-	public ObjectConstructor(LocationInfo location, Distributor distributor) {
+	public ObjectConstructor(
+			LocationInfo location,
+			Distributor distributor,
+			boolean stateful) {
 		super(location, distributor);
+		this.stateful = stateful;
 	}
 
 	/**
@@ -76,6 +81,10 @@ public abstract class ObjectConstructor
 
 	public final Nesting getNesting() {
 		return this.construction;
+	}
+
+	public final boolean isStateful() {
+		return this.stateful;
 	}
 
 	public final Obj getConstructed() {
@@ -127,6 +136,13 @@ public abstract class ObjectConstructor
 		return toPath().bind(this, getScope()).target(distribute());
 	}
 
+	public final ObjectConstructor toStateful() {
+		if (isStateful()) {
+			return this;
+		}
+		return createStateful();
+	}
+
 	public final ObjectConstructor toSynthetic() {
 		if (!mayContainDeps()) {
 			return this;
@@ -144,6 +160,8 @@ public abstract class ObjectConstructor
 	public HostOp op(HostOp host) {
 		return new ConstructorOp(host);
 	}
+
+	protected abstract ObjectConstructor createStateful();
 
 	protected abstract Obj createObject();
 

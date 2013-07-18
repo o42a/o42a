@@ -26,6 +26,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.DefinedObject;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
@@ -45,7 +46,7 @@ public class Call extends ObjectConstructor {
 			Distributor distributor,
 			AscendantsDefinition ascendants,
 			BlockBuilder definitions) {
-		super(location, distributor);
+		super(location, distributor, ascendants.isStateful());
 		this.ascendants = ascendants;
 		this.definitions = definitions;
 	}
@@ -110,6 +111,20 @@ public class Call extends ObjectConstructor {
 	}
 
 	@Override
+	protected ObjectConstructor createStateful() {
+
+		final AscendantsDefinition oldAscendants = getAscendants();
+		final AscendantsDefinition newAscendants =
+				oldAscendants.setStateful(true);
+
+		if (oldAscendants == newAscendants) {
+			return this;
+		}
+
+		return new Call(this, distribute(), newAscendants, this.definitions);
+	}
+
+	@Override
 	protected Obj createObject() {
 		return new CallObject(this, distribute());
 	}
@@ -139,6 +154,12 @@ public class Call extends ObjectConstructor {
 		@Override
 		protected Ascendants buildAscendants() {
 			return this.call.ascendants.updateAscendants(new Ascendants(this));
+		}
+
+		@Override
+		protected Statefulness determineStatefulness() {
+			return super.determineStatefulness()
+					.setStateful(this.call.getAscendants().isStateful());
 		}
 
 		@Override
