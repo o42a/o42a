@@ -26,6 +26,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.DefinedObject;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
@@ -44,7 +45,8 @@ class PhraseConstructor extends ObjectConstructor {
 	PhraseConstructor(Phrase phrase) {
 		super(
 				phrase,
-				phrase.distribute());
+				phrase.distribute(),
+				phrase.getMainContext().getAscendants().isStateful());
 		this.phrase = phrase;
 		this.ascendants = phrase.getMainContext().getAscendants();
 		this.ascendants.assertCompatibleScope(this);
@@ -55,7 +57,7 @@ class PhraseConstructor extends ObjectConstructor {
 			Distributor distributor,
 			Phrase phrase,
 			AscendantsDefinition ascendants) {
-		super(location, distributor);
+		super(location, distributor, ascendants.isStateful());
 		this.phrase = phrase;
 		this.ascendants = ascendants;
 	}
@@ -109,6 +111,23 @@ class PhraseConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	protected PhraseConstructor createStateful() {
+
+		final AscendantsDefinition ascendants =
+				this.ascendants.setStateful(true);
+
+		if (ascendants == this.ascendants) {
+			return this;
+		}
+
+		return new PhraseConstructor(
+				this,
+				distribute(),
+				this.phrase,
+				ascendants);
+	}
+
+	@Override
 	protected Obj createObject() {
 		return new PhraseObject(this);
 	}
@@ -141,6 +160,12 @@ class PhraseConstructor extends ObjectConstructor {
 		protected Ascendants buildAscendants() {
 			return this.constructor.ascendants.updateAscendants(
 					new Ascendants(this));
+		}
+
+		@Override
+		protected Statefulness determineStatefulness() {
+			return super.determineStatefulness().setStateful(
+					this.constructor.ascendants.isStateful());
 		}
 
 		@Override

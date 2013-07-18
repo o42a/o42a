@@ -22,6 +22,7 @@ package org.o42a.core.ref.path;
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.value.Statefulness;
 
 
 public abstract class ConstructedObject extends Obj {
@@ -50,6 +51,12 @@ public abstract class ConstructedObject extends Obj {
 	@Override
 	protected final Nesting createNesting() {
 		return getConstructor().getNesting();
+	}
+
+	@Override
+	protected Statefulness determineStatefulness() {
+		return super.determineStatefulness()
+				.setStateful(this.constructor.isStateful());
 	}
 
 }

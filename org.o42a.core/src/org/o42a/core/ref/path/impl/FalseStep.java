@@ -85,6 +85,11 @@ public class FalseStep extends Step {
 	}
 
 	@Override
+	protected Ref statefulRef(Ref ref) {
+		return defaultStatefulRef(ref);
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

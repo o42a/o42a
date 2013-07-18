@@ -26,6 +26,8 @@ public interface FieldDefiner {
 
 	Field getField();
 
+	void makeStateful();
+
 	void define(BlockBuilder definitions);
 
 }

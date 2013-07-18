@@ -147,9 +147,15 @@ public final class ExpressionVisitor
 					ip(),
 					p.getContext(),
 					expression,
-					p).toRef();
+					p,
+					false).toRef();
 		case VALUE_OF:
-			return new ValueOf(ip(), p.getContext(), expression, p).toRef();
+			return new ValueOf(
+					ip(),
+					p.getContext(),
+					expression,
+					p,
+					false).toRef();
 		case KEEP_VALUE:
 			return keepValue(expression, p);
 		case LINK:
@@ -180,7 +186,8 @@ public final class ExpressionVisitor
 				ip(),
 				p.getContext(),
 				brackets,
-				p).toRef();
+				p,
+				false).toRef();
 	}
 
 	@Override

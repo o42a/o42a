@@ -81,7 +81,8 @@ public class MemberFragment extends PathFragment {
 				new TypeParameterConstructor(
 						expander.getPath(),
 						start.distribute(),
-						this.memberKey);
+						this.memberKey,
+						false);
 
 		return typeParameter.toPath();
 	}

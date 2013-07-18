@@ -41,7 +41,8 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 			Distributor distributor) {
 		super(
 				new Location(distributor.getContext(), instance.getLocation()),
-				distributor);
+				distributor,
+				false);
 		this.instance = instance;
 	}
 
@@ -51,7 +52,8 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 			AscendantsDefinition ascendants) {
 		super(
 				new Location(distributor.getContext(), instance.getLocation()),
-				distributor);
+				distributor,
+				ascendants.isStateful());
 		this.instance = instance;
 		this.ascendants = ascendants;
 	}
@@ -96,6 +98,22 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 	@Override
 	public String toString() {
 		return this.instance.toString();
+	}
+
+	@Override
+	protected ClauseInstanceConstructor createStateful() {
+
+		final AscendantsDefinition ascendants =
+				this.ascendants.setStateful(true);
+
+		if (ascendants == this.ascendants) {
+			return this;
+		}
+
+		return new ClauseInstanceConstructor(
+				this.instance,
+				distribute(),
+				ascendants);
 	}
 
 	@Override

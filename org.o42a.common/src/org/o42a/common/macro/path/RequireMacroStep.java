@@ -23,7 +23,9 @@ import static org.o42a.common.macro.path.MacroExpansionStep.prohibitedExpansion;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import org.o42a.core.Container;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -71,6 +73,12 @@ public final class RequireMacroStep extends Step {
 	protected Container resolve(StepResolver resolver) {
 		prohibitedExpansion(resolver.getLogger(), this.expansion);
 		return null;
+	}
+
+	@Override
+	protected Ref statefulRef(Ref ref) {
+		prohibitedExpansion(ref.getLogger(), this.expansion);
+		return ref;
 	}
 
 	@Override

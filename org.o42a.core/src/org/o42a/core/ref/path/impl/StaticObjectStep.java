@@ -87,6 +87,11 @@ public class StaticObjectStep extends Step {
 	}
 
 	@Override
+	protected Ref statefulRef(Ref ref) {
+		return defaultStatefulRef(ref);
+	}
+
+	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizer.finish();
 	}

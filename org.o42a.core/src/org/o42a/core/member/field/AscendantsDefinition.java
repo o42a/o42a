@@ -46,6 +46,7 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 	private TypeRef ancestor;
 	private ObjectTypeParameters typeParameters;
 	private StaticTypeRef[] samples = NO_SAMPLES;
+	private boolean stateful;
 
 	public AscendantsDefinition(
 			LocationInfo location,
@@ -148,6 +149,22 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		final AscendantsDefinition clone = clone();
 
 		clone.samples = ArrayUtil.append(this.samples, samples);
+
+		return clone;
+	}
+
+	public boolean isStateful() {
+		return this.stateful;
+	}
+
+	public AscendantsDefinition setStateful(boolean stateful) {
+		if (this.stateful == stateful) {
+			return this;
+		}
+
+		final AscendantsDefinition clone = clone();
+
+		clone.stateful = stateful;
 
 		return clone;
 	}

@@ -39,6 +39,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.*;
 import org.o42a.core.value.Void;
@@ -121,6 +122,12 @@ final class ComparisonResult extends BuiltinObject {
 	@Override
 	protected Nesting createNesting() {
 		return this.comparison.getNesting();
+	}
+
+	@Override
+	protected Statefulness determineStatefulness() {
+		return super.determineStatefulness()
+				.setStateful(this.comparison.isStateful());
 	}
 
 	@Override

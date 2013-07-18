@@ -58,4 +58,6 @@ public abstract class RefPath extends Located {
 
 	protected abstract Ref consume(Ref ref, Consumer consumer);
 
+	protected abstract Ref toStateful(Ref ref);
+
 }

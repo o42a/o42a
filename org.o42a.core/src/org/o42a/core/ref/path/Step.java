@@ -21,12 +21,15 @@ package org.o42a.core.ref.path;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.RefIR;
 import org.o42a.core.ir.op.RefTargetIR;
+import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.path.impl.AncestorFragment;
 import org.o42a.core.ref.path.impl.PathFieldDefinition;
@@ -221,6 +224,18 @@ public abstract class Step {
 
 	protected abstract Container resolve(StepResolver resolver);
 
+	/**
+	 * Makes the reference stateful.
+	 *
+	 * <p>This method is called for the last step of resolved path from the
+	 * {@link Ref#toStateful()} method.</p>
+	 *
+	 * @param ref reference this step belongs to.
+	 *
+	 * @return stateful reference.
+	 */
+	protected abstract Ref statefulRef(Ref ref);
+
 	protected abstract void normalize(PathNormalizer normalizer);
 
 	protected abstract void normalizeStatic(PathNormalizer normalizer);
@@ -264,6 +279,21 @@ public abstract class Step {
 
 	protected final FieldDefinition defaultFieldDefinition(Ref ref) {
 		return new PathFieldDefinition(ref);
+	}
+
+	protected final Ref defaultStatefulRef(Ref ref) {
+
+		final Distributor distributor = ref.distribute();
+
+		return new Call(
+				ref,
+				distributor,
+				new AscendantsDefinition(
+						ref,
+						distributor,
+						ref.toTypeRef())
+				.setStateful(true),
+				null).toRef();
 	}
 
 	protected abstract HostOp op(HostOp host);

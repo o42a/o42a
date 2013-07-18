@@ -21,7 +21,9 @@ package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.ir.op.RefTargetIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -84,10 +86,15 @@ public class Wrapper extends Step {
 	}
 
 	@Override
-	protected Container resolve(	StepResolver resolver) {
+	protected Container resolve(StepResolver resolver) {
 		resolver.getStart().assertSameScope(this.wrapperScope);
 		resolver.getWalker().staticScope(this, this.wrappedScope);
 		return this.wrappedScope.getContainer();
+	}
+
+	@Override
+	protected Ref statefulRef(Ref ref) {
+		return ref;
 	}
 
 	@Override

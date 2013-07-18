@@ -85,13 +85,18 @@ public class ErrorStep extends Step {
 	}
 
 	@Override
+	protected Ref statefulRef(Ref ref) {
+		return ref;// No use in making of stateful error.
+	}
+
+	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.cancel(); // Normalization impossible.
+		normalizer.cancel();// Normalization impossible.
 	}
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		normalizer.cancel(); // Normalization impossible.
+		normalizer.cancel();// Normalization impossible.
 	}
 
 	@Override

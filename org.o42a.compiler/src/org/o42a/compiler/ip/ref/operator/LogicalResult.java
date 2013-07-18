@@ -28,6 +28,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -109,6 +110,12 @@ final class LogicalResult extends BuiltinObject {
 	@Override
 	protected Nesting createNesting() {
 		return this.logical.getNesting();
+	}
+
+	@Override
+	protected Statefulness determineStatefulness() {
+		return super.determineStatefulness()
+				.setStateful(this.logical.isStateful());
 	}
 
 	private final Ref operand() {

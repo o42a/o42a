@@ -75,16 +75,16 @@ public abstract class AbstractComparisonMacro extends AnnotatedMacro {
 		final CompilerContext context = expander.getLocation().getContext();
 		final Ref left = left();
 		final Ref right = right();
-
-		return new ComparisonExpression(
+		final ComparisonExpression comparison = new ComparisonExpression(
 				expander,
 				this.operator,
 				left.rebuildIn(macroScope)
 				.setLocation(new Location(context, left.getLocation())),
 				right.rebuildIn(macroScope)
-				.setLocation(new Location(context, right.getLocation())))
-				.setResolutionLogger(expander.getLogger())
-				.toPath();
+				.setLocation(new Location(context, right.getLocation())),
+				false);
+
+		return comparison.setResolutionLogger(expander.getLogger()).toPath();
 	}
 
 	private Ref left() {

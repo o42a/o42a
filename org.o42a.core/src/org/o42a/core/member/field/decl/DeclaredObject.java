@@ -24,6 +24,7 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.object.value.Statefulness;
 
 
 class DeclaredObject extends Obj {
@@ -54,6 +55,21 @@ class DeclaredObject extends Obj {
 	protected Ascendants buildAscendants() {
 		this.field.initDefinition(this);
 		return new Ascendants(this).declareField(this.field);
+	}
+
+	@Override
+	protected Statefulness determineStatefulness() {
+
+		final Statefulness statefulness = super.determineStatefulness();
+
+		if (statefulness.isStateful()) {
+			return statefulness;
+		}
+		if (!this.field.isStateful()) {
+			return statefulness;
+		}
+
+		return Statefulness.STATEFUL;
 	}
 
 	@Override

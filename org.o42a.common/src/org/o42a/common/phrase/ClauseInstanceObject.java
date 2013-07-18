@@ -22,6 +22,7 @@ package org.o42a.common.phrase;
 import org.o42a.core.object.common.DefinedObject;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
@@ -53,6 +54,12 @@ final class ClauseInstanceObject extends DefinedObject {
 	protected Ascendants buildAscendants() {
 		return this.constructor.getAscendants().updateAscendants(
 				new Ascendants(this));
+	}
+
+	@Override
+	protected Statefulness determineStatefulness() {
+		return super.determineStatefulness().setStateful(
+				this.constructor.getAscendants().isStateful());
 	}
 
 	@Override
