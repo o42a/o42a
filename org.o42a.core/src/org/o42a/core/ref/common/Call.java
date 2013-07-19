@@ -61,7 +61,7 @@ public class Call extends ObjectConstructor {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location, Ref ref) {
-		return this.ascendants.getAncestor()
+		return getAscendants().getAncestor()
 				.setParameters(toSynthetic().toRef().typeParameters());
 	}
 
@@ -72,7 +72,7 @@ public class Call extends ObjectConstructor {
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return this.ascendants.fieldDefinition(this, this.definitions);
+		return getAscendants().fieldDefinition(this, getDefinitions());
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class Call extends ObjectConstructor {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final AscendantsDefinition ascendants =
-				this.ascendants.reproduce(reproducer.getReproducer());
+				getAscendants().reproduce(reproducer.getReproducer());
 
 		if (ascendants == null) {
 			return null;
@@ -90,7 +90,7 @@ public class Call extends ObjectConstructor {
 				this,
 				reproducer.distribute(),
 				ascendants,
-				this.definitions);
+				getDefinitions());
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class Call extends ObjectConstructor {
 			return this;
 		}
 
-		return new Call(this, distribute(), newAscendants, this.definitions);
+		return new Call(this, distribute(), newAscendants, getDefinitions());
 	}
 
 	@Override
@@ -153,7 +153,8 @@ public class Call extends ObjectConstructor {
 
 		@Override
 		protected Ascendants buildAscendants() {
-			return this.call.ascendants.updateAscendants(new Ascendants(this));
+			return this.call.getAscendants().updateAscendants(
+					new Ascendants(this));
 		}
 
 		@Override
@@ -164,7 +165,12 @@ public class Call extends ObjectConstructor {
 
 		@Override
 		protected void buildDefinition(DeclarativeBlock definition) {
-			this.call.definitions.buildBlock(definition);
+
+			final BlockBuilder definitions = this.call.getDefinitions();
+
+			if (definitions != null) {
+				definitions.buildBlock(definition);
+			}
 		}
 
 	}
