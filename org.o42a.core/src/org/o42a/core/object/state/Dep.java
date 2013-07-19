@@ -217,7 +217,9 @@ public final class Dep extends Step implements SubID {
 		}
 
 		final PrefixPath prefix =
-				ref.getPath().cut(1).toPrefix(ref.getScope());
+				ref.getPath().cut(1)
+				.append(getDeclaredIn().getScope().getEnclosingScopePath())
+				.toPrefix(ref.getScope());
 
 		return stateful.prefixWith(prefix);
 	}
@@ -377,6 +379,10 @@ public final class Dep extends Step implements SubID {
 		final Obj target =
 				ref().resolve(enclosingScope.resolver()).toObject();
 
+		return target(target);
+	}
+
+	private Obj target(Obj target) {
 		if (!target.getConstructionMode().isRuntime()
 				|| target.getConstructionMode().isPredefined()) {
 			return target;
@@ -388,7 +394,7 @@ public final class Dep extends Step implements SubID {
 			return link.getInterfaceRef().getType();
 		}
 
-		return target.type().getAncestor().getType();
+		return target(target.type().getAncestor().getType());
 	}
 
 	private final class DepDisabler extends NormalAppender {
