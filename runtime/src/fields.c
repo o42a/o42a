@@ -113,48 +113,6 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
-	[O42A_KPR_VOID] = {// Void keeper.
-		.propagate = &o42a_kpr_void_derive,
-		.inherit = &o42a_kpr_void_derive,
-		.mark = &o42a_fld_mark_none,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_kpr_void_is_init,
-	},
-	[O42A_KPR_INTEGER] = {// Integer keeper.
-		.propagate = &o42a_kpr_integer_derive,
-		.inherit = &o42a_kpr_integer_derive,
-		.mark = &o42a_fld_mark_none,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_kpr_integer_is_init,
-	},
-	[O42A_KPR_FLOAT] = {// Float keeper.
-		.propagate = &o42a_kpr_float_derive,
-		.inherit = &o42a_kpr_float_derive,
-		.mark = &o42a_fld_mark_none,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_kpr_float_is_init,
-	},
-	[O42A_KPR_STRING] = {// String keeper.
-		.propagate = &o42a_kpr_value_derive,
-		.inherit = &o42a_kpr_value_derive,
-		.mark = &o42a_fld_mark_none,
-		.sweep = &o42a_kpr_value_sweep,
-		.is_init = &o42a_kpr_value_is_init,
-	},
-	[O42A_KPR_LINK] = {// Link keeper.
-		.propagate = &o42a_kpr_link_derive,
-		.inherit = &o42a_kpr_link_derive,
-		.mark = &o42a_fld_mark_obj,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_fld_obj_is_init,
-	},
-	[O42A_KPR_ARRAY] = {// Array keeper.
-		.propagate = &o42a_kpr_value_derive,
-		.inherit = &o42a_kpr_value_derive,
-		.mark = &o42a_kpr_array_mark,
-		.sweep = &o42a_kpr_value_sweep,
-		.is_init = &o42a_kpr_value_is_init,
-	},
 };
 
 
