@@ -26,13 +26,7 @@ public enum FldKind {
 	LINK(1),
 	VAR(2),
 	SCOPE(3),
-	DEP(4),
-	VOID_KEEPER(7),
-	INTEGER_KEEPER(8),
-	FLOAT_KEEPER(9),
-	STRING_KEEPER(10),
-	LINK_KEEPER(11),
-	ARRAY_KEEPER(12),;
+	DEP(4);
 
 	private final int code;
 

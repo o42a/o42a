@@ -22,22 +22,19 @@ package org.o42a.core.ir.object.impl;
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.state.DepOp.DEP_ID;
-import static org.o42a.core.ir.object.state.KeeperOp.KEEPER_ID;
+import static org.o42a.core.ir.object.dep.DepOp.DEP_ID;
 
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.state.DepOp;
-import org.o42a.core.ir.object.state.KeeperOp;
+import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
@@ -137,22 +134,6 @@ public final class AnonymousObjOp extends ObjectOp {
 		final DepOp op = ascendant.dep(subDirs, dep);
 
 		subDirs.code().dumpName("Dep: ", op);
-		subDirs.done();
-
-		return op;
-	}
-
-	@Override
-	public KeeperOp<?> keeper(CodeDirs dirs, Keeper keeper) {
-
-		final CodeDirs subDirs = dirs.begin(KEEPER_ID, keeper.toString());
-		final ObjOp ascendant = cast(
-				KEEPER_HOST_ID.sub(keeper),
-				subDirs,
-				keeper.getDeclaredIn());
-		final KeeperOp<?> op = ascendant.keeper(subDirs, keeper);
-
-		subDirs.code().dumpName("Keeper: ", op);
 		subDirs.done();
 
 		return op;

@@ -19,14 +19,14 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.object.state.DepIR.DEP_IR;
+import static org.o42a.core.ir.object.dep.DepIR.DEP_IR;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.object.state.DepIR.Op;
-import org.o42a.core.ir.object.state.DepIR.Type;
+import org.o42a.core.ir.object.dep.DepIR.Op;
+import org.o42a.core.ir.object.dep.DepIR.Type;
 import org.o42a.util.string.ID;
 
 

@@ -29,13 +29,11 @@ import org.o42a.codegen.data.Data;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.object.state.DepIR;
-import org.o42a.core.ir.object.state.KeeperIR;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
@@ -184,10 +182,6 @@ public class ObjectIR  {
 
 	public final DepIR dep(Dep dep) {
 		return bodyIR(dep.getDeclaredIn()).dep(dep);
-	}
-
-	public final KeeperIR<?, ?> keeper(Keeper keeper) {
-		return bodyIR(keeper.getDeclaredIn()).keeper(keeper);
 	}
 
 	@Override

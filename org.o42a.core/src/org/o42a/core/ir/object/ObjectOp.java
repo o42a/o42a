@@ -32,18 +32,16 @@ import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.object.state.DepOp;
-import org.o42a.core.ir.object.state.KeeperOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.object.state.Keeper;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
@@ -135,8 +133,6 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 	public abstract FldOp<?> field(CodeDirs dirs, MemberKey memberKey);
 
 	public abstract DepOp dep(CodeDirs dirs, Dep dep);
-
-	public abstract KeeperOp<?> keeper(CodeDirs dirs, Keeper keeper);
 
 	@Override
 	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {

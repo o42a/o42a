@@ -20,8 +20,8 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.dep.DepIR.DEP_IR;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.object.state.DepIR.DEP_IR;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -31,9 +31,9 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.state.DepIR;
-import org.o42a.core.ir.object.state.DepIR.Op;
-import org.o42a.core.ir.object.state.DepIR.Type;
+import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.dep.DepIR.Op;
+import org.o42a.core.ir.object.dep.DepIR.Type;
 import org.o42a.core.ir.op.*;
 import org.o42a.util.string.ID;
 
