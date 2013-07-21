@@ -115,6 +115,10 @@ public abstract class TypeRef implements ScopeInfo {
 		return get().getObject();
 	}
 
+	public final Obj getInterface() {
+		return getType().getInterface();
+	}
+
 	public final TypeParameters<?> getParameters() {
 		if (this.parameters != null) {
 			return this.parameters;

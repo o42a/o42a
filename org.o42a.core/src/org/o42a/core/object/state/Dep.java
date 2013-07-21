@@ -40,7 +40,6 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.link.Link;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 import org.o42a.util.string.SubID;
@@ -66,9 +65,6 @@ public final class Dep extends Step implements SubID {
 		this.name = name;
 		this.id = id;
 		this.target = target();
-		assert !this.target.getConstructionMode().isRuntime()
-			|| this.target.getConstructionMode().isPredefined():
-			"Can not find an interface of run-time constructed dependency";
 	}
 
 	public final Obj getDeclaredIn() {
@@ -375,26 +371,10 @@ public final class Dep extends Step implements SubID {
 	private Obj target() {
 
 		final Scope enclosingScope =
-				this.declaredIn.getScope().getEnclosingScope();
-		final Obj target =
-				ref().resolve(enclosingScope.resolver()).toObject();
+				getDeclaredIn().getScope().getEnclosingScope();
+		final Obj target = ref().resolve(enclosingScope.resolver()).toObject();
 
-		return target(target);
-	}
-
-	private Obj target(Obj target) {
-		if (!target.getConstructionMode().isRuntime()
-				|| target.getConstructionMode().isPredefined()) {
-			return target;
-		}
-
-		final Link link = target.getDereferencedLink();
-
-		if (link != null) {
-			return link.getInterfaceRef().getType();
-		}
-
-		return target(target.type().getAncestor().getType());
+		return target.getInterface();
 	}
 
 	private final class DepDisabler extends NormalAppender {

@@ -52,7 +52,7 @@ public final class AnonymousObjOp extends ObjectOp {
 		this.ptr = ptr;
 		assert wellKnownType != null :
 			"Object type not specified";
-		this.wellKnownType = wellKnownType;
+		this.wellKnownType = wellKnownType.getInterface();
 	}
 
 	public AnonymousObjOp(CodeBuilder builder, DataOp ptr, Obj wellKnownType) {
@@ -60,7 +60,7 @@ public final class AnonymousObjOp extends ObjectOp {
 		this.ptr = ptr;
 		assert wellKnownType != null :
 			"Object type not specified";
-		this.wellKnownType = wellKnownType;
+		this.wellKnownType = wellKnownType.getInterface();
 	}
 
 	@Override

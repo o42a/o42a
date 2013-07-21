@@ -160,6 +160,32 @@ public abstract class Obj
 		return null;
 	}
 
+	/**
+	 * Returns an interface for this object.
+	 *
+	 * <p>The object interface is a closest object, which can be constructed by
+	 * compiler. Usually, it is an object itself, even if it is
+	 * {@link ConstructionMode#RUNTIME_CONSTRUCTION run time constructed}.
+	 * The only exception is a run time constructed link target. In this case
+	 * a link interface is returned.<p>
+	 *
+	 * @return object interface.
+	 */
+	public final Obj getInterface() {
+		if (!getConstructionMode().isRuntime()
+				|| getConstructionMode().isPredefined()) {
+			return this;
+		}
+
+		final Link link = getDereferencedLink();
+
+		if (link != null) {
+			return link.getInterfaceRef().getType();
+		}
+
+		return this;
+	}
+
 	public Obj getPropagatedFrom() {
 		return this.propagatedFrom;
 	}
