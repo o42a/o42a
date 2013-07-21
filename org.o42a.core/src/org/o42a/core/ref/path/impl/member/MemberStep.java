@@ -35,7 +35,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.FldStoreOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.state.DepIR.Op;
+import org.o42a.core.ir.object.dep.DepIR.Op;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;

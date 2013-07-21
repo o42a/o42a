@@ -30,8 +30,8 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.state.DepIR;
-import org.o42a.core.ir.object.state.DepIR.Op;
+import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.dep.DepIR.Op;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 

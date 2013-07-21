@@ -30,8 +30,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.object.state.DepIR;
-import org.o42a.core.ir.object.state.KeeperIR;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -39,7 +38,6 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.object.state.Keeper;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Getter;
@@ -58,8 +56,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
-	private final LinkedHashMap<Keeper, KeeperIR<?, ?>> keepers =
-			new LinkedHashMap<>();
 
 	private StructRec<ObjectIRTypeOp> declaredIn;
 	private RelRec objectType;
@@ -179,16 +175,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return ir;
 	}
 
-	public final KeeperIR<? ,?> keeper(Keeper keeper) {
-
-		final KeeperIR<?, ?> ir = this.keepers.get(keeper);
-
-		assert ir != null :
-			keeper + " not found in " + this;
-
-		return ir;
-	}
-
 	@Override
 	public ObjectIRBodyOp op(StructWriter<ObjectIRBodyOp> writer) {
 		return new ObjectIRBodyOp(writer);
@@ -205,7 +191,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 		allocateValueBody(bodyData);
 		allocateFields(bodyData);
-		allocateKeepers(bodyData);
 		allocateDeps(bodyData);
 	}
 
@@ -249,10 +234,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	final Collection<DepIR> getDeclaredDeps() {
 		return this.deps.values();
-	}
-
-	final Collection<KeeperIR<?, ?>> getDeclaredKeepers() {
-		return this.keepers.values();
 	}
 
 	final void declareFld(Fld<?> fld) {
@@ -321,22 +302,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		}
 
 		return true;
-	}
-
-	private void allocateKeepers(ObjectIRBodyData data) {
-
-		final Obj ascendant = getAscendant();
-
-		for (Keeper keeper : ascendant.keepers().declaredKeepers()) {
-
-			final KeeperIR<?, ?> keeperIR =
-					keeper.getValue()
-					.typeParameters(keeper.getValue().getScope())
-					.keeperIR(this, keeper);
-
-			keeperIR.allocate(data);
-			this.keepers.put(keeper, keeperIR);
-		}
 	}
 
 	private void allocateDeps(ObjectIRBodyData data) {

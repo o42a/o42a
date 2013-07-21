@@ -26,14 +26,11 @@ import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.state.KeeperIR;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.state.Keeper;
 import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
@@ -43,7 +40,9 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.ArrayValueType;
-import org.o42a.core.value.link.impl.*;
+import org.o42a.core.value.link.impl.LinkByValueAdapter;
+import org.o42a.core.value.link.impl.LinkValueConverter;
+import org.o42a.core.value.link.impl.LinkValueTypeIR;
 
 
 public abstract class LinkValueType extends ValueType<KnownLink> {
@@ -242,14 +241,6 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 	@Override
 	protected ValueTypeIR<KnownLink> createIR(Generator generator) {
 		return new LinkValueTypeIR(generator, this);
-	}
-
-	@Override
-	protected KeeperIR<?, ?> createKeeperIR(
-			TypeParameters<KnownLink> parameters,
-			ObjectIRBody bodyIR,
-			Keeper keeper) {
-		return new LinkKeeperIR(parameters, bodyIR, keeper);
 	}
 
 }

@@ -21,15 +21,15 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.core.ir.object.state.DepOp.DEP_ID;
-import static org.o42a.core.ir.object.state.KeeperOp.KEEPER_ID;
+import static org.o42a.core.ir.object.dep.DepOp.DEP_ID;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.object.state.*;
+import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -39,7 +39,6 @@ import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.object.state.Keeper;
 import org.o42a.util.string.ID;
 
 
@@ -178,25 +177,6 @@ public final class ObjOp extends ObjectOp {
 		final DepOp op = ir.op(code, host);
 
 		code.dumpName("Dep: ", op);
-
-		subDirs.done();
-
-		return op;
-	}
-
-	@Override
-	public KeeperOp<?> keeper(CodeDirs dirs, Keeper keeper) {
-
-		final CodeDirs subDirs = dirs.begin(KEEPER_ID, keeper.toString());
-		final Code code = subDirs.code();
-		final KeeperIR<?, ?> ir = getObjectIR().keeper(keeper);
-		final ObjOp host = cast(
-				KEEPER_HOST_ID.sub(keeper),
-				subDirs,
-				keeper.getDeclaredIn());
-		final KeeperOp<?> op = ir.op(code, host);
-
-		code.dumpName("Keeper: ", op);
 
 		subDirs.done();
 

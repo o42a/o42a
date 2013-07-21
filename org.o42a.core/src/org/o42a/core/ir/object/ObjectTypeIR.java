@@ -32,8 +32,7 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.object.state.DepIR;
-import org.o42a.core.ir.object.state.KeeperIR;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.type.FieldDescIR;
 import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
@@ -158,7 +157,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				this.objectIRStruct.sampleBodyIRs());
 
 		allocateFieldDecls();
-		allocateKeeperDecls();
 		allocateDepDecls();
 		allocateOverriders();
 
@@ -183,16 +181,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 			fields.add(fieldDescIR);
 			this.fieldDescs.put(fld.getKey(), fieldDescIR);
-		}
-	}
-
-	private void allocateKeeperDecls() {
-
-		final RelList<FieldDescIR> fields = getObjectType().fields();
-
-		for (KeeperIR<?, ?> keeper
-				: getObjectIR().getMainBodyIR().getDeclaredKeepers()) {
-			fields.add(new FieldDescIR(keeper));
 		}
 	}
 
