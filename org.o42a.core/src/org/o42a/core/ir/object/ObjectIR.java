@@ -104,7 +104,7 @@ public class ObjectIR  {
 			return null;
 		}
 
-		final Obj ancestor = ancestorType.getType();
+		final Obj ancestor = ancestorType.getInterface();
 
 		if (ancestor.is(ancestor.getContext().getVoid())) {
 			return null;
@@ -179,7 +179,7 @@ public class ObjectIR  {
 		final Obj origin = memberKey.getOrigin().toObject();
 		final ObjectIRBody bodyIR = findBodyIR(origin);
 
-		return bodyIR.findFld(memberKey);
+		return bodyIR != null ? bodyIR.findFld(memberKey) : null;
 	}
 
 	public final DepIR dep(Dep dep) {

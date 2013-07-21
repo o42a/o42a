@@ -104,7 +104,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 		if (ancestorRef != null) {
 
-			final Obj ancestor = ancestorRef.getType();
+			final Obj ancestor = ancestorRef.getInterface();
 
 			if (!ancestor.is(ancestor.getContext().getVoid())) {
 				deriveBodyIRs(data, ancestor, true);
