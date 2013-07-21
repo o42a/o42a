@@ -39,7 +39,6 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
-import org.o42a.compiler.ip.ref.keeper.KeepValueFragment;
 import org.o42a.compiler.ip.ref.operator.LogicalExpression;
 import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
