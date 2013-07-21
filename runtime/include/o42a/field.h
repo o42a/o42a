@@ -35,18 +35,6 @@ enum o42a_fld_kind {
 
 	O42A_FLD_DEP = 4,
 
-	O42A_KPR_VOID = 7,
-
-	O42A_KPR_INTEGER = 8,
-
-	O42A_KPR_FLOAT = 9,
-
-	O42A_KPR_STRING = 10,
-
-	O42A_KPR_LINK = 11,
-
-	O42A_KPR_ARRAY = 12,
-
 };
 
 

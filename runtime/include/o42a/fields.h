@@ -14,13 +14,6 @@
 #include "o42a/fld/scope.h"
 #include "o42a/fld/var.h"
 
-#include "o42a/kpr/array.h"
-#include "o42a/kpr/float.h"
-#include "o42a/kpr/integer.h"
-#include "o42a/kpr/link.h"
-#include "o42a/kpr/string.h"
-#include "o42a/kpr/void.h"
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,18 +36,6 @@ union o42a_fld {
 	o42a_fld_scope scope;
 
 	o42a_fld_dep dep;
-
-	o42a_kpr_void kpr_void;
-
-	o42a_kpr_integer kpr_integer;
-
-	o42a_kpr_float kpr_float;
-
-	o42a_kpr_string kpr_string;
-
-	o42a_kpr_link kpr_link;
-
-	o42a_kpr_array kpr_array;
 
 };
 
