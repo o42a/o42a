@@ -201,13 +201,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				")");
 
 		assertThat(
-				definiteValue(linkTarget(field("b", "g")), ValueType.INTEGER),
-				is(23L));
-		assertThat(
 				LinkValueType.LINK.interfaceRef(
 						field("b", "g").toObject().type().getParameters())
 						.getType(),
-						is(this.context.getIntrinsics().getVoid()));
+						is(this.context.getIntrinsics().getInteger()));
 	}
 
 	@Test
@@ -227,7 +224,7 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 				LinkValueType.LINK.interfaceRef(
 						field("b", "g").toObject().type().getParameters())
 				.getType(),
-				is(this.context.getIntrinsics().getVoid()));
+				is(this.context.getIntrinsics().getInteger()));
 	}
 
 }
