@@ -26,6 +26,7 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 import static org.o42a.core.value.ValueType.STRING;
 
@@ -38,7 +39,7 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
-import org.o42a.compiler.ip.ref.keeper.KeepValue;
+import org.o42a.compiler.ip.ref.keeper.KeepValueFragment;
 import org.o42a.compiler.ip.ref.operator.LogicalExpression;
 import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
@@ -264,7 +265,9 @@ public final class ExpressionVisitor
 			return null;
 		}
 
-		return new KeepValue(location(p, expression.getSign()), value).toRef();
+		return SELF_PATH.bind(location(p, expression.getSign()), p.getScope())
+				.append(new KeepValueFragment(value))
+				.target(p);
 	}
 
 	private Ref link(

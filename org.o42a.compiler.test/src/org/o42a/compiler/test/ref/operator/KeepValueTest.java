@@ -50,7 +50,7 @@ public class KeepValueTest extends CompilerTestCase {
 				LinkValueType.LINK.interfaceRef(
 						field("b").toObject().type().getParameters())
 				.getType(),
-				is(this.context.getIntrinsics().getInteger()));
+				is(field("a").toObject()));
 	}
 
 	@Test
