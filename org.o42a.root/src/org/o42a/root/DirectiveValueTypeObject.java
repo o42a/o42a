@@ -22,7 +22,6 @@ package org.o42a.root;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.common.object.ValueTypeObject;
-import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Ref;
@@ -41,16 +40,12 @@ public class DirectiveValueTypeObject
 	}
 
 	@Override
-	public Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ascendantDefinitions) {
+	public Definitions overrideDefinitions(Definitions ascendantDefinitions) {
 
 		final Definitions explicitDefinitions =
-				value().getExplicitDefinitions().upgradeScope(scope);
-
-		if (ascendantDefinitions == null) {
-			return explicitDefinitions;
-		}
+				value()
+				.getExplicitDefinitions()
+				.upgradeScope(ascendantDefinitions.getScope());
 
 		return ascendantDefinitions.override(explicitDefinitions);
 	}

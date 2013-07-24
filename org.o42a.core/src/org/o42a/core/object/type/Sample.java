@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.type;
 
-import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
@@ -79,17 +78,13 @@ public abstract class Sample extends Scoped implements Derivative {
 	}
 
 	public final Definitions overrideDefinitions(
-			Scope scope,
-			Definitions overriddenDefinitions,
-			Definitions ancestorDefinitions) {
+			Definitions overriddenDefinitions) {
 
 		final Obj object = getObject();
-		final Definitions definitions = object.value().overriddenDefinitions(
-				scope,
-				overriddenDefinitions,
-				ancestorDefinitions);
+		final Definitions definitions =
+				object.value().overriddenDefinitions(overriddenDefinitions);
 
-		return object.overrideDefinitions(scope, definitions);
+		return object.overrideDefinitions(definitions);
 	}
 
 	public void resolveAll(FullResolver resolver) {

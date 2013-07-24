@@ -97,7 +97,7 @@ public class PropagationTest extends CompilerTestCase {
 		compile(
 				"Foo := 1",
 				"Bar := &foo (= 2)",
-				"A := void(Foo := &upgrade ancestor: foo (= 3))",
+				"A := void (Foo := &upgrade ancestor: foo (= 3))",
 				"B := &a (Foo = &bar ())");
 
 		final Obj foo = field("foo").toObject();
@@ -113,7 +113,7 @@ public class PropagationTest extends CompilerTestCase {
 		assertThat(definiteValue(foo, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(bar, ValueType.INTEGER), is(2L));
 		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(3L));
-		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(3L));
 	}
 
 	@Override

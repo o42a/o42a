@@ -19,7 +19,6 @@
 */
 package org.o42a.common.object;
 
-import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.ValueType;
@@ -40,10 +39,10 @@ public abstract class ValueTypeObject extends AnnotatedObject {
 	}
 
 	@Override
-	public Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ascentantDefinitions) {
-		return type().getParameters().noValueDefinitions(this, scope);
+	public Definitions overrideDefinitions(Definitions ascentantDefinitions) {
+		return type().getParameters().noValueDefinitions(
+				this,
+				ascentantDefinitions.getScope());
 	}
 
 	@Override

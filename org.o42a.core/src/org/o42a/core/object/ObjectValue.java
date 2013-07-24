@@ -27,7 +27,6 @@ import static org.o42a.core.ref.RefUser.refUser;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
-import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValueParts;
@@ -117,9 +116,9 @@ public final class ObjectValue extends ObjectValueParts {
 
 		object.resolve();
 
+		final Definitions overriddenDefinitions = getOverriddenDefinitions();
 		final Definitions definitions = object.overrideDefinitions(
-				object.getScope(),
-				getOverriddenDefinitions())
+				overriddenDefinitions)
 				.upgradeTypeParameters(getObject().type().getParameters());
 
 		return this.definitions = definitions;
@@ -163,54 +162,27 @@ public final class ObjectValue extends ObjectValueParts {
 
 		final Obj object = getObject();
 		final Definitions ancestorDefinitions = getAncestorDefinitions();
+		final Definitions overriddenDefinitions;
 
-		return overriddenDefinitions(
-				object.getScope(),
-				ancestorDefinitions,
-				ancestorDefinitions);
+		if (ancestorDefinitions != null) {
+			ancestorDefinitions.assertScopeIs(object.getScope());
+			overriddenDefinitions = ancestorDefinitions;
+		} else {
+			overriddenDefinitions = emptyDefinitions(object, object.getScope());
+		}
+
+		return overriddenDefinitions(overriddenDefinitions);
 	}
 
 	public final Definitions overriddenDefinitions(
-			Scope scope,
-			Definitions overriddenDefinitions,
-			Definitions ancestorDefinitions) {
-		if (ancestorDefinitions != null) {
-			ancestorDefinitions.assertScopeIs(scope);
-		}
+			Definitions overriddenDefinitions) {
 
-		final Obj object = getObject();
 		Definitions definitions = overriddenDefinitions;
-
-		if (overriddenDefinitions != null) {
-			overriddenDefinitions.assertScopeIs(scope);
-			definitions = overriddenDefinitions;
-		} else {
-			definitions = emptyDefinitions(object, object.getScope());
-		}
-
-		boolean hasExplicitAncestor =
-				object.type().getAscendants().getExplicitAncestor() != null;
+		final Obj object = getObject();
 		final Sample[] samples = object.type().getSamples();
 
 		for (int i = samples.length - 1; i >= 0; --i) {
-
-			final Sample sample = samples[i];
-
-			if (sample.isExplicit()) {
-				if (hasExplicitAncestor) {
-					definitions = definitions.override(ancestorDefinitions);
-					hasExplicitAncestor = false;
-				}
-			}
-
-			definitions = sample.overrideDefinitions(
-					scope,
-					definitions,
-					ancestorDefinitions);
-		}
-
-		if (hasExplicitAncestor) {
-			definitions = definitions.override(ancestorDefinitions);
+			definitions = samples[i].overrideDefinitions(definitions);
 		}
 
 		return definitions;
