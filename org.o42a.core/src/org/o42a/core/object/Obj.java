@@ -508,16 +508,12 @@ public abstract class Obj
 		return member(access, memberId, declaredIn);
 	}
 
-	public Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ascendantDefinitions) {
+	public Definitions overrideDefinitions(Definitions ascendantDefinitions) {
 
 		final Definitions explicitDefinitions =
-				value().getExplicitDefinitions().upgradeScope(scope);
-
-		if (ascendantDefinitions == null) {
-			return explicitDefinitions;
-		}
+				value()
+				.getExplicitDefinitions()
+				.upgradeScope(ascendantDefinitions.getScope());
 
 		return ascendantDefinitions.override(explicitDefinitions);
 	}
