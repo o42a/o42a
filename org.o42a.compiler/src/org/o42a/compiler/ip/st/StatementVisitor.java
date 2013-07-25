@@ -129,12 +129,12 @@ public abstract class StatementVisitor
 			return;
 		}
 
-		statements.statement(
-				new AssignmentStatement(
-						assignment,
-						distributor,
-						destination,
-						value));
+		statements.statement(new AssignmentStatement(
+				assignment,
+				distributor,
+				destination,
+				value,
+				assignment.getOperator().getType().isBinding()));
 	}
 
 }

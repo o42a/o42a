@@ -22,14 +22,18 @@ package org.o42a.compiler.ip.st.assignment;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.st.assignment.CustomAssignment.customAssignment;
 import static org.o42a.compiler.ip.st.assignment.VariableAssignment.variableAssignment;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.access.AccessRules;
+import org.o42a.compiler.ip.ref.KeepValueFragment;
+import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.*;
 
 
@@ -39,20 +43,23 @@ public class AssignmentStatement extends Statement {
 	private final AccessRules accessRules;
 	private final Ref destination;
 	private final RefBuilder value;
+	private final boolean binding;
 	private AssignmentKind assignmentKind;
 
 	public AssignmentStatement(
 			AssignmentNode node,
 			AccessDistributor distributor,
 			Ref destination,
-			RefBuilder value) {
+			RefBuilder value,
+			boolean binding) {
 		super(
 				location(destination, node.getOperator()),
 				distributor);
 		this.node = node;
 		this.accessRules = distributor.getAccessRules();
 		this.destination = destination;
-		this.value = value;
+		this.value = binding ? value : new StatefulRef(value);
+		this.binding = binding;
 	}
 
 	AssignmentStatement(
@@ -66,6 +73,7 @@ public class AssignmentStatement extends Statement {
 		this.accessRules = prototype.getAccessRules();
 		this.destination = destination;
 		this.value = value;
+		this.binding = prototype.binding;
 		this.assignmentKind = assignmentKind;
 		assignmentKind.init(this);
 	}
@@ -84,6 +92,10 @@ public class AssignmentStatement extends Statement {
 
 	public final RefBuilder getValue() {
 		return this.value;
+	}
+
+	public final boolean isBinding() {
+		return this.binding;
 	}
 
 	@Override
@@ -114,7 +126,7 @@ public class AssignmentStatement extends Statement {
 		if (this.assignmentKind != null) {
 			return this.assignmentKind.toString();
 		}
-		return this.destination + " = " + this.value;
+		return this.destination + (this.binding ? "<-" : "=") + this.value;
 	}
 
 	public AssignmentKind getAssignmentKind() {
@@ -149,6 +161,40 @@ public class AssignmentStatement extends Statement {
 				getDestination(),
 				"Can only assign to links or variables");
 		return this.assignmentKind = new AssignmentError(this);
+	}
+
+	private static final class StatefulRef implements RefBuilder {
+
+		private final RefBuilder ref;
+
+		StatefulRef(RefBuilder ref) {
+			this.ref = ref;
+		}
+
+		@Override
+		public Location getLocation() {
+			return this.ref.getLocation();
+		}
+
+		@Override
+		public Ref buildRef(Distributor distributor) {
+
+			final Ref ref = this.ref.buildRef(distributor);
+			final KeepValueFragment keepValue = new KeepValueFragment(ref);
+
+			return SELF_PATH.bind(getLocation(), distributor.getScope())
+					.append(keepValue)
+					.target(distributor);
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return "\\\\" + this.ref;
+		}
+
 	}
 
 }

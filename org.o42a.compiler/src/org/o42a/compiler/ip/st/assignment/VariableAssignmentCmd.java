@@ -49,6 +49,10 @@ final class VariableAssignmentCmd implements Cmd {
 		final HostOp value =
 				this.assignment.getValue().op(control.host()).path();
 
+		if (!this.assignment.getStatement().isBinding()) {
+			subDirs.code().debug("Evaluate condition");
+			value.value().writeCond(subDirs);
+		}
 		destination.value().assign(subDirs, value);
 
 		subDirs.done();

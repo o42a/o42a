@@ -33,6 +33,10 @@ public enum AssignmentOperator implements SignType {
 		this.sign = sign;
 	}
 
+	public final boolean isBinding() {
+		return this == BIND;
+	}
+
 	@Override
 	public String getSign() {
 		return this.sign;
