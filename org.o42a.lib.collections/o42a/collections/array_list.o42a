@@ -21,7 +21,7 @@ Item => * (
   = Data [index]
   Set => * (
     Element assignment: {
-      Data [index] = new value
+      Data [index] <- new value
     }
   )
 )
@@ -43,21 +43,21 @@ Constructs a list by the given row.
 Add => * ({
   New data := (size + 1)~#element type` duplicates
   Data: copy _to [new data]
-  New data [size] = new element
-  Data = new data
+  New data [size] <- new element
+  Data <- new data
 })
 
 Insert => * ({
   New data := (size + 1)~#element type` duplicates
   Data: copy [0 ... index) to [new data]
-  New data [index] = new element
+  New data [index] <- new element
   Data: copy [index ...) to [new data] at [index + 1]
-  Data = new data
+  Data <- new data
 })
 
 Remove => * ({
   New data := (size - 1)~#element type` duplicates
   Data: copy [0 ... index) to [new data]
   Data: copy [index + 1 ...) to [new data] at [index]
-  Data = new data
+  Data <- new data
 })
