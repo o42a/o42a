@@ -131,12 +131,7 @@ public class AssignmentStatement extends Statement {
 		final Obj object = destResolution.toObject();
 
 		if (object == null) {
-			getLogger().error(
-					"not_variable_assigned",
-					this.destination,
-					"Can only assign to variable");
-
-			return this.assignmentKind = new AssignmentError(this);
+			return assignmentError();
 		}
 
 		final AssignmentKind custom = customAssignment(this, object);
@@ -146,6 +141,14 @@ public class AssignmentStatement extends Statement {
 		}
 
 		return this.assignmentKind = variableAssignment(this, object);
+	}
+
+	AssignmentKind assignmentError() {
+		getLogger().error(
+				"not_variable_assigned",
+				getDestination(),
+				"Can only assign to links or variables");
+		return this.assignmentKind = new AssignmentError(this);
 	}
 
 }

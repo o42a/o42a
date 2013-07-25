@@ -50,11 +50,7 @@ final class VariableAssignment extends AssignmentKind {
 				destParams.getValueType().toLinkType();
 
 		if (destLinkType == null || !destLinkType.is(VARIABLE)) {
-			statement.getLogger().error(
-					"not_variable_assigned",
-					statement.getDestination(),
-					"Can only assign to variable");
-			return new AssignmentError(statement);
+			return statement.assignmentError();
 		}
 
 		final PrefixPath prefix =
