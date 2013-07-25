@@ -25,7 +25,7 @@ Set => void (
   ~~~
 
   {
-    Value = new value->
+    Value <- new value->
   }
 )
 
