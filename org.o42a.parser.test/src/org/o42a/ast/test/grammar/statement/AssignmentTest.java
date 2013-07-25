@@ -13,9 +13,11 @@ import static org.o42a.parser.Grammar.IMPERATIVE;
 import org.junit.Test;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
+import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.statement.AssignmentNode;
+import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
@@ -29,6 +31,22 @@ public class AssignmentTest extends GrammarTestCase {
 
 		assertThat(assignment, hasRange(0, 9));
 		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(
+				assignment.getOperator().getType(),
+				is(AssignmentOperator.ASSIGN));
+		assertThat(assignment.getValue(), isName("bar"));
+	}
+
+	@Test
+	public void binding() {
+
+		final AssignmentNode assignment = parse("foo <- bar");
+
+		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(
+				assignment.getOperator().getType(),
+				is(AssignmentOperator.BIND));
 		assertThat(assignment.getValue(), isName("bar"));
 	}
 
@@ -75,6 +93,29 @@ public class AssignmentTest extends GrammarTestCase {
 		assertThat(
 				to(ScopeRefNode.class, value.getRightOperand()).getType(),
 				is(ScopeType.LOCAL));
+	}
+
+	@Test
+	public void namedLocalAssignment() {
+
+		final AssignmentNode assignment = parse("A $ local = b + $local");
+		final LocalNode local = assignment.getDestination().toLocal();
+
+		assertThat(local.getExpression(), isName("a"));
+		assertThat(local.getName().getName().toString(), is("local"));
+
+		final BinaryNode value = to(BinaryNode.class, assignment.getValue());
+
+		assertThat(value.getLeftOperand(), isName("b"));
+
+		final MemberRefNode right =
+				to(MemberRefNode.class, value.getRightOperand());
+
+		assertThat(right, memberRefWithoutRetention());
+		assertThat(
+				to(ScopeRefNode.class, right.getOwner()).getType(),
+				is(ScopeType.LOCAL));
+		assertThat(right, hasName("local"));
 	}
 
 	private AssignmentNode parse(String text) {

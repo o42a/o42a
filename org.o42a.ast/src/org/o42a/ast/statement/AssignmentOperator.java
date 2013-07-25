@@ -24,11 +24,18 @@ import org.o42a.ast.atom.SignType;
 
 public enum AssignmentOperator implements SignType {
 
-	ASSIGN;
+	ASSIGN("="),
+	BIND("<-");
+
+	private final String sign;
+
+	AssignmentOperator(String sign) {
+		this.sign = sign;
+	}
 
 	@Override
 	public String getSign() {
-		return "=";
+		return this.sign;
 	}
 
 }

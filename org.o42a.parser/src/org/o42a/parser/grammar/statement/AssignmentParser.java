@@ -41,24 +41,8 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 
 	@Override
 	public AssignmentNode parse(ParserContext context) {
-		if (context.next() != '=') {
-			return null;
-		}
 
-		final SourcePosition operatorStart = context.current().fix();
-
-		if (context.next() == '=') {
-			return null;
-		}
-		context.acceptButLast();
-
-		final SignNode<AssignmentOperator> operator = new SignNode<>(
-				operatorStart,
-				context.current().fix(),
-				AssignmentOperator.ASSIGN);
-
-		context.acceptComments(false, operator);
-
+		final SignNode<AssignmentOperator> operator = parseOperator(context);
 		final ExpressionNode value = context.parse(expression());
 
 		if (value == null) {
@@ -66,6 +50,41 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 		}
 
 		return new AssignmentNode(this.destination, operator, value);
+	}
+
+	private SignNode<AssignmentOperator> parseOperator(ParserContext context) {
+
+		final AssignmentOperator operator;
+		final SourcePosition operatorStart = context.current().fix();
+
+		switch (context.next()) {
+		case '=':
+			switch (context.next()) {
+			case '=':
+			case '<':
+			case '>':
+				return null;
+			}
+			operator = AssignmentOperator.ASSIGN;
+			context.acceptButLast();
+			break;
+		case '<':
+			if (context.next() != '-') {
+				return null;
+			}
+			operator = AssignmentOperator.BIND;
+			context.acceptAll();
+			break;
+		default:
+			return null;
+		}
+
+		return context.acceptComments(
+				false,
+				new SignNode<>(
+						operatorStart,
+						context.current().fix(),
+						operator));
 	}
 
 }

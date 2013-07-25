@@ -179,6 +179,8 @@ public class BinaryParser implements Parser<BinaryNode> {
 						context.acceptButLast();
 					}
 					break;
+				case '-':
+					return null;
 				default:
 					operator = BinaryOperator.LESS;
 					context.acceptButLast();
