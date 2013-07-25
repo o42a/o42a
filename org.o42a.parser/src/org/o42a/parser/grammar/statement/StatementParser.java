@@ -192,12 +192,21 @@ public class StatementParser implements Parser<StatementNode> {
 			ParserContext context,
 			LocalNode local,
 			ExpressionNode expression) {
-		if (local == null && !assignmentsAllowed()) {
+
+		final int next = context.pendingOrNext();
+
+		switch (next) {
+		case '=':
+			if (local == null && !assignmentsAllowed()) {
+				return null;
+			}
+			break;
+		case '<':
+			break;
+		default:
 			return null;
 		}
-		if (context.pendingOrNext() != '=') {
-			return null;
-		}
+
 		return context.parse(assignment(local != null ? local : expression));
 	}
 
