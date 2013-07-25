@@ -104,7 +104,7 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 	protected ClauseInstanceConstructor createStateful() {
 
 		final AscendantsDefinition ascendants =
-				this.ascendants.setStateful(true);
+				getAscendants().setStateful(true);
 
 		if (ascendants == this.ascendants) {
 			return this;
