@@ -28,10 +28,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.cmd.InlineCmd;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
@@ -173,29 +170,6 @@ final class CustomAssignment extends AssignmentKind {
 		@Override
 		protected Cancelable cancelable() {
 			return null;
-		}
-
-	}
-
-	public static final class AssignEval implements Eval {
-
-		private final Ref ref;
-
-		AssignEval(Ref ref) {
-			this.ref = ref;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			this.ref.op(host).writeCond(dirs.dirs());
-		}
-
-		@Override
-		public String toString() {
-			if (this.ref == null) {
-				return super.toString();
-			}
-			return this.ref.toString();
 		}
 
 	}
