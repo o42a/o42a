@@ -19,7 +19,9 @@
 */
 package org.o42a.compiler.ip.st;
 
+import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
@@ -31,11 +33,17 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Location;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.util.log.LogInfo;
+import org.o42a.util.string.Name;
 
 
 public abstract class StatementVisitor
 		extends AbstractStatementVisitor<Void, StatementsAccess> {
+
+	public static final Name VALUE_LOCAL_NAME =
+			CASE_SENSITIVE.canonicalName("LV");
 
 	static void invalidStatement(CompilerLogger logger, LogInfo location) {
 		logger.error(
@@ -119,6 +127,17 @@ public abstract class StatementVisitor
 			StatementsAccess statements,
 			AssignmentNode assignment,
 			Ref destination) {
+		if (assignment.getOperator().getType().isBinding()) {
+			addBinding(statements, assignment, destination);
+		} else {
+			addValueAssignment(statements, assignment, destination);
+		}
+	}
+
+	private void addBinding(
+			StatementsAccess statements,
+			AssignmentNode assignment,
+			Ref destination) {
 
 		final AccessDistributor distributor = statements.nextDistributor();
 		final RefBuilder value = assignment.getValue().accept(
@@ -133,8 +152,39 @@ public abstract class StatementVisitor
 				assignment,
 				distributor,
 				destination,
-				value,
-				assignment.getOperator().getType().isBinding()));
+				value));
+	}
+
+	private void addValueAssignment(
+			StatementsAccess statements,
+			AssignmentNode assignment,
+			Ref destination) {
+
+		final Location location =
+				location(destination, assignment.getOperator());
+		final StatementsAccess st = new StatementsAccess(
+				statements.getRules(),
+				statements.get()
+				.parentheses(location)
+				.propose(location)
+				.alternative(location));
+		final Local local = LocalInterpreter.local(
+				ip(),
+				location.getContext(),
+				st,
+				location.getLocation(),
+				VALUE_LOCAL_NAME,
+				assignment.getValue());
+
+		if (local == null) {
+			return;
+		}
+
+		st.statement(new AssignmentStatement(
+				assignment,
+				st.nextDistributor(),
+				destination,
+				local));
 	}
 
 }

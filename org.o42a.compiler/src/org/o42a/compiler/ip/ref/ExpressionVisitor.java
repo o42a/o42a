@@ -35,6 +35,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
+import org.o42a.common.ref.state.KeepValueFragment;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;

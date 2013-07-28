@@ -35,6 +35,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -71,7 +72,8 @@ final class CustomAssignment extends AssignmentKind {
 		this.ref = ref;
 	}
 
-	private CustomAssignment(Ref ref) {
+	private CustomAssignment(CustomAssignment prototype, Ref ref) {
+		super(prototype.getStatement());
 		this.ref = ref;
 	}
 
@@ -88,20 +90,37 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public void resolve(FullResolver resolver) {
-		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
+
+		final FullResolver condResolver =
+				resolver.setRefUsage(CONDITION_REF_USAGE);
+		final Local local = getStatement().getLocal();
+
+		if (local != null) {
+			local.ref().resolveAll(condResolver);
+		}
+
+		getRef().resolveAll(condResolver);
 	}
 
 	@Override
 	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);
+		final Local local = getStatement().getLocal();
+		final InlineValue inlineLocal;
 
-		if (value == null) {
+		if (local == null) {
+			inlineLocal = null;
+		} else {
+			inlineLocal = local.ref().inline(normalizer, origin);
+		}
+
+		if (value == null || local != null && inlineLocal == null) {
 			this.ref.normalize(normalizer.getAnalyzer());
 			return null;
 		}
 
-		return new InlineAssignCmd(value);
+		return new InlineAssignCmd(value, inlineLocal);
 	}
 
 	@Override
@@ -117,7 +136,8 @@ final class CustomAssignment extends AssignmentKind {
 			return null;
 		}
 
-		final CustomAssignment customAssignment = new CustomAssignment(this.ref);
+		final CustomAssignment customAssignment =
+				new CustomAssignment(this, this.ref);
 
 		return new AssignmentStatement(
 				prototype,
@@ -129,7 +149,7 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public Cmd cmd() {
-		return new AssignCmd(this.ref);
+		return new AssignCmd(this.ref, getStatement().getLocal());
 	}
 
 	@Override
@@ -143,10 +163,12 @@ final class CustomAssignment extends AssignmentKind {
 	private static final class InlineAssignCmd extends InlineCmd {
 
 		private final InlineValue value;
+		private final InlineValue local;
 
-		InlineAssignCmd(InlineValue value) {
+		InlineAssignCmd(InlineValue value, InlineValue local) {
 			super(null);
 			this.value = value;
+			this.local = local;
 		}
 
 		@Override
@@ -156,6 +178,9 @@ final class CustomAssignment extends AssignmentKind {
 					control.code(),
 					control.falseDir());
 
+			if (this.local != null) {
+				this.local.writeCond(dirs, control.host());
+			}
 			this.value.writeCond(dirs, control.host());
 		}
 
@@ -177,13 +202,18 @@ final class CustomAssignment extends AssignmentKind {
 	private static final class AssignCmd implements Cmd {
 
 		private final Ref ref;
+		private final Local local;
 
-		AssignCmd(Ref ref) {
+		AssignCmd(Ref ref, Local local) {
 			this.ref = ref;
+			this.local = local;
 		}
 
 		@Override
 		public void write(Control control) {
+			if (this.local != null) {
+				control.locals().get(this.local).writeCond(control.dirs());
+			}
 			this.ref.op(control.host()).writeCond(control.dirs());
 		}
 

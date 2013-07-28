@@ -22,19 +22,16 @@ package org.o42a.compiler.ip.st.assignment;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.st.assignment.CustomAssignment.customAssignment;
 import static org.o42a.compiler.ip.st.assignment.VariableAssignment.variableAssignment;
-import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.access.AccessRules;
-import org.o42a.compiler.ip.ref.KeepValueFragment;
-import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.source.Location;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.Local;
 
 
 public class AssignmentStatement extends Statement {
@@ -43,23 +40,37 @@ public class AssignmentStatement extends Statement {
 	private final AccessRules accessRules;
 	private final Ref destination;
 	private final RefBuilder value;
-	private final boolean binding;
+	private final Local local;
 	private AssignmentKind assignmentKind;
 
 	public AssignmentStatement(
 			AssignmentNode node,
 			AccessDistributor distributor,
 			Ref destination,
-			RefBuilder value,
-			boolean binding) {
+			RefBuilder value) {
 		super(
 				location(destination, node.getOperator()),
 				distributor);
 		this.node = node;
 		this.accessRules = distributor.getAccessRules();
 		this.destination = destination;
-		this.value = binding ? value : new StatefulRef(value);
-		this.binding = binding;
+		this.value = value;
+		this.local = null;
+	}
+
+	public AssignmentStatement(
+			AssignmentNode node,
+			AccessDistributor distributor,
+			Ref destination,
+			Local local) {
+		super(
+				location(destination, node.getOperator()),
+				distributor);
+		this.node = node;
+		this.accessRules = distributor.getAccessRules();
+		this.destination = destination;
+		this.value = local.ref();
+		this.local = local;
 	}
 
 	AssignmentStatement(
@@ -73,7 +84,7 @@ public class AssignmentStatement extends Statement {
 		this.accessRules = prototype.getAccessRules();
 		this.destination = destination;
 		this.value = value;
-		this.binding = prototype.binding;
+		this.local = prototype.local;
 		this.assignmentKind = assignmentKind;
 		assignmentKind.init(this);
 	}
@@ -94,8 +105,12 @@ public class AssignmentStatement extends Statement {
 		return this.value;
 	}
 
+	public final Local getLocal() {
+		return this.local;
+	}
+
 	public final boolean isBinding() {
-		return this.binding;
+		return getLocal() == null;
 	}
 
 	@Override
@@ -126,7 +141,10 @@ public class AssignmentStatement extends Statement {
 		if (this.assignmentKind != null) {
 			return this.assignmentKind.toString();
 		}
-		return this.destination + (this.binding ? "<-" : "=") + this.value;
+		if (isBinding()) {
+			return this.destination + "<-" + this.value;
+		}
+		return this.destination + "=" + this.local.ref();
 	}
 
 	public AssignmentKind getAssignmentKind() {
@@ -161,40 +179,6 @@ public class AssignmentStatement extends Statement {
 				getDestination(),
 				"Can only assign to links or variables");
 		return this.assignmentKind = new AssignmentError(this);
-	}
-
-	private static final class StatefulRef implements RefBuilder {
-
-		private final RefBuilder ref;
-
-		StatefulRef(RefBuilder ref) {
-			this.ref = ref;
-		}
-
-		@Override
-		public Location getLocation() {
-			return this.ref.getLocation();
-		}
-
-		@Override
-		public Ref buildRef(Distributor distributor) {
-
-			final Ref ref = this.ref.buildRef(distributor);
-			final KeepValueFragment keepValue = new KeepValueFragment(ref);
-
-			return SELF_PATH.bind(getLocation(), distributor.getScope())
-					.append(keepValue)
-					.target(distributor);
-		}
-
-		@Override
-		public String toString() {
-			if (this.ref == null) {
-				return super.toString();
-			}
-			return "\\\\" + this.ref;
-		}
-
 	}
 
 }

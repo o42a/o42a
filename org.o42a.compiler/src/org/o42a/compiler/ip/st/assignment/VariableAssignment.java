@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.core.ref.RefUsage.ASSIGNABLE_REF_USAGE;
+import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.value.link.LinkValueType.VARIABLE;
 
@@ -113,7 +114,13 @@ final class VariableAssignment extends AssignmentKind {
 				.target(destination.distribute());
 		final FullResolver targetResolver =
 				resolver.setRefUsage(TARGET_REF_USAGE);
-		final Resolution val = getValue().resolveAll(targetResolver);
+		final Ref value = getValue();
+		final Resolution val = value.resolveAll(targetResolver);
+
+		if (!getStatement().isBinding()) {
+			value.resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
+		}
+
 		final Resolution dest = destTarget.resolveAll(targetResolver);
 
 		if (dest.isError() || val.isError()) {
