@@ -47,7 +47,7 @@ Repeat := test (
   $Counter := ``3
   {
     Print error '    .. ' [counter] nl
-    Counter = counter - 1
+    Counter -= 1
     Counter > 0? ...
   }
   
@@ -60,7 +60,7 @@ Repeat local scope := test (
 
   ``3 $ counter {
     Print error '    .. ' [counter] nl
-    Counter = counter - 1
+    Counter -= 1
     Counter > 0? ...
     Assert [counter == 0] "Loop terminated unexpectedly"
   }
