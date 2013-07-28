@@ -20,6 +20,7 @@
 package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.expression;
+import static org.o42a.util.string.Characters.*;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -43,6 +44,11 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 	public AssignmentNode parse(ParserContext context) {
 
 		final SignNode<AssignmentOperator> operator = parseOperator(context);
+
+		if (operator == null) {
+			return null;
+		}
+
 		final ExpressionNode value = context.parse(expression());
 
 		if (value == null) {
@@ -73,6 +79,39 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 				return null;
 			}
 			operator = AssignmentOperator.BIND;
+			context.acceptAll();
+			break;
+		case '+':
+			if (context.next() != '=') {
+				return null;
+			}
+			operator = AssignmentOperator.ADD_AND_ASSIGN;
+			context.acceptAll();
+			break;
+		case '-':
+		case MINUS_SIGN:
+			if (context.next() != '=') {
+				return null;
+			}
+			operator = AssignmentOperator.SUBTRACT_AND_ASSIGN;
+			context.acceptAll();
+			break;
+		case '*':
+		case MULTIPLICATION_SIGN:
+		case DOT_OPERATOR:
+			if (context.next() != '=') {
+				return null;
+			}
+			operator = AssignmentOperator.MULTIPLY_AND_ASSIGN;
+			context.acceptAll();
+			break;
+		case '/':
+		case DIVISION_SIGN:
+		case DIVISION_SLASH:
+			if (context.next() != '=') {
+				return null;
+			}
+			operator = AssignmentOperator.DIVIDE_AND_ASSIGN;
 			context.acceptAll();
 			break;
 		default:

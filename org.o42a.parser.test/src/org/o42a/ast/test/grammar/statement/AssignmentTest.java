@@ -25,7 +25,7 @@ import org.o42a.ast.test.grammar.GrammarTestCase;
 public class AssignmentTest extends GrammarTestCase {
 
 	@Test
-	public void assignment() {
+	public void assign() {
 
 		final AssignmentNode assignment = parse("foo = bar");
 
@@ -38,7 +38,7 @@ public class AssignmentTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void binding() {
+	public void bind() {
 
 		final AssignmentNode assignment = parse("foo <- bar");
 
@@ -47,6 +47,45 @@ public class AssignmentTest extends GrammarTestCase {
 		assertThat(
 				assignment.getOperator().getType(),
 				is(AssignmentOperator.BIND));
+		assertThat(assignment.getValue(), isName("bar"));
+	}
+
+	@Test
+	public void addAndAssign() {
+
+		final AssignmentNode assignment = parse("foo += bar");
+
+		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(
+				assignment.getOperator().getType(),
+				is(AssignmentOperator.ADD_AND_ASSIGN));
+		assertThat(assignment.getValue(), isName("bar"));
+	}
+
+	@Test
+	public void subtractAndAssign() {
+
+		final AssignmentNode assignment = parse("foo -= bar");
+
+		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(
+				assignment.getOperator().getType(),
+				is(AssignmentOperator.SUBTRACT_AND_ASSIGN));
+		assertThat(assignment.getValue(), isName("bar"));
+	}
+
+	@Test
+	public void multiplyAndAssign() {
+
+		final AssignmentNode assignment = parse("foo *= bar");
+
+		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(
+				assignment.getOperator().getType(),
+				is(AssignmentOperator.MULTIPLY_AND_ASSIGN));
 		assertThat(assignment.getValue(), isName("bar"));
 	}
 
@@ -63,6 +102,19 @@ public class AssignmentTest extends GrammarTestCase {
 		assertEquals(BinaryOperator.ADD, value.getOperator());
 		assertThat(value.getLeftOperand(), isName("bar"));
 		assertThat(value.getRightOperand(), isName("baz"));
+	}
+
+	@Test
+	public void divideAndAssign() {
+
+		final AssignmentNode assignment = parse("foo /= bar");
+
+		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment.getDestination(), isName("foo"));
+		assertThat(
+				assignment.getOperator().getType(),
+				is(AssignmentOperator.DIVIDE_AND_ASSIGN));
+		assertThat(assignment.getValue(), isName("bar"));
 	}
 
 	@Test
