@@ -97,16 +97,16 @@ final class CustomAssignment extends AssignmentKind {
 	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);
-		final Local local = getStatement().getLocal();
+		final Ref localRef = getStatement().getLocalRef();
 		final InlineValue inlineLocal;
 
-		if (local == null) {
+		if (localRef == null) {
 			inlineLocal = null;
 		} else {
-			inlineLocal = local.ref().inline(normalizer, origin);
+			inlineLocal = localRef.inline(normalizer, origin);
 		}
 
-		if (value == null || local != null && inlineLocal == null) {
+		if (value == null || localRef != null && inlineLocal == null) {
 			this.ref.normalize(normalizer.getAnalyzer());
 			return null;
 		}

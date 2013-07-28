@@ -41,6 +41,10 @@ public enum AssignmentOperator implements SignType {
 		return this == BIND;
 	}
 
+	public final boolean isCombined() {
+		return ordinal() >= ADD_AND_ASSIGN.ordinal();
+	}
+
 	@Override
 	public String getSign() {
 		return this.sign;
