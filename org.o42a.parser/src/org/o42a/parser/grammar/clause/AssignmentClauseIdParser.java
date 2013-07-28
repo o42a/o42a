@@ -23,8 +23,6 @@ import static org.o42a.parser.Grammar.ref;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.ref.ScopeRefNode;
-import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.parser.Parser;
@@ -42,52 +40,33 @@ final class AssignmentClauseIdParser implements Parser<AssignmentNode> {
 
 	@Override
 	public AssignmentNode parse(ParserContext context) {
-		if (context.next() != '=') {
+		if (context.next() != '<') {
 			return null;
 		}
 
 		final SourcePosition start = context.current().fix();
 
-		if (context.next() == '=') {
-			return null;
-		}
-
-		final SignNode<AssignmentOperator> operator =
-				context.skipComments(
-						false,
-						new SignNode<>(
-								start,
-								context.current().fix(),
-								AssignmentOperator.ASSIGN));
-		final ScopeRefNode value = parseImpliedValue(context);
-
-		if (value == null) {
+		if (context.next() != '-') {
 			return null;
 		}
 
 		context.acceptAll();
 
-		return new AssignmentNode(this.destination, operator, value);
-	}
+		final SignNode<AssignmentOperator> operator =
+				context.acceptComments(
+						false,
+						new SignNode<>(
+								start,
+								context.current().fix(),
+								AssignmentOperator.BIND));
 
-	private ScopeRefNode parseImpliedValue(ParserContext context) {
-
-		final RefNode value = context.push(ref());
+		final RefNode value = context.parse(ref());
 
 		if (value == null) {
-			return null;
+			context.getLogger().missingValue(context.current());
 		}
 
-		final ScopeRefNode scopeRef = value.toScopeRef();
-
-		if (scopeRef == null) {
-			return null;
-		}
-		if (scopeRef.getType() != ScopeType.IMPLIED) {
-			return null;
-		}
-
-		return scopeRef;
+		return new AssignmentNode(this.destination, operator, value);
 	}
 
 }

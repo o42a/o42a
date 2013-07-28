@@ -15,5 +15,5 @@ Item => *
 
   It assigns new item value with <set> prototype.
   ~~~
-  <New value = *> New value = *
+  <New value <- *> New value = *
 )
