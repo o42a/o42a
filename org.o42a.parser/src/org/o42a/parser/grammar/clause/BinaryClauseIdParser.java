@@ -51,7 +51,7 @@ final class BinaryClauseIdParser implements Parser<BinaryNode> {
 		}
 
 		final BinaryOperator operator = sign.getType();
-		RefNode rightOperand = context.parse(ref());
+		final RefNode rightOperand = context.parse(ref());
 
 		if (rightOperand == null) {
 			context.getLogger().missingRightOperand(

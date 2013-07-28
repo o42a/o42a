@@ -69,7 +69,7 @@ final class ClauseIdParser implements Parser<ClauseIdNode> {
 			return null;
 		}
 
-		if (context.pendingOrNext() == '=') {
+		if (context.pendingOrNext() == '<') {
 
 			final AssignmentNode assignment =
 					context.parse(new AssignmentClauseIdParser(ref));
