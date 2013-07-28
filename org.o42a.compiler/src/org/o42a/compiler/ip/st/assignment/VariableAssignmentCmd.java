@@ -23,6 +23,7 @@ import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.st.sentence.Local;
 
 
 final class VariableAssignmentCmd implements Cmd {
@@ -48,10 +49,10 @@ final class VariableAssignmentCmd implements Cmd {
 				.path();
 		final HostOp value =
 				this.assignment.getValue().op(control.host()).path();
+		final Local local = this.assignment.getStatement().getLocal();
 
-		if (!this.assignment.getStatement().isBinding()) {
-			subDirs.code().debug("Evaluate condition");
-			value.value().writeCond(subDirs);
+		if (local != null) {
+			control.locals().get(local).writeCond(subDirs);
 		}
 		destination.value().assign(subDirs, value);
 

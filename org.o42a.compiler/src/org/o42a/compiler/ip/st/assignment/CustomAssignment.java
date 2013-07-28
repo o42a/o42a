@@ -90,16 +90,7 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public void resolve(FullResolver resolver) {
-
-		final FullResolver condResolver =
-				resolver.setRefUsage(CONDITION_REF_USAGE);
-		final Local local = getStatement().getLocal();
-
-		if (local != null) {
-			local.ref().resolveAll(condResolver);
-		}
-
-		getRef().resolveAll(condResolver);
+		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
 	}
 
 	@Override

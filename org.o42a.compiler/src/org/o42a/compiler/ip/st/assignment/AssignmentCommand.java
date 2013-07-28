@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.st.assignment;
 
+import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
@@ -26,6 +28,7 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -91,6 +94,13 @@ final class AssignmentCommand extends Command {
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
+
+		final Local local = getAssignment().getLocal();
+
+		if (local != null) {
+			local.ref().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
+		}
+
 		getAssignmentKind().resolve(resolver);
 	}
 
