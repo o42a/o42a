@@ -133,11 +133,28 @@ public final class LocalInterpreter {
 			name = ANONYMOUS_LOCAL_NAME;
 		}
 
+		return local(
+				ip,
+				context,
+				statements,
+				location,
+				name,
+				local.getExpression());
+	}
+
+	public static Local local(
+			Interpreter ip,
+			CompilerContext context,
+			StatementsAccess statements,
+			final LogInfo location,
+			final Name name,
+			final ExpressionNode definition) {
+
 		final Ref ref = localValue(
 				ip,
 				context,
 				location,
-				local.getExpression(),
+				definition,
 				statements.nextDistributor().distributeIn(context));
 
 		return statements.get()
