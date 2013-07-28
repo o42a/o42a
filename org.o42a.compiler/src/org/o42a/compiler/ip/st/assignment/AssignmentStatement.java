@@ -41,6 +41,7 @@ public class AssignmentStatement extends Statement {
 	private final Ref destination;
 	private final RefBuilder value;
 	private final Local local;
+	private final Ref localRef;
 	private AssignmentKind assignmentKind;
 
 	public AssignmentStatement(
@@ -56,6 +57,7 @@ public class AssignmentStatement extends Statement {
 		this.destination = destination;
 		this.value = value;
 		this.local = null;
+		this.localRef = null;
 	}
 
 	public AssignmentStatement(
@@ -69,7 +71,7 @@ public class AssignmentStatement extends Statement {
 		this.node = node;
 		this.accessRules = distributor.getAccessRules();
 		this.destination = destination;
-		this.value = local.ref();
+		this.value = this.localRef = local.toRef();
 		this.local = local;
 	}
 
@@ -85,6 +87,11 @@ public class AssignmentStatement extends Statement {
 		this.destination = destination;
 		this.value = value;
 		this.local = prototype.local;
+		if (prototype.localRef == null) {
+			this.localRef = null;
+		} else {
+			this.localRef = prototype.localRef.reproduce(reproducer);
+		}
 		this.assignmentKind = assignmentKind;
 		assignmentKind.init(this);
 	}
@@ -107,6 +114,10 @@ public class AssignmentStatement extends Statement {
 
 	public final Local getLocal() {
 		return this.local;
+	}
+
+	public final Ref getLocalRef() {
+		return this.localRef;
 	}
 
 	public final boolean isBinding() {

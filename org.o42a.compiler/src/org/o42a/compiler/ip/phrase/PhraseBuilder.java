@@ -33,6 +33,7 @@ import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.type.AscendantNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
@@ -490,6 +491,39 @@ public final class PhraseBuilder extends Contained {
 		return this;
 	}
 
+	public PhraseBuilder binary(Ref destination, AssignmentNode node) {
+
+		final BinaryPhraseOperator operator = binaryPhraseOperator(node);
+
+		if (operator == null) {
+			return null;
+		}
+
+		final AccessDistributor distributor = distributeAccess();
+
+		setAncestor(destination.toTypeRef());
+
+		final ExpressionNode rightOperand = node.getValue();
+
+		if (rightOperand == null) {
+			return null;
+		}
+
+		final RefBuilder right =
+				rightOperand.accept(ip().refBuildVisitor(), distributor);
+
+		if (right == null) {
+			return null;
+		}
+
+		phrase().binary(
+				location(this, node.getOperator()),
+				operator,
+				right);
+
+		return this;
+	}
+
 	public PhraseBuilder suffix(BinaryNode node) {
 
 		final RefBuilder prefix = node.getLeftOperand().accept(
@@ -583,6 +617,29 @@ public final class PhraseBuilder extends Contained {
 				node.getSign(),
 				"Binary operator '%s' is not supported",
 				node.getOperator().getSign());
+
+		return null;
+	}
+
+	private BinaryPhraseOperator binaryPhraseOperator(AssignmentNode node) {
+		switch (node.getOperator().getType()) {
+		case ADD_AND_ASSIGN:
+			return BinaryPhraseOperator.ADD;
+		case SUBTRACT_AND_ASSIGN:
+			return BinaryPhraseOperator.SUBTRACT;
+		case MULTIPLY_AND_ASSIGN:
+			return BinaryPhraseOperator.MULTIPLY;
+		case DIVIDE_AND_ASSIGN:
+			return BinaryPhraseOperator.DIVIDE;
+		case ASSIGN:
+		case BIND:
+		}
+
+		getLogger().error(
+				"unsupported_combined_assignment",
+				node.getOperator(),
+				"Combined assignment operator '%s' is not supported",
+				node.getOperator().getType().getSign());
 
 		return null;
 	}

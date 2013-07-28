@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
+import static org.o42a.compiler.ip.st.LocalInterpreter.local;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.ast.atom.NumberNode;
@@ -28,6 +29,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
+import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
@@ -42,6 +44,8 @@ import org.o42a.util.string.Name;
 public abstract class StatementVisitor
 		extends AbstractStatementVisitor<Void, StatementsAccess> {
 
+	public static final Name DESTINATION_LOCAL_NAME =
+			CASE_SENSITIVE.canonicalName("LD");
 	public static final Name VALUE_LOCAL_NAME =
 			CASE_SENSITIVE.canonicalName("LV");
 
@@ -168,13 +172,36 @@ public abstract class StatementVisitor
 				.parentheses(location)
 				.propose(location)
 				.alternative(location));
-		final Local local = LocalInterpreter.local(
-				ip(),
-				location.getContext(),
-				st,
-				location.getLocation(),
-				VALUE_LOCAL_NAME,
-				assignment.getValue());
+		final Ref dest;
+		final Local local;
+
+		if (!assignment.getOperator().getType().isCombined()) {
+			dest = destination;
+			local = local(
+					ip(),
+					location.getContext(),
+					st,
+					location.getLocation(),
+					VALUE_LOCAL_NAME,
+					assignment.getValue());
+		} else {
+
+			final Local destLocal = st.get().local(
+					destination,
+					DESTINATION_LOCAL_NAME,
+					destination);
+
+			dest = destLocal.toRef();
+
+			final PhraseBuilder phrase = new PhraseBuilder(
+					ip(),
+					location,
+					st.nextDistributor(),
+					null);
+			final Ref value = phrase.binary(dest, assignment).toRef();
+
+			local = st.get().local(value, VALUE_LOCAL_NAME, value);
+		}
 
 		if (local == null) {
 			return;
@@ -183,7 +210,7 @@ public abstract class StatementVisitor
 		st.statement(new AssignmentStatement(
 				assignment,
 				st.nextDistributor(),
-				destination,
+				dest,
 				local));
 	}
 
