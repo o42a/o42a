@@ -22,9 +22,7 @@ Iterate => * (
   ::Next index := ``0
   Next = * (
     $Index := next index->
-    {
-      Next index = index + 1
-    }
+    Next index += 1
     = List:: [index]
   )
 )
