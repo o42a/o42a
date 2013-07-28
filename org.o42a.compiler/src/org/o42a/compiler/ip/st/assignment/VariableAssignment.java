@@ -59,13 +59,18 @@ final class VariableAssignment extends AssignmentKind {
 				.toPrefix(statement.getScope());
 		final TypeRef destTypeRef =
 				destLinkType.interfaceRef(destParams).prefixWith(prefix);
+		final Ref valueRef =
+				statement.getValue().buildRef(statement.distribute());
 
-		final Ref value = statement.getValue().buildRef(statement.distribute());
-
-		if (value == null || value.getResolution().isError()) {
+		if (valueRef == null) {
 			return new AssignmentError(statement);
 		}
 
+		final Ref value = valueRef.adapt(statement, destTypeRef.toStatic());
+
+		if (value.getResolution().isError()) {
+			return new AssignmentError(statement);
+		}
 		if (!value.toTypeRef()
 				.relationTo(destTypeRef)
 				.checkDerived(statement.getLogger())) {
