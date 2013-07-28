@@ -146,23 +146,35 @@ public class BinaryParser implements Parser<BinaryNode> {
 			case '-':
 			case MINUS_SIGN:
 				operator = BinaryOperator.SUBTRACT;
-				context.acceptAll();
+				if (context.next() == '=') {
+					return null;
+				}
+				context.acceptButLast();
 				break;
 			case '*':
 			case MULTIPLICATION_SIGN:
 			case DOT_OPERATOR:
 				operator = BinaryOperator.MULTIPLY;
-				context.acceptAll();
+				if (context.next() == '=') {
+					return null;
+				}
+				context.acceptButLast();
 				break;
 			case '/':
 			case DIVISION_SIGN:
 			case DIVISION_SLASH:
 				operator = BinaryOperator.DIVIDE;
-				context.acceptAll();
+				if (context.next() == '=') {
+					return null;
+				}
+				context.acceptButLast();
 				break;
 			case '+':
 				operator = BinaryOperator.ADD;
-				context.acceptAll();
+				if (context.next() == '=') {
+					return null;
+				}
+				context.acceptButLast();
 				break;
 			case '<':
 				switch (context.next()) {
