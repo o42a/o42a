@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Compiler
 Bundle-SymbolicName: org.o42a.compiler;singleton:=true
-Bundle-Version: 0.2.8
+Bundle-Version: 0.2.9
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.o42a.parser;bundle-version="0.2.8",
- org.o42a.codegen;bundle-version="0.2.8",
- org.o42a.core;bundle-version="0.2.8";visibility:=reexport,
- org.o42a.common;bundle-version="0.2.8"
+Require-Bundle: org.o42a.parser;bundle-version="0.2.9",
+ org.o42a.codegen;bundle-version="0.2.9",
+ org.o42a.core;bundle-version="0.2.9";visibility:=reexport,
+ org.o42a.common;bundle-version="0.2.9"
 Export-Package: org.o42a.compiler

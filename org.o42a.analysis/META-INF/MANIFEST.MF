@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Compilation Analysis Tools
 Bundle-SymbolicName: org.o42a.analysis
-Bundle-Version: 0.2.8
+Bundle-Version: 0.2.9
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.o42a.util;bundle-version="0.2.8";visibility:=reexport
+Require-Bundle: org.o42a.util;bundle-version="0.2.9";visibility:=reexport
 Export-Package: org.o42a.analysis,
  org.o42a.analysis.use

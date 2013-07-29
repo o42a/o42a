@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Compiler Commons
 Bundle-SymbolicName: org.o42a.common;singleton:=true
-Bundle-Version: 0.2.8
+Bundle-Version: 0.2.9
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.o42a.core;bundle-version="0.2.8";visibility:=reexport,
- org.o42a.codegen;bundle-version="0.2.8";visibility:=reexport
+Require-Bundle: org.o42a.core;bundle-version="0.2.9";visibility:=reexport,
+ org.o42a.codegen;bundle-version="0.2.9";visibility:=reexport
 Export-Package: org.o42a.common.builtin,
  org.o42a.common.macro,
  org.o42a.common.macro.type,
