@@ -17,7 +17,7 @@ else
 	white=""
 fi
 
-O42A_RELEASE="0.2.8"
+O42A_RELEASE="0.2.9"
 JAR_DIR=${JAR_DIR:-"$(dirname $0)/target"}
 LIB_DIR=${LIB_DIR:-"$(dirname $0)/target"}
 DEBUG_LDFLAGS=${DEBUG_LDFLAGS:-"-Wl,-rpath=${LIB_DIR} -L${LIB_DIR} -lo42a_debug"}

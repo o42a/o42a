@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: LLVM Back-end of Compiler
 Bundle-SymbolicName: org.o42a.backend.llvm;singleton:=true
-Bundle-Version: 0.2.8
+Bundle-Version: 0.2.9
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.o42a.util;bundle-version="0.2.8",
- org.o42a.codegen;bundle-version="0.2.8";visibility:=reexport
+Require-Bundle: org.o42a.util;bundle-version="0.2.9",
+ org.o42a.codegen;bundle-version="0.2.9";visibility:=reexport
 Export-Package: org.o42a.backend.llvm
 Bundle-ActivationPolicy: lazy

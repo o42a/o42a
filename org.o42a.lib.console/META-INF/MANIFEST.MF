@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Console Module
 Bundle-SymbolicName: org.o42a.lib.console;singleton:=true
-Bundle-Version: 0.2.8
+Bundle-Version: 0.2.9
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.o42a.common;bundle-version="0.2.8"
+Require-Bundle: org.o42a.common;bundle-version="0.2.9"
 Export-Package: org.o42a.lib.console
 Bundle-ActivationPolicy: lazy
