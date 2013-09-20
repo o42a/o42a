@@ -24,7 +24,7 @@
 		<path>
 			<filelist dir="." files="${source..}"/>
 		</path>
-		<regexpmapper from="${basedir}/(.*)$$" to="\1" handledirsep="true"/>
+		<flattenmapper/>
 	</pathconvert>
 
 	<pathconvert property="project.deps.classpath">
@@ -38,9 +38,7 @@
 		<path>
 			<filelist dir="${root.dir}" files="${compile.deps}"/>
 		</path>
-		<regexpmapper
-			from="${root.dir}/(.*)$$"
-			to="${root.dir}/\1/bin" handledirsep="true"/>
+		<globmapper from="*" to="*/bin" handledirsep="true"/>
 	</pathconvert>
 
 	<property 
@@ -51,7 +49,15 @@
 		<path>
 			<filelist dir="." files="${bin.includes}"/>
 		</path>
-		<regexpmapper from="${basedir}/(.*)$$" to="\1/**" handledirsep="true"/>
+		<chainedmapper>
+			<flattenmapper/>
+			<filtermapper>
+				<linecontains negate="true">
+					<contains value="${ant.project.name}"/>
+				</linecontains>
+				<suffixlines suffix="/**"/>
+			</filtermapper>
+		</chainedmapper>
 	</pathconvert>
 	
 	<condition property="project.has_deps" value="${project.deps.classpath}">
