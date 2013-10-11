@@ -50,12 +50,12 @@ const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_fld_ctr = {
 };
 #endif /* NDEBUG */
 
-static void o42a_fld_mark_none(o42a_fld *const field) {
+static void o42a_fld_mark_none(o42a_fld *const field __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }
 
-static void o42a_fld_sweep_none(o42a_fld *const field) {
+static void o42a_fld_sweep_none(o42a_fld *const field __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }
@@ -126,12 +126,12 @@ extern o42a_fld *o42a_fld_by_field(
 
 extern o42a_fld *o42a_fld_by_overrider(const o42a_obj_overrider_t *);
 
-o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope) {
+o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope __attribute__((unused))) {
 	O42A_ENTER(return NULL);
 	O42A_RETURN NULL;
 }
 
-o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *scope) {
+o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *scope __attribute__((unused))) {
 	O42A_ENTER(return NULL);
 	o42a_error_print("Object reference stub invoked");
 	O42A_RETURN NULL;

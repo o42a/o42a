@@ -712,7 +712,7 @@ void o42a_gc_run() {
 }
 #endif /* !NDEBUG || O42A_GC_SYNC */
 
-static void *o42a_gc_thread(void *data) {
+static void *o42a_gc_thread(void *data __attribute__((unused))) {
 	O42A_START_THREAD("GC");
 	O42A_ENTER(return NULL);
 
@@ -950,7 +950,7 @@ void o42a_gc_mark(o42a_gc_block_t *block) {
 	O42A_RETURN;
 }
 
-void o42a_gc_noop(void *data) {
+void o42a_gc_noop(void *data __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }

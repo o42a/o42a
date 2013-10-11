@@ -1326,7 +1326,9 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 }
 
 
-void o42a_obj_val_false(o42a_val_t *const result, o42a_obj_t *const object) {
+void o42a_obj_val_false(
+		o42a_val_t *const result,
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
@@ -1334,20 +1336,23 @@ void o42a_obj_val_false(o42a_val_t *const result, o42a_obj_t *const object) {
 
 void o42a_obj_value_false(
 		o42a_val_t *const result,
-		o42a_obj_data_t *const data,
-		o42a_obj_t *const object) {
+		o42a_obj_data_t *const data __attribute__((unused)),
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
 }
 
-o42a_bool_t o42a_obj_cond_false(o42a_obj_t *const object) {
+o42a_bool_t o42a_obj_cond_false(
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return O42A_FALSE);
 	O42A_RETURN O42A_FALSE;
 }
 
 
-void o42a_obj_val_void(o42a_val_t *const result, o42a_obj_t *const object) {
+void o42a_obj_val_void(
+		o42a_val_t *const result,
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	result->flags = O42A_TRUE;
 	O42A_RETURN;
@@ -1355,25 +1360,30 @@ void o42a_obj_val_void(o42a_val_t *const result, o42a_obj_t *const object) {
 
 void o42a_obj_value_void(
 		o42a_val_t *const result,
-		o42a_obj_data_t *const data,
-		o42a_obj_t *const object) {
+		o42a_obj_data_t *const data __attribute__((unused)),
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	result->flags = O42A_TRUE;
 	O42A_RETURN;
 }
 
-o42a_bool_t o42a_obj_cond_true(o42a_obj_t *const object) {
+o42a_bool_t o42a_obj_cond_true(
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return O42A_FALSE);
 	O42A_RETURN O42A_TRUE;
 }
 
 
-void o42a_obj_val_unknown(o42a_val_t *const result, o42a_obj_t *const object) {
+void o42a_obj_val_unknown(
+		o42a_val_t *const result __attribute__((unused)),
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }
 
-void o42a_obj_val_stub(o42a_val_t *const result, o42a_obj_t *const object) {
+void o42a_obj_val_stub(
+		o42a_val_t *const result,
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	o42a_error_print("Object value part stub invoked");
 	result->flags = O42A_FALSE;
@@ -1382,15 +1392,16 @@ void o42a_obj_val_stub(o42a_val_t *const result, o42a_obj_t *const object) {
 
 void o42a_obj_value_stub(
 		o42a_val_t *const result,
-		o42a_obj_data_t *const data,
-		o42a_obj_t *const object) {
+		o42a_obj_data_t *const data __attribute__((unused)),
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	o42a_error_print("Object value stub invoked");
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
 }
 
-o42a_bool_t o42a_obj_cond_stub(o42a_obj_t *const object) {
+o42a_bool_t o42a_obj_cond_stub(
+		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return O42A_FALSE);
 	o42a_error_print("Object condition stub invoked");
 	O42A_RETURN O42A_FALSE;
