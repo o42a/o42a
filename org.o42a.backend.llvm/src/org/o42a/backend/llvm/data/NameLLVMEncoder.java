@@ -93,10 +93,7 @@ public final class NameLLVMEncoder extends NameEncoder {
 					this.lastEncoded = false;
 				}
 				super.writeCodePoint(c);
-			} else if (
-					(c >= 'a' && c <= 'z')
-					|| (c >= 'A' && c <= 'Z')
-					|| c == '_' || c == '-') {
+			} else if (isId(c)) {
 				super.writeCodePoint(c);
 				this.lastEncoded = false;
 			} else if (c == ' ') {
@@ -106,6 +103,12 @@ public final class NameLLVMEncoder extends NameEncoder {
 				appendEncoded(c);
 				this.lastEncoded = true;
 			}
+		}
+
+		private boolean isId(int c) {
+			return (c >= 'a' && c <= 'z')
+					|| (c >= 'A' && c <= 'Z')
+					|| c == '_';
 		}
 
 		private boolean isSpecial(int c) {
