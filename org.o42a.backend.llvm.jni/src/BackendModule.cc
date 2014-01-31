@@ -27,6 +27,7 @@
 #include "llvm/CodeGen/AsmPrinter.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCStreamer.h"
@@ -297,6 +298,7 @@ bool BackendModule::validateFunction(Function *const function) {
 	OTRACE("--------- Validation succeed: " << function->getName() << "\n");
 
 	if (!this->functionPassManager) {
+
 		this->functionPassManager = new FunctionPassManager(this);
 		this->functionPassManager->add(
 				new llvm::DataLayout(*this->getTargetDataLayout()));
@@ -340,7 +342,7 @@ bool BackendModule::writeCode() {
 				new raw_fd_ostream(
 						OutputFilename.getValue().c_str(),
 						errorInfo,
-						raw_fd_ostream::F_Binary);
+						sys::fs::F_Binary);
 
 		if (!errorInfo.empty()) {
 			errs() << errorInfo << '\n';
