@@ -30,8 +30,11 @@ namespace llvm {
 class Constant;
 class DataLayout;
 class Function;
-class FunctionPassManager;
 class TargetMachine;
+
+namespace legacy {
+class FunctionPassManager;
+}
 
 }
 
@@ -41,7 +44,7 @@ class BackendModule : public Module {
 
 	mutable llvm::TargetMachine *targetMachine;
 	mutable const llvm::DataLayout *targetDataLayout;
-	mutable FunctionPassManager *functionPassManager;
+	mutable llvm::legacy::FunctionPassManager *functionPassManager;
 	Constant *stackSaveFunc;
 	Constant *stackRestoreFunc;
 	bool hostMachine;
