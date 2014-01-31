@@ -40,7 +40,18 @@ final class IntegerStaticsIR extends CachingStaticsIR<Long> {
 
 	@Override
 	protected ID constId(Long value) {
-		return CONST_ID.sub("INTEGER").sub(Long.toString(value));
+
+		final String id;
+
+		if (value == Long.MIN_VALUE) {
+			id = "min";
+		} else if (value < 0) {
+			id = "n" + (-value);
+		} else {
+			id = Long.toString(value);
+		}
+
+		return CONST_ID.sub("INTEGER").sub(id);
 	}
 
 }
