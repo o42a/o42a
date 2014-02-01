@@ -1,6 +1,6 @@
 /*
     Parser
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2012-2014 Ruslan Lopatin
 
     This file is part of o42a.
 

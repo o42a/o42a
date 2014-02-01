@@ -58,7 +58,7 @@ BEGIN {
 
 	no_copyright=public_domain
 
-	year = "2013"
+	year = "2014"
 	author = "Ruslan Lopatin"
 
 	o42a = license ~ ".o42a$"

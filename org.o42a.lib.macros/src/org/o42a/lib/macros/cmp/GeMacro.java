@@ -1,6 +1,6 @@
 /*
     Standard Macros
-    Copyright (C) 2013 Ruslan Lopatin
+    Copyright (C) 2013,2014 Ruslan Lopatin
 
     This file is part of o42a.
 
