@@ -1,6 +1,6 @@
 /*
     Test Framework
-    Copyright (C) 2011-2013 Ruslan Lopatin
+    Copyright (C) 2011-2014 Ruslan Lopatin
 
     This file is part of o42a.
 
