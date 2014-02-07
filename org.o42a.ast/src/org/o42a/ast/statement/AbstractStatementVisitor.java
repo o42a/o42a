@@ -24,7 +24,6 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.file.SubTitleNode;
 
 
@@ -75,11 +74,6 @@ public abstract class AbstractStatementVisitor<R, P>
 	@Override
 	public R visitSubTitle(SubTitleNode subTitle, P p) {
 		return visitStatement(subTitle, p);
-	}
-
-	@Override
-	public R visitInclusion(InclusionNode inclusion, P p) {
-		return visitStatement(inclusion, p);
 	}
 
 	@Override
