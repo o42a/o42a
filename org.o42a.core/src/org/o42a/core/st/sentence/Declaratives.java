@@ -24,7 +24,6 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.declarative.ExplicitInclusion;
 import org.o42a.util.string.Name;
 
 
@@ -90,14 +89,6 @@ public final class Declaratives extends Statements<Declaratives> {
 				"prohibited_declarative_ellipsis",
 				location,
 				"Ellipsis is only allowed within imperative block");
-	}
-
-	@Override
-	public void include(LocationInfo location, Name tag) {
-		if (!getMemberRegistry().inclusions().include(location, tag)) {
-			return;
-		}
-		statement(new ExplicitInclusion(location, this, tag));
 	}
 
 	@Override

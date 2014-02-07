@@ -254,8 +254,6 @@ public abstract class Statements<S extends Statements<S>>
 
 	public abstract void ellipsis(LocationInfo location, Name name);
 
-	public abstract void include(LocationInfo location, Name name);
-
 	public final Container nextContainer() {
 		return this.nextContainer;
 	}

@@ -31,7 +31,6 @@ import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -182,18 +181,6 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		p.get().ellipsis(
 				location(p, ellipsis),
 				target != null ? target.getName() : null);
-
-		return null;
-	}
-
-	@Override
-	public Void visitInclusion(InclusionNode inclusion, StatementsAccess p) {
-
-		final NameNode tag = inclusion.getTag();
-
-		if (tag != null) {
-			p.get().include(location(p, inclusion), tag.getName());
-		}
 
 		return null;
 	}

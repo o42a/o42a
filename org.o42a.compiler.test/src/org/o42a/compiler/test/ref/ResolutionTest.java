@@ -60,24 +60,6 @@ public class ResolutionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void referIncludedIsideBlock() {
-		addSource(
-				"a",
-				"A := integer",
-				"============ Inc",
-				"= 24");
-		compile(
-				"(*** Inc ***)",
-				"B := a (= 44)");
-
-		final Field a = field("a");
-		final Field b = field("b");
-
-		assertThat(definiteValue(a, ValueType.INTEGER), is(24L));
-		assertThat(definiteValue(b, ValueType.INTEGER), is(44L));
-	}
-
-	@Test
 	public void fieldWithTheSameNameAsOwner() {
 		compile(
 				"A := integer (",
