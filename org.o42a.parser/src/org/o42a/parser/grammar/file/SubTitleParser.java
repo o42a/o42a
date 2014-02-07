@@ -19,17 +19,13 @@
 */
 package org.o42a.parser.grammar.file;
 
-import static org.o42a.parser.Grammar.memberRef;
-import static org.o42a.parser.Grammar.name;
 import static org.o42a.parser.grammar.file.OddParser.ODD;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.file.DoubleLine;
 import org.o42a.ast.file.SubTitleNode;
-import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -38,8 +34,7 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 
 	public static final SubTitleParser SUB_TITLE = new SubTitleParser();
 
-	private static final DoubleLineParser PREFIX = new DoubleLineParser(3);
-	private static final DoubleLineParser SUFFIX = new DoubleLineParser(1);
+	private static final DoubleLineParser DOUBLE_LINE = new DoubleLineParser();
 
 	private SubTitleParser() {
 	}
@@ -48,38 +43,21 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 	public SubTitleNode parse(ParserContext context) {
 
 		final SeparatorNodes comments = context.skipComments(true);
-		final SignNode<DoubleLine> prefix = parsePrefix(context);
+		final SignNode<DoubleLine> doubleLine = parseDoubleLine(context);
 
-		if (prefix == null) {
+		if (doubleLine == null) {
 			return null;
 		}
 
-		final NameNode tagFirstName = context.parse(name());
-
-		if (tagFirstName == null) {
-			context.parse(ODD);
-			return addComments(new SubTitleNode(prefix, null, null), comments);
-		}
-
-		final MemberRefNode owner = context.acceptComments(
-					false,
-					addComments(
-							new MemberRefNode(null, null, tagFirstName, null),
-							comments));
-		final MemberRefNode memberRef = context.parse(memberRef(owner, true));
-		final MemberRefNode tag = memberRef != null ? memberRef : owner;
-
-		final SignNode<DoubleLine> suffix = context.parse(SUFFIX);
-
 		context.parse(ODD);
 
-		return new SubTitleNode(prefix, tag, suffix);
+		return addComments(new SubTitleNode(doubleLine), comments);
 	}
 
-	private SignNode<DoubleLine> parsePrefix(ParserContext context) {
+	private SignNode<DoubleLine> parseDoubleLine(ParserContext context) {
 
 		final boolean lineStart = context.isLineStart();
-		final SignNode<DoubleLine> prefix = context.parse(PREFIX);
+		final SignNode<DoubleLine> prefix = context.parse(DOUBLE_LINE);
 
 		if (prefix != null && !lineStart) {
 			invalidTitleUnderline(context, prefix);
@@ -107,8 +85,8 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 
 	private static final class DoubleLineParser extends LineParser<DoubleLine> {
 
-		DoubleLineParser(int minLength) {
-			super('=', minLength);
+		DoubleLineParser() {
+			super('=', 3);
 		}
 
 		@Override

@@ -93,7 +93,7 @@ public class FileTest extends GrammarTestCase {
 		assertThat(section.getTitle(), notNullValue());
 		assertThat(section.getDeclarator(), notNullValue());
 		assertThat(
-				section.getSubTitle().getPrefix().getType().getLength(),
+				section.getSubTitle().getDoubleLine().getType().getLength(),
 				is(11));
 		assertThat(section.getTypeDefinition(), nullValue());
 		assertThat(section.getContent().length, is(1));
@@ -118,7 +118,7 @@ public class FileTest extends GrammarTestCase {
 		assertThat(section.getTitle(), notNullValue());
 		assertThat(section.getDeclarator(), notNullValue());
 		assertThat(
-				section.getSubTitle().getPrefix().getType().getLength(),
+				section.getSubTitle().getDoubleLine().getType().getLength(),
 				is(11));
 		assertThat(section.getTypeDefinition().getContent().length, is(2));
 		assertThat(section.getContent().length, is(1));
@@ -146,7 +146,7 @@ public class FileTest extends GrammarTestCase {
 		assertThat(section.getTitle(), notNullValue());
 		assertThat(section.getDeclarator(), notNullValue());
 		assertThat(
-				section.getSubTitle().getPrefix().getType().getLength(),
+				section.getSubTitle().getDoubleLine().getType().getLength(),
 				is(10));
 		assertThat(section.getTypeDefinition(), nullValue());
 		assertThat(section.getContent().length, is(1));
@@ -167,7 +167,7 @@ public class FileTest extends GrammarTestCase {
 		assertThat(section, notNullValue());
 		assertThat(section.getTitle(), nullValue());
 		assertThat(
-				section.getSubTitle().getPrefix().getType().getLength(),
+				section.getSubTitle().getDoubleLine().getType().getLength(),
 				is(5));
 		assertThat(section.getTypeDefinition(), nullValue());
 		assertThat(section.getContent().length, is(1));
@@ -194,7 +194,7 @@ public class FileTest extends GrammarTestCase {
 		assertThat(section, notNullValue());
 		assertThat(section.getTitle(), nullValue());
 		assertThat(
-				section.getSubTitle().getPrefix().getType().getLength(),
+				section.getSubTitle().getDoubleLine().getType().getLength(),
 				is(6));
 		assertThat(section.getTypeDefinition(), nullValue());
 		assertThat(section.getContent().length, is(1));

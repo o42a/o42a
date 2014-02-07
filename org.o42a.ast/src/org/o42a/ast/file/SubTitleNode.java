@@ -22,7 +22,6 @@ package org.o42a.ast.file;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
@@ -30,30 +29,15 @@ import org.o42a.ast.statement.StatementNodeVisitor;
 
 public class SubTitleNode extends AbstractStatementNode {
 
-	private final SignNode<DoubleLine> prefix;
-	private final MemberRefNode tag;
-	private final SignNode<DoubleLine> suffix;
+	private final SignNode<DoubleLine> doubleLine;
 
-	public SubTitleNode(
-			SignNode<DoubleLine> prefix,
-			MemberRefNode tag,
-			SignNode<DoubleLine> suffix) {
-		super(prefix.getStart(), end(prefix, tag, suffix));
-		this.prefix = prefix;
-		this.tag = tag;
-		this.suffix = suffix;
+	public SubTitleNode(SignNode<DoubleLine> doubleLine) {
+		super(doubleLine);
+		this.doubleLine = doubleLine;
 	}
 
-	public final SignNode<DoubleLine> getPrefix() {
-		return this.prefix;
-	}
-
-	public final MemberRefNode getTag() {
-		return this.tag;
-	}
-
-	public final SignNode<DoubleLine> getSuffix() {
-		return this.suffix;
+	public SignNode<DoubleLine> getDoubleLine() {
+		return this.doubleLine;
 	}
 
 	@Override
@@ -78,13 +62,7 @@ public class SubTitleNode extends AbstractStatementNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		this.prefix.printContent(out);
-		if (this.tag != null) {
-			this.tag.printContent(out);
-		}
-		if (this.suffix != null) {
-			this.suffix.printContent(out);
-		}
+		this.doubleLine.printContent(out);
 	}
 
 }
