@@ -56,9 +56,10 @@ public class FileNode extends AbstractNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		if (this.section != null) {
-			this.section.printContent(out);
+		if (this.header != null) {
+			this.header.printContent(out);
 		}
+		this.section.printContent(out);
 	}
 
 }

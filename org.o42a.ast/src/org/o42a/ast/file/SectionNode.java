@@ -24,7 +24,6 @@ import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
@@ -109,10 +108,6 @@ public class SectionNode
 		return this.subTitle;
 	}
 
-	public final MemberRefNode getLabel() {
-		return this.subTitle != null ? this.subTitle.getTag() : null;
-	}
-
 	public final SectionTypeDefinitionNode getTypeDefinition() {
 		return this.typeDefinition;
 	}
@@ -122,14 +117,7 @@ public class SectionNode
 		if (this.subTitle == null) {
 			return null;
 		}
-
-		final SignNode<DoubleLine> suffix = this.subTitle.getSuffix();
-
-		if (suffix != null) {
-			return suffix;
-		}
-
-		return this.subTitle.getPrefix();
+		return this.subTitle.getDoubleLine();
 	}
 
 	@Override
