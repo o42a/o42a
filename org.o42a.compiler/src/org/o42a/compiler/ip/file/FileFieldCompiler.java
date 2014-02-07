@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.file;
 import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
 
 import org.o42a.ast.file.FileNode;
-import org.o42a.ast.file.SectionNode;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
@@ -52,18 +51,7 @@ public class FileFieldCompiler
 
 	@Override
 	protected Section createSection() {
-
-		final SectionNode[] sectionNodes = getNode().getSections();
-
-		if (sectionNodes.length == 0) {
-
-			final SectionNode sectionNode =
-					new SectionNode(getNode().getStart(), getNode().getEnd());
-
-			return new Section(this, sectionNode);
-		}
-
-		return new Section(this, sectionNodes[0]);
+		return new Section(this, getNode());
 	}
 
 }

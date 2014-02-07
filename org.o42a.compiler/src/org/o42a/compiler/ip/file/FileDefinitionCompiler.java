@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.file;
 
 import org.o42a.ast.file.FileNode;
-import org.o42a.ast.file.SectionNode;
 import org.o42a.core.source.DefinitionSource;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
@@ -59,18 +58,7 @@ public class FileDefinitionCompiler
 	}
 
 	private Section compile() {
-
-		final SectionNode[] sectionNodes = getNode().getSections();
-
-		if (sectionNodes.length == 0) {
-
-			final SectionNode sectionNode =
-					new SectionNode(getNode().getStart(), getNode().getEnd());
-
-			return new Section(this, sectionNode);
-		}
-
-		return new Section(this, sectionNodes[0]);
+		return new Section(this, getNode());
 	}
 
 }

@@ -29,9 +29,7 @@ import static org.o42a.compiler.ip.st.StInterpreter.addSentence;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.redundantTypeParameters;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
 
-import org.o42a.ast.file.SectionNode;
-import org.o42a.ast.file.SectionTypeDefinitionNode;
-import org.o42a.ast.file.SubTitleNode;
+import org.o42a.ast.file.*;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.field.FieldNesting;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
@@ -58,11 +56,20 @@ final class Section implements LogInfo {
 
 	Section(
 			AbstractDefinitionCompiler<?> compiler,
-			SectionNode sectionNode) {
+			FileNode fileNode) {
 		this.compiler = compiler;
-		this.sectionNode = sectionNode;
+
+		final SectionNode sectionNode = fileNode.getSection();
+
+		if (sectionNode != null) {
+			this.sectionNode = sectionNode;
+		} else {
+			this.sectionNode =
+					new SectionNode(fileNode.getStart(), fileNode.getEnd());
+		}
+
 		this.title = new SectionTitle(this);
-		this.loggable = sectionLoggable(sectionNode);
+		this.loggable = sectionLoggable(this.sectionNode);
 	}
 
 	public final AbstractDefinitionCompiler<?> getCompiler() {
@@ -117,7 +124,7 @@ final class Section implements LogInfo {
 
 	public void encloseInto(DeclarativeBlock enclosingBlock) {
 		assert this.enclosingBlock == null :
-			"Section already enclosed into block";
+			"The section is already enclosed into a block";
 		this.enclosingBlock = enclosingBlock;
 		addHeader(enclosingBlock);
 	}
