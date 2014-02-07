@@ -23,7 +23,6 @@ import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.file.SubTitleNode;
 
 
@@ -47,7 +46,5 @@ public interface StatementNodeVisitor<R, P>
 	R visitEllipsis(EllipsisNode ellipsis, P p);
 
 	R visitSubTitle(SubTitleNode subTitle, P p);
-
-	R visitInclusion(InclusionNode inclusion, P p);
 
 }

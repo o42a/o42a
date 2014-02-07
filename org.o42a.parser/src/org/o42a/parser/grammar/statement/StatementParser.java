@@ -125,10 +125,6 @@ public class StatementParser implements Parser<StatementNode> {
 			return parseParentheses(context);
 		case '<':
 			return context.parse(this.grammar.clauseDeclarator());
-		case '*':
-			if (this.grammar.isDeclarative()) {
-				return context.parse(inclusion());
-			}
 		}
 
 		return null;
