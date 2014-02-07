@@ -19,16 +19,19 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import org.o42a.core.member.Inclusions;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Declaratives;
 
 
-public abstract class Inclusion extends Statement {
+public class Inclusion extends Statement {
+
+	private final Declaratives statements;
 
 	public Inclusion(LocationInfo location, Declaratives statements) {
 		super(location, statements.nextDistributor());
+		this.statements = statements;
 	}
 
 	@Override
@@ -39,6 +42,41 @@ public abstract class Inclusion extends Statement {
 	@Override
 	public final Statement reproduce(Reproducer reproducer) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Command command(CommandEnv env) {
+		return new InclusionCommand(this, env);
+	}
+
+	@Override
+	public String toString() {
+		return "***";
+	}
+
+	final boolean include() {
+
+		final Inclusions inclusions =
+				this.statements.getMemberRegistry().inclusions();
+
+		if (!inclusions.implicitInclusionsSupported()) {
+			// Implicit inclusions support status may change
+			// as additional field variants may be added at a time
+			// after this instruction created.
+			return false;
+		}
+		if (inclusions.hasExplicitInclusions()) {
+			// Implicit inclusions won't be performed
+			// if at least one implicit inclusion present.
+			return false;
+		}
+		if (this.statements.isInsideIssue()) {
+			// Implicit inclusions not supported
+			// inside conditional declarations.
+			return false;
+		}
+
+		return true;
 	}
 
 }

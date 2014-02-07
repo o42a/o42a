@@ -16,27 +16,13 @@ import org.o42a.core.value.ValueType;
 public class InclusionTest extends CompilerTestCase {
 
 	@Test
-	public void implicitInclusion() {
+	public void fieldInclusion() {
 		addSource(
 				"included",
 				"Included := integer",
 				"===================",
 				"= 42");
 		compile("");
-
-		final Field included = field("included");
-
-		assertThat(definiteValue(included, ValueType.INTEGER), is(42L));
-	}
-
-	@Test
-	public void explicitInclusion() {
-		addSource(
-				"included",
-				"Included := integer",
-				"=================== Inc",
-				"= 42");
-		compile("(*** Inc ***)");
 
 		final Field included = field("included");
 

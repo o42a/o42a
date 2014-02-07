@@ -33,7 +33,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.impl.declarative.DeclarativeBlockCommand;
-import org.o42a.core.st.impl.declarative.ImplicitInclusion;
+import org.o42a.core.st.impl.declarative.Inclusion;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.string.Name;
 
@@ -225,7 +225,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 		final Declaratives statements = propose(this).alternative(this);
 
-		statements.statement(new ImplicitInclusion(this, statements));
+		statements.statement(new Inclusion(this, statements));
 	}
 
 }

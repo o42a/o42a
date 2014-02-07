@@ -74,14 +74,6 @@ public final class Imperatives extends Statements<Imperatives> {
 	}
 
 	@Override
-	public void include(LocationInfo location, Name name) {
-		getLogger().error(
-				"prohibited_imperative_inclusion",
-				location,
-				"Inclusion into imperative block is not possible");
-	}
-
-	@Override
 	protected void braces(ImperativeBlock braces) {
 		statement(braces);
 	}

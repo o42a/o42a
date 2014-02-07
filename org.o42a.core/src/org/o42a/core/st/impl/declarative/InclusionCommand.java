@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
@@ -31,19 +33,16 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
-abstract class InclusionCommand<I extends Inclusion>
-		extends Command
-		implements Instruction {
+final class InclusionCommand extends Command implements Instruction {
 
 	private Command replacement;
 
-	InclusionCommand(I statement, CommandEnv env) {
+	InclusionCommand(Inclusion statement, CommandEnv env) {
 		super(statement, env);
 	}
 
-	@SuppressWarnings("unchecked")
-	public final I getInclusion() {
-		return (I) getStatement();
+	public final Inclusion getInclusion() {
+		return (Inclusion) getStatement();
 	}
 
 	public final Command getReplacement() {
@@ -60,7 +59,11 @@ abstract class InclusionCommand<I extends Inclusion>
 
 		final DeclarativeBlock block = context.getBlock().toDeclarativeBlock();
 
-		includeInto(block);
+		if (!getInclusion().include()) {
+			return;
+		}
+
+		getContext().include(block, IMPLICIT_SECTION_TAG);
 	}
 
 	@Override
@@ -75,6 +78,9 @@ abstract class InclusionCommand<I extends Inclusion>
 
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
+		if (!getInclusion().include()) {
+			return SKIP_INSTRUCTION;
+		}
 		return this;
 	}
 
@@ -107,8 +113,6 @@ abstract class InclusionCommand<I extends Inclusion>
 	public Cmd cmd(Scope origin) {
 		throw new UnsupportedOperationException();
 	}
-
-	protected abstract void includeInto(DeclarativeBlock block);
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
