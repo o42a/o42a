@@ -19,103 +19,58 @@
 */
 package org.o42a.compiler.ip.file;
 
-import java.util.HashMap;
-
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.core.source.DefinitionSource;
-import org.o42a.core.source.Location;
-import org.o42a.core.source.SectionTag;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
 public class FileDefinitionCompiler
 		extends AbstractDefinitionCompiler<DefinitionSource> {
 
-	private HashMap<SectionTag, Section> sections;
+	private Section section;
 
 	public FileDefinitionCompiler(DefinitionSource source, FileNode node) {
 		super(source, node);
 	}
 
-	@Override
-	public void define(DeclarativeBlock definition, SectionTag tag) {
+	public Section getSection() {
+		if (this.section != null) {
+			return this.section;
+		}
 
-		final Section section = section(tag);
+		this.section = compile();
+
+		return this.section;
+	}
+
+	@Override
+	public void define(DeclarativeBlock definition) {
+
+		final Section section = getSection();
 
 		if (section == null) {
 			// No section with the given tag in the source.
 			return;
 		}
+		section.use();
 
 		section.declareField(definition);
 	}
 
-	@Override
-	public void done() {
-		for (Section section : getSections().values()) {
-			section.done();
-		}
-		this.sections = null;
-	}
-
-	private Section section(SectionTag tag) {
-
-		final Section section = getSections().get(tag);
-
-		if (section != null) {
-			section.use();
-		}
-
-		return section;
-	}
-
-	private HashMap<SectionTag, Section> getSections() {
-		if (this.sections != null) {
-			return this.sections;
-		}
+	private Section compile() {
 
 		final SectionNode[] sectionNodes = getNode().getSections();
-		final HashMap<SectionTag, Section> sections =
-				new HashMap<>(sectionNodes.length);
-		SectionTitle aboveTitle = null;
 
-		for (SectionNode sectionNode : sectionNodes) {
+		if (sectionNodes.length == 0) {
 
-			final Section section = new Section(this, sectionNode, aboveTitle);
+			final SectionNode sectionNode =
+					new SectionNode(getNode().getStart(), getNode().getEnd());
 
-			aboveTitle = section.getTitle();
-			if (!section.isValid()) {
-				continue;
-			}
-
-			final SectionTag tag = section.getTag();
-			final Section existing = sections.put(tag, section);
-
-			if (existing == null) {
-				continue;
-			}
-
-			sections.put(tag, existing);
-
-			final Location location =
-					section.getLocation().addAnother(existing);
-
-			if (tag.isImplicit()) {
-				getLogger().error(
-						"duplicate_implicit_section",
-						location,
-						"Section without tag already present in this file");
-			} else {
-				getLogger().error(
-						"duplicate_section",
-						location,
-						"Section '%s' already present in this file",
-						tag);
-			}
+			return new Section(this, sectionNode);
 		}
 
-		return this.sections = sections;
+		return new Section(this, sectionNodes[0]);
 	}
 
 }

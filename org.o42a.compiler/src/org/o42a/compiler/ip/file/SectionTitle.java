@@ -52,7 +52,7 @@ final class SectionTitle implements LogInfo {
 	private final Loggable loggable;
 	private final DeclaratorNode declaratorNode;
 
-	SectionTitle(Section section, SectionTitle aboveTitle) {
+	SectionTitle(Section section) {
 		this.section = section;
 
 		final SectionNode sectionNode = section.getSectionNode();
@@ -61,8 +61,6 @@ final class SectionTitle implements LogInfo {
 
 		if (sectionNode.getTitle() != null) {
 			this.declaratorNode = sectionNode.getDeclarator();
-		} else if (aboveTitle != null) {
-			this.declaratorNode = aboveTitle.getDeclaratorNode();
 		} else {
 			this.declaratorNode = null;
 		}

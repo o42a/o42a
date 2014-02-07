@@ -217,11 +217,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		if (!getMemberRegistry().inclusions().implicitInclusionsSupported()) {
 			return;
 		}
-		if (!getContext().getSectionTag().isImplicit()) {
-			// Enclosing context is a section.
-			// Only explicit (tagged) inclusions supported.
-			return;
-		}
 
 		final Declaratives statements = propose(this).alternative(this);
 

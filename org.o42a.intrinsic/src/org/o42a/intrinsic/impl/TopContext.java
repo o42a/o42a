@@ -21,7 +21,9 @@ package org.o42a.intrinsic.impl;
 
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
-import org.o42a.core.source.*;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.FieldCompiler;
+import org.o42a.core.source.ModuleCompiler;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.io.EmptySource;
@@ -52,7 +54,7 @@ public final class TopContext extends CompilerContext {
 	}
 
 	@Override
-	public void include(DeclarativeBlock block, SectionTag tag) {
+	public void include(DeclarativeBlock block) {
 	}
 
 	@Override

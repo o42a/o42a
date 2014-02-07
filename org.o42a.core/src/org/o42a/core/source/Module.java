@@ -22,7 +22,6 @@ package org.o42a.core.source;
 import static org.o42a.core.Distributor.containerDistributor;
 import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
-import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -135,7 +134,7 @@ public class Module extends Obj {
 				this.memberRegistry);
 		this.definitionsBuilder = this.definition.definitions(definitionEnv());
 
-		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
+		getCompiler().define(this.definition);
 	}
 
 	@Override

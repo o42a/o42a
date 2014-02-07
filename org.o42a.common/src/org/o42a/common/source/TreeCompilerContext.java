@@ -19,8 +19,6 @@
 */
 package org.o42a.common.source;
 
-import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
-
 import java.util.Iterator;
 
 import org.o42a.core.source.*;
@@ -33,28 +31,18 @@ public class TreeCompilerContext<S extends Source>
 		extends CompilerContext {
 
 	private final SourceTree<S> sourceTree;
-	private final SectionTag sectionTag;
 
 	public TreeCompilerContext(
 			CompilerContext parentContext,
 			SourceTree<S> sourceTree) {
-		this(parentContext, sourceTree, IMPLICIT_SECTION_TAG, null);
+		this(parentContext, sourceTree, null);
 	}
 
 	public TreeCompilerContext(
 			CompilerContext parentContext,
 			SourceTree<S> sourceTree,
 			Logger logger) {
-		this(parentContext, sourceTree, IMPLICIT_SECTION_TAG, logger);
-	}
-
-	protected TreeCompilerContext(
-			CompilerContext parentContext,
-			SourceTree<S> sourceTree,
-			SectionTag sectionTag,
-			Logger logger) {
 		super(parentContext, logger);
-		this.sectionTag = sectionTag;
 		this.sourceTree = sourceTree;
 		if (!sourceTree.getFileName().isValid()) {
 			getLogger().error(
@@ -75,11 +63,6 @@ public class TreeCompilerContext<S extends Source>
 	}
 
 	@Override
-	public final SectionTag getSectionTag() {
-		return this.sectionTag;
-	}
-
-	@Override
 	public ModuleCompiler compileModule() {
 		return getCompiler().compileModule(new TreeObjectSource<>(this));
 	}
@@ -90,7 +73,7 @@ public class TreeCompilerContext<S extends Source>
 	}
 
 	@Override
-	public void include(DeclarativeBlock block, SectionTag tag) {
+	public void include(DeclarativeBlock block) {
 
 		final SourceCompiler compiler = getCompiler();
 		final Iterator<? extends SourceTree<S>> childTrees =
@@ -105,15 +88,13 @@ public class TreeCompilerContext<S extends Source>
 					compiler.compileDefinition(definitionSource);
 
 			if (definitionCompiler != null) {
-				definitionCompiler.define(block, tag);
+				definitionCompiler.define(block);
 			}
 		}
 	}
 
-	protected TreeCompilerContext<S> sectionContext(
-			SectionTag tag,
-			SourceTree<S> sourceTree) {
-		return new TreeCompilerContext<>(this, sourceTree, tag, null);
+	protected TreeCompilerContext<S> sectionContext(SourceTree<S> sourceTree) {
+		return new TreeCompilerContext<>(this, sourceTree, null);
 	}
 
 }

@@ -28,12 +28,10 @@ import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 import static org.o42a.compiler.ip.st.StInterpreter.addSentence;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.redundantTypeParameters;
 import static org.o42a.compiler.ip.type.def.TypeDefinition.typeDefinition;
-import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.file.SectionTypeDefinitionNode;
 import org.o42a.ast.file.SubTitleNode;
-import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.field.FieldNesting;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
@@ -55,25 +53,16 @@ final class Section implements LogInfo {
 	private final Loggable loggable;
 	private SectionNode sectionNode;
 	private final SectionTitle title;
-	private final SectionTag tag;
 	private Location location;
 	private DeclarativeBlock enclosingBlock;
 
 	Section(
 			AbstractDefinitionCompiler<?> compiler,
 			SectionNode sectionNode) {
-		this(compiler, sectionNode, null);
-	}
-
-	Section(
-			AbstractDefinitionCompiler<?> compiler,
-			SectionNode sectionNode,
-			SectionTitle aboveTitle) {
 		this.compiler = compiler;
 		this.sectionNode = sectionNode;
-		this.title = new SectionTitle(this, aboveTitle);
+		this.title = new SectionTitle(this);
 		this.loggable = sectionLoggable(sectionNode);
-		this.tag = sectionTag(sectionNode);
 	}
 
 	public final AbstractDefinitionCompiler<?> getCompiler() {
@@ -97,12 +86,8 @@ final class Section implements LogInfo {
 		return this.title;
 	}
 
-	public final SectionTag getTag() {
-		return this.tag;
-	}
-
 	public final boolean isValid() {
-		return getTag() != null && getTitle().isValid();
+		return getTitle().isValid();
 	}
 
 	public final CompilerContext getContext() {
@@ -110,8 +95,6 @@ final class Section implements LogInfo {
 	}
 
 	public final Location getLocation() {
-		assert isUsed() :
-			"Section never used";
 		return this.location;
 	}
 
@@ -120,9 +103,7 @@ final class Section implements LogInfo {
 	}
 
 	public final Section use() {
-		return useBy(getSource().getSectionFactory().sectionContext(
-				this,
-				getTag()));
+		return useBy(getSource().getSectionFactory().sectionContext(this));
 	}
 
 	public final Section useBy(CompilerContext context) {
@@ -253,7 +234,7 @@ final class Section implements LogInfo {
 		if (this.loggable == null) {
 			return super.toString();
 		}
-		return "Section[" + this.tag + "]:" + this.loggable;
+		return "Section[" + this.loggable + ']';
 	}
 
 	private static Loggable sectionLoggable(SectionNode node) {
@@ -271,25 +252,6 @@ final class Section implements LogInfo {
 		}
 
 		return subTitle.getLoggable();
-	}
-
-	private SectionTag sectionTag(SectionNode node) {
-
-		final SubTitleNode subTitle = node.getSubTitle();
-
-		if (subTitle == null) {
-			return IMPLICIT_SECTION_TAG;
-		}
-
-		final MemberRefNode tagNode = subTitle.getTag();
-
-		if (tagNode == null) {
-			return IMPLICIT_SECTION_TAG;
-		}
-
-		return tagNode.accept(
-				new SectionTagVisitor(getLogger()),
-				IMPLICIT_SECTION_TAG);
 	}
 
 	private void addHeader(DeclarativeBlock enclosingBlock) {
