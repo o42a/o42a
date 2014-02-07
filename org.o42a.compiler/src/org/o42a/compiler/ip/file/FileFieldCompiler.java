@@ -63,24 +63,7 @@ public class FileFieldCompiler
 			return new Section(this, sectionNode);
 		}
 
-		if (sectionNodes.length > 1) {
-			getLogger().error(
-					"redundant_field_section",
-					SectionTitle.titleLoggable(sectionNodes[1]),
-					"Field source filed should not contain"
-					+ " more than one section");
-		}
-
-		final Section section = new Section(this, sectionNodes[0]);
-
-		if (!section.getTag().isImplicit()) {
-			getLogger().error(
-					"prohibited_field_section_tag",
-					section.getSectionNode().getSubTitle().getTag(),
-					"Field section should not be tagged");
-		}
-
-		return section;
+		return new Section(this, sectionNodes[0]);
 	}
 
 }

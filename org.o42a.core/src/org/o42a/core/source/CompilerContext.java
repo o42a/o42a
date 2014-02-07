@@ -19,8 +19,6 @@
 */
 package org.o42a.core.source;
 
-import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
-
 import org.o42a.core.object.Obj;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.io.Source;
@@ -57,10 +55,6 @@ public abstract class CompilerContext implements LocationInfo {
 			return this.location;
 		}
 		return this.location = new Location(this, getSource());
-	}
-
-	public SectionTag getSectionTag() {
-		return IMPLICIT_SECTION_TAG;
 	}
 
 	public final SourceCompiler getCompiler() {
@@ -106,7 +100,7 @@ public abstract class CompilerContext implements LocationInfo {
 
 	public abstract FieldCompiler compileField();
 
-	public abstract void include(DeclarativeBlock block, SectionTag tag);
+	public abstract void include(DeclarativeBlock block);
 
 	public boolean declarationsVisibleFrom(CompilerContext viewer) {
 		return getSource().equals(viewer.getSource());

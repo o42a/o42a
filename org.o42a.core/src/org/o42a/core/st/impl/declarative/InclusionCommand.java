@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
@@ -63,7 +61,7 @@ final class InclusionCommand extends Command implements Instruction {
 			return;
 		}
 
-		getContext().include(block, IMPLICIT_SECTION_TAG);
+		getContext().include(block);
 	}
 
 	@Override

@@ -24,8 +24,6 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 
 public interface DefinitionCompiler {
 
-	void define(DeclarativeBlock definition, SectionTag tag);
-
-	void done();
+	void define(DeclarativeBlock definition);
 
 }

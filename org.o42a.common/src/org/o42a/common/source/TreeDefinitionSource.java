@@ -19,7 +19,9 @@
 */
 package org.o42a.common.source;
 
-import org.o42a.core.source.*;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.DefinitionSource;
+import org.o42a.core.source.SectionFactory;
 import org.o42a.util.io.Source;
 import org.o42a.util.io.SourceFileName;
 import org.o42a.util.log.LogInfo;
@@ -63,10 +65,8 @@ class TreeDefinitionSource<S extends Source>
 	}
 
 	@Override
-	public TreeCompilerContext<S> sectionContext(
-			LogInfo location,
-			SectionTag tag) {
-		return getParentContext().sectionContext(tag, this.sourceTree);
+	public TreeCompilerContext<S> sectionContext(LogInfo location) {
+		return getParentContext().sectionContext(this.sourceTree);
 	}
 
 	@Override

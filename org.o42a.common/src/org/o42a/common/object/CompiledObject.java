@@ -20,7 +20,6 @@
 package org.o42a.common.object;
 
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
-import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.common.ref.ScopeSet;
 import org.o42a.common.source.SourceTree;
@@ -117,7 +116,7 @@ public class CompiledObject extends Obj {
 				this.memberRegistry);
 		this.definitionsBuilder = this.definition.definitions(definitionEnv());
 
-		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
+		getCompiler().define(this.definition);
 	}
 
 	@Override

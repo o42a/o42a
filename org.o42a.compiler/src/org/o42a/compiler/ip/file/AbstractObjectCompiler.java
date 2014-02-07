@@ -93,16 +93,8 @@ public abstract class AbstractObjectCompiler
 	}
 
 	@Override
-	public void define(DeclarativeBlock definition, SectionTag tag) {
-		assert tag.isImplicit() :
-			"Section tag ignored in object definition";
+	public void define(DeclarativeBlock definition) {
 		getSection().define(definition);
-	}
-
-	@Override
-	public void done() {
-		getLocation();
-		this.section = null;
 	}
 
 	protected abstract Section createSection();

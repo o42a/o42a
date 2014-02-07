@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.Ref.voidRef;
-import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.object.AnnotatedSources;
@@ -223,7 +222,7 @@ public class Root extends Obj {
 				this.memberRegistry);
 		this.definitionsBuilder = this.definition.definitions(definitionEnv());
 
-		this.compiler.define(this.definition, IMPLICIT_SECTION_TAG);
+		this.compiler.define(this.definition);
 	}
 
 	@Override

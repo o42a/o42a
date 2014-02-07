@@ -24,6 +24,6 @@ import org.o42a.util.log.LogInfo;
 
 public interface SectionFactory {
 
-	CompilerContext sectionContext(LogInfo location, SectionTag tag);
+	CompilerContext sectionContext(LogInfo location);
 
 }

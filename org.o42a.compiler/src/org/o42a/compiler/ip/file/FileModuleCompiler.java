@@ -29,7 +29,9 @@ import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.source.*;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.ModuleCompiler;
+import org.o42a.core.source.ObjectSource;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.io.SourceFileName;
@@ -70,9 +72,7 @@ public final class FileModuleCompiler
 	}
 
 	@Override
-	public void define(DeclarativeBlock definition, SectionTag tag) {
-		assert tag.isImplicit() :
-			"Section tag ignored in object definition";
+	public void define(DeclarativeBlock definition) {
 		getSection().define(definition);
 	}
 
@@ -91,21 +91,7 @@ public final class FileModuleCompiler
 			return new Section(this, sectionNode);
 		}
 
-		if (sectionNodes.length > 1) {
-			getLogger().error(
-					"redundant_module_section",
-					SectionTitle.titleLoggable(sectionNodes[1]),
-					"Module should not contain more than one section");
-		}
-
 		final Section section = new Section(this, sectionNodes[0]);
-
-		if (!section.getTag().isImplicit()) {
-			getLogger().error(
-					"prohibited_module_section_tag",
-					section.getSectionNode().getSubTitle().getTag(),
-					"Module section should not be tagged");
-		}
 
 		this.moduleName = moduleName(section.getTitle());
 
