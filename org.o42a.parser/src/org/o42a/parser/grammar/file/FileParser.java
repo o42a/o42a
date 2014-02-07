@@ -19,15 +19,12 @@
 */
 package org.o42a.parser.grammar.file;
 
+import static org.o42a.parser.grammar.file.SectionContentParser.HEADER_CONTENT;
 import static org.o42a.parser.grammar.file.SectionContentParser.SECTION_CONTENT;
-import static org.o42a.parser.grammar.file.SubTitleParser.SUB_TITLE;
-
-import java.util.ArrayList;
 
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.file.SubTitleNode;
-import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -42,65 +39,49 @@ public final class FileParser implements Parser<FileNode> {
 	@Override
 	public FileNode parse(ParserContext context) {
 
-		final ArrayList<SectionNode> sections = new ArrayList<>();
-		SentenceNode title = null;
-		SubTitleNode subTitle = context.parse(SUB_TITLE);
+		final ContentWithNextTitle header = context.parse(HEADER_CONTENT);
 
-		for (;;) {
-
-			final ContentWithNextTitle contentWithNextTitle =
-					context.parse(SECTION_CONTENT);
-
-			if (contentWithNextTitle == null) {
-				break;
-			}
-
-			final SentenceNode[] content = contentWithNextTitle.getContent();
-
-			if (content.length == 0
-					&& contentWithNextTitle.getTypeDefinition() == null
-					&& subTitle == null
-					&& sections.isEmpty()) {
-				// Do not create the very first empty section.
-			} else {
-				sections.add(new SectionNode(
-						title,
-						subTitle,
-						contentWithNextTitle.getTypeDefinition(),
-						content));
-			}
-
-			title = contentWithNextTitle.getNextTitle();
-			subTitle = contentWithNextTitle.getNextSubTitle();
-		}
-
-		if (subTitle != null) {
-			sections.add(new SectionNode(
-					title,
-					subTitle,
-					null,
-					new SentenceNode[0]));
-		} else if (sections.isEmpty()) {
+		if (header == null) {
 			return null;
 		}
 
-		final int numSections = sections.size();
+		final SubTitleNode subTitle = header.getNextSubTitle();
 
-		if (numSections > 1) {
+		if (subTitle != null) {
 
-			final SectionNode first = sections.get(0);
+			final ContentWithNextTitle content = context.parse(SECTION_CONTENT);
 
-			if (first.getSubTitle() == null) {
+			if (content != null) {
+
+				final SectionNode headerSection;
+
+				if (header.getContent().length == 0) {
+					headerSection = null;
+				} else {
+					headerSection = new SectionNode(
+							null,
+							null,
+							null,
+							header.getContent());
+				}
+
 				return new FileNode(
-						first,
-						sections.subList(1, numSections)
-						.toArray(new SectionNode[numSections - 1]));
+						headerSection,
+						new SectionNode(
+								header.getNextTitle(),
+								subTitle,
+								content.getTypeDefinition(),
+								content.getContent()));
 			}
 		}
 
 		return new FileNode(
 				null,
-				sections.toArray(new SectionNode[numSections]));
+				new SectionNode(
+						header.getNextTitle(),
+						subTitle,
+						header.getTypeDefinition(),
+						header.getContent()));
 	}
 
 }

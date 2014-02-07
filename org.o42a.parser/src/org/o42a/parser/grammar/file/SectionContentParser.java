@@ -32,89 +32,48 @@ import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
-import org.o42a.util.ArrayUtil;
 
 
 final class SectionContentParser implements Parser<ContentWithNextTitle> {
 
+	public static final SectionContentParser HEADER_CONTENT =
+			new SectionContentParser(true);
 	public static final SectionContentParser SECTION_CONTENT =
-			new SectionContentParser();
+			new SectionContentParser(false);
 
 	private static final HashLineParser HASH_LINE = new HashLineParser();
 
-	private SectionContentParser() {
+	private final boolean header;
+
+	private SectionContentParser(boolean header) {
+		this.header = header;
 	}
 
 	@Override
 	public ContentWithNextTitle parse(ParserContext context) {
 
+		boolean header = this.header;
 		final ArrayList<SentenceNode> sentences = new ArrayList<>();
 		SectionTypeDefinitionNode typeDefinition = null;
 
 		for (;;) {
+			if (header) {
 
-			final SubTitleNode subTitle = context.parse(SUB_TITLE);
+				final ContentWithNextTitle result1 =
+						parseSubTitle(context, sentences);
 
-			if (subTitle != null) {
-
-				final int numSentences = sentences.size();
-
-				if (numSentences == 0) {
-					return createResult(
-							typeDefinition,
-							sentences,
-							null,
-							subTitle);
+				if (result1 != null) {
+					return result1;
 				}
 
-				final SentenceNode lastSentence =
-						sentences.remove(numSentences - 1);
-				final SentenceNode title;
-
-				if (subTitle.getStart().getLine()
-						- lastSentence.getEnd().getLine() > 1) {
-					// Empty or pure-comment lines between title and sub-title.
-					sentences.add(lastSentence);
-					title = null;
-				} else if (sectionDeclaratorFromTitle(lastSentence) == null) {
-					// Preceding sentence is not a valid title.
-					context.getLogger().error(
-							"invalid_section_title",
-							lastSentence,
-							"Section title should be a proposition or claim"
-							+ " with only a single field declaration");
-					sentences.add(lastSentence);
-					title = null;
-				} else {
-					title = lastSentence;
+				typeDefinition = parseTypeDefinition(context, sentences);
+				if (typeDefinition != null) {
+					header = false;
 				}
-
-				return createResult(typeDefinition, sentences, title, subTitle);
 			}
 
-			final SignNode<HashLine> hashLine = context.parse(HASH_LINE);
-
-			if (hashLine != null) {
-				if (typeDefinition == null) {
-					typeDefinition = new SectionTypeDefinitionNode(
-							sentences.toArray(
-									new SentenceNode[sentences.size()]),
-							hashLine);
-					sentences.clear();
-					continue;
-				}
-				context.getLogger().error(
-						"redundant_hash_line",
-						hashLine,
-						"Only one hash line allowed within section");
-				typeDefinition = new SectionTypeDefinitionNode(
-						ArrayUtil.append(
-								typeDefinition.getContent(),
-								sentences.toArray(
-										new SentenceNode[sentences.size()])),
-						hashLine);
-				sentences.clear();
-				continue;
+			if (typeDefinition == null) {
+				typeDefinition = parseTypeDefinition(context, sentences);
 			}
 
 			final SentenceNode sentence =
@@ -127,6 +86,67 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 
 			sentences.add(sentence);
 		}
+	}
+
+	private ContentWithNextTitle parseSubTitle(
+			ParserContext context,
+			ArrayList<SentenceNode> sentences) {
+
+		final SubTitleNode subTitle = context.parse(SUB_TITLE);
+
+		if (subTitle == null) {
+			return null;
+		}
+
+		final int numSentences = sentences.size();
+
+		if (numSentences == 0) {
+			return createResult(null, sentences, null, subTitle);
+		}
+
+		final SentenceNode lastSentence = sentences.remove(numSentences - 1);
+		final SentenceNode title;
+
+		if (subTitle.getStart().getLine()
+				- lastSentence.getEnd().getLine() > 1) {
+			// Empty or pure-comment lines between title and sub-title.
+			sentences.add(lastSentence);
+			title = null;
+		} else if (sectionDeclaratorFromTitle(lastSentence) == null) {
+			// Preceding sentence is not a valid title.
+			context.getLogger().error(
+					"invalid_section_title",
+					lastSentence,
+					"Section title should be a proposition or claim"
+					+ " with only a single field declaration");
+			sentences.add(lastSentence);
+			title = null;
+		} else {
+			title = lastSentence;
+		}
+
+		return createResult(null, sentences, title, subTitle);
+	}
+
+	private SectionTypeDefinitionNode parseTypeDefinition(
+			ParserContext context,
+			ArrayList<SentenceNode> sentences) {
+
+		final SignNode<HashLine> hashLine = context.parse(HASH_LINE);
+
+		if (hashLine == null) {
+			return null;
+		}
+
+		final SectionTypeDefinitionNode typeDefinition =
+				new SectionTypeDefinitionNode(
+						sentences.toArray(
+								new SentenceNode[sentences.size()]),
+						hashLine);
+
+		sentences.clear();
+
+		return typeDefinition;
 	}
 
 	private ContentWithNextTitle createResult(

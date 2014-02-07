@@ -26,7 +26,6 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.FileNode;
-import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.Location;
@@ -80,18 +79,7 @@ public final class FileModuleCompiler
 	protected Section createSection() {
 		validateFileName();
 
-		final SectionNode[] sectionNodes = getNode().getSections();
-
-		if (sectionNodes.length == 0) {
-			this.moduleName = nameByFile();
-
-			final SectionNode sectionNode =
-					new SectionNode(getNode().getStart(), getNode().getEnd());
-
-			return new Section(this, sectionNode);
-		}
-
-		final Section section = new Section(this, sectionNodes[0]);
+		final Section section = new Section(this, getNode());
 
 		this.moduleName = moduleName(section.getTitle());
 

@@ -310,7 +310,7 @@ public class ClauseIdTest extends GrammarTestCase {
 	@Test
 	public void assign() {
 
-		final ClauseDeclaratorNode result = parse("<foo = *> bar");
+		final ClauseDeclaratorNode result = parse("<foo <- *> bar");
 		final AssignmentNode assignment =
 				to(AssignmentNode.class, result.getClauseId());
 

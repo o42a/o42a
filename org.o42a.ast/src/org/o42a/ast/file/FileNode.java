@@ -27,26 +27,26 @@ import org.o42a.util.io.SourcePosition;
 public class FileNode extends AbstractNode {
 
 	private final SectionNode header;
-	private final SectionNode[] sections;
+	private final SectionNode section;
 
-	public FileNode(SectionNode header, SectionNode[] sections) {
-		super(sections);
+	public FileNode(SectionNode header, SectionNode section) {
+		super(section);
 		this.header = header;
-		this.sections = sections;
+		this.section = section;
 	}
 
 	public FileNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 		this.header = null;
-		this.sections = new SectionNode[0];
+		this.section = null;
 	}
 
 	public final SectionNode getHeader() {
 		return this.header;
 	}
 
-	public final SectionNode[] getSections() {
-		return this.sections;
+	public final SectionNode getSection() {
+		return this.section;
 	}
 
 	@Override
@@ -56,8 +56,8 @@ public class FileNode extends AbstractNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		for (SectionNode section : this.sections) {
-			section.printContent(out);
+		if (this.section != null) {
+			this.section.printContent(out);
 		}
 	}
 
