@@ -32,7 +32,6 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 
 	private final SignNode<Parenthesis> opening;
 	private final ClauseIdNode clauseId;
-	private final OutcomeNode outcome;
 	private final ReusedClauseNode[] reused;
 	private final SignNode<Requirement> requirement;
 	private final SignNode<Parenthesis> closing;
@@ -41,7 +40,6 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 	public ClauseDeclaratorNode(
 			SignNode<Parenthesis> opening,
 			ClauseIdNode clauseId,
-			OutcomeNode outcome,
 			ReusedClauseNode[] reused,
 			SignNode<Requirement> requirement,
 			SignNode<Parenthesis> closing,
@@ -51,14 +49,12 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 				end(
 						opening,
 						clauseId,
-						outcome,
 						lastNode(reused),
 						requirement,
 						closing,
 						content));
 		this.opening = opening;
 		this.clauseId = clauseId;
-		this.outcome = outcome;
 		this.reused = reused;
 		this.requirement = requirement;
 		this.closing = closing;
@@ -71,10 +67,6 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 
 	public final ClauseIdNode getClauseId() {
 		return this.clauseId;
-	}
-
-	public final OutcomeNode getOutcome() {
-		return this.outcome;
 	}
 
 	public final ReusedClauseNode[] getReused() {

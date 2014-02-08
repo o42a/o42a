@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
-import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.clause.ClauseIdVisitor.CLAUSE_ID_VISITOR;
 import static org.o42a.compiler.ip.clause.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
@@ -29,7 +28,6 @@ import static org.o42a.core.member.clause.ClauseKind.EXPRESSION;
 import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
 import org.o42a.ast.clause.ClauseDeclaratorNode;
-import org.o42a.ast.clause.OutcomeNode;
 import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarationTarget;
@@ -256,30 +254,7 @@ public class ClauseInterpreter {
 	static ClauseAccess declare(
 			ClauseAccess builder,
 			ClauseDeclaratorNode declarator) {
-		return reuseClauses(setOutcome(builder, declarator), declarator);
-	}
-
-	private static ClauseAccess setOutcome(
-			ClauseAccess builder,
-			ClauseDeclaratorNode declarator) {
-
-		final OutcomeNode outcomeNode = declarator.getOutcome();
-
-		if (outcomeNode == null) {
-			return builder;
-		}
-
-		final RefNode outcomeValueNode = outcomeNode.getValue();
-
-		if (outcomeValueNode == null) {
-			return builder;
-		}
-
-		builder.get().setOutcome(outcomeValueNode.accept(
-				CLAUSE_DEF_IP.refVisitor(),
-				builder.distributeAccess().fromDeclaration()));
-
-		return builder;
+		return reuseClauses(builder, declarator);
 	}
 
 	private static ClauseAccess reuseClauses(
