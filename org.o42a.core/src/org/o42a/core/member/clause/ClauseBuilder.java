@@ -54,7 +54,6 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	private MemberId overridden;
 	private StaticTypeRef declaredIn;
 	private AscendantsDefinition ascendants;
-	private Ref outcome;
 	private ReusedClauseRef[] reusedClauses = NOTHING_REUSED;
 	private BlockBuilder declarations;
 	private boolean mandatory;
@@ -104,15 +103,6 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 	public final ClauseDeclaration getDeclaration() {
 		return this.declaration;
-	}
-
-	public final Ref getOutcome() {
-		return this.outcome;
-	}
-
-	public final ClauseBuilder setOutcome(Ref outcome) {
-		this.outcome = outcome;
-		return this;
 	}
 
 	public final boolean isMandatory() {

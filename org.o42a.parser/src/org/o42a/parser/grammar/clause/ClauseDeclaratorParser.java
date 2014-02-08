@@ -21,7 +21,6 @@ package org.o42a.parser.grammar.clause;
 
 import static org.o42a.parser.grammar.clause.ClauseIdParser.CLAUSE_ID;
 import static org.o42a.parser.grammar.clause.ClauseRequirementParser.CLAUSE_REQUIREMENT;
-import static org.o42a.parser.grammar.clause.OutcomeParser.OUTCOME;
 import static org.o42a.parser.grammar.clause.ReusedClauseParser.REUSED_CLAUSE;
 
 import org.o42a.ast.atom.SignNode;
@@ -58,7 +57,6 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 			return null;
 		}
 
-		final OutcomeNode outcome = context.parse(OUTCOME);
 		final ReusedClauseNode[] reused = reused(context);
 		final SignNode<Requirement> requirement =
 				context.parse(CLAUSE_REQUIREMENT);
@@ -69,7 +67,6 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		return new ClauseDeclaratorNode(
 				opening,
 				clauseId,
-				outcome,
 				reused,
 				requirement,
 				closing,
