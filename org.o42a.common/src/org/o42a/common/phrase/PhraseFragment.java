@@ -74,10 +74,7 @@ class PhraseFragment extends PathFragment {
 			ref = new PhraseConstructor(phrase).toRef();
 		}
 
-		final Ref terminated =
-				ref.getPath()
-				.append(context.getOutcome())
-				.target(ref.distribute());
+		final Ref terminated = ref.getPath().target(ref.distribute());
 		final PhraseContinuation nextPart = context.getNextPart();
 
 		if (nextPart == null) {

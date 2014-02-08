@@ -31,7 +31,6 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -51,7 +50,6 @@ public final class DeclaredGroupClause
 	}
 
 	private final ClauseBuilder builder;
-	private Path outcome;
 	private ReusedClause[] reused;
 	private Block<?> definition;
 	private ImperativeBlock imperative;
@@ -104,14 +102,6 @@ public final class DeclaredGroupClause
 	@Override
 	public ClauseContainer getClauseContainer() {
 		return this;
-	}
-
-	@Override
-	public Path getOutcome() {
-		if (this.outcome != null) {
-			return this.outcome;
-		}
-		return this.outcome = this.builder.outcome(this);
 	}
 
 	@Override
