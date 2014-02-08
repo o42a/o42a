@@ -34,8 +34,6 @@ import org.o42a.core.member.clause.impl.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -214,32 +212,6 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 				this.reusedClauses,
 				new ReusedClauseRef(reusedClause, reuseContents));
 		return this;
-	}
-
-	public final Path outcome(Clause clause) {
-
-		final Ref outcome = getOutcome();
-
-		if (outcome == null) {
-
-			final Clause enclosingClause = clause.getEnclosingClause();
-
-			if (enclosingClause != null) {
-				return enclosingClause.getOutcome();
-			}
-
-			return Path.SELF_PATH;
-		}
-
-		final OutcomeBuilder outcomeBuilder = new OutcomeBuilder(this.outcome);
-		final Resolver resolver =
-				clause.getEnclosingScope().walkingResolver(outcomeBuilder);
-
-		if (!outcome.resolve(resolver).isResolved()) {
-			return Path.SELF_PATH;
-		}
-
-		return outcomeBuilder.getOutcome();
 	}
 
 	public ReusedClause[] reuseClauses(Clause clause) {

@@ -25,7 +25,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.fn.Holder;
@@ -40,7 +39,6 @@ public final class DeclaredPlainClause extends PlainClause {
 	private final ClauseBuilder builder;
 	private Holder<ClauseDefinition> definition;
 	private MemberKey overridden;
-	private Path outcome;
 	private ReusedClause[] reused;
 
 	DeclaredPlainClause(
@@ -101,14 +99,6 @@ public final class DeclaredPlainClause extends PlainClause {
 	@Override
 	public boolean isPrototype() {
 		return this.builder.isPrototype();
-	}
-
-	@Override
-	public Path getOutcome() {
-		if (this.outcome != null) {
-			return this.outcome;
-		}
-		return this.outcome = this.builder.outcome(this);
 	}
 
 	@Override

@@ -54,7 +54,6 @@ final class MainPhraseContext extends PhraseContext {
 	private PhraseContext nextContext;
 	private Ascendants implicitAscendants;
 	private PhraseContinuation nextPart;
-	private Path outcome = Path.SELF_PATH;
 
 	MainPhraseContext(Phrase phrase) {
 		super(phrase, phrase.getPrefix());
@@ -70,11 +69,6 @@ final class MainPhraseContext extends PhraseContext {
 
 	public final PhraseContinuation getNextPart() {
 		return this.nextPart;
-	}
-
-	public Path getOutcome() {
-		build();
-		return this.outcome;
 	}
 
 	public boolean createsObject() {
@@ -454,12 +448,6 @@ final class MainPhraseContext extends PhraseContext {
 			if (partsAsPrefix.includeLast()) {
 				context = nextContext(stack, continuation, nextClause);
 				context.incompleteInstance().addContent(continuation);
-
-				final Clause clause = nextClause.getClause();
-
-				if (clause != null) {
-					this.outcome = clause.getOutcome();
-				}
 			}
 
 			if (partsAsPrefix.isPrefix()) {
