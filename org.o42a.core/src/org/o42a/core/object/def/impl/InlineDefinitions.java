@@ -32,17 +32,12 @@ import org.o42a.util.fn.Cancelable;
 public class InlineDefinitions extends InlineValue {
 
 	private final ValueType<?> valueType;
-	private final InlineEval claim;
-	private final InlineEval proposition;
+	private final InlineEval defs;
 
-	public InlineDefinitions(
-			ValueType<?> valueType,
-			InlineEval claim,
-			InlineEval proposition) {
+	public InlineDefinitions(ValueType<?> valueType, InlineEval defs) {
 		super(null);
 		this.valueType = valueType;
-		this.claim = claim;
-		this.proposition = proposition;
+		this.defs = defs;
 	}
 
 	@Override
@@ -51,8 +46,7 @@ public class InlineDefinitions extends InlineValue {
 		final DefDirs defDirs =
 				dirs.nested().value(this.valueType, TEMP_VAL_HOLDER).def();
 
-		this.claim.write(defDirs, host);
-		this.proposition.write(defDirs, host);
+		this.defs.write(defDirs, host);
 		defDirs.done();
 	}
 
@@ -61,8 +55,7 @@ public class InlineDefinitions extends InlineValue {
 
 		final DefDirs defDirs = dirs.nested().def();
 
-		this.claim.write(defDirs, host);
-		this.proposition.write(defDirs, host);
+		this.defs.write(defDirs, host);
 		defDirs.done();
 
 		return defDirs.result();
@@ -70,15 +63,14 @@ public class InlineDefinitions extends InlineValue {
 
 	@Override
 	public String toString() {
-		if (this.proposition == null) {
+		if (this.defs == null) {
 			return super.toString();
 		}
 
 		final StringBuilder out = new StringBuilder();
 
 		out.append('(');
-		out.append(this.claim).append("! ");
-		out.append(this.proposition);
+		out.append(this.defs);
 		out.append(')');
 
 		return out.toString();

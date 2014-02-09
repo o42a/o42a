@@ -67,14 +67,14 @@ public class ValueInheritanceTest extends CompilerTestCase {
 				"A := 1",
 				"B := a (Rt-void)");
 
-		final Defs propositions =
+		final Defs defs =
 				field("b")
 				.toObject()
 				.value()
 				.getDefinitions()
 				.defs();
 
-		assertThat(propositions.length(), is(2));
+		assertThat(defs.length(), is(2));
 	}
 
 	@Test
@@ -84,14 +84,14 @@ public class ValueInheritanceTest extends CompilerTestCase {
 				"A := void",
 				"B := a (Rt-void)");
 
-		final Defs propositions =
+		final Defs defs =
 				field("b")
 				.toObject()
 				.value()
 				.getDefinitions()
 				.defs();
 
-		assertThat(propositions.length(), is(2));
+		assertThat(defs.length(), is(2));
 	}
 
 	@Override

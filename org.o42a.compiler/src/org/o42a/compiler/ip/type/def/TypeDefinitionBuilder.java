@@ -171,9 +171,9 @@ public class TypeDefinitionBuilder
 	private void addSentence(SentenceNode sentence) {
 		if (sentence.getType() != SentenceType.DECLARATION) {
 			getLogger().error(
-					"prohibited_type_definition_sentence_type",
+					"not_declarative_type_definition",
 					sentence.getMark(),
-					"Only propositions allowed within type definition");
+					"Only declarative sentences allowed in type definition");
 		}
 
 		final AlternativeNode[] disjunction = sentence.getDisjunction();

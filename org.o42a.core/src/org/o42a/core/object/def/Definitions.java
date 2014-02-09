@@ -20,6 +20,7 @@
 package org.o42a.core.object.def;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
+import static org.o42a.core.object.def.DefTarget.UNKNOWN_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
@@ -124,77 +125,35 @@ public class Definitions extends Scoped {
 			return this.constant;
 		}
 
-		final DefValue claim = claims().getConstant();
+		final DefValue constant = defs().getConstant();
 
-		if (claim.hasValue()) {
-			return this.constant = claim.getValue();
+		if (constant.hasValue()) {
+			return this.constant = constant.getValue();
 		}
-
-		switch (claim.getCondition()) {
-		case FALSE:
-			return this.constant = getTypeParameters().falseValue();
-		case RUNTIME:
-			return this.constant = getTypeParameters().runtimeValue();
-		case TRUE:
-			break;
-		}
-
-		final DefValue proposition = defs().getConstant();
-
-		if (proposition.hasValue()) {
-			return this.constant = proposition.getValue();
-		}
-		if (proposition.getCondition().isConstant()) {
+		if (constant.getCondition().isConstant()) {
 			return this.constant = getTypeParameters().falseValue();
 		}
 
 		return this.constant = getTypeParameters().runtimeValue();
 	}
 
-	public final Defs claims() {
-		return NO_DEFS;
-	}
-
 	public final Defs defs() {
 		return this.defs;
 	}
 
-	public final boolean onlyClaims() {
-		return defs().isEmpty();
-	}
-
-	public final boolean noClaims() {
-		return claims().isEmpty();
-	}
-
 	public final boolean hasInherited() {
-		return claims().hasInherited() || defs().hasInherited();
+		return defs().hasInherited();
 	}
 
 	public Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
-		final DefValue claim = claims().value(resolver);
+		final DefValue value = defs().value(resolver);
 
-		if (claim.hasValue()) {
-			return claim.getValue();
+		if (value.hasValue()) {
+			return value.getValue();
 		}
-
-		switch (claim.getCondition()) {
-		case FALSE:
-			return getTypeParameters().falseValue();
-		case RUNTIME:
-			return getTypeParameters().runtimeValue();
-		case TRUE:
-			break;
-		}
-
-		final DefValue proposition = defs().value(resolver);
-
-		if (proposition.hasValue()) {
-			return proposition.getValue();
-		}
-		if (proposition.getCondition().isConstant()) {
+		if (value.getCondition().isConstant()) {
 			return getTypeParameters().falseValue();
 		}
 
@@ -213,12 +172,9 @@ public class Definitions extends Scoped {
 		final TypeParameters<?> typeParameters =
 				getTypeParameters() != null
 				? getTypeParameters() : refinements.getTypeParameters();
-		final Defs newPropositions = refinements.defs().add(defs());
+		final Defs newDefs = refinements.defs().add(defs());
 
-		return new Definitions(
-				this,
-				typeParameters,
-				newPropositions);
+		return new Definitions(this, typeParameters, newDefs);
 	}
 
 	public final Definitions override(Definitions overriders) {
@@ -255,50 +211,34 @@ public class Definitions extends Scoped {
 				&& typeParameters.relationTo(objectTypeParameters).isSame()) {
 			return this;
 		}
-
-		final boolean claimsOk =
-				claims().upgradeTypeParameters(this, typeParameters);
-		final boolean propositionsOk =
-				defs().upgradeTypeParameters(this, typeParameters);
-
-		if (!claimsOk || !propositionsOk) {
+		if (!defs().upgradeTypeParameters(this, typeParameters)) {
 			return this;
 		}
-
-		return new Definitions(
-				this,
-				typeParameters,
-				defs());
+		return new Definitions(this, typeParameters, defs());
 	}
 
 	public void resolveTargets(TargetResolver resolver) {
-		claims().resolveTargets(resolver);
 		defs().resolveTargets(resolver);
 	}
 
 	public final boolean updatedSince(Obj ascendant) {
-		if (claims().updatedSince(ascendant)) {
-			return true;
-		}
 		return defs().updatedSince(ascendant);
 	}
 
 	public final InlineValue inline(Normalizer normalizer) {
 
-		final InlineEval claim = claims().inline(normalizer);
-		final InlineEval proposition = defs().inline(normalizer);
+		final InlineEval defs = defs().inline(normalizer);
 
 		if (normalizer.isCancelled()) {
 			return null;
 		}
 
-		return new InlineDefinitions(getValueType(), claim, proposition);
+		return new InlineDefinitions(getValueType(), defs);
 	}
 
 	public final void resolveAll() {
 		getContext().fullResolution().start();
 		try {
-			claims().resolveAll(this);
 			defs().resolveAll(this);
 
 			final Ref targetRef = target().getRef();
@@ -316,7 +256,6 @@ public class Definitions extends Scoped {
 	}
 
 	public final void normalize(RootNormalizer normalizer) {
-		claims().normalize(normalizer);
 		defs().normalize(normalizer);
 
 		final Ref targetRef = target().getRef();
@@ -343,19 +282,13 @@ public class Definitions extends Scoped {
 			return this.target = NO_DEF_TARGET;
 		}
 
-		final DefTarget claimedTarget = claims().target();
+		final DefTarget defTarget = defs().target();
 
-		if (claimedTarget != null) {
-			return setTarget(claimedTarget);
+		if (defTarget != null) {
+			return setTarget(defTarget);
 		}
 
-		final DefTarget proposedTarget = defs().target();
-
-		if (proposedTarget != null) {
-			return setTarget(proposedTarget);
-		}
-
-		return this.target = DefTarget.UNKNOWN_DEF_TARGET;
+		return this.target = UNKNOWN_DEF_TARGET;
 	}
 
 	@Override
@@ -382,8 +315,7 @@ public class Definitions extends Scoped {
 	}
 
 	private boolean assertEmptyWithoutValues() {
-		assert (hasValues()
-				|| (defs().isEmpty() && claims().isEmpty())) :
+		assert hasValues() || defs().isEmpty() :
 				"Non-empty definitions should have a value type";
 		return true;
 	}
@@ -399,8 +331,8 @@ public class Definitions extends Scoped {
 			return emptyDefinitions(this, resultScope);
 		}
 
-		final Defs propositions = defs();
-		final Defs newPropositions = propositions.upgradeScope(scopeUpgrade);
+		final Defs defs = defs();
+		final Defs newDefs = defs.upgradeScope(scopeUpgrade);
 		final TypeParameters<?> oldTypeParameters = getTypeParameters();
 		final TypeParameters<?> newTypeParameters =
 				oldTypeParameters != null
@@ -410,7 +342,7 @@ public class Definitions extends Scoped {
 		if (resultScope.is(getScope())
 				// This may fail when there is no definitions.
 				&& oldTypeParameters == newTypeParameters
-				&& propositions == newPropositions) {
+				&& defs == newDefs) {
 			return this;
 		}
 
@@ -418,7 +350,7 @@ public class Definitions extends Scoped {
 				this,
 				resultScope,
 				newTypeParameters,
-				newPropositions);
+				newDefs);
 	}
 
 	private DefTarget setTarget(DefTarget target) {
