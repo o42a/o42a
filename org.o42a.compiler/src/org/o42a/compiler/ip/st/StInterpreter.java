@@ -63,13 +63,13 @@ public final class StInterpreter {
 		final Sentence<?> sentence;
 
 		switch (type) {
-		case PROPOSITION:
+		case DECLARATION:
 			sentence = block.declare(location);
 			break;
-		case CLAIM:
+		case EXCLAMATION:
 			sentence = block.exit(location);
 			break;
-		case ISSUE:
+		case INTERROGATION:
 			sentence = block.interrogate(location);
 			break;
 		default:

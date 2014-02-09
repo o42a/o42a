@@ -169,7 +169,7 @@ public class TypeDefinitionBuilder
 	}
 
 	private void addSentence(SentenceNode sentence) {
-		if (sentence.getType() != SentenceType.PROPOSITION) {
+		if (sentence.getType() != SentenceType.DECLARATION) {
 			getLogger().error(
 					"prohibited_type_definition_sentence_type",
 					sentence.getMark(),

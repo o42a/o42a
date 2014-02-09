@@ -23,7 +23,7 @@ public class SentenceTest extends GrammarTestCase {
 		final SentenceNode sentence = parse("foo1, bar1; foo2, bar2");
 
 		assertNotNull(sentence);
-		assertEquals(SentenceType.PROPOSITION, sentence.getType());
+		assertEquals(SentenceType.DECLARATION, sentence.getType());
 		assertNull(sentence.getMark());
 
 		final AlternativeNode[] disjunction = sentence.getDisjunction();
@@ -46,23 +46,23 @@ public class SentenceTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void issue() {
-		assertType(SentenceType.ISSUE, "foo?");
+	public void interrogation() {
+		assertType(SentenceType.INTERROGATION, "foo?");
 	}
 
 	@Test
-	public void proposition() {
-		assertType(SentenceType.PROPOSITION, "foo.");
+	public void declaration() {
+		assertType(SentenceType.DECLARATION, "foo.");
 	}
 
 	@Test
-	public void claim() {
-		assertType(SentenceType.CLAIM, "foo!");
+	public void exclamation() {
+		assertType(SentenceType.EXCLAMATION, "foo!");
 	}
 
 	@Test
 	public void noSeparator() {
-		assertType(SentenceType.PROPOSITION, "foo");
+		assertType(SentenceType.DECLARATION, "foo");
 	}
 
 	@Test
