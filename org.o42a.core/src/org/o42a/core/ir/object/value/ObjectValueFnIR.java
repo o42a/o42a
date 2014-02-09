@@ -74,26 +74,12 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected DefValue determineConstant() {
-
-		final DefValue claim = getValueIR().claim().getConstant();
-
-		if (claim.hasValue() || !claim.getCondition().isTrue()) {
-			return claim;
-		}
-
-		return getValueIR().proposition().getConstant();
+		return getValueIR().defs().getConstant();
 	}
 
 	@Override
 	protected DefValue determineFinal() {
-
-		final DefValue claim = getValueIR().claim().getFinal();
-
-		if (claim.hasValue() || !claim.getCondition().isTrue()) {
-			return claim;
-		}
-
-		return getValueIR().proposition().getFinal();
+		return getValueIR().defs().getFinal();
 	}
 
 	@Override
@@ -108,8 +94,7 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected boolean canStub() {
-		return getValueIR().claim().canStub()
-				&& getValueIR().proposition().canStub();
+		return getValueIR().defs().canStub();
 	}
 
 	@Override

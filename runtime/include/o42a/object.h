@@ -256,18 +256,11 @@ struct o42a_obj_data {
 	o42a_obj_cond_ft *cond_f;
 
 	/**
-	 * Object's claim calculator function.
+	 * Object's value definition function.
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_obj_val_ft *claim_f;
-
-	/**
-	 * Object's proposition calculator function.
-	 *
-	 * Accepts main object body as a second argument.
-	 */
-	o42a_obj_val_ft *proposition_f;
+	o42a_obj_val_ft *defs_f;
 
 	/**
 	 * Object value.

@@ -62,8 +62,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private Int16rec flags;
 	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectCondFunc> condFunc;
-	private FuncRec<ObjectValFunc> claimFunc;
-	private FuncRec<ObjectValFunc> propositionFunc;
+	private FuncRec<ObjectValFunc> defsFunc;
 	private ValType value;
 	private StructRec<ValueTypeDescOp> valueType;
 	private RelList<ObjectIRBody> ascendants;
@@ -98,12 +97,8 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.condFunc;
 	}
 
-	public final FuncRec<ObjectValFunc> claimFunc() {
-		return this.claimFunc;
-	}
-
-	public final FuncRec<ObjectValFunc> propositionFunc() {
-		return this.propositionFunc;
+	public final FuncRec<ObjectValFunc> defsFunc() {
+		return this.defsFunc;
 	}
 
 	public final ValType value() {
@@ -137,8 +132,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
-		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
-		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
+		this.defsFunc = data.addFuncPtr("defs_f", OBJECT_VAL);
 		this.value = data.addInstance(VALUE_ID, VAL_TYPE);
 		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();

@@ -23,7 +23,9 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.value.*;
+import org.o42a.core.ir.object.value.ObjectCondFnIR;
+import org.o42a.core.ir.object.value.ObjectValueDefsFnIR;
+import org.o42a.core.ir.object.value.ObjectValueFnIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.object.Obj;
@@ -34,15 +36,13 @@ public class ObjectValueIR {
 	private final ObjectIR objectIR;
 	private final ObjectValueFnIR value;
 	private final ObjectCondFnIR condition;
-	private final ObjectClaimFnIR claim;
-	private final ObjectPropositionFnIR proposition;
+	private final ObjectValueDefsFnIR defs;
 
 	protected ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
 		this.value = new ObjectValueFnIR(this);
 		this.condition = new ObjectCondFnIR(this);
-		this.claim = new ObjectClaimFnIR(this);
-		this.proposition = new ObjectPropositionFnIR(this);
+		this.defs = new ObjectValueDefsFnIR(this);
 	}
 
 	public final Generator getGenerator() {
@@ -65,16 +65,8 @@ public class ObjectValueIR {
 		return this.condition;
 	}
 
-	public final ObjectClaimFnIR claim() {
-		return this.claim;
-	}
-
-	public final ObjectPropositionFnIR proposition() {
-		return this.proposition;
-	}
-
-	public final ObjectValuePartFnIR value(boolean claim) {
-		return claim ? claim() : proposition();
+	public final ObjectValueDefsFnIR defs() {
+		return this.defs;
 	}
 
 	public final ValueOp op(CodeBuilder builder, Code code) {
@@ -89,15 +81,11 @@ public class ObjectValueIR {
 		condition().call(dirs, host);
 	}
 
-	public final void writeClaim(DefDirs dirs, ObjOp host, ObjectOp body) {
-		claim().call(dirs, host, body);
-	}
-
-	public final void writeProposition(
+	public final void writeDefs(
 			DefDirs dirs,
 			ObjOp host,
 			ObjectOp body) {
-		proposition().call(dirs, host, body);
+		defs().call(dirs, host, body);
 	}
 
 	@Override
@@ -108,8 +96,7 @@ public class ObjectValueIR {
 	protected void allocate(ObjectTypeIR typeIR) {
 		value().allocate(typeIR);
 		condition().allocate(typeIR);
-		claim().allocate(typeIR);
-		proposition().allocate(typeIR);
+		defs().allocate(typeIR);
 	}
 
 }

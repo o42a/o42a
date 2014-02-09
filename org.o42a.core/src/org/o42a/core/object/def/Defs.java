@@ -30,7 +30,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.impl.InlineDefs;
-import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.core.object.value.ObjectValueDefs;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -326,7 +326,7 @@ public final class Defs {
 
 		final ObjectValue objectValue =
 				definitions.getScope().toObject().value();
-		final ObjectValuePart part = objectValue.proposition();
+		final ObjectValueDefs part = objectValue.valueDefs();
 		final FullResolver resolver = part.fullResolver();
 
 		for (Def def : get()) {

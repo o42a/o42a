@@ -159,13 +159,6 @@ public class Definitions extends Scoped {
 		return this.defs;
 	}
 
-	public final Defs defs(boolean claim) {
-		if (claim) {
-			return claims();
-		}
-		return defs();
-	}
-
 	public final boolean onlyClaims() {
 		return defs().isEmpty();
 	}
