@@ -131,7 +131,7 @@ public class EllipsisTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void lastInProposition() {
+	public void lastInDeclarativeSentence() {
 
 		final SentenceNode sentence = parse("foo ....");
 		final MemberRefNode statement =
@@ -145,7 +145,7 @@ public class EllipsisTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void horizontalEllipsisLastInProposition() {
+	public void horizontalEllipsisLastInDeclarativeSentence() {
 
 		final SentenceNode sentence = parse("foo \u2026.");
 		final MemberRefNode statement =

@@ -104,7 +104,7 @@ public class SentenceTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void emptyProposition() {
+	public void emptyDeclarative() {
 
 		final SentenceNode result = parse(".");
 
@@ -112,7 +112,7 @@ public class SentenceTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void commentProposition() {
+	public void declarativeWithCommentOnly() {
 
 		final SentenceNode result = parse("~~ comment ~~.");
 

@@ -275,9 +275,9 @@ final class Section implements LogInfo {
 		for (SentenceNode sentence : header.getContent()) {
 			if (sentence.getType() != DECLARATION) {
 				getLogger().error(
-						"not_header_proposition",
+						"not_declarative_header",
 						sentence.getMark(),
-						"Only propositions allowed in file header");
+						"Only declarative sentences allowed in file header");
 			}
 			addSentence(
 					ACCESS_FROM_HEADER,

@@ -32,15 +32,13 @@ public final class CommandTargets implements LogInfo {
 	static final int PREREQUISITE_MASK = 0x02;
 	static final int PRECONDITION_MASK = 0x04;
 	static final int VALUE_MASK = 0x08;
-	static final int CLAIM_MASK = 0x10;
-	static final int FIELD_MASK = 0x20;
-	static final int CLAUSE_MASK = 0x40;
+	static final int FIELD_MASK = 0x10;
+	static final int CLAUSE_MASK = 0x20;
 	static final int EXIT_MASK = 0x100;
 	static final int REPEAT_MASK = 0x200;
 	static final int ERROR_MASK = 0x1000;
 
-	static final int CONDITIONAL_MASK =
-			PREREQUISITE_MASK | PRECONDITION_MASK;
+	static final int CONDITIONAL_MASK = PREREQUISITE_MASK | PRECONDITION_MASK;
 	static final int DECLARING_MASK = FIELD_MASK | CLAUSE_MASK;
 	static final int LOOPING_MASK = EXIT_MASK | REPEAT_MASK;
 	static final int BREAKING_MASK = VALUE_MASK | LOOPING_MASK;
@@ -144,10 +142,6 @@ public final class CommandTargets implements LogInfo {
 		return setMask((mask() & ~PREREQUISITE_MASK) | PRECONDITION_MASK);
 	}
 
-	public final boolean isClaim() {
-		return (mask() & CLAIM_MASK) != 0;
-	}
-
 	public final boolean haveField() {
 		return (mask() & FIELD_MASK) != 0;
 	}
@@ -162,10 +156,6 @@ public final class CommandTargets implements LogInfo {
 
 	public final boolean defining() {
 		return (mask() & ~DECLARING_MASK) != 0;
-	}
-
-	public final CommandTargets claim() {
-		return setMask(CLAIM_MASK);
 	}
 
 	public final boolean haveExit() {

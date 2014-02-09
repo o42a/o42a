@@ -112,10 +112,10 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> proposition =
+		final Sentence<S> sentence =
 				sentenceFactory.declare(location, this);
 
-		return addSentence(proposition);
+		return addSentence(sentence);
 	}
 
 	public Sentence<S> exit(LocationInfo location) {
@@ -131,9 +131,9 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> claim = sentenceFactory.exit(location, this);
+		final Sentence<S> exit = sentenceFactory.exit(location, this);
 
-		return addSentence(claim);
+		return addSentence(exit);
 	}
 
 	public Sentence<S> interrogate(LocationInfo location) {
