@@ -60,13 +60,11 @@ final class DeclarativePart extends Def {
 			DeclarativeBlock block,
 			CommandEnv env,
 			CommandTargets targets,
-			List<DeclarativeSentence> sentences,
-			boolean claim) {
+			List<DeclarativeSentence> sentences) {
 		super(
 				sourceOf(block),
 				block,
-				noScopeUpgrade(block.getScope()),
-				claim);
+				noScopeUpgrade(block.getScope()));
 		this.block = block;
 		this.env = env;
 		this.sentences = new DeclarativePartSentences(this, targets, sentences);
@@ -149,10 +147,7 @@ final class DeclarativePart extends Def {
 			return super.toString();
 		}
 		if (this.sentences == null) {
-			if (isClaim()) {
-				return "Claims[" + this.block + ']';
-			}
-			return "Propositions[" + this.block + ']';
+			return "Definitions[" + this.block + ']';
 		}
 
 		final List<DeclarativeSentence> sentences =
@@ -160,7 +155,7 @@ final class DeclarativePart extends Def {
 		final int len = sentences.size();
 
 		if (len == 0) {
-			return isClaim() ? "!" : ".";
+			return ".";
 		}
 
 		final StringBuilder out = new StringBuilder();

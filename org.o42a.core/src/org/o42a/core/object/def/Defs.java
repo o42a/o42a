@@ -19,12 +19,10 @@
 */
 package org.o42a.core.object.def;
 
-import static java.lang.System.arraycopy;
 import static org.o42a.core.ir.def.InlineEval.noInlineEval;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.InlineEval;
@@ -42,17 +40,11 @@ import org.o42a.util.ArrayUtil;
 
 public final class Defs {
 
-	private final boolean claims;
 	private final Def[] defs;
 	private DefValue constant;
 
-	Defs(boolean claims, Def... defs) {
-		this.claims = claims;
+	Defs(Def... defs) {
 		this.defs = defs;
-	}
-
-	public final boolean isClaims() {
-		return this.claims;
 	}
 
 	public final Def[] get() {
@@ -181,16 +173,14 @@ public final class Defs {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(isClaims() ? "Claims[" : "Propositions[");
+		out.append("Defs[");
 		defsToString(out, false);
 		out.append(']');
 
 		return out.toString();
 	}
 
-	final boolean assertValid(Scope scope, boolean claims) {
-		assert isClaims() == claims :
-			"Wrong definition kind";
+	final boolean assertValid(Scope scope) {
 		for (Def def : this.defs) {
 			def.assertScopeIs(scope);
 		}
@@ -211,53 +201,6 @@ public final class Defs {
 		}
 
 		return hasComma;
-	}
-
-	final Defs claim(Defs claims) {
-		if (isEmpty()) {
-			return claims;
-		}
-
-		final Def[] propositions = get();
-		final Def[] oldClaims = claims.get();
-		final Def[] newClaims = Arrays.copyOf(
-				oldClaims,
-				oldClaims.length + propositions.length);
-
-		int idx = oldClaims.length;
-
-		for (Def proposition : propositions) {
-			newClaims[idx++] = proposition.claim();
-		}
-
-		return new Defs(true, newClaims);
-	}
-
-	final Defs unclaim(Defs propositions) {
-		if (isEmpty()) {
-			return propositions;
-		}
-
-		final Def[] oldPropositions = propositions.get();
-		final Def[] claims = get();
-		final Def[] newPropositions = (Def[]) Array.newInstance(
-				propositions.getClass().getComponentType(),
-				claims.length + oldPropositions.length);
-
-		int idx = 0;
-
-		for (Def claim : claims) {
-			newPropositions[idx++] = claim.unclaim();
-		}
-
-		arraycopy(
-				oldPropositions,
-				0,
-				newPropositions,
-				claims.length,
-				oldPropositions.length);
-
-		return new Defs(false, newPropositions);
 	}
 
 	final Defs upgradeScope(ScopeUpgrade scopeUpgrade) {
@@ -287,7 +230,7 @@ public final class Defs {
 				newItems[i] = items[i].upgradeScope(scopeUpgrade);
 			}
 
-			return new Defs(isClaims(), newItems);
+			return new Defs(newItems);
 		}
 
 		return this;
@@ -304,9 +247,7 @@ public final class Defs {
 			return this;
 		}
 
-		return new Defs(
-				isClaims(),
-				ArrayUtil.append(get(), additions.get()));
+		return new Defs(ArrayUtil.append(get(), additions.get()));
 	}
 
 	InlineEval inline(Normalizer normalizer) {
@@ -368,7 +309,7 @@ public final class Defs {
 			newDefs[i] = oldDefs[i].toVoid();
 		}
 
-		return new Defs(isClaims(), newDefs);
+		return new Defs(newDefs);
 	}
 
 	final void resolveTargets(TargetResolver wrapper) {
@@ -379,10 +320,13 @@ public final class Defs {
 
 	void resolveAll(Definitions definitions) {
 		validate(definitions.getTypeParameters());
+		if (isEmpty()) {
+			return;
+		}
 
 		final ObjectValue objectValue =
 				definitions.getScope().toObject().value();
-		final ObjectValuePart part = objectValue.part(isClaims());
+		final ObjectValuePart part = objectValue.proposition();
 		final FullResolver resolver = part.fullResolver();
 
 		for (Def def : get()) {

@@ -107,7 +107,7 @@ public class BuiltinDef extends Def {
 		object.resolveAll();
 		this.builtin.resolveBuiltin(
 				object.value()
-				.part(isClaim())
+				.proposition()
 				.fullResolver());
 	}
 
