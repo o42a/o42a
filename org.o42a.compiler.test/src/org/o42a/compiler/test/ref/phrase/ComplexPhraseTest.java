@@ -33,7 +33,7 @@ public class ComplexPhraseTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void issueClause() {
+	public void interrogativeClause() {
 		compile(
 				"Is :=> string (",
 				"  <*Check> (<[Condition]>? = \"true\". = \"false\")",

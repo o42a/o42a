@@ -233,7 +233,7 @@ public abstract class Sentences {
 			result = action;
 		}
 
-		if (sentence.isExit()) {
+		if (sentence.getKind().isExclamatory()) {
 			return new ExitLoop(sentence, null);
 		}
 		if (result != null) {

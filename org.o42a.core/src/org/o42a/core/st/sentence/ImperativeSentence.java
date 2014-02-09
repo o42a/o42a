@@ -126,13 +126,15 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 
 		final CommandTargets result;
 
-		if (isIssue() && targets.isEmpty() && !targets.haveError()) {
-			reportEmptyIssue();
+		if (getKind().isInterrogative()
+				&& targets.isEmpty()
+				&& !targets.haveError()) {
+			reportEmptyInterrogation();
 			result = targets.addError();
 		} else {
 			result = targets;
 		}
-		if (!isExit()) {
+		if (!getKind().isExclamatory()) {
 			return result;
 		}
 

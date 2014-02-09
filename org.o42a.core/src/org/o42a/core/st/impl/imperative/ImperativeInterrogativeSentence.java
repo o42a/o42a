@@ -19,29 +19,34 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.core.st.sentence.SentenceFactory.IMPERATIVE_INTERROGATION_FACTORY;
+
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.impl.InterrogativeMemberRegistry;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeFactory;
 import org.o42a.core.st.sentence.ImperativeSentence;
+import org.o42a.core.st.sentence.SentenceKind;
 
 
-public final class ImperativeProposition extends ImperativeSentence {
+public class ImperativeInterrogativeSentence extends ImperativeSentence {
 
-	public ImperativeProposition(
-			LocationInfo location,
-			ImperativeBlock block,
-			ImperativeFactory sentenceFactory) {
-		super(location, block, sentenceFactory);
+	private final MemberRegistry memberRegistry;
+
+	public ImperativeInterrogativeSentence(LocationInfo location, ImperativeBlock block) {
+		super(location, block, IMPERATIVE_INTERROGATION_FACTORY);
+		this.memberRegistry =
+				new InterrogativeMemberRegistry(block.getMemberRegistry());
 	}
 
 	@Override
-	public boolean isClaim() {
-		return false;
+	public SentenceKind getKind() {
+		return SentenceKind.INTERROGATIVE_SENTENCE;
 	}
 
 	@Override
-	public boolean isIssue() {
-		return false;
+	public MemberRegistry getMemberRegistry() {
+		return this.memberRegistry;
 	}
 
 }

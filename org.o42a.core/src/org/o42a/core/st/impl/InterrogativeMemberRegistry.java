@@ -20,7 +20,8 @@
 package org.o42a.core.st.impl;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueField;
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedInterrogativeClause;
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedInterrogativeField;
 
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.ProxyMemberRegistry;
@@ -30,9 +31,9 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.st.sentence.Statements;
 
 
-public class IssueMemberRegistry extends ProxyMemberRegistry {
+public class InterrogativeMemberRegistry extends ProxyMemberRegistry {
 
-	public IssueMemberRegistry(MemberRegistry registry) {
+	public InterrogativeMemberRegistry(MemberRegistry registry) {
 		super(noInclusions(), registry);
 	}
 
@@ -41,11 +42,11 @@ public class IssueMemberRegistry extends ProxyMemberRegistry {
 			Statements<?> statements,
 			ClauseDeclaration declaration) {
 		if (statements.getContainer().toClause() == null) {
-			SentenceErrors.prohibitedIssueClause(declaration);
+			prohibitedInterrogativeClause(declaration);
 			return null;
 		}
 		if (declaration.getKind() == ClauseKind.OVERRIDER) {
-			prohibitedIssueField(declaration);
+			prohibitedInterrogativeField(declaration);
 			return null;
 		}
 		return registry().newClause(statements, declaration);

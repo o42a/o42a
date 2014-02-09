@@ -40,7 +40,7 @@ final class ExpandMacroBlock extends BlockBuilder {
 				new ExpandMacroStatement(
 						this.expansion.rescope(block.getScope()));
 
-		block.propose(this).alternative(this).statement(statement);
+		block.declare(this).alternative(this).statement(statement);
 	}
 
 	@Override

@@ -22,9 +22,9 @@ package org.o42a.core.st.sentence;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.declarative.DeclarativeIssueFactory;
+import org.o42a.core.st.impl.declarative.DeclarativeInterrogationFactory;
 import org.o42a.core.st.impl.imperative.ImperativeGroupFactory;
-import org.o42a.core.st.impl.imperative.ImperativeIssueFactory;
+import org.o42a.core.st.impl.imperative.ImperativeInterrogationFactory;
 import org.o42a.util.string.Name;
 
 
@@ -37,10 +37,10 @@ public abstract class SentenceFactory<
 			new DeclarativeFactory();
 	public static final ImperativeFactory IMPERATIVE_FACTORY =
 			new ImperativeFactory();
-	public static final DeclarativeFactory DECLARATIVE_ISSUE_FACTORY =
-			new DeclarativeIssueFactory();
-	public static final ImperativeFactory IMPERATIVE_ISSUE_FACTORY =
-			new ImperativeIssueFactory();
+	public static final DeclarativeFactory DECLARATIVE_INTERROGATION_FACTORY =
+			new DeclarativeInterrogationFactory();
+	public static final ImperativeFactory IMPERATIVE_INTERROGATION_FACTORY =
+			new ImperativeInterrogationFactory();
 	public static final ImperativeFactory IMPERATIVE_GROUP_FACTORY =
 			new ImperativeGroupFactory();
 
@@ -73,11 +73,11 @@ public abstract class SentenceFactory<
 			Name name,
 			MemberRegistry memberRegistry);
 
-	public abstract T propose(LocationInfo location, B block);
+	public abstract T declare(LocationInfo location, B block);
 
-	public abstract T claim(LocationInfo location, B block);
+	public abstract T exit(LocationInfo location, B block);
 
-	public abstract T issue(LocationInfo location, B block);
+	public abstract T interrogate(LocationInfo location, B block);
 
 	public abstract S createAlternative(LocationInfo location, T sentence);
 

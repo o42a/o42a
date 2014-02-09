@@ -17,21 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.declarative;
+package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.DeclarativeFactory;
-import org.o42a.core.st.sentence.DeclarativeSentence;
+import org.o42a.core.st.sentence.*;
 
 
-public class DeclarativeIssueFactory extends DeclarativeFactory {
+public final class LoopExitSentence extends ImperativeSentence {
+
+	public LoopExitSentence(
+			LocationInfo location,
+			ImperativeBlock block,
+			ImperativeFactory sentenceFactory) {
+		super(location, block, sentenceFactory);
+	}
 
 	@Override
-	public DeclarativeSentence propose(
-			LocationInfo location,
-			DeclarativeBlock block) {
-		return new DeclarativeIssue(location, block);
+	public SentenceKind getKind() {
+		return SentenceKind.EXCLAMATORY_SENTENCE;
 	}
 
 }

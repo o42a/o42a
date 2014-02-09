@@ -11,8 +11,8 @@ import org.o42a.compiler.test.CompilerTestCase;
 public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 
 	@Test
-	public void emptyIssue() {
-		expectError("compiler.prohibited_empty_issue");
+	public void emptyInterrogativeSentence() {
+		expectError("compiler.prohibited_empty_interrogative_sentence");
 		compile(
 				"A := integer (",
 				"  ? = 2",
@@ -20,8 +20,8 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void emptyCompoundIssue() {
-		expectError("compiler.prohibited_empty_issue");
+	public void emptyCompoundInterrogativeSentence() {
+		expectError("compiler.prohibited_empty_interrogative_sentence");
 		compile(
 				"A := integer (",
 				"  (())? = 2",
@@ -29,8 +29,8 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignInsideIssue() {
-		expectError("compiler.prohibited_issue_assignment");
+	public void selfAssignInInterrogativeSentence() {
+		expectError("compiler.prohibited_interrogative_assignment");
 		compile(
 				"A := integer (",
 				"  = 2?",
@@ -38,8 +38,8 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignDeepInsideIssue() {
-		expectError("compiler.prohibited_issue_assignment");
+	public void selfAssignInsideInterrogation() {
+		expectError("compiler.prohibited_interrogative_assignment");
 		compile(
 				"A := integer (",
 				"  (False, (Void, = 2))?",
@@ -47,8 +47,8 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void emptyClaimInsideIssue() {
-		expectError("compiler.prohibited_issue_claim");
+	public void exitFromInterrogativeSentence() {
+		expectError("compiler.prohibited_interrogative_exit");
 		compile(
 				"A := integer (",
 				"  (!)?",
@@ -56,8 +56,8 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void claimInsideIssue() {
-		expectError("compiler.prohibited_issue_claim");
+	public void exitFromInterrogation() {
+		expectError("compiler.prohibited_interrogative_exit");
 		compile(
 				"A := integer (",
 				"  (False!)?",
@@ -65,8 +65,8 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void braceInsideIssue() {
-		expectError("compiler.prohibited_issue_braces");
+	public void bracesInsideInterogativeSentence() {
+		expectError("compiler.prohibited_interrogative_braces");
 		compile(
 				"A := integer (",
 				"  {}?",

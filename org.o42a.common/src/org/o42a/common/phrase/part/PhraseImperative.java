@@ -55,7 +55,7 @@ public class PhraseImperative extends PhraseContinuation {
 	public void define(Block<?> definition) {
 
 		final Statements<?> statements =
-				definition.propose(this).alternative(this);
+				definition.declare(this).alternative(this);
 
 		this.imperatives.buildBlock(statements.braces(this));
 	}

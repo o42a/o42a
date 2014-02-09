@@ -110,13 +110,7 @@ final class InlineSentence {
 			}
 		}
 
-		if (this.sentence.isIssue()) {
-			out.append('?');
-		} else if (this.sentence.isClaim()) {
-			out.append('!');
-		} else {
-			out.append('.');
-		}
+		out.append(this.sentence.getKind().getSign());
 
 		return out.toString();
 	}

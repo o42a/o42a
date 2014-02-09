@@ -125,13 +125,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		return null;
 	}
 
-	public final boolean isInsideClaim() {
-
-		final Declaratives enclosing = getEnclosing();
-
-		return enclosing != null && enclosing.isInsideClaim();
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DeclarativeSentence> getSentences() {
@@ -144,18 +137,18 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public final DeclarativeSentence propose(LocationInfo location) {
-		return (DeclarativeSentence) super.propose(location);
+	public final DeclarativeSentence declare(LocationInfo location) {
+		return (DeclarativeSentence) super.declare(location);
 	}
 
 	@Override
-	public final DeclarativeSentence claim(LocationInfo location) {
-		return (DeclarativeSentence) super.claim(location);
+	public final DeclarativeSentence exit(LocationInfo location) {
+		return (DeclarativeSentence) super.exit(location);
 	}
 
 	@Override
-	public final DeclarativeSentence issue(LocationInfo location) {
-		return (DeclarativeSentence) super.issue(location);
+	public final DeclarativeSentence interrogate(LocationInfo location) {
+		return (DeclarativeSentence) super.interrogate(location);
 	}
 
 	public DefinitionsBuilder definitions(CommandEnv env) {
@@ -218,7 +211,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return;
 		}
 
-		final Declaratives statements = propose(this).alternative(this);
+		final Declaratives statements = declare(this).alternative(this);
 
 		statements.statement(new Inclusion(this, statements));
 	}
