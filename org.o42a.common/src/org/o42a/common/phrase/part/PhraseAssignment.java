@@ -61,7 +61,7 @@ public class PhraseAssignment extends PhraseContinuation {
 		}
 
 		final Statements<?> statements =
-				definition.propose(this).alternative(this);
+				definition.declare(this).alternative(this);
 
 		statements.selfAssign(this.value);
 	}

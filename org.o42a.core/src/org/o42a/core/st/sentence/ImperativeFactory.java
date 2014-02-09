@@ -24,9 +24,9 @@ import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.imperative.ImperativeClaim;
-import org.o42a.core.st.impl.imperative.ImperativeIssue;
-import org.o42a.core.st.impl.imperative.ImperativeProposition;
+import org.o42a.core.st.impl.imperative.LoopExitSentence;
+import org.o42a.core.st.impl.imperative.ImperativeInterrogativeSentence;
+import org.o42a.core.st.impl.imperative.DefaultImperativeSentence;
 import org.o42a.util.string.Name;
 
 
@@ -89,10 +89,10 @@ public class ImperativeFactory extends SentenceFactory<
 	}
 
 	@Override
-	public ImperativeSentence issue(
+	public ImperativeSentence interrogate(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeIssue(location, block);
+		return new ImperativeInterrogativeSentence(location, block);
 	}
 
 	@Override
@@ -103,17 +103,17 @@ public class ImperativeFactory extends SentenceFactory<
 	}
 
 	@Override
-	public ImperativeSentence propose(
+	public ImperativeSentence declare(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeProposition(location, block, this);
+		return new DefaultImperativeSentence(location, block, this);
 	}
 
 	@Override
-	public ImperativeSentence claim(
+	public ImperativeSentence exit(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeClaim(location, block, this);
+		return new LoopExitSentence(location, block, this);
 	}
 
 	@Override

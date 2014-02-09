@@ -41,7 +41,7 @@ public class ConditionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void issue() {
+	public void interrogationSucceed() {
 		compile(
 				"A := void (",
 				"  Condition := 1",
@@ -56,7 +56,7 @@ public class ConditionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void unlessIssue() {
+	public void interrogationFailed() {
 		compile(
 				"A := void (",
 				"  Condition := 1",

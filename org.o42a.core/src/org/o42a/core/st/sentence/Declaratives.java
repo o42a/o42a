@@ -33,10 +33,6 @@ public final class Declaratives extends Statements<Declaratives> {
 		super(location, sentence);
 	}
 
-	public final boolean isInsideClaim() {
-		return getSentence().isInsideClaim();
-	}
-
 	@Override
 	public final DeclarativeSentence getSentence() {
 		return (DeclarativeSentence) super.getSentence();
@@ -51,14 +47,6 @@ public final class Declaratives extends Statements<Declaratives> {
 	public FieldBuilder field(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
-		if (getSentence().isInsideClaim()) {
-			getLogger().error(
-					"prohibited_claim_field",
-					declaration,
-					"Field can not be declared inside the claim");
-			dropStatement();
-			return null;
-		}
 		if (getSentence().isConditional()) {
 			getLogger().error(
 					"prohibited_conditional_field",

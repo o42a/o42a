@@ -26,32 +26,34 @@ import org.o42a.core.st.CommandTargets;
 
 public final class SentenceErrors {
 
-	public static void prohibitedIssueField(LocationInfo location) {
+	public static void prohibitedInterrogativeField(LocationInfo location) {
 		location.getLocation().getLogger().error(
-				"prohibited_issue_field",
+				"prohibited_interrogative_field",
 				location,
-				"Field declarations prohibited inside issues");
+				"Field declarations prohibited inside interrogative sentences");
 	}
 
-	public static void prohibitedIssueClause(LocationInfo location) {
+	public static void prohibitedInterrogativeClause(LocationInfo location) {
 		location.getLocation().getLogger().error(
-				"prohibited_issue_clause",
+				"prohibited_interrogative_clause",
 				location,
-				"Clause declarations prohibited inside issues");
+				"Clause declarations prohibited inside"
+				+ " interrogative sentences");
 	}
 
-	public static void prohibitedIssueBraces(LocationInfo location) {
+	public static void prohibitedInterrogativeBraces(LocationInfo location) {
 		location.getLocation().getLogger().error(
-				"prohibited_issue_braces",
+				"prohibited_interrogative_braces",
 				location,
-				"Issue can not contain braces");
+				"Interrogative sentences can not contain braces");
 	}
 
-	public static void prohibitedIssueAssignment(LocationInfo location) {
+	public static void prohibitedInterrogativeAssignment(
+			LocationInfo location) {
 		location.getLocation().getLogger().error(
-				"prohibited_issue_assignment",
+				"prohibited_interrogative_assignment",
 				location,
-				"Assignments are prohibited within issue");
+				"Assignments are prohibited within interrogative sentences");
 	}
 
 	public static void declarationNotAlone(

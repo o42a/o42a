@@ -64,13 +64,13 @@ public final class StInterpreter {
 
 		switch (type) {
 		case PROPOSITION:
-			sentence = block.propose(location);
+			sentence = block.declare(location);
 			break;
 		case CLAIM:
-			sentence = block.claim(location);
+			sentence = block.exit(location);
 			break;
 		case ISSUE:
-			sentence = block.issue(location);
+			sentence = block.interrogate(location);
 			break;
 		default:
 			throw new IllegalStateException(

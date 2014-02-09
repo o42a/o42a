@@ -19,40 +19,22 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_ISSUE_FACTORY;
-
-import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.IssueMemberRegistry;
-import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.DeclarativeSentence;
+import org.o42a.core.st.sentence.*;
 
 
-public final class DeclarativeIssue extends DeclarativeSentence {
+public final class DefaultDeclarativeSentence extends DeclarativeSentence {
 
-	private final MemberRegistry memberRegistry;
-
-	public DeclarativeIssue(
+	public DefaultDeclarativeSentence(
 			LocationInfo location,
-			DeclarativeBlock block) {
-		super(location, block, DECLARATIVE_ISSUE_FACTORY);
-		this.memberRegistry =
-				new IssueMemberRegistry(block.getMemberRegistry());
+			DeclarativeBlock block,
+			DeclarativeFactory sentenceFactory) {
+		super(location, block, sentenceFactory);
 	}
 
 	@Override
-	public final boolean isClaim() {
-		return false;
-	}
-
-	@Override
-	public boolean isIssue() {
-		return true;
-	}
-
-	@Override
-	public MemberRegistry getMemberRegistry() {
-		return this.memberRegistry;
+	public SentenceKind getKind() {
+		return SentenceKind.DECLARATIVE_SENTENCE;
 	}
 
 }

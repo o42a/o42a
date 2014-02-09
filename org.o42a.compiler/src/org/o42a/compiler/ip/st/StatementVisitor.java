@@ -170,7 +170,7 @@ public abstract class StatementVisitor
 				statements.getRules(),
 				statements.get()
 				.parentheses(location)
-				.propose(location)
+				.declare(location)
 				.alternative(location));
 		final Ref dest;
 		final Local local;

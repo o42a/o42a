@@ -127,8 +127,8 @@ public abstract class Control {
 		return new NestedControl.ParenthesesControl(this, code, next);
 	}
 
-	public final Control issue(CodePos next) {
-		return new NestedControl.IssueControl(this, next);
+	public final Control interrogation(CodePos next) {
+		return new NestedControl.InterrogationControl(this, next);
 	}
 
 	public final Control alt(Block code, CodePos next) {
