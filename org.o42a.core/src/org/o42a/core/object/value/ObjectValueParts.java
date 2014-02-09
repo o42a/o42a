@@ -52,13 +52,6 @@ public abstract class ObjectValueParts {
 		return this.proposition;
 	}
 
-	public final ObjectValuePart part(boolean claims) {
-		if (claims) {
-			return claim();
-		}
-		return proposition();
-	}
-
 	@Override
 	public String toString() {
 		if (this.object == null) {

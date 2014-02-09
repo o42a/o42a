@@ -37,10 +37,7 @@ final class BlockDefinitions {
 	private final DeclarativeBlock block;
 	private final CommandEnv env;
 	private CommandTargets targets = noCommands();
-	private CommandTargets claimTargets = noCommands();
-	private CommandTargets propositionTargets = noCommands();
-	private ArrayList<DeclarativeSentence> claims;
-	private ArrayList<DeclarativeSentence> propositions;
+	private ArrayList<DeclarativeSentence> sentences;
 
 	BlockDefinitions(DeclarativeBlock block, CommandEnv env) {
 		this.block = block;
@@ -60,12 +57,8 @@ final class BlockDefinitions {
 		return this.targets;
 	}
 
-	public final ArrayList<DeclarativeSentence> getClaims() {
-		return this.claims;
-	}
-
-	public final ArrayList<DeclarativeSentence> getPropositions() {
-		return this.propositions;
+	public final ArrayList<DeclarativeSentence> getSentences() {
+		return this.sentences;
 	}
 
 	public final CompilerLogger getLogger() {
@@ -76,35 +69,19 @@ final class BlockDefinitions {
 
 		final TypeParameters<?> typeParameters =
 				env().getValueRequest().getExpectedParameters();
-		final Definitions claims;
 
-		if (this.claims == null) {
-			claims = typeParameters.noValueDefinitions(
+		if (this.sentences == null) {
+			return typeParameters.noValueDefinitions(
 					getBlock(),
 					getBlock().getScope());
-		} else {
-			claims =
-					new DeclarativePart(
-							getBlock(),
-							env(),
-							this.claimTargets,
-							this.claims,
-							true)
-					.toDefinitions(typeParameters);
 		}
 
-		if (this.propositions == null) {
-			return claims;
-		}
-
-		return claims.refine(
-				new DeclarativePart(
+		return new DeclarativePart(
 						getBlock(),
 						env(),
-						this.propositionTargets,
-						this.propositions,
-						false)
-				.toDefinitions(typeParameters));
+						this.targets,
+						this.sentences)
+				.toDefinitions(typeParameters);
 	}
 
 	@Override
@@ -128,25 +105,8 @@ final class BlockDefinitions {
 			if (!targets.defining()) {
 				continue;
 			}
-
-			final boolean claim;
-
-			if (targets.isClaim()
-					&& this.targets.defining()
-					&& !this.targets.isClaim()) {
-				if (!this.targets.haveError()) {
-					getLogger().error(
-							"prohibited_claim_after_proposition",
-							sentence,
-							"Claims should never follow propositions");
-					this.targets = this.targets.addError();
-				}
-				claim = false;
-			} else {
-				claim = targets.isClaim();
-			}
 			if (!this.targets.breaking() || this.targets.havePrerequisite()) {
-				addSentence(sentence, targets, index, claim);
+				addSentence(sentence, targets, index);
 				continue;
 			}
 			if (this.targets.haveError()) {
@@ -163,45 +123,25 @@ final class BlockDefinitions {
 	private void addSentence(
 			DeclarativeSentence sentence,
 			CommandTargets targets,
-			int index,
-			boolean claim) {
-		if (claim) {
-			if (this.claims == null) {
-				this.claims = new ArrayList<>(
-						getBlock().getSentences().size() - index);
-			}
-			this.claims.add(sentence);
-		} else {
-			if (this.propositions == null) {
-				this.propositions = new ArrayList<>(
-						getBlock().getSentences().size() - index);
-			}
-			this.propositions.add(sentence);
+			int index) {
+		if (this.sentences == null) {
+			this.sentences = new ArrayList<>(
+					getBlock().getSentences().size() - index);
 		}
+		this.sentences.add(sentence);
 
 		if (!targets.breaking()) {
-			addTargets(targets.toPreconditions(), claim);
+			addTargets(targets.toPreconditions());
 		} else {
-			addTargets(targets, claim);
+			addTargets(targets);
 			if (!targets.havePrerequisite()) {
 				this.targets = this.targets.toPreconditions();
-				if (claim) {
-					this.claimTargets = this.claimTargets.toPreconditions();
-				} else {
-					this.propositionTargets =
-							this.propositionTargets.toPreconditions();
-				}
 			}
 		}
 	}
 
-	private void addTargets(CommandTargets targets, boolean claim) {
+	private void addTargets(CommandTargets targets) {
 		this.targets = this.targets.add(targets);
-		if (claim) {
-			this.claimTargets = this.claimTargets.add(targets);
-		} else {
-			this.propositionTargets = this.propositionTargets.add(targets);
-		}
 	}
 
 }

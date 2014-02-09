@@ -72,7 +72,7 @@ public class ValueInheritanceTest extends CompilerTestCase {
 				.toObject()
 				.value()
 				.getDefinitions()
-				.propositions();
+				.defs();
 
 		assertThat(propositions.length(), is(2));
 	}
@@ -89,7 +89,7 @@ public class ValueInheritanceTest extends CompilerTestCase {
 				.toObject()
 				.value()
 				.getDefinitions()
-				.propositions();
+				.defs();
 
 		assertThat(propositions.length(), is(2));
 	}

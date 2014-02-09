@@ -19,9 +19,6 @@
 */
 package org.o42a.core.object.def;
 
-import static org.o42a.core.object.def.Definitions.NO_CLAIMS;
-import static org.o42a.core.object.def.Definitions.NO_PROPOSITIONS;
-import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
@@ -58,36 +55,21 @@ public abstract class Def implements SourceInfo {
 	private final Obj source;
 	private final Location location;
 	private DefValue constantValue;
-	private boolean claim;
 	private boolean allResolved;
 
 	public Def(
 			Obj source,
 			LocationInfo location,
 			ScopeUpgrade scopeUpgrade) {
-		this(source, location, scopeUpgrade, false);
-	}
-
-	public Def(
-			Obj source,
-			LocationInfo location,
-			ScopeUpgrade scopeUpgrade,
-			boolean claim) {
 		this.scopeUpgrade = scopeUpgrade;
 		this.location = location.getLocation();
 		this.source = source;
-		this.claim = claim;
 	}
 
 	protected Def(Def prototype, ScopeUpgrade scopeUpgrade) {
 		this.scopeUpgrade = scopeUpgrade;
 		this.source = prototype.source;
 		this.location = prototype.location;
-		this.claim = prototype.claim;
-	}
-
-	public final boolean isClaim() {
-		return this.claim;
 	}
 
 	@Override
@@ -169,30 +151,6 @@ public abstract class Def implements SourceInfo {
 		return upgradeScope(ScopeUpgrade.upgradeScope(this, toScope));
 	}
 
-	public final Def claim() {
-		if (isClaim()) {
-			return this;
-		}
-
-		final Def copy = copy();
-
-		copy.claim = true;
-
-		return copy;
-	}
-
-	public final Def unclaim() {
-		if (!isClaim()) {
-			return this;
-		}
-
-		final Def copy = copy();
-
-		copy.claim = false;
-
-		return copy;
-	}
-
 	public final DefValue getConstantValue() {
 		if (this.constantValue != null) {
 			return this.constantValue;
@@ -231,21 +189,11 @@ public abstract class Def implements SourceInfo {
 		assert typeParameters != null :
 			"Type parameters expected";
 
-		if (isClaim()) {
-			return new Definitions(
-					this,
-					getScope(),
-					typeParameters,
-					new Defs(true, this),
-					NO_PROPOSITIONS);
-		}
-
 		return new Definitions(
 				this,
 				getScope(),
 				typeParameters,
-				NO_CLAIMS,
-				new Defs(false, this));
+				new Defs(this));
 	}
 
 	public final void resolveAll(FullResolver resolver) {
@@ -297,11 +245,7 @@ public abstract class Def implements SourceInfo {
 
 		out.append(getClass().getSimpleName()).append('[');
 		out.append(getLocation());
-		if (isClaim()) {
-			out.append("!]");
-		} else {
-			out.append(".]");
-		}
+		out.append(']');
 
 		return out.toString();
 	}
@@ -336,10 +280,6 @@ public abstract class Def implements SourceInfo {
 		}
 
 		return create(newUpgrade, upgrade);
-	}
-
-	private final Def copy() {
-		return create(getScopeUpgrade(), noScopeUpgrade(getScope()));
 	}
 
 }
