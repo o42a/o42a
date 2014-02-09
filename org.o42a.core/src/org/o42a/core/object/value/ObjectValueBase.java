@@ -24,32 +24,25 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 
 
-public abstract class ObjectValueParts {
+public abstract class ObjectValueBase {
 
 	private final Obj object;
+	private final ObjectValueDefs valueDefs;
 
-	private final ObjectValuePart claim;
-	private final ObjectValuePart proposition;
-
-	public ObjectValueParts(Obj object) {
+	public ObjectValueBase(Obj object) {
 		this.object = object;
 
 		final ObjectValue objectValue = (ObjectValue) this;
 
-		this.claim = new ObjectValuePart(objectValue, true);
-		this.proposition = new ObjectValuePart(objectValue, false);
+		this.valueDefs = new ObjectValueDefs(objectValue);
 	}
 
 	public final Obj getObject() {
 		return this.object;
 	}
 
-	public final ObjectValuePart claim() {
-		return this.claim;
-	}
-
-	public final ObjectValuePart proposition() {
-		return this.proposition;
+	public final ObjectValueDefs valueDefs() {
+		return this.valueDefs;
 	}
 
 	@Override

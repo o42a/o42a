@@ -33,7 +33,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.type.DerivationUsage;
 import org.o42a.core.object.type.Inheritor;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.core.object.value.ObjectValueDefs;
 import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -262,10 +262,10 @@ final class DerivationUses {
 			final ObjectValue ascendantValue,
 			final ObjectValue derivedValue) {
 
-		final ObjectValuePart derivedPart = derivedValue.proposition();
+		final ObjectValueDefs derivedPart = derivedValue.valueDefs();
 
 		if (derivedPart.getDefs().presentIn(ancestor)) {
-			ascendantValue.proposition().accessBy(derivedPart);
+			ascendantValue.valueDefs().accessBy(derivedPart);
 		}
 	}
 
@@ -297,14 +297,14 @@ final class DerivationUses {
 			final ObjectValue newAncestorValue,
 			final Obj oldAncestorObject) {
 
-		final ObjectValuePart sampleValuePart =
-				getObject().value().proposition();
-		final ObjectValuePart sinceValuePart =
-				since.value().proposition();
+		final ObjectValueDefs sampleValuePart =
+				getObject().value().valueDefs();
+		final ObjectValueDefs sinceValuePart =
+				since.value().valueDefs();
 
 		sampleValuePart.updateAncestorDefsBy(
 				sinceValuePart.ancestorDefsUpdatesUser());
-		if (newAncestorValue.proposition().getDefs().updatedSince(
+		if (newAncestorValue.valueDefs().getDefs().updatedSince(
 				oldAncestorObject)) {
 			sampleValuePart.updateAncestorDefsBy(sinceValuePart);
 		}

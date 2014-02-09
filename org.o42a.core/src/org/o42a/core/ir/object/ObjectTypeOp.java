@@ -95,20 +95,11 @@ public final class ObjectTypeOp extends IROp {
 		function.call(dirs, data.loadObject(code));
 	}
 
-	public final void writeClaim(DefDirs dirs, ObjectOp body) {
-
-		final Code code = dirs.code();
-		final ObjectValFunc function =
-				ptr().data(code).claimFunc(code).load(null, code);
-
-		function.call(dirs, body(code, body));
-	}
-
-	public final void writeProposition(DefDirs dirs, ObjectOp body) {
+	public final void writeDefs(DefDirs dirs, ObjectOp body) {
 
 		final Block code = dirs.code();
 		final ObjectValFunc function =
-				ptr().data(code).propositionFunc(code).load(null, code);
+				ptr().data(code).defsFunc(code).load(null, code);
 
 		function.call(dirs, body(code, body));
 	}

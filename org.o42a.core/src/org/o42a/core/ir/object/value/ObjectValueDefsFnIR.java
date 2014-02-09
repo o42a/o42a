@@ -29,6 +29,7 @@ import static org.o42a.core.object.value.ValueUsage.ANY_RUNTIME_VALUE_USAGE;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectSignature;
@@ -40,31 +41,30 @@ import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Defs;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.core.object.value.ObjectValueDefs;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public abstract class ObjectValuePartFnIR
+public class ObjectValueDefsFnIR
 		extends AbstractObjectValueFnIR<ObjectValFunc>
 		implements FunctionBuilder<ObjectValFunc> {
 
+	private static final ID DEFS_ID = ID.id("defs");
 	private static final ID SAME_VALUE_TYPE = ID.rawId("same_value_type");
 
-	ObjectValuePartFnIR(ObjectValueIR valueIR) {
+	public ObjectValueDefsFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
-	public abstract ObjectValuePart part();
-
-	public final Defs defs() {
-		return part().getDefs();
+	public final ObjectValueDefs valueDefs() {
+		return getObject().value().valueDefs();
 	}
 
-	public final boolean isClaim() {
-		return part().isClaim();
+	public final Defs defs() {
+		return valueDefs().getDefs();
 	}
 
 	public final void call(DefDirs dirs, ObjOp host, ObjectOp body) {
@@ -133,6 +133,16 @@ public abstract class ObjectValuePartFnIR
 			result.store(done, dirs.result());
 			done.returnVoid();
 		}
+	}
+
+	@Override
+	protected ID suffix() {
+		return DEFS_ID;
+	}
+
+	@Override
+	protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
+		return data.defsFunc();
 	}
 
 	@Override
@@ -247,7 +257,7 @@ public abstract class ObjectValuePartFnIR
 		final ObjectValueIR reuseFromIR =
 				reuseFrom.ir(getGenerator()).allocate().getObjectValueIR();
 		final FuncPtr<ObjectValFunc> reused =
-				reuseFromIR.value(isClaim()).getNotStub();
+				reuseFromIR.defs().getNotStub();
 
 		if (reused != null) {
 			reuse(reused);
@@ -283,7 +293,7 @@ public abstract class ObjectValuePartFnIR
 	}
 
 	private boolean partUsed() {
-		return part().isUsed(
+		return valueDefs().isUsed(
 				getGenerator().getAnalyzer(),
 				ALL_VALUE_PART_USAGES);
 	}
@@ -298,7 +308,7 @@ public abstract class ObjectValuePartFnIR
 		if (rtUsed()) {
 			return true;
 		}
-		return part().ancestorDefsUpdates().isUsed(
+		return valueDefs().ancestorDefsUpdates().isUsed(
 				getGenerator().getAnalyzer(),
 				ALL_SIMPLE_USAGES);
 	}
@@ -373,9 +383,6 @@ public abstract class ObjectValuePartFnIR
 	}
 
 	private void writeVoid(Block code, DefDirs dirs, ObjOp host) {
-		if (isClaim()) {
-			return;
-		}
 		if (!dirs.getValueType().isVoid()) {
 			return;
 		}
@@ -426,11 +433,7 @@ public abstract class ObjectValuePartFnIR
 		hostValueType.eq(SAME_VALUE_TYPE, code, ancestorValueType)
 		.goUnless(code, diffValueType.head());
 
-		if (isClaim()) {
-			ancestorType.writeClaim(defDirs, ancestorBody);
-		} else {
-			ancestorType.writeProposition(defDirs, ancestorBody);
-		}
+		ancestorType.writeDefs(defDirs, ancestorBody);
 
 		if (diffValueType.exists()) {
 			diffValueType.dumpName("Ancestor value type: ", ancestorValueType);
