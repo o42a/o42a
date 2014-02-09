@@ -38,10 +38,10 @@ public class SectionNode
 	public static DeclaratorNode sectionDeclaratorFromTitle(
 			SentenceNode title) {
 		switch (title.getType()) {
-		case ISSUE:
+		case INTERROGATION:
 			return null;
-		case PROPOSITION:
-		case CLAIM:
+		case DECLARATION:
+		case EXCLAMATION:
 			break;
 		}
 

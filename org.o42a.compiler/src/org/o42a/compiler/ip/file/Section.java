@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
+import static org.o42a.ast.sentence.SentenceType.DECLARATION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_HEADER;
 import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_TYPE;
@@ -273,7 +273,7 @@ final class Section implements LogInfo {
 				new HeaderStatementVisitor(getContext());
 
 		for (SentenceNode sentence : header.getContent()) {
-			if (sentence.getType() != PROPOSITION) {
+			if (sentence.getType() != DECLARATION) {
 				getLogger().error(
 						"not_header_proposition",
 						sentence.getMark(),
@@ -284,7 +284,7 @@ final class Section implements LogInfo {
 					visitor,
 					enclosingBlock,
 					sentence,
-					PROPOSITION);
+					DECLARATION);
 		}
 
 		enclosingBlock.executeInstructions();

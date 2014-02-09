@@ -139,7 +139,7 @@ public class EllipsisTest extends GrammarTestCase {
 		final EllipsisNode ellipsis =
 				statement(EllipsisNode.class, sentence, 1, 2);
 
-		assertThat(sentence.getMark().getType(), is(SentenceType.PROPOSITION));
+		assertThat(sentence.getMark().getType(), is(SentenceType.DECLARATION));
 		assertThat(statement, isName("foo"));
 		assertThat(ellipsis.getTarget(), nullValue());
 	}
@@ -153,7 +153,7 @@ public class EllipsisTest extends GrammarTestCase {
 		final EllipsisNode ellipsis =
 				statement(EllipsisNode.class, sentence, 1, 2);
 
-		assertThat(sentence.getMark().getType(), is(SentenceType.PROPOSITION));
+		assertThat(sentence.getMark().getType(), is(SentenceType.DECLARATION));
 		assertThat(statement, isName("foo"));
 		assertThat(ellipsis.getTarget(), nullValue());
 	}
@@ -167,7 +167,7 @@ public class EllipsisTest extends GrammarTestCase {
 		final EllipsisNode ellipsis =
 				statement(EllipsisNode.class, sentence, 1, 2);
 
-		assertThat(sentence.getMark().getType(), is(SentenceType.PROPOSITION));
+		assertThat(sentence.getMark().getType(), is(SentenceType.DECLARATION));
 		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
@@ -181,7 +181,7 @@ public class EllipsisTest extends GrammarTestCase {
 		final EllipsisNode ellipsis =
 				statement(EllipsisNode.class, sentence, 1, 2);
 
-		assertThat(sentence.getMark().getType(), is(SentenceType.PROPOSITION));
+		assertThat(sentence.getMark().getType(), is(SentenceType.DECLARATION));
 		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
@@ -195,7 +195,7 @@ public class EllipsisTest extends GrammarTestCase {
 		final EllipsisNode ellipsis =
 				statement(EllipsisNode.class, sentence, 1, 2);
 
-		assertThat(sentence.getMark().getType(), is(SentenceType.CLAIM));
+		assertThat(sentence.getMark().getType(), is(SentenceType.EXCLAMATION));
 		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
@@ -209,7 +209,7 @@ public class EllipsisTest extends GrammarTestCase {
 		final EllipsisNode ellipsis =
 				statement(EllipsisNode.class, sentence, 1, 2);
 
-		assertThat(sentence.getMark().getType(), is(SentenceType.CLAIM));
+		assertThat(sentence.getMark().getType(), is(SentenceType.EXCLAMATION));
 		assertThat(statement, isName("foo"));
 		assertThat(canonicalName(ellipsis.getTarget()), is("bar"));
 	}
