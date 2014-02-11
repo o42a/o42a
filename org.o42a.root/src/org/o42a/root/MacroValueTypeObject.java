@@ -39,17 +39,6 @@ public class MacroValueTypeObject extends ValueTypeObject implements Macro {
 	}
 
 	@Override
-	public Definitions overrideDefinitions(Definitions ascendantDefinitions) {
-
-		final Definitions explicitDefinitions =
-				value()
-				.getExplicitDefinitions()
-				.upgradeScope(ascendantDefinitions.getScope());
-
-		return ascendantDefinitions.override(explicitDefinitions);
-	}
-
-	@Override
 	public Path expand(MacroExpander expander) {
 		return cantExpand(expander);
 	}

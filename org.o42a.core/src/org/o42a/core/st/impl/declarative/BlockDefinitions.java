@@ -76,7 +76,7 @@ final class BlockDefinitions {
 					getBlock().getScope());
 		}
 
-		return new DeclarativePart(
+		return new BlockDef(
 						getBlock(),
 						env(),
 						this.targets,

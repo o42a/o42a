@@ -160,25 +160,21 @@ public class Definitions extends Scoped {
 		return getTypeParameters().runtimeValue();
 	}
 
-	public Definitions refine(Definitions refinements) {
-		assertSameScope(refinements);
-		if (refinements.isEmpty()) {
+	public final Definitions override(Definitions overriders) {
+		assertSameScope(overriders);
+		if (overriders.isEmpty()) {
 			return this;
 		}
 		if (isEmpty()) {
-			return refinements;
+			return overriders;
 		}
 
 		final TypeParameters<?> typeParameters =
 				getTypeParameters() != null
-				? getTypeParameters() : refinements.getTypeParameters();
-		final Defs newDefs = refinements.defs().add(defs());
+				? getTypeParameters() : overriders.getTypeParameters();
+		final Defs newDefs = defs().override(overriders.defs());
 
 		return new Definitions(this, typeParameters, newDefs);
-	}
-
-	public final Definitions override(Definitions overriders) {
-		return refine(overriders);
 	}
 
 	public final Definitions wrapBy(Scope wrapperScope) {
@@ -214,6 +210,7 @@ public class Definitions extends Scoped {
 		if (!defs().upgradeTypeParameters(this, typeParameters)) {
 			return this;
 		}
+
 		return new Definitions(this, typeParameters, defs());
 	}
 
