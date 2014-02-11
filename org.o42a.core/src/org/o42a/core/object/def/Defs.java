@@ -35,6 +35,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
+import org.o42a.util.ArrayUtil;
 
 
 public final class Defs {
@@ -226,6 +227,10 @@ public final class Defs {
 		}
 
 		return this;
+	}
+
+	final Defs add(Def def) {
+		return new Defs(ArrayUtil.append(this.defs, def));
 	}
 
 	final Defs override(Defs overriders) {

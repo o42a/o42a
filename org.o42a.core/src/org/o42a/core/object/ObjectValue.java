@@ -121,6 +121,10 @@ public final class ObjectValue extends ObjectValueBase {
 				object.overrideDefinitions(overriddenDefinitions)
 				.upgradeTypeParameters(getObject().type().getParameters());
 
+		if (getObject().type().getValueType().isVoid()) {
+			return this.definitions = definitions.addVoid();
+		}
+
 		return this.definitions = definitions;
 	}
 
