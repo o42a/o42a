@@ -37,9 +37,8 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 import org.o42a.core.value.link.TargetResolver;
 
 
@@ -153,11 +152,18 @@ public class Definitions extends Scoped {
 		if (value.hasValue()) {
 			return value.getValue();
 		}
-		if (value.getCondition().isConstant()) {
-			return getTypeParameters().falseValue();
+
+		final TypeParameters<?> typeParameters = getTypeParameters();
+		final Condition condition = value.getCondition();
+
+		if (!condition.isConstant()) {
+			return typeParameters.runtimeValue();
+		}
+		if (condition.isTrue() && typeParameters.getValueType().isVoid()) {
+			return ValueType.VOID.cast(typeParameters).compilerValue(Void.VOID);
 		}
 
-		return getTypeParameters().runtimeValue();
+		return typeParameters.falseValue();
 	}
 
 	public final Definitions override(Definitions overriders) {
