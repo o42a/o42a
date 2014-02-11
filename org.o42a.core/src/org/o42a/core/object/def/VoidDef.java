@@ -57,7 +57,7 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	public boolean unconditional() {
+	public boolean isDefined() {
 		return true;
 	}
 

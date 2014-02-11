@@ -40,14 +40,11 @@ public class DirectiveValueTypeObject
 	}
 
 	@Override
-	public Definitions overrideDefinitions(Definitions ascendantDefinitions) {
-
-		final Definitions explicitDefinitions =
-				value()
-				.getExplicitDefinitions()
-				.upgradeScope(ascendantDefinitions.getScope());
-
-		return ascendantDefinitions.override(explicitDefinitions);
+	public void apply(Ref directive, InstructionContext context) {
+		context.getResolver().getLogger().error(
+				"indefinite_directive",
+				directive,
+				"Indefinite directive");
 	}
 
 	@Override
@@ -57,14 +54,6 @@ public class DirectiveValueTypeObject
 				ValueType.DIRECTIVE.constantRef(this, distribute(), this);
 
 		return ref.toDefinitions(definitionEnv());
-	}
-
-	@Override
-	public void apply(Ref directive, InstructionContext context) {
-		context.getResolver().getLogger().error(
-				"indefinite_directive",
-				directive,
-				"Indefinite directive");
 	}
 
 }

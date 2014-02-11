@@ -35,7 +35,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
-import org.o42a.util.ArrayUtil;
 
 
 public final class Defs {
@@ -55,37 +54,30 @@ public final class Defs {
 		return this.defs.length == 0;
 	}
 
+	public final boolean isDefined() {
+		for (Def def : this.defs) {
+			if (def.isDefined()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public final boolean hasInherited() {
-
-		boolean passThrough = true;// May request an ancestor value?
-
 		for (Def def : this.defs) {
 			if (def.isInherited()) {
 				return true;
 			}
-			if (def.unconditional()) {
-				// Return unconditionally. Do not request an ancestor value.
-				passThrough = false;
+			if (def.isDefined()) {
+				// Return unconditionally. Never request an ancestor value.
+				return false;
 			}
 		}
-
-		return passThrough;
+		return true;// Not explicitly defined. Can reuse the inherited value.
 	}
 
 	public final int length() {
 		return this.defs.length;
-	}
-
-	public final boolean unconditional() {
-
-		final Def[] defs = get();
-		final int length = defs.length;
-
-		if (length == 0) {
-			return false;
-		}
-
-		return defs[length - 1].unconditional();
 	}
 
 	public final DefTarget target() {
@@ -236,22 +228,15 @@ public final class Defs {
 		return this;
 	}
 
-	final Defs add(Defs additions) {
-		if (additions.isEmpty()) {
+	final Defs override(Defs overriders) {
+		if (!overriders.isDefined()) {
 			return this;
 		}
-		if (isEmpty()) {
-			return additions;
-		}
-		if (unconditional()) {
-			return this;
-		}
-
-		return new Defs(ArrayUtil.append(get(), additions.get()));
+		return overriders;
 	}
 
 	InlineEval inline(Normalizer normalizer) {
-		if (isEmpty()) {
+		if (!isDefined()) {
 			return noInlineEval();
 		}
 

@@ -122,7 +122,7 @@ public abstract class Def implements SourceInfo {
 		return typeParameters.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
-	public abstract boolean unconditional();
+	public abstract boolean isDefined();
 
 	public final boolean isExplicit() {
 		return getSource().is(getScope().toObject());

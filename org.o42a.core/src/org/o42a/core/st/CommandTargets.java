@@ -42,6 +42,8 @@ public final class CommandTargets implements LogInfo {
 	static final int DECLARING_MASK = FIELD_MASK | CLAUSE_MASK;
 	static final int LOOPING_MASK = EXIT_MASK | REPEAT_MASK;
 	static final int BREAKING_MASK = VALUE_MASK | LOOPING_MASK;
+	static final int DEFINITION_MASK =
+			CONDITIONAL_MASK | VALUE_MASK | LOOPING_MASK;
 
 	private final Loggable loggable;
 	private final int mask;
@@ -72,6 +74,10 @@ public final class CommandTargets implements LogInfo {
 
 	public final boolean isConstant() {
 		return (mask() & NON_CONSTANT_MASK) == 0;
+	}
+
+	public final boolean haveDefinition() {
+		return (mask() & DEFINITION_MASK) != 0;
 	}
 
 	public final boolean havePrerequisite() {

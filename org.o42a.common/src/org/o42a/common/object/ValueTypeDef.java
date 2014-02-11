@@ -1,6 +1,6 @@
 /*
-    Compiler Commons
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.builtin;
+package org.o42a.common.object;
 
+import static org.o42a.core.ir.def.InlineEval.noInlineEval;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
-import static org.o42a.core.st.DefValue.defValue;
+import static org.o42a.core.st.DefValue.FALSE_DEF_VALUE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueType;
 
 
-public class BuiltinDef extends Def {
+final class ValueTypeDef extends Def {
 
-	private final Builtin builtin;
-	private InlineEval normal;
+	private ValueType<?> valueType;
 
-	public BuiltinDef(Builtin builtin) {
-		super(
-				builtin.toObject(),
-				builtin,
-				noScopeUpgrade(builtin.toObject().getScope()));
-		this.builtin = builtin;
+	ValueTypeDef(ValueTypeObject object) {
+		super(object, object.getScope(), noScopeUpgrade(object.getScope()));
+		this.valueType = object.type().getValueType();
 	}
 
-	private BuiltinDef(BuiltinDef prototype, ScopeUpgrade scopeUpgrade) {
+	public ValueTypeDef(
+			ValueTypeDef prototype,
+			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.builtin = prototype.builtin;
+		this.valueType = prototype.valueType;
 	}
 
 	@Override
@@ -57,58 +56,48 @@ public class BuiltinDef extends Def {
 
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
-		return this.builtin.inlineBuiltin(normalizer, getScope());
+		return noInlineEval();
 	}
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.normal = inline(normalizer.newNormalizer());
 	}
 
 	@Override
 	public Eval eval() {
-		if (this.normal != null) {
-			return this.normal;
+		return noInlineEval();
+	}
+
+	@Override
+	public String toString() {
+		if (this.valueType == null) {
+			return super.toString();
 		}
-		return this.builtin.evalBuiltin();
+		return this.valueType.toString();
+	}
+
+	@Override
+	protected Def create(ScopeUpgrade upgrade, ScopeUpgrade additionalUpgrade) {
+		return new ValueTypeDef(this, upgrade);
 	}
 
 	@Override
 	protected boolean hasConstantValue() {
-		return this.builtin.isConstantBuiltin();
-	}
-
-	@Override
-	protected BuiltinDef create(
-			ScopeUpgrade upgrade,
-			ScopeUpgrade additionalUpgrade) {
-		return new BuiltinDef(this, upgrade);
+		return true;
 	}
 
 	@Override
 	protected TypeParameters<?> typeParameters(Scope scope) {
-		return this.builtin.getBuiltinTypeParameters();
+		return null;
 	}
 
 	@Override
 	protected DefValue calculateValue(Resolver resolver) {
-		return defValue(this.builtin.calculateBuiltin(resolver));
+		return FALSE_DEF_VALUE;
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-
-		final Obj object = resolver.getContainer().toObject();
-		final Obj builtin = this.builtin.toObject();
-
-		if (builtin != object) {
-			builtin.value().resolveAll(resolver.refUser());
-		}
-		object.resolveAll();
-		this.builtin.resolveBuiltin(
-				object.value()
-				.valueDefs()
-				.fullResolver());
 	}
 
 }

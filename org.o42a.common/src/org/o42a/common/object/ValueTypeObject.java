@@ -39,15 +39,15 @@ public abstract class ValueTypeObject extends AnnotatedObject {
 	}
 
 	@Override
-	public Definitions overrideDefinitions(Definitions ascentantDefinitions) {
-		return type().getParameters().noValueDefinitions(
-				this,
-				ascentantDefinitions.getScope());
+	public Definitions overrideDefinitions(Definitions ascendantDefinitions) {
+		return value()
+				.getExplicitDefinitions()
+				.upgradeScope(ascendantDefinitions.getScope());
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return type().getParameters().noValueDefinitions(this, getScope());
+		return new ValueTypeDef(this).toDefinitions(type().getParameters());
 	}
 
 }

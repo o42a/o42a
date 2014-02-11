@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.def;
 
+import static org.o42a.core.ir.def.NoInlineEval.NO_INLINE_EVAL;
+
 import org.o42a.core.ref.Normal;
 import org.o42a.core.ref.Normalizer;
 
@@ -26,7 +28,7 @@ import org.o42a.core.ref.Normalizer;
 public abstract class InlineEval extends Normal implements Eval {
 
 	public static InlineEval noInlineEval() {
-		return NoInlineEval.NO_INLINE_EVAL;
+		return NO_INLINE_EVAL;
 	}
 
 	public static InlineEval falseInlineEval() {

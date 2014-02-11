@@ -117,8 +117,8 @@ public final class ObjectValue extends ObjectValueBase {
 		object.resolve();
 
 		final Definitions overriddenDefinitions = getOverriddenDefinitions();
-		final Definitions definitions = object.overrideDefinitions(
-				overriddenDefinitions)
+		final Definitions definitions =
+				object.overrideDefinitions(overriddenDefinitions)
 				.upgradeTypeParameters(getObject().type().getParameters());
 
 		return this.definitions = definitions;
