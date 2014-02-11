@@ -129,7 +129,16 @@ public class Definitions extends Scoped {
 		if (constant.hasValue()) {
 			return this.constant = constant.getValue();
 		}
-		if (constant.getCondition().isConstant()) {
+
+		final Condition condition = constant.getCondition();
+
+		if (condition.isConstant()) {
+			if (condition.isTrue()
+					&& getScope().toObject().type().getValueType().isVoid()) {
+				return this.constant = typeParameters(
+						this,
+						ValueType.VOID).compilerValue(Void.VOID);
+			}
 			return this.constant = getTypeParameters().falseValue();
 		}
 
@@ -159,9 +168,6 @@ public class Definitions extends Scoped {
 		if (!condition.isConstant()) {
 			return typeParameters.runtimeValue();
 		}
-		if (condition.isTrue() && typeParameters.getValueType().isVoid()) {
-			return ValueType.VOID.cast(typeParameters).compilerValue(Void.VOID);
-		}
 
 		return typeParameters.falseValue();
 	}
@@ -181,6 +187,31 @@ public class Definitions extends Scoped {
 		final Defs newDefs = defs().override(overriders.defs());
 
 		return new Definitions(this, typeParameters, newDefs);
+	}
+
+	public final Definitions addVoid() {
+		if (isEmpty()) {
+			return new Definitions(
+					this,
+					typeParameters(this, ValueType.VOID),
+					new Defs(new VoidDef(this)));
+		}
+
+		final Def[] defs = defs().get();
+
+		if (defs.length != 0) {
+
+			final Def last = defs[defs.length - 1];
+
+			if (last.getConstantValue().hasValue()) {
+				return this;
+			}
+		}
+
+		return new Definitions(
+				this,
+				getTypeParameters(),
+				defs().add(new VoidDef(this)));
 	}
 
 	public final Definitions wrapBy(Scope wrapperScope) {

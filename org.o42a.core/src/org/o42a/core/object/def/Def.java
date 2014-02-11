@@ -182,7 +182,7 @@ public abstract class Def implements SourceInfo {
 		if (getValueType().isVoid()) {
 			return this;
 		}
-		return new VoidDef(this);
+		return new ToVoidDef(this);
 	}
 
 	public final Definitions toDefinitions(TypeParameters<?> typeParameters) {

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,41 +19,33 @@
 */
 package org.o42a.core.object.def;
 
-import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.ir.def.Eval.VOID_EVAL;
+import static org.o42a.core.ir.def.InlineEval.voidInlineEval;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
+import static org.o42a.core.value.Void.VOID;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
-import org.o42a.util.fn.Cancelable;
 
 
 final class VoidDef extends Def {
 
-	private final Def def;
-
-	VoidDef(Def def) {
+	VoidDef(Definitions definitions) {
 		super(
-				def.getSource(),
-				def.getLocation(),
-				def.getScopeUpgrade());
-		this.def = def;
+				definitions.getScope().toObject(),
+				definitions.getLocation(),
+				noScopeUpgrade(definitions.getScope()));
 	}
 
-	private VoidDef(
-			VoidDef prototype,
-			ScopeUpgrade scopeUpgrade,
-			ScopeUpgrade additionalUpgrade) {
+	private VoidDef(VoidDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.def = prototype.def.upgradeScope(additionalUpgrade);
 	}
 
 	@Override
@@ -63,45 +55,27 @@ final class VoidDef extends Def {
 
 	@Override
 	public DefValue value(Resolver resolver) {
-
-		final DefValue value = this.def.value(resolver);
-
-		if (!value.hasValue()) {
-			return value;
-		}
-
-		return defValue(
-				value.getValue()
-				.getKnowledge()
-				.getCondition()
-				.toValue(typeParameters(resolver.getScope())));
+		return defValue(typeParameters(resolver.getScope())
+				.compilerValue(VOID));
 	}
 
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
-
-		final InlineEval inline = this.def.inline(normalizer);
-
-		if (inline == null) {
-			return null;
-		}
-
-		return new EvalToVoid(this.def.getValueType(), inline);
+		return voidInlineEval();
 	}
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.def.normalize(normalizer);
 	}
 
 	@Override
 	public Eval eval() {
-		return new EvalToVoid(this.def.getValueType(), this.def.eval());
+		return VOID_EVAL;
 	}
 
 	@Override
 	protected boolean hasConstantValue() {
-		return this.def.hasConstantValue();
+		return true;
 	}
 
 	@Override
@@ -118,56 +92,11 @@ final class VoidDef extends Def {
 	protected Def create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new VoidDef(this, upgrade, additionalUpgrade);
+		return new VoidDef(this, upgrade);
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-		this.def.fullyResolve(resolver);
-	}
-
-	private static final class EvalToVoid extends InlineEval {
-
-		private final ValueType<?> valueType;
-		private final Eval def;
-
-		EvalToVoid(ValueType<?> valueType, Eval def) {
-			super(null);
-			this.valueType = valueType;
-			this.def = def;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-
-			final Block trueVal = dirs.addBlock("true_def");
-			final DefDirs defDirs =
-					dirs.dirs()
-					.nested()
-					.value(this.valueType, TEMP_VAL_HOLDER)
-					.def(trueVal.head());
-
-			this.def.write(defDirs, host);
-			defDirs.done();
-
-			if (trueVal.exists()) {
-				trueVal.go(dirs.code().tail());
-			}
-		}
-
-		@Override
-		public String toString() {
-			if (this.def == null) {
-				return super.toString();
-			}
-			return "(void) "+ this.def.toString();
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
 	}
 
 }
