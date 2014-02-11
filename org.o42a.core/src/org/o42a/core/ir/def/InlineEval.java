@@ -35,6 +35,10 @@ public abstract class InlineEval extends Normal implements Eval {
 		return FalseEval.INSTANCE;
 	}
 
+	public static InlineEval voidInlineEval() {
+		return VoidEval.INSTANCE;
+	}
+
 	public static InlineEval macroInlineEval() {
 		return MacroEval.INSTANCE;
 	}
