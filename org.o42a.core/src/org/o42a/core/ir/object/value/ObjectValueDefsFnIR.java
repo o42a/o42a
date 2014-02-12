@@ -65,7 +65,7 @@ public class ObjectValueDefsFnIR
 
 		final DefDirs subDirs = dirs.begin(
 				null,
-				"Calculating definitions of " + getObjectIR().getId());
+				"Calculating definition of " + getObjectIR().getId());
 		final Block code = subDirs.code();
 
 		if (!writeIfConstant(subDirs, getFinal())) {
@@ -80,7 +80,7 @@ public class ObjectValueDefsFnIR
 
 	@Override
 	public void build(Function<ObjectValFunc> function) {
-		function.debug("Calculating " + suffix());
+		function.debug("Calculating definition");
 
 		final Block failure = function.addBlock("failure");
 		final Block done = function.addBlock("done");
