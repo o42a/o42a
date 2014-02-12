@@ -81,11 +81,8 @@ public class ObjectValueIR {
 		condition().call(dirs, host);
 	}
 
-	public final void writeDefs(
-			DefDirs dirs,
-			ObjOp host,
-			ObjectOp body) {
-		defs().call(dirs, host, body);
+	public final void writeDefs(DefDirs dirs, ObjOp host) {
+		defs().call(dirs, host);
 	}
 
 	@Override

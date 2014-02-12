@@ -134,13 +134,11 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 	}
 
 	@Override
-	public final DataOp objectArg(Code code, ObjOp host, ObjectOp body) {
+	public final DataOp objectArg(Code code, ObjOp host) {
 		if (isReused()) {
-			return body != null
-					? body.toData(null, code)
-					: host.toData(null, code);
+			return host.toData(null, code);
 		}
-		return super.objectArg(code, host, body);
+		return super.objectArg(code, host);
 	}
 
 	@Override
