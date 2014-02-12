@@ -24,7 +24,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 
@@ -53,18 +52,14 @@ public abstract class ObjectFnIR {
 		return getObject().value().getDefinitions();
 	}
 
-	public DataOp objectArg(Code code, ObjOp host, ObjectOp body) {
+	public DataOp objectArg(Code code, ObjOp host) {
 
 		final ObjectIR objectIR = getObjectIR();
 
 		if (!objectIR.isExact()) {
-			return body != null
-					? body.toData(null, code) : host.toData(null, code);
+			return host.toData(null, code);
 		}
 
-		assert body == null :
-			"Attempt to invoke " + this + " for object different from "
-			+ getObject() + ", while this object is exact";
 		assert host.getAscendant().is(objectIR.getObject()) :
 			"Attempt to invoke " + this + " for object " + host.getAscendant()
 			+ ", while " + getObject() + " expected";

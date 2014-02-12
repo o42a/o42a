@@ -61,21 +61,18 @@ public class ObjectValueDefsFnIR
 		return valueDefs().getDefs();
 	}
 
-	public final void call(DefDirs dirs, ObjOp host, ObjectOp body) {
+	public final void call(DefDirs dirs, ObjOp host) {
 
 		final DefDirs subDirs = dirs.begin(
 				null,
-				"Calculate " + suffix() + " of " + getObjectIR().getId());
+				"Calculating definitions of " + getObjectIR().getId());
 		final Block code = subDirs.code();
 
-		if (body != null) {
-			code.dumpName("For: ", body);
-		}
 		if (!writeIfConstant(subDirs, getFinal())) {
 
 			final ObjectValFunc func = get(host).op(suffix(), code);
 
-			func.call(subDirs, objectArg(code, host, body));
+			func.call(subDirs, objectArg(code, host));
 		}
 
 		subDirs.done();

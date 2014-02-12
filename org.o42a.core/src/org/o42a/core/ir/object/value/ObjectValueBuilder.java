@@ -97,7 +97,7 @@ final class ObjectValueBuilder extends AbstractObjectValueBuilder {
 			dirs.code().dumpName("Host: ", host);
 		}
 
-		this.fn.getValueIR().writeDefs(dirs, host, null);
+		this.fn.getValueIR().writeDefs(dirs, host);
 	}
 
 }
