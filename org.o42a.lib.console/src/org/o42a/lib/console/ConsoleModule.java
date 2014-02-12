@@ -211,7 +211,7 @@ public class ConsoleModule extends AnnotatedModule {
 				"result",
 				main,
 				builder,
-				ValueType.INTEGER,
+				ValueType.VOID,
 				TEMP_VAL_HOLDER);
 		final ValDirs dirs = builder.dirs(main, exit.head()).value(result);
 		final ValOp programResult;
@@ -238,13 +238,8 @@ public class ConsoleModule extends AnnotatedModule {
 
 		@Override
 		public void build(Function<DebuggableMainFunc> function) {
-
-			final ValOp result = callMain(function);
-
-			result.rawValue(ID.id("execution_result_ptr"), function)
-			.load(null, function)
-			.toInt32(null, function)
-			.returnValue(function);
+			callMain(function);
+			function.int32(0).returnValue(function);
 		}
 
 	}
@@ -259,6 +254,7 @@ public class ConsoleModule extends AnnotatedModule {
 
 		@Override
 		public void build(Function<MainFunc> function) {
+
 			final FuncPtr<DebugExecMainFunc> executeMain =
 					function.getGenerator()
 					.externalFunction()
