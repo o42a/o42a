@@ -51,7 +51,7 @@ public class BuiltinDef extends Def {
 	}
 
 	@Override
-	public boolean unconditional() {
+	public boolean isDefined() {
 		return true;
 	}
 
@@ -107,7 +107,7 @@ public class BuiltinDef extends Def {
 		object.resolveAll();
 		this.builtin.resolveBuiltin(
 				object.value()
-				.part(isClaim())
+				.valueDefs()
 				.fullResolver());
 	}
 

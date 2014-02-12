@@ -53,13 +53,6 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return (DeclarativeSentence) super.getPrerequisite();
 	}
 
-	public final boolean isInsideClaim() {
-		if (isClaim()) {
-			return true;
-		}
-		return getBlock().isInsideClaim();
-	}
-
 	@Override
 	public CommandTargets getTargets() {
 		if (this.targets != null) {
@@ -137,20 +130,14 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	}
 
 	private CommandTargets addSentenceTargets(CommandTargets targets) {
-
-		final CommandTargets result;
-
-		if (isIssue() && targets.isEmpty() && !targets.haveError()) {
-			reportEmptyIssue();
-			result = targets.addError();
-		} else {
-			result = targets;
-		}
-		if (!isInsideClaim()) {
-			return result;
+		if (getKind().isInterrogative()
+				&& targets.isEmpty()
+				&& !targets.haveError()) {
+			reportEmptyInterrogation();
+			return targets.addError();
 		}
 
-		return result.claim();
+		return targets;
 	}
 
 }

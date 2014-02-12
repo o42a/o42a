@@ -39,7 +39,7 @@ public class SentenceNode extends AbstractNode {
 
 	public final SentenceType getType() {
 		if (this.mark == null) {
-			return SentenceType.PROPOSITION;
+			return SentenceType.DECLARATION;
 		}
 		return this.mark.getType();
 	}

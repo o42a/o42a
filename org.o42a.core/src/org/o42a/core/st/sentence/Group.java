@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedInterrogativeBraces;
 
 import org.o42a.core.Contained;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -57,8 +57,8 @@ public final class Group extends Contained {
 	}
 
 	public final ImperativeBlock braces(Name name) {
-		if (this.statements.isInsideIssue()) {
-			prohibitedIssueBraces(this);
+		if (this.statements.isInterrogation()) {
+			prohibitedInterrogativeBraces(this);
 			this.statements.dropStatement();
 			return null;
 		}

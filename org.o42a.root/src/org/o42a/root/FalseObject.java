@@ -108,7 +108,6 @@ public class FalseObject extends BuiltinObject {
 	@Override
 	protected final Definitions explicitDefinitions() {
 		return new BuiltinDef(this)
-				.claim()
 				.toDefinitions(typeParameters(this, ValueType.VOID));
 	}
 

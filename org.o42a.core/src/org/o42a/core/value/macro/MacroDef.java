@@ -51,7 +51,7 @@ public final class MacroDef extends Def {
 	}
 
 	@Override
-	public boolean unconditional() {
+	public boolean isDefined() {
 		return true;
 	}
 

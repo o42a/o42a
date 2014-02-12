@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,21 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
-
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeFactory;
-import org.o42a.core.st.sentence.ImperativeSentence;
+package org.o42a.core.st.sentence;
 
 
-public class ImperativeIssueFactory extends ImperativeFactory {
+public enum SentenceKind {
 
-	@Override
-	public ImperativeSentence propose(
-			LocationInfo location,
-			ImperativeBlock block) {
-		return new ImperativeIssue(location, block);
+	INTERROGATIVE_SENTENCE("?"),
+	DECLARATIVE_SENTENCE("."),
+	IMPERATIVE_SENTENCE("."),
+	EXCLAMATORY_SENTENCE("!");
+
+	private final String sign;
+
+	SentenceKind(String sign) {
+		this.sign = sign;
+	}
+
+	public final String getSign() {
+		return this.sign;
+	}
+
+	public final boolean isInterrogative() {
+		return this == INTERROGATIVE_SENTENCE;
+	}
+
+	public final boolean isExclamatory() {
+		return this == EXCLAMATORY_SENTENCE;
+	}
+
+	public final boolean isSequential() {
+		return this == IMPERATIVE_SENTENCE || this == DECLARATIVE_SENTENCE;
 	}
 
 }

@@ -11,8 +11,8 @@ import org.o42a.compiler.test.CompilerTestCase;
 public class MisplacedImperativeStatementTest extends CompilerTestCase {
 
 	@Test
-	public void emptyIssue() {
-		expectError("compiler.prohibited_empty_issue");
+	public void emptyInterrogativeSentence() {
+		expectError("compiler.prohibited_empty_interrogative_sentence");
 		compile(
 				"A := integer ({",
 				"  ? = 2",
@@ -20,8 +20,8 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void emptyCompundIssue() {
-		expectError("compiler.prohibited_empty_issue");
+	public void emptyCompundInterrogativeSentence() {
+		expectError("compiler.prohibited_empty_interrogative_sentence");
 		compile(
 				"A := integer ({",
 				"  (())? = 2",
@@ -29,8 +29,8 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void returnInsideIssue() {
-		expectError("compiler.prohibited_issue_assignment");
+	public void returnFromInterrogatveSentence() {
+		expectError("compiler.prohibited_interrogative_assignment");
 		compile(
 				"A := integer ({",
 				"  = 2?",
@@ -38,8 +38,8 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void returnDeepInsideIssue() {
-		expectError("compiler.prohibited_issue_assignment");
+	public void returnFromInterrogation() {
+		expectError("compiler.prohibited_interrogative_assignment");
 		compile(
 				"A := integer ({",
 				"  (False, (Void, = 2))?",
@@ -47,8 +47,8 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void repeatInsideIssue() {
-		expectError("compiler.prohibited_issue_ellipsis");
+	public void repeatInInterrogativeSentence() {
+		expectError("compiler.prohibited_interrogative_repeat");
 		compile(
 				"A := integer ({",
 				"  ...?",
@@ -56,8 +56,8 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void repeatDeepInsideIssue() {
-		expectError("compiler.prohibited_issue_ellipsis");
+	public void repeatInInterrogation() {
+		expectError("compiler.prohibited_interrogative_repeat");
 		compile(
 				"A := integer ({",
 				"  (False; (Void...))?",
@@ -65,8 +65,8 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void unconditionalExitInsideIssue() {
-		expectError("compiler.prohibited_issue_exit");
+	public void unconditionalExitFromIterrogativeSentence() {
+		expectError("compiler.prohibited_interrogative_exit");
 		compile(
 				"A := integer ({",
 				"  (!)?",
@@ -74,8 +74,8 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void conditionalExitInsideIssue() {
-		expectError("compiler.prohibited_issue_exit");
+	public void conditionalExitFromIterrogativeSentence() {
+		expectError("compiler.prohibited_interrogative_exit");
 		compile(
 				"A := integer ({",
 				"  (False!)?",
@@ -83,8 +83,8 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void braceInsideIssue() {
-		expectError("compiler.prohibited_issue_braces");
+	public void bracesInInterrogativeSentence() {
+		expectError("compiler.prohibited_interrogative_braces");
 		compile(
 				"A := integer ({",
 				"  {}?",

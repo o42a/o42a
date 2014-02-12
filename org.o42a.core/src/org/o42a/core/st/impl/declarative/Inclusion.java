@@ -70,9 +70,9 @@ public class Inclusion extends Statement {
 			// if at least one implicit inclusion present.
 			return false;
 		}
-		if (this.statements.isInsideIssue()) {
+		if (this.statements.isInterrogation()) {
 			// Implicit inclusions not supported
-			// inside conditional declarations.
+			// inside interrogative sentences.
 			return false;
 		}
 

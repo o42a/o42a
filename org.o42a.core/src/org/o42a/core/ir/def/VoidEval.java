@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.value;
+package org.o42a.core.ir.def;
 
-import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.object.value.ObjectValuePart;
-import org.o42a.util.string.ID;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.util.fn.Cancelable;
 
 
-public final class ObjectClaimFnIR extends ObjectValuePartFnIR {
+final class VoidEval extends InlineEval {
 
-	public static final ID CLAIM_ID = ID.id("claim");
+	static final VoidEval INSTANCE = new VoidEval();
 
-	public ObjectClaimFnIR(ObjectValueIR valueIR) {
-		super(valueIR);
+	private VoidEval() {
+		super(null);
 	}
 
 	@Override
-	public final ObjectValuePart part() {
-		return getObject().value().claim();
+	public void write(DefDirs dirs, HostOp host) {
+		dirs.returnValue(dirs.getBuilder().voidVal(dirs.code()));
 	}
 
 	@Override
-	protected ID suffix() {
-		return CLAIM_ID;
+	public String toString() {
+		return "VOID";
 	}
 
 	@Override
-	protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
-		return data.claimFunc();
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

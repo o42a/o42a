@@ -61,16 +61,10 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 		return this.sentenceFactory;
 	}
 
-	public final boolean isExit() {
-		return isClaim() && !getSentenceFactory().isDeclarative();
-	}
+	public abstract SentenceKind getKind();
 
-	public abstract boolean isClaim();
-
-	public abstract boolean isIssue();
-
-	public final boolean isInsideIssue() {
-		return isIssue() || getBlock().isInsideIssue();
+	public final boolean isInterrogation() {
+		return getKind().isInterrogative() || getBlock().isInterrogation();
 	}
 
 	public final List<S> getAlternatives() {
@@ -157,13 +151,8 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 			}
 			out.append(alt);
 		}
-		if (isIssue()) {
-			out.append('?');
-		} else if (isClaim()) {
-			out.append('!');
-		} else {
-			out.append('.');
-		}
+
+		out.append(getKind().getSign());
 
 		return out.toString();
 	}
@@ -211,9 +200,12 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 		this.statementDropped = true;
 	}
 
-	final void reportEmptyIssue() {
+	final void reportEmptyInterrogation() {
 		if (!this.statementDropped) {
-			getLogger().warning("prohibited_empty_issue", this, "Impty issue");
+			getLogger().warning(
+					"prohibited_empty_interrogative_sentence",
+					this,
+					"Impty interrogative sentence");
 		}
 	}
 
@@ -225,19 +217,25 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 			prerequisite.reproduce(block, reproducer);
 		}
 
-		final Sentence<S> reproduction;
-
-		if (isIssue()) {
-			reproduction = block.issue(this);
-		} else if (isClaim()) {
-			reproduction = block.claim(this);
-		} else {
-			reproduction = block.propose(this);
-		}
+		final Sentence<S> reproduction = reproduceIn(block);
 
 		for (S alt : getAlternatives()) {
 			alt.reproduce(reproduction, reproducer);
 		}
+	}
+
+	private Sentence<S> reproduceIn(Block<S> block) {
+		switch (getKind()) {
+		case INTERROGATIVE_SENTENCE:
+			return block.interrogate(this);
+		case EXCLAMATORY_SENTENCE:
+			return block.exit(this);
+		case DECLARATIVE_SENTENCE:
+		case IMPERATIVE_SENTENCE:
+			return block.declare(this);
+		}
+		throw new IllegalStateException(
+				"Unsupported sentence kind: " + getKind());
 	}
 
 	private S createAlt(LocationInfo location) {

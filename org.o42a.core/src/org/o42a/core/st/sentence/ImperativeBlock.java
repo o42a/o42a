@@ -163,18 +163,18 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public final ImperativeSentence propose(LocationInfo location) {
-		return (ImperativeSentence) super.propose(location);
+	public final ImperativeSentence declare(LocationInfo location) {
+		return (ImperativeSentence) super.declare(location);
 	}
 
 	@Override
-	public final ImperativeSentence claim(LocationInfo location) {
-		return (ImperativeSentence) super.claim(location);
+	public final ImperativeSentence exit(LocationInfo location) {
+		return (ImperativeSentence) super.exit(location);
 	}
 
 	@Override
-	public final ImperativeSentence issue(LocationInfo location) {
-		return (ImperativeSentence) super.issue(location);
+	public final ImperativeSentence interrogate(LocationInfo location) {
+		return (ImperativeSentence) super.interrogate(location);
 	}
 
 	@Override

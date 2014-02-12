@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Modules Commons
     Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,35 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.def;
+package org.o42a.common.object;
 
-import static org.o42a.core.ir.def.Eval.VOID_EVAL;
-import static org.o42a.core.ir.def.InlineEval.voidInlineEval;
+import static org.o42a.core.ir.def.InlineEval.noInlineEval;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
-import static org.o42a.core.st.DefValue.defValue;
-import static org.o42a.core.value.Void.VOID;
+import static org.o42a.core.st.DefValue.FALSE_DEF_VALUE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
-import org.o42a.core.value.Void;
 
 
-final class VoidDef extends Def {
+final class ValueTypeDef extends Def {
 
-	VoidDef(Definitions definitions) {
-		super(
-				definitions.getScope().toObject(),
-				definitions.getLocation(),
-				noScopeUpgrade(definitions.getScope()));
+	private ValueType<?> valueType;
+
+	ValueTypeDef(ValueTypeObject object) {
+		super(object, object.getScope(), noScopeUpgrade(object.getScope()));
+		this.valueType = object.type().getValueType();
 	}
 
-	private VoidDef(VoidDef prototype, ScopeUpgrade scopeUpgrade) {
+	public ValueTypeDef(
+			ValueTypeDef prototype,
+			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
+		this.valueType = prototype.valueType;
 	}
 
 	@Override
@@ -54,14 +55,8 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	public DefValue value(Resolver resolver) {
-		return defValue(typeParameters(resolver.getScope())
-				.compilerValue(VOID));
-	}
-
-	@Override
 	public InlineEval inline(Normalizer normalizer) {
-		return voidInlineEval();
+		return noInlineEval();
 	}
 
 	@Override
@@ -70,12 +65,20 @@ final class VoidDef extends Def {
 
 	@Override
 	public Eval eval() {
-		return VOID_EVAL;
+		return noInlineEval();
 	}
 
 	@Override
 	public String toString() {
-		return "=void";
+		if (this.valueType == null) {
+			return super.toString();
+		}
+		return this.valueType.toString();
+	}
+
+	@Override
+	protected Def create(ScopeUpgrade upgrade, ScopeUpgrade additionalUpgrade) {
+		return new ValueTypeDef(this, upgrade);
 	}
 
 	@Override
@@ -84,20 +87,13 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	protected TypeParameters<Void> typeParameters(Scope scope) {
-		return TypeParameters.typeParameters(this, ValueType.VOID);
+	protected TypeParameters<?> typeParameters(Scope scope) {
+		return null;
 	}
 
 	@Override
 	protected DefValue calculateValue(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected Def create(
-			ScopeUpgrade upgrade,
-			ScopeUpgrade additionalUpgrade) {
-		return new VoidDef(this, upgrade);
+		return FALSE_DEF_VALUE;
 	}
 
 	@Override

@@ -19,6 +19,8 @@
 */
 package org.o42a.root;
 
+import static org.o42a.core.ir.def.Eval.VOID_EVAL;
+import static org.o42a.core.ir.def.InlineEval.voidInlineEval;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.codegen.Generator;
@@ -29,7 +31,6 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
@@ -45,13 +46,10 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
-import org.o42a.util.fn.Cancelable;
 import org.o42a.util.string.ID;
 
 
 public final class VoidObject extends BuiltinObject {
-
-	private static final VoidEval VOID_EVAL = new VoidEval();
 
 	public VoidObject(Scope topScope) {
 		super(voidScope(topScope), ValueType.VOID);
@@ -79,7 +77,7 @@ public final class VoidObject extends BuiltinObject {
 
 	@Override
 	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
-		return VOID_EVAL;
+		return voidInlineEval();
 	}
 
 	@Override
@@ -155,27 +153,5 @@ public final class VoidObject extends BuiltinObject {
 
 	}
 
-	private static final class VoidEval extends InlineEval {
-
-		VoidEval() {
-			super(null);
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			dirs.returnValue(dirs.getBuilder().voidVal(dirs.code()));
-		}
-
-		@Override
-		public String toString() {
-			return "VOID";
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
-	}
 
 }

@@ -31,17 +31,15 @@ import org.o42a.core.object.def.Defs;
 import org.o42a.core.ref.FullResolver;
 
 
-public final class ObjectValuePart implements UserInfo {
+public final class ObjectValueDefs implements UserInfo {
 
 	private final ObjectValue objectValue;
-	private final ValuePartUses partUses;
-	private final boolean claim;
+	private final ValueDefsUses partUses;
 	private Usable<SimpleUsage> ancestorDefsUpdates;
 
-	ObjectValuePart(ObjectValue objectValue, boolean claim) {
+	ObjectValueDefs(ObjectValue objectValue) {
 		this.objectValue = objectValue;
-		this.claim = claim;
-		this.partUses = new ValuePartUses(this);
+		this.partUses = new ValueDefsUses(this);
 	}
 
 	public final Obj getObject() {
@@ -52,12 +50,8 @@ public final class ObjectValuePart implements UserInfo {
 		return this.objectValue;
 	}
 
-	public final boolean isClaim() {
-		return this.claim;
-	}
-
 	public final Defs getDefs() {
-		return getObjectValue().getDefinitions().defs(isClaim());
+		return getObjectValue().getDefinitions().defs();
 	}
 
 	public final Uses<SimpleUsage> ancestorDefsUpdates() {
@@ -102,7 +96,7 @@ public final class ObjectValuePart implements UserInfo {
 				.fullResolver(partUses().refUser(), VALUE_REF_USAGE);
 	}
 
-	public final void wrapBy(ObjectValuePart wrapPart) {
+	public final void wrapBy(ObjectValueDefs wrapPart) {
 		partUses().wrapBy(wrapPart.partUses());
 		ancestorDefsUpdateUses().useBy(
 				wrapPart.ancestorDefsUpdateUses(),
@@ -114,10 +108,10 @@ public final class ObjectValuePart implements UserInfo {
 		if (this.objectValue == null) {
 			return super.toString();
 		}
-		return (isClaim() ? "ClaimOf[" : "PropositionOf[") + getObject() + ']';
+		return "ValueDefsOf[" + getObject() + ']';
 	}
 
-	private ValuePartUses partUses() {
+	private ValueDefsUses partUses() {
 		return this.partUses;
 	}
 
@@ -126,10 +120,8 @@ public final class ObjectValuePart implements UserInfo {
 			return this.ancestorDefsUpdates;
 		}
 
-		final String name = isClaim() ? "Claim" : "Proposition";
-
 		this.ancestorDefsUpdates = simpleUsable(
-				name + "AncestorDefsUpdates",
+				"AncestorDefsUpdates",
 				getObject());
 		this.ancestorDefsUpdates.useBy(getObjectValue().rtUses(), SIMPLE_USAGE);
 

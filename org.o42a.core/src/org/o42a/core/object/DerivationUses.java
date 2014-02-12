@@ -33,7 +33,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.type.DerivationUsage;
 import org.o42a.core.object.type.Inheritor;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.core.object.value.ObjectValueDefs;
 import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -254,25 +254,18 @@ final class DerivationUses {
 		trackAscendantPartUsage(
 				ancestor,
 				ascendantValue,
-				derivedValue,
-				true);
-		trackAscendantPartUsage(
-				ancestor,
-				ascendantValue,
-				derivedValue,
-				false);
+				derivedValue);
 	}
 
 	private void trackAscendantPartUsage(
 			final Obj ancestor,
 			final ObjectValue ascendantValue,
-			final ObjectValue derivedValue,
-			final boolean claim) {
+			final ObjectValue derivedValue) {
 
-		final ObjectValuePart derivedPart = derivedValue.part(claim);
+		final ObjectValueDefs derivedPart = derivedValue.valueDefs();
 
 		if (derivedPart.getDefs().presentIn(ancestor)) {
-			ascendantValue.part(claim).accessBy(derivedPart);
+			ascendantValue.valueDefs().accessBy(derivedPart);
 		}
 	}
 
@@ -296,29 +289,22 @@ final class DerivationUses {
 		trackAncestorPartUpdates(
 				since,
 				newAncestorValue,
-				oldAncestorObject,
-				true);
-		trackAncestorPartUpdates(
-				since,
-				newAncestorValue,
-				oldAncestorObject,
-				false);
+				oldAncestorObject);
 	}
 
 	private void trackAncestorPartUpdates(
 			final Obj since,
 			final ObjectValue newAncestorValue,
-			final Obj oldAncestorObject,
-			final boolean claim) {
+			final Obj oldAncestorObject) {
 
-		final ObjectValuePart sampleValuePart =
-				getObject().value().part(claim);
-		final ObjectValuePart sinceValuePart =
-				since.value().part(claim);
+		final ObjectValueDefs sampleValuePart =
+				getObject().value().valueDefs();
+		final ObjectValueDefs sinceValuePart =
+				since.value().valueDefs();
 
 		sampleValuePart.updateAncestorDefsBy(
 				sinceValuePart.ancestorDefsUpdatesUser());
-		if (newAncestorValue.part(claim).getDefs().updatedSince(
+		if (newAncestorValue.valueDefs().getDefs().updatedSince(
 				oldAncestorObject)) {
 			sampleValuePart.updateAncestorDefsBy(sinceValuePart);
 		}

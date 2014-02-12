@@ -25,9 +25,8 @@ import static org.o42a.core.st.sentence.ImperativeBlock.topLevelImperativeBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.declarative.DeclarativeClaim;
-import org.o42a.core.st.impl.declarative.DeclarativeIssue;
-import org.o42a.core.st.impl.declarative.DeclarativeProposition;
+import org.o42a.core.st.impl.declarative.DeclarativeInterrogativeSentence;
+import org.o42a.core.st.impl.declarative.DefaultDeclarativeSentence;
 import org.o42a.util.string.Name;
 
 
@@ -86,10 +85,10 @@ public class DeclarativeFactory extends SentenceFactory<
 	}
 
 	@Override
-	public DeclarativeSentence issue(
+	public DeclarativeSentence interrogate(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeIssue(location, block);
+		return new DeclarativeInterrogativeSentence(location, block);
 	}
 
 	@Override
@@ -100,17 +99,21 @@ public class DeclarativeFactory extends SentenceFactory<
 	}
 
 	@Override
-	public DeclarativeSentence propose(
+	public DeclarativeSentence declare(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeProposition(location, block, this);
+		return new DefaultDeclarativeSentence(location, block, this);
 	}
 
 	@Override
-	public DeclarativeSentence claim(
+	public DeclarativeSentence exit(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeClaim(location, block, this);
+		location.getLocation().getLogger().error(
+				"prohibited_loop_exit",
+				location,
+				"No loop to exit");
+		return new DefaultDeclarativeSentence(location, block, this);
 	}
 
 	@Override

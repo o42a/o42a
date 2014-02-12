@@ -19,12 +19,10 @@
 */
 package org.o42a.core.object.def;
 
-import static java.lang.System.arraycopy;
 import static org.o42a.core.ir.def.InlineEval.noInlineEval;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.InlineEval;
@@ -32,7 +30,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.impl.InlineDefs;
-import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.core.object.value.ObjectValueDefs;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -42,17 +40,11 @@ import org.o42a.util.ArrayUtil;
 
 public final class Defs {
 
-	private final boolean claims;
 	private final Def[] defs;
 	private DefValue constant;
 
-	Defs(boolean claims, Def... defs) {
-		this.claims = claims;
+	Defs(Def... defs) {
 		this.defs = defs;
-	}
-
-	public final boolean isClaims() {
-		return this.claims;
 	}
 
 	public final Def[] get() {
@@ -63,37 +55,30 @@ public final class Defs {
 		return this.defs.length == 0;
 	}
 
+	public final boolean isDefined() {
+		for (Def def : this.defs) {
+			if (def.isDefined()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public final boolean hasInherited() {
-
-		boolean passThrough = true;// May request an ancestor value?
-
 		for (Def def : this.defs) {
 			if (def.isInherited()) {
 				return true;
 			}
-			if (def.unconditional()) {
-				// Return unconditionally. Do not request an ancestor value.
-				passThrough = false;
+			if (def.isDefined()) {
+				// Return unconditionally. Never request an ancestor value.
+				return false;
 			}
 		}
-
-		return passThrough;
+		return true;// Not explicitly defined. Can reuse the inherited value.
 	}
 
 	public final int length() {
 		return this.defs.length;
-	}
-
-	public final boolean unconditional() {
-
-		final Def[] defs = get();
-		final int length = defs.length;
-
-		if (length == 0) {
-			return false;
-		}
-
-		return defs[length - 1].unconditional();
 	}
 
 	public final DefTarget target() {
@@ -181,16 +166,14 @@ public final class Defs {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(isClaims() ? "Claims[" : "Propositions[");
+		out.append("Defs[");
 		defsToString(out, false);
 		out.append(']');
 
 		return out.toString();
 	}
 
-	final boolean assertValid(Scope scope, boolean claims) {
-		assert isClaims() == claims :
-			"Wrong definition kind";
+	final boolean assertValid(Scope scope) {
 		for (Def def : this.defs) {
 			def.assertScopeIs(scope);
 		}
@@ -211,53 +194,6 @@ public final class Defs {
 		}
 
 		return hasComma;
-	}
-
-	final Defs claim(Defs claims) {
-		if (isEmpty()) {
-			return claims;
-		}
-
-		final Def[] propositions = get();
-		final Def[] oldClaims = claims.get();
-		final Def[] newClaims = Arrays.copyOf(
-				oldClaims,
-				oldClaims.length + propositions.length);
-
-		int idx = oldClaims.length;
-
-		for (Def proposition : propositions) {
-			newClaims[idx++] = proposition.claim();
-		}
-
-		return new Defs(true, newClaims);
-	}
-
-	final Defs unclaim(Defs propositions) {
-		if (isEmpty()) {
-			return propositions;
-		}
-
-		final Def[] oldPropositions = propositions.get();
-		final Def[] claims = get();
-		final Def[] newPropositions = (Def[]) Array.newInstance(
-				propositions.getClass().getComponentType(),
-				claims.length + oldPropositions.length);
-
-		int idx = 0;
-
-		for (Def claim : claims) {
-			newPropositions[idx++] = claim.unclaim();
-		}
-
-		arraycopy(
-				oldPropositions,
-				0,
-				newPropositions,
-				claims.length,
-				oldPropositions.length);
-
-		return new Defs(false, newPropositions);
 	}
 
 	final Defs upgradeScope(ScopeUpgrade scopeUpgrade) {
@@ -287,30 +223,25 @@ public final class Defs {
 				newItems[i] = items[i].upgradeScope(scopeUpgrade);
 			}
 
-			return new Defs(isClaims(), newItems);
+			return new Defs(newItems);
 		}
 
 		return this;
 	}
 
-	final Defs add(Defs additions) {
-		if (additions.isEmpty()) {
-			return this;
-		}
-		if (isEmpty()) {
-			return additions;
-		}
-		if (unconditional()) {
-			return this;
-		}
+	final Defs add(Def def) {
+		return new Defs(ArrayUtil.append(this.defs, def));
+	}
 
-		return new Defs(
-				isClaims(),
-				ArrayUtil.append(get(), additions.get()));
+	final Defs override(Defs overriders) {
+		if (!overriders.isDefined()) {
+			return this;
+		}
+		return overriders;
 	}
 
 	InlineEval inline(Normalizer normalizer) {
-		if (isEmpty()) {
+		if (!isDefined()) {
 			return noInlineEval();
 		}
 
@@ -368,7 +299,7 @@ public final class Defs {
 			newDefs[i] = oldDefs[i].toVoid();
 		}
 
-		return new Defs(isClaims(), newDefs);
+		return new Defs(newDefs);
 	}
 
 	final void resolveTargets(TargetResolver wrapper) {
@@ -379,10 +310,13 @@ public final class Defs {
 
 	void resolveAll(Definitions definitions) {
 		validate(definitions.getTypeParameters());
+		if (isEmpty()) {
+			return;
+		}
 
 		final ObjectValue objectValue =
 				definitions.getScope().toObject().value();
-		final ObjectValuePart part = objectValue.part(isClaims());
+		final ObjectValueDefs part = objectValue.valueDefs();
 		final FullResolver resolver = part.fullResolver();
 
 		for (Def def : get()) {

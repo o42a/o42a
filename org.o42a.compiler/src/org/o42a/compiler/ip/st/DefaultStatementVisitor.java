@@ -215,7 +215,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		final Statements<?> alt =
 				statements.get()
 				.parentheses(blockLocation)
-				.propose(blockLocation)
+				.declare(blockLocation)
 				.alternative(blockLocation);
 
 		return statements.getRules().statements(alt);

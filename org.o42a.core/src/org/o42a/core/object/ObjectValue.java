@@ -29,7 +29,7 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.object.value.ObjectValueParts;
+import org.o42a.core.object.value.ObjectValueBase;
 import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.RefUser;
@@ -40,7 +40,7 @@ import org.o42a.core.source.FullResolution;
 import org.o42a.core.value.Value;
 
 
-public final class ObjectValue extends ObjectValueParts {
+public final class ObjectValue extends ObjectValueBase {
 
 	private static final byte FULLY_RESOLVED = 1;
 	private static final byte NORMALIZED = 2;
@@ -117,9 +117,13 @@ public final class ObjectValue extends ObjectValueParts {
 		object.resolve();
 
 		final Definitions overriddenDefinitions = getOverriddenDefinitions();
-		final Definitions definitions = object.overrideDefinitions(
-				overriddenDefinitions)
+		final Definitions definitions =
+				object.overrideDefinitions(overriddenDefinitions)
 				.upgradeTypeParameters(getObject().type().getParameters());
+
+		if (getObject().type().getValueType().isVoid()) {
+			return this.definitions = definitions.addVoid();
+		}
 
 		return this.definitions = definitions;
 	}
@@ -203,8 +207,7 @@ public final class ObjectValue extends ObjectValueParts {
 	}
 
 	public final void wrapBy(ObjectValue wrapValue) {
-		claim().wrapBy(wrapValue.claim());
-		proposition().wrapBy(wrapValue.proposition());
+		valueDefs().wrapBy(wrapValue.valueDefs());
 	}
 
 	public final void resolveAll(RefUser user) {

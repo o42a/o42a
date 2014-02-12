@@ -24,9 +24,9 @@ import org.o42a.ast.atom.SignType;
 
 public enum SentenceType implements SignType {
 
-	PROPOSITION("."),
-	CLAIM("!"),
-	ISSUE("?");
+	DECLARATION("."),
+	EXCLAMATION("!"),
+	INTERROGATION("?");
 
 	private final String sign;
 

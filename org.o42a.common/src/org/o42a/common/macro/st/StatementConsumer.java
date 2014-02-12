@@ -104,7 +104,7 @@ public final class StatementConsumer implements Consumer {
 			final Statements<?> enclosing = block.getEnclosing();
 
 			if (enclosing == null) {
-				return block.propose(location).alternative(location);
+				return block.declare(location).alternative(location);
 			}
 
 			st = enclosing;
