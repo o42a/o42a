@@ -38,6 +38,9 @@ public class InlineDefs extends InlineEval {
 	public void write(DefDirs dirs, HostOp host) {
 		for (InlineEval def : this.defs) {
 			def.write(dirs, host);
+			if (!dirs.code().exists()) {
+				break;
+			}
 		}
 	}
 

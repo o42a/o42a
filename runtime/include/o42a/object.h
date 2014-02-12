@@ -73,8 +73,11 @@ enum o42a_obj_type_flags {
 	/** Object is abstract. */
 	O42A_OBJ_ABSTRACT = 0x2,
 
-	/** Object is protobj_type. */
+	/** Object is prototype. */
 	O42A_OBJ_PROTOTYPE = 0x4,
+
+	/** Object value definition is inherited from ancestor. */
+	O42A_OBJ_ANCESTOR_DEF = 0x8,
 
 	/** Object is a VOID special object. */
 	O42A_OBJ_VOID = 0x8000,
@@ -91,7 +94,7 @@ enum o42a_obj_type_flags {
 	O42A_OBJ_NONE = 0x4000,
 
 	/** Type flags mask inherited when constructing new instance. */
-	O42A_OBJ_INHERIT_MASK = 0xFF,
+	O42A_OBJ_INHERIT_MASK = 0xFF & ~O42A_OBJ_ANCESTOR_DEF,
 
 };
 

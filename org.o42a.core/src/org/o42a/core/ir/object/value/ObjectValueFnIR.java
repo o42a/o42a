@@ -50,9 +50,7 @@ public final class ObjectValueFnIR
 				"Calculate value of " + getObjectIR().getId());
 		final Block code = subDirs.code();
 
-		final DefValue finalValue = getFinal();
-
-		if (!writeIfConstant(subDirs, finalValue)) {
+		if (!writeIfConstant(subDirs, getFinal())) {
 
 			final ObjectValueFunc func = get(host).op(suffix(), code);
 

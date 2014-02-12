@@ -33,18 +33,13 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectSignature;
-import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Defs;
-import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValueDefs;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -53,7 +48,6 @@ public class ObjectValueDefsFnIR
 		implements FunctionBuilder<ObjectValFunc> {
 
 	private static final ID DEFS_ID = ID.id("defs");
-	private static final ID SAME_VALUE_TYPE = ID.rawId("same_value_type");
 
 	public ObjectValueDefsFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -77,10 +71,7 @@ public class ObjectValueDefsFnIR
 		if (body != null) {
 			code.dumpName("For: ", body);
 		}
-
-		final DefValue finalValue = getFinal();
-
-		if (!writeIfConstant(subDirs, finalValue)) {
+		if (!writeIfConstant(subDirs, getFinal())) {
 
 			final ObjectValFunc func = get(host).op(suffix(), code);
 
@@ -116,6 +107,7 @@ public class ObjectValueDefsFnIR
 		} else {
 			dirs.code().dumpName("Host: ", host);
 		}
+
 		build(dirs, host);
 
 		final Block code = dirs.done().code();
@@ -162,7 +154,7 @@ public class ObjectValueDefsFnIR
 
 	@Override
 	protected DefValue determineFinal() {
-		if (partUsed() && !getObject().getConstructionMode().isPredefined()) {
+		if (isUsed() && !getObject().getConstructionMode().isPredefined()) {
 			return RUNTIME_DEF_VALUE;
 		}
 		return defs().value(getObject().getScope().resolver());
@@ -180,7 +172,7 @@ public class ObjectValueDefsFnIR
 
 	@Override
 	protected boolean canStub() {
-		if (partUsed()) {
+		if (isUsed()) {
 			return false;
 		}
 		return !getObject().getConstructionMode().isPredefined();
@@ -216,48 +208,20 @@ public class ObjectValueDefsFnIR
 
 	@Override
 	protected void reuse() {
-
-		final ObjectType type = getObject().type();
-		final Sample[] samples = type.getSamples();
-
-		if (samples.length > 1) {
+		if (defs().isEmpty()) {
 			return;
 		}
 
-		final Obj reuseFrom;
+		final Def def = defs().get()[0];
 
-		if (samples.length == 1) {
-
-			final ObjectType sampleType =
-					samples[0].getTypeRef().getType().type();
-
-			reuseFrom = sampleType.getLastDefinition();
-		} else {
-
-			final TypeRef ancestor = type.getAncestor();
-
-			if (ancestor == null) {
-				return;
-			}
-			if (ancestorDefsUpdated()) {
-				return;
-			}
-
-			reuseFrom = ancestor.getType().type().getLastDefinition();
-		}
-		if (!getObject().type().getValueType().is(
-				reuseFrom.type().getValueType())) {
-			// Do not reuse the value of different type.
-			return;
-		}
-		if (defs().updatedSince(reuseFrom)) {
+		if (def.isExplicit()) {
 			return;
 		}
 
+		final Obj reuseFrom = def.getSource();
 		final ObjectValueIR reuseFromIR =
 				reuseFrom.ir(getGenerator()).allocate().getObjectValueIR();
-		final FuncPtr<ObjectValFunc> reused =
-				reuseFromIR.defs().getNotStub();
+		final FuncPtr<ObjectValFunc> reused = reuseFromIR.defs().getNotStub();
 
 		if (reused != null) {
 			reuse(reused);
@@ -265,34 +229,18 @@ public class ObjectValueDefsFnIR
 	}
 
 	protected void build(DefDirs dirs, ObjOp host) {
-
-		final DefValue finalValue = getFinal();
-
-		if (writeIfConstant(dirs, finalValue)) {
+		if (writeIfConstant(dirs, getFinal())) {
 			return;
 		}
-
-		final Defs defs = defs();
-
-		if (defs.isEmpty()) {
-			writeAncestorDef(dirs, host);
-			return;
+		for (Def def : defs().get()) {
+			def.eval().write(dirs, host);
+			if (!dirs.code().exists()) {
+				break;
+			}
 		}
-
-		final DefCollector collector =
-				new DefCollector(getObject(), defs.length());
-
-		collector.addDefs(defs);
-
-		if (collector.size() == 0) {
-			writeAncestorDef(dirs, host);
-			return;
-		}
-
-		writeExplicitDefs(dirs, host, collector);
 	}
 
-	private boolean partUsed() {
+	private boolean isUsed() {
 		return valueDefs().isUsed(
 				getGenerator().getAnalyzer(),
 				ALL_VALUE_PART_USAGES);
@@ -311,137 +259,6 @@ public class ObjectValueDefsFnIR
 		return valueDefs().ancestorDefsUpdates().isUsed(
 				getGenerator().getAnalyzer(),
 				ALL_SIMPLE_USAGES);
-	}
-
-	private void writeExplicitDefs(
-			DefDirs dirs,
-			ObjOp host,
-			DefCollector collector) {
-
-		final int size = collector.size();
-		final Def[] defs = collector.getExplicitDefs();
-
-		for (int i = 0; i < size; ++i) {
-
-			final Def def = defs[i];
-
-			if (def == null) {
-				if (i == collector.getAncestorIndex()) {
-					writeAncestorDef(dirs, host);
-				}
-				continue;
-			}
-
-			def.eval().write(dirs, host);
-		}
-	}
-
-	private void writeAncestorDef(
-			DefDirs dirs,
-			ObjOp host) {
-
-		final Block code = dirs.code();
-
-		if (!ancestorDefsUpdated()) {
-
-			final TypeRef ancestor = getObject().type().getAncestor();
-
-			if (ancestor == null) {
-				code.debug("No ancestor " + suffix());
-				return;
-			}
-
-			final Obj ancestorObject = ancestor.getType();
-			final ObjectOp ancestorBody = host.ancestor(code);
-			final ObjectTypeOp ancestorType =
-					ancestorObject.ir(getGenerator())
-					.getStaticTypeIR()
-					.getInstance()
-					.pointer(getGenerator())
-					.op(null, code)
-					.op(dirs.getBuilder(), EXACT);
-
-			writeAncestorDef(dirs, host, ancestorBody, ancestorType);
-
-			return;
-		}
-
-		final Block noAncestor = code.addBlock("no_ancestor");
-
-		host.hasAncestor(code).goUnless(code, noAncestor.head());
-
-		final ObjectOp ancestorBody = host.ancestor(code);
-		final ObjectTypeOp ancestorType =
-				ancestorBody.declaredIn(code).op(host.getBuilder(), DERIVED);
-
-		writeAncestorDef(dirs, host, ancestorBody, ancestorType);
-
-		noAncestor.debug("No ancestor " + suffix());
-		writeVoid(noAncestor, dirs, host);
-
-		noAncestor.go(code.tail());
-	}
-
-	private void writeVoid(Block code, DefDirs dirs, ObjOp host) {
-		if (!dirs.getValueType().isVoid()) {
-			return;
-		}
-
-		final ValueTypeDescOp hostValueType =
-				host.objectType(code)
-				.ptr()
-				.data(code)
-				.valueType(code)
-				.load(null, code);
-		final Block voidVal = code.addBlock("void_val");
-
-		hostValueType.eq(
-				null,
-				code,
-				ValueType.VOID.ir(getGenerator())
-				.getValueTypeDesc()
-				.op(null, code))
-				.go(code, voidVal.head());
-		if (voidVal.exists()) {
-			voidVal.debug("Void ancestor");
-			dirs.returnValue(voidVal, dirs.getBuilder().voidVal(voidVal));
-		}
-	}
-
-	private void writeAncestorDef(
-			DefDirs dirs,
-			ObjOp host,
-			ObjectOp ancestorBody,
-			ObjectTypeOp ancestorType) {
-
-		final DefDirs defDirs = dirs.begin(null, "Ancestor " + suffix());
-		final Block code = defDirs.code();
-
-		code.dumpName("Ancestor: ", ancestorBody);
-
-		final Block diffValueType = code.addBlock("diff_value_type");
-
-		final ValueTypeDescOp hostValueType =
-				host.objectType(code)
-				.ptr()
-				.data(code)
-				.valueType(code)
-				.load(null, code);
-		final ValueTypeDescOp ancestorValueType =
-				ancestorType.ptr().data(code).valueType(code).load(null, code);
-
-		hostValueType.eq(SAME_VALUE_TYPE, code, ancestorValueType)
-		.goUnless(code, diffValueType.head());
-
-		ancestorType.writeDefs(defDirs, ancestorBody);
-
-		if (diffValueType.exists()) {
-			diffValueType.dumpName("Ancestor value type: ", ancestorValueType);
-			diffValueType.dumpName("       differs from: ", hostValueType);
-			diffValueType.go(code.tail());
-		}
-
-		defDirs.done();
 	}
 
 }

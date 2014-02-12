@@ -52,7 +52,7 @@ final class BlockDef extends Def {
 
 	private final DeclarativeBlock block;
 	private final CommandEnv env;
-	private final DeclarativePartSentences sentences;
+	private final DefSentences sentences;
 	private InlineSentences normal;
 	private Holder<DefTarget> defTarget;
 
@@ -67,7 +67,7 @@ final class BlockDef extends Def {
 				noScopeUpgrade(block.getScope()));
 		this.block = block;
 		this.env = env;
-		this.sentences = new DeclarativePartSentences(this, targets, sentences);
+		this.sentences = new DefSentences(this, targets, sentences);
 	}
 
 	private BlockDef(
@@ -114,8 +114,10 @@ final class BlockDef extends Def {
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
 
-		final InlineSentences inline =
-				this.sentences.inline(normalizer.getRoot(), normalizer, getScope());
+		final InlineSentences inline = this.sentences.inline(
+				normalizer.getRoot(),
+				normalizer,
+				getScope());
 
 		if (inline == null) {
 			return null;
@@ -203,13 +205,13 @@ final class BlockDef extends Def {
 		return new BlockDef(this, upgrade);
 	}
 
-	private static final class DeclarativePartSentences extends Sentences {
+	private static final class DefSentences extends Sentences {
 
 		private final BlockDef part;
 		private final CommandTargets targets;
 		private final List<DeclarativeSentence> sentences;
 
-		DeclarativePartSentences(
+		DefSentences(
 				BlockDef part,
 				CommandTargets targets,
 				List<DeclarativeSentence> sentences) {

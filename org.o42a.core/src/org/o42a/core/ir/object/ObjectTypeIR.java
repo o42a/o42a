@@ -230,6 +230,9 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		if (object.isPrototype()) {
 			flags |= OBJ_FLAG_PROTOTYPE;
 		}
+		if (object.value().getDefinitions().hasInherited()) {
+			flags |= OBJ_FLAG_ANCESTOR_DEF;
+		}
 		if (object.isNone()) {
 			flags |= OBJ_FLAG_NONE;
 		} else if (object.is(object.getContext().getVoid())) {
