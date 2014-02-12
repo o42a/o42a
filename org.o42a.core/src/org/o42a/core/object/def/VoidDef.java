@@ -74,6 +74,11 @@ final class VoidDef extends Def {
 	}
 
 	@Override
+	public String toString() {
+		return "=void";
+	}
+
+	@Override
 	protected boolean hasConstantValue() {
 		return true;
 	}
