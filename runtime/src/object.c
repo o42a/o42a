@@ -1259,7 +1259,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->cond_f = sdata->cond_f;
 	data->defs_f =
 			(sflags & O42A_OBJ_ANCESTOR_DEF) ? adata->defs_f : sdata->defs_f;
-	if ((sflags & O42A_VAL_STATELESS)
+	if ((sdata->value.flags & O42A_VAL_STATELESS)
 			&& (adata->value.flags & O42A_VAL_STATELESS)) {
 		data->value.flags = O42A_VAL_STATELESS;
 	} else {
