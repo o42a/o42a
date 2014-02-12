@@ -17,35 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.sentence.SentenceFactory.IMPERATIVE_ISSUE_FACTORY;
+import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_INTERROGATION_FACTORY;
 
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.IssueMemberRegistry;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeSentence;
+import org.o42a.core.st.impl.InterrogativeMemberRegistry;
+import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.DeclarativeSentence;
+import org.o42a.core.st.sentence.SentenceKind;
 
 
-public class ImperativeIssue extends ImperativeSentence {
+public final class DeclarativeInterrogativeSentence
+		extends DeclarativeSentence {
 
 	private final MemberRegistry memberRegistry;
 
-	public ImperativeIssue(LocationInfo location, ImperativeBlock block) {
-		super(location, block, IMPERATIVE_ISSUE_FACTORY);
+	public DeclarativeInterrogativeSentence(
+			LocationInfo location,
+			DeclarativeBlock block) {
+		super(location, block, DECLARATIVE_INTERROGATION_FACTORY);
 		this.memberRegistry =
-				new IssueMemberRegistry(block.getMemberRegistry());
+				new InterrogativeMemberRegistry(block.getMemberRegistry());
 	}
 
 	@Override
-	public final boolean isClaim() {
-		return false;
-	}
-
-	@Override
-	public boolean isIssue() {
-		return true;
+	public SentenceKind getKind() {
+		return SentenceKind.INTERROGATIVE_SENTENCE;
 	}
 
 	@Override

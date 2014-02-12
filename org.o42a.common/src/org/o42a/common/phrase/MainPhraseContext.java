@@ -135,7 +135,7 @@ final class MainPhraseContext extends PhraseContext {
 
 			final LocationInfo location = instance.getLocation();
 			final Statements<?> statements =
-					definition.propose(location).alternative(location);
+					definition.declare(location).alternative(location);
 
 			subContext.applyCause(statements);
 		}

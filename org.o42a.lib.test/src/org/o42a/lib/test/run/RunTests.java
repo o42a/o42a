@@ -64,7 +64,7 @@ public class RunTests extends DirectiveObject {
 		final TestModule module =
 				(TestModule) getField().getEnclosingScope().toObject();
 		final Statements<?> statements =
-				definition.propose(definition).alternative(definition);
+				definition.declare(definition).alternative(definition);
 		final UserInfo user = dummyUser();
 
 		for (Member member : object.getMembers()) {

@@ -23,7 +23,7 @@ import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.clause.ClauseSubstitution.NO_SUBSTITUTION;
 import static org.o42a.core.member.clause.impl.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.clause.impl.DeclaredPlainClause.plainClause;
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueAssignment;
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedInterrogativeAssignment;
 import static org.o42a.util.ArrayUtil.append;
 
 import org.o42a.core.*;
@@ -154,8 +154,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	public final ClauseBuilder assignment() {
 		assert getDeclaration().getKind() == ClauseKind.EXPRESSION :
 			"Only expressioncan be assigned";
-		if (isAssignment() && getStatements().isInsideIssue()) {
-			prohibitedIssueAssignment(getDeclaration());
+		if (isAssignment() && getStatements().isInterrogation()) {
+			prohibitedInterrogativeAssignment(getDeclaration());
 			return null;
 		}
 		this.assignment = true;

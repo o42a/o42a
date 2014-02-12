@@ -85,11 +85,11 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	public abstract Name getName();
 
-	public final boolean isInsideIssue() {
+	public final boolean isInterrogation() {
 
 		final Statements<?> enclosing = getEnclosing();
 
-		return enclosing != null && enclosing.isInsideIssue();
+		return enclosing != null && enclosing.isInterrogation();
 	}
 
 	public final MemberRegistry getMemberRegistry() {
@@ -107,30 +107,23 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		return this.sentences;
 	}
 
-	public Sentence<S> propose(LocationInfo location) {
+	public Sentence<S> declare(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> proposition =
-				sentenceFactory.propose(location, this);
+		final Sentence<S> sentence =
+				sentenceFactory.declare(location, this);
 
-		return addSentence(proposition);
+		return addSentence(sentence);
 	}
 
-	public Sentence<S> claim(LocationInfo location) {
-		if (isInsideIssue()) {
-			if (getSentenceFactory().isDeclarative()) {
-				getLogger().error(
-						"prohibited_issue_claim",
-						location,
-						"A claim can not be placed inside an issue");
-			} else {
-				getLogger().error(
-						"prohibited_issue_exit",
-						location,
-						"Can not exit the loop from inside an issue");
-			}
+	public Sentence<S> exit(LocationInfo location) {
+		if (isInterrogation()) {
+			getLogger().error(
+					"prohibited_interrogative_exit",
+					location,
+					"Can not exit loop from interrogative sentence");
 			dropSentence();
 			return null;
 		}
@@ -138,21 +131,22 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> claim = sentenceFactory.claim(location, this);
+		final Sentence<S> exit = sentenceFactory.exit(location, this);
 
-		return addSentence(claim);
+		return addSentence(exit);
 	}
 
-	public Sentence<S> issue(LocationInfo location) {
+	public Sentence<S> interrogate(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> issue = sentenceFactory.issue(location, this);
+		final Sentence<S> interrogation =
+				sentenceFactory.interrogate(location, this);
 
-		addSentence(issue);
+		addSentence(interrogation);
 
-		return issue;
+		return interrogation;
 	}
 
 	public final void executeInstructions() {
@@ -259,7 +253,8 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			// this alternative, unless the sentence has a single alternative.
 			return last.getContainer();
 		}
-		if (last.getPrerequisite() != null && !last.isIssue()) {
+		if (last.getPrerequisite() != null
+				&& !last.getKind().isInterrogative()) {
 			// The sentence has prerequisite and is not a prerequisite
 			// of another sentence. The locals are not exported, neither from
 			// the sentence itself, nor from its prerequisites.
@@ -307,7 +302,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			final int lastIdx = size - 1;
 			final Sentence<S> last = this.sentences.get(lastIdx);
 
-			if (last.isIssue()) {
+			if (last.getKind().isInterrogative()) {
 				sentence.setPrerequisite(last);
 				this.sentences.set(lastIdx, sentence);
 				return sentence;

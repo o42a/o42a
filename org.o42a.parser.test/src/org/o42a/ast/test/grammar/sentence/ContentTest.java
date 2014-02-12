@@ -69,9 +69,9 @@ public class ContentTest extends GrammarTestCase {
 				"b()");
 
 		assertThat(result.length, is(2));
-		assertThat(result[0].getType(), is(SentenceType.PROPOSITION));
+		assertThat(result[0].getType(), is(SentenceType.DECLARATION));
 		assertNull(result[0].getMark());
-		assertThat(result[1].getType(), is(SentenceType.PROPOSITION));
+		assertThat(result[1].getType(), is(SentenceType.DECLARATION));
 		assertNull(result[1].getMark());
 	}
 
@@ -84,9 +84,9 @@ public class ContentTest extends GrammarTestCase {
 				", b");
 
 		assertThat(result.length, is(2));
-		assertThat(result[0].getType(), is(SentenceType.PROPOSITION));
+		assertThat(result[0].getType(), is(SentenceType.DECLARATION));
 		assertNull(result[0].getMark());
-		assertThat(result[1].getType(), is(SentenceType.PROPOSITION));
+		assertThat(result[1].getType(), is(SentenceType.DECLARATION));
 		assertNull(result[1].getMark());
 	}
 
@@ -99,9 +99,9 @@ public class ContentTest extends GrammarTestCase {
 				"; b");
 
 		assertThat(result.length, is(2));
-		assertThat(result[0].getType(), is(SentenceType.PROPOSITION));
+		assertThat(result[0].getType(), is(SentenceType.DECLARATION));
 		assertNull(result[0].getMark());
-		assertThat(result[1].getType(), is(SentenceType.PROPOSITION));
+		assertThat(result[1].getType(), is(SentenceType.DECLARATION));
 		assertNull(result[1].getMark());
 	}
 

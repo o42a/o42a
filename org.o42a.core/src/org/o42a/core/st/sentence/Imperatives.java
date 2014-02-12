@@ -55,11 +55,11 @@ public final class Imperatives extends Statements<Imperatives> {
 
 	@Override
 	public void ellipsis(LocationInfo location, Name name) {
-		if (isInsideIssue()) {
+		if (isInterrogation()) {
 			getLogger().error(
-					"prohibited_issue_ellipsis",
+					"prohibited_interrogative_repeat",
 					location,
-					"Ellipsis is prohibited within issue");
+					"Can not repeat the loop from interrogative sentence");
 			dropStatement();
 			return;
 		}

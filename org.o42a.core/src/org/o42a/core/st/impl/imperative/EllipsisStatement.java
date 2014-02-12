@@ -37,7 +37,7 @@ public final class EllipsisStatement extends Statement {
 			Name name) {
 		super(location, enclosing.nextDistributor());
 		this.name = name;
-		this.exit = enclosing.getSentence().isExit();
+		this.exit = enclosing.getSentence().getKind().isInterrogative();
 	}
 
 	private EllipsisStatement(

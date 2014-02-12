@@ -98,8 +98,7 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 		final Block code = dirs.code();
 		final ObjectOp owner = dirs.getBuilder().host();
 
-		data.claimFunc(code).load(null, code).call(dirs, owner);
-		data.propositionFunc(code).load(null, code).call(dirs, owner);
+		data.defsFunc(code).load(null, code).call(dirs, owner);
 	}
 
 	private Obj typeObject() {

@@ -48,32 +48,30 @@ import org.o42a.util.fn.Holder;
 import org.o42a.util.string.Name;
 
 
-final class DeclarativePart extends Def {
+final class BlockDef extends Def {
 
 	private final DeclarativeBlock block;
 	private final CommandEnv env;
-	private final DeclarativePartSentences sentences;
+	private final DefSentences sentences;
 	private InlineSentences normal;
 	private Holder<DefTarget> defTarget;
 
-	DeclarativePart(
+	BlockDef(
 			DeclarativeBlock block,
 			CommandEnv env,
 			CommandTargets targets,
-			List<DeclarativeSentence> sentences,
-			boolean claim) {
+			List<DeclarativeSentence> sentences) {
 		super(
 				sourceOf(block),
 				block,
-				noScopeUpgrade(block.getScope()),
-				claim);
+				noScopeUpgrade(block.getScope()));
 		this.block = block;
 		this.env = env;
-		this.sentences = new DeclarativePartSentences(this, targets, sentences);
+		this.sentences = new DefSentences(this, targets, sentences);
 	}
 
-	private DeclarativePart(
-			DeclarativePart prototype,
+	private BlockDef(
+			BlockDef prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.block = prototype.block;
@@ -86,11 +84,8 @@ final class DeclarativePart extends Def {
 	}
 
 	@Override
-	public boolean unconditional() {
-
-		final CommandTargets targets = this.sentences.getTargets();
-
-		return targets.haveValue() && !targets.havePrerequisite();
+	public boolean isDefined() {
+		return this.sentences.getTargets().haveDefinition();
 	}
 
 	public final List<DeclarativeSentence> getSentences() {
@@ -119,8 +114,10 @@ final class DeclarativePart extends Def {
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
 
-		final InlineSentences inline =
-				this.sentences.inline(normalizer.getRoot(), normalizer, getScope());
+		final InlineSentences inline = this.sentences.inline(
+				normalizer.getRoot(),
+				normalizer,
+				getScope());
 
 		if (inline == null) {
 			return null;
@@ -149,10 +146,7 @@ final class DeclarativePart extends Def {
 			return super.toString();
 		}
 		if (this.sentences == null) {
-			if (isClaim()) {
-				return "Claims[" + this.block + ']';
-			}
-			return "Propositions[" + this.block + ']';
+			return "Definitions[" + this.block + ']';
 		}
 
 		final List<DeclarativeSentence> sentences =
@@ -160,7 +154,7 @@ final class DeclarativePart extends Def {
 		final int len = sentences.size();
 
 		if (len == 0) {
-			return isClaim() ? "!" : ".";
+			return ".";
 		}
 
 		final StringBuilder out = new StringBuilder();
@@ -205,20 +199,20 @@ final class DeclarativePart extends Def {
 	}
 
 	@Override
-	protected DeclarativePart create(
+	protected BlockDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new DeclarativePart(this, upgrade);
+		return new BlockDef(this, upgrade);
 	}
 
-	private static final class DeclarativePartSentences extends Sentences {
+	private static final class DefSentences extends Sentences {
 
-		private final DeclarativePart part;
+		private final BlockDef part;
 		private final CommandTargets targets;
 		private final List<DeclarativeSentence> sentences;
 
-		DeclarativePartSentences(
-				DeclarativePart part,
+		DefSentences(
+				BlockDef part,
 				CommandTargets targets,
 				List<DeclarativeSentence> sentences) {
 			this.part = part;

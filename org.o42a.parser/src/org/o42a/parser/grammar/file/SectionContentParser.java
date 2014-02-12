@@ -117,8 +117,8 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 			context.getLogger().error(
 					"invalid_section_title",
 					lastSentence,
-					"Section title should be a proposition or claim"
-					+ " with only a single field declaration");
+					"Section title should be a declarative sentence"
+					+ " with a single field declaration");
 			sentences.add(lastSentence);
 			title = null;
 		} else {

@@ -16,7 +16,7 @@ Element type = void
 Item type = #element type
 ###
 
-Length = * (= size!)
+Length = * (= size)
 
 Iterate => * (
   ::Next index := ``0

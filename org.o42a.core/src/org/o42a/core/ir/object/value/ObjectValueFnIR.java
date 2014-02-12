@@ -50,9 +50,7 @@ public final class ObjectValueFnIR
 				"Calculate value of " + getObjectIR().getId());
 		final Block code = subDirs.code();
 
-		final DefValue finalValue = getFinal();
-
-		if (!writeIfConstant(subDirs, finalValue)) {
+		if (!writeIfConstant(subDirs, getFinal())) {
 
 			final ObjectValueFunc func = get(host).op(suffix(), code);
 
@@ -74,26 +72,12 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected DefValue determineConstant() {
-
-		final DefValue claim = getValueIR().claim().getConstant();
-
-		if (claim.hasValue() || !claim.getCondition().isTrue()) {
-			return claim;
-		}
-
-		return getValueIR().proposition().getConstant();
+		return getValueIR().defs().getConstant();
 	}
 
 	@Override
 	protected DefValue determineFinal() {
-
-		final DefValue claim = getValueIR().claim().getFinal();
-
-		if (claim.hasValue() || !claim.getCondition().isTrue()) {
-			return claim;
-		}
-
-		return getValueIR().proposition().getFinal();
+		return getValueIR().defs().getFinal();
 	}
 
 	@Override
@@ -108,8 +92,7 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected boolean canStub() {
-		return getValueIR().claim().canStub()
-				&& getValueIR().proposition().canStub();
+		return getValueIR().defs().canStub();
 	}
 
 	@Override

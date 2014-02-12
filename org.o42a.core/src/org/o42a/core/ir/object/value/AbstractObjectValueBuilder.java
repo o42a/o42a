@@ -113,6 +113,7 @@ abstract class AbstractObjectValueBuilder
 		}
 		if (done.exists()) {
 			result.store(done, dirs.result());
+			done.dump("Result: ", result);
 			if (ctr != null) {
 				returnIfStateless(done, stateless);
 				state.init(done, result);
@@ -180,6 +181,7 @@ abstract class AbstractObjectValueBuilder
 	}
 
 	private static void writeKept(Block code, StateOp state, ValOp result) {
+		code.debug("Write kept");
 
 		final Block falseKept = code.addBlock("false_kept");
 
@@ -192,9 +194,11 @@ abstract class AbstractObjectValueBuilder
 				.value(result);
 
 		state.loadValue(dirs, code);
+		code.dump("Kept: ", state.value());
 		dirs.done().code().returnVoid();
 
 		if (falseKept.exists()) {
+			falseKept.debug("False kept");
 			result.storeFalse(falseKept);
 			falseKept.returnVoid();
 		}

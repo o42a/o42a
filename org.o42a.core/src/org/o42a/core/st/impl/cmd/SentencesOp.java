@@ -103,7 +103,7 @@ final class SentencesOp {
 			// write prerequisite
 			prereqFailed = control.addBlock(index + "_prereq_failed");
 
-			final Control prereqControl = control.issue(prereqFailed.head());
+			final Control prereqControl = control.interrogation(prereqFailed.head());
 
 			writeSentence(
 					prereqControl,
@@ -207,12 +207,12 @@ final class SentencesOp {
 			Sentence<?> sentence,
 			Control mainControl,
 			Control control) {
-		if (sentence.isExit()) {
+		if (sentence.getKind().isExclamatory()) {
 			control.exitBraces();
 			return;
 		}
-		// issue condition satisfied or proposition successfully complete
-		// go to the next sentence
+		// Interrogative condition satisfied or sentence successfully complete.
+		// Go to the next sentence.
 		if (control.code() != mainControl.code()) {
 			control.code().go(mainControl.code().tail());
 		}

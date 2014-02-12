@@ -68,8 +68,8 @@ public abstract class Statements<S extends Statements<S>>
 		return this.sentence;
 	}
 
-	public final boolean isInsideIssue() {
-		return getSentence().isInsideIssue();
+	public final boolean isInterrogation() {
+		return getSentence().getKind().isInterrogative();
 	}
 
 	public final List<Command> getCommands() {
@@ -115,8 +115,8 @@ public abstract class Statements<S extends Statements<S>>
 		assert checkSameContext(location);
 		assert checkSameContext(value);
 
-		if (isInsideIssue()) {
-			prohibitedIssueAssignment(location);
+		if (isInterrogation()) {
+			prohibitedInterrogativeAssignment(location);
 			dropStatement();
 			return;
 		}
@@ -136,8 +136,8 @@ public abstract class Statements<S extends Statements<S>>
 	public FieldBuilder field(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
-		if (isInsideIssue()) {
-			prohibitedIssueField(declaration);
+		if (isInterrogation()) {
+			prohibitedInterrogativeField(declaration);
 			dropStatement();
 			return null;
 		}
@@ -205,8 +205,8 @@ public abstract class Statements<S extends Statements<S>>
 			LocationInfo location,
 			Name name,
 			Container container) {
-		if (isInsideIssue()) {
-			prohibitedIssueBraces(location);
+		if (isInterrogation()) {
+			prohibitedInterrogativeBraces(location);
 			dropStatement();
 			return null;
 		}

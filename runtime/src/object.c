@@ -19,7 +19,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 15,
+	.field_num = 14,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -64,12 +64,7 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_data_t, claim_f),
-			.name = "claim_f",
-		},
-		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_data_t, proposition_f),
+			.offset = offsetof(o42a_obj_data_t, defs_f),
 			.name = "proposition_f",
 		},
 		{
@@ -950,8 +945,7 @@ static o42a_obj_rtype_t *propagate_object(
 
 	data->value_f = adata->value_f;
 	data->cond_f = adata->cond_f;
-	data->claim_f = adata->claim_f;
-	data->proposition_f = adata->proposition_f;
+	data->defs_f = adata->defs_f;
 	if ((sdata->value.flags & O42A_VAL_STATELESS)
 			&& (adata->value.flags & O42A_VAL_STATELESS)) {
 		data->value.flags = O42A_VAL_STATELESS;
@@ -1254,16 +1248,17 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	// fill object type and data
 	const size_t data_start = type_start + offsetof(o42a_obj_rtype_t, data);
+	const int32_t sflags = sdata->flags;
 
 	data->object = main_body_start - data_start;
 	data->start = -data_start;
-	data->flags = O42A_OBJ_RT | (sdata->flags & O42A_OBJ_INHERIT_MASK);
+	data->flags = O42A_OBJ_RT | (sflags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
 	data->value_f = sdata->value_f;
 	data->cond_f = sdata->cond_f;
-	data->claim_f = sdata->claim_f;
-	data->proposition_f = sdata->proposition_f;
+	data->defs_f =
+			(sflags & O42A_OBJ_ANCESTOR_DEF) ? adata->defs_f : sdata->defs_f;
 	if ((sdata->value.flags & O42A_VAL_STATELESS)
 			&& (adata->value.flags & O42A_VAL_STATELESS)) {
 		data->value.flags = O42A_VAL_STATELESS;

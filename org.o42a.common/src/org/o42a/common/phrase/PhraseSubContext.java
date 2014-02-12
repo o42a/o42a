@@ -288,7 +288,7 @@ class PhraseSubContext extends PhraseContext {
 
 			final LocationInfo location = instance.getLocation();
 
-			this.statements = block.propose(location).alternative(location);
+			this.statements = block.declare(location).alternative(location);
 		}
 
 		@Override

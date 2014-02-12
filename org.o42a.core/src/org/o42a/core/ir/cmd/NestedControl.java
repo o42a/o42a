@@ -105,9 +105,9 @@ abstract class NestedControl extends Control {
 
 	}
 
-	static final class IssueControl extends NestedControl {
+	static final class InterrogationControl extends NestedControl {
 
-		IssueControl(Control parent, CodePos next) {
+		InterrogationControl(Control parent, CodePos next) {
 			super(parent, parent.code(), next, next);
 		}
 

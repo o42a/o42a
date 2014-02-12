@@ -31,13 +31,13 @@ import org.o42a.core.object.ObjectValue;
 import org.o42a.core.ref.RefUser;
 
 
-final class ValuePartUses implements UserInfo {
+final class ValueDefsUses implements UserInfo {
 
-	private final ObjectValuePart part;
+	private final ObjectValueDefs part;
 	private Usable<ValuePartUsage> uses;
 	private RefUser refUser;
 
-	ValuePartUses(ObjectValuePart part) {
+	ValueDefsUses(ObjectValueDefs part) {
 		this.part = part;
 	}
 
@@ -84,11 +84,10 @@ final class ValuePartUses implements UserInfo {
 		if (this.part == null) {
 			return super.toString();
 		}
-		return (this.part.isClaim() ? "ClaimUsesOf[" : "PropositionUsesOf[")
-				+ getObject() + ']';
+		return "ValueDefsUsesOf[" + getObject() + ']';
 	}
 
-	final void wrapBy(ValuePartUses wrapUses) {
+	final void wrapBy(ValueDefsUses wrapUses) {
 		uses().useBy(
 				wrapUses.uses().usageUser(VALUE_PART_USAGE),
 				VALUE_PART_USAGE);
@@ -104,7 +103,7 @@ final class ValuePartUses implements UserInfo {
 
 		this.uses = ValuePartUsage.usable(this);
 
-		final ObjectValueParts objectValue = getObjectValue();
+		final ObjectValueBase objectValue = getObjectValue();
 		final Usable<ValueUsage> valueUses = objectValue.uses();
 		final boolean runtimeConstructed =
 				getObjectValue().isRuntimeConstructed();

@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
+import static org.o42a.ast.sentence.SentenceType.DECLARATION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_HEADER;
 import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_TYPE;
@@ -197,7 +197,7 @@ final class Section implements LogInfo {
 		final DeclarativeBlock enclosingBlock = enclosingBlock(definition);
 		final LocationInfo location = getLocation();
 		final Declaratives statements =
-				enclosingBlock.propose(location).alternative(location);
+				enclosingBlock.declare(location).alternative(location);
 
 		final Distributor distributor = statements.nextDistributor();
 		final FieldDeclaration fieldDeclaration =
@@ -225,7 +225,7 @@ final class Section implements LogInfo {
 
 		final LocationInfo location = getLocation();
 		final Declaratives statements =
-				definition.propose(location).alternative(location);
+				definition.declare(location).alternative(location);
 		final Namespace namespace =
 				new Namespace(location, statements.nextContainer());
 		final DeclarativeBlock enclosingBlock =
@@ -273,18 +273,18 @@ final class Section implements LogInfo {
 				new HeaderStatementVisitor(getContext());
 
 		for (SentenceNode sentence : header.getContent()) {
-			if (sentence.getType() != PROPOSITION) {
+			if (sentence.getType() != DECLARATION) {
 				getLogger().error(
-						"not_header_proposition",
+						"not_declarative_header",
 						sentence.getMark(),
-						"Only propositions allowed in file header");
+						"Only declarative sentences allowed in file header");
 			}
 			addSentence(
 					ACCESS_FROM_HEADER,
 					visitor,
 					enclosingBlock,
 					sentence,
-					PROPOSITION);
+					DECLARATION);
 		}
 
 		enclosingBlock.executeInstructions();

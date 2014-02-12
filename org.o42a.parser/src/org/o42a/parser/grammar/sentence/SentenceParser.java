@@ -84,13 +84,13 @@ public class SentenceParser implements Parser<SentenceNode> {
 
 			switch(context.next()) {
 			case '.':
-				sentenceType = SentenceType.PROPOSITION;
+				sentenceType = SentenceType.DECLARATION;
 				break;
 			case '!':
-				sentenceType = SentenceType.CLAIM;
+				sentenceType = SentenceType.EXCLAMATION;
 				break;
 			case '?':
-				sentenceType = SentenceType.ISSUE;
+				sentenceType = SentenceType.INTERROGATION;
 				break;
 			default:
 				return null;
