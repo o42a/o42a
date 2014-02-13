@@ -12,7 +12,22 @@ Mutable list :=> list
 A mutable list of elements.
 ~~~
 
-Item =<> assignable ()
+@Indexed =< * (
+  Item =<> * (
+
+    @Assignable :=< * ~~ New value can be assigned to mutable list item.
+
+    <*Set> Set @assignable (
+      ~~~
+      Value assignment clause.
+
+      It assigns a new value with <set> prototype.
+      ~~~
+
+      <New value <- *> New value = *
+    )
+  )
+)
 
 Add :=<> void (
   ~~~
@@ -76,3 +91,30 @@ Remove :=<> void (
     <[]> Index = * ~~ An <index> of element to remove.
   )
 )
+
+<*Sublist> Sublist (
+  ~~~
+  Constructs a mutable sublist by the given right-open list indices interval.
+  ~~~
+  <[From...) | to> From = *
+  <[...To)!> To = *
+)
+
+<*Trailing sublist> Sublist (
+  ~~~
+  Constructs a trailing mutable sublist by the given closed left-bounded
+  list indices interval.
+  ~~~
+  <[From...-)!> From = *
+)
+
+<*Leading sublist> Sublist (
+  ~~~
+  Constructs a leading mutable sublist by the given open right-bounded 
+  list indices interval.
+  ~~~
+  <(-...To)!> To = *
+)
+
+<(-Full sublist...-)!> ~~ Returns a mutable list itself when unbounded list
+                       ~~ indices interval provided.
