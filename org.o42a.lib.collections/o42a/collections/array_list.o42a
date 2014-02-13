@@ -17,12 +17,16 @@ Data :=< #element type` array` variable
 
 Size = \data: length
 
-Item => * (
-  = Data [index]
-  Set => * (
-    Element assignment: {
-      Data [index] <- new value
-    }
+@Indexed = * (
+  Item => * (
+    = Data [index]
+    @Assignable = * (
+      Set => * (
+        Element assignment: {
+          Data [index] <- new value
+        }
+      )
+    )
   )
 )
 

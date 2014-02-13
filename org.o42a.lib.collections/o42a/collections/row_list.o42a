@@ -16,8 +16,10 @@ Data :=< #element type` row ~~ A row represented by this list.
 
 Size = \data: length
 
-Item => * (
-  = Data [index]
+@Indexed = * (
+  Item => * (
+    = Data [index]
+  )
 )
 
 <[[Items]]!> Data = *

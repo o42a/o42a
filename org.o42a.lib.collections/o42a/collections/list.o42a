@@ -6,17 +6,19 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-List :=> indexed & collection
+List :=> collection
 =============================
 ~~~
 An indexed list of elements.
 ~~~
 
-Element type = void
-Item type = #element type
-###
+@Indexed :=< #element type` * (
+  Length = \size
+)
 
-Length = * (= size)
+<*Item by index> Item @indexed (
+  <[Item index]!> Index = *
+)
 
 Iterate => * (
   ::Next index := ``0
@@ -24,33 +26,6 @@ Iterate => * (
     $Index := next index->
     Next index += 1
     = List:: [index]
-  )
-)
-
-Sublist :=> #element type` &list (
-  ~~~
-  A sublist representing a slice of original list.
-  ~~~
-
-  From := integer` link = 0
-  ~~~
-  An index of the first list element represented by this sublist.
-
-  Zero by default.
-  ~~~
-
-  To := integer` link = list:: size
-  ~~~
-  A value one greater than index of the last list element
-  represented by this sublist.
-
-  Equals to the list size by default.
-  ~~~
-
-  Size = \(to - from)
-  
-  Item => * (
-    Index < size? = List:: [from + index]
   )
 )
 
