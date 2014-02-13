@@ -32,10 +32,8 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.phrase.PhrasePartNode;
-import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.AssignmentNode;
-import org.o42a.ast.type.AscendantNode;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.common.phrase.Phrase;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
@@ -48,7 +46,6 @@ import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.compiler.ip.type.ascendant.SampleSpecVisitor;
 import org.o42a.core.Contained;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
@@ -128,38 +125,16 @@ public final class PhraseBuilder extends Contained {
 		return this;
 	}
 
-	public PhraseBuilder prefixByAscendants(AscendantsNode node) {
+	public PhraseBuilder prefixByStaticRef(StaticRefNode node) {
 
 		final AccessDistributor distributor = distributeAccess();
 		final AncestorTypeRef ancestor =
 				ip().typeIp().parseAncestor(node, distributor);
 
 		if (ancestor.isImplied()) {
-			setImpliedAncestor(location(this, node.getAncestor()));
+			setImpliedAncestor(location(this, node));
 		} else {
 			ancestor.applyTo(phrase());
-		}
-
-		if (!node.hasSamples()) {
-			return this;
-		}
-
-		final SampleSpecVisitor sampleSpecVisitor =
-				new SampleSpecVisitor(ip());
-
-		for (AscendantNode sampleNode : node.getSamples()) {
-
-			final RefNode specNode = sampleNode.getSpec();
-
-			if (specNode != null) {
-
-				final StaticTypeRef sample =
-						specNode.accept(sampleSpecVisitor, distributor);
-
-				if (sample != null) {
-					addSamples(sample);
-				}
-			}
 		}
 
 		return this;

@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.phrase;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.core.ref.type.TypeRefParameters;
 
@@ -43,11 +43,11 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	public PhraseBuilder visitAscendants(
-			AscendantsNode ascendants,
+	public PhraseBuilder visitStaticRef(
+			StaticRefNode staticRef,
 			PhraseBuilder p) {
 
-		final PhraseBuilder phrase = p.prefixByAscendants(ascendants);
+		final PhraseBuilder phrase = p.prefixByStaticRef(staticRef);
 
 		if (phrase == null) {
 			return phrase;

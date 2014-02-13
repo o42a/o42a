@@ -7,7 +7,6 @@ package org.o42a.ast.test.grammar.field;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.declarator;
 import static org.o42a.parser.Grammar.ref;
@@ -19,7 +18,7 @@ import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
 
@@ -48,11 +47,10 @@ public class DefinitionTest extends GrammarTestCase {
 		assertEquals(DeclarationTarget.VALUE, result.getTarget());
 		assertThat(definition.getOperator(), is(UnaryOperator.LINK));
 
-		final AscendantsNode ascendants =
-				to(AscendantsNode.class, definition.getOperand());
+		final StaticRefNode ascendants =
+				to(StaticRefNode.class, definition.getOperand());
 
-		assertFalse(ascendants.hasSamples());
-		assertThat(ascendants.getAncestor().getSpec(), isName("bar"));
+		assertThat(ascendants.getRef(), isName("bar"));
 	}
 
 	@Test
