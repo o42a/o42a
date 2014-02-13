@@ -101,13 +101,10 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 	}
 
 	@Override
-	public TypeRefParameters visitAscendants(
-			AscendantsNode ascendants,
+	public TypeRefParameters visitStaticRef(
+			StaticRefNode staticRef,
 			AccessDistributor p) {
-		if (ascendants.hasSamples()) {
-			return invalidTypeArgument(ascendants, p);
-		}
-		return singleTypeArgument(ascendants, p);
+		return singleTypeArgument(staticRef, p);
 	}
 
 	@Override

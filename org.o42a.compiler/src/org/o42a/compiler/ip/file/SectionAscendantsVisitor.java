@@ -28,7 +28,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.ParamTypeRef;
@@ -50,11 +50,11 @@ final class SectionAscendantsVisitor
 	}
 
 	@Override
-	public AscendantsDefinition visitAscendants(
-			AscendantsNode ascendants,
+	public AscendantsDefinition visitStaticRef(
+			StaticRefNode staticRef,
 			AccessDistributor p) {
 		return PLAIN_IP.typeIp()
-				.parseAscendants(ascendants, p.fromDeclaration());
+				.parseAscendants(staticRef, p.fromDeclaration());
 	}
 
 	@Override

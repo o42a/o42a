@@ -20,10 +20,11 @@
 package org.o42a.parser.grammar.type;
 
 import static org.o42a.ast.type.TypeArgumentSuffix.BACKQUOTE;
-import static org.o42a.parser.Grammar.*;
+import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.ref;
+import static org.o42a.parser.Grammar.staticRef;
 
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -63,14 +64,6 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 				missingType(context, suffix);
 				break;
 			}
-
-			final AscendantsNode ascendants =
-					parseAscendants(context, argument);
-
-			if (ascendants != null) {
-				argument = ascendants;
-				break;
-			}
 		}
 		if (args == null) {
 			return null;
@@ -92,19 +85,6 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 				new SignNode<>(start, context.current().fix(), BACKQUOTE);
 
 		return context.acceptComments(false, suffix);
-	}
-
-	private AscendantsNode parseAscendants(
-			ParserContext context,
-			TypeArgumentNode arg) {
-
-		final RefNode ref = arg.toRef();
-
-		if (ref == null) {
-			return null;
-		}
-
-		return context.parse(ascendants(ref));
 	}
 
 	private static TypeArgNode[] addArgument(
@@ -140,7 +120,7 @@ public class TypeArgumentsParser implements Parser<TypeArgumentsNode> {
 
 			switch (c) {
 			case '&':
-				return context.parse(samples());
+				return context.parse(staticRef());
 			case '(':
 				return context.parse(DECLARATIVE.parentheses());
 			default:

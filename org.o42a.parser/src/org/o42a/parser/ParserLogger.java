@@ -73,13 +73,6 @@ public abstract class ParserLogger implements Logger {
 		fatal("io_error", location, "I/O error: %s", message);
 	}
 
-	public void missingAscendantSpec(LogInfo location) {
-		error(
-				"missing_ascendant_spec",
-				location,
-				"Ascendant specifier is missing");
-	}
-
 	public void missingClause(LogInfo location) {
 		error(
 				"missing_clause",
