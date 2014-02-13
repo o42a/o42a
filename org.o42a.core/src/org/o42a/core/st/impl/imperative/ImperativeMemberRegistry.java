@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.ProxyMemberRegistry;
@@ -34,7 +34,7 @@ import org.o42a.core.st.sentence.Statements;
 public class ImperativeMemberRegistry extends ProxyMemberRegistry {
 
 	public ImperativeMemberRegistry(MemberRegistry registry) {
-		super(noInclusions(), registry);
+		super(NO_INCLUSIONS, registry);
 	}
 
 	@Override

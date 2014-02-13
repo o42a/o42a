@@ -59,15 +59,10 @@ public class Inclusion extends Statement {
 		final Inclusions inclusions =
 				this.statements.getMemberRegistry().inclusions();
 
-		if (!inclusions.implicitInclusionsSupported()) {
+		if (!inclusions.hasInclusions()) {
 			// Implicit inclusions support status may change
 			// as additional field variants may be added at a time
 			// after this instruction created.
-			return false;
-		}
-		if (inclusions.hasExplicitInclusions()) {
-			// Implicit inclusions won't be performed
-			// if at least one implicit inclusion present.
 			return false;
 		}
 		if (this.statements.isInterrogation()) {

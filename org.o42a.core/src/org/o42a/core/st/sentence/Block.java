@@ -156,6 +156,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 		this.executingInstructions = true;
 		try {
+
 			final List<? extends Sentence<S>> sentences = getSentences();
 
 			for (int i = this.instructionsExecuted; i < sentences.size(); ++i) {

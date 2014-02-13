@@ -19,50 +19,14 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.core.source.LocationInfo;
-import org.o42a.util.string.Name;
 
+public enum Inclusions {
 
-public abstract class Inclusions {
+	INCLUSIONS,
+	NO_INCLUSIONS;
 
-	private static final Inclusions NO_INCLUSIONS = new NoInclusions();
-
-	public static Inclusions noInclusions() {
-		return NO_INCLUSIONS;
-	}
-
-	public abstract boolean implicitInclusionsSupported();
-
-	public abstract boolean hasExplicitInclusions();
-
-	public abstract boolean include(LocationInfo location, Name tag);
-
-	private static final class NoInclusions extends Inclusions {
-
-		@Override
-		public boolean implicitInclusionsSupported() {
-			return false;
-		}
-
-		@Override
-		public boolean hasExplicitInclusions() {
-			return false;
-		}
-
-		@Override
-		public boolean include(LocationInfo location, Name tag) {
-			location.getLocation().getLogger().error(
-					"prohibited_inclusion",
-					location,
-					"Inclusions not allowed here");
-			return false;
-		}
-
-		@Override
-		public String toString() {
-			return "NoInclusions";
-		}
-
+	public final boolean hasInclusions() {
+		return this == INCLUSIONS;
 	}
 
 }

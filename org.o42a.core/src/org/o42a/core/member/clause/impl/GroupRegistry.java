@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.clause.impl;
 
-import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
@@ -41,7 +41,7 @@ final class GroupRegistry
 	private final DeclaredGroupClause group;
 
 	GroupRegistry(DeclaredGroupClause group, MemberRegistry registry) {
-		super(noInclusions(), registry);
+		super(NO_INCLUSIONS, registry);
 		this.group = group;
 	}
 

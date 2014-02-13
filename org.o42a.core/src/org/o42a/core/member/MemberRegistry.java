@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.member.MemberId.BROKEN_MEMBER_ID;
 
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -92,7 +92,7 @@ public abstract class MemberRegistry {
 	private static class NoDeclarations extends MemberRegistry {
 
 		NoDeclarations() {
-			super(noInclusions());
+			super(NO_INCLUSIONS);
 		}
 
 		@Override

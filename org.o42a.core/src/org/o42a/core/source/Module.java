@@ -20,6 +20,7 @@
 package org.o42a.core.source;
 
 import static org.o42a.core.Distributor.containerDistributor;
+import static org.o42a.core.member.Inclusions.INCLUSIONS;
 import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 
@@ -126,8 +127,7 @@ public class Module extends Obj {
 	protected void postResolve() {
 		super.postResolve();
 
-		this.memberRegistry =
-				new ObjectMemberRegistry(new ModuleInclusions(this), this);
+		this.memberRegistry = new ObjectMemberRegistry(INCLUSIONS, this);
 		this.definition = new DeclarativeBlock(
 				this,
 				new Namespace(this, this),

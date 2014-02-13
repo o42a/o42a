@@ -19,13 +19,13 @@
 */
 package org.o42a.common.object;
 
+import static org.o42a.core.member.Inclusions.INCLUSIONS;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 
 import org.o42a.common.ref.ScopeSet;
 import org.o42a.common.source.SourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
-import org.o42a.core.member.AbstractInclusions;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.object.Obj;
@@ -107,9 +107,7 @@ public class CompiledObject extends Obj {
 		super.postResolve();
 
 		this.memberRegistry =
-				new ObjectMemberRegistry(
-						new CompiledInclusions(getField()),
-						this);
+				new ObjectMemberRegistry(INCLUSIONS, this);
 		this.definition = new DeclarativeBlock(
 				this,
 				new Namespace(this, this),
@@ -145,29 +143,6 @@ public class CompiledObject extends Obj {
 			return true;
 		}
 		return this.errorReportedAt.add(scope);
-	}
-
-	private static final class CompiledInclusions extends AbstractInclusions {
-
-		private final Field field;
-
-		CompiledInclusions(Field field) {
-			this.field = field;
-		}
-
-		@Override
-		public String toString() {
-			if (this.field == null) {
-				return super.toString();
-			}
-			return "FieldInclusions[" + this.field + ']';
-		}
-
-		@Override
-		protected String includedIntoName() {
-			return this.field.getDisplayName();
-		}
-
 	}
 
 }

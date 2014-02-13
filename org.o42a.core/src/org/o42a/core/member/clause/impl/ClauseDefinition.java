@@ -20,7 +20,7 @@
 package org.o42a.core.member.clause.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.member.clause.impl.GroupRegistry.prohibitedContinuation;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
@@ -131,7 +131,7 @@ final class ClauseDefinition extends Obj {
 		if (toClause().isTerminator()) {
 			registry = new TerminatorRegistry(this);
 		} else {
-			registry = new ObjectMemberRegistry(noInclusions(), this);
+			registry = new ObjectMemberRegistry(NO_INCLUSIONS, this);
 		}
 
 		this.declarations =
@@ -184,7 +184,7 @@ final class ClauseDefinition extends Obj {
 	private static final class TerminatorRegistry extends ObjectMemberRegistry {
 
 		TerminatorRegistry(ClauseDefinition owner) {
-			super(noInclusions(), owner);
+			super(NO_INCLUSIONS, owner);
 		}
 
 		@Override

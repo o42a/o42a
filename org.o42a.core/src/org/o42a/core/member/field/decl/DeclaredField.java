@@ -19,7 +19,8 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.Inclusions.INCLUSIONS;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
@@ -28,7 +29,6 @@ import org.o42a.core.member.Inclusions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.impl.FieldInclusions;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
@@ -106,11 +106,8 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return enclosingMember.getContext() != getContext();
 	}
 
-	public final Inclusions newInclusions() {
-		if (!ownsCompilerContext()) {
-			return noInclusions();
-		}
-		return new FieldInclusions(this);
+	public final Inclusions fieldInclusions() {
+		return ownsCompilerContext() ? INCLUSIONS : NO_INCLUSIONS;
 	}
 
 	final boolean initDefinition(Obj object) {
@@ -244,7 +241,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private final class Registry extends ObjectMemberRegistry {
 
 		Registry() {
-			super(newInclusions());
+			super(fieldInclusions());
 		}
 
 		@Override

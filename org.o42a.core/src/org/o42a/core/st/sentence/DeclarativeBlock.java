@@ -207,7 +207,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		if (getEnclosing() != null) {
 			return;
 		}
-		if (!getMemberRegistry().inclusions().implicitInclusionsSupported()) {
+		if (!getMemberRegistry().inclusions().hasInclusions()) {
 			return;
 		}
 
