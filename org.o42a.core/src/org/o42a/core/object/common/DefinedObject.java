@@ -19,7 +19,7 @@
 */
 package org.o42a.core.object.common;
 
-import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
@@ -86,8 +86,7 @@ public abstract class DefinedObject extends Obj {
 
 	private ObjectMemberRegistry getMemberRegistry() {
 		if (this.memberRegistry == null) {
-			this.memberRegistry =
-					new ObjectMemberRegistry(noInclusions(), this);
+			this.memberRegistry = new ObjectMemberRegistry(NO_INCLUSIONS, this);
 		}
 		return this.memberRegistry;
 	}

@@ -21,6 +21,7 @@ package org.o42a.root;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
+import static org.o42a.core.member.Inclusions.INCLUSIONS;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -214,8 +215,7 @@ public class Root extends Obj {
 	protected void postResolve() {
 		super.postResolve();
 
-		this.memberRegistry =
-				new ObjectMemberRegistry(new RootInclusions(), this);
+		this.memberRegistry = new ObjectMemberRegistry(INCLUSIONS, this);
 		this.definition = new DeclarativeBlock(
 				this,
 				new Namespace(this, this),

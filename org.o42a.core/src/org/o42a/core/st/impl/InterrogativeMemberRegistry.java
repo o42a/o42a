@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl;
 
-import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.st.impl.SentenceErrors.prohibitedInterrogativeClause;
 import static org.o42a.core.st.impl.SentenceErrors.prohibitedInterrogativeField;
 
@@ -34,7 +34,7 @@ import org.o42a.core.st.sentence.Statements;
 public class InterrogativeMemberRegistry extends ProxyMemberRegistry {
 
 	public InterrogativeMemberRegistry(MemberRegistry registry) {
-		super(noInclusions(), registry);
+		super(NO_INCLUSIONS, registry);
 	}
 
 	@Override

@@ -21,7 +21,7 @@ package org.o42a.common.ref.cmp;
 
 import static org.o42a.common.ref.cmp.ComparisonExpression.COMPARISON_MEMBER;
 import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
-import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.CommandEnv.defaultEnv;
 
@@ -134,7 +134,7 @@ final class ComparisonResult extends BuiltinObject {
 	protected void declareMembers(ObjectMembers members) {
 
 		final ObjectMemberRegistry memberRegistry =
-				new ObjectMemberRegistry(noInclusions(), this);
+				new ObjectMemberRegistry(NO_INCLUSIONS, this);
 		final Distributor distributor = distribute();
 		final Ref phrase = this.comparison.phrase(distributor);
 		final FieldBuilder builder = memberRegistry.newField(
