@@ -24,13 +24,11 @@ import static org.o42a.analysis.use.User.dummyUser;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 
@@ -78,18 +76,6 @@ public final class MemberOverride extends Sample {
 	@Override
 	public Member getOverriddenMember() {
 		return this.overriddenMember;
-	}
-
-	@Override
-	public StaticTypeRef getExplicitAscendant() {
-		return null;
-	}
-
-	@Override
-	public void reproduce(
-			Reproducer reproducer,
-			AscendantsBuilder<?> ascendants) {
-		// Will be done automatically.
 	}
 
 	@Override

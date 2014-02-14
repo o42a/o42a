@@ -317,15 +317,20 @@ final class DerivationUses {
 	}
 
 	private void registerSamples() {
-		for (Sample sample : this.type.getSamples()) {
 
-			final TypeRef sampleTypeRef = sample.getTypeRef();
+		final Sample sample = this.type.getSample();
 
-			if (!sampleTypeRef.isValid()) {
-				continue;
-			}
-			sampleTypeRef.getType().type().derivationUses().useAsSample(sample);
+		if (sample == null) {
+			return;
 		}
+
+		final TypeRef sampleTypeRef = sample.getTypeRef();
+
+		if (!sampleTypeRef.isValid()) {
+			return;
+		}
+
+		sampleTypeRef.getType().type().derivationUses().useAsSample(sample);
 	}
 
 }

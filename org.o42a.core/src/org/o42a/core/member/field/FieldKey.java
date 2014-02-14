@@ -72,12 +72,11 @@ public final class FieldKey implements Nesting {
 
 			final ObjectType containerType =
 					declaration.getContainer().toObject().type();
+			final Sample sample = containerType.getSample();
 
-			for (Sample sample : containerType.getSamples()) {
-				overridden = overridden(
-						memberId,
-						overridden,
-						sample.getObject());
+			if (sample != null) {
+				overridden =
+						overridden(memberId, overridden, sample.getObject());
 			}
 
 			final TypeRef ancestor = containerType.getAncestor();

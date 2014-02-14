@@ -111,10 +111,10 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			}
 		}
 
-		final Sample[] samples = objectType.getSamples();
+		final Sample sample = objectType.getSample();
 
-		for (int i = samples.length - 1; i >= 0; --i) {
-			deriveBodyIRs(data, samples[i].getObject(), false);
+		if (sample != null) {
+			deriveBodyIRs(data, sample.getObject(), false);
 		}
 
 		allocateBodyIR(data, this.mainBodyIR, null, false);
