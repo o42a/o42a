@@ -23,10 +23,8 @@ import static org.o42a.core.member.MemberName.clauseName;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.Name;
 
@@ -135,23 +133,6 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 
 	public final String getDisplayName() {
 		return getClauseId().toString(this.memberId, this.name);
-	}
-
-	public final StaticTypeRef getAdapterType() {
-
-		final MemberId memberId = getMemberId();
-
-		if (memberId == null) {
-			return null;
-		}
-
-		final AdapterId adapterId = memberId.getAdapterId();
-
-		if (adapterId == null) {
-			return null;
-		}
-
-		return adapterId.adapterType(getScope());
 	}
 
 	public final ClauseKind getKind() {
