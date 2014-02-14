@@ -97,8 +97,9 @@ final class TypeParameterKeyVisitor
 
 		final Obj object = p.toObject();
 		final Ascendants ascendants = object.type().getAscendants();
+		final Sample sample = ascendants.getSample();
 
-		for (Sample sample : ascendants.getSamples()) {
+		if (sample != null) {
 
 			final Member member = sample.getObject().objectMember(
 					Accessor.PUBLIC,

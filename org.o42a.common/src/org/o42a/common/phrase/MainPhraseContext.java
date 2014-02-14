@@ -237,7 +237,10 @@ final class MainPhraseContext extends PhraseContext {
 		if (implicitAscendants == null) {
 			return null;
 		}
-		for (Sample sample : implicitAscendants.getSamples()) {
+
+		final Sample sample = implicitAscendants.getSample();
+
+		if (sample != null) {
 
 			final NextClause found = findClause(
 					sample.getObject(),
@@ -249,6 +252,7 @@ final class MainPhraseContext extends PhraseContext {
 				return found;
 			}
 		}
+
 		return null;
 	}
 

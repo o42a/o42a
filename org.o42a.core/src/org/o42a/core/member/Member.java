@@ -273,44 +273,30 @@ public abstract class Member extends Contained implements MemberPath {
 
 		final Container container = getContainer();
 		final ObjectType containerType = container.toObject().type();
-		final Sample[] containerSamples = containerType.getSamples();
-		final ArrayList<Member> overridden;
+		final ArrayList<Member> overridden = new ArrayList<>(2);
+		final Sample containerSample = containerType.getSample();
+
+		if (containerSample != null) {
+			addMember(
+					overridden,
+					containerSample.getObject().member(getMemberKey()));
+		}
 
 		final TypeRef containerAncestor = containerType.getAncestor();
-		final Member ancestorMember;
 
 		if (containerAncestor != null) {
-			ancestorMember = containerAncestor.getType().member(getMemberKey());
-		} else {
-			ancestorMember = null;
-		}
-
-		if (ancestorMember != null) {
-			overridden = new ArrayList<>(containerSamples.length + 1);
-		} else {
-			overridden = new ArrayList<>(containerSamples.length);
-		}
-
-		for (Sample containerSample : containerSamples) {
-
-			final Member sampleMember =
-					containerSample.getObject()
-					.member(getMemberKey());
-
-			if (sampleMember == null) {
-				continue;
-			}
-			addMember(overridden, sampleMember);
-		}
-
-		if (ancestorMember != null) {
-			addMember(overridden, ancestorMember);
+			addMember(
+					overridden,
+					containerAncestor.getType().member(getMemberKey()));
 		}
 
 		return overridden.toArray(new Member[overridden.size()]);
 	}
 
 	private void addMember(ArrayList<Member> members, Member member) {
+		if (member == null) {
+			return;
+		}
 
 		final Scope definedIn = member.getDefinedIn();
 		final Iterator<Member> i = members.iterator();

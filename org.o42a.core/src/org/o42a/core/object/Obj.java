@@ -342,7 +342,10 @@ public abstract class Obj
 		if (ancestor != null) {
 			return ancestor.getType().hasSubClauses();
 		}
-		for (Sample sample : type().getSamples()) {
+
+		final Sample sample = type().getSample();
+
+		if (sample != null) {
 			if (sample.getObject().hasSubClauses()) {
 				return true;
 			}
@@ -365,7 +368,9 @@ public abstract class Obj
 			}
 		}
 
-		for (Sample sample : type().getSamples()) {
+		final Sample sample = type().getSample();
+
+		if (sample != null) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
 					sample.getObject().getImplicitClauses());
@@ -740,16 +745,11 @@ public abstract class Obj
 			return null;
 		}
 
-		final Sample[] samples = type().getSamples();
+		final Sample sample = type().getSample();
 
-		assert samples.length > 0 :
-			"Propagated object has no samples: " + this;
+		assert sample != null :
+			"Propagated object has no sample: " + this;
 
-		if (samples.length != 1) {
-			return null;
-		}
-
-		final Sample sample = samples[0];
 		final Obj sampleObject = sample.getObject();
 
 		if (sampleObject == null) {
@@ -837,8 +837,9 @@ public abstract class Obj
 		declareMembers(this.objectMembers);
 
 		final ObjectType objectType = type();
+		final Sample sample = objectType.getSample();
 
-		for (Sample sample : objectType.getSamples()) {
+		if (sample != null) {
 			sample.deriveMembers(this.objectMembers);
 		}
 
