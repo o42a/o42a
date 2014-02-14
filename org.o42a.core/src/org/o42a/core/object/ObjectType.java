@@ -288,21 +288,12 @@ public final class ObjectType {
 
 		TypeParameters<?> parameters =
 				typeParameters(getObject(), ValueType.VOID);
-		boolean ancestorApplied = getAscendants().getExplicitAncestor() == null;
 
+		// First apply sample parameters, then - explicit ancestor's ones.
 		for (Sample sample : getSamples()) {
-			if (!ancestorApplied && sample.isExplicit()) {
-				// Apply an explicit ancestor's parameters after
-				// implicit samples, but before the explicit ones.
-				ancestorApplied = true;
-				parameters = applyAncestorParameters(parameters);
-			}
 			parameters = applySampleParameters(parameters, sample);
 		}
-		if (!ancestorApplied) {
-			// Apply an ancestor parameters if not applied yet.
-			parameters = applyAncestorParameters(parameters);
-		}
+		parameters = applyAncestorParameters(parameters);
 
 		return applyExplicitParameters(parameters);
 	}
@@ -375,9 +366,6 @@ public final class ObjectType {
 		}
 
 		addSamplesAscendants(allAscendants, this.ascendants.getSamples());
-		addSamplesAscendants(
-				allAscendants,
-				this.ascendants.getDiscardedSamples());
 
 		return allAscendants;
 	}
@@ -408,9 +396,15 @@ public final class ObjectType {
 
 	private TypeParameters<?> applyAncestorParameters(
 			TypeParameters<?> parameters) {
-		return getAscendants()
-				.getExplicitAncestor()
-				.getType()
+
+		final TypeRef explicitAncestor =
+				getAscendants().getExplicitAncestor();
+
+		if (explicitAncestor == null) {
+			return parameters;
+		}
+
+		return explicitAncestor.getType()
 				.type()
 				.getParameters()
 				.upgradeScope(getObject().getScope())

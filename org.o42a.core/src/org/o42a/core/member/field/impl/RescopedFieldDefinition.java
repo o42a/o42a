@@ -128,14 +128,6 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public ObjectDefiner addExplicitSample(
-				StaticTypeRef explicitAscendant) {
-			this.definer.addExplicitSample(
-					explicitAscendant.prefixWith(getPrefix()));
-			return this;
-		}
-
-		@Override
 		public ObjectDefiner addImplicitSample(
 				StaticTypeRef implicitAscendant,
 				TypeRef overriddenAncestor) {

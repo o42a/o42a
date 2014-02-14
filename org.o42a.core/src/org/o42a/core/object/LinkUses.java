@@ -78,11 +78,6 @@ public class LinkUses {
 
 		final Obj derived = sample.getDerivedObject();
 
-		if (sample.isExplicit()) {
-			explicitlyDerivedBy(derived);
-			return;
-		}
-
 		deriveComplexity(derived);
 
 		final Usable<LinkUsage> derivedUses = derived.type().linkUses().uses();

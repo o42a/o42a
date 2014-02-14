@@ -31,8 +31,6 @@ public interface AscendantsBuilder<A extends AscendantsBuilder<A>> {
 
 	A setParameters(ObjectTypeParameters typeParameters);
 
-	A addExplicitSample(StaticTypeRef explicitAscendant);
-
 	A addImplicitSample(
 			StaticTypeRef implicitAscendant,
 			TypeRef overriddenAncestor);
