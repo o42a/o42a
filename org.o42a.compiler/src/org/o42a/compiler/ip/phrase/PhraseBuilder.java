@@ -52,7 +52,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.LocationInfo;
@@ -106,11 +105,6 @@ public final class PhraseBuilder extends Contained {
 
 	public final PhraseBuilder setAncestor(TypeRef ancestor) {
 		phrase().setAncestor(ancestor);
-		return this;
-	}
-
-	public final PhraseBuilder addSamples(StaticTypeRef... samples) {
-		phrase().addSamples(samples);
 		return this;
 	}
 

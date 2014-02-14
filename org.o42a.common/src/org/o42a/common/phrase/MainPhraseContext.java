@@ -36,7 +36,6 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
@@ -162,13 +161,6 @@ final class MainPhraseContext extends PhraseContext {
 			establishLinkTargetSearch();
 		}
 
-		final NextClause foundInSamples =
-				findClauseInSamples(location, memberId, what);
-
-		if (foundInSamples != null) {
-			return foundInSamples;
-		}
-
 		final Ascendants implicitAscendants = effectiveImplicitAscendants();
 		final NextClause foundInImplicitAscendants = findInImplicitSamples(
 				location,
@@ -206,27 +198,9 @@ final class MainPhraseContext extends PhraseContext {
 	}
 
 	private void establishLinkTargetSearch() {
-		if (getAscendants().getSamples().length != 0) {
-			this.firstClauseFound = true;
-		} else if (getAscendants().getTypeParameters() != null) {
+		if (getAscendants().getTypeParameters() != null) {
 			this.firstClauseFound = true;
 		}
-	}
-
-	private NextClause findClauseInSamples(
-			LocationInfo location,
-			MemberId memberId,
-			Object what) {
-		for (StaticTypeRef sample : getAscendants().getSamples()) {
-
-			final NextClause found =
-					findClause(sample.getType(), location, memberId, what);
-
-			if (found.found()) {
-				return found;
-			}
-		}
-		return null;
 	}
 
 	private Ascendants effectiveImplicitAscendants() {
@@ -478,16 +452,6 @@ final class MainPhraseContext extends PhraseContext {
 				// Next clause is expression.
 				// It will construct an object by itself.
 				this.createsObject = -1;
-
-				final StaticTypeRef[] samples = getPhrase().getSamples();
-
-				if (samples.length != 0) {
-					getLogger().error(
-							"prohibited_phrase_samples",
-							samples[0],
-							"The samples are prohibited when the top-level"
-							+ " clause of phrase is an expression");
-				}
 
 				final ObjectTypeParameters typeParameters =
 						getPhrase().getTypeParameters();
