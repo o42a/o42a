@@ -378,32 +378,10 @@ public class Ascendants
 			FieldAscendants fieldAscendants) {
 
 		Ascendants ascendants = this;
-		final Obj containerObject = member.getContainer().toObject();
-		final ObjectType containerType = containerObject.type();
-		final Sample containerSample = containerType.getSample();
 
-		if (containerSample != null) {
-
-			final Member overridden =
-					containerSample.getObject()
-					.member(member.getMemberKey());
-
-			if (overridden != null) {
-				ascendants = ascendants.addMemberOverride(overridden);
-				return fieldAscendants.updateAscendants(ascendants);
-			}
-		}
-
-		final TypeRef ancestor = containerType.getAncestor();
-
-		if (ancestor != null) {
-
-			final Member overridden =
-					ancestor.getType().member(member.getMemberKey());
-
-			if (overridden != null) {
-				ascendants = ascendants.addMemberOverride(overridden);
-			}
+		for (Member overridden : member.overridden(true)) {
+			ascendants = ascendants.addMemberOverride(overridden);
+			break;
 		}
 
 		return fieldAscendants.updateAscendants(ascendants);
