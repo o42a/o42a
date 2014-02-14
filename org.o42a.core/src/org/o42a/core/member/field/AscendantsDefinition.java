@@ -29,23 +29,18 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.field.impl.AscendantsFieldDefinition;
 import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.util.ArrayUtil;
 
 
 public class AscendantsDefinition extends Contained implements Cloneable {
 
-	private static final StaticTypeRef[] NO_SAMPLES = new StaticTypeRef[0];
-
 	private TypeRef ancestor;
 	private ObjectTypeParameters typeParameters;
-	private StaticTypeRef[] samples = NO_SAMPLES;
 	private boolean stateful;
 
 	public AscendantsDefinition(
@@ -57,15 +52,13 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 	public AscendantsDefinition(
 			LocationInfo location,
 			Distributor distributor,
-			TypeRef ancestor,
-			StaticTypeRef... samples) {
+			TypeRef ancestor) {
 		super(location, distributor);
 		this.ancestor = ancestor;
-		this.samples = samples;
 	}
 
 	public final boolean isEmpty() {
-		return this.ancestor == null && this.samples.length == 0;
+		return this.ancestor == null;
 	}
 
 	public final DefinitionTarget getDefinitionTarget() {
@@ -78,15 +71,6 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		if (ancestor != null) {
 
 			final TypeParameters<?> typeParameters = ancestor.getParameters();
-
-			if (!typeParameters.getValueType().isVoid()) {
-				return definitionTarget(typeParameters);
-			}
-		}
-
-		for (StaticTypeRef sample : getSamples()) {
-
-			final TypeParameters<?> typeParameters = sample.getParameters();
 
 			if (!typeParameters.getValueType().isVoid()) {
 				return definitionTarget(typeParameters);
@@ -127,32 +111,6 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		return clone;
 	}
 
-	public final StaticTypeRef[] getSamples() {
-		return this.samples;
-	}
-
-	public AscendantsDefinition addSample(StaticTypeRef sample) {
-		sample.assertCompatibleScope(this);
-
-		final AscendantsDefinition clone = clone();
-
-		clone.samples = ArrayUtil.append(this.samples, sample);
-
-		return clone;
-	}
-
-	public AscendantsDefinition addSamples(StaticTypeRef... samples) {
-		for (StaticTypeRef sample : samples) {
-			sample.assertCompatibleScope(this);
-		}
-
-		final AscendantsDefinition clone = clone();
-
-		clone.samples = ArrayUtil.append(this.samples, samples);
-
-		return clone;
-	}
-
 	public boolean isStateful() {
 		return this.stateful;
 	}
@@ -169,16 +127,6 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		return clone;
 	}
 
-	public StaticTypeRef getAscendant() {
-		if (this.samples.length != 0) {
-			return this.samples[this.samples.length - 1];
-		}
-		if (this.ancestor != null) {
-			return this.ancestor.toStatic();
-		}
-		return null;
-	}
-
 	public <A extends AscendantsBuilder<A>> A updateAscendants(A ascendants) {
 
 		A result;
@@ -191,19 +139,12 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		if (this.typeParameters != null) {
 			result = result.setParameters(this.typeParameters);
 		}
-		for (StaticTypeRef sample : this.samples) {
-			result = result.addExplicitSample(sample);
-		}
 
 		return result;
 	}
 
 	public final AscendantsDefinition toStatic() {
-		return create(
-				this,
-				distribute(),
-				this.ancestor.toStatic(),
-				this.samples);
+		return create(this, distribute(), this.ancestor.toStatic());
 	}
 
 	public AscendantsDefinition prefixWith(PrefixPath prefix) {
@@ -216,17 +157,10 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 			ancestor = this.ancestor.prefixWith(prefix);
 		}
 
-		final StaticTypeRef[] samples = new StaticTypeRef[this.samples.length];
-
-		for (int i = 0; i < samples.length; ++i) {
-			samples[i] = this.samples[i].prefixWith(prefix);
-		}
-
 		return create(
 				this,
 				distributeIn(prefix.getStart().getContainer()),
-				ancestor,
-				samples);
+				ancestor);
 	}
 
 	public AscendantsDefinition reproduce(Reproducer reproducer) {
@@ -243,20 +177,7 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 			}
 		}
 
-		final StaticTypeRef[] samples = new StaticTypeRef[this.samples.length];
-
-		for (int i = 0; i < samples.length; ++i) {
-
-			final StaticTypeRef sample = this.samples[i].reproduce(reproducer);
-
-			if (sample == null) {
-				return null;
-			}
-
-			samples[i] = sample;
-		}
-
-		return create(this, reproducer.distribute(), ancestor, samples);
+		return create(this, reproducer.distribute(), ancestor);
 	}
 
 	public final FieldDefinition fieldDefinition(
@@ -280,9 +201,6 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		} else {
 			out.append('*');
 		}
-		for (StaticTypeRef sample : this.samples) {
-			out.append(" & ").append(sample);
-		}
 
 		return out.toString();
 	}
@@ -290,13 +208,14 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 	protected AscendantsDefinition create(
 			LocationInfo location,
 			Distributor distributor,
-			TypeRef ancestor,
-			StaticTypeRef[] samples) {
-		return new AscendantsDefinition(
-				location,
-				distributor,
-				ancestor,
-				samples);
+			TypeRef ancestor) {
+
+		final AscendantsDefinition ascendants =
+				new AscendantsDefinition(location, distributor, ancestor);
+
+		ascendants.stateful = isStateful();
+
+		return ascendants;
 	}
 
 	@Override
