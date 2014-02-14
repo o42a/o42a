@@ -145,7 +145,7 @@ public class ModuleRefVisitor
 
 			return owner.member(
 					location(p, ref),
-					adapterId(type.toStaticTypeRef()),
+					adapterId(type.toTypeRef()),
 					declaredIn(ref.getDeclaredIn(), p));
 		}
 
