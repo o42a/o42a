@@ -744,7 +744,6 @@ public abstract class Obj
 
 		assert samples.length > 0 :
 			"Propagated object has no samples: " + this;
-		assert assertImplicitSamples(samples);
 
 		if (samples.length != 1) {
 			return null;
@@ -973,14 +972,6 @@ public abstract class Obj
 
 			field.toObject().normalize(analyzer);
 		}
-	}
-
-	private boolean assertImplicitSamples(Sample[] samples) {
-		for (Sample sample : samples) {
-			assert !sample.isExplicit() :
-				sample + " is explicit";
-		}
-		return true;
 	}
 
 	private static final class ObjectDistributor extends Distributor {

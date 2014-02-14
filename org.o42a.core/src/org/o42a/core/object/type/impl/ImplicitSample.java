@@ -70,11 +70,6 @@ public final class ImplicitSample extends Sample {
 	}
 
 	@Override
-	public boolean isExplicit() {
-		return false;
-	}
-
-	@Override
 	public Member getOverriddenMember() {
 		return null;
 	}

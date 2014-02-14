@@ -52,8 +52,6 @@ public abstract class Sample extends Scoped implements Derivative {
 
 	public abstract StaticTypeRef getTypeRef();
 
-	public abstract boolean isExplicit();
-
 	public abstract Member getOverriddenMember();
 
 	public abstract StaticTypeRef getExplicitAscendant();

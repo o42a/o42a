@@ -76,11 +76,6 @@ public final class MemberOverride extends Sample {
 	}
 
 	@Override
-	public boolean isExplicit() {
-		return false;
-	}
-
-	@Override
 	public Member getOverriddenMember() {
 		return this.overriddenMember;
 	}
