@@ -116,8 +116,8 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public ObjectDefiner setAncestor(TypeRef explicitAncestor) {
-			this.definer.setAncestor(explicitAncestor.prefixWith(getPrefix()));
+		public ObjectDefiner setAncestor(TypeRef ancestor) {
+			this.definer.setAncestor(ancestor.prefixWith(getPrefix()));
 			return this;
 		}
 

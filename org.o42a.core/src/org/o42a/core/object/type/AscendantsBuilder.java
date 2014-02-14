@@ -27,7 +27,7 @@ import org.o42a.core.value.ObjectTypeParameters;
 
 public interface AscendantsBuilder<A extends AscendantsBuilder<A>> {
 
-	A setAncestor(TypeRef explicitAncestor);
+	A setAncestor(TypeRef ancestor);
 
 	A setParameters(ObjectTypeParameters typeParameters);
 

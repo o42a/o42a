@@ -53,6 +53,7 @@ public class Ascendants
 
 	private final Obj object;
 	private TypeRef explicitAncestor;
+	private TypeRef implicitAncestor;
 	private ObjectTypeParameters explicitParameters;
 	private TypeRef ancestor;
 	private Sample[] samples = NO_SAMPLES;
@@ -88,17 +89,13 @@ public class Ascendants
 		return this.explicitAncestor;
 	}
 
+	public final TypeRef getImplicitAncestor() {
+		return this.implicitAncestor;
+	}
+
 	@Override
-	public Ascendants setAncestor(TypeRef explicitAncestor) {
-		getScope().getEnclosingScope().assertDerivedFrom(
-				explicitAncestor.getScope());
-
-		final Ascendants clone = clone();
-
-		clone.explicitAncestor =
-				explicitAncestor.upgradeScope(getScope().getEnclosingScope());
-
-		return clone;
+	public final Ascendants setAncestor(TypeRef ancestor) {
+		return setAncestor(ancestor, false);
 	}
 
 	public final ObjectTypeParameters getExplicitParameters() {
@@ -277,17 +274,17 @@ public class Ascendants
 		}
 		this.validated = true;
 		if (this.explicitAncestor != null) {
-			if (!this.explicitAncestor.isValid()) {
+			if (!validateAncestor(this.explicitAncestor)) {
+				if (this.implicitAncestor == this.explicitAncestor) {
+					this.implicitAncestor = null;
+				}
 				this.explicitAncestor = null;
-			} else if (!validateUse(this.explicitAncestor)) {
-				this.explicitAncestor = null;
-			} else if (this.explicitAncestor
-					.getConstructionMode().isProhibited()) {
-				this.explicitAncestor.getLogger().error(
-						"cant_inherit",
-						this.explicitAncestor,
-						"Can not be inherited");
-				this.explicitAncestor = null;
+			}
+		}
+		if (this.implicitAncestor != null
+				&& this.implicitAncestor != this.explicitAncestor) {
+			if (!validateAncestor(this.implicitAncestor)) {
+				this.implicitAncestor = null;
 			}
 		}
 		for (int i = this.samples.length - 1; i >= 0 ; --i) {
@@ -352,6 +349,24 @@ public class Ascendants
 		}
 	}
 
+	private Ascendants setAncestor(TypeRef ancestor, boolean implicit) {
+		getScope().getEnclosingScope().assertDerivedFrom(ancestor.getScope());
+
+		final Ascendants clone = clone();
+
+		if (implicit) {
+			clone.implicitAncestor = ancestor;
+			if (this.explicitAncestor != null) {
+				return clone;
+			}
+		}
+
+		clone.explicitAncestor =
+				ancestor.upgradeScope(getScope().getEnclosingScope());
+
+		return clone;
+	}
+
 	private Ascendants addSample(Sample sample) {
 		assert (!sample.isExplicit()
 				|| this.samples.length == 0
@@ -374,8 +389,9 @@ public class Ascendants
 		final AdapterId adapterId = member.getMemberId().getAdapterId();
 
 		if (adapterId != null && !fieldAscendants.isLinkAscendants()) {
-			ascendants = ascendants.addExplicitSample(
-					adapterId.adapterType(enclosingScope));
+			ascendants = ascendants.setAncestor(
+					adapterId.adapterType(enclosingScope),
+					true);
 		}
 		ascendants = fieldAscendants.updateAscendants(ascendants);
 		if (!ascendants.isEmpty()) {
@@ -422,6 +438,23 @@ public class Ascendants
 		return fieldAscendants.updateAscendants(ascendants);
 	}
 
+	private boolean validateAncestor(TypeRef ancestor) {
+		if (!ancestor.isValid()) {
+			return false;
+		}
+		if (!validateUse(ancestor)) {
+			return false;
+		}
+		if (ancestor.getConstructionMode().isProhibited()) {
+			ancestor.getLogger().error(
+					"cant_inherit",
+					ancestor,
+					"Can not be inherited");
+			return false;
+		}
+		return true;
+	}
+
 	private boolean validateUse(TypeRef checkUse) {
 		if (checkUse == null) {
 			return true;
@@ -463,6 +496,8 @@ public class Ascendants
 		if (ancestor == null) {
 			return;
 		}
+
+		validateImplicitAncestor(ancestor);
 
 		final TypeParameters<?> parameters = objectType.getParameters();
 		final TypeRef parameterizedAncestor;
@@ -552,7 +587,22 @@ public class Ascendants
 		return true;
 	}
 
-	private int validateSampleAncestor(Sample sample, TypeRef ancestor) {
+	private void validateImplicitAncestor(TypeRef ancestor) {
+		if (this.implicitAncestor == null) {
+			return;
+		}
+		if (!ancestor.derivedFrom(this.implicitAncestor)) {
+			getScope().getLogger().error(
+					"unexpected_ancestor",
+					ancestor,
+					"Wrong ancestor: %s, but expected: %s",
+					ancestor,
+					this.implicitAncestor);
+			this.explicitAncestor = null;
+		}
+	}
+
+	private void validateSampleAncestor(Sample sample, TypeRef ancestor) {
 
 		final TypeRef sampleAncestor =
 				sample.overriddenAncestor().rescope(ancestor.getScope());
@@ -583,13 +633,11 @@ public class Ascendants
 						first);
 			}
 			if (explicit) {
-				return -1;
+				return;
 			}
 			this.explicitAncestor = null;
-			return 1;
+			return;
 		}
-
-		return 0;
 	}
 
 	private boolean discardSample(Sample sample) {

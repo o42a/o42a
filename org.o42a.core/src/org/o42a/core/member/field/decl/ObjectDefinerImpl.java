@@ -59,8 +59,8 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	}
 
 	@Override
-	public ObjectDefiner setAncestor(TypeRef explicitAncestor) {
-		this.ascendants = this.ascendants.setAncestor(explicitAncestor);
+	public ObjectDefiner setAncestor(TypeRef ancestor) {
+		this.ascendants = this.ascendants.setAncestor(ancestor);
 		return this;
 	}
 
