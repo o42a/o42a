@@ -33,6 +33,9 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
+import org.o42a.core.value.DeferredObjectTypeParameters;
+import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.link.Link;
 
 
@@ -69,13 +72,16 @@ public final class RtLinkTarget extends Obj {
 	protected Ascendants buildAscendants() {
 
 		final TypeRef interfaceRef = this.link.getInterfaceRef();
+		final TypeRefParameters params = interfaceRef.copyParameters();
 
 		return new Ascendants(this)
 		.setAncestor(interfaceRef)
-		.setParameters(
-				interfaceRef.copyParameters()
-				.rescope(getScope())
-				.toObjectTypeParameters());
+		.setParameters(new DeferredObjectTypeParameters(params) {
+			@Override
+			protected ObjectTypeParameters resolve() {
+				return params.rescope(getScope()).toObjectTypeParameters();
+			}
+		});
 	}
 
 	@Override
