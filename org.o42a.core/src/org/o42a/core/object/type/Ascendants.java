@@ -23,6 +23,9 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
+import static org.o42a.core.object.ConstructionMode.DYNAMIC_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.STATIC_CONSTRUCTION;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import org.o42a.core.Scope;
@@ -117,41 +120,33 @@ public class Ascendants
 
 		ConstructionMode constructionMode = enclosingConstructionMode();
 
-		if (constructionMode.isRuntime()) {
+		if (constructionMode.isStrict()) {
 			return this.constructionMode = constructionMode;
-		}
-
-		final TypeRef ancestor = getExplicitAncestor();
-
-		if (ancestor != null) {
-
-			final ConstructionMode ancestorMode =
-					ancestor.getConstructionMode();
-
-			if (ancestorMode.isRuntime() || ancestorMode.isProhibited()) {
-				return this.constructionMode = ancestorMode;
-			}
-			if (constructionMode.ordinal() < ancestorMode.ordinal()) {
-				constructionMode = ancestorMode;
-			}
 		}
 
 		final Sample sample = getSample();
 
 		if (sample != null) {
-
-			final ConstructionMode sampleMode =
+			return this.constructionMode =
 					sample.getObject().getConstructionMode();
-
-			if (sampleMode.isRuntime() || sampleMode.isProhibited()) {
-				return this.constructionMode = sampleMode;
-			}
-			if (constructionMode.ordinal() < sampleMode.ordinal()) {
-				constructionMode = sampleMode;
-			}
+		}
+		if (getObject().isPropagated()) {
+			return this.constructionMode = PROHIBITED_CONSTRUCTION;
 		}
 
-		return this.constructionMode = constructionMode;
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor == null) {
+			return this.constructionMode = STATIC_CONSTRUCTION;
+		}
+		if (!ancestor.isValid()) {
+			return this.constructionMode = PROHIBITED_CONSTRUCTION;
+		}
+		if (ancestor.isStatic()) {
+			return this.constructionMode = STATIC_CONSTRUCTION;
+		}
+
+		return this.constructionMode = DYNAMIC_CONSTRUCTION;
 	}
 
 	public final boolean isEmpty() {
@@ -204,8 +199,10 @@ public class Ascendants
 
 		implicitAscendant.assertCompatible(enclosingScope);
 
-		return addSample(
-				new ImplicitSample(this, implicitAscendant, overriddenAncestor));
+		return addSample(new ImplicitSample(
+				this,
+				implicitAscendant,
+				overriddenAncestor));
 	}
 
 	@Override
@@ -222,7 +219,7 @@ public class Ascendants
 
 	public void resolveAll(ObjectType objectType) {
 		validate();
-		validateOverriddenAncestors(objectType);
+		validateAncestors(objectType);
 
 		final RefUser user = getObject().type().refUser();
 		final TypeRef ancestor = getExplicitAncestor();
@@ -379,7 +376,7 @@ public class Ascendants
 
 		Ascendants ascendants = this;
 
-		for (Member overridden : member.overridden(true)) {
+		for (Member overridden : member.getOverridden()) {
 			ascendants = ascendants.addMemberOverride(overridden);
 			break;
 		}
@@ -425,7 +422,7 @@ public class Ascendants
 		return sample.getAncestor();
 	}
 
-	private void validateOverriddenAncestors(ObjectType objectType) {
+	private void validateAncestors(ObjectType objectType) {
 
 		final TypeRef ancestor = objectType.getAncestor();
 
@@ -500,6 +497,15 @@ public class Ascendants
 			this.explicitAncestor = null;
 			return;
 		}
+
+		if (!getConstructionMode().canUpgradeAncestor()
+				&& !relation.ignoreParameters().isSame()) {
+			relation.ignoreParameters().isSame();
+			getScope().getLogger().error(
+					"prohibited_ancestor_upgrade",
+					getAncestor(),
+					"Ancestor can no be upgraded");
+		}
 	}
 
 	private TypeRef parameterizedAncestor(
@@ -518,11 +524,10 @@ public class Ascendants
 
 	private ConstructionMode enclosingConstructionMode() {
 
-		final Scope enclosingScope =
-				getScope().getEnclosingScope();
+		final Scope enclosingScope = getScope().getEnclosingScope();
 
 		if (enclosingScope == null) {
-			return ConstructionMode.FULL_CONSTRUCTION;
+			return STATIC_CONSTRUCTION;
 		}
 
 		return enclosingScope.getConstructionMode();

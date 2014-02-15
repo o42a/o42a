@@ -47,7 +47,7 @@ public class AdapterRefTest extends CompilerTestCase {
 				"A := void (",
 				"  F := 1",
 				")",
-				"B := A (",
+				"B := &a (",
 				"  F = 2",
 				"  @a := * (",
 				"    F = 3",

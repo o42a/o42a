@@ -50,7 +50,7 @@ public class PrivateFieldNonVisibilityTest extends CompilerTestCase {
 				"A := void (",
 				"  :Foo := 1",
 				")",
-				"B := a (",
+				"B := &a (",
 				"  Bar := foo",
 				")");
 	}

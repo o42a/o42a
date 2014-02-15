@@ -96,9 +96,9 @@ public class PropagationTest extends CompilerTestCase {
 	public void upgradeAncestor() {
 		compile(
 				"Foo := 1",
-				"Bar := &foo (= 2)",
-				"A := void (Foo := &upgrade ancestor: foo (= 3))",
-				"B := &a (Foo = &bar ())");
+				"Bar := foo (= 2)",
+				"A := void (Foo := upgrade ancestor: foo (= 3))",
+				"B := a (Foo = bar ())");
 
 		final Obj foo = field("foo").toObject();
 		final Obj bar = field("bar").toObject();
