@@ -26,6 +26,7 @@ import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
+import static org.o42a.core.object.impl.ScopeField.reusedScopePath;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
@@ -525,25 +526,14 @@ public abstract class Obj
 
 	public Path scopePath() {
 
-		final Scope scope = getScope();
-		final Scope enclosing = scope.getEnclosingScope();
+		final Path reused = reusedScopePath(this);
 
-		assert enclosing.toObject() != null :
-			"No enclosing object found";
-
-		final Obj propagatedFrom = getPropagatedFrom();
-
-		if (propagatedFrom != null) {
-			// Reuse enclosing scope path from object
-			// this one is propagated from.
-			return propagatedFrom.getScope().getEnclosingScopePath();
+		if (reused != null) {
+			return reused;
 		}
 
 		// New scope field is to be created.
-		final Step scopePathStep =
-				new OwnerStep(this, SCOPE_FIELD_ID.key(scope));
-
-		return scopePathStep.toPath();
+		return new OwnerStep(this, SCOPE_FIELD_ID.key(getScope())).toPath();
 	}
 
 	public final Ref staticRef(Scope scope) {
