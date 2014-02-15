@@ -244,14 +244,7 @@ public abstract class Member extends Contained implements MemberPath {
 		if (this.overridden != null) {
 			return this.overridden;
 		}
-		return this.overridden = findOverridden(false);
-	}
-
-	public final Member[] overridden(boolean preferSample) {
-		if (!preferSample) {
-			return getOverridden();
-		}
-		return findOverridden(preferSample);
+		return this.overridden = findOverridden();
 	}
 
 	public final boolean definedAfter(Member other) {
@@ -270,7 +263,7 @@ public abstract class Member extends Contained implements MemberPath {
 		return getId().toString();
 	}
 
-	private Member[] findOverridden(boolean preferSample) {
+	private Member[] findOverridden() {
 		if (!isOverride()) {
 			return NOTHING_OVERRIDDEN;
 		}
@@ -279,7 +272,7 @@ public abstract class Member extends Contained implements MemberPath {
 		final Member ancestorMember = overriddenAncestorMember(containerType);
 		final Member sampleMember = overriddenSampleMember(containerType);
 
-		return selectOverridden(ancestorMember, sampleMember, preferSample);
+		return selectOverridden(ancestorMember, sampleMember);
 	}
 
 	private Member overriddenAncestorMember(ObjectType containerType) {
@@ -306,8 +299,7 @@ public abstract class Member extends Contained implements MemberPath {
 
 	private Member[] selectOverridden(
 			Member ancestorMember,
-			Member sampleMember,
-			boolean preferSample) {
+			Member sampleMember) {
 		if (sampleMember == null) {
 			if (ancestorMember == null) {
 				return NOTHING_OVERRIDDEN;
@@ -321,7 +313,7 @@ public abstract class Member extends Contained implements MemberPath {
 				ancestorMember.getDefinedIn())) {
 			return new Member[] {sampleMember};
 		}
-		if (!preferSample && ancestorMember.getDefinedIn().derivedFrom(
+		if (ancestorMember.getDefinedIn().derivedFrom(
 				sampleMember.getDefinedIn())) {
 			return new Member[] {ancestorMember};
 		}

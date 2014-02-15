@@ -93,7 +93,7 @@ final class PhrasePrefixVisitor
 					new AscendantsDefinition(
 							ancestor,
 							distributor,
-						ancestor.toTypeRef()));
+							ancestor.toTypeRef()));
 		}
 
 		return p;
