@@ -28,7 +28,6 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 public abstract class Sample extends Scoped implements Derivative {
@@ -52,11 +51,7 @@ public abstract class Sample extends Scoped implements Derivative {
 
 	public abstract StaticTypeRef getTypeRef();
 
-	public abstract boolean isExplicit();
-
 	public abstract Member getOverriddenMember();
-
-	public abstract StaticTypeRef getExplicitAscendant();
 
 	@Override
 	public final Obj getDerivedObject() {
@@ -96,9 +91,5 @@ public abstract class Sample extends Scoped implements Derivative {
 			ancestor.resolveAll(resolver);
 		}
 	}
-
-	public abstract void reproduce(
-			Reproducer reproducer,
-			AscendantsBuilder<?> ascendants);
 
 }

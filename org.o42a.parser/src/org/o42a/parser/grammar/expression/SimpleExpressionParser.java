@@ -28,8 +28,9 @@ import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.GroupNode;
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.ref.*;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.ref.AdapterRefNode;
+import org.o42a.ast.ref.DerefNode;
+import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.type.TypeArgumentNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.parser.Parser;
@@ -100,7 +101,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '(':
 			return context.parse(DECLARATIVE.parentheses());
 		case '&':
-			return context.parse(samples());
+			return context.parse(staticRef());
 		case '"':
 		case '\'':
 			return context.parse(text());
@@ -110,20 +111,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			if (isDigit(c)) {
 				return context.parse(number());
 			}
-
-			final RefNode ref = context.parse(ref());
-
-			if (ref == null) {
-				return null;
-			}
-
-			final AscendantsNode ascendants = context.parse(ascendants(ref));
-
-			if (ascendants != null) {
-				return ascendants;
-			}
-
-			return ref;
+			return context.parse(ref());
 		}
 	}
 

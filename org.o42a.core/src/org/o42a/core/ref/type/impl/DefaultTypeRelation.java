@@ -68,17 +68,20 @@ public final class DefaultTypeRelation extends TypeRelation {
 
 		if (root1.is(root2)) {
 			if (type1.getObject().is(type2.getObject())) {
+				if (parametersIgnored()) {
+					return Kind.SAME;
+				}
 
-				final TypeRelation.Kind structRelation =
+				final TypeRelation.Kind paramsRelation =
 						of().getParameters().relationTo(to().getParameters());
 
-				if (logger != null && structRelation == Kind.INCOMPATIBLE) {
+				if (logger != null && paramsRelation == Kind.INCOMPATIBLE) {
 					logger.incompatible(
 							to().getLocation(),
 							of().getParameters());
 				}
 
-				return structRelation;
+				return paramsRelation;
 			}
 			if (type1.derivedFrom(type2)) {
 				return checkDerivative(logger);

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path.impl.member;
 
+import static org.o42a.core.object.ConstructionMode.DYNAMIC_CONSTRUCTION;
+
 import org.o42a.core.Scope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.ref.path.PropagatedConstructedObject;
@@ -34,7 +36,7 @@ final class PropagatedTypeParameterObject extends PropagatedConstructedObject {
 
 	@Override
 	public ConstructionMode getConstructionMode() {
-		return ConstructionMode.FULL_CONSTRUCTION;
+		return DYNAMIC_CONSTRUCTION;
 	}
 
 }

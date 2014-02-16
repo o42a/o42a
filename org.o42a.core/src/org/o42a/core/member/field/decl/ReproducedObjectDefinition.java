@@ -25,7 +25,6 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -66,9 +65,6 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 			if (newAncestor != null) {
 				definer.setAncestor(newAncestor);
 			}
-		}
-		for (Sample oldSample : oldAscendants.getSamples()) {
-			oldSample.reproduce(this.reproducer, definer);
 		}
 
 		definer.define(new ReproducedContent(

@@ -23,7 +23,6 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 
 import org.o42a.ast.expression.*;
-import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
 import org.o42a.common.ref.cmp.ComparisonExpression;
@@ -58,20 +57,6 @@ public final class PhraseInterpreter {
 		}
 
 		return prefixed.addParts(node);
-	}
-
-	public PhraseBuilder ascendantsPhrase(
-			AscendantsNode node,
-			AccessDistributor distributor,
-			TypeConsumer typeConsumer) {
-
-		final PhraseBuilder phrase = new PhraseBuilder(
-				ip(),
-				location(distributor, node),
-				distributor,
-				typeConsumer);
-
-		return phrase.prefixByAscendants(node).noDeclarations();
 	}
 
 	public PhraseBuilder typeArgumentsPhrase(

@@ -22,11 +22,9 @@ package org.o42a.core.object.type.impl;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.Reproducer;
 
 
 public final class ImplicitSample extends Sample {
@@ -70,25 +68,8 @@ public final class ImplicitSample extends Sample {
 	}
 
 	@Override
-	public boolean isExplicit() {
-		return false;
-	}
-
-	@Override
 	public Member getOverriddenMember() {
 		return null;
-	}
-
-	@Override
-	public StaticTypeRef getExplicitAscendant() {
-		return null;
-	}
-
-	@Override
-	public void reproduce(
-			Reproducer reproducer,
-			AscendantsBuilder<?> ascendants) {
-		// Will be done automatically.
 	}
 
 	@Override

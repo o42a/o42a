@@ -5,7 +5,6 @@
 package org.o42a.compiler.test.ref;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -21,8 +20,8 @@ public class FieldRefTest extends CompilerTestCase {
 	@Test
 	public void staticFieldRefInheritance() {
 		compile(
-				"A := void(Foo := 1).",
-				"B := &a: foo.");
+				"A := void (Foo := 1)",
+				"B := &a: foo");
 
 		final Obj foo = field(this.a, "foo").toObject();
 
@@ -33,7 +32,7 @@ public class FieldRefTest extends CompilerTestCase {
 	@Test
 	public void dynamicFieldRefInheritance() {
 		compile(
-				"A := void(Foo := 1).",
+				"A := void (Foo := 1)",
 				"B := a: foo");
 
 		final Obj foo = field(this.a, "foo").toObject();
@@ -43,24 +42,10 @@ public class FieldRefTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void fieldRefDerivation() {
-		compile(
-				"A := void(Foo := 1).",
-				"B := * & a: foo");
-
-		final Obj foo = field(this.a, "foo").toObject();
-
-		assertFalse(this.b.type().inherits(foo.type()));
-		assertTrue(this.b.type().inherits(
-				this.context.getIntrinsics().getInteger().type()));
-		assertEquals(definiteValue(this.b), 1L);
-	}
-
-	@Test
 	public void enclosedFieldRef() {
 		compile(
-				"A := void(Foo := 1).",
-				"B := void(Bar := a: foo)");
+				"A := void (Foo := 1)",
+				"B := void (Bar := a: foo)");
 
 		final Obj foo = field(this.a, "foo").toObject();
 		final Obj bar = field(this.b, "bar").toObject();
@@ -72,9 +57,9 @@ public class FieldRefTest extends CompilerTestCase {
 	@Test
 	public void overrideFieldRef() {
 		compile(
-				"A := void(Foo := 1).",
-				"B := void(Bar := a: foo).",
-				"C := b(Bar = a: foo(= 2))");
+				"A := void (Foo := 1)",
+				"B := void (Bar := a: foo)",
+				"C := b (Bar = a: foo (= 2))");
 
 		final Obj c = field("c").toObject();
 

@@ -21,9 +21,6 @@ package org.o42a.core.member;
 
 import static org.o42a.core.member.impl.MemberPropagatedFromID.memberScopePrefix;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
 import org.o42a.core.member.clause.MemberClause;
@@ -243,11 +240,11 @@ public abstract class Member extends Contained implements MemberPath {
 		return getLastDefinition() != this;
 	}
 
-	public Member[] getOverridden() {
+	public final Member[] getOverridden() {
 		if (this.overridden != null) {
 			return this.overridden;
 		}
-		return this.overridden = overriddenMembers();
+		return this.overridden = findOverridden();
 	}
 
 	public final boolean definedAfter(Member other) {
@@ -266,78 +263,61 @@ public abstract class Member extends Contained implements MemberPath {
 		return getId().toString();
 	}
 
-	private Member[] overriddenMembers() {
+	private Member[] findOverridden() {
 		if (!isOverride()) {
 			return NOTHING_OVERRIDDEN;
 		}
 
-		final Container container = getContainer();
-		final ObjectType containerType = container.toObject().type();
-		final Sample[] containerSamples = containerType.getSamples();
-		final ArrayList<Member> overridden;
+		final ObjectType containerType = getContainer().toObject().type();
+		final Member ancestorMember = overriddenAncestorMember(containerType);
+		final Member sampleMember = overriddenSampleMember(containerType);
 
-		final TypeRef containerAncestor = containerType.getAncestor();
-		final Member ancestorMember;
-
-		if (containerAncestor != null) {
-			ancestorMember = containerAncestor.getType().member(getMemberKey());
-		} else {
-			ancestorMember = null;
-		}
-
-		if (ancestorMember != null) {
-			overridden = new ArrayList<>(containerSamples.length + 1);
-		} else {
-			overridden = new ArrayList<>(containerSamples.length);
-		}
-
-		for (Sample containerSample : containerSamples) {
-
-			final Member sampleMember =
-					containerSample.getObject()
-					.member(getMemberKey());
-
-			if (sampleMember == null) {
-				continue;
-			}
-			addMember(overridden, sampleMember);
-		}
-
-		if (ancestorMember != null) {
-			addMember(overridden, ancestorMember);
-		}
-
-		return overridden.toArray(new Member[overridden.size()]);
+		return selectOverridden(ancestorMember, sampleMember);
 	}
 
-	private void addMember(ArrayList<Member> members, Member member) {
+	private Member overriddenAncestorMember(ObjectType containerType) {
 
-		final Scope definedIn = member.getDefinedIn();
-		final Iterator<Member> i = members.iterator();
+		final TypeRef containerAncestor = containerType.getAncestor();
 
-		while (i.hasNext()) {
-
-			final Member m = i.next();
-
-			if (m.getDefinedIn().derivedFrom(definedIn)) {
-				return;
-			}
-			if (definedIn.derivedFrom(m.getDefinedIn())) {
-				i.remove();
-				while (i.hasNext()) {
-
-					final Member f2 = i.next();
-
-					if (definedIn.derivedFrom(f2.getDefinedIn())) {
-						i.remove();
-					}
-				}
-
-				break;
-			}
+		if (containerAncestor == null) {
+			return null;
 		}
 
-		members.add(member);
+		return containerAncestor.getType().member(getMemberKey());
+	}
+
+	private Member overriddenSampleMember(ObjectType containerType) {
+
+		final Sample containerSample = containerType.getSample();
+
+		if (containerSample == null) {
+			return null;
+		}
+
+		return containerSample.getObject().member(getMemberKey());
+	}
+
+	private Member[] selectOverridden(
+			Member ancestorMember,
+			Member sampleMember) {
+		if (sampleMember == null) {
+			if (ancestorMember == null) {
+				return NOTHING_OVERRIDDEN;
+			}
+			return new Member[] {ancestorMember};
+		}
+		if (ancestorMember == null) {
+			return new Member[] {sampleMember};
+		}
+		if (sampleMember.getDefinedIn().derivedFrom(
+				ancestorMember.getDefinedIn())) {
+			return new Member[] {sampleMember};
+		}
+		if (ancestorMember.getDefinedIn().derivedFrom(
+				sampleMember.getDefinedIn())) {
+			return new Member[] {ancestorMember};
+		}
+		return new Member[] {sampleMember, ancestorMember};
 	}
 
 }

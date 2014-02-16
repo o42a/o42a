@@ -13,7 +13,7 @@ import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 
 
 public class TypeDefinitionTest extends GrammarTestCase {
@@ -37,16 +37,14 @@ public class TypeDefinitionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void ascendantsDefinition() {
+	public void staticRefTypeDefinition() {
 
-		final PhraseNode phrase = parse("A & b #(Foo := bar)");
+		final PhraseNode phrase = parse("&A #(Foo := bar)");
 		final PhrasePartNode[] parts = phrase.getParts();
-		final AscendantsNode ascendants =
-				to(AscendantsNode.class, phrase.getPrefix());
+		final StaticRefNode staticRef =
+				to(StaticRefNode.class, phrase.getPrefix());
 
-		assertThat(ascendants.getAncestor().getSpec(), isName("a"));
-		assertThat(ascendants.getSamples().length, is(1));
-		assertThat(ascendants.getSamples()[0].getSpec(), isName("b"));
+		assertThat(staticRef.getRef(), isName("a"));
 
 		final TypeDefinitionNode definition =
 				to(TypeDefinitionNode.class, parts[0]);

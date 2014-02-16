@@ -23,16 +23,15 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
+import static org.o42a.core.object.ConstructionMode.DYNAMIC_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.STATIC_CONSTRUCTION;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
-
-import java.util.Arrays;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.object.*;
-import org.o42a.core.object.type.impl.ExplicitSample;
 import org.o42a.core.object.type.impl.ImplicitSample;
 import org.o42a.core.object.type.impl.MemberOverride;
 import org.o42a.core.ref.FullResolver;
@@ -43,20 +42,17 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.ArrayUtil;
 
 
 public class Ascendants
 		implements AscendantsBuilder<Ascendants>, Cloneable {
 
-	private static final Sample[] NO_SAMPLES = new Sample[0];
-
 	private final Obj object;
 	private TypeRef explicitAncestor;
+	private TypeRef implicitAncestor;
 	private ObjectTypeParameters explicitParameters;
 	private TypeRef ancestor;
-	private Sample[] samples = NO_SAMPLES;
-	private Sample[] discardedSamples = NO_SAMPLES;
+	private Sample sample;
 	private ConstructionMode constructionMode;
 	private boolean validated;
 
@@ -88,17 +84,13 @@ public class Ascendants
 		return this.explicitAncestor;
 	}
 
+	public final TypeRef getImplicitAncestor() {
+		return this.implicitAncestor;
+	}
+
 	@Override
-	public Ascendants setAncestor(TypeRef explicitAncestor) {
-		getScope().getEnclosingScope().assertDerivedFrom(
-				explicitAncestor.getScope());
-
-		final Ascendants clone = clone();
-
-		clone.explicitAncestor =
-				explicitAncestor.upgradeScope(getScope().getEnclosingScope());
-
-		return clone;
+	public final Ascendants setAncestor(TypeRef ancestor) {
+		return setAncestor(ancestor, false);
 	}
 
 	public final ObjectTypeParameters getExplicitParameters() {
@@ -116,12 +108,8 @@ public class Ascendants
 		return clone;
 	}
 
-	public final Sample[] getSamples() {
-		return this.samples;
-	}
-
-	public final Sample[] getDiscardedSamples() {
-		return this.discardedSamples;
+	public final Sample getSample() {
+		return this.sample;
 	}
 
 	public ConstructionMode getConstructionMode() {
@@ -129,41 +117,53 @@ public class Ascendants
 			return this.constructionMode;
 		}
 
-		ConstructionMode constructionMode = enclosingConstructionMode();
+		final ConstructionMode enclosingMode = enclosingConstructionMode();
+		ConstructionMode constructionMode;
 
-		if (constructionMode.isRuntime()) {
-			return this.constructionMode = constructionMode;
+		if (enclosingMode.isRuntime()) {
+			return this.constructionMode = enclosingMode;
+		}
+		if (enclosingMode.isStrict()) {
+			constructionMode = enclosingMode;
+		} else {
+			constructionMode = null;
 		}
 
-		final TypeRef ancestor = getExplicitAncestor();
+		final Sample sample = getSample();
 
-		if (ancestor != null) {
-
-			final ConstructionMode ancestorMode =
-					ancestor.getConstructionMode();
-
-			if (ancestorMode.isRuntime() || ancestorMode.isProhibited()) {
-				return this.constructionMode = ancestorMode;
-			}
-			if (constructionMode.ordinal() < ancestorMode.ordinal()) {
-				constructionMode = ancestorMode;
-			}
-		}
-
-		for (Sample sample : getSamples()) {
+		if (sample != null) {
 
 			final ConstructionMode sampleMode =
 					sample.getObject().getConstructionMode();
 
-			if (sampleMode.isRuntime() || sampleMode.isProhibited()) {
+			if (sampleMode.isRuntime()) {
 				return this.constructionMode = sampleMode;
 			}
-			if (constructionMode.ordinal() < sampleMode.ordinal()) {
-				constructionMode = sampleMode;
-			}
+
+			constructionMode = sampleMode.restrict(constructionMode);
 		}
 
-		return this.constructionMode = constructionMode;
+		final TypeRef ancestor = getExplicitAncestor();
+
+		if (ancestor == null) {
+			return this.constructionMode =
+					constructionMode != null
+					? constructionMode
+					: STATIC_CONSTRUCTION;
+		}
+
+		final ConstructionMode ancestorMode = ancestor.getConstructionMode();
+
+		if (ancestorMode.isRuntime()) {
+			return this.constructionMode = ancestorMode;
+		}
+		if (ancestor.isStatic()) {
+			return this.constructionMode =
+					STATIC_CONSTRUCTION.restrict(constructionMode);
+		}
+
+		return this.constructionMode =
+				DYNAMIC_CONSTRUCTION.restrict(constructionMode);
 	}
 
 	public final boolean isEmpty() {
@@ -173,7 +173,7 @@ public class Ascendants
 		if (getExplicitParameters() != null) {
 			return false;
 		}
-		return getSamples().length == 0;
+		return getSample() == null;
 	}
 
 	public final DefinitionTarget getDefinitionTarget() {
@@ -192,7 +192,9 @@ public class Ascendants
 			}
 		}
 
-		for (Sample sample : getSamples()) {
+		final Sample sample = getSample();
+
+		if (sample != null) {
 
 			final TypeParameters<?> typeParameters =
 					sample.getObject().type().getParameters();
@@ -206,16 +208,6 @@ public class Ascendants
 	}
 
 	@Override
-	public Ascendants addExplicitSample(StaticTypeRef explicitAscendant) {
-
-		final Scope enclosingScope = getScope().getEnclosingScope();
-
-		explicitAscendant.assertCompatible(enclosingScope);
-
-		return addSample(new ExplicitSample(explicitAscendant, this));
-	}
-
-	@Override
 	public Ascendants addImplicitSample(
 			StaticTypeRef implicitAscendant,
 			TypeRef overriddenAncestor) {
@@ -224,8 +216,10 @@ public class Ascendants
 
 		implicitAscendant.assertCompatible(enclosingScope);
 
-		return addSample(
-				new ImplicitSample(this, implicitAscendant, overriddenAncestor));
+		return addSample(new ImplicitSample(
+				this,
+				implicitAscendant,
+				overriddenAncestor));
 	}
 
 	@Override
@@ -242,7 +236,7 @@ public class Ascendants
 
 	public void resolveAll(ObjectType objectType) {
 		validate();
-		validateOverriddenAncestors(objectType);
+		validateAncestors(objectType);
 
 		final RefUser user = getObject().type().refUser();
 		final TypeRef ancestor = getExplicitAncestor();
@@ -255,7 +249,10 @@ public class Ascendants
 		if (ancestor != null) {
 			ancestor.resolveAll(resolver);
 		}
-		for (Sample sample : getSamples()) {
+
+		final Sample sample = getSample();
+
+		if (sample != null) {
 			sample.resolveAll(resolver);
 		}
 	}
@@ -277,26 +274,21 @@ public class Ascendants
 		}
 		this.validated = true;
 		if (this.explicitAncestor != null) {
-			if (!this.explicitAncestor.isValid()) {
-				this.explicitAncestor = null;
-			} else if (!validateUse(this.explicitAncestor)) {
-				this.explicitAncestor = null;
-			} else if (this.explicitAncestor
-					.getConstructionMode().isProhibited()) {
-				this.explicitAncestor.getLogger().error(
-						"cant_inherit",
-						this.explicitAncestor,
-						"Can not be inherited");
+			if (!validateAncestor(this.explicitAncestor)) {
+				if (this.implicitAncestor == this.explicitAncestor) {
+					this.implicitAncestor = null;
+				}
 				this.explicitAncestor = null;
 			}
 		}
-		for (int i = this.samples.length - 1; i >= 0 ; --i) {
-
-			final Sample sample = this.samples[i];
-
-			if (!validateSample(sample, i)) {
-				this.samples = ArrayUtil.remove(this.samples, i);
+		if (this.implicitAncestor != null
+				&& this.implicitAncestor != this.explicitAncestor) {
+			if (!validateAncestor(this.implicitAncestor)) {
+				this.implicitAncestor = null;
 			}
+		}
+		if (!validateSample()) {
+			this.sample = null;
 		}
 	}
 
@@ -316,20 +308,12 @@ public class Ascendants
 			out.append(this.explicitAncestor);
 			comma = true;
 		}
-		if (this.samples.length != 0) {
+		if (this.sample != null) {
 			if (comma) {
 				out.append(' ');
 			}
-			out.append("samples=");
-			out.append(Arrays.toString(this.samples));
-			comma = true;
-		}
-		if (this.discardedSamples.length != 0) {
-			if (comma) {
-				out.append(' ');
-			}
-			out.append("discarded=");
-			out.append(Arrays.toString(this.discardedSamples));
+			out.append("sample=");
+			out.append(this.sample);
 		}
 		out.append(']');
 
@@ -344,7 +328,6 @@ public class Ascendants
 
 			clone.ancestor = null;
 			clone.validated = false;
-			clone.discardedSamples = NO_SAMPLES;
 
 			return clone;
 		} catch (CloneNotSupportedException e) {
@@ -352,15 +335,31 @@ public class Ascendants
 		}
 	}
 
-	private Ascendants addSample(Sample sample) {
-		assert (!sample.isExplicit()
-				|| this.samples.length == 0
-				|| !this.samples[0].isExplicit()) :
-			"Implicit sample should be added before explicit one: " + sample;
+	private Ascendants setAncestor(TypeRef ancestor, boolean implicit) {
+		getScope().getEnclosingScope().assertDerivedFrom(ancestor.getScope());
 
 		final Ascendants clone = clone();
 
-		clone.samples = ArrayUtil.prepend(sample, this.samples);
+		if (implicit) {
+			clone.implicitAncestor = ancestor;
+			if (this.explicitAncestor != null) {
+				return clone;
+			}
+		}
+
+		clone.explicitAncestor =
+				ancestor.upgradeScope(getScope().getEnclosingScope());
+
+		return clone;
+	}
+
+	private Ascendants addSample(Sample sample) {
+		assert this.sample == null :
+			"Redundant sample: " + sample;
+
+		final Ascendants clone = clone();
+
+		clone.sample = sample;
 
 		return clone;
 	}
@@ -374,8 +373,9 @@ public class Ascendants
 		final AdapterId adapterId = member.getMemberId().getAdapterId();
 
 		if (adapterId != null && !fieldAscendants.isLinkAscendants()) {
-			ascendants = ascendants.addExplicitSample(
-					adapterId.adapterType(enclosingScope));
+			ascendants = ascendants.setAncestor(
+					adapterId.adapterType(enclosingScope),
+					true);
 		}
 		ascendants = fieldAscendants.updateAscendants(ascendants);
 		if (!ascendants.isEmpty()) {
@@ -392,34 +392,30 @@ public class Ascendants
 			FieldAscendants fieldAscendants) {
 
 		Ascendants ascendants = this;
-		final Obj containerObject = member.getContainer().toObject();
-		final ObjectType containerType = containerObject.type();
-		final TypeRef ancestor = containerType.getAncestor();
 
-		if (ancestor != null) {
-
-			final Member overridden =
-					ancestor.getType().member(member.getMemberKey());
-
-			if (overridden != null) {
-				ascendants = ascendants.addMemberOverride(overridden);
-			}
-		}
-
-		final Sample[] containerSamples = containerType.getSamples();
-
-		for (int i = containerSamples.length - 1; i >= 0; --i) {
-
-			final Member overridden =
-					containerSamples[i].getObject()
-					.member(member.getMemberKey());
-
-			if (overridden != null) {
-				ascendants = ascendants.addMemberOverride(overridden);
-			}
+		for (Member overridden : member.getOverridden()) {
+			ascendants = ascendants.addMemberOverride(overridden);
+			break;
 		}
 
 		return fieldAscendants.updateAscendants(ascendants);
+	}
+
+	private boolean validateAncestor(TypeRef ancestor) {
+		if (!ancestor.isValid()) {
+			return false;
+		}
+		if (!validateUse(ancestor)) {
+			return false;
+		}
+		if (ancestor.getConstructionMode().isProhibited()) {
+			ancestor.getLogger().error(
+					"cant_inherit",
+					ancestor,
+					"Can not be inherited");
+			return false;
+		}
+		return true;
 	}
 
 	private boolean validateUse(TypeRef checkUse) {
@@ -434,29 +430,16 @@ public class Ascendants
 
 	private TypeRef sampleAncestor() {
 
-		TypeRef result = null;
+		final Sample sample = getSample();
 
-		for (Sample sample : this.samples) {
-
-			final TypeRef ancestor = sample.getAncestor();
-
-			if (ancestor == null) {
-				continue;
-			}
-			if (result == null) {
-				result = ancestor;
-				continue;
-			}
-			result = result.relationTo(ancestor)
-					.ignoreParameters()
-					.check(getScope().getLogger())
-					.commonDerivative();
+		if (sample == null) {
+			return null;
 		}
 
-		return result;
+		return sample.getAncestor();
 	}
 
-	private void validateOverriddenAncestors(ObjectType objectType) {
+	private void validateAncestors(ObjectType objectType) {
 
 		final TypeRef ancestor = objectType.getAncestor();
 
@@ -464,113 +447,59 @@ public class Ascendants
 			return;
 		}
 
-		final TypeParameters<?> parameters = objectType.getParameters();
-		final TypeRef parameterizedAncestor;
-
-		if (parameters.isEmpty()) {
-			parameterizedAncestor = ancestor;
-		} else {
-			parameterizedAncestor =
-					ancestor.rescope(parameters.getScope())
-					.setParameters(parameters);
-		}
-
-		for (Sample sample : getSamples()) {
-			validateSampleAncestor(sample, parameterizedAncestor);
-		}
+		validateImplicitAncestor(ancestor);
+		validateSampleAncestor(objectType, ancestor);
 	}
 
-	private boolean validateSample(Sample sample, int index) {
+	private boolean validateSample() {
+
+		final Sample sample = getSample();
+
+		if (sample == null) {
+			return true;
+		}
 		if (!sample.getTypeRef().isValid()) {
 			return false;
 		}
-
-		final StaticTypeRef explicitAscendant = sample.getExplicitAscendant();
-
-		if (explicitAscendant != null) {
-			if (!validateUse(sample.getTypeRef())) {
-				return false;
-			}
-
-			final ConstructionMode sampleConstructionMode =
-					explicitAscendant.getConstructionMode();
-
-			if (sampleConstructionMode.isStrict()) {
-				getScope().getLogger().error(
-						"prohibited_sample",
-						sample,
-						"Can not be used as sample");
-				return false;
-			}
-
-			final ConstructionMode constructionMode =
-					getObject().getConstructionMode();
-
-			if (constructionMode.isStrict()) {
-				getScope().getLogger().error(
-						"prohibited_strict_sample",
-						sample,
-						"Strictly constructed object can not have a sample");
-				return false;
-			}
-		}
-
 		if (!sample.getAncestor().isValid()) {
 			return false;
-		}
-
-		for (int i = index + 1; i < this.samples.length; ++i) {
-
-			final Sample s = this.samples[i];
-
-			if (!sample.isExplicit()) {
-
-				final TypeRelation relation =
-						sample.getTypeRef().relationTo(s.getTypeRef());
-
-				if (relation.isAscendant()) {
-					return discardSample(sample);
-				}
-				if (relation.isDerivative()) {
-					removeSample(i);
-				}
-
-				continue;
-			}
-
-			final TypeRelation relation =
-					s.getTypeRef().relationTo(sample.getTypeRef());
-
-			if (relation.isDerivative()) {
-				return discardSample(sample);
-			}
-			if (relation.isAscendant()) {
-				removeSample(i);
-			}
 		}
 
 		return true;
 	}
 
-	private int validateSampleAncestor(Sample sample, TypeRef ancestor) {
+	private void validateImplicitAncestor(TypeRef ancestor) {
+		if (this.implicitAncestor == null) {
+			return;
+		}
+		if (!ancestor.derivedFrom(this.implicitAncestor)) {
+			getScope().getLogger().error(
+					"unexpected_ancestor",
+					ancestor,
+					"Wrong ancestor: %s, but expected: %s",
+					ancestor,
+					this.implicitAncestor);
+			this.explicitAncestor = null;
+		}
+	}
 
-		final TypeRef sampleAncestor =
-				sample.overriddenAncestor().rescope(ancestor.getScope());
-		final boolean explicit = sample.isExplicit();
-		final TypeRef first;
-		final TypeRef second;
+	private void validateSampleAncestor(
+			ObjectType objectType,
+			TypeRef ancestor) {
 
-		if (explicit) {
-			first = ancestor;
-			second = sampleAncestor;
-		} else {
-			first = sampleAncestor;
-			second = ancestor;
+		final Sample sample = getSample();
+
+		if (sample == null) {
+			return;
 		}
 
+		final TypeRef parameterizedAncestor =
+				parameterizedAncestor(objectType, ancestor);
+		final TypeRef sampleAncestor =
+				sample.overriddenAncestor()
+				.rescope(parameterizedAncestor.getScope());
 		final TypeRelation relation =
-				first.relationTo(second)
-				.revert(!explicit)
+				parameterizedAncestor.relationTo(sampleAncestor)
 				.check(getScope().getLogger());
 
 		if (!relation.isDerivative()) {
@@ -579,36 +508,43 @@ public class Ascendants
 						"unexpected_ancestor",
 						sample,
 						"Wrong ancestor: %s, but expected: %s",
-						second,
-						first);
-			}
-			if (explicit) {
-				return -1;
+						parameterizedAncestor,
+						sampleAncestor);
 			}
 			this.explicitAncestor = null;
-			return 1;
+			return;
 		}
 
-		return 0;
+		if (!getConstructionMode().canUpgradeAncestor()
+				&& !relation.ignoreParameters().isSame()) {
+			relation.ignoreParameters().isSame();
+			getScope().getLogger().error(
+					"prohibited_ancestor_upgrade",
+					getAncestor(),
+					"Ancestor can no be upgraded");
+		}
 	}
 
-	private boolean discardSample(Sample sample) {
-		this.discardedSamples = ArrayUtil.append(this.discardedSamples, sample);
-		return false;
-	}
+	private TypeRef parameterizedAncestor(
+			ObjectType objectType,
+			TypeRef ancestor) {
 
-	private void removeSample(int index) {
-		discardSample(this.samples[index]);
-		this.samples = ArrayUtil.remove(this.samples, index);
+		final TypeParameters<?> parameters = objectType.getParameters();
+
+		if (parameters.isEmpty()) {
+			return ancestor;
+		}
+
+		return ancestor.rescope(parameters.getScope())
+				.setParameters(parameters);
 	}
 
 	private ConstructionMode enclosingConstructionMode() {
 
-		final Scope enclosingScope =
-				getScope().getEnclosingScope();
+		final Scope enclosingScope = getScope().getEnclosingScope();
 
 		if (enclosingScope == null) {
-			return ConstructionMode.FULL_CONSTRUCTION;
+			return STATIC_CONSTRUCTION;
 		}
 
 		return enclosingScope.getConstructionMode();

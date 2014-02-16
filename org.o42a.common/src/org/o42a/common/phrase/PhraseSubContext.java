@@ -247,8 +247,8 @@ class PhraseSubContext extends PhraseContext {
 					location,
 					distributor,
 					adapterId(
-							overriddenKey.getAdapterId().adapterType(
-									distributor.getScope())));
+							overriddenKey.getAdapterId()
+							.adapterType(distributor.getScope())));
 		} else {
 			declaration = fieldDeclaration(
 					location,

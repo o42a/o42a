@@ -21,16 +21,17 @@ package org.o42a.compiler.ip.type;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
+import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.impliedAncestorTypeRef;
 
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.StaticRefNode;
+import org.o42a.ast.type.TypeArgNode;
+import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.type.ascendant.*;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.log.LogInfo;
@@ -115,46 +116,34 @@ public final class TypeInterpreter {
 	}
 
 	public AncestorTypeRef parseAncestor(
-			AscendantsNode ascendantsNode,
+			StaticRefNode node,
 			AccessDistributor distributor) {
-
-		final AscendantNode ancestorNode = ascendantsNode.getAncestor();
-
-		return parseAncestor(
-				distributor,
-				ancestorNode,
-				null);
+		return parseAncestor(distributor, node, null);
 	}
 
 	public AncestorTypeRef parseAncestor(
 			AccessDistributor distributor,
-			AscendantNode ascendantNode,
+			StaticRefNode node,
 			TypeRefParameters typeParameters) {
 
-		final
-		RefNodeVisitor<AncestorTypeRef, AccessDistributor> ancestorVisitor;
+		final RefNode ref = node.getRef();
 
-		if (ascendantNode.getSeparator() == null) {
-			ancestorVisitor = ancestorVisitor(
-					typeParameters,
-					NO_TYPE_CONSUMER);
-		} else {
-			ancestorVisitor = staticAncestorVisitor(
-					typeParameters,
-					NO_TYPE_CONSUMER);
+		if (ref == null) {
+			return impliedAncestorTypeRef();
 		}
 
-		final AncestorSpecVisitor specVisitor =
-				new AncestorSpecVisitor(ancestorVisitor);
+		final AncestorRefVisitor ancestorRefVisitor =
+				new AncestorRefVisitor(staticAncestorVisitor(
+						typeParameters,
+						NO_TYPE_CONSUMER));
 
-		return ascendantNode.getSpec().accept(specVisitor, distributor);
+		return ref.accept(ancestorRefVisitor, distributor);
 	}
 
 	public AscendantsDefinition parseAscendants(
-			AscendantsNode node,
+			StaticRefNode node,
 			AccessDistributor distributor) {
 
-		final SampleSpecVisitor sampleSpecVisitor = new SampleSpecVisitor(ip());
 		AscendantsDefinition ascendants = new AscendantsDefinition(
 				location(distributor, node),
 				distributor);
@@ -162,21 +151,6 @@ public final class TypeInterpreter {
 
 		if (!ancestor.isImplied()) {
 			ascendants = ancestor.applyTo(ascendants);
-		}
-
-		for (AscendantNode sampleNode : node.getSamples()) {
-
-			final RefNode specNode = sampleNode.getSpec();
-
-			if (specNode != null) {
-
-				final StaticTypeRef sample =
-						specNode.accept(sampleSpecVisitor, distributor);
-
-				if (sample != null) {
-					ascendants = ascendants.addSample(sample);
-				}
-			}
 		}
 
 		return ascendants;
