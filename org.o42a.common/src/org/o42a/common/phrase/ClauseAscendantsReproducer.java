@@ -25,7 +25,6 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -47,7 +46,6 @@ final class ClauseAscendantsReproducer extends Reproducer {
 
 		final ClauseAscendantsReproducer ascendantsReproducer =
 				new ClauseAscendantsReproducer(context, distributor);
-
 		final AscendantsDefinition oldAscendants =
 				context.getClause().toPlainClause().getAscendants();
 
@@ -65,20 +63,6 @@ final class ClauseAscendantsReproducer extends Reproducer {
 				}
 
 				ascendants = ascendants.setAncestor(newAncestor);
-			}
-		}
-
-		if (oldAscendants != null) {
-			for (StaticTypeRef sample : oldAscendants.getSamples()) {
-
-				final StaticTypeRef newSample =
-						sample.reproduce(ascendantsReproducer);
-
-				if (newSample == null) {
-					return null;
-				}
-
-				ascendants = ascendants.addSample(newSample);
 			}
 		}
 

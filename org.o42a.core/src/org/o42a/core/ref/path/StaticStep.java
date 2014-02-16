@@ -35,6 +35,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Reproducer;
 import org.o42a.util.string.ID;
 
 
@@ -136,11 +137,16 @@ final class StaticStep extends Step {
 			LocationInfo location,
 			PathReproducer reproducer) {
 		getExpectedScope().assertCompatible(reproducer.getReproducingScope());
+
+		final Reproducer finalReproducer =
+				reproducer.getReproducer().reproducerOf(getFinalScope());
+
 		return reproducedPath(
 				new StaticStep(
 						reproducer.getScope(),
-						reproducer.getReproducer().reproducerOf(
-								getFinalScope()).getScope())
+						finalReproducer != null
+						? finalReproducer.getScope()
+						: getFinalScope())
 				.toPath());
 	}
 

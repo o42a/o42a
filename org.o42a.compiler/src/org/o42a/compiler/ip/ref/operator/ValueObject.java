@@ -26,6 +26,9 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefParameters;
+import org.o42a.core.value.DeferredObjectTypeParameters;
+import org.o42a.core.value.ObjectTypeParameters;
 
 
 final class ValueObject extends Obj {
@@ -55,13 +58,16 @@ final class ValueObject extends Obj {
 	protected Ascendants buildAscendants() {
 
 		final TypeRef ancestor = this.valueOf.getValueTypeInterface();
+		final TypeRefParameters params = ancestor.copyParameters();
 
 		return new Ascendants(this)
 		.setAncestor(ancestor)
-		.setParameters(
-				ancestor.copyParameters()
-				.rescope(getScope())
-				.toObjectTypeParameters());
+		.setParameters(new DeferredObjectTypeParameters(params) {
+			@Override
+			protected ObjectTypeParameters resolve() {
+				return params.rescope(getScope()).toObjectTypeParameters();
+			}
+		});
 	}
 
 	@Override

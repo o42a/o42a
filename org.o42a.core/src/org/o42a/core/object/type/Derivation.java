@@ -29,9 +29,6 @@ public abstract class Derivation {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return EXPLICIT_SAMPLE;
-			}
 			if (sample.getOverriddenMember() != null) {
 				return MEMBER_OVERRIDE;
 			}
@@ -64,9 +61,6 @@ public abstract class Derivation {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return PROPAGATION;
-			}
 			if (sample.getOverriddenMember() != null) {
 				return this;
 			}
@@ -85,9 +79,6 @@ public abstract class Derivation {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return PROPAGATION;
-			}
 			return IMPLICIT_PROPAGATION;
 		}
 
@@ -98,29 +89,11 @@ public abstract class Derivation {
 
 	};
 
-	public static final Derivation EXPLICIT_SAMPLE = new Derivation(
-			PROPAGATION_MASK | 0x02) {
-
-		@Override
-		public Derivation traverseSample(Sample sample) {
-			return PROPAGATION;
-		}
-
-		@Override
-		public String toString() {
-			return "EXPLICIT_SAMPLE";
-		}
-
-	};
-
 	public static final Derivation IMPLICIT_PROPAGATION = new Derivation(
 			IMPLICIT_MASK) {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return PROPAGATION;
-			}
 			return IMPLICIT_PROPAGATION;
 		}
 
@@ -151,7 +124,6 @@ public abstract class Derivation {
 		INHERITANCE,
 		MEMBER_OVERRIDE,
 		IMPLICIT_SAMPLE,
-		EXPLICIT_SAMPLE,
 		IMPLICIT_PROPAGATION,
 		PROPAGATION,
 	};

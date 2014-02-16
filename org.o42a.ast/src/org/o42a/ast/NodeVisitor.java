@@ -39,7 +39,6 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.LocalNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.AscendantNode;
 import org.o42a.ast.type.TypeArgNode;
 import org.o42a.ast.type.TypeArgumentNodeVisitor;
 
@@ -100,10 +99,6 @@ public abstract class NodeVisitor<R, P>
 	@Override
 	public R visitTypeDefinition(TypeDefinitionNode definition, P p) {
 		return visitPart(definition, p);
-	}
-
-	public R visitSample(AscendantNode sample, P p) {
-		return visitPart(sample, p);
 	}
 
 	public R visitTypeArg(TypeArgNode argument, P p) {

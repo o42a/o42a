@@ -19,8 +19,12 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.analysis.use.User.dummyUser;
+
 import java.util.Map;
 
+import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 
 
@@ -50,6 +54,10 @@ public abstract class ContainerMembers {
 					+ "or type definition instead");
 			return;
 		}
+		if (!member.isOverride() && !allowDeclaration(member)) {
+			return;
+		}
+
 		addEntry(new MemberEntry(member, false));
 	}
 
@@ -113,6 +121,34 @@ public abstract class ContainerMembers {
 
 	protected void add(Member member, boolean override) {
 		addEntry(new MemberEntry(member, override));
+	}
+
+	private boolean allowDeclaration(Member member) {
+
+		final ConstructionMode constructionMode =
+				getOwner().getConstructionMode();
+		final MemberField field = member.toField();
+
+		if (field != null && field.field(dummyUser()).isScopeField()) {
+			return true;
+		}
+
+		if (constructionMode.isStrict()) {
+			member.getLogger().error(
+					"prohibited_member_declaration",
+					member,
+					"Can not declare new members here");
+			return false;
+		}
+		if (field != null && !constructionMode.canDeclareFields()) {
+			member.getLogger().error(
+					"prohibited_field_declaration",
+					member,
+					"Can not declare new fields here");
+			return false;
+		}
+
+		return true;
 	}
 
 	private void addEntry(MemberEntry entry) {

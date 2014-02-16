@@ -21,7 +21,7 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 
 
@@ -31,7 +31,7 @@ public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitText(TextNode text, P p);
 
-	R visitAscendants(AscendantsNode ascendants, P p);
+	R visitStaticRef(StaticRefNode staticRef, P p);
 
 	R visitTypeArguments(TypeArgumentsNode arguments, P p);
 

@@ -183,10 +183,10 @@ public final class ObjectValue extends ObjectValueBase {
 
 		Definitions definitions = overriddenDefinitions;
 		final Obj object = getObject();
-		final Sample[] samples = object.type().getSamples();
+		final Sample sample = object.type().getSample();
 
-		for (int i = samples.length - 1; i >= 0; --i) {
-			definitions = samples[i].overrideDefinitions(definitions);
+		if (sample != null) {
+			definitions = sample.overrideDefinitions(definitions);
 		}
 
 		return definitions;

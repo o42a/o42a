@@ -1,15 +1,15 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Copyright (C) 2013,2014 Ruslan Lopatin
+Copyright (C) 2012-2014 Ruslan Lopatin
 
 This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Sublist :=> #element type` &mutable list
-========================================
+Sublist :=> #element type` &list
+================================
 ~~~
-A mutable sublist representing a slice of original list.
+A sublist representing a slice of original list.
 ~~~
 
 From := integer` link = 0
@@ -19,7 +19,7 @@ An index of the first list element represented by this sublist.
 Zero by default.
 ~~~
 
-To := integer` link = Mutable list:: size
+To := integer` link = list:: size
 ~~~
 A value one greater than index of the last list element
 represented by this sublist.
@@ -31,23 +31,6 @@ Size = \(to - from)
 
 @Indexed = * (
   Item => * (
-    Index < size? = Mutable list:: [from + index]
-    @Assignable = * (
-      Set => * ({
-        Index < size? Mutable list:: [from + index] = new value
-      })
-    )
+    Index < size? = List:: [from + index]
   )
-)
-
-Add => * (
-  Mutable list:: insert [new element] at [to]
-)
-
-Insert => * (
-  Index < size? Mutable list:: insert [new element] at [from + index]
-)
-
-Remove => * (
-  Index < size? Mutable list:: remove [from + index]
 )

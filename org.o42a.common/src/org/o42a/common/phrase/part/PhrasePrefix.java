@@ -21,7 +21,6 @@ package org.o42a.common.phrase.part;
 
 import org.o42a.common.phrase.Phrase;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ObjectTypeParameters;
@@ -53,14 +52,6 @@ public final class PhrasePrefix extends PhrasePart {
 			ObjectTypeParameters typeParameters) {
 		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
 		return this;
-	}
-
-	public final StaticTypeRef[] getSamples() {
-		return getAscendants().getSamples();
-	}
-
-	public void addSamples(StaticTypeRef... samples) {
-		this.ascendants = this.ascendants.addSamples(samples);
 	}
 
 	public final AscendantsDefinition getAscendants() {

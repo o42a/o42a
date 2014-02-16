@@ -25,6 +25,7 @@ import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.scope.ScopeFld;
 import org.o42a.core.ir.field.scope.ScopeFldOp;
@@ -41,6 +42,24 @@ import org.o42a.core.ref.path.Path;
 
 public final class ScopeField extends ObjectField {
 
+	public static Path reusedScopePath(Obj object) {
+
+		final Scope enclosing = object.getScope().getEnclosingScope();
+
+		assert enclosing.toObject() != null :
+			"No enclosing object found";
+
+		final Obj propagatedFrom = object.getPropagatedFrom();
+
+		if (propagatedFrom != null) {
+			// Reuse enclosing scope path from object
+			// this one is propagated from.
+			return propagatedFrom.getScope().getEnclosingScopePath();
+		}
+
+		return null;
+	}
+
 	static Obj objectScope(Obj object, MemberKey scopeFieldKey) {
 
 		final ObjectType newOwnerType = object.type();
@@ -48,7 +67,7 @@ public final class ScopeField extends ObjectField {
 		final Member ancestorMember = ancestor.member(scopeFieldKey);
 
 		if (ancestorMember != null) {
-			// Scope field present in ancestor.
+			// Scope field is present in ancestor.
 			// Preserve an ancestor`s scope.
 			return ancestorMember.substance(dummyUser()).toObject();
 		}
@@ -57,8 +76,8 @@ public final class ScopeField extends ObjectField {
 				scopeFieldKey.getOrigin().toObject().type();
 
 		if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
-			// Scope field declared in implicit sample.
-			// Update owner with an actual one.
+			// Scope field is declared in implicit sample.
+			// Update the owner with an actual one.
 			return object.getEnclosingContainer().toObject();
 		}
 

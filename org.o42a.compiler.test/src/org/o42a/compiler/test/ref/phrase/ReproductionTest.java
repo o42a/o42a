@@ -51,7 +51,7 @@ public class ReproductionTest extends CompilerTestCase {
 				")",
 				"Object :=> void (",
 				"  Value :=< integer",
-				"  <Refer> Value = container: referred",
+				"  <Refer> Value = * (= container: referred)",
 				")",
 				"Result := object _refer");
 
@@ -68,7 +68,7 @@ public class ReproductionTest extends CompilerTestCase {
 				")",
 				"Object :=> void (",
 				"  Value :=< integer",
-				"  <Refer> Value = container: referred",
+				"  <Refer> Value = * (= container: referred)",
 				")",
 				"Descendant :=> object",
 				"Result := descendant _refer");

@@ -86,12 +86,10 @@ public class FieldPrediction extends Prediction {
 
 	private static final class Itr extends SubIterator<Pred, Pred> {
 
-		private final Prediction basePrediction;
 		private final MemberKey fieldKey;
 
 		Itr(Prediction basePrediction, Field field) {
 			super(basePrediction.iterator());
-			this.basePrediction = basePrediction;
 			this.fieldKey = field.getKey();
 		}
 
@@ -109,7 +107,6 @@ public class FieldPrediction extends Prediction {
 				return nextBase.iterator();
 			}
 			return new OverridersIterator(
-					this.basePrediction,
 					nextBase,
 					nextBase.getScope()
 					.getContainer()
@@ -126,14 +123,13 @@ public class FieldPrediction extends Prediction {
 		private final Pred base;
 		private final Field start;
 
-		OverridersIterator(Prediction basePrediction, Pred base, Field start) {
+		OverridersIterator(Pred base, Field start) {
 			super(
 					singletonIterator(start)
 					.then(new ReplacementsIterator(start)));
 			this.start = start;
 			this.base = base;
-			start.getEnclosingScope().assertDerivedFrom(
-					basePrediction.getScope());
+			start.getEnclosingScope().assertDerivedFrom(base.getScope());
 		}
 
 		@Override
