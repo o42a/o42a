@@ -160,12 +160,25 @@ public final class OwnerStep
 
 	private Dep replaceWithDep(PathRebuilder rebuilder, Name name) {
 
-		final Container enclosingContainer =
-				this.object.getEnclosingContainer();
+		final Obj origin =
+				rebuilder.cutPath(1).resolve(
+						rebuilder.getPath()
+						.getOrigin()
+						.resolver()
+						.toPathResolver())
+				.getObject();
+		final Container enclosing;
+
+		if (origin.membersResolved()) {
+			enclosing = origin.member(getMemberKey()).substance(dummyUser());
+		} else {
+			enclosing = resolveWhenMembersNotResolved(origin);
+		}
+
 		final Ref ref =
-				rebuilder.restPath(enclosingContainer.getScope())
-				.target(this.object.distributeIn(enclosingContainer));
-		final Dep dep = this.object.deps().addDep(name, ref);
+				rebuilder.restPath(enclosing.getScope())
+				.target(origin.distributeIn(enclosing.toObject()));
+		final Dep dep = origin.deps().addDep(name, ref);
 
 		rebuilder.replaceRest(dep);
 
