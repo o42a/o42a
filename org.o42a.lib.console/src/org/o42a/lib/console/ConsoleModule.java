@@ -226,7 +226,7 @@ public class ConsoleModule extends AnnotatedModule {
 
 		if (exit.exists()) {
 			exit.debug("Execution failed");
-			exit.int32(-1).returnValue(exit);
+			exit.int32(1).returnValue(exit);
 		}
 
 		main.debug("Execution succeed");
