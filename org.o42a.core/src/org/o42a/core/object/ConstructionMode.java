@@ -144,17 +144,44 @@ public enum ConstructionMode {
 		return this == PROHIBITED_CONSTRUCTION;
 	}
 
+	/**
+	 * Applies additional restrictions to this construction mode.
+	 *
+	 * <p>If both this and {@code other} mode are not restricted, then the mode
+	 * remains the same.</p>
+	 *
+	 * @param other the construction mode, which restrictions should be applied
+	 * to this one.
+	 *
+	 * @return construction mode with additional restrictions applied.
+	 */
 	public ConstructionMode restrictBy(ConstructionMode other) {
-		if (isStrict()) {
-			if (other.isStrict()) {
-				return other.ordinal() > ordinal() ? other : this;
-			}
+		if (!isStrict()) {
+			return other.isStrict() ? other : this;
+		}
+		if (!other.isStrict()) {
 			return this;
 		}
-		if (other.isStrict()) {
-			return other;
+		return other.ordinal() > ordinal() ? other : this;
+	}
+
+	/**
+	 * Applies the restrictions of this mode to another one.
+	 *
+	 * <p>If {@code target} mode is not specified, then returns this mode.
+	 * Otherwise simply invokes
+	 * {@link #restrictBy(ConstructionMode) target.restrictBy(this)}.</p>
+	 *
+	 * @param target the constructions mode to apply restrictions to,
+	 * or <code>null</code>
+	 *
+	 * @return construction mode with additional restrictions applied.
+	 */
+	public final ConstructionMode restrict(ConstructionMode target) {
+		if (target == null) {
+			return this;
 		}
-		return this;
+		return target.restrictBy(this);
 	}
 
 }
