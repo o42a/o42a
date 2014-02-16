@@ -55,9 +55,7 @@ import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.impl.StaticObjectStep;
-import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -841,33 +839,12 @@ public abstract class Obj
 	}
 
 	private void declareScopeField() {
-		if (getScope().getEnclosingScope().toObject() == null) {
-			// Only object members may have an enclosing scope path.
-			return;
+
+		final ScopeField scopeField = ScopeField.scopeFieldFor(this);
+
+		if (scopeField != null) {
+			this.objectMembers.addMember(scopeField.toMember());
 		}
-
-		final Path enclosingScopePath = getScope().getEnclosingScopePath();
-
-		if (enclosingScopePath == null) {
-			// Enclosing scope path not defined.
-			return;
-		}
-
-		final Step[] steps = enclosingScopePath.getSteps();
-
-		assert steps.length == 1 :
-			"Enclosing path scope should contain exactly one step";
-
-		final AbstractMemberStep step = (AbstractMemberStep) steps[0];
-		final MemberKey memberKey = step.getMemberKey();
-
-		if (memberKey.getOrigin() != getScope()) {
-			// Enclosing scope field is derived from overridden object.
-			return;
-		}
-
-		this.objectMembers.addMember(
-				new ScopeField(this, memberKey.getMemberId()).toMember());
 	}
 
 	private void declareMemberTypeParameters() {
