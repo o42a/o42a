@@ -140,10 +140,7 @@ public class Ascendants
 				return this.constructionMode = sampleMode;
 			}
 
-			constructionMode =
-					constructionMode != null
-					? constructionMode.restrictBy(sampleMode)
-					: sampleMode;
+			constructionMode = sampleMode.restrict(constructionMode);
 		}
 
 		final TypeRef ancestor = getExplicitAncestor();
@@ -162,15 +159,11 @@ public class Ascendants
 		}
 		if (ancestor.isStatic()) {
 			return this.constructionMode =
-					constructionMode != null
-					? constructionMode.restrictBy(STATIC_CONSTRUCTION)
-					: STATIC_CONSTRUCTION;
+					STATIC_CONSTRUCTION.restrict(constructionMode);
 		}
 
 		return this.constructionMode =
-				constructionMode != null
-				? constructionMode.restrictBy(DYNAMIC_CONSTRUCTION)
-				: DYNAMIC_CONSTRUCTION;
+				DYNAMIC_CONSTRUCTION.restrict(constructionMode);
 	}
 
 	public final boolean isEmpty() {
