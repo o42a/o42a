@@ -24,7 +24,6 @@ import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.object.ConstructionMode.DYNAMIC_CONSTRUCTION;
-import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.object.ConstructionMode.STATIC_CONSTRUCTION;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
@@ -118,35 +117,60 @@ public class Ascendants
 			return this.constructionMode;
 		}
 
-		ConstructionMode constructionMode = enclosingConstructionMode();
+		final ConstructionMode enclosingMode = enclosingConstructionMode();
+		ConstructionMode constructionMode;
 
-		if (constructionMode.isStrict()) {
-			return this.constructionMode = constructionMode;
+		if (enclosingMode.isRuntime()) {
+			return this.constructionMode = enclosingMode;
+		}
+		if (enclosingMode.isStrict()) {
+			constructionMode = enclosingMode;
+		} else {
+			constructionMode = null;
 		}
 
 		final Sample sample = getSample();
 
 		if (sample != null) {
-			return this.constructionMode =
+
+			final ConstructionMode sampleMode =
 					sample.getObject().getConstructionMode();
-		}
-		if (getObject().isPropagated()) {
-			return this.constructionMode = PROHIBITED_CONSTRUCTION;
+
+			if (sampleMode.isRuntime()) {
+				return this.constructionMode = sampleMode;
+			}
+
+			constructionMode =
+					constructionMode != null
+					? constructionMode.restrictBy(sampleMode)
+					: sampleMode;
 		}
 
-		final TypeRef ancestor = getAncestor();
+		final TypeRef ancestor = getExplicitAncestor();
 
 		if (ancestor == null) {
-			return this.constructionMode = STATIC_CONSTRUCTION;
-		}
-		if (!ancestor.isValid()) {
-			return this.constructionMode = PROHIBITED_CONSTRUCTION;
-		}
-		if (ancestor.isStatic()) {
-			return this.constructionMode = STATIC_CONSTRUCTION;
+			return this.constructionMode =
+					constructionMode != null
+					? constructionMode
+					: STATIC_CONSTRUCTION;
 		}
 
-		return this.constructionMode = DYNAMIC_CONSTRUCTION;
+		final ConstructionMode ancestorMode = ancestor.getConstructionMode();
+
+		if (ancestorMode.isRuntime()) {
+			return this.constructionMode = ancestorMode;
+		}
+		if (ancestor.isStatic()) {
+			return this.constructionMode =
+					constructionMode != null
+					? constructionMode.restrictBy(STATIC_CONSTRUCTION)
+					: STATIC_CONSTRUCTION;
+		}
+
+		return this.constructionMode =
+				constructionMode != null
+				? constructionMode.restrictBy(DYNAMIC_CONSTRUCTION)
+				: DYNAMIC_CONSTRUCTION;
 	}
 
 	public final boolean isEmpty() {

@@ -144,4 +144,17 @@ public enum ConstructionMode {
 		return this == PROHIBITED_CONSTRUCTION;
 	}
 
+	public ConstructionMode restrictBy(ConstructionMode other) {
+		if (isStrict()) {
+			if (other.isStrict()) {
+				return other.ordinal() > ordinal() ? other : this;
+			}
+			return this;
+		}
+		if (other.isStrict()) {
+			return other;
+		}
+		return this;
+	}
+
 }
