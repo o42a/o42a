@@ -23,7 +23,6 @@ package org.o42a.core.object.type;
 public abstract class Derivation {
 
 	private static final int PROPAGATION_MASK = 0x40;
-	private static final int IMPLICIT_MASK = 0x80 | PROPAGATION_MASK;
 
 	public static final Derivation SAME = new Derivation(0x10) {
 
@@ -57,14 +56,14 @@ public abstract class Derivation {
 	};
 
 	public static final Derivation MEMBER_OVERRIDE = new Derivation(
-			IMPLICIT_MASK | 0x01) {
+			PROPAGATION_MASK | 0x01) {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
 			if (sample.getOverriddenMember() != null) {
 				return this;
 			}
-			return IMPLICIT_PROPAGATION;
+			return PROPAGATION;
 		}
 
 		@Override
@@ -75,31 +74,16 @@ public abstract class Derivation {
 	};
 
 	public static final Derivation IMPLICIT_SAMPLE = new Derivation(
-			IMPLICIT_MASK | 0x04) {
+			PROPAGATION_MASK | 0x04) {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
-			return IMPLICIT_PROPAGATION;
+			return PROPAGATION;
 		}
 
 		@Override
 		public String toString() {
 			return "IMPLICIT_SAMPLE";
-		}
-
-	};
-
-	public static final Derivation IMPLICIT_PROPAGATION = new Derivation(
-			IMPLICIT_MASK) {
-
-		@Override
-		public Derivation traverseSample(Sample sample) {
-			return IMPLICIT_PROPAGATION;
-		}
-
-		@Override
-		public String toString() {
-			return "IMPLICIT_PROPAGATION";
 		}
 
 	};
@@ -124,7 +108,6 @@ public abstract class Derivation {
 		INHERITANCE,
 		MEMBER_OVERRIDE,
 		IMPLICIT_SAMPLE,
-		IMPLICIT_PROPAGATION,
 		PROPAGATION,
 	};
 
