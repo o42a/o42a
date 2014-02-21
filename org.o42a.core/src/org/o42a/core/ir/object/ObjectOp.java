@@ -62,17 +62,17 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 	}
 
 	private final ObjectPrecision precision;
-	private final ObjectTypeOp objectType;
+	private final ObjectDataOp objectData;
 
 	protected ObjectOp(CodeBuilder builder, ObjectPrecision precision) {
 		super(builder);
 		this.precision = precision;
-		this.objectType = null;
+		this.objectData = null;
 	}
 
-	protected ObjectOp(ObjectTypeOp objectType) {
+	protected ObjectOp(ObjectDataOp objectType) {
 		super(objectType.getBuilder());
-		this.objectType = objectType;
+		this.objectData = objectType;
 		this.precision = objectType.getPrecision();
 	}
 
@@ -108,15 +108,15 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 		return this;
 	}
 
-	public final ObjectIRTypeOp declaredIn(Code code) {
+	public final ObjectIRDescOp declaredIn(Code code) {
 		return body(code).declaredIn(code).load(null, code);
 	}
 
-	public final ObjectTypeOp objectType(Code code) {
-		if (this.objectType != null) {
-			return this.objectType;
+	public final ObjectDataOp objectData(Code code) {
+		if (this.objectData != null) {
+			return this.objectData;
 		}
-		return body(code).loadObjectType(code).op(getBuilder(), getPrecision());
+		return body(code).loadObjectData(code).op(getBuilder(), getPrecision());
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 
 		final Block code = subDirs.code();
 		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
-		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
+		final ObjectDataOp ascendantData = ascendantObj.objectData(code);
 
 		final DataOp resultPtr =
 				castFunc()
@@ -213,25 +213,21 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 						id != null ? id.detail("ptr") : null,
 						code,
 						this,
-						ascendantType);
+						ascendantData);
 
 		resultPtr.isNull(null, code).go(code, subDirs.falseDir());
 
-		final ObjOp result = resultPtr.to(
-				id,
-				code,
-				ascendantIR.getBodyType()).op(
-						getBuilder(),
-						ascendant,
-						COMPATIBLE);
+		final ObjOp result =
+				resultPtr.to(id, code, ascendantIR.getBodyType())
+				.op(getBuilder(), ascendant, COMPATIBLE);
 
 		subDirs.done();
 
 		return result;
 	}
 
-	protected final ObjectTypeOp cachedData() {
-		return this.objectType;
+	protected final ObjectDataOp cachedData() {
+		return this.objectData;
 	}
 
 	private FuncPtr<CastObjectFunc> castFunc() {

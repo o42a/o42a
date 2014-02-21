@@ -45,7 +45,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	private final ObjectIR objectIR;
 
-	private final ObjectTypeIR typeIR;
+	private final ObjectDataIR dataIR;
 	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
 			new LinkedHashMap<>();
 	private final ArrayList<ObjectIRBody> sampleBodyIRs = new ArrayList<>();
@@ -55,7 +55,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		super(objectIR.getId().detail(OBJECT_ID));
 		this.objectIR = objectIR;
 		this.mainBodyIR = new ObjectIRBody(this);
-		this.typeIR = new ObjectTypeIR(this);
+		this.dataIR = new ObjectDataIR(this);
 	}
 
 	public final Obj getObject() {
@@ -66,8 +66,8 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		return this.objectIR;
 	}
 
-	public final ObjectTypeIR typeIR() {
-		return this.typeIR;
+	public final ObjectDataIR dataIR() {
+		return this.dataIR;
 	}
 
 	public final ObjectIRBody mainBodyIR() {
@@ -90,7 +90,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	@Override
 	protected final void allocate(SubData<Op> data) {
 		allocateBodyIRs(data);
-		this.typeIR.allocate(data);
+		this.dataIR.allocate(data);
 	}
 
 	@Override

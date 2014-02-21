@@ -19,14 +19,14 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
+import org.o42a.core.ir.object.ObjectDataOp;
+import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.util.string.ID;
 
 
@@ -38,12 +38,17 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 		super(caller);
 	}
 
-	public DataOp cast(ID id, Code code, ObjectOp object, ObjectTypeOp type) {
+	public DataOp cast(ID id, Code code, ObjectOp object, ObjectDataOp data) {
+		return cast(id, code, object, data.loadDesc(code));
+	}
+
+	public DataOp cast(ID id, Code code, ObjectOp object, ObjectIRDescOp desc) {
 		return invoke(
 				id,
 				code,
 				CAST_OBJECT.result(),
-				object.toData(null, code), type.ptr());
+				object.toData(null, code),
+				desc);
 	}
 
 	public static final class Signature
@@ -51,7 +56,7 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
-		private Arg<ObjectIRTypeOp> type;
+		private Arg<ObjectIRDescOp> desc;
 
 		private Signature() {
 			super(ID.id("ObjectCastF"));
@@ -65,8 +70,8 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 			return this.object;
 		}
 
-		public final Arg<ObjectIRTypeOp> type() {
-			return this.type;
+		public final Arg<ObjectIRDescOp> desc() {
+			return this.desc;
 		}
 
 		@Override
@@ -78,7 +83,7 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnData();
 			this.object = builder.addData("object");
-			this.type = builder.addPtr("type", OBJECT_TYPE);
+			this.desc = builder.addPtr("desc", OBJECT_DESC_TYPE);
 		}
 
 	}

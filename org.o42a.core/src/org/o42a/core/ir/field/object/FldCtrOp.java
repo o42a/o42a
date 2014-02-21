@@ -64,11 +64,11 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 				code.int16((short) fld.fld().getKind().code()));
 
 		return fn.op(null, code)
-				.call(code, fld.host().objectType(code).ptr().data(code), this);
+				.call(code, fld.host().objectData(code).ptr(), this);
 	}
 
 	public final BoolOp start(Code code, ObjectOp host) {
-		return start(code, host.objectType(code).ptr().data(code));
+		return start(code, host.objectData(code).ptr());
 	}
 
 	public BoolOp start(Code code, ObjectIRDataOp data) {
@@ -88,7 +88,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 	}
 
 	public final void finish(Code code, ObjectOp host) {
-		finish(code, host.objectType(code).ptr().data(code));
+		finish(code, host.objectData(code).ptr());
 	}
 
 	public void finish(Code code, ObjectIRDataOp data) {

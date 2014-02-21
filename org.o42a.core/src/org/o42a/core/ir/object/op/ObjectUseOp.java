@@ -73,14 +73,14 @@ public final class ObjectUseOp extends IROp {
 	void setUsed(Code code, ObjectOp object) {
 		code.dumpName("Trapped object caught: ", object);
 
-		final ObjectIRDataOp data = object.objectType(code).ptr().data(code);
+		final ObjectIRDataOp data = object.objectData(code).ptr();
 
 		this.objectData.store(code, data);
 	}
 
 	void startUse(Code code, ObjectOp object) {
 
-		final ObjectIRDataOp data = object.objectType(code).ptr().data(code);
+		final ObjectIRDataOp data = object.objectData(code).ptr();
 
 		getGenerator()
 		.externalFunction()

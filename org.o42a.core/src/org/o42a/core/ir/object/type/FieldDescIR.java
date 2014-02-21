@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -29,7 +29,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
+import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.util.string.ID;
 
 
@@ -63,15 +63,25 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		final Generator generator = instance.getGenerator();
 		final ObjectIR declaredInIR = this.fld.getDeclaredIn().ir(generator);
 
-		instance.declaredIn().setConstant(true).setValue(
-				declaredInIR.getTypeIR().getObjectType()
-				.data(generator).getPointer());
-		instance.kind().setConstant(true).setValue(
-				this.fld.getKind().code());
-		instance.fld().setConstant(true).setValue(
-				this.fld.data(generator).getPointer()
+		instance.declaredIn()
+		.setConstant(true)
+		.setValue(
+				declaredInIR.getDataIR()
+				.getDesc()
+				.data(generator)
+				.getPointer());
+		instance.kind()
+		.setConstant(true)
+		.setValue(this.fld.getKind().code());
+		instance.fld()
+		.setConstant(true)
+		.setValue(
+				this.fld.data(generator)
+				.getPointer()
 				.relativeTo(
-						this.fld.getBodyIR().data(generator).getPointer()));
+						this.fld.getBodyIR()
+						.data(generator)
+						.getPointer()));
 	}
 
 	@Override
@@ -90,7 +100,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRTypeOp> declaredIn(Code code) {
+		public final StructRecOp<ObjectIRDescOp> declaredIn(Code code) {
 			return ptr(null, code, getType().declaredIn());
 		}
 
@@ -107,7 +117,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRTypeOp> declaredIn;
+		private StructRec<ObjectIRDescOp> declaredIn;
 		private Int32rec kind;
 		private RelRec fld;
 
@@ -115,7 +125,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			super(ID.rawId("o42a_obj_field_t"));
 		}
 
-		public final StructRec<ObjectIRTypeOp> declaredIn() {
+		public final StructRec<ObjectIRDescOp> declaredIn() {
 			return this.declaredIn;
 		}
 
@@ -134,7 +144,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.declaredIn = data.addPtr("declared_in", OBJECT_TYPE);
+			this.declaredIn = data.addPtr("declared_in", OBJECT_DESC_TYPE);
 			this.kind = data.addInt32("kind");
 			this.fld = data.addRelPtr("fld");
 		}

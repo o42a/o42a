@@ -111,15 +111,15 @@ public class ObjectIR  {
 		return bodyIR(ancestor);
 	}
 
-	public final ObjectTypeIR getStaticTypeIR() {
+	public final ObjectDataIR getStaticDataIR() {
 
 		final Obj lastDefinition = getObject().type().getLastDefinition();
 
-		return lastDefinition.ir(getGenerator()).getTypeIR();
+		return lastDefinition.ir(getGenerator()).getDataIR();
 	}
 
-	public final ObjectTypeIR getTypeIR() {
-		return getStruct().typeIR();
+	public final ObjectDataIR getDataIR() {
+		return getStruct().dataIR();
 	}
 
 	public final ValueIR getValueIR() {

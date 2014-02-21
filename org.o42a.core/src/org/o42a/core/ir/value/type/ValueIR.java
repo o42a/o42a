@@ -58,7 +58,7 @@ public abstract class ValueIR {
 
 	public abstract ValueOp op(ObjectOp object);
 
-	public abstract void setInitialValue(ObjectTypeIR type);
+	public abstract void setInitialValue(ObjectDataIR dataIR);
 
 	@Override
 	public String toString() {

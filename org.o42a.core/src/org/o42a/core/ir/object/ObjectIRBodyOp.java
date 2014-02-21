@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
+import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DATA_ID;
+import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -48,12 +48,12 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return getType().getAscendant();
 	}
 
-	public final StructRecOp<ObjectIRTypeOp> declaredIn(Code code) {
+	public final StructRecOp<ObjectIRDescOp> declaredIn(Code code) {
 		return ptr(null, code, getType().declaredIn());
 	}
 
-	public final RelRecOp objectType(Code code) {
-		return relPtr(null, code, getType().objectType());
+	public final RelRecOp objectData(Code code) {
+		return relPtr(null, code, getType().objectData());
 	}
 
 	public final Int32recOp flags(Code code) {
@@ -73,11 +73,11 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return op(builder, null, ascendant, precision);
 	}
 
-	public final ObjectIRTypeOp loadObjectType(Code code) {
-		return objectType(code)
+	public final ObjectIRDataOp loadObjectData(Code code) {
+		return objectData(code)
 				.load(null, code)
 				.offset(null, code, this)
-				.to(OBJECT_TYPE_ID, code, OBJECT_TYPE);
+				.to(OBJECT_DATA_ID, code, OBJECT_DATA_TYPE);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 				precision);
 	}
 
-	final ObjOp op(ObjectIR objectIR, ObjectTypeOp data, Obj ascendant) {
+	final ObjOp op(ObjectIR objectIR, ObjectDataOp data, Obj ascendant) {
 		return new ObjOp(
 				objectIR != null ? objectIR : getType().getObjectIR(),
 				this,
