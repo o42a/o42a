@@ -38,7 +38,6 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
@@ -59,7 +58,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private StructRec<ObjectIRTypeOp> declaredIn;
 	private RelRec objectType;
-	private RelRec ancestorBody;
 	private Int32rec flags;
 
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
@@ -110,37 +108,12 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return Kind.values()[value.get().intValue() & KIND_MASK];
 	}
 
-	public ObjectIRBody getAncestorBodyIR() {
-		if (isMain()) {
-			return getObjectIR().getAncestorBodyIR();
-		}
-
-		final TypeRef ancestorRef =
-				getAscendant().type().getAncestor();
-
-		if (ancestorRef == null) {
-			return null;
-		}
-
-		final Obj ancestor = ancestorRef.getType();
-
-		if (ancestor.is(ancestor.getContext().getVoid())) {
-			return null;
-		}
-
-		return getObjectIR().bodyIR(ancestor);
-	}
-
 	public final StructRec<ObjectIRTypeOp> declaredIn() {
 		return this.declaredIn;
 	}
 
 	public final RelRec objectType() {
 		return this.objectType;
-	}
-
-	public final RelRec ancestorBody() {
-		return this.ancestorBody;
 	}
 
 	public final Int32rec flags() {
@@ -184,7 +157,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
 		this.declaredIn = data.addPtr("declared_in", OBJECT_TYPE);
 		this.objectType = data.addRelPtr("object_type");
-		this.ancestorBody = data.addRelPtr("ancestor_body");
 		this.flags = data.addInt32("flags");
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
@@ -216,16 +188,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.objectType.setConstant(true).setValue(
 				objectType.data(generator).getPointer().relativeTo(
 						data(generator).getPointer()));
-
-		final ObjectIRBody ancestorBodyIR = getAncestorBodyIR();
-
-		if (ancestorBodyIR != null) {
-			this.ancestorBody.setConstant(true).setValue(
-					ancestorBodyIR.data(generator).getPointer().relativeTo(
-							data(generator).getPointer()));
-		} else {
-			this.ancestorBody.setConstant(true).setNull();
-		}
 	}
 
 	final List<Fld<?>> getDeclaredFields() {

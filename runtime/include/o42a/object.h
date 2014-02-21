@@ -168,11 +168,6 @@ typedef struct o42a_obj_body {
 	o42a_rptr_t object_type;
 
 	/**
-	 * Relative pointer to ancestor's body.
-	 */
-	o42a_rptr_t ancestor_body;
-
-	/**
 	 * Object body flags.
 	 *
 	 * \see o42a_obj_body_flags for possible values.
@@ -552,18 +547,6 @@ extern const o42a_gc_desc_t o42a_obj_gc_desc;
  */
 inline o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t *const body) {
 	return (o42a_obj_type_t *) (((char *) body) + body->object_type);
-}
-
-/**
- * Retrieves object ancestor's body.
- *
- * \param body[in] object body pointer.
- *
- * \return ancestor body pointer.
- */
-inline o42a_obj_body_t *o42a_obj_ancestor(
-		const o42a_obj_body_t *const body) {
-	return (o42a_obj_body_t *) (((char *) body) + body->ancestor_body);
 }
 
 /**

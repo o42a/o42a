@@ -512,7 +512,6 @@ enum derivation_kind {
 
 static void derive_object_body(
 		o42a_obj_ctable_t *const ctable,
-		o42a_obj_body_t *ancestor_body,
 		enum derivation_kind kind) {
 	O42A_ENTER(return);
 	O42A_DO("Derive body");
@@ -540,10 +539,6 @@ static void derive_object_body(
 	// Fill body header.
 	to_body->object_type =
 			((char *) ctable->object_type) - ((char *) to_body);
-	to_body->ancestor_body =
-			kind < DK_PROPAGATE
-			? from_body->ancestor_body
-			: ((char *) ancestor_body) - ((char *) to_body);
 	to_body->declared_in = from_body->declared_in;
 
 	uint32_t body_kind = O42A_OBJ_BODY_INHERITED;
@@ -610,7 +605,7 @@ static void derive_ancestor_bodies(o42a_obj_ctable_t *const ctable, int kind) {
 		ctable->body_type = ascendant->type;
 		ctable->from.body = O42A(o42a_obj_ascendant_body(aascendant));
 		ctable->to.body = O42A(o42a_obj_ascendant_body(ascendant));
-		O42A(derive_object_body(ctable, NULL, kind));
+		O42A(derive_object_body(ctable, kind));
 		++aascendant;
 		++ascendant;
 	}
@@ -1046,7 +1041,6 @@ static inline size_t fill_sample_data(
 static inline void propagate_samples(
 		o42a_obj_ctable_t *const ctable,
 		char *const mem,
-		o42a_obj_body_t *const ancestor_body,
 		sample_data_t *const sample_data) {
 	O42A_ENTER(return);
 
@@ -1100,7 +1094,7 @@ static inline void propagate_samples(
 		ctable->from.body = old_body;
 		ctable->to.body = new_body;
 
-		O42A(derive_object_body(ctable, ancestor_body, DK_PROPAGATE));
+		O42A(derive_object_body(ctable, DK_PROPAGATE));
 
 		++sample_idx;
 		++sample;
@@ -1299,17 +1293,14 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			NULL));
 #endif /* NDEBUG */
 
-	o42a_obj_body_t *const ancestor_body =
-			(o42a_obj_body_t*) (mem + (adata->object - adata->start));
-
 	derive_ancestor_bodies(&ctable, DK_INHERIT);
-	O42A(propagate_samples(&ctable, mem, ancestor_body, sample_data));
+	O42A(propagate_samples(&ctable, mem, sample_data));
 
 	ctable.body_type = sstype;
 	ctable.from.body = O42A(o42a_obj_by_data(sdata));
 	ctable.to.body = object;
 
-	O42A(derive_object_body(&ctable, ancestor_body, DK_MAIN));
+	O42A(derive_object_body(&ctable, DK_MAIN));
 
 #ifndef NDEBUG
 	O42A(fill_field_infos(type, type_info));
