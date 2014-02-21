@@ -22,9 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.Int32rec;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.impl.ObjectIRFields;
 import org.o42a.core.ir.object.impl.ObjectIROverriders;
@@ -34,22 +32,20 @@ import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
 
-public class ObjectIRType extends Type<ObjectIRTypeOp> {
+public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
-	public static final ObjectIRType OBJECT_TYPE = new ObjectIRType();
+	public static final ObjectIRDesc OBJECT_DESC_TYPE = new ObjectIRDesc();
 
-	private static final ID DATA_ID = ID.id("data");
-
-	private ObjectIRData data;
+	private StructRec<ObjectIRDataOp> data;
 	private RelList<FieldDescIR> fields;
 	private RelList<OverriderDescIR> overriders;
 	private Int32rec mainBodyLayout;
 
-	private ObjectIRType() {
-		super(ID.rawId("o42a_obj_stype_t"));
+	private ObjectIRDesc() {
+		super(ID.rawId("o42a_obj_desc_t"));
 	}
 
-	public final ObjectIRData data() {
+	public final StructRec<ObjectIRDataOp> data() {
 		return this.data;
 	}
 
@@ -66,13 +62,13 @@ public class ObjectIRType extends Type<ObjectIRTypeOp> {
 	}
 
 	@Override
-	public ObjectIRTypeOp op(StructWriter<ObjectIRTypeOp> writer) {
-		return new ObjectIRTypeOp(writer);
+	public ObjectIRDescOp op(StructWriter<ObjectIRDescOp> writer) {
+		return new ObjectIRDescOp(writer);
 	}
 
 	@Override
-	protected void allocate(SubData<ObjectIRTypeOp> data) {
-		this.data = data.addInstance(DATA_ID, OBJECT_DATA_TYPE);
+	protected void allocate(SubData<ObjectIRDescOp> data) {
+		this.data = data.addPtr("data", OBJECT_DATA_TYPE);
 		this.fields = new ObjectIRFields().allocate(data, "fields");
 		this.overriders = new ObjectIROverriders().allocate(data, "overriders");
 		this.mainBodyLayout = data.addInt32("main_body_layout");

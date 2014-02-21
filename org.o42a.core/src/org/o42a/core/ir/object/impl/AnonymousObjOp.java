@@ -44,7 +44,7 @@ public final class AnonymousObjOp extends ObjectOp {
 	private final Obj wellKnownType;
 	private ValueOp value;
 
-	public AnonymousObjOp(ObjectTypeOp data, DataOp ptr, Obj wellKnownType) {
+	public AnonymousObjOp(ObjectDataOp data, DataOp ptr, Obj wellKnownType) {
 		super(data);
 		this.ptr = ptr;
 		assert wellKnownType != null :

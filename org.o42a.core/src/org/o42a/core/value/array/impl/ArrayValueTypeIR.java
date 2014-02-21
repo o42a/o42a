@@ -60,16 +60,16 @@ public final class ArrayValueTypeIR extends ValueTypeIR<Array> {
 		}
 
 		@Override
-		public void setInitialValue(ObjectTypeIR type) {
+		public void setInitialValue(ObjectDataIR dataIR) {
 
-			final Obj object = type.getObjectIR().getObject();
+			final Obj object = dataIR.getObjectIR().getObject();
 			final ArrayValueType arrayType = getValueType().toArrayType();
 			final Array array =
 					arrayType.cast(object.value().getValue()).getCompilerValue();
 			final Val arrayVal =
 					arrayType.ir(getGenerator()).staticsIR().val(array);
 
-			type.getInstance().data().value().set(arrayVal);
+			dataIR.getInstance().value().set(arrayVal);
 		}
 
 		@Override

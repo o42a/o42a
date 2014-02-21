@@ -24,7 +24,7 @@ typedef struct o42a_fld_obj o42a_fld_obj;
  * \param fld[in] pointer to field, which object construction invoked for. This
  * may be a field from object different from scope (see o42a_fld_obj.previous),
  * but is always belongs to compatible body of that object.
- * \param ancestor_type[in] known ancestor type or NULL when fld belongs
+ * \param ancestor_data[in] known ancestor data or NULL when fld belongs
  * to scope. In the latter case an ancestor_type will be evaluated
  * by constructor.
  *
@@ -33,7 +33,7 @@ typedef struct o42a_fld_obj o42a_fld_obj;
 typedef o42a_obj_t *o42a_obj_constructor_ft(
 		o42a_obj_t *,
 		o42a_fld_obj *,
-		o42a_obj_type_t *);
+		o42a_obj_data_t *);
 
 
 struct o42a_fld_obj {

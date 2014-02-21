@@ -21,7 +21,7 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_DATA_ID;
+import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DATA_ID;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 
 import org.o42a.codegen.code.Code;
@@ -80,8 +80,8 @@ final class ObjectValueBuilder extends AbstractObjectValueBuilder {
 			return function.arg(code, OBJECT_VALUE.data());
 		}
 		return this.fn.getObjectIR()
-				.getTypeIR()
-				.getObjectData()
+				.getDataIR()
+				.getInstance()
 				.pointer(this.fn.getGenerator())
 				.op(OBJECT_DATA_ID, code);
 	}

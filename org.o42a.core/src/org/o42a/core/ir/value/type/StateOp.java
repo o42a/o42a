@@ -139,7 +139,7 @@ public abstract class StateOp {
 	public abstract void assign(CodeDirs dirs, ObjectOp value);
 
 	protected void start(Block code) {
-		this.data = host().objectType(code).ptr().data(code);
+		this.data = host().objectData(code).ptr();
 		this.value = this.data.value(code);
 		code.acquireBarrier();
 		this.flags = this.value.flags(code, ATOMIC);
@@ -153,7 +153,7 @@ public abstract class StateOp {
 
 		final DefDirs defDirs = dirs.nested().def();
 
-		host().objectType(defDirs.code()).writeValue(defDirs);
+		host().objectData(defDirs.code()).writeValue(defDirs);
 		defDirs.done();
 
 		return defDirs.result();

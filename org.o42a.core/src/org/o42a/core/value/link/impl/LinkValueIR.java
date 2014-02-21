@@ -48,11 +48,11 @@ final class LinkValueIR extends ValueIR {
 	}
 
 	@Override
-	public void setInitialValue(ObjectTypeIR type) {
+	public void setInitialValue(ObjectDataIR dataIR) {
 
-		final Obj object = type.getObjectIR().getObject();
+		final Obj object = dataIR.getObjectIR().getObject();
 		final Value<?> value = object.value().getValue();
-		final ValType objectVal = type.getInstance().data().value();
+		final ValType objectVal = dataIR.getInstance().value();
 
 		final LinkValueType linkType = getValueType().toLinkType();
 		final KnownLink link =

@@ -58,13 +58,12 @@ void o42a_fld_obj_inherit(o42a_obj_ctable_t *const ctable) {
 
 	to->object = NULL;
 
-	o42a_obj_overrider_t *const overrider = O42A(o42a_obj_field_overrider(
-			ctable->sample_type,
-			ctable->field));
+	o42a_obj_overrider_t *const overrider =
+			O42A(o42a_obj_field_overrider(ctable->sample_desc, ctable->field));
 
 	if (overrider) {// Field is overridden.
 		if (!O42A(o42a_obj_ascendant_of_type(
-				&ctable->ancestor_type->type.data,
+				ctable->ancestor_data,
 				overrider->defined_in))) {
 			// The body overrider defined in isn't present in ancestor
 			// and thus not overridden there.

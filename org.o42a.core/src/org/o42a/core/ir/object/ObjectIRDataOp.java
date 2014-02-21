@@ -19,13 +19,14 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
+import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DATA_ID;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
@@ -47,6 +48,12 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 	@Override
 	public final ObjectIRData getType() {
 		return (ObjectIRData) super.getType();
+	}
+
+	public final ObjectDataOp op(
+			CodeBuilder builder,
+			ObjectPrecision precision) {
+		return new ObjectDataOp(builder, this, precision);
 	}
 
 	public final RelRecOp object(Code code) {
@@ -85,6 +92,10 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 
 	public final ValType.Op value(Code code) {
 		return struct(null, code, getType().value());
+	}
+
+	public final StructRecOp<ObjectIRDescOp> desc(Code code) {
+		return ptr(null, code, getType().desc());
 	}
 
 	public final StructRecOp<ValueTypeDescOp> valueType(Code code) {
@@ -148,7 +159,7 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 
 	@Override
 	protected ID fieldId(Code code, ID local) {
-		return OBJECT_TYPE_ID.setLocal(local);
+		return OBJECT_DATA_ID.setLocal(local);
 	}
 
 }

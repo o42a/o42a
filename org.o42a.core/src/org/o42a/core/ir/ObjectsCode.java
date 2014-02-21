@@ -24,8 +24,9 @@ import static org.o42a.core.ir.object.op.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -81,13 +82,15 @@ public final class ObjectsCode {
 			ObjectOp owner,
 			ObjectOp ancestor,
 			Obj sample) {
+
+		final Block code = dirs.code();
+
 		return newObject(
 				dirs,
 				host,
 				holder,
 				owner,
-				ancestor == null
-				? null : ancestor.objectType(dirs.code()).ptr(),
+				ancestor == null ? null : ancestor.objectData(code).ptr(),
 				sample);
 	}
 
@@ -96,7 +99,7 @@ public final class ObjectsCode {
 			HostOp host,
 			ObjHolder holder,
 			ObjectOp owner,
-			ObjectIRTypeOp ancestor,
+			ObjectIRDataOp ancestorData,
 			Obj sample) {
 
 		final Code alloc = dirs.code().getAllocator().allocation();
@@ -105,7 +108,7 @@ public final class ObjectsCode {
 				dirs,
 				holder,
 				owner,
-				ancestor,
+				ancestorData,
 				sample.ir(getGenerator()).op(getBuilder(), dirs.code()));
 
 		if (host != null) {
