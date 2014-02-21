@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRBody.BODY_ID;
-import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
+import static org.o42a.core.object.type.Derivation.PROPAGATION;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -169,7 +169,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			bodyIR.setKind(ObjectIRBody.Kind.MAIN);
 		} else if (getObject().type().derivedFrom(
 				bodyIR.getAscendant().type(),
-				IMPLICIT_PROPAGATION)) {
+				PROPAGATION)) {
 			bodyIR.setKind(ObjectIRBody.Kind.PROPAGATED);
 		} else {
 			bodyIR.setKind(ObjectIRBody.Kind.EXPLICIT);
