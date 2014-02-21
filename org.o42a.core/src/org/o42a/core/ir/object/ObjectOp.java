@@ -28,7 +28,6 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
@@ -118,15 +117,6 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 			return this.objectType;
 		}
 		return body(code).loadObjectType(code).op(getBuilder(), getPrecision());
-	}
-
-	public final BoolOp hasAncestor(Code code) {
-		return body(code).ancestorBody(code).load(null, code)
-				.toInt32(null, code).ne(null, code, code.int32(0));
-	}
-
-	public final ObjectOp ancestor(Code code) {
-		return body(code).loadAncestor(getBuilder(), code);
 	}
 
 	@Override

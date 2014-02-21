@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
 
 import org.o42a.codegen.code.Code;
@@ -31,7 +30,6 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
 
@@ -58,10 +56,6 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return relPtr(null, code, getType().objectType());
 	}
 
-	public final RelRecOp ancestorBody(Code code) {
-		return relPtr(null, code, getType().ancestorBody());
-	}
-
 	public final Int32recOp flags(Code code) {
 		return int32(null, code, getType().flags());
 	}
@@ -84,28 +78,6 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 				.load(null, code)
 				.offset(null, code, this)
 				.to(OBJECT_TYPE_ID, code, OBJECT_TYPE);
-	}
-
-	public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
-
-		final TypeRef ancestorRef = getAscendant().type().getAncestor();
-		final Obj ancestor;
-
-		if (ancestorRef == null) {
-			ancestor = builder.getContext().getVoid();
-		} else {
-			ancestor = ancestorRef.getType();
-		}
-
-		final AnyOp ancestorBodyPtr =
-				ancestorBody(code)
-				.load(null, code)
-				.offset(null, code, this);
-
-		return anonymousObject(
-				builder,
-				ancestorBodyPtr.toData(null, code),
-				ancestor);
 	}
 
 	@Override
