@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.path.impl.member;
 
-import static org.o42a.core.object.ConstructionMode.DYNAMIC_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.ConstructionMode;
@@ -48,7 +48,7 @@ final class TypeParameterObject extends Obj {
 
 	@Override
 	public ConstructionMode getConstructionMode() {
-		return DYNAMIC_CONSTRUCTION;
+		return FULL_CONSTRUCTION;
 	}
 
 	@Override
