@@ -20,7 +20,7 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.AbstractScope.enclosingScopes;
-import static org.o42a.core.object.ConstructionMode.STATIC_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 
 import java.util.Set;
 
@@ -205,7 +205,7 @@ public abstract class PlainClause
 
 	@Override
 	public ConstructionMode getConstructionMode() {
-		return STATIC_CONSTRUCTION;
+		return FULL_CONSTRUCTION;
 	}
 
 	@Override

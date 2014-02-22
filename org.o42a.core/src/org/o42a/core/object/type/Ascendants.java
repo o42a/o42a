@@ -23,8 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
-import static org.o42a.core.object.ConstructionMode.DYNAMIC_CONSTRUCTION;
-import static org.o42a.core.object.ConstructionMode.STATIC_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import org.o42a.core.Scope;
@@ -147,9 +146,7 @@ public class Ascendants
 
 		if (ancestor == null) {
 			return this.constructionMode =
-					constructionMode != null
-					? constructionMode
-					: STATIC_CONSTRUCTION;
+					FULL_CONSTRUCTION.restrict(constructionMode);
 		}
 
 		final ConstructionMode ancestorMode = ancestor.getConstructionMode();
@@ -157,13 +154,9 @@ public class Ascendants
 		if (ancestorMode.isRuntime()) {
 			return this.constructionMode = ancestorMode;
 		}
-		if (ancestor.isStatic()) {
-			return this.constructionMode =
-					STATIC_CONSTRUCTION.restrict(constructionMode);
-		}
 
 		return this.constructionMode =
-				DYNAMIC_CONSTRUCTION.restrict(constructionMode);
+				FULL_CONSTRUCTION.restrict(constructionMode);
 	}
 
 	public final boolean isEmpty() {
@@ -544,7 +537,7 @@ public class Ascendants
 		final Scope enclosingScope = getScope().getEnclosingScope();
 
 		if (enclosingScope == null) {
-			return STATIC_CONSTRUCTION;
+			return FULL_CONSTRUCTION;
 		}
 
 		return enclosingScope.getConstructionMode();

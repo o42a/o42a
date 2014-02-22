@@ -32,39 +32,25 @@ import org.o42a.core.source.Intrinsics;
 public enum ConstructionMode {
 
 	/**
-	 * Static construction mode.
+	 * Full construction mode.
 	 *
-	 * <p>Only statically constructed objects can declare new fields.</p>
+	 * <p>Only fully constructed objects can declare new fields and upgrade
+	 * their ancestors when overridden.</p>
 	 *
-	 * <p>This mode is applied when the object ancestor is a static reference,
-	 * and the object is either a module, a field derived from statically
-	 * constructed one, or it is nested inside another statically or
-	 * dynamically constructed object.</p>
+	 * <p>This mode is applied when the object ancestor is a reference
+	 * resolvable at compile time, and the object is either a module, a field
+	 * derived from fully constructed one, and it is nested inside another
+	 * fully constructed object.</p>
 	 */
-	STATIC_CONSTRUCTION() {
-
-		@Override
-		public boolean canDeclareFields() {
-			return true;
-		}
-
-	},
-
-	/**
-	 * Dynamic construction mode.
-	 *
-	 * <p>Only dynamically constructed fields can upgrade their ancestors when
-	 * overridden.</p>
-	 *
-	 * <p>This mode is applied when the object ancestor is a non-static
-	 * reference, and the object is either derived from dynamically constructed
-	 * object, or nested inside another statically or dynamically constructed
-	 * object.</p>
-	 */
-	DYNAMIC_CONSTRUCTION() {
+	FULL_CONSTRUCTION() {
 
 		@Override
 		public boolean canUpgradeAncestor() {
+			return true;
+		}
+
+		@Override
+		public boolean canDeclareFields() {
 			return true;
 		}
 
@@ -147,21 +133,12 @@ public enum ConstructionMode {
 	/**
 	 * Applies additional restrictions to this construction mode.
 	 *
-	 * <p>If both this and {@code other} mode are not restricted, then the mode
-	 * remains the same.</p>
-	 *
 	 * @param other the construction mode, which restrictions should be applied
 	 * to this one.
 	 *
 	 * @return construction mode with additional restrictions applied.
 	 */
 	public ConstructionMode restrictBy(ConstructionMode other) {
-		if (!isStrict()) {
-			return other.isStrict() ? other : this;
-		}
-		if (!other.isStrict()) {
-			return this;
-		}
 		return other.ordinal() > ordinal() ? other : this;
 	}
 

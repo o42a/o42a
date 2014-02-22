@@ -21,8 +21,8 @@ package org.o42a.core;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableSet;
+import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
-import static org.o42a.core.object.ConstructionMode.STATIC_CONSTRUCTION;
 import static org.o42a.core.object.ConstructionMode.STRICT_CONSTRUCTION;
 
 import java.util.HashSet;
@@ -83,7 +83,7 @@ public abstract class AbstractScope implements Scope {
 		final Scope enclosingScope = scope.getEnclosingScope();
 
 		if (enclosingScope == null) {
-			return STATIC_CONSTRUCTION;
+			return FULL_CONSTRUCTION;
 		}
 
 		final ConstructionMode enclosingMode =

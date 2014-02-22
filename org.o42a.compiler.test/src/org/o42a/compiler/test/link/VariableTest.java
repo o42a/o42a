@@ -6,8 +6,8 @@ package org.o42a.compiler.test.link;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
-import static org.o42a.core.object.ConstructionMode.STATIC_CONSTRUCTION;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -47,7 +47,7 @@ public class VariableTest extends CompilerTestCase {
 
 		final Field b = field("b");
 
-		assertThat(b.getConstructionMode(), is(STATIC_CONSTRUCTION));
+		assertThat(b.getConstructionMode(), is(FULL_CONSTRUCTION));
 
 		final Value<Long> value = valueOf(b, ValueType.INTEGER);
 
