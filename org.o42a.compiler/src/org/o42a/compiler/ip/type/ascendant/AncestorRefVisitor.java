@@ -25,13 +25,13 @@ import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.access.AccessDistributor;
 
 
-public final class AncestorSpecVisitor
+public final class AncestorRefVisitor
 		extends AbstractRefVisitor<AncestorTypeRef, AccessDistributor> {
 
 	private final
 	RefNodeVisitor<AncestorTypeRef, AccessDistributor> ancestorVisitor;
 
-	public AncestorSpecVisitor(
+	public AncestorRefVisitor(
 			RefNodeVisitor<AncestorTypeRef, AccessDistributor> ancestorVisitor) {
 		this.ancestorVisitor = ancestorVisitor;
 	}

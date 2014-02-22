@@ -24,13 +24,13 @@ import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
 
 public final class AdapterId extends MemberId {
 
-	public static AdapterId adapterId(StaticTypeRef adapterType) {
+	public static AdapterId adapterId(TypeRef adapterType) {
 		return new AdapterId(adapterType);
 	}
 
@@ -49,7 +49,7 @@ public final class AdapterId extends MemberId {
 		return typeField.getOriginal();
 	}
 
-	private final StaticTypeRef adapterType;
+	private final TypeRef adapterType;
 	private Scope adapterTypeScope;
 	private boolean invalid;
 
@@ -58,7 +58,7 @@ public final class AdapterId extends MemberId {
 		this.adapterTypeScope = adapter;
 	}
 
-	private AdapterId(StaticTypeRef adapterType) {
+	private AdapterId(TypeRef adapterType) {
 		this.adapterType = adapterType;
 	}
 
@@ -93,10 +93,6 @@ public final class AdapterId extends MemberId {
 		return this;
 	}
 
-	public final StaticTypeRef getAdapterType() {
-		return this.adapterType;
-	}
-
 	public final Scope getAdapterTypeScope() {
 		if (this.adapterTypeScope != null) {
 			return this.adapterTypeScope;
@@ -114,7 +110,7 @@ public final class AdapterId extends MemberId {
 		return null;
 	}
 
-	public StaticTypeRef adapterType(Scope scope) {
+	public TypeRef adapterType(Scope scope) {
 		if (this.adapterType != null) {
 			if (this.adapterType.getScope().is(scope)) {
 				return this.adapterType;

@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 import static org.o42a.core.ir.object.value.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
@@ -56,7 +56,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	private static final ID VALUE_ID = ID.id("value");
 	private static final Type<?>[] TYPE_DEPENDENCIES =
-			new Type<?>[] {OBJECT_TYPE};
+			new Type<?>[] {OBJECT_DESC_TYPE};
 
 	private RelRec object;
 	private RelRec start;
@@ -65,6 +65,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private FuncRec<ObjectCondFunc> condFunc;
 	private FuncRec<ObjectValFunc> defsFunc;
 	private ValType value;
+	private StructRec<ObjectIRDescOp> desc;
 	private StructRec<ValueTypeDescOp> valueType;
 	private RelList<ObjectIRBody> ascendants;
 	private RelList<ObjectIRBody> samples;
@@ -106,6 +107,10 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.value;
 	}
 
+	public final StructRec<ObjectIRDescOp> desc() {
+		return this.desc;
+	}
+
 	public final StructRec<ValueTypeDescOp> valueType() {
 		return this.valueType;
 	}
@@ -135,6 +140,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
 		this.defsFunc = data.addFuncPtr("defs_f", OBJECT_VAL);
 		this.value = data.addInstance(VALUE_ID, VAL_TYPE);
+		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
 		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
 		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");

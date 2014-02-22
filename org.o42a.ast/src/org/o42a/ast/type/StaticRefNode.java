@@ -19,6 +19,8 @@
 */
 package org.o42a.ast.type;
 
+import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.BinaryNode;
@@ -27,39 +29,35 @@ import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.RefNode;
 
 
-public class AscendantsNode
+public class StaticRefNode
 		extends AbstractExpressionNode
 		implements TypeArgumentNode {
 
-	private final AscendantNode ancestor;
-	private final AscendantNode[] samples;
+	private final SignNode<Prefix> prefix;
+	private final RefNode ref;
 
-	public AscendantsNode(AscendantNode ancestor, AscendantNode[] samples) {
-		super(ancestor.getStart(), end(ancestor, lastNode(samples)));
-		this.ancestor = ancestor;
-		this.samples = samples;
+	public StaticRefNode(SignNode<Prefix> prefix, RefNode ref) {
+		super(prefix.getStart(), end(prefix, ref));
+		this.prefix = prefix;
+		this.ref = ref;
 	}
 
-	public final AscendantNode getAncestor() {
-		return this.ancestor;
+	public final SignNode<Prefix> getPrefix() {
+		return this.prefix;
 	}
 
-	public final boolean hasSamples() {
-		return getSamples().length != 0;
-	}
-
-	public final AscendantNode[] getSamples() {
-		return this.samples;
+	public final RefNode getRef() {
+		return this.ref;
 	}
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitAscendants(this, p);
+		return visitor.visitStaticRef(this, p);
 	}
 
 	@Override
 	public <R, P> R accept(TypeArgumentNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitAscendants(this, p);
+		return visitor.visitStaticRef(this, p);
 	}
 
 	@Override
@@ -74,10 +72,7 @@ public class AscendantsNode
 
 	@Override
 	public final TypeArgumentNode toTypeArgument() {
-		if (!hasSamples()) {
-			return this;
-		}
-		return null;
+		return this;
 	}
 
 	@Override
@@ -92,10 +87,21 @@ public class AscendantsNode
 
 	@Override
 	public void printContent(StringBuilder out) {
-		this.ancestor.printContent(out);
-		for (AscendantNode ascendant : this.samples) {
-			ascendant.printContent(out);
+		this.prefix.printContent(out);
+		if (this.ref != null) {
+			this.ref.printContent(out);
 		}
+	}
+
+	public enum Prefix implements SignType {
+
+		STATIC_REF() {
+			@Override
+			public String getSign() {
+				return "&";
+			}
+		}
+
 	}
 
 }

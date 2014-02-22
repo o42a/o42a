@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.type.FieldDescIR.FIELD_DESC_IR;
 
 import org.o42a.codegen.Generator;
@@ -32,7 +32,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
+import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
@@ -62,7 +62,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		final ObjectIR declaredInIR =
 				this.fld.getDeclaredIn().ir(this.fld.getGenerator());
 		final FieldDescIR fieldDescIR =
-				declaredInIR.getTypeIR().fieldDescIR(
+				declaredInIR.getDataIR().fieldDescIR(
 						this.fld.getKey());
 		final Obj definedIn = this.fld.getDefinedIn();
 		final ObjectIR definedInIR = definedIn.ir(this.fld.getGenerator());
@@ -70,7 +70,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		instance.field().setConstant(true).setValue(
 				fieldDescIR.getInstance().pointer(generator));
 		instance.definedIn().setConstant(true).setValue(
-				definedInIR.getTypeIR().getObjectType().pointer(generator));
+				definedInIR.getDataIR().getDesc().pointer(generator));
 		instance.body().setConstant(true).setValue(
 				this.fld.getBodyIR().pointer(generator).relativeTo(
 						instance.pointer(generator)));
@@ -106,7 +106,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			extends org.o42a.codegen.data.Type<Op> {
 
 		private StructRec<FieldDescIR.Op> field;
-		private StructRec<ObjectIRTypeOp> definedIn;
+		private StructRec<ObjectIRDescOp> definedIn;
 		private RelRec body;
 
 		private Type() {
@@ -117,7 +117,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			return this.field;
 		}
 
-		public final StructRec<ObjectIRTypeOp> definedIn() {
+		public final StructRec<ObjectIRDescOp> definedIn() {
 			return this.definedIn;
 		}
 
@@ -133,7 +133,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.field = data.addPtr("field", FIELD_DESC_IR);
-			this.definedIn = data.addPtr("defined_in", OBJECT_TYPE);
+			this.definedIn = data.addPtr("defined_in", OBJECT_DESC_TYPE);
 			this.body = data.addRelPtr("body");
 		}
 

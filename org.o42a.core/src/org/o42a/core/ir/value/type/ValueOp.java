@@ -120,14 +120,14 @@ public abstract class ValueOp implements HostValueOp {
 	}
 
 	protected final void defaultCond(CodeDirs dirs) {
-		object().objectType(dirs.code()).writeCond(dirs);
+		object().objectData(dirs.code()).writeCond(dirs);
 	}
 
 	protected final ValOp defaultValue(ValDirs dirs) {
 
 		final DefDirs defDirs = dirs.nested().def();
 
-		object().objectType(defDirs.code()).writeValue(defDirs);
+		object().objectData(defDirs.code()).writeValue(defDirs);
 		defDirs.done();
 
 		return defDirs.result();

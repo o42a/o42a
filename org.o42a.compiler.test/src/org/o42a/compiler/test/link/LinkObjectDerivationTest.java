@@ -94,14 +94,17 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	@Test
 	public void linkAncestorUpgrade() {
 		compile(
-				"A := void (",
-				"  F := integer` link = 3",
+				"Lnk 1 :=> integer` link (",
+				"  G := 11",
 				")",
-				"Lnk :=> integer` link (",
-				"  G := 12",
+				"Lnk 2 :=> lnk 1 (",
+				"  G = 12",
+				")",
+				"A := void (",
+				"  F := lnk 1 = 3",
 				")",
 				"B := a (",
-				"  F = lnk ()",
+				"  F = lnk 2 ()",
 				")");
 
 		assertThat(
@@ -112,14 +115,17 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	@Test
 	public void parameterizedLinkAncestorUpgrade() {
 		compile(
-				"A := void (",
-				"  F := integer` link = 3",
+				"Lnk 1 :=> link (",
+				"  G := 11",
 				")",
-				"Lnk :=> link (",
-				"  G := 12",
+				"Lnk 2 :=> integer` lnk 1 (",
+				"  G = 12",
+				")",
+				"A := void (",
+				"  F := integer` lnk 1 = 3",
 				")",
 				"B := a (",
-				"  F = integer` lnk",
+				"  F = integer` lnk 2",
 				")");
 
 		assertThat(
@@ -130,14 +136,17 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	@Test
 	public void linkPrototypeAncestorUpgrade() {
 		compile(
-				"A :=> void (",
-				"  F :=<> integer` link = 3",
+				"Lnk 1 :=> link (",
+				"  G := 11",
 				")",
-				"Lnk :=> integer` link (",
-				"  G := 12",
+				"Lnk 2 :=> integer` lnk 1 (",
+				"  G = 12",
+				")",
+				"A :=> void (",
+				"  F :=<> lnk 1 = 3",
 				")",
 				"B :=> a (",
-				"  F =<> lnk ()",
+				"  F =<> lnk 2 ()",
 				")");
 
 		assertThat(

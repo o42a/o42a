@@ -32,33 +32,41 @@ import org.o42a.core.source.Intrinsics;
 public enum ConstructionMode {
 
 	/**
-	 * Full (unrestricted) object construction mode.
+	 * Full construction mode.
 	 *
-	 * <p>This mode is always applied to top-level objects, such as modules.</p>
+	 * <p>Only fully constructed objects can declare new fields and upgrade
+	 * their ancestors when overridden.</p>
 	 *
-	 * <p>Object can be fully constructed only when all of the following
-	 * requirements satisfied:
-	 * <ul>
-	 * <li>object is inherited from another fully constructed object;</li>
-	 * <li>object construction appears within declarative code;</li>
-	 * <li>object constructed inside definition of another fully constructed
-	 * object.</li>
-	 * </ul>
+	 * <p>This mode is applied when the object ancestor is a reference
+	 * resolvable at compile time, and the object is either a module, a field
+	 * derived from fully constructed one, and it is nested inside another
+	 * fully constructed object.</p>
 	 */
-	FULL_CONSTRUCTION,
+	FULL_CONSTRUCTION() {
+
+		@Override
+		public boolean canUpgradeAncestor() {
+			return true;
+		}
+
+		@Override
+		public boolean canDeclareFields() {
+			return true;
+		}
+
+	},
 
 	/**
 	 * Strict object construction mode.
 	 *
-	 * <p>This mode applied when object can not be {@link #FULL_CONSTRUCTION
-	 * fully constructed} and object is not inherited from variable target.</p>
+	 * <p>This mode applied when object can not be statically or dynamically
+	 * constructed, and the object is not inherited from variable target.</p>
 	 *
 	 * <p>Strict object construction can not change interface of the object.
-	 * The following restrictions apply to strictly constructed object:
+	 * The following restrictions apply to strictly constructed objects:
 	 * <ul>
-	 * <li>object can not have samples;</li>
-	 * <li>new adapters can not be declared;</li>
-	 * <li>object field ancestors can not be upgraded;</li>
+	 * <li>new members can not be declared;</li>
+	 * <li>object ancestors can not be upgraded;</li>
 	 * <li>type parameters can not be changed.</li>
 	 * <ul>
 	 *
@@ -94,12 +102,20 @@ public enum ConstructionMode {
 	 * Object construction is prohibited.
 	 *
 	 * <p>This may happen, when object ancestor is unknown or it can not
-	 * be inherited (e.g. when it is array).
+	 * be inherited. This only happens due to compilation errors.</a>
 	 */
 	PROHIBITED_CONSTRUCTION;
 
+	public boolean canUpgradeAncestor() {
+		return false;
+	}
+
+	public boolean canDeclareFields() {
+		return false;
+	}
+
 	public final boolean isStrict() {
-		return this != FULL_CONSTRUCTION;
+		return ordinal() >= STRICT_CONSTRUCTION.ordinal();
 	}
 
 	public final boolean isPredefined() {
@@ -112,6 +128,37 @@ public enum ConstructionMode {
 
 	public final boolean isProhibited() {
 		return this == PROHIBITED_CONSTRUCTION;
+	}
+
+	/**
+	 * Applies additional restrictions to this construction mode.
+	 *
+	 * @param other the construction mode, which restrictions should be applied
+	 * to this one.
+	 *
+	 * @return construction mode with additional restrictions applied.
+	 */
+	public ConstructionMode restrictBy(ConstructionMode other) {
+		return other.ordinal() > ordinal() ? other : this;
+	}
+
+	/**
+	 * Applies the restrictions of this mode to another one.
+	 *
+	 * <p>If {@code target} mode is not specified, then returns this mode.
+	 * Otherwise simply invokes
+	 * {@link #restrictBy(ConstructionMode) target.restrictBy(this)}.</p>
+	 *
+	 * @param target the constructions mode to apply restrictions to,
+	 * or <code>null</code>
+	 *
+	 * @return construction mode with additional restrictions applied.
+	 */
+	public final ConstructionMode restrict(ConstructionMode target) {
+		if (target == null) {
+			return this;
+		}
+		return target.restrictBy(this);
 	}
 
 }

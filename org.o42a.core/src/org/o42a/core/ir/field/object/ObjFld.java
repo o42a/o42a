@@ -134,19 +134,19 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 		.toData(null, constructed)
 		.returnValue(constructed);
 
-		final ObjectIRTypeOp evaluatedAncestorType =
-				ancestorType(builder, dirs, start);
+		final ObjectIRDataOp evaluatedAncestorType =
+				ancestorData(builder, dirs, start);
 
 		start.go(code.tail());
 
 		final Block cont = start.otherwise();
-		final ObjectIRTypeOp suppliedAncestorType = builder.getFunction().arg(
+		final ObjectIRDataOp suppliedAncestorType = builder.getFunction().arg(
 				cont,
-				OBJECT_CONSTRUCTOR.ancestorType());
+				OBJECT_CONSTRUCTOR.ancestorData());
 
 		cont.go(code.tail());
 
-		final ObjectIRTypeOp ancestorType = code.phi(
+		final ObjectIRDataOp ancestorType = code.phi(
 				ID.id("atype"),
 				evaluatedAncestorType,
 				suppliedAncestorType);
@@ -197,30 +197,31 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 		return new ObjFldOp(this, host, ptr);
 	}
 
-	private ObjectIRTypeOp ancestorType(
+	private ObjectIRDataOp ancestorData(
 			ObjBuilder builder,
 			CodeDirs dirs,
 			CondBlock code) {
 
 		final CodeDirs ancDirs = dirs.sub(code);
-		final ObjectIRTypeOp ancestorType =
+		final ObjectIRDataOp ancestorData =
 				builder.objects()
 				.objectAncestor(ancDirs, getField().toObject())
-				.objectType(code)
+				.objectData(code)
 				.ptr();
 
-		code.dumpName("Ancestor: ", ancestorType);
+		code.dumpName("Ancestor: ", ancestorData);
 		ancDirs.done();
 
-		return ancestorType;
+		return ancestorData;
 	}
 
 	private ObjectOp construct(
 			ObjBuilder builder,
 			CodeDirs dirs,
 			ObjHolder holder,
-			ObjectIRTypeOp ancestorType) {
+			ObjectIRDataOp ancestorData) {
 
+		final Block code = dirs.code();
 		final Obj object = getField().toObject();
 		final ObjectsCode objects = builder.objects();
 
@@ -229,9 +230,9 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 				builder.host(),
 				holder,
 				builder.host(),
-				ancestorType != null ? ancestorType :
+				ancestorData != null ? ancestorData :
 				objects.objectAncestor(dirs, object)
-				.objectType(dirs.code())
+				.objectData(code)
 				.ptr(),
 				object);
 	}
@@ -241,7 +242,7 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 			CodeDirs dirs,
 			ObjFldTargetHolder holder,
 			Op previous,
-			ObjectIRTypeOp ancestorType) {
+			ObjectIRDataOp ancestorData) {
 
 		final Block code = dirs.code();
 
@@ -250,7 +251,7 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 		final ObjectConstructorFunc constructor =
 				previous.constructor(null, code).load(null, code);
 		final DataOp ancestorPtr =
-				constructor.call(code, builder.host(), previous, ancestorType);
+				constructor.call(code, builder.host(), previous, ancestorData);
 		final ObjectOp ancestor = anonymousObject(
 				builder,
 				ancestorPtr,

@@ -62,7 +62,7 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 		}
 
 		@Override
-		public void setInitialValue(ObjectTypeIR type) {
+		public void setInitialValue(ObjectDataIR dataIR) {
 
 			final String value = ValueType.STRING.cast(
 					getObjectIR()
@@ -71,7 +71,7 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 					.getValue()
 					.getCompilerValue());
 
-			type.getInstance().data().value().set(
+			dataIR.getInstance().value().set(
 					ValueType.STRING.ir(getGenerator()).staticsIR().val(value));
 		}
 

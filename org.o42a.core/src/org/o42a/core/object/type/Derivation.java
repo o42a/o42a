@@ -23,15 +23,11 @@ package org.o42a.core.object.type;
 public abstract class Derivation {
 
 	private static final int PROPAGATION_MASK = 0x40;
-	private static final int IMPLICIT_MASK = 0x80 | PROPAGATION_MASK;
 
 	public static final Derivation SAME = new Derivation(0x10) {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return EXPLICIT_SAMPLE;
-			}
 			if (sample.getOverriddenMember() != null) {
 				return MEMBER_OVERRIDE;
 			}
@@ -60,17 +56,14 @@ public abstract class Derivation {
 	};
 
 	public static final Derivation MEMBER_OVERRIDE = new Derivation(
-			IMPLICIT_MASK | 0x01) {
+			PROPAGATION_MASK | 0x01) {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return PROPAGATION;
-			}
 			if (sample.getOverriddenMember() != null) {
 				return this;
 			}
-			return IMPLICIT_PROPAGATION;
+			return PROPAGATION;
 		}
 
 		@Override
@@ -81,25 +74,7 @@ public abstract class Derivation {
 	};
 
 	public static final Derivation IMPLICIT_SAMPLE = new Derivation(
-			IMPLICIT_MASK | 0x04) {
-
-		@Override
-		public Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return PROPAGATION;
-			}
-			return IMPLICIT_PROPAGATION;
-		}
-
-		@Override
-		public String toString() {
-			return "IMPLICIT_SAMPLE";
-		}
-
-	};
-
-	public static final Derivation EXPLICIT_SAMPLE = new Derivation(
-			PROPAGATION_MASK | 0x02) {
+			PROPAGATION_MASK | 0x04) {
 
 		@Override
 		public Derivation traverseSample(Sample sample) {
@@ -108,25 +83,7 @@ public abstract class Derivation {
 
 		@Override
 		public String toString() {
-			return "EXPLICIT_SAMPLE";
-		}
-
-	};
-
-	public static final Derivation IMPLICIT_PROPAGATION = new Derivation(
-			IMPLICIT_MASK) {
-
-		@Override
-		public Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return PROPAGATION;
-			}
-			return IMPLICIT_PROPAGATION;
-		}
-
-		@Override
-		public String toString() {
-			return "IMPLICIT_PROPAGATION";
+			return "IMPLICIT_SAMPLE";
 		}
 
 	};
@@ -151,8 +108,6 @@ public abstract class Derivation {
 		INHERITANCE,
 		MEMBER_OVERRIDE,
 		IMPLICIT_SAMPLE,
-		EXPLICIT_SAMPLE,
-		IMPLICIT_PROPAGATION,
 		PROPAGATION,
 	};
 

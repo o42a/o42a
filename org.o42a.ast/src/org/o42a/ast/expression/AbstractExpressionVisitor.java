@@ -22,7 +22,7 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 
 
@@ -41,8 +41,8 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
-	public R visitAscendants(AscendantsNode ascendants, P p) {
-		return visitExpression(ascendants, p);
+	public R visitStaticRef(StaticRefNode staticRef, P p) {
+		return visitExpression(staticRef, p);
 	}
 
 	@Override

@@ -19,39 +19,33 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
+import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DESC_ID;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.core.ir.CodeBuilder;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectIRTypeOp extends StructOp<ObjectIRTypeOp> {
+public final class ObjectIRDescOp extends StructOp<ObjectIRDescOp> {
 
-	ObjectIRTypeOp(StructWriter<ObjectIRTypeOp> writer) {
+	ObjectIRDescOp(StructWriter<ObjectIRDescOp> writer) {
 		super(writer);
 	}
 
 	@Override
-	public final ObjectIRType getType() {
-		return (ObjectIRType) super.getType();
+	public final ObjectIRDesc getType() {
+		return (ObjectIRDesc) super.getType();
 	}
 
-	public final ObjectIRDataOp data(Code code) {
-		return struct(null, code, getType().data());
-	}
-
-	public final ObjectTypeOp op(
-			CodeBuilder builder,
-			ObjectPrecision precision) {
-		return new ObjectTypeOp(builder, this, precision);
+	public final StructRecOp<ObjectIRDataOp> data(Code code) {
+		return ptr(null, code, getType().data());
 	}
 
 	@Override
 	protected ID fieldId(Code code, ID local) {
-		return OBJECT_TYPE_ID.setLocal(local);
+		return OBJECT_DESC_ID.setLocal(local);
 	}
 
 }

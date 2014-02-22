@@ -53,7 +53,7 @@ public final class ObjOp extends ObjectOp {
 			ObjectIR objectIR,
 			ObjectIRBodyOp ptr,
 			Obj ascendant,
-			ObjectTypeOp data) {
+			ObjectDataOp data) {
 		super(data);
 		this.objectIR = objectIR;
 		this.ptr = ptr;
@@ -204,7 +204,7 @@ public final class ObjOp extends ObjectOp {
 		final ObjectIRBodyOp ascendantBody =
 				ascendantBodyIR.pointer(getGenerator()).op(null, code);
 
-		final ObjectTypeOp cachedData = cachedData();
+		final ObjectDataOp cachedData = cachedData();
 
 		if (cachedData != null) {
 			return ascendantBody.op(getObjectIR(), cachedData, ascendant);

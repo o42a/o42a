@@ -29,6 +29,7 @@ import org.o42a.core.source.CompilerContext;
 	"collection.o42a",
 	"iterator.o42a",
 	"list.o42a",
+	"list/sublist.o42a",
 	"mutable_list.o42a",
 	"mutable_list/sublist.o42a",
 	"row_list.o42a",

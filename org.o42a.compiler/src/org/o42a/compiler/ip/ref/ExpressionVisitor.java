@@ -33,7 +33,7 @@ import static org.o42a.core.value.ValueType.STRING;
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.common.ref.state.KeepValueFragment;
 import org.o42a.compiler.ip.Interpreter;
@@ -92,22 +92,16 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitAscendants(AscendantsNode ascendants, AccessDistributor p) {
-		if (!ascendants.hasSamples()) {
+	public Ref visitStaticRef(StaticRefNode staticRef, AccessDistributor p) {
 
-			final AncestorTypeRef ancestor =
-					ip().typeIp().parseAncestor(ascendants, p);
+		final AncestorTypeRef ancestor =
+				ip().typeIp().parseAncestor(staticRef, p);
 
-			if (ancestor.isImplied()) {
-				return super.visitAscendants(ascendants, p);
-			}
-
-			return ancestor.getAncestor().getTypeRef().getRef();
+		if (ancestor.isImplied()) {
+			return super.visitStaticRef(staticRef, p);
 		}
 
-		return ip().phraseIp()
-				.ascendantsPhrase(ascendants, p, this.typeConsumer)
-				.toRef();
+		return ancestor.getAncestor().getTypeRef().getRef();
 	}
 
 	@Override

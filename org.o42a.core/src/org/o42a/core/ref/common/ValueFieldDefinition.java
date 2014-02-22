@@ -20,10 +20,12 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.member.field.DefinitionTarget;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
+import org.o42a.core.value.DeferredObjectTypeParameters;
 import org.o42a.core.value.ObjectTypeParameters;
 
 
@@ -64,9 +66,16 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	private ObjectTypeParameters typeParameters(ObjectDefiner definer) {
-		return this.typeParameters
-				.rescope(definer.getField())
-				.toObjectTypeParameters();
+
+		final Field field = definer.getField();
+		final TypeRefParameters params = this.typeParameters;
+
+		return new DeferredObjectTypeParameters(params) {
+			@Override
+			protected ObjectTypeParameters resolve() {
+				return params.rescope(field).toObjectTypeParameters();
+			}
+		};
 	}
 
 }

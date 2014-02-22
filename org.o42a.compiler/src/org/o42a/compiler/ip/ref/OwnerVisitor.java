@@ -321,7 +321,7 @@ final class OwnerVisitor
 
 		return owner.member(
 				location(p, ref),
-				adapterId(type.toStaticTypeRef()),
+				adapterId(type.toTypeRef()),
 				ip().declaredIn(ref.getDeclaredIn(), p));
 	}
 

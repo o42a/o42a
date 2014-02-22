@@ -115,8 +115,8 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		return this.finalValue = determineFinal();
 	}
 
-	public void allocate(ObjectTypeIR typeIR) {
-		this.func = func(typeIR.getObjectData());
+	public void allocate(ObjectDataIR typeIR) {
+		this.func = func(typeIR.getInstance());
 		if (this.funcPtr == null) {
 			create();
 		}
@@ -126,9 +126,9 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 	public final FuncPtr<F> get(ObjOp host) {
 
 		final ObjectIR objectIR = host.getAscendant().ir(getGenerator());
-		final ObjectTypeIR typeIR =
-				objectIR.getBodyType().getObjectIR().getTypeIR();
-		final ObjectIRData data = typeIR.getObjectData();
+		final ObjectDataIR typeIR =
+				objectIR.getBodyType().getObjectIR().getDataIR();
+		final ObjectIRData data = typeIR.getInstance();
 
 		return func(data).getValue().get();
 	}

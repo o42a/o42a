@@ -26,6 +26,7 @@ import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
+import static org.o42a.core.object.impl.ScopeField.reusedScopePath;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
@@ -54,9 +55,7 @@ import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.impl.StaticObjectStep;
-import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -342,7 +341,10 @@ public abstract class Obj
 		if (ancestor != null) {
 			return ancestor.getType().hasSubClauses();
 		}
-		for (Sample sample : type().getSamples()) {
+
+		final Sample sample = type().getSample();
+
+		if (sample != null) {
 			if (sample.getObject().hasSubClauses()) {
 				return true;
 			}
@@ -365,7 +367,9 @@ public abstract class Obj
 			}
 		}
 
-		for (Sample sample : type().getSamples()) {
+		final Sample sample = type().getSample();
+
+		if (sample != null) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
 					sample.getObject().getImplicitClauses());
@@ -520,25 +524,14 @@ public abstract class Obj
 
 	public Path scopePath() {
 
-		final Scope scope = getScope();
-		final Scope enclosing = scope.getEnclosingScope();
+		final Path reused = reusedScopePath(this);
 
-		assert enclosing.toObject() != null :
-			"No enclosing object found";
-
-		final Obj propagatedFrom = getPropagatedFrom();
-
-		if (propagatedFrom != null) {
-			// Reuse enclosing scope path from object
-			// this one is propagated from.
-			return propagatedFrom.getScope().getEnclosingScopePath();
+		if (reused != null) {
+			return reused;
 		}
 
 		// New scope field is to be created.
-		final Step scopePathStep =
-				new OwnerStep(this, SCOPE_FIELD_ID.key(scope));
-
-		return scopePathStep.toPath();
+		return new OwnerStep(this, SCOPE_FIELD_ID.key(getScope())).toPath();
 	}
 
 	public final Ref staticRef(Scope scope) {
@@ -740,17 +733,11 @@ public abstract class Obj
 			return null;
 		}
 
-		final Sample[] samples = type().getSamples();
+		final Sample sample = type().getSample();
 
-		assert samples.length > 0 :
-			"Propagated object has no samples: " + this;
-		assert assertImplicitSamples(samples);
+		assert sample != null :
+			"Propagated object has no sample: " + this;
 
-		if (samples.length != 1) {
-			return null;
-		}
-
-		final Sample sample = samples[0];
 		final Obj sampleObject = sample.getObject();
 
 		if (sampleObject == null) {
@@ -838,8 +825,9 @@ public abstract class Obj
 		declareMembers(this.objectMembers);
 
 		final ObjectType objectType = type();
+		final Sample sample = objectType.getSample();
 
-		for (Sample sample : objectType.getSamples()) {
+		if (sample != null) {
 			sample.deriveMembers(this.objectMembers);
 		}
 
@@ -851,33 +839,12 @@ public abstract class Obj
 	}
 
 	private void declareScopeField() {
-		if (getScope().getEnclosingScope().toObject() == null) {
-			// Only object members may have an enclosing scope path.
-			return;
+
+		final ScopeField scopeField = ScopeField.scopeFieldFor(this);
+
+		if (scopeField != null) {
+			this.objectMembers.addMember(scopeField.toMember());
 		}
-
-		final Path enclosingScopePath = getScope().getEnclosingScopePath();
-
-		if (enclosingScopePath == null) {
-			// Enclosing scope path not defined.
-			return;
-		}
-
-		final Step[] steps = enclosingScopePath.getSteps();
-
-		assert steps.length == 1 :
-			"Enclosing path scope should contain exactly one step";
-
-		final AbstractMemberStep step = (AbstractMemberStep) steps[0];
-		final MemberKey memberKey = step.getMemberKey();
-
-		if (memberKey.getOrigin() != getScope()) {
-			// Enclosing scope field is derived from overridden object.
-			return;
-		}
-
-		this.objectMembers.addMember(
-				new ScopeField(this, memberKey.getMemberId()).toMember());
 	}
 
 	private void declareMemberTypeParameters() {
@@ -973,14 +940,6 @@ public abstract class Obj
 
 			field.toObject().normalize(analyzer);
 		}
-	}
-
-	private boolean assertImplicitSamples(Sample[] samples) {
-		for (Sample sample : samples) {
-			assert !sample.isExplicit() :
-				sample + " is explicit";
-		}
-		return true;
 	}
 
 	private static final class ObjectDistributor extends Distributor {

@@ -49,8 +49,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 
 		call(
 				dirs,
-				object != null
-				? object.objectType(code).ptr().data(code) : null,
+				object != null ? object.objectData(code).ptr() : null,
 				object);
 	}
 

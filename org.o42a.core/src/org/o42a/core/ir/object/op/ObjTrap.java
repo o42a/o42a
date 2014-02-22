@@ -52,7 +52,7 @@ final class ObjTrap extends ObjHolder {
 		.externalFunction()
 		.link("o42a_obj_use", OBJECT_DATA)
 		.op(null, code)
-		.call(code, object.objectType(code).ptr().data(code));
+		.call(code, object.objectData(code).ptr());
 	}
 
 	@Override

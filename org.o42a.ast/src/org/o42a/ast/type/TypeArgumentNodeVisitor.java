@@ -25,7 +25,7 @@ import org.o42a.ast.ref.RefNodeVisitor;
 
 public interface TypeArgumentNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
-	R visitAscendants(AscendantsNode ascendants, P p);
+	R visitStaticRef(StaticRefNode staticRef, P p);
 
 	R visitParentheses(ParenthesesNode parentheses, P p);
 

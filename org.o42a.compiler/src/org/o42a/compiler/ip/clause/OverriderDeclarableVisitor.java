@@ -76,8 +76,8 @@ final class OverriderDeclarableVisitor
 			return null;
 		}
 
-		final ClauseBuilder builder = p.setOverridden(
-				adapterId(adapterId.toStaticTypeRef()));
+		final ClauseBuilder builder =
+				p.setOverridden(adapterId(adapterId.toTypeRef()));
 
 		return setDeclaredIn(memberNode, builder);
 	}

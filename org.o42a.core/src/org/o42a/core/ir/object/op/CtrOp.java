@@ -19,7 +19,8 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
+import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 
@@ -35,7 +36,8 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ObjectsCode;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
+import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
@@ -64,7 +66,7 @@ public class CtrOp extends IROp {
 			CodeDirs dirs,
 			ObjHolder holder,
 			ObjectOp owner,
-			ObjectIRTypeOp ancestorType,
+			ObjectIRDataOp ancestorData,
 			ObjectOp sample) {
 
 		final CodeDirs subDirs = dirs.begin(
@@ -73,15 +75,15 @@ public class CtrOp extends IROp {
 		final Block code = subDirs.code();
 
 		if (owner != null) {
-			ptr().ownerType(code).store(code, owner.objectType(code).ptr());
+			ptr().ownerData(code).store(code, owner.objectData(code).ptr());
 		} else {
-			ptr().ownerType(code).store(code, code.nullPtr(OBJECT_TYPE));
+			ptr().ownerData(code).store(code, code.nullPtr(OBJECT_DATA_TYPE));
 		}
-		ptr().ancestorType(code).store(
+		ptr().ancestorData(code).store(
 				code,
-				ancestorType != null
-				? ancestorType : code.nullPtr(OBJECT_TYPE));
-		ptr().type(code).store(code, sample.objectType(code).ptr());
+				ancestorData != null
+				? ancestorData : code.nullPtr(OBJECT_DATA_TYPE));
+		ptr().desc(code).store(code, sample.objectData(code).loadDesc(code));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 
@@ -114,16 +116,16 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRTypeOp> ownerType(Code code) {
-			return ptr(null, code, getType().ownerType());
+		public final StructRecOp<ObjectIRDataOp> ownerData(Code code) {
+			return ptr(null, code, getType().ownerData());
 		}
 
-		public final StructRecOp<ObjectIRTypeOp> ancestorType(Code code) {
-			return ptr(null, code, getType().ancestorType());
+		public final StructRecOp<ObjectIRDataOp> ancestorData(Code code) {
+			return ptr(null, code, getType().ancestorData());
 		}
 
-		public final StructRecOp<ObjectIRTypeOp> type(Code code) {
-			return ptr(null, code, getType().type());
+		public final StructRecOp<ObjectIRDescOp> desc(Code code) {
+			return ptr(null, code, getType().desc());
 		}
 
 		public final CtrOp op(ObjectsCode objects) {
@@ -134,9 +136,9 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRTypeOp> ownerType;
-		private StructRec<ObjectIRTypeOp> ancestorType;
-		private StructRec<ObjectIRTypeOp> type;
+		private StructRec<ObjectIRDataOp> ownerData;
+		private StructRec<ObjectIRDataOp> ancestorData;
+		private StructRec<ObjectIRDescOp> desc;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ctr_t"));
@@ -147,23 +149,23 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructRec<ObjectIRTypeOp> ownerType() {
-			return this.ownerType;
+		public final StructRec<ObjectIRDataOp> ownerData() {
+			return this.ownerData;
 		}
 
-		public final StructRec<ObjectIRTypeOp> ancestorType() {
-			return this.ancestorType;
+		public final StructRec<ObjectIRDataOp> ancestorData() {
+			return this.ancestorData;
 		}
 
-		public final StructRec<ObjectIRTypeOp> type() {
-			return this.type;
+		public final StructRec<ObjectIRDescOp> desc() {
+			return this.desc;
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.ownerType = data.addPtr("owner_type", OBJECT_TYPE);
-			this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
-			this.type = data.addPtr("type", OBJECT_TYPE);
+			this.ownerData = data.addPtr("owner_data", OBJECT_DATA_TYPE);
+			this.ancestorData = data.addPtr("ancestor_data", OBJECT_DATA_TYPE);
+			this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
 		}
 
 		@Override
