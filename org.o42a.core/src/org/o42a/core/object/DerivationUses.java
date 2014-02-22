@@ -114,7 +114,7 @@ final class DerivationUses {
 				RUNTIME_DERIVATION_USAGE);
 
 		trackUpdatesBySample(sample);
-		trackImplicitSampleRtDerivation(sample);
+		trackSampleRtDerivation(sample);
 	}
 
 	private Obj getOwner() {
@@ -230,12 +230,8 @@ final class DerivationUses {
 		}
 	}
 
-	private void trackImplicitSampleRtDerivation(Sample sample) {
-		if (sample.isExplicit()) {
-			return;
-		}
-
-		// Run time derivation of implicit sample means
+	private void trackSampleRtDerivation(Sample sample) {
+		// Run time derivation of sample means that
 		// the owner object's value can be constructed at run time.
 		final Obj derived = sample.getDerivedObject();
 		final Obj owner = sample.getScope().toObject();
@@ -321,15 +317,20 @@ final class DerivationUses {
 	}
 
 	private void registerSamples() {
-		for (Sample sample : this.type.getSamples()) {
 
-			final TypeRef sampleTypeRef = sample.getTypeRef();
+		final Sample sample = this.type.getSample();
 
-			if (!sampleTypeRef.isValid()) {
-				continue;
-			}
-			sampleTypeRef.getType().type().derivationUses().useAsSample(sample);
+		if (sample == null) {
+			return;
 		}
+
+		final TypeRef sampleTypeRef = sample.getTypeRef();
+
+		if (!sampleTypeRef.isValid()) {
+			return;
+		}
+
+		sampleTypeRef.getType().type().derivationUses().useAsSample(sample);
 	}
 
 }

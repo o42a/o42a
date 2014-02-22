@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.impl;
 
 import static java.util.Collections.emptyList;
+import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 
 import java.util.Collection;
 
@@ -120,7 +121,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public ConstructionMode getConstructionMode() {
-		return ConstructionMode.FULL_CONSTRUCTION;
+		return FULL_CONSTRUCTION;
 	}
 
 	@Override

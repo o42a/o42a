@@ -513,8 +513,7 @@ public class Ref extends Statement implements RefBuilder {
 
 	private Path adaptByMember(Obj object, Obj target) {
 
-		final Member adapterMember =
-				object.member(adapterId(target));
+		final Member adapterMember = object.member(adapterId(target));
 
 		if (adapterMember == null) {
 			return null;

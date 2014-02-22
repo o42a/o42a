@@ -109,7 +109,7 @@ public final class FieldDeclarableVisitor
 		FieldDeclaration declaration = fieldDeclaration(
 				location(p, adapterNode),
 				p,
-				adapterId(adapterId.toStaticTypeRef()));
+				adapterId(adapterId.toTypeRef()));
 
 		declaration = update(declaration, this.declarator);
 		declaration = setDeclaredIn(declaration, p, memberNode);

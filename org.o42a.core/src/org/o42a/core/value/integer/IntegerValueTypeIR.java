@@ -22,8 +22,8 @@ package org.o42a.core.value.integer;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectDataIR;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectTypeIR;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.*;
 import org.o42a.core.value.ValueType;
@@ -52,7 +52,7 @@ final class IntegerValueTypeIR extends ValueTypeIR<Long> {
 		}
 
 		@Override
-		public void setInitialValue(ObjectTypeIR data) {
+		public void setInitialValue(ObjectDataIR data) {
 
 			final long value = ValueType.INTEGER.cast(
 					getObjectIR()
@@ -60,8 +60,7 @@ final class IntegerValueTypeIR extends ValueTypeIR<Long> {
 					.value()
 					.getValue()
 					.getCompilerValue());
-
-			final ValType val = data.getInstance().data().value();
+			final ValType val = data.getInstance().value();
 
 			val.flags().setValue(VAL_CONDITION);
 			val.length().setValue(0);

@@ -27,7 +27,6 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -100,18 +99,6 @@ public class Phrase extends Contained {
 			return this;
 		}
 		this.prefix.setTypeParameters(typeParameters);
-		return this;
-	}
-
-	public final StaticTypeRef[] getSamples() {
-		if (this.prefix == null) {
-			return new StaticTypeRef[0];
-		}
-		return this.prefix.getSamples();
-	}
-
-	public final Phrase addSamples(StaticTypeRef... samples) {
-		this.prefix.addSamples(samples);
 		return this;
 	}
 

@@ -133,7 +133,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 				"  <[]!> ()",
 				")",
 				"#T := 123",
-				"B := a [#t]");
+				"B := &a [#t]");
 
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(123L));
 	}

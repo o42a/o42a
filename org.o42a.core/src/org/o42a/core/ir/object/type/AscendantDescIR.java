@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -31,7 +31,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRTypeOp;
+import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.util.string.ID;
 
 
@@ -61,8 +61,10 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 				this.bodyIR.getAscendant().ir(this.bodyIR.getGenerator());
 
 		instance.type().setConstant(true).setValue(
-				ascendantIR.getTypeIR().getObjectType()
-				.data(generator).getPointer());
+				ascendantIR.getDataIR()
+				.getDesc()
+				.data(generator)
+				.getPointer());
 		instance.body().setConstant(true).setValue(
 				this.bodyIR.data(generator).getPointer().relativeTo(
 						instance.data(generator).getPointer()));
@@ -84,7 +86,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRTypeOp> type(Code code) {
+		public final StructRecOp<ObjectIRDescOp> type(Code code) {
 			return ptr(null, code, getType().type());
 		}
 
@@ -97,14 +99,14 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRTypeOp> type;
+		private StructRec<ObjectIRDescOp> type;
 		private RelRec body;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ascendant_t"));
 		}
 
-		public final StructRec<ObjectIRTypeOp> type() {
+		public final StructRec<ObjectIRDescOp> type() {
 			return this.type;
 		}
 
@@ -119,7 +121,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.type = data.addPtr("type", OBJECT_TYPE);
+			this.type = data.addPtr("type", OBJECT_DESC_TYPE);
 			this.body = data.addRelPtr("body");
 		}
 

@@ -33,14 +33,14 @@ import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.object.Obj;
 
 
-public final class ObjectTypeOp extends IROp {
+public final class ObjectDataOp extends IROp {
 
 	private final ObjectPrecision precision;
-	private final ObjectIRTypeOp ptr;
+	private final ObjectIRDataOp ptr;
 
-	ObjectTypeOp(
+	ObjectDataOp(
 			CodeBuilder builder,
-			ObjectIRTypeOp ptr,
+			ObjectIRDataOp ptr,
 			ObjectPrecision precision) {
 		super(builder);
 		this.ptr = ptr;
@@ -52,8 +52,12 @@ public final class ObjectTypeOp extends IROp {
 	}
 
 	@Override
-	public final ObjectIRTypeOp ptr() {
+	public final ObjectIRDataOp ptr() {
 		return this.ptr;
+	}
+
+	public final ObjectIRDescOp loadDesc(Code code) {
+		return ptr().desc(code).load(null, code);
 	}
 
 	public final ObjectOp object(Code code, Obj wellKnownType) {
@@ -64,7 +68,7 @@ public final class ObjectTypeOp extends IROp {
 	}
 
 	public final DataOp start(Code code) {
-		return ptr().data(code).loadStart(code);
+		return ptr().loadStart(code);
 	}
 
 	public final ObjOp objectOfType(Code code, Obj type) {
@@ -79,27 +83,25 @@ public final class ObjectTypeOp extends IROp {
 
 		final Code code = dirs.code();
 		final ObjectValueFunc function =
-				ptr().data(code).valueFunc(code).load(null, code);
-		final ObjectIRDataOp data = ptr().data(code);
+				ptr().valueFunc(code).load(null, code);
 
-		function.call(dirs, data, data.loadObject(code));
+		function.call(dirs, ptr(), ptr().loadObject(code));
 	}
 
 	public final void writeCond(CodeDirs dirs) {
 
 		final Code code = dirs.code();
 		final ObjectCondFunc function =
-				ptr().data(code).condFunc(code).load(null, code);
-		final ObjectIRDataOp data = ptr().data(code);
+				ptr().condFunc(code).load(null, code);
 
-		function.call(dirs, data.loadObject(code));
+		function.call(dirs, ptr().loadObject(code));
 	}
 
 	public final void writeDefs(DefDirs dirs, ObjectOp body) {
 
 		final Block code = dirs.code();
 		final ObjectValFunc function =
-				ptr().data(code).defsFunc(code).load(null, code);
+				ptr().defsFunc(code).load(null, code);
 
 		function.call(dirs, body(code, body));
 	}
@@ -114,7 +116,7 @@ public final class ObjectTypeOp extends IROp {
 	}
 
 	private final DataOp mainBody(Code code) {
-		return ptr().data(code).loadObject(code);
+		return ptr().loadObject(code);
 	}
 
 }

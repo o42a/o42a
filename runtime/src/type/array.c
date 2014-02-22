@@ -41,7 +41,7 @@ static void o42a_array_gc_marker(void *const data) {
 
 		if (item) {
 
-			o42a_obj_data_t *const item_data = &o42a_obj_type(item)->type.data;
+			o42a_obj_data_t *const item_data = O42A(o42a_obj_data(item));
 
 			O42A(o42a_gc_mark(
 					o42a_gc_blockof((char *) item_data + item_data->start)));

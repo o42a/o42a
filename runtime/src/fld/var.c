@@ -52,12 +52,12 @@ void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 
 	o42a_obj_overrider_t *const overrider =
 			O42A(o42a_obj_field_overrider(
-					ctable->sample_type,
+					ctable->sample_desc,
 					ctable->field));
 
 	if (overrider) {// Field is overridden.
 		if (!O42A(o42a_obj_ascendant_of_type(
-				&ctable->ancestor_type->type.data,
+				ctable->ancestor_data,
 				overrider->defined_in))) {
 			// The body overrider defined isn't present in ancestor
 			// and thus not overridden there.
@@ -86,7 +86,7 @@ void o42a_fld_var_mark(o42a_fld *const field) {
 
 	if (object) {
 
-		o42a_obj_data_t *const data = O42A(&o42a_obj_type(object)->type.data);
+		o42a_obj_data_t *const data = O42A(o42a_obj_data(object));
 
 		O42A(o42a_gc_mark(o42a_gc_blockof((char *) data + data->start)));
 	}

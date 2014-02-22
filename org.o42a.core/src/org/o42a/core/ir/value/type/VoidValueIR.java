@@ -44,8 +44,8 @@ public final class VoidValueIR extends ValueIR {
 	}
 
 	@Override
-	public void setInitialValue(ObjectTypeIR type) {
-		type.getInstance().data().value().set(VOID_VAL);
+	public void setInitialValue(ObjectDataIR dataIR) {
+		dataIR.getInstance().value().set(VOID_VAL);
 	}
 
 	private static final class VoidValueOp extends DefaultValueOp {

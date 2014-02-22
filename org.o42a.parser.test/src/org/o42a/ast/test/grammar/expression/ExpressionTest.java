@@ -11,7 +11,7 @@ import static org.o42a.parser.Grammar.expression;
 import org.junit.Test;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.StaticRefNode;
 
 
 public class ExpressionTest extends GrammarTestCase {
@@ -30,57 +30,27 @@ public class ExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void ascendantsAsLeftOperand() {
+	public void staticRefAsLeftOperand() {
 
 		final BinaryNode result =
-				to(BinaryNode.class, parse("foo & bar + baz"));
-		final AscendantsNode left =
-				to(AscendantsNode.class, result.getLeftOperand());
+				to(BinaryNode.class, parse("&foo + bar"));
+		final StaticRefNode left =
+				to(StaticRefNode.class, result.getLeftOperand());
 
-		assertThat(left.getAncestor().getSpec(), isName("foo"));
-		assertThat(left.getSamples()[0].getSpec(), isName("bar"));
-		assertThat(result.getRightOperand(), isName("baz"));
+		assertThat(left.getRef(), isName("foo"));
+		assertThat(result.getRightOperand(), isName("bar"));
 	}
 
 	@Test
-	public void samplesAsLeftOperand() {
+	public void staticRefAsRightOperand() {
 
 		final BinaryNode result =
-				to(BinaryNode.class, parse("&foo & bar + baz"));
-		final AscendantsNode left =
-				to(AscendantsNode.class, result.getLeftOperand());
-
-		assertThat(left.getAncestor().getSpec(), isName("foo"));
-		assertThat(left.getSamples()[0].getSpec(), isName("bar"));
-		assertThat(result.getRightOperand(), isName("baz"));
-	}
-
-	@Test
-	public void ascendantsAsRigntOperand() {
-
-		final BinaryNode result =
-				to(BinaryNode.class, parse("foo \u2212 bar & baz"));
+				to(BinaryNode.class, parse("foo  + &bar"));
+		final StaticRefNode right =
+				to(StaticRefNode.class, result.getRightOperand());
 
 		assertThat(result.getLeftOperand(), isName("foo"));
-
-		final AscendantsNode right =
-				to(AscendantsNode.class, result.getRightOperand());
-
-		assertThat(right.getAncestor().getSpec(), isName("bar"));
-		assertThat(right.getSamples()[0].getSpec(), isName("baz"));
-	}
-
-	@Test
-	public void samplesAsRightOperand() {
-
-		final BinaryNode result =
-				to(BinaryNode.class, parse("foo  + &bar & baz"));
-		final AscendantsNode right =
-				to(AscendantsNode.class, result.getRightOperand());
-
-		assertThat(result.getLeftOperand(), isName("foo"));
-		assertThat(right.getAncestor().getSpec(), isName("bar"));
-		assertThat(right.getSamples()[0].getSpec(), isName("baz"));
+		assertThat(right.getRef(), isName("bar"));
 	}
 
 	@Test

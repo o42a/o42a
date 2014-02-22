@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRBody.BODY_ID;
-import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
+import static org.o42a.core.object.type.Derivation.PROPAGATION;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +45,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	private final ObjectIR objectIR;
 
-	private final ObjectTypeIR typeIR;
+	private final ObjectDataIR dataIR;
 	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
 			new LinkedHashMap<>();
 	private final ArrayList<ObjectIRBody> sampleBodyIRs = new ArrayList<>();
@@ -55,7 +55,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		super(objectIR.getId().detail(OBJECT_ID));
 		this.objectIR = objectIR;
 		this.mainBodyIR = new ObjectIRBody(this);
-		this.typeIR = new ObjectTypeIR(this);
+		this.dataIR = new ObjectDataIR(this);
 	}
 
 	public final Obj getObject() {
@@ -66,8 +66,8 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		return this.objectIR;
 	}
 
-	public final ObjectTypeIR typeIR() {
-		return this.typeIR;
+	public final ObjectDataIR dataIR() {
+		return this.dataIR;
 	}
 
 	public final ObjectIRBody mainBodyIR() {
@@ -90,7 +90,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	@Override
 	protected final void allocate(SubData<Op> data) {
 		allocateBodyIRs(data);
-		this.typeIR.allocate(data);
+		this.dataIR.allocate(data);
 	}
 
 	@Override
@@ -111,10 +111,10 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			}
 		}
 
-		final Sample[] samples = objectType.getSamples();
+		final Sample sample = objectType.getSample();
 
-		for (int i = samples.length - 1; i >= 0; --i) {
-			deriveBodyIRs(data, samples[i].getObject(), false);
+		if (sample != null) {
+			deriveBodyIRs(data, sample.getObject(), false);
 		}
 
 		allocateBodyIR(data, this.mainBodyIR, null, false);
@@ -169,7 +169,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			bodyIR.setKind(ObjectIRBody.Kind.MAIN);
 		} else if (getObject().type().derivedFrom(
 				bodyIR.getAscendant().type(),
-				IMPLICIT_PROPAGATION)) {
+				PROPAGATION)) {
 			bodyIR.setKind(ObjectIRBody.Kind.PROPAGATED);
 		} else {
 			bodyIR.setKind(ObjectIRBody.Kind.EXPLICIT);

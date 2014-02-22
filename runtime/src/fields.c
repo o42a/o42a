@@ -70,7 +70,7 @@ static void o42a_fld_mark_obj(o42a_fld *const field) {
 		O42A_RETURN;
 	}
 
-	o42a_obj_data_t *const data = O42A(&o42a_obj_type(object)->type.data);
+	o42a_obj_data_t *const data = O42A(o42a_obj_data(object));
 
 	O42A(o42a_gc_mark(o42a_gc_blockof((char *) data + data->start)));
 

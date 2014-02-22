@@ -77,6 +77,18 @@ public final class PathRebuilder implements LocationInfo {
 		return this.previousStep;
 	}
 
+	public final BoundPath cutPath(int stepsToCut) {
+
+		final Path rawPath = getPath().getRawPath();
+		final Path path = new Path(
+				rawPath.getKind(),
+				rawPath.isStatic(),
+				null,
+				Arrays.copyOf(this.rebuiltSteps, this.nextIdx - stepsToCut));
+
+		return path.bind(getPath(), getPath().getOrigin());
+	}
+
 	public final void replace(Step rebuilt) {
 		this.rebuiltSteps[this.rebuiltIdx] = this.previousStep = rebuilt;
 		this.replacement = 1;

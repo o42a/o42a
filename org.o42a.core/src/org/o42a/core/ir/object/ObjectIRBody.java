@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
 import java.util.*;
@@ -38,7 +38,6 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
@@ -57,9 +56,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
 
-	private StructRec<ObjectIRTypeOp> declaredIn;
-	private RelRec objectType;
-	private RelRec ancestorBody;
+	private StructRec<ObjectIRDescOp> declaredIn;
+	private RelRec objectData;
 	private Int32rec flags;
 
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
@@ -110,37 +108,12 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return Kind.values()[value.get().intValue() & KIND_MASK];
 	}
 
-	public ObjectIRBody getAncestorBodyIR() {
-		if (isMain()) {
-			return getObjectIR().getAncestorBodyIR();
-		}
-
-		final TypeRef ancestorRef =
-				getAscendant().type().getAncestor();
-
-		if (ancestorRef == null) {
-			return null;
-		}
-
-		final Obj ancestor = ancestorRef.getType();
-
-		if (ancestor.is(ancestor.getContext().getVoid())) {
-			return null;
-		}
-
-		return getObjectIR().bodyIR(ancestor);
-	}
-
-	public final StructRec<ObjectIRTypeOp> declaredIn() {
+	public final StructRec<ObjectIRDescOp> declaredIn() {
 		return this.declaredIn;
 	}
 
-	public final RelRec objectType() {
-		return this.objectType;
-	}
-
-	public final RelRec ancestorBody() {
-		return this.ancestorBody;
+	public final RelRec objectData() {
+		return this.objectData;
 	}
 
 	public final Int32rec flags() {
@@ -182,9 +155,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
-		this.declaredIn = data.addPtr("declared_in", OBJECT_TYPE);
-		this.objectType = data.addRelPtr("object_type");
-		this.ancestorBody = data.addRelPtr("ancestor_body");
+		this.declaredIn = data.addPtr("declared_in", OBJECT_DESC_TYPE);
+		this.objectData = data.addRelPtr("object_data");
 		this.flags = data.addInt32("flags");
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
@@ -199,33 +171,26 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.declaredIn.setConstant(true);
 
 		final Generator generator = getGenerator();
-		final ObjectIRType objectType =
-				getObjectIR().getTypeIR().getObjectType();
+		final ObjectIRDesc objectDesc = getObjectIR().getDataIR().getDesc();
 
 		if (isMain()) {
-			this.declaredIn.setValue(objectType.data(generator).getPointer());
+			this.declaredIn.setValue(objectDesc.data(generator).getPointer());
 		} else {
 			this.declaredIn.setValue(
 					getAscendant().ir(getGenerator())
-					.getTypeIR()
-					.getObjectType()
+					.getDataIR()
+					.getDesc()
 					.data(generator)
 					.getPointer());
 		}
 
-		this.objectType.setConstant(true).setValue(
-				objectType.data(generator).getPointer().relativeTo(
-						data(generator).getPointer()));
+		final ObjectIRData objectData =
+				getObjectIR().getDataIR().getInstance();
 
-		final ObjectIRBody ancestorBodyIR = getAncestorBodyIR();
-
-		if (ancestorBodyIR != null) {
-			this.ancestorBody.setConstant(true).setValue(
-					ancestorBodyIR.data(generator).getPointer().relativeTo(
-							data(generator).getPointer()));
-		} else {
-			this.ancestorBody.setConstant(true).setNull();
-		}
+		this.objectData.setConstant(true).setValue(
+				objectData.data(generator)
+				.getPointer()
+				.relativeTo(data(generator).getPointer()));
 	}
 
 	final List<Fld<?>> getDeclaredFields() {

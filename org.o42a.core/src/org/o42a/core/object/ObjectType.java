@@ -96,15 +96,8 @@ public final class ObjectType {
 		return getAscendants().getAncestor();
 	}
 
-	/**
-	 * Object samples in descending precedence order.
-	 *
-	 * <p>This is an order reverse to their appearance in source code.</p>
-	 *
-	 * @return array of object samples.
-	 */
-	public final Sample[] getSamples() {
-		return getAscendants().getSamples();
+	public final Sample getSample() {
+		return getAscendants().getSample();
 	}
 
 	public final ValueType<?> getValueType() {
@@ -288,21 +281,9 @@ public final class ObjectType {
 
 		TypeParameters<?> parameters =
 				typeParameters(getObject(), ValueType.VOID);
-		boolean ancestorApplied = getAscendants().getExplicitAncestor() == null;
 
-		for (Sample sample : getSamples()) {
-			if (!ancestorApplied && sample.isExplicit()) {
-				// Apply an explicit ancestor's parameters after
-				// implicit samples, but before the explicit ones.
-				ancestorApplied = true;
-				parameters = applyAncestorParameters(parameters);
-			}
-			parameters = applySampleParameters(parameters, sample);
-		}
-		if (!ancestorApplied) {
-			// Apply an ancestor parameters if not applied yet.
-			parameters = applyAncestorParameters(parameters);
-		}
+		parameters = applySampleParameters(parameters);
+		parameters = applyAncestorParameters(parameters);
 
 		return applyExplicitParameters(parameters);
 	}
@@ -320,7 +301,10 @@ public final class ObjectType {
 				return ancestorStatefulness;
 			}
 		}
-		for (Sample sample : getSamples()) {
+
+		final Sample sample = getSample();
+
+		if (sample != null) {
 
 			final Statefulness sampleStatefulness =
 					sample.getObject().value().getStatefulness();
@@ -341,12 +325,9 @@ public final class ObjectType {
 		if (!getObject().meta().isUpdated()) {
 			// Clone is explicitly derived.
 			// Update the derivation tree.
-			final Sample[] samples = getSamples();
+			final Sample sample = getSample();
 
-			if (samples.length != 0) {
-
-				final Sample sample = getSamples()[0];
-
+			if (sample != null) {
 				sample.getObject().type().registerDerivative(sample);
 			}
 		}
@@ -374,43 +355,49 @@ public final class ObjectType {
 			}
 		}
 
-		addSamplesAscendants(allAscendants, this.ascendants.getSamples());
-		addSamplesAscendants(
-				allAscendants,
-				this.ascendants.getDiscardedSamples());
+		addSamplesAscendants(allAscendants);
 
 		return allAscendants;
 	}
 
 	private void addSamplesAscendants(
-			HashMap<Scope, Derivation> allAscendants,
-			Sample[] samples) {
-		for (Sample sample : samples) {
+			HashMap<Scope, Derivation> allAscendants) {
 
-			final ObjectType type = sample.getObject().type();
+		final Sample sample = getSample();
 
-			for (Map.Entry<Scope, Derivation> e
-					: type.allAscendants().entrySet()) {
+		if (sample == null) {
+			return;
+		}
 
-				final Scope scope = e.getKey();
-				final Derivation traversed =
-						e.getValue().traverseSample(sample);
-				final Derivation derivations = allAscendants.get(scope);
+		final ObjectType type = sample.getObject().type();
 
-				if (derivations == null) {
-					allAscendants.put(scope, traversed);
-					continue;
-				}
-				allAscendants.put(scope, derivations.union(traversed));
+		for (Map.Entry<Scope, Derivation> e
+				: type.allAscendants().entrySet()) {
+
+			final Scope scope = e.getKey();
+			final Derivation traversed =
+					e.getValue().traverseSample(sample);
+			final Derivation derivations = allAscendants.get(scope);
+
+			if (derivations == null) {
+				allAscendants.put(scope, traversed);
+				continue;
 			}
+			allAscendants.put(scope, derivations.union(traversed));
 		}
 	}
 
 	private TypeParameters<?> applyAncestorParameters(
 			TypeParameters<?> parameters) {
-		return getAscendants()
-				.getExplicitAncestor()
-				.getType()
+
+		final TypeRef explicitAncestor =
+				getAscendants().getExplicitAncestor();
+
+		if (explicitAncestor == null) {
+			return parameters;
+		}
+
+		return explicitAncestor.getType()
 				.type()
 				.getParameters()
 				.upgradeScope(getObject().getScope())
@@ -418,8 +405,14 @@ public final class ObjectType {
 	}
 
 	private TypeParameters<?> applySampleParameters(
-			TypeParameters<?> parameters,
-			Sample sample) {
+			TypeParameters<?> parameters) {
+
+		final Sample sample = getSample();
+
+		if (sample == null) {
+			return parameters;
+		}
+
 		return sample.getObject()
 				.type()
 				.getParameters()

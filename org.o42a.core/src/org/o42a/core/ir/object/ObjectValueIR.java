@@ -90,7 +90,7 @@ public class ObjectValueIR {
 		return this.objectIR + " Value IR";
 	}
 
-	protected void allocate(ObjectTypeIR typeIR) {
+	protected void allocate(ObjectDataIR typeIR) {
 		value().allocate(typeIR);
 		condition().allocate(typeIR);
 		defs().allocate(typeIR);
