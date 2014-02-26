@@ -149,12 +149,22 @@ public abstract class ContainerMembers {
 					"Can not declare new fields here");
 			return false;
 		}
-		if (field.isStatic() && !getOwner().isStatic()) {
-			member.getLogger().error(
-					"prohibited_static",
-					member,
-					"Static field can not be declared in non-static object");
-			return false;
+		if (field.isStatic()) {
+			if (!getOwner().isStatic()) {
+				member.getLogger().error(
+						"prohibited_static_in_instance",
+						member,
+						"Static field can not be declared "
+						+ "in non-static object");
+				return false;
+			}
+			if (getOwner().isPrototype()) {
+				member.getLogger().error(
+						"prohibited_static_in_prototype",
+						member,
+						"Static field can not be declared inside prototype");
+				return false;
+			}
 		}
 
 		return true;
