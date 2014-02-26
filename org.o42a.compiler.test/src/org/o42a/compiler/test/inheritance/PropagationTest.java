@@ -28,7 +28,7 @@ public class PropagationTest extends CompilerTestCase {
 	public void overrideAncestor() {
 		compile(
 				"A := void (Foo := 1. Bar := foo ())",
-				"B := &a (Foo = 3)");
+				"B := a (Foo = 3)");
 
 		final Obj aFoo = field(this.a, "foo").toObject();
 		final Obj bFoo = field(this.b, "foo").toObject();
@@ -75,7 +75,7 @@ public class PropagationTest extends CompilerTestCase {
 	public void propagateField() {
 		compile(
 				"A := void (Foo := void (Bar := 1))",
-				"B := &a (Foo = * (Bar = 2))");
+				"B := a (Foo = * (Bar = 2))");
 
 		final Obj aFoo = field(this.a, "foo").toObject();
 		final Obj bFoo = field(this.b, "foo").toObject();

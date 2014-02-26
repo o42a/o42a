@@ -114,9 +114,9 @@ public class LinkInheritanceTest extends CompilerTestCase {
 	@Test
 	public void staticLinkPropagation() {
 		compile(
-				"A :=> void (",
+				"A ::= void (",
 				"  Foo := `1",
-				"  Bar := &foo",
+				"  Bar := /a: foo",
 				")",
 				"B := a (Foo = 2)",
 				"C := b",
@@ -140,9 +140,9 @@ public class LinkInheritanceTest extends CompilerTestCase {
 	@Test
 	public void staticLinkTargetPropagation() {
 		compile(
-				"A :=> void (",
+				"A ::= void (",
 				"  Foo := `1",
-				"  Bar := &foo->",
+				"  Bar := /a: foo->",
 				")",
 				"B := a (Foo = 2)",
 				"C := b",

@@ -107,7 +107,7 @@ public class ProtectedFieldVisibilityTest extends CompilerTestCase {
 				"A := void (",
 				"  ::Foo := 1",
 				")",
-				"B := &a (",
+				"B := a (",
 				"  Bar := foo",
 				")");
 

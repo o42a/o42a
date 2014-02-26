@@ -85,9 +85,9 @@ public class LinkObjectTest extends CompilerTestCase {
 	@Test
 	public void staticLink() {
 		compile(
-				"A := void (",
+				"A ::= void (",
 				"  Foo := 1",
-				"  Bar := &foo` link = &foo",
+				"  Bar := (/a: foo)` link = /a: foo",
 				")",
 				"B := a (Foo = 2)");
 

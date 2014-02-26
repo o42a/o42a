@@ -72,7 +72,7 @@ public class LinkTest extends CompilerTestCase {
 	@Test
 	public void staticLink() {
 		compile(
-				"A := void (Foo := 1. Bar := `&foo)",
+				"A ::= void (Foo := 1. Bar := `/a: foo)",
 				"B := a (Foo = 2)");
 
 		final Obj a = field("a").toObject();

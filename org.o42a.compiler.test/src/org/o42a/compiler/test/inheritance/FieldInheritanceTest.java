@@ -85,8 +85,8 @@ public class FieldInheritanceTest extends CompilerTestCase {
 	public void overlapField() {
 		compile(
 				"A := void (Foo := 123)",
-				"B := &a (Foo := 12)",
-				"C := &b");
+				"B := a (Foo := 12)",
+				"C := b");
 
 		final Field aFoo = field(this.a, "foo");
 		final Field bFoo = field(this.b, "foo");
@@ -107,9 +107,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 	public void hiddenOverride() {
 		compile(
 				"A := void (Foo := 123)",
-				"Z := &a (Foo := 321)",
-				"B := &z (Foo @a = 12)",
-				"C := &b");
+				"Z := a (Foo := 321)",
+				"B := z (Foo @a = 12)",
+				"C := b");
 
 		final Field aFoo = field(this.a, "foo");
 		final Field z = field("z");
