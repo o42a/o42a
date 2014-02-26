@@ -109,7 +109,7 @@ final class URLSourceReader extends SourceReader {
 			if (result.isError()) {
 				continue;
 			}
-			if (result.isUnderflow()) {
+			if (result.isUnderflow() && this.chars.position() == 0) {
 				continue;
 			}
 
