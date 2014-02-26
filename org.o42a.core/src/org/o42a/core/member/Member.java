@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 import static org.o42a.core.member.impl.MemberPropagatedFromID.memberScopePrefix;
+import static org.o42a.core.ref.path.Path.staticPath;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
@@ -120,6 +121,9 @@ public abstract class Member extends Contained implements MemberPath {
 
 	@Override
 	public final Path pathToMember() {
+		if (isStatic()) {
+			return staticPath(getScope(), getScope()).append(getMemberKey());
+		}
 		return getMemberKey().toPath();
 	}
 
@@ -183,6 +187,10 @@ public abstract class Member extends Contained implements MemberPath {
 	public abstract Visibility getVisibility();
 
 	public abstract boolean isOverride();
+
+	public boolean isStatic() {
+		return false;
+	}
 
 	public final boolean isPropagated() {
 		return getPropagatedFrom() != null;

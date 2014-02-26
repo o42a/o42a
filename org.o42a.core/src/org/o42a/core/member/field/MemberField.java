@@ -94,6 +94,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return getDeclaration().isPrototype();
 	}
 
+	@Override
 	public final boolean isStatic() {
 		return getDeclaration().isStatic();
 	}
