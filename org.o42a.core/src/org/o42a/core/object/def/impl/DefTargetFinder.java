@@ -21,6 +21,7 @@ package org.o42a.core.object.def.impl;
 
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.ref.path.Path.staticPath;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import org.o42a.core.Container;
@@ -83,11 +84,14 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		return false;
+		return staticScope(step, module.getScope());
 	}
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
+		this.path =
+				staticPath(getScope(), scope)
+				.bind(this.originalPath, getScope());
 		return true;
 	}
 
