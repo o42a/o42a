@@ -43,6 +43,16 @@ public class DeclaratorTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void staticField() {
+		assertDeclaration(STATIC, "::=");
+	}
+
+	@Test
+	public void staticPrototype() {
+		assertDeclaration(STATIC_PROTOTYPE, "::=>");
+	}
+
+	@Test
 	public void valueAdapter() {
 		assertAdapter(OVERRIDE_VALUE, "=");
 		assertAdapter(VALUE, ":=");
@@ -52,18 +62,6 @@ public class DeclaratorTest extends GrammarTestCase {
 	public void inputValueAdapter() {
 		assertAdapter(OVERRIDE_INPUT, "=<");
 		assertAdapter(INPUT, ":=<");
-	}
-
-	@Test
-	public void prototypeAdapter() {
-		assertAdapter(OVERRIDE_PROTOTYPE, "=>");
-		assertAdapter(PROTOTYPE, ":=>");
-	}
-
-	@Test
-	public void abstractPrototypeAdapter() {
-		assertAdapter(OVERRIDE_ABSTRACT, "=<>");
-		assertAdapter(ABSTRACT, ":=<>");
 	}
 
 	private void assertDeclaration(DeclarationTarget target, String sign) {
