@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 
 
@@ -197,22 +196,12 @@ final class MemberEntry {
 		if (!isOverride() || isPropagated()) {
 			return true;
 		}
-
-		final MemberField field = getMember().toField();
-
-		if (field == null) {
-			return true;
-		}
-
 		for (Member overridden : getMember().getOverridden()) {
-
-			final MemberField f = overridden.toField();
-
-			if (f.isStatic()) {
+			if (overridden.isStatic()) {
 				getMember().getLogger().error(
 						"prohibited_static_override",
 						getMember().getLocation().setDeclaration(
-								f.getLocation()),
+								overridden.getLocation()),
 						"Static field can not be overridded");
 				return false;
 			}
