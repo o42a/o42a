@@ -110,7 +110,7 @@ final class FileSourceReader extends SourceReader {
 				continue;
 			}
 			if (result.isUnderflow()) {
-				if (!this.eof ||  this.chars.position() == 0) {
+				if (!this.eof || this.chars.position() == 0) {
 					continue;
 				}
 			}
