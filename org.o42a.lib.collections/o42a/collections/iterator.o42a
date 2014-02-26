@@ -7,8 +7,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Use namespace 'Console'
 
-Iterator :=> void
-=================
+Iterator ::=> void
+==================
 ~~~
 Iterator over a sequence.
 ~~~

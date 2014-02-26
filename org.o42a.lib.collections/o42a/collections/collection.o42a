@@ -6,8 +6,8 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Collection :=> void
-===================
+Collection ::=> void
+====================
 ~~~
 An abstract collection of elements.
 ~~~
@@ -15,7 +15,7 @@ An abstract collection of elements.
 Element type := void ~~ The type of elements of this collection.
 ###
 
-Iterate :=<> #element type` &iterator
+Iterate :=<> #element type` iterator
 ~~~
 Constructs an iterator over all collection elements.
 ~~~
