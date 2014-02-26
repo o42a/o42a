@@ -73,19 +73,31 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 
 			final SourcePosition start = context.current().fix();
 			final boolean override;
+			final boolean staticField;
 
 			switch (context.next()) {
-			case ':':
-				if (context.next() != '=') {
-					return null;
-				}
-				override = false;
-				break;
 			case '=':
 				override = true;
+				staticField = false;
+				break;
+			case ':':
+				override = false;
+				switch (context.next()) {
+				case '=':
+					staticField = false;
+					break;
+				case ':':
+					staticField = true;
+					if (context.next() != '=') {
+						return null;
+					}
+					break;
+				default:
+					return null;
+				}
 				break;
 			default:
-				return null;// not a declaration
+				return null;// Not a declaration.
 			}
 
 			final DeclarationTarget type;
@@ -94,12 +106,17 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			case '>':
 				if (override) {
 					type = OVERRIDE_PROTOTYPE;
+				} else if (staticField) {
+					type = STATIC_PROTOTYPE;
 				} else {
 					type = PROTOTYPE;
 				}
 				context.acceptAll();
 				break;
 			case '<':
+				if (staticField) {
+					return null;// Static field can not be abstract.
+				}
 				if (context.next() == '>') {
 					if (override) {
 						type = OVERRIDE_ABSTRACT;
@@ -119,6 +136,8 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			default:
 				if (override) {
 					type = OVERRIDE_VALUE;
+				} else if (staticField) {
+					type = STATIC;
 				} else {
 					type = VALUE;
 				}

@@ -24,29 +24,25 @@ import org.o42a.ast.atom.SignType;
 
 public enum DeclarationTarget implements SignType {
 
-	VALUE(":=", false, false, false),
-	INPUT(":=<", false, true, false),
-	PROTOTYPE(":=>", false, false, true),
-	ABSTRACT(":=<>", false, true, true),
-	OVERRIDE_VALUE("=", true, false, false),
-	OVERRIDE_INPUT("=<", true, true, false),
-	OVERRIDE_PROTOTYPE("=>", true, false, true),
-	OVERRIDE_ABSTRACT("=<>", true, true, true);
+	VALUE(":=", 0),
+	PROTOTYPE(":=>", Mask.PROTOTYPE_FIELD),
+	INPUT(":=<", Mask.ABSTRACT_FIELD),
+	ABSTRACT(":=<>", Mask.ABSTRACT_FIELD | Mask.PROTOTYPE_FIELD),
+	STATIC("::=", Mask.STATIC_FIELD),
+	STATIC_PROTOTYPE("::=>", Mask.STATIC_FIELD | Mask.PROTOTYPE_FIELD),
+	OVERRIDE_VALUE("=", Mask.OVERRIDE_FIELD),
+	OVERRIDE_PROTOTYPE("=>", Mask.OVERRIDE_FIELD | Mask.PROTOTYPE_FIELD),
+	OVERRIDE_INPUT("=<", Mask.OVERRIDE_FIELD | Mask.ABSTRACT_FIELD),
+	OVERRIDE_ABSTRACT(
+			"=<>",
+			Mask.OVERRIDE_FIELD | Mask.ABSTRACT_FIELD | Mask.PROTOTYPE_FIELD);
 
 	private final String sign;
-	private final boolean override;
-	private final boolean _abstract;
-	private final boolean prototype;
+	private final int mask;
 
-	DeclarationTarget(
-			String sign,
-			boolean override,
-			boolean _abstract,
-			boolean prototype) {
+	DeclarationTarget(String sign, int mask) {
 		this.sign = sign;
-		this.override = override;
-		this._abstract = _abstract;
-		this.prototype = prototype;
+		this.mask = mask;
 	}
 
 	@Override
@@ -55,15 +51,28 @@ public enum DeclarationTarget implements SignType {
 	}
 
 	public boolean isOverride() {
-		return this.override;
-	}
-
-	public boolean isAbstract() {
-		return this._abstract;
+		return (this.mask & Mask.OVERRIDE_FIELD) != 0;
 	}
 
 	public boolean isPrototype() {
-		return this.prototype;
+		return (this.mask & Mask.PROTOTYPE_FIELD) != 0;
+	}
+
+	public boolean isStatic() {
+		return (this.mask & Mask.STATIC_FIELD) != 0;
+	}
+
+	public boolean isAbstract() {
+		return (this.mask & Mask.ABSTRACT_FIELD) != 0;
+	}
+
+	private static final class Mask {
+
+		static final int OVERRIDE_FIELD = 0x01;
+		static final int PROTOTYPE_FIELD = 0x02;
+		static final int STATIC_FIELD = 0x04;
+		static final int ABSTRACT_FIELD = 0x08;
+
 	}
 
 }
