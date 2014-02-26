@@ -7,8 +7,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Use object 'Print error' from 'Console'
 
-Test :=> void (
-~~~~~~~~~~~~~~~
+Test ::=> void (
+~~~~~~~~~~~~~~~~
 Test signature.
 
 Inherit this object or create an adapter to it in public field. Then such
@@ -28,8 +28,8 @@ and executes them.
   <{}>
 )
 
-Fail :=> void (
-~~~~~~~~~~~~~~~
+Fail ::=> void (
+~~~~~~~~~~~~~~~~
 Failure message.
 ~~~
   <*> {
@@ -42,8 +42,8 @@ Failure message.
   }
 )
 
-Assert :=> void (
-~~~~~~~~~~~~~~~~~
+Assert ::=> void (
+~~~~~~~~~~~~~~~~~~
 Assertion.
 
 Usage syntax:
