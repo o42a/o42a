@@ -11,7 +11,6 @@ import static org.o42a.parser.Grammar.expression;
 import org.junit.Test;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.StaticRefNode;
 
 
 public class ExpressionTest extends GrammarTestCase {
@@ -27,30 +26,6 @@ public class ExpressionTest extends GrammarTestCase {
 		final PhraseNode operand = to(PhraseNode.class, result.getOperand());
 
 		assertThat(operand.getPrefix(), isName("foo"));
-	}
-
-	@Test
-	public void staticRefAsLeftOperand() {
-
-		final BinaryNode result =
-				to(BinaryNode.class, parse("&foo + bar"));
-		final StaticRefNode left =
-				to(StaticRefNode.class, result.getLeftOperand());
-
-		assertThat(left.getRef(), isName("foo"));
-		assertThat(result.getRightOperand(), isName("bar"));
-	}
-
-	@Test
-	public void staticRefAsRightOperand() {
-
-		final BinaryNode result =
-				to(BinaryNode.class, parse("foo  + &bar"));
-		final StaticRefNode right =
-				to(StaticRefNode.class, result.getRightOperand());
-
-		assertThat(result.getLeftOperand(), isName("foo"));
-		assertThat(right.getRef(), isName("bar"));
 	}
 
 	@Test

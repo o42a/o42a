@@ -14,7 +14,6 @@ import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 
 
@@ -106,15 +105,8 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void staticRef() {
-		assertThat(parse("&foo"), instanceOf(StaticRefNode.class));
-	}
-
-	@Test
 	public void call() {
 		assertThat(parse("foo ()"), instanceOf(PhraseNode.class));
-		assertThat(parse("&foo ()"), instanceOf(PhraseNode.class));
-		assertThat(parse("* ()"), instanceOf(PhraseNode.class));
 	}
 
 	@Test

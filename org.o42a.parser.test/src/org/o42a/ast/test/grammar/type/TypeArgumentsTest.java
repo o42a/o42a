@@ -14,7 +14,6 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 
@@ -63,27 +62,6 @@ public class TypeArgumentsTest extends GrammarTestCase {
 		assertThat(args.getArguments()[0].getArgument(), isName("foo"));
 		assertThat(args.getArguments()[1].getArgument(), isName("bar"));
 		assertThat(args.getType(), isName("baz"));
-	}
-
-	@Test
-	public void argumentOfStaticRef() {
-
-		final TypeArgumentsNode args = parse("foo` &bar");
-
-		assertThat(args.getArguments().length, is(1));
-
-		final TypeArgNode arg = args.getArguments()[0];
-
-		assertThat(arg.getArgument(), isName("foo"));
-		assertThat(arg.getSuffix().getType(), is(BACKQUOTE));
-
-		final StaticRefNode staticRef =
-				to(StaticRefNode.class, args.getType());
-
-		assertThat(
-				staticRef.getPrefix().getType(),
-				is(StaticRefNode.Prefix.STATIC_REF));
-		assertThat(staticRef.getRef(), isName("bar"));
 	}
 
 	@Test

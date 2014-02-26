@@ -13,7 +13,6 @@ import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.TypeDefinitionNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.StaticRefNode;
 
 
 public class TypeDefinitionTest extends GrammarTestCase {
@@ -36,25 +35,6 @@ public class TypeDefinitionTest extends GrammarTestCase {
 		assertThat(definition.getDefinition().getContent().length, is(1));
 	}
 
-	@Test
-	public void staticRefTypeDefinition() {
-
-		final PhraseNode phrase = parse("&A #(Foo := bar)");
-		final PhrasePartNode[] parts = phrase.getParts();
-		final StaticRefNode staticRef =
-				to(StaticRefNode.class, phrase.getPrefix());
-
-		assertThat(staticRef.getRef(), isName("a"));
-
-		final TypeDefinitionNode definition =
-				to(TypeDefinitionNode.class, parts[0]);
-
-		assertThat(
-				definition.getPrefix().getType(),
-				is(TypeDefinitionNode.Prefix.HASH));
-		assertThat(definition.getDefinition().getContent().length, is(1));
-
-	}
 	private PhraseNode parse(String text) {
 		return to(
 				PhraseNode.class,
