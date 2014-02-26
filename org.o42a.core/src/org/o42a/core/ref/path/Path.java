@@ -73,6 +73,10 @@ public final class Path {
 		return path;
 	}
 
+	public static Path staticPath(Scope from, Scope to) {
+		return new StaticStep(from, to).toPath();
+	}
+
 	public static Path modulePath(Name moduleName) {
 		return new Path(ABSOLUTE_PATH, true, null, new ModuleStep(moduleName));
 	}

@@ -28,6 +28,7 @@ import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
 import static org.o42a.core.object.impl.ScopeField.reusedScopePath;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.core.ref.path.Path.staticPath;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.Collection;
@@ -536,6 +537,9 @@ public abstract class Obj
 	}
 
 	public Path scopePath() {
+		if (isStatic()) {
+			return staticPath(getScope(), getScope().getEnclosingScope());
+		}
 
 		final Path reused = reusedScopePath(this);
 
