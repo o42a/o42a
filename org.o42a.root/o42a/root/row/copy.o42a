@@ -5,6 +5,7 @@ This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Copy :=> void
 =============
 ~~~
@@ -22,23 +23,23 @@ or <target start> greater or equal to target array length, then does nothing
 and results to false.
 ~~~
 
-From := //integer` //link = 0
+From := integer` link = 0
 ~~~
 An index of first element to copy.
 
 Zero by default.
 ~~~
 
-To := //integer` //link = length
+To := integer` link = length
 ~~~
 An index one greater than the last element to copy.
 
 Equals to row length by default.
 ~~~ 
 
-Target :=< #item type` //array` //link ~~ An array to copy elements to.
+Target :=< #item type` array` link ~~ An array to copy elements to.
 
-Target start := //integer` //link = 0
+Target start := integer` link = 0
 ~~~
 An index of first element of target array to copy at.
 

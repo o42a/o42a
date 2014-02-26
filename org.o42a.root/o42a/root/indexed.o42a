@@ -6,8 +6,8 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Indexed :=> void
-================
+Indexed ::=> void
+=================
 ~~~
 A set of items indexed by integer keys (indexes) starting with zero.
 
@@ -18,21 +18,21 @@ can also base on this prototype.
 Item type := void ~~ An indexed items' type reference.
 #################
 
-Length :=< //integer
+Length :=< integer
 ~~~
 Indexed length.
 
 This is one less than a maximum index. 
 ~~~
 
-Item :=<> #item type` //link (
+Item :=<> #item type` link (
   ~~~
   A link to an item with the given index.
 
   Fails when <index> is negative or greater or equals to indexed <length>.
   ~~~
 
-  Index :=< //integer` //link ~~ Item index.
+  Index :=< integer` link ~~ Item index.
 )
 
 <*Item by index> Item (
