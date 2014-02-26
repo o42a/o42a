@@ -143,9 +143,6 @@ public final class StaticPathStartFinder implements PathWalker {
 		}
 		this.startObjectScope = objectScope;
 		this.startObject = object;
-		if (object.getConstructionMode().isRuntime()) {
-			return false;
-		}
 		this.startIndex = ++this.index;
 		return true;
 	}
