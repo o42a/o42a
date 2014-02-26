@@ -30,7 +30,6 @@ import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
@@ -59,25 +58,6 @@ class ClauseExpressionVisitor
 		}
 
 		return super.visitMemberRef(ref, p);
-	}
-
-	@Override
-	public ClauseAccess visitStaticRef(
-			StaticRefNode staticRef,
-			ClauseAccess p) {
-
-		final AscendantsDefinition ascendantsDefinition =
-				CLAUSE_DEF_IP.typeIp().parseAscendants(
-						staticRef,
-						p.distributeAccess());
-
-		if (ascendantsDefinition == null) {
-			return null;
-		}
-
-		p.get().setAscendants(ascendantsDefinition);
-
-		return p;
 	}
 
 	@Override

@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.phrase;
 import static org.o42a.compiler.ip.Interpreter.location;
 
 import org.o42a.ast.expression.*;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -47,22 +46,6 @@ final class SuffixVisitor
 
 	public final Interpreter ip() {
 		return this.phraseIp.ip();
-	}
-
-	@Override
-	public PhraseBuilder visitStaticRef(
-			StaticRefNode staticRef,
-			AccessDistributor p) {
-
-		final PhraseBuilder phrase = new PhraseBuilder(
-				ip(),
-				location(p, this.node),
-				p,
-				this.typeConsumer);
-
-		return phrase.prefixByStaticRef(staticRef)
-				.noDeclarations()
-				.suffix(this.node);
 	}
 
 	@Override

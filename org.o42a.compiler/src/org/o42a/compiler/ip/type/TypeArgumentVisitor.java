@@ -31,7 +31,9 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AbstractTypeArgumentVisitor;
+import org.o42a.ast.type.TypeArgNode;
+import org.o42a.ast.type.TypeArgumentNode;
 import org.o42a.common.ref.ArbitraryTypeRefParameters;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -98,13 +100,6 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 
 	public final TypeInterpreter typeIp() {
 		return this.typeIp;
-	}
-
-	@Override
-	public TypeRefParameters visitStaticRef(
-			StaticRefNode staticRef,
-			AccessDistributor p) {
-		return singleTypeArgument(staticRef, p);
 	}
 
 	@Override
