@@ -220,7 +220,7 @@ public class ClauseInterpreter {
 
 		final DeclarationTarget target = declarator.getTarget();
 
-		if (!target.isOverride() || target.isAbstract()) {
+		if (!target.isOverride() || target.isAbstract() || target.isStatic()) {
 			invalidClauseContent(
 					p.getLogger(),
 					declarator.getDefinitionAssignment());

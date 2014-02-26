@@ -49,15 +49,8 @@ public final class CompiledField extends ObjectField {
 	}
 
 	@Override
-	public final Obj toObject() {
-
-		final Obj object = getScopeObject();
-
-		if (object != null) {
-			return object;
-		}
-
-		return setScopeObject(new CompiledObject(this));
+	protected Obj createObject() {
+		return new CompiledObject(this);
 	}
 
 	@Override

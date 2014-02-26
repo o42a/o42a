@@ -147,9 +147,6 @@ public abstract class Field extends ObjectScope {
 	}
 
 	@Override
-	public abstract Obj toObject();
-
-	@Override
 	public final Field toField() {
 		return this;
 	}
@@ -170,12 +167,16 @@ public abstract class Field extends ObjectScope {
 		return this.member.isAdapter();
 	}
 
-	public final boolean isAbstract() {
-		return this.member.isAbstract();
-	}
-
 	public final boolean isPrototype() {
 		return this.member.isPrototype();
+	}
+
+	public final boolean isStatic() {
+		return this.member.isStatic();
+	}
+
+	public final boolean isAbstract() {
+		return this.member.isAbstract();
 	}
 
 	public final boolean isOverride() {
@@ -250,7 +251,13 @@ public abstract class Field extends ObjectScope {
 		return this.member.toString();
 	}
 
+	@Override
+	protected abstract Obj createObject();
+
 	protected final Obj propagateObject() {
+		if (isStatic()) {
+			return getOverridden()[0].toObject();
+		}
 		return new PropagatedFieldObject(this);
 	}
 

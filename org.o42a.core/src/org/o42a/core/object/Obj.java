@@ -137,18 +137,31 @@ public abstract class Obj
 		return this;
 	}
 
-	public boolean isAbstract() {
-
-		final Field field = getScope().toField();
-
-		return field != null && field.isAbstract();
-	}
-
-	public boolean isPrototype() {
+	public final boolean isPrototype() {
 
 		final Field field = getScope().toField();
 
 		return field != null && field.isPrototype();
+	}
+
+	public final boolean isStatic() {
+
+		final Field field = getScope().toField();
+
+		if (field != null) {
+			return field.isStatic();
+		}
+
+		final Scope enclosingScope = getScope().getEnclosingScope();
+
+		return enclosingScope == null || enclosingScope.isTopScope();
+	}
+
+	public final boolean isAbstract() {
+
+		final Field field = getScope().toField();
+
+		return field != null && field.isAbstract();
 	}
 
 	public boolean isValid() {
