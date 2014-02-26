@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.object.value;
 
+import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DATA_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DATA_ID;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 
 import org.o42a.codegen.code.Code;
