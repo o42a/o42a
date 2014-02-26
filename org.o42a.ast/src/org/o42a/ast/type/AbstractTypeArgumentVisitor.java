@@ -29,11 +29,6 @@ public abstract class AbstractTypeArgumentVisitor<R, P>
 		implements TypeArgumentNodeVisitor<R, P> {
 
 	@Override
-	public R visitStaticRef(StaticRefNode staticRef, P p) {
-		return visitTypeArgument(staticRef, p);
-	}
-
-	@Override
 	public R visitParentheses(ParenthesesNode parentheses, P p) {
 		return visitParentheses(parentheses, p);
 	}

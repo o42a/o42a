@@ -100,8 +100,6 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			return context.parse(unary());
 		case '(':
 			return context.parse(DECLARATIVE.parentheses());
-		case '&':
-			return context.parse(staticRef());
 		case '"':
 		case '\'':
 			return context.parse(text());

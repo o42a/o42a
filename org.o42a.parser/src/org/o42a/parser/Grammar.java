@@ -32,7 +32,6 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.parser.grammar.atom.*;
@@ -47,7 +46,6 @@ import org.o42a.parser.grammar.phrase.PhraseParser;
 import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
-import org.o42a.parser.grammar.type.StaticRefParser;
 import org.o42a.parser.grammar.type.TypeArgumentsParser;
 
 
@@ -117,10 +115,6 @@ public class Grammar {
 
 	public static Parser<RefNode> ref() {
 		return RefParser.REF;
-	}
-
-	public static Parser<StaticRefNode> staticRef() {
-		return StaticRefParser.STATIC_REF;
 	}
 
 	public static Parser<DeclarableAdapterNode> declarableAdapter() {
