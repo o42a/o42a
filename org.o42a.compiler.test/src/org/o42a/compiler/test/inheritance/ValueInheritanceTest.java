@@ -45,7 +45,7 @@ public class ValueInheritanceTest extends CompilerTestCase {
 	public void overridePropagatedValue() {
 		compile(
 				"A := 1",
-				"B := &a (= 2)");
+				"B := a (= 2)");
 		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(this.b, ValueType.INTEGER), is(2L));
 	}

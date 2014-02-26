@@ -68,30 +68,6 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void staticLinkPropagation() {
-		compile(
-				"A :=> void (",
-				"  Foo :=< &integer` link",
-				"  Bar := &integer` link = foo",
-				")",
-				"B := a (Foo = 2)",
-				"C := b",
-				"D := b ()");
-
-		final Field bBar = field(field("b"), "bar");
-		final Field cBar = field(field("c"), "bar");
-		final Field dBar = field(field("d"), "bar");
-
-		final Obj bBarTarget = linkTarget(bBar);
-		final Obj cBarTarget = linkTarget(cBar);
-		final Obj dBarTarget = linkTarget(dBar);
-
-		assertThat(definiteValue(bBarTarget, ValueType.INTEGER), is(2L));
-		assertThat(definiteValue(cBarTarget, ValueType.INTEGER), is(2L));
-		assertThat(definiteValue(dBarTarget, ValueType.INTEGER), is(2L));
-	}
-
-	@Test
 	public void linkAncestorUpgrade() {
 		compile(
 				"Lnk 1 :=> integer` link (",

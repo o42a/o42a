@@ -20,8 +20,8 @@ public class FieldRefTest extends CompilerTestCase {
 	@Test
 	public void staticFieldRefInheritance() {
 		compile(
-				"A := void (Foo := 1)",
-				"B := &a: foo");
+				"A ::= void (Foo := 1)",
+				"B := /a: foo");
 
 		final Obj foo = field(this.a, "foo").toObject();
 
