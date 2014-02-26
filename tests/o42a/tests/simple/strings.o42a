@@ -5,15 +5,15 @@ http://creativecommons.org/publicdomain/zero/1.0/
 Use namespace 'Console'
 Use namespace 'Test'
 
-Strings := test
-===============
+Strings ::= test
+================
 
 Name = "Strings"
 
 Print error '  ' [name] nl
 Run tests
 
-Input := test (
+Input ::= test (
   Name = "Input"
   Print error '    ' [name] nl
 
@@ -21,7 +21,7 @@ Input := test (
   Assert [rt-string 'abc'] "String input is false"
 )
 
-Length := test (
+Length ::= test (
   Name = "Length"
   Print error '    ' [name] nl
 
@@ -29,7 +29,7 @@ Length := test (
   Assert [rt-string 'abc': length == 3] "Wrong string length"
 )
 
-Equality := test (
+Equality ::= test (
   Name = "Equality"
   Print error '    ' [name] nl
 
@@ -40,7 +40,7 @@ Equality := test (
   Assert [--(rt-string 'abc' == "c")] "Non-equal strings are equal"
 )
 
-Non-equality := test (
+Non-equality ::= test (
   Name = "Non-equality"
   Print error '    ' [name] nl
 
@@ -48,7 +48,7 @@ Non-equality := test (
   Assert [--(rt-string 'abc' <> "abc")] "Equal strings are not equal"
 )
 
-Less := test (
+Less ::= test (
   Name = "Less"
   Print error '    ' [name] nl
 
@@ -58,7 +58,7 @@ Less := test (
   Assert [--(rt-string 'a' < "a")] "String is less than itself"
 )
 
-Less or equal := test (
+Less or equal ::= test (
   Name = "Less or equal"
   Print error '    ' [name] nl
 
@@ -68,7 +68,7 @@ Less or equal := test (
   Assert [--(rt-string 'b' <= "a")] "String is less or equal"
 )
 
-Greater := test (
+Greater ::= test (
   Name = "Greater"
   Print error '    ' [name] nl
 
@@ -78,7 +78,7 @@ Greater := test (
   Assert [--(rt-string 'a' > "a")] "String is greater than itself"
 )
 
-Greater or equal := test (
+Greater or equal ::= test (
   Name = "Greater or equal"
   Print error '    ' [name] nl
 
@@ -88,7 +88,7 @@ Greater or equal := test (
   Assert [--(rt-string 'a' >= "b")] "String is greater or equal"
 )
 
-Char := test (
+Char ::= test (
   Name = "Char"
   Print error '    ' [name] nl
 
@@ -99,7 +99,7 @@ Char := test (
   Assert [--rt-string 'abc' [3]] "Char at invalid index"
 )
 
-Substrings := test (
+Substrings ::= test (
   Name = "Substrings"
   Print error '    ' [name] nl
 

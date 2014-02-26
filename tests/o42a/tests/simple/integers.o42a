@@ -5,15 +5,15 @@ http://creativecommons.org/publicdomain/zero/1.0/
 Use namespace 'Console'
 Use namespace 'Test'
 
-Integers := test
-================
+Integers ::= test
+=================
 
 Name = "Integers"
 
 Print error '  ' [name] nl
 Run tests
 
-Unary conditions := test (
+Unary conditions ::= test (
   Name = "Unary conditions"
   Print error '    ' [name] nl
 
@@ -23,7 +23,7 @@ Unary conditions := test (
   Assert [-rt-integer '3'] 'Unary integer minus is not true'
 )
 
-Equal := test (
+Equal ::= test (
   Name = "Equal"
   Print error '    ' [name] nl
 
@@ -32,7 +32,7 @@ Equal := test (
   Assert [rt-integer '7' == rt-integer '7'] 'Integers not equal'
 )
 
-Not equal := test (
+Not equal ::= test (
   Name = "Not equal"
   Print error '    ' [name] nl
 
@@ -40,7 +40,7 @@ Not equal := test (
   Assert [--(rt-integer '9' == rt-integer '7')] 'Integers equal' 
 )
 
-Plus := test (
+Plus ::= test (
   Name = "Plus"
   Print error '    ' [name] nl
 
@@ -48,14 +48,14 @@ Plus := test (
   Assert [+rt-integer '5' == 5] 'Integer plus failed'
 )
 
-Minus := test (
+Minus ::= test (
   Name = "Minus"
   Print error '    ' [name] nl
 
   Assert [-rt-integer '5' == rt-integer '-5'] 'Integer minus failed'
 )
 
-Arithmetics := test (
+Arithmetics ::= test (
   Name = "Arithmetics"
   Print error '    ' [name] nl
 

@@ -5,15 +5,15 @@ http://creativecommons.org/publicdomain/zero/1.0/
 Use namespace 'Console'
 Use namespace 'Test'
 
-Links := test
-=============
+Links ::= test
+==============
 
 Name = "Links"
 
 Print error [name] nl
 Run tests
 
-Reference := test (
+Reference ::= test (
   Name = "Reference link"
   Print error '  ' [name] nl
 
@@ -27,7 +27,7 @@ Reference := test (
   }
 )
 
-Expression := test (
+Expression ::= test (
   Name = "Expression link"
   Print error '  ' [name] nl
 
@@ -41,7 +41,7 @@ Expression := test (
   }
 )
 
-Target and body := test (
+Target and body ::= test (
   Name = "Target and body"
   Print error '  ' [name] nl
   

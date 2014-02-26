@@ -108,13 +108,15 @@ public final class FileModuleCompiler
 		}
 
 		final DeclaratorNode declaratorNode = title.getDeclaratorNode();
+		final DeclarationTarget target = declaratorNode.getTarget();
 
-		if (declaratorNode.getTarget() != DeclarationTarget.VALUE) {
+		if (target != DeclarationTarget.VALUE
+				&& target != DeclarationTarget.STATIC) {
 			getLogger().error(
 					"invalid_module_declaration",
 					declaratorNode.getDefinitionAssignment(),
-					"Module can only declare new object (':='). "
-					+ "It can't declare prototype or override something");
+					"A module can only be declared as a value (`:=`),"
+					+ " or static object (`::=`)");
 		}
 
 		final DeclarableNode declarableNode = declaratorNode.getDeclarable();

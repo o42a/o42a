@@ -5,8 +5,8 @@ http://creativecommons.org/publicdomain/zero/1.0/
 Use namespace 'Console'
 Use namespace 'Test'
 
-Locals := test
-==============
+Locals ::= test
+===============
 Name = "Locals"
 Print error [name] nl
 

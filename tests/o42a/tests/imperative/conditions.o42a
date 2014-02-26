@@ -6,15 +6,15 @@ Use namespace 'Console'
 Use namespace 'Test'
 
 
-Conditions := test
-==================
+Conditions ::= test
+===================
 
 Name = "Conditions"
 
 Print error '  ' [name] nl
 Run tests
 
-True := test (
+True ::= test (
   Name = "True"
   
   Print error '    ' [name] nl
@@ -24,7 +24,7 @@ True := test (
   Assert [value] "Imperative is not true"
 )
 
-False := test (
+False ::= test (
   Name = "False"
   
   Print error '    ' [name] nl

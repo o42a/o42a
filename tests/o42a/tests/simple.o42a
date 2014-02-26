@@ -5,16 +5,15 @@ http://creativecommons.org/publicdomain/zero/1.0/
 Use namespace 'Console'
 Use namespace 'Test'
 
-
-Simple := test
-==============
+Simple ::= test
+===============
 
 Name = "Simple tests"
 
 Print error [name] nl
 Run tests
 
-Assertions := test (
+Assertions ::= test (
   Name = "Assertions"
   
   Print error '  ' [name] nl

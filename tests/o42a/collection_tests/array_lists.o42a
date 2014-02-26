@@ -6,15 +6,15 @@ Use namespace 'Collections'
 Use namespace 'Console'
 Use namespace 'Test'
 
-Array lists := test
-===================
+Array lists ::= test
+====================
 
 Name = "Array lists"
 
 Print error [name] nl
 Run tests
 
-Static := test (
+Static ::= test (
   Name = "Static"
   Print error '  ' [name] nl
    
@@ -26,7 +26,7 @@ Static := test (
   Assert [--list [3]] "Non-existing element accessed"
 )
 
-Runtime := test (
+Runtime ::= test (
   Name = "Runtime"
   Print error '  ' [name] nl
 
@@ -38,7 +38,7 @@ Runtime := test (
   Assert [--list [13]] "Non-existing element accessed"
 )
 
-Iteration := test (
+Iteration ::= test (
   Name = "Iteration"
   Print error '  ' [name] nl
 
@@ -48,7 +48,7 @@ Iteration := test (
   }
 )
 
-Update element := test (
+Update element ::= test (
   Name = "Update element"
   Print error '  ' [name] nl
 
@@ -59,7 +59,7 @@ Update element := test (
   Assert [list [1] == "value 3"] "Assignment failed"
 )
 
-Add element := test (
+Add element ::= test (
   Name = "Add element"
   Print error '  ' [name] nl
 
@@ -69,7 +69,7 @@ Add element := test (
   Assert [list [2] == 3] "Wrong element added"
 )
 
-Insert element := test (
+Insert element ::= test (
   Name = "Insert element"
   Print error '  ' [name] nl
 
@@ -79,7 +79,7 @@ Insert element := test (
   Assert [list [1] == 3] "Wrong element inserted"
 )
 
-Remove element := test (
+Remove element ::= test (
   Name = "Remove element"
   Print error '  ' [name] nl
 
