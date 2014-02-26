@@ -170,7 +170,8 @@ final class SectionTitle implements LogInfo {
 		return FieldDeclaration.fieldDeclaration(
 				new Location(distributor.getContext(), this),
 				distributor,
-				fieldName(fieldName));
+				fieldName(fieldName))
+				.makeStatic();
 	}
 
 	private FieldDeclaration explicitFieldDeclaration(Distributor distributor) {
