@@ -27,6 +27,7 @@ import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
 import static org.o42a.core.object.impl.ScopeField.reusedScopePath;
+import static org.o42a.core.object.impl.ScopeField.scopeFieldFor;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.staticPath;
 import static org.o42a.core.value.TypeParameters.typeParameters;
@@ -856,8 +857,11 @@ public abstract class Obj
 	}
 
 	private void declareScopeField() {
+		if (isStatic()) {
+			return;
+		}
 
-		final ScopeField scopeField = ScopeField.scopeFieldFor(this);
+		final ScopeField scopeField = scopeFieldFor(this);
 
 		if (scopeField != null) {
 			this.objectMembers.addMember(scopeField.toMember());
