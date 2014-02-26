@@ -88,17 +88,6 @@ public abstract class StandaloneObjectScope extends ObjectScope {
 	}
 
 	@Override
-	public Obj toObject() {
-
-		final Obj object = getScopeObject();
-
-		assert object != null :
-			"Scope " + this + " not initialized yet";
-
-		return object;
-	}
-
-	@Override
 	public final Prediction predict(Prediction enclosing) {
 		return predictObject(enclosing, toObject());
 	}
@@ -124,6 +113,11 @@ public abstract class StandaloneObjectScope extends ObjectScope {
 			this.ir = createIR(generator);
 		}
 		return this.ir;
+	}
+
+	@Override
+	protected Obj createObject() {
+		throw new IllegalStateException(this + " is not initialized yet");
 	}
 
 	protected abstract ScopeIR createIR(Generator generator);

@@ -90,12 +90,16 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return getDeclaration().isAdapter();
 	}
 
-	public final boolean isAbstract() {
-		return getDeclaration().isAbstract();
-	}
-
 	public final boolean isPrototype() {
 		return getDeclaration().isPrototype();
+	}
+
+	public final boolean isStatic() {
+		return getDeclaration().isStatic();
+	}
+
+	public final boolean isAbstract() {
+		return getDeclaration().isAbstract();
 	}
 
 	@Override

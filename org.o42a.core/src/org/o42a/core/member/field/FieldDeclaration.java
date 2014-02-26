@@ -33,6 +33,12 @@ import org.o42a.core.st.Reproducer;
 
 public final class FieldDeclaration extends Contained implements Cloneable {
 
+	private static final int PROTOTYPE_MASK = 0x01;
+	private static final int STATIC_MASK = 0x02;
+	private static final int OVERRIDE_MASK = 0x04;
+	private static final int ABSTRACT_MASK = 0x08;
+	private static final int MACRO_MASK = 0x10;
+
 	public static FieldDeclaration fieldDeclaration(
 			LocationInfo location,
 			Distributor distributor,
@@ -43,10 +49,7 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 	private final MemberId memberId;
 	private FieldKey fieldKey;
 	private Visibility visibility = Visibility.PUBLIC;
-	private boolean macro;
-	private boolean override;
-	private boolean isAbstract;
-	private boolean prototype;
+	private int mask;
 	private StaticTypeRef declaredIn;
 
 	FieldDeclaration(
@@ -73,10 +76,7 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		super(location, distributor);
 		this.memberId = memberId;
 		this.visibility = sample.getVisibility();
-		this.macro = sample.isMacro();
-		this.override = sample.isOverride();
-		this.isAbstract = sample.isAbstract();
-		this.prototype = sample.isPrototype();
+		this.mask = sample.mask;
 		this.declaredIn = sample.getDeclaredIn();
 	}
 
@@ -126,55 +126,43 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 	}
 
 	public final boolean isMacro() {
-		return this.macro;
+		return hasMask(MACRO_MASK);
 	}
 
 	public final FieldDeclaration macro() {
-
-		final FieldDeclaration clone = clone();
-
-		clone.macro = true;
-
-		return clone;
-	}
-
-	public final boolean isOverride() {
-		return this.override;
-	}
-
-	public final FieldDeclaration override() {
-
-		final FieldDeclaration clone = clone();
-
-		clone.override = true;
-
-		return clone;
-	}
-
-	public final boolean isAbstract() {
-		return this.isAbstract;
-	}
-
-	public final FieldDeclaration setAbstract() {
-
-		final FieldDeclaration clone = clone();
-
-		clone.isAbstract = true;
-
-		return clone;
+		return setMask(MACRO_MASK);
 	}
 
 	public final boolean isPrototype() {
-		return this.prototype;
+		return hasMask(PROTOTYPE_MASK);
 	}
 
-	public final FieldDeclaration prototype() {
+	public final FieldDeclaration makePrototype() {
+		return setMask(PROTOTYPE_MASK);
+	}
 
-		final FieldDeclaration clone = clone();
+	public final boolean isStatic() {
+		return hasMask(STATIC_MASK);
+	}
 
-		clone.prototype = true;
+	public final FieldDeclaration makeStatic() {
+		return setMask(STATIC_MASK);
+	}
 
-		return clone;
+	public final boolean isOverride() {
+		return hasMask(OVERRIDE_MASK);
+	}
+
+	public final FieldDeclaration override() {
+		return setMask(OVERRIDE_MASK);
+	}
+
+	public final boolean isAbstract() {
+		return hasMask(ABSTRACT_MASK);
+	}
+
+	public final FieldDeclaration makeAbstract() {
+		return setMask(ABSTRACT_MASK);
 	}
 
 	public FieldDeclaration inGroup(MemberId groupId) {
@@ -267,6 +255,25 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
+	}
+
+	private final boolean hasMask(int mask) {
+		return (this.mask & mask) != 0;
+	}
+
+	private final FieldDeclaration setMask(int mask) {
+
+		final int newMask = this.mask | mask;
+
+		if (newMask == this.mask) {
+			return this;
+		}
+
+		final FieldDeclaration clone = clone();
+
+		clone.mask = newMask;
+
+		return clone;
 	}
 
 }

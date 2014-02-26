@@ -186,23 +186,17 @@ public final class ScopeField extends ObjectField {
 	}
 
 	@Override
-	public Obj toObject() {
-
-		final Obj object = getScopeObject();
-
-		if (object != null) {
-			return object;
-		}
+	protected Obj createObject() {
 
 		final Obj objectScope =
 				objectScope(getEnclosingContainer().toObject(), getKey());
 		// Preserve an old scope by default.
-		final Obj newObject =
+		final Obj object =
 				objectScope != null ? objectScope : this.overridden.toObject();
 
-		setScopeObject(newObject);
+		setScopeObject(object);
 
-		return newObject;
+		return object;
 	}
 
 	@Override

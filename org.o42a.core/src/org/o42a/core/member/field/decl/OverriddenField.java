@@ -32,8 +32,9 @@ final class OverriddenField extends Field {
 	}
 
 	@Override
-	public Obj toObject() {
-		return getScopeObject();
+	protected Obj createObject() {
+		throw new IllegalStateException(
+				"The object of overridden field is unknown");
 	}
 
 }

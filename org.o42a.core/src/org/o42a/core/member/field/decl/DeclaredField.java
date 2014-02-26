@@ -81,19 +81,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return this.ascendants = buildAscendants(ascendants);
 	}
 
-	@Override
-	public Obj toObject() {
-		if (getScopeObject() == null) {
-			if (!getKey().isValid()) {
-				setScopeObject(getContext().getNone());
-			} else {
-				setScopeObject(new DeclaredObject(this));
-			}
-		}
-
-		return getScopeObject();
-	}
-
 	public final boolean ownsCompilerContext() {
 
 		final Scope enclosingScope = getEnclosingScope();
@@ -108,6 +95,14 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	public final Inclusions fieldInclusions() {
 		return ownsCompilerContext() ? INCLUSIONS : NO_INCLUSIONS;
+	}
+
+	@Override
+	protected Obj createObject() {
+		if (!getKey().isValid()) {
+			return getContext().getNone();
+		}
+		return new DeclaredObject(this);
 	}
 
 	final boolean initDefinition(Obj object) {

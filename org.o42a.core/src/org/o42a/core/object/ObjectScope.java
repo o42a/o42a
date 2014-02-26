@@ -46,6 +46,14 @@ public abstract class ObjectScope extends AbstractScope {
 	}
 
 	@Override
+	public final Obj toObject() {
+		if (this.object != null) {
+			return this.object;
+		}
+		return this.object = createObject();
+	}
+
+	@Override
 	public String toString() {
 
 		final ID id = getId();
@@ -57,12 +65,14 @@ public abstract class ObjectScope extends AbstractScope {
 		return id.toString();
 	}
 
+	protected final Obj getScopeObject() {
+		return this.object;
+	}
+
 	protected final Obj setScopeObject(Obj object) {
 		return this.object = object;
 	}
 
-	protected final Obj getScopeObject() {
-		return this.object;
-	}
+	protected abstract Obj createObject();
 
 }

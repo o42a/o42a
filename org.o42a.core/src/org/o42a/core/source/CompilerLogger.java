@@ -165,14 +165,6 @@ public class CompilerLogger implements Logger {
 				directiveName);
 	}
 
-	public void prohibitedPrivateAbstract(LogInfo location, String fieldName) {
-		error(
-				"prohibited_private_abstract",
-				location,
-				"Private field '%s' can not be abstract",
-				fieldName);
-	}
-
 	public void syntaxError(LogInfo location) {
 		error("syntax_error", location, "Syntax error");
 	}

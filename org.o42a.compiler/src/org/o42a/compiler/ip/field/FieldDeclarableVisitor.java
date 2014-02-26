@@ -226,15 +226,26 @@ public final class FieldDeclarableVisitor
 
 		if (target.isOverride()) {
 			result = result.override();
+		} else if (target.isStatic()) {
+			if (declaration.isAdapter()) {
+				declaration.getLogger().error(
+						"prohibited_static_adapter",
+						declarator.getDefinitionAssignment(),
+						"Adapter can not be static");
+			} else {
+				result = result.makeStatic();
+			}
 		}
 		if (target.isAbstract()) {
 			if (!declaration.getVisibility().isOverridable()) {
-				declaration.getLogger().prohibitedPrivateAbstract(
+				declaration.getLogger().error(
+						"prohibited_private_abstract",
 						declarator.getDefinitionAssignment(),
+						"Private field '%s' can not be abstract",
 						declaration.getDisplayName());
 				return null;
 			}
-			result = result.setAbstract();
+			result = result.makeAbstract();
 		}
 		if (target.isPrototype()) {
 			if (declaration.isAdapter()) {
@@ -243,7 +254,7 @@ public final class FieldDeclarableVisitor
 						declarator.getDefinitionAssignment(),
 						"Adapter can not be declared as prototype");
 			} else {
-				result = result.prototype();
+				result = result.makePrototype();
 			}
 		}
 

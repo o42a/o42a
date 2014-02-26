@@ -132,7 +132,6 @@ public abstract class ContainerMembers {
 		if (field != null && field.field(dummyUser()).isScopeField()) {
 			return true;
 		}
-
 		if (constructionMode.isStrict()) {
 			member.getLogger().error(
 					"prohibited_member_declaration",
@@ -140,11 +139,21 @@ public abstract class ContainerMembers {
 					"Can not declare new members here");
 			return false;
 		}
-		if (field != null && !constructionMode.canDeclareFields()) {
+		if (field == null) {
+			return true;
+		}
+		if (!constructionMode.canDeclareFields()) {
 			member.getLogger().error(
 					"prohibited_field_declaration",
 					member,
 					"Can not declare new fields here");
+			return false;
+		}
+		if (field.isStatic() && !getOwner().isStatic()) {
+			member.getLogger().error(
+					"prohibited_static",
+					member,
+					"Static field can not be declared in non-static object");
 			return false;
 		}
 

@@ -53,7 +53,12 @@ final class TypeDefinitionVisitor
 		if (definitionNode == null) {
 			return null;
 		}
-		if (declarator.getTarget().isPrototype()) {
+		if (declarator.getTarget().isStatic()) {
+			p.getLogger().error(
+					"prohibited_static_type_parameter",
+					location(p, declarator.getDefinitionAssignment()),
+					"Type parameter can not be static");
+		} else if (declarator.getTarget().isPrototype()) {
 			p.getLogger().error(
 					"prohibited_prototype_type_parameter",
 					location(p, declarator.getDefinitionAssignment()),

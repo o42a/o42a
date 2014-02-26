@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member;
 
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 
 
@@ -102,12 +103,14 @@ final class MemberEntry {
 		if (!key.isValid()) {
 			return null;
 		}
+		if (!validateStaticOverride()) {
+			return null;
+		}
 
 		final Member existing = members.members().get(key);
 
 		if (existing == null) {
 			// Member is not registered yet.
-
 			final Member member = createMember(members.getOwner());
 
 			members.register(key, member);
@@ -188,6 +191,34 @@ final class MemberEntry {
 		// Otherwise, leave it as is.
 		// The member should take care of merging the definitions.
 		return null;
+	}
+
+	private boolean validateStaticOverride() {
+		if (!isOverride() || isPropagated()) {
+			return true;
+		}
+
+		final MemberField field = getMember().toField();
+
+		if (field == null) {
+			return true;
+		}
+
+		for (Member overridden : getMember().getOverridden()) {
+
+			final MemberField f = overridden.toField();
+
+			if (f.isStatic()) {
+				getMember().getLogger().error(
+						"prohibited_static_override",
+						getMember().getLocation().setDeclaration(
+								f.getLocation()),
+						"Static field can not be overridded");
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

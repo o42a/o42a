@@ -266,7 +266,7 @@ class PhraseSubContext extends PhraseContext {
 				.setVisibility(overridden.getVisibility());
 
 		if (getClause().toPlainClause().isPrototype()) {
-			declaration = declaration.prototype();
+			declaration = declaration.makePrototype();
 		}
 
 		return declaration;
