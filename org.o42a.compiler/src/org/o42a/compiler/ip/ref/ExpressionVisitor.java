@@ -33,7 +33,6 @@ import static org.o42a.core.value.ValueType.STRING;
 import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.common.ref.state.KeepValueFragment;
 import org.o42a.compiler.ip.Interpreter;
@@ -44,7 +43,6 @@ import org.o42a.compiler.ip.ref.operator.LogicalExpression;
 import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
@@ -89,19 +87,6 @@ public final class ExpressionVisitor
 		}
 
 		return super.visitText(textNode, p);
-	}
-
-	@Override
-	public Ref visitStaticRef(StaticRefNode staticRef, AccessDistributor p) {
-
-		final AncestorTypeRef ancestor =
-				ip().typeIp().parseAncestor(staticRef, p);
-
-		if (ancestor.isImplied()) {
-			return super.visitStaticRef(staticRef, p);
-		}
-
-		return ancestor.getAncestor().getTypeRef().getRef();
 	}
 
 	@Override

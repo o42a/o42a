@@ -19,19 +19,16 @@
 */
 package org.o42a.compiler.ip.type;
 
-import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
-import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.impliedAncestorTypeRef;
 
 import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.type.ascendant.*;
-import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
+import org.o42a.compiler.ip.type.ascendant.AncestorVisitor;
+import org.o42a.compiler.ip.type.ascendant.StaticAncestorVisitor;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.log.LogInfo;
@@ -113,47 +110,6 @@ public final class TypeInterpreter {
 				ip(),
 				typeParameters,
 				typeConsumer);
-	}
-
-	public AncestorTypeRef parseAncestor(
-			StaticRefNode node,
-			AccessDistributor distributor) {
-		return parseAncestor(distributor, node, null);
-	}
-
-	public AncestorTypeRef parseAncestor(
-			AccessDistributor distributor,
-			StaticRefNode node,
-			TypeRefParameters typeParameters) {
-
-		final RefNode ref = node.getRef();
-
-		if (ref == null) {
-			return impliedAncestorTypeRef();
-		}
-
-		final AncestorRefVisitor ancestorRefVisitor =
-				new AncestorRefVisitor(staticAncestorVisitor(
-						typeParameters,
-						NO_TYPE_CONSUMER));
-
-		return ref.accept(ancestorRefVisitor, distributor);
-	}
-
-	public AscendantsDefinition parseAscendants(
-			StaticRefNode node,
-			AccessDistributor distributor) {
-
-		AscendantsDefinition ascendants = new AscendantsDefinition(
-				location(distributor, node),
-				distributor);
-		final AncestorTypeRef ancestor = parseAncestor(node, distributor);
-
-		if (!ancestor.isImplied()) {
-			ascendants = ancestor.applyTo(ascendants);
-		}
-
-		return ascendants;
 	}
 
 }

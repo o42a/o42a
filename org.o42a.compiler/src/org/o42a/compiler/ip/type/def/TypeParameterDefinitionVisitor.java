@@ -28,13 +28,11 @@ import static org.o42a.compiler.ip.type.TypeInterpreter.redundantTypeArguments;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.ParamTypeRef;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 
@@ -55,23 +53,6 @@ final class TypeParameterDefinitionVisitor
 			TypeRefParameters typeParameters) {
 		this.typeParameters = typeParameters;
 		this.consumer = consumer;
-	}
-
-	@Override
-	public TypeRef visitStaticRef(
-			StaticRefNode staticRef,
-			AccessDistributor p) {
-
-		final AncestorTypeRef ancestor = PLAIN_IP.typeIp().parseAncestor(
-				p.fromDeclaration(),
-				staticRef,
-				this.typeParameters);
-
-		if (ancestor.isImplied()) {
-			return super.visitStaticRef(staticRef, p);
-		}
-
-		return typeRef(ancestor.getAncestor());
 	}
 
 	@Override

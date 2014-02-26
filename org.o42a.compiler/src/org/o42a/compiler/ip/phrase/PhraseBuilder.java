@@ -33,7 +33,6 @@ import org.o42a.ast.phrase.BoundNode;
 import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.statement.AssignmentNode;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.common.phrase.Phrase;
 import org.o42a.common.phrase.part.BinaryPhraseOperator;
@@ -116,21 +115,6 @@ public final class PhraseBuilder extends Contained {
 	public final PhraseBuilder setTypeParameters(
 			ObjectTypeParameters typeParameters) {
 		phrase().setTypeParameters(typeParameters);
-		return this;
-	}
-
-	public PhraseBuilder prefixByStaticRef(StaticRefNode node) {
-
-		final AccessDistributor distributor = distributeAccess();
-		final AncestorTypeRef ancestor =
-				ip().typeIp().parseAncestor(node, distributor);
-
-		if (ancestor.isImplied()) {
-			setImpliedAncestor(location(this, node));
-		} else {
-			ancestor.applyTo(phrase());
-		}
-
 		return this;
 	}
 

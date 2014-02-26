@@ -26,7 +26,6 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.ast.type.StaticRefNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
@@ -50,26 +49,6 @@ final class PhrasePrefixVisitor
 		p.get().setAscendants(new AscendantsDefinition(
 				location(p, ref),
 				p.distribute()));
-
-		return p;
-	}
-
-	@Override
-	public ClauseAccess visitStaticRef(
-			StaticRefNode staticRef,
-			ClauseAccess p) {
-
-		final AccessDistributor distributor = p.distributeAccess();
-		final AscendantsDefinition ascendantsDefinition =
-				CLAUSE_DEF_IP.typeIp().parseAscendants(staticRef, distributor);
-
-		if (ascendantsDefinition == null) {
-			p.get().setAscendants(new AscendantsDefinition(
-					location(p, staticRef),
-					distributor));
-		} else {
-			p.get().setAscendants(ascendantsDefinition);
-		}
 
 		return p;
 	}
