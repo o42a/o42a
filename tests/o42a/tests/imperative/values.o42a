@@ -6,15 +6,15 @@ Use namespace 'Console'
 Use namespace 'Test'
 
 
-Values := test
-==============
+Values ::= test
+===============
 
 Name = "Values"
 
 Print error '  ' [name] nl
 Run tests
 
-Default value := test (
+Default value ::= test (
 
   Value := integer ({}. = Rt-integer '2')
   

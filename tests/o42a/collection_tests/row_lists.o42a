@@ -6,15 +6,15 @@ Use namespace 'Collections'
 Use namespace 'Console'
 Use namespace 'Test'
 
-Row lists := test
-=================
+Row lists ::= test
+==================
 
 Name = "Row lists"
 
 Print error [name] nl
 Run tests
 
-Static := test (
+Static ::= test (
   Name = "Static"
   Print error '  ' [name] nl
    
@@ -26,7 +26,7 @@ Static := test (
   Assert [--list [3]] "Non-existing element accessed"
 )
 
-Runtime := test (
+Runtime ::= test (
   Name = "Runtime"
   Print error '  ' [name] nl
 
@@ -38,7 +38,7 @@ Runtime := test (
   Assert [--list [13]] "Non-existing element accessed"
 )
 
-Iteration := test (
+Iteration ::= test (
   Name = "Iteration"
   Print error '  ' [name] nl
 

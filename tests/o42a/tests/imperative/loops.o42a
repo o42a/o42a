@@ -5,8 +5,8 @@ http://creativecommons.org/publicdomain/zero/1.0/
 Use namespace 'Console'
 Use namespace 'Test'
 
-Loops := test
-=============
+Loops ::= test
+==============
 
 Name = "Loops"
 
@@ -14,7 +14,7 @@ Print error '  ' [name] nl
 
 Run tests
 
-Exit := test (
+Exit ::= test (
   Name = "Exit"
   Print error '    ' [name] nl
 
@@ -27,7 +27,7 @@ Exit := test (
   Assert [result == 2] "Block not exited"
 )
 
-Continue := test (
+Continue ::= test (
   Name = "Continue"
   Print error '    ' [name] nl
 
@@ -40,7 +40,7 @@ Continue := test (
   Assert [result == 3] "Block exited unexpectedly"
 )
 
-Repeat := test (
+Repeat ::= test (
   Name = "Repeat"
   Print error '    ' [name] nl
 
@@ -54,7 +54,7 @@ Repeat := test (
   Assert [counter == 0] "Loop terminated unexpectedly"
 )
 
-Repeat local scope := test (
+Repeat local scope ::= test (
   Name = "Repeat local scope"
   Print error '    ' [name] nl
 

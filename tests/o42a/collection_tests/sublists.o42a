@@ -6,15 +6,15 @@ Use namespace 'Collections'
 Use namespace 'Console'
 Use namespace 'Test'
 
-Sublists := test
-================
+Sublists ::= test
+=================
 
 Name = "Sublists"
 Print error [name] nl
 
 Run tests
 
-Simple := test (
+Simple ::= test (
   Name = "Simple"
   Print error '  ' [name] nl
   
@@ -28,7 +28,7 @@ Simple := test (
   Assert [--sublist [3]] 'Wrong element accessed'
 )
 
-Mutable := test (
+Mutable ::= test (
   Name ="Mutable"
   Print error '  ' [name] nl
 

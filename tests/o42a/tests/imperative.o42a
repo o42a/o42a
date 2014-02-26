@@ -6,8 +6,8 @@ Use namespace 'Console'
 Use namespace 'Test'
 
 
-Imperative := test
-==================
+Imperative ::= test
+===================
 
 Name = "Imperatives"
 

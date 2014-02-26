@@ -5,15 +5,15 @@ http://creativecommons.org/publicdomain/zero/1.0/
 Use namespace 'Console'
 Use namespace 'Test'
 
-Floats := test
-==============
+Floats ::= test
+===============
 
 Name = "Floats"
 
 Print error '  ' [name] nl
 Run tests
 
-Unary conditions := test (
+Unary conditions ::= test (
   Name = "Unary conditions"
   Print error '    ' [name] nl
 
@@ -21,7 +21,7 @@ Unary conditions := test (
   Assert [-rt-float '3.13'] 'Unary float minus is not true'
 )
 
-Equal := test (
+Equal ::= test (
   Name = "Equal"
   Print error '    ' [name] nl
 
@@ -29,7 +29,7 @@ Equal := test (
   Assert [rt-float '7' == 7] 'Float and integer not equal'
 )
 
-Not equal := test (
+Not equal ::= test (
   Name = "Not equal"
   Print error '    ' [name] nl
 
@@ -38,21 +38,21 @@ Not equal := test (
   Assert [rt-float '7.4' <> 7] 'Float and integer equal'
 )
 
-Plus := test (
+Plus ::= test (
   Name = "Plus"
   Print error '    ' [name] nl
 
   Assert [+rt-float '5,1' == 5,1] 'Float plus failed'
 )
 
-Minus := test (
+Minus ::= test (
   Name = "Minus"
   Print error '    ' [name] nl
 
   Assert [-rt-float '5,1' == -5,1] 'Float minus failed'
 )
 
-Arithmetics := test (
+Arithmetics ::= test (
   Name = "Arithmetics"
   Print error '    ' [name] nl
 
@@ -66,7 +66,7 @@ Arithmetics := test (
   _'Float division failed'
 )
 
-Mixed arithmetics := test (
+Mixed arithmetics ::= test (
   Name = "Mixed arithmetics"
   Print error '    ' [name] nl
 
