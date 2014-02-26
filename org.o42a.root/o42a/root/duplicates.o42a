@@ -6,15 +6,15 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Duplicates :=> //array
-======================
+Duplicates ::=> array
+=====================
 ~~~
 An array prefilled with the same item.
 ~~~
 
-Size :=< //integer` //link ~~ The size of array.
+Size :=< integer` link ~~ The size of array.
 
-Duplicate := #item type` //link
+Duplicate := #item type` link
 ~~~
 Array item to prefill the array with.
 

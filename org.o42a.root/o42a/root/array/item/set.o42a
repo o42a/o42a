@@ -12,4 +12,4 @@ Set :=> void
 Assigns a new value to enclosing array item.
 ~~~
 
-New value :=< #item type` //link
+New value :=< #item type` link
