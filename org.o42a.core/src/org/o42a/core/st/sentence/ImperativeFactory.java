@@ -24,9 +24,9 @@ import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.imperative.LoopExitSentence;
-import org.o42a.core.st.impl.imperative.ImperativeInterrogativeSentence;
 import org.o42a.core.st.impl.imperative.DefaultImperativeSentence;
+import org.o42a.core.st.impl.imperative.ImperativeInterrogativeSentence;
+import org.o42a.core.st.impl.imperative.LoopExitSentence;
 import org.o42a.util.string.Name;
 
 
