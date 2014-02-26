@@ -94,6 +94,24 @@ final class StaticStep extends Step {
 	}
 
 	@Override
+	protected void rebuild(PathRebuilder rebuilder) {
+		rebuilder.combinePreviousWithStatic(
+				this,
+				getExpectedScope(),
+				getFinalScope());
+	}
+
+	@Override
+	protected void combineWithStatic(
+			PathRebuilder rebuilder,
+			Step step,
+			Scope expectedScope,
+			Scope finalScope) {
+		getFinalScope().assertSameScope(expectedScope);
+		rebuilder.replace(new StaticStep(getExpectedScope(), finalScope));
+	}
+
+	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
 		return defaultAncestor(location, ref);
 	}

@@ -177,11 +177,26 @@ public abstract class Step {
 	}
 
 	/**
+	 * Combines the step with a static step following this step in the path.
+	 *
+	 * @param rebuilder path rebuilder.
+	 * @param step the static step to combine with.
+	 * @param expectedScope the scope expected when the static step is resolved.
+	 * @param finalScope the final scope the static step is always resolving to.
+	 */
+	protected void combineWithStatic(
+			PathRebuilder rebuilder,
+			Step step,
+			Scope expectedScope,
+			Scope finalScope) {
+	}
+
+	/**
 	 * Combines the step with an object constructor following this step in the
 	 * path.
 	 *
 	 * @param rebuilder path rebuilder.
-	 * @param step the object construction step.
+	 * @param step the object construction step to combine with.
 	 * @param constructor the object constructor.
 	 */
 	protected void combineWithConstructor(

@@ -99,6 +99,17 @@ public final class PathRebuilder implements LocationInfo {
 		this.replacement = 2;
 	}
 
+	public final void combinePreviousWithStatic(
+			Step step,
+			Scope expectedScope,
+			Scope finalScope) {
+		getPreviousStep().combineWithStatic(
+				this,
+				step,
+				expectedScope,
+				finalScope);
+	}
+
 	public final void combinePreviousWithConstructor(
 			Step step,
 			ObjectConstructor constructor) {
