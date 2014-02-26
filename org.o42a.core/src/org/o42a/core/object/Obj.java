@@ -771,8 +771,6 @@ public abstract class Obj
 			cloneOf = sampleObject;
 		}
 
-		assert getScope().isClone();
-
 		return cloneOf;
 	}
 
