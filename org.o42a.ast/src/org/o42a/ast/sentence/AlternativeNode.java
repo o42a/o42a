@@ -20,7 +20,6 @@
 package org.o42a.ast.sentence;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.util.io.SourcePosition;
@@ -51,11 +50,6 @@ public class AlternativeNode extends AbstractNode {
 
 	public SerialNode[] getConjunction() {
 		return this.conjunction;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitAlternative(this, p);
 	}
 
 	@Override

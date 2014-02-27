@@ -20,7 +20,6 @@
 package org.o42a.ast.atom;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 
 
 public class FractionalPartNode extends AbstractNode {
@@ -40,11 +39,6 @@ public class FractionalPartNode extends AbstractNode {
 
 	public final DigitsNode getDigits() {
 		return this.digits;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitFractionalPart(this, p);
 	}
 
 	@Override

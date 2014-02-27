@@ -19,7 +19,6 @@
 */
 package org.o42a.ast.ref;
 
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
@@ -43,11 +42,6 @@ public class ScopeRefNode extends SignNode<ScopeType>
 			SourcePosition end,
 			ScopeType type) {
 		super(start, end, type);
-	}
-
-	@Override
-	public final <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override

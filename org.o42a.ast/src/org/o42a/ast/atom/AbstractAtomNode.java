@@ -21,7 +21,6 @@ package org.o42a.ast.atom;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.Node;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
@@ -35,11 +34,6 @@ public abstract class AbstractAtomNode
 
 	public AbstractAtomNode(Node... nodes) {
 		super(nodes);
-	}
-
-	@Override
-	public final <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return accept((AtomNodeVisitor<R, P>) visitor, p);
 	}
 
 }

@@ -23,7 +23,6 @@ import static org.o42a.ast.phrase.IntervalBracket.LEFT_CLOSED_BRACKET;
 import static org.o42a.ast.phrase.IntervalBracket.RIGHT_CLOSED_BRACKET;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.HorizontalEllipsis;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
@@ -91,11 +90,6 @@ public final class IntervalNode
 			return true;
 		}
 		return this.rightBracket.getType() != RIGHT_CLOSED_BRACKET;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitInterval(this, p);
 	}
 
 	@Override

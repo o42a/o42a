@@ -20,7 +20,6 @@
 package org.o42a.ast.sentence;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 
 
@@ -50,11 +49,6 @@ public class SentenceNode extends AbstractNode {
 
 	public SignNode<SentenceType> getMark() {
 		return this.mark;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitSentence(this, p);
 	}
 
 	@Override

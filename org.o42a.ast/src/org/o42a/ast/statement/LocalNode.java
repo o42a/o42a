@@ -20,7 +20,6 @@
 package org.o42a.ast.statement;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
@@ -63,11 +62,6 @@ public class LocalNode extends AbstractNode implements AssignableNode {
 	@Override
 	public final LocalNode toLocal() {
 		return this;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitLocal(this, p);
 	}
 
 	@Override

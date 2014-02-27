@@ -37,8 +37,6 @@ public interface Node extends LogInfo {
 
 	void addComments(SeparatorNodes separators);
 
-	<R, P> R accept(NodeVisitor<R, P> visitor, P p);
-
 	String nodeType();
 
 	void printNode(StringBuilder out);
