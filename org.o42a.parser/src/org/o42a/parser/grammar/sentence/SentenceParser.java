@@ -19,11 +19,14 @@
 */
 package org.o42a.parser.grammar.sentence;
 
+import static org.o42a.ast.sentence.SentenceType.*;
+import static org.o42a.parser.Grammar.name;
+import static org.o42a.util.string.Characters.HORIZONTAL_ELLIPSIS;
+
+import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.sentence.AlternativeNode;
-import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.ast.sentence.SentenceType;
+import org.o42a.ast.sentence.*;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -33,6 +36,10 @@ import org.o42a.util.io.SourcePosition;
 public class SentenceParser implements Parser<SentenceNode> {
 
 	private static final MarkParser MARK = new MarkParser();
+	private static final ContinuedMarkParser CONTINUED_MARK =
+			new ContinuedMarkParser();
+	private static final ContinuationParser SENTENCE_CONTINUATION =
+			new ContinuationParser();
 
 	private final Grammar grammar;
 
@@ -45,29 +52,35 @@ public class SentenceParser implements Parser<SentenceNode> {
 
 		final AlternativeNode[] disjunction =
 				context.expect(MARK).parse(this.grammar.disjunction());
+		final SeparatorNodes comments;
 
 		if (disjunction == null) {
-
-			final SeparatorNodes comments = context.skipComments(true);
-			final SignNode<SentenceType> mark = context.parse(MARK);
-
-			if (mark == null) {
-				return null;
-			}
-
-			final SentenceNode sentenceNode =
-					new SentenceNode(new AlternativeNode[0], mark);
-
-			sentenceNode.addComments(comments);
-
-			return sentenceNode;
+			comments = context.skipComments(true);
+		} else {
+			comments = null;
 		}
 
 		final SignNode<SentenceType> mark = context.parse(MARK);
-		final SentenceNode sentence = new SentenceNode(disjunction, mark);
+		final ContinuationNode continuation;
 
-		if (mark != null) {
-			return sentence;
+		if (mark == null) {
+			if (disjunction == null) {
+				return null;
+			}
+			continuation = null;
+		} else if (mark.getType().supportsContinuation()) {
+			continuation = context.parse(SENTENCE_CONTINUATION);
+		} else {
+			continuation = null;
+		}
+
+		final SentenceNode sentence = new SentenceNode(
+				disjunction != null ? disjunction : new AlternativeNode[0],
+				mark,
+				continuation);
+
+		if (comments != null) {
+			sentence.addComments(comments);
 		}
 
 		return context.acceptComments(true, sentence);
@@ -79,31 +92,160 @@ public class SentenceParser implements Parser<SentenceNode> {
 		@Override
 		public SignNode<SentenceType> parse(ParserContext context) {
 
-			final SourcePosition start = context.current().fix();
-			final SentenceType sentenceType;
+			final SentenceType sentenceType = guessSentenceType(context);
 
+			if (sentenceType == null) {
+				return null;
+			}
+
+			final SignNode<SentenceType> mark =
+					parseMark(context, sentenceType);
+
+			return context.acceptComments(false, mark);
+		}
+
+		private SentenceType guessSentenceType(ParserContext context) {
 			switch(context.next()) {
 			case '.':
-				sentenceType = SentenceType.DECLARATION;
-				break;
+				return DECLARATION;
 			case '!':
-				sentenceType = SentenceType.EXCLAMATION;
-				break;
+				return EXCLAMATION;
 			case '?':
-				sentenceType = SentenceType.INTERROGATION;
-				break;
+				return INTERROGATION;
+			case HORIZONTAL_ELLIPSIS:
+				return CONTINUATION;
 			default:
 				return null;
+			}
+		}
+
+		private SignNode<SentenceType> parseMark(
+				ParserContext context,
+				SentenceType sentenceType) {
+
+			final SourcePosition start = context.current().fix();
+
+			if (sentenceType == CONTINUATION) {
+				context.acceptAll();
+				return new SignNode<>(
+						start,
+						context.current().fix(),
+						sentenceType);
+			}
+
+			final SignNode<SentenceType> continued =
+					context.parse(CONTINUED_MARK);
+
+			if (continued != null) {
+				return continued;
 			}
 
 			context.acceptAll();
 
-			final SignNode<SentenceType> result = new SignNode<>(
+			return new SignNode<>(
 					start,
 					context.current().fix(),
 					sentenceType);
+		}
 
-			return context.acceptComments(true, result);
+	}
+
+	private static final class ContinuedMarkParser
+			implements Parser<SignNode<SentenceType>> {
+
+		@Override
+		public SignNode<SentenceType> parse(ParserContext context) {
+
+			final SentenceType sentenceType = predictSentenceType(context);
+
+			if (sentenceType == null) {
+				return null;
+			}
+
+			final SourcePosition start = context.current().fix();
+
+			if (context.next() != '.') {
+				return null;
+			}
+			if (context.next() != '.') {
+				return null;
+			}
+
+			if (sentenceType == CONTINUATION) {
+				context.acceptAll();
+			} else {
+				if (context.next() == '.') {
+					return null;
+				}
+				context.acceptButLast();
+			}
+
+			return new SignNode<>(
+					start,
+					context.firstUnaccepted().fix(),
+					sentenceType);
+		}
+
+		private SentenceType predictSentenceType(ParserContext context) {
+			switch (context.next()) {
+			case '?':
+				return CONTINUED_INTERROGATION;
+			case '!':
+				return CONTINUED_EXCLAMATION;
+			case '.':
+				return CONTINUATION;
+			default:
+				return null;
+			}
+		}
+
+	}
+
+	private static final class ContinuationParser
+			implements Parser<ContinuationNode> {
+
+		@Override
+		public ContinuationNode parse(ParserContext context) {
+
+			final NameNode label = context.parse(name());
+
+			if (label == null) {
+				return null;// No label - no continuation
+			}
+
+			context.skipComments(false, label);
+
+			final SignNode<SentenceType> period;
+
+			// The label should be followed either by period, or by new line.
+			switch (context.next()) {
+			case '.':
+				// Period? Can be ellipsis too.
+				final SignNode<SentenceType> mark = context.push(MARK);
+
+				if (mark.getType() != DECLARATION) {
+					// Not a period. Ellipsis probably.
+					return null;
+				}
+
+				period = mark;
+				context.acceptAll();
+				break;
+			case '\n':
+				context.acceptAll();
+				period = null;
+				break;
+			default:
+				if (context.current().line() > label.getEnd().getLine()) {
+					// New line.
+					context.acceptButLast();
+					period = null;
+					break;
+				}
+				return null;
+			}
+
+			return new ContinuationNode(label, period);
 		}
 
 	}

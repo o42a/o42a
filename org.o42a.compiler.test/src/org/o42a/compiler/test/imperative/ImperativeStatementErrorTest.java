@@ -18,8 +18,8 @@ public class ImperativeStatementErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterUnconditionalRepeat() {
-		expectError("compiler.unreachable_statement");
-		compile("A := integer ({..., void})");
+		expectError("compiler.unreachable_sentence");
+		compile("A := integer ({... . void})");
 	}
 
 	@Test
@@ -37,7 +37,7 @@ public class ImperativeStatementErrorTest extends CompilerTestCase {
 	@Test
 	public void unreachableAfterUnconditionalNamedExit() {
 		expectError("compiler.unreachable_statement");
-		compile("A := integer (Foo: {(... foo!), void})");
+		compile("A := integer (Foo: {(!.. foo), void})");
 	}
 
 	@Test
@@ -49,13 +49,13 @@ public class ImperativeStatementErrorTest extends CompilerTestCase {
 	@Test
 	public void unreachableAfterReturnAndRepeatAlts() {
 		expectError("compiler.unreachable_statement");
-		compile("A := integer ({(False, = 1; void, ...), void})");
+		compile("A := integer ({(False, = 1; void, (...)), void})");
 	}
 
 	@Test
 	public void unreachableAfterExitAndRepeatAlts() {
 		expectError("compiler.unreachable_statement");
-		compile("A := integer ({(False, (!); void, ...), void})");
+		compile("A := integer ({(False, (!); void, (...)), void})");
 	}
 
 }

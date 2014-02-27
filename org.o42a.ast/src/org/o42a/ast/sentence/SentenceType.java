@@ -24,19 +24,28 @@ import org.o42a.ast.atom.SignType;
 
 public enum SentenceType implements SignType {
 
-	DECLARATION("."),
-	EXCLAMATION("!"),
-	INTERROGATION("?");
+	DECLARATION(".", false),
+	CONTINUATION("...", true),
+	EXCLAMATION("!", false),
+	CONTINUED_EXCLAMATION("!..", true),
+	INTERROGATION("?", false),
+	CONTINUED_INTERROGATION("?..", true);
 
 	private final String sign;
+	private final boolean supportsContinuation;
 
-	SentenceType(String sign) {
+	SentenceType(String sign, boolean supportsContinuation) {
 		this.sign = sign;
+		this.supportsContinuation = supportsContinuation;
 	}
 
 	@Override
-	public String getSign() {
+	public final String getSign() {
 		return this.sign;
+	}
+
+	public final boolean supportsContinuation() {
+		return this.supportsContinuation;
 	}
 
 }

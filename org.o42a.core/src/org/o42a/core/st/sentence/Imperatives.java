@@ -21,7 +21,7 @@ package org.o42a.core.st.sentence;
 
 import org.o42a.core.Container;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.imperative.EllipsisStatement;
+import org.o42a.core.st.impl.imperative.LoopStatement;
 import org.o42a.util.string.Name;
 
 
@@ -54,12 +54,12 @@ public final class Imperatives extends Statements<Imperatives> {
 	}
 
 	@Override
-	public void ellipsis(LocationInfo location, Name name) {
+	public void loop(LocationInfo location, Name name) {
 		if (isInterrogation()) {
 			getLogger().error(
-					"prohibited_interrogative_repeat",
+					"prohibited_interrogation_loop",
 					location,
-					"Can not repeat the loop from interrogative sentence");
+					"Can not loop from interrogation");
 			dropStatement();
 			return;
 		}
@@ -70,7 +70,7 @@ public final class Imperatives extends Statements<Imperatives> {
 			return;
 		}
 		block.loop();
-		statement(new EllipsisStatement(location, this, name));
+		statement(new LoopStatement(location, this, name));
 	}
 
 	@Override

@@ -38,6 +38,9 @@ public class SectionNode
 			SentenceNode title) {
 		switch (title.getType()) {
 		case INTERROGATION:
+		case CONTINUATION:
+		case CONTINUED_EXCLAMATION:
+		case CONTINUED_INTERROGATION:
 			return null;
 		case DECLARATION:
 		case EXCLAMATION:

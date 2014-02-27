@@ -43,8 +43,6 @@ public interface StatementNodeVisitor<R, P>
 
 	R visitNamedBlock(NamedBlockNode block, P p);
 
-	R visitEllipsis(EllipsisNode ellipsis, P p);
-
 	R visitSubTitle(SubTitleNode subTitle, P p);
 
 }

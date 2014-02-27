@@ -27,13 +27,20 @@ public class SentenceNode extends AbstractNode {
 
 	private final AlternativeNode[] disjunction;
 	private final SignNode<SentenceType> mark;
+	private final ContinuationNode continuation;
 
 	public SentenceNode(
 			AlternativeNode[] disjunction,
-			SignNode<SentenceType> mark) {
-		super(firstNode(disjunction), lastNode(disjunction), mark);
+			SignNode<SentenceType> mark,
+			ContinuationNode continuation) {
+		super(
+				firstNode(disjunction),
+				lastNode(disjunction),
+				mark,
+				continuation);
 		this.disjunction = disjunction;
 		this.mark = mark;
+		this.continuation = continuation;
 	}
 
 	public final SentenceType getType() {
@@ -43,12 +50,16 @@ public class SentenceNode extends AbstractNode {
 		return this.mark.getType();
 	}
 
-	public AlternativeNode[] getDisjunction() {
+	public final AlternativeNode[] getDisjunction() {
 		return this.disjunction;
 	}
 
-	public SignNode<SentenceType> getMark() {
+	public final SignNode<SentenceType> getMark() {
 		return this.mark;
+	}
+
+	public final ContinuationNode getContinuation() {
+		return this.continuation;
 	}
 
 	@Override
@@ -58,6 +69,9 @@ public class SentenceNode extends AbstractNode {
 		}
 		if (this.mark != null) {
 			this.mark.printContent(out);
+		}
+		if (this.continuation != null) {
+			this.continuation.printContent(out);
 		}
 	}
 

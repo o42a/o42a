@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,40 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.atom;
+package org.o42a.ast.sentence;
 
-import org.o42a.ast.phrase.PhrasePartNode;
-import org.o42a.ast.phrase.PhrasePartNodeVisitor;
-import org.o42a.util.io.SourcePosition;
-import org.o42a.util.string.Name;
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.atom.SignNode;
 
 
-public class NameNode extends AbstractAtomNode implements PhrasePartNode {
+public class ContinuationNode extends AbstractNode {
 
-	private final Name name;
+	private final NameNode label;
+	private final SignNode<SentenceType> period;
 
-	public NameNode(SourcePosition start, SourcePosition end, Name name) {
-		super(start, end);
-		this.name = name;
+	public ContinuationNode(NameNode label, SignNode<SentenceType> period) {
+		super(label.getStart(), end(label, period));
+		this.label = label;
+		this.period = period;
 	}
 
-	public final Name getName() {
-		return this.name;
+	public final NameNode getLabel() {
+		return this.label;
 	}
 
-	@Override
-	public <R, P> R accept(AtomNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitName(this, p);
-	}
-
-	@Override
-	public <R, P> R accept(PhrasePartNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitName(this, p);
+	public final SignNode<SentenceType> getPeriod() {
+		return this.period;
 	}
 
 	@Override
 	public void printContent(StringBuilder out) {
-		out.append(this.name);
+		this.label.printContent(out);
+		if (this.period != null) {
+			this.period.printContent(out);
+		}
 	}
 
 }

@@ -47,20 +47,20 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void repeatInInterrogativeSentence() {
-		expectError("compiler.prohibited_interrogative_repeat");
+	public void loopInInterrogativeSentence() {
+		expectError("compiler.prohibited_interrogation_loop");
 		compile(
 				"A := integer ({",
-				"  ...?",
+				"  (...)?",
 				"})");
 	}
 
 	@Test
-	public void repeatInInterrogation() {
-		expectError("compiler.prohibited_interrogative_repeat");
+	public void loopInInterrogation() {
+		expectError("compiler.prohibited_interrogation_loop");
 		compile(
 				"A := integer ({",
-				"  (False; (Void...))?",
+				"  (False; Void, (...))?",
 				"})");
 	}
 
