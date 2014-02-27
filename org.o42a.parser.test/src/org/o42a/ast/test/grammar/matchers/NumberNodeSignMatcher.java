@@ -12,7 +12,7 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignOfNumber;
 
 
-public class NumberNodeSignMatcher <T extends Node>
+public class NumberNodeSignMatcher<T extends Node>
 		extends BaseMatcher<T> {
 
 	@SuppressWarnings("rawtypes")

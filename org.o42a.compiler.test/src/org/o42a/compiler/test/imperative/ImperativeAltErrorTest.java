@@ -19,7 +19,7 @@ public class ImperativeAltErrorTest extends CompilerTestCase {
 	@Test
 	public void unreachableAfterUnconditionalNamedRepeat() {
 		expectError("compiler.unreachable_alternative");
-		compile("A := integer(Foo: {... foo; void})");
+		compile("A := integer(Foo: {(... foo); void})");
 	}
 
 	@Test
@@ -31,7 +31,7 @@ public class ImperativeAltErrorTest extends CompilerTestCase {
 	@Test
 	public void unreachableAfterUnconditionalNamedExit() {
 		expectError("compiler.unreachable_alternative");
-		compile("A := integer(Foo: {(... foo!); void})");
+		compile("A := integer(Foo: {(!.. foo); void})");
 	}
 
 }

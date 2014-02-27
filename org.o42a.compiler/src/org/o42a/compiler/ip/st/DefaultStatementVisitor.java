@@ -25,7 +25,6 @@ import static org.o42a.compiler.ip.field.FieldInterpreter.field;
 import static org.o42a.compiler.ip.st.LocalInterpreter.local;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 
-import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -170,18 +169,6 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			ClauseDeclaratorNode declarator,
 			StatementsAccess p) {
 		clause(getContext(), declarator, p);
-		return null;
-	}
-
-	@Override
-	public Void visitEllipsis(EllipsisNode ellipsis, StatementsAccess p) {
-
-		final NameNode target = ellipsis.getTarget();
-
-		p.get().ellipsis(
-				location(p, ellipsis),
-				target != null ? target.getName() : null);
-
 		return null;
 	}
 

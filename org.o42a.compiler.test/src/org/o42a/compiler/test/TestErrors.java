@@ -42,8 +42,8 @@ final class TestErrors extends TestWatcher implements Logger, CompileErrors {
 
 		assertThat(
 				"Unexpected error occurred: " + record,
-				expected,
-				is(code));
+				code,
+				is(expected));
 	}
 
 	public final void expectError(String code) {

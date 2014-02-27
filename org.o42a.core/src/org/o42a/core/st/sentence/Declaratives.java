@@ -71,12 +71,12 @@ public final class Declaratives extends Statements<Declaratives> {
 	}
 
 	@Override
-	public void ellipsis(LocationInfo location, Name name) {
+	public void loop(LocationInfo location, Name name) {
 		dropStatement();
 		getLogger().error(
-				"prohibited_declarative_ellipsis",
+				"prohibited_declarative_loop",
 				location,
-				"Ellipsis is only allowed within imperative block");
+				"Loops are only allowed within imperative blocks");
 	}
 
 	@Override

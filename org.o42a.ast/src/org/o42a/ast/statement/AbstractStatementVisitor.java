@@ -67,11 +67,6 @@ public abstract class AbstractStatementVisitor<R, P>
 	}
 
 	@Override
-	public R visitEllipsis(EllipsisNode ellipsis, P p) {
-		return visitStatement(ellipsis, p);
-	}
-
-	@Override
 	public R visitSubTitle(SubTitleNode subTitle, P p) {
 		return visitStatement(subTitle, p);
 	}

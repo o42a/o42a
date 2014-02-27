@@ -19,12 +19,16 @@
 */
 package org.o42a.compiler.ip.st;
 
+import static org.o42a.ast.sentence.SentenceType.CONTINUED_INTERROGATION;
+
+import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
+import org.o42a.util.string.Name;
 
 
 public final class StInterpreter {
@@ -51,7 +55,7 @@ public final class StInterpreter {
 		}
 	}
 
-	public static Sentence<?> addSentence(
+	public static void addSentence(
 			AccessRules accessRules,
 			StatementVisitor statementVisitor,
 			Block<?> block,
@@ -64,12 +68,15 @@ public final class StInterpreter {
 
 		switch (type) {
 		case DECLARATION:
+		case CONTINUATION:
 			sentence = block.declare(location);
 			break;
 		case EXCLAMATION:
+		case CONTINUED_EXCLAMATION:
 			sentence = block.exit(location);
 			break;
 		case INTERROGATION:
+		case CONTINUED_INTERROGATION:
 			sentence = block.interrogate(location);
 			break;
 		default:
@@ -77,11 +84,12 @@ public final class StInterpreter {
 					"Unsupported sentence type: " + type);
 		}
 
-		if (sentence != null) {
-			fillSentence(accessRules, statementVisitor, sentence, node);
+		if (sentence == null) {
+			return;
 		}
 
-		return sentence;
+		fillSentence(accessRules, statementVisitor, sentence, node);
+		addContinuation(block, sentence, node, type);
 	}
 
 	private static void fillSentence(
@@ -121,6 +129,47 @@ public final class StInterpreter {
 				st.accept(statementVisitor, accessRules.statements(alt));
 			}
 		}
+	}
+
+	private static void addContinuation(
+			Block<?> block,
+			Sentence<?> sentence,
+			SentenceNode node,
+			SentenceType type) {
+
+		final Location location = sentence.getLocation();
+
+		if (!type.supportsContinuation()) {
+			return;
+		}
+
+		final Name label;
+		final Location continuationLocation;
+		final ContinuationNode continuationNode = node.getContinuation();
+
+		if (continuationNode != null) {
+			continuationLocation =
+					new Location(location.getContext(), continuationNode);
+
+			final NameNode labelNode = continuationNode.getLabel();
+
+			label = labelNode != null ? labelNode.getName() : null;
+		} else {
+			continuationLocation =
+					new Location(location.getContext(), node.getMark());
+			label = null;
+		}
+
+		final Sentence<?> continuation;
+
+		if (type == CONTINUED_INTERROGATION) {
+			continuation = block.declare(continuationLocation);
+		} else {
+			continuation = sentence;
+		}
+
+		continuation.alternative(continuationLocation)
+		.loop(continuationLocation, label);
 	}
 
 	private StInterpreter() {

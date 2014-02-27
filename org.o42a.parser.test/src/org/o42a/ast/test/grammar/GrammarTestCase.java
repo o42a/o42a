@@ -23,9 +23,7 @@ import org.o42a.ast.atom.SignType;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.phrase.PhrasePartNode;
-import org.o42a.ast.sentence.AlternativeNode;
-import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.ast.sentence.SerialNode;
+import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.ast.test.grammar.matchers.*;
 import org.o42a.parser.Parser;
@@ -141,6 +139,17 @@ public class GrammarTestCase {
 
 	public static <S extends SignType> S signType(SignNode<S> node) {
 		return node == null ? null : node.getType();
+	}
+
+	public static Matcher<SentenceNode> sentenceOfType(
+			SentenceType sentenceType) {
+		return new SentenceTypeMatcher(sentenceType);
+	}
+
+	public static Matcher<SentenceNode> sentenceWithContinuation(
+			String label,
+			boolean withPeriod) {
+		return new SentenceContinuationMatcher(label, withPeriod);
 	}
 
 	public static SentenceNode singleSentence(BlockNode<?> block) {

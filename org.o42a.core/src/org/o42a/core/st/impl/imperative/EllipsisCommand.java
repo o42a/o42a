@@ -35,12 +35,12 @@ import org.o42a.core.value.link.TargetResolver;
 
 abstract class EllipsisCommand extends Command {
 
-	EllipsisCommand(EllipsisStatement ellipsis, CommandEnv env) {
+	EllipsisCommand(LoopStatement ellipsis, CommandEnv env) {
 		super(ellipsis, env);
 	}
 
-	public final EllipsisStatement getEllipsis() {
-		return (EllipsisStatement) getStatement();
+	public final LoopStatement getEllipsis() {
+		return (LoopStatement) getStatement();
 	}
 
 	@Override
@@ -78,7 +78,7 @@ abstract class EllipsisCommand extends Command {
 
 	static class ExitCommand extends EllipsisCommand {
 
-		ExitCommand(EllipsisStatement ellipsis, CommandEnv env) {
+		ExitCommand(LoopStatement ellipsis, CommandEnv env) {
 			super(ellipsis, env);
 		}
 
@@ -102,7 +102,7 @@ abstract class EllipsisCommand extends Command {
 
 	static class RepeatCommand extends EllipsisCommand {
 
-		RepeatCommand(EllipsisStatement ellipsis, CommandEnv env) {
+		RepeatCommand(LoopStatement ellipsis, CommandEnv env) {
 			super(ellipsis, env);
 		}
 
@@ -126,9 +126,9 @@ abstract class EllipsisCommand extends Command {
 
 	private static final class ExitCmd implements Cmd {
 
-		private final EllipsisStatement statement;
+		private final LoopStatement statement;
 
-		ExitCmd(EllipsisStatement statement) {
+		ExitCmd(LoopStatement statement) {
 			this.statement = statement;
 		}
 
@@ -149,9 +149,9 @@ abstract class EllipsisCommand extends Command {
 
 	private static final class RepeatCmd implements Cmd {
 
-		private final EllipsisStatement statement;
+		private final LoopStatement statement;
 
-		RepeatCmd(EllipsisStatement statement) {
+		RepeatCmd(LoopStatement statement) {
 			this.statement = statement;
 		}
 

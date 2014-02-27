@@ -142,10 +142,6 @@ public class Grammar {
 		return new NamedBlockParser(name);
 	}
 
-	public static Parser<EllipsisNode> ellipsis() {
-		return EllipsisParser.ELLIPSIS;
-	}
-
 	public static Parser<TextNode> text() {
 		return TextParser.TEXT;
 	}

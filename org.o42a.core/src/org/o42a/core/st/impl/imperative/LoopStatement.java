@@ -26,22 +26,22 @@ import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.util.string.Name;
 
 
-public final class EllipsisStatement extends Statement {
+public final class LoopStatement extends Statement {
 
 	private final Name name;
 	private final boolean exit;
 
-	public EllipsisStatement(
+	public LoopStatement(
 			LocationInfo location,
 			Imperatives enclosing,
 			Name name) {
 		super(location, enclosing.nextDistributor());
 		this.name = name;
-		this.exit = enclosing.getSentence().getKind().isInterrogative();
+		this.exit = enclosing.getSentence().getKind().isExclamatory();
 	}
 
-	private EllipsisStatement(
-			EllipsisStatement prototype,
+	private LoopStatement(
+			LoopStatement prototype,
 			Distributor distributor) {
 		super(prototype, distributor);
 		this.name = prototype.name;
@@ -68,7 +68,7 @@ public final class EllipsisStatement extends Statement {
 	@Override
 	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		return new EllipsisStatement(this, reproducer.distribute());
+		return new LoopStatement(this, reproducer.distribute());
 	}
 
 	@Override
@@ -80,9 +80,9 @@ public final class EllipsisStatement extends Statement {
 			return "(... " + this.name + ')';
 		}
 		if (this.name == null) {
-			return "(...!)";
+			return "(!..)";
 		}
-		return "(... " + this.name + "!)";
+		return "(!.." + this.name + ')';
 	}
 
 }

@@ -19,7 +19,6 @@
 */
 package org.o42a.parser.grammar.sentence;
 
-import static org.o42a.parser.Grammar.ellipsis;
 import static org.o42a.util.string.Characters.HORIZONTAL_ELLIPSIS;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.sentence.SerialNode.Separator;
-import org.o42a.ast.statement.EllipsisNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.*;
 import org.o42a.util.io.SourcePosition;
@@ -71,25 +69,7 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 				statement = new SerialNode(statementStart);
 			}
 
-			int c = context.next();
-
-			if (this.grammar.isImperative()
-					&& (c == '.' || c == HORIZONTAL_ELLIPSIS)) {
-
-				final EllipsisNode ellipsis = context.push(ellipsis());
-
-				if (ellipsis != null) {
-					if (stat != null) {
-						statements.add(statement);
-					}
-					stat = ellipsis;
-					statement = new SerialNode(separator, ellipsis);
-					ellipsis.addComments(separators);
-					context.acceptAll();
-					c = context.next();
-				}
-			}
-			if (c == ',') {
+			if (context.next() == ',') {
 				if (stat == null) {
 					context.getLogger().emptyStatement(statementStart);
 					statement.addComments(separators);

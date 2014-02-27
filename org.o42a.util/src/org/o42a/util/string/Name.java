@@ -214,6 +214,9 @@ public final class Name implements SubID, CharSequence, Comparable<Name> {
 		if (obj == this) {
 			return true;
 		}
+		if (obj == null) {
+			return false;
+		}
 		if (obj.getClass() != getClass()) {
 			return false;
 		}

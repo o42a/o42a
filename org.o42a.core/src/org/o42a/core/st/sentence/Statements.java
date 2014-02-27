@@ -252,7 +252,7 @@ public abstract class Statements<S extends Statements<S>>
 		return local;
 	}
 
-	public abstract void ellipsis(LocationInfo location, Name name);
+	public abstract void loop(LocationInfo location, Name name);
 
 	public final Container nextContainer() {
 		return this.nextContainer;

@@ -76,7 +76,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
-				"  False ...",
+				"  False, (...)",
 				"  Void",
 				"})");
 	}
@@ -138,7 +138,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
-				"  False ... ; = 3",
+				"  False, (...) ; = 3",
 				"  Void",
 				"})");
 	}
@@ -148,7 +148,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
-				"  False ... ; !",
+				"  False, (...) ; !",
 				"  Void",
 				"})");
 	}
