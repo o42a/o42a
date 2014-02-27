@@ -20,7 +20,6 @@
 package org.o42a.ast.phrase;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.expression.ParenthesesNode;
@@ -45,11 +44,6 @@ public class TypeDefinitionNode extends AbstractNode implements PhrasePartNode {
 
 	public final ParenthesesNode getDefinition() {
 		return this.definition;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeDefinition(this, p);
 	}
 
 	@Override

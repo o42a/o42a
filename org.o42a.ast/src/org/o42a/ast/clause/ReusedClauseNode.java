@@ -20,7 +20,6 @@
 package org.o42a.ast.clause;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.ref.RefNode;
@@ -52,11 +51,6 @@ public class ReusedClauseNode extends AbstractNode {
 
 	public final SignNode<ReuseContents> getReuseContents() {
 		return this.reuseContents;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitReusedClause(this, p);
 	}
 
 	@Override

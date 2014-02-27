@@ -20,7 +20,6 @@
 package org.o42a.ast.file;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
@@ -47,11 +46,6 @@ public class FileNode extends AbstractNode {
 
 	public final SectionNode getSection() {
 		return this.section;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitFile(this, p);
 	}
 
 	@Override

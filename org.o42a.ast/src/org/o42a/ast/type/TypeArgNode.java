@@ -20,7 +20,6 @@
 package org.o42a.ast.type;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 
 
@@ -43,11 +42,6 @@ public class TypeArgNode extends AbstractNode {
 
 	public final SignNode<TypeArgumentSuffix> getSuffix() {
 		return this.suffix;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitTypeArg(this, p);
 	}
 
 	@Override

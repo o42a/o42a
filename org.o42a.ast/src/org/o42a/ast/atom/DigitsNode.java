@@ -20,7 +20,6 @@
 package org.o42a.ast.atom;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 
@@ -38,11 +37,6 @@ public class DigitsNode extends AbstractNode {
 
 	public final String getDigits() {
 		return this.digits;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitDigits(this, p);
 	}
 
 	@Override

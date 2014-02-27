@@ -20,7 +20,6 @@
 package org.o42a.ast.file;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.field.DeclaratorNode;
@@ -128,11 +127,6 @@ public class SectionNode
 	@Override
 	public final SignNode<DoubleLine> getClosing() {
 		return null;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitSection(this, p);
 	}
 
 	@Override

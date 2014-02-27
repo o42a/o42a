@@ -20,7 +20,6 @@
 package org.o42a.ast.file;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.SentenceNode;
 
@@ -44,11 +43,6 @@ public class SectionTypeDefinitionNode extends AbstractNode {
 
 	public final SignNode<HashLine> getSeparator() {
 		return this.separator;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitSectionTypeDefinition(this, p);
 	}
 
 	@Override

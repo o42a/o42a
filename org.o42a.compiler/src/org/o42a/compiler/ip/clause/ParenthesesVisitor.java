@@ -19,17 +19,18 @@
 */
 package org.o42a.compiler.ip.clause;
 
-import org.o42a.ast.Node;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.phrase.AbstractPhrasePartVisitor;
+import org.o42a.ast.phrase.PhrasePartNode;
 
 
-final class ParenthesesVisitor extends NodeVisitor<ParenthesesNode, Void> {
+final class ParenthesesVisitor
+		extends AbstractPhrasePartVisitor<ParenthesesNode, Void> {
 
 	private static final ParenthesesVisitor PARENTHESES_VISITOR =
 			new ParenthesesVisitor();
 
-	public static ParenthesesNode extractParentheses(Node node) {
+	public static ParenthesesNode extractParentheses(PhrasePartNode node) {
 		return node.accept(PARENTHESES_VISITOR, null);
 	}
 
@@ -44,7 +45,7 @@ final class ParenthesesVisitor extends NodeVisitor<ParenthesesNode, Void> {
 	}
 
 	@Override
-	protected ParenthesesNode visitAny(Node any, Void p) {
+	protected ParenthesesNode visitPhrasePart(PhrasePartNode part, Void p) {
 		return null;
 	}
 

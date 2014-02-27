@@ -20,7 +20,6 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.CommaSign;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.statement.AssignmentOperator;
@@ -64,11 +63,6 @@ public class ArgumentNode extends AbstractNode {
 
 	public final ExpressionNode getValue() {
 		return this.value;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitArgument(this, p);
 	}
 
 	@Override

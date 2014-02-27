@@ -20,7 +20,6 @@
 package org.o42a.ast.sentence;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.statement.StatementNode;
@@ -50,11 +49,6 @@ public class SerialNode extends AbstractNode {
 
 	public StatementNode getStatement() {
 		return this.statement;
-	}
-
-	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitSerial(this, p);
 	}
 
 	@Override
