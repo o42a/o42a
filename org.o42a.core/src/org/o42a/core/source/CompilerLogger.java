@@ -97,14 +97,6 @@ public class CompilerLogger implements Logger {
 		error("no_definition", location, "Definition is missing");
 	}
 
-	public void notAbstract(LogInfo location) {
-		error("not_abstract", location, "Abstract declaration expected");
-	}
-
-	public void notAdapter(LogInfo location) {
-		error("not_adapter", location, "Adapter declaration expected");
-	}
-
 	public void notClause(LogInfo location) {
 		error("not_clause", location, "Not clause");
 	}
@@ -162,17 +154,6 @@ public class CompilerLogger implements Logger {
 
 	public void syntaxError(LogInfo location) {
 		error("syntax_error", location, "Syntax error");
-	}
-
-	public void unexpectedAbstract(LogInfo location) {
-		error(
-				"unexpected_abstract",
-				location,
-				"Unexpected abstract declaration");
-	}
-
-	public void unexpectedAdapter(LogInfo location) {
-		error("unexpected_adapter", location, "Unexpected adapter declaration");
 	}
 
 	public void unresolved(LogInfo location, Object target) {

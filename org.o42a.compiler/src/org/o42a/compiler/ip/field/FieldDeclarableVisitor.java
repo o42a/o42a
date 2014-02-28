@@ -277,7 +277,7 @@ public final class FieldDeclarableVisitor
 			return declaration;
 		}
 
-		if (!declaration.isOverride()) {
+		if (!declaration.getDeclarationMode().canOverride()) {
 			declaration.getLogger().prohibitedDeclaredIn(
 					declaredIn.getLocation());
 			return declaration;

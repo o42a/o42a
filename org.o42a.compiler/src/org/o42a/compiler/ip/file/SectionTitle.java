@@ -282,7 +282,7 @@ final class SectionTitle implements LogInfo {
 		final SourceFileName fileName = getSource().getFileName();
 
 		if (fileName.isOverride()) {
-			if (!declaration.isOverride()) {
+			if (!declaration.getDeclarationMode().canOverride()) {
 				getLogger().warning(
 						"not_override_section_title",
 						getDeclaratorNode().getDeclarable(),
