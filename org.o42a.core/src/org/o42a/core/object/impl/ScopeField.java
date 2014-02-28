@@ -21,6 +21,7 @@ package org.o42a.core.object.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.member.field.VisibilityMode.PROTECTED_VISIBILITY;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -30,7 +31,9 @@ import org.o42a.core.ir.field.scope.ScopeFld;
 import org.o42a.core.ir.field.scope.ScopeFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBodyData;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
@@ -165,7 +168,7 @@ public final class ScopeField extends ObjectField {
 						owner,
 						owner.distributeIn(owner),
 						memberId)
-				.setVisibility(Visibility.PROTECTED));
+				.setVisibilityMode(PROTECTED_VISIBILITY));
 		this.overridden = null;
 		setScopeObject(owner.getScope().getEnclosingContainer().toObject());
 	}

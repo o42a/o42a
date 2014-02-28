@@ -23,11 +23,11 @@ import static org.o42a.core.member.field.FieldKey.fieldKey;
 import static org.o42a.core.member.field.PrototypeMode.AUTO_PROTOTYPE;
 import static org.o42a.core.member.field.PrototypeMode.NOT_PROTOTYPE;
 import static org.o42a.core.member.field.PrototypeMode.PROTOTYPE;
+import static org.o42a.core.member.field.VisibilityMode.AUTO_VISIBILITY;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.decl.DeclaredField;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -50,7 +50,7 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 
 	private final MemberId memberId;
 	private FieldKey fieldKey;
-	private Visibility visibility = Visibility.PUBLIC;
+	private VisibilityMode visibilityMode = AUTO_VISIBILITY;
 	private PrototypeMode prototypeMode = NOT_PROTOTYPE;
 	private StaticTypeRef declaredIn;
 	private int mask;
@@ -78,8 +78,8 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 			MemberId memberId) {
 		super(location, distributor);
 		this.memberId = memberId;
-		this.visibility = sample.getVisibility();
-		this.prototypeMode = sample.prototypeMode;
+		this.visibilityMode = sample.getVisibilityMode();
+		this.prototypeMode = sample.getPrototypeMode();
 		this.declaredIn = sample.getDeclaredIn();
 		this.mask = sample.mask;
 	}
@@ -116,15 +116,16 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		return this.memberId.getAdapterId() != null;
 	}
 
-	public final Visibility getVisibility() {
-		return this.visibility;
+	public final VisibilityMode getVisibilityMode() {
+		return this.visibilityMode;
 	}
 
-	public final FieldDeclaration setVisibility(Visibility visibility) {
+	public final FieldDeclaration setVisibilityMode(
+			VisibilityMode visibilityMode) {
 
 		final FieldDeclaration clone = clone();
 
-		clone.visibility = visibility;
+		clone.visibilityMode = visibilityMode;
 
 		return clone;
 	}
@@ -208,15 +209,6 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 			} else {
 				field.getLogger().notAdapter(getLocation());
 			}
-			ok = false;
-		}
-
-		if (fieldDeclaration.getVisibility() != getVisibility()) {
-			field.getLogger().unexpectedVisibility(
-					getLocation(),
-					getDisplayName(),
-					getVisibility(),
-					fieldDeclaration.getVisibility());
 			ok = false;
 		}
 

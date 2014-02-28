@@ -42,6 +42,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	private FieldAnalysis analysis;
 	private ArrayList<FieldReplacement> allReplacements;
+	private Visibility visibility;
 	private byte prototype;
 
 	public MemberField(Obj owner, FieldDeclaration declaration) {
@@ -85,7 +86,11 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	@Override
 	public final Visibility getVisibility() {
-		return getFieldKey().getVisibility();
+		if (this.visibility != null) {
+			return this.visibility;
+		}
+		return this.visibility =
+				getFieldKey().getVisibilityMode().detectVisibility(this);
 	}
 
 	public final boolean isAdapter() {

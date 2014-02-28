@@ -23,6 +23,7 @@ import static org.o42a.common.ref.cmp.ComparisonExpression.COMPARISON_MEMBER;
 import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 import static org.o42a.core.st.CommandEnv.defaultEnv;
 
 import org.o42a.common.builtin.BuiltinObject;
@@ -34,7 +35,6 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
@@ -139,7 +139,7 @@ final class ComparisonResult extends BuiltinObject {
 		final Ref phrase = this.comparison.phrase(distributor);
 		final FieldBuilder builder = memberRegistry.newField(
 				fieldDeclaration(this, distributor, COMPARISON_MEMBER)
-				.setVisibility(Visibility.PRIVATE),
+				.setVisibilityMode(PRIVATE_VISIBILITY),
 				phrase.toFieldDefinition());
 
 		if (builder == null) {

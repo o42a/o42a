@@ -21,6 +21,7 @@ package org.o42a.core.member.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
+import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;
@@ -35,7 +36,7 @@ import org.o42a.core.ref.type.TypeRef;
 public final class FieldKey implements Nesting {
 
 	private static final FieldKey BROKEN_FIELD_KEY =
-			new FieldKey(brokenMemberKey(), Visibility.PRIVATE);
+			new FieldKey(brokenMemberKey(), PRIVATE_VISIBILITY);
 
 	static final FieldKey fieldKey(FieldDeclaration declaration) {
 		if (declaration.isOverride()) {
@@ -128,23 +129,23 @@ public final class FieldKey implements Nesting {
 	private static FieldKey declareNewField(FieldDeclaration declaration) {
 		return new FieldKey(
 				declaration.getMemberId().key(declaration.getScope()),
-				declaration.getVisibility());
+				declaration.getVisibilityMode());
 	}
 
 	private final MemberKey memberKey;
-	private final Visibility visibility;
+	private final VisibilityMode visibilityMode;
 
-	private FieldKey(MemberKey memberKey, Visibility visibility) {
+	private FieldKey(MemberKey memberKey, VisibilityMode visibilityMode) {
 		this.memberKey = memberKey;
-		this.visibility = visibility;
+		this.visibilityMode = visibilityMode;
 	}
 
 	public final MemberKey getMemberKey() {
 		return this.memberKey;
 	}
 
-	public final Visibility getVisibility() {
-		return this.visibility;
+	public final VisibilityMode getVisibilityMode() {
+		return this.visibilityMode;
 	}
 
 	@Override

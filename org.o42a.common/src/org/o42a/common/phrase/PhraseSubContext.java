@@ -29,7 +29,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.*;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldBuilder;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -257,13 +259,10 @@ class PhraseSubContext extends PhraseContext {
 		}
 
 		final Obj origin = overriddenKey.getOrigin().toObject();
-		final MemberField overridden =
-				origin.member(overriddenKey).toField();
 
 		declaration =
 				declaration.override()
-				.setDeclaredIn(origin.selfRef().toStaticTypeRef())
-				.setVisibility(overridden.getVisibility());
+				.setDeclaredIn(origin.selfRef().toStaticTypeRef());
 
 		if (getClause().toPlainClause().isPrototype()) {
 			declaration = declaration.prototype();

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.core.member.Visibility;
 import org.o42a.util.log.*;
 
 
@@ -174,20 +173,6 @@ public class CompilerLogger implements Logger {
 
 	public void unexpectedAdapter(LogInfo location) {
 		error("unexpected_adapter", location, "Unexpected adapter declaration");
-	}
-
-	public void unexpectedVisibility(
-			LogInfo location,
-			String fieldName,
-			Visibility actual,
-			Visibility expected) {
-		error(
-				"unexpected_visibility",
-				location,
-				"Wrong '%s' field visibility: %s, but %s expected",
-				fieldName,
-				actual,
-				expected);
 	}
 
 	public void unresolved(LogInfo location, Object target) {

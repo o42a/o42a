@@ -27,15 +27,13 @@ public enum PrototypeMode {
 	PROTOTYPE() {
 
 		@Override
-		protected boolean byOverridden(
-				MemberField field,
-				MemberField overridden) {
+		boolean byOverridden(MemberField field, MemberField overridden) {
 			if (overridden.isPrototype()) {
 				return true;
 			}
 			field.getLogger().error(
 					"unexpected_prototype",
-					field,
+					field.getDeclaration(),
 					"Unexpected prototype declaration");
 			return false;
 		}
@@ -45,15 +43,13 @@ public enum PrototypeMode {
 	NOT_PROTOTYPE() {
 
 		@Override
-		protected boolean byOverridden(
-				MemberField field,
-				MemberField overridden) {
+		boolean byOverridden(MemberField field, MemberField overridden) {
 			if (!overridden.isPrototype()) {
 				return false;
 			}
 			field.getLogger().error(
 					"not_prototype",
-					field,
+					field.getDeclaration(),
 					"Prototype declaration expected");
 			return true;
 		}
@@ -63,9 +59,7 @@ public enum PrototypeMode {
 	AUTO_PROTOTYPE() {
 
 		@Override
-		protected boolean byOverridden(
-				MemberField field,
-				MemberField overridden) {
+		boolean byOverridden(MemberField field, MemberField overridden) {
 			return overridden.isPrototype();
 		}
 
@@ -86,7 +80,7 @@ public enum PrototypeMode {
 		return byOverridden(field, overridden[0].toField());
 	}
 
-	protected abstract boolean byOverridden(
+	abstract boolean byOverridden(
 			MemberField field,
 			MemberField overridden);
 
