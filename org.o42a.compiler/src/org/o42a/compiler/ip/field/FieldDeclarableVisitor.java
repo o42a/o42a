@@ -24,6 +24,8 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
+import static org.o42a.core.member.field.VisibilityMode.PROTECTED_VISIBILITY;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -33,7 +35,6 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -178,9 +179,9 @@ public final class FieldDeclarableVisitor
 
 		switch (scopeRef.getType()) {
 		case SELF:
-			return declaration.setVisibility(Visibility.PRIVATE);
+			return declaration.setVisibilityMode(PRIVATE_VISIBILITY);
 		case PARENT:
-			return declaration.setVisibility(Visibility.PROTECTED);
+			return declaration.setVisibilityMode(PROTECTED_VISIBILITY);
 		case MACRO:
 			return declareMacro(declaration);
 		case MODULE:
@@ -237,7 +238,7 @@ public final class FieldDeclarableVisitor
 			}
 		}
 		if (target.isAbstract()) {
-			if (!declaration.getVisibility().isOverridable()) {
+			if (!declaration.getVisibilityMode().isOverridable()) {
 				declaration.getLogger().error(
 						"prohibited_private_abstract",
 						declarator.getDefinitionAssignment(),

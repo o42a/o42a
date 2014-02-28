@@ -20,10 +20,10 @@
 package org.o42a.common.macro.st;
 
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.member.field.VisibilityMode.PROTECTED_VISIBILITY;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
@@ -120,7 +120,7 @@ public final class StatementConsumer implements Consumer {
 				macroRef,
 				statements.nextDistributor(),
 				statements.getMemberRegistry().tempMemberId())
-				.setVisibility(Visibility.PROTECTED);
+				.setVisibilityMode(PROTECTED_VISIBILITY);
 		final FieldBuilder field = statements.field(
 				declaration,
 				new TempFieldDefinition(expansion, this.condition));
