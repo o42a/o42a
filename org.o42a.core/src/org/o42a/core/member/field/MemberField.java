@@ -90,7 +90,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			return this.visibility;
 		}
 		return this.visibility =
-				getFieldKey().getVisibilityMode().detectVisibility(this);
+				getDeclaration().getVisibilityMode().detectVisibility(this);
 	}
 
 	public final boolean isAdapter() {
@@ -120,7 +120,13 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	@Override
 	public final boolean isOverride() {
-		return getDeclaration().isOverride();
+		if (getDeclaration().isExplicitOverride()) {
+			return true;
+		}
+
+		final MemberKey memberKey = getMemberKey();
+
+		return memberKey.isValid() && !memberKey.getOrigin().is(getScope());
 	}
 
 	public final boolean isUpdated() {

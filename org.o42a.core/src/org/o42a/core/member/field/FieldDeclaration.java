@@ -19,7 +19,9 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.member.field.FieldKey.fieldKey;
+import static org.o42a.core.member.field.DeclarationMode.DECLARE;
+import static org.o42a.core.member.field.DeclarationMode.OVERRIDE;
+import static org.o42a.core.member.field.DeclarationMode.OVERRIDE_OR_DECLARE;
 import static org.o42a.core.member.field.PrototypeMode.AUTO_PROTOTYPE;
 import static org.o42a.core.member.field.PrototypeMode.NOT_PROTOTYPE;
 import static org.o42a.core.member.field.PrototypeMode.PROTOTYPE;
@@ -28,7 +30,6 @@ import static org.o42a.core.member.field.VisibilityMode.AUTO_VISIBILITY;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.member.field.decl.DeclaredField;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -36,9 +37,8 @@ import org.o42a.core.st.Reproducer;
 
 public final class FieldDeclaration extends Contained implements Cloneable {
 
-	private static final int OVERRIDE_MASK = 0x01;
-	private static final int STATIC_MASK = 0x02;
-	private static final int ABSTRACT_MASK = 0x04;
+	private static final int STATIC_MASK = 0x01;
+	private static final int ABSTRACT_MASK = 0x02;
 	private static final int MACRO_MASK = 0x10;
 
 	public static FieldDeclaration fieldDeclaration(
@@ -50,6 +50,7 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 
 	private final MemberId memberId;
 	private FieldKey fieldKey;
+	private DeclarationMode declarationMode = DECLARE;
 	private VisibilityMode visibilityMode = AUTO_VISIBILITY;
 	private PrototypeMode prototypeMode = NOT_PROTOTYPE;
 	private StaticTypeRef declaredIn;
@@ -92,11 +93,11 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		return this.memberId.toString();
 	}
 
-	public FieldKey getFieldKey() {
+	public final FieldKey getFieldKey() {
 		if (this.fieldKey != null) {
 			return this.fieldKey;
 		}
-		return fieldKey(this);
+		return this.fieldKey = getDeclarationMode().fieldKey(this);
 	}
 
 	public final StaticTypeRef getDeclaredIn() {
@@ -168,12 +169,30 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		return setMask(STATIC_MASK);
 	}
 
-	public final boolean isOverride() {
-		return hasMask(OVERRIDE_MASK);
+	public final DeclarationMode getDeclarationMode() {
+		return this.declarationMode;
+	}
+
+	public final boolean isExplicitOverride() {
+		return getDeclarationMode().isExplicitOverride(this);
 	}
 
 	public final FieldDeclaration override() {
-		return setMask(OVERRIDE_MASK);
+
+		final FieldDeclaration clone = clone();
+
+		clone.declarationMode = OVERRIDE;
+
+		return clone;
+	}
+
+	public final FieldDeclaration overrideOrDeclare() {
+
+		final FieldDeclaration clone = clone();
+
+		clone.declarationMode = OVERRIDE_OR_DECLARE;
+
+		return clone;
 	}
 
 	public final boolean isAbstract() {
@@ -190,55 +209,6 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 				distribute(),
 				this,
 				groupId.append(getMemberId()));
-	}
-
-	@Deprecated
-	public boolean validateVariantDeclaration(DeclaredField field) {
-
-		final FieldDeclaration fieldDeclaration = field.getDeclaration();
-
-		if (fieldDeclaration == this) {
-			return true;
-		}
-
-		boolean ok = true;
-
-		if (fieldDeclaration.isAdapter() != isAdapter()) {
-			if (isAdapter()) {
-				field.getLogger().unexpectedAdapter(getLocation());
-			} else {
-				field.getLogger().notAdapter(getLocation());
-			}
-			ok = false;
-		}
-
-		if (fieldDeclaration.isAbstract() != isAbstract()) {
-			if (isAbstract()) {
-				field.getLogger().unexpectedAbstract(getLocation());
-			} else {
-				field.getLogger().notAbstract(getLocation());
-			}
-			ok = false;
-		}
-
-		if (field.isOverride() != isOverride()) {
-			if (isOverride()) {
-				field.getLogger().error(
-						"cant_override_declared",
-						this,
-						"Can not override already declared field '%s'",
-						getDisplayName());
-			} else {
-				field.getLogger().error(
-						"cant_declare_overridden",
-						this,
-						"Can not declare already overridden field '%s'",
-						getDisplayName());
-			}
-			ok = false;
-		}
-
-		return ok;
 	}
 
 	public FieldDeclaration reproduce(Reproducer reproducer) {
