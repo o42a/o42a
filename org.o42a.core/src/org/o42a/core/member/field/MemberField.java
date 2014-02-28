@@ -42,6 +42,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	private FieldAnalysis analysis;
 	private ArrayList<FieldReplacement> allReplacements;
+	private byte prototype;
 
 	public MemberField(Obj owner, FieldDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
@@ -61,6 +62,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 						propagatedFrom,
 						distribute(),
 						propagatedFrom.getDeclaration())
+				.autoPrototype()
 				.override();
 	}
 
@@ -91,7 +93,15 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	public final boolean isPrototype() {
-		return getDeclaration().isPrototype();
+		if (this.prototype != 0) {
+			return this.prototype > 0;
+		}
+		if (getDeclaration().getPrototypeMode().detectPrototype(this)) {
+			this.prototype = 1;
+			return true;
+		}
+		this.prototype = -1;
+		return false;
 	}
 
 	@Override
