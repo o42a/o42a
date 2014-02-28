@@ -20,6 +20,9 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.core.member.field.FieldKey.fieldKey;
+import static org.o42a.core.member.field.PrototypeMode.AUTO_PROTOTYPE;
+import static org.o42a.core.member.field.PrototypeMode.NOT_PROTOTYPE;
+import static org.o42a.core.member.field.PrototypeMode.PROTOTYPE;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
@@ -33,10 +36,9 @@ import org.o42a.core.st.Reproducer;
 
 public final class FieldDeclaration extends Contained implements Cloneable {
 
-	private static final int PROTOTYPE_MASK = 0x01;
+	private static final int OVERRIDE_MASK = 0x01;
 	private static final int STATIC_MASK = 0x02;
-	private static final int OVERRIDE_MASK = 0x04;
-	private static final int ABSTRACT_MASK = 0x08;
+	private static final int ABSTRACT_MASK = 0x04;
 	private static final int MACRO_MASK = 0x10;
 
 	public static FieldDeclaration fieldDeclaration(
@@ -49,8 +51,9 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 	private final MemberId memberId;
 	private FieldKey fieldKey;
 	private Visibility visibility = Visibility.PUBLIC;
-	private int mask;
+	private PrototypeMode prototypeMode = NOT_PROTOTYPE;
 	private StaticTypeRef declaredIn;
+	private int mask;
 
 	FieldDeclaration(
 			LocationInfo location,
@@ -76,8 +79,9 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		super(location, distributor);
 		this.memberId = memberId;
 		this.visibility = sample.getVisibility();
-		this.mask = sample.mask;
+		this.prototypeMode = sample.prototypeMode;
 		this.declaredIn = sample.getDeclaredIn();
+		this.mask = sample.mask;
 	}
 
 	public final MemberId getMemberId() {
@@ -133,12 +137,26 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		return setMask(MACRO_MASK);
 	}
 
-	public final boolean isPrototype() {
-		return hasMask(PROTOTYPE_MASK);
+	public final PrototypeMode getPrototypeMode() {
+		return this.prototypeMode;
 	}
 
-	public final FieldDeclaration makePrototype() {
-		return setMask(PROTOTYPE_MASK);
+	public final FieldDeclaration prototype() {
+
+		final FieldDeclaration clone = clone();
+
+		clone.prototypeMode = PROTOTYPE;
+
+		return clone;
+	}
+
+	public final FieldDeclaration autoPrototype() {
+
+		final FieldDeclaration clone = clone();
+
+		clone.prototypeMode = AUTO_PROTOTYPE;
+
+		return clone;
 	}
 
 	public final boolean isStatic() {
@@ -173,6 +191,7 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 				groupId.append(getMemberId()));
 	}
 
+	@Deprecated
 	public boolean validateVariantDeclaration(DeclaredField field) {
 
 		final FieldDeclaration fieldDeclaration = field.getDeclaration();
@@ -198,15 +217,6 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 					getDisplayName(),
 					getVisibility(),
 					fieldDeclaration.getVisibility());
-			ok = false;
-		}
-
-		if (fieldDeclaration.isPrototype() != isPrototype()) {
-			if (isPrototype()) {
-				field.getLogger().unexpectedPrototype(getLocation());
-			} else {
-				field.getLogger().notPrototype(getLocation());
-			}
 			ok = false;
 		}
 

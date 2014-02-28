@@ -195,7 +195,7 @@ public final class FieldDeclarableVisitor
 	}
 
 	private FieldDeclaration declareMacro(FieldDeclaration declaration) {
-		if (declaration.isPrototype()) {
+		if (declaration.getPrototypeMode().isPrototype()) {
 			getLogger().error(
 					"porhibited_macro_prototype",
 					this.declarator.getDefinitionAssignment(),
@@ -254,7 +254,7 @@ public final class FieldDeclarableVisitor
 						declarator.getDefinitionAssignment(),
 						"Adapter can not be declared as prototype");
 			} else {
-				result = result.makePrototype();
+				result = result.prototype();
 			}
 		}
 

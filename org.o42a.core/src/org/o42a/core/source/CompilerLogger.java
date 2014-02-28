@@ -122,10 +122,6 @@ public class CompilerLogger implements Logger {
 		error("not_deried_from", location, "Not derived from %s", ascendant);
 	}
 
-	public void notPrototype(LogInfo location) {
-		error("not_prototype", location, "Prototype declaration expected");
-	}
-
 	public void notReproducible(LogInfo location) {
 		error("not_reproducible", location, "Not reproducible");
 	}
@@ -178,13 +174,6 @@ public class CompilerLogger implements Logger {
 
 	public void unexpectedAdapter(LogInfo location) {
 		error("unexpected_adapter", location, "Unexpected adapter declaration");
-	}
-
-	public void unexpectedPrototype(LogInfo location) {
-		error(
-				"unexpected_prototype",
-				location,
-				"Unexpected prototype declaration");
 	}
 
 	public void unexpectedVisibility(
