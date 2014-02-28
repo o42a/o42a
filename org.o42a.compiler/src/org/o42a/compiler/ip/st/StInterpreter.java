@@ -21,6 +21,8 @@ package org.o42a.compiler.ip.st;
 
 import static org.o42a.ast.sentence.SentenceType.CONTINUED_INTERROGATION;
 
+import java.util.List;
+
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.sentence.*;
@@ -160,16 +162,24 @@ public final class StInterpreter {
 			label = null;
 		}
 
-		final Sentence<?> continuation;
-
 		if (type == CONTINUED_INTERROGATION) {
-			continuation = block.declare(continuationLocation);
-		} else {
-			continuation = sentence;
+			block.declare(continuationLocation)
+			.alternative(continuationLocation)
+			.loop(continuationLocation, label);
+			return;
 		}
 
-		continuation.alternative(continuationLocation)
-		.loop(continuationLocation, label);
+		final List<? extends Statements<?>> alts = sentence.getAlternatives();
+
+		if (alts.isEmpty()) {
+			sentence.alternative(continuationLocation)
+			.loop(continuationLocation, label);
+			return;
+		}
+
+		for (Statements<?> alt : alts) {
+			alt.loop(continuationLocation, label);
+		}
 	}
 
 	private StInterpreter() {
