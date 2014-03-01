@@ -39,6 +39,7 @@ import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.Contained;
 import org.o42a.core.Scope;
 import org.o42a.core.member.clause.*;
+import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -220,16 +221,20 @@ public class ClauseInterpreter {
 
 		final DeclarationTarget target = declarator.getTarget();
 
-		if (!target.isOverride() || target.isAbstract() || target.isStatic()) {
-			invalidClauseContent(
-					p.getLogger(),
-					declarator.getDefinitionAssignment());
-			return null;
+		if (target != null) {
+			if (!target.isOverride()
+					|| target.isAbstract()
+					|| target.isStatic()) {
+				invalidClauseContent(
+						p.getLogger(),
+						declarator.getTargetTypeNode());
+				return null;
+			}
 		}
 
 		final ExpressionNode definition = declarator.getDefinition();
 
-		if (definition == null) {
+		if (definition == null && target != null) {
 			return null;
 		}
 
@@ -242,13 +247,25 @@ public class ClauseInterpreter {
 		if (builder == null) {
 			return null;
 		}
-		if (target.isPrototype()) {
+		if (target == null) {
+			builder.autoPrototype();
+		} else if (target.isPrototype()) {
 			builder.prototype();
+		}
+
+		final ClauseAccess clauseAccess =
+				new ClauseAccess(p.getRules(), builder);
+
+		if (definition == null) {
+			clauseAccess.get().setAscendants(new AscendantsDefinition(
+					builder,
+					builder.distribute()));
+			return clauseAccess;
 		}
 
 		return definition.accept(
 				OVERRIDER_DEFINITION_VISITOR,
-				new ClauseAccess(p.getRules(), builder));
+				clauseAccess);
 	}
 
 	static ClauseAccess declare(

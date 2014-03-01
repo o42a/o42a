@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.member.field.VisibilityMode.AUTO_VISIBILITY;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 import static org.o42a.core.member.field.VisibilityMode.PROTECTED_VISIBILITY;
 
@@ -184,12 +185,16 @@ public final class FieldDeclarableVisitor
 			return declaration.setVisibilityMode(PROTECTED_VISIBILITY);
 		case MACRO:
 			return declareMacro(declaration);
+		case IMPLIED:
+			if (!declaration.getDeclarationMode().canOverride()) {
+				break;
+			}
+			return declaration.setVisibilityMode(AUTO_VISIBILITY);
 		case MODULE:
 		case ROOT:
 		case LOCAL:
 		case ANONYMOUS:
 		case MACROS:
-		case IMPLIED:
 		}
 
 		return illegalVisibility(declaration, member);
@@ -199,7 +204,7 @@ public final class FieldDeclarableVisitor
 		if (declaration.getPrototypeMode().isPrototype()) {
 			getLogger().error(
 					"porhibited_macro_prototype",
-					this.declarator.getDefinitionAssignment(),
+					this.declarator.getTargetTypeNode(),
 					"Macro can not be declared as prototype");
 		}
 		return declaration.macro();
@@ -225,34 +230,40 @@ public final class FieldDeclarableVisitor
 		FieldDeclaration result = declaration;
 		final DeclarationTarget target = declarator.getTarget();
 
-		if (target.isOverride()) {
+		if (target == null) {
+			if (declaration.isAdapter()) {
+				result = result.overrideOrDeclare();
+			} else {
+				result = result.override();
+			}
+		} else if (target.isOverride()) {
 			result = result.override();
 		} else if (target.isStatic()) {
 			if (declaration.isAdapter()) {
 				declaration.getLogger().error(
 						"prohibited_static_adapter",
-						declarator.getDefinitionAssignment(),
+						declarator.getTargetTypeNode(),
 						"Adapter can not be static");
 			} else {
 				result = result.makeStatic();
 			}
 		}
-		if (target.isAbstract()) {
+		if (target != null && target.isAbstract()) {
 			if (!declaration.getVisibilityMode().isOverridable()) {
 				declaration.getLogger().error(
 						"prohibited_private_abstract",
-						declarator.getDefinitionAssignment(),
+						declarator.getTargetTypeNode(),
 						"Private field '%s' can not be abstract",
 						declaration.getDisplayName());
 				return null;
 			}
 			result = result.makeAbstract();
 		}
-		if (target.isPrototype()) {
+		if (target != null && target.isPrototype()) {
 			if (declaration.isAdapter()) {
 				getLogger().error(
 						"prohibited_adapter_prototype",
-						declarator.getDefinitionAssignment(),
+						declarator.getTargetTypeNode(),
 						"Adapter can not be declared as prototype");
 			} else {
 				result = result.prototype();

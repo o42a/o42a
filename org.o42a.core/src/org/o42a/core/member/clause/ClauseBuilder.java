@@ -23,6 +23,9 @@ import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.clause.ClauseSubstitution.NO_SUBSTITUTION;
 import static org.o42a.core.member.clause.impl.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.clause.impl.DeclaredPlainClause.plainClause;
+import static org.o42a.core.member.field.PrototypeMode.AUTO_PROTOTYPE;
+import static org.o42a.core.member.field.PrototypeMode.NOT_PROTOTYPE;
+import static org.o42a.core.member.field.PrototypeMode.PROTOTYPE;
 import static org.o42a.core.st.impl.SentenceErrors.prohibitedInterrogativeAssignment;
 import static org.o42a.util.ArrayUtil.append;
 
@@ -32,6 +35,7 @@ import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.impl.*;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.PrototypeMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -57,7 +61,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	private ReusedClauseRef[] reusedClauses = NOTHING_REUSED;
 	private BlockBuilder declarations;
 	private boolean mandatory;
-	private boolean prototype;
+	private PrototypeMode prototypeMode = NOT_PROTOTYPE;
 	private boolean assignment;
 	private ClauseSubstitution substitution = NO_SUBSTITUTION;
 
@@ -136,14 +140,21 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this;
 	}
 
-	public final boolean isPrototype() {
-		return this.prototype;
+	public final PrototypeMode getPrototypeMode() {
+		return this.prototypeMode;
 	}
 
 	public final ClauseBuilder prototype() {
 		assert getDeclaration().getKind() == ClauseKind.OVERRIDER :
 			"Field override expected";
-		this.prototype = true;
+		this.prototypeMode = PROTOTYPE;
+		return this;
+	}
+
+	public final ClauseBuilder autoPrototype() {
+		assert getDeclaration().getKind() == ClauseKind.OVERRIDER :
+			"Field override expected";
+		this.prototypeMode = AUTO_PROTOTYPE;
 		return this;
 	}
 

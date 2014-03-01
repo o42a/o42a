@@ -75,23 +75,18 @@ public abstract class RefInterpreter {
 	}
 
 	public static boolean isRootRef(ExpressionNode node) {
-
-		final RefNode ref = node.toRef();
-
-		if (ref == null) {
-			return false;
-		}
-
-		final ScopeRefNode scopeRef = ref.toScopeRef();
-
-		if (scopeRef == null) {
-			return false;
-		}
-
-		return scopeRef.getType() == ScopeType.ROOT;
+		return isScopeRef(node, ScopeType.ROOT);
 	}
 
 	public static boolean isMacroRef(ExpressionNode node) {
+		return isScopeRef(node, ScopeType.MACRO);
+	}
+
+	public static boolean isImpliedRef(ExpressionNode node) {
+		return isScopeRef(node, ScopeType.IMPLIED);
+	}
+
+	public static boolean isScopeRef(ExpressionNode node, ScopeType scopeType) {
 
 		final RefNode ref = node.toRef();
 
@@ -105,7 +100,7 @@ public abstract class RefInterpreter {
 			return false;
 		}
 
-		return scopeRef.getType() == ScopeType.MACRO;
+		return scopeRef.getType() == scopeType;
 	}
 
 	public static boolean linkTargetIsAccessibleFrom(AccessSource accessSource) {

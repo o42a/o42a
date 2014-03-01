@@ -21,10 +21,12 @@ package org.o42a.compiler.ip.type.def;
 
 import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_PLACEMENT;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PLAIN_REF_IP;
+import static org.o42a.compiler.ip.ref.RefInterpreter.isImpliedRef;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.core.member.MemberName.fieldName;
 
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.AbstractDeclarableVisitor;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.MemberRefNode;
@@ -71,12 +73,8 @@ final class TypeParameterKeyVisitor
 		if (name == null) {
 			return super.visitMemberRef(ref, p);
 		}
-		if (ref.getOwner() != null) {
-			p.getLogger().error(
-					"prohibited_type_parameter_visibility",
-					ref.getOwner(),
-					"Type parameter visibility is always public");
-		}
+
+		validateVisibility(ref, p);
 
 		final StaticTypeRef declaredInRef = declaredIn(ref, p);
 
@@ -139,6 +137,20 @@ final class TypeParameterKeyVisitor
 				declarable,
 				"Invalid type parameter name");
 		return brokenMemberKey();
+	}
+
+	private void validateVisibility(MemberRefNode ref, TypeDefinitionBuilder p) {
+
+		final ExpressionNode owner = ref.getOwner();
+
+		if (owner == null || isImpliedRef(owner)) {
+			return;
+		}
+
+		p.getLogger().error(
+				"prohibited_type_parameter_visibility",
+				owner,
+				"Type parameter visibility is always public");
 	}
 
 	private StaticTypeRef declaredIn(

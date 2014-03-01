@@ -262,11 +262,10 @@ class PhraseSubContext extends PhraseContext {
 
 		declaration =
 				declaration.override()
-				.setDeclaredIn(origin.selfRef().toStaticTypeRef());
-
-		if (getClause().toPlainClause().isPrototype()) {
-			declaration = declaration.prototype();
-		}
+				.setDeclaredIn(
+						origin.selfRef().toStaticTypeRef())
+				.setPrototypeMode(
+						getClause().toPlainClause().getPrototypeMode());
 
 		return declaration;
 	}

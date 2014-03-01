@@ -23,6 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.clause.ClauseInterpreter.buildOverrider;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 
+import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.st.StatementsAccess;
@@ -42,16 +43,20 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 
 	@Override
 	public Void visitDeclarator(DeclaratorNode declarator, StatementsAccess p) {
-		if (!declarator.getTarget().isOverride()) {
+
+		final DeclarationTarget target = declarator.getTarget();
+
+		if (target != null && !target.isOverride()) {
 			return super.visitDeclarator(declarator, p);
 		}
 
 		final Distributor distributor =
 				new Contained(getContext(), declarator, p.nextDistributor())
 				.distribute();
-		final ClauseDeclaration declaration = anonymousClauseDeclaration(
-				new Location(getContext(), declarator.getDeclarable()),
-				distributor)
+		final ClauseDeclaration declaration =
+				anonymousClauseDeclaration(
+						new Location(getContext(), declarator.getDeclarable()),
+						distributor)
 				.setKind(ClauseKind.OVERRIDER);
 		final ClauseAccess builder =
 				buildOverrider(declaration, declarator, p);

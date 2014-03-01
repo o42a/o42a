@@ -143,22 +143,22 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		return this.prototypeMode;
 	}
 
-	public final FieldDeclaration prototype() {
+	public final FieldDeclaration setPrototypeMode(
+			PrototypeMode prototypeMode) {
 
 		final FieldDeclaration clone = clone();
 
-		clone.prototypeMode = PROTOTYPE;
+		clone.prototypeMode = prototypeMode;
 
 		return clone;
 	}
 
+	public final FieldDeclaration prototype() {
+		return setPrototypeMode(PROTOTYPE);
+	}
+
 	public final FieldDeclaration autoPrototype() {
-
-		final FieldDeclaration clone = clone();
-
-		clone.prototypeMode = AUTO_PROTOTYPE;
-
-		return clone;
+		return setPrototypeMode(AUTO_PROTOTYPE);
 	}
 
 	public final boolean isStatic() {
