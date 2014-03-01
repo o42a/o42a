@@ -240,6 +240,7 @@ public final class FieldDeclarableVisitor
 			} else {
 				result = result.override();
 			}
+			result = result.autoPrototype();
 		} else if (target.isOverride()) {
 			result = result.override();
 		} else if (target.isStatic()) {

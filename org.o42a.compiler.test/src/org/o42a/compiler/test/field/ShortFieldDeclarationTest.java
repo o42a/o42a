@@ -49,4 +49,24 @@ public class ShortFieldDeclarationTest extends CompilerTestCase {
 				definiteValue(field("b", "f"), ValueType.INTEGER),
 				is(1L));
 	}
+
+	@Test
+	public void overridePrototype() {
+		compile(
+				"A ::= void(",
+				"  F :=> 1",
+				"  G := F",
+				")",
+				"B ::= a (",
+				"  *F (= 2)",
+				")");
+
+		assertThat(
+				definiteValue(field("a", "g"), ValueType.INTEGER),
+				is(1L));
+		assertThat(
+				definiteValue(field("b", "g"), ValueType.INTEGER),
+				is(2L));
+	}
+
 }
