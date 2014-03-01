@@ -18,10 +18,10 @@ Data :=< #element type` array` variable
 Size = \data: length
 
 @Indexed = * (
-  Item => * (
+  *Item (
     = Data [index]
-    @Assignable = * (
-      Set => * (
+    @Assignable (
+      *Set (
         Element assignment: {
           Data [index] <- new value
         }
