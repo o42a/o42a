@@ -83,7 +83,7 @@ public class DefinitionTest extends GrammarTestCase {
 
 		assertThat(field, isName("foo"));
 
-		return this.worker.parse(declarator(field));
+		return this.worker.parse(declarator(field, true));
 	}
 
 }

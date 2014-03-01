@@ -21,12 +21,16 @@ package org.o42a.parser.grammar.field;
 
 import static org.o42a.ast.field.DeclarationTarget.*;
 import static org.o42a.parser.Grammar.initializer;
+import static org.o42a.parser.Grammar.phrase;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
+import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.ref.ScopeType;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -38,13 +42,26 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			new DefinitionAssignmentParser();
 
 	private final DeclarableNode declarable;
+	private final boolean full;
 
-	public DeclaratorParser(DeclarableNode declarable) {
+	public DeclaratorParser(DeclarableNode declarable, boolean full) {
 		this.declarable = declarable;
+		this.full = full;
 	}
 
 	@Override
 	public DeclaratorNode parse(ParserContext context) {
+
+		final int next = context.next();
+
+		if (this.full || next == ':' || next == '=') {
+			return parseFullDeclaration(context);
+		}
+
+		return parseShortDeclaration(context);
+	}
+
+	private DeclaratorNode parseFullDeclaration(ParserContext context) {
 
 		final SignNode<DeclarationTarget> definitionAssignment =
 				context.parse(DEFINITION_ASSIGNMENT);
@@ -63,6 +80,21 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 				this.declarable,
 				definitionAssignment,
 				definition);
+	}
+
+	private DeclaratorNode parseShortDeclaration(ParserContext context) {
+
+		final ScopeRefNode impliedRef = new ScopeRefNode(
+				this.declarable.getStart(),
+				this.declarable.getEnd(),
+				ScopeType.IMPLIED);
+		final PhraseNode phrase = context.parse(phrase(impliedRef));
+
+		if (phrase == null) {
+			context.acceptButLast();
+		}
+
+		return new DeclaratorNode(this.declarable, null, phrase);
 	}
 
 	private static final class DefinitionAssignmentParser
@@ -100,16 +132,36 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 				return null;// Not a declaration.
 			}
 
-			final DeclarationTarget type;
+			final DeclarationTarget target =
+					parseTarget(context, override, staticField);
+
+			if (target == null) {
+				return null;
+			}
+
+			final SignNode<DeclarationTarget> assignment = new SignNode<>(
+					start,
+					context.firstUnaccepted().fix(),
+					target);
+
+			return context.acceptComments(false, assignment);
+		}
+
+		private DeclarationTarget parseTarget(
+				ParserContext context,
+				boolean override,
+				boolean staticField) {
+
+			final DeclarationTarget target;
 
 			switch (context.next()) {
 			case '>':
 				if (override) {
-					type = OVERRIDE_PROTOTYPE;
+					target = OVERRIDE_PROTOTYPE;
 				} else if (staticField) {
-					type = STATIC_PROTOTYPE;
+					target = STATIC_PROTOTYPE;
 				} else {
-					type = PROTOTYPE;
+					target = PROTOTYPE;
 				}
 				context.acceptAll();
 				break;
@@ -119,37 +171,32 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 				}
 				if (context.next() == '>') {
 					if (override) {
-						type = OVERRIDE_ABSTRACT;
+						target = OVERRIDE_ABSTRACT;
 					} else {
-						type = ABSTRACT;
+						target = ABSTRACT;
 					}
 					context.acceptAll();
 					break;
 				}
 				if (override) {
-					type = OVERRIDE_INPUT;
+					target = OVERRIDE_INPUT;
 				} else {
-					type = INPUT;
+					target = INPUT;
 				}
 				context.acceptButLast();
 				break;
 			default:
 				if (override) {
-					type = OVERRIDE_VALUE;
+					target = OVERRIDE_VALUE;
 				} else if (staticField) {
-					type = STATIC;
+					target = STATIC;
 				} else {
-					type = VALUE;
+					target = VALUE;
 				}
 				context.acceptButLast();
 			}
 
-			final SignNode<DeclarationTarget> assignment = new SignNode<>(
-					start,
-					context.firstUnaccepted().fix(),
-					type);
-
-			return context.acceptComments(false, assignment);
+			return target;
 		}
 
 	}
