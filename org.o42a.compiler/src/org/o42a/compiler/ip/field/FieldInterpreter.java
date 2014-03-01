@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.field;
 
+import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
+
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.Interpreter;
@@ -60,27 +62,32 @@ public class FieldInterpreter {
 			return;
 		}
 
+		final FieldDefinition definition;
 		final ExpressionNode definitionNode = node.getDefinition();
 
 		if (definitionNode == null) {
+			if (node.getTarget() != null) {
+				return;
+			}
+			definition =
+					impliedDefinition(declaration, declaration.distribute());
+		} else {
+			definition = definitionNode.accept(
+					ip.definitionVisitor(
+							new FieldNesting(declaration).toTypeConsumer()),
+					new FieldAccess(p.getRules(), declaration));
+			if (definition == null) {
+				return;
+			}
+		}
+
+		final FieldBuilder builder = p.get().field(declaration, definition);
+
+		if (builder == null) {
 			return;
 		}
 
-		final FieldDefinition definition = definitionNode.accept(
-				ip.definitionVisitor(
-						new FieldNesting(declaration).toTypeConsumer()),
-				new FieldAccess(p.getRules(), declaration));
-
-		if (definition != null) {
-
-			final FieldBuilder builder = p.get().field(declaration, definition);
-
-			if (builder == null) {
-				return;
-			}
-
-			p.statement(builder.build());
-		}
+		p.statement(builder.build());
 	}
 
 	private FieldInterpreter() {

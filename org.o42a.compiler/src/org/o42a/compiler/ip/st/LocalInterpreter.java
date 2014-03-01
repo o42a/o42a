@@ -97,15 +97,21 @@ public final class LocalInterpreter {
 		if (declarator.getTarget() != DeclarationTarget.VALUE) {
 			context.getLogger().error(
 					"invalid_local_target",
-					declarator.getDefinitionAssignment(),
+					declarator.getTargetTypeNode(),
 					"A local can be declared only with `:=` sign");
+		}
+
+		final ExpressionNode definition = declarator.getDefinition();
+
+		if (definition == null) {
+			return true;
 		}
 
 		final Ref ref = localValue(
 				ip,
 				context,
 				declarator.getDeclarable(),
-				declarator.getDefinition(),
+				definition,
 				statements.nextDistributor().distributeIn(context));
 
 		statements.get().local(

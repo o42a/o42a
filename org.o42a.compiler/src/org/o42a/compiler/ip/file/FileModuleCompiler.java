@@ -114,9 +114,9 @@ public final class FileModuleCompiler
 				&& target != DeclarationTarget.STATIC) {
 			getLogger().error(
 					"invalid_module_declaration",
-					declaratorNode.getDefinitionAssignment(),
-					"A module can only be declared as a value (`:=`),"
-					+ " or static object (`::=`)");
+					declaratorNode.getTargetTypeNode(),
+					"A module can only be declared as value (`:=`),"
+					+ " or as static object (`::=`)");
 		}
 
 		final DeclarableNode declarableNode = declaratorNode.getDeclarable();

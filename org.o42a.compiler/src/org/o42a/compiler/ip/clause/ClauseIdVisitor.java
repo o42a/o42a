@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.clause.ClauseInterpreter.invalidClauseName;
 import static org.o42a.compiler.ip.clause.ClauseVisibility.clauseVisibilityByName;
 import static org.o42a.compiler.ip.clause.NameExtractor.extractName;
 import static org.o42a.compiler.ip.clause.NameExtractor.extractNameOrImplied;
+import static org.o42a.compiler.ip.ref.RefInterpreter.isImpliedRef;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 import static org.o42a.util.string.Name.caseInsensitiveName;
@@ -56,8 +57,6 @@ final class ClauseIdVisitor
 
 	static final ClauseIdVisitor CLAUSE_ID_VISITOR = new ClauseIdVisitor();
 
-	private static final AsteriskChecker ASTERISK_CHECKER =
-			new AsteriskChecker();
 	private static final BracketsExtractor BRACKETS_EXTRACTOR =
 			new BracketsExtractor();
 
@@ -181,8 +180,11 @@ final class ClauseIdVisitor
 
 		final ExpressionNode rightOperand = binary.getRightOperand();
 
-		if (rightOperand != null) {
-			rightOperand.accept(ASTERISK_CHECKER, p.getContext());
+		if (rightOperand != null && !isImpliedRef(rightOperand)) {
+			p.getLogger().error(
+					"asterisk_expected",
+					rightOperand,
+					"Asterisk expected here");
 		}
 
 		return clauseDeclaration(location(p, binary), p, name, clauseId);
@@ -397,30 +399,6 @@ final class ClauseIdVisitor
 				name);
 
 		return null;
-	}
-
-	private static final class AsteriskChecker
-			extends AbstractExpressionVisitor<Void, CompilerContext> {
-
-		@Override
-		public Void visitScopeRef(ScopeRefNode ref, CompilerContext p) {
-			if (ref.getType() == ScopeType.IMPLIED) {
-				return null;
-			}
-			return super.visitScopeRef(ref, p);
-		}
-
-		@Override
-		protected Void visitExpression(
-				ExpressionNode expression,
-				CompilerContext p) {
-			p.getLogger().error(
-					"asterisk_expected",
-					p,
-					"Asterisk expected here");
-			return null;
-		}
-
 	}
 
 	private static final class BracketsExtractor

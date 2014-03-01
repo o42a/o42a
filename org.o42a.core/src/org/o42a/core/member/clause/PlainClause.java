@@ -34,6 +34,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.PrototypeMode;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
@@ -222,7 +223,7 @@ public abstract class PlainClause
 
 	public abstract MemberKey getOverridden();
 
-	public abstract boolean isPrototype();
+	public abstract PrototypeMode getPrototypeMode();
 
 	@Override
 	public MemberClause[] getSubClauses() {

@@ -21,6 +21,8 @@ package org.o42a.compiler.ip.type.def;
 
 import static org.o42a.compiler.ip.type.def.TypeParameterKeyVisitor.typeParameterKeyVisitor;
 
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.common.macro.type.TypeParameterKey;
 import org.o42a.compiler.ip.type.TypeConsumer;
@@ -49,10 +51,15 @@ final class TypeParameterDeclaration
 
 		final TypeConsumer consumer =
 				builder.getConsumer().paramConsumer(this);
+		final ExpressionNode definitionNode = node.getDefinition();
 
-		this.definition = node.getDefinition().accept(
-				new TypeParameterDefinitionVisitor(consumer),
-				builder.distributeAccess());
+		if (definitionNode == null) {
+			this.definition = null;
+		} else {
+			this.definition = definitionNode.accept(
+					new TypeParameterDefinitionVisitor(consumer),
+					builder.distributeAccess());
+		}
 	}
 
 	private TypeParameterDeclaration(
@@ -106,8 +113,11 @@ final class TypeParameterDeclaration
 		this.node.printContent(out);
 	}
 
-	private boolean isOverride() {
-		return this.node.getTarget().isOverride();
+	private final boolean isOverride() {
+
+		final DeclarationTarget target = this.node.getTarget();
+
+		return target == null || target.isOverride();
 	}
 
 }

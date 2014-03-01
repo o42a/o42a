@@ -24,6 +24,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.PrototypeMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
@@ -97,8 +98,8 @@ public final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
-	public boolean isPrototype() {
-		return this.builder.isPrototype();
+	public PrototypeMode getPrototypeMode() {
+		return this.builder.getPrototypeMode();
 	}
 
 	@Override

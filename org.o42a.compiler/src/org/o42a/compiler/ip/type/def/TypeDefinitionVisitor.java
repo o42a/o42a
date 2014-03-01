@@ -23,6 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.location;
 
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
@@ -49,31 +50,35 @@ final class TypeDefinitionVisitor
 			TypeDefinitionBuilder p) {
 
 		final ExpressionNode definitionNode = declarator.getDefinition();
+		final DeclarationTarget target = declarator.getTarget();
 
-		if (definitionNode == null) {
+		if (definitionNode == null && target != null) {
 			return null;
 		}
-		if (declarator.getTarget().isStatic()) {
-			p.getLogger().error(
-					"prohibited_static_type_parameter",
-					location(p, declarator.getDefinitionAssignment()),
-					"Type parameter can not be static");
-		} else if (declarator.getTarget().isPrototype()) {
-			p.getLogger().error(
-					"prohibited_prototype_type_parameter",
-					location(p, declarator.getDefinitionAssignment()),
-					"Type parameter can not be a prototype");
-		} else if (declarator.getTarget().isAbstract()) {
-			p.getLogger().error(
-					"prohibited_abstract_type_parameter",
-					location(p, declarator.getDefinitionAssignment()),
-					"Type parameter can not be abstract");
+		if (target != null) {
+			if (target.isStatic()) {
+				p.getLogger().error(
+						"prohibited_static_type_parameter",
+						location(p, declarator.getTargetTypeNode()),
+						"Type parameter can not be static");
+			} else if (target.isPrototype()) {
+				p.getLogger().error(
+						"prohibited_prototype_type_parameter",
+						location(p, declarator.getTargetTypeNode()),
+						"Type parameter can not be a prototype");
+			} else if (target.isAbstract()) {
+				p.getLogger().error(
+						"prohibited_abstract_type_parameter",
+						location(p, declarator.getTargetTypeNode()),
+						"Type parameter can not be abstract");
+			}
 		}
 
 		final TypeParameterDeclaration parameter =
 				new TypeParameterDeclaration(p, declarator);
 
 		if (parameter.getDefinition() == null) {
+			// TODO implement implied type parameters
 			return null;
 		}
 
