@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.field;
 
+import org.o42a.ast.Node;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -40,6 +41,7 @@ public class DeclaratorNode extends AbstractStatementNode {
 		super(
 				declarable.getStart(),
 				end(
+						declarable,
 						definitionAssignment,
 						definition));
 		this.declarable = declarable;
@@ -56,7 +58,16 @@ public class DeclaratorNode extends AbstractStatementNode {
 	}
 
 	public final DeclarationTarget getTarget() {
-		return this.definitionAssignment.getType();
+		return this.definitionAssignment != null
+				? this.definitionAssignment.getType()
+				: null;
+	}
+
+	public final Node getTargetTypeNode() {
+		if (this.definitionAssignment != null) {
+			return this.definitionAssignment;
+		}
+		return this.declarable;
 	}
 
 	public ExpressionNode getDefinition() {
@@ -86,8 +97,12 @@ public class DeclaratorNode extends AbstractStatementNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		this.declarable.printContent(out);
-		this.definitionAssignment.printContent(out);
-		this.definition.printContent(out);
+		if (this.definitionAssignment != null) {
+			this.definitionAssignment.printContent(out);
+		}
+		if (this.definition != null) {
+			this.definition.printContent(out);
+		}
 	}
 
 }
