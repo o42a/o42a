@@ -186,9 +186,13 @@ public final class FieldDeclarableVisitor
 		case MACRO:
 			return declareMacro(declaration);
 		case IMPLIED:
-			if (!declaration.getDeclarationMode().canOverride()) {
+
+			final DeclarationTarget target = this.declarator.getTarget();
+
+			if (target != null && !target.isOverride()) {
 				break;
 			}
+
 			return declaration.setVisibilityMode(AUTO_VISIBILITY);
 		case MODULE:
 		case ROOT:
