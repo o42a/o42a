@@ -16,8 +16,8 @@ Data :=< #element type` row ~~ A row represented by this list.
 
 Size = \data: length
 
-@Indexed = * (
-  Item => * (
+@Indexed (
+  *Item (
     = Data [index]
   )
 )
