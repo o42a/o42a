@@ -193,8 +193,9 @@ public class Grammar {
 	}
 
 	public static final Parser<DeclaratorNode> declarator(
-			DeclarableNode declarable) {
-		return new DeclaratorParser(declarable);
+			DeclarableNode declarable,
+			boolean full) {
+		return new DeclaratorParser(declarable, full);
 	}
 
 	public static final Parser<ExpressionNode> initializer() {

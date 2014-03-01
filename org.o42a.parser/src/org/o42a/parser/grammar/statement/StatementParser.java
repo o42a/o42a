@@ -28,6 +28,7 @@ import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.*;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
@@ -112,13 +113,18 @@ public class StatementParser implements Parser<StatementNode> {
 		case '@':
 
 			final DeclarableAdapterNode declarableAdapter =
-					context.parse(declarableAdapter());
+					context.push(declarableAdapter());
 
-			if (declarableAdapter == null) {
+			return parseDeclarator(context, declarableAdapter);
+		case '*':
+
+			final RefNode declarableRef = context.push(ref());
+
+			if (declarableRef == null) {
 				return null;
 			}
 
-			return context.parse(declarator(declarableAdapter));
+			return parseDeclarator(context, declarableRef.toMemberRef());
 		case '{':
 			return context.parse(braces());
 		case '(':
@@ -128,6 +134,19 @@ public class StatementParser implements Parser<StatementNode> {
 		}
 
 		return null;
+	}
+
+	private DeclaratorNode parseDeclarator(
+			ParserContext context,
+			DeclarableNode declarable) {
+		if (declarable == null) {
+			return null;
+		}
+		if (context.isEOF()) {
+			context.acceptAll();
+			return new DeclaratorNode(declarable, null, null);
+		}
+		return context.parse(declarator(declarable, false));
 	}
 
 	private StatementNode parseLocalStatement(ParserContext context, int next) {
@@ -232,7 +251,8 @@ public class StatementParser implements Parser<StatementNode> {
 			return expression;
 		}
 
-		final DeclaratorNode declarator = context.parse(declarator(declarable));
+		final DeclaratorNode declarator =
+				context.parse(declarator(declarable, true));
 
 		if (declarator != null) {
 			return declarator;
