@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,9 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.integer;
+package org.o42a.core.value.flow.impl;
 
-import static org.o42a.core.ir.value.type.ValueIRDesc.PRIMITIVE_VALUE_IR_DESC;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.Generator;
@@ -29,19 +28,20 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.flow.Flow;
 
 
-public final class IntegerValueType extends SingleValueType<Long> {
+public class FlowValueType extends SingleValueType<Flow> {
 
-	public static final IntegerValueType INSTANCE = new IntegerValueType();
+	public static final FlowValueType INSTANCE = new FlowValueType();
 
-	private IntegerValueType() {
-		super("integer", Long.class);
+	private FlowValueType() {
+		super("flow", Flow.class);
 	}
 
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
-		return intrinsics.getInteger();
+		return intrinsics.getFlow();
 	}
 
 	@Override
@@ -52,12 +52,14 @@ public final class IntegerValueType extends SingleValueType<Long> {
 
 	@Override
 	public ValueIRDesc irDesc() {
-		return PRIMITIVE_VALUE_IR_DESC;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	protected ValueTypeIR<Long> createIR(Generator generator) {
-		return new IntegerValueTypeIR(generator, this);
+	protected ValueTypeIR<Flow> createIR(Generator generator) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -42,6 +42,8 @@ import org.o42a.core.value.array.ArrayValueType;
 import org.o42a.core.value.directive.Directive;
 import org.o42a.core.value.directive.impl.DirectiveValueType;
 import org.o42a.core.value.floats.FloatValueType;
+import org.o42a.core.value.flow.Flow;
+import org.o42a.core.value.flow.impl.FlowValueType;
 import org.o42a.core.value.impl.NoneValueType;
 import org.o42a.core.value.integer.IntegerValueType;
 import org.o42a.core.value.link.LinkValueType;
@@ -62,6 +64,8 @@ public abstract class ValueType<T> {
 			FloatValueType.INSTANCE;
 	public static final SingleValueType<String> STRING =
 			StringValueType.INSTANCE;
+	public static final SingleValueType<Flow> FLOW =
+			FlowValueType.INSTANCE;
 	public static final SingleValueType<Directive> DIRECTIVE =
 			DirectiveValueType.INSTANCE;
 	public static final SingleValueType<Macro> MACRO =
