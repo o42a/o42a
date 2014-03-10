@@ -38,6 +38,7 @@ Export-Package: org.o42a.core,
  org.o42a.core.value,
  org.o42a.core.value.array,
  org.o42a.core.value.directive,
+ org.o42a.core.value.flow,
  org.o42a.core.value.link,
  org.o42a.core.value.macro
 Require-Bundle: org.o42a.codegen;bundle-version="0.2.9",
