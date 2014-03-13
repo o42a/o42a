@@ -95,7 +95,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final Name name;
 	private final boolean topLevel;
 	private NamedBlocks namedBlocks;
-	private boolean loop;
 
 	private ImperativeBlock(
 			LocationInfo location,
@@ -130,10 +129,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 	public final boolean isTopLevel() {
 		return this.topLevel;
-	}
-
-	public final boolean isLoop() {
-		return this.loop;
 	}
 
 	@Override
@@ -217,10 +212,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	@Override
 	Command createCommand(CommandEnv env) {
 		return new ImperativeBlockCommand(this, env);
-	}
-
-	final void loop() {
-		this.loop = true;
 	}
 
 }

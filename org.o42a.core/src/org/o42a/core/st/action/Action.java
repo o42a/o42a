@@ -26,10 +26,8 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
-import org.o42a.util.string.Name;
 
 
 public abstract class Action implements ScopeInfo {
@@ -87,17 +85,6 @@ public abstract class Action implements ScopeInfo {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + '[' + this.statement + ']';
-	}
-
-	static final boolean blockMatchesName(Block<?> block, Name blockName) {
-
-		final ImperativeBlock imperativeBlock = block.toImperativeBlock();
-
-		if (imperativeBlock == null) {
-			return false;
-		}
-
-		return blockName == null || blockName.is(imperativeBlock.getName());
 	}
 
 }
