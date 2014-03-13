@@ -83,14 +83,8 @@ public abstract class Block extends Statement {
 
 	public abstract boolean isParentheses();
 
-	public boolean isImperative() {
-		if (!isParentheses()) {
-			return true;
-		}
-
-		final Statements enclosing = getEnclosing();
-
-		return enclosing != null && enclosing.isImperative();
+	public final boolean isImperative() {
+		return !getSentenceFactory().isDeclarative();
 	}
 
 	public abstract Name getName();
