@@ -21,7 +21,7 @@ package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.impl.InterrogativeSentence;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.DeclarativeFactory;
 import org.o42a.core.st.sentence.Sentence;
 
@@ -29,9 +29,7 @@ import org.o42a.core.st.sentence.Sentence;
 public class DeclarativeInterrogationFactory extends DeclarativeFactory {
 
 	@Override
-	public Sentence declare(
-			LocationInfo location,
-			DeclarativeBlock block) {
+	public Sentence declare(LocationInfo location, Block block) {
 		return new InterrogativeSentence(location, block, this);
 	}
 

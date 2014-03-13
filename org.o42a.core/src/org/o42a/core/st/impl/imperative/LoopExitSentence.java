@@ -27,7 +27,7 @@ public final class LoopExitSentence extends Sentence {
 
 	public LoopExitSentence(
 			LocationInfo location,
-			ImperativeBlock block,
+			Block block,
 			ImperativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
 	}

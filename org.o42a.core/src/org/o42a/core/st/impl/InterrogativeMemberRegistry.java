@@ -31,9 +31,9 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.st.sentence.Statements;
 
 
-public class InterrogativeMemberRegistry extends ProxyMemberRegistry {
+final class InterrogativeMemberRegistry extends ProxyMemberRegistry {
 
-	public InterrogativeMemberRegistry(MemberRegistry registry) {
+	InterrogativeMemberRegistry(MemberRegistry registry) {
 		super(NO_INCLUSIONS, registry);
 	}
 
