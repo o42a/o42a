@@ -24,14 +24,13 @@ import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.impl.imperative.DefaultImperativeSentence;
-import org.o42a.core.st.impl.imperative.ImperativeInterrogativeSentence;
+import org.o42a.core.st.impl.DefaultSentence;
+import org.o42a.core.st.impl.InterrogativeSentence;
 import org.o42a.core.st.impl.imperative.LoopExitSentence;
 import org.o42a.util.string.Name;
 
 
-public class ImperativeFactory
-		extends SentenceFactory<ImperativeSentence, ImperativeBlock> {
+public class ImperativeFactory extends SentenceFactory<ImperativeBlock> {
 
 	protected ImperativeFactory() {
 	}
@@ -87,30 +86,29 @@ public class ImperativeFactory
 	}
 
 	@Override
-	public ImperativeSentence interrogate(
+	public Sentence interrogate(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeInterrogativeSentence(location, block);
+		return new InterrogativeSentence(
+				location,
+				block,
+				IMPERATIVE_INTERROGATION_FACTORY);
 	}
 
 	@Override
 	public Statements createAlternative(
 			LocationInfo location,
-			ImperativeSentence sentence) {
+			Sentence sentence) {
 		return new Statements(location, sentence);
 	}
 
 	@Override
-	public ImperativeSentence declare(
-			LocationInfo location,
-			ImperativeBlock block) {
-		return new DefaultImperativeSentence(location, block, this);
+	public Sentence declare(LocationInfo location, ImperativeBlock block) {
+		return new DefaultSentence(location, block, this);
 	}
 
 	@Override
-	public ImperativeSentence exit(
-			LocationInfo location,
-			ImperativeBlock block) {
+	public Sentence exit(LocationInfo location, ImperativeBlock block) {
 		return new LoopExitSentence(location, block, this);
 	}
 

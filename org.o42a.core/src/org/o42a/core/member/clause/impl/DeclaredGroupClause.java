@@ -117,7 +117,7 @@ public final class DeclaredGroupClause
 			return braces(group, null);
 		}
 
-		final SentenceFactory<?, ?> sentenceFactory =
+		final SentenceFactory<?> sentenceFactory =
 				group.getStatements().getSentenceFactory();
 		final Block definition = sentenceFactory.groupParentheses(
 				group,
@@ -132,7 +132,7 @@ public final class DeclaredGroupClause
 	public ImperativeBlock braces(Group group, Name name) {
 
 		final Statements statements = group.getStatements();
-		final SentenceFactory<?, ?> sentenceFactory =
+		final SentenceFactory<?> sentenceFactory =
 				statements.getSentenceFactory();
 		final ImperativeBlock definition;
 

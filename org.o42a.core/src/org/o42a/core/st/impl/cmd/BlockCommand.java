@@ -129,7 +129,7 @@ public abstract class BlockCommand<B extends Block> extends Command {
 		}
 
 		@Override
-		public List<? extends Sentence> getSentences() {
+		public List<Sentence> getSentences() {
 			return this.command.getBlock().getSentences();
 		}
 

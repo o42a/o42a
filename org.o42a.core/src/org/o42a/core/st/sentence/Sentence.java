@@ -19,6 +19,10 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.st.Command.exitCommand;
+import static org.o42a.core.st.Command.noCommands;
+import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,22 +38,23 @@ import org.o42a.core.value.TypeParameters;
 public abstract class Sentence extends Contained {
 
 	private final Block block;
-	private final SentenceFactory<?, ?> sentenceFactory;
+	private final SentenceFactory<?> sentenceFactory;
 	private final ArrayList<Statements> alternatives = new ArrayList<>(1);
 	private Sentence prerequisite;
+	private CommandTargets targets;
 	private boolean statementDropped;
 	private boolean instructionsExecuted;
 
-	Sentence(
+	protected Sentence(
 			LocationInfo location,
 			Block block,
-			SentenceFactory<?, ?> sentenceFactory) {
+			SentenceFactory<?> sentenceFactory) {
 		super(location, new SentenceDistributor(location, block));
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
 	}
 
-	public Block getBlock() {
+	public final Block getBlock() {
 		return this.block;
 	}
 
@@ -57,8 +62,12 @@ public abstract class Sentence extends Contained {
 		return getBlock().getMemberRegistry();
 	}
 
-	public SentenceFactory<?, ?> getSentenceFactory() {
+	public final SentenceFactory<?> getSentenceFactory() {
 		return this.sentenceFactory;
+	}
+
+	public final boolean isImperative() {
+		return getBlock().isImperative();
 	}
 
 	public abstract SentenceKind getKind();
@@ -86,7 +95,15 @@ public abstract class Sentence extends Contained {
 		return getBlock().isConditional();
 	}
 
-	public abstract CommandTargets getTargets();
+	public final CommandTargets getTargets() {
+		if (this.targets != null) {
+			return this.targets;
+		}
+		return this.targets = applyExitTargets(
+				prerequisiteTargets().add(
+						isImperative()
+						? imperativeTargets() : declarativeTargets()));
+	}
 
 	public final Statements alternative(LocationInfo location) {
 
@@ -239,12 +256,139 @@ public abstract class Sentence extends Contained {
 
 	private Statements createAlt(LocationInfo location) {
 
-		@SuppressWarnings("rawtypes")
-		final SentenceFactory sentenceFactory = getSentenceFactory();
-		@SuppressWarnings("unchecked")
-		final Statements alt = sentenceFactory.createAlternative(location, this);
+		final SentenceFactory<?> sentenceFactory = getSentenceFactory();
+		final Statements alt =
+				sentenceFactory.createAlternative(location, this);
 
 		return alt;
+	}
+
+	private CommandTargets prerequisiteTargets() {
+
+		final Sentence prerequisite = getPrerequisite();
+
+		if (prerequisite == null) {
+			return noCommands();
+		}
+
+		return prerequisite.getTargets().toPrerequisites();
+	}
+
+	private CommandTargets declarativeTargets() {
+
+		CommandTargets result = noCommands();
+		Statements first = null;
+
+		for (Statements alt : getAlternatives()) {
+
+			final CommandTargets targets = alt.getTargets();
+
+			if (first == null) {
+				first = alt;
+			} else if (result.isEmpty()) {
+				if (!result.haveError()) {
+					first.reportEmptyAlternative();
+					result = result.addError();
+				}
+				continue;
+			} else if (!result.defining()) {
+				if (!result.haveError()) {
+					declarationNotAlone(getLogger(), result);
+					result = result.addError();
+				}
+				continue;
+			} else if (!targets.defining()) {
+				if (!result.haveError()) {
+					declarationNotAlone(getLogger(), targets);
+					result = result.addError();
+				}
+				continue;
+			}
+			if (result.isEmpty()) {
+				result = targets;
+				continue;
+			}
+			result = result.add(targets);
+
+			final boolean mayBeNonBreaking =
+					(result.breaking() || targets.breaking())
+					&& result.breaking() != targets.breaking();
+
+			if (mayBeNonBreaking) {
+				result = result.addPrerequisite();
+			}
+		}
+
+		return result;
+	}
+
+	private CommandTargets imperativeTargets() {
+
+		CommandTargets result = noCommands();
+		Statements first = null;
+
+		for (Statements alt : getAlternatives()) {
+
+			final CommandTargets targets = alt.getTargets();
+
+			if (first == null) {
+				first = alt;
+			} else if (result.isEmpty()) {
+				if (!result.haveError()) {
+					first.reportEmptyAlternative();
+				}
+				return result.addError();
+			}
+			if (!result.conditional() && result.looping()) {
+				if (!result.haveError()) {
+					result = result.addError();
+					getLogger().error(
+							"unreachable_alternative",
+							targets,
+							"Unreachable alternative");
+				}
+				continue;
+			}
+			if (result.isEmpty()) {
+				result = targets;
+				continue;
+			}
+			if (targets.isEmpty()) {
+				continue;
+			}
+			result = result.add(targets);
+
+			final boolean mayBeNonBreaking =
+					(result.breaking() || targets.breaking())
+					&& result.unconditionallyBreaking()
+					!= targets.unconditionallyBreaking();
+
+			if (mayBeNonBreaking) {
+				result = result.addPrerequisite();
+			}
+			continue;
+		}
+
+		return result;
+	}
+
+	private CommandTargets applyExitTargets(CommandTargets targets) {
+
+		final CommandTargets result;
+
+		if (getKind().isInterrogative()
+				&& targets.isEmpty()
+				&& !targets.haveError()) {
+			reportEmptyInterrogation();
+			result = targets.addError();
+		} else {
+			result = targets;
+		}
+		if (!getKind().isExclamatory()) {
+			return result;
+		}
+
+		return result.add(exitCommand(getLocation()));
 	}
 
 	private static final class SentenceDistributor extends Distributor {

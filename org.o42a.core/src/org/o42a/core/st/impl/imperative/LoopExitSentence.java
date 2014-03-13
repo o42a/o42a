@@ -23,7 +23,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.*;
 
 
-public final class LoopExitSentence extends ImperativeSentence {
+public final class LoopExitSentence extends Sentence {
 
 	public LoopExitSentence(
 			LocationInfo location,

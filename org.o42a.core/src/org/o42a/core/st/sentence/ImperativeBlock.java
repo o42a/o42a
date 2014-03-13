@@ -21,8 +21,6 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.CommandEnv.defaultEnv;
 
-import java.util.List;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
@@ -136,12 +134,6 @@ public final class ImperativeBlock extends Block {
 		return (ImperativeFactory) super.getSentenceFactory();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<ImperativeSentence> getSentences() {
-		return (List<ImperativeSentence>) super.getSentences();
-	}
-
 	@Override
 	public final boolean isParentheses() {
 		return this.parentheses;
@@ -155,21 +147,6 @@ public final class ImperativeBlock extends Block {
 	@Override
 	public final ImperativeBlock toImperativeBlock() {
 		return this;
-	}
-
-	@Override
-	public final ImperativeSentence declare(LocationInfo location) {
-		return (ImperativeSentence) super.declare(location);
-	}
-
-	@Override
-	public final ImperativeSentence exit(LocationInfo location) {
-		return (ImperativeSentence) super.exit(location);
-	}
-
-	@Override
-	public final ImperativeSentence interrogate(LocationInfo location) {
-		return (ImperativeSentence) super.interrogate(location);
 	}
 
 	@Override

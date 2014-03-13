@@ -80,7 +80,7 @@ public final class Statements extends Contained {
 		return this.commands;
 	}
 
-	public SentenceFactory<?, ?> getSentenceFactory() {
+	public SentenceFactory<?> getSentenceFactory() {
 		return getSentence().getSentenceFactory();
 	}
 
