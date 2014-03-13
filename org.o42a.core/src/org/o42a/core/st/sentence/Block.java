@@ -33,12 +33,12 @@ import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
 
-public abstract class Block<S extends Statements<S>> extends Statement {
+public abstract class Block extends Statement {
 
-	private final Statements<?> enclosing;
-	private final ArrayList<Sentence<S>> sentences = new ArrayList<>(1);
+	private final Statements enclosing;
+	private final ArrayList<Sentence> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
-	private final SentenceFactory<S, ?, ?> sentenceFactory;
+	private final SentenceFactory<?, ?> sentenceFactory;
 	private final StatementsEnv statementsEnv = new StatementsEnv();
 	private CommandEnv initialEnv;
 	private Locals locals;
@@ -49,7 +49,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
-			SentenceFactory<S, ?, ?> sentenceFactory) {
+			SentenceFactory<?, ?> sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
@@ -59,9 +59,9 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	Block(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?> enclosing,
+			Statements enclosing,
 			MemberRegistry memberRegistry,
-			SentenceFactory<S, ?, ?> sentenceFactory) {
+			SentenceFactory<?, ?> sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
@@ -73,15 +73,25 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		return true;
 	}
 
-	public Statements<?> getEnclosing() {
+	public final Statements getEnclosing() {
 		return this.enclosing;
 	}
 
-	public SentenceFactory<S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<?, ?> getSentenceFactory() {
 		return this.sentenceFactory;
 	}
 
 	public abstract boolean isParentheses();
+
+	public boolean isImperative() {
+		if (!isParentheses()) {
+			return true;
+		}
+
+		final Statements enclosing = getEnclosing();
+
+		return enclosing != null && enclosing.isImperative();
+	}
 
 	public abstract Name getName();
 
@@ -94,7 +104,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	public final boolean isInterrogation() {
 
-		final Statements<?> enclosing = getEnclosing();
+		final Statements enclosing = getEnclosing();
 
 		return enclosing != null && enclosing.isInterrogation();
 	}
@@ -105,27 +115,27 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	public final boolean isConditional() {
 
-		final Statements<?> enclosing = getEnclosing();
+		final Statements enclosing = getEnclosing();
 
 		return enclosing != null && enclosing.getSentence().isConditional();
 	}
 
-	public List<? extends Sentence<S>> getSentences() {
+	public List<? extends Sentence> getSentences() {
 		return this.sentences;
 	}
 
-	public Sentence<S> declare(LocationInfo location) {
+	public Sentence declare(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> sentence =
+		final Sentence sentence =
 				sentenceFactory.declare(location, this);
 
 		return addSentence(sentence);
 	}
 
-	public Sentence<S> exit(LocationInfo location) {
+	public Sentence exit(LocationInfo location) {
 		if (isInterrogation()) {
 			getLogger().error(
 					"prohibited_interrogative_exit",
@@ -138,17 +148,17 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> exit = sentenceFactory.exit(location, this);
+		final Sentence exit = sentenceFactory.exit(location, this);
 
 		return addSentence(exit);
 	}
 
-	public Sentence<S> interrogate(LocationInfo location) {
+	public Sentence interrogate(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> interrogation =
+		final Sentence interrogation =
 				sentenceFactory.interrogate(location, this);
 
 		addSentence(interrogation);
@@ -164,7 +174,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		this.executingInstructions = true;
 		try {
 
-			final List<? extends Sentence<S>> sentences = getSentences();
+			final List<? extends Sentence> sentences = getSentences();
 
 			for (int i = this.instructionsExecuted; i < sentences.size(); ++i) {
 				this.instructionsExecuted = i + 1;
@@ -175,21 +185,21 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		}
 	}
 
-	public boolean contains(Block<?> block) {
+	public boolean contains(Block block) {
 		if (block == this) {
 			return true;
 		}
 
-		final Statements<?> enclosing = block.getEnclosing();
+		final Statements enclosing = block.getEnclosing();
 
 		return enclosing != null && contains(enclosing);
 	}
 
-	public boolean contains(Statements<?> statements) {
+	public boolean contains(Statements statements) {
 		return contains(statements.getSentence());
 	}
 
-	public boolean contains(Sentence<?> sentence) {
+	public boolean contains(Sentence sentence) {
 		return contains(sentence.getBlock());
 	}
 
@@ -201,8 +211,8 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	public void reproduceSentences(
 			Reproducer reproducer,
-			Block<S> reproduction) {
-		for (Sentence<S> sentence : getSentences()) {
+			Block reproduction) {
+		for (Sentence sentence : getSentences()) {
 			sentence.reproduce(reproduction, reproducer);
 		}
 	}
@@ -215,7 +225,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		boolean space = false;
 
 		out.append(parentheses ? '(' : '{');
-		for (Sentence<S> sentence : getSentences()) {
+		for (Sentence sentence : getSentences()) {
 			if (space) {
 				out.append(' ');
 			} else {
@@ -233,7 +243,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			return this.locals;
 		}
 
-		final Statements<?> enclosing = getEnclosing();
+		final Statements enclosing = getEnclosing();
 
 		if (enclosing == null) {
 			return this.locals = new Locals(null);
@@ -245,15 +255,15 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	final Container nextContainer() {
 
-		final List<? extends Sentence<S>> sentences = getSentences();
+		final List<? extends Sentence> sentences = getSentences();
 		final int numSentences = sentences.size();
 
 		if (numSentences == 0) {
 			return getContainer();
 		}
 
-		final Sentence<S> last = sentences.get(numSentences - 1);
-		final List<S> alts = last.getAlternatives();
+		final Sentence last = sentences.get(numSentences - 1);
+		final List<Statements> alts = last.getAlternatives();
 		final int numAlts = alts.size();
 
 		if (numAlts > 1) {
@@ -276,7 +286,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		// The sentence has only one alternative and has no prerequisites.
 		// The locals declared in it are visible in the next sentences.
 		// Even if this sentence is a prerequisite for the next one.
-		final S singleAlt = alts.get(0);
+		final Statements singleAlt = alts.get(0);
 
 		return singleAlt.nextContainer();
 	}
@@ -297,7 +307,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		return this.initialEnv;
 	}
 
-	private Sentence<S> addSentence(Sentence<S> sentence) {
+	private Sentence addSentence(Sentence sentence) {
 		if (sentence == null) {
 			dropSentence();
 			return null;
@@ -308,7 +318,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		if (size != 0) {
 
 			final int lastIdx = size - 1;
-			final Sentence<S> last = this.sentences.get(lastIdx);
+			final Sentence last = this.sentences.get(lastIdx);
 
 			if (last.getKind().isInterrogative()) {
 				sentence.setPrerequisite(last);
@@ -324,7 +334,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	private void dropSentence() {
 
-		final Statements<?> enclosing = getEnclosing();
+		final Statements enclosing = getEnclosing();
 
 		if (enclosing != null) {
 			enclosing.dropStatement();

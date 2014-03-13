@@ -31,7 +31,7 @@ import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.impl.cmd.BlockCommand;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.sentence.Statements;
 
 
 public final class ImperativeBlockCommand
@@ -142,7 +142,7 @@ public final class ImperativeBlockCommand
 			return NO_DEF_TARGET;
 		}
 
-		final List<Imperatives> alts = sentence.getAlternatives();
+		final List<Statements> alts = sentence.getAlternatives();
 		final int size = alts.size();
 
 		if (size != 1) {
@@ -157,7 +157,7 @@ public final class ImperativeBlockCommand
 
 	private static DefTarget statementsTarget(
 			Scope origin,
-			Imperatives statements) {
+			Statements statements) {
 
 		final CommandTargets targets = statements.getTargets();
 

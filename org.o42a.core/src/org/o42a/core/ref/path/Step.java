@@ -105,7 +105,7 @@ public abstract class Step {
 	 *
 	 * @return the conditional statement.
 	 */
-	protected Statement condition(Ref condition, Statements<?> statements) {
+	protected Statement condition(Ref condition, Statements statements) {
 		return new RefCondition(condition);
 	}
 
@@ -127,7 +127,7 @@ public abstract class Step {
 	protected Statement value(
 			LocationInfo location,
 			Ref value,
-			Statements<?> statements) {
+			Statements statements) {
 		return value;
 	}
 

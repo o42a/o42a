@@ -31,25 +31,25 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 
 
-public abstract class Sentence<S extends Statements<S>> extends Contained {
+public abstract class Sentence extends Contained {
 
-	private final Block<S> block;
-	private final SentenceFactory<S, ?, ?> sentenceFactory;
-	private final ArrayList<S> alternatives = new ArrayList<>(1);
-	private Sentence<S> prerequisite;
+	private final Block block;
+	private final SentenceFactory<?, ?> sentenceFactory;
+	private final ArrayList<Statements> alternatives = new ArrayList<>(1);
+	private Sentence prerequisite;
 	private boolean statementDropped;
 	private boolean instructionsExecuted;
 
 	Sentence(
 			LocationInfo location,
-			Block<S> block,
-			SentenceFactory<S, ?, ?> sentenceFactory) {
+			Block block,
+			SentenceFactory<?, ?> sentenceFactory) {
 		super(location, new SentenceDistributor(location, block));
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
 	}
 
-	public Block<S> getBlock() {
+	public Block getBlock() {
 		return this.block;
 	}
 
@@ -57,7 +57,7 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 		return getBlock().getMemberRegistry();
 	}
 
-	public SentenceFactory<S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<?, ?> getSentenceFactory() {
 		return this.sentenceFactory;
 	}
 
@@ -67,7 +67,7 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 		return getKind().isInterrogative() || getBlock().isInterrogation();
 	}
 
-	public final List<S> getAlternatives() {
+	public final List<Statements> getAlternatives() {
 		return this.alternatives;
 	}
 
@@ -75,7 +75,7 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 		return getAlternatives().isEmpty();
 	}
 
-	public Sentence<S> getPrerequisite() {
+	public Sentence getPrerequisite() {
 		return this.prerequisite;
 	}
 
@@ -88,9 +88,9 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 
 	public abstract CommandTargets getTargets();
 
-	public final S alternative(LocationInfo location) {
+	public final Statements alternative(LocationInfo location) {
 
-		final S alt = createAlt(location);
+		final Statements alt = createAlt(location);
 
 		if (alt != null) {
 			this.alternatives.add(alt);
@@ -107,7 +107,7 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 
 		TypeParameters<?> typeParameters = null;
 
-		for (Statements<S> alt : getAlternatives()) {
+		for (Statements alt : getAlternatives()) {
 
 			final TypeParameters<?> altParameters =
 					alt.typeParameters(scope, expectedParameters);
@@ -137,13 +137,12 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 
 		final StringBuilder out = new StringBuilder();
 		boolean separator = false;
-
-		final Sentence<S> prerequisite = getPrerequisite();
+		final Sentence prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
 			out.append(prerequisite).append(' ');
 		}
-		for (S alt : getAlternatives()) {
+		for (Statements alt : getAlternatives()) {
 			if (!separator) {
 				separator = true;
 			} else {
@@ -157,16 +156,16 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 		return out.toString();
 	}
 
-	final Sentence<S> firstPrerequisite() {
+	final Sentence firstPrerequisite() {
 
-		Sentence<S> prerequisite = getPrerequisite();
+		Sentence prerequisite = getPrerequisite();
 
 		if (prerequisite == null) {
 			return null;
 		}
 		for (;;) {
 
-			final Sentence<S> prePrerequisite = prerequisite.getPrerequisite();
+			final Sentence prePrerequisite = prerequisite.getPrerequisite();
 
 			if (prePrerequisite == null) {
 				return prerequisite;
@@ -182,17 +181,17 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 		}
 		this.instructionsExecuted = true;
 
-		final Sentence<S> prerequisite = getPrerequisite();
+		final Sentence prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
 			prerequisite.executeInstructions();
 		}
-		for (S alt : getAlternatives()) {
+		for (Statements alt : getAlternatives()) {
 			alt.executeInstructions();
 		}
 	}
 
-	final void setPrerequisite(Sentence<S> prerequisite) {
+	final void setPrerequisite(Sentence prerequisite) {
 		this.prerequisite = prerequisite;
 	}
 
@@ -209,22 +208,22 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 		}
 	}
 
-	void reproduce(Block<S> block, Reproducer reproducer) {
+	void reproduce(Block block, Reproducer reproducer) {
 
-		final Sentence<S> prerequisite = getPrerequisite();
+		final Sentence prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
 			prerequisite.reproduce(block, reproducer);
 		}
 
-		final Sentence<S> reproduction = reproduceIn(block);
+		final Sentence reproduction = reproduceIn(block);
 
-		for (S alt : getAlternatives()) {
+		for (Statements alt : getAlternatives()) {
 			alt.reproduce(reproduction, reproducer);
 		}
 	}
 
-	private Sentence<S> reproduceIn(Block<S> block) {
+	private Sentence reproduceIn(Block block) {
 		switch (getKind()) {
 		case INTERROGATIVE_SENTENCE:
 			return block.interrogate(this);
@@ -238,12 +237,12 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 				"Unsupported sentence kind: " + getKind());
 	}
 
-	private S createAlt(LocationInfo location) {
+	private Statements createAlt(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final S alt = (S) sentenceFactory.createAlternative(location, this);
+		final Statements alt = sentenceFactory.createAlternative(location, this);
 
 		return alt;
 	}
@@ -251,10 +250,10 @@ public abstract class Sentence<S extends Statements<S>> extends Contained {
 	private static final class SentenceDistributor extends Distributor {
 
 		private final Location location;
-		private final Block<?> block;
+		private final Block block;
 		private final Container container;
 
-		SentenceDistributor(LocationInfo location, Block<?> block) {
+		SentenceDistributor(LocationInfo location, Block block) {
 			this.location = location.getLocation();
 			this.block = block;
 			this.container = block.nextContainer();

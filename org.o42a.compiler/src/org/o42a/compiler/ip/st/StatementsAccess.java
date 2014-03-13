@@ -26,9 +26,9 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 
 
-public final class StatementsAccess extends AbstractAccess<Statements<?>> {
+public final class StatementsAccess extends AbstractAccess<Statements> {
 
-	public StatementsAccess(AccessRules rules, Statements<?> statements) {
+	public StatementsAccess(AccessRules rules, Statements statements) {
 		super(rules.contentRules(), statements);
 	}
 

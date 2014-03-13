@@ -391,7 +391,7 @@ public class BoundPath extends RefPath {
 	}
 
 	@Override
-	protected Statement toCondition(Ref condition, Statements<?> statements) {
+	protected Statement toCondition(Ref condition, Statements statements) {
 
 		final Step lastStep = lastRawStep();
 
@@ -406,7 +406,7 @@ public class BoundPath extends RefPath {
 	protected Statement toValue(
 			LocationInfo location,
 			Ref value,
-			Statements<?> statements) {
+			Statements statements) {
 
 		final Step lastStep = lastRawStep();
 

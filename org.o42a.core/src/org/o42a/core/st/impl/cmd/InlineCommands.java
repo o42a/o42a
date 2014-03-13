@@ -35,7 +35,7 @@ final class InlineCommands {
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			Scope origin,
-			Statements<?> statements) {
+			Statements statements) {
 
 		final List<Command> commands = statements.getCommands();
 		final InlineCmd[] inlines = new InlineCmd[commands.size()];

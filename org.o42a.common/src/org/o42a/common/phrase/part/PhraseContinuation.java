@@ -36,6 +36,6 @@ public abstract class PhraseContinuation extends PhrasePart {
 
 	public abstract Ref substitute(Distributor distributor);
 
-	public abstract void define(Block<?> definition);
+	public abstract void define(Block definition);
 
 }

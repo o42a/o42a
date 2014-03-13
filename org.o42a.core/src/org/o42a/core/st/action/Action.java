@@ -58,7 +58,7 @@ public abstract class Action implements ScopeInfo {
 
 	public abstract Value<?> getValue();
 
-	public abstract LoopAction toLoopAction(Block<?> block);
+	public abstract LoopAction toLoopAction(Block block);
 
 	public abstract DefValue toDefValue();
 
