@@ -85,6 +85,13 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	public abstract Name getName();
 
+	public final boolean hasName(Name name) {
+		if (isParentheses()) {
+			return false;
+		}
+		return name == null || name.equals(getName());
+	}
+
 	public final boolean isInterrogation() {
 
 		final Statements<?> enclosing = getEnclosing();

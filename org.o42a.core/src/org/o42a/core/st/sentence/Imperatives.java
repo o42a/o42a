@@ -69,7 +69,7 @@ public final class Imperatives extends Statements<Imperatives> {
 		if (block == null) {
 			return;
 		}
-		block.loop();
+
 		statement(new LoopStatement(location, this, name));
 	}
 
@@ -79,14 +79,11 @@ public final class Imperatives extends Statements<Imperatives> {
 	}
 
 	private ImperativeBlock blockByName(LocationInfo location, Name name) {
-		if (name == null) {
-			return getSentence().getBlock();
-		}
 
 		ImperativeBlock block = getSentence().getBlock();
 
 		for (;;) {
-			if (name.is(block.getName())) {
+			if (block.hasName(name)) {
 				return block;
 			}
 
@@ -109,5 +106,6 @@ public final class Imperatives extends Statements<Imperatives> {
 
 		return null;
 	}
+
 
 }

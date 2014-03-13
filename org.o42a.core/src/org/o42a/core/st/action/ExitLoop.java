@@ -57,7 +57,7 @@ public class ExitLoop extends Action {
 
 	@Override
 	public LoopAction toLoopAction(Block<?> block) {
-		if (blockMatchesName(block, getBlockName())) {
+		if (block.hasName(getBlockName())) {
 			return LoopAction.EXIT;
 		}
 		return LoopAction.PULL;
