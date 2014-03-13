@@ -35,7 +35,7 @@ import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.string.Name;
 
 
-public abstract class BlockCommand<B extends Block<?>> extends Command {
+public abstract class BlockCommand<B extends Block> extends Command {
 
 	private final BlockSentences sentences;
 
@@ -129,7 +129,7 @@ public abstract class BlockCommand<B extends Block<?>> extends Command {
 		}
 
 		@Override
-		public List<? extends Sentence<?>> getSentences() {
+		public List<Sentence> getSentences() {
 			return this.command.getBlock().getSentences();
 		}
 

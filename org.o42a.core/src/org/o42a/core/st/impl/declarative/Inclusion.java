@@ -22,14 +22,14 @@ package org.o42a.core.st.impl.declarative;
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.sentence.Declaratives;
+import org.o42a.core.st.sentence.Statements;
 
 
 public class Inclusion extends Statement {
 
-	private final Declaratives statements;
+	private final Statements statements;
 
-	public Inclusion(LocationInfo location, Declaratives statements) {
+	public Inclusion(LocationInfo location, Statements statements) {
 		super(location, statements.nextDistributor());
 		this.statements = statements;
 	}

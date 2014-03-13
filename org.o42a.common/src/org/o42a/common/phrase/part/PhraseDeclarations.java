@@ -53,7 +53,7 @@ public class PhraseDeclarations extends PhraseContinuation {
 	}
 
 	@Override
-	public void define(Block<?> definition) {
+	public void define(Block definition) {
 		this.declarations.buildBlock(definition);
 	}
 

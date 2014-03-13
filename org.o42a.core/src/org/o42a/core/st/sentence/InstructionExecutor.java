@@ -29,13 +29,13 @@ import org.o42a.core.st.InstructionContext;
 
 final class InstructionExecutor implements InstructionContext {
 
-	private final Statements<?> statements;
+	private final Statements statements;
 	private final Resolver resolver;
 	private Command command;
-	private Block<?> block;
+	private Block block;
 	private boolean doNotRemove;
 
-	InstructionExecutor(Statements<?> statements) {
+	InstructionExecutor(Statements statements) {
 		this.statements = statements;
 		this.resolver = statements.getScope().resolver();
 	}
@@ -46,7 +46,7 @@ final class InstructionExecutor implements InstructionContext {
 	}
 
 	@Override
-	public Block<?> getBlock() {
+	public Block getBlock() {
 		if (this.block != null) {
 			return this.block;
 		}

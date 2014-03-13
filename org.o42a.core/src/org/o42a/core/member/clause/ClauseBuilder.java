@@ -51,7 +51,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 	static final ReusedClauseRef[] NOTHING_REUSED = new ReusedClauseRef[0];
 
-	private final Statements<?> statements;
+	private final Statements statements;
 	private final MemberRegistry memberRegistry;
 	private final ClauseDeclaration declaration;
 
@@ -66,7 +66,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	private ClauseSubstitution substitution = NO_SUBSTITUTION;
 
 	ClauseBuilder(
-			Statements<?> statements,
+			Statements statements,
 			MemberRegistry memberRegistry,
 			ClauseDeclaration declaration) {
 		this.statements = statements;
@@ -74,7 +74,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		this.declaration = declaration;
 	}
 
-	public final Statements<?> getStatements() {
+	public final Statements getStatements() {
 		return this.statements;
 	}
 
@@ -284,12 +284,12 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	}
 
 	@Override
-	protected Block<?> parentheses(Group group) {
+	protected Block parentheses(Group group) {
 		assert getDeclaration().getKind() == ClauseKind.GROUP :
 			"Group declaration expected: " + getDeclaration();
 
 		final DeclaredGroupClause clause = declaredGroupClause(this);
-		final Block<?> definition = clause.parentheses(group);
+		final Block definition = clause.parentheses(group);
 
 		if (definition == null) {
 			return null;

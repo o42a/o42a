@@ -45,7 +45,7 @@ public final class StInterpreter {
 	public static void addContent(
 			AccessRules accessRules,
 			StatementVisitor statementVisitor,
-			Block<?> block,
+			Block block,
 			BlockNode<?> blockNode) {
 		for (SentenceNode sentence : blockNode.getContent()) {
 			addSentence(
@@ -60,13 +60,13 @@ public final class StInterpreter {
 	public static void addSentence(
 			AccessRules accessRules,
 			StatementVisitor statementVisitor,
-			Block<?> block,
+			Block block,
 			SentenceNode node,
 			SentenceType type) {
 
 		final Location location =
 				new Location(statementVisitor.getContext(), node);
-		final Sentence<?> sentence;
+		final Sentence sentence;
 
 		switch (type) {
 		case DECLARATION:
@@ -97,7 +97,7 @@ public final class StInterpreter {
 	private static void fillSentence(
 			AccessRules accessRules,
 			StatementVisitor statementVisitor,
-			Sentence<?> sentence,
+			Sentence sentence,
 			SentenceNode node) {
 
 		int i = 0;
@@ -109,7 +109,7 @@ public final class StInterpreter {
 			final AlternativeNode altNode = disjunction[i];
 			final Location location =
 					new Location(statementVisitor.getContext(), altNode);
-			final Statements<?> alt = sentence.alternative(location);
+			final Statements alt = sentence.alternative(location);
 
 			if (alt != null) {
 				fillStatements(accessRules, statementVisitor, altNode, alt);
@@ -122,7 +122,7 @@ public final class StInterpreter {
 			AccessRules accessRules,
 			StatementVisitor statementVisitor,
 			AlternativeNode altNode,
-			Statements<?> alt) {
+			Statements alt) {
 		for (SerialNode stat : altNode.getConjunction()) {
 
 			final StatementNode st = stat.getStatement();
@@ -134,8 +134,8 @@ public final class StInterpreter {
 	}
 
 	private static void addContinuation(
-			Block<?> block,
-			Sentence<?> sentence,
+			Block block,
+			Sentence sentence,
 			SentenceNode node,
 			SentenceType type) {
 
@@ -169,7 +169,7 @@ public final class StInterpreter {
 			return;
 		}
 
-		final List<? extends Statements<?>> alts = sentence.getAlternatives();
+		final List<Statements> alts = sentence.getAlternatives();
 
 		if (alts.isEmpty()) {
 			sentence.alternative(continuationLocation)
@@ -177,7 +177,7 @@ public final class StInterpreter {
 			return;
 		}
 
-		for (Statements<?> alt : alts) {
+		for (Statements alt : alts) {
 			alt.loop(continuationLocation, label);
 		}
 	}

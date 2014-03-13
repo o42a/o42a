@@ -49,7 +49,7 @@ public final class ImperativeGroupFactory extends ImperativeFactory {
 	public ImperativeBlock createBraces(
 			LocationInfo location,
 			Distributor distributor,
-			Imperatives enclosing,
+			Statements enclosing,
 			Name name) {
 		return nestedImperativeBlock(
 				location,

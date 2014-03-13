@@ -56,7 +56,7 @@ final class GroupRegistry
 
 	@Override
 	public ClauseBuilder newClause(
-			Statements<?> statements,
+			Statements statements,
 			ClauseDeclaration declaration) {
 		if (this.group.isTerminator()) {
 			prohibitedContinuation(declaration);

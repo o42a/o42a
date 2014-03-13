@@ -30,8 +30,8 @@ import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.impl.cmd.BlockCommand;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeSentence;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.sentence.Sentence;
+import org.o42a.core.st.sentence.Statements;
 
 
 public final class ImperativeBlockCommand
@@ -72,7 +72,7 @@ public final class ImperativeBlockCommand
 			return NO_DEF_TARGET;
 		}
 
-		for (ImperativeSentence sentence : getBlock().getSentences()) {
+		for (Sentence sentence : getBlock().getSentences()) {
 
 			final DefTarget target = sentenceTarget(origin, sentence);
 
@@ -88,7 +88,7 @@ public final class ImperativeBlockCommand
 
 		CommandTargets result = noCommands();
 
-		for (ImperativeSentence sentence : getBlock().getSentences()) {
+		for (Sentence sentence : getBlock().getSentences()) {
 
 			final CommandTargets targets = sentence.getTargets();
 
@@ -123,9 +123,7 @@ public final class ImperativeBlockCommand
 		return targets.removeLooping();
 	}
 
-	private static DefTarget sentenceTarget(
-			Scope origin,
-			ImperativeSentence sentence) {
+	private static DefTarget sentenceTarget(Scope origin, Sentence sentence) {
 
 		final CommandTargets targets = sentence.getTargets();
 
@@ -142,7 +140,7 @@ public final class ImperativeBlockCommand
 			return NO_DEF_TARGET;
 		}
 
-		final List<Imperatives> alts = sentence.getAlternatives();
+		final List<Statements> alts = sentence.getAlternatives();
 		final int size = alts.size();
 
 		if (size != 1) {
@@ -157,7 +155,7 @@ public final class ImperativeBlockCommand
 
 	private static DefTarget statementsTarget(
 			Scope origin,
-			Imperatives statements) {
+			Statements statements) {
 
 		final CommandTargets targets = statements.getTargets();
 

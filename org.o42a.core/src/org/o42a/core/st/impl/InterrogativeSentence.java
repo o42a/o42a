@@ -17,24 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.declarative;
+package org.o42a.core.st.impl;
 
+import static org.o42a.core.st.sentence.SentenceKind.INTERROGATIVE_SENTENCE;
+
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.*;
 
 
-public final class DefaultDeclarativeSentence extends DeclarativeSentence {
+public final class InterrogativeSentence extends Sentence {
 
-	public DefaultDeclarativeSentence(
+	private final MemberRegistry memberRegistry;
+
+	public InterrogativeSentence(
 			LocationInfo location,
-			DeclarativeBlock block,
-			DeclarativeFactory sentenceFactory) {
+			Block block,
+			SentenceFactory<?> sentenceFactory) {
 		super(location, block, sentenceFactory);
+		this.memberRegistry =
+				new InterrogativeMemberRegistry(block.getMemberRegistry());
 	}
 
 	@Override
 	public SentenceKind getKind() {
-		return SentenceKind.DECLARATIVE_SENTENCE;
+		return INTERROGATIVE_SENTENCE;
+	}
+
+	@Override
+	public MemberRegistry getMemberRegistry() {
+		return this.memberRegistry;
 	}
 
 }

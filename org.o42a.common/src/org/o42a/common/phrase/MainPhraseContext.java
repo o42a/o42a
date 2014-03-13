@@ -129,11 +129,11 @@ final class MainPhraseContext extends PhraseContext {
 	}
 
 	@Override
-	protected void define(ClauseInstance instance, Block<?> definition) {
+	protected void define(ClauseInstance instance, Block definition) {
 		for (PhraseSubContext subContext : subContexts()) {
 
 			final LocationInfo location = instance.getLocation();
-			final Statements<?> statements =
+			final Statements statements =
 					definition.declare(location).alternative(location);
 
 			subContext.applyCause(statements);
