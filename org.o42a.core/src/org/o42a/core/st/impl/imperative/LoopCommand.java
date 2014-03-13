@@ -33,13 +33,13 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
 
-abstract class EllipsisCommand extends Command {
+abstract class LoopCommand extends Command {
 
-	EllipsisCommand(LoopStatement ellipsis, CommandEnv env) {
+	LoopCommand(LoopStatement ellipsis, CommandEnv env) {
 		super(ellipsis, env);
 	}
 
-	public final LoopStatement getEllipsis() {
+	public final LoopStatement getLoopStatement() {
 		return (LoopStatement) getStatement();
 	}
 
@@ -76,7 +76,7 @@ abstract class EllipsisCommand extends Command {
 	protected void fullyResolve(FullResolver resolver) {
 	}
 
-	static class ExitCommand extends EllipsisCommand {
+	static class ExitCommand extends LoopCommand {
 
 		ExitCommand(LoopStatement ellipsis, CommandEnv env) {
 			super(ellipsis, env);
@@ -89,18 +89,18 @@ abstract class EllipsisCommand extends Command {
 
 		@Override
 		public Action action(Resolver resolver) {
-			return new ExitLoop(this, getEllipsis().getName());
+			return new ExitLoop(this, getLoopStatement().getName());
 		}
 
 		@Override
 		public Cmd cmd(Scope origin) {
 			assert getStatement().assertFullyResolved();
-			return new ExitCmd(getEllipsis());
+			return new ExitCmd(getLoopStatement());
 		}
 
 	}
 
-	static class RepeatCommand extends EllipsisCommand {
+	static class RepeatCommand extends LoopCommand {
 
 		RepeatCommand(LoopStatement ellipsis, CommandEnv env) {
 			super(ellipsis, env);
@@ -113,13 +113,13 @@ abstract class EllipsisCommand extends Command {
 
 		@Override
 		public Action action(Resolver resolver) {
-			return new RepeatLoop(this, getEllipsis().getName());
+			return new RepeatLoop(this, getLoopStatement().getName());
 		}
 
 		@Override
 		public Cmd cmd(Scope origin) {
 			assert getStatement().assertFullyResolved();
-			return new RepeatCmd(getEllipsis());
+			return new RepeatCmd(getLoopStatement());
 		}
 
 	}

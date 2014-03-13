@@ -60,9 +60,9 @@ public final class LoopStatement extends Statement {
 	@Override
 	public Command command(CommandEnv env) {
 		if (this.exit) {
-			return new EllipsisCommand.ExitCommand(this, env);
+			return new LoopCommand.ExitCommand(this, env);
 		}
-		return new EllipsisCommand.RepeatCommand(this, env);
+		return new LoopCommand.RepeatCommand(this, env);
 	}
 
 	@Override
