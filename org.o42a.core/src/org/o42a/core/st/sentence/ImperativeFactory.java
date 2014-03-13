@@ -30,7 +30,7 @@ import org.o42a.core.st.impl.imperative.LoopExitSentence;
 import org.o42a.util.string.Name;
 
 
-public class ImperativeFactory extends SentenceFactory<ImperativeBlock> {
+public class ImperativeFactory extends SentenceFactory {
 
 	protected ImperativeFactory() {
 	}
@@ -86,9 +86,7 @@ public class ImperativeFactory extends SentenceFactory<ImperativeBlock> {
 	}
 
 	@Override
-	public Sentence interrogate(
-			LocationInfo location,
-			ImperativeBlock block) {
+	public Sentence interrogate(LocationInfo location, Block block) {
 		return new InterrogativeSentence(
 				location,
 				block,
@@ -103,12 +101,12 @@ public class ImperativeFactory extends SentenceFactory<ImperativeBlock> {
 	}
 
 	@Override
-	public Sentence declare(LocationInfo location, ImperativeBlock block) {
+	public Sentence declare(LocationInfo location, Block block) {
 		return new DefaultSentence(location, block, this);
 	}
 
 	@Override
-	public Sentence exit(LocationInfo location, ImperativeBlock block) {
+	public Sentence exit(LocationInfo location, Block block) {
 		return new LoopExitSentence(location, block, this);
 	}
 

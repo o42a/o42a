@@ -21,7 +21,7 @@ package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.impl.InterrogativeSentence;
-import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.ImperativeFactory;
 import org.o42a.core.st.sentence.Sentence;
 
@@ -29,9 +29,7 @@ import org.o42a.core.st.sentence.Sentence;
 public class ImperativeInterrogationFactory extends ImperativeFactory {
 
 	@Override
-	public Sentence declare(
-			LocationInfo location,
-			ImperativeBlock block) {
+	public Sentence declare(LocationInfo location, Block block) {
 		return new InterrogativeSentence(location, block, this);
 	}
 

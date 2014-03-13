@@ -31,7 +31,7 @@ public final class DefaultSentence extends Sentence {
 	public DefaultSentence(
 			LocationInfo location,
 			Block block,
-			SentenceFactory<?> sentenceFactory) {
+			SentenceFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
 	}
 

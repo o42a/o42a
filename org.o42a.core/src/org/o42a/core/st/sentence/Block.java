@@ -38,7 +38,7 @@ public abstract class Block extends Statement {
 	private final Statements enclosing;
 	private final ArrayList<Sentence> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
-	private final SentenceFactory<?> sentenceFactory;
+	private final SentenceFactory sentenceFactory;
 	private final StatementsEnv statementsEnv = new StatementsEnv();
 	private CommandEnv initialEnv;
 	private Locals locals;
@@ -49,7 +49,7 @@ public abstract class Block extends Statement {
 			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
-			SentenceFactory<?> sentenceFactory) {
+			SentenceFactory sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
@@ -61,7 +61,7 @@ public abstract class Block extends Statement {
 			Distributor distributor,
 			Statements enclosing,
 			MemberRegistry memberRegistry,
-			SentenceFactory<?> sentenceFactory) {
+			SentenceFactory sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
@@ -77,20 +77,14 @@ public abstract class Block extends Statement {
 		return this.enclosing;
 	}
 
-	public SentenceFactory<?> getSentenceFactory() {
+	public SentenceFactory getSentenceFactory() {
 		return this.sentenceFactory;
 	}
 
 	public abstract boolean isParentheses();
 
-	public boolean isImperative() {
-		if (!isParentheses()) {
-			return true;
-		}
-
-		final Statements enclosing = getEnclosing();
-
-		return enclosing != null && enclosing.isImperative();
+	public final boolean isImperative() {
+		return !getSentenceFactory().isDeclarative();
 	}
 
 	public abstract Name getName();
@@ -126,11 +120,7 @@ public abstract class Block extends Statement {
 
 	public final Sentence declare(LocationInfo location) {
 
-		@SuppressWarnings("rawtypes")
-		final SentenceFactory sentenceFactory = getSentenceFactory();
-		@SuppressWarnings("unchecked")
-		final Sentence sentence =
-				sentenceFactory.declare(location, this);
+		final Sentence sentence = getSentenceFactory().declare(location, this);
 
 		return addSentence(sentence);
 	}
@@ -145,21 +135,15 @@ public abstract class Block extends Statement {
 			return null;
 		}
 
-		@SuppressWarnings("rawtypes")
-		final SentenceFactory sentenceFactory = getSentenceFactory();
-		@SuppressWarnings("unchecked")
-		final Sentence exit = sentenceFactory.exit(location, this);
+		final Sentence exit = getSentenceFactory().exit(location, this);
 
 		return addSentence(exit);
 	}
 
 	public final Sentence interrogate(LocationInfo location) {
 
-		@SuppressWarnings("rawtypes")
-		final SentenceFactory sentenceFactory = getSentenceFactory();
-		@SuppressWarnings("unchecked")
 		final Sentence interrogation =
-				sentenceFactory.interrogate(location, this);
+				getSentenceFactory().interrogate(location, this);
 
 		addSentence(interrogation);
 
