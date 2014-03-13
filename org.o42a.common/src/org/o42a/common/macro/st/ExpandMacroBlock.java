@@ -34,7 +34,7 @@ final class ExpandMacroBlock extends BlockBuilder {
 	}
 
 	@Override
-	public void buildBlock(Block<?> block) {
+	public void buildBlock(Block block) {
 
 		final ExpandMacroStatement statement =
 				new ExpandMacroStatement(

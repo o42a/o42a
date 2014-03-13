@@ -22,7 +22,7 @@ package org.o42a.core.st.impl.imperative;
 import org.o42a.core.Distributor;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.Name;
 
 
@@ -33,7 +33,7 @@ public final class LoopStatement extends Statement {
 
 	public LoopStatement(
 			LocationInfo location,
-			Imperatives enclosing,
+			Statements enclosing,
 			Name name) {
 		super(location, enclosing.nextDistributor());
 		this.name = name;
@@ -60,9 +60,9 @@ public final class LoopStatement extends Statement {
 	@Override
 	public Command command(CommandEnv env) {
 		if (this.exit) {
-			return new EllipsisCommand.ExitCommand(this, env);
+			return new LoopCommand.ExitCommand(this, env);
 		}
-		return new EllipsisCommand.RepeatCommand(this, env);
+		return new LoopCommand.RepeatCommand(this, env);
 	}
 
 	@Override

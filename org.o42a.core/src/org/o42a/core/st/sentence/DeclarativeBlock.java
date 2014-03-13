@@ -23,8 +23,6 @@ import static org.o42a.core.Distributor.containerDistributor;
 import static org.o42a.core.st.CommandEnv.defaultEnv;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
-import java.util.List;
-
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
@@ -38,12 +36,12 @@ import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.string.Name;
 
 
-public final class DeclarativeBlock extends Block<Declaratives> {
+public final class DeclarativeBlock extends Block {
 
 	static DeclarativeBlock nestedBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Declaratives enclosing,
+			Statements enclosing,
 			DeclarativeFactory sentenceFactory) {
 		return new DeclarativeBlock(
 				location,
@@ -86,7 +84,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		this(
 				group,
 				distributor,
-				(Declaratives) group.getStatements(),
+				group.getStatements(),
 				memberRegistry,
 				DECLARATIVE_FACTORY,
 				false);
@@ -95,7 +93,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	private DeclarativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Declaratives enclosing,
+			Statements enclosing,
 			MemberRegistry memberRegistry,
 			DeclarativeFactory sentenceFactory,
 			boolean reproduced) {
@@ -111,11 +109,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public Declaratives getEnclosing() {
-		return (Declaratives) super.getEnclosing();
-	}
-
-	@Override
 	public final boolean isParentheses() {
 		return true;
 	}
@@ -125,30 +118,9 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<DeclarativeSentence> getSentences() {
-		return (List<DeclarativeSentence>) super.getSentences();
-	}
-
 	@Override
 	public final DeclarativeBlock toDeclarativeBlock() {
 		return this;
-	}
-
-	@Override
-	public final DeclarativeSentence declare(LocationInfo location) {
-		return (DeclarativeSentence) super.declare(location);
-	}
-
-	@Override
-	public final DeclarativeSentence exit(LocationInfo location) {
-		return (DeclarativeSentence) super.exit(location);
-	}
-
-	@Override
-	public final DeclarativeSentence interrogate(LocationInfo location) {
-		return (DeclarativeSentence) super.interrogate(location);
 	}
 
 	public DefinitionsBuilder definitions(CommandEnv env) {
@@ -160,7 +132,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	public DeclarativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Statements<?> enclosing = reproducer.getStatements();
+		final Statements enclosing = reproducer.getStatements();
 		final DeclarativeBlock reproduction;
 
 		if (enclosing == null) {
@@ -188,7 +160,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return this.namedBlocks;
 		}
 
-		final Declaratives enclosing = getEnclosing();
+		final Statements enclosing = getEnclosing();
 
 		if (enclosing == null) {
 			return this.namedBlocks = new NamedBlocks(this);
@@ -211,7 +183,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return;
 		}
 
-		final Declaratives statements = declare(this).alternative(this);
+		final Statements statements = declare(this).alternative(this);
 
 		statements.statement(new Inclusion(this, statements));
 	}

@@ -46,7 +46,7 @@ public class UnboundedInterval extends PhraseContinuation {
 	}
 
 	@Override
-	public void define(Block<?> definition) {
+	public void define(Block definition) {
 	}
 
 	@Override

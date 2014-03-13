@@ -28,7 +28,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.DeclarativeSentence;
+import org.o42a.core.st.sentence.Sentence;
 import org.o42a.core.value.TypeParameters;
 
 
@@ -37,7 +37,7 @@ final class BlockDefinitions {
 	private final DeclarativeBlock block;
 	private final CommandEnv env;
 	private CommandTargets targets = noCommands();
-	private ArrayList<DeclarativeSentence> sentences;
+	private ArrayList<Sentence> sentences;
 
 	BlockDefinitions(DeclarativeBlock block, CommandEnv env) {
 		this.block = block;
@@ -57,7 +57,7 @@ final class BlockDefinitions {
 		return this.targets;
 	}
 
-	public final ArrayList<DeclarativeSentence> getSentences() {
+	public final ArrayList<Sentence> getSentences() {
 		return this.sentences;
 	}
 
@@ -97,7 +97,7 @@ final class BlockDefinitions {
 
 		int index = -1;
 
-		for (DeclarativeSentence sentence : getBlock().getSentences()) {
+		for (Sentence sentence : getBlock().getSentences()) {
 			++index;
 
 			final CommandTargets targets = sentence.getTargets();
@@ -121,7 +121,7 @@ final class BlockDefinitions {
 	}
 
 	private void addSentence(
-			DeclarativeSentence sentence,
+			Sentence sentence,
 			CommandTargets targets,
 			int index) {
 		if (this.sentences == null) {

@@ -39,8 +39,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
 import org.o42a.core.member.field.*;
 import org.o42a.core.source.*;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.Declaratives;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 
@@ -52,7 +53,7 @@ final class Section implements LogInfo {
 	private SectionNode sectionNode;
 	private final SectionTitle title;
 	private Location location;
-	private DeclarativeBlock enclosingBlock;
+	private Block enclosingBlock;
 
 	Section(
 			AbstractDefinitionCompiler<?> compiler,
@@ -122,7 +123,7 @@ final class Section implements LogInfo {
 		return this;
 	}
 
-	public void encloseInto(DeclarativeBlock enclosingBlock) {
+	public void encloseInto(Block enclosingBlock) {
 		assert this.enclosingBlock == null :
 			"The section is already enclosed into a block";
 		this.enclosingBlock = enclosingBlock;
@@ -194,9 +195,9 @@ final class Section implements LogInfo {
 
 	public void declareField(DeclarativeBlock definition) {
 
-		final DeclarativeBlock enclosingBlock = enclosingBlock(definition);
+		final Block enclosingBlock = enclosingBlock(definition);
 		final LocationInfo location = getLocation();
-		final Declaratives statements =
+		final Statements statements =
 				enclosingBlock.declare(location).alternative(location);
 
 		final Distributor distributor = statements.nextDistributor();
@@ -221,14 +222,14 @@ final class Section implements LogInfo {
 		}
 	}
 
-	private DeclarativeBlock enclosingBlock(DeclarativeBlock definition) {
+	private Block enclosingBlock(DeclarativeBlock definition) {
 
 		final LocationInfo location = getLocation();
-		final Declaratives statements =
+		final Statements statements =
 				definition.declare(location).alternative(location);
 		final Namespace namespace =
 				new Namespace(location, statements.nextContainer());
-		final DeclarativeBlock enclosingBlock =
+		final Block enclosingBlock =
 				statements.parentheses(location, namespace);
 
 		encloseInto(enclosingBlock);
@@ -261,7 +262,7 @@ final class Section implements LogInfo {
 		return subTitle.getLoggable();
 	}
 
-	private void addHeader(DeclarativeBlock enclosingBlock) {
+	private void addHeader(Block enclosingBlock) {
 
 		final SectionNode header = getCompiler().getNode().getHeader();
 

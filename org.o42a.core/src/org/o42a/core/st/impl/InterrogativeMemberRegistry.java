@@ -39,7 +39,7 @@ public class InterrogativeMemberRegistry extends ProxyMemberRegistry {
 
 	@Override
 	public ClauseBuilder newClause(
-			Statements<?> statements,
+			Statements statements,
 			ClauseDeclaration declaration) {
 		if (statements.getContainer().toClause() == null) {
 			prohibitedInterrogativeClause(declaration);

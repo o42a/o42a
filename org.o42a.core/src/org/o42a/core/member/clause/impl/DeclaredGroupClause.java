@@ -51,7 +51,7 @@ public final class DeclaredGroupClause
 
 	private final ClauseBuilder builder;
 	private ReusedClause[] reused;
-	private Block<?> definition;
+	private Block definition;
 	private ImperativeBlock imperative;
 
 	DeclaredGroupClause(
@@ -112,14 +112,14 @@ public final class DeclaredGroupClause
 		return this.reused = this.builder.reuseClauses(this);
 	}
 
-	public Block<?> parentheses(Group group) {
+	public Block parentheses(Group group) {
 		if (isImperative()) {
 			return braces(group, null);
 		}
 
-		final SentenceFactory<?, ?, ?> sentenceFactory =
+		final SentenceFactory<?> sentenceFactory =
 				group.getStatements().getSentenceFactory();
-		final Block<?> definition = sentenceFactory.groupParentheses(
+		final Block definition = sentenceFactory.groupParentheses(
 				group,
 				new BlockDistributor(group, this),
 				new GroupRegistry(
@@ -131,8 +131,8 @@ public final class DeclaredGroupClause
 
 	public ImperativeBlock braces(Group group, Name name) {
 
-		final Statements<?> statements = group.getStatements();
-		final SentenceFactory<?, ?, ?> sentenceFactory =
+		final Statements statements = group.getStatements();
+		final SentenceFactory<?> sentenceFactory =
 				statements.getSentenceFactory();
 		final ImperativeBlock definition;
 
@@ -174,7 +174,7 @@ public final class DeclaredGroupClause
 
 			if (reproduction != null) {
 
-				final Statements<?> statements = reproducer.getStatements();
+				final Statements statements = reproducer.getStatements();
 
 				if (statements != null) {
 					statements.statement(reproduction);
@@ -276,7 +276,7 @@ public final class DeclaredGroupClause
 		}
 
 		@Override
-		public Statements<?> getStatements() {
+		public Statements getStatements() {
 			return null;
 		}
 
@@ -296,7 +296,7 @@ public final class DeclaredGroupClause
 		@Override
 		public void applyClause(
 				LocationInfo location,
-				Statements<?> statements,
+				Statements statements,
 				Clause clause) {
 			this.reproducer.applyClause(location, statements, clause);
 		}

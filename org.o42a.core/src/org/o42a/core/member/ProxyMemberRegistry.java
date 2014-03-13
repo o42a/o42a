@@ -59,7 +59,7 @@ public abstract class ProxyMemberRegistry extends MemberRegistry {
 
 	@Override
 	public ClauseBuilder newClause(
-			Statements<?> statements,
+			Statements statements,
 			ClauseDeclaration declaration) {
 		return registry().newClause(statements, declaration);
 	}

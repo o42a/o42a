@@ -20,18 +20,19 @@
 package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.impl.InterrogativeSentence;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeFactory;
-import org.o42a.core.st.sentence.DeclarativeSentence;
+import org.o42a.core.st.sentence.Sentence;
 
 
 public class DeclarativeInterrogationFactory extends DeclarativeFactory {
 
 	@Override
-	public DeclarativeSentence declare(
+	public Sentence declare(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeInterrogativeSentence(location, block);
+		return new InterrogativeSentence(location, block, this);
 	}
 
 }

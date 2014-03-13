@@ -17,24 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.core.st.impl;
+
+import static org.o42a.core.st.sentence.SentenceKind.DECLARATIVE_SENTENCE;
+import static org.o42a.core.st.sentence.SentenceKind.IMPERATIVE_SENTENCE;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.*;
 
 
-public final class DefaultImperativeSentence extends ImperativeSentence {
+public final class DefaultSentence extends Sentence {
 
-	public DefaultImperativeSentence(
+	public DefaultSentence(
 			LocationInfo location,
-			ImperativeBlock block,
-			ImperativeFactory sentenceFactory) {
+			Block block,
+			SentenceFactory<?> sentenceFactory) {
 		super(location, block, sentenceFactory);
 	}
 
 	@Override
 	public SentenceKind getKind() {
-		return SentenceKind.IMPERATIVE_SENTENCE;
+		return isImperative() ? IMPERATIVE_SENTENCE : DECLARATIVE_SENTENCE;
 	}
 
 }

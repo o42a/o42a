@@ -40,7 +40,7 @@ import org.o42a.core.st.DefValue;
 import org.o42a.core.st.impl.cmd.InlineSentences;
 import org.o42a.core.st.impl.cmd.Sentences;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.DeclarativeSentence;
+import org.o42a.core.st.sentence.Sentence;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
@@ -60,7 +60,7 @@ final class BlockDef extends Def {
 			DeclarativeBlock block,
 			CommandEnv env,
 			CommandTargets targets,
-			List<DeclarativeSentence> sentences) {
+			List<Sentence> sentences) {
 		super(
 				sourceOf(block),
 				block,
@@ -88,7 +88,7 @@ final class BlockDef extends Def {
 		return this.sentences.getTargets().haveDefinition();
 	}
 
-	public final List<DeclarativeSentence> getSentences() {
+	public final List<Sentence> getSentences() {
 		return this.sentences.getSentences();
 	}
 
@@ -149,8 +149,7 @@ final class BlockDef extends Def {
 			return "Definitions[" + this.block + ']';
 		}
 
-		final List<DeclarativeSentence> sentences =
-				this.sentences.getSentences();
+		final List<Sentence> sentences = this.sentences.getSentences();
 		final int len = sentences.size();
 
 		if (len == 0) {
@@ -209,12 +208,12 @@ final class BlockDef extends Def {
 
 		private final BlockDef part;
 		private final CommandTargets targets;
-		private final List<DeclarativeSentence> sentences;
+		private final List<Sentence> sentences;
 
 		DefSentences(
 				BlockDef part,
 				CommandTargets targets,
-				List<DeclarativeSentence> sentences) {
+				List<Sentence> sentences) {
 			this.part = part;
 			this.targets = targets;
 			this.sentences = sentences;
@@ -231,7 +230,7 @@ final class BlockDef extends Def {
 		}
 
 		@Override
-		public List<DeclarativeSentence> getSentences() {
+		public List<Sentence> getSentences() {
 			return this.sentences;
 		}
 
