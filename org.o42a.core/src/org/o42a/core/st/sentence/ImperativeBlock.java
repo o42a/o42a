@@ -66,8 +66,7 @@ public final class ImperativeBlock extends Block {
 				false,
 				name,
 				registry,
-				sentenceFactory,
-				true);
+				sentenceFactory);
 	}
 
 	public static ImperativeBlock nestedImperativeBlock(
@@ -85,13 +84,11 @@ public final class ImperativeBlock extends Block {
 				parentheses,
 				name,
 				memberRegistry,
-				sentenceFactory,
-				false);
+				sentenceFactory);
 	}
 
 	private final boolean parentheses;
 	private final Name name;
-	private final boolean topLevel;
 	private NamedBlocks namedBlocks;
 
 	private ImperativeBlock(
@@ -101,8 +98,7 @@ public final class ImperativeBlock extends Block {
 			boolean parentheses,
 			Name name,
 			MemberRegistry memberRegistry,
-			ImperativeFactory sentenceFactory,
-			boolean topLevel) {
+			ImperativeFactory sentenceFactory) {
 		super(
 				location,
 				distributor,
@@ -111,7 +107,6 @@ public final class ImperativeBlock extends Block {
 				sentenceFactory);
 		this.parentheses = parentheses;
 		this.name = name;
-		this.topLevel = topLevel;
 	}
 
 	private ImperativeBlock(
@@ -122,11 +117,6 @@ public final class ImperativeBlock extends Block {
 		super(prototype, distributor, memberRegistry, sentenceFactory);
 		this.parentheses = false;
 		this.name = prototype.getName();
-		this.topLevel = true;
-	}
-
-	public final boolean isTopLevel() {
-		return this.topLevel;
 	}
 
 	@Override

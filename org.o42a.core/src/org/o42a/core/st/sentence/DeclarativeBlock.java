@@ -145,7 +145,7 @@ public final class DeclarativeBlock extends Block {
 					true);
 			reproduction.command(defaultEnv(reproducer.getLogger()));
 			reproduceSentences(reproducer, reproduction);
-			return null;
+			return reproduction;
 		}
 
 		reproduction = enclosing.parentheses(this).toDeclarativeBlock();
