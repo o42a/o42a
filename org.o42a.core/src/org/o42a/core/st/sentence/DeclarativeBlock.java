@@ -23,8 +23,6 @@ import static org.o42a.core.Distributor.containerDistributor;
 import static org.o42a.core.st.CommandEnv.defaultEnv;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
-import java.util.List;
-
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
@@ -120,30 +118,9 @@ public final class DeclarativeBlock extends Block {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<DeclarativeSentence> getSentences() {
-		return (List<DeclarativeSentence>) super.getSentences();
-	}
-
 	@Override
 	public final DeclarativeBlock toDeclarativeBlock() {
 		return this;
-	}
-
-	@Override
-	public final DeclarativeSentence declare(LocationInfo location) {
-		return (DeclarativeSentence) super.declare(location);
-	}
-
-	@Override
-	public final DeclarativeSentence exit(LocationInfo location) {
-		return (DeclarativeSentence) super.exit(location);
-	}
-
-	@Override
-	public final DeclarativeSentence interrogate(LocationInfo location) {
-		return (DeclarativeSentence) super.interrogate(location);
 	}
 
 	public DefinitionsBuilder definitions(CommandEnv env) {

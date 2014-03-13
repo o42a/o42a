@@ -47,7 +47,7 @@ public abstract class Sentences {
 
 	public abstract boolean isParentheses();
 
-	public abstract List<? extends Sentence> getSentences();
+	public abstract List<Sentence> getSentences();
 
 	public abstract CommandTargets getTargets();
 

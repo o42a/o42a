@@ -28,7 +28,7 @@ import org.o42a.core.st.impl.imperative.ImperativeInterrogationFactory;
 import org.o42a.util.string.Name;
 
 
-public abstract class SentenceFactory<T extends Sentence, B extends Block> {
+public abstract class SentenceFactory<B extends Block> {
 
 	public static final DeclarativeFactory DECLARATIVE_FACTORY =
 			new DeclarativeFactory();
@@ -70,15 +70,15 @@ public abstract class SentenceFactory<T extends Sentence, B extends Block> {
 			Name name,
 			MemberRegistry memberRegistry);
 
-	public abstract T declare(LocationInfo location, B block);
+	public abstract Sentence declare(LocationInfo location, B block);
 
-	public abstract T exit(LocationInfo location, B block);
+	public abstract Sentence exit(LocationInfo location, B block);
 
-	public abstract T interrogate(LocationInfo location, B block);
+	public abstract Sentence interrogate(LocationInfo location, B block);
 
 	public abstract Statements createAlternative(
 			LocationInfo location,
-			T sentence);
+			Sentence sentence);
 
 	public abstract DeclarativeFactory toDeclarativeFactory();
 

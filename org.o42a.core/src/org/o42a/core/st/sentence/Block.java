@@ -38,7 +38,7 @@ public abstract class Block extends Statement {
 	private final Statements enclosing;
 	private final ArrayList<Sentence> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
-	private final SentenceFactory<?, ?> sentenceFactory;
+	private final SentenceFactory<?> sentenceFactory;
 	private final StatementsEnv statementsEnv = new StatementsEnv();
 	private CommandEnv initialEnv;
 	private Locals locals;
@@ -49,7 +49,7 @@ public abstract class Block extends Statement {
 			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
-			SentenceFactory<?, ?> sentenceFactory) {
+			SentenceFactory<?> sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
@@ -61,7 +61,7 @@ public abstract class Block extends Statement {
 			Distributor distributor,
 			Statements enclosing,
 			MemberRegistry memberRegistry,
-			SentenceFactory<?, ?> sentenceFactory) {
+			SentenceFactory<?> sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
@@ -77,7 +77,7 @@ public abstract class Block extends Statement {
 		return this.enclosing;
 	}
 
-	public SentenceFactory<?, ?> getSentenceFactory() {
+	public SentenceFactory<?> getSentenceFactory() {
 		return this.sentenceFactory;
 	}
 
@@ -120,11 +120,11 @@ public abstract class Block extends Statement {
 		return enclosing != null && enclosing.getSentence().isConditional();
 	}
 
-	public List<? extends Sentence> getSentences() {
+	public final List<Sentence> getSentences() {
 		return this.sentences;
 	}
 
-	public Sentence declare(LocationInfo location) {
+	public final Sentence declare(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -135,7 +135,7 @@ public abstract class Block extends Statement {
 		return addSentence(sentence);
 	}
 
-	public Sentence exit(LocationInfo location) {
+	public final Sentence exit(LocationInfo location) {
 		if (isInterrogation()) {
 			getLogger().error(
 					"prohibited_interrogative_exit",
@@ -153,7 +153,7 @@ public abstract class Block extends Statement {
 		return addSentence(exit);
 	}
 
-	public Sentence interrogate(LocationInfo location) {
+	public final Sentence interrogate(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -174,7 +174,7 @@ public abstract class Block extends Statement {
 		this.executingInstructions = true;
 		try {
 
-			final List<? extends Sentence> sentences = getSentences();
+			final List<Sentence> sentences = getSentences();
 
 			for (int i = this.instructionsExecuted; i < sentences.size(); ++i) {
 				this.instructionsExecuted = i + 1;
@@ -209,9 +209,7 @@ public abstract class Block extends Statement {
 		return createCommand(env);
 	}
 
-	public void reproduceSentences(
-			Reproducer reproducer,
-			Block reproduction) {
+	public void reproduceSentences(Reproducer reproducer, Block reproduction) {
 		for (Sentence sentence : getSentences()) {
 			sentence.reproduce(reproduction, reproducer);
 		}
@@ -255,7 +253,7 @@ public abstract class Block extends Statement {
 
 	final Container nextContainer() {
 
-		final List<? extends Sentence> sentences = getSentences();
+		final List<Sentence> sentences = getSentences();
 		final int numSentences = sentences.size();
 
 		if (numSentences == 0) {
