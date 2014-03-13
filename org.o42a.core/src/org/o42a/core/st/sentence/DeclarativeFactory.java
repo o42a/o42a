@@ -30,7 +30,7 @@ import org.o42a.core.st.impl.InterrogativeSentence;
 import org.o42a.util.string.Name;
 
 
-public class DeclarativeFactory extends SentenceFactory<DeclarativeBlock> {
+public class DeclarativeFactory extends SentenceFactory {
 
 	protected DeclarativeFactory() {
 	}
@@ -82,9 +82,7 @@ public class DeclarativeFactory extends SentenceFactory<DeclarativeBlock> {
 	}
 
 	@Override
-	public Sentence interrogate(
-			LocationInfo location,
-			DeclarativeBlock block) {
+	public Sentence interrogate(LocationInfo location, Block block) {
 		return new InterrogativeSentence(
 				location,
 				block,
@@ -99,16 +97,12 @@ public class DeclarativeFactory extends SentenceFactory<DeclarativeBlock> {
 	}
 
 	@Override
-	public Sentence declare(
-			LocationInfo location,
-			DeclarativeBlock block) {
+	public Sentence declare(LocationInfo location, Block block) {
 		return new DefaultSentence(location, block, this);
 	}
 
 	@Override
-	public Sentence exit(
-			LocationInfo location,
-			DeclarativeBlock block) {
+	public Sentence exit(LocationInfo location, Block block) {
 		location.getLocation().getLogger().error(
 				"prohibited_loop_exit",
 				location,

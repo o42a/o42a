@@ -38,7 +38,7 @@ import org.o42a.core.value.TypeParameters;
 public abstract class Sentence extends Contained {
 
 	private final Block block;
-	private final SentenceFactory<?> sentenceFactory;
+	private final SentenceFactory sentenceFactory;
 	private final ArrayList<Statements> alternatives = new ArrayList<>(1);
 	private Sentence prerequisite;
 	private CommandTargets targets;
@@ -48,7 +48,7 @@ public abstract class Sentence extends Contained {
 	protected Sentence(
 			LocationInfo location,
 			Block block,
-			SentenceFactory<?> sentenceFactory) {
+			SentenceFactory sentenceFactory) {
 		super(location, new SentenceDistributor(location, block));
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
@@ -62,7 +62,7 @@ public abstract class Sentence extends Contained {
 		return getBlock().getMemberRegistry();
 	}
 
-	public final SentenceFactory<?> getSentenceFactory() {
+	public final SentenceFactory getSentenceFactory() {
 		return this.sentenceFactory;
 	}
 
@@ -107,7 +107,8 @@ public abstract class Sentence extends Contained {
 
 	public final Statements alternative(LocationInfo location) {
 
-		final Statements alt = createAlt(location);
+		final Statements alt =
+				getSentenceFactory().createAlternative(location, this);
 
 		if (alt != null) {
 			this.alternatives.add(alt);
@@ -252,15 +253,6 @@ public abstract class Sentence extends Contained {
 		}
 		throw new IllegalStateException(
 				"Unsupported sentence kind: " + getKind());
-	}
-
-	private Statements createAlt(LocationInfo location) {
-
-		final SentenceFactory<?> sentenceFactory = getSentenceFactory();
-		final Statements alt =
-				sentenceFactory.createAlternative(location, this);
-
-		return alt;
 	}
 
 	private CommandTargets prerequisiteTargets() {

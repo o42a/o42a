@@ -33,7 +33,7 @@ public final class InterrogativeSentence extends Sentence {
 	public InterrogativeSentence(
 			LocationInfo location,
 			Block block,
-			SentenceFactory<?> sentenceFactory) {
+			SentenceFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
 		this.memberRegistry =
 				new InterrogativeMemberRegistry(block.getMemberRegistry());
