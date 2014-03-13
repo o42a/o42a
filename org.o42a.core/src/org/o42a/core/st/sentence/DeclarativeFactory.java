@@ -30,10 +30,8 @@ import org.o42a.core.st.impl.declarative.DefaultDeclarativeSentence;
 import org.o42a.util.string.Name;
 
 
-public class DeclarativeFactory extends SentenceFactory<
-		Declaratives,
-		DeclarativeSentence,
-		DeclarativeBlock> {
+public class DeclarativeFactory
+		extends SentenceFactory<DeclarativeSentence, DeclarativeBlock> {
 
 	protected DeclarativeFactory() {
 	}
@@ -42,7 +40,7 @@ public class DeclarativeFactory extends SentenceFactory<
 	public DeclarativeBlock createParentheses(
 			LocationInfo location,
 			Distributor distributor,
-			Declaratives enclosing) {
+			Statements enclosing) {
 		return nestedBlock(location, distributor, enclosing, this);
 	}
 
@@ -73,7 +71,7 @@ public class DeclarativeFactory extends SentenceFactory<
 	public ImperativeBlock createBraces(
 			LocationInfo location,
 			Distributor distributor,
-			Declaratives enclosing,
+			Statements enclosing,
 			Name name) {
 		return topLevelImperativeBlock(
 				location,
@@ -92,10 +90,10 @@ public class DeclarativeFactory extends SentenceFactory<
 	}
 
 	@Override
-	public Declaratives createAlternative(
+	public Statements createAlternative(
 			LocationInfo location,
 			DeclarativeSentence sentence) {
-		return new Declaratives(location, sentence);
+		return new Statements(location, sentence);
 	}
 
 	@Override

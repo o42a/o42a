@@ -40,7 +40,7 @@ import org.o42a.core.value.macro.MacroConsumer;
 public final class StatementConsumer implements Consumer {
 
 	public static Ref consumeStatement(
-			Statements<?> statements,
+			Statements statements,
 			LocationInfo location,
 			Ref ref,
 			boolean condition) {
@@ -65,11 +65,11 @@ public final class StatementConsumer implements Consumer {
 				.target(rescoped.distribute());
 	}
 
-	private final Statements<?> statements;
+	private final Statements statements;
 	private final boolean condition;
 	private MemberField tempField;
 
-	public StatementConsumer(Statements<?> statements, boolean condition) {
+	public StatementConsumer(Statements statements, boolean condition) {
 		this.statements = statements;
 		this.condition = condition;
 	}
@@ -84,7 +84,7 @@ public final class StatementConsumer implements Consumer {
 			PathTemplate template,
 			Ref expansion) {
 
-		final Statements<?> statements = createTopLevelSentence(macroRef);
+		final Statements statements = createTopLevelSentence(macroRef);
 
 		this.tempField = createTempField(macroRef, expansion, statements);
 		if (this.tempField == null) {
@@ -94,14 +94,14 @@ public final class StatementConsumer implements Consumer {
 		return new StatementMacroConsumer(macroRef, template, this.tempField);
 	}
 
-	private Statements<?> createTopLevelSentence(LocationInfo location) {
+	private Statements createTopLevelSentence(LocationInfo location) {
 
-		Statements<?> st = this.statements;
+		Statements st = this.statements;
 
 		for (;;) {
 
-			final Block<?> block = st.getSentence().getBlock();
-			final Statements<?> enclosing = block.getEnclosing();
+			final Block block = st.getSentence().getBlock();
+			final Statements enclosing = block.getEnclosing();
 
 			if (enclosing == null) {
 				return block.declare(location).alternative(location);
@@ -114,7 +114,7 @@ public final class StatementConsumer implements Consumer {
 	private MemberField createTempField(
 			Ref macroRef,
 			Ref expansion,
-			Statements<?> statements) {
+			Statements statements) {
 
 		final FieldDeclaration declaration = fieldDeclaration(
 				macroRef,

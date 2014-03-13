@@ -83,12 +83,12 @@ public class BinaryPhrasePart extends PhraseContinuation {
 	}
 
 	@Override
-	public void define(Block<?> definition) {
+	public void define(Block definition) {
 		if (this.rightOperand == null) {
 			return;// Do not assign any value.
 		}
 
-		final Statements<?> statements =
+		final Statements statements =
 				definition.declare(this).alternative(this);
 
 		statements.selfAssign(this.rightOperand);

@@ -26,7 +26,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
 
 
-public abstract class ImperativeSentence extends Sentence<Imperatives> {
+public abstract class ImperativeSentence extends Sentence {
 
 	private CommandTargets targets;
 
@@ -75,9 +75,9 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 	private CommandTargets altTargets() {
 
 		CommandTargets result = noCommands();
-		Imperatives first = null;
+		Statements first = null;
 
-		for (Imperatives alt : getAlternatives()) {
+		for (Statements alt : getAlternatives()) {
 
 			final CommandTargets targets = alt.getTargets();
 

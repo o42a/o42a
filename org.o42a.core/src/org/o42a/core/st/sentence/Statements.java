@@ -39,16 +39,16 @@ import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.StatementsDistributor;
+import org.o42a.core.st.impl.imperative.LoopStatement;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.LocalInsides;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.Name;
 
 
-public abstract class Statements<S extends Statements<S>>
-				extends Contained {
+public final class Statements extends Contained {
 
-	private final Sentence<S> sentence;
+	private final Sentence sentence;
 	private final ArrayList<Command> commands = new ArrayList<>(1);
 	private Container nextContainer;
 	private boolean statementDropped;
@@ -56,7 +56,7 @@ public abstract class Statements<S extends Statements<S>>
 	private int instructionsExecuted;
 	private CommandTargets targets;
 
-	Statements(LocationInfo location, Sentence<S> sentence) {
+	Statements(LocationInfo location, Sentence sentence) {
 		super(
 				location,
 				new StatementsDistributor(location, sentence));
@@ -64,8 +64,12 @@ public abstract class Statements<S extends Statements<S>>
 		this.nextContainer = getContainer();
 	}
 
-	public Sentence<S> getSentence() {
+	public Sentence getSentence() {
 		return this.sentence;
+	}
+
+	public final boolean isImperative() {
+		return getSentence().getBlock().isImperative();
 	}
 
 	public final boolean isInterrogation() {
@@ -76,7 +80,7 @@ public abstract class Statements<S extends Statements<S>>
 		return this.commands;
 	}
 
-	public SentenceFactory<S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<?, ?> getSentenceFactory() {
 		return getSentence().getSentenceFactory();
 	}
 
@@ -141,6 +145,14 @@ public abstract class Statements<S extends Statements<S>>
 			dropStatement();
 			return null;
 		}
+		if (getSentence().isConditional()) {
+			getLogger().error(
+					"prohibited_conditional_field",
+					declaration,
+					"Field declaration can not be conditional");
+			dropStatement();
+			return null;
+		}
 
 		final FieldBuilder builder =
 				getMemberRegistry().newField(declaration, definition);
@@ -182,11 +194,11 @@ public abstract class Statements<S extends Statements<S>>
 		return new Group(location, this, builder);
 	}
 
-	public Block<S> parentheses(LocationInfo location) {
+	public Block parentheses(LocationInfo location) {
 		return parentheses(location, nextContainer());
 	}
 
-	public Block<S> parentheses(LocationInfo location, Container container) {
+	public Block parentheses(LocationInfo location, Container container) {
 		return parentheses(
 				-1,
 				location,
@@ -220,12 +232,10 @@ public abstract class Statements<S extends Statements<S>>
 			}
 		}
 
-		@SuppressWarnings("unchecked")
-		final S self = (S) this;
 		final ImperativeBlock braces = getSentenceFactory().createBraces(
 				location,
 				nextDistributor(container),
-				self,
+				this,
 				name);
 
 		if (braces != null) {
@@ -239,8 +249,8 @@ public abstract class Statements<S extends Statements<S>>
 
 	public final Local local(LocationInfo location, Name name, Ref ref) {
 
-		final Sentence<S> sentence = getSentence();
-		final Block<S> block = sentence.getBlock();
+		final Sentence sentence = getSentence();
+		final Block block = sentence.getBlock();
 
 		block.getLocals().declareLocal(location, name);
 
@@ -252,7 +262,24 @@ public abstract class Statements<S extends Statements<S>>
 		return local;
 	}
 
-	public abstract void loop(LocationInfo location, Name name);
+	public void loop(LocationInfo location, Name name) {
+		if (isInterrogation()) {
+			getLogger().error(
+					"prohibited_interrogation_loop",
+					location,
+					"Can not loop from interrogation");
+			dropStatement();
+			return;
+		}
+
+		final Block block = blockByName(location, name);
+
+		if (block == null) {
+			return;
+		}
+
+		statement(new LoopStatement(location, this, name));
+	}
 
 	public final Container nextContainer() {
 		return this.nextContainer;
@@ -305,7 +332,9 @@ public abstract class Statements<S extends Statements<S>>
 		getSentence().dropStatement();
 	}
 
-	protected abstract void braces(ImperativeBlock braces);
+	protected void braces(ImperativeBlock braces) {
+		statement(braces);
+	}
 
 	protected final void addStatement(Statement statement) {
 		statement.assertSameScope(this);
@@ -326,9 +355,9 @@ public abstract class Statements<S extends Statements<S>>
 		this.commands.remove(index);
 	}
 
-	void reproduce(Sentence<S> sentence, Reproducer reproducer) {
+	void reproduce(Sentence sentence, Reproducer reproducer) {
 
-		final S reproduction = sentence.alternative(this);
+		final Statements reproduction = sentence.alternative(this);
 		final Reproducer statementsReproducer =
 				reproducer.reproduceIn(reproduction);
 
@@ -345,16 +374,16 @@ public abstract class Statements<S extends Statements<S>>
 		}
 	}
 
-	Block<S> parentheses(
+	Block parentheses(
 			int index,
 			LocationInfo location,
 			Distributor distributor) {
 
-		final Block<S> parentheses =
+		final Block parentheses =
 				getSentence().getSentenceFactory().createParentheses(
 						location,
 						distributor,
-						self());
+						this);
 
 		if (index < 0) {
 			addStatement(parentheses);
@@ -419,11 +448,6 @@ public abstract class Statements<S extends Statements<S>>
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private final S self() {
-		return (S) this;
-	}
-
 	private boolean checkSameContext(LocationInfo location) {
 		assert location.getLocation().getContext() == getContext() :
 			location + " has wrong context: "
@@ -434,6 +458,40 @@ public abstract class Statements<S extends Statements<S>>
 
 	private final Distributor nextDistributor(Container container) {
 		return distributeIn(container);
+	}
+
+	private Block blockByName(LocationInfo location, Name name) {
+
+		Block block = getSentence().getBlock();
+
+		for (;;) {
+			if (block.hasName(name)) {
+				return block;
+			}
+
+			final Statements enclosing = block.getEnclosing();
+
+			if (enclosing == null) {
+				break;
+			}
+			block = enclosing.getSentence().getBlock();
+		}
+
+		dropStatement();
+		if (name == null) {
+			getLogger().error(
+					"prohibited_declarative_loop",
+					location,
+					"Loops are only allowed within imperative blocks");
+		} else {
+			getLogger().error(
+					"unresolved_block",
+					location,
+					"Imperative block with name '%s' does not exist",
+					name);
+		}
+
+		return null;
 	}
 
 	private CommandTargets determineTargets() {

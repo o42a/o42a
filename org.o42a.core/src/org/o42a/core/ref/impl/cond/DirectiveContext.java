@@ -28,7 +28,7 @@ final class DirectiveContext implements InstructionContext {
 
 	private final ApplyDirective applyDirective;
 	private final InstructionContext context;
-	private Block<?> block;
+	private Block block;
 
 	DirectiveContext(
 			ApplyDirective applyDirective,
@@ -43,7 +43,7 @@ final class DirectiveContext implements InstructionContext {
 	}
 
 	@Override
-	public Block<?> getBlock() {
+	public Block getBlock() {
 		if (this.block != null) {
 			return this.block;
 		}

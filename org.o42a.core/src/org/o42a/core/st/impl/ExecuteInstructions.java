@@ -26,9 +26,9 @@ import org.o42a.core.st.sentence.Block;
 
 public final class ExecuteInstructions implements Instruction {
 
-	private final Block<?> block;
+	private final Block block;
 
-	public ExecuteInstructions(Block<?> block) {
+	public ExecuteInstructions(Block block) {
 		this.block = block;
 	}
 

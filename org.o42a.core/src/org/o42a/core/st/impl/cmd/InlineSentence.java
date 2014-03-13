@@ -36,9 +36,9 @@ final class InlineSentence {
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			Scope origin,
-			Sentence<?> sentence) {
+			Sentence sentence) {
 
-		final Sentence<?> prereq = sentence.getPrerequisite();
+		final Sentence prereq = sentence.getPrerequisite();
 		final InlineSentence inlinePrereq;
 
 		if (prereq == null) {
@@ -51,12 +51,11 @@ final class InlineSentence {
 					prereq);
 		}
 
-		final List<? extends Statements<?>> alts =
-				sentence.getAlternatives();
+		final List<Statements> alts = sentence.getAlternatives();
 		final InlineCommands[] inlineAlts = new InlineCommands[alts.size()];
 		int i = 0;
 
-		for (Statements<?> alt : alts) {
+		for (Statements alt : alts) {
 			inlineAlts[i++] = inlineCommands(
 					rootNormalizer,
 					normalizer,
@@ -71,12 +70,12 @@ final class InlineSentence {
 		return new InlineSentence(sentence, inlinePrereq, inlineAlts);
 	}
 
-	private final Sentence<?> sentence;
+	private final Sentence sentence;
 	private final InlineSentence prerequisite;
 	private final InlineCommands[] alts;
 
 	private InlineSentence(
-			Sentence<?> sentence,
+			Sentence sentence,
 			InlineSentence prerequisite,
 			InlineCommands[] alts) {
 		this.sentence = sentence;

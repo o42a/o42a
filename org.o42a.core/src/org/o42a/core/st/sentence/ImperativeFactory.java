@@ -30,10 +30,8 @@ import org.o42a.core.st.impl.imperative.LoopExitSentence;
 import org.o42a.util.string.Name;
 
 
-public class ImperativeFactory extends SentenceFactory<
-		Imperatives,
-		ImperativeSentence,
-		ImperativeBlock> {
+public class ImperativeFactory
+		extends SentenceFactory<ImperativeSentence, ImperativeBlock> {
 
 	protected ImperativeFactory() {
 	}
@@ -42,7 +40,7 @@ public class ImperativeFactory extends SentenceFactory<
 	public ImperativeBlock createParentheses(
 			LocationInfo location,
 			Distributor distributor,
-			Imperatives enclosing) {
+			Statements enclosing) {
 		return nestedImperativeBlock(
 				location,
 				distributor,
@@ -66,7 +64,7 @@ public class ImperativeFactory extends SentenceFactory<
 	public ImperativeBlock createBraces(
 			LocationInfo location,
 			Distributor distributor,
-			Imperatives enclosing,
+			Statements enclosing,
 			Name name) {
 		return nestedImperativeBlock(
 				location,
@@ -96,10 +94,10 @@ public class ImperativeFactory extends SentenceFactory<
 	}
 
 	@Override
-	public Imperatives createAlternative(
+	public Statements createAlternative(
 			LocationInfo location,
 			ImperativeSentence sentence) {
-		return new Imperatives(location, sentence);
+		return new Statements(location, sentence);
 	}
 
 	@Override

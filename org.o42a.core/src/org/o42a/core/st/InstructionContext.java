@@ -27,7 +27,7 @@ public interface InstructionContext {
 
 	Resolver getResolver();
 
-	Block<?> getBlock();
+	Block getBlock();
 
 	void doNotRemove();
 

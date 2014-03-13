@@ -134,7 +134,7 @@ public abstract class AccessRules {
 
 	public abstract AccessRules clauseReuseRules();
 
-	public StatementsAccess statements(Statements<?> statements) {
+	public StatementsAccess statements(Statements statements) {
 		return new StatementsAccess(this, statements);
 	}
 

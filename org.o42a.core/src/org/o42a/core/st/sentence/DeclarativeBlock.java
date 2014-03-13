@@ -38,12 +38,12 @@ import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.string.Name;
 
 
-public final class DeclarativeBlock extends Block<Declaratives> {
+public final class DeclarativeBlock extends Block {
 
 	static DeclarativeBlock nestedBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Declaratives enclosing,
+			Statements enclosing,
 			DeclarativeFactory sentenceFactory) {
 		return new DeclarativeBlock(
 				location,
@@ -86,7 +86,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		this(
 				group,
 				distributor,
-				(Declaratives) group.getStatements(),
+				group.getStatements(),
 				memberRegistry,
 				DECLARATIVE_FACTORY,
 				false);
@@ -95,7 +95,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	private DeclarativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Declaratives enclosing,
+			Statements enclosing,
 			MemberRegistry memberRegistry,
 			DeclarativeFactory sentenceFactory,
 			boolean reproduced) {
@@ -108,11 +108,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		if (!reproduced) {
 			addImplicitInclusions();
 		}
-	}
-
-	@Override
-	public Declaratives getEnclosing() {
-		return (Declaratives) super.getEnclosing();
 	}
 
 	@Override
@@ -160,7 +155,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	public DeclarativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Statements<?> enclosing = reproducer.getStatements();
+		final Statements enclosing = reproducer.getStatements();
 		final DeclarativeBlock reproduction;
 
 		if (enclosing == null) {
@@ -188,7 +183,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return this.namedBlocks;
 		}
 
-		final Declaratives enclosing = getEnclosing();
+		final Statements enclosing = getEnclosing();
 
 		if (enclosing == null) {
 			return this.namedBlocks = new NamedBlocks(this);
@@ -211,7 +206,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return;
 		}
 
-		final Declaratives statements = declare(this).alternative(this);
+		final Statements statements = declare(this).alternative(this);
 
 		statements.statement(new Inclusion(this, statements));
 	}

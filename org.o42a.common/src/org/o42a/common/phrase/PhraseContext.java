@@ -116,9 +116,7 @@ public abstract class PhraseContext {
 		return getPhrase().getResolutionLogger();
 	}
 
-	protected abstract void define(
-			ClauseInstance instance,
-			Block<?> definition);
+	protected abstract void define(ClauseInstance instance, Block definition);
 
 	abstract MainPhraseContext getMainContext();
 

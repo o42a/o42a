@@ -26,7 +26,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
 
 
-public abstract class DeclarativeSentence extends Sentence<Declaratives> {
+public abstract class DeclarativeSentence extends Sentence {
 
 	private CommandTargets targets;
 	private boolean ignored;
@@ -84,9 +84,9 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	private CommandTargets altTargets() {
 
 		CommandTargets result = noCommands();
-		Declaratives first = null;
+		Statements first = null;
 
-		for (Declaratives alt : getAlternatives()) {
+		for (Statements alt : getAlternatives()) {
 
 			final CommandTargets targets = alt.getTargets();
 

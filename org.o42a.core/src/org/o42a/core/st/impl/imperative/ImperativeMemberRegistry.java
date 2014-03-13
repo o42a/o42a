@@ -47,7 +47,7 @@ public class ImperativeMemberRegistry extends ProxyMemberRegistry {
 
 	@Override
 	public ClauseBuilder newClause(
-			Statements<?> statements,
+			Statements statements,
 			ClauseDeclaration declaration) {
 		declaration.getLogger()
 		.prohibitedClauseDeclaration(declaration.getLocation());

@@ -35,7 +35,7 @@ public final class ClauseFactory {
 	}
 
 	public ClauseBuilder newClause(
-			Statements<?> statements,
+			Statements statements,
 			ClauseDeclaration declaration) {
 		if (!declaration.isAnonymous()) {
 			return createNewClause(statements, declaration);
@@ -48,7 +48,7 @@ public final class ClauseFactory {
 	}
 
 	private final ClauseBuilder createNewClause(
-			Statements<?> statements,
+			Statements statements,
 			ClauseDeclaration declaration) {
 		return new ClauseBuilder(
 				statements,
