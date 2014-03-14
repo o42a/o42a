@@ -102,7 +102,7 @@ public final class Macros {
 		return consumeStatement(statements, value, value, true);
 	}
 
-	public static Ref consumeSelfAssignment(
+	public static Ref consumeReturn(
 			Statements statements,
 			LocationInfo location,
 			Ref condition) {

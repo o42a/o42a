@@ -91,7 +91,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		final Statements statements =
 				definition.declare(this).alternative(this);
 
-		statements.selfAssign(this.rightOperand);
+		statements.returnValue(this.rightOperand);
 	}
 
 	@Override

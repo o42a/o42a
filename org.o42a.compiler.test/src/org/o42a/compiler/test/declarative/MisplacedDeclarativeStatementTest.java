@@ -29,7 +29,7 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignInInterrogativeSentence() {
+	public void returnInInterrogativeSentence() {
 		expectError("compiler.prohibited_interrogative_assignment");
 		compile(
 				"A := integer (",
@@ -38,7 +38,7 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignInsideInterrogation() {
+	public void returnInsideInterrogation() {
 		expectError("compiler.prohibited_interrogative_assignment");
 		compile(
 				"A := integer (",

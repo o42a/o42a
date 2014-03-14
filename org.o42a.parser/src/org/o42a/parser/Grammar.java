@@ -188,8 +188,8 @@ public class Grammar {
 		return BracketsParser.BRACKETS;
 	}
 
-	public static final Parser<SelfAssignmentNode> selfAssignment() {
-		return SelfAssignmentParser.SELF_ASSIGNMENT;
+	public static final Parser<ReturnNode> returnValue() {
+		return ReturnParser.RETURN;
 	}
 
 	public static final Parser<DeclaratorNode> declarator(

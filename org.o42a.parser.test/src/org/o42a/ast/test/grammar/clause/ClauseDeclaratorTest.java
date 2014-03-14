@@ -17,7 +17,7 @@ import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.statement.SelfAssignmentNode;
+import org.o42a.ast.statement.ReturnNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -41,7 +41,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		to(ParenthesesNode.class, parse("<*> (foo)").getContent());
 		to(BracesNode.class, parse("<*> {foo}").getContent());
 		to(DeclaratorNode.class, parse("<*> foo = bar").getContent());
-		to(SelfAssignmentNode.class, parse("<*> = foo").getContent());
+		to(ReturnNode.class, parse("<*> = foo").getContent());
 		to(PhraseNode.class, parse("<*> foo()").getContent());
 	}
 

@@ -109,7 +109,7 @@ public class StatementParser implements Parser<StatementNode> {
 
 		switch (next) {
 		case '=':
-			return context.parse(selfAssignment());
+			return context.parse(returnValue());
 		case '@':
 
 			final DeclarableAdapterNode declarableAdapter =
@@ -131,7 +131,7 @@ public class StatementParser implements Parser<StatementNode> {
 			return parseParentheses(context);
 		case '<':
 
-			final SelfAssignmentNode yield = context.parse(selfAssignment());
+			final ReturnNode yield = context.parse(returnValue());
 
 			if (yield != null) {
 				return yield;

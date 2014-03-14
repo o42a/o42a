@@ -31,7 +31,7 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignment() {
+	public void returnValue() {
 		compile(
 				"A := integer (",
 				"  <[Arg]> ()",

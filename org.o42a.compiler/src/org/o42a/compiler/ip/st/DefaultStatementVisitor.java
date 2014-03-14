@@ -120,11 +120,11 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitSelfAssignment(
-			SelfAssignmentNode assignment,
+	public Void visitReturn(
+			ReturnNode ret,
 			StatementsAccess p) {
 
-		final ExpressionNode valueNode = assignment.getValue();
+		final ExpressionNode valueNode = ret.getValue();
 
 		if (valueNode == null) {
 			return null;
@@ -134,7 +134,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		final Ref value = valueNode.accept(ip().expressionVisitor(), distributor);
 
 		if (value != null) {
-			p.get().selfAssign(location(p, assignment.getPrefix()), value);
+			p.get().returnValue(location(p, ret.getPrefix()), value);
 		}
 
 		return null;
