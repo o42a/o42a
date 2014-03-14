@@ -53,7 +53,7 @@ public class PhraseArray extends PhraseContinuation {
 		final Statements statements =
 				definition.declare(this).alternative(this);
 
-		statements.selfAssign(this.array);
+		statements.returnValue(this.array);
 	}
 
 	@Override

@@ -42,8 +42,8 @@ public abstract class AbstractStatementVisitor<R, P>
 	}
 
 	@Override
-	public R visitSelfAssignment(SelfAssignmentNode assignment, P p) {
-		return visitStatement(assignment, p);
+	public R visitReturn(ReturnNode ret, P p) {
+		return visitStatement(ret, p);
 	}
 
 	@Override

@@ -22,14 +22,14 @@ package org.o42a.ast.statement;
 import org.o42a.ast.atom.SignType;
 
 
-public enum SelfAssignmentOperator implements SignType {
+public enum ReturnOperator implements SignType {
 
-	SET_VALUE("="),
+	RETURN_VALUE("="),
 	YIELD_VALUE("<<");
 
 	private final String sign;
 
-	SelfAssignmentOperator(String sign) {
+	ReturnOperator(String sign) {
 		this.sign = sign;
 	}
 

@@ -111,11 +111,11 @@ public final class Statements extends Contained {
 		statement(ref.toCondition(this));
 	}
 
-	public final void selfAssign(RefBuilder value) {
-		selfAssign(value, value);
+	public final void returnValue(RefBuilder value) {
+		returnValue(value, value);
 	}
 
-	public final void selfAssign(LocationInfo location, RefBuilder value) {
+	public final void returnValue(LocationInfo location, RefBuilder value) {
 		assert checkSameContext(location);
 		assert checkSameContext(value);
 

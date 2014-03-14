@@ -20,7 +20,7 @@
 package org.o42a.common.macro.path;
 
 import static org.o42a.common.macro.Macros.consumeCondition;
-import static org.o42a.common.macro.Macros.consumeSelfAssignment;
+import static org.o42a.common.macro.Macros.consumeReturn;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
@@ -86,7 +86,7 @@ public class MacroExpansionStep extends Step {
 			LocationInfo location,
 			Ref value,
 			Statements statements) {
-		return consumeSelfAssignment(statements, location, value);
+		return consumeReturn(statements, location, value);
 	}
 
 	@Override

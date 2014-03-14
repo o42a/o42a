@@ -23,27 +23,26 @@ import static org.o42a.parser.Grammar.expression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.SelfAssignmentNode;
-import org.o42a.ast.statement.SelfAssignmentOperator;
+import org.o42a.ast.statement.ReturnNode;
+import org.o42a.ast.statement.ReturnOperator;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
+public class ReturnParser implements Parser<ReturnNode> {
 
-	public static final SelfAssignmentParser SELF_ASSIGNMENT =
-			new SelfAssignmentParser();
+	public static final ReturnParser RETURN = new ReturnParser();
 
 	private static final PrefixParser PREFIX = new PrefixParser();
 
-	private SelfAssignmentParser() {
+	private ReturnParser() {
 	}
 
 	@Override
-	public SelfAssignmentNode parse(ParserContext context) {
+	public ReturnNode parse(ParserContext context) {
 
-		final SignNode<SelfAssignmentOperator> prefix = context.parse(PREFIX);
+		final SignNode<ReturnOperator> prefix = context.parse(PREFIX);
 
 		if (prefix == null) {
 			return null;
@@ -51,7 +50,7 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 
 		final ExpressionNode value = parseValue(context);
 
-		return new SelfAssignmentNode(prefix, value);
+		return new ReturnNode(prefix, value);
 	}
 
 	private ExpressionNode parseValue(ParserContext context) {
@@ -66,10 +65,10 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 	}
 
 	private static final class PrefixParser
-			implements Parser<SignNode<SelfAssignmentOperator>> {
+			implements Parser<SignNode<ReturnOperator>> {
 
 		@Override
-		public SignNode<SelfAssignmentOperator> parse(ParserContext context) {
+		public SignNode<ReturnOperator> parse(ParserContext context) {
 			switch (context.next()) {
 			case '=':
 				return parseSet(context);
@@ -79,7 +78,7 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 			return null;
 		}
 
-		private SignNode<SelfAssignmentOperator> parseSet(
+		private SignNode<ReturnOperator> parseSet(
 				ParserContext context) {
 
 			final SourcePosition start = context.current().fix();
@@ -98,10 +97,10 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 					new SignNode<>(
 							start,
 							context.current().fix(),
-							SelfAssignmentOperator.SET_VALUE));
+							ReturnOperator.RETURN_VALUE));
 		}
 
-		private SignNode<SelfAssignmentOperator> parseYield(
+		private SignNode<ReturnOperator> parseYield(
 				ParserContext context) {
 
 			final SourcePosition start = context.current().fix();
@@ -120,7 +119,7 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 					new SignNode<>(
 							start,
 							context.current().fix(),
-							SelfAssignmentOperator.YIELD_VALUE));
+							ReturnOperator.YIELD_VALUE));
 		}
 
 	}

@@ -56,7 +56,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignment() {
+	public void returnValue() {
 		compile(
 				"#A := 5",
 				"B := integer (= #A)");
@@ -65,7 +65,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignmentWithAdapter() {
+	public void returnWithAdapter() {
 		compile(
 				"#A := 5",
 				"B := float (= #A)");

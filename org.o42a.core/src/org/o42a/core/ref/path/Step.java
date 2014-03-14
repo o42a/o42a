@@ -113,7 +113,7 @@ public abstract class Step {
 	 * Converts a reference to value statement.
 	 *
 	 * <p>This method is called for the last step of the reference path when
-	 * the reference is used as a {@link Statements#selfAssign(RefBuilder)
+	 * the reference is used as a {@link Statements#returnValue(RefBuilder)
 	 * self-assignment statement}.</p>
 	 *
 	 * <p>By default this method returns the reference itself.</p>
