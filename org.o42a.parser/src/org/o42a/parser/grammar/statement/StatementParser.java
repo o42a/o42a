@@ -130,6 +130,13 @@ public class StatementParser implements Parser<StatementNode> {
 		case '(':
 			return parseParentheses(context);
 		case '<':
+
+			final SelfAssignmentNode yield = context.parse(selfAssignment());
+
+			if (yield != null) {
+				return yield;
+			}
+
 			return context.parse(this.grammar.clauseDeclarator());
 		}
 
