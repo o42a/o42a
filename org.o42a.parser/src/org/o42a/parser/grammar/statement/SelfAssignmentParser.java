@@ -23,8 +23,8 @@ import static org.o42a.parser.Grammar.expression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.AssignmentOperator;
 import org.o42a.ast.statement.SelfAssignmentNode;
+import org.o42a.ast.statement.SelfAssignmentOperator;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -35,30 +35,26 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 	public static final SelfAssignmentParser SELF_ASSIGNMENT =
 			new SelfAssignmentParser();
 
+	private static final PrefixParser PREFIX = new PrefixParser();
+
 	private SelfAssignmentParser() {
 	}
 
 	@Override
 	public SelfAssignmentNode parse(ParserContext context) {
-		if (context.next() != '=') {
+
+		final SignNode<SelfAssignmentOperator> prefix = context.parse(PREFIX);
+
+		if (prefix == null) {
 			return null;
 		}
 
-		final SourcePosition start = context.current().fix();
+		final ExpressionNode value = parseValue(context);
 
-		context.skip();
+		return new SelfAssignmentNode(prefix, value);
+	}
 
-		final SignNode<AssignmentOperator> prefix = new SignNode<>(
-				start,
-				context.current().fix(),
-				AssignmentOperator.ASSIGN);
-
-		if (context.next() == '=') {
-			return null;
-		}
-
-		context.acceptButLast();
-		context.acceptComments(false, prefix);
+	private ExpressionNode parseValue(ParserContext context) {
 
 		final ExpressionNode value = context.parse(expression());
 
@@ -66,7 +62,67 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 			context.getLogger().missingValue(context.current());
 		}
 
-		return new SelfAssignmentNode(prefix, value);
+		return value;
+	}
+
+	private static final class PrefixParser
+			implements Parser<SignNode<SelfAssignmentOperator>> {
+
+		@Override
+		public SignNode<SelfAssignmentOperator> parse(ParserContext context) {
+			switch (context.next()) {
+			case '=':
+				return parseSet(context);
+			case '<':
+				return parseYield(context);
+			}
+			return null;
+		}
+
+		private SignNode<SelfAssignmentOperator> parseSet(
+				ParserContext context) {
+
+			final SourcePosition start = context.current().fix();
+
+			switch (context.next()) {
+			case '=':
+			case '>':
+			case '<':
+				return null;
+			}
+
+			context.acceptButLast();
+
+			return context.acceptComments(
+					false,
+					new SignNode<>(
+							start,
+							context.current().fix(),
+							SelfAssignmentOperator.SET_VALUE));
+		}
+
+		private SignNode<SelfAssignmentOperator> parseYield(
+				ParserContext context) {
+
+			final SourcePosition start = context.current().fix();
+
+			if (context.next() != '<') {
+				return null;
+			}
+			if (context.next() == '<') {
+				return null;
+			}
+
+			context.acceptButLast();
+
+			return context.acceptComments(
+					false,
+					new SignNode<>(
+							start,
+							context.current().fix(),
+							SelfAssignmentOperator.YIELD_VALUE));
+		}
+
 	}
 
 }

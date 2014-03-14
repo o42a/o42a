@@ -25,6 +25,7 @@ import static org.o42a.parser.grammar.clause.ReusedClauseParser.REUSED_CLAUSE;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.*;
+import org.o42a.ast.clause.ClauseDeclaratorNode.Parenthesis;
 import org.o42a.ast.clause.ClauseDeclaratorNode.Requirement;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Grammar;
@@ -38,6 +39,8 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 
 	private final Grammar grammar;
 
+	private static final OpeningParser OPENING = new OpeningParser();
+
 	public ClauseDeclaratorParser(Grammar grammar) {
 		this.grammar = grammar;
 	}
@@ -49,7 +52,11 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		}
 
 		final SignNode<ClauseDeclaratorNode.Parenthesis> opening =
-				opening(context);
+				context.push(OPENING);
+
+		if (opening == null) {
+			return null;
+		}
 
 		final ClauseIdNode clauseId = context.parse(CLAUSE_ID);
 
@@ -71,22 +78,6 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 				requirement,
 				closing,
 				content);
-	}
-
-	private SignNode<ClauseDeclaratorNode.Parenthesis> opening(
-			ParserContext context) {
-
-		final SourcePosition start = context.current().fix();
-
-		context.skip();
-
-		final SignNode<ClauseDeclaratorNode.Parenthesis> opening =
-				new SignNode<>(
-						start,
-						context.current().fix(),
-						ClauseDeclaratorNode.Parenthesis.OPENING);
-
-		return context.skipComments(true, opening);
 	}
 
 	private ReusedClauseNode[] reused(ParserContext context) {
@@ -126,6 +117,33 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 						ClauseDeclaratorNode.Parenthesis.CLOSING);
 
 		return context.acceptComments(false, closing);
+	}
+
+	private static final class OpeningParser
+			implements Parser<SignNode<ClauseDeclaratorNode.Parenthesis>> {
+
+		@Override
+		public SignNode<Parenthesis> parse(ParserContext context) {
+			if (context.next() != '<') {
+				return null;
+			}
+
+			final SourcePosition start = context.current().fix();
+
+			if (context.next() == '<') {
+				return null;
+			}
+
+			context.acceptButLast();
+
+			return context.acceptComments(
+					true,
+					new SignNode<>(
+							start,
+							context.current().fix(),
+							ClauseDeclaratorNode.Parenthesis.OPENING));
+		}
+
 	}
 
 }

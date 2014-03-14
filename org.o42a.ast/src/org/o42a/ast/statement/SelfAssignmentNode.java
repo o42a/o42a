@@ -27,22 +27,22 @@ import org.o42a.ast.ref.RefNode;
 
 public class SelfAssignmentNode extends AbstractStatementNode {
 
-	private final SignNode<AssignmentOperator> prefix;
+	private final SignNode<SelfAssignmentOperator> prefix;
 	private final ExpressionNode value;
 
 	public SelfAssignmentNode(
-			SignNode<AssignmentOperator> prefix,
+			SignNode<SelfAssignmentOperator> prefix,
 			ExpressionNode value) {
 		super(prefix.getStart(), end(prefix, value));
 		this.prefix = prefix;
 		this.value = value;
 	}
 
-	public SignNode<AssignmentOperator> getPrefix() {
+	public final SignNode<SelfAssignmentOperator> getPrefix() {
 		return this.prefix;
 	}
 
-	public ExpressionNode getValue() {
+	public final ExpressionNode getValue() {
 		return this.value;
 	}
 
