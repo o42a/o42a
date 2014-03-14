@@ -23,7 +23,6 @@ import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.file.SubTitleNode;
 
 
 public interface StatementNodeVisitor<R, P>
@@ -42,7 +41,5 @@ public interface StatementNodeVisitor<R, P>
 	R visitClauseDeclarator(ClauseDeclaratorNode declarator, P p);
 
 	R visitNamedBlock(NamedBlockNode block, P p);
-
-	R visitSubTitle(SubTitleNode subTitle, P p);
 
 }
