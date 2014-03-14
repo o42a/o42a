@@ -5,6 +5,7 @@
 package org.o42a.ast.test.grammar.statement;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.IMPERATIVE;
@@ -16,19 +17,16 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.statement.AssignmentNode;
-import org.o42a.ast.statement.ReturnNode;
-import org.o42a.ast.statement.ReturnOperator;
+import org.o42a.ast.statement.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
 public class StatementTest extends GrammarTestCase {
 
 	@Test
-	public void setValue() {
+	public void returnValue() {
 
-		final ReturnNode result =
-				parse(ReturnNode.class, "= foo");
+		final ReturnNode result = parse(ReturnNode.class, "= foo");
 
 		assertThat(result.getPrefix(), hasRange(0, 1));
 		assertThat(result.getValue(), hasRange(2, 5));
@@ -50,6 +48,32 @@ public class StatementTest extends GrammarTestCase {
 		assertThat(
 				result.getPrefix().getType(),
 				is(ReturnOperator.YIELD_VALUE));
+	}
+
+	@Test
+	public void passThrough() {
+
+		final PassThroughNode result =
+				parse(PassThroughNode.class, "input >> flow");
+
+		assertThat(result.getInput(), isName("input"));
+		assertThat(
+				result.getOperator().getType(),
+				is(PassThroughNode.Operator.CHEVRON));
+		assertThat(result.getFlow().getName().toString(), is("flow"));
+	}
+
+	@Test
+	public void passNothingThrough() {
+
+		final PassThroughNode result =
+				parse(PassThroughNode.class, ">> flow");
+
+		assertThat(result.getInput(), nullValue());
+		assertThat(
+				result.getOperator().getType(),
+				is(PassThroughNode.Operator.CHEVRON));
+		assertThat(result.getFlow().getName().toString(), is("flow"));
 	}
 
 	@Test
