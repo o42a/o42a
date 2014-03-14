@@ -116,6 +116,7 @@ public class LocalScopeTest extends GrammarTestCase {
 		checkExpressionIs(nested, "expression2");
 		checkLocalNameIs(nested, "local2");
 		checkContentIs(nested, "statement");
+		checkColon(nested);
 	}
 
 	@Test
@@ -142,6 +143,72 @@ public class LocalScopeTest extends GrammarTestCase {
 		assertThat(expression.getOperand(), isName("expression"));
 		checkLocalNameIs(scope, "local");
 		checkContentIs(scope, "statement");
+	}
+
+	@Test
+	public void each() {
+
+		final LocalScopeNode scope = parse("Flow $ name >> do");
+
+		checkExpressionIs(scope, "flow");
+		checkLocalNameIs(scope, "name");
+		checkChevron(scope);
+		checkContentIs(scope, "do");
+	}
+
+	@Test
+	public void eachLoop() {
+
+		final LocalScopeNode scope = parse(
+				"Flow $ name >>",
+				"{do}");
+
+		checkExpressionIs(scope, "flow");
+		checkLocalNameIs(scope, "name");
+		checkChevron(scope);
+		to(BracesNode.class, scope.getContent());
+	}
+
+	@Test
+	public void eachNested() {
+
+		final LocalScopeNode scope = parse(
+				"Expression1 $ local 1:",
+				"Expression2 $ local 2 >>",
+				"Statement");
+
+		checkExpressionIs(scope, "expression1");
+		checkLocalNameIs(scope, "local1");
+		checkColon(scope);
+
+		final LocalScopeNode nested =
+				to(LocalScopeNode.class, scope.getContent());
+
+		checkExpressionIs(nested, "expression2");
+		checkLocalNameIs(nested, "local2");
+		checkContentIs(nested, "statement");
+		checkChevron(nested);
+	}
+
+	@Test
+	public void nestedForEach() {
+
+		final LocalScopeNode scope = parse(
+				"Expression1 $ local 1 >>",
+				"Expression2 $ local 2:",
+				"Statement");
+
+		checkExpressionIs(scope, "expression1");
+		checkLocalNameIs(scope, "local1");
+		checkChevron(scope);
+
+		final LocalScopeNode nested =
+				to(LocalScopeNode.class, scope.getContent());
+
+		checkExpressionIs(nested, "expression2");
+		checkLocalNameIs(nested, "local2");
+		checkContentIs(nested, "statement");
+		checkColon(nested);
 	}
 
 	private LocalScopeNode parse(String... text) {
@@ -186,6 +253,12 @@ public class LocalScopeTest extends GrammarTestCase {
 		assertThat(
 				scope.getSeparator().getType(),
 				is(LocalScopeNode.Separator.COLON));
+	}
+
+	private static void checkChevron(LocalScopeNode scope) {
+		assertThat(
+				scope.getSeparator().getType(),
+				is(LocalScopeNode.Separator.CHEVRON));
 	}
 
 	private static void checkContentIs(LocalScopeNode scope, String content) {
