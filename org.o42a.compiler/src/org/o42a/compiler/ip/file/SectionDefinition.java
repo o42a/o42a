@@ -34,7 +34,7 @@ class SectionDefinition extends BlockBuilder {
 
 	@Override
 	public void buildBlock(Block block) {
-		this.section.define(block.toDeclarativeBlock());
+		this.section.define(block);
 	}
 
 }

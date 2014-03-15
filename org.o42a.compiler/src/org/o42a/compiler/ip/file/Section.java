@@ -40,7 +40,6 @@ import org.o42a.core.Namespace;
 import org.o42a.core.member.field.*;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
@@ -171,7 +170,7 @@ final class Section implements LogInfo {
 		return ascendants;
 	}
 
-	public void define(DeclarativeBlock definition) {
+	public void define(Block definition) {
 		addContent(
 				ACCESS_FROM_HEADER,
 				new DefaultStatementVisitor(PLAIN_IP, getContext()),
@@ -193,7 +192,7 @@ final class Section implements LogInfo {
 		return getSource().getLogger();
 	}
 
-	public void declareField(DeclarativeBlock definition) {
+	public void declareField(Block definition) {
 
 		final Block enclosingBlock = enclosingBlock(definition);
 		final LocationInfo location = getLocation();
@@ -222,7 +221,7 @@ final class Section implements LogInfo {
 		}
 	}
 
-	private Block enclosingBlock(DeclarativeBlock definition) {
+	private Block enclosingBlock(Block definition) {
 
 		final LocationInfo location = getLocation();
 		final Statements statements =

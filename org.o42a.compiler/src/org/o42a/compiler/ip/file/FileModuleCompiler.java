@@ -31,7 +31,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.ModuleCompiler;
 import org.o42a.core.source.ObjectSource;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.io.SourceFileName;
 import org.o42a.util.log.LogInfo;
@@ -71,7 +71,7 @@ public final class FileModuleCompiler
 	}
 
 	@Override
-	public void define(DeclarativeBlock definition) {
+	public void define(Block definition) {
 		getSection().define(definition);
 	}
 

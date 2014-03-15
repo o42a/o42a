@@ -118,11 +118,6 @@ public final class DeclarativeBlock extends Block {
 		return null;
 	}
 
-	@Override
-	public final DeclarativeBlock toDeclarativeBlock() {
-		return this;
-	}
-
 	public DefinitionsBuilder definitions(CommandEnv env) {
 		init(env);
 		return createCommand(env);

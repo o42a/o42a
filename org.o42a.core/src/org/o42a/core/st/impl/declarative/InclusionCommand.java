@@ -26,7 +26,7 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 
@@ -55,7 +55,7 @@ final class InclusionCommand extends Command implements Instruction {
 	@Override
 	public final void execute(InstructionContext context) {
 
-		final DeclarativeBlock block = context.getBlock().toDeclarativeBlock();
+		final Block block = context.getBlock();
 
 		if (!getInclusion().include()) {
 			return;

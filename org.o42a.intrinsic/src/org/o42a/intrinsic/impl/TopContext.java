@@ -24,7 +24,7 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ModuleCompiler;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.io.EmptySource;
 import org.o42a.util.io.Source;
@@ -54,7 +54,7 @@ public final class TopContext extends CompilerContext {
 	}
 
 	@Override
-	public void include(DeclarativeBlock block) {
+	public void include(Block block) {
 	}
 
 	@Override
