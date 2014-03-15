@@ -60,7 +60,7 @@ public class StatementTest extends GrammarTestCase {
 		assertThat(
 				result.getOperator().getType(),
 				is(PassThroughNode.Operator.CHEVRON));
-		assertThat(result.getFlow().getName().toString(), is("flow"));
+		assertThat(result.getFlow(), isName("flow"));
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class StatementTest extends GrammarTestCase {
 		assertThat(
 				result.getOperator().getType(),
 				is(PassThroughNode.Operator.CHEVRON));
-		assertThat(result.getFlow().getName().toString(), is("flow"));
+		assertThat(result.getFlow(), isName("flow"));
 	}
 
 	@Test
