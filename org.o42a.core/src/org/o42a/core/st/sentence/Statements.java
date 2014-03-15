@@ -21,6 +21,8 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.*;
+import static org.o42a.core.st.sentence.FlowBlock.flowBlock;
+import static org.o42a.core.st.sentence.SentenceFactory.IMPERATIVE_FACTORY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,6 +139,38 @@ public final class Statements extends Contained {
 		statement(ref.toValue(location, this));
 	}
 
+	public FlowBlock flow(LocationInfo location, Name name) {
+		if (isInterrogation()
+				|| getSentence().isImperative()
+				|| getSentence().isConditional()
+				|| getSentence().getAlternatives().size() != 1
+				|| !getCommands().isEmpty()) {
+			prohibitedFlow(location);
+			dropStatement();
+			return null;
+		}
+
+		final NamedBlocks namedBlocks =
+				getSentence().getBlock().getNamedBlocks();
+
+		if (!namedBlocks.declareBlock(location, name)) {
+			dropStatement();
+			return null;
+		}
+
+		final FlowBlock flow = flowBlock(
+				location,
+				nextDistributor(),
+				this,
+				name,
+				IMPERATIVE_FACTORY,
+				null);
+
+		statement(flow);
+
+		return flow;
+	}
+
 	public FieldBuilder field(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
@@ -228,6 +262,7 @@ public final class Statements extends Contained {
 					getSentence().getBlock().getNamedBlocks();
 
 			if (!namedBlocks.declareBlock(location, name)) {
+				dropStatement();
 				return null;
 			}
 		}
@@ -239,7 +274,7 @@ public final class Statements extends Contained {
 				name);
 
 		if (braces != null) {
-			braces(braces);
+			statement(braces);
 		} else {
 			dropStatement();
 		}
@@ -330,10 +365,6 @@ public final class Statements extends Contained {
 	protected final void dropStatement() {
 		this.statementDropped = true;
 		getSentence().dropStatement();
-	}
-
-	protected void braces(ImperativeBlock braces) {
-		statement(braces);
 	}
 
 	protected final void addStatement(Statement statement) {

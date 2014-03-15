@@ -23,7 +23,6 @@ import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.ImperativeBlock;
 
 
 public abstract class Statement extends Contained {
@@ -37,10 +36,6 @@ public abstract class Statement extends Contained {
 	public abstract boolean isValid();
 
 	public DeclarativeBlock toDeclarativeBlock() {
-		return null;
-	}
-
-	public ImperativeBlock toImperativeBlock() {
 		return null;
 	}
 

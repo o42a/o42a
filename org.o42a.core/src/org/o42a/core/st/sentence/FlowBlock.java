@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -28,15 +28,15 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.impl.imperative.ImperativeBlockCommand;
+import org.o42a.core.st.impl.flow.FlowCommand;
 import org.o42a.core.st.impl.imperative.ImperativeMemberRegistry;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.util.string.Name;
 
 
-public final class ImperativeBlock extends Block {
+public final class FlowBlock extends Block {
 
-	public static ImperativeBlock topLevelImperativeBlock(
+	public static FlowBlock flowBlock(
 			LocationInfo location,
 			Distributor distributor,
 			Statements enclosing,
@@ -59,63 +59,35 @@ public final class ImperativeBlock extends Block {
 					new ImperativeMemberRegistry(enclosing.getMemberRegistry());
 		}
 
-		return new ImperativeBlock(
+		return new FlowBlock(
 				location,
 				distributor,
 				enclosing,
-				false,
 				name,
 				registry,
 				sentenceFactory);
 	}
 
-	public static ImperativeBlock nestedImperativeBlock(
-			LocationInfo location,
-			Distributor distributor,
-			Statements enclosing,
-			boolean parentheses,
-			Name name,
-			MemberRegistry memberRegistry,
-			ImperativeFactory sentenceFactory) {
-		return new ImperativeBlock(
-				location,
-				distributor,
-				enclosing,
-				parentheses,
-				name,
-				memberRegistry,
-				sentenceFactory);
-	}
-
-	private final boolean parentheses;
-	private final Name name;
+	private Name name;
 	private NamedBlocks namedBlocks;
 
-	private ImperativeBlock(
+	private FlowBlock(
 			LocationInfo location,
 			Distributor distributor,
 			Statements enclosing,
-			boolean parentheses,
 			Name name,
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
-		super(
-				location,
-				distributor,
-				enclosing,
-				memberRegistry,
-				sentenceFactory);
-		this.parentheses = parentheses;
+		super(location, distributor, enclosing, memberRegistry, sentenceFactory);
 		this.name = name;
 	}
 
-	private ImperativeBlock(
-			ImperativeBlock prototype,
+	private FlowBlock(
+			FlowBlock prototype,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
 		super(prototype, distributor, memberRegistry, sentenceFactory);
-		this.parentheses = false;
 		this.name = prototype.getName();
 	}
 
@@ -126,7 +98,7 @@ public final class ImperativeBlock extends Block {
 
 	@Override
 	public final boolean isParentheses() {
-		return this.parentheses;
+		return false;
 	}
 
 	@Override
@@ -135,26 +107,25 @@ public final class ImperativeBlock extends Block {
 	}
 
 	@Override
-	public ImperativeBlock reproduce(Reproducer reproducer) {
+	public FlowBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final Statements enclosing = reproducer.getStatements();
 
 		if (enclosing != null) {
 
-			final ImperativeBlock reproduction =
-					enclosing.braces(this, getName());
+			final FlowBlock reproduction = enclosing.flow(this, getName());
 
 			reproduceSentences(reproducer, reproduction);
 
 			return null;
 		}
 
-		final ImperativeBlock reproduction = new ImperativeBlock(
+		final FlowBlock reproduction = new FlowBlock(
 				this,
 				reproducer.distribute(),
 				reproducer.getMemberRegistry(),
-				getSentenceFactory());
+				getSentenceFactory().toImperativeFactory());
 
 		reproduction.command(defaultEnv(reproducer.getLogger()));
 		reproduceSentences(reproducer, reproduction);
@@ -173,7 +144,7 @@ public final class ImperativeBlock extends Block {
 
 	@Override
 	Command createCommand(CommandEnv env) {
-		return new ImperativeBlockCommand(this, env);
+		return new FlowCommand(this, env);
 	}
 
 }

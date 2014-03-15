@@ -39,9 +39,7 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.ValueType;
 
 
@@ -148,7 +146,7 @@ final class ClauseDefinition extends Obj {
 	void define(Reproducer reproducer) {
 
 		final Statements statements = reproducer.getStatements();
-		final DeclarativeBlock reproduction = getDeclarations().reproduce(
+		final Block reproduction = getDeclarations().reproduce(
 				reproducer.distributeBy(statements.nextDistributor()));
 
 		if (reproduction != null) {

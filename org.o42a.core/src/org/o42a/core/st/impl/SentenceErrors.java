@@ -48,6 +48,13 @@ public final class SentenceErrors {
 				"Interrogative sentences can not contain braces");
 	}
 
+	public static void prohibitedFlow(LocationInfo location) {
+		location.getLocation().getLogger().error(
+				"prohibited_flow",
+				location,
+				"Flow can not be declared here");
+	}
+
 	public static void prohibitedInterrogativeAssignment(
 			LocationInfo location) {
 		location.getLocation().getLogger().error(
