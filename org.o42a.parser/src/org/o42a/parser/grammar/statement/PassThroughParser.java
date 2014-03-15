@@ -20,23 +20,21 @@
 package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.ref;
+import static org.o42a.parser.grammar.statement.FlowOperatorParser.FLOW_OPERATOR;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.statement.FlowOperator;
 import org.o42a.ast.statement.PassThroughNode;
-import org.o42a.ast.statement.PassThroughNode.Operator;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
-import org.o42a.util.io.SourcePosition;
 
 
 public class PassThroughParser implements Parser<PassThroughNode> {
 
 	public static final PassThroughParser PASS_THROUGH =
 			new PassThroughParser(null);
-
-	private static final OperatorParser OPERATOR = new OperatorParser();
 
 	private final ExpressionNode input;
 
@@ -47,7 +45,7 @@ public class PassThroughParser implements Parser<PassThroughNode> {
 	@Override
 	public PassThroughNode parse(ParserContext context) {
 
-		final SignNode<Operator> operator = context.push(OPERATOR);
+		final SignNode<FlowOperator> operator = context.push(FLOW_OPERATOR);
 
 		if (operator == null) {
 			return null;
@@ -67,36 +65,6 @@ public class PassThroughParser implements Parser<PassThroughNode> {
 		}
 
 		return new PassThroughNode(this.input, operator, flow);
-	}
-
-	private static final class OperatorParser
-			implements Parser<SignNode<PassThroughNode.Operator>> {
-
-		@Override
-		public SignNode<PassThroughNode.Operator> parse(ParserContext context) {
-			if (context.next() != '>') {
-				return null;
-			}
-
-			final SourcePosition start = context.current().fix();
-
-			if (context.next() != '>') {
-				return null;
-			}
-			if (context.next() == '>') {
-				return null;
-			}
-
-			context.acceptButLast();
-
-			return context.acceptComments(
-					false,
-					new SignNode<>(
-							start,
-							context.current().fix(),
-							PassThroughNode.Operator.CHEVRON));
-		}
-
 	}
 
 }

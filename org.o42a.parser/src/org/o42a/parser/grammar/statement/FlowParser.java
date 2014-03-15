@@ -1,6 +1,6 @@
 /*
     Parser
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,41 +20,33 @@
 package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.braces;
+import static org.o42a.parser.grammar.statement.FlowOperatorParser.FLOW_OPERATOR;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BracesNode;
-import org.o42a.ast.statement.NamedBlockNode;
+import org.o42a.ast.statement.FlowNode;
+import org.o42a.ast.statement.FlowOperator;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
-import org.o42a.util.io.SourcePosition;
 
 
-public class NamedBlockParser implements Parser<NamedBlockNode> {
+public class FlowParser implements Parser<FlowNode> {
 
 	private final NameNode name;
 
-	public NamedBlockParser(NameNode name) {
+	public FlowParser(NameNode name) {
 		this.name = name;
 	}
 
 	@Override
-	public NamedBlockNode parse(ParserContext context) {
+	public FlowNode parse(ParserContext context) {
 
-		final SourcePosition start = context.current().fix();
+		final SignNode<FlowOperator> operator = context.push(FLOW_OPERATOR);
 
-		if (context.next() != ':') {
+		if (operator == null) {
 			return null;
 		}
-
-		context.skip();
-
-		final SignNode<NamedBlockNode.Separator> separator = new SignNode<>(
-				start,
-				context.current().fix(),
-				NamedBlockNode.Separator.COLON);
-
-		context.skipComments(true, separator);
 
 		final BracesNode block = context.parse(braces());
 
@@ -62,7 +54,7 @@ public class NamedBlockParser implements Parser<NamedBlockNode> {
 			return null;
 		}
 
-		return new NamedBlockNode(this.name, separator, block);
+		return new FlowNode(this.name, operator, block);
 	}
 
 }

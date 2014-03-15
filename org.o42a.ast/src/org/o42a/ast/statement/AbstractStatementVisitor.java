@@ -51,6 +51,11 @@ public abstract class AbstractStatementVisitor<R, P>
 	}
 
 	@Override
+	public R visitFlow(FlowNode flow, P p) {
+		return visitStatement(flow, p);
+	}
+
+	@Override
 	public R visitDeclarator(DeclaratorNode declarator, P p) {
 		return visitStatement(declarator, p);
 	}
