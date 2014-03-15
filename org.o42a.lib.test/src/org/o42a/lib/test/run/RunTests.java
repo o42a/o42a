@@ -56,7 +56,7 @@ public class RunTests extends DirectiveObject {
 			return;
 		}
 
-		runTests(context.getBlock().toDeclarativeBlock(), object);
+		runTests(context.getBlock(), object);
 	}
 
 	private void runTests(Block definition, Obj object) {
