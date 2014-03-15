@@ -45,7 +45,7 @@ public abstract class Block extends Statement {
 	private int instructionsExecuted;
 	private boolean executingInstructions;
 
-	protected Block(
+	Block(
 			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
