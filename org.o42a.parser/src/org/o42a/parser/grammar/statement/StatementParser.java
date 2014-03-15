@@ -264,11 +264,10 @@ public class StatementParser implements Parser<StatementNode> {
 			return expression;
 		}
 
-		final NamedBlockNode namedBlock =
-				parseNamedBlock(context, declarable);
+		final StatementNode block = parseNamedBlockOrFlow(context, declarable);
 
-		if (namedBlock != null) {
-			return namedBlock;
+		if (block != null) {
+			return block;
 		}
 
 		if (this.local) {
@@ -286,9 +285,43 @@ public class StatementParser implements Parser<StatementNode> {
 		return expression;
 	}
 
-	private NamedBlockNode parseNamedBlock(
+	private StatementNode parseNamedBlockOrFlow(
 			ParserContext context,
 			DeclarableNode declarable) {
+
+		final NameNode name = blockName(declarable);
+
+		if (name == null) {
+			return null;
+		}
+
+		switch (context.pendingOrNext()) {
+		case ':':
+
+			final NamedBlockNode namedBlock = context.parse(namedBlock(name));
+
+			if (namedBlock != null) {
+				name.addComments(declarable.getComments());
+				return namedBlock;
+			}
+
+			return null;
+		case '>':
+
+			final FlowNode flow = context.parse(flow(name));
+
+			if (flow != null) {
+				flow.addComments(declarable.getComments());
+				return flow;
+			}
+
+			return null;
+		}
+
+		return null;
+	}
+
+	private NameNode blockName(DeclarableNode declarable) {
 
 		final MemberRefNode memberRef = declarable.toMemberRef();
 
@@ -299,19 +332,7 @@ public class StatementParser implements Parser<StatementNode> {
 			return null;
 		}
 
-		final NameNode name = memberRef.getName();
-
-		if (name == null) {
-			return null;
-		}
-
-		final NamedBlockNode namedBlock = context.parse(namedBlock(name));
-
-		if (namedBlock != null) {
-			name.addComments(memberRef.getComments());
-		}
-
-		return namedBlock;
+		return memberRef.getName();
 	}
 
 }

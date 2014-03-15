@@ -36,6 +36,8 @@ public interface StatementNodeVisitor<R, P>
 
 	R visitReturn(ReturnNode ret, P p);
 
+	R visitFlow(FlowNode flow, P p);
+
 	R visitDeclarator(DeclaratorNode declarator, P p);
 
 	R visitLocalScope(LocalScopeNode scope, P p);

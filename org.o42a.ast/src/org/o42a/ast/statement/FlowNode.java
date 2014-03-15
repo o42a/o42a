@@ -19,43 +19,45 @@
 */
 package org.o42a.ast.statement;
 
+import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
 
 
-public class PassThroughNode extends AbstractStatementNode {
+public class FlowNode extends AbstractStatementNode {
 
-	private final ExpressionNode input;
+	private final NameNode name;
 	private final SignNode<FlowOperator> operator;
-	private final RefNode flow;
+	private final BracesNode block;
 
-	public PassThroughNode(
-			ExpressionNode input,
+	public FlowNode(
+			NameNode name,
 			SignNode<FlowOperator> operator,
-			RefNode flow) {
-		super(start(input, operator), end(operator, flow));
-		this.input = input;
+			BracesNode block) {
+		super(name.getStart(), block.getEnd());
+		this.name = name;
 		this.operator = operator;
-		this.flow = flow;
+		this.block = block;
 	}
 
-	public final ExpressionNode getInput() {
-		return this.input;
+	public final NameNode getName() {
+		return this.name;
 	}
 
 	public final SignNode<FlowOperator> getOperator() {
 		return this.operator;
 	}
 
-	public final RefNode getFlow() {
-		return this.flow;
+	public final BracesNode getBlock() {
+		return this.block;
 	}
 
 	@Override
 	public <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitPassThrough(this, p);
+		return visitor.visitFlow(this, p);
 	}
 
 	@Override
@@ -75,13 +77,9 @@ public class PassThroughNode extends AbstractStatementNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		if (this.input != null) {
-			this.input.printContent(out);
-		}
+		this.name.printContent(out);
 		this.operator.printContent(out);
-		if (this.flow != null) {
-			this.flow.printContent(out);
-		}
+		this.block.printContent(out);
 	}
 
 }
