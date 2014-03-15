@@ -143,6 +143,11 @@ public final class Statements extends Contained {
 	}
 
 	public FlowBlock flow(LocationInfo location, Name name) {
+		if (isInterrogation()) {
+			prohibitedInterrogativeBraces(location);
+			dropStatement();
+			return null;
+		}
 		if (localsAvailable()) {
 			prohibitedFlow(location);
 			dropStatement();
