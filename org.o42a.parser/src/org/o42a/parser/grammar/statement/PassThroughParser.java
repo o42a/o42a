@@ -19,11 +19,11 @@
 */
 package org.o42a.parser.grammar.statement;
 
-import static org.o42a.parser.Grammar.name;
+import static org.o42a.parser.Grammar.ref;
 
-import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.PassThroughNode;
 import org.o42a.ast.statement.PassThroughNode.Operator;
 import org.o42a.parser.Parser;
@@ -47,24 +47,26 @@ public class PassThroughParser implements Parser<PassThroughNode> {
 	@Override
 	public PassThroughNode parse(ParserContext context) {
 
-		final SignNode<Operator> operator = context.parse(OPERATOR);
+		final SignNode<Operator> operator = context.push(OPERATOR);
 
 		if (operator == null) {
 			return null;
 		}
 
-		final NameNode flow = context.parse(name());
+		final RefNode flow = context.parse(ref());
 
 		if (flow == null) {
+			if (this.input != null) {
+				return null;
+			}
+			context.acceptAll();
 			context.getLogger().error(
 					"missing_flow",
 					context.current(),
 					"The flow to pass the input through is missing");
 		}
 
-		return context.acceptComments(
-				false,
-				new PassThroughNode(this.input, operator, flow));
+		return new PassThroughNode(this.input, operator, flow);
 	}
 
 	private static final class OperatorParser

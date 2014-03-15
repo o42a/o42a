@@ -19,7 +19,6 @@
 */
 package org.o42a.ast.statement;
 
-import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseIdNode;
@@ -31,16 +30,16 @@ public class PassThroughNode extends AbstractStatementNode {
 
 	private final ExpressionNode input;
 	private final SignNode<Operator> operator;
-	private final NameNode target;
+	private final RefNode flow;
 
 	public PassThroughNode(
 			ExpressionNode input,
 			SignNode<Operator> operator,
-			NameNode flow) {
+			RefNode flow) {
 		super(start(input, operator), end(operator, flow));
 		this.input = input;
 		this.operator = operator;
-		this.target = flow;
+		this.flow = flow;
 	}
 
 	public final ExpressionNode getInput() {
@@ -51,8 +50,8 @@ public class PassThroughNode extends AbstractStatementNode {
 		return this.operator;
 	}
 
-	public final NameNode getFlow() {
-		return this.target;
+	public final RefNode getFlow() {
+		return this.flow;
 	}
 
 	@Override
@@ -81,8 +80,8 @@ public class PassThroughNode extends AbstractStatementNode {
 			this.input.printContent(out);
 		}
 		this.operator.printContent(out);
-		if (this.target != null) {
-			this.target.printContent(out);
+		if (this.flow != null) {
+			this.flow.printContent(out);
 		}
 	}
 
