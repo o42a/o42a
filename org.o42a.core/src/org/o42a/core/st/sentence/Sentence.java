@@ -107,14 +107,9 @@ public abstract class Sentence extends Contained {
 
 	public final Statements alternative(LocationInfo location) {
 
-		final Statements alt =
-				getSentenceFactory().createAlternative(location, this);
+		final Statements alt = new Statements(location, this);
 
-		if (alt != null) {
-			this.alternatives.add(alt);
-		} else {
-			dropStatement();
-		}
+		this.alternatives.add(alt);
 
 		return alt;
 	}

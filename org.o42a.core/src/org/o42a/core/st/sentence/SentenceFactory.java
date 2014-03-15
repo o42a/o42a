@@ -76,10 +76,6 @@ public abstract class SentenceFactory {
 
 	public abstract Sentence interrogate(LocationInfo location, Block block);
 
-	public abstract Statements createAlternative(
-			LocationInfo location,
-			Sentence sentence);
-
 	public abstract DeclarativeFactory toDeclarativeFactory();
 
 	public abstract ImperativeFactory toImperativeFactory();
