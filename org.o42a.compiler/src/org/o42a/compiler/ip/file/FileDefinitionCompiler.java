@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.file;
 
 import org.o42a.ast.file.FileNode;
 import org.o42a.core.source.DefinitionSource;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 
 
 public class FileDefinitionCompiler
@@ -44,7 +44,7 @@ public class FileDefinitionCompiler
 	}
 
 	@Override
-	public void define(DeclarativeBlock definition) {
+	public void define(Block definition) {
 
 		final Section section = getSection();
 

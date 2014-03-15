@@ -19,11 +19,11 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 
 
 public interface DefinitionCompiler {
 
-	void define(DeclarativeBlock definition);
+	void define(Block definition);
 
 }
