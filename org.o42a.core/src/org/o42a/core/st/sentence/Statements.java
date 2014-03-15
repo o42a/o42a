@@ -54,13 +54,15 @@ public final class Statements extends Contained {
 	private Container nextContainer;
 	private boolean statementDropped;
 	private boolean incompatibilityReported;
-	private int instructionsExecuted;
 	private CommandTargets targets;
+	private int instructionsExecuted;
+	private boolean localsAvailable;
 
 	Statements(LocationInfo location, Sentence sentence) {
 		super(location, sentence.distribute());
 		this.sentence = sentence;
 		this.nextContainer = getContainer();
+		this.localsAvailable = sentence.externalLocalsAvailable();
 	}
 
 	public Sentence getSentence() {
@@ -85,6 +87,10 @@ public final class Statements extends Contained {
 
 	public final MemberRegistry getMemberRegistry() {
 		return getSentence().getMemberRegistry();
+	}
+
+	public final boolean localsAvailable() {
+		return this.localsAvailable;
 	}
 
 	public final CommandTargets getTargets() {
@@ -137,11 +143,7 @@ public final class Statements extends Contained {
 	}
 
 	public FlowBlock flow(LocationInfo location, Name name) {
-		if (isInterrogation()
-				|| getSentence().isImperative()
-				|| getSentence().isConditional()
-				|| getSentence().getAlternatives().size() != 1
-				|| !getCommands().isEmpty()) {
+		if (localsAvailable()) {
 			prohibitedFlow(location);
 			dropStatement();
 			return null;
@@ -289,6 +291,7 @@ public final class Statements extends Contained {
 		final Local local = new Local(location, name, ref);
 
 		this.nextContainer = new LocalInsides(local);
+		this.localsAvailable = true;
 		statement(new RefCondition(local));
 
 		return local;
