@@ -22,7 +22,6 @@ package org.o42a.core.st.sentence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
@@ -43,6 +42,7 @@ public abstract class Block extends Statement {
 	private CommandEnv initialEnv;
 	private Locals locals;
 	private int instructionsExecuted;
+	private final boolean externalLocalsAvailable;
 	private boolean executingInstructions;
 
 	Block(
@@ -54,6 +54,7 @@ public abstract class Block extends Statement {
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
+		this.externalLocalsAvailable = false;
 	}
 
 	Block(
@@ -66,6 +67,8 @@ public abstract class Block extends Statement {
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
+		this.externalLocalsAvailable =
+				enclosing != null && enclosing.localsAvailable();
 	}
 
 	@Override
@@ -116,6 +119,10 @@ public abstract class Block extends Statement {
 
 	public final List<Sentence> getSentences() {
 		return this.sentences;
+	}
+
+	public final boolean externalLocalsAvailable() {
+		return this.externalLocalsAvailable;
 	}
 
 	public final Sentence declare(LocationInfo location) {
@@ -233,44 +240,6 @@ public abstract class Block extends Statement {
 
 		return this.locals =
 				new Locals(enclosing.getSentence().getBlock().getLocals());
-	}
-
-	final Container nextContainer() {
-
-		final List<Sentence> sentences = getSentences();
-		final int numSentences = sentences.size();
-
-		if (numSentences == 0) {
-			return getContainer();
-		}
-
-		final Sentence last = sentences.get(numSentences - 1);
-		final List<Statements> alts = last.getAlternatives();
-		final int numAlts = alts.size();
-
-		if (numAlts > 1) {
-			// Locals declared within alternative are visible only inside
-			// this alternative, unless the sentence has a single alternative.
-			return last.getContainer();
-		}
-		if (last.getPrerequisite() != null
-				&& !last.getKind().isInterrogative()) {
-			// The sentence has prerequisite and is not a prerequisite
-			// of another sentence. The locals are not exported, neither from
-			// the sentence itself, nor from its prerequisites.
-			return last.firstPrerequisite().getContainer();
-		}
-		if (numAlts == 0) {
-			// Empty sentence without prerequisites.
-			// The next sentence will see the same locals as this one.
-			return last.getContainer();
-		}
-		// The sentence has only one alternative and has no prerequisites.
-		// The locals declared in it are visible in the next sentences.
-		// Even if this sentence is a prerequisite for the next one.
-		final Statements singleAlt = alts.get(0);
-
-		return singleAlt.nextContainer();
 	}
 
 	abstract NamedBlocks getNamedBlocks();

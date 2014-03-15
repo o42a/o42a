@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.Distributor.containerDistributor;
 import static org.o42a.core.st.Command.exitCommand;
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
@@ -43,6 +42,7 @@ public abstract class Sentence extends Contained {
 	private final ArrayList<Statements> alternatives = new ArrayList<>(1);
 	private Sentence prerequisite;
 	private CommandTargets targets;
+	private final boolean externalLocalsAvailable;
 	private boolean statementDropped;
 	private boolean instructionsExecuted;
 
@@ -50,9 +50,22 @@ public abstract class Sentence extends Contained {
 			LocationInfo location,
 			Block block,
 			SentenceFactory sentenceFactory) {
-		super(location, containerDistributor(block.nextContainer()));
+		this(
+				location,
+				new NextSentenceDistributor(block),
+				block,
+				sentenceFactory);
+	}
+
+	private Sentence(
+			LocationInfo location,
+			NextSentenceDistributor distributor,
+			Block block,
+			SentenceFactory sentenceFactory) {
+		super(location, distributor);
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
+		this.externalLocalsAvailable = distributor.localsAvailable();
 	}
 
 	public final Block getBlock() {
@@ -85,15 +98,19 @@ public abstract class Sentence extends Contained {
 		return getAlternatives().isEmpty();
 	}
 
-	public Sentence getPrerequisite() {
+	public final Sentence getPrerequisite() {
 		return this.prerequisite;
 	}
 
-	public boolean isConditional() {
+	public final boolean isConditional() {
 		if (getPrerequisite() != null) {
 			return true;
 		}
 		return getBlock().isConditional();
+	}
+
+	public final boolean externalLocalsAvailable() {
+		return this.externalLocalsAvailable;
 	}
 
 	public final CommandTargets getTargets() {
