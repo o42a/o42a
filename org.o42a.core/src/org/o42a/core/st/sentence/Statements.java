@@ -38,7 +38,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.LoopStatement;
@@ -59,9 +58,7 @@ public final class Statements extends Contained {
 	private CommandTargets targets;
 
 	Statements(LocationInfo location, Sentence sentence) {
-		super(
-				location,
-				new StatementsDistributor(location, sentence));
+		super(location, sentence.distribute());
 		this.sentence = sentence;
 		this.nextContainer = getContainer();
 	}
@@ -581,33 +578,6 @@ public final class Statements extends Contained {
 		}
 
 		return result;
-	}
-
-	private static final class StatementsDistributor extends Distributor {
-
-		private final Location location;
-		private final Sentence sentence;
-
-		StatementsDistributor(LocationInfo location, Sentence sentence) {
-			this.location = location.getLocation();
-			this.sentence = sentence;
-		}
-
-		@Override
-		public final Location getLocation() {
-			return this.location;
-		}
-
-		@Override
-		public Scope getScope() {
-			return this.sentence.getScope();
-		}
-
-		@Override
-		public Container getContainer() {
-			return this.sentence.getContainer();
-		}
-
 	}
 
 }

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.Distributor.containerDistributor;
 import static org.o42a.core.st.Command.exitCommand;
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
@@ -26,9 +27,9 @@ import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.o42a.core.*;
+import org.o42a.core.Contained;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Reproducer;
@@ -49,7 +50,7 @@ public abstract class Sentence extends Contained {
 			LocationInfo location,
 			Block block,
 			SentenceFactory sentenceFactory) {
-		super(location, new SentenceDistributor(location, block));
+		super(location, containerDistributor(block.nextContainer()));
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
 	}
@@ -376,35 +377,6 @@ public abstract class Sentence extends Contained {
 		}
 
 		return result.add(exitCommand(getLocation()));
-	}
-
-	private static final class SentenceDistributor extends Distributor {
-
-		private final Location location;
-		private final Block block;
-		private final Container container;
-
-		SentenceDistributor(LocationInfo location, Block block) {
-			this.location = location.getLocation();
-			this.block = block;
-			this.container = block.nextContainer();
-		}
-
-		@Override
-		public Location getLocation() {
-			return this.location;
-		}
-
-		@Override
-		public Scope getScope() {
-			return this.block.getScope();
-		}
-
-		@Override
-		public Container getContainer() {
-			return this.container;
-		}
-
 	}
 
 }
