@@ -63,6 +63,22 @@ public final class SentenceErrors {
 				"Assignments are prohibited within interrogative sentences");
 	}
 
+	public static void prohibitedInterrogativeReturn(
+			LocationInfo location) {
+		location.getLocation().getLogger().error(
+				"prohibited_interrogative_return",
+				location,
+				"Can not return from interrogative sentence");
+	}
+
+	public static void prohibitedInterrogativeYield(
+			LocationInfo location) {
+		location.getLocation().getLogger().error(
+				"prohibited_interrogative_yield",
+				location,
+				"Can not yield from interrogative sentence");
+	}
+
 	public static void declarationNotAlone(
 			CompilerLogger logger,
 			CommandTargets targets) {
