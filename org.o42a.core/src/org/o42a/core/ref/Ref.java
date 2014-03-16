@@ -429,9 +429,7 @@ public class Ref extends Statement implements RefBuilder {
 		return path.toCondition(this, statements);
 	}
 
-	public final Statement toValue(
-			LocationInfo location,
-			Statements statements) {
+	public final Ref toValue(LocationInfo location, Statements statements) {
 
 		final RefPath path = getPath();
 

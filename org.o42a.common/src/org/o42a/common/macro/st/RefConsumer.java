@@ -37,9 +37,9 @@ import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.macro.MacroConsumer;
 
 
-public final class StatementConsumer implements Consumer {
+public final class RefConsumer implements Consumer {
 
-	public static Ref consumeStatement(
+	public static Ref consumeRef(
 			Statements statements,
 			LocationInfo location,
 			Ref ref,
@@ -47,8 +47,8 @@ public final class StatementConsumer implements Consumer {
 
 		final Scope scope = statements.getScope();
 		final Ref rescoped = ref.rescope(scope);
-		final StatementConsumer consumer =
-				new StatementConsumer(statements, condition);
+		final RefConsumer consumer =
+				new RefConsumer(statements, condition);
 
 		rescoped.consume(consumer);
 
@@ -69,7 +69,7 @@ public final class StatementConsumer implements Consumer {
 	private final boolean condition;
 	private MemberField tempField;
 
-	public StatementConsumer(Statements statements, boolean condition) {
+	public RefConsumer(Statements statements, boolean condition) {
 		this.statements = statements;
 		this.condition = condition;
 	}
