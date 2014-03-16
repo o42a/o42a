@@ -62,6 +62,7 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 	private final MemberName memberId;
 	private final Ref ref;
 	private ObjectStepUses uses;
+	private boolean flowStatus;
 
 	Local(LocationInfo location, Name name, Ref ref) {
 		assert name != null :
@@ -80,6 +81,10 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 
 	public final MemberName getMemberId() {
 		return this.memberId;
+	}
+
+	public final boolean isFlowStatus() {
+		return this.flowStatus;
 	}
 
 	public final Ref ref() {
@@ -287,6 +292,10 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 	@Override
 	protected RefTargetIR targetIR(RefIR refIR) {
 		return new LocalRefTargetIR(refIR.getGenerator(), this);
+	}
+
+	void setFlowStatus() {
+		this.flowStatus = true;
 	}
 
 	private final ObjectStepUses uses() {

@@ -41,6 +41,10 @@ public abstract class Block extends Statement {
 		public Local createLocal(LocationInfo location, Name name, Ref ref) {
 			return new Local(location, name, ref);
 		}
+		@Override
+		public void setFlowStatus(Local local) {
+			local.setFlowStatus();
+		}
 	};
 
 	private final Statements enclosing;

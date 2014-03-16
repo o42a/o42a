@@ -104,6 +104,22 @@ public final class Locals {
 		return new Locals(this, statements, local);
 	}
 
+	public void setFlowStatus() {
+
+		Locals locals = this;
+
+		do {
+
+			final Local local = locals.getLocal();
+
+			if (local != null) {
+				this.factory.setFlowStatus(local);
+			}
+
+			locals = locals.enclosing;
+		} while (locals != null);
+	}
+
 	private boolean duplicateLocal(
 			Statements statements,
 			LocationInfo location,
