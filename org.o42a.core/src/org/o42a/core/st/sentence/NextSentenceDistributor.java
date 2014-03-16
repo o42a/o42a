@@ -25,12 +25,13 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.impl.local.Locals;
 
 
 class NextSentenceDistributor extends Distributor {
 
 	private final Container container;
-	private final boolean localsAvailable;
+	private final Locals locals;
 
 	NextSentenceDistributor(Block block) {
 
@@ -39,7 +40,8 @@ class NextSentenceDistributor extends Distributor {
 
 		if (numSentences == 0) {
 			this.container = block.getContainer();
-			this.localsAvailable = block.externalLocalsAvailable();
+			this.locals = block.externalLocals();
+			assert validContainer();
 			return;
 		}
 
@@ -51,7 +53,8 @@ class NextSentenceDistributor extends Distributor {
 			// Locals declared within alternative are visible only inside
 			// this alternative, unless the sentence has a single alternative.
 			this.container = last.getContainer();
-			this.localsAvailable = last.externalLocalsAvailable();
+			this.locals = last.externalLocals();
+			assert validContainer();
 			return;
 		}
 		if (last.getPrerequisite() != null
@@ -63,14 +66,16 @@ class NextSentenceDistributor extends Distributor {
 			final Sentence firstPrerequisite = last.firstPrerequisite();
 
 			this.container = firstPrerequisite.getContainer();
-			this.localsAvailable = firstPrerequisite.externalLocalsAvailable();
+			this.locals = firstPrerequisite.externalLocals();
+			assert validContainer();
 			return;
 		}
 		if (numAlts == 0) {
 			// Empty sentence without prerequisites.
 			// The next sentence will see the same locals as this one.
 			this.container = last.getContainer();
-			this.localsAvailable = last.externalLocalsAvailable();
+			this.locals = last.externalLocals();
+			assert validContainer();
 			return;
 		}
 		// The sentence has only one alternative and has no prerequisites.
@@ -79,11 +84,13 @@ class NextSentenceDistributor extends Distributor {
 		final Statements singleAlt = alts.get(0);
 
 		this.container = singleAlt.nextContainer();
-		this.localsAvailable = singleAlt.localsAvailable();
+		this.locals = singleAlt.locals();
+
+		assert validContainer();
 	}
 
-	public final boolean localsAvailable() {
-		return this.localsAvailable;
+	public final Locals locals() {
+		return this.locals;
 	}
 
 	@Override
@@ -99,6 +106,12 @@ class NextSentenceDistributor extends Distributor {
 	@Override
 	public Container getContainer() {
 		return this.container;
+	}
+
+	private boolean validContainer() {
+		assert getContainer() == this.locals.getContainer() :
+			"Unexpected container";
+		return true;
 	}
 
 }
