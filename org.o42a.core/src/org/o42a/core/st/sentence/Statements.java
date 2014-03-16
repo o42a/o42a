@@ -40,6 +40,7 @@ import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
+import org.o42a.core.st.impl.flow.YieldStatement;
 import org.o42a.core.st.impl.imperative.LoopStatement;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.Locals;
@@ -123,7 +124,7 @@ public final class Statements extends Contained {
 		assert checkSameContext(value);
 
 		if (isInterrogation()) {
-			prohibitedInterrogativeAssignment(location);
+			prohibitedInterrogativeReturn(location);
 			dropStatement();
 			return;
 		}
@@ -140,7 +141,31 @@ public final class Statements extends Contained {
 		statement(ref.toValue(location, this));
 	}
 
+	public void yield(LocationInfo location, RefBuilder value) {
+		assert checkSameContext(location);
+		assert checkSameContext(value);
+
+		if (isInterrogation()) {
+			prohibitedInterrogativeYield(location);
+			dropStatement();
+			return;
+		}
+
+		final Ref ref = value.buildRef(nextDistributor());
+
+		if (ref == null) {
+			dropStatement();
+			return;
+		}
+
+		assert checkSameContext(ref);
+
+		locals().setFlowStatus();
+		statement(new YieldStatement(location, ref.toValue(location, this)));
+	}
+
 	public FlowBlock flow(LocationInfo location, Name name) {
+		assert checkSameContext(location);
 		if (isInterrogation()) {
 			prohibitedInterrogativeBraces(location);
 			dropStatement();
