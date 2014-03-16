@@ -124,7 +124,7 @@ public abstract class Step {
 	 *
 	 * @return the value statement.
 	 */
-	protected Statement value(
+	protected Ref value(
 			LocationInfo location,
 			Ref value,
 			Statements statements) {
