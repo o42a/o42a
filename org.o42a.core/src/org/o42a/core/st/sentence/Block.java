@@ -24,9 +24,11 @@ import java.util.List;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.core.st.impl.local.LocalFactory;
 import org.o42a.core.st.impl.local.Locals;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
@@ -34,15 +36,21 @@ import org.o42a.util.string.Name;
 
 public abstract class Block extends Statement {
 
+	private static final LocalFactory LOCAL_FACTORY = new LocalFactory() {
+		@Override
+		public Local createLocal(LocationInfo location, Name name, Ref ref) {
+			return new Local(location, name, ref);
+		}
+	};
+
 	private final Statements enclosing;
 	private final ArrayList<Sentence> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory sentenceFactory;
 	private final StatementsEnv statementsEnv = new StatementsEnv();
+	private final Locals externalLocals;
 	private CommandEnv initialEnv;
-	private Locals locals;
 	private int instructionsExecuted;
-	private final boolean externalLocalsAvailable;
 	private boolean executingInstructions;
 
 	Block(
@@ -54,7 +62,7 @@ public abstract class Block extends Statement {
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
-		this.externalLocalsAvailable = false;
+		this.externalLocals = new Locals(this, LOCAL_FACTORY);
 	}
 
 	Block(
@@ -67,8 +75,11 @@ public abstract class Block extends Statement {
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
-		this.externalLocalsAvailable =
-				enclosing != null && enclosing.localsAvailable();
+		if (enclosing != null) {
+			this.externalLocals = enclosing.locals().forBlock(this);
+		} else {
+			this.externalLocals = new Locals(this, LOCAL_FACTORY);
+		}
 	}
 
 	@Override
@@ -119,10 +130,6 @@ public abstract class Block extends Statement {
 
 	public final List<Sentence> getSentences() {
 		return this.sentences;
-	}
-
-	public final boolean externalLocalsAvailable() {
-		return this.externalLocalsAvailable;
 	}
 
 	public final Sentence declare(LocationInfo location) {
@@ -227,19 +234,8 @@ public abstract class Block extends Statement {
 		return out.toString();
 	}
 
-	final Locals getLocals() {
-		if (this.locals != null) {
-			return this.locals;
-		}
-
-		final Statements enclosing = getEnclosing();
-
-		if (enclosing == null) {
-			return this.locals = new Locals(null);
-		}
-
-		return this.locals =
-				new Locals(enclosing.getSentence().getBlock().getLocals());
+	final Locals externalLocals() {
+		return this.externalLocals;
 	}
 
 	abstract NamedBlocks getNamedBlocks();

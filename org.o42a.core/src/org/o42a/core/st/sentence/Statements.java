@@ -42,7 +42,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.LoopStatement;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
-import org.o42a.core.st.impl.local.LocalInsides;
+import org.o42a.core.st.impl.local.Locals;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.Name;
 
@@ -51,18 +51,16 @@ public final class Statements extends Contained {
 
 	private final Sentence sentence;
 	private final ArrayList<Command> commands = new ArrayList<>(1);
-	private Container nextContainer;
+	private Locals locals;
 	private boolean statementDropped;
 	private boolean incompatibilityReported;
 	private CommandTargets targets;
 	private int instructionsExecuted;
-	private boolean localsAvailable;
 
 	Statements(LocationInfo location, Sentence sentence) {
 		super(location, sentence.distribute());
 		this.sentence = sentence;
-		this.nextContainer = getContainer();
-		this.localsAvailable = sentence.externalLocalsAvailable();
+		this.locals = sentence.externalLocals();
 	}
 
 	public Sentence getSentence() {
@@ -90,7 +88,7 @@ public final class Statements extends Contained {
 	}
 
 	public final boolean localsAvailable() {
-		return this.localsAvailable;
+		return !this.locals.isEmpty();
 	}
 
 	public final CommandTargets getTargets() {
@@ -240,7 +238,7 @@ public final class Statements extends Contained {
 		return parentheses(
 				-1,
 				location,
-				nextDistributor(container));
+				distributeIn(container));
 	}
 
 	public final ImperativeBlock braces(LocationInfo location) {
@@ -273,7 +271,7 @@ public final class Statements extends Contained {
 
 		final ImperativeBlock braces = getSentenceFactory().createBraces(
 				location,
-				nextDistributor(container),
+				distributeIn(container),
 				this,
 				name);
 
@@ -288,15 +286,17 @@ public final class Statements extends Contained {
 
 	public final Local local(LocationInfo location, Name name, Ref ref) {
 
-		final Sentence sentence = getSentence();
-		final Block block = sentence.getBlock();
+		final Locals newLocals =
+				locals().declareLocal(this, location, name, ref);
 
-		block.getLocals().declareLocal(location, name);
+		if (newLocals == null) {
+			return null;
+		}
 
-		final Local local = new Local(location, name, ref);
+		this.locals = newLocals;
 
-		this.nextContainer = new LocalInsides(local);
-		this.localsAvailable = true;
+		final Local local = newLocals.getLocal();
+
 		statement(new RefCondition(local));
 
 		return local;
@@ -322,11 +322,11 @@ public final class Statements extends Contained {
 	}
 
 	public final Container nextContainer() {
-		return this.nextContainer;
+		return this.locals.getContainer();
 	}
 
 	public final Distributor nextDistributor() {
-		return nextDistributor(nextContainer());
+		return distributeIn(nextContainer());
 	}
 
 	public final void statement(Statement statement) {
@@ -389,6 +389,10 @@ public final class Statements extends Contained {
 
 	protected final void removeStatement(int index) {
 		this.commands.remove(index);
+	}
+
+	final Locals locals() {
+		return this.locals;
 	}
 
 	void reproduce(Sentence sentence, Reproducer reproducer) {
@@ -490,10 +494,6 @@ public final class Statements extends Contained {
 				+ location.getLocation().getContext()
 			+ ", but " + getContext() + " expected";
 		return true;
-	}
-
-	private final Distributor nextDistributor(Container container) {
-		return distributeIn(container);
 	}
 
 	private Block blockByName(LocationInfo location, Name name) {

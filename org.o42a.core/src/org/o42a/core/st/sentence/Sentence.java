@@ -32,6 +32,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.impl.local.Locals;
 import org.o42a.core.value.TypeParameters;
 
 
@@ -40,9 +41,9 @@ public abstract class Sentence extends Contained {
 	private final Block block;
 	private final SentenceFactory sentenceFactory;
 	private final ArrayList<Statements> alternatives = new ArrayList<>(1);
+	private final Locals externalLocals;
 	private Sentence prerequisite;
 	private CommandTargets targets;
-	private final boolean externalLocalsAvailable;
 	private boolean statementDropped;
 	private boolean instructionsExecuted;
 
@@ -65,7 +66,7 @@ public abstract class Sentence extends Contained {
 		super(location, distributor);
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
-		this.externalLocalsAvailable = distributor.localsAvailable();
+		this.externalLocals = distributor.locals();
 	}
 
 	public final Block getBlock() {
@@ -107,10 +108,6 @@ public abstract class Sentence extends Contained {
 			return true;
 		}
 		return getBlock().isConditional();
-	}
-
-	public final boolean externalLocalsAvailable() {
-		return this.externalLocalsAvailable;
 	}
 
 	public final CommandTargets getTargets() {
@@ -185,6 +182,10 @@ public abstract class Sentence extends Contained {
 		out.append(getKind().getSign());
 
 		return out.toString();
+	}
+
+	final Locals externalLocals() {
+		return this.externalLocals;
 	}
 
 	final Sentence firstPrerequisite() {
