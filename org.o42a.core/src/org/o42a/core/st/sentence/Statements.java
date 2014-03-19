@@ -174,6 +174,10 @@ public final class Statements extends Contained {
 		statement(new YieldStatement(location, ref.toValue(location, this)));
 	}
 
+	public final FlowBlock flow(LocationInfo location) {
+		return flow(location, null);
+	}
+
 	public FlowBlock flow(LocationInfo location, Name name) {
 		assert checkSameContext(location);
 		if (isInterrogation()) {
