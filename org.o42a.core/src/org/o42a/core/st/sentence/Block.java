@@ -105,6 +105,8 @@ public abstract class Block extends Statement {
 		return !getSentenceFactory().isDeclarative();
 	}
 
+	public abstract boolean isFlow();
+
 	public abstract Name getName();
 
 	public final boolean hasName(Name name) {

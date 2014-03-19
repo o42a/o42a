@@ -102,6 +102,11 @@ public final class FlowBlock extends Block {
 	}
 
 	@Override
+	public boolean isFlow() {
+		return true;
+	}
+
+	@Override
 	public final Name getName() {
 		return this.name;
 	}

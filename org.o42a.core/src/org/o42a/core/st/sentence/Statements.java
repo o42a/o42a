@@ -128,6 +128,11 @@ public final class Statements extends Contained {
 			dropStatement();
 			return;
 		}
+		if (getSentence().getBlock().isFlow()) {
+			prohibitedFlowReturn(location);
+			dropStatement();
+			return;
+		}
 
 		final Ref ref = value.buildRef(nextDistributor());
 
@@ -145,6 +150,11 @@ public final class Statements extends Contained {
 		assert checkSameContext(location);
 		assert checkSameContext(value);
 
+		if (getSentence().getBlock().isFlow()) {
+			prohibitedYield(location);
+			dropStatement();
+			return;
+		}
 		if (isInterrogation()) {
 			prohibitedInterrogativeYield(location);
 			dropStatement();
@@ -168,6 +178,11 @@ public final class Statements extends Contained {
 		assert checkSameContext(location);
 		if (isInterrogation()) {
 			prohibitedInterrogativeBraces(location);
+			dropStatement();
+			return null;
+		}
+		if (getSentence().getBlock().isFlow()) {
+			prohibitedNestedFlow(location);
 			dropStatement();
 			return null;
 		}
