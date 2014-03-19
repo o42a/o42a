@@ -131,13 +131,24 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		}
 
 		final AccessDistributor distributor = p.nextDistributor();
-		final Ref value = valueNode.accept(ip().expressionVisitor(), distributor);
+		final Ref value =
+				valueNode.accept(ip().expressionVisitor(), distributor);
 
-		if (value != null) {
-			p.get().returnValue(location(p, ret.getPrefix()), value);
+		if (value == null) {
+			return null;
 		}
 
-		return null;
+		switch (ret.getPrefix().getType()) {
+		case RETURN_VALUE:
+			p.get().returnValue(location(p, ret.getPrefix()), value);
+			return null;
+		case YIELD_VALUE:
+			p.get().yield(location(p, ret.getPrefix()), value);
+			return null;
+		}
+
+		throw new UnsupportedOperationException(
+				"Unsupported return operator: " + ret.getPrefix().getType());
 	}
 
 	@Override
