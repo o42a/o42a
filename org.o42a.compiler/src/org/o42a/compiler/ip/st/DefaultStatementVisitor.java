@@ -36,9 +36,7 @@ import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.st.sentence.*;
 
 
 public class DefaultStatementVisitor extends StatementVisitor {
@@ -120,9 +118,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitReturn(
-			ReturnNode ret,
-			StatementsAccess p) {
+	public Void visitReturn(ReturnNode ret, StatementsAccess p) {
 
 		final ExpressionNode valueNode = ret.getValue();
 
@@ -149,6 +145,19 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 		throw new UnsupportedOperationException(
 				"Unsupported return operator: " + ret.getPrefix().getType());
+	}
+
+	@Override
+	public Void visitFlow(FlowNode flow, StatementsAccess p) {
+		
+		final FlowBlock block = 
+				p.get().flow(location(p, flow), flow.getName().getName());
+		
+		if (block != null) {
+			addContent(p.getRules(), this, block, flow.getBlock());
+		}
+		
+		return null;
 	}
 
 	@Override

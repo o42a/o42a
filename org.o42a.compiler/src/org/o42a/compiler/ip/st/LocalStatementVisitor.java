@@ -28,6 +28,8 @@ import static org.o42a.compiler.ip.st.StatementVisitor.validateLocalScope;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.statement.*;
+import org.o42a.core.source.Location;
+import org.o42a.core.st.sentence.FlowBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Local;
 
@@ -35,11 +37,20 @@ import org.o42a.core.st.sentence.Local;
 final class LocalStatementVisitor
 		extends AbstractStatementVisitor<Void, StatementsAccess> {
 
+	private static final FlowExtractor FLOW_EXTRACTOR = new FlowExtractor();
+
 	private final StatementVisitor visitor;
+	private final boolean flowExtracted;
 	private LocalNode localNode;
 
 	LocalStatementVisitor(StatementVisitor visitor) {
 		this.visitor = visitor;
+		this.flowExtracted = false;
+	}
+
+	private LocalStatementVisitor(LocalStatementVisitor visitor) {
+		this.visitor = visitor.visitor;
+		this.flowExtracted = true;
 	}
 
 	@Override
@@ -92,11 +103,38 @@ final class LocalStatementVisitor
 	}
 
 	@Override
+	public Void visitFlow(FlowNode flow, StatementsAccess p) {
+
+		final BracesNode block = flow.getBlock();
+
+		if (block != null) {
+			// Just add a flow content, as a flow block is already added.
+
+			final Location location = location(p, block);
+
+			addContent(
+					p.getRules(),
+					this.visitor,
+					p.get().braces(location, flow.getName().getName()),
+					block);
+		}
+
+		return null;
+	}
+
+	@Override
 	protected Void visitStatement(StatementNode statement, StatementsAccess p) {
 		return statement.accept(this.visitor, p);
 	}
 
 	void addLocalScope(StatementsAccess statements, LocalScopeNode scope) {
+		if (!this.flowExtracted) {
+			// Extract flow. The locals will be declared inside of this flow.
+			// And then - the flow block content will be added.
+			extractFlow(statements, scope);
+			return;
+		}
+
 		local(
 				this.visitor.ip(),
 				this.visitor.getContext(),
@@ -123,6 +161,59 @@ final class LocalStatementVisitor
 
 		this.localNode = localNode;
 		this.visitor.addAssignment(statements, assignment, local.toRef());
+	}
+
+	private void extractFlow(
+			StatementsAccess statements,
+			LocalScopeNode scope) {
+
+		final FlowNode flowNode =
+				scope.getContent().accept(FLOW_EXTRACTOR, null);
+
+		if (flowNode != null) {
+
+			final FlowBlock flow = statements.get().flow(
+					location(statements, flowNode.getName()));
+
+			if (flow != null) {
+				new LocalStatementVisitor(this).addLocalScope(
+						new StatementsAccess(
+								statements.getRules(),
+								flow.declare(flow)
+								.alternative(flow)),
+						scope);
+				return;
+			}
+		}
+
+		new LocalStatementVisitor(this).addLocalScope(statements, scope);
+	}
+
+	private static final class FlowExtractor
+			extends AbstractStatementVisitor<FlowNode, Void> {
+
+		@Override
+		public FlowNode visitFlow(FlowNode flow, Void p) {
+			return flow;
+		}
+
+		@Override
+		public FlowNode visitLocalScope(LocalScopeNode scope, Void p) {
+
+			final StatementNode content = scope.getContent();
+
+			if (content == null) {
+				return null;
+			}
+
+			return content.accept(this, p);
+		}
+
+		@Override
+		protected FlowNode visitStatement(StatementNode statement, Void p) {
+			return null;
+		}
+
 	}
 
 }
