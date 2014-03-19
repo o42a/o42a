@@ -38,7 +38,6 @@ import org.o42a.util.log.LogInfo;
 
 public abstract class Command implements ContainerInfo {
 
-
 	public static CommandTargets noCommands() {
 		return NO_COMMANDS;
 	}
