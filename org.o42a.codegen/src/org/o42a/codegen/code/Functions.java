@@ -25,6 +25,8 @@ import java.util.LinkedList;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.util.string.ID;
 
@@ -91,6 +93,8 @@ public abstract class Functions {
 	protected <F extends Func<F>> void addFunction(Function<F> function) {
 		this.functions.add(function);
 	}
+
+	protected abstract DataAllocation<AnyOp> codeToAny(CodePtr ptr);
 
 	final <F extends Func<F>> FuncPtr<F> externalFunction(
 			String name,

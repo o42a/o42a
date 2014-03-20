@@ -22,11 +22,17 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.CodeOp;
+import org.o42a.codegen.code.op.OpBlockBase;
 import org.o42a.codegen.debug.DebugBlockBase;
 import org.o42a.util.string.ID;
 
 
 public abstract class Block extends DebugBlockBase {
+
+	protected static CodePos unwrapPos(CodePos pos) {
+		return OpBlockBase.unwrapPos(pos);
+	}
 
 	private final Head head = new Head(this);
 
@@ -41,6 +47,10 @@ public abstract class Block extends DebugBlockBase {
 	@Override
 	public final Block getBlock() {
 		return this;
+	}
+
+	public final CodePtr ptr() {
+		return new CodePtr(getGenerator(), getId(), head());
 	}
 
 	public final CodePos head() {
@@ -71,6 +81,18 @@ public abstract class Block extends DebugBlockBase {
 			disposeUpTo(pos);
 		}
 		writer().go(unwrapPos(pos));
+	}
+
+	public final void go(CodeOp pos, CodePos... targets) {
+		assert assertIncomplete();
+
+		final CodePos[] unwrapped = new CodePos[targets.length];
+
+		for (int i = 0; i < targets.length; ++i) {
+			unwrapped[i] = unwrapPos(targets[i]);
+		}
+
+		writer().go(pos, unwrapped);
 	}
 
 	public void returnVoid() {

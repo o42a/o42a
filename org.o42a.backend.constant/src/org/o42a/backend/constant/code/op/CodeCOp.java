@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Constant Handler Compiler Back-end
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,9 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.op;
+package org.o42a.backend.constant.code.op;
+
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.op.CodeOp;
 
 
-public interface CodeOp extends Op {
+public class CodeCOp extends AbstractCOp<CodeOp, CodePos> implements CodeOp {
+
+	public CodeCOp(OpBE<CodeOp> backend) {
+		super(backend);
+	}
+
+	public CodeCOp(OpBE<CodeOp> backend, CodePos constant) {
+		super(backend, constant);
+	}
+
+	@Override
+	public CodeCOp create(OpBE<CodeOp> backend, CodePos constant) {
+		return new CodeCOp(backend, constant);
+	}
 
 }

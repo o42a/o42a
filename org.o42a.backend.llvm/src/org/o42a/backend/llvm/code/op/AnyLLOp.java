@@ -26,6 +26,7 @@ import org.o42a.backend.llvm.code.rec.*;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.CodeOp;
 import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
@@ -252,6 +253,13 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 								ids.write(resultId),
 								ids.length(),
 								getNativePtr())));
+	}
+
+	@Override
+	public CodeOp toCode(ID id, Code code) {
+		return new CodeLLOp(
+				code.getOpNames().castId(id, ANY_ID, this),
+				this);
 	}
 
 	@Override

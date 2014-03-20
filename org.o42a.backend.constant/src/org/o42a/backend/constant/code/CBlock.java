@@ -21,13 +21,12 @@ package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.op.AllocPtrCOp;
-import org.o42a.backend.constant.code.op.BaseInstrBE;
-import org.o42a.backend.constant.code.op.BoolCOp;
+import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.CodeOp;
 import org.o42a.util.Chain;
 
 
@@ -71,7 +70,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	}
 
 	@Override
-	public CodePos tail() {
+	public CCodePos tail() {
 		if (this.nextPart != null) {
 			if (!this.nextPart.hasOps()) {
 				return this.nextPart.head();
@@ -141,6 +140,23 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	public final void go(final CodePos pos) {
 		new JumpBE.Unconditional(nextPart(), cast(pos));
 		resetNextPart();
+	}
+
+	@Override
+	public void go(CodeOp pos, CodePos[] targets) {
+
+		final CodeCOp cpos = (CodeCOp) pos;
+		final CBlockPart prev = nextPart();
+
+		resetNextPart();
+
+		final CCodePos poss[] = new CCodePos[targets.length];
+
+		for (int i = 0; i < targets.length; ++i) {
+			poss[i] = cast(targets[i]);
+		}
+
+		new JumpBE.Potential(prev, cpos, poss);
 	}
 
 	@Override

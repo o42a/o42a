@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,27 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.*;
+import static org.o42a.codegen.code.Block.unwrapPos;
+
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
-import org.o42a.codegen.data.backend.FuncAllocation;
 import org.o42a.util.string.ID;
 
 
-public interface CodeBackend {
+public final class CodePtr extends AbstractPtr {
 
-	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
+	private final Generator generator;
+	private final CodePos pos;
 
-	<F extends Func<F>> FuncWriter<F> addFunction(
-			Function<F> function,
-			BeforeReturn beforeReturn);
+	CodePtr(Generator generator, ID id, CodePos pos) {
+		super(id, true, false);
+		this.generator = generator;
+		this.pos = pos;
+	}
 
-	<F extends Func<F>> FuncAllocation<F> externFunction(
-			ID id,
-			FuncPtr<F> pointer);
+	public final CodePos pos() {
+		return unwrapPos(this.pos);
+	}
 
-	DataAllocation<AnyOp> codeToAny(CodePtr ptr);
+	@Override
+	protected DataAllocation<AnyOp> allocationToAny() {
+		return this.generator.getFunctions().codeToAny(this);
+	}
 
 }

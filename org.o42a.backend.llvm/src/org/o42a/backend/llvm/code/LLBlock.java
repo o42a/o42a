@@ -24,6 +24,7 @@ import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.CodeOp;
 
 
 public abstract class LLBlock extends LLCode implements BlockWriter {
@@ -118,6 +119,12 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 
 		instr(nextPtr, go(nextPtr, nextInstr(), blockPtr(pos)));
 		endBlock();
+	}
+
+	@Override
+	public void go(CodeOp pos, CodePos[] targets) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
