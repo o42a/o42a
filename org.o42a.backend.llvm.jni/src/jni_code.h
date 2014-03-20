@@ -41,6 +41,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_go
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
+ * Method:    goByPtr
+ * Signature: (JJJ[J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_goByPtr
+  (JNIEnv *, jclass, jlong, jlong, jlong, jlongArray);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    choose
  * Signature: (JJJJJ)J
  */

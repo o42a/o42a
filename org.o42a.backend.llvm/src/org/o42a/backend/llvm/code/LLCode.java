@@ -496,6 +496,12 @@ public abstract class LLCode implements CodeWriter {
 			long instrPtr,
 			long targetPtr);
 
+	static native long goByPtr(
+			long sourcePtr,
+			long instrPtr,
+			long addrPtr,
+			long[] blockPtrs);
+
 	static native long choose(
 			long blockPtr,
 			long instrPtr,
