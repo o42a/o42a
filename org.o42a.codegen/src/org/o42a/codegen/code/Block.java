@@ -23,25 +23,22 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.CodeOp;
-import org.o42a.codegen.code.op.OpBlockBase;
 import org.o42a.codegen.debug.DebugBlockBase;
 import org.o42a.util.string.ID;
 
 
 public abstract class Block extends DebugBlockBase {
 
-	protected static CodePos unwrapPos(CodePos pos) {
-		return OpBlockBase.unwrapPos(pos);
-	}
-
-	private final Head head = new Head(this);
+	private final CodePtr ptr;
 
 	Block(Code enclosing, ID name) {
 		super(enclosing, name);
+		this.ptr = new CodePtr(this);
 	}
 
 	Block(Generator generator, ID id) {
 		super(generator, id);
+		this.ptr = new CodePtr(this);
 	}
 
 	@Override
@@ -50,14 +47,11 @@ public abstract class Block extends DebugBlockBase {
 	}
 
 	public final CodePtr ptr() {
-		return new CodePtr(getGenerator(), getId(), head());
+		return this.ptr;
 	}
 
 	public final CodePos head() {
-		if (created()) {
-			return writer().head();
-		}
-		return this.head;
+		return ptr().head();
 	}
 
 	public final CodePos tail() {
@@ -103,6 +97,14 @@ public abstract class Block extends DebugBlockBase {
 
 	@Override
 	public abstract BlockWriter writer();
+
+	@Override
+	protected CodePos unwrapPos(CodePos pos) {
+		if (pos == null || pos.getClass() != CodePtr.class) {
+			return pos;
+		}
+		return ((CodePtr) pos).pos();
+	}
 
 	@Override
 	protected final CondBlock choose(

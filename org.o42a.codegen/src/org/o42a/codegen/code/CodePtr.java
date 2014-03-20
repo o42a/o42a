@@ -19,33 +19,44 @@
 */
 package org.o42a.codegen.code;
 
-import static org.o42a.codegen.code.Block.unwrapPos;
-
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
-import org.o42a.util.string.ID;
 
 
-public final class CodePtr extends AbstractPtr {
+public final class CodePtr extends AbstractPtr implements CodePos {
 
-	private final Generator generator;
-	private final CodePos pos;
+	private final Block code;
 
-	CodePtr(Generator generator, ID id, CodePos pos) {
-		super(id, true, false);
-		this.generator = generator;
-		this.pos = pos;
+	CodePtr(Block code) {
+		super(code.getId(), true, false);
+		this.code = code;
+	}
+
+	@Override
+	public final Block code() {
+		return this.code;
+	}
+
+	public final CodePos head() {
+		if (!code().created()) {
+			return this;
+		}
+		return pos();
 	}
 
 	public final CodePos pos() {
-		return unwrapPos(this.pos);
+		return this.code.writer().head();
+	}
+
+	@Override
+	public String toString() {
+		return this.code.toString();
 	}
 
 	@Override
 	protected DataAllocation<AnyOp> allocationToAny() {
-		return this.generator.getFunctions().codeToAny(this);
+		return this.code.getGenerator().getFunctions().codeToAny(this);
 	}
 
 }
