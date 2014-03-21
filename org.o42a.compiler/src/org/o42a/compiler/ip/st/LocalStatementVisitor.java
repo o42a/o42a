@@ -173,7 +173,8 @@ final class LocalStatementVisitor
 		if (flowNode != null) {
 
 			final FlowBlock flow = statements.get().flow(
-					location(statements, flowNode.getName()));
+					location(statements, flowNode.getName()),
+					flowNode.getName().getName());
 
 			if (flow != null) {
 				new LocalStatementVisitor(this).addLocalScope(
