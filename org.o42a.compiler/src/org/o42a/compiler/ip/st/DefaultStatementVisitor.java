@@ -37,6 +37,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
+import org.o42a.util.string.Name;
 
 
 public class DefaultStatementVisitor extends StatementVisitor {
@@ -149,14 +150,15 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 	@Override
 	public Void visitFlow(FlowNode flow, StatementsAccess p) {
-		
-		final FlowBlock block = 
-				p.get().flow(location(p, flow), flow.getName().getName());
-		
+
+		final Name name = flow.getName().getName();
+		final FlowBlock block =
+				p.get().flow(location(p, flow), name, name);
+
 		if (block != null) {
 			addContent(p.getRules(), this, block, flow.getBlock());
 		}
-		
+
 		return null;
 	}
 

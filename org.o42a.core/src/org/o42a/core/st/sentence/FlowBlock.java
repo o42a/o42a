@@ -40,7 +40,8 @@ public final class FlowBlock extends Block {
 			LocationInfo location,
 			Distributor distributor,
 			Statements enclosing,
-			Name name,
+			Name flowName,
+			Name blockName,
 			ImperativeFactory sentenceFactory,
 			MemberRegistry memberRegistry) {
 
@@ -63,23 +64,32 @@ public final class FlowBlock extends Block {
 				location,
 				distributor,
 				enclosing,
-				name,
+				flowName,
+				blockName,
 				registry,
 				sentenceFactory);
 	}
 
-	private Name name;
+	private final Name flowName;
+	private final Name blockName;
 	private NamedBlocks namedBlocks;
 
 	private FlowBlock(
 			LocationInfo location,
 			Distributor distributor,
 			Statements enclosing,
-			Name name,
+			Name flowName,
+			Name blockName,
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
-		super(location, distributor, enclosing, memberRegistry, sentenceFactory);
-		this.name = name;
+		super(
+				location,
+				distributor,
+				enclosing,
+				memberRegistry,
+				sentenceFactory);
+		this.flowName = flowName;
+		this.blockName = blockName;
 	}
 
 	private FlowBlock(
@@ -88,7 +98,12 @@ public final class FlowBlock extends Block {
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
 		super(prototype, distributor, memberRegistry, sentenceFactory);
-		this.name = prototype.getName();
+		this.flowName = prototype.getFlowName();
+		this.blockName = prototype.getName();
+	}
+
+	public final Name getFlowName() {
+		return this.flowName;
 	}
 
 	@Override
@@ -108,7 +123,7 @@ public final class FlowBlock extends Block {
 
 	@Override
 	public final Name getName() {
-		return this.name;
+		return this.blockName;
 	}
 
 	@Override
@@ -119,7 +134,8 @@ public final class FlowBlock extends Block {
 
 		if (enclosing != null) {
 
-			final FlowBlock reproduction = enclosing.flow(this, getName());
+			final FlowBlock reproduction =
+					enclosing.flow(this, getFlowName(), getName());
 
 			reproduceSentences(reproducer, reproduction);
 

@@ -174,11 +174,14 @@ public final class Statements extends Contained {
 		statement(new YieldStatement(location, ref.toValue(location, this)));
 	}
 
-	public final FlowBlock flow(LocationInfo location) {
-		return flow(location, null);
+	public final FlowBlock flow(LocationInfo location, Name flowName) {
+		return flow(location, flowName, null);
 	}
 
-	public FlowBlock flow(LocationInfo location, Name name) {
+	public FlowBlock flow(
+			LocationInfo location,
+			Name flowName,
+			Name blockName) {
 		assert checkSameContext(location);
 		if (isInterrogation()) {
 			prohibitedInterrogativeBraces(location);
@@ -199,7 +202,7 @@ public final class Statements extends Contained {
 		final NamedBlocks namedBlocks =
 				getSentence().getBlock().getNamedBlocks();
 
-		if (!namedBlocks.declareBlock(location, name)) {
+		if (!namedBlocks.declareBlock(location, blockName)) {
 			dropStatement();
 			return null;
 		}
@@ -208,7 +211,8 @@ public final class Statements extends Contained {
 				location,
 				nextDistributor(),
 				this,
-				name,
+				flowName,
+				blockName,
 				IMPERATIVE_FACTORY,
 				null);
 
