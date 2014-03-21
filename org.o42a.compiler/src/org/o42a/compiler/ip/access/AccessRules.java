@@ -204,16 +204,17 @@ public abstract class AccessRules {
 			}
 
 			final Scope scope = container.getScope();
-			final Path enclosingScopePath = scope.getEnclosingScopePath();
-
-			if (enclosingScopePath == null) {
-				unresolvedParent(location, name);
-				return null;
-			}
 
 			container = parent;
 
 			if (!scope.is(parent.getScope())) {
+
+				final Path enclosingScopePath = scope.getEnclosingScopePath();
+
+				if (enclosingScopePath == null) {
+					unresolvedParent(location, name);
+					return null;
+				}
 				if (path != null) {
 					path = path.append(enclosingScopePath);
 				} else {
