@@ -114,11 +114,6 @@ public final class DeclarativeBlock extends Block {
 	}
 
 	@Override
-	public boolean isFlow() {
-		return false;
-	}
-
-	@Override
 	public final Name getName() {
 		return null;
 	}

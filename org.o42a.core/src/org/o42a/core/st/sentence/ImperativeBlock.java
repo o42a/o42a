@@ -130,14 +130,6 @@ public final class ImperativeBlock extends Block {
 	}
 
 	@Override
-	public boolean isFlow() {
-
-		final Statements enclosing = getEnclosing();
-
-		return enclosing != null && enclosing.getSentence().getBlock().isFlow();
-	}
-
-	@Override
 	public final Name getName() {
 		return this.name;
 	}

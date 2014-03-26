@@ -21,8 +21,6 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.*;
-import static org.o42a.core.st.sentence.FlowBlock.flowBlock;
-import static org.o42a.core.st.sentence.SentenceFactory.IMPERATIVE_FACTORY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,11 +126,6 @@ public final class Statements extends Contained {
 			dropStatement();
 			return;
 		}
-		if (getSentence().getBlock().isFlow()) {
-			prohibitedFlowReturn(location);
-			dropStatement();
-			return;
-		}
 
 		final Ref ref = value.buildRef(nextDistributor());
 
@@ -150,11 +143,6 @@ public final class Statements extends Contained {
 		assert checkSameContext(location);
 		assert checkSameContext(value);
 
-		if (getSentence().getBlock().isFlow()) {
-			prohibitedYield(location);
-			dropStatement();
-			return;
-		}
 		if (isInterrogation()) {
 			prohibitedInterrogativeYield(location);
 			dropStatement();
@@ -172,53 +160,6 @@ public final class Statements extends Contained {
 
 		locals().setFlowStatus();
 		statement(new YieldStatement(location, ref.toValue(location, this)));
-	}
-
-	public final FlowBlock flow(LocationInfo location, Name flowName) {
-		return flow(location, flowName, null);
-	}
-
-	public FlowBlock flow(
-			LocationInfo location,
-			Name flowName,
-			Name blockName) {
-		assert checkSameContext(location);
-		if (isInterrogation()) {
-			prohibitedInterrogativeBraces(location);
-			dropStatement();
-			return null;
-		}
-		if (getSentence().getBlock().isFlow()) {
-			prohibitedNestedFlow(location);
-			dropStatement();
-			return null;
-		}
-		if (localsAvailable()) {
-			prohibitedFlow(location);
-			dropStatement();
-			return null;
-		}
-
-		final NamedBlocks namedBlocks =
-				getSentence().getBlock().getNamedBlocks();
-
-		if (!namedBlocks.declareBlock(location, blockName)) {
-			dropStatement();
-			return null;
-		}
-
-		final FlowBlock flow = flowBlock(
-				location,
-				nextDistributor(),
-				this,
-				flowName,
-				blockName,
-				IMPERATIVE_FACTORY,
-				null);
-
-		statement(flow);
-
-		return flow;
 	}
 
 	public FieldBuilder field(

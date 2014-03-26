@@ -55,20 +55,6 @@ public final class SentenceErrors {
 				"Flow can not be declared here");
 	}
 
-	public static void prohibitedNestedFlow(LocationInfo location) {
-		location.getLocation().getLogger().error(
-				"prohibited_nested_flow",
-				location,
-				"Flow can not be declared inside another flow");
-	}
-
-	public static void prohibitedFlowReturn(LocationInfo location) {
-		location.getLocation().getLogger().error(
-				"prohibited_flow_return",
-				location,
-				"Can not return from the flow");
-	}
-
 	public static void prohibitedInterrogativeAssignment(
 			LocationInfo location) {
 		location.getLocation().getLogger().error(
@@ -82,13 +68,6 @@ public final class SentenceErrors {
 				"prohibited_interrogative_return",
 				location,
 				"Can not return from interrogative sentence");
-	}
-
-	public static void prohibitedYield(LocationInfo location) {
-		location.getLocation().getLogger().error(
-				"prohibited_yield",
-				location,
-				"Yielding is only possible in flows");
 	}
 
 	public static void prohibitedInterrogativeYield(LocationInfo location) {
