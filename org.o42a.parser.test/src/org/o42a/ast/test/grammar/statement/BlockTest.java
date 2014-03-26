@@ -16,7 +16,8 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.statement.*;
+import org.o42a.ast.statement.AssignmentNode;
+import org.o42a.ast.statement.NamedBlockNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -127,38 +128,6 @@ public class BlockTest extends GrammarTestCase {
 		assertThat(
 				result.getSeparator().getType(),
 				is(NamedBlockNode.Separator.COLON));
-		assertThat(result.getBlock().getContent().length, is(0));
-	}
-
-	@Test
-	public void flow() {
-
-		final FlowNode result = to(
-				FlowNode.class,
-				parse(IMPERATIVE.statement(), "foo >> {bar}"));
-
-		assertThat(canonicalName(result.getName()), is("foo"));
-		assertThat(
-				result.getOperator().getType(),
-				is(FlowOperator.FLOW));
-		assertThat(
-				singleStatement(
-						MemberRefNode.class,
-						result.getBlock()),
-				isName("bar"));
-	}
-
-	@Test
-	public void emptyFlow() {
-
-		final FlowNode result = to(
-				FlowNode.class,
-				parse(IMPERATIVE.statement(), "foo >> {}"));
-
-		assertThat(canonicalName(result.getName()), is("foo"));
-		assertThat(
-				result.getOperator().getType(),
-				is(FlowOperator.FLOW));
 		assertThat(result.getBlock().getContent().length, is(0));
 	}
 
