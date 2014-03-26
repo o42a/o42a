@@ -73,10 +73,6 @@ public final class Root__SRC implements AnnotatedSources {
 					owner,
 					new org.o42a.root.Root__floats(this))
 			.getScope().toField(),
-			new org.o42a.root.flow.FlowValueTypeObject(
-					owner,
-					new org.o42a.root.flow.FlowValueTypeObject__SRC(this))
-			.getScope().toField(),
 			new org.o42a.root.numeric.IntegerValueTypeObject(
 					owner,
 					new org.o42a.root.numeric.IntegerValueTypeObject__SRC(this))
