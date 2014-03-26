@@ -264,7 +264,7 @@ public class StatementParser implements Parser<StatementNode> {
 			return expression;
 		}
 
-		final StatementNode block = parseNamedBlockOrFlow(context, declarable);
+		final StatementNode block = parseNamedBlock(context, declarable);
 
 		if (block != null) {
 			return block;
@@ -285,7 +285,7 @@ public class StatementParser implements Parser<StatementNode> {
 		return expression;
 	}
 
-	private StatementNode parseNamedBlockOrFlow(
+	private StatementNode parseNamedBlock(
 			ParserContext context,
 			DeclarableNode declarable) {
 
@@ -294,28 +294,15 @@ public class StatementParser implements Parser<StatementNode> {
 		if (name == null) {
 			return null;
 		}
-
-		switch (context.pendingOrNext()) {
-		case ':':
-
-			final NamedBlockNode namedBlock = context.parse(namedBlock(name));
-
-			if (namedBlock != null) {
-				name.addComments(declarable.getComments());
-				return namedBlock;
-			}
-
+		if (context.pendingOrNext() != ':') {
 			return null;
-		case '>':
+		}
 
-			final FlowNode flow = context.parse(flow(name));
+		final NamedBlockNode namedBlock = context.parse(namedBlock(name));
 
-			if (flow != null) {
-				flow.addComments(declarable.getComments());
-				return flow;
-			}
-
-			return null;
+		if (namedBlock != null) {
+			name.addComments(declarable.getComments());
+			return namedBlock;
 		}
 
 		return null;

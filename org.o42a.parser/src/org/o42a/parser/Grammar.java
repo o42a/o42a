@@ -142,10 +142,6 @@ public class Grammar {
 		return new NamedBlockParser(name);
 	}
 
-	public static Parser<FlowNode> flow(NameNode name) {
-		return new FlowParser(name);
-	}
-
 	public static Parser<TextNode> text() {
 		return TextParser.TEXT;
 	}
