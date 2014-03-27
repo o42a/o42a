@@ -94,6 +94,10 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 		return struct(null, code, getType().value());
 	}
 
+	public final AnyRecOp resumeFrom(Code code) {
+		return ptr(null, code, getType().resumeFrom());
+	}
+
 	public final StructRecOp<ObjectIRDescOp> desc(Code code) {
 		return ptr(null, code, getType().desc());
 	}

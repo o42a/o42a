@@ -38,7 +38,6 @@ import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.impl.flow.YieldStatement;
 import org.o42a.core.st.impl.imperative.LoopStatement;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
 import org.o42a.core.st.impl.local.Locals;
@@ -158,8 +157,8 @@ public final class Statements extends Contained {
 
 		assert checkSameContext(ref);
 
-		locals().setFlowStatus();
-		statement(new YieldStatement(location, ref.toValue(location, this)));
+		locals().convertToFields();
+		statement(ref.toYield(location, this));
 	}
 
 	public FieldBuilder field(

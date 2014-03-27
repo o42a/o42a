@@ -44,7 +44,8 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.impl.RefCommand;
+import org.o42a.core.ref.impl.ReturnCommand;
+import org.o42a.core.ref.impl.YieldStatement;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -148,11 +149,11 @@ public class Ref extends Statement implements RefBuilder {
 
 	@Override
 	public final Command command(CommandEnv env) {
-		return new RefCommand(this, env);
+		return new ReturnCommand(this, env);
 	}
 
 	public final Definitions toDefinitions(CommandEnv env) {
-		return new RefCommand(this, env).createDefinitions();
+		return new ReturnCommand(this, env).createDefinitions();
 	}
 
 	public final Resolution resolve(Resolver resolver) {
@@ -434,6 +435,17 @@ public class Ref extends Statement implements RefBuilder {
 		final RefPath path = getPath();
 
 		return path.toValue(location, this, statements);
+	}
+
+	public final Statement toYield(
+			LocationInfo location,
+			Statements statements) {
+
+		final RefPath path = getPath();
+
+		return new YieldStatement(
+				location,
+				path.toValue(location, this, statements));
 	}
 
 	public final Ref toStateful() {

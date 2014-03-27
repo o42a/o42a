@@ -19,7 +19,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 15,
+	.field_num = 16,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -72,6 +72,11 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.offset = offsetof(o42a_obj_data_t, value),
 			.name = "value",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
+		},
+		{
+			.data_type = O42A_TYPE_PTR,
+			.offset = offsetof(o42a_obj_data_t, resume_from),
+			.name = "resume_from",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -933,6 +938,7 @@ static o42a_obj_data_t *propagate_object(
 	} else {
 		data->value.flags = O42A_VAL_INDEFINITE;
 	}
+	data->resume_from = NULL;
 	data->desc = adata->desc;
 	if (adata->value_type != &o42a_val_type_void) {
 		data->value_type = adata->value_type;
@@ -1233,6 +1239,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	} else {
 		data->value.flags = O42A_VAL_INDEFINITE;
 	}
+	data->resume_from = NULL;
 	data->desc = sdesc;
 	if (sdata->value_type != &o42a_val_type_void) {
 		data->value_type = sdata->value_type;

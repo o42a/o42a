@@ -37,7 +37,13 @@ import org.o42a.util.string.Name;
 public abstract class Control {
 
 	public static Control mainControl(DefDirs dirs) {
-		return new MainControl(dirs, dirs.addBlock("continuation"));
+
+		final MainControl mainControl =
+				new MainControl(dirs, dirs.addBlock("continuation"));
+
+		mainControl.init();
+
+		return mainControl;
 	}
 
 	Control() {
@@ -148,6 +154,10 @@ public abstract class Control {
 	}
 
 	public abstract void end();
+
+	public final void resumeFrom(Block resumeFrom) {
+		main().addResumePosition(resumeFrom);
+	}
 
 	@Override
 	public String toString() {

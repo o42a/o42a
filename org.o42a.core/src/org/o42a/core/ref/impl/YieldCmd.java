@@ -17,54 +17,49 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.flow;
+package org.o42a.core.ref.impl;
 
-import org.o42a.core.ref.Ref;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.Control;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
 
 
-public class YieldStatement extends Statement {
+final class YieldCmd implements Cmd {
 
-	private final Ref value;
+	private final Eval eval;
 
-	public YieldStatement(LocationInfo location, Ref value) {
-		super(location, value.distribute());
-		this.value = value;
-	}
-
-	public final Ref getValue() {
-		return this.value;
+	YieldCmd(Eval eval) {
+		this.eval = eval;
 	}
 
 	@Override
-	public boolean isValid() {
-		return this.value.isValid();
-	}
+	public void write(Control control) {
 
-	@Override
-	public Command command(CommandEnv env) {
-		return new YieldCommand(this, env);
-	}
+		final DefDirs dirs = control.defDirs();
 
-	@Override
-	public Statement reproduce(Reproducer reproducer) {
+		this.eval.write(dirs, control.host());
 
-		final Ref value = this.value.reproduce(reproducer);
+		final Block code = dirs.done().code();
+		final Block afterYield = code.addBlock("after_yield");
 
-		if (value == null) {
-			return null;
-		}
+		control.resumeFrom(afterYield);
+		control.host()
+		.objectData(code)
+		.ptr()
+		.resumeFrom(code)
+		.store(code, afterYield.ptr().toAny().op(afterYield.getId(), code));
 
-		return new YieldStatement(this, value);
+		afterYield.go(code.tail());
 	}
 
 	@Override
 	public String toString() {
-		if (this.value == null) {
+		if (this.eval == null) {
 			return super.toString();
 		}
-		return "<<" + this.value;
+		return "<<" + this.eval;
 	}
 
 }

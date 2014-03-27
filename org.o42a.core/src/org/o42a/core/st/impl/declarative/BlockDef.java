@@ -70,9 +70,7 @@ final class BlockDef extends Def {
 		this.sentences = new DefSentences(this, targets, sentences);
 	}
 
-	private BlockDef(
-			BlockDef prototype,
-			ScopeUpgrade scopeUpgrade) {
+	private BlockDef(BlockDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.block = prototype.block;
 		this.env = prototype.env;
@@ -99,7 +97,7 @@ final class BlockDef extends Def {
 		}
 
 		final DefTarget defTarget =
-				this.sentences.declarativeTarget(getScope());
+				this.sentences.target(getScope());
 
 		this.defTarget = Holder.holder(defTarget);
 
