@@ -77,7 +77,7 @@ public abstract class Block extends DebugBlockBase {
 		writer().go(unwrapPos(pos));
 	}
 
-	public final void go(CodeOp pos, CodePos... targets) {
+	public final void go(CodeOp pos, CodePos[] targets) {
 		assert assertIncomplete();
 
 		final CodePos[] unwrapped = new CodePos[targets.length];

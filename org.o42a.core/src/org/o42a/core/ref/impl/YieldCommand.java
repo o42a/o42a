@@ -17,31 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.flow;
+package org.o42a.core.ref.impl;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
-import org.o42a.core.st.*;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.Condition;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.link.TargetResolver;
 
 
-final class YieldCommand extends Command {
+final class YieldCommand extends RefCommand {
 
-	private final Ref value;
-
-	public YieldCommand(YieldStatement statement, CommandEnv env) {
-		super(statement, env);
-		this.value = statement.getValue();
+	public YieldCommand(Ref ref, CommandEnv env) {
+		super(ref, env);
 	}
 
 	@Override
@@ -50,27 +46,13 @@ final class YieldCommand extends Command {
 	}
 
 	@Override
-	public TypeParameters<?> typeParameters(Scope scope) {
-		return null;
-	}
-
-	@Override
 	public Action action(Resolver resolver) {
 		return new ExecuteCommand(getStatement(), Condition.RUNTIME);
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return null;
-	}
-
-	@Override
 	public DefTarget toTarget(Scope origin) {
 		return NO_DEF_TARGET;
-	}
-
-	@Override
-	public void resolveTargets(TargetResolver resolver, Scope origin) {
 	}
 
 	@Override
@@ -84,14 +66,20 @@ final class YieldCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd(Scope origin) {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+
+		final Ref ref = getRef();
+
+		if (ref == null) {
+			return super.toString();
+		}
+
+		return "<<" + ref;
 	}
 
 	@Override
-	protected void fullyResolve(FullResolver resolver) {
-		this.value.resolveAll(resolver.setRefUsage(TARGET_REF_USAGE));
+	protected Cmd refCmd(Eval value) {
+		return new YieldCmd(value);
 	}
 
 }

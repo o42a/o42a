@@ -29,6 +29,6 @@ public interface LocalFactory {
 
 	Local createLocal(LocationInfo location, Name name, Ref ref);
 
-	void setFlowStatus(Local local);
+	void convertToField(Local local);
 
 }

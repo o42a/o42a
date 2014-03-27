@@ -271,6 +271,19 @@ struct o42a_obj_data {
 	o42a_val_t value;
 
 	/**
+	 * Value evaluation resume pointer.
+	 *
+	 * It is a position inside the object's value definition function (defs_f).
+
+	 * This value is updated by the yield statement. The next time the value is
+	 * requested, the evaluation starts from this position.
+	 *
+	 * Always NULL for newly constructed objects. In this case the value
+	 * evaluation starts from the beginning.
+	 */
+	void *resume_from;
+
+	/**
 	 * Pointer to object type descriptor.
 	 */
 	const o42a_obj_desc_t *desc;
@@ -466,7 +479,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[15];
+	o42a_dbg_field_info_t fields[16];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;

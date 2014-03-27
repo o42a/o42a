@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
@@ -175,7 +176,7 @@ public abstract class Def implements SourceInfo {
 	}
 
 	public DefTarget target() {
-		return DefTarget.NO_DEF_TARGET;
+		return NO_DEF_TARGET;
 	}
 
 	public final Def toVoid() {

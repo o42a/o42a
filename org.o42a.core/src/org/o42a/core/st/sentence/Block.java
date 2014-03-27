@@ -42,8 +42,8 @@ public abstract class Block extends Statement {
 			return new Local(location, name, ref);
 		}
 		@Override
-		public void setFlowStatus(Local local) {
-			local.setFlowStatus();
+		public void convertToField(Local local) {
+			local.convertToField();
 		}
 	};
 

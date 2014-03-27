@@ -104,7 +104,7 @@ public final class Locals {
 		return new Locals(this, statements, local);
 	}
 
-	public void setFlowStatus() {
+	public void convertToFields() {
 
 		Locals locals = this;
 
@@ -113,7 +113,7 @@ public final class Locals {
 			final Local local = locals.getLocal();
 
 			if (local != null) {
-				this.factory.setFlowStatus(local);
+				this.factory.convertToField(local);
 			}
 
 			locals = locals.enclosing;

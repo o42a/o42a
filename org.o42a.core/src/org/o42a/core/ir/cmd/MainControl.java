@@ -22,9 +22,11 @@ package org.o42a.core.ir.cmd;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
 
 
@@ -38,6 +40,9 @@ final class MainControl extends Control {
 	private ValOp finalResult;
 	private Code singleResultInset;
 	private byte results;
+	private CodePos[] resumePositions;
+	private Block resume;
+	private CodePos start;
 
 	MainControl(DefDirs dirs, Block continuation) {
 		this.dirs = dirs;
@@ -76,12 +81,30 @@ final class MainControl extends Control {
 
 	@Override
 	public void end() {
+		resume();
 		if (this.continuation.exists()) {
 			this.continuation.go(code().tail());
 		}
 		if (this.returnCode != null) {
 			this.dirs.returnValue(this.returnCode, finalResult());
 		}
+	}
+
+	private void resume() {
+		if (this.resumePositions == null) {
+			this.resume.go(this.start);
+			return;
+		}
+
+		final AnyOp resumeFrom =
+				host()
+				.objectData(this.resume)
+				.ptr()
+				.resumeFrom(this.resume)
+				.load(null, this.resume);
+
+		resumeFrom.isNull(null, this.resume).go(this.resume, this.start);
+		this.resume.go(resumeFrom.toCode(null, this.resume), this.resumePositions);
 	}
 
 	final CodeBuilder builder() {
@@ -110,6 +133,12 @@ final class MainControl extends Control {
 		return this.returnCode.head();
 	}
 
+	void init() {
+		this.resume = code().addBlock("resume");
+		code().go(this.resume.head());
+		this.start = code().tail();
+	}
+
 	final ID anonymousName() {
 		return ID.id(Integer.toString(++this.seq));
 	}
@@ -132,6 +161,14 @@ final class MainControl extends Control {
 			this.finalResult = result();
 		}
 		result().store(code, value);
+	}
+
+	void addResumePosition(Block resumeFrom) {
+		if (this.resumePositions == null) {
+			this.resumePositions = new CodePos[] {resumeFrom.head()};
+		}
+		this.resumePositions =
+				ArrayUtil.append(this.resumePositions, resumeFrom.head());
 	}
 
 	private boolean valueAccessibleBy(Code code) {
