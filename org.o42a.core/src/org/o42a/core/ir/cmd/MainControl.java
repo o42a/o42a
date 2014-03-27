@@ -166,9 +166,10 @@ final class MainControl extends Control {
 	void addResumePosition(Block resumeFrom) {
 		if (this.resumePositions == null) {
 			this.resumePositions = new CodePos[] {resumeFrom.head()};
+		} else {
+			this.resumePositions =
+					ArrayUtil.append(this.resumePositions, resumeFrom.head());
 		}
-		this.resumePositions =
-				ArrayUtil.append(this.resumePositions, resumeFrom.head());
 	}
 
 	private boolean valueAccessibleBy(Code code) {
