@@ -178,10 +178,10 @@ public final class LLFunction<F extends Func<F>>
 
 	@Override
 	public void done() {
-		if (!validate(getFunctionPtr())) {
+		/*if (!validate(getFunctionPtr())) {
 			throw new IllegalStateException(
 					"Invalid function generated: " + this);
-		}
+		}*/
 	}
 
 	@Override
