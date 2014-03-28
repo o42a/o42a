@@ -7,12 +7,13 @@ package org.o42a.compiler.test.inheritance;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.ValueType;
 
 
 public class FieldInheritanceTest extends CompilerTestCase {
@@ -33,12 +34,12 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		final Field cFoo = field(this.c, "foo");
 
 		assertThat(bFoo.getKey(), is(aFoo.getKey()));
-		assertTrue(bFoo.isPropagated());
-		assertEquals(123L, definiteValue(bFoo));
+		assertThat(bFoo.isPropagated(), is(true));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(123L));
 
 		assertThat(cFoo.getKey(), is(aFoo.getKey()));
-		assertTrue(cFoo.isPropagated());
-		assertEquals(123L, definiteValue(cFoo));
+		assertThat(cFoo.isPropagated(), is(true));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(123L));
 	}
 
 	@Test
@@ -53,12 +54,12 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		final Field cFoo = field(this.c, "foo");
 
 		assertThat(bFoo.getKey(), is(aFoo.getKey()));
-		assertFalse(bFoo.isPropagated());
-		assertEquals(12L, definiteValue(bFoo));
+		assertThat(bFoo.isPropagated(), is(false));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(12L));
 
 		assertThat(cFoo.getKey(), is(aFoo.getKey()));
-		assertTrue(cFoo.isPropagated());
-		assertEquals(12L, definiteValue(cFoo));
+		assertThat(cFoo.isPropagated(), is(true));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(12L));
 	}
 
 	@Test
@@ -73,12 +74,12 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		final Field cFoo = field(this.c, "foo");
 
 		assertThat(bFoo.getKey(), is(aFoo.getKey()));
-		assertFalse(bFoo.isPropagated());
-		assertEquals(12L, definiteValue(bFoo));
+		assertThat(bFoo.isPropagated(), is(false));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(12L));
 
 		assertThat(cFoo.getKey(), is(aFoo.getKey()));
-		assertTrue(cFoo.isPropagated());
-		assertEquals(12L, definiteValue(cFoo));
+		assertThat(cFoo.isPropagated(), is(true));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(12L));
 	}
 
 	@Test
@@ -92,12 +93,12 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		final Field bFoo = field(this.b, "foo");
 		final Field cFoo = field(this.c, "foo");
 
-		assertEquals(12L, definiteValue(bFoo));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(12L));
 		assertThat(
 				bFoo.getKey(),
 				not(equalTo(this.b.member(aFoo.getKey()).getMemberKey())));
 
-		assertEquals(12L, definiteValue(cFoo));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(12L));
 		assertThat(
 				cFoo.getKey(),
 				not(equalTo(this.c.member(aFoo.getKey()).getMemberKey())));
@@ -117,33 +118,33 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		final Field bFoo = field(this.b, "foo");
 		final Field cFoo = field(this.c, "foo");
 
-		assertEquals(321L, definiteValue(zFoo));
+		assertThat(definiteValue(zFoo, ValueType.INTEGER), is(321L));
 
-		assertEquals(321L, definiteValue(bFoo));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(321L));
 		assertThat(
 				bFoo.getKey(),
 				not(equalTo(this.b.member(aFoo.getKey()).getMemberKey())));
 		assertThat(bFoo.getKey(), is(zFoo.getKey()));
-		assertTrue(bFoo.isPropagated());
+		assertThat(bFoo.isPropagated(), is(true));
 
-		assertEquals(321L, definiteValue(cFoo));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(321L));
 		assertThat(
 				cFoo.getKey(),
 				not(equalTo(this.b.member(aFoo.getKey()).getMemberKey())));
 		assertThat(cFoo.getKey(), is(zFoo.getKey()));
-		assertTrue(cFoo.isPropagated());
+		assertThat(cFoo.isPropagated(), is(true));
 
 		final Field baFoo =
 				this.b.member(aFoo.getKey()).toField().field(USE_CASE);
 
-		assertEquals(12L, definiteValue(baFoo));
-		assertFalse(baFoo.isPropagated());
+		assertThat(definiteValue(baFoo, ValueType.INTEGER), is(12L));
+		assertThat(baFoo.isPropagated(), is(false));
 
 		final Field caFoo =
 				this.c.member(aFoo.getKey()).toField().field(USE_CASE);
 
-		assertEquals(12L, definiteValue(caFoo));
-		assertTrue(caFoo.isPropagated());
+		assertThat(definiteValue(caFoo, ValueType.INTEGER), is(12L));
+		assertThat(caFoo.isPropagated(), is(true));
 	}
 
 	@Override

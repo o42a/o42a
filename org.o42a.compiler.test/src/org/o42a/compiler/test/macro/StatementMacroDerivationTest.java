@@ -40,8 +40,8 @@ public class StatementMacroDerivationTest extends CompilerTestCase {
 				"  T = false",
 				")");
 
-		assertTrueVoid(field("a"));
-		assertFalseVoid(field("b"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -66,8 +66,8 @@ public class StatementMacroDerivationTest extends CompilerTestCase {
 				")",
 				"B := a");
 
-		assertTrueVoid(field("a"));
-		assertTrueVoid(field("b"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(definiteValue(field("b"), ValueType.VOID), voidValue());
 	}
 
 }

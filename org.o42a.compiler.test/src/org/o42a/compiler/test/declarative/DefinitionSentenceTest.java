@@ -21,7 +21,7 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 				"False");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
-		assertFalseVoid(this.module);
+		assertThat(valueOf(this.module, ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 				"B := 34");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
-		assertFalseVoid(this.module);
+		assertThat(valueOf(this.module, ValueType.VOID), falseValue());
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(34L));
 	}
 

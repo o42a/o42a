@@ -43,7 +43,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 				"#A := 5",
 				"B := void (#A)");
 
-		assertTrueVoid(field("b"));
+		assertThat(definiteValue(field("b"), ValueType.VOID), voidValue());
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 				"#A := false",
 				"B := void (#A)");
 
-		assertFalseVoid(field("b"));
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 				"#T := 1",
 				"A := 0 > #t");
 
-		assertFalseVoid(field("a"));
+		assertThat(valueOf(field("a"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 				"#T := 3",
 				"A := 3 == #t");
 
-		assertTrueVoid(field("a"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
 	}
 
 	@Test

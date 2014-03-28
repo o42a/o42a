@@ -4,8 +4,11 @@
 */
 package org.o42a.compiler.test.declarative;
 
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
 public class ConditionTest extends CompilerTestCase {
@@ -20,9 +23,11 @@ public class ConditionTest extends CompilerTestCase {
 				"B := a (Condition = false)",
 				"C := b");
 
-		assertTrueVoid(field("a", "value"));
-		assertFalseVoid(field("b", "value"));
-		assertFalseVoid(field("c", "value"));
+		assertThat(
+				definiteValue(field("a", "value"), ValueType.VOID),
+				voidValue());
+		assertThat(valueOf(field("b", "value"), ValueType.VOID), falseValue());
+		assertThat(valueOf(field("c", "value"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -35,9 +40,11 @@ public class ConditionTest extends CompilerTestCase {
 				"B := a (Condition = void)",
 				"C := b");
 
-		assertTrueVoid(field("a", "value"));
-		assertFalseVoid(field("b", "value"));
-		assertFalseVoid(field("c", "value"));
+		assertThat(
+				definiteValue(field("a", "value"), ValueType.VOID),
+				voidValue());
+		assertThat(valueOf(field("b", "value"), ValueType.VOID), falseValue());
+		assertThat(valueOf(field("c", "value"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -50,9 +57,11 @@ public class ConditionTest extends CompilerTestCase {
 				"B := a (Condition = 0)",
 				"C := b");
 
-		assertTrueVoid(field("a"));
-		assertFalseVoid(field("b"));
-		assertFalseVoid(field("c"));
+		assertThat(
+				definiteValue(field("a"), ValueType.VOID),
+				voidValue());
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
+		assertThat(valueOf(field("c"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -65,9 +74,13 @@ public class ConditionTest extends CompilerTestCase {
 				"B := a (Condition = 0)",
 				"C := b");
 
-		assertFalseVoid(field("a"));
-		assertTrueVoid(field("b"));
-		assertTrueVoid(field("c"));
+		assertThat(valueOf(field("a"), ValueType.VOID), falseValue());
+		assertThat(
+				definiteValue(field("b"), ValueType.VOID),
+				voidValue());
+		assertThat(
+				definiteValue(field("c"), ValueType.VOID),
+				voidValue());
 	}
 
 }

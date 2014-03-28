@@ -4,8 +4,8 @@
 */
 package org.o42a.compiler.test.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.User.useCase;
@@ -103,7 +103,7 @@ public class UseTest {
 	public void selfNotUsed() {
 		this.usable.useBy(this.usable, SIMPLE_USAGE);
 
-		assertFalse(this.usable.isUsed(this.useCase, SIMPLE_USAGE));
+		assertThat(this.usable.isUsed(this.useCase, SIMPLE_USAGE), is(false));
 	}
 
 	@Test
@@ -181,15 +181,17 @@ public class UseTest {
 	}
 
 	public void assertUsed(Uses<SimpleUsage> use) {
-		assertTrue(
+		assertThat(
 				use + " is not used by " + this.useCase,
-				use.selectUse(this.useCase, ALL_SIMPLE_USAGES).isUsed());
+				use.selectUse(this.useCase, ALL_SIMPLE_USAGES).isUsed(),
+				is(true));
 	}
 
 	public void assertUnused(Uses<SimpleUsage> use) {
-		assertFalse(
+		assertThat(
 				use + " is used by " + this.useCase,
-				use.selectUse(this.useCase, ALL_SIMPLE_USAGES).isUsed());
+				use.selectUse(this.useCase, ALL_SIMPLE_USAGES).isUsed(),
+				is(false));
 	}
 
 	private final class TestUsable extends Usable<SimpleUsage> {

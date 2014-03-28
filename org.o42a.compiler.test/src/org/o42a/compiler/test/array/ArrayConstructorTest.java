@@ -5,9 +5,7 @@
 package org.o42a.compiler.test.array;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -32,7 +30,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
-		assertFalse(arrayType.isVariable());
+		assertThat(arrayType.isVariable(), is(false));
 		assertThat(
 				itemTypeRef.getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -63,7 +61,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
-		assertFalse(arrayType.isVariable());
+		assertThat(arrayType.isVariable(), is(false));
 		assertThat(
 				itemTypeRef.getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -94,7 +92,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
-		assertTrue(arrayType.isVariable());
+		assertThat(arrayType.isVariable(), is(true));
 		assertThat(
 				itemTypeRef.getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -103,9 +101,9 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(a.getScope());
 
 		assertThat(items.length, is(3));
-		assertTrue(items[0].isVariable());
-		assertTrue(items[1].isVariable());
-		assertTrue(items[2].isVariable());
+		assertThat(items[0].isVariable(), is(true));
+		assertThat(items[1].isVariable(), is(true));
+		assertThat(items[2].isVariable(), is(true));
 	}
 
 	@Test
@@ -119,7 +117,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(a.type().getParameters()));
 
-		assertTrue(arrayType.isVariable());
+		assertThat(arrayType.isVariable(), is(true));
 		assertThat(
 				itemTypeRef.getType(),
 				is(a.getContext().getIntrinsics().getVoid()));
@@ -128,9 +126,9 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(a.getScope());
 
 		assertThat(items.length, is(3));
-		assertTrue(items[0].isVariable());
-		assertTrue(items[1].isVariable());
-		assertTrue(items[2].isVariable());
+		assertThat(items[0].isVariable(), is(true));
+		assertThat(items[1].isVariable(), is(true));
+		assertThat(items[2].isVariable(), is(true));
 	}
 
 }

@@ -5,9 +5,7 @@
 package org.o42a.compiler.test.array;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.o42a.core.value.array.ArrayValueType.ARRAY;
 import static org.o42a.core.value.array.ArrayValueType.ROW;
 import static org.o42a.core.value.link.LinkValueType.LINK;
@@ -33,7 +31,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 						LINK.interfaceRef(a.type().getParameters())
 						.getParameters());
 
-		assertFalse(arrayParameters.getValueType().isVariable());
+		assertThat(arrayParameters.getValueType().isVariable(), is(false));
 		assertThat(
 				ROW.itemTypeRef(arrayParameters).getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -63,7 +61,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 						LINK.interfaceRef(a.type().getParameters())
 						.getParameters());
 
-		assertFalse(arrayParameters.getValueType().isVariable());
+		assertThat(arrayParameters.getValueType().isVariable(), is(false));
 		assertThat(
 				ROW.itemTypeRef(arrayParameters).getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -93,7 +91,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 						LINK.interfaceRef(a.type().getParameters())
 						.getParameters());
 
-		assertTrue(arrayParameters.getValueType().isVariable());
+		assertThat(arrayParameters.getValueType().isVariable(), is(true));
 		assertThat(
 				ARRAY.itemTypeRef(arrayParameters).getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -102,9 +100,9 @@ public class ArrayLinkTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(array.getScope());
 
 		assertThat(items.length, is(3));
-		assertTrue(items[0].isVariable());
-		assertTrue(items[1].isVariable());
-		assertTrue(items[2].isVariable());
+		assertThat(items[0].isVariable(), is(true));
+		assertThat(items[1].isVariable(), is(true));
+		assertThat(items[2].isVariable(), is(true));
 	}
 
 	@Test
@@ -117,7 +115,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 						LINK.interfaceRef(a.type().getParameters())
 						.getParameters());
 
-		assertTrue(arrayParameters.getValueType().isVariable());
+		assertThat(arrayParameters.getValueType().isVariable(), is(true));
 		assertThat(
 				ARRAY.itemTypeRef(arrayParameters).getType(),
 				is(a.getContext().getIntrinsics().getVoid()));
@@ -126,9 +124,9 @@ public class ArrayLinkTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(array.getScope());
 
 		assertThat(items.length, is(3));
-		assertTrue(items[0].isVariable());
-		assertTrue(items[1].isVariable());
-		assertTrue(items[2].isVariable());
+		assertThat(items[0].isVariable(), is(true));
+		assertThat(items[1].isVariable(), is(true));
+		assertThat(items[2].isVariable(), is(true));
 	}
 
 }

@@ -22,7 +22,7 @@ public class LocalScopeTest extends CompilerTestCase {
 				"  local",
 				")");
 
-		assertFalseVoid(field("a"));
+		assertThat(valueOf(field("a"), ValueType.VOID), falseValue());
 	}
 
 	@Test

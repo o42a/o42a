@@ -5,9 +5,8 @@
 package org.o42a.compiler.test.link;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.junit.Test;
@@ -30,7 +29,7 @@ public class LinkTest extends CompilerTestCase {
 		final Obj bTarget = linkTarget(b);
 
 		assertThat(definiteValue(bTarget, ValueType.INTEGER), is(1L));
-		assertSame(a, bTarget.getWrapped());
+		assertThat(bTarget.getWrapped(), sameInstance(a));
 	}
 
 	@Test
@@ -44,7 +43,7 @@ public class LinkTest extends CompilerTestCase {
 		final Obj bTarget = linkTarget(b);
 
 		assertThat(definiteValue(bTarget, ValueType.INTEGER), is(1L));
-		assertSame(a, bTarget.getWrapped());
+		assertThat(bTarget.getWrapped(), sameInstance(a));
 	}
 
 	@Test
@@ -60,13 +59,13 @@ public class LinkTest extends CompilerTestCase {
 		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 
-		assertSame(aFoo, aBarTarget.getWrapped());
+		assertThat(aBarTarget.getWrapped(), sameInstance(aFoo));
 
 		final Obj bFoo = field(b, "foo").toObject();
 		final Field bBar = field(b, "bar");
 		final Obj bBarTarget = linkTarget(bBar);
 
-		assertSame(bFoo, bBarTarget.getWrapped());
+		assertThat(bBarTarget.getWrapped(), sameInstance(bFoo));
 	}
 
 	@Test
@@ -82,12 +81,12 @@ public class LinkTest extends CompilerTestCase {
 		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 
-		assertSame(aFoo, aBarTarget.getWrapped());
+		assertThat(aBarTarget.getWrapped(), sameInstance(aFoo));
 
 		final Field bBar = field(b, "bar");
 		final Obj bBarTarget = linkTarget(bBar);
 
-		assertSame(aFoo, bBarTarget.getWrapped());
+		assertThat(bBarTarget.getWrapped(), sameInstance(aFoo));
 	}
 
 	@Test
@@ -104,7 +103,7 @@ public class LinkTest extends CompilerTestCase {
 
 		final Obj bTarget = linkTarget(field("b"));
 
-		assertTrue(bTarget.type().getValueType().isLink());
+		assertThat(bTarget.type().getValueType().isLink(), is(true));
 		assertThat(
 				LINK.interfaceRef(bTarget.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getInteger()));
@@ -114,7 +113,7 @@ public class LinkTest extends CompilerTestCase {
 
 		final Obj c = field("c").toObject();
 
-		assertTrue(c.type().getValueType().isLink());
+		assertThat(c.type().getValueType().isLink(), is(true));
 		assertThat(
 				LINK.interfaceRef(c.type().getParameters()).getType(),
 				is(this.context.getIntrinsics().getInteger()));

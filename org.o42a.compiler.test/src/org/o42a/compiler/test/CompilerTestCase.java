@@ -4,20 +4,30 @@
 */
 package org.o42a.compiler.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.theInstance;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.o42a.analysis.use.User.useCase;
 import static org.o42a.compiler.Compiler.compiler;
+import static org.o42a.compiler.test.matchers.FalseValueMatcher.FALSE_VALUE_MATCHER;
+import static org.o42a.compiler.test.matchers.RuntimeValueMatcher.RUNTIME_VALUE_MATCHER;
+import static org.o42a.compiler.test.matchers.TrueValueMatcher.TRUE_VALUE_MATCHER;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.UseCase;
 import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
+import org.o42a.compiler.test.matchers.ValueOfTypeMatcher;
+import org.o42a.compiler.test.matchers.ValueTypeMatcher;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.Member;
@@ -26,15 +36,18 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
-import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.core.value.Void;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.string.Name;
 
 
 public abstract class CompilerTestCase {
+
+	private static final Matcher<Void> VOID_VALUE_MATCHER =
+			theInstance(Void.VOID);
 
 	public static final UseCase USE_CASE = useCase("test");
 	protected Analyzer analyzer = new Analyzer("test");
@@ -50,23 +63,18 @@ public abstract class CompilerTestCase {
 		return valueOf(field.toObject());
 	}
 
-	public static <T> Value<T> valueOf(
-			Field field,
-			ValueType<T> valueStruct) {
-		return valueOf(field.toObject(), valueStruct);
+	public static <T> Value<T> valueOf(Field field, ValueType<T> valueType) {
+		return valueOf(field.toObject(), valueType);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static <T> Value<T> valueOf(
-			Obj object,
-			ValueType<T> valueType) {
+	public static <T> Value<T> valueOf(Obj object, ValueType<T> valueType) {
 
 		final Value<?> value = valueOf(object);
 
 		assertThat(
 				value + " has wrong type",
 				value.getValueType(),
-				is((ValueType) valueType));
+				valueType(valueType));
 
 		return valueType.cast(value);
 	}
@@ -76,16 +84,21 @@ public abstract class CompilerTestCase {
 
 		final Value<?> value = valueOf(object);
 
-		assertTrue(
+		assertThat(
 				"Value is not definite: " + value,
-				value.getKnowledge().isKnownToCompiler());
-		assertFalse(
+				value,
+				not(runtimeValue()));
+		assertThat(
 				"Value is false: " + value,
-				value.getKnowledge().isFalse());
+				value,
+				not(falseValue()));
 
 		final Object definiteValue = value.getCompilerValue();
 
-		assertNotNull(object + " has not definite value", definiteValue);
+		assertThat(
+				object + " value is not known to compiler",
+				definiteValue,
+				notNullValue());
 
 		return (T) definiteValue;
 	}
@@ -94,16 +107,18 @@ public abstract class CompilerTestCase {
 
 		final Value<?> value = valueOf(object, valueType);
 
-		assertTrue(
+		assertThat(
 				"Value is not definite: " + value,
-				value.getKnowledge().isKnownToCompiler());
-		assertFalse(
-				"Value is false: " + value,
-				value.getKnowledge().isFalse());
+				value,
+				not(runtimeValue()));
+		assertThat("Value is false: " + value, value, not(falseValue()));
 
 		final Object definiteValue = value.getCompilerValue();
 
-		assertNotNull(object + " has not definite value", definiteValue);
+		assertThat(
+				object + " value is not known to compiler",
+				definiteValue,
+				notNullValue());
 
 		return valueType.cast(definiteValue);
 	}
@@ -124,56 +139,6 @@ public abstract class CompilerTestCase {
 
 	public static Obj linkTarget(Scope scope) {
 		return linkTarget(scope.toObject());
-	}
-
-	public static void assertTrueValue(Condition condition) {
-		assertTrue(condition + " is not true", condition.isTrue());
-	}
-
-	public static void assertTrueValue(Value<?> value) {
-		assertTrue(
-				value + " is not true",
-				value.getKnowledge().getCondition().isTrue());
-	}
-
-	public static void assertFalseValue(Condition condition) {
-		assertTrue(condition + " is not false", condition.isFalse());
-	}
-
-	public static void assertFalseValue(Value<?> value) {
-		assertTrue(
-				value + " is not false",
-				value.getKnowledge().isFalse());
-	}
-
-	public static void assertRuntimeValue(Value<?> value) {
-		assertFalse(
-				value + " is definite",
-				value.getKnowledge().isKnownToCompiler());
-	}
-
-	public static void assertTrueVoid(Field field) {
-		assertTrueVoid(field.toObject());
-	}
-
-	public static void assertTrueVoid(Obj object) {
-		assertEquals(
-				object + " is not void",
-				ValueType.VOID,
-				object.type().getValueType());
-		assertTrueValue(object.value().getValue());
-	}
-
-	public static void assertFalseVoid(Field field) {
-		assertFalseVoid(field.toObject());
-	}
-
-	public static void assertFalseVoid(Obj object) {
-		assertEquals(
-				object + " is not void",
-				ValueType.VOID,
-				object.type().getValueType());
-		assertFalseValue(object.value().getValue());
 	}
 
 	public Field field(String name, String... names) {
@@ -285,6 +250,30 @@ public abstract class CompilerTestCase {
 		}
 
 		return member;
+	}
+
+	public static Matcher<Value<?>> falseValue() {
+		return FALSE_VALUE_MATCHER;
+	}
+
+	public static Matcher<Value<?>> trueValue() {
+		return TRUE_VALUE_MATCHER;
+	}
+
+	public static <T> Matcher<Value<?>> runtimeValue() {
+		return RUNTIME_VALUE_MATCHER;
+	}
+
+	public static <T> Matcher<Value<T>> valueOfType(ValueType<T> valueType) {
+		return new ValueOfTypeMatcher<>(valueType);
+	}
+
+	public static Matcher<ValueType<?>> valueType(ValueType<?> valueType) {
+		return new ValueTypeMatcher(valueType);
+	}
+
+	public static Matcher<Void> voidValue() {
+		return VOID_VALUE_MATCHER;
 	}
 
 	@Rule

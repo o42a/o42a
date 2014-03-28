@@ -4,8 +4,11 @@
 */
 package org.o42a.compiler.test.macro;
 
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
 public class ComparisonMacroTest extends CompilerTestCase {
@@ -16,8 +19,8 @@ public class ComparisonMacroTest extends CompilerTestCase {
 				"A := 2 ##eq [2]",
 				"B := 3 ##eq [2]");
 
-		assertTrueVoid(field("a"));
-		assertFalseVoid(field("b"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -26,8 +29,8 @@ public class ComparisonMacroTest extends CompilerTestCase {
 				"A := 2 ##ne [3]",
 				"B := 2 ##ne [2]");
 
-		assertTrueVoid(field("a"));
-		assertFalseVoid(field("b"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -37,9 +40,9 @@ public class ComparisonMacroTest extends CompilerTestCase {
 				"B := 3 ##gt [3]",
 				"C := 2 ##gt [3]");
 
-		assertTrueVoid(field("a"));
-		assertFalseVoid(field("b"));
-		assertFalseVoid(field("c"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
+		assertThat(valueOf(field("c"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -49,9 +52,9 @@ public class ComparisonMacroTest extends CompilerTestCase {
 				"B := 3 ##ge [3]",
 				"C := 2 ##ge [3]");
 
-		assertTrueVoid(field("a"));
-		assertTrueVoid(field("b"));
-		assertFalseVoid(field("c"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(definiteValue(field("b"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("c"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -61,9 +64,9 @@ public class ComparisonMacroTest extends CompilerTestCase {
 				"B := 3 ##lt [3]",
 				"C := 3 ##lt [2]");
 
-		assertTrueVoid(field("a"));
-		assertFalseVoid(field("b"));
-		assertFalseVoid(field("c"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
+		assertThat(valueOf(field("c"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -73,9 +76,9 @@ public class ComparisonMacroTest extends CompilerTestCase {
 				"B := 3 ##le [3]",
 				"C := 3 ##le [2]");
 
-		assertTrueVoid(field("a"));
-		assertTrueVoid(field("b"));
-		assertFalseVoid(field("c"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(definiteValue(field("b"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("c"), ValueType.VOID), falseValue());
 	}
 
 }

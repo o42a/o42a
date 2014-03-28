@@ -10,6 +10,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.ValueType;
 
 
 public class BuiltinRefTest extends CompilerTestCase {
@@ -21,7 +22,7 @@ public class BuiltinRefTest extends CompilerTestCase {
 		final Obj aTarget = linkTarget(field("a"));
 
 		assertThat(aTarget.getWrapped(), is(this.context.getVoid()));
-		assertTrueVoid(aTarget);
+		assertThat(definiteValue(aTarget, ValueType.VOID), voidValue());
 	}
 
 	@Test
@@ -31,7 +32,7 @@ public class BuiltinRefTest extends CompilerTestCase {
 		final Obj aTarget = linkTarget(field("a"));
 
 		assertThat(aTarget.getWrapped(), is(this.context.getVoid()));
-		assertTrueVoid(aTarget);
+		assertThat(definiteValue(aTarget, ValueType.VOID), voidValue());
 	}
 
 	@Test
@@ -41,7 +42,7 @@ public class BuiltinRefTest extends CompilerTestCase {
 		final Obj aTarget = linkTarget(field("a"));
 
 		assertThat(aTarget.getWrapped(), is(this.context.getFalse()));
-		assertFalseVoid(aTarget);
+		assertThat(valueOf(aTarget, ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -51,7 +52,7 @@ public class BuiltinRefTest extends CompilerTestCase {
 		final Obj aTarget = linkTarget(field("a"));
 
 		assertThat(aTarget.getWrapped(), is(this.context.getFalse()));
-		assertFalseVoid(aTarget);
+		assertThat(valueOf(aTarget, ValueType.VOID), falseValue());
 	}
 
 }

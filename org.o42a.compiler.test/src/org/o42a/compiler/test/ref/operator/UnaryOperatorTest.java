@@ -4,12 +4,13 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.ValueType;
 
 
 public class UnaryOperatorTest extends CompilerTestCase {
@@ -22,9 +23,11 @@ public class UnaryOperatorTest extends CompilerTestCase {
 
 		final Obj b = field("b").toObject();
 
-		assertTrue(b.type().derivedFrom(
-				this.context.getIntrinsics().getInteger().type()));
-		assertEquals(1L, definiteValue(b));
+		assertThat(
+				b.type().derivedFrom(
+						this.context.getIntrinsics().getInteger().type()),
+				is(true));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(1L));
 	}
 
 	@Test
@@ -35,9 +38,11 @@ public class UnaryOperatorTest extends CompilerTestCase {
 
 		final Obj b = field("b").toObject();
 
-		assertTrue(b.type().derivedFrom(
-				this.context.getIntrinsics().getInteger().type()));
-		assertEquals(1L, definiteValue(b));
+		assertThat(
+				b.type().derivedFrom(
+						this.context.getIntrinsics().getInteger().type()),
+				is(true));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(1L));
 	}
 
 	@Test
@@ -48,9 +53,11 @@ public class UnaryOperatorTest extends CompilerTestCase {
 
 		final Obj b = field("b").toObject();
 
-		assertTrue(b.type().derivedFrom(
-				this.context.getIntrinsics().getInteger().type()));
-		assertEquals(2L, definiteValue(b));
+		assertThat(
+				b.type().derivedFrom(
+						this.context.getIntrinsics().getInteger().type()),
+				is(true));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
 
 }

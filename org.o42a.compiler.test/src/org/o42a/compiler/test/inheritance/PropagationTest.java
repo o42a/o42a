@@ -5,17 +5,17 @@
 package org.o42a.compiler.test.inheritance;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
+import static org.o42a.core.object.type.Derivation.INHERITANCE;
+import static org.o42a.core.object.type.Derivation.MEMBER_OVERRIDE;
+import static org.o42a.core.object.type.Derivation.PROPAGATION;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.type.Derivation;
 import org.o42a.core.value.ValueType;
 
 
@@ -33,30 +33,30 @@ public class PropagationTest extends CompilerTestCase {
 		final Obj aFoo = field(this.a, "foo").toObject();
 		final Obj bFoo = field(this.b, "foo").toObject();
 
-		assertTrue(bFoo.type().derivedFrom(
-				aFoo.type(),
-				Derivation.MEMBER_OVERRIDE));
+		assertThat(
+				bFoo.type().derivedFrom(aFoo.type(), MEMBER_OVERRIDE),
+				is(true));
 
 		final Obj aBar = field(this.a, "bar").toObject();
 		final Obj bBar = field(this.b, "bar").toObject();
 
 		assertThat(definiteValue(bBar, ValueType.INTEGER), is(3L));
-		assertTrue(bBar.type().derivedFrom(
-				aBar.type(),
-				Derivation.MEMBER_OVERRIDE));
-		assertTrue(bBar.type().derivedFrom(
-				aFoo.type(),
-				Derivation.INHERITANCE));
-		assertFalse(bBar.type().derivedFrom(
-				aFoo.type(),
-				Derivation.PROPAGATION));
-		assertTrue(
+		assertThat(
+				bBar.type().derivedFrom(aBar.type(), MEMBER_OVERRIDE),
+				is(true));
+		assertThat(
+				bBar.type().derivedFrom(aFoo.type(), INHERITANCE),
+				is(true));
+		assertThat(
+				bBar.type().derivedFrom(aFoo.type(), PROPAGATION),
+				is(false));
+		assertThat(
 				bBar.type()
 				.getAncestor().getType().type().derivedFrom(
 						aFoo.type(),
-						Derivation.MEMBER_OVERRIDE));
-		assertTrue(bBar.type().inherits(
-				bFoo.type()));
+						MEMBER_OVERRIDE),
+				is(true));
+		assertThat(bBar.type().inherits(bFoo.type()), is(true));
 
 		final Field aFooScope =
 				aFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT)
@@ -80,16 +80,16 @@ public class PropagationTest extends CompilerTestCase {
 		final Obj aFoo = field(this.a, "foo").toObject();
 		final Obj bFoo = field(this.b, "foo").toObject();
 
-		assertTrue(bFoo.type().derivedFrom(
-				aFoo.type(),
-				Derivation.MEMBER_OVERRIDE));
+		assertThat(
+				bFoo.type().derivedFrom(aFoo.type(), MEMBER_OVERRIDE),
+				is(true));
 
 		final Obj aBar = field(aFoo, "bar").toObject();
 		final Obj bBar = field(bFoo, "bar").toObject();
 
-		assertTrue(bBar.type().derivedFrom(
-				aBar.type(),
-				Derivation.MEMBER_OVERRIDE));
+		assertThat(
+				bBar.type().derivedFrom(aBar.type(), MEMBER_OVERRIDE),
+				is(true));
 	}
 
 	@Test
@@ -105,10 +105,10 @@ public class PropagationTest extends CompilerTestCase {
 		final Obj aFoo = field(this.a, "foo").toObject();
 		final Obj bFoo = field(this.b, "foo").toObject();
 
-		assertTrue(aFoo.type().inherits(foo.type()));
-		assertFalse(aFoo.type().inherits(bar.type()));
-		assertTrue(bFoo.type().inherits(bar.type()));
-		assertTrue(bFoo.type().derivedFrom(aFoo.type()));
+		assertThat(aFoo.type().inherits(foo.type()), is(true));
+		assertThat(aFoo.type().inherits(bar.type()), is(false));
+		assertThat(bFoo.type().inherits(bar.type()), is(true));
+		assertThat(bFoo.type().derivedFrom(aFoo.type()), is(true));
 
 		assertThat(definiteValue(foo, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(bar, ValueType.INTEGER), is(2L));

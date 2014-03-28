@@ -4,8 +4,11 @@
 */
 package org.o42a.compiler.test.ref.string;
 
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
 public class CompareStringsTest extends CompilerTestCase {
@@ -16,8 +19,8 @@ public class CompareStringsTest extends CompilerTestCase {
 				"Res1 := \"abc\" == \"abc\"",
 				"Res2 := \"abc\" == \"a\"");
 
-		assertTrueVoid(field("res1"));
-		assertFalseVoid(field("res2"));
+		assertThat(definiteValue(field("res1"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("res2"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -26,8 +29,8 @@ public class CompareStringsTest extends CompilerTestCase {
 				"Res1 := \"abc\" <> \"a\"",
 				"Res2 := \"abc\" <> \"abc\"");
 
-		assertTrueVoid(field("res1"));
-		assertFalseVoid(field("res2"));
+		assertThat(definiteValue(field("res1"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("res2"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -37,9 +40,9 @@ public class CompareStringsTest extends CompilerTestCase {
 				"Res2 := \"a\" < \"a\"",
 				"Res3 := \"b\" < \"a\"");
 
-		assertTrueVoid(field("res1"));
-		assertFalseVoid(field("res2"));
-		assertFalseVoid(field("res3"));
+		assertThat(definiteValue(field("res1"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("res2"), ValueType.VOID), falseValue());
+		assertThat(valueOf(field("res3"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -49,9 +52,9 @@ public class CompareStringsTest extends CompilerTestCase {
 				"Res2 := \"a\" <= \"a\"",
 				"Res3 := \"b\" <= \"a\"");
 
-		assertTrueVoid(field("res1"));
-		assertTrueVoid(field("res2"));
-		assertFalseVoid(field("res3"));
+		assertThat(definiteValue(field("res1"), ValueType.VOID), voidValue());
+		assertThat(definiteValue(field("res2"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("res3"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -61,9 +64,9 @@ public class CompareStringsTest extends CompilerTestCase {
 				"Res2 := \"a\" > \"a\"",
 				"Res3 := \"b\" > \"a\"");
 
-		assertFalseVoid(field("res1"));
-		assertFalseVoid(field("res2"));
-		assertTrueVoid(field("res3"));
+		assertThat(valueOf(field("res1"), ValueType.VOID), falseValue());
+		assertThat(valueOf(field("res2"), ValueType.VOID), falseValue());
+		assertThat(definiteValue(field("res3"), ValueType.VOID), voidValue());
 	}
 
 	@Test
@@ -73,9 +76,9 @@ public class CompareStringsTest extends CompilerTestCase {
 				"Res2 := \"a\" >= \"a\"",
 				"Res3 := \"b\" >= \"a\"");
 
-		assertFalseVoid(field("res1"));
-		assertTrueVoid(field("res2"));
-		assertTrueVoid(field("res3"));
+		assertThat(valueOf(field("res1"), ValueType.VOID), falseValue());
+		assertThat(definiteValue(field("res2"), ValueType.VOID), voidValue());
+		assertThat(definiteValue(field("res3"), ValueType.VOID), voidValue());
 	}
 
 }

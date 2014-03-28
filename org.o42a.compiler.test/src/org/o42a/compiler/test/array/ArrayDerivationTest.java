@@ -5,7 +5,6 @@
 package org.o42a.compiler.test.array;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -33,7 +32,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 		final TypeRef itemTypeRef =
 				arrayType.itemTypeRef(arrayType.cast(b.type().getParameters()));
 
-		assertFalse(arrayType.isVariable());
+		assertThat(arrayType.isVariable(), is(false));
 		assertThat(
 				itemTypeRef.getType(),
 				is(b.getContext().getIntrinsics().getInteger()));
@@ -69,7 +68,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 				arrayType.itemTypeRef(
 						arrayType.cast(bField.type().getParameters()));
 
-		assertFalse(arrayType.isVariable());
+		assertThat(arrayType.isVariable(), is(false));
 		assertThat(
 				itemTypeRef.getType(),
 				is(bField.getContext().getIntrinsics().getInteger()));
@@ -107,7 +106,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 				arrayType.itemTypeRef(
 						arrayType.cast(bField.type().getParameters()));
 
-		assertFalse(arrayType.isVariable());
+		assertThat(arrayType.isVariable(), is(false));
 		assertThat(
 				itemTypeRef.getType(),
 				is(bField.getContext().getIntrinsics().getInteger()));

@@ -6,9 +6,7 @@ package org.o42a.compiler.test.link;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.o42a.core.value.link.LinkValueType.LINK;
 
 import org.junit.Test;
@@ -34,7 +32,9 @@ public class LinkObjectTest extends CompilerTestCase {
 		assertThat(
 				LINK.interfaceRef(b.type().getParameters()).getType(),
 				is(b.getContext().getIntrinsics().getVoid()));
-		assertTrue(bTarget.type().getValueType().is(ValueType.INTEGER));
+		assertThat(
+				bTarget.type().getValueType(),
+				valueType(ValueType.INTEGER));
 		assertThat(bTarget.getWrapped(), sameInstance(a));
 	}
 
@@ -52,7 +52,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		assertThat(
 				LINK.interfaceRef(b.type().getParameters()).getType(),
 				is(b.getContext().getIntrinsics().getInteger()));
-		assertEquals(ValueType.INTEGER, bTarget.type().getValueType());
+		assertThat(bTarget.type().getValueType(), valueType(ValueType.INTEGER));
 		assertThat(definiteValue(bTarget, ValueType.INTEGER), is(1L));
 		assertThat(bTarget.getWrapped(), sameInstance(a));
 	}

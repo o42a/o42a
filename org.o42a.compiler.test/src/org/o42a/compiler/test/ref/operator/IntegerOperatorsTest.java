@@ -4,8 +4,8 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -21,42 +21,42 @@ public class IntegerOperatorsTest extends CompilerTestCase {
 	public void plus() {
 		compile("Result := +2");
 
-		assertEquals(2L, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
 	public void minus() {
 		compile("Result := -2");
 
-		assertEquals(-2L, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.INTEGER), is(-2L));
 	}
 
 	@Test
 	public void add() {
 		compile("Result := 2 + 3");
 
-		assertEquals(5L, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.INTEGER), is(5L));
 	}
 
 	@Test
 	public void subtract() {
 		compile("Result := 2 - 3");
 
-		assertEquals(-1L, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.INTEGER), is(-1L));
 	}
 
 	@Test
 	public void multiply() {
 		compile("Result := 2 * 3");
 
-		assertEquals(6L, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.INTEGER), is(6L));
 	}
 
 	@Test
 	public void divide() {
 		compile("Result := 6 / 2");
 
-		assertEquals(3L, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.INTEGER), is(3L));
 	}
 
 	@Test
@@ -65,17 +65,24 @@ public class IntegerOperatorsTest extends CompilerTestCase {
 
 		compile("Result := 1 / 0");
 
-		assertEquals(ValueType.INTEGER, this.result.type().getValueType());
-		assertFalseValue(valueOf(this.result));
+		assertThat(
+				this.result.type().getValueType(),
+				valueType(ValueType.INTEGER));
+		assertThat(valueOf(this.result), falseValue());
 	}
 
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
 		this.result = field("result").toObject();
-		assertEquals(ValueType.INTEGER, this.result.type().getValueType());
-		assertTrue(this.result.type().inherits(
-				this.context.getIntrinsics().getInteger().type()));
+
+		assertThat(
+				this.result.type().getValueType(),
+				valueType(ValueType.INTEGER));
+		assertThat(
+				this.result.type().inherits(
+						this.context.getIntrinsics().getInteger().type()),
+				is(true));
 	}
 
 }

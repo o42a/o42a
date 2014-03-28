@@ -6,7 +6,6 @@ package org.o42a.compiler.test.declarative;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -27,12 +26,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 
 		final Field a = field("a");
 
-		assertTrueValue(valueOf(a));
+		assertThat(valueOf(a), trueValue());
 		assertThat(definiteValue(a, ValueType.INTEGER), is(1L));
 
 		final Field b = field("b");
 
-		assertTrueValue(valueOf(b));
+		assertThat(valueOf(b), trueValue());
 		assertThat(definiteValue(b, ValueType.INTEGER), is(1L));
 	}
 
@@ -44,12 +43,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 
 		final Value<?> aValue = valueOf(field("a"));
 
-		assertFalseValue(aValue);
+		assertThat(aValue, falseValue());
 		assertThat(aValue.getCompilerValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
-		assertFalseValue(bValue);
+		assertThat(bValue, falseValue());
 		assertThat(bValue.getCompilerValue(), nullValue());
 	}
 
@@ -61,12 +60,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 
 		final Value<?> aValue = valueOf(field("a"));
 
-		assertFalseValue(aValue);
+		assertThat(aValue, falseValue());
 		assertThat(aValue.getCompilerValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
-		assertFalseValue(bValue);
+		assertThat(bValue, falseValue());
 		assertThat(bValue.getCompilerValue(), nullValue());
 	}
 
@@ -79,16 +78,20 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 
 		final Value<?> aValue = valueOf(field("a"));
 
-		assertFalse(aValue.getKnowledge().isKnownToCompiler());
+		assertThat(aValue, runtimeValue());
 		assertThat(aValue.getKnowledge().getCondition(), is(Condition.RUNTIME));
-		assertFalse(aValue.getKnowledge().getCondition().isConstant());
+		assertThat(
+				aValue.getKnowledge().getCondition().isConstant(),
+				is(false));
 		assertThat(aValue.getCompilerValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
-		assertFalse(bValue.getKnowledge().isKnownToCompiler());
+		assertThat(bValue, runtimeValue());
 		assertThat(bValue.getKnowledge().getCondition(), is(Condition.RUNTIME));
-		assertFalse(bValue.getKnowledge().getCondition().isConstant());
+		assertThat(
+				bValue.getKnowledge().getCondition().isConstant(),
+				is(false));
 		assertThat(bValue.getCompilerValue(), nullValue());
 	}
 
@@ -101,16 +104,20 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 
 		final Value<?> aValue = valueOf(field("a"));
 
-		assertFalse(aValue.getKnowledge().isKnownToCompiler());
+		assertThat(aValue, runtimeValue());
 		assertThat(aValue.getKnowledge().getCondition(), is(Condition.RUNTIME));
-		assertFalse(aValue.getKnowledge().getCondition().isConstant());
+		assertThat(
+				aValue.getKnowledge().getCondition().isConstant(),
+				is(false));
 		assertThat(aValue.getCompilerValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
-		assertFalse(bValue.getKnowledge().isKnownToCompiler());
+		assertThat(bValue, runtimeValue());
 		assertThat(bValue.getKnowledge().getCondition(), is(Condition.RUNTIME));
-		assertFalse(bValue.getKnowledge().getCondition().isConstant());
+		assertThat(
+				bValue.getKnowledge().getCondition().isConstant(),
+				is(false));
 		assertThat(bValue.getCompilerValue(), nullValue());
 	}
 

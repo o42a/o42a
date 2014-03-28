@@ -6,7 +6,6 @@ package org.o42a.compiler.test.link;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -29,7 +28,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 		assertThat(definiteValue(linkTarget(a), ValueType.INTEGER), is(42L));
 		assertThat(definiteValue(linkTarget(b), ValueType.INTEGER), is(43L));
 
-		assertTrue(b.type().inherits(a.type()));
+		assertThat(b.type().inherits(a.type()), is(true));
 	}
 
 	@Test
@@ -44,8 +43,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 		assertThat(definiteValue(aTarget, ValueType.INTEGER), is(42L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(43L));
 
-		assertTrue(b.type().inherits(aTarget.type()));
-		assertTrue(b.getWrapped().type().inherits(aTarget.type()));
+		assertThat(b.type().inherits(aTarget.type()), is(true));
+		assertThat(b.getWrapped().type().inherits(aTarget.type()), is(true));
 	}
 
 	@Test
