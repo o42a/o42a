@@ -23,7 +23,7 @@ public class DefinitionBlockTest extends CompilerTestCase {
 				")");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
-		assertFalseVoid(this.module);
+		assertThat(valueOf(this.module, ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class DefinitionBlockTest extends CompilerTestCase {
 				")");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
-		assertFalseVoid(this.module);
+		assertThat(valueOf(this.module, ValueType.VOID), falseValue());
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(34L));
 	}
 

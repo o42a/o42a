@@ -52,10 +52,10 @@ public class NumericAdaptersTest extends CompilerTestCase {
 				"C := float '9' == 9",
 				"D := 12.12 <> 12");
 
-		assertTrueVoid(field("a"));
-		assertFalseVoid(field("b"));
-		assertTrueVoid(field("c"));
-		assertTrueVoid(field("d"));
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
+		assertThat(definiteValue(field("c"), ValueType.VOID), voidValue());
+		assertThat(definiteValue(field("d"), ValueType.VOID), voidValue());
 	}
 
 }

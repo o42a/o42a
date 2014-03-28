@@ -5,7 +5,7 @@
 package org.o42a.compiler.test.ref.phrase;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -57,9 +57,9 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 		final Obj bFooTarget = linkTarget(bFoo);
 
 		assertThat(definiteValue(bFooTarget, ValueType.INTEGER), is(1L));
-		assertSame(
-				field("val").toObject(),
-				bFooTarget.getWrapped());
+		assertThat(
+				bFooTarget.getWrapped(),
+				sameInstance(field("val").toObject()));
 	}
 
 }

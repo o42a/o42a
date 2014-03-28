@@ -17,38 +17,62 @@ public class IntegerCompareTest extends CompilerTestCase {
 
 	@Test
 	public void less() {
-		assertTrueVoid(compare("Result := 1 < 2"));
-		assertFalseVoid(compare("Result := 2 < 1"));
+		assertThat(
+				definiteValue(compare("Result := 1 < 2"), ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(compare("Result := 2 < 1"), ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void lessOrEqual() {
-		assertTrueVoid(compare("Result := 1 <= 2"));
-		assertFalseVoid(compare("Result := 2 <= 1"));
+		assertThat(
+				definiteValue(compare("Result := 1 <= 2"), ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(compare("Result := 2 <= 1"), ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void greater() {
-		assertTrueVoid(compare("Result := 2 > 1"));
-		assertFalseVoid(compare("Result := 1 > 2"));
+		assertThat(
+				definiteValue(compare("Result := 2 > 1"), ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(compare("Result := 1 > 2"), ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void greaterOrEqual() {
-		assertTrueVoid(compare("Result := 2 >= 1"));
-		assertFalseVoid(compare("Result := 1 >= 2"));
+		assertThat(
+				definiteValue(compare("Result := 2 >= 1"), ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(compare("Result := 1 >= 2"), ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void equal() {
-		assertTrueVoid(compare("Result := 2 == 2"));
-		assertFalseVoid(compare("Result := 1 == 2"));
+		assertThat(
+				definiteValue(compare("Result := 2 == 2"), ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(compare("Result := 1 == 2"), ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void notEqual() {
-		assertTrueVoid(compare("Result := 1 <> 2"));
-		assertFalseVoid(compare("Result := 1 <> 1"));
+		assertThat(
+				definiteValue(compare("Result := 1 <> 2"), ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(compare("Result := 1 <> 1"), ValueType.VOID),
+				falseValue());
 	}
 
 	@Test

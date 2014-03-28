@@ -48,7 +48,7 @@ public class SubStringTest extends CompilerTestCase {
 
 		compile("Sub := \"asubc\" [4...3)");
 
-		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), falseValue());
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class SubStringTest extends CompilerTestCase {
 
 		compile("Sub := \"asubc\" [-1...4)");
 
-		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), falseValue());
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class SubStringTest extends CompilerTestCase {
 
 		compile("Sub := \"asubc\" [1...6)");
 
-		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), falseValue());
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class SubStringTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Sub := string (False) [rt-integer '1'...rt-integer '4')");
 
-		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), falseValue());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class SubStringTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Sub := rt-string 'asubc' [1...4)");
 
-		assertRuntimeValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), runtimeValue());
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class SubStringTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Sub := rt-string 'asubc' [integer(False)...rt-integer '4')");
 
-		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), falseValue());
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public class SubStringTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Sub := \"asubc\" [rt-integer '1'...4)");
 
-		assertRuntimeValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), runtimeValue());
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class SubStringTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Sub := rt-string 'asubc' [rt-integer '1'...integer(False))");
 
-		assertFalseValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), falseValue());
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class SubStringTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Sub := \"asubc\" [1...rt-integer '4')");
 
-		assertRuntimeValue(valueOf(field("sub"), ValueType.STRING));
+		assertThat(valueOf(field("sub"), ValueType.STRING), runtimeValue());
 	}
 
 }

@@ -4,12 +4,13 @@
 */
 package org.o42a.compiler.test.ref;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.ValueType;
 
 
 public class FieldRefTest extends CompilerTestCase {
@@ -25,8 +26,8 @@ public class FieldRefTest extends CompilerTestCase {
 
 		final Obj foo = field(this.a, "foo").toObject();
 
-		assertTrue(this.b.type().inherits(foo.type()));
-		assertEquals(definiteValue(this.b), 1L);
+		assertThat(this.b.type().inherits(foo.type()), is(true));
+		assertThat(definiteValue(this.b, ValueType.INTEGER), is(1L));
 	}
 
 	@Test
@@ -37,8 +38,8 @@ public class FieldRefTest extends CompilerTestCase {
 
 		final Obj foo = field(this.a, "foo").toObject();
 
-		assertTrue(this.b.type().inherits(foo.type()));
-		assertEquals(definiteValue(this.b), 1L);
+		assertThat(this.b.type().inherits(foo.type()), is(true));
+		assertThat(definiteValue(this.b, ValueType.INTEGER), is(1L));
 	}
 
 	@Test
@@ -50,8 +51,8 @@ public class FieldRefTest extends CompilerTestCase {
 		final Obj foo = field(this.a, "foo").toObject();
 		final Obj bar = field(this.b, "bar").toObject();
 
-		assertTrue(bar.type().inherits(foo.type()));
-		assertEquals(definiteValue(bar), 1L);
+		assertThat(bar.type().inherits(foo.type()), is(true));
+		assertThat(definiteValue(bar, ValueType.INTEGER), is(1L));
 	}
 
 	@Test
@@ -66,8 +67,8 @@ public class FieldRefTest extends CompilerTestCase {
 		final Obj foo = field(this.a, "foo").toObject();
 		final Obj bar = field(c, "bar").toObject();
 
-		assertTrue(bar.type().derivedFrom(foo.type()));
-		assertEquals(definiteValue(bar), 2L);
+		assertThat(bar.type().derivedFrom(foo.type()), is(true));
+		assertThat(definiteValue(bar, ValueType.INTEGER), is(2L));
 	}
 
 	@Override

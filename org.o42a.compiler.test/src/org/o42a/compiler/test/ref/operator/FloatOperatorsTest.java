@@ -4,8 +4,8 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -21,59 +21,71 @@ public strictfp class FloatOperatorsTest extends CompilerTestCase {
 	public void plus() {
 		compile("Result := +float '123.45'");
 
-		assertEquals(123.45, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.FLOAT), is(123.45));
 	}
 
 	@Test
 	public void minus() {
 		compile("Result := -float '123.45'");
 
-		assertEquals(-123.45, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.FLOAT), is(-123.45));
 	}
 
 	@Test
 	public void add() {
 		compile("Result := float '1.2' + float '3.4'");
 
-		assertEquals(1.2 + 3.4, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.FLOAT), is(1.2 + 3.4));
 	}
 
 	@Test
 	public void subtract() {
 		compile("Result := float '1.2' - float '3.45'");
 
-		assertEquals(1.2 - 3.45, definiteValue(this.result));
+		assertThat(definiteValue(this.result, ValueType.FLOAT), is(1.2 - 3.45));
 	}
 
 	@Test
 	public void multiply() {
 		compile("Result := float '.12' * float '3.456'");
 
-		assertEquals(0.12 * 3.456, definiteValue(this.result));
+		assertThat(
+				definiteValue(this.result, ValueType.FLOAT),
+				is(0.12 * 3.456));
 	}
 
 	@Test
 	public void divide() {
 		compile("Result := float '6.12' / float '2.34'");
 
-		assertEquals(6.12 / 2.34, definiteValue(this.result));
+		assertThat(
+				definiteValue(this.result, ValueType.FLOAT),
+				is(6.12 / 2.34));
 	}
 
 	@Test
 	public void divideByZero() {
 		compile("Result := float '123.45' / float '0'");
 
-		assertEquals(ValueType.FLOAT, this.result.type().getValueType());
-		assertEquals(Double.POSITIVE_INFINITY, definiteValue(this.result));
+		assertThat(
+				this.result.type().getValueType(),
+				valueType(ValueType.FLOAT));
+		assertThat(
+				definiteValue(this.result, ValueType.FLOAT),
+				is(Double.POSITIVE_INFINITY));
 	}
 
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
 		this.result = field("result").toObject();
-		assertEquals(ValueType.FLOAT, this.result.type().getValueType());
-		assertTrue(this.result.type().inherits(
-				this.context.getIntrinsics().getFloat().type()));
+		assertThat(
+				this.result.type().getValueType(),
+				valueType(ValueType.FLOAT));
+		assertThat(
+				this.result.type().inherits(
+						this.context.getIntrinsics().getFloat().type()),
+				is(true));
 	}
 
 }

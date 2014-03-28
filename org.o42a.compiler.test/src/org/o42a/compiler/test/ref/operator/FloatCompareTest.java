@@ -17,38 +17,86 @@ public class FloatCompareTest extends CompilerTestCase {
 
 	@Test
 	public void less() {
-		assertTrueVoid(compare("Result := float '1.1' < float '1.2'"));
-		assertFalseVoid(compare("Result := float '1.2' < float '1.1'"));
+		assertThat(
+				definiteValue(
+						compare("Result := float '1.1' < float '1.2'"),
+						ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(
+						compare("Result := float '1.2' < float '1.1'"),
+						ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void lessOrEqual() {
-		assertTrueVoid(compare("Result := float '0.1' <= float '0.2'"));
-		assertFalseVoid(compare("Result := float '0.2' <= float '0.1'"));
+		assertThat(
+				definiteValue(
+						compare("Result := float '0.1' <= float '0.2'"),
+						ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(
+						compare("Result := float '0.2' <= float '0.1'"),
+						ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void greater() {
-		assertTrueVoid(compare("Result := float '0.2' > float '0.1'"));
-		assertFalseVoid(compare("Result := float '0.1' > float '0.2'"));
+		assertThat(
+				definiteValue(
+						compare("Result := float '0.2' > float '0.1'"),
+						ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(
+						compare("Result := float '0.1' > float '0.2'"),
+						ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void greaterOrEqual() {
-		assertTrueVoid(compare("Result := float '0.2' >= float '0.1'"));
-		assertFalseVoid(compare("Result := float '0.1' >= float '0.2'"));
+		assertThat(
+				definiteValue(
+						compare("Result := float '0.2' >= float '0.1'"),
+						ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(
+						compare("Result := float '0.1' >= float '0.2'"),
+						ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void equal() {
-		assertTrueVoid(compare("Result := float '0.2' == float '0.2'"));
-		assertFalseVoid(compare("Result := float '0.1' == float '0.2'"));
+		assertThat(
+				definiteValue(
+						compare("Result := float '0.2' == float '0.2'"),
+						ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(
+						compare("Result := float '0.1' == float '0.2'"),
+						ValueType.VOID),
+				falseValue());
 	}
 
 	@Test
 	public void notEqual() {
-		assertTrueVoid(compare("Result := float '0.1' <> float '0.2'"));
-		assertFalseVoid(compare("Result := float '0.1' <> float '0.1'"));
+		assertThat(
+				definiteValue(
+						compare("Result := float '0.1' <> float '0.2'"),
+						ValueType.VOID),
+				voidValue());
+		assertThat(
+				valueOf(
+						compare("Result := float '0.1' <> float '0.1'"),
+						ValueType.VOID),
+				falseValue());
 	}
 
 	@Test

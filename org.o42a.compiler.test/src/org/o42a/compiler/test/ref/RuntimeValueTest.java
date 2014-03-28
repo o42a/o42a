@@ -4,7 +4,7 @@
 */
 package org.o42a.compiler.test.ref;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -48,8 +48,8 @@ public class RuntimeValueTest extends CompilerTestCase {
 	}
 
 	private static void assertRuntimeInteger(Obj object) {
-		assertEquals(ValueType.INTEGER, object.type().getValueType());
-		assertRuntimeValue(object.value().getValue());
+		assertThat(object.type().getValueType(), valueType(ValueType.INTEGER));
+		assertThat(object.value().getValue(), runtimeValue());
 	}
 
 }

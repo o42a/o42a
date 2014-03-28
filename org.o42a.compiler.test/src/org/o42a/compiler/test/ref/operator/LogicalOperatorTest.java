@@ -4,9 +4,11 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.object.Obj;
+import org.o42a.core.value.ValueType;
 
 
 public class LogicalOperatorTest extends CompilerTestCase {
@@ -15,22 +17,16 @@ public class LogicalOperatorTest extends CompilerTestCase {
 	public void isTrue() {
 		compile("A := ++1. B := ++false");
 
-		final Obj a = field("a").toObject();
-		final Obj b = field("b").toObject();
-
-		assertTrueVoid(a);
-		assertFalseVoid(b);
+		assertThat(definiteValue(field("a"), ValueType.VOID), voidValue());
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
 	public void not() {
 		compile("A := --1. B := --false");
 
-		final Obj a = field("a").toObject();
-		final Obj b = field("b").toObject();
-
-		assertFalseVoid(a);
-		assertTrueVoid(b);
+		assertThat(valueOf(field("a"), ValueType.VOID), falseValue());
+		assertThat(definiteValue(field("b"), ValueType.VOID), voidValue());
 	}
 
 }

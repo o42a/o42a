@@ -41,7 +41,7 @@ public class ArrayAsRowTest extends CompilerTestCase {
 				"A := integer` array (False, = [1, 2, 3])",
 				"B := a: as row");
 
-		assertFalseValue(valueOf(field("b")));
+		assertThat(valueOf(field("b")), falseValue());
 	}
 
 }

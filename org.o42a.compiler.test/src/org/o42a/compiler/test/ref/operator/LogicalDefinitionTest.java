@@ -4,9 +4,12 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.ValueType;
 
 
 public class LogicalDefinitionTest extends CompilerTestCase {
@@ -19,27 +22,27 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 	public void isTrue() {
 		compile("A := void. B := ++a. C := b.");
 
-		assertTrueVoid(this.a);
-		assertTrueVoid(this.b);
-		assertTrueVoid(this.c);
+		assertThat(definiteValue(this.a, ValueType.VOID), voidValue());
+		assertThat(definiteValue(this.b, ValueType.VOID), voidValue());
+		assertThat(definiteValue(this.c, ValueType.VOID), voidValue());
 	}
 
 	@Test
 	public void notTrue() {
 		compile("A := void. B := --a. C := b.");
 
-		assertTrueVoid(this.a);
-		assertFalseVoid(this.b);
-		assertFalseVoid(this.c);
+		assertThat(definiteValue(this.a, ValueType.VOID), voidValue());
+		assertThat(valueOf(this.b, ValueType.VOID), falseValue());
+		assertThat(valueOf(this.c, ValueType.VOID), falseValue());
 	}
 
 	@Test
 	public void notFalse() {
 		compile("A := false. B := --a. C := b.");
 
-		assertFalseVoid(this.a);
-		assertTrueVoid(this.b);
-		assertTrueVoid(this.c);
+		assertThat(valueOf(this.a, ValueType.VOID), falseValue());
+		assertThat(definiteValue(this.b, ValueType.VOID), voidValue());
+		assertThat(definiteValue(this.c, ValueType.VOID), voidValue());
 	}
 
 	@Override

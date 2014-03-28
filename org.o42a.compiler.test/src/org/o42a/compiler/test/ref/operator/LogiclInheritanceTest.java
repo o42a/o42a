@@ -4,9 +4,12 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.ValueType;
 
 
 public class LogiclInheritanceTest extends CompilerTestCase {
@@ -25,9 +28,9 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 				"B := a(Foo = false)",
 				"C := b");
 
-		assertTrueVoid(this.aBar);
-		assertFalseVoid(this.bBar);
-		assertFalseVoid(this.cBar);
+		assertThat(definiteValue(this.aBar, ValueType.VOID), voidValue());
+		assertThat(valueOf(this.bBar, ValueType.VOID), falseValue());
+		assertThat(valueOf(this.cBar, ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -40,9 +43,9 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 				"B := a(Foo = false)",
 				"C := b");
 
-		assertFalseVoid(this.aBar);
-		assertTrueVoid(this.bBar);
-		assertTrueVoid(this.cBar);
+		assertThat(valueOf(this.aBar, ValueType.VOID), falseValue());
+		assertThat(definiteValue(this.bBar, ValueType.VOID), voidValue());
+		assertThat(definiteValue(this.cBar, ValueType.VOID), voidValue());
 	}
 
 	@Override

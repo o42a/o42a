@@ -4,8 +4,13 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
+import org.o42a.core.value.Void;
 
 
 public class ComparisonOperatorTest extends CompilerTestCase {
@@ -23,7 +28,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"B := a == 23");
 
-		assertTrueVoid(field("b"));
+		assertThat(definiteValue(field("b"), ValueType.VOID), is(Void.VOID));
 	}
 
 	@Test
@@ -39,7 +44,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"B := a <> 44");
 
-		assertFalseVoid(field("b"));
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -50,7 +55,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"B := a < 2");
 
-		assertFalseVoid(field("b"));
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -61,7 +66,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"B := a <= 2");
 
-		assertFalseVoid(field("b"));
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -72,7 +77,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"B := a > 2");
 
-		assertTrueVoid(field("b"));
+		assertThat(definiteValue(field("b"), ValueType.VOID), is(Void.VOID));
 	}
 
 	@Test
@@ -83,7 +88,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"B := a >= 2");
 
-		assertTrueVoid(field("b"));
+		assertThat(definiteValue(field("b"), ValueType.VOID), is(Void.VOID));
 	}
 
 	@Test
@@ -94,7 +99,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"B := a == 2");
 
-		assertFalseVoid(field("b"));
+		assertThat(valueOf(field("b"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -105,7 +110,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"B := a <> 2");
 
-		assertTrueVoid(field("b"));
+		assertThat(definiteValue(field("b"), ValueType.VOID), is(Void.VOID));
 	}
 
 }

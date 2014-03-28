@@ -32,7 +32,7 @@ public class StringLengthTest extends CompilerTestCase {
 	public void falseString() {
 		compile("Len := string(False): length");
 
-		assertFalseValue(valueOf(field("len"), ValueType.INTEGER));
+		assertThat(valueOf(field("len"), ValueType.INTEGER), falseValue());
 	}
 
 	@Test
@@ -41,7 +41,7 @@ public class StringLengthTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Len := rt-string 'abc': length");
 
-		assertRuntimeValue(valueOf(field("len"), ValueType.INTEGER));
+		assertThat(valueOf(field("len"), ValueType.INTEGER), runtimeValue());
 	}
 
 }

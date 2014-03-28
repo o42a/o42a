@@ -89,7 +89,7 @@ public class ReproductionTest extends CompilerTestCase {
 				")",
 				"Result := object _refer");
 
-		assertFalseVoid(field("result"));
+		assertThat(valueOf(field("result"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -104,7 +104,7 @@ public class ReproductionTest extends CompilerTestCase {
 				"Descendant :=> object",
 				"Result := descendant _refer");
 
-		assertFalseVoid(field("result"));
+		assertThat(valueOf(field("result"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class ReproductionTest extends CompilerTestCase {
 				")",
 				"Result := object _construct _refer");
 
-		assertFalseVoid(field("result"));
+		assertThat(valueOf(field("result"), ValueType.VOID), falseValue());
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class ReproductionTest extends CompilerTestCase {
 				"Descendant :=> object",
 				"Result := descendant _construct _refer");
 
-		assertFalseVoid(field("result"));
+		assertThat(valueOf(field("result"), ValueType.VOID), falseValue());
 	}
 
 	@Test
