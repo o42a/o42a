@@ -26,7 +26,6 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
-import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueType;
@@ -126,18 +125,10 @@ public abstract class CompilerTestCase {
 		return linkTarget(scope.toObject());
 	}
 
-	public static void assertTrueValue(Condition condition) {
-		assertTrue(condition + " is not true", condition.isTrue());
-	}
-
 	public static void assertTrueValue(Value<?> value) {
 		assertTrue(
 				value + " is not true",
 				value.getKnowledge().getCondition().isTrue());
-	}
-
-	public static void assertFalseValue(Condition condition) {
-		assertTrue(condition + " is not false", condition.isFalse());
 	}
 
 	public static void assertFalseValue(Value<?> value) {
