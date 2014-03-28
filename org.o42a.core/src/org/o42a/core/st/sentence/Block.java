@@ -22,12 +22,13 @@ package org.o42a.core.st.sentence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.core.st.impl.local.LocalFactory;
 import org.o42a.core.st.impl.local.Locals;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
@@ -35,17 +36,28 @@ import org.o42a.util.string.Name;
 
 public abstract class Block extends Statement {
 
+	private static final LocalFactory LOCAL_FACTORY = new LocalFactory() {
+		@Override
+		public Local createLocal(LocationInfo location, Name name, Ref ref) {
+			return new Local(location, name, ref);
+		}
+		@Override
+		public void convertToField(Local local) {
+			local.convertToField();
+		}
+	};
+
 	private final Statements enclosing;
 	private final ArrayList<Sentence> sentences = new ArrayList<>(1);
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory sentenceFactory;
 	private final StatementsEnv statementsEnv = new StatementsEnv();
+	private final Locals externalLocals;
 	private CommandEnv initialEnv;
-	private Locals locals;
 	private int instructionsExecuted;
 	private boolean executingInstructions;
 
-	protected Block(
+	Block(
 			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
@@ -54,6 +66,7 @@ public abstract class Block extends Statement {
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
+		this.externalLocals = new Locals(this, LOCAL_FACTORY);
 	}
 
 	Block(
@@ -66,6 +79,11 @@ public abstract class Block extends Statement {
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
+		if (enclosing != null) {
+			this.externalLocals = enclosing.locals().forBlock(this);
+		} else {
+			this.externalLocals = new Locals(this, LOCAL_FACTORY);
+		}
 	}
 
 	@Override
@@ -220,57 +238,8 @@ public abstract class Block extends Statement {
 		return out.toString();
 	}
 
-	final Locals getLocals() {
-		if (this.locals != null) {
-			return this.locals;
-		}
-
-		final Statements enclosing = getEnclosing();
-
-		if (enclosing == null) {
-			return this.locals = new Locals(null);
-		}
-
-		return this.locals =
-				new Locals(enclosing.getSentence().getBlock().getLocals());
-	}
-
-	final Container nextContainer() {
-
-		final List<Sentence> sentences = getSentences();
-		final int numSentences = sentences.size();
-
-		if (numSentences == 0) {
-			return getContainer();
-		}
-
-		final Sentence last = sentences.get(numSentences - 1);
-		final List<Statements> alts = last.getAlternatives();
-		final int numAlts = alts.size();
-
-		if (numAlts > 1) {
-			// Locals declared within alternative are visible only inside
-			// this alternative, unless the sentence has a single alternative.
-			return last.getContainer();
-		}
-		if (last.getPrerequisite() != null
-				&& !last.getKind().isInterrogative()) {
-			// The sentence has prerequisite and is not a prerequisite
-			// of another sentence. The locals are not exported, neither from
-			// the sentence itself, nor from its prerequisites.
-			return last.firstPrerequisite().getContainer();
-		}
-		if (numAlts == 0) {
-			// Empty sentence without prerequisites.
-			// The next sentence will see the same locals as this one.
-			return last.getContainer();
-		}
-		// The sentence has only one alternative and has no prerequisites.
-		// The locals declared in it are visible in the next sentences.
-		// Even if this sentence is a prerequisite for the next one.
-		final Statements singleAlt = alts.get(0);
-
-		return singleAlt.nextContainer();
+	final Locals externalLocals() {
+		return this.externalLocals;
 	}
 
 	abstract NamedBlocks getNamedBlocks();

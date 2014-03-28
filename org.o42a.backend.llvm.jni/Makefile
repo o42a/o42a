@@ -172,6 +172,7 @@ $(srcdir)/jni_int.h : $(java_package_dir)/code/op/IntLLOp.class
 $(srcdir)/jni_fp.h : $(java_package_dir)/code/op/FpLLOp.class
 	$(call make_javah)
 
+$(srcdir)/jni_ptr.h : $(java_package_dir)/code/LLVMCodeBackend.class
 $(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/PtrLLOp.class
 $(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/RelLLOp.class
 $(srcdir)/jni_ptr.h :

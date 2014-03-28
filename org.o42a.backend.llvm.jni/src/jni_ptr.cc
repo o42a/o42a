@@ -38,6 +38,13 @@ using namespace llvm;
 		if (instrPtr) builder.SetInsertPoint(\
 			static_cast<Instruction*>(from_ptr<Value>(instrPtr)))
 
+jlong Java_org_o42a_backend_llvm_code_LLVMCodeBackend_codeToAny(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr) {
+	return to_ptr<Value>(BlockAddress::get(from_ptr<BasicBlock>(blockPtr)));
+}
+
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 		JNIEnv *,
 		jclass,

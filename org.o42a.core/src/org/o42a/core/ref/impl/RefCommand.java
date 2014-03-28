@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,27 +21,24 @@ package org.o42a.core.ref.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
-import org.o42a.core.ir.cmd.EvalCmd;
-import org.o42a.core.ir.cmd.InlineCmd;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.impl.RefDef;
-import org.o42a.core.ref.*;
-import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ReturnValue;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ref.FullResolver;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Instruction;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.core.value.link.TargetResolver;
 
 
-public final class RefCommand extends Command {
+abstract class RefCommand extends Command {
 
 	private ValueAdapter valueAdapter;
 
-	public RefCommand(Ref ref, CommandEnv env) {
+	RefCommand(Ref ref, CommandEnv env) {
 		super(ref, env);
 	}
 
@@ -49,15 +46,7 @@ public final class RefCommand extends Command {
 		return (Ref) getStatement();
 	}
 
-	@Override
-	public final CommandTargets getTargets() {
-		if (!getRef().isConstant()) {
-			return returnCommand();
-		}
-		return returnCommand().setConstant();
-	}
-
-	public ValueAdapter getValueAdapter() {
+	public final ValueAdapter getValueAdapter() {
 		if (this.valueAdapter != null) {
 			return this.valueAdapter;
 		}
@@ -67,46 +56,9 @@ public final class RefCommand extends Command {
 		return this.valueAdapter = getRef().valueAdapter(valueRequest);
 	}
 
-	public Definitions createDefinitions() {
-
-		final RefDef def = new RefDef(getRef());
-
-		return def.toDefinitions(
-				env().getValueRequest().getExpectedParameters());
-	}
-
 	@Override
 	public TypeParameters<?> typeParameters(Scope scope) {
 		return getValueAdapter().typeParameters(scope);
-	}
-
-	@Override
-	public Action action(Resolver resolver) {
-		return new ReturnValue(
-				this,
-				getValueAdapter().value(resolver));
-	}
-
-	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
-
-		final InlineValue inline = getValueAdapter().inline(normalizer, origin);
-
-		if (inline == null) {
-			return null;
-		}
-
-		return inline.toInlineCmd();
-	}
-
-	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(normalizer.newNormalizer(), origin);
-	}
-
-	@Override
-	public void resolveTargets(TargetResolver resolver, Scope origin) {
-		getValueAdapter().resolveTargets(resolver);
 	}
 
 	@Override
@@ -115,26 +67,21 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public DefTarget toTarget(Scope origin) {
-
-		final Ref target = getValueAdapter().toTarget();
-
-		if (target == null) {
-			return DefTarget.NO_DEF_TARGET;
-		}
-
-		return new DefTarget(target);
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
+		getValueAdapter().resolveTargets(resolver);
 	}
 
 	@Override
 	public final Cmd cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new EvalCmd(getValueAdapter().eval());
+		return refCmd(getValueAdapter().eval());
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		getValueAdapter().resolveAll(resolver);
 	}
+
+	protected abstract Cmd refCmd(Eval value);
 
 }

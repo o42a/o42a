@@ -154,11 +154,9 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public Void visitSelfAssignment(
-			SelfAssignmentNode assignment,
-			StatementsAccess p) {
+	public Void visitReturn(ReturnNode ret, StatementsAccess p) {
 
-		final ExpressionNode value = assignment.getValue();
+		final ExpressionNode value = ret.getValue();
 
 		if (value == null) {
 			return null;

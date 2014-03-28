@@ -37,6 +37,7 @@ public interface Op {
 	ID ANY_ID = ID.rawId("any");
 	ID DATA_ID = ID.rawId("data");
 	ID REL_ID = ID.rawId("rel");
+	ID CODE_ID = ID.rawId("code");
 
 	ID PHI_ID = ID.rawId("phi");
 

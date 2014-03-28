@@ -30,7 +30,7 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 
 	@Test
 	public void returnFromInterrogatveSentence() {
-		expectError("compiler.prohibited_interrogative_assignment");
+		expectError("compiler.prohibited_interrogative_return");
 		compile(
 				"A := integer ({",
 				"  = 2?",
@@ -39,7 +39,7 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 
 	@Test
 	public void returnFromInterrogation() {
-		expectError("compiler.prohibited_interrogative_assignment");
+		expectError("compiler.prohibited_interrogative_return");
 		compile(
 				"A := integer ({",
 				"  (False, (Void, = 2))?",

@@ -101,9 +101,7 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 					block.distribute(),
 					this.reproducer);
 
-			this.content.reproduceSentences(
-					reproducer,
-					block.toDeclarativeBlock());
+			this.content.reproduceSentences(reproducer, block);
 		}
 
 		@Override

@@ -102,6 +102,27 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_go(
 	return to_instr_ptr(builder.GetInsertBlock(), builder.CreateBr(target));
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLCode_goByPtr(
+		JNIEnv *env,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
+		jlong addrPtr,
+		jlongArray blockPtrs) {
+
+	jInt64Array blocks(env, blockPtrs);
+	const size_t len = blocks.length();
+	MAKE_BUILDER;
+	Value *addr = from_ptr<Value>(addrPtr);
+	IndirectBrInst *br = builder.CreateIndirectBr(addr, len);
+
+	for (size_t i = 0; i < len; ++i) {
+		br->addDestination(from_ptr<BasicBlock>(blocks[i]));
+	}
+
+	return to_instr_ptr(builder.GetInsertBlock(), br);
+}
+
 jlong Java_org_o42a_backend_llvm_code_LLCode_choose(
 		JNIEnv *,
 		jclass,

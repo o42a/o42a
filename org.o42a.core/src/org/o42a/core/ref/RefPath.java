@@ -47,7 +47,7 @@ public abstract class RefPath extends Located {
 			Ref condition,
 			Statements statements);
 
-	protected abstract Statement toValue(
+	protected abstract Ref toValue(
 			LocationInfo location,
 			Ref value,
 			Statements statements);

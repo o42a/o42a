@@ -188,8 +188,17 @@ public class Grammar {
 		return BracketsParser.BRACKETS;
 	}
 
-	public static final Parser<SelfAssignmentNode> selfAssignment() {
-		return SelfAssignmentParser.SELF_ASSIGNMENT;
+	public static final Parser<ReturnNode> returnValue() {
+		return ReturnParser.RETURN;
+	}
+
+	public static final Parser<PassThroughNode> passThrough() {
+		return PassThroughParser.PASS_THROUGH;
+	}
+
+	public static final Parser<PassThroughNode> passThrough(
+			ExpressionNode input) {
+		return new PassThroughParser(input);
 	}
 
 	public static final Parser<DeclaratorNode> declarator(

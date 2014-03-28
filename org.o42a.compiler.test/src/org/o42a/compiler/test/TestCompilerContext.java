@@ -7,7 +7,7 @@ package org.o42a.compiler.test;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ModuleCompiler;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.util.io.EmptySource;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.Logger;
@@ -43,7 +43,7 @@ class TestCompilerContext extends CompilerContext {
 	}
 
 	@Override
-	public void include(DeclarativeBlock block) {
+	public void include(Block block) {
 	}
 
 	@Override

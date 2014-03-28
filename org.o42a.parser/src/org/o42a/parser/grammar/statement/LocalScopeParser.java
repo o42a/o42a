@@ -24,9 +24,8 @@ import static org.o42a.parser.Grammar.local;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.LocalNode;
-import org.o42a.ast.statement.LocalScopeNode;
-import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.statement.*;
+import org.o42a.ast.statement.LocalScopeNode.Separator;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -34,6 +33,8 @@ import org.o42a.util.io.SourcePosition;
 
 
 public class LocalScopeParser implements Parser<LocalScopeNode> {
+
+	private static final SeparatorParser SEPARATOR = new SeparatorParser();
 
 	private final Grammar grammar;
 	private final ExpressionNode expression;
@@ -60,35 +61,19 @@ public class LocalScopeParser implements Parser<LocalScopeNode> {
 	@Override
 	public LocalScopeNode parse(ParserContext context) {
 
-		final LocalNode local;
+		final LocalNode local = parseLocal(context);
 
-		if (this.local != null) {
-			local = this.local;
-		} else if (this.expression != null) {
-			local = context.parse(new LocalParser(this.expression));
-			if (local == null) {
-				return null;
-			}
-		} else {
-			local = context.parse(local());
-			if (local == null) {
-				return null;
-			}
+		if (local == null) {
+			return null;
 		}
 
 		final SignNode<LocalScopeNode.Separator> separator;
 		final StatementNode content;
-		final SourcePosition start = context.current().fix();
 
 		switch (context.next()) {
 		case ':':
-			context.acceptAll();
-			separator = context.acceptComments(
-					true,
-					new SignNode<>(
-							start,
-							context.current().fix(),
-							LocalScopeNode.Separator.COLON));
+		case '>':
+			separator = context.parse(SEPARATOR);
 			content = context.parse(this.grammar.localStatement());
 			break;
 		case '(':
@@ -104,6 +89,66 @@ public class LocalScopeParser implements Parser<LocalScopeNode> {
 		}
 
 		return new LocalScopeNode(local, separator, content);
+	}
+
+	private LocalNode parseLocal(ParserContext context) {
+		if (this.local != null) {
+			return this.local;
+		}
+		if (this.expression != null) {
+			return context.parse(new LocalParser(this.expression));
+		}
+		return context.parse(local());
+	}
+
+	private static final class SeparatorParser
+			implements Parser<SignNode<LocalScopeNode.Separator>> {
+
+		@Override
+		public SignNode<Separator> parse(ParserContext context) {
+			switch (context.next()) {
+			case ':':
+				return parseColon(context);
+			case '>':
+				return parseChevron(context);
+			}
+			return null;
+		}
+
+		private SignNode<Separator> parseChevron(ParserContext context) {
+			final SourcePosition start = context.current().fix();
+
+			if (context.next() != '>') {
+				return null;
+			}
+			if (context.next() == '>') {
+				return null;
+			}
+
+			context.acceptButLast();
+
+			return context.acceptComments(
+					true,
+					new SignNode<>(
+							start,
+							context.current().fix(),
+							LocalScopeNode.Separator.CHEVRON));
+		}
+
+		private SignNode<Separator> parseColon(ParserContext context) {
+
+			final SourcePosition start = context.current().fix();
+
+			context.acceptAll();
+
+			return context.acceptComments(
+					true,
+					new SignNode<>(
+							start,
+							context.current().fix(),
+							LocalScopeNode.Separator.COLON));
+		}
+
 	}
 
 }

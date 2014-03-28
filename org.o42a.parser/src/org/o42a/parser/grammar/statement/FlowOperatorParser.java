@@ -1,6 +1,6 @@
 /*
     Parser
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,54 +19,40 @@
 */
 package org.o42a.parser.grammar.statement;
 
-import static org.o42a.parser.Grammar.expression;
-
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.AssignmentOperator;
-import org.o42a.ast.statement.SelfAssignmentNode;
+import org.o42a.ast.statement.FlowOperator;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
+final class FlowOperatorParser implements Parser<SignNode<FlowOperator>> {
 
-	public static final SelfAssignmentParser SELF_ASSIGNMENT =
-			new SelfAssignmentParser();
-
-	private SelfAssignmentParser() {
-	}
+	static final FlowOperatorParser FLOW_OPERATOR = new FlowOperatorParser();
 
 	@Override
-	public SelfAssignmentNode parse(ParserContext context) {
-		if (context.next() != '=') {
+	public SignNode<FlowOperator> parse(ParserContext context) {
+		if (context.next() != '>') {
 			return null;
 		}
 
 		final SourcePosition start = context.current().fix();
 
-		context.skip();
-
-		final SignNode<AssignmentOperator> prefix = new SignNode<>(
-				start,
-				context.current().fix(),
-				AssignmentOperator.ASSIGN);
-
-		if (context.next() == '=') {
+		if (context.next() != '>') {
+			return null;
+		}
+		if (context.next() == '>') {
 			return null;
 		}
 
 		context.acceptButLast();
-		context.acceptComments(false, prefix);
 
-		final ExpressionNode value = context.parse(expression());
-
-		if (value == null) {
-			context.getLogger().missingValue(context.current());
-		}
-
-		return new SelfAssignmentNode(prefix, value);
+		return context.acceptComments(
+				false,
+				new SignNode<>(
+						start,
+						context.current().fix(),
+						FlowOperator.FLOW));
 	}
 
 }

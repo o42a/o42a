@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen.code.op;
 
-import static org.o42a.codegen.code.op.OpBlockBase.unwrapPos;
-
 import org.o42a.codegen.code.*;
 import org.o42a.util.string.ID;
 
@@ -77,8 +75,14 @@ public abstract class BoolOp implements Op {
 	}
 
 	public final void go(Block source, CodePos truePos, CodePos falsePos) {
+
+		final OpBlockBase s = source;
+
 		if (source.getGenerator().isProxied()) {
-			source.writer().go(this, unwrapPos(truePos), unwrapPos(falsePos));
+			source.writer().go(
+					this,
+					s.unwrapPos(truePos),
+					s.unwrapPos(falsePos));
 			return;
 		}
 
@@ -152,6 +156,7 @@ public abstract class BoolOp implements Op {
 			return null;
 		}
 
+		final OpBlockBase s = source;
 		final Allocator from;
 
 		if (includingFrom) {
@@ -161,7 +166,7 @@ public abstract class BoolOp implements Op {
 			// Start from the enclosing allocator.
 			from = fromAllocator.getEnclosingAllocator();
 			if (from == null) {
-				return unwrapPos(pos);
+				return s.unwrapPos(pos);
 			}
 		}
 
@@ -171,12 +176,12 @@ public abstract class BoolOp implements Op {
 		exitBlock.disposeFromTo(from, pos);
 
 		if (!exitBlock.exists()) {
-			return unwrapPos(pos);
+			return s.unwrapPos(pos);
 		}
 
-		exitBlock.writer().go(unwrapPos(pos));
+		exitBlock.writer().go(s.unwrapPos(pos));
 
-		return unwrapPos(exitBlock.head());
+		return s.unwrapPos(exitBlock.head());
 	}
 
 }
