@@ -21,38 +21,111 @@ package org.o42a.core.st.impl.local;
 
 import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_NAME;
 
-import java.util.HashMap;
-
-import org.o42a.core.source.Location;
+import org.o42a.core.Container;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.sentence.Local;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.Name;
 
 
 public final class Locals {
 
+	private final LocalFactory factory;
 	private final Locals enclosing;
-	private Location first;
-	private HashMap<Name, Location> locals;
+	private final Statements statements;
+	private final Local local;
+	private Container container;
 
-	public Locals(Locals enclosing) {
+	public Locals(Block block, LocalFactory factory) {
+		this.factory = factory;
+		this.enclosing = null;
+		this.statements = null;
+		this.local = null;
+		this.container = block.getContainer();
+	}
+
+	private Locals(Locals enclosing, Container container) {
+		this.factory = enclosing.factory;
 		this.enclosing = enclosing;
+		this.statements = null;
+		this.local = null;
+		this.container = container;
 	}
 
-	public Location firstLocal() {
-		return this.first;
+	private Locals(Locals enclosing, Statements statements, Local local) {
+		this.factory = enclosing.factory;
+		this.enclosing = enclosing;
+		this.statements = statements;
+		this.local = local;
 	}
 
-	public boolean declareLocal(LocationInfo location, Name name) {
-		if (duplicateLocal(location, name)) {
-			return false;
+	public final boolean isEmpty() {
+		if (this.enclosing == null) {
+			return this.local == null;
 		}
-		addLocal(location, name);
-		return true;
+		return this.enclosing.isEmpty();
 	}
 
-	private boolean duplicateLocal(LocationInfo location, Name name) {
+	public final Local getLocal() {
+		return this.local;
+	}
 
-		final Location existing = existingLocal(name);
+	public final Container getContainer() {
+		if (this.container != null) {
+			return this.container;
+		}
+		return this.container = new LocalInsides(this.local);
+	}
+
+	public final Locals forBlock(Block block) {
+
+		final Container container = block.getContainer();
+
+		if (this.container == container) {
+			return this;
+		}
+
+		return new Locals(this, container);
+	}
+
+	public final Locals declareLocal(
+			Statements statements,
+			LocationInfo location,
+			Name name,
+			Ref ref) {
+		if (duplicateLocal(statements, location, name)) {
+			return null;
+		}
+
+		final Local local = this.factory.createLocal(location, name, ref);
+
+		return new Locals(this, statements, local);
+	}
+
+	public void convertToFields() {
+
+		Locals locals = this;
+
+		do {
+
+			final Local local = locals.getLocal();
+
+			if (local != null) {
+				this.factory.convertToField(local);
+			}
+
+			locals = locals.enclosing;
+		} while (locals != null);
+	}
+
+	private boolean duplicateLocal(
+			Statements statements,
+			LocationInfo location,
+			Name name) {
+
+		final Local existing = existingLocal(statements, name);
 
 		if (existing == null) {
 			return false;
@@ -67,42 +140,52 @@ public final class Locals {
 		return true;
 	}
 
-	private Location existingLocal(Name name) {
+	private Local existingLocal(Statements statements, Name name) {
 		if (name.is(ANONYMOUS_LOCAL_NAME)) {
 			// Anonymous locals allowed in enclosing blocks.
-			return blockAnonymousLocal();
+			return anonymousLocal(statements);
 		}
 		return localByName(name);
 	}
 
-	private Location localByName(Name name) {
-		if (this.locals != null) {
+	private Local localByName(Name name) {
 
-			final Location found = this.locals.get(name);
+		Locals locals = this;
 
-			if (found != null) {
-				return found;
+		do {
+
+			final Local local = locals.local;
+
+			if (local != null && local.getName().is(name)) {
+				return this.local;
 			}
-		}
-		if (this.enclosing == null) {
-			return null;
-		}
-		return this.enclosing.localByName(name);
+
+			locals = locals.enclosing;
+		} while (locals != null);
+
+		return null;
 	}
 
-	private Location blockAnonymousLocal() {
-		if (this.locals == null) {
+	private Local anonymousLocal(Statements statements) {
+		// Search for anonymous local in the same statements only.
+		if (this.statements != statements) {
 			return null;
 		}
-		return this.locals.get(ANONYMOUS_LOCAL_NAME);
-	}
 
-	private void addLocal(LocationInfo location, Name name) {
-		if (this.locals == null) {
-			this.first = location.getLocation();
-			this.locals = new HashMap<>();
-		}
-		this.locals.put(name, location.getLocation());
+		Locals locals = this;
+
+		do {
+
+			final Local local = locals.local;
+
+			if (local != null && local.getName().is(ANONYMOUS_LOCAL_NAME)) {
+				return local;
+			}
+
+			locals = locals.enclosing;
+		} while (locals != null && locals.statements == statements);
+
+		return null;
 	}
 
 }

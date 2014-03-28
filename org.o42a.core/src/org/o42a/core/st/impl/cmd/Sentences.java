@@ -109,7 +109,7 @@ public abstract class Sentences {
 		return new ExecuteCommand(location, Condition.TRUE);
 	}
 
-	public DefTarget declarativeTarget(Scope origin) {
+	public DefTarget target(Scope origin) {
 
 		final CommandTargets defTargets = getTargets();
 

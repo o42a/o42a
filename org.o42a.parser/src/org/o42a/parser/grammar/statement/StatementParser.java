@@ -109,7 +109,7 @@ public class StatementParser implements Parser<StatementNode> {
 
 		switch (next) {
 		case '=':
-			return context.parse(selfAssignment());
+			return context.parse(returnValue());
 		case '@':
 
 			final DeclarableAdapterNode declarableAdapter =
@@ -130,7 +130,16 @@ public class StatementParser implements Parser<StatementNode> {
 		case '(':
 			return parseParentheses(context);
 		case '<':
+
+			final ReturnNode yield = context.parse(returnValue());
+
+			if (yield != null) {
+				return yield;
+			}
+
 			return context.parse(this.grammar.clauseDeclarator());
+		case '>':
+			return context.parse(passThrough());
 		}
 
 		return null;
@@ -185,6 +194,13 @@ public class StatementParser implements Parser<StatementNode> {
 			ParserContext context,
 			ExpressionNode expression) {
 
+		final PassThroughNode passThrough =
+				parsePassThrough(context, expression);
+
+		if (passThrough != null) {
+			return passThrough;
+		}
+
 		final LocalNode local = context.parse(local(expression));
 		final StatementNode assignment =
 				parseAssignment(context, local, expression);
@@ -206,13 +222,22 @@ public class StatementParser implements Parser<StatementNode> {
 	private AssignmentNode parseAssignment(
 			ParserContext context,
 			LocalNode local,
-			ExpressionNode expression) {
+			ExpressionNode destination) {
 		if (context.pendingOrNext() == '='
 				&& local == null
 				&& !assignmentsAllowed()) {
 			return null;
 		}
-		return context.parse(assignment(local != null ? local : expression));
+		return context.parse(assignment(local != null ? local : destination));
+	}
+
+	private PassThroughNode parsePassThrough(
+			ParserContext context,
+			ExpressionNode input) {
+		if (this.local || context.pendingOrNext() != '>') {
+			return null;
+		}
+		return context.parse(passThrough(input));
 	}
 
 	private LocalScopeNode parseLocalScope(
@@ -239,11 +264,10 @@ public class StatementParser implements Parser<StatementNode> {
 			return expression;
 		}
 
-		final NamedBlockNode namedBlock =
-				parseNamedBlock(context, declarable);
+		final StatementNode block = parseNamedBlock(context, declarable);
 
-		if (namedBlock != null) {
-			return namedBlock;
+		if (block != null) {
+			return block;
 		}
 
 		if (this.local) {
@@ -261,9 +285,30 @@ public class StatementParser implements Parser<StatementNode> {
 		return expression;
 	}
 
-	private NamedBlockNode parseNamedBlock(
+	private StatementNode parseNamedBlock(
 			ParserContext context,
 			DeclarableNode declarable) {
+
+		final NameNode name = blockName(declarable);
+
+		if (name == null) {
+			return null;
+		}
+		if (context.pendingOrNext() != ':') {
+			return null;
+		}
+
+		final NamedBlockNode namedBlock = context.parse(namedBlock(name));
+
+		if (namedBlock != null) {
+			name.addComments(declarable.getComments());
+			return namedBlock;
+		}
+
+		return null;
+	}
+
+	private NameNode blockName(DeclarableNode declarable) {
 
 		final MemberRefNode memberRef = declarable.toMemberRef();
 
@@ -274,19 +319,7 @@ public class StatementParser implements Parser<StatementNode> {
 			return null;
 		}
 
-		final NameNode name = memberRef.getName();
-
-		if (name == null) {
-			return null;
-		}
-
-		final NamedBlockNode namedBlock = context.parse(namedBlock(name));
-
-		if (namedBlock != null) {
-			name.addComments(memberRef.getComments());
-		}
-
-		return namedBlock;
+		return memberRef.getName();
 	}
 
 }

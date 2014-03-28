@@ -46,6 +46,8 @@ public interface AnyOp extends DataPtrOp<AnyOp> {
 
 	DataOp toData(ID id, Code code);
 
+	CodeOp toCode(ID id, Code code);
+
 	<S extends StructOp<S>> S to(ID id, Code code, Type<S> type);
 
 }

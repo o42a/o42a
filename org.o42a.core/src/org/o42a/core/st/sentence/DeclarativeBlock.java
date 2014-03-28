@@ -118,40 +118,37 @@ public final class DeclarativeBlock extends Block {
 		return null;
 	}
 
-	@Override
-	public final DeclarativeBlock toDeclarativeBlock() {
-		return this;
-	}
-
 	public DefinitionsBuilder definitions(CommandEnv env) {
 		init(env);
 		return createCommand(env);
 	}
 
 	@Override
-	public DeclarativeBlock reproduce(Reproducer reproducer) {
+	public Block reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final Statements enclosing = reproducer.getStatements();
-		final DeclarativeBlock reproduction;
 
-		if (enclosing == null) {
-			reproduction = new DeclarativeBlock(
-					this,
-					containerDistributor(reproducer.getContainer()),
-					null,
-					reproducer.getMemberRegistry(),
-					DECLARATIVE_FACTORY,
-					true);
-			reproduction.command(defaultEnv(reproducer.getLogger()));
+		if (enclosing != null) {
+			final Block reproduction = enclosing.parentheses(this);
+
 			reproduceSentences(reproducer, reproduction);
-			return reproduction;
+
+			return null;
 		}
 
-		reproduction = enclosing.parentheses(this).toDeclarativeBlock();
+		final Block reproduction = new DeclarativeBlock(
+				this,
+				containerDistributor(reproducer.getContainer()),
+				null,
+				reproducer.getMemberRegistry(),
+				DECLARATIVE_FACTORY,
+				true);
+
+		reproduction.command(defaultEnv(reproducer.getLogger()));
 		reproduceSentences(reproducer, reproduction);
 
-		return null;
+		return reproduction;
 	}
 
 	@Override

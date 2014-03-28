@@ -59,6 +59,8 @@ public abstract class Intrinsics {
 
 	public abstract Obj getRow();
 
+	public abstract Obj getFlow();
+
 	public abstract Module getModule(Name moduleName);
 
 	public abstract Module getMainModule();

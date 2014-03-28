@@ -257,6 +257,25 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	}
 
 	@Override
+	public CodeCOp toCode(ID id, Code code) {
+
+		final ID castId = code.getOpNames().castId(id, CODE_ID, this);
+
+		return new CodeCOp(new OpBE<CodeOp>(castId, cast(code)) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
+			protected CodeOp write() {
+				return backend().underlying().toCode(
+						getId(),
+						part().underlying());
+			}
+		});
+	}
+
+	@Override
 	public <S extends StructOp<S>> S to(
 			final ID id,
 			final Code code,

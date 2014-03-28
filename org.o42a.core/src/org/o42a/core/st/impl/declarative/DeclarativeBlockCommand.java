@@ -58,7 +58,7 @@ public final class DeclarativeBlockCommand
 
 	@Override
 	public DefTarget toTarget(Scope origin) {
-		return getSentences().declarativeTarget(origin);
+		return getSentences().target(origin);
 	}
 
 }

@@ -33,6 +33,7 @@ import org.o42a.common.source.TreeCompilerContext;
 import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
@@ -76,6 +77,8 @@ public class Root extends Obj {
 			fieldName(CASE_INSENSITIVE.canonicalName("array"));
 	private static final MemberName ROW_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("row"));
+	private static final MemberName FLOW_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("flow"));
 
 	public static Root createRoot(Scope topScope) {
 
@@ -98,6 +101,7 @@ public class Root extends Obj {
 	private Obj variableObject;
 	private Obj arrayObject;
 	private Obj rowObject;
+	private Obj flowObject;
 
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
@@ -129,64 +133,63 @@ public class Root extends Obj {
 		if (this.macroObject != null) {
 			return this.macroObject;
 		}
-		return this.macroObject =
-				member(MACRO_MEMBER).substance(dummyUser()).toObject();
+		return this.macroObject = object(MACRO_MEMBER);
 	}
 
 	public final Obj getInteger() {
 		if (this.integerObject != null) {
 			return this.integerObject;
 		}
-		return this.integerObject =
-				member(INTEGER_MEMBER).substance(dummyUser()).toObject();
+		return this.integerObject = object(INTEGER_MEMBER);
 	}
 
 	public final Obj getFloat() {
 		if (this.floatObject != null) {
 			return this.floatObject;
 		}
-		return this.floatObject =
-				member(FLOAT_MEMBER).substance(dummyUser()).toObject();
+		return this.floatObject = object(FLOAT_MEMBER);
 	}
 
 	public final Obj getString() {
 		if (this.stringObject != null) {
 			return this.stringObject;
 		}
-		return this.stringObject =
-				member(STRING_MEMBER).substance(dummyUser()).toObject();
+		return this.stringObject = object(STRING_MEMBER);
 	}
 
 	public final Obj getLink() {
 		if (this.linkObject != null) {
 			return this.linkObject;
 		}
-		return this.linkObject =
-				member(LINK_MEMBER).substance(dummyUser()).toObject();
+		return this.linkObject = object(LINK_MEMBER);
 	}
 
 	public final Obj getVariable() {
 		if (this.variableObject != null) {
 			return this.variableObject;
 		}
-		return this.variableObject =
-				member(VARIABLE_MEMBER).substance(dummyUser()).toObject();
+		return this.variableObject = object(VARIABLE_MEMBER);
 	}
 
 	public final Obj getArray() {
 		if (this.arrayObject != null) {
 			return this.arrayObject;
 		}
-		return this.arrayObject =
-				member(ARRAY_MEMBER).substance(dummyUser()).toObject();
+		return this.arrayObject = object(ARRAY_MEMBER);
 	}
 
 	public final Obj getRow() {
 		if (this.rowObject != null) {
 			return this.rowObject;
 		}
-		return this.rowObject =
-				member(ROW_MEMBER).substance(dummyUser()).toObject();
+		return this.rowObject = object(ROW_MEMBER);
+	}
+
+	public final Obj getFlow() {
+		if (this.flowObject != null) {
+			return this.flowObject;
+		}
+		return this.flowObject = object(FLOW_MEMBER);
 	}
 
 	@Override
@@ -241,6 +244,10 @@ public class Root extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.definitionsBuilder.buildDefinitions();
+	}
+
+	private Obj object(MemberId memberId) {
+		return member(memberId).substance(dummyUser()).toObject();
 	}
 
 }

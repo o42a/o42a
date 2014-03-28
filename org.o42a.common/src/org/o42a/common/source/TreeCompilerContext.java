@@ -22,7 +22,7 @@ package org.o42a.common.source;
 import java.util.Iterator;
 
 import org.o42a.core.source.*;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.Logger;
 
@@ -73,7 +73,7 @@ public class TreeCompilerContext<S extends Source>
 	}
 
 	@Override
-	public void include(DeclarativeBlock block) {
+	public void include(Block block) {
 
 		final SourceCompiler compiler = getCompiler();
 		final Iterator<? extends SourceTree<S>> childTrees =

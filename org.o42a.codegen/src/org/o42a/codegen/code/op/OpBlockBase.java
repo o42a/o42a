@@ -26,13 +26,6 @@ import org.o42a.util.string.ID;
 
 public abstract class OpBlockBase extends Code {
 
-	protected static CodePos unwrapPos(CodePos codePos) {
-		if (codePos == null || codePos.getClass() != Head.class) {
-			return codePos;
-		}
-		return ((Head) codePos).unwrap();
-	}
-
 	public OpBlockBase(Code enclosing, ID name) {
 		super(enclosing, name);
 	}
@@ -55,7 +48,7 @@ public abstract class OpBlockBase extends Code {
 		final Allocator toAllocator = pos.code().getAllocator();
 		// Go to the allocator's head?
 		final boolean includeTarget =
-				unwrapPos(toAllocator.head()) == unwrapPos(pos);
+				toAllocator.ptr().pos() == unwrapPos(pos);
 
 		disposeFromTo(fromAllocator, toAllocator, includeTarget);
 
@@ -89,30 +82,8 @@ public abstract class OpBlockBase extends Code {
 		}
 	}
 
+	protected abstract CodePos unwrapPos(CodePos pos);
+
 	protected abstract void disposeBy(Allocator allocator);
-
-	protected static final class Head implements CodePos {
-
-		private final Block code;
-
-		public Head(Block code) {
-			this.code = code;
-		}
-
-		@Override
-		public Block code() {
-			return this.code;
-		}
-
-		@Override
-		public String toString() {
-			return this.code.toString();
-		}
-
-		CodePos unwrap() {
-			return this.code.writer().head();
-		}
-
-	}
 
 }

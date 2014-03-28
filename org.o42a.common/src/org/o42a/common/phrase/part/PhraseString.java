@@ -61,7 +61,7 @@ public class PhraseString extends PhraseContinuation {
 		final Statements statements =
 				definition.declare(this).alternative(this);
 
-		statements.selfAssign(ValueType.STRING.constantRef(
+		statements.returnValue(ValueType.STRING.constantRef(
 				this,
 				statements.nextDistributor(),
 				this.string));

@@ -20,6 +20,7 @@
 package org.o42a.core.value.integer;
 
 import static org.o42a.core.ir.value.type.ValueIRDesc.PRIMITIVE_VALUE_IR_DESC;
+import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.type.ValueIRDesc;
@@ -45,7 +46,7 @@ public final class IntegerValueType extends SingleValueType<Long> {
 
 	@Override
 	public Path path(Intrinsics intrinsics) {
-		return Path.ROOT_PATH.append(
+		return ROOT_PATH.append(
 				typeObject(intrinsics).getScope().toField().getKey());
 	}
 

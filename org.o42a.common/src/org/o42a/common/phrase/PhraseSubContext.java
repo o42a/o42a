@@ -219,7 +219,7 @@ class PhraseSubContext extends PhraseContext {
 				continue;
 			}
 			if (assignment) {
-				statements.selfAssign(ref);
+				statements.returnValue(ref);
 			} else {
 				statements.expression(ref);
 			}

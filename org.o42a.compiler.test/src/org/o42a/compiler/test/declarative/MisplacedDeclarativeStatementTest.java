@@ -29,8 +29,8 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignInInterrogativeSentence() {
-		expectError("compiler.prohibited_interrogative_assignment");
+	public void returnInInterrogativeSentence() {
+		expectError("compiler.prohibited_interrogative_return");
 		compile(
 				"A := integer (",
 				"  = 2?",
@@ -38,8 +38,8 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void selfAssignInsideInterrogation() {
-		expectError("compiler.prohibited_interrogative_assignment");
+	public void returnInsideInterrogation() {
+		expectError("compiler.prohibited_interrogative_return");
 		compile(
 				"A := integer (",
 				"  (False, (Void, = 2))?",
