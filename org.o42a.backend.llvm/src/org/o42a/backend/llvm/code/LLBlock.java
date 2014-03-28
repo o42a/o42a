@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.llvm.code;
 
+import org.o42a.backend.llvm.code.op.CodeLLOp;
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.code.*;
@@ -123,8 +124,24 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 
 	@Override
 	public void go(CodeOp pos, CodePos[] targets) {
-		// TODO Auto-generated method stub
 
+		final long[] blockPtrs = new long[targets.length];
+
+		for (int i = 0; i < targets.length; ++i) {
+			blockPtrs[i] = blockPtr(targets[i]);
+		}
+
+		final long nextPtr = nextPtr();
+		final CodeLLOp llvmPos = (CodeLLOp) pos;
+
+		instr(
+				nextPtr,
+				goByPtr(
+						nextPtr,
+						nextInstr(),
+						llvmPos.ptr().getNativePtr(),
+						blockPtrs));
+		endBlock();
 	}
 
 	@Override
