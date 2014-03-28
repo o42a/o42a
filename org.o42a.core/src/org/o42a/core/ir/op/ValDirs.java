@@ -27,6 +27,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.DefStore;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
@@ -92,7 +93,7 @@ public abstract class ValDirs {
 	}
 
 	public final DefDirs def(CodePos returnDir) {
-		return new DefDirs(this, returnDir);
+		return new DefDirs(new DefStore(this), returnDir);
 	}
 
 	public final ValDirs sub(Block code) {
@@ -181,7 +182,7 @@ public abstract class ValDirs {
 		private final Block returnCode;
 
 		ValDefDirs(ValDirs valDirs, Block returnCode) {
-			super(valDirs, returnCode.head());
+			super(new DefStore(valDirs), returnCode.head());
 			this.returnCode = returnCode;
 		}
 
