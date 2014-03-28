@@ -113,7 +113,7 @@ final class BracesControl extends Control {
 
 	@Override
 	final CodePos returnDir() {
-		return this.parent.returnDir();
+		return main().returnDir();
 	}
 
 }

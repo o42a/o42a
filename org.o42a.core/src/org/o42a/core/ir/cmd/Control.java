@@ -27,7 +27,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.ID;
@@ -64,7 +63,7 @@ public abstract class Control {
 	public abstract LocalsCode locals();
 
 	public final ValOp result() {
-		return main().mainResult();
+		return main().mainStore().value();
 	}
 
 	public abstract Code allocation();
@@ -80,7 +79,7 @@ public abstract class Control {
 	}
 
 	public final void returnValue(Block code, ValOp value) {
-		main().storeResult(code, value);
+		main().mainStore().store(code, value);
 		code.go(returnDir());
 	}
 
@@ -145,12 +144,11 @@ public abstract class Control {
 		return getBuilder().dirs(code(), falseDir());
 	}
 
-	public final ValDirs valDirs() {
-		return dirs().value(result());
-	}
-
 	public final DefDirs defDirs() {
-		return new ControlDirs(valDirs());
+		return new DefDirs(
+				main().mainStore(),
+				dirs().value(result()),
+				returnDir());
 	}
 
 	public abstract void end();
@@ -200,24 +198,6 @@ public abstract class Control {
 				location,
 				"Block '%s' not found",
 				name);
-	}
-
-	private final class ControlDirs extends DefDirs {
-
-		ControlDirs(ValDirs valDirs) {
-			super(valDirs, returnDir());
-		}
-
-		@Override
-		public void returnValue(Block code, ValOp value) {
-			Control.this.returnValue(code, value);
-		}
-
-		@Override
-		public ValOp result() {
-			return Control.this.result();
-		}
-
 	}
 
 }

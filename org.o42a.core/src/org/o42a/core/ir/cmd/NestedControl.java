@@ -94,7 +94,7 @@ abstract class NestedControl extends Control {
 
 	@Override
 	final CodePos returnDir() {
-		return this.parent.returnDir();
+		return main().returnDir();
 	}
 
 	static final class ParenthesesControl extends NestedControl {

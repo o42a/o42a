@@ -25,6 +25,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.DefStore;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
@@ -37,9 +38,6 @@ final class MainControl extends Control {
 
 	private int seq;
 	private Block returnCode;
-	private ValOp finalResult;
-	private Code singleResultInset;
-	private byte results;
 	private CodePos[] resumePositions;
 	private Block resume;
 	private CodePos start;
@@ -76,7 +74,7 @@ final class MainControl extends Control {
 	}
 
 	public final ValOp finalResult() {
-		return this.finalResult != null ? this.finalResult : result();
+		return this.dirs.result();
 	}
 
 	@Override
@@ -104,6 +102,7 @@ final class MainControl extends Control {
 				.load(null, this.resume);
 
 		resumeFrom.isNull(null, this.resume).go(this.resume, this.start);
+		this.resume.debug("Resuming");
 		this.resume.go(
 				resumeFrom.toCode(null, this.resume),
 				this.resumePositions);
@@ -113,8 +112,8 @@ final class MainControl extends Control {
 		return this.dirs.getBuilder();
 	}
 
-	final ValOp mainResult() {
-		return this.dirs.value();
+	final DefStore mainStore() {
+		return this.dirs.store();
 	}
 
 	@Override
@@ -145,26 +144,6 @@ final class MainControl extends Control {
 		return ID.id(Integer.toString(++this.seq));
 	}
 
-	void storeResult(Block code, ValOp value) {
-		assert this.dirs.getValueType().is(value.getValueType()) :
-			"Can not store " + value + " in " + this;
-		if (this.results == 0 && valueAccessibleBy(code)) {
-			this.singleResultInset = code.inset("sgl_res");
-			this.finalResult = value;
-			this.results = 1;
-			return;
-		}
-		if (this.results == 1) {
-			if (this.singleResultInset != null) {
-				result().store(this.singleResultInset, this.finalResult);
-				this.singleResultInset = null;
-			}
-			this.results = 2;
-			this.finalResult = result();
-		}
-		result().store(code, value);
-	}
-
 	void addResumePosition(Block resumeFrom) {
 		if (this.resumePositions == null) {
 			this.resumePositions = new CodePos[] {resumeFrom.head()};
@@ -172,13 +151,6 @@ final class MainControl extends Control {
 			this.resumePositions =
 					ArrayUtil.append(this.resumePositions, resumeFrom.head());
 		}
-	}
-
-	private boolean valueAccessibleBy(Code code) {
-		if (!this.dirs.value().isStackAllocated()) {
-			return true;
-		}
-		return code.getAllocator() == this.dirs.code().getAllocator();
 	}
 
 }
