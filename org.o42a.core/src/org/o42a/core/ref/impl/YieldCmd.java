@@ -24,6 +24,7 @@ import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.op.CodeDirs;
 
 
 final class YieldCmd implements Cmd {
@@ -37,21 +38,15 @@ final class YieldCmd implements Cmd {
 	@Override
 	public void write(Control control) {
 
-		final DefDirs dirs = control.defDirs();
+		final DefDirs controlDirs = control.defDirs();
+		final Block yield = controlDirs.addBlock("yield");
+		final DefDirs dirs = controlDirs.setReturnDir(yield.head());
 
 		this.eval.write(dirs, control.host());
 
-		final Block code = dirs.done().code();
-		final Block afterYield = code.addBlock("after_yield");
+		dirs.done();
 
-		control.resumeFrom(afterYield);
-		control.host()
-		.objectData(code)
-		.ptr()
-		.resumeFrom(code)
-		.store(code, afterYield.ptr().toAny().op(afterYield.getId(), code));
-
-		afterYield.go(code.tail());
+		yield(control, controlDirs, yield);
 	}
 
 	@Override
@@ -60,6 +55,32 @@ final class YieldCmd implements Cmd {
 			return super.toString();
 		}
 		return "<<" + this.eval;
+	}
+
+	private void yield(Control control, DefDirs controlDirs, Block code) {
+
+		final CodeDirs continuationDirs = controlDirs.done();
+
+		if (!code.exists()) {
+			return;
+		}
+
+		final Block continuation = continuationDirs.code();
+		final Block onResume = continuation.addBlock("on_resume");
+
+		code.dump("Yield: ", controlDirs.result());
+		control.resumeFrom(onResume);
+		control.host()
+		.objectData(code)
+		.ptr()
+		.resumeFrom(code)
+		.store(
+				code,
+				onResume.ptr().toAny().op(code.getId(), code));
+		code.go(controlDirs.returnDir());
+
+		onResume.debug("Resumed");
+		onResume.go(continuation.tail());
 	}
 
 }
