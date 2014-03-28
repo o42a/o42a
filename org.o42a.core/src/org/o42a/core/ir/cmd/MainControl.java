@@ -104,7 +104,9 @@ final class MainControl extends Control {
 				.load(null, this.resume);
 
 		resumeFrom.isNull(null, this.resume).go(this.resume, this.start);
-		this.resume.go(resumeFrom.toCode(null, this.resume), this.resumePositions);
+		this.resume.go(
+				resumeFrom.toCode(null, this.resume),
+				this.resumePositions);
 	}
 
 	final CodeBuilder builder() {
