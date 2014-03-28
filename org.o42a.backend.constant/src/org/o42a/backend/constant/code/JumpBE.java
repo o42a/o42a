@@ -182,6 +182,7 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 
 		@Override
 		public void prepare() {
+			use(this.pos);
 		}
 
 		@Override
