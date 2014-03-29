@@ -9,6 +9,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberName.localFieldName;
+import static org.o42a.core.value.link.LinkValueType.LINK;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.junit.Test;
@@ -52,7 +53,6 @@ public class YieldTest extends CompilerTestCase {
 				")");
 
 		final Obj a = field("a").toObject();
-
 		final Member memberF = a.member(
 				localFieldName(caseInsensitiveName("f")),
 				Accessor.OWNER);
@@ -61,7 +61,48 @@ public class YieldTest extends CompilerTestCase {
 
 		final Obj f = memberF.toField().field(dummyUser()).toObject();
 
+		assertThat(f.type().getValueType(), valueType(LINK));
+		assertThat(
+				LINK.interfaceRef(f.type().getParameters())
+				.getType()
+				.type()
+				.getValueType(),
+				valueType(ValueType.INTEGER));
 		assertThat(definiteValue(linkTarget(f), ValueType.INTEGER), is(2L));
+
+		assertThat(valueOf(a, ValueType.INTEGER), runtimeValue());
+	}
+
+	@Test
+	public void convertLocalLinkToField() {
+		compile(
+				"A := integer (",
+				"  `2 $ F (",
+				"    << 1",
+				"    F",
+				"  )",
+				")");
+
+		final Obj a = field("a").toObject();
+		final Member memberF = a.member(
+				localFieldName(caseInsensitiveName("f")),
+				Accessor.OWNER);
+
+		assertThat("Local field `f` not created", memberF, notNullValue());
+
+		final Obj f = memberF.toField().field(dummyUser()).toObject();
+
+		assertThat(f.type().getValueType(), valueType(LINK));
+
+		assertThat(
+				LINK.interfaceRef(f.type().getParameters())
+				.getType()
+				.type()
+				.getValueType(),
+				valueType(LINK));
+		assertThat(
+				definiteValue(linkTarget(linkTarget(f)), ValueType.INTEGER),
+				is(2L));
 
 		assertThat(valueOf(a, ValueType.INTEGER), runtimeValue());
 	}

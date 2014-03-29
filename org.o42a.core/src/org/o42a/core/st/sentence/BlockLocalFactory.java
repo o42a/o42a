@@ -37,8 +37,11 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.field.impl.AscendantsFieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.impl.local.LocalFactory;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.link.KnownLink;
 import org.o42a.util.string.Name;
 
 
@@ -72,13 +75,14 @@ final class BlockLocalFactory implements LocalFactory {
 				distributor,
 				fieldName(local))
 				.setVisibilityMode(PRIVATE_VISIBILITY);
+		final TypeRef iface = local.originalRef().getInterface();
+		final TypeParameters<KnownLink> linkParameters =
+				LINK.typeParameters(iface);
 		final AscendantsDefinition ascendants = new AscendantsDefinition(
 				local,
 				distributor,
-				LINK.typeRef(
-						local,
-						distributor.getScope(),
-						LINK.typeParameters(local.originalRef().toTypeRef())));
+				LINK.typeRef(local, distributor.getScope()))
+				.setTypeParameters(linkParameters.toObjectTypeParameters());
 		final AscendantsFieldDefinition definition =
 				new AscendantsFieldDefinition(
 						local,
