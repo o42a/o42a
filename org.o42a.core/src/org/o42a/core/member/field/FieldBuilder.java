@@ -84,11 +84,11 @@ public final class FieldBuilder implements ContainerInfo {
 	public DeclarationStatement build() {
 
 		final DeclaredMemberField member = new DeclaredMemberField(this);
+
+		this.memberRegistry.declareMember(member);
+
 		final FieldDeclarationStatement statement =
 				new FieldDeclarationStatement(this, member);
-
-		member.setStatement(statement);
-		this.memberRegistry.declareMember(member);
 
 		return statement;
 	}

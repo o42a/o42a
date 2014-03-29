@@ -43,7 +43,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	public final Ref getRef() {
-		return getRefCondition().getRef();
+		return getRefCondition().ref();
 	}
 
 	public final RefCondition getRefCondition() {

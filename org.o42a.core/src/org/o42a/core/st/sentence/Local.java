@@ -22,6 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
 import static org.o42a.core.member.MemberName.localName;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
@@ -37,6 +38,7 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -48,6 +50,7 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
+import org.o42a.util.string.SubID;
 
 
 public final class Local extends Step implements ContainerInfo, MemberPath {
@@ -56,13 +59,16 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 			CASE_SENSITIVE.canonicalName("L");
 	public static final MemberName ANONYMOUS_LOCAL_MEMBER =
 			localName(ANONYMOUS_LOCAL_NAME);
+	public static final SubID LOCAL_FIELD_SUFFIX =
+			CASE_SENSITIVE.canonicalName("LF");
 
 	private final Location location;
 	private final Name name;
 	private final MemberName memberId;
-	private final Ref ref;
+	private final Ref originalRef;
 	private ObjectStepUses uses;
-	private boolean field;
+	private Ref fieldRef;
+	private Ref ref;
 
 	Local(LocationInfo location, Name name, Ref ref) {
 		assert name != null :
@@ -71,7 +77,7 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 			"Local reference not specified";
 		this.location = location.getLocation();
 		this.name = name;
-		this.ref = ref;
+		this.originalRef = ref;
 		this.memberId = localName(name);
 	}
 
@@ -84,11 +90,21 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 	}
 
 	public final boolean isField() {
-		return this.field;
+		return this.fieldRef != null;
+	}
+
+	public final Ref originalRef() {
+		return this.originalRef;
 	}
 
 	public final Ref ref() {
-		return this.ref;
+		if (this.ref != null) {
+			return this.ref;
+		}
+		if (toString().equals("F")) {
+			System.err.println("(!)");
+		}
+		return this.ref = originalRef();
 	}
 
 	@Override
@@ -108,12 +124,12 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 
 	@Override
 	public final Scope getScope() {
-		return ref().getScope();
+		return originalRef().getScope();
 	}
 
 	@Override
 	public final Container getContainer() {
-		return ref().getContainer();
+		return originalRef().getContainer();
 	}
 
 	public Ref toRef() {
@@ -193,7 +209,7 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 
 	@Override
 	protected TypeRef iface(Ref ref) {
-		return ref().getInterface().prefixWith(refPrefix(ref));
+		return originalRef().getInterface().prefixWith(refPrefix(ref));
 	}
 
 	@Override
@@ -294,8 +310,14 @@ public final class Local extends Step implements ContainerInfo, MemberPath {
 		return new LocalRefTargetIR(refIR.getGenerator(), this);
 	}
 
-	void convertToField() {
-		this.field = true;
+	void convertToField(MemberField field) {
+		assert this.ref == null :
+			"Too late to convert the local to field";
+		this.ref = this.fieldRef =
+				SELF_PATH.append(field.getMemberKey())
+				.dereference()
+				.bind(this, getScope())
+				.target(distribute());
 	}
 
 	private final ObjectStepUses uses() {

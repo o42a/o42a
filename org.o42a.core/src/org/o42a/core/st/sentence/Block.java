@@ -24,28 +24,15 @@ import java.util.List;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
-import org.o42a.core.st.impl.local.LocalFactory;
 import org.o42a.core.st.impl.local.Locals;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.Name;
 
 
 public abstract class Block extends Statement {
-
-	private static final LocalFactory LOCAL_FACTORY = new LocalFactory() {
-		@Override
-		public Local createLocal(LocationInfo location, Name name, Ref ref) {
-			return new Local(location, name, ref);
-		}
-		@Override
-		public void convertToField(Local local) {
-			local.convertToField();
-		}
-	};
 
 	private final Statements enclosing;
 	private final ArrayList<Sentence> sentences = new ArrayList<>(1);
@@ -66,7 +53,7 @@ public abstract class Block extends Statement {
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
-		this.externalLocals = new Locals(this, LOCAL_FACTORY);
+		this.externalLocals = new Locals(this, new BlockLocalFactory(this));
 	}
 
 	Block(
@@ -82,7 +69,7 @@ public abstract class Block extends Statement {
 		if (enclosing != null) {
 			this.externalLocals = enclosing.locals().forBlock(this);
 		} else {
-			this.externalLocals = new Locals(this, LOCAL_FACTORY);
+			this.externalLocals = new Locals(this, new BlockLocalFactory(this));
 		}
 	}
 
