@@ -58,7 +58,7 @@ final class RefConditionCmd implements Cmd {
 	}
 
 	private final Ref ref() {
-		return this.statement.getRef();
+		return this.statement.ref();
 	}
 
 }

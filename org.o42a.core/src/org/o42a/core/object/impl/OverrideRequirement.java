@@ -135,7 +135,9 @@ public class OverrideRequirement implements PathWalker {
 
 	@Override
 	public boolean local(Scope scope, Local local) {
-		return local.ref().resolve(scope.walkingResolver(this)).isResolved();
+		return local.originalRef()
+				.resolve(scope.walkingResolver(this))
+				.isResolved();
 	}
 
 	@Override

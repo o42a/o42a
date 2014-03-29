@@ -38,10 +38,10 @@ public final class AscendantsFieldDefinition extends FieldDefinition {
 
 	public AscendantsFieldDefinition(
 			LocationInfo location,
-			Distributor scope,
+			Distributor distributor,
 			AscendantsDefinition ascendants,
 			BlockBuilder definitions) {
-		super(location, scope);
+		super(location, distributor);
 		this.ascendants = ascendants;
 		this.definitions = definitions;
 	}

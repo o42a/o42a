@@ -155,7 +155,7 @@ public class AssignmentStatement extends Statement {
 		if (isBinding()) {
 			return this.destination + "<-" + this.value;
 		}
-		return this.destination + "=" + this.local.ref();
+		return this.destination + "=" + this.local.originalRef();
 	}
 
 	public AssignmentKind getAssignmentKind() {
