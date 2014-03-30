@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.code;
 
+import static java.util.Objects.requireNonNull;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
@@ -44,6 +46,58 @@ public abstract class Code extends DebugCodeBase {
 	public abstract Allocator getAllocator();
 
 	public abstract Block getBlock();
+
+	/**
+	 * Retrieves the assets available at the current execution point.
+	 *
+	 * <p>It is possible that some assets are not available at the moment of
+	 * this method execution. It is possible that code transitions (e.g.
+	 * {@link Block#go(CodePos)}) will bring more assets available at this
+	 * execution point. So, it is advisable to perform actual assets checking
+	 * only at the function is fully built.<p>
+	 *
+	 * @return available assets.
+	 */
+	public CodeAssets assets() {
+		return getBlock().currentAssets();
+	}
+
+	/**
+	 * Adds asset to code.
+	 *
+	 * <p>This asset will be available after current execution point, but not
+	 * before it.</p>
+	 *
+	 * @param assetType asset type.
+	 * @param asset asset value, or <code>null</code> to do nothing.
+	 *
+	 * @return updated code assets.
+	 */
+	public <A extends CodeAsset<A>> CodeAssets addAsset(
+			Class<? extends A> assetType,
+			A asset) {
+		requireNonNull(assetType, "Asset type not specified");
+		if (asset == null) {
+			return getBlock().currentAssets();
+		}
+		return getBlock().updateAssets(assetType, asset);
+	}
+
+	/**
+	 * Removes all assets of the given type.
+	 *
+	 * <p>No assets of the given type will be available after current execution
+	 * point.</p>
+	 *
+	 * @param assetType asset type.
+	 *
+	 * @return updated code assets.
+	 */
+	public final <A extends CodeAsset<A>> CodeAssets removeAsset(
+			Class<? extends A> assetType) {
+		requireNonNull(assetType, "Asset type not specified");
+		return getBlock().updateAssets(assetType, null);
+	}
 
 	public final OpNames getOpNames() {
 		return this.opNames;

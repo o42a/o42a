@@ -30,6 +30,8 @@ import org.o42a.util.string.ID;
 public abstract class Block extends DebugBlockBase {
 
 	private final CodePtr ptr;
+	private final CodeAssets initialAssets = new CodeAssets();
+	private CodeAssets currentAssets = this.initialAssets;
 
 	Block(Code enclosing, ID name) {
 		super(enclosing, name);
@@ -118,6 +120,33 @@ public abstract class Block extends DebugBlockBase {
 	@Override
 	protected void disposeBy(Allocator allocator) {
 		allocator.dispose(this);
+	}
+
+	final CodeAssets currentAssets() {
+		return this.currentAssets;
+	}
+
+	final <A extends CodeAsset<A>> CodeAssets updateAssets(
+			Class<? extends A> assetType,
+			A asset) {
+		return this.currentAssets =
+				this.currentAssets.update(assetType, asset);
+	}
+
+	final void addAssetsFrom(Block block, CodePos pos) {
+		if (block.getAllocator() != getAllocator()) {
+			return;// Do not track assets from different allocator.
+		}
+		if (isHead(pos)) {
+			this.initialAssets.addAvailable(block.currentAssets());
+		} else {
+			this.currentAssets =
+					this.currentAssets.unite(block.currentAssets());
+		}
+	}
+
+	private boolean isHead(CodePos pos) {
+		return unwrapPos(pos) == ptr().pos();
 	}
 
 }
