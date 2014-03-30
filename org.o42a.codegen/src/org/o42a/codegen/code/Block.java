@@ -61,9 +61,13 @@ public abstract class Block extends DebugBlockBase {
 		return writer().tail();
 	}
 
+	@Override
+	public final CodeAssets assets() {
+		return this.currentAssets;
+	}
+
 	public final Allocator allocator(String name) {
-		assert assertIncomplete();
-		return new AllocatorCode(this, ID.id(name));
+		return allocator(ID.id(name));
 	}
 
 	public final Allocator allocator(ID name) {
@@ -73,6 +77,7 @@ public abstract class Block extends DebugBlockBase {
 
 	public final void go(CodePos pos) {
 		assert assertIncomplete();
+		addAssetsTo(pos);
 		if (!getGenerator().isProxied()) {
 			disposeUpTo(pos);
 		}
@@ -85,7 +90,11 @@ public abstract class Block extends DebugBlockBase {
 		final CodePos[] unwrapped = new CodePos[targets.length];
 
 		for (int i = 0; i < targets.length; ++i) {
-			unwrapped[i] = unwrapPos(targets[i]);
+
+			final CodePos target = targets[i];
+
+			addAssetsTo(target);
+			unwrapped[i] = unwrapPos(target);
 		}
 
 		writer().go(pos, unwrapped);
@@ -109,6 +118,12 @@ public abstract class Block extends DebugBlockBase {
 	}
 
 	@Override
+	protected void goInternal(CodePos pos) {
+		addAssetsTo(pos);
+		writer().go(unwrapPos(pos));
+	}
+
+	@Override
 	protected final CondBlock choose(
 			BoolOp condition,
 			ID trueName,
@@ -118,35 +133,34 @@ public abstract class Block extends DebugBlockBase {
 	}
 
 	@Override
+	protected void updateAssets(CodeAssets assets) {
+		this.currentAssets = assets;
+	}
+
+	@Override
 	protected void disposeBy(Allocator allocator) {
 		allocator.dispose(this);
 	}
 
-	final CodeAssets currentAssets() {
-		return this.currentAssets;
-	}
+	final void addAssetsTo(CodePos pos) {
 
-	final <A extends CodeAsset<A>> CodeAssets updateAssets(
-			Class<? extends A> assetType,
-			A asset) {
-		return this.currentAssets =
-				this.currentAssets.update(assetType, asset);
-	}
+		final Block target = pos.code();
 
-	final void addAssetsFrom(Block block, CodePos pos) {
-		if (block.getAllocator() != getAllocator()) {
-			return;// Do not track assets from different allocator.
+		if (target.toString().equals("value: to ~~ exit")) {
+			System.err.println("(!)");
 		}
 		if (isHead(pos)) {
-			this.initialAssets.addAvailable(block.currentAssets());
+			target.initialAssets.addSource(assets());
 		} else {
-			this.currentAssets =
-					this.currentAssets.unite(block.currentAssets());
+			target.updateAssets(new CodeAssets(target.assets(), assets()));
 		}
 	}
 
-	private boolean isHead(CodePos pos) {
-		return unwrapPos(pos) == ptr().pos();
+	private static boolean isHead(CodePos pos) {
+
+		final Block code = pos.code();
+
+		return code.unwrapPos(pos) == code.ptr().pos();
 	}
 
 }

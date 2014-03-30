@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen.code;
 
-import static java.util.Objects.requireNonNull;
-
 import org.o42a.util.ArrayUtil;
 
 
@@ -37,40 +35,45 @@ import org.o42a.util.ArrayUtil;
  * <p>Code transitions at the block beginning might make more assets available
  * at particular execution point within that block. But retrieving of these
  * assets will be possible only after such transition is made.</p>
- *
- * <p>Assets are only tracked within the same {@link Allocator allocation}.</p>
  */
-public final class CodeAssets {
+public final class CodeAssets implements CodeAssetsSource {
 
-	private static final CodeAssets[] NO_AVAILABLE = new CodeAssets[0];
+	private static final CodeAssetsSource[] NO_SOURCE =
+			new CodeAssetsSource[0];
 
 	private final Class<?> assetType;
 	private final CodeAsset<?> asset;
-	private CodeAssets[] available;
+	private CodeAssetsSource[] sources;
 
 	CodeAssets() {
 		this.assetType = null;
 		this.asset = null;
-		this.available = NO_AVAILABLE;
+		this.sources = NO_SOURCE;
 	}
 
-	private CodeAssets(CodeAssets... available) {
+	CodeAssets(CodeAssetsSource... sources) {
 		this.assetType = null;
 		this.asset = null;
-		this.available = available;
+		this.sources = sources;
 	}
 
 	private CodeAssets(
-			CodeAssets available,
+			CodeAssets derived,
 			Class<?> assetType,
 			CodeAsset<?> asset) {
 		this.assetType = assetType;
 		this.asset = asset;
-		this.available = new CodeAssets[] {available};
+		this.sources = new CodeAssetsSource[] {derived};
+	}
+
+	@Override
+	public final CodeAssets assets() {
+		return this;
 	}
 
 	public final <A extends CodeAsset<A>> A get(Class<? extends A> assetType) {
-		requireNonNull(assetType, "Asset type not specified");
+		assert assetType != null:
+			"Asset type not specified";
 		return asset(this, assetType);
 	}
 
@@ -80,12 +83,8 @@ public final class CodeAssets {
 		return new CodeAssets(this, assetType, asset);
 	}
 
-	final void addAvailable(CodeAssets assets) {
-		this.available = ArrayUtil.append(this.available, assets);
-	}
-
-	final CodeAssets unite(CodeAssets assets) {
-		return new CodeAssets(this, assets);
+	final void addSource(CodeAssetsSource source) {
+		this.sources = ArrayUtil.append(this.sources, source);
 	}
 
 	private <A extends CodeAsset<A>> A get(
@@ -107,9 +106,9 @@ public final class CodeAssets {
 
 		A result = null;
 
-		for (CodeAssets available : this.available) {
+		for (CodeAssetsSource source : this.sources) {
 
-			final A asset = available.get(initial, assetType);
+			final A asset = source.assets().get(initial, assetType);
 
 			if (asset == null) {
 				continue;

@@ -20,6 +20,7 @@
 package org.o42a.codegen.code;
 
 import static java.util.Objects.requireNonNull;
+import static org.o42a.codegen.code.InternalDisposal.NO_DISPOSAL;
 import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
 
 import org.o42a.codegen.code.backend.BeforeReturn;
@@ -156,7 +157,7 @@ public final class Function<F extends Func<F>>
 	}
 
 	@Override
-	protected Disposal disposal() {
+	InternalDisposal disposal() {
 		return NO_DISPOSAL;
 	}
 

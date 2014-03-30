@@ -27,13 +27,16 @@ final class AllocatorCode extends Allocator {
 
 	private final Allocator enclosingAllocator;
 	private final BlockWriter writer;
-	private final Disposal disposal;
+	private final InternalDisposal disposal;
 
 	AllocatorCode(Block enclosing, ID name) {
 		super(enclosing, name);
 		this.enclosingAllocator = enclosing.getAllocator();
 		this.writer = enclosing.writer().block(this);
-		this.disposal = enclosing.writer().startAllocation(this);
+		enclosing.addAssetsTo(head());
+		this.disposal = new DedupDisposal(
+				this,
+				enclosing.writer().startAllocation(this));
 		enclosing.writer().go(unwrapPos(head()));
 		allocation();
 	}
@@ -59,7 +62,7 @@ final class AllocatorCode extends Allocator {
 	}
 
 	@Override
-	protected Disposal disposal() {
+	InternalDisposal disposal() {
 		return this.disposal;
 	}
 
