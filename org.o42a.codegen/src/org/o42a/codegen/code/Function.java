@@ -19,11 +19,13 @@
 */
 package org.o42a.codegen.code;
 
+import static java.util.Objects.requireNonNull;
 import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
 
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
 
 
@@ -35,6 +37,7 @@ public final class Function<F extends Func<F>>
 	private final Signature<F> signature;
 	private final FunctionBuilder<F> builder;
 	private final FuncPtr<F> pointer;
+	private FunctionCompleteListener[] completeListeners;
 	private FuncWriter<F> writer;
 	private boolean done;
 
@@ -124,11 +127,22 @@ public final class Function<F extends Func<F>>
 		return this.writer;
 	}
 
+	public void addCompleteListener(FunctionCompleteListener listener) {
+		requireNonNull(listener, "Function complete listener not specified");
+		if (this.completeListeners == null) {
+			this.completeListeners = new FunctionCompleteListener[] {listener};
+		} else {
+			this.completeListeners =
+					ArrayUtil.append(this.completeListeners, listener);
+		}
+	}
+
 	@Override
 	public void done() {
 		if (this.done) {
 			return;
 		}
+		notifyCompleteListeners();
 		this.done = true;
 		super.done();
 		if (created()) {
@@ -149,6 +163,15 @@ public final class Function<F extends Func<F>>
 	final void build() {
 		this.builder.build(this);
 		done();
+	}
+
+	private void notifyCompleteListeners() {
+		if (this.completeListeners == null) {
+			return;
+		}
+		for (FunctionCompleteListener listener : this.completeListeners) {
+			listener.functionComplete(this);
+		}
 	}
 
 }

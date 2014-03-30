@@ -54,7 +54,8 @@ public abstract class Code extends DebugCodeBase {
 	 * this method execution. It is possible that code transitions (e.g.
 	 * {@link Block#go(CodePos)}) will bring more assets available at this
 	 * execution point. So, it is advisable to perform actual assets checking
-	 * only at the function is fully built.<p>
+	 * only at the function is {@link Function#addCompleteListener(
+	 * FunctionCompleteListener) fully built}.<p>
 	 *
 	 * @return available assets.
 	 */
