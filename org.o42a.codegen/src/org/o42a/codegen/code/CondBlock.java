@@ -68,10 +68,14 @@ public class CondBlock extends CodeBlock {
 	private void initBlocks() {
 		this.writer = enclosing().writer().block(this);
 		this.otherwise = enclosing().addBlock(this.falseName);
-		enclosing().writer().go(
-				this.condition,
-				unwrapPos(head()),
-				unwrapPos(this.otherwise.head()));
+
+		final Block enclosing = enclosing();
+		final CodePos truePos = unwrapPos(head());
+		final CodePos falsePos = unwrapPos(this.otherwise.head());
+
+		enclosing.addAssetsTo(truePos);
+		enclosing.addAssetsTo(falsePos);
+		enclosing.writer().go(this.condition, truePos, falsePos);
 	}
 
 }

@@ -84,6 +84,8 @@ public abstract class OpBlockBase extends Code {
 
 	protected abstract CodePos unwrapPos(CodePos pos);
 
+	protected abstract void goInternal(CodePos pos);
+
 	protected abstract void disposeBy(Allocator allocator);
 
 }

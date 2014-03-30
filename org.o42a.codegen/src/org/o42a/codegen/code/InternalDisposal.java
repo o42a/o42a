@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,22 +19,28 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.util.string.ID;
 
+interface InternalDisposal {
 
-final class InsetCode extends Inset {
+	NoDisposal NO_DISPOSAL = new NoDisposal();
 
-	private final CodeWriter writer;
+	void dispose(Code code);
 
-	public InsetCode(Code enclosing, ID name) {
-		super(enclosing, name);
-		this.writer = enclosing.writer().inset(this);
-	}
+	final class NoDisposal implements InternalDisposal {
 
-	@Override
-	public final CodeWriter writer() {
-		return this.writer;
+		NoDisposal() {
+			super();
+		}
+
+		@Override
+		public void dispose(Code code) {
+		}
+
+		@Override
+		public String toString() {
+			return "_";
+		}
+
 	}
 
 }

@@ -172,14 +172,13 @@ public abstract class BoolOp implements Op {
 
 		final Block exitBlock =
 				source.addBlock(TO_ID.detail(pos.code().getId()));
+		final OpBlockBase exitBlk = exitBlock;
 
-		exitBlock.disposeFromTo(from, pos);
-
-		if (!exitBlock.exists()) {
+		exitBlk.disposeFromTo(from, pos);
+		if (!exitBlk.exists()) {
 			return s.unwrapPos(pos);
 		}
-
-		exitBlock.writer().go(s.unwrapPos(pos));
+		exitBlk.goInternal(pos);
 
 		return s.unwrapPos(exitBlock.head());
 	}

@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen.code;
 
-import static java.util.Objects.requireNonNull;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
@@ -59,9 +57,7 @@ public abstract class Code extends DebugCodeBase {
 	 *
 	 * @return available assets.
 	 */
-	public CodeAssets assets() {
-		return getBlock().currentAssets();
-	}
+	public abstract CodeAssets assets();
 
 	/**
 	 * Adds asset to code.
@@ -77,11 +73,13 @@ public abstract class Code extends DebugCodeBase {
 	public <A extends CodeAsset<A>> CodeAssets addAsset(
 			Class<? extends A> assetType,
 			A asset) {
-		requireNonNull(assetType, "Asset type not specified");
+		assert assetType != null:
+			"Asset type not specified";
 		if (asset == null) {
-			return getBlock().currentAssets();
+			return assets();
 		}
-		return getBlock().updateAssets(assetType, asset);
+		updateAssets(assets().update(assetType, asset));
+		return assets();
 	}
 
 	/**
@@ -96,8 +94,10 @@ public abstract class Code extends DebugCodeBase {
 	 */
 	public final <A extends CodeAsset<A>> CodeAssets removeAsset(
 			Class<? extends A> assetType) {
-		requireNonNull(assetType, "Asset type not specified");
-		return getBlock().updateAssets(assetType, null);
+		assert assetType != null:
+			"Asset type not specified";
+		updateAssets(assets().update(assetType, null));
+		return assets();
 	}
 
 	public final OpNames getOpNames() {
@@ -113,13 +113,17 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final Code inset(String name) {
-		assert assertIncomplete();
-		return new InsetCode(this, ID.id(name));
+		return inset(ID.id(name));
 	}
 
 	public final Code inset(ID name) {
 		assert assertIncomplete();
-		return new InsetCode(this, name);
+
+		final Inset inset = new Inset(this, name);
+
+		updateAssets(new CodeAssets(inset));
+
+		return inset;
 	}
 
 	public final Block addBlock(String name) {
@@ -273,5 +277,7 @@ public abstract class Code extends DebugCodeBase {
 	public String toString() {
 		return this.id.toString();
 	}
+
+	protected abstract void updateAssets(CodeAssets assets);
 
 }
