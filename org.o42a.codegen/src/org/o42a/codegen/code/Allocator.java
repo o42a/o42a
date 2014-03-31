@@ -32,6 +32,7 @@ import org.o42a.util.string.ID;
 public abstract class Allocator extends Block {
 
 	private static final ID DISPOSE_ID = ID.id("dispose");
+
 	private final AllocPlace allocPlace = autoAllocPlace(this);
 	private Code allocation;
 	private InternalDisposal lastDisposal = NO_DISPOSAL;
@@ -118,7 +119,10 @@ public abstract class Allocator extends Block {
 	abstract InternalDisposal disposal();
 
 	final void dispose(Block code) {
-		getFunction().addCompleteListener(new DisposeListener(this, code));
+		// FIXME Dispose only when necessary
+		//getFunction().addCompleteListener(new Disposer(this, code));
+		disposeIn(code);
+		afterDispose(code);
 	}
 
 	private <T> T find(Class<? extends T> klass) {
@@ -128,22 +132,32 @@ public abstract class Allocator extends Block {
 		return klass.cast(this.data.get(klass));
 	}
 
-	private static final class DisposeListener
+	private void disposeIn(Code code) {
+		this.disposal.dispose(code);
+		this.lastDisposal.dispose(code);
+		disposal().dispose(code);
+	}
+
+	private void afterDispose(Code code) {
+		this.disposal.afterDispose(code);
+		this.lastDisposal.afterDispose(code);
+		disposal().afterDispose(code);
+	}
+
+	private static final class Disposer
 			implements FunctionCompleteListener {
 
 		private final Allocator allocator;
 		private final Code dispose;
 
-		DisposeListener(Allocator allocator, Block code) {
+		Disposer(Allocator allocator, Block code) {
 			this.allocator = allocator;
 			this.dispose = code.inset(DISPOSE_ID);
 		}
 
 		@Override
 		public void functionComplete(Function<?> function) {
-			this.allocator.disposal.dispose(this.dispose);
-			this.allocator.lastDisposal.dispose(this.dispose);
-			this.allocator.disposal().dispose(this.dispose);
+			this.allocator.disposeIn(this.dispose);
 		}
 
 	}

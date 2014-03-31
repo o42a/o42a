@@ -49,6 +49,13 @@ public final class CodePtr extends AbstractPtr implements CodePos {
 		return this.code.writer().head();
 	}
 
+	public final boolean is(CodePos pos) {
+		if (pos == this) {
+			return true;
+		}
+		return this.code.unwrapPos(pos) == pos();
+	}
+
 	@Override
 	public String toString() {
 		return this.code.toString();

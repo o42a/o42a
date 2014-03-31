@@ -47,8 +47,7 @@ public abstract class OpBlockBase extends Code {
 
 		final Allocator toAllocator = pos.code().getAllocator();
 		// Go to the allocator's head?
-		final boolean includeTarget =
-				toAllocator.ptr().pos() == unwrapPos(pos);
+		final boolean includeTarget = toAllocator.ptr().is(pos);
 
 		disposeFromTo(fromAllocator, toAllocator, includeTarget);
 
@@ -84,7 +83,7 @@ public abstract class OpBlockBase extends Code {
 
 	protected abstract CodePos unwrapPos(CodePos pos);
 
-	protected abstract void goInternal(CodePos pos);
+	protected abstract void addAssetsTo(CodePos pos);
 
 	protected abstract void disposeBy(Allocator allocator);
 
