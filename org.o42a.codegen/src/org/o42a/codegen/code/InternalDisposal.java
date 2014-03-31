@@ -26,6 +26,8 @@ interface InternalDisposal {
 
 	void dispose(Code code);
 
+	void afterDispose(Code code);
+
 	final class NoDisposal implements InternalDisposal {
 
 		NoDisposal() {
@@ -34,6 +36,10 @@ interface InternalDisposal {
 
 		@Override
 		public void dispose(Code code) {
+		}
+
+		@Override
+		public void afterDispose(Code code) {
 		}
 
 		@Override

@@ -118,18 +118,24 @@ public abstract class Block extends DebugBlockBase {
 	}
 
 	@Override
-	protected void goInternal(CodePos pos) {
-		addAssetsTo(pos);
-		writer().go(unwrapPos(pos));
-	}
-
-	@Override
 	protected final CondBlock choose(
 			BoolOp condition,
 			ID trueName,
 			ID falseName) {
 		assert assertIncomplete();
 		return new CondBlock(this, condition, trueName, falseName);
+	}
+
+	@Override
+	protected void addAssetsTo(CodePos pos) {
+
+		final Block target = pos.code();
+
+		if (isHead(pos)) {
+			target.initialAssets.addSource(assets());
+		} else {
+			target.updateAssets(new CodeAssets(target.assets(), assets()));
+		}
 	}
 
 	@Override
@@ -142,25 +148,11 @@ public abstract class Block extends DebugBlockBase {
 		allocator.dispose(this);
 	}
 
-	final void addAssetsTo(CodePos pos) {
-
-		final Block target = pos.code();
-
-		if (target.toString().equals("value: to ~~ exit")) {
-			System.err.println("(!)");
-		}
-		if (isHead(pos)) {
-			target.initialAssets.addSource(assets());
-		} else {
-			target.updateAssets(new CodeAssets(target.assets(), assets()));
-		}
-	}
-
 	private static boolean isHead(CodePos pos) {
-
-		final Block code = pos.code();
-
-		return code.unwrapPos(pos) == code.ptr().pos();
+		if (pos == null) {
+			return false;
+		}
+		return pos.code().ptr().is(pos);
 	}
 
 }

@@ -82,6 +82,12 @@ public abstract class Code extends DebugCodeBase {
 		return assets();
 	}
 
+	public <A extends CodeAsset<A>> CodeAssets addAssets(
+			CodeAssetsSource assets) {
+		updateAssets(new CodeAssets(assets(), assets));
+		return assets();
+	}
+
 	/**
 	 * Removes all assets of the given type.
 	 *

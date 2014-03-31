@@ -37,6 +37,12 @@ final class CombinedDisposal implements InternalDisposal {
 	}
 
 	@Override
+	public void afterDispose(Code code) {
+		this.first.afterDispose(code);
+		this.second.afterDispose(code);
+	}
+
+	@Override
 	public String toString() {
 		if (this.second == null) {
 			return super.toString();

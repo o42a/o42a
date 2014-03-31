@@ -75,14 +75,8 @@ public abstract class BoolOp implements Op {
 	}
 
 	public final void go(Block source, CodePos truePos, CodePos falsePos) {
-
-		final OpBlockBase s = source;
-
 		if (source.getGenerator().isProxied()) {
-			source.writer().go(
-					this,
-					s.unwrapPos(truePos),
-					s.unwrapPos(falsePos));
+			internalGo(source, truePos, falsePos);
 			return;
 		}
 
@@ -116,8 +110,8 @@ public abstract class BoolOp implements Op {
 		// Create an auxiliary block either for true or false position
 		// if necessary. This block will dispose the rest of the allocations
 		// made between innermost position and the target one.
-		source.writer().go(
-				this,
+		internalGo(
+				source,
 				exitPos(source, innermostAllocator, truePos, !included),
 				exitPos(source, innermostAllocator, falsePos, !included));
 	}
@@ -170,17 +164,38 @@ public abstract class BoolOp implements Op {
 			}
 		}
 
+		return dispose(source, pos, from);
+	}
+
+	private static CodePos dispose(
+			Block source,
+			CodePos pos,
+			Allocator from) {
+
 		final Block exitBlock =
 				source.addBlock(TO_ID.detail(pos.code().getId()));
 		final OpBlockBase exitBlk = exitBlock;
 
 		exitBlk.disposeFromTo(from, pos);
-		if (!exitBlk.exists()) {
-			return s.unwrapPos(pos);
-		}
-		exitBlk.goInternal(pos);
+		exitBlk.addAssetsTo(pos);
+		exitBlock.writer().go(exitBlk.unwrapPos(pos));
 
-		return s.unwrapPos(exitBlock.head());
+		return exitBlk.unwrapPos(exitBlock.head());
 	}
 
+	private void internalGo(Block source, CodePos truePos, CodePos falsePos) {
+
+		final OpBlockBase s = source;
+
+		if (truePos != null) {
+			s.addAssetsTo(truePos);
+		}
+		if (falsePos != null) {
+			s.addAssetsTo(falsePos);
+		}
+		source.writer().go(
+				this,
+				s.unwrapPos(truePos),
+				s.unwrapPos(falsePos));
+	}
 }

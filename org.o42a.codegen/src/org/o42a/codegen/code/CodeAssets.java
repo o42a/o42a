@@ -116,7 +116,7 @@ public final class CodeAssets implements CodeAssetsSource {
 			if (result == null) {
 				result = asset;
 			} else {
-				result = result.add(asset);
+				result = result.combine(asset);
 			}
 		}
 

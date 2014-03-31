@@ -27,10 +27,18 @@ import java.util.Map;
 
 final class AllocAsset implements CodeAsset<AllocAsset> {
 
+	static AllocAsset allocatedAsset(DedupDisposal disposal) {
+		return new AllocAsset(disposal, Boolean.TRUE);
+	}
+
+	static AllocAsset deallocatedAsset(DedupDisposal disposal) {
+		return new AllocAsset(disposal, Boolean.FALSE);
+	}
+
 	private final Map<DedupDisposal, Boolean> disposals;
 
-	AllocAsset(DedupDisposal disposal) {
-		this.disposals = singletonMap(disposal, Boolean.TRUE);
+	private AllocAsset(DedupDisposal disposal, Boolean allocated) {
+		this.disposals = singletonMap(disposal, allocated);
 	}
 
 	private AllocAsset(Map<DedupDisposal, Boolean> disposals) {
@@ -46,8 +54,17 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 
 	public final AllocAsset deallocate(DedupDisposal disposal) {
 
-		final HashMap<DedupDisposal, Boolean> disposals =
-				new HashMap<>(this.disposals.size());
+		final Boolean allocated = this.disposals.get(disposal);
+		final HashMap<DedupDisposal, Boolean> disposals;
+
+		if (allocated != null) {
+			 // FIXME Resolve deallocation conflict
+			 /*assert allocated :
+				 "Already deallocated: " + disposal;*/
+			disposals = new HashMap<>(this.disposals.size());
+		} else {
+			disposals = new HashMap<>(this.disposals.size() + 1);
+		}
 
 		disposals.putAll(this.disposals);
 		disposals.put(disposal, Boolean.FALSE);
@@ -56,7 +73,7 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 	}
 
 	@Override
-	public AllocAsset add(AllocAsset asset) {
+	public AllocAsset combine(AllocAsset asset) {
 		if (asset.disposals.isEmpty()) {
 			return this;
 		}
@@ -73,16 +90,11 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 
 			final DedupDisposal key = e.getKey();
 			final Boolean value = e.getValue();
+			// FIXME Resolve deallocation conflict
+			/*final Boolean prevValue = disposals.get(key);
 
-			if (value) {
-
-				final Boolean oldValue = disposals.get(key);
-
-				if (oldValue != null && !oldValue.booleanValue()) {
-					// Deallocation has precedence.
-					continue;
-				}
-			}
+			assert prevValue == null || value == prevValue :
+				"Conflicting allocation asset: " + key;*/
 
 			disposals.put(key, value);
 		}

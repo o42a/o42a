@@ -57,6 +57,9 @@ public class CondBlock extends CodeBlock {
 
 	@Override
 	public String toString() {
+		if (this.condition == null) {
+			return super.toString();
+		}
 		return this.condition.toString()
 				+ " ? " + getId() + " : " + this.falseName;
 	}
