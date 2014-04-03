@@ -79,6 +79,7 @@ public class CondBlock extends CodeBlock {
 		enclosing.addAssetsTo(truePos);
 		enclosing.addAssetsTo(falsePos);
 		enclosing.writer().go(this.condition, truePos, falsePos);
+		enclosing.removeAllAssets();
 	}
 
 }

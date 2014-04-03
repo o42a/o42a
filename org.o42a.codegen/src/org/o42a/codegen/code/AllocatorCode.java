@@ -38,6 +38,7 @@ final class AllocatorCode extends Allocator {
 				this,
 				enclosing.writer().startAllocation(this));
 		enclosing.writer().go(unwrapPos(head()));
+		enclosing.removeAllAssets();
 		allocation();
 	}
 

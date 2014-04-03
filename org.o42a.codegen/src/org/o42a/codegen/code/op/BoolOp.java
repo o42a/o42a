@@ -179,6 +179,7 @@ public abstract class BoolOp implements Op {
 		exitBlk.disposeFromTo(from, pos);
 		exitBlk.addAssetsTo(pos);
 		exitBlock.writer().go(exitBlk.unwrapPos(pos));
+		exitBlk.removeAllAssets();
 
 		return exitBlk.unwrapPos(exitBlock.head());
 	}
@@ -197,5 +198,8 @@ public abstract class BoolOp implements Op {
 				this,
 				s.unwrapPos(truePos),
 				s.unwrapPos(falsePos));
+		if (truePos != null && falsePos != null) {
+			s.removeAllAssets();
+		}
 	}
 }

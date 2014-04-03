@@ -84,7 +84,7 @@ public abstract class Code extends DebugCodeBase {
 
 	public <A extends CodeAsset<A>> CodeAssets addAssets(
 			CodeAssetsSource assets) {
-		updateAssets(new CodeAssets(assets(), assets));
+		updateAssets(new CodeAssets(this, assets(), assets));
 		return assets();
 	}
 
@@ -285,5 +285,9 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	protected abstract void updateAssets(CodeAssets assets);
+
+	protected void removeAllAssets() {
+		updateAssets(new CodeAssets(this));
+	}
 
 }

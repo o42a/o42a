@@ -119,9 +119,7 @@ public abstract class Allocator extends Block {
 	abstract InternalDisposal disposal();
 
 	final void dispose(Block code) {
-		// FIXME Dispose only when necessary
-		//getFunction().addCompleteListener(new Disposer(this, code));
-		disposeIn(code);
+		getFunction().addCompleteListener(new Disposer(this, code));
 		afterDispose(code);
 	}
 
@@ -135,6 +133,7 @@ public abstract class Allocator extends Block {
 	private void disposeIn(Code code) {
 		this.disposal.dispose(code);
 		this.lastDisposal.dispose(code);
+		code.debug("(!) dispose " + disposal());
 		disposal().dispose(code);
 	}
 

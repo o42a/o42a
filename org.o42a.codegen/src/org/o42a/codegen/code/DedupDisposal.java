@@ -26,25 +26,25 @@ import static org.o42a.codegen.code.AllocAsset.deallocatedAsset;
 class DedupDisposal implements InternalDisposal {
 
 	private final Disposal disposal;
+	private final Allocator allocator;
 
 	DedupDisposal(Allocator allocator, Disposal disposal) {
+		this.allocator = allocator;
 		this.disposal = disposal;
-		allocator.addAsset(AllocAsset.class, allocatedAsset(this));
+		allocator.addAsset(AllocAsset.class, allocatedAsset(allocator, this));
+	}
+
+	public final Allocator getAllocator() {
+		return this.allocator;
 	}
 
 	@Override
 	public void dispose(Code code) {
-		// FIXME Prevent duplicate deallocation
+		// FIXME Prevent double disposal
 
 		/*final AllocAsset asset = code.assets().get(AllocAsset.class);
 
-		if (asset == null) {
-			// FIXME this should never happen
-			//this.disposal.dispose(code);
-			return;
-		}
-
-		if (!asset.allocated(this)) {
+		if (asset == null || !asset.allocated(this)) {
 			return;
 		}*/
 
@@ -58,9 +58,9 @@ class DedupDisposal implements InternalDisposal {
 		final AllocAsset deallocated;
 
 		if (existing != null) {
-			deallocated = existing.deallocate(this);
+			deallocated = existing.deallocate(code, this);
 		} else {
-			deallocated = deallocatedAsset(this);
+			deallocated = deallocatedAsset(code, this);
 		}
 
 		code.addAsset(AllocAsset.class, deallocated);
