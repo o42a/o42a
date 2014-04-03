@@ -30,7 +30,7 @@ import org.o42a.util.string.ID;
 public abstract class Block extends DebugBlockBase {
 
 	private final CodePtr ptr;
-	private final CodeAssets initialAssets = new CodeAssets();
+	private final CodeAssets initialAssets = new CodeAssets(this);
 	private CodeAssets currentAssets = this.initialAssets;
 
 	Block(Code enclosing, ID name) {
@@ -82,6 +82,7 @@ public abstract class Block extends DebugBlockBase {
 			disposeUpTo(pos);
 		}
 		writer().go(unwrapPos(pos));
+		removeAllAssets();
 	}
 
 	public final void go(CodeOp pos, CodePos[] targets) {
@@ -98,6 +99,7 @@ public abstract class Block extends DebugBlockBase {
 		}
 
 		writer().go(pos, unwrapped);
+		removeAllAssets();
 	}
 
 	public void returnVoid() {
@@ -134,13 +136,21 @@ public abstract class Block extends DebugBlockBase {
 		if (isHead(pos)) {
 			target.initialAssets.addSource(assets());
 		} else {
-			target.updateAssets(new CodeAssets(target.assets(), assets()));
+			target.updateAssets(new CodeAssets(
+					this,
+					target.assets(),
+					assets()));
 		}
 	}
 
 	@Override
 	protected void updateAssets(CodeAssets assets) {
 		this.currentAssets = assets;
+	}
+
+	@Override
+	protected void removeAllAssets() {
+		super.removeAllAssets();
 	}
 
 	@Override

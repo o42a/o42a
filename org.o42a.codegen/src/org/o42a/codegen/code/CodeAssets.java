@@ -41,17 +41,20 @@ public final class CodeAssets implements CodeAssetsSource {
 	private static final CodeAssetsSource[] NO_SOURCE =
 			new CodeAssetsSource[0];
 
+	private final Code code;
 	private final Class<?> assetType;
 	private final CodeAsset<?> asset;
 	private CodeAssetsSource[] sources;
 
-	CodeAssets() {
+	CodeAssets(Code code) {
+		this.code = code;
 		this.assetType = null;
 		this.asset = null;
 		this.sources = NO_SOURCE;
 	}
 
-	CodeAssets(CodeAssetsSource... sources) {
+	CodeAssets(Code code, CodeAssetsSource... sources) {
+		this.code = code;
 		this.assetType = null;
 		this.asset = null;
 		this.sources = sources;
@@ -61,6 +64,7 @@ public final class CodeAssets implements CodeAssetsSource {
 			CodeAssets derived,
 			Class<?> assetType,
 			CodeAsset<?> asset) {
+		this.code = derived.code;
 		this.assetType = assetType;
 		this.asset = asset;
 		this.sources = new CodeAssetsSource[] {derived};
@@ -75,6 +79,14 @@ public final class CodeAssets implements CodeAssetsSource {
 		assert assetType != null:
 			"Asset type not specified";
 		return asset(this, assetType);
+	}
+
+	@Override
+	public String toString() {
+		if (this.code == null) {
+			return super.toString();
+		}
+		return "CodeAssets[" + this.code + ']';
 	}
 
 	final <A extends CodeAsset<A>> CodeAssets update(

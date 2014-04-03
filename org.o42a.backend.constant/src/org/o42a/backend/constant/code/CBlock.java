@@ -105,7 +105,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	}
 
 	@Override
-	public Disposal startAllocation(Allocator allocator) {
+	public Disposal startAllocation(final Allocator allocator) {
 
 		final StartAllocation startAllocation = new StartAllocation(this);
 
@@ -132,6 +132,10 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 								part().underlying());
 					}
 				};
+			}
+			@Override
+			public String toString() {
+				return "Dispose[" + allocator + ']';
 			}
 		};
 	}

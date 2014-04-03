@@ -85,6 +85,11 @@ public abstract class OpBlockBase extends Code {
 
 	protected abstract void addAssetsTo(CodePos pos);
 
+	@Override
+	protected void removeAllAssets() {
+		super.removeAllAssets();
+	}
+
 	protected abstract void disposeBy(Allocator allocator);
 
 }

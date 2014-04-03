@@ -27,79 +27,123 @@ import java.util.Map;
 
 final class AllocAsset implements CodeAsset<AllocAsset> {
 
-	static AllocAsset allocatedAsset(DedupDisposal disposal) {
-		return new AllocAsset(disposal, Boolean.TRUE);
+	static AllocAsset allocatedAsset(Code code, DedupDisposal disposal) {
+		return new AllocAsset(disposal, new Alloc(code, true));
 	}
 
-	static AllocAsset deallocatedAsset(DedupDisposal disposal) {
-		return new AllocAsset(disposal, Boolean.FALSE);
+	static AllocAsset deallocatedAsset(Code code, DedupDisposal disposal) {
+		return new AllocAsset(disposal, new Alloc(code, false));
 	}
 
-	private final Map<DedupDisposal, Boolean> disposals;
+	private final Map<DedupDisposal, Alloc> allocs;
 
-	private AllocAsset(DedupDisposal disposal, Boolean allocated) {
-		this.disposals = singletonMap(disposal, allocated);
+	private AllocAsset(DedupDisposal disposal, Alloc alloc) {
+		this.allocs = singletonMap(disposal, alloc);
 	}
 
-	private AllocAsset(Map<DedupDisposal, Boolean> disposals) {
-		this.disposals = disposals;
+	private AllocAsset(Map<DedupDisposal, Alloc> disposals) {
+		this.allocs = disposals;
 	}
 
 	public final boolean allocated(DedupDisposal disposal) {
 
-		final Boolean allocated = this.disposals.get(disposal);
+		final Alloc alloc = this.allocs.get(disposal);
 
-		return allocated != null && allocated.booleanValue();
+		return alloc != null && alloc.isAllocated();
 	}
 
-	public final AllocAsset deallocate(DedupDisposal disposal) {
+	public final AllocAsset deallocate(Code code, DedupDisposal disposal) {
 
-		final Boolean allocated = this.disposals.get(disposal);
-		final HashMap<DedupDisposal, Boolean> disposals;
+		final Alloc alloc = this.allocs.get(disposal);
+		final HashMap<DedupDisposal, Alloc> disposals;
 
-		if (allocated != null) {
-			 // FIXME Resolve deallocation conflict
-			 /*assert allocated :
-				 "Already deallocated: " + disposal;*/
-			disposals = new HashMap<>(this.disposals.size());
+		if (alloc == null) {
+			disposals = new HashMap<>(this.allocs.size() + 1);
+		} else if (!alloc.isAllocated()) {
+			assert alloc.isAllocated() :
+				"Double deallocation of " + disposal;
+			return this;
 		} else {
-			disposals = new HashMap<>(this.disposals.size() + 1);
+			disposals = new HashMap<>(this.allocs.size());
 		}
 
-		disposals.putAll(this.disposals);
-		disposals.put(disposal, Boolean.FALSE);
+		disposals.putAll(this.allocs);
+		disposals.put(disposal, new Alloc(code, false));
 
 		return new AllocAsset(disposals);
 	}
 
 	@Override
 	public AllocAsset combine(AllocAsset asset) {
-		if (asset.disposals.isEmpty()) {
+		if (asset.allocs.isEmpty()) {
 			return this;
 		}
-		if (this.disposals.isEmpty()) {
+		if (this.allocs.isEmpty()) {
 			return asset;
 		}
 
-		final HashMap<DedupDisposal, Boolean> disposals =
-				new HashMap<>(this.disposals.size() + asset.disposals.size());
+		final HashMap<DedupDisposal, Alloc> allocs =
+				new HashMap<>(this.allocs.size() + asset.allocs.size());
 
-		disposals.putAll(this.disposals);
+		allocs.putAll(this.allocs);
 
-		for (Map.Entry<DedupDisposal, Boolean> e : asset.disposals.entrySet()) {
+		for (Map.Entry<DedupDisposal, Alloc> e : asset.allocs.entrySet()) {
 
 			final DedupDisposal key = e.getKey();
-			final Boolean value = e.getValue();
-			// FIXME Resolve deallocation conflict
-			/*final Boolean prevValue = disposals.get(key);
+			final Alloc alloc = e.getValue();
+			final Alloc prevAlloc = allocs.get(key);
 
-			assert prevValue == null || value == prevValue :
-				"Conflicting allocation asset: " + key;*/
+			if (prevAlloc != null) {
+				// Allocation has precedence over deallocation.
+				assert prevAlloc.isAllocated() == alloc.isAllocated() :
+					"Allocation/deallocation conflict: " + key;
+				if (prevAlloc.isAllocated()) {
+					continue;
+				}
+				if (!alloc.isAllocated()) {
+					continue;
+				}
+			}
 
-			disposals.put(key, value);
+			allocs.put(key, alloc);
 		}
 
-		return new AllocAsset(disposals);
+		return new AllocAsset(allocs);
+	}
+
+	@Override
+	public String toString() {
+		if (this.allocs == null) {
+			return super.toString();
+		}
+		return "AllocAssets" + this.allocs;
+	}
+
+	private static final class Alloc {
+
+		private final Code code;
+		private final boolean allocated;
+
+		Alloc(Code code, boolean allocated) {
+			this.code = code;
+			this.allocated = allocated;
+		}
+
+		public final boolean isAllocated() {
+			return this.allocated;
+		}
+
+		@Override
+		public String toString() {
+			if (this.code == null) {
+				return super.toString();
+			}
+			if (this.allocated) {
+				return "Allocated@" + this.code;
+			}
+			return "Deallocated@" + this.code;
+		}
+
 	}
 
 }
