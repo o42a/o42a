@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.code;
 
+import java.util.HashSet;
+
 import org.o42a.util.ArrayUtil;
 
 
@@ -28,9 +30,8 @@ import org.o42a.util.ArrayUtil;
  * <p>Arbitrary assets present in code at the given execution point.</p>
  *
  * <p>Asset can be added to code with {@link Code#addAsset(Class, CodeAsset)}
- * method, and removed with {@link Code#removeAsset(Class)} one. Assets
- * available at the current execution point could be retrieved with
- * {@link Code#assets()} method.</p>
+ * method. Assets available at the current execution point could be retrieved
+ * with {@link Code#assets()} method.</p>
  *
  * <p>Code transitions at the block beginning might make more assets available
  * at particular execution point within that block. But retrieving of these
@@ -42,19 +43,22 @@ public final class CodeAssets implements CodeAssetsSource {
 			new CodeAssetsSource[0];
 
 	private final Code code;
+	private final String comment;
 	private final Class<?> assetType;
 	private final CodeAsset<?> asset;
 	private CodeAssetsSource[] sources;
 
-	CodeAssets(Code code) {
+	CodeAssets(Code code, String comment) {
 		this.code = code;
+		this.comment = comment;
 		this.assetType = null;
 		this.asset = null;
 		this.sources = NO_SOURCE;
 	}
 
-	CodeAssets(Code code, CodeAssetsSource... sources) {
+	CodeAssets(Code code, String comment, CodeAssetsSource... sources) {
 		this.code = code;
+		this.comment = comment;
 		this.assetType = null;
 		this.asset = null;
 		this.sources = sources;
@@ -62,9 +66,11 @@ public final class CodeAssets implements CodeAssetsSource {
 
 	private CodeAssets(
 			CodeAssets derived,
+			String comment,
 			Class<?> assetType,
 			CodeAsset<?> asset) {
 		this.code = derived.code;
+		this.comment = comment;
 		this.assetType = assetType;
 		this.asset = asset;
 		this.sources = new CodeAssetsSource[] {derived};
@@ -78,7 +84,7 @@ public final class CodeAssets implements CodeAssetsSource {
 	public final <A extends CodeAsset<A>> A get(Class<? extends A> assetType) {
 		assert assetType != null:
 			"Asset type not specified";
-		return asset(this, assetType);
+		return asset(new HashSet<CodeAssets>(), assetType);
 	}
 
 	@Override
@@ -86,13 +92,17 @@ public final class CodeAssets implements CodeAssetsSource {
 		if (this.code == null) {
 			return super.toString();
 		}
-		return "CodeAssets[" + this.code + ']';
+		return "CodeAssets[" + this.comment + " @" + this.code + ']';
 	}
 
 	final <A extends CodeAsset<A>> CodeAssets update(
 			Class<? extends A> assetType,
 			A asset) {
-		return new CodeAssets(this, assetType, asset);
+		return new CodeAssets(
+				this,
+				assetType + ": " + asset,
+				assetType,
+				asset);
 	}
 
 	final void addSource(CodeAssetsSource source) {
@@ -100,27 +110,24 @@ public final class CodeAssets implements CodeAssetsSource {
 	}
 
 	private <A extends CodeAsset<A>> A get(
-			CodeAssets initial,
+			HashSet<CodeAssets> checked,
 			Class<? extends A> assetType) {
-		if (this == initial) {
+		if (checked.contains(this)) {
 			return null;
 		}
-		return asset(initial, assetType);
+		return asset(checked, assetType);
 	}
 
-	@SuppressWarnings("unchecked")
 	private <A extends CodeAsset<A>> A asset(
-			CodeAssets initial,
+			HashSet<CodeAssets> checked,
 			Class<? extends A> assetType) {
-		if (assetType == this.assetType) {
-			return (A) this.asset;
-		}
+		checked.add(this);
 
 		A result = null;
 
 		for (CodeAssetsSource source : this.sources) {
 
-			final A asset = source.assets().get(initial, assetType);
+			final A asset = source.assets().get(checked, assetType);
 
 			if (asset == null) {
 				continue;
@@ -128,7 +135,19 @@ public final class CodeAssets implements CodeAssetsSource {
 			if (result == null) {
 				result = asset;
 			} else {
-				result = result.combine(asset);
+				result = result.combineWith(asset);
+			}
+		}
+
+		if (assetType == this.assetType) {
+
+			@SuppressWarnings("unchecked")
+			final A asset = (A) this.asset;
+
+			if (result == null) {
+				result = asset;
+			} else {
+				result = result.overwriteBy(asset);
 			}
 		}
 

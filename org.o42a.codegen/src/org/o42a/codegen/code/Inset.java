@@ -58,12 +58,14 @@ final class Inset extends Code implements CodeAssetsSource {
 	}
 
 	@Override
-	public CodeAssets assets() {
+	public final CodeAssets assets() {
 		return this.assets;
 	}
 
 	@Override
-	protected void updateAssets(CodeAssets assets) {
+	protected final void updateAssets(CodeAssets assets) {
+		assert !getFunction().isDone() :
+			"Can not update assets of already built function";
 		this.assets = assets;
 	}
 

@@ -93,6 +93,10 @@ public final class Function<F extends Func<F>>
 		return this.writer != null && this.writer.exists();
 	}
 
+	public final boolean isDone() {
+		return this.done;
+	}
+
 	public final <O extends Op> O arg(Code code, Arg<O> arg) {
 		assert getSignature() == arg.getSignature() :
 			"Argument " + arg + " does not belong to " + getSignature()
@@ -143,8 +147,8 @@ public final class Function<F extends Func<F>>
 		if (this.done) {
 			return;
 		}
-		notifyCompleteListeners();
 		this.done = true;
+		notifyCompleteListeners();
 		super.done();
 		if (created()) {
 			writer().done();

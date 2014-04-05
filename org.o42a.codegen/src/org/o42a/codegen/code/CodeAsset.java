@@ -22,6 +22,8 @@ package org.o42a.codegen.code;
 
 public interface CodeAsset<A extends CodeAsset<A>> {
 
-	A combine(A asset);
+	A combineWith(A asset);
+
+	A overwriteBy(A asset);
 
 }
