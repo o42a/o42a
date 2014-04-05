@@ -49,32 +49,18 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 
 		final Alloc alloc = this.allocs.get(disposal);
 
-		return alloc != null && alloc.isAllocated();
-	}
-
-	public final AllocAsset deallocate(Code code, DedupDisposal disposal) {
-
-		final Alloc alloc = this.allocs.get(disposal);
-		final HashMap<DedupDisposal, Alloc> disposals;
-
 		if (alloc == null) {
-			disposals = new HashMap<>(this.allocs.size() + 1);
-		} else if (!alloc.isAllocated()) {
-			assert alloc.isAllocated() :
-				"Double deallocation of " + disposal;
-			return this;
-		} else {
-			disposals = new HashMap<>(this.allocs.size());
+			return false;
 		}
 
-		disposals.putAll(this.allocs);
-		disposals.put(disposal, new Alloc(code, false));
+		assert !alloc.isConflict() :
+			alloc;
 
-		return new AllocAsset(disposals);
+		return alloc.isAllocated();
 	}
 
 	@Override
-	public AllocAsset combine(AllocAsset asset) {
+	public AllocAsset combineWith(AllocAsset asset) {
 		if (asset.allocs.isEmpty()) {
 			return this;
 		}
@@ -93,20 +79,30 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 			final Alloc alloc = e.getValue();
 			final Alloc prevAlloc = allocs.get(key);
 
-			if (prevAlloc != null) {
-				// Allocation has precedence over deallocation.
-				assert prevAlloc.isAllocated() == alloc.isAllocated() :
-					"Allocation/deallocation conflict: " + key;
-				if (prevAlloc.isAllocated()) {
-					continue;
-				}
-				if (!alloc.isAllocated()) {
-					continue;
-				}
+			if (prevAlloc == null) {
+				allocs.put(key, alloc);
+			} else {
+				allocs.put(key, prevAlloc.combineWith(alloc));
 			}
-
-			allocs.put(key, alloc);
 		}
+
+		return new AllocAsset(allocs);
+	}
+
+	@Override
+	public AllocAsset overwriteBy(AllocAsset asset) {
+		if (asset.allocs.isEmpty()) {
+			return this;
+		}
+		if (this.allocs.isEmpty()) {
+			return asset;
+		}
+
+		final HashMap<DedupDisposal, Alloc> allocs =
+				new HashMap<>(this.allocs.size() + asset.allocs.size());
+
+		allocs.putAll(this.allocs);
+		allocs.putAll(asset.allocs);
 
 		return new AllocAsset(allocs);
 	}
@@ -119,7 +115,7 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 		return "AllocAssets" + this.allocs;
 	}
 
-	private static final class Alloc {
+	private static class Alloc {
 
 		private final Code code;
 		private final boolean allocated;
@@ -129,8 +125,22 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 			this.allocated = allocated;
 		}
 
+		public boolean isConflict() {
+			return false;
+		}
+
 		public final boolean isAllocated() {
 			return this.allocated;
+		}
+
+		public Alloc combineWith(Alloc other) {
+			if (other.isConflict()) {
+				return other;
+			}
+			if (isAllocated() == other.isAllocated()) {
+				return this;
+			}
+			return new AllocConflict(this, other);
 		}
 
 		@Override
@@ -142,6 +152,37 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 				return "Allocated@" + this.code;
 			}
 			return "Deallocated@" + this.code;
+		}
+
+	}
+
+	private static class AllocConflict extends Alloc {
+
+		private final Alloc alloc1;
+		private final Alloc alloc2;
+
+		AllocConflict(Alloc alloc1, Alloc alloc2) {
+			super(alloc1.code, true);
+			this.alloc1 = alloc1;
+			this.alloc2 = alloc2;
+		}
+
+		@Override
+		public boolean isConflict() {
+			return true;
+		}
+
+		@Override
+		public Alloc combineWith(Alloc other) {
+			return this;
+		}
+
+		@Override
+		public String toString() {
+			if (this.alloc2 == null) {
+				return super.toString();
+			}
+			return "AllocConflict[" + this.alloc1 + ", " + this.alloc2 +']';
 		}
 
 	}

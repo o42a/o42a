@@ -30,8 +30,8 @@ import org.o42a.util.string.ID;
 public abstract class Block extends DebugBlockBase {
 
 	private final CodePtr ptr;
-	private final CodeAssets initialAssets = new CodeAssets(this);
-	private CodeAssets currentAssets = this.initialAssets;
+	private final CodeAssets initialAssets = new CodeAssets(this, "initial");
+	private CodeAssets assets = this.initialAssets;
 
 	Block(Code enclosing, ID name) {
 		super(enclosing, name);
@@ -63,7 +63,7 @@ public abstract class Block extends DebugBlockBase {
 
 	@Override
 	public final CodeAssets assets() {
-		return this.currentAssets;
+		return this.assets;
 	}
 
 	public final Allocator allocator(String name) {
@@ -138,6 +138,7 @@ public abstract class Block extends DebugBlockBase {
 		} else {
 			target.updateAssets(new CodeAssets(
 					this,
+					"go to " + pos,
 					target.assets(),
 					assets()));
 		}
@@ -145,7 +146,9 @@ public abstract class Block extends DebugBlockBase {
 
 	@Override
 	protected void updateAssets(CodeAssets assets) {
-		this.currentAssets = assets;
+		assert !getFunction().isDone() :
+			"Can not update assets of already built function";
+		this.assets = assets;
 	}
 
 	@Override

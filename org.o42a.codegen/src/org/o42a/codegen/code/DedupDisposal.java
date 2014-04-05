@@ -31,7 +31,9 @@ class DedupDisposal implements InternalDisposal {
 	DedupDisposal(Allocator allocator, Disposal disposal) {
 		this.allocator = allocator;
 		this.disposal = disposal;
-		allocator.addAsset(AllocAsset.class, allocatedAsset(allocator, this));
+		allocator.allocation().addAsset(
+				AllocAsset.class,
+				allocatedAsset(allocator, this));
 	}
 
 	public final Allocator getAllocator() {
@@ -40,30 +42,19 @@ class DedupDisposal implements InternalDisposal {
 
 	@Override
 	public void dispose(Code code) {
-		// FIXME Prevent double disposal
 
-		/*final AllocAsset asset = code.assets().get(AllocAsset.class);
+		final AllocAsset asset = code.assets().get(AllocAsset.class);
 
 		if (asset == null || !asset.allocated(this)) {
 			return;
-		}*/
+		}
 
 		this.disposal.dispose(code);
 	}
 
 	@Override
 	public void afterDispose(Code code) {
-
-		final AllocAsset existing = code.assets().get(AllocAsset.class);
-		final AllocAsset deallocated;
-
-		if (existing != null) {
-			deallocated = existing.deallocate(code, this);
-		} else {
-			deallocated = deallocatedAsset(code, this);
-		}
-
-		code.addAsset(AllocAsset.class, deallocated);
+		code.addAsset(AllocAsset.class, deallocatedAsset(code, this));
 	}
 
 	@Override

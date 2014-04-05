@@ -66,43 +66,18 @@ public abstract class Code extends DebugCodeBase {
 	 * before it.</p>
 	 *
 	 * @param assetType asset type.
-	 * @param asset asset value, or <code>null</code> to do nothing.
+	 * @param asset asset value.
 	 *
 	 * @return updated code assets.
 	 */
-	public <A extends CodeAsset<A>> CodeAssets addAsset(
+	public final <A extends CodeAsset<A>> CodeAssets addAsset(
 			Class<? extends A> assetType,
 			A asset) {
 		assert assetType != null:
 			"Asset type not specified";
-		if (asset == null) {
-			return assets();
-		}
+		assert asset != null :
+			"Asset value not specified";
 		updateAssets(assets().update(assetType, asset));
-		return assets();
-	}
-
-	public <A extends CodeAsset<A>> CodeAssets addAssets(
-			CodeAssetsSource assets) {
-		updateAssets(new CodeAssets(this, assets(), assets));
-		return assets();
-	}
-
-	/**
-	 * Removes all assets of the given type.
-	 *
-	 * <p>No assets of the given type will be available after current execution
-	 * point.</p>
-	 *
-	 * @param assetType asset type.
-	 *
-	 * @return updated code assets.
-	 */
-	public final <A extends CodeAsset<A>> CodeAssets removeAsset(
-			Class<? extends A> assetType) {
-		assert assetType != null:
-			"Asset type not specified";
-		updateAssets(assets().update(assetType, null));
 		return assets();
 	}
 
@@ -127,7 +102,7 @@ public abstract class Code extends DebugCodeBase {
 
 		final Inset inset = new Inset(this, name);
 
-		updateAssets(new CodeAssets(inset));
+		updateAssets(new CodeAssets(inset, "inset", inset));
 
 		return inset;
 	}
@@ -287,7 +262,7 @@ public abstract class Code extends DebugCodeBase {
 	protected abstract void updateAssets(CodeAssets assets);
 
 	protected void removeAllAssets() {
-		updateAssets(new CodeAssets(this));
+		updateAssets(new CodeAssets(this, "clean"));
 	}
 
 }

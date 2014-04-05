@@ -54,6 +54,8 @@ public abstract class Allocator extends Block {
 	public final void addDisposal(Disposal disposal) {
 		assert disposal != null :
 			"Disposal not specified";
+		assert !getFunction().isComplete() :
+			"Can not add disposals to already built function";
 
 		final DedupDisposal dedupDisposal = new DedupDisposal(this, disposal);
 
@@ -67,6 +69,8 @@ public abstract class Allocator extends Block {
 	public final void addLastDisposal(Disposal disposal) {
 		assert disposal != null :
 			"Disposal not specified";
+		assert !getFunction().isDone() :
+			"Can not add disposals to already built function";
 
 		final DedupDisposal dedupDisposal = new DedupDisposal(this, disposal);
 
@@ -133,7 +137,6 @@ public abstract class Allocator extends Block {
 	private void disposeIn(Code code) {
 		this.disposal.dispose(code);
 		this.lastDisposal.dispose(code);
-		code.debug("(!) dispose " + disposal());
 		disposal().dispose(code);
 	}
 
