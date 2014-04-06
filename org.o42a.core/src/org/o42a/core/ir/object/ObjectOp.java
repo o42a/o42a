@@ -137,7 +137,7 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 		final LinkValueType linkType =
 				typeParameters.getValueType().toLinkType();
 
-		assert typeParameters != null :
+		assert linkType != null :
 			"Not a link: " + this;
 
 		final ValDirs valDirs =

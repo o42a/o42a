@@ -69,8 +69,8 @@ public class SimplePathTracker extends PathTracker {
 	}
 
 	@Override
-	public boolean local(Scope scope, Local local) {
-		return walk(walker().local(scope, local));
+	public boolean local(Step step, Scope scope, Local local) {
+		return walk(walker().local(step, scope, local));
 	}
 
 	@Override

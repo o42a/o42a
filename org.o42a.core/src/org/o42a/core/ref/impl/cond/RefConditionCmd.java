@@ -42,7 +42,7 @@ final class RefConditionCmd implements Cmd {
 		final Local local = this.statement.getLocal();
 		final CodeDirs dirs = control.dirs();
 
-		if (local == null) {
+		if (local == null || local.isField()) {
 			op.writeCond(dirs);
 		} else {
 			control.locals().set(dirs, local, op);

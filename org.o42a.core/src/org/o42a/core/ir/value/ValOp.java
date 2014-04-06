@@ -66,9 +66,9 @@ public abstract class ValOp extends IROp {
 
 	public ValOp(CodeBuilder builder, ValueType<?> valueType) {
 		super(builder);
-		this.valueType = valueType;
 		assert valueType != null :
-			"Value structure not specified";
+			"Value type not specified";
+		this.valueType = valueType;
 	}
 
 	public final ValueType<?> getValueType() {
