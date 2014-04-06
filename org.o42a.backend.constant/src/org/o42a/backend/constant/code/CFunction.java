@@ -29,7 +29,6 @@ import org.o42a.backend.constant.data.func.FunctionCFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
@@ -39,7 +38,7 @@ public class CFunction<F extends Func<F>>
 		extends CBlock<Function<F>>
 		implements FuncWriter<F> {
 
-	private final BeforeReturn beforeReturn;
+	private final Disposal beforeReturn;
 	private FunctionCFAlloc<F> allocation;
 	private Function<F> underlying;
 	private byte status;
@@ -47,7 +46,7 @@ public class CFunction<F extends Func<F>>
 	CFunction(
 			ConstBackend backend,
 			Function<F> function,
-			BeforeReturn beforeReturn) {
+			Disposal beforeReturn) {
 		super(backend, null, function);
 		this.beforeReturn = beforeReturn;
 	}
@@ -64,8 +63,8 @@ public class CFunction<F extends Func<F>>
 		return this.underlying;
 	}
 
-	public final void beforeReturn(Block code) {
-		this.beforeReturn.beforeReturn(code);
+	public final void beforeReturn(Code code) {
+		this.beforeReturn.dispose(code);
 	}
 
 	@Override

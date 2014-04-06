@@ -22,6 +22,16 @@ package org.o42a.codegen.code;
 
 public interface Disposal {
 
+	Disposal DISPOSE_NOTHING = new Disposal() {
+		@Override
+		public void dispose(Code code) {
+		}
+		@Override
+		public String toString() {
+			return "_";
+		}
+	};
+
 	void dispose(Code code);
 
 }

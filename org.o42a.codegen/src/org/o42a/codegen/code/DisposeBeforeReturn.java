@@ -19,24 +19,22 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.BeforeReturn;
 
+final class DisposeBeforeReturn implements Disposal {
 
-final class DisposeBeforeReturn implements BeforeReturn {
+	private final Disposal beforeReturn;
 
-	private final BeforeReturn beforeReturn;
-
-	DisposeBeforeReturn(BeforeReturn beforeReturn) {
+	DisposeBeforeReturn(Disposal beforeReturn) {
 		this.beforeReturn = beforeReturn;
 	}
 
 	@Override
-	public void beforeReturn(Block code) {
+	public void dispose(Code code) {
 		disposeAll(code);
-		this.beforeReturn.beforeReturn(code);
+		this.beforeReturn.dispose(code);
 	}
 
-	private static void disposeAll(Block code) {
+	private static void disposeAll(Code code) {
 
 		Allocator allocator = code.getAllocator();
 

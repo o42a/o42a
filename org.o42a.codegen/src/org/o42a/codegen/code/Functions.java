@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -83,7 +82,7 @@ public abstract class Functions {
 
 	protected abstract DataWriter dataWriter();
 
-	protected abstract BeforeReturn createBeforeReturn(Function<?> function);
+	protected abstract Disposal createBeforeReturn(Function<?> function);
 
 	protected abstract <F extends Func<F>> void addFunction(
 			ID id,

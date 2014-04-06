@@ -25,11 +25,11 @@ import org.o42a.util.string.ID;
 
 public abstract class BoolOp implements Op {
 
-	public static final ID TRUE_ID = ID.rawId("true");
-	public static final ID FALSE_ID = ID.rawId("false");
-	public static final ID NOT_ID = ID.rawId("not");
+	public static final ID TRUE_ID = ID.rawId("__true__");
+	public static final ID FALSE_ID = ID.rawId("__false__");
+	public static final ID NOT_ID = ID.rawId("__not__");
 
-	private static final ID TO_ID = ID.id().detail("to");
+	private static final ID TO_ID = ID.id().detail("__to__");
 
 	public abstract <O extends Op> O select(
 			ID id,
@@ -202,4 +202,5 @@ public abstract class BoolOp implements Op {
 			s.removeAllAssets();
 		}
 	}
+
 }

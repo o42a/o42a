@@ -28,7 +28,6 @@ import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.AnyLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -58,7 +57,7 @@ public class LLVMCodeBackend implements CodeBackend {
 	@Override
 	public <F extends Func<F>> LLFunction<F> addFunction(
 			Function<F> function,
-			BeforeReturn beforeReturn) {
+			Disposal beforeReturn) {
 		return new LLFunction<>(this.module, function, beforeReturn);
 	}
 
