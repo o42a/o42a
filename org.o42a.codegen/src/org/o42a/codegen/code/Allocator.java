@@ -31,6 +31,7 @@ import org.o42a.util.string.ID;
 
 public abstract class Allocator extends Block {
 
+	private static final ID ALLOC_ID = ID.id("__alloc__");
 	private static final ID DISPOSE_ID = ID.id("__dispose__");
 
 	private final AllocPlace allocPlace = autoAllocPlace(this);
@@ -93,7 +94,7 @@ public abstract class Allocator extends Block {
 		if (this.allocation != null) {
 			return this.allocation;
 		}
-		return this.allocation = inset("alloc");
+		return this.allocation = inset(ALLOC_ID);
 	}
 
 	public final <T> T get(Class<? extends T> klass) {
