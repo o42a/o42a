@@ -31,7 +31,7 @@ import org.o42a.util.string.ID;
 
 public abstract class Allocator extends Block {
 
-	private static final ID DISPOSE_ID = ID.id("dispose");
+	private static final ID DISPOSE_ID = ID.id("__dispose__");
 
 	private final AllocPlace allocPlace = autoAllocPlace(this);
 	private Code allocation;
@@ -122,7 +122,7 @@ public abstract class Allocator extends Block {
 
 	abstract InternalDisposal disposal();
 
-	final void dispose(Block code) {
+	final void dispose(Code code) {
 		getFunction().addCompleteListener(new Disposer(this, code));
 		afterDispose(code);
 	}
@@ -152,7 +152,7 @@ public abstract class Allocator extends Block {
 		private final Allocator allocator;
 		private final Code dispose;
 
-		Disposer(Allocator allocator, Block code) {
+		Disposer(Allocator allocator, Code code) {
 			this.allocator = allocator;
 			this.dispose = code.inset(DISPOSE_ID);
 		}

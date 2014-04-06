@@ -32,7 +32,7 @@ public interface CodeBackend {
 
 	<F extends Func<F>> FuncWriter<F> addFunction(
 			Function<F> function,
-			BeforeReturn beforeReturn);
+			Disposal beforeReturn);
 
 	<F extends Func<F>> FuncAllocation<F> externFunction(
 			ID id,

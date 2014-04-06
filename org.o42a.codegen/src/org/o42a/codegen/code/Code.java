@@ -46,7 +46,7 @@ public abstract class Code extends DebugCodeBase {
 	public abstract Block getBlock();
 
 	/**
-	 * Retrieves the assets available at the current execution point.
+	 * Retrieves all assets available at current execution point.
 	 *
 	 * <p>It is possible that some assets are not available at the moment of
 	 * this method execution. It is possible that code transitions (e.g.

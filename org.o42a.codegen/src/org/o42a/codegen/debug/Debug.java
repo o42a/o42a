@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
+import static org.o42a.codegen.code.Disposal.DISPOSE_NOTHING;
 import static org.o42a.codegen.debug.DbgOptionsType.DBG_OPTIONS_TYPE;
 import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
 import static org.o42a.codegen.debug.DebugExitFunc.DEBUG_EXIT;
@@ -34,7 +34,6 @@ import org.o42a.codegen.AbstractGenerator;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.ProxyGenerator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.data.*;
@@ -46,7 +45,7 @@ public final class Debug {
 	public static final ID DEBUG_ID = ID.id("DEBUG");
 	private static final ID FUNC_NAME_ID = DEBUG_ID.sub("func_name");
 
-	private static final BeforeReturn TRACE_BEFORE_RETURN =
+	private static final TraceBeforReturn TRACE_BEFORE_RETURN =
 			new TraceBeforReturn();
 
 	private final Generator generator;
@@ -184,14 +183,14 @@ public final class Debug {
 		}
 	}
 
-	public BeforeReturn createBeforeReturn(Function<?> function) {
+	public Disposal createBeforeReturn(Function<?> function) {
 		if (isProxied()) {
-			return NOTHING_BEFORE_RETURN;
+			return DISPOSE_NOTHING;
 		}
 		if (isDebug() && function.getSignature().isDebuggable()) {
 			return TRACE_BEFORE_RETURN;
 		}
-		return NOTHING_BEFORE_RETURN;
+		return DISPOSE_NOTHING;
 	}
 
 	public void registerType(SubData<?> typeData) {
@@ -294,10 +293,10 @@ public final class Debug {
 				.link("o42a_dbg_exit", DEBUG_EXIT);
 	}
 
-	private static final class TraceBeforReturn implements BeforeReturn {
+	private static final class TraceBeforReturn implements Disposal {
 
 		@Override
-		public void beforeReturn(Block code) {
+		public void dispose(Code code) {
 
 			final Debug debug = code.getGenerator().getDebug();
 

@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.*;
@@ -128,7 +127,7 @@ public abstract class Generator {
 
 	protected abstract CodeBackend codeBackend();
 
-	protected BeforeReturn createBeforeReturn(Function<?> function) {
+	protected Disposal createBeforeReturn(Function<?> function) {
 		return getDebug().createBeforeReturn(function);
 	}
 

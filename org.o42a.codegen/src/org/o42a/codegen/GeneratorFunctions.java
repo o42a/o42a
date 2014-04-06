@@ -20,7 +20,6 @@
 package org.o42a.codegen;
 
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -45,7 +44,7 @@ final class GeneratorFunctions extends Functions {
 	}
 
 	@Override
-	protected BeforeReturn createBeforeReturn(Function<?> function) {
+	protected Disposal createBeforeReturn(Function<?> function) {
 		return getGenerator().createBeforeReturn(function);
 	}
 
