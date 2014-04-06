@@ -153,7 +153,7 @@ final class ClauseReuser implements PathWalker {
 	}
 
 	@Override
-	public boolean local(Scope scope, Local local) {
+	public boolean local(Step step, Scope scope, Local local) {
 		return local.ref().resolve(scope.walkingResolver(this)).isResolved();
 	}
 

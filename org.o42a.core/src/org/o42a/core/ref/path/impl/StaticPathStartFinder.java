@@ -107,7 +107,7 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean local(Scope scope, Local local) {
+	public boolean local(Step step, Scope scope, Local local) {
 		return abort();// Local can not be statically referenced.
 	}
 

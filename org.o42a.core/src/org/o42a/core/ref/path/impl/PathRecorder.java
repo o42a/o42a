@@ -131,12 +131,13 @@ public class PathRecorder extends PathTracker {
 
 	@Override
 	public boolean local(
+			final Step step,
 			final Scope scope,
 			final Local local) {
 		return record(new Record() {
 			@Override
 			public boolean replay(PathWalker walker) {
-				return walker.local(scope, local);
+				return walker.local(step, scope, local);
 			}
 		});
 	}

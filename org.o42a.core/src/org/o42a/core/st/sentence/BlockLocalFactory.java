@@ -82,7 +82,8 @@ final class BlockLocalFactory implements LocalFactory {
 				local,
 				distributor,
 				LINK.typeRef(local, distributor.getScope()))
-				.setTypeParameters(linkParameters.toObjectTypeParameters());
+				.setTypeParameters(linkParameters.toObjectTypeParameters())
+				.setStateful(true);
 		final AscendantsFieldDefinition definition =
 				new AscendantsFieldDefinition(
 						local,
