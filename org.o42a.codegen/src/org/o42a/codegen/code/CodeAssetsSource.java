@@ -20,7 +20,7 @@
 package org.o42a.codegen.code;
 
 
-public interface CodeAssetsSource {
+interface CodeAssetsSource {
 
 	CodeAssets assets();
 

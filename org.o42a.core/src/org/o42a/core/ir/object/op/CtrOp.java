@@ -24,9 +24,7 @@ import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -47,6 +45,8 @@ import org.o42a.util.string.ID;
 public class CtrOp extends IROp {
 
 	public static final Type CTR_TYPE = new Type();
+	public static final Allocatable<Op> ALLOCATABLE_CTR =
+			new AllocatableCtr();
 
 	public static final ID CTR_ID = ID.id("ctr");
 
@@ -171,6 +171,33 @@ public class CtrOp extends IROp {
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
 			return externalTypeInfo(0x042a0120);
+		}
+
+	}
+
+	private static final class AllocatableCtr implements Allocatable<Op> {
+
+		@Override
+		public boolean isImmedite() {
+			return true;
+		}
+
+		@Override
+		public int getPriority() {
+			return NORMAL_ALLOC_PRIORITY;
+		}
+
+		@Override
+		public Op allocate(AllocationCode<Op> code) {
+			return code.allocate(CTR_ID, CTR_TYPE);
+		}
+
+		@Override
+		public void initialize(AllocationCode<Op> code) {
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<Op> allocated) {
 		}
 
 	}

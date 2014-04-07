@@ -23,7 +23,7 @@ import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.util.string.ID;
 
 
-final class Inset extends Code implements CodeAssetsSource {
+class Inset extends Code implements CodeAssetsSource {
 
 	private final Block block;
 	private final CodeWriter writer;

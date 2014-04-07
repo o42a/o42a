@@ -21,9 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -32,14 +30,15 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public abstract class AbstractObjectStoreOp implements TargetStoreOp {
+public abstract class AbstractObjectStoreOp
+		implements TargetStoreOp, Allocatable<AnyRecOp> {
 
 	private final Allocator allocator;
-	private final AnyRecOp ptr;
+	private final Allocated<AnyRecOp> ptr;
 
 	public AbstractObjectStoreOp(ID id, Code code) {
 		this.allocator = code.getAllocator();
-		this.ptr = code.allocatePtr(id);
+		this.ptr = code.allocate(id, this);
 	}
 
 	public abstract Obj getWellKnownType();
@@ -49,19 +48,43 @@ public abstract class AbstractObjectStoreOp implements TargetStoreOp {
 	}
 
 	@Override
+	public boolean isImmedite() {
+		return false;
+	}
+
+	@Override
+	public int getPriority() {
+		return NORMAL_ALLOC_PRIORITY;
+	}
+
+	@Override
+	public AnyRecOp allocate(AllocationCode<AnyRecOp> code) {
+		return code.allocatePtr();
+	}
+
+	@Override
+	public void initialize(AllocationCode<AnyRecOp> code) {
+	}
+
+	@Override
+	public void dispose(Code code, Allocated<AnyRecOp> allocated) {
+	}
+
+	@Override
 	public void storeTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
 		final ObjectOp object = object(dirs);
 
-		this.ptr.store(code, object.toAny(null, code));
+		this.ptr.get().store(code, object.toAny(null, code));
 	}
 
 	@Override
 	public ObjectOp loadTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final DataOp objectPtr = this.ptr.load(null, code).toData(null, code);
+		final DataOp objectPtr =
+				this.ptr.get().load(null, code).toData(null, code);
 
 		return anonymousObject(
 				dirs.getBuilder(),

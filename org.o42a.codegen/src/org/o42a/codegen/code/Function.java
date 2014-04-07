@@ -21,7 +21,6 @@ package org.o42a.codegen.code;
 
 import static java.util.Objects.requireNonNull;
 import static org.o42a.codegen.code.Disposal.DISPOSE_NOTHING;
-import static org.o42a.codegen.code.InternalDisposal.NO_DISPOSAL;
 
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
@@ -52,6 +51,7 @@ public final class Function<F extends Func<F>>
 		this.builder = builder;
 		this.signature = getGenerator().getFunctions().allocate(signature);
 		this.pointer = new ConstructingFuncPtr<>(this);
+		initAllocation(null);
 	}
 
 	public final Signature<F> getSignature() {
@@ -125,10 +125,8 @@ public final class Function<F extends Func<F>>
 					new DisposeBeforeReturn(functions.createBeforeReturn(this));
 		}
 
-		this.writer = functions.codeBackend().addFunction(this, beforeReturn);
-		allocation();
-
-		return this.writer;
+		return this.writer =
+				functions.codeBackend().addFunction(this, beforeReturn);
 	}
 
 	public void addCompleteListener(FunctionCompleteListener listener) {
@@ -157,11 +155,6 @@ public final class Function<F extends Func<F>>
 	@Override
 	public String toString() {
 		return getSignature().toString(getId().toString());
-	}
-
-	@Override
-	InternalDisposal disposal() {
-		return NO_DISPOSAL;
 	}
 
 	final void build() {

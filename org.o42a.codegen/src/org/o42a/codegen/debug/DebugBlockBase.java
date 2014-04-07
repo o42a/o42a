@@ -20,18 +20,21 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.debug.DebugDoFunc.DEBUG_DO;
+import static org.o42a.codegen.debug.DebugDoneFunc.DEBUG_DONE;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
-import static org.o42a.codegen.debug.TaskBlock.TASK_DISPOSAL;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.OpBlockBase;
 import org.o42a.util.string.ID;
 
 
 public abstract class DebugBlockBase extends OpBlockBase {
+
+	private static final ID DEBUG_BLOCK_ID = ID.id("__debug__");
+	private static final ID STACK_FRAME_ID = ID.id("__stack_frame__");
+	private static final AllocatableStackFrame ALLOCATABLE_STACK_FRAME =
+			new AllocatableStackFrame();
 
 	public DebugBlockBase(Code enclosing, ID name) {
 		super(enclosing, name);
@@ -50,13 +53,10 @@ public abstract class DebugBlockBase extends OpBlockBase {
 		}
 
 		final Allocator code =
-				block.allocator(id != null ? id : ID.id("debug"));
-
-		code.addLastDisposal(TASK_DISPOSAL);
-
+				block.allocator(id != null ? id : DEBUG_BLOCK_ID);
 		final DebugStackFrameOp stackFrame = code.allocation().allocate(
-				ID.id("task_stack_frame"),
-				DEBUG_STACK_FRAME_TYPE);
+				STACK_FRAME_ID,
+				ALLOCATABLE_STACK_FRAME).get();
 
 		stackFrame.comment(code).store(code, code.nullPtr());
 		stackFrame.file(code).store(code, code.nullPtr());
@@ -72,6 +72,43 @@ public abstract class DebugBlockBase extends OpBlockBase {
 
 	private final Block block() {
 		return (Block) this;
+	}
+
+	private static final class AllocatableStackFrame
+			implements Allocatable<DebugStackFrameOp> {
+
+		@Override
+		public boolean isImmedite() {
+			return true;
+		}
+
+		@Override
+		public int getPriority() {
+			return DEBUG_ALLOC_PRIORITY;
+		}
+
+		@Override
+		public DebugStackFrameOp allocate(
+				AllocationCode<DebugStackFrameOp> code) {
+			return code.allocate(DEBUG_STACK_FRAME_TYPE);
+		}
+
+		@Override
+		public void initialize(
+				AllocationCode<DebugStackFrameOp> code) {
+		}
+
+		@Override
+		public void dispose(
+				Code code,
+				Allocated<DebugStackFrameOp> allocated) {
+			code.getGenerator()
+			.externalFunction()
+			.link("o42a_dbg_done", DEBUG_DONE)
+			.op(null, code)
+			.call(code);
+		}
+
 	}
 
 }

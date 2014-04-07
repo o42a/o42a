@@ -19,10 +19,10 @@
 */
 package org.o42a.codegen.code;
 
-import static org.o42a.codegen.code.InternalDisposal.NO_DISPOSAL;
 import static org.o42a.codegen.data.AllocPlace.autoAllocPlace;
 
 import java.util.HashMap;
+import java.util.TreeSet;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.AllocPlace;
@@ -32,12 +32,14 @@ import org.o42a.util.string.ID;
 public abstract class Allocator extends Block {
 
 	private static final ID ALLOC_ID = ID.id("__alloc__");
+	private static final ID DISPOSAL_ID = ID.id("__disposal__");
+	private static final ID ALLOCATOR_DISPOSAL_ID =
+			ID.id("__allocator_disposal__");
 	private static final ID DISPOSE_ID = ID.id("__dispose__");
 
 	private final AllocPlace allocPlace = autoAllocPlace(this);
 	private Code allocation;
-	private InternalDisposal lastDisposal = NO_DISPOSAL;
-	private InternalDisposal disposal = NO_DISPOSAL;
+	private final TreeSet<Allocated<?>> allocated = new TreeSet<>();
 	private HashMap<Class<?>, Object> data;
 
 	Allocator(Block enclosing, ID name) {
@@ -53,34 +55,7 @@ public abstract class Allocator extends Block {
 	}
 
 	public final void addDisposal(Disposal disposal) {
-		assert disposal != null :
-			"Disposal not specified";
-		assert !getFunction().isComplete() :
-			"Can not add disposals to already built function";
-
-		final DedupDisposal dedupDisposal = new DedupDisposal(this, disposal);
-
-		if (this.disposal == NO_DISPOSAL) {
-			this.disposal = dedupDisposal;
-		} else {
-			this.disposal = new CombinedDisposal(this.disposal, dedupDisposal);
-		}
-	}
-
-	public final void addLastDisposal(Disposal disposal) {
-		assert disposal != null :
-			"Disposal not specified";
-		assert !getFunction().isDone() :
-			"Can not add disposals to already built function";
-
-		final DedupDisposal dedupDisposal = new DedupDisposal(this, disposal);
-
-		if (this.lastDisposal == NO_DISPOSAL) {
-			this.lastDisposal = dedupDisposal;
-		} else {
-			this.lastDisposal =
-					new CombinedDisposal(dedupDisposal, this.lastDisposal);
-		}
+		allocation().allocate(DISPOSAL_ID, new AllocatableDisposal(disposal));
 	}
 
 	@Override
@@ -91,10 +66,9 @@ public abstract class Allocator extends Block {
 	public abstract Allocator getEnclosingAllocator();
 
 	public final Code allocation() {
-		if (this.allocation != null) {
-			return this.allocation;
-		}
-		return this.allocation = inset(ALLOC_ID);
+		assert this.allocation != null :
+			"Allocation not started yet";
+		return this.allocation;
 	}
 
 	public final <T> T get(Class<? extends T> klass) {
@@ -121,11 +95,32 @@ public abstract class Allocator extends Block {
 		this.data.put(klass, value);
 	}
 
-	abstract InternalDisposal disposal();
+	final void initAllocation(Disposal disposal) {
+		assert this.allocation == null :
+			"Allocation already started";
+		this.allocation = inset(ALLOC_ID);
+		if (disposal != null) {
+			this.allocation.allocate(
+					ALLOCATOR_DISPOSAL_ID,
+					new AllocatableDisposal(disposal, Integer.MIN_VALUE));
+		}
+	}
 
 	final void dispose(Code code) {
 		getFunction().addCompleteListener(new Disposer(this, code));
 		afterDispose(code);
+	}
+
+	final <T> Allocated<T> addAllocation(
+			ID id,
+			Allocatable<T> allocatable) {
+
+		final Allocated<T> allocated =
+				new Allocated<>(id, allocatable, this.allocated.size());
+
+		this.allocated.add(allocated);
+
+		return allocated;
 	}
 
 	private <T> T find(Class<? extends T> klass) {
@@ -136,15 +131,15 @@ public abstract class Allocator extends Block {
 	}
 
 	private void disposeIn(Code code) {
-		this.disposal.dispose(code);
-		this.lastDisposal.dispose(code);
-		disposal().dispose(code);
+		for (Allocated<?> allocated : this.allocated.descendingSet()) {
+			allocated.dispose(code);
+		}
 	}
 
 	private void afterDispose(Code code) {
-		this.disposal.afterDispose(code);
-		this.lastDisposal.afterDispose(code);
-		disposal().afterDispose(code);
+		for (Allocated<?> allocated : this.allocated.descendingSet()) {
+			allocated.afterDispose(code);
+		}
 	}
 
 	private static final class Disposer

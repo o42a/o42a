@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
@@ -170,14 +170,15 @@ abstract class AbstractObjectValueBuilder
 			ValOp result) {
 
 		final Block valueKept = code.addBlock("value_kept");
-		final FldCtrOp ctr = code.getAllocator().allocation().allocate(
-				FLD_CTR_ID,
-				FLD_CTR_TYPE);
+		final Allocated<FldCtrOp> ctr =
+				code.getAllocator().allocation().allocate(
+						FLD_CTR_ID,
+						ALLOCATABLE_FLD_CTR);
 
-		ctr.start(code, state.data()).goUnless(code, valueKept.head());
+		ctr.get().start(code, state.data()).goUnless(code, valueKept.head());
 		writeKept(valueKept, state, result);
 
-		return ctr;
+		return ctr.get();
 	}
 
 	private static void writeKept(Block code, StateOp state, ValOp result) {
