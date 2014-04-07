@@ -27,25 +27,25 @@ import java.util.Map;
 
 final class AllocAsset implements CodeAsset<AllocAsset> {
 
-	static AllocAsset allocatedAsset(Code code, DedupDisposal disposal) {
+	static AllocAsset allocatedAsset(Code code, Object disposal) {
 		return new AllocAsset(disposal, new Alloc(code, true));
 	}
 
-	static AllocAsset deallocatedAsset(Code code, DedupDisposal disposal) {
+	static AllocAsset deallocatedAsset(Code code, Object disposal) {
 		return new AllocAsset(disposal, new Alloc(code, false));
 	}
 
-	private final Map<DedupDisposal, Alloc> allocs;
+	private final Map<Object, Alloc> allocs;
 
-	private AllocAsset(DedupDisposal disposal, Alloc alloc) {
+	private AllocAsset(Object disposal, Alloc alloc) {
 		this.allocs = singletonMap(disposal, alloc);
 	}
 
-	private AllocAsset(Map<DedupDisposal, Alloc> disposals) {
+	private AllocAsset(Map<Object, Alloc> disposals) {
 		this.allocs = disposals;
 	}
 
-	public final boolean allocated(DedupDisposal disposal) {
+	public final boolean allocated(Object disposal) {
 
 		final Alloc alloc = this.allocs.get(disposal);
 
@@ -68,14 +68,14 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 			return asset;
 		}
 
-		final HashMap<DedupDisposal, Alloc> allocs =
+		final HashMap<Object, Alloc> allocs =
 				new HashMap<>(this.allocs.size() + asset.allocs.size());
 
 		allocs.putAll(this.allocs);
 
-		for (Map.Entry<DedupDisposal, Alloc> e : asset.allocs.entrySet()) {
+		for (Map.Entry<Object, Alloc> e : asset.allocs.entrySet()) {
 
-			final DedupDisposal key = e.getKey();
+			final Object key = e.getKey();
 			final Alloc alloc = e.getValue();
 			final Alloc prevAlloc = allocs.get(key);
 
@@ -98,7 +98,7 @@ final class AllocAsset implements CodeAsset<AllocAsset> {
 			return asset;
 		}
 
-		final HashMap<DedupDisposal, Alloc> allocs =
+		final HashMap<Object, Alloc> allocs =
 				new HashMap<>(this.allocs.size() + asset.allocs.size());
 
 		allocs.putAll(this.allocs);

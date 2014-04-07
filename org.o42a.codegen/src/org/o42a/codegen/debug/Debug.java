@@ -34,6 +34,7 @@ import org.o42a.codegen.AbstractGenerator;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.ProxyGenerator;
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocated;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.data.*;
@@ -42,9 +43,15 @@ import org.o42a.util.string.ID;
 
 public final class Debug {
 
-	public static final ID DEBUG_ID = ID.id("DEBUG");
-	private static final ID FUNC_NAME_ID = DEBUG_ID.sub("func_name");
 
+	public static final ID DEBUG_ID = ID.id("DEBUG");
+
+	private static final ID FN_STACK_FRAME_ID = ID.id("__fn_stack_frame__");
+	private static final ID FN_NAME_ID = ID.id("__fn_name__");
+	private static final ID CANT_ENTER_ID = ID.id("__cant_enter__");
+
+	private static final AllocatableFnStackFrame ALLOCATABLE_FN_STACK_FRAME =
+			new AllocatableFnStackFrame();
 	private static final TraceBeforReturn TRACE_BEFORE_RETURN =
 			new TraceBeforReturn();
 
@@ -156,11 +163,12 @@ public final class Debug {
 			return;
 		}
 
-		final Ptr<AnyOp> namePtr = allocateName(FUNC_NAME_ID.sub(id), id);
-
-		final DebugStackFrameOp stackFrame = function.allocation().allocate(
-				ID.id("func_stack_frame"),
-				DEBUG_STACK_FRAME_TYPE);
+		final Ptr<AnyOp> namePtr = allocateName(FN_NAME_ID.sub(id), id);
+		final DebugStackFrameOp stackFrame =
+				function.allocation().allocate(
+						FN_STACK_FRAME_ID,
+						ALLOCATABLE_FN_STACK_FRAME)
+				.get();
 
 		stackFrame.name(function).store(function, namePtr.op(null, function));
 		stackFrame.comment(function).store(function, function.nullPtr());
@@ -169,7 +177,7 @@ public final class Debug {
 
 		final BoolOp canEnter =
 				enterFunc().op(null, function).enter(function, stackFrame);
-		final Block cantEnter = function.addBlock("cant_enter");
+		final Block cantEnter = function.addBlock(CANT_ENTER_ID);
 
 		canEnter.goUnless(function, cantEnter.head());
 
@@ -291,6 +299,38 @@ public final class Debug {
 				getGenerator()
 				.externalFunction()
 				.link("o42a_dbg_exit", DEBUG_EXIT);
+	}
+
+	private static final class AllocatableFnStackFrame
+			implements Allocatable<DebugStackFrameOp> {
+
+		@Override
+		public boolean isImmedite() {
+			return true;
+		}
+
+		@Override
+		public int getPriority() {
+			return NORMAL_ALLOC_PRIORITY;
+		}
+
+		@Override
+		public DebugStackFrameOp allocate(
+				AllocationCode<DebugStackFrameOp> code) {
+			return code.allocate(DEBUG_STACK_FRAME_TYPE);
+		}
+
+		@Override
+		public void initialize(
+				AllocationCode<DebugStackFrameOp> code) {
+		}
+
+		@Override
+		public void dispose(
+				Code code,
+				Allocated<DebugStackFrameOp> allocated) {
+		}
+
 	}
 
 	private static final class TraceBeforReturn implements Disposal {

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.core.ir.object.op.CtrOp.ALLOCATABLE_CTR;
 import static org.o42a.core.ir.object.op.CtrOp.CTR_ID;
-import static org.o42a.core.ir.object.op.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.Generator;
@@ -103,7 +103,7 @@ public final class ObjectsCode {
 			Obj sample) {
 
 		final Code alloc = dirs.code().getAllocator().allocation();
-		final CtrOp.Op ctr = alloc.allocate(CTR_ID, CTR_TYPE);
+		final CtrOp.Op ctr = alloc.allocate(CTR_ID, ALLOCATABLE_CTR).get();
 		final ObjectOp newObject = ctr.op(this).newObject(
 				dirs,
 				holder,

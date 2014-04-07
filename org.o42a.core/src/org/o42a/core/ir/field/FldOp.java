@@ -22,9 +22,7 @@ package org.o42a.core.ir.field;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -62,19 +60,12 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 	public abstract F ptr();
 
 	@Override
-	public FldStoreOp allocateStore(ID id, Code code) {
+	public FldStoreOp allocateStore(final ID id, Code code) {
 		if (fld().isOmitted()) {
 			return new OmittedFldStoreOp(this);
 		}
 
-		final AnyRecOp hostPtr = code.allocatePtr(id.detail(HOST_ID));
-		final StructRecOp<F> ptr = code.allocatePtr(id, fld().getType());
-
-		return new RealFldStoreOp<>(
-				this,
-				code.getAllocator(),
-				hostPtr,
-				ptr);
+		return code.allocate(id, new AllocatableRealFld<>(this)).get();
 	}
 
 	private static final class OmittedFldStoreOp implements FldStoreOp {
@@ -105,6 +96,50 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 				return super.toString();
 			}
 			return this.fld.toString();
+		}
+
+	}
+
+	private static final class AllocatableRealFld<F extends Fld.Op<F>>
+			implements Allocatable<RealFldStoreOp<F>> {
+
+		private final FldOp<F> fld;
+
+		AllocatableRealFld(FldOp<F> fld) {
+			this.fld = fld;
+		}
+
+		@Override
+		public boolean isImmedite() {
+			return true;
+		}
+
+		@Override
+		public int getPriority() {
+			return NORMAL_ALLOC_PRIORITY;
+		}
+
+		@Override
+		public RealFldStoreOp<F> allocate(
+				AllocationCode<RealFldStoreOp<F>> code) {
+
+			final AnyRecOp hostPtr = code.allocatePtr(HOST_ID);
+			final StructRecOp<F> ptr =
+					code.allocatePtr(this.fld.fld().getType());
+
+			return new RealFldStoreOp<>(
+					this.fld,
+					code.getAllocator(),
+					hostPtr,
+					ptr);
+		}
+
+		@Override
+		public void initialize(AllocationCode<RealFldStoreOp<F>> code) {
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<RealFldStoreOp<F>> allocated) {
 		}
 
 	}

@@ -20,33 +20,20 @@
 package org.o42a.codegen.code;
 
 
-interface InternalDisposal {
+public interface Allocatable<T> {
 
-	NoDisposal NO_DISPOSAL = new NoDisposal();
+	int NORMAL_ALLOC_PRIORITY = 1;
+	int HIGH_ALLOC_PRIORITY = 0;
+	int DEBUG_ALLOC_PRIORITY = -1;
 
-	void dispose(Code code);
+	boolean isImmedite();
 
-	void afterDispose(Code code);
+	int getPriority();
 
-	final class NoDisposal implements InternalDisposal {
+	T allocate(AllocationCode<T> code);
 
-		NoDisposal() {
-			super();
-		}
+	void initialize(AllocationCode<T> code);
 
-		@Override
-		public void dispose(Code code) {
-		}
-
-		@Override
-		public void afterDispose(Code code) {
-		}
-
-		@Override
-		public String toString() {
-			return "_";
-		}
-
-	}
+	void dispose(Code code, Allocated<T> allocated);
 
 }

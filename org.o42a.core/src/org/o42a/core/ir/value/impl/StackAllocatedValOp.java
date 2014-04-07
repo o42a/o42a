@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ir.value.impl;
 
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.ValType.Op;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -32,7 +32,7 @@ public final class StackAllocatedValOp extends ValOp {
 	private final ID id;
 	private final Allocator allocator;
 	private final ValHolder holder;
-	private ValType.Op ptr;
+	private final Allocated<ValType.Op> ptr;
 
 	public StackAllocatedValOp(
 			ID id,
@@ -44,6 +44,32 @@ public final class StackAllocatedValOp extends ValOp {
 		this.id = id;
 		this.allocator = allocator;
 		this.holder = holderFactory.createValHolder(this);
+
+		final Code code = this.allocator.allocation();
+
+		this.ptr = code.allocate(
+				this.id.getLocal(),
+				new Allocatable<ValType.Op>() {
+					@Override
+					public boolean isImmedite() {
+						return false;
+					}
+					@Override
+					public int getPriority() {
+						return NORMAL_ALLOC_PRIORITY;
+					}
+					@Override
+					public Op allocate(AllocationCode<Op> code) {
+						return code.allocate(ValType.VAL_TYPE);
+					}
+					@Override
+					public void initialize(AllocationCode<Op> code) {
+						storeIndefinite(code);
+					}
+					@Override
+					public void dispose(Code code, Allocated<Op> allocated) {
+					}
+				});
 	}
 
 	@Override
@@ -68,16 +94,7 @@ public final class StackAllocatedValOp extends ValOp {
 
 	@Override
 	public ValType.Op ptr() {
-		if (this.ptr != null) {
-			return this.ptr;
-		}
-
-		final Code code = this.allocator.allocation();
-
-		this.ptr = code.allocate(this.id.getLocal(), ValType.VAL_TYPE);
-		storeIndefinite(code);
-
-		return this.ptr;
+		return this.ptr.get();
 	}
 
 	@Override

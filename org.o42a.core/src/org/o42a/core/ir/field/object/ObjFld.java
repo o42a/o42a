@@ -22,7 +22,7 @@ package org.o42a.core.ir.field.object;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
@@ -120,7 +120,8 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 		final FldCtrOp ctr =
 				code.getAllocator()
 				.allocation()
-				.allocate(FLD_CTR_ID, FLD_CTR_TYPE);
+				.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR)
+				.get();
 
 		final CondBlock start = isOwn.branch(code, "start", "cont");
 

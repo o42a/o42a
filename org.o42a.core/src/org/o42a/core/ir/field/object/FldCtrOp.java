@@ -23,8 +23,8 @@ import static org.o42a.core.ir.field.object.FldCtrFinishFunc.FLD_CTR_FINISH;
 import static org.o42a.core.ir.field.object.FldCtrStartFunc.FLD_CTR_START;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocated;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -38,6 +38,8 @@ import org.o42a.util.string.ID;
 public final class FldCtrOp extends StructOp<FldCtrOp> {
 
 	public static final Type FLD_CTR_TYPE = new Type();
+	public static final Allocatable<FldCtrOp> ALLOCATABLE_FLD_CTR =
+			new AllocatableFldCtr();
 
 	private FldCtrOp(StructWriter<FldCtrOp> writer) {
 		super(writer);
@@ -151,6 +153,34 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
 			return externalTypeInfo(0x042a02ff);
+		}
+
+	}
+
+	private static final class AllocatableFldCtr
+			implements Allocatable<FldCtrOp> {
+
+		@Override
+		public boolean isImmedite() {
+			return true;
+		}
+
+		@Override
+		public int getPriority() {
+			return NORMAL_ALLOC_PRIORITY;
+		}
+
+		@Override
+		public FldCtrOp allocate(AllocationCode<FldCtrOp> code) {
+			return code.allocate(FLD_CTR_TYPE);
+		}
+
+		@Override
+		public void initialize(AllocationCode<FldCtrOp> code) {
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<FldCtrOp> allocated) {
 		}
 
 	}

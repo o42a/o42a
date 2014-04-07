@@ -19,42 +19,44 @@
 */
 package org.o42a.codegen.code;
 
-import static org.o42a.codegen.code.AllocAsset.allocatedAsset;
-import static org.o42a.codegen.code.AllocAsset.deallocatedAsset;
 
-
-class DedupDisposal implements InternalDisposal {
+class AllocatableDisposal implements Allocatable<Void> {
 
 	private final Disposal disposal;
-	private final Allocator allocator;
+	private final int priority;
 
-	DedupDisposal(Allocator allocator, Disposal disposal) {
-		this.allocator = allocator;
+	AllocatableDisposal(Disposal disposal) {
 		this.disposal = disposal;
-		allocator.allocation().addAsset(
-				AllocAsset.class,
-				allocatedAsset(allocator, this));
+		this.priority = NORMAL_ALLOC_PRIORITY;
 	}
 
-	public final Allocator getAllocator() {
-		return this.allocator;
+	AllocatableDisposal(Disposal disposal, int priority) {
+		this.disposal = disposal;
+		this.priority = priority;
 	}
 
 	@Override
-	public void dispose(Code code) {
+	public boolean isImmedite() {
+		return true;
+	}
 
-		final AllocAsset asset = code.assets().get(AllocAsset.class);
+	@Override
+	public int getPriority() {
+		return this.priority;
+	}
 
-		if (asset == null || !asset.allocated(this)) {
-			return;
-		}
+	@Override
+	public Void allocate(AllocationCode<Void> code) {
+		return null;
+	}
 
+	@Override
+	public void initialize(AllocationCode<Void> code) {
+	}
+
+	@Override
+	public void dispose(Code code, Allocated<Void> allocated) {
 		this.disposal.dispose(code);
-	}
-
-	@Override
-	public void afterDispose(Code code) {
-		code.addAsset(AllocAsset.class, deallocatedAsset(code, this));
 	}
 
 	@Override

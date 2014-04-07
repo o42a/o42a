@@ -19,16 +19,10 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DebugDoneFunc.DEBUG_DONE;
-
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Disposal;
 
 
 public final class TaskBlock {
-
-	static final Disposal TASK_DISPOSAL = new TaskDisposal();
 
 	private final Block enclosing;
 	private final Block block;
@@ -52,19 +46,6 @@ public final class TaskBlock {
 		}
 
 		return this.enclosing;
-	}
-
-	private static final class TaskDisposal implements Disposal {
-
-		@Override
-		public void dispose(Code code) {
-			code.getGenerator()
-			.externalFunction()
-			.link("o42a_dbg_done", DEBUG_DONE)
-			.op(null, code)
-			.call(code);
-		}
-
 	}
 
 }
