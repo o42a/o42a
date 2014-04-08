@@ -36,7 +36,7 @@ class AllocatableDisposal implements Allocatable<Void> {
 	}
 
 	@Override
-	public boolean isImmedite() {
+	public boolean isMandatory() {
 		return true;
 	}
 

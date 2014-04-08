@@ -64,7 +64,6 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		if (fld().isOmitted()) {
 			return new OmittedFldStoreOp(this);
 		}
-
 		return code.allocate(id, new AllocatableRealFld<>(this)).get();
 	}
 
@@ -110,8 +109,8 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		}
 
 		@Override
-		public boolean isImmedite() {
-			return true;
+		public boolean isMandatory() {
+			return false;
 		}
 
 		@Override

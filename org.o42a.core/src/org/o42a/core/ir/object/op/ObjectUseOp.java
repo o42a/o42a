@@ -152,7 +152,7 @@ public final class ObjectUseOp extends IROp {
 			implements Allocatable<AllocatedObjectUse> {
 
 		@Override
-		public boolean isImmedite() {
+		public boolean isMandatory() {
 			return false;
 		}
 

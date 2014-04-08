@@ -33,8 +33,6 @@ public abstract class DebugBlockBase extends OpBlockBase {
 
 	private static final ID DEBUG_BLOCK_ID = ID.id("__debug__");
 	private static final ID STACK_FRAME_ID = ID.id("__stack_frame__");
-	private static final AllocatableStackFrame ALLOCATABLE_STACK_FRAME =
-			new AllocatableStackFrame();
 
 	public DebugBlockBase(Code enclosing, ID name) {
 		super(enclosing, name);
@@ -54,18 +52,10 @@ public abstract class DebugBlockBase extends OpBlockBase {
 
 		final Allocator code =
 				block.allocator(id != null ? id : DEBUG_BLOCK_ID);
-		final DebugStackFrameOp stackFrame = code.allocation().allocate(
+
+		code.allocation().allocate(
 				STACK_FRAME_ID,
-				ALLOCATABLE_STACK_FRAME).get();
-
-		stackFrame.comment(code).store(code, code.nullPtr());
-		stackFrame.file(code).store(code, code.nullPtr());
-		stackFrame.line(code).store(code, code.int32(0));
-
-		getGenerator().externalFunction()
-		.link("o42a_dbg_do", DEBUG_DO)
-		.op(null, code)
-		.call(code, stackFrame, comment);
+				new AllocatableStackFrame(comment));
 
 		return new TaskBlock(block, code);
 	}
@@ -77,8 +67,14 @@ public abstract class DebugBlockBase extends OpBlockBase {
 	private static final class AllocatableStackFrame
 			implements Allocatable<DebugStackFrameOp> {
 
+		private final String comment;
+
+		AllocatableStackFrame(String comment) {
+			this.comment = comment;
+		}
+
 		@Override
-		public boolean isImmedite() {
+		public boolean isMandatory() {
 			return true;
 		}
 
@@ -94,8 +90,19 @@ public abstract class DebugBlockBase extends OpBlockBase {
 		}
 
 		@Override
-		public void initialize(
-				AllocationCode<DebugStackFrameOp> code) {
+		public void initialize(AllocationCode<DebugStackFrameOp> code) {
+
+			final DebugStackFrameOp stackFrame = code.getAllocated().get();
+
+			stackFrame.comment(code).store(code, code.nullPtr());
+			stackFrame.file(code).store(code, code.nullPtr());
+			stackFrame.line(code).store(code, code.int32(0));
+
+			code.getGenerator()
+			.externalFunction()
+			.link("o42a_dbg_do", DEBUG_DO)
+			.op(null, code)
+			.call(code, stackFrame, this.comment);
 		}
 
 		@Override
