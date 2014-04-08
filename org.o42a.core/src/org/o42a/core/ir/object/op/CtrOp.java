@@ -178,8 +178,8 @@ public class CtrOp extends IROp {
 	private static final class AllocatableCtr implements Allocatable<Op> {
 
 		@Override
-		public boolean isImmedite() {
-			return true;
+		public boolean isMandatory() {
+			return false;
 		}
 
 		@Override

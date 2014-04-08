@@ -45,6 +45,20 @@ public abstract class Code extends DebugCodeBase {
 
 	public abstract Block getBlock();
 
+	public boolean contains(Code code) {
+
+		Code c = code;
+
+		do {
+			if (this == c) {
+				return true;
+			}
+			c = c.getEnclosing();
+		} while (c != null);
+
+		return false;
+	}
+
 	/**
 	 * Retrieves all assets available at current execution point.
 	 *

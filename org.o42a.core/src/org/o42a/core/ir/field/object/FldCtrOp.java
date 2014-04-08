@@ -161,8 +161,8 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 			implements Allocatable<FldCtrOp> {
 
 		@Override
-		public boolean isImmedite() {
-			return true;
+		public boolean isMandatory() {
+			return false;
 		}
 
 		@Override

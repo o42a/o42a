@@ -44,32 +44,9 @@ public final class StackAllocatedValOp extends ValOp {
 		this.id = id;
 		this.allocator = allocator;
 		this.holder = holderFactory.createValHolder(this);
-
-		final Code code = this.allocator.allocation();
-
-		this.ptr = code.allocate(
-				this.id.getLocal(),
-				new Allocatable<ValType.Op>() {
-					@Override
-					public boolean isImmedite() {
-						return false;
-					}
-					@Override
-					public int getPriority() {
-						return NORMAL_ALLOC_PRIORITY;
-					}
-					@Override
-					public Op allocate(AllocationCode<Op> code) {
-						return code.allocate(ValType.VAL_TYPE);
-					}
-					@Override
-					public void initialize(AllocationCode<Op> code) {
-						storeIndefinite(code);
-					}
-					@Override
-					public void dispose(Code code, Allocated<Op> allocated) {
-					}
-				});
+		this.ptr =
+				this.allocator.allocation()
+				.allocate(this.id.getLocal(), new AllocatableVal());
 	}
 
 	@Override
@@ -108,6 +85,35 @@ public final class StackAllocatedValOp extends ValOp {
 			return super.toString();
 		}
 		return "(" + getValueType() + ") " + this.id;
+	}
+
+	private final class AllocatableVal
+			implements Allocatable<ValType.Op> {
+
+		@Override
+		public boolean isMandatory() {
+			return false;
+		}
+
+		@Override
+		public int getPriority() {
+			return NORMAL_ALLOC_PRIORITY;
+		}
+
+		@Override
+		public Op allocate(AllocationCode<Op> code) {
+			return code.allocate(ValType.VAL_TYPE);
+		}
+
+		@Override
+		public void initialize(AllocationCode<Op> code) {
+			storeIndefinite(code);
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<Op> allocated) {
+		}
+
 	}
 
 }

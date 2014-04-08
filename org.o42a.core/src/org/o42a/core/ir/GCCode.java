@@ -54,7 +54,7 @@ public final class GCCode {
 	private static final class SignalGC implements Allocatable<Void> {
 
 		@Override
-		public boolean isImmedite() {
+		public boolean isMandatory() {
 			return true;
 		}
 

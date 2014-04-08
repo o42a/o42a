@@ -26,7 +26,16 @@ public interface Allocatable<T> {
 	int HIGH_ALLOC_PRIORITY = 0;
 	int DEBUG_ALLOC_PRIORITY = -1;
 
-	boolean isImmedite();
+	/**
+	 * Whether allocation created for this allocatable is mandatory.
+	 *
+	 * <p>Mandatory allocations are always made in their allocator, otherwise
+	 * allocations are only made when necessary.</p>
+	 *
+	 * @return <code>true</code> if allocation is mandatory, or
+	 * <code>false</code> otherwise.
+	 */
+	boolean isMandatory();
 
 	int getPriority();
 

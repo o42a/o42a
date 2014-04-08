@@ -85,7 +85,7 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 		this.alloc = new AllocationCode<>(code, this);
 		code.updateAssets(new CodeAssets(this.alloc, "alloc", this.alloc));
 		code.addAsset(AllocAsset.class, allocatedAsset(code, this));
-		if (getAllocatable().isImmedite()) {
+		if (getAllocatable().isMandatory()) {
 			allocate();
 		}
 	}

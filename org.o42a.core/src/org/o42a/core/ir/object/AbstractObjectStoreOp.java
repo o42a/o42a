@@ -31,43 +31,23 @@ import org.o42a.util.string.ID;
 
 
 public abstract class AbstractObjectStoreOp
-		implements TargetStoreOp, Allocatable<AnyRecOp> {
+		implements TargetStoreOp {
+
+	private static final AllocatableObjectStore ALLOCATABLE_OBJECT_STORE =
+			new AllocatableObjectStore();
 
 	private final Allocator allocator;
 	private final Allocated<AnyRecOp> ptr;
 
 	public AbstractObjectStoreOp(ID id, Code code) {
 		this.allocator = code.getAllocator();
-		this.ptr = code.allocate(id, this);
+		this.ptr = code.allocate(id, ALLOCATABLE_OBJECT_STORE);
 	}
 
 	public abstract Obj getWellKnownType();
 
 	public final Allocator getAllocator() {
 		return this.allocator;
-	}
-
-	@Override
-	public boolean isImmedite() {
-		return false;
-	}
-
-	@Override
-	public int getPriority() {
-		return NORMAL_ALLOC_PRIORITY;
-	}
-
-	@Override
-	public AnyRecOp allocate(AllocationCode<AnyRecOp> code) {
-		return code.allocatePtr();
-	}
-
-	@Override
-	public void initialize(AllocationCode<AnyRecOp> code) {
-	}
-
-	@Override
-	public void dispose(Code code, Allocated<AnyRecOp> allocated) {
 	}
 
 	@Override
@@ -101,5 +81,33 @@ public abstract class AbstractObjectStoreOp
 	}
 
 	protected abstract ObjectOp object(CodeDirs dirs);
+
+	private static final class AllocatableObjectStore
+			implements Allocatable<AnyRecOp> {
+
+		@Override
+		public boolean isMandatory() {
+			return false;
+		}
+
+		@Override
+		public int getPriority() {
+			return NORMAL_ALLOC_PRIORITY;
+		}
+
+		@Override
+		public AnyRecOp allocate(AllocationCode<AnyRecOp> code) {
+			return code.allocatePtr();
+		}
+
+		@Override
+		public void initialize(AllocationCode<AnyRecOp> code) {
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<AnyRecOp> allocated) {
+		}
+
+	}
 
 }

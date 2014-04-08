@@ -43,15 +43,12 @@ import org.o42a.util.string.ID;
 
 public final class Debug {
 
-
 	public static final ID DEBUG_ID = ID.id("DEBUG");
 
 	private static final ID FN_STACK_FRAME_ID = ID.id("__fn_stack_frame__");
 	private static final ID FN_NAME_ID = ID.id("__fn_name__");
 	private static final ID CANT_ENTER_ID = ID.id("__cant_enter__");
 
-	private static final AllocatableFnStackFrame ALLOCATABLE_FN_STACK_FRAME =
-			new AllocatableFnStackFrame();
 	private static final TraceBeforReturn TRACE_BEFORE_RETURN =
 			new TraceBeforReturn();
 
@@ -167,14 +164,8 @@ public final class Debug {
 		final DebugStackFrameOp stackFrame =
 				function.allocation().allocate(
 						FN_STACK_FRAME_ID,
-						ALLOCATABLE_FN_STACK_FRAME)
+						new AllocatableFnStackFrame(namePtr))
 				.get();
-
-		stackFrame.name(function).store(function, namePtr.op(null, function));
-		stackFrame.comment(function).store(function, function.nullPtr());
-		stackFrame.file(function).store(function, function.nullPtr());
-		stackFrame.line(function).store(function, function.int32(0));
-
 		final BoolOp canEnter =
 				enterFunc().op(null, function).enter(function, stackFrame);
 		final Block cantEnter = function.addBlock(CANT_ENTER_ID);
@@ -304,8 +295,14 @@ public final class Debug {
 	private static final class AllocatableFnStackFrame
 			implements Allocatable<DebugStackFrameOp> {
 
+		private final Ptr<AnyOp> namePtr;
+
+		AllocatableFnStackFrame(Ptr<AnyOp> namePtr) {
+			this.namePtr = namePtr;
+		}
+
 		@Override
-		public boolean isImmedite() {
+		public boolean isMandatory() {
 			return true;
 		}
 
@@ -321,8 +318,14 @@ public final class Debug {
 		}
 
 		@Override
-		public void initialize(
-				AllocationCode<DebugStackFrameOp> code) {
+		public void initialize(AllocationCode<DebugStackFrameOp> code) {
+
+			final DebugStackFrameOp stackFrame = code.getAllocated().get();
+
+			stackFrame.name(code).store(code, this.namePtr.op(null, code));
+			stackFrame.comment(code).store(code, code.nullPtr());
+			stackFrame.file(code).store(code, code.nullPtr());
+			stackFrame.line(code).store(code, code.int32(0));
 		}
 
 		@Override
