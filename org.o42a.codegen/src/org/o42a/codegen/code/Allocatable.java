@@ -22,13 +22,13 @@ package org.o42a.codegen.code;
 
 public interface Allocatable<T> {
 
-	int NORMAL_ALLOC_PRIORITY = 1;
-	int HIGH_ALLOC_PRIORITY = 0;
-	int DEBUG_ALLOC_PRIORITY = -1;
+	int NORMAL_DISPOSE_PRIORITY = 0;
+	int LAST_DISPOSE_PRIORITY = -1;
+	int DEBUG_DISPOSE_PRIORITY = -2;
 
 	AllocationMode getAllocationMode();
 
-	int getPriority();
+	int getDisposePriority();
 
 	T allocate(Allocations code, Allocated<T> allocated);
 

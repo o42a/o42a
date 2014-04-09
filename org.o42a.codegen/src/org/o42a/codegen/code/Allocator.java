@@ -131,13 +131,13 @@ public abstract class Allocator extends Block {
 	}
 
 	private void disposeIn(Code code) {
-		for (Allocated<?> allocated : this.allocated.descendingSet()) {
+		for (Allocated<?> allocated : this.allocated) {
 			allocated.dispose(code);
 		}
 	}
 
 	private void afterDispose(Code code) {
-		for (Allocated<?> allocated : this.allocated.descendingSet()) {
+		for (Allocated<?> allocated : this.allocated) {
 			allocated.afterDispose(code);
 		}
 	}

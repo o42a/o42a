@@ -60,8 +60,8 @@ public final class GCCode {
 		}
 
 		@Override
-		public int getPriority() {
-			return DEBUG_ALLOC_PRIORITY;
+		public int getDisposePriority() {
+			return DEBUG_DISPOSE_PRIORITY;
 		}
 
 		@Override

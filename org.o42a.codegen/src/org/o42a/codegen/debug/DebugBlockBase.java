@@ -78,8 +78,8 @@ public abstract class DebugBlockBase extends OpBlockBase {
 		}
 
 		@Override
-		public int getPriority() {
-			return DEBUG_ALLOC_PRIORITY;
+		public int getDisposePriority() {
+			return DEBUG_DISPOSE_PRIORITY;
 		}
 
 		@Override

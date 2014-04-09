@@ -308,8 +308,8 @@ public final class Debug {
 		}
 
 		@Override
-		public int getPriority() {
-			return NORMAL_ALLOC_PRIORITY;
+		public int getDisposePriority() {
+			return DEBUG_DISPOSE_PRIORITY;
 		}
 
 		@Override

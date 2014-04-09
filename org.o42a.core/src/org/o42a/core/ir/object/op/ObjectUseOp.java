@@ -158,8 +158,8 @@ public final class ObjectUseOp extends IROp {
 		}
 
 		@Override
-		public int getPriority() {
-			return NORMAL_ALLOC_PRIORITY;
+		public int getDisposePriority() {
+			return NORMAL_DISPOSE_PRIORITY;
 		}
 
 		@Override
