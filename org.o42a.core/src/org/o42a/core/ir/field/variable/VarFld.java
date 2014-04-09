@@ -79,10 +79,7 @@ public class VarFld extends AbstractLinkFld<VarFld.Op> {
 		final Block code = dirs.code();
 		final FldOp<Op> fld = op(code, builder.host());
 		final FldCtrOp ctr =
-				code.getAllocator()
-				.allocation()
-				.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR)
-				.get();
+				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get();
 
 		final Block constructed = code.addBlock("constructed");
 

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.value.impl;
 
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
+
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
@@ -44,9 +46,9 @@ public final class StackAllocatedValOp extends ValOp {
 		this.id = id;
 		this.allocator = allocator;
 		this.holder = holderFactory.createValHolder(this);
-		this.ptr =
-				this.allocator.allocation()
-				.allocate(this.id.getLocal(), new AllocatableVal());
+		this.ptr = this.allocator.allocate(
+				this.id.getLocal(),
+				new AllocatableVal());
 	}
 
 	@Override
@@ -91,8 +93,8 @@ public final class StackAllocatedValOp extends ValOp {
 			implements Allocatable<ValType.Op> {
 
 		@Override
-		public boolean isMandatory() {
-			return false;
+		public AllocationMode getAllocationMode() {
+			return ALLOCATOR_ALLOCATION;
 		}
 
 		@Override

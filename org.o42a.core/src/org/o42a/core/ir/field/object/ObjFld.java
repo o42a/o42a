@@ -118,10 +118,7 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 		final BoolOp isOwn =
 				ownFld.toAny(null, code).eq(null, code, fld.toAny(null, code));
 		final FldCtrOp ctr =
-				code.getAllocator()
-				.allocation()
-				.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR)
-				.get();
+				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get();
 
 		final CondBlock start = isOwn.branch(code, "start", "cont");
 
