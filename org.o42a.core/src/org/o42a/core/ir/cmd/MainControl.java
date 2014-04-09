@@ -20,7 +20,6 @@
 package org.o42a.core.ir.cmd;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.ir.CodeBuilder;
@@ -55,12 +54,6 @@ final class MainControl extends Control {
 	@Override
 	public final Block code() {
 		return this.dirs.code();
-	}
-
-	@Override
-	public Code allocation() {
-		throw new UnsupportedOperationException(
-				"Main control does not support stack allocations");
 	}
 
 	@Override

@@ -86,13 +86,20 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 		final AllocationMode mode = getAllocatable().getAllocationMode();
 
 		if (!mode.supportsAllocation()) {
-			code.addAsset(AllocAsset.class, allocatedAsset(code, this));
+
+			final Code enclosing = code.getAllocator().allocations();
+
+			enclosing.addAsset(
+					AllocAsset.class,
+					allocatedAsset(enclosing, this));
+
 			this.allocated = true;
 		} else {
 
 			final Code enclosing =
 					mode.inAllocator()
-					? code.getAllocator().allocation() : code;
+					? code.getAllocator().allocations()
+					: code;
 
 			this.alloc = new Allocations(enclosing, this);
 			enclosing.updateAssets(

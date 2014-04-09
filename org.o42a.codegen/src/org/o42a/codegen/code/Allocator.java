@@ -31,14 +31,14 @@ import org.o42a.util.string.ID;
 
 public abstract class Allocator extends Block {
 
-	private static final ID ALLOC_ID = ID.id("__alloc__");
+	private static final ID ALLOCATIONS_ID = ID.id("__alloc__");
 	private static final ID DISPOSAL_ID = ID.id("__disposal__");
 	private static final ID ALLOCATOR_DISPOSAL_ID =
 			ID.id("__allocator_disposal__");
 	private static final ID DISPOSE_ID = ID.id("__dispose__");
 
 	private final AllocPlace allocPlace = autoAllocPlace(this);
-	private Code allocation;
+	private Code allocations;
 	private final TreeSet<Allocated<?>> allocated = new TreeSet<>();
 	private HashMap<Class<?>, Object> data;
 
@@ -55,7 +55,7 @@ public abstract class Allocator extends Block {
 	}
 
 	public final void addDisposal(Disposal disposal) {
-		allocation().allocate(DISPOSAL_ID, new AllocatableDisposal(disposal));
+		allocate(DISPOSAL_ID, new AllocatableDisposal(disposal));
 	}
 
 	@Override
@@ -65,10 +65,10 @@ public abstract class Allocator extends Block {
 
 	public abstract Allocator getEnclosingAllocator();
 
-	public final Code allocation() {
-		assert this.allocation != null :
-			"Allocation not started yet";
-		return this.allocation;
+	public final Code allocations() {
+		assert this.allocations != null :
+			"Allocations not started yet";
+		return this.allocations;
 	}
 
 	public final <T> T get(Class<? extends T> klass) {
@@ -95,12 +95,12 @@ public abstract class Allocator extends Block {
 		this.data.put(klass, value);
 	}
 
-	final void initAllocation(Disposal disposal) {
-		assert this.allocation == null :
+	final void initAllocations(Disposal disposal) {
+		assert this.allocations == null :
 			"Allocation already started";
-		this.allocation = inset(ALLOC_ID);
+		this.allocations = inset(ALLOCATIONS_ID);
 		if (disposal != null) {
-			this.allocation.allocate(
+			this.allocations.allocate(
 					ALLOCATOR_DISPOSAL_ID,
 					new AllocatableDisposal(disposal, Integer.MIN_VALUE));
 		}
