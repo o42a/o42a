@@ -85,14 +85,15 @@ public abstract class DebugBlockBase extends OpBlockBase {
 
 		@Override
 		public DebugStackFrameOp allocate(
-				AllocationCode<DebugStackFrameOp> code) {
+				Allocations code,
+				Allocated<DebugStackFrameOp> allocated) {
 			return code.allocate(DEBUG_STACK_FRAME_TYPE);
 		}
 
 		@Override
-		public void initialize(AllocationCode<DebugStackFrameOp> code) {
+		public void init(Code code, Allocated<DebugStackFrameOp> allocated) {
 
-			final DebugStackFrameOp stackFrame = code.getAllocated().get();
+			final DebugStackFrameOp stackFrame = allocated.get();
 
 			stackFrame.comment(code).store(code, code.nullPtr());
 			stackFrame.file(code).store(code, code.nullPtr());

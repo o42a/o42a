@@ -101,12 +101,12 @@ public final class StackAllocatedValOp extends ValOp {
 		}
 
 		@Override
-		public Op allocate(AllocationCode<Op> code) {
+		public Op allocate(Allocations code, Allocated<ValType.Op> allocated) {
 			return code.allocate(ValType.VAL_TYPE);
 		}
 
 		@Override
-		public void initialize(AllocationCode<Op> code) {
+		public void init(Code code, Allocated<ValType.Op> allocated) {
 			storeIndefinite(code);
 		}
 

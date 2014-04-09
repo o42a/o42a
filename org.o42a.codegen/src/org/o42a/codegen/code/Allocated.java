@@ -29,7 +29,7 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 
 	private final ID id;
 	private final Allocatable<T> allocatable;
-	private AllocationCode<T> alloc;
+	private Allocations alloc;
 	private T result;
 	private final int order;
 	private boolean allocated;
@@ -82,7 +82,7 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 	}
 
 	void init(Code code) {
-		this.alloc = new AllocationCode<>(code, this);
+		this.alloc = new Allocations(code, this);
 		code.updateAssets(new CodeAssets(this.alloc, "alloc", this.alloc));
 		code.addAsset(AllocAsset.class, allocatedAsset(code, this));
 		if (getAllocatable().isMandatory()) {
@@ -110,8 +110,8 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 
 	private void allocate() {
 		this.allocated = true;
-		this.result = getAllocatable().allocate(this.alloc);
-		getAllocatable().initialize(this.alloc);
+		this.result = getAllocatable().allocate(this.alloc, this);
+		getAllocatable().init(this.alloc, this);
 	}
 
 }

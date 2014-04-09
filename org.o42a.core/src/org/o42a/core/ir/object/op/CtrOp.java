@@ -188,12 +188,12 @@ public class CtrOp extends IROp {
 		}
 
 		@Override
-		public Op allocate(AllocationCode<Op> code) {
+		public Op allocate(Allocations code, Allocated<Op> allocated) {
 			return code.allocate(CTR_ID, CTR_TYPE);
 		}
 
 		@Override
-		public void initialize(AllocationCode<Op> code) {
+		public void init(Code code, Allocated<Op> allocated) {
 		}
 
 		@Override

@@ -171,12 +171,14 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		}
 
 		@Override
-		public FldCtrOp allocate(AllocationCode<FldCtrOp> code) {
+		public FldCtrOp allocate(
+				Allocations code,
+				Allocated<FldCtrOp> allocated) {
 			return code.allocate(FLD_CTR_TYPE);
 		}
 
 		@Override
-		public void initialize(AllocationCode<FldCtrOp> code) {
+		public void init(Code code, Allocated<FldCtrOp> allocated) {
 		}
 
 		@Override

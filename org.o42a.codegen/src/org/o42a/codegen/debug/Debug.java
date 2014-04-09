@@ -313,14 +313,15 @@ public final class Debug {
 
 		@Override
 		public DebugStackFrameOp allocate(
-				AllocationCode<DebugStackFrameOp> code) {
+				Allocations code,
+				Allocated<DebugStackFrameOp> allocated) {
 			return code.allocate(DEBUG_STACK_FRAME_TYPE);
 		}
 
 		@Override
-		public void initialize(AllocationCode<DebugStackFrameOp> code) {
+		public void init(Code code, Allocated<DebugStackFrameOp> allocated) {
 
-			final DebugStackFrameOp stackFrame = code.getAllocated().get();
+			final DebugStackFrameOp stackFrame = allocated.get();
 
 			stackFrame.name(code).store(code, this.namePtr.op(null, code));
 			stackFrame.comment(code).store(code, code.nullPtr());
@@ -329,9 +330,7 @@ public final class Debug {
 		}
 
 		@Override
-		public void dispose(
-				Code code,
-				Allocated<DebugStackFrameOp> allocated) {
+		public void dispose(Code code, Allocated<DebugStackFrameOp> allocated) {
 		}
 
 	}
