@@ -115,8 +115,8 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		}
 
 		@Override
-		public int getPriority() {
-			return NORMAL_ALLOC_PRIORITY;
+		public int getDisposePriority() {
+			return NORMAL_DISPOSE_PRIORITY;
 		}
 
 		@Override

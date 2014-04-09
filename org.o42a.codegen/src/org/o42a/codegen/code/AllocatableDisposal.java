@@ -29,7 +29,7 @@ class AllocatableDisposal implements Allocatable<Void> {
 
 	AllocatableDisposal(Disposal disposal) {
 		this.disposal = disposal;
-		this.priority = NORMAL_ALLOC_PRIORITY;
+		this.priority = NORMAL_DISPOSE_PRIORITY;
 	}
 
 	AllocatableDisposal(Disposal disposal, int priority) {
@@ -43,7 +43,7 @@ class AllocatableDisposal implements Allocatable<Void> {
 	}
 
 	@Override
-	public int getPriority() {
+	public int getDisposePriority() {
 		return this.priority;
 	}
 

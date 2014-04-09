@@ -167,8 +167,8 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		}
 
 		@Override
-		public int getPriority() {
-			return NORMAL_ALLOC_PRIORITY;
+		public int getDisposePriority() {
+			return NORMAL_DISPOSE_PRIORITY;
 		}
 
 		@Override

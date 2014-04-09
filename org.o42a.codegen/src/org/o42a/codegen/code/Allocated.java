@@ -63,14 +63,14 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 	public int compareTo(Allocated<T> o) {
 
 		final int cmp = Integer.compare(
-				getAllocatable().getPriority(),
-				o.getAllocatable().getPriority());
+				o.getAllocatable().getDisposePriority(),
+				getAllocatable().getDisposePriority());
 
 		if (cmp != 0) {
 			return cmp;
 		}
 
-		return Integer.compare(this.order, o.order);
+		return Integer.compare(o.order, this.order);
 	}
 
 	@Override
