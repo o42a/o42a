@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.codegen.code.AllocationMode.NO_ALLOCATION;
+
 
 class AllocatableDisposal implements Allocatable<Void> {
 
@@ -36,8 +38,8 @@ class AllocatableDisposal implements Allocatable<Void> {
 	}
 
 	@Override
-	public boolean isMandatory() {
-		return true;
+	public AllocationMode getAllocationMode() {
+		return NO_ALLOCATION;
 	}
 
 	@Override

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object.op;
 
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
 import static org.o42a.core.ir.object.op.StartObjectUseFunc.START_OBJECT_USE;
@@ -46,7 +47,7 @@ public final class ObjectUseOp extends IROp {
 
 	ObjectUseOp(ID id, CodeBuilder builder, Allocator allocator) {
 		super(builder);
-		this.ptr = allocator.allocation().allocate(id, ALLOCATABLE_OBJECT_USE);
+		this.ptr = allocator.allocate(id, ALLOCATABLE_OBJECT_USE);
 		getBuilder().gc().signal();
 	}
 
@@ -152,8 +153,8 @@ public final class ObjectUseOp extends IROp {
 			implements Allocatable<AllocatedObjectUse> {
 
 		@Override
-		public boolean isMandatory() {
-			return false;
+		public AllocationMode getAllocationMode() {
+			return ALLOCATOR_ALLOCATION;
 		}
 
 		@Override

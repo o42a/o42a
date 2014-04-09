@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.codegen.code.AllocationMode.LAZY_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.*;
@@ -86,8 +87,8 @@ public abstract class AbstractObjectStoreOp
 			implements Allocatable<AnyRecOp> {
 
 		@Override
-		public boolean isMandatory() {
-			return false;
+		public AllocationMode getAllocationMode() {
+			return LAZY_ALLOCATION;
 		}
 
 		@Override

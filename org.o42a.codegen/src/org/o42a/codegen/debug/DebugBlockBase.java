@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
 import static org.o42a.codegen.debug.DebugDoFunc.DEBUG_DO;
 import static org.o42a.codegen.debug.DebugDoneFunc.DEBUG_DONE;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
@@ -53,9 +54,7 @@ public abstract class DebugBlockBase extends OpBlockBase {
 		final Allocator code =
 				block.allocator(id != null ? id : DEBUG_BLOCK_ID);
 
-		code.allocation().allocate(
-				STACK_FRAME_ID,
-				new AllocatableStackFrame(comment));
+		code.allocate(STACK_FRAME_ID, new AllocatableStackFrame(comment));
 
 		return new TaskBlock(block, code);
 	}
@@ -74,8 +73,8 @@ public abstract class DebugBlockBase extends OpBlockBase {
 		}
 
 		@Override
-		public boolean isMandatory() {
-			return true;
+		public AllocationMode getAllocationMode() {
+			return MANDATORY_ALLOCATION;
 		}
 
 		@Override

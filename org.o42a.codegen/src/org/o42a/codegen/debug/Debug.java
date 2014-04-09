@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
 import static org.o42a.codegen.code.Disposal.DISPOSE_NOTHING;
 import static org.o42a.codegen.debug.DbgOptionsType.DBG_OPTIONS_TYPE;
 import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
@@ -162,7 +163,7 @@ public final class Debug {
 
 		final Ptr<AnyOp> namePtr = allocateName(FN_NAME_ID.sub(id), id);
 		final DebugStackFrameOp stackFrame =
-				function.allocation().allocate(
+				function.allocate(
 						FN_STACK_FRAME_ID,
 						new AllocatableFnStackFrame(namePtr))
 				.get();
@@ -302,8 +303,8 @@ public final class Debug {
 		}
 
 		@Override
-		public boolean isMandatory() {
-			return true;
+		public AllocationMode getAllocationMode() {
+			return MANDATORY_ALLOCATION;
 		}
 
 		@Override

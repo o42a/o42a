@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.field.object.FldCtrFinishFunc.FLD_CTR_FINISH;
 import static org.o42a.core.ir.field.object.FldCtrStartFunc.FLD_CTR_START;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
@@ -161,8 +162,8 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 			implements Allocatable<FldCtrOp> {
 
 		@Override
-		public boolean isMandatory() {
-			return false;
+		public AllocationMode getAllocationMode() {
+			return ALLOCATOR_ALLOCATION;
 		}
 
 		@Override

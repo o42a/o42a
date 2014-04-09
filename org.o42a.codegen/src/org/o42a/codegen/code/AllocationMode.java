@@ -20,15 +20,41 @@
 package org.o42a.codegen.code;
 
 
+/**
+ * Allocation mode of {@link Allocatable#getAllocationMode() allocatable}.
+ */
 public enum AllocationMode {
 
-	DISPOSE_ONLY,
+	/**
+	 * Allocate nothing. Only dispose.
+	 */
+	NO_ALLOCATION,
+
+	/**
+	 * Allocate when needed.
+	 */
 	LAZY_ALLOCATION,
+
+	/**
+	 * Allocate in allocator when needed.
+	 */
 	ALLOCATOR_ALLOCATION,
+
+	/**
+	 * Always allocate in allocator.
+	 */
 	MANDATORY_ALLOCATION;
 
 	final boolean supportsAllocation() {
-		return this != DISPOSE_ONLY;
+		return this != NO_ALLOCATION;
+	}
+
+	final boolean inAllocator() {
+		return ordinal() >= ALLOCATOR_ALLOCATION.ordinal();
+	}
+
+	final boolean isMandatory() {
+		return this == MANDATORY_ALLOCATION;
 	}
 
 }
