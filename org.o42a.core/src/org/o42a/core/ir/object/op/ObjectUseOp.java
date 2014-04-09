@@ -163,13 +163,14 @@ public final class ObjectUseOp extends IROp {
 
 		@Override
 		public AllocatedObjectUse allocate(
-				AllocationCode<AllocatedObjectUse> code) {
+				Allocations code,
+				Allocated<AllocatedObjectUse> allocated) {
 			return new AllocatedObjectUse(code.allocate(OBJECT_USE_TYPE));
 		}
 
 		@Override
-		public void initialize(AllocationCode<AllocatedObjectUse> code) {
-			code.getAllocated().get().init(code);
+		public void init(Code code, Allocated<AllocatedObjectUse> allocated) {
+			allocated.get().init(code);
 		}
 
 		@Override

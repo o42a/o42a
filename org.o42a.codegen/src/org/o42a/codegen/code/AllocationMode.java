@@ -20,29 +20,15 @@
 package org.o42a.codegen.code;
 
 
-public interface Allocatable<T> {
+public enum AllocationMode {
 
-	int NORMAL_ALLOC_PRIORITY = 1;
-	int HIGH_ALLOC_PRIORITY = 0;
-	int DEBUG_ALLOC_PRIORITY = -1;
+	DISPOSE_ONLY,
+	LAZY_ALLOCATION,
+	ALLOCATOR_ALLOCATION,
+	MANDATORY_ALLOCATION;
 
-	/**
-	 * Whether allocation created for this allocatable is mandatory.
-	 *
-	 * <p>Mandatory allocations are always made in their allocator, otherwise
-	 * allocations are only made when necessary.</p>
-	 *
-	 * @return <code>true</code> if allocation is mandatory, or
-	 * <code>false</code> otherwise.
-	 */
-	boolean isMandatory();
-
-	int getPriority();
-
-	T allocate(Allocations code, Allocated<T> allocated);
-
-	void init(Code code, Allocated<T> allocated);
-
-	void dispose(Code code, Allocated<T> allocated);
+	final boolean supportsAllocation() {
+		return this != DISPOSE_ONLY;
+	}
 
 }

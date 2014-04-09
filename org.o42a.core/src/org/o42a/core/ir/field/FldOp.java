@@ -120,7 +120,8 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 		@Override
 		public RealFldStoreOp<F> allocate(
-				AllocationCode<RealFldStoreOp<F>> code) {
+				Allocations code,
+				Allocated<RealFldStoreOp<F>> allocated) {
 
 			final AnyRecOp hostPtr = code.allocatePtr(HOST_ID);
 			final StructRecOp<F> ptr =
@@ -134,7 +135,7 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		}
 
 		@Override
-		public void initialize(AllocationCode<RealFldStoreOp<F>> code) {
+		public void init(Code code, Allocated<RealFldStoreOp<F>> allocated) {
 		}
 
 		@Override

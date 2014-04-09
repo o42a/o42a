@@ -96,12 +96,14 @@ public abstract class AbstractObjectStoreOp
 		}
 
 		@Override
-		public AnyRecOp allocate(AllocationCode<AnyRecOp> code) {
+		public AnyRecOp allocate(
+				Allocations code,
+				Allocated<AnyRecOp> allocated) {
 			return code.allocatePtr();
 		}
 
 		@Override
-		public void initialize(AllocationCode<AnyRecOp> code) {
+		public void init(Code code, Allocated<AnyRecOp> allocated) {
 		}
 
 		@Override

@@ -64,12 +64,12 @@ public final class GCCode {
 		}
 
 		@Override
-		public Void allocate(AllocationCode<Void> code) {
+		public Void allocate(Allocations code, Allocated<Void> allocated) {
 			return null;
 		}
 
 		@Override
-		public void initialize(AllocationCode<Void> code) {
+		public void init(Code code, Allocated<Void> allocated) {
 		}
 
 		@Override

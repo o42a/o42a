@@ -26,18 +26,18 @@ import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
 
-public final class AllocationCode<T> extends Inset {
+public final class Allocations extends Inset {
 
 	private static final ID ALLOC_SUFFIX = ID.id("__alloc__");
 
-	private final Allocated<T> allocated;
+	private final Allocated<?> allocated;
 
-	AllocationCode(Code enclosing, Allocated<T> allocated) {
+	Allocations(Code enclosing, Allocated<?> allocated) {
 		super(enclosing, allocated.getId().getLocal().detail(ALLOC_SUFFIX));
 		this.allocated = allocated;
 	}
 
-	public final Allocated<T> getAllocated() {
+	public final Allocated<?> getAllocated() {
 		return this.allocated;
 	}
 
