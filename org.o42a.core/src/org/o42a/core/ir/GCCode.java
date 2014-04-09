@@ -47,9 +47,7 @@ public final class GCCode {
 			return;
 		}
 		this.signalSent = true;
-		getBuilder().getFunction().allocation().allocate(
-				SIGNAL_GC_ID,
-				SIGNAL_GC);
+		getBuilder().getFunction().allocate(SIGNAL_GC_ID, SIGNAL_GC);
 	}
 
 	private static final class SignalGC implements Allocatable<Void> {

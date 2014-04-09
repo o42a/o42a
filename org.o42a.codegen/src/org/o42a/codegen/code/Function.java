@@ -51,7 +51,7 @@ public final class Function<F extends Func<F>>
 		this.builder = builder;
 		this.signature = getGenerator().getFunctions().allocate(signature);
 		this.pointer = new ConstructingFuncPtr<>(this);
-		initAllocation(null);
+		initAllocations(null);
 	}
 
 	public final Signature<F> getSignature() {

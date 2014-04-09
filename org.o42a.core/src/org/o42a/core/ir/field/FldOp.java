@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
-import static org.o42a.codegen.code.AllocationMode.LAZY_ALLOCATION;
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
@@ -111,7 +111,7 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 		@Override
 		public AllocationMode getAllocationMode() {
-			return LAZY_ALLOCATION;
+			return ALLOCATOR_ALLOCATION;
 		}
 
 		@Override

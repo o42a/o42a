@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.codegen.code.AllocationMode.LAZY_ALLOCATION;
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
@@ -180,7 +180,7 @@ public class CtrOp extends IROp {
 
 		@Override
 		public AllocationMode getAllocationMode() {
-			return LAZY_ALLOCATION;
+			return ALLOCATOR_ALLOCATION;
 		}
 
 		@Override

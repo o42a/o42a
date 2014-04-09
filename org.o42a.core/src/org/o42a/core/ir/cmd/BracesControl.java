@@ -19,7 +19,9 @@
 */
 package org.o42a.core.ir.cmd;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
@@ -69,11 +71,6 @@ final class BracesControl extends Control {
 	@Override
 	public final Block code() {
 		return this.allocator;
-	}
-
-	@Override
-	public final Code allocation() {
-		return this.allocator.allocation();
 	}
 
 	@Override

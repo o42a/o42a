@@ -33,7 +33,7 @@ final class AllocatorCode extends Allocator {
 		this.enclosingAllocator = enclosing.getAllocator();
 		this.writer = enclosing.writer().block(this);
 		enclosing.addAssetsTo(head());
-		initAllocation(enclosing.writer().startAllocation(this));
+		initAllocations(enclosing.writer().startAllocation(this));
 		enclosing.writer().go(unwrapPos(head()));
 		enclosing.removeAllAssets();
 	}
