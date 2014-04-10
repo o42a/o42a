@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,14 +19,19 @@
 */
 package org.o42a.core.ir.cmd;
 
-import org.o42a.core.ref.Normal;
-import org.o42a.core.ref.Normalizer;
 
+public enum CmdResult {
 
-public abstract class InlineCmd<T> extends Normal implements Cmd<T> {
+	CMD_DONE,
+	CMD_NEXT,
+	CMD_REPEAT;
 
-	public InlineCmd(Normalizer normalizer) {
-		super(normalizer);
+	public final boolean isDone() {
+		return this == CMD_DONE;
+	}
+
+	public final boolean isRepeat() {
+		return this == CMD_REPEAT;
 	}
 
 }

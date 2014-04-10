@@ -87,7 +87,7 @@ final class ExpandMacroCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue inline =
 				valueAdapter(origin).inline(normalizer, origin);
@@ -100,12 +100,12 @@ final class ExpandMacroCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override
-	public Cmd cmd(Scope origin) {
+	public Cmd<?> cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return new EvalCmd(valueAdapter(origin).eval());
 	}

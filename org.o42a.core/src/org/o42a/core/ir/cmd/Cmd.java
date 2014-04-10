@@ -20,10 +20,8 @@
 package org.o42a.core.ir.cmd;
 
 
-public interface Cmd {
+public interface Cmd<T> {
 
-	Cmd NO_CMD = InlineCmd.NO_INLINE_CMD;
-
-	void write(Control control);
+	void write(Control control, CmdState<T> state);
 
 }

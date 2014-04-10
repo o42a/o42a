@@ -65,17 +65,17 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 		return command().inline(normalizer, origin);
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 		return command().normalize(normalizer, origin);
 	}
 
 	@Override
-	public Cmd cmd(Scope origin) {
+	public Cmd<?> cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return command().cmd(origin);
 	}
@@ -169,17 +169,17 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public InlineCmd inline(Normalizer normalizer, Scope origin) {
+		public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Cmd cmd(Scope origin) {
+		public Cmd<?> cmd(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -237,17 +237,17 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public InlineCmd inline(Normalizer normalizer, Scope origin) {
+		public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Cmd cmd(Scope origin) {
+		public Cmd<?> cmd(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -288,17 +288,17 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public InlineCmd inline(Normalizer normalizer, Scope origin) {
+		public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Cmd cmd(Scope origin) {
+		public Cmd<?> cmd(Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

@@ -65,7 +65,7 @@ public final class ReturnCommand extends RefCommand {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue inline = getValueAdapter().inline(normalizer, origin);
 
@@ -77,7 +77,7 @@ public final class ReturnCommand extends RefCommand {
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 		return inline(normalizer.newNormalizer(), origin);
 	}
 
@@ -106,7 +106,7 @@ public final class ReturnCommand extends RefCommand {
 	}
 
 	@Override
-	protected Cmd refCmd(Eval value) {
+	protected Cmd<?> refCmd(Eval value) {
 		return new EvalCmd(value);
 	}
 

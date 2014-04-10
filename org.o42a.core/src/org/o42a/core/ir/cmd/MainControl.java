@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.cmd;
 
+import static org.o42a.core.ir.cmd.CmdResult.CMD_DONE;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.AnyOp;
@@ -34,6 +36,7 @@ final class MainControl extends Control {
 
 	private final DefDirs dirs;
 	private final Block continuation;
+	private CmdState<?> lastState = new CmdState<>();
 
 	private int seq;
 	private Block returnCode;
@@ -68,6 +71,18 @@ final class MainControl extends Control {
 
 	public final ValOp finalResult() {
 		return this.dirs.result();
+	}
+
+	@Override
+	public CmdResult write(Cmd<?> cmd) {
+		for (;;) {
+
+			final CmdResult result = super.write(cmd);
+
+			if (!result.isRepeat()) {
+				return CMD_DONE;
+			}
+		}
 	}
 
 	@Override
@@ -144,6 +159,14 @@ final class MainControl extends Control {
 			this.resumePositions =
 					ArrayUtil.append(this.resumePositions, resumeFrom.head());
 		}
+	}
+
+	final CmdState<?> getLastState() {
+		return this.lastState;
+	}
+
+	final void setLastState(CmdState<?> state) {
+		this.lastState = state;
 	}
 
 }

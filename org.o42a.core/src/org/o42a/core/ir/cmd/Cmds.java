@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,14 +19,22 @@
 */
 package org.o42a.core.ir.cmd;
 
-import org.o42a.core.ref.Normal;
-import org.o42a.core.ref.Normalizer;
 
+public final class Cmds {
 
-public abstract class InlineCmd<T> extends Normal implements Cmd<T> {
+	@SuppressWarnings("rawtypes")
+	private static final InlineCmd<?> NO_INLINE_CMD = new NoCmd();
 
-	public InlineCmd(Normalizer normalizer) {
-		super(normalizer);
+	@SuppressWarnings("unchecked")
+	public static <T> InlineCmd<T> noInlineCmd() {
+		return (InlineCmd<T>) NO_INLINE_CMD;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <T> Cmd<T> noCmd() {
+		return (Cmd<T>) NO_INLINE_CMD;
+	}
+
+	private Cmds() {
+	}
 }

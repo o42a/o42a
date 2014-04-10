@@ -21,13 +21,14 @@ package org.o42a.core.ref.impl;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.CmdState;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.op.CodeDirs;
 
 
-final class YieldCmd implements Cmd {
+final class YieldCmd implements Cmd<Void> {
 
 	private final Eval eval;
 
@@ -36,7 +37,7 @@ final class YieldCmd implements Cmd {
 	}
 
 	@Override
-	public void write(Control control) {
+	public void write(Control control, CmdState<Void> state) {
 
 		final DefDirs controlDirs = control.defDirs();
 		final Block yield = controlDirs.addBlock("yield");
@@ -47,6 +48,8 @@ final class YieldCmd implements Cmd {
 		dirs.done();
 
 		yield(control, controlDirs, yield);
+
+		state.next();
 	}
 
 	@Override

@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.st.assignment;
 
-import static org.o42a.core.ir.cmd.Cmd.NO_CMD;
+import static org.o42a.core.ir.cmd.Cmds.noCmd;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
@@ -52,12 +52,12 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 		return null;
 	}
 
@@ -69,8 +69,8 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd cmd() {
-		return NO_CMD;
+	public Cmd<?> cmd() {
+		return noCmd();
 	}
 
 	@Override

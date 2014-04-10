@@ -20,9 +20,7 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.cmd.Cmd;
-import org.o42a.core.ir.cmd.Control;
-import org.o42a.core.ir.cmd.InlineCmd;
+import org.o42a.core.ir.cmd.*;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -63,12 +61,12 @@ abstract class LoopCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 		return null;
 	}
 
@@ -93,7 +91,7 @@ abstract class LoopCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd(Scope origin) {
+		public Cmd<?> cmd(Scope origin) {
 			assert getStatement().assertFullyResolved();
 			return new ExitCmd(getLoopStatement());
 		}
@@ -117,14 +115,14 @@ abstract class LoopCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd(Scope origin) {
+		public Cmd<?> cmd(Scope origin) {
 			assert getStatement().assertFullyResolved();
 			return new RepeatCmd(getLoopStatement());
 		}
 
 	}
 
-	private static final class ExitCmd implements Cmd {
+	private static final class ExitCmd implements Cmd<Void> {
 
 		private final LoopStatement statement;
 
@@ -133,8 +131,9 @@ abstract class LoopCommand extends Command {
 		}
 
 		@Override
-		public void write(Control control) {
+		public void write(Control control, CmdState<Void> state) {
 			control.exitBraces(this.statement, this.statement.getName());
+			state.done();
 		}
 
 		@Override
@@ -147,7 +146,7 @@ abstract class LoopCommand extends Command {
 
 	}
 
-	private static final class RepeatCmd implements Cmd {
+	private static final class RepeatCmd implements Cmd<Void> {
 
 		private final LoopStatement statement;
 
@@ -156,8 +155,9 @@ abstract class LoopCommand extends Command {
 		}
 
 		@Override
-		public void write(Control control) {
+		public void write(Control control, CmdState<Void> state) {
 			control.repeat(this.statement, this.statement.getName());
+			state.done();
 		}
 
 		@Override

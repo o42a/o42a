@@ -25,9 +25,7 @@ import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.cmd.Cmd;
-import org.o42a.core.ir.cmd.Control;
-import org.o42a.core.ir.cmd.InlineCmd;
+import org.o42a.core.ir.cmd.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
@@ -94,7 +92,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);
 		final Ref localRef = getStatement().getLocalRef();
@@ -115,7 +113,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 		return inline(normalizer.newNormalizer(), origin);
 	}
 
@@ -139,7 +137,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd cmd() {
+	public Cmd<?> cmd() {
 		return new AssignCmd(this.ref, getStatement().getLocal());
 	}
 
@@ -151,7 +149,7 @@ final class CustomAssignment extends AssignmentKind {
 		return this.ref.toString();
 	}
 
-	private static final class InlineAssignCmd extends InlineCmd {
+	private static final class InlineAssignCmd extends InlineCmd<Void> {
 
 		private final InlineValue value;
 		private final InlineValue local;
@@ -163,7 +161,7 @@ final class CustomAssignment extends AssignmentKind {
 		}
 
 		@Override
-		public void write(Control control) {
+		public void write(Control control, CmdState<Void> state) {
 
 			final CodeDirs dirs = control.getBuilder().dirs(
 					control.code(),
@@ -173,6 +171,8 @@ final class CustomAssignment extends AssignmentKind {
 				this.local.writeCond(dirs, control.host());
 			}
 			this.value.writeCond(dirs, control.host());
+
+			state.done();
 		}
 
 		@Override
@@ -190,7 +190,7 @@ final class CustomAssignment extends AssignmentKind {
 
 	}
 
-	private static final class AssignCmd implements Cmd {
+	private static final class AssignCmd implements Cmd<Void> {
 
 		private final Ref ref;
 		private final Local local;
@@ -201,7 +201,7 @@ final class CustomAssignment extends AssignmentKind {
 		}
 
 		@Override
-		public void write(Control control) {
+		public void write(Control control, CmdState<Void> state) {
 
 			final CodeDirs dirs = control.dirs();
 
@@ -209,6 +209,8 @@ final class CustomAssignment extends AssignmentKind {
 				control.locals().get(this.local).writeCond(dirs);
 			}
 			this.ref.op(control.host()).writeCond(dirs);
+
+			state.done();
 		}
 
 		@Override

@@ -20,13 +20,14 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.CmdState;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.st.sentence.Local;
 
 
-final class VariableAssignmentCmd implements Cmd {
+final class VariableAssignmentCmd implements Cmd<Void> {
 
 	private final VariableAssignment assignment;
 
@@ -35,7 +36,7 @@ final class VariableAssignmentCmd implements Cmd {
 	}
 
 	@Override
-	public void write(Control control) {
+	public void write(Control control, CmdState<Void> state) {
 
 		final CodeDirs dirs = control.getBuilder().dirs(
 				control.code(),
@@ -58,6 +59,8 @@ final class VariableAssignmentCmd implements Cmd {
 
 		subDirs.done();
 		dirs.done();
+
+		state.done();
 	}
 
 	@Override

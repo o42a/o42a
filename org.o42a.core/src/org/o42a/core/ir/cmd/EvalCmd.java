@@ -23,7 +23,7 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 
 
-public class EvalCmd implements Cmd {
+public class EvalCmd implements Cmd<Void> {
 
 	private final Eval eval;
 
@@ -32,13 +32,14 @@ public class EvalCmd implements Cmd {
 	}
 
 	@Override
-	public void write(Control control) {
+	public void write(Control control, CmdState<Void> state) {
 
 		final DefDirs dirs = control.defDirs();
 
 		this.eval.write(dirs, control.host());
 
 		dirs.done();
+		state.done();
 	}
 
 	@Override

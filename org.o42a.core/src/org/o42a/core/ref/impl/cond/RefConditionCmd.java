@@ -20,6 +20,7 @@
 package org.o42a.core.ref.impl.cond;
 
 import org.o42a.core.ir.cmd.Cmd;
+import org.o42a.core.ir.cmd.CmdState;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
@@ -27,7 +28,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Local;
 
 
-final class RefConditionCmd implements Cmd {
+final class RefConditionCmd implements Cmd<Void> {
 
 	private final RefCondition statement;
 
@@ -36,7 +37,7 @@ final class RefConditionCmd implements Cmd {
 	}
 
 	@Override
-	public void write(Control control) {
+	public void write(Control control, CmdState<Void> state) {
 
 		final RefOp op = ref().op(control.host());
 		final Local local = this.statement.getLocal();
@@ -47,6 +48,8 @@ final class RefConditionCmd implements Cmd {
 		} else {
 			control.locals().set(dirs, local, op);
 		}
+
+		state.done();
 	}
 
 	@Override
