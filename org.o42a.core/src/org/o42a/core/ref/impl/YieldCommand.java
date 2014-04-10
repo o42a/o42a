@@ -56,12 +56,12 @@ final class YieldCommand extends RefCommand {
 	}
 
 	@Override
-	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
 		return null;
 	}
 
@@ -78,7 +78,7 @@ final class YieldCommand extends RefCommand {
 	}
 
 	@Override
-	protected Cmd refCmd(Eval value) {
+	protected Cmd<?> refCmd(Eval value) {
 		return new YieldCmd(value);
 	}
 

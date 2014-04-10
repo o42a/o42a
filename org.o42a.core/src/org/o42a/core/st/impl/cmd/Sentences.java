@@ -173,7 +173,7 @@ public abstract class Sentences {
 		return new InlineSentences(this, origin, inlines);
 	}
 
-	public final Cmd cmd(Scope origin) {
+	public final Cmd<?> cmd(Scope origin) {
 		return new SentencesCmd(this, origin);
 	}
 

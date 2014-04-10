@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,40 +19,41 @@
 */
 package org.o42a.core.st.impl.cmd;
 
-import static org.o42a.core.st.impl.cmd.SentencesOp.writeSentences;
-
-import org.o42a.core.Scope;
-import org.o42a.core.ir.cmd.Cmd;
-import org.o42a.core.ir.cmd.CmdState;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.cmd.Control;
+import org.o42a.util.string.ID;
 
 
-final class SentencesCmd implements Cmd<SentenceIndex> {
+class AltBlocks {
 
-	private final Sentences sentences;
-	private final Scope origin;
+	private final Control control;
+	private final ID prefix;
+	private final Block[] blocks;
 
-	SentencesCmd(Sentences sentences, Scope origin) {
-		this.sentences = sentences;
-		this.origin = origin;
+	AltBlocks(Control control, ID prefix, int size) {
+		this.control = control;
+		this.prefix = prefix;
+		this.blocks = new Block[size];
 	}
 
-	@Override
-	public void write(Control control, CmdState<SentenceIndex> state) {
-		writeSentences(
-				control,
-				this.origin,
-				this.sentences,
-				null,
-				state);
-	}
+	public Block get(int index) {
 
-	@Override
-	public String toString() {
-		if (this.sentences == null) {
-			return super.toString();
+		final Block existing = this.blocks[index];
+
+		if (existing != null) {
+			return existing;
 		}
-		return this.sentences.toString();
+
+		final Block block =
+				this.control.addBlock(this.prefix.sub(index + "_alt"));
+
+		this.blocks[index] = block;
+
+		return block;
+	}
+
+	public final int size() {
+		return this.blocks.length;
 	}
 
 }

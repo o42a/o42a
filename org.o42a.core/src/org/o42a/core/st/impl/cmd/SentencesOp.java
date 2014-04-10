@@ -19,180 +19,207 @@
 */
 package org.o42a.core.st.impl.cmd;
 
-import static org.o42a.util.string.Capitalization.AS_IS;
+import static org.o42a.core.ir.cmd.CmdResult.CMD_DONE;
+import static org.o42a.core.ir.cmd.CmdResult.CMD_NEXT;
+import static org.o42a.core.ir.cmd.CmdResult.CMD_REPEAT;
 
 import java.util.List;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.cmd.Control;
-import org.o42a.core.ir.cmd.InlineCmd;
+import org.o42a.core.ir.cmd.*;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.sentence.Sentence;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.util.string.ID;
-import org.o42a.util.string.Name;
 
 
 final class SentencesOp {
-
-	private static final Name BLK_SUFFIX = AS_IS.name("_blk");
-	private static final Name NEXT_SUFFIX = AS_IS.name("_next");
 
 	static void writeSentences(
 			Control control,
 			Scope origin,
 			Sentences sentences,
-			InlineSentences inline) {
+			InlineSentences inline,
+			CmdState<SentenceIndex> state) {
 
-		final ID name = control.name(sentences.getName()).suffix(BLK_SUFFIX);
-		final Block code = control.addBlock(name);
-		final Block next = control.addBlock(name.suffix(NEXT_SUFFIX));
-		final Control blockControl;
+		final SentenceIndex index = sentenceIndex(control, origin, state);
+		final Control blockControl = index.startBlock(sentences);
 
-		if (sentences.isParentheses()) {
-			blockControl =
-					control.parentheses(code, next.head());
-		} else {
-			blockControl =
-					control.braces(code, next.head(), sentences.getName());
-		}
-
-		final List<? extends Sentence> sentenceList =
-				sentences.getSentences();
+		CmdResult result = CMD_DONE;
+		final List<? extends Sentence> sentenceList = sentences.getSentences();
 		final int len = sentenceList.size();
 
-		for (int i = 0; i < len; ++i) {
+		for (; index.getSentence() < len; index.nextSentence()) {
 
+			final int i = index.getSentence();
 			final Sentence sentence = sentenceList.get(i);
-
-			writeSentence(
+			final CmdResult res = writeSentence(
 					blockControl,
-					origin,
 					sentence,
 					inline != null ? inline.get(i) : null,
-					Integer.toString(i));
+					Integer.toString(i),
+					index);
+
+			if (res.isDone()) {
+				continue;
+			}
+			if (res.isRepeat()) {
+				result = res;
+				break;
+			}
+			if (i + 1 >= len) {
+				// Last sentence. Go to the next statement.
+				result = CMD_NEXT;
+				break;
+			}
+			// Not the last sentence.
+			// Repeat starting from the next one.
+			index.nextSentence();
+			result = CMD_REPEAT;
+			break;
 		}
 
-		blockControl.end();
-
-		if (code.created()) {
-			control.code().go(code.head());
-			if (next.exists()) {
-				next.go(control.code().tail());
-			}
-			if (code.exists()) {
-				code.go(control.code().tail());
-			}
-		}
+		updateState(state, index, result);
 	}
 
-	private static void writeSentence(
+	private static SentenceIndex sentenceIndex(
 			Control control,
 			Scope origin,
-			Sentence sentence,
-			InlineSentence inline,
-			String index) {
+			CmdState<SentenceIndex> state) {
 
-		final Sentence prerequisite = sentence.getPrerequisite();
-		final Block prereqFailed;
+		final SentenceIndex index = state.get();
 
-		if (prerequisite == null) {
-			prereqFailed = null;
-		} else {
-			// write prerequisite
-			prereqFailed = control.addBlock(index + "_prereq_failed");
-
-			final Control prereqControl = control.interrogation(prereqFailed.head());
-
-			writeSentence(
-					prereqControl,
-					origin,
-					prerequisite,
-					inline != null ? inline.getPrerequisite() : null,
-					index + "_prereq");
-
-			prereqControl.end();
+		if (index != null) {
+			return index;
 		}
 
+		return new SentenceIndex(control, origin);
+	}
+
+	private static void updateState(
+			CmdState<SentenceIndex> state,
+			SentenceIndex index,
+			CmdResult result) {
+		switch (result) {
+		case CMD_DONE:
+			index.endBlock();
+			state.done();
+			return;
+		case CMD_NEXT:
+			index.endBlock();
+			state.next();
+			return;
+		case CMD_REPEAT:
+			state.repeat(index);
+			return;
+		}
+		throw new IllegalStateException(
+				"Unexpected copmmand result: " + result);
+	}
+
+	private static CmdResult writeSentence(
+			Control control,
+			Sentence sentence,
+			InlineSentence inline,
+			String prefix,
+			SentenceIndex index) {
+
+		final Block prereqFailed =
+				writePrereq(control, sentence, inline, prefix, index);
 		final List<Statements> alternatives = sentence.getAlternatives();
 		final int len = alternatives.size();
 
 		if (len <= 1) {
-			if (len != 0) {
-				writeStatements(
+
+			final CmdResult result;
+
+			if (len == 0) {
+				result = CMD_DONE;
+			} else {
+				result = writeStatements(
 						control,
-						origin,
 						alternatives.get(0),
-						inline != null ? inline.get(0) : null);
+						inline != null ? inline.get(0) : null,
+						index);
 			}
+
 			endPrereq(control, prereqFailed);
-			endAlt(sentence, control, control);
-			return;
+			if (!result.isRepeat()) {
+				index.endSingleAlt(sentence, control);
+			}
+
+			return result;
 		}
 
-		// code blocks for each alternative
-		final Block[] blocks = new Block[len];
-		final ID sentId = ID.id(index + "_sent");
-
-		for (int i = 0; i < len; ++i) {
-			blocks[i] = control.addBlock(sentId.sub(i + "_alt"));
-		}
-		control.code().go(blocks[0].head());
+		index.startSentence(control, prefix, len);
 		endPrereq(control, prereqFailed);
 
 		// fill code blocks
-		for (int i = 0; i < len; ++i) {
+		for (; index.getAlt() < len; index.nextAlt()) {
 
-			final Statements alt = alternatives.get(i);
-			final Block altCode = blocks[i];
-			final Control altControl;
-			final int nextIdx = i + 1;
-
-			if (nextIdx >= len) {
-				// last alternative
-				altControl = control.alt(altCode, control.exit());
-			} else {
-				altControl = control.alt(altCode, blocks[nextIdx].head());
-			}
-
-			writeStatements(
+			final int i = index.getAlt();
+			final Control altControl = index.startAlt(control);
+			final CmdResult result = writeStatements(
 					altControl,
-					origin,
-					alt,
-					inline != null ? inline.get(i) : null);
+					alternatives.get(i),
+					inline != null ? inline.get(i) : null,
+					index);
 
-			altControl.end();
-
-			endAlt(sentence, control, altControl);
+			if (result.isDone()) {
+				index.endAlt(sentence, control);
+				continue;
+			}
+			if (result.isRepeat()) {
+				return CMD_REPEAT;
+			}
+			index.endAlt(sentence, control);
+			if (i + 1 < len) {
+				// Not the last alternative. Repeat from the next one.
+				index.nextAlt();
+				return CMD_REPEAT;
+			}
+			// Last alternative. Repeat from the next statement.
+			index.endSentence();
+			return CMD_NEXT;
 		}
+
+		index.endSentence();
+
+		return CMD_DONE;
 	}
 
-	private static void writeStatements(
+	private static Block writePrereq(
 			Control control,
-			Scope origin,
-			Statements statements,
-			InlineCommands inlines) {
+			Sentence sentence,
+			InlineSentence inline,
+			String prefix,
+			SentenceIndex index) {
 
-		final List<Command> commands = statements.getCommands();
-		final int size = commands.size();
+		final Sentence prerequisite = sentence.getPrerequisite();
 
-		for (int i = 0; i < size; ++i) {
-
-			final Command command = commands.get(i);
-
-			if (inlines != null) {
-
-				final InlineCmd inline = inlines.get(i);
-
-				if (inline != null) {
-					inline.write(control);
-					continue;
-				}
-			}
-
-			command.cmd(origin).write(control);
+		if (prerequisite == null || index.isPrereqWritten()) {
+			return null;
 		}
+			// write prerequisite
+		final Block prereqFailed =
+				control.addBlock(prefix + "_prereq_failed");
+		final Control prereqControl =
+				control.interrogation(prereqFailed.head());
+		final CmdResult result = writeSentence(
+				prereqControl,
+				prerequisite,
+				inline != null ? inline.getPrerequisite() : null,
+				prefix + "_prereq",
+				new SentenceIndex(prereqControl, index.getOrigin()));
+
+		assert result.isDone() :
+			"Unexpected prerequisite result: " + result;
+
+		prereqControl.end();
+
+		index.writePrereq();
+
+		return prereqFailed;
 	}
 
 	private static void endPrereq(Control control, Block prereqFailed) {
@@ -202,19 +229,47 @@ final class SentencesOp {
 		}
 	}
 
-	private static void endAlt(
-			Sentence sentence,
-			Control mainControl,
-			Control control) {
-		if (sentence.getKind().isExclamatory()) {
-			control.exitBraces();
-			return;
+	private static CmdResult writeStatements(
+			Control control,
+			Statements statements,
+			InlineCommands inlines,
+			SentenceIndex index) {
+
+		final List<Command> commands = statements.getCommands();
+		final int size = commands.size();
+
+		for (; index.getStatement() < size; index.nextStatement()) {
+
+			final Cmd<?> cmd = statementCmd(statements, inlines, index);
+			final CmdResult result = control.write(cmd);
+
+			if (!result.isDone()) {
+				return result;
+			}
 		}
-		// Interrogative condition satisfied or sentence successfully complete.
-		// Go to the next sentence.
-		if (control.code() != mainControl.code()) {
-			control.code().go(mainControl.code().tail());
+
+		return CMD_DONE;
+	}
+
+	private static Cmd<?> statementCmd(
+			Statements statements,
+			InlineCommands inlines,
+			SentenceIndex index) {
+
+		final int i = index.getStatement();
+
+		if (inlines != null) {
+
+			final InlineCmd<?> inline = inlines.get(i);
+
+			if (inline != null) {
+				return inline;
+			}
 		}
+
+		final Command command = statements.getCommands().get(i);
+
+		return command.cmd(index.getOrigin());
 	}
 
 	private SentencesOp() {

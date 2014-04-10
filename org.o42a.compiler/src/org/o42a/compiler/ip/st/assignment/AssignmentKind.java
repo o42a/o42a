@@ -55,13 +55,13 @@ abstract class AssignmentKind {
 			Reproducer reproducer,
 			AssignmentStatement prototype);
 
-	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
+	public abstract InlineCmd<?> inline(Normalizer normalizer, Scope origin);
 
-	public abstract InlineCmd normalize(
+	public abstract InlineCmd<?> normalize(
 			RootNormalizer normalizer,
 			Scope origin);
 
-	public abstract Cmd cmd();
+	public abstract Cmd<?> cmd();
 
 	void init(AssignmentStatement statement) {
 		this.statement = statement;

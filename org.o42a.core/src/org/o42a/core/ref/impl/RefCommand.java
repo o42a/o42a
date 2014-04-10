@@ -72,7 +72,7 @@ abstract class RefCommand extends Command {
 	}
 
 	@Override
-	public final Cmd cmd(Scope origin) {
+	public final Cmd<?> cmd(Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return refCmd(getValueAdapter().eval());
 	}
@@ -82,6 +82,6 @@ abstract class RefCommand extends Command {
 		getValueAdapter().resolveAll(resolver);
 	}
 
-	protected abstract Cmd refCmd(Eval value);
+	protected abstract Cmd<?> refCmd(Eval value);
 
 }

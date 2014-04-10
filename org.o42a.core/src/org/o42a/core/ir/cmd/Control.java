@@ -154,6 +154,10 @@ public abstract class Control {
 		main().addResumePosition(resumeFrom);
 	}
 
+	public CmdResult write(Cmd<?> cmd) {
+		return main().getLastState().writeNested(this, cmd);
+	}
+
 	@Override
 	public String toString() {
 

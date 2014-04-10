@@ -22,12 +22,13 @@ package org.o42a.core.st.impl.cmd;
 import static org.o42a.core.st.impl.cmd.SentencesOp.writeSentences;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.cmd.CmdState;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.util.fn.Cancelable;
 
 
-public class InlineSentences extends InlineCmd {
+public class InlineSentences extends InlineCmd<SentenceIndex> {
 
 	private final Sentences sentences;
 	private final Scope origin;
@@ -48,8 +49,8 @@ public class InlineSentences extends InlineCmd {
 	}
 
 	@Override
-	public void write(Control control) {
-		writeSentences(control, this.origin, this.sentences, this);
+	public void write(Control control, CmdState<SentenceIndex> state) {
+		writeSentences(control, this.origin, this.sentences, this, state);
 	}
 
 	@Override
