@@ -127,35 +127,13 @@ final class SentencesOp {
 		final Block prereqFailed =
 				writePrereq(control, sentence, inline, prefix, index);
 		final List<Statements> alternatives = sentence.getAlternatives();
-		final int len = alternatives.size();
+		final int size = alternatives.size();
 
-		if (len <= 1) {
-
-			final CmdResult result;
-
-			if (len == 0) {
-				result = CMD_DONE;
-			} else {
-				result = writeStatements(
-						control,
-						alternatives.get(0),
-						inline != null ? inline.get(0) : null,
-						index);
-			}
-
-			endPrereq(control, prereqFailed);
-			if (!result.isRepeat()) {
-				index.endSingleAlt(sentence, control);
-			}
-
-			return result;
-		}
-
-		index.startSentence(control, prefix, len);
+		index.startSentence(control, prefix, size);
 		endPrereq(control, prereqFailed);
 
 		// fill code blocks
-		for (; index.getAlt() < len; index.nextAlt()) {
+		for (; index.getAlt() < size; index.nextAlt()) {
 
 			final int i = index.getAlt();
 			final Control altControl = index.startAlt(control);
@@ -173,7 +151,7 @@ final class SentencesOp {
 				return CMD_REPEAT;
 			}
 			index.endAlt(sentence, control);
-			if (i + 1 < len) {
+			if (i + 1 < size) {
 				// Not the last alternative. Repeat from the next one.
 				index.nextAlt();
 				return CMD_REPEAT;

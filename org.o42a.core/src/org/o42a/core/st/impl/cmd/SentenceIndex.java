@@ -121,7 +121,7 @@ final class SentenceIndex {
 
 		if (nextIdx >= this.altBlocks.size()) {
 			// last alternative
-			return this.altControl = control.alt(altCode, control.exit());
+			return this.altControl = control.alt(altCode, control.falseDir());
 		}
 
 		return this.altControl =
@@ -130,29 +130,16 @@ final class SentenceIndex {
 
 	public final void endAlt(Sentence sentence, Control control) {
 		this.altControl.end();
-		endAlt(sentence, this.altControl, control);
-		this.altControl = null;
-	}
-
-	public final void endSingleAlt(Sentence sentence, Control control) {
-		assert this.altControl == null :
-			"Not a single alternative";
-		endAlt(sentence, control, control);
-	}
-
-	private void endAlt(
-			Sentence sentence,
-			Control altControl,
-			Control control) {
 		if (sentence.getKind().isExclamatory()) {
-			altControl.exitBraces();
+			this.altControl.exitBraces();
 		} else {
 			// Interrogative condition satisfied or sentence successfully
 			// completed. Go to the next sentence.
-			if (altControl.code() != control.code()) {
-				altControl.code().go(control.code().tail());
+			if (this.altControl.code() != control.code()) {
+				this.altControl.code().go(control.code().tail());
 			}
 		}
+		this.altControl = null;
 	}
 
 	public final int getSentence() {
