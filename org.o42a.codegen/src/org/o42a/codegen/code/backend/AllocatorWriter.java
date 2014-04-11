@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,27 +19,12 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.CodeOp;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Disposal;
 
 
-public interface BlockWriter extends CodeWriter {
+public interface AllocatorWriter extends Disposal {
 
-	CodePos head();
-
-	CodePos tail();
-
-	BlockWriter block(Block code);
-
-	AllocatorWriter startAllocation(Allocator allocator);
-
-	void go(CodePos pos);
-
-	void go(CodeOp pos, CodePos[] targets);
-
-	void go(BoolOp condition, CodePos truePos, CodePos falsePos);
-
-	void returnVoid();
+	void allocate(Code code);
 
 }

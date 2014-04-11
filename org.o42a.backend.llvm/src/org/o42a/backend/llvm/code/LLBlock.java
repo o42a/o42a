@@ -23,6 +23,7 @@ import org.o42a.backend.llvm.code.op.CodeLLOp;
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.CodeOp;
@@ -105,12 +106,8 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	@Override
-	public Disposal startAllocation(Allocator allocator) {
-
-		final long nextPtr = nextPtr();
-		final long stackPtr = instr(nextPtr, stackSave(nextPtr, nextInstr()));
-
-		return new StackRestore(stackPtr);
+	public AllocatorWriter startAllocation(Allocator allocator) {
+		return new StackKeeper();
 	}
 
 	@Override
@@ -229,16 +226,26 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 		this.tail = null;
 	}
 
-	private static final class StackRestore implements Disposal {
+	private static final class StackKeeper implements AllocatorWriter {
 
-		private final long stackPtr;
+		private long stackPtr;
 
-		StackRestore(long stackPtr) {
-			this.stackPtr = stackPtr;
+		@Override
+		public void allocate(Code code) {
+
+			final LLCode llvm = llvm(code);
+			final long nextPtr = llvm.nextPtr();
+
+			this.stackPtr = llvm.instr(
+					nextPtr,
+					stackSave(nextPtr, llvm.nextInstr()));
 		}
 
 		@Override
 		public void dispose(Code code) {
+			if (this.stackPtr == 0L) {
+				return;
+			}
 
 			final LLCode llvm = llvm(code);
 			final long nextPtr = llvm.nextPtr();

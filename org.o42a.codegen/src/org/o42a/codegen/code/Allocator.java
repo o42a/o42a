@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.TreeSet;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
@@ -32,15 +33,17 @@ import org.o42a.util.string.ID;
 public abstract class Allocator extends Block {
 
 	private static final ID ALLOCATIONS_ID = ID.id("__alloc__");
+	private static final ID START_ID = ID.id("__start__");
 	private static final ID DISPOSAL_ID = ID.id("__disposal__");
 	private static final ID ALLOCATOR_DISPOSAL_ID =
 			ID.id("__allocator_disposal__");
 	private static final ID DISPOSE_ID = ID.id("__dispose__");
 
 	private final AllocPlace allocPlace = autoAllocPlace(this);
-	private Code allocations;
 	private final TreeSet<Allocated<?>> allocated = new TreeSet<>();
+	private Code allocations;
 	private HashMap<Class<?>, Object> data;
+	private AllocatorWriter allocatorWriter;
 
 	Allocator(Block enclosing, ID name) {
 		super(enclosing, name);
@@ -95,14 +98,31 @@ public abstract class Allocator extends Block {
 		this.data.put(klass, value);
 	}
 
-	final void initAllocations(Disposal disposal) {
+	protected final AllocatorWriter allocatorWriter() {
+		return this.allocatorWriter;
+	}
+
+	final void initAllocations(final AllocatorWriter allocatorWriter) {
 		assert this.allocations == null :
 			"Allocation already started";
+		this.allocatorWriter = allocatorWriter;
 		this.allocations = inset(ALLOCATIONS_ID);
-		if (disposal != null) {
+		if (allocatorWriter != null) {
+
+			final Code start = this.allocations.inset(START_ID);
+
+			getFunction().addCompleteListener(new FunctionCompleteListener() {
+				@Override
+				public void functionComplete(Function<?> function) {
+					allocatorWriter.allocate(start);
+				}
+			});
+
 			this.allocations.allocate(
 					ALLOCATOR_DISPOSAL_ID,
-					new AllocatableDisposal(disposal, Integer.MIN_VALUE));
+					new AllocatableDisposal(
+							allocatorWriter,
+							Integer.MIN_VALUE));
 		}
 	}
 
@@ -111,9 +131,7 @@ public abstract class Allocator extends Block {
 		afterDispose(code);
 	}
 
-	final <T> Allocated<T> addAllocation(
-			ID id,
-			Allocatable<T> allocatable) {
+	final <T> Allocated<T> addAllocation(ID id, Allocatable<T> allocatable) {
 
 		final Allocated<T> allocated =
 				new Allocated<>(id, allocatable, this.allocated.size());
