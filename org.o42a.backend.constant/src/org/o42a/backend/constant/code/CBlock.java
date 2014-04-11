@@ -24,6 +24,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.CodeOp;
@@ -105,39 +106,21 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	}
 
 	@Override
-	public Disposal startAllocation(final Allocator allocator) {
+	public AllocatorWriter startAllocation(Allocator allocator) {
 
-		final StartAllocation startAllocation = new StartAllocation(this);
+		final StartAllocation initAllocation =
+				new StartAllocation(this, allocator);
 
 		if (allocator != null) {
 
-			final CBlock<?> block = (CBlock<?>) allocator.writer();
+			final CBlock<?> allocBlock = cast(allocator.writer());
 
-			block.startAllocation = startAllocation;
+			allocBlock.startAllocation = initAllocation;
 		} else {
-			startAllocation.alwaysEmit();
+			initAllocation.alwaysEmit();
 		}
 
-		return new Disposal() {
-			@Override
-			public void dispose(Code code) {
-				new BaseInstrBE(cast(code)) {
-					@Override
-					public void prepare() {
-						useBy(startAllocation);
-					}
-					@Override
-					protected void emit() {
-						startAllocation.getDisposal().dispose(
-								part().underlying());
-					}
-				};
-			}
-			@Override
-			public String toString() {
-				return "Dispose[" + allocator + ']';
-			}
-		};
+		return new CAllocator(initAllocation);
 	}
 
 	@Override
@@ -305,10 +288,12 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	private static final class StartAllocation extends BaseInstrBE {
 
-		private Disposal disposal;
+		private final Allocator allocator;
+		private AllocatorWriter writer;
 
-		StartAllocation(CCode<?> code) {
+		StartAllocation(CBlock<?> code, Allocator allocator) {
 			super(code);
+			this.allocator = allocator;
 		}
 
 		@Override
@@ -316,21 +301,109 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		}
 
 		@Override
+		public String toString() {
+			if (this.allocator == null) {
+				return super.toString();
+			}
+			return "StartAllocation[" + this.allocator + ']';
+		}
+
+		@Override
 		protected void emit() {
 
 			final CBlockPart part = (CBlockPart) part();
 
-			this.disposal = part.underlying().writer().startAllocation(null);
+			this.writer = part.underlying().writer().startAllocation(null);
 		}
 
-		Disposal getDisposal() {
-			if (this.disposal != null) {
-				return this.disposal;
+		final AllocatorWriter writer() {
+			if (this.writer != null) {
+				return this.writer;
 			}
 			part().revealUpTo(this);
-			assert this.disposal != null :
-				"Can not reveal the allocation start";
-			return this.disposal;
+			assert this.writer != null :
+				"Can not start allocation";
+			return this.writer;
+		}
+
+	}
+
+	private static final class AllocateUnderlying extends BaseInstrBE {
+
+		private final StartAllocation startAllocation;
+		private boolean revealed;
+
+		AllocateUnderlying(CCode<?> code, StartAllocation initAllocation) {
+			super(code);
+			this.startAllocation = initAllocation;
+		}
+
+		@Override
+		public void prepare() {
+			this.startAllocation.use(this);
+		}
+
+		@Override
+		public String toString() {
+			if (this.startAllocation == null) {
+				return super.toString();
+			}
+			return "AllocateUnderlying[" + this.startAllocation.allocator + ']';
+		}
+
+		@Override
+		protected void emit() {
+			this.revealed = true;
+			this.startAllocation.writer().allocate(part().underlying());
+		}
+
+		final AllocatorWriter allocate() {
+			if (!this.revealed) {
+				part().revealUpTo(this);
+				assert this.revealed :
+					"Can not allocate underlying allocator";
+			}
+			return this.startAllocation.writer();
+		}
+
+	}
+
+	private static final class CAllocator implements AllocatorWriter {
+
+		private final StartAllocation startAllocation;
+		private AllocateUnderlying allocateUnderlying;
+
+		CAllocator(StartAllocation initAllocation) {
+			this.startAllocation = initAllocation;
+		}
+
+		@Override
+		public void allocate(Code code) {
+			this.allocateUnderlying =
+					new AllocateUnderlying(cast(code), this.startAllocation);
+		}
+
+		@Override
+		public void dispose(Code code) {
+			new BaseInstrBE(cast(code)) {
+				@Override
+				public void prepare() {
+					useBy(CAllocator.this.allocateUnderlying);
+				}
+				@Override
+				protected void emit() {
+					CAllocator.this.allocateUnderlying.allocate()
+					.dispose(part().underlying());
+				}
+			};
+		}
+
+		@Override
+		public String toString() {
+			if (this.startAllocation == null) {
+				return super.toString();
+			}
+			return "CAllocator[" + this.startAllocation.allocator + ']';
 		}
 
 	}
