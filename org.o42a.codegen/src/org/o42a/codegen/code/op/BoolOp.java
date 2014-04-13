@@ -29,7 +29,7 @@ public abstract class BoolOp implements Op {
 	public static final ID FALSE_ID = ID.rawId("__false__");
 	public static final ID NOT_ID = ID.rawId("__not__");
 
-	private static final ID TO_ID = ID.id().detail("__to__");
+	private static final ID EXIT_TO_ID = ID.id().detail("__exit_to__");
 
 	public abstract <O extends Op> O select(
 			ID id,
@@ -167,13 +167,10 @@ public abstract class BoolOp implements Op {
 		return dispose(source, pos, from);
 	}
 
-	private static CodePos dispose(
-			Block source,
-			CodePos pos,
-			Allocator from) {
+	private static CodePos dispose(Block source, CodePos pos, Allocator from) {
 
 		final Block exitBlock =
-				source.addBlock(TO_ID.detail(pos.code().getId()));
+				source.addBlock(EXIT_TO_ID.detail(pos.code().getId()));
 		final OpBlockBase exitBlk = exitBlock;
 
 		exitBlk.disposeFromTo(from, pos);

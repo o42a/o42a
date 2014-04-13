@@ -25,8 +25,7 @@ import org.o42a.codegen.code.Code;
 class LLInset extends LLCode {
 
 	private final long blockPtr;
-	private LLInset prevInset;
-	private long nextInstr;
+	private final LLInstructions instrs;
 	private boolean exists;
 
 	LLInset(LLCode enclosing, Code code) {
@@ -35,6 +34,7 @@ class LLInset extends LLCode {
 				enclosing.getFunction(),
 				code);
 		this.blockPtr = enclosing.nextPtr();
+		this.instrs = enclosing.instrs().inset(code.getId());
 	}
 
 	@Override
@@ -53,35 +53,8 @@ class LLInset extends LLCode {
 	}
 
 	@Override
-	public long nextInstr() {
-		return this.nextInstr;
-	}
-
-	@Override
-	protected void addInstr(long blockPtr, long instr) {
-		assert this.blockPtr == blockPtr :
-			"An attempt to add instruction from another block";
-		super.addInstr(blockPtr, instr);
-		this.exists = true;
-		if (this.prevInset != null) {
-			this.prevInset.nextInstr(blockPtr, instr);
-			this.prevInset = null;
-		}
-	}
-
-	final void setPrevInset(LLInset prevInset) {
-		assert prevInset == null || prevInset.blockPtr == this.blockPtr :
-			this + " belongs to another block than " + prevInset;
-		this.prevInset = prevInset;
-	}
-
-	final void nextInstr(long blockPtr, long nextInstr) {
-		assert this.blockPtr == blockPtr :
-			"An attempt to add instruction from another block";
-		this.nextInstr = nextInstr;
-		if (this.prevInset != null) {
-			this.prevInset.nextInstr(blockPtr, nextInstr);
-		}
+	protected LLInstructions instrs() {
+		return this.instrs;
 	}
 
 }

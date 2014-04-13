@@ -46,39 +46,15 @@ public abstract class OpBlockBase extends Code {
 	protected boolean disposeFromTo(Allocator fromAllocator, CodePos pos) {
 
 		final Allocator toAllocator = pos.code().getAllocator();
-		// Go to the allocator's head?
-		final boolean includeTarget = toAllocator.ptr().is(pos);
 
-		disposeFromTo(fromAllocator, toAllocator, includeTarget);
-
-		return includeTarget;
-	}
-
-	protected void disposeFromTo(
-			final Allocator fromAllocator,
-			final Allocator toAllocator,
-			final boolean includeTarget) {
-
-		Allocator allocator = fromAllocator;
-
-		if (!includeTarget) {
-			while (allocator != toAllocator) {
-				disposeBy(allocator);
-				allocator = allocator.getEnclosingAllocator();
-				assert allocator != null :
-					fromAllocator + " is not inside " + toAllocator;
-			}
-		} else {
-			for (;;) {
-				disposeBy(allocator);
-				if (allocator == toAllocator) {
-					break;
-				}
-				allocator = allocator.getEnclosingAllocator();
-				assert allocator != null :
-					fromAllocator + " is not inside " + toAllocator;
-			}
+		if (toAllocator.ptr().is(pos)) {
+			// Go to the allocator's head?
+			disposeFromIncludingTo(fromAllocator, toAllocator);
+			return true;
 		}
+
+		disposeFromExcludingTo(fromAllocator, toAllocator);
+		return false;
 	}
 
 	protected abstract CodePos unwrapPos(CodePos pos);
@@ -91,5 +67,36 @@ public abstract class OpBlockBase extends Code {
 	}
 
 	protected abstract void disposeBy(Allocator allocator);
+
+	private void disposeFromIncludingTo(
+			final Allocator fromAllocator,
+			final Allocator toAllocator) {
+
+		Allocator allocator = fromAllocator;
+
+		for (;;) {
+			disposeBy(allocator);
+			if (allocator == toAllocator) {
+				break;
+			}
+			allocator = allocator.getEnclosingAllocator();
+			assert allocator != null :
+				fromAllocator + " is not inside " + toAllocator;
+		}
+	}
+
+	private void disposeFromExcludingTo(
+			final Allocator fromAllocator,
+			final Allocator toAllocator) {
+
+		Allocator allocator = fromAllocator;
+
+		while (allocator != toAllocator) {
+			disposeBy(allocator);
+			allocator = allocator.getEnclosingAllocator();
+			assert allocator != null :
+				fromAllocator + " is not inside " + toAllocator;
+		}
+	}
 
 }

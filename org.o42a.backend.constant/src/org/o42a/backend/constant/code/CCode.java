@@ -102,7 +102,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final CodeWriter inset(Code code) {
-		return new CCodeInset(this, code);
+		return new CInset(this, code);
 	}
 
 	@Override
@@ -399,7 +399,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return this.code.toString();
 	}
 
-	final CCodePart<?> inset(CInset<?> inset) {
+	final CCodePart<?> inset(CInset inset) {
 		return record(inset.nextPart());
 	}
 

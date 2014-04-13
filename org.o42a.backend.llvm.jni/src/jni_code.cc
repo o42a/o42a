@@ -337,6 +337,33 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 	return to_instr_ptr(builder.GetInsertBlock(), phi);
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLCode_phiN(
+		JNIEnv *env,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
+		jlong id,
+		jint idLen,
+		jlongArray ptrs) {
+
+	jInt64Array targets(env, ptrs);
+	size_t len = targets.length();
+	MAKE_BUILDER;
+	Value *value1 = from_ptr<Value>(targets[1]);
+	PHINode *phi = builder.CreatePHI(
+			value1->getType(),
+			2,
+			StringRef(from_ptr<char>(id), idLen));
+
+	for (size_t i = 0; i < len; i += 2) {
+		phi->addIncoming(
+				from_ptr<Value>(targets[i + 1]),
+				from_ptr<BasicBlock>(targets[i]));
+	}
+
+	return to_instr_ptr(builder.GetInsertBlock(), phi);
+}
+
 jlong Java_org_o42a_backend_llvm_code_LLCode_acquireBarrier(
 		JNIEnv *,
 		jclass,

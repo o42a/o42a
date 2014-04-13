@@ -67,7 +67,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 		return create(
 				offsetId,
 				nextPtr,
-				llvm.instr(nextPtr, offset(
+				llvm.instr(offset(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(offsetId),
@@ -88,7 +88,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 				castId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toAny(
+				llvm.instr(toAny(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(castId),
@@ -107,14 +107,12 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 				castId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toAny(
 						nextPtr,
-						toAny(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(castId),
-								ids.length(),
-								getNativePtr())));
+						llvm.nextInstr(),
+						ids.write(castId),
+						ids.length(),
+						getNativePtr())));
 	}
 
 	public <SS extends StructOp<SS>> SS to(
@@ -132,7 +130,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 				getAllocPlace(),
 				type,
 				nextPtr,
-				llvm.instr(nextPtr, castStructTo(
+				llvm.instr(castStructTo(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(castId),

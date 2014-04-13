@@ -65,14 +65,12 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toPtr(
 						nextPtr,
-						toPtr(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr())));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr())));
 	}
 
 	@Override
@@ -87,14 +85,12 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toPtr(
 						nextPtr,
-						toPtr(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr())));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr())));
 	}
 
 	@Override
@@ -109,15 +105,13 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toInt(
 						nextPtr,
-						toInt(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr(),
-								(byte) 8)));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr(),
+						(byte) 8)));
 	}
 
 	@Override
@@ -132,15 +126,13 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toInt(
 						nextPtr,
-						toInt(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr(),
-								(byte) 16)));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr(),
+						(byte) 16)));
 	}
 
 	@Override
@@ -155,15 +147,13 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toInt(
 						nextPtr,
-						toInt(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr(),
-								(byte) 32)));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr(),
+						(byte) 32)));
 	}
 
 	@Override
@@ -178,15 +168,13 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toInt(
 						nextPtr,
-						toInt(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr(),
-								(byte) 64)));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr(),
+						(byte) 64)));
 	}
 
 	@Override
@@ -201,14 +189,12 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toFp32(
 						nextPtr,
-						toFp32(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr())));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr())));
 	}
 
 	@Override
@@ -223,14 +209,12 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toFp64(
 						nextPtr,
-						toFp64(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr())));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr())));
 	}
 
 	@Override
@@ -245,14 +229,12 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(
+				llvm.instr(toRelPtr(
 						nextPtr,
-						toRelPtr(
-								nextPtr,
-								llvm.nextInstr(),
-								ids.write(resultId),
-								ids.length(),
-								getNativePtr())));
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr())));
 	}
 
 	@Override

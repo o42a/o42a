@@ -23,8 +23,36 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Disposal;
 
 
+/**
+ * Allocator allocations writer.
+ *
+ * <p>It is created once by {@link BlockWriter#startAllocation(
+ * org.o42a.codegen.code.Allocator)} method, the used to make allocations one or
+ * more times by calling {@link #allocate(Code)} method. When all allocations
+ * are made, the {@link #combine(Code)} method is called to create PHI nodes
+ * for all possible allocations.</p>
+ *
+ * <p>All allocations are disposed with {@link #dispose(Code)} method.</p>
+ */
 public interface AllocatorWriter extends Disposal {
 
+	/**
+	 * Makes an allocator allocations.
+	 *
+	 * <p>This method can be called multiple times in different code blocks.
+	 * After allocation the execution flow jumps to allocator. The
+	 * {@link #combine(Code)} method should combine all possible allocations
+	 * made in different blocks, e.g. by creating a PHI node.</p>
+	 *
+	 * @param code code to perform allocation in.
+	 */
 	void allocate(Code code);
+
+	/**
+	 * Combines all allocations made by {@link #allocate(Code)} method call.
+	 *
+	 * @param code code to combine allocations in.
+	 */
+	void combine(Code code);
 
 }

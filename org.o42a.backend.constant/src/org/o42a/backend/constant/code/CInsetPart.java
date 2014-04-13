@@ -22,19 +22,17 @@ package org.o42a.backend.constant.code;
 import org.o42a.codegen.code.Code;
 
 
-final class CInsetPart<C extends Code>
-		extends CCodePart<C>
-		implements OpRecord {
+final class CInsetPart extends CCodePart<Code> implements OpRecord {
 
-	private C underlying;
+	private Code underlying;
 	private OpRecord next;
 
-	CInsetPart(CInset<C> inset) {
+	CInsetPart(CInset inset) {
 		super(inset, inset.getId());
 	}
 
 	@Override
-	public CCodePart<?> part() {
+	public final CCodePart<?> part() {
 		return inset().getEnclosingPart();
 	}
 
@@ -44,14 +42,13 @@ final class CInsetPart<C extends Code>
 	}
 
 	@Override
-	public final C underlying() {
+	public final Code underlying() {
 		if (this.underlying != null) {
 			return this.underlying;
 		}
 
-		inset().getEnclosingPart().revealUpTo(this);
-		this.underlying = inset().createUnderlying(
-				inset().getEnclosingPart().underlying());
+		part().revealUpTo(this);
+		this.underlying = inset().createUnderlying(part().underlying());
 
 		assert this.underlying != null :
 			"Can not construct an underlying inset for " + this;
@@ -59,9 +56,8 @@ final class CInsetPart<C extends Code>
 		return this.underlying;
 	}
 
-	@SuppressWarnings("unchecked")
-	public final CInset<C> inset() {
-		return (CInset<C>) code();
+	public final CInset inset() {
+		return (CInset) code();
 	}
 
 	@Override

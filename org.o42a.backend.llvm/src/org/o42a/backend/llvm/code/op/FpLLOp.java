@@ -48,7 +48,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, neg(
+				llvm.instr(neg(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -68,7 +68,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, add(
+				llvm.instr(add(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -89,7 +89,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, sub(
+				llvm.instr(sub(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -110,7 +110,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, mul(
+				llvm.instr(mul(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -131,7 +131,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, div(
+				llvm.instr(div(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -152,7 +152,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, rem(
+				llvm.instr(rem(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -172,7 +172,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, eq(
+				llvm.instr(eq(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -192,7 +192,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, ne(
+				llvm.instr(ne(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -212,7 +212,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, gt(
+				llvm.instr(gt(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -232,7 +232,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, ge(
+				llvm.instr(ge(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -252,7 +252,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, lt(
+				llvm.instr(lt(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -272,7 +272,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, le(
+				llvm.instr(le(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -292,7 +292,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Int8llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, fp2int(
+				llvm.instr(fp2int(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -312,7 +312,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Int16llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, fp2int(
+				llvm.instr(fp2int(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -332,7 +332,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Int32llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, fp2int(
+				llvm.instr(fp2int(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -352,7 +352,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Int64llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, fp2int(
+				llvm.instr(fp2int(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -372,7 +372,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Fp32llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, fp2fp32(
+				llvm.instr(fp2fp32(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -391,7 +391,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Fp64llOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, fp2fp64(
+				llvm.instr(fp2fp64(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
