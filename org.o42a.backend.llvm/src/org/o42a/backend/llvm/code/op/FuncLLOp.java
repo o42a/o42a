@@ -67,7 +67,7 @@ public final class FuncLLOp<F extends Func<F>>
 				id,
 				getAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, castFuncTo(
+				llvm.instr(castFuncTo(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(id),

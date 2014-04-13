@@ -29,6 +29,8 @@ import org.o42a.util.string.ID;
 
 public abstract class Block extends DebugBlockBase {
 
+	private static final ID ENTER_TO_ID = ID.id().detail("__enter_to__");
+
 	private final CodePtr ptr;
 	private final CodeAssets initialAssets = new CodeAssets(this, "initial");
 	private CodeAssets assets = this.initialAssets;
@@ -92,7 +94,7 @@ public abstract class Block extends DebugBlockBase {
 
 		for (int i = 0; i < targets.length; ++i) {
 
-			final CodePos target = targets[i];
+			final CodePos target = reallocateDownTo(targets[i]);
 
 			addAssetsTo(target);
 			unwrapped[i] = unwrapPos(target);
@@ -166,6 +168,57 @@ public abstract class Block extends DebugBlockBase {
 			return false;
 		}
 		return pos.code().ptr().is(pos);
+	}
+
+	private CodePos reallocateDownTo(CodePos pos) {
+		if (getGenerator().isProxied()) {
+			return pos;
+		}
+
+		final Allocator from = getAllocator();
+		final Allocator to = pos.code().getAllocator();
+
+		if (from == to) {
+			return pos;
+		}
+
+		final Allocator target;
+
+		if (to.ptr().is(pos)) {
+			// Go to allocator's head?
+			target = to.getEnclosingAllocator();
+			if (target == from) {
+				return pos;
+			}
+		} else {
+			throw new UnsupportedOperationException(
+					"Can jump only to allocator's head");
+		}
+
+		final Block realloc = addBlock(ENTER_TO_ID.detail(pos.code().getId()));
+
+		reallocate(realloc, from, target);
+
+		final CodePos allocatorEntry = target.entry();
+
+		realloc.writer().go(unwrapPos(allocatorEntry));
+		realloc.addAssetsTo(allocatorEntry);
+
+		return realloc.head();
+	}
+
+	private void reallocate(
+			Block realloc,
+			Allocator from,
+			Allocator allocator) {
+
+		final Allocator enclosing = allocator.getEnclosingAllocator();
+
+		if (enclosing != from) {
+			reallocate(realloc, from, enclosing);
+		}
+
+		allocator.reallocate(realloc);
 	}
 
 }

@@ -22,16 +22,16 @@ package org.o42a.backend.constant.code;
 import org.o42a.codegen.code.Code;
 
 
-abstract class CInset<C extends Code> extends CCode<C> {
+final class CInset extends CCode<Code> {
 
 	private final CBlock<?> block;
-	private final CInsetPart<C> part;
+	private final CInsetPart part;
 	private final CCodePart<?> enclosingPart;
 
-	CInset(CCode<?> enclosing, C code) {
+	CInset(CCode<?> enclosing, Code code) {
 		super(enclosing.getBackend(), enclosing.getFunction(), code);
 		this.block = enclosing.block();
-		this.part = new CInsetPart<>(this);
+		this.part = new CInsetPart(this);
 		this.enclosingPart = enclosing.inset(this);
 	}
 
@@ -55,10 +55,12 @@ abstract class CInset<C extends Code> extends CCode<C> {
 	}
 
 	@Override
-	public CInsetPart<C> nextPart() {
+	public CInsetPart nextPart() {
 		return this.part;
 	}
 
-	protected abstract C createUnderlying(Code enclosingUnderlying);
+	protected Code createUnderlying(Code enclosingUnderlying) {
+		return enclosingUnderlying.inset(getId().getLocal());
+	}
 
 }

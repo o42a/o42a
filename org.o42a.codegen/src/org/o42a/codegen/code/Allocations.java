@@ -28,7 +28,7 @@ import org.o42a.util.string.ID;
 
 public final class Allocations extends Inset {
 
-	private static final ID ALLOC_SUFFIX = ID.id("__alloc__");
+	private static final ID ALLOC_SUFFIX = ID.rawId("__alloc__");
 
 	private final Allocated<?> allocated;
 

@@ -19,9 +19,14 @@
 */
 package org.o42a.backend.llvm.code;
 
+import static org.o42a.codegen.code.op.Op.PHI_ID;
+
+import java.util.Arrays;
+
 import org.o42a.backend.llvm.code.op.CodeLLOp;
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.codegen.code.backend.BlockWriter;
@@ -31,6 +36,7 @@ import org.o42a.codegen.code.op.CodeOp;
 
 public abstract class LLBlock extends LLCode implements BlockWriter {
 
+	private LLInstructions instrs;
 	private LLCodePos.Head head;
 	private LLCodePos.Tail tail;
 	private long firstBlockPtr;
@@ -39,6 +45,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 
 	LLBlock(LLVMModule module, LLFunction<?> function, Block code) {
 		super(module, function, code);
+		this.instrs = new LLInstructions(code.getId());
 	}
 
 	public final Block block() {
@@ -74,7 +81,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 		if (prevPtr != 0L) {
 			endBlock();
 			nextPtr = nextPtr();
-			instr(nextPtr, go(prevPtr, nextInstr(), nextPtr));
+			instr(go(prevPtr, nextInstr(), nextPtr));
 		} else {
 			nextPtr = nextPtr();
 		}
@@ -96,11 +103,6 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	@Override
-	public final long nextInstr() {
-		return 0L;
-	}
-
-	@Override
 	public LLBlock block(Block code) {
 		return new LLCodeBlock(this, code);
 	}
@@ -112,10 +114,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 
 	@Override
 	public void go(CodePos pos) {
-
-		final long nextPtr = nextPtr();
-
-		instr(nextPtr, go(nextPtr, nextInstr(), blockPtr(pos)));
+		instr(go(nextPtr(), nextInstr(), blockPtr(pos)));
 		endBlock();
 	}
 
@@ -128,16 +127,13 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 			blockPtrs[i] = blockPtr(targets[i]);
 		}
 
-		final long nextPtr = nextPtr();
 		final CodeLLOp llvmPos = (CodeLLOp) pos;
 
-		instr(
-				nextPtr,
-				goByPtr(
-						nextPtr,
-						nextInstr(),
-						llvmPos.ptr().getNativePtr(),
-						blockPtrs));
+		instr(goByPtr(
+				nextPtr(),
+				nextInstr(),
+				llvmPos.ptr().getNativePtr(),
+				blockPtrs));
 		endBlock();
 	}
 
@@ -164,31 +160,23 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 			falsePtr = llvmFalse.getBlockPtr();
 		}
 
-		instr(
+		instr(choose(
 				blockPtr,
-				choose(
-						blockPtr,
-						nextInstr(),
-						nativePtr(condition),
-						truePtr,
-						falsePtr));
+				nextInstr(),
+				nativePtr(condition),
+				truePtr,
+				falsePtr));
 	}
 
 	@Override
 	public void returnVoid() {
 		getFunction().beforeReturn(block());
-
-		final long nextPtr = nextPtr();
-
-		instr(nextPtr, returnVoid(nextPtr, nextInstr()));
+		instr(returnVoid(nextPtr(), nextInstr()));
 	}
 
 	public void returnValue(LLOp<?> result) {
 		getFunction().beforeReturn(block());
-
-		final long nextPtr = nextPtr();
-
-		instr(nextPtr, returnValue(nextPtr, nextInstr(),result.getNativePtr()));
+		instr(returnValue(nextPtr(), nextInstr(), result.getNativePtr()));
 	}
 
 	protected final void init() {
@@ -197,6 +185,11 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	protected abstract long createFirtsBlock();
+
+	@Override
+	protected LLInstructions instrs() {
+		return this.instrs;
+	}
 
 	final long getFirstBlockPtr() {
 		if (created()) {
@@ -222,12 +215,14 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	private final void endBlock() {
+		this.instrs = new LLInstructions(getId());
 		this.blockPtr = 0;
 		this.tail = null;
 	}
 
 	private static final class StackKeeper implements AllocatorWriter {
 
+		private long[] stackPtrs;
 		private long stackPtr;
 
 		@Override
@@ -235,10 +230,42 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 
 			final LLCode llvm = llvm(code);
 			final long nextPtr = llvm.nextPtr();
+			final long stackPtr =
+					llvm.instr(stackSave(nextPtr, llvm.nextInstr()));
 
-			this.stackPtr = llvm.instr(
-					nextPtr,
-					stackSave(nextPtr, llvm.nextInstr()));
+			if (this.stackPtrs == null) {
+				this.stackPtrs = new long[] {nextPtr, stackPtr};
+			} else {
+
+				final int len = this.stackPtrs.length;
+
+				this.stackPtrs = Arrays.copyOf(this.stackPtrs, len + 2);
+				this.stackPtrs[len] = nextPtr;
+				this.stackPtrs[len + 1] = stackPtr;
+			}
+		}
+
+		@Override
+		public void combine(Code code) {
+
+			final LLCode llvm = llvm(code);
+
+			if (this.stackPtrs == null) {
+				this.stackPtr =
+						llvm.instr(stackSave(llvm.nextPtr(), llvm.nextInstr()));
+			} else if (this.stackPtrs.length == 2) {
+				this.stackPtr = this.stackPtrs[1];
+			} else {
+
+				final NativeBuffer ids = llvm.getModule().ids();
+
+				this.stackPtr = llvm.instr(phiN(
+						llvm.nextPtr(),
+						llvm.nextInstr(),
+						ids.write(PHI_ID),
+						ids.length(),
+						this.stackPtrs));
+			}
 		}
 
 		@Override
@@ -248,14 +275,11 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 			}
 
 			final LLCode llvm = llvm(code);
-			final long nextPtr = llvm.nextPtr();
 
-			llvm.instr(
-					nextPtr,
-					stackRestore(
-							nextPtr,
-							llvm.nextInstr(),
-							this.stackPtr));
+			llvm.instr(stackRestore(
+					llvm.nextPtr(),
+					llvm.nextInstr(),
+					this.stackPtr));
 		}
 
 	}

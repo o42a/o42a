@@ -28,6 +28,7 @@ import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.CodeOp;
+import org.o42a.util.ArrayUtil;
 import org.o42a.util.Chain;
 
 
@@ -357,6 +358,46 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			this.startAllocation.writer().allocate(part().underlying());
 		}
 
+		final AllocatorWriter reallocate() {
+			if (!this.revealed) {
+				part().revealUpTo(this);
+				assert this.revealed :
+					"Can not reallocate underlying allocator";
+			}
+			return this.startAllocation.writer();
+		}
+
+	}
+
+	private static final class CombineUnderlying extends BaseInstrBE {
+
+		private final StartAllocation startAllocation;
+		private boolean revealed;
+
+		CombineUnderlying(CCode<?> code, StartAllocation initAllocation) {
+			super(code);
+			this.startAllocation = initAllocation;
+		}
+
+		@Override
+		public void prepare() {
+			this.startAllocation.use(this);
+		}
+
+		@Override
+		public String toString() {
+			if (this.startAllocation == null) {
+				return super.toString();
+			}
+			return "CombineUnderlying[" + this.startAllocation.allocator + ']';
+		}
+
+		@Override
+		protected void emit() {
+			this.revealed = true;
+			this.startAllocation.writer().combine(part().underlying());
+		}
+
 		final AllocatorWriter allocate() {
 			if (!this.revealed) {
 				part().revealUpTo(this);
@@ -371,7 +412,8 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	private static final class CAllocator implements AllocatorWriter {
 
 		private final StartAllocation startAllocation;
-		private AllocateUnderlying allocateUnderlying;
+		private AllocateUnderlying[] allocs;
+		private CombineUnderlying combine;
 
 		CAllocator(StartAllocation initAllocation) {
 			this.startAllocation = initAllocation;
@@ -379,8 +421,21 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 		@Override
 		public void allocate(Code code) {
-			this.allocateUnderlying =
+
+			final AllocateUnderlying alloc =
 					new AllocateUnderlying(cast(code), this.startAllocation);
+
+			if (this.allocs == null) {
+				this.allocs = new AllocateUnderlying[] {alloc};
+			} else {
+				this.allocs = ArrayUtil.append(this.allocs, alloc);
+			}
+		}
+
+		@Override
+		public void combine(Code code) {
+			this.combine =
+					new CombineUnderlying(cast(code), this.startAllocation);
 		}
 
 		@Override
@@ -388,12 +443,11 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			new BaseInstrBE(cast(code)) {
 				@Override
 				public void prepare() {
-					useBy(CAllocator.this.allocateUnderlying);
+					useBy(CAllocator.this.combine);
 				}
 				@Override
 				protected void emit() {
-					CAllocator.this.allocateUnderlying.allocate()
-					.dispose(part().underlying());
+					emitAlloc(part());
 				}
 			};
 		}
@@ -404,6 +458,15 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 				return super.toString();
 			}
 			return "CAllocator[" + this.startAllocation.allocator + ']';
+		}
+
+		private void emitAlloc(CCodePart<?> part) {
+			if (this.allocs != null) {
+				for (AllocateUnderlying alloc : this.allocs) {
+					alloc.reallocate();
+				}
+			}
+			this.combine.allocate().dispose(part.underlying());
 		}
 
 	}

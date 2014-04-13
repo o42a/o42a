@@ -32,18 +32,20 @@ import org.o42a.util.string.ID;
 
 public abstract class Allocator extends Block {
 
-	private static final ID ALLOCATIONS_ID = ID.id("__alloc__");
-	private static final ID START_ID = ID.id("__start__");
-	private static final ID DISPOSAL_ID = ID.id("__disposal__");
+	private static final ID ALLOCATIONS_ID = ID.rawId("__allocs__");
+	private static final ID ENTRY_ID = ID.rawId("__entry__");
+	private static final ID START_ID = ID.rawId("__start__");
+	private static final ID DISPOSAL_ID = ID.rawId("__disposal__");
 	private static final ID ALLOCATOR_DISPOSAL_ID =
-			ID.id("__allocator_disposal__");
-	private static final ID DISPOSE_ID = ID.id("__dispose__");
+			ID.rawId("__allocator_disposal__");
+	private static final ID DISPOSE_ID = ID.rawId("__dispose__");
 
 	private final AllocPlace allocPlace = autoAllocPlace(this);
 	private final TreeSet<Allocated<?>> allocated = new TreeSet<>();
 	private Code allocations;
 	private HashMap<Class<?>, Object> data;
 	private AllocatorWriter allocatorWriter;
+	private CodePos entry;
 
 	Allocator(Block enclosing, ID name) {
 		super(enclosing, name);
@@ -98,32 +100,58 @@ public abstract class Allocator extends Block {
 		this.data.put(klass, value);
 	}
 
-	protected final AllocatorWriter allocatorWriter() {
-		return this.allocatorWriter;
+	/**
+	 * Allocator entry.
+	 *
+	 * <p>It is expected that internal allocations are done at this point.</p>
+	 *
+	 * @return entry entry head position.
+	 */
+	final CodePos entry() {
+		return this.entry;
 	}
 
 	final void initAllocations(final AllocatorWriter allocatorWriter) {
 		assert this.allocations == null :
 			"Allocation already started";
-		this.allocatorWriter = allocatorWriter;
-		this.allocations = inset(ALLOCATIONS_ID);
-		if (allocatorWriter != null) {
 
-			final Code start = this.allocations.inset(START_ID);
-
-			getFunction().addCompleteListener(new FunctionCompleteListener() {
-				@Override
-				public void functionComplete(Function<?> function) {
-					allocatorWriter.allocate(start);
-				}
-			});
-
-			this.allocations.allocate(
-					ALLOCATOR_DISPOSAL_ID,
-					new AllocatableDisposal(
-							allocatorWriter,
-							Integer.MIN_VALUE));
+		if (allocatorWriter == null) {
+			this.allocations = inset(ALLOCATIONS_ID);
+		} else {
+			createEntry(allocatorWriter);
 		}
+	}
+
+	private void createEntry(final AllocatorWriter allocatorWriter) {
+		this.allocatorWriter = allocatorWriter;
+
+		final Block entry = addBlock(ENTRY_ID);
+
+		go(entry.head());
+		allocatorWriter.allocate(entry);
+		this.entry = tail();
+		entry.go(this.entry);
+
+		final Code start = inset(START_ID);
+
+		getFunction().addCompleteListener(new FunctionCompleteListener() {
+			@Override
+			public void functionComplete(Function<?> function) {
+				allocatorWriter.combine(start);
+			}
+		});
+
+		this.allocations = inset(ALLOCATIONS_ID);
+
+		allocate(
+				ALLOCATOR_DISPOSAL_ID,
+				new AllocatableDisposal(
+						allocatorWriter,
+						Integer.MIN_VALUE));
+	}
+
+	final void reallocate(Code code) {
+		this.allocatorWriter.allocate(code);
 	}
 
 	final void dispose(Code code) {

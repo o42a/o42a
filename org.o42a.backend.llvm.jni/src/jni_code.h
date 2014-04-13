@@ -145,6 +145,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phi2
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
+ * Method:    phiN
+ * Signature: (JJJI[J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlongArray);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    acquireBarrier
  * Signature: (JJ)J
  */
