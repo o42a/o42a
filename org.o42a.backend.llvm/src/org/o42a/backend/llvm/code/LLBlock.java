@@ -19,15 +19,12 @@
 */
 package org.o42a.backend.llvm.code;
 
-import static org.o42a.codegen.code.op.Op.PHI_ID;
-
-import java.util.Arrays;
-
 import org.o42a.backend.llvm.code.op.CodeLLOp;
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
@@ -109,7 +106,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 
 	@Override
 	public AllocatorWriter startAllocation(Allocator allocator) {
-		return new StackKeeper();
+		return new LLStackKeeper();
 	}
 
 	@Override
@@ -218,70 +215,6 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 		this.instrs = new LLInstructions(getId());
 		this.blockPtr = 0;
 		this.tail = null;
-	}
-
-	private static final class StackKeeper implements AllocatorWriter {
-
-		private long[] stackPtrs;
-		private long stackPtr;
-
-		@Override
-		public void allocate(Code code, CodePos target) {
-
-			final LLCode llvm = llvm(code);
-			final long nextPtr = llvm.nextPtr();
-			final long stackPtr =
-					llvm.instr(stackSave(nextPtr, llvm.nextInstr()));
-
-			if (this.stackPtrs == null) {
-				this.stackPtrs = new long[] {nextPtr, stackPtr};
-			} else {
-
-				final int len = this.stackPtrs.length;
-
-				this.stackPtrs = Arrays.copyOf(this.stackPtrs, len + 2);
-				this.stackPtrs[len] = nextPtr;
-				this.stackPtrs[len + 1] = stackPtr;
-			}
-		}
-
-		@Override
-		public void combine(Code code) {
-
-			final LLCode llvm = llvm(code);
-
-			if (this.stackPtrs == null) {
-				this.stackPtr =
-						llvm.instr(stackSave(llvm.nextPtr(), llvm.nextInstr()));
-			} else if (this.stackPtrs.length == 2) {
-				this.stackPtr = this.stackPtrs[1];
-			} else {
-
-				final NativeBuffer ids = llvm.getModule().ids();
-
-				this.stackPtr = llvm.instr(phiN(
-						llvm.nextPtr(),
-						llvm.nextInstr(),
-						ids.write(PHI_ID),
-						ids.length(),
-						this.stackPtrs));
-			}
-		}
-
-		@Override
-		public void dispose(Code code) {
-			if (this.stackPtr == 0L) {
-				return;
-			}
-
-			final LLCode llvm = llvm(code);
-
-			llvm.instr(stackRestore(
-					llvm.nextPtr(),
-					llvm.nextInstr(),
-					this.stackPtr));
-		}
-
 	}
 
 }

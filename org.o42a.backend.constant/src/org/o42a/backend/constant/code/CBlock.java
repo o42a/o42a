@@ -365,7 +365,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 					this.target);
 		}
 
-		final AllocatorWriter reallocate() {
+		final AllocatorWriter allocate() {
 			if (!this.revealed) {
 				part().revealUpTo(this);
 				assert this.revealed :
@@ -378,12 +378,19 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	private static final class CombineUnderlying extends BaseInstrBE {
 
+		private final Code originalCode;
+		private final CAllocator allocator;
 		private final StartAllocation startAllocation;
 		private boolean revealed;
 
-		CombineUnderlying(CCode<?> code, StartAllocation initAllocation) {
+		CombineUnderlying(
+				CCode<?> code,
+				Code originalCode,
+				CAllocator allocator) {
 			super(code);
-			this.startAllocation = initAllocation;
+			this.originalCode = originalCode;
+			this.allocator = allocator;
+			this.startAllocation = allocator.startAllocation;
 		}
 
 		@Override
@@ -402,10 +409,13 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		@Override
 		protected void emit() {
 			this.revealed = true;
-			this.startAllocation.writer().combine(part().underlying());
+			this.allocator.emitAllocs();
+			this.startAllocation.writer().combine(
+					part().underlying(),
+					this.originalCode);
 		}
 
-		final AllocatorWriter allocate() {
+		final AllocatorWriter combine() {
 			if (!this.revealed) {
 				part().revealUpTo(this);
 				assert this.revealed :
@@ -442,13 +452,15 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		}
 
 		@Override
-		public void combine(Code code) {
-			this.combine =
-					new CombineUnderlying(cast(code), this.startAllocation);
+		public void combine(Code code, Code originalCode) {
+			this.combine = new CombineUnderlying(
+					cast(code),
+					originalCode,
+					this);
 		}
 
 		@Override
-		public void dispose(Code code) {
+		public void dispose(Code code, final Code originalCode) {
 			new BaseInstrBE(cast(code)) {
 				@Override
 				public void prepare() {
@@ -456,7 +468,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 				}
 				@Override
 				protected void emit() {
-					emitAlloc(part());
+					emitDispose(part(), originalCode);
 				}
 			};
 		}
@@ -469,13 +481,16 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			return "CAllocator[" + this.startAllocation.allocator + ']';
 		}
 
-		private void emitAlloc(CCodePart<?> part) {
+		void emitAllocs() {
 			if (this.allocs != null) {
 				for (AllocateUnderlying alloc : this.allocs) {
-					alloc.reallocate();
+					alloc.allocate();
 				}
 			}
-			this.combine.allocate().dispose(part.underlying());
+		}
+
+		private void emitDispose(CCodePart<?> part, Code originalCode) {
+			this.combine.combine().dispose(part.underlying(), originalCode);
 		}
 
 	}

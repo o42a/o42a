@@ -21,7 +21,6 @@ package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.Disposal;
 
 
 /**
@@ -30,20 +29,20 @@ import org.o42a.codegen.code.Disposal;
  * <p>It is created once by {@link BlockWriter#startAllocation(
  * org.o42a.codegen.code.Allocator)} method, the used to make allocations one or
  * more times by calling {@link #allocate(Code, CodePos)} method. When all
- * allocations are made, the {@link #combine(Code)} method is called to create
- * PHI nodes for all possible allocations.</p>
+ * allocations are made, the {@link #combine(Code, Code)} method is called to
+ * create PHI nodes for all possible allocations.</p>
  *
- * <p>All allocations are disposed with {@link #dispose(Code)} method.</p>
+ * <p>All allocations are disposed with {@link #dispose(Code, Code)} method.</p>
  */
-public interface AllocatorWriter extends Disposal {
+public interface AllocatorWriter {
 
 	/**
 	 * Makes an allocator allocations.
 	 *
 	 * <p>This method can be called multiple times in different code blocks.
 	 * After allocation the execution flow jumps to allocator. The
-	 * {@link #combine(Code)} method should combine all possible allocations
-	 * made in different blocks, e.g. by creating a PHI node.</p>
+	 * {@link #combine(Code, Code)} method should combine all possible
+	 * allocations made in different blocks, e.g. by creating a PHI node.</p>
 	 *
 	 * @param code code to perform allocation in.
 	 * @param target the position of jump position following this allocation.
@@ -61,8 +60,11 @@ public interface AllocatorWriter extends Disposal {
 	 * with allocations made specifically for target one (see {@code target}
 	 * argument of {@link #allocate(Code, CodePos)} method).</p>
 	 *
-	 * @param code code to combine allocations in.
+	 * @param code the code to combine allocations in.
+	 * @param originalCode original code, not back-end specific one.
 	 */
-	void combine(Code code);
+	void combine(Code code, Code originalCode);
+
+	void dispose(Code code, Code originalCode);
 
 }
