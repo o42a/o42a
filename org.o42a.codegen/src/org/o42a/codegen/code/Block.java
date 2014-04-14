@@ -163,14 +163,7 @@ public abstract class Block extends DebugBlockBase {
 		allocator.dispose(this);
 	}
 
-	private static boolean isHead(CodePos pos) {
-		if (pos == null) {
-			return false;
-		}
-		return pos.code().ptr().is(pos);
-	}
-
-	private CodePos reallocateDownTo(CodePos pos) {
+	CodePos reallocateDownTo(CodePos pos) {
 		if (getGenerator().isProxied()) {
 			return pos;
 		}
@@ -181,30 +174,25 @@ public abstract class Block extends DebugBlockBase {
 		if (from == to) {
 			return pos;
 		}
-
-		final Allocator target;
-
-		if (to.ptr().is(pos)) {
-			// Go to allocator's head?
-			target = to.getEnclosingAllocator();
-			if (target == from) {
-				return pos;
-			}
-		} else {
+		if (!to.ptr().is(pos)) {
 			throw new UnsupportedOperationException(
 					"Can jump only to allocator's head");
 		}
 
 		final Block realloc = addBlock(ENTER_TO_ID.detail(pos.code().getId()));
 
-		reallocate(realloc, from, target);
-
-		final CodePos allocatorEntry = target.entry();
-
-		realloc.writer().go(unwrapPos(allocatorEntry));
-		realloc.addAssetsTo(allocatorEntry);
+		reallocate(realloc, from, to);
+		realloc.writer().go(unwrapPos(pos));
+		realloc.addAssetsTo(pos);
 
 		return realloc.head();
+	}
+
+	private static boolean isHead(CodePos pos) {
+		if (pos == null) {
+			return false;
+		}
+		return pos.code().ptr().is(pos);
 	}
 
 	private void reallocate(
@@ -218,7 +206,7 @@ public abstract class Block extends DebugBlockBase {
 			reallocate(realloc, from, enclosing);
 		}
 
-		allocator.reallocate(realloc);
+		allocator.allocate(realloc);
 	}
 
 }

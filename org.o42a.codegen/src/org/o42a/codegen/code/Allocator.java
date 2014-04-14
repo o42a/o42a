@@ -34,7 +34,6 @@ public abstract class Allocator extends Block {
 
 	private static final ID ALLOCATIONS_ID = ID.rawId("__allocs__");
 	private static final ID ENTRY_ID = ID.rawId("__entry__");
-	private static final ID START_ID = ID.rawId("__start__");
 	private static final ID DISPOSAL_ID = ID.rawId("__disposal__");
 	private static final ID ALLOCATOR_DISPOSAL_ID =
 			ID.rawId("__allocator_disposal__");
@@ -45,7 +44,6 @@ public abstract class Allocator extends Block {
 	private Code allocations;
 	private HashMap<Class<?>, Object> data;
 	private AllocatorWriter allocatorWriter;
-	private CodePos entry;
 
 	Allocator(Block enclosing, ID name) {
 		super(enclosing, name);
@@ -100,17 +98,6 @@ public abstract class Allocator extends Block {
 		this.data.put(klass, value);
 	}
 
-	/**
-	 * Allocator entry.
-	 *
-	 * <p>It is expected that internal allocations are done at this point.</p>
-	 *
-	 * @return entry entry head position.
-	 */
-	final CodePos entry() {
-		return this.entry;
-	}
-
 	final void initAllocations(final AllocatorWriter allocatorWriter) {
 		assert this.allocations == null :
 			"Allocation already started";
@@ -122,35 +109,7 @@ public abstract class Allocator extends Block {
 		}
 	}
 
-	private void createEntry(final AllocatorWriter allocatorWriter) {
-		this.allocatorWriter = allocatorWriter;
-
-		final Block entry = addBlock(ENTRY_ID);
-
-		go(entry.head());
-		allocatorWriter.allocate(entry);
-		this.entry = tail();
-		entry.go(this.entry);
-
-		final Code start = inset(START_ID);
-
-		getFunction().addCompleteListener(new FunctionCompleteListener() {
-			@Override
-			public void functionComplete(Function<?> function) {
-				allocatorWriter.combine(start);
-			}
-		});
-
-		this.allocations = inset(ALLOCATIONS_ID);
-
-		allocate(
-				ALLOCATOR_DISPOSAL_ID,
-				new AllocatableDisposal(
-						allocatorWriter,
-						Integer.MIN_VALUE));
-	}
-
-	final void reallocate(Code code) {
+	final void allocate(Code code) {
 		this.allocatorWriter.allocate(code);
 	}
 
@@ -167,6 +126,27 @@ public abstract class Allocator extends Block {
 		this.allocated.add(allocated);
 
 		return allocated;
+	}
+
+	private void createEntry(final AllocatorWriter allocatorWriter) {
+		this.allocatorWriter = allocatorWriter;
+
+		final Code entry = inset(ENTRY_ID);
+
+		getFunction().addCompleteListener(new FunctionCompleteListener() {
+			@Override
+			public void functionComplete(Function<?> function) {
+				allocatorWriter.combine(entry);
+			}
+		});
+
+		this.allocations = inset(ALLOCATIONS_ID);
+
+		allocate(
+				ALLOCATOR_DISPOSAL_ID,
+				new AllocatableDisposal(
+						allocatorWriter,
+						Integer.MIN_VALUE));
 	}
 
 	private <T> T find(Class<? extends T> klass) {
