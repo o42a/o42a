@@ -109,8 +109,8 @@ public abstract class Allocator extends Block {
 		}
 	}
 
-	final void allocate(Code code) {
-		this.allocatorWriter.allocate(code);
+	final void allocate(Code code, CodePos target) {
+		this.allocatorWriter.allocate(code, target);
 	}
 
 	final void dispose(Code code) {
