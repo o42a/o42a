@@ -22,9 +22,10 @@ package org.o42a.codegen.code;
 import static java.util.Objects.requireNonNull;
 import static org.o42a.codegen.code.Disposal.DISPOSE_NOTHING;
 
+import java.util.LinkedList;
+
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
-import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
 
 
@@ -36,7 +37,8 @@ public final class Function<F extends Func<F>>
 	private final Signature<F> signature;
 	private final FunctionBuilder<F> builder;
 	private final FuncPtr<F> pointer;
-	private FunctionCompleteListener[] completeListeners;
+	private final LinkedList<FunctionCompleteListener> completeListeners =
+			new LinkedList<>();
 	private FuncWriter<F> writer;
 	private boolean done;
 
@@ -131,12 +133,7 @@ public final class Function<F extends Func<F>>
 
 	public void addCompleteListener(FunctionCompleteListener listener) {
 		requireNonNull(listener, "Function complete listener not specified");
-		if (this.completeListeners == null) {
-			this.completeListeners = new FunctionCompleteListener[] {listener};
-		} else {
-			this.completeListeners =
-					ArrayUtil.append(this.completeListeners, listener);
-		}
+		this.completeListeners.add(listener);
 	}
 
 	@Override
@@ -163,9 +160,6 @@ public final class Function<F extends Func<F>>
 	}
 
 	private void notifyCompleteListeners() {
-		if (this.completeListeners == null) {
-			return;
-		}
 		for (FunctionCompleteListener listener : this.completeListeners) {
 			listener.functionComplete(this);
 		}
