@@ -20,6 +20,7 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Disposal;
 
 
@@ -28,9 +29,9 @@ import org.o42a.codegen.code.Disposal;
  *
  * <p>It is created once by {@link BlockWriter#startAllocation(
  * org.o42a.codegen.code.Allocator)} method, the used to make allocations one or
- * more times by calling {@link #allocate(Code)} method. When all allocations
- * are made, the {@link #combine(Code)} method is called to create PHI nodes
- * for all possible allocations.</p>
+ * more times by calling {@link #allocate(Code, CodePos)} method. When all
+ * allocations are made, the {@link #combine(Code)} method is called to create
+ * PHI nodes for all possible allocations.</p>
  *
  * <p>All allocations are disposed with {@link #dispose(Code)} method.</p>
  */
@@ -45,11 +46,19 @@ public interface AllocatorWriter extends Disposal {
 	 * made in different blocks, e.g. by creating a PHI node.</p>
 	 *
 	 * @param code code to perform allocation in.
+	 * @param target the position of jump position following this allocation.
 	 */
-	void allocate(Code code);
+	void allocate(Code code, CodePos target);
 
 	/**
-	 * Combines all allocations made by {@link #allocate(Code)} method call.
+	 * Combines all allocations made by {@link #allocate(Code, CodePos)}
+	 * method call.
+	 *
+	 * <p>This method is called once per allocator. But it can be called
+	 * multiple times: for allocator itself, and for its nested allocators.
+	 * In the latter case it should combine allocations made by parent allocator
+	 * with allocations made specifically for target one (see {@code target}
+	 * argument of {@link #allocate(Code, CodePos)} method).</p>
 	 *
 	 * @param code code to combine allocations in.
 	 */

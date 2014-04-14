@@ -226,7 +226,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 		private long stackPtr;
 
 		@Override
-		public void allocate(Code code) {
+		public void allocate(Code code, CodePos target) {
 
 			final LLCode llvm = llvm(code);
 			final long nextPtr = llvm.nextPtr();
