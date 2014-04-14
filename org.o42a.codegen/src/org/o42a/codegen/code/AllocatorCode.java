@@ -32,9 +32,12 @@ final class AllocatorCode extends Allocator {
 		super(enclosing, name);
 		this.enclosingAllocator = enclosing.getAllocator();
 		this.writer = enclosing.writer().block(this);
-		enclosing.addAssetsTo(head());
 		initAllocations(enclosing.writer().startAllocation(this));
-		enclosing.writer().go(unwrapPos(head()));
+
+		final CodePos entry = enclosing.reallocateDownTo(head());
+
+		enclosing.addAssetsTo(entry);
+		enclosing.writer().go(unwrapPos(entry));
 		enclosing.removeAllAssets();
 	}
 
