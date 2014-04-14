@@ -136,7 +136,7 @@ public abstract class Allocator extends Block {
 		getFunction().addCompleteListener(new FunctionCompleteListener() {
 			@Override
 			public void functionComplete(Function<?> function) {
-				allocatorWriter.combine(entry);
+				allocatorWriter.combine(entry, entry);
 			}
 		});
 
@@ -145,7 +145,12 @@ public abstract class Allocator extends Block {
 		allocate(
 				ALLOCATOR_DISPOSAL_ID,
 				new AllocatableDisposal(
-						allocatorWriter,
+						new Disposal() {
+							@Override
+							public void dispose(Code code) {
+								allocatorWriter.dispose(code, code);
+							}
+						},
 						Integer.MIN_VALUE));
 	}
 
