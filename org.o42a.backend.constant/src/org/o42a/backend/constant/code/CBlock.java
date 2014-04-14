@@ -331,13 +331,13 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	private static final class AllocateUnderlying extends BaseInstrBE {
 
-		private final CCodePos target;
+		private final CodePos target;
 		private final StartAllocation startAllocation;
 		private boolean revealed;
 
 		AllocateUnderlying(
 				CCode<?> code,
-				CCodePos target,
+				CodePos target,
 				StartAllocation initAllocation) {
 			super(code);
 			this.target = target;
@@ -362,7 +362,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			this.revealed = true;
 			this.startAllocation.writer().allocate(
 					part().underlying(),
-					this.target.getUnderlying());
+					this.target);
 		}
 
 		final AllocatorWriter reallocate() {
@@ -431,7 +431,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 			final AllocateUnderlying alloc = new AllocateUnderlying(
 					cast(code),
-					cast(target),
+					target,
 					this.startAllocation);
 
 			if (this.allocs == null) {

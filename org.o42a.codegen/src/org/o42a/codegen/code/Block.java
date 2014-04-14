@@ -180,10 +180,9 @@ public abstract class Block extends DebugBlockBase {
 		}
 
 		final Block realloc = addBlock(ENTER_TO_ID.detail(pos.code().getId()));
-		final CodePos target = unwrapPos(pos);
 
-		reallocate(realloc, from, target, to);
-		realloc.writer().go(target);
+		allocate(realloc, from, pos, to);
+		realloc.writer().go(unwrapPos(pos));
 		realloc.addAssetsTo(pos);
 
 		return realloc.head();
@@ -196,7 +195,7 @@ public abstract class Block extends DebugBlockBase {
 		return pos.code().ptr().is(pos);
 	}
 
-	private void reallocate(
+	private void allocate(
 			Block realloc,
 			Allocator from,
 			CodePos target,
@@ -205,7 +204,7 @@ public abstract class Block extends DebugBlockBase {
 		final Allocator enclosing = allocator.getEnclosingAllocator();
 
 		if (enclosing != from) {
-			reallocate(realloc, from, target, enclosing);
+			allocate(realloc, from, target, enclosing);
 		}
 
 		allocator.allocate(realloc, target);

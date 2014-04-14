@@ -47,6 +47,7 @@ public interface AllocatorWriter extends Disposal {
 	 *
 	 * @param code code to perform allocation in.
 	 * @param target the position of jump position following this allocation.
+	 * Note that this is an original position, not a back-end implementation.
 	 */
 	void allocate(Code code, CodePos target);
 
