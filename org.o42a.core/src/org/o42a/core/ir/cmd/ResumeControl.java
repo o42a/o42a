@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,48 +22,30 @@ package org.o42a.core.ir.cmd;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.util.string.ID;
-import org.o42a.util.string.Name;
 
 
-final class BracesControl extends Control {
-
-	private static final ID BRACES_ID = ID.id("braces");
+final class ResumeControl extends Control {
 
 	private final MainControl main;
 	private final Control parent;
-	private final Name name;
-	private final BraceLocals locals;
-	private final CodePos done;
-	private final Block enclosingBlock;
 	private final Allocator allocator;
 
-	BracesControl(
-			Control parent,
-			Block enclosingBlock,
-			CodePos next,
-			Name name) {
+	ResumeControl(Control parent, String index) {
 		this.main = parent.main();
 		this.parent = parent;
-		this.locals = new BraceLocals(parent.locals());
-		this.enclosingBlock = enclosingBlock;
-		this.allocator = enclosingBlock.allocator(BRACES_ID);
-		this.allocator.put(LocalsCode.class, this.locals);
-		this.name = name;
-		this.done = next;
-	}
-
-	public final BracesControl getEnclosing() {
-		return this.parent.braces();
-	}
-
-	public final Name getName() {
-		return this.name;
+		this.allocator = parent.code().allocator(index + "_resume");
 	}
 
 	@Override
 	public final LocalsCode locals() {
-		return this.locals;
+
+		final BracesControl braces = braces();
+
+		if (braces != null) {
+			return braces.locals();
+		}
+
+		return main().locals();
 	}
 
 	@Override
@@ -73,7 +55,7 @@ final class BracesControl extends Control {
 
 	@Override
 	public final CodePos exit() {
-		return this.done;
+		return this.parent.exit();
 	}
 
 	@Override
@@ -84,7 +66,7 @@ final class BracesControl extends Control {
 	@Override
 	public void end() {
 		if (this.allocator.exists()) {
-			this.allocator.go(this.enclosingBlock.tail());
+			this.allocator.go(this.parent.code().tail());
 		}
 	}
 
@@ -103,7 +85,7 @@ final class BracesControl extends Control {
 
 	@Override
 	final BracesControl braces() {
-		return this;
+		return this.parent.braces();
 	}
 
 	@Override

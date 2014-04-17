@@ -24,6 +24,7 @@ import static org.o42a.util.string.Capitalization.AS_IS;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Control;
+import org.o42a.core.ir.cmd.ResumeCallback;
 import org.o42a.core.st.sentence.Sentence;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
@@ -39,8 +40,11 @@ final class SentenceIndex {
 	private Block blockCode;
 	private Block afterBlock;
 	private Control blockControl;
+	private Control sentenceControl;
 	private AltBlocks altBlocks;
 	private Control altControl;
+	private Control statementControl;
+	private ResumeCallback prevResumeCallback;
 
 	public SentenceIndex(Control control, Scope origin) {
 		this.origin = origin;
@@ -52,12 +56,10 @@ final class SentenceIndex {
 	}
 
 	public Control startBlock(Sentences sentences) {
-		if (this.blockControl != null) {
-			return this.blockControl;
-		}
 
 		final ID name =
 				this.control.name(sentences.getName()).suffix(BLK_SUFFIX);
+
 		this.blockCode = this.control.addBlock(name);
 		this.afterBlock = this.control.addBlock(name.suffix(NEXT_SUFFIX));
 
@@ -84,57 +86,81 @@ final class SentenceIndex {
 				this.blockCode.go(this.control.code().tail());
 			}
 		}
-
-		this.blockControl = null;
-		this.afterBlock = null;
 	}
 
 	public AltBlocks startSentence(Control control, String prefix, int len) {
-		if (this.altBlocks != null) {
-			return this.altBlocks;
-		}
-
 		this.altBlocks =
 				new AltBlocks(control, ID.id(prefix + "_sent"), len);
 
 		control.code().go(this.altBlocks.get(0).head());
+		this.sentenceControl = control;
 
 		return this.altBlocks;
 	}
 
 	public void endSentence() {
-		this.altBlocks = null;
 	}
 
-	public Control startAlt(Control control, int index) {
-		if (this.altControl != null) {
-			return this.altControl;
-		}
+	public Control startAlt(int index) {
+		this.statementControl = null;
 
 		final Block altCode = this.altBlocks.get(index);
 		final int nextIdx = index + 1;
 
 		if (nextIdx >= this.altBlocks.size()) {
 			// last alternative
-			return this.altControl = control.alt(altCode, control.falseDir());
+			return this.altControl = this.sentenceControl.alt(
+					altCode,
+					this.sentenceControl.falseDir());
 		}
 
 		return this.altControl =
-				control.alt(altCode, this.altBlocks.get(nextIdx).head());
+				this.sentenceControl.alt(
+						altCode,
+						this.altBlocks.get(nextIdx).head());
 	}
 
-	public final void endAlt(Sentence sentence, Control control) {
+	public final void endAlt(Sentence sentence) {
+		if (this.prevResumeCallback != null) {
+			startStatement("resume");
+			endStatement();
+		}
+		if (this.statementControl != this.altControl) {
+			this.statementControl.end();
+		}
 		this.altControl.end();
 		if (sentence.getKind().isExclamatory()) {
 			this.altControl.exitBraces();
 		} else {
 			// Interrogative condition satisfied or sentence successfully
 			// completed. Go to the next sentence.
-			if (this.altControl.code() != control.code()) {
-				this.altControl.code().go(control.code().tail());
-			}
+			this.altControl.code().go(this.sentenceControl.code().tail());
 		}
-		this.altControl = null;
+	}
+
+	public Control startStatement(String index) {
+		if (this.prevResumeCallback == null) {
+			if (this.statementControl == null) {
+				this.statementControl = this.altControl;
+			}
+			return this.statementControl;
+		}
+		assert this.statementControl == null :
+			"Statement control already created";
+		return this.statementControl =
+				this.altControl.resume(index, this.prevResumeCallback);
+	}
+
+	public void endStatement() {
+		this.prevResumeCallback = this.statementControl.getResumeCallback();
+		this.statementControl.setResumeCallback(null);
+		if (this.prevResumeCallback == null) {
+			return;
+		}
+		if (this.statementControl != this.altControl) {
+			this.statementControl.end();
+		}
+		this.statementControl = null;
 	}
 
 }
