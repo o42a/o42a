@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import org.o42a.core.ir.cmd.CmdState;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.util.fn.Cancelable;
 
 
-final class InlineRefConditionCmd extends InlineCmd<Void> {
+final class InlineRefConditionCmd extends InlineCmd {
 
 	private final InlineValue value;
 
@@ -36,9 +35,8 @@ final class InlineRefConditionCmd extends InlineCmd<Void> {
 	}
 
 	@Override
-	public void write(Control control, CmdState<Void> state) {
+	public void write(Control control) {
 		this.value.writeCond(control.dirs(), control.host());
-		state.done();
 	}
 
 	@Override

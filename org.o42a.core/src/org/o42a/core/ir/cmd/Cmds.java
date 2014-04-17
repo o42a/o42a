@@ -23,16 +23,14 @@ package org.o42a.core.ir.cmd;
 public final class Cmds {
 
 	@SuppressWarnings("rawtypes")
-	private static final InlineCmd<?> NO_INLINE_CMD = new NoCmd();
+	private static final InlineCmd NO_INLINE_CMD = new NoCmd();
 
-	@SuppressWarnings("unchecked")
-	public static <T> InlineCmd<T> noInlineCmd() {
-		return (InlineCmd<T>) NO_INLINE_CMD;
+	public static InlineCmd noInlineCmd() {
+		return NO_INLINE_CMD;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> Cmd<T> noCmd() {
-		return (Cmd<T>) NO_INLINE_CMD;
+	public static Cmd noCmd() {
+		return NO_INLINE_CMD;
 	}
 
 	private Cmds() {

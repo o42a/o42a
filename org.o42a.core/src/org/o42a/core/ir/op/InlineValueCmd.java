@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.core.ir.cmd.CmdState;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.fn.Cancelable;
 
 
-final class InlineValueCmd extends InlineCmd<Void> {
+final class InlineValueCmd extends InlineCmd {
 
 	private final InlineValue inline;
 
@@ -36,7 +35,7 @@ final class InlineValueCmd extends InlineCmd<Void> {
 	}
 
 	@Override
-	public void write(Control control, CmdState<Void> state) {
+	public void write(Control control) {
 
 		final ValDirs dirs =
 				control.getBuilder().dirs(
@@ -48,7 +47,6 @@ final class InlineValueCmd extends InlineCmd<Void> {
 		control.returnValue(dirs.code(), value);
 
 		dirs.done();
-		state.done();
 	}
 
 	@Override

@@ -20,8 +20,8 @@
 package org.o42a.core.ir.cmd;
 
 
-public interface Cmd<T> {
+public interface Cmd {
 
-	void write(Control control, CmdState<T> state);
+	void write(Control control);
 
 }

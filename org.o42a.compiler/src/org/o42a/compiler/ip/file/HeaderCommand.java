@@ -83,17 +83,17 @@ final class HeaderCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Cmd<?> cmd(Scope origin) {
+	public Cmd cmd(Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -101,5 +101,6 @@ final class HeaderCommand extends Command {
 	protected void fullyResolve(FullResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
+
 }
 

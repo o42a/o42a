@@ -148,15 +148,11 @@ public abstract class Control {
 				returnDir());
 	}
 
-	public abstract void end();
-
 	public final void resumeFrom(Block resumeFrom) {
 		main().addResumePosition(resumeFrom);
 	}
 
-	public CmdResult write(Cmd<?> cmd) {
-		return main().getLastState().writeNested(this, cmd);
-	}
+	public abstract void end();
 
 	@Override
 	public String toString() {

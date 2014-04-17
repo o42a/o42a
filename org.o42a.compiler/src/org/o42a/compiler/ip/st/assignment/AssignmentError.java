@@ -52,12 +52,12 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd<?> inline(Normalizer normalizer, Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 
 	@Override
-	public InlineCmd<?> normalize(RootNormalizer normalizer, Scope origin) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 		return null;
 	}
 
@@ -69,7 +69,7 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd<?> cmd() {
+	public Cmd cmd() {
 		return noCmd();
 	}
 

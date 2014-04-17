@@ -38,12 +38,12 @@ final class InlineCommands {
 			Statements statements) {
 
 		final List<Command> commands = statements.getCommands();
-		final InlineCmd<?>[] inlines = new InlineCmd[commands.size()];
+		final InlineCmd[] inlines = new InlineCmd[commands.size()];
 		int i = 0;
 
 		for (Command command : commands) {
 
-			final InlineCmd<?> inline;
+			final InlineCmd inline;
 
 			if (normalizer != null) {
 				inline = command.inline(normalizer, origin);
@@ -64,13 +64,13 @@ final class InlineCommands {
 		return new InlineCommands(inlines);
 	}
 
-	private final InlineCmd<?>[] commands;
+	private final InlineCmd[] commands;
 
-	private InlineCommands(InlineCmd<?>[] commands) {
+	private InlineCommands(InlineCmd[] commands) {
 		this.commands = commands;
 	}
 
-	public final InlineCmd<?> get(int index) {
+	public final InlineCmd get(int index) {
 		return this.commands[index];
 	}
 

@@ -127,7 +127,7 @@ final class BlockDef extends Def {
 	@Override
 	public Eval eval() {
 
-		final Cmd<?> cmd;
+		final Cmd cmd;
 
 		if (this.normal != null) {
 			cmd = this.normal;
@@ -249,9 +249,9 @@ final class BlockDef extends Def {
 
 	private static final class CmdEval extends InlineEval {
 
-		private final Cmd<?> cmd;
+		private final Cmd cmd;
 
-		CmdEval(Cmd<?> cmd) {
+		CmdEval(Cmd cmd) {
 			super(null);
 			this.cmd = cmd;
 		}
@@ -261,7 +261,7 @@ final class BlockDef extends Def {
 
 			final Control control = mainControl(dirs);
 
-			control.write(this.cmd);
+			this.cmd.write(control);
 
 			control.end();
 		}
