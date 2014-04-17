@@ -22,14 +22,14 @@ package org.o42a.core.ir.cmd;
 import org.o42a.util.fn.Cancelable;
 
 
-final class NoCmd<T> extends InlineCmd<T> {
+final class NoCmd<T> extends InlineCmd {
 
 	public NoCmd() {
 		super(null);
 	}
 
 	@Override
-	public void write(Control control, CmdState<T> state) {
+	public void write(Control control) {
 	}
 
 	@Override

@@ -23,11 +23,10 @@ import static org.o42a.core.st.impl.cmd.SentencesOp.writeSentences;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
-import org.o42a.core.ir.cmd.CmdState;
 import org.o42a.core.ir.cmd.Control;
 
 
-final class SentencesCmd implements Cmd<SentenceIndex> {
+final class SentencesCmd implements Cmd {
 
 	private final Sentences sentences;
 	private final Scope origin;
@@ -38,13 +37,12 @@ final class SentencesCmd implements Cmd<SentenceIndex> {
 	}
 
 	@Override
-	public void write(Control control, CmdState<SentenceIndex> state) {
+	public void write(Control control) {
 		writeSentences(
 				control,
 				this.origin,
 				this.sentences,
-				null,
-				state);
+				null);
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public abstract class InlineValue extends Normal {
 		return new InlineValueEval(this);
 	}
 
-	public final InlineCmd<?> toInlineCmd() {
+	public final InlineCmd toInlineCmd() {
 		return new InlineValueCmd(this);
 	}
 

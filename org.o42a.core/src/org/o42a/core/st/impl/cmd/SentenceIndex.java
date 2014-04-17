@@ -39,12 +39,8 @@ final class SentenceIndex {
 	private Block blockCode;
 	private Block afterBlock;
 	private Control blockControl;
-	private int sentence;
-	private boolean prereqWritten;
 	private AltBlocks altBlocks;
-	private int alt;
 	private Control altControl;
-	private int statement;
 
 	public SentenceIndex(Control control, Scope origin) {
 		this.origin = origin;
@@ -110,14 +106,13 @@ final class SentenceIndex {
 		this.altBlocks = null;
 	}
 
-	public Control startAlt(Control control) {
+	public Control startAlt(Control control, int index) {
 		if (this.altControl != null) {
 			return this.altControl;
 		}
 
-		final int altIdx = getAlt();
-		final Block altCode = this.altBlocks.get(altIdx);
-		final int nextIdx = altIdx + 1;
+		final Block altCode = this.altBlocks.get(index);
+		final int nextIdx = index + 1;
 
 		if (nextIdx >= this.altBlocks.size()) {
 			// last alternative
@@ -140,65 +135,6 @@ final class SentenceIndex {
 			}
 		}
 		this.altControl = null;
-	}
-
-	public final int getSentence() {
-		return this.sentence;
-	}
-
-	public final void nextSentence() {
-		assert this.altBlocks == null && this.altControl == null:
-			"Can not start next sentence";
-		++this.sentence;
-		this.prereqWritten = false;
-		this.alt = 0;
-		this.statement = 0;
-	}
-
-	public final boolean isPrereqWritten() {
-		return this.prereqWritten;
-	}
-
-	public final void writePrereq() {
-		this.prereqWritten = true;
-	}
-
-	public final int getAlt() {
-		return this.alt;
-	}
-
-	public final void nextAlt() {
-		assert this.altControl == null :
-			"Can not start next alternative";
-		++this.alt;
-		this.statement = 0;
-	}
-
-	public final int getStatement() {
-		return this.statement;
-	}
-
-	public final void nextStatement() {
-		++this.statement;
-	}
-
-	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append("SentenceIndex[sentence=");
-		out.append(this.sentence);
-		if (this.prereqWritten) {
-			out.append(", prereq written");
-		}
-		out.append(", alt=");
-		out.append(this.alt);
-		out.append(", statement=");
-		out.append(this.statement);
-		out.append("]");
-
-		return out.toString();
 	}
 
 }

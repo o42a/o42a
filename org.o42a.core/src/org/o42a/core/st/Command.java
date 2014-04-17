@@ -141,13 +141,13 @@ public abstract class Command implements ContainerInfo {
 		return Contained.distributeIn(this, container);
 	}
 
-	public abstract InlineCmd<?> inline(Normalizer normalizer, Scope origin);
+	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
 
-	public abstract InlineCmd<?> normalize(
+	public abstract InlineCmd normalize(
 			RootNormalizer normalizer,
 			Scope origin);
 
-	public abstract Cmd<?> cmd(Scope origin);
+	public abstract Cmd cmd(Scope origin);
 
 	@Override
 	public final void assertScopeIs(Scope scope) {
