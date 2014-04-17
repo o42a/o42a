@@ -52,7 +52,7 @@ final class SentencesOp {
 					blockControl,
 					sentence,
 					inline != null ? inline.get(i) : null,
-					Integer.toString(i),
+					Integer.toString(i + 1),
 					index);
 		}
 
@@ -76,16 +76,12 @@ final class SentencesOp {
 
 		// fill code blocks
 		for (int i = 0; i < size; ++i) {
-
-			final Control altControl = index.startAlt(control, i);
-
+			index.startAlt(i);
 			writeStatements(
-					altControl,
 					alternatives.get(i),
 					inline != null ? inline.get(i) : null,
 					index);
-
-			index.endAlt(sentence, control);
+			index.endAlt(sentence);
 		}
 
 		index.endSentence();
@@ -129,7 +125,6 @@ final class SentencesOp {
 	}
 
 	private static void writeStatements(
-			Control control,
 			Statements statements,
 			InlineCommands inlines,
 			SentenceIndex index) {
@@ -138,7 +133,13 @@ final class SentencesOp {
 		final int size = commands.size();
 
 		for (int i = 0; i < size; ++i) {
+
+			final Control control =
+					index.startStatement(Integer.toString(i + 1));
+
 			statementCmd(statements, inlines, index, i).write(control);
+
+			index.endStatement();
 		}
 	}
 

@@ -17,43 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.cmd;
+package org.o42a.core.ir.cmd;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.core.ir.cmd.Control;
-import org.o42a.util.string.ID;
+import org.o42a.codegen.code.CodePtr;
 
 
-class AltBlocks {
+public interface ResumeCallback {
 
-	private final Control control;
-	private final ID prefix;
-	private final Block[] blocks;
-
-	AltBlocks(Control control, ID prefix, int size) {
-		this.control = control;
-		this.prefix = prefix;
-		this.blocks = new Block[size];
-	}
-
-	public Block get(int index) {
-
-		final Block existing = this.blocks[index];
-
-		if (existing != null) {
-			return existing;
-		}
-
-		final Block block =
-				this.control.addBlock(this.prefix.sub((index + 1) + "_alt"));
-
-		this.blocks[index] = block;
-
-		return block;
-	}
-
-	public final int size() {
-		return this.blocks.length;
-	}
+	void resumedAt(CodePtr resumePtr);
 
 }

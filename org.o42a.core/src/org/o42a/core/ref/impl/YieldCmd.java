@@ -20,14 +20,21 @@
 package org.o42a.core.ref.impl;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePtr;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
+import org.o42a.core.ir.cmd.ResumeCallback;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.util.string.ID;
 
 
 final class YieldCmd implements Cmd {
+
+	private static final ID YIELD_ID = ID.rawId("yield");
+	private static final ID PREPARE_RESUME_ID = ID.rawId("prepare_resume");
 
 	private final Eval eval;
 
@@ -39,7 +46,7 @@ final class YieldCmd implements Cmd {
 	public void write(Control control) {
 
 		final DefDirs controlDirs = control.defDirs();
-		final Block yield = controlDirs.addBlock("yield");
+		final Block yield = controlDirs.addBlock(YIELD_ID);
 		final DefDirs dirs = controlDirs.setReturnDir(yield.head());
 
 		this.eval.write(dirs, control.host());
@@ -58,29 +65,28 @@ final class YieldCmd implements Cmd {
 	}
 
 	private void yield(Control control, DefDirs controlDirs, Block code) {
-
-		final CodeDirs continuationDirs = controlDirs.done();
-
 		if (!code.exists()) {
 			return;
 		}
 
-		final Block continuation = continuationDirs.code();
-		final Block onResume = continuation.addBlock("on_resume");
-
 		code.dump("Yield: ", controlDirs.result());
-		control.resumeFrom(onResume);
-		control.host()
-		.objectData(code)
-		.ptr()
-		.resumeFrom(code)
-		.store(
-				code,
-				onResume.ptr().toAny().op(code.getId(), code));
-		code.go(controlDirs.returnDir());
 
-		onResume.debug("Resumed");
-		onResume.go(continuation.tail());
+		final Code prepareResume = code.inset(PREPARE_RESUME_ID);
+		final ObjectOp host = control.host();
+
+		control.setResumeCallback(new ResumeCallback() {
+			@Override
+			public void resumedAt(CodePtr resumePtr) {
+				host.objectData(prepareResume)
+				.ptr()
+				.resumeFrom(prepareResume)
+				.store(
+						prepareResume,
+						resumePtr.toAny().op(null, prepareResume));
+			}
+		});
+
+		code.go(controlDirs.returnDir());
 	}
 
 }

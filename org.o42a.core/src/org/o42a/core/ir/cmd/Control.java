@@ -20,6 +20,7 @@
 package org.o42a.core.ir.cmd;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
@@ -43,6 +44,9 @@ public abstract class Control {
 
 		return mainControl;
 	}
+
+
+	private ResumeCallback resumeCallback;
 
 	Control() {
 	}
@@ -137,6 +141,23 @@ public abstract class Control {
 		return new NestedControl.AltControl(this, code, next);
 	}
 
+	public final Control resume(
+			String index,
+			ResumeCallback prevResumeCallback) {
+
+		final ResumeControl control = new ResumeControl(this, index);
+
+		if (prevResumeCallback != null) {
+
+			final Allocator allocator = control.code().getAllocator();
+
+			prevResumeCallback.resumedAt(allocator.ptr());
+			main().addResumePosition(allocator);
+		}
+
+		return control;
+	}
+
 	public final CodeDirs dirs() {
 		return getBuilder().dirs(code(), falseDir());
 	}
@@ -148,8 +169,12 @@ public abstract class Control {
 				returnDir());
 	}
 
-	public final void resumeFrom(Block resumeFrom) {
-		main().addResumePosition(resumeFrom);
+	public final ResumeCallback getResumeCallback() {
+		return this.resumeCallback;
+	}
+
+	public final void setResumeCallback(ResumeCallback resumeCallback) {
+		this.resumeCallback = resumeCallback;
 	}
 
 	public abstract void end();
