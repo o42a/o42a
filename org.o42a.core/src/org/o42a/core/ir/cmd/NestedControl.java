@@ -26,6 +26,7 @@ import org.o42a.codegen.code.CodePos;
 abstract class NestedControl extends Control {
 
 	private final MainControl main;
+	private final Control parent;
 	private final Block code;
 	private final BracesControl braces;
 	private final CodePos exit;
@@ -33,6 +34,7 @@ abstract class NestedControl extends Control {
 
 	NestedControl(Control parent, Block code, CodePos exit, CodePos falseDir) {
 		this.main = parent.main();
+		this.parent = parent;
 		this.code = code;
 		this.falseDir = falseDir;
 		this.exit = exit;
@@ -67,10 +69,6 @@ abstract class NestedControl extends Control {
 	}
 
 	@Override
-	public void end() {
-	}
-
-	@Override
 	final MainControl main() {
 		return this.main;
 	}
@@ -83,6 +81,11 @@ abstract class NestedControl extends Control {
 	@Override
 	final CodePos returnDir() {
 		return main().returnDir();
+	}
+
+	@Override
+	Control done() {
+		return this.parent;
 	}
 
 	static final class ParenthesesControl extends NestedControl {

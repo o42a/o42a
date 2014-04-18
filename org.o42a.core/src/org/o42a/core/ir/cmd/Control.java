@@ -46,6 +46,7 @@ public abstract class Control {
 
 
 	private ResumeCallback resumeCallback;
+	private Control done;
 
 	Control() {
 	}
@@ -56,6 +57,10 @@ public abstract class Control {
 
 	public final CodeBuilder getBuilder() {
 		return main().builder();
+	}
+
+	public final boolean isDone() {
+		return this.done != null;
 	}
 
 	public final ObjectOp host() {
@@ -140,17 +145,20 @@ public abstract class Control {
 		return new NestedControl.AltControl(this, code, next);
 	}
 
+	public final Control command(String index) {
+		return new CommandControl(this, "cmd_" + index);
+	}
+
 	public final Control resume(
 			String index,
 			ResumeCallback prevResumeCallback) {
 
-		final ResumeControl control = new ResumeControl(this, index);
+		final CommandControl control =
+				new CommandControl(this, "resume_" + index);
+		final Block code = control.code();
 
-		if (prevResumeCallback != null) {
-			main().addResumePosition(
-					control.code().head(),
-					prevResumeCallback);
-		}
+		code.debug("Resumed @" + code.getId());
+		main().addResumePosition(code.head(), prevResumeCallback);
 
 		return control;
 	}
@@ -174,7 +182,12 @@ public abstract class Control {
 		this.resumeCallback = resumeCallback;
 	}
 
-	public abstract void end();
+	public final Control end() {
+		if (this.done != null) {
+			return this.done;
+		}
+		return this.done = done();
+	}
 
 	@Override
 	public String toString() {
@@ -193,6 +206,8 @@ public abstract class Control {
 	abstract BracesControl braces();
 
 	abstract CodePos returnDir();
+
+	abstract Control done();
 
 	private BracesControl enclosingBraces(Name name) {
 		if (name == null) {

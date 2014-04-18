@@ -21,7 +21,6 @@ package org.o42a.core.ref.impl.cond;
 
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Local;
@@ -40,12 +39,11 @@ final class RefConditionCmd implements Cmd {
 
 		final RefOp op = ref().op(control.host());
 		final Local local = this.statement.getLocal();
-		final CodeDirs dirs = control.dirs();
 
 		if (local == null || local.isField()) {
-			op.writeCond(dirs);
+			writeCond(control, op);
 		} else {
-			control.locals().set(dirs, local, op);
+			storeLocal(control.end(), op, local);
 		}
 	}
 
@@ -59,6 +57,14 @@ final class RefConditionCmd implements Cmd {
 
 	private final Ref ref() {
 		return this.statement.ref();
+	}
+
+	private void writeCond(Control control, RefOp op) {
+		op.writeCond(control.dirs());
+	}
+
+	private void storeLocal(Control control, RefOp op, Local local) {
+		control.locals().set(control.dirs(), local, op);
 	}
 
 }

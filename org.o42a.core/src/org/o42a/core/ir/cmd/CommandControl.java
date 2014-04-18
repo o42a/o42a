@@ -24,17 +24,16 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 
 
-final class ResumeControl extends Control {
+final class CommandControl extends Control {
 
 	private final MainControl main;
 	private final Control parent;
 	private final Allocator allocator;
 
-	ResumeControl(Control parent, String index) {
+	CommandControl(Control parent, String name) {
 		this.main = parent.main();
 		this.parent = parent;
-		this.allocator = parent.code().allocator(index + "_resume");
-		this.allocator.debug("Resumed @" + this.allocator.getId());
+		this.allocator = parent.code().allocator(name);
 	}
 
 	@Override
@@ -65,13 +64,6 @@ final class ResumeControl extends Control {
 	}
 
 	@Override
-	public void end() {
-		if (this.allocator.exists()) {
-			this.allocator.go(this.parent.code().tail());
-		}
-	}
-
-	@Override
 	public String toString() {
 		if (this.allocator == null) {
 			return super.toString();
@@ -92,6 +84,14 @@ final class ResumeControl extends Control {
 	@Override
 	final CodePos returnDir() {
 		return main().returnDir();
+	}
+
+	@Override
+	Control done() {
+		if (this.allocator.exists()) {
+			this.allocator.go(this.parent.code().tail());
+		}
+		return this.parent;
 	}
 
 }

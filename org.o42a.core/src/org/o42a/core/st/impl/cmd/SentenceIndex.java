@@ -125,7 +125,7 @@ final class SentenceIndex {
 			startStatement("last");
 			endStatement();
 		}
-		if (this.statementControl != this.altControl) {
+		if (this.statementControl != null) {
 			this.statementControl.end();
 		}
 		this.altControl.end();
@@ -139,28 +139,28 @@ final class SentenceIndex {
 	}
 
 	public Control startStatement(String index) {
-		if (this.prevResumeCallback == null) {
-			if (this.statementControl == null) {
-				this.statementControl = this.altControl;
-			}
+		if (this.prevResumeCallback != null) {
+			assert this.statementControl == null :
+				"Statement control already created";
+			return this.statementControl =
+					this.altControl.resume(index, this.prevResumeCallback);
+		}
+		if (this.statementControl != null) {
 			return this.statementControl;
 		}
-		assert this.statementControl == null :
-			"Statement control already created";
-		return this.statementControl =
-				this.altControl.resume(index, this.prevResumeCallback);
+		return this.statementControl = this.altControl.command(index);
 	}
 
 	public void endStatement() {
 		this.prevResumeCallback = this.statementControl.getResumeCallback();
-		this.statementControl.setResumeCallback(null);
-		if (this.prevResumeCallback == null) {
+		if (this.prevResumeCallback != null) {
+			this.statementControl.end();
+			this.statementControl = null;
 			return;
 		}
-		if (this.statementControl != this.altControl) {
-			this.statementControl.end();
+		if (this.statementControl.isDone()) {
+			this.statementControl = null;
 		}
-		this.statementControl = null;
 	}
 
 }
