@@ -82,13 +82,6 @@ final class BracesControl extends Control {
 	}
 
 	@Override
-	public void end() {
-		if (this.allocator.exists()) {
-			this.allocator.go(this.enclosingBlock.tail());
-		}
-	}
-
-	@Override
 	public String toString() {
 		if (this.allocator == null) {
 			return super.toString();
@@ -109,6 +102,14 @@ final class BracesControl extends Control {
 	@Override
 	final CodePos returnDir() {
 		return main().returnDir();
+	}
+
+	@Override
+	Control done() {
+		if (this.allocator.exists()) {
+			this.allocator.go(this.enclosingBlock.tail());
+		}
+		return this.parent;
 	}
 
 }

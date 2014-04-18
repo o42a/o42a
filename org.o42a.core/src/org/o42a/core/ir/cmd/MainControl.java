@@ -72,54 +72,6 @@ final class MainControl extends Control {
 		return this.dirs.result();
 	}
 
-	@Override
-	public void end() {
-		resume();
-		if (this.continuation.exists()) {
-			this.continuation.go(code().tail());
-		}
-		if (this.returnCode != null) {
-			this.dirs.returnValue(this.returnCode, finalResult());
-		}
-	}
-
-	private void resume() {
-		if (this.resumePositions == null) {
-			this.resume.go(this.start);
-			return;
-		}
-
-		final ObjectIRDataOp objectData = host().objectData(this.resume).ptr();
-		final AnyOp resumeFrom =
-				objectData.resumeFrom(this.resume)
-				.load(null, this.resume);
-
-		resumeFrom.isNull(null, this.resume).go(this.resume, this.start);
-
-		final CodePos[] targets = new CodePos[this.resumePositions.length];
-
-		for (int i = 0; i < targets.length; ++i) {
-			targets[i] = this.resumePositions[i].resumeFrom;
-		}
-
-		this.resume.debug("Resuming");
-
-		final CodePos[] heads = this.resume.go(
-				resumeFrom.toCode(null, this.resume),
-				targets);
-
-		for (int i = 0; i < heads.length; ++i) {
-
-			final CodePos head = heads[i];
-			final CodePtr ptr = head.code().ptr();
-
-			assert ptr.is(head) :
-				"Not a block head: " + head;
-
-			this.resumePositions[i].callback.resumedAt(ptr);
-		}
-	}
-
 	final CodeBuilder builder() {
 		return this.dirs.getBuilder();
 	}
@@ -166,6 +118,55 @@ final class MainControl extends Control {
 		} else {
 			this.resumePositions =
 					ArrayUtil.append(this.resumePositions, position);
+		}
+	}
+
+	@Override
+	Control done() {
+		resume();
+		if (this.continuation.exists()) {
+			this.continuation.go(code().tail());
+		}
+		if (this.returnCode != null) {
+			this.dirs.returnValue(this.returnCode, finalResult());
+		}
+		return this;
+	}
+
+	private void resume() {
+		if (this.resumePositions == null) {
+			this.resume.go(this.start);
+			return;
+		}
+
+		final ObjectIRDataOp objectData = host().objectData(this.resume).ptr();
+		final AnyOp resumeFrom =
+				objectData.resumeFrom(this.resume)
+				.load(null, this.resume);
+
+		resumeFrom.isNull(null, this.resume).go(this.resume, this.start);
+
+		final CodePos[] targets = new CodePos[this.resumePositions.length];
+
+		for (int i = 0; i < targets.length; ++i) {
+			targets[i] = this.resumePositions[i].resumeFrom;
+		}
+
+		this.resume.debug("Resuming");
+
+		final CodePos[] heads = this.resume.go(
+				resumeFrom.toCode(null, this.resume),
+				targets);
+
+		for (int i = 0; i < heads.length; ++i) {
+
+			final CodePos head = heads[i];
+			final CodePtr ptr = head.code().ptr();
+
+			assert ptr.is(head) :
+				"Not a block head: " + head;
+
+			this.resumePositions[i].callback.resumedAt(ptr);
 		}
 	}
 
