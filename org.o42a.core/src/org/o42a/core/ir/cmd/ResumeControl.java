@@ -34,6 +34,7 @@ final class ResumeControl extends Control {
 		this.main = parent.main();
 		this.parent = parent;
 		this.allocator = parent.code().allocator(index + "_resume");
+		this.allocator.debug("Resumed @" + this.allocator.getId());
 	}
 
 	@Override

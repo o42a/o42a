@@ -122,7 +122,7 @@ final class SentenceIndex {
 
 	public final void endAlt(Sentence sentence) {
 		if (this.prevResumeCallback != null) {
-			startStatement("resume");
+			startStatement("last");
 			endStatement();
 		}
 		if (this.statementControl != this.altControl) {

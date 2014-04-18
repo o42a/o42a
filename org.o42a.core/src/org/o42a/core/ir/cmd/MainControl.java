@@ -21,10 +21,12 @@ package org.o42a.core.ir.cmd;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.DefStore;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
@@ -37,7 +39,7 @@ final class MainControl extends Control {
 
 	private int seq;
 	private Block returnCode;
-	private CodePos[] resumePositions;
+	private ResumePosition[] resumePositions;
 	private Block resume;
 	private CodePos start;
 
@@ -87,18 +89,35 @@ final class MainControl extends Control {
 			return;
 		}
 
+		final ObjectIRDataOp objectData = host().objectData(this.resume).ptr();
 		final AnyOp resumeFrom =
-				host()
-				.objectData(this.resume)
-				.ptr()
-				.resumeFrom(this.resume)
+				objectData.resumeFrom(this.resume)
 				.load(null, this.resume);
 
 		resumeFrom.isNull(null, this.resume).go(this.resume, this.start);
+
+		final CodePos[] targets = new CodePos[this.resumePositions.length];
+
+		for (int i = 0; i < targets.length; ++i) {
+			targets[i] = this.resumePositions[i].resumeFrom;
+		}
+
 		this.resume.debug("Resuming");
-		this.resume.go(
+
+		final CodePos[] heads = this.resume.go(
 				resumeFrom.toCode(null, this.resume),
-				this.resumePositions);
+				targets);
+
+		for (int i = 0; i < heads.length; ++i) {
+
+			final CodePos head = heads[i];
+			final CodePtr ptr = head.code().ptr();
+
+			assert ptr.is(head) :
+				"Not a block head: " + head;
+
+			this.resumePositions[i].callback.resumedAt(ptr);
+		}
 	}
 
 	final CodeBuilder builder() {
@@ -137,13 +156,29 @@ final class MainControl extends Control {
 		return ID.id(Integer.toString(++this.seq));
 	}
 
-	void addResumePosition(Block resumeFrom) {
+	void addResumePosition(CodePos resumePos, ResumeCallback callback) {
+
+		final ResumePosition position =
+				new ResumePosition(resumePos, callback);
+
 		if (this.resumePositions == null) {
-			this.resumePositions = new CodePos[] {resumeFrom.head()};
+			this.resumePositions = new ResumePosition[] {position};
 		} else {
 			this.resumePositions =
-					ArrayUtil.append(this.resumePositions, resumeFrom.head());
+					ArrayUtil.append(this.resumePositions, position);
 		}
+	}
+
+	private static final class ResumePosition {
+
+		private final CodePos resumeFrom;
+		private final ResumeCallback callback;
+
+		ResumePosition(CodePos resumeFrom, ResumeCallback callback) {
+			this.resumeFrom = resumeFrom;
+			this.callback = callback;
+		}
+
 	}
 
 }
