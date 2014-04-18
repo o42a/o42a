@@ -87,21 +87,25 @@ public abstract class Block extends DebugBlockBase {
 		removeAllAssets();
 	}
 
-	public final void go(CodeOp pos, CodePos[] targets) {
+	public CodePos[] go(CodeOp pos, CodePos[] targets) {
 		assert assertIncomplete();
 
+		final CodePos[] heads = new CodePos[targets.length];
 		final CodePos[] unwrapped = new CodePos[targets.length];
 
 		for (int i = 0; i < targets.length; ++i) {
 
-			final CodePos target = reallocateDownTo(targets[i]);
+			final CodePos head = reallocateDownTo(targets[i]);
 
-			addAssetsTo(target);
-			unwrapped[i] = unwrapPos(target);
+			heads[i] = head;
+			addAssetsTo(head);
+			unwrapped[i] = unwrapPos(head);
 		}
 
 		writer().go(pos, unwrapped);
 		removeAllAssets();
+
+		return heads;
 	}
 
 	public void returnVoid() {
