@@ -20,7 +20,6 @@
 package org.o42a.core.ir.cmd;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
@@ -148,11 +147,9 @@ public abstract class Control {
 		final ResumeControl control = new ResumeControl(this, index);
 
 		if (prevResumeCallback != null) {
-
-			final Allocator allocator = control.code().getAllocator();
-
-			prevResumeCallback.resumedAt(allocator.ptr());
-			main().addResumePosition(allocator);
+			main().addResumePosition(
+					control.code().head(),
+					prevResumeCallback);
 		}
 
 		return control;
