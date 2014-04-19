@@ -21,7 +21,9 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.backend.SignatureWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataType;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
@@ -35,7 +37,11 @@ public abstract class Arg<O extends Op> {
 	private final ID id;
 	private final DataType dataType;
 
-	Arg(Signature<?> signature, int index, String name, DataType dataType) {
+	protected Arg(
+			Signature<?> signature,
+			int index,
+			String name,
+			DataType dataType) {
 		this.signature = signature;
 		this.index = index;
 		this.name = name;
@@ -85,144 +91,6 @@ public abstract class Arg<O extends Op> {
 		return typeName() + " #" + getIndex();
 	}
 
-	static final class Int8arg extends Arg<Int8op> {
-
-		Int8arg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.INT8);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof Int8op;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addInt8(this);
-		}
-
-		@Override
-		protected Int8op get(Code code, FuncWriter<?> writer) {
-			return writer.int8arg(code, this);
-		}
-
-	}
-
-	static final class Int16arg extends Arg<Int16op> {
-
-		Int16arg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.INT16);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof Int16op;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addInt16(this);
-		}
-
-		@Override
-		protected Int16op get(Code code, FuncWriter<?> writer) {
-			return writer.int16arg(code, this);
-		}
-
-	}
-
-	static final class Int32arg extends Arg<Int32op> {
-
-		Int32arg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.INT32);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof Int32op;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addInt32(this);
-		}
-
-		@Override
-		protected Int32op get(Code code, FuncWriter<?> writer) {
-			return writer.int32arg(code, this);
-		}
-
-	}
-
-	static final class Int64arg extends Arg<Int64op> {
-
-		Int64arg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.INT64);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof Int64op;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addInt64(this);
-		}
-
-		@Override
-		protected Int64op get(Code code, FuncWriter<?> writer) {
-			return writer.int64arg(code, this);
-		}
-
-	}
-
-	static final class Fp32arg extends Arg<Fp32op> {
-
-		Fp32arg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.FP32);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof Fp64op;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addFp32(this);
-		}
-
-		@Override
-		protected Fp32op get(Code code, FuncWriter<?> writer) {
-			return writer.fp32arg(code, this);
-		}
-
-	}
-
-	static final class Fp64arg extends Arg<Fp64op> {
-
-		Fp64arg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.FP64);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof Fp64op;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addFp64(this);
-		}
-
-		@Override
-		protected Fp64op get(Code code, FuncWriter<?> writer) {
-			return writer.fp64arg(code, this);
-		}
-
-	}
-
 	static final class BoolArg extends Arg<BoolOp> {
 
 		BoolArg(Signature<?> signature, int index, String name) {
@@ -242,75 +110,6 @@ public abstract class Arg<O extends Op> {
 		@Override
 		protected BoolOp get(Code code, FuncWriter<?> writer) {
 			return writer.boolArg(code, this);
-		}
-
-	}
-
-	static final class RelPtrArg extends Arg<RelOp> {
-
-		RelPtrArg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.REL_PTR);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof RelOp;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addRelPtr(this);
-		}
-
-		@Override
-		protected RelOp get(Code code, FuncWriter<?> writer) {
-			return writer.relPtrArg(code, this);
-		}
-
-	}
-
-	static final class AnyArg extends Arg<AnyOp> {
-
-		AnyArg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.REL_PTR);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof AnyOp;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addPtr(this);
-		}
-
-		@Override
-		protected AnyOp get(Code code, FuncWriter<?> writer) {
-			return writer.ptrArg(code, this);
-		}
-
-	}
-
-	static final class DataArg extends Arg<DataOp> {
-
-		DataArg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.DATA_PTR);
-		}
-
-		@Override
-		public boolean compatibleWith(Op op) {
-			return op instanceof DataOp;
-		}
-
-		@Override
-		protected void write(SignatureWriter<?> writer) {
-			writer.addData(this);
-		}
-
-		@Override
-		protected DataOp get(Code code, FuncWriter<?> writer) {
-			return writer.dataArg(code, this);
 		}
 
 	}
