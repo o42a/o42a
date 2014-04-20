@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
@@ -26,19 +27,29 @@ import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
 
-public final class Allocations extends Inset {
+public final class Allocations {
 
 	private static final ID ALLOC_SUFFIX = ID.rawId("__alloc__");
 
+	private final Code code;
 	private final Allocated<?> allocated;
 
 	Allocations(Code enclosing, Allocated<?> allocated) {
-		super(enclosing, allocated.getId().getLocal().detail(ALLOC_SUFFIX));
+		this.code = enclosing.inset(
+				allocated.getId().getLocal().detail(ALLOC_SUFFIX));
 		this.allocated = allocated;
 	}
 
 	public final Allocated<?> getAllocated() {
 		return this.allocated;
+	}
+
+	public final Block getBlock() {
+		return code().getBlock();
+	}
+
+	public final Allocator getAllocator() {
+		return code().getAllocator();
 	}
 
 	public final AnyRecOp allocatePtr() {
@@ -47,7 +58,7 @@ public final class Allocations extends Inset {
 
 	public final AnyRecOp allocatePtr(ID id) {
 		assert assertIncomplete();
-		return writer().allocatePtr(opId(id));
+		return writer().allocatePtr(code().opId(id));
 	}
 
 	public final <S extends StructOp<S>> StructRecOp<S> allocatePtr(
@@ -61,10 +72,10 @@ public final class Allocations extends Inset {
 		assert assertIncomplete();
 
 		final StructRecOp<S> result = writer().allocatePtr(
-				opId(id),
-				type.data(getGenerator()).getPointer().getAllocation());
+				code().opId(id),
+				type.data(code().getGenerator()).getPointer().getAllocation());
 
-		result.allocated(this, null);
+		result.allocated(code(), null);
 
 		return result;
 	}
@@ -73,18 +84,28 @@ public final class Allocations extends Inset {
 		return allocate(getAllocated().getId(), type);
 	}
 
-	@Override
-	@SuppressWarnings("deprecation")
 	public final <S extends StructOp<S>> S allocate(ID id, Type<S> type) {
 		assert assertIncomplete();
 
 		final S result = writer().allocateStruct(
-				opId(id),
-				type.data(getGenerator()).getPointer().getAllocation());
+				code().opId(id),
+				type.data(code().getGenerator()).getPointer().getAllocation());
 
-		result.allocated(this, null);
+		result.allocated(code(), null);
 
 		return result;
+	}
+
+	final Code code() {
+		return this.code;
+	}
+
+	private final boolean assertIncomplete() {
+		return code().assertIncomplete();
+	}
+
+	private final CodeWriter writer() {
+		return code().writer();
 	}
 
 }

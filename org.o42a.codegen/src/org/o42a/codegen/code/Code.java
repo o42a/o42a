@@ -204,19 +204,6 @@ public abstract class Code extends DebugCodeBase {
 		return allocated;
 	}
 
-	@Deprecated
-	public <S extends StructOp<S>> S allocate(ID id, Type<S> type) {
-		assert assertIncomplete();
-
-		final S result = writer().allocateStruct(
-				opId(id),
-				type.data(getGenerator()).getPointer().getAllocation());
-
-		result.allocated(this, null);
-
-		return result;
-	}
-
 	public final <O extends Op> O phi(ID id, O op) {
 		assert assertIncomplete();
 		return writer().phi(id != null ? id : op.getId(), op);
