@@ -102,8 +102,6 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 					: code;
 
 			this.alloc = new Allocations(enclosing, this);
-			enclosing.updateAssets(
-					new CodeAssets(this.alloc, "alloc", this.alloc));
 
 			if (mode.isMandatory()) {
 				allocate();
@@ -132,10 +130,10 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 	private void allocate() {
 		this.allocated = true;
 		this.result = getAllocatable().allocate(this.alloc, this);
-		this.alloc.addAsset(
+		this.alloc.code().addAsset(
 				AllocAsset.class,
-				allocatedAsset(this.alloc, this));
-		getAllocatable().init(this.alloc, this);
+				allocatedAsset(this.alloc.code(), this));
+		getAllocatable().init(this.alloc.code(), this);
 	}
 
 }
