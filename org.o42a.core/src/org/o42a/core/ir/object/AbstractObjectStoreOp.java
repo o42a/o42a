@@ -57,7 +57,7 @@ public abstract class AbstractObjectStoreOp
 		final Block code = dirs.code();
 		final ObjectOp object = object(dirs);
 
-		this.ptr.get().store(code, object.toAny(null, code));
+		this.ptr.get(code).store(code, object.toAny(null, code));
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public abstract class AbstractObjectStoreOp
 
 		final Block code = dirs.code();
 		final DataOp objectPtr =
-				this.ptr.get().load(null, code).toData(null, code);
+				this.ptr.get(code).load(null, code).toData(null, code);
 
 		return anonymousObject(
 				dirs.getBuilder(),

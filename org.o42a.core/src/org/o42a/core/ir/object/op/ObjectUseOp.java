@@ -52,8 +52,8 @@ public final class ObjectUseOp extends IROp {
 	}
 
 	@Override
-	public final Op ptr() {
-		return this.ptr.get().op;
+	public final Op ptr(Code code) {
+		return this.ptr.get(code).op;
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public final class ObjectUseOp extends IROp {
 
 		final ObjectIRDataOp data = object.objectData(code).ptr();
 
-		this.ptr.get().objectData.store(code, data);
+		this.ptr.get(code).objectData.store(code, data);
 	}
 
 	void startUse(Code code, ObjectOp object) {
@@ -80,7 +80,7 @@ public final class ObjectUseOp extends IROp {
 		.externalFunction()
 		.link("o42a_obj_start_use", START_OBJECT_USE)
 		.op(null, code)
-		.use(code, ptr(), data);
+		.use(code, ptr(code), data);
 	}
 
 	public static final class Op extends StructOp<Op> {
@@ -171,7 +171,7 @@ public final class ObjectUseOp extends IROp {
 
 		@Override
 		public void init(Code code, Allocated<AllocatedObjectUse> allocated) {
-			allocated.get().init(code);
+			allocated.get(code).init(code);
 		}
 
 		@Override
@@ -182,7 +182,7 @@ public final class ObjectUseOp extends IROp {
 			.externalFunction()
 			.link("o42a_obj_end_use", END_OBJECT_UNUSE)
 			.op(null, code)
-			.unuse(code, allocated.get().op);
+			.unuse(code, allocated.get(code).op);
 		}
 
 		@Override

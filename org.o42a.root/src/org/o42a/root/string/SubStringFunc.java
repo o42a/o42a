@@ -63,8 +63,8 @@ final class SubStringFunc extends Func<SubStringFunc> {
 				null,
 				code,
 				SUB_STRING.result(),
-				sub.ptr(),
-				string.ptr(),
+				sub.ptr(code),
+				string.ptr(code),
 				from,
 				to);
 	}

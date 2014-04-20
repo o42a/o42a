@@ -20,9 +20,11 @@
 package org.o42a.core.ir.value.impl;
 
 import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public final class FinalValOp extends ValOp {
@@ -44,6 +46,11 @@ public final class FinalValOp extends ValOp {
 	}
 
 	@Override
+	public final ID getId() {
+		return this.ptr.getId();
+	}
+
+	@Override
 	public final Val getConstant() {
 		return null;
 	}
@@ -54,7 +61,7 @@ public final class FinalValOp extends ValOp {
 	}
 
 	@Override
-	public final ValType.Op ptr() {
+	public final ValType.Op ptr(Code code) {
 		return this.ptr;
 	}
 
@@ -72,7 +79,7 @@ public final class FinalValOp extends ValOp {
 			return super.toString();
 		}
 
-		return "(" + valueType + ") " + ptr();
+		return "(" + valueType + ") " + this.ptr;
 	}
 
 }

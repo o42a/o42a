@@ -54,8 +54,8 @@ public final class ParseWithRadixFunc extends Func<ParseWithRadixFunc> {
 				null,
 				code,
 				PARSE_WITH_RADIX.result(),
-				output.ptr(),
-				input.ptr(),
+				output.ptr(code),
+				input.ptr(code),
 				code.int32(radix));
 	}
 

@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.useVar;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -54,6 +55,11 @@ public abstract class RefFldOp<
 
 	@Override
 	public abstract F ptr();
+
+	@Override
+	public final F ptr(Code code) {
+		return ptr();
+	}
 
 	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
 

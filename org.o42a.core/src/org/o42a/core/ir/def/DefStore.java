@@ -73,7 +73,7 @@ public class DefStore {
 	}
 
 	protected boolean valueAccessibleBy(Code code) {
-		if (!valDirs().value().isStackAllocated()) {
+		if (!valDirs().value().isStackAllocated(code)) {
 			return true;
 		}
 		return code.getAllocator() == valDirs().code().getAllocator();

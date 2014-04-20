@@ -72,7 +72,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 				null,
 				code,
 				OBJECT_VALUE.result(),
-				value.ptr(),
+				value.ptr(code),
 				data != null ? data : code.nullPtr(OBJECT_DATA_TYPE),
 				object != null ? object : code.nullDataPtr());
 

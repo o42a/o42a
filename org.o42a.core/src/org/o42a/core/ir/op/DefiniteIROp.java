@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2010-2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,39 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.op;
 
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DumpablePtrOp;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.util.string.ID;
 
 
-public abstract class FldIROp extends DefiniteIROp implements TargetOp {
+public abstract class DefiniteIROp extends IROp {
 
-	private final ObjOp host;
-	private final FldIR fld;
-
-	public FldIROp(ObjOp host, FldIR fld) {
-		super(host.getBuilder());
-		this.host = host;
-		this.fld = fld;
+	public DefiniteIROp(CodeBuilder builder) {
+		super(builder);
 	}
 
-	public final ObjOp host() {
-		return this.host;
-	}
-
-	public FldIR fld() {
-		return this.fld;
+	public ID getId() {
+		return ptr().getId();
 	}
 
 	@Override
-	public final HostTargetOp target() {
-		return this;
+	public DumpablePtrOp<?> ptr(Code code) {
+		return ptr();
 	}
 
-	@Override
-	public final TargetOp op(CodeDirs dirs) {
-		return this;
-	}
+	public abstract DumpablePtrOp<?> ptr();
 
 }
