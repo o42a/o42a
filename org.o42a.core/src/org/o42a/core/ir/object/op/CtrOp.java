@@ -34,7 +34,6 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.ObjectsCode;
 import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -51,16 +50,16 @@ public class CtrOp extends IROp {
 
 	public static final ID CTR_ID = ID.id("ctr");
 
-	private final Op ptr;
+	private final Allocated<Op> ptr;
 
-	private CtrOp(CodeBuilder builder, Op ptr) {
+	public CtrOp(CodeBuilder builder, Allocated<Op> ptr) {
 		super(builder);
 		this.ptr = ptr;
 	}
 
 	@Override
-	public final Op ptr() {
-		return this.ptr;
+	public final Op ptr(Code code) {
+		return this.ptr.get(code);
 	}
 
 	public ObjectOp newObject(
@@ -76,15 +75,21 @@ public class CtrOp extends IROp {
 		final Block code = subDirs.code();
 
 		if (owner != null) {
-			ptr().ownerData(code).store(code, owner.objectData(code).ptr());
+			ptr(code).ownerData(code).store(
+					code,
+					owner.objectData(code).ptr());
 		} else {
-			ptr().ownerData(code).store(code, code.nullPtr(OBJECT_DATA_TYPE));
+			ptr(code).ownerData(code).store(
+					code,
+					code.nullPtr(OBJECT_DATA_TYPE));
 		}
-		ptr().ancestorData(code).store(
+		ptr(code).ancestorData(code).store(
 				code,
 				ancestorData != null
 				? ancestorData : code.nullPtr(OBJECT_DATA_TYPE));
-		ptr().desc(code).store(code, sample.objectData(code).loadDesc(code));
+		ptr(code).desc(code).store(
+				code,
+				sample.objectData(code).loadDesc(code));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 
@@ -127,10 +132,6 @@ public class CtrOp extends IROp {
 
 		public final StructRecOp<ObjectIRDescOp> desc(Code code) {
 			return ptr(null, code, getType().desc());
-		}
-
-		public final CtrOp op(ObjectsCode objects) {
-			return new CtrOp(objects.getBuilder(), this);
 		}
 
 	}

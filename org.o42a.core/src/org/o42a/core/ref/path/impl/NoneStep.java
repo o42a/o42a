@@ -24,6 +24,7 @@ import static org.o42a.core.ir.value.Val.falseVal;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.ir.CodeBuilder;
@@ -142,11 +143,16 @@ public class NoneStep extends Step {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			dirs.code().go(dirs.falseDir());
-			return new ConstValOp(
+
+			final Block code = dirs.code();
+			final ConstValOp result = new ConstValOp(
 					dirs.getBuilder(),
-					dirs.value().ptr(),
+					dirs.value().ptr(code),
 					FALSE_VAL);
+
+			code.go(dirs.falseDir());
+
+			return result;
 		}
 
 		@Override
@@ -194,11 +200,16 @@ public class NoneStep extends Step {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			dirs.code().go(dirs.falseDir());
-			return new ConstValOp(
+
+			final Block code = dirs.code();
+			final ConstValOp result = new ConstValOp(
 					dirs.getBuilder(),
-					dirs.value().ptr(),
+					dirs.value().ptr(code),
 					falseVal(dirs.getValueType()));
+
+			code.go(dirs.falseDir());
+
+			return result;
 		}
 
 		@Override

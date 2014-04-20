@@ -43,12 +43,13 @@ public final class ValAllocFunc extends Func<ValAllocFunc> {
 
 	public final AnyOp allocate(ValDirs dirs, Int32op size) {
 
+		final Block code = dirs.code();
 		final ValOp value = dirs.value();
 		final AnyOp result = invoke(
 				null,
-				dirs.code(),
+				code,
 				VAL_ALLOC.result(),
-				value.ptr(),
+				value.ptr(code),
 				size);
 
 		value.go(dirs.code(), dirs.dirs());

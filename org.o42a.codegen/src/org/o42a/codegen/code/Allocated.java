@@ -52,7 +52,7 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 		return this.allocated;
 	}
 
-	public final T get() {
+	public final T get(Code code) {
 		if (!this.allocated) {
 			allocate();
 		}

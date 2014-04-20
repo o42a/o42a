@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.op.CtrOp.CTR_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Allocated;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -101,14 +102,14 @@ public final class ObjectsCode {
 			ObjectIRDataOp ancestorData,
 			Obj sample) {
 
-		final CtrOp.Op ctr =
-				dirs.code().allocate(CTR_ID, ALLOCATABLE_CTR).get();
-		final ObjectOp newObject = ctr.op(this).newObject(
+		final Block code = dirs.code();
+		final Allocated<CtrOp.Op> ctr = code.allocate(CTR_ID, ALLOCATABLE_CTR);
+		final ObjectOp newObject = new CtrOp(getBuilder(), ctr).newObject(
 				dirs,
 				holder,
 				owner,
 				ancestorData,
-				sample.ir(getGenerator()).op(getBuilder(), dirs.code()));
+				sample.ir(getGenerator()).op(getBuilder(), code));
 
 		if (host != null) {
 			newObject.fillDeps(dirs, host, sample);

@@ -57,7 +57,7 @@ public final class StackAllocatedValOp extends ValOp {
 	}
 
 	@Override
-	public final boolean isStackAllocated() {
+	public final boolean isStackAllocated(Code code) {
 		return true;
 	}
 
@@ -72,8 +72,8 @@ public final class StackAllocatedValOp extends ValOp {
 	}
 
 	@Override
-	public ValType.Op ptr() {
-		return this.ptr.get();
+	public ValType.Op ptr(Code code) {
+		return this.ptr.get(code);
 	}
 
 	@Override

@@ -20,8 +20,10 @@
 package org.o42a.core.ir.value.impl;
 
 import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
+import org.o42a.util.string.ID;
 
 
 public final class ConstValOp extends ValOp {
@@ -36,6 +38,11 @@ public final class ConstValOp extends ValOp {
 	}
 
 	@Override
+	public ID getId() {
+		return this.ptr.getId();
+	}
+
+	@Override
 	public final Val getConstant() {
 		return this.constant;
 	}
@@ -46,7 +53,7 @@ public final class ConstValOp extends ValOp {
 	}
 
 	@Override
-	public final ValType.Op ptr() {
+	public final ValType.Op ptr(Code code) {
 		return this.ptr;
 	}
 

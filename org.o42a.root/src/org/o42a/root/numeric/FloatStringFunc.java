@@ -45,7 +45,7 @@ public class FloatStringFunc extends Func<FloatStringFunc> {
 				null,
 				code,
 				FLOAT_TO_STRING.result(),
-				string.ptr(),
+				string.ptr(code),
 				value);
 
 		result.goUnless(code, stringDirs.falseDir());

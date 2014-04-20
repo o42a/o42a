@@ -171,7 +171,7 @@ abstract class AbstractObjectValueBuilder
 
 		final Block valueKept = code.addBlock("value_kept");
 		final FldCtrOp ctr =
-				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get();
+				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
 		ctr.start(code, state.data()).goUnless(code, valueKept.head());
 		writeKept(valueKept, state, result);

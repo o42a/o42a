@@ -166,7 +166,7 @@ public final class Debug {
 				function.allocate(
 						FN_STACK_FRAME_ID,
 						new AllocatableFnStackFrame(namePtr))
-				.get();
+				.get(function);
 		final BoolOp canEnter =
 				enterFunc().op(null, function).enter(function, stackFrame);
 		final Block cantEnter = function.addBlock(CANT_ENTER_ID);
@@ -322,7 +322,7 @@ public final class Debug {
 		@Override
 		public void init(Code code, Allocated<DebugStackFrameOp> allocated) {
 
-			final DebugStackFrameOp stackFrame = allocated.get();
+			final DebugStackFrameOp stackFrame = allocated.get(code);
 
 			stackFrame.name(code).store(code, this.namePtr.op(null, code));
 			stackFrame.comment(code).store(code, code.nullPtr());
