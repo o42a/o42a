@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.codegen.code.AllocationsMap.ALLOCATIONS_ID;
 import static org.o42a.codegen.data.AllocPlace.autoAllocPlace;
 
 import java.util.HashMap;
@@ -32,18 +33,14 @@ import org.o42a.util.string.ID;
 
 public abstract class Allocator extends Block {
 
-	private static final ID ALLOCATIONS_ID = ID.rawId("__allocs__");
-	private static final ID ENTRY_ID = ID.rawId("__entry__");
 	private static final ID DISPOSAL_ID = ID.rawId("__disposal__");
-	private static final ID ALLOCATOR_DISPOSAL_ID =
-			ID.rawId("__allocator_disposal__");
 	private static final ID DISPOSE_ID = ID.rawId("__dispose__");
 
 	private final AllocPlace allocPlace = autoAllocPlace(this);
 	private final TreeSet<Allocated<?>> allocated = new TreeSet<>();
+	private AllocationsMap allocationsMap;
 	private Code allocations;
 	private HashMap<Class<?>, Object> data;
-	private AllocatorWriter allocatorWriter;
 
 	Allocator(Block enclosing, ID name) {
 		super(enclosing, name);
@@ -105,12 +102,14 @@ public abstract class Allocator extends Block {
 		if (allocatorWriter == null) {
 			this.allocations = inset(ALLOCATIONS_ID);
 		} else {
-			createEntry(allocatorWriter);
+			this.allocationsMap = new AllocationsMap(this, allocatorWriter);
+			this.allocations = this.allocationsMap.createEntry();
+			this.allocationsMap.initDisposal();
 		}
 	}
 
 	final void allocate(Code code, CodePos target) {
-		this.allocatorWriter.allocate(code, target);
+		this.allocationsMap.allocate(code, target);
 	}
 
 	final void dispose(Code code) {
@@ -126,32 +125,6 @@ public abstract class Allocator extends Block {
 		this.allocated.add(allocated);
 
 		return allocated;
-	}
-
-	private void createEntry(final AllocatorWriter allocatorWriter) {
-		this.allocatorWriter = allocatorWriter;
-
-		final Code entry = inset(ENTRY_ID);
-
-		getFunction().addCompleteListener(new FunctionCompleteListener() {
-			@Override
-			public void functionComplete(Function<?> function) {
-				allocatorWriter.combine(entry, entry);
-			}
-		});
-
-		this.allocations = inset(ALLOCATIONS_ID);
-
-		allocate(
-				ALLOCATOR_DISPOSAL_ID,
-				new AllocatableDisposal(
-						new Disposal() {
-							@Override
-							public void dispose(Code code) {
-								allocatorWriter.dispose(code, code);
-							}
-						},
-						Integer.MIN_VALUE));
 	}
 
 	private <T> T find(Class<? extends T> klass) {
