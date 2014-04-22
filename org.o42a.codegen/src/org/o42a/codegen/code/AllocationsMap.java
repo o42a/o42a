@@ -288,7 +288,6 @@ final class AllocationsMap {
 	private final class MapAllocatedValue<T> implements AllocatedValue<T> {
 
 		private final Allocated<T> allocated;
-		private boolean isAllocated;
 
 		MapAllocatedValue(Allocated<T> allocated) {
 			this.allocated = allocated;
@@ -296,12 +295,11 @@ final class AllocationsMap {
 
 		@Override
 		public boolean isAllocated() {
-			return this.isAllocated;
+			return true;
 		}
 
 		@Override
 		public T get(Allocator target) {
-			this.isAllocated = true;
 			return entry(target).data(this.allocated).get();
 		}
 
