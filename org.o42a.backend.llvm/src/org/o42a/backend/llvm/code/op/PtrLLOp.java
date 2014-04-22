@@ -219,6 +219,14 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 			long pointerPtr,
 			long typePtr);
 
+	static native long toStructRec(
+			long blockPtr,
+			long instrPtr,
+			long id,
+			int idLen,
+			long pointerPtr,
+			long typePtr);
+
 	protected static native long castFuncTo(
 			long blockPtr,
 			long instrPtr,

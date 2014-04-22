@@ -379,6 +379,35 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
+	public <O extends Op> O phi(ID id, O[] ops) {
+
+		final long[] ptrs = new long[ops.length << 1];
+
+		for (int i = 0; i < ops.length; ++i) {
+
+			final LLOp<O> llop = llvm(ops[i]);
+			final int idx = i << 1;
+
+			ptrs[idx] = llop.getBlockPtr();
+			ptrs[idx + 1] = llop.getNativePtr();
+		}
+
+		final ID resultId = code().getOpNames().opId(id);
+		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
+
+		return llvm(ops[0]).create(
+				resultId,
+				nextPtr,
+				instr(phiN(
+						nextPtr,
+						nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						ptrs)));
+	}
+
+	@Override
 	public void acquireBarrier() {
 		instr(acquireBarrier(nextPtr(), nextInstr()));
 	}

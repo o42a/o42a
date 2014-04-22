@@ -214,6 +214,14 @@ public abstract class Code extends DebugCodeBase {
 		return writer().phi(opId(id), op1, op2);
 	}
 
+	public final <O extends Op> O phi(ID id, O[] ops) {
+		assert assertIncomplete();
+		if (ops.length == 1) {
+			return phi(id, ops[0]);
+		}
+		return writer().phi(opId(id), ops);
+	}
+
 	/**
 	 * An "acquire" memory barrier.
 	 */

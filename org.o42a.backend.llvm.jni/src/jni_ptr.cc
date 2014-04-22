@@ -411,6 +411,27 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 	return to_instr_ptr(builder.GetInsertBlock(), result);
 }
 
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toStructRec(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
+		jlong id,
+		jint idLen,
+		jlong pointerPtr,
+		jlong typePtr) {
+
+	MAKE_BUILDER;
+	Value *pointer = from_ptr<Value>(pointerPtr);
+	Type *type = from_ptr<Type>(typePtr);
+	Value *result = builder.CreatePointerCast(
+			pointer,
+			type->getPointerTo()->getPointerTo(),
+			StringRef(from_ptr<char>(id), idLen));
+
+	return to_instr_ptr(builder.GetInsertBlock(), result);
+}
+
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
 		JNIEnv *,
 		jclass,

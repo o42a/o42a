@@ -302,6 +302,32 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	}
 
 	@Override
+	public <S extends StructOp<S>> StructRecCOp<S> toRec(
+			ID id,
+			Code code,
+			final Type<S> type) {
+
+		final ID castId = code.getOpNames().castId(id, type.getId(), this);
+
+		return new StructRecCOp<>(
+				new OpBE<StructRecOp<S>>(castId, cast(code)) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
+					protected StructRecOp<S> write() {
+						return backend().underlying().toRec(
+								getId(),
+								part().underlying(),
+								getBackend().underlying(type));
+					}
+				},
+				allocRecStore(getAllocPlace()),
+				type);
+	}
+
+	@Override
 	public AnyCOp create(OpBE<AnyOp> backend, Ptr<AnyOp> constant) {
 		return new AnyCOp(backend, getAllocPlace(), constant);
 	}
