@@ -145,7 +145,7 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		}
 
 		@Override
-		public void init(Code code, Allocated<FldPtrs<F>> allocated) {
+		public void init(Code code, FldPtrs<F> allocated) {
 		}
 
 		@Override

@@ -146,7 +146,7 @@ public abstract class Control {
 	}
 
 	public final Control command(String index) {
-		return new CommandControl(this, "cmd_" + index);
+		return new CommandControl(this, index + "_cmd");
 	}
 
 	public final Control resume(
@@ -154,7 +154,7 @@ public abstract class Control {
 			ResumeCallback prevResumeCallback) {
 
 		final CommandControl control =
-				new CommandControl(this, "resume_" + index);
+				new CommandControl(this, index + "_resume");
 		final Block code = control.code();
 
 		code.debug("Resumed @" + code.getId());

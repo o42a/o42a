@@ -27,17 +27,25 @@ import org.o42a.util.string.ID;
 
 public class Allocated<T> implements Comparable<Allocated<T>> {
 
+	private final Allocator allocator;
 	private final ID id;
 	private final Allocatable<T> allocatable;
-	private Allocations alloc;
-	private T result;
+	private AllocatedValue<T> value;
 	private final int order;
-	private boolean allocated;
 
-	Allocated(ID id, Allocatable<T> allocatable, int order) {
+	Allocated(
+			Allocator allocator,
+			ID id,
+			Allocatable<T> allocatable,
+			int order) {
+		this.allocator = allocator;
 		this.id = id;
 		this.allocatable = allocatable;
 		this.order = order;
+	}
+
+	public final Allocator getAllocator() {
+		return this.allocator;
 	}
 
 	public final ID getId() {
@@ -49,14 +57,13 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 	}
 
 	public final boolean isAllocated() {
-		return this.allocated;
+		return this.value == null || this.value.isAllocated();
 	}
 
 	public final T get(Code code) {
-		if (!this.allocated) {
-			allocate();
-		}
-		return this.result;
+		assert this.value != null :
+			"Allocations can not be done";
+		return this.value.get(code.getAllocator());
 	}
 
 	@Override
@@ -82,31 +89,15 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 	}
 
 	void init(Code code) {
-
-		final AllocationMode mode = getAllocatable().getAllocationMode();
-
-		if (!mode.supportsAllocation()) {
-
-			final Code enclosing = code.getAllocator().allocations();
-
-			enclosing.addAsset(
-					AllocAsset.class,
-					allocatedAsset(enclosing, this));
-
-			this.allocated = true;
-		} else {
-
-			final Code enclosing =
-					mode.inAllocator()
-					? code.getAllocator().allocations()
-					: code;
-
-			this.alloc = new Allocations(enclosing, this);
-
-			if (mode.isMandatory()) {
-				allocate();
-			}
+		this.value = getAllocator().allocationsMap().value(code, this);
+		if (getAllocatable().getAllocationMode().isMandatory()) {
+			get(code);
 		}
+	}
+
+	void allocated(Code code, T value) {
+		code.addAsset(AllocAsset.class, allocatedAsset(code, this));
+		getAllocatable().init(code, value != null ? value : get(code));
 	}
 
 	void afterDispose(Code code) {
@@ -127,13 +118,12 @@ public class Allocated<T> implements Comparable<Allocated<T>> {
 		getAllocatable().dispose(code, this);
 	}
 
-	private void allocate() {
-		this.allocated = true;
-		this.result = getAllocatable().allocate(this.alloc, this);
-		this.alloc.code().addAsset(
-				AllocAsset.class,
-				allocatedAsset(this.alloc.code(), this));
-		getAllocatable().init(this.alloc.code(), this);
+	interface AllocatedValue<T> {
+
+		boolean isAllocated();
+
+		T get(Allocator allocator);
+
 	}
 
 }

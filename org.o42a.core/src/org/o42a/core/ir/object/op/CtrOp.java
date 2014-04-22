@@ -195,7 +195,7 @@ public class CtrOp extends IROp {
 		}
 
 		@Override
-		public void init(Code code, Allocated<Op> allocated) {
+		public void init(Code code, Op allocated) {
 		}
 
 		@Override

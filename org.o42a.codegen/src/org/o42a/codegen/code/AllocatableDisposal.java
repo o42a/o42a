@@ -53,7 +53,7 @@ class AllocatableDisposal implements Allocatable<Void> {
 	}
 
 	@Override
-	public void init(Code code, Allocated<Void> allocated) {
+	public void init(Code code, Void allocated) {
 	}
 
 	@Override

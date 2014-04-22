@@ -95,11 +95,18 @@ public abstract class Allocator extends Block {
 		this.data.put(klass, value);
 	}
 
+	final AllocationsMap allocationsMap() {
+		assert this.allocationsMap != null :
+			"Allocator not initialized yet: " + this;
+		return this.allocationsMap;
+	}
+
 	final void initAllocations(final AllocatorWriter allocatorWriter) {
 		assert this.allocations == null :
 			"Allocation already started";
 
 		if (allocatorWriter == null) {
+			this.allocationsMap = new AllocationsMap(this, allocatorWriter);
 			this.allocations = inset(ALLOCATIONS_ID);
 		} else {
 			this.allocationsMap = new AllocationsMap(this, allocatorWriter);
@@ -120,7 +127,7 @@ public abstract class Allocator extends Block {
 	final <T> Allocated<T> addAllocation(ID id, Allocatable<T> allocatable) {
 
 		final Allocated<T> allocated =
-				new Allocated<>(id, allocatable, this.allocated.size());
+				new Allocated<>(this, id, allocatable, this.allocated.size());
 
 		this.allocated.add(allocated);
 

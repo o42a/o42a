@@ -68,7 +68,7 @@ public final class GCCode {
 		}
 
 		@Override
-		public void init(Code code, Allocated<Void> allocated) {
+		public void init(Code code, Void allocated) {
 		}
 
 		@Override
