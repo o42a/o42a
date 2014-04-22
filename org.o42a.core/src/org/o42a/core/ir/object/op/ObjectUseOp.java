@@ -170,8 +170,8 @@ public final class ObjectUseOp extends IROp {
 		}
 
 		@Override
-		public void init(Code code, Allocated<AllocatedObjectUse> allocated) {
-			allocated.get(code).init(code);
+		public void init(Code code, AllocatedObjectUse objectUse) {
+			objectUse.init(code);
 		}
 
 		@Override

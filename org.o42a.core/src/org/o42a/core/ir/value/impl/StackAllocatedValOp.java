@@ -20,6 +20,7 @@
 package org.o42a.core.ir.value.impl;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
+import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.CodeBuilder;
@@ -108,8 +109,8 @@ public final class StackAllocatedValOp extends ValOp {
 		}
 
 		@Override
-		public void init(Code code, Allocated<ValType.Op> allocated) {
-			storeIndefinite(code);
+		public void init(Code code, ValType.Op allocated) {
+			allocated.flags(code, NOT_ATOMIC).storeIndefinite(code);
 		}
 
 		@Override

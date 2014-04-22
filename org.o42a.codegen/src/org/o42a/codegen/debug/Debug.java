@@ -320,10 +320,7 @@ public final class Debug {
 		}
 
 		@Override
-		public void init(Code code, Allocated<DebugStackFrameOp> allocated) {
-
-			final DebugStackFrameOp stackFrame = allocated.get(code);
-
+		public void init(Code code, DebugStackFrameOp stackFrame) {
 			stackFrame.name(code).store(code, this.namePtr.op(null, code));
 			stackFrame.comment(code).store(code, code.nullPtr());
 			stackFrame.file(code).store(code, code.nullPtr());

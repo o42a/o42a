@@ -179,7 +179,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		}
 
 		@Override
-		public void init(Code code, Allocated<FldCtrOp> allocated) {
+		public void init(Code code, FldCtrOp allocated) {
 		}
 
 		@Override

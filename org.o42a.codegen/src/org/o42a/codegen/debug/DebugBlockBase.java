@@ -90,10 +90,7 @@ public abstract class DebugBlockBase extends OpBlockBase {
 		}
 
 		@Override
-		public void init(Code code, Allocated<DebugStackFrameOp> allocated) {
-
-			final DebugStackFrameOp stackFrame = allocated.get(code);
-
+		public void init(Code code, DebugStackFrameOp stackFrame) {
 			stackFrame.comment(code).store(code, code.nullPtr());
 			stackFrame.file(code).store(code, code.nullPtr());
 			stackFrame.line(code).store(code, code.int32(0));

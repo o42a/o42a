@@ -104,7 +104,7 @@ public abstract class AbstractObjectStoreOp
 		}
 
 		@Override
-		public void init(Code code, Allocated<AnyRecOp> allocated) {
+		public void init(Code code, AnyRecOp allocated) {
 		}
 
 		@Override

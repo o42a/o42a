@@ -32,7 +32,7 @@ public interface Allocatable<T> {
 
 	T allocate(Allocations code, Allocated<T> allocated);
 
-	void init(Code code, Allocated<T> allocated);
+	void init(Code code, T allocated);
 
 	void dispose(Code code, Allocated<T> allocated);
 
