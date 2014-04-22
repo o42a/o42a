@@ -124,6 +124,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_PtrLLOp
+ * Method:    toStructRec
+ * Signature: (JJJIJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_toStructRec
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_op_PtrLLOp
  * Method:    castFuncTo
  * Signature: (JJJIJJ)J
  */

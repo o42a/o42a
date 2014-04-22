@@ -20,14 +20,15 @@
 package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
+import static org.o42a.backend.llvm.code.LLCode.typePtr;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.rec.*;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.CodeOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.AllocPlace;
+import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
 
@@ -235,6 +236,31 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 						ids.write(resultId),
 						ids.length(),
 						getNativePtr())));
+	}
+
+	@Override
+	public <S extends StructOp<S>> StructRecOp<S> toRec(
+			ID id,
+			Code code,
+			Type<S> type) {
+
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
+		final ID resultId = code.getOpNames().castId(id, REL_ID, this);
+
+		return new StructRecLLOp<>(
+				resultId,
+				getAllocPlace(),
+				type,
+				nextPtr,
+				llvm.instr(toStructRec(
+						nextPtr,
+						llvm.nextInstr(),
+						ids.write(resultId),
+						ids.length(),
+						getNativePtr(),
+						typePtr(type))));
 	}
 
 	@Override
