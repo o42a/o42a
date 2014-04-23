@@ -152,7 +152,7 @@ final class AllocationsMap {
 		return records;
 	}
 
-	public AllocEntry entry(Allocator target) {
+	public AllocEntry entryTo(Allocator target) {
 		assert getAllocator().contains(target) :
 			target + " is not inside " + getAllocator();
 		assert this.writer != null :
@@ -174,23 +174,9 @@ final class AllocationsMap {
 		return entry;
 	}
 
-	public AllocEntry findEntry(Allocator target) {
-
-		final AllocEntry existing = this.entries.get(target);
-
-		if (existing != null && !existing.isEmpty()) {
-			return existing;
-		}
-		if (target == getAllocator()) {
-			return null;
-		}
-
-		return findEntry(target.getEnclosingAllocator());
-	}
-
 	public final void allocate(Code code, CodePos target) {
 		this.writer.allocate(code, target);
-		entry(target.code().getAllocator()).allocateIn(code);
+		entryTo(target.code().getAllocator()).allocateIn(code);
 	}
 
 	public AnyRecOp allocatePtr(
@@ -202,7 +188,7 @@ final class AllocationsMap {
 		final AllocRecord<AnyRecOp> record =
 				records(allocated).recordPtr(index, id);
 
-		return entry(target).data(allocated).ptrs(record).ptr();
+		return entryTo(target).dataFor(allocated).ptrsTo(record).ptr();
 	}
 
 	public AnyRecOp reallocatePtr(
@@ -215,7 +201,7 @@ final class AllocationsMap {
 		final AllocRecord<AnyRecOp> record =
 				records(allocated).recordPtr(index, id);
 
-		return entry(target).data(allocated).ptrs(record).add(code);
+		return entryTo(target).dataFor(allocated).ptrsTo(record).add(code);
 	}
 
 	public <S extends StructOp<S>> StructRecOp<S> allocatePtr(
@@ -228,7 +214,7 @@ final class AllocationsMap {
 		final AllocRecord<StructRecOp<S>> record =
 				records(allocated).recordPtr(index, id, type);
 
-		return entry(target).data(allocated).ptrs(record).ptr();
+		return entryTo(target).dataFor(allocated).ptrsTo(record).ptr();
 	}
 
 	public <S extends StructOp<S>> StructRecOp<S> reallocatePtr(
@@ -242,7 +228,7 @@ final class AllocationsMap {
 		final AllocRecord<StructRecOp<S>> record =
 				records(allocated).recordPtr(index, id, type);
 
-		return entry(target).data(allocated).ptrs(record).add(code);
+		return entryTo(target).dataFor(allocated).ptrsTo(record).add(code);
 	}
 
 	public <S extends StructOp<S>> S allocate(
@@ -255,7 +241,7 @@ final class AllocationsMap {
 		final AllocRecord<S> record =
 				records(allocated).recordStruct(index, id, type);
 
-		return entry(target).data(allocated).ptrs(record).ptr();
+		return entryTo(target).dataFor(allocated).ptrsTo(record).ptr();
 	}
 
 	public <S extends StructOp<S>> S reallocate(
@@ -269,7 +255,7 @@ final class AllocationsMap {
 		final AllocRecord<S> record =
 				records(allocated).recordStruct(index, id, type);
 
-		return entry(target).data(allocated).ptrs(record).add(code);
+		return entryTo(target).dataFor(allocated).ptrsTo(record).add(code);
 	}
 
 	public void combineAll() {
@@ -317,7 +303,7 @@ final class AllocationsMap {
 
 		@Override
 		public T get(Allocator target) {
-			return entry(target).data(this.allocated).get();
+			return entryTo(target).dataFor(this.allocated).get();
 		}
 
 	}
