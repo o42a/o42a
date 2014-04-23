@@ -61,12 +61,17 @@ final class AllocEntry {
 		return this.target;
 	}
 
-	public final boolean isEmpty() {
-		return this.data == null && this.reallocs.length == 0;
-	}
-
 	public final boolean isCombined() {
 		return this.combined;
+	}
+
+	public final boolean reallocatedIn(Allocator allocator) {
+		for (Code realloc : this.reallocs) {
+			if (realloc.getAllocator() == allocator) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void allocateIn(Code code) {
@@ -81,7 +86,7 @@ final class AllocEntry {
 		}
 	}
 
-	public <T> AllocatedData<T> data(Allocated<T> allocated) {
+	public <T> AllocatedData<T> dataFor(Allocated<T> allocated) {
 		if (this.data == null) {
 			this.data = new IdentityHashMap<>();
 		} else {
@@ -137,11 +142,14 @@ final class AllocEntry {
 	}
 
 	private final AllocEntry parentEntry() {
-		if (this.target == getAllocator()) {
+
+		final Allocator target = getTarget();
+
+		if (target == getAllocator()) {
 			return null;
 		}
-		return this.allocationsMap.findEntry(
-				this.target.getEnclosingAllocator());
+
+		return this.allocationsMap.entryTo(target.getEnclosingAllocator());
 	}
 
 	static final class AllocatedData<T> {
@@ -156,10 +164,6 @@ final class AllocEntry {
 		private AllocatedData(AllocEntry entry, Allocated<T> allocated) {
 			this.entry = entry;
 			this.allocated = allocated;
-		}
-
-		public boolean isEmpty() {
-			return this.ptrs == null && this.entry.reallocs.length == 0;
 		}
 
 		public T get() {
@@ -180,7 +184,7 @@ final class AllocEntry {
 		}
 
 		@SuppressWarnings("unchecked")
-		public <P extends AllocPtrOp<P>> AllocatedPtrs<P> ptrs(
+		public <P extends AllocPtrOp<P>> AllocatedPtrs<P> ptrsTo(
 				AllocRecord<P> record) {
 
 			final int index = record.getIndex();
@@ -200,7 +204,7 @@ final class AllocEntry {
 				return null;
 			}
 
-			return parentEntry.data(this.allocated);
+			return parentEntry.dataFor(this.allocated);
 		}
 
 		private void initParents() {
@@ -296,10 +300,6 @@ final class AllocEntry {
 			this.record = record;
 		}
 
-		public final boolean isEmpty() {
-			return this.ptr == null && this.ptrs == null;
-		}
-
 		public P ptr() {
 			if (this.ptr != null) {
 				return this.ptr;
@@ -341,7 +341,7 @@ final class AllocEntry {
 				return null;
 			}
 
-			return parentData.ptrs(this.record);
+			return parentData.ptrsTo(this.record);
 		}
 
 		private AnyRecOp prealloc() {
@@ -356,7 +356,7 @@ final class AllocEntry {
 		}
 
 		private void combine() {
-			if (this.combined || isEmpty()) {
+			if (this.combined) {
 				return;
 			}
 			this.combined = true;
