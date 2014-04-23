@@ -145,6 +145,9 @@ public abstract class Allocator extends Block {
 		for (Allocated<?> allocated : this.allocated) {
 			allocated.dispose(code);
 		}
+		// Disposals may request new pointers and generate new entries.
+		// They need to be combined too.
+		this.allocationsMap.combineAll();
 	}
 
 	private void afterDispose(Code code) {
