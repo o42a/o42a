@@ -51,6 +51,7 @@ final class AllocationsMap {
 	private Code phis;
 	private Code entry;
 	private Code merges;
+	private boolean combined;
 
 	AllocationsMap(Allocator allocator, AllocatorWriter writer) {
 		this.allocator = allocator;
@@ -71,6 +72,10 @@ final class AllocationsMap {
 
 	public final Code merges() {
 		return this.merges;
+	}
+
+	public final boolean isCombined() {
+		return this.combined;
 	}
 
 	public Code createEntry() {
@@ -162,6 +167,9 @@ final class AllocationsMap {
 		final AllocEntry entry = new AllocEntry(this, target);
 
 		this.entries.put(target, entry);
+		if (isCombined()) {
+			entry.combineAll();
+		}
 
 		return entry;
 	}
@@ -264,7 +272,14 @@ final class AllocationsMap {
 		return entry(target).data(allocated).ptrs(record).add(code);
 	}
 
-	private void combineAll() {
+	public void combineAll() {
+		if (isCombined()) {
+			return;
+		}
+		this.combined = true;
+		if (this.writer == null) {
+			return;
+		}
 		this.writer.combine(entry(), entry());
 		for (AllocEntry entry :
 				this.entries.values().toArray(
@@ -275,6 +290,8 @@ final class AllocationsMap {
 	}
 
 	private boolean checkAllCombined() {
+		assert isCombined() :
+			"Not combined";
 		for (AllocEntry entry : this.entries.values()) {
 			entry.checkAllCombined();
 		}

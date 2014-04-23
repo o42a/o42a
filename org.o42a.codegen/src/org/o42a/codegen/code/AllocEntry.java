@@ -42,7 +42,7 @@ final class AllocEntry {
 	private final Allocator target;
 	private Code[] reallocs = NO_ALLOCS;
 	private IdentityHashMap<Allocated<?>, AllocatedData<?>> data;
-	private boolean isCombined;
+	private boolean combined;
 
 	AllocEntry(AllocationsMap allocationsMap, Allocator target) {
 		this.allocationsMap = allocationsMap;
@@ -63,6 +63,10 @@ final class AllocEntry {
 
 	public final boolean isEmpty() {
 		return this.data == null && this.reallocs.length == 0;
+	}
+
+	public final boolean isCombined() {
+		return this.combined;
 	}
 
 	public void allocateIn(Code code) {
@@ -103,10 +107,10 @@ final class AllocEntry {
 	}
 
 	public void combineAll() {
-		if (this.isCombined) {
+		if (isCombined()) {
 			return;
 		}
-		this.isCombined = true;
+		this.combined = true;
 
 		final AllocEntry parentEntry = parentEntry();
 
@@ -123,7 +127,7 @@ final class AllocEntry {
 	}
 
 	public void checkAllCombined() {
-		assert this.isCombined :
+		assert isCombined() :
 			"Not combined";
 		if (this.data != null) {
 			for (AllocatedData<?> data : this.data.values()) {
@@ -285,7 +289,7 @@ final class AllocEntry {
 		private AnyRecOp prealloc;
 		private P ptr;
 		private P[] ptrs;
-		private boolean isCombined;
+		private boolean combined;
 
 		private AllocatedPtrs(AllocatedData<?> data, AllocRecord<P> record) {
 			this.data = data;
@@ -305,7 +309,7 @@ final class AllocEntry {
 
 			this.ptr = this.record.load(code, prealloc());
 
-			if (this.data.entry.isCombined) {
+			if (this.data.entry.isCombined()) {
 				// May happen during the dispose.
 				// Request combining immediately.
 				combine();
@@ -315,7 +319,7 @@ final class AllocEntry {
 		}
 
 		public P add(Code code) {
-			assert !this.isCombined :
+			assert !this.combined :
 				"Pointers already combined. Can not add a new one";
 
 			final P ptr = this.record.allocate(code);
@@ -352,10 +356,10 @@ final class AllocEntry {
 		}
 
 		private void combine() {
-			if (this.isCombined || isEmpty()) {
+			if (this.combined || isEmpty()) {
 				return;
 			}
-			this.isCombined = true;
+			this.combined = true;
 
 			final AllocatedPtrs<P> parentPtrs = parentPtrs();
 			final P[] ptrs;
@@ -378,7 +382,7 @@ final class AllocEntry {
 		}
 
 		private void checkCombined() {
-			assert this.isCombined :
+			assert this.combined :
 				"Not combined";
 		}
 
