@@ -39,3 +39,21 @@ Yield two values ::= test (
   Assert [f == 2] 'Wrong value yielded for the second time'
   Assert [--f] 'Excessive value yielded'
 )
+
+Yield in loop ::= test (
+   Name = "Yield in loop"
+   Print error '  ' [name] nl
+   
+   F := integer (
+    ``3 $ {
+      << $
+      $ -= 1
+      $ > 0?...
+    }
+  )
+
+  Assert [f == 3] 'Wrong value yielded'
+  Assert [f == 2] 'Wrong value yielded for the second time'
+  Assert [f == 1] 'Wrong value yielded for the third time'
+  Assert [--f] 'Excessive value yielded'
+)
