@@ -145,16 +145,17 @@ public abstract class Control {
 		return new NestedControl.AltControl(this, code, next);
 	}
 
-	public final Control command(String index) {
-		return new CommandControl(this, index + "_cmd");
+	public final Control command(String index, ControlIsolator isolator) {
+		return new CommandControl(this, index + "_cmd", isolator);
 	}
 
 	public final Control resume(
 			String index,
+			ControlIsolator isolator,
 			ResumeCallback prevResumeCallback) {
 
 		final CommandControl control =
-				new CommandControl(this, index + "_resume");
+				new CommandControl(this, index + "_resume", isolator);
 		final Block code = control.code();
 
 		code.debug("Resumed @" + code.getId());
@@ -182,11 +183,37 @@ public abstract class Control {
 		this.resumeCallback = resumeCallback;
 	}
 
+	/**
+	 * Closes this control and returns the parent one.
+	 *
+	 * <p>The returned control can be used to share the allocations made by
+	 * command. This is necessary e.g. for locals, but isn't compatible with
+	 * value yielding.</p>
+	 *
+	 * @return parent allocation.
+	 */
 	public final Control end() {
 		if (this.done != null) {
 			return this.done;
 		}
 		return this.done = done();
+	}
+
+	/**
+	 * Creates an isolated control.
+	 *
+	 * <p>Allocations made by isolated control are always made in dedicated
+	 * allocator. Otherwise they will be made in original allocator, in which
+	 * other commands can do their allocations too.</p>
+	 *
+	 * <p>Explicit control isolation is only necessary for commands like loops
+	 * to prevent unintended allocations sharing leading to "The node does not
+	 * dominate all its usages" error.</p>
+	 *
+	 * @return this control if it isolated control.
+	 */
+	public Control isolate() {
+		return this;
 	}
 
 	@Override

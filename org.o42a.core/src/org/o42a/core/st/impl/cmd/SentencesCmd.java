@@ -38,11 +38,7 @@ final class SentencesCmd implements Cmd {
 
 	@Override
 	public void write(Control control) {
-		writeSentences(
-				control,
-				this.origin,
-				this.sentences,
-				null);
+		writeSentences(control.isolate(), this.origin, this.sentences, null);
 	}
 
 	@Override

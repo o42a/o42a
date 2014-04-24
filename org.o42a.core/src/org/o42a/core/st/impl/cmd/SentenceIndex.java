@@ -24,6 +24,7 @@ import static org.o42a.util.string.Capitalization.AS_IS;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Control;
+import org.o42a.core.ir.cmd.ControlIsolator;
 import org.o42a.core.ir.cmd.ResumeCallback;
 import org.o42a.core.st.sentence.Sentence;
 import org.o42a.util.string.ID;
@@ -43,8 +44,7 @@ final class SentenceIndex {
 	private Control sentenceControl;
 	private AltBlocks altBlocks;
 	private Control altControl;
-	private Control statementControl;
-	private ResumeCallback prevResumeCallback;
+	private CommandIsolator isolator;
 
 	public SentenceIndex(Control control, Scope origin) {
 		this.origin = origin;
@@ -102,7 +102,6 @@ final class SentenceIndex {
 	}
 
 	public Control startAlt(int index) {
-		this.statementControl = null;
 
 		final Block altCode = this.altBlocks.get(index);
 		final int nextIdx = index + 1;
@@ -121,12 +120,9 @@ final class SentenceIndex {
 	}
 
 	public final void endAlt(Sentence sentence) {
-		if (this.prevResumeCallback != null) {
-			startStatement("last");
-			endStatement();
-		}
-		if (this.statementControl != null) {
-			this.statementControl.end();
+		if (this.isolator != null) {
+			this.isolator.endAlt();
+			this.isolator = null;
 		}
 		this.altControl.end();
 		if (sentence.getKind().isExclamatory()) {
@@ -139,27 +135,83 @@ final class SentenceIndex {
 	}
 
 	public Control startStatement(String index) {
-		if (this.prevResumeCallback != null) {
-			assert this.statementControl == null :
-				"Statement control already created";
-			return this.statementControl =
-					this.altControl.resume(index, this.prevResumeCallback);
+		if (this.isolator == null) {
+			this.isolator = new CommandIsolator(this.altControl);
 		}
-		if (this.statementControl != null) {
-			return this.statementControl;
-		}
-		return this.statementControl = this.altControl.command(index);
+		return this.isolator.startStatement(index);
 	}
 
 	public void endStatement() {
-		this.prevResumeCallback = this.statementControl.getResumeCallback();
-		if (this.prevResumeCallback != null) {
-			this.statementControl.end();
-			this.statementControl = null;
-			return;
+		this.isolator.endStatement();
+	}
+
+	private static final class CommandIsolator implements ControlIsolator {
+
+		private final Control altControl;
+		private Control statementControl;
+		private ResumeCallback prevResumeCallback;
+		private String index;
+		private boolean reused;
+		private boolean isolated;
+
+		CommandIsolator(Control altControl) {
+			this.altControl = altControl;
 		}
-		this.statementControl.end();
-		this.statementControl = null;
+
+		public Control startStatement(String index) {
+			this.index = index;
+			this.isolated = false;
+			if (this.prevResumeCallback != null) {
+				assert this.statementControl == null :
+					"Statement control already created";
+				return this.statementControl = this.altControl.resume(
+						index,
+						this,
+						this.prevResumeCallback);
+			}
+			if (this.statementControl != null) {
+				this.reused = true;
+				return this.statementControl;
+			}
+			return this.statementControl =
+					this.altControl.command(index, this);
+		}
+
+		@Override
+		public Control isolateControl(Control control) {
+			this.isolated = true;
+			if (!this.reused) {
+				return control;
+			}
+			control.end();
+			endStatement();
+			this.isolated = true;
+			return startStatement(this.index);
+		}
+
+		public void endStatement() {
+			this.reused = false;
+			this.prevResumeCallback = this.statementControl.getResumeCallback();
+			if (this.prevResumeCallback != null || this.isolated) {
+				this.statementControl.end();
+				this.statementControl = null;
+				return;
+			}
+			if (this.statementControl.isDone()) {
+				this.statementControl = null;
+			}
+		}
+
+		public void endAlt() {
+			if (this.prevResumeCallback != null) {
+				startStatement("last");
+				endStatement();
+			}
+			if (this.statementControl != null) {
+				this.statementControl.end();
+			}
+		}
+
 	}
 
 }

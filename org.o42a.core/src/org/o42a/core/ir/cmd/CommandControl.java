@@ -29,11 +29,16 @@ final class CommandControl extends Control {
 	private final MainControl main;
 	private final Control parent;
 	private final Allocator allocator;
+	private final ControlIsolator isolator;
 
-	CommandControl(Control parent, String name) {
+	CommandControl(
+			Control parent,
+			String name,
+			ControlIsolator isolator) {
 		this.main = parent.main();
 		this.parent = parent;
 		this.allocator = parent.code().allocator(name);
+		this.isolator = isolator;
 	}
 
 	@Override
@@ -61,6 +66,11 @@ final class CommandControl extends Control {
 	@Override
 	public CodePos falseDir() {
 		return this.parent.falseDir();
+	}
+
+	@Override
+	public Control isolate() {
+		return this.isolator.isolateControl(this);
 	}
 
 	@Override
