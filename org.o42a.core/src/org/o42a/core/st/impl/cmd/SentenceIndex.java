@@ -158,9 +158,8 @@ final class SentenceIndex {
 			this.statementControl = null;
 			return;
 		}
-		if (this.statementControl.isDone()) {
-			this.statementControl = null;
-		}
+		this.statementControl.end();
+		this.statementControl = null;
 	}
 
 }
