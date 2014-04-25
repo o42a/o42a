@@ -41,11 +41,6 @@ public abstract class AbstractStatementVisitor<R, P>
 	}
 
 	@Override
-	public R visitPassThrough(PassThroughNode passThrough, P p) {
-		return visitStatement(passThrough, p);
-	}
-
-	@Override
 	public R visitReturn(ReturnNode ret, P p) {
 		return visitStatement(ret, p);
 	}

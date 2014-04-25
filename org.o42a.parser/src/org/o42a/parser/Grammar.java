@@ -192,15 +192,6 @@ public class Grammar {
 		return ReturnParser.RETURN;
 	}
 
-	public static final Parser<PassThroughNode> passThrough() {
-		return PassThroughParser.PASS_THROUGH;
-	}
-
-	public static final Parser<PassThroughNode> passThrough(
-			ExpressionNode input) {
-		return new PassThroughParser(input);
-	}
-
 	public static final Parser<DeclaratorNode> declarator(
 			DeclarableNode declarable,
 			boolean full) {
