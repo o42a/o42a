@@ -32,8 +32,6 @@ public interface StatementNodeVisitor<R, P>
 
 	R visitAssignment(AssignmentNode assignment, P p);
 
-	R visitPassThrough(PassThroughNode passThrough, P p);
-
 	R visitReturn(ReturnNode ret, P p);
 
 	R visitDeclarator(DeclaratorNode declarator, P p);

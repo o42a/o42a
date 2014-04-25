@@ -138,8 +138,6 @@ public class StatementParser implements Parser<StatementNode> {
 			}
 
 			return context.parse(this.grammar.clauseDeclarator());
-		case '>':
-			return context.parse(passThrough());
 		}
 
 		return null;
@@ -194,13 +192,6 @@ public class StatementParser implements Parser<StatementNode> {
 			ParserContext context,
 			ExpressionNode expression) {
 
-		final PassThroughNode passThrough =
-				parsePassThrough(context, expression);
-
-		if (passThrough != null) {
-			return passThrough;
-		}
-
 		final LocalNode local = context.parse(local(expression));
 		final StatementNode assignment =
 				parseAssignment(context, local, expression);
@@ -229,15 +220,6 @@ public class StatementParser implements Parser<StatementNode> {
 			return null;
 		}
 		return context.parse(assignment(local != null ? local : destination));
-	}
-
-	private PassThroughNode parsePassThrough(
-			ParserContext context,
-			ExpressionNode input) {
-		if (this.local || context.pendingOrNext() != '>') {
-			return null;
-		}
-		return context.parse(passThrough(input));
 	}
 
 	private LocalScopeNode parseLocalScope(
