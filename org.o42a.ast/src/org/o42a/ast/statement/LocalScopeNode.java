@@ -95,15 +95,6 @@ public class LocalScopeNode extends AbstractStatementNode {
 				return ":";
 			}
 
-		},
-
-		CHEVRON() {
-
-			@Override
-			public String getSign() {
-				return ">>";
-			}
-
 		}
 
 	}
