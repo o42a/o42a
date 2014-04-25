@@ -106,36 +106,9 @@ public class LocalScopeParser implements Parser<LocalScopeNode> {
 
 		@Override
 		public SignNode<Separator> parse(ParserContext context) {
-			switch (context.next()) {
-			case ':':
-				return parseColon(context);
-			case '>':
-				return parseChevron(context);
-			}
-			return null;
-		}
-
-		private SignNode<Separator> parseChevron(ParserContext context) {
-			final SourcePosition start = context.current().fix();
-
-			if (context.next() != '>') {
+			if (context.next() != ':') {
 				return null;
 			}
-			if (context.next() == '>') {
-				return null;
-			}
-
-			context.acceptButLast();
-
-			return context.acceptComments(
-					true,
-					new SignNode<>(
-							start,
-							context.current().fix(),
-							LocalScopeNode.Separator.CHEVRON));
-		}
-
-		private SignNode<Separator> parseColon(ParserContext context) {
 
 			final SourcePosition start = context.current().fix();
 
