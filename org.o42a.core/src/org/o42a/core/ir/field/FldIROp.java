@@ -23,7 +23,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.*;
 
 
-public abstract class FldIROp extends IROp implements TargetOp {
+public abstract class FldIROp extends DefiniteIROp implements TargetOp {
 
 	private final ObjOp host;
 	private final FldIR fld;

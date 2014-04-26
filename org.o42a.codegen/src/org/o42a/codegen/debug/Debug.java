@@ -19,7 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
+import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
+import static org.o42a.codegen.code.Disposal.DISPOSE_NOTHING;
 import static org.o42a.codegen.debug.DbgOptionsType.DBG_OPTIONS_TYPE;
 import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
 import static org.o42a.codegen.debug.DebugExitFunc.DEBUG_EXIT;
@@ -34,7 +35,7 @@ import org.o42a.codegen.AbstractGenerator;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.ProxyGenerator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.BeforeReturn;
+import org.o42a.codegen.code.Allocated;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.data.*;
@@ -44,9 +45,12 @@ import org.o42a.util.string.ID;
 public final class Debug {
 
 	public static final ID DEBUG_ID = ID.id("DEBUG");
-	private static final ID FUNC_NAME_ID = DEBUG_ID.sub("func_name");
 
-	private static final BeforeReturn TRACE_BEFORE_RETURN =
+	private static final ID FN_STACK_FRAME_ID = ID.id("__fn_stack_frame__");
+	private static final ID FN_NAME_ID = ID.id("__fn_name__");
+	private static final ID CANT_ENTER_ID = ID.id("__cant_enter__");
+
+	private static final TraceBeforReturn TRACE_BEFORE_RETURN =
 			new TraceBeforReturn();
 
 	private final Generator generator;
@@ -157,20 +161,15 @@ public final class Debug {
 			return;
 		}
 
-		final Ptr<AnyOp> namePtr = allocateName(FUNC_NAME_ID.sub(id), id);
-
-		final DebugStackFrameOp stackFrame = function.allocation().allocate(
-				ID.id("func_stack_frame"),
-				DEBUG_STACK_FRAME_TYPE);
-
-		stackFrame.name(function).store(function, namePtr.op(null, function));
-		stackFrame.comment(function).store(function, function.nullPtr());
-		stackFrame.file(function).store(function, function.nullPtr());
-		stackFrame.line(function).store(function, function.int32(0));
-
+		final Ptr<AnyOp> namePtr = allocateName(FN_NAME_ID.sub(id), id);
+		final DebugStackFrameOp stackFrame =
+				function.allocate(
+						FN_STACK_FRAME_ID,
+						new AllocatableFnStackFrame(namePtr))
+				.get(function);
 		final BoolOp canEnter =
 				enterFunc().op(null, function).enter(function, stackFrame);
-		final Block cantEnter = function.addBlock("cant_enter");
+		final Block cantEnter = function.addBlock(CANT_ENTER_ID);
 
 		canEnter.goUnless(function, cantEnter.head());
 
@@ -184,14 +183,14 @@ public final class Debug {
 		}
 	}
 
-	public BeforeReturn createBeforeReturn(Function<?> function) {
+	public Disposal createBeforeReturn(Function<?> function) {
 		if (isProxied()) {
-			return NOTHING_BEFORE_RETURN;
+			return DISPOSE_NOTHING;
 		}
 		if (isDebug() && function.getSignature().isDebuggable()) {
 			return TRACE_BEFORE_RETURN;
 		}
-		return NOTHING_BEFORE_RETURN;
+		return DISPOSE_NOTHING;
 	}
 
 	public void registerType(SubData<?> typeData) {
@@ -294,10 +293,50 @@ public final class Debug {
 				.link("o42a_dbg_exit", DEBUG_EXIT);
 	}
 
-	private static final class TraceBeforReturn implements BeforeReturn {
+	private static final class AllocatableFnStackFrame
+			implements Allocatable<DebugStackFrameOp> {
+
+		private final Ptr<AnyOp> namePtr;
+
+		AllocatableFnStackFrame(Ptr<AnyOp> namePtr) {
+			this.namePtr = namePtr;
+		}
 
 		@Override
-		public void beforeReturn(Block code) {
+		public AllocationMode getAllocationMode() {
+			return MANDATORY_ALLOCATION;
+		}
+
+		@Override
+		public int getDisposePriority() {
+			return DEBUG_DISPOSE_PRIORITY;
+		}
+
+		@Override
+		public DebugStackFrameOp allocate(
+				Allocations code,
+				Allocated<DebugStackFrameOp> allocated) {
+			return code.allocate(DEBUG_STACK_FRAME_TYPE);
+		}
+
+		@Override
+		public void init(Code code, DebugStackFrameOp stackFrame) {
+			stackFrame.name(code).store(code, this.namePtr.op(null, code));
+			stackFrame.comment(code).store(code, code.nullPtr());
+			stackFrame.file(code).store(code, code.nullPtr());
+			stackFrame.line(code).store(code, code.int32(0));
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<DebugStackFrameOp> allocated) {
+		}
+
+	}
+
+	private static final class TraceBeforReturn implements Disposal {
+
+		@Override
+		public void dispose(Code code) {
 
 			final Debug debug = code.getGenerator().getDebug();
 

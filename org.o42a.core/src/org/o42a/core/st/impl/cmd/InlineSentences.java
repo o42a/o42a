@@ -49,7 +49,7 @@ public class InlineSentences extends InlineCmd {
 
 	@Override
 	public void write(Control control) {
-		writeSentences(control, this.origin, this.sentences, this);
+		writeSentences(control.isolate(), this.origin, this.sentences, this);
 	}
 
 	@Override

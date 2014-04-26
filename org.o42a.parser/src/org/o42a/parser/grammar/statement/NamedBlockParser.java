@@ -62,8 +62,6 @@ public class NamedBlockParser implements Parser<NamedBlockNode> {
 			return null;
 		}
 
-		context.acceptAll();
-
 		return new NamedBlockNode(this.name, separator, block);
 	}
 

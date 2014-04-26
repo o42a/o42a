@@ -19,15 +19,21 @@
 */
 package org.o42a.backend.llvm.code;
 
+import org.o42a.backend.llvm.code.op.CodeLLOp;
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.CodeOp;
 
 
 public abstract class LLBlock extends LLCode implements BlockWriter {
 
+	private LLInstructions instrs;
 	private LLCodePos.Head head;
 	private LLCodePos.Tail tail;
 	private long firstBlockPtr;
@@ -36,6 +42,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 
 	LLBlock(LLVMModule module, LLFunction<?> function, Block code) {
 		super(module, function, code);
+		this.instrs = new LLInstructions(code.getId());
 	}
 
 	public final Block block() {
@@ -71,7 +78,7 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 		if (prevPtr != 0L) {
 			endBlock();
 			nextPtr = nextPtr();
-			instr(nextPtr, go(prevPtr, nextInstr(), nextPtr));
+			instr(go(prevPtr, nextInstr(), nextPtr));
 		} else {
 			nextPtr = nextPtr();
 		}
@@ -93,30 +100,37 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	@Override
-	public final long nextInstr() {
-		return 0L;
-	}
-
-	@Override
 	public LLBlock block(Block code) {
 		return new LLCodeBlock(this, code);
 	}
 
 	@Override
-	public Disposal startAllocation(Allocator allocator) {
-
-		final long nextPtr = nextPtr();
-		final long stackPtr = instr(nextPtr, stackSave(nextPtr, nextInstr()));
-
-		return new StackRestore(stackPtr);
+	public AllocatorWriter startAllocation(Allocator allocator) {
+		return new LLStackKeeper();
 	}
 
 	@Override
 	public void go(CodePos pos) {
+		instr(go(nextPtr(), nextInstr(), blockPtr(pos)));
+		endBlock();
+	}
 
-		final long nextPtr = nextPtr();
+	@Override
+	public void go(CodeOp pos, CodePos[] targets) {
 
-		instr(nextPtr, go(nextPtr, nextInstr(), blockPtr(pos)));
+		final long[] blockPtrs = new long[targets.length];
+
+		for (int i = 0; i < targets.length; ++i) {
+			blockPtrs[i] = blockPtr(targets[i]);
+		}
+
+		final CodeLLOp llvmPos = (CodeLLOp) pos;
+
+		instr(goByPtr(
+				nextPtr(),
+				nextInstr(),
+				llvmPos.ptr().getNativePtr(),
+				blockPtrs));
 		endBlock();
 	}
 
@@ -143,31 +157,23 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 			falsePtr = llvmFalse.getBlockPtr();
 		}
 
-		instr(
+		instr(choose(
 				blockPtr,
-				choose(
-						blockPtr,
-						nextInstr(),
-						nativePtr(condition),
-						truePtr,
-						falsePtr));
+				nextInstr(),
+				nativePtr(condition),
+				truePtr,
+				falsePtr));
 	}
 
 	@Override
 	public void returnVoid() {
 		getFunction().beforeReturn(block());
-
-		final long nextPtr = nextPtr();
-
-		instr(nextPtr, returnVoid(nextPtr, nextInstr()));
+		instr(returnVoid(nextPtr(), nextInstr()));
 	}
 
 	public void returnValue(LLOp<?> result) {
 		getFunction().beforeReturn(block());
-
-		final long nextPtr = nextPtr();
-
-		instr(nextPtr, returnValue(nextPtr, nextInstr(),result.getNativePtr()));
+		instr(returnValue(nextPtr(), nextInstr(), result.getNativePtr()));
 	}
 
 	protected final void init() {
@@ -176,6 +182,11 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	protected abstract long createFirtsBlock();
+
+	@Override
+	protected LLInstructions instrs() {
+		return this.instrs;
+	}
 
 	final long getFirstBlockPtr() {
 		if (created()) {
@@ -201,32 +212,9 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	private final void endBlock() {
+		this.instrs = new LLInstructions(getId());
 		this.blockPtr = 0;
 		this.tail = null;
-	}
-
-	private static final class StackRestore implements Disposal {
-
-		private final long stackPtr;
-
-		StackRestore(long stackPtr) {
-			this.stackPtr = stackPtr;
-		}
-
-		@Override
-		public void dispose(Code code) {
-
-			final LLCode llvm = llvm(code);
-			final long nextPtr = llvm.nextPtr();
-
-			llvm.instr(
-					nextPtr,
-					stackRestore(
-							nextPtr,
-							llvm.nextInstr(),
-							this.stackPtr));
-		}
-
 	}
 
 }

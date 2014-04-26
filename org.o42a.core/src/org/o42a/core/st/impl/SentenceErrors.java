@@ -48,12 +48,33 @@ public final class SentenceErrors {
 				"Interrogative sentences can not contain braces");
 	}
 
+	public static void prohibitedFlow(LocationInfo location) {
+		location.getLocation().getLogger().error(
+				"prohibited_flow",
+				location,
+				"Flow can not be declared here");
+	}
+
 	public static void prohibitedInterrogativeAssignment(
 			LocationInfo location) {
 		location.getLocation().getLogger().error(
 				"prohibited_interrogative_assignment",
 				location,
 				"Assignments are prohibited within interrogative sentences");
+	}
+
+	public static void prohibitedInterrogativeReturn(LocationInfo location) {
+		location.getLocation().getLogger().error(
+				"prohibited_interrogative_return",
+				location,
+				"Can not return from interrogative sentence");
+	}
+
+	public static void prohibitedInterrogativeYield(LocationInfo location) {
+		location.getLocation().getLogger().error(
+				"prohibited_interrogative_yield",
+				location,
+				"Can not yield from interrogative sentence");
 	}
 
 	public static void declarationNotAlone(

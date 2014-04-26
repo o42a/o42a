@@ -102,7 +102,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final CodeWriter inset(Code code) {
-		return new CCodeInset(this, code);
+		return new CInset(this, code);
 	}
 
 	@Override
@@ -316,16 +316,17 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public final <O extends Op> O phi(ID id, O op1, O op2) {
 
-		final ID resultId =
-				code().getOpNames().binaryId(id, PHI_ID, op1, op2);
 		final COp<O, ?> cop1 = cast(op1);
 		final COp<O, ?> cop2 = cast(op2);
 
 		if (cop1.isConstant() && cop2.isConstant()) {
 			if (cop1.getConstant().equals(cop2.getConstant())) {
-				return phi(resultId, op1);
+				return phi(id, op1);
 			}
 		}
+
+		final ID resultId =
+				code().getOpNames().binaryId(id, PHI_ID, op1, op2);
 
 		return cop1.create(
 				new OpBE<O>(resultId, this) {
@@ -336,10 +337,44 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 					}
 					@Override
 					protected O write() {
-						 return part().underlying().phi(
+						return part().underlying().phi(
 									getId(),
 									cop1.backend().underlying(),
 									cop2.backend().underlying());
+					}
+				},
+				null);
+	}
+
+	@Override
+	public <O extends Op> O phi(ID id, final O[] ops) {
+
+		final ID resultId = code().getOpNames().opId(id);
+		@SuppressWarnings("unchecked")
+		final COp<O, ?>[] cops = new COp[ops.length];
+
+		for (int i = 0; i < ops.length; ++i) {
+			cops[i] = cast(ops[i]);
+		}
+
+		return cops[0].create(
+				new OpBE<O>(resultId, this) {
+					@Override
+					public void prepare() {
+						for (COp<O, ?> cop : cops) {
+							use(cop);
+						}
+					}
+					@Override
+					protected O write() {
+
+						final O[] uops = ops.clone();
+
+						for (int i = 0; i < uops.length; ++i) {
+							uops[i] = cops[i].backend().underlying();
+						}
+
+						return part().underlying().phi(getId(), uops);
 					}
 				},
 				null);
@@ -399,7 +434,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return this.code.toString();
 	}
 
-	final CCodePart<?> inset(CInset<?> inset) {
+	final CCodePart<?> inset(CInset inset) {
 		return record(inset.nextPart());
 	}
 

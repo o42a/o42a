@@ -21,7 +21,6 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
-import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 
 import org.o42a.codegen.code.*;
@@ -66,10 +65,12 @@ public abstract class ValOp extends IROp {
 
 	public ValOp(CodeBuilder builder, ValueType<?> valueType) {
 		super(builder);
-		this.valueType = valueType;
 		assert valueType != null :
-			"Value structure not specified";
+			"Value type not specified";
+		this.valueType = valueType;
 	}
+
+	public abstract ID getId();
 
 	public final ValueType<?> getValueType() {
 		return this.valueType;
@@ -86,8 +87,8 @@ public abstract class ValOp extends IROp {
 		return getConstant() != null;
 	}
 
-	public boolean isStackAllocated() {
-		return ptr().isAllocatedOnStack();
+	public boolean isStackAllocated(Code code) {
+		return ptr(code).isAllocatedOnStack();
 	}
 
 	public abstract Val getConstant();
@@ -95,18 +96,18 @@ public abstract class ValOp extends IROp {
 	public abstract Allocator getAllocator();
 
 	@Override
-	public abstract ValType.Op ptr();
+	public abstract ValType.Op ptr(Code code);
 
 	public final ValFlagsOp flags(Code code) {
 		return flags(null, code);
 	}
 
 	public final ValFlagsOp flags(ID id, Code code) {
-		return ptr().flags(id, code, NOT_ATOMIC);
+		return ptr(code).flags(id, code, NOT_ATOMIC);
 	}
 
 	public final Int32recOp length(ID id, Code code) {
-		return ptr().length(id, code);
+		return ptr(code).length(id, code);
 	}
 
 	public Int32op loadLength(ID id, Code code) {
@@ -114,7 +115,7 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final Int64recOp rawValue(ID id, Code code) {
-		return ptr().rawValue(id, code);
+		return ptr(code).rawValue(id, code);
 	}
 
 	public final AnyOp value(ID id, Code code) {
@@ -166,7 +167,7 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp storeIndefinite(Code code) {
-		flags(code).store(code, code.int32(VAL_INDEFINITE));
+		flags(code).storeIndefinite(code);
 		return this;
 	}
 
@@ -206,7 +207,7 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp store(Code code, ValOp value) {
-		if (this == value || ptr() == value.ptr()) {
+		if (this == value || ptr(code) == value.ptr(code)) {
 			return this;
 		}
 
@@ -328,16 +329,16 @@ public abstract class ValOp extends IROp {
 		final Val constant = getConstant();
 
 		if (constant != null) {
-			return code.phi(null, ptr())
+			return code.phi(null, ptr(code))
 					.op(getBuilder(), constant);
 		}
 
-		return code.phi(null, ptr())
+		return code.phi(null, ptr(code))
 				.op(null, getBuilder(), getValueType(), NO_VAL_HOLDER);
 	}
 
 	public final ValOp phi(ID id, Code code, ValOp other) {
-		return code.phi(id, ptr(), other.ptr())
+		return code.phi(id, ptr(code), other.ptr(code))
 				.op(null, getBuilder(), getValueType(), NO_VAL_HOLDER);
 	}
 
@@ -366,27 +367,27 @@ public abstract class ValOp extends IROp {
 	public abstract ValHolder holder();
 
 	public final void useRefCounted(Code code) {
-		ptr().useRefCounted(code);
+		ptr(code).useRefCounted(code);
 	}
 
 	public final void unuseRefCounted(Code code) {
-		ptr().unuseRefCounted(code);
+		ptr(code).unuseRefCounted(code);
 	}
 
 	public final void useObjectPointer(Code code) {
-		ptr().useObjectPointer(code);
+		ptr(code).useObjectPointer(code);
 	}
 
 	public final void unuseObjectPointer(Code code) {
-		ptr().unuseObjectPointer(code);
+		ptr(code).unuseObjectPointer(code);
 	}
 
 	public final void useArrayPointer(Code code) {
-		ptr().useArrayPointer(code);
+		ptr(code).useArrayPointer(code);
 	}
 
 	public final void unuseArrayPointer(Code code) {
-		ptr().unuseArrayPointer(code);
+		ptr(code).unuseArrayPointer(code);
 	}
 
 	private final void storeNoHold(Code code, AnyOp pointer) {

@@ -61,6 +61,12 @@ public final class MemberName extends MemberId {
 		return new MemberName(LOCAL, name);
 	}
 
+	public static MemberName localFieldName(Name name) {
+		assert name != null :
+			"Local field name not specified";
+		return new MemberName(LOCAL_FIELD, name);
+	}
+
 	private final MemberKind kind;
 	private final Name name;
 

@@ -82,6 +82,8 @@ public final class OwnerStep
 
 	@Override
 	protected void combineWithLocal(PathRebuilder rebuilder, Local local) {
+		assert !local.isField() :
+			"Can not combine with local field";
 		replaceWithDep(rebuilder, local.getName());
 	}
 

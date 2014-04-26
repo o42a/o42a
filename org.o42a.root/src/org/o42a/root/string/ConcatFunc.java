@@ -41,9 +41,9 @@ public class ConcatFunc extends Func<ConcatFunc> {
 				null,
 				code,
 				CONCAT.result(),
-				output.ptr(),
-				what.ptr(),
-				with.ptr());
+				output.ptr(code),
+				what.ptr(code),
+				with.ptr(code));
 	}
 
 	public static final class Signature

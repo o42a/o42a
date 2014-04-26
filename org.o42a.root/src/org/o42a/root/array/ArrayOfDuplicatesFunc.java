@@ -46,7 +46,7 @@ final class ArrayOfDuplicatesFunc extends Func<ArrayOfDuplicatesFunc> {
 				null,
 				code,
 				ARRAY_OF_DUPLICATES.result(),
-				value.ptr(),
+				value.ptr(code),
 				size,
 				item);
 

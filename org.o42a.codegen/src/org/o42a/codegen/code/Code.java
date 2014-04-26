@@ -45,6 +45,56 @@ public abstract class Code extends DebugCodeBase {
 
 	public abstract Block getBlock();
 
+	public boolean contains(Code code) {
+
+		Code c = code;
+
+		do {
+			if (this == c) {
+				return true;
+			}
+			c = c.getEnclosing();
+		} while (c != null);
+
+		return false;
+	}
+
+	/**
+	 * Retrieves all assets available at current execution point.
+	 *
+	 * <p>It is possible that some assets are not available at the moment of
+	 * this method execution. It is possible that code transitions (e.g.
+	 * {@link Block#go(CodePos)}) will bring more assets available at this
+	 * execution point. So, it is advisable to perform actual assets checking
+	 * only at the function is {@link Function#addCompleteListener(
+	 * FunctionCompleteListener) fully built}.<p>
+	 *
+	 * @return available assets.
+	 */
+	public abstract CodeAssets assets();
+
+	/**
+	 * Adds asset to code.
+	 *
+	 * <p>This asset will be available after current execution point, but not
+	 * before it.</p>
+	 *
+	 * @param assetType asset type.
+	 * @param asset asset value.
+	 *
+	 * @return updated code assets.
+	 */
+	public final <A extends CodeAsset<A>> CodeAssets addAsset(
+			Class<? extends A> assetType,
+			A asset) {
+		assert assetType != null:
+			"Asset type not specified";
+		assert asset != null :
+			"Asset value not specified";
+		updateAssets(assets().update(assetType, asset));
+		return assets();
+	}
+
 	public final OpNames getOpNames() {
 		return this.opNames;
 	}
@@ -58,13 +108,17 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final Code inset(String name) {
-		assert assertIncomplete();
-		return new InsetCode(this, ID.id(name));
+		return inset(ID.id(name));
 	}
 
 	public final Code inset(ID name) {
 		assert assertIncomplete();
-		return new InsetCode(this, name);
+
+		final Inset inset = new Inset(this, name);
+
+		updateAssets(new CodeAssets(inset, "inset", inset));
+
+		return inset;
 	}
 
 	public final Block addBlock(String name) {
@@ -136,44 +190,18 @@ public abstract class Code extends DebugCodeBase {
 				getGenerator().getFunctions().allocate(signature)));
 	}
 
-	public final AnyRecOp allocatePtr(ID id) {
-		assert assertIncomplete();
-		return writer().allocatePtr(opId(id));
-	}
-
-	public final AnyRecOp allocateNull(ID id) {
-
-		final AnyRecOp result = allocatePtr(id);
-
-		result.store(this, nullPtr());
-
-		return result;
-	}
-
-	public final <S extends StructOp<S>> S allocate(ID id, Type<S> type) {
-		assert assertIncomplete();
-
-		final S result = writer().allocateStruct(
-				opId(id),
-				type.data(getGenerator()).getPointer().getAllocation());
-
-		result.allocated(this, null);
-
-		return result;
-	}
-
-	public <S extends StructOp<S>> StructRecOp<S> allocatePtr(
+	public final <T> Allocated<T> allocate(
 			ID id,
-			Type<S> type) {
+			Allocatable<T> allocatable) {
 		assert assertIncomplete();
 
-		final StructRecOp<S> result = writer().allocatePtr(
-				opId(id),
-				type.data(getGenerator()).getPointer().getAllocation());
+		final Allocated<T> allocated = getAllocator().addAllocation(
+				getOpNames().nestedId(id),
+				allocatable);
 
-		result.allocated(this, null);
+		allocated.init(this);
 
-		return result;
+		return allocated;
 	}
 
 	public final <O extends Op> O phi(ID id, O op) {
@@ -184,6 +212,14 @@ public abstract class Code extends DebugCodeBase {
 	public final <O extends Op> O phi(ID id, O op1, O op2) {
 		assert assertIncomplete();
 		return writer().phi(opId(id), op1, op2);
+	}
+
+	public final <O extends Op> O phi(ID id, O[] ops) {
+		assert assertIncomplete();
+		if (ops.length == 1) {
+			return phi(id, ops[0]);
+		}
+		return writer().phi(opId(id), ops);
 	}
 
 	/**
@@ -217,6 +253,12 @@ public abstract class Code extends DebugCodeBase {
 	@Override
 	public String toString() {
 		return this.id.toString();
+	}
+
+	protected abstract void updateAssets(CodeAssets assets);
+
+	protected void removeAllAssets() {
+		updateAssets(new CodeAssets(this, "clean"));
 	}
 
 }

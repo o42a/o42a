@@ -38,7 +38,12 @@ public class CompareFunc extends Func<CompareFunc> {
 	}
 
 	public Int64op compare(Code code, ValOp what, ValOp with) {
-		return invoke(null, code, COMPARE.result(), what.ptr(), with.ptr());
+		return invoke(
+				null,
+				code,
+				COMPARE.result(),
+				what.ptr(code),
+				with.ptr(code));
 	}
 
 	public static final class Signature

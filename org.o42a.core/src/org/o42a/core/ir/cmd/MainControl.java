@@ -20,11 +20,15 @@
 package org.o42a.core.ir.cmd;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.DefStore;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
 
 
@@ -35,9 +39,9 @@ final class MainControl extends Control {
 
 	private int seq;
 	private Block returnCode;
-	private ValOp finalResult;
-	private Code singleResultInset;
-	private byte results;
+	private ResumePosition[] resumePositions;
+	private Block resume;
+	private CodePos start;
 
 	MainControl(DefDirs dirs, Block continuation) {
 		this.dirs = dirs;
@@ -55,12 +59,6 @@ final class MainControl extends Control {
 	}
 
 	@Override
-	public Code allocation() {
-		throw new UnsupportedOperationException(
-				"Main control does not support stack allocations");
-	}
-
-	@Override
 	public final CodePos exit() {
 		return this.continuation.head();
 	}
@@ -71,25 +69,15 @@ final class MainControl extends Control {
 	}
 
 	public final ValOp finalResult() {
-		return this.finalResult != null ? this.finalResult : result();
-	}
-
-	@Override
-	public void end() {
-		if (this.continuation.exists()) {
-			this.continuation.go(code().tail());
-		}
-		if (this.returnCode != null) {
-			this.dirs.returnValue(this.returnCode, finalResult());
-		}
+		return this.dirs.result();
 	}
 
 	final CodeBuilder builder() {
 		return this.dirs.getBuilder();
 	}
 
-	final ValOp mainResult() {
-		return this.dirs.value();
+	final DefStore mainStore() {
+		return this.dirs.store();
 	}
 
 	@Override
@@ -110,35 +98,88 @@ final class MainControl extends Control {
 		return this.returnCode.head();
 	}
 
+	void init() {
+		this.resume = code().addBlock("resume");
+		code().go(this.resume.head());
+		this.start = code().tail();
+	}
+
 	final ID anonymousName() {
 		return ID.id(Integer.toString(++this.seq));
 	}
 
-	void storeResult(Block code, ValOp value) {
-		assert this.dirs.getValueType().is(value.getValueType()) :
-			"Can not store " + value + " in " + this;
-		if (this.results == 0 && valueAccessibleBy(code)) {
-			this.singleResultInset = code.inset("sgl_res");
-			this.finalResult = value;
-			this.results = 1;
-			return;
+	void addResumePosition(CodePos resumePos, ResumeCallback callback) {
+
+		final ResumePosition position =
+				new ResumePosition(resumePos, callback);
+
+		if (this.resumePositions == null) {
+			this.resumePositions = new ResumePosition[] {position};
+		} else {
+			this.resumePositions =
+					ArrayUtil.append(this.resumePositions, position);
 		}
-		if (this.results == 1) {
-			if (this.singleResultInset != null) {
-				result().store(this.singleResultInset, this.finalResult);
-				this.singleResultInset = null;
-			}
-			this.results = 2;
-			this.finalResult = result();
-		}
-		result().store(code, value);
 	}
 
-	private boolean valueAccessibleBy(Code code) {
-		if (!this.dirs.value().isStackAllocated()) {
-			return true;
+	@Override
+	Control done() {
+		resume();
+		if (this.continuation.exists()) {
+			this.continuation.go(code().tail());
 		}
-		return code.getAllocator() == this.dirs.code().getAllocator();
+		if (this.returnCode != null) {
+			this.dirs.returnValue(this.returnCode, finalResult());
+		}
+		return this;
+	}
+
+	private void resume() {
+		if (this.resumePositions == null) {
+			this.resume.go(this.start);
+			return;
+		}
+
+		final ObjectIRDataOp objectData = host().objectData(this.resume).ptr();
+		final AnyOp resumeFrom =
+				objectData.resumeFrom(this.resume)
+				.load(null, this.resume);
+
+		resumeFrom.isNull(null, this.resume).go(this.resume, this.start);
+
+		final CodePos[] targets = new CodePos[this.resumePositions.length];
+
+		for (int i = 0; i < targets.length; ++i) {
+			targets[i] = this.resumePositions[i].resumeFrom;
+		}
+
+		this.resume.debug("Resuming");
+
+		final CodePos[] heads = this.resume.go(
+				resumeFrom.toCode(null, this.resume),
+				targets);
+
+		for (int i = 0; i < heads.length; ++i) {
+
+			final CodePos head = heads[i];
+			final CodePtr ptr = head.code().ptr();
+
+			assert ptr.is(head) :
+				"Not a block head: " + head;
+
+			this.resumePositions[i].callback.resumedAt(ptr);
+		}
+	}
+
+	private static final class ResumePosition {
+
+		private final CodePos resumeFrom;
+		private final ResumeCallback callback;
+
+		ResumePosition(CodePos resumeFrom, ResumeCallback callback) {
+			this.resumeFrom = resumeFrom;
+			this.callback = callback;
+		}
+
 	}
 
 }

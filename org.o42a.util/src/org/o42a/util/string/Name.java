@@ -23,7 +23,6 @@ import static java.lang.Character.charCount;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 
-
 public final class Name implements SubID, CharSequence, Comparable<Name> {
 
 	/**

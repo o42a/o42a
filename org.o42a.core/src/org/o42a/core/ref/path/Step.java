@@ -70,8 +70,8 @@ public abstract class Step {
 	 * Return the usage, which should be applied to the object produced by the
 	 * previous step.
 	 *
-	 * <p>This is applied by the previous step in the path. For the last step of
-	 * the path {@link PathResolver#refUsage()} will be applied.</p>
+	 * <p>This is applied to the previous step in the path. For the last step of
+	 * the path a {@link PathResolver#refUsage()} is applied.</p>
 	 *
 	 * @return preceding object usage.
 	 */
@@ -113,7 +113,7 @@ public abstract class Step {
 	 * Converts a reference to value statement.
 	 *
 	 * <p>This method is called for the last step of the reference path when
-	 * the reference is used as a {@link Statements#selfAssign(RefBuilder)
+	 * the reference is used as a {@link Statements#returnValue(RefBuilder)
 	 * self-assignment statement}.</p>
 	 *
 	 * <p>By default this method returns the reference itself.</p>
@@ -124,7 +124,7 @@ public abstract class Step {
 	 *
 	 * @return the value statement.
 	 */
-	protected Statement value(
+	protected Ref value(
 			LocationInfo location,
 			Ref value,
 			Statements statements) {

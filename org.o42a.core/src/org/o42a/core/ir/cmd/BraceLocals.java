@@ -37,6 +37,8 @@ final class BraceLocals extends LocalsCode {
 
 	@Override
 	public LocalOp get(Local local) {
+		assert !local.isField() :
+			local + " is field. It can't be allocated";
 
 		final LocalOp found = find(local);
 
@@ -49,6 +51,8 @@ final class BraceLocals extends LocalsCode {
 
 	@Override
 	public LocalOp set(CodeDirs dirs, Local local, RefOp ref) {
+		assert !local.isField() :
+			local + " is field. Can not allocate it";
 		if (this.locals == null) {
 			this.locals = new IdentityHashMap<>();
 		}

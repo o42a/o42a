@@ -20,6 +20,8 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
 import org.o42a.util.string.ID;
 
@@ -30,10 +32,12 @@ public interface CodeBackend {
 
 	<F extends Func<F>> FuncWriter<F> addFunction(
 			Function<F> function,
-			BeforeReturn beforeReturn);
+			Disposal beforeReturn);
 
 	<F extends Func<F>> FuncAllocation<F> externFunction(
 			ID id,
 			FuncPtr<F> pointer);
+
+	DataAllocation<AnyOp> codeToAny(CodePtr ptr);
 
 }

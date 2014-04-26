@@ -4,6 +4,7 @@
 */
 package org.o42a.ast.test.grammar.statement;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.IMPERATIVE;
@@ -16,21 +17,38 @@ import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.statement.AssignmentNode;
-import org.o42a.ast.statement.SelfAssignmentNode;
+import org.o42a.ast.statement.ReturnNode;
+import org.o42a.ast.statement.ReturnOperator;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
 public class StatementTest extends GrammarTestCase {
 
 	@Test
-	public void selfAssignment() {
+	public void returnValue() {
 
-		final SelfAssignmentNode result =
-				parse(SelfAssignmentNode.class, "= foo");
+		final ReturnNode result = parse(ReturnNode.class, "= foo");
 
 		assertThat(result.getPrefix(), hasRange(0, 1));
 		assertThat(result.getValue(), hasRange(2, 5));
 		assertThat(result.getValue(), isName("foo"));
+		assertThat(
+				result.getPrefix().getType(),
+				is(ReturnOperator.RETURN_VALUE));
+	}
+
+	@Test
+	public void yieldValue() {
+
+		final ReturnNode result =
+				parse(ReturnNode.class, "<< foo");
+
+		assertThat(result.getPrefix(), hasRange(0, 2));
+		assertThat(result.getValue(), hasRange(3, 6));
+		assertThat(result.getValue(), isName("foo"));
+		assertThat(
+				result.getPrefix().getType(),
+				is(ReturnOperator.YIELD_VALUE));
 	}
 
 	@Test

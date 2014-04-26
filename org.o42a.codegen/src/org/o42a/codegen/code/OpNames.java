@@ -142,15 +142,15 @@ public class OpNames {
 		public ID nestedId(ID name) {
 
 			final ID local = code().getId().getLocal();
-			final ID codeName;
+			final ID localName;
 
 			if (name == null) {
-				codeName = local.anonymous(nextBlock());
+				localName = local.anonymous(nextBlock());
 			} else {
-				codeName = local.sub(name);
+				localName = local.sub(name);
 			}
 
-			return super.nestedId(codeName);
+			return code().getEnclosing().getOpNames().nestedId(localName);
 		}
 
 	}

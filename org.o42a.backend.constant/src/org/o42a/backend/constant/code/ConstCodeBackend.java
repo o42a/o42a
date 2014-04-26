@@ -19,11 +19,16 @@
 */
 package org.o42a.backend.constant.code;
 
+import static org.o42a.backend.constant.data.ConstBackend.cast;
+
 import org.o42a.backend.constant.code.signature.CSignatureWriter;
-import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.data.*;
 import org.o42a.backend.constant.data.func.ExternCFAlloc;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.*;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
 import org.o42a.util.string.ID;
 
@@ -49,7 +54,7 @@ public class ConstCodeBackend implements CodeBackend {
 	@Override
 	public <F extends Func<F>> FuncWriter<F> addFunction(
 			Function<F> function,
-			BeforeReturn beforeReturn) {
+			Disposal beforeReturn) {
 		return new CFunction<>(this.backend, function, beforeReturn);
 	}
 
@@ -58,6 +63,23 @@ public class ConstCodeBackend implements CodeBackend {
 			ID id,
 			FuncPtr<F> pointer) {
 		return new ExternCFAlloc<>(getBackend(), pointer, id.toString());
+	}
+
+	@Override
+	public DataAllocation<AnyOp> codeToAny(
+			final CodePtr ptr) {
+
+		final CCodePos cpos = cast(ptr.pos());
+
+		return new AnyCDAlloc(
+				getBackend(),
+				ptr.toAny(),
+				new UnderAlloc<AnyOp>() {
+					@Override
+					public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp> alloc) {
+						return cpos.part().underlying().ptr().toAny();
+					}
+				});
 	}
 
 }

@@ -49,7 +49,7 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		final Block code = dirs.code();
 		final ValOp value = dirs.value();
 
-		invoke(null, code, OBJECT_VAL.result(), value.ptr(), object);
+		invoke(null, code, OBJECT_VAL.result(), value.ptr(code), object);
 
 		final Block hasResult = code.addBlock("has_result");
 

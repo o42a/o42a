@@ -80,6 +80,8 @@ public interface CodeWriter {
 
 	<O extends Op> O phi(ID id, O op1, O op2);
 
+	<O extends Op> O phi(ID id, O[] ops);
+
 	void acquireBarrier();
 
 	void releaseBarrier();

@@ -26,7 +26,6 @@ import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
@@ -37,14 +36,14 @@ public final class LLFunction<F extends Func<F>>
 		implements FuncWriter<F> {
 
 	private final Function<F> function;
-	private final BeforeReturn beforeReturn;
+	private final Disposal beforeReturn;
 	private final LLFAlloc<F> allocation;
 	private long functionPtr;
 
 	LLFunction(
 			LLVMModule module,
 			Function<F> function,
-			BeforeReturn beforeReturn) {
+			Disposal beforeReturn) {
 		super(module, null, function);
 		this.function = function;
 		this.beforeReturn = beforeReturn;
@@ -61,7 +60,7 @@ public final class LLFunction<F extends Func<F>>
 	}
 
 	public final void beforeReturn(Block code) {
-		this.beforeReturn.beforeReturn(code);
+		this.beforeReturn.dispose(code);
 	}
 
 	@Override

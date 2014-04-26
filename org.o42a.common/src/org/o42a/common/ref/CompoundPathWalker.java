@@ -135,12 +135,12 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean local(Scope scope, Local local) {
+	public boolean local(Step step, Scope scope, Local local) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.local(scope, local) & proceed;
+			proceed = walker.local(step, scope, local) & proceed;
 		}
 
 		return proceed;

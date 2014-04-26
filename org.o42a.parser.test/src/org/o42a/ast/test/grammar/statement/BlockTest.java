@@ -110,7 +110,11 @@ public class BlockTest extends GrammarTestCase {
 		assertThat(
 				result.getSeparator().getType(),
 				is(NamedBlockNode.Separator.COLON));
-		assertThat(singleStatement(MemberRefNode.class, result.getBlock()), isName("bar"));
+		assertThat(
+				singleStatement(
+						MemberRefNode.class,
+						result.getBlock()),
+				isName("bar"));
 	}
 
 	@Test

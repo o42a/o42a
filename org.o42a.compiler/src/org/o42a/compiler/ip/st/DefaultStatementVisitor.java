@@ -120,24 +120,33 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitSelfAssignment(
-			SelfAssignmentNode assignment,
-			StatementsAccess p) {
+	public Void visitReturn(ReturnNode ret, StatementsAccess p) {
 
-		final ExpressionNode valueNode = assignment.getValue();
+		final ExpressionNode valueNode = ret.getValue();
 
 		if (valueNode == null) {
 			return null;
 		}
 
 		final AccessDistributor distributor = p.nextDistributor();
-		final Ref value = valueNode.accept(ip().expressionVisitor(), distributor);
+		final Ref value =
+				valueNode.accept(ip().expressionVisitor(), distributor);
 
-		if (value != null) {
-			p.get().selfAssign(location(p, assignment.getPrefix()), value);
+		if (value == null) {
+			return null;
 		}
 
-		return null;
+		switch (ret.getPrefix().getType()) {
+		case RETURN_VALUE:
+			p.get().returnValue(location(p, ret.getPrefix()), value);
+			return null;
+		case YIELD_VALUE:
+			p.get().yield(location(p, ret.getPrefix()), value);
+			return null;
+		}
+
+		throw new UnsupportedOperationException(
+				"Unsupported return operator: " + ret.getPrefix().getType());
 	}
 
 	@Override

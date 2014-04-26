@@ -116,6 +116,7 @@ public class LocalScopeTest extends GrammarTestCase {
 		checkExpressionIs(nested, "expression2");
 		checkLocalNameIs(nested, "local2");
 		checkContentIs(nested, "statement");
+		checkColon(nested);
 	}
 
 	@Test

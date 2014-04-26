@@ -202,10 +202,13 @@ final class CustomAssignment extends AssignmentKind {
 
 		@Override
 		public void write(Control control) {
+
+			final CodeDirs dirs = control.dirs();
+
 			if (this.local != null) {
-				control.locals().get(this.local).writeCond(control.dirs());
+				control.locals().get(this.local).writeCond(dirs);
 			}
-			this.ref.op(control.host()).writeCond(control.dirs());
+			this.ref.op(control.host()).writeCond(dirs);
 		}
 
 		@Override

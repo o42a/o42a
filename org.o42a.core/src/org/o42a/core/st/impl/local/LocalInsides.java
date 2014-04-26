@@ -29,7 +29,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.st.sentence.Local;
 
 
-public class LocalInsides extends AbstractContainer {
+class LocalInsides extends AbstractContainer {
 
 	private final Local local;
 

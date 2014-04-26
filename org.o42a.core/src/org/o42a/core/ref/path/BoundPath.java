@@ -403,7 +403,7 @@ public class BoundPath extends RefPath {
 	}
 
 	@Override
-	protected Statement toValue(
+	protected Ref toValue(
 			LocationInfo location,
 			Ref value,
 			Statements statements) {

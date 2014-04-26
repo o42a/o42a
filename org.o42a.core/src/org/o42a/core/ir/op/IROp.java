@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -50,20 +50,16 @@ public abstract class IROp implements Dumpable {
 		return this.builder;
 	}
 
-	public ID getId() {
-		return ptr().getId();
-	}
-
-	public abstract DumpablePtrOp<?> ptr();
+	public abstract DumpablePtrOp<?> ptr(Code code);
 
 	@Override
 	public final DataOp toData(ID id, Code code) {
-		return ptr().toData(id, code);
+		return ptr(code).toData(id, code);
 	}
 
 	@Override
 	public final AnyOp toAny(ID id, Code code) {
-		return ptr().toAny(null, code);
+		return ptr(code).toAny(null, code);
 	}
 
 }

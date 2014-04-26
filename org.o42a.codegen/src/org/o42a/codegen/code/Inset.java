@@ -19,17 +19,22 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.util.string.ID;
 
 
-abstract class Inset extends Code {
+final class Inset extends Code implements CodeAssetsSource {
 
 	private final Block block;
+	private final CodeWriter writer;
+	private CodeAssets assets;
 
 	Inset(Code enclosing, ID name) {
 		super(enclosing, name);
 		this.block = enclosing.getBlock();
 		setOpNames(new OpNames.InsetOpNames(this));
+		this.assets = enclosing.assets();
+		this.writer = enclosing.writer().inset(this);
 	}
 
 	@Override
@@ -50,6 +55,23 @@ abstract class Inset extends Code {
 	@Override
 	public final boolean exists() {
 		return writer().exists();
+	}
+
+	@Override
+	public final CodeAssets assets() {
+		return this.assets;
+	}
+
+	@Override
+	protected final void updateAssets(CodeAssets assets) {
+		assert !getFunction().isDone() :
+			"Can not update assets of already built function";
+		this.assets = assets;
+	}
+
+	@Override
+	public final CodeWriter writer() {
+		return this.writer;
 	}
 
 }

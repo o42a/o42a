@@ -74,7 +74,7 @@ public abstract class BlockBuilder extends Located {
 
 		@Override
 		public void buildBlock(Block block) {
-			block.declare(block).alternative(block).selfAssign(this.value);
+			block.declare(block).alternative(block).returnValue(this.value);
 		}
 
 		@Override

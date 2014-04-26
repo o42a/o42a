@@ -76,7 +76,7 @@ public class SuffixedByPhrase extends PhraseContinuation {
 		final Statements statements =
 				definition.declare(this).alternative(this);
 
-		statements.selfAssign(this.prefix);
+		statements.returnValue(this.prefix);
 	}
 
 	@Override

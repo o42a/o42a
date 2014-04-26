@@ -74,7 +74,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, isNull(
+				llvm.instr(isNull(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -93,7 +93,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, IntLLOp.eq(
+				llvm.instr(IntLLOp.eq(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -113,7 +113,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, IntLLOp.ne(
+				llvm.instr(IntLLOp.ne(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),
@@ -212,6 +212,14 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 			long pointerPtr);
 
 	static native long castStructTo(
+			long blockPtr,
+			long instrPtr,
+			long id,
+			int idLen,
+			long pointerPtr,
+			long typePtr);
+
+	static native long toStructRec(
 			long blockPtr,
 			long instrPtr,
 			long id,

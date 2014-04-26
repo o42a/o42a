@@ -101,5 +101,6 @@ final class HeaderCommand extends Command {
 	protected void fullyResolve(FullResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
+
 }
 

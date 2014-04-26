@@ -26,7 +26,7 @@ import org.o42a.core.st.sentence.Local;
 
 public final class RefCondition extends Statement {
 
-	private final Ref ref;
+	private Ref ref;
 	private final Local local;
 
 	public RefCondition(Ref ref) {
@@ -37,12 +37,14 @@ public final class RefCondition extends Statement {
 
 	public RefCondition(Local local) {
 		super(local, local.distribute());
-		this.ref = local.ref();
 		this.local = local;
 	}
 
-	public final Ref getRef() {
-		return this.ref;
+	public final Ref ref() {
+		if (this.ref != null) {
+			return this.ref;
+		}
+		return this.ref = this.local.ref();
 	}
 
 	public final boolean isLocal() {
@@ -55,7 +57,7 @@ public final class RefCondition extends Statement {
 
 	@Override
 	public boolean isValid() {
-		return getRef().isValid();
+		return originalRef().isValid();
 	}
 
 	@Override
@@ -67,7 +69,7 @@ public final class RefCondition extends Statement {
 	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Ref ref = this.ref.reproduce(reproducer);
+		final Ref ref = originalRef().reproduce(reproducer);
 
 		if (ref == null) {
 			return null;
@@ -86,13 +88,17 @@ public final class RefCondition extends Statement {
 
 	@Override
 	public String toString() {
-		if (this.ref == null) {
-			return super.toString();
-		}
 		if (this.local != null) {
-			return this.local.toString() + " = " + this.local.ref();
+			return this.local.toString() + " = " + this.local.originalRef();
 		}
-		return this.ref.toString();
+		if (this.ref != null) {
+			return this.ref.toString();
+		}
+		return super.toString();
+	}
+
+	private final Ref originalRef() {
+		return this.local != null ? this.local.originalRef() : this.ref;
 	}
 
 }

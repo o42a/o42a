@@ -26,12 +26,13 @@ import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.o42a.core.*;
+import org.o42a.core.Contained;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.impl.local.Locals;
 import org.o42a.core.value.TypeParameters;
 
 
@@ -40,6 +41,7 @@ public abstract class Sentence extends Contained {
 	private final Block block;
 	private final SentenceFactory sentenceFactory;
 	private final ArrayList<Statements> alternatives = new ArrayList<>(1);
+	private final Locals externalLocals;
 	private Sentence prerequisite;
 	private CommandTargets targets;
 	private boolean statementDropped;
@@ -49,9 +51,22 @@ public abstract class Sentence extends Contained {
 			LocationInfo location,
 			Block block,
 			SentenceFactory sentenceFactory) {
-		super(location, new SentenceDistributor(location, block));
+		this(
+				location,
+				new NextSentenceDistributor(block),
+				block,
+				sentenceFactory);
+	}
+
+	private Sentence(
+			LocationInfo location,
+			NextSentenceDistributor distributor,
+			Block block,
+			SentenceFactory sentenceFactory) {
+		super(location, distributor);
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
+		this.externalLocals = distributor.locals();
 	}
 
 	public final Block getBlock() {
@@ -84,11 +99,11 @@ public abstract class Sentence extends Contained {
 		return getAlternatives().isEmpty();
 	}
 
-	public Sentence getPrerequisite() {
+	public final Sentence getPrerequisite() {
 		return this.prerequisite;
 	}
 
-	public boolean isConditional() {
+	public final boolean isConditional() {
 		if (getPrerequisite() != null) {
 			return true;
 		}
@@ -107,14 +122,9 @@ public abstract class Sentence extends Contained {
 
 	public final Statements alternative(LocationInfo location) {
 
-		final Statements alt =
-				getSentenceFactory().createAlternative(location, this);
+		final Statements alt = new Statements(location, this);
 
-		if (alt != null) {
-			this.alternatives.add(alt);
-		} else {
-			dropStatement();
-		}
+		this.alternatives.add(alt);
 
 		return alt;
 	}
@@ -172,6 +182,10 @@ public abstract class Sentence extends Contained {
 		out.append(getKind().getSign());
 
 		return out.toString();
+	}
+
+	final Locals externalLocals() {
+		return this.externalLocals;
 	}
 
 	final Sentence firstPrerequisite() {
@@ -381,35 +395,6 @@ public abstract class Sentence extends Contained {
 		}
 
 		return result.add(exitCommand(getLocation()));
-	}
-
-	private static final class SentenceDistributor extends Distributor {
-
-		private final Location location;
-		private final Block block;
-		private final Container container;
-
-		SentenceDistributor(LocationInfo location, Block block) {
-			this.location = location.getLocation();
-			this.block = block;
-			this.container = block.nextContainer();
-		}
-
-		@Override
-		public Location getLocation() {
-			return this.location;
-		}
-
-		@Override
-		public Scope getScope() {
-			return this.block.getScope();
-		}
-
-		@Override
-		public Container getContainer() {
-			return this.container;
-		}
-
 	}
 
 }

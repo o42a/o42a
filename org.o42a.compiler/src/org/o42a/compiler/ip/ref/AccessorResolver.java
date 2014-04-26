@@ -117,7 +117,7 @@ final class AccessorResolver implements PathWalker {
 	}
 
 	@Override
-	public boolean local(Scope scope, Local local) {
+	public boolean local(Step step, Scope scope, Local local) {
 		this.owner = false;
 		this.enclosed = false;
 		this.inheritant = false;

@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.MemberFldOp;
@@ -53,6 +54,11 @@ public class ScopeFldOp extends MemberFldOp<ScopeFld.Op> {
 	@Override
 	public final ScopeFld.Op ptr() {
 		return this.ptr;
+	}
+
+	@Override
+	public final ScopeFld.Op ptr(Code code) {
+		return ptr();
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public abstract class Ptr<P extends PtrOp<P>>
 	private DataAllocation<P> allocation;
 	private DataAllocation<P> protoAllocation;
 
-	Ptr(ID id, boolean ptrToConstant, boolean isNull) {
+	protected Ptr(ID id, boolean ptrToConstant, boolean isNull) {
 		super(id, ptrToConstant, isNull);
 	}
 

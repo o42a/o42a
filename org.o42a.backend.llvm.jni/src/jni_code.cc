@@ -102,6 +102,27 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_go(
 	return to_instr_ptr(builder.GetInsertBlock(), builder.CreateBr(target));
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLCode_goByPtr(
+		JNIEnv *env,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
+		jlong addrPtr,
+		jlongArray blockPtrs) {
+
+	jInt64Array blocks(env, blockPtrs);
+	const size_t len = blocks.length();
+	MAKE_BUILDER;
+	Value *addr = from_ptr<Value>(addrPtr);
+	IndirectBrInst *br = builder.CreateIndirectBr(addr, len);
+
+	for (size_t i = 0; i < len; ++i) {
+		br->addDestination(from_ptr<BasicBlock>(blocks[i]));
+	}
+
+	return to_instr_ptr(builder.GetInsertBlock(), br);
+}
+
 jlong Java_org_o42a_backend_llvm_code_LLCode_choose(
 		JNIEnv *,
 		jclass,
@@ -312,6 +333,33 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 
 	phi->addIncoming(value1, block1);
 	phi->addIncoming(value2, block2);
+
+	return to_instr_ptr(builder.GetInsertBlock(), phi);
+}
+
+jlong Java_org_o42a_backend_llvm_code_LLCode_phiN(
+		JNIEnv *env,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
+		jlong id,
+		jint idLen,
+		jlongArray ptrs) {
+
+	jInt64Array targets(env, ptrs);
+	size_t len = targets.length();
+	MAKE_BUILDER;
+	Value *value1 = from_ptr<Value>(targets[1]);
+	PHINode *phi = builder.CreatePHI(
+			value1->getType(),
+			2,
+			StringRef(from_ptr<char>(id), idLen));
+
+	for (size_t i = 0; i < len; i += 2) {
+		phi->addIncoming(
+				from_ptr<Value>(targets[i + 1]),
+				from_ptr<BasicBlock>(targets[i]));
+	}
 
 	return to_instr_ptr(builder.GetInsertBlock(), phi);
 }

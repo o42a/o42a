@@ -29,6 +29,26 @@ import java.util.Collection;
 
 public class ArrayUtil {
 
+	public static <T> T[] singleElementArray(T element) {
+
+		@SuppressWarnings("unchecked")
+		final T[] array = (T[]) Array.newInstance(element.getClass(), 1);
+
+		array[0] = element;
+
+		return array;
+	}
+
+	public static <T> T[] arrayOfType(
+			Class<? extends T> elementType,
+			int size) {
+
+		@SuppressWarnings("unchecked")
+		final T[] array = (T[]) Array.newInstance(elementType, size);
+
+		return array;
+	}
+
 	public static final <T> T[] clip(T[] array, int length) {
 		if (array.length <= length) {
 			return array;

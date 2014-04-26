@@ -144,7 +144,7 @@ public class PredictionWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean local(Scope scope, Local local) {
+	public boolean local(Step step, Scope scope, Local local) {
 		return set(predictRef(getPrediction(), local.ref()));
 	}
 

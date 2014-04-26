@@ -1,0 +1,59 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Any copyright is dedicated to the Public Domain.
+http://creativecommons.org/publicdomain/zero/1.0/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use namespace 'Console'
+Use namespace 'Test'
+
+Yield ::= test
+==============
+
+Name = "Yield"
+
+Print error [name] nl
+Run tests
+
+
+Yield one value ::= test (
+  Name = "Yield one value"
+  Print error '  ' [name] nl
+
+  F := integer (
+    << 1
+  )
+  
+  Assert [f == 1] 'Wrong value yielded'
+  Assert [--f] 'Excessive value yielded'
+)
+
+Yield two values ::= test (
+  Name = "Yield two values"
+  Print error '  ' [name] nl
+
+  F := integer (
+    << 1
+    << 2
+  )
+  
+  Assert [f == 1] 'Wrong value yielded'
+  Assert [f == 2] 'Wrong value yielded for the second time'
+  Assert [--f] 'Excessive value yielded'
+)
+
+Yield in loop ::= test (
+   Name = "Yield in loop"
+   Print error '  ' [name] nl
+   
+   F := integer (
+    ``3 $ {
+      << $
+      $ -= 1
+      $ > 0?...
+    }
+  )
+
+  Assert [f == 3] 'Wrong value yielded'
+  Assert [f == 2] 'Wrong value yielded for the second time'
+  Assert [f == 1] 'Wrong value yielded for the third time'
+  Assert [--f] 'Excessive value yielded'
+)

@@ -94,13 +94,6 @@ public class ImperativeFactory extends SentenceFactory {
 	}
 
 	@Override
-	public Statements createAlternative(
-			LocationInfo location,
-			Sentence sentence) {
-		return new Statements(location, sentence);
-	}
-
-	@Override
 	public Sentence declare(LocationInfo location, Block block) {
 		return new DefaultSentence(location, block, this);
 	}

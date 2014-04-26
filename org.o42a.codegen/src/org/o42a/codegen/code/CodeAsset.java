@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,15 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
-
-import org.o42a.codegen.code.Block;
+package org.o42a.codegen.code;
 
 
-public interface BeforeReturn {
+public interface CodeAsset<A extends CodeAsset<A>> {
 
-	BeforeReturn NOTHING_BEFORE_RETURN = new NotingBeforeReturn();
+	A combineWith(A asset);
 
-	void beforeReturn(Block code);
+	A overwriteBy(A asset);
 
 }

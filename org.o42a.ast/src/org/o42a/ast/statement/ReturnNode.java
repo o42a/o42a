@@ -25,30 +25,30 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
 
 
-public class SelfAssignmentNode extends AbstractStatementNode {
+public class ReturnNode extends AbstractStatementNode {
 
-	private final SignNode<AssignmentOperator> prefix;
+	private final SignNode<ReturnOperator> prefix;
 	private final ExpressionNode value;
 
-	public SelfAssignmentNode(
-			SignNode<AssignmentOperator> prefix,
+	public ReturnNode(
+			SignNode<ReturnOperator> prefix,
 			ExpressionNode value) {
 		super(prefix.getStart(), end(prefix, value));
 		this.prefix = prefix;
 		this.value = value;
 	}
 
-	public SignNode<AssignmentOperator> getPrefix() {
+	public final SignNode<ReturnOperator> getPrefix() {
 		return this.prefix;
 	}
 
-	public ExpressionNode getValue() {
+	public final ExpressionNode getValue() {
 		return this.value;
 	}
 
 	@Override
 	public <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitSelfAssignment(this, p);
+		return visitor.visitReturn(this, p);
 	}
 
 	@Override

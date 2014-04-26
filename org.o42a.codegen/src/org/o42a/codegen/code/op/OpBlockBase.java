@@ -26,13 +26,6 @@ import org.o42a.util.string.ID;
 
 public abstract class OpBlockBase extends Code {
 
-	protected static CodePos unwrapPos(CodePos codePos) {
-		if (codePos == null || codePos.getClass() != Head.class) {
-			return codePos;
-		}
-		return ((Head) codePos).unwrap();
-	}
-
 	public OpBlockBase(Code enclosing, ID name) {
 		super(enclosing, name);
 	}
@@ -53,66 +46,57 @@ public abstract class OpBlockBase extends Code {
 	protected boolean disposeFromTo(Allocator fromAllocator, CodePos pos) {
 
 		final Allocator toAllocator = pos.code().getAllocator();
-		// Go to the allocator's head?
-		final boolean includeTarget =
-				unwrapPos(toAllocator.head()) == unwrapPos(pos);
 
-		disposeFromTo(fromAllocator, toAllocator, includeTarget);
+		if (toAllocator.ptr().is(pos)) {
+			// Go to the allocator's head?
+			disposeFromIncludingTo(fromAllocator, toAllocator);
+			return true;
+		}
 
-		return includeTarget;
+		disposeFromExcludingTo(fromAllocator, toAllocator);
+		return false;
 	}
 
-	protected void disposeFromTo(
-			final Allocator fromAllocator,
-			final Allocator toAllocator,
-			final boolean includeTarget) {
+	protected abstract CodePos unwrapPos(CodePos pos);
 
-		Allocator allocator = fromAllocator;
+	protected abstract void addAssetsTo(CodePos pos);
 
-		if (!includeTarget) {
-			while (allocator != toAllocator) {
-				disposeBy(allocator);
-				allocator = allocator.getEnclosingAllocator();
-				assert allocator != null :
-					fromAllocator + " is not inside " + toAllocator;
-			}
-		} else {
-			for (;;) {
-				disposeBy(allocator);
-				if (allocator == toAllocator) {
-					break;
-				}
-				allocator = allocator.getEnclosingAllocator();
-				assert allocator != null :
-					fromAllocator + " is not inside " + toAllocator;
-			}
-		}
+	@Override
+	protected void removeAllAssets() {
+		super.removeAllAssets();
 	}
 
 	protected abstract void disposeBy(Allocator allocator);
 
-	protected static final class Head implements CodePos {
+	private void disposeFromIncludingTo(
+			final Allocator fromAllocator,
+			final Allocator toAllocator) {
 
-		private final Block code;
+		Allocator allocator = fromAllocator;
 
-		public Head(Block code) {
-			this.code = code;
+		for (;;) {
+			disposeBy(allocator);
+			if (allocator == toAllocator) {
+				break;
+			}
+			allocator = allocator.getEnclosingAllocator();
+			assert allocator != null :
+				fromAllocator + " is not inside " + toAllocator;
 		}
+	}
 
-		@Override
-		public Block code() {
-			return this.code;
+	private void disposeFromExcludingTo(
+			final Allocator fromAllocator,
+			final Allocator toAllocator) {
+
+		Allocator allocator = fromAllocator;
+
+		while (allocator != toAllocator) {
+			disposeBy(allocator);
+			allocator = allocator.getEnclosingAllocator();
+			assert allocator != null :
+				fromAllocator + " is not inside " + toAllocator;
 		}
-
-		@Override
-		public String toString() {
-			return this.code.toString();
-		}
-
-		CodePos unwrap() {
-			return this.code.writer().head();
-		}
-
 	}
 
 }

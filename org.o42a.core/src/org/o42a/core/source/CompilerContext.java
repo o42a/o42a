@@ -20,7 +20,7 @@
 package org.o42a.core.source;
 
 import org.o42a.core.object.Obj;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.Logger;
 
@@ -100,7 +100,7 @@ public abstract class CompilerContext implements LocationInfo {
 
 	public abstract FieldCompiler compileField();
 
-	public abstract void include(DeclarativeBlock block);
+	public abstract void include(Block block);
 
 	public boolean declarationsVisibleFrom(CompilerContext viewer) {
 		return getSource().equals(viewer.getSource());
