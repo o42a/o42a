@@ -21,7 +21,7 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 
 
 public final class SignatureBuilder {
@@ -90,27 +90,27 @@ public final class SignatureBuilder {
 	}
 
 	public final Arg<Int8op> addInt8(String name) {
-		return arg(new Arg.Int8arg(this.signature, argIndex(), name));
+		return arg(IntType.INT8.arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Int16op> addInt16(String name) {
-		return arg(new Arg.Int16arg(this.signature, argIndex(), name));
+		return arg(IntType.INT16.arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Int32op> addInt32(String name) {
-		return arg(new Arg.Int32arg(this.signature, argIndex(), name));
+		return arg(IntType.INT32.arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Int64op> addInt64(String name) {
-		return arg(new Arg.Int64arg(this.signature, argIndex(), name));
+		return arg(IntType.INT64.arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Fp32op> addFp32(String name) {
-		return arg(new Arg.Fp32arg(this.signature, argIndex(), name));
+		return arg(FpType.FP32.arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Fp64op> addFp64(String name) {
-		return arg(new Arg.Fp64arg(this.signature, argIndex(), name));
+		return arg(FpType.FP64.arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<BoolOp> addBool(String name) {
@@ -118,15 +118,15 @@ public final class SignatureBuilder {
 	}
 
 	public final Arg<RelOp> addRelPtr(String name) {
-		return arg(new Arg.RelPtrArg(this.signature, argIndex(), name));
+		return arg(ScalarType.REL_PTR.arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<AnyOp> addPtr(String name) {
-		return arg(new Arg.AnyArg(this.signature, argIndex(), name));
+		return arg(PtrType.ANY_PTR.arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<DataOp> addData(String name) {
-		return arg(new Arg.DataArg(this.signature, argIndex(), name));
+		return arg(PtrType.DATA_PTR.arg(this.signature, argIndex(), name));
 	}
 
 	public final <S extends StructOp<S>> Arg<S> addPtr(

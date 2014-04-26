@@ -28,12 +28,12 @@ import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.DefiniteIROp;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.object.Obj;
 
 
-public final class ObjectDataOp extends IROp {
+public final class ObjectDataOp extends DefiniteIROp {
 
 	private final ObjectPrecision precision;
 	private final ObjectIRDataOp ptr;
@@ -54,6 +54,11 @@ public final class ObjectDataOp extends IROp {
 	@Override
 	public final ObjectIRDataOp ptr() {
 		return this.ptr;
+	}
+
+	@Override
+	public final ObjectIRDataOp ptr(Code code) {
+		return ptr();
 	}
 
 	public final ObjectIRDescOp loadDesc(Code code) {

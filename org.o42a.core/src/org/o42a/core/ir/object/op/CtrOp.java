@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ir.object.op;
 
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -35,7 +34,6 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.ObjectsCode;
 import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -47,19 +45,21 @@ import org.o42a.util.string.ID;
 public class CtrOp extends IROp {
 
 	public static final Type CTR_TYPE = new Type();
+	public static final Allocatable<Op> ALLOCATABLE_CTR =
+			new AllocatableCtr();
 
 	public static final ID CTR_ID = ID.id("ctr");
 
-	private final Op ptr;
+	private final Allocated<Op> ptr;
 
-	private CtrOp(CodeBuilder builder, Op ptr) {
+	public CtrOp(CodeBuilder builder, Allocated<Op> ptr) {
 		super(builder);
 		this.ptr = ptr;
 	}
 
 	@Override
-	public final Op ptr() {
-		return this.ptr;
+	public final Op ptr(Code code) {
+		return this.ptr.get(code);
 	}
 
 	public ObjectOp newObject(
@@ -75,15 +75,21 @@ public class CtrOp extends IROp {
 		final Block code = subDirs.code();
 
 		if (owner != null) {
-			ptr().ownerData(code).store(code, owner.objectData(code).ptr());
+			ptr(code).ownerData(code).store(
+					code,
+					owner.objectData(code).ptr());
 		} else {
-			ptr().ownerData(code).store(code, code.nullPtr(OBJECT_DATA_TYPE));
+			ptr(code).ownerData(code).store(
+					code,
+					code.nullPtr(OBJECT_DATA_TYPE));
 		}
-		ptr().ancestorData(code).store(
+		ptr(code).ancestorData(code).store(
 				code,
 				ancestorData != null
 				? ancestorData : code.nullPtr(OBJECT_DATA_TYPE));
-		ptr().desc(code).store(code, sample.objectData(code).loadDesc(code));
+		ptr(code).desc(code).store(
+				code,
+				sample.objectData(code).loadDesc(code));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 
@@ -128,10 +134,6 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().desc());
 		}
 
-		public final CtrOp op(ObjectsCode objects) {
-			return new CtrOp(objects.getBuilder(), this);
-		}
-
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
@@ -171,6 +173,33 @@ public class CtrOp extends IROp {
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
 			return externalTypeInfo(0x042a0120);
+		}
+
+	}
+
+	private static final class AllocatableCtr implements Allocatable<Op> {
+
+		@Override
+		public AllocationMode getAllocationMode() {
+			return ALLOCATOR_ALLOCATION;
+		}
+
+		@Override
+		public int getDisposePriority() {
+			return NORMAL_DISPOSE_PRIORITY;
+		}
+
+		@Override
+		public Op allocate(Allocations code, Allocated<Op> allocated) {
+			return code.allocate(CTR_ID, CTR_TYPE);
+		}
+
+		@Override
+		public void init(Code code, Op allocated) {
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<Op> allocated) {
 		}
 
 	}

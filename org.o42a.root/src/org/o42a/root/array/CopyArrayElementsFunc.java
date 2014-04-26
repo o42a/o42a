@@ -54,10 +54,10 @@ public final class CopyArrayElementsFunc extends Func<CopyArrayElementsFunc> {
 				COPIED,
 				code,
 				COPY_ARRAY_ELEMENTS.result(),
-				source.ptr(),
+				source.ptr(code),
 				sourceFrom,
 				sourceTo,
-				target.ptr(),
+				target.ptr(code),
 				targetStart);
 
 		copied.goUnless(code, dirs.falseDir());

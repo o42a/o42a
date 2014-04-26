@@ -19,14 +19,16 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.codegen.code.AllocationMode.NO_ALLOCATION;
 import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Disposal;
+import org.o42a.codegen.code.*;
+import org.o42a.util.string.ID;
 
 
 public final class GCCode {
 
+	private static final ID SIGNAL_GC_ID = ID.id("__signal_gc__");
 	private static final SignalGC SIGNAL_GC = new SignalGC();
 
 	private final CodeBuilder builder;
@@ -45,13 +47,32 @@ public final class GCCode {
 			return;
 		}
 		this.signalSent = true;
-		getBuilder().getFunction().addLastDisposal(SIGNAL_GC);
+		getBuilder().getFunction().allocate(SIGNAL_GC_ID, SIGNAL_GC);
 	}
 
-	private static final class SignalGC implements Disposal {
+	private static final class SignalGC implements Allocatable<Void> {
 
 		@Override
-		public void dispose(Code code) {
+		public AllocationMode getAllocationMode() {
+			return NO_ALLOCATION;
+		}
+
+		@Override
+		public int getDisposePriority() {
+			return DEBUG_DISPOSE_PRIORITY;
+		}
+
+		@Override
+		public Void allocate(Allocations code, Allocated<Void> allocated) {
+			return null;
+		}
+
+		@Override
+		public void init(Code code, Void allocated) {
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<Void> allocated) {
 			code.getGenerator()
 			.externalFunction()
 			.link("o42a_gc_signal", NO_ARG)

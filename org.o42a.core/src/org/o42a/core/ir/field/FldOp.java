@@ -19,12 +19,11 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -67,14 +66,10 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 			return new OmittedFldStoreOp(this);
 		}
 
-		final AnyRecOp hostPtr = code.allocatePtr(id.detail(HOST_ID));
-		final StructRecOp<F> ptr = code.allocatePtr(id, fld().getType());
+		final Allocated<FldPtrs<F>> ptrs =
+				code.allocate(id, new AllocatableFldPtrs<>(this));
 
-		return new RealFldStoreOp<>(
-				this,
-				code.getAllocator(),
-				hostPtr,
-				ptr);
+		return new RealFldStoreOp<>(this, code.getAllocator(), ptrs);
 	}
 
 	private static final class OmittedFldStoreOp implements FldStoreOp {
@@ -109,23 +104,70 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 	}
 
+	private static final class FldPtrs<F extends Fld.Op<F>> {
+
+		private final AnyRecOp host;
+		private final StructRecOp<F> ptr;
+
+		FldPtrs(AnyRecOp host, StructRecOp<F> ptr) {
+			this.host = host;
+			this.ptr = ptr;
+		}
+
+	}
+
+	private static final class AllocatableFldPtrs<F extends Fld.Op<F>>
+			implements Allocatable<FldPtrs<F>> {
+
+		private final FldOp<F> fld;
+
+		AllocatableFldPtrs(FldOp<F> fld) {
+			this.fld = fld;
+		}
+
+		@Override
+		public AllocationMode getAllocationMode() {
+			return ALLOCATOR_ALLOCATION;
+		}
+
+		@Override
+		public int getDisposePriority() {
+			return NORMAL_DISPOSE_PRIORITY;
+		}
+
+		@Override
+		public FldPtrs<F> allocate(
+				Allocations code,
+				Allocated<FldPtrs<F>> allocated) {
+			return new FldPtrs<>(
+					code.allocatePtr(HOST_ID),
+					code.allocatePtr(this.fld.fld().getType()));
+		}
+
+		@Override
+		public void init(Code code, FldPtrs<F> allocated) {
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<FldPtrs<F>> allocated) {
+		}
+
+	}
+
 	private static final class RealFldStoreOp<F extends Fld.Op<F>>
 			implements FldStoreOp {
 
 		private final FldOp<F> fld;
 		private final Allocator allocator;
-		private final AnyRecOp hostPtr;
-		private final StructRecOp<F> ptr;
+		private final Allocated<FldPtrs<F>> ptrs;
 
 		RealFldStoreOp(
 				FldOp<F> fld,
 				Allocator allocator,
-				AnyRecOp hostPtr,
-				StructRecOp<F> ptr) {
+				Allocated<FldPtrs<F>> ptrs) {
 			this.fld = fld;
 			this.allocator = allocator;
-			this.hostPtr = hostPtr;
-			this.ptr = ptr;
+			this.ptrs = ptrs;
 		}
 
 		@Override
@@ -135,8 +177,11 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 			final ObjOp host = this.fld.host();
 
 			tempObjHolder(this.allocator).holdVolatile(code, host);
-			this.hostPtr.store(code, host.toAny(null, code));
-			this.ptr.store(code, this.fld.ptr());
+
+			final FldPtrs<F> ptrs = this.ptrs.get(code);
+
+			ptrs.host.store(code, host.toAny(null, code));
+			ptrs.ptr.store(code, this.fld.ptr());
 		}
 
 		@Override
@@ -146,7 +191,10 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 			return anonymousObject(
 					dirs.getBuilder(),
-					this.hostPtr.load(null, code).toData(null, code),
+					this.ptrs.get(code)
+					.host
+					.load(null, code)
+					.toData(null, code),
 					this.fld.fld().getDeclaredIn());
 		}
 
@@ -154,17 +202,17 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		public TargetOp loadTarget(CodeDirs dirs) {
 
 			final Block code = dirs.code();
-			final F ptr = this.ptr.load(null, code);
+			final F ptr = this.ptrs.get(code).ptr.load(null, code);
 
 			return this.fld.fld().op(code, this.fld.host(), ptr);
 		}
 
 		@Override
 		public String toString() {
-			if (this.ptr == null) {
+			if (this.ptrs == null) {
 				return super.toString();
 			}
-			return this.ptr.toString();
+			return this.ptrs.toString();
 		}
 
 	}

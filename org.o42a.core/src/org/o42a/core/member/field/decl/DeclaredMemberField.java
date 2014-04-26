@@ -30,7 +30,6 @@ import org.o42a.core.object.Obj;
 public final class DeclaredMemberField extends MemberField {
 
 	private final FieldBuilder builder;
-	private FieldDeclarationStatement statement;
 
 	public DeclaredMemberField(FieldBuilder builder) {
 		super(builder.getMemberOwner(), builder.getDeclaration());
@@ -45,14 +44,6 @@ public final class DeclaredMemberField extends MemberField {
 	@Override
 	public MemberField propagateTo(Obj owner) {
 		return new OverriddenDeclaredMemberField(owner, this);
-	}
-
-	public final FieldDeclarationStatement getStatement() {
-		return this.statement;
-	}
-
-	public final void setStatement(FieldDeclarationStatement statement) {
-		this.statement = statement;
 	}
 
 	@Override

@@ -46,7 +46,7 @@ import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
 
 
-public abstract class ObjectOp extends IROp implements TargetOp {
+public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
 	protected static final ID CAST_ID = ID.id("cast");
 	protected static final ID TARGET_ID = ID.id("target");
@@ -137,7 +137,7 @@ public abstract class ObjectOp extends IROp implements TargetOp {
 		final LinkValueType linkType =
 				typeParameters.getValueType().toLinkType();
 
-		assert typeParameters != null :
+		assert linkType != null :
 			"Not a link: " + this;
 
 		final ValDirs valDirs =

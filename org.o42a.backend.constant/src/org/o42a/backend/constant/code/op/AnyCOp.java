@@ -257,6 +257,25 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	}
 
 	@Override
+	public CodeCOp toCode(ID id, Code code) {
+
+		final ID castId = code.getOpNames().castId(id, CODE_ID, this);
+
+		return new CodeCOp(new OpBE<CodeOp>(castId, cast(code)) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
+			protected CodeOp write() {
+				return backend().underlying().toCode(
+						getId(),
+						part().underlying());
+			}
+		});
+	}
+
+	@Override
 	public <S extends StructOp<S>> S to(
 			final ID id,
 			final Code code,
@@ -280,6 +299,32 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 				},
 				allocStructStore(getAllocPlace()),
 				type));
+	}
+
+	@Override
+	public <S extends StructOp<S>> StructRecCOp<S> toRec(
+			ID id,
+			Code code,
+			final Type<S> type) {
+
+		final ID castId = code.getOpNames().castId(id, type.getId(), this);
+
+		return new StructRecCOp<>(
+				new OpBE<StructRecOp<S>>(castId, cast(code)) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
+					protected StructRecOp<S> write() {
+						return backend().underlying().toRec(
+								getId(),
+								part().underlying(),
+								getBackend().underlying(type));
+					}
+				},
+				allocRecStore(getAllocPlace()),
+				type);
 	}
 
 	@Override

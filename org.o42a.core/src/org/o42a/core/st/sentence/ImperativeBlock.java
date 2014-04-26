@@ -120,7 +120,7 @@ public final class ImperativeBlock extends Block {
 	}
 
 	@Override
-	public ImperativeFactory getSentenceFactory() {
+	public final ImperativeFactory getSentenceFactory() {
 		return (ImperativeFactory) super.getSentenceFactory();
 	}
 
@@ -132,11 +132,6 @@ public final class ImperativeBlock extends Block {
 	@Override
 	public final Name getName() {
 		return this.name;
-	}
-
-	@Override
-	public final ImperativeBlock toImperativeBlock() {
-		return this;
 	}
 
 	@Override

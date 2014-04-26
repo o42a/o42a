@@ -45,7 +45,7 @@ public class IntegerStringFunc extends Func<IntegerStringFunc> {
 				null,
 				code,
 				INTEGER_STRING.result(),
-				string.ptr(),
+				string.ptr(code),
 				value);
 
 		result.goUnless(code, stringDirs.falseDir());

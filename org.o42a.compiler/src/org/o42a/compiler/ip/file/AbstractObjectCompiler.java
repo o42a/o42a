@@ -26,6 +26,7 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.*;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
@@ -93,7 +94,7 @@ public abstract class AbstractObjectCompiler
 	}
 
 	@Override
-	public void define(DeclarativeBlock definition) {
+	public void define(Block definition) {
 		getSection().define(definition);
 	}
 

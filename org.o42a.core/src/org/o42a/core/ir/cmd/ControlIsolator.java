@@ -1,6 +1,6 @@
 /*
-    Constant Handler Compiler Back-end
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Compiler Core
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code;
-
-import org.o42a.codegen.code.Code;
+package org.o42a.core.ir.cmd;
 
 
-class CCodeInset extends CInset<Code> {
+public interface ControlIsolator {
 
-	CCodeInset(CCode<?> enclosing, Code code) {
-		super(enclosing, code);
-	}
-
-	@Override
-	protected Code createUnderlying(Code enclosingUnderlying) {
-		return enclosingUnderlying.inset(getId().getLocal());
-	}
+	Control isolateControl(Control control);
 
 }

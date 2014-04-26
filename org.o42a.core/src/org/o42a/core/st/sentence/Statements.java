@@ -38,10 +38,9 @@ import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.LoopStatement;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
-import org.o42a.core.st.impl.local.LocalInsides;
+import org.o42a.core.st.impl.local.Locals;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.util.string.Name;
 
@@ -50,18 +49,16 @@ public final class Statements extends Contained {
 
 	private final Sentence sentence;
 	private final ArrayList<Command> commands = new ArrayList<>(1);
-	private Container nextContainer;
+	private Locals locals;
 	private boolean statementDropped;
 	private boolean incompatibilityReported;
-	private int instructionsExecuted;
 	private CommandTargets targets;
+	private int instructionsExecuted;
 
 	Statements(LocationInfo location, Sentence sentence) {
-		super(
-				location,
-				new StatementsDistributor(location, sentence));
+		super(location, sentence.distribute());
 		this.sentence = sentence;
-		this.nextContainer = getContainer();
+		this.locals = sentence.externalLocals();
 	}
 
 	public Sentence getSentence() {
@@ -88,6 +85,10 @@ public final class Statements extends Contained {
 		return getSentence().getMemberRegistry();
 	}
 
+	public final boolean localsAvailable() {
+		return !this.locals.isEmpty();
+	}
+
 	public final CommandTargets getTargets() {
 		if (this.targets != null) {
 			return this.targets;
@@ -111,16 +112,16 @@ public final class Statements extends Contained {
 		statement(ref.toCondition(this));
 	}
 
-	public final void selfAssign(RefBuilder value) {
-		selfAssign(value, value);
+	public final void returnValue(RefBuilder value) {
+		returnValue(value, value);
 	}
 
-	public final void selfAssign(LocationInfo location, RefBuilder value) {
+	public final void returnValue(LocationInfo location, RefBuilder value) {
 		assert checkSameContext(location);
 		assert checkSameContext(value);
 
 		if (isInterrogation()) {
-			prohibitedInterrogativeAssignment(location);
+			prohibitedInterrogativeReturn(location);
 			dropStatement();
 			return;
 		}
@@ -135,6 +136,29 @@ public final class Statements extends Contained {
 		assert checkSameContext(ref);
 
 		statement(ref.toValue(location, this));
+	}
+
+	public void yield(LocationInfo location, RefBuilder value) {
+		assert checkSameContext(location);
+		assert checkSameContext(value);
+
+		if (isInterrogation()) {
+			prohibitedInterrogativeYield(location);
+			dropStatement();
+			return;
+		}
+
+		final Ref ref = value.buildRef(nextDistributor());
+
+		if (ref == null) {
+			dropStatement();
+			return;
+		}
+
+		assert checkSameContext(ref);
+
+		locals().convertToFields();
+		statement(ref.toYield(location, this));
 	}
 
 	public FieldBuilder field(
@@ -202,7 +226,7 @@ public final class Statements extends Contained {
 		return parentheses(
 				-1,
 				location,
-				nextDistributor(container));
+				distributeIn(container));
 	}
 
 	public final ImperativeBlock braces(LocationInfo location) {
@@ -228,18 +252,19 @@ public final class Statements extends Contained {
 					getSentence().getBlock().getNamedBlocks();
 
 			if (!namedBlocks.declareBlock(location, name)) {
+				dropStatement();
 				return null;
 			}
 		}
 
 		final ImperativeBlock braces = getSentenceFactory().createBraces(
 				location,
-				nextDistributor(container),
+				distributeIn(container),
 				this,
 				name);
 
 		if (braces != null) {
-			braces(braces);
+			statement(braces);
 		} else {
 			dropStatement();
 		}
@@ -249,14 +274,17 @@ public final class Statements extends Contained {
 
 	public final Local local(LocationInfo location, Name name, Ref ref) {
 
-		final Sentence sentence = getSentence();
-		final Block block = sentence.getBlock();
+		final Locals newLocals =
+				locals().declareLocal(this, location, name, ref);
 
-		block.getLocals().declareLocal(location, name);
+		if (newLocals == null) {
+			return null;
+		}
 
-		final Local local = new Local(location, name, ref);
+		this.locals = newLocals;
 
-		this.nextContainer = new LocalInsides(local);
+		final Local local = newLocals.getLocal();
+
 		statement(new RefCondition(local));
 
 		return local;
@@ -282,11 +310,11 @@ public final class Statements extends Contained {
 	}
 
 	public final Container nextContainer() {
-		return this.nextContainer;
+		return this.locals.getContainer();
 	}
 
 	public final Distributor nextDistributor() {
-		return nextDistributor(nextContainer());
+		return distributeIn(nextContainer());
 	}
 
 	public final void statement(Statement statement) {
@@ -332,10 +360,6 @@ public final class Statements extends Contained {
 		getSentence().dropStatement();
 	}
 
-	protected void braces(ImperativeBlock braces) {
-		statement(braces);
-	}
-
 	protected final void addStatement(Statement statement) {
 		statement.assertSameScope(this);
 
@@ -353,6 +377,10 @@ public final class Statements extends Contained {
 
 	protected final void removeStatement(int index) {
 		this.commands.remove(index);
+	}
+
+	final Locals locals() {
+		return this.locals;
 	}
 
 	void reproduce(Sentence sentence, Reproducer reproducer) {
@@ -454,10 +482,6 @@ public final class Statements extends Contained {
 				+ location.getLocation().getContext()
 			+ ", but " + getContext() + " expected";
 		return true;
-	}
-
-	private final Distributor nextDistributor(Container container) {
-		return distributeIn(container);
 	}
 
 	private Block blockByName(LocationInfo location, Name name) {

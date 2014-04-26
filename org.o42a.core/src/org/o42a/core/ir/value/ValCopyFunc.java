@@ -40,7 +40,7 @@ public final class ValCopyFunc extends Func<ValCopyFunc> {
 
 		final Block code = dirs.code();
 
-		invoke(null, code, VAL_COPY.result(), from.ptr(), to.ptr());
+		invoke(null, code, VAL_COPY.result(), from.ptr(code), to.ptr(code));
 		to.go(code, dirs);
 		to.holder().hold(code);
 	}

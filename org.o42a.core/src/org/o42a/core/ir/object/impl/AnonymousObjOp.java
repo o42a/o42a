@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.dep.DepOp.DEP_ID;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
@@ -68,6 +69,11 @@ public final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public final DataOp ptr() {
 		return this.ptr;
+	}
+
+	@Override
+	public final DataOp ptr(Code code) {
+		return ptr();
 	}
 
 	@Override

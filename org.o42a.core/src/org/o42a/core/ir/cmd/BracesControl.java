@@ -19,7 +19,9 @@
 */
 package org.o42a.core.ir.cmd;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
@@ -30,7 +32,6 @@ final class BracesControl extends Control {
 
 	private final MainControl main;
 	private final Control parent;
-	private final BracesControl enclosing;
 	private final Name name;
 	private final BraceLocals locals;
 	private final CodePos done;
@@ -44,7 +45,6 @@ final class BracesControl extends Control {
 			Name name) {
 		this.main = parent.main();
 		this.parent = parent;
-		this.enclosing = parent.braces();
 		this.locals = new BraceLocals(parent.locals());
 		this.enclosingBlock = enclosingBlock;
 		this.allocator = enclosingBlock.allocator(BRACES_ID);
@@ -54,7 +54,7 @@ final class BracesControl extends Control {
 	}
 
 	public final BracesControl getEnclosing() {
-		return this.enclosing;
+		return this.parent.braces();
 	}
 
 	public final Name getName() {
@@ -72,11 +72,6 @@ final class BracesControl extends Control {
 	}
 
 	@Override
-	public final Code allocation() {
-		return this.allocator.allocation();
-	}
-
-	@Override
 	public final CodePos exit() {
 		return this.done;
 	}
@@ -84,13 +79,6 @@ final class BracesControl extends Control {
 	@Override
 	public CodePos falseDir() {
 		return this.parent.falseDir();
-	}
-
-	@Override
-	public void end() {
-		if (this.allocator.exists()) {
-			this.allocator.go(this.enclosingBlock.tail());
-		}
 	}
 
 	@Override
@@ -113,7 +101,15 @@ final class BracesControl extends Control {
 
 	@Override
 	final CodePos returnDir() {
-		return this.parent.returnDir();
+		return main().returnDir();
+	}
+
+	@Override
+	Control done() {
+		if (this.allocator.exists()) {
+			this.allocator.go(this.enclosingBlock.tail());
+		}
+		return this.parent;
 	}
 
 }

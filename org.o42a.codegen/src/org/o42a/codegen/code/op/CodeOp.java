@@ -19,30 +19,7 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.util.string.ID;
 
-
-public interface CodeOp {
-
-	ID BOOL_ID = ID.rawId("bool");
-
-	ID INT8_ID = ID.rawId("int8");
-	ID INT16_ID = ID.rawId("int16");
-	ID INT32_ID = ID.rawId("int32");
-	ID INT64_ID = ID.rawId("int64");
-
-	ID FP32_ID = ID.rawId("fp32");
-	ID FP64_ID = ID.rawId("fp64");
-
-	ID ANY_ID = ID.rawId("any");
-	ID DATA_ID = ID.rawId("data");
-	ID REL_ID = ID.rawId("rel");
-
-	ID PHI_ID = ID.rawId("phi");
-
-	ID EQ_ID = ID.rawId("eq");
-	ID NE_ID = ID.rawId("ne");
-
-	ID getId();
+public interface CodeOp extends Op {
 
 }

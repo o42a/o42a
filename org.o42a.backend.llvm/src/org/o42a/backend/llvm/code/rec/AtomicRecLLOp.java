@@ -58,7 +58,7 @@ public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
 		return createLoaded(
 				resultId,
 				nextPtr,
-				llvm.instr(nextPtr, testAndSet(
+				llvm.instr(testAndSet(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(resultId),

@@ -19,19 +19,17 @@
 */
 package org.o42a.codegen.code.op;
 
-import static org.o42a.codegen.code.op.OpBlockBase.unwrapPos;
-
 import org.o42a.codegen.code.*;
 import org.o42a.util.string.ID;
 
 
 public abstract class BoolOp implements Op {
 
-	public static final ID TRUE_ID = ID.rawId("true");
-	public static final ID FALSE_ID = ID.rawId("false");
-	public static final ID NOT_ID = ID.rawId("not");
+	public static final ID TRUE_ID = ID.rawId("__true__");
+	public static final ID FALSE_ID = ID.rawId("__false__");
+	public static final ID NOT_ID = ID.rawId("__not__");
 
-	private static final ID TO_ID = ID.id().detail("to");
+	private static final ID EXIT_TO_ID = ID.id().detail("__exit_to__");
 
 	public abstract <O extends Op> O select(
 			ID id,
@@ -78,7 +76,7 @@ public abstract class BoolOp implements Op {
 
 	public final void go(Block source, CodePos truePos, CodePos falsePos) {
 		if (source.getGenerator().isProxied()) {
-			source.writer().go(this, unwrapPos(truePos), unwrapPos(falsePos));
+			internalGo(source, truePos, falsePos);
 			return;
 		}
 
@@ -112,8 +110,8 @@ public abstract class BoolOp implements Op {
 		// Create an auxiliary block either for true or false position
 		// if necessary. This block will dispose the rest of the allocations
 		// made between innermost position and the target one.
-		source.writer().go(
-				this,
+		internalGo(
+				source,
 				exitPos(source, innermostAllocator, truePos, !included),
 				exitPos(source, innermostAllocator, falsePos, !included));
 	}
@@ -152,6 +150,7 @@ public abstract class BoolOp implements Op {
 			return null;
 		}
 
+		final OpBlockBase s = source;
 		final Allocator from;
 
 		if (includingFrom) {
@@ -161,22 +160,44 @@ public abstract class BoolOp implements Op {
 			// Start from the enclosing allocator.
 			from = fromAllocator.getEnclosingAllocator();
 			if (from == null) {
-				return unwrapPos(pos);
+				return s.unwrapPos(pos);
 			}
 		}
 
+		return dispose(source, pos, from);
+	}
+
+	private static CodePos dispose(Block source, CodePos pos, Allocator from) {
+
 		final Block exitBlock =
-				source.addBlock(TO_ID.detail(pos.code().getId()));
+				source.addBlock(EXIT_TO_ID.detail(pos.code().getId()));
+		final OpBlockBase exitBlk = exitBlock;
 
-		exitBlock.disposeFromTo(from, pos);
+		exitBlk.disposeFromTo(from, pos);
+		exitBlk.addAssetsTo(pos);
+		exitBlock.writer().go(exitBlk.unwrapPos(pos));
+		exitBlk.removeAllAssets();
 
-		if (!exitBlock.exists()) {
-			return unwrapPos(pos);
+		return exitBlk.unwrapPos(exitBlock.head());
+	}
+
+	private void internalGo(Block source, CodePos truePos, CodePos falsePos) {
+
+		final OpBlockBase s = source;
+
+		if (truePos != null) {
+			s.addAssetsTo(truePos);
 		}
-
-		exitBlock.writer().go(unwrapPos(pos));
-
-		return unwrapPos(exitBlock.head());
+		if (falsePos != null) {
+			s.addAssetsTo(falsePos);
+		}
+		source.writer().go(
+				this,
+				s.unwrapPos(truePos),
+				s.unwrapPos(falsePos));
+		if (truePos != null && falsePos != null) {
+			s.removeAllAssets();
+		}
 	}
 
 }

@@ -19,15 +19,19 @@
 */
 package org.o42a.backend.llvm.code;
 
+import static org.o42a.backend.llvm.code.LLCode.llvm;
+import static org.o42a.backend.llvm.id.LLVMId.dataId;
 import static org.o42a.backend.llvm.id.LLVMId.extenFuncId;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.NativeBuffer;
+import org.o42a.backend.llvm.data.alloc.AnyLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.SignatureWriter;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
 import org.o42a.util.string.ID;
 
@@ -53,7 +57,7 @@ public class LLVMCodeBackend implements CodeBackend {
 	@Override
 	public <F extends Func<F>> LLFunction<F> addFunction(
 			Function<F> function,
-			BeforeReturn beforeReturn) {
+			Disposal beforeReturn) {
 		return new LLFunction<>(this.module, function, beforeReturn);
 	}
 
@@ -75,5 +79,18 @@ public class LLVMCodeBackend implements CodeBackend {
 				extenFuncId(id, functionPtr),
 				signature);
 	}
+
+	@Override
+	public DataAllocation<AnyOp> codeToAny(CodePtr ptr) {
+
+		final LLCodePos llvmPos = llvm(ptr.pos());
+
+		return new AnyLLDAlloc(
+				getModule(),
+				dataId(ptr.getId(), codeToAny(llvmPos.getBlockPtr())),
+				null);
+	}
+
+	private static native long codeToAny(long blockPtr);
 
 }

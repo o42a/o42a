@@ -19,9 +19,11 @@
 */
 package org.o42a.codegen.code;
 
-import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
+import static java.util.Objects.requireNonNull;
+import static org.o42a.codegen.code.Disposal.DISPOSE_NOTHING;
 
-import org.o42a.codegen.code.backend.BeforeReturn;
+import java.util.LinkedList;
+
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.util.string.ID;
@@ -35,6 +37,8 @@ public final class Function<F extends Func<F>>
 	private final Signature<F> signature;
 	private final FunctionBuilder<F> builder;
 	private final FuncPtr<F> pointer;
+	private final LinkedList<FunctionCompleteListener> completeListeners =
+			new LinkedList<>();
 	private FuncWriter<F> writer;
 	private boolean done;
 
@@ -49,6 +53,7 @@ public final class Function<F extends Func<F>>
 		this.builder = builder;
 		this.signature = getGenerator().getFunctions().allocate(signature);
 		this.pointer = new ConstructingFuncPtr<>(this);
+		initAllocations(null);
 	}
 
 	public final Signature<F> getSignature() {
@@ -89,6 +94,10 @@ public final class Function<F extends Func<F>>
 		return this.writer != null && this.writer.exists();
 	}
 
+	public final boolean isDone() {
+		return this.done;
+	}
+
 	public final <O extends Op> O arg(Code code, Arg<O> arg) {
 		assert getSignature() == arg.getSignature() :
 			"Argument " + arg + " does not belong to " + getSignature()
@@ -109,19 +118,22 @@ public final class Function<F extends Func<F>>
 		}
 
 		final Functions functions = getGenerator().getFunctions();
-		final BeforeReturn beforeReturn;
+		final Disposal beforeReturn;
 
 		if (getGenerator().isProxied()) {
-			beforeReturn = NOTHING_BEFORE_RETURN;
+			beforeReturn = DISPOSE_NOTHING;
 		} else {
 			beforeReturn =
 					new DisposeBeforeReturn(functions.createBeforeReturn(this));
 		}
 
-		this.writer = functions.codeBackend().addFunction(this, beforeReturn);
-		allocation();
+		return this.writer =
+				functions.codeBackend().addFunction(this, beforeReturn);
+	}
 
-		return this.writer;
+	public void addCompleteListener(FunctionCompleteListener listener) {
+		requireNonNull(listener, "Function complete listener not specified");
+		this.completeListeners.add(listener);
 	}
 
 	@Override
@@ -130,6 +142,7 @@ public final class Function<F extends Func<F>>
 			return;
 		}
 		this.done = true;
+		notifyCompleteListeners();
 		super.done();
 		if (created()) {
 			writer().done();
@@ -141,14 +154,15 @@ public final class Function<F extends Func<F>>
 		return getSignature().toString(getId().toString());
 	}
 
-	@Override
-	protected Disposal disposal() {
-		return NO_DISPOSAL;
-	}
-
 	final void build() {
 		this.builder.build(this);
 		done();
+	}
+
+	private void notifyCompleteListeners() {
+		for (FunctionCompleteListener listener : this.completeListeners) {
+			listener.functionComplete(this);
+		}
 	}
 
 }

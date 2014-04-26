@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012,2013 Ruslan Lopatin
+    Copyright (C) 2010-2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,33 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.link.impl;
+package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DumpablePtrOp;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.util.string.ID;
 
-import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.ir.value.type.ValueOp;
 
+public abstract class DefiniteIROp extends IROp {
 
-final class LinkIR extends ValueIR {
+	public DefiniteIROp(CodeBuilder builder) {
+		super(builder);
+	}
 
-	LinkIR(LinkValueTypeIR valueStructIR, ObjectIR objectIR) {
-		super(valueStructIR, objectIR);
+	public ID getId() {
+		return ptr().getId();
 	}
 
 	@Override
-	public void allocateBody(ObjectIRBodyData data) {
+	public DumpablePtrOp<?> ptr(Code code) {
+		return ptr();
 	}
 
-	@Override
-	public void setInitialValue(ObjectTypeIR data) {
-		data.getInstance().data().value().set(INDEFINITE_VAL);
-	}
-
-	@Override
-	public ValueOp op(ObjectOp object) {
-		return defaultOp(object);
-	}
+	public abstract DumpablePtrOp<?> ptr();
 
 }

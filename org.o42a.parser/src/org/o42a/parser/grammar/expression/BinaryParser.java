@@ -182,6 +182,8 @@ public class BinaryParser implements Parser<BinaryNode> {
 					operator = BinaryOperator.NOT_EQUAL;
 					context.acceptAll();
 					break;
+				case '<':
+					return null;
 				case '=':
 					if (context.next() == '>') {
 						operator = BinaryOperator.COMPARE;
@@ -204,6 +206,8 @@ public class BinaryParser implements Parser<BinaryNode> {
 					operator = BinaryOperator.GREATER_OR_EQUAL;
 					context.acceptAll();
 					break;
+				case '>':
+					return null;
 				default:
 					operator = BinaryOperator.GREATER;
 					context.acceptButLast();

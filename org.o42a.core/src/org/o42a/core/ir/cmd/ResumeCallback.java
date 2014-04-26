@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Compiler Core
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,15 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.core.ir.cmd;
 
-import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePtr;
 
 
-final class NotingBeforeReturn implements BeforeReturn {
+public interface ResumeCallback {
 
-	@Override
-	public void beforeReturn(Block code) {
-	}
+	void resumedAt(CodePtr resumePtr);
 
 }

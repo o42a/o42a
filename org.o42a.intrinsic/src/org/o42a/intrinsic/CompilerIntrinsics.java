@@ -162,6 +162,11 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
+	public Obj getFlow() {
+		return this.root.getFlow();
+	}
+
+	@Override
 	public Module getModule(Name moduleName) {
 
 		final ModuleUse module = this.modules.get(moduleName);

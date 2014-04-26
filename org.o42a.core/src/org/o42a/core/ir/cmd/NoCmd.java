@@ -22,7 +22,7 @@ package org.o42a.core.ir.cmd;
 import org.o42a.util.fn.Cancelable;
 
 
-final class NoCmd extends InlineCmd {
+final class NoCmd<T> extends InlineCmd {
 
 	public NoCmd() {
 		super(null);

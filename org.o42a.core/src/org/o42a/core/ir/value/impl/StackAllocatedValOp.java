@@ -19,10 +19,13 @@
 */
 package org.o42a.core.ir.value.impl;
 
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Code;
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
+import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
+
+import org.o42a.codegen.code.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.ValType.Op;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -32,7 +35,7 @@ public final class StackAllocatedValOp extends ValOp {
 	private final ID id;
 	private final Allocator allocator;
 	private final ValHolder holder;
-	private ValType.Op ptr;
+	private final Allocated<ValType.Op> ptr;
 
 	public StackAllocatedValOp(
 			ID id,
@@ -44,6 +47,9 @@ public final class StackAllocatedValOp extends ValOp {
 		this.id = id;
 		this.allocator = allocator;
 		this.holder = holderFactory.createValHolder(this);
+		this.ptr = this.allocator.allocate(
+				this.id.getLocal(),
+				new AllocatableVal());
 	}
 
 	@Override
@@ -52,7 +58,7 @@ public final class StackAllocatedValOp extends ValOp {
 	}
 
 	@Override
-	public final boolean isStackAllocated() {
+	public final boolean isStackAllocated(Code code) {
 		return true;
 	}
 
@@ -67,17 +73,8 @@ public final class StackAllocatedValOp extends ValOp {
 	}
 
 	@Override
-	public ValType.Op ptr() {
-		if (this.ptr != null) {
-			return this.ptr;
-		}
-
-		final Code code = this.allocator.allocation();
-
-		this.ptr = code.allocate(this.id.getLocal(), ValType.VAL_TYPE);
-		storeIndefinite(code);
-
-		return this.ptr;
+	public ValType.Op ptr(Code code) {
+		return this.ptr.get(code);
 	}
 
 	@Override
@@ -91,6 +88,35 @@ public final class StackAllocatedValOp extends ValOp {
 			return super.toString();
 		}
 		return "(" + getValueType() + ") " + this.id;
+	}
+
+	private final class AllocatableVal
+			implements Allocatable<ValType.Op> {
+
+		@Override
+		public AllocationMode getAllocationMode() {
+			return ALLOCATOR_ALLOCATION;
+		}
+
+		@Override
+		public int getDisposePriority() {
+			return NORMAL_DISPOSE_PRIORITY;
+		}
+
+		@Override
+		public Op allocate(Allocations code, Allocated<ValType.Op> allocated) {
+			return code.allocate(ValType.VAL_TYPE);
+		}
+
+		@Override
+		public void init(Code code, ValType.Op allocated) {
+			allocated.flags(code, NOT_ATOMIC).storeIndefinite(code);
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<Op> allocated) {
+		}
+
 	}
 
 }

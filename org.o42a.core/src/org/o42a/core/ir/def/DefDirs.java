@@ -20,7 +20,9 @@
 package org.o42a.core.ir.def;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -32,20 +34,29 @@ import org.o42a.util.string.ID;
 public class DefDirs {
 
 	private final ValDirs valDirs;
-	private final Shared shared;
+	private final DefStore store;
+	private final CodePos returnDir;
 
-	public DefDirs(ValDirs valDirs, CodePos returnDir) {
-		assert valDirs != null :
-			"Value directions not specified";
+	public DefDirs(DefStore store, CodePos returnDir) {
+		assert store != null :
+			"Value definition store not specified";
 		assert returnDir != null :
 			"Return direction not specified";
+		this.valDirs = store.valDirs();
+		this.store = store;
+		this.returnDir = returnDir;
+	}
+
+	public DefDirs(DefStore store, ValDirs valDirs, CodePos returnDir) {
+		this.store = store;
 		this.valDirs = valDirs;
-		this.shared = new Shared(returnDir);
+		this.returnDir = returnDir;
 	}
 
 	private DefDirs(DefDirs prototype, ValDirs valDirs) {
+		this.store = prototype.store;
 		this.valDirs = valDirs;
-		this.shared = prototype.shared;
+		this.returnDir = prototype.returnDir;
 	}
 
 	public final Generator getGenerator() {
@@ -89,10 +100,18 @@ public class DefDirs {
 	}
 
 	public ValOp result() {
-		if (this.shared.result != null) {
-			return this.shared.result;
-		}
-		return value();
+
+		final ValOp storedResult = this.store.result();
+
+		return storedResult != null ? storedResult : value();
+	}
+
+	public final DefStore store() {
+		return this.store;
+	}
+
+	public final CodePos returnDir() {
+		return this.returnDir;
 	}
 
 	public final void returnValue(ValOp value) {
@@ -100,8 +119,8 @@ public class DefDirs {
 	}
 
 	public void returnValue(Block code, ValOp value) {
-		this.shared.store(code, value);
-		code.go(this.shared.returnDir);
+		this.store.store(code, value);
+		code.go(this.returnDir);
 	}
 
 	public final Block addBlock(String name) {
@@ -124,6 +143,10 @@ public class DefDirs {
 		return new DefDirs(this, valDirs().setFalseDir(falsePos));
 	}
 
+	public final DefDirs setReturnDir(CodePos returnDir) {
+		return new DefDirs(store(), valDirs().nested(), returnDir);
+	}
+
 	public CodeDirs done() {
 		return valDirs().done();
 	}
@@ -134,60 +157,6 @@ public class DefDirs {
 			return super.toString();
 		}
 		return dirs().toString("DefDirs", code());
-	}
-
-	private final class Shared {
-
-		private final CodePos returnDir;
-		private ValOp result;
-		private Code singleResultInset;
-		private boolean storeInstantly;
-
-		Shared(CodePos returnDir) {
-			this.returnDir = returnDir;
-		}
-
-		private void store(Code code, ValOp result) {
-			assert getValueType().is(result.getValueType()) :
-				"Wrong value type: " + result.getValueType()
-				+ ", but " + getValueType() + " expected";
-			if (this.result == null
-					&& valueAccessibleBy(code)
-					&& !holdableValue(result)) {
-				this.result = result;
-				this.singleResultInset = code.inset("store_def");
-				return;
-			}
-			if (!this.storeInstantly) {
-				if (this.singleResultInset != null) {
-					value().store(this.singleResultInset, this.result);
-					this.singleResultInset = null;
-				}
-				this.storeInstantly = true;
-				this.result = value();
-			}
-			value().store(code, result);
-		}
-
-
-		private boolean valueAccessibleBy(Code code) {
-			if (!valDirs().value().isStackAllocated()) {
-				return true;
-			}
-			return code.getAllocator() == valDirs().code().getAllocator();
-		}
-
-		private boolean holdableValue(ValOp result) {
-
-			final ValOp value = valDirs().value();
-
-			if (value == result) {
-				return false;
-			}
-
-			return value.holder().holdable(result);
-		}
-
 	}
 
 }

@@ -84,7 +84,9 @@ public abstract class BlockCommand<B extends Block> extends Command {
 	}
 
 	@Override
-	public final InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+	public final InlineCmd normalize(
+			RootNormalizer normalizer,
+			Scope origin) {
 		return this.sentences.inline(normalizer, null, origin);
 	}
 

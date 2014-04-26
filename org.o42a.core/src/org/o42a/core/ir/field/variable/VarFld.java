@@ -21,7 +21,7 @@ package org.o42a.core.ir.field.variable;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Block;
@@ -79,9 +79,7 @@ public class VarFld extends AbstractLinkFld<VarFld.Op> {
 		final Block code = dirs.code();
 		final FldOp<Op> fld = op(code, builder.host());
 		final FldCtrOp ctr =
-				code.getAllocator()
-				.allocation()
-				.allocate(FLD_CTR_ID, FLD_CTR_TYPE);
+				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
 		final Block constructed = code.addBlock("constructed");
 

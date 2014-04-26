@@ -118,8 +118,8 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 	}
 
 	@Override
-	public boolean local(Scope scope, Local local) {
-		return appendIfExist(local);
+	public boolean local(Step step, Scope scope, Local local) {
+		return appendIfExist(step);
 	}
 
 	@Override

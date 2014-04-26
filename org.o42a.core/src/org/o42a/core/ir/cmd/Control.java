@@ -21,13 +21,11 @@ package org.o42a.core.ir.cmd;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.ID;
@@ -37,8 +35,18 @@ import org.o42a.util.string.Name;
 public abstract class Control {
 
 	public static Control mainControl(DefDirs dirs) {
-		return new MainControl(dirs, dirs.addBlock("continuation"));
+
+		final MainControl mainControl =
+				new MainControl(dirs, dirs.addBlock("continuation"));
+
+		mainControl.init();
+
+		return mainControl;
 	}
+
+
+	private ResumeCallback resumeCallback;
+	private Control done;
 
 	Control() {
 	}
@@ -51,6 +59,10 @@ public abstract class Control {
 		return main().builder();
 	}
 
+	public final boolean isDone() {
+		return this.done != null;
+	}
+
 	public final ObjectOp host() {
 		return getBuilder().host();
 	}
@@ -58,10 +70,8 @@ public abstract class Control {
 	public abstract LocalsCode locals();
 
 	public final ValOp result() {
-		return main().mainResult();
+		return main().mainStore().value();
 	}
-
-	public abstract Code allocation();
 
 	public abstract Block code();
 
@@ -74,7 +84,7 @@ public abstract class Control {
 	}
 
 	public final void returnValue(Block code, ValOp value) {
-		main().storeResult(code, value);
+		main().mainStore().store(code, value);
 		code.go(returnDir());
 	}
 
@@ -135,19 +145,76 @@ public abstract class Control {
 		return new NestedControl.AltControl(this, code, next);
 	}
 
+	public final Control command(String index, ControlIsolator isolator) {
+		return new CommandControl(this, index + "_cmd", isolator);
+	}
+
+	public final Control resume(
+			String index,
+			ControlIsolator isolator,
+			ResumeCallback prevResumeCallback) {
+
+		final CommandControl control =
+				new CommandControl(this, index + "_resume", isolator);
+		final Block code = control.code();
+
+		code.debug("Resumed @" + code.getId());
+		main().addResumePosition(code.head(), prevResumeCallback);
+
+		return control;
+	}
+
 	public final CodeDirs dirs() {
 		return getBuilder().dirs(code(), falseDir());
 	}
 
-	public final ValDirs valDirs() {
-		return dirs().value(result());
-	}
-
 	public final DefDirs defDirs() {
-		return new ControlDirs(valDirs());
+		return new DefDirs(
+				main().mainStore(),
+				dirs().value(result()),
+				returnDir());
 	}
 
-	public abstract void end();
+	public final ResumeCallback getResumeCallback() {
+		return this.resumeCallback;
+	}
+
+	public final void setResumeCallback(ResumeCallback resumeCallback) {
+		this.resumeCallback = resumeCallback;
+	}
+
+	/**
+	 * Closes this control and returns the parent one.
+	 *
+	 * <p>The returned control can be used to share the allocations made by
+	 * command. This is necessary e.g. for locals, but isn't compatible with
+	 * value yielding.</p>
+	 *
+	 * @return parent allocation.
+	 */
+	public final Control end() {
+		if (this.done != null) {
+			return this.done;
+		}
+		return this.done = done();
+	}
+
+	/**
+	 * Creates an isolated control.
+	 *
+	 * <p>Allocations made by isolated control are always made in dedicated
+	 * allocator. Otherwise they will be made in original allocator, in which
+	 * other commands can do their allocations too.</p>
+	 *
+	 * <p>Explicit control isolation is only necessary for commands like loops
+	 * to prevent unintended allocations sharing leading to "The node does not
+	 * dominate all its usages" error.</p>
+	 *
+	 * @return this control if it isolated control.
+	 */
+	public Control isolate() {
+		return this;
+	}
 
 	@Override
 	public String toString() {
@@ -166,6 +233,8 @@ public abstract class Control {
 	abstract BracesControl braces();
 
 	abstract CodePos returnDir();
+
+	abstract Control done();
 
 	private BracesControl enclosingBraces(Name name) {
 		if (name == null) {
@@ -190,24 +259,6 @@ public abstract class Control {
 				location,
 				"Block '%s' not found",
 				name);
-	}
-
-	private final class ControlDirs extends DefDirs {
-
-		ControlDirs(ValDirs valDirs) {
-			super(valDirs, returnDir());
-		}
-
-		@Override
-		public void returnValue(Block code, ValOp value) {
-			Control.this.returnValue(code, value);
-		}
-
-		@Override
-		public ValOp result() {
-			return Control.this.result();
-		}
-
 	}
 
 }

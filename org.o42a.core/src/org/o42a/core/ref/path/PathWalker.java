@@ -52,7 +52,7 @@ public interface PathWalker {
 
 	boolean dereference(Obj linkObject, Step step, Link link);
 
-	boolean local(Scope scope, Local local);
+	boolean local(Step step, Scope scope, Local local);
 
 	boolean dep(Obj object, Dep dep);
 

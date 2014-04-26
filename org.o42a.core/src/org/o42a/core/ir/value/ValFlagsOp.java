@@ -153,6 +153,10 @@ public final class ValFlagsOp {
 		store(code, 0);
 	}
 
+	public final void storeIndefinite(Code code) {
+		store(code, VAL_INDEFINITE);
+	}
+
 	public final void store(Code code, int flags) {
 		this.ptr.store(code, code.int32(flags), this.atomicity);
 	}

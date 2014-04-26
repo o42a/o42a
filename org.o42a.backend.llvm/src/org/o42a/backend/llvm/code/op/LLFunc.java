@@ -66,7 +66,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 				castId,
 				constantAllocPlace(),
 				nextPtr,
-				llvm.instr(nextPtr, toAny(
+				llvm.instr(toAny(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.write(castId),
@@ -183,17 +183,13 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 			argPtrs[i] = nativePtr(args[i]);
 		}
 
-		final long nextPtr = code.nextPtr();
-
-		return code.instr(
-				nextPtr,
-				call(
-						nextPtr,
-						code.nextInstr(),
-						ids.write(id),
-						ids.length(),
-						getNativePtr(),
-						argPtrs));
+		return code.instr(call(
+				code.nextPtr(),
+				code.nextInstr(),
+				ids.write(id),
+				ids.length(),
+				getNativePtr(),
+				argPtrs));
 	}
 
 	private static native long call(

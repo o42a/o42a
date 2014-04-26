@@ -19,13 +19,12 @@
 */
 package org.o42a.core.ir.object.op;
 
+import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
 import static org.o42a.core.ir.object.op.StartObjectUseFunc.START_OBJECT_USE;
 
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Disposal;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
@@ -41,25 +40,20 @@ import org.o42a.util.string.ID;
 public final class ObjectUseOp extends IROp {
 
 	public static final Type OBJECT_USE_TYPE = new Type();
+	private static final AllocatableObjectUse ALLOCATABLE_OBJECT_USE =
+			new AllocatableObjectUse();
 
-	private final Op ptr;
-	private final StructRecOp<ObjectIRDataOp> objectData;
+	private final Allocated<AllocatedObjectUse> ptr;
 
 	ObjectUseOp(ID id, CodeBuilder builder, Allocator allocator) {
 		super(builder);
-
-		final Code code = allocator.allocation();
-
-		this.ptr = code.allocate(id, OBJECT_USE_TYPE);
-		this.objectData = ptr().objectData(null, code);
-		this.objectData.store(code, code.nullPtr(OBJECT_DATA_TYPE));
-		allocator.addDisposal(new UnuseObject(this));
+		this.ptr = allocator.allocate(id, ALLOCATABLE_OBJECT_USE);
 		getBuilder().gc().signal();
 	}
 
 	@Override
-	public final Op ptr() {
-		return this.ptr;
+	public final Op ptr(Code code) {
+		return this.ptr.get(code).op;
 	}
 
 	@Override
@@ -75,7 +69,7 @@ public final class ObjectUseOp extends IROp {
 
 		final ObjectIRDataOp data = object.objectData(code).ptr();
 
-		this.objectData.store(code, data);
+		this.ptr.get(code).objectData.store(code, data);
 	}
 
 	void startUse(Code code, ObjectOp object) {
@@ -86,15 +80,7 @@ public final class ObjectUseOp extends IROp {
 		.externalFunction()
 		.link("o42a_obj_start_use", START_OBJECT_USE)
 		.op(null, code)
-		.use(code, ptr(), data);
-	}
-
-	private void endUse(Code code) {
-		getGenerator()
-		.externalFunction()
-		.link("o42a_obj_end_use", END_OBJECT_UNUSE)
-		.op(null, code)
-		.unuse(code, ptr());
+		.use(code, ptr(code), data);
 	}
 
 	public static final class Op extends StructOp<Op> {
@@ -139,17 +125,13 @@ public final class ObjectUseOp extends IROp {
 
 	}
 
-	private static final class UnuseObject implements Disposal {
+	private static final class AllocatedObjectUse {
 
-		private final ObjectUseOp op;
+		private final Op op;
+		private StructRecOp<ObjectIRDataOp> objectData;
 
-		UnuseObject(ObjectUseOp op) {
+		AllocatedObjectUse(Op op) {
 			this.op = op;
-		}
-
-		@Override
-		public void dispose(Code code) {
-			this.op.endUse(code);
 		}
 
 		@Override
@@ -157,7 +139,55 @@ public final class ObjectUseOp extends IROp {
 			if (this.op == null) {
 				return super.toString();
 			}
-			return "UnuseObject[" + this.op.ptr() + ']';
+			return toString();
+		}
+
+		void init(Code code) {
+			this.objectData = this.op.objectData(null, code);
+			this.objectData.store(code, code.nullPtr(OBJECT_DATA_TYPE));
+		}
+
+	}
+
+	private static final class AllocatableObjectUse
+			implements Allocatable<AllocatedObjectUse> {
+
+		@Override
+		public AllocationMode getAllocationMode() {
+			return ALLOCATOR_ALLOCATION;
+		}
+
+		@Override
+		public int getDisposePriority() {
+			return NORMAL_DISPOSE_PRIORITY;
+		}
+
+		@Override
+		public AllocatedObjectUse allocate(
+				Allocations code,
+				Allocated<AllocatedObjectUse> allocated) {
+			return new AllocatedObjectUse(code.allocate(OBJECT_USE_TYPE));
+		}
+
+		@Override
+		public void init(Code code, AllocatedObjectUse objectUse) {
+			objectUse.init(code);
+		}
+
+		@Override
+		public void dispose(
+				Code code,
+				Allocated<AllocatedObjectUse> allocated) {
+			code.getGenerator()
+			.externalFunction()
+			.link("o42a_obj_end_use", END_OBJECT_UNUSE)
+			.op(null, code)
+			.unuse(code, allocated.get(code).op);
+		}
+
+		@Override
+		public String toString() {
+			return "ObjectUse";
 		}
 
 	}

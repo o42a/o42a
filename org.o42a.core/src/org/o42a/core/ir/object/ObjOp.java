@@ -105,6 +105,11 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
+	public final ObjectIRBodyOp ptr(Code code) {
+		return ptr();
+	}
+
+	@Override
 	public final ValueOp value() {
 		if (this.value != null) {
 			return this.value;

@@ -38,6 +38,13 @@ using namespace llvm;
 		if (instrPtr) builder.SetInsertPoint(\
 			static_cast<Instruction*>(from_ptr<Value>(instrPtr)))
 
+jlong Java_org_o42a_backend_llvm_code_LLVMCodeBackend_codeToAny(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr) {
+	return to_ptr<Value>(BlockAddress::get(from_ptr<BasicBlock>(blockPtr)));
+}
+
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 		JNIEnv *,
 		jclass,
@@ -399,6 +406,27 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 	Value *result = builder.CreatePointerCast(
 			pointer,
 			type->getPointerTo(),
+			StringRef(from_ptr<char>(id), idLen));
+
+	return to_instr_ptr(builder.GetInsertBlock(), result);
+}
+
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toStructRec(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
+		jlong id,
+		jint idLen,
+		jlong pointerPtr,
+		jlong typePtr) {
+
+	MAKE_BUILDER;
+	Value *pointer = from_ptr<Value>(pointerPtr);
+	Type *type = from_ptr<Type>(typePtr);
+	Value *result = builder.CreatePointerCast(
+			pointer,
+			type->getPointerTo()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
 	return to_instr_ptr(builder.GetInsertBlock(), result);

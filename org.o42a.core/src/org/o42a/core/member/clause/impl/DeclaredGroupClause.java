@@ -221,9 +221,7 @@ public final class DeclaredGroupClause
 		private final Distributor enclosingDistributor;
 		private final DeclaredGroupClause clause;
 
-		BlockDistributor(
-				Group group,
-				DeclaredGroupClause clause) {
+		BlockDistributor(Group group, DeclaredGroupClause clause) {
 			this.enclosingDistributor = group.distribute();
 			this.clause = clause;
 		}
