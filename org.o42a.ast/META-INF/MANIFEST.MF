@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: o42a Abstract Syntax Tree
 Bundle-SymbolicName: org.o42a.ast;singleton:=true
 Bundle-Version: 0.2.9
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.o42a.ast,
  org.o42a.ast.atom,
  org.o42a.ast.clause,
