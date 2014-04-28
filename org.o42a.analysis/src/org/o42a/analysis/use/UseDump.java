@@ -51,7 +51,10 @@ public class UseDump<U extends Usage<U>> {
 		if (!isEnabled()) {
 			return;
 		}
-		uses.add(new UseDump<>(what.toString(), user, usage));
+
+		final UseDump<U> dump = new UseDump<>(what.toString(), user, usage);
+
+		uses.add(dump);
 	}
 
 	public static void dumpSeparator(String what) {

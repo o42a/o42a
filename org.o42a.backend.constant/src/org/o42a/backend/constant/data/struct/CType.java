@@ -61,6 +61,7 @@ public final class CType<S extends StructOp<S>> extends Struct<S> {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Type<?>[] getTypeDependencies() {
 		if (this.dependencies != null) {
@@ -76,7 +77,11 @@ public final class CType<S extends StructOp<S>> extends Struct<S> {
 		final CType<?>[] deps = new CType<?>[originalDeps.length];
 
 		for (int i = 0; i < deps.length; ++i) {
-			deps[i] = getBackend().underlying(originalDeps[i]);
+
+			@SuppressWarnings("rawtypes")
+			final Type originalDep = originalDeps[i];
+
+			deps[i] = getBackend().underlying(originalDep);
 		}
 
 		return this.dependencies = deps;
