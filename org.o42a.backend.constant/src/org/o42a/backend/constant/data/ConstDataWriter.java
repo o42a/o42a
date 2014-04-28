@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.data;
 
+import java.util.function.Supplier;
+
 import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.func.NullCFAlloc;
 import org.o42a.backend.constant.data.rec.*;
@@ -30,7 +32,6 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
-import org.o42a.util.fn.Getter;
 
 
 public final class ConstDataWriter implements DataWriter {
@@ -138,7 +139,7 @@ public final class ConstDataWriter implements DataWriter {
 	@Override
 	public void writeInt8(
 			DataAllocation<Int8recOp> destination,
-			Getter<Byte> value) {
+			Supplier<Byte> value) {
 
 		final Int8cdAlloc dest = (Int8cdAlloc) destination;
 
@@ -148,7 +149,7 @@ public final class ConstDataWriter implements DataWriter {
 	@Override
 	public void writeInt16(
 			DataAllocation<Int16recOp> destination,
-			Getter<Short> value) {
+			Supplier<Short> value) {
 
 		final Int16cdAlloc dest = (Int16cdAlloc) destination;
 
@@ -158,7 +159,7 @@ public final class ConstDataWriter implements DataWriter {
 	@Override
 	public void writeInt32(
 			DataAllocation<Int32recOp> destination,
-			Getter<Integer> value) {
+			Supplier<Integer> value) {
 
 		final Int32cdAlloc dest = (Int32cdAlloc) destination;
 
@@ -168,7 +169,7 @@ public final class ConstDataWriter implements DataWriter {
 	@Override
 	public void writeInt64(
 			DataAllocation<Int64recOp> destination,
-			Getter<Long> value) {
+			Supplier<Long> value) {
 
 		final Int64cdAlloc dest = (Int64cdAlloc) destination;
 
@@ -178,7 +179,7 @@ public final class ConstDataWriter implements DataWriter {
 	@Override
 	public void writeNativePtrAsInt64(
 			DataAllocation<Int64recOp> destination,
-			Getter<Ptr<AnyOp>> value) {
+			Supplier<Ptr<AnyOp>> value) {
 
 		final Int64cdAlloc dest = (Int64cdAlloc) destination;
 
@@ -188,7 +189,7 @@ public final class ConstDataWriter implements DataWriter {
 	@Override
 	public void writeFp32(
 			DataAllocation<Fp32recOp> destination,
-			Getter<Float> value) {
+			Supplier<Float> value) {
 
 		final Fp32cdAlloc dest = (Fp32cdAlloc) destination;
 
@@ -198,7 +199,7 @@ public final class ConstDataWriter implements DataWriter {
 	@Override
 	public void writeFp64(
 			DataAllocation<Fp64recOp> destination,
-			Getter<Double> value) {
+			Supplier<Double> value) {
 
 		final Fp64cdAlloc dest = (Fp64cdAlloc) destination;
 

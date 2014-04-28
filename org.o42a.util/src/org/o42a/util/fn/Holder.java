@@ -19,8 +19,10 @@
 */
 package org.o42a.util.fn;
 
+import java.util.function.Supplier;
 
-public final class Holder<T> implements Getter<T> {
+
+public final class Holder<T> implements Supplier<T> {
 
 	public static <T> Holder<T> holder(T value) {
 		return new Holder<>(value);

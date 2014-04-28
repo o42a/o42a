@@ -23,6 +23,8 @@ import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 
+import java.util.function.Supplier;
+
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.CCode;
@@ -35,7 +37,6 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Rec;
-import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
@@ -70,7 +71,7 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 			return null;
 		}
 
-		final Getter<T> value = alloc.getValue();
+		final Supplier<T> value = alloc.getValue();
 
 		return value != null ? value.get() : null;
 	}

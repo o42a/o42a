@@ -22,18 +22,19 @@ package org.o42a.codegen.data;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
 
+import java.util.function.Supplier;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
-import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
 public abstract class Ptr<P extends PtrOp<P>>
 		extends AbstractPtr
-		implements Getter<Ptr<P>> {
+		implements Supplier<Ptr<P>> {
 
 	private DataAllocation<P> allocation;
 	private DataAllocation<P> protoAllocation;

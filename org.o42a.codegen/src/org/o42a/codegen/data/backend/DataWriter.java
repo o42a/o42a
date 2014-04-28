@@ -19,11 +19,12 @@
 */
 package org.o42a.codegen.data.backend;
 
+import java.util.function.Supplier;
+
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
-import org.o42a.util.fn.Getter;
 
 
 public interface DataWriter {
@@ -54,25 +55,25 @@ public interface DataWriter {
 			DataAllocation<S> destination,
 			Global<S, ?> global);
 
-	void writeInt8(DataAllocation<Int8recOp> destination, Getter<Byte> value);
+	void writeInt8(DataAllocation<Int8recOp> destination, Supplier<Byte> value);
 
 	void writeInt16(
 			DataAllocation<Int16recOp> destination,
-			Getter<Short> value);
+			Supplier<Short> value);
 
 	void writeInt32(
 			DataAllocation<Int32recOp> destination,
-			Getter<Integer> value);
+			Supplier<Integer> value);
 
-	void writeInt64(DataAllocation<Int64recOp> destination, Getter<Long> value);
+	void writeInt64(DataAllocation<Int64recOp> destination, Supplier<Long> value);
 
 	void writeNativePtrAsInt64(
 			DataAllocation<Int64recOp> destination,
-			Getter<Ptr<AnyOp>> value);
+			Supplier<Ptr<AnyOp>> value);
 
-	void writeFp32(DataAllocation<Fp32recOp> destination, Getter<Float> value);
+	void writeFp32(DataAllocation<Fp32recOp> destination, Supplier<Float> value);
 
-	void writeFp64(DataAllocation<Fp64recOp> destination, Getter<Double> value);
+	void writeFp64(DataAllocation<Fp64recOp> destination, Supplier<Double> value);
 
 	void writeSystem(DataAllocation<SystemOp> destination);
 

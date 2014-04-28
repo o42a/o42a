@@ -19,8 +19,9 @@
 */
 package org.o42a.codegen.data;
 
+import java.util.function.Supplier;
+
 import org.o42a.codegen.code.op.AllocPtrOp;
-import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
@@ -29,7 +30,7 @@ public abstract class Rec<P extends AllocPtrOp<P>, T>
 		implements RecAttributes {
 
 	private final SubData<?> enclosing;
-	private Getter<T> value;
+	private Supplier<T> value;
 	private int flags;
 
 	Rec(SubData<?> enclosing, ID id) {
@@ -85,11 +86,11 @@ public abstract class Rec<P extends AllocPtrOp<P>, T>
 		return null;
 	}
 
-	public final Getter<T> getValue() {
+	public final Supplier<T> getValue() {
 		return this.value;
 	}
 
-	public void setValue(Getter<T> value) {
+	public void setValue(Supplier<T> value) {
 		this.value = value;
 	}
 
