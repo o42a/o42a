@@ -27,7 +27,7 @@ import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.object.AnnotatedSources;
-import org.o42a.common.object.RelatedSources;
+import org.o42a.common.object.RelatedSource;
 import org.o42a.common.object.SourcePath;
 import org.o42a.common.source.TreeCompilerContext;
 import org.o42a.common.source.URLSourceTree;
@@ -51,12 +51,10 @@ import org.o42a.util.io.URLSource;
 
 
 @SourcePath("root.o42a")
-@RelatedSources({
-	"assignable.o42a",
-	"number.o42a",
-	"indexed.o42a",
-	"property.o42a"
-})
+@RelatedSource("assignable.o42a")
+@RelatedSource("number.o42a")
+@RelatedSource("indexed.o42a")
+@RelatedSource("property.o42a")
 public class Root extends Obj {
 
 	private static final MemberName DIRECTIVE_MEMBER =

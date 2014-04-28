@@ -586,7 +586,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		for (Map.Entry<
 				? extends ExecutableElement,
 				? extends AnnotationValue> e
-				:this.relatedSources.getElementValues().entrySet()) {
+				: this.relatedSources.getElementValues().entrySet()) {
 			if (e.getKey().getSimpleName().contentEquals(VALUE)) {
 				value = e.getValue();
 			}
@@ -603,7 +603,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 
 	private void printRelatedSource(PrintWriter out, AnnotationValue value) {
 
-		final String path = value.getValue().toString();
+		final String path = extractPath(value);
 
 		if (path.startsWith("/")) {
 			getMessenger().printMessage(
@@ -616,6 +616,23 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 
 		out.append("\t\tthis.sourceTree.add(\"").append(path);
 		out.println("\");");
+	}
+
+	private String extractPath(AnnotationValue value) {
+
+		final AnnotationMirror annotation =
+				AnnotationValueVisitor.annotationValue(value);
+
+		for (Map.Entry<
+				? extends ExecutableElement,
+				? extends AnnotationValue> e
+				: annotation.getElementValues().entrySet()) {
+			if (e.getKey().getSimpleName().contentEquals(VALUE)) {
+				return e.getValue().getValue().toString();
+			}
+		}
+
+		throw new IllegalStateException("Related source path is absent");
 	}
 
 	private void emitFields(PrintWriter out) throws IOException {

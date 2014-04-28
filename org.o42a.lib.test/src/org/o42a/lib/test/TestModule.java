@@ -24,7 +24,7 @@ import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.common.object.AnnotatedModule;
-import org.o42a.common.object.RelatedSources;
+import org.o42a.common.object.RelatedSource;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -36,7 +36,9 @@ import org.o42a.core.source.Module;
 
 
 @SourcePath("test.o42a")
-@RelatedSources({"rt-float.o42a", "rt-integer.o42a", "rt-string.o42a"})
+@RelatedSource("rt-float.o42a")
+@RelatedSource("rt-integer.o42a")
+@RelatedSource("rt-string.o42a")
 public class TestModule extends AnnotatedModule {
 
 	private static final MemberName TEST_MEMBER =

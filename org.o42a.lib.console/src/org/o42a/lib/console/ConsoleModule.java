@@ -58,7 +58,7 @@ import org.o42a.util.string.ID;
 
 
 @SourcePath("console.o42a")
-@RelatedSources("print_to_console.o42a")
+@RelatedSource("print_to_console.o42a")
 public class ConsoleModule extends AnnotatedModule {
 
 	public static final ID CONSOLE_ID = ID.id("console");

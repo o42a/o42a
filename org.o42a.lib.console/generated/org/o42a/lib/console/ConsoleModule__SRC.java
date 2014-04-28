@@ -29,22 +29,17 @@ public final class ConsoleModule__SRC implements AnnotatedSources {
 		}
 	}
 
-	private URLSources sourceTree;
+	private SingleURLSource sourceTree;
 
 	@Override
-	public URLSources getSourceTree() {
+	public SingleURLSource getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-
-		this.sourceTree = new URLSources(
+		return this.sourceTree = new SingleURLSource(
 				null,
 				base(),
 				"console.o42a");
-
-		this.sourceTree.add("print_to_console.o42a");
-
-		return this.sourceTree;
 	}
 
 	@Override

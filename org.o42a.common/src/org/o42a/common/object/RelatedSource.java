@@ -1,6 +1,6 @@
 /*
-    Compiler Commons
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,8 +24,9 @@ import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.TYPE})
-public @interface RelatedSources {
+@Repeatable(RelatedSources.class)
+public @interface RelatedSource {
 
-	RelatedSource[] value();
+	String value();
 
 }
