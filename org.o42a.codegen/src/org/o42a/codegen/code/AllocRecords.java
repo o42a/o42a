@@ -36,14 +36,18 @@ final class AllocRecords {
 		return this.records.length;
 	}
 
+	public final AllocRecord<?> get(int index) {
+		return this.records[index];
+	}
+
 	@SuppressWarnings("unchecked")
-	public final <P extends AllocPtrOp<P>> AllocRecord<P> get(int index) {
-		return (AllocRecord<P>) this.records[index];
+	public final <P extends AllocPtrOp<P>> AllocRecord<P> cast(int index) {
+		return (AllocRecord<P>) get(index);
 	}
 
 	public AllocRecord<AnyRecOp> recordPtr(int index, ID id) {
 		if (index < this.records.length) {
-			return get(index);
+			return cast(index);
 		}
 
 		return record(new AllocRecord<AnyRecOp>(id, index) {
@@ -74,7 +78,7 @@ final class AllocRecords {
 			ID id,
 			final Type<S> type) {
 		if (index < this.records.length) {
-			return get(index);
+			return cast(index);
 		}
 
 		return record(new AllocRecord<StructRecOp<S>>(id, index) {
@@ -115,7 +119,7 @@ final class AllocRecords {
 			ID id,
 			final Type<S> type) {
 		if (index < this.records.length) {
-			return get(index);
+			return cast(index);
 		}
 
 		return record(new AllocRecord<S>(id, index) {

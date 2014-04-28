@@ -106,9 +106,14 @@ public class CSignatureWriter<F extends Func<F>>
 		ret(CArgType.DATA);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void returnPtr(Type<?> type) {
-		this.returnType = getBackend().underlying(type);
+
+		@SuppressWarnings("rawtypes")
+		final Type t = type;
+
+		this.returnType = getBackend().underlying(t);
 	}
 
 	@Override

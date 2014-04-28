@@ -447,7 +447,8 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return part;
 	}
 
-	private final <O extends AllocPtrCOp<?>> O allocated(O op) {
+	private final <O extends AllocPtrCOp<P>, P extends AllocPtrOp<P>>
+			O allocated(O op) {
 
 		final CBlock<?> allocator =
 				(CBlock<?>) code().getAllocator().writer();

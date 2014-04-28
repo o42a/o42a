@@ -279,9 +279,9 @@ final class AllocEntry {
 					this.entry.getAllocationsMap().records(this.allocated);
 		}
 
-		private <P extends AllocPtrOp<P>> AllocatedPtrs<P> newPtrs(
-				AllocRecord<P> record) {
-			return new AllocatedPtrs<>(this, record);
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		private AllocatedPtrs<?> newPtrs(AllocRecord<?> record) {
+			return new AllocatedPtrs(this, record);
 		}
 
 	}

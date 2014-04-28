@@ -218,7 +218,10 @@ public final class LLVMModule {
 
 	public long pointerTo(Signature<?> signature) {
 
-		final LLSignature<?> allocation = llvm(signature);
+		@SuppressWarnings("rawtypes")
+		final Signature s = signature;
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		final LLSignature allocation = llvm(s);
 
 		return pointerToFunc(allocation.getNativePtr());
 	}
