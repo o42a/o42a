@@ -22,11 +22,11 @@ package org.o42a.tools.ap;
 import java.util.List;
 
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.util.SimpleAnnotationValueVisitor6;
+import javax.lang.model.util.SimpleAnnotationValueVisitor8;
 
 
 final class AnnotationArrayValueVisitor
-		extends SimpleAnnotationValueVisitor6<
+		extends SimpleAnnotationValueVisitor8<
 				List<? extends AnnotationValue>,
 				Void> {
 

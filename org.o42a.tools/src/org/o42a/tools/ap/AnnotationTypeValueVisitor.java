@@ -21,11 +21,11 @@ package org.o42a.tools.ap;
 
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleAnnotationValueVisitor6;
+import javax.lang.model.util.SimpleAnnotationValueVisitor8;
 
 
 final class AnnotationTypeValueVisitor
-		extends SimpleAnnotationValueVisitor6<TypeMirror, Void> {
+		extends SimpleAnnotationValueVisitor8<TypeMirror, Void> {
 
 	private static final AnnotationTypeValueVisitor VISITOR =
 			new AnnotationTypeValueVisitor();

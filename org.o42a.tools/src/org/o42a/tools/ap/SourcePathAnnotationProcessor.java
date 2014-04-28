@@ -31,7 +31,7 @@ import javax.tools.Diagnostic;
 
 
 @SupportedAnnotationTypes("org.o42a.common.object.SourcePath")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class SourcePathAnnotationProcessor extends AbstractProcessor {
 
 	@Override
