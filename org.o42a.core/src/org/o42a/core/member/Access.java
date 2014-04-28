@@ -19,7 +19,9 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.ContainerInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.source.Location;
 
 
@@ -87,36 +89,6 @@ public final class Access implements ContainerInfo {
 	@Override
 	public final Container getContainer() {
 		return this.user.getContainer();
-	}
-
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

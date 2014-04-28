@@ -63,7 +63,7 @@ public final class ClauseInstance implements LocationInfo {
 		return this.location;
 	}
 
-	public final PhraseContext getContext() {
+	public final PhraseContext getPhraseContext() {
 		return this.context;
 	}
 
@@ -96,7 +96,7 @@ public final class ClauseInstance implements LocationInfo {
 	}
 
 	public void groupDefinition(Block block) {
-		getContext().define(this, block);
+		getPhraseContext().define(this, block);
 		for (PhraseContinuation content : getContent()) {
 			content.define(block);
 		}
@@ -105,7 +105,7 @@ public final class ClauseInstance implements LocationInfo {
 	public Ref instantiateObject(Distributor distributor) {
 
 		final ClauseSubstitution substitution =
-				getContext().getClause().getSubstitution();
+				getPhraseContext().getClause().getSubstitution();
 
 		switch (substitution) {
 		case NO_SUBSTITUTION:
@@ -113,7 +113,7 @@ public final class ClauseInstance implements LocationInfo {
 		case VALUE_SUBSTITUTION:
 			return substituteValue(distributor);
 		case PREFIX_SUBSITUTION:
-			return getContext().getPhrase().substitutePrefix(distributor);
+			return getPhraseContext().getPhrase().substitutePrefix(distributor);
 		}
 
 		final Path instancePath =
@@ -151,7 +151,7 @@ public final class ClauseInstance implements LocationInfo {
 		}
 
 		final PhraseSubContext context =
-				new PhraseSubContext(getContext(), location, clause);
+				new PhraseSubContext(getPhraseContext(), location, clause);
 
 		this.subContexts.put(key, context);
 
@@ -177,7 +177,7 @@ public final class ClauseInstance implements LocationInfo {
 
 		@Override
 		public void buildBlock(Block block) {
-			this.instance.getContext().define(this.instance, block);
+			this.instance.getPhraseContext().define(this.instance, block);
 			for (PhraseContinuation content : this.instance.getContent()) {
 				content.define(block);
 			}

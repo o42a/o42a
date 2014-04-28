@@ -26,12 +26,28 @@ public interface ScopeInfo extends LocationInfo {
 
 	Scope getScope();
 
-	void assertScopeIs(Scope scope);
+	default boolean assertScopeIs(Scope scope) {
+		// Don't place an assertion here. JDK-8025141
+		Scoped.assertScopeIs(this, scope);
+		return true;
+	}
 
-	void assertCompatible(Scope scope);
+	default boolean assertCompatible(Scope scope) {
+		// Don't place an assertion here. JDK-8025141
+		Scoped.assertCompatible(this, scope);
+		return true;
+	}
 
-	void assertSameScope(ScopeInfo other);
+	default boolean assertSameScope(ScopeInfo other) {
+		// Don't place an assertion here. JDK-8025141
+		Scoped.assertSameScope(this, other);
+		return true;
+	}
 
-	void assertCompatibleScope(ScopeInfo other);
+	default boolean assertCompatibleScope(ScopeInfo other) {
+		// Don't place an assertion here. JDK-8025141
+		Scoped.assertCompatibleScope(this, other);
+		return true;
+	}
 
 }

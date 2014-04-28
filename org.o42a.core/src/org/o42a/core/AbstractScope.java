@@ -35,8 +35,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.string.ID;
 
 
@@ -157,11 +155,6 @@ public abstract class AbstractScope implements Scope {
 	private int anonymousSeq;
 
 	@Override
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
-	@Override
 	public final Scope getScope() {
 		return this;
 	}
@@ -220,21 +213,6 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
-	}
-
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
-	@Override
 	public final PrefixPath pathTo(Scope targetScope) {
 		return pathTo(this, targetScope);
 	}
@@ -257,26 +235,6 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public final boolean assertDerivedFrom(Scope other) {
 		return assertDerivedFrom(this, other);
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 }

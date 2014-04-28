@@ -23,7 +23,9 @@ import static org.o42a.core.member.MemberName.localName;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.ContainerInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberPath;
@@ -146,36 +148,6 @@ public final class Local
 	@Override
 	public final Local toLocal() {
 		return this;
-	}
-
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

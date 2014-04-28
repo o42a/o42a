@@ -33,7 +33,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.*;
 import org.o42a.core.ref.type.TypeRelation.Kind;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -104,10 +103,6 @@ public final class TypeParameters<T> extends TypeRefParameters {
 	@Override
 	public final Location getLocation() {
 		return this.location;
-	}
-
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
 	}
 
 	@Override

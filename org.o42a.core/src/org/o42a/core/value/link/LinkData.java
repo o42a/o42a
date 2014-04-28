@@ -23,7 +23,9 @@ import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.value.ValueKnowledge.*;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.ContainerInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
@@ -31,8 +33,6 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.link.impl.LinkTarget;
@@ -59,10 +59,6 @@ public abstract class LinkData<L extends Link> implements ContainerInfo {
 	@Override
 	public final Location getLocation() {
 		return getLink().getLocation();
-	}
-
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
 	}
 
 	@Override
@@ -113,10 +109,6 @@ public abstract class LinkData<L extends Link> implements ContainerInfo {
 		return INITIALLY_KNOWN_VALUE;
 	}
 
-	public final CompilerLogger getLogger() {
-		return getLink().getLogger();
-	}
-
 	public final Obj createTarget() {
 		if (getLink().isRuntime()) {
 			return new RtLinkTarget(getLink());
@@ -134,38 +126,8 @@ public abstract class LinkData<L extends Link> implements ContainerInfo {
 		return new LinkTarget(this);
 	}
 
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
 	public void resolveAll(FullResolver resolver) {
 		getTargetRef().resolveAll(resolver.setRefUsage(TARGET_REF_USAGE));
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

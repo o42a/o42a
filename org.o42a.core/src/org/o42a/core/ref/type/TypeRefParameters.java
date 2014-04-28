@@ -21,7 +21,6 @@ package org.o42a.core.ref.type;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.Scoped;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.impl.DefaultTypeRefParameters;
 import org.o42a.core.ref.type.impl.ObjectTypeParametersBuilder;
@@ -68,25 +67,5 @@ public abstract class TypeRefParameters implements ScopeInfo {
 	}
 
 	public abstract TypeRefParameters reproduce(Reproducer reproducer);
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
-	}
 
 }

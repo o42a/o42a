@@ -24,12 +24,10 @@ import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.Scoped;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.value.Value;
 
@@ -56,10 +54,6 @@ public final class TargetRef implements ScopeInfo {
 	@Override
 	public final Location getLocation() {
 		return getRef().getLocation();
-	}
-
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
 	}
 
 	@Override
@@ -129,26 +123,6 @@ public final class TargetRef implements ScopeInfo {
 		} finally {
 			getContext().fullResolution().end();
 		}
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	public final boolean assertFullyResolved() {

@@ -65,6 +65,7 @@ public interface MacroExpander extends LocationInfo {
 	 *
 	 * @return logger.
 	 */
+	@Override
 	CompilerLogger getLogger();
 
 	/**

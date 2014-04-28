@@ -94,26 +94,6 @@ public final class FieldBuilder implements ContainerInfo {
 	}
 
 	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
-	}
-
-	@Override
 	public String toString() {
 		return "FieldBuilder[" + this.declaration + "]:" + this.definition;
 	}

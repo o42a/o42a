@@ -62,6 +62,7 @@ public final class Location implements LocationInfo, LogInfo {
 		return this;
 	}
 
+	@Override
 	public final CompilerContext getContext() {
 		return this.context;
 	}
@@ -69,10 +70,6 @@ public final class Location implements LocationInfo, LogInfo {
 	@Override
 	public final Loggable getLoggable() {
 		return this.loggable;
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
 	}
 
 	public final Location setDeclaration(Location declaration) {

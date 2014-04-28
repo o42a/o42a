@@ -20,9 +20,16 @@
 package org.o42a.core.source;
 
 
-
 public interface LocationInfo {
 
 	Location getLocation();
+
+	default CompilerContext getContext() {
+		return getLocation().getContext();
+	}
+
+	default CompilerLogger getLogger() {
+		return getContext().getLogger();
+	}
 
 }

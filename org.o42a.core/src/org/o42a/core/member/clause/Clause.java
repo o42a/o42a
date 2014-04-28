@@ -21,14 +21,13 @@ package org.o42a.core.member.clause;
 
 import java.util.HashMap;
 
-import org.o42a.core.*;
+import org.o42a.core.ContainerInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
@@ -106,14 +105,6 @@ public abstract class Clause implements ContainerInfo {
 	@Override
 	public final Location getLocation() {
 		return this.member.getLocation();
-	}
-
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
 	}
 
 	public abstract Scope getEnclosingScope();
@@ -265,36 +256,6 @@ public abstract class Clause implements ContainerInfo {
 		} finally {
 			getContext().fullResolution().end();
 		}
-	}
-
-	@Override
-	public Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

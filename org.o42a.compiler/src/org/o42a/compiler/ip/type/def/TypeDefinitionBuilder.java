@@ -124,16 +124,6 @@ public class TypeDefinitionBuilder
 	}
 
 	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
-	@Override
 	public String toString() {
 		if (this.object == null) {
 			return super.toString();

@@ -23,13 +23,16 @@ import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Derivation;
 import org.o42a.core.ref.*;
-import org.o42a.core.source.*;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
@@ -85,14 +88,6 @@ public abstract class Def implements SourceInfo {
 	@Override
 	public final Location getLocation() {
 		return this.location;
-	}
-
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
 	}
 
 	@Override
@@ -212,26 +207,6 @@ public abstract class Def implements SourceInfo {
 	public abstract void normalize(RootNormalizer normalizer);
 
 	public abstract Eval eval();
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
-	}
 
 	public final boolean assertFullyResolved() {
 		assert this.allResolved :

@@ -146,16 +146,6 @@ public abstract class Link extends AbstractContainer implements ContainerInfo {
 
 	public abstract void resolveAll(FullResolver resolver);
 
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
 	protected abstract Obj createTarget();
 
 	protected abstract Link findLinkIn(Scope enclosing);

@@ -25,8 +25,6 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 
 public interface ObjectCompiler extends LocationInfo, DefinitionCompiler {
 
-	CompilerContext getContext();
-
 	void encloseInto(DeclarativeBlock enclosingBlock);
 
 	Ascendants buildAscendants(Ascendants ascendants);
