@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
@@ -39,7 +40,6 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
@@ -86,7 +86,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	public void setKind(Kind kind) {
 
-		final Getter<Integer> value = this.flags.getValue();
+		final Supplier<Integer> value = this.flags.getValue();
 
 		if (value == null) {
 			this.flags.setConstant(true).setValue(kind.ordinal());
@@ -99,7 +99,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	public Kind getKind() {
 
-		final Getter<Integer> value = this.flags.getValue();
+		final Supplier<Integer> value = this.flags.getValue();
 
 		if (value == null) {
 			return null;

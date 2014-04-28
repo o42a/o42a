@@ -19,17 +19,18 @@
 */
 package org.o42a.codegen.code;
 
+import java.util.function.Supplier;
+
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
-import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
 public abstract class FuncPtr<F extends Func<F>>
 		extends AbstractPtr
-		implements FunctionAttributes, Getter<FuncPtr<F>> {
+		implements FunctionAttributes, Supplier<FuncPtr<F>> {
 
 	private final Signature<F> signature;
 

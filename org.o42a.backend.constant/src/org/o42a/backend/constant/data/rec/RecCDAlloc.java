@@ -21,6 +21,8 @@ package org.o42a.backend.constant.data.rec;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import java.util.function.Supplier;
+
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -29,18 +31,17 @@ import org.o42a.backend.constant.data.TopLevelCDAlloc;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.data.*;
-import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
 public abstract class RecCDAlloc<
 		R extends Rec<P, T>,
 		P extends AllocPtrOp<P>,
-		T> extends DCDAlloc<P, R> implements Getter<T> {
+		T> extends DCDAlloc<P, R> implements Supplier<T> {
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
-	private Getter<T> value;
+	private Supplier<T> value;
 
 	public RecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
@@ -66,11 +67,11 @@ public abstract class RecCDAlloc<
 		return this.enclosing;
 	}
 
-	public final Getter<T> getValue() {
+	public final Supplier<T> getValue() {
 		return this.value;
 	}
 
-	public void setValue(Getter<T> value) {
+	public void setValue(Supplier<T> value) {
 		if (isUnderlyingAllocated()) {
 			getUnderlying().setAttributes(getData());
 		}

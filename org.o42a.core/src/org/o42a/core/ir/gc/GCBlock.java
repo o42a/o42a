@@ -21,9 +21,10 @@ package org.o42a.core.ir.gc;
 
 import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
 
+import java.util.function.Supplier;
+
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Type;
-import org.o42a.util.fn.Getter;
 
 
 public final class GCBlock implements Content<GCBlockOp.Type> {
@@ -60,7 +61,7 @@ public final class GCBlock implements Content<GCBlockOp.Type> {
 		instance.size()
 		.setConstant(true)
 		.setLowLevel(true)
-		.setValue(new Getter<Integer>() {
+		.setValue(new Supplier<Integer>() {
 			@Override
 			public Integer get() {
 				return GCBlock.this.type.layout(

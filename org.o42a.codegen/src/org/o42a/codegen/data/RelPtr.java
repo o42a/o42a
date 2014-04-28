@@ -19,14 +19,15 @@
 */
 package org.o42a.codegen.data;
 
+import java.util.function.Supplier;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.data.backend.RelAllocation;
-import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
-public final class RelPtr implements Getter<RelPtr> {
+public final class RelPtr implements Supplier<RelPtr> {
 
 	private final Ptr<?> pointer;
 	private final Ptr<?> relativeTo;

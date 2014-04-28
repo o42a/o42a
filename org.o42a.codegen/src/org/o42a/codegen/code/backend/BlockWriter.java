@@ -19,7 +19,9 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.CodeOp;
 

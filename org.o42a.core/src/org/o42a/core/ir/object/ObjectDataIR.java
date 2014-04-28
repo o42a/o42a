@@ -25,6 +25,7 @@ import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.STATELESS_VAL;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -43,7 +44,6 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.value.ValueKnowledge;
-import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
@@ -271,7 +271,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		.setConstant(true)
 		.setValue(getInstance().pointer(generator));
 		instance.mainBodyLayout().setConstant(true).setLowLevel(true).setValue(
-				new Getter<Integer>() {
+				new Supplier<Integer>() {
 					@Override
 					public Integer get() {
 						return getObjectIR()

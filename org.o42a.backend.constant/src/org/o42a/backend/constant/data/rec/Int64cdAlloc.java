@@ -21,6 +21,8 @@ package org.o42a.backend.constant.data.rec;
 
 import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
 
+import java.util.function.Supplier;
+
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int64recCOp;
 import org.o42a.backend.constant.data.AnyCDAlloc;
@@ -28,12 +30,11 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.codegen.data.*;
-import org.o42a.util.fn.Getter;
 
 
 public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 
-	private Getter<Ptr<AnyOp>> nativePtr;
+	private Supplier<Ptr<AnyOp>> nativePtr;
 
 	public Int64cdAlloc(
 			ContainerCDAlloc<?> enclosing,
@@ -44,12 +45,12 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	}
 
 	@Override
-	public final void setValue(Getter<Long> value) {
+	public final void setValue(Supplier<Long> value) {
 		super.setValue(value);
 		this.nativePtr = null;
 	}
 
-	public final void setNativePtr(Getter<Ptr<AnyOp>> pointer) {
+	public final void setNativePtr(Supplier<Ptr<AnyOp>> pointer) {
 		this.nativePtr = pointer;
 		super.setValue(null);
 		if (isUnderlyingAllocated()) {
@@ -84,11 +85,11 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 		return new Int64recCOp(backend, allocRecStore(allocPlace), getPointer());
 	}
 
-	private static final class UnderlyingNativePtr implements Getter<Ptr<AnyOp>> {
+	private static final class UnderlyingNativePtr implements Supplier<Ptr<AnyOp>> {
 
-		private final Getter<Ptr<AnyOp>> nativePtr;
+		private final Supplier<Ptr<AnyOp>> nativePtr;
 
-		UnderlyingNativePtr(Getter<Ptr<AnyOp>> nativePtr) {
+		UnderlyingNativePtr(Supplier<Ptr<AnyOp>> nativePtr) {
 			this.nativePtr = nativePtr;
 		}
 

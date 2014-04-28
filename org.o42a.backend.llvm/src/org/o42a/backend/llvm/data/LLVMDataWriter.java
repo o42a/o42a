@@ -21,6 +21,8 @@ package org.o42a.backend.llvm.data;
 
 import static org.o42a.backend.llvm.data.LLVMDataAllocator.container;
 
+import java.util.function.Supplier;
+
 import org.o42a.backend.llvm.data.alloc.*;
 import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.Func;
@@ -30,7 +32,6 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
-import org.o42a.util.fn.Getter;
 
 
 public class LLVMDataWriter implements DataWriter {
@@ -131,7 +132,7 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeInt8(
 			DataAllocation<Int8recOp> destination,
-			Getter<Byte> value) {
+			Supplier<Byte> value) {
 		nextField(destination);
 		writeInt(
 				getModule().getNativePtr(),
@@ -143,7 +144,7 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeInt16(
 			DataAllocation<Int16recOp> destination,
-			Getter<Short> value) {
+			Supplier<Short> value) {
 		nextField(destination);
 		writeInt(
 				getModule().getNativePtr(),
@@ -155,7 +156,7 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeInt32(
 			DataAllocation<Int32recOp> destination,
-			Getter<Integer> value) {
+			Supplier<Integer> value) {
 		nextField(destination);
 		writeInt(
 				getModule().getNativePtr(),
@@ -167,7 +168,7 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeInt64(
 			DataAllocation<Int64recOp> destination,
-			Getter<Long> value) {
+			Supplier<Long> value) {
 		nextField(destination);
 		writeInt(
 				getModule().getNativePtr(),
@@ -179,7 +180,7 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeNativePtrAsInt64(
 			DataAllocation<Int64recOp> destination,
-			Getter<Ptr<AnyOp>> value) {
+			Supplier<Ptr<AnyOp>> value) {
 		nextField(destination);
 
 		final LLDAlloc<?> alloc =
@@ -193,7 +194,7 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeFp32(
 			DataAllocation<Fp32recOp> destination,
-			Getter<Float> value) {
+			Supplier<Float> value) {
 		nextField(destination);
 		writeFp32(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
@@ -201,7 +202,7 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeFp64(
 			DataAllocation<Fp64recOp> destination,
-			Getter<Double> value) {
+			Supplier<Double> value) {
 		nextField(destination);
 		writeFp64(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
