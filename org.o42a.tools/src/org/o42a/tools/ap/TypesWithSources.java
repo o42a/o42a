@@ -54,6 +54,8 @@ public class TypesWithSources {
 
 	private static final String SOURCE_PATH =
 			"org.o42a.common.object.SourcePath";
+	private static final String RELATED_SOURCE =
+			"org.o42a.common.object.RelatedSource";
 	private static final String RELATED_SOURCES =
 			"org.o42a.common.object.RelatedSources";
 
@@ -102,6 +104,9 @@ public class TypesWithSources {
 				continue;
 			}
 			if (annotationName.contentEquals(RELATED_SOURCES)) {
+				relatedSources = annotation;
+			}
+			if (annotationName.contentEquals(RELATED_SOURCE)) {
 				relatedSources = annotation;
 			}
 		}

@@ -21,6 +21,7 @@ package org.o42a.tools.ap;
 
 import static org.o42a.common.object.AnnotatedModule.SOURCES_DESCRIPTOR_SUFFIX;
 import static org.o42a.tools.ap.AnnotationArrayValueVisitor.annotationArrayValue;
+import static org.o42a.tools.ap.AnnotationValueVisitor.annotationValue;
 import static org.o42a.tools.ap.TypesWithSources.VALUE;
 import static org.o42a.tools.ap.TypesWithSources.nameAndRest;
 import static org.o42a.tools.ap.UnderscoredCPWriter.underscoredName;
@@ -596,15 +597,22 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			return;
 		}
 
-		for (AnnotationValue val : annotationArrayValue(value)) {
-			printRelatedSource(out, val);
+		final List<? extends AnnotationValue> values =
+				annotationArrayValue(value);
+
+		if (values != null) {
+			for (AnnotationValue val : values) {
+				printRelatedSource(out, val, extractPath(val));
+			}
+		} else {
+			printRelatedSource(out, value, value.getValue().toString());
 		}
 	}
 
-	private void printRelatedSource(PrintWriter out, AnnotationValue value) {
-
-		final String path = extractPath(value);
-
+	private void printRelatedSource(
+			PrintWriter out,
+			AnnotationValue value,
+			String path) {
 		if (path.startsWith("/")) {
 			getMessenger().printMessage(
 					Diagnostic.Kind.WARNING,
@@ -620,8 +628,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 
 	private String extractPath(AnnotationValue value) {
 
-		final AnnotationMirror annotation =
-				AnnotationValueVisitor.annotationValue(value);
+		final AnnotationMirror annotation = annotationValue(value);
 
 		for (Map.Entry<
 				? extends ExecutableElement,
