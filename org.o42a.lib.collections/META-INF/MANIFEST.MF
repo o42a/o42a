@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: o42a Collections Library
 Bundle-SymbolicName: org.o42a.lib.collections;singleton:=true
 Bundle-Version: 0.2.9
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.o42a.common;bundle-version="0.2.9"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.o42a.lib.collections

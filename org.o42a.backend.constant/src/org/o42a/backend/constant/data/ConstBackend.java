@@ -67,11 +67,18 @@ public class ConstBackend {
 	})
 	public static <O extends Op> COp<O, ?> cast(O op) {
 		if (op instanceof StructOp) {
-			return cast((StructOp) op);
+
+			final COp structOp = cast((StructOp) op);
+
+			return structOp;
 		}
 		if (op instanceof Func) {
-			return cast((Func) op);
+
+			final COp func = cast((Func) op);
+
+			return func;
 		}
+
 		return (COp<O, ?>) op;
 	}
 

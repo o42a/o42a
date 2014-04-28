@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: o42a Parser
 Bundle-SymbolicName: org.o42a.parser;singleton:=true
 Bundle-Version: 0.2.9
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.o42a.util;bundle-version="0.2.9";visibility:=reexport,
  org.o42a.ast;bundle-version="0.2.9";visibility:=reexport
 Export-Package: org.o42a.parser

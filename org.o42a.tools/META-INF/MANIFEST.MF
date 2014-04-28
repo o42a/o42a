@@ -3,6 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: o42a Build Tools
 Bundle-SymbolicName: org.o42a.tools
 Bundle-Version: 0.2.9
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.o42a.common;bundle-version="0.2.9"
 Export-Package: org.o42a.tools.ap
