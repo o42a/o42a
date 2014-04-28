@@ -39,12 +39,4 @@ public abstract class Located implements LocationInfo {
 		return this.location;
 	}
 
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
-	}
-
 }

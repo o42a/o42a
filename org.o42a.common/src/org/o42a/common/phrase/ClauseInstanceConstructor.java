@@ -126,7 +126,8 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 			return this.ascendants;
 		}
 		return this.ascendants =
-				this.instance.getContext().ascendants(this, distribute());
+				this.instance.getPhraseContext()
+				.ascendants(this, distribute());
 	}
 
 }

@@ -21,14 +21,14 @@ package org.o42a.core.st;
 
 import static org.o42a.core.st.CommandTargets.*;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.ContainerInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.TypeParameters;
@@ -65,14 +65,6 @@ public abstract class Command implements ContainerInfo {
 	@Override
 	public final Location getLocation() {
 		return getStatement().getLocation();
-	}
-
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
 	}
 
 	@Override
@@ -131,16 +123,6 @@ public abstract class Command implements ContainerInfo {
 
 	public abstract void resolveTargets(TargetResolver resolver, Scope origin);
 
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
 	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
 
 	public abstract InlineCmd normalize(
@@ -148,26 +130,6 @@ public abstract class Command implements ContainerInfo {
 			Scope origin);
 
 	public abstract Cmd cmd(Scope origin);
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
-	}
 
 	@Override
 	public String toString() {

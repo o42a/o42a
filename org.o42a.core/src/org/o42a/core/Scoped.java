@@ -28,19 +28,19 @@ import org.o42a.util.log.Loggable;
 
 public class Scoped extends Located implements ScopeInfo {
 
-	public static final void assertScopeIs(ScopeInfo scoped, Scope scope) {
+	static final void assertScopeIs(ScopeInfo scoped, Scope scope) {
 		assert scoped.getScope().is(scope) :
 			scoped + " has scope " + scoped.getScope()
 			+ ", but " + scope + " expected";
 	}
 
-	public static final void assertCompatible(ScopeInfo scoped, Scope scope) {
+	static final void assertCompatible(ScopeInfo scoped, Scope scope) {
 		assert scope.derivedFrom(scoped.getScope()) :
 			"Scope " + scope + " is not compatible with "
 			+ scoped + ": it's not derived from " + scoped.getScope();
 	}
 
-	public static final void assertSameScope(
+	static final void assertSameScope(
 			ScopeInfo scoped,
 			ScopeInfo other) {
 		assert scoped.getScope().is(other.getScope()) :
@@ -49,7 +49,7 @@ public class Scoped extends Located implements ScopeInfo {
 			+ " of " + other;
 	}
 
-	public static final void assertCompatibleScope(
+	static final void assertCompatibleScope(
 			ScopeInfo scoped,
 			ScopeInfo other) {
 		assert other.getScope().derivedFrom(scoped.getScope()) :
@@ -80,26 +80,6 @@ public class Scoped extends Located implements ScopeInfo {
 	@Override
 	public final Scope getScope() {
 		return this.scope;
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		assertCompatibleScope(this, other);
 	}
 
 	@Override

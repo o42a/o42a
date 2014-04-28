@@ -29,7 +29,8 @@ import static org.o42a.core.member.field.PrototypeMode.PROTOTYPE;
 import static org.o42a.core.st.impl.SentenceErrors.prohibitedInterrogativeAssignment;
 import static org.o42a.util.ArrayUtil.append;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberRegistry;
@@ -39,8 +40,6 @@ import org.o42a.core.member.field.PrototypeMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.ArrayUtil;
@@ -92,17 +91,9 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this.declaration.getLocation();
 	}
 
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
 	@Override
 	public final Container getContainer() {
 		return this.declaration.getContainer();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
 	}
 
 	public final ClauseDeclaration getDeclaration() {
@@ -251,36 +242,6 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		getStatements().statement(
 				new ClauseDeclarationStatement(this, clause, null));
-	}
-
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

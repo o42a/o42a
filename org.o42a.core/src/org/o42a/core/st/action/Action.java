@@ -21,8 +21,6 @@ package org.o42a.core.st.action;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.Scoped;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.Block;
@@ -43,10 +41,6 @@ public abstract class Action implements ScopeInfo {
 		return this.statement.getLocation();
 	}
 
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
 	@Override
 	public final Scope getScope() {
 		return this.statement.getScope();
@@ -61,26 +55,6 @@ public abstract class Action implements ScopeInfo {
 	public abstract LoopAction toLoopAction(Block block);
 
 	public abstract DefValue toDefValue();
-
-	@Override
-	public void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
-	}
 
 	@Override
 	public String toString() {

@@ -28,7 +28,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.common.RoleResolver;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.source.*;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 
 
 public final class Resolver implements LocationInfo {
@@ -55,10 +56,6 @@ public final class Resolver implements LocationInfo {
 		return this.scope.getLocation();
 	}
 
-	public final CompilerContext getContext() {
-		return this.scope.getContext();
-	}
-
 	public final Container getContainer() {
 		return this.scope.getContainer();
 	}
@@ -69,10 +66,6 @@ public final class Resolver implements LocationInfo {
 
 	public final PathWalker getWalker() {
 		return this.walker;
-	}
-
-	public final CompilerLogger getLogger() {
-		return this.scope.getLogger();
 	}
 
 	public final PathResolver toPathResolver() {

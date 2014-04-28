@@ -21,9 +21,6 @@ package org.o42a.compiler.ip.access;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.Scoped;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 
 
@@ -50,37 +47,9 @@ public abstract class AbstractAccess<T extends ScopeInfo> implements ScopeInfo {
 		return get().getLocation();
 	}
 
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
 	@Override
 	public final Scope getScope() {
 		return get().getScope();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getLocation().getLogger();
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

@@ -25,7 +25,6 @@ import static org.o42a.core.ref.type.TypeRefParameters.defaultTypeRefParameters;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.Scoped;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.ConstructionMode;
@@ -35,7 +34,8 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.impl.DefaultTypeRef;
 import org.o42a.core.ref.type.impl.DefaultTypeRelation;
-import org.o42a.core.source.*;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
@@ -84,10 +84,6 @@ public abstract class TypeRef implements ScopeInfo {
 	@Override
 	public final Location getLocation() {
 		return getRef().getLocation();
-	}
-
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
 	}
 
 	@Override
@@ -192,10 +188,6 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public abstract TypeRef setLocation(LocationInfo location);
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
-	}
 
 	public final Resolution resolve(Resolver resolver) {
 		return getRef().resolve(resolver);
@@ -313,26 +305,6 @@ public abstract class TypeRef implements ScopeInfo {
 
 	public final RefOp op(HostOp host) {
 		return getRef().op(host);
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	public final boolean assertFullyResolved() {

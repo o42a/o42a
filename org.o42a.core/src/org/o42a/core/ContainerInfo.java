@@ -24,8 +24,12 @@ public interface ContainerInfo extends ScopeInfo {
 
 	Container getContainer();
 
-	Distributor distribute();
+	default Distributor distribute() {
+		return new Contained.ContainedDistributor(this);
+	}
 
-	Distributor distributeIn(Container container);
+	default Distributor distributeIn(Container container) {
+		return new Contained.OtherContainerDistributor(container, this);
+	}
 
 }

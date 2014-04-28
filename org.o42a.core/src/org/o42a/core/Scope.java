@@ -33,14 +33,10 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.string.ID;
 
 
 public interface Scope extends ContainerInfo {
-
-	CompilerContext getContext();
 
 	ID getId();
 
@@ -105,8 +101,6 @@ public interface Scope extends ContainerInfo {
 	Prediction predict(Prediction enclosing);
 
 	boolean derivedFrom(Scope other);
-
-	CompilerLogger getLogger();
 
 	PrefixPath pathTo(Scope targetScope);
 

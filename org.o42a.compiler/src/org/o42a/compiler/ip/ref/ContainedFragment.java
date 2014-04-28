@@ -23,7 +23,6 @@ import org.o42a.core.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundFragment;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
@@ -56,45 +55,11 @@ public abstract class ContainedFragment
 		return this.container;
 	}
 
-	public final CompilerLogger getLogger() {
-		return getLocation().getLogger();
-	}
-
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
-	}
-
 	public final Ref toRef() {
 		return Path.SELF_PATH
 				.bind(this, getScope())
 				.append(this)
 				.target(distribute());
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

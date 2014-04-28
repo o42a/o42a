@@ -65,6 +65,7 @@ public abstract class CompilerContext implements LocationInfo {
 		return this.intrinsics;
 	}
 
+	@Override
 	public final CompilerLogger getLogger() {
 		return this.logger;
 	}

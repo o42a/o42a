@@ -24,7 +24,8 @@ import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathResolver;
-import org.o42a.core.source.*;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 
 
 public final class FullResolver implements LocationInfo {
@@ -42,10 +43,6 @@ public final class FullResolver implements LocationInfo {
 	@Override
 	public final Location getLocation() {
 		return getResolver().getLocation();
-	}
-
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
 	}
 
 	public final Container getContainer() {
@@ -73,10 +70,6 @@ public final class FullResolver implements LocationInfo {
 			return this;
 		}
 		return getResolver().fullResolver(this.user, refUsage);
-	}
-
-	public final CompilerLogger getLogger() {
-		return getResolver().getLogger();
 	}
 
 	public final PathResolver toPathResolver() {

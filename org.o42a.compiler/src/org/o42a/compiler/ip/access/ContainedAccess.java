@@ -19,7 +19,8 @@
 */
 package org.o42a.compiler.ip.access;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.ContainerInfo;
 
 
 public abstract class ContainedAccess<T extends ContainerInfo>
@@ -35,18 +36,8 @@ public abstract class ContainedAccess<T extends ContainerInfo>
 		return get().getContainer();
 	}
 
-	@Override
-	public final Distributor distribute() {
-		return Contained.distribute(this);
-	}
-
 	public final AccessDistributor distributeAccess() {
 		return getRules().distribute(distribute());
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Contained.distributeIn(this, container);
 	}
 
 }

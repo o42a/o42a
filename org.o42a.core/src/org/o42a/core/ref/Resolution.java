@@ -21,13 +21,14 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.value.ValueType.DIRECTIVE;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PathResolver;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.directive.Directive;
@@ -65,10 +66,6 @@ public final class Resolution implements ScopeInfo {
 	@Override
 	public final Location getLocation() {
 		return getResolver().getLocation();
-	}
-
-	public final CompilerContext getContext() {
-		return getResolver().getContext();
 	}
 
 	@Override
@@ -156,26 +153,6 @@ public final class Resolution implements ScopeInfo {
 			return this.resolved;
 		}
 		return this.resolved = resolve(getResolver().toPathResolver());
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
 	}
 
 	@Override

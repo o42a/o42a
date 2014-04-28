@@ -27,16 +27,6 @@ import org.o42a.util.log.LogInfo;
 
 public class Contained extends Scoped implements ContainerInfo {
 
-	public static Distributor distribute(ContainerInfo contained) {
-		return new ContainedDistributor(contained);
-	}
-
-	public static Distributor distributeIn(
-			LocationInfo location,
-			Container container) {
-		return new OtherContainerDistributor(container, location);
-	}
-
 	private final Container container;
 
 	public Contained(LocationInfo location, Distributor distributor) {
@@ -65,21 +55,11 @@ public class Contained extends Scoped implements ContainerInfo {
 		return this.container;
 	}
 
-	@Override
-	public Distributor distribute() {
-		return distribute(this);
-	}
-
-	@Override
-	public Distributor distributeIn(Container container) {
-		return distributeIn(this, container);
-	}
-
-	private static final class ContainedDistributor extends Distributor {
+	static final class ContainedDistributor extends Distributor {
 
 		private final ContainerInfo contained;
 
-		private ContainedDistributor(ContainerInfo contained) {
+		ContainedDistributor(ContainerInfo contained) {
 			this.contained = contained;
 		}
 
@@ -100,7 +80,7 @@ public class Contained extends Scoped implements ContainerInfo {
 
 	}
 
-	private static final class OtherContainerDistributor extends Distributor {
+	static final class OtherContainerDistributor extends Distributor {
 
 		private final Container container;
 		private final Location location;

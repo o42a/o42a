@@ -24,7 +24,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.path.impl.PathTracker;
-import org.o42a.core.source.*;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 
 
 public final class StepResolver implements LocationInfo {
@@ -67,10 +68,6 @@ public final class StepResolver implements LocationInfo {
 		return getPath().getLocation();
 	}
 
-	public final CompilerContext getContext() {
-		return getLocation().getContext();
-	}
-
 	public final Scope getPathStart() {
 		return getPathResolver().getPathStart();
 	}
@@ -85,10 +82,6 @@ public final class StepResolver implements LocationInfo {
 
 	public final RefUsage refUsage() {
 		return getPathResolver().refUsage();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
 	}
 
 	@Override
