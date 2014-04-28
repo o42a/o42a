@@ -29,31 +29,7 @@ import org.o42a.util.log.LogInfo;
 
 public abstract class AbstractContainer extends Located implements Container {
 
-	public static Container parentContainer(Container container) {
-
-		final Scope scope = container.getScope();
-		final Member member = container.toMember();
-
-		if (member == null || member.getScope() != scope) {
-			return scope.getEnclosingContainer();
-		}
-
-		final MemberKey enclosingKey = member.getMemberKey().getEnclosingKey();
-
-		if (enclosingKey == null) {
-			return scope.getContainer();
-		}
-
-		final Member parent = scope.getContainer().member(enclosingKey);
-
-		assert parent != null :
-			"Parent container of " + container
-			+ " does not exist: " + enclosingKey;
-
-		return parent.getContainer();
-	}
-
-	public static MemberPath matchingPath(
+	public static MemberPath matchingPathOf(
 			Container container,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -82,13 +58,32 @@ public abstract class AbstractContainer extends Located implements Container {
 	}
 
 	@Override
-	public Container getParentContainer() {
-		return parentContainer(this);
+	public MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
+		return matchingPathOf(this, memberId, declaredIn);
 	}
 
-	@Override
-	public MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
-		return matchingPath(this, memberId, declaredIn);
+	static Container parentContainerOf(Container container) {
+
+		final Scope scope = container.getScope();
+		final Member member = container.toMember();
+
+		if (member == null || member.getScope() != scope) {
+			return scope.getEnclosingContainer();
+		}
+
+		final MemberKey enclosingKey = member.getMemberKey().getEnclosingKey();
+
+		if (enclosingKey == null) {
+			return scope.getContainer();
+		}
+
+		final Member parent = scope.getContainer().member(enclosingKey);
+
+		assert parent != null :
+			"Parent container of " + container
+			+ " does not exist: " + enclosingKey;
+
+		return parent.getContainer();
 	}
 
 }

@@ -102,16 +102,29 @@ public interface Scope extends ContainerInfo {
 
 	boolean derivedFrom(Scope other);
 
-	PrefixPath pathTo(Scope targetScope);
+	default PrefixPath pathTo(Scope targetScope) {
+		return AbstractScope.pathTo(this, targetScope);
+	}
 
-	boolean is(Scope scope);
+	default boolean is(Scope scope) {
+		return this == scope;
+	}
 
-	boolean contains(Scope other);
+	default boolean contains(Scope other) {
+		if (is(other)) {
+			return true;
+		}
+		return other.getEnclosingScopes().contains(this);
+	}
 
 	ID nextAnonymousId();
 
 	ScopeIR ir(Generator generator);
 
-	boolean assertDerivedFrom(Scope other);
+	default boolean assertDerivedFrom(Scope other) {
+		// Don't place an assertion here. JDK-8025141
+		AbstractScope.assertDerivedFrom(this, other);
+		return true;
+	}
 
 }

@@ -28,36 +28,6 @@ import org.o42a.util.log.Loggable;
 
 public class Scoped extends Located implements ScopeInfo {
 
-	static final void assertScopeIs(ScopeInfo scoped, Scope scope) {
-		assert scoped.getScope().is(scope) :
-			scoped + " has scope " + scoped.getScope()
-			+ ", but " + scope + " expected";
-	}
-
-	static final void assertCompatible(ScopeInfo scoped, Scope scope) {
-		assert scope.derivedFrom(scoped.getScope()) :
-			"Scope " + scope + " is not compatible with "
-			+ scoped + ": it's not derived from " + scoped.getScope();
-	}
-
-	static final void assertSameScope(
-			ScopeInfo scoped,
-			ScopeInfo other) {
-		assert scoped.getScope().is(other.getScope()) :
-			scoped + " has scope " + scoped.getScope()
-			+ ", which differs from scope " + other.getScope()
-			+ " of " + other;
-	}
-
-	static final void assertCompatibleScope(
-			ScopeInfo scoped,
-			ScopeInfo other) {
-		assert other.getScope().derivedFrom(scoped.getScope()) :
-			other + " scope " + other.getScope()
-			+ " is not compatible with " + scoped
-			+ ": it's not derived from " + scoped.getScope();
-	}
-
 	private final Scope scope;
 
 	public Scoped(LocationInfo location, Scope scope) {
@@ -99,6 +69,36 @@ public class Scoped extends Located implements ScopeInfo {
 		out.append(']');
 
 		return out.toString();
+	}
+
+	static final void assertScopeIs(ScopeInfo scoped, Scope scope) {
+		assert scoped.getScope().is(scope) :
+			scoped + " has scope " + scoped.getScope()
+			+ ", but " + scope + " expected";
+	}
+
+	static final void assertCompatible(ScopeInfo scoped, Scope scope) {
+		assert scope.derivedFrom(scoped.getScope()) :
+			"Scope " + scope + " is not compatible with "
+			+ scoped + ": it's not derived from " + scoped.getScope();
+	}
+
+	static final void assertSameScope(
+			ScopeInfo scoped,
+			ScopeInfo other) {
+		assert scoped.getScope().is(other.getScope()) :
+			scoped + " has scope " + scoped.getScope()
+			+ ", which differs from scope " + other.getScope()
+			+ " of " + other;
+	}
+
+	static final void assertCompatibleScope(
+			ScopeInfo scoped,
+			ScopeInfo other) {
+		assert other.getScope().derivedFrom(scoped.getScope()) :
+			other + " scope " + other.getScope()
+			+ " is not compatible with " + scoped
+			+ ": it's not derived from " + scoped.getScope();
 	}
 
 }
