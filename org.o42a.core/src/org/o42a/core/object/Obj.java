@@ -20,7 +20,7 @@
 package org.o42a.core.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.AbstractContainer.parentContainer;
+import static org.o42a.core.AbstractContainer.matchingPathOf;
 import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
@@ -407,11 +407,6 @@ public abstract class Obj
 	}
 
 	@Override
-	public Container getParentContainer() {
-		return parentContainer(this);
-	}
-
-	@Override
 	public final Member member(MemberKey memberKey) {
 		resolveMembers(memberKey.getMemberId().containsAdapterId());
 		return members().get(memberKey);
@@ -516,7 +511,7 @@ public abstract class Obj
 
 	@Override
 	public MemberPath matchingPath(MemberId memberId, Obj declaredIn) {
-		return AbstractContainer.matchingPath(this, memberId, declaredIn);
+		return matchingPathOf(this, memberId, declaredIn);
 	}
 
 	@Override

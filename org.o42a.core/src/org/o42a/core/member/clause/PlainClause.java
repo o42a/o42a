@@ -25,7 +25,6 @@ import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 import java.util.Set;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.AbstractScope;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.ScopeIR;
@@ -42,7 +41,6 @@ import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.util.string.ID;
 
 
@@ -282,21 +280,6 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final PrefixPath pathTo(Scope targetScope) {
-		return AbstractScope.pathTo(this, targetScope);
-	}
-
-	@Override
-	public final boolean is(Scope scope) {
-		return this == scope;
-	}
-
-	@Override
-	public final boolean contains(Scope other) {
-		return AbstractScope.contains(this, other);
-	}
-
-	@Override
 	public final ID nextAnonymousId() {
 		return ID.id().anonymous(++this.anonymusSeq);
 	}
@@ -304,11 +287,6 @@ public abstract class PlainClause
 	@Override
 	public final ScopeIR ir(Generator generator) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final boolean assertDerivedFrom(Scope other) {
-		return AbstractScope.assertDerivedFrom(this, other);
 	}
 
 	protected Obj getClauseObject() {

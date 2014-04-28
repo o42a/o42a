@@ -40,12 +40,6 @@ import org.o42a.util.string.ID;
 
 public abstract class AbstractScope implements Scope {
 
-	public static boolean assertDerivedFrom(Scope scope, Scope other) {
-		assert scope.derivedFrom(other) :
-			scope + " is not derived from " + other;
-		return true;
-	}
-
 	public static Scope enclosingScope(Scope scope) {
 
 		final Container enclosingContainer = scope.getEnclosingContainer();
@@ -99,56 +93,6 @@ public abstract class AbstractScope implements Scope {
 		}
 
 		return STRICT_CONSTRUCTION;
-	}
-
-	public static PrefixPath pathTo(Scope fromScope, Scope toScope) {
-		if (fromScope.is(toScope)) {
-			return Path.SELF_PATH.toPrefix(fromScope);
-		}
-
-		final Path pathToEnclosing = pathToEnclosing(fromScope, toScope);
-
-		assert pathToEnclosing != null :
-			"Can not build path from " + fromScope + " to " + toScope;
-
-		return pathToEnclosing.toPrefix(fromScope);
-	}
-
-	public static boolean contains(Scope scope, Scope other) {
-		if (other.is(scope)) {
-			return true;
-		}
-		return other.getEnclosingScopes().contains(scope);
-	}
-
-	private static Path pathToEnclosing(Scope scope, Scope targetScope) {
-
-		Container enclosing = scope.getEnclosingContainer();
-		Path enclosingPath = scope.getEnclosingScopePath();
-
-		while (enclosing != null) {
-			if (enclosing.getScope().is(targetScope)) {
-				return enclosingPath;
-			}
-
-			final Container enc = enclosing.getScope().getEnclosingContainer();
-
-			if (enc == null) {
-				return null;
-			}
-
-			final Scope enclosingScope = enc.getScope();
-
-			if (enclosingScope.isTopScope()) {
-				return null;
-			}
-
-			enclosingPath = enclosingPath.append(
-					enclosing.getScope().getEnclosingScopePath());
-			enclosing = enc;
-		}
-
-		return null;
 	}
 
 	private Set<Scope> enclosingScopes;
@@ -213,28 +157,56 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public final PrefixPath pathTo(Scope targetScope) {
-		return pathTo(this, targetScope);
-	}
-
-	@Override
-	public final boolean is(Scope scope) {
-		return this == scope;
-	}
-
-	@Override
-	public boolean contains(Scope other) {
-		return contains(this, other);
-	}
-
-	@Override
 	public final ID nextAnonymousId() {
 		return getId().anonymous(++this.anonymousSeq);
 	}
 
-	@Override
-	public final boolean assertDerivedFrom(Scope other) {
-		return assertDerivedFrom(this, other);
+	static PrefixPath pathTo(Scope fromScope, Scope toScope) {
+		if (fromScope.is(toScope)) {
+			return Path.SELF_PATH.toPrefix(fromScope);
+		}
+
+		final Path pathToEnclosing = pathToEnclosing(fromScope, toScope);
+
+		assert pathToEnclosing != null :
+			"Can not build path from " + fromScope + " to " + toScope;
+
+		return pathToEnclosing.toPrefix(fromScope);
+	}
+
+	static void assertDerivedFrom(Scope scope, Scope other) {
+		assert scope.derivedFrom(other) :
+			scope + " is not derived from " + other;
+	}
+
+	private static Path pathToEnclosing(Scope scope, Scope targetScope) {
+
+		Container enclosing = scope.getEnclosingContainer();
+		Path enclosingPath = scope.getEnclosingScopePath();
+
+		while (enclosing != null) {
+			if (enclosing.getScope().is(targetScope)) {
+				return enclosingPath;
+			}
+
+			final Container enc = enclosing.getScope().getEnclosingContainer();
+
+			if (enc == null) {
+				return null;
+			}
+
+			final Scope enclosingScope = enc.getScope();
+
+			if (enclosingScope.isTopScope()) {
+				return null;
+			}
+
+			enclosingPath = enclosingPath.append(
+					enclosing.getScope().getEnclosingScopePath());
+			enclosing = enc;
+		}
+
+		return null;
 	}
 
 }

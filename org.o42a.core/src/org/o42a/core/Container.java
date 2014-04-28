@@ -19,6 +19,8 @@
 */
 package org.o42a.core;
 
+import static org.o42a.core.AbstractContainer.parentContainerOf;
+
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
@@ -28,7 +30,9 @@ public interface Container extends ScopeInfo {
 
 	Container getEnclosingContainer();
 
-	Container getParentContainer();
+	default Container getParentContainer() {
+		return parentContainerOf(this);
+	}
 
 	Member toMember();
 

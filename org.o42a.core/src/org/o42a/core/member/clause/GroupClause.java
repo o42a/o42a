@@ -19,8 +19,6 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.AbstractContainer.parentContainer;
-
 import java.util.Collection;
 
 import org.o42a.core.Container;
@@ -49,11 +47,6 @@ public abstract class GroupClause extends Clause implements Container {
 	@Override
 	public final Container getContainer() {
 		return this;
-	}
-
-	@Override
-	public final Container getParentContainer() {
-		return parentContainer(this);
 	}
 
 	@Override
