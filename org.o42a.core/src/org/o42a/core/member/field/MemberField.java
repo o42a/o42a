@@ -204,8 +204,8 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	@Override
-	public final Alias toAlias() {
-		return null;
+	public final boolean isAlias() {
+		return false;
 	}
 
 	@Override

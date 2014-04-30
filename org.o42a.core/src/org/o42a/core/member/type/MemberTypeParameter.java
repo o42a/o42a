@@ -22,7 +22,6 @@ package org.o42a.core.member.type;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.Alias;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.clause.MemberClause;
@@ -74,8 +73,8 @@ public abstract class MemberTypeParameter extends Member {
 	}
 
 	@Override
-	public final Alias toAlias() {
-		return null;
+	public final boolean isAlias() {
+		return false;
 	}
 
 	@Override
