@@ -90,8 +90,8 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public final Alias toAlias() {
-		return null;
+	public final boolean isAlias() {
+		return false;
 	}
 
 	@Override
