@@ -145,6 +145,14 @@ public abstract class Member extends Contained implements MemberPath {
 	}
 
 	/**
+	 * Whether this is an alias.
+	 *
+	 * @return <code>true</code> if this is an alias, or <code>false</code>
+	 * otherwise.
+	 */
+	public abstract boolean isAlias();
+
+	/**
 	 * Whether this member is type parameter.
 	 *
 	 * <p>Type parameters are {@link #isTypeMember() type members}.</p>
@@ -179,8 +187,6 @@ public abstract class Member extends Contained implements MemberPath {
 	public abstract MemberField toField();
 
 	public abstract MemberClause toClause();
-
-	public abstract Alias toAlias();
 
 	public abstract Container substance(UserInfo user);
 

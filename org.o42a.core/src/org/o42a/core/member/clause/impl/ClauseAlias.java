@@ -26,10 +26,9 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
 
 
-public final class ClauseAlias extends Alias {
+public final class ClauseAlias extends Member {
 
 	private final MemberId memberId;
 	private final ClauseAlias propagatedFrom;
@@ -54,11 +53,6 @@ public final class ClauseAlias extends Alias {
 		this.memberId = prototype.getMemberId();
 		this.propagatedFrom = prototype;
 		this.memberKey = prototype.getMemberKey();
-	}
-
-	@Override
-	public final Path getAliased() {
-		return getAliasedKey().toPath();
 	}
 
 	@Override
@@ -116,6 +110,11 @@ public final class ClauseAlias extends Alias {
 	@Override
 	public MemberClause toClause() {
 		return getAliasedClause();
+	}
+
+	@Override
+	public boolean isAlias() {
+		return true;
 	}
 
 	private MemberKey getAliasedKey() {
