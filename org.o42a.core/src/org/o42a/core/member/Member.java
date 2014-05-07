@@ -19,8 +19,8 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.impl.MemberPropagatedFromID.memberScopePrefix;
-import static org.o42a.core.ref.path.Path.staticPath;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
@@ -31,14 +31,12 @@ import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.Local;
 import org.o42a.util.string.ID;
 
 
-public abstract class Member extends Contained implements MemberPath {
+public abstract class Member extends Contained {
 
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
@@ -80,6 +78,8 @@ public abstract class Member extends Contained implements MemberPath {
 
 	public abstract MemberKey getMemberKey();
 
+	public abstract MemberPath getMemberPath();
+
 	/**
 	 * Determines whether this member matches the given identifier and optional
 	 * placement and returns the member path leading to this member if so.
@@ -111,20 +111,12 @@ public abstract class Member extends Contained implements MemberPath {
 			if (enclosingId == null) {
 				return SELF_MEMBER_PATH;
 			}
-			return this;
+			return getMemberPath();
 		}
 		if (!getMemberId().equals(memberId)) {
 			return null;
 		}
-		return this;
-	}
-
-	@Override
-	public final Path pathToMember() {
-		if (isStatic()) {
-			return staticPath(getScope(), getScope()).append(getMemberKey());
-		}
-		return getMemberKey().toPath();
+		return getMemberPath();
 	}
 
 	public final String getDisplayName() {
@@ -170,16 +162,6 @@ public abstract class Member extends Contained implements MemberPath {
 	 */
 	public final boolean isTypeParameter() {
 		return toTypeParameter() != null;
-	}
-
-	@Override
-	public final Member toMember() {
-		return this;
-	}
-
-	@Override
-	public final Local toLocal() {
-		return null;
 	}
 
 	public abstract MemberTypeParameter toTypeParameter();

@@ -69,6 +69,11 @@ public final class ClauseAlias extends Member {
 	}
 
 	@Override
+	public MemberPath getMemberPath() {
+		return getAliasedClause().getMemberPath();
+	}
+
+	@Override
 	public final Container substance(UserInfo user) {
 		return getAliasedClause().substance(user);
 	}
