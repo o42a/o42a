@@ -22,7 +22,7 @@ package org.o42a.core.member.type;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.Member;
+import org.o42a.core.member.NonAliasMember;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
@@ -32,7 +32,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameter;
 
 
-public abstract class MemberTypeParameter extends Member {
+public abstract class MemberTypeParameter extends NonAliasMember {
 
 	public MemberTypeParameter(
 			LocationInfo location,
