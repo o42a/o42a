@@ -35,7 +35,9 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.source.LocationInfo;
 
 
-public abstract class MemberField extends Member implements FieldReplacement {
+public abstract class MemberField
+		extends NonAliasMember
+		implements FieldReplacement {
 
 	private final FieldDeclaration declaration;
 	private Field field;

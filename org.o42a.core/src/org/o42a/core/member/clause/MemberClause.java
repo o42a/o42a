@@ -27,7 +27,7 @@ import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 
 
-public abstract class MemberClause extends Member {
+public abstract class MemberClause extends NonAliasMember {
 
 	private final ClauseDeclaration declaration;
 	private MemberKey key;

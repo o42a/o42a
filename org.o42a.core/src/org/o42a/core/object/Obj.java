@@ -492,7 +492,11 @@ public abstract class Obj
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-		return objectMember(access.getAccessor(), memberId, declaredIn);
+
+		final Member found =
+				objectMember(access.getAccessor(), memberId, declaredIn);
+
+		return found != null ? found.getMemberPath() : null;
 	}
 
 	@Override
@@ -502,11 +506,7 @@ public abstract class Obj
 		final Member found =
 				objectMember(Accessor.PUBLIC, memberId, declaredIn);
 
-		if (found == null) {
-			return null;
-		}
-
-		return found.toClause();
+		return found != null ? found.toClause() : null;
 	}
 
 	@Override
