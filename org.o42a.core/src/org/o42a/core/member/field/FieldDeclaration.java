@@ -56,7 +56,7 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 	private StaticTypeRef declaredIn;
 	private int mask;
 
-	FieldDeclaration(
+	private FieldDeclaration(
 			LocationInfo location,
 			Distributor distributor,
 			FieldDeclaration sample) {
@@ -87,6 +87,10 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 
 	public final MemberId getMemberId() {
 		return this.memberId;
+	}
+
+	public final FieldDeclaration setMemberId(MemberId memberId) {
+		return new FieldDeclaration(this, distribute(), this, memberId);
 	}
 
 	public final String getDisplayName() {
@@ -203,12 +207,16 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 		return setMask(ABSTRACT_MASK);
 	}
 
-	public FieldDeclaration inGroup(MemberId groupId) {
-		return new FieldDeclaration(
-				this,
-				distribute(),
-				this,
-				groupId.append(getMemberId()));
+	public final FieldDeclaration override(
+			LocationInfo location,
+			Distributor distributor) {
+		return new FieldDeclaration(location, distributor, this)
+				.autoPrototype()
+				.override();
+	}
+
+	public final FieldDeclaration inGroup(MemberId groupId) {
+		return setMemberId(groupId.append(getMemberId()));
 	}
 
 	public FieldDeclaration reproduce(Reproducer reproducer) {

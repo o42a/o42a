@@ -82,7 +82,7 @@ public class StaticObjectStep extends Step {
 		if (resolver.isFullResolution()) {
 			this.object.resolveAll();
 		}
-		resolver.getWalker().object(this, this.object);
+		resolver.getWalker().staticScope(this, this.object.getScope());
 		return this.object;
 	}
 

@@ -30,6 +30,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.ref.Ref;
 import org.o42a.util.string.Name;
 
 
@@ -77,6 +78,14 @@ public class ObjectMemberRegistry extends MemberRegistry {
 			+ ", but " + getOwner() + " expected";
 
 		return new FieldBuilder(this, declaration, definition);
+	}
+
+	@Override
+	public FieldBuilder newAlias(FieldDeclaration declaration, Ref ref) {
+		assert getOwner().is(declaration.getContainer().toObject()) :
+			"Wrong container " + declaration.getContainer()
+			+ ", but " + getOwner() + " expected";
+		return new FieldBuilder(this, declaration, ref);
 	}
 
 	@Override

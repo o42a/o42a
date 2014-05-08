@@ -61,12 +61,7 @@ public abstract class MemberField
 				propagatedFrom.distributeIn(owner),
 				owner);
 		this.declaration =
-				new FieldDeclaration(
-						propagatedFrom,
-						distribute(),
-						propagatedFrom.getDeclaration())
-				.autoPrototype()
-				.override();
+				propagatedFrom.getDeclaration().override(this, distribute());
 	}
 
 	@Override
@@ -92,7 +87,9 @@ public abstract class MemberField
 			return this.visibility;
 		}
 		return this.visibility =
-				getDeclaration().getVisibilityMode().detectVisibility(this);
+				getDeclaration().getVisibilityMode().detectVisibility(
+						this,
+						getDeclaration());
 	}
 
 	public final boolean isAdapter() {

@@ -161,9 +161,20 @@ public final class Statements extends Contained {
 		statement(ref.toYield(location, this));
 	}
 
-	public FieldBuilder field(
+	public final FieldBuilder field(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
+		return field(declaration, definition, null);
+	}
+
+	public final FieldBuilder alias(FieldDeclaration declaration, Ref ref) {
+		return field(declaration, null, ref);
+	}
+
+	private FieldBuilder field(
+			FieldDeclaration declaration,
+			FieldDefinition definition,
+			Ref ref) {
 		if (isInterrogation()) {
 			prohibitedInterrogativeField(declaration);
 			dropStatement();
@@ -178,9 +189,13 @@ public final class Statements extends Contained {
 			return null;
 		}
 
-		final FieldBuilder builder =
-				getMemberRegistry().newField(declaration, definition);
+		final FieldBuilder builder;
 
+		if (ref != null) {
+			builder = getMemberRegistry().newAlias(declaration, ref);
+		} else {
+			builder = getMemberRegistry().newField(declaration, definition);
+		}
 		if (builder == null) {
 			dropStatement();
 			return null;

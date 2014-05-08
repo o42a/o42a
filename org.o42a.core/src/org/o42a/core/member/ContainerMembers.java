@@ -129,7 +129,8 @@ public abstract class ContainerMembers {
 				getOwner().getConstructionMode();
 		final MemberField field = member.toField();
 
-		if (field != null && field.field(dummyUser()).isScopeField()) {
+		if (field != null
+				&& field.field(dummyUser()).getFieldKind().isScope()) {
 			return true;
 		}
 		if (constructionMode.isStrict()) {

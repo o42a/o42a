@@ -21,6 +21,7 @@ package org.o42a.core.object.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.member.field.FieldKind.SCOPE_FIELD;
 import static org.o42a.core.member.field.VisibilityMode.PROTECTED_VISIBILITY;
 
 import org.o42a.codegen.Generator;
@@ -35,6 +36,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldKind;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
@@ -179,8 +181,8 @@ public final class ScopeField extends ObjectField {
 	}
 
 	@Override
-	public final boolean isScopeField() {
-		return true;
+	public final FieldKind getFieldKind() {
+		return SCOPE_FIELD;
 	}
 
 	@Override

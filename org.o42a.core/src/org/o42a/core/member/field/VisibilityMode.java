@@ -27,7 +27,10 @@ public enum VisibilityMode {
 
 	AUTO_VISIBILITY(Visibility.PUBLIC) {
 		@Override
-		Visibility byOverridden(MemberField field, MemberField overridden) {
+		Visibility byOverridden(
+				Member member,
+				FieldDeclaration declaration,
+				Member overridden) {
 			return overridden.getVisibility();
 		}
 	},
@@ -45,25 +48,30 @@ public enum VisibilityMode {
 		return this.defaultVisibility.isOverridable();
 	}
 
-	public final Visibility detectVisibility(MemberField field) {
+	public final Visibility detectVisibility(
+			Member member,
+			FieldDeclaration declaration) {
 
-		final Member[] overridden = field.getOverridden();
+		final Member[] overridden = member.getOverridden();
 
 		if (overridden.length == 0) {
 			return this.defaultVisibility;
 		}
 
-		return byOverridden(field, overridden[0].toField());
+		return byOverridden(member, declaration, overridden[0].toField());
 	}
 
-	Visibility byOverridden(MemberField field, MemberField overridden) {
+	Visibility byOverridden(
+			Member member,
+			FieldDeclaration declaration,
+			Member overridden) {
 
 		final Visibility expected = overridden.getVisibility();
 
-		if (!expected.isOverridable() && !field.isPropagated()) {
-			field.getLogger().error(
+		if (!expected.isOverridable() && !member.isPropagated()) {
+			member.getLogger().error(
 					"prohibited_private_override",
-					field,
+					member,
 					"Private fields can not be overridden");
 			return expected;
 		}
@@ -71,11 +79,11 @@ public enum VisibilityMode {
 			return expected;
 		}
 
-		field.getLogger().error(
+		member.getLogger().error(
 				"unexpected_visibility",
-				field.getDeclaration(),
+				declaration,
 				"Wrong '%s' field visibility: %s, but %s expected",
-				field.getDeclaration().getDisplayName(),
+				declaration.getDisplayName(),
 				this.defaultVisibility,
 				expected);
 

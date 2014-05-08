@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2013,2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field.decl;
-
-import org.o42a.core.member.DeclarationCommand;
-import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.st.CommandEnv;
-import org.o42a.core.st.CommandTargets;
+package org.o42a.core.member.field;
 
 
-public final class FieldDeclarationCommand extends DeclarationCommand {
+public enum FieldKind {
 
-	public FieldDeclarationCommand(
-			DeclarationStatement statement,
-			CommandEnv env) {
-		super(statement, env);
+	ORDINAL_FIELD,
+	SCOPE_FIELD,
+	ALIAS_FIELD;
+
+	public final boolean isOrdinal() {
+		return this == ORDINAL_FIELD;
 	}
 
-	@Override
-	public CommandTargets getTargets() {
-		return fieldDef();
+	public final boolean isScope() {
+		return this == SCOPE_FIELD;
 	}
 
 }
