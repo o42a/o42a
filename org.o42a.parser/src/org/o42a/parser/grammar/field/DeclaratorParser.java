@@ -118,6 +118,9 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 				case '=':
 					staticField = false;
 					break;
+				case '-':
+					context.acceptAll();
+					return result(context, start, DeclarationTarget.ALIAS);
 				case ':':
 					staticField = true;
 					if (context.next() != '=') {
@@ -138,6 +141,14 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			if (target == null) {
 				return null;
 			}
+
+			return result(context, start, target);
+		}
+
+		private SignNode<DeclarationTarget> result(
+				ParserContext context,
+				final SourcePosition start,
+				final DeclarationTarget target) {
 
 			final SignNode<DeclarationTarget> assignment = new SignNode<>(
 					start,

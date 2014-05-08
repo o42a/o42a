@@ -43,6 +43,11 @@ public class DeclaratorTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void alias() {
+		assertDeclaration(ALIAS, ":-");
+	}
+
+	@Test
 	public void staticField() {
 		assertDeclaration(STATIC, "::=");
 	}
