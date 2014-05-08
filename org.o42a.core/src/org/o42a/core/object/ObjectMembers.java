@@ -26,8 +26,14 @@ import org.o42a.core.member.*;
 
 public class ObjectMembers extends ContainerMembers {
 
+	private int idSeq;
+
 	ObjectMembers(Obj owner) {
 		super(owner);
+	}
+
+	public final int nextId() {
+		return ++this.idSeq;
 	}
 
 	public final void addTypeParameter(Member typeParameter) {

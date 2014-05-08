@@ -28,6 +28,7 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Statements;
 
 
@@ -41,6 +42,12 @@ public class ImperativeMemberRegistry extends ProxyMemberRegistry {
 	public FieldBuilder newField(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
+		prohibitedDeclaration(declaration);
+		return null;
+	}
+
+	@Override
+	public FieldBuilder newAlias(FieldDeclaration declaration, Ref ref) {
 		prohibitedDeclaration(declaration);
 		return null;
 	}

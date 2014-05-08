@@ -67,6 +67,12 @@ public final class MemberName extends MemberId {
 		return new MemberName(LOCAL_FIELD, name);
 	}
 
+	public static MemberName aliasName(Name name) {
+		assert name != null :
+			"Alias name not specified";
+		return new MemberName(ALIAS, name);
+	}
+
 	private final MemberKind kind;
 	private final Name name;
 

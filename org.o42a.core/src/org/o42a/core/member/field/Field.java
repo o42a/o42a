@@ -20,6 +20,7 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.field.FieldKind.ORDINAL_FIELD;
 import static org.o42a.core.ref.impl.prediction.FieldPrediction.predictField;
 
 import org.o42a.codegen.Generator;
@@ -64,8 +65,8 @@ public abstract class Field extends ObjectScope {
 		return this.member.getId();
 	}
 
-	public boolean isScopeField() {
-		return false;
+	public FieldKind getFieldKind() {
+		return ORDINAL_FIELD;
 	}
 
 	public final boolean isPropagated() {

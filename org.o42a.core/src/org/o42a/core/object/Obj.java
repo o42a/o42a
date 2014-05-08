@@ -453,6 +453,10 @@ public abstract class Obj
 		return cloneOf.cloneOf(other);
 	}
 
+	public final ObjectMembers objectMembers() {
+		return this.objectMembers;
+	}
+
 	public void resolveMembers(boolean resolveAdapters) {
 		if (this.objectMembers != null) {
 			// Register members incrementally.
@@ -948,7 +952,7 @@ public abstract class Obj
 
 			final Field field = memberField.field(dummyUser());
 
-			if (field.isScopeField()) {
+			if (field.getFieldKind().isScope()) {
 				continue;
 			}
 

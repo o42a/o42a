@@ -29,6 +29,7 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Statements;
 
 
@@ -49,6 +50,13 @@ final class GroupRegistry
 		return registry().newField(
 				declaration.inGroup(getGroupId()),
 				definition);
+	}
+
+	@Override
+	public FieldBuilder newAlias(FieldDeclaration declaration, Ref ref) {
+		return registry().newAlias(
+				declaration.inGroup(getGroupId()),
+				ref);
 	}
 
 	@Override

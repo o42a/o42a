@@ -91,7 +91,7 @@ public class LinkUses {
 	}
 
 	void fieldChanged(MemberField field) {
-		if (field.field(dummyUser()).isScopeField()) {
+		if (!field.field(dummyUser()).getFieldKind().isOrdinal()) {
 			// Scope fields not considered.
 			return;
 		}

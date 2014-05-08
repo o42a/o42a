@@ -118,12 +118,27 @@ public enum MemberKind {
 					.suffix(DISPLAY_SUFFIX);
 		}
 
+	},
+
+	ALIAS() {
+
+		@Override
+		ID toID(MemberName memberName) {
+			return ALIAS_PREFIX_ID.suffix(memberName.getName());
+		}
+
+		@Override
+		ID toDisplayID(MemberName memberName) {
+			return memberName.getName().toID();
+		}
+
 	};
 
 	private static final ID TEMP_PREFIX_ID = ID.id("T");
 	private static final ID CLAUSE_PREFIX_ID = ID.id("C");
 	private static final ID LOCAL_PREFIX_ID = ID.id("L");
 	private static final ID LOCAL_FIELD_PREFIX_ID = ID.id("LF");
+	private static final ID ALIAS_PREFIX_ID = ID.id("A");
 
 	private static final ID CLAUSE_DISPLAY_PREFIX =
 			ID.id(ID.displayText("Clause `"));
