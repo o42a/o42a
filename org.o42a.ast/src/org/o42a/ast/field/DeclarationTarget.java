@@ -51,19 +51,23 @@ public enum DeclarationTarget implements SignType {
 		return this.sign;
 	}
 
-	public boolean isOverride() {
+	public final boolean isAlias() {
+		return this == ALIAS;
+	}
+
+	public final boolean isOverride() {
 		return (this.mask & Mask.OVERRIDE_FIELD) != 0;
 	}
 
-	public boolean isPrototype() {
+	public final boolean isPrototype() {
 		return (this.mask & Mask.PROTOTYPE_FIELD) != 0;
 	}
 
-	public boolean isStatic() {
+	public final boolean isStatic() {
 		return (this.mask & Mask.STATIC_FIELD) != 0;
 	}
 
-	public boolean isAbstract() {
+	public final boolean isAbstract() {
 		return (this.mask & Mask.ABSTRACT_FIELD) != 0;
 	}
 
