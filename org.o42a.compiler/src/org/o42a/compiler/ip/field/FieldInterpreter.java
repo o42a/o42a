@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.field;
 import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -29,6 +30,7 @@ import org.o42a.compiler.ip.st.StatementsAccess;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 
 
@@ -50,24 +52,54 @@ public class FieldInterpreter {
 			return;
 		}
 
-		setDefinition(ip, p, declarator, declaration);
+		final FieldBuilder builder;
+		final DeclarationTarget target = declarator.getTarget();
+
+		if (target != null && target.isAlias()) {
+			builder = aliasBuilder(ip, p, declarator, declaration);
+		} else {
+			builder = fieldBuilder(ip, p, declarator, declaration);
+		}
+		if (builder != null) {
+			p.statement(builder.build());
+		}
 	}
 
-	private static void setDefinition(
+	private static FieldBuilder aliasBuilder(
 			Interpreter ip,
 			StatementsAccess p,
 			DeclaratorNode node,
 			FieldDeclaration declaration) {
-		if (declaration == null) {
-			return;
+
+		final ExpressionNode definitionNode = node.getDefinition();
+
+		if (definitionNode == null) {
+			return null;
 		}
+
+		final Ref ref = definitionNode.accept(
+				ip.expressionVisitor(),
+				p.nextDistributor());
+
+		if (ref == null) {
+			return null;
+		}
+
+		return p.get().alias(declaration, ref);
+	}
+
+	private static FieldBuilder fieldBuilder(
+			Interpreter ip,
+			StatementsAccess p,
+			DeclaratorNode node,
+			FieldDeclaration declaration) {
 
 		final FieldDefinition definition;
 		final ExpressionNode definitionNode = node.getDefinition();
 
 		if (definitionNode == null) {
 			if (node.getTarget() != null) {
-				return;
+				return null;
 			}
 			definition =
 					impliedDefinition(declaration, declaration.distribute());
@@ -77,17 +109,11 @@ public class FieldInterpreter {
 							new FieldNesting(declaration).toTypeConsumer()),
 					new FieldAccess(p.getRules(), declaration));
 			if (definition == null) {
-				return;
+				return null;
 			}
 		}
 
-		final FieldBuilder builder = p.get().field(declaration, definition);
-
-		if (builder == null) {
-			return;
-		}
-
-		p.statement(builder.build());
+		return p.get().field(declaration, definition);
 	}
 
 	private FieldInterpreter() {
