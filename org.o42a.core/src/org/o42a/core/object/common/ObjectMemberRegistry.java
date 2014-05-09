@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.common;
 
-import static org.o42a.core.member.MemberName.tempName;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import java.util.ArrayList;
@@ -109,8 +108,8 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public MemberId tempMemberId() {
-		return tempName(CASE_SENSITIVE.canonicalName(
+	public MemberId tempMemberId(MemberIdKind kind) {
+		return kind.memberName(CASE_SENSITIVE.canonicalName(
 				Integer.toString(++this.tempMemberIndex)));
 	}
 

@@ -20,7 +20,7 @@
 package org.o42a.root.array;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.root.array.CopyArrayElementsFunc.COPY_ARRAY_ELEMENTS;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -50,13 +50,14 @@ import org.o42a.util.fn.Cancelable;
 abstract class AbstractCopyArrayElements extends AnnotatedBuiltin {
 
 	private static final MemberName FROM_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("from"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("from"));
 	private static final MemberName TO_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("to"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("to"));
 	private static final MemberName TARGET_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("target"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("target"));
 	private static final MemberName TARGET_START_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("target start"));
+			FIELD_NAME.memberName(
+					CASE_INSENSITIVE.canonicalName("target start"));
 
 	private Ref source;
 	private Ref from;

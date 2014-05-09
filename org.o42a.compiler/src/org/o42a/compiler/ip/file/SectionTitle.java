@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.file;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_TITLE;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
@@ -170,7 +170,7 @@ final class SectionTitle implements LogInfo {
 		return FieldDeclaration.fieldDeclaration(
 				new Location(distributor.getContext(), this),
 				distributor,
-				fieldName(fieldName))
+				FIELD_NAME.memberName(fieldName))
 				.makeStatic();
 	}
 

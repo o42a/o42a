@@ -20,7 +20,7 @@
 package org.o42a.root.string;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.root.string.SubStringFunc.SUB_STRING;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -52,9 +52,9 @@ import org.o42a.util.string.ID;
 final class SubString extends AnnotatedBuiltin {
 
 	private static final MemberName FROM_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("from"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("from"));
 	private static final MemberName TO_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("to"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("to"));
 
 	private static final ID FROM_ID = ID.id("from");
 	private static final ID TO_ID = ID.id("to");

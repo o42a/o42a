@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value.link;
 
-import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
@@ -29,6 +28,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberIdKind;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.value.Statefulness;
@@ -66,7 +66,8 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 	};
 
 	private static final MemberName INTERFACE_ID =
-			fieldName(CASE_INSENSITIVE.canonicalName("interface"));
+			MemberIdKind.FIELD_NAME.memberName(
+					CASE_INSENSITIVE.canonicalName("interface"));
 
 	private final LinkValueConverter converter;
 	private Intrinsics intrinsics;

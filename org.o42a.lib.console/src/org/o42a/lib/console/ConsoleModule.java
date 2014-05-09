@@ -24,7 +24,7 @@ import static org.o42a.core.ir.CodeBuilder.defaultBuilder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.RefUser.refUser;
 import static org.o42a.core.ref.path.Path.modulePath;
@@ -66,7 +66,7 @@ public class ConsoleModule extends AnnotatedModule {
 	private static final ID MAIN_ID = ID.rawId("main");
 
 	private static final MemberName MAIN_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("main"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("main"));
 
 	public static ConsoleModule consoleModule(CompilerContext parentContext) {
 		return new ConsoleModule(

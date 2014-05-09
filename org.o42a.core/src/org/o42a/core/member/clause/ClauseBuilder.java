@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.member.MemberName.clauseName;
+import static org.o42a.core.member.MemberIdKind.CLAUSE_NAME;
 import static org.o42a.core.member.clause.ClauseSubstitution.NO_SUBSTITUTION;
 import static org.o42a.core.member.clause.impl.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.clause.impl.DeclaredPlainClause.plainClause;
@@ -316,7 +316,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 			return;
 		}
 
-		final MemberId aliasName = clauseName(name);
+		final MemberId aliasName = CLAUSE_NAME.memberName(name);
 		final MemberId aliasId;
 		final MemberId enclosingId = id.getEnclosingId();
 

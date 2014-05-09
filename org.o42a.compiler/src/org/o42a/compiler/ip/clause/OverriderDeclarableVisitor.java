@@ -24,7 +24,7 @@ import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_PLACEMENT;
 import static org.o42a.compiler.ip.clause.ClauseInterpreter.invalidClauseContent;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 
 import org.o42a.ast.field.AbstractDeclarableVisitor;
 import org.o42a.ast.field.DeclarableAdapterNode;
@@ -57,7 +57,7 @@ final class OverriderDeclarableVisitor
 		}
 
 		final ClauseBuilder builder =
-				p.setOverridden(fieldName(ref.getName().getName()));
+				p.setOverridden(FIELD_NAME.memberName(ref.getName().getName()));
 
 		return setDeclaredIn(ref, builder);
 	}

@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.field;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.VisibilityMode.AUTO_VISIBILITY;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
@@ -80,7 +80,7 @@ public final class FieldDeclarableVisitor
 		FieldDeclaration declaration = fieldDeclaration(
 				location(p, memberNode),
 				p,
-				fieldName(nameNode.getName()));
+				FIELD_NAME.memberName(nameNode.getName()));
 
 		declaration = setVisibility(declaration, memberNode);
 		declaration = update(declaration, this.declarator);

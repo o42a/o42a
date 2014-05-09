@@ -20,7 +20,7 @@
 package org.o42a.lib.console.impl;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.lib.console.impl.PrintFunc.PRINT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -52,9 +52,11 @@ import org.o42a.util.fn.Cancelable;
 public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 	private static final MemberName PRINT_TO_CONSOLE_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("print to console"));
+			FIELD_NAME.memberName(
+					CASE_INSENSITIVE.canonicalName("print to console"));
 	private static final MemberName TEXT_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("text"));
+			FIELD_NAME.memberName(
+					CASE_INSENSITIVE.canonicalName("text"));
 
 	private final String funcName;
 	private Ref text;

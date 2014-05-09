@@ -238,14 +238,14 @@ class LocalInsides extends AbstractContainer {
 			return false;
 		}
 
-		final MemberKind memberKind = memberName.getKind();
+		final MemberIdKind memberKind = memberName.getKind();
 
-		if (memberKind == MemberKind.FIELD) {
+		if (memberKind == MemberIdKind.FIELD_NAME) {
 			if (declaredIn != null) {
 				// `foo @bar` is always a field lookup.
 				return false;
 			}
-		} else if (memberKind != MemberKind.LOCAL) {
+		} else if (memberKind != MemberIdKind.LOCAL_NAME) {
 			return false;
 		}
 		if (!memberName.getName().is(getLocal().getName())) {

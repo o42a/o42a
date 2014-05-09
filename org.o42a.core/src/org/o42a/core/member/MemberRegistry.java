@@ -79,7 +79,11 @@ public abstract class MemberRegistry {
 
 	public abstract void declareMember(Member member);
 
-	public abstract MemberId tempMemberId();
+	public final MemberId tempMemberId() {
+		return tempMemberId(MemberIdKind.TEMP_FIELD_NAME);
+	}
+
+	public abstract MemberId tempMemberId(MemberIdKind kind);
 
 	public abstract Name anonymousBlockName();
 
@@ -133,7 +137,7 @@ public abstract class MemberRegistry {
 		}
 
 		@Override
-		public MemberId tempMemberId() {
+		public MemberId tempMemberId(MemberIdKind kind) {
 			return BROKEN_MEMBER_ID;
 		}
 

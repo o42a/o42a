@@ -20,7 +20,6 @@
 package org.o42a.core.value.array;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 import static org.o42a.core.value.array.impl.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
@@ -31,6 +30,7 @@ import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberIdKind;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
@@ -56,9 +56,11 @@ public class ArrayValueType extends ValueType<Array> {
 	public static final ArrayValueType ARRAY = new ArrayValueType(true);
 
 	private static final MemberName INDEXED_ID =
-			fieldName(CASE_INSENSITIVE.canonicalName("indexed"));
+			MemberIdKind.FIELD_NAME.memberName(
+					CASE_INSENSITIVE.canonicalName("indexed"));
 	private static final MemberName ITEM_TYPE_ID =
-			fieldName(CASE_INSENSITIVE.canonicalName("item type"));
+			MemberIdKind.FIELD_NAME.memberName(
+					CASE_INSENSITIVE.canonicalName("item type"));
 
 	private final boolean variable;
 	private final ArrayValueConverter converter;

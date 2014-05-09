@@ -19,7 +19,7 @@
 */
 package org.o42a.root.array;
 
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -50,7 +50,7 @@ import org.o42a.core.value.link.TargetRef;
 abstract class IndexedItem extends AnnotatedBuiltin {
 
 	private static final MemberName INDEX_NAME =
-			fieldName(CASE_INSENSITIVE.canonicalName("index"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("index"));
 
 	private Ref array;
 	private Ref index;

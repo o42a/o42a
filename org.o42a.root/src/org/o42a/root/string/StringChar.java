@@ -23,7 +23,7 @@ import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.VAL_ALIGNMENT_MASK;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;
@@ -67,7 +67,7 @@ final class StringChar extends AnnotatedBuiltin {
 	private static final ID FLAGS_ID = ID.id("flags");
 
 	private static final MemberName INDEX_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("index"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("index"));
 
 	private Ref string;
 	private Ref index;

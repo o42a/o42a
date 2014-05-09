@@ -15,7 +15,7 @@ import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.compiler.test.matchers.FalseValueMatcher.FALSE_VALUE_MATCHER;
 import static org.o42a.compiler.test.matchers.RuntimeValueMatcher.RUNTIME_VALUE_MATCHER;
 import static org.o42a.compiler.test.matchers.TrueValueMatcher.TRUE_VALUE_MATCHER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -233,7 +233,7 @@ public abstract class CompilerTestCase {
 			Accessor accessor) {
 
 		final MemberName fieldName =
-				fieldName(CASE_INSENSITIVE.canonicalName(name));
+				FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName(name));
 		final Member member = container.member(fieldName, accessor);
 
 		if (member == null) {

@@ -19,7 +19,7 @@
 */
 package org.o42a.root;
 
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
@@ -161,7 +161,10 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName(MODULE).key(getScope()).toPath().dereference();
+				FIELD_NAME.memberName(MODULE)
+				.key(getScope())
+				.toPath()
+				.dereference();
 
 		return this.module = path.bind(this, getScope()).target(distribute());
 	}
@@ -172,7 +175,10 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName(OBJECT).key(getScope()).toPath().dereference();
+				FIELD_NAME.memberName(OBJECT)
+				.key(getScope())
+				.toPath()
+				.dereference();
 
 		return this.object = path.bind(this, getScope()).target(distribute());
 	}
@@ -183,7 +189,10 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName(ALIAS).key(getScope()).toPath().dereference();
+				FIELD_NAME.memberName(ALIAS)
+				.key(getScope())
+				.toPath()
+				.dereference();
 
 		return this.alias = path.bind(this, getScope()).target(distribute());
 	}

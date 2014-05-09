@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.member.MemberName.clauseName;
+import static org.o42a.core.member.MemberIdKind.CLAUSE_NAME;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
@@ -119,9 +119,9 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 		clone.clauseId = ClauseId.NAME;
 		clone.name = name;
 		if (this.groupId != null) {
-			clone.memberId = this.groupId.append(clauseName(name));
+			clone.memberId = this.groupId.append(CLAUSE_NAME.memberName(name));
 		} else {
-			clone.memberId = clauseName(name);
+			clone.memberId = CLAUSE_NAME.memberName(name);
 		}
 
 		return clone;
@@ -242,7 +242,7 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 		final ClauseId clauseId = getClauseId();
 
 		if (clauseId.isName()) {
-			return clauseName(getName());
+			return CLAUSE_NAME.memberName(getName());
 		}
 
 		return clauseId.getMemberId();

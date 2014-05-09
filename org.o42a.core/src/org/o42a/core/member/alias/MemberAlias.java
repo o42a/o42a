@@ -19,11 +19,10 @@
 */
 package org.o42a.core.member.alias;
 
-import static org.o42a.core.member.MemberName.aliasName;
+import static org.o42a.core.member.MemberIdKind.FIELD_ALIAS;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
-import static org.o42a.util.string.Name.caseSensitiveName;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
@@ -32,7 +31,6 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.*;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
@@ -203,38 +201,45 @@ public class MemberAlias extends Member implements MemberPath {
 				getOriginalRef().resolve(getScope().walkingResolver(detector));
 
 		if (resolution.isResolved()) {
-
-			final MemberField field = detector.getField();
-
-			if (field != null) {
-				this.aliasedFieldKey = field.getMemberKey();
-			}
-
-			this.ref = getOriginalRef();
-
-			return;
+			assignRef(detector.getField());
+		} else {
+			createAliasField();
 		}
+	}
+
+	private void assignRef(MemberField field) {
+		if (field != null) {
+			this.aliasedFieldKey = field.getMemberKey();
+		}
+		this.ref = getOriginalRef();
+	}
+
+	private void createAliasField() {
 
 		final Obj owner = getScope().toObject();
-		final ObjectMembers members = owner.objectMembers();
 		final MemberId memberId = getMemberId();
 		final MemberName memberName = memberId.toMemberName();
 		final MemberId aliasId;
 
 		if (memberName != null) {
-			aliasId = aliasName(memberName.getName());
+			aliasId = FIELD_ALIAS.memberName(memberName.getName());
 		} else {
-			aliasId = aliasName(
-					caseSensitiveName(Integer.toString(members.nextId())));
+			aliasId = this.registry.tempMemberId(FIELD_ALIAS);
 		}
 
-		this.registry.declareMember(
-				new MemberAliasField(
-						owner,
-						getDeclaration()
-						.setMemberId(aliasId)
-						.setVisibilityMode(PRIVATE_VISIBILITY),
-						getOriginalRef()));
+		final MemberAliasField alias = new MemberAliasField(
+				owner,
+				getDeclaration()
+				.setMemberId(aliasId)
+				.setVisibilityMode(PRIVATE_VISIBILITY),
+				getOriginalRef());
+
+		this.registry.declareMember(alias);
+		this.aliasedFieldKey = alias.getMemberKey();
+		this.ref =
+				this.aliasedFieldKey.toPath()
+				.bind(alias, getScope())
+				.target(distribute());
 	}
 
 }

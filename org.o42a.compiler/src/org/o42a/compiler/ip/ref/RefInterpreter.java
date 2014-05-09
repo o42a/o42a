@@ -23,8 +23,8 @@ import static org.o42a.compiler.ip.Interpreter.*;
 import static org.o42a.compiler.ip.clause.ClauseInterpreter.clauseObjectPath;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
-import static org.o42a.core.member.MemberName.clauseName;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.CLAUSE_NAME;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
@@ -329,7 +329,7 @@ public abstract class RefInterpreter {
 
 		@Override
 		public MemberId memberName(Name name) {
-			return fieldName(name);
+			return FIELD_NAME.memberName(name);
 		}
 
 	}
@@ -347,7 +347,7 @@ public abstract class RefInterpreter {
 
 		@Override
 		public MemberId memberName(Name name) {
-			return fieldName(name);
+			return FIELD_NAME.memberName(name);
 		}
 
 	}
@@ -386,7 +386,7 @@ public abstract class RefInterpreter {
 
 		@Override
 		public MemberId memberName(Name name) {
-			return fieldName(name);
+			return FIELD_NAME.memberName(name);
 		}
 
 		@Override
@@ -409,7 +409,7 @@ public abstract class RefInterpreter {
 
 		@Override
 		public MemberId memberName(Name name) {
-			return clauseName(name);
+			return CLAUSE_NAME.memberName(name);
 		}
 
 	}
@@ -427,7 +427,7 @@ public abstract class RefInterpreter {
 
 		@Override
 		public MemberId memberName(Name name) {
-			return fieldName(name);
+			return FIELD_NAME.memberName(name);
 		}
 
 		@Override

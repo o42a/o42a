@@ -8,7 +8,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.MemberName.localFieldName;
+import static org.o42a.core.member.MemberIdKind.LOCAL_FIELD_NAME;
 import static org.o42a.core.value.link.LinkValueType.LINK;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
@@ -54,7 +54,7 @@ public class YieldTest extends CompilerTestCase {
 
 		final Obj a = field("a").toObject();
 		final Member memberF = a.member(
-				localFieldName(caseInsensitiveName("f")),
+				LOCAL_FIELD_NAME.memberName(caseInsensitiveName("f")),
 				Accessor.OWNER);
 
 		assertThat("Local field `f` not created", memberF, notNullValue());
@@ -85,7 +85,7 @@ public class YieldTest extends CompilerTestCase {
 
 		final Obj a = field("a").toObject();
 		final Member memberF = a.member(
-				localFieldName(caseInsensitiveName("f")),
+				LOCAL_FIELD_NAME.memberName(caseInsensitiveName("f")),
 				Accessor.OWNER);
 
 		assertThat("Local field `f` not created", memberF, notNullValue());

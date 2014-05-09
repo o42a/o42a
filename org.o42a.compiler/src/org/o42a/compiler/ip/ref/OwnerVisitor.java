@@ -26,7 +26,7 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.isRootRef;
 import static org.o42a.compiler.ip.st.LocalInterpreter.isLocalScopeRef;
 import static org.o42a.compiler.ip.st.LocalInterpreter.localName;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberName.localName;
+import static org.o42a.core.member.MemberIdKind.LOCAL_NAME;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.Ref.voidRef;
@@ -355,7 +355,7 @@ final class OwnerVisitor
 				new MemberById(
 						location(p, ref),
 						p,
-						localName(nameNode.getName()),
+						LOCAL_NAME.memberName(nameNode.getName()),
 						declaredIn).toRef());
 	}
 

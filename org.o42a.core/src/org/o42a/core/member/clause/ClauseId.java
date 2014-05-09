@@ -19,7 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.member.MemberName.clauseId;
+import static org.o42a.core.member.MemberIdKind.CLAUSE_ID;
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.core.member.MemberId;
 import org.o42a.util.string.Name;
@@ -385,7 +386,7 @@ public enum ClauseId {
 		if (isName()) {
 			this.memberId = null;
 		} else {
-			this.memberId = clauseId(this);
+			this.memberId = CLAUSE_ID.memberName(CASE_SENSITIVE.name(name()));
 		}
 	}
 

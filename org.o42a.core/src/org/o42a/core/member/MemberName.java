@@ -19,64 +19,16 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.core.member.MemberKind.*;
-import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
-
-import org.o42a.core.member.clause.ClauseId;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
 public final class MemberName extends MemberId {
 
-	public static MemberName fieldName(Name name) {
-		assert name != null :
-			"Field name not specified";
-		return new MemberName(FIELD, name);
-	}
-
-	public static MemberName tempName(Name name) {
-		assert name != null :
-			"Temporary field name not specified";
-		return new MemberName(TEMP, name);
-	}
-
-	public static MemberName clauseId(ClauseId clauseId) {
-		assert clauseId != null :
-			"Clause identifier not specified";
-		assert !clauseId.isName() :
-			"Clause name has no identifier";
-		return new MemberName(CLAUSE_ID, CASE_SENSITIVE.name(clauseId.name()));
-	}
-
-	public static MemberName clauseName(Name name) {
-		assert name != null :
-			"Clause name not specified";
-		return new MemberName(CLAUSE_NAME, name);
-	}
-
-	public static MemberName localName(Name name) {
-		assert name != null :
-			"Local name not specified";
-		return new MemberName(LOCAL, name);
-	}
-
-	public static MemberName localFieldName(Name name) {
-		assert name != null :
-			"Local field name not specified";
-		return new MemberName(LOCAL_FIELD, name);
-	}
-
-	public static MemberName aliasName(Name name) {
-		assert name != null :
-			"Alias name not specified";
-		return new MemberName(ALIAS, name);
-	}
-
-	private final MemberKind kind;
+	private final MemberIdKind kind;
 	private final Name name;
 
-	private MemberName(MemberKind kind, Name name) {
+	MemberName(MemberIdKind kind, Name name) {
 		this.kind = kind;
 		this.name = name;
 	}
@@ -86,7 +38,7 @@ public final class MemberName extends MemberId {
 		return true;
 	}
 
-	public final MemberKind getKind() {
+	public final MemberIdKind getKind() {
 		return this.kind;
 	}
 

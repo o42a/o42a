@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.ref;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.ref.RefInterpreter.linkTargetIsAccessibleFrom;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
@@ -52,9 +52,9 @@ import org.o42a.util.fn.Holder;
 public class MemberById extends ContainedFragment {
 
 	private static final MemberName VOID_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("void"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("void"));
 	private static final MemberName FALSE_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("false"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("false"));
 
 	private final AccessRules accessRules;
 	private final StaticTypeRef declaredIn;
