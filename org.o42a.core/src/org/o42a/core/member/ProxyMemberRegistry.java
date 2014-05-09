@@ -76,8 +76,8 @@ public abstract class ProxyMemberRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public MemberId tempMemberId() {
-		return registry().tempMemberId();
+	public MemberId tempMemberId(MemberIdKind kind) {
+		return registry().tempMemberId(kind);
 	}
 
 	@Override

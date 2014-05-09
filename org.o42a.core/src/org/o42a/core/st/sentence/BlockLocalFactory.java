@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.member.MemberName.localFieldName;
+import static org.o42a.core.member.MemberIdKind.LOCAL_FIELD_NAME;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
@@ -121,7 +121,7 @@ final class BlockLocalFactory implements LocalFactory {
 
 		this.fieldNames.put(localName, newIndex);
 
-		return localFieldName(fieldName);
+		return LOCAL_FIELD_NAME.memberName(fieldName);
 	}
 
 }

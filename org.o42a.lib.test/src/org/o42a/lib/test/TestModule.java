@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test;
 
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.analysis.use.UserInfo;
@@ -42,7 +42,7 @@ import org.o42a.core.source.Module;
 public class TestModule extends AnnotatedModule {
 
 	private static final MemberName TEST_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("test"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("test"));
 
 	public static Module testModule(CompilerContext parentContext) {
 		return new TestModule(parentContext);

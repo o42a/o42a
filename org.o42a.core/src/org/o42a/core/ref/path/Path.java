@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -30,6 +29,7 @@ import java.util.Arrays;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberIdKind;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.ref.path.impl.member.MemberFragment;
@@ -61,7 +61,8 @@ public final class Path {
 		for (String field : fields) {
 
 			final Member member = object.member(
-					fieldName(CASE_INSENSITIVE.canonicalName(field)));
+					MemberIdKind.FIELD_NAME.memberName(
+							CASE_INSENSITIVE.canonicalName(field)));
 
 			assert member != null :
 				"Field \"" + field + "\" not found in " + object;

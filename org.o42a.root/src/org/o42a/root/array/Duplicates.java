@@ -21,7 +21,7 @@ package org.o42a.root.array;
 
 import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
 import static org.o42a.core.value.array.ArrayValueType.ARRAY;
 import static org.o42a.root.array.ArrayOfDuplicatesFunc.ARRAY_OF_DUPLICATES;
@@ -63,9 +63,9 @@ import org.o42a.util.fn.Cancelable;
 public class Duplicates extends AnnotatedBuiltin {
 
 	private static final MemberName SIZE =
-			fieldName(CASE_INSENSITIVE.canonicalName("size"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("size"));
 	private static final MemberName DUPLICATE =
-			fieldName(CASE_INSENSITIVE.canonicalName("duplicate"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("duplicate"));
 
 	private Ref size;
 	private Ref duplicate;

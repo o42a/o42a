@@ -21,7 +21,7 @@ package org.o42a.lib.test.run;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.analysis.use.UserInfo;
@@ -48,7 +48,7 @@ import org.o42a.lib.test.TestModule;
 final class TestRunner extends ConstructedObject {
 
 	private static final MemberName NAME_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("name"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("name"));
 
 	public static void runTest(
 			TestModule module,

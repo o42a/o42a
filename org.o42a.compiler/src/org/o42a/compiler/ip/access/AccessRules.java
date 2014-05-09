@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.access;
 import static org.o42a.core.member.AccessSource.FROM_CLAUSE_REUSE;
 import static org.o42a.core.member.AccessSource.FROM_DECLARATION;
 import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.compiler.ip.Interpreter;
@@ -173,7 +173,8 @@ public abstract class AccessRules {
 			AccessDistributor distributor,
 			Name name) {
 
-		final MemberName memberName = name != null ? fieldName(name) : null;
+		final MemberName memberName =
+				name != null ? FIELD_NAME.memberName(name) : null;
 		final Container from = distributor.getContainer();
 		Path path = SELF_PATH;
 		Container container = from;

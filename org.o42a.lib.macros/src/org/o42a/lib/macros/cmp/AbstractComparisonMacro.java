@@ -20,7 +20,7 @@
 package org.o42a.lib.macros.cmp;
 
 import static org.o42a.common.macro.Macros.expandMacroField;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.macro.AnnotatedMacro;
@@ -92,7 +92,7 @@ public abstract class AbstractComparisonMacro extends AnnotatedMacro {
 			return this.left;
 		}
 		return this.left = expandMacroField(
-				fieldName(leftName()).key(getScope()),
+				FIELD_NAME.memberName(leftName()).key(getScope()),
 				distribute());
 	}
 
@@ -101,7 +101,7 @@ public abstract class AbstractComparisonMacro extends AnnotatedMacro {
 			return this.right;
 		}
 		return this.right = expandMacroField(
-				fieldName(rightName()).key(getScope()),
+				FIELD_NAME.memberName(rightName()).key(getScope()),
 				distribute());
 	}
 

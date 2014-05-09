@@ -20,7 +20,7 @@
 package org.o42a.common.phrase;
 
 import static org.o42a.common.phrase.part.NextClause.clauseNotFound;
-import static org.o42a.core.member.MemberName.clauseName;
+import static org.o42a.core.member.MemberIdKind.CLAUSE_NAME;
 
 import java.util.LinkedList;
 
@@ -99,7 +99,7 @@ final class MainPhraseContext extends PhraseContext {
 
 	@Override
 	public NextClause clauseByName(LocationInfo location, Name name) {
-		return findObjectClause(location, clauseName(name), name);
+		return findObjectClause(location, CLAUSE_NAME.memberName(name), name);
 	}
 
 	@Override

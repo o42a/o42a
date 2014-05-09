@@ -20,7 +20,6 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
-import static org.o42a.core.member.MemberName.localName;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
@@ -36,6 +35,7 @@ import org.o42a.core.ir.cmd.LocalOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
+import org.o42a.core.member.MemberIdKind;
 import org.o42a.core.member.MemberPath;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -159,7 +159,7 @@ final class LocalStep extends Step {
 				.getContainer()
 				.member(
 						Accessor.OWNER.accessBy(local(), FROM_DEFINITION),
-						localName(local().getName()),
+						MemberIdKind.LOCAL_NAME.memberName(local().getName()),
 						reproducer.getScope().toObject());
 
 		if (path == null) {

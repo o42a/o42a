@@ -19,7 +19,7 @@
 */
 package org.o42a.root.array;
 
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.RefUsage.ASSIGNABLE_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
@@ -47,7 +47,7 @@ import org.o42a.core.value.ValueType;
 final class SetArrayItem extends AnnotatedBuiltin {
 
 	private static final MemberName NEW_VALUE_NAME =
-			fieldName(CASE_INSENSITIVE.canonicalName("new value"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("new value"));
 
 	private Ref array;
 	private Ref item;

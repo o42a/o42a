@@ -20,7 +20,7 @@
 package org.o42a.root.adapter;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.builtin.AnnotatedBuiltin;
@@ -49,7 +49,7 @@ import org.o42a.util.fn.Cancelable;
 public abstract class ByString<T> extends AnnotatedBuiltin {
 
 	private static final MemberName INPUT_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("input"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("input"));
 
 	private Ref input;
 

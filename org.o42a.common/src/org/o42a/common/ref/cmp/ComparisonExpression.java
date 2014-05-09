@@ -20,7 +20,7 @@
 package org.o42a.common.ref.cmp;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.common.phrase.Phrase;
@@ -46,7 +46,7 @@ import org.o42a.core.value.ValueType;
 public class ComparisonExpression extends ObjectConstructor {
 
 	static final MemberId COMPARISON_MEMBER =
-			fieldName(CASE_SENSITIVE.canonicalName("_cmp"));
+			FIELD_NAME.memberName(CASE_SENSITIVE.canonicalName("_cmp"));
 
 	private final ComparisonExpression prototype;
 	private final Reproducer reproducer;

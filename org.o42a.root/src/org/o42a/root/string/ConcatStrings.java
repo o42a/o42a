@@ -20,7 +20,7 @@
 package org.o42a.root.string;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.root.string.ConcatFunc.CONCAT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -51,9 +51,9 @@ import org.o42a.util.fn.Cancelable;
 final class ConcatStrings extends AnnotatedBuiltin {
 
 	private static final MemberName WHAT_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("what"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("what"));
 	private static final MemberName WITH_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("with"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("with"));
 
 	private Ref what;
 	private Ref with;

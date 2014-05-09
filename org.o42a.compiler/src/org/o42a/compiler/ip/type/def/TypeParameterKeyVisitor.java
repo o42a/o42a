@@ -22,8 +22,8 @@ package org.o42a.compiler.ip.type.def;
 import static org.o42a.compiler.ip.access.AccessRules.ACCESS_FROM_PLACEMENT;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PLAIN_REF_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.isImpliedRef;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
-import static org.o42a.core.member.MemberName.fieldName;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -85,7 +85,7 @@ final class TypeParameterKeyVisitor
 		final Obj declaredIn =
 				declaredInRef != null ? declaredInRef.getType() : null;
 
-		final MemberName fieldName = fieldName(name.getName());
+		final MemberName fieldName = FIELD_NAME.memberName(name.getName());
 		final Contained location =
 				new Contained(p.getContext(), ref, p.distribute());
 

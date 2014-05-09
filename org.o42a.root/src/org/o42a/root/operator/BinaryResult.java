@@ -20,7 +20,7 @@
 package org.o42a.root.operator;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.builtin.AnnotatedBuiltin;
@@ -68,11 +68,11 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 			String rightOperandName,
 			ValueType<R> rightOperandType) {
 		super(owner, sources);
-		this.leftOperandId =
-				fieldName(CASE_INSENSITIVE.canonicalName(leftOperandName));
+		this.leftOperandId = FIELD_NAME.memberName(
+				CASE_INSENSITIVE.canonicalName(leftOperandName));
 		this.leftOperandType = leftOperandType;
-		this.rightOperandId =
-				fieldName(CASE_INSENSITIVE.canonicalName(rightOperandName));
+		this.rightOperandId = FIELD_NAME.memberName(
+				CASE_INSENSITIVE.canonicalName(rightOperandName));
 		this.rightOperandType = rightOperandType;
 	}
 

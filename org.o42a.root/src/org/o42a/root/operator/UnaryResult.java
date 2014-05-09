@@ -20,7 +20,7 @@
 package org.o42a.root.operator;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.builtin.AnnotatedBuiltin;
@@ -61,7 +61,8 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 			String operandName,
 			ValueType<O> operandType) {
 		super(owner, sources);
-		this.operandId = fieldName(CASE_INSENSITIVE.canonicalName(operandName));
+		this.operandId = FIELD_NAME.memberName(
+				CASE_INSENSITIVE.canonicalName(operandName));
 		this.operandType = operandType;
 	}
 

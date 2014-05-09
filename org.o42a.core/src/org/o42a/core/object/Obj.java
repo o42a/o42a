@@ -453,10 +453,6 @@ public abstract class Obj
 		return cloneOf.cloneOf(other);
 	}
 
-	public final ObjectMembers objectMembers() {
-		return this.objectMembers;
-	}
-
 	public void resolveMembers(boolean resolveAdapters) {
 		if (this.objectMembers != null) {
 			// Register members incrementally.

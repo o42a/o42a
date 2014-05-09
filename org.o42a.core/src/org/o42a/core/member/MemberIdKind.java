@@ -22,12 +22,13 @@ package org.o42a.core.member;
 import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_MEMBER;
 
 import org.o42a.util.string.ID;
+import org.o42a.util.string.Name;
 import org.o42a.util.string.SubID;
 
 
-public enum MemberKind {
+public enum MemberIdKind {
 
-	TEMP() {
+	TEMP_FIELD_NAME() {
 
 		@Override
 		ID toID(MemberName memberName) {
@@ -41,7 +42,7 @@ public enum MemberKind {
 
 	},
 
-	FIELD() {
+	FIELD_NAME() {
 
 		@Override
 		ID toID(MemberName memberName) {
@@ -85,7 +86,7 @@ public enum MemberKind {
 
 	},
 
-	LOCAL() {
+	LOCAL_NAME() {
 
 		@Override
 		ID toID(MemberName memberName) {
@@ -104,7 +105,7 @@ public enum MemberKind {
 
 	},
 
-	LOCAL_FIELD() {
+	LOCAL_FIELD_NAME() {
 
 		@Override
 		ID toID(MemberName memberName) {
@@ -120,7 +121,7 @@ public enum MemberKind {
 
 	},
 
-	ALIAS() {
+	FIELD_ALIAS() {
 
 		@Override
 		ID toID(MemberName memberName) {
@@ -150,6 +151,12 @@ public enum MemberKind {
 			ID.id(ID.displayText("Local field `"));
 	private static final SubID DISPLAY_SUFFIX =
 			ID.displayText("`");
+
+	public final MemberName memberName(Name name) {
+		assert name != null :
+			"Member name not specified";
+		return new MemberName(this, name);
+	}
 
 	abstract ID toID(MemberName memberName);
 

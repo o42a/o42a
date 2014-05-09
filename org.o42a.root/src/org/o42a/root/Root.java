@@ -22,7 +22,7 @@ package org.o42a.root;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
 import static org.o42a.core.member.Inclusions.INCLUSIONS;
-import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -58,25 +58,25 @@ import org.o42a.util.io.URLSource;
 public class Root extends Obj {
 
 	private static final MemberName DIRECTIVE_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("directive"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("directive"));
 	private static final MemberName MACRO_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("macro"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("macro"));
 	private static final MemberName INTEGER_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("integer"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("integer"));
 	private static final MemberName FLOAT_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("float"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("float"));
 	private static final MemberName STRING_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("string"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("string"));
 	private static final MemberName LINK_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("link"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("link"));
 	private static final MemberName VARIABLE_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("variable"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("variable"));
 	private static final MemberName ARRAY_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("array"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("array"));
 	private static final MemberName ROW_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("row"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("row"));
 	private static final MemberName FLOW_MEMBER =
-			fieldName(CASE_INSENSITIVE.canonicalName("flow"));
+			FIELD_NAME.memberName(CASE_INSENSITIVE.canonicalName("flow"));
 
 	public static Root createRoot(Scope topScope) {
 
