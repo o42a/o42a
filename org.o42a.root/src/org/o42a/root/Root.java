@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
 import static org.o42a.core.member.Inclusions.INCLUSIONS;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
+import static org.o42a.core.object.meta.Nesting.NO_NESTING;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -123,8 +124,7 @@ public class Root extends Obj {
 		if (this.directiveObject != null) {
 			return this.directiveObject;
 		}
-		return this.directiveObject =
-				member(DIRECTIVE_MEMBER).substance(dummyUser()).toObject();
+		return this.directiveObject = object(DIRECTIVE_MEMBER);
 	}
 
 	public final Obj getMacro() {
@@ -202,7 +202,7 @@ public class Root extends Obj {
 
 	@Override
 	protected Nesting createNesting() {
-		return Nesting.NO_NESTING;
+		return NO_NESTING;
 	}
 
 	@Override
