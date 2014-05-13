@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldKey.BROKEN_FIELD_KEY;
 
 import org.o42a.core.member.Accessor;
@@ -58,7 +59,7 @@ public enum DeclarationMode {
 		@Override
 		FieldKey fieldKey(FieldDeclaration declaration) {
 
-			final Holder<MemberField> overridden = overridden(declaration);
+			final Holder<MemberField> overridden = overriddenField(declaration);
 
 			if (overridden == null) {
 				return BROKEN_FIELD_KEY;
@@ -69,7 +70,6 @@ public enum DeclarationMode {
 			if (overriddenField != null) {
 				return overriddenField.getFieldKey();
 			}
-			overridden(declaration);
 
 			return cantOverride(declaration);
 		}
@@ -86,7 +86,7 @@ public enum DeclarationMode {
 		@Override
 		FieldKey fieldKey(FieldDeclaration declaration) {
 
-			final Holder<MemberField> overridden = overridden(declaration);
+			final Holder<MemberField> overridden = overriddenField(declaration);
 
 			if (overridden == null) {
 				return BROKEN_FIELD_KEY;
@@ -116,7 +116,8 @@ public enum DeclarationMode {
 				declaration.getMemberId().key(declaration.getScope()));
 	}
 
-	private static Holder<MemberField> overridden(FieldDeclaration declaration) {
+	private static Holder<MemberField> overriddenField(
+			FieldDeclaration declaration) {
 
 		final MemberId memberId = declaration.getMemberId();
 		final StaticTypeRef declaredInRef = declaration.getDeclaredIn();
@@ -136,22 +137,54 @@ public enum DeclarationMode {
 			final Sample sample = containerType.getSample();
 
 			if (sample != null) {
-				overridden =
-						overridden(memberId, overridden, sample.getObject());
+				overridden = overriddenMember(
+						memberId,
+						overridden,
+						sample.getObject());
 			}
 
 			final TypeRef ancestor = containerType.getAncestor();
 
 			if (ancestor != null) {
-				overridden =
-						overridden(memberId, overridden, ancestor.getType());
+				overridden = overriddenMember(
+						memberId,
+						overridden,
+						ancestor.getType());
 			}
 		}
 
-		return new Holder<>(overridden != null ? overridden.toField() : null);
+		if (overridden == null) {
+			return new Holder<>(null);
+		}
+		if (overridden.isStatic()) {
+			prohibitedStaticOverride(declaration, overridden);
+			return null;
+		}
+
+		final MemberField overriddenField = overridden.toField();
+
+		if (overriddenField == null) {
+			if (overridden.isAlias()) {
+				prohibitedAliasOverride(declaration, overridden);
+			} else {
+				cantOverride(declaration);
+			}
+			return null;
+		}
+		if (overriddenField != overridden) {
+
+			final Field field = overriddenField.field(dummyUser());
+
+			if (!field.getFieldKind().isOrdinal()) {
+				prohibitedAliasOverride(declaration, overridden);
+				return null;
+			}
+		}
+
+		return new Holder<>(overriddenField);
 	}
 
-	private static Member overridden(
+	private static Member overriddenMember(
 			MemberId memberId,
 			Member overridden,
 			Obj ascendant) {
@@ -175,6 +208,26 @@ public enum DeclarationMode {
 		}
 
 		return overridden;
+	}
+
+	private static void prohibitedStaticOverride(
+			FieldDeclaration declaration,
+			Member overridden) {
+		declaration.getLogger().error(
+				"prohibited_static_override",
+				declaration.getLocation().setDeclaration(overridden),
+				"Static field `%s` can not be overridden",
+				declaration.getDisplayName());
+	}
+
+	private static void prohibitedAliasOverride(
+			FieldDeclaration declaration,
+			Member overridden) {
+		declaration.getLogger().error(
+				"prohibited_alias_override",
+				declaration.getLocation().setDeclaration(overridden),
+				"Alias `%s` can not be overridden",
+				declaration.getDisplayName());
 	}
 
 	private static FieldKey cantOverride(FieldDeclaration declaration) {

@@ -102,9 +102,6 @@ final class MemberEntry {
 		if (!key.isValid()) {
 			return null;
 		}
-		if (!validateStaticOverride()) {
-			return null;
-		}
 
 		final Member existing = members.members().get(key);
 
@@ -190,24 +187,6 @@ final class MemberEntry {
 		// Otherwise, leave it as is.
 		// The member should take care of merging the definitions.
 		return null;
-	}
-
-	private boolean validateStaticOverride() {
-		if (!isOverride() || isPropagated()) {
-			return true;
-		}
-		for (Member overridden : getMember().getOverridden()) {
-			if (overridden.isStatic()) {
-				getMember().getLogger().error(
-						"prohibited_static_override",
-						getMember().getLocation().setDeclaration(
-								overridden.getLocation()),
-						"Static field can not be overridded");
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 }
