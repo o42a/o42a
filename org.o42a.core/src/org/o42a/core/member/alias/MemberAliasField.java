@@ -19,6 +19,9 @@
 */
 package org.o42a.core.member.alias;
 
+import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
+import static org.o42a.core.ref.RefUser.refUser;
+
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
@@ -64,6 +67,14 @@ public class MemberAliasField extends MemberField {
 	@Override
 	public MemberAliasField propagateTo(Obj owner) {
 		return new MemberAliasField(owner, this);
+	}
+
+	@Override
+	public void resolveAll() {
+		super.resolveAll();
+		getRef().resolveAll(getScope().resolver().fullResolver(
+				refUser(getAnalysis().fieldAccess()),
+				BODY_REF_USAGE));
 	}
 
 	@Override

@@ -21,8 +21,10 @@ package org.o42a.core.member.alias;
 
 import static org.o42a.core.member.MemberIdKind.FIELD_ALIAS;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
+import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.core.ref.RefUser.refUser;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
@@ -31,6 +33,7 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.*;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
@@ -163,7 +166,22 @@ public class MemberAlias extends Member implements MemberPath {
 
 	@Override
 	public Container substance(UserInfo user) {
-		return getRef().getResolution().resolve();
+
+		final Container substance;
+
+		if (user.isDummy()) {
+			substance = getRef().getResolution().resolve();
+		} else {
+
+			final FullResolver fullResolver =
+					getScope()
+					.resolver()
+					.fullResolver(refUser(user), BODY_REF_USAGE);
+
+			substance = getRef().resolveAll(fullResolver).resolve();
+		}
+
+		return substance;
 	}
 
 	@Override
@@ -209,9 +227,18 @@ public class MemberAlias extends Member implements MemberPath {
 
 	private void assignRef(MemberField field) {
 		if (field != null) {
-			this.aliasedFieldKey = field.getMemberKey();
+			setAliasedFieldKey(field.getMemberKey());
+		} else {
+			this.ref = getOriginalRef();
 		}
-		this.ref = getOriginalRef();
+	}
+
+	private void setAliasedFieldKey(MemberKey aliasedFieldKey) {
+		this.aliasedFieldKey = aliasedFieldKey;
+		this.ref =
+				this.aliasedFieldKey.toPath()
+				.bind(getDeclaration(), getScope())
+				.target(distribute());
 	}
 
 	private void createAliasField() {
@@ -235,11 +262,8 @@ public class MemberAlias extends Member implements MemberPath {
 				getOriginalRef());
 
 		this.registry.declareMember(alias);
-		this.aliasedFieldKey = alias.getMemberKey();
-		this.ref =
-				this.aliasedFieldKey.toPath()
-				.bind(alias, getScope())
-				.target(distribute());
+
+		setAliasedFieldKey(alias.getMemberKey());
 	}
 
 }
