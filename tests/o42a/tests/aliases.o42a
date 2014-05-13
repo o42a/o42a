@@ -1,0 +1,53 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Any copyright is dedicated to the Public Domain.
+http://creativecommons.org/publicdomain/zero/1.0/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use namespace 'Console'
+Use namespace 'Test'
+
+Aliases ::= test
+================
+Name = "Aliases"
+
+Print error [name] nl
+Run tests
+
+Field alias := test (
+  Name = "Field alias"
+  Field := rt-string 'value'
+  Alias :- field
+  
+  Print error '  ' [name] nl
+  
+  Assert [alias == "value"] 'Wrong alias value'
+)
+
+Ref alias := test (
+  Name = "Ref alias"
+  Field := void (F := rt-string 'value')
+  Alias :- field: f
+  
+  Print error '  ' [name] nl
+  
+  Assert [alias == "value"] 'Wrong reference alias value'
+)
+
+Deref alias := test (
+  Name = "Deref alias"
+  Field := string` link = rt-string 'value'
+  Alias :- field->
+  
+  Print error '  ' [name] nl
+  
+  Assert [alias == "value"] 'Wrong dereferencing alias value'
+)
+
+Expression alias := test (
+  Name = "Expression alias"
+  Field := void (F := rt-string 'value')
+  Alias :- field
+  
+  Print error '  ' [name] nl
+  
+  Assert [alias: f == "value"] 'Wrong expression alias value'
+)
