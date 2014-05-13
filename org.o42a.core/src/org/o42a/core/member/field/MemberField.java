@@ -66,7 +66,7 @@ public abstract class MemberField
 
 	@Override
 	public final MemberId getMemberId() {
-		return getDeclaration().getMemberId();
+		return getFieldKey().getMemberKey().getMemberId();
 	}
 
 	public final FieldKey getFieldKey() {

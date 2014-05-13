@@ -58,7 +58,7 @@ public enum VisibilityMode {
 			return this.defaultVisibility;
 		}
 
-		return byOverridden(member, declaration, overridden[0].toField());
+		return byOverridden(member, declaration, overridden[0]);
 	}
 
 	Visibility byOverridden(
