@@ -9,7 +9,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberIdKind.LOCAL_FIELD_NAME;
-import static org.o42a.core.value.link.LinkValueType.LINK;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.junit.Test;
@@ -61,15 +60,7 @@ public class YieldTest extends CompilerTestCase {
 
 		final Obj f = memberF.toField().field(dummyUser()).toObject();
 
-		assertThat(f.type().getValueType(), valueType(LINK));
-		assertThat(
-				LINK.interfaceRef(f.type().getParameters())
-				.getType()
-				.type()
-				.getValueType(),
-				valueType(ValueType.INTEGER));
-		assertThat(definiteValue(linkTarget(f), ValueType.INTEGER), is(2L));
-
+		assertThat(definiteValue(f, ValueType.INTEGER), is(2L));
 		assertThat(valueOf(a, ValueType.INTEGER), runtimeValue());
 	}
 
@@ -92,18 +83,9 @@ public class YieldTest extends CompilerTestCase {
 
 		final Obj f = memberF.toField().field(dummyUser()).toObject();
 
-		assertThat(f.type().getValueType(), valueType(LINK));
-
 		assertThat(
-				LINK.interfaceRef(f.type().getParameters())
-				.getType()
-				.type()
-				.getValueType(),
-				valueType(LINK));
-		assertThat(
-				definiteValue(linkTarget(linkTarget(f)), ValueType.INTEGER),
+				definiteValue(linkTarget(f), ValueType.INTEGER),
 				is(2L));
-
 		assertThat(valueOf(a, ValueType.INTEGER), runtimeValue());
 	}
 
