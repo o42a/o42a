@@ -262,6 +262,17 @@ public abstract class Obj
 		return this.wrapped = findWrapped();
 	}
 
+	public final Obj mostWrapped() {
+
+		final Obj wrapped = getWrapped();
+
+		if (wrapped == this) {
+			return this;
+		}
+
+		return wrapped.mostWrapped();
+	}
+
 	public final Meta meta() {
 		if (this.meta != null) {
 			return this.meta;
