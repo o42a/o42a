@@ -22,9 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.member.MemberIdKind.LOCAL_FIELD_NAME;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
-import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_NAME;
-import static org.o42a.core.value.link.LinkValueType.LINK;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
@@ -32,16 +30,11 @@ import java.util.HashMap;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberName;
-import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.field.impl.AscendantsFieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.impl.local.LocalFactory;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.link.KnownLink;
 import org.o42a.util.string.Name;
 
 
@@ -75,24 +68,9 @@ final class BlockLocalFactory implements LocalFactory {
 				distributor,
 				fieldName(local))
 				.setVisibilityMode(PRIVATE_VISIBILITY);
-		final TypeRef iface = local.originalRef().getInterface();
-		final TypeParameters<KnownLink> linkParameters =
-				LINK.typeParameters(iface);
-		final AscendantsDefinition ascendants = new AscendantsDefinition(
-				local,
-				distributor,
-				LINK.typeRef(local, distributor.getScope()))
-				.setTypeParameters(linkParameters.toObjectTypeParameters())
-				.setStateful(true);
-		final AscendantsFieldDefinition definition =
-				new AscendantsFieldDefinition(
-						local,
-						distributor,
-						ascendants,
-						valueBlock(local.originalRef()));
 
 		return this.block.getMemberRegistry()
-				.newField(declaration, definition)
+				.newAlias(declaration, local.originalRef())
 				.build()
 				.toMember()
 				.toField();

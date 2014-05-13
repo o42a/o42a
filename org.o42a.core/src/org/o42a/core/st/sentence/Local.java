@@ -160,7 +160,6 @@ public final class Local
 			"Too late to convert the local to field";
 		this.ref = this.fieldRef =
 				SELF_PATH.append(field.getMemberKey())
-				.dereference()
 				.bind(this, getScope())
 				.target(distribute());
 	}
