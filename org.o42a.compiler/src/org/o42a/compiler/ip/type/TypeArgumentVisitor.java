@@ -31,9 +31,9 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.AbstractTypeArgumentVisitor;
 import org.o42a.ast.type.TypeArgNode;
 import org.o42a.ast.type.TypeArgumentNode;
+import org.o42a.ast.type.TypeArgumentNodeVisitor;
 import org.o42a.common.ref.ArbitraryTypeRefParameters;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -43,7 +43,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
-final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
+final class TypeArgumentVisitor implements TypeArgumentNodeVisitor<
 		TypeRefParameters,
 		AccessDistributor> {
 
@@ -120,12 +120,12 @@ final class TypeArgumentVisitor extends AbstractTypeArgumentVisitor<
 	}
 
 	@Override
-	protected TypeRefParameters visitRef(RefNode ref, AccessDistributor p) {
+	public TypeRefParameters visitRef(RefNode ref, AccessDistributor p) {
 		return singleTypeArgument(ref, p);
 	}
 
 	@Override
-	protected TypeRefParameters visitTypeArgument(
+	public TypeRefParameters visitTypeArgument(
 			TypeArgumentNode argument,
 			AccessDistributor p) {
 		return invalidTypeArgument(argument, p);

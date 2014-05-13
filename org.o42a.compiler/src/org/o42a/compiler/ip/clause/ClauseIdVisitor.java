@@ -31,8 +31,8 @@ import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.StringNode;
-import org.o42a.ast.clause.AbstractClauseIdVisitor;
 import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.phrase.IntervalNode;
 import org.o42a.ast.ref.MemberRefNode;
@@ -41,9 +41,9 @@ import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
-import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.statement.StatementNodeVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseId;
@@ -53,7 +53,7 @@ import org.o42a.util.string.Name;
 
 
 final class ClauseIdVisitor
-		extends AbstractClauseIdVisitor<ClauseDeclaration, Distributor> {
+		implements ClauseIdNodeVisitor<ClauseDeclaration, Distributor> {
 
 	static final ClauseIdVisitor CLAUSE_ID_VISITOR = new ClauseIdVisitor();
 
@@ -66,7 +66,7 @@ final class ClauseIdVisitor
 	@Override
 	public ClauseDeclaration visitScopeRef(ScopeRefNode ref, Distributor p) {
 		if (ref.getType() != ScopeType.IMPLIED) {
-			return super.visitScopeRef(ref, p);
+			return invalidClauseId(ref, p);
 		}
 		return anonymousClauseDeclaration(
 				location(p, ref),
@@ -131,7 +131,7 @@ final class ClauseIdVisitor
 			StringNode string,
 			Distributor p) {
 		if (string.isDoubleQuoted()) {
-			return super.visitString(string, p);
+			return invalidClauseId(string, p);
 		}
 		return clauseDeclaration(
 				location(p, string),
@@ -155,7 +155,7 @@ final class ClauseIdVisitor
 		final ClauseId clauseId = unaryClauseId(unary);
 
 		if (clauseId == null) {
-			return super.visitUnary(unary, p);
+			return invalidClauseId(unary, p);
 		}
 
 		final Name name = extractNameOrImplied(
@@ -171,7 +171,7 @@ final class ClauseIdVisitor
 		final ClauseId clauseId = binaryClauseId(binary);
 
 		if (clauseId == null) {
-			return super.visitBinary(binary, p);
+			return invalidClauseId(binary, p);
 		}
 
 		final Name name = extractNameOrImplied(
@@ -221,7 +221,13 @@ final class ClauseIdVisitor
 	}
 
 	@Override
-	protected ClauseDeclaration visitClauseId(
+	public ClauseDeclaration visitClauseId(
+			ClauseIdNode clauseId,
+			Distributor p) {
+		return invalidClauseId(clauseId, p);
+	}
+
+	private ClauseDeclaration invalidClauseId(
 			ClauseIdNode clauseId,
 			Distributor p) {
 		p.getLogger().invalidDeclaration(clauseId);
@@ -402,19 +408,15 @@ final class ClauseIdVisitor
 	}
 
 	private static final class BracketsExtractor
-			extends AbstractStatementVisitor<BracketsNode, Object> {
+			implements StatementNodeVisitor<BracketsNode, Object> {
 
 		@Override
-		public BracketsNode visitBrackets(
-				BracketsNode brackets,
-				Object p) {
+		public BracketsNode visitBrackets(BracketsNode brackets, Object p) {
 			return brackets;
 		}
 
 		@Override
-		protected BracketsNode visitStatement(
-				StatementNode statement,
-				Object p) {
+		public BracketsNode visitStatement(StatementNode statement, Object p) {
 			return null;
 		}
 

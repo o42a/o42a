@@ -38,7 +38,7 @@ final class HeaderStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	protected Void visitExpression(
+	public Void visitExpression(
 			ExpressionNode expression,
 			StatementsAccess p) {
 
@@ -54,7 +54,7 @@ final class HeaderStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	protected Void visitStatement(
+	public Void visitStatement(
 			StatementNode statement,
 			StatementsAccess p) {
 		notDirective(getLogger(), statement);

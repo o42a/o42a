@@ -19,14 +19,13 @@
 */
 package org.o42a.compiler.ip.type.ascendant;
 
-import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.access.AccessDistributor;
 
 
 public final class AncestorRefVisitor
-		extends AbstractRefVisitor<AncestorTypeRef, AccessDistributor> {
+		implements RefNodeVisitor<AncestorTypeRef, AccessDistributor> {
 
 	private final
 	RefNodeVisitor<AncestorTypeRef, AccessDistributor> ancestorVisitor;
@@ -37,7 +36,7 @@ public final class AncestorRefVisitor
 	}
 
 	@Override
-	protected AncestorTypeRef visitRef(RefNode ref, AccessDistributor p) {
+	public AncestorTypeRef visitRef(RefNode ref, AccessDistributor p) {
 		return ref.accept(this.ancestorVisitor, p);
 	}
 

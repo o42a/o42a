@@ -24,8 +24,14 @@ import org.o42a.ast.ref.MemberRefNode;
 
 public interface DeclarableNodeVisitor<R, P> {
 
-	R visitMemberRef(MemberRefNode ref, P p);
+	default R visitMemberRef(MemberRefNode ref, P p) {
+		return visitDeclarable(ref, p);
+	}
 
-	R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p);
+	default R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
+		return visitDeclarable(adapter, p);
+	}
+
+	R visitDeclarable(DeclarableNode declarable, P p);
 
 }

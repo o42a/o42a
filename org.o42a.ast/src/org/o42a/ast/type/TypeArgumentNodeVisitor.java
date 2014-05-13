@@ -20,11 +20,21 @@
 package org.o42a.ast.type;
 
 import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 
 
 public interface TypeArgumentNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
-	R visitParentheses(ParenthesesNode parentheses, P p);
+	default R visitParentheses(ParenthesesNode parentheses, P p) {
+		return visitParentheses(parentheses, p);
+	}
+
+	@Override
+	default R visitRef(RefNode ref, P p) {
+		return visitTypeArgument(ref, p);
+	}
+
+	R visitTypeArgument(TypeArgumentNode argument, P p);
 
 }

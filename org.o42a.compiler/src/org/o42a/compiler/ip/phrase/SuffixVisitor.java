@@ -29,7 +29,7 @@ import org.o42a.compiler.ip.type.TypeConsumer;
 
 
 final class SuffixVisitor
-		extends AbstractExpressionVisitor<PhraseBuilder, AccessDistributor> {
+		implements ExpressionNodeVisitor<PhraseBuilder, AccessDistributor> {
 
 	private final PhraseInterpreter phraseIp;
 	private final TypeConsumer typeConsumer;
@@ -78,7 +78,7 @@ final class SuffixVisitor
 	}
 
 	@Override
-	protected PhraseBuilder visitExpression(
+	public PhraseBuilder visitExpression(
 			ExpressionNode expression,
 			AccessDistributor p) {
 

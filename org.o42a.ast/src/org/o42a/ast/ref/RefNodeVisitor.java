@@ -22,14 +22,26 @@ package org.o42a.ast.ref;
 
 public interface RefNodeVisitor<R, P> {
 
-	R visitScopeRef(ScopeRefNode ref, P p);
+	default R visitScopeRef(ScopeRefNode ref, P p) {
+		return visitRef(ref, p);
+	}
 
-	R visitParentRef(ParentRefNode ref, P p);
+	default R visitParentRef(ParentRefNode ref, P p) {
+		return visitRef(ref, p);
+	}
 
-	R visitMemberRef(MemberRefNode ref, P p);
+	default R visitMemberRef(MemberRefNode ref, P p) {
+		return visitRef(ref, p);
+	}
 
-	R visitAdapterRef(AdapterRefNode ref, P p);
+	default R visitAdapterRef(AdapterRefNode ref, P p) {
+		return visitRef(ref, p);
+	}
 
-	R visitDeref(DerefNode ref, P p);
+	default R visitDeref(DerefNode ref, P p) {
+		return visitRef(ref, p);
+	}
+
+	R visitRef(RefNode ref, P p);
 
 }

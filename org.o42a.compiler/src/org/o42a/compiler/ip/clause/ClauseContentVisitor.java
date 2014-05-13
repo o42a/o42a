@@ -41,7 +41,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 
 
 final class ClauseContentVisitor
-		extends AbstractStatementVisitor<Void, StatementsAccess> {
+		implements StatementNodeVisitor<Void, StatementsAccess> {
 
 	private final ClauseDeclaration declaration;
 	private final ClauseDeclaratorNode node;
@@ -175,7 +175,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	protected Void visitExpression(
+	public Void visitExpression(
 			ExpressionNode expression,
 			StatementsAccess p) {
 
@@ -189,7 +189,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	protected Void visitStatement(
+	public Void visitStatement(
 			StatementNode statement,
 			StatementsAccess p) {
 		invalidClauseContent(getLogger(), statement);
@@ -222,9 +222,7 @@ final class ClauseContentVisitor
 			ExpressionNode expression,
 			ClauseExpressionVisitor visitor) {
 
-		final ClauseAccess result = expression.accept(
-				visitor,
-				builder);
+		final ClauseAccess result = expression.accept(visitor, builder);
 
 		if (result != null) {
 			result.get().build();

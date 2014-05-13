@@ -27,8 +27,8 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.path.Path.modulePath;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
@@ -37,7 +37,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 
 
 public class ModuleRefVisitor
-		extends AbstractRefVisitor<Ref, AccessDistributor> {
+		implements RefNodeVisitor<Ref, AccessDistributor> {
 
 	public static final ModuleRefVisitor MODULE_REF_VISITOR =
 			new ModuleRefVisitor();
@@ -66,7 +66,7 @@ public class ModuleRefVisitor
 	}
 
 	@Override
-	protected Ref visitRef(RefNode ref, AccessDistributor p) {
+	public Ref visitRef(RefNode ref, AccessDistributor p) {
 		p.getContext().getLogger().invalidReference(ref);
 		return falseRef(location(p, ref), p);
 	}
@@ -96,7 +96,7 @@ public class ModuleRefVisitor
 	}
 
 	private final class ModuleOwnerVisitor
-			extends AbstractExpressionVisitor<Owner, AccessDistributor> {
+			implements ExpressionNodeVisitor<Owner, AccessDistributor> {
 
 		@Override
 		public Owner visitMemberRef(MemberRefNode ref, AccessDistributor p) {
@@ -150,7 +150,7 @@ public class ModuleRefVisitor
 		}
 
 		@Override
-		protected Owner visitExpression(
+		public Owner visitExpression(
 				ExpressionNode expression,
 				AccessDistributor p) {
 			p.getContext().getLogger().invalidReference(expression);

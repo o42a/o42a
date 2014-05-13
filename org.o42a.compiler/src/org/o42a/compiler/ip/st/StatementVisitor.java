@@ -42,7 +42,7 @@ import org.o42a.util.string.Name;
 
 
 public abstract class StatementVisitor
-		extends AbstractStatementVisitor<Void, StatementsAccess> {
+		implements StatementNodeVisitor<Void, StatementsAccess> {
 
 	public static final Name DESTINATION_LOCAL_NAME =
 			CASE_SENSITIVE.canonicalName("LD");
@@ -87,20 +87,17 @@ public abstract class StatementVisitor
 
 	@Override
 	public Void visitNumber(NumberNode number, StatementsAccess p) {
-		invalidStatement(number);
-		return null;
+		return invalidStatement(number);
 	}
 
 	@Override
 	public Void visitText(TextNode text, StatementsAccess p) {
-		invalidStatement(text);
-		return null;
+		return invalidStatement(text);
 	}
 
 	@Override
 	public Void visitBrackets(BracketsNode brackets, StatementsAccess p) {
-		invalidStatement(brackets);
-		return null;
+		return invalidStatement(brackets);
 	}
 
 	@Override
@@ -114,17 +111,17 @@ public abstract class StatementVisitor
 			return unwrapped.accept(this, p);
 		}
 
-		return super.visitParentheses(parentheses, p);
+		return visitStatement(parentheses, p);
 	}
 
 	@Override
-	protected Void visitStatement(StatementNode statement, StatementsAccess p) {
-		invalidStatement(statement);
-		return null;
+	public Void visitStatement(StatementNode statement, StatementsAccess p) {
+		return invalidStatement(statement);
 	}
 
-	void invalidStatement(LogInfo location) {
+	Void invalidStatement(LogInfo location) {
 		invalidStatement(getLogger(), location);
+		return null;
 	}
 
 	void addAssignment(

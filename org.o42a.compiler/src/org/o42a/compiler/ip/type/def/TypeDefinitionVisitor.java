@@ -25,12 +25,12 @@ import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
-import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.statement.StatementNodeVisitor;
 
 
 final class TypeDefinitionVisitor
-		extends AbstractStatementVisitor<Void, TypeDefinitionBuilder> {
+		implements StatementNodeVisitor<Void, TypeDefinitionBuilder> {
 
 	static final TypeDefinitionVisitor TYPE_DEFINITION_VISITOR =
 			new TypeDefinitionVisitor();
@@ -88,7 +88,7 @@ final class TypeDefinitionVisitor
 	}
 
 	@Override
-	protected Void visitStatement(
+	public Void visitStatement(
 			StatementNode statement,
 			TypeDefinitionBuilder p) {
 		p.getLogger().error(

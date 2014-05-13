@@ -182,7 +182,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	protected Void visitExpression(
+	public Void visitExpression(
 			ExpressionNode expression,
 			StatementsAccess p) {
 

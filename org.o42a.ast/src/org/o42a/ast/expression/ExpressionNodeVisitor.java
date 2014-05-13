@@ -20,28 +20,54 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.NumberNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.TypeArgumentsNode;
 
 
 public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
-	R visitNumber(NumberNode number, P p);
+	default R visitNumber(NumberNode number, P p) {
+		return visitExpression(number, p);
+	}
 
-	R visitText(TextNode text, P p);
+	default R visitText(TextNode text, P p) {
+		return visitExpression(text, p);
+	}
 
-	R visitTypeArguments(TypeArgumentsNode arguments, P p);
+	default R visitTypeArguments(TypeArgumentsNode arguments, P p) {
+		return visitExpression(arguments, p);
+	}
 
-	R visitGroup(GroupNode group, P p);
+	default R visitGroup(GroupNode group, P p) {
+		return visitExpression(group, p);
+	}
 
-	R visitUnary(UnaryNode expression, P p);
+	default R visitUnary(UnaryNode expression, P p) {
+		return visitExpression(expression, p);
+	}
 
-	R visitBinary(BinaryNode expression, P p);
+	default R visitBinary(BinaryNode expression, P p) {
+		return visitExpression(expression, p);
+	}
 
-	R visitBrackets(BracketsNode brackets, P p);
+	default R visitBrackets(BracketsNode brackets, P p) {
+		return visitExpression(brackets, p);
+	}
 
-	R visitParentheses(ParenthesesNode parentheses, P p);
+	default R visitParentheses(ParenthesesNode parentheses, P p) {
+		return visitExpression(parentheses, p);
+	}
 
-	R visitPhrase(PhraseNode phrase, P p);
+	default R visitPhrase(PhraseNode phrase, P p) {
+		return visitExpression(phrase, p);
+	}
+
+	@Override
+	default R visitRef(RefNode ref, P p) {
+		return visitExpression(ref, p);
+	}
+
+	R visitExpression(ExpressionNode expression, P p);
 
 }

@@ -21,8 +21,8 @@ package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.clause.NameExtractor.extractName;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
@@ -32,7 +32,7 @@ import org.o42a.core.source.Location;
 
 
 final class BoundNameVisitor
-		extends AbstractExpressionVisitor<BoundName, CompilerContext> {
+		implements ExpressionNodeVisitor<BoundName, CompilerContext> {
 
 	static final BoundNameVisitor BOUND_NAME_VISITOR =
 			new BoundNameVisitor();
@@ -45,7 +45,7 @@ final class BoundNameVisitor
 		if (ref.getType() == ScopeType.IMPLIED) {
 			return new BoundName(new Location(p, ref), null, true);
 		}
-		return super.visitScopeRef(ref, p);
+		return visitRef(ref, p);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ final class BoundNameVisitor
 	}
 
 	@Override
-	protected BoundName visitExpression(
+	public BoundName visitExpression(
 			ExpressionNode expression,
 			CompilerContext p) {
 		p.getLogger().error(

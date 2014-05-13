@@ -22,8 +22,8 @@ package org.o42a.compiler.ip.ref;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.OwnerVisitor.MACROS_PATH;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
@@ -31,7 +31,7 @@ import org.o42a.util.log.LogInfo;
 
 
 final class MemberOwnerVisitor
-		extends AbstractExpressionVisitor<Owner, AccessDistributor> {
+		implements ExpressionNodeVisitor<Owner, AccessDistributor> {
 
 	private final OwnerVisitor visitor;
 	private LogInfo macroExpansion;
@@ -50,7 +50,7 @@ final class MemberOwnerVisitor
 							MACROS_PATH.bind(location(p, ref), p.getScope())
 					.target(p));
 		}
-		return super.visitScopeRef(ref, p);
+		return visitExpression(ref, p);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ final class MemberOwnerVisitor
 	}
 
 	@Override
-	protected Owner visitExpression(
+	public Owner visitExpression(
 			ExpressionNode expression,
 			AccessDistributor p) {
 		return this.visitor.visitExpression(expression, p);

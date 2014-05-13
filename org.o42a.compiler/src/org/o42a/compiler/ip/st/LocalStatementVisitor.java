@@ -33,7 +33,7 @@ import org.o42a.core.st.sentence.Local;
 
 
 final class LocalStatementVisitor
-		extends AbstractStatementVisitor<Void, StatementsAccess> {
+		implements StatementNodeVisitor<Void, StatementsAccess> {
 
 	private final StatementVisitor visitor;
 	private LocalNode localNode;
@@ -51,7 +51,7 @@ final class LocalStatementVisitor
 		final LocalNode local = assignment.getDestination().toLocal();
 
 		if (local == null) {
-			return super.visitAssignment(assignment, p);
+			return visitStatement(assignment, p);
 		}
 
 		addLocalAssignment(p, assignment, local);
@@ -67,7 +67,7 @@ final class LocalStatementVisitor
 
 		addLocalScope(p, scope);
 
-		return super.visitLocalScope(scope, p);
+		return visitStatement(scope, p);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ final class LocalStatementVisitor
 	}
 
 	@Override
-	protected Void visitStatement(StatementNode statement, StatementsAccess p) {
+	public Void visitStatement(StatementNode statement, StatementsAccess p) {
 		return statement.accept(this.visitor, p);
 	}
 

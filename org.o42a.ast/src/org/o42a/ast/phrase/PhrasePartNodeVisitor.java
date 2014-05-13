@@ -26,20 +26,38 @@ import org.o42a.ast.expression.*;
 
 public interface PhrasePartNodeVisitor<R, P> {
 
-	R visitName(NameNode name, P p);
+	default R visitName(NameNode name, P p) {
+		return visitPhrasePart(name, p);
+	}
 
-	R visitBraces(BracesNode braces, P p);
+	default R visitBraces(BracesNode braces, P p) {
+		return visitPhrasePart(braces, p);
+	}
 
-	R visitParentheses(ParenthesesNode parentheses, P p);
+	default R visitParentheses(ParenthesesNode parentheses, P p) {
+		return visitPhrasePart(parentheses, p);
+	}
 
-	R visitBrackets(BracketsNode brackets, P p);
+	default R visitBrackets(BracketsNode brackets, P p) {
+		return visitPhrasePart(brackets, p);
+	}
 
-	R visitText(TextNode text, P p);
+	default R visitText(TextNode text, P p) {
+		return visitPhrasePart(text, p);
+	}
 
-	R visitNumber(NumberNode number, P p);
+	default R visitNumber(NumberNode number, P p) {
+		return visitPhrasePart(number, p);
+	}
 
-	R visitInterval(IntervalNode interval, P p);
+	default R visitInterval(IntervalNode interval, P p) {
+		return visitPhrasePart(interval, p);
+	}
 
-	R visitTypeDefinition(TypeDefinitionNode definition, P p);
+	default R visitTypeDefinition(TypeDefinitionNode definition, P p) {
+		return visitPhrasePart(definition, p);
+	}
+
+	R visitPhrasePart(PhrasePartNode part, P p);
 
 }
