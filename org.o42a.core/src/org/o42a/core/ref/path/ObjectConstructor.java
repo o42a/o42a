@@ -100,8 +100,9 @@ public abstract class ObjectConstructor
 	 * <p>This is so only for special object constructors, like type parameter
 	 * access.</p>
 	 *
-	 * @return <code>true</code> if object construction allowed inside prototype,
-	 * or <code>false</code> otherwise. Returns <code>false</code> by default.
+	 * @return <code>true</code> if object construction allowed inside
+	 * prototype, or <code>false</code> otherwise.
+	 * Returns <code>false</code> by default.
 	 */
 	public boolean isAllowedInsidePrototype() {
 		return false;

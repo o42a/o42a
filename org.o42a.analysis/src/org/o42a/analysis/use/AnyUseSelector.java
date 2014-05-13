@@ -24,7 +24,7 @@ import java.util.Arrays;
 import org.o42a.util.ArrayUtil;
 
 
-final class AnyUseSelector<U extends Usage<U>> extends UseSelector<U> {
+final class AnyUseSelector<U extends Usage<U>> implements UseSelector<U> {
 
 	private final UseSelector<U>[] selectors;
 

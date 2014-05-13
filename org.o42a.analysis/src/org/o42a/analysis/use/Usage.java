@@ -20,7 +20,7 @@
 package org.o42a.analysis.use;
 
 
-public abstract class Usage<U extends Usage<U>> extends UseSelector<U> {
+public abstract class Usage<U extends Usage<U>> implements UseSelector<U> {
 
 	private final AllUsages<U> all;
 	private final String name;
@@ -70,7 +70,7 @@ public abstract class Usage<U extends Usage<U>> extends UseSelector<U> {
 		if (other == all()) {
 			return this;
 		}
-		return super.and(other);
+		return UseSelector.super.and(other);
 	}
 
 	@Override

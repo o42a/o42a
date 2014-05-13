@@ -119,13 +119,6 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 		return uc.usedFlag();
 	}
 
-	@Override
-	public final boolean isUsed(
-			UseCaseInfo useCase,
-			UseSelector<FieldUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
-	}
-
 	public final User<FieldUsage> usageUser(FieldUsage usage) {
 		assert usage != null :
 			"Usage not specified";

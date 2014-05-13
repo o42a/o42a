@@ -109,13 +109,6 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 		return unknown ? uc.checkUseFlag() : uc.unusedFlag();
 	}
 
-	@Override
-	public final boolean isUsed(
-			UseCaseInfo useCase,
-			UseSelector<U> selector) {
-		return selectUse(useCase, selector).isUsed();
-	}
-
 	public final boolean hasUses(UseSelector<U> selector) {
 		if (this.usedBy == null) {
 			return false;
