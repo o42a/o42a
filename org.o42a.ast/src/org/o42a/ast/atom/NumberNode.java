@@ -34,7 +34,7 @@ import org.o42a.ast.type.TypeArgumentNode;
 
 public class NumberNode
 		extends AbstractExpressionNode
-		implements AtomNode, PhrasePartNode {
+		implements PhrasePartNode {
 
 	private final SignNode<SignOfNumber> sign;
 	private final SignNode<Radix> radixPrefix;
@@ -88,11 +88,6 @@ public class NumberNode
 
 	public final ExponentNode getExponent() {
 		return this.exponent;
-	}
-
-	@Override
-	public <R, P> R accept(AtomNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitNumber(this, p);
 	}
 
 	@Override

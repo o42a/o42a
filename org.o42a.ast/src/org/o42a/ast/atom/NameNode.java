@@ -19,13 +19,14 @@
 */
 package org.o42a.ast.atom;
 
+import org.o42a.ast.AbstractNode;
 import org.o42a.ast.phrase.PhrasePartNode;
 import org.o42a.ast.phrase.PhrasePartNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.string.Name;
 
 
-public class NameNode extends AbstractAtomNode implements PhrasePartNode {
+public class NameNode extends AbstractNode implements PhrasePartNode {
 
 	private final Name name;
 
@@ -36,11 +37,6 @@ public class NameNode extends AbstractAtomNode implements PhrasePartNode {
 
 	public final Name getName() {
 		return this.name;
-	}
-
-	@Override
-	public <R, P> R accept(AtomNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitName(this, p);
 	}
 
 	@Override

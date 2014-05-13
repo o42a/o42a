@@ -23,9 +23,7 @@ import org.o42a.ast.AbstractNode;
 import org.o42a.util.io.SourcePosition;
 
 
-public class SignNode<S extends SignType>
-		extends AbstractNode
-		implements AtomNode {
+public class SignNode<S extends SignType> extends AbstractNode {
 
 	private final S type;
 
@@ -36,11 +34,6 @@ public class SignNode<S extends SignType>
 
 	public S getType() {
 		return this.type;
-	}
-
-	@Override
-	public final <R, P> R accept(AtomNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitSign(this, p);
 	}
 
 	@Override
