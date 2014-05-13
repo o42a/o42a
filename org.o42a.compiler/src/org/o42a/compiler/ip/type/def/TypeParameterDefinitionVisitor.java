@@ -25,8 +25,8 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PLAIN_REF_IP;
 import static org.o42a.compiler.ip.type.TypeInterpreter.redundantTypeArguments;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -38,7 +38,7 @@ import org.o42a.core.ref.type.TypeRefParameters;
 
 
 final class TypeParameterDefinitionVisitor
-		extends AbstractExpressionVisitor<TypeRef, AccessDistributor> {
+		implements ExpressionNodeVisitor<TypeRef, AccessDistributor> {
 
 	private final TypeConsumer consumer;
 	private final TypeRefParameters typeParameters;
@@ -63,7 +63,7 @@ final class TypeParameterDefinitionVisitor
 		final ExpressionNode ascendantNode = arguments.getType();
 
 		if (ascendantNode == null) {
-			return super.visitTypeArguments(arguments, p);
+			return visitExpression(arguments, p);
 		}
 
 		final TypeRefParameters typeParameters;
@@ -89,7 +89,7 @@ final class TypeParameterDefinitionVisitor
 	}
 
 	@Override
-	protected TypeRef visitRef(RefNode node, AccessDistributor p) {
+	public TypeRef visitRef(RefNode node, AccessDistributor p) {
 
 		final Owner ref =
 				node.accept(PLAIN_REF_IP.ownerVisitor(), p.fromDeclaration());
@@ -110,7 +110,7 @@ final class TypeParameterDefinitionVisitor
 	}
 
 	@Override
-	protected TypeRef visitExpression(
+	public TypeRef visitExpression(
 			ExpressionNode expression,
 			AccessDistributor p) {
 		p.getLogger().error(

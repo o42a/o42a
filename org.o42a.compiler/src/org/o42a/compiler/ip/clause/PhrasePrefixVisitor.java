@@ -22,8 +22,8 @@ package org.o42a.compiler.ip.clause;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -32,7 +32,7 @@ import org.o42a.core.ref.Ref;
 
 
 final class PhrasePrefixVisitor
-		extends AbstractExpressionVisitor<ClauseAccess, ClauseAccess> {
+		implements ExpressionNodeVisitor<ClauseAccess, ClauseAccess> {
 
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 			new PhrasePrefixVisitor();
@@ -43,7 +43,7 @@ final class PhrasePrefixVisitor
 	@Override
 	public ClauseAccess visitScopeRef(ScopeRefNode ref, ClauseAccess p) {
 		if (ref.getType() != ScopeType.IMPLIED) {
-			return super.visitScopeRef(ref, p);
+			return visitRef(ref, p);
 		}
 
 		p.get().setAscendants(new AscendantsDefinition(
@@ -54,7 +54,7 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	protected ClauseAccess visitExpression(
+	public ClauseAccess visitExpression(
 			ExpressionNode expression,
 			ClauseAccess p) {
 

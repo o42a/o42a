@@ -19,8 +19,8 @@
 */
 package org.o42a.compiler.ip.file;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ParentRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
@@ -28,7 +28,7 @@ import org.o42a.util.string.Name;
 
 
 final class SectionTitlePathValidator
-		extends AbstractExpressionVisitor<Object, Integer> {
+		implements ExpressionNodeVisitor<Object, Integer> {
 
 	private final Name[] path;
 
@@ -74,7 +74,7 @@ final class SectionTitlePathValidator
 	}
 
 	@Override
-	protected Object visitExpression(ExpressionNode expression, Integer p) {
+	public Object visitExpression(ExpressionNode expression, Integer p) {
 		return null;
 	}
 

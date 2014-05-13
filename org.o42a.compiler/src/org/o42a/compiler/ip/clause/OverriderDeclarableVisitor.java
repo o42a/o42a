@@ -26,9 +26,9 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 
-import org.o42a.ast.field.AbstractDeclarableVisitor;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclarableNodeVisitor;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -36,7 +36,7 @@ import org.o42a.core.ref.Ref;
 
 
 final class OverriderDeclarableVisitor
-		extends AbstractDeclarableVisitor<ClauseBuilder, ClauseBuilder> {
+		implements DeclarableNodeVisitor<ClauseBuilder, ClauseBuilder> {
 
 	static final OverriderDeclarableVisitor OVERRIDER_DECLARABLE_VISITOR =
 			new OverriderDeclarableVisitor();
@@ -83,7 +83,7 @@ final class OverriderDeclarableVisitor
 	}
 
 	@Override
-	protected ClauseBuilder visitDeclarable(
+	public ClauseBuilder visitDeclarable(
 			DeclarableNode declarable,
 			ClauseBuilder p) {
 		invalidClauseContent(p.getLogger(), declarable);

@@ -37,7 +37,7 @@ import org.o42a.util.string.Name;
 
 
 class ClauseExpressionVisitor
-		extends AbstractExpressionVisitor<ClauseAccess, ClauseAccess> {
+		implements ExpressionNodeVisitor<ClauseAccess, ClauseAccess> {
 
 	static final ClauseExpressionVisitor CLAUSE_EXPRESSION_VISITOR =
 			new ClauseExpressionVisitor();
@@ -57,7 +57,7 @@ class ClauseExpressionVisitor
 			}
 		}
 
-		return super.visitMemberRef(ref, p);
+		return visitRef(ref, p);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ class ClauseExpressionVisitor
 	}
 
 	@Override
-	protected ClauseAccess visitExpression(
+	public ClauseAccess visitExpression(
 			ExpressionNode expression,
 			ClauseAccess p) {
 

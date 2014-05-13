@@ -31,7 +31,7 @@ import org.o42a.core.ref.Ref;
 
 
 final class PhrasePartVisitor
-		extends AbstractPhrasePartVisitor<PhraseBuilder, PhraseBuilder> {
+		implements PhrasePartNodeVisitor<PhraseBuilder, PhraseBuilder> {
 
 	public static final PhrasePartVisitor PHRASE_PART_VISITOR =
 			new PhrasePartVisitor();
@@ -101,9 +101,7 @@ final class PhrasePartVisitor
 	}
 
 	@Override
-	protected PhraseBuilder visitPhrasePart(
-			PhrasePartNode part,
-			PhraseBuilder p) {
+	public PhraseBuilder visitPhrasePart(PhrasePartNode part, PhraseBuilder p) {
 		p.getLogger().error("invalid_phrase_part", part, "Invalid phrase part");
 		return p;
 	}

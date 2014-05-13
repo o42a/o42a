@@ -44,14 +44,12 @@ import org.o42a.compiler.ip.ref.operator.ValueOf;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.Location;
 import org.o42a.core.value.link.LinkValueType;
-import org.o42a.util.log.LogInfo;
 
 
 public final class ExpressionVisitor
-		extends AbstractExpressionVisitor<Ref, AccessDistributor> {
+		implements ExpressionNodeVisitor<Ref, AccessDistributor> {
 
 	private final Interpreter ip;
 	private final TypeConsumer typeConsumer;
@@ -86,7 +84,7 @@ public final class ExpressionVisitor
 			return STRING.constantRef(location(p, textNode), p, text);
 		}
 
-		return super.visitText(textNode, p);
+		return invalidExpression(textNode, p);
 	}
 
 	@Override
@@ -100,7 +98,7 @@ public final class ExpressionVisitor
 				.typeArgumentsPhrase(arguments, p, this.typeConsumer);
 
 		if (phrase == null) {
-			return super.visitTypeArguments(arguments, p);
+			return invalidExpression(arguments, p);
 		}
 
 		return phrase.toRef();
@@ -144,7 +142,7 @@ public final class ExpressionVisitor
 			return link(expression, p, LinkValueType.VARIABLE);
 		}
 
-		return super.visitUnary(expression, p);
+		return invalidExpression(expression, p);
 	}
 
 	@Override
@@ -157,7 +155,7 @@ public final class ExpressionVisitor
 			return binary;
 		}
 
-		return super.visitBinary(expression, p);
+		return invalidExpression(expression, p);
 	}
 
 	@Override
@@ -181,7 +179,7 @@ public final class ExpressionVisitor
 			return unwrapped.accept(this, p);
 		}
 
-		return super.visitParentheses(parentheses, p);
+		return invalidExpression(parentheses, p);
 	}
 
 	@Override
@@ -194,7 +192,7 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	protected Ref visitRef(RefNode ref, AccessDistributor p) {
+	public Ref visitRef(RefNode ref, AccessDistributor p) {
 
 		final Owner owner = ref.accept(ip().refIp().ownerVisitor(), p);
 
@@ -212,15 +210,8 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	protected Ref visitExpression(ExpressionNode expression, AccessDistributor p) {
-		invalidExpression(p.getLogger(), expression);
-		return errorRef(location(p, expression), p);
-	}
-
-	private static void invalidExpression(
-			CompilerLogger logger,
-			LogInfo location) {
-		logger.error("invalid_expression", location, "Not a valid expression");
+	public Ref visitExpression(ExpressionNode expression, AccessDistributor p) {
+		return invalidExpression(expression, p);
 	}
 
 	private Ref unaryPhrase(UnaryNode expression, AccessDistributor p) {
@@ -276,6 +267,16 @@ public final class ExpressionVisitor
 		phrase.phrase().declarations(valueBlock(value));
 
 		return phrase.toRef();
+	}
+
+	private Ref invalidExpression(
+			ExpressionNode expression,
+			AccessDistributor p) {
+		p.getLogger().error(
+				"invalid_expression",
+				expression,
+				"Not a valid expression");
+		return errorRef(location(p, expression), p);
 	}
 
 }

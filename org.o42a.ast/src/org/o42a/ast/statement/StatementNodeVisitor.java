@@ -21,6 +21,7 @@ package org.o42a.ast.statement;
 
 import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.BracesNode;
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.DeclaratorNode;
 
@@ -28,18 +29,39 @@ import org.o42a.ast.field.DeclaratorNode;
 public interface StatementNodeVisitor<R, P>
 		extends ExpressionNodeVisitor<R, P> {
 
-	R visitBraces(BracesNode braces, P p);
+	default R visitBraces(BracesNode braces, P p) {
+		return visitStatement(braces, p);
+	}
 
-	R visitAssignment(AssignmentNode assignment, P p);
+	default R visitAssignment(AssignmentNode assignment, P p) {
+		return visitStatement(assignment, p);
+	}
 
-	R visitReturn(ReturnNode ret, P p);
+	default R visitReturn(ReturnNode ret, P p) {
+		return visitStatement(ret, p);
+	}
 
-	R visitDeclarator(DeclaratorNode declarator, P p);
+	default R visitDeclarator(DeclaratorNode declarator, P p) {
+		return visitStatement(declarator, p);
+	}
 
-	R visitLocalScope(LocalScopeNode scope, P p);
+	default R visitLocalScope(LocalScopeNode scope, P p) {
+		return visitStatement(scope, p);
+	}
 
-	R visitClauseDeclarator(ClauseDeclaratorNode declarator, P p);
+	default R visitClauseDeclarator(ClauseDeclaratorNode declarator, P p) {
+		return visitStatement(declarator, p);
+	}
 
-	R visitNamedBlock(NamedBlockNode block, P p);
+	default R visitNamedBlock(NamedBlockNode block, P p) {
+		return visitStatement(block, p);
+	}
+
+	@Override
+	default R visitExpression(ExpressionNode expression, P p) {
+		return visitStatement(expression, p);
+	}
+
+	R visitStatement(StatementNode statement, P p);
 
 }

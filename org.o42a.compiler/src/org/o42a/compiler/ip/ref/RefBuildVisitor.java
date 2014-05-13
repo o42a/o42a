@@ -21,14 +21,16 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 
-import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 
 
 public final class RefBuildVisitor
-		extends AbstractExpressionVisitor<RefBuilder, AccessDistributor> {
+		implements ExpressionNodeVisitor<RefBuilder, AccessDistributor> {
 
 	private final ExpressionNodeVisitor<Ref, AccessDistributor> visitor;
 
@@ -48,11 +50,11 @@ public final class RefBuildVisitor
 			return unwrapped.accept(this, p);
 		}
 
-		return super.visitParentheses(parentheses, p);
+		return visitExpression(parentheses, p);
 	}
 
 	@Override
-	protected RefBuilder visitExpression(
+	public RefBuilder visitExpression(
 			ExpressionNode expression,
 			AccessDistributor p) {
 		return expression.accept(this.visitor, p);

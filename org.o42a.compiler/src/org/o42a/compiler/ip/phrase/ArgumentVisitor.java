@@ -23,7 +23,7 @@ import org.o42a.ast.expression.*;
 
 
 final class ArgumentVisitor
-		extends AbstractExpressionVisitor<PhraseBuilder, PhraseBuilder> {
+		implements ExpressionNodeVisitor<PhraseBuilder, PhraseBuilder> {
 
 	public static final ArgumentVisitor ARGUMENT_VISITOR =
 			new ArgumentVisitor();
@@ -39,13 +39,13 @@ final class ArgumentVisitor
 	@Override
 	public PhraseBuilder visitText(TextNode text, PhraseBuilder p) {
 		if (text.isDoubleQuoted()) {
-			return super.visitText(text, p);
+			return visitExpression(text, p);
 		}
 		return p.string(text);
 	}
 
 	@Override
-	protected PhraseBuilder visitExpression(
+	public PhraseBuilder visitExpression(
 			ExpressionNode expression,
 			PhraseBuilder p) {
 		return p.argument(

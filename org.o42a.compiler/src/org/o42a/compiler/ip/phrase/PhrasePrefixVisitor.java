@@ -19,14 +19,14 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.core.ref.type.TypeRefParameters;
 
 
 final class PhrasePrefixVisitor
-		extends AbstractExpressionVisitor<PhraseBuilder, PhraseBuilder> {
+		implements ExpressionNodeVisitor<PhraseBuilder, PhraseBuilder> {
 
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 			new PhrasePrefixVisitor();
@@ -56,7 +56,7 @@ final class PhrasePrefixVisitor
 	}
 
 	@Override
-	protected PhraseBuilder visitExpression(
+	public PhraseBuilder visitExpression(
 			ExpressionNode expression,
 			PhraseBuilder p) {
 		return p.expressionPhrase(expression, this.typeParameters);

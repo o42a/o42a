@@ -27,8 +27,8 @@ import static org.o42a.core.member.MemberKey.brokenMemberKey;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.field.AbstractDeclarableVisitor;
 import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclarableNodeVisitor;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.core.Contained;
@@ -42,7 +42,7 @@ import org.o42a.core.ref.type.TypeRef;
 
 
 final class TypeParameterKeyVisitor
-		extends AbstractDeclarableVisitor<MemberKey, TypeDefinitionBuilder> {
+		implements DeclarableNodeVisitor<MemberKey, TypeDefinitionBuilder> {
 
 	private static final TypeParameterKeyVisitor
 	DECLARED_TYPE_PARAMETER_KEY_VISITOR = new TypeParameterKeyVisitor(false);
@@ -71,7 +71,7 @@ final class TypeParameterKeyVisitor
 		final NameNode name = ref.getName();
 
 		if (name == null) {
-			return super.visitMemberRef(ref, p);
+			return invalidDeclarable(ref, p);
 		}
 
 		validateVisibility(ref, p);
@@ -129,7 +129,13 @@ final class TypeParameterKeyVisitor
 	}
 
 	@Override
-	protected MemberKey visitDeclarable(
+	public MemberKey visitDeclarable(
+			DeclarableNode declarable,
+			TypeDefinitionBuilder p) {
+		return invalidDeclarable(declarable, p);
+	}
+
+	private MemberKey invalidDeclarable(
 			DeclarableNode declarable,
 			TypeDefinitionBuilder p) {
 		p.getLogger().error(

@@ -29,22 +29,42 @@ import org.o42a.ast.statement.AssignmentNode;
 
 public interface ClauseIdNodeVisitor<R, P> {
 
-	R visitMemberRef(MemberRefNode ref, P p);
+	default R visitMemberRef(MemberRefNode ref, P p) {
+		return visitClauseId(ref, p);
+	}
 
-	R visitScopeRef(ScopeRefNode ref, P p);
+	default R visitScopeRef(ScopeRefNode ref, P p) {
+		return visitClauseId(ref, p);
+	}
 
-	R visitBrackets(BracketsNode brackets, P p);
+	default R visitBrackets(BracketsNode brackets, P p) {
+		return visitClauseId(brackets, p);
+	}
 
-	R visitString(StringNode string, P p);
+	default R visitString(StringNode string, P p) {
+		return visitClauseId(string, p);
+	}
 
-	R visitBraces(BracesNode braces, P p);
+	default R visitBraces(BracesNode braces, P p) {
+		return visitClauseId(braces, p);
+	}
 
-	R visitUnary(UnaryNode unary, P p);
+	default R visitUnary(UnaryNode unary, P p) {
+		return visitClauseId(unary, p);
+	}
 
-	R visitBinary(BinaryNode binary, P p);
+	default R visitBinary(BinaryNode binary, P p) {
+		return visitClauseId(binary, p);
+	}
 
-	R visitAssignment(AssignmentNode assignment, P p);
+	default R visitAssignment(AssignmentNode assignment, P p) {
+		return visitClauseId(assignment, p);
+	}
 
-	R visitInterval(IntervalNode interval, P p);
+	default R visitInterval(IntervalNode interval, P p) {
+		return visitClauseId(interval, p);
+	}
+
+	R visitClauseId(ClauseIdNode clauseId, P p);
 
 }

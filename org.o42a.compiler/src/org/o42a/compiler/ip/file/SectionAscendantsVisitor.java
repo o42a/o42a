@@ -23,8 +23,8 @@ import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
@@ -38,7 +38,7 @@ import org.o42a.core.ref.type.TypeRefParameters;
 
 
 final class SectionAscendantsVisitor
-		extends AbstractExpressionVisitor<
+		implements ExpressionNodeVisitor<
 				AscendantsDefinition,
 				AccessDistributor> {
 
@@ -87,7 +87,7 @@ final class SectionAscendantsVisitor
 		if (ref.getType() == ScopeType.IMPLIED) {
 			return new AscendantsDefinition(location(p, ref), p);
 		}
-		return super.visitScopeRef(ref, p);
+		return visitRef(ref, p);
 	}
 
 	@Override
@@ -101,11 +101,11 @@ final class SectionAscendantsVisitor
 			return unwrapped.accept(this, p);
 		}
 
-		return super.visitParentheses(parentheses, p);
+		return visitExpression(parentheses, p);
 	}
 
 	@Override
-	protected AscendantsDefinition visitExpression(
+	public AscendantsDefinition visitExpression(
 			ExpressionNode expression,
 			AccessDistributor p) {
 

@@ -22,8 +22,8 @@ package org.o42a.compiler.ip.field;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
@@ -33,7 +33,7 @@ import org.o42a.core.ref.Ref;
 
 
 public final class DefinitionVisitor
-		extends AbstractExpressionVisitor<FieldDefinition, FieldAccess> {
+		implements ExpressionNodeVisitor<FieldDefinition, FieldAccess> {
 
 	private final Interpreter ip;
 	private final TypeConsumer typeConsumer;
@@ -52,11 +52,11 @@ public final class DefinitionVisitor
 		if (ref.getType() == ScopeType.IMPLIED) {
 			return impliedDefinition(location(p, ref), p.distribute());
 		}
-		return super.visitScopeRef(ref, p);
+		return visitRef(ref, p);
 	}
 
 	@Override
-	protected FieldDefinition visitExpression(
+	public FieldDefinition visitExpression(
 			ExpressionNode expression,
 			FieldAccess p) {
 

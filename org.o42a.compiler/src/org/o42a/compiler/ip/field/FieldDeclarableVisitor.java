@@ -45,7 +45,7 @@ import org.o42a.util.log.LogInfo;
 
 
 public final class FieldDeclarableVisitor
-		extends AbstractDeclarableVisitor<FieldDeclaration, AccessDistributor> {
+		implements DeclarableNodeVisitor<FieldDeclaration, AccessDistributor> {
 
 	private final Interpreter ip;
 	private final CompilerContext context;
@@ -120,7 +120,7 @@ public final class FieldDeclarableVisitor
 	}
 
 	@Override
-	protected FieldDeclaration visitDeclarable(
+	public FieldDeclaration visitDeclarable(
 			DeclarableNode declarable,
 			AccessDistributor p) {
 		getLogger().invalidDeclaration(declarable);

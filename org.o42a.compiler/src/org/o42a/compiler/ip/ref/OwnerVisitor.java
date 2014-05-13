@@ -37,8 +37,8 @@ import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.ref.MemberRefNode.Qualifier;
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -52,7 +52,7 @@ import org.o42a.util.string.Name;
 
 
 final class OwnerVisitor
-		extends AbstractExpressionVisitor<Owner, AccessDistributor> {
+		implements ExpressionNodeVisitor<Owner, AccessDistributor> {
 
 	static final Path MACROS_PATH = modulePath(CASE_INSENSITIVE.name("Macros"));
 
@@ -188,13 +188,13 @@ final class OwnerVisitor
 	}
 
 	@Override
-	protected Owner visitRef(RefNode ref, AccessDistributor p) {
+	public Owner visitRef(RefNode ref, AccessDistributor p) {
 		p.getContext().getLogger().invalidReference(ref);
 		return nonLinkOwner(p.getAccessRules(), errorRef(location(p, ref), p));
 	}
 
 	@Override
-	protected Owner visitExpression(
+	public Owner visitExpression(
 			ExpressionNode expression,
 			AccessDistributor p) {
 		return owner(

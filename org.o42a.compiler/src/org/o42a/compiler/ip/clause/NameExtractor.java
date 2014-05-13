@@ -24,14 +24,14 @@ import static org.o42a.compiler.ip.clause.ClauseInterpreter.invalidClauseName;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
-import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.statement.StatementNodeVisitor;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.string.Name;
 
 
 final class NameExtractor
-		extends AbstractStatementVisitor<Name, CompilerContext> {
+		implements StatementNodeVisitor<Name, CompilerContext> {
 
 	private static final NameExtractor NAME_EXTRACTOR = new NameExtractor();
 
@@ -87,9 +87,7 @@ final class NameExtractor
 	}
 
 	@Override
-	protected Name visitStatement(
-			StatementNode statement,
-			CompilerContext p) {
+	public Name visitStatement(StatementNode statement, CompilerContext p) {
 		invalidClauseName(p, statement);
 		return null;
 	}
