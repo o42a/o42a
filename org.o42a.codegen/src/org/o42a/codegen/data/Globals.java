@@ -29,14 +29,15 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.Chain;
 import org.o42a.util.string.ID;
 
 
 public abstract class Globals {
 
 	private final Generator generator;
-
-	private final DataChain globals = new DataChain();
+	private final Chain<Data<?>> globals =
+			new Chain<>(Data::getNext, Data::setNext);
 	private final HashMap<String, Ptr<?>> externals = new HashMap<>();
 	private int typesAllocating;
 	private final LinkedList<AbstractTypeData<?>> scheduled =

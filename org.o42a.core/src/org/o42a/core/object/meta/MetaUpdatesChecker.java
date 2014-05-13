@@ -24,6 +24,7 @@ import java.util.Iterator;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
+import org.o42a.util.Chain;
 
 
 final class MetaUpdatesChecker {
@@ -93,7 +94,7 @@ final class MetaUpdatesChecker {
 
 			nextMeta.init();
 
-			final MetaDeps nextDeps = nextMeta.deps();
+			final Chain<MetaDep> nextDeps = nextMeta.deps();
 
 			if (nextDeps != null && !nextDeps.isEmpty()) {
 				return nextMeta;

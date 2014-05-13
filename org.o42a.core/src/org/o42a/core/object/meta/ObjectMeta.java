@@ -26,12 +26,13 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
+import org.o42a.util.Chain;
 
 
 public abstract class ObjectMeta {
 
 	private IdentityHashMap<MetaDep, Boolean> tripped;
-	private MetaDeps deps;
+	private Chain<MetaDep> deps;
 	private boolean initialized;
 	private byte updated;
 
@@ -51,7 +52,7 @@ public abstract class ObjectMeta {
 		return false;
 	}
 
-	final MetaDeps deps() {
+	final Chain<MetaDep> deps() {
 		return this.deps;
 	}
 
@@ -65,7 +66,7 @@ public abstract class ObjectMeta {
 			final ObjectMeta objectMeta = currentMeta;
 
 			if (objectMeta.deps == null) {
-				objectMeta.deps = new MetaDeps();
+				objectMeta.deps = newDeps();
 			}
 			objectMeta.deps.add(currentDep);
 
@@ -142,7 +143,7 @@ public abstract class ObjectMeta {
 				continue;
 			}
 			if (this.deps == null) {
-				this.deps = new MetaDeps();
+				this.deps = newDeps();
 			} else if (this.deps.contains(dep)) {
 				continue;
 			}
@@ -188,6 +189,10 @@ public abstract class ObjectMeta {
 
 	private final Meta meta() {
 		return (Meta) this;
+	}
+
+	private static Chain<MetaDep> newDeps() {
+		return new Chain<>(MetaDep::getNext, MetaDep::setNext);
 	}
 
 }

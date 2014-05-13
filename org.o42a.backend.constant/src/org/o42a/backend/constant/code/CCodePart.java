@@ -28,7 +28,8 @@ public abstract class CCodePart<C extends Code> {
 
 	private final CCode<?> code;
 	private final ID id;
-	private final OpRecords records = new OpRecords();
+	private final Chain<OpRecord> records =
+			new Chain<>(OpRecord::getNext, OpRecord::setNext);
 	private OpRecord lastRevealed;
 	private boolean revealing;
 	private boolean hasRecords;
@@ -124,20 +125,6 @@ public abstract class CCodePart<C extends Code> {
 
 	final void add(OpRecord op) {
 		this.records.add(op);
-	}
-
-	private static final class OpRecords extends Chain<OpRecord> {
-
-		@Override
-		protected OpRecord next(OpRecord item) {
-			return item.getNext();
-		}
-
-		@Override
-		protected void setNext(OpRecord prev, OpRecord next) {
-			prev.setNext(next);
-		}
-
 	}
 
 }

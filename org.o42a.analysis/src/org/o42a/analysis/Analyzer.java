@@ -25,13 +25,15 @@ import static org.o42a.analysis.use.User.useCase;
 import org.o42a.analysis.use.UseCase;
 import org.o42a.analysis.use.UseCaseInfo;
 import org.o42a.analysis.use.User;
+import org.o42a.util.Chain;
 
 
 public class Analyzer implements UseCaseInfo {
 
 	public static final boolean TRACK_RUNTIME_USES = false;
 
-	private final Doubts doubts = new Doubts();
+	private final Chain<Doubt> doubts =
+			new Chain<>(Doubt::getNext, Doubt::setNext);
 	private UseCase useCase;
 	private boolean normalizationEnabled = true;
 

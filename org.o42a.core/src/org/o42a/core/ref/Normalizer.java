@@ -28,7 +28,8 @@ import org.o42a.util.fn.Cancelable;
 public final class Normalizer {
 
 	private final RootNormalizer root;
-	private final Normals cancelables = new Normals();
+	private final Chain<Normal> cancelables =
+			new Chain<>(Normal::getNext, Normal::setNext);
 	private boolean cancelled;
 
 	Normalizer(RootNormalizer root) {
@@ -128,20 +129,6 @@ public final class Normalizer {
 		@Override
 		protected Cancelable cancelable() {
 			return this;
-		}
-
-	}
-
-	private static final class Normals extends Chain<Normal> {
-
-		@Override
-		protected Normal next(Normal item) {
-			return item.getNext();
-		}
-
-		@Override
-		protected void setNext(Normal prev, Normal next) {
-			prev.setNext(next);
 		}
 
 	}

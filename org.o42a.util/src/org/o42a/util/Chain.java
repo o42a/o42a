@@ -22,6 +22,8 @@ package org.o42a.util;
 import static org.o42a.util.collect.Iterators.emptyIterator;
 
 import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
+import java.util.function.UnaryOperator;
 
 import org.o42a.util.collect.ReadonlyIterable;
 import org.o42a.util.collect.ReadonlyIterator;
@@ -34,10 +36,17 @@ import org.o42a.util.collect.ReadonlyIterator;
  *
  * @param <T> item type.
  */
-public abstract class Chain<T> implements ReadonlyIterable<T> {
+public class Chain<T> implements ReadonlyIterable<T> {
 
+	private final UnaryOperator<T> getNext;
+	private final BiConsumer<T, T> setNext;
 	private T first;
 	private T last;
+
+	public Chain(UnaryOperator<T> getNext, BiConsumer<T, T> setNext) {
+		this.getNext = getNext;
+		this.setNext = setNext;
+	}
 
 	/**
 	 * Appends the last item of the chain.
@@ -123,7 +132,7 @@ public abstract class Chain<T> implements ReadonlyIterable<T> {
 	 * @param item item to find.
 	 *
 	 * @return <code>true</code> if this chain contains an item equal to the
-	 * given one, or <code>false</code> othwerwise.
+	 * given one, or <code>false</code> otherwise.
 	 */
 	public final boolean contains(T item) {
 		for (T t = getFirst(); t != null; t = next(t)) {
@@ -149,9 +158,13 @@ public abstract class Chain<T> implements ReadonlyIterable<T> {
 		return new Iter();
 	}
 
-	protected abstract T next(T item);
+	private final T next(T t) {
+		return this.getNext.apply(t);
+	}
 
-	protected abstract void setNext(T prev, T next);
+	private final void setNext(T item, T next) {
+		this.setNext.accept(item, next);
+	}
 
 	@Override
 	public String toString() {
