@@ -235,7 +235,14 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 			if (declaredField == null) {
 				continue;
 			}
+			if (declaredField != declared) {
+				// An alias.
+				continue;
+			}
 			if (declared.isOverride()) {
+				continue;
+			}
+			if (!generateField(declaredField)) {
 				continue;
 			}
 
@@ -243,11 +250,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 					object.member(declaredField.getMemberKey())
 					.toField()
 					.field(dummyUser());
-
-			if (!generateField(declaredField)) {
-				continue;
-			}
-
 			final FieldIRBase fieldIR = field.ir(generator);
 
 			fieldIR.allocate(data);
@@ -290,24 +292,24 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append("Field ").append(memberKey);
-		out.append(" not found in ").append(this);
+		out.append("Field `").append(memberKey);
+		out.append("` not found in `").append(this);
 
 		final Member member = getAscendant().member(memberKey);
 
 		if (member == null) {
-			return out.append(": no such member").toString();
+			return out.append("`: no such member").toString();
 		}
 
 		final MemberField field = member.toField();
 
 		if (field == null) {
-			return out.append(": not a field").toString();
+			return out.append("`: not a field").toString();
 		}
 
 		final FieldAnalysis analysis = field.getAnalysis();
 
-		out.append(": ").append(
+		out.append("`: ").append(
 				analysis.reasonNotFound(getGenerator().getAnalyzer()));
 
 		return out.toString();
