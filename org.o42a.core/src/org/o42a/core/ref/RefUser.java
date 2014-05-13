@@ -68,10 +68,6 @@ public final class RefUser implements UserInfo {
 		this.rtUser = rtUser;
 	}
 
-	public final boolean isDummy() {
-		return toUser().isDummy();
-	}
-
 	public final boolean hasRtUser() {
 		return !rtUser().toUser().isDummy();
 	}

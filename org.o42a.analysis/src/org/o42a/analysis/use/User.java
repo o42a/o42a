@@ -47,6 +47,7 @@ public abstract class User<U extends Usage<U>> implements UserInfo, Uses<U> {
 		this.allUsages = allUsages;
 	}
 
+	@Override
 	public abstract boolean isDummy();
 
 	@Override
