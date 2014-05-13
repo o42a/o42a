@@ -74,13 +74,6 @@ public class FieldUses implements Uses<SimpleUsage> {
 	}
 
 	@Override
-	public final boolean isUsed(
-			UseCaseInfo useCase,
-			UseSelector<SimpleUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
-	}
-
-	@Override
 	public String toString() {
 		return "FieldUses[" + this.container + ']';
 	}

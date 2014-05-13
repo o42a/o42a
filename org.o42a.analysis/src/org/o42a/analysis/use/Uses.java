@@ -26,6 +26,10 @@ public interface Uses<U extends Usage<U>> {
 
 	UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector);
 
-	boolean isUsed(UseCaseInfo useCase, UseSelector<U> selector);
+	default boolean isUsed(
+			UseCaseInfo useCase,
+			UseSelector<U> selector) {
+		return selectUse(useCase, selector).isUsed();
+	}
 
 }

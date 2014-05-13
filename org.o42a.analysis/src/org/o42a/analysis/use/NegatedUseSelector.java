@@ -20,7 +20,7 @@
 package org.o42a.analysis.use;
 
 
-final class NegatedUseSelector<U extends Usage<U>> extends UseSelector<U> {
+final class NegatedUseSelector<U extends Usage<U>> implements UseSelector<U> {
 
 	private final UseSelector<U> negated;
 

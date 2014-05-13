@@ -20,18 +20,19 @@
 package org.o42a.analysis.use;
 
 
-public abstract class UseSelector<U extends Usage<U>> {
+@FunctionalInterface
+public interface UseSelector<U extends Usage<U>> {
 
-	public abstract boolean acceptUsage(U usage);
+	boolean acceptUsage(U usage);
 
-	public UseSelector<U> and(UseSelector<U> other) {
+	default UseSelector<U> and(UseSelector<U> other) {
 		if (equals(other)) {
 			return this;
 		}
 		return new CompoundUseSelector<>(this, other);
 	}
 
-	public UseSelector<U> or(UseSelector<U> other) {
+	default UseSelector<U> or(UseSelector<U> other) {
 		if (equals(other)) {
 			return this;
 		}
@@ -41,7 +42,7 @@ public abstract class UseSelector<U extends Usage<U>> {
 		return new AnyUseSelector<>(this, other);
 	}
 
-	public UseSelector<U> not() {
+	default UseSelector<U> not() {
 		return new NegatedUseSelector<>(this);
 	}
 

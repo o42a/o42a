@@ -20,7 +20,7 @@
 package org.o42a.analysis.use;
 
 
-final class CompoundUseSelector<U extends Usage<U>> extends UseSelector<U> {
+final class CompoundUseSelector<U extends Usage<U>> implements UseSelector<U> {
 
 	private final UseSelector<U> first;
 	private final UseSelector<U> second;

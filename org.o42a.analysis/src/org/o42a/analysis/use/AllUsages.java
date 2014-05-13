@@ -24,7 +24,7 @@ import java.lang.reflect.Array;
 import org.o42a.util.ArrayUtil;
 
 
-public final class AllUsages<U extends Usage<U>> extends UseSelector<U> {
+public final class AllUsages<U extends Usage<U>> implements UseSelector<U> {
 
 	private final Class<? extends U> usageClass;
 	private final String name;
