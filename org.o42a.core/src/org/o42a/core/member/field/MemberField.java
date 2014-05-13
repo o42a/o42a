@@ -209,7 +209,7 @@ public abstract class MemberField
 
 	@Override
 	public final Obj substance(UserInfo user) {
-		return field(user).toObject();
+		return object(user);
 	}
 
 	@Override

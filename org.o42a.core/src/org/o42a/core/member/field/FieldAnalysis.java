@@ -50,6 +50,10 @@ public class FieldAnalysis {
 		return getMember().getFirstDeclaration().getAnalysis();
 	}
 
+	public UserInfo fieldAccess() {
+		return uses().usageUser(FIELD_ACCESS);
+	}
+
 	public UseFlag selectUse(
 			Analyzer analyzer,
 			UseSelector<FieldUsage> selector) {
