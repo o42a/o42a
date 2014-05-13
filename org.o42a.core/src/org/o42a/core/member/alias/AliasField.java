@@ -69,7 +69,8 @@ public final class AliasField extends Field {
 		protected AliasFld declare(ObjectIRBodyData data) {
 
 			final AliasField field = (AliasField) getField();
-			final Obj target = field.getRef().getResolution().toObject();
+			final Obj target =
+					field.getRef().getResolution().toObject().mostWrapped();
 			final AliasFld fld = new AliasFld(field, target);
 
 			fld.allocate(data, target);
