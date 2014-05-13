@@ -27,6 +27,7 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.Chain;
 import org.o42a.util.collect.ReadonlyIterable;
 import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.string.ID;
@@ -37,7 +38,8 @@ public abstract class SubData<S extends StructOp<S>>
 		implements ReadonlyIterable<Data<?>> {
 
 	private final Type<S> instance;
-	private final DataChain data = new DataChain();
+	private final Chain<Data<?>> data =
+			new Chain<>(Data::getNext, Data::setNext);
 	private int size;
 	private boolean allocationComplete;
 
@@ -215,7 +217,7 @@ public abstract class SubData<S extends StructOp<S>>
 		return add(data, true);
 	}
 
-	final DataChain data() {
+	final Chain<Data<?>> data() {
 		return this.data;
 	}
 

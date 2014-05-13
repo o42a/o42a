@@ -26,6 +26,10 @@ final class MemberEntries extends Chain<MemberEntry> {
 
 	private MemberEntry registering;
 
+	public MemberEntries() {
+		super(MemberEntry::getNext, MemberEntry::setNext);
+	}
+
 	@Override
 	public String toString() {
 
@@ -45,7 +49,7 @@ final class MemberEntries extends Chain<MemberEntry> {
 					comma = true;
 				}
 				out.append(entry);
-				entry = entry.next;
+				entry = entry.getNext();
 			} while (entry != null);
 
 			out.append(']');
@@ -60,16 +64,6 @@ final class MemberEntries extends Chain<MemberEntry> {
 		out.append('}');
 
 		return out.toString();
-	}
-
-	@Override
-	protected MemberEntry next(MemberEntry item) {
-		return item.next;
-	}
-
-	@Override
-	protected void setNext(MemberEntry prev, MemberEntry next) {
-		prev.next = next;
 	}
 
 	void registerMembers(ContainerMembers members) {

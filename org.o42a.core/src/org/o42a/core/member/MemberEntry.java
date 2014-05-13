@@ -26,7 +26,7 @@ final class MemberEntry {
 
 	private final Member member;
 	private final boolean propagated;
-	MemberEntry next;
+	private MemberEntry next;
 	private boolean registered;
 
 	MemberEntry(Member member, boolean propagated) {
@@ -93,6 +93,14 @@ final class MemberEntry {
 			return this.member + "^";
 		}
 		return this.member.toString();
+	}
+
+	final MemberEntry getNext() {
+		return this.next;
+	}
+
+	final void setNext(MemberEntry next) {
+		this.next = next;
 	}
 
 	private Member registerMember(ContainerMembers members) {

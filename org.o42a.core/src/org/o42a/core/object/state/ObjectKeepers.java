@@ -35,7 +35,8 @@ import org.o42a.util.string.ID;
 public abstract class ObjectKeepers {
 
 	private final Obj object;
-	private final DeclaredKeepers declaredKeepers = new DeclaredKeepers();
+	private final Chain<Keeper> declaredKeepers =
+			new Chain<>(Keeper::getNext, Keeper::setNext);
 
 	public ObjectKeepers(Obj object) {
 		this.object = object;
@@ -74,20 +75,6 @@ public abstract class ObjectKeepers {
 	}
 
 	protected abstract void keeperResolved(Keeper keeper);
-
-	private static final class DeclaredKeepers extends Chain<Keeper> {
-
-		@Override
-		protected Keeper next(Keeper item) {
-			return item.getNext();
-		}
-
-		@Override
-		protected void setNext(Keeper prev, Keeper next) {
-			prev.setNext(next);
-		}
-
-	}
 
 	private static final class AllKeepers implements ReadonlyIterable<Keeper> {
 

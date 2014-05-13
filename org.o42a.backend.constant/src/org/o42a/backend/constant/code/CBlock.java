@@ -39,7 +39,8 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	private CBlockPart lastPart;
 	private CBlockPart nextPart;
 
-	private final SubBlocks subBlocks = new SubBlocks();
+	private final Chain<CBlock<?>> subBlocks =
+			new Chain<>(CBlock::getNextBlock, CBlock::setNextBlock);
 	private StartAllocation startAllocation;
 	private CBlock<?> nextBlock;
 	private int blockSeq;
@@ -273,18 +274,12 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 				this.lastPart.createNextPart(++this.blockSeq);
 	}
 
-	private static final class SubBlocks extends Chain<CBlock<?>> {
+	private CBlock<?> getNextBlock() {
+		return this.nextBlock;
+	}
 
-		@Override
-		protected CBlock<?> next(CBlock<?> item) {
-			return item.nextBlock;
-		}
-
-		@Override
-		protected void setNext(CBlock<?> prev, CBlock<?> next) {
-			prev.nextBlock = next;
-		}
-
+	private void setNextBlock(CBlock<?> nextBlock) {
+		this.nextBlock = nextBlock;
 	}
 
 	private static final class StartAllocation extends BaseInstrBE {
