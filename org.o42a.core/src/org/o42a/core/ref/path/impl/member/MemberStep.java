@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path.impl.member;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
@@ -131,7 +130,7 @@ final class MemberStep extends AbstractMemberStep {
 				.fld(getMemberKey());
 
 		if (fld.isOmitted()) {
-			return new OmittedMemberRefTargetIR(this);
+			return new OmittedMemberRefTargetIR(this, fld);
 		}
 
 		return new MemberRefTargetIR(this);
@@ -207,9 +206,11 @@ final class MemberStep extends AbstractMemberStep {
 	private static final class OmittedMemberRefTargetIR implements RefTargetIR {
 
 		private final MemberStep member;
+		private final Fld<?> fld;
 
-		OmittedMemberRefTargetIR(MemberStep member) {
+		OmittedMemberRefTargetIR(MemberStep member, Fld<?> fld) {
 			this.member = member;
+			this.fld = fld;
 		}
 
 		@Override
@@ -219,7 +220,7 @@ final class MemberStep extends AbstractMemberStep {
 
 		@Override
 		public RefTargetOp op(Code code, StructOp<?> data) {
-			return new OmittedMemberRefTargetOp(this.member, data);
+			return new OmittedMemberRefTargetOp(this.member, data, this.fld);
 		}
 
 		@Override
@@ -236,10 +237,15 @@ final class MemberStep extends AbstractMemberStep {
 
 		private final MemberStep member;
 		private final StructOp<?> object;
+		private final Fld<?> fld;
 
-		OmittedMemberRefTargetOp(MemberStep member, StructOp<?> object) {
+		OmittedMemberRefTargetOp(
+				MemberStep member,
+				StructOp<?> object,
+				Fld<?> fld) {
 			this.member = member;
 			this.object = object;
+			this.fld = fld;
 		}
 
 		@Override
@@ -257,14 +263,11 @@ final class MemberStep extends AbstractMemberStep {
 
 		@Override
 		public FldOp<?> loadTarget(CodeDirs dirs) {
-
-			final MemberKey memberKey = this.member.getMemberKey();
-			final ObjectOp object = anonymousObject(
-					dirs.getBuilder(),
-					this.object.toData(null, dirs.code()),
-					memberKey.getOrigin().toObject());
-
-			return object.field(dirs, memberKey);
+			return this.fld.op(
+					dirs.code(),
+					this.fld.getBodyIR()
+					.getObjectIR()
+					.op(dirs.getBuilder(), dirs.code()));
 		}
 
 		@Override

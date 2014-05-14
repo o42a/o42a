@@ -84,7 +84,7 @@ final class LocalStep extends Step {
 	protected void rebuild(PathRebuilder rebuilder) {
 		if (!rebuilder.isStatic()) {
 			// Locals should never be statically referenced.
-			rebuilder.combinePreviousWithLocal(local());
+			rebuilder.combinePreviousWithLocal(this, local());
 		}
 	}
 

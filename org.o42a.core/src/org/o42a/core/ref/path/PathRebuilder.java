@@ -116,8 +116,8 @@ public final class PathRebuilder implements LocationInfo {
 		getPreviousStep().combineWithConstructor(this, step, constructor);
 	}
 
-	public final void combinePreviousWithLocal(Local local) {
-		getPreviousStep().combineWithLocal(this, local);
+	public final void combinePreviousWithLocal(Step step, Local local) {
+		getPreviousStep().combineWithLocal(this, step, local);
 	}
 
 	@Override
