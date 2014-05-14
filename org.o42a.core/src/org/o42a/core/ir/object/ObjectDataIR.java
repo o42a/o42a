@@ -191,7 +191,9 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		final RelList<FieldDescIR> fields = instance.fields();
 
 		for (DepIR dep : getObjectIR().getMainBodyIR().getDeclaredDeps()) {
-			fields.add(new FieldDescIR(dep));
+			if (!dep.isOmitted()) {
+				fields.add(new FieldDescIR(dep));
+			}
 		}
 	}
 

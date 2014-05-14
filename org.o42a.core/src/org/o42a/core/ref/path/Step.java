@@ -209,9 +209,13 @@ public abstract class Step {
 	 * Combines the step with the local following this step in the path.
 	 *
 	 * @param rebuilder path rebuilder.
+	 * @param step the local path step.
 	 * @param local the local to combine this one with.
 	 */
-	protected void combineWithLocal(PathRebuilder rebuilder, Local local) {
+	protected void combineWithLocal(
+			PathRebuilder rebuilder,
+			Step step,
+			Local local) {
 	}
 
 	/**

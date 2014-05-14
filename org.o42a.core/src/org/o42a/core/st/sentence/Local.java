@@ -19,13 +19,16 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.member.MemberIdKind.LOCAL_NAME;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.core.Container;
 import org.o42a.core.ContainerInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberName;
+import org.o42a.core.member.MemberPath;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Ref;
@@ -46,7 +49,7 @@ public final class Local
 	public static final Name ANONYMOUS_LOCAL_NAME =
 			CASE_SENSITIVE.canonicalName("L");
 	public static final MemberName ANONYMOUS_LOCAL_MEMBER =
-			MemberIdKind.LOCAL_NAME.memberName(ANONYMOUS_LOCAL_NAME);
+			LOCAL_NAME.memberName(ANONYMOUS_LOCAL_NAME);
 	public static final SubID LOCAL_FIELD_SUFFIX =
 			CASE_SENSITIVE.canonicalName("LF");
 
@@ -65,7 +68,7 @@ public final class Local
 		this.location = location.getLocation();
 		this.name = name;
 		this.originalRef = ref;
-		this.memberId = MemberIdKind.LOCAL_NAME.memberName(name);
+		this.memberId = LOCAL_NAME.memberName(name);
 	}
 
 	public final Name getName() {

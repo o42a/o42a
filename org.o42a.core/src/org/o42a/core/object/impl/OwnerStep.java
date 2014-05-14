@@ -75,16 +75,19 @@ public final class OwnerStep
 			return;
 		}
 
-		final Dep dep = replaceWithDep(rebuilder, null);
+		final Dep dep = replaceWithDep(rebuilder, step, null);
 
 		dep.setSynthetic(constructor);
 	}
 
 	@Override
-	protected void combineWithLocal(PathRebuilder rebuilder, Local local) {
+	protected void combineWithLocal(
+			PathRebuilder rebuilder,
+			Step step,
+			Local local) {
 		assert !local.isField() :
 			"Can not combine with local field";
-		replaceWithDep(rebuilder, local.getName());
+		replaceWithDep(rebuilder, step, local.getName());
 	}
 
 	@Override
@@ -160,7 +163,10 @@ public final class OwnerStep
 		return defaultTargetIR(refIR);
 	}
 
-	private Dep replaceWithDep(PathRebuilder rebuilder, Name name) {
+	private Dep replaceWithDep(
+			PathRebuilder rebuilder,
+			@SuppressWarnings("unused") Step step,
+			Name name) {
 
 		final Obj origin =
 				rebuilder.cutPath(1).resolve(
@@ -169,20 +175,31 @@ public final class OwnerStep
 						.resolver()
 						.toPathResolver())
 				.getObject();
-		final Container enclosing;
+		final Container owner;
 
 		if (origin.membersResolved()) {
-			enclosing = origin.member(getMemberKey()).substance(dummyUser());
+			owner = origin.member(getMemberKey()).substance(dummyUser());
 		} else {
-			enclosing = resolveWhenMembersNotResolved(origin);
+			owner = resolveWhenMembersNotResolved(origin);
 		}
 
 		final Ref ref =
-				rebuilder.restPath(enclosing.getScope())
-				.target(origin.distributeIn(enclosing.toObject()));
+				rebuilder.restPath(owner.getScope())
+				.target(origin.distributeIn(owner.toObject()));
 		final Dep dep = origin.deps().addDep(name, ref);
 
 		rebuilder.replaceRest(dep);
+
+		/* TODO store only next step in the dependency instead of the rest
+		 * of the path
+		final Ref ref =
+				step.toPath()
+				.bind(rebuilder, owner.getScope())
+				.target(origin.distributeIn(owner));
+		final Dep dep = origin.deps().addDep(name, ref);
+
+		rebuilder.replace(dep);
+		 */
 
 		return dep;
 	}

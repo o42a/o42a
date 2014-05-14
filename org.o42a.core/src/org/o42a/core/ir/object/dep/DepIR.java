@@ -47,6 +47,7 @@ public class DepIR implements FldIR {
 	private final Dep dep;
 	private final RefIR refIR;
 	private Data<?> data;
+	private boolean omitted;
 
 	public DepIR(ObjectIRBody bodyIR, Dep dep) {
 		assert dep.exists(bodyIR.getGenerator().getAnalyzer()) :
@@ -67,6 +68,10 @@ public class DepIR implements FldIR {
 	@Override
 	public final ID getId() {
 		return getDep().toID();
+	}
+
+	public final boolean isOmitted() {
+		return this.omitted;
 	}
 
 	@Override
@@ -90,7 +95,13 @@ public class DepIR implements FldIR {
 	}
 
 	public final void allocate(ObjectIRBodyData data) {
+
+		final int oldSize = data.getData().size();
+
 		this.data = this.refIR.allocate(getId(), data.getData());
+		if (data.getData().size() == oldSize) {
+			this.omitted = true;
+		}
 	}
 
 	public final DepOp op(Code code, ObjOp host) {
