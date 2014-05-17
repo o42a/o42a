@@ -19,9 +19,7 @@
 */
 package org.o42a.parser.grammar.ref;
 
-import static org.o42a.parser.Grammar.adapterRef;
-import static org.o42a.parser.Grammar.deref;
-import static org.o42a.parser.Grammar.memberRef;
+import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
@@ -60,7 +58,15 @@ final class SubRefParser implements Parser<RefNode> {
 					return null;
 				}
 				qualifierExpected = false;
-				next = context.next();
+				next = context.pendingOrNext();
+				break;
+			case '>':
+				owner = context.parse(eagerRef(this.owner));
+				if (owner == null) {
+					return null;
+				}
+				qualifierExpected = false;
+				next = context.pendingOrNext();
 				break;
 			default:
 				owner = this.owner;
