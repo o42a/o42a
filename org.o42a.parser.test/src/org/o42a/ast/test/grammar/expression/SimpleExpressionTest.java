@@ -25,8 +25,10 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("foo\\: bar"), instanceOf(MemberRefNode.class));
 		assertThat(parse("foo (): bar"), instanceOf(MemberRefNode.class));
 		assertThat(parse("(foo): bar"), instanceOf(MemberRefNode.class));
-		assertThat(parse("(foo) -> bar"), instanceOf(MemberRefNode.class));
-		assertThat(parse("foo () -> bar"), instanceOf(MemberRefNode.class));
+		assertThat(parse("(foo)->bar"), instanceOf(MemberRefNode.class));
+		assertThat(parse("foo ()->bar"), instanceOf(MemberRefNode.class));
+		assertThat(parse("(foo)>>bar"), instanceOf(MemberRefNode.class));
+		assertThat(parse("foo ()>>bar"), instanceOf(MemberRefNode.class));
 	}
 
 	@Test
@@ -35,8 +37,10 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("foo\\ #bar"), instanceOf(MemberRefNode.class));
 		assertThat(parse("foo () #bar"), instanceOf(MemberRefNode.class));
 		assertThat(parse("(foo) #bar"), instanceOf(MemberRefNode.class));
-		assertThat(parse("(foo) -> #bar"), instanceOf(MemberRefNode.class));
-		assertThat(parse("foo () -> #bar"), instanceOf(MemberRefNode.class));
+		assertThat(parse("(foo)->#bar"), instanceOf(MemberRefNode.class));
+		assertThat(parse("foo ()->#bar"), instanceOf(MemberRefNode.class));
+		assertThat(parse("(foo)>>#bar"), instanceOf(MemberRefNode.class));
+		assertThat(parse("foo ()>>#bar"), instanceOf(MemberRefNode.class));
 	}
 
 	@Test
@@ -45,8 +49,10 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("foo\\ @@bar"), instanceOf(AdapterRefNode.class));
 		assertThat(parse("foo () @@bar"), instanceOf(AdapterRefNode.class));
 		assertThat(parse("(foo) @@bar"), instanceOf(AdapterRefNode.class));
-		assertThat(parse("foo () -> @@bar"), instanceOf(AdapterRefNode.class));
-		assertThat(parse("(foo) -> @@bar"), instanceOf(AdapterRefNode.class));
+		assertThat(parse("foo ()->@@bar"), instanceOf(AdapterRefNode.class));
+		assertThat(parse("(foo)->@@bar"), instanceOf(AdapterRefNode.class));
+		assertThat(parse("foo ()>>@@bar"), instanceOf(AdapterRefNode.class));
+		assertThat(parse("(foo)>>@@bar"), instanceOf(AdapterRefNode.class));
 		assertThat(parse("*@@bar"), instanceOf(AdapterRefNode.class));
 		assertThat(parse(":@@bar"), instanceOf(AdapterRefNode.class));
 		assertThat(parse("::@@bar"), instanceOf(AdapterRefNode.class));
@@ -63,8 +69,20 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		assertThat(parse("foo ()->"), instanceOf(DerefNode.class));
 		assertThat(parse("\"\"->"), instanceOf(DerefNode.class));
 		assertThat(parse("123 456->"), instanceOf(DerefNode.class));
-		assertThat(parse("foo_ bar->"), instanceOf(DerefNode.class));
+		assertThat(parse("foo _bar->"), instanceOf(DerefNode.class));
 		assertThat(parse("foo::->"), instanceOf(DerefNode.class));
+	}
+
+	@Test
+	public void eagerRef() {
+		assertThat(parse("(foo)>>"), instanceOf(EagerRefNode.class));
+		assertThat(parse("foo\\>>"), instanceOf(EagerRefNode.class));
+		assertThat(parse("foo>>"), instanceOf(EagerRefNode.class));
+		assertThat(parse("foo ()>>"), instanceOf(EagerRefNode.class));
+		assertThat(parse("\"\">>"), instanceOf(EagerRefNode.class));
+		assertThat(parse("123 456>>"), instanceOf(EagerRefNode.class));
+		assertThat(parse("foo _bar>>"), instanceOf(EagerRefNode.class));
+		assertThat(parse("foo::>>"), instanceOf(EagerRefNode.class));
 	}
 
 	@Test
