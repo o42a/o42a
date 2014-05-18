@@ -29,8 +29,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.ir.value.type.ValueTypeIR;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberIdKind;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
@@ -206,7 +206,7 @@ public class ArrayValueType extends ValueType<Array> {
 				ref,
 				ref.distribute(),
 				ascendants.setTypeParameters(convertedParameters),
-				valueBlock(ref));
+				valueBlock(ref)::definitions);
 
 		return arrayConstructor.toRef();
 	}

@@ -22,6 +22,8 @@ package org.o42a.core.object.common;
 import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.object.def.DefinitionsBuilder.NO_DEFINITIONS_BUILDER;
 
+import java.util.function.Function;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
@@ -70,6 +72,14 @@ public abstract class DefinedObject extends Obj implements ObjectToDefine {
 	@Override
 	protected void updateMembers() {
 		definitionsBuilder().updateMembers();
+	}
+
+	protected final DefinitionsBuilder definitionsBuilder(
+			Function<ObjectToDefine, DefinitionsBuilder> definitions) {
+		if (definitions == null) {
+			return NO_DEFINITIONS_BUILDER;
+		}
+		return definitions.apply(this);
 	}
 
 	protected final DefinitionsBuilder blockDefinitions(BlockBuilder builder) {
