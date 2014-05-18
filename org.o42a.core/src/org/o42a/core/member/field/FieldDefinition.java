@@ -24,7 +24,6 @@ import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
@@ -52,9 +51,8 @@ public abstract class FieldDefinition extends Contained {
 	public static FieldDefinition impliedDefinition(
 			LocationInfo location,
 			Distributor scope) {
-		return new AscendantsDefinition(location, scope).fieldDefinition(
-				location,
-				emptyBlock(location));
+		return new AscendantsDefinition(location, scope)
+		.fieldDefinition(location, null);
 	}
 
 	public static DefinitionTarget definerTarget(ObjectDefiner definer) {

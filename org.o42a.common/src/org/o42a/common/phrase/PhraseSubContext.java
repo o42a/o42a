@@ -183,7 +183,7 @@ class PhraseSubContext extends PhraseContext {
 		case NO_SUBSTITUTION:
 			return ascendants(location, distributor).fieldDefinition(
 					location,
-					getInstances()[0].getDefinition());
+					getInstances()[0].getDefinition()::definitions);
 		}
 
 		throw new IllegalStateException(

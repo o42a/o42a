@@ -22,17 +22,20 @@ package org.o42a.core.member.field;
 import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
-import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
+import static org.o42a.core.object.def.DefinitionsBuilder.NO_DEFINITIONS_BUILDER;
+
+import java.util.function.Function;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.impl.AscendantsFieldDefinition;
+import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 
@@ -182,13 +185,14 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 
 	public final FieldDefinition fieldDefinition(
 			LocationInfo location,
-			BlockBuilder definition) {
+			Function<ObjectToDefine, DefinitionsBuilder> definition) {
 		return new AscendantsFieldDefinition(
 				location,
 				distribute(),
 				this,
 				definition != null
-				? definition : emptyBlock(location));
+				? definition
+				: object -> NO_DEFINITIONS_BUILDER);
 	}
 
 	@Override

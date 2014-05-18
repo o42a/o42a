@@ -75,7 +75,7 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 		return this.definition = mainContext.getAscendants().fieldDefinition(
 				this,
-				mainContext.getInstances()[0].getDefinition());
+				mainContext.getInstances()[0].getDefinition()::definitions);
 	}
 
 }

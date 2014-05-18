@@ -211,7 +211,7 @@ final class Section implements LogInfo {
 				ascendants(new FieldNesting(fieldDeclaration).toTypeConsumer())
 				.fieldDefinition(
 						getLocation(),
-						new SectionDefinition(this));
+						new SectionDefinition(this)::definitions);
 
 		final FieldBuilder fieldBuilder =
 				statements.field(fieldDeclaration, fieldDefinition);

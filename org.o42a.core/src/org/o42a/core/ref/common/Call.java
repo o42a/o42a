@@ -19,12 +19,15 @@
 */
 package org.o42a.core.ref.common;
 
+import java.util.function.Function;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.DefinedObject;
 import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.value.Statefulness;
@@ -33,19 +36,18 @@ import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.BlockBuilder;
 
 
 public class Call extends ObjectConstructor {
 
 	private final AscendantsDefinition ascendants;
-	private final BlockBuilder definitions;
+	private final Function<ObjectToDefine, DefinitionsBuilder> definitions;
 
 	public Call(
 			LocationInfo location,
 			Distributor distributor,
 			AscendantsDefinition ascendants,
-			BlockBuilder definitions) {
+			Function<ObjectToDefine, DefinitionsBuilder> definitions) {
 		super(location, distributor, ascendants.isStateful());
 		this.ascendants = ascendants;
 		this.definitions = definitions;
@@ -55,7 +57,7 @@ public class Call extends ObjectConstructor {
 		return this.ascendants;
 	}
 
-	public final BlockBuilder getDefinitions() {
+	public final Function<ObjectToDefine, DefinitionsBuilder> getDefinitions() {
 		return this.definitions;
 	}
 
@@ -165,7 +167,7 @@ public class Call extends ObjectConstructor {
 
 		@Override
 		protected DefinitionsBuilder createDefinitionsBuilder() {
-			return blockDefinitions(this.call.getDefinitions());
+			return definitionsBuilder(this.call.getDefinitions());
 		}
 
 

@@ -21,26 +21,29 @@ package org.o42a.core.member.field.impl;
 
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
+import java.util.function.Function;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.*;
+import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.BlockBuilder;
 
 
 public final class AscendantsFieldDefinition extends FieldDefinition {
 
 	private final AscendantsDefinition ascendants;
-	private final BlockBuilder definitions;
+	private final Function<ObjectToDefine, DefinitionsBuilder> definitions;
 	private Ref value;
 
 	public AscendantsFieldDefinition(
 			LocationInfo location,
 			Distributor distributor,
 			AscendantsDefinition ascendants,
-			BlockBuilder definitions) {
+			Function<ObjectToDefine, DefinitionsBuilder> definitions) {
 		super(location, distributor);
 		this.ascendants = ascendants;
 		this.definitions = definitions;
@@ -61,7 +64,7 @@ public final class AscendantsFieldDefinition extends FieldDefinition {
 			definer.makeStateful();
 		}
 		this.ascendants.updateAscendants(definer);
-		definer.define(this.definitions::definitions);
+		definer.define(this.definitions);
 	}
 
 	@Override
