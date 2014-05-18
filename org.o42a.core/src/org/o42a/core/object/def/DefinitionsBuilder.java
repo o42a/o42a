@@ -22,6 +22,26 @@ package org.o42a.core.object.def;
 
 public interface DefinitionsBuilder {
 
+	DefinitionsBuilder NO_DEFINITIONS_BUILDER = new DefinitionsBuilder() {
+
+		@Override
+		public void updateMembers() {
+		}
+
+		@Override
+		public Definitions buildDefinitions() {
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			return "()";
+		}
+
+	};
+
+	void updateMembers();
+
 	Definitions buildDefinitions();
 
 }
