@@ -42,6 +42,10 @@ public interface RefNodeVisitor<R, P> {
 		return visitRef(ref, p);
 	}
 
+	default R visitEagerRef(EagerRefNode ref, P p) {
+		return visitRef(ref, p);
+	}
+
 	R visitRef(RefNode ref, P p);
 
 }
