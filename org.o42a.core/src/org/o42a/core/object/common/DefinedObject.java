@@ -20,6 +20,9 @@
 package org.o42a.core.object.common;
 
 import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
+import static org.o42a.core.object.def.DefinitionsBuilder.NO_DEFINITIONS_BUILDER;
+
+import java.util.function.Consumer;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
@@ -27,34 +30,32 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
 public abstract class DefinedObject extends Obj {
 
 	private ObjectMemberRegistry memberRegistry;
-	private DeclarativeBlock definition;
-	private boolean definitionBuilt;
 	private DefinitionsBuilder definitionsBuilder;
 
 	public DefinedObject(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
 	}
 
-	public DeclarativeBlock getDefinition() {
-		if (!this.definitionBuilt) {
-			buildDefinition(definition());
-			this.definitionBuilt = true;
+	public ObjectMemberRegistry getMemberRegistry() {
+		if (this.memberRegistry == null) {
+			this.memberRegistry = new ObjectMemberRegistry(NO_INCLUSIONS, this);
 		}
-		return this.definition;
+		return this.memberRegistry;
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getDefinitionsBuilder().buildDefinitions();
+		return definitionsBuilder().buildDefinitions();
 	}
 
-	protected abstract void buildDefinition(DeclarativeBlock definition);
+	protected abstract DefinitionsBuilder createDefinitionsBuilder();
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
@@ -63,39 +64,34 @@ public abstract class DefinedObject extends Obj {
 
 	@Override
 	protected void updateMembers() {
-
-		final DeclarativeBlock definition = getDefinition();
-
-		if (definition != null) {
-			definition.executeInstructions();
-		}
+		definitionsBuilder().updateMembers();
 	}
 
-	private DeclarativeBlock definition() {
-		if (this.definition != null) {
-			return this.definition;
+	protected final DefinitionsBuilder blockDefinitions(BlockBuilder builder) {
+		if (builder == null) {
+			return NO_DEFINITIONS_BUILDER;
 		}
+		return blockDefinitions(builder::buildBlock);
+	}
 
-		final DeclarativeBlock definition =
+	protected final DefinitionsBuilder blockDefinitions(
+			Consumer<DeclarativeBlock> definition) {
+
+		final DeclarativeBlock block =
 				new DeclarativeBlock(this, this, getMemberRegistry());
+		final DefinitionsBuilder builder =
+				block.definitions(definitionEnv());
 
-		this.definitionsBuilder = definition.definitions(definitionEnv());
+		definition.accept(block);
 
-		return this.definition = definition;
+		return builder;
 	}
 
-	private ObjectMemberRegistry getMemberRegistry() {
-		if (this.memberRegistry == null) {
-			this.memberRegistry = new ObjectMemberRegistry(NO_INCLUSIONS, this);
+	private DefinitionsBuilder definitionsBuilder() {
+		if (this.definitionsBuilder != null) {
+			return this.definitionsBuilder;
 		}
-		return this.memberRegistry;
-	}
-
-	private DefinitionsBuilder getDefinitionsBuilder() {
-		if (this.definitionsBuilder == null) {
-			getDefinition();
-		}
-		return this.definitionsBuilder;
+		return this.definitionsBuilder = createDefinitionsBuilder();
 	}
 
 }
