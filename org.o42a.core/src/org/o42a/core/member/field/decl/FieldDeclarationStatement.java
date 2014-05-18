@@ -19,13 +19,9 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
-
 import org.o42a.core.member.DeclarationCommand;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.FieldBuilder;
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
@@ -56,29 +52,8 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 
 	@Override
 	public Statement reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final FieldDeclaration declaration =
-				this.builder.getDeclaration().reproduce(reproducer);
-
-		if (declaration == null) {
-			return null;
-		}
-
-		final FieldDefinition definition = reproduceDefinition(reproducer);
-
-		if (definition == null) {
-			return null;
-		}
-
-		final FieldBuilder builder =
-				reproducer.getStatements().field(declaration, definition);
-
-		if (builder == null) {
-			return null;
-		}
-
-		return builder.build();
+		reproducer.getLogger().notReproducible(getLocation());
+		return null;
 	}
 
 	@Override
@@ -86,18 +61,6 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		return ("FieldDeclarationStatement["
 				+ this.member + "]:"
 				+ this.builder.getDefinition());
-	}
-
-	private FieldDefinition reproduceDefinition(Reproducer reproducer) {
-		if (!this.builder.getDefinition().isValid()) {
-			return invalidDefinition(
-					this.builder.getDefinition(),
-					reproducer.distribute());
-		}
-
-		final DeclaredField field = this.member.toDeclaredField();
-
-		return new ReproducedObjectDefinition(field, reproducer);
 	}
 
 }
