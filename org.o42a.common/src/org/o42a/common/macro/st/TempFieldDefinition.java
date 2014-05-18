@@ -57,7 +57,7 @@ final class TempFieldDefinition extends FieldDefinition {
 		if (!this.condition) {
 			definer.setParameters(new ParentTypeParameters(definer));
 		}
-		definer.define(new ExpandMacroBlock(this.expansion));
+		definer.define(new ExpandMacroBlock(this.expansion)::definitions);
 	}
 
 	@Override

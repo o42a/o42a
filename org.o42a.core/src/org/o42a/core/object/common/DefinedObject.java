@@ -22,19 +22,18 @@ package org.o42a.core.object.common;
 import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.object.def.DefinitionsBuilder.NO_DEFINITIONS_BUILDER;
 
-import java.util.function.Consumer;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-public abstract class DefinedObject extends Obj {
+public abstract class DefinedObject extends Obj implements ObjectToDefine {
 
 	private ObjectMemberRegistry memberRegistry;
 	private DefinitionsBuilder definitionsBuilder;
@@ -43,11 +42,17 @@ public abstract class DefinedObject extends Obj {
 		super(location, enclosing);
 	}
 
+	@Override
 	public ObjectMemberRegistry getMemberRegistry() {
 		if (this.memberRegistry == null) {
 			this.memberRegistry = new ObjectMemberRegistry(NO_INCLUSIONS, this);
 		}
 		return this.memberRegistry;
+	}
+
+	@Override
+	public CommandEnv definitionsEnv() {
+		return definitionEnv();
 	}
 
 	@Override
@@ -71,20 +76,7 @@ public abstract class DefinedObject extends Obj {
 		if (builder == null) {
 			return NO_DEFINITIONS_BUILDER;
 		}
-		return blockDefinitions(builder::buildBlock);
-	}
-
-	protected final DefinitionsBuilder blockDefinitions(
-			Consumer<DeclarativeBlock> definition) {
-
-		final DeclarativeBlock block =
-				new DeclarativeBlock(this, this, getMemberRegistry());
-		final DefinitionsBuilder builder =
-				block.definitions(definitionEnv());
-
-		definition.accept(block);
-
-		return builder;
+		return builder.definitions(this);
 	}
 
 	private DefinitionsBuilder definitionsBuilder() {

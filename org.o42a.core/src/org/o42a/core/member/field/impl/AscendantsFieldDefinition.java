@@ -61,7 +61,7 @@ public final class AscendantsFieldDefinition extends FieldDefinition {
 			definer.makeStateful();
 		}
 		this.ascendants.updateAscendants(definer);
-		definer.define(this.definitions);
+		definer.define(this.definitions::definitions);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public final class AscendantsFieldDefinition extends FieldDefinition {
 			return;
 		}
 
-		definer.define(valueBlock(getValue()));
+		definer.define(valueBlock(getValue())::definitions);
 	}
 
 	@Override

@@ -19,14 +19,17 @@
 */
 package org.o42a.core.member.field.impl;
 
+import java.util.function.Function;
+
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
+import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.ObjectTypeParameters;
 
 
@@ -144,7 +147,8 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public void define(BlockBuilder definitions) {
+		public void define(
+				Function<ObjectToDefine, DefinitionsBuilder> definitions) {
 			this.definer.define(definitions);
 		}
 
@@ -182,7 +186,8 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public void define(BlockBuilder definitions) {
+		public void define(
+				Function<ObjectToDefine, DefinitionsBuilder> definitions) {
 			this.definer.define(definitions);
 		}
 

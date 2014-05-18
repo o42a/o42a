@@ -19,17 +19,31 @@
 */
 package org.o42a.core.member.field.decl;
 
+import static org.o42a.core.member.Inclusions.INCLUSIONS;
+import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
+import static org.o42a.core.object.def.DefinitionsBuilder.NO_DEFINITIONS_BUILDER;
+
+import java.util.function.Function;
+
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.value.Statefulness;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueRequest;
 
 
-class DeclaredObject extends Obj {
+class DeclaredObject extends Obj implements ObjectToDefine {
 
 	private final DeclaredField field;
+	private Registry memberRegistry;
+	private DefinitionsBuilder definitionsBuilder;
 
 	DeclaredObject(DeclaredField field) {
 		super(field);
@@ -39,6 +53,19 @@ class DeclaredObject extends Obj {
 	@Override
 	public boolean isValid() {
 		return this.field.validate();
+	}
+
+	@Override
+	public Registry getMemberRegistry() {
+		if (this.memberRegistry == null) {
+			this.memberRegistry = new Registry();
+		}
+		return this.memberRegistry;
+	}
+
+	@Override
+	public CommandEnv definitionsEnv() {
+		return new DeclarationEnv(this.field);
 	}
 
 	@Override
@@ -74,17 +101,79 @@ class DeclaredObject extends Obj {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		this.field.getMemberRegistry().registerMembers(members);
+		getMemberRegistry().registerMembers(members);
 	}
 
 	@Override
 	protected void updateMembers() {
-		this.field.updateMembers();
+		getDefinitionsBuilder().updateMembers();
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.field.createDefinitions();
+		return getDefinitionsBuilder().buildDefinitions();
+	}
+
+	private DefinitionsBuilder getDefinitionsBuilder() {
+		if (this.definitionsBuilder != null) {
+			return this.definitionsBuilder;
+		}
+
+		final Function<ObjectToDefine, DefinitionsBuilder> definitions =
+				this.field.getDefinitions();
+
+		if (definitions == null) {
+			return this.definitionsBuilder = NO_DEFINITIONS_BUILDER;
+		}
+
+		return this.definitionsBuilder = definitions.apply(this);
+	}
+
+	private final class Registry extends ObjectMemberRegistry {
+
+		Registry() {
+			super(
+					getScope().ownsCompilerContext()
+					? INCLUSIONS : NO_INCLUSIONS);
+		}
+
+		@Override
+		public Obj getOwner() {
+
+			final Obj owner = super.getOwner();
+
+			if (owner != null) {
+				return owner;
+			}
+
+			return setOwner(toObject());
+		}
+
+	}
+
+	private static final class DeclarationEnv extends CommandEnv {
+
+		private final DeclaredField field;
+		private ValueRequest valueRequest;
+
+		DeclarationEnv(DeclaredField field) {
+			this.field = field;
+		}
+
+		@Override
+		public ValueRequest getValueRequest() {
+			if (this.valueRequest != null) {
+				return this.valueRequest;
+			}
+
+			final TypeParameters<?> ancestorParameters =
+					this.field.toObject().type().getParameters();
+
+			return this.valueRequest = new ValueRequest(
+					ancestorParameters,
+					this.field.getContext().getLogger());
+		}
+
 	}
 
 }

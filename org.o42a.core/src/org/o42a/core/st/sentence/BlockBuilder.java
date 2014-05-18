@@ -19,6 +19,9 @@
 */
 package org.o42a.core.st.sentence;
 
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Located;
@@ -45,6 +48,10 @@ public abstract class BlockBuilder extends Located {
 	}
 
 	public abstract void buildBlock(Block block);
+
+	public DefinitionsBuilder definitions(ObjectToDefine object) {
+		return new BlockDefinitionsBuilder(this, object);
+	}
 
 	private static final class EmptyBlock extends BlockBuilder {
 
@@ -80,6 +87,55 @@ public abstract class BlockBuilder extends Located {
 		@Override
 		public String toString() {
 			return "(= " + this.value + ')';
+		}
+
+	}
+
+	private static final class BlockDefinitionsBuilder
+			implements DefinitionsBuilder {
+
+		private final BlockBuilder blockBuilder;
+		private final ObjectToDefine object;
+		private DefinitionsBuilder definitionsBuilder;
+
+		BlockDefinitionsBuilder(
+				BlockBuilder blockBuilder,
+				ObjectToDefine object) {
+			this.blockBuilder = blockBuilder;
+			this.object = object;
+		}
+
+		@Override
+		public void updateMembers() {
+			definitionsBuilder().updateMembers();
+		}
+
+		@Override
+		public Definitions buildDefinitions() {
+			return definitionsBuilder().buildDefinitions();
+		}
+
+		@Override
+		public String toString() {
+			if (this.blockBuilder == null) {
+				return super.toString();
+			}
+			return this.blockBuilder.toString();
+		}
+
+		private DefinitionsBuilder definitionsBuilder() {
+			if (this.definitionsBuilder != null) {
+				return this.definitionsBuilder;
+			}
+
+			final DeclarativeBlock block =
+					this.object.createDefinitionsBlock();
+
+			this.definitionsBuilder =
+					block.definitions(this.object.definitionsEnv());
+			this.blockBuilder.buildBlock(block);
+
+			return this.definitionsBuilder;
 		}
 
 	}

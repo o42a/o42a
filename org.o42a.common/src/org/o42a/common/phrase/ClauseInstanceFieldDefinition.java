@@ -44,7 +44,8 @@ final class ClauseInstanceFieldDefinition extends DefaultFieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		this.constructor.getAscendants().updateAscendants(definer);
-		definer.define(this.constructor.instance().getDefinition());
+		definer.define(
+				this.constructor.instance().getDefinition()::definitions);
 	}
 
 	@Override

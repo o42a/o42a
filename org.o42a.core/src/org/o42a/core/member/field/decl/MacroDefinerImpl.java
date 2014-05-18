@@ -21,11 +21,14 @@ package org.o42a.core.member.field.decl;
 
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
+import java.util.function.Function;
+
 import org.o42a.core.member.field.MacroDefiner;
+import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.ValueType;
 
 
@@ -74,11 +77,12 @@ final class MacroDefinerImpl implements MacroDefiner {
 
 	@Override
 	public void setRef(Ref ref) {
-		getField().addDefinitions(valueBlock(ref));
+		getField().addDefinitions(valueBlock(ref)::definitions);
 	}
 
 	@Override
-	public void define(BlockBuilder definitions) {
+	public void define(
+			Function<ObjectToDefine, DefinitionsBuilder> definitions) {
 		getField().addDefinitions(definitions);
 	}
 

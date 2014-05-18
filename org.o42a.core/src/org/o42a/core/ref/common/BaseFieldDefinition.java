@@ -84,7 +84,7 @@ public abstract class BaseFieldDefinition extends FieldDefinition {
 	}
 
 	protected void refAsValue(ObjectDefiner definer) {
-		definer.define(valueBlock(getRef()));
+		definer.define(valueBlock(getRef())::definitions);
 	}
 
 }
