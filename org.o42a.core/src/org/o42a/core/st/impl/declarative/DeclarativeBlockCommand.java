@@ -52,6 +52,11 @@ public final class DeclarativeBlockCommand
 	}
 
 	@Override
+	public void updateMembers() {
+		getBlock().executeInstructions();
+	}
+
+	@Override
 	public Definitions buildDefinitions() {
 		return getBlockDefinitions().buildDefinitions();
 	}

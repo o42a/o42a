@@ -24,6 +24,7 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.DefinedObject;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.value.Statefulness;
@@ -33,8 +34,6 @@ import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
 class PhraseConstructor extends ObjectConstructor {
@@ -169,13 +168,10 @@ class PhraseConstructor extends ObjectConstructor {
 		}
 
 		@Override
-		protected void buildDefinition(DeclarativeBlock definition) {
-
-			final BlockBuilder definitionBuilder =
+		protected DefinitionsBuilder createDefinitionsBuilder() {
+			return blockDefinitions(
 					this.constructor.phrase.getMainContext()
-					.getInstances()[0].getDefinition();
-
-			definitionBuilder.buildBlock(definition);
+					.getInstances()[0].getDefinition());
 		}
 
 	}

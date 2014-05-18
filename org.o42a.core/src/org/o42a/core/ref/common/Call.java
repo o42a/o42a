@@ -24,6 +24,7 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.DefinedObject;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.value.Statefulness;
@@ -33,7 +34,6 @@ import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
 public class Call extends ObjectConstructor {
@@ -164,14 +164,10 @@ public class Call extends ObjectConstructor {
 		}
 
 		@Override
-		protected void buildDefinition(DeclarativeBlock definition) {
-
-			final BlockBuilder definitions = this.call.getDefinitions();
-
-			if (definitions != null) {
-				definitions.buildBlock(definition);
-			}
+		protected DefinitionsBuilder createDefinitionsBuilder() {
+			return blockDefinitions(this.call.getDefinitions());
 		}
+
 
 	}
 
