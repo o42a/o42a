@@ -21,8 +21,6 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.*;
 import static org.o42a.compiler.ip.clause.ClauseInterpreter.clauseObjectPath;
-import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
-import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
 import static org.o42a.core.member.MemberIdKind.CLAUSE_NAME;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -39,7 +37,6 @@ import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.ref.owner.Owner;
-import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.AccessSource;
@@ -255,14 +252,10 @@ public abstract class RefInterpreter {
 		}
 	}
 
-	private final OwnerFactory ownerFactory;
-	private final RefVisitor refVisitor;
-	private final OwnerVisitor ownerVisitor;
+	private final RefVisitor refVisitor = new RefVisitor(this);
+	private final OwnerVisitor ownerVisitor = new OwnerVisitor(this);
 
-	RefInterpreter(OwnerFactory ownerFactory) {
-		this.ownerFactory = ownerFactory;
-		this.refVisitor = new RefVisitor(this);
-		this.ownerVisitor = new OwnerVisitor(this);
+	RefInterpreter() {
 	}
 
 	public abstract Interpreter ip();
@@ -277,10 +270,6 @@ public abstract class RefInterpreter {
 	}
 
 	public abstract MemberId memberName(Name name);
-
-	public final OwnerFactory ownerFactory() {
-		return this.ownerFactory;
-	}
 
 	/**
 	 * Constructs a reference, which is {@code $object} expression resolved to.
@@ -318,10 +307,6 @@ public abstract class RefInterpreter {
 
 	private static final class PlainRefIp extends RefInterpreter {
 
-		PlainRefIp() {
-			super(DEFAULT_OWNER_FACTORY);
-		}
-
 		@Override
 		public Interpreter ip() {
 			return PLAIN_IP;
@@ -336,10 +321,6 @@ public abstract class RefInterpreter {
 
 	private static final class PathCompilerRefIp extends RefInterpreter {
 
-		PathCompilerRefIp() {
-			super(NON_LINK_OWNER_FACTORY);
-		}
-
 		@Override
 		public Interpreter ip() {
 			return PATH_COMPILER_IP;
@@ -353,10 +334,6 @@ public abstract class RefInterpreter {
 	}
 
 	private static abstract class ClauseRefIp extends RefInterpreter {
-
-		ClauseRefIp(OwnerFactory ownerFactory) {
-			super(ownerFactory);
-		}
 
 		@Override
 		public Ref intrinsicObject(MemberRefNode ref, Distributor p) {
@@ -374,10 +351,6 @@ public abstract class RefInterpreter {
 	}
 
 	private static final class ClauseDefRefIp extends ClauseRefIp {
-
-		ClauseDefRefIp() {
-			super(DEFAULT_OWNER_FACTORY);
-		}
 
 		@Override
 		public Interpreter ip() {
@@ -398,10 +371,6 @@ public abstract class RefInterpreter {
 
 	private static final class ClauseDeclRefIp extends ClauseRefIp {
 
-		ClauseDeclRefIp() {
-			super(NON_LINK_OWNER_FACTORY);
-		}
-
 		@Override
 		public Interpreter ip() {
 			return CLAUSE_DECL_IP;
@@ -415,10 +384,6 @@ public abstract class RefInterpreter {
 	}
 
 	private static final class AdapterFieldRefIp extends RefInterpreter {
-
-		AdapterFieldRefIp() {
-			super(DEFAULT_OWNER_FACTORY);
-		}
 
 		@Override
 		public Interpreter ip() {

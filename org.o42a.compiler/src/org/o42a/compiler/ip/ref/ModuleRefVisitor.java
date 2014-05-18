@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.ref;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PATH_COMPILER_REF_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModuleRef;
-import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
+import static org.o42a.compiler.ip.ref.owner.Owner.owner;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.path.Path.modulePath;
@@ -123,9 +123,7 @@ public class ModuleRefVisitor
 						declaredIn);
 			}
 
-			return NON_LINK_OWNER_FACTORY.owner(
-					p.getAccessRules(),
-					moduleRef(ref, p));
+			return owner(p.getAccessRules(), moduleRef(ref, p));
 		}
 
 		@Override
