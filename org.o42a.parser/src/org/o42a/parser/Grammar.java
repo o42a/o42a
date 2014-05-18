@@ -113,6 +113,10 @@ public class Grammar {
 		return new DerefParser(owner);
 	}
 
+	public static Parser<EagerRefNode> eagerRef(ExpressionNode owner) {
+		return new EagerRefParser(owner);
+	}
+
 	public static Parser<RefNode> ref() {
 		return RefParser.REF;
 	}

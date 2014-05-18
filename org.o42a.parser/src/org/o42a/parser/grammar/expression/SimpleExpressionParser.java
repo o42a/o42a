@@ -28,9 +28,7 @@ import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.GroupNode;
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.ref.AdapterRefNode;
-import org.o42a.ast.ref.DerefNode;
-import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.*;
 import org.o42a.ast.type.TypeArgumentNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.parser.Parser;
@@ -148,6 +146,27 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 					expression = derefMemberRef;
 				} else {
 					expression = deref;
+				}
+
+				next = context.pendingOrNext();
+
+				continue;
+			case '>':
+
+				final EagerRefNode eagerRef =
+						context.parse(eagerRef(expression));
+
+				if (eagerRef == null) {
+					return expression;
+				}
+
+				final MemberRefNode eagerMemberRef =
+						context.parse(memberRef(eagerRef, false));
+
+				if (eagerMemberRef != null) {
+					expression = eagerMemberRef;
+				} else {
+					expression = eagerRef;
 				}
 
 				next = context.pendingOrNext();
