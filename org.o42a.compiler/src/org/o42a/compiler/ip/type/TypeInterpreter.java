@@ -26,9 +26,8 @@ import org.o42a.ast.type.TypeArgNode;
 import org.o42a.ast.type.TypeArgumentsNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
-import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
-import org.o42a.compiler.ip.type.ascendant.AncestorVisitor;
-import org.o42a.compiler.ip.type.ascendant.StaticAncestorVisitor;
+import org.o42a.compiler.ip.type.ancestor.AncestorTypeRef;
+import org.o42a.compiler.ip.type.ancestor.AncestorVisitor;
 import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.log.LogInfo;
@@ -49,17 +48,10 @@ public final class TypeInterpreter {
 	private final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			AccessDistributor> ancestorVisitor;
-	private final ExpressionNodeVisitor<
-			AncestorTypeRef,
-			AccessDistributor> staticAncestorVisitor;
 
 	public TypeInterpreter(Interpreter ip) {
 		this.ip = ip;
 		this.ancestorVisitor = new AncestorVisitor(
-				ip,
-				null,
-				NO_TYPE_CONSUMER);
-		this.staticAncestorVisitor = new StaticAncestorVisitor(
 				ip,
 				null,
 				NO_TYPE_CONSUMER);
@@ -93,20 +85,6 @@ public final class TypeInterpreter {
 			return this.ancestorVisitor;
 		}
 		return new AncestorVisitor(
-				ip(),
-				typeParameters,
-				typeConsumer);
-	}
-
-	public final ExpressionNodeVisitor<AncestorTypeRef, AccessDistributor>
-	staticAncestorVisitor(
-			TypeRefParameters typeParameters,
-			TypeConsumer typeConsumer) {
-		if (typeParameters == null
-				&& typeConsumer == NO_TYPE_CONSUMER) {
-			return this.staticAncestorVisitor;
-		}
-		return new StaticAncestorVisitor(
 				ip(),
 				typeParameters,
 				typeConsumer);
