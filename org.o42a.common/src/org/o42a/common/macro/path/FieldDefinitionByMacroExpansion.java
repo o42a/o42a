@@ -91,7 +91,7 @@ final class FieldDefinitionByMacroExpansion extends FieldDefinition {
 	}
 
 	private void define(FieldDefiner definer) {
-		definer.define(valueBlock(this.expansion));
+		definer.define(valueBlock(this.expansion)::definitions);
 	}
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.object.def;
 
-import java.util.function.Function;
+import org.o42a.core.*;
+import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.sentence.DeclarativeBlock;
 
-import org.o42a.core.object.def.DefinitionsBuilder;
-import org.o42a.core.object.def.ObjectToDefine;
 
+public interface ObjectToDefine extends ScopeInfo {
 
-public interface FieldDefiner {
+	MemberRegistry getMemberRegistry();
 
-	Field getField();
+	CommandEnv definitionsEnv();
 
-	void makeStateful();
+	default DeclarativeBlock createDefinitionsBlock() {
 
-	void define(Function<ObjectToDefine, DefinitionsBuilder> definitions);
+		final Scope scope = getScope();
+		final Container container;
+
+		if (scope.ownsCompilerContext()) {
+			container = new Namespace(scope, scope.getContainer());
+		} else {
+			container = scope.getContainer();
+		}
+
+		return new DeclarativeBlock(
+				container,
+				container,
+				getMemberRegistry());
+	}
 
 }

@@ -19,37 +19,22 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.core.member.Inclusions.INCLUSIONS;
-import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
+import java.util.function.Function;
 
-import org.o42a.core.Container;
-import org.o42a.core.Namespace;
-import org.o42a.core.Scope;
-import org.o42a.core.member.Inclusions;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.common.ObjectMemberRegistry;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.DefinitionsBuilder;
+import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
-import org.o42a.core.st.CommandEnv;
-import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueRequest;
 
 
 public final class DeclaredField extends Field implements FieldAscendants {
 
 	private final FieldDefinition definition;
 	private Ascendants ascendants;
-	private Registry memberRegistry;
-	private DeclarativeBlock content;
-	private DefinitionsBuilder definitionsBuilder;
-	private BlockBuilder definitions;
+	private Function<ObjectToDefine, DefinitionsBuilder> definitions;
 	private boolean stateful;
 	private boolean invalid;
 
@@ -81,22 +66,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return this.ascendants = buildAscendants(ascendants);
 	}
 
-	public final boolean ownsCompilerContext() {
-
-		final Scope enclosingScope = getEnclosingScope();
-		final Member enclosingMember = enclosingScope.toMember();
-
-		if (enclosingMember == null) {
-			return enclosingScope.getContext() != getContext();
-		}
-
-		return enclosingMember.getContext() != getContext();
-	}
-
-	public final Inclusions fieldInclusions() {
-		return ownsCompilerContext() ? INCLUSIONS : NO_INCLUSIONS;
-	}
-
 	@Override
 	protected Obj createObject() {
 		if (!getKey().isValid()) {
@@ -116,25 +85,15 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return definition.isValid();
 	}
 
-	final ObjectMemberRegistry getMemberRegistry() {
-		if (this.memberRegistry == null) {
-			this.memberRegistry = new Registry();
-		}
-		return this.memberRegistry;
+	final Function<ObjectToDefine, DefinitionsBuilder> getDefinitions() {
+		return this.definitions;
 	}
 
-	final void addDefinitions(BlockBuilder definitions) {
+	final void addDefinitions(
+			Function<ObjectToDefine, DefinitionsBuilder> definitions) {
 		assert this.definitions == null :
 			"Field already defined";
 		this.definitions = definitions;
-	}
-
-	final Definitions createDefinitions() {
-		return getDefinitionsBuilder().buildDefinitions();
-	}
-
-	final void updateMembers() {
-		definedContent().executeInstructions();
 	}
 
 	final void makeStateful() {
@@ -150,49 +109,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 			return false;
 		}
 		return !this.invalid;
-	}
-
-	final DeclarativeBlock definedContent() {
-
-		final DeclarativeBlock content = getContent();
-		final BlockBuilder definitions = this.definitions;
-
-		if (definitions != null) {
-			this.definitions = null;
-			definitions.buildBlock(content);
-		}
-
-		return content;
-	}
-
-	private DeclarativeBlock getContent() {
-		if (this.content != null) {
-			return this.content;
-		}
-
-		final Container container;
-
-		if (ownsCompilerContext()) {
-			container = new Namespace(getDefinition(), getContainer());
-		} else {
-			container = getContainer();
-		}
-
-		this.content = new DeclarativeBlock(
-				container,
-				container,
-				getMemberRegistry());
-		this.definitionsBuilder =
-				this.content.definitions(new DeclarationEnv(this));
-
-		return this.content;
-	}
-
-	private DefinitionsBuilder getDefinitionsBuilder() {
-		if (this.definitionsBuilder == null) {
-			definedContent();
-		}
-		return this.definitionsBuilder;
 	}
 
 	private Ascendants buildAscendants(Ascendants implicitAscendants) {
@@ -231,50 +147,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		}
 
 		return definer.getAscendants();
-	}
-
-	private final class Registry extends ObjectMemberRegistry {
-
-		Registry() {
-			super(fieldInclusions());
-		}
-
-		@Override
-		public Obj getOwner() {
-
-			final Obj owner = super.getOwner();
-
-			if (owner != null) {
-				return owner;
-			}
-			return setOwner(toObject());
-		}
-
-	}
-
-	private static final class DeclarationEnv extends CommandEnv {
-
-		private final DeclaredField field;
-		private ValueRequest valueRequest;
-
-		DeclarationEnv(DeclaredField field) {
-			this.field = field;
-		}
-
-		@Override
-		public ValueRequest getValueRequest() {
-			if (this.valueRequest != null) {
-				return this.valueRequest;
-			}
-
-			final TypeParameters<?> ancestorParameters =
-					this.field.toObject().type().getParameters();
-
-			return this.valueRequest = new ValueRequest(
-					ancestorParameters,
-					this.field.getContext().getLogger());
-		}
-
 	}
 
 }

@@ -102,6 +102,21 @@ public interface Scope extends ContainerInfo {
 
 	boolean derivedFrom(Scope other);
 
+	default boolean ownsCompilerContext() {
+		if (toMember() == null) {
+			return false;
+		}
+
+		final Scope enclosingScope = getEnclosingScope();
+		final Member enclosingMember = enclosingScope.toMember();
+
+		if (enclosingMember == null) {
+			return enclosingScope.getContext() != getContext();
+		}
+
+		return enclosingMember.getContext() != getContext();
+	}
+
 	default PrefixPath pathTo(Scope targetScope) {
 		return AbstractScope.pathTo(this, targetScope);
 	}
