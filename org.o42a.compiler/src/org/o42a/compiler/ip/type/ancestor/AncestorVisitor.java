@@ -102,20 +102,14 @@ public class AncestorVisitor
 			return null;
 		}
 
-		final Ref result = owner.targetRef();
+		final Ref result = owner.ref();
 
 		if (owner.isMacroExpanding()) {
 			return macroAncestorTypeRef(
 					paramTypeRef(removeMacroRequirement(result)));
 		}
 
-		final ParamTypeRef typeRef = paramTypeRef(result);
-
-		if (owner.isBodyReferred()) {
-			return ancestorTypeRef(typeRef);
-		}
-
-		return ancestorTypeRef(typeRef);
+		return ancestorTypeRef(paramTypeRef(result));
 	}
 
 	@Override

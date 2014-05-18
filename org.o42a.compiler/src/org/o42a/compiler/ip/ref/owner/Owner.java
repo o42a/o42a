@@ -33,13 +33,6 @@ import org.o42a.util.log.LogInfo;
 
 public abstract class Owner {
 
-	static void redundantBodyRef(CompilerLogger logger, LogInfo location) {
-		logger.error(
-				"redundant_body_ref",
-				location,
-				"Redundant link body reference");
-	}
-
 	private final AccessRules accessRules;
 	private final Ref ownerRef;
 
@@ -64,9 +57,7 @@ public abstract class Owner {
 		return false;
 	}
 
-	public abstract boolean isBodyReferred();
-
-	public abstract Ref targetRef();
+	public abstract Ref ref();
 
 	public abstract Owner deref(LocationInfo location, LocationInfo deref);
 
@@ -110,7 +101,7 @@ public abstract class Owner {
 	}
 
 	protected Ref memberOwnerRef() {
-		return targetRef();
+		return ref();
 	}
 
 	protected Owner memberOwner(Ref ref) {

@@ -100,12 +100,12 @@ final class TypeParameterDefinitionVisitor
 
 		if (!ref.isMacroExpanding()) {
 			return typeRef(this.consumer.consumeType(
-					ref.targetRef(),
+					ref.ref(),
 					this.typeParameters));
 		}
 
 		return typeRef(this.consumer.consumeType(
-				expandMacro(ref.targetRef()),
+				expandMacro(ref.ref()),
 				this.typeParameters));
 	}
 

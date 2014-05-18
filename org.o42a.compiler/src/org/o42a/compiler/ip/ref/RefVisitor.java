@@ -26,11 +26,11 @@ import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.ref.Ref;
 
 
-final class TargetRefVisitor implements RefNodeVisitor<Ref, AccessDistributor> {
+final class RefVisitor implements RefNodeVisitor<Ref, AccessDistributor> {
 
 	private final RefInterpreter interpreter;
 
-	TargetRefVisitor(RefInterpreter interpreter) {
+	RefVisitor(RefInterpreter interpreter) {
 		this.interpreter = interpreter;
 	}
 
@@ -39,7 +39,7 @@ final class TargetRefVisitor implements RefNodeVisitor<Ref, AccessDistributor> {
 
 		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
 
-		return result != null ? result.targetRef() : null;
+		return result != null ? result.ref() : null;
 	}
 
 }

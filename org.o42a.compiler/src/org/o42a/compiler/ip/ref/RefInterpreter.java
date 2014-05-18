@@ -256,12 +256,12 @@ public abstract class RefInterpreter {
 	}
 
 	private final OwnerFactory ownerFactory;
-	private final TargetRefVisitor refVisitor;
+	private final RefVisitor refVisitor;
 	private final OwnerVisitor ownerVisitor;
 
 	RefInterpreter(OwnerFactory ownerFactory) {
 		this.ownerFactory = ownerFactory;
-		this.refVisitor = new TargetRefVisitor(this);
+		this.refVisitor = new RefVisitor(this);
 		this.ownerVisitor = new OwnerVisitor(this);
 	}
 
