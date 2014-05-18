@@ -33,6 +33,10 @@ import org.o42a.util.log.LogInfo;
 
 public abstract class Owner {
 
+	public static Owner owner(AccessRules accessRules, Ref ownerRef) {
+		return new DefaultOwner(accessRules, ownerRef);
+	}
+
 	private final AccessRules accessRules;
 	private final Ref ownerRef;
 
@@ -78,10 +82,6 @@ public abstract class Owner {
 
 	public final Owner expandMacro(LogInfo expansion) {
 		return new MacroExpandingOwner(this, expansion);
-	}
-
-	public final Owner plainOwner() {
-		return new NonLinkOwner(getAccessRules(), ownerRef());
 	}
 
 	public final CompilerLogger getLogger() {

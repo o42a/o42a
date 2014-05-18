@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.OwnerVisitor.MACROS_PATH;
+import static org.o42a.compiler.ip.ref.owner.Owner.owner;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
@@ -44,8 +45,7 @@ final class MemberOwnerVisitor
 	public Owner visitScopeRef(ScopeRefNode ref, AccessDistributor p) {
 		if (ref.getType() == ScopeType.MACROS) {
 			this.macroExpansion = ref;
-			return this.visitor
-					.owner(
+			return owner(
 							p.getAccessRules(),
 							MACROS_PATH.bind(location(p, ref), p.getScope())
 					.target(p));
