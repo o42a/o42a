@@ -38,18 +38,13 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
-	public final boolean isBodyReferred() {
-		return true;
-	}
-
-	@Override
 	public boolean isMacroExpanding() {
 		return true;
 	}
 
 	@Override
-	public Ref targetRef() {
-		return requireMacro(this.owner.targetRef(), this.expansion);
+	public Ref ref() {
+		return requireMacro(this.owner.ref(), this.expansion);
 	}
 
 	@Override

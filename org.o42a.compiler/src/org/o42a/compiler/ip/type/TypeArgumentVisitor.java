@@ -243,12 +243,12 @@ final class TypeArgumentVisitor implements TypeArgumentNodeVisitor<
 
 		if (!owner.isMacroExpanding()) {
 			return consumer.consumeType(
-					owner.targetRef(),
+					owner.ref(),
 					this.typeParameters);
 		}
 
 		return consumer.consumeType(
-					expandMacro(owner.targetRef()),
+					expandMacro(owner.ref()),
 					this.typeParameters);
 	}
 

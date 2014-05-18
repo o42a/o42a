@@ -200,7 +200,7 @@ public final class ExpressionVisitor
 			return null;
 		}
 
-		final Ref result = owner.targetRef();
+		final Ref result = owner.ref();
 
 		if (!owner.isMacroExpanding()) {
 			return result;

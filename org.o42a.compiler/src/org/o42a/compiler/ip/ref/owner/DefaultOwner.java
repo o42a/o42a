@@ -31,18 +31,13 @@ final class DefaultOwner extends Owner {
 	}
 
 	@Override
-	public final boolean isBodyReferred() {
-		return false;
-	}
-
-	@Override
-	public Ref targetRef() {
+	public Ref ref() {
 		return ownerRef();
 	}
 
 	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
-		return new DerefOwner(location, deref, getAccessRules(), targetRef());
+		return new DerefOwner(location, deref, getAccessRules(), ref());
 	}
 
 }

@@ -31,12 +31,7 @@ class NonLinkOwner extends Owner {
 	}
 
 	@Override
-	public final boolean isBodyReferred() {
-		return true;
-	}
-
-	@Override
-	public Ref targetRef() {
+	public Ref ref() {
 		return ownerRef();
 	}
 
