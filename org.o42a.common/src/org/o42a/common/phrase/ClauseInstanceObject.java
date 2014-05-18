@@ -20,10 +20,10 @@
 package org.o42a.common.phrase;
 
 import org.o42a.core.object.common.DefinedObject;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.value.Statefulness;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
 final class ClauseInstanceObject extends DefinedObject {
@@ -63,8 +63,8 @@ final class ClauseInstanceObject extends DefinedObject {
 	}
 
 	@Override
-	protected void buildDefinition(DeclarativeBlock definition) {
-		this.constructor.instance().getDefinition().buildBlock(definition);
+	protected DefinitionsBuilder createDefinitionsBuilder() {
+		return blockDefinitions(this.constructor.instance().getDefinition());
 	}
 
 }
