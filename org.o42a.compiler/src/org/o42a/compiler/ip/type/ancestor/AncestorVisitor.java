@@ -17,13 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.ascendant;
+package org.o42a.compiler.ip.type.ancestor;
 
 import static org.o42a.common.macro.Macros.removeMacroRequirement;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.ancestorTypeRef;
-import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.impliedAncestorTypeRef;
-import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.macroAncestorTypeRef;
+import static org.o42a.compiler.ip.type.ancestor.AncestorTypeRef.ancestorTypeRef;
+import static org.o42a.compiler.ip.type.ancestor.AncestorTypeRef.impliedAncestorTypeRef;
+import static org.o42a.compiler.ip.type.ancestor.AncestorTypeRef.macroAncestorTypeRef;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;

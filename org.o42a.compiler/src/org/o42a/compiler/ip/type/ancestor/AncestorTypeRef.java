@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type.ascendant;
+package org.o42a.compiler.ip.type.ancestor;
 
 import org.o42a.common.phrase.Phrase;
 import org.o42a.compiler.ip.type.ParamTypeRef;
