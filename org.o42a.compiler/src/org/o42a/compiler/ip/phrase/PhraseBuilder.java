@@ -44,7 +44,7 @@ import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
+import org.o42a.compiler.ip.type.ancestor.AncestorTypeRef;
 import org.o42a.core.Contained;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
