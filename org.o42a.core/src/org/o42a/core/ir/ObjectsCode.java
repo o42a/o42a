@@ -22,17 +22,16 @@ package org.o42a.core.ir;
 import static org.o42a.core.ir.object.op.CtrOp.ALLOCATABLE_CTR;
 import static org.o42a.core.ir.object.op.CtrOp.CTR_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Allocated;
 import org.o42a.codegen.code.Block;
-import org.o42a.core.ir.object.ObjectIRDataOp;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -84,9 +83,27 @@ public final class ObjectsCode {
 			Obj sample) {
 
 		final Block code = dirs.code();
+		final CtrOp ctr = allocateCtr(dirs);
+
+		if (ancestor != null
+				&& sample.value().getStatefulness().isEager()) {
+
+			final ValOp value = ctr.value(code).op(
+					dirs.getAllocator(),
+					getBuilder(),
+					sample.type().getValueType(),
+					TEMP_VAL_HOLDER);
+			final ValDirs eagerDirs = dirs.value(value);
+			final ValOp result = ancestor.value().writeValue(eagerDirs);
+
+			value.store(code, result);
+
+			eagerDirs.done();
+		}
 
 		return newObject(
 				dirs,
+				ctr,
 				host,
 				holder,
 				owner,
@@ -102,24 +119,60 @@ public final class ObjectsCode {
 			ObjectIRDataOp ancestorData,
 			Obj sample) {
 
-		final Block code = dirs.code();
-		final Allocated<CtrOp.Op> ctr = code.allocate(CTR_ID, ALLOCATABLE_CTR);
-		final ObjectOp newObject = new CtrOp(getBuilder(), ctr).newObject(
+		final CtrOp ctr = allocateCtr(dirs);
+
+		if (ancestorData != null
+				&& sample.value().getStatefulness().isEager()) {
+
+			final ValOp value = ctr.value(dirs.code()).op(
+					dirs.getAllocator(),
+					getBuilder(),
+					sample.type().getValueType(),
+					TEMP_VAL_HOLDER);
+			final DefDirs eagerDirs = dirs.value(value).def();
+
+			ancestorData.op(getBuilder(), ObjectPrecision.DERIVED)
+			.writeValue(eagerDirs);
+
+			eagerDirs.done();
+		}
+
+		return newObject(dirs, ctr, host, holder, owner, ancestorData, sample);
+	}
+
+	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
+		return objectAncestor(dirs, host(), object);
+	}
+
+	private CtrOp allocateCtr(CodeDirs dirs) {
+		return new CtrOp(
+				getBuilder(),
+				dirs.code().allocate(CTR_ID, ALLOCATABLE_CTR));
+	}
+
+	private ObjectOp newObject(
+			CodeDirs dirs,
+			CtrOp ctr,
+			HostOp host,
+			ObjHolder holder,
+			ObjectOp owner,
+			ObjectIRDataOp ancestorData,
+			Obj sample) {
+
+		final ObjOp samplePtr =
+				sample.ir(getGenerator()).op(getBuilder(), dirs.code());
+		final ObjectOp newObject = ctr.newObject(
 				dirs,
 				holder,
 				owner,
 				ancestorData,
-				sample.ir(getGenerator()).op(getBuilder(), code));
+				samplePtr);
 
 		if (host != null) {
 			newObject.fillDeps(dirs, host, sample);
 		}
 
 		return newObject;
-	}
-
-	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
-		return objectAncestor(dirs, host(), object);
 	}
 
 }

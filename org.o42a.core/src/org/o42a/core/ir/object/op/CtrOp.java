@@ -66,6 +66,10 @@ public class CtrOp extends IROp {
 		return this.ptr.get(code);
 	}
 
+	public final ValType.Op value(Code code) {
+		return ptr(code).value(code);
+	}
+
 	public ObjectOp newObject(
 			CodeDirs dirs,
 			ObjHolder holder,
