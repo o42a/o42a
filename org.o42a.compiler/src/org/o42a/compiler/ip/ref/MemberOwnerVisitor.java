@@ -69,6 +69,11 @@ final class MemberOwnerVisitor
 	}
 
 	@Override
+	public Owner visitEagerRef(EagerRefNode ref, AccessDistributor p) {
+		return this.visitor.eagerRef(ref, p, this);
+	}
+
+	@Override
 	public Owner visitExpression(
 			ExpressionNode expression,
 			AccessDistributor p) {
