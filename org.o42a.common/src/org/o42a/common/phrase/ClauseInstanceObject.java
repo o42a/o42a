@@ -19,7 +19,6 @@
 */
 package org.o42a.common.phrase;
 
-import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.object.common.DefinedObject;
 import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.meta.Nesting;
@@ -59,13 +58,9 @@ final class ClauseInstanceObject extends DefinedObject {
 
 	@Override
 	protected Statefulness determineStatefulness() {
-
-		final AscendantsDefinition ascendants =
-				this.constructor.getAscendants();
-
 		return super.determineStatefulness()
-				.setStateful(ascendants.isStateful())
-				.setEager(ascendants.isEager());
+				.setStateful(this.constructor.isStateful())
+				.setEager(this.constructor.isEager());
 	}
 
 	@Override
