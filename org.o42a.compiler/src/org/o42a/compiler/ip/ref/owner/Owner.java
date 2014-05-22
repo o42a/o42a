@@ -65,6 +65,10 @@ public abstract class Owner {
 
 	public abstract Owner deref(LocationInfo location, LocationInfo deref);
 
+	public abstract Owner eagerRef(
+			LocationInfo location,
+			LocationInfo eagerRef);
+
 	public final Owner member(
 			LocationInfo location,
 			MemberId memberId,
