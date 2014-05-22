@@ -87,6 +87,10 @@ public abstract class ObjectConstructor
 		return this.stateful;
 	}
 
+	public boolean isEager() {
+		return false;
+	}
+
 	public final Obj getConstructed() {
 		if (this.constructed != null) {
 			return this.constructed;

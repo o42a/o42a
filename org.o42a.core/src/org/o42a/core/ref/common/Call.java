@@ -161,8 +161,12 @@ public class Call extends ObjectConstructor {
 
 		@Override
 		protected Statefulness determineStatefulness() {
+
+			final AscendantsDefinition ascendants = this.call.getAscendants();
+
 			return super.determineStatefulness()
-					.setStateful(this.call.getAscendants().isStateful());
+					.setStateful(ascendants.isStateful())
+					.setEager(ascendants.isEager());
 		}
 
 		@Override

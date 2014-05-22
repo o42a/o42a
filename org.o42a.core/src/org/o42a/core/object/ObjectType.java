@@ -22,6 +22,7 @@ package org.o42a.core.object;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.object.impl.ObjectResolution.NOT_RESOLVED;
+import static org.o42a.core.object.value.Statefulness.STATELESS;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.*;
@@ -314,7 +315,7 @@ public final class ObjectType {
 			}
 		}
 
-		return Statefulness.STATELESS;
+		return STATELESS;
 	}
 
 	void registerDerivative(Derivative derivative) {
