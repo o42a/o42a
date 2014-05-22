@@ -39,6 +39,15 @@ public enum Statefulness {
 	STATELESS,
 
 	/**
+	 * Eagerly evaluated value.
+	 *
+	 * <p>This means that the value is evaluated before object construction.
+	 * The value definition function is never executed at run time in this case.
+	 * </p>
+	 */
+	EAGER,
+
+	/**
 	 * Stateful value.
 	 *
 	 * <p>This means that object value is evaluated at most once, and then
@@ -62,7 +71,12 @@ public enum Statefulness {
 	 * value type with this kind of statefulness is
 	 * {@link LinkValueType#VARIABLE}.</p>
 	 */
-	VARIABLE;
+	VARIABLE,
+
+	/**
+	 * Eagerly evaluated variable value.
+	 */
+	EAGER_VARIABLE;
 
 	/**
 	 * Object value is stateless.
@@ -74,12 +88,22 @@ public enum Statefulness {
 	}
 
 	/**
+	 * Object value is eagerly evaluated.
+	 *
+	 * @return <code>true</code> for {@link #EAGER} and {@link #EAGER_VARIABLE}.
+	 */
+	public final boolean isEager() {
+		return this == EAGER || this == EAGER_VARIABLE;
+	}
+
+	/**
 	 * Object value is stateful.
 	 *
-	 * @return <code>true</code> for {@link #STATEFUL} and {@link #VARIABLE}.
+	 * @return <code>true</code> for {@link #STATEFUL}, {@link #VARIABLE}, and
+	 * {@link #EAGER_VARIABLE}.
 	 */
 	public final boolean isStateful() {
-		return this != STATELESS;
+		return this == STATEFUL || this == VARIABLE || this == EAGER_VARIABLE;
 	}
 
 	/**
@@ -98,11 +122,31 @@ public enum Statefulness {
 		return makeStateful();
 	}
 
+	public final Statefulness setEager(boolean eager) {
+		if (!eager) {
+			return this;
+		}
+		return makeEager();
+	}
+
 	public final Statefulness makeStateful() {
 		if (isStateful()) {
 			return this;
 		}
 		return STATEFUL;
+	}
+
+	public final Statefulness makeEager() {
+		if (isEager()) {
+			return this;
+		}
+		if (isVariable()) {
+			return EAGER_VARIABLE;
+		}
+		if (isStateful()) {
+			return this;
+		}
+		return EAGER;
 	}
 
 }
