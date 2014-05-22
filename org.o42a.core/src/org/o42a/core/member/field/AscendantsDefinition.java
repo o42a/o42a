@@ -82,7 +82,6 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		}
 
 		return objectDefinition();
-
 	}
 
 	public final TypeRef getAncestor() {

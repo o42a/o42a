@@ -163,13 +163,9 @@ class PhraseConstructor extends ObjectConstructor {
 
 		@Override
 		protected Statefulness determineStatefulness() {
-
-			final AscendantsDefinition ascendants =
-					this.constructor.ascendants;
-
 			return super.determineStatefulness()
-					.setStateful(ascendants.isStateful())
-					.setEager(ascendants.isEager());
+					.setStateful(this.constructor.isStateful())
+					.setEager(this.constructor.isEager());
 		}
 
 		@Override

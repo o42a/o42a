@@ -57,6 +57,11 @@ public class Call extends ObjectConstructor {
 		return this.ascendants;
 	}
 
+	@Override
+	public boolean isEager() {
+		return this.ascendants.isEager();
+	}
+
 	public final Function<ObjectToDefine, DefinitionsBuilder> getDefinitions() {
 		return this.definitions;
 	}
@@ -161,12 +166,9 @@ public class Call extends ObjectConstructor {
 
 		@Override
 		protected Statefulness determineStatefulness() {
-
-			final AscendantsDefinition ascendants = this.call.getAscendants();
-
 			return super.determineStatefulness()
-					.setStateful(ascendants.isStateful())
-					.setEager(ascendants.isEager());
+					.setStateful(this.call.isStateful())
+					.setEager(this.call.isEager());
 		}
 
 		@Override
