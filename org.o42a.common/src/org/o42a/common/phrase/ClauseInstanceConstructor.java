@@ -58,6 +58,11 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 		this.ascendants = ascendants;
 	}
 
+	@Override
+	public boolean isEager() {
+		return getAscendants().isEager();
+	}
+
 	public final ClauseInstance instance() {
 		return this.instance;
 	}

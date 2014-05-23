@@ -119,6 +119,11 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
+		public void makeEager() {
+			this.definer.makeEager();
+		}
+
+		@Override
 		public ObjectDefiner setAncestor(TypeRef ancestor) {
 			this.definer.setAncestor(ancestor.prefixWith(getPrefix()));
 			return this;
@@ -178,6 +183,11 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		@Override
 		public void makeStateful() {
 			this.definer.makeStateful();
+		}
+
+		@Override
+		public void makeEager() {
+			this.definer.makeEager();
 		}
 
 		@Override

@@ -188,6 +188,14 @@ final class OwnerVisitor
 	}
 
 	@Override
+	public Owner visitEagerRef(EagerRefNode ref, AccessDistributor p) {
+
+		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
+
+		return ownerVisitor.expandMacro(eagerRef(ref, p,ownerVisitor));
+	}
+
+	@Override
 	public Owner visitRef(RefNode ref, AccessDistributor p) {
 		p.getContext().getLogger().invalidReference(ref);
 		return owner(p.getAccessRules(), errorRef(location(p, ref), p));
@@ -325,6 +333,20 @@ final class OwnerVisitor
 		}
 
 		return result.deref(location(p, ref), location(p, ref.getSuffix()));
+	}
+
+	Owner eagerRef(
+			EagerRefNode ref,
+			AccessDistributor p,
+			MemberOwnerVisitor ownerVisitor) {
+
+		final Owner result = ref.getOwner().accept(ownerVisitor, p);
+
+		if (result == null) {
+			return null;
+		}
+
+		return result.eagerRef(location(p, ref), location(p, ref.getSuffix()));
 	}
 
 	private Owner localRef(MemberRefNode ref, AccessDistributor p) {

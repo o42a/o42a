@@ -932,9 +932,14 @@ static o42a_obj_data_t *propagate_object(
 	data->value_f = adata->value_f;
 	data->cond_f = adata->cond_f;
 	data->defs_f = adata->defs_f;
-	if ((sdata->value.flags & O42A_VAL_STATELESS)
+	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
+		data->value = ctr->value;
+		data->value.flags |= O42A_VAL_EAGER;
+	} else if ((sdata->value.flags & O42A_VAL_STATELESS)
 			&& (adata->value.flags & O42A_VAL_STATELESS)) {
 		data->value.flags = O42A_VAL_STATELESS;
+	} else if (adata->value.flags & O42A_VAL_EAGER) {
+		data->value = adata->value;
 	} else {
 		data->value.flags = O42A_VAL_INDEFINITE;
 	}
@@ -1233,9 +1238,20 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->cond_f = sdata->cond_f;
 	data->defs_f =
 			(sflags & O42A_OBJ_ANCESTOR_DEF) ? adata->defs_f : sdata->defs_f;
-	if ((sdata->value.flags & O42A_VAL_STATELESS)
+	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
+		data->value = ctr->value;
+		data->value.flags |= O42A_VAL_EAGER;
+	} else if ((sdata->value.flags & O42A_VAL_STATELESS)
 			&& (adata->value.flags & O42A_VAL_STATELESS)) {
 		data->value.flags = O42A_VAL_STATELESS;
+	} else if (sflags & O42A_OBJ_ANCESTOR_DEF) {
+		if (adata->value.flags & O42A_VAL_EAGER) {
+			data->value = adata->value;
+		} else {
+			data->value.flags = O42A_VAL_INDEFINITE;
+		}
+	} else if (sdata->value.flags & O42A_VAL_EAGER) {
+		data->value = sdata->value;
 	} else {
 		data->value.flags = O42A_VAL_INDEFINITE;
 	}

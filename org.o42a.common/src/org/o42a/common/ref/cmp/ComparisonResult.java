@@ -127,7 +127,8 @@ final class ComparisonResult extends BuiltinObject {
 	@Override
 	protected Statefulness determineStatefulness() {
 		return super.determineStatefulness()
-				.setStateful(this.comparison.isStateful());
+				.setStateful(this.comparison.isStateful())
+				.setEager(this.comparison.isEager());
 	}
 
 	@Override

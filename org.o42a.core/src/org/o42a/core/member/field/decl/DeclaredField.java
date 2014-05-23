@@ -36,6 +36,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private Ascendants ascendants;
 	private Function<ObjectToDefine, DefinitionsBuilder> definitions;
 	private boolean stateful;
+	private boolean eager;
 	private boolean invalid;
 
 	DeclaredField(DeclaredMemberField member, FieldDefinition definition) {
@@ -53,6 +54,10 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	public final boolean isStateful() {
 		return this.stateful;
+	}
+
+	public final boolean isEager() {
+		return this.eager;
 	}
 
 	@Override
@@ -98,6 +103,10 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	final void makeStateful() {
 		this.stateful = true;
+	}
+
+	final void makeEager() {
+		this.eager = true;
 	}
 
 	final void invalid() {
