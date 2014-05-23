@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.op.CtrOp.ALLOCATABLE_CTR;
 import static org.o42a.core.ir.object.op.CtrOp.CTR_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.ir.value.ValOp.finalVal;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
@@ -89,11 +88,9 @@ public final class ObjectsCode {
 		if (ancestor != null
 				&& sample.value().getStatefulness().isEager()) {
 
-			final ValOp value = finalVal(
+			final ValOp value = ctr.value(
 					"eager",
 					dirs.getAllocator(),
-					getBuilder(),
-					ctr::value,
 					sample.type().getValueType(),
 					TEMP_VAL_HOLDER);
 			final ValDirs eagerDirs = dirs.nested().value(value);
@@ -127,11 +124,9 @@ public final class ObjectsCode {
 		if (ancestorData != null
 				&& sample.value().getStatefulness().isEager()) {
 
-			final ValOp value = finalVal(
+			final ValOp value = ctr.value(
 					"eager",
 					dirs.getAllocator(),
-					getBuilder(),
-					ctr::value,
 					sample.type().getValueType(),
 					TEMP_VAL_HOLDER);
 			final DefDirs eagerDirs = dirs.nested().value(value).def();

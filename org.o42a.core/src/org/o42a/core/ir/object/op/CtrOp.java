@@ -26,6 +26,7 @@ import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
+import static org.o42a.core.ir.value.ValOp.finalVal;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
@@ -42,7 +43,10 @@ import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.value.ValHolderFactory;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -66,8 +70,18 @@ public class CtrOp extends IROp {
 		return this.ptr.get(code);
 	}
 
-	public final ValType.Op value(Code code) {
-		return ptr(code).value(code);
+	public final ValOp value(
+			String name,
+			Allocator allocator,
+			ValueType<?> valueType,
+			ValHolderFactory holderFactory) {
+		return finalVal(
+				name,
+				allocator,
+				getBuilder(),
+				code -> ptr(code).value(code),
+				valueType,
+				holderFactory);
 	}
 
 	public ObjectOp newObject(
