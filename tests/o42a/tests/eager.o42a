@@ -1,0 +1,68 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Any copyright is dedicated to the Public Domain.
+http://creativecommons.org/publicdomain/zero/1.0/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use namespace 'Console'
+Use namespace 'Test'
+
+Eager ::= test
+==============
+
+Name = "Eager"
+
+Print error [name] nl
+Run tests
+
+Eager constant ::= test (
+  Name = "Eager constant"
+  Print error '  ' [name] nl
+  
+  Eager := 1>>
+  Assert [eager == 1] 'Wrong initial constant eager value'
+  Assert [eager == 1] 'Wrong subsequent constant eager value'
+)
+
+Eager variable target ::= test (
+  Name = "Eager variable target"
+  Print error '  ' [name] nl
+  
+  Var := ``1
+  Eager := var->>>
+  {
+    Assert [eager == 1] 'Wrong initial eager variable value'
+    Var = 2
+    Assert [eager == 1] 'Eager variable value updated'
+  }
+)
+
+Eager string ::= test (
+  Name = "Eager string"
+  Print error '  ' [name] nl
+  
+  Eager := rt-string 'Eager'>>
+  Assert [eager == "Eager"] 'Wrong eager string'
+)
+
+Eager link ::= test (
+  Name = "Eager link"
+  Print error '  ' [name] nl
+  
+  Lnk := `rt-string 'Eager'
+  Eager := Lnk>>
+  Assert [eager == "Eager"] 'Wrong eager link target'
+)
+
+Eager yield ::= test (
+  Name = "Eager yield"
+  Print error '  ' [name] nl
+
+  A := integer (
+    << 1
+    << 2
+  )
+  
+  A>> $ eager (
+    Assert [eager == 1] 'Wrong value yielded'
+    Assert [eager == 1] 'Value yielded again'
+  )
+)
