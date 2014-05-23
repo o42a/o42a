@@ -20,9 +20,8 @@
 package org.o42a.compiler.ip.ref.owner;
 
 import org.o42a.compiler.ip.access.AccessRules;
-import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.Call;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -48,20 +47,10 @@ final class DefaultOwner extends Owner {
 	}
 
 	@Override
-	public Owner eagerRef(
-			LocationInfo location,
-			LocationInfo eagerRef) {
-
-		final AscendantsDefinition ascendants =
-				new AscendantsDefinition(
-						location,
-						distribute(),
-						ref().toTypeRef())
-				.setEager(true);
-
+	public Owner eagerRef(LocationInfo location) {
 		return new DefaultOwner(
 				getAccessRules(),
-				new Call(eagerRef, distribute(), ascendants, null).toRef());
+				RefInterpreter.eagerRef(location, ref()));
 	}
 
 }

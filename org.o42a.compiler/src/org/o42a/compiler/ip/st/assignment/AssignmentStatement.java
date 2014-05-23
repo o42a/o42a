@@ -31,7 +31,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.*;
-import org.o42a.core.st.sentence.Local;
 
 
 public class AssignmentStatement extends Statement {
@@ -40,39 +39,23 @@ public class AssignmentStatement extends Statement {
 	private final AccessRules accessRules;
 	private final Ref destination;
 	private final RefBuilder value;
-	private final Local local;
-	private final Ref localRef;
+	private final boolean binding;
 	private AssignmentKind assignmentKind;
 
 	public AssignmentStatement(
 			AssignmentNode node,
 			AccessDistributor distributor,
 			Ref destination,
-			RefBuilder value) {
+			RefBuilder value,
+			boolean binding) {
 		super(
 				location(destination, node.getOperator()),
 				distributor);
 		this.node = node;
+		this.binding = binding;
 		this.accessRules = distributor.getAccessRules();
 		this.destination = destination;
 		this.value = value;
-		this.local = null;
-		this.localRef = null;
-	}
-
-	public AssignmentStatement(
-			AssignmentNode node,
-			AccessDistributor distributor,
-			Ref destination,
-			Local local) {
-		super(
-				location(destination, node.getOperator()),
-				distributor);
-		this.node = node;
-		this.accessRules = distributor.getAccessRules();
-		this.destination = destination;
-		this.value = this.localRef = local.toRef();
-		this.local = local;
 	}
 
 	AssignmentStatement(
@@ -86,12 +69,7 @@ public class AssignmentStatement extends Statement {
 		this.accessRules = prototype.getAccessRules();
 		this.destination = destination;
 		this.value = value;
-		this.local = prototype.local;
-		if (prototype.localRef == null) {
-			this.localRef = null;
-		} else {
-			this.localRef = prototype.localRef.reproduce(reproducer);
-		}
+		this.binding = prototype.binding;
 		this.assignmentKind = assignmentKind;
 		assignmentKind.init(this);
 	}
@@ -112,16 +90,8 @@ public class AssignmentStatement extends Statement {
 		return this.value;
 	}
 
-	public final Local getLocal() {
-		return this.local;
-	}
-
-	public final Ref getLocalRef() {
-		return this.localRef;
-	}
-
 	public final boolean isBinding() {
-		return getLocal() == null;
+		return this.binding;
 	}
 
 	@Override
@@ -152,10 +122,10 @@ public class AssignmentStatement extends Statement {
 		if (this.assignmentKind != null) {
 			return this.assignmentKind.toString();
 		}
-		if (isBinding()) {
+		if (this.binding) {
 			return this.destination + "<-" + this.value;
 		}
-		return this.destination + "=" + this.local.originalRef();
+		return this.destination + "=" + this.value;
 	}
 
 	public AssignmentKind getAssignmentKind() {
