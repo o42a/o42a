@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.value.impl;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
@@ -29,25 +31,28 @@ import org.o42a.util.string.ID;
 
 public final class FinalValOp extends ValOp {
 
+	private final ID id;
 	private final Allocator allocator;
-	private final ValType.Op ptr;
+	private final Function<Code, ValType.Op> getPtr;
 	private final ValHolder holder;
 
 	public FinalValOp(
+			ID id,
 			Allocator allocator,
 			CodeBuilder builder,
-			ValType.Op ptr,
+			Function<Code, ValType.Op> getPtr,
 			ValueType<?> valueType,
 			ValHolderFactory holderFactory) {
 		super(builder, valueType);
+		this.id = id;
 		this.allocator = allocator;
-		this.ptr = ptr;
+		this.getPtr = getPtr;
 		this.holder = holderFactory.createValHolder(this);
 	}
 
 	@Override
 	public final ID getId() {
-		return this.ptr.getId();
+		return this.id;
 	}
 
 	@Override
@@ -62,7 +67,7 @@ public final class FinalValOp extends ValOp {
 
 	@Override
 	public final ValType.Op ptr(Code code) {
-		return this.ptr;
+		return this.getPtr.apply(code);
 	}
 
 	@Override
@@ -79,7 +84,7 @@ public final class FinalValOp extends ValOp {
 			return super.toString();
 		}
 
-		return "(" + valueType + ") " + this.ptr;
+		return "(" + valueType + ") " + this.id;
 	}
 
 }

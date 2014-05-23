@@ -23,6 +23,8 @@ import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Ptr;
@@ -31,6 +33,7 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.impl.FinalValOp;
 import org.o42a.core.ir.value.impl.StackAllocatedValOp;
 import org.o42a.core.ir.value.type.ValueIRDesc;
 import org.o42a.core.value.ValueType;
@@ -49,13 +52,31 @@ public abstract class ValOp extends IROp {
 			ValueType<?> valueType,
 			ValHolderFactory holderFactory) {
 
-		final ID valId =
-				allocator.getId().setLocal(name != null ? name : "value");
+		final ID id = allocator.getId().setLocal(name != null ? name : "value");
 
 		return new StackAllocatedValOp(
-				valId,
+				id,
 				allocator,
 				builder,
+				valueType,
+				holderFactory);
+	}
+
+	public static ValOp finalVal(
+			String name,
+			Allocator allocator,
+			CodeBuilder builder,
+			Function<Code, ValType.Op> getPtr,
+			ValueType<?> valueType,
+			ValHolderFactory holderFactory) {
+
+		final ID id = allocator.getId().setLocal(name != null ? name : "value");
+
+		return new FinalValOp(
+				id,
+				allocator,
+				builder,
+				getPtr,
 				valueType,
 				holderFactory);
 	}
