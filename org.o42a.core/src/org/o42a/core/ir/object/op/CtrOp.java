@@ -20,10 +20,13 @@
 package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
+import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
+import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -39,6 +42,7 @@ import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
 
@@ -62,6 +66,10 @@ public class CtrOp extends IROp {
 		return this.ptr.get(code);
 	}
 
+	public final ValType.Op value(Code code) {
+		return ptr(code).value(code);
+	}
+
 	public ObjectOp newObject(
 			CodeDirs dirs,
 			ObjHolder holder,
@@ -73,23 +81,22 @@ public class CtrOp extends IROp {
 				"new_object",
 				"New object: sample=" + sample);
 		final Block code = subDirs.code();
+		final Op ptr = ptr(code);
 
 		if (owner != null) {
-			ptr(code).ownerData(code).store(
-					code,
-					owner.objectData(code).ptr());
+			ptr.ownerData(code)
+			.store(code, owner.objectData(code).ptr());
 		} else {
-			ptr(code).ownerData(code).store(
-					code,
-					code.nullPtr(OBJECT_DATA_TYPE));
+			ptr.ownerData(code)
+			.store(code, code.nullPtr(OBJECT_DATA_TYPE));
 		}
-		ptr(code).ancestorData(code).store(
+		ptr.ancestorData(code)
+		.store(
 				code,
 				ancestorData != null
 				? ancestorData : code.nullPtr(OBJECT_DATA_TYPE));
-		ptr(code).desc(code).store(
-				code,
-				sample.objectData(code).loadDesc(code));
+		ptr.desc(code)
+		.store(code, sample.objectData(code).loadDesc(code));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 
@@ -134,6 +141,10 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().desc());
 		}
 
+		public final ValType.Op value(Code code) {
+			return struct(null, code, getType().value());
+		}
+
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
@@ -141,6 +152,7 @@ public class CtrOp extends IROp {
 		private StructRec<ObjectIRDataOp> ownerData;
 		private StructRec<ObjectIRDataOp> ancestorData;
 		private StructRec<ObjectIRDescOp> desc;
+		private ValType value;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ctr_t"));
@@ -163,11 +175,16 @@ public class CtrOp extends IROp {
 			return this.desc;
 		}
 
+		public final ValType value() {
+			return this.value;
+		}
+
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.ownerData = data.addPtr("owner_data", OBJECT_DATA_TYPE);
 			this.ancestorData = data.addPtr("ancestor_data", OBJECT_DATA_TYPE);
 			this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
+			this.value = data.addInstance(ID.rawId("value"), VAL_TYPE);
 		}
 
 		@Override
@@ -196,6 +213,9 @@ public class CtrOp extends IROp {
 
 		@Override
 		public void init(Code code, Op allocated) {
+			allocated.value(code)
+			.flags(code, NOT_ATOMIC)
+			.store(code, VAL_INDEFINITE);
 		}
 
 		@Override

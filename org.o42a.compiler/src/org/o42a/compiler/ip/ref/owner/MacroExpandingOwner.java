@@ -53,6 +53,12 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
+	public Owner eagerRef(LocationInfo location, LocationInfo eagerRef) {
+		return this.owner.eagerRef(location, eagerRef)
+				.expandMacro(this.expansion);
+	}
+
+	@Override
 	public String toString() {
 		if (this.owner == null) {
 			return '#' + super.toString();

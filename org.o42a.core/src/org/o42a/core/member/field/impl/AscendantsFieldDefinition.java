@@ -63,6 +63,9 @@ public final class AscendantsFieldDefinition extends FieldDefinition {
 		if (this.ascendants.isStateful()) {
 			definer.makeStateful();
 		}
+		if (this.ascendants.isEager()) {
+			definer.makeEager();
+		}
 		this.ascendants.updateAscendants(definer);
 		definer.define(this.definitions);
 	}

@@ -86,17 +86,9 @@ class DeclaredObject extends Obj implements ObjectToDefine {
 
 	@Override
 	protected Statefulness determineStatefulness() {
-
-		final Statefulness statefulness = super.determineStatefulness();
-
-		if (statefulness.isStateful()) {
-			return statefulness;
-		}
-		if (!this.field.isStateful()) {
-			return statefulness;
-		}
-
-		return Statefulness.STATEFUL;
+		return super.determineStatefulness()
+				.setStateful(this.field.isStateful())
+				.setEager(this.field.isEager());
 	}
 
 	@Override

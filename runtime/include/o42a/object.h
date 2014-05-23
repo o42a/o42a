@@ -437,6 +437,14 @@ typedef struct o42a_obj_ctr {
 	 */
 	o42a_obj_desc_t *desc;
 
+	/**
+	 * Eagerly evaluated object value.
+	 *
+	 * An O42A_VAL_INDEFINITE bit should be set if the value is not eagerly
+	 * evaluated.
+	 */
+	o42a_val_t value;
+
 } o42a_obj_ctr_t;
 
 typedef struct o42a_obj_ctable {
