@@ -93,7 +93,7 @@ public final class ObjectsCode {
 					getBuilder(),
 					sample.type().getValueType(),
 					TEMP_VAL_HOLDER);
-			final ValDirs eagerDirs = dirs.value(value);
+			final ValDirs eagerDirs = dirs.nested().value(value);
 			final ValOp result = ancestor.value().writeValue(eagerDirs);
 
 			value.store(code, result);
@@ -129,7 +129,7 @@ public final class ObjectsCode {
 					getBuilder(),
 					sample.type().getValueType(),
 					TEMP_VAL_HOLDER);
-			final DefDirs eagerDirs = dirs.value(value).def();
+			final DefDirs eagerDirs = dirs.nested().value(value).def();
 
 			ancestorData.op(getBuilder(), ObjectPrecision.DERIVED)
 			.writeValue(eagerDirs);
