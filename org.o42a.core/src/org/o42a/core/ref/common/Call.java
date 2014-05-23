@@ -108,11 +108,22 @@ public class Call extends ObjectConstructor {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(this.ascendants).append('(');
+		this.ascendants.appendPrefix(out);
 		if (this.definitions != null) {
+			out.append('(');
 			out.append(this.definitions);
+			out.append(')');
+			this.ascendants.appendSuffix(out);
+		} else {
+
+			final int len = out.length();
+
+			this.ascendants.appendSuffix(out);
+			if (len == out.length()) {
+				// No suffix.
+				out.append("()");
+			}
 		}
-		out.append(')');
 
 		return out.toString();
 	}
