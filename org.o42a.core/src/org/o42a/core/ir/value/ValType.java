@@ -123,9 +123,10 @@ public final class ValType extends Type<ValType.Op> {
 				ValueType<?> valueType,
 				ValHolderFactory holderFactory) {
 			return new FinalValOp(
+					getId(),
 					allocator,
 					builder,
-					this,
+					code -> this,
 					valueType,
 					holderFactory);
 		}
