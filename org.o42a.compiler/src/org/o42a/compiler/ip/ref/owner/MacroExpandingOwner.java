@@ -53,8 +53,8 @@ final class MacroExpandingOwner extends Owner {
 	}
 
 	@Override
-	public Owner eagerRef(LocationInfo location, LocationInfo eagerRef) {
-		return this.owner.eagerRef(location, eagerRef)
+	public Owner eagerRef(LocationInfo eagerRef) {
+		return this.owner.eagerRef(eagerRef)
 				.expandMacro(this.expansion);
 	}
 

@@ -21,15 +21,17 @@ package org.o42a.compiler.ip.st;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.st.LocalInterpreter.local;
+import static org.o42a.compiler.ip.ref.RefInterpreter.eagerRef;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.ast.atom.NumberNode;
+import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
+import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
@@ -46,8 +48,6 @@ public abstract class StatementVisitor
 
 	public static final Name DESTINATION_LOCAL_NAME =
 			CASE_SENSITIVE.canonicalName("LD");
-	public static final Name VALUE_LOCAL_NAME =
-			CASE_SENSITIVE.canonicalName("LV");
 
 	static void invalidStatement(CompilerLogger logger, LogInfo location) {
 		logger.error(
@@ -128,17 +128,24 @@ public abstract class StatementVisitor
 			StatementsAccess statements,
 			AssignmentNode assignment,
 			Ref destination) {
-		if (assignment.getOperator().getType().isBinding()) {
-			addBinding(statements, assignment, destination);
+
+		final SignNode<AssignmentOperator> sign = assignment.getOperator();
+		final AssignmentOperator operator = sign.getType();
+
+		if (operator.isBinding()) {
+			addAssignment(statements, assignment, destination, true);
+		} else if (!operator.isCombined()) {
+			addAssignment(statements, assignment, destination, false);
 		} else {
-			addValueAssignment(statements, assignment, destination);
+			addCombinedAssignment(statements, assignment, destination);
 		}
 	}
 
-	private void addBinding(
+	private void addAssignment(
 			StatementsAccess statements,
 			AssignmentNode assignment,
-			Ref destination) {
+			Ref destination,
+			boolean binding) {
 
 		final AccessDistributor distributor = statements.nextDistributor();
 		final RefBuilder value = assignment.getValue().accept(
@@ -153,10 +160,15 @@ public abstract class StatementVisitor
 				assignment,
 				distributor,
 				destination,
-				value));
+				binding
+				? value
+				: value.apply(
+						location(distributor, assignment.getOperator()),
+						RefInterpreter::eagerRef),
+				binding));
 	}
 
-	private void addValueAssignment(
+	private void addCombinedAssignment(
 			StatementsAccess statements,
 			AssignmentNode assignment,
 			Ref destination) {
@@ -169,46 +181,24 @@ public abstract class StatementVisitor
 				.parentheses(location)
 				.declare(location)
 				.alternative(location));
-		final Ref dest;
-		final Local local;
-
-		if (!assignment.getOperator().getType().isCombined()) {
-			dest = destination;
-			local = local(
-					ip(),
-					location.getContext(),
-					st,
-					location.getLocation(),
-					VALUE_LOCAL_NAME,
-					assignment.getValue());
-		} else {
-
-			final Local destLocal = st.get().local(
-					destination,
-					DESTINATION_LOCAL_NAME,
-					destination);
-
-			dest = destLocal.toRef();
-
-			final PhraseBuilder phrase = new PhraseBuilder(
-					ip(),
-					location,
-					st.nextDistributor(),
-					null);
-			final Ref value = phrase.binary(dest, assignment).toRef();
-
-			local = st.get().local(value, VALUE_LOCAL_NAME, value);
-		}
-
-		if (local == null) {
-			return;
-		}
+		final Local destLocal = st.get().local(
+				destination,
+				DESTINATION_LOCAL_NAME,
+				destination);
+		final Ref dest = destLocal.toRef();
+		final PhraseBuilder phrase = new PhraseBuilder(
+				ip(),
+				location,
+				st.nextDistributor(),
+				null);
+		final Ref value = phrase.binary(dest, assignment).toRef();
 
 		st.statement(new AssignmentStatement(
 				assignment,
 				st.nextDistributor(),
 				dest,
-				local));
+				eagerRef(location, value),
+				false));
 	}
 
 }

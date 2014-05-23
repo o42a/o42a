@@ -41,7 +41,9 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.AccessSource;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
@@ -140,6 +142,19 @@ public abstract class RefInterpreter {
 		}
 
 		return floatNumber(number, distributor, digits.toString());
+	}
+
+	public static Ref eagerRef(LocationInfo location, Ref ref) {
+
+		final Distributor distributor = ref.distribute();
+		final AscendantsDefinition ascendants =
+				new AscendantsDefinition(
+						ref,
+						distributor,
+						ref.toTypeRef())
+				.setEager(true);
+
+		return new Call(location, distributor, ascendants, null).toRef();
 	}
 
 	private static String digits(

@@ -346,7 +346,7 @@ final class OwnerVisitor
 			return null;
 		}
 
-		return result.eagerRef(location(p, ref), location(p, ref.getSuffix()));
+		return result.eagerRef(location(p, ref.getSuffix()));
 	}
 
 	private Owner localRef(MemberRefNode ref, AccessDistributor p) {
