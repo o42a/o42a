@@ -216,13 +216,24 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 
 		final StringBuilder out = new StringBuilder();
 
+		appendPrefix(out);
+		appendSuffix(out);
+
+		return out.toString();
+	}
+
+	public void appendPrefix(StringBuilder out) {
 		if (this.ancestor != null) {
 			out.append(this.ancestor);
 		} else {
 			out.append('*');
 		}
+	}
 
-		return out.toString();
+	public void appendSuffix(StringBuilder out) {
+		if (this.eager) {
+			out.append(">>");
+		}
 	}
 
 	protected AscendantsDefinition create(
