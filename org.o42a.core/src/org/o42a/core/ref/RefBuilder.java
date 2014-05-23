@@ -19,12 +19,37 @@
 */
 package org.o42a.core.ref;
 
+import java.util.function.BiFunction;
+
 import org.o42a.core.Distributor;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
 public interface RefBuilder extends LocationInfo {
 
 	Ref buildRef(Distributor distributor);
+
+	default RefBuilder apply(BiFunction<LocationInfo, Ref, Ref> function) {
+		return apply(this, function);
+	}
+
+	default RefBuilder apply(
+			LocationInfo location,
+			BiFunction<LocationInfo, Ref, Ref> function) {
+
+		final RefBuilder self = this;
+
+		return new RefBuilder() {
+			@Override
+			public Location getLocation() {
+				return location.getLocation();
+			}
+			@Override
+			public Ref buildRef(Distributor distributor) {
+				return function.apply(location, self.buildRef(distributor));
+			}
+		};
+	}
 
 }
