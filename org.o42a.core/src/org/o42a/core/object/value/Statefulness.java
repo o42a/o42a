@@ -71,12 +71,7 @@ public enum Statefulness {
 	 * value type with this kind of statefulness is
 	 * {@link LinkValueType#VARIABLE}.</p>
 	 */
-	VARIABLE,
-
-	/**
-	 * Eagerly evaluated variable value.
-	 */
-	EAGER_VARIABLE;
+	VARIABLE;
 
 	/**
 	 * Object value is stateless.
@@ -90,46 +85,30 @@ public enum Statefulness {
 	/**
 	 * Object value is eagerly evaluated.
 	 *
-	 * @return <code>true</code> for {@link #EAGER} and {@link #EAGER_VARIABLE}.
+	 * @return <code>true</code> for {@link #EAGER}.
 	 */
 	public final boolean isEager() {
-		return this == EAGER || this == EAGER_VARIABLE;
+		return this == EAGER;
 	}
 
 	/**
 	 * Object value is stateful.
 	 *
-	 * @return <code>true</code> for {@link #STATEFUL}, {@link #VARIABLE}, and
-	 * {@link #EAGER_VARIABLE}.
+	 * @return <code>true</code> for {@link #STATEFUL} and {@link #VARIABLE}.
 	 */
 	public final boolean isStateful() {
-		return this == STATEFUL || this == VARIABLE || this == EAGER_VARIABLE;
-	}
-
-	/**
-	 * Object value is variable.
-	 *
-	 * @return <code>true</code> for {@link #VARIABLE}.
-	 */
-	public final boolean isVariable() {
-		return this == VARIABLE;
+		return this == STATEFUL || this == VARIABLE;
 	}
 
 	public final Statefulness setEager(boolean eager) {
 		if (!eager) {
 			return this;
 		}
-		return makeEager();
+		return EAGER;
 	}
 
 	public final Statefulness makeEager() {
 		if (isEager()) {
-			return this;
-		}
-		if (isVariable()) {
-			return EAGER_VARIABLE;
-		}
-		if (isStateful()) {
 			return this;
 		}
 		return EAGER;

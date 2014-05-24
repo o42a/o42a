@@ -84,11 +84,6 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 	}
 
 	@Override
-	public boolean isStateful() {
-		return isVariable();
-	}
-
-	@Override
 	public final boolean isVariable() {
 		return is(VARIABLE);
 	}
