@@ -51,9 +51,8 @@ public final class Constant<T> extends ObjectConstructor {
 			LocationInfo location,
 			Distributor distributor,
 			SingleValueType<T> valueType,
-			T constant,
-			boolean stateful) {
-		super(location, distributor, stateful);
+			T constant) {
+		super(location, distributor);
 		this.valueType = valueType;
 		this.constant = constant;
 	}
@@ -104,8 +103,7 @@ public final class Constant<T> extends ObjectConstructor {
 				this,
 				reproducer.distribute(),
 				getValueType(),
-				getConstant(),
-				isStateful());
+				getConstant());
 	}
 
 	@Override
@@ -119,16 +117,6 @@ public final class Constant<T> extends ObjectConstructor {
 			return super.toString();
 		}
 		return this.valueType.valueString(this.constant);
-	}
-
-	@Override
-	protected Constant<T> createStateful() {
-		return new Constant<>(
-				this,
-				distribute(),
-				getValueType(),
-				getConstant(),
-				true);
 	}
 
 	@Override

@@ -57,9 +57,8 @@ public class ArrayConstructor extends ObjectConstructor {
 			Interpreter ip,
 			CompilerContext context,
 			BracketsNode node,
-			AccessDistributor distributor,
-			boolean stateful) {
-		super(new Location(context, node), distributor, stateful);
+			AccessDistributor distributor) {
+		super(new Location(context, node), distributor);
 		this.ip = ip;
 		this.node = node;
 		this.accessRules = distributor.getAccessRules();
@@ -70,10 +69,7 @@ public class ArrayConstructor extends ObjectConstructor {
 	private ArrayConstructor(
 			ArrayConstructor reproducedFrom,
 			Reproducer reproducer) {
-		super(
-				reproducedFrom,
-				reproducer.distribute(),
-				reproducedFrom.isStateful());
+		super(reproducedFrom, reproducer.distribute());
 		this.ip = reproducedFrom.ip;
 		this.node = reproducedFrom.node;
 		this.accessRules = reproducedFrom.accessRules;
@@ -153,16 +149,6 @@ public class ArrayConstructor extends ObjectConstructor {
 		this.node.printContent(out);
 
 		return out.toString();
-	}
-
-	@Override
-	protected ArrayConstructor createStateful() {
-		return new ArrayConstructor(
-				ip(),
-				getContext(),
-				getNode(),
-				distributeAccess(),
-				true);
 	}
 
 	@Override

@@ -127,11 +127,6 @@ public abstract class AbstractMemberStep extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-		return defaultStatefulRef(ref);
-	}
-
-	@Override
 	protected final PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

@@ -59,7 +59,6 @@ final class ClauseInstanceObject extends DefinedObject {
 	@Override
 	protected Statefulness determineStatefulness() {
 		return super.determineStatefulness()
-				.setStateful(this.constructor.isStateful())
 				.setEager(this.constructor.isEager());
 	}
 

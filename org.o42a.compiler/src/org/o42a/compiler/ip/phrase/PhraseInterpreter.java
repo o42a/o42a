@@ -187,8 +187,7 @@ public final class PhraseInterpreter {
 				location(distributor, node),
 				operator,
 				left,
-				right,
-				false).toRef();
+				right).toRef();
 	}
 
 	private PhraseBuilder suffixPhrase(

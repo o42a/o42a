@@ -280,8 +280,7 @@ public final class PhraseBuilder extends Contained {
 				ip(),
 				getContext(),
 				brackets,
-				distributeAccess(),
-				false);
+				distributeAccess());
 
 		phrase().array(array.toRef());
 

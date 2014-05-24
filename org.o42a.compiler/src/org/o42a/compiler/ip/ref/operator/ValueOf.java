@@ -44,22 +44,15 @@ public class ValueOf extends ObjectConstructor {
 			Interpreter ip,
 			CompilerContext context,
 			UnaryNode node,
-			AccessDistributor distributor,
-			boolean stateful) {
-		super(new Location(context, node), distributor, stateful);
+			AccessDistributor distributor) {
+		super(new Location(context, node), distributor);
 		this.operand = node.getOperand().accept(
 				ip.expressionVisitor(),
 				distributor);
 	}
 
-	private ValueOf(ValueOf prototype, boolean stateful) {
-		super(prototype, prototype.distribute(), stateful);
-		this.operand = prototype.operand;
-		this.valueTypeInterface = prototype.valueTypeInterface;
-	}
-
 	private ValueOf(ValueOf prototype, Distributor distributor, Ref operand) {
-		super(prototype, distributor, prototype.isStateful());
+		super(prototype, distributor);
 		this.operand = operand;
 	}
 
@@ -86,9 +79,7 @@ public class ValueOf extends ObjectConstructor {
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(
-				ref.toStateful(isStateful()),
-				rescopedTypeParameters(ref));
+		return new ValueFieldDefinition(ref, rescopedTypeParameters(ref));
 	}
 
 	@Override
@@ -109,11 +100,6 @@ public class ValueOf extends ObjectConstructor {
 			return "/" + this.operand;
 		}
 		return super.toString();
-	}
-
-	@Override
-	protected ValueOf createStateful() {
-		return new ValueOf(this, true);
 	}
 
 	@Override

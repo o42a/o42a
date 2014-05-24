@@ -48,11 +48,6 @@ final class MacroDefinerImpl implements MacroDefiner {
 	}
 
 	@Override
-	public void makeStateful() {
-		this.field.makeStateful();
-	}
-
-	@Override
 	public void makeEager() {
 		this.field.makeEager();
 	}

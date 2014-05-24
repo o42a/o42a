@@ -81,8 +81,7 @@ public abstract class AbstractComparisonMacro extends AnnotatedMacro {
 				left.rebuildIn(macroScope)
 				.setLocation(new Location(context, left.getLocation())),
 				right.rebuildIn(macroScope)
-				.setLocation(new Location(context, right.getLocation())),
-				false);
+				.setLocation(new Location(context, right.getLocation())));
 
 		return comparison.setResolutionLogger(expander.getLogger()).toPath();
 	}

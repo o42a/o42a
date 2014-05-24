@@ -115,7 +115,6 @@ final class LogicalResult extends BuiltinObject {
 	@Override
 	protected Statefulness determineStatefulness() {
 		return super.determineStatefulness()
-				.setStateful(this.logical.isStateful())
 				.setEager(this.logical.isEager());
 	}
 

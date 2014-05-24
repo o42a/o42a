@@ -53,7 +53,7 @@ public abstract class SingleValueType<T> extends ValueType<T> {
 			T value) {
 
 		final Constant<T> constant =
-				new Constant<>(location, distributor, this, value, false);
+				new Constant<>(location, distributor, this, value);
 		final BoundPath path = constant.toPath().bindStatically(
 				location,
 				distributor.getScope());

@@ -56,7 +56,6 @@ public abstract class ConstructedObject extends Obj {
 	@Override
 	protected Statefulness determineStatefulness() {
 		return super.determineStatefulness()
-				.setStateful(this.constructor.isStateful())
 				.setEager(this.constructor.isEager());
 	}
 

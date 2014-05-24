@@ -122,22 +122,6 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-
-		final ObjectConstructor stateful = this.constructor.toStateful();
-
-		if (stateful == this.constructor) {
-			return ref;
-		}
-
-		final Path prefix = ref.getPath().getPath().cut(1);
-
-		return prefix.append(stateful.toStep())
-				.bind(ref, ref.getScope())
-				.target(ref.distribute());
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizeConstructor(normalizer);
 	}

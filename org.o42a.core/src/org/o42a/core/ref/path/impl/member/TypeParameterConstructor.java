@@ -40,9 +40,8 @@ final class TypeParameterConstructor extends ObjectConstructor {
 	TypeParameterConstructor(
 			LocationInfo location,
 			Distributor distributor,
-			MemberKey parameterKey,
-			boolean stateful) {
-		super(location, distributor, stateful);
+			MemberKey parameterKey) {
+		super(location, distributor);
 		this.parameterKey = parameterKey;
 	}
 
@@ -76,7 +75,7 @@ final class TypeParameterConstructor extends ObjectConstructor {
 
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
-		return new ValueFieldDefinition(ref.toStateful(isStateful()), null);
+		return new ValueFieldDefinition(ref, null);
 	}
 
 	@Override
@@ -85,8 +84,7 @@ final class TypeParameterConstructor extends ObjectConstructor {
 		return new TypeParameterConstructor(
 				this,
 				reproducer.distribute(),
-				this.parameterKey,
-				isStateful());
+				this.parameterKey);
 	}
 
 	@Override
@@ -95,15 +93,6 @@ final class TypeParameterConstructor extends ObjectConstructor {
 			return super.toString();
 		}
 		return this.parameterKey.toString();
-	}
-
-	@Override
-	protected TypeParameterConstructor createStateful() {
-		return new TypeParameterConstructor(
-				this,
-				distribute(),
-				this.parameterKey,
-				true);
 	}
 
 	@Override

@@ -53,11 +53,6 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	}
 
 	@Override
-	public void makeStateful() {
-		this.field.makeStateful();
-	}
-
-	@Override
 	public void makeEager() {
 		this.field.makeEager();
 	}

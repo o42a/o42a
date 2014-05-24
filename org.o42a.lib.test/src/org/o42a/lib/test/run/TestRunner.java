@@ -93,12 +93,13 @@ final class TestRunner extends ConstructedObject {
 			String name,
 			Field field) {
 		if (field.isPrototype()) {
-			statements.expression(new RunTest(
-					statements,
-					statements.nextDistributor(),
-					name,
-					field.getKey(),
-					false).toRef());
+			statements.expression(
+					new RunTest(
+							statements,
+							statements.nextDistributor(),
+							name,
+							field.getKey())
+					.toRef());
 			return;
 		}
 
@@ -172,9 +173,8 @@ final class TestRunner extends ConstructedObject {
 				LocationInfo location,
 				Distributor distributor,
 				String name,
-				MemberKey testKey,
-				boolean stateful) {
-			super(location, distributor, stateful);
+				MemberKey testKey) {
+			super(location, distributor);
 			this.testKey = testKey;
 			this.name = name;
 		}
@@ -210,23 +210,12 @@ final class TestRunner extends ConstructedObject {
 					this,
 					reproducer.distribute(),
 					this.name,
-					this.testKey,
-					isStateful());
+					this.testKey);
 		}
 
 		@Override
 		public String toString() {
 			return "Run test[" + this.name + ']';
-		}
-
-		@Override
-		protected RunTest createStateful() {
-			return new RunTest(
-					this,
-					distribute(),
-					this.name,
-					this.testKey,
-					true);
 		}
 
 		@Override

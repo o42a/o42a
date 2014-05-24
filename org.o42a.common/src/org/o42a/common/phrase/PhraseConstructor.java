@@ -42,10 +42,7 @@ class PhraseConstructor extends ObjectConstructor {
 	private final AscendantsDefinition ascendants;
 
 	PhraseConstructor(Phrase phrase) {
-		super(
-				phrase,
-				phrase.distribute(),
-				phrase.getMainContext().getAscendants().isStateful());
+		super(phrase, phrase.distribute());
 		this.phrase = phrase;
 		this.ascendants = phrase.getMainContext().getAscendants();
 		this.ascendants.assertCompatibleScope(this);
@@ -56,7 +53,7 @@ class PhraseConstructor extends ObjectConstructor {
 			Distributor distributor,
 			Phrase phrase,
 			AscendantsDefinition ascendants) {
-		super(location, distributor, ascendants.isStateful());
+		super(location, distributor);
 		this.phrase = phrase;
 		this.ascendants = ascendants;
 	}
@@ -110,23 +107,6 @@ class PhraseConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	protected PhraseConstructor createStateful() {
-
-		final AscendantsDefinition ascendants =
-				this.ascendants.setStateful(true);
-
-		if (ascendants == this.ascendants) {
-			return this;
-		}
-
-		return new PhraseConstructor(
-				this,
-				distribute(),
-				this.phrase,
-				ascendants);
-	}
-
-	@Override
 	protected Obj createObject() {
 		return new PhraseObject(this);
 	}
@@ -164,7 +144,6 @@ class PhraseConstructor extends ObjectConstructor {
 		@Override
 		protected Statefulness determineStatefulness() {
 			return super.determineStatefulness()
-					.setStateful(this.constructor.isStateful())
 					.setEager(this.constructor.isEager());
 		}
 

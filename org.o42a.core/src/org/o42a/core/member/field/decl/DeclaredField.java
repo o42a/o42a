@@ -35,7 +35,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private final FieldDefinition definition;
 	private Ascendants ascendants;
 	private Function<ObjectToDefine, DefinitionsBuilder> definitions;
-	private boolean stateful;
 	private boolean eager;
 	private boolean invalid;
 
@@ -50,10 +49,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	public final Ascendants getAscendants() {
 		return this.ascendants;
-	}
-
-	public final boolean isStateful() {
-		return this.stateful;
 	}
 
 	public final boolean isEager() {
@@ -99,10 +94,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		assert this.definitions == null :
 			"Field already defined";
 		this.definitions = definitions;
-	}
-
-	final void makeStateful() {
-		this.stateful = true;
 	}
 
 	final void makeEager() {

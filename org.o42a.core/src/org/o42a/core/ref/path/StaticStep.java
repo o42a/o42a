@@ -131,11 +131,6 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-		return defaultStatefulRef(ref);
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 
 		final Prediction lastPrediction = normalizer.lastPrediction();
