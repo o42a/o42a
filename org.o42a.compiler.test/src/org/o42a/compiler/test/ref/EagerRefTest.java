@@ -2,7 +2,7 @@
     Any copyright is dedicated to the Public Domain.
     http://creativecommons.org/publicdomain/zero/1.0/
 */
-package org.o42a.compiler.test.ref.operator;
+package org.o42a.compiler.test.ref;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -13,13 +13,13 @@ import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkValueType;
 
 
-public class KeepValueTest extends CompilerTestCase {
+public class EagerRefTest extends CompilerTestCase {
 
 	@Test
-	public void keepValue() {
+	public void eagerValue() {
 		compile(
 				"A := 5",
-				"B := \\\\a");
+				"B := a>>");
 
 		assertThat(
 				definiteValue(field("b"), ValueType.INTEGER),
@@ -27,10 +27,10 @@ public class KeepValueTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void keepLink() {
+	public void eagerLink() {
 		compile(
 				"A := `5",
-				"B := \\\\a");
+				"B := a>>");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.INTEGER),
@@ -41,7 +41,7 @@ public class KeepValueTest extends CompilerTestCase {
 	public void linkByValue() {
 		compile(
 				"A := 5",
-				"B := `\\\\a");
+				"B := `a>>");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.INTEGER),
@@ -57,7 +57,7 @@ public class KeepValueTest extends CompilerTestCase {
 	public void linkByAdapterValue() {
 		compile(
 				"A := 5",
-				"B := string` link = \\\\a");
+				"B := string` link = a>>");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.STRING),
@@ -74,7 +74,7 @@ public class KeepValueTest extends CompilerTestCase {
 		compile(
 				"A := 5",
 				"B := integer ({",
-				"  L := \\\\a",
+				"  L := a>>",
 				"  = L",
 				"})");
 
@@ -85,7 +85,7 @@ public class KeepValueTest extends CompilerTestCase {
 	public void linkByLink() {
 		compile(
 				"A := `5",
-				"B := \\\\a");
+				"B := a>>");
 
 		assertThat(
 				definiteValue(linkTarget(field("b")), ValueType.INTEGER),
@@ -98,10 +98,10 @@ public class KeepValueTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void keepLinkTarget() {
+	public void eagerLinkTarget() {
 		compile(
 				"A := `5",
-				"B := \\\\a->");
+				"B := a->>>");
 
 		assertThat(
 				definiteValue(field("b"), ValueType.INTEGER),
@@ -112,19 +112,15 @@ public class KeepValueTest extends CompilerTestCase {
 	public void linkByVariable() {
 		compile(
 				"A := ``5",
-				"B := `\\\\a->");
+				"B := `a->>>");
 
 		assertThat(
 				LinkValueType.LINK.interfaceRef(
 						field("b").toObject().type().getParameters())
-				.getType(),
-				is(this.context.getIntrinsics().getInteger()));
-		assertThat(
-				LinkValueType.LINK.interfaceRef(
-						field("b").toObject().type().getParameters())
-				.getType(),
-				is(this.context.getIntrinsics().getInteger()));
-
+				.getType()
+				.type()
+				.getValueType(),
+				valueType(ValueType.INTEGER));
 	}
 
 }
