@@ -58,15 +58,11 @@ abstract class AbstractObjectValueBuilder
 
 		final ObjectIRDataOp data = data(function, function);
 		final StateOp state = value.state();
-		final FldCtrOp ctr;
 
 		state.startEval(function, data);
-		if (isStateful()) {
-			ctr = writeKeptOrContinue(function, state, result);
-		} else {
-			ctr = null;
-		}
 
+		final FldCtrOp ctr =
+				writeKeptOrContinue(function, state, result);
 		final Block done = function.addBlock("done");
 		final Block exit = function.addBlock("exit");
 		final DefDirs dirs =
@@ -81,28 +77,28 @@ abstract class AbstractObjectValueBuilder
 		if (indefinite.exists()) {
 			indefinite.debug("Indefinite");
 			result.storeFalse(indefinite);
-			if (ctr != null) {
+			if (isStateful()) {
 				state.initToFalse(indefinite);
-				ctr.finish(indefinite, state.host());
 			}
+			ctr.finish(indefinite, state.host());
 			indefinite.returnVoid();
 		}
 		if (exit.exists()) {
 			exit.debug("False");
 			result.storeFalse(exit);
-			if (ctr != null) {
+			if (isStateful()) {
 				state.initToFalse(exit);
-				ctr.finish(exit, state.host());
 			}
+			ctr.finish(exit, state.host());
 			exit.returnVoid();
 		}
 		if (done.exists()) {
 			result.store(done, dirs.result());
 			done.dump("Result: ", result);
-			if (ctr != null) {
+			if (isStateful()) {
 				state.init(done, result);
-				ctr.finish(done, state.host());
 			}
+			ctr.finish(done, state.host());
 			done.returnVoid();
 		}
 	}
