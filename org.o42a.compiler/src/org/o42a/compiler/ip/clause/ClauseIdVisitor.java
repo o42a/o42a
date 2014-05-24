@@ -243,7 +243,6 @@ final class ClauseIdVisitor
 		case IS_TRUE:
 		case NOT:
 		case VALUE_OF:
-		case KEEP_VALUE:
 		case LINK:
 		case VARIABLE:
 			return null;

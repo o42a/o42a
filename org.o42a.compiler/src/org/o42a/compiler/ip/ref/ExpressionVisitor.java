@@ -26,7 +26,6 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.number;
 import static org.o42a.compiler.ip.type.TypeConsumer.EXPRESSION_TYPE_CONSUMER;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
-import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 import static org.o42a.core.value.ValueType.STRING;
 
@@ -34,7 +33,6 @@ import org.o42a.ast.atom.NumberNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.TypeArgumentsNode;
-import org.o42a.common.ref.state.KeepValueFragment;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.phrase.PhraseBuilder;
@@ -134,8 +132,6 @@ public final class ExpressionVisitor
 					expression,
 					p,
 					false).toRef();
-		case KEEP_VALUE:
-			return keepValue(expression, p);
 		case LINK:
 			return link(expression, p, LinkValueType.LINK);
 		case VARIABLE:
@@ -224,20 +220,6 @@ public final class ExpressionVisitor
 		}
 
 		return phrase.toRef();
-	}
-
-	private Ref keepValue(UnaryNode expression, AccessDistributor p) {
-
-		final Ref value =
-				expression.getOperand().accept(ip().expressionVisitor(), p);
-
-		if (value == null) {
-			return null;
-		}
-
-		return SELF_PATH.bind(location(p, expression.getSign()), p.getScope())
-				.append(new KeepValueFragment(value))
-				.target(p);
 	}
 
 	private Ref link(

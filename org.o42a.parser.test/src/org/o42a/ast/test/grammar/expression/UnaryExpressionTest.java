@@ -95,17 +95,6 @@ public class UnaryExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void keepValue() {
-
-		final UnaryNode result = parse("\\\\foo");
-
-		assertEquals(UnaryOperator.KEEP_VALUE, result.getOperator());
-		assertThat(result.getOperand(), isName("foo"));
-		assertThat(result, hasRange(0, 5));
-		assertThat(result.getSign(), hasRange(0, 2));
-	}
-
-	@Test
 	public void link() {
 
 		final UnaryNode result = parse("`foo");

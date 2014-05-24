@@ -77,13 +77,8 @@ public class UnaryParser implements Parser<UnaryNode> {
 			}
 			break;
 		case '\\':
-			if (context.next() == '\\') {
-				operator = UnaryOperator.KEEP_VALUE;
-				context.acceptAll();
-			} else {
-				operator = UnaryOperator.VALUE_OF;
-				context.acceptButLast();
-			}
+			operator = UnaryOperator.VALUE_OF;
+			context.acceptAll();
 			break;
 		case NOT_SIGN:
 			operator = UnaryOperator.NOT;
