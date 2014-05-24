@@ -29,7 +29,7 @@ public abstract class DefaultValueOp extends ValueOp {
 
 	public DefaultValueOp(ValueIR valueIR, ObjectOp object) {
 		super(valueIR, object);
-		assert valueIR.getValueType().getDefaultStatefulness().isStateless() :
+		assert !valueIR.getValueType().isStateful() :
 			valueIR.getValueType() + " is stateful";
 	}
 
