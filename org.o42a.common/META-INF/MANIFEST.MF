@@ -14,6 +14,5 @@ Export-Package: org.o42a.common.builtin,
  org.o42a.common.phrase.part,
  org.o42a.common.ref,
  org.o42a.common.ref.cmp,
- org.o42a.common.ref.state,
  org.o42a.common.source
 Bundle-ActivationPolicy: lazy

@@ -29,7 +29,6 @@ public enum UnaryOperator implements SignType {
 	NOT("--"),
 	IS_TRUE("++"),
 	VALUE_OF("\\"),
-	KEEP_VALUE("\\\\"),
 	LINK("`"),
 	VARIABLE("``");
 
