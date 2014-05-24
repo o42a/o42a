@@ -35,18 +35,11 @@ enum o42a_val_flags {
 	O42A_VAL_INDEFINITE = 2,
 
 	/**
-	 * Stateless value bit.
-	 *
-	 * This is set when the object value is never meant to be stored.
-	 */
-	O42A_VAL_STATELESS = 4,
-
-	/**
 	 * Eagerly evaluated value bit.
 	 *
 	 * This is set when object's value is eagerly evaluated.
 	 */
-	O42A_VAL_EAGER = 8,
+	O42A_VAL_EAGER = 4,
 
 	/**
 	 * Value alignment mask.
