@@ -42,7 +42,7 @@ For each :=> void (
   )
 
   {
-    $Next item := \\next, $next item? Do (It = $next item)...
+    $Next item := next>>, $next item? Do (It = $next item)...
   }
 
   <{Action}!> Do => *
