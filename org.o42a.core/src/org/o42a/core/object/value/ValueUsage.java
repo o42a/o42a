@@ -27,19 +27,10 @@ public class ValueUsage extends Usage<ValueUsage> {
 	public static final AllUsages<ValueUsage> ALL_VALUE_USAGES =
 			new AllUsages<>(ValueUsage.class);
 
-	public static final ValueUsage STATIC_VALUE_USAGE =
-			new ValueUsage("StaticValue");
-	public static final ValueUsage RUNTIME_VALUE_USAGE =
-			new ValueUsage("RuntimeValue");
-	public static final ValueUsage EXPLICIT_STATIC_VALUE_USAGE =
-			new ValueUsage("ExplicitStaticValue");
-	public static final ValueUsage EXPLICIT_RUNTIME_VALUE_USAGE =
-			new ValueUsage("ExplicitRuntimeValue");
-
-	public static final UseSelector<ValueUsage> ANY_STATIC_VALUE_USAGE =
-			STATIC_VALUE_USAGE.or(EXPLICIT_STATIC_VALUE_USAGE);
-	public static final UseSelector<ValueUsage> ANY_RUNTIME_VALUE_USAGE =
-			RUNTIME_VALUE_USAGE.or(EXPLICIT_RUNTIME_VALUE_USAGE);
+	public static final ValueUsage VALUE_USAGE =
+			new ValueUsage("Value");
+	public static final ValueUsage EXPLICIT_VALUE_USAGE =
+			new ValueUsage("ExplicitValue");
 
 	public static final Uses<ValueUsage> alwaysUsed() {
 		return ALL_VALUE_USAGES.alwaysUsed();

@@ -25,7 +25,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 import static org.o42a.core.object.value.ValuePartUsage.ALL_VALUE_PART_USAGES;
-import static org.o42a.core.object.value.ValueUsage.ANY_RUNTIME_VALUE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
 import org.o42a.codegen.code.*;
@@ -246,7 +246,7 @@ public class ObjectValueDefsFnIR
 	private boolean rtUsed() {
 		return getObject().value().isUsed(
 				getGenerator().getAnalyzer(),
-				ANY_RUNTIME_VALUE_USAGE);
+				ALL_VALUE_USAGES);
 	}
 
 	private boolean ancestorDefsUpdated() {

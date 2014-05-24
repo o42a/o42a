@@ -123,7 +123,7 @@ public final class ObjectValueDefs implements UserInfo {
 		this.ancestorDefsUpdates = simpleUsable(
 				"AncestorDefsUpdates",
 				getObject());
-		this.ancestorDefsUpdates.useBy(getObjectValue().rtUses(), SIMPLE_USAGE);
+		this.ancestorDefsUpdates.useBy(getObjectValue().toUser(), SIMPLE_USAGE);
 
 		return this.ancestorDefsUpdates;
 	}
