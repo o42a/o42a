@@ -308,7 +308,9 @@ static void test_break_cyclic_references() {
 
 //////////////////// Main functions
 
-static int32_t run_tests(int32_t argc, char **argv) {
+static int32_t run_tests(
+		int32_t argc __attribute__((unused)),
+		char **argv __attribute__((unused))) {
 	O42A_ENTER(return 0);
 
 	O42A(test_non_referenced());
