@@ -48,7 +48,7 @@ public class Call extends ObjectConstructor {
 			Distributor distributor,
 			AscendantsDefinition ascendants,
 			Function<ObjectToDefine, DefinitionsBuilder> definitions) {
-		super(location, distributor, ascendants.isStateful());
+		super(location, distributor);
 		this.ascendants = ascendants;
 		this.definitions = definitions;
 	}
@@ -129,20 +129,6 @@ public class Call extends ObjectConstructor {
 	}
 
 	@Override
-	protected ObjectConstructor createStateful() {
-
-		final AscendantsDefinition oldAscendants = getAscendants();
-		final AscendantsDefinition newAscendants =
-				oldAscendants.setStateful(true);
-
-		if (oldAscendants == newAscendants) {
-			return this;
-		}
-
-		return new Call(this, distribute(), newAscendants, getDefinitions());
-	}
-
-	@Override
 	protected Obj createObject() {
 		return new CallObject(this, distribute());
 	}
@@ -178,7 +164,6 @@ public class Call extends ObjectConstructor {
 		@Override
 		protected Statefulness determineStatefulness() {
 			return super.determineStatefulness()
-					.setStateful(this.call.isStateful())
 					.setEager(this.call.isEager());
 		}
 

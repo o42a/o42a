@@ -132,12 +132,6 @@ public class MacroExpansionStep extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-		prohibitedExpansion(ref.getLogger(), ref.getLocation());
-		return ref;
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 	}
 

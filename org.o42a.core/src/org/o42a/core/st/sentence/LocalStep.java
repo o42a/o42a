@@ -176,24 +176,6 @@ final class LocalStep extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-
-		final Ref oldRef = local().ref();
-		final Ref newRef = oldRef.toStateful();
-
-		if (oldRef == newRef) {
-			return ref;
-		}
-
-		final Local local = new Local(local(), local().getName(), newRef);
-		final Path prefix = ref.getPath().getPath().cut(1);
-
-		return prefix.append(new LocalStep(local))
-				.bind(ref, ref.getScope())
-				.target(ref.distribute());
-	}
-
-	@Override
 	protected LocalStepOp op(HostOp host) {
 		return new LocalStepOp(host, this);
 	}

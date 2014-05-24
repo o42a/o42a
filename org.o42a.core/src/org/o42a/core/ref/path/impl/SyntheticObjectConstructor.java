@@ -37,7 +37,7 @@ public class SyntheticObjectConstructor extends ObjectConstructor {
 	private final ObjectConstructor constructor;
 
 	public SyntheticObjectConstructor(ObjectConstructor constructor) {
-		super(constructor, constructor.distribute(), false);
+		super(constructor, constructor.distribute());
 		this.constructor = constructor;
 	}
 
@@ -92,11 +92,6 @@ public class SyntheticObjectConstructor extends ObjectConstructor {
 			return super.toString();
 		}
 		return this.constructor.toString();
-	}
-
-	@Override
-	protected ObjectConstructor createStateful() {
-		return this;
 	}
 
 	@Override

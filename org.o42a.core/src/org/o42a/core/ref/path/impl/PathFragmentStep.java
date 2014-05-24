@@ -83,11 +83,6 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-		throw unresolved();
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		throw unresolved();
 	}

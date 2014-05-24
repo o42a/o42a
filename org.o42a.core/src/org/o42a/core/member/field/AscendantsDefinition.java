@@ -44,7 +44,6 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 
 	private TypeRef ancestor;
 	private ObjectTypeParameters typeParameters;
-	private boolean stateful;
 	private boolean eager;
 
 	public AscendantsDefinition(
@@ -110,22 +109,6 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		final AscendantsDefinition clone = clone();
 
 		clone.typeParameters = typeParameters;
-
-		return clone;
-	}
-
-	public final boolean isStateful() {
-		return this.stateful;
-	}
-
-	public final AscendantsDefinition setStateful(boolean stateful) {
-		if (this.stateful == stateful) {
-			return this;
-		}
-
-		final AscendantsDefinition clone = clone();
-
-		clone.stateful = stateful;
 
 		return clone;
 	}
@@ -244,7 +227,7 @@ public class AscendantsDefinition extends Contained implements Cloneable {
 		final AscendantsDefinition ascendants =
 				new AscendantsDefinition(location, distributor, ancestor);
 
-		ascendants.stateful = isStateful();
+		ascendants.eager = isEager();
 
 		return ascendants;
 	}

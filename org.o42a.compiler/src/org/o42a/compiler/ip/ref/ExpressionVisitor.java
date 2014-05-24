@@ -123,15 +123,13 @@ public final class ExpressionVisitor
 					ip(),
 					p.getContext(),
 					expression,
-					p,
-					false).toRef();
+					p).toRef();
 		case VALUE_OF:
 			return new ValueOf(
 					ip(),
 					p.getContext(),
 					expression,
-					p,
-					false).toRef();
+					p).toRef();
 		case LINK:
 			return link(expression, p, LinkValueType.LINK);
 		case VARIABLE:
@@ -160,8 +158,7 @@ public final class ExpressionVisitor
 				ip(),
 				p.getContext(),
 				brackets,
-				p,
-				false).toRef();
+				p).toRef();
 	}
 
 	@Override

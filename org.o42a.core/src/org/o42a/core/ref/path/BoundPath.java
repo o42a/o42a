@@ -43,11 +43,9 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
-import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.core.ref.path.impl.*;
@@ -455,29 +453,6 @@ public class BoundPath extends RefPath {
 		}
 
 		return consumption;
-	}
-
-	@Override
-	protected Ref toStateful(Ref ref) {
-
-		final Step lastStep = lastStep();
-
-		if (lastStep == null) {
-
-			final Distributor distributor = ref.distribute();
-
-			return new Call(
-					ref,
-					distributor,
-					new AscendantsDefinition(
-							ref,
-							distributor,
-							ref.toTypeRef())
-					.setStateful(true),
-					null).toRef();
-		}
-
-		return lastStep.statefulRef(ref);
 	}
 
 	final PathNormalizationDoubt doubt(Analyzer analyzer) {

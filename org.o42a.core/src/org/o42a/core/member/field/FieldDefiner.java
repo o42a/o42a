@@ -29,8 +29,6 @@ public interface FieldDefiner {
 
 	Field getField();
 
-	void makeStateful();
-
 	void makeEager();
 
 	void define(Function<ObjectToDefine, DefinitionsBuilder> definitions);

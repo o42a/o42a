@@ -82,11 +82,6 @@ public class VoidStep extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-		return defaultStatefulRef(ref);
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizer.skipStep();
 	}

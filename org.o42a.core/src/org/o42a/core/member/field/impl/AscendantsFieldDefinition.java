@@ -60,9 +60,6 @@ public final class AscendantsFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		if (this.ascendants.isStateful()) {
-			definer.makeStateful();
-		}
 		if (this.ascendants.isEager()) {
 			definer.makeEager();
 		}

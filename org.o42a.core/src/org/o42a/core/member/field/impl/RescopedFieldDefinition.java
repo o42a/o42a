@@ -114,11 +114,6 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public void makeStateful() {
-			this.definer.makeStateful();
-		}
-
-		@Override
 		public void makeEager() {
 			this.definer.makeEager();
 		}
@@ -178,11 +173,6 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		@Override
 		public Field getField() {
 			return this.definer.getField();
-		}
-
-		@Override
-		public void makeStateful() {
-			this.definer.makeStateful();
 		}
 
 		@Override

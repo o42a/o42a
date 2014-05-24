@@ -93,11 +93,6 @@ public class Wrapper extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-		return ref;
-	}
-
-	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

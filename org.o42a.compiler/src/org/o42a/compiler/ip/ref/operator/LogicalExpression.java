@@ -50,17 +50,16 @@ public class LogicalExpression extends ObjectConstructor {
 			Interpreter ip,
 			CompilerContext context,
 			UnaryNode node,
-			AccessDistributor distributor,
-			boolean stateful) {
-		super(new Location(context, node), distributor, stateful);
+			AccessDistributor distributor) {
+		super(new Location(context, node), distributor);
 		this.node = node;
 		this.operand = this.node.getOperand().accept(
 				ip.expressionVisitor(),
 				distributor);
 	}
 
-	private LogicalExpression(LogicalExpression prototype, boolean stateful) {
-		super(prototype, prototype.distribute(), stateful);
+	private LogicalExpression(LogicalExpression prototype) {
+		super(prototype, prototype.distribute());
 		this.node = prototype.node;
 		this.operand = prototype.operand;
 	}
@@ -69,7 +68,7 @@ public class LogicalExpression extends ObjectConstructor {
 			LogicalExpression prototype,
 			Distributor distributor,
 			Ref operand) {
-		super(prototype, distributor, prototype.isStateful());
+		super(prototype, distributor);
 		this.node = prototype.node;
 		this.operand = operand;
 	}
@@ -115,11 +114,6 @@ public class LogicalExpression extends ObjectConstructor {
 			return this.node.getOperator().getSign() + this.operand;
 		}
 		return super.toString();
-	}
-
-	@Override
-	protected LogicalExpression createStateful() {
-		return new LogicalExpression(this, true);
 	}
 
 	@Override

@@ -76,12 +76,6 @@ public final class RequireMacroStep extends Step {
 	}
 
 	@Override
-	protected Ref statefulRef(Ref ref) {
-		prohibitedExpansion(ref.getLogger(), this.expansion);
-		return ref;
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 	}
 
