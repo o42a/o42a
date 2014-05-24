@@ -25,7 +25,6 @@ import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
@@ -60,24 +59,12 @@ abstract class AbstractObjectValueBuilder
 		final ObjectIRDataOp data = data(function, function);
 		final StateOp state = value.state();
 		final FldCtrOp ctr;
-		final BoolOp stateless;
 
 		state.startEval(function, data);
 		if (isStateful()) {
 			ctr = writeKeptOrContinue(function, state, result);
-			stateless = null;
 		} else {
-
-			final Block stateful = function.addBlock("stateful");
-
-			stateless = state.flags().stateless(null, function);
-			stateless.goUnless(function, stateful.head());
-			if (!stateful.exists()) {
-				ctr = null;
-			} else {
-				ctr = writeKeptOrContinue(stateful, state, result);
-				stateful.go(function.tail());
-			}
+			ctr = null;
 		}
 
 		final Block done = function.addBlock("done");
@@ -95,7 +82,6 @@ abstract class AbstractObjectValueBuilder
 			indefinite.debug("Indefinite");
 			result.storeFalse(indefinite);
 			if (ctr != null) {
-				returnIfStateless(indefinite, stateless);
 				state.initToFalse(indefinite);
 				ctr.finish(indefinite, state.host());
 			}
@@ -105,7 +91,6 @@ abstract class AbstractObjectValueBuilder
 			exit.debug("False");
 			result.storeFalse(exit);
 			if (ctr != null) {
-				returnIfStateless(exit, stateless);
 				state.initToFalse(exit);
 				ctr.finish(exit, state.host());
 			}
@@ -115,7 +100,6 @@ abstract class AbstractObjectValueBuilder
 			result.store(done, dirs.result());
 			done.dump("Result: ", result);
 			if (ctr != null) {
-				returnIfStateless(done, stateless);
 				state.init(done, result);
 				ctr.finish(done, state.host());
 			}
@@ -125,10 +109,12 @@ abstract class AbstractObjectValueBuilder
 
 	protected abstract ValueType<?> getValueType();
 
-	protected abstract boolean isStateful();
+	protected final boolean isStateful() {
+		return getValueType().isStateful();
+	}
 
-	protected boolean lock() {
-		return getValueType().getDefaultStatefulness().isStateful();
+	protected final boolean lock() {
+		return isStateful();
 	}
 
 	protected abstract ObjBuilder createBuilder(
@@ -200,19 +186,6 @@ abstract class AbstractObjectValueBuilder
 			falseKept.debug("False kept");
 			result.storeFalse(falseKept);
 			falseKept.returnVoid();
-		}
-	}
-
-	private static void returnIfStateless(Block code, BoolOp stateless) {
-		if (stateless == null) {
-			return;
-		}
-
-		final Block ret = code.addBlock("return");
-
-		stateless.go(code, ret.head());
-		if (ret.exists()) {
-			ret.returnVoid();
 		}
 	}
 

@@ -56,11 +56,6 @@ final class ObjectValueBuilder extends AbstractObjectValueBuilder {
 	}
 
 	@Override
-	protected boolean isStateful() {
-		return this.fn.getObject().value().getStatefulness().isStateful();
-	}
-
-	@Override
 	protected ObjBuilder createBuilder(
 			Function<ObjectValueFunc> function,
 			CodePos failureDir) {

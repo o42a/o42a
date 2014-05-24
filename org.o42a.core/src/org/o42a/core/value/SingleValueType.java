@@ -38,8 +38,13 @@ public abstract class SingleValueType<T> extends ValueType<T> {
 	}
 
 	@Override
-	public Statefulness getDefaultStatefulness() {
+	public final Statefulness getDefaultStatefulness() {
 		return Statefulness.STATELESS;
+	}
+
+	@Override
+	public final boolean isStateful() {
+		return false;
 	}
 
 	@Override

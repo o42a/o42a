@@ -79,6 +79,11 @@ public class ArrayValueType extends ValueType<Array> {
 	}
 
 	@Override
+	public final boolean isStateful() {
+		return isVariable();
+	}
+
+	@Override
 	public final boolean isVariable() {
 		return this.variable;
 	}

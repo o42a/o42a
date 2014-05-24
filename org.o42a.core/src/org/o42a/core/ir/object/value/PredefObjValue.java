@@ -43,7 +43,6 @@ public abstract class PredefObjValue {
 			new DefaultObjValue();
 
 	private static final ID OBJ_VALUE_ID = ID.id("_o42a_obj_value");
-	private static final ID OBJ_KEEP_ID = ID.id("_o42a_obj_keep");
 	private static final ID OBJ_COND_ID = ID.id("_o42a_obj_cond");
 
 	private final boolean typeAware;
@@ -59,10 +58,9 @@ public abstract class PredefObjValue {
 	public final FuncPtr<ObjectValueFunc> valueFunction(
 			CompilerContext context,
 			Generator generator,
-			ValueType<?> valueType,
-			boolean stateful) {
+			ValueType<?> valueType) {
 		return predefObjValues(generator)
-				.valueFunction(context, this, valueType, stateful);
+				.valueFunction(context, this, valueType);
 	}
 
 	public final FuncPtr<ObjectCondFunc> condFunction(
@@ -76,8 +74,7 @@ public abstract class PredefObjValue {
 	abstract FuncPtr<ObjectValueFunc> createValueFunction(
 			CompilerContext context,
 			Generator generator,
-			ValueType<?> valueType,
-			boolean stateful);
+			ValueType<?> valueType);
 
 	abstract FuncPtr<ObjectCondFunc> createCondFunction(
 			CompilerContext context,
@@ -99,8 +96,7 @@ public abstract class PredefObjValue {
 		FuncPtr<ObjectValueFunc> createValueFunction(
 				CompilerContext context,
 				Generator generator,
-				ValueType<?> valueType,
-				boolean stateful) {
+				ValueType<?> valueType) {
 			return generator.externalFunction().link(
 					"o42a_obj_value_false",
 					OBJECT_VALUE);
@@ -133,8 +129,7 @@ public abstract class PredefObjValue {
 		FuncPtr<ObjectValueFunc> createValueFunction(
 				CompilerContext context,
 				Generator generator,
-				ValueType<?> valueType,
-				boolean stateful) {
+				ValueType<?> valueType) {
 			return generator.externalFunction().link(
 					"o42a_obj_value_void",
 					OBJECT_VALUE);
@@ -167,8 +162,7 @@ public abstract class PredefObjValue {
 		FuncPtr<ObjectValueFunc> createValueFunction(
 				CompilerContext context,
 				Generator generator,
-				ValueType<?> valueType,
-				boolean stateful) {
+				ValueType<?> valueType) {
 			return generator.externalFunction().link(
 					"o42a_obj_value_stub",
 					OBJECT_VALUE);
@@ -201,25 +195,11 @@ public abstract class PredefObjValue {
 		FuncPtr<ObjectValueFunc> createValueFunction(
 				CompilerContext context,
 				Generator generator,
-				ValueType<?> valueType,
-				boolean stateful) {
+				ValueType<?> valueType) {
 
-			final ID prefix;
-
-			if (valueType.getDefaultStatefulness().isStateful()) {
-				assert stateful :
-					"Stateless value function can not be constructed for "
-					+ valueType;
-				prefix = OBJ_VALUE_ID;
-			} else if (stateful) {
-				prefix = OBJ_KEEP_ID;
-			} else {
-				prefix = OBJ_VALUE_ID;
-			}
-
-			final ID id = prefix.sub(valueType.getSystemId());
+			final ID id = OBJ_VALUE_ID.sub(valueType.getSystemId());
 			final PredefValueBuilder builder =
-					new PredefValueBuilder(context, id, valueType, stateful);
+					new PredefValueBuilder(context, id, valueType);
 			final Function<ObjectValueFunc> function =
 					generator.newFunction().create(
 							id,
