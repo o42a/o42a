@@ -737,13 +737,6 @@ public abstract class Obj
 	}
 
 	protected Statefulness determineStatefulness() {
-
-		final Statefulness derivedStatefulness = type().derivedStatefulness();
-
-		if (derivedStatefulness.isStateful()) {
-			return derivedStatefulness;
-		}
-
 		return type().getValueType().getDefaultStatefulness();
 	}
 

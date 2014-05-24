@@ -22,7 +22,6 @@ package org.o42a.core.object;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.object.impl.ObjectResolution.NOT_RESOLVED;
-import static org.o42a.core.object.value.Statefulness.STATELESS;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import java.util.*;
@@ -31,7 +30,6 @@ import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
 import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
-import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ObjectTypeParameters;
@@ -287,35 +285,6 @@ public final class ObjectType {
 		parameters = applyAncestorParameters(parameters);
 
 		return applyExplicitParameters(parameters);
-	}
-
-	final Statefulness derivedStatefulness() {
-
-		final TypeRef ancestor = getAscendants().getAncestor();
-
-		if (ancestor != null) {
-
-			final Statefulness ancestorStatefulness =
-					ancestor.getType().value().getStatefulness();
-
-			if (ancestorStatefulness.isStateful()) {
-				return ancestorStatefulness;
-			}
-		}
-
-		final Sample sample = getSample();
-
-		if (sample != null) {
-
-			final Statefulness sampleStatefulness =
-					sample.getObject().value().getStatefulness();
-
-			if (sampleStatefulness.isStateful()) {
-				return sampleStatefulness;
-			}
-		}
-
-		return STATELESS;
 	}
 
 	void registerDerivative(Derivative derivative) {

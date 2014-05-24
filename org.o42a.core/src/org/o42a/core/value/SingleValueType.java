@@ -43,11 +43,6 @@ public abstract class SingleValueType<T> extends ValueType<T> {
 	}
 
 	@Override
-	public final boolean isStateful() {
-		return false;
-	}
-
-	@Override
 	public final boolean isVariable() {
 		return false;
 	}
