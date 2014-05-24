@@ -12,7 +12,9 @@ Row list ::=> list
 A row represented as <list>. 
 ~~~
 
-Data :=< #element type` row ~~ A row represented by this list.
+::Source :=< #element type` row ~~ A source row represented by this list.
+::Data :- source>> ~~ List data.
+
 
 Size = \data: length
 
@@ -22,8 +24,8 @@ Size = \data: length
   )
 )
 
-<[[Items]]!> Data = *
-<[= Init]!> Data = *
+<[[Items]]!> Source = *
+<[= Init]!> Source = *
 ~~~
 Constructs a list by the given row.
 ~~~
@@ -32,6 +34,6 @@ Constructs a list by the given row.
   ~~~
   Constructs a list by the given row.
   ~~~
-  <[[Items]]!> Data = * ~~ Row expression argument.
-  <[Row]!> Data = *     ~~ Row value argument. 
+  <[[Items]]!> Source = * ~~ Row expression argument.
+  <[Row]!> Source = *     ~~ Row value argument. 
 )
