@@ -110,6 +110,8 @@ public abstract class ValueType<T> {
 
 	public abstract Statefulness getDefaultStatefulness();
 
+	public abstract boolean isStateful();
+
 	public abstract boolean isVariable();
 
 	public final boolean is(ValueType<?> valueType) {

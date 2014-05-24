@@ -127,8 +127,7 @@ public final class ObjectValueFnIR
 		return value.valueFunction(
 				getObject().getContext(),
 				getGenerator(),
-				getValueType(),
-				getObject().value().getStatefulness().isStateful());
+				getValueType());
 	}
 
 }
