@@ -935,9 +935,6 @@ static o42a_obj_data_t *propagate_object(
 	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
 		data->value = ctr->value;
 		data->value.flags |= O42A_VAL_EAGER;
-	} else if ((sdata->value.flags & O42A_VAL_STATELESS)
-			&& (adata->value.flags & O42A_VAL_STATELESS)) {
-		data->value.flags = O42A_VAL_STATELESS;
 	} else if (adata->value.flags & O42A_VAL_EAGER) {
 		data->value = adata->value;
 	} else {
@@ -1241,9 +1238,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
 		data->value = ctr->value;
 		data->value.flags |= O42A_VAL_EAGER;
-	} else if ((sdata->value.flags & O42A_VAL_STATELESS)
-			&& (adata->value.flags & O42A_VAL_STATELESS)) {
-		data->value.flags = O42A_VAL_STATELESS;
 	} else if (sflags & O42A_OBJ_ANCESTOR_DEF) {
 		if (adata->value.flags & O42A_VAL_EAGER) {
 			data->value = adata->value;
