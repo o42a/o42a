@@ -22,8 +22,7 @@ package org.o42a.core.member.field;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
 import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
-import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
-import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
+import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -68,14 +67,6 @@ public class FieldAnalysis {
 
 	public final User<DerivationUsage> derivation() {
 		return derivationUses().toUser();
-	}
-
-	public final User<DerivationUsage> rtDerivation() {
-		return derivationUses().usageUser(RUNTIME_DERIVATION_USAGE);
-	}
-
-	public final User<DerivationUsage> staticDerivation() {
-		return derivationUses().usageUser(STATIC_DERIVATION_USAGE);
 	}
 
 	public String reasonNotFound(Analyzer analyzer) {
@@ -123,7 +114,7 @@ public class FieldAnalysis {
 		uses.useBy(object.fieldUses(), NESTED_USAGE);
 
 		if (object.type().isRuntimeConstructed()) {
-			derivationUses().useBy(object.content(), RUNTIME_DERIVATION_USAGE);
+			derivationUses().useBy(object.content(), DERIVATION_USAGE);
 		}
 	}
 
@@ -166,27 +157,22 @@ public class FieldAnalysis {
 		final ObjectType ownerType = member.getMemberOwner().type();
 
 		// If owner derived then member derived too.
-		this.derivationUses.useBy(
-				ownerType.staticDerivation(),
-				STATIC_DERIVATION_USAGE);
-		this.derivationUses.useBy(
-				ownerType.rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
+		this.derivationUses.useBy(ownerType.derivation(), DERIVATION_USAGE);
 
 		final MemberField firstDeclaration = member.getFirstDeclaration();
 
 		if (firstDeclaration != member) {
-			firstDeclaration.getAnalysis().derivationUses().useBy(
-					this.derivationUses,
-					STATIC_DERIVATION_USAGE);
+			firstDeclaration.getAnalysis()
+			.derivationUses()
+			.useBy(this.derivationUses, DERIVATION_USAGE);
 			if (!member.isUpdated()) {
 
 				final MemberField lastDefinition = member.getLastDefinition();
 
 				if (lastDefinition != member) {
-					lastDefinition.getAnalysis().derivationUses().useBy(
-							rtDerivation(),
-							RUNTIME_DERIVATION_USAGE);
+					lastDefinition.getAnalysis()
+					.derivationUses()
+					.useBy(derivation(), DERIVATION_USAGE);
 				}
 			}
 		}

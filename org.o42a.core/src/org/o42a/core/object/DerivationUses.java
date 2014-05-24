@@ -19,11 +19,8 @@
 */
 package org.o42a.core.object;
 
-import static org.o42a.analysis.Analyzer.TRACK_RUNTIME_USES;
-import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
-import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
-import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
-import static org.o42a.core.ref.RefUser.rtRefUser;
+import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
+import static org.o42a.core.object.value.ValueUsage.EXPLICIT_VALUE_USAGE;
 
 import org.o42a.analysis.use.Usable;
 import org.o42a.analysis.use.User;
@@ -52,29 +49,19 @@ final class DerivationUses {
 	}
 
 	public final RefUser refUser() {
-		return rtRefUser(toUser(), rtUser());
+		return RefUser.refUser(toUser());
 	}
 
 	public final void useBy(RefUser user) {
-		if (user.hasRtUser()) {
-			uses().useBy(user.rtUser(), RUNTIME_DERIVATION_USAGE);
-		}
+		uses().useBy(user.toUser(), DERIVATION_USAGE);
 	}
 
 	public final User<DerivationUsage> toUser() {
 		return uses().toUser();
 	}
 
-	public final User<DerivationUsage> rtUser() {
-		return uses().usageUser(RUNTIME_DERIVATION_USAGE);
-	}
-
-	public final User<DerivationUsage> staticUser() {
-		return uses().usageUser(STATIC_DERIVATION_USAGE);
-	}
-
 	public final void wrapBy(DerivationUses other) {
-		uses().useBy(other.rtUser(), RUNTIME_DERIVATION_USAGE);
+		uses().useBy(other.toUser(), DERIVATION_USAGE);
 	}
 
 	public void resolveAll() {
@@ -91,13 +78,8 @@ final class DerivationUses {
 	}
 
 	void useAsAncestor(Obj derived) {
-		uses().useBy(
-				derived.content(),
-				!derived.meta().isUpdated()
-				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
-		uses().useBy(
-				derived.type().rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
+		uses().useBy(derived.content(), DERIVATION_USAGE);
+		uses().useBy(derived.type().derivation(), DERIVATION_USAGE);
 		trackUpdatesByAncestor(derived);
 	}
 
@@ -105,13 +87,8 @@ final class DerivationUses {
 
 		final Obj derived = sample.getDerivedObject();
 
-		uses().useBy(
-				derived.content(),
-				!derived.meta().isUpdated()
-				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
-		uses().useBy(
-				derived.type().rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
+		uses().useBy(derived.content(), DERIVATION_USAGE);
+		uses().useBy(derived.type().derivation(), DERIVATION_USAGE);
 
 		trackUpdatesBySample(sample);
 		trackSampleRtDerivation(sample);
@@ -143,11 +120,7 @@ final class DerivationUses {
 		}
 
 		this.uses = DerivationUsage.usable("DerivationOf", object);
-		if (!TRACK_RUNTIME_USES) {
-			this.uses.useBy(
-					this.uses.usageUser(STATIC_DERIVATION_USAGE),
-					RUNTIME_DERIVATION_USAGE);
-		}
+		this.uses.useBy(this.uses, DERIVATION_USAGE);
 
 		final Member member = object.toMember();
 
@@ -169,12 +142,7 @@ final class DerivationUses {
 			return;
 		}
 
-		this.uses.useBy(
-				field.getAnalysis().rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
-		this.uses.useBy(
-				field.getAnalysis().staticDerivation(),
-				STATIC_DERIVATION_USAGE);
+		this.uses.useBy(field.getAnalysis().derivation(), DERIVATION_USAGE);
 	}
 
 	private void detectStandaloneObjectRtDerivation() {
@@ -183,13 +151,11 @@ final class DerivationUses {
 		}
 
 		// Stand-alone object is constructed at run time, if it's ever derived.
-		this.uses.useBy(staticUser(), RUNTIME_DERIVATION_USAGE);
+		this.uses.useBy(toUser(), DERIVATION_USAGE);
 
 		// Stand-alone object is constructed at run time
 		// if its owner's value is ever used at runtime.
-		this.uses.useBy(
-				getOwner().value().rtUses(),
-				RUNTIME_DERIVATION_USAGE);
+		this.uses.useBy(getOwner().value().uses(), DERIVATION_USAGE);
 	}
 
 	private void trackUpdatesByAncestor(Obj derived) {
@@ -237,8 +203,8 @@ final class DerivationUses {
 		final Obj owner = sample.getScope().toObject();
 
 		owner.value().uses().useBy(
-				derived.type().rtDerivation(),
-				EXPLICIT_RUNTIME_VALUE_USAGE);
+				derived.type().derivation(),
+				EXPLICIT_VALUE_USAGE);
 	}
 
 	private void trackAscendantDefsUsage(Obj derived) {

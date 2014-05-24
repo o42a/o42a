@@ -19,9 +19,9 @@
 */
 package org.o42a.core.object;
 
-import static org.o42a.analysis.Analyzer.TRACK_RUNTIME_USES;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
-import static org.o42a.core.object.value.ValueUsage.*;
+import static org.o42a.core.object.value.ValueUsage.EXPLICIT_VALUE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.VALUE_USAGE;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
 import static org.o42a.core.ref.RefUser.refUser;
 
@@ -194,14 +194,7 @@ public final class ObjectValue extends ObjectValueBase {
 
 	public final ObjectValue explicitUseBy(RefUser user) {
 		if (!user.toUser().isDummy()) {
-			uses().useBy(
-					user,
-					isRuntimeConstructed()
-					? EXPLICIT_RUNTIME_VALUE_USAGE
-					: EXPLICIT_STATIC_VALUE_USAGE);
-			if (user.hasRtUser()) {
-				uses().useBy(user.rtUser(), EXPLICIT_RUNTIME_VALUE_USAGE);
-			}
+			uses().useBy(user, EXPLICIT_VALUE_USAGE);
 		}
 		return this;
 	}
@@ -250,8 +243,8 @@ public final class ObjectValue extends ObjectValueBase {
 		getDefinitions().normalize(normalizer);
 	}
 
-	public final User<ValueUsage> rtUses() {
-		return uses().selectiveUser(ANY_RUNTIME_VALUE_USAGE);
+	public final User<ValueUsage> toUser() {
+		return uses().toUser();
 	}
 
 	@Override
@@ -269,16 +262,14 @@ public final class ObjectValue extends ObjectValueBase {
 			// Always construct the value functions
 			// of run-time constructed objects.
 			this.uses.useBy(
-					getObject().type().rtDerivation(),
-					RUNTIME_VALUE_USAGE);
-			if (!TRACK_RUNTIME_USES) {
-				this.uses.useBy(
-						this.uses.usageUser(EXPLICIT_STATIC_VALUE_USAGE),
-						EXPLICIT_RUNTIME_VALUE_USAGE);
-				this.uses.useBy(
-						this.uses.usageUser(STATIC_VALUE_USAGE),
-						RUNTIME_VALUE_USAGE);
-			}
+					getObject().type().derivation(),
+					VALUE_USAGE);
+			this.uses.useBy(
+					this.uses.usageUser(EXPLICIT_VALUE_USAGE),
+					EXPLICIT_VALUE_USAGE);
+			this.uses.useBy(
+					this.uses.usageUser(VALUE_USAGE),
+					VALUE_USAGE);
 		}
 		getObject().content().useBy(this.uses);
 
@@ -303,12 +294,7 @@ public final class ObjectValue extends ObjectValueBase {
 			return;
 		}
 
-		final Usable<ValueUsage> ancestorUses = ancestor.value().uses();
-
-		ancestorUses.useBy(
-				uses().selectiveUser(ANY_STATIC_VALUE_USAGE),
-				STATIC_VALUE_USAGE);
-		ancestorUses.useBy(rtUses(), RUNTIME_VALUE_USAGE);
+		ancestor.value().uses().useBy(uses(), VALUE_USAGE);
 	}
 
 	private Definitions getAncestorDefinitions() {
