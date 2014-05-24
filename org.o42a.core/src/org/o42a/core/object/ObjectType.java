@@ -167,14 +167,6 @@ public final class ObjectType {
 		return derivationUses().toUser();
 	}
 
-	public final User<DerivationUsage> rtDerivation() {
-		return derivationUses().rtUser();
-	}
-
-	public final User<DerivationUsage> staticDerivation() {
-		return derivationUses().staticUser();
-	}
-
 	public final boolean derivedFrom(ObjectType other) {
 		return allAscendants().containsKey(other.getObject().getScope());
 	}

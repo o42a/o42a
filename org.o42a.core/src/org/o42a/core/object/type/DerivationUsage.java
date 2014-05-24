@@ -27,10 +27,8 @@ public final class DerivationUsage extends Usage<DerivationUsage> {
 	public static final AllUsages<DerivationUsage> ALL_DERIVATION_USAGES =
 			new AllUsages<>(DerivationUsage.class);
 
-	public static final DerivationUsage STATIC_DERIVATION_USAGE =
-			new DerivationUsage("StaticDerivation");
-	public static final DerivationUsage RUNTIME_DERIVATION_USAGE =
-			new DerivationUsage("RuntimeDerivation");
+	public static final DerivationUsage DERIVATION_USAGE =
+			new DerivationUsage("Derivation");
 
 	public static final Uses<DerivationUsage> alwaysUsed() {
 		return ALL_DERIVATION_USAGES.alwaysUsed();

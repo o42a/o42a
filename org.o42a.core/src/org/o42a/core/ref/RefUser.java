@@ -44,32 +44,10 @@ public final class RefUser implements UserInfo {
 		return new RefUser(usr);
 	}
 
-	public static RefUser rtRefUser(UserInfo user, UserInfo rtUser) {
-
-		final User<?> usr = user.toUser();
-
-		if (usr.isDummy()) {
-			return dummyRefUser();
-		}
-
-		return new RefUser(usr, rtUser.toUser());
-	}
-
 	private final User<?> user;
-	private final User<?> rtUser;
 
 	RefUser(User<?> user) {
 		this.user = user;
-		this.rtUser = dummyUser();
-	}
-
-	RefUser(User<?> user, User<?> rtUser) {
-		this.user = user;
-		this.rtUser = rtUser;
-	}
-
-	public final boolean hasRtUser() {
-		return !rtUser().toUser().isDummy();
 	}
 
 	@Override
@@ -77,19 +55,12 @@ public final class RefUser implements UserInfo {
 		return this.user.toUser();
 	}
 
-	public final User<?> rtUser() {
-		return this.rtUser.toUser();
-	}
-
 	@Override
 	public String toString() {
-		if (this.rtUser == null) {
+		if (this.user == null) {
 			return super.toString();
 		}
-		if (!hasRtUser()) {
-			return this.user.toString();
-		}
-		return this.user + "(at run time: " + this.rtUser + ')';
+		return this.user.toString();
 	}
 
 }

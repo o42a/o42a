@@ -26,7 +26,7 @@ import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -91,7 +91,7 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 
 		if (!analysis.derivation().isUsed(
 				getGenerator().getAnalyzer(),
-				RUNTIME_DERIVATION_USAGE)) {
+				DERIVATION_USAGE)) {
 			// Reuse the derived constructor if no run-time
 			// inheritance expected.
 			return getType().constructorStub();

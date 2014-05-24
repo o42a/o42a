@@ -30,8 +30,6 @@ import org.o42a.util.Chain;
 
 public class Analyzer implements UseCaseInfo {
 
-	public static final boolean TRACK_RUNTIME_USES = false;
-
 	private final Chain<Doubt> doubts =
 			new Chain<>(Doubt::getNext, Doubt::setNext);
 	private UseCase useCase;
