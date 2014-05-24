@@ -21,7 +21,7 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.ir.ObjectsCode.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 
 import java.util.IdentityHashMap;
 
@@ -233,7 +233,7 @@ public abstract class ObjectConstructor
 		private boolean isExact() {
 			return !getConstructed().type().derivation().isUsed(
 					getGenerator().getAnalyzer(),
-					RUNTIME_DERIVATION_USAGE);
+					DERIVATION_USAGE);
 		}
 
 		private ObjectOp createObject(CodeDirs dirs, ObjHolder holder) {
