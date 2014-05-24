@@ -145,13 +145,13 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void keepLink() {
+	public void eagerLink() {
 		compile(
 				"A :=> void #(",
 				"  T := void",
 				") (",
 				"  F :=< #t` link",
-				"  G := \\\\f",
+				"  G := f>>",
 				")",
 				"B := integer` a (",
 				"  F = 23",
@@ -168,13 +168,13 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void keepVariable() {
+	public void eagerVariable() {
 		compile(
 				"A :=> void #(",
 				"  T := void",
 				") (",
 				"  F :=< #t` variable",
-				"  G := \\\\f",
+				"  G := f>>",
 				")",
 				"B := integer` a (",
 				"  F = 23",
@@ -188,13 +188,13 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void keepLinkTarget() {
+	public void eagerLinkTarget() {
 		compile(
 				"A :=> void #(",
 				"  T := void",
 				") (",
 				"  F :=< #t` link",
-				"  G := `\\\\f->",
+				"  G := #t` link = f->>>",
 				")",
 				"B := integer` a (",
 				"  F = 23",
@@ -203,18 +203,20 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 		assertThat(
 				LinkValueType.LINK.interfaceRef(
 						field("b", "g").toObject().type().getParameters())
-						.getType(),
-						is(this.context.getIntrinsics().getInteger()));
+						.getType()
+						.type()
+						.getValueType(),
+						valueType(ValueType.INTEGER));
 	}
 
 	@Test
-	public void keepVariableTarget() {
+	public void eagerVariableTarget() {
 		compile(
 				"A :=> void #(",
 				"  T := void",
 				") (",
 				"  F :=< #t` variable",
-				"  G := `\\\\f->",
+				"  G := #t` link = f->>>",
 				")",
 				"B := integer` a (",
 				"  F = 23",
@@ -223,8 +225,10 @@ public class ParameterUpgradeTest extends CompilerTestCase {
 		assertThat(
 				LinkValueType.LINK.interfaceRef(
 						field("b", "g").toObject().type().getParameters())
-				.getType(),
-				is(this.context.getIntrinsics().getInteger()));
+				.getType()
+				.type()
+				.getValueType(),
+				valueType(ValueType.INTEGER));
 	}
 
 }

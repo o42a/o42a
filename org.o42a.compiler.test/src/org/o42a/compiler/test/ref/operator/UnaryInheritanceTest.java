@@ -65,11 +65,11 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void keepValue() {
+	public void eagerValue() {
 		compile(
 				"A := void (",
 				"  Foo := 1",
-				"  Bar := \\\\foo",
+				"  Bar := foo>>",
 				")",
 				"B := a (Foo = 2)",
 				"C := b");
