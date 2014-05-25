@@ -64,8 +64,8 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_data_t, defs_f),
-			.name = "proposition_f",
+			.offset = offsetof(o42a_obj_data_t, def_f),
+			.name = "def_f",
 		},
 		{
 			.data_type = O42A_TYPE_STRUCT,
@@ -931,7 +931,7 @@ static o42a_obj_data_t *propagate_object(
 
 	data->value_f = adata->value_f;
 	data->cond_f = adata->cond_f;
-	data->defs_f = adata->defs_f;
+	data->def_f = adata->def_f;
 	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
 		data->value = ctr->value;
 		data->value.flags |= O42A_VAL_EAGER;
@@ -1233,8 +1233,8 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	data->value_f = sdata->value_f;
 	data->cond_f = sdata->cond_f;
-	data->defs_f =
-			(sflags & O42A_OBJ_ANCESTOR_DEF) ? adata->defs_f : sdata->defs_f;
+	data->def_f =
+			(sflags & O42A_OBJ_ANCESTOR_DEF) ? adata->def_f : sdata->def_f;
 	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
 		data->value = ctr->value;
 		data->value.flags |= O42A_VAL_EAGER;
@@ -1302,7 +1302,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 }
 
 
-void o42a_obj_val_false(
+void o42a_obj_def_false(
 		o42a_val_t *const result,
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
@@ -1326,7 +1326,7 @@ o42a_bool_t o42a_obj_cond_false(
 }
 
 
-void o42a_obj_val_void(
+void o42a_obj_def_void(
 		o42a_val_t *const result,
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
@@ -1350,14 +1350,14 @@ o42a_bool_t o42a_obj_cond_true(
 }
 
 
-void o42a_obj_val_unknown(
+void o42a_obj_def_unknown(
 		o42a_val_t *const result __attribute__((unused)),
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }
 
-void o42a_obj_val_stub(
+void o42a_obj_def_stub(
 		o42a_val_t *const result,
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);

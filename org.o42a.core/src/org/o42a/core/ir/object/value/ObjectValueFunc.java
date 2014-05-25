@@ -90,7 +90,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 		private Arg<DataOp> object;
 
 		private Signature() {
-			super(ID.id("ObjectValueF"));
+			super(ID.rawId("o42a_obj_value_ft"));
 		}
 
 		public final Return<Void> result() {

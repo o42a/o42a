@@ -22,7 +22,7 @@ package org.o42a.core.ir.object.value;
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ObjectDefFunc.OBJECT_DEF;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 import static org.o42a.core.object.value.ValuePartUsage.ALL_VALUE_PART_USAGES;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
@@ -33,7 +33,7 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectSignature;
-import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ObjectDefFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
@@ -43,13 +43,13 @@ import org.o42a.core.st.DefValue;
 import org.o42a.util.string.ID;
 
 
-public class ObjectValueDefsFnIR
-		extends AbstractObjectValueFnIR<ObjectValFunc>
-		implements FunctionBuilder<ObjectValFunc> {
+public class ObjectValueDefFnIR
+		extends AbstractObjectValueFnIR<ObjectDefFunc>
+		implements FunctionBuilder<ObjectDefFunc> {
 
-	private static final ID DEFS_ID = ID.id("defs");
+	private static final ID DEF_ID = ID.rawId("def");
 
-	public ObjectValueDefsFnIR(ObjectValueIR valueIR) {
+	public ObjectValueDefFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
@@ -70,7 +70,7 @@ public class ObjectValueDefsFnIR
 
 		if (!writeIfConstant(subDirs, getFinal())) {
 
-			final ObjectValFunc func = get(host).op(suffix(), code);
+			final ObjectDefFunc func = get(host).op(suffix(), code);
 
 			func.call(subDirs, objectArg(code, host));
 		}
@@ -79,7 +79,7 @@ public class ObjectValueDefsFnIR
 	}
 
 	@Override
-	public void build(Function<ObjectValFunc> function) {
+	public void build(Function<ObjectDefFunc> function) {
 		function.debug("Calculating definition");
 
 		final Block failure = function.addBlock("failure");
@@ -91,7 +91,7 @@ public class ObjectValueDefsFnIR
 				getObjectIR().getObject(),
 				getObjectIR().isExact() ? EXACT : DERIVED);
 		final ValOp result =
-				function.arg(function, OBJECT_VAL.value())
+				function.arg(function, OBJECT_DEF.value())
 				.op(function, builder, getValueType(), VAL_TRAP);
 		final DefDirs dirs =
 				builder.dirs(function, failure.head())
@@ -126,11 +126,11 @@ public class ObjectValueDefsFnIR
 
 	@Override
 	protected ID suffix() {
-		return DEFS_ID;
+		return DEF_ID;
 	}
 
 	@Override
-	protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
+	protected FuncRec<ObjectDefFunc> func(ObjectIRData data) {
 		return data.defsFunc();
 	}
 
@@ -158,12 +158,12 @@ public class ObjectValueDefsFnIR
 	}
 
 	@Override
-	protected final ObjectSignature<ObjectValFunc> signature() {
-		return OBJECT_VAL;
+	protected final ObjectSignature<ObjectDefFunc> signature() {
+		return OBJECT_DEF;
 	}
 
 	@Override
-	protected final FunctionBuilder<ObjectValFunc> builder() {
+	protected final FunctionBuilder<ObjectDefFunc> builder() {
 		return this;
 	}
 
@@ -176,31 +176,31 @@ public class ObjectValueDefsFnIR
 	}
 
 	@Override
-	protected final FuncPtr<ObjectValFunc> stubFunc() {
+	protected final FuncPtr<ObjectDefFunc> stubFunc() {
 		return getGenerator()
 				.externalFunction()
-				.link("o42a_obj_val_stub", OBJECT_VAL);
+				.link("o42a_obj_def_stub", OBJECT_DEF);
 	}
 
 	@Override
-	protected final FuncPtr<ObjectValFunc> unknownValFunc() {
+	protected final FuncPtr<ObjectDefFunc> unknownValFunc() {
 		return getGenerator()
 				.externalFunction()
-				.link("o42a_obj_val_unknown", OBJECT_VAL);
+				.link("o42a_obj_def_unknown", OBJECT_DEF);
 	}
 
 	@Override
-	protected final FuncPtr<ObjectValFunc> falseValFunc() {
+	protected final FuncPtr<ObjectDefFunc> falseValFunc() {
 		return getGenerator()
 				.externalFunction()
-				.link("o42a_obj_val_false", OBJECT_VAL);
+				.link("o42a_obj_def_false", OBJECT_DEF);
 	}
 
 	@Override
-	protected final FuncPtr<ObjectValFunc> voidValFunc() {
+	protected final FuncPtr<ObjectDefFunc> voidValFunc() {
 		return getGenerator()
 				.externalFunction()
-				.link("o42a_obj_val_void", OBJECT_VAL);
+				.link("o42a_obj_def_void", OBJECT_DEF);
 	}
 
 	@Override
@@ -218,7 +218,7 @@ public class ObjectValueDefsFnIR
 		final Obj reuseFrom = def.getSource();
 		final ObjectValueIR reuseFromIR =
 				reuseFrom.ir(getGenerator()).allocate().getObjectValueIR();
-		final FuncPtr<ObjectValFunc> reused = reuseFromIR.defs().getNotStub();
+		final FuncPtr<ObjectDefFunc> reused = reuseFromIR.defs().getNotStub();
 
 		if (reused != null) {
 			reuse(reused);
