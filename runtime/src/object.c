@@ -1361,7 +1361,7 @@ void o42a_obj_def_stub(
 		o42a_val_t *const result,
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
-	o42a_error_print("Object value part stub invoked");
+	o42a_error_print("Object value definition stub invoked");
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
 }

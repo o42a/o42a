@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+import static org.o42a.core.ir.value.Val.VAL_EAGER;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
@@ -30,6 +31,7 @@ import java.util.function.Supplier;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.Int32rec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
@@ -247,20 +249,37 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		final Obj object = getObjectIR().getObject();
 
-		if (!object.type().getValueType().isStateful()) {
+		if (object.value().getStatefulness().isEager()) {
+			fillKnownValue(instance, object, true);
+		} else if (object.type().getValueType().isStateful()) {
+			fillKnownValue(instance, object, false);
+		} else {
 			instance.value().set(INDEFINITE_VAL);
-			return;
 		}
+	}
+
+	private void fillKnownValue(
+			ObjectIRData instance,
+			Obj object,
+			boolean eager) {
 
 		final ValueKnowledge knowledge =
 				object.value().getValue().getKnowledge();
 
 		if (!knowledge.isInitiallyKnown()) {
 			instance.value().set(INDEFINITE_VAL);
-		} else if (knowledge.isFalse()) {
+			return;
+		}
+
+		final Int32rec flags = instance.value().flags();
+
+		if (knowledge.isFalse()) {
 			instance.value().set(FALSE_VAL);
 		} else {
 			getObjectIR().getValueIR().setInitialValue(this);
+		}
+		if (eager) {
+			flags.setValue(flags.getValue().get() | VAL_EAGER);
 		}
 	}
 

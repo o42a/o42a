@@ -180,8 +180,8 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		final DefValue finalValue = getFinal();
 
 		if (isConstantValue(finalValue)) {
+			// Final value is false.
 			if (finalValue.getCondition().isFalse()) {
-				// Always false.
 				reuse(falseValFunc());
 				return;
 			}

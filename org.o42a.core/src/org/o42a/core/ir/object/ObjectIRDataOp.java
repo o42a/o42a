@@ -87,7 +87,7 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 	}
 
 	public final FuncOp<ObjectDefFunc> defsFunc(Code code) {
-		return func(null, code, getType().defsFunc());
+		return func(null, code, getType().defFunc());
 	}
 
 	public final ValType.Op value(Code code) {
