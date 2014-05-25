@@ -43,13 +43,13 @@ import org.o42a.core.st.DefValue;
 import org.o42a.util.string.ID;
 
 
-public class ObjectValueDefFnIR
+public class ObjectDefFnIR
 		extends AbstractObjectValueFnIR<ObjectDefFunc>
 		implements FunctionBuilder<ObjectDefFunc> {
 
 	private static final ID DEF_ID = ID.rawId("def");
 
-	public ObjectValueDefFnIR(ObjectValueIR valueIR) {
+	public ObjectDefFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
@@ -131,7 +131,7 @@ public class ObjectValueDefFnIR
 
 	@Override
 	protected FuncRec<ObjectDefFunc> func(ObjectIRData data) {
-		return data.defsFunc();
+		return data.defFunc();
 	}
 
 	@Override
@@ -218,7 +218,7 @@ public class ObjectValueDefFnIR
 		final Obj reuseFrom = def.getSource();
 		final ObjectValueIR reuseFromIR =
 				reuseFrom.ir(getGenerator()).allocate().getObjectValueIR();
-		final FuncPtr<ObjectDefFunc> reused = reuseFromIR.defs().getNotStub();
+		final FuncPtr<ObjectDefFunc> reused = reuseFromIR.def().getNotStub();
 
 		if (reused != null) {
 			reuse(reused);

@@ -72,12 +72,12 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected DefValue determineConstant() {
-		return getValueIR().defs().getConstant();
+		return getValueIR().def().getConstant();
 	}
 
 	@Override
 	protected DefValue determineFinal() {
-		return getValueIR().defs().getFinal();
+		return getValueIR().def().getFinal();
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected boolean canStub() {
-		return getValueIR().defs().canStub();
+		return getValueIR().def().canStub();
 	}
 
 	@Override

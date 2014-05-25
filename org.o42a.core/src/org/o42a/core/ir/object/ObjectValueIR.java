@@ -24,7 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.value.ObjectCondFnIR;
-import org.o42a.core.ir.object.value.ObjectValueDefFnIR;
+import org.o42a.core.ir.object.value.ObjectDefFnIR;
 import org.o42a.core.ir.object.value.ObjectValueFnIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.type.ValueOp;
@@ -36,13 +36,13 @@ public class ObjectValueIR {
 	private final ObjectIR objectIR;
 	private final ObjectValueFnIR value;
 	private final ObjectCondFnIR condition;
-	private final ObjectValueDefFnIR defs;
+	private final ObjectDefFnIR def;
 
 	protected ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
 		this.value = new ObjectValueFnIR(this);
 		this.condition = new ObjectCondFnIR(this);
-		this.defs = new ObjectValueDefFnIR(this);
+		this.def = new ObjectDefFnIR(this);
 	}
 
 	public final Generator getGenerator() {
@@ -65,8 +65,8 @@ public class ObjectValueIR {
 		return this.condition;
 	}
 
-	public final ObjectValueDefFnIR defs() {
-		return this.defs;
+	public final ObjectDefFnIR def() {
+		return this.def;
 	}
 
 	public final ValueOp op(CodeBuilder builder, Code code) {
@@ -81,8 +81,8 @@ public class ObjectValueIR {
 		condition().call(dirs, host);
 	}
 
-	public final void writeDefs(DefDirs dirs, ObjOp host) {
-		defs().call(dirs, host);
+	public final void writeDef(DefDirs dirs, ObjOp host) {
+		def().call(dirs, host);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class ObjectValueIR {
 	protected void allocate(ObjectDataIR typeIR) {
 		value().allocate(typeIR);
 		condition().allocate(typeIR);
-		defs().allocate(typeIR);
+		def().allocate(typeIR);
 	}
 
 }

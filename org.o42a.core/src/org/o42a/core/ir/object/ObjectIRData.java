@@ -63,7 +63,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private Int16rec flags;
 	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectCondFunc> condFunc;
-	private FuncRec<ObjectDefFunc> defsFunc;
+	private FuncRec<ObjectDefFunc> defFunc;
 	private ValType value;
 	private AnyRec resumeFrom;
 	private StructRec<ObjectIRDescOp> desc;
@@ -100,8 +100,8 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.condFunc;
 	}
 
-	public final FuncRec<ObjectDefFunc> defsFunc() {
-		return this.defsFunc;
+	public final FuncRec<ObjectDefFunc> defFunc() {
+		return this.defFunc;
 	}
 
 	public final ValType value() {
@@ -143,7 +143,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
-		this.defsFunc = data.addFuncPtr("defs_f", OBJECT_DEF);
+		this.defFunc = data.addFuncPtr("def_f", OBJECT_DEF);
 		this.value = data.addInstance(VALUE_ID, VAL_TYPE);
 		this.resumeFrom = data.addPtr("resume_from");
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
