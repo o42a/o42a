@@ -62,7 +62,7 @@ public final class ObjectCondFunc extends ObjectFunc<ObjectCondFunc> {
 		private Arg<DataOp> object;
 
 		private Signature() {
-			super(ID.id("ObjectCondF"));
+			super(ID.rawId("o42a_obj_cond_ft"));
 		}
 
 		public final Return<BoolOp> result() {
