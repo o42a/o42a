@@ -20,7 +20,7 @@
 package org.o42a.core.ir.value.array;
 
 import static org.o42a.core.ir.IRNames.CONST_ID;
-import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ObjectDefFunc.OBJECT_DEF;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
@@ -29,7 +29,7 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ObjectDefFunc;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.array.Array;
@@ -46,7 +46,7 @@ public class ArrayIR {
 	private Val val;
 	private Ptr<ValType.Op> valPtr;
 	private ArrayItemsIR items;
-	private FuncPtr<ObjectValFunc> constructor;
+	private FuncPtr<ObjectDefFunc> constructor;
 
 	public ArrayIR(ArrayIRGenerator generator, Array array) {
 		this.generator = generator;
@@ -122,7 +122,7 @@ public class ArrayIR {
 		return this.items = itemsContainer.items();
 	}
 
-	public final FuncPtr<ObjectValFunc> getConstructor() {
+	public final FuncPtr<ObjectDefFunc> getConstructor() {
 		if (this.constructor != null) {
 			return this.constructor;
 		}
@@ -137,7 +137,7 @@ public class ArrayIR {
 		return this.constructor =
 				getGenerator().newFunction().dontExport().create(
 						getId().detail("constructor"),
-						OBJECT_VAL,
+						OBJECT_DEF,
 						new ArrayConstructorBuilder(this))
 				.getPointer();
 	}
