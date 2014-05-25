@@ -22,7 +22,7 @@ package org.o42a.core.value.array.impl;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ObjectDefFunc.OBJECT_DEF;
 import static org.o42a.core.ir.value.ValAllocFunc.VAL_ALLOC;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
@@ -34,7 +34,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ObjectDefFunc;
 import org.o42a.core.ir.value.ValAllocFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.array.ArrayIR;
@@ -45,7 +45,7 @@ import org.o42a.util.string.ID;
 
 
 public class ArrayConstructorBuilder
-		implements FunctionBuilder<ObjectValFunc> {
+		implements FunctionBuilder<ObjectDefFunc> {
 
 	private static final ID ITEMS_ID = ID.id("items");
 
@@ -56,7 +56,7 @@ public class ArrayConstructorBuilder
 	}
 
 	@Override
-	public void build(Function<ObjectValFunc> function) {
+	public void build(Function<ObjectDefFunc> function) {
 
 		final Array array = this.arrayIR.getArray();
 		final Obj owner = array.getOwner();
@@ -68,7 +68,7 @@ public class ArrayConstructorBuilder
 				ownerIR.getMainBodyIR(),
 				owner,
 				ownerIR.isExact() ? EXACT : DERIVED);
-		final ValOp value = function.arg(function, OBJECT_VAL.value()).op(
+		final ValOp value = function.arg(function, OBJECT_DEF.value()).op(
 				function,
 				builder,
 				array.getValueType(),

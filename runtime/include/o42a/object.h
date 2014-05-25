@@ -32,12 +32,12 @@ typedef struct o42a_obj_data o42a_obj_data_t;
 
 
 /**
- * Function calculating some value by the given object.
+ * Object value definition function.
  *
  * \param result[out] object value to fill by function (stack-allocated).
  * \param object[in] object pointer.
  */
-typedef void o42a_obj_val_ft(o42a_val_t *, o42a_obj_t *);
+typedef void o42a_obj_def_ft(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Object value evaluation function.
@@ -256,11 +256,11 @@ struct o42a_obj_data {
 	o42a_obj_cond_ft *cond_f;
 
 	/**
-	 * Object's value definition function.
+	 * Object value definition function.
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_obj_val_ft *defs_f;
+	o42a_obj_def_ft *def_f;
 
 	/**
 	 * Object value.
@@ -664,9 +664,9 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
 
 
 /**
- * False value part.
+ * False value definition.
  */
-void o42a_obj_val_false(o42a_val_t *, o42a_obj_t *);
+void o42a_obj_def_false(o42a_val_t *, o42a_obj_t *);
 
 /**
  * False object value.
@@ -680,9 +680,9 @@ o42a_bool_t o42a_obj_cond_false(o42a_obj_t *);
 
 
 /**
- * Void value part.
+ * Void value definition.
  */
-void o42a_obj_val_void(o42a_val_t *, o42a_obj_t *);
+void o42a_obj_def_void(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Void object value.
@@ -696,17 +696,17 @@ o42a_bool_t o42a_obj_cond_true(o42a_obj_t *);
 
 
 /**
- * Unknown value.
+ * Unknown value definition.
  *
  * This function does not modify the value. So, after the function call,
  * the value remain indefinite, as it was before.
  */
-void o42a_obj_val_unknown(o42a_val_t *, o42a_obj_t *);
+void o42a_obj_def_unknown(o42a_val_t *, o42a_obj_t *);
 
 /**
- * Object value part evaluation stub.
+ * Object value definition stub.
  */
-void o42a_obj_val_stub(o42a_val_t *, o42a_obj_t *);
+void o42a_obj_def_stub(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Object value evaluation stub.

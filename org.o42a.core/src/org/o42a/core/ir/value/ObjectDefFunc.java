@@ -32,11 +32,11 @@ import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
+public final class ObjectDefFunc extends ObjectFunc<ObjectDefFunc> {
 
-	public static final Signature OBJECT_VAL = new Signature();
+	public static final Signature OBJECT_DEF = new Signature();
 
-	private ObjectValFunc(FuncCaller<ObjectValFunc> caller) {
+	private ObjectDefFunc(FuncCaller<ObjectDefFunc> caller) {
 		super(caller);
 	}
 
@@ -49,7 +49,7 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		final Block code = dirs.code();
 		final ValOp value = dirs.value();
 
-		invoke(null, code, OBJECT_VAL.result(), value.ptr(code), object);
+		invoke(null, code, OBJECT_DEF.result(), value.ptr(code), object);
 
 		final Block hasResult = code.addBlock("has_result");
 
@@ -64,14 +64,14 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		.goUnless(code, dirs.falseDir());
 	}
 
-	public static final class Signature extends ObjectSignature<ObjectValFunc> {
+	public static final class Signature extends ObjectSignature<ObjectDefFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> value;
 		private Arg<DataOp> object;
 
 		private Signature() {
-			super(ID.id("ObjectValF"));
+			super(ID.rawId("o42a_obj_def_ft"));
 		}
 
 		public final Return<Void> result() {
@@ -88,8 +88,8 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		}
 
 		@Override
-		public ObjectValFunc op(FuncCaller<ObjectValFunc> caller) {
-			return new ObjectValFunc(caller);
+		public ObjectDefFunc op(FuncCaller<ObjectDefFunc> caller) {
+			return new ObjectDefFunc(caller);
 		}
 
 		@Override

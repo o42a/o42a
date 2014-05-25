@@ -29,7 +29,7 @@ import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.DefiniteIROp;
-import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ObjectDefFunc;
 import org.o42a.core.object.Obj;
 
 
@@ -105,7 +105,7 @@ public final class ObjectDataOp extends DefiniteIROp {
 	public final void writeDefs(DefDirs dirs, ObjectOp body) {
 
 		final Block code = dirs.code();
-		final ObjectValFunc function =
+		final ObjectDefFunc function =
 				ptr().defsFunc(code).load(null, code);
 
 		function.call(dirs, body(code, body));
