@@ -43,8 +43,9 @@ Iteration ::= test (
   Print error '  ' [name] nl
 
   List := string` array list [["1/3", "2/3", "3/3"]]
-  List: iterate (): for each {
-    Print error '    ' [it] nl
+
+  List: each () $ each {
+    $It = each->? Print error '    ' [it] nl...
   }
 )
 

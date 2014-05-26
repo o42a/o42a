@@ -20,13 +20,11 @@ An indexed list of elements.
   <[Item index]!> Index = *
 )
 
-Iterate => * (
-  ::Next index := ``0
-  Next = * (
-    $Index = next index->
-    Next index +<< 1
-    = List:: [index]
-  )
+Each => * (
+  :Next index := ``0
+  $Index = next index->
+  Next index +<< 1
+  = List:: [$index]
 )
 
 <*Sublist> Sublist (

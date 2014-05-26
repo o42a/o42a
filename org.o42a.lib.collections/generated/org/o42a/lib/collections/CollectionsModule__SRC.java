@@ -44,7 +44,6 @@ public final class CollectionsModule__SRC implements AnnotatedSources {
 
 		this.sourceTree.add("array_list.o42a");
 		this.sourceTree.add("collection.o42a");
-		this.sourceTree.add("iterator.o42a");
 		this.sourceTree.add("list.o42a");
 		this.sourceTree.add("list/sublist.o42a");
 		this.sourceTree.add("mutable_list.o42a");
