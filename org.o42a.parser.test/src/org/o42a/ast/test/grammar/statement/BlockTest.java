@@ -76,7 +76,7 @@ public class BlockTest extends GrammarTestCase {
 
 		final BracesNode result = to(
 				BracesNode.class,
-				parse(IMPERATIVE.statement(), "{foo = bar}"));
+				parse(IMPERATIVE.statement(), "{foo << bar}"));
 		final AssignmentNode assignment =
 				singleStatement(AssignmentNode.class, result);
 
@@ -89,7 +89,7 @@ public class BlockTest extends GrammarTestCase {
 
 		final BracesNode result = to(
 				BracesNode.class,
-				parse(IMPERATIVE.statement(), "{(foo = bar)}"));
+				parse(IMPERATIVE.statement(), "{(foo << bar)}"));
 		final ParenthesesNode parentheses =
 				singleStatement(ParenthesesNode.class, result);
 		final AssignmentNode assignment =

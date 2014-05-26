@@ -30,7 +30,7 @@ Eager variable target ::= test (
   Eager := var->>>
   {
     Assert [eager == 1] 'Wrong initial eager variable value'
-    Var = 2
+    Var << 2
     Assert [eager == 1] 'Eager variable value updated'
   }
 )

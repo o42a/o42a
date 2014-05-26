@@ -17,19 +17,19 @@ Array := string` //array [["a", "b", "c"]]
 {
   Assert [array [1] == "b"] "Wrong array initialization"
   
-  Array [1] = "new"
+  Array [1] << "new"
   Assert [array [1] == "new"] "Wrong value assigned to array item"
   Assert [array [2] == "c"] "Non-assigned array item altered"
   
-  Array [rt-integer '2'] = "new2"
+  Array [rt-integer '2'] << "new2"
   Assert [array [2] == "new2"]
   _"Wrong value assigned to array item with run-time index"
   
-  Array [rt-integer '-1'] = "invalid",
+  Array [rt-integer '-1'] << "invalid",
   fail "Assignment to array item with negative index didn't failed";
   void
   
-  Array [rt-integer '10'] = "invalid",
+  Array [rt-integer '10'] << "invalid",
   fail "Assignment to array item with wrong index didn't failed";
   void
 }

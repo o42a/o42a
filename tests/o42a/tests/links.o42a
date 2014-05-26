@@ -22,7 +22,7 @@ Reference ::= test (
 
   {
     Assert [proxy == 1] "Wrong initial reference link value"
-    Value = 2
+    Value << 2
     Assert [proxy == 2] "Reference link value did not update properly"
   }
 )
@@ -36,7 +36,7 @@ Expression ::= test (
 
   {
     Assert [proxy == 10] "Wrong initial expression link value"
-    Value = 2
+    Value << 2
     Assert [proxy == 20] "Expression link value did not update properly"
   }
 )

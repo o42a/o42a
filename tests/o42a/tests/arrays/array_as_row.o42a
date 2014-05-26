@@ -18,11 +18,11 @@ Row := array: as row
 {
   Assert [row [1] == "b"] "Wrong array as row"
   
-  Array [1] = "new"
+  Array [1] << "new"
   Assert [row [1] == "new"] "Wrong value assigned to row item"
   Assert [row [2] == "c"] "Non-assigned row item altered"
   
-  Array [rt-integer '2'] = "new2"
+  Array [rt-integer '2'] << "new2"
   Assert [row [2] == "new2"]
   _"Wrong value assigned to row item with run-time index"
 }

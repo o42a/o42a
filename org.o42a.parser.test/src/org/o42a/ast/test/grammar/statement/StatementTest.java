@@ -69,7 +69,7 @@ public class StatementTest extends GrammarTestCase {
 		parse(BinaryNode.class, "(foo) + bar");
 		to(
 				AssignmentNode.class,
-				parse(IMPERATIVE.statement(), "(foo) = bar"));
+				parse(IMPERATIVE.statement(), "(foo) << bar"));
 	}
 
 	@Test

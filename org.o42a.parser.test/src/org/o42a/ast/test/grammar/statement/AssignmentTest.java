@@ -27,9 +27,9 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void assign() {
 
-		final AssignmentNode assignment = parse("foo = bar");
+		final AssignmentNode assignment = parse("foo << bar");
 
-		assertThat(assignment, hasRange(0, 9));
+		assertThat(assignment, hasRange(0, 10));
 		assertThat(assignment.getDestination(), isName("foo"));
 		assertThat(
 				assignment.getOperator().getType(),
@@ -53,9 +53,9 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void addAndAssign() {
 
-		final AssignmentNode assignment = parse("foo += bar");
+		final AssignmentNode assignment = parse("foo +<< bar");
 
-		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment, hasRange(0, 11));
 		assertThat(assignment.getDestination(), isName("foo"));
 		assertThat(
 				assignment.getOperator().getType(),
@@ -66,9 +66,9 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void subtractAndAssign() {
 
-		final AssignmentNode assignment = parse("foo -= bar");
+		final AssignmentNode assignment = parse("foo -<< bar");
 
-		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment, hasRange(0, 11));
 		assertThat(assignment.getDestination(), isName("foo"));
 		assertThat(
 				assignment.getOperator().getType(),
@@ -79,9 +79,9 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void multiplyAndAssign() {
 
-		final AssignmentNode assignment = parse("foo *= bar");
+		final AssignmentNode assignment = parse("foo *<< bar");
 
-		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment, hasRange(0, 11));
 		assertThat(assignment.getDestination(), isName("foo"));
 		assertThat(
 				assignment.getOperator().getType(),
@@ -92,7 +92,7 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void binaryExpressionValue() {
 
-		final AssignmentNode assignment = parse("foo = bar + baz");
+		final AssignmentNode assignment = parse("foo << bar + baz");
 
 		assertThat(assignment.getDestination(), isName("foo"));
 
@@ -107,9 +107,9 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void divideAndAssign() {
 
-		final AssignmentNode assignment = parse("foo /= bar");
+		final AssignmentNode assignment = parse("foo /<< bar");
 
-		assertThat(assignment, hasRange(0, 10));
+		assertThat(assignment, hasRange(0, 11));
 		assertThat(assignment.getDestination(), isName("foo"));
 		assertThat(
 				assignment.getOperator().getType(),
@@ -120,7 +120,7 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void binaryExpressionDestination() {
 
-		final AssignmentNode assignment = parse("foo + bar = baz");
+		final AssignmentNode assignment = parse("foo + bar << baz");
 		final BinaryNode destination =
 				to(BinaryNode.class, assignment.getDestination());
 
@@ -133,7 +133,7 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void localAssignment() {
 
-		final AssignmentNode assignment = parse("A $= b + $");
+		final AssignmentNode assignment = parse("A $<< b + $");
 		final LocalNode local = assignment.getDestination().toLocal();
 
 		assertThat(local.getExpression(), isName("a"));
@@ -150,7 +150,7 @@ public class AssignmentTest extends GrammarTestCase {
 	@Test
 	public void namedLocalAssignment() {
 
-		final AssignmentNode assignment = parse("A $ local = b + $local");
+		final AssignmentNode assignment = parse("A $ local << b + $local");
 		final LocalNode local = assignment.getDestination().toLocal();
 
 		assertThat(local.getExpression(), isName("a"));

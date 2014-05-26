@@ -194,7 +194,7 @@ public class StatementParser implements Parser<StatementNode> {
 
 		final LocalNode local = context.parse(local(expression));
 		final StatementNode assignment =
-				parseAssignment(context, local, expression);
+				context.parse(assignment(local != null ? local : expression));
 
 		if (assignment != null) {
 			return assignment;
@@ -210,18 +210,6 @@ public class StatementParser implements Parser<StatementNode> {
 		return startWithDeclarable(context, expression);
 	}
 
-	private AssignmentNode parseAssignment(
-			ParserContext context,
-			LocalNode local,
-			ExpressionNode destination) {
-		if (context.pendingOrNext() == '='
-				&& local == null
-				&& !assignmentsAllowed()) {
-			return null;
-		}
-		return context.parse(assignment(local != null ? local : destination));
-	}
-
 	private LocalScopeNode parseLocalScope(
 			ParserContext context,
 			LocalNode local,
@@ -230,10 +218,6 @@ public class StatementParser implements Parser<StatementNode> {
 			return context.parse(this.grammar.localScope(local));
 		}
 		return context.parse(this.grammar.localScope(expression));
-	}
-
-	private boolean assignmentsAllowed() {
-		return this.local || this.grammar.isImperative();
 	}
 
 	private StatementNode startWithDeclarable(

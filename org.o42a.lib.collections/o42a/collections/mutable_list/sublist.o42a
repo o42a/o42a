@@ -34,7 +34,7 @@ Size = \(to - from)
     Index < size? = Mutable list:: [from + index]
     @Assignable = * (
       Set => * ({
-        Index < size? Mutable list:: [from + index] = new value
+        Index < size? Mutable list:: [from + index] << new value
       })
     )
   )

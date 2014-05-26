@@ -100,7 +100,11 @@ public final class PhraseInterpreter {
 		case SUBTRACT:
 		case MULTIPLY:
 		case DIVIDE:
-			return binaryPhrase(node, distributor, typeConsumer).toRef();
+
+			final PhraseBuilder binary =
+					binaryPhrase(node, distributor, typeConsumer);
+
+			return binary != null ? binary.toRef() : null;
 		case GREATER:
 			return comparison(node, distributor, BinaryPhraseOperator.GREATER);
 		case GREATER_OR_EQUAL:
