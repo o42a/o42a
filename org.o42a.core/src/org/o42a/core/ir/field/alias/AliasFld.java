@@ -23,18 +23,20 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
-import static org.o42a.core.ir.field.variable.VarFld.VAR_FLD;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.object.FldCtrOp;
-import org.o42a.core.ir.field.variable.VarFld;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -42,9 +44,12 @@ import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.alias.AliasField;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
-public class AliasFld extends RefFld<VarFld.Op, ObjectRefFunc> {
+public class AliasFld extends RefFld<AliasFld.Op, ObjectRefFunc> {
+
+	public static final Type ALIAS_FLD = new Type();
 
 	public AliasFld(AliasField field, Obj target) {
 		super(field, target);
@@ -52,17 +57,17 @@ public class AliasFld extends RefFld<VarFld.Op, ObjectRefFunc> {
 
 	@Override
 	public FldKind getKind() {
-		return FldKind.LINK;
+		return FldKind.ALIAS;
 	}
 
 	@Override
-	public VarFld.Type getInstance() {
-		return (VarFld.Type) super.getInstance();
+	public Type getInstance() {
+		return (Type) super.getInstance();
 	}
 
 	@Override
-	protected VarFld.Type getType() {
-		return VAR_FLD;
+	protected Type getType() {
+		return ALIAS_FLD;
 	}
 
 	@Override
@@ -81,7 +86,7 @@ public class AliasFld extends RefFld<VarFld.Op, ObjectRefFunc> {
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final FldOp<VarFld.Op> fld = op(code, builder.host());
+		final FldOp<AliasFld.Op> fld = op(code, builder.host());
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
@@ -106,7 +111,7 @@ public class AliasFld extends RefFld<VarFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	protected AliasFldOp op(Code code, ObjOp host, VarFld.Op ptr) {
+	protected AliasFldOp op(Code code, ObjOp host, AliasFld.Op ptr) {
 		return new AliasFldOp(this, host, ptr);
 	}
 
@@ -119,6 +124,62 @@ public class AliasFld extends RefFld<VarFld.Op, ObjectRefFunc> {
 				.path()
 				.target()
 				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
+	}
+
+	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {
+
+		private Op(StructWriter<Op> writer) {
+			super(writer);
+		}
+
+		@Override
+		public final Type getType() {
+			return (Type) super.getType();
+		}
+
+		@Override
+		protected DataOp construct(
+				Code code,
+				ObjOp host,
+				ObjectRefFunc constructor) {
+			return constructor.call(code, host);
+		}
+
+	}
+
+	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
+
+		private Type() {
+			super(ID.rawId("o42a_fld_alias"));
+		}
+
+		@Override
+		public boolean isStateless() {
+			return false;
+		}
+
+		@Override
+		public Op op(StructWriter<Op> writer) {
+			return new Op(writer);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.ALIAS.code());
+		}
+
+		@Override
+		protected ObjectRefFunc.Signature getSignature() {
+			return OBJECT_REF;
+		}
+
+		@Override
+		protected FuncPtr<ObjectRefFunc> constructorStub() {
+			return getGenerator()
+					.externalFunction()
+					.link("o42a_obj_ref_stub", OBJECT_REF);
+		}
+
 	}
 
 }

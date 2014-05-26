@@ -92,6 +92,13 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
+	[O42A_FLD_ALIAS] = {// Alias field.
+		.propagate = &o42a_fld_var_propagate,
+		.inherit = &o42a_fld_var_inherit,
+		.mark = &o42a_fld_var_mark,
+		.sweep = &o42a_fld_sweep_none,
+		.is_init = &o42a_fld_obj_is_init,
+	},
 	[O42A_FLD_VAR] = {// Variable field.
 		.propagate = &o42a_fld_var_propagate,
 		.inherit = &o42a_fld_var_inherit,
