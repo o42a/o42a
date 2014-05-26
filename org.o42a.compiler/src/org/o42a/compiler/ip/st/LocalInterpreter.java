@@ -94,11 +94,12 @@ public final class LocalInterpreter {
 		if (name == null) {
 			return false;
 		}
-		if (declarator.getTarget() != DeclarationTarget.VALUE) {
+		if (declarator.getTarget() != DeclarationTarget.VALUE
+				&& declarator.getTarget() != DeclarationTarget.OVERRIDE_VALUE) {
 			context.getLogger().error(
 					"invalid_local_target",
 					declarator.getTargetTypeNode(),
-					"A local can be declared only with `:=` sign");
+					"A local can be declared with either `:=`, or `=` sign");
 		}
 
 		final ExpressionNode definition = declarator.getDefinition();
@@ -194,12 +195,16 @@ public final class LocalInterpreter {
 			MemberRefNode memberRef,
 			StatementsAccess statements) {
 		if (!isLocalRef(memberRef)) {
-			if (statements.isDeclarative()) {
-				return null;
-			}
 			if (memberRef.getOwner() != null) {
 				return null;
 			}
+			if (statements.isDeclarative()) {
+				return null;
+			}
+			statements.getLogger().warning(
+					"invalid_local_declarable",
+					memberRef,
+					"Local declarations should start with `$` sign");
 		}
 
 		final NameNode nameNode = memberRef.getName();

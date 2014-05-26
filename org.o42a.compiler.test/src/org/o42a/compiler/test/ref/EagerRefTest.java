@@ -71,6 +71,8 @@ public class EagerRefTest extends CompilerTestCase {
 
 	@Test
 	public void localFieldDefinition() {
+		expectError("compiler.invalid_local_declarable");
+
 		compile(
 				"A := 5",
 				"B := integer ({",
