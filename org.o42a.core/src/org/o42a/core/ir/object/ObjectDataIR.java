@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Content;
-import org.o42a.codegen.data.Int32rec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
@@ -39,6 +38,7 @@ import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.type.FieldDescIR;
 import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.MemberField;
@@ -57,6 +57,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 	private final ID id;
 	private ObjectIRData instance;
 	private ObjectIRDesc desc;
+	private Val initialValue;
 
 	ObjectDataIR(ObjectIRStruct objectIRStruct) {
 		this.objectIRStruct = objectIRStruct;
@@ -98,6 +99,43 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		this.instance = instance;
 	}
 
+	public Val getInitialValue() {
+		if (this.initialValue != null) {
+			return this.initialValue;
+		}
+
+		final Obj object = getObjectIR().getObject();
+		final boolean eager = object.value().getStatefulness().isEager();
+
+		if (!eager && !object.type().getValueType().isStateful()) {
+			// Stateless object has no initial value.
+			return this.initialValue = INDEFINITE_VAL;
+		}
+
+		final ValueKnowledge knowledge =
+				object.value().getValue().getKnowledge();
+
+		if (!knowledge.isInitiallyKnown()) {
+			return this.initialValue = INDEFINITE_VAL;
+		}
+		if (knowledge.isFalse()) {
+			return FALSE_VAL;
+		}
+
+		final Val initialValue =
+				getObjectIR().getValueIR().initialValue(this);
+
+		if (initialValue == null) {
+			return this.initialValue = INDEFINITE_VAL;
+		}
+		if (!eager) {
+			return this.initialValue = initialValue;
+		}
+
+		return this.initialValue =
+				initialValue.setFlags(initialValue.getFlags() | VAL_EAGER);
+	}
+
 	@Override
 	public void fill(ObjectIRData instance) {
 
@@ -111,7 +149,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 				this.objectIRStruct.data(generator).getPointer().relativeTo(
 						instance.data(generator).getPointer()));
 
-		fillValue(instance);
+		instance.value().set(getInitialValue());
 		instance.resumeFrom().setNull();
 		instance.desc()
 		.setConstant(true)
@@ -243,44 +281,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		}
 
 		return flags;
-	}
-
-	private void fillValue(ObjectIRData instance) {
-
-		final Obj object = getObjectIR().getObject();
-
-		if (object.value().getStatefulness().isEager()) {
-			fillKnownValue(instance, object, true);
-		} else if (object.type().getValueType().isStateful()) {
-			fillKnownValue(instance, object, false);
-		} else {
-			instance.value().set(INDEFINITE_VAL);
-		}
-	}
-
-	private void fillKnownValue(
-			ObjectIRData instance,
-			Obj object,
-			boolean eager) {
-
-		final ValueKnowledge knowledge =
-				object.value().getValue().getKnowledge();
-
-		if (!knowledge.isInitiallyKnown()) {
-			instance.value().set(INDEFINITE_VAL);
-			return;
-		}
-
-		final Int32rec flags = instance.value().flags();
-
-		if (knowledge.isFalse()) {
-			instance.value().set(FALSE_VAL);
-		} else {
-			getObjectIR().getValueIR().setInitialValue(this);
-		}
-		if (eager) {
-			flags.setValue(flags.getValue().get() | VAL_EAGER);
-		}
 	}
 
 	private void fillDesc(ObjectIRDesc instance) {
