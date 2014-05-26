@@ -28,8 +28,8 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.Value;
@@ -48,11 +48,10 @@ final class LinkValueIR extends ValueIR {
 	}
 
 	@Override
-	public void setInitialValue(ObjectDataIR dataIR) {
+	public Val initialValue(ObjectDataIR dataIR) {
 
 		final Obj object = dataIR.getObjectIR().getObject();
 		final Value<?> value = object.value().getValue();
-		final ValType objectVal = dataIR.getInstance().value();
 
 		final LinkValueType linkType = getValueType().toLinkType();
 		final KnownLink link =
@@ -60,18 +59,18 @@ final class LinkValueIR extends ValueIR {
 		final Obj target = link.getTarget().getWrapped();
 
 		if (target.getConstructionMode().isRuntime()) {
-			objectVal.set(INDEFINITE_VAL);
-		} else {
-
-			final ObjectIR targetIR = target.ir(getGenerator());
-
-			objectVal.flags().setValue(VAL_CONDITION);
-			objectVal.length().setValue(0);
-			objectVal.value().setNativePtr(
-					targetIR.getMainBodyIR()
-					.pointer(getGenerator())
-					.toAny());
+			return INDEFINITE_VAL;
 		}
+
+		final ObjectIR targetIR = target.ir(getGenerator());
+
+		return new Val(
+				getValueType(),
+				VAL_CONDITION,
+				0,
+				targetIR.getMainBodyIR()
+				.pointer(getGenerator())
+				.toAny());
 	}
 
 	@Override

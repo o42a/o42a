@@ -21,6 +21,7 @@ package org.o42a.core.ir.value.type;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.value.ValueType;
 
 
@@ -58,7 +59,7 @@ public abstract class ValueIR {
 
 	public abstract ValueOp op(ObjectOp object);
 
-	public abstract void setInitialValue(ObjectDataIR dataIR);
+	public abstract Val initialValue(ObjectDataIR dataIR);
 
 	@Override
 	public String toString() {

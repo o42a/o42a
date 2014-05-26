@@ -108,6 +108,13 @@ public final class Val implements Content<ValType> {
 		return this.flags;
 	}
 
+	public final Val setFlags(int flags) {
+		if (this.pointer != null) {
+			return new Val(this.valueType, flags, this.length, this.pointer);
+		}
+		return new Val(this.valueType, flags, this.length, this.value);
+	}
+
 	public final boolean getCondition() {
 		return (this.flags & VAL_CONDITION) != 0;
 	}
