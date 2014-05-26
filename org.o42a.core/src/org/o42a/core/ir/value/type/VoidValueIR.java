@@ -25,6 +25,7 @@ import static org.o42a.core.ir.value.Val.VOID_VAL;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 
 
@@ -44,8 +45,8 @@ public final class VoidValueIR extends ValueIR {
 	}
 
 	@Override
-	public void setInitialValue(ObjectDataIR dataIR) {
-		dataIR.getInstance().value().set(VOID_VAL);
+	public Val initialValue(ObjectDataIR dataIR) {
+		return VOID_VAL;
 	}
 
 	private static final class VoidValueOp extends DefaultValueOp {

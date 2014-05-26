@@ -32,6 +32,7 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -162,7 +163,7 @@ public abstract class RefFld<
 		if (getType().isStateless()) {
 			return;
 		}
-		if (getTarget().getConstructionMode().isRuntime()) {
+		if (runtimeConstructedTarget()) {
 			return;
 		}
 
@@ -173,6 +174,25 @@ public abstract class RefFld<
 				targetBodyIR.pointer(getGenerator()).toData();
 
 		getInstance().object().setValue(targetPtr);
+	}
+
+	private boolean runtimeConstructedTarget() {
+		if (getTarget().getConstructionMode().isRuntime()) {
+			return true;
+		}
+
+		final Obj target = getTarget();
+
+		if (!target.value().getStatefulness().isEager()) {
+			return false;
+		}
+
+		// Objects with initially unknown eagerly evaluated values
+		// should be constructed at run time.
+		final Val initialValue =
+				target.ir(getGenerator()).getDataIR().getInitialValue();
+
+		return initialValue.isIndefinite();
 	}
 
 	private void fill(boolean fillFields, boolean fillTarget) {

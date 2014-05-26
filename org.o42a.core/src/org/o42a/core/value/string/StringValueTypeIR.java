@@ -25,6 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.*;
 import org.o42a.core.value.ValueType;
@@ -62,7 +63,7 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 		}
 
 		@Override
-		public void setInitialValue(ObjectDataIR dataIR) {
+		public Val initialValue(ObjectDataIR dataIR) {
 
 			final String value = ValueType.STRING.cast(
 					getObjectIR()
@@ -71,8 +72,7 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 					.getValue()
 					.getCompilerValue());
 
-			dataIR.getInstance().value().set(
-					ValueType.STRING.ir(getGenerator()).staticsIR().val(value));
+			return ValueType.STRING.ir(getGenerator()).staticsIR().val(value);
 		}
 
 	}

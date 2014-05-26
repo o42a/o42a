@@ -19,13 +19,10 @@
 */
 package org.o42a.core.value.floats;
 
-import static java.lang.Double.doubleToRawLongBits;
-import static org.o42a.core.ir.value.Val.VAL_CONDITION;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectDataIR;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.type.*;
 import org.o42a.core.value.ValueType;
 
@@ -53,7 +50,7 @@ final class FloatValueTypeIR extends ValueTypeIR<Double> {
 		}
 
 		@Override
-		public void setInitialValue(ObjectDataIR dataIR) {
+		public Val initialValue(ObjectDataIR dataIR) {
 
 			final double value = ValueType.FLOAT.cast(
 					getObjectIR().getObject()
@@ -61,11 +58,8 @@ final class FloatValueTypeIR extends ValueTypeIR<Double> {
 					.getValue()
 					.getCompilerValue())
 					.doubleValue();
-			final ValType val = dataIR.getInstance().value();
 
-			val.flags().setValue(VAL_CONDITION);
-			val.length().setValue(0);
-			val.value().setValue(doubleToRawLongBits(value));
+			return new Val(value);
 		}
 
 	}
