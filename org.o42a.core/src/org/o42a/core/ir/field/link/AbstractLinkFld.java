@@ -68,7 +68,7 @@ public abstract class AbstractLinkFld<F extends RefFld.Op<F, ObjectRefFunc>>
 				.getType();
 	}
 
-	protected final ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
+	protected ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
 
 		final Obj object = getField().toObject();
 

@@ -49,10 +49,14 @@ public class LinkUses {
 	}
 
 	public final boolean simplifiedLink(Analyzer analyzer) {
-		return !uses().isUsed(analyzer, ALL_LINK_USAGES);
+		return !uses().isUsed(analyzer, COMPLEX_LINK_USES);
 	}
 
-	public void useBodyBy(RefUser user) {
+	public final boolean simplifiedEagerLink(Analyzer analyzer) {
+		return !uses().isUsed(analyzer, COMPLEX_LAZY_LINK_USES);
+	}
+
+	public final void useBodyBy(RefUser user) {
 		uses().useBy(user, COMPLEX_LINK_TARGET);
 	}
 
@@ -65,8 +69,15 @@ public class LinkUses {
 	}
 
 	void determineTargetComplexity() {
-		if (!getObject().value().getDefinitions().target().exists()) {
-			uses().useBy(getObject().content(), COMPLEX_LINK_TARGET);
+
+		final Obj object = getObject();
+		final ObjectValue objectValue = object.value();
+
+		if (!objectValue.getDefinitions().target().exists()) {
+			uses().useBy(object.content(), COMPLEX_LINK_TARGET);
+		}
+		if (objectValue.getStatefulness().isEager()) {
+			uses().useBy(object.content(), EAGER_LINK);
 		}
 	}
 
@@ -88,6 +99,9 @@ public class LinkUses {
 		uses().useBy(
 				derivedUses.selectiveUser(COMPLEX_LINK_TARGET),
 				COMPLEX_LINK_TARGET);
+		uses().useBy(
+				derivedUses.selectiveUser(EAGER_LINK),
+				EAGER_LINK);
 	}
 
 	void fieldChanged(MemberField field) {
@@ -134,9 +148,16 @@ public class LinkUses {
 	}
 
 	private void deriveComplexity(Obj derived) {
-		derived.type().linkUses().uses().useBy(
+
+		final Usable<LinkUsage> derivedUses =
+				derived.type().linkUses().uses();
+
+		derivedUses.useBy(
 				uses().selectiveUser(LINK_COMPLEXITY_SELECTOR),
 				DERIVED_LINK_COMPLEXITY);
+		derivedUses.useBy(
+				uses().selectiveUser(EAGER_LINK),
+				EAGER_LINK);
 	}
 
 }

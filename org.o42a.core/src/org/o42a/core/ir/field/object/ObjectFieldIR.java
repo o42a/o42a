@@ -24,6 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.field.link.EagerLinkFld;
 import org.o42a.core.ir.field.link.LinkFld;
 import org.o42a.core.ir.field.variable.VarFld;
 import org.o42a.core.ir.object.ObjectIRBodyData;
@@ -78,8 +79,13 @@ public final class ObjectFieldIR extends FieldIR {
 		}
 
 		final LinkUses linkUses = object.type().linkUses();
+		final boolean eager;
 
-		if (!linkUses.simplifiedLink(getGenerator().getAnalyzer())) {
+		if (linkUses.simplifiedLink(getGenerator().getAnalyzer())) {
+			eager = false;
+		} else if (linkUses.simplifiedEagerLink(getGenerator().getAnalyzer())) {
+			eager = true;
+		} else {
 			return null;
 		}
 
@@ -105,7 +111,11 @@ public final class ObjectFieldIR extends FieldIR {
 		final RefFld<?, ?> fld;
 
 		if (linkType == LinkValueType.LINK) {
-			fld = new LinkFld(field, target);
+			if (eager) {
+				fld = new EagerLinkFld(field, target);
+			} else {
+				fld = new LinkFld(field, target);
+			}
 		} else if (linkType == LinkValueType.VARIABLE) {
 			fld = new VarFld(field, target);
 		} else {
