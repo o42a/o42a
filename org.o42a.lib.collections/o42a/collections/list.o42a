@@ -23,7 +23,7 @@ An indexed list of elements.
 Iterate => * (
   ::Next index := ``0
   Next = * (
-    $Index := next index->
+    $Index = next index->
     Next index +<< 1
     = List:: [index]
   )
