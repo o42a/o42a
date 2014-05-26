@@ -24,7 +24,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.RefFldOp;
-import org.o42a.core.ir.field.variable.VarFld.Op;
+import org.o42a.core.ir.field.alias.AliasFld.Op;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;

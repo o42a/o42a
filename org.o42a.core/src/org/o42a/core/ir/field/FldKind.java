@@ -24,9 +24,10 @@ public enum FldKind {
 
 	OBJ(0),
 	LINK(1),
-	VAR(2),
-	SCOPE(3),
-	DEP(4);
+	ALIAS(2),
+	VAR(3),
+	SCOPE(4),
+	DEP(5);
 
 	private final int code;
 
