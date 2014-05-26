@@ -25,6 +25,8 @@ import static org.o42a.backend.constant.data.struct.StructStore.autoStructStore;
 import static org.o42a.codegen.code.op.Op.PHI_ID;
 import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
 
+import java.lang.reflect.Array;
+
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
@@ -365,13 +367,23 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 							use(cop);
 						}
 					}
+					@SuppressWarnings("unchecked")
 					@Override
 					protected O write() {
 
-						final O[] uops = ops.clone();
+						O[] uops = null;
 
-						for (int i = 0; i < uops.length; ++i) {
-							uops[i] = cops[i].backend().underlying();
+						for (int i = 0; i < cops.length; ++i) {
+
+							final O uop = cops[i].backend().underlying();
+
+							if (uops == null) {
+								uops = (O[]) Array.newInstance(
+										uop.getClass(),
+										cops.length);
+							}
+
+							uops[i] = uop;
 						}
 
 						return part().underlying().phi(getId(), uops);
