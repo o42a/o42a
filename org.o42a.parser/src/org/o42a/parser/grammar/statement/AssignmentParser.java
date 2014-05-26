@@ -64,55 +64,48 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 		final SourcePosition operatorStart = context.current().fix();
 
 		switch (context.next()) {
-		case '=':
-			switch (context.next()) {
-			case '=':
-			case '<':
-			case '>':
-				return null;
-			}
-			operator = AssignmentOperator.ASSIGN;
-			context.acceptButLast();
-			break;
 		case '<':
-			if (context.next() != '-') {
+			switch (context.next()) {
+			case '-':
+				operator = AssignmentOperator.BIND;
+				context.acceptAll();
+				break;
+			case '<':
+				operator = AssignmentOperator.ASSIGN;
+				context.acceptAll();
+				break;
+			default:
 				return null;
 			}
-			operator = AssignmentOperator.BIND;
-			context.acceptAll();
 			break;
 		case '+':
-			if (context.next() != '=') {
+			if (!acceptCombined(context)) {
 				return null;
 			}
 			operator = AssignmentOperator.ADD_AND_ASSIGN;
-			context.acceptAll();
 			break;
 		case '-':
 		case MINUS_SIGN:
-			if (context.next() != '=') {
+			if (!acceptCombined(context)) {
 				return null;
 			}
 			operator = AssignmentOperator.SUBTRACT_AND_ASSIGN;
-			context.acceptAll();
 			break;
 		case '*':
 		case MULTIPLICATION_SIGN:
 		case DOT_OPERATOR:
-			if (context.next() != '=') {
+			if (!acceptCombined(context)) {
 				return null;
 			}
 			operator = AssignmentOperator.MULTIPLY_AND_ASSIGN;
-			context.acceptAll();
 			break;
 		case '/':
 		case DIVISION_SIGN:
 		case DIVISION_SLASH:
-			if (context.next() != '=') {
+			if (!acceptCombined(context)) {
 				return null;
 			}
 			operator = AssignmentOperator.DIVIDE_AND_ASSIGN;
-			context.acceptAll();
 			break;
 		default:
 			return null;
@@ -124,6 +117,14 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 						operatorStart,
 						context.current().fix(),
 						operator));
+	}
+
+	private boolean acceptCombined(ParserContext context) {
+		if (context.next() != '<' || context.next() != '<') {
+			return false;
+		}
+		context.acceptAll();
+		return true;
 	}
 
 }

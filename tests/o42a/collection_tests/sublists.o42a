@@ -35,9 +35,7 @@ Mutable ::= test (
   List := string` array list [["a", "b", "c", "d", "e", "f"]]
   Sublist := list [1...4)
 
-  {
-    Sublist [1] = "ff"
-  }
+  Sublist [1] << "ff"
 
   Assert [sublist [1] == "ff"] 'Sublist value not assigned'
   Assert [list [2] == "ff"] 'Wrong value stored in list'

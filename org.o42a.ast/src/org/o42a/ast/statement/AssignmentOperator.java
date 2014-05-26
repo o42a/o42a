@@ -25,11 +25,11 @@ import org.o42a.ast.atom.SignType;
 public enum AssignmentOperator implements SignType {
 
 	BIND("<-"),
-	ASSIGN("="),
-	ADD_AND_ASSIGN("+="),
-	SUBTRACT_AND_ASSIGN("-="),
-	MULTIPLY_AND_ASSIGN("*="),
-	DIVIDE_AND_ASSIGN("/=");
+	ASSIGN("<<"),
+	ADD_AND_ASSIGN("+<<"),
+	SUBTRACT_AND_ASSIGN("-<<"),
+	MULTIPLY_AND_ASSIGN("*<<"),
+	DIVIDE_AND_ASSIGN("/<<");
 
 	private final String sign;
 

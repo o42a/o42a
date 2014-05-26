@@ -20,8 +20,8 @@ Exit ::= test (
 
   Result := ``1
   {
-    Rt-integer '1' > 0? Result = 2!
-    Result = 3
+    Rt-integer '1' > 0? Result << 2!
+    Result << 3
   }
 
   Assert [result == 2] "Block not exited"
@@ -33,8 +33,8 @@ Continue ::= test (
 
   Result := ``1
   {
-    Rt-integer '1' > 0? Result = 2
-    Result = 3
+    Rt-integer '1' > 0? Result << 2
+    Result << 3
   }
 
   Assert [result == 3] "Block exited unexpectedly"
@@ -47,7 +47,7 @@ Repeat ::= test (
   $Counter := ``3
   {
     Print error '    .. ' [counter] nl
-    Counter -= 1
+    Counter -<< 1
     Counter > 0?..
   }
   
@@ -60,7 +60,7 @@ Repeat local scope ::= test (
 
   ``3 $ counter {
     Print error '    .. ' [counter] nl
-    Counter -= 1
+    Counter -<< 1
     Counter > 0?..
     Assert [counter == 0] "Loop terminated unexpectedly"
   }

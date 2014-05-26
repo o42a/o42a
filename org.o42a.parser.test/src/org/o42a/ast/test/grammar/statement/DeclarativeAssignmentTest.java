@@ -37,7 +37,7 @@ public class DeclarativeAssignmentTest extends GrammarTestCase {
 	@Test
 	public void localAssignment() {
 
-		final AssignmentNode assignment = parse("A $= b + $");
+		final AssignmentNode assignment = parse("A $<< b + $");
 		final LocalNode local = assignment.getDestination().toLocal();
 
 		assertThat(local.getExpression(), isName("a"));
@@ -77,7 +77,7 @@ public class DeclarativeAssignmentTest extends GrammarTestCase {
 	@Test
 	public void namedLocalAssignment() {
 
-		final AssignmentNode assignment = parse("A $ tmp = b + tmp");
+		final AssignmentNode assignment = parse("A $ tmp << b + tmp");
 		final LocalNode local = assignment.getDestination().toLocal();
 
 		assertThat(local.getExpression(), isName("a"));

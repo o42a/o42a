@@ -47,7 +47,7 @@ Yield in loop ::= test (
    F := integer (
     ``3 $ {
       << $
-      $ -= 1
+      $ -<< 1
       $ > 0?...
     }
   )
