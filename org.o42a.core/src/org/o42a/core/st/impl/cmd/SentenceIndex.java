@@ -92,13 +92,16 @@ final class SentenceIndex {
 		this.altBlocks =
 				new AltBlocks(control, ID.id(prefix + "_sent"), len);
 
-		control.code().go(this.altBlocks.get(0).head());
+		if (len > 0) {
+			control.code().go(this.altBlocks.get(0).head());
+		}
 		this.sentenceControl = control;
 
 		return this.altBlocks;
 	}
 
 	public void endSentence() {
+		this.sentenceControl = null;
 	}
 
 	public Control startAlt(int index) {
