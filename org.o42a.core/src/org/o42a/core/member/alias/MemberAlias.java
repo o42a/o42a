@@ -46,10 +46,8 @@ public class MemberAlias extends Member implements MemberPath {
 	private final FieldDeclaration declaration;
 	private final Ref originalRef;
 	private final MemberAlias propagatedFrom;
-	private MemberField aliasedField;
-	private MemberKey aliasedFieldKey;
+	private AliasRef aliasRef;
 	private Visibility visibility;
-	private Ref ref;
 
 	public MemberAlias(MemberRegistry registry, FieldBuilder builder) {
 		super(
@@ -74,8 +72,7 @@ public class MemberAlias extends Member implements MemberPath {
 				propagatedFrom.getDeclaration().override(this, distribute());
 		this.originalRef =
 				propagatedFrom.getOriginalRef().upgradeScope(owner.getScope());
-		this.aliasedFieldKey = propagatedFrom.getAliasedFieldKey();
-		this.ref = propagatedFrom.getRef().upgradeScope(owner.getScope());
+		this.aliasRef = new AliasRef(this, propagatedFrom.getAliasRef());
 	}
 
 	public final FieldDeclaration getDeclaration() {
@@ -87,15 +84,11 @@ public class MemberAlias extends Member implements MemberPath {
 	}
 
 	public final Ref getRef() {
-		if (this.ref == null) {
-			detectAliasType();
-		}
-		return this.ref;
+		return getAliasRef().getRef();
 	}
 
-	public final MemberKey getAliasedFieldKey() {
-		getRef();
-		return this.aliasedFieldKey;
+	public final MemberRef getAliasedField() {
+		return getAliasRef().getAliasedField();
 	}
 
 	@Override
@@ -150,20 +143,10 @@ public class MemberAlias extends Member implements MemberPath {
 
 	@Override
 	public MemberField toField() {
-		if (this.aliasedField != null) {
-			return this.aliasedField;
-		}
 
-		final MemberKey aliasedFieldKey = getAliasedFieldKey();
+		final MemberRef aliasedField = getAliasedField();
 
-		if (aliasedFieldKey == null) {
-			return null;
-		}
-		if (this.aliasedField != null) {
-			return this.aliasedField;
-		}
-
-		return getScope().getContainer().member(aliasedFieldKey).toField();
+		return aliasedField != null ? aliasedField.getMember().toField() : null;
 	}
 
 	@Override
@@ -219,37 +202,40 @@ public class MemberAlias extends Member implements MemberPath {
 						TEMP_REF_USAGE));
 	}
 
-	private void detectAliasType() {
+	private AliasRef getAliasRef() {
+		if (this.aliasRef != null) {
+			return this.aliasRef;
+		}
+
+		final AliasRef detectedAliasRef = detectAliasRef();
+
+		if (detectedAliasRef != null) {
+			return this.aliasRef = detectedAliasRef;
+		}
+
+		return this.aliasRef = createAliasField();
+	}
+
+	private AliasRef detectAliasRef() {
 
 		final AliasTypeDetector detector = new AliasTypeDetector();
 		final Resolution resolution =
 				getOriginalRef().resolve(getScope().walkingResolver(detector));
 
-		if (resolution.isResolved()) {
-			assignRef(detector.getField());
-		} else {
-			createAliasField();
+		if (!resolution.isResolved()) {
+			return null;
 		}
-	}
 
-	private void assignRef(MemberField field) {
+		final MemberField field = detector.getField();
+
 		if (field != null) {
-			setAliasedField(field);
-		} else {
-			this.ref = getOriginalRef();
+			return new AliasRef(this, field);
 		}
+
+		return new AliasRef(getOriginalRef());
 	}
 
-	private void setAliasedField(MemberField aliasedField) {
-		this.aliasedField = aliasedField;
-		this.aliasedFieldKey = aliasedField.getMemberKey();
-		this.ref =
-				this.aliasedFieldKey.toPath()
-				.bind(getDeclaration(), getScope())
-				.target(distribute());
-	}
-
-	private void createAliasField() {
+	private AliasRef createAliasField() {
 
 		final Obj owner = getScope().toObject();
 		final MemberId memberId = getMemberId();
@@ -271,7 +257,62 @@ public class MemberAlias extends Member implements MemberPath {
 
 		this.registry.declareMember(alias);
 
-		setAliasedField(alias);
+		return new AliasRef(this, alias);
+	}
+
+	private static final class AliasRef {
+
+		private final Ref ref;
+		private final MemberRef aliasedField;
+
+		AliasRef(Ref ref) {
+			this.ref = ref;
+			this.aliasedField = null;
+		}
+
+		AliasRef(MemberAlias alias, MemberField aliasedField) {
+			this(
+					alias,
+					new MemberRef(alias.getScope(), aliasedField));
+		}
+
+		AliasRef(MemberAlias alias, MemberRef aliasedField) {
+			this.ref = aliasedField.getMemberKey()
+					.toPath()
+					.bind(alias.getDeclaration(), alias.getScope())
+					.target(alias.distribute());
+			this.aliasedField = aliasedField;
+		}
+
+		AliasRef(MemberAlias alias, AliasRef prototype) {
+
+			final MemberRef aliasedField = prototype.getAliasedField();
+
+			if (aliasedField == null) {
+				this.aliasedField = null;
+			} else {
+				this.aliasedField = aliasedField.setOwner(alias.getScope());
+			}
+
+			this.ref = prototype.getRef().upgradeScope(alias.getScope());
+		}
+
+		public final Ref getRef() {
+			return this.ref;
+		}
+
+		public final MemberRef getAliasedField() {
+			return this.aliasedField;
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
+		}
+
 	}
 
 }
