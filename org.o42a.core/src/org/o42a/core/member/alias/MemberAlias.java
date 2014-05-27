@@ -46,6 +46,7 @@ public class MemberAlias extends Member implements MemberPath {
 	private final FieldDeclaration declaration;
 	private final Ref originalRef;
 	private final MemberAlias propagatedFrom;
+	private MemberField aliasedField;
 	private MemberKey aliasedFieldKey;
 	private Visibility visibility;
 	private Ref ref;
@@ -149,11 +150,17 @@ public class MemberAlias extends Member implements MemberPath {
 
 	@Override
 	public MemberField toField() {
+		if (this.aliasedField != null) {
+			return this.aliasedField;
+		}
 
 		final MemberKey aliasedFieldKey = getAliasedFieldKey();
 
 		if (aliasedFieldKey == null) {
 			return null;
+		}
+		if (this.aliasedField != null) {
+			return this.aliasedField;
 		}
 
 		return getScope().getContainer().member(aliasedFieldKey).toField();
@@ -227,14 +234,15 @@ public class MemberAlias extends Member implements MemberPath {
 
 	private void assignRef(MemberField field) {
 		if (field != null) {
-			setAliasedFieldKey(field.getMemberKey());
+			setAliasedField(field);
 		} else {
 			this.ref = getOriginalRef();
 		}
 	}
 
-	private void setAliasedFieldKey(MemberKey aliasedFieldKey) {
-		this.aliasedFieldKey = aliasedFieldKey;
+	private void setAliasedField(MemberField aliasedField) {
+		this.aliasedField = aliasedField;
+		this.aliasedFieldKey = aliasedField.getMemberKey();
 		this.ref =
 				this.aliasedFieldKey.toPath()
 				.bind(getDeclaration(), getScope())
@@ -263,7 +271,7 @@ public class MemberAlias extends Member implements MemberPath {
 
 		this.registry.declareMember(alias);
 
-		setAliasedFieldKey(alias.getMemberKey());
+		setAliasedField(alias);
 	}
 
 }
