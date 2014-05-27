@@ -612,6 +612,9 @@ public final class TypeParameters<T> extends TypeRefParameters {
 	}
 
 	private Kind parametersRelation(TypeParameters<?> other) {
+		if (this == other) {
+			return TypeRelation.Kind.SAME;
+		}
 
 		Kind result = TypeRelation.Kind.SAME;
 
