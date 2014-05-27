@@ -53,6 +53,9 @@ public final class DefaultTypeRelation extends TypeRelation {
 	protected Kind relationKind(
 			CompilerLogger logger,
 			boolean checkDerivationOnly) {
+		if (of() == to()) {
+			return Kind.SAME;
+		}
 		if (!to().isValid()) {
 			return Kind.PREFERRED;
 		}
