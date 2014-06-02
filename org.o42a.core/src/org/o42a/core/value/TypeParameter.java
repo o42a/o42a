@@ -43,6 +43,9 @@ public final class TypeParameter implements ScopeInfo {
 		this.key = key;
 		this.typeRef = typeRef;
 		this.origin = origin;
+		if (toString().equals("<[hello world: each] (Location[hello_world.o42a]:hello_world.o42a:12,11(390)..12,12(391)[])///Indexed: item: S/(//Indexed: item type)///Indexed: (2): S/collections: list @@(//indexed): S/(collections: collection: element type)/collections: list: (2): S/hello world: each: a: S/->> (`)")) {
+			System.err.println("(!)");
+		}
 	}
 
 	@Override

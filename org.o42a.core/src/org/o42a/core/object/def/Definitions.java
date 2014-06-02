@@ -244,9 +244,6 @@ public class Definitions extends Scoped {
 				&& typeParameters.relationTo(objectTypeParameters).isSame()) {
 			return this;
 		}
-		if (!defs().upgradeTypeParameters(this, typeParameters)) {
-			return this;
-		}
 
 		return new Definitions(this, typeParameters, defs());
 	}

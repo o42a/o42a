@@ -193,6 +193,9 @@ public class Ref extends Statement implements RefBuilder {
 		if (!request.isValueExpected()) {
 			return rawValueAdapter(this);
 		}
+		if (toString().equals("<[hello world: each] (Location[hello_world.o42a]:hello_world.o42a:12,11(390)..12,12(391)[])>")) {
+			System.err.println("(!) " + this);
+		}
 
 		final ValueAdapter adapter = requestValueAdapter(request);
 
