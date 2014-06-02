@@ -259,32 +259,6 @@ public final class Defs {
 		return new InlineDefs(inlines);
 	}
 
-	boolean upgradeTypeParameters(
-			Definitions definitions,
-			TypeParameters<?> typeParameters) {
-
-		boolean ok = true;
-
-		for (Def def : get()) {
-
-			final TypeParameters<?> defTypeParameters = def.getTypeParameters();
-
-			if (defTypeParameters == null) {
-				continue;
-			}
-			if (typeParameters.getValueType().isVoid()) {
-				continue;
-			}
-			if (!typeParameters.assignableFrom(defTypeParameters)) {
-				definitions.getLogger().incompatible(
-						def.getLocation(),
-						typeParameters);
-			}
-		}
-
-		return ok;
-	}
-
 	final Defs toVoid() {
 
 		final Def[] oldDefs = get();
