@@ -20,7 +20,6 @@
 package org.o42a.core.member.alias;
 
 import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
-import static org.o42a.core.ref.RefUser.refUser;
 
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -73,7 +72,7 @@ public class MemberAliasField extends MemberField {
 	public void resolveAll() {
 		super.resolveAll();
 		getRef().resolveAll(getScope().resolver().fullResolver(
-				refUser(getAnalysis().fieldAccess()),
+				getAnalysis().fieldAccess(),
 				BODY_REF_USAGE));
 	}
 

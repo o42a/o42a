@@ -27,7 +27,7 @@ final class DummyUser<U extends Usage<U>> extends User<U> {
 	}
 
 	@Override
-	public final boolean isDummy() {
+	public final boolean isDummyUser() {
 		return true;
 	}
 

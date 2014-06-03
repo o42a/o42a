@@ -21,8 +21,8 @@ package org.o42a.core.ref.path;
 
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOfRange;
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
@@ -96,7 +96,7 @@ public enum PathKind {
 		Scope fromScope = reproducer.getReproducingScope();
 		final StepResolver resolver = new StepResolver(new SimplePathTracker(
 				path,
-				pathResolver(fromScope, dummyRefUser()),
+				pathResolver(fromScope, dummyUser()),
 				DUMMY_PATH_WALKER));
 		Scope toScope = reproducer.getScope();
 		Path reproduced = SELF_PATH;
@@ -119,7 +119,7 @@ public enum PathKind {
 			final Path reproducedPath = reproduction.getReproducedPath();
 			final PathResolution resolution =
 					reproducedPath.bind(path, toScope)
-					.resolve(pathResolver(toScope, dummyRefUser()));
+					.resolve(pathResolver(toScope, dummyUser()));
 
 			if (!resolution.isResolved()) {
 				return null;

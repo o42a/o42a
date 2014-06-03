@@ -23,7 +23,6 @@ import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_VALUE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.VALUE_USAGE;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
-import static org.o42a.core.ref.RefUser.refUser;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -32,7 +31,6 @@ import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValueBase;
 import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.object.value.ValueUsage;
-import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.ref.type.TypeRef;
@@ -192,8 +190,8 @@ public final class ObjectValue extends ObjectValueBase {
 		return definitions;
 	}
 
-	public final ObjectValue explicitUseBy(RefUser user) {
-		if (!user.toUser().isDummy()) {
+	public final ObjectValue explicitUseBy(UserInfo user) {
+		if (!user.isDummyUser()) {
 			uses().useBy(user, EXPLICIT_VALUE_USAGE);
 		}
 		return this;
@@ -203,7 +201,7 @@ public final class ObjectValue extends ObjectValueBase {
 		valueDefs().wrapBy(wrapValue.valueDefs());
 	}
 
-	public final void resolveAll(RefUser user) {
+	public final void resolveAll(UserInfo user) {
 		if (this.fullResolution != 0) {
 			explicitUseBy(user);
 			return;
@@ -222,7 +220,7 @@ public final class ObjectValue extends ObjectValueBase {
 			object.type().getParameters().resolveAll(
 					object.getScope()
 					.resolver()
-					.fullResolver(refUser(uses()), TYPE_PARAMETER_REF_USAGE));
+					.fullResolver(uses(), TYPE_PARAMETER_REF_USAGE));
 			// Use an ancestor value, as it is involved
 			// into this object's value evaluation.
 			useAncestorValue();

@@ -245,7 +245,7 @@ public abstract class MemberField
 	protected abstract Field createField();
 
 	private void useBy(UserInfo user) {
-		if (user.toUser().isDummy()) {
+		if (user.isDummyUser()) {
 			return;
 		}
 		getAnalysis().uses().useBy(user.toUser(), FIELD_ACCESS);

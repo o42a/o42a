@@ -19,9 +19,9 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
@@ -79,7 +79,7 @@ public abstract class FieldDefinition extends Contained {
 	public static DefinitionTarget pathDefinitionTarget(BoundPath path) {
 
 		final PathResolution resolution = path.resolve(
-				pathResolver(path.getOrigin(), dummyRefUser()));
+				pathResolver(path.getOrigin(), dummyUser()));
 
 		if (resolution.isError()) {
 			return objectDefinition();

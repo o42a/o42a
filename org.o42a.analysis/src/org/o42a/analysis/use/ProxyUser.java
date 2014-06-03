@@ -46,7 +46,7 @@ public class ProxyUser<U extends Usage<U>> extends AbstractUser<U> {
 		}
 
 		if (proxied == null) {
-			if (this.proxied.isDummy()) {
+			if (this.proxied.isDummyUser()) {
 				return;
 			}
 			this.proxied = allUsages().dummyUser();

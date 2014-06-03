@@ -27,14 +27,12 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
-import org.o42a.core.ref.RefUser;
 
 
 final class ValueDefsUses implements UserInfo {
 
 	private final ObjectValueDefs part;
 	private Usable<ValuePartUsage> uses;
-	private RefUser refUser;
 
 	ValueDefsUses(ObjectValueDefs part) {
 		this.part = part;
@@ -53,15 +51,8 @@ final class ValueDefsUses implements UserInfo {
 		return uses().toUser();
 	}
 
-	public final RefUser refUser() {
-		if (this.refUser != null) {
-			return this.refUser;
-		}
-		return this.refUser = RefUser.refUser(uses());
-	}
-
 	public final void useBy(UserInfo user) {
-		if (!user.toUser().isDummy()) {
+		if (!user.isDummyUser()) {
 			uses().useBy(user, VALUE_PART_ACCESS);
 		}
 	}

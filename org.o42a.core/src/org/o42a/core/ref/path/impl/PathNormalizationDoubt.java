@@ -22,13 +22,9 @@ package org.o42a.core.ref.path.impl;
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ref.RefUser.refUser;
 
 import org.o42a.analysis.Doubt;
-import org.o42a.analysis.use.ProxyUser;
-import org.o42a.analysis.use.SimpleUsage;
-import org.o42a.analysis.use.Usable;
-import org.o42a.core.ref.RefUser;
+import org.o42a.analysis.use.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolver;
 
@@ -38,38 +34,34 @@ public final class PathNormalizationDoubt extends Doubt {
 	private final BoundPath path;
 	private final Usable<SimpleUsage> uses;
 	private final ProxyUser<SimpleUsage> user;
-	private final RefUser refUser;
 	private ProxyUser<SimpleUsage> normalUser;
-	private RefUser normalRefUser;
 	private boolean normalizationAborted;
 
 	public PathNormalizationDoubt(BoundPath path) {
 		this.path = path;
 		this.uses = ALL_SIMPLE_USAGES.usable(path);
 		this.user = new ProxyUser<>(this.uses.toUser());
-		this.refUser = refUser(this.user);
 	}
 
 	public final PathResolver wrapResolutionUser(
 			PathResolver originalResolver) {
 
-		final RefUser originalUser = originalResolver.refUser();
+		final User<?> originalUser = originalResolver.toUser();
 
-		if (originalUser.isDummy()) {
+		if (originalUser.isDummyUser()) {
 			return originalResolver;
 		}
 
 		this.uses.useBy(originalUser, SIMPLE_USAGE);
 
-		return originalResolver.resolveBy(this.refUser);
+		return originalResolver.resolveBy(this.user);
 	}
 
-	public final RefUser pathNormalized() {
-		if (this.normalRefUser != null) {
-			return this.normalRefUser;
+	public final UserInfo pathNormalized() {
+		if (this.normalUser != null) {
+			return this.normalUser;
 		}
-		this.normalUser = new ProxyUser<>(dummyUser());
-		return this.normalRefUser = refUser(this.normalUser);
+		return this.normalUser = new ProxyUser<>(dummyUser());
 	}
 
 	public final void abortNormalization() {
@@ -78,7 +70,7 @@ public final class PathNormalizationDoubt extends Doubt {
 
 	@Override
 	public void resolveDoubt() {
-		if (this.normalRefUser == null) {
+		if (this.normalUser == null) {
 			// Path was never normalized.
 			return;
 		}
@@ -102,12 +94,11 @@ public final class PathNormalizationDoubt extends Doubt {
 
 	@Override
 	protected void reused() {
-		if (this.normalRefUser != null) {
+		if (this.normalUser != null) {
 			this.normalUser.setProxied(dummyUser());
 			this.normalUser = null;
-			this.normalRefUser = null;
 		}
-		if (this.user.getProxied().isDummy()) {
+		if (this.user.getProxied().isDummyUser()) {
 			this.user.setProxied(this.uses.toUser());
 		}
 		this.normalizationAborted = false;

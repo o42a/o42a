@@ -34,12 +34,12 @@ import org.o42a.core.ref.FullResolver;
 public final class ObjectValueDefs implements UserInfo {
 
 	private final ObjectValue objectValue;
-	private final ValueDefsUses partUses;
+	private final ValueDefsUses uses;
 	private Usable<SimpleUsage> ancestorDefsUpdates;
 
 	ObjectValueDefs(ObjectValue objectValue) {
 		this.objectValue = objectValue;
-		this.partUses = new ValueDefsUses(this);
+		this.uses = new ValueDefsUses(this);
 	}
 
 	public final Obj getObject() {
@@ -66,21 +66,21 @@ public final class ObjectValueDefs implements UserInfo {
 
 	@Override
 	public final User<ValuePartUsage> toUser() {
-		return partUses().toUser();
+		return uses().toUser();
 	}
 
 	public final boolean isUsed(
 			Analyzer analyzer,
 			UseSelector<ValuePartUsage> selector) {
-		return this.partUses.isUsed(analyzer, selector);
+		return this.uses.isUsed(analyzer, selector);
 	}
 
 	public final void accessBy(UserInfo user) {
-		partUses().useBy(user);
+		uses().useBy(user);
 	}
 
 	public final void updateAncestorDefsBy(UserInfo user) {
-		if (!user.toUser().isDummy()) {
+		if (!user.isDummyUser()) {
 			ancestorDefsUpdateUses().useBy(user, SIMPLE_USAGE);
 		}
 	}
@@ -93,11 +93,11 @@ public final class ObjectValueDefs implements UserInfo {
 		return getObject()
 				.getScope()
 				.resolver()
-				.fullResolver(partUses().refUser(), VALUE_REF_USAGE);
+				.fullResolver(this, VALUE_REF_USAGE);
 	}
 
 	public final void wrapBy(ObjectValueDefs wrapPart) {
-		partUses().wrapBy(wrapPart.partUses());
+		uses().wrapBy(wrapPart.uses());
 		ancestorDefsUpdateUses().useBy(
 				wrapPart.ancestorDefsUpdateUses(),
 				SIMPLE_USAGE);
@@ -111,8 +111,8 @@ public final class ObjectValueDefs implements UserInfo {
 		return "ValueDefsOf[" + getObject() + ']';
 	}
 
-	private ValueDefsUses partUses() {
-		return this.partUses;
+	private final ValueDefsUses uses() {
+		return this.uses;
 	}
 
 	private final Usable<SimpleUsage> ancestorDefsUpdateUses() {

@@ -93,11 +93,11 @@ public class DereferenceStep extends Step {
 			resolver + " is not an object";
 
 		final ObjectValue linkObjectValue =
-				linkObject.value().explicitUseBy(resolver.refUser());
+				linkObject.value().explicitUseBy(resolver);
 
 		if (resolver.isFullResolution()) {
 			uses().useBy(resolver);
-			linkObjectValue.resolveAll(resolver.refUser());
+			linkObjectValue.resolveAll(resolver);
 		}
 
 		final TypeParameters<?> typeParameters =
@@ -128,7 +128,7 @@ public class DereferenceStep extends Step {
 		if (resolver.isFullResolution()) {
 			link.resolveAll(
 					resolver.getStart().resolver()
-					.fullResolver(resolver.refUser(), resolver.refUsage()));
+					.fullResolver(resolver, resolver.refUsage()));
 		}
 
 		resolver.getWalker().dereference(linkObject, this, link);

@@ -59,7 +59,7 @@ public class ProxyUsable<U extends Usage<U>> extends ProxyUser<U> {
 	}
 
 	public final void useBy(User<?> user, U usage) {
-		if (user.toUser().isDummy()) {
+		if (user.isDummyUser()) {
 			// Ignore dummy user.
 			return;
 		}
@@ -69,7 +69,7 @@ public class ProxyUsable<U extends Usage<U>> extends ProxyUser<U> {
 
 			final User<U> oldProxied = getProxied();
 
-			if (!oldProxied.isDummy()) {
+			if (!oldProxied.isDummyUser()) {
 				// Some user already proxied. Use the usable by it.
 				for (U u : allUsages().usages()) {
 					this.usable.useBy(u.selectiveUser(oldProxied), u);

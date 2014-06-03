@@ -27,17 +27,17 @@ import static org.o42a.core.value.TypeParameters.typeParameters;
 import java.util.*;
 
 import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
-import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 
 
-public final class ObjectType {
+public final class ObjectType implements UserInfo {
 
 	private final Obj object;
 	private final DerivationUses derivationUses;
@@ -82,8 +82,9 @@ public final class ObjectType {
 				|| !object.meta().isUpdated();
 	}
 
-	public final RefUser refUser() {
-		return derivationUses().refUser();
+	@Override
+	public final User<?> toUser() {
+		return derivationUses().toUser();
 	}
 
 	public final Ascendants getAscendants() {
@@ -158,7 +159,7 @@ public final class ObjectType {
 		return this.allDerivatives;
 	}
 
-	public final ObjectType useBy(RefUser user) {
+	public final ObjectType useBy(UserInfo user) {
 		derivationUses().useBy(user);
 		return this;
 	}

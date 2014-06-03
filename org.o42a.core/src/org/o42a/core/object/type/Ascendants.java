@@ -34,7 +34,6 @@ import org.o42a.core.object.*;
 import org.o42a.core.object.type.impl.ImplicitSample;
 import org.o42a.core.object.type.impl.MemberOverride;
 import org.o42a.core.ref.FullResolver;
-import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -231,13 +230,12 @@ public class Ascendants
 		validate();
 		validateAncestors(objectType);
 
-		final RefUser user = getObject().type().refUser();
 		final TypeRef ancestor = getExplicitAncestor();
 		final FullResolver resolver =
 				getScope()
 				.getEnclosingScope()
 				.resolver()
-				.fullResolver(user, TYPE_REF_USAGE);
+				.fullResolver(getObject().type(), TYPE_REF_USAGE);
 
 		if (ancestor != null) {
 			ancestor.resolveAll(resolver);

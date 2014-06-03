@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.ref.RefInterpreter.linkTargetIsAccessibleFrom;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
@@ -139,7 +138,7 @@ public class MemberById extends ContainedFragment {
 		final Scope enclosingScope = enclosing.getScope();
 		final PathResolution pathResolution =
 				found.bind(this, enclosingScope).resolve(
-						pathResolver(enclosingScope, dummyRefUser()));
+						pathResolver(enclosingScope, dummyUser()));
 
 		if (!pathResolution.isResolved()) {
 			return null;
