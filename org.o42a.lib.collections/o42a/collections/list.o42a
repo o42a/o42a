@@ -21,10 +21,11 @@ An indexed list of elements.
 )
 
 Each => * (
-  :Next index := ``0
-  $Index = next index->
-  Next index +<< 1
-  = List:: [$index]
+  ``0 $ {
+    $ >= size?!
+    << List:: [$]
+    $ +<< 1...
+  }
 )
 
 <*Sublist> Sublist (
