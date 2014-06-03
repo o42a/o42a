@@ -28,7 +28,6 @@ import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
 import static org.o42a.core.object.impl.ScopeField.reusedScopePath;
 import static org.o42a.core.object.impl.ScopeField.scopeFieldFor;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.staticPath;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
@@ -788,7 +787,7 @@ public abstract class Obj
 		}
 		resolveAllMembers();
 		validateImplicitSubClauses(getExplicitClauses());
-		value().resolveAll(dummyRefUser());
+		value().resolveAll(dummyUser());
 	}
 
 	protected void fullyResolveDefinitions() {

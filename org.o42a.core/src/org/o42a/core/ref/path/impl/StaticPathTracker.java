@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.path.impl;
 
-import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolver;
@@ -45,7 +45,7 @@ public final class StaticPathTracker extends SimplePathTracker {
 	@Override
 	public PathResolver nextResolver() {
 		if (this.beforeStart > 0) {
-			return this.initialResolver.resolveBy(dummyRefUser());
+			return this.initialResolver.resolveBy(dummyUser());
 		}
 		return super.nextResolver();
 	}

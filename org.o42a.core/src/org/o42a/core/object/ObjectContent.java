@@ -62,7 +62,7 @@ public class ObjectContent implements UserInfo {
 	}
 
 	public final void useBy(UserInfo user) {
-		if (user.toUser().isDummy()) {
+		if (user.isDummyUser()) {
 			return;
 		}
 		uses().useBy(user, SIMPLE_USAGE);

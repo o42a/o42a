@@ -26,7 +26,6 @@ import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
-import static org.o42a.core.ref.RefUser.refUser;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
@@ -171,7 +170,7 @@ public class ConsoleModule extends AnnotatedModule {
 			final FullResolver resolver =
 					this.main.getScope()
 					.resolver()
-					.fullResolver(refUser(this.user), VALUE_REF_USAGE);
+					.fullResolver(this.user, VALUE_REF_USAGE);
 
 			this.main.resolveAll(resolver);
 		}

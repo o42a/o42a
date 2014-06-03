@@ -22,7 +22,6 @@ package org.o42a.core.ref;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
@@ -171,7 +170,7 @@ public class Ref extends Statement implements RefBuilder {
 			this.iface.resolveAll(
 					getScope()
 					.resolver()
-					.fullResolver(dummyRefUser(), TYPE_PARAMETER_REF_USAGE));
+					.fullResolver(dummyUser(), TYPE_PARAMETER_REF_USAGE));
 		}
 
 		return resolution;

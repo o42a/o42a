@@ -19,10 +19,11 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.common.RoleResolver;
@@ -69,10 +70,10 @@ public final class Resolver implements LocationInfo {
 	}
 
 	public final PathResolver toPathResolver() {
-		return pathResolver(getScope(), dummyRefUser());
+		return pathResolver(getScope(), dummyUser());
 	}
 
-	public final FullResolver fullResolver(RefUser user, RefUsage usage) {
+	public final FullResolver fullResolver(UserInfo user, RefUsage usage) {
 
 		final Resolver resolver = new Resolver(
 				getScope(),

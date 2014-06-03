@@ -19,11 +19,11 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.object.def.DefTarget.UNKNOWN_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
@@ -279,7 +279,7 @@ public class Definitions extends Scoped {
 						getScope()
 						.getEnclosingScope()
 						.resolver()
-						.fullResolver(dummyRefUser(), TARGET_REF_USAGE));
+						.fullResolver(dummyUser(), TARGET_REF_USAGE));
 			}
 		} finally {
 			getContext().fullResolution().end();

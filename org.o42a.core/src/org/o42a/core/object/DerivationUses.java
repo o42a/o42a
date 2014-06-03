@@ -24,6 +24,7 @@ import static org.o42a.core.object.value.ValueUsage.EXPLICIT_VALUE_USAGE;
 
 import org.o42a.analysis.use.Usable;
 import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
@@ -31,11 +32,10 @@ import org.o42a.core.object.type.DerivationUsage;
 import org.o42a.core.object.type.Inheritor;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValueDefs;
-import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.type.TypeRef;
 
 
-final class DerivationUses {
+final class DerivationUses implements UserInfo {
 
 	private final ObjectType type;
 	private Usable<DerivationUsage> uses;
@@ -48,20 +48,17 @@ final class DerivationUses {
 		return this.type.getObject();
 	}
 
-	public final RefUser refUser() {
-		return RefUser.refUser(toUser());
+	public final void useBy(UserInfo user) {
+		uses().useBy(user, DERIVATION_USAGE);
 	}
 
-	public final void useBy(RefUser user) {
-		uses().useBy(user.toUser(), DERIVATION_USAGE);
-	}
-
+	@Override
 	public final User<DerivationUsage> toUser() {
 		return uses().toUser();
 	}
 
 	public final void wrapBy(DerivationUses other) {
-		uses().useBy(other.toUser(), DERIVATION_USAGE);
+		uses().useBy(other, DERIVATION_USAGE);
 	}
 
 	public void resolveAll() {
@@ -151,7 +148,7 @@ final class DerivationUses {
 		}
 
 		// Stand-alone object is constructed at run time, if it's ever derived.
-		this.uses.useBy(toUser(), DERIVATION_USAGE);
+		this.uses.useBy(this, DERIVATION_USAGE);
 
 		// Stand-alone object is constructed at run time
 		// if its owner's value is ever used at runtime.

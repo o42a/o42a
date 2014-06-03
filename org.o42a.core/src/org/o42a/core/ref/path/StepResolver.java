@@ -19,16 +19,17 @@
 */
 package org.o42a.core.ref.path;
 
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.RefUser;
 import org.o42a.core.ref.path.impl.PathTracker;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class StepResolver implements LocationInfo {
+public final class StepResolver implements UserInfo, LocationInfo {
 
 	private final PathTracker tracker;
 	private PathResolver pathResolver;
@@ -76,8 +77,9 @@ public final class StepResolver implements LocationInfo {
 		return getPathResolver().isFullResolution();
 	}
 
-	public final RefUser refUser() {
-		return getPathResolver().refUser();
+	@Override
+	public final User<?> toUser() {
+		return getPathResolver().toUser();
 	}
 
 	public final RefUsage refUsage() {

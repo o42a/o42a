@@ -21,6 +21,8 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathResolver;
@@ -28,15 +30,15 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class FullResolver implements LocationInfo {
+public final class FullResolver implements UserInfo, LocationInfo {
 
 	private final Resolver resolver;
-	private final RefUser user;
+	private final User<?> user;
 	private final RefUsage usage;
 
-	FullResolver(Resolver resolver, RefUser user, RefUsage usage) {
+	FullResolver(Resolver resolver, UserInfo user, RefUsage usage) {
 		this.resolver = resolver;
-		this.user = user;
+		this.user = user.toUser();
 		this.usage = usage;
 	}
 
@@ -57,7 +59,8 @@ public final class FullResolver implements LocationInfo {
 		return this.resolver;
 	}
 
-	public RefUser refUser() {
+	@Override
+	public User<?> toUser() {
 		return this.user;
 	}
 
@@ -69,11 +72,11 @@ public final class FullResolver implements LocationInfo {
 		if (refUsage() == refUsage) {
 			return this;
 		}
-		return getResolver().fullResolver(this.user, refUsage);
+		return getResolver().fullResolver(this, refUsage);
 	}
 
 	public final PathResolver toPathResolver() {
-		return fullPathResolver(getScope(), refUser(), refUsage());
+		return fullPathResolver(getScope(), this, refUsage());
 	}
 
 	@Override
@@ -82,7 +85,7 @@ public final class FullResolver implements LocationInfo {
 			return super.toString();
 		}
 		return "FullResolver[" + getScope()
-				+ " by " + refUser()
+				+ " by " + this.user
 				+ " for " + refUsage()  + ']';
 	}
 

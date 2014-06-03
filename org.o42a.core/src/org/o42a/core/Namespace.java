@@ -19,7 +19,7 @@
 */
 package org.o42a.core;
 
-import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import java.util.ArrayList;
@@ -278,7 +278,7 @@ public class Namespace extends AbstractContainer {
 				return this.container = container(this.ref);
 			}
 			return this.container =
-					this.path.resolve(pathResolver(getScope(), dummyRefUser()))
+					this.path.resolve(pathResolver(getScope(), dummyUser()))
 					.getResult();
 		}
 

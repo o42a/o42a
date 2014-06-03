@@ -92,10 +92,10 @@ public abstract class RefUsage extends Usage<RefUsage> {
 	}
 
 	public void fullyResolve(FullResolver resolver, Container resolved) {
-		resolveObject(resolved.toObject(), resolver.refUser());
+		resolveObject(resolved.toObject(), resolver);
 	}
 
-	protected abstract void resolveObject(Obj object, RefUser user);
+	protected abstract void resolveObject(Obj object, UserInfo user);
 
 	private static final class ValueUsage extends RefUsage {
 
@@ -104,7 +104,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		protected void resolveObject(Obj object, RefUser user) {
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.value().resolveAll(user);
 		}
 
@@ -117,7 +117,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		protected void resolveObject(Obj object, RefUser user) {
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.type().useBy(user);
 		}
 
@@ -135,7 +135,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		protected void resolveObject(Obj object, RefUser user) {
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.type().useBy(user);
 		}
 
@@ -155,12 +155,12 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			if (clause != null) {
 				clause.resolveAll();
 			} else {
-				resolveObject(resolved.toObject(), resolver.refUser());
+				resolveObject(resolved.toObject(), resolver);
 			}
 		}
 
 		@Override
-		protected void resolveObject(Obj object, RefUser user) {
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.resolveAll();
 			object.type().useBy(user);
 		}
@@ -174,7 +174,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		protected void resolveObject(Obj object, RefUser user) {
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.resolveAll();
 			object.type().useBy(user);
 
@@ -199,7 +199,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		protected void resolveObject(Obj object, RefUser user) {
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.type().useBy(user);
 		}
 

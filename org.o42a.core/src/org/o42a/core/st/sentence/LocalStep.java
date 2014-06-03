@@ -123,7 +123,7 @@ final class LocalStep extends Step {
 			}
 
 			local().ref().resolveAll(
-					refResolver.fullResolver(resolver.refUser(), usage));
+					refResolver.fullResolver(resolver, usage));
 		}
 
 		final Obj resolution =

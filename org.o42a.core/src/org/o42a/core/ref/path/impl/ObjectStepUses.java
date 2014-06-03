@@ -84,7 +84,7 @@ public class ObjectStepUses {
 		final RefUsage usage = usage(resolver);
 
 		if (usage != null) {
-			uses().useBy(resolver.refUser(), usage);
+			uses().useBy(resolver, usage);
 		}
 	}
 

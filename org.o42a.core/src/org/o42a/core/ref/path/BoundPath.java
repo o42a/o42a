@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathIR.pathOp;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
 import static org.o42a.core.ref.path.PathResolution.noPathResolutionError;
@@ -516,7 +516,7 @@ public class BoundPath extends RefPath {
 						walker,
 						start,
 						true);
-			} else if (resolver.refUser().isDummy()) {
+			} else if (resolver.isDummyUser()) {
 				tracker = new SimplePathTracker(this, resolver, walker);
 			} else {
 				tracker = new StaticPathTracker(
@@ -538,7 +538,7 @@ public class BoundPath extends RefPath {
 						walker,
 						start,
 						false);
-			} else if (!isStatic() || resolver.refUser().isDummy()) {
+			} else if (!isStatic() || resolver.isDummyUser()) {
 				tracker = new SimplePathTracker(this, resolver, walker);
 			} else {
 				tracker = new StaticPathTracker(
@@ -732,7 +732,7 @@ public class BoundPath extends RefPath {
 
 		final StaticPathStartFinder walker = new StaticPathStartFinder();
 
-		walk(pathResolver(getOrigin(), dummyRefUser()), walker);
+		walk(pathResolver(getOrigin(), dummyUser()), walker);
 
 		this.startObjectScope = walker.getStartObjectScope();
 		this.startObject = walker.getStartObject();
@@ -770,7 +770,7 @@ public class BoundPath extends RefPath {
 
 		walkPath(
 				path,
-				pathResolver(getOrigin(), dummyRefUser()),
+				pathResolver(getOrigin(), dummyUser()),
 				remover,
 				true);
 

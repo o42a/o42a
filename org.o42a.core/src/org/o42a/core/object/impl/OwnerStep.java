@@ -243,7 +243,7 @@ public final class OwnerStep
 			return null;
 		}
 
-		return member.substance(resolver.refUser());
+		return member.substance(resolver);
 	}
 
 	private Container reportToWalker(

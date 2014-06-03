@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value.macro;
 
-import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import org.o42a.core.Container;
@@ -176,7 +176,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 		final BoundPath path = this.ref.getPath();
 		final Scope start = this.ref.getScope();
 		final PathResolution resolution =
-				path.walk(pathResolver(start, dummyRefUser()), this);
+				path.walk(pathResolver(start, dummyUser()), this);
 
 		if (!resolution.isResolved()) {
 			return null;
@@ -346,7 +346,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 		protected boolean triggered(Meta meta) {
 
 			final PathResolution resolution = this.depPath.resolve(
-					pathResolver(meta.getObject().getScope(), dummyRefUser()));
+					pathResolver(meta.getObject().getScope(), dummyUser()));
 
 			if (!resolution.isResolved()) {
 				return false;

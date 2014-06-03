@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.impl.prediction.PredictionWalker.predictRef;
 
 import java.util.Iterator;
@@ -94,7 +94,7 @@ final class ObjectImplementations extends SubIterator<Pred, Pred> {
 		// Fully resolve as temporary reference to prevent assertions failures
 		// and to not create extra entities such as Deps.
 		ancestorRef.resolveAll(
-				scope.resolver().fullResolver(dummyRefUser(), TEMP_REF_USAGE));
+				scope.resolver().fullResolver(dummyUser(), TEMP_REF_USAGE));
 
 		return ancestorRef;
 	}

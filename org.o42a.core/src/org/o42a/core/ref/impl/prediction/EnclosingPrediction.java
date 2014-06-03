@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
-import static org.o42a.core.ref.RefUser.dummyRefUser;
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import java.util.Iterator;
@@ -117,7 +117,7 @@ public class EnclosingPrediction extends Prediction {
 					base.getScope(),
 					base.getScope());
 			final PathResolution resolution = path.resolve(
-					pathResolver(path.getOrigin(), dummyRefUser()));
+					pathResolver(path.getOrigin(), dummyUser()));
 
 			return new EnclosingPred(
 					base,

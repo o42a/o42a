@@ -19,12 +19,11 @@
 */
 package org.o42a.core.member.alias;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberIdKind.FIELD_ALIAS;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
-import static org.o42a.core.ref.RefUser.refUser;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
@@ -159,14 +158,14 @@ public class MemberAlias extends Member implements MemberPath {
 
 		final Container substance;
 
-		if (user.isDummy()) {
+		if (user.isDummyUser()) {
 			substance = getRef().getResolution().resolve();
 		} else {
 
 			final FullResolver fullResolver =
 					getScope()
 					.resolver()
-					.fullResolver(refUser(user), BODY_REF_USAGE);
+					.fullResolver(user, BODY_REF_USAGE);
 
 			substance = getRef().resolveAll(fullResolver).resolve();
 		}
@@ -198,7 +197,7 @@ public class MemberAlias extends Member implements MemberPath {
 	public void resolveAll() {
 		getRef().resolveAll(
 				getScope().resolver().fullResolver(
-						dummyRefUser(),
+						dummyUser(),
 						TEMP_REF_USAGE));
 	}
 

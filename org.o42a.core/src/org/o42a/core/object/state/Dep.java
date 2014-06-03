@@ -19,9 +19,9 @@
 */
 package org.o42a.core.object.state;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
-import static org.o42a.core.ref.RefUser.dummyRefUser;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
@@ -88,7 +88,7 @@ public final class Dep extends Step implements SubID {
 
 	public Scope walkToEnclosingScope(Scope scope, PathWalker walker) {
 
-		final PathResolver resolver = pathResolver(scope, dummyRefUser());
+		final PathResolver resolver = pathResolver(scope, dummyUser());
 
 		return walkToEnclosingScope(resolver, walker);
 	}
@@ -189,7 +189,7 @@ public final class Dep extends Step implements SubID {
 			}
 
 			ref().resolveAll(
-					enclosingResolver.fullResolver(resolver.refUser(), usage));
+					enclosingResolver.fullResolver(resolver, usage));
 
 			final ObjectDeps deps = getDeclaredIn().deps();
 
@@ -308,12 +308,10 @@ public final class Dep extends Step implements SubID {
 		if (resolver.isFullResolution()) {
 			pathResolver = fullPathResolver(
 					resolver.getStart(),
-					resolver.refUser(),
+					resolver,
 					CONTAINER_REF_USAGE);
 		} else {
-			pathResolver = pathResolver(
-					resolver.getStart(),
-					resolver.refUser());
+			pathResolver = pathResolver(resolver.getStart(), resolver);
 		}
 
 		return walkToEnclosingScope(pathResolver, DUMMY_PATH_WALKER);

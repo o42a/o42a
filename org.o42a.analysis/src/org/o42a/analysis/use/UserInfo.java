@@ -22,8 +22,16 @@ package org.o42a.analysis.use;
 
 public interface UserInfo {
 
-	default boolean isDummy() {
-		return toUser().isDummy();
+	default boolean isDummyUser() {
+		return toUser().isDummyUser();
+	}
+
+	default boolean is(UserInfo user) {
+		return is(user.toUser());
+	}
+
+	default boolean is(User<?> user) {
+		return toUser() == user;
 	}
 
 	User<?> toUser();

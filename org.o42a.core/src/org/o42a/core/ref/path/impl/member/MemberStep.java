@@ -84,7 +84,7 @@ final class MemberStep extends AbstractMemberStep {
 				this,
 				member);
 
-		return member.substance(resolver.refUser());
+		return member.substance(resolver);
 	}
 
 	@Override
