@@ -76,7 +76,7 @@ public class MemberOf extends ContainedFragment {
 				accessorResolver.getAccessor()
 				.accessBy(this, this.accessSource);
 
-		final Path found = findMember(container, access);
+		final Path found = memberOfContainerOrLinkTarget(container, access);
 
 		if (found != null) {
 			return found;
@@ -115,7 +115,20 @@ public class MemberOf extends ContainedFragment {
 		return out.toString();
 	}
 
-	private Path findMember(MemberContainer container, Access access) {
+	private Path memberOfContainerOrLinkTarget(
+			MemberContainer container,
+			Access access) {
+
+		final Path memberOfAdapter = memberOfContainer(container, access);
+
+		if (memberOfAdapter != null) {
+			return memberOfAdapter;
+		}
+
+		return memberOfLinkTarget(container);
+	}
+
+	private Path memberOfContainer(MemberContainer container, Access access) {
 
 		final MemberPath memberPath = container.member(
 				access,
@@ -127,13 +140,7 @@ public class MemberOf extends ContainedFragment {
 			return memberPath.pathToMember();
 		}
 
-		final Path memberOfAdapter = memberOfAdapter(access, container);
-
-		if (memberOfAdapter != null) {
-			return memberOfAdapter;
-		}
-
-		return memberOfLinkTarget(container);
+		return memberOfAdapter(access, container);
 	}
 
 	private Path memberOfAdapter(
@@ -204,7 +211,7 @@ public class MemberOf extends ContainedFragment {
 
 		final Obj iface =
 				linkType.interfaceRef(object.type().getParameters()).getType();
-		final Path targetMember = findMember(
+		final Path targetMember = memberOfContainer(
 				iface,
 				Accessor.PUBLIC.accessBy(this, this.accessSource));
 

@@ -183,7 +183,7 @@ public class MemberById extends ContainedFragment {
 			return null;
 		}
 
-		final Holder<Path> memberOfContainer = memberOfContainer(
+		final Holder<Path> memberOfContainer = memberOrMatchingContainer(
 				encosingAccessor(container),
 				container,
 				declaredIn);
@@ -206,6 +206,21 @@ public class MemberById extends ContainedFragment {
 		return Accessor.ENCLOSED;
 	}
 
+	private Holder<Path> memberOrMatchingContainer(
+			Accessor accessor,
+			Container container,
+			Obj declaredIn) {
+
+		final Holder<Path> memberOfAdapter =
+				memberOfContainer(accessor, container, declaredIn);
+
+		if (memberOfAdapter != null) {
+			return memberOfAdapter;
+		}
+
+		return matchingContainer(container, declaredIn);
+	}
+
 	private Holder<Path> memberOfContainer(
 			Accessor accessor,
 			Container container,
@@ -220,13 +235,7 @@ public class MemberById extends ContainedFragment {
 			return new Holder<>(found.pathToMember());
 		}
 
-		final Holder<Path> memberOfAdapter = memberOfAdapter(access, container);
-
-		if (memberOfAdapter != null) {
-			return memberOfAdapter;
-		}
-
-		return matchingContainer(container, declaredIn);
+		return memberOfAdapter(access, container);
 	}
 
 	private Holder<Path> memberOfAdapter(Access access, Container container) {
