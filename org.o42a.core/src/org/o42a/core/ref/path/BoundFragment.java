@@ -47,6 +47,8 @@ public abstract class BoundFragment {
 	}
 
 	final BoundPath appendTo(BoundPath path) {
+		assert this.fragment.origin == null :
+			"Fragment already bound";
 
 		final BoundPath origin = path.append(this.fragment);
 
