@@ -72,11 +72,6 @@ public final class ObjectValue extends ObjectValueBase {
 		return this.uses.selectUse(analyzer, selector);
 	}
 
-	public final boolean isRuntimeConstructed() {
-		return getObject().value().getStatefulness().isStateless()
-				|| getObject().type().isRuntimeConstructed();
-	}
-
 	public final boolean isUsed(
 			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
