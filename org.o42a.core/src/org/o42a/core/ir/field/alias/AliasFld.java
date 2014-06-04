@@ -71,11 +71,6 @@ public class AliasFld extends RefFld<AliasFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	protected boolean mayOmit() {
-		return false;
-	}
-
-	@Override
 	protected Obj targetType(Obj bodyType) {
 		return bodyType.member(getField().getKey())
 				.toField()
