@@ -63,11 +63,6 @@ public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 	}
 
 	@Override
-	protected boolean mayOmit() {
-		return false;
-	}
-
-	@Override
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();

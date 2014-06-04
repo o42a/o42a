@@ -64,11 +64,6 @@ public class EagerLinkFld extends AbstractLinkFld<AliasFld.Op> {
 	}
 
 	@Override
-	protected boolean mayOmit() {
-		return false;
-	}
-
-	@Override
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();

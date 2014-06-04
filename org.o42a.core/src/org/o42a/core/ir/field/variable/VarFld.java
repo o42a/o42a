@@ -23,6 +23,7 @@ import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
+import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -70,7 +71,12 @@ public class VarFld extends AbstractLinkFld<VarFld.Op> {
 
 	@Override
 	protected boolean mayOmit() {
-		return false;
+		if (!super.mayOmit()) {
+			return false;
+		}
+		return !getTarget().value().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_VALUE_USAGES);
 	}
 
 	@Override
