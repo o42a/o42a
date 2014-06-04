@@ -165,7 +165,7 @@ public final class OwnerStep
 
 	private Dep replaceWithDep(
 			PathRebuilder rebuilder,
-			@SuppressWarnings("unused") Step step,
+			Step step,
 			Name name) {
 
 		final Obj origin =
@@ -184,22 +184,12 @@ public final class OwnerStep
 		}
 
 		final Ref ref =
-				rebuilder.restPath(owner.getScope())
-				.target(origin.distributeIn(owner.toObject()));
-		final Dep dep = origin.deps().addDep(name, ref);
-
-		rebuilder.replaceRest(dep);
-
-		/* TODO store only next step in the dependency instead of the rest
-		 * of the path
-		final Ref ref =
 				step.toPath()
 				.bind(rebuilder, owner.getScope())
 				.target(origin.distributeIn(owner));
 		final Dep dep = origin.deps().addDep(name, ref);
 
 		rebuilder.replace(dep);
-		 */
 
 		return dep;
 	}
