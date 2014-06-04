@@ -37,7 +37,7 @@ public final class PathRebuilder implements LocationInfo {
 
 	private final Step[] rebuiltSteps;
 	private int rebuiltIdx;
-	private byte replacement;
+	private boolean replaced;
 
 	PathRebuilder(BoundPath path, Step[] steps) {
 		this.path = path;
@@ -91,12 +91,7 @@ public final class PathRebuilder implements LocationInfo {
 
 	public final void replace(Step rebuilt) {
 		this.rebuiltSteps[this.rebuiltIdx] = this.previousStep = rebuilt;
-		this.replacement = 1;
-	}
-
-	public final void replaceRest(Step rebuilt) {
-		this.rebuiltSteps[this.rebuiltIdx] = this.previousStep = rebuilt;
-		this.replacement = 2;
+		this.replaced = true;
 	}
 
 	public final void combinePreviousWithStatic(
@@ -134,9 +129,6 @@ public final class PathRebuilder implements LocationInfo {
 			final Step next = this.steps[this.nextIdx];
 
 			if (rebuild(next)) {
-				if (isRestReplaced()) {
-					break;
-				}
 				if (++this.nextIdx >= this.steps.length) {
 					break;
 				}
@@ -157,21 +149,17 @@ public final class PathRebuilder implements LocationInfo {
 		return ArrayUtil.clip(this.rebuiltSteps, rebuiltLen);
 	}
 
-	private boolean isRestReplaced() {
-		return this.replacement == 2;
-	}
-
 	private boolean rebuild(Step next) {
-		this.replacement = 0;
+		this.replaced = false;
 		next.rebuild(this);
 
-		if (this.replacement > 0) {
+		if (this.replaced) {
 			return true;
 		}
 
 		getPreviousStep().combineWith(this, next);
 
-		return this.replacement > 0;
+		return this.replaced;
 	}
 
 }
