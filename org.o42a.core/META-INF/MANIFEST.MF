@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Core & IR
 Bundle-SymbolicName: org.o42a.core;singleton:=true
-Bundle-Version: 0.2.9
+Bundle-Version: 0.2.10
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.o42a.core,
  org.o42a.core.ir,
@@ -40,6 +40,6 @@ Export-Package: org.o42a.core,
  org.o42a.core.value.directive,
  org.o42a.core.value.link,
  org.o42a.core.value.macro
-Require-Bundle: org.o42a.codegen;bundle-version="0.2.9",
- org.o42a.util;bundle-version="0.2.9";visibility:=reexport
+Require-Bundle: org.o42a.codegen;bundle-version="0.2.10",
+ org.o42a.util;bundle-version="0.2.10";visibility:=reexport
 Bundle-ActivationPolicy: lazy

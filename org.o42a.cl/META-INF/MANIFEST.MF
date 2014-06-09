@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Command Line Interface
 Bundle-SymbolicName: org.o42a.cl;singleton:=true
-Bundle-Version: 0.2.9
+Bundle-Version: 0.2.10
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.o42a.core;bundle-version="0.2.9",
- org.o42a.backend.constant;bundle-version="0.2.9",
- org.o42a.backend.llvm;bundle-version="0.2.9",
- org.o42a.common;bundle-version="0.2.9",
- org.o42a.intrinsic;bundle-version="0.2.9",
- org.o42a.compiler;bundle-version="0.2.9"
+Require-Bundle: org.o42a.core;bundle-version="0.2.10",
+ org.o42a.backend.constant;bundle-version="0.2.10",
+ org.o42a.backend.llvm;bundle-version="0.2.10",
+ org.o42a.common;bundle-version="0.2.10",
+ org.o42a.intrinsic;bundle-version="0.2.10",
+ org.o42a.compiler;bundle-version="0.2.10"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.o42a.cl
