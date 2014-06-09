@@ -9,10 +9,10 @@ Other configurations not tested.
 
 DEPENDENCIES
 
- * JavaSE-1.7
- * LLVM-3.3
+ * JavaSE-1.8
+ * LLVM-3.4
  * ICU
- * Apache Ant-1.8
+ * Apache Ant-1.9
  * GNU Make
  * GCC or compatible C/C++ compiler
  * Bash
