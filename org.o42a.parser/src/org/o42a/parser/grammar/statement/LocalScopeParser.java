@@ -72,7 +72,6 @@ public class LocalScopeParser implements Parser<LocalScopeNode> {
 
 		switch (context.next()) {
 		case ':':
-		case '>':
 			separator = context.parse(SEPARATOR);
 			content = context.parse(this.grammar.localStatement());
 			break;
