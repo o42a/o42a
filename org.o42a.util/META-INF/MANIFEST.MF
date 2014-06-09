@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Compiler Utililies
 Bundle-SymbolicName: org.o42a.util;singleton:=true
-Bundle-Version: 0.2.9
+Bundle-Version: 0.2.10
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.o42a.util,
  org.o42a.util.collect,
