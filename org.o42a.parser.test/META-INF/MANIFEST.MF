@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Parser Tests
 Bundle-SymbolicName: org.o42a.parser.test;singleton:=true
-Bundle-Version: 0.2.10
+Bundle-Version: 0.2.11
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.junit;bundle-version="4.11.0",
- org.o42a.parser;bundle-version="0.2.10"
+ org.o42a.parser;bundle-version="0.2.11"
