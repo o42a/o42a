@@ -130,7 +130,7 @@ public abstract class ContainerMembers {
 		final MemberField field = member.toField();
 
 		if (field != null
-				&& field.field(dummyUser()).getFieldKind().isScope()) {
+				&& field.field(dummyUser()).getFieldKind().isOwner()) {
 			return true;
 		}
 		if (constructionMode.isStrict()) {

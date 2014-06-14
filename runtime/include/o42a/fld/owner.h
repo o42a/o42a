@@ -5,8 +5,8 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-#ifndef O42A_FLD_SCOPE_H
-#define O42A_FLD_SCOPE_H
+#ifndef O42A_FLD_OWNER_H
+#define O42A_FLD_OWNER_H
 
 #include "o42a/field.h"
 
@@ -21,20 +21,20 @@ typedef struct {
 
 	o42a_obj_body_t *object;
 
-} o42a_fld_scope;
+} o42a_fld_owner;
 
 
 #ifndef NDEBUG
-extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_scope;
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_owner;
 #endif /* NDEBUG */
 
-void o42a_fld_scope_propagate(o42a_obj_ctable_t*);
+void o42a_fld_owner_propagate(o42a_obj_ctable_t*);
 
-void o42a_fld_scope_inherit(o42a_obj_ctable_t*);
+void o42a_fld_owner_inherit(o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* O42A_FLD_SCOPE_H */
+#endif /* O42A_FLD_OWNER_H */

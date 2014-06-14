@@ -21,7 +21,7 @@ package org.o42a.core.object.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.member.field.FieldKind.SCOPE_FIELD;
+import static org.o42a.core.member.field.FieldKind.OWNER_FIELD;
 import static org.o42a.core.member.field.VisibilityMode.PROTECTED_VISIBILITY;
 
 import org.o42a.codegen.Generator;
@@ -29,8 +29,8 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.field.scope.ScopeFld;
-import org.o42a.core.ir.field.scope.ScopeFldOp;
+import org.o42a.core.ir.field.owner.OwnerFld;
+import org.o42a.core.ir.field.owner.OwnerFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.Member;
@@ -166,7 +166,7 @@ public final class OwnerField extends ObjectField {
 
 	@Override
 	public final FieldKind getFieldKind() {
-		return SCOPE_FIELD;
+		return OWNER_FIELD;
 	}
 
 	@Override
@@ -205,14 +205,14 @@ public final class OwnerField extends ObjectField {
 		}
 
 		@Override
-		public ScopeFldOp field(Code code, ObjOp host) {
-			return (ScopeFldOp) super.field(code, host);
+		public OwnerFldOp field(Code code, ObjOp host) {
+			return (OwnerFldOp) super.field(code, host);
 		}
 
 		@Override
-		protected ScopeFld declare(ObjectIRBodyData data) {
+		protected OwnerFld declare(ObjectIRBodyData data) {
 
-			final ScopeFld fld = new ScopeFld(getField());
+			final OwnerFld fld = new OwnerFld(getField());
 			final Obj target = getField().toObject();
 
 			fld.declare(data, target);
@@ -223,7 +223,7 @@ public final class OwnerField extends ObjectField {
 		@Override
 		protected Fld<?> declareDummy(ObjectIRBodyData data) {
 
-			final ScopeFld fld = new ScopeFld(getField());
+			final OwnerFld fld = new OwnerFld(getField());
 
 			fld.declareDummy(data);
 
