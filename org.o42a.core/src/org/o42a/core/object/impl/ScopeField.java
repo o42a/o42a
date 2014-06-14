@@ -28,6 +28,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FieldIR;
+import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.scope.ScopeFld;
 import org.o42a.core.ir.field.scope.ScopeFldOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -232,6 +233,16 @@ public final class ScopeField extends ObjectField {
 			final Obj target = getField().toObject();
 
 			fld.declare(data, target);
+
+			return fld;
+		}
+
+		@Override
+		protected Fld<?> declareDummy(ObjectIRBodyData data) {
+
+			final ScopeFld fld = new ScopeFld(getField());
+
+			fld.declareDummy(data);
 
 			return fld;
 		}

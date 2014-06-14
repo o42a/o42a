@@ -41,6 +41,7 @@ public final class ScopeFld
 
 	private Obj ascendant;
 	private ObjectIRBody target;
+	private boolean dummy;
 
 	public ScopeFld(Field field) {
 		super(field);
@@ -49,6 +50,11 @@ public final class ScopeFld
 	@Override
 	public final FldKind getKind() {
 		return FldKind.SCOPE;
+	}
+
+	@Override
+	public boolean isDummy() {
+		return this.dummy;
 	}
 
 	@Override
@@ -76,6 +82,11 @@ public final class ScopeFld
 		} else {
 			this.target = null;
 		}
+		allocate(data);
+	}
+
+	public final void declareDummy(ObjectIRBodyData data) {
+		this.dummy = true;
 		allocate(data);
 	}
 
@@ -120,7 +131,14 @@ public final class ScopeFld
 	}
 
 	@Override
+	protected Content<ScopeFld.Type> dummyContent() {
+		return this;
+	}
+
+	@Override
 	protected MemberFldOp<Op> op(Code code, ObjOp host, Op ptr) {
+		assert !isDummy() :
+			"Dummy scope field accessd: " + this;
 		return new ScopeFldOp(this, host, ptr);
 	}
 

@@ -75,6 +75,12 @@ final class DerivationUses implements UserInfo {
 	}
 
 	void useAsAncestor(Obj derived) {
+		if (derived.getWrapped() == derived) {
+			getObject()
+			.mostWrapped()
+			.type()
+			.registerDerivative(new Inheritor(derived));
+		}
 		uses().useBy(derived.content(), DERIVATION_USAGE);
 		uses().useBy(derived.type().derivation(), DERIVATION_USAGE);
 		trackUpdatesByAncestor(derived);
@@ -84,6 +90,12 @@ final class DerivationUses implements UserInfo {
 
 		final Obj derived = sample.getDerivedObject();
 
+		if (derived.getWrapped() == derived) {
+			getObject()
+			.mostWrapped()
+			.type()
+			.registerDerivative(sample);
+		}
 		uses().useBy(derived.content(), DERIVATION_USAGE);
 		uses().useBy(derived.type().derivation(), DERIVATION_USAGE);
 
@@ -168,7 +180,7 @@ final class DerivationUses implements UserInfo {
 			linkUses.useAsAncestor(derived);
 		}
 		if (derived.getWrapped() == null) {
-			this.type.registerDerivative(new Inheritor(derived));
+			this.type.registerUpdatedDerivative(new Inheritor(derived));
 		}
 	}
 
@@ -189,7 +201,7 @@ final class DerivationUses implements UserInfo {
 			linkUses.useAsSample(sample);
 		}
 		if (derived.getWrapped() == null) {
-			this.type.registerDerivative(sample);
+			this.type.registerUpdatedDerivative(sample);
 		}
 	}
 
