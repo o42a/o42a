@@ -21,6 +21,7 @@ package org.o42a.root;
 
 import static org.o42a.core.ir.def.Eval.VOID_EVAL;
 import static org.o42a.core.ir.def.InlineEval.voidInlineEval;
+import static org.o42a.core.object.OwnerPath.NO_OWNER_PATH;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.codegen.Generator;
@@ -34,6 +35,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.object.OwnerPath;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.Nesting;
@@ -41,7 +43,6 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -53,11 +54,6 @@ public final class VoidObject extends BuiltinObject {
 
 	public VoidObject(Scope topScope) {
 		super(voidScope(topScope), ValueType.VOID);
-	}
-
-	@Override
-	public Path scopePath() {
-		return null;
 	}
 
 	@Override
@@ -88,6 +84,11 @@ public final class VoidObject extends BuiltinObject {
 	@Override
 	public String toString() {
 		return "void";
+	}
+
+	@Override
+	protected OwnerPath createOwnerPath() {
+		return NO_OWNER_PATH;
 	}
 
 	@Override
