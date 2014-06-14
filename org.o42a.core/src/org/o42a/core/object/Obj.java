@@ -85,7 +85,6 @@ public abstract class Obj
 	private Meta meta;
 	private ObjectType type;
 	private ObjectValue value;
-	private Keepers keepers;
 	private Deps deps;
 
 	private final HashMap<MemberKey, Member> members = new HashMap<>();
@@ -291,13 +290,6 @@ public abstract class Obj
 			return this.value;
 		}
 		return this.value = new ObjectValue(this);
-	}
-
-	public final Keepers keepers() {
-		if (this.keepers != null) {
-			return this.keepers;
-		}
-		return this.keepers = new Keepers(this);
 	}
 
 	public final boolean hasDeps(Analyzer analyzer) {
