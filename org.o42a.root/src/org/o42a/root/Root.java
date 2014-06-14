@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
 import static org.o42a.core.member.Inclusions.INCLUSIONS;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
+import static org.o42a.core.object.OwnerPath.NO_OWNER_PATH;
 import static org.o42a.core.object.meta.Nesting.NO_NESTING;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -39,12 +40,12 @@ import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.OwnerPath;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
@@ -191,13 +192,13 @@ public class Root extends Obj {
 	}
 
 	@Override
-	public Path ownerPath() {
-		return null;
+	public String toString() {
+		return "ROOT";
 	}
 
 	@Override
-	public String toString() {
-		return "ROOT";
+	protected OwnerPath createOwnerPath() {
+		return NO_OWNER_PATH;
 	}
 
 	@Override
