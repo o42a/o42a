@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field.scope;
+package org.o42a.core.ir.field.owner;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -33,22 +33,22 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public final class ScopeFld
-		extends MemberFld<ScopeFld.Op>
-		implements Content<ScopeFld.Type> {
+public final class OwnerFld
+		extends MemberFld<OwnerFld.Op>
+		implements Content<OwnerFld.Type> {
 
-	public static final Type SCOPE_FLD = new Type();
+	public static final Type OWNER_FLD = new Type();
 
 	private Obj ascendant;
 	private ObjectIRBody target;
 
-	public ScopeFld(Field field) {
+	public OwnerFld(Field field) {
 		super(field);
 	}
 
 	@Override
 	public final FldKind getKind() {
-		return FldKind.SCOPE;
+		return FldKind.OWNER;
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public final class ScopeFld
 
 	@Override
 	protected Type getType() {
-		return SCOPE_FLD;
+		return OWNER_FLD;
 	}
 
 	@Override
@@ -115,13 +115,13 @@ public final class ScopeFld
 	}
 
 	@Override
-	protected Content<ScopeFld.Type> content() {
+	protected Content<OwnerFld.Type> content() {
 		return this;
 	}
 
 	@Override
 	protected MemberFldOp<Op> op(Code code, ObjOp host, Op ptr) {
-		return new ScopeFldOp(this, host, ptr);
+		return new OwnerFldOp(this, host, ptr);
 	}
 
 	public static final class Op extends Fld.Op<Op> {
@@ -146,7 +146,7 @@ public final class ScopeFld
 		private DataRec object;
 
 		private Type() {
-			super(ID.rawId("o42a_fld_scope"));
+			super(ID.rawId("o42a_fld_owner"));
 		}
 
 		public final DataRec object() {
@@ -165,7 +165,7 @@ public final class ScopeFld
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0200 | FldKind.SCOPE.code());
+			return externalTypeInfo(0x042a0200 | FldKind.OWNER.code());
 		}
 
 	}

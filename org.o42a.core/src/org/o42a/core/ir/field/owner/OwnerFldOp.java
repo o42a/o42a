@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field.scope;
+package org.o42a.core.ir.field.owner;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
@@ -37,27 +37,27 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 
 
-public class ScopeFldOp extends MemberFldOp<ScopeFld.Op> {
+public class OwnerFldOp extends MemberFldOp<OwnerFld.Op> {
 
-	private final ScopeFld.Op ptr;
+	private final OwnerFld.Op ptr;
 
-	ScopeFldOp(ScopeFld field, ObjOp host, ScopeFld.Op ptr) {
+	OwnerFldOp(OwnerFld field, ObjOp host, OwnerFld.Op ptr) {
 		super(field, host);
 		this.ptr = ptr;
 	}
 
 	@Override
-	public final ScopeFld fld() {
-		return (ScopeFld) super.fld();
+	public final OwnerFld fld() {
+		return (OwnerFld) super.fld();
 	}
 
 	@Override
-	public final ScopeFld.Op ptr() {
+	public final OwnerFld.Op ptr() {
 		return this.ptr;
 	}
 
 	@Override
-	public final ScopeFld.Op ptr(Code code) {
+	public final OwnerFld.Op ptr(Code code) {
 		return ptr();
 	}
 
