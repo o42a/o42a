@@ -42,7 +42,7 @@ public abstract class ObjectScope extends AbstractScope {
 		if (getEnclosingScope().isTopScope()) {
 			return null;
 		}
-		return this.enclosingScopePath = toObject().scopePath();
+		return this.enclosingScopePath = toObject().ownerPath().toPath();
 	}
 
 	@Override

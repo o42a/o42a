@@ -41,6 +41,7 @@ import org.o42a.core.member.field.FieldKind;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.OwnerPath;
 import org.o42a.core.object.common.ObjectField;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
@@ -52,7 +53,7 @@ import org.o42a.core.ref.type.TypeRef;
 
 public final class ScopeField extends ObjectField {
 
-	public static Path reusedScopePath(Obj object) {
+	public static OwnerPath reusedOwnerPath(Obj object) {
 
 		final Scope enclosing = object.getScope().getEnclosingScope();
 
@@ -64,7 +65,7 @@ public final class ScopeField extends ObjectField {
 		if (propagatedFrom != null) {
 			// Reuse the enclosing scope path from the object
 			// this one is propagated from.
-			return propagatedFrom.getScope().getEnclosingScopePath();
+			return propagatedFrom.ownerPath();
 		}
 
 		return reusedFromSample(object);
@@ -76,15 +77,14 @@ public final class ScopeField extends ObjectField {
 			return null;
 		}
 
-		final Path enclosingScopePath =
-				owner.getScope().getEnclosingScopePath();
+		final OwnerPath enclosingScopePath = owner.ownerPath();
 
 		if (enclosingScopePath == null) {
 			// Enclosing scope path not defined.
 			return null;
 		}
 
-		final MemberKey scopeFieldKey = scopeFieldKey(enclosingScopePath);
+		final MemberKey scopeFieldKey = enclosingScopePath.scopeFieldKey();
 
 		if (!scopeFieldKey.getOrigin().is(owner.getScope())) {
 			// Enclosing scope field is derived from overridden object.
@@ -130,7 +130,7 @@ public final class ScopeField extends ObjectField {
 		return step.getMemberKey();
 	}
 
-	private static Path reusedFromSample(Obj object) {
+	private static OwnerPath reusedFromSample(Obj object) {
 
 		final Ascendants ascendants = object.type().getAscendants();
 		final Sample sample = ascendants.getSample();
@@ -145,8 +145,8 @@ public final class ScopeField extends ObjectField {
 			return null;
 		}
 
-		final Path path = sample.getObject().getScope().getEnclosingScopePath();
-		final MemberKey scopeFieldKey = scopeFieldKey(path);
+		final OwnerPath sampleScopePath = sample.getObject().ownerPath();
+		final MemberKey scopeFieldKey = sampleScopePath.scopeFieldKey();
 
 		if (ancestor.getType().member(scopeFieldKey) != null) {
 			// Scope field is overridden in ancestor.
@@ -159,7 +159,7 @@ public final class ScopeField extends ObjectField {
 				.is(object.getScope().getEnclosingScope()) :
 			"Wrong enclosing scope path";
 
-		return path;
+		return sampleScopePath;
 	}
 
 	private final ScopeField overridden;
