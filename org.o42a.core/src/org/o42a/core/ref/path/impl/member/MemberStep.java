@@ -29,7 +29,6 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.FldStoreOp;
@@ -37,6 +36,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.dep.DepIR.Op;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
@@ -100,21 +100,23 @@ final class MemberStep extends AbstractMemberStep {
 	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
-			PathReproducer reproducer,
-			Scope origin,
-			Scope scope) {
+			PathReproducer reproducer) {
 
-		final Member member = origin.getContainer().member(getMemberKey());
+		final MemberContainer origin =
+				getMemberKey().getOrigin().getContainer();
 
-		if (origin.getContainer().toClause() == null
-				&& member.toClause() == null) {
+		if (origin.toClause() == null
+				&& origin.member(getMemberKey()).toClause() == null) {
 			// Neither clause, nor member of clause.
 			// Return unchanged.
 			return unchangedPath(toPath());
 		}
 
 		final MemberKey reproductionKey =
-				getMemberKey().getMemberId().reproduceFrom(origin).key(scope);
+				getMemberKey()
+				.getMemberId()
+				.reproduceFrom(origin.getScope())
+				.key(reproducer.getScope());
 
 		return reproducedPath(reproductionKey.toPath());
 	}

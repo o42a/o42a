@@ -20,8 +20,6 @@
 package org.o42a.core.ref.path.impl.member;
 
 import static org.o42a.core.ir.op.HostTargetOp.ALLOC_STORE_SUFFIX;
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
@@ -35,7 +33,9 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathKind;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.ID;
@@ -124,47 +124,6 @@ public abstract class AbstractMemberStep extends Step {
 		}
 
 		return member;
-	}
-
-	@Override
-	protected final PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-
-		final Scope origin = this.memberKey.getOrigin();
-
-		return reproduce(location, reproducer, origin, reproducer.getScope());
-	}
-
-	/**
-	 * Reproduces a member step.
-	 *
-	 * @param location the reproduced step location.
-	 * @param reproducer the reproducer.
-	 * @param origin the member's {@link MemberKey#getOrigin() origin}.
-	 * @param scope the scope the reproduced member belongs to.
-	 *
-	 * @return the reproduced step in the form of path reproduction.
-	 */
-	protected PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer,
-			Scope origin,
-			Scope scope) {
-
-		final Member member = origin.getContainer().member(this.memberKey);
-
-		if (origin.getContainer().toClause() == null
-				&& member.toClause() == null) {
-			// Neither clause, nor member of clause.
-			// Return unchanged.
-			return unchangedPath(toPath());
-		}
-
-		final MemberKey reproductionKey =
-				this.memberKey.getMemberId().reproduceFrom(origin).key(scope);
-
-		return reproducedPath(reproductionKey.toPath());
 	}
 
 	@Override

@@ -135,11 +135,11 @@ public final class OwnerStep
 	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
-			PathReproducer reproducer,
-			Scope origin,
-			Scope scope) {
+			PathReproducer reproducer) {
 
-		final Clause fromClause = origin.getContainer().toClause();
+		final Scope scope = reproducer.getScope();
+		final Clause fromClause =
+				reproducer.getReproducingScope().getContainer().toClause();
 
 		if (fromClause == null) {
 			// Walked out of object, containing clauses.
