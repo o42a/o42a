@@ -20,7 +20,9 @@
 package org.o42a.core.ir.value.type;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjectDataIR;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.value.ValueType;
 
@@ -54,8 +56,6 @@ public abstract class ValueIR {
 	public final ObjectIR getObjectIR() {
 		return this.objectIR;
 	}
-
-	public abstract void allocateBody(ObjectIRBodyData data);
 
 	public abstract ValueOp op(ObjectOp object);
 

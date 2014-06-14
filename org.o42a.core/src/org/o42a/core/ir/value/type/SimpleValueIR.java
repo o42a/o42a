@@ -25,7 +25,6 @@ import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -35,10 +34,6 @@ public abstract class SimpleValueIR extends ValueIR {
 
 	public SimpleValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
 		super(valueTypeIR, objectIR);
-	}
-
-	@Override
-	public void allocateBody(ObjectIRBodyData data) {
 	}
 
 	@Override
