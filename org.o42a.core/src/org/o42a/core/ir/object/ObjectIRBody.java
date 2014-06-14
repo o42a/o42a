@@ -39,7 +39,6 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
@@ -161,7 +160,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
 
-		allocateValueBody(bodyData);
 		allocateFields(bodyData);
 		allocateDeps(bodyData);
 	}
@@ -208,18 +206,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private static ID buildId(ObjectIR ascendantIR) {
 		return ascendantIR.getId().detail(BODY_ID);
-	}
-
-	private void allocateValueBody(ObjectIRBodyData data) {
-
-		final Obj ascendant = getAscendant();
-		final ValueType<?> valueType = ascendant.type().getValueType();
-		final Obj typeObject =
-				valueType.typeObject(ascendant.getContext().getIntrinsics());
-
-		if (ascendant.is(typeObject)) {
-			getObjectIR().getValueIR().allocateBody(data);
-		}
 	}
 
 	private final void allocateFields(ObjectIRBodyData data) {
