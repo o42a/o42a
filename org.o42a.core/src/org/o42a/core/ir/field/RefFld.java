@@ -48,6 +48,7 @@ public abstract class RefFld<
 	private final Obj target;
 	private Obj targetAscendant;
 
+	private boolean dummy;
 	private boolean targetIRAllocated;
 	private boolean filling;
 	private boolean filledFields;
@@ -68,6 +69,11 @@ public abstract class RefFld<
 		return this.targetAscendant;
 	}
 
+	@Override
+	public final boolean isDummy() {
+		return this.dummy;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Type<F, C> getInstance() {
@@ -77,6 +83,14 @@ public abstract class RefFld<
 	public final void allocate(ObjectIRBodyData data, Obj targetAscendant) {
 		getTarget().assertDerivedFrom(targetAscendant);
 		this.targetAscendant = targetAscendant;
+		allocate(data);
+	}
+
+	public final void allocateDummy(ObjectIRBodyData data) {
+		this.dummy = true;
+		this.targetIRAllocated = true;
+		this.filledFields = true;
+		this.filledAll = true;
 		allocate(data);
 	}
 
@@ -147,6 +161,18 @@ public abstract class RefFld<
 		.setValue(this.constructor);
 	}
 
+	protected void fillDummy() {
+		if (!getType().isStateless()) {
+			// Initialize object pointer to null.
+			// May be overridden by fillTarget().
+			getInstance().object().setNull();
+		}
+		getInstance()
+		.constructor()
+		.setConstant(true)
+		.setNull();
+	}
+
 	protected abstract void buildConstructor(ObjBuilder builder, CodeDirs dirs);
 
 	protected abstract Obj targetType(Obj bodyType);
@@ -154,6 +180,19 @@ public abstract class RefFld<
 	@Override
 	protected Content<Type<F, C>> content() {
 		return new FldContent<>(this);
+	}
+
+	@Override
+	protected Content<Type<F, C>> dummyContent() {
+		return new Content<Type<F, C>>() {
+			@Override
+			public void allocated(Type<F, C> instance) {
+			}
+			@Override
+			public void fill(Type<F, C> instance) {
+				fillDummy();
+			}
+		};
 	}
 
 	@Override
@@ -361,7 +400,7 @@ public abstract class RefFld<
 					constructor,
 					failure.head(),
 					getBodyIR(),
-					getBodyIR().getAscendant(),
+					getBodyIR().getClosestAscendant(),
 					getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
 			final CodeDirs dirs =
 					builder.dirs(constructor, failure.head());

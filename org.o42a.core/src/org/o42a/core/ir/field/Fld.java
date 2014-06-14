@@ -70,6 +70,8 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 		return false;
 	}
 
+	public abstract boolean isDummy();
+
 	@Override
 	public abstract FldKind getKind();
 
@@ -107,12 +109,14 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 		this.instance = data.getData().addInstance(
 				FLD_ID.detail(getId().getLocal()),
 				getType(),
-				content());
+				isDummy() ? dummyContent() : content());
 	}
 
 	protected abstract Type<F> getType();
 
 	protected abstract Content<? extends Type<F>> content();
+
+	protected abstract Content<? extends Type<F>> dummyContent();
 
 	protected abstract FldOp<F> op(Code code, ObjOp host, F ptr);
 
