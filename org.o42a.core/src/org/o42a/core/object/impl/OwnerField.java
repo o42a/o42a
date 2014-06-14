@@ -48,7 +48,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public final class ScopeField extends ObjectField {
+public final class OwnerField extends ObjectField {
 
 	public static OwnerPath reusedOwnerPath(Obj object) {
 
@@ -60,7 +60,7 @@ public final class ScopeField extends ObjectField {
 		final Obj propagatedFrom = object.getPropagatedFrom();
 
 		if (propagatedFrom != null) {
-			// Reuse the enclosing scope path from the object
+			// Reuse the owner path from the object
 			// this one is propagated from.
 			return propagatedFrom.ownerPath();
 		}
@@ -68,44 +68,47 @@ public final class ScopeField extends ObjectField {
 		return reusedFromSample(object);
 	}
 
-	public static ScopeField scopeFieldFor(Obj object) {
+	public static OwnerField ownerFieldFor(Obj object) {
+		if (object.isStatic()) {
+			return null;
+		}
 		if (object.getScope().getEnclosingScope().toObject() == null) {
 			// Only object members may have an enclosing scope path.
 			return null;
 		}
 
-		final MemberKey scopeFieldKey = object.ownerPath().scopeFieldKey();
+		final MemberKey ownerFieldKey = object.ownerPath().ownerFieldKey();
 
-		if (scopeFieldKey == null) {
-			// Enclosing scope is not accessed with scope field.
+		if (ownerFieldKey == null) {
+			// Enclosing scope is not accessed with owner field.
 			return null;
 		}
 
-		if (scopeFieldKey.getOrigin().is(object.getScope())) {
-			// Declare new scope field for this object.
-			return new ScopeField(object, scopeFieldKey.getMemberId());
+		if (ownerFieldKey.getOrigin().is(object.getScope())) {
+			// Declare new owner field for this object.
+			return new OwnerField(object, ownerFieldKey.getMemberId());
 		}
 
 		return null;
 	}
 
-	static Obj objectScope(Obj object, MemberKey scopeFieldKey) {
+	static Obj objectScope(Obj object, MemberKey ownerFieldKey) {
 
 		final ObjectType newOwnerType = object.type();
 		final Obj ancestor = newOwnerType.getAncestor().getType();
-		final Member ancestorMember = ancestor.member(scopeFieldKey);
+		final Member ancestorMember = ancestor.member(ownerFieldKey);
 
 		if (ancestorMember != null) {
-			// Scope field is present in ancestor.
-			// Preserve an ancestor`s scope.
+			// Owner field is present in ancestor.
+			// Preserve the ancestor`s owner.
 			return ancestorMember.substance(dummyUser()).toObject();
 		}
 
 		final Sample sample = newOwnerType.getSample();
 
 		if (sample != null
-				&& sample.getObject().member(scopeFieldKey) != null) {
-			// Scope field is declared in implicit sample.
+				&& sample.getObject().member(ownerFieldKey) != null) {
+			// Owner field is declared in sample.
 			// Update the owner with an actual one.
 			return object.getScope().getEnclosingScope().toObject();
 		}
@@ -123,17 +126,17 @@ public final class ScopeField extends ObjectField {
 		}
 
 		final OwnerPath sampleScopePath = sample.getObject().ownerPath();
-		final MemberKey scopeFieldKey = sampleScopePath.scopeFieldKey();
+		final MemberKey ownerFieldKey = sampleScopePath.ownerFieldKey();
 		final TypeRef ancestor = ascendants.getExplicitAncestor();
 
 		if (ancestor != null
-				&& ancestor.getType().member(scopeFieldKey) != null) {
-			// Scope field is overridden in ancestor.
+				&& ancestor.getType().member(ownerFieldKey) != null) {
+			// Owner field is overridden in ancestor.
 			// Can not reuse it.
 			return null;
 		}
 
-		assert objectScope(object, scopeFieldKey)
+		assert objectScope(object, ownerFieldKey)
 				.getScope()
 				.is(object.getScope().getEnclosingScope()) :
 			"Wrong enclosing scope path";
@@ -141,9 +144,9 @@ public final class ScopeField extends ObjectField {
 		return sampleScopePath;
 	}
 
-	private final ScopeField overridden;
+	private final OwnerField overridden;
 
-	private ScopeField(Obj owner, MemberId memberId) {
+	private OwnerField(Obj owner, MemberId memberId) {
 		super(
 				owner,
 				fieldDeclaration(
@@ -155,7 +158,7 @@ public final class ScopeField extends ObjectField {
 		setScopeObject(owner.getScope().getEnclosingContainer().toObject());
 	}
 
-	private ScopeField(MemberField member, ScopeField overridden) {
+	private OwnerField(MemberField member, OwnerField overridden) {
 		super(member);
 		this.overridden = overridden;
 	}
@@ -186,7 +189,7 @@ public final class ScopeField extends ObjectField {
 
 	@Override
 	protected ObjectField propagate(MemberField member) {
-		return new ScopeField(member, this);
+		return new OwnerField(member, this);
 	}
 
 	@Override
