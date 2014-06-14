@@ -23,15 +23,15 @@ package org.o42a.core.member.field;
 public enum FieldKind {
 
 	ORDINAL_FIELD,
-	SCOPE_FIELD,
+	OWNER_FIELD,
 	ALIAS_FIELD;
 
 	public final boolean isOrdinal() {
 		return this == ORDINAL_FIELD;
 	}
 
-	public final boolean isScope() {
-		return this == SCOPE_FIELD;
+	public final boolean isOwner() {
+		return this == OWNER_FIELD;
 	}
 
 }

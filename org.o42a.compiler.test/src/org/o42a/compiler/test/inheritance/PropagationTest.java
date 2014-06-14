@@ -6,7 +6,7 @@ package org.o42a.compiler.test.inheritance;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
+import static org.o42a.core.member.MemberId.OWNER_FIELD_ID;
 import static org.o42a.core.object.type.Derivation.INHERITANCE;
 import static org.o42a.core.object.type.Derivation.MEMBER_OVERRIDE;
 import static org.o42a.core.object.type.Derivation.PROPAGATION;
@@ -59,11 +59,11 @@ public class PropagationTest extends CompilerTestCase {
 		assertThat(bBar.type().inherits(bFoo.type()), is(true));
 
 		final Field aFooScope =
-				aFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT)
+				aFoo.member(OWNER_FIELD_ID, Accessor.INHERITANT)
 				.toField()
 				.field(USE_CASE);
 		final Field bFooScope =
-				bFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT)
+				bFoo.member(OWNER_FIELD_ID, Accessor.INHERITANT)
 				.toField()
 				.field(USE_CASE);
 

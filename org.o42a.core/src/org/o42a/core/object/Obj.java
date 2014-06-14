@@ -21,7 +21,7 @@ package org.o42a.core.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.AbstractContainer.matchingPathOf;
-import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
+import static org.o42a.core.member.MemberId.OWNER_FIELD_ID;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
@@ -670,7 +670,7 @@ public abstract class Obj
 		}
 
 		// New owner field is to be created.
-		return new OwnerStep(this, SCOPE_FIELD_ID.key(getScope()));
+		return new OwnerStep(this, OWNER_FIELD_ID.key(getScope()));
 	}
 
 	protected abstract Nesting createNesting();
@@ -959,7 +959,7 @@ public abstract class Obj
 
 			final Field field = memberField.field(dummyUser());
 
-			if (field.getFieldKind().isScope()) {
+			if (field.getFieldKind().isOwner()) {
 				continue;
 			}
 
