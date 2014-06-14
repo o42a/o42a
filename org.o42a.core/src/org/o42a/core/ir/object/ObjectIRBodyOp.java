@@ -44,8 +44,8 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return (ObjectIRBody) super.getType();
 	}
 
-	public final Obj getAscendant() {
-		return getType().getAscendant();
+	public final Obj getSampleDeclaration() {
+		return getType().getSampleDeclaration();
 	}
 
 	public final StructRecOp<ObjectIRDescOp> declaredIn(Code code) {

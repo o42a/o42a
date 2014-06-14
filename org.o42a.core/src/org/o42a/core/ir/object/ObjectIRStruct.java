@@ -20,9 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRBody.BODY_ID;
-import static org.o42a.core.object.type.Derivation.PROPAGATION;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
@@ -48,13 +46,11 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	private final ObjectDataIR dataIR;
 	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
 			new LinkedHashMap<>();
-	private final ArrayList<ObjectIRBody> sampleBodyIRs = new ArrayList<>();
-	private final ObjectIRBody mainBodyIR;
+	private ObjectIRBody mainBodyIR;
 
 	public ObjectIRStruct(ObjectIR objectIR) {
 		super(objectIR.getId().detail(OBJECT_ID));
 		this.objectIR = objectIR;
-		this.mainBodyIR = new ObjectIRBody(this);
 		this.dataIR = new ObjectDataIR(this);
 	}
 
@@ -66,20 +62,22 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		return this.objectIR;
 	}
 
+	public final Obj getSampleDeclaration() {
+		return getObjectIR().getSampleDeclaration();
+	}
+
 	public final ObjectDataIR dataIR() {
 		return this.dataIR;
 	}
 
 	public final ObjectIRBody mainBodyIR() {
+		assert this.mainBodyIR != null :
+			"Main body is not allocated yet";
 		return this.mainBodyIR;
 	}
 
 	public final LinkedHashMap<Obj, ObjectIRBody> bodyIRs() {
 		return this.bodyIRs;
-	}
-
-	public final ArrayList<ObjectIRBody> sampleBodyIRs() {
-		return this.sampleBodyIRs;
 	}
 
 	@Override
@@ -115,9 +113,11 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 		if (sample != null) {
 			deriveBodyIRs(data, sample.getObject(), false);
+		} else {
+			assert getObjectIR().isSampleDeclaration() :
+				"The object has no sample. It should be a declaration then";
+			allocateBodyIR(data, new ObjectIRBody(this), null, false);
 		}
-
-		allocateBodyIR(data, this.mainBodyIR, null, false);
 	}
 
 	private void deriveBodyIRs(
@@ -129,17 +129,15 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 				ascendant.ir(getGenerator()).getBodyIRs();
 
 		for (ObjectIRBody ascendantBodyIR : ascendantBodyIRs) {
-			if (this.bodyIRs.containsKey(ascendantBodyIR.getAscendant())) {
-				// body for the given ascendant already present
+			if (this.bodyIRs.containsKey(
+					ascendantBodyIR.getSampleDeclaration())) {
+				// The body for the given declaration is already present.
 				continue;
 			}
 
 			final ObjectIRBody bodyIR = ascendantBodyIR.derive(getObjectIR());
 
 			allocateBodyIR(data, bodyIR, ascendantBodyIR, inherited);
-			if (!inherited) {
-				this.sampleBodyIRs.add(bodyIR);
-			}
 		}
 	}
 
@@ -148,10 +146,15 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			ObjectIRBody bodyIR,
 			ObjectIRBody derivedFrom,
 			boolean inherited) {
+		if (!inherited) {
+			assert this.mainBodyIR == null :
+				"Main body already allocated: " + this.mainBodyIR;
+			this.mainBodyIR = bodyIR;
+		}
 
-		final Obj ascendant = bodyIR.getAscendant();
+		final Obj declaration = bodyIR.getSampleDeclaration();
 
-		this.bodyIRs.put(ascendant, bodyIR);
+		this.bodyIRs.put(declaration, bodyIR);
 		if (derivedFrom != null) {
 			data.addStruct(
 					bodyId(data.getGenerator(), bodyIR),
@@ -165,20 +168,14 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 		if (inherited) {
 			bodyIR.setKind(ObjectIRBody.Kind.INHERITED);
-		} else if (bodyIR.isMain()) {
-			bodyIR.setKind(ObjectIRBody.Kind.MAIN);
-		} else if (getObject().type().derivedFrom(
-				bodyIR.getAscendant().type(),
-				PROPAGATION)) {
-			bodyIR.setKind(ObjectIRBody.Kind.PROPAGATED);
 		} else {
-			bodyIR.setKind(ObjectIRBody.Kind.EXPLICIT);
+			bodyIR.setKind(ObjectIRBody.Kind.MAIN);
 		}
 	}
 
 	private static ID bodyId(Generator generator, ObjectIRBody bodyIR) {
 
-		final ObjectIR ascendantIR = bodyIR.getAscendant().ir(generator);
+		final ObjectIR ascendantIR = bodyIR.getSampleDeclaration().ir(generator);
 
 		return BODY_PREFIX_ID.detail(ascendantIR.getId());
 	}
