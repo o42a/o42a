@@ -28,7 +28,7 @@ public interface OwnerPath {
 	OwnerPath NO_OWNER_PATH = new OwnerPath() {
 
 		@Override
-		public MemberKey scopeFieldKey() {
+		public MemberKey ownerFieldKey() {
 			return null;
 		}
 
@@ -44,7 +44,7 @@ public interface OwnerPath {
 
 	};
 
-	MemberKey scopeFieldKey();
+	MemberKey ownerFieldKey();
 
 	Path toPath();
 

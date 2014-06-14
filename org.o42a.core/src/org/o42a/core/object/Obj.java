@@ -26,8 +26,8 @@ import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
-import static org.o42a.core.object.impl.ScopeField.reusedOwnerPath;
-import static org.o42a.core.object.impl.ScopeField.scopeFieldFor;
+import static org.o42a.core.object.impl.OwnerField.ownerFieldFor;
+import static org.o42a.core.object.impl.OwnerField.reusedOwnerPath;
 import static org.o42a.core.ref.path.Path.staticPath;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
@@ -651,7 +651,7 @@ public abstract class Obj
 		if (isStatic()) {
 			return new OwnerPath() {
 				@Override
-				public MemberKey scopeFieldKey() {
+				public MemberKey ownerFieldKey() {
 					return null;
 				}
 				@Override
@@ -669,7 +669,7 @@ public abstract class Obj
 			return reused;
 		}
 
-		// New scope field is to be created.
+		// New owner field is to be created.
 		return new OwnerStep(this, SCOPE_FIELD_ID.key(getScope()));
 	}
 
@@ -845,7 +845,7 @@ public abstract class Obj
 
 	private void declareMembers() {
 		this.objectMembers = new ObjectMembers(this);
-		declareScopeField();
+		declareOwnerField();
 		declareMemberTypeParameters();
 		declareMembers(this.objectMembers);
 
@@ -863,15 +863,12 @@ public abstract class Obj
 		}
 	}
 
-	private void declareScopeField() {
-		if (isStatic()) {
-			return;
-		}
+	private void declareOwnerField() {
 
-		final ScopeField scopeField = scopeFieldFor(this);
+		final OwnerField ownerField = ownerFieldFor(this);
 
-		if (scopeField != null) {
-			this.objectMembers.addMember(scopeField.toMember());
+		if (ownerField != null) {
+			this.objectMembers.addMember(ownerField.toMember());
 		}
 	}
 

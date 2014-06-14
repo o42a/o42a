@@ -20,7 +20,7 @@
 package org.o42a.core.object.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.object.impl.ScopeField.objectScope;
+import static org.o42a.core.object.impl.OwnerField.objectScope;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
@@ -68,7 +68,7 @@ public final class OwnerStep
 	}
 
 	@Override
-	public MemberKey scopeFieldKey() {
+	public MemberKey ownerFieldKey() {
 		return getMemberKey();
 	}
 
