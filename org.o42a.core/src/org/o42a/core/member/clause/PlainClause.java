@@ -74,7 +74,7 @@ public abstract class PlainClause
 		if (getEnclosingContainer().getScope().isTopScope()) {
 			return null;
 		}
-		return this.enclosingScopePath = getObject().scopePath();
+		return this.enclosingScopePath = getObject().ownerPath().toPath();
 	}
 
 	@Override

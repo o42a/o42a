@@ -191,7 +191,7 @@ public class Root extends Obj {
 	}
 
 	@Override
-	public Path scopePath() {
+	public Path ownerPath() {
 		return null;
 	}
 

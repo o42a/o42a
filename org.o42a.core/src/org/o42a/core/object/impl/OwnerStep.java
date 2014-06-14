@@ -36,6 +36,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.OwnerPath;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Ref;
@@ -51,7 +52,7 @@ import org.o42a.util.string.Name;
 
 public final class OwnerStep
 		extends AbstractMemberStep
-		implements ReversePath {
+		implements OwnerPath, ReversePath {
 
 	private final Obj object;
 	private ObjectStepUses uses;
@@ -64,6 +65,11 @@ public final class OwnerStep
 	@Override
 	public Scope revert(Scope target) {
 		return this.object.meta().findIn(target).getScope();
+	}
+
+	@Override
+	public MemberKey scopeFieldKey() {
+		return getMemberKey();
 	}
 
 	@Override
