@@ -72,6 +72,8 @@ public abstract class FieldIRBase extends ScopeIR {
 
 	protected abstract Fld<?> declare(ObjectIRBodyData data);
 
+	protected abstract Fld<?> declareDummy(ObjectIRBodyData data);
+
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
 
@@ -94,6 +96,10 @@ public abstract class FieldIRBase extends ScopeIR {
 			this.targetAllocated = false;
 			fld.targetAllocated();
 		}
+	}
+
+	void allocateDummy(ObjectIRBodyData data) {
+		this.fld = declareDummy(data);
 	}
 
 }

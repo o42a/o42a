@@ -61,6 +61,14 @@ public class ObjectIR  {
 		return this.object;
 	}
 
+	public final boolean isSampleDeclaration() {
+		return getObject().is(getSampleDeclaration());
+	}
+
+	public final Obj getSampleDeclaration() {
+		return getObject().type().getSampleDeclaration();
+	}
+
 	public final ID getId() {
 		return getScopeIR().getScope().getId();
 	}
@@ -161,7 +169,8 @@ public class ObjectIR  {
 		if (ascendant.is(ascendant.getContext().getVoid())) {
 			return getMainBodyIR();
 		}
-		return getStruct().bodyIRs().get(ascendant);
+		return getStruct().bodyIRs().get(
+				ascendant.type().getSampleDeclaration());
 	}
 
 	public final Fld<?> fld(MemberKey memberKey) {

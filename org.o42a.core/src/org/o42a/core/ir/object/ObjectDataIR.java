@@ -183,8 +183,9 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		instance.ascendants().addAll(
 				this.objectIRStruct.bodyIRs().values());
-		instance.samples().addAll(
-				this.objectIRStruct.sampleBodyIRs());
+		if (!getObjectIR().isSampleDeclaration()) {
+			//instance.samples().add(this.objectIRStruct.mainBodyIR());
+		}
 
 		instance.ascendants().allocateItems(data);
 		instance.samples().allocateItems(data);
@@ -244,9 +245,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 			final MemberField field = member.toField();
 
 			if (field == null) {
-				continue;
-			}
-			if (!field.isOverride()) {
 				continue;
 			}
 

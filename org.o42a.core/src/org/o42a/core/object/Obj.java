@@ -630,9 +630,10 @@ public abstract class Obj
 		return true;
 	}
 
-	public final void assertDerivedFrom(Obj type) {
+	public final boolean assertDerivedFrom(Obj type) {
 		assert is(type) || type().derivedFrom(type.type()) :
 			this + " is not derived from " + type;
+		return true;
 	}
 
 	@Override
