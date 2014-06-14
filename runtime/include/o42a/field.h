@@ -33,7 +33,7 @@ enum o42a_fld_kind {
 
 	O42A_FLD_VAR = 3,
 
-	O42A_FLD_SCOPE = 4,
+	O42A_FLD_OWNER = 4,
 
 	O42A_FLD_DEP = 5,
 

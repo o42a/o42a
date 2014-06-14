@@ -12,7 +12,7 @@
 #include "o42a/fld/dep.h"
 #include "o42a/fld/link.h"
 #include "o42a/fld/obj.h"
-#include "o42a/fld/scope.h"
+#include "o42a/fld/owner.h"
 #include "o42a/fld/var.h"
 
 
@@ -36,7 +36,7 @@ union o42a_fld {
 
 	o42a_fld_var var;
 
-	o42a_fld_scope scope;
+	o42a_fld_owner owner;
 
 	o42a_fld_dep dep;
 

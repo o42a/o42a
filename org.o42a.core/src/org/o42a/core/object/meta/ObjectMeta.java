@@ -171,7 +171,7 @@ public abstract class ObjectMeta {
 
 			final Field field = memberField.field(User.dummyUser());
 
-			if (field.getFieldKind().isScope()) {
+			if (field.getFieldKind().isOwner()) {
 				// Only nested fields are interesting.
 				continue;
 			}

@@ -60,7 +60,7 @@ objects += $(srcdir)/fld/alias.o
 objects += $(srcdir)/fld/dep.o
 objects += $(srcdir)/fld/link.o
 objects += $(srcdir)/fld/obj.o
-objects += $(srcdir)/fld/scope.o
+objects += $(srcdir)/fld/owner.o
 objects += $(srcdir)/fld/var.o
 
 objects += $(srcdir)/lib/io.o

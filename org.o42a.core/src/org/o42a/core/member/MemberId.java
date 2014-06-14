@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.core.Scope;
@@ -35,8 +36,8 @@ public abstract class MemberId implements SubID {
 
 	private static final Scope[] NOT_REPRODUCED = new Scope[0];
 
-	public static final MemberId SCOPE_FIELD_ID =
-			MemberIdKind.FIELD_NAME.memberName(CASE_SENSITIVE.name("S"));
+	public static final MemberId OWNER_FIELD_ID =
+			FIELD_NAME.memberName(CASE_SENSITIVE.name("O"));
 
 	public abstract boolean isValid();
 
