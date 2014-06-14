@@ -64,7 +64,18 @@ public abstract class MemberFld<F extends Fld.Op<F>> extends Fld<F> {
 
 		if (!field.isOverride()) {
 			// New field declaration.
-			return false;
+			if (getBodyIR().getObjectIR().isSampleDeclaration()) {
+				// Object declaration.
+				return false;
+			}
+
+			// Already present in declaration.
+			return getBodyIR()
+			.getObjectIR()
+			.getSampleDeclaration()
+			.ir(getGenerator())
+			.getMainBodyIR()
+			.findFld(getKey()) != null;
 		}
 
 		final Scope definedIn = field.getDefinedIn();

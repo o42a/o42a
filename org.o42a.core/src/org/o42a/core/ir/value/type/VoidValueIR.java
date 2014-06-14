@@ -23,7 +23,9 @@ import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VOID_VAL;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjectDataIR;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
@@ -33,10 +35,6 @@ public final class VoidValueIR extends ValueIR {
 
 	public VoidValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
 		super(valueTypeIR, objectIR);
-	}
-
-	@Override
-	public void allocateBody(ObjectIRBodyData data) {
 	}
 
 	@Override

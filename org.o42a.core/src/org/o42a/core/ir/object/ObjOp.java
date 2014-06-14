@@ -137,10 +137,12 @@ public final class ObjOp extends ObjectOp {
 		if (getPrecision().isExact()) {
 			return staticCast(dirs.code(), ascendant);
 		}
-		if (ascendant.cloneOf(ptr().getAscendant())) {
-			// Clone shares the body with it`s origin.
+		if (ascendant.type().getSampleDeclaration().is(
+				ptr().getSampleDeclaration())) {
+			// Share the same body.
 			return this;
 		}
+
 		return dynamicCast(id, dirs, ascendant);
 	}
 
@@ -196,9 +198,15 @@ public final class ObjOp extends ObjectOp {
 		assert getPrecision().isCompatible() :
 			"Wrong object precision: " + this;
 		assert (!getPrecision().isExact()
-				|| getAscendant().cloneOf(ptr().getAscendant())) :
-				getAscendant() + " is not a clone of "
-				+ ptr().getAscendant();
+				|| getAscendant()
+						.ir(getGenerator())
+						.getSampleDeclaration().is(
+								ptr()
+								.getSampleDeclaration()
+								.ir(getGenerator())
+								.getSampleDeclaration())) :
+				getAscendant() + " declaration differs from "
+				+ ptr().getSampleDeclaration();
 		return true;
 	}
 
