@@ -26,7 +26,7 @@ import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
-import static org.o42a.core.object.impl.ScopeField.reusedScopePath;
+import static org.o42a.core.object.impl.ScopeField.reusedOwnerPath;
 import static org.o42a.core.object.impl.ScopeField.scopeFieldFor;
 import static org.o42a.core.ref.path.Path.staticPath;
 import static org.o42a.core.value.TypeParameters.typeParameters;
@@ -81,6 +81,7 @@ public abstract class Obj
 	private Holder<Obj> cloneOf;
 	private byte fullResolution;
 
+	private OwnerPath ownerPath;
 	private Obj wrapped;
 	private Meta meta;
 	private ObjectType type;
@@ -534,19 +535,11 @@ public abstract class Obj
 		return ascendantDefinitions.override(explicitDefinitions);
 	}
 
-	public Path scopePath() {
-		if (isStatic()) {
-			return staticPath(getScope(), getScope().getEnclosingScope());
+	public final OwnerPath ownerPath() {
+		if (this.ownerPath != null) {
+			return this.ownerPath;
 		}
-
-		final Path reused = reusedScopePath(this);
-
-		if (reused != null) {
-			return reused;
-		}
-
-		// New scope field is to be created.
-		return new OwnerStep(this, SCOPE_FIELD_ID.key(getScope())).toPath();
+		return this.ownerPath = createOwnerPath();
 	}
 
 	public final Ref staticRef(Scope scope) {
@@ -652,6 +645,32 @@ public abstract class Obj
 		}
 
 		return scope.toString();
+	}
+
+	protected OwnerPath createOwnerPath() {
+		if (isStatic()) {
+			return new OwnerPath() {
+				@Override
+				public MemberKey scopeFieldKey() {
+					return null;
+				}
+				@Override
+				public Path toPath() {
+					return staticPath(
+							getScope(),
+							getScope().getEnclosingScope());
+				}
+			};
+		}
+
+		final OwnerPath reused = reusedOwnerPath(this);
+
+		if (reused != null) {
+			return reused;
+		}
+
+		// New scope field is to be created.
+		return new OwnerStep(this, SCOPE_FIELD_ID.key(getScope()));
 	}
 
 	protected abstract Nesting createNesting();
