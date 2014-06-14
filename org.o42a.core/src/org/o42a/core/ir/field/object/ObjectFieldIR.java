@@ -23,6 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FieldIR;
+import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.link.EagerLinkFld;
 import org.o42a.core.ir.field.link.LinkFld;
@@ -54,7 +55,7 @@ public final class ObjectFieldIR extends FieldIR {
 	@Override
 	protected RefFld<?, ?> declare(ObjectIRBodyData data) {
 
-		final RefFld<?, ?> linkFld = declareLink(data);
+		final RefFld<?, ?> linkFld = declareLink(data, false);
 
 		if (linkFld != null) {
 			return linkFld;
@@ -67,7 +68,23 @@ public final class ObjectFieldIR extends FieldIR {
 		return fld;
 	}
 
-	private RefFld<?, ?> declareLink(ObjectIRBodyData data) {
+	@Override
+	protected Fld<?> declareDummy(ObjectIRBodyData data) {
+
+		final RefFld<?, ?> linkFld = declareLink(data, true);
+
+		if (linkFld != null) {
+			return linkFld;
+		}
+
+		final ObjFld fld = new ObjFld(getField());
+
+		fld.allocateDummy(data);
+
+		return fld;
+	}
+
+	private RefFld<?, ?> declareLink(ObjectIRBodyData data, boolean dummy) {
 
 		final Field field = getField();
 		final Obj object = field.toObject();
@@ -92,7 +109,9 @@ public final class ObjectFieldIR extends FieldIR {
 		final TypeParameters<?> parameters = object.type().getParameters();
 
 		final Obj ascendant =
-				parameters.getValueType()
+				dummy
+				? null
+				: parameters.getValueType()
 				.toLinkType()
 				.interfaceRef(parameters)
 				.getType();
@@ -122,7 +141,11 @@ public final class ObjectFieldIR extends FieldIR {
 			return null;
 		}
 
-		fld.allocate(data, ascendant);
+		if (dummy) {
+			fld.allocateDummy(data);
+		} else {
+			fld.allocate(data, ascendant);
+		}
 
 		return fld;
 	}

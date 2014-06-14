@@ -42,7 +42,7 @@ public final class ObjectIRSamples extends RelList<ObjectIRBody> {
 
 		final Generator generator = item.getGenerator();
 		final ID id =
-				PREFIX_ID.detail(item.getAscendant().ir(generator).getId());
+				PREFIX_ID.detail(item.getSampleDeclaration().ir(generator).getId());
 		final SampleDescIR.Type desc = data.addInstance(
 				id,
 				SAMPLE_DESC_IR,

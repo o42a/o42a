@@ -39,6 +39,7 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
+import org.o42a.core.object.type.Derivative;
 import org.o42a.util.string.ID;
 
 
@@ -49,7 +50,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private static final int KIND_MASK = 3;
 
 	private final ObjectIRStruct objectIRStruct;
-	private final Obj ascendant;
+	private final Obj sampleDeclaration;
+	private final Obj closestAscendant;
 
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
@@ -62,21 +64,27 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
 		super(buildId(objectIRStruct.getObjectIR()));
 		this.objectIRStruct = objectIRStruct;
-		this.ascendant = objectIRStruct.getObject();
+		this.sampleDeclaration = objectIRStruct.getSampleDeclaration();
+		this.closestAscendant = this.sampleDeclaration;
 	}
 
-	private ObjectIRBody(ObjectIR inheritantIR, Obj ascendant) {
-		super(buildId(ascendant.ir(inheritantIR.getGenerator())));
+	private ObjectIRBody(ObjectIR inheritantIR, Obj declaration) {
+		super(buildId(declaration.ir(inheritantIR.getGenerator())));
 		this.objectIRStruct = inheritantIR.getStruct();
-		this.ascendant = ascendant;
+		this.sampleDeclaration = declaration;
+		this.closestAscendant = inheritantIR.getObject();
 	}
 
 	public final ObjectIR getObjectIR() {
 		return this.objectIRStruct.getObjectIR();
 	}
 
-	public final Obj getAscendant() {
-		return this.ascendant;
+	public final Obj getSampleDeclaration() {
+		return this.sampleDeclaration;
+	}
+
+	public final Obj getClosestAscendant() {
+		return this.closestAscendant;
 	}
 
 	public final boolean isMain() {
@@ -120,7 +128,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	}
 
 	public final ObjectIRBody derive(ObjectIR inheritantIR) {
-		return new ObjectIRBody(inheritantIR, getAscendant());
+		return new ObjectIRBody(inheritantIR, getSampleDeclaration());
 	}
 
 	public final Fld<?> fld(MemberKey memberKey) {
@@ -175,7 +183,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 			this.declaredIn.setValue(objectDesc.data(generator).getPointer());
 		} else {
 			this.declaredIn.setValue(
-					getAscendant().ir(getGenerator())
+					getSampleDeclaration()
+					.ir(getGenerator())
 					.getDataIR()
 					.getDesc()
 					.data(generator)
@@ -209,12 +218,20 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	}
 
 	private final void allocateFields(ObjectIRBodyData data) {
+		allocateFieldsDeclaredIn(data, getSampleDeclaration());
+	}
 
-		final Obj ascendant = getAscendant();
+	private void allocateFieldsDeclaredIn(
+			ObjectIRBodyData data,
+			Obj ascendant) {
+
 		final Generator generator = getGenerator();
 		final Obj object = getObjectIR().getObject();
 
 		for (Member declared : ascendant.getMembers()) {
+			if (declared.isOverride()) {
+				continue;
+			}
 
 			final MemberField declaredField = declared.toField();
 
@@ -225,20 +242,41 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 				// An alias.
 				continue;
 			}
-			if (declared.isOverride()) {
-				continue;
-			}
 			if (!generateField(declaredField)) {
 				continue;
 			}
 
-			final Field field =
-					object.member(declaredField.getMemberKey())
-					.toField()
-					.field(dummyUser());
-			final FieldIRBase fieldIR = field.ir(generator);
+			final Member member =
+					object.member(declaredField.getMemberKey());
 
-			fieldIR.allocate(data);
+			if (member != null) {
+				// Member present in object.
+
+				final Field field = member.toField().field(dummyUser());
+				final FieldIRBase fieldIR = field.ir(generator);
+
+				fieldIR.allocate(data);
+			} else {
+
+				final Obj origin =
+						declaredField.getMemberKey().getOrigin().toObject();
+
+				assert origin.assertDerivedFrom(getSampleDeclaration());
+
+				final Field field =
+						origin.member(declaredField.getMemberKey())
+						.toField()
+						.field(dummyUser());
+				final FieldIRBase fieldIR = field.ir(generator);
+
+				fieldIR.allocateDummy(data);
+			}
+		}
+
+		for (Derivative derivative : ascendant.type().allDerivatives()) {
+			if (derivative.isSample()) {
+				allocateFieldsDeclaredIn(data, derivative.getDerivedObject());
+			}
 		}
 	}
 
@@ -258,9 +296,14 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	}
 
 	private void allocateDeps(ObjectIRBodyData data) {
+		allocateDepsDeclaredIn(data, getSampleDeclaration());
+	}
+
+	private void allocateDepsDeclaredIn(
+			ObjectIRBodyData data,
+			Obj ascendant) {
 
 		final Analyzer analyzer = getGenerator().getAnalyzer();
-		final Obj ascendant = getAscendant();
 
 		for (Dep dep : ascendant.deps()) {
 			if (!dep.exists(analyzer)) {
@@ -272,6 +315,12 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 			depIR.allocate(data);
 			this.deps.put(dep, depIR);
 		}
+
+		for (Derivative derivative : ascendant.type().allDerivatives()) {
+			if (derivative.isSample()) {
+				allocateDepsDeclaredIn(data, derivative.getDerivedObject());
+			}
+		}
 	}
 
 	private String fieldNotFound(MemberKey memberKey) {
@@ -281,7 +330,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		out.append("Field `").append(memberKey);
 		out.append("` not found in `").append(this);
 
-		final Member member = getAscendant().member(memberKey);
+		final Member member = findMemberIn(getSampleDeclaration(), memberKey);
 
 		if (member == null) {
 			return out.append("`: no such member").toString();
@@ -299,6 +348,29 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 				analysis.reasonNotFound(getGenerator().getAnalyzer()));
 
 		return out.toString();
+	}
+
+	private Member findMemberIn(Obj descendant, MemberKey memberKey) {
+
+		final Member member = descendant.member(memberKey);
+
+		if (member != null) {
+			return member;
+		}
+
+		for (Derivative derivative : descendant.type().allDerivatives()) {
+			if (derivative.isSample()) {
+
+				final Member found =
+						findMemberIn(derivative.getDerivedObject(), memberKey);
+
+				if (found != null) {
+					return found;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public enum Kind {

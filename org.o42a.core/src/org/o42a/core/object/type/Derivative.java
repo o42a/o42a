@@ -26,6 +26,10 @@ public interface Derivative {
 
 	Obj getDerivedObject();
 
+	default boolean isSample() {
+		return toSample() != null;
+	}
+
 	Sample toSample();
 
 	Inheritor toInheritor();
