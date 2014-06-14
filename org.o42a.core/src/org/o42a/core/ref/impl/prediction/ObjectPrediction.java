@@ -113,7 +113,7 @@ public class ObjectPrediction extends Prediction {
 		private final Obj start;
 
 		DerivativesIterator(Obj start) {
-			super(start.type().allDerivatives().iterator());
+			super(start.type().updatedDerivatives().iterator());
 			this.start = start;
 		}
 

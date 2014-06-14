@@ -42,12 +42,14 @@ public final class ObjectType implements UserInfo {
 	private final Obj object;
 	private final DerivationUses derivationUses;
 	private Obj lastDefinition;
+	private Obj sampleDeclaration;
 	private TypeParameters<?> parameters;
 	private LinkUses linkUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
 	private ArrayList<Derivative> allDerivatives;
+	private ArrayList<Derivative> updatedDerivatives;
 	private ValueType<?> valueType;
 
 	ObjectType(Obj object) {
@@ -72,6 +74,28 @@ public final class ObjectType implements UserInfo {
 		}
 
 		return this.lastDefinition = object;
+	}
+
+	public final Obj getSampleDeclaration() {
+		if (this.sampleDeclaration != null) {
+			return this.sampleDeclaration;
+		}
+
+		Obj declaration = getObject();
+
+		for (;;) {
+
+			final Sample sample =
+					declaration.type().getAscendants().getSample();
+
+			if (sample == null) {
+				break;
+			}
+
+			declaration = sample.getObject();
+		}
+
+		return this.sampleDeclaration = declaration;
 	}
 
 	public final boolean isRuntimeConstructed() {
@@ -157,6 +181,13 @@ public final class ObjectType implements UserInfo {
 			return emptyList();
 		}
 		return this.allDerivatives;
+	}
+
+	public final List<Derivative> updatedDerivatives() {
+		if (this.updatedDerivatives == null) {
+			return emptyList();
+		}
+		return this.updatedDerivatives;
 	}
 
 	public final ObjectType useBy(UserInfo user) {
@@ -285,13 +316,20 @@ public final class ObjectType implements UserInfo {
 			this.allDerivatives = new ArrayList<>();
 		}
 		this.allDerivatives.add(derivative);
+	}
+
+	void registerUpdatedDerivative(Derivative derivative) {
+		if (this.updatedDerivatives == null) {
+			this.updatedDerivatives = new ArrayList<>();
+		}
+		this.updatedDerivatives.add(derivative);
 		if (!getObject().meta().isUpdated()) {
 			// Clone is explicitly derived.
 			// Update the derivation tree.
 			final Sample sample = getSample();
 
 			if (sample != null) {
-				sample.getObject().type().registerDerivative(sample);
+				sample.getObject().type().registerUpdatedDerivative(sample);
 			}
 		}
 	}

@@ -23,7 +23,9 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjectDataIR;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
@@ -51,10 +53,6 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 
 		StringValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
 			super(valueTypeIR, objectIR);
-		}
-
-		@Override
-		public void allocateBody(ObjectIRBodyData data) {
 		}
 
 		@Override

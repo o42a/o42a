@@ -219,7 +219,7 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
 		final ObjOp result =
 				resultPtr.to(id, code, ascendantIR.getBodyType())
-				.op(getBuilder(), ascendant, COMPATIBLE);
+				.op(getBuilder(), ascendantIR.getObject(), COMPATIBLE);
 
 		subDirs.done();
 

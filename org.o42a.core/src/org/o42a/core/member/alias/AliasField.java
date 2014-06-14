@@ -23,6 +23,7 @@ import static org.o42a.core.member.field.FieldKind.ALIAS_FIELD;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.field.FieldIR;
+import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.alias.AliasFld;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.field.Field;
@@ -74,6 +75,17 @@ public final class AliasField extends Field {
 			final AliasFld fld = new AliasFld(field, target);
 
 			fld.allocate(data, target);
+
+			return fld;
+		}
+
+		@Override
+		protected Fld<?> declareDummy(ObjectIRBodyData data) {
+
+			final AliasField field = (AliasField) getField();
+			final AliasFld fld = new AliasFld(field, null);
+
+			fld.allocateDummy(data);
 
 			return fld;
 		}

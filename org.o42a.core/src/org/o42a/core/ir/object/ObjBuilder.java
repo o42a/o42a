@@ -40,7 +40,7 @@ public final class ObjBuilder extends CodeBuilder {
 			ObjectIRBody hostIR,
 			Obj hostType,
 			ObjectPrecision hostPrecision) {
-		super(hostIR.getAscendant().getContext(), function);
+		super(hostIR.getSampleDeclaration().getContext(), function);
 		this.host = host(function, exit, hostIR, hostType, hostPrecision);
 	}
 
