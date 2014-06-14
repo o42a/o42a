@@ -45,8 +45,6 @@ import org.o42a.core.object.common.ObjectField;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.Step;
-import org.o42a.core.ref.path.impl.member.AbstractMemberStep;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -70,27 +68,25 @@ public final class ScopeField extends ObjectField {
 		return reusedFromSample(object);
 	}
 
-	public static ScopeField scopeFieldFor(Obj owner) {
-		if (owner.getScope().getEnclosingScope().toObject() == null) {
+	public static ScopeField scopeFieldFor(Obj object) {
+		if (object.getScope().getEnclosingScope().toObject() == null) {
 			// Only object members may have an enclosing scope path.
 			return null;
 		}
 
-		final OwnerPath enclosingScopePath = owner.ownerPath();
+		final MemberKey scopeFieldKey = object.ownerPath().scopeFieldKey();
 
-		if (enclosingScopePath == null) {
-			// Enclosing scope path not defined.
+		if (scopeFieldKey == null) {
+			// Enclosing scope is not accessed with scope field.
 			return null;
 		}
 
-		final MemberKey scopeFieldKey = enclosingScopePath.scopeFieldKey();
-
-		if (!scopeFieldKey.getOrigin().is(owner.getScope())) {
-			// Enclosing scope field is derived from overridden object.
-			return null;
+		if (scopeFieldKey.getOrigin().is(object.getScope())) {
+			// Declare new scope field for this object.
+			return new ScopeField(object, scopeFieldKey.getMemberId());
 		}
 
-		return new ScopeField(owner, scopeFieldKey.getMemberId());
+		return null;
 	}
 
 	static Obj objectScope(Obj object, MemberKey scopeFieldKey) {
@@ -117,18 +113,6 @@ public final class ScopeField extends ObjectField {
 		throw new IllegalStateException();
 	}
 
-	static MemberKey scopeFieldKey(Path enclosingScopePath) {
-
-		final Step[] steps = enclosingScopePath.getSteps();
-
-		assert steps.length == 1 :
-			"Enclosing path scope should contain exactly one step";
-
-		final AbstractMemberStep step = (AbstractMemberStep) steps[0];
-
-		return step.getMemberKey();
-	}
-
 	private static OwnerPath reusedFromSample(Obj object) {
 
 		final Ascendants ascendants = object.type().getAscendants();
@@ -138,16 +122,12 @@ public final class ScopeField extends ObjectField {
 			return null;
 		}
 
-		final TypeRef ancestor = ascendants.getExplicitAncestor();
-
-		if (ancestor == null) {
-			return null;
-		}
-
 		final OwnerPath sampleScopePath = sample.getObject().ownerPath();
 		final MemberKey scopeFieldKey = sampleScopePath.scopeFieldKey();
+		final TypeRef ancestor = ascendants.getExplicitAncestor();
 
-		if (ancestor.getType().member(scopeFieldKey) != null) {
+		if (ancestor != null
+				&& ancestor.getType().member(scopeFieldKey) != null) {
 			// Scope field is overridden in ancestor.
 			// Can not reuse it.
 			return null;

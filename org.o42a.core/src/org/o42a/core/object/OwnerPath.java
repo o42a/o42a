@@ -25,6 +25,25 @@ import org.o42a.core.ref.path.Path;
 
 public interface OwnerPath {
 
+	OwnerPath NO_OWNER_PATH = new OwnerPath() {
+
+		@Override
+		public MemberKey scopeFieldKey() {
+			return null;
+		}
+
+		@Override
+		public Path toPath() {
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			return "NO OWNER";
+		}
+
+	};
+
 	MemberKey scopeFieldKey();
 
 	Path toPath();
