@@ -107,6 +107,12 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 	}
 
 	@Override
+	protected void fillDummy() {
+		super.fillDummy();
+		getInstance().previous().setNull();
+	}
+
+	@Override
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
@@ -253,7 +259,7 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 		final ObjectOp ancestor = anonymousObject(
 				builder,
 				ancestorPtr,
-				getBodyIR().getAscendant());
+				getBodyIR().getClosestAscendant());
 
 		// Ancestor object is marked used by previous constructor.
 		// Set it to a temporary holder, to automatically release.
