@@ -36,6 +36,7 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	public static final ObjectIRDesc OBJECT_DESC_TYPE = new ObjectIRDesc();
 
+	private StructRec<ObjectIRDescOp> declaration;
 	private StructRec<ObjectIRDataOp> data;
 	private RelList<FieldDescIR> fields;
 	private RelList<OverriderDescIR> overriders;
@@ -43,6 +44,10 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	private ObjectIRDesc() {
 		super(ID.rawId("o42a_obj_desc_t"));
+	}
+
+	public final StructRec<ObjectIRDescOp> declaration() {
+		return this.declaration;
 	}
 
 	public final StructRec<ObjectIRDataOp> data() {
@@ -68,6 +73,7 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRDescOp> data) {
+		this.declaration = data.addPtr("declaration", OBJECT_DESC_TYPE);
 		this.data = data.addPtr("data", OBJECT_DATA_TYPE);
 		this.fields = new ObjectIRFields().allocate(data, "fields");
 		this.overriders = new ObjectIROverriders().allocate(data, "overriders");

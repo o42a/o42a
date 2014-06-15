@@ -60,14 +60,13 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 		final ObjectIR ascendantIR =
 				this.bodyIR.getSampleDeclaration().ir(generator);
 
-		instance.type().setConstant(true).setValue(
+		instance.desc().setConstant(true).setValue(
 				ascendantIR.getDataIR()
 				.getDesc()
-				.data(generator)
-				.getPointer());
+				.pointer(generator));
 		instance.body().setConstant(true).setValue(
 				this.bodyIR.data(generator).getPointer().relativeTo(
-						instance.data(generator).getPointer()));
+						instance.pointer(generator)));
 	}
 
 	@Override
@@ -86,8 +85,8 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRDescOp> type(Code code) {
-			return ptr(null, code, getType().type());
+		public final StructRecOp<ObjectIRDescOp> desc(Code code) {
+			return ptr(null, code, getType().desc());
 		}
 
 		public final RelRecOp body(Code code) {
@@ -99,15 +98,15 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRDescOp> type;
+		private StructRec<ObjectIRDescOp> desc;
 		private RelRec body;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ascendant_t"));
 		}
 
-		public final StructRec<ObjectIRDescOp> type() {
-			return this.type;
+		public final StructRec<ObjectIRDescOp> desc() {
+			return this.desc;
 		}
 
 		public final RelRec body() {
@@ -121,7 +120,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.type = data.addPtr("type", OBJECT_DESC_TYPE);
+			this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
 			this.body = data.addRelPtr("body");
 		}
 

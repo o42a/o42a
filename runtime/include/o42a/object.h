@@ -156,7 +156,7 @@ typedef struct o42a_obj_body {
 	O42A_HEADER
 
 	/**
-	 * Pointer to object descriptor, where corresponding body were first
+	 * Pointer to object type descriptor, where corresponding body were first
 	 * declared in.
 	 */
 	o42a_obj_desc_t *declared_in;
@@ -316,7 +316,15 @@ struct o42a_obj_desc {
 	O42A_HEADER
 
 	/**
-	 * Pointer to the data of the data this descriptor is created for.
+	 * Pointer to the descriptor this declaration copies the structure of.
+	 *
+	 * This can be either a pointer to this descriptor, or to the descriptor
+	 * of the object this one is propagated from.
+	 */
+	o42a_obj_desc_t *declaration;
+
+	/**
+	 * Pointer to the data of the object this descriptor is created for.
 	 */
 	o42a_obj_data_t *data;
 
@@ -490,7 +498,7 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	o42a_dbg_field_info_t fields[16];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
@@ -573,7 +581,7 @@ inline o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *const data) {
  */
 inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 
-	const o42a_rlist_t *const list = &desc->fields;
+	const o42a_rlist_t *const list = &desc->declaration->fields;
 
 	return (o42a_obj_field_t *) (((char *) list) + list->list);
 }

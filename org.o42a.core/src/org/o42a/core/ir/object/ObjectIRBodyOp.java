@@ -49,7 +49,7 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 	}
 
 	public final StructRecOp<ObjectIRDescOp> declaredIn(Code code) {
-		return ptr(null, code, getType().declaredIn());
+		return ptr(null, code, getType().definedIn());
 	}
 
 	public final RelRecOp objectData(Code code) {
