@@ -303,9 +303,6 @@ struct o42a_obj_data {
 	/** Relative pointer to the list of ascendant descriptors. */
 	o42a_rlist_t ascendants;
 
-	/** Relative pointer to the list of object sample descriptors. */
-	o42a_rlist_t samples;
-
 };
 
 /**
@@ -360,20 +357,6 @@ typedef struct o42a_obj_ascendant {
 	o42a_rptr_t body;
 
 } o42a_obj_ascendant_t;
-
-/**
- * Object sample descriptor.
- *
- * Describes explicit sample or propagated field's body .
- */
-typedef struct o42a_obj_sample {
-
-	O42A_HEADER
-
-	/** Relative pointer to sample body. */
-	o42a_rptr_t body;
-
-} o42a_obj_sample_t;
 
 /**
  * Field descriptor.
@@ -495,14 +478,12 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[16];
+	o42a_dbg_field_info_t fields[15];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
-
-extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_sample;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
@@ -559,20 +540,6 @@ inline o42a_obj_ascendant_t *o42a_obj_ascendants(
 }
 
 /**
- * Retrieves object sample's descriptors.
- *
- * \param data[in] object data pointer.
- *
- * \return pointer to the first element of sample descriptors array.
- */
-inline o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *const data) {
-
-	const o42a_rlist_t *const list = &data->samples;
-
-	return (o42a_obj_sample_t *) (((char *) list) + list->list);
-}
-
-/**
  * Retrieves field descriptors.
  *
  * \param desc[in] type descriptor pointer.
@@ -611,19 +578,6 @@ inline o42a_obj_overrider_t *o42a_obj_overriders(
 inline o42a_obj_body_t *o42a_obj_ascendant_body(
 		const o42a_obj_ascendant_t *const ascendant) {
 	return (o42a_obj_body_t *) (((char *) ascendant) + ascendant->body);
-}
-
-
-/**
- * Retrieves object body corresponding to the given sample.
- *
- * \param sample[in] pointer to ascendant descriptor.
- *
- * \return body pointer.
- */
-inline o42a_obj_body_t *o42a_obj_sample_body(
-		const o42a_obj_sample_t *const sample) {
-	return (o42a_obj_body_t *) (((char *) sample) + sample->body);
 }
 
 /**
