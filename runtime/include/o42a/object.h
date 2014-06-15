@@ -325,7 +325,12 @@ struct o42a_obj_desc {
 	 */
 	o42a_obj_data_t *data;
 
-	/** Relative pointer to the list of field descriptors. */
+	/**
+	 * Relative pointer to the list of field descriptors.
+	 *
+	 * Note that this list is empty for propagated objects.
+	 * Always use `declaration.fields` to get a real list.
+	 */
 	o42a_rlist_t fields;
 
 	/**
