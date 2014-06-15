@@ -33,7 +33,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.impl.ObjectIRAscendants;
-import org.o42a.core.ir.object.impl.ObjectIRSamples;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
@@ -69,7 +68,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private StructRec<ObjectIRDescOp> desc;
 	private StructRec<ValueTypeDescOp> valueType;
 	private RelList<ObjectIRBody> ascendants;
-	private RelList<ObjectIRBody> samples;
 
 	private ObjectIRData() {
 		super(ID.rawId("o42a_obj_data_t"));
@@ -124,10 +122,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.ascendants;
 	}
 
-	public final RelList<ObjectIRBody> samples() {
-		return this.samples;
-	}
-
 	@Override
 	public ObjectIRDataOp op(StructWriter<ObjectIRDataOp> writer) {
 		return new ObjectIRDataOp(writer);
@@ -150,7 +144,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
 		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");
-		this.samples = new ObjectIRSamples().allocate(data, "samples");
 	}
 
 	@Override

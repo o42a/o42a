@@ -183,12 +183,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		instance.ascendants().addAll(
 				this.objectIRStruct.bodyIRs().values());
-		if (!getObjectIR().isSampleDeclaration()) {
-			//instance.samples().add(this.objectIRStruct.mainBodyIR());
-		}
-
 		instance.ascendants().allocateItems(data);
-		instance.samples().allocateItems(data);
 
 		allocateDesc(data);
 
