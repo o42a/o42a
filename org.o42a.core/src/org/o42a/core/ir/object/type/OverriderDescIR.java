@@ -60,7 +60,10 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 
 		final Generator generator = instance.getGenerator();
 		final ObjectIR declaredInIR =
-				this.fld.getDeclaredIn().ir(this.fld.getGenerator());
+				this.fld.getDeclaredIn()
+				.type()
+				.getSampleDeclaration()
+				.ir(this.fld.getGenerator());
 		final FieldDescIR fieldDescIR =
 				declaredInIR.getDataIR().fieldDescIR(
 						this.fld.getKey());

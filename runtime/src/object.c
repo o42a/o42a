@@ -535,7 +535,7 @@ static void derive_object_body(
 	}
 
 	// Derive fields.
-	const size_t num_fields = ctable->body_desc->fields.size;
+	const size_t num_fields = ctable->body_desc->declaration->fields.size;
 	o42a_obj_field_t *const fields =
 			O42A(o42a_obj_fields(ctable->body_desc));
 
@@ -725,7 +725,7 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(asc));
 		const o42a_obj_desc_t *const desc = asc->desc;
 
-		uint32_t num_fields = desc->fields.size;
+		uint32_t num_fields = desc->declaration->fields.size;
 
 		if (num_fields) {
 
@@ -781,7 +781,7 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(asc));
 		const o42a_obj_desc_t *const desc = asc->desc;
 
-		uint32_t num_fields = desc->fields.size;
+		uint32_t num_fields = desc->declaration->fields.size;
 
 		if (num_fields) {
 

@@ -197,8 +197,10 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 				OBJECT_DESC_TYPE,
 				new ObjectIRDescContent(this));
 
-		allocateFieldDecls(instance);
-		allocateDepDecls(instance);
+		if (getObjectIR().isSampleDeclaration()) {
+			allocateFieldDecls(instance);
+			allocateDepDecls(instance);
+		}
 		allocateOverriders(instance);
 		instance.fields().allocateItems(data);
 		instance.overriders().allocateItems(data);
