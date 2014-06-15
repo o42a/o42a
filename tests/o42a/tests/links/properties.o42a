@@ -13,8 +13,6 @@ Print error '  ' [name] nl
 
 Prop := string` property = "Initial value"
 
-{
-  Assert [prop == "Initial value"] "Wrong initial property value"
-  Prop << "New value"
-  Assert [prop == "New value"] "Wrong value assigned to property"
-}
+Assert [prop == "Initial value"] "Wrong initial property value"
+Prop <- "New value"
+Assert [prop == "New value"] "Wrong value assigned to property"
