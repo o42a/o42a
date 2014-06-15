@@ -114,11 +114,18 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	},
 };
 
-const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
+const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 	.type_code = 0x042a0101,
-	.field_num = 4,
+	.field_num = 5,
 	.name = "o42a_obj_desc_t",
 	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_desc_t, declaration),
+			.name = "declaration",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
+		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_desc_t, data),
@@ -405,12 +412,15 @@ const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
 		const o42a_obj_desc_t *const desc) {
 	O42A_ENTER(return NULL);
 
+	const o42a_obj_desc_t *const decl = desc->declaration;
+
 	o42a_debug_mem_name("--- Data: ", data);
-	o42a_debug_mem_name("--- Type: ", desc);
+	o42a_debug_mem_name("--- Type: ", decl);
+
 	const o42a_obj_ascendant_t *ascendant = O42A(o42a_obj_ascendants(data));
 
 	for (size_t i = data->ascendants.size; i > 0; --i) {
-		if (ascendant->desc == desc) {
+		if (ascendant->desc == decl) {
 			O42A_RETURN ascendant;
 		}
 		++ascendant;
@@ -447,7 +457,7 @@ o42a_obj_body_t *o42a_obj_cast(
 		O42A_DONE;
 		O42A_RETURN object;
 	}
-	if (object->declared_in == desc) {
+	if (object->declared_in->declaration == desc->declaration) {
 		// body of the necessary type
 		o42a_debug_mem_name("Cast not required: ", object);
 		o42a_debug_mem_name("     to: ", desc);
@@ -537,8 +547,6 @@ static void derive_object_body(
 			((char *) ctable->object_data) - ((char *) to_body);
 	to_body->declared_in = from_body->declared_in;
 
-	uint32_t body_kind = O42A_OBJ_BODY_INHERITED;
-
 	if (kind == DK_INHERIT) {
 		// Drop the kind of body to "inherited" for inherited body.
 		to_body->flags =
@@ -588,7 +596,10 @@ static void derive_object_body(
 	O42A_RETURN;
 }
 
-static void derive_ancestor_bodies(o42a_obj_ctable_t *const ctable, int kind) {
+static void derive_ancestor_bodies(
+		o42a_obj_ctable_t *const ctable,
+		int kind,
+		size_t excluded) {
 	O42A_ENTER(return);
 
 	const o42a_obj_ascendant_t *ascendant =
@@ -596,6 +607,7 @@ static void derive_ancestor_bodies(o42a_obj_ctable_t *const ctable, int kind) {
 	const o42a_obj_data_t *const adata = ctable->ancestor_data;
 	const o42a_obj_ascendant_t *aascendant =
 			O42A(o42a_obj_ascendants(adata));
+	const size_t num = adata->ascendants.size - excluded;
 
 	for (size_t i = adata->ascendants.size; i > 0; --i) {
 		ctable->body_desc = ascendant->desc;
@@ -974,7 +986,7 @@ static o42a_obj_data_t *propagate_object(
 			NULL));
 #endif /* NDEBUG */
 
-	O42A(derive_ancestor_bodies(&ctable, DK_COPY));
+	O42A(derive_ancestor_bodies(&ctable, DK_COPY, 0));
 	O42A(copy_samples(adata, samples, mem));
 
 #ifndef NDEBUG
@@ -1127,25 +1139,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	const o42a_obj_ascendant_t *const consuming_ascendant =
 			O42A(o42a_obj_ascendant_of_type(adata, sdesc));
-
-	if (consuming_ascendant) {
-		// Ancestor has a body of the same type as sample.
-		// Propagate ancestor.
-		o42a_debug_mem_name("Sample consumed by ", consuming_ascendant);
-
-		o42a_obj_data_t *const result =
-				O42A(propagate_object(ctr, adata, sdesc));
-
-		// obtain consuming ascendant from result type
-		const o42a_obj_ascendant_t *const a_ascendants =
-				O42A(o42a_obj_ascendants(adata));
-		const o42a_obj_ascendant_t *const res_ascendants =
-				O42A(o42a_obj_ascendants(result));
-		const o42a_obj_ascendant_t *const res_consuming_ascendant =
-				res_ascendants + (consuming_ascendant - a_ascendants);
-
-		O42A_RETURN o42a_obj_ascendant_body(res_consuming_ascendant);
-	}
+	const size_t consumed_ascendants = consuming_ascendant ? 1 : 0;
 
 	// Ancestor bodies size.
 	size_t start = -adata->start;
@@ -1155,10 +1149,15 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	const size_t num_samples =
 			O42A(fill_sample_data(&start, adata, sdata, sample_data));
 
-	const size_t main_body_start =
-			O42A(o42a_layout_pad(start, sdesc->main_body_layout));
+	size_t main_body_start;
 
-	start = main_body_start + o42a_layout_size(sdesc->main_body_layout);
+	if (consumed_ascendants) {
+		main_body_start = adata->object - adata->start;
+	} else {
+		main_body_start =
+				O42A(o42a_layout_pad(start, sdesc->main_body_layout));
+		start = main_body_start + o42a_layout_size(sdesc->main_body_layout);
+	}
 
 	const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
 	const size_t data_start = o42a_layout_pad(start, obj_data_layout);
@@ -1167,7 +1166,8 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	const size_t ascendants_start = o42a_layout_pad(
 			data_start + o42a_layout_size(obj_data_layout),
 			ascendant_layout);
-	const size_t num_ascendants = adata->ascendants.size + num_samples + 1;
+	const size_t num_ascendants =
+			adata->ascendants.size + num_samples + 1 - consumed_ascendants;
 
 	const o42a_layout_t sample_layout = O42A_LAYOUT(o42a_obj_sample_t);
 	const size_t samples_start = o42a_layout_pad(
@@ -1207,11 +1207,13 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	// Build samples.
 	O42A(copy_ancestor_ascendants(adata, ascendants, mem));
 
-	o42a_obj_ascendant_t *const main_ascendant =
-			ascendants + (num_ascendants - 1);
+	if (!consumed_ascendants) {
 
-	main_ascendant->desc = sdesc;
-	main_ascendant->body = ((char *) object) - ((char *) main_ascendant);
+		o42a_obj_ascendant_t *const main_ascendant =
+				ascendants + (num_ascendants - 1);
+
+		main_ascendant->desc = sdesc->declaration;
+		main_ascendant->body = ((char *) object) - ((char *) main_ascendant);
 
 #ifndef NDEBUG
 
@@ -1222,6 +1224,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			(o42a_dbg_header_t*) mem));
 
 #endif
+	}
 
 	// fill object type and data
 	const int32_t sflags = sdata->flags;
@@ -1283,7 +1286,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			NULL));
 #endif /* NDEBUG */
 
-	derive_ancestor_bodies(&ctable, DK_INHERIT);
+	derive_ancestor_bodies(&ctable, DK_INHERIT, consumed_ascendants);
 	O42A(propagate_samples(&ctable, mem, sample_data));
 
 	ctable.body_desc = sdesc;

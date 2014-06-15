@@ -80,7 +80,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		return this.instance;
 	}
 
-	public ObjectIRDesc getDesc() {
+	public final ObjectIRDesc getDesc() {
 		return this.desc;
 	}
 
@@ -285,6 +285,15 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		final Generator generator = instance.getGenerator();
 
+		instance.declaration()
+		.setConstant(true)
+		.setValue(
+				getObjectIR()
+				.getSampleDeclaration()
+				.ir(generator)
+				.getDataIR()
+				.getDesc()
+				.pointer(generator));
 		instance.data()
 		.setConstant(true)
 		.setValue(getInstance().pointer(generator));

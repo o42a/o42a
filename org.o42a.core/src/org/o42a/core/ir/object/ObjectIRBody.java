@@ -57,7 +57,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
 
-	private StructRec<ObjectIRDescOp> declaredIn;
+	private StructRec<ObjectIRDescOp> definedIn;
 	private RelRec objectData;
 	private Int32rec flags;
 
@@ -68,11 +68,14 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.closestAscendant = this.sampleDeclaration;
 	}
 
-	private ObjectIRBody(ObjectIR inheritantIR, Obj declaration) {
-		super(buildId(declaration.ir(inheritantIR.getGenerator())));
+	private ObjectIRBody(ObjectIR inheritantIR, Obj sampleDeclaration) {
+		super(buildId(sampleDeclaration.ir(inheritantIR.getGenerator())));
 		this.objectIRStruct = inheritantIR.getStruct();
-		this.sampleDeclaration = declaration;
-		this.closestAscendant = inheritantIR.getObject();
+		this.sampleDeclaration = sampleDeclaration;
+		this.closestAscendant =
+				inheritantIR.getSampleDeclaration().is(sampleDeclaration)
+				? inheritantIR.getObject()
+				: sampleDeclaration;
 	}
 
 	public final ObjectIR getObjectIR() {
@@ -115,8 +118,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return Kind.values()[value.get().intValue() & KIND_MASK];
 	}
 
-	public final StructRec<ObjectIRDescOp> declaredIn() {
-		return this.declaredIn;
+	public final StructRec<ObjectIRDescOp> definedIn() {
+		return this.definedIn;
 	}
 
 	public final RelRec objectData() {
@@ -162,7 +165,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
-		this.declaredIn = data.addPtr("declared_in", OBJECT_DESC_TYPE);
+		this.definedIn = data.addPtr("defined_in", OBJECT_DESC_TYPE);
 		this.objectData = data.addRelPtr("object_data");
 		this.flags = data.addInt32("flags");
 
@@ -174,15 +177,15 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void fill() {
-		this.declaredIn.setConstant(true);
+		this.definedIn.setConstant(true);
 
 		final Generator generator = getGenerator();
 		final ObjectIRDesc objectDesc = getObjectIR().getDataIR().getDesc();
 
 		if (isMain()) {
-			this.declaredIn.setValue(objectDesc.data(generator).getPointer());
+			this.definedIn.setValue(objectDesc.data(generator).getPointer());
 		} else {
-			this.declaredIn.setValue(
+			this.definedIn.setValue(
 					getSampleDeclaration()
 					.ir(getGenerator())
 					.getDataIR()
