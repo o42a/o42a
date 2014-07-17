@@ -16,8 +16,15 @@
  * \param mem a pointer to the data start.
  */
 #define o42a_refcount_blockof(mem) \
-	((o42a_refcount_block_t*) \
+	((o42a_refcount_block_t *) \
 			(((char *) (mem)) - offsetof(struct _o42a_refcount_block, data)))
+
+/**
+ * Obtains a pointer to data of reference-counted block.
+ */
+#define o42a_refcount_data(block) \
+	((void *) (((struct _o42a_refcount_block *) block))->data)
+
 
 /**
  * A reference-counted block of data.
@@ -73,7 +80,10 @@ o42a_refcount_block_t *o42a_refcount_balloc(size_t);
  *
  * \return allocated data pointer or NULL if allocation failed.
  */
-void *o42a_refcount_alloc(size_t);
+inline void *o42a_refcount_alloc(const size_t size) {
+	O42A_ENTER(return NULL);
+	O42A_RETURN o42a_refcount_data(o42a_refcount_balloc(size));
+}
 
 /**
  * Frees a reference-counted data block previously allocated with

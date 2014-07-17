@@ -28,20 +28,10 @@ o42a_refcount_block_t *o42a_refcount_balloc(const size_t size) {
 	O42A_RETURN block;
 }
 
-inline void *o42a_refcount_alloc(const size_t size) {
-	O42A_ENTER(return NULL);
-
-	struct _o42a_refcount_block *const block =
-			(struct _o42a_refcount_block *)
-			O42A(o42a_refcount_balloc(size));
-
-	O42A_RETURN (void*) &block->data;
-}
+extern void *o42a_refcount_alloc(const size_t size);
 
 void o42a_refcount_free(o42a_refcount_block_t *const block) {
 	O42A_ENTER(return);
-
 	O42A(free(block));
-
 	O42A_RETURN;
 }
