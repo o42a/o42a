@@ -22,7 +22,6 @@ extern "C" {
 union o42a_fld;
 struct o42a_fld_ctr;
 
-/** Object structure descriptor. */
 typedef struct o42a_obj_desc o42a_obj_desc_t;
 
 /** Object represented by it's body. */
@@ -30,6 +29,9 @@ typedef struct o42a_obj_body o42a_obj_t;
 
 typedef struct o42a_obj_data o42a_obj_data_t;
 
+typedef struct o42a_obj_vmt o42a_obj_vmt_t;
+
+typedef struct o42a_obj_vmtc o42a_obj_vmtc_t;
 
 /**
  * Object value definition function.
@@ -145,7 +147,7 @@ enum o42a_obj_body_kind {
 /**
  * Object body.
  *
- * This structure is only a header, common to every object body. The fields
+ * This structure is only a header common to every object body. The fields
  * are allocated after this header at proper alignments.
  *
  * Each object contains one body per each ascendant, except void. One of the
@@ -410,6 +412,61 @@ typedef const struct o42a_obj_overrider {
 } o42a_obj_overrider_t;
 
 /**
+ * A chain of VMTs.
+ *
+ * The chain is represented as a linked list of VMTs. Each VMT in such list has
+ * the same structure.
+ *
+ * A new VMT chain can be allocated at run time with o42a_obj_vmtc_alloc
+ * function. It should be released with o42a_obj_vmtc_release function when no
+ * longer needed.
+ */
+struct o42a_obj_vmtc {
+
+	O42A_HEADER
+
+	/** A pointer to VMT. */
+	const o42a_obj_vmt_t *const vmt;
+
+	/**
+	 * A pointer to previous link in VMT chain, or NULL.
+	 *
+	 * Only VMT terminators have NULL as this pointer.
+	 */
+	const o42a_obj_vmtc_t *const prev;
+
+};
+
+#ifndef NDEBUG
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
+#endif /* NDEBUG */
+
+/**
+ * Virtual methods table.
+ *
+ * This structure is only a header common to every VMT. An actual VMT structure
+ * is specific to particular object body structure. Such object body contains
+ * a pointer to the chain of compatible VMTs.
+ *
+ * All VMTs are statically allocated and may not be altered at run time.
+ */
+struct o42a_obj_vmt {
+
+	O42A_HEADER
+
+	/**
+	 * VMT chain terminator.
+	 *
+	 * This chain link always refers to owning VMT, and doesn't have a previous
+	 * chain link (terminator.prev == NULL).
+	 *
+	 * Every VMT chain should terminate with one of terminators.
+	 */
+	o42a_obj_vmtc_t terminator;
+
+};
+
+/**
  * Object construction data.
  */
 typedef struct o42a_obj_ctr {
@@ -629,6 +686,34 @@ o42a_obj_body_t *o42a_obj_cast(o42a_obj_t *, const o42a_obj_desc_t *);
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
 
+/**
+ * Allocates a new VMT chain.
+ *
+ * The chain link instances are reference-counted. This function sets the
+ * reference count of newly allocated link to one and increases the reference
+ * count of previous link in the chain by one, unless it is a terminator link.
+ *
+ * The allocated link chain is released with o42a_obj_vmtc_release function.
+ *
+ * \param prev previous link in VMT chain.
+ *
+ * \return a pointer to new VMT chain, or NULL if allocation failed.
+ */
+const o42a_obj_vmtc_t *o42a_obj_vmtc_alloc(const o42a_obj_vmtc_t *);
+
+/**
+ * Releases the VMT chain.
+ *
+ * If VMT chain link is allocated with o42a_obj_vmtc_alloc method, then
+ * decreases its reference count and deallocates it if it is dropped to zero.
+ * Also releases a previous link.
+ *
+ * If the chain link is terminator, then does nothing.
+ *
+ * \param vmtc VMT chain to release.
+ */
+void o42a_obj_vmtc_release(const o42a_obj_vmtc_t *);
+
 
 /**
  * False value definition.
@@ -716,7 +801,6 @@ void o42a_obj_signal(o42a_obj_data_t *);
  * Unblocks all threads waiting on an object condition.
  */
 void o42a_obj_broadcast(o42a_obj_data_t *);
-
 
 /**
  * An object use by current thread.

@@ -13,6 +13,7 @@
 
 #include "o42a/error.h"
 #include "o42a/field.h"
+#include "o42a/memory/refcount.h"
 
 
 #ifndef NDEBUG
@@ -215,6 +216,27 @@ const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_overrider = {
 			.data_type = O42A_TYPE_REL_PTR,
 			.offset = offsetof(o42a_obj_overrider_t, body),
 			.name = "body",
+		},
+	},
+};
+
+
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
+	.type_code = 0x042a0102,
+	.field_num = 2,
+	.name = "o42a_obj_vmtc_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_vmtc_t, vmt),
+			.name = "vmt",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_vmtc_t, prev),
+			.name = "prev",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
 		},
 	},
 };
@@ -1101,6 +1123,59 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_RETURN object;
 }
 
+
+const o42a_obj_vmtc_t *o42a_obj_vmtc_alloc(const o42a_obj_vmtc_t *const prev) {
+	O42A_ENTER(return NULL);
+
+	o42a_refcount_block_t *const block =
+			O42A(o42a_refcount_balloc(sizeof(o42a_obj_vmtc_t)));
+
+	block->ref_count = 1;
+
+	o42a_obj_vmtc_t *const vmtc = o42a_refcount_data(block);
+
+#ifndef NDEBUG
+	O42A(o42a_dbg_fill_header(
+			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
+			&vmtc->__o42a_dbg_header__,
+			NULL));
+#endif /* NDEBUG */
+
+	if (prev->prev) {
+		// Previous link is not a terminator.
+		// Adjust its reference counter.
+		o42a_refcount_block_t *const prev_block = o42a_refcount_blockof(prev);
+
+		__sync_add_and_fetch(&prev_block->ref_count, 1);
+	}
+
+	O42A_RETURN vmtc;
+}
+
+void o42a_obj_vmtc_release(const o42a_obj_vmtc_t *vmtc) {
+	O42A_ENTER(return);
+	for (;;) {
+
+		const o42a_obj_vmtc_t *const prev = vmtc->prev;
+
+		if (!prev) {
+			// Terminator. It is always statically allocated. Do nothing.
+			O42A_RETURN;
+		}
+
+		o42a_refcount_block_t *const block = o42a_refcount_blockof(vmtc);
+
+		if (__sync_sub_and_fetch(&block->ref_count, 1)) {
+			// Chain link is still used.
+			O42A_RETURN;
+		}
+
+		// Chain link is no longer used.
+		// Free it and release the previous one.
+		O42A(o42a_refcount_free(block));
+		vmtc = prev;
+	}
+}
 
 void o42a_obj_def_false(
 		o42a_val_t *const result,

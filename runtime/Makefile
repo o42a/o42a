@@ -124,6 +124,7 @@ $(srcdir)/error.%.o : $(srcdir)/error.c
 
 $(srcdir)/object.*.o : $(common_deps)
 $(srcdir)/object.*.o : $(headersdir)/memory/gc.h
+$(srcdir)/object.*.o : $(headersdir)/memory/refcount.h
 $(srcdir)/object.*.o : $(headersdir)/field.h
 $(srcdir)/object.*.o : $(headersdir)/object.h
 $(srcdir)/object.%.o : $(srcdir)/object.c
