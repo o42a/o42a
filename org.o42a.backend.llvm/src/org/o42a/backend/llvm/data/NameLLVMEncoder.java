@@ -127,8 +127,8 @@ public final class NameLLVMEncoder extends NameEncoder {
 
 		private void appendSpecial(int c) {
 			expandCapacity(2);
-			super.writeCodePoint('X');
-			super.writeCodePoint(c);
+			writeASCII('X');
+			writeASCII(c);
 		}
 
 		protected void appendEncoded(int c) {
@@ -143,15 +143,15 @@ public final class NameLLVMEncoder extends NameEncoder {
 			} while (ch != 0);
 
 			expandCapacity(32 + 1 - i);
-			super.writeCodePoint('X');
+			writeASCII('X');
 			while (i < 32) {
-				super.writeCodePoint(digits[i++]);
+				writeASCII(digits[i++]);
 			}
 		}
 
 		protected void closeEncoded() {
 			expandCapacity(1);
-			super.writeCodePoint('Z');
+			writeASCII('Z');
 		}
 
 	}

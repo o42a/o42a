@@ -60,4 +60,11 @@ public class StringCPWriter extends CPWriter {
 		out().appendCodePoint(codePoint);
 	}
 
+	@Override
+	public void writeASCII(int c) {
+		assert c <= 127 :
+			"Not an ASCII char: '" + ((char) c) + '\'';
+		out().appendCodePoint(c);
+	}
+
 }
