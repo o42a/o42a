@@ -34,7 +34,7 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 	private final ObjectIRStruct struct;
 
-	public ObjectIRBlock(ObjectIR objectIR) {
+	ObjectIRBlock(ObjectIR objectIR) {
 		super(objectIR.getId());
 		this.struct = new ObjectIRStruct(objectIR);
 	}

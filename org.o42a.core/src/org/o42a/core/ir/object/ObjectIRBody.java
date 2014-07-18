@@ -57,7 +57,10 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
 
+	private VmtIR vmtIR;
+
 	private StructRec<ObjectIRDescOp> definedIn;
+	private DataRec vmt;
 	private RelRec objectData;
 	private Int32rec flags;
 
@@ -92,6 +95,13 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	public final boolean isMain() {
 		return this == this.objectIRStruct.mainBodyIR();
+	}
+
+	public final VmtIR getVmtIR() {
+		if (this.vmtIR != null) {
+			return this.vmtIR;
+		}
+		return this.vmtIR = new VmtIR(this);
 	}
 
 	public void setKind(Kind kind) {
@@ -166,6 +176,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	@Override
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
 		this.definedIn = data.addPtr("defined_in", OBJECT_DESC_TYPE);
+		this.vmt = data.addDataPtr("vmt");
 		this.objectData = data.addRelPtr("object_data");
 		this.flags = data.addInt32("flags");
 
@@ -193,6 +204,12 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 					.data(generator)
 					.getPointer());
 		}
+
+		final VmtIR vmtIR = getVmtIR();
+
+		getGenerator().newGlobal().struct(vmtIR);
+		this.vmt.setConstant(true)
+		.setValue(vmtIR.pointer(getGenerator()).toData());
 
 		final ObjectIRData objectData =
 				getObjectIR().getDataIR().getInstance();
