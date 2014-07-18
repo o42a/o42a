@@ -416,24 +416,20 @@ typedef const struct o42a_obj_overrider {
  *
  * The chain is represented as a linked list of VMTs. Each VMT in such list has
  * the same structure.
- *
- * A new VMT chain can be allocated at run time with o42a_obj_vmtc_alloc
- * function. It should be released with o42a_obj_vmtc_release function when no
- * longer needed.
  */
 struct o42a_obj_vmtc {
 
 	O42A_HEADER
 
 	/** A pointer to VMT. */
-	const o42a_obj_vmt_t *const vmt;
+	const o42a_obj_vmt_t *vmt;
 
 	/**
 	 * A pointer to previous link in VMT chain, or NULL.
 	 *
 	 * Only VMT terminators have NULL as this pointer.
 	 */
-	const o42a_obj_vmtc_t *const prev;
+	const o42a_obj_vmtc_t *prev;
 
 };
 
@@ -685,34 +681,6 @@ o42a_obj_body_t *o42a_obj_cast(o42a_obj_t *, const o42a_obj_desc_t *);
  * \return pointer to object's body of the sample type.
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
-
-/**
- * Allocates a new VMT chain.
- *
- * The chain link instances are reference-counted. This function sets the
- * reference count of newly allocated link to one and increases the reference
- * count of previous link in the chain by one, unless it is a terminator link.
- *
- * The allocated link chain is released with o42a_obj_vmtc_release function.
- *
- * \param prev previous link in VMT chain.
- *
- * \return a pointer to new VMT chain, or NULL if allocation failed.
- */
-const o42a_obj_vmtc_t *o42a_obj_vmtc_alloc(const o42a_obj_vmtc_t *);
-
-/**
- * Releases the VMT chain.
- *
- * If VMT chain link is allocated with o42a_obj_vmtc_alloc method, then
- * decreases its reference count and deallocates it if it is dropped to zero.
- * Also releases a previous link.
- *
- * If the chain link is terminator, then does nothing.
- *
- * \param vmtc VMT chain to release.
- */
-void o42a_obj_vmtc_release(const o42a_obj_vmtc_t *);
 
 
 /**
