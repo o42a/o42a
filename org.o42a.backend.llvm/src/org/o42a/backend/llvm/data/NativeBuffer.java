@@ -99,10 +99,15 @@ public final class NativeBuffer {
 
 		@Override
 		public void writeCodePoint(int codePoint) {
-			assert codePoint <= 127 :
-				"Not an ASCII char: '" + ((char) codePoint) + '\'';
+			writeASCII(codePoint);
+		}
+
+		@Override
+		public void writeASCII(int c) {
+			assert c <= 127 :
+				"Not an ASCII char: '" + ((char) c) + '\'';
 			expandCapacity(1);
-			this.buffer.put((byte) codePoint);
+			this.buffer.put((byte) c);
 		}
 
 		private final ByteBuffer allocate(int capacity) {
