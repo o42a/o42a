@@ -38,6 +38,11 @@ public abstract class CPWriterProxy extends CPWriter {
 		out().writeCodePoint(codePoint);
 	}
 
+	@Override
+	public final void writeASCII(int c) {
+		out().writeASCII(c);
+	}
+
 	protected final CPWriter out() {
 		return this.out;
 	}

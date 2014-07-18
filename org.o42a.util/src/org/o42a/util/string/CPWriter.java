@@ -55,4 +55,6 @@ public abstract class CPWriter {
 
 	public abstract void writeCodePoint(int codePoint);
 
+	public abstract void writeASCII(int c);
+
 }
