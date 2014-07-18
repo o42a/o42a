@@ -31,6 +31,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -60,7 +61,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private VmtIR vmtIR;
 
 	private StructRec<ObjectIRDescOp> definedIn;
-	private DataRec vmt;
+	private StructRec<VmtIRChain.Op> vmtc;
 	private RelRec objectData;
 	private Int32rec flags;
 
@@ -101,7 +102,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		if (this.vmtIR != null) {
 			return this.vmtIR;
 		}
-		return this.vmtIR = new VmtIR(this);
+		return this.vmtIR =
+			getGenerator().newGlobal().struct(new VmtIR(this)).getInstance();
 	}
 
 	public void setKind(Kind kind) {
@@ -130,6 +132,10 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	public final StructRec<ObjectIRDescOp> definedIn() {
 		return this.definedIn;
+	}
+
+	public final StructRec<Op> vmtc() {
+		return this.vmtc;
 	}
 
 	public final RelRec objectData() {
@@ -176,7 +182,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	@Override
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
 		this.definedIn = data.addPtr("defined_in", OBJECT_DESC_TYPE);
-		this.vmt = data.addDataPtr("vmt");
+		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.objectData = data.addRelPtr("object_data");
 		this.flags = data.addInt32("flags");
 
@@ -205,11 +211,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 					.getPointer());
 		}
 
-		final VmtIR vmtIR = getVmtIR();
-
-		getGenerator().newGlobal().struct(vmtIR);
-		this.vmt.setConstant(true)
-		.setValue(vmtIR.pointer(getGenerator()).toData());
+		this.vmtc.setConstant(true)
+		.setValue(getVmtIR().terminator().pointer(getGenerator()));
 
 		final ObjectIRData objectData =
 				getObjectIR().getDataIR().getInstance();

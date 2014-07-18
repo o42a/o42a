@@ -164,9 +164,9 @@ typedef struct o42a_obj_body {
 	const o42a_obj_desc_t *declared_in;
 
 	/**
-	 * Pointer to virtual method table.
+	 * Pointer to virtual method tables chain.
 	 */
-	const o42a_obj_vmt_t *vmt;
+	const o42a_obj_vmtc_t *vmtc;
 
 	/*
 	 * Relative pointer to object data.
