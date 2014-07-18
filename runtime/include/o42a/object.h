@@ -161,7 +161,12 @@ typedef struct o42a_obj_body {
 	 * Pointer to object type descriptor, where corresponding body were first
 	 * declared in.
 	 */
-	o42a_obj_desc_t *declared_in;
+	const o42a_obj_desc_t *declared_in;
+
+	/**
+	 * Pointer to virtual method table.
+	 */
+	const o42a_obj_vmt_t *vmt;
 
 	/*
 	 * Relative pointer to object data.
