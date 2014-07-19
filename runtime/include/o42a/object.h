@@ -22,7 +22,6 @@ extern "C" {
 union o42a_fld;
 struct o42a_fld_ctr;
 
-/** Object structure descriptor. */
 typedef struct o42a_obj_desc o42a_obj_desc_t;
 
 /** Object represented by it's body. */
@@ -30,6 +29,9 @@ typedef struct o42a_obj_body o42a_obj_t;
 
 typedef struct o42a_obj_data o42a_obj_data_t;
 
+typedef struct o42a_obj_vmt o42a_obj_vmt_t;
+
+typedef struct o42a_obj_vmtc o42a_obj_vmtc_t;
 
 /**
  * Object value definition function.
@@ -145,7 +147,7 @@ enum o42a_obj_body_kind {
 /**
  * Object body.
  *
- * This structure is only a header, common to every object body. The fields
+ * This structure is only a header common to every object body. The fields
  * are allocated after this header at proper alignments.
  *
  * Each object contains one body per each ascendant, except void. One of the
@@ -159,7 +161,12 @@ typedef struct o42a_obj_body {
 	 * Pointer to object type descriptor, where corresponding body were first
 	 * declared in.
 	 */
-	o42a_obj_desc_t *declared_in;
+	const o42a_obj_desc_t *declared_in;
+
+	/**
+	 * Pointer to virtual method tables chain.
+	 */
+	const o42a_obj_vmtc_t *vmtc;
 
 	/*
 	 * Relative pointer to object data.
@@ -408,6 +415,57 @@ typedef const struct o42a_obj_overrider {
 	o42a_rptr_t body;
 
 } o42a_obj_overrider_t;
+
+/**
+ * A chain of VMTs.
+ *
+ * The chain is represented as a linked list of VMTs. Each VMT in such list has
+ * the same structure.
+ */
+struct o42a_obj_vmtc {
+
+	O42A_HEADER
+
+	/** A pointer to VMT. */
+	const o42a_obj_vmt_t *vmt;
+
+	/**
+	 * A pointer to previous link in VMT chain, or NULL.
+	 *
+	 * Only VMT terminators have NULL as this pointer.
+	 */
+	const o42a_obj_vmtc_t *prev;
+
+};
+
+#ifndef NDEBUG
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
+#endif /* NDEBUG */
+
+/**
+ * Virtual methods table.
+ *
+ * This structure is only a header common to every VMT. An actual VMT structure
+ * is specific to particular object body structure. Such object body contains
+ * a pointer to the chain of compatible VMTs.
+ *
+ * All VMTs are statically allocated and may not be altered at run time.
+ */
+struct o42a_obj_vmt {
+
+	O42A_HEADER
+
+	/**
+	 * VMT chain terminator.
+	 *
+	 * This chain link always refers to owning VMT, and doesn't have a previous
+	 * chain link (terminator.prev == NULL).
+	 *
+	 * Every VMT chain should terminate with one of terminators.
+	 */
+	o42a_obj_vmtc_t terminator;
+
+};
 
 /**
  * Object construction data.
@@ -716,7 +774,6 @@ void o42a_obj_signal(o42a_obj_data_t *);
  * Unblocks all threads waiting on an object condition.
  */
 void o42a_obj_broadcast(o42a_obj_data_t *);
-
 
 /**
  * An object use by current thread.

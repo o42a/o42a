@@ -48,7 +48,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			new LinkedHashMap<>();
 	private ObjectIRBody mainBodyIR;
 
-	public ObjectIRStruct(ObjectIR objectIR) {
+	ObjectIRStruct(ObjectIR objectIR) {
 		super(objectIR.getId().detail(OBJECT_ID));
 		this.objectIR = objectIR;
 		this.dataIR = new ObjectDataIR(this);

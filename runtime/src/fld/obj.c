@@ -65,9 +65,9 @@ void o42a_fld_obj_inherit(o42a_obj_ctable_t *const ctable) {
 		if (!O42A(o42a_obj_ascendant_of_type(
 				ctable->ancestor_data,
 				overrider->defined_in))) {
-			// The body overrider defined in isn't present in ancestor
+			// The body where overrider is defined in isn't present in ancestor
 			// and thus not overridden there.
-			// Use definition from overrider.
+			// Use the definition from overrider.
 			to->constructor =
 					O42A(o42a_fld_by_overrider(overrider))->obj.constructor;
 			// Store pointer to previous definition.
