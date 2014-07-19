@@ -66,14 +66,16 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private Int32rec flags;
 
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
-		super(buildId(objectIRStruct.getObjectIR()));
+		super(mainId(objectIRStruct.getObjectIR()));
 		this.objectIRStruct = objectIRStruct;
 		this.sampleDeclaration = objectIRStruct.getSampleDeclaration();
 		this.closestAscendant = this.sampleDeclaration;
 	}
 
 	private ObjectIRBody(ObjectIR inheritantIR, Obj sampleDeclaration) {
-		super(buildId(sampleDeclaration.ir(inheritantIR.getGenerator())));
+		super(derivedId(
+				inheritantIR,
+				sampleDeclaration.ir(inheritantIR.getGenerator())));
 		this.objectIRStruct = inheritantIR.getStruct();
 		this.sampleDeclaration = sampleDeclaration;
 		this.closestAscendant =
@@ -236,8 +238,14 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.fieldMap.put(fld.getKey(), fld);
 	}
 
-	private static ID buildId(ObjectIR ascendantIR) {
-		return ascendantIR.getId().detail(BODY_ID);
+	private static ID mainId(ObjectIR objectIR) {
+		return objectIR.getId().detail(BODY_ID);
+	}
+
+	private static ID derivedId(
+			ObjectIR objectIR,
+			ObjectIR sampleDeclarationIR) {
+		return mainId(objectIR).detail(sampleDeclarationIR.getId());
 	}
 
 	private final void allocateFields(ObjectIRBodyData data) {
