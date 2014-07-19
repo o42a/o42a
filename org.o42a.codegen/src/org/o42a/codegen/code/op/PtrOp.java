@@ -36,6 +36,10 @@ public interface PtrOp<P extends PtrOp<P>> extends Op {
 
 	AnyOp toAny(ID id, Code code);
 
-	void returnValue(Block code);
+	default void returnValue(Block code) {
+		returnValue(code, true);
+	}
+
+	void returnValue(Block code, boolean dispose);
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,27 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
-
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.backend.DataAllocation;
-import org.o42a.codegen.data.backend.FuncAllocation;
-import org.o42a.util.string.ID;
+package org.o42a.codegen.code;
 
 
-public interface CodeBackend {
+public interface BeforeReturn {
 
-	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
+	BeforeReturn NOTHING_BEFORE_RETURN = new BeforeReturn() {
+		@Override
+		public void beforeReturn(Code code, boolean dispose) {
+		}
+		@Override
+		public String toString() {
+			return "_";
+		}
+	};
 
-	<F extends Func<F>> FuncWriter<F> addFunction(
-			Function<F> function,
-			BeforeReturn beforeReturn);
-
-	<F extends Func<F>> FuncAllocation<F> externFunction(
-			ID id,
-			FuncPtr<F> pointer);
-
-	DataAllocation<AnyOp> codeToAny(CodePtr ptr);
+	void beforeReturn(Code code, boolean dispose);
 
 }

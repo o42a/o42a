@@ -48,7 +48,7 @@ public abstract class Return<O> {
 		return getDataType().getName();
 	}
 
-	public abstract void returnNull(Block code);
+	public abstract void returnNull(Block code, boolean dispose);
 
 	@Override
 	public String toString() {
@@ -75,8 +75,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.returnVoid();
+		public void returnNull(Block code, boolean dispose) {
+			code.returnVoid(dispose);
 		}
 
 		@Override
@@ -98,8 +98,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.int8((byte) 0).returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.int8((byte) 0).returnValue(code, dispose);
 		}
 
 		@Override
@@ -123,8 +123,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.int16((short) 0).returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.int16((short) 0).returnValue(code, dispose);
 		}
 
 		@Override
@@ -148,8 +148,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.int32(0).returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.int32(0).returnValue(code, dispose);
 		}
 
 		@Override
@@ -173,8 +173,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.int64(0L).returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.int64(0L).returnValue(code, dispose);
 		}
 
 		@Override
@@ -198,8 +198,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.fp32(0.0f).returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.fp32(0.0f).returnValue(code, dispose);
 		}
 
 		@Override
@@ -223,8 +223,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.fp64(0.0d).returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.fp64(0.0d).returnValue(code, dispose);
 		}
 
 		@Override
@@ -248,8 +248,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.bool(false).returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.bool(false).returnValue(code, dispose);
 		}
 
 		@Override
@@ -273,8 +273,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.nullPtr().returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.nullPtr().returnValue(code, dispose);
 		}
 
 		@Override
@@ -298,8 +298,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.nullDataPtr().returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.nullDataPtr().returnValue(code, dispose);
 		}
 
 		@Override
@@ -331,8 +331,8 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Block code) {
-			code.nullPtr(this.type).returnValue(code);
+		public void returnNull(Block code, boolean dispose) {
+			code.nullPtr(this.type).returnValue(code, dispose);
 		}
 
 		@Override

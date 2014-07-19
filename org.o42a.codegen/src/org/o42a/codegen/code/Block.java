@@ -109,9 +109,7 @@ public abstract class Block extends DebugBlockBase {
 	}
 
 	public void returnVoid() {
-		assert assertIncomplete();
-		writer().returnVoid();
-		complete();
+		returnVoid(true);
 	}
 
 	@Override
@@ -165,6 +163,12 @@ public abstract class Block extends DebugBlockBase {
 	@Override
 	protected void disposeBy(Allocator allocator) {
 		allocator.dispose(this);
+	}
+
+	void returnVoid(boolean dispose) {
+		assert assertIncomplete();
+		writer().returnVoid(dispose);
+		complete();
 	}
 
 	CodePos reallocateDownTo(CodePos pos) {

@@ -57,7 +57,7 @@ public class LLVMCodeBackend implements CodeBackend {
 	@Override
 	public <F extends Func<F>> LLFunction<F> addFunction(
 			Function<F> function,
-			Disposal beforeReturn) {
+			BeforeReturn beforeReturn) {
 		return new LLFunction<>(this.module, function, beforeReturn);
 	}
 

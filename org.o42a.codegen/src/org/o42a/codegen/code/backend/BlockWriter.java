@@ -42,6 +42,6 @@ public interface BlockWriter extends CodeWriter {
 
 	void go(BoolOp condition, CodePos truePos, CodePos falsePos);
 
-	void returnVoid();
+	void returnVoid(boolean dispose);
 
 }

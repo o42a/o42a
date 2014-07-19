@@ -66,8 +66,8 @@ public abstract class StructOp<S extends StructOp<S>>
 	}
 
 	@Override
-	public final void returnValue(Block code) {
-		writer().returnValue(code);
+	public final void returnValue(Block code, boolean dispose) {
+		writer().returnValue(code, dispose);
 	}
 
 	@Override

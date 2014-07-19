@@ -130,8 +130,8 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	}
 
 	@Override
-	public final void returnValue(Block code) {
-		new ReturnBE(cast(code).nextPart()) {
+	public final void returnValue(Block code, boolean dispose) {
+		new ReturnBE(cast(code).nextPart(), dispose) {
 			@Override
 			public void prepare() {
 				use(backend());

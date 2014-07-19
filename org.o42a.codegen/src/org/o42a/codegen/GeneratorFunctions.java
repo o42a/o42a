@@ -44,7 +44,7 @@ final class GeneratorFunctions extends Functions {
 	}
 
 	@Override
-	protected Disposal createBeforeReturn(Function<?> function) {
+	protected BeforeReturn createBeforeReturn(Function<?> function) {
 		return getGenerator().createBeforeReturn(function);
 	}
 

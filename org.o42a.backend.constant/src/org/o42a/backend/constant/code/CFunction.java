@@ -38,7 +38,7 @@ public class CFunction<F extends Func<F>>
 		extends CBlock<Function<F>>
 		implements FuncWriter<F> {
 
-	private final Disposal beforeReturn;
+	private final BeforeReturn beforeReturn;
 	private FunctionCFAlloc<F> allocation;
 	private Function<F> underlying;
 	private byte status;
@@ -46,7 +46,7 @@ public class CFunction<F extends Func<F>>
 	CFunction(
 			ConstBackend backend,
 			Function<F> function,
-			Disposal beforeReturn) {
+			BeforeReturn beforeReturn) {
 		super(backend, null, function);
 		this.beforeReturn = beforeReturn;
 	}
@@ -63,8 +63,8 @@ public class CFunction<F extends Func<F>>
 		return this.underlying;
 	}
 
-	public final void beforeReturn(Code code) {
-		this.beforeReturn.dispose(code);
+	public final void beforeReturn(Code code, boolean dispose) {
+		this.beforeReturn.beforeReturn(code, dispose);
 	}
 
 	@Override

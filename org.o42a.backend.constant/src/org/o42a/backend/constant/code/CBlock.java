@@ -208,8 +208,8 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	}
 
 	@Override
-	public final void returnVoid() {
-		new ReturnBE(nextPart()) {
+	public final void returnVoid(boolean dispose) {
+		new ReturnBE(nextPart(), dispose) {
 			@Override
 			public void prepare() {
 			}

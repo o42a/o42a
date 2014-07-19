@@ -20,18 +20,20 @@
 package org.o42a.codegen.code;
 
 
-final class DisposeBeforeReturn implements Disposal {
+final class DisposeBeforeReturn implements BeforeReturn {
 
-	private final Disposal beforeReturn;
+	private final BeforeReturn beforeReturn;
 
-	DisposeBeforeReturn(Disposal beforeReturn) {
+	DisposeBeforeReturn(BeforeReturn beforeReturn) {
 		this.beforeReturn = beforeReturn;
 	}
 
 	@Override
-	public void dispose(Code code) {
-		disposeAll(code);
-		this.beforeReturn.dispose(code);
+	public void beforeReturn(Code code, boolean dispose) {
+		if (dispose) {
+			disposeAll(code);
+		}
+		this.beforeReturn.beforeReturn(code, dispose);
 	}
 
 	private static void disposeAll(Code code) {

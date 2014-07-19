@@ -116,7 +116,11 @@ public abstract class BoolOp implements Op {
 				exitPos(source, innermostAllocator, falsePos, !included));
 	}
 
-	public abstract void returnValue(Block code);
+	public final void returnValue(Block code) {
+		returnValue(code, true);
+	}
+
+	public abstract void returnValue(Block code, boolean dispose);
 
 	private static final Allocator allocatorOf(Block source, CodePos pos) {
 		if (pos == null) {
