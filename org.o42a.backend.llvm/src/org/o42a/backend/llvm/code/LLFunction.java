@@ -36,14 +36,14 @@ public final class LLFunction<F extends Func<F>>
 		implements FuncWriter<F> {
 
 	private final Function<F> function;
-	private final Disposal beforeReturn;
+	private final BeforeReturn beforeReturn;
 	private final LLFAlloc<F> allocation;
 	private long functionPtr;
 
 	LLFunction(
 			LLVMModule module,
 			Function<F> function,
-			Disposal beforeReturn) {
+			BeforeReturn beforeReturn) {
 		super(module, null, function);
 		this.function = function;
 		this.beforeReturn = beforeReturn;
@@ -59,8 +59,8 @@ public final class LLFunction<F extends Func<F>>
 		return this.functionPtr;
 	}
 
-	public final void beforeReturn(Block code) {
-		this.beforeReturn.dispose(code);
+	public final void beforeReturn(Block code, boolean dispose) {
+		this.beforeReturn.beforeReturn(code, dispose);
 	}
 
 	@Override

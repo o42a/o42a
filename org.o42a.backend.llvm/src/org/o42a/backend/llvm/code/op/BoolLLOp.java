@@ -65,8 +65,8 @@ public class BoolLLOp extends BoolOp implements LLOp<BoolOp> {
 	}
 
 	@Override
-	public void returnValue(Block code) {
-		llvm(code).returnValue(this);
+	public void returnValue(Block code, boolean dispose) {
+		llvm(code).returnValue(this, dispose);
 	}
 
 	@Override

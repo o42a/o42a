@@ -46,8 +46,8 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	@Override
-	public final void returnValue(Block code) {
-		this.caller.returnValue(code);
+	public final void returnValue(Block code, boolean dispose) {
+		this.caller.returnValue(code, dispose);
 	}
 
 	@Override

@@ -95,8 +95,8 @@ public abstract class NumLLOp<O extends NumOp<O>, T extends O>
 	public abstract T create(ID id, long blockPtr, long nativePtr);
 
 	@Override
-	public void returnValue(Block code) {
-		llvm(code).returnValue(this);
+	public void returnValue(Block code, boolean dispose) {
+		llvm(code).returnValue(this, dispose);
 	}
 
 	@Override

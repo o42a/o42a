@@ -166,13 +166,13 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	@Override
-	public void returnVoid() {
-		getFunction().beforeReturn(block());
+	public void returnVoid(boolean dispose) {
+		getFunction().beforeReturn(block(), dispose);
 		instr(returnVoid(nextPtr(), nextInstr()));
 	}
 
-	public void returnValue(LLOp<?> result) {
-		getFunction().beforeReturn(block());
+	public void returnValue(LLOp<?> result, boolean dispose) {
+		getFunction().beforeReturn(block(), dispose);
 		instr(returnValue(nextPtr(), nextInstr(), result.getNativePtr()));
 	}
 

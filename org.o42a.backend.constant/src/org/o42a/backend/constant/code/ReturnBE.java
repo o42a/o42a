@@ -22,12 +22,12 @@ package org.o42a.backend.constant.code;
 
 public abstract class ReturnBE extends TermBE {
 
-	public ReturnBE(CBlockPart part) {
+	public ReturnBE(CBlockPart part, boolean dispose) {
 		super(part);
 
 		final CBlock<?> block = part.block();
 
-		block.getFunction().beforeReturn(block.code());
+		block.getFunction().beforeReturn(block.code(), dispose);
 		block.resetNextPart();
 	}
 

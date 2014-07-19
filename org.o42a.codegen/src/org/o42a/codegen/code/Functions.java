@@ -82,7 +82,7 @@ public abstract class Functions {
 
 	protected abstract DataWriter dataWriter();
 
-	protected abstract Disposal createBeforeReturn(Function<?> function);
+	protected abstract BeforeReturn createBeforeReturn(Function<?> function);
 
 	protected abstract <F extends Func<F>> void addFunction(
 			ID id,

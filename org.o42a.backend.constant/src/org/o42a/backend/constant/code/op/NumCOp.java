@@ -571,8 +571,8 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final void returnValue(Block code) {
-		new ReturnBE(cast(code).nextPart()) {
+	public final void returnValue(Block code, boolean dispose) {
+		new ReturnBE(cast(code).nextPart(), dispose) {
 			@Override
 			public void prepare() {
 				use(backend());

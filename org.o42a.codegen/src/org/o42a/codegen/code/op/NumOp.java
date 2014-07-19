@@ -73,6 +73,10 @@ public interface NumOp<O extends NumOp<O>> extends Op {
 
 	Fp64op toFp64(ID id, Code code);
 
-	void returnValue(Block code);
+	default void returnValue(Block code) {
+		returnValue(code, true);
+	}
+
+	void returnValue(Block code, boolean dispose);
 
 }

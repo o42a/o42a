@@ -20,7 +20,7 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
-import static org.o42a.codegen.code.Disposal.DISPOSE_NOTHING;
+import static org.o42a.codegen.code.BeforeReturn.NOTHING_BEFORE_RETURN;
 import static org.o42a.codegen.debug.DbgOptionsType.DBG_OPTIONS_TYPE;
 import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
 import static org.o42a.codegen.debug.DebugExitFunc.DEBUG_EXIT;
@@ -50,15 +50,14 @@ public final class Debug {
 	private static final ID FN_NAME_ID = ID.id("__fn_name__");
 	private static final ID CANT_ENTER_ID = ID.id("__cant_enter__");
 
-	private static final TraceBeforReturn TRACE_BEFORE_RETURN =
-			new TraceBeforReturn();
+	private static final TraceBeforeReturn TRACE_BEFORE_RETURN =
+			new TraceBeforeReturn();
 
 	private final Generator generator;
 	private final DebugSettings settings;
 
 	private int debugSeq;
 
-	private Code dontExitFrom;
 	private FuncPtr<DebugEnterFunc> enterFunc;
 	private FuncPtr<DebugExitFunc> exitFunc;
 
@@ -173,24 +172,17 @@ public final class Debug {
 
 		canEnter.goUnless(function, cantEnter.head());
 
-		final Code oldDontExitFrom = this.dontExitFrom;
-
-		try {
-			this.dontExitFrom = cantEnter;
-			signature.returns(getGenerator()).returnNull(cantEnter);
-		} finally {
-			this.dontExitFrom = oldDontExitFrom;
-		}
+		signature.returns(getGenerator()).returnNull(cantEnter, false);
 	}
 
-	public Disposal createBeforeReturn(Function<?> function) {
+	public BeforeReturn createBeforeReturn(Function<?> function) {
 		if (isProxied()) {
-			return DISPOSE_NOTHING;
+			return NOTHING_BEFORE_RETURN;
 		}
 		if (isDebug() && function.getSignature().isDebuggable()) {
 			return TRACE_BEFORE_RETURN;
 		}
-		return DISPOSE_NOTHING;
+		return NOTHING_BEFORE_RETURN;
 	}
 
 	public void registerType(SubData<?> typeData) {
@@ -333,15 +325,16 @@ public final class Debug {
 
 	}
 
-	private static final class TraceBeforReturn implements Disposal {
+	private static final class TraceBeforeReturn implements BeforeReturn {
 
 		@Override
-		public void dispose(Code code) {
-
-			final Debug debug = code.getGenerator().getDebug();
-
-			if (debug.dontExitFrom != code) {
-				debug.exitFunc().op(null, code).exit(code);
+		public void beforeReturn(Code code, boolean dispose) {
+			if (dispose) {
+				code.getGenerator()
+				.getDebug()
+				.exitFunc()
+				.op(null, code)
+				.exit(code);
 			}
 		}
 

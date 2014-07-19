@@ -127,7 +127,7 @@ public abstract class Generator {
 
 	protected abstract CodeBackend codeBackend();
 
-	protected Disposal createBeforeReturn(Function<?> function) {
+	protected BeforeReturn createBeforeReturn(Function<?> function) {
 		return getDebug().createBeforeReturn(function);
 	}
 

@@ -59,8 +59,8 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 	}
 
 	@Override
-	public void returnValue(Block code) {
-		llvm(code).returnValue(this);
+	public void returnValue(Block code, boolean dispose) {
+		llvm(code).returnValue(this, dispose);
 	}
 
 	@Override

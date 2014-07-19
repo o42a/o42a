@@ -20,7 +20,6 @@
 package org.o42a.codegen.code;
 
 import static java.util.Objects.requireNonNull;
-import static org.o42a.codegen.code.Disposal.DISPOSE_NOTHING;
 
 import java.util.LinkedList;
 
@@ -118,10 +117,10 @@ public final class Function<F extends Func<F>>
 		}
 
 		final Functions functions = getGenerator().getFunctions();
-		final Disposal beforeReturn;
+		final BeforeReturn beforeReturn;
 
 		if (getGenerator().isProxied()) {
-			beforeReturn = DISPOSE_NOTHING;
+			beforeReturn = BeforeReturn.NOTHING_BEFORE_RETURN;
 		} else {
 			beforeReturn =
 					new DisposeBeforeReturn(functions.createBeforeReturn(this));

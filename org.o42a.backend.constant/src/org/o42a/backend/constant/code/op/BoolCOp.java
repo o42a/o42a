@@ -119,8 +119,8 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	}
 
 	@Override
-	public void returnValue(Block code) {
-		new ReturnBE(cast(code).nextPart()) {
+	public void returnValue(Block code, boolean dispose) {
+		new ReturnBE(cast(code).nextPart(), dispose) {
 			@Override
 			public void prepare() {
 				use(backend());
