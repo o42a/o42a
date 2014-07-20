@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.field.link;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.field.alias.AliasFld;
@@ -81,6 +83,11 @@ public class EagerLinkFldOp extends RefFldOp<AliasFld.Op, ObjectRefFunc> {
 	@Override
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
 		return loadOrConstructTarget(dirs, holder, false);
+	}
+
+	@Override
+	protected DataOp construct(Code code, ObjectRefFunc constructor) {
+		return constructor.call(code, host());
 	}
 
 	private static final class EagerLinkFldValueOp

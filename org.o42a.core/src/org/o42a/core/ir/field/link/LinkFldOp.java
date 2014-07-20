@@ -20,6 +20,7 @@
 package org.o42a.core.ir.field.link;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFldOp;
@@ -82,11 +83,16 @@ public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
 
 		final Block code = dirs.code();
-		final DataOp constructed = ptr().construct(code, host());
+		final DataOp constructed = construct(code);
 
 		constructed.isNull(null, code).go(code, dirs.falseDir());
 
 		return holder.set(code, createObject(code, constructed));
+	}
+
+	@Override
+	protected DataOp construct(Code code, ObjectRefFunc constructor) {
+		return constructor.call(code, host());
 	}
 
 	private static final class LinkFldValueOp

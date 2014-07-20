@@ -23,6 +23,8 @@ import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.field.link.AbstractLinkFldValueOp;
@@ -84,6 +86,11 @@ public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	@Override
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
 		return loadOrConstructTarget(dirs, holder, true);
+	}
+
+	@Override
+	protected DataOp construct(Code code, ObjectRefFunc constructor) {
+		return constructor.call(code, host());
 	}
 
 	private void assign(CodeDirs dirs, HostOp value) {

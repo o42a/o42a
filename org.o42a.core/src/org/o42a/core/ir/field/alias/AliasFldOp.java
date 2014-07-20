@@ -21,6 +21,8 @@ package org.o42a.core.ir.field.alias;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.RefFldOp;
@@ -73,6 +75,11 @@ final class AliasFldOp extends RefFldOp<Op, ObjectRefFunc> {
 	@Override
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
 		return loadOrConstructTarget(dirs, holder, false);
+	}
+
+	@Override
+	protected DataOp construct(Code code, ObjectRefFunc constructor) {
+		return constructor.call(code, host());
 	}
 
 }

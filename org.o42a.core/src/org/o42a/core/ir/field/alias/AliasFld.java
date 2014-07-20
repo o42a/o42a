@@ -132,14 +132,6 @@ public class AliasFld extends RefFld<AliasFld.Op, ObjectRefFunc> {
 			return (Type) super.getType();
 		}
 
-		@Override
-		protected DataOp construct(
-				Code code,
-				ObjOp host,
-				ObjectRefFunc constructor) {
-			return constructor.call(code, host);
-		}
-
 	}
 
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {

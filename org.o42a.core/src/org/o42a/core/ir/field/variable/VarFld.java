@@ -123,14 +123,6 @@ public class VarFld extends AbstractLinkFld<VarFld.Op> {
 			return (Type) super.getType();
 		}
 
-		@Override
-		protected DataOp construct(
-				Code code,
-				ObjOp host,
-				ObjectRefFunc constructor) {
-			return constructor.call(code, host);
-		}
-
 	}
 
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
