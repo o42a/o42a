@@ -25,6 +25,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.field.Fld;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
@@ -71,12 +72,16 @@ public class VmtIR extends Struct<VmtIROp> {
 				TERMINATOR_ID,
 				VMT_IR_CHAIN_TYPE,
 				new VmtTerminator(data));
-		// TODO allocate VMT
+		for (Fld<?> fld : getBodyIR().getDeclaredFields()) {
+			fld.allocateMethods(data);
+		}
 	}
 
 	@Override
 	protected void fill() {
-		// TODO fill VMT
+		for (Fld<?> fld : getBodyIR().getDeclaredFields()) {
+			fld.fillMethods();
+		}
 	}
 
 	private static ID buildId(ObjectIRBody bodyIR) {

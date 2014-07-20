@@ -52,6 +52,10 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return ptr(null, code, getType().definedIn());
 	}
 
+	public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
+		return ptr(null, code, getType().vmtc());
+	}
+
 	public final RelRecOp objectData(Code code) {
 		return relPtr(null, code, getType().objectData());
 	}

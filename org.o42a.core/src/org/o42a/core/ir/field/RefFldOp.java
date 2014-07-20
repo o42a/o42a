@@ -121,7 +121,7 @@ public abstract class RefFldOp<
 
 		hasTarget.go(code.tail());
 
-		final DataOp constructed = ptr().construct(noTarget, host());
+		final DataOp constructed = construct(noTarget);
 
 		constructed.isNull(null, noTarget).go(noTarget, dirs.falseDir());
 
@@ -142,6 +142,31 @@ public abstract class RefFldOp<
 
 		return target;
 	}
+
+	protected final DataOp construct(Code code) {
+
+		final C constructor;
+
+		if (ptr().getType().supportsVmt()) {
+			constructor =
+					host()
+					.vmtc(code)
+					.func(null, code, fld().vmtConstructor())
+					.load(null, code);
+		} else {
+			constructor =
+					ptr()
+					.constructor(null, code)
+					.load(null, code);
+		}
+
+		code.dumpName("Constructor: ", constructor);
+		code.dumpName("Host: ", host());
+
+		return construct(code, constructor);
+	}
+
+	protected abstract DataOp construct(Code code, C constructor);
 
 	/**
 	 * Create an object by the given pointer.

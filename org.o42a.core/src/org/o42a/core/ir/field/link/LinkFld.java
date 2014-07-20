@@ -25,7 +25,6 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
@@ -85,14 +84,6 @@ public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 		@Override
 		public final Type getType() {
 			return (Type) super.getType();
-		}
-
-		@Override
-		protected DataOp construct(
-				Code code,
-				ObjOp host,
-				ObjectRefFunc constructor) {
-			return constructor.call(code, host);
 		}
 
 	}

@@ -289,14 +289,6 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 			return ptr(id, code, getType().previous());
 		}
 
-		@Override
-		protected DataOp construct(
-				Code code,
-				ObjOp host,
-				ObjectConstructorFunc constructor) {
-			return constructor.call(code, host, this, null);
-		}
-
 	}
 
 	public static final class Type

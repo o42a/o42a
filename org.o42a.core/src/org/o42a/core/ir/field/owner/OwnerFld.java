@@ -91,6 +91,14 @@ public final class OwnerFld
 	}
 
 	@Override
+	public void allocateMethods(SubData<VmtIROp> vmt) {
+	}
+
+	@Override
+	public void fillMethods() {
+	}
+
+	@Override
 	public void allocated(Type instance) {
 	}
 

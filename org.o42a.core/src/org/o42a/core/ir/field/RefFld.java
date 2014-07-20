@@ -49,11 +49,13 @@ public abstract class RefFld<
 	private Obj targetAscendant;
 
 	private boolean dummy;
+	private boolean constructorBuilt;
 	private boolean targetIRAllocated;
 	private boolean filling;
 	private boolean filledFields;
 	private boolean filledAll;
 
+	private FuncRec<C> vmtConstructor;
 	private FuncPtr<C> constructor;
 
 	public RefFld(Field field, Obj target) {
@@ -95,6 +97,25 @@ public abstract class RefFld<
 	}
 
 	@Override
+	public void allocateMethods(SubData<VmtIROp> vmt) {
+		if (!getType().supportsVmt()) {
+			return;
+		}
+		buildConstructor();
+		this.vmtConstructor = vmt.addFuncPtr(
+				getId().detail("constructor"),
+				getType().getSignature());
+	}
+
+	@Override
+	public void fillMethods() {
+		if (!getType().supportsVmt()) {
+			return;
+		}
+		this.vmtConstructor.setConstant(true).setValue(this.constructor);
+	}
+
+	@Override
 	public void targetAllocated() {
 		if (this.targetIRAllocated) {
 			return;
@@ -113,21 +134,6 @@ public abstract class RefFld<
 		if (!this.targetIRAllocated) {
 			this.targetIRAllocated = isOmitted();
 		}
-	}
-
-	protected void allocateMethods() {
-
-		final FuncPtr<C> reusedConstructor = reuseConstructor();
-
-		if (reusedConstructor != null) {
-			this.constructor = reusedConstructor;
-			return;
-		}
-
-		this.constructor = getGenerator().newFunction().create(
-				getField().getId().detail("constructor"),
-				getType().getSignature(),
-				new ConstructorBuilder()).getPointer();
 	}
 
 	protected FuncPtr<C> reuseConstructor() {
@@ -155,10 +161,12 @@ public abstract class RefFld<
 			// May be overridden by fillTarget().
 			getInstance().object().setNull();
 		}
-		getInstance()
-		.constructor()
-		.setConstant(true)
-		.setValue(this.constructor);
+		if (!getType().supportsVmt()) {
+			getInstance()
+			.constructor()
+			.setConstant(true)
+			.setValue(this.constructor);
+		}
 	}
 
 	protected void fillDummy() {
@@ -167,10 +175,12 @@ public abstract class RefFld<
 			// May be overridden by fillTarget().
 			getInstance().object().setNull();
 		}
-		getInstance()
-		.constructor()
-		.setConstant(true)
-		.setNull();
+		if (!getType().supportsVmt()) {
+			getInstance()
+			.constructor()
+			.setConstant(true)
+			.setNull();
+		}
 	}
 
 	protected abstract void buildConstructor(ObjBuilder builder, CodeDirs dirs);
@@ -198,6 +208,12 @@ public abstract class RefFld<
 	@Override
 	protected abstract RefFldOp<F, C> op(Code code, ObjOp host, F ptr);
 
+	final FuncRec<C> vmtConstructor() {
+		assert this.vmtConstructor != null :
+			"Constructor of " + this + " is not allocated in VMT";
+		return this.vmtConstructor;
+	}
+
 	private void fillTarget() {
 		if (getType().isStateless()) {
 			return;
@@ -213,6 +229,32 @@ public abstract class RefFld<
 				targetBodyIR.pointer(getGenerator()).toData();
 
 		getInstance().object().setValue(targetPtr);
+	}
+
+	private void buildConstructor() {
+		if (this.constructorBuilt) {
+			return;
+		}
+		this.constructorBuilt = true;
+		if (isDummy()) {
+			this.constructor =
+					getGenerator()
+					.getFunctions()
+					.nullPtr(getType().getSignature());
+			return;
+		}
+
+		final FuncPtr<C> reusedConstructor = reuseConstructor();
+
+		if (reusedConstructor != null) {
+			this.constructor = reusedConstructor;
+			return;
+		}
+
+		this.constructor = getGenerator().newFunction().create(
+				getField().getId().detail("constructor"),
+				getType().getSignature(),
+				new ConstructorBuilder()).getPointer();
 	}
 
 	private boolean runtimeConstructedTarget() {
@@ -290,21 +332,6 @@ public abstract class RefFld<
 			return func(id, code, getType().constructor());
 		}
 
-		public final DataOp construct(Code code, ObjOp host) {
-
-			final C constructor = constructor(null, code).load(null, code);
-
-			code.dumpName("Constructor: ", constructor);
-			code.dumpName("Host: ", host);
-
-			return construct(code, host, constructor);
-		}
-
-		protected abstract DataOp construct(
-				Code code,
-				ObjOp host,
-				C constructor);
-
 	}
 
 	public static abstract class Type<
@@ -321,6 +348,10 @@ public abstract class RefFld<
 
 		public abstract boolean isStateless();
 
+		public boolean supportsVmt() {
+			return false;
+		}
+
 		public final DataRec object() {
 			assert !isStateless() :
 				this + " is stateless";
@@ -328,6 +359,8 @@ public abstract class RefFld<
 		}
 
 		public final FuncRec<C> constructor() {
+			assert !supportsVmt() :
+				this + " constructor is declared in VMT";
 			return this.constructor;
 		}
 
@@ -336,9 +369,11 @@ public abstract class RefFld<
 			if (!isStateless()) {
 				this.object = data.addDataPtr("object");
 			}
-			this.constructor = data.addFuncPtr(
-					"constructor",
-					getSignature());
+			if (!supportsVmt()) {
+				this.constructor = data.addFuncPtr(
+						"constructor",
+						getSignature());
+			}
 		}
 
 		protected abstract ObjectSignature<C> getSignature();
@@ -365,7 +400,7 @@ public abstract class RefFld<
 
 		@Override
 		public void allocated(T instance) {
-			this.fld.allocateMethods();
+			this.fld.buildConstructor();
 		}
 
 		@Override

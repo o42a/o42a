@@ -104,8 +104,11 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		if (this.vmtIR != null) {
 			return this.vmtIR;
 		}
-		return this.vmtIR =
-			getGenerator().newGlobal().struct(new VmtIR(this)).getInstance();
+
+		this.vmtIR = new VmtIR(this);
+		getGenerator().newGlobal().struct(this.vmtIR).getInstance();
+
+		return this.vmtIR;
 	}
 
 	public void setKind(Kind kind) {
