@@ -74,8 +74,6 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 	@Override
 	public abstract FldKind getKind();
 
-	public abstract boolean isOverrider();
-
 	@Override
 	public final Obj getDeclaredIn() {
 		return getKey().getOrigin().toObject();

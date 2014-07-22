@@ -58,11 +58,6 @@ public final class OwnerFld
 	}
 
 	@Override
-	public boolean isOverrider() {
-		return false;
-	}
-
-	@Override
 	public final Type getInstance() {
 		return (Type) super.getInstance();
 	}

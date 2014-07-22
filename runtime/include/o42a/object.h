@@ -340,13 +340,6 @@ struct o42a_obj_desc {
 	 */
 	o42a_rlist_t fields;
 
-	/**
-	 * Relative pointer to the list of field overrider descriptors.
-	 *
-	 * The list is ordered by field descriptor pointers.
-	 */
-	o42a_rlist_t overriders;
-
 	/** Main body layout. */
 	o42a_layout_t main_body_layout;
 
@@ -394,27 +387,6 @@ typedef const struct o42a_obj_field {
 	o42a_rptr_t fld;
 
 } o42a_obj_field_t;
-
-/**
- * Field overrider descriptor.
- */
-typedef const struct o42a_obj_overrider {
-
-	O42A_HEADER
-
-	/** Pointer to descriptor of the overridden field. */
-	o42a_obj_field_t *field;
-
-	/**
-	 * Pointer to the type descriptor of the object the overrider field were
-	 * defined in.
-	 */
-	o42a_obj_desc_t *defined_in;
-
-	/** Relative pointer to the body containing overriding field. */
-	o42a_rptr_t body;
-
-} o42a_obj_overrider_t;
 
 /**
  * A chain of VMTs.
@@ -544,13 +516,11 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	o42a_dbg_field_info_t fields[15];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
-
-extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_overrider;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
@@ -617,21 +587,6 @@ inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 }
 
 /**
- * Retrieves field override descriptors.
- *
- * \param desc[in] type descriptor pointer.
- *
- * \return pointer to the first element of the field override descriptors array.
- */
-inline o42a_obj_overrider_t *o42a_obj_overriders(
-		const o42a_obj_desc_t *const desc) {
-
-	const o42a_rlist_t *const list = &desc->overriders;
-
-	return (o42a_obj_overrider_t *) (((char *) list) + list->list);
-}
-
-/**
  * Retrieves object body corresponding to the given ascendant.
  *
  * \param ascendant[in] pointer to ascendant descriptor.
@@ -642,18 +597,6 @@ inline o42a_obj_body_t *o42a_obj_ascendant_body(
 		const o42a_obj_ascendant_t *const ascendant) {
 	return (o42a_obj_body_t *) (((char *) ascendant) + ascendant->body);
 }
-
-/**
- * Retrieved the given field overrider.
- *
- * \param sample_desc[in] type descriptor of the sample to search the field in.
- * \param dield[in] target field descriptor.
- *
- * \return field overrider, or NULL if not found.
- */
-o42a_obj_overrider_t *o42a_obj_field_overrider(
-		const o42a_obj_desc_t *,
-		const o42a_obj_field_t *);
 
 /**
  * Searches for ascendant descriptor of the given type.

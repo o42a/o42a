@@ -23,14 +23,12 @@ import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
 import org.o42a.util.string.ID;
 
 
@@ -55,47 +53,6 @@ public abstract class MemberFld<F extends Fld.Op<F>> extends Fld<F> {
 	@Override
 	public final ID getId() {
 		return getField().getId();
-	}
-
-	@Override
-	public boolean isOverrider() {
-
-		final Field field = getField();
-
-		if (!field.isOverride()) {
-			// New field declaration.
-			if (getBodyIR().getObjectIR().isSampleDeclaration()) {
-				// Object declaration.
-				return false;
-			}
-
-			// Already present in declaration.
-			return getBodyIR()
-			.getObjectIR()
-			.getSampleDeclaration()
-			.ir(getGenerator())
-			.getMainBodyIR()
-			.findFld(getKey()) != null;
-		}
-
-		final Scope definedIn = field.getDefinedIn();
-		final Scope enclosingScope = field.getEnclosingScope();
-
-		if (enclosingScope.is(definedIn)) {
-			// Explicit field override.
-			return true;
-		}
-
-		final ObjectType definedInType = definedIn.toObject().type();
-
-		if (definedInType.getAncestor().getType().type().derivedFrom(
-				definedInType)) {
-			// Field overridden in ancestor.
-			return false;
-		}
-
-		// Field overridden in sample.
-		return true;
 	}
 
 	@Override

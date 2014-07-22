@@ -109,9 +109,9 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	},
 };
 
-const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 	.type_code = 0x042a0101,
-	.field_num = 5,
+	.field_num = 4,
 	.name = "o42a_obj_desc_t",
 	.fields = {
 		{
@@ -132,12 +132,6 @@ const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 			.data_type = O42A_TYPE_STRUCT,
 			.offset = offsetof(o42a_obj_desc_t, fields),
 			.name = "fields",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
-		},
-		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_desc_t, overriders),
-			.name = "overriders",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
 		},
 		{
@@ -189,33 +183,6 @@ const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field = {
 			.data_type = O42A_TYPE_REL_PTR,
 			.offset = offsetof(o42a_obj_field_t, fld),
 			.name = "fld",
-		},
-	},
-};
-
-const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_overrider = {
-	.type_code = 0x042a0113,
-	.field_num = 3,
-	.name = "o42a_obj_overrider_t",
-	.fields = {
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_overrider_t, field),
-			.name = "field",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_field,
-		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_overrider_t, defined_in),
-			.name = "defined_in",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
-		},
-		{
-			.data_type = O42A_TYPE_REL_PTR,
-			.offset = offsetof(o42a_obj_overrider_t, body),
-			.name = "body",
 		},
 	},
 };
@@ -379,30 +346,7 @@ extern o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t *);
 
 extern o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *);
 
-extern o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_desc_t *);
-
 extern o42a_obj_body_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t *);
-
-const o42a_obj_overrider_t *o42a_obj_field_overrider(
-		const o42a_obj_desc_t *const sample_desc,
-		const o42a_obj_field_t *const field) {
-	O42A_ENTER(return NULL);
-
-	const size_t num_overriders = sample_desc->overriders.size;
-	const o42a_obj_overrider_t *const overriders =
-			O42A(o42a_obj_overriders(sample_desc));
-
-	for (size_t i = 0; i < num_overriders; ++i) {
-
-		const o42a_obj_overrider_t *const overrider = overriders + i;
-
-		if (overrider->field == field) {
-			O42A_RETURN overrider;
-		}
-	}
-
-	O42A_RETURN NULL;
-}
 
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
 		const o42a_obj_data_t *const data,
