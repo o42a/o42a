@@ -26,6 +26,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.field.link.AbstractLinkFldValueOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -38,11 +39,11 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
+public final class VarFldOp extends RefFldOp<StatefulOp, ObjectRefFunc> {
 
-	private final VarFld.Op ptr;
+	private final StatefulOp ptr;
 
-	VarFldOp(VarFld fld, ObjOp host, VarFld.Op ptr) {
+	VarFldOp(VarFld fld, ObjOp host, StatefulOp ptr) {
 		super(fld, host);
 		this.ptr = ptr;
 	}
@@ -53,7 +54,7 @@ public final class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	public final VarFld.Op ptr() {
+	public final StatefulOp ptr() {
 		return this.ptr;
 	}
 

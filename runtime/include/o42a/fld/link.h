@@ -15,22 +15,10 @@
 extern "C" {
 #endif
 
-typedef struct {
-
-	O42A_HEADER
-
-	o42a_obj_ref_ft *constructor;
-
-} o42a_fld_link;
-
 
 #ifndef NDEBUG
-extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_link;
+extern const o42a_dbg_type_info_t _O42A_DEBUG_TYPE_o42a_fld_link;
 #endif /* NDEBUG */
-
-void o42a_fld_link_propagate(o42a_obj_ctable_t*);
-
-void o42a_fld_link_inherit(o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus
