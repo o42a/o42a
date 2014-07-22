@@ -109,6 +109,10 @@ public final class ObjOp extends ObjectOp {
 		return ptr();
 	}
 
+	public final VmtIRChain.Op vmtc(Code code) {
+		return ptr(code).vmtc(code).load(null, code);
+	}
+
 	@Override
 	public final ValueOp value() {
 		if (this.value != null) {

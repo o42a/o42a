@@ -59,57 +59,107 @@ public abstract class SubData<S extends StructOp<S>>
 	}
 
 	public final Int8rec addInt8(String name) {
-		return add(new Int8rec(this, ID.id(name)));
+		return addInt8(ID.id(name));
+	}
+
+	public final Int8rec addInt8(ID name) {
+		return add(new Int8rec(this, name));
 	}
 
 	public final Int16rec addInt16(String name) {
-		return add(new Int16rec(this, ID.id(name)));
+		return addInt16(ID.id(name));
+	}
+
+	public final Int16rec addInt16(ID name) {
+		return add(new Int16rec(this, name));
 	}
 
 	public final Int32rec addInt32(String name) {
-		return add(new Int32rec(this, ID.id(name)));
+		return addInt32(ID.id(name));
+	}
+
+	public final Int32rec addInt32(ID name) {
+		return add(new Int32rec(this, name));
 	}
 
 	public final Int64rec addInt64(String name) {
-		return add(new Int64rec(this, ID.id(name)));
+		return addInt64(ID.id(name));
+	}
+
+	public final Int64rec addInt64(ID name) {
+		return add(new Int64rec(this, name));
 	}
 
 	public final Fp32rec addFp32(String name) {
-		return add(new Fp32rec(this, ID.id(name)));
+		return addFp32(ID.id(name));
+	}
+
+	public final Fp32rec addFp32(ID name) {
+		return add(new Fp32rec(this, name));
 	}
 
 	public final Fp64rec addFp64(String name) {
-		return add(new Fp64rec(this, ID.id(name)));
+		return addFp64(ID.id(name));
+	}
+
+	public final Fp64rec addFp64(ID name) {
+		return add(new Fp64rec(this, name));
 	}
 
 	public final SystemData addSystem(String name, SystemType systemType) {
+		return addSystem(ID.id(name), systemType);
+	}
+
+	public final SystemData addSystem(ID name, SystemType systemType) {
 		systemType.allocate(getGenerator());
-		return add(new SystemData(this, ID.id(name), systemType));
+		return add(new SystemData(this, name, systemType));
 	}
 
 	public final <F extends Func<F>>
 	FuncRec<F> addFuncPtr(String name, Signature<F> signature) {
+		return addFuncPtr(ID.id(name), signature);
+	}
+
+	public final <F extends Func<F>>
+	FuncRec<F> addFuncPtr(ID name, Signature<F> signature) {
 		return add(new FuncRec<>(
 				this,
-				ID.id(name),
+				name,
 				getGenerator().getFunctions().allocate(signature)));
 	}
 
 	public final AnyRec addPtr(String name) {
-		return add(new AnyRec(this, ID.id(name)));
+		return addPtr(ID.id(name));
+	}
+
+	public final AnyRec addPtr(ID name) {
+		return add(new AnyRec(this, name));
 	}
 
 	public final DataRec addDataPtr(String name) {
-		return add(new DataRec(this, ID.id(name)));
+		return addDataPtr(ID.id(name));
+	}
+
+	public final DataRec addDataPtr(ID name) {
+		return add(new DataRec(this, name));
 	}
 
 	public final <SS extends StructOp<SS>>
 	StructRec<SS> addPtr(String name, Type<SS> type) {
-		return add(new StructRec<>(this, ID.id(name), type));
+		return addPtr(ID.id(name), type);
+	}
+
+	public final <SS extends StructOp<SS>>
+	StructRec<SS> addPtr(ID name, Type<SS> type) {
+		return add(new StructRec<>(this, name, type));
 	}
 
 	public final RelRec addRelPtr(String name) {
-		return add(new RelRec(this, ID.id(name)));
+		return addRelPtr(ID.id(name));
+	}
+
+	public final RelRec addRelPtr(ID name) {
+		return add(new RelRec(this, name));
 	}
 
 	public final <SS extends StructOp<SS>, T extends Type<SS>>

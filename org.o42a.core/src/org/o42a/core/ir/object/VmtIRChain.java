@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,28 +19,33 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_ID;
-import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
-import static org.o42a.core.ir.object.ObjectIRStruct.OBJECT_ID;
-
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Struct;
-import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.gc.GCBlock;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.util.string.ID;
 
 
-public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
+public final class VmtIRChain extends Type<VmtIRChain.Op> {
 
-	private final ObjectIRStruct struct;
+	public static final VmtIRChain VMT_IR_CHAIN_TYPE = new VmtIRChain();
 
-	ObjectIRBlock(ObjectIR objectIR) {
-		super(objectIR.getId());
-		this.struct = new ObjectIRStruct(objectIR);
+	private DataRec vmt;
+	private StructRec<Op> prev;
+
+	private VmtIRChain() {
+		super(ID.rawId("o42a_obj_vmtc_t"));
 	}
 
-	public final ObjectIRStruct getStruct() {
-		return this.struct;
+	public final DataRec vmt() {
+		return this.vmt;
+	}
+
+	public final StructRec<Op> prev() {
+		return this.prev;
 	}
 
 	@Override
@@ -50,21 +55,32 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(
-				GC_BLOCK_ID,
-				GC_BLOCK_TYPE,
-				new GCBlock(this.struct, "o42a_obj_gc_desc"));
-		data.addStruct(OBJECT_ID, this.struct);
+		this.vmt = data.addDataPtr("vmt");
+		this.prev = data.addPtr("prev", VMT_IR_CHAIN_TYPE);
 	}
 
 	@Override
-	protected void fill() {
+	protected DebugTypeInfo createTypeInfo() {
+		return externalTypeInfo(0x042a0102);
 	}
 
 	public static final class Op extends StructOp<Op> {
 
 		private Op(StructWriter<Op> writer) {
 			super(writer);
+		}
+
+		@Override
+		public final VmtIRChain getType() {
+			return (VmtIRChain) super.getType();
+		}
+
+		public final DataRecOp vmt(ID id, Code code) {
+			return ptr(id, code, getType().vmt());
+		}
+
+		public final StructRecOp<Op> prev(ID id, Code code) {
+			return ptr(id, code, getType().prev());
 		}
 
 	}

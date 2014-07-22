@@ -26,8 +26,8 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.object.op.ObjectSignature;
@@ -39,9 +39,12 @@ import org.o42a.util.string.ID;
 
 
 public abstract class RefFld<
-		F extends RefFld.Op<F, C>,
+		F extends RefFld.Op<F>,
 		C extends ObjectFunc<C>>
 				extends MemberFld<F> {
+
+	public static final StatelessType STATELESS_FLD = new StatelessType();
+	public static final StatefulType STATEFUL_FLD = new StatefulType();
 
 	public static final ID FLD_CTR_ID = ID.id("fld_ctr");
 
@@ -49,11 +52,13 @@ public abstract class RefFld<
 	private Obj targetAscendant;
 
 	private boolean dummy;
+	private boolean constructorBuilt;
 	private boolean targetIRAllocated;
 	private boolean filling;
 	private boolean filledFields;
 	private boolean filledAll;
 
+	private FuncRec<C> vmtConstructor;
 	private FuncPtr<C> constructor;
 
 	public RefFld(Field field, Obj target) {
@@ -74,10 +79,9 @@ public abstract class RefFld<
 		return this.dummy;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Type<F, C> getInstance() {
-		return (Type<F, C>) super.getInstance();
+	public Type<F> getInstance() {
+		return (Type<F>) super.getInstance();
 	}
 
 	public final void allocate(ObjectIRBodyData data, Obj targetAscendant) {
@@ -95,6 +99,25 @@ public abstract class RefFld<
 	}
 
 	@Override
+	public void allocateMethods(SubData<VmtIROp> vmt) {
+		if (isOmitted()) {
+			return;
+		}
+		buildConstructor();
+		this.vmtConstructor = vmt.addFuncPtr(
+				getId().detail("constructor"),
+				getConstructorSignature());
+	}
+
+	@Override
+	public void fillMethods() {
+		if (isOmitted()) {
+			return;
+		}
+		vmtConstructor().setConstant(true).setValue(this.constructor);
+	}
+
+	@Override
 	public void targetAllocated() {
 		if (this.targetIRAllocated) {
 			return;
@@ -105,7 +128,7 @@ public abstract class RefFld<
 	}
 
 	@Override
-	protected abstract Type<F, C> getType();
+	protected abstract Type<F> getType();
 
 	@Override
 	protected void allocate(ObjectIRBodyData data) {
@@ -113,21 +136,6 @@ public abstract class RefFld<
 		if (!this.targetIRAllocated) {
 			this.targetIRAllocated = isOmitted();
 		}
-	}
-
-	protected void allocateMethods() {
-
-		final FuncPtr<C> reusedConstructor = reuseConstructor();
-
-		if (reusedConstructor != null) {
-			this.constructor = reusedConstructor;
-			return;
-		}
-
-		this.constructor = getGenerator().newFunction().create(
-				getField().getId().detail("constructor"),
-				getType().getSignature(),
-				new ConstructorBuilder()).getPointer();
 	}
 
 	protected FuncPtr<C> reuseConstructor() {
@@ -155,10 +163,6 @@ public abstract class RefFld<
 			// May be overridden by fillTarget().
 			getInstance().object().setNull();
 		}
-		getInstance()
-		.constructor()
-		.setConstant(true)
-		.setValue(this.constructor);
 	}
 
 	protected void fillDummy() {
@@ -167,29 +171,27 @@ public abstract class RefFld<
 			// May be overridden by fillTarget().
 			getInstance().object().setNull();
 		}
-		getInstance()
-		.constructor()
-		.setConstant(true)
-		.setNull();
 	}
+
+	protected abstract ObjectSignature<C> getConstructorSignature();
 
 	protected abstract void buildConstructor(ObjBuilder builder, CodeDirs dirs);
 
 	protected abstract Obj targetType(Obj bodyType);
 
 	@Override
-	protected Content<Type<F, C>> content() {
+	protected Content<Type<F>> content() {
 		return new FldContent<>(this);
 	}
 
 	@Override
-	protected Content<Type<F, C>> dummyContent() {
-		return new Content<Type<F, C>>() {
+	protected Content<Type<F>> dummyContent() {
+		return new Content<Type<F>>() {
 			@Override
-			public void allocated(Type<F, C> instance) {
+			public void allocated(Type<F> instance) {
 			}
 			@Override
-			public void fill(Type<F, C> instance) {
+			public void fill(Type<F> instance) {
 				fillDummy();
 			}
 		};
@@ -197,6 +199,14 @@ public abstract class RefFld<
 
 	@Override
 	protected abstract RefFldOp<F, C> op(Code code, ObjOp host, F ptr);
+
+	protected final FuncRec<C> vmtConstructor() {
+		assert this.vmtConstructor != null :
+			"Constructor of " + this + " is not allocated in VMT";
+		return this.vmtConstructor;
+	}
+
+	protected abstract FuncPtr<C> constructorStub();
 
 	private void fillTarget() {
 		if (getType().isStateless()) {
@@ -213,6 +223,32 @@ public abstract class RefFld<
 				targetBodyIR.pointer(getGenerator()).toData();
 
 		getInstance().object().setValue(targetPtr);
+	}
+
+	private void buildConstructor() {
+		if (this.constructorBuilt) {
+			return;
+		}
+		this.constructorBuilt = true;
+		if (isDummy()) {
+			this.constructor =
+					getGenerator()
+					.getFunctions()
+					.nullPtr(getConstructorSignature());
+			return;
+		}
+
+		final FuncPtr<C> reusedConstructor = reuseConstructor();
+
+		if (reusedConstructor != null) {
+			this.constructor = reusedConstructor;
+			return;
+		}
+
+		this.constructor = getGenerator().newFunction().create(
+				getField().getId().detail("constructor"),
+				getConstructorSignature(),
+				new ConstructorBuilder()).getPointer();
 	}
 
 	private boolean runtimeConstructedTarget() {
@@ -267,53 +303,28 @@ public abstract class RefFld<
 		}
 	}
 
-	public static abstract class Op<
-			S extends Op<S, C>,
-			C extends ObjectFunc<C>>
+	public static abstract class Op<S extends Op<S>>
 					extends Fld.Op<S> {
 
 		public Op(StructWriter<S> writer) {
 			super(writer);
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
-		public Type<S, C> getType() {
-			return (Type<S, C>) super.getType();
+		public Type<S> getType() {
+			return (Type<S>) super.getType();
 		}
 
 		public final DataRecOp object(ID id, Code code) {
 			return ptr(id, code, getType().object());
 		}
 
-		public FuncOp<C> constructor(ID id, Code code) {
-			return func(id, code, getType().constructor());
-		}
-
-		public final DataOp construct(Code code, ObjOp host) {
-
-			final C constructor = constructor(null, code).load(null, code);
-
-			code.dumpName("Constructor: ", constructor);
-			code.dumpName("Host: ", host);
-
-			return construct(code, host, constructor);
-		}
-
-		protected abstract DataOp construct(
-				Code code,
-				ObjOp host,
-				C constructor);
-
 	}
 
-	public static abstract class Type<
-			F extends Op<F, C>,
-			C extends ObjectFunc<C>>
+	public static abstract class Type<F extends Op<F>>
 					extends Fld.Type<F> {
 
 		private DataRec object;
-		private FuncRec<C> constructor;
 
 		public Type(ID id) {
 			super(id);
@@ -327,29 +338,90 @@ public abstract class RefFld<
 			return this.object;
 		}
 
-		public final FuncRec<C> constructor() {
-			return this.constructor;
-		}
-
 		@Override
 		protected void allocate(SubData<F> data) {
 			if (!isStateless()) {
 				this.object = data.addDataPtr("object");
 			}
-			this.constructor = data.addFuncPtr(
-					"constructor",
-					getSignature());
 		}
 
-		protected abstract ObjectSignature<C> getSignature();
+	}
 
-		protected abstract FuncPtr<C> constructorStub();
+	public static final class StatelessOp extends RefFld.Op<StatelessOp> {
+
+		private StatelessOp(StructWriter<StatelessOp> writer) {
+			super(writer);
+		}
+
+		@Override
+		public final StatelessType getType() {
+			return (StatelessType) super.getType();
+		}
+
+	}
+
+	public static final class StatelessType extends RefFld.Type<StatelessOp> {
+
+		private StatelessType() {
+			super(ID.rawId("o42a_fld_link"));
+		}
+
+		@Override
+		public boolean isStateless() {
+			return true;
+		}
+
+		@Override
+		public StatelessOp op(StructWriter<StatelessOp> writer) {
+			return new StatelessOp(writer);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.LINK.code());
+		}
+
+	}
+
+	public static final class StatefulOp extends RefFld.Op<StatefulOp> {
+
+		private StatefulOp(StructWriter<StatefulOp> writer) {
+			super(writer);
+		}
+
+		@Override
+		public final StatefulType getType() {
+			return (StatefulType) super.getType();
+		}
+
+	}
+
+	public static final class StatefulType extends RefFld.Type<StatefulOp> {
+
+		private StatefulType() {
+			super(ID.rawId("o42a_fld_obj"));
+		}
+
+		@Override
+		public boolean isStateless() {
+			return false;
+		}
+
+		@Override
+		public StatefulOp op(StructWriter<StatefulOp> writer) {
+			return new StatefulOp(writer);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.OBJ.code());
+		}
 
 	}
 
 	private static class FldContent<
-			F extends Op<F, C>,
-			T extends Type<F, C>,
+			F extends Op<F>,
+			T extends Type<F>,
 			C extends ObjectFunc<C>>
 					implements Content<T> {
 
@@ -365,7 +437,7 @@ public abstract class RefFld<
 
 		@Override
 		public void allocated(T instance) {
-			this.fld.allocateMethods();
+			this.fld.buildConstructor();
 		}
 
 		@Override

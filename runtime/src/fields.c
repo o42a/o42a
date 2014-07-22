@@ -77,32 +77,38 @@ static void o42a_fld_mark_obj(o42a_fld *const field) {
 	O42A_RETURN;
 }
 
+static void fld_no_copy(
+		o42a_obj_ctable_t *const ctable __attribute__ ((unused))) {
+	O42A_ENTER(return);
+	O42A_RETURN;
+}
+
 static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	[O42A_FLD_OBJ] = {// Object field.
-		.propagate = &o42a_fld_obj_propagate,
-		.inherit = &o42a_fld_obj_inherit,
+		.propagate = &o42a_fld_obj_copy,
+		.inherit = &o42a_fld_obj_copy,
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_LINK] = {// Link field.
-		.propagate = &o42a_fld_link_propagate,
-		.inherit = &o42a_fld_link_inherit,
+		.propagate = &fld_no_copy,
+		.inherit = &fld_no_copy,
 		.mark = &o42a_fld_mark_none,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_ALIAS] = {// Alias field.
-		.propagate = &o42a_fld_var_propagate,
-		.inherit = &o42a_fld_var_inherit,
-		.mark = &o42a_fld_var_mark,
+		.propagate = &o42a_fld_obj_copy,
+		.inherit = &o42a_fld_obj_copy,
+		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_VAR] = {// Variable field.
-		.propagate = &o42a_fld_var_propagate,
-		.inherit = &o42a_fld_var_inherit,
-		.mark = &o42a_fld_var_mark,
+		.propagate = &o42a_fld_obj_copy,
+		.inherit = &o42a_fld_obj_copy,
+		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
@@ -130,8 +136,6 @@ inline o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *const field) {
 extern o42a_fld *o42a_fld_by_field(
 		const o42a_obj_body_t *,
 		const o42a_obj_field_t *);
-
-extern o42a_fld *o42a_fld_by_overrider(const o42a_obj_overrider_t *);
 
 o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope __attribute__((unused))) {
 	O42A_ENTER(return NULL);

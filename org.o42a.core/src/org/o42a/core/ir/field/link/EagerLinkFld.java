@@ -21,28 +21,31 @@ package org.o42a.core.ir.field.link;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.alias.AliasFld.ALIAS_FLD;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.field.alias.AliasFld;
+import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.alias.AliasField;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
-public class EagerLinkFld extends AbstractLinkFld<AliasFld.Op> {
+public class EagerLinkFld extends AbstractLinkFld<StatefulOp> {
 
 	public EagerLinkFld(Field field, Obj target) {
 		super(field, target);
@@ -54,20 +57,32 @@ public class EagerLinkFld extends AbstractLinkFld<AliasFld.Op> {
 	}
 
 	@Override
-	public AliasFld.Type getInstance() {
-		return (AliasFld.Type) super.getInstance();
+	public StatefulType getInstance() {
+		return (StatefulType) super.getInstance();
 	}
 
 	@Override
-	protected AliasFld.Type getType() {
-		return ALIAS_FLD;
+	protected StatefulType getType() {
+		return STATEFUL_FLD;
+	}
+
+	@Override
+	protected ObjectSignature<ObjectRefFunc> getConstructorSignature() {
+		return OBJECT_REF;
+	}
+
+	@Override
+	protected FuncPtr<ObjectRefFunc> constructorStub() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_ref_stub", getConstructorSignature());
 	}
 
 	@Override
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final FldOp<AliasFld.Op> fld = op(code, builder.host());
+		final FldOp<StatefulOp> fld = op(code, builder.host());
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
@@ -104,7 +119,7 @@ public class EagerLinkFld extends AbstractLinkFld<AliasFld.Op> {
 	}
 
 	@Override
-	protected EagerLinkFldOp op(Code code, ObjOp host, AliasFld.Op ptr) {
+	protected EagerLinkFldOp op(Code code, ObjOp host, StatefulOp ptr) {
 		return new EagerLinkFldOp(this, host, ptr);
 	}
 
