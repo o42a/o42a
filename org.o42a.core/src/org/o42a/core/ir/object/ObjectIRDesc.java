@@ -25,9 +25,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.impl.ObjectIRFields;
-import org.o42a.core.ir.object.impl.ObjectIROverriders;
 import org.o42a.core.ir.object.type.FieldDescIR;
-import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
@@ -39,7 +37,6 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 	private StructRec<ObjectIRDescOp> declaration;
 	private StructRec<ObjectIRDataOp> data;
 	private RelList<FieldDescIR> fields;
-	private RelList<OverriderDescIR> overriders;
 	private Int32rec mainBodyLayout;
 
 	private ObjectIRDesc() {
@@ -58,10 +55,6 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 		return this.fields;
 	}
 
-	public final RelList<OverriderDescIR> overriders() {
-		return this.overriders;
-	}
-
 	public final Int32rec mainBodyLayout() {
 		return this.mainBodyLayout;
 	}
@@ -76,7 +69,6 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 		this.declaration = data.addPtr("declaration", OBJECT_DESC_TYPE);
 		this.data = data.addPtr("data", OBJECT_DATA_TYPE);
 		this.fields = new ObjectIRFields().allocate(data, "fields");
-		this.overriders = new ObjectIROverriders().allocate(data, "overriders");
 		this.mainBodyLayout = data.addInt32("main_body_layout");
 	}
 

@@ -137,8 +137,6 @@ extern o42a_fld *o42a_fld_by_field(
 		const o42a_obj_body_t *,
 		const o42a_obj_field_t *);
 
-extern o42a_fld *o42a_fld_by_overrider(const o42a_obj_overrider_t *);
-
 o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope __attribute__((unused))) {
 	O42A_ENTER(return NULL);
 	O42A_RETURN NULL;

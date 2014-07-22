@@ -36,12 +36,9 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.type.FieldDescIR;
-import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueKnowledge;
 import org.o42a.util.string.ID;
@@ -201,9 +198,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 			allocateFieldDecls(instance);
 			allocateDepDecls(instance);
 		}
-		allocateOverriders(instance);
 		instance.fields().allocateItems(data);
-		instance.overriders().allocateItems(data);
 	}
 
 	private void allocateFieldDecls(ObjectIRDesc instance) {
@@ -230,28 +225,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 			if (!dep.isOmitted()) {
 				fields.add(new FieldDescIR(dep));
 			}
-		}
-	}
-
-	private void allocateOverriders(ObjectIRDesc instance) {
-
-		final RelList<OverriderDescIR> overriders = instance.overriders();
-
-		for (Member member : getObjectIR().getObject().getMembers()) {
-
-			final MemberField field = member.toField();
-
-			if (field == null) {
-				continue;
-			}
-
-			final Fld<?> fld = getObjectIR().findFld(field.getMemberKey());
-
-			if (fld == null || fld.isOmitted() || !fld.isOverrider()) {
-				continue;
-			}
-
-			overriders.add(new OverriderDescIR(fld));
 		}
 	}
 
