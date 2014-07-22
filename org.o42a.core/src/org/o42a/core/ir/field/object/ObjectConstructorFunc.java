@@ -19,14 +19,15 @@
 */
 package org.o42a.core.ir.field.object;
 
-import static org.o42a.core.ir.field.object.ObjFld.OBJ_FLD;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
+import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.VmtIRChain;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.util.string.ID;
@@ -43,7 +44,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 	public DataOp call(
 			Code code,
 			ObjectOp object,
-			ObjFld.Op fld,
+			VmtIRChain.Op vmtc,
 			ObjectIRDataOp ancestorData) {
 		return invoke(
 				null,
@@ -51,7 +52,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 				OBJECT_CONSTRUCTOR.result(),
 				object != null
 				? object.toData(null, code) : code.nullDataPtr(),
-				fld,
+				vmtc != null ? vmtc : code.nullPtr(VMT_IR_CHAIN_TYPE),
 				ancestorData != null
 				? ancestorData : code.nullPtr(OBJECT_DATA_TYPE));
 	}
@@ -61,7 +62,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
-		private Arg<ObjFld.Op> field;
+		private Arg<VmtIRChain.Op> vmtc;
 		private Arg<ObjectIRDataOp> ancestorData;
 
 		private Signature() {
@@ -77,8 +78,8 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 			return this.object;
 		}
 
-		public final Arg<ObjFld.Op> field() {
-			return this.field;
+		public final Arg<VmtIRChain.Op> vmtc() {
+			return this.vmtc;
 		}
 
 		public final Arg<ObjectIRDataOp> ancestorData() {
@@ -95,7 +96,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnData();
 			this.object = builder.addData("object");
-			this.field = builder.addPtr("field", OBJ_FLD);
+			this.vmtc = builder.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 			this.ancestorData =
 					builder.addPtr("ancestor_data", OBJECT_DATA_TYPE);
 		}

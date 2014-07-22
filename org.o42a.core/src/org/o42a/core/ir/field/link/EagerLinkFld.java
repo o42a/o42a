@@ -24,9 +24,11 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.alias.AliasFld.ALIAS_FLD;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.field.FldKind;
@@ -36,6 +38,7 @@ import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.alias.AliasField;
 import org.o42a.core.member.field.Field;
@@ -61,6 +64,13 @@ public class EagerLinkFld extends AbstractLinkFld<AliasFld.Op> {
 	@Override
 	protected AliasFld.Type getType() {
 		return ALIAS_FLD;
+	}
+
+	@Override
+	protected FuncPtr<ObjectRefFunc> constructorStub() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_ref_stub", OBJECT_REF);
 	}
 
 	@Override

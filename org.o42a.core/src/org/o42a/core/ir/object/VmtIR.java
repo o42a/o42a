@@ -34,7 +34,7 @@ public class VmtIR extends Struct<VmtIROp> {
 
 	private static final ID TERMINATOR_ID = ID.rawId("terminator");
 
-	static final ID VMT_ID = ID.id("vmt");
+	public static final ID VMT_ID = ID.id("vmt");
 
 	private final ObjectIRBody bodyIR;
 

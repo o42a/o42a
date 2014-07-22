@@ -2,8 +2,10 @@
 Any copyright is dedicated to the Public Domain.
 http://creativecommons.org/publicdomain/zero/1.0/
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use namespace 'Collections'
 Use namespace 'Console'
 
 @Main (
-  Print "Hello, World!" nl
+  List := integer` array list [[1, 2]]
+  List [1] <- 3
 )

@@ -83,7 +83,14 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	protected DataOp construct(
 			Code code,
 			ObjectConstructorFunc constructor) {
-		return constructor.call(code, host(), ptr(), null);
+
+		final ObjOp host = host();
+
+		return constructor.call(
+				code,
+				host,
+				host != null ? host.vmtc(code) : null,
+				null);
 	}
 
 	@Override
