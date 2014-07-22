@@ -78,6 +78,13 @@ public class AliasFld extends RefFld<AliasFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
+	protected FuncPtr<ObjectRefFunc> constructorStub() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_ref_stub", OBJECT_REF);
+	}
+
+	@Override
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
@@ -158,13 +165,6 @@ public class AliasFld extends RefFld<AliasFld.Op, ObjectRefFunc> {
 		@Override
 		protected ObjectRefFunc.Signature getSignature() {
 			return OBJECT_REF;
-		}
-
-		@Override
-		protected FuncPtr<ObjectRefFunc> constructorStub() {
-			return getGenerator()
-					.externalFunction()
-					.link("o42a_obj_ref_stub", OBJECT_REF);
 		}
 
 	}

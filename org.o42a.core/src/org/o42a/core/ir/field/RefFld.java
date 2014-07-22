@@ -208,11 +208,13 @@ public abstract class RefFld<
 	@Override
 	protected abstract RefFldOp<F, C> op(Code code, ObjOp host, F ptr);
 
-	final FuncRec<C> vmtConstructor() {
+	protected final FuncRec<C> vmtConstructor() {
 		assert this.vmtConstructor != null :
 			"Constructor of " + this + " is not allocated in VMT";
 		return this.vmtConstructor;
 	}
+
+	protected abstract FuncPtr<C> constructorStub();
 
 	private void fillTarget() {
 		if (getType().isStateless()) {
@@ -377,8 +379,6 @@ public abstract class RefFld<
 		}
 
 		protected abstract ObjectSignature<C> getSignature();
-
-		protected abstract FuncPtr<C> constructorStub();
 
 	}
 

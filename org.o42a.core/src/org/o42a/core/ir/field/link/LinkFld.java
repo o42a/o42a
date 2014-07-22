@@ -62,6 +62,12 @@ public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 	}
 
 	@Override
+	protected FuncPtr<ObjectRefFunc> constructorStub() {
+		throw new IllegalStateException(
+				"The link constructor can not be a stub");
+	}
+
+	@Override
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
@@ -112,12 +118,6 @@ public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 		@Override
 		protected ObjectRefFunc.Signature getSignature() {
 			return OBJECT_REF;
-		}
-
-		@Override
-		protected FuncPtr<ObjectRefFunc> constructorStub() {
-			throw new IllegalStateException(
-					"The link constructor can not be a stub");
 		}
 
 	}

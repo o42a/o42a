@@ -21,6 +21,7 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.VmtIR.VMT_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.useVar;
 
 import org.o42a.codegen.code.Block;
@@ -151,6 +152,9 @@ public abstract class RefFldOp<
 			constructor =
 					host()
 					.vmtc(code)
+					.vmt(null, code)
+					.load(null, code)
+					.to(VMT_ID, code, fld().getBodyIR().getVmtIR())
 					.func(null, code, fld().vmtConstructor())
 					.load(null, code);
 		} else {
