@@ -25,6 +25,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -33,11 +34,11 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
+public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFunc> {
 
-	private final ObjFld.Op ptr;
+	private final StatefulOp ptr;
 
-	ObjFldOp(ObjFld fld, ObjOp host, ObjFld.Op ptr) {
+	ObjFldOp(ObjFld fld, ObjOp host, StatefulOp ptr) {
 		super(fld, host);
 		this.ptr = ptr;
 	}
@@ -48,7 +49,7 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	}
 
 	@Override
-	public final ObjFld.Op ptr() {
+	public final StatefulOp ptr() {
 		return this.ptr;
 	}
 

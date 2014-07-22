@@ -24,10 +24,8 @@ import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.field.RefFld.StatelessOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -35,12 +33,9 @@ import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.util.string.ID;
 
 
-public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
-
-	public static final Type LINK_FLD = new Type();
+public class LinkFld extends AbstractLinkFld<StatelessOp> {
 
 	public LinkFld(Field field, Obj target) {
 		super(field, target);
@@ -52,13 +47,18 @@ public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 	}
 
 	@Override
-	public Type getInstance() {
-		return (Type) super.getInstance();
+	public StatelessType getInstance() {
+		return (StatelessType) super.getInstance();
 	}
 
 	@Override
-	protected Type getType() {
-		return LINK_FLD;
+	protected StatelessType getType() {
+		return STATELESS_FLD;
+	}
+
+	@Override
+	protected ObjectRefFunc.Signature getConstructorSignature() {
+		return OBJECT_REF;
 	}
 
 	@Override
@@ -77,49 +77,8 @@ public class LinkFld extends AbstractLinkFld<LinkFld.Op> {
 	}
 
 	@Override
-	protected LinkFldOp op(Code code, ObjOp host, Op ptr) {
+	protected LinkFldOp op(Code code, ObjOp host, StatelessOp ptr) {
 		return new LinkFldOp(this, host, ptr);
-	}
-
-	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {
-
-		private Op(StructWriter<Op> writer) {
-			super(writer);
-		}
-
-		@Override
-		public final Type getType() {
-			return (Type) super.getType();
-		}
-
-	}
-
-	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
-
-		private Type() {
-			super(ID.rawId("o42a_fld_link"));
-		}
-
-		@Override
-		public boolean isStateless() {
-			return true;
-		}
-
-		@Override
-		public Op op(StructWriter<Op> writer) {
-			return new Op(writer);
-		}
-
-		@Override
-		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0200 | FldKind.LINK.code());
-		}
-
-		@Override
-		protected ObjectRefFunc.Signature getSignature() {
-			return OBJECT_REF;
-		}
-
 	}
 
 }

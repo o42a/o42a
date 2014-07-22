@@ -22,8 +22,8 @@ package org.o42a.core.ir.field.link;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFldOp;
-import org.o42a.core.ir.field.alias.AliasFld;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -34,11 +34,11 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public class EagerLinkFldOp extends RefFldOp<AliasFld.Op, ObjectRefFunc> {
+public class EagerLinkFldOp extends RefFldOp<StatefulOp, ObjectRefFunc> {
 
-	private final AliasFld.Op ptr;
+	private final StatefulOp ptr;
 
-	EagerLinkFldOp(EagerLinkFld fld, ObjOp host, AliasFld.Op ptr) {
+	EagerLinkFldOp(EagerLinkFld fld, ObjOp host, StatefulOp ptr) {
 		super(fld, host);
 		this.ptr = ptr;
 	}
@@ -49,7 +49,7 @@ public class EagerLinkFldOp extends RefFldOp<AliasFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	public final AliasFld.Op ptr() {
+	public final StatefulOp ptr() {
 		return this.ptr;
 	}
 

@@ -40,7 +40,7 @@ import org.o42a.util.string.ID;
 
 
 public abstract class RefFldOp<
-		F extends RefFld.Op<F, C>,
+		F extends RefFld.Op<F>,
 		C extends ObjectFunc<C>>
 				extends MemberFldOp<F> {
 
@@ -146,23 +146,14 @@ public abstract class RefFldOp<
 
 	protected final DataOp construct(Code code) {
 
-		final C constructor;
-
-		if (ptr().getType().supportsVmt()) {
-			constructor =
-					host()
-					.vmtc(code)
-					.vmt(null, code)
-					.load(null, code)
-					.to(VMT_ID, code, fld().getBodyIR().getVmtIR())
-					.func(null, code, fld().vmtConstructor())
-					.load(null, code);
-		} else {
-			constructor =
-					ptr()
-					.constructor(null, code)
-					.load(null, code);
-		}
+		final C constructor =
+				host()
+				.vmtc(code)
+				.vmt(null, code)
+				.load(null, code)
+				.to(VMT_ID, code, fld().getBodyIR().getVmtIR())
+				.func(null, code, fld().vmtConstructor())
+				.load(null, code);
 
 		code.dumpName("Constructor: ", constructor);
 		code.dumpName("Host: ", host());

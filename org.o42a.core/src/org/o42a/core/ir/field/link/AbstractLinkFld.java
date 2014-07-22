@@ -35,7 +35,7 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.TypeParameters;
 
 
-public abstract class AbstractLinkFld<F extends RefFld.Op<F, ObjectRefFunc>>
+public abstract class AbstractLinkFld<F extends RefFld.Op<F>>
 		extends RefFld<F, ObjectRefFunc> {
 
 	public AbstractLinkFld(Field field, Obj target) {
