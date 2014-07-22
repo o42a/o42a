@@ -130,21 +130,6 @@ inline o42a_fld *o42a_fld_by_field(
 }
 
 /**
- * Retrieves overriding field from body.
- *
- * \param field target field overrider descriptor.
- *
- * \return overriding field pointer..
- */
-inline o42a_fld *o42a_fld_by_overrider(
-		const o42a_obj_overrider_t *const overrider) {
-
-	char *const body = ((char *) overrider) + overrider->body;
-
-	return (o42a_fld *) (body + overrider->field->fld);
-}
-
-/**
  * Object reference function, which always returns NULL.
  *
  * This can be used e.g. to refer void object ancestor.

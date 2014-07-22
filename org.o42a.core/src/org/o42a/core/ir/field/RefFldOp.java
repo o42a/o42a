@@ -21,6 +21,7 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.VmtIR.VMT_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.useVar;
 
 import org.o42a.codegen.code.Block;
@@ -39,7 +40,7 @@ import org.o42a.util.string.ID;
 
 
 public abstract class RefFldOp<
-		F extends RefFld.Op<F, C>,
+		F extends RefFld.Op<F>,
 		C extends ObjectFunc<C>>
 				extends MemberFldOp<F> {
 
@@ -121,7 +122,7 @@ public abstract class RefFldOp<
 
 		hasTarget.go(code.tail());
 
-		final DataOp constructed = ptr().construct(noTarget, host());
+		final DataOp constructed = construct(noTarget);
 
 		constructed.isNull(null, noTarget).go(noTarget, dirs.falseDir());
 
@@ -142,6 +143,25 @@ public abstract class RefFldOp<
 
 		return target;
 	}
+
+	protected final DataOp construct(Code code) {
+
+		final C constructor =
+				host()
+				.vmtc(code)
+				.vmt(null, code)
+				.load(null, code)
+				.to(VMT_ID, code, fld().getBodyIR().getVmtIR())
+				.func(null, code, fld().vmtConstructor())
+				.load(null, code);
+
+		code.dumpName("Constructor: ", constructor);
+		code.dumpName("Host: ", host());
+
+		return construct(code, constructor);
+	}
+
+	protected abstract DataOp construct(Code code, C constructor);
 
 	/**
 	 * Create an object by the given pointer.

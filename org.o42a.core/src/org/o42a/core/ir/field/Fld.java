@@ -25,9 +25,8 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Data;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
+import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -75,8 +74,6 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 	@Override
 	public abstract FldKind getKind();
 
-	public abstract boolean isOverrider();
-
 	@Override
 	public final Obj getDeclaredIn() {
 		return getKey().getOrigin().toObject();
@@ -87,6 +84,10 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 	public Type<F> getInstance() {
 		return this.instance;
 	}
+
+	public abstract void allocateMethods(SubData<VmtIROp> vmt);
+
+	public abstract void fillMethods();
 
 	public final FldOp<F> op(Code code, ObjOp host) {
 		return op(

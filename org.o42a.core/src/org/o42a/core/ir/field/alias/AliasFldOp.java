@@ -21,10 +21,10 @@ package org.o42a.core.ir.field.alias;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
-import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.field.RefFld;
-import org.o42a.core.ir.field.RefFldOp;
-import org.o42a.core.ir.field.alias.AliasFld.Op;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.field.*;
+import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -34,17 +34,20 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-final class AliasFldOp extends RefFldOp<Op, ObjectRefFunc> {
+final class AliasFldOp extends RefFldOp<StatefulOp, ObjectRefFunc> {
 
-	private final Op ptr;
+	private final StatefulOp ptr;
 
-	AliasFldOp(RefFld<Op, ObjectRefFunc> fld, ObjOp host, Op ptr) {
+	AliasFldOp(
+			RefFld<StatefulOp, ObjectRefFunc> fld,
+			ObjOp host,
+			StatefulOp ptr) {
 		super(fld, host);
 		this.ptr = ptr;
 	}
 
 	@Override
-	public final Op ptr() {
+	public final StatefulOp ptr() {
 		return this.ptr;
 	}
 
@@ -73,6 +76,11 @@ final class AliasFldOp extends RefFldOp<Op, ObjectRefFunc> {
 	@Override
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
 		return loadOrConstructTarget(dirs, holder, false);
+	}
+
+	@Override
+	protected DataOp construct(Code code, ObjectRefFunc constructor) {
+		return constructor.call(code, host());
 	}
 
 }

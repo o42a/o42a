@@ -8,12 +8,10 @@
 #ifndef O42A_FIELDS_H
 #define O42A_FIELDS_H
 
-#include "o42a/fld/alias.h"
 #include "o42a/fld/dep.h"
 #include "o42a/fld/link.h"
 #include "o42a/fld/obj.h"
 #include "o42a/fld/owner.h"
-#include "o42a/fld/var.h"
 
 
 #ifdef __cplusplus
@@ -29,12 +27,6 @@ union o42a_fld {
 	O42A_HEADER
 
 	o42a_fld_obj obj;
-
-	o42a_fld_link link;
-
-	o42a_fld_alias alias;
-
-	o42a_fld_var var;
 
 	o42a_fld_owner owner;
 

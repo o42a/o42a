@@ -22,7 +22,6 @@ extern "C" {
 union o42a_fld;
 struct o42a_fld_ctr;
 
-/** Object structure descriptor. */
 typedef struct o42a_obj_desc o42a_obj_desc_t;
 
 /** Object represented by it's body. */
@@ -30,6 +29,9 @@ typedef struct o42a_obj_body o42a_obj_t;
 
 typedef struct o42a_obj_data o42a_obj_data_t;
 
+typedef struct o42a_obj_vmt o42a_obj_vmt_t;
+
+typedef struct o42a_obj_vmtc o42a_obj_vmtc_t;
 
 /**
  * Object value definition function.
@@ -145,7 +147,7 @@ enum o42a_obj_body_kind {
 /**
  * Object body.
  *
- * This structure is only a header, common to every object body. The fields
+ * This structure is only a header common to every object body. The fields
  * are allocated after this header at proper alignments.
  *
  * Each object contains one body per each ascendant, except void. One of the
@@ -159,7 +161,12 @@ typedef struct o42a_obj_body {
 	 * Pointer to object type descriptor, where corresponding body were first
 	 * declared in.
 	 */
-	o42a_obj_desc_t *declared_in;
+	const o42a_obj_desc_t *declared_in;
+
+	/**
+	 * Pointer to virtual method tables chain.
+	 */
+	const o42a_obj_vmtc_t *vmtc;
 
 	/*
 	 * Relative pointer to object data.
@@ -313,32 +320,14 @@ struct o42a_obj_desc {
 	O42A_HEADER
 
 	/**
-	 * Pointer to the descriptor this declaration copies the structure of.
-	 *
-	 * This can be either a pointer to this descriptor, or to the descriptor
-	 * of the object this one is propagated from.
-	 */
-	o42a_obj_desc_t *declaration;
-
-	/**
 	 * Pointer to the data of the object this descriptor is created for.
 	 */
 	o42a_obj_data_t *data;
 
 	/**
 	 * Relative pointer to the list of field descriptors.
-	 *
-	 * Note that this list is empty for propagated objects.
-	 * Always use `declaration.fields` to get a real list.
 	 */
 	o42a_rlist_t fields;
-
-	/**
-	 * Relative pointer to the list of field overrider descriptors.
-	 *
-	 * The list is ordered by field descriptor pointers.
-	 */
-	o42a_rlist_t overriders;
 
 	/** Main body layout. */
 	o42a_layout_t main_body_layout;
@@ -389,25 +378,55 @@ typedef const struct o42a_obj_field {
 } o42a_obj_field_t;
 
 /**
- * Field overrider descriptor.
+ * A chain of VMTs.
+ *
+ * The chain is represented as a linked list of VMTs. Each VMT in such list has
+ * the same structure.
  */
-typedef const struct o42a_obj_overrider {
+struct o42a_obj_vmtc {
 
 	O42A_HEADER
 
-	/** Pointer to descriptor of the overridden field. */
-	o42a_obj_field_t *field;
+	/** A pointer to VMT. */
+	const o42a_obj_vmt_t *vmt;
 
 	/**
-	 * Pointer to the type descriptor of the object the overrider field were
-	 * defined in.
+	 * A pointer to previous link in VMT chain, or NULL.
+	 *
+	 * Only VMT terminators have NULL as this pointer.
 	 */
-	o42a_obj_desc_t *defined_in;
+	const o42a_obj_vmtc_t *prev;
 
-	/** Relative pointer to the body containing overriding field. */
-	o42a_rptr_t body;
+};
 
-} o42a_obj_overrider_t;
+#ifndef NDEBUG
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
+#endif /* NDEBUG */
+
+/**
+ * Virtual methods table.
+ *
+ * This structure is only a header common to every VMT. An actual VMT structure
+ * is specific to particular object body structure. Such object body contains
+ * a pointer to the chain of compatible VMTs.
+ *
+ * All VMTs are statically allocated and may not be altered at run time.
+ */
+struct o42a_obj_vmt {
+
+	O42A_HEADER
+
+	/**
+	 * VMT chain terminator.
+	 *
+	 * This chain link always refers to owning VMT, and doesn't have a previous
+	 * chain link (terminator.prev == NULL).
+	 *
+	 * Every VMT chain should terminate with one of terminators.
+	 */
+	o42a_obj_vmtc_t terminator;
+
+};
 
 /**
  * Object construction data.
@@ -429,9 +448,9 @@ typedef struct o42a_obj_ctr {
 	o42a_obj_data_t *ancestor_data;
 
 	/**
-	 * Sample object type descriptor.
+	 * Sample data.
 	 */
-	o42a_obj_desc_t *desc;
+	o42a_obj_data_t *sample_data;
 
 	/**
 	 * Eagerly evaluated object value.
@@ -456,7 +475,7 @@ typedef struct o42a_obj_ctable {
 
 	const o42a_obj_data_t *const ancestor_data;
 
-	const o42a_obj_desc_t *const sample_desc;
+	const o42a_obj_data_t *const sample_data;
 
 	o42a_obj_data_t *const object_data;
 
@@ -486,13 +505,11 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	o42a_dbg_field_info_t fields[15];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
-
-extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_overrider;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
@@ -553,24 +570,9 @@ inline o42a_obj_ascendant_t *o42a_obj_ascendants(
  */
 inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 
-	const o42a_rlist_t *const list = &desc->declaration->fields;
+	const o42a_rlist_t *const list = &desc->fields;
 
 	return (o42a_obj_field_t *) (((char *) list) + list->list);
-}
-
-/**
- * Retrieves field override descriptors.
- *
- * \param desc[in] type descriptor pointer.
- *
- * \return pointer to the first element of the field override descriptors array.
- */
-inline o42a_obj_overrider_t *o42a_obj_overriders(
-		const o42a_obj_desc_t *const desc) {
-
-	const o42a_rlist_t *const list = &desc->overriders;
-
-	return (o42a_obj_overrider_t *) (((char *) list) + list->list);
 }
 
 /**
@@ -584,18 +586,6 @@ inline o42a_obj_body_t *o42a_obj_ascendant_body(
 		const o42a_obj_ascendant_t *const ascendant) {
 	return (o42a_obj_body_t *) (((char *) ascendant) + ascendant->body);
 }
-
-/**
- * Retrieved the given field overrider.
- *
- * \param sample_desc[in] type descriptor of the sample to search the field in.
- * \param dield[in] target field descriptor.
- *
- * \return field overrider, or NULL if not found.
- */
-o42a_obj_overrider_t *o42a_obj_field_overrider(
-		const o42a_obj_desc_t *,
-		const o42a_obj_field_t *);
 
 /**
  * Searches for ascendant descriptor of the given type.
@@ -716,7 +706,6 @@ void o42a_obj_signal(o42a_obj_data_t *);
  * Unblocks all threads waiting on an object condition.
  */
 void o42a_obj_broadcast(o42a_obj_data_t *);
-
 
 /**
  * An object use by current thread.

@@ -58,11 +58,6 @@ public final class OwnerFld
 	}
 
 	@Override
-	public boolean isOverrider() {
-		return false;
-	}
-
-	@Override
 	public final Type getInstance() {
 		return (Type) super.getInstance();
 	}
@@ -88,6 +83,14 @@ public final class OwnerFld
 	public final void declareDummy(ObjectIRBodyData data) {
 		this.dummy = true;
 		allocate(data);
+	}
+
+	@Override
+	public void allocateMethods(SubData<VmtIROp> vmt) {
+	}
+
+	@Override
+	public void fillMethods() {
 	}
 
 	@Override

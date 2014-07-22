@@ -26,7 +26,6 @@ import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.value.Val.VAL_EAGER;
 
 import java.util.HashMap;
-import java.util.function.Supplier;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -36,12 +35,9 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.type.FieldDescIR;
-import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueKnowledge;
 import org.o42a.util.string.ID;
@@ -191,19 +187,24 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 	}
 
 	private void allocateDesc(SubData<?> data) {
+		if (!getObjectIR().isSampleDeclaration()) {
+			this.desc =
+					getObjectIR()
+					.getSampleDeclaration()
+					.ir(getGenerator())
+					.getDataIR()
+					.getDesc();
+		} else {
 
-		final ObjectIRDesc instance = this.desc = data.addInstance(
-				OBJECT_DESC_ID,
-				OBJECT_DESC_TYPE,
-				new ObjectIRDescContent(this));
+			final ObjectIRDesc instance = this.desc = data.addInstance(
+					OBJECT_DESC_ID,
+					OBJECT_DESC_TYPE,
+					new ObjectIRDescContent(this));
 
-		if (getObjectIR().isSampleDeclaration()) {
 			allocateFieldDecls(instance);
 			allocateDepDecls(instance);
+			instance.fields().allocateItems(data);
 		}
-		allocateOverriders(instance);
-		instance.fields().allocateItems(data);
-		instance.overriders().allocateItems(data);
 	}
 
 	private void allocateFieldDecls(ObjectIRDesc instance) {
@@ -230,28 +231,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 			if (!dep.isOmitted()) {
 				fields.add(new FieldDescIR(dep));
 			}
-		}
-	}
-
-	private void allocateOverriders(ObjectIRDesc instance) {
-
-		final RelList<OverriderDescIR> overriders = instance.overriders();
-
-		for (Member member : getObjectIR().getObject().getMembers()) {
-
-			final MemberField field = member.toField();
-
-			if (field == null) {
-				continue;
-			}
-
-			final Fld<?> fld = getObjectIR().findFld(field.getMemberKey());
-
-			if (fld == null || fld.isOmitted() || !fld.isOverrider()) {
-				continue;
-			}
-
-			overriders.add(new OverriderDescIR(fld));
 		}
 	}
 
@@ -282,28 +261,17 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		final Generator generator = instance.getGenerator();
 
-		instance.declaration()
-		.setConstant(true)
-		.setValue(
-				getObjectIR()
-				.getSampleDeclaration()
-				.ir(generator)
-				.getDataIR()
-				.getDesc()
-				.pointer(generator));
 		instance.data()
 		.setConstant(true)
 		.setValue(getInstance().pointer(generator));
-		instance.mainBodyLayout().setConstant(true).setLowLevel(true).setValue(
-				new Supplier<Integer>() {
-					@Override
-					public Integer get() {
-						return getObjectIR()
-								.getMainBodyIR()
-								.layout(generator)
-								.toBinaryForm();
-					}
-				});
+		instance.mainBodyLayout()
+		.setConstant(true)
+		.setLowLevel(true)
+		.setValue(
+				() -> getObjectIR()
+				.getMainBodyIR()
+				.layout(generator)
+				.toBinaryForm());
 	}
 
 	private static final class ObjectIRDescContent

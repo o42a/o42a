@@ -13,6 +13,7 @@
 
 #include "o42a/error.h"
 #include "o42a/field.h"
+#include "o42a/memory/refcount.h"
 
 
 #ifndef NDEBUG
@@ -108,18 +109,11 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	},
 };
 
-const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 	.type_code = 0x042a0101,
-	.field_num = 5,
+	.field_num = 3,
 	.name = "o42a_obj_desc_t",
 	.fields = {
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_desc_t, declaration),
-			.name = "declaration",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
-		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_desc_t, data),
@@ -131,12 +125,6 @@ const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 			.data_type = O42A_TYPE_STRUCT,
 			.offset = offsetof(o42a_obj_desc_t, fields),
 			.name = "fields",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
-		},
-		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_desc_t, overriders),
-			.name = "overriders",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
 		},
 		{
@@ -192,29 +180,23 @@ const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field = {
 	},
 };
 
-const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_overrider = {
-	.type_code = 0x042a0113,
-	.field_num = 3,
-	.name = "o42a_obj_overrider_t",
+
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
+	.type_code = 0x042a0102,
+	.field_num = 2,
+	.name = "o42a_obj_vmtc_t",
 	.fields = {
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_overrider_t, field),
-			.name = "field",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_field,
+			.offset = offsetof(o42a_obj_vmtc_t, vmt),
+			.name = "vmt",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_overrider_t, defined_in),
-			.name = "defined_in",
+			.offset = offsetof(o42a_obj_vmtc_t, prev),
+			.name = "prev",
 			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
-		},
-		{
-			.data_type = O42A_TYPE_REL_PTR,
-			.offset = offsetof(o42a_obj_overrider_t, body),
-			.name = "body",
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
 		},
 	},
 };
@@ -240,10 +222,10 @@ const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, desc),
-			.name = "desc",
+			.offset = offsetof(o42a_obj_ctr_t, sample_data),
+			.name = "sample_data",
 			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
 		},
 	},
 };
@@ -288,10 +270,10 @@ _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctable_t, sample_desc),
-			.name = "sample_desc",
+			.offset = offsetof(o42a_obj_ctable_t, sample_data),
+			.name = "sample_data",
 			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -351,53 +333,26 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use = {
 
 extern o42a_obj_data_t *o42a_obj_data(const o42a_obj_body_t *);
 
-extern o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t *);
-
 extern o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *);
 
 extern o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t *);
 
 extern o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *);
 
-extern o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_desc_t *);
-
 extern o42a_obj_body_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t *);
-
-const o42a_obj_overrider_t *o42a_obj_field_overrider(
-		const o42a_obj_desc_t *const sample_desc,
-		const o42a_obj_field_t *const field) {
-	O42A_ENTER(return NULL);
-
-	const size_t num_overriders = sample_desc->overriders.size;
-	const o42a_obj_overrider_t *const overriders =
-			O42A(o42a_obj_overriders(sample_desc));
-
-	for (size_t i = 0; i < num_overriders; ++i) {
-
-		const o42a_obj_overrider_t *const overrider = overriders + i;
-
-		if (overrider->field == field) {
-			O42A_RETURN overrider;
-		}
-	}
-
-	O42A_RETURN NULL;
-}
 
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
 		const o42a_obj_data_t *const data,
 		const o42a_obj_desc_t *const desc) {
 	O42A_ENTER(return NULL);
 
-	const o42a_obj_desc_t *const decl = desc->declaration;
-
 	o42a_debug_mem_name("--- Data: ", data);
-	o42a_debug_mem_name("--- Type: ", decl);
+	o42a_debug_mem_name("--- Type: ", desc);
 
 	const o42a_obj_ascendant_t *ascendant = O42A(o42a_obj_ascendants(data));
 
 	for (size_t i = data->ascendants.size; i > 0; --i) {
-		if (ascendant->desc == decl) {
+		if (ascendant->desc == desc) {
 			O42A_RETURN ascendant;
 		}
 		++ascendant;
@@ -434,7 +389,7 @@ o42a_obj_body_t *o42a_obj_cast(
 		O42A_DONE;
 		O42A_RETURN object;
 	}
-	if (object->declared_in->declaration == desc->declaration) {
+	if (object->declared_in == desc) {
 		// body of the necessary type
 		o42a_debug_mem_name("Cast not required: ", object);
 		o42a_debug_mem_name("     to: ", desc);
@@ -486,10 +441,144 @@ static inline void copy_ancestor_ascendants(
 	O42A_RETURN;
 }
 
+static inline void vmtc_use(const o42a_obj_vmtc_t *const vmtc) {
+	O42A_ENTER(return);
+	if (vmtc->prev) {
+		// Not terminator. Increase the reference count.
+		o42a_refcount_block_t *const block =
+				o42a_refcount_blockof(vmtc);
+		__sync_add_and_fetch(&block->ref_count, 1);
+	}
+	O42A_RETURN;
+}
+
+/**
+ * Allocates a new VMT chain.
+ *
+ * The chain link instances are reference-counted. This function sets the
+ * reference count of newly allocated link to one and increases the reference
+ * count of previous link in the chain by one, unless it is a terminator link.
+ *
+ * The allocated link chain can be released by vmtc_release function.
+ *
+ * If the VMT of the previous link is the same as provided one, then just
+ * increases the reference count of previous link and returns it.
+ *
+ * \param vmt VMT of the new chain link.
+ * \param prev previous link in VMT chain.
+ *
+ * \return a pointer to new VMT chain, or NULL if allocation failed.
+ */
+static inline const o42a_obj_vmtc_t *vmtc_alloc(
+		const o42a_obj_vmt_t *const vmt,
+		const o42a_obj_vmtc_t *const prev) {
+	O42A_ENTER(return NULL);
+
+	if (vmt == prev->vmt) {
+		// Reuse a previous link chain with the same VMT.
+		O42A(vmtc_use(prev));
+		O42A_RETURN prev;
+	}
+
+	o42a_refcount_block_t *const block =
+			O42A(o42a_refcount_balloc(sizeof(o42a_obj_vmtc_t)));
+
+	block->ref_count = 1;
+
+	o42a_obj_vmtc_t *const vmtc = o42a_refcount_data(block);
+
+#ifndef NDEBUG
+	O42A(o42a_dbg_fill_header(
+			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
+			&vmtc->__o42a_dbg_header__,
+			NULL));
+#endif /* NDEBUG */
+
+	vmtc->vmt = vmt;
+	vmtc->prev = prev;
+	O42A(vmtc_use(prev));
+
+	O42A_RETURN vmtc;
+}
+
+/**
+ * Releases the VMT chain.
+ *
+ * If VMT chain link is allocated with vmtc_alloc method, then decreases its
+ * reference count and deallocates it if it is dropped to zero.
+ * Also releases a previous link.
+ *
+ * If the chain link is terminator, then does nothing.
+ *
+ * \param vmtc VMT chain to release.
+ */
+static inline void vmtc_release(const o42a_obj_vmtc_t *vmtc) {
+	O42A_ENTER(return);
+	for (;;) {
+
+		const o42a_obj_vmtc_t *const prev = vmtc->prev;
+
+		if (!prev) {
+			// Terminator. It is always statically allocated. Do nothing.
+			O42A_RETURN;
+		}
+
+		o42a_refcount_block_t *const block = o42a_refcount_blockof(vmtc);
+
+		if (__sync_sub_and_fetch(&block->ref_count, 1)) {
+			// Chain link is still used.
+			O42A_RETURN;
+		}
+
+		// Chain link is no longer used.
+		// Free it and release the previous one.
+		O42A(o42a_refcount_free(block));
+		vmtc = prev;
+	}
+}
+
+static inline const o42a_obj_vmtc_t *vmtc_derive(
+		o42a_obj_ctable_t *const ctable) {
+	O42A_ENTER(return NULL);
+
+	const o42a_obj_desc_t *const declared_in =
+			ctable->from.body->declared_in;
+	const o42a_obj_ascendant_t *const aasc =
+			O42A(o42a_obj_ascendant_of_type(
+					ctable->ancestor_data,
+					declared_in));
+	const o42a_obj_ascendant_t *const sasc =
+			O42A(o42a_obj_ascendant_of_type(
+					ctable->sample_data,
+					declared_in));
+
+	if (!sasc) {
+
+		const o42a_obj_vmtc_t *const avmtc =
+				O42A(o42a_obj_ascendant_body(aasc))->vmtc;
+
+		O42A(vmtc_use(avmtc));
+
+		O42A_RETURN avmtc;
+	}
+
+	const o42a_obj_vmtc_t *const svmtc =
+			O42A(o42a_obj_ascendant_body(sasc))->vmtc;
+
+	if (!aasc) {
+		O42A(vmtc_use(svmtc));
+		O42A_RETURN svmtc;
+	}
+
+	const o42a_obj_vmtc_t *const prev =
+			O42A(o42a_obj_ascendant_body(aasc))->vmtc;
+
+	O42A_RETURN vmtc_alloc(svmtc->vmt, prev);
+}
+
 enum derivation_kind {
 	DK_COPY,
 	DK_INHERIT,
-	DK_PROPAGATE,
 	DK_MAIN,
 };
 
@@ -523,6 +612,7 @@ static void derive_object_body(
 	to_body->object_data =
 			((char *) ctable->object_data) - ((char *) to_body);
 	to_body->declared_in = from_body->declared_in;
+	to_body->vmtc = O42A(vmtc_derive(ctable));
 
 	if (kind == DK_INHERIT) {
 		// Drop the kind of body to "inherited" for inherited body.
@@ -535,7 +625,7 @@ static void derive_object_body(
 	}
 
 	// Derive fields.
-	const size_t num_fields = ctable->body_desc->declaration->fields.size;
+	const size_t num_fields = ctable->body_desc->fields.size;
 	o42a_obj_field_t *const fields =
 			O42A(o42a_obj_fields(ctable->body_desc));
 
@@ -725,7 +815,7 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(asc));
 		const o42a_obj_desc_t *const desc = asc->desc;
 
-		uint32_t num_fields = desc->declaration->fields.size;
+		uint32_t num_fields = desc->fields.size;
 
 		if (num_fields) {
 
@@ -779,9 +869,11 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 	while (1) {
 
 		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(asc));
-		const o42a_obj_desc_t *const desc = asc->desc;
 
-		uint32_t num_fields = desc->declaration->fields.size;
+		O42A(vmtc_release(body->vmtc));
+
+		const o42a_obj_desc_t *const desc = asc->desc;
+		uint32_t num_fields = desc->fields.size;
 
 		if (num_fields) {
 
@@ -818,10 +910,9 @@ const o42a_gc_desc_t o42a_obj_gc_desc = {
 static o42a_obj_data_t *propagate_object(
 		const o42a_obj_ctr_t *const ctr,
 		const o42a_obj_data_t *const adata,
-		const o42a_obj_desc_t *const sdesc) {
+		const o42a_obj_data_t *const sdata) {
 	O42A_ENTER(return NULL);
 
-	const o42a_obj_data_t *const sdata = sdesc->data;
 	const size_t main_body_start = (size_t) (adata->object - adata->start);
 	const size_t data_start = -adata->start;
 	const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
@@ -898,7 +989,7 @@ static o42a_obj_data_t *propagate_object(
 	o42a_obj_ctable_t ctable = {
 		.owner_data = ctr->owner_data,
 		.ancestor_data = adata,
-		.sample_desc = sdesc,
+		.sample_data = sdata,
 		.object_data = data,
 	};
 
@@ -936,15 +1027,16 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 		}
 	}
 
-	const o42a_obj_desc_t *const sdesc = ctr->desc;
+	const o42a_obj_data_t *const sdata = ctr->sample_data;
+	const o42a_obj_desc_t *const sdesc = sdata->desc;
 
 	if (!adata) {
 		// Sample has no ancestor.
 		// Propagate sample.
-		o42a_debug_mem_name("No ancestor of ", sdesc);
+		o42a_debug_mem_name("No ancestor of ", sdata);
 
 		o42a_obj_data_t *const result =
-				O42A(propagate_object(ctr, sdesc->data, sdesc));
+				O42A(propagate_object(ctr, sdata, sdata));
 
 		O42A_RETURN o42a_obj_by_data(result);
 	}
@@ -955,9 +1047,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	// Ancestor bodies size.
 	size_t start = -adata->start;
-
-	const o42a_obj_data_t *const sdata = sdesc->data;
-
 	size_t main_body_start;
 
 	if (consumed_ascendants) {
@@ -1016,7 +1105,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 		o42a_obj_ascendant_t *const main_ascendant =
 				ascendants + (num_ascendants - 1);
 
-		main_ascendant->desc = sdesc->declaration;
+		main_ascendant->desc = sdesc;
 		main_ascendant->body = ((char *) object) - ((char *) main_ascendant);
 
 #ifndef NDEBUG
@@ -1073,7 +1162,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	o42a_obj_ctable_t ctable = {
 		.owner_data = ctr->owner_data,
 		.ancestor_data = adata,
-		.sample_desc = sdesc,
+		.sample_data = sdata,
 		.object_data = data,
 	};
 

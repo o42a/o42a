@@ -22,7 +22,6 @@ package org.o42a.core.ir.object.op;
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
@@ -39,7 +38,6 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIRDataOp;
-import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
@@ -109,8 +107,7 @@ public class CtrOp extends IROp {
 				code,
 				ancestorData != null
 				? ancestorData : code.nullPtr(OBJECT_DATA_TYPE));
-		ptr.desc(code)
-		.store(code, sample.objectData(code).loadDesc(code));
+		ptr.desc(code).store(code, sample.objectData(code).ptr(code));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 
@@ -151,8 +148,8 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().ancestorData());
 		}
 
-		public final StructRecOp<ObjectIRDescOp> desc(Code code) {
-			return ptr(null, code, getType().desc());
+		public final StructRecOp<ObjectIRDataOp> desc(Code code) {
+			return ptr(null, code, getType().sampleData());
 		}
 
 		public final ValType.Op value(Code code) {
@@ -165,7 +162,7 @@ public class CtrOp extends IROp {
 
 		private StructRec<ObjectIRDataOp> ownerData;
 		private StructRec<ObjectIRDataOp> ancestorData;
-		private StructRec<ObjectIRDescOp> desc;
+		private StructRec<ObjectIRDataOp> sampleData;
 		private ValType value;
 
 		private Type() {
@@ -185,8 +182,8 @@ public class CtrOp extends IROp {
 			return this.ancestorData;
 		}
 
-		public final StructRec<ObjectIRDescOp> desc() {
-			return this.desc;
+		public final StructRec<ObjectIRDataOp> sampleData() {
+			return this.sampleData;
 		}
 
 		public final ValType value() {
@@ -197,7 +194,7 @@ public class CtrOp extends IROp {
 		protected void allocate(SubData<Op> data) {
 			this.ownerData = data.addPtr("owner_data", OBJECT_DATA_TYPE);
 			this.ancestorData = data.addPtr("ancestor_data", OBJECT_DATA_TYPE);
-			this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
+			this.sampleData = data.addPtr("sample_data", OBJECT_DATA_TYPE);
 			this.value = data.addInstance(ID.rawId("value"), VAL_TYPE);
 		}
 

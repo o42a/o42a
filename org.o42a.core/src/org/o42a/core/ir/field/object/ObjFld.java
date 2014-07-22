@@ -25,20 +25,17 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.VmtIR.VMT_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.StructRecOp;
-import org.o42a.codegen.data.StructRec;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.ObjectsCode;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
@@ -48,9 +45,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
-
-	public static final Type OBJ_FLD = new Type();
+public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 
 	public ObjFld(Field field) {
 		super(field, field.toObject());
@@ -62,13 +57,13 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 	}
 
 	@Override
-	public Type getInstance() {
-		return (Type) super.getInstance();
+	public StatefulType getInstance() {
+		return (StatefulType) super.getInstance();
 	}
 
 	@Override
-	protected Type getType() {
-		return OBJ_FLD;
+	protected StatefulType getType() {
+		return STATEFUL_FLD;
 	}
 
 	@Override
@@ -94,22 +89,22 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 				DERIVATION_USAGE)) {
 			// Reuse the derived constructor if no run-time
 			// inheritance expected.
-			return getType().constructorStub();
+			return constructorStub();
 		}
 
 		return null;
 	}
 
 	@Override
-	protected void fill() {
-		super.fill();
-		getInstance().previous().setNull();
+	protected ObjectConstructorFunc.Signature getConstructorSignature() {
+		return OBJECT_CONSTRUCTOR;
 	}
 
 	@Override
-	protected void fillDummy() {
-		super.fillDummy();
-		getInstance().previous().setNull();
+	protected FuncPtr<ObjectConstructorFunc> constructorStub() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_constructor_stub", OBJECT_CONSTRUCTOR);
 	}
 
 	@Override
@@ -117,56 +112,58 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 
 		final Block code = dirs.code();
 		final ObjOp host = builder.host();
-		final ObjFld.Op fld =
-				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
-		final ObjFldOp ownFld =
+		final VmtIRChain.Op vmtc =
+				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.vmtc());
+		final ObjFldOp fld =
 				(ObjFldOp) host.field(dirs, getField().getKey());
-		final BoolOp isOwn =
-				ownFld.toAny(null, code).eq(null, code, fld.toAny(null, code));
+		final ObjectIRDataOp ancestorDataArg = builder.getFunction().arg(
+				code,
+				OBJECT_CONSTRUCTOR.ancestorData());
+		final BoolOp noAncestor = ancestorDataArg.isNull(null, code);
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
-		final CondBlock start = isOwn.branch(code, "start", "cont");
+		final CondBlock start = noAncestor.branch(code, "start", "cont");
 
 		final Block constructed = start.addBlock("constructed");
 
-		ctr.start(start, ownFld).goUnless(start, constructed.head());
+		ctr.start(start, fld).goUnless(start, constructed.head());
 
-		ownFld.ptr()
+		fld.ptr()
 		.object(null, constructed)
 		.load(null, constructed, ATOMIC)
 		.toData(null, constructed)
 		.returnValue(constructed);
 
-		final ObjectIRDataOp evaluatedAncestorType =
+		final ObjectIRDataOp evaluatedAncestorData =
 				ancestorData(builder, dirs, start);
 
 		start.go(code.tail());
 
 		final Block cont = start.otherwise();
-		final ObjectIRDataOp suppliedAncestorType = builder.getFunction().arg(
-				cont,
-				OBJECT_CONSTRUCTOR.ancestorData());
 
+		final ObjectIRDataOp suppliedAncestorData =
+				cont.phi(null, ancestorDataArg);
 		cont.go(code.tail());
 
-		final ObjectIRDataOp ancestorType = code.phi(
+		final ObjectIRDataOp ancestorData = code.phi(
 				ID.id("atype"),
-				evaluatedAncestorType,
-				suppliedAncestorType);
+				evaluatedAncestorData,
+				suppliedAncestorData);
 
 		final ObjFldTargetHolder holder =
-				new ObjFldTargetHolder(code.getAllocator(), isOwn);
-		final Op previous = fld.previous(null, code).load(null, code);
+				new ObjFldTargetHolder(code.getAllocator(), noAncestor);
+		final VmtIRChain.Op prevVmtc =
+				vmtc.prev(null, code).load(null, code);
 		final CondBlock construct =
-				previous.isNull(null, code)
+				prevVmtc.isNull(null, code)
 				.branch(code, "construct", "delegate");
 		final DataOp result1 =
 				construct(
 						builder,
 						builder.dirs(construct, dirs.falseDir()),
 						holder,
-						ancestorType)
+						ancestorData)
 				.toData(null, construct);
 
 		construct.go(code.tail());
@@ -175,9 +172,10 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 		final DataOp result2 = delegate(
 				builder,
 				builder.dirs(delegate, dirs.falseDir()),
+				construct.head(),
 				holder,
-				previous,
-				ancestorType).toData(null, delegate);
+				prevVmtc,
+				ancestorData).toData(null, delegate);
 
 		delegate.go(code.tail());
 
@@ -185,19 +183,19 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 
 		final Block dontStore = code.addBlock("dont_store");
 
-		isOwn.goUnless(code, dontStore.head());
+		noAncestor.goUnless(code, dontStore.head());
 		if (dontStore.exists()) {
 			result.returnValue(dontStore);
 		}
 
-		fld.object(null, code).store(code, result, ACQUIRE_RELEASE);
-		ctr.finish(code, ownFld);
+		fld.ptr().object(null, code).store(code, result, ACQUIRE_RELEASE);
+		ctr.finish(code, fld);
 
 		result.returnValue(code);
 	}
 
 	@Override
-	protected ObjFldOp op(Code code, ObjOp host, Op ptr) {
+	protected ObjFldOp op(Code code, ObjOp host, StatefulOp ptr) {
 		return new ObjFldOp(this, host, ptr);
 	}
 
@@ -244,18 +242,27 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 	private ObjectOp delegate(
 			ObjBuilder builder,
 			CodeDirs dirs,
+			CodePos construct,
 			ObjFldTargetHolder holder,
-			Op previous,
+			VmtIRChain.Op prevVmtc,
 			ObjectIRDataOp ancestorData) {
 
 		final Block code = dirs.code();
 
-		code.dumpName("Delegate to ", previous);
+		code.dump("Delegate to ", prevVmtc);
 
 		final ObjectConstructorFunc constructor =
-				previous.constructor(null, code).load(null, code);
+				prevVmtc.vmt(null, code)
+				.load(null, code)
+				.to(VMT_ID, code, getBodyIR().getVmtIR())
+				.func(null, code, vmtConstructor())
+				.load(null, code);
+
+		// The field is dummy. The actual field is declared later.
+		constructor.isNull(null, code).go(code, construct);
+
 		final DataOp ancestorPtr =
-				constructor.call(code, builder.host(), previous, ancestorData);
+				constructor.call(code, builder.host(), prevVmtc, ancestorData);
 		final ObjectOp ancestor = anonymousObject(
 				builder,
 				ancestorPtr,
@@ -272,79 +279,6 @@ public class ObjFld extends RefFld<ObjFld.Op, ObjectConstructorFunc> {
 				builder.host(),
 				ancestor,
 				getField().toObject());
-	}
-
-	public static final class Op extends RefFld.Op<Op, ObjectConstructorFunc> {
-
-		private Op(StructWriter<Op> writer) {
-			super(writer);
-		}
-
-		@Override
-		public final Type getType() {
-			return (Type) super.getType();
-		}
-
-		public final StructRecOp<Op> previous(ID id, Code code) {
-			return ptr(id, code, getType().previous());
-		}
-
-		@Override
-		protected DataOp construct(
-				Code code,
-				ObjOp host,
-				ObjectConstructorFunc constructor) {
-			return constructor.call(code, host, this, null);
-		}
-
-	}
-
-	public static final class Type
-			extends RefFld.Type<Op, ObjectConstructorFunc> {
-
-		private StructRec<Op> previous;
-
-		private Type() {
-			super(ID.rawId("o42a_fld_obj"));
-		}
-
-		@Override
-		public boolean isStateless() {
-			return false;
-		}
-
-		public final StructRec<Op> previous() {
-			return this.previous;
-		}
-
-		@Override
-		public Op op(StructWriter<Op> writer) {
-			return new Op(writer);
-		}
-
-		@Override
-		protected void allocate(SubData<Op> data) {
-			super.allocate(data);
-			this.previous = data.addPtr("previous", OBJ_FLD);
-		}
-
-		@Override
-		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0200 | FldKind.OBJ.code());
-		}
-
-		@Override
-		protected ObjectConstructorFunc.Signature getSignature() {
-			return OBJECT_CONSTRUCTOR;
-		}
-
-		@Override
-		protected FuncPtr<ObjectConstructorFunc> constructorStub() {
-			return getGenerator()
-					.externalFunction()
-					.link("o42a_obj_constructor_stub", OBJECT_CONSTRUCTOR);
-		}
-
 	}
 
 }

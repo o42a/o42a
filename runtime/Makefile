@@ -56,12 +56,10 @@ objects += $(srcdir)/object.o
 objects += $(srcdir)/types.o
 objects += $(srcdir)/value.o
 
-objects += $(srcdir)/fld/alias.o
 objects += $(srcdir)/fld/dep.o
 objects += $(srcdir)/fld/link.o
 objects += $(srcdir)/fld/obj.o
 objects += $(srcdir)/fld/owner.o
-objects += $(srcdir)/fld/var.o
 
 objects += $(srcdir)/lib/io.o
 
@@ -124,6 +122,7 @@ $(srcdir)/error.%.o : $(srcdir)/error.c
 
 $(srcdir)/object.*.o : $(common_deps)
 $(srcdir)/object.*.o : $(headersdir)/memory/gc.h
+$(srcdir)/object.*.o : $(headersdir)/memory/refcount.h
 $(srcdir)/object.*.o : $(headersdir)/field.h
 $(srcdir)/object.*.o : $(headersdir)/object.h
 $(srcdir)/object.%.o : $(srcdir)/object.c
