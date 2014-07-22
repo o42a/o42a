@@ -26,7 +26,6 @@ import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.value.Val.VAL_EAGER;
 
 import java.util.HashMap;
-import java.util.function.Supplier;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -188,17 +187,24 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 	}
 
 	private void allocateDesc(SubData<?> data) {
+		if (!getObjectIR().isSampleDeclaration()) {
+			this.desc =
+					getObjectIR()
+					.getSampleDeclaration()
+					.ir(getGenerator())
+					.getDataIR()
+					.getDesc();
+		} else {
 
-		final ObjectIRDesc instance = this.desc = data.addInstance(
-				OBJECT_DESC_ID,
-				OBJECT_DESC_TYPE,
-				new ObjectIRDescContent(this));
+			final ObjectIRDesc instance = this.desc = data.addInstance(
+					OBJECT_DESC_ID,
+					OBJECT_DESC_TYPE,
+					new ObjectIRDescContent(this));
 
-		if (getObjectIR().isSampleDeclaration()) {
 			allocateFieldDecls(instance);
 			allocateDepDecls(instance);
+			instance.fields().allocateItems(data);
 		}
-		instance.fields().allocateItems(data);
 	}
 
 	private void allocateFieldDecls(ObjectIRDesc instance) {
@@ -255,28 +261,17 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		final Generator generator = instance.getGenerator();
 
-		instance.declaration()
-		.setConstant(true)
-		.setValue(
-				getObjectIR()
-				.getSampleDeclaration()
-				.ir(generator)
-				.getDataIR()
-				.getDesc()
-				.pointer(generator));
 		instance.data()
 		.setConstant(true)
 		.setValue(getInstance().pointer(generator));
-		instance.mainBodyLayout().setConstant(true).setLowLevel(true).setValue(
-				new Supplier<Integer>() {
-					@Override
-					public Integer get() {
-						return getObjectIR()
-								.getMainBodyIR()
-								.layout(generator)
-								.toBinaryForm();
-					}
-				});
+		instance.mainBodyLayout()
+		.setConstant(true)
+		.setLowLevel(true)
+		.setValue(
+				() -> getObjectIR()
+				.getMainBodyIR()
+				.layout(generator)
+				.toBinaryForm());
 	}
 
 	private static final class ObjectIRDescContent

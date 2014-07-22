@@ -60,7 +60,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private VmtIR vmtIR;
 
-	private StructRec<ObjectIRDescOp> definedIn;
+	private StructRec<ObjectIRDescOp> declaredIn;
 	private StructRec<VmtIRChain.Op> vmtc;
 	private RelRec objectData;
 	private Int32rec flags;
@@ -135,8 +135,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return Kind.values()[value.get().intValue() & KIND_MASK];
 	}
 
-	public final StructRec<ObjectIRDescOp> definedIn() {
-		return this.definedIn;
+	public final StructRec<ObjectIRDescOp> declaredIn() {
+		return this.declaredIn;
 	}
 
 	public final StructRec<Op> vmtc() {
@@ -186,7 +186,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
-		this.definedIn = data.addPtr("defined_in", OBJECT_DESC_TYPE);
+		this.declaredIn = data.addPtr("declared_in", OBJECT_DESC_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.objectData = data.addRelPtr("object_data");
 		this.flags = data.addInt32("flags");
@@ -199,21 +199,20 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void fill() {
-		this.definedIn.setConstant(true);
+		this.declaredIn.setConstant(true);
 
 		final Generator generator = getGenerator();
 		final ObjectIRDesc objectDesc = getObjectIR().getDataIR().getDesc();
 
 		if (isMain()) {
-			this.definedIn.setValue(objectDesc.data(generator).getPointer());
+			this.declaredIn.setValue(objectDesc.pointer(generator));
 		} else {
-			this.definedIn.setValue(
+			this.declaredIn.setValue(
 					getSampleDeclaration()
 					.ir(getGenerator())
 					.getDataIR()
 					.getDesc()
-					.data(generator)
-					.getPointer());
+					.pointer(generator));
 		}
 
 		this.vmtc.setConstant(true)
