@@ -320,23 +320,12 @@ struct o42a_obj_desc {
 	O42A_HEADER
 
 	/**
-	 * Pointer to the descriptor this declaration copies the structure of.
-	 *
-	 * This can be either a pointer to this descriptor, or to the descriptor
-	 * of the object this one is propagated from.
-	 */
-	o42a_obj_desc_t *declaration;
-
-	/**
 	 * Pointer to the data of the object this descriptor is created for.
 	 */
 	o42a_obj_data_t *data;
 
 	/**
 	 * Relative pointer to the list of field descriptors.
-	 *
-	 * Note that this list is empty for propagated objects.
-	 * Always use `declaration.fields` to get a real list.
 	 */
 	o42a_rlist_t fields;
 
@@ -459,9 +448,9 @@ typedef struct o42a_obj_ctr {
 	o42a_obj_data_t *ancestor_data;
 
 	/**
-	 * Sample object type descriptor.
+	 * Sample data.
 	 */
-	o42a_obj_desc_t *desc;
+	o42a_obj_data_t *sample_data;
 
 	/**
 	 * Eagerly evaluated object value.
@@ -486,7 +475,7 @@ typedef struct o42a_obj_ctable {
 
 	const o42a_obj_data_t *const ancestor_data;
 
-	const o42a_obj_desc_t *const sample_desc;
+	const o42a_obj_data_t *const sample_data;
 
 	o42a_obj_data_t *const object_data;
 
@@ -516,7 +505,7 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	o42a_dbg_field_info_t fields[15];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
@@ -581,7 +570,7 @@ inline o42a_obj_ascendant_t *o42a_obj_ascendants(
  */
 inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 
-	const o42a_rlist_t *const list = &desc->declaration->fields;
+	const o42a_rlist_t *const list = &desc->fields;
 
 	return (o42a_obj_field_t *) (((char *) list) + list->list);
 }
