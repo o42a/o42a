@@ -52,9 +52,9 @@ typedef uint8_t o42a_bool_t;
  */
 typedef uint32_t o42a_layout_t;
 
-#define O42A_LAYOUT(target) o42a_layout( \
-		__alignof__ (target), \
-		sizeof (target))
+#define O42A_LAYOUT(target) \
+		((o42a_layout_t) (sizeof (target) \
+				| ((__builtin_ffs(__alignof__ (target)) - 1) << 29)))
 
 
 // Need it here for IDE to see it independently from NDEBUG.
@@ -215,27 +215,7 @@ inline o42a_layout_t o42a_layout_array(
 }
 
 inline o42a_layout_t o42a_layout(const uint8_t alignment, const size_t size) {
-
-	uint8_t ashift = 0;
-	const int diff = ((int) alignment) - 4;
-
-	if (diff <= 0) {
-		if (!diff) {
-			ashift = 2;
-		} else if (alignment == 2) {
-			ashift = 1;
-		}
-	} else {
-		switch (alignment) {
-		case 8: ashift = 3; break;
-		case 16: ashift = 4; break;
-		case 32: ashift = 5; break;
-		case 64: ashift = 6; break;
-		case 128: ashift = 7; break;
-		}
-	}
-
-	return size | (ashift << 29);
+	return size | ((__builtin_ffs(alignment) - 1) << 29);
 }
 
 inline o42a_layout_t o42a_layout_both(

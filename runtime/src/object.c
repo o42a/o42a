@@ -109,18 +109,11 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	},
 };
 
-const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 	.type_code = 0x042a0101,
-	.field_num = 3,
+	.field_num = 2,
 	.name = "o42a_obj_desc_t",
 	.fields = {
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_desc_t, data),
-			.name = "data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
-		},
 		{
 			.data_type = O42A_TYPE_STRUCT,
 			.offset = offsetof(o42a_obj_desc_t, fields),
@@ -341,6 +334,79 @@ extern o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *);
 
 extern o42a_obj_body_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t *);
 
+const o42a_obj_desc_t o42a_obj_void_desc = {
+#ifndef NDEBUG
+	.__o42a_dbg_header__ = {
+		.type_code = 0x042a0101,
+		.enclosing = 0,
+		.name = "o42a_obj_void_desc",
+		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
+	},
+#endif /* NDEBUG */
+	.fields = {
+#ifndef NDEBUG
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, fields)),
+			.name = "fields",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
+	.main_body_layout = O42A_LAYOUT(o42a_obj_body_t),
+};
+
+const o42a_obj_desc_t o42a_obj_false_desc = {
+#ifndef NDEBUG
+	.__o42a_dbg_header__ = {
+		.type_code = 0x042a0101,
+		.enclosing = 0,
+		.name = "o42a_obj_false_desc",
+		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
+	},
+#endif /* NDEBUG */
+	.fields = {
+#ifndef NDEBUG
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, fields)),
+			.name = "fields",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
+	.main_body_layout = O42A_LAYOUT(o42a_obj_body_t),
+};
+
+const o42a_obj_desc_t o42a_obj_none_desc = {
+#ifndef NDEBUG
+	.__o42a_dbg_header__ = {
+		.type_code = 0x042a0101,
+		.enclosing = 0,
+		.name = "o42a_obj_none_desc",
+		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
+	},
+#endif /* NDEBUG */
+	.fields = {
+#ifndef NDEBUG
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, fields)),
+			.name = "fields",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
+	.main_body_layout = O42A_LAYOUT(o42a_obj_body_t),
+};
+
+
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
 		const o42a_obj_data_t *const data,
 		const o42a_obj_desc_t *const desc) {
@@ -383,7 +449,7 @@ o42a_obj_body_t *o42a_obj_cast(
 	O42A_ENTER(return NULL);
 	O42A_DO("Cast");
 
-	if (desc->data->flags & O42A_OBJ_VOID) {
+	if (desc == &o42a_obj_void_desc) {
 		// any body can be void
 		o42a_debug_mem_name("Cast to void: ", object);
 		O42A_DONE;
@@ -1112,7 +1178,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	// Fill the main ascendant`s debug header.
 	O42A(o42a_dbg_copy_header(
-			o42a_dbg_header(o42a_obj_ascendant_of_type(sdesc->data, sdesc)),
+			o42a_dbg_header(o42a_obj_ascendant_of_type(sdata, sdesc)),
 			&main_ascendant->__o42a_dbg_header__,
 			(o42a_dbg_header_t*) mem));
 

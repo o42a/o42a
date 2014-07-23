@@ -30,6 +30,7 @@ import java.util.HashMap;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
@@ -39,6 +40,7 @@ import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
+import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.ValueKnowledge;
 import org.o42a.util.string.ID;
 
@@ -52,7 +54,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 	private final HashMap<MemberKey, FieldDescIR> fieldDescs = new HashMap<>();
 	private final ID id;
 	private ObjectIRData instance;
-	private ObjectIRDesc desc;
+	private Ptr<ObjectIRDescOp> descPtr;
 	private Val initialValue;
 
 	ObjectDataIR(ObjectIRStruct objectIRStruct) {
@@ -76,8 +78,8 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		return this.instance;
 	}
 
-	public final ObjectIRDesc getDesc() {
-		return this.desc;
+	public final Ptr<ObjectIRDescOp> getDescPtr() {
+		return this.descPtr;
 	}
 
 	public final FieldDescIR fieldDescIR(MemberKey key) {
@@ -149,7 +151,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		instance.resumeFrom().setNull();
 		instance.desc()
 		.setConstant(true)
-		.setValue(getDesc().pointer(generator));
+		.setValue(getDescPtr());
 		instance.valueType().setConstant(true).setValue(
 				getObjectIR()
 				.getValueIR()
@@ -188,23 +190,52 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 	private void allocateDesc(SubData<?> data) {
 		if (!getObjectIR().isSampleDeclaration()) {
-			this.desc =
+			this.descPtr =
 					getObjectIR()
 					.getSampleDeclaration()
 					.ir(getGenerator())
 					.getDataIR()
-					.getDesc();
-		} else {
-
-			final ObjectIRDesc instance = this.desc = data.addInstance(
-					OBJECT_DESC_ID,
-					OBJECT_DESC_TYPE,
-					new ObjectIRDescContent(this));
-
-			allocateFieldDecls(instance);
-			allocateDepDecls(instance);
-			instance.fields().allocateItems(data);
+					.getDescPtr();
+			return;
 		}
+
+		final Obj object = getObjectIR().getObject();
+		final Intrinsics intrinsics = object.getContext().getIntrinsics();
+
+		if (object.is(intrinsics.getVoid())) {
+			this.descPtr =
+					getGenerator()
+					.externalGlobal()
+					.setConstant()
+					.link("o42a_obj_void_desc", OBJECT_DESC_TYPE);
+			return;
+		}
+		if (object.is(intrinsics.getFalse())) {
+			this.descPtr =
+					getGenerator()
+					.externalGlobal()
+					.setConstant()
+					.link("o42a_obj_false_desc", OBJECT_DESC_TYPE);
+			return;
+		}
+		if (object.is(intrinsics.getNone())) {
+			this.descPtr =
+					getGenerator()
+					.externalGlobal()
+					.setConstant()
+					.link("o42a_obj_none_desc", OBJECT_DESC_TYPE);
+			return;
+		}
+
+		final ObjectIRDesc instance = data.addInstance(
+				OBJECT_DESC_ID,
+				OBJECT_DESC_TYPE,
+				new ObjectIRDescContent(this));
+
+		this.descPtr = instance.pointer(getGenerator());
+		allocateFieldDecls(instance);
+		allocateDepDecls(instance);
+		instance.fields().allocateItems(data);
 	}
 
 	private void allocateFieldDecls(ObjectIRDesc instance) {
@@ -261,9 +292,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		final Generator generator = instance.getGenerator();
 
-		instance.data()
-		.setConstant(true)
-		.setValue(getInstance().pointer(generator));
 		instance.mainBodyLayout()
 		.setConstant(true)
 		.setLowLevel(true)
@@ -285,7 +313,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		@Override
 		public void allocated(ObjectIRDesc instance) {
-			this.dataIR.desc = instance;
 		}
 
 		@Override

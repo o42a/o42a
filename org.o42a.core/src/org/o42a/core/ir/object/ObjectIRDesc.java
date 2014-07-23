@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Int32rec;
+import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.Type;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.impl.ObjectIRFields;
 import org.o42a.core.ir.object.type.FieldDescIR;
@@ -34,16 +34,11 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	public static final ObjectIRDesc OBJECT_DESC_TYPE = new ObjectIRDesc();
 
-	private StructRec<ObjectIRDataOp> data;
 	private RelList<FieldDescIR> fields;
 	private Int32rec mainBodyLayout;
 
 	private ObjectIRDesc() {
 		super(ID.rawId("o42a_obj_desc_t"));
-	}
-
-	public final StructRec<ObjectIRDataOp> data() {
-		return this.data;
 	}
 
 	public final RelList<FieldDescIR> fields() {
@@ -61,7 +56,6 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRDescOp> data) {
-		this.data = data.addPtr("data", OBJECT_DATA_TYPE);
 		this.fields = new ObjectIRFields().allocate(data, "fields");
 		this.mainBodyLayout = data.addInt32("main_body_layout");
 	}

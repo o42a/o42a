@@ -69,11 +69,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 		instance.declaredIn()
 		.setConstant(true)
-		.setValue(
-				declaredInIR.getDataIR()
-				.getDesc()
-				.data(generator)
-				.getPointer());
+		.setValue(declaredInIR.getDataIR().getDescPtr());
 		instance.kind()
 		.setConstant(true)
 		.setValue(this.fld.getKind().code());

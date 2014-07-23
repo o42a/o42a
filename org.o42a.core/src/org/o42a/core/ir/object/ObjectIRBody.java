@@ -202,17 +202,15 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.declaredIn.setConstant(true);
 
 		final Generator generator = getGenerator();
-		final ObjectIRDesc objectDesc = getObjectIR().getDataIR().getDesc();
 
 		if (isMain()) {
-			this.declaredIn.setValue(objectDesc.pointer(generator));
+			this.declaredIn.setValue(getObjectIR().getDataIR().getDescPtr());
 		} else {
 			this.declaredIn.setValue(
 					getSampleDeclaration()
 					.ir(getGenerator())
 					.getDataIR()
-					.getDesc()
-					.pointer(generator));
+					.getDescPtr());
 		}
 
 		this.vmtc.setConstant(true)
