@@ -320,11 +320,6 @@ struct o42a_obj_desc {
 	O42A_HEADER
 
 	/**
-	 * Pointer to the data of the object this descriptor is created for.
-	 */
-	o42a_obj_data_t *data;
-
-	/**
 	 * Relative pointer to the list of field descriptors.
 	 */
 	o42a_rlist_t fields;
@@ -505,7 +500,7 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	o42a_dbg_field_info_t fields[15];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
@@ -520,6 +515,14 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 
 #endif /* NDEBUG */
 
+/** Void object type descriptor. */
+extern const o42a_obj_desc_t o42a_obj_void_desc;
+
+/** False object type descriptor. */
+extern const o42a_obj_desc_t o42a_obj_false_desc;
+
+/** None object type descriptor. */
+extern const o42a_obj_desc_t o42a_obj_none_desc;
 
 /** Garbage-collected object descriptor. */
 extern const o42a_gc_desc_t o42a_obj_gc_desc;
