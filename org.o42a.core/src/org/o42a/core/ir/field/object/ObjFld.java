@@ -105,7 +105,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 	protected FuncPtr<ObjectConstructorFunc> constructorStub() {
 		return getGenerator()
 				.externalFunction()
-				.link("o42a_obj_constructor_stub", OBJECT_CONSTRUCTOR);
+				.link("o42a_obj_constructor_stub", getConstructorSignature());
 	}
 
 	@Override
@@ -296,8 +296,9 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 
 		final Block code = dirs.code();
 		final ObjOp host = builder.host();
-		final VmtIRChain.Op vmtc =
-				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.vmtc());
+		final VmtIRChain.Op vmtc = builder.getFunction().arg(
+				code,
+				getConstructorSignature().vmtc());
 		final ObjectIRDataOp ancestorData = builder.getFunction().arg(
 				code,
 				getConstructorSignature().ancestorData());

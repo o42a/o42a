@@ -23,7 +23,6 @@ import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -38,7 +37,6 @@ import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
-import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.alias.AliasField;
 import org.o42a.core.member.field.Field;
@@ -64,11 +62,6 @@ public class EagerLinkFld extends AbstractLinkFld<StatefulOp> {
 	@Override
 	protected StatefulType getType() {
 		return STATEFUL_FLD;
-	}
-
-	@Override
-	protected ObjectSignature<ObjectRefFunc> getConstructorSignature() {
-		return OBJECT_REF;
 	}
 
 	@Override
