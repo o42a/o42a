@@ -137,12 +137,16 @@ extern o42a_fld *o42a_fld_by_field(
 		const o42a_obj_body_t *,
 		const o42a_obj_field_t *);
 
-o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope __attribute__((unused))) {
+o42a_obj_body_t *o42a_obj_ref_null(
+		o42a_obj_t *scope __attribute__((unused)),
+		const o42a_obj_vmtc_t *vmtc __attribute__((unused))) {
 	O42A_ENTER(return NULL);
 	O42A_RETURN NULL;
 }
 
-o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *scope __attribute__((unused))) {
+o42a_obj_body_t *o42a_obj_ref_stub(
+		o42a_obj_t *scope __attribute__((unused)),
+		const o42a_obj_vmtc_t *vmtc __attribute__((unused))) {
 	O42A_ENTER(return NULL);
 	o42a_error_print("Object reference stub invoked");
 	O42A_RETURN NULL;

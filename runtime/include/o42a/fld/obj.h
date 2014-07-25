@@ -32,7 +32,7 @@ typedef struct o42a_fld_obj o42a_fld_obj;
  */
 typedef o42a_obj_t *o42a_obj_constructor_ft(
 		o42a_obj_t *,
-		o42a_obj_vmtc_t *,
+		const o42a_obj_vmtc_t *,
 		o42a_obj_data_t *);
 
 
@@ -58,7 +58,7 @@ o42a_bool_t o42a_fld_obj_is_init(const o42a_fld *);
  */
 o42a_obj_body_t *o42a_obj_constructor_stub(
 		o42a_obj_t *,
-		o42a_obj_vmtc_t *,
+		const o42a_obj_vmtc_t *,
 		o42a_obj_data_t *);
 
 #ifdef __cplusplus

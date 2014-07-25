@@ -28,6 +28,7 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
@@ -83,15 +84,8 @@ public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFunc> {
 	@Override
 	protected DataOp construct(
 			Code code,
-			ObjectConstructorFunc constructor) {
-
-		final ObjOp host = host();
-
-		return constructor.call(
-				code,
-				host,
-				host != null ? host.vmtc(code) : null,
-				null);
+			ObjectConstructorFunc constructor, Op vmtc) {
+		return constructor.call(code, host(), vmtc, null);
 	}
 
 	@Override

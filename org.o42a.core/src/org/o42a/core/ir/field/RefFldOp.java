@@ -32,6 +32,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.op.CodeDirs;
@@ -146,10 +147,9 @@ public abstract class RefFldOp<
 
 	protected final DataOp construct(Code code) {
 
+		final Op vmtc = host().vmtc(code);
 		final C constructor =
-				host()
-				.vmtc(code)
-				.vmt(null, code)
+				vmtc.vmt(null, code)
 				.load(null, code)
 				.to(VMT_ID, code, fld().getBodyIR().getVmtIR())
 				.func(null, code, fld().vmtConstructor())
@@ -158,10 +158,10 @@ public abstract class RefFldOp<
 		code.dumpName("Constructor: ", constructor);
 		code.dumpName("Host: ", host());
 
-		return construct(code, constructor);
+		return construct(code, constructor, vmtc);
 	}
 
-	protected abstract DataOp construct(Code code, C constructor);
+	protected abstract DataOp construct(Code code, C constructor, Op vmtc);
 
 	/**
 	 * Create an object by the given pointer.
