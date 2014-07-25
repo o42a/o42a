@@ -31,6 +31,7 @@ import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.field.link.AbstractLinkFldValueOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
@@ -90,8 +91,8 @@ public final class VarFldOp extends RefFldOp<StatefulOp, ObjectRefFunc> {
 	}
 
 	@Override
-	protected DataOp construct(Code code, ObjectRefFunc constructor) {
-		return constructor.call(code, host());
+	protected DataOp construct(Code code, ObjectRefFunc constructor, Op vmtc) {
+		return constructor.call(code, host(), vmtc);
 	}
 
 	private void assign(CodeDirs dirs, HostOp value) {

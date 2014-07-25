@@ -50,11 +50,14 @@ typedef void o42a_fld_copy_ft(o42a_obj_ctable_t *);
 /**
  * Object reference function.
  *
- * \param scope[in] scope object pointer.
+ * \param object[in] scope object pointer.
+ * \param vmtc[in] a pointer to VMT chain the object reference is invoked from.
+ * This can be either an original VMT chain from the object, or one of
+ * the links of that chain.
  *
- * \return resulting object reference.
+ * \return resulting object pointer.
  */
-typedef o42a_obj_t *o42a_obj_ref_ft(o42a_obj_t *);
+typedef o42a_obj_t *o42a_obj_ref_ft(o42a_obj_t *, const o42a_obj_vmtc_t *);
 
 /**
  * The descriptor of the field kind.
@@ -134,12 +137,12 @@ inline o42a_fld *o42a_fld_by_field(
  *
  * This can be used e.g. to refer void object ancestor.
  */
-o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *);
+o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *, const o42a_obj_vmtc_t *);
 
 /**
  * Object reference evaluation stub.
  */
-o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *);
+o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *, const o42a_obj_vmtc_t *);
 
 
 #ifdef __cplusplus
