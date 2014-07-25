@@ -25,7 +25,6 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.VmtIR.VMT_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 
@@ -46,6 +45,8 @@ import org.o42a.util.string.ID;
 
 
 public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
+
+	private FuncPtr<ObjectConstructorFunc> cloneFunc;
 
 	public ObjFld(Field field) {
 		super(field, field.toObject());
@@ -108,17 +109,29 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 	}
 
 	@Override
+	protected FuncPtr<ObjectConstructorFunc> cloneFunc() {
+		if (this.cloneFunc != null) {
+			return this.cloneFunc;
+		}
+		return this.cloneFunc = getGenerator().newFunction().create(
+				getField().getId().detail(CLONE_ID),
+				getConstructorSignature(),
+				new ConstructorBuilder(this::buildCloneFunc)).getPointer();
+	}
+
+	@Override
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
 		final ObjOp host = builder.host();
-		final VmtIRChain.Op vmtc =
-				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.vmtc());
+		final VmtIRChain.Op vmtc = builder.getFunction().arg(
+				code,
+				getConstructorSignature().vmtc());
 		final ObjFldOp fld =
 				(ObjFldOp) host.field(dirs, getField().getKey());
 		final ObjectIRDataOp ancestorDataArg = builder.getFunction().arg(
 				code,
-				OBJECT_CONSTRUCTOR.ancestorData());
+				getConstructorSignature().ancestorData());
 		final BoolOp noAncestor = ancestorDataArg.isNull(null, code);
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
@@ -252,9 +265,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		code.dump("Delegate to ", prevVmtc);
 
 		final ObjectConstructorFunc constructor =
-				prevVmtc.vmt(null, code)
-				.load(null, code)
-				.to(VMT_ID, code, getBodyIR().getVmtIR())
+				prevVmtc.loadVmt(code, getBodyIR().getVmtIR())
 				.func(null, code, vmtConstructor())
 				.load(null, code);
 
@@ -279,6 +290,34 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 				builder.host(),
 				ancestor,
 				getField().toObject());
+	}
+
+	private void buildCloneFunc(ObjBuilder builder, CodeDirs dirs) {
+
+		final Block code = dirs.code();
+		final ObjOp host = builder.host();
+		final VmtIRChain.Op vmtc =
+				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.vmtc());
+		final ObjectIRDataOp ancestorData = builder.getFunction().arg(
+				code,
+				getConstructorSignature().ancestorData());
+		final VmtIRChain.Op prevVmtc = vmtc.prev(null, code).load(null, code);
+		final CondBlock construct =
+				prevVmtc.isNull(null, code)
+				.branch(code, "construct", "delegate");
+
+		constructor()
+		.op(null, construct)
+		.call(construct, host, vmtc, ancestorData)
+		.returnValue(construct);
+
+		final Block delegate = construct.otherwise();
+
+		prevVmtc.loadVmt(delegate, getBodyIR().getVmtIR())
+		.func(null, delegate, vmtConstructor())
+		.load(null, delegate)
+		.call(delegate, host, prevVmtc, ancestorData)
+		.returnValue(delegate);
 	}
 
 }

@@ -22,6 +22,8 @@ package org.o42a.core.ir.field;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
+import java.util.function.BiConsumer;
+
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -47,6 +49,8 @@ public abstract class RefFld<
 	public static final StatefulType STATEFUL_FLD = new StatefulType();
 
 	public static final ID FLD_CTR_ID = ID.id("fld_ctr");
+	public static final ID CONSTRUCT_ID = ID.rawId("construct");
+	public static final ID CLONE_ID = ID.rawId("clone");
 
 	private final Obj target;
 	private Obj targetAscendant;
@@ -114,7 +118,7 @@ public abstract class RefFld<
 		if (isOmitted()) {
 			return;
 		}
-		vmtConstructor().setConstant(true).setValue(this.constructor);
+		vmtConstructor().setConstant(true).setValue(constructor());
 	}
 
 	@Override
@@ -154,7 +158,7 @@ public abstract class RefFld<
 		final RefFld<F, C> overriddenFld =
 				(RefFld<F, C>) overriddenOwnerIR.fld(getField().getKey());
 
-		return overriddenFld.constructor;
+		return overriddenFld.cloneFunc();
 	}
 
 	protected void fill() {
@@ -199,6 +203,14 @@ public abstract class RefFld<
 
 	@Override
 	protected abstract RefFldOp<F, C> op(Code code, ObjOp host, F ptr);
+
+	protected final FuncPtr<C> constructor() {
+		return this.constructor;
+	}
+
+	protected FuncPtr<C> cloneFunc() {
+		return constructor();
+	}
 
 	protected final FuncRec<C> vmtConstructor() {
 		assert this.vmtConstructor != null :
@@ -246,9 +258,9 @@ public abstract class RefFld<
 		}
 
 		this.constructor = getGenerator().newFunction().create(
-				getField().getId().detail("constructor"),
+				getField().getId().detail(CONSTRUCT_ID),
 				getConstructorSignature(),
-				new ConstructorBuilder()).getPointer();
+				new ConstructorBuilder(this::buildConstructor)).getPointer();
 	}
 
 	private boolean runtimeConstructedTarget() {
@@ -462,7 +474,13 @@ public abstract class RefFld<
 
 	}
 
-	private final class ConstructorBuilder implements FunctionBuilder<C> {
+	protected final class ConstructorBuilder implements FunctionBuilder<C> {
+
+		private final BiConsumer<ObjBuilder, CodeDirs> build;
+
+		public ConstructorBuilder(BiConsumer<ObjBuilder, CodeDirs> build) {
+			this.build = build;
+		}
 
 		@Override
 		public void build(Function<C> constructor) {
@@ -477,7 +495,7 @@ public abstract class RefFld<
 			final CodeDirs dirs =
 					builder.dirs(constructor, failure.head());
 
-			buildConstructor(builder, dirs);
+			this.build.accept(builder, dirs);
 
 			if (failure.exists()) {
 				failure.nullPtr().returnValue(failure);

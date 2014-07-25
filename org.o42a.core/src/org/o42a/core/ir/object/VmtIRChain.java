@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.VmtIR.VMT_ID;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
@@ -77,6 +79,12 @@ public final class VmtIRChain extends Type<VmtIRChain.Op> {
 
 		public final DataRecOp vmt(ID id, Code code) {
 			return ptr(id, code, getType().vmt());
+		}
+
+		public final VmtIROp loadVmt(Code code, VmtIR vmtIR) {
+			return vmt(null, code)
+			.load(null, code)
+			.to(VMT_ID, code, vmtIR);
 		}
 
 		public final StructRecOp<Op> prev(ID id, Code code) {
