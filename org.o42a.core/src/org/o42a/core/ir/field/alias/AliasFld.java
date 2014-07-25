@@ -24,7 +24,6 @@ import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -43,7 +42,7 @@ import org.o42a.core.member.alias.AliasField;
 import org.o42a.core.object.Obj;
 
 
-public class AliasFld extends RefFld<StatefulOp, ObjectRefFunc> {
+public class AliasFld extends ObjectRefFld<StatefulOp> {
 
 	public AliasFld(AliasField field, Obj target) {
 		super(field, target);
@@ -75,12 +74,7 @@ public class AliasFld extends RefFld<StatefulOp, ObjectRefFunc> {
 	protected FuncPtr<ObjectRefFunc> constructorStub() {
 		return getGenerator()
 				.externalFunction()
-				.link("o42a_obj_ref_stub", OBJECT_REF);
-	}
-
-	@Override
-	protected ObjectRefFunc.Signature getConstructorSignature() {
-		return OBJECT_REF;
+				.link("o42a_obj_ref_stub", getConstructorSignature());
 	}
 
 	@Override

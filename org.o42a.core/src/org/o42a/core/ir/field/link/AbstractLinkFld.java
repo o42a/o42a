@@ -23,10 +23,10 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
+import org.o42a.core.ir.field.ObjectRefFld;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
@@ -36,7 +36,7 @@ import org.o42a.core.value.TypeParameters;
 
 
 public abstract class AbstractLinkFld<F extends RefFld.Op<F>>
-		extends RefFld<F, ObjectRefFunc> {
+		extends ObjectRefFld<F> {
 
 	public AbstractLinkFld(Field field, Obj target) {
 		super(field, target);
@@ -91,7 +91,7 @@ public abstract class AbstractLinkFld<F extends RefFld.Op<F>>
 		}
 
 		// Links and variables should trap the object before returning
-		// to caller.
+		// to the caller.
 		return target.getRef()
 				.op(builder.host())
 				.path()

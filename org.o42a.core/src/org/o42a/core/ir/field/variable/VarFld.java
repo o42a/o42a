@@ -22,7 +22,6 @@ package org.o42a.core.ir.field.variable;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
-import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
 import org.o42a.codegen.code.Block;
@@ -75,15 +74,10 @@ public class VarFld extends AbstractLinkFld<StatefulOp> {
 	}
 
 	@Override
-	protected ObjectRefFunc.Signature getConstructorSignature() {
-		return OBJECT_REF;
-	}
-
-	@Override
 	protected FuncPtr<ObjectRefFunc> constructorStub() {
 		return getGenerator()
 				.externalFunction()
-				.link("o42a_obj_ref_stub", OBJECT_REF);
+				.link("o42a_obj_ref_stub", getConstructorSignature());
 	}
 
 	@Override

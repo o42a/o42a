@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.field.link;
 
-import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -54,11 +52,6 @@ public class LinkFld extends AbstractLinkFld<StatelessOp> {
 	@Override
 	protected StatelessType getType() {
 		return STATELESS_FLD;
-	}
-
-	@Override
-	protected ObjectRefFunc.Signature getConstructorSignature() {
-		return OBJECT_REF;
 	}
 
 	@Override
