@@ -19,7 +19,7 @@ prototype.
 
 ::Value := property #interface` variable ~~ Property value.
 
-Set => void (
+Set => * (
   ~~~
   Value setter.
   ~~~
