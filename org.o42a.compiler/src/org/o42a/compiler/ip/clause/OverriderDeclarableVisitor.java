@@ -26,11 +26,11 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
-import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.ref.*;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.ref.Ref;
 
@@ -46,13 +46,7 @@ final class OverriderDeclarableVisitor
 
 	@Override
 	public ClauseBuilder visitMemberRef(MemberRefNode ref, ClauseBuilder p) {
-		if (ref.getOwner() != null) {
-			p.getLogger().error(
-					"unexpected_overridder_owner",
-					ref.getOwner(),
-					"Field owner is not expected here");
-		}
-		if (ref.getName() == null) {
+		if (!checkMemberRef(ref, p)) {
 			return p;
 		}
 
@@ -90,7 +84,46 @@ final class OverriderDeclarableVisitor
 		return null;
 	}
 
-	private ClauseBuilder setDeclaredIn(
+	private static boolean checkMemberRef(MemberRefNode ref, ClauseBuilder p) {
+		if (ref.getName() == null) {
+			return false;
+		}
+
+		final ExpressionNode owner = ref.getOwner();
+
+		if (owner == null) {
+			return true;
+		}
+
+		final RefNode ownerRef = owner.toRef();
+
+		if (ownerRef == null) {
+			return unexpectedOverriderOwner(ref, p);
+		}
+
+		final ScopeRefNode ownerScopeRef = ownerRef.toScopeRef();
+
+		if (ownerScopeRef == null) {
+			return unexpectedOverriderOwner(ref, p);
+		}
+		if (ownerScopeRef.getType() != ScopeType.IMPLIED) {
+			return unexpectedOverriderOwner(ref, p);
+		}
+
+		return true;
+	}
+
+	private static boolean unexpectedOverriderOwner(
+			MemberRefNode ref,
+			ClauseBuilder p) {
+		p.getLogger().error(
+				"unexpected_overridder_owner",
+				ref.getOwner(),
+				"Field owner is not expected here");
+		return false;
+	}
+
+	private static ClauseBuilder setDeclaredIn(
 			MemberRefNode ref,
 			ClauseBuilder builder) {
 
