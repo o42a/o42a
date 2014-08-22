@@ -27,12 +27,12 @@ represented by this sublist.
 Equals to the list size by default.
 ~~~
 
-Size = \(to - from)
+*Size (= to - from)
 
-@Indexed = * (
+@Indexed (
   Item => * (
     Index < size? = Mutable list:: [from + index]
-    @Assignable = * (
+    @Assignable (
       Set => * ({
         Index < size? Mutable list:: [from + index] << new value
       })

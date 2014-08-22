@@ -15,9 +15,9 @@ A <mutable list> storing its elements in array.
 Data :=< #element type` array` variable
 ~~ An array variable storing elements of this list.
 
-Size = \data: length
+*Size (= data: length)
 
-@Indexed = * (
+@Indexed (
   *Item (
     = Data [index]
     @Assignable (
@@ -30,8 +30,8 @@ Size = \data: length
   )
 )
 
-<[[Items]]!> Data = *
-<[= Init]!> Data = *
+<[[Items]]!> *Data
+<[= Init]!> *Data
 ~~~
 Constructs a list by the given row.
 ~~~
@@ -40,28 +40,28 @@ Constructs a list by the given row.
   ~~~
   Constructs a list by the given array.
   ~~~
-  <[[Items]]!> Data = * ~~ Row expression argument.
-  <[Array]!> Data = *   ~~ Array value argument. 
+  <[[Items]]!> *Data ~~ Row expression argument.
+  <[Array]!> *Data   ~~ Array value argument. 
 )
 
-Add => * ({
+*Add (
   $New data = (size + 1)~#element type` duplicates
   Data: copy _to [new data]
   New data [size] <- new element
   Data <- new data
-})
+)
 
-Insert => * ({
+*Insert (
   $New data = (size + 1)~#element type` duplicates
   Data: copy [0 ... index) to [new data]
   New data [index] <- new element
   Data: copy [index ...) to [new data] at [index + 1]
   Data <- new data
-})
+)
 
-Remove => * ({
+*Remove (
   $New data = (size - 1)~#element type` duplicates
   Data: copy [0 ... index) to [new data]
   Data: copy [index + 1 ...) to [new data] at [index]
   Data <- new data
-})
+)
