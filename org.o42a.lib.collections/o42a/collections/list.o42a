@@ -13,11 +13,11 @@ An indexed list of elements.
 ~~~
 
 @Indexed :=< #element type` * (
-  Length = \size
+  *Length (= size)
 )
 
 <*Item by index> Item @indexed (
-  <[Item index]!> Index = *
+  <[Item index]!> *Index
 )
 
 Each => * (
@@ -32,8 +32,8 @@ Each => * (
   ~~~
   Constructs a sublist by the given right-open list indices interval.
   ~~~
-  <[From...) | to> From = *
-  <[...To)!> To = *
+  <[From...) | to> *From
+  <[...To)!> *To
 )
 
 <*Trailing sublist> Sublist (
@@ -41,7 +41,7 @@ Each => * (
   Constructs a trailing sublist by the given closed left-bounded
   list indices interval.
   ~~~
-  <[From...-)!> From = *
+  <[From...-)!> *From
 )
 
 <*Leading sublist> Sublist (
@@ -49,7 +49,7 @@ Each => * (
   Constructs a leading sublist by the given open right-bounded 
   list indices interval.
   ~~~
-  <(-...To)!> To = *
+  <(-...To)!> *To
 )
 
 <(-Full sublist...-)!> ~~ Returns a list itself when unbounded list indices
