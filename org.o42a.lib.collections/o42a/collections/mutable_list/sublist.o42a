@@ -30,24 +30,25 @@ Equals to the list size by default.
 *Size (= to - from)
 
 @Indexed (
-  Item => * (
+  *Item (
     Index < size? = Mutable list:: [from + index]
+
     @Assignable (
-      Set => * ({
-        Index < size? Mutable list:: [from + index] << new value
-      })
+      *Set (
+        Index < size? Mutable list:: [from + index] <- new value
+      )
     )
   )
 )
 
-Add => * (
+*Add (
   Mutable list:: insert [new element] at [to]
 )
 
-Insert => * (
+*Insert (
   Index < size? Mutable list:: insert [new element] at [from + index]
 )
 
-Remove => * (
+*Remove (
   Index < size? Mutable list:: remove [from + index]
 )

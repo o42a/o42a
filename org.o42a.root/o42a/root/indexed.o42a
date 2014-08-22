@@ -36,6 +36,6 @@ Item :=<> #item type` link (
 )
 
 <*Item by index> Item (
-  <[Item index]!> Index = *
+  <[Item index]!> *Index
 )
  
