@@ -10,34 +10,34 @@ String ::=> void
 ================
 
 <*Char> Char (
-  <[]!> Index = ()
+  <[]!> *Index
 )
 
 <*Addition> Strings: concat (
   <*Concat what | concat with> What = $prefix
   <:Concat with> (
-    <* + *> With = *
+    <* + *> *With
   )
 )
 
 <*Comparison> Strings: compare (
   <*Compare what | compare with> What = $prefix
   <:Compare with> (
-    <* <=> *> With = *
+    <* <=> *> *With
   )
 )
 
 <*Substring> Substring (
-  <[From...) | to> From = ()
-  <[...To)!> To = *
+  <[From...) | to> *From
+  <[...To)!> *To
 )
 
 <*Leading substring> Substring (
-  <(-...To)!> To = *
+  <(-...To)!> *To
 )
 
 <*Trailing substring> Substring (
-  <[From...-)!> From = *
+  <[From...-)!> *From
 )
 
 <(...)!>

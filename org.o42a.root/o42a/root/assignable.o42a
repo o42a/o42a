@@ -27,5 +27,5 @@ Set :=<> void (
   It assigns a new value with <set> prototype.
   ~~~
 
-  <New value <- *> New value = *
+  <New value <- *> *New value
 )
