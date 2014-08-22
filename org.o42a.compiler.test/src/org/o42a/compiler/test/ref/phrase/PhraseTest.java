@@ -37,7 +37,7 @@ public class PhraseTest extends CompilerTestCase {
 		compile(
 				"A := integer (",
 				"  Foo :=> string",
-				"  <[]> a (<''> Foo => string)",
+				"  <[]> a (<''> Foo => *)",
 				")",
 				"B := a [2] 'b'");
 

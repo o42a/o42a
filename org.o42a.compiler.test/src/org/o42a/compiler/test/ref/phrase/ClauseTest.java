@@ -123,7 +123,7 @@ public class ClauseTest extends CompilerTestCase {
 				"A :=> void (",
 				"  Foo :=< \"a\"",
 				"  <*Implicit> A (",
-				"    <[Arg]> foo = string",
+				"    <[Arg]> *Foo",
 				"  )",
 				")",
 				"B := a \"b\"");

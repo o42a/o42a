@@ -94,6 +94,7 @@ public class PropagationTest extends CompilerTestCase {
 
 	@Test
 	public void upgradeAncestor() {
+		expectError("compiler.prohibited_explicit_ancestor");
 		compile(
 				"Foo := 1",
 				"Bar := foo (= 2)",

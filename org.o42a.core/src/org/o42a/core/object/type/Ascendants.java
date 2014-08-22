@@ -438,8 +438,31 @@ public class Ascendants
 			return;
 		}
 
+		validateExplicitAncestor();
 		validateImplicitAncestor(ancestor);
 		validateSampleAncestor(objectType, ancestor);
+	}
+
+	private void validateExplicitAncestor() {
+
+		final Sample sample = getSample();
+
+		if (sample == null) {
+			return;
+		}
+
+		final TypeRef explicitAncestor = getExplicitAncestor();
+
+		if (explicitAncestor == null) {
+			return;
+		}
+
+		explicitAncestor.getLogger().error(
+				"prohibited_explicit_ancestor",
+				explicitAncestor,
+				"Ancestor can not be specified when overriding a field."
+				+ " Use an asterisk instead of explicit "
+				+ "ancestor specification");
 	}
 
 	private boolean validateSample() {
