@@ -21,10 +21,10 @@ Array item to prefill the array with.
 If omitted, the array will be prefilled with false items.
 ~~~
 
-<Amount ~ * | item to duplicate> Size = *
+<Amount ~ * | item to duplicate> *Size
 
 <:Item to duplicate> (
   <Of...> (
-    <[Duplicate]> Duplicate = *
+    <[Duplicate]> *Duplicate
   )
 )

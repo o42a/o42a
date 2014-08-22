@@ -19,14 +19,11 @@ prototype.
 
 ::Value := property #interface` variable ~~ Property value.
 
-Set => * (
+*Set (
   ~~~
   Value setter.
   ~~~
-
-  {
-    Value <- new value->
-  }
+  Value <- new value->
 )
 
 = value
