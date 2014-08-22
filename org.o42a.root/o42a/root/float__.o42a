@@ -14,43 +14,43 @@ Float ::=> number
 <*Addition> Floats: add (
   <*Left summand | right summand> Left operand = $prefix
   <:Right summand> (
-    <* + *> Right operand = *
+    <* + *> *Right operand
   )
 )
 
 <*Subtraction> Floats: subtract (
   <*Minuend | subtrahend> Left operand = $prefix
   <:Subtrahend> (
-    <* - *> Right operand = *
+    <* - *> *Right operand
   )
 )
 
 <*Multiplication> Floats: multiply (
   <*Left factor | right factor> Left operand = $prefix
   <:Right factor> (
-    <* * *> Right operand = *
+    <* * *> *Right operand
   )
 )
 
 <*Division> Floats: divide (
   <*Dividend | divisor> Left operand = $prefix
   <:Divisor> (
-    <* / *> Right operand = *
+    <* / *> *Right operand
   )
 )
 
 <*Equality> Floats: equals (
   <*What equals | equals to> What = $prefix
   <:Equals to> (
-    <* == *> To = *
+    <* == *> *To
   )
 )
 
 <*Comparison> Floats: compare (
   <*Compare what | compare with> What = $prefix
   <:Compare with> (
-    <* <=> *> With = *
+    <* <=> *> *With
   )
 )
 
-<*By string> Floats: by string (<''!> Input = ())
+<*By string> Floats: by string (<''!> *Input)
