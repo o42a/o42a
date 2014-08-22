@@ -60,7 +60,7 @@ public class FieldRefTest extends CompilerTestCase {
 		compile(
 				"A := void (Foo := 1)",
 				"B := void (Bar := a: foo)",
-				"C := b (Bar = a: foo (= 2))");
+				"C := b (*Bar (= 2))");
 
 		final Obj c = field("c").toObject();
 

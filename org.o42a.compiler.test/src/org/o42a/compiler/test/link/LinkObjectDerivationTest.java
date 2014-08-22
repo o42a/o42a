@@ -68,6 +68,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 
 	@Test
 	public void linkAncestorUpgrade() {
+		expectError("compiler.prohibited_explicit_ancestor");
+
 		compile(
 				"Lnk 1 :=> integer` link (",
 				"  G := 11",
@@ -89,6 +91,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 
 	@Test
 	public void parameterizedLinkAncestorUpgrade() {
+		expectError("compiler.prohibited_explicit_ancestor");
+
 		compile(
 				"Lnk 1 :=> link (",
 				"  G := 11",
@@ -110,6 +114,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 
 	@Test
 	public void linkPrototypeAncestorUpgrade() {
+		expectError("compiler.prohibited_explicit_ancestor");
+
 		compile(
 				"Lnk 1 :=> link (",
 				"  G := 11",
