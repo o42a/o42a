@@ -40,10 +40,13 @@ public final class DetailedLogger implements Logger {
 
 	@Override
 	public void log(LogRecord record) {
+
+		final LogMessage message = record.getMessage();
+
 		this.logger.log(new LogRecord(
-				record.getSeverity(),
-				record.getCode(),
-				record.getMessage(),
+				message.getSeverity(),
+				message.getCode(),
+				message.getText(),
 				record.getLoggable().addDetail(this.detail, this.location),
 				record.getArgs()));
 	}
