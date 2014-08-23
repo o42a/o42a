@@ -31,6 +31,7 @@ import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.object.*;
+import org.o42a.core.object.type.impl.AncestorValidator;
 import org.o42a.core.object.type.impl.ImplicitSample;
 import org.o42a.core.object.type.impl.MemberOverride;
 import org.o42a.core.ref.FullResolver;
@@ -438,31 +439,43 @@ public class Ascendants
 			return;
 		}
 
-		validateExplicitAncestor();
+		validateExplicitAncestor(objectType);
 		validateImplicitAncestor(ancestor);
 		validateSampleAncestor(objectType, ancestor);
 	}
 
-	private void validateExplicitAncestor() {
-
-		final Sample sample = getSample();
-
-		if (sample == null) {
-			return;
-		}
+	private void validateExplicitAncestor(ObjectType objectType) {
 
 		final TypeRef explicitAncestor = getExplicitAncestor();
 
 		if (explicitAncestor == null) {
 			return;
 		}
-
-		explicitAncestor.getLogger().error(
-				"prohibited_explicit_ancestor",
-				explicitAncestor,
-				"Ancestor can not be specified when overriding a field."
-				+ " Use an asterisk instead of explicit "
-				+ "ancestor specification");
+		if (getSample() != null) {
+			this.explicitAncestor = null;
+			getScope().getLogger().error(
+					"prohibited_explicit_ancestor",
+					explicitAncestor,
+					"Ancestor can not be specified when overriding a field."
+					+ " Use an asterisk instead of explicit "
+					+ "ancestor specification");
+			return;
+		}
+		if (!objectType.getObject().value().getStatefulness().isEager()) {
+			// Eager reference can always be constructed.
+			explicitAncestor.getRef()
+					.getPath()
+					.walk(
+							getScope()
+							.getEnclosingScope()
+							.resolver()
+							.toPathResolver(),
+							new AncestorValidator(
+									getScope().getLogger(),
+									explicitAncestor,
+									objectType.getObject().toClause() != null))
+					.isResolved();
+		}
 	}
 
 	private boolean validateSample() {

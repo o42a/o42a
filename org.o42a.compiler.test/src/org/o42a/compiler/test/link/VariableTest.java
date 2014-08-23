@@ -54,19 +54,4 @@ public class VariableTest extends CompilerTestCase {
 		assertThat(value.getKnowledge().isKnownToCompiler(), is(false));
 	}
 
-	@Test
-	public void variableTargetInheritance() {
-		compile(
-				"A := integer` variable = 1",
-				"B := a->");
-
-		final Field b = field("b");
-
-		assertThat(b.getConstructionMode(), is(RUNTIME_CONSTRUCTION));
-
-		final Value<Long> value = valueOf(b, ValueType.INTEGER);
-
-		assertThat(value.getKnowledge().isKnownToCompiler(), is(false));
-	}
-
 }

@@ -94,8 +94,8 @@ public class LinkTest extends CompilerTestCase {
 		compile(
 				"A := `1",
 				"B := `a",
-				"C := b->",
-				"D := b->->");
+				"C := b-> @@string",
+				"D := b->-> @@string");
 
 		assertThat(
 				definiteValue(linkTarget(field("a")), ValueType.INTEGER),
@@ -113,15 +113,11 @@ public class LinkTest extends CompilerTestCase {
 
 		final Obj c = field("c").toObject();
 
-		assertThat(c.type().getValueType().isLink(), is(true));
 		assertThat(
-				LINK.interfaceRef(c.type().getParameters()).getType(),
-				is(this.context.getIntrinsics().getInteger()));
-		assertThat(
-				definiteValue(linkTarget(c), ValueType.INTEGER),
-				is(1L));
+				definiteValue(c, ValueType.STRING),
+				is("1"));
 
-		assertThat(definiteValue(field("d"), ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(field("d"), ValueType.STRING), is("1"));
 	}
 
 }
