@@ -173,16 +173,14 @@ public abstract class ParserLogger implements Logger {
 		log(Severity.WARNING, code, defaultMessage, location, args);
 	}
 
-	@Override
-	public void log(LogRecord record) {
-		getLogger().log(record);
+	public final void log(
+			LogMessage message,
+			LogInfo location,
+			Object... args) {
+		log(new LogRecord(message, location.getLoggable(), args));
 	}
 
-	protected abstract Object getSource();
-
-	protected abstract Logger getLogger();
-
-	private final void log(
+	public final void log(
 			Severity severity,
 			String code,
 			String defaultMessage,
@@ -195,5 +193,14 @@ public abstract class ParserLogger implements Logger {
 				location.getLoggable(),
 				args));
 	}
+
+	@Override
+	public void log(LogRecord record) {
+		getLogger().log(record);
+	}
+
+	protected abstract Object getSource();
+
+	protected abstract Logger getLogger();
 
 }

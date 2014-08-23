@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.o42a.intrinsic.CompileErrors;
+import org.o42a.util.log.LogMessage;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
@@ -29,11 +30,13 @@ final class TestErrors extends TestWatcher implements Logger, CompileErrors {
 
 	@Override
 	public void log(LogRecord record) {
-		if (record.getSeverity().isError()) {
+
+		final LogMessage message = record.getMessage();
+
+		if (message.getSeverity().isError()) {
 			this.hasErrors = true;
 		}
 
-		final String code = record.getCode();
 		final String expected = this.expectedErrors.poll();
 
 		if (expected == null) {
@@ -42,7 +45,7 @@ final class TestErrors extends TestWatcher implements Logger, CompileErrors {
 
 		assertThat(
 				"Unexpected error occurred: " + record,
-				code,
+				message.getCode(),
 				is(expected));
 	}
 

@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,14 +20,12 @@
 package org.o42a.util.log;
 
 
-final class DeclarationLogger implements Logger {
+public interface LogMessage {
 
-	@Override
-	public void log(LogRecord record) {
-		if (record.getSeverity().ordinal() <= Severity.ERROR.ordinal()) {
-			throw new DeclarationError(record);
-		}
-		DEFAULT_LOGGER.log(record);
-	}
+	Severity getSeverity();
+
+	String getCode();
+
+	String getText();
 
 }

@@ -229,6 +229,27 @@ public class CompilerLogger implements Logger {
 	}
 
 	public final void log(
+			LogMessage message,
+			LocationInfo location,
+			Object... args) {
+		log(message, location.getLocation(), args);
+	}
+
+	public final void log(
+			LogMessage message,
+			Location location,
+			Object... args) {
+		log(message, location.getLoggable(), args);
+	}
+
+	public final void log(
+			LogMessage message,
+			LogInfo location,
+			Object... args) {
+		log(new LogRecord(message, location.getLoggable(), args));
+	}
+
+	public final void log(
 			Severity severity,
 			String code,
 			LogInfo location,

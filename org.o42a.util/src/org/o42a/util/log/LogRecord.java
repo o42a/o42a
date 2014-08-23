@@ -24,15 +24,21 @@ import java.util.Formatter;
 import java.util.IllegalFormatException;
 
 
-public class LogRecord implements Formattable {
+public final class LogRecord implements Formattable {
 
 	static final Object[] NO_ARGS = new Object[0];
 
-	private final Severity severity;
-	private final String code;
-	private final String message;
+	private final LogMessage message;
 	private final Loggable loggable;
 	private final Object[] args;
+
+	public LogRecord(LogMessage message, Loggable loggable, Object... args) {
+		assert message != null :
+			"Message not specified";
+		this.message = message;
+		this.loggable = loggable;
+		this.args = args != null ? args : NO_ARGS;
+	}
 
 	public LogRecord(
 			Severity severity,
@@ -40,30 +46,26 @@ public class LogRecord implements Formattable {
 			String message,
 			Loggable loggable,
 			Object... args) {
-		this.severity = severity;
-		this.code = code != null ? code : severity.toString();
-		this.message = message != null ? message : severity.toString();
-		this.loggable = loggable;
-		this.args = args != null ? args : NO_ARGS;
+		this(new SimpleLogMessage(severity, code, message), loggable, args);
 	}
 
-	public Severity getSeverity() {
-		return this.severity;
+	public final Severity getSeverity() {
+		return getMessage().getSeverity();
 	}
 
-	public String getCode() {
-		return this.code;
+	public final String getCode() {
+		return getMessage().getCode();
 	}
 
-	public Loggable getLoggable() {
-		return this.loggable;
-	}
-
-	public String getMessage() {
+	public final LogMessage getMessage() {
 		return this.message;
 	}
 
-	public Object[] getArgs() {
+	public final Loggable getLoggable() {
+		return this.loggable;
+	}
+
+	public final Object[] getArgs() {
 		return this.args;
 	}
 
@@ -74,7 +76,7 @@ public class LogRecord implements Formattable {
 			int width,
 			int precision)
 	throws IllegalFormatException {
-		formatter.format(getMessage(), getArgs());
+		formatter.format(getMessage().getText(), getArgs());
 		formatter.format(" at %s", getLoggable());
 	}
 

@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,14 +20,33 @@
 package org.o42a.util.log;
 
 
-final class DeclarationLogger implements Logger {
+public class SimpleLogMessage implements LogMessage {
+
+	private final Severity severity;
+	private final String code;
+	private final String text;
+
+	public SimpleLogMessage(Severity severity, String code, String text) {
+		assert severity != null :
+			"Message severity not specified";
+		this.severity = severity;
+		this.code = code != null ? code : severity.toString();
+		this.text = text != null ? text : severity.toString();
+	}
 
 	@Override
-	public void log(LogRecord record) {
-		if (record.getSeverity().ordinal() <= Severity.ERROR.ordinal()) {
-			throw new DeclarationError(record);
-		}
-		DEFAULT_LOGGER.log(record);
+	public Severity getSeverity() {
+		return this.severity;
+	}
+
+	@Override
+	public String getCode() {
+		return this.code;
+	}
+
+	@Override
+	public String getText() {
+		return this.text;
 	}
 
 }
