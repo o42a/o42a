@@ -67,15 +67,15 @@ public class ProtectedFieldVisibilityTest extends CompilerTestCase {
 				"======");
 		addSource(
 				"a/b/c",
-				"C := a",
-				"======");
+				"C := a @@string",
+				"===============");
 		compile("");
 
 		assertThat(
 				definiteValue(
 						field(field("a", Accessor.OWNER), "b", "c"),
-						ValueType.INTEGER),
-				is(1L));
+						ValueType.STRING),
+				is("1"));
 	}
 
 	@Test
