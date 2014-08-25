@@ -50,6 +50,10 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 		super(object);
 	}
 
+	public final int size() {
+		return this.deps.size();
+	}
+
 	@Override
 	public ReadonlyIterator<Dep> iterator() {
 		return readonlyIterator(this.deps.values().iterator());

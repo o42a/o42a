@@ -30,9 +30,11 @@ import static org.o42a.core.ir.value.ObjectDefFunc.OBJECT_DEF;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.impl.ObjectIRAscendants;
+import org.o42a.core.ir.object.impl.ObjectIRDeps;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
@@ -68,6 +70,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private StructRec<ObjectIRDescOp> desc;
 	private StructRec<ValueTypeDescOp> valueType;
 	private RelList<ObjectIRBody> ascendants;
+	private RelList<Ptr<DataOp>> deps;
 
 	private ObjectIRData() {
 		super(ID.rawId("o42a_obj_data_t"));
@@ -122,6 +125,10 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.ascendants;
 	}
 
+	public final RelList<Ptr<DataOp>> deps() {
+		return this.deps;
+	}
+
 	@Override
 	public ObjectIRDataOp op(StructWriter<ObjectIRDataOp> writer) {
 		return new ObjectIRDataOp(writer);
@@ -144,6 +151,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
 		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");
+		this.deps = new ObjectIRDeps().allocate(data, "deps");
 	}
 
 	@Override

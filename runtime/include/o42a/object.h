@@ -310,6 +310,9 @@ struct o42a_obj_data {
 	/** Relative pointer to the list of ascendant descriptors. */
 	o42a_rlist_t ascendants;
 
+	/** Relative pointer to the list of run-time dependencies. */
+	o42a_rlist_t deps;
+
 };
 
 /**
@@ -455,6 +458,11 @@ typedef struct o42a_obj_ctr {
 	 */
 	o42a_val_t value;
 
+	/**
+	 * The number of run-time dependencies of newly constructed object.
+	 */
+	uint32_t num_deps;
+
 } o42a_obj_ctr_t;
 
 typedef struct o42a_obj_ctable {
@@ -497,7 +505,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[15];
+	o42a_dbg_field_info_t fields[16];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
@@ -506,7 +514,7 @@ extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
-extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
