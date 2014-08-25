@@ -59,7 +59,6 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 	}
 
 	public void allocateItems(SubData<?> data) {
-
 		assert this.firstItem == null :
 			this + " items already allocated: " + this.firstItem;
 
