@@ -626,9 +626,18 @@ o42a_obj_body_t *o42a_obj_cast(o42a_obj_t *, const o42a_obj_desc_t *);
  *
  * \param ctr[in] filled-in construction data.
  *
- * \return pointer to object's body of the sample type.
+ * \return pointer to object construction data.
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
+
+/**
+ * Instantiates a new object with eagerly evaluated value.
+ *
+ * \param ctr[in] filled-in construction data.
+ *
+ * \return pointer to object construction data.
+ */
+o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *);
 
 
 /**
