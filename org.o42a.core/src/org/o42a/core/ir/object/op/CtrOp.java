@@ -44,6 +44,7 @@ import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -125,11 +126,55 @@ public class CtrOp extends IROp {
 		return holder.holdVolatile(resultCode, newObject);
 	}
 
+	public ObjectOp eagerObject(
+			CodeDirs dirs,
+			ObjHolder holder,
+			ObjectOp owner,
+			ObjectIRDataOp ancestorData,
+			Obj sample) {
+		assert ancestorData != null :
+			"Eager object's ancestor not specified";
+		assert sample.deps().size() == 0 :
+			"Eager object has run-time dependencies";
+
+		final CodeDirs subDirs = dirs.begin(
+				"eager_object",
+				"Eager object: ancestor=" + ancestorData);
+		final Block code = subDirs.code();
+		final Op ptr = ptr(code);
+
+		if (owner != null) {
+			ptr.ownerData(code)
+			.store(code, owner.objectData(code).ptr());
+		} else {
+			ptr.ownerData(code)
+			.store(code, code.nullPtr(OBJECT_DATA_TYPE));
+		}
+		ptr.ancestorData(code).store(code, ancestorData);
+
+		final DataOp result = eagerFunc().op(null, code).newObject(code, this);
+
+		result.isNull(null, code).go(code, subDirs.falseDir());
+
+		final ObjectOp newObject =
+				anonymousObject(dirs.getBuilder(), result, sample);
+		final Block resultCode = subDirs.done().code();
+
+		return holder.holdVolatile(resultCode, newObject);
+	}
+
 	private FuncPtr<NewObjectFunc> newFunc() {
 		return getGenerator()
 				.externalFunction()
 				.noSideEffects()
 				.link("o42a_obj_new", NEW_OBJECT);
+	}
+
+	private FuncPtr<NewObjectFunc> eagerFunc() {
+		return getGenerator()
+				.externalFunction()
+				.noSideEffects()
+				.link("o42a_obj_eager", NEW_OBJECT);
 	}
 
 	public static final class Op extends StructOp<Op> {

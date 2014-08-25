@@ -1305,6 +1305,32 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_RETURN object;
 }
 
+o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
+	O42A_ENTER(return NULL);
+
+	o42a_obj_data_t *const adata = ctr->ancestor_data;
+	const size_t num_deps = adata->deps.size;
+
+	ctr->sample_data = adata;
+	ctr->num_deps = num_deps;
+
+	o42a_obj_t *const result = O42A(o42a_obj_new(ctr));
+
+	if (result && num_deps) {
+
+		o42a_obj_data_t *const data = o42a_obj_data(result);
+		void **const adeps =
+				(void **) (((char *) &adata->deps) + adata->deps.list);
+		void **const deps =
+				(void **) (((char *) &data->deps) + data->deps.list);
+
+		for (size_t i = 0; i < num_deps; ++i) {
+			deps[i] = adeps[i];
+		}
+	}
+
+	O42A_RETURN result;
+}
 
 void o42a_obj_def_false(
 		o42a_val_t *const result,

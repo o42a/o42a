@@ -99,6 +99,13 @@ public final class ObjectsCode {
 			value.store(code, result);
 
 			eagerDirs.done();
+
+			return ctr.eagerObject(
+					dirs,
+					holder,
+					owner,
+					ancestor.objectData(code).ptr(),
+					sample);
 		}
 
 		return newObject(
@@ -135,6 +142,13 @@ public final class ObjectsCode {
 			.writeValue(eagerDirs);
 
 			eagerDirs.done();
+
+			return ctr.eagerObject(
+					dirs,
+					holder,
+					owner,
+					ancestorData,
+					sample);
 		}
 
 		return newObject(dirs, ctr, host, holder, owner, ancestorData, sample);
