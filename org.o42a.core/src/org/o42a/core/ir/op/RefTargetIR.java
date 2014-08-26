@@ -26,6 +26,8 @@ import org.o42a.core.ir.object.dep.DepIR;
 
 public interface RefTargetIR {
 
+	boolean isOmitted();
+
 	RefTargetOp op(Code code, DepIR depIR, DataRecOp data);
 
 }

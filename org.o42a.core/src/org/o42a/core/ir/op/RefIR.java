@@ -47,6 +47,11 @@ public final class RefIR extends PathIR implements RefTargetIR {
 	}
 
 	@Override
+	public boolean isOmitted() {
+		return targetIR().isOmitted();
+	}
+
+	@Override
 	public RefIROp op(Code code, DepIR depIR, DataRecOp data) {
 		return new RefIROp(this, targetIR().op(code, depIR, data));
 	}

@@ -27,6 +27,11 @@ import org.o42a.core.ir.object.dep.DepIR;
 public abstract class AbstractRefFldTargetIR implements RefTargetIR {
 
 	@Override
+	public boolean isOmitted() {
+		return false;
+	}
+
+	@Override
 	public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
 		return createOp(data.offset(null, code, code.int32(depIR.getIndex())));
 	}

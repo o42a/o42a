@@ -214,6 +214,11 @@ final class MemberStep extends AbstractMemberStep {
 		}
 
 		@Override
+		public boolean isOmitted() {
+			return true;
+		}
+
+		@Override
 		public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
 			return new OmittedMemberRefTargetOp(this.member, data, this.fld);
 		}

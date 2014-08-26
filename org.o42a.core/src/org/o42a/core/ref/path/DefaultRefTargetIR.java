@@ -44,6 +44,11 @@ final class DefaultRefTargetIR implements RefTargetIR {
 	}
 
 	@Override
+	public boolean isOmitted() {
+		return false;
+	}
+
+	@Override
 	public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
 
 		final DataRecOp ptr =
