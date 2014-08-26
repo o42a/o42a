@@ -25,15 +25,14 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.code.op.DataPtrOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.Container;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.FldStoreOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.dep.DepIR.Op;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
@@ -49,7 +48,6 @@ import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.string.ID;
 
 
 final class MemberStep extends AbstractMemberStep {
@@ -216,12 +214,7 @@ final class MemberStep extends AbstractMemberStep {
 		}
 
 		@Override
-		public Data<?> allocate(ID id, SubData<?> data) {
-			return data;
-		}
-
-		@Override
-		public RefTargetOp op(Code code, StructOp<?> data) {
+		public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
 			return new OmittedMemberRefTargetOp(this.member, data, this.fld);
 		}
 
@@ -238,21 +231,21 @@ final class MemberStep extends AbstractMemberStep {
 	private static final class OmittedMemberRefTargetOp implements RefTargetOp {
 
 		private final MemberStep member;
-		private final StructOp<?> object;
+		private final DataRecOp data;
 		private final Fld<?> fld;
 
 		OmittedMemberRefTargetOp(
 				MemberStep member,
-				StructOp<?> object,
+				DataRecOp data,
 				Fld<?> fld) {
 			this.member = member;
-			this.object = object;
+			this.data = data;
 			this.fld = fld;
 		}
 
 		@Override
-		public DumpablePtrOp<?> ptr() {
-			return this.object;
+		public DataPtrOp<?> ptr() {
+			return this.data;
 		}
 
 		@Override
@@ -270,16 +263,6 @@ final class MemberStep extends AbstractMemberStep {
 					this.fld.getBodyIR()
 					.getObjectIR()
 					.op(dirs.getBuilder(), dirs.code()));
-		}
-
-		@Override
-		public DataOp toData(ID id, Code code) {
-			return ptr().toData(id, code);
-		}
-
-		@Override
-		public AnyOp toAny(ID id, Code code) {
-			return ptr().toAny(id, code);
 		}
 
 		@Override
@@ -310,7 +293,7 @@ final class MemberStep extends AbstractMemberStep {
 		}
 
 		@Override
-		protected AbstractRefFldTargetOp createOp(Op ptr) {
+		protected AbstractRefFldTargetOp createOp(DataRecOp ptr) {
 			return new MemberRefTargetOp(this, ptr, this.member);
 		}
 
@@ -323,7 +306,7 @@ final class MemberStep extends AbstractMemberStep {
 
 		MemberRefTargetOp(
 				AbstractRefFldTargetIR ir,
-				Op ptr,
+				DataRecOp ptr,
 				MemberStep member) {
 			super(ir, ptr);
 			this.member = member;

@@ -19,40 +19,18 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.object.dep.DepIR.DEP_IR;
-
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.object.dep.DepIR.Op;
-import org.o42a.core.ir.object.dep.DepIR.Type;
-import org.o42a.util.string.ID;
+import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.core.ir.object.dep.DepIR;
 
 
 public abstract class AbstractRefFldTargetIR implements RefTargetIR {
 
-	private Type instance;
-
-	public final Type getInstance() {
-		return this.instance;
-	}
-
 	@Override
-	public final Data<?> allocate(ID id, SubData<?> data) {
-		this.instance = data.addInstance(id, DEP_IR);
-		this.instance.object().setNull();
-		return this.instance.data(data.getGenerator());
+	public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
+		return createOp(data.offset(null, code, code.int32(depIR.getIndex())));
 	}
 
-	@Override
-	public final AbstractRefFldTargetOp op(Code code, StructOp<?> data) {
-
-		final Op ptr = data.struct(null, code, getInstance());
-
-		return createOp(ptr);
-	}
-
-	protected abstract AbstractRefFldTargetOp createOp(Op ptr);
+	protected abstract AbstractRefFldTargetOp createOp(DataRecOp ptr);
 
 }

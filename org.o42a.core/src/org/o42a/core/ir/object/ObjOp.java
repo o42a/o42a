@@ -187,8 +187,6 @@ public final class ObjOp extends ObjectOp {
 				dep.getDeclaredIn());
 		final DepOp op = ir.op(code, host);
 
-		code.dumpName("Dep: ", op);
-
 		subDirs.done();
 
 		return op;

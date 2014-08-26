@@ -23,23 +23,22 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Supplier;
 
-import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.VmtIRChain.Op;
-import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.type.Derivative;
 import org.o42a.util.string.ID;
 
@@ -56,7 +55,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
-	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
 
 	private VmtIR vmtIR;
 
@@ -169,16 +167,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this.fieldMap.get(memberKey);
 	}
 
-	public final DepIR dep(Dep dep) {
-
-		final DepIR ir = this.deps.get(dep);
-
-		assert ir != null :
-			dep + " not found in " + this;
-
-		return ir;
-	}
-
 	@Override
 	public ObjectIRBodyOp op(StructWriter<ObjectIRBodyOp> writer) {
 		return new ObjectIRBodyOp(writer);
@@ -194,7 +182,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
 
 		allocateFields(bodyData);
-		allocateDeps(bodyData);
 	}
 
 	@Override
@@ -227,10 +214,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	final List<Fld<?>> getDeclaredFields() {
 		return this.fieldList;
-	}
-
-	final Collection<DepIR> getDeclaredDeps() {
-		return this.deps.values();
 	}
 
 	final void declareFld(Fld<?> fld) {
@@ -324,34 +307,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		}
 
 		return true;
-	}
-
-	private void allocateDeps(ObjectIRBodyData data) {
-		allocateDepsDeclaredIn(data, getSampleDeclaration());
-	}
-
-	private void allocateDepsDeclaredIn(
-			ObjectIRBodyData data,
-			Obj ascendant) {
-
-		final Analyzer analyzer = getGenerator().getAnalyzer();
-
-		for (Dep dep : ascendant.deps()) {
-			if (!dep.exists(analyzer)) {
-				continue;
-			}
-
-			final DepIR depIR = new DepIR(this, dep);
-
-			depIR.allocate(data);
-			this.deps.put(dep, depIR);
-		}
-
-		for (Derivative derivative : ascendant.type().allDerivatives()) {
-			if (derivative.isSample()) {
-				allocateDepsDeclaredIn(data, derivative.getDerivedObject());
-			}
-		}
 	}
 
 	private String fieldNotFound(MemberKey memberKey) {

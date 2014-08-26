@@ -139,7 +139,6 @@ public final class AnonymousObjOp extends ObjectOp {
 				dep.getDeclaredIn());
 		final DepOp op = ascendant.dep(subDirs, dep);
 
-		subDirs.code().dumpName("Dep: ", op);
 		subDirs.done();
 
 		return op;
