@@ -301,6 +301,11 @@ final class LocalStep extends Step {
 		}
 
 		@Override
+		public boolean isOmitted() {
+			return this.targetIR.isOmitted();
+		}
+
+		@Override
 		public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
 			return new LocalRefTargetOp(
 					this,

@@ -24,13 +24,13 @@ import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
-import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
@@ -83,13 +83,8 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	}
 
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
-
-		final Analyzer analyzer = getGenerator().getAnalyzer();
-
-		for (Dep dep : sample.deps()) {
-			if (dep.exists(analyzer)) {
-				fillDep(dirs, host, dep);
-			}
+		for (DepIR dep : sample.ir(getGenerator()).existingDeps()) {
+			fillDep(dirs, host, dep.getDep());
 		}
 	}
 

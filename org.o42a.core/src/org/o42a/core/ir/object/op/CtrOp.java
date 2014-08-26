@@ -111,7 +111,7 @@ public class CtrOp extends IROp {
 		ptr.desc(code).store(code, sample.objectData(code).ptr(code));
 		ptr.numDeps(code).store(
 				code,
-				code.int32(sample.getObjectIR().getObject().deps().size()));
+				code.int32(sample.getObjectIR().existingDeps().size()));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 

@@ -19,12 +19,11 @@
 */
 package org.o42a.core.ir.object;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
@@ -50,7 +49,8 @@ public class ObjectIR  {
 	private final ValueIR valueIR;
 	private ObjectIRStruct struct;
 	private ObjectValueIR objectValueIR;
-	private Map<Dep, DepIR> deps;
+	private List<DepIR> existingDeps;
+	private Map<Dep, DepIR> allDeps;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
@@ -195,6 +195,11 @@ public class ObjectIR  {
 		return bodyIR != null ? bodyIR.findFld(memberKey) : null;
 	}
 
+	public final List<DepIR> existingDeps() {
+		deps();
+		return this.existingDeps;
+	}
+
 	public final DepIR dep(Dep dep) {
 
 		final DepIR depIR = deps().get(dep);
@@ -215,29 +220,38 @@ public class ObjectIR  {
 	}
 
 	private Map<Dep, DepIR> deps() {
-		if (this.deps != null) {
-			return this.deps;
+		if (this.allDeps != null) {
+			return this.allDeps;
 		}
 
 		final Deps deps = getObject().deps();
 		final int size = deps.size();
 
 		if (size == 0) {
-			return this.deps = emptyMap();
+			this.existingDeps = emptyList();
+			return this.allDeps = emptyMap();
 		}
 
 		final Analyzer analyzer = getGenerator().getAnalyzer();
 		final IdentityHashMap<Dep, DepIR> irs = new IdentityHashMap<>(size);
-		int index = 0;
+		final ArrayList<DepIR> existing = new ArrayList<>(size);
 
 		for (Dep dep : deps) {
 			if (!dep.exists(analyzer)) {
 				continue;
 			}
-			irs.put(dep, new DepIR(this, dep, index++));
+
+			final DepIR depIR = new DepIR(this, dep, existing.size());
+
+			irs.put(dep, depIR);
+			if (!depIR.isOmitted()) {
+				existing.add(depIR);
+			}
 		}
 
-		return this.deps = irs;
+		this.existingDeps = existing;
+
+		return this.allDeps = irs;
 	}
 
 	final ObjectIRStruct getStruct() {

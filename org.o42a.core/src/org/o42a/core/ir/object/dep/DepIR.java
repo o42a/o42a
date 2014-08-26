@@ -34,7 +34,6 @@ public class DepIR {
 	private final Dep dep;
 	private final RefIR refIR;
 	private final int index;
-	private boolean omitted;
 
 	public DepIR(ObjectIR objectIR, Dep dep, int index) {
 		assert dep.exists(objectIR.getGenerator().getAnalyzer()) :
@@ -58,7 +57,7 @@ public class DepIR {
 	}
 
 	public final boolean isOmitted() {
-		return this.omitted;
+		return this.refIR.isOmitted();
 	}
 
 	public final ObjectIR getObjectIR() {
