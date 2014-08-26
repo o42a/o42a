@@ -854,7 +854,7 @@ static inline void fill_field_infos(
 
 	const size_t num_deps = data->deps.size;
 	void **const deps =
-			 (void **) (((char *) &data->deps) + data->deps.list);
+			(void **) (((char *) &data->deps) + data->deps.list);
 
 	// Fill deps field info.
 	for (size_t i = 0; i < num_deps; ++i) {
@@ -863,6 +863,7 @@ static inline void fill_field_infos(
 		field_info->name = "D";
 		field_info->type_info = NULL;
 		++field_info;
+		deps[i] = NULL;// To be able to dump the object before deps filled.
 	}
 
 	O42A_RETURN;
