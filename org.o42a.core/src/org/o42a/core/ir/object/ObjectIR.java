@@ -19,10 +19,14 @@
 */
 package org.o42a.core.ir.object;
 
+import static java.util.Collections.emptyMap;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import java.util.Collection;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Data;
@@ -32,6 +36,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Deps;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.type.TypeRef;
@@ -45,6 +50,7 @@ public class ObjectIR  {
 	private final ValueIR valueIR;
 	private ObjectIRStruct struct;
 	private ObjectValueIR objectValueIR;
+	private Map<Dep, DepIR> deps;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
@@ -190,7 +196,13 @@ public class ObjectIR  {
 	}
 
 	public final DepIR dep(Dep dep) {
-		return bodyIR(dep.getDeclaredIn()).dep(dep);
+
+		final DepIR depIR = deps().get(dep);
+
+		assert depIR != null :
+			"Dependency `" + dep + "` is not present in `" + this + '`';
+
+		return depIR;
 	}
 
 	@Override
@@ -200,6 +212,32 @@ public class ObjectIR  {
 
 	protected ObjectValueIR createValueIR() {
 		return new ObjectValueIR(this);
+	}
+
+	private Map<Dep, DepIR> deps() {
+		if (this.deps != null) {
+			return this.deps;
+		}
+
+		final Deps deps = getObject().deps();
+		final int size = deps.size();
+
+		if (size == 0) {
+			return this.deps = emptyMap();
+		}
+
+		final Analyzer analyzer = getGenerator().getAnalyzer();
+		final IdentityHashMap<Dep, DepIR> irs = new IdentityHashMap<>(size);
+		int index = 0;
+
+		for (Dep dep : deps) {
+			if (!dep.exists(analyzer)) {
+				continue;
+			}
+			irs.put(dep, new DepIR(this, dep, index++));
+		}
+
+		return this.deps = irs;
 	}
 
 	final ObjectIRStruct getStruct() {

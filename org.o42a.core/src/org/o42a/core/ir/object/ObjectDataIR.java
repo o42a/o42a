@@ -34,7 +34,6 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.type.FieldDescIR;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.Val;
@@ -234,7 +233,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		this.descPtr = instance.pointer(getGenerator());
 		allocateFieldDecls(instance);
-		allocateDepDecls(instance);
 		instance.fields().allocateItems(data);
 	}
 
@@ -251,17 +249,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 			fields.add(fieldDescIR);
 			this.fieldDescs.put(fld.getKey(), fieldDescIR);
-		}
-	}
-
-	private void allocateDepDecls(ObjectIRDesc instance) {
-
-		final RelList<FieldDescIR> fields = instance.fields();
-
-		for (DepIR dep : getObjectIR().getMainBodyIR().getDeclaredDeps()) {
-			if (!dep.isOmitted()) {
-				fields.add(new FieldDescIR(dep));
-			}
 		}
 	}
 

@@ -31,6 +31,7 @@ import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
+import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectDefFunc;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
@@ -104,6 +105,18 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 
 	public final StructRecOp<ValueTypeDescOp> valueType(Code code) {
 		return ptr(null, code, getType().valueType());
+	}
+
+	public final DataRecOp loadDeps(Code code) {
+
+		final RelList.Op deps =
+				struct(null, code, getType().deps().getInstance());
+		final Int32op offset =
+				deps.list(code).load(null, code).toInt32(null, code);
+
+		return deps.toAny(null, code)
+				.offset(null, code, offset)
+				.toDataRec(null, code);
 	}
 
 	public final void lock(Code code) {
