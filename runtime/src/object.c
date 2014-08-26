@@ -766,6 +766,21 @@ static void derive_ancestor_bodies(
 }
 
 
+static inline o42a_obj_t **o42a_obj_deps(const o42a_obj_data_t *const data) {
+	return (o42a_obj_t **) (((char *) &data->deps) + data->deps.list);
+}
+
+static inline void fill_deps(const o42a_obj_data_t *const data) {
+
+	const size_t num_deps = data->deps.size;
+	o42a_obj_t **const deps = o42a_obj_deps(data);
+
+	// Fill deps field info.
+	for (size_t i = 0; i < num_deps; ++i) {
+		deps[i] = NULL;// To be able to dump the object before deps filled.
+	}
+}
+
 #ifndef NDEBUG
 
 static inline size_t get_type_info_start(
@@ -853,8 +868,7 @@ static inline void fill_field_infos(
 	}
 
 	const size_t num_deps = data->deps.size;
-	void **const deps =
-			(void **) (((char *) &data->deps) + data->deps.list);
+	o42a_obj_t **const deps = o42a_obj_deps(data);
 
 	// Fill deps field info.
 	for (size_t i = 0; i < num_deps; ++i) {
@@ -863,7 +877,6 @@ static inline void fill_field_infos(
 		field_info->name = "D";
 		field_info->type_info = NULL;
 		++field_info;
-		deps[i] = NULL;// To be able to dump the object before deps filled.
 	}
 
 	O42A_RETURN;
@@ -934,7 +947,31 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 			break;
 		}
 		++asc;
-	} while (num_asc);
+	}
+
+	const size_t num_deps = data->deps.size;
+
+	if (!num_deps) {
+		O42A_RETURN;
+	}
+
+	// Mark all deps.
+	o42a_obj_t **const deps = O42A(o42a_obj_deps(data));
+
+	for (size_t i = 0; i < num_deps; ++i) {
+		O42A_DEBUG("Mark dep #%zd\n", i);
+
+		o42a_obj_t *const object = deps[i];
+
+		if (!object) {
+			continue;
+		}
+
+		o42a_debug_mem_name("Dep: ", object);
+		o42a_obj_data_t *const data = O42A(o42a_obj_data(object));
+
+		O42A(o42a_gc_mark(o42a_gc_blockof((char *) data + data->start)));
+	}
 
 	O42A_RETURN;
 }
@@ -1106,6 +1143,7 @@ static o42a_obj_data_t *propagate_object(
 #endif /* NDEBUG */
 
 	O42A(derive_ancestor_bodies(&ctable, DK_COPY, 0));
+	O42A(fill_deps(data));
 
 #ifndef NDEBUG
 	O42A(fill_field_infos(mem, data, type_info));
@@ -1296,6 +1334,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	ctable.to.body = object;
 
 	O42A(derive_object_body(&ctable, DK_MAIN));
+	O42A(fill_deps(data));
 
 #ifndef NDEBUG
 	O42A(fill_field_infos(mem, data, type_info));
