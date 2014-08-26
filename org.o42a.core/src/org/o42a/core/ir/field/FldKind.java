@@ -26,8 +26,7 @@ public enum FldKind {
 	LINK(1),
 	ALIAS(2),
 	VAR(3),
-	OWNER(4),
-	DEP(5);
+	OWNER(4);
 
 	private final int code;
 
