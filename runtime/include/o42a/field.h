@@ -70,7 +70,7 @@ typedef const struct o42a_fld_desc {
 
 	/**
 	 * This function is called for a constructing object to fill the field
-	 * propagated from sample.
+	 * propagated from sample's main body.
 	 */
 	o42a_fld_copy_ft *const propagate;
 

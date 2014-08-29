@@ -49,7 +49,7 @@ struct o42a_fld_obj {
 extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_obj;
 #endif /* NDEBUG */
 
-void o42a_fld_obj_copy(o42a_obj_ctable_t*);
+void o42a_fld_obj_reset(o42a_obj_ctable_t*);
 
 o42a_bool_t o42a_fld_obj_is_init(const o42a_fld *);
 

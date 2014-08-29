@@ -467,6 +467,39 @@ typedef struct o42a_obj_ctr {
 
 } o42a_obj_ctr_t;
 
+
+/**
+ * Object body derivation kind.
+ */
+enum o42a_obj_derivation_kind {
+
+	/**
+	 * Copied ancestor body.
+	 */
+	O42A_DK_COPY = 0x00,
+
+	/**
+	 * Copied main ancestor body.
+	 */
+	O42A_DK_COPY_MAIN = 0x10,
+
+	/**
+	 * Inherited ancestor body.
+	 */
+	O42A_DK_INHERIT = 0x01,
+
+	/**
+	 * Sample body not present in ancestor.
+	 */
+	O42A_DK_DERIVE_MAIN = 0x12,
+
+	/**
+	 * Sample body present in ancestor.
+	 */
+	O42A_DK_OVERRIDE_MAIN = 0x13,
+
+};
+
 typedef struct o42a_obj_ctable {
 
 	O42A_HEADER
@@ -485,6 +518,8 @@ typedef struct o42a_obj_ctable {
 	o42a_obj_data_t *const object_data;
 
 	const o42a_obj_desc_t *body_desc;
+
+	uint32_t derivation_kind;
 
 	o42a_obj_field_t *field;
 
@@ -520,7 +555,7 @@ extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[8];
+	o42a_dbg_field_info_t fields[9];
 } _O42A_DEBUG_TYPE_o42a_obj_ctable;
 
 #endif /* NDEBUG */

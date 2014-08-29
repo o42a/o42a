@@ -85,8 +85,8 @@ static void fld_no_copy(
 
 static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	[O42A_FLD_OBJ] = {// Object field.
-		.propagate = &o42a_fld_obj_copy,
-		.inherit = &o42a_fld_obj_copy,
+		.propagate = &o42a_fld_obj_reset,
+		.inherit = &o42a_fld_obj_reset,
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
@@ -99,15 +99,15 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_ALIAS] = {// Alias field.
-		.propagate = &o42a_fld_obj_copy,
-		.inherit = &o42a_fld_obj_copy,
+		.propagate = &o42a_fld_obj_reset,
+		.inherit = &o42a_fld_obj_reset,
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_VAR] = {// Variable field.
-		.propagate = &o42a_fld_obj_copy,
-		.inherit = &o42a_fld_obj_copy,
+		.propagate = &o42a_fld_obj_reset,
+		.inherit = &o42a_fld_obj_reset,
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
