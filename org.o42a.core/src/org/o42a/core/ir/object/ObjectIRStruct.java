@@ -165,12 +165,6 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 					bodyId(data.getGenerator(), bodyIR),
 					bodyIR);
 		}
-
-		if (inherited) {
-			bodyIR.setKind(ObjectIRBody.Kind.INHERITED);
-		} else {
-			bodyIR.setKind(ObjectIRBody.Kind.MAIN);
-		}
 	}
 
 	private static ID bodyId(Generator generator, ObjectIRBody bodyIR) {

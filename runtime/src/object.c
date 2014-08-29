@@ -671,16 +671,6 @@ static void derive_object_body(o42a_obj_ctable_t *const ctable) {
 	to_body->declared_in = from_body->declared_in;
 	to_body->vmtc = O42A(vmtc_derive(ctable));
 
-	if (dkind == O42A_DK_INHERIT) {
-		// Drop the kind of body to "inherited" for inherited body.
-		to_body->flags =
-				(from_body->flags & ~O42A_OBJ_BODY_TYPE)
-				| O42A_OBJ_BODY_INHERITED;
-	} else {
-		// Keep the kind of body otherwise.
-		to_body->flags = from_body->flags;
-	}
-
 	// Derive fields.
 	const size_t num_fields = ctable->body_desc->fields.size;
 	o42a_obj_field_t *const fields =
