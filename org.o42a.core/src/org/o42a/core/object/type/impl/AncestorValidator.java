@@ -61,7 +61,7 @@ public class AncestorValidator implements PathWalker {
 
 	@Override
 	public boolean start(BoundPath path, Scope start) {
-		return validLast();
+		return invalidLastParent();
 	}
 
 	@Override
@@ -80,12 +80,7 @@ public class AncestorValidator implements PathWalker {
 			Step step,
 			Container enclosing,
 			ReversePath reversePath) {
-		if (this.clause) {
-			// Clauses may refer to enclosing objects.
-			// This will be re-validated in phrase.
-			return validLast();
-		}
-		return invalidLast(AncestorError.PARENT_ANCESTOR);
+		return invalidLastParent();
 	}
 
 	@Override
@@ -150,6 +145,15 @@ public class AncestorValidator implements PathWalker {
 	private boolean invalidLast(AncestorError ancestorError) {
 		this.ancestorError = ancestorError;
 		return true;
+	}
+
+	private boolean invalidLastParent() {
+		if (this.clause) {
+			// Clauses may refer to enclosing objects.
+			// This will be re-validated in phrase.
+			return validLast();
+		}
+		return invalidLast(AncestorError.PARENT_ANCESTOR);
 	}
 
 	private boolean validateNested(Scope start, Ref ref) {

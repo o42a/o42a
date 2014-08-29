@@ -44,8 +44,8 @@ public class PrivateFieldVisibilityTest extends CompilerTestCase {
 				"=======");
 		addSource(
 				"a/b",
-				"B := a",
-				"======");
+				"B := /a",
+				"=======");
 		compile("");
 
 		assertThat(
