@@ -582,48 +582,84 @@ static inline void vmtc_release(const o42a_obj_vmtc_t *vmtc) {
 	}
 }
 
+/**
+ * Object body derivation kind.
+ */
+enum derivation_kind {
+
+	/**
+	 * Copied ancestor body.
+	 */
+	DK_COPY,
+
+	/**
+	 * Inherited ancestor body.
+	 */
+	DK_INHERIT,
+
+	/**
+	 * Sample body not present in ancestor.
+	 */
+	DK_DERIVE_MAIN,
+
+	/**
+	 * Sample body present in ancestor.
+	 */
+	DK_OVERRIDE_MAIN,
+};
+
 static inline const o42a_obj_vmtc_t *vmtc_derive(
-		o42a_obj_ctable_t *const ctable) {
+		o42a_obj_ctable_t *const ctable,
+		enum derivation_kind kind) {
 	O42A_ENTER(return NULL);
 
 	const o42a_obj_data_t *const adata = ctable->ancestor_data;
 	const o42a_obj_data_t *const sdata = ctable->sample_data;
-	const o42a_obj_desc_t *const declared_in =
-			ctable->from.body->declared_in;
-	const o42a_obj_ascendant_t *const aasc =
-			O42A(o42a_obj_ascendant_of_type(adata->desc, declared_in));
-	const o42a_obj_ascendant_t *const sasc =
-			O42A(o42a_obj_ascendant_of_type(sdata->desc, declared_in));
+	const o42a_obj_desc_t *const body_desc = ctable->body_desc;
 
-	if (!sasc) {
+	if (kind == DK_DERIVE_MAIN) {
+		// The body is derived from sample.
+		// No such body in ancestor.
 
-		const o42a_obj_vmtc_t *const avmtc =
-				O42A(o42a_obj_ascendant_body(adata, aasc))->vmtc;
+		const o42a_obj_vmtc_t *const svmtc = ctable->from.body->vmtc;
 
-		O42A(vmtc_use(avmtc));
-
-		O42A_RETURN avmtc;
-	}
-
-	const o42a_obj_vmtc_t *const svmtc =
-			O42A(o42a_obj_ascendant_body(sdata, sasc))->vmtc;
-
-	if (!aasc) {
 		O42A(vmtc_use(svmtc));
+
 		O42A_RETURN svmtc;
 	}
 
-	const o42a_obj_vmtc_t *const prev =
-			O42A(o42a_obj_ascendant_body(adata, aasc))->vmtc;
+	// The body with the same descriptor is present
+	// both in sample and in ancestor.
+	const char *const sstart = ((char *) sdata) + sdata->start;
+	const char *const astart = ((char *) adata) + adata->start;
 
-	O42A_RETURN vmtc_alloc(svmtc->vmt, prev);
+	const o42a_obj_vmt_t *svmt;
+	const o42a_obj_vmtc_t *prev;
+
+	if (kind == DK_OVERRIDE_MAIN) {
+		// The body is derived from sample.
+
+		const o42a_obj_body_t *const sbody = ctable->from.body;
+		const ptrdiff_t offset = ((char *) sbody) - sstart;
+		const o42a_obj_body_t *const abody =
+				(o42a_obj_body_t*) (((char *) astart) + offset);
+
+		svmt = sbody->vmtc->vmt;
+		prev = abody->vmtc;
+	} else {
+		// The body is derived from ancestor.
+
+		const o42a_obj_body_t *const abody = ctable->from.body;
+		const ptrdiff_t offset = ((char *) abody) - astart;
+		const o42a_obj_body_t *const sbody =
+				(o42a_obj_body_t*) (((char *) sstart) + offset);
+
+		svmt = sbody->vmtc->vmt;
+		prev = abody->vmtc;
+	}
+
+	O42A_RETURN vmtc_alloc(svmt, prev);
 }
-
-enum derivation_kind {
-	DK_COPY,
-	DK_INHERIT,
-	DK_MAIN,
-};
 
 static void derive_object_body(
 		o42a_obj_ctable_t *const ctable,
@@ -655,7 +691,7 @@ static void derive_object_body(
 	to_body->object_data =
 			((char *) ctable->object_data) - ((char *) to_body);
 	to_body->declared_in = from_body->declared_in;
-	to_body->vmtc = O42A(vmtc_derive(ctable));
+	to_body->vmtc = O42A(vmtc_derive(ctable, kind));
 
 	if (kind == DK_INHERIT) {
 		// Drop the kind of body to "inherited" for inherited body.
@@ -693,12 +729,11 @@ static void derive_object_body(
 	}
 
 	o42a_debug_dump_mem(
-			kind == DK_MAIN ? "Main body: " : (
-					kind == DK_INHERIT
-					? "Inherited body: " : (
-							kind == DK_COPY
-							? "Copied body: "
-							: "Propagated body: ")),
+			kind == DK_DERIVE_MAIN ? "Main body: "
+			: kind == DK_OVERRIDE_MAIN ? "Overridden main body: "
+			: kind == DK_INHERIT ? "Inherited body: "
+			: kind == DK_COPY ? "Copied body: "
+			: "Derived body: ",
 			to_body,
 			3);
 
@@ -1131,21 +1166,15 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 		O42A_RETURN o42a_obj_by_data(result);
 	}
 
-	const o42a_obj_ascendant_t *const consuming_ascendant =
-			O42A(o42a_obj_ascendant_of_type(adata->desc, sdesc));
-	const size_t consumed_ascendants = consuming_ascendant ? 1 : 0;
+	const size_t adiff = sdesc->ascendants.size - adata->desc->ascendants.size;
+
+	assert((adiff == 0 || adiff == 1) && "Inheritance is impossible");
+
+	const size_t consumed_ascendants = adiff ? 0 : 1;
 
 	// Ancestor bodies size.
-	size_t start = -adata->start;
-	size_t main_body_start;
-
-	if (consumed_ascendants) {
-		main_body_start = adata->object - adata->start;
-	} else {
-		main_body_start =
-				O42A(o42a_layout_pad(start, sdesc->main_body_layout));
-		start = main_body_start + o42a_layout_size(sdesc->main_body_layout);
-	}
+	const size_t start = -sdata->start;
+	const size_t main_body_start = sdata->object - sdata->start;
 
 	static const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
 	const size_t data_start = o42a_layout_pad(start, obj_data_layout);
@@ -1154,8 +1183,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	const size_t deps_start = o42a_layout_pad(
 			data_start + o42a_layout_size(obj_data_layout),
 			dep_layout);
-	const size_t num_ascendants =
-			adata->desc->ascendants.size + 1 - consumed_ascendants;
+	const size_t num_ascendants = sdesc->ascendants.size;
 	const size_t num_deps = ctr->num_deps;
 
 	size_t size = deps_start + o42a_layout_array_size(dep_layout, num_deps);
@@ -1244,7 +1272,9 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	ctable.from.body = O42A(o42a_obj_by_data(sdata));
 	ctable.to.body = object;
 
-	O42A(derive_object_body(&ctable, DK_MAIN));
+	O42A(derive_object_body(
+			&ctable,
+			consumed_ascendants ? DK_OVERRIDE_MAIN : DK_DERIVE_MAIN));
 	O42A(fill_deps(data));
 
 #ifndef NDEBUG
