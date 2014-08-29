@@ -63,7 +63,7 @@ typedef o42a_bool_t o42a_obj_cond_ft(o42a_obj_t *);
  *
  * Used in o42a_obj_data.flags.
  */
-enum o42a_obj_type_flags {
+enum o42a_obj_flags {
 
 	/**
 	 * Object is created at run-time.
@@ -102,49 +102,6 @@ enum o42a_obj_type_flags {
 };
 
 /**
- * Object body flags.
- *
- * Used in o42a_obj_body.flags.
- */
-enum o42a_obj_body_flags {
-
-	/**
-	 * The mask to apply to flags to gain a kind of body.
-	 *
-	 * \see o42a_obj_body_kind for possible values.
-	 */
-	O42A_OBJ_BODY_TYPE = 0x3,
-
-};
-
-/**
- * The kinds of object bodies.
- *
- * Apply O42A_OBJ_BODY_TYPE to o42a_obj_body.flags to gain one of these values.
- *
- * Body kind is exact only for static objects. When constructing object at run
- * time, it is only kept when O42A_OBJ_CTR_FIELD_PROPAGATION flags is set.
- * Otherwise the value is dropped to O42A_OBJ_BODY_INHERITED.
- *
- * This is used to update scope fields properly.
- */
-enum o42a_obj_body_kind {
-
-	/** The body is inherited from ancestor. */
-	O42A_OBJ_BODY_INHERITED = 0,
-
-	/** The body is from explicit sample. */
-	O42A_OBJ_BODY_EXPLICIT = 1,
-
-	/** The body is propagated from ascendant field. */
-	O42A_OBJ_BODY_PROPAGATED = 2,
-
-	/** The body is main one. */
-	O42A_OBJ_BODY_MAIN = 3,
-
-};
-
-/**
  * Object body.
  *
  * This structure is only a header common to every object body. The fields
@@ -175,13 +132,6 @@ typedef struct o42a_obj_body {
 	 * of that object.
 	 */
 	o42a_rptr_t object_data;
-
-	/**
-	 * Object body flags.
-	 *
-	 * \see o42a_obj_body_flags for possible values.
-	 */
-	uint32_t flags;
 
 } o42a_obj_body_t;
 
@@ -215,7 +165,7 @@ struct o42a_obj_data {
 	 * Type flags.
 	 *
 	 * This can be used to distinguish object type implementation and contains
-	 * other information. See o42a_obj_type_flags enum.
+	 * other information. See o42a_obj_flags enum.
 	 */
 	uint16_t flags;
 

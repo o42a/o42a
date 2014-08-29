@@ -26,7 +26,6 @@ import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -48,8 +47,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	static final ID BODY_ID = ID.id("body");
 
-	private static final int KIND_MASK = 3;
-
 	private final ObjectIRStruct objectIRStruct;
 	private final Obj sampleDeclaration;
 	private final Obj closestAscendant;
@@ -62,7 +59,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private StructRec<ObjectIRDescOp> declaredIn;
 	private StructRec<VmtIRChain.Op> vmtc;
 	private RelRec objectData;
-	private Int32rec flags;
 
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
 		super(mainId(objectIRStruct.getObjectIR()));
@@ -110,30 +106,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this.vmtIR;
 	}
 
-	public void setKind(Kind kind) {
-
-		final Supplier<Integer> value = this.flags.getValue();
-
-		if (value == null) {
-			this.flags.setConstant(true).setValue(kind.ordinal());
-			return;
-		}
-
-		this.flags.setValue(
-				(value.get().intValue() & ~KIND_MASK) | kind.ordinal());
-	}
-
-	public Kind getKind() {
-
-		final Supplier<Integer> value = this.flags.getValue();
-
-		if (value == null) {
-			return null;
-		}
-
-		return Kind.values()[value.get().intValue() & KIND_MASK];
-	}
-
 	public final StructRec<ObjectIRDescOp> declaredIn() {
 		return this.declaredIn;
 	}
@@ -144,10 +116,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	public final RelRec objectData() {
 		return this.objectData;
-	}
-
-	public final Int32rec flags() {
-		return this.flags;
 	}
 
 	public final ObjectIRBody derive(ObjectIR inheritantIR) {
@@ -182,7 +150,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.declaredIn = data.addPtr("declared_in", OBJECT_DESC_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.objectData = data.addRelPtr("object_data");
-		this.flags = data.addInt32("flags");
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
 

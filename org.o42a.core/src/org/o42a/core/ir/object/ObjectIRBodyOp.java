@@ -24,7 +24,9 @@ import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.RelRecOp;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
@@ -59,10 +61,6 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 
 	public final RelRecOp objectData(Code code) {
 		return relPtr(null, code, getType().objectData());
-	}
-
-	public final Int32recOp flags(Code code) {
-		return int32(null, code, getType().flags());
 	}
 
 	public final <O extends Fld.Op<O>> O field(
