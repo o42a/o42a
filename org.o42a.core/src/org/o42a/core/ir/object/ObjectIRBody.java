@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.VmtIRChain.Op;
-import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -56,7 +54,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private VmtIR vmtIR;
 
-	private StructRec<ObjectIRDescOp> declaredIn;
 	private StructRec<VmtIRChain.Op> vmtc;
 	private RelRec objectData;
 
@@ -106,10 +103,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this.vmtIR;
 	}
 
-	public final StructRec<ObjectIRDescOp> declaredIn() {
-		return this.declaredIn;
-	}
-
 	public final StructRec<Op> vmtc() {
 		return this.vmtc;
 	}
@@ -147,7 +140,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
-		this.declaredIn = data.addPtr("declared_in", OBJECT_DESC_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.objectData = data.addRelPtr("object_data");
 
@@ -158,18 +150,8 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void fill() {
-		this.declaredIn.setConstant(true);
 
 		final Generator generator = getGenerator();
-		final ObjectIR declaredInIR;
-
-		if (isMain()) {
-			declaredInIR = getObjectIR();
-		} else {
-			declaredInIR = getSampleDeclaration().ir(getGenerator());
-		}
-
-		this.declaredIn.setValue(declaredInIR.getDescIR().ptr());
 
 		this.vmtc.setConstant(true)
 		.setValue(getVmtIR().terminator().pointer(getGenerator()));

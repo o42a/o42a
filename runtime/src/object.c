@@ -470,13 +470,6 @@ o42a_obj_body_t *o42a_obj_cast(
 		O42A_DONE;
 		O42A_RETURN object;
 	}
-	if (object->declared_in == desc) {
-		// body of the necessary type
-		o42a_debug_mem_name("Cast not required: ", object);
-		o42a_debug_mem_name("     to: ", desc);
-		O42A_DONE;
-		O42A_RETURN object;
-	}
 
 	o42a_debug_mem_name("Cast of: ", object);
 	o42a_debug_mem_name("     to: ", desc);
@@ -668,7 +661,6 @@ static void derive_object_body(o42a_obj_ctable_t *const ctable) {
 	// Fill body header.
 	to_body->object_data =
 			((char *) ctable->object_data) - ((char *) to_body);
-	to_body->declared_in = from_body->declared_in;
 	to_body->vmtc = O42A(vmtc_derive(ctable));
 
 	// Derive fields.
