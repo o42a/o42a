@@ -35,7 +35,6 @@ import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.ValueOp;
@@ -102,10 +101,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	@Override
 	public final ObjectOp op(CodeDirs dirs) {
 		return this;
-	}
-
-	public final ObjectIRDescOp declaredIn(Code code) {
-		return body(code).declaredIn(code).load(null, code);
 	}
 
 	public final ObjectDataOp objectData(Code code) {

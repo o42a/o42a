@@ -115,12 +115,6 @@ typedef struct o42a_obj_body {
 	O42A_HEADER
 
 	/**
-	 * Pointer to object type descriptor, where corresponding body were first
-	 * declared in.
-	 */
-	const o42a_obj_desc_t *declared_in;
-
-	/**
 	 * Pointer to virtual method tables chain.
 	 */
 	const o42a_obj_vmtc_t *vmtc;

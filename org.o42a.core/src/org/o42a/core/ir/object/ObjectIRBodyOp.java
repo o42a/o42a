@@ -30,7 +30,6 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -49,10 +48,6 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 
 	public final Obj getSampleDeclaration() {
 		return getType().getSampleDeclaration();
-	}
-
-	public final StructRecOp<ObjectIRDescOp> declaredIn(Code code) {
-		return ptr(null, code, getType().declaredIn());
 	}
 
 	public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
