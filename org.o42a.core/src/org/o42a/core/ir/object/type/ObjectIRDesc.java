@@ -17,15 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.type;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.Int32rec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.impl.ObjectIRFields;
-import org.o42a.core.ir.object.type.FieldDescIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
@@ -35,6 +34,7 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 	public static final ObjectIRDesc OBJECT_DESC_TYPE = new ObjectIRDesc();
 
 	private RelList<FieldDescIR> fields;
+	private RelList<ObjectIRBody> ascendants;
 	private Int32rec mainBodyLayout;
 
 	private ObjectIRDesc() {
@@ -43,6 +43,10 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	public final RelList<FieldDescIR> fields() {
 		return this.fields;
+	}
+
+	public final RelList<ObjectIRBody> ascendants() {
+		return this.ascendants;
 	}
 
 	public final Int32rec mainBodyLayout() {
@@ -57,6 +61,7 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 	@Override
 	protected void allocate(SubData<ObjectIRDescOp> data) {
 		this.fields = new ObjectIRFields().allocate(data, "fields");
+		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");
 		this.mainBodyLayout = data.addInt32("main_body_layout");
 	}
 

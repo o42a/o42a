@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -29,7 +29,6 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.util.string.ID;
 
 
@@ -69,19 +68,17 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 		instance.declaredIn()
 		.setConstant(true)
-		.setValue(declaredInIR.getDataIR().getDescPtr());
+		.setValue(declaredInIR.getDescIR().ptr());
+
 		instance.kind()
 		.setConstant(true)
 		.setValue(this.fld.getKind().code());
+
 		instance.fld()
 		.setConstant(true)
 		.setValue(
-				this.fld.data(generator)
-				.getPointer()
-				.relativeTo(
-						this.fld.getBodyIR()
-						.data(generator)
-						.getPointer()));
+				fld().data(generator).getPointer().relativeTo(
+						fld().getBodyIR().data(generator).getPointer()));
 	}
 
 	@Override

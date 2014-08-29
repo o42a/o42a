@@ -19,14 +19,14 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectDataOp;
-import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.util.string.ID;
 
 

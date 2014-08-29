@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static org.o42a.core.ir.object.type.ObjectDescIR.allocateDescIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import java.util.*;
@@ -29,10 +30,12 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.type.ObjectDescIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Deps;
@@ -42,7 +45,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
 
-public class ObjectIR  {
+public class ObjectIR {
 
 	private final Generator generator;
 	private final Obj object;
@@ -51,6 +54,7 @@ public class ObjectIR  {
 	private ObjectValueIR objectValueIR;
 	private List<DepIR> existingDeps;
 	private Map<Dep, DepIR> allDeps;
+	private ObjectDescIR descIR;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
@@ -96,6 +100,10 @@ public class ObjectIR  {
 		return getObject().type().getLastDefinition().ir(getGenerator());
 	}
 
+	public final Ptr<?> ptr() {
+		return getStruct().pointer(getGenerator());
+	}
+
 	public final ObjectIRBody getBodyType() {
 		return definitionIR().getMainBodyIR();
 	}
@@ -123,6 +131,13 @@ public class ObjectIR  {
 		}
 
 		return bodyIR(ancestor);
+	}
+
+	public final ObjectDescIR getDescIR() {
+		if (this.descIR != null) {
+			return this.descIR;
+		}
+		return this.descIR = allocateDescIR(this);
 	}
 
 	public final ObjectDataIR getStaticDataIR() {

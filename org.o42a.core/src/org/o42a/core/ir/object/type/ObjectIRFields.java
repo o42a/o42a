@@ -17,30 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DESC_ID;
+import static org.o42a.core.ir.object.type.FieldDescIR.FIELD_DESC_IR;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectIRDescOp extends StructOp<ObjectIRDescOp> {
+final class ObjectIRFields extends RelList<FieldDescIR> {
 
-	ObjectIRDescOp(StructWriter<ObjectIRDescOp> writer) {
-		super(writer);
-	}
+	private static final ID PREFIX_ID = ID.id("field");
 
 	@Override
-	public final ObjectIRDesc getType() {
-		return (ObjectIRDesc) super.getType();
-	}
+	protected Ptr<?> allocateItem(
+			SubData<?> data,
+			int index,
+			FieldDescIR item) {
 
-	@Override
-	protected ID fieldId(Code code, ID local) {
-		return OBJECT_DESC_ID.setLocal(local);
+		final FldIR fld = item.fld();
+		final ID id = PREFIX_ID.detail(fld.getId().getLocal());
+		final FieldDescIR.Type desc =
+				data.addInstance(id, FIELD_DESC_IR, item);
+
+		return desc.data(data.getGenerator()).getPointer();
 	}
 
 }

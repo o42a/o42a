@@ -115,8 +115,8 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		return this.finalValue = determineFinal();
 	}
 
-	public void allocate(ObjectDataIR typeIR) {
-		this.func = func(typeIR.getInstance());
+	public void allocate(ObjectDataIR dataIR) {
+		this.func = func(dataIR.getInstance());
 		if (this.funcPtr == null) {
 			create();
 		}
