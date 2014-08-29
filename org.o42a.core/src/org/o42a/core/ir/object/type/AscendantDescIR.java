@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -31,7 +31,6 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.util.string.ID;
 
 
@@ -62,13 +61,13 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		instance.desc()
 		.setConstant(true)
-		.setValue(ascendantIR.getDataIR().getDescPtr());
+		.setValue(ascendantIR.getDescIR().ptr());
+
 		instance.body()
 		.setConstant(true)
 		.setValue(
-				this.bodyIR.data(generator)
-				.getPointer()
-				.relativeTo(instance.pointer(generator)));
+				getBodyIR().pointer(generator).relativeTo(
+						getBodyIR().getObjectIR().ptr()));
 	}
 
 	@Override

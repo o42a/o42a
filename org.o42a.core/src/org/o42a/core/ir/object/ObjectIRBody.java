@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
 import java.util.ArrayList;
@@ -33,6 +33,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.VmtIRChain.Op;
+import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -153,6 +154,10 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return new ObjectIRBody(inheritantIR, getSampleDeclaration());
 	}
 
+	public final List<Fld<?>> getDeclaredFields() {
+		return this.fieldList;
+	}
+
 	public final Fld<?> fld(MemberKey memberKey) {
 
 		final Fld<?> fld = findFld(memberKey);
@@ -189,16 +194,15 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		this.declaredIn.setConstant(true);
 
 		final Generator generator = getGenerator();
+		final ObjectIR declaredInIR;
 
 		if (isMain()) {
-			this.declaredIn.setValue(getObjectIR().getDataIR().getDescPtr());
+			declaredInIR = getObjectIR();
 		} else {
-			this.declaredIn.setValue(
-					getSampleDeclaration()
-					.ir(getGenerator())
-					.getDataIR()
-					.getDescPtr());
+			declaredInIR = getSampleDeclaration().ir(getGenerator());
 		}
+
+		this.declaredIn.setValue(declaredInIR.getDescIR().ptr());
 
 		this.vmtc.setConstant(true)
 		.setValue(getVmtIR().terminator().pointer(getGenerator()));
@@ -210,10 +214,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 				objectData.data(generator)
 				.getPointer()
 				.relativeTo(data(generator).getPointer()));
-	}
-
-	final List<Fld<?>> getDeclaredFields() {
-		return this.fieldList;
 	}
 
 	final void declareFld(Fld<?> fld) {

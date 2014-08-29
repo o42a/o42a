@@ -20,40 +20,28 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRData.*;
-import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.value.Val.VAL_EAGER;
 
-import java.util.HashMap;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Content;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.object.type.FieldDescIR;
-import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
-import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.ValueKnowledge;
 import org.o42a.util.string.ID;
 
 
 public final class ObjectDataIR implements Content<ObjectIRData> {
 
-	public static final ID OBJECT_DESC_ID = ID.id("object_desc");
 	public static final ID OBJECT_DATA_ID = ID.id("object_data");
 
 	private final ObjectIRStruct objectIRStruct;
-	private final HashMap<MemberKey, FieldDescIR> fieldDescs = new HashMap<>();
 	private final ID id;
 	private ObjectIRData instance;
-	private Ptr<ObjectIRDescOp> descPtr;
 	private Val initialValue;
 
 	ObjectDataIR(ObjectIRStruct objectIRStruct) {
@@ -75,20 +63,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 	public final ObjectIRData getInstance() {
 		return this.instance;
-	}
-
-	public final Ptr<ObjectIRDescOp> getDescPtr() {
-		return this.descPtr;
-	}
-
-	public final FieldDescIR fieldDescIR(MemberKey key) {
-
-		final FieldDescIR fieldDesc = this.fieldDescs.get(key);
-
-		assert fieldDesc != null :
-			"Field descriptor for " + key + " is missing from " + this;
-
-		return fieldDesc;
 	}
 
 	@Override
@@ -150,7 +124,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		instance.resumeFrom().setNull();
 		instance.desc()
 		.setConstant(true)
-		.setValue(getDescPtr());
+		.setValue(getObjectIR().getDescIR().ptr());
 		instance.valueType().setConstant(true).setValue(
 				getObjectIR()
 				.getValueIR()
@@ -174,82 +148,8 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 	}
 
 	void allocate(SubData<?> data) {
-
-		final ObjectIRData instance =
-				data.addInstance(OBJECT_DATA_ID, OBJECT_DATA_TYPE, this);
-
-		instance.ascendants().addAll(
-				this.objectIRStruct.bodyIRs().values());
-		instance.ascendants().allocateItems(data);
-
-		allocateDesc(data);
-
+		data.addInstance(OBJECT_DATA_ID, OBJECT_DATA_TYPE, this);
 		getObjectIR().getObjectValueIR().allocate(this);
-	}
-
-	private void allocateDesc(SubData<?> data) {
-		if (!getObjectIR().isSampleDeclaration()) {
-			this.descPtr =
-					getObjectIR()
-					.getSampleDeclaration()
-					.ir(getGenerator())
-					.getDataIR()
-					.getDescPtr();
-			return;
-		}
-
-		final Obj object = getObjectIR().getObject();
-		final Intrinsics intrinsics = object.getContext().getIntrinsics();
-
-		if (object.is(intrinsics.getVoid())) {
-			this.descPtr =
-					getGenerator()
-					.externalGlobal()
-					.setConstant()
-					.link("o42a_obj_void_desc", OBJECT_DESC_TYPE);
-			return;
-		}
-		if (object.is(intrinsics.getFalse())) {
-			this.descPtr =
-					getGenerator()
-					.externalGlobal()
-					.setConstant()
-					.link("o42a_obj_false_desc", OBJECT_DESC_TYPE);
-			return;
-		}
-		if (object.is(intrinsics.getNone())) {
-			this.descPtr =
-					getGenerator()
-					.externalGlobal()
-					.setConstant()
-					.link("o42a_obj_none_desc", OBJECT_DESC_TYPE);
-			return;
-		}
-
-		final ObjectIRDesc instance = data.addInstance(
-				OBJECT_DESC_ID,
-				OBJECT_DESC_TYPE,
-				new ObjectIRDescContent(this));
-
-		this.descPtr = instance.pointer(getGenerator());
-		allocateFieldDecls(instance);
-		instance.fields().allocateItems(data);
-	}
-
-	private void allocateFieldDecls(ObjectIRDesc instance) {
-
-		final RelList<FieldDescIR> fields = instance.fields();
-
-		for (Fld<?> fld : getObjectIR().getMainBodyIR().getDeclaredFields()) {
-			if (fld.isOmitted()) {
-				continue;
-			}
-
-			final FieldDescIR fieldDescIR = new FieldDescIR(fld);
-
-			fields.add(fieldDescIR);
-			this.fieldDescs.put(fld.getKey(), fieldDescIR);
-		}
 	}
 
 	private short objectFlags() {
@@ -273,40 +173,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		}
 
 		return flags;
-	}
-
-	private void fillDesc(ObjectIRDesc instance) {
-
-		final Generator generator = instance.getGenerator();
-
-		instance.mainBodyLayout()
-		.setConstant(true)
-		.setLowLevel(true)
-		.setValue(
-				() -> getObjectIR()
-				.getMainBodyIR()
-				.layout(generator)
-				.toBinaryForm());
-	}
-
-	private static final class ObjectIRDescContent
-			implements Content<ObjectIRDesc> {
-
-		private final ObjectDataIR dataIR;
-
-		ObjectIRDescContent(ObjectDataIR dataIR) {
-			this.dataIR = dataIR;
-		}
-
-		@Override
-		public void allocated(ObjectIRDesc instance) {
-		}
-
-		@Override
-		public void fill(ObjectIRDesc instance) {
-			this.dataIR.fillDesc(instance);
-		}
-
 	}
 
 }

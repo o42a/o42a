@@ -25,6 +25,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
+import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.CodeDirs;

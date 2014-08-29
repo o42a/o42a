@@ -307,9 +307,6 @@ struct o42a_obj_data {
 	 */
 	struct o42a_fld_ctr *fld_ctrs;
 
-	/** Relative pointer to the list of ascendant descriptors. */
-	o42a_rlist_t ascendants;
-
 	/** Relative pointer to the list of run-time dependencies. */
 	o42a_rlist_t deps;
 
@@ -326,6 +323,11 @@ struct o42a_obj_desc {
 	 * Relative pointer to the list of field descriptors.
 	 */
 	o42a_rlist_t fields;
+
+	/**
+	 * Relative list to the list of ascendant descriptors.
+	 */
+	o42a_rlist_t ascendants;
 
 	/** Main body layout. */
 	o42a_layout_t main_body_layout;
@@ -505,10 +507,10 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[16];
+	o42a_dbg_field_info_t fields[15];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
@@ -560,14 +562,14 @@ inline o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *const data) {
 /**
  * Retrieves object ascendant's descriptors.
  *
- * \param data[in] object data pointer.
+ * \param desc[in] object type descriptor pointer.
  *
  * \return pointer to the first element of ascendant descriptors array.
  */
 inline o42a_obj_ascendant_t *o42a_obj_ascendants(
-		const o42a_obj_data_t *const data) {
+		const o42a_obj_desc_t *const desc) {
 
-	const o42a_rlist_t *const list = &data->ascendants;
+	const o42a_rlist_t *const list = &desc->ascendants;
 
 	return (o42a_obj_ascendant_t *) (((char *) list) + list->list);
 }
@@ -589,25 +591,30 @@ inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 /**
  * Retrieves object body corresponding to the given ascendant.
  *
+ * \param data[in] object data.
  * \param ascendant[in] pointer to ascendant descriptor.
  *
  * \return body pointer.
  */
 inline o42a_obj_body_t *o42a_obj_ascendant_body(
+		const o42a_obj_data_t *const data,
 		const o42a_obj_ascendant_t *const ascendant) {
-	return (o42a_obj_body_t *) (((char *) ascendant) + ascendant->body);
+
+	char *const start = ((char *) data) + data->start;
+
+	return (o42a_obj_body_t *) (start + ascendant->body);
 }
 
 /**
  * Searches for ascendant descriptor of the given type.
  *
- * \param data object data to search sample descriptor in.
- * \param desc the descriptor of the type to search for.
+ * \param source type descriptor to search for ascendant descriptor in.
+ * \param target the descriptor of the type to search for.
  *
  * \return ascendant descriptor or NULL if not found.
  */
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
-		const o42a_obj_data_t *,
+		const o42a_obj_desc_t *,
 		const o42a_obj_desc_t *);
 
 /**

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.impl;
+package org.o42a.core.ir.object.type;
 
 import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
 
@@ -25,12 +25,11 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.type.AscendantDescIR;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectIRAscendants extends RelList<ObjectIRBody> {
+final class ObjectIRAscendants extends RelList<ObjectIRBody> {
 
 	private static final ID PREFIX_ID = ID.id("ascendant");
 
