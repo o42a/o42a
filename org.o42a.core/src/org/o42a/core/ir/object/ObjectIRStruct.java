@@ -87,8 +87,8 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	@Override
 	protected final void allocate(SubData<Op> data) {
-		allocateBodyIRs(data);
 		this.dataIR.allocate(data);
+		allocateBodyIRs(data);
 	}
 
 	@Override

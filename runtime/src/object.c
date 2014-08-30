@@ -834,7 +834,7 @@ static inline void fill_type_info(
 			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
 			data_header,
 			header));
-	data_header->name = "object_type";
+	data_header->name = "object_data";
 
 	O42A_RETURN;
 }
@@ -848,7 +848,10 @@ static inline void fill_field_infos(
 	// Fill new object's type field info.
 	o42a_dbg_field_info_t *field_info = type_info->fields;
 
-	// Fill object ascendant bodies field info.
+	// Fill object data field info.
+	O42A(o42a_dbg_fill_field_info(&data->__o42a_dbg_header__, field_info++));
+
+	// Fill object bodies field info.
 	const o42a_obj_ascendant_t *const ascendants =
 			O42A(o42a_obj_ascendants(data->desc));
 	const size_t num_ascendants = data->desc->ascendants.size;
@@ -860,9 +863,6 @@ static inline void fill_field_infos(
 
 		O42A(o42a_dbg_fill_field_info(o42a_dbg_header(body), field_info++));
 	}
-
-	// Fill object data field info.
-	O42A(o42a_dbg_fill_field_info(&data->__o42a_dbg_header__, field_info++));
 
 	const size_t num_deps = data->deps.size;
 	o42a_obj_t **const deps = o42a_obj_deps(data);
@@ -882,16 +882,8 @@ static inline void fill_field_infos(
 #endif /* NDEBUG */
 
 
-struct obj_bodies {
-	O42A_HEADER
-	o42a_obj_body_t first_body;
-};
-
 static inline o42a_obj_data_t *o42a_obj_gc_data(void *const obj_data) {
-
-	struct obj_bodies *const bodies = obj_data;
-
-	return O42A(o42a_obj_data(&bodies->first_body));
+	return &((struct o42a_obj *) obj_data)->object_data;
 }
 
 static void o42a_obj_gc_marker(void *const obj_data) {
@@ -1043,15 +1035,15 @@ static o42a_obj_data_t *propagate_object(
 		const o42a_obj_data_t *const sdata) {
 	O42A_ENTER(return NULL);
 
+	const size_t data_start = offsetof(struct o42a_obj, object_data);
 	const size_t main_body_start =
 			(char *) O42A(o42a_obj_by_data(adata))
 			- ((char *) adata + adata->start);
-	const size_t data_start = -adata->start;
 	static const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
 
-	static const o42a_layout_t dep_layout = O42A_LAYOUT(void*);
+	static const o42a_layout_t dep_layout = O42A_LAYOUT(void *);
 	const size_t deps_start = o42a_layout_pad(
-			data_start + o42a_layout_size(obj_data_layout),
+			main_body_start + o42a_layout_size(adata->desc->main_body_layout),
 			dep_layout);
 	const size_t num_ascendants = adata->desc->ascendants.size;
 	const size_t num_deps = ctr->num_deps;
@@ -1082,7 +1074,7 @@ static o42a_obj_data_t *propagate_object(
 #endif
 
 	// Fill object type and data.
-	data->start = adata->start;
+	data->start = -data_start;
 	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
@@ -1173,18 +1165,16 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	const size_t consumed_ascendants = adiff ? 0 : 1;
 
+	const size_t data_start = offsetof(struct o42a_obj, object_data);
+
 	// Ancestor bodies size.
-	const size_t start = -sdata->start;
 	const size_t main_body_start =
 			(char *) O42A(o42a_obj_by_data(sdata))
 			- ((char *) sdata + sdata->start);
 
-	static const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
-	const size_t data_start = o42a_layout_pad(start, obj_data_layout);
-
-	static const o42a_layout_t dep_layout = O42A_LAYOUT(void*);
+	static const o42a_layout_t dep_layout = O42A_LAYOUT(void *);
 	const size_t deps_start = o42a_layout_pad(
-			data_start + o42a_layout_size(obj_data_layout),
+			main_body_start + o42a_layout_size(sdata->desc->main_body_layout),
 			dep_layout);
 	const size_t num_ascendants = sdesc->ascendants.size;
 	const size_t num_deps = ctr->num_deps;
