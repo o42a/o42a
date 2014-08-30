@@ -59,7 +59,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private static final Type<?>[] TYPE_DEPENDENCIES =
 			new Type<?>[] {OBJECT_DESC_TYPE};
 
-	private RelRec start;
 	private Int16rec flags;
 	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectCondFunc> condFunc;
@@ -77,10 +76,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	@Override
 	public final Type<?>[] getTypeDependencies() {
 		return TYPE_DEPENDENCIES;
-	}
-
-	public final RelRec start() {
-		return this.start;
 	}
 
 	public final Int16rec flags() {
@@ -126,7 +121,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRDataOp> data) {
-		this.start = data.addRelPtr("start");
 		this.flags = data.addInt16("flags");
 		data.addInt8("mutex_init").setValue((byte) 0);
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);

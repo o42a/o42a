@@ -145,14 +145,6 @@ struct o42a_obj_data {
 	O42A_HEADER
 
 	/**
-	 * Relative pointer to memory block containing this object.
-	 *
-	 * This may be a virtual block start when ancestor body is not physically
-	 * present.
-	 */
-	o42a_rptr_t start;
-
-	/**
 	 * Type flags.
 	 *
 	 * This can be used to distinguish object type implementation and contains
@@ -494,7 +486,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[14];
+	o42a_dbg_field_info_t fields[13];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
@@ -562,7 +554,8 @@ inline o42a_obj_body_t *o42a_obj_ascendant_body(
 		const o42a_obj_data_t *const data,
 		const o42a_obj_ascendant_t *const ascendant) {
 
-	char *const start = ((char *) data) + data->start;
+	char *const start =
+			((char *) data) - offsetof(struct o42a_obj, object_data);
 
 	return (o42a_obj_body_t *) (start + ascendant->body);
 }

@@ -20,14 +20,9 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 14,
+	.field_num = 13,
 	.name = "o42a_obj_data_t",
 	.fields = {
-		{
-			.data_type = O42A_TYPE_REL_PTR,
-			.offset = offsetof(o42a_obj_data_t, start),
-			.name = "start",
-		},
 		{
 			.data_type = O42A_TYPE_INT16,
 			.offset = offsetof(o42a_obj_data_t, flags),
@@ -633,8 +628,10 @@ static inline const o42a_obj_vmtc_t *vmtc_derive(
 
 	// The body with the same descriptor is present
 	// both in sample and in ancestor.
-	const char *const sstart = ((char *) sdata) + sdata->start;
-	const char *const astart = ((char *) adata) + adata->start;
+	const char *const sstart =
+			((char *) sdata) - offsetof(struct o42a_obj, object_data);
+	const char *const astart =
+			((char *) adata) - offsetof(struct o42a_obj, object_data);
 
 	const o42a_obj_vmt_t *svmt;
 	const o42a_obj_vmtc_t *prev;
@@ -680,7 +677,8 @@ static void derive_object_body(o42a_obj_ctable_t *const ctable) {
 	// Fill debug header.
 	const o42a_obj_data_t *const object_data = ctable->object_data;
 	const o42a_dbg_header_t *const object_header =
-			(o42a_dbg_header_t *) (((char *) object_data) + object_data->start);
+			(o42a_dbg_header_t *)
+			(((char *) object_data) - offsetof(struct o42a_obj, object_data));
 
 	O42A(o42a_dbg_copy_header(
 			o42a_dbg_header(from_body),
@@ -960,7 +958,8 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 		o42a_debug_mem_name("Dep: ", object);
 		o42a_obj_data_t *const data = O42A(o42a_obj_data(object));
 
-		O42A(o42a_gc_mark(o42a_gc_blockof((char *) data + data->start)));
+		O42A(o42a_gc_mark(o42a_gc_blockof(
+				(char *) data - offsetof(struct o42a_obj, object_data))));
 	}
 
 	O42A_RETURN;
@@ -977,7 +976,9 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 		data->value_type->sweep(data);
 	}
 
-	o42a_debug_mem_name("Sweep object: ", (char *) data + data->start);
+	o42a_debug_mem_name(
+			"Sweep object: ",
+			(char *) data - offsetof(struct o42a_obj, object_data));
 	const o42a_obj_desc_t *const desc = data->desc;
 	uint32_t num_asc = desc->ascendants.size;
 
@@ -1038,7 +1039,7 @@ static o42a_obj_data_t *propagate_object(
 	const size_t data_start = offsetof(struct o42a_obj, object_data);
 	const size_t main_body_start =
 			(char *) O42A(o42a_obj_by_data(adata))
-			- ((char *) adata + adata->start);
+			- ((char *) adata - offsetof(struct o42a_obj, object_data));
 	static const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
 
 	static const o42a_layout_t dep_layout = O42A_LAYOUT(void *);
@@ -1074,7 +1075,6 @@ static o42a_obj_data_t *propagate_object(
 #endif
 
 	// Fill object type and data.
-	data->start = -data_start;
 	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
@@ -1170,7 +1170,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	// Ancestor bodies size.
 	const size_t main_body_start =
 			(char *) O42A(o42a_obj_by_data(sdata))
-			- ((char *) sdata + sdata->start);
+			- ((char *) sdata - offsetof(struct o42a_obj, object_data));
 
 	static const o42a_layout_t dep_layout = O42A_LAYOUT(void *);
 	const size_t deps_start = o42a_layout_pad(
@@ -1208,7 +1208,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	// fill object type and data
 	const int32_t sflags = sdata->flags;
 
-	data->start = -data_start;
 	data->flags = O42A_OBJ_RT | (sflags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
@@ -1481,8 +1480,11 @@ void o42a_obj_broadcast(o42a_obj_data_t *const data) {
 
 void o42a_obj_use(o42a_obj_data_t *const data) {
 	O42A_ENTER(return);
-	o42a_debug_mem_name("Use object: ", (char *) data + data->start);
-	O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+	o42a_debug_mem_name(
+			"Use object: ",
+			(char *) data - offsetof(struct o42a_obj, object_data));
+	O42A(o42a_gc_use(o42a_gc_blockof(
+			(char *) data - offsetof(struct o42a_obj, object_data))));
 	O42A_RETURN;
 }
 
@@ -1492,7 +1494,8 @@ static inline o42a_gc_block_t *gc_block_by_object(void *const ptr) {
 	o42a_obj_t *const obj = ptr;
 	o42a_obj_data_t *const data = o42a_obj_data(obj);
 
-	O42A_RETURN o42a_gc_blockof((char *) data + data->start);
+	O42A_RETURN o42a_gc_blockof(
+			(char *) data - offsetof(struct o42a_obj, object_data));
 }
 
 o42a_obj_t *o42a_obj_use_mutable(o42a_obj_t **const var) {
@@ -1507,8 +1510,11 @@ void o42a_obj_use_static(o42a_obj_data_t *const data) {
 
 	assert(!(data->flags & O42A_OBJ_RT) && "Object is not static");
 	if (!(data->flags & O42A_OBJ_RT)) {
-		o42a_debug_mem_name("Static object: ", (char *) data + data->start);
-		O42A(o42a_gc_static(o42a_gc_blockof((char *) data + data->start)));
+		o42a_debug_mem_name(
+				"Static object: ",
+				(char *) data - offsetof(struct o42a_obj, object_data));
+		O42A(o42a_gc_static(o42a_gc_blockof(
+				(char *) data - offsetof(struct o42a_obj, object_data))));
 	}
 
 	O42A_RETURN;
@@ -1525,8 +1531,11 @@ void o42a_obj_start_use(
 
 	if (data->flags & O42A_OBJ_RT) {
 		use->data = data;
-		o42a_debug_mem_name("Start object use: ", (char *) data + data->start);
-		O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+		o42a_debug_mem_name(
+				"Start object use: ",
+				(char *) data - offsetof(struct o42a_obj, object_data));
+		O42A(o42a_gc_use(o42a_gc_blockof(
+				(char *) data - offsetof(struct o42a_obj, object_data))));
 	} else {
 		O42A(o42a_obj_use_static(data));
 	}
@@ -1540,9 +1549,9 @@ void o42a_obj_end_use(o42a_obj_use_t *const use) {
 	if (use->data) {
 		o42a_debug_mem_name(
 				"End object use: ",
-				(char *) use->data + use->data->start);
-		O42A(o42a_gc_unuse(
-				o42a_gc_blockof((char *) use->data + use->data->start)));
+				(char *) use->data - offsetof(struct o42a_obj, object_data));
+		O42A(o42a_gc_unuse(o42a_gc_blockof(
+				(char *) use->data - offsetof(struct o42a_obj, object_data))));
 		use->data = NULL;
 	}
 
@@ -1564,8 +1573,11 @@ void o42a_obj_start_val_use(o42a_val_t *const val) {
 
 	o42a_obj_data_t *const data = O42A(o42a_obj_data(obj));
 
-	o42a_debug_mem_name("Start link target use: ", (char *) data + data->start);
-	O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+	o42a_debug_mem_name(
+			"Start link target use: ",
+			(char *) data - offsetof(struct o42a_obj, object_data));
+	O42A(o42a_gc_use(o42a_gc_blockof(
+			(char *) data - offsetof(struct o42a_obj, object_data))));
 
 	O42A_RETURN;
 }
@@ -1585,8 +1597,11 @@ void o42a_obj_end_val_use(o42a_val_t *const val) {
 
 	o42a_obj_data_t *const data = O42A(o42a_obj_data(obj));
 
-	o42a_debug_mem_name("End link target use: ", (char *) data + data->start);
-	O42A(o42a_gc_unuse(o42a_gc_blockof((char *) data + data->start)));
+	o42a_debug_mem_name(
+			"End link target use: ",
+			(char *) data - offsetof(struct o42a_obj, object_data));
+	O42A(o42a_gc_unuse(o42a_gc_blockof(
+			(char *) data - offsetof(struct o42a_obj, object_data))));
 
 	O42A_RETURN;
 }

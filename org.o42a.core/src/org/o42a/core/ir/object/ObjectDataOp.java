@@ -19,22 +19,38 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
+
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.RelOp;
+import org.o42a.codegen.data.RelPtr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
+import org.o42a.core.ir.object.type.AscendantDescIR;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.DefiniteIROp;
+import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectDefFunc;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectDataOp extends DefiniteIROp {
+
+	private static final ID LAST_ID = ID.rawId("last");
+	private static final ID MAIN_BODY_ID = ID.rawId("main_body");
+	private static final ID START_OFFSET_ID = ID.rawId("start_offset");
+	private static final ID OBJECT_START_ID = ID.rawId("object_start");
+
+	private static ObjectStartOffset startOffset;
 
 	private final ObjectPrecision precision;
 	private final ObjectIRDataOp ptr;
@@ -69,16 +85,12 @@ public final class ObjectDataOp extends DefiniteIROp {
 	public final ObjectOp object(Code code, Obj wellKnownType) {
 		return new AnonymousObjOp(
 				this,
-				mainBody(code),
+				mainBody(code, wellKnownType),
 				wellKnownType);
 	}
 
-	public final DataOp start(Code code) {
-		return ptr().loadStart(code);
-	}
-
 	public final ObjOp objectOfType(Code code, Obj type) {
-		return mainBody(code).to(
+		return mainBody(code, type).to(
 				null,
 				code,
 				type.ir(getGenerator()).getBodyType())
@@ -91,7 +103,7 @@ public final class ObjectDataOp extends DefiniteIROp {
 		final ObjectValueFunc function =
 				ptr().valueFunc(code).load(null, code);
 
-		function.call(dirs, ptr(), mainBody(code));
+		function.call(dirs, ptr(), mainBody(code, null));
 	}
 
 	public final void writeCond(CodeDirs dirs) {
@@ -100,7 +112,7 @@ public final class ObjectDataOp extends DefiniteIROp {
 		final ObjectCondFunc function =
 				ptr().condFunc(code).load(null, code);
 
-		function.call(dirs, mainBody(code));
+		function.call(dirs, mainBody(code, null));
 	}
 
 	public final void writeDefs(DefDirs dirs, ObjectOp body) {
@@ -118,11 +130,76 @@ public final class ObjectDataOp extends DefiniteIROp {
 	}
 
 	private final DataOp body(Code code, ObjectOp body) {
-		return body != null ? body.toData(null, code) : mainBody(code);
+		return body != null ? body.toData(null, code) : mainBody(code, null);
 	}
 
-	private final DataOp mainBody(Code code) {
-		return ptr().loadObject(code);
+	private final DataOp mainBody(Code code, Obj anyObject) {
+
+		final RelList.Op ascendants =
+				ptr(code).desc(code).load(null, code).ascendants(code);
+		final Int32op last =
+				ascendants.size(code)
+				.load(null, code)
+				.sub(LAST_ID, code, code.int32(1));
+		final AscendantDescIR.Op ascendant =
+				ascendants.loadList(code)
+				.to(null, code, ASCENDANT_DESC_IR)
+				.offset(null, code, last);
+
+		return loadStart(code, anyObject).offset(
+				MAIN_BODY_ID,
+				code,
+				ascendant.body(code).load(null, code));
+	}
+
+	private final DataOp loadStart(Code code, Obj anyObject) {
+		return ptr(code)
+				.toData(null, code)
+				.offset(null, code, startOffset(code, anyObject))
+				.toData(OBJECT_START_ID, code);
+	}
+
+	private RelOp startOffset(Code code, Obj anyObject) {
+
+		final ObjectStartOffset cached = startOffset;
+
+		if (cached != null && cached.generator == getGenerator()) {
+			return cached.get(code);
+		}
+
+		final Obj object;
+
+		if (anyObject != null) {
+			object = anyObject;
+		} else {
+			object = getBuilder().getContext().getIntrinsics().getVoid();
+		}
+
+		final ObjectIR ir = object.ir(getGenerator());
+		final ObjectStartOffset offset = new ObjectStartOffset(
+				getGenerator(),
+				ir.ptr().relativeTo(
+						ir.getDataIR().getInstance().pointer(getGenerator())));
+
+		startOffset = offset;
+
+		return offset.get(code);
+	}
+
+	private static final class ObjectStartOffset {
+
+		private final Generator generator;
+		private final RelPtr offset;
+
+		ObjectStartOffset(Generator generator, RelPtr offset) {
+			this.generator = generator;
+			this.offset = offset;
+		}
+
+		final RelOp get(Code code) {
+			return this.offset.op(START_OFFSET_ID, code);
+		}
+
 	}
 
 }

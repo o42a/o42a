@@ -72,7 +72,8 @@ static void o42a_fld_mark_obj(o42a_fld *const field) {
 
 	o42a_obj_data_t *const data = O42A(o42a_obj_data(object));
 
-	O42A(o42a_gc_mark(o42a_gc_blockof((char *) data + data->start)));
+	O42A(o42a_gc_mark(o42a_gc_blockof(
+			(char *) data - offsetof(struct o42a_obj, object_data))));
 
 	O42A_RETURN;
 }
@@ -302,7 +303,8 @@ void o42a_fld_finish(o42a_obj_data_t *const data, o42a_fld_ctr_t *const ctr) {
 	}// Not in the list otherwise.
 
 	// The object can link to garbage-collected data blocks now.
-	O42A(o42a_gc_link(o42a_gc_blockof((char *) data + data->start)));
+	O42A(o42a_gc_link(o42a_gc_blockof(
+			(char *) data - offsetof(struct o42a_obj, object_data))));
 
 	// Inform others the field is constructed.
 	O42A(o42a_obj_broadcast(data));
