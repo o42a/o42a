@@ -109,14 +109,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 	@Override
 	public void fill(ObjectIRData instance) {
-
-		final Generator generator = instance.getGenerator();
-
 		instance.flags().setConstant(true).setValue(objectFlags());
-		instance.start().setConstant(true).setValue(
-				this.objectIRStruct.data(generator).getPointer().relativeTo(
-						instance.data(generator).getPointer()));
-
 		instance.value().set(getInitialValue());
 		instance.resumeFrom().setNull();
 		instance.desc()
