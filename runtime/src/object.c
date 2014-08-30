@@ -20,14 +20,9 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 15,
+	.field_num = 14,
 	.name = "o42a_obj_data_t",
 	.fields = {
-		{
-			.data_type = O42A_TYPE_REL_PTR,
-			.offset = offsetof(o42a_obj_data_t, object),
-			.name = "object",
-		},
 		{
 			.data_type = O42A_TYPE_REL_PTR,
 			.offset = offsetof(o42a_obj_data_t, start),
@@ -342,15 +337,15 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use = {
 
 extern o42a_obj_data_t *o42a_obj_data(const o42a_obj_body_t *);
 
-extern o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *);
-
-extern o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_desc_t *);
-
-extern o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *);
+extern const o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_desc_t *);
 
 extern o42a_obj_body_t *o42a_obj_ascendant_body(
 		const o42a_obj_data_t *,
 		const o42a_obj_ascendant_t *);
+
+extern o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *);
+
+extern o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *);
 
 const o42a_obj_desc_t o42a_obj_void_desc = {
 #ifndef NDEBUG
@@ -882,7 +877,7 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 	}
 
 	// Mark all fields.
-	o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(desc));
+	const o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(desc));
 
 	while (1) {
 
@@ -963,7 +958,7 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 	}
 
 	// Mark all fields.
-	o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(desc));
+	const o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(desc));
 
 	while (1) {
 
@@ -1012,7 +1007,9 @@ static o42a_obj_data_t *propagate_object(
 		const o42a_obj_data_t *const sdata) {
 	O42A_ENTER(return NULL);
 
-	const size_t main_body_start = (size_t) (adata->object - adata->start);
+	const size_t main_body_start =
+			(char *) O42A(o42a_obj_by_data(adata))
+			- ((char *) adata + adata->start);
 	const size_t data_start = -adata->start;
 	static const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
 
@@ -1049,7 +1046,6 @@ static o42a_obj_data_t *propagate_object(
 #endif
 
 	// Fill object type and data.
-	data->object = adata->object;
 	data->start = adata->start;
 	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
@@ -1143,7 +1139,9 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	// Ancestor bodies size.
 	const size_t start = -sdata->start;
-	const size_t main_body_start = sdata->object - sdata->start;
+	const size_t main_body_start =
+			(char *) O42A(o42a_obj_by_data(sdata))
+			- ((char *) sdata + sdata->start);
 
 	static const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
 	const size_t data_start = o42a_layout_pad(start, obj_data_layout);
@@ -1184,7 +1182,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	// fill object type and data
 	const int32_t sflags = sdata->flags;
 
-	data->object = main_body_start - data_start;
 	data->start = -data_start;
 	data->flags = O42A_OBJ_RT | (sflags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;

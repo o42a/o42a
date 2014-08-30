@@ -144,9 +144,6 @@ struct o42a_obj_data {
 
 	O42A_HEADER
 
-	/** Relative pointer to main object body. */
-	o42a_rptr_t object;
-
 	/**
 	 * Relative pointer to memory block containing this object.
 	 *
@@ -486,7 +483,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[15];
+	o42a_dbg_field_info_t fields[14];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
@@ -528,43 +525,18 @@ inline o42a_obj_data_t *o42a_obj_data(const o42a_obj_body_t *const body) {
 }
 
 /**
- * Retrieves object from it's data.
- *
- * \param data[in] object data pointer.
- *
- * \return pointer to object's main body.
- */
-inline o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *const data) {
-	return (o42a_obj_t *) (((char *) data) + data->object);
-}
-
-/**
  * Retrieves object ascendant's descriptors.
  *
  * \param desc[in] object type descriptor pointer.
  *
  * \return pointer to the first element of ascendant descriptors array.
  */
-inline o42a_obj_ascendant_t *o42a_obj_ascendants(
+inline const o42a_obj_ascendant_t *o42a_obj_ascendants(
 		const o42a_obj_desc_t *const desc) {
 
 	const o42a_rlist_t *const list = &desc->ascendants;
 
 	return (o42a_obj_ascendant_t *) (((char *) list) + list->list);
-}
-
-/**
- * Retrieves field descriptors.
- *
- * \param desc[in] type descriptor pointer.
- *
- * \return pointer to the first element of the field descriptors array.
- */
-inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
-
-	const o42a_rlist_t *const list = &desc->fields;
-
-	return (o42a_obj_field_t *) (((char *) list) + list->list);
 }
 
 /**
@@ -582,6 +554,38 @@ inline o42a_obj_body_t *o42a_obj_ascendant_body(
 	char *const start = ((char *) data) + data->start;
 
 	return (o42a_obj_body_t *) (start + ascendant->body);
+}
+
+/**
+ * Retrieves object from it's data.
+ *
+ * \param data[in] object data pointer.
+ *
+ * \return pointer to object's main body.
+ */
+inline o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *const data) {
+	O42A_ENTER(return NULL);
+
+	const o42a_obj_desc_t *const desc = data->desc;
+	const size_t last = desc->ascendants.size - 1;
+	const o42a_obj_ascendant_t *const ascendants =
+			O42A(o42a_obj_ascendants(desc));
+
+	O42A_RETURN o42a_obj_ascendant_body(data, ascendants + last);
+}
+
+/**
+ * Retrieves field descriptors.
+ *
+ * \param desc[in] type descriptor pointer.
+ *
+ * \return pointer to the first element of the field descriptors array.
+ */
+inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
+
+	const o42a_rlist_t *const list = &desc->fields;
+
+	return (o42a_obj_field_t *) (((char *) list) + list->list);
 }
 
 /**
