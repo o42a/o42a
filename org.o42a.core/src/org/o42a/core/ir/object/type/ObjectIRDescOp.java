@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.type.ObjectDescIR.OBJECT_DESC_ID;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
 
@@ -36,6 +37,14 @@ public final class ObjectIRDescOp extends StructOp<ObjectIRDescOp> {
 	@Override
 	public final ObjectIRDesc getType() {
 		return (ObjectIRDesc) super.getType();
+	}
+
+	public final RelList.Op fields(Code code) {
+		return struct(null, code, getType().fields().getInstance());
+	}
+
+	public final RelList.Op ascendants(Code code) {
+		return struct(null, code, getType().ascendants().getInstance());
 	}
 
 	@Override

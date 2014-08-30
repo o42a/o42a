@@ -112,9 +112,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 		final Generator generator = instance.getGenerator();
 
-		instance.object().setConstant(true).setValue(
-				getObjectIR().getMainBodyIR().data(generator).getPointer()
-				.relativeTo(instance.data(generator).getPointer()));
 		instance.flags().setConstant(true).setValue(objectFlags());
 		instance.start().setConstant(true).setValue(
 				this.objectIRStruct.data(generator).getPointer().relativeTo(

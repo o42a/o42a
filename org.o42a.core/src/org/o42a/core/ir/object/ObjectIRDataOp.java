@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DATA_ID;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
+import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -28,6 +29,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
+import org.o42a.core.ir.object.type.AscendantDescIR;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
@@ -40,6 +42,7 @@ import org.o42a.util.string.ID;
 
 public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 
+	private static final ID LAST_ID = ID.rawId("last");
 	private static final ID MAIN_BODY_ID = ID.id("main_body");
 	private static final ID OBJECT_START_ID = ID.id("object_start");
 
@@ -58,15 +61,23 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 		return new ObjectDataOp(builder, this, precision);
 	}
 
-	public final RelRecOp object(Code code) {
-		return relPtr(null, code, getType().object());
-	}
-
 	public final DataOp loadObject(Code code) {
-		return object(code)
+
+		final RelList.Op ascendants =
+				desc(code).load(null, code).ascendants(code);
+		final Int32op last =
+				ascendants.size(code)
 				.load(null, code)
-				.offset(null, code, this)
-				.toData(MAIN_BODY_ID, code);
+				.sub(LAST_ID, code, code.int32(1));
+		final AscendantDescIR.Op ascendant =
+				ascendants.loadList(code)
+				.to(null, code, ASCENDANT_DESC_IR)
+				.offset(null, code, last);
+
+		return loadStart(code).offset(
+				MAIN_BODY_ID,
+				code,
+				ascendant.body(code).load(null, code));
 	}
 
 	public final RelRecOp start(Code code) {

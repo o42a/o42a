@@ -91,7 +91,7 @@ public final class ObjectDataOp extends DefiniteIROp {
 		final ObjectValueFunc function =
 				ptr().valueFunc(code).load(null, code);
 
-		function.call(dirs, ptr(), ptr().loadObject(code));
+		function.call(dirs, ptr(), mainBody(code));
 	}
 
 	public final void writeCond(CodeDirs dirs) {
@@ -100,7 +100,7 @@ public final class ObjectDataOp extends DefiniteIROp {
 		final ObjectCondFunc function =
 				ptr().condFunc(code).load(null, code);
 
-		function.call(dirs, ptr().loadObject(code));
+		function.call(dirs, mainBody(code));
 	}
 
 	public final void writeDefs(DefDirs dirs, ObjectOp body) {
