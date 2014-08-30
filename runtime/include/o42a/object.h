@@ -276,6 +276,17 @@ struct o42a_obj_desc {
 };
 
 
+struct o42a_obj {
+
+	O42A_HEADER
+
+	o42a_obj_data_t object_data;
+
+	o42a_obj_body_t bodies[];
+
+};
+
+
 /**
  * Object ascendant descriptor.
  *
