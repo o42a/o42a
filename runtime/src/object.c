@@ -368,6 +368,18 @@ const o42a_obj_desc_t o42a_obj_void_desc = {
 		.list = 0,
 		.size = 0,
 	},
+	.ascendants = {
+#ifndef NDEBUG
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, ascendants)),
+			.name = "ascendants",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
 	.main_body_layout = O42A_LAYOUT(o42a_obj_body_t),
 };
 
@@ -392,6 +404,18 @@ const o42a_obj_desc_t o42a_obj_false_desc = {
 		.list = 0,
 		.size = 0,
 	},
+	.ascendants = {
+#ifndef NDEBUG
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, ascendants)),
+			.name = "ascendants",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
 	.main_body_layout = O42A_LAYOUT(o42a_obj_body_t),
 };
 
@@ -410,6 +434,18 @@ const o42a_obj_desc_t o42a_obj_none_desc = {
 			.type_code = 0x042a0001,
 			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, fields)),
 			.name = "fields",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
+	.ascendants = {
+#ifndef NDEBUG
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, ascendants)),
+			.name = "ascendants",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
 		},
 #endif /* NDEBUG */
