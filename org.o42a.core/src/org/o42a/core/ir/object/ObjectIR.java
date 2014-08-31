@@ -50,11 +50,12 @@ public class ObjectIR {
 	private final Generator generator;
 	private final Obj object;
 	private final ValueIR valueIR;
+	private ObjectDescIR descIR;
+	private VmtIR vmtIR;
 	private ObjectIRStruct struct;
 	private ObjectValueIR objectValueIR;
 	private List<DepIR> existingDeps;
 	private Map<Dep, DepIR> allDeps;
-	private ObjectDescIR descIR;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
@@ -100,8 +101,30 @@ public class ObjectIR {
 		return getObject().type().getLastDefinition().ir(getGenerator());
 	}
 
+	public final ObjectDescIR getDescIR() {
+		if (this.descIR != null) {
+			return this.descIR;
+		}
+		return this.descIR = allocateDescIR(this);
+	}
+
+	public final VmtIR getVmtIR() {
+		if (this.vmtIR != null) {
+			return this.vmtIR;
+		}
+
+		this.vmtIR = new VmtIR(this);
+		getGenerator().newGlobal().struct(this.vmtIR).getInstance();
+
+		return this.vmtIR;
+	}
+
 	public final Ptr<?> ptr() {
 		return getStruct().pointer(getGenerator());
+	}
+
+	public final ObjectDataIR getDataIR() {
+		return getStruct().dataIR();
 	}
 
 	public final ObjectIRBody getBodyType() {
@@ -133,22 +156,11 @@ public class ObjectIR {
 		return bodyIR(ancestor);
 	}
 
-	public final ObjectDescIR getDescIR() {
-		if (this.descIR != null) {
-			return this.descIR;
-		}
-		return this.descIR = allocateDescIR(this);
-	}
-
 	public final ObjectDataIR getStaticDataIR() {
 
 		final Obj lastDefinition = getObject().type().getLastDefinition();
 
 		return lastDefinition.ir(getGenerator()).getDataIR();
-	}
-
-	public final ObjectDataIR getDataIR() {
-		return getStruct().dataIR();
 	}
 
 	public final ValueIR getValueIR() {

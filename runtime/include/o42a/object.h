@@ -114,11 +114,6 @@ typedef struct o42a_obj_body {
 
 	O42A_HEADER
 
-	/**
-	 * Pointer to virtual method tables chain.
-	 */
-	const o42a_obj_vmtc_t *vmtc;
-
 	/*
 	 * Relative pointer to object data.
 	 *
@@ -136,9 +131,6 @@ typedef struct o42a_obj_body {
  * and it's inheritance.
  *
  * There is exactly one data section per object.
- *
- * Object type always starts with data field, so it is safe to cast type pointer
- * to data pointer.
  */
 struct o42a_obj_data {
 
@@ -184,6 +176,11 @@ struct o42a_obj_data {
 	 * all waiting thread.
 	 */
 	pthread_cond_t thread_cond;
+
+	/**
+	 * Pointer to virtual method tables chain.
+	 */
+	const o42a_obj_vmtc_t *vmtc;
 
 	/**
 	 * Object value calculator function.
@@ -268,13 +265,27 @@ struct o42a_obj_desc {
 };
 
 
+/**
+ * Object structure.
+
+ * This structure is only a header common to every object. The fields are
+ * allocated after this header at proper alignments.
+ */
 struct o42a_obj {
 
 	O42A_HEADER
 
+	/**
+	 * Object data.
+	 */
 	o42a_obj_data_t object_data;
 
-	o42a_obj_body_t bodies[];
+	/**
+	 * Object fields.
+	 *
+	 * The number and types of these fields are specific to object type.
+	 */
+	char fields[];
 
 };
 
@@ -351,7 +362,7 @@ extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
  * Virtual methods table.
  *
  * This structure is only a header common to every VMT. An actual VMT structure
- * is specific to particular object body structure. Such object body contains
+ * is specific to particular object type. Such object data contains
  * a pointer to the chain of compatible VMTs.
  *
  * All VMTs are statically allocated and may not be altered at run time.
@@ -359,6 +370,11 @@ extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
 struct o42a_obj_vmt {
 
 	O42A_HEADER
+
+	/**
+	 * The size of this VMT.
+	 */
+	uint32_t size;
 
 	/**
 	 * VMT chain terminator.
@@ -369,6 +385,13 @@ struct o42a_obj_vmt {
 	 * Every VMT chain should terminate with one of terminators.
 	 */
 	o42a_obj_vmtc_t terminator;
+
+	/**
+	 * Object methods.
+	 *
+	 * The number and types of these methods are specific to the object type.
+	 */
+	char methods[];
 
 };
 
@@ -486,7 +509,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[13];
+	o42a_dbg_field_info_t fields[14];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc;

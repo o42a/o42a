@@ -110,6 +110,11 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 	@Override
 	public void fill(ObjectIRData instance) {
 		instance.flags().setConstant(true).setValue(objectFlags());
+		instance.vmtc().setConstant(true).setValue(
+				getObjectIR()
+				.getVmtIR()
+				.terminator()
+				.pointer(getGenerator()));
 		instance.value().set(getInitialValue());
 		instance.resumeFrom().setNull();
 		instance.desc()

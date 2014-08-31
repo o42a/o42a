@@ -28,9 +28,10 @@ import java.util.List;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.RelRec;
+import org.o42a.codegen.data.Struct;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -52,9 +53,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 
-	private VmtIR vmtIR;
-
-	private StructRec<VmtIRChain.Op> vmtc;
 	private RelRec objectData;
 
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
@@ -92,21 +90,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this == this.objectIRStruct.mainBodyIR();
 	}
 
-	public final VmtIR getVmtIR() {
-		if (this.vmtIR != null) {
-			return this.vmtIR;
-		}
-
-		this.vmtIR = new VmtIR(this);
-		getGenerator().newGlobal().struct(this.vmtIR).getInstance();
-
-		return this.vmtIR;
-	}
-
-	public final StructRec<Op> vmtc() {
-		return this.vmtc;
-	}
-
 	public final RelRec objectData() {
 		return this.objectData;
 	}
@@ -140,7 +123,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRBodyOp> data) {
-		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.objectData = data.addRelPtr("object_data");
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
@@ -152,10 +134,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	protected void fill() {
 
 		final Generator generator = getGenerator();
-
-		this.vmtc.setConstant(true)
-		.setValue(getVmtIR().terminator().pointer(getGenerator()));
-
 		final ObjectIRData objectData =
 				getObjectIR().getDataIR().getInstance();
 

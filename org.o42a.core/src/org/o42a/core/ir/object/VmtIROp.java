@@ -19,7 +19,10 @@
 */
 package org.o42a.core.ir.object;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.code.op.StructOp;
 
 
@@ -32,6 +35,19 @@ public class VmtIROp extends StructOp<VmtIROp> {
 	@Override
 	public final VmtIR getType() {
 		return (VmtIR) super.getType();
+	}
+
+	public final Int32recOp size(Code code) {
+		return int32(null, code, getType().size());
+	}
+
+	public final BoolOp compatible(Code code) {
+
+		final int expectedSize = getType().layout(code.getGenerator()).size();
+
+		return size(code)
+				.load(null, code)
+				.ge(null, code, code.int32(expectedSize));
 	}
 
 }

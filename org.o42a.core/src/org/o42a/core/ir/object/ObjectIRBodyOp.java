@@ -26,7 +26,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
@@ -48,10 +47,6 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 
 	public final Obj getSampleDeclaration() {
 		return getType().getSampleDeclaration();
-	}
-
-	public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
-		return ptr(null, code, getType().vmtc());
 	}
 
 	public final RelRecOp objectData(Code code) {

@@ -24,9 +24,7 @@ import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.core.ir.object.ObjBuilder;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.VmtIRChain;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
@@ -76,9 +74,11 @@ public abstract class ObjectRefFld<F extends RefFld.Op<F>>
 		.returnValue(refer);
 
 		final Block delegate = refer.otherwise();
+		final VmtIROp prevVmt =
+				prevVmtc.loadVmt(delegate, getObjectIR().getVmtIR());
 
-		prevVmtc.loadVmt(delegate, getBodyIR().getVmtIR())
-		.func(null, delegate, vmtConstructor())
+		prevVmt.compatible(delegate).goUnless(delegate, refer.head());
+		prevVmt.func(null, delegate, vmtConstructor())
 		.load(null, delegate)
 		.call(delegate, host, prevVmtc)
 		.returnValue(delegate);
