@@ -21,8 +21,6 @@ package org.o42a.core.ir.gc;
 
 import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
 
-import java.util.function.Supplier;
-
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Type;
 
@@ -61,13 +59,7 @@ public final class GCBlock implements Content<GCBlockOp.Type> {
 		instance.size()
 		.setConstant(true)
 		.setLowLevel(true)
-		.setValue(new Supplier<Integer>() {
-			@Override
-			public Integer get() {
-				return GCBlock.this.type.layout(
-						GCBlock.this.type.getGenerator()).size();
-			}
-		});
+		.setValue(() -> this.type.layout(this.type.getGenerator()).size());
 	}
 
 	@Override
