@@ -20,7 +20,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 13,
+	.field_num = 14,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -47,6 +47,13 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.data_type = O42A_TYPE_FUNC_PTR,
 			.offset = offsetof(o42a_obj_data_t, value_f),
 			.name = "value_f",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_data_t, vmtc),
+			.name = "vmtc",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
@@ -606,61 +613,6 @@ static inline void vmtc_release(const o42a_obj_vmtc_t *vmtc) {
 	}
 }
 
-static inline const o42a_obj_vmtc_t *vmtc_derive(
-		o42a_obj_ctable_t *const ctable) {
-	O42A_ENTER(return NULL);
-
-	enum o42a_obj_derivation_kind dkind = ctable->derivation_kind;
-	const o42a_obj_data_t *const adata = ctable->ancestor_data;
-	const o42a_obj_data_t *const sdata = ctable->sample_data;
-	const o42a_obj_desc_t *const body_desc = ctable->body_desc;
-
-	if (dkind == O42A_DK_DERIVE_MAIN) {
-		// The body is derived from sample.
-		// No such body in ancestor.
-
-		const o42a_obj_vmtc_t *const svmtc = ctable->from.body->vmtc;
-
-		O42A(vmtc_use(svmtc));
-
-		O42A_RETURN svmtc;
-	}
-
-	// The body with the same descriptor is present
-	// both in sample and in ancestor.
-	const char *const sstart =
-			((char *) sdata) - offsetof(struct o42a_obj, object_data);
-	const char *const astart =
-			((char *) adata) - offsetof(struct o42a_obj, object_data);
-
-	const o42a_obj_vmt_t *svmt;
-	const o42a_obj_vmtc_t *prev;
-
-	if (dkind == O42A_DK_OVERRIDE_MAIN) {
-		// The body is derived from sample.
-
-		const o42a_obj_body_t *const sbody = ctable->from.body;
-		const ptrdiff_t offset = ((char *) sbody) - sstart;
-		const o42a_obj_body_t *const abody =
-				(o42a_obj_body_t*) (((char *) astart) + offset);
-
-		svmt = sbody->vmtc->vmt;
-		prev = abody->vmtc;
-	} else {
-		// The body is derived from ancestor.
-
-		const o42a_obj_body_t *const abody = ctable->from.body;
-		const ptrdiff_t offset = ((char *) abody) - astart;
-		const o42a_obj_body_t *const sbody =
-				(o42a_obj_body_t*) (((char *) sstart) + offset);
-
-		svmt = sbody->vmtc->vmt;
-		prev = abody->vmtc;
-	}
-
-	O42A_RETURN vmtc_alloc(svmt, prev);
-}
-
 static void derive_object_body(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 	O42A_DO("Derive body");
@@ -690,7 +642,6 @@ static void derive_object_body(o42a_obj_ctable_t *const ctable) {
 	// Fill body header.
 	to_body->object_data =
 			((char *) ctable->object_data) - ((char *) to_body);
-	to_body->vmtc = O42A(vmtc_derive(ctable));
 
 	// Derive fields.
 	const size_t num_fields = ctable->body_desc->fields.size;
@@ -979,6 +930,9 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 	o42a_debug_mem_name(
 			"Sweep object: ",
 			(char *) data - offsetof(struct o42a_obj, object_data));
+
+	O42A(vmtc_release(data->vmtc));
+
 	const o42a_obj_desc_t *const desc = data->desc;
 	uint32_t num_asc = desc->ascendants.size;
 
@@ -992,9 +946,6 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 	while (1) {
 
 		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(data, asc));
-
-		O42A(vmtc_release(body->vmtc));
-
 		const o42a_obj_desc_t *const body_desc = asc->desc;
 		uint32_t num_fields = body_desc->fields.size;
 
@@ -1078,6 +1029,11 @@ static o42a_obj_data_t *propagate_object(
 	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
+	const o42a_obj_vmtc_t *const vmtc = adata->vmtc;
+
+	O42A(vmtc_use(vmtc));
+
+	data->vmtc = vmtc;
 	data->value_f = adata->value_f;
 	data->cond_f = adata->cond_f;
 	data->def_f = adata->def_f;
@@ -1211,6 +1167,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->flags = O42A_OBJ_RT | (sflags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
+	data->vmtc = O42A(vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
 	data->value_f = sdata->value_f;
 	data->cond_f = sdata->cond_f;
 	data->def_f =

@@ -110,7 +110,7 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	public final VmtIRChain.Op vmtc(Code code) {
-		return ptr(code).vmtc(code).load(null, code);
+		return ptr(code).loadObjectData(code).vmtc(code).load(null, code);
 	}
 
 	@Override

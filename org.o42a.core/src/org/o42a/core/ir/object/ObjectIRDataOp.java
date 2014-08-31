@@ -55,6 +55,10 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 		return new ObjectDataOp(builder, this, precision);
 	}
 
+	public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
+		return ptr(null, code, getType().vmtc());
+	}
+
 	public final FuncOp<ObjectValueFunc> valueFunc(Code code) {
 		return func(null, code, getType().valueFunc());
 	}

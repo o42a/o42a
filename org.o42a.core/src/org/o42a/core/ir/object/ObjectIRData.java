@@ -33,6 +33,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.impl.ObjectIRDeps;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
@@ -60,6 +61,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 			new Type<?>[] {OBJECT_DESC_TYPE};
 
 	private Int16rec flags;
+	private StructRec<VmtIRChain.Op> vmtc;
 	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectCondFunc> condFunc;
 	private FuncRec<ObjectDefFunc> defFunc;
@@ -80,6 +82,10 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	public final Int16rec flags() {
 		return this.flags;
+	}
+
+	public final StructRec<Op> vmtc() {
+		return this.vmtc;
 	}
 
 	public final FuncRec<ObjectValueFunc> valueFunc() {
@@ -125,6 +131,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		data.addInt8("mutex_init").setValue((byte) 0);
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
+		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
 		this.defFunc = data.addFuncPtr("def_f", OBJECT_DEF);

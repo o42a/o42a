@@ -123,9 +123,9 @@ enum o42a_gc_block_flags {
 	 * The data blocks links to other data blocks.
 	 *
 	 * This is only valid for O42A_GC_LIST_USED list. The block with this flag
-	 * sent won't be deallocated even though the block's use count is zero.
+	 * set won't be deallocated even though the block's use count is zero.
 	 *
-	 * This flag is set by o42a_gc_link and dropped as soon as the block
+	 * This flag is set by gc_link and dropped as soon as the block
 	 * is used for the first time.
 	 */
 	O42A_GC_BLOCK_LINKING = 0x04,
