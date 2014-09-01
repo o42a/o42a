@@ -226,11 +226,6 @@ struct o42a_obj_data {
 	const o42a_obj_desc_t *desc;
 
 	/**
-	 * Pointer to object value type descriptor.
-	 */
-	const o42a_val_type_t *value_type;
-
-	/**
 	 * Pointer to the head of the constructing fields list.
 	 *
 	 * This is maintained with o42a_fld_start and o42a_fld_finish functions.
@@ -248,6 +243,11 @@ struct o42a_obj_data {
 struct o42a_obj_desc {
 
 	O42A_HEADER
+
+	/**
+	 * Pointer to object value type descriptor.
+	 */
+	const o42a_val_type_t *value_type;
 
 	/**
 	 * Relative pointer to the list of field descriptors.
@@ -509,10 +509,10 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[14];
+	o42a_dbg_field_info_t fields[13];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 

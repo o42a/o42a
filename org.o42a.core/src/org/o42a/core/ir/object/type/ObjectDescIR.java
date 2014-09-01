@@ -160,6 +160,14 @@ public class ObjectDescIR {
 			final Generator generator = getGenerator();
 			final ObjectIRDesc desc = getDesc();
 
+			desc.valueType()
+			.setConstant(true)
+			.setValue(
+					getObjectIR()
+					.getValueIR()
+					.getValueTypeIR()
+					.getValueTypeDesc());
+
 			desc.mainBodyLayout()
 			.setConstant(true)
 			.setLowLevel(true)

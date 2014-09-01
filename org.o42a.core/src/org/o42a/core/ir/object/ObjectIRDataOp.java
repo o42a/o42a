@@ -29,7 +29,6 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
-import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.RelList;
@@ -81,10 +80,6 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 
 	public final StructRecOp<ObjectIRDescOp> desc(Code code) {
 		return ptr(null, code, getType().desc());
-	}
-
-	public final StructRecOp<ValueTypeDescOp> valueType(Code code) {
-		return ptr(null, code, getType().valueType());
 	}
 
 	public final DataRecOp loadDeps(Code code) {
