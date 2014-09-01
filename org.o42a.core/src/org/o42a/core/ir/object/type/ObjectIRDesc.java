@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ir.object.type;
 
+import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
+
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.Int32rec;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.op.RelList;
@@ -33,12 +33,17 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	public static final ObjectIRDesc OBJECT_DESC_TYPE = new ObjectIRDesc();
 
+	private StructRec<ValueTypeDescOp> valueType;
 	private RelList<FieldDescIR> fields;
 	private RelList<ObjectIRBody> ascendants;
 	private Int32rec mainBodyLayout;
 
 	private ObjectIRDesc() {
 		super(ID.rawId("o42a_obj_desc_t"));
+	}
+
+	public final StructRec<ValueTypeDescOp> valueType() {
+		return this.valueType;
 	}
 
 	public final RelList<FieldDescIR> fields() {
@@ -60,6 +65,7 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRDescOp> data) {
+		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		this.fields = new ObjectIRFields().allocate(data, "fields");
 		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");
 		this.mainBodyLayout = data.addInt32("main_body_layout");

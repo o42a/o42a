@@ -20,7 +20,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 14,
+	.field_num = 13,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -85,13 +85,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_data_t, value_type),
-			.name = "value_type",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type,
-		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_data_t, fld_ctrs),
 			.name = "fld_ctrs",
 			.type_info =
@@ -106,11 +99,18 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	},
 };
 
-const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 	.type_code = 0x042a0101,
-	.field_num = 3,
+	.field_num = 4,
 	.name = "o42a_obj_desc_t",
 	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_desc_t, value_type),
+			.name = "value_type",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type,
+		},
 		{
 			.data_type = O42A_TYPE_STRUCT,
 			.offset = offsetof(o42a_obj_desc_t, fields),
@@ -843,7 +843,7 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 	const uint32_t flags = value->flags;
 
 	if (flags & O42A_VAL_CONDITION) {
-		data->value_type->mark(data);
+		data->desc->value_type->mark(data);
 	}
 
 	const o42a_obj_desc_t *const desc = data->desc;
@@ -924,7 +924,7 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 	const uint32_t flags = value->flags;
 
 	if (flags & O42A_VAL_CONDITION) {
-		data->value_type->sweep(data);
+		data->desc->value_type->sweep(data);
 	}
 
 	o42a_debug_mem_name(
@@ -1047,11 +1047,6 @@ static o42a_obj_data_t *propagate_object(
 	}
 	data->resume_from = NULL;
 	data->desc = adata->desc;
-	if (adata->value_type != &o42a_val_type_void) {
-		data->value_type = adata->value_type;
-	} else {
-		data->value_type = sdata->value_type;
-	}
 
 	data->fld_ctrs = NULL;
 	data->deps.list = num_deps ? ((char *) deps) - ((char *) &data->deps) : 0;
@@ -1188,11 +1183,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	}
 	data->resume_from = NULL;
 	data->desc = sdesc;
-	if (sdata->value_type != &o42a_val_type_void) {
-		data->value_type = sdata->value_type;
-	} else {
-		data->value_type = adata->value_type;
-	}
 
 	data->fld_ctrs = NULL;
 	data->deps.list =

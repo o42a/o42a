@@ -120,11 +120,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		instance.desc()
 		.setConstant(true)
 		.setValue(getObjectIR().getDescIR().ptr());
-		instance.valueType().setConstant(true).setValue(
-				getObjectIR()
-				.getValueIR()
-				.getValueTypeIR()
-				.getValueTypeDesc());
 	}
 
 	public final ObjectDataOp op(CodeBuilder builder, Code code) {
