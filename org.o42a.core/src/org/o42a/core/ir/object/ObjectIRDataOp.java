@@ -86,12 +86,8 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 
 		final RelList.Op deps =
 				struct(null, code, getType().deps().getInstance());
-		final Int32op offset =
-				deps.list(code).load(null, code).toInt32(null, code);
 
-		return deps.toAny(null, code)
-				.offset(null, code, offset)
-				.toDataRec(null, code);
+		return deps.loadList(code).toDataRec(null, code);
 	}
 
 	public final void lock(Code code) {

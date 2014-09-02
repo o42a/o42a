@@ -21,10 +21,7 @@ static void mark_link_val(o42a_obj_data_t *const data) {
 		O42A_RETURN;
 	}
 
-	o42a_obj_data_t *const tdata = O42A(o42a_obj_data(target));
-
-	O42A(o42a_gc_mark(o42a_gc_blockof(
-			(char *) tdata - offsetof(struct o42a_obj, object_data))));
+	O42A(o42a_gc_mark(o42a_gc_blockof(target)));
 
 	O42A_RETURN;
 }

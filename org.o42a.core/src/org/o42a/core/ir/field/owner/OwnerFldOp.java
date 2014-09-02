@@ -97,10 +97,7 @@ public class OwnerFldOp extends MemberFldOp<OwnerFld.Op> {
 
 		return holder.hold(
 				code,
-				anonymousObject(
-						getBuilder(),
-						targetPtr,
-						fld().getAscendant()));
+				anonymousObject(dirs, targetPtr, fld().getAscendant()));
 	}
 
 }

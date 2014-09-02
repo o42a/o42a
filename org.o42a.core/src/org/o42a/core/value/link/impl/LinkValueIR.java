@@ -60,15 +60,11 @@ final class LinkValueIR extends ValueIR {
 			return INDEFINITE_VAL;
 		}
 
-		final ObjectIR targetIR = target.ir(getGenerator());
-
 		return new Val(
 				getValueType(),
 				VAL_CONDITION,
 				0,
-				targetIR.getMainBodyIR()
-				.pointer(getGenerator())
-				.toAny());
+				target.ir(getGenerator()).ptr().toAny());
 	}
 
 	@Override

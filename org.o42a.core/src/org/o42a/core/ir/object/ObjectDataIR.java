@@ -137,9 +137,14 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		return this.id.toString();
 	}
 
-	void allocate(SubData<?> data) {
-		data.addInstance(OBJECT_DATA_ID, OBJECT_DATA_TYPE, this);
+	ObjectIRData allocate(SubData<?> data) {
+
+		final ObjectIRData result =
+				data.addInstance(OBJECT_DATA_ID, OBJECT_DATA_TYPE, this);
+
 		getObjectIR().getObjectValueIR().allocate(this);
+
+		return result;
 	}
 
 	private short objectFlags() {

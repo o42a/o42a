@@ -26,7 +26,7 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_owner = {
 void o42a_fld_owner_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
-	o42a_fld_owner *const to = &ctable->to.fld->owner;
+	o42a_fld_owner *const to = &ctable->to_fld->owner;
 	const o42a_obj_data_t *const owner_data = ctable->owner_data;
 
 	if (owner_data) {
@@ -36,7 +36,7 @@ void o42a_fld_owner_propagate(o42a_obj_ctable_t *const ctable) {
 	}
 
 	// Object is local.
-	to->object = ctable->from.fld->owner.object;
+	to->object = ctable->from_fld->owner.object;
 	o42a_debug_mem_name("Leave the owner unchanged: ", to->object);
 
 	O42A_RETURN;
@@ -45,8 +45,8 @@ void o42a_fld_owner_propagate(o42a_obj_ctable_t *const ctable) {
 void o42a_fld_owner_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
-	const o42a_fld_owner *const from = &ctable->from.fld->owner;
-	o42a_fld_owner *const to = &ctable->to.fld->owner;
+	const o42a_fld_owner *const from = &ctable->from_fld->owner;
+	o42a_fld_owner *const to = &ctable->to_fld->owner;
 
 	to->object = from->object;
 

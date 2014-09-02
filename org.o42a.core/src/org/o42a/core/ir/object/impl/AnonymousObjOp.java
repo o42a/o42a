@@ -23,14 +23,16 @@ import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.dep.DepOp.DEP_ID;
+import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
@@ -41,21 +43,14 @@ import org.o42a.util.string.ID;
 
 public final class AnonymousObjOp extends ObjectOp {
 
-	private final DataOp ptr;
 	private final Obj wellKnownType;
 	private ValueOp value;
 
-	public AnonymousObjOp(ObjectDataOp data, DataOp ptr, Obj wellKnownType) {
-		super(data);
-		this.ptr = ptr;
-		assert wellKnownType != null :
-			"Object type not specified";
-		this.wellKnownType = wellKnownType.getInterface();
-	}
-
-	public AnonymousObjOp(CodeBuilder builder, DataOp ptr, Obj wellKnownType) {
-		super(builder, DERIVED);
-		this.ptr = ptr;
+	public AnonymousObjOp(
+			CodeBuilder builder,
+			ObjectIROp ptr,
+			Obj wellKnownType) {
+		super(builder, ptr, DERIVED);
 		assert wellKnownType != null :
 			"Object type not specified";
 		this.wellKnownType = wellKnownType.getInterface();
@@ -64,16 +59,6 @@ public final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public final Obj getWellKnownType() {
 		return this.wellKnownType;
-	}
-
-	@Override
-	public final DataOp ptr() {
-		return this.ptr;
-	}
-
-	@Override
-	public final DataOp ptr(Code code) {
-		return ptr();
 	}
 
 	@Override
@@ -95,15 +80,8 @@ public final class AnonymousObjOp extends ObjectOp {
 			: "Can not cast " + getWellKnownType() + " to " + ascendant;
 		if (ascendant.is(getContext().getVoid())) {
 			// Everything is compatible with void.
-
-			final ObjectIR ir = getWellKnownType().ir(getGenerator());
-
-			return ptr().to(null, dirs.code(), ir.getBodyType()).op(
-					getBuilder(),
-					getWellKnownType(),
-					COMPATIBLE);
+			return ptr().op(getBuilder(), getWellKnownType(), COMPATIBLE);
 		}
-
 		return dynamicCast(id, dirs, ascendant);
 	}
 
@@ -142,6 +120,48 @@ public final class AnonymousObjOp extends ObjectOp {
 		subDirs.done();
 
 		return op;
+	}
+
+	private ObjOp dynamicCast(ID id, CodeDirs dirs, Obj ascendant) {
+
+		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
+		final CodeDirs subDirs = dirs.begin(
+				id != null ? id : CAST_ID,
+				"Dynamic cast " + this + " to " + ascendantIR.getId());
+
+		final Block code = subDirs.code();
+
+		final RelList.Op ascendants =
+				objectData(code)
+				.loadDesc(code)
+				.ascendants(code);
+		final Int32op ascendantIndex =
+				code.int32(ascendantIR.getBodyIRs().size() - 1);
+
+		// Is it enough ascendant records in type descriptor?
+		ascendants.size(code)
+		.load(null, code)
+		.lt(null, code, ascendantIndex)
+		.go(code, dirs.falseDir());
+
+		// Does ascendant record match the required one?
+		ascendants.loadList(code)
+		.to(null, code, ASCENDANT_DESC_IR)
+		.offset(null, code, ascendantIndex)
+		.desc(code)
+		.load(null, code)
+		.ne(null, code, ascendantIR.getDescIR().ptr().op(null, code))
+		.go(code, dirs.falseDir());
+
+		final ObjOp result =
+				ptr(code)
+				.toData(null, code)
+				.to(id, code, ascendantIR.getStruct())
+				.op(getBuilder(), ascendantIR.getObject(), COMPATIBLE);
+
+		subDirs.done();
+
+		return result;
 	}
 
 }

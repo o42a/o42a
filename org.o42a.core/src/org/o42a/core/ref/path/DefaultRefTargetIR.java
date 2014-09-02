@@ -104,20 +104,18 @@ final class DefaultRefTargetIR implements RefTargetIR {
 		public void copyTarget(CodeDirs dirs, TargetStoreOp store) {
 
 			final Block code = dirs.code();
-			final ObjectOp object =
-					store.loadTarget(dirs).materialize(dirs, tempObjHolder(dirs.getAllocator()));
+			final ObjectOp object = store.loadTarget(dirs).materialize(
+					dirs,
+					tempObjHolder(dirs.getAllocator()));
 
 			ptr().store(code, object.toData(null, code));
 		}
 
 		@Override
 		public TargetOp loadTarget(CodeDirs dirs) {
-
-			final Block code = dirs.code();
-
 			return anonymousObject(
-					dirs.getBuilder(),
-					ptr().load(null, code),
+					dirs,
+					ptr().load(null, dirs.code()),
 					this.ir.refIR.ref().getResolution().resolveTarget());
 		}
 

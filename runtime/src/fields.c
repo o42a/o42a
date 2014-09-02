@@ -70,10 +70,7 @@ static void o42a_fld_mark_obj(o42a_fld *const field) {
 		O42A_RETURN;
 	}
 
-	o42a_obj_data_t *const data = O42A(o42a_obj_data(object));
-
-	O42A(o42a_gc_mark(o42a_gc_blockof(
-			(char *) data - offsetof(struct o42a_obj, object_data))));
+	O42A(o42a_gc_mark(o42a_gc_blockof(object)));
 
 	O42A_RETURN;
 }
@@ -128,17 +125,17 @@ inline o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *const field) {
 }
 
 extern o42a_fld *o42a_fld_by_field(
-		const o42a_obj_body_t *,
+		const o42a_obj_t *,
 		const o42a_obj_field_t *);
 
-o42a_obj_body_t *o42a_obj_ref_null(
+o42a_obj_t *o42a_obj_ref_null(
 		o42a_obj_t *scope __attribute__((unused)),
 		const o42a_obj_vmtc_t *vmtc __attribute__((unused))) {
 	O42A_ENTER(return NULL);
 	O42A_RETURN NULL;
 }
 
-o42a_obj_body_t *o42a_obj_ref_stub(
+o42a_obj_t *o42a_obj_ref_stub(
 		o42a_obj_t *scope __attribute__((unused)),
 		const o42a_obj_vmtc_t *vmtc __attribute__((unused))) {
 	O42A_ENTER(return NULL);

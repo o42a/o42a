@@ -24,8 +24,7 @@ struct o42a_fld_ctr;
 
 typedef struct o42a_obj_desc o42a_obj_desc_t;
 
-/** Object represented by it's body. */
-typedef struct o42a_obj_body o42a_obj_t;
+typedef struct o42a_obj o42a_obj_t;
 
 typedef struct o42a_obj_data o42a_obj_data_t;
 
@@ -100,29 +99,6 @@ enum o42a_obj_flags {
 	O42A_OBJ_INHERIT_MASK = 0xFF & ~O42A_OBJ_ANCESTOR_DEF,
 
 };
-
-/**
- * Object body.
- *
- * This structure is only a header common to every object body. The fields
- * are allocated after this header at proper alignments.
- *
- * Each object contains one body per each ascendant, except void. One of the
- * bodies is called main and corresponds to an object type.
- */
-typedef struct o42a_obj_body {
-
-	O42A_HEADER
-
-	/*
-	 * Relative pointer to object data.
-	 *
-	 * Each object body of the same object refers to the same data instance
-	 * of that object.
-	 */
-	o42a_rptr_t object_data;
-
-} o42a_obj_body_t;
 
 /**
  * Object data.
@@ -259,8 +235,8 @@ struct o42a_obj_desc {
 	 */
 	o42a_rlist_t ascendants;
 
-	/** Main body layout. */
-	o42a_layout_t main_body_layout;
+	/** Object size in bytes. */
+	uint32_t object_size;
 
 };
 
@@ -301,9 +277,6 @@ typedef struct o42a_obj_ascendant {
 
 	/** Pointer to the ascending object's type descriptor. */
 	const o42a_obj_desc_t *desc;
-
-	/** Relative pointer to ascendant body. */
-	o42a_rptr_t body;
 
 } o42a_obj_ascendant_t;
 
@@ -482,7 +455,9 @@ typedef struct o42a_obj_ctable {
 
 	const o42a_obj_data_t *const sample_data;
 
-	o42a_obj_data_t *const object_data;
+	const o42a_obj_t *from;
+
+	o42a_obj_t *const to;
 
 	const o42a_obj_desc_t *body_desc;
 
@@ -490,17 +465,9 @@ typedef struct o42a_obj_ctable {
 
 	o42a_obj_field_t *field;
 
-	struct o42a_obj_cside {
+	union o42a_fld *from_fld;
 
-		O42A_HEADER
-
-		o42a_obj_body_t *body;
-
-		union o42a_fld *fld;
-
-	} from;
-
-	struct o42a_obj_cside to;
+	union o42a_fld *to_fld;
 
 } o42a_obj_ctable_t;
 
@@ -514,7 +481,7 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
@@ -522,7 +489,7 @@ extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[9];
+	o42a_dbg_field_info_t fields[10];
 } _O42A_DEBUG_TYPE_o42a_obj_ctable;
 
 #endif /* NDEBUG */
@@ -540,17 +507,6 @@ extern const o42a_obj_desc_t o42a_obj_none_desc;
 extern const o42a_gc_desc_t o42a_obj_gc_desc;
 
 /**
- * Retrieves object data from it's body.
- *
- * \param body[in] object body pointer.
- *
- * \return object type pointer.
- */
-inline o42a_obj_data_t *o42a_obj_data(const o42a_obj_body_t *const body) {
-	return (o42a_obj_data_t *) (((char *) body) + body->object_data);
-}
-
-/**
  * Retrieves object ascendant's descriptors.
  *
  * \param desc[in] object type descriptor pointer.
@@ -566,24 +522,6 @@ inline const o42a_obj_ascendant_t *o42a_obj_ascendants(
 }
 
 /**
- * Retrieves object body corresponding to the given ascendant.
- *
- * \param data[in] object data.
- * \param ascendant[in] pointer to ascendant descriptor.
- *
- * \return body pointer.
- */
-inline o42a_obj_body_t *o42a_obj_ascendant_body(
-		const o42a_obj_data_t *const data,
-		const o42a_obj_ascendant_t *const ascendant) {
-
-	char *const start =
-			((char *) data) - offsetof(struct o42a_obj, object_data);
-
-	return (o42a_obj_body_t *) (start + ascendant->body);
-}
-
-/**
  * Retrieves object from it's data.
  *
  * \param data[in] object data pointer.
@@ -591,14 +529,7 @@ inline o42a_obj_body_t *o42a_obj_ascendant_body(
  * \return pointer to object's main body.
  */
 inline o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *const data) {
-	O42A_ENTER(return NULL);
-
-	const o42a_obj_desc_t *const desc = data->desc;
-	const size_t last = desc->ascendants.size - 1;
-	const o42a_obj_ascendant_t *const ascendants =
-			O42A(o42a_obj_ascendants(desc));
-
-	O42A_RETURN o42a_obj_ascendant_body(data, ascendants + last);
+	return (o42a_obj_t *) ((char *) data - offsetof(o42a_obj_t, object_data));
 }
 
 /**
@@ -626,17 +557,6 @@ inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
 		const o42a_obj_desc_t *,
 		const o42a_obj_desc_t *);
-
-/**
- * Searches for the object's body of the given type.
- *
- * \param object[in] object to cast.
- * \param desc[in] the descriptor of the type to cast to.
- *
- * \return object body pointer corresponding to the given type,
- * or NULL if the object is not derived from it.
- */
-o42a_obj_body_t *o42a_obj_cast(o42a_obj_t *, const o42a_obj_desc_t *);
 
 /**
  * Instantiates a new object.

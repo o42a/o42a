@@ -22,9 +22,6 @@ package org.o42a.core.value.link.impl;
 import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBodyOp;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.type.CachingStaticsIR;
 import org.o42a.core.ir.value.type.ValueTypeIR;
@@ -52,15 +49,12 @@ public class LinkStaticsIR extends CachingStaticsIR<KnownLink> {
 				.getRef()
 				.getResolution()
 				.toObject();
-		final ObjectIR targetIR = target.ir(getGenerator());
-		final Ptr<ObjectIRBodyOp> mainBodyPtr =
-				targetIR.getMainBodyIR().pointer(getGenerator());
 
 		return new Val(
 				getValueType(),
 				VAL_CONDITION,
 				0,
-				mainBodyPtr.toAny());
+				target.ir(getGenerator()).ptr().toAny());
 	}
 
 	@Override
