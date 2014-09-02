@@ -605,6 +605,11 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
+	protected S self() {
+		return getType().op(this);
+	}
+
+	@Override
 	protected final Usable<SimpleUsage> explicitUses() {
 		return this.explicitUses;
 	}
