@@ -65,7 +65,7 @@ final class PredefCondBuilder extends AbstractObjectCondBuilder {
 		return new ObjBuilder(
 				function,
 				failureDir,
-				typeObject.ir(function.getGenerator()).getMainBodyIR(),
+				typeObject.ir(function.getGenerator()),
 				typeObject,
 				DERIVED);
 	}

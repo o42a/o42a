@@ -37,7 +37,7 @@ public final class ObjBuilder extends CodeBuilder {
 	public ObjBuilder(
 			Function<? extends ObjectFunc<?>> function,
 			CodePos exit,
-			ObjectIRBody hostIR,
+			ObjectIR hostIR,
 			Obj hostType,
 			ObjectPrecision hostPrecision) {
 		super(hostIR.getSampleDeclaration().getContext(), function);
@@ -52,25 +52,25 @@ public final class ObjBuilder extends CodeBuilder {
 	private ObjOp host(
 			Block code,
 			CodePos exit,
-			ObjectIRBody hostIR,
+			ObjectIR hostIR,
 			Obj hostType,
 			ObjectPrecision hostPrecision) {
 		switch (hostPrecision) {
 		case EXACT:
-			return hostIR.getObjectIR()
-					.op(this, code)
+			return hostIR.op(this, code)
 					.cast(null, dirs(code, exit), hostType);
 		case COMPATIBLE:
 			return getFunction()
 					.arg(code, getObjectSignature().object())
-					.to(null, code, hostIR)
+					.to(null, code, hostIR.getStruct())
 					.op(this, hostType, hostPrecision);
 		case DERIVED:
 
 			final ObjectOp host = anonymousObject(
 					this,
+					code,
 					getFunction().arg(code, getObjectSignature().object()),
-					hostType);
+					hostIR.getObject());
 
 			return host.cast(HOST_ID, dirs(code, exit), hostType);
 		}

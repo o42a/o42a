@@ -118,7 +118,7 @@ public class CtrOp extends IROp {
 		result.isNull(null, code).go(code, subDirs.falseDir());
 
 		final ObjectOp newObject = anonymousObject(
-				sample.getBuilder(),
+				subDirs,
 				result,
 				sample.getWellKnownType());
 		final Block resultCode = subDirs.done().code();
@@ -156,8 +156,7 @@ public class CtrOp extends IROp {
 
 		result.isNull(null, code).go(code, subDirs.falseDir());
 
-		final ObjectOp newObject =
-				anonymousObject(dirs.getBuilder(), result, sample);
+		final ObjectOp newObject = anonymousObject(subDirs, result, sample);
 		final Block resultCode = subDirs.done().code();
 
 		return holder.holdVolatile(resultCode, newObject);

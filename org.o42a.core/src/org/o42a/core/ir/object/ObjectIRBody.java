@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.RelRec;
-import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.member.Member;
@@ -42,7 +39,7 @@ import org.o42a.core.object.type.Derivative;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
+public final class ObjectIRBody {
 
 	static final ID BODY_ID = ID.id("body");
 
@@ -53,25 +50,23 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 
-	private RelRec objectData;
-
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
-		super(mainId(objectIRStruct.getObjectIR()));
 		this.objectIRStruct = objectIRStruct;
 		this.sampleDeclaration = objectIRStruct.getSampleDeclaration();
 		this.closestAscendant = this.sampleDeclaration;
 	}
 
 	private ObjectIRBody(ObjectIR inheritantIR, Obj sampleDeclaration) {
-		super(derivedId(
-				inheritantIR,
-				sampleDeclaration.ir(inheritantIR.getGenerator())));
 		this.objectIRStruct = inheritantIR.getStruct();
 		this.sampleDeclaration = sampleDeclaration;
 		this.closestAscendant =
 				inheritantIR.getSampleDeclaration().is(sampleDeclaration)
 				? inheritantIR.getObject()
 				: sampleDeclaration;
+	}
+
+	public final Generator getGenerator() {
+		return this.objectIRStruct.getGenerator();
 	}
 
 	public final ObjectIR getObjectIR() {
@@ -88,10 +83,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	public final boolean isMain() {
 		return this == this.objectIRStruct.mainBodyIR();
-	}
-
-	public final RelRec objectData() {
-		return this.objectData;
 	}
 
 	public final ObjectIRBody derive(ObjectIR inheritantIR) {
@@ -116,46 +107,16 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this.fieldMap.get(memberKey);
 	}
 
-	@Override
-	public ObjectIRBodyOp op(StructWriter<ObjectIRBodyOp> writer) {
-		return new ObjectIRBodyOp(writer);
-	}
-
-	@Override
-	protected void allocate(SubData<ObjectIRBodyOp> data) {
-		this.objectData = data.addRelPtr("object_data");
+	final void allocate(SubData<?> data) {
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
 
 		allocateFields(bodyData);
 	}
 
-	@Override
-	protected void fill() {
-
-		final Generator generator = getGenerator();
-		final ObjectIRData objectData =
-				getObjectIR().getDataIR().getInstance();
-
-		this.objectData.setConstant(true).setValue(
-				objectData.data(generator)
-				.getPointer()
-				.relativeTo(data(generator).getPointer()));
-	}
-
 	final void declareFld(Fld<?> fld) {
 		this.fieldList.add(fld);
 		this.fieldMap.put(fld.getKey(), fld);
-	}
-
-	private static ID mainId(ObjectIR objectIR) {
-		return objectIR.getId().detail(BODY_ID);
-	}
-
-	private static ID derivedId(
-			ObjectIR objectIR,
-			ObjectIR sampleDeclarationIR) {
-		return mainId(objectIR).detail(sampleDeclarationIR.getId());
 	}
 
 	private final void allocateFields(ObjectIRBodyData data) {

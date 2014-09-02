@@ -168,14 +168,14 @@ public class ObjectDescIR {
 					.getValueTypeIR()
 					.getValueTypeDesc());
 
-			desc.mainBodyLayout()
+			desc.objectSize()
 			.setConstant(true)
 			.setLowLevel(true)
 			.setValue(
 					() -> getObjectIR()
-					.getMainBodyIR()
+					.getStruct()
 					.layout(generator)
-					.toBinaryForm());
+					.size());
 		}
 
 		private void allocateFieldDecls() {

@@ -93,7 +93,7 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 
 		final Block code = dirs.code();
 		final ObjectOp owner = anonymousObject(
-				dirs.getBuilder(),
+				dirs,
 				ptr().load(null, code),
 				getWellKnownOwner());
 

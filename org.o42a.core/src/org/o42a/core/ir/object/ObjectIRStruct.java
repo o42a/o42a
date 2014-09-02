@@ -19,14 +19,10 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectIRBody.BODY_ID;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.object.Obj;
@@ -36,10 +32,9 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
 
-final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
+public final class ObjectIRStruct extends Struct<ObjectIROp> {
 
-	static final ID OBJECT_ID = ID.id("object");
-	private static final ID BODY_PREFIX_ID = ID.id().detail(BODY_ID);
+	public static final ID OBJECT_ID = ID.id("object");
 
 	private final ObjectIR objectIR;
 
@@ -47,6 +42,8 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
 			new LinkedHashMap<>();
 	private ObjectIRBody mainBodyIR;
+
+	private ObjectIRData objectData;
 
 	ObjectIRStruct(ObjectIR objectIR) {
 		super(objectIR.getId().detail(OBJECT_ID));
@@ -80,14 +77,18 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		return this.bodyIRs;
 	}
 
-	@Override
-	public Op op(StructWriter<Op> writer) {
-		return new Op(writer);
+	public final ObjectIRData objectData() {
+		return this.objectData;
 	}
 
 	@Override
-	protected final void allocate(SubData<Op> data) {
-		this.dataIR.allocate(data);
+	public ObjectIROp op(StructWriter<ObjectIROp> writer) {
+		return new ObjectIROp(writer);
+	}
+
+	@Override
+	protected final void allocate(SubData<ObjectIROp> data) {
+		this.objectData = this.dataIR.allocate(data);
 		allocateBodyIRs(data);
 	}
 
@@ -116,7 +117,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		} else {
 			assert getObjectIR().isSampleDeclaration() :
 				"The object has no sample. It should be a declaration then";
-			allocateBodyIR(data, new ObjectIRBody(this), null, false);
+			allocateBodyIR(data, new ObjectIRBody(this), false);
 		}
 	}
 
@@ -137,14 +138,13 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 			final ObjectIRBody bodyIR = ascendantBodyIR.derive(getObjectIR());
 
-			allocateBodyIR(data, bodyIR, ascendantBodyIR, inherited);
+			allocateBodyIR(data, bodyIR, inherited);
 		}
 	}
 
 	private void allocateBodyIR(
 			SubData<?> data,
 			ObjectIRBody bodyIR,
-			ObjectIRBody derivedFrom,
 			boolean inherited) {
 		if (!inherited) {
 			assert this.mainBodyIR == null :
@@ -155,31 +155,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		final Obj declaration = bodyIR.getSampleDeclaration();
 
 		this.bodyIRs.put(declaration, bodyIR);
-		if (derivedFrom != null) {
-			data.addStruct(
-					bodyId(data.getGenerator(), bodyIR),
-					derivedFrom,
-					bodyIR);
-		} else {
-			data.addStruct(
-					bodyId(data.getGenerator(), bodyIR),
-					bodyIR);
-		}
-	}
-
-	private static ID bodyId(Generator generator, ObjectIRBody bodyIR) {
-
-		final ObjectIR ascendantIR = bodyIR.getSampleDeclaration().ir(generator);
-
-		return BODY_PREFIX_ID.detail(ascendantIR.getId());
-	}
-
-	public static final class Op extends StructOp<Op> {
-
-		public Op(StructWriter<Op> writer) {
-			super(writer);
-		}
-
+		bodyIR.allocate(data);
 	}
 
 }

@@ -87,7 +87,7 @@ public class ObjectDefFnIR
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				failure.head(),
-				getObjectIR().getMainBodyIR(),
+				getObjectIR(),
 				getObjectIR().getObject(),
 				getObjectIR().isExact() ? EXACT : DERIVED);
 		final ValOp result =

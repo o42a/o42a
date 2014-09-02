@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,33 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.op;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.object.Obj;
-import org.o42a.util.string.ID;
+import org.o42a.codegen.code.Code;
+import org.o42a.core.ir.CodeBuilder;
 
 
-public interface FldIR {
+public interface BuilderCode {
 
-	ID getId();
-
-	FldKind getKind();
-
-	Obj getDeclaredIn();
-
-	default ObjectIR getObjectIR() {
-		return getBodyIR().getObjectIR();
+	default Generator getGenerator() {
+		return code().getGenerator();
 	}
 
-	ObjectIRBody getBodyIR();
+	CodeBuilder getBuilder();
 
-	Ptr<?> pointer(Generator generator);
-
-	Data<?> data(Generator generator);
+	Code code();
 
 }

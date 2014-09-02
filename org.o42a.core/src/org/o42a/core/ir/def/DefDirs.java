@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ir.def;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.op.BuilderCode;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -31,7 +31,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public class DefDirs {
+public class DefDirs implements BuilderCode {
 
 	private final ValDirs valDirs;
 	private final DefStore store;
@@ -59,10 +59,7 @@ public class DefDirs {
 		this.returnDir = prototype.returnDir;
 	}
 
-	public final Generator getGenerator() {
-		return valDirs().getGenerator();
-	}
-
+	@Override
 	public final CodeBuilder getBuilder() {
 		return valDirs().getBuilder();
 	}
@@ -91,6 +88,7 @@ public class DefDirs {
 		return valDirs().falseDir();
 	}
 
+	@Override
 	public final Block code() {
 		return valDirs().code();
 	}

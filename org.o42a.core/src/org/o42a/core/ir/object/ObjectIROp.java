@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,44 +19,31 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DATA_ID;
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
-import org.o42a.util.string.ID;
 
 
-public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
+public final class ObjectIROp extends StructOp<ObjectIROp> {
 
-	ObjectIRBodyOp(StructWriter<ObjectIRBodyOp> writer) {
+	public ObjectIROp(StructWriter<ObjectIROp> writer) {
 		super(writer);
 	}
 
 	@Override
-	public final ObjectIRBody getType() {
-		return (ObjectIRBody) super.getType();
+	public final ObjectIRStruct getType() {
+		return (ObjectIRStruct) super.getType();
 	}
 
 	public final Obj getSampleDeclaration() {
 		return getType().getSampleDeclaration();
 	}
 
-	public final RelRecOp objectData(Code code) {
-		return relPtr(null, code, getType().objectData());
-	}
-
-	public final <O extends Fld.Op<O>> O field(
-			Code code,
-			Fld.Type<O> instance) {
-		return struct(null, code, instance);
+	public final ObjectIRDataOp objectData(Code code) {
+		return struct(null, code, getType().objectData());
 	}
 
 	public final ObjOp op(
@@ -66,21 +53,10 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 		return op(builder, null, ascendant, precision);
 	}
 
-	public final ObjectIRDataOp loadObjectData(Code code) {
-		return objectData(code)
-				.load(null, code)
-				.offset(null, code, this)
-				.to(OBJECT_DATA_ID, code, OBJECT_DATA_TYPE);
-	}
-
-	@Override
-	public String toString() {
-		return "*" + getType().getId();
-	}
-
-	@Override
-	protected ID fieldId(Code code, ID local) {
-		return ObjectIRBody.BODY_ID.setLocal(local);
+	public final <O extends Fld.Op<O>> O field(
+			Code code,
+			Fld.Type<O> instance) {
+		return struct(null, code, instance);
 	}
 
 	final ObjOp op(
@@ -96,26 +72,8 @@ public final class ObjectIRBodyOp extends StructOp<ObjectIRBodyOp> {
 				precision);
 	}
 
-	final ObjOp op(ObjectIR objectIR, ObjectDataOp data, Obj ascendant) {
-		return new ObjOp(
-				objectIR != null ? objectIR : getType().getObjectIR(),
-				this,
-				ascendant,
-				data);
-	}
-
 	final ObjOp op(CodeBuilder builder, ObjectIR objectIR) {
 		return new ObjOp(builder, objectIR, this);
-	}
-
-	FldOp<?> declaredField(Code code, ObjOp host, MemberKey memberKey) {
-
-		final Fld<?> declared = getType().fld(memberKey);
-
-		assert declared != null :
-			memberKey + " is not declared in " + this;
-
-		return declared.op(code, host);
 	}
 
 }

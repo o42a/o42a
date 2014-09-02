@@ -19,7 +19,7 @@ typedef struct {
 
 	O42A_HEADER
 
-	o42a_obj_body_t *object;
+	o42a_obj_t *object;
 
 } o42a_fld_owner;
 

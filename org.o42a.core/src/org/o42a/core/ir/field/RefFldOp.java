@@ -30,7 +30,6 @@ import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -176,15 +175,13 @@ public abstract class RefFldOp<
 		final Obj hostAscendant = host().getAscendant();
 		final Obj targetType = fld().targetType(hostAscendant);
 
-		return anonymousObject(getBuilder(), ptr, targetType);
+		return anonymousObject(getBuilder(), code, ptr, targetType);
 	}
 
 	private BoolOp isNone(Block hasTarget, DataOp ptr) {
 
 		final ObjectIR noneIR = getContext().getNone().ir(getGenerator());
-		final Ptr<ObjectIRBodyOp> nonePtr =
-				noneIR.getMainBodyIR().pointer(getGenerator());
-		final DataOp none = nonePtr.toData().op(null, hasTarget);
+		final DataOp none = noneIR.ptr().toData().op(null, hasTarget);
 
 		return ptr.eq(ID.id("is_none"), hasTarget, none);
 	}

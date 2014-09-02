@@ -27,13 +27,10 @@ import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.ArrayItem;
-import org.o42a.core.value.array.ArrayValueType;
 
 
 public final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
@@ -80,11 +77,6 @@ public final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
 	protected void fill() {
 
 		final Array array = this.arrayIR.getArray();
-		final TypeParameters<Array> typeParameters = array.getTypeParameters();
-		final ArrayValueType arrayType =
-				typeParameters.getValueType().toArrayType();
-		final Obj itemAscendant =
-				arrayType.itemTypeRef(typeParameters).getType();
 		final ArrayItem[] items = array.getItems();
 		final int length = items.length;
 
@@ -96,9 +88,8 @@ public final class ArrayItemsIR extends Struct<ArrayItemsIR.Op> {
 					.resolve(array.getOwner().getScope().resolver())
 					.toObject();
 			final ObjectIR itemValueIR = itemValue.ir(getGenerator());
-			final ObjectIRBody itemBodyIR = itemValueIR.bodyIR(itemAscendant);
 
-			this.items[i].setValue(itemBodyIR.pointer(getGenerator()).toData());
+			this.items[i].setValue(itemValueIR.ptr().toData());
 		}
 	}
 

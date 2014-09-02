@@ -40,7 +40,7 @@ public final class OwnerFld
 	public static final Type SCOPE_FLD = new Type();
 
 	private Obj ascendant;
-	private ObjectIRBody target;
+	private ObjectIR targetIR;
 	private boolean dummy;
 
 	public OwnerFld(Field field) {
@@ -66,16 +66,16 @@ public final class OwnerFld
 		return this.ascendant;
 	}
 
-	public final ObjectIRBody getTarget() {
-		return this.target;
+	public final ObjectIR getTargetIR() {
+		return this.targetIR;
 	}
 
 	public final void declare(ObjectIRBodyData data, Obj target) {
 		this.ascendant = target;
 		if (!target.getConstructionMode().isRuntime()) {
-			this.target = target.ir(data.getGenerator()).getMainBodyIR();
+			this.targetIR = target.ir(data.getGenerator());
 		} else {
-			this.target = null;
+			this.targetIR = null;
 		}
 		allocate(data);
 	}
@@ -101,11 +101,10 @@ public final class OwnerFld
 	public void fill(Type instance) {
 
 		final DataRec objectRec = instance.object().setConstant(true);
-		final ObjectIRBody target = getTarget();
+		final ObjectIR targetIR = getTargetIR();
 
-		if (target != null) {
-			objectRec.setValue(
-					target.pointer(instance.getGenerator()).toData());
+		if (targetIR != null) {
+			objectRec.setValue(targetIR.ptr().toData());
 		} else {
 			objectRec.setNull();
 		}

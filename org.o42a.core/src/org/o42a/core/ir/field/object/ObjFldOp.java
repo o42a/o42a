@@ -94,13 +94,15 @@ public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFunc> {
 			return super.createObject(code, ptr);
 		}
 
-		final ObjectIRBodyOp targetBodyPtr = ptr.to(
+		final ObjectIROp targetPtr = ptr.to(
 				null,
 				code,
-				fld().getTargetAscendant()
-				.ir(getGenerator()).getBodyType());
+				fld()
+				.getTargetAscendant()
+				.ir(getGenerator())
+				.getStruct());
 
-		return targetBodyPtr.op(
+		return targetPtr.op(
 				getBuilder(),
 				fld().getTargetAscendant(),
 				ObjectPrecision.COMPATIBLE);

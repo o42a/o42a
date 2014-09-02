@@ -278,7 +278,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		final DataOp ancestorPtr =
 				constructor.call(code, builder.host(), prevVmtc, ancestorData);
 		final ObjectOp ancestor = anonymousObject(
-				builder,
+				dirs,
 				ancestorPtr,
 				getBodyIR().getClosestAscendant());
 

@@ -119,7 +119,24 @@ public class ObjectIR {
 		return this.vmtIR;
 	}
 
-	public final Ptr<?> ptr() {
+	public final ObjectIRStruct getStruct() {
+		if (this.struct != null) {
+			return this.struct;
+		}
+
+		assert getObject().assertFullyResolved();
+
+		final ObjectIRBlock block = new ObjectIRBlock(this);
+
+		this.struct = block.getStruct();
+
+		getGenerator().newGlobal().struct(block);
+		getScopeIR().targetAllocated();
+
+		return this.struct;
+	}
+
+	public final Ptr<ObjectIROp> ptr() {
 		return getStruct().pointer(getGenerator());
 	}
 
@@ -184,8 +201,11 @@ public class ObjectIR {
 	}
 
 	public final ObjOp op(CodeBuilder builder, Code code) {
-		return getMainBodyIR().data(getGenerator())
-				.getPointer().op(null, code).op(builder, this);
+		return getStruct()
+				.data(getGenerator())
+				.getPointer()
+				.op(null, code)
+				.op(builder, this);
 	}
 
 	public final ObjectIRBody bodyIR(Obj ascendant) {
@@ -279,23 +299,6 @@ public class ObjectIR {
 		this.existingDeps = existing;
 
 		return this.allDeps = irs;
-	}
-
-	final ObjectIRStruct getStruct() {
-		if (this.struct != null) {
-			return this.struct;
-		}
-
-		assert getObject().assertFullyResolved();
-
-		final ObjectIRBlock block = new ObjectIRBlock(this);
-
-		this.struct = block.getStruct();
-
-		getGenerator().newGlobal().struct(block);
-		getScopeIR().targetAllocated();
-
-		return this.struct;
 	}
 
 }

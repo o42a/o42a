@@ -62,7 +62,7 @@ final class ObjectValueBuilder extends AbstractObjectValueBuilder {
 		return new ObjBuilder(
 				function,
 				failureDir,
-				this.fn.getObjectIR().getMainBodyIR(),
+				this.fn.getObjectIR(),
 				this.fn.getObjectIR().getObject(),
 				this.fn.getObjectIR().isExact() ? EXACT : DERIVED);
 	}
