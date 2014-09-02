@@ -44,10 +44,6 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 	}
 
 	@Override
-	public void allocated(FieldInfoType instance) {
-	}
-
-	@Override
 	public void fill(FieldInfoType instance) {
 
 		final Data<?> fieldData = getFieldData();

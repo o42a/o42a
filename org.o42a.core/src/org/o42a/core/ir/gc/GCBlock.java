@@ -40,10 +40,6 @@ public final class GCBlock implements Content<GCBlockOp.Type> {
 	}
 
 	@Override
-	public void allocated(GCBlockOp.Type instance) {
-	}
-
-	@Override
 	public void fill(GCBlockOp.Type instance) {
 		instance.lock().setValue((byte) 0);
 		instance.list().setValue((byte) 0);

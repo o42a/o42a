@@ -50,10 +50,6 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	}
 
 	@Override
-	public void allocated(Type instance) {
-	}
-
-	@Override
 	public void fill(Type instance) {
 
 		final Generator generator = instance.getGenerator();

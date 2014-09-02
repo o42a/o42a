@@ -292,10 +292,6 @@ public abstract class Type<S extends StructOp<S>>
 	private static final class EmptyContent<T> implements Content<T> {
 
 		@Override
-		public void allocated(T instance) {
-		}
-
-		@Override
 		public void fill(T struct) {
 		}
 

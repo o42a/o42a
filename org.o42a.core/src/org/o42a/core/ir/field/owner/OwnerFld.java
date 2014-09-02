@@ -94,10 +94,6 @@ public final class OwnerFld
 	}
 
 	@Override
-	public void allocated(Type instance) {
-	}
-
-	@Override
 	public void fill(Type instance) {
 
 		final DataRec objectRec = instance.object().setConstant(true);

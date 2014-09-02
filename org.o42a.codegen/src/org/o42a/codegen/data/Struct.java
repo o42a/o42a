@@ -25,12 +25,8 @@ import org.o42a.util.string.ID;
 
 public abstract class Struct<S extends StructOp<S>> extends Type<S> {
 
-	@SuppressWarnings("rawtypes")
-	private static final StructContent<?> STRUCT_CONTENT = new StructContent();
-
-	@SuppressWarnings("unchecked")
 	public static final <S extends Struct<?>> Content<S> structContent() {
-		return (Content<S>) STRUCT_CONTENT;
+		return instance -> instance.fill();
 	}
 
 	public Struct(ID id) {
@@ -38,19 +34,5 @@ public abstract class Struct<S extends StructOp<S>> extends Type<S> {
 	}
 
 	protected abstract void fill();
-
-	private static final class StructContent<T extends Struct<?>>
-			implements Content<T> {
-
-		@Override
-		public void allocated(T instance) {
-		}
-
-		@Override
-		public void fill(T instance) {
-			instance.fill();
-		}
-
-	}
 
 }
