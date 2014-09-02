@@ -20,9 +20,16 @@
 package org.o42a.codegen.data;
 
 
+@FunctionalInterface
 public interface Content<T> {
 
-	void allocated(T instance);
+	/**
+	 * Invoked to inform the data is allocated.
+	 *
+	 * @param instance allocated instance.
+	 */
+	default void allocated(T instance) {
+	}
 
 	void fill(T instance);
 

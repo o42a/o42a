@@ -140,10 +140,6 @@ public final class Val implements Content<ValType> {
 	}
 
 	@Override
-	public void allocated(ValType instance) {
-	}
-
-	@Override
 	public void fill(ValType instance) {
 		instance.set(this);
 	}

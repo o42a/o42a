@@ -190,15 +190,7 @@ public abstract class RefFld<
 
 	@Override
 	protected Content<Type<F>> dummyContent() {
-		return new Content<Type<F>>() {
-			@Override
-			public void allocated(Type<F> instance) {
-			}
-			@Override
-			public void fill(Type<F> instance) {
-				fillDummy();
-			}
-		};
+		return instance -> fillDummy();
 	}
 
 	@Override

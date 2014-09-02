@@ -48,10 +48,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 	}
 
 	@Override
-	public void allocated(HeaderType instance) {
-	}
-
-	@Override
 	public void fill(HeaderType instance) {
 
 		final Generator generator = instance.getGenerator();

@@ -101,10 +101,6 @@ public class VmtIR extends Struct<VmtIROp> {
 		}
 
 		@Override
-		public void allocated(VmtIRChain instance) {
-		}
-
-		@Override
 		public void fill(VmtIRChain instance) {
 			instance.vmt()
 			.setConstant(true)

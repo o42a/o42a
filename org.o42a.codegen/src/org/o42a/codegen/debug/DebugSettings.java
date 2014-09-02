@@ -71,10 +71,6 @@ final class DebugSettings implements Content<DbgOptionsType> {
 	}
 
 	@Override
-	public void allocated(DbgOptionsType instance) {
-	}
-
-	@Override
 	public void fill(DbgOptionsType instance) {
 		instance.quiet().setValue(toInt8(this.quiet));
 		instance.noDebugMessages().setValue(toInt8(this.noDebugMessages));
