@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.data;
 
-import static org.o42a.codegen.data.Type.emptyContent;
+import static org.o42a.codegen.data.Content.noContent;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
@@ -39,7 +39,7 @@ abstract class AbstractInstanceData<S extends StructOp<S>>
 			Type<S> instance,
 			Content<? extends Type<S>> content) {
 		super(generator, id, instance);
-		this.content = content != null ? content : emptyContent();
+		this.content = content != null ? content : noContent();
 		this.next = instance.type.data.data().getFirst();
 	}
 

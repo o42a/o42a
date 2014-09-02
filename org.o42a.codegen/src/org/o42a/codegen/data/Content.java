@@ -23,6 +23,10 @@ package org.o42a.codegen.data;
 @FunctionalInterface
 public interface Content<T> {
 
+	static <T> Content<T> noContent() {
+		return instance -> {};
+	}
+
 	/**
 	 * Invoked to inform the data is allocated.
 	 *
