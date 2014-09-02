@@ -35,14 +35,7 @@ public abstract class Type<S extends StructOp<S>>
 		extends TypeDebugBase
 		implements Cloneable {
 
-	@SuppressWarnings("rawtypes")
-	private static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
 	private static final Type<?>[] NO_DEPENDENCIES = new Type<?>[0];
-
-	@SuppressWarnings("unchecked")
-	public static <T> Content<T> emptyContent() {
-		return (Content<T>) EMPTY_CONTENT;
-	}
 
 	private final ID id;
 	Type<S> type;
@@ -287,14 +280,6 @@ public abstract class Type<S extends StructOp<S>>
 			assert isAllocated(generator) :
 				"Not allocated: " + getId();
 		}
-	}
-
-	private static final class EmptyContent<T> implements Content<T> {
-
-		@Override
-		public void fill(T struct) {
-		}
-
 	}
 
 }
