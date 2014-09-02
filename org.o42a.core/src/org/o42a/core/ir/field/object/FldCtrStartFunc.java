@@ -20,12 +20,11 @@
 package org.o42a.core.ir.field.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.util.string.ID;
 
 
@@ -37,15 +36,15 @@ public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 		super(caller);
 	}
 
-	public final BoolOp call(Code code, ObjectIRDataOp data, FldCtrOp ctr) {
-		return invoke(null, code, FLD_CTR_START.result(), data, ctr);
+	public final BoolOp call(Code code, DataOp object, FldCtrOp ctr) {
+		return invoke(null, code, FLD_CTR_START.result(), object, ctr);
 	}
 
 	public static final class Signature
 			extends org.o42a.codegen.code.Signature<FldCtrStartFunc> {
 
 		private Return<BoolOp> result;
-		private Arg<ObjectIRDataOp> data;
+		private Arg<DataOp> object;
 		private Arg<FldCtrOp> ctr;
 
 		private Signature() {
@@ -56,8 +55,8 @@ public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 			return this.result;
 		}
 
-		public final Arg<ObjectIRDataOp> data() {
-			return this.data;
+		public final Arg<DataOp> object() {
+			return this.object;
 		}
 
 		public final Arg<FldCtrOp> ctr() {
@@ -72,7 +71,7 @@ public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnBool();
-			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
+			this.object = builder.addData("object");
 			this.ctr = builder.addPtr("ctr", FLD_CTR_TYPE);
 		}
 

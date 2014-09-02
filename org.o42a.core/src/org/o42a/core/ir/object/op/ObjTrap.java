@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
+import static org.o42a.core.ir.object.op.ByObjectFunc.BY_OBJECT;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.object.ObjectOp;
@@ -50,9 +50,9 @@ final class ObjTrap extends ObjHolder {
 	protected void holdObject(Block code, ObjectOp object) {
 		code.getGenerator()
 		.externalFunction()
-		.link("o42a_obj_use", OBJECT_DATA)
+		.link("o42a_obj_use", BY_OBJECT)
 		.op(null, code)
-		.call(code, object.objectData(code).ptr());
+		.call(code, object.toData(null, code));
 	}
 
 	@Override

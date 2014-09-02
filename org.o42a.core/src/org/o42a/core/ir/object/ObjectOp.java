@@ -132,7 +132,7 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	}
 
 	public final ObjectDataOp objectData(Code code) {
-		return ptr(code).objectData(code).op(getBuilder(), getPrecision());
+		return ptr(code).objectData(code).op(getBuilder());
 	}
 
 	@Override

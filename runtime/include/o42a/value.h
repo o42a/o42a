@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-struct o42a_obj_data;
+struct o42a_obj;
 
 /**
  * Value flags.
@@ -144,7 +144,7 @@ typedef struct o42a_val_type {
 	 *
 	 * \param data marked object data pointer.
 	 */
-	void (* mark) (struct o42a_obj_data *);
+	void (* mark) (struct o42a_obj *);
 
 	/**
 	 * GC sweep function pointer.
@@ -154,7 +154,7 @@ typedef struct o42a_val_type {
 	 *
 	 * \param data swept object data pointer.
 	 */
-	void (* sweep) (struct o42a_obj_data *);
+	void (* sweep) (struct o42a_obj *);
 
 } o42a_val_type_t;
 
@@ -228,7 +228,7 @@ void o42a_val_use(o42a_val_t *);
 
 void o42a_val_unuse(o42a_val_t *);
 
-void o42a_val_gc_none(struct o42a_obj_data *);
+void o42a_val_gc_none(struct o42a_obj *);
 
 #ifdef __cplusplus
 } /* extern "C" */

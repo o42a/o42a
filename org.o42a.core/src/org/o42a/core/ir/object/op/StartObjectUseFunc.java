@@ -19,12 +19,12 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.op.ObjectUseOp.OBJECT_USE_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.util.string.ID;
 
 
@@ -36,8 +36,13 @@ public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 		super(caller);
 	}
 
-	public final void use(Code code, ObjectUseOp.Op use, ObjectIRDataOp data) {
-		invoke(null, code, START_OBJECT_USE.result(), use, data);
+	public final void use(Code code, ObjectUseOp.Op use, ObjectOp object) {
+		invoke(
+				null,
+				code,
+				START_OBJECT_USE.result(),
+				use,
+				object.toData(null, code));
 	}
 
 	public static final class Signature
@@ -45,7 +50,7 @@ public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 
 		private Return<Void> result;
 		private Arg<ObjectUseOp.Op> use;
-		private Arg<ObjectIRDataOp> data;
+		private Arg<DataOp> object;
 
 		private Signature() {
 			super(ID.id("StartObjectUseF"));
@@ -59,8 +64,8 @@ public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 			return this.use;
 		}
 
-		public final Arg<ObjectIRDataOp> data() {
-			return this.data;
+		public final Arg<DataOp> data() {
+			return this.object;
 		}
 
 		@Override
@@ -73,7 +78,7 @@ public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
 			this.use = builder.addPtr("use", OBJECT_USE_TYPE);
-			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
+			this.object = builder.addData("object");
 		}
 
 	}

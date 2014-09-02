@@ -376,21 +376,21 @@ typedef struct o42a_obj_ctr {
 	O42A_HEADER
 
 	/**
-	 * Pointer to enclosing object's data.
+	 * Pointer to enclosing object.
 	 *
 	 * May be NULL when constructing object is local or exactly known.
 	 */
-	o42a_obj_data_t *owner_data;
+	o42a_obj_t *owner;
 
 	/**
-	 * Ancestor data.
+	 * Pointer to ancestor object.
 	 */
-	o42a_obj_data_t *ancestor_data;
+	const o42a_obj_t *ancestor;
 
 	/**
-	 * Sample data.
+	 * Pointer to sample object.
 	 */
-	o42a_obj_data_t *sample_data;
+	const o42a_obj_t *sample;
 
 	/**
 	 * Eagerly evaluated object value.
@@ -445,15 +445,15 @@ typedef struct o42a_obj_ctable {
 	O42A_HEADER
 
 	/**
-	 * Pointer to the data of this object's owner (i.e. enclosing object).
+	 * Pointer to the object's owner (i.e. enclosing object).
 	 *
 	 * May be NULL when constructing object is local or exactly known.
 	 */
-	const o42a_obj_data_t *owner_data;
+	o42a_obj_t *owner;
 
-	const o42a_obj_data_t *const ancestor_data;
+	const o42a_obj_t *const ancestor;
 
-	const o42a_obj_data_t *const sample_data;
+	const o42a_obj_t *const sample;
 
 	const o42a_obj_t *from;
 
@@ -522,17 +522,6 @@ inline const o42a_obj_ascendant_t *o42a_obj_ascendants(
 }
 
 /**
- * Retrieves object from it's data.
- *
- * \param data[in] object data pointer.
- *
- * \return pointer to object's main body.
- */
-inline o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *const data) {
-	return (o42a_obj_t *) ((char *) data - offsetof(o42a_obj_t, object_data));
-}
-
-/**
  * Retrieves field descriptors.
  *
  * \param desc[in] type descriptor pointer.
@@ -545,18 +534,6 @@ inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 
 	return (o42a_obj_field_t *) (((char *) list) + list->list);
 }
-
-/**
- * Searches for ascendant descriptor of the given type.
- *
- * \param source type descriptor to search for ascendant descriptor in.
- * \param target the descriptor of the type to search for.
- *
- * \return ascendant descriptor or NULL if not found.
- */
-const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
-		const o42a_obj_desc_t *,
-		const o42a_obj_desc_t *);
 
 /**
  * Instantiates a new object.
@@ -640,29 +617,29 @@ o42a_bool_t o42a_obj_cond_stub(o42a_obj_t *);
  * means it can be locked multiple times by the same thread and remains locked
  * until unlocked the same number of times.
  */
-void o42a_obj_lock(o42a_obj_data_t *);
+void o42a_obj_lock(o42a_obj_t *);
 
 /**
  * Unlocks an object mutex previously locked with o42a_obj_lock by the same
  * thread.
  */
-void o42a_obj_unlock(o42a_obj_data_t *);
+void o42a_obj_unlock(o42a_obj_t *);
 
 
 /**
  * Waits for an object condition.
  */
-void o42a_obj_wait(o42a_obj_data_t *);
+void o42a_obj_wait(o42a_obj_t *);
 
 /**
  * Unblocks at least one thread waiting on an object condition.
  */
-void o42a_obj_signal(o42a_obj_data_t *);
+void o42a_obj_signal(o42a_obj_t *);
 
 /**
  * Unblocks all threads waiting on an object condition.
  */
-void o42a_obj_broadcast(o42a_obj_data_t *);
+void o42a_obj_broadcast(o42a_obj_t *);
 
 /**
  * An object use by current thread.
@@ -675,11 +652,11 @@ typedef struct o42a_obj_use {
 	O42A_HEADER
 
 	/**
-	 * Used object data pointer or NULL if no object use declared.
+	 * Used object pointer or NULL if no object use declared.
 	 *
 	 * This should be initialized to NULL initially.
 	 */
-	o42a_obj_data_t *data;
+	o42a_obj_t *object;
 
 } o42a_obj_use_t;
 
@@ -693,7 +670,7 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use;
  *
  * This function invokes o42a_gc_use for object data block.
  */
-void o42a_obj_use(o42a_obj_data_t *);
+void o42a_obj_use(o42a_obj_t *);
 
 /**
  * Declares the indirectly pointed object is used by current thread.
@@ -713,7 +690,7 @@ o42a_obj_t *o42a_obj_use_mutable(o42a_obj_t **);
  *
  * This should only be called for static objects.
  */
-void o42a_obj_use_static(o42a_obj_data_t *);
+void o42a_obj_use_static(o42a_obj_t *);
 
 /**
  * Declares the object is used.
@@ -728,7 +705,7 @@ void o42a_obj_use_static(o42a_obj_data_t *);
  * It is an error to call this function multiple times with the same use
  * structure.
  */
-void o42a_obj_start_use(o42a_obj_use_t *, o42a_obj_data_t *);
+void o42a_obj_start_use(o42a_obj_use_t *, o42a_obj_t *);
 
 /**
  * Releases the object previously used by o42a_obj_start_use.

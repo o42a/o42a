@@ -199,24 +199,18 @@ const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.fields = {
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, owner_data),
-			.name = "owner_data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			.offset = offsetof(o42a_obj_ctr_t, owner),
+			.name = "owner",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, ancestor_data),
-			.name = "ancestor_data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			.offset = offsetof(o42a_obj_ctr_t, ancestor),
+			.name = "ancestor",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, sample_data),
-			.name = "sample_data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			.offset = offsetof(o42a_obj_ctr_t, sample),
+			.name = "sample",
 		},
 		{
 			.data_type = O42A_TYPE_INT32,
@@ -234,24 +228,18 @@ _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 	.fields = {
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctable_t, owner_data),
-			.name = "owner_data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			.offset = offsetof(o42a_obj_ctable_t, owner),
+			.name = "owner",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctable_t, ancestor_data),
-			.name = "ancestor_data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			.offset = offsetof(o42a_obj_ctable_t, ancestor),
+			.name = "ancestor",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctable_t, sample_data),
-			.name = "sample_data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			.offset = offsetof(o42a_obj_ctable_t, sample),
+			.name = "sample",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -302,20 +290,15 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use = {
 	.fields = {
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_use_t, data),
-			.name = "data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			.offset = offsetof(o42a_obj_use_t, object),
+			.name = "object",
 		},
 	},
 };
 
 #endif /* NDEBUG */
 
-
 extern const o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_desc_t *);
-
-extern o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *);
 
 extern o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *);
 
@@ -536,7 +519,7 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 	const uint32_t flags = value->flags;
 
 	if (flags & O42A_VAL_CONDITION) {
-		data->desc->value_type->mark(data);
+		data->desc->value_type->mark(object);
 	}
 
 	const o42a_obj_desc_t *const desc = data->desc;
@@ -614,12 +597,10 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 	const uint32_t flags = value->flags;
 
 	if (flags & O42A_VAL_CONDITION) {
-		data->desc->value_type->sweep(data);
+		data->desc->value_type->sweep(object);
 	}
 
-	o42a_debug_mem_name(
-			"Sweep object: ",
-			(char *) data - offsetof(struct o42a_obj, object_data));
+	o42a_debug_mem_name("Sweep object: ", object);
 
 	O42A(vmtc_release(data->vmtc));
 
@@ -727,12 +708,13 @@ static void derive_ancestor_bodies(
 	const o42a_obj_data_t *const data = &ctable->to->object_data;
 	const o42a_obj_ascendant_t *ascendant =
 			O42A(o42a_obj_ascendants(data->desc));
-	const o42a_obj_data_t *const adata = ctable->ancestor_data;
+	const o42a_obj_desc_t *const adesc =
+			ctable->ancestor->object_data.desc;
 	const o42a_obj_ascendant_t *aascendant =
-			O42A(o42a_obj_ascendants(adata->desc));
-	const size_t num = adata->desc->ascendants.size - excluded;
+			O42A(o42a_obj_ascendants(adesc));
+	const size_t num = adesc->ascendants.size - excluded;
 
-	for (size_t i = adata->desc->ascendants.size - excluded; i > 0; --i) {
+	for (size_t i = adesc->ascendants.size - excluded; i > 0; --i) {
 		assert(
 				aascendant->desc == ascendant->desc
 				&& "Ancestor and sample body descriptors differ");
@@ -966,9 +948,9 @@ static o42a_obj_t *propagate_object(
 
 	// propagate bodies
 	o42a_obj_ctable_t ctable = {
-		.owner_data = ctr->owner_data,
-		.ancestor_data = fdata,
-		.sample_data = fdata,
+		.owner = ctr->owner,
+		.ancestor = from,
+		.sample = from,
 		.from = from,
 		.to = object,
 	};
@@ -992,22 +974,23 @@ static o42a_obj_t *propagate_object(
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
-	o42a_obj_t *ancestor = NULL;
-	const o42a_obj_data_t *adata = ctr->ancestor_data;
+	const o42a_obj_t *const ancestor = ctr->ancestor;
+	const o42a_obj_data_t *adata;
 
-	if (adata) {
+	if (!ancestor) {
+		adata = NULL;
+	} else {
+		adata = &ancestor->object_data;
 		if (adata->flags & O42A_OBJ_VOID) {
 			adata = NULL;
 		} else if (adata->flags & O42A_OBJ_NONE) {
 			O42A_RETURN NULL;
-		} else {
-			ancestor = O42A(o42a_obj_by_data(adata));
 		}
 	}
 
-	const o42a_obj_data_t *const sdata = ctr->sample_data;
+	const o42a_obj_t *const sample = ctr->sample;
+	const o42a_obj_data_t *const sdata = &sample->object_data;
 	const o42a_obj_desc_t *const sdesc = sdata->desc;
-	const o42a_obj_t *const sample = O42A(o42a_obj_by_data(sdata));
 
 	if (!adata) {
 		// Sample has no ancestor.
@@ -1093,9 +1076,9 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	// propagate sample and inherit ancestor
 	o42a_obj_ctable_t ctable = {
-		.owner_data = ctr->owner_data,
-		.ancestor_data = adata,
-		.sample_data = sdata,
+		.owner = ctr->owner,
+		.ancestor = ancestor,
+		.sample = sample,
 		.from = ancestor,
 		.to = object,
 	};
@@ -1125,10 +1108,11 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
-	o42a_obj_data_t *const adata = ctr->ancestor_data;
+	const o42a_obj_t *const ancestor = ctr->ancestor;
+	const o42a_obj_data_t *const adata = &ancestor->object_data;
 	const size_t num_deps = adata->deps.size;
 
-	ctr->sample_data = adata;
+	ctr->sample = ancestor;
 	ctr->num_deps = num_deps;
 
 	o42a_obj_t *const result = O42A(o42a_obj_new(ctr));
@@ -1245,8 +1229,10 @@ void o42a_init() {
 	O42A_RETURN;
 }
 
-void o42a_obj_lock(o42a_obj_data_t *const data) {
+void o42a_obj_lock(o42a_obj_t *const object) {
 	O42A_ENTER(return);
+
+	o42a_obj_data_t *const data = &object->object_data;
 
 	// Ensure the mutex is initialized.
 	while (1) {
@@ -1272,7 +1258,7 @@ void o42a_obj_lock(o42a_obj_data_t *const data) {
 			o42a_error_print("Failed to initialize an object mutex");
 		}
 		if (!(data->flags & O42A_OBJ_RT)) {
-			O42A(o42a_obj_use_static(data));
+			O42A(o42a_obj_use_static(object));
 		}
 
 		__sync_synchronize();
@@ -1289,46 +1275,45 @@ void o42a_obj_lock(o42a_obj_data_t *const data) {
 	O42A_RETURN;
 }
 
-void o42a_obj_unlock(o42a_obj_data_t *const data) {
+void o42a_obj_unlock(o42a_obj_t *const object) {
 	O42A_ENTER(return);
-	if (O42A(pthread_mutex_unlock(&data->mutex))) {
+	if (O42A(pthread_mutex_unlock(&object->object_data.mutex))) {
 		o42a_error_print("Current thread does not own an object mutex");
 	}
 	O42A_RETURN;
 }
 
-void o42a_obj_wait(o42a_obj_data_t *const data) {
+void o42a_obj_wait(o42a_obj_t *const object) {
 	O42A_ENTER(return);
-	if (O42A(pthread_cond_wait(&data->thread_cond, &data->mutex))) {
+	if (O42A(pthread_cond_wait(
+			&object->object_data.thread_cond,
+			&object->object_data.mutex))) {
 		o42a_error_print("Current thread does not own an object mutex");
 	}
 	O42A_RETURN;
 }
 
-void o42a_obj_signal(o42a_obj_data_t *const data) {
+void o42a_obj_signal(o42a_obj_t *const object) {
 	O42A_ENTER(return);
-	if (O42A(pthread_cond_signal(&data->thread_cond))) {
+	if (O42A(pthread_cond_signal(&object->object_data.thread_cond))) {
 		o42a_error_print("Failed to send signal to an object condition waiter");
 	}
 	O42A_RETURN;
 }
 
-void o42a_obj_broadcast(o42a_obj_data_t *const data) {
+void o42a_obj_broadcast(o42a_obj_t *const object) {
 	O42A_ENTER(return);
-	if (O42A(pthread_cond_broadcast(&data->thread_cond))) {
+	if (O42A(pthread_cond_broadcast(&object->object_data.thread_cond))) {
 		o42a_error_print(
 				"Failed to broadcast signal to an object condition waiters");
 	}
 	O42A_RETURN;
 }
 
-void o42a_obj_use(o42a_obj_data_t *const data) {
+void o42a_obj_use(o42a_obj_t *const object) {
 	O42A_ENTER(return);
-	o42a_debug_mem_name(
-			"Use object: ",
-			(char *) data - offsetof(struct o42a_obj, object_data));
-	O42A(o42a_gc_use(o42a_gc_blockof(
-			(char *) data - offsetof(struct o42a_obj, object_data))));
+	o42a_debug_mem_name("Use object: ", object);
+	O42A(o42a_gc_use(o42a_gc_blockof(object)));
 	O42A_RETURN;
 }
 
@@ -1344,39 +1329,32 @@ o42a_obj_t *o42a_obj_use_mutable(o42a_obj_t **const var) {
 	O42A_RETURN result;
 }
 
-void o42a_obj_use_static(o42a_obj_data_t *const data) {
+void o42a_obj_use_static(o42a_obj_t *const object) {
 	O42A_ENTER(return);
 
-	assert(!(data->flags & O42A_OBJ_RT) && "Object is not static");
-	if (!(data->flags & O42A_OBJ_RT)) {
-		o42a_debug_mem_name(
-				"Static object: ",
-				(char *) data - offsetof(struct o42a_obj, object_data));
-		O42A(o42a_gc_static(o42a_gc_blockof(
-				(char *) data - offsetof(struct o42a_obj, object_data))));
+	assert(!(object->object_data.flags & O42A_OBJ_RT)
+			&& "Object is not static");
+	if (!(object->object_data.flags & O42A_OBJ_RT)) {
+		o42a_debug_mem_name("Static object: ", object);
+		O42A(o42a_gc_static(o42a_gc_blockof(object)));
 	}
 
 	O42A_RETURN;
 }
 
-void o42a_obj_start_use(
-		o42a_obj_use_t *const use,
-		o42a_obj_data_t *const data) {
+void o42a_obj_start_use(o42a_obj_use_t *const use, o42a_obj_t *const object) {
 	O42A_ENTER(return);
 
 	assert(
-			!use->data
+			!use->object
 			&& "Object use instance already utilized by another object");
 
-	if (data->flags & O42A_OBJ_RT) {
-		use->data = data;
-		o42a_debug_mem_name(
-				"Start object use: ",
-				(char *) data - offsetof(struct o42a_obj, object_data));
-		O42A(o42a_gc_use(o42a_gc_blockof(
-				(char *) data - offsetof(struct o42a_obj, object_data))));
+	if (object->object_data.flags & O42A_OBJ_RT) {
+		use->object = object;
+		o42a_debug_mem_name("Start object use: ", object);
+		O42A(o42a_gc_use(o42a_gc_blockof(object)));
 	} else {
-		O42A(o42a_obj_use_static(data));
+		O42A(o42a_obj_use_static(object));
 	}
 
 	O42A_RETURN;
@@ -1385,13 +1363,10 @@ void o42a_obj_start_use(
 void o42a_obj_end_use(o42a_obj_use_t *const use) {
 	O42A_ENTER(return);
 
-	if (use->data) {
-		o42a_debug_mem_name(
-				"End object use: ",
-				(char *) use->data - offsetof(struct o42a_obj, object_data));
-		O42A(o42a_gc_unuse(o42a_gc_blockof(
-				(char *) use->data - offsetof(struct o42a_obj, object_data))));
-		use->data = NULL;
+	if (use->object) {
+		o42a_debug_mem_name("End object use: ", use->object);
+		O42A(o42a_gc_unuse(o42a_gc_blockof(use->object)));
+		use->object = NULL;
 	}
 
 	O42A_RETURN;

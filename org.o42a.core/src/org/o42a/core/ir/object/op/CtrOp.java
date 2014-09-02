@@ -21,7 +21,6 @@ package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
@@ -31,13 +30,12 @@ import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.Int32rec;
-import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
@@ -87,7 +85,7 @@ public class CtrOp extends IROp {
 			CodeDirs dirs,
 			ObjHolder holder,
 			ObjectOp owner,
-			ObjectIRDataOp ancestorData,
+			ObjectOp ancestor,
 			ObjOp sample) {
 
 		final CodeDirs subDirs = dirs.begin(
@@ -97,18 +95,16 @@ public class CtrOp extends IROp {
 		final Op ptr = ptr(code);
 
 		if (owner != null) {
-			ptr.ownerData(code)
-			.store(code, owner.objectData(code).ptr());
+			ptr.owner(code).store(code, owner.toData(null, code));
 		} else {
-			ptr.ownerData(code)
-			.store(code, code.nullPtr(OBJECT_DATA_TYPE));
+			ptr.owner(code).store(code, code.nullDataPtr());
 		}
-		ptr.ancestorData(code)
-		.store(
+		ptr.ancestor(code).store(
 				code,
-				ancestorData != null
-				? ancestorData : code.nullPtr(OBJECT_DATA_TYPE));
-		ptr.desc(code).store(code, sample.objectData(code).ptr(code));
+				ancestor != null
+				? ancestor.toData(null, code)
+				: code.nullDataPtr());
+		ptr.sample(code).store(code, sample.toData(null, code));
 		ptr.numDeps(code).store(
 				code,
 				code.int32(sample.getObjectIR().existingDeps().size()));
@@ -130,27 +126,25 @@ public class CtrOp extends IROp {
 			CodeDirs dirs,
 			ObjHolder holder,
 			ObjectOp owner,
-			ObjectIRDataOp ancestorData,
+			ObjectOp ancestor,
 			Obj sample) {
-		assert ancestorData != null :
+		assert ancestor != null :
 			"Eager object's ancestor not specified";
 		assert sample.deps().size() == 0 :
 			"Eager object has run-time dependencies";
 
 		final CodeDirs subDirs = dirs.begin(
 				"eager_object",
-				"Eager object: ancestor=" + ancestorData);
+				"Eager object: ancestor=" + ancestor);
 		final Block code = subDirs.code();
 		final Op ptr = ptr(code);
 
 		if (owner != null) {
-			ptr.ownerData(code)
-			.store(code, owner.objectData(code).ptr());
+			ptr.owner(code).store(code, owner.toData(null, code));
 		} else {
-			ptr.ownerData(code)
-			.store(code, code.nullPtr(OBJECT_DATA_TYPE));
+			ptr.owner(code).store(code, code.nullDataPtr());
 		}
-		ptr.ancestorData(code).store(code, ancestorData);
+		ptr.ancestor(code).store(code, ancestor.toData(null, code));
 
 		final DataOp result = eagerFunc().op(null, code).newObject(code, this);
 
@@ -187,16 +181,16 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRDataOp> ownerData(Code code) {
-			return ptr(null, code, getType().ownerData());
+		public final DataRecOp owner(Code code) {
+			return ptr(null, code, getType().owner());
 		}
 
-		public final StructRecOp<ObjectIRDataOp> ancestorData(Code code) {
-			return ptr(null, code, getType().ancestorData());
+		public final DataRecOp ancestor(Code code) {
+			return ptr(null, code, getType().ancestor());
 		}
 
-		public final StructRecOp<ObjectIRDataOp> desc(Code code) {
-			return ptr(null, code, getType().sampleData());
+		public final DataRecOp sample(Code code) {
+			return ptr(null, code, getType().sample());
 		}
 
 		public final ValType.Op value(Code code) {
@@ -211,9 +205,9 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRDataOp> ownerData;
-		private StructRec<ObjectIRDataOp> ancestorData;
-		private StructRec<ObjectIRDataOp> sampleData;
+		private DataRec owner;
+		private DataRec ancestor;
+		private DataRec sample;
 		private ValType value;
 		private Int32rec numDeps;
 
@@ -226,16 +220,16 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructRec<ObjectIRDataOp> ownerData() {
-			return this.ownerData;
+		public final DataRec owner() {
+			return this.owner;
 		}
 
-		public final StructRec<ObjectIRDataOp> ancestorData() {
-			return this.ancestorData;
+		public final DataRec ancestor() {
+			return this.ancestor;
 		}
 
-		public final StructRec<ObjectIRDataOp> sampleData() {
-			return this.sampleData;
+		public final DataRec sample() {
+			return this.sample;
 		}
 
 		public final ValType value() {
@@ -248,9 +242,9 @@ public class CtrOp extends IROp {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.ownerData = data.addPtr("owner_data", OBJECT_DATA_TYPE);
-			this.ancestorData = data.addPtr("ancestor_data", OBJECT_DATA_TYPE);
-			this.sampleData = data.addPtr("sample_data", OBJECT_DATA_TYPE);
+			this.owner = data.addDataPtr("owner");
+			this.ancestor = data.addDataPtr("ancestor");
+			this.sample = data.addDataPtr("sample");
 			this.value = data.addInstance(ID.rawId("value"), VAL_TYPE);
 			this.numDeps = data.addInt32("num_deps");
 		}

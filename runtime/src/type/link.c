@@ -11,10 +11,10 @@
 #include "o42a/object.h"
 
 
-static void mark_link_val(o42a_obj_data_t *const data) {
+static void mark_link_val(o42a_obj_t *const object) {
 	O42A_ENTER(return);
 
-	const volatile o42a_val_t *const value = &data->value;
+	const volatile o42a_val_t *const value = &object->object_data.value;
 	o42a_obj_t *const target = value->value.v_ptr;
 
 	if (!target) {

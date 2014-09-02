@@ -19,31 +19,29 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectDataFunc extends Func<ObjectDataFunc> {
+public final class ByObjectFunc extends Func<ByObjectFunc> {
 
-	public static final Signature OBJECT_DATA = new Signature();
+	public static final Signature BY_OBJECT = new Signature();
 
-	private ObjectDataFunc(FuncCaller<ObjectDataFunc> caller) {
+	private ByObjectFunc(FuncCaller<ByObjectFunc> caller) {
 		super(caller);
 	}
 
-	public final void call(Code code, ObjectIRDataOp data) {
-		invoke(null, code, OBJECT_DATA.result(), data);
+	public final void call(Code code, DataOp object) {
+		invoke(null, code, BY_OBJECT.result(), object);
 	}
 
 	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ObjectDataFunc> {
+			extends org.o42a.codegen.code.Signature<ByObjectFunc> {
 
 		private Return<Void> result;
-		private Arg<ObjectIRDataOp> data;
+		private Arg<DataOp> object;
 
 		private Signature() {
 			super(ID.id("ObjectDataF"));
@@ -53,19 +51,19 @@ public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 			return this.result;
 		}
 
-		public final Arg<ObjectIRDataOp> data() {
-			return this.data;
+		public final Arg<DataOp> object() {
+			return this.object;
 		}
 
 		@Override
-		public final ObjectDataFunc op(FuncCaller<ObjectDataFunc> caller) {
-			return new ObjectDataFunc(caller);
+		public final ByObjectFunc op(FuncCaller<ByObjectFunc> caller) {
+			return new ByObjectFunc(caller);
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
-			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
+			this.object = builder.addData("object");
 		}
 
 	}

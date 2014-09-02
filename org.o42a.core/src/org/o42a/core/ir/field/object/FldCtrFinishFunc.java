@@ -20,11 +20,10 @@
 package org.o42a.core.ir.field.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.util.string.ID;
 
 
@@ -36,15 +35,15 @@ public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 		super(caller);
 	}
 
-	public final void call(Code code, ObjectIRDataOp data, FldCtrOp ctr) {
-		invoke(null, code, FLD_CTR_FINISH.result(), data, ctr);
+	public final void call(Code code, DataOp object, FldCtrOp ctr) {
+		invoke(null, code, FLD_CTR_FINISH.result(), object, ctr);
 	}
 
 	public static final class Signature
 			extends org.o42a.codegen.code.Signature<FldCtrFinishFunc> {
 
 		private Return<Void> result;
-		private Arg<ObjectIRDataOp> data;
+		private Arg<DataOp> object;
 		private Arg<FldCtrOp> ctr;
 
 		private Signature() {
@@ -55,8 +54,8 @@ public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 			return this.result;
 		}
 
-		public final Arg<ObjectIRDataOp> data() {
-			return this.data;
+		public final Arg<DataOp> data() {
+			return this.object;
 		}
 
 		public final Arg<FldCtrOp> ctr() {
@@ -71,7 +70,7 @@ public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
-			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
+			this.object = builder.addData("object");
 			this.ctr = builder.addPtr("ctr", FLD_CTR_TYPE);
 		}
 

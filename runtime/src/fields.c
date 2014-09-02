@@ -144,23 +144,23 @@ o42a_obj_t *o42a_obj_ref_stub(
 }
 
 o42a_bool_t o42a_fld_start(
-		o42a_obj_data_t *const data,
+		o42a_obj_t *const object,
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
-	O42A(o42a_obj_lock(data));
+	O42A(o42a_obj_lock(object));
 
 	const o42a_fld *const fld = ctr->fld;
 	o42a_bool_t (*const is_init) (const o42a_fld *) =
 			o42a_obj_field_kinds[ctr->fld_kind].is_init;
 
 	if (is_init(fld)) {
-		O42A(o42a_obj_unlock(data));
+		O42A(o42a_obj_unlock(object));
 		// Object already set.
 		O42A_RETURN O42A_FALSE;
 	}
 
-	o42a_fld_ctr_t *last_ctr = data->fld_ctrs;
+	o42a_fld_ctr_t *last_ctr = object->object_data.fld_ctrs;
 	pthread_t thread = O42A(pthread_self());
 
 	if (!last_ctr) {
@@ -168,8 +168,8 @@ o42a_bool_t o42a_fld_start(
 		ctr->prev = NULL;
 		ctr->next = NULL;
 		ctr->thread = thread;
-		data->fld_ctrs = ctr;
-		O42A(o42a_obj_unlock(data));
+		object->object_data.fld_ctrs = ctr;
+		O42A(o42a_obj_unlock(object));
 		O42A_RETURN O42A_TRUE;
 	}
 
@@ -190,16 +190,16 @@ o42a_bool_t o42a_fld_start(
 			ctr->prev = NULL;
 			ctr->next = NULL;
 			ctr->thread = last_ctr->thread;
-			O42A(o42a_obj_unlock(data));
+			O42A(o42a_obj_unlock(object));
 			// Try to construct the field.
 			O42A_RETURN O42A_TRUE;
 		}
 		// Wait for another thread to construct the field.
 		while (!is_init(fld)) {
-			O42A(o42a_obj_wait(data));
+			O42A(o42a_obj_wait(object));
 		}
 		// Field constructed.
-		O42A(o42a_obj_unlock(data));
+		O42A(o42a_obj_unlock(object));
 		O42A_RETURN O42A_FALSE;
 	}
 
@@ -208,28 +208,28 @@ o42a_bool_t o42a_fld_start(
 	ctr->prev = last_ctr;
 	ctr->next = NULL;
 	ctr->thread = thread;
-	O42A(o42a_obj_unlock(data));
+	O42A(o42a_obj_unlock(object));
 
 	// Construct the field.
 	O42A_RETURN O42A_TRUE;
 }
 
 o42a_bool_t o42a_fld_val_start(
-		o42a_obj_data_t *const data,
+		o42a_obj_t *const object,
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
-	O42A(o42a_obj_lock(data));
+	O42A(o42a_obj_lock(object));
 
-	o42a_val_t *const value = ctr->fld = &data->value;
+	o42a_val_t *const value = ctr->fld = &object->object_data.value;
 
 	if (!(value->flags & O42A_VAL_INDEFINITE)) {
-		O42A(o42a_obj_unlock(data));
+		O42A(o42a_obj_unlock(object));
 		// Object already set.
 		O42A_RETURN O42A_FALSE;
 	}
 
-	o42a_fld_ctr_t *last_ctr = data->fld_ctrs;
+	o42a_fld_ctr_t *last_ctr = object->object_data.fld_ctrs;
 	pthread_t thread = O42A(pthread_self());
 
 	if (!last_ctr) {
@@ -237,8 +237,8 @@ o42a_bool_t o42a_fld_val_start(
 		ctr->prev = NULL;
 		ctr->next = NULL;
 		ctr->thread = thread;
-		data->fld_ctrs = ctr;
-		O42A(o42a_obj_unlock(data));
+		object->object_data.fld_ctrs = ctr;
+		O42A(o42a_obj_unlock(object));
 		O42A_RETURN O42A_TRUE;
 	}
 
@@ -259,16 +259,16 @@ o42a_bool_t o42a_fld_val_start(
 			ctr->prev = NULL;
 			ctr->next = NULL;
 			ctr->thread = last_ctr->thread;
-			O42A(o42a_obj_unlock(data));
+			O42A(o42a_obj_unlock(object));
 			// Try to construct the field.
 			O42A_RETURN O42A_TRUE;
 		}
 		// Wait for another thread to construct the field.
 		while (value->flags & O42A_VAL_INDEFINITE) {
-			O42A(o42a_obj_wait(data));
+			O42A(o42a_obj_wait(object));
 		}
 		// Field constructed.
-		O42A(o42a_obj_unlock(data));
+		O42A(o42a_obj_unlock(object));
 		O42A_RETURN O42A_FALSE;
 	}
 
@@ -277,16 +277,16 @@ o42a_bool_t o42a_fld_val_start(
 	ctr->prev = last_ctr;
 	ctr->next = NULL;
 	ctr->thread = thread;
-	O42A(o42a_obj_unlock(data));
+	O42A(o42a_obj_unlock(object));
 
 	// Construct the field.
 	O42A_RETURN O42A_TRUE;
 }
 
-void o42a_fld_finish(o42a_obj_data_t *const data, o42a_fld_ctr_t *const ctr) {
+void o42a_fld_finish(o42a_obj_t *const object, o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return);
 
-	O42A(o42a_obj_lock(data));
+	O42A(o42a_obj_lock(object));
 
 	// Remove the construction info from the list.
 	o42a_fld_ctr_t *prev = ctr->prev;
@@ -294,19 +294,18 @@ void o42a_fld_finish(o42a_obj_data_t *const data, o42a_fld_ctr_t *const ctr) {
 	if (prev) {
 		// Not first in the list.
 		prev->next = ctr->next;
-	} else if (data->fld_ctrs == ctr) {
+	} else if (object->object_data.fld_ctrs == ctr) {
 		// First in the list.
-		data->fld_ctrs = ctr->next;
+		object->object_data.fld_ctrs = ctr->next;
 	}// Not in the list otherwise.
 
 	// The object can link to garbage-collected data blocks now.
-	O42A(o42a_gc_link(o42a_gc_blockof(
-			(char *) data - offsetof(struct o42a_obj, object_data))));
+	O42A(o42a_gc_link(o42a_gc_blockof(object)));
 
 	// Inform others the field is constructed.
-	O42A(o42a_obj_broadcast(data));
+	O42A(o42a_obj_broadcast(object));
 
-	O42A(o42a_obj_unlock(data));
+	O42A(o42a_obj_unlock(object));
 
 	O42A_RETURN;
 }

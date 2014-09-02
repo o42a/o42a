@@ -13,9 +13,9 @@
 #include "o42a/memory/gc.h"
 #include "o42a/object.h"
 
-void mark_array_val(o42a_obj_data_t *const data) {
+void mark_array_val(o42a_obj_t *const object) {
 	O42A_ENTER(return);
-	O42A(o42a_array_mark(&data->value));
+	O42A(o42a_array_mark(&object->object_data.value));
 	O42A_RETURN;
 }
 

@@ -20,18 +20,16 @@
 package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
 import static org.o42a.core.ir.object.op.StartObjectUseFunc.START_OBJECT_USE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.code.op.StructRecOp;
-import org.o42a.codegen.data.StructRec;
+import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.util.string.ID;
@@ -66,21 +64,15 @@ public final class ObjectUseOp extends IROp {
 
 	void setUsed(Code code, ObjectOp object) {
 		code.dumpName("Trapped object caught: ", object);
-
-		final ObjectIRDataOp data = object.objectData(code).ptr();
-
-		this.ptr.get(code).objectData.store(code, data);
+		this.ptr.get(code).object.store(code, object.toData(null, code));
 	}
 
 	void startUse(Code code, ObjectOp object) {
-
-		final ObjectIRDataOp data = object.objectData(code).ptr();
-
 		getGenerator()
 		.externalFunction()
 		.link("o42a_obj_start_use", START_OBJECT_USE)
 		.op(null, code)
-		.use(code, ptr(code), data);
+		.use(code, ptr(code), object);
 	}
 
 	public static final class Op extends StructOp<Op> {
@@ -94,8 +86,8 @@ public final class ObjectUseOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRDataOp> objectData(ID id, Code code) {
-			return ptr(id, code, getType().objectData());
+		public final DataRecOp object(ID id, Code code) {
+			return ptr(id, code, getType().object());
 		}
 
 	}
@@ -103,14 +95,14 @@ public final class ObjectUseOp extends IROp {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRDataOp> objectData;
+		private DataRec object;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_use_t"));
 		}
 
-		public final StructRec<ObjectIRDataOp> objectData() {
-			return this.objectData;
+		public final DataRec object() {
+			return this.object;
 		}
 
 		@Override
@@ -120,7 +112,7 @@ public final class ObjectUseOp extends IROp {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.objectData = data.addPtr("data", OBJECT_DATA_TYPE);
+			this.object = data.addDataPtr("object");
 		}
 
 	}
@@ -128,7 +120,7 @@ public final class ObjectUseOp extends IROp {
 	private static final class AllocatedObjectUse {
 
 		private final Op op;
-		private StructRecOp<ObjectIRDataOp> objectData;
+		private DataRecOp object;
 
 		AllocatedObjectUse(Op op) {
 			this.op = op;
@@ -143,8 +135,8 @@ public final class ObjectUseOp extends IROp {
 		}
 
 		void init(Code code) {
-			this.objectData = this.op.objectData(null, code);
-			this.objectData.store(code, code.nullPtr(OBJECT_DATA_TYPE));
+			this.object = this.op.object(null, code);
+			this.object.store(code, code.nullDataPtr());
 		}
 
 	}

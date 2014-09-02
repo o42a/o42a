@@ -24,7 +24,7 @@ typedef struct o42a_fld_obj o42a_fld_obj;
  * \param vmtc[in] a pointer to VMT chain the object construction is invoked
  * from. This can be either an original VMT chain from the object, or one of
  * the links of that chain.
- * \param ancestor_data[in] known ancestor data, or NULL when vmtc belongs
+ * \param ancestor[in] known ancestor object pointer, or NULL when vmtc belongs
  * to the object. In the latter case the ancestor_data will be evaluated
  * by constructor.
  *
@@ -33,7 +33,7 @@ typedef struct o42a_fld_obj o42a_fld_obj;
 typedef o42a_obj_t *o42a_obj_constructor_ft(
 		o42a_obj_t *,
 		const o42a_obj_vmtc_t *,
-		o42a_obj_data_t *);
+		o42a_obj_t *);
 
 
 struct o42a_fld_obj {
@@ -59,7 +59,7 @@ o42a_bool_t o42a_fld_obj_is_init(const o42a_fld *);
 o42a_obj_t *o42a_obj_constructor_stub(
 		o42a_obj_t *,
 		const o42a_obj_vmtc_t *,
-		o42a_obj_data_t *);
+		o42a_obj_t *);
 
 #ifdef __cplusplus
 } /* extern "C" */

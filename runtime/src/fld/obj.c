@@ -43,7 +43,7 @@ o42a_bool_t o42a_fld_obj_is_init(const o42a_fld *const fld) {
 o42a_obj_t *o42a_obj_constructor_stub(
 		o42a_obj_t *object __attribute__((unused)),
 		const o42a_obj_vmtc_t *vmtc __attribute__((unused)),
-		o42a_obj_data_t *ancestor_data __attribute__((unused))) {
+		o42a_obj_t *ancestor_data __attribute__((unused))) {
 	O42A_ENTER(return NULL);
 	o42a_error_print("Object constructor stub invoked");
 	O42A_RETURN NULL;

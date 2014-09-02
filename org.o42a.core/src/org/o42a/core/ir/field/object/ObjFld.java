@@ -129,10 +129,10 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 				getConstructorSignature().vmtc());
 		final ObjFldOp fld =
 				(ObjFldOp) host.field(dirs, getField().getKey());
-		final ObjectIRDataOp ancestorDataArg = builder.getFunction().arg(
+		final DataOp ancestorArg = builder.getFunction().arg(
 				code,
-				getConstructorSignature().ancestorData());
-		final BoolOp noAncestor = ancestorDataArg.isNull(null, code);
+				getConstructorSignature().ancestor());
+		final BoolOp noAncestor = ancestorArg.isNull(null, code);
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
@@ -148,21 +148,19 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		.toData(null, constructed)
 		.returnValue(constructed);
 
-		final ObjectIRDataOp evaluatedAncestorData =
-				ancestorData(builder, dirs, start);
+		final DataOp evaluatedAncestor = ancestor(builder, dirs, start);
 
 		start.go(code.tail());
 
 		final Block cont = start.otherwise();
 
-		final ObjectIRDataOp suppliedAncestorData =
-				cont.phi(null, ancestorDataArg);
+		final DataOp suppliedAncestor = cont.phi(null, ancestorArg);
 		cont.go(code.tail());
 
-		final ObjectIRDataOp ancestorData = code.phi(
+		final DataOp ancestor = code.phi(
 				ID.id("atype"),
-				evaluatedAncestorData,
-				suppliedAncestorData);
+				evaluatedAncestor,
+				suppliedAncestor);
 
 		final ObjFldTargetHolder holder =
 				new ObjFldTargetHolder(code.getAllocator(), noAncestor);
@@ -176,7 +174,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 						builder,
 						builder.dirs(construct, dirs.falseDir()),
 						holder,
-						ancestorData)
+						ancestor)
 				.toData(null, construct);
 
 		construct.go(code.tail());
@@ -188,7 +186,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 				construct.head(),
 				holder,
 				prevVmtc,
-				ancestorData).toData(null, delegate);
+				ancestor).toData(null, delegate);
 
 		delegate.go(code.tail());
 
@@ -212,31 +210,29 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		return new ObjFldOp(this, host, ptr);
 	}
 
-	private ObjectIRDataOp ancestorData(
+	private DataOp ancestor(
 			ObjBuilder builder,
 			CodeDirs dirs,
 			CondBlock code) {
 
 		final CodeDirs ancDirs = dirs.sub(code);
-		final ObjectIRDataOp ancestorData =
+		final DataOp ancestor =
 				builder.objects()
 				.objectAncestor(ancDirs, getField().toObject())
-				.objectData(code)
-				.ptr();
+				.toData(null, code);
 
-		code.dumpName("Ancestor: ", ancestorData);
+		code.dumpName("Ancestor: ", ancestor);
 		ancDirs.done();
 
-		return ancestorData;
+		return ancestor;
 	}
 
 	private ObjectOp construct(
 			ObjBuilder builder,
 			CodeDirs dirs,
 			ObjHolder holder,
-			ObjectIRDataOp ancestorData) {
+			DataOp ancestor) {
 
-		final Block code = dirs.code();
 		final Obj object = getField().toObject();
 		final ObjectsCode objects = builder.objects();
 
@@ -245,10 +241,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 				builder.host(),
 				holder,
 				builder.host(),
-				ancestorData != null ? ancestorData :
-				objects.objectAncestor(dirs, object)
-				.objectData(code)
-				.ptr(),
+				ancestor,
 				object);
 	}
 
@@ -258,7 +251,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 			CodePos construct,
 			ObjFldTargetHolder holder,
 			VmtIRChain.Op prevVmtc,
-			ObjectIRDataOp ancestorData) {
+			DataOp ancestorPtr) {
 
 		final Block code = dirs.code();
 
@@ -275,11 +268,11 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		// The field is dummy. The actual field is declared later.
 		constructor.isNull(null, code).go(code, construct);
 
-		final DataOp ancestorPtr =
-				constructor.call(code, builder.host(), prevVmtc, ancestorData);
+		final DataOp newAncestorPtr =
+				constructor.call(code, builder.host(), prevVmtc, ancestorPtr);
 		final ObjectOp ancestor = anonymousObject(
 				dirs,
-				ancestorPtr,
+				newAncestorPtr,
 				getBodyIR().getClosestAscendant());
 
 		// Ancestor object is marked used by previous constructor.
@@ -302,9 +295,9 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		final VmtIRChain.Op vmtc = builder.getFunction().arg(
 				code,
 				getConstructorSignature().vmtc());
-		final ObjectIRDataOp ancestorData = builder.getFunction().arg(
+		final DataOp ancestorArg = builder.getFunction().arg(
 				code,
-				getConstructorSignature().ancestorData());
+				getConstructorSignature().ancestor());
 		final VmtIRChain.Op prevVmtc = vmtc.prev(null, code).load(null, code);
 		final CondBlock construct =
 				prevVmtc.isNull(null, code)
@@ -312,7 +305,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 
 		constructor()
 		.op(null, construct)
-		.call(construct, host, vmtc, ancestorData)
+		.call(construct, host, vmtc, ancestorArg)
 		.returnValue(construct);
 
 		final Block delegate = construct.otherwise();
@@ -322,7 +315,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		prevVmt.compatible(delegate).goUnless(delegate, construct.head());
 		prevVmt.func(null, delegate, vmtConstructor())
 		.load(null, delegate)
-		.call(delegate, host, prevVmtc, ancestorData)
+		.call(delegate, host, prevVmtc, ancestorArg)
 		.returnValue(delegate);
 	}
 
