@@ -25,11 +25,12 @@ import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.*;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.core.ir.object.ObjectDataOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
@@ -56,7 +57,7 @@ abstract class AbstractObjectValueBuilder
 		assert getValueType().is(value.getValueType()) :
 			"Wrong value type";
 
-		final ObjectIRDataOp data = data(function, function);
+		final ObjectDataOp data = data(builder, function, function);
 		final StateOp state = value.state();
 
 		state.startEval(function, data);
@@ -117,14 +118,15 @@ abstract class AbstractObjectValueBuilder
 			Function<ObjectValueFunc> function,
 			CodePos failureDir);
 
-	protected abstract ObjectIRDataOp data(
+	protected abstract ObjectDataOp data(
+			CodeBuilder builder,
 			Code code,
 			Function<ObjectValueFunc> function);
 
 	protected abstract void writeValue(
 			DefDirs dirs,
 			ObjOp host,
-			ObjectIRDataOp data);
+			ObjectDataOp data);
 
 	private ObjBuilder builder(Function<ObjectValueFunc> function) {
 

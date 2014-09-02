@@ -27,10 +27,10 @@ void o42a_fld_owner_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	o42a_fld_owner *const to = &ctable->to_fld->owner;
-	const o42a_obj_data_t *const owner_data = ctable->owner_data;
+	o42a_obj_t *const owner = ctable->owner;
 
-	if (owner_data) {
-		to->object = O42A(o42a_obj_by_data(owner_data));
+	if (owner) {
+		to->object = owner;
 		o42a_debug_mem_name("Updated owner: ", to->object);
 		O42A_RETURN;
 	}

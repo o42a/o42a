@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 
 import org.o42a.codegen.code.*;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.object.Obj;
@@ -75,22 +76,23 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 	}
 
 	@Override
-	protected ObjectIRDataOp data(
+	protected ObjectDataOp data(
+			CodeBuilder builder,
 			Code code,
 			Function<ObjectValueFunc> function) {
-		return function.arg(code, OBJECT_VALUE.data());
+		return function.arg(code, OBJECT_VALUE.data()).op(builder);
 	}
 
 	@Override
 	protected void writeValue(
 			DefDirs dirs,
 			ObjOp host,
-			ObjectIRDataOp data) {
+			ObjectDataOp data) {
 
 		final Block code = dirs.code();
 		final ObjectOp owner = dirs.getBuilder().host();
 
-		data.defsFunc(code).load(null, code).call(dirs, owner);
+		data.ptr(code).defsFunc(code).load(null, code).call(dirs, owner);
 	}
 
 	private Obj typeObject() {

@@ -46,20 +46,11 @@ public final class ObjectDataOp extends DefiniteIROp {
 
 	private static ObjectStartOffset startOffset;
 
-	private final ObjectPrecision precision;
 	private final ObjectIRDataOp ptr;
 
-	ObjectDataOp(
-			CodeBuilder builder,
-			ObjectIRDataOp ptr,
-			ObjectPrecision precision) {
+	ObjectDataOp(CodeBuilder builder, ObjectIRDataOp ptr) {
 		super(builder);
 		this.ptr = ptr;
-		this.precision = precision;
-	}
-
-	public final ObjectPrecision getPrecision() {
-		return this.precision;
 	}
 
 	@Override
@@ -82,6 +73,13 @@ public final class ObjectDataOp extends DefiniteIROp {
 				code,
 				objectPtr(code, wellKnownType),
 				wellKnownType);
+	}
+
+	public final DataOp objectPtr(Code code, Obj anyObject) {
+		return ptr(code)
+				.toData(null, code)
+				.offset(null, code, startOffset(code, anyObject))
+				.toData(OBJECT_ID, code);
 	}
 
 	public final void writeValue(DefDirs dirs) {
@@ -118,13 +116,6 @@ public final class ObjectDataOp extends DefiniteIROp {
 
 	private final DataOp body(Code code, ObjectOp body) {
 		return body != null ? body.toData(null, code) : objectPtr(code, null);
-	}
-
-	private final DataOp objectPtr(Code code, Obj anyObject) {
-		return ptr(code)
-				.toData(null, code)
-				.offset(null, code, startOffset(code, anyObject))
-				.toData(OBJECT_ID, code);
 	}
 
 	private RelOp startOffset(Code code, Obj anyObject) {

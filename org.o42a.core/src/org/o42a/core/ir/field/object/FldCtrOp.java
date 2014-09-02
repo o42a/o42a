@@ -31,7 +31,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIROp;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.core.ir.object.ObjectDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.util.string.ID;
 
@@ -67,23 +67,40 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 				code.int16((short) fld.fld().getKind().code()));
 
 		return fn.op(null, code)
-				.call(code, fld.host().objectData(code).ptr(), this);
+				.call(code, fld.host().toData(null, code), this);
 	}
 
-	public final BoolOp start(Code code, ObjectOp host) {
-		return start(code, host.objectData(code).ptr());
-	}
-
-	public BoolOp start(Code code, ObjectIRDataOp data) {
+	public final BoolOp start(Code code, ObjectDataOp data) {
 
 		final FuncPtr<FldCtrStartFunc> fn =
 				code.getGenerator().externalFunction().link(
 						"o42a_fld_val_start",
 						FLD_CTR_START);
 
-		fld(code).store(code, data.value(code).toData(null, code));
+		fld(code).store(
+				code,
+				data.ptr(code).value(code).toData(null, code));
 
-		return fn.op(null, code).call(code, data, this);
+		return fn.op(null, code).call(
+				code,
+				data.objectPtr(code, null).toData(null, code), this);
+	}
+
+	public final BoolOp start(Code code, ObjectOp host) {
+
+		final FuncPtr<FldCtrStartFunc> fn =
+				code.getGenerator().externalFunction().link(
+						"o42a_fld_val_start",
+						FLD_CTR_START);
+
+		fld(code).store(
+				code,
+				host.objectData(code)
+				.ptr(code)
+				.value(code)
+				.toData(null, code));
+
+		return fn.op(null, code).call(code, host.toData(null, code), this);
 	}
 
 	public final void finish(Code code, FldIROp fld) {
@@ -91,17 +108,13 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 	}
 
 	public final void finish(Code code, ObjectOp host) {
-		finish(code, host.objectData(code).ptr());
-	}
-
-	public void finish(Code code, ObjectIRDataOp data) {
 
 		final FuncPtr<FldCtrFinishFunc> fn =
 				code.getGenerator().externalFunction().link(
 						"o42a_fld_finish",
 						FLD_CTR_FINISH);
 
-		fn.op(null, code).call(code, data, this);
+		fn.op(null, code).call(code, host.toData(null, code), this);
 	}
 
 	public static final class Type

@@ -13,10 +13,10 @@
 #include "o42a/object.h"
 
 
-static void sweep_str_val(o42a_obj_data_t *const data) {
+static void sweep_str_val(o42a_obj_t *const object) {
 	O42A_ENTER(return);
 
-	const volatile o42a_val_t *const value = &data->value;
+	const volatile o42a_val_t *const value = &object->object_data.value;
 	const uint32_t flags = value->flags;
 
 	if (flags & O42A_VAL_STATIC) {

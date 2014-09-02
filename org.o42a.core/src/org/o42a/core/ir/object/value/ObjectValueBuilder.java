@@ -27,10 +27,11 @@ import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.core.ir.object.ObjectDataOp;
 import org.o42a.core.value.ValueType;
 
 
@@ -68,24 +69,26 @@ final class ObjectValueBuilder extends AbstractObjectValueBuilder {
 	}
 
 	@Override
-	protected ObjectIRDataOp data(
+	protected ObjectDataOp data(
+			CodeBuilder builder,
 			Code code,
 			Function<ObjectValueFunc> function) {
 		if (!this.fn.getObjectIR().isExact()) {
-			return function.arg(code, OBJECT_VALUE.data());
+			return function.arg(code, OBJECT_VALUE.data()).op(builder);
 		}
 		return this.fn.getObjectIR()
 				.getDataIR()
 				.getInstance()
 				.pointer(this.fn.getGenerator())
-				.op(OBJECT_DATA_ID, code);
+				.op(OBJECT_DATA_ID, code)
+				.op(builder);
 	}
 
 	@Override
 	protected void writeValue(
 			DefDirs dirs,
 			ObjOp host,
-			ObjectIRDataOp data) {
+			ObjectDataOp data) {
 		if (this.fn.getObjectIR().isExact()) {
 			dirs.code().debug("Exact host: " + this.fn.getObjectIR().getId());
 		} else {

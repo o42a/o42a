@@ -60,7 +60,7 @@ inline void o42a_val_unuse(o42a_val_t *const val) {
 	O42A_RETURN;
 }
 
-void o42a_val_gc_none(o42a_obj_data_t *const data __attribute__((unused))) {
+void o42a_val_gc_none(o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }

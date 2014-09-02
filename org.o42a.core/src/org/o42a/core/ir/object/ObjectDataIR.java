@@ -126,7 +126,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		return getInstance()
 				.pointer(getGenerator())
 				.op(null, code)
-				.op(builder, ObjectPrecision.EXACT);
+				.op(builder);
 	}
 
 	@Override

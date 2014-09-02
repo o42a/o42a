@@ -28,7 +28,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.core.ir.object.ObjectDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -42,7 +42,7 @@ import org.o42a.core.value.ValueType;
 public abstract class StateOp {
 
 	private final ObjectOp host;
-	private ObjectIRDataOp data;
+	private ObjectDataOp data;
 	private ValType.Op value;
 	private ValFlagsOp flags;
 
@@ -78,13 +78,13 @@ public abstract class StateOp {
 		return this.flags;
 	}
 
-	public final ObjectIRDataOp data() {
+	public final ObjectDataOp data() {
 		return this.data;
 	}
 
-	public void startEval(Block code, ObjectIRDataOp data) {
+	public void startEval(Block code, ObjectDataOp data) {
 		this.data = data;
-		this.value = this.data.value(code);
+		this.value = this.data.ptr(code).value(code);
 		this.flags = this.value.flags(code, ATOMIC);
 	}
 
@@ -139,8 +139,8 @@ public abstract class StateOp {
 	public abstract void assign(CodeDirs dirs, ObjectOp value);
 
 	protected void start(Block code) {
-		this.data = host().objectData(code).ptr();
-		this.value = this.data.value(code);
+		this.data = host().objectData(code);
+		this.value = this.data.ptr(code).value(code);
 		code.acquireBarrier();
 		this.flags = this.value.flags(code, ATOMIC);
 	}
