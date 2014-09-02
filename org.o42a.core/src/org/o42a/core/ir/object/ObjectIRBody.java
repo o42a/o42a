@@ -20,35 +20,28 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.object.VmtIRChain.Op;
-import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.type.Derivative;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
+public final class ObjectIRBody {
 
 	static final ID BODY_ID = ID.id("body");
-
-	private static final int KIND_MASK = 3;
 
 	private final ObjectIRStruct objectIRStruct;
 	private final Obj sampleDeclaration;
@@ -56,32 +49,24 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
-	private final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
-
-	private VmtIR vmtIR;
-
-	private StructRec<ObjectIRDescOp> declaredIn;
-	private StructRec<VmtIRChain.Op> vmtc;
-	private RelRec objectData;
-	private Int32rec flags;
 
 	ObjectIRBody(ObjectIRStruct objectIRStruct) {
-		super(mainId(objectIRStruct.getObjectIR()));
 		this.objectIRStruct = objectIRStruct;
 		this.sampleDeclaration = objectIRStruct.getSampleDeclaration();
 		this.closestAscendant = this.sampleDeclaration;
 	}
 
 	private ObjectIRBody(ObjectIR inheritantIR, Obj sampleDeclaration) {
-		super(derivedId(
-				inheritantIR,
-				sampleDeclaration.ir(inheritantIR.getGenerator())));
 		this.objectIRStruct = inheritantIR.getStruct();
 		this.sampleDeclaration = sampleDeclaration;
 		this.closestAscendant =
 				inheritantIR.getSampleDeclaration().is(sampleDeclaration)
 				? inheritantIR.getObject()
 				: sampleDeclaration;
+	}
+
+	public final Generator getGenerator() {
+		return this.objectIRStruct.getGenerator();
 	}
 
 	public final ObjectIR getObjectIR() {
@@ -100,59 +85,12 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this == this.objectIRStruct.mainBodyIR();
 	}
 
-	public final VmtIR getVmtIR() {
-		if (this.vmtIR != null) {
-			return this.vmtIR;
-		}
-
-		this.vmtIR = new VmtIR(this);
-		getGenerator().newGlobal().struct(this.vmtIR).getInstance();
-
-		return this.vmtIR;
-	}
-
-	public void setKind(Kind kind) {
-
-		final Supplier<Integer> value = this.flags.getValue();
-
-		if (value == null) {
-			this.flags.setConstant(true).setValue(kind.ordinal());
-			return;
-		}
-
-		this.flags.setValue(
-				(value.get().intValue() & ~KIND_MASK) | kind.ordinal());
-	}
-
-	public Kind getKind() {
-
-		final Supplier<Integer> value = this.flags.getValue();
-
-		if (value == null) {
-			return null;
-		}
-
-		return Kind.values()[value.get().intValue() & KIND_MASK];
-	}
-
-	public final StructRec<ObjectIRDescOp> declaredIn() {
-		return this.declaredIn;
-	}
-
-	public final StructRec<Op> vmtc() {
-		return this.vmtc;
-	}
-
-	public final RelRec objectData() {
-		return this.objectData;
-	}
-
-	public final Int32rec flags() {
-		return this.flags;
-	}
-
 	public final ObjectIRBody derive(ObjectIR inheritantIR) {
 		return new ObjectIRBody(inheritantIR, getSampleDeclaration());
+	}
+
+	public final List<Fld<?>> getDeclaredFields() {
+		return this.fieldList;
 	}
 
 	public final Fld<?> fld(MemberKey memberKey) {
@@ -169,83 +107,16 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		return this.fieldMap.get(memberKey);
 	}
 
-	public final DepIR dep(Dep dep) {
-
-		final DepIR ir = this.deps.get(dep);
-
-		assert ir != null :
-			dep + " not found in " + this;
-
-		return ir;
-	}
-
-	@Override
-	public ObjectIRBodyOp op(StructWriter<ObjectIRBodyOp> writer) {
-		return new ObjectIRBodyOp(writer);
-	}
-
-	@Override
-	protected void allocate(SubData<ObjectIRBodyOp> data) {
-		this.declaredIn = data.addPtr("declared_in", OBJECT_DESC_TYPE);
-		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
-		this.objectData = data.addRelPtr("object_data");
-		this.flags = data.addInt32("flags");
+	final void allocate(SubData<?> data) {
 
 		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
 
 		allocateFields(bodyData);
-		allocateDeps(bodyData);
-	}
-
-	@Override
-	protected void fill() {
-		this.declaredIn.setConstant(true);
-
-		final Generator generator = getGenerator();
-
-		if (isMain()) {
-			this.declaredIn.setValue(getObjectIR().getDataIR().getDescPtr());
-		} else {
-			this.declaredIn.setValue(
-					getSampleDeclaration()
-					.ir(getGenerator())
-					.getDataIR()
-					.getDescPtr());
-		}
-
-		this.vmtc.setConstant(true)
-		.setValue(getVmtIR().terminator().pointer(getGenerator()));
-
-		final ObjectIRData objectData =
-				getObjectIR().getDataIR().getInstance();
-
-		this.objectData.setConstant(true).setValue(
-				objectData.data(generator)
-				.getPointer()
-				.relativeTo(data(generator).getPointer()));
-	}
-
-	final List<Fld<?>> getDeclaredFields() {
-		return this.fieldList;
-	}
-
-	final Collection<DepIR> getDeclaredDeps() {
-		return this.deps.values();
 	}
 
 	final void declareFld(Fld<?> fld) {
 		this.fieldList.add(fld);
 		this.fieldMap.put(fld.getKey(), fld);
-	}
-
-	private static ID mainId(ObjectIR objectIR) {
-		return objectIR.getId().detail(BODY_ID);
-	}
-
-	private static ID derivedId(
-			ObjectIR objectIR,
-			ObjectIR sampleDeclarationIR) {
-		return mainId(objectIR).detail(sampleDeclarationIR.getId());
 	}
 
 	private final void allocateFields(ObjectIRBodyData data) {
@@ -324,34 +195,6 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		}
 
 		return true;
-	}
-
-	private void allocateDeps(ObjectIRBodyData data) {
-		allocateDepsDeclaredIn(data, getSampleDeclaration());
-	}
-
-	private void allocateDepsDeclaredIn(
-			ObjectIRBodyData data,
-			Obj ascendant) {
-
-		final Analyzer analyzer = getGenerator().getAnalyzer();
-
-		for (Dep dep : ascendant.deps()) {
-			if (!dep.exists(analyzer)) {
-				continue;
-			}
-
-			final DepIR depIR = new DepIR(this, dep);
-
-			depIR.allocate(data);
-			this.deps.put(dep, depIR);
-		}
-
-		for (Derivative derivative : ascendant.type().allDerivatives()) {
-			if (derivative.isSample()) {
-				allocateDepsDeclaredIn(data, derivative.getDerivedObject());
-			}
-		}
 	}
 
 	private String fieldNotFound(MemberKey memberKey) {

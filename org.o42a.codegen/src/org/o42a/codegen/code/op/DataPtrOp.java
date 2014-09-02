@@ -30,4 +30,8 @@ public interface DataPtrOp<P extends DataPtrOp<P>> extends PtrOp<P> {
 
 	P offset(ID id, Code code, IntOp<?> index);
 
+	default P offset(ID id, Code code, RelOp index) {
+		return offset(id, code, index.toInt32(null, code));
+	}
+
 }

@@ -19,32 +19,43 @@
 */
 package org.o42a.core.ir.object;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static org.o42a.core.ir.object.type.ObjectDescIR.allocateDescIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
-import java.util.Collection;
+import java.util.*;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.type.ObjectDescIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Deps;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
 
-public class ObjectIR  {
+public class ObjectIR {
 
 	private final Generator generator;
 	private final Obj object;
 	private final ValueIR valueIR;
+	private ObjectDescIR descIR;
+	private VmtIR vmtIR;
 	private ObjectIRStruct struct;
 	private ObjectValueIR objectValueIR;
+	private List<DepIR> existingDeps;
+	private Map<Dep, DepIR> allDeps;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
@@ -90,6 +101,49 @@ public class ObjectIR  {
 		return getObject().type().getLastDefinition().ir(getGenerator());
 	}
 
+	public final ObjectDescIR getDescIR() {
+		if (this.descIR != null) {
+			return this.descIR;
+		}
+		return this.descIR = allocateDescIR(this);
+	}
+
+	public final VmtIR getVmtIR() {
+		if (this.vmtIR != null) {
+			return this.vmtIR;
+		}
+
+		this.vmtIR = new VmtIR(this);
+		getGenerator().newGlobal().struct(this.vmtIR).getInstance();
+
+		return this.vmtIR;
+	}
+
+	public final ObjectIRStruct getStruct() {
+		if (this.struct != null) {
+			return this.struct;
+		}
+
+		assert getObject().assertFullyResolved();
+
+		final ObjectIRBlock block = new ObjectIRBlock(this);
+
+		this.struct = block.getStruct();
+
+		getGenerator().newGlobal().struct(block);
+		getScopeIR().targetAllocated();
+
+		return this.struct;
+	}
+
+	public final Ptr<ObjectIROp> ptr() {
+		return getStruct().pointer(getGenerator());
+	}
+
+	public final ObjectDataIR getDataIR() {
+		return getStruct().dataIR();
+	}
+
 	public final ObjectIRBody getBodyType() {
 		return definitionIR().getMainBodyIR();
 	}
@@ -126,10 +180,6 @@ public class ObjectIR  {
 		return lastDefinition.ir(getGenerator()).getDataIR();
 	}
 
-	public final ObjectDataIR getDataIR() {
-		return getStruct().dataIR();
-	}
-
 	public final ValueIR getValueIR() {
 		return this.valueIR;
 	}
@@ -151,8 +201,11 @@ public class ObjectIR  {
 	}
 
 	public final ObjOp op(CodeBuilder builder, Code code) {
-		return getMainBodyIR().data(getGenerator())
-				.getPointer().op(null, code).op(builder, this);
+		return getStruct()
+				.data(getGenerator())
+				.getPointer()
+				.op(null, code)
+				.op(builder, this);
 	}
 
 	public final ObjectIRBody bodyIR(Obj ascendant) {
@@ -189,8 +242,19 @@ public class ObjectIR  {
 		return bodyIR != null ? bodyIR.findFld(memberKey) : null;
 	}
 
+	public final List<DepIR> existingDeps() {
+		deps();
+		return this.existingDeps;
+	}
+
 	public final DepIR dep(Dep dep) {
-		return bodyIR(dep.getDeclaredIn()).dep(dep);
+
+		final DepIR depIR = deps().get(dep);
+
+		assert depIR != null :
+			"Dependency `" + dep + "` is not present in `" + this + '`';
+
+		return depIR;
 	}
 
 	@Override
@@ -202,21 +266,39 @@ public class ObjectIR  {
 		return new ObjectValueIR(this);
 	}
 
-	final ObjectIRStruct getStruct() {
-		if (this.struct != null) {
-			return this.struct;
+	private Map<Dep, DepIR> deps() {
+		if (this.allDeps != null) {
+			return this.allDeps;
 		}
 
-		assert getObject().assertFullyResolved();
+		final Deps deps = getObject().deps();
+		final int size = deps.size();
 
-		final ObjectIRBlock block = new ObjectIRBlock(this);
+		if (size == 0) {
+			this.existingDeps = emptyList();
+			return this.allDeps = emptyMap();
+		}
 
-		this.struct = block.getStruct();
+		final Analyzer analyzer = getGenerator().getAnalyzer();
+		final IdentityHashMap<Dep, DepIR> irs = new IdentityHashMap<>(size);
+		final ArrayList<DepIR> existing = new ArrayList<>(size);
 
-		getGenerator().newGlobal().struct(block);
-		getScopeIR().targetAllocated();
+		for (Dep dep : deps) {
+			if (!dep.exists(analyzer)) {
+				continue;
+			}
 
-		return this.struct;
+			final DepIR depIR = new DepIR(this, dep, existing.size());
+
+			irs.put(dep, depIR);
+			if (!depIR.isOmitted()) {
+				existing.add(depIR);
+			}
+		}
+
+		this.existingDeps = existing;
+
+		return this.allDeps = irs;
 	}
 
 }

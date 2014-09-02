@@ -68,7 +68,7 @@ public abstract class AbstractObjectStoreOp
 				this.ptr.get(code).load(null, code).toData(null, code);
 
 		return anonymousObject(
-				dirs.getBuilder(),
+				dirs,
 				objectPtr,
 				getWellKnownType());
 	}

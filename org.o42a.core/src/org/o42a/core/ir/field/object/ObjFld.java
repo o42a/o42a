@@ -264,10 +264,13 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 
 		code.dump("Delegate to ", prevVmtc);
 
+		final VmtIR vmtIR = getObjectIR().getVmtIR();
+		final VmtIROp prevVmt = prevVmtc.loadVmt(code, vmtIR);
+
+		prevVmt.compatible(code).goUnless(code, construct);
+
 		final ObjectConstructorFunc constructor =
-				prevVmtc.loadVmt(code, getBodyIR().getVmtIR())
-				.func(null, code, vmtConstructor())
-				.load(null, code);
+				prevVmt.func(null, code, vmtConstructor()).load(null, code);
 
 		// The field is dummy. The actual field is declared later.
 		constructor.isNull(null, code).go(code, construct);
@@ -275,7 +278,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		final DataOp ancestorPtr =
 				constructor.call(code, builder.host(), prevVmtc, ancestorData);
 		final ObjectOp ancestor = anonymousObject(
-				builder,
+				dirs,
 				ancestorPtr,
 				getBodyIR().getClosestAscendant());
 
@@ -313,9 +316,11 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		.returnValue(construct);
 
 		final Block delegate = construct.otherwise();
+		final VmtIROp prevVmt =
+				prevVmtc.loadVmt(delegate, getObjectIR().getVmtIR());
 
-		prevVmtc.loadVmt(delegate, getBodyIR().getVmtIR())
-		.func(null, delegate, vmtConstructor())
+		prevVmt.compatible(delegate).goUnless(delegate, construct.head());
+		prevVmt.func(null, delegate, vmtConstructor())
 		.load(null, delegate)
 		.call(delegate, host, prevVmtc, ancestorData)
 		.returnValue(delegate);

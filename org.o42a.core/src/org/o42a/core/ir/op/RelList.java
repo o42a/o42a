@@ -23,9 +23,7 @@ import java.util.ArrayList;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.Int32recOp;
-import org.o42a.codegen.code.op.RelRecOp;
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.util.string.ID;
@@ -59,7 +57,6 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 	}
 
 	public void allocateItems(SubData<?> data) {
-
 		assert this.firstItem == null :
 			this + " items already allocated: " + this.firstItem;
 
@@ -124,6 +121,11 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 		public final Int32recOp size(Code code) {
 			return int32(null, code, getType().size());
+		}
+
+		public final AnyOp loadList(Code code) {
+			return toAny(null, code)
+					.offset(null, code, list(code).load(null, code));
 		}
 
 	}

@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
-import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.dep.DepOp.DEP_ID;
 
 import org.o42a.codegen.code.Code;
@@ -45,32 +45,16 @@ import org.o42a.util.string.ID;
 public final class ObjOp extends ObjectOp {
 
 	private final ObjectIR objectIR;
-	private final ObjectIRBodyOp ptr;
 	private final Obj ascendant;
 	private ValueOp value;
 
 	ObjOp(
-			ObjectIR objectIR,
-			ObjectIRBodyOp ptr,
-			Obj ascendant,
-			ObjectDataOp data) {
-		super(data);
-		this.objectIR = objectIR;
-		this.ptr = ptr;
-		assert ascendant != null :
-			"Object ascendant not specified";
-		this.ascendant = ascendant;
-		assert validPrecision();
-	}
-
-	ObjOp(
 			CodeBuilder builder,
 			ObjectIR objectIR,
-			ObjectIRBodyOp ptr,
+			ObjectIROp ptr,
 			Obj ascendant,
 			ObjectPrecision precision) {
-		super(builder, precision);
-		this.ptr = ptr;
+		super(builder, ptr, precision);
 		this.objectIR = objectIR;
 		assert ascendant != null :
 			"Object ascendant not specified";
@@ -78,9 +62,8 @@ public final class ObjOp extends ObjectOp {
 		assert validPrecision();
 	}
 
-	ObjOp(CodeBuilder builder, ObjectIR objectIR, ObjectIRBodyOp ptr) {
-		super(builder, ObjectPrecision.EXACT);
-		this.ptr = ptr;
+	ObjOp(CodeBuilder builder, ObjectIR objectIR, ObjectIROp ptr) {
+		super(builder, ptr, ObjectPrecision.EXACT);
 		this.ascendant = objectIR.getObject();
 		this.objectIR = objectIR;
 		assert validPrecision();
@@ -99,18 +82,8 @@ public final class ObjOp extends ObjectOp {
 		return getAscendant();
 	}
 
-	@Override
-	public final ObjectIRBodyOp ptr() {
-		return this.ptr;
-	}
-
-	@Override
-	public final ObjectIRBodyOp ptr(Code code) {
-		return ptr();
-	}
-
 	public final VmtIRChain.Op vmtc(Code code) {
-		return ptr(code).vmtc(code).load(null, code);
+		return ptr(code).objectData(code).vmtc(code).load(null, code);
 	}
 
 	@Override
@@ -135,19 +108,12 @@ public final class ObjOp extends ObjectOp {
 		if (ascendant.is(getAscendant())) {
 			return this;
 		}
-		if (ascendant.is(getContext().getVoid())) {
-			return this;
-		}
-		if (getPrecision().isExact()) {
-			return staticCast(dirs.code(), ascendant);
-		}
-		if (ascendant.type().getSampleDeclaration().is(
-				ptr().getSampleDeclaration())) {
-			// Share the same body.
-			return this;
-		}
-
-		return dynamicCast(id, dirs, ascendant);
+		return new ObjOp(
+				getBuilder(),
+				getObjectIR(),
+				ptr(dirs.code()),
+				ascendant,
+				COMPATIBLE);
 	}
 
 	@Override
@@ -175,6 +141,16 @@ public final class ObjOp extends ObjectOp {
 		return op;
 	}
 
+	public FldOp<?> declaredField(Code code, MemberKey memberKey) {
+
+		final Fld<?> declared = getObjectIR().getMainBodyIR().fld(memberKey);
+
+		assert declared != null :
+			memberKey + " is not declared in " + this;
+
+		return declared.op(code, this);
+	}
+
 	@Override
 	public DepOp dep(CodeDirs dirs, Dep dep) {
 
@@ -187,15 +163,9 @@ public final class ObjOp extends ObjectOp {
 				dep.getDeclaredIn());
 		final DepOp op = ir.op(code, host);
 
-		code.dumpName("Dep: ", op);
-
 		subDirs.done();
 
 		return op;
-	}
-
-	public FldOp<?> declaredField(Code code, MemberKey memberKey) {
-		return ptr().declaredField(code, this, memberKey);
 	}
 
 	private boolean validPrecision() {
@@ -212,22 +182,6 @@ public final class ObjOp extends ObjectOp {
 				getAscendant() + " declaration differs from "
 				+ ptr().getSampleDeclaration();
 		return true;
-	}
-
-	private ObjOp staticCast(Code code, Obj ascendant) {
-
-		final ObjectIRBody ascendantBodyIR =
-				getObjectIR().bodyIR(ascendant);
-		final ObjectIRBodyOp ascendantBody =
-				ascendantBodyIR.pointer(getGenerator()).op(null, code);
-
-		final ObjectDataOp cachedData = cachedData();
-
-		if (cachedData != null) {
-			return ascendantBody.op(getObjectIR(), cachedData, ascendant);
-		}
-
-		return ascendantBody.op(getBuilder(), getObjectIR(), ascendant, EXACT);
 	}
 
 	private static final class ExactValueOp extends ValueOp {

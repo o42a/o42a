@@ -70,9 +70,7 @@ static void o42a_fld_mark_obj(o42a_fld *const field) {
 		O42A_RETURN;
 	}
 
-	o42a_obj_data_t *const data = O42A(o42a_obj_data(object));
-
-	O42A(o42a_gc_mark(o42a_gc_blockof((char *) data + data->start)));
+	O42A(o42a_gc_mark(o42a_gc_blockof(object)));
 
 	O42A_RETURN;
 }
@@ -85,8 +83,8 @@ static void fld_no_copy(
 
 static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	[O42A_FLD_OBJ] = {// Object field.
-		.propagate = &o42a_fld_obj_copy,
-		.inherit = &o42a_fld_obj_copy,
+		.propagate = &o42a_fld_obj_reset,
+		.inherit = &o42a_fld_obj_reset,
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
@@ -99,15 +97,15 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_ALIAS] = {// Alias field.
-		.propagate = &o42a_fld_obj_copy,
-		.inherit = &o42a_fld_obj_copy,
+		.propagate = &o42a_fld_obj_reset,
+		.inherit = &o42a_fld_obj_reset,
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},
 	[O42A_FLD_VAR] = {// Variable field.
-		.propagate = &o42a_fld_obj_copy,
-		.inherit = &o42a_fld_obj_copy,
+		.propagate = &o42a_fld_obj_reset,
+		.inherit = &o42a_fld_obj_reset,
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
@@ -118,14 +116,7 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
-	},
-	[O42A_FLD_DEP] = {// Local dependency field.
-		.propagate = &o42a_fld_dep_copy,
-		.inherit = &o42a_fld_dep_copy,
-		.mark = &o42a_fld_mark_obj,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_fld_obj_is_init,
-	},
+	}
 };
 
 
@@ -134,17 +125,17 @@ inline o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *const field) {
 }
 
 extern o42a_fld *o42a_fld_by_field(
-		const o42a_obj_body_t *,
+		const o42a_obj_t *,
 		const o42a_obj_field_t *);
 
-o42a_obj_body_t *o42a_obj_ref_null(
+o42a_obj_t *o42a_obj_ref_null(
 		o42a_obj_t *scope __attribute__((unused)),
 		const o42a_obj_vmtc_t *vmtc __attribute__((unused))) {
 	O42A_ENTER(return NULL);
 	O42A_RETURN NULL;
 }
 
-o42a_obj_body_t *o42a_obj_ref_stub(
+o42a_obj_t *o42a_obj_ref_stub(
 		o42a_obj_t *scope __attribute__((unused)),
 		const o42a_obj_vmtc_t *vmtc __attribute__((unused))) {
 	O42A_ENTER(return NULL);
@@ -309,7 +300,8 @@ void o42a_fld_finish(o42a_obj_data_t *const data, o42a_fld_ctr_t *const ctr) {
 	}// Not in the list otherwise.
 
 	// The object can link to garbage-collected data blocks now.
-	O42A(o42a_gc_link(o42a_gc_blockof((char *) data + data->start)));
+	O42A(o42a_gc_link(o42a_gc_blockof(
+			(char *) data - offsetof(struct o42a_obj, object_data))));
 
 	// Inform others the field is constructed.
 	O42A(o42a_obj_broadcast(data));

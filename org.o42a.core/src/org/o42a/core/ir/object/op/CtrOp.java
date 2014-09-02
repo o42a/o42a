@@ -30,13 +30,13 @@ import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Int32rec;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -44,6 +44,7 @@ import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
@@ -87,7 +88,7 @@ public class CtrOp extends IROp {
 			ObjHolder holder,
 			ObjectOp owner,
 			ObjectIRDataOp ancestorData,
-			ObjectOp sample) {
+			ObjOp sample) {
 
 		final CodeDirs subDirs = dirs.begin(
 				"new_object",
@@ -108,15 +109,54 @@ public class CtrOp extends IROp {
 				ancestorData != null
 				? ancestorData : code.nullPtr(OBJECT_DATA_TYPE));
 		ptr.desc(code).store(code, sample.objectData(code).ptr(code));
+		ptr.numDeps(code).store(
+				code,
+				code.int32(sample.getObjectIR().existingDeps().size()));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 
 		result.isNull(null, code).go(code, subDirs.falseDir());
 
 		final ObjectOp newObject = anonymousObject(
-				sample.getBuilder(),
+				subDirs,
 				result,
 				sample.getWellKnownType());
+		final Block resultCode = subDirs.done().code();
+
+		return holder.holdVolatile(resultCode, newObject);
+	}
+
+	public ObjectOp eagerObject(
+			CodeDirs dirs,
+			ObjHolder holder,
+			ObjectOp owner,
+			ObjectIRDataOp ancestorData,
+			Obj sample) {
+		assert ancestorData != null :
+			"Eager object's ancestor not specified";
+		assert sample.deps().size() == 0 :
+			"Eager object has run-time dependencies";
+
+		final CodeDirs subDirs = dirs.begin(
+				"eager_object",
+				"Eager object: ancestor=" + ancestorData);
+		final Block code = subDirs.code();
+		final Op ptr = ptr(code);
+
+		if (owner != null) {
+			ptr.ownerData(code)
+			.store(code, owner.objectData(code).ptr());
+		} else {
+			ptr.ownerData(code)
+			.store(code, code.nullPtr(OBJECT_DATA_TYPE));
+		}
+		ptr.ancestorData(code).store(code, ancestorData);
+
+		final DataOp result = eagerFunc().op(null, code).newObject(code, this);
+
+		result.isNull(null, code).go(code, subDirs.falseDir());
+
+		final ObjectOp newObject = anonymousObject(subDirs, result, sample);
 		final Block resultCode = subDirs.done().code();
 
 		return holder.holdVolatile(resultCode, newObject);
@@ -127,6 +167,13 @@ public class CtrOp extends IROp {
 				.externalFunction()
 				.noSideEffects()
 				.link("o42a_obj_new", NEW_OBJECT);
+	}
+
+	private FuncPtr<NewObjectFunc> eagerFunc() {
+		return getGenerator()
+				.externalFunction()
+				.noSideEffects()
+				.link("o42a_obj_eager", NEW_OBJECT);
 	}
 
 	public static final class Op extends StructOp<Op> {
@@ -156,6 +203,10 @@ public class CtrOp extends IROp {
 			return struct(null, code, getType().value());
 		}
 
+		public final Int32recOp numDeps(Code code) {
+			return int32(null, code, getType().numDeps());
+		}
+
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
@@ -164,6 +215,7 @@ public class CtrOp extends IROp {
 		private StructRec<ObjectIRDataOp> ancestorData;
 		private StructRec<ObjectIRDataOp> sampleData;
 		private ValType value;
+		private Int32rec numDeps;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ctr_t"));
@@ -190,12 +242,17 @@ public class CtrOp extends IROp {
 			return this.value;
 		}
 
+		public final Int32rec numDeps() {
+			return this.numDeps;
+		}
+
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.ownerData = data.addPtr("owner_data", OBJECT_DATA_TYPE);
 			this.ancestorData = data.addPtr("ancestor_data", OBJECT_DATA_TYPE);
 			this.sampleData = data.addPtr("sample_data", OBJECT_DATA_TYPE);
 			this.value = data.addInstance(ID.rawId("value"), VAL_TYPE);
+			this.numDeps = data.addInt32("num_deps");
 		}
 
 		@Override

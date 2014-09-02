@@ -19,19 +19,19 @@
 */
 package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.StructRec;
+import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRDescOp;
 import org.o42a.util.string.ID;
 
 
@@ -62,13 +62,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		instance.desc()
 		.setConstant(true)
-		.setValue(ascendantIR.getDataIR().getDescPtr());
-		instance.body()
-		.setConstant(true)
-		.setValue(
-				this.bodyIR.data(generator)
-				.getPointer()
-				.relativeTo(instance.pointer(generator)));
+		.setValue(ascendantIR.getDescIR().ptr());
 	}
 
 	@Override
@@ -91,17 +85,12 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return ptr(null, code, getType().desc());
 		}
 
-		public final RelRecOp body(Code code) {
-			return relPtr(null, code, getType().body());
-		}
-
 	}
 
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
 		private StructRec<ObjectIRDescOp> desc;
-		private RelRec body;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ascendant_t"));
@@ -109,10 +98,6 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		public final StructRec<ObjectIRDescOp> desc() {
 			return this.desc;
-		}
-
-		public final RelRec body() {
-			return this.body;
 		}
 
 		@Override
@@ -123,7 +108,6 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
-			this.body = data.addRelPtr("body");
 		}
 
 		@Override

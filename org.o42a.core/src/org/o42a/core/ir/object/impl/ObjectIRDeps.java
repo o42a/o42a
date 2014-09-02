@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,30 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.impl;
 
-import static org.o42a.core.ir.object.ObjectDataIR.OBJECT_DESC_ID;
-
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.util.string.ID;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.op.RelList;
 
 
-public final class ObjectIRDescOp extends StructOp<ObjectIRDescOp> {
-
-	ObjectIRDescOp(StructWriter<ObjectIRDescOp> writer) {
-		super(writer);
-	}
+public class ObjectIRDeps extends RelList<Ptr<DataOp>> {
 
 	@Override
-	public final ObjectIRDesc getType() {
-		return (ObjectIRDesc) super.getType();
-	}
-
-	@Override
-	protected ID fieldId(Code code, ID local) {
-		return OBJECT_DESC_ID.setLocal(local);
+	protected Ptr<?> allocateItem(
+			SubData<?> data,
+			int index,
+			Ptr<DataOp> item) {
+		throw new UnsupportedOperationException();
 	}
 
 }

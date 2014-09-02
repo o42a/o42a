@@ -19,21 +19,17 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
-import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
-import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
-import org.o42a.core.ir.object.op.CastObjectFunc;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -55,25 +51,57 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	protected static final ID KEEPER_HOST_ID = ID.id("keeper_host");
 
 	public static ObjectOp anonymousObject(
-			CodeBuilder builder,
+			BuilderCode code,
 			DataOp ptr,
+			Obj wellKnownType) {
+		return anonymousObject(
+				code.getBuilder(),
+				code.code(),
+				ptr,
+				wellKnownType);
+	}
+
+	public static ObjectOp anonymousObject(
+			CodeBuilder builder,
+			Code code,
+			DataOp ptr,
+			Obj wellKnownType) {
+		return anonymousObject(
+				builder,
+				ptr.to(
+						null,
+						code,
+						wellKnownType.ir(builder.getGenerator()).getStruct()),
+				wellKnownType);
+	}
+
+	public static ObjectOp anonymousObject(
+			CodeBuilder builder,
+			ObjectIROp ptr,
 			Obj wellKnownType) {
 		return new AnonymousObjOp(builder, ptr, wellKnownType);
 	}
 
+	private final ObjectIROp ptr;
 	private final ObjectPrecision precision;
-	private final ObjectDataOp objectData;
 
-	protected ObjectOp(CodeBuilder builder, ObjectPrecision precision) {
+	protected ObjectOp(
+			CodeBuilder builder,
+			ObjectIROp ptr,
+			ObjectPrecision precision) {
 		super(builder);
+		this.ptr = ptr;
 		this.precision = precision;
-		this.objectData = null;
 	}
 
-	protected ObjectOp(ObjectDataOp objectType) {
-		super(objectType.getBuilder());
-		this.objectData = objectType;
-		this.precision = objectType.getPrecision();
+	@Override
+	public final ObjectIROp ptr() {
+		return this.ptr;
+	}
+
+	@Override
+	public final ObjectIROp ptr(Code code) {
+		return ptr();
 	}
 
 	public abstract Obj getWellKnownType();
@@ -83,13 +111,8 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	}
 
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
-
-		final Analyzer analyzer = getGenerator().getAnalyzer();
-
-		for (Dep dep : sample.deps()) {
-			if (dep.exists(analyzer)) {
-				fillDep(dirs, host, dep);
-			}
+		for (DepIR dep : sample.ir(getGenerator()).existingDeps()) {
+			fillDep(dirs, host, dep.getDep());
 		}
 	}
 
@@ -108,15 +131,8 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 		return this;
 	}
 
-	public final ObjectIRDescOp declaredIn(Code code) {
-		return body(code).declaredIn(code).load(null, code);
-	}
-
 	public final ObjectDataOp objectData(Code code) {
-		if (this.objectData != null) {
-			return this.objectData;
-		}
-		return body(code).loadObjectData(code).op(getBuilder(), getPrecision());
+		return ptr(code).objectData(code).op(getBuilder(), getPrecision());
 	}
 
 	@Override
@@ -153,7 +169,7 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 		final ObjectOp result = holder.holdVolatile(
 				code,
 				anonymousObject(
-						getBuilder(),
+						valDirs,
 						ptr,
 						linkType.interfaceRef(typeParameters).getType()));
 
@@ -193,55 +209,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 		out.append(ptr());
 
 		return out.toString();
-	}
-
-	protected ObjOp dynamicCast(ID id, CodeDirs dirs, Obj ascendant) {
-
-		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
-		final CodeDirs subDirs = dirs.begin(
-				id != null ? id : CAST_ID,
-				"Dynamic cast " + this + " to " + ascendantIR.getId());
-
-		final Block code = subDirs.code();
-		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
-		final ObjectDataOp ascendantData = ascendantObj.objectData(code);
-
-		final DataOp resultPtr =
-				castFunc()
-				.op(null, code)
-				.cast(
-						id != null ? id.detail("ptr") : null,
-						code,
-						this,
-						ascendantData);
-
-		resultPtr.isNull(null, code).go(code, subDirs.falseDir());
-
-		final ObjOp result =
-				resultPtr.to(id, code, ascendantIR.getBodyType())
-				.op(getBuilder(), ascendantIR.getObject(), COMPATIBLE);
-
-		subDirs.done();
-
-		return result;
-	}
-
-	protected final ObjectDataOp cachedData() {
-		return this.objectData;
-	}
-
-	private FuncPtr<CastObjectFunc> castFunc() {
-		return getGenerator()
-				.externalFunction()
-				.noSideEffects()
-				.link("o42a_obj_cast", CAST_OBJECT);
-	}
-
-	private final ObjectIRBodyOp body(Code code) {
-		return ptr().toAny(null, code).to(
-				null,
-				code,
-				getWellKnownType().ir(getGenerator()).getBodyType());
 	}
 
 	private final void fillDep(CodeDirs dirs, HostOp host, Dep dep) {

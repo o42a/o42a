@@ -19,13 +19,12 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.op.DumpablePtrOp;
-import org.o42a.codegen.debug.Dumpable;
+import org.o42a.codegen.code.op.DataPtrOp;
 
 
-public interface RefTargetOp extends Dumpable {
+public interface RefTargetOp {
 
-	DumpablePtrOp<?> ptr();
+	DataPtrOp<?> ptr();
 
 	void storeTarget(CodeDirs dirs, HostOp host);
 

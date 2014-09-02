@@ -28,18 +28,16 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
-import org.o42a.core.ir.object.type.ValueTypeDescOp;
+import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
+import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectDefFunc;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
 
 public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
-
-	private static final ID MAIN_BODY_ID = ID.id("main_body");
-	private static final ID OBJECT_START_ID = ID.id("object_start");
 
 	ObjectIRDataOp(StructWriter<ObjectIRDataOp> writer) {
 		super(writer);
@@ -56,26 +54,8 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 		return new ObjectDataOp(builder, this, precision);
 	}
 
-	public final RelRecOp object(Code code) {
-		return relPtr(null, code, getType().object());
-	}
-
-	public final DataOp loadObject(Code code) {
-		return object(code)
-				.load(null, code)
-				.offset(null, code, this)
-				.toData(MAIN_BODY_ID, code);
-	}
-
-	public final RelRecOp start(Code code) {
-		return relPtr(null, code, getType().start());
-	}
-
-	public final DataOp loadStart(Code code) {
-		return start(code)
-				.load(null, code)
-				.offset(null, code, this)
-				.toData(OBJECT_START_ID, code);
+	public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
+		return ptr(null, code, getType().vmtc());
 	}
 
 	public final FuncOp<ObjectValueFunc> valueFunc(Code code) {
@@ -102,8 +82,12 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 		return ptr(null, code, getType().desc());
 	}
 
-	public final StructRecOp<ValueTypeDescOp> valueType(Code code) {
-		return ptr(null, code, getType().valueType());
+	public final DataRecOp loadDeps(Code code) {
+
+		final RelList.Op deps =
+				struct(null, code, getType().deps().getInstance());
+
+		return deps.loadList(code).toDataRec(null, code);
 	}
 
 	public final void lock(Code code) {

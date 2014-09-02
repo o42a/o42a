@@ -22,9 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.Content;
-import org.o42a.codegen.data.Struct;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -32,29 +30,31 @@ import org.o42a.util.string.ID;
 
 public class VmtIR extends Struct<VmtIROp> {
 
+	private static final ID SIZE_ID = ID.rawId("size");
 	private static final ID TERMINATOR_ID = ID.rawId("terminator");
 
 	public static final ID VMT_ID = ID.id("vmt");
 
-	private final ObjectIRBody bodyIR;
+	private final ObjectIR objectIR;
 
+	private Int32rec size;
 	private VmtIRChain terminator;
 
-	public VmtIR(ObjectIRBody bodyIR) {
-		super(buildId(bodyIR));
-		this.bodyIR = bodyIR;
-	}
-
-	public final ObjectIRBody getBodyIR() {
-		return this.bodyIR;
+	public VmtIR(ObjectIR objectIR) {
+		super(objectIR.getId().detail(VMT_ID));
+		this.objectIR = objectIR;
 	}
 
 	public final ObjectIR getObjectIR() {
-		return getBodyIR().getObjectIR();
+		return this.objectIR;
 	}
 
 	public final Obj getSampleDeclaration() {
-		return getBodyIR().getSampleDeclaration();
+		return getObjectIR().getSampleDeclaration();
+	}
+
+	public final Int32rec size() {
+		return this.size;
 	}
 
 	public final VmtIRChain terminator() {
@@ -68,34 +68,28 @@ public class VmtIR extends Struct<VmtIROp> {
 
 	@Override
 	protected void allocate(SubData<VmtIROp> data) {
+		this.size = data.addInt32(SIZE_ID);
 		this.terminator = data.addInstance(
 				TERMINATOR_ID,
 				VMT_IR_CHAIN_TYPE,
 				new VmtTerminator(data));
-		for (Fld<?> fld : getBodyIR().getDeclaredFields()) {
-			fld.allocateMethods(data);
+		for (ObjectIRBody bodyIR : getObjectIR().getBodyIRs()) {
+			for (Fld<?> fld : bodyIR.getDeclaredFields()) {
+				fld.allocateMethods(data);
+			}
 		}
 	}
 
 	@Override
 	protected void fill() {
-		for (Fld<?> fld : getBodyIR().getDeclaredFields()) {
-			fld.fillMethods();
+		size()
+		.setConstant(true)
+		.setLowLevel(true).setValue(() -> layout(getGenerator()).size());
+		for (ObjectIRBody bodyIR : getObjectIR().getBodyIRs()) {
+			for (Fld<?> fld : bodyIR.getDeclaredFields()) {
+				fld.fillMethods();
+			}
 		}
-	}
-
-	private static ID buildId(ObjectIRBody bodyIR) {
-
-		final ID prefix = bodyIR.getObjectIR().getId().detail(VMT_ID);
-
-		if (bodyIR.isMain()) {
-			return prefix;
-		}
-
-		return prefix.detail(
-				bodyIR.getSampleDeclaration()
-				.ir(bodyIR.getGenerator())
-				.getId());
 	}
 
 	private static final class VmtTerminator implements Content<VmtIRChain> {

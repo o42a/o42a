@@ -23,9 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Content;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -48,6 +46,11 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 	@Override
 	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;
+	}
+
+	@Override
+	public Ptr<?> pointer(Generator generator) {
+		return getInstance().pointer(generator);
 	}
 
 	@Override
@@ -93,7 +96,7 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 		return op(
 				code,
 				host,
-				isOmitted() ? null : host.ptr().field(code, getInstance()));
+				isOmitted() ? null : host.ptr(code).field(code, getInstance()));
 	}
 
 	public void targetAllocated() {

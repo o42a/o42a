@@ -32,22 +32,6 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void inheritLinkTarget() {
-		compile(
-				"A := integer` link = 42",
-				"B := a-> (= 43)");
-
-		final Obj b = field("b").toObject();
-		final Obj aTarget = linkTarget(field("a").toObject());
-
-		assertThat(definiteValue(aTarget, ValueType.INTEGER), is(42L));
-		assertThat(definiteValue(b, ValueType.INTEGER), is(43L));
-
-		assertThat(b.type().inherits(aTarget.type()), is(true));
-		assertThat(b.getWrapped().type().inherits(aTarget.type()), is(true));
-	}
-
-	@Test
 	public void linkPropagation() {
 		compile(
 				"A := void (",

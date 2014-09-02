@@ -85,6 +85,7 @@
 			taskname="debug"
 			failonerror="true">
 			<env key="O42A_THREAD_LOG_GC" value="GC.log"/>
+			<env key="O42A_THREAD_LOG_main" value="out.log"/>
 			<env key="O42A_THREAD_NO_DEBUG_MESSAGES_GC" value="0"/>
 			<env key="O42A_THREAD_DEBUG_BLOCKS_OMITTED_GC" value="0"/>
 			<env key="O42A_THREAD_SILENT_CALLS_GC" value="0"/>
@@ -101,6 +102,7 @@
 			taskname="debug"
 			failonerror="true">
 			<env key="O42A_THREAD_LOG_GC" value="GC.log"/>
+			<env key="O42A_THREAD_LOG_main" value="out.log"/>
 			<env key="O42A_THREAD_NO_DEBUG_MESSAGES_GC" value="0"/>
 			<env key="O42A_THREAD_DEBUG_BLOCKS_OMITTED_GC" value="0"/>
 			<env key="O42A_THREAD_SILENT_CALLS_GC" value="0"/>

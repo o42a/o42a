@@ -26,12 +26,12 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.code.op.DataPtrOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.LocalOp;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
@@ -301,13 +301,15 @@ final class LocalStep extends Step {
 		}
 
 		@Override
-		public Data<?> allocate(ID id, SubData<?> data) {
-			return this.targetIR.allocate(id, data);
+		public boolean isOmitted() {
+			return this.targetIR.isOmitted();
 		}
 
 		@Override
-		public RefTargetOp op(Code code, StructOp<?> data) {
-			return new LocalRefTargetOp(this, this.targetIR.op(code, data));
+		public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
+			return new LocalRefTargetOp(
+					this,
+					this.targetIR.op(code, depIR, data));
 		}
 
 		@Override
@@ -331,7 +333,7 @@ final class LocalStep extends Step {
 		}
 
 		@Override
-		public DumpablePtrOp<?> ptr() {
+		public DataPtrOp<?> ptr() {
 			return this.target.ptr();
 		}
 
@@ -356,16 +358,6 @@ final class LocalStep extends Step {
 		@Override
 		public TargetOp loadTarget(CodeDirs dirs) {
 			return this.target.loadTarget(dirs);
-		}
-
-		@Override
-		public DataOp toData(ID id, Code code) {
-			return ptr().toData(id, code);
-		}
-
-		@Override
-		public AnyOp toAny(ID id, Code code) {
-			return ptr().toAny(id, code);
 		}
 
 	}
