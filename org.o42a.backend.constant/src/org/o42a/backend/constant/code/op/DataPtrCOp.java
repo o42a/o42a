@@ -92,7 +92,6 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 				getAllocPlace());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public final P offset(ID id, Code code, IntOp<?> index) {
 
@@ -102,7 +101,7 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 
 		if (idx.isConstant() && idx.getConstant().intValue() == 0) {
 			if (part() == ccode.nextPart()) {
-				return (P) this;
+				return self();
 			}
 			return create(
 					new AliasBE<>(resultId, ccode, backend()),
@@ -125,6 +124,11 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 					}
 				},
 				null);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected P self() {
+		return (P) this;
 	}
 
 }

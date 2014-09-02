@@ -25,11 +25,10 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_obj = {
 };
 #endif /* NDEBUG */
 
-void o42a_fld_obj_copy(o42a_obj_ctable_t *const ctable) {
+void o42a_fld_obj_reset(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
-	const o42a_fld_obj *const from = &ctable->from.fld->obj;
-	o42a_fld_obj *const to = &ctable->to.fld->obj;
+	o42a_fld_obj *const to = &ctable->to_fld->obj;
 
 	to->object = NULL;
 
@@ -41,7 +40,7 @@ o42a_bool_t o42a_fld_obj_is_init(const o42a_fld *const fld) {
 	O42A_RETURN fld->obj.object ? O42A_TRUE : O42A_FALSE;
 }
 
-o42a_obj_body_t *o42a_obj_constructor_stub(
+o42a_obj_t *o42a_obj_constructor_stub(
 		o42a_obj_t *object __attribute__((unused)),
 		const o42a_obj_vmtc_t *vmtc __attribute__((unused)),
 		o42a_obj_data_t *ancestor_data __attribute__((unused))) {

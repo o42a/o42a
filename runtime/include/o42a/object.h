@@ -24,8 +24,7 @@ struct o42a_fld_ctr;
 
 typedef struct o42a_obj_desc o42a_obj_desc_t;
 
-/** Object represented by it's body. */
-typedef struct o42a_obj_body o42a_obj_t;
+typedef struct o42a_obj o42a_obj_t;
 
 typedef struct o42a_obj_data o42a_obj_data_t;
 
@@ -63,7 +62,7 @@ typedef o42a_bool_t o42a_obj_cond_ft(o42a_obj_t *);
  *
  * Used in o42a_obj_data.flags.
  */
-enum o42a_obj_type_flags {
+enum o42a_obj_flags {
 
 	/**
 	 * Object is created at run-time.
@@ -102,120 +101,22 @@ enum o42a_obj_type_flags {
 };
 
 /**
- * Object body flags.
- *
- * Used in o42a_obj_body.flags.
- */
-enum o42a_obj_body_flags {
-
-	/**
-	 * The mask to apply to flags to gain a kind of body.
-	 *
-	 * \see o42a_obj_body_kind for possible values.
-	 */
-	O42A_OBJ_BODY_TYPE = 0x3,
-
-};
-
-/**
- * The kinds of object bodies.
- *
- * Apply O42A_OBJ_BODY_TYPE to o42a_obj_body.flags to gain one of these values.
- *
- * Body kind is exact only for static objects. When constructing object at run
- * time, it is only kept when O42A_OBJ_CTR_FIELD_PROPAGATION flags is set.
- * Otherwise the value is dropped to O42A_OBJ_BODY_INHERITED.
- *
- * This is used to update scope fields properly.
- */
-enum o42a_obj_body_kind {
-
-	/** The body is inherited from ancestor. */
-	O42A_OBJ_BODY_INHERITED = 0,
-
-	/** The body is from explicit sample. */
-	O42A_OBJ_BODY_EXPLICIT = 1,
-
-	/** The body is propagated from ascendant field. */
-	O42A_OBJ_BODY_PROPAGATED = 2,
-
-	/** The body is main one. */
-	O42A_OBJ_BODY_MAIN = 3,
-
-};
-
-/**
- * Object body.
- *
- * This structure is only a header common to every object body. The fields
- * are allocated after this header at proper alignments.
- *
- * Each object contains one body per each ascendant, except void. One of the
- * bodies is called main and corresponds to an object type.
- */
-typedef struct o42a_obj_body {
-
-	O42A_HEADER
-
-	/**
-	 * Pointer to object type descriptor, where corresponding body were first
-	 * declared in.
-	 */
-	const o42a_obj_desc_t *declared_in;
-
-	/**
-	 * Pointer to virtual method tables chain.
-	 */
-	const o42a_obj_vmtc_t *vmtc;
-
-	/*
-	 * Relative pointer to object data.
-	 *
-	 * Each object body of the same object refers to the same data instance
-	 * of that object.
-	 */
-	o42a_rptr_t object_data;
-
-	/**
-	 * Object body flags.
-	 *
-	 * \see o42a_obj_body_flags for possible values.
-	 */
-	uint32_t flags;
-
-} o42a_obj_body_t;
-
-/**
  * Object data.
  *
  * Contains object value and combines other data necessary to maintain object
  * and it's inheritance.
  *
  * There is exactly one data section per object.
- *
- * Object type always starts with data field, so it is safe to cast type pointer
- * to data pointer.
  */
 struct o42a_obj_data {
 
 	O42A_HEADER
 
-	/** Relative pointer to main object body. */
-	o42a_rptr_t object;
-
-	/**
-	 * Relative pointer to memory block containing this object.
-	 *
-	 * This may be a virtual block start when ancestor body is not physically
-	 * present.
-	 */
-	o42a_rptr_t start;
-
 	/**
 	 * Type flags.
 	 *
 	 * This can be used to distinguish object type implementation and contains
-	 * other information. See o42a_obj_type_flags enum.
+	 * other information. See o42a_obj_flags enum.
 	 */
 	uint16_t flags;
 
@@ -251,6 +152,11 @@ struct o42a_obj_data {
 	 * all waiting thread.
 	 */
 	pthread_cond_t thread_cond;
+
+	/**
+	 * Pointer to virtual method tables chain.
+	 */
+	const o42a_obj_vmtc_t *vmtc;
 
 	/**
 	 * Object value calculator function.
@@ -296,19 +202,14 @@ struct o42a_obj_data {
 	const o42a_obj_desc_t *desc;
 
 	/**
-	 * Pointer to object value type descriptor.
-	 */
-	const o42a_val_type_t *value_type;
-
-	/**
 	 * Pointer to the head of the constructing fields list.
 	 *
 	 * This is maintained with o42a_fld_start and o42a_fld_finish functions.
 	 */
 	struct o42a_fld_ctr *fld_ctrs;
 
-	/** Relative pointer to the list of ascendant descriptors. */
-	o42a_rlist_t ascendants;
+	/** Relative pointer to the list of run-time dependencies. */
+	o42a_rlist_t deps;
 
 };
 
@@ -320,12 +221,47 @@ struct o42a_obj_desc {
 	O42A_HEADER
 
 	/**
+	 * Pointer to object value type descriptor.
+	 */
+	const o42a_val_type_t *value_type;
+
+	/**
 	 * Relative pointer to the list of field descriptors.
 	 */
 	o42a_rlist_t fields;
 
-	/** Main body layout. */
-	o42a_layout_t main_body_layout;
+	/**
+	 * Relative list to the list of ascendant descriptors.
+	 */
+	o42a_rlist_t ascendants;
+
+	/** Object size in bytes. */
+	uint32_t object_size;
+
+};
+
+
+/**
+ * Object structure.
+
+ * This structure is only a header common to every object. The fields are
+ * allocated after this header at proper alignments.
+ */
+struct o42a_obj {
+
+	O42A_HEADER
+
+	/**
+	 * Object data.
+	 */
+	o42a_obj_data_t object_data;
+
+	/**
+	 * Object fields.
+	 *
+	 * The number and types of these fields are specific to object type.
+	 */
+	char fields[];
 
 };
 
@@ -341,9 +277,6 @@ typedef struct o42a_obj_ascendant {
 
 	/** Pointer to the ascending object's type descriptor. */
 	const o42a_obj_desc_t *desc;
-
-	/** Relative pointer to ascendant body. */
-	o42a_rptr_t body;
 
 } o42a_obj_ascendant_t;
 
@@ -402,7 +335,7 @@ extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
  * Virtual methods table.
  *
  * This structure is only a header common to every VMT. An actual VMT structure
- * is specific to particular object body structure. Such object body contains
+ * is specific to particular object type. Such object data contains
  * a pointer to the chain of compatible VMTs.
  *
  * All VMTs are statically allocated and may not be altered at run time.
@@ -410,6 +343,11 @@ extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
 struct o42a_obj_vmt {
 
 	O42A_HEADER
+
+	/**
+	 * The size of this VMT.
+	 */
+	uint32_t size;
 
 	/**
 	 * VMT chain terminator.
@@ -420,6 +358,13 @@ struct o42a_obj_vmt {
 	 * Every VMT chain should terminate with one of terminators.
 	 */
 	o42a_obj_vmtc_t terminator;
+
+	/**
+	 * Object methods.
+	 *
+	 * The number and types of these methods are specific to the object type.
+	 */
+	char methods[];
 
 };
 
@@ -455,7 +400,45 @@ typedef struct o42a_obj_ctr {
 	 */
 	o42a_val_t value;
 
+	/**
+	 * The number of run-time dependencies of newly constructed object.
+	 */
+	uint32_t num_deps;
+
 } o42a_obj_ctr_t;
+
+
+/**
+ * Object body derivation kind.
+ */
+enum o42a_obj_derivation_kind {
+
+	/**
+	 * Copied ancestor body.
+	 */
+	O42A_DK_COPY = 0x00,
+
+	/**
+	 * Copied main ancestor body.
+	 */
+	O42A_DK_COPY_MAIN = 0x10,
+
+	/**
+	 * Inherited ancestor body.
+	 */
+	O42A_DK_INHERIT = 0x01,
+
+	/**
+	 * Sample body not present in ancestor.
+	 */
+	O42A_DK_DERIVE_MAIN = 0x12,
+
+	/**
+	 * Sample body present in ancestor.
+	 */
+	O42A_DK_OVERRIDE_MAIN = 0x13,
+
+};
 
 typedef struct o42a_obj_ctable {
 
@@ -472,23 +455,19 @@ typedef struct o42a_obj_ctable {
 
 	const o42a_obj_data_t *const sample_data;
 
-	o42a_obj_data_t *const object_data;
+	const o42a_obj_t *from;
+
+	o42a_obj_t *const to;
 
 	const o42a_obj_desc_t *body_desc;
 
+	uint32_t derivation_kind;
+
 	o42a_obj_field_t *field;
 
-	struct o42a_obj_cside {
+	union o42a_fld *from_fld;
 
-		O42A_HEADER
-
-		o42a_obj_body_t *body;
-
-		union o42a_fld *fld;
-
-	} from;
-
-	struct o42a_obj_cside to;
+	union o42a_fld *to_fld;
 
 } o42a_obj_ctable_t;
 
@@ -497,20 +476,20 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[15];
+	o42a_dbg_field_info_t fields[13];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
-extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[8];
+	o42a_dbg_field_info_t fields[10];
 } _O42A_DEBUG_TYPE_o42a_obj_ctable;
 
 #endif /* NDEBUG */
@@ -528,14 +507,18 @@ extern const o42a_obj_desc_t o42a_obj_none_desc;
 extern const o42a_gc_desc_t o42a_obj_gc_desc;
 
 /**
- * Retrieves object data from it's body.
+ * Retrieves object ascendant's descriptors.
  *
- * \param body[in] object body pointer.
+ * \param desc[in] object type descriptor pointer.
  *
- * \return object type pointer.
+ * \return pointer to the first element of ascendant descriptors array.
  */
-inline o42a_obj_data_t *o42a_obj_data(const o42a_obj_body_t *const body) {
-	return (o42a_obj_data_t *) (((char *) body) + body->object_data);
+inline const o42a_obj_ascendant_t *o42a_obj_ascendants(
+		const o42a_obj_desc_t *const desc) {
+
+	const o42a_rlist_t *const list = &desc->ascendants;
+
+	return (o42a_obj_ascendant_t *) (((char *) list) + list->list);
 }
 
 /**
@@ -546,22 +529,7 @@ inline o42a_obj_data_t *o42a_obj_data(const o42a_obj_body_t *const body) {
  * \return pointer to object's main body.
  */
 inline o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *const data) {
-	return (o42a_obj_t *) (((char *) data) + data->object);
-}
-
-/**
- * Retrieves object ascendant's descriptors.
- *
- * \param data[in] object data pointer.
- *
- * \return pointer to the first element of ascendant descriptors array.
- */
-inline o42a_obj_ascendant_t *o42a_obj_ascendants(
-		const o42a_obj_data_t *const data) {
-
-	const o42a_rlist_t *const list = &data->ascendants;
-
-	return (o42a_obj_ascendant_t *) (((char *) list) + list->list);
+	return (o42a_obj_t *) ((char *) data - offsetof(o42a_obj_t, object_data));
 }
 
 /**
@@ -579,48 +547,34 @@ inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 }
 
 /**
- * Retrieves object body corresponding to the given ascendant.
- *
- * \param ascendant[in] pointer to ascendant descriptor.
- *
- * \return body pointer.
- */
-inline o42a_obj_body_t *o42a_obj_ascendant_body(
-		const o42a_obj_ascendant_t *const ascendant) {
-	return (o42a_obj_body_t *) (((char *) ascendant) + ascendant->body);
-}
-
-/**
  * Searches for ascendant descriptor of the given type.
  *
- * \param data object data to search sample descriptor in.
- * \param desc the descriptor of the type to search for.
+ * \param source type descriptor to search for ascendant descriptor in.
+ * \param target the descriptor of the type to search for.
  *
  * \return ascendant descriptor or NULL if not found.
  */
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
-		const o42a_obj_data_t *,
+		const o42a_obj_desc_t *,
 		const o42a_obj_desc_t *);
-
-/**
- * Searches for the object's body of the given type.
- *
- * \param object[in] object to cast.
- * \param desc[in] the descriptor of the type to cast to.
- *
- * \return object body pointer corresponding to the given type,
- * or NULL if the object is not derived from it.
- */
-o42a_obj_body_t *o42a_obj_cast(o42a_obj_t *, const o42a_obj_desc_t *);
 
 /**
  * Instantiates a new object.
  *
  * \param ctr[in] filled-in construction data.
  *
- * \return pointer to object's body of the sample type.
+ * \return pointer to object construction data.
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
+
+/**
+ * Instantiates a new object with eagerly evaluated value.
+ *
+ * \param ctr[in] filled-in construction data.
+ *
+ * \return pointer to object construction data.
+ */
+o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *);
 
 
 /**

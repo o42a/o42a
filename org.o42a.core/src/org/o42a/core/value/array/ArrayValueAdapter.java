@@ -194,7 +194,8 @@ final class ArrayValueAdapter extends ValueAdapter {
 					.link("o42a_array_copy", VAL_COPY);
 
 			func.op(null, code).copy(fromDirs.dirs(), from, dirs.value());
-			fromDirs.done();
+
+			fromDirs.done().code().go(dirs.returnDir());
 		}
 
 		@Override

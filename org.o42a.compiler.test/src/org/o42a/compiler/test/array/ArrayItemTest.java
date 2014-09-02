@@ -18,9 +18,13 @@ public class ArrayItemTest extends CompilerTestCase {
 	public void shortRowItem() {
 		compile(
 				"Array := [1, 2, 3]",
-				"Item := array [1]->");
+				"Item := array [1]");
 
-		assertThat(definiteValue(field("item"), ValueType.INTEGER), is(2L));
+		assertThat(
+				definiteValue(
+						linkTarget(field("item")),
+						ValueType.INTEGER),
+				is(2L));
 	}
 
 	@Test

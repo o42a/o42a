@@ -33,9 +33,7 @@ enum o42a_fld_kind {
 
 	O42A_FLD_VAR = 3,
 
-	O42A_FLD_OWNER = 4,
-
-	O42A_FLD_DEP = 5,
+	O42A_FLD_OWNER = 4
 
 };
 
@@ -72,7 +70,7 @@ typedef const struct o42a_fld_desc {
 
 	/**
 	 * This function is called for a constructing object to fill the field
-	 * propagated from sample.
+	 * propagated from sample's main body.
 	 */
 	o42a_fld_copy_ft *const propagate;
 
@@ -127,9 +125,9 @@ o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *);
  * \return field pointer.
  */
 inline o42a_fld *o42a_fld_by_field(
-		const o42a_obj_body_t *const body,
+		const o42a_obj_t *const object,
 		const o42a_obj_field_t *const field) {
-	return (o42a_fld *) (((char *) body) + field->fld);
+	return (o42a_fld *) (((char *) object) + field->fld);
 }
 
 /**
@@ -137,12 +135,12 @@ inline o42a_fld *o42a_fld_by_field(
  *
  * This can be used e.g. to refer void object ancestor.
  */
-o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *, const o42a_obj_vmtc_t *);
+o42a_obj_t *o42a_obj_ref_null(o42a_obj_t *, const o42a_obj_vmtc_t *);
 
 /**
  * Object reference evaluation stub.
  */
-o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *, const o42a_obj_vmtc_t *);
+o42a_obj_t *o42a_obj_ref_stub(o42a_obj_t *, const o42a_obj_vmtc_t *);
 
 
 #ifdef __cplusplus

@@ -19,15 +19,14 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.op.DumpablePtrOp;
-import org.o42a.codegen.debug.Dumpable;
+import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.util.string.ID;
 
 
-public interface TargetOp extends HostOp, HostTargetOp, Dumpable {
+public interface TargetOp extends HostOp, HostTargetOp {
 
 	ID getId();
 
-	DumpablePtrOp<?> ptr();
+	DataPtrOp<?> ptr();
 
 }

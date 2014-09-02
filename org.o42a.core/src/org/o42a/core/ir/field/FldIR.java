@@ -21,6 +21,8 @@ package org.o42a.core.ir.field;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -34,7 +36,13 @@ public interface FldIR {
 
 	Obj getDeclaredIn();
 
+	default ObjectIR getObjectIR() {
+		return getBodyIR().getObjectIR();
+	}
+
 	ObjectIRBody getBodyIR();
+
+	Ptr<?> pointer(Generator generator);
 
 	Data<?> data(Generator generator);
 

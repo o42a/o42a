@@ -229,10 +229,7 @@ public abstract class RefFld<
 		}
 
 		final ObjectIR targetIR = getTarget().ir(getGenerator());
-		final ObjectIRBody targetBodyIR =
-				targetIR.bodyIR(getTargetAscendant());
-		final Ptr<DataOp> targetPtr =
-				targetBodyIR.pointer(getGenerator()).toData();
+		final Ptr<DataOp> targetPtr = targetIR.ptr().toData();
 
 		getInstance().object().setValue(targetPtr);
 	}
@@ -489,7 +486,7 @@ public abstract class RefFld<
 			final ObjBuilder builder = new ObjBuilder(
 					constructor,
 					failure.head(),
-					getBodyIR(),
+					getObjectIR(),
 					getBodyIR().getClosestAscendant(),
 					getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
 			final CodeDirs dirs =

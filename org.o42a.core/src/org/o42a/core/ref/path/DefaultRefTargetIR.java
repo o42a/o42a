@@ -20,29 +20,23 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.dep.DepIR.DEP_IR;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.dep.DepIR;
-import org.o42a.core.ir.object.dep.DepIR.Op;
-import org.o42a.core.ir.object.dep.DepIR.Type;
 import org.o42a.core.ir.op.*;
-import org.o42a.util.string.ID;
 
 
 final class DefaultRefTargetIR implements RefTargetIR {
 
 	private final RefIR refIR;
 	private final Step step;
-	private Type instance;
 
 	DefaultRefTargetIR(RefIR refIR, Step step) {
 		this.refIR = refIR;
@@ -50,38 +44,37 @@ final class DefaultRefTargetIR implements RefTargetIR {
 	}
 
 	@Override
-	public RefTargetOp op(Code code, StructOp<?> data) {
-		return new DefaultRefTargetOp(
-				this,
-				data.struct(null, code, this.instance));
+	public boolean isOmitted() {
+		return false;
 	}
 
 	@Override
-	public Data<?> allocate(ID id, SubData<?> data) {
-		this.instance = data.addInstance(id, DEP_IR);
-		this.instance.object().setNull();
-		return this.instance.data(data.getGenerator());
+	public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
+
+		final DataRecOp ptr =
+				data.offset(null, code, code.int32(depIR.getIndex()));
+
+		return new DefaultRefTargetOp(this, ptr);
 	}
 
 	private static final class DefaultRefTargetOp implements RefTargetOp {
 
 		private final DefaultRefTargetIR ir;
-		private final DepIR.Op ptr;
+		private final DataRecOp ptr;
 
-		DefaultRefTargetOp(DefaultRefTargetIR ir, Op ptr) {
+		DefaultRefTargetOp(DefaultRefTargetIR ir, DataRecOp ptr) {
 			this.ptr = ptr;
 			this.ir = ir;
 		}
 
 		@Override
-		public final DepIR.Op ptr() {
+		public final DataRecOp ptr() {
 			return this.ptr;
 		}
 
 		@Override
 		public void storeTarget(CodeDirs dirs, HostOp host) {
 
-			final DataRecOp objectRec = this.ptr.object(dirs.code());
 			final Block noDep = dirs.addBlock("no_dep");
 			final CodeDirs depDirs =
 					dirs.getBuilder().dirs(dirs.code(), noDep.head());
@@ -89,7 +82,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 			final DataOp object = createObject(depDirs, host);
 			final Block code = depDirs.code();
 
-			objectRec.store(code, object);
+			ptr().store(code, object);
 
 			if (noDep.exists()) {
 
@@ -98,7 +91,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 						builder.getContext().getNone().ir(
 								builder.getGenerator());
 
-				objectRec.store(
+				ptr().store(
 						noDep,
 						noneIR.op(builder, noDep).toData(null, noDep));
 				noDep.go(code.tail());
@@ -111,32 +104,19 @@ final class DefaultRefTargetIR implements RefTargetIR {
 		public void copyTarget(CodeDirs dirs, TargetStoreOp store) {
 
 			final Block code = dirs.code();
-			final DataRecOp objectRec = this.ptr.object(code);
-			final ObjectOp object =
-					store.loadTarget(dirs).materialize(dirs, tempObjHolder(dirs.getAllocator()));
+			final ObjectOp object = store.loadTarget(dirs).materialize(
+					dirs,
+					tempObjHolder(dirs.getAllocator()));
 
-			objectRec.store(code, object.toData(null, code));
+			ptr().store(code, object.toData(null, code));
 		}
 
 		@Override
 		public TargetOp loadTarget(CodeDirs dirs) {
-
-			final Block code = dirs.code();
-
 			return anonymousObject(
-					dirs.getBuilder(),
-					this.ptr.object(code).load(null, code),
+					dirs,
+					ptr().load(null, dirs.code()),
 					this.ir.refIR.ref().getResolution().resolveTarget());
-		}
-
-		@Override
-		public DataOp toData(ID id, Code code) {
-			return ptr().toData(id, code);
-		}
-
-		@Override
-		public AnyOp toAny(ID id, Code code) {
-			return ptr().toAny(id, code);
 		}
 
 		@Override

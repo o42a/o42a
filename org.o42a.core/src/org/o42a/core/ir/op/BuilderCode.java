@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.op;
+
+import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
+import org.o42a.core.ir.CodeBuilder;
 
 
-public enum FldKind {
+public interface BuilderCode {
 
-	OBJ(0),
-	LINK(1),
-	ALIAS(2),
-	VAR(3),
-	OWNER(4);
-
-	private final int code;
-
-	FldKind(int code) {
-		this.code = code;
+	default Generator getGenerator() {
+		return code().getGenerator();
 	}
 
-	public final int code() {
-		return this.code;
-	}
+	CodeBuilder getBuilder();
+
+	Code code();
 
 }

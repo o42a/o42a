@@ -19,13 +19,9 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.DumpablePtrOp;
+import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathIR;
-import org.o42a.util.string.ID;
 
 
 public final class RefIROp extends PathIR implements RefTargetOp {
@@ -39,7 +35,7 @@ public final class RefIROp extends PathIR implements RefTargetOp {
 	}
 
 	@Override
-	public final DumpablePtrOp<?> ptr() {
+	public final DataPtrOp<?> ptr() {
 		return this.targetOp.ptr();
 	}
 
@@ -60,16 +56,6 @@ public final class RefIROp extends PathIR implements RefTargetOp {
 	@Override
 	public final TargetOp loadTarget(CodeDirs dirs) {
 		return this.targetOp.loadTarget(dirs);
-	}
-
-	@Override
-	public final DataOp toData(ID id, Code code) {
-		return ptr().toData(id, code);
-	}
-
-	@Override
-	public final AnyOp toAny(ID id, Code code) {
-		return ptr().toAny(id, code);
 	}
 
 	@Override

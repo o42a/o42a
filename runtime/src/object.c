@@ -20,19 +20,9 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 15,
+	.field_num = 13,
 	.name = "o42a_obj_data_t",
 	.fields = {
-		{
-			.data_type = O42A_TYPE_REL_PTR,
-			.offset = offsetof(o42a_obj_data_t, object),
-			.name = "object",
-		},
-		{
-			.data_type = O42A_TYPE_REL_PTR,
-			.offset = offsetof(o42a_obj_data_t, start),
-			.name = "start",
-		},
 		{
 			.data_type = O42A_TYPE_INT16,
 			.offset = offsetof(o42a_obj_data_t, flags),
@@ -57,6 +47,13 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.data_type = O42A_TYPE_FUNC_PTR,
 			.offset = offsetof(o42a_obj_data_t, value_f),
 			.name = "value_f",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_data_t, vmtc),
+			.name = "vmtc",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
@@ -88,13 +85,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_data_t, value_type),
-			.name = "value_type",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type,
-		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_data_t, fld_ctrs),
 			.name = "fld_ctrs",
 			.type_info =
@@ -102,18 +92,25 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 		},
 		{
 			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_data_t, ascendants),
-			.name = "ascendants",
+			.offset = offsetof(o42a_obj_data_t, deps),
+			.name = "deps",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
-		}
+		},
 	},
 };
 
-const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 	.type_code = 0x042a0101,
-	.field_num = 2,
+	.field_num = 4,
 	.name = "o42a_obj_desc_t",
 	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_desc_t, value_type),
+			.name = "value_type",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type,
+		},
 		{
 			.data_type = O42A_TYPE_STRUCT,
 			.offset = offsetof(o42a_obj_desc_t, fields),
@@ -121,16 +118,22 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
 		},
 		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_desc_t, ascendants),
+			.name = "ascendants",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+		{
 			.data_type = O42A_TYPE_INT32,
-			.offset = offsetof(o42a_obj_desc_t, main_body_layout),
-			.name = "main_body_layout",
+			.offset = offsetof(o42a_obj_desc_t, object_size),
+			.name = "object_size",
 		},
 	},
 };
 
-const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant = {
+const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant = {
 	.type_code = 0x042a0110,
-	.field_num = 2,
+	.field_num = 1,
 	.name = "o42a_obj_ascendant_t",
 	.fields = {
 		{
@@ -139,11 +142,6 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant = {
 			.name = "desc",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
-		},
-		{
-			.data_type = O42A_TYPE_REL_PTR,
-			.offset = offsetof(o42a_obj_ascendant_t, body),
-			.name = "body",
 		},
 	},
 };
@@ -194,7 +192,7 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 	},
 };
 
-const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
 	.field_num = 3,
 	.name = "o42a_obj_ctr_t",
@@ -220,23 +218,10 @@ const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
 		},
-	},
-};
-
-const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_cside = {
-	.type_code = 0x042a0121,
-	.field_num = 2,
-	.name = "o42a_obj_cside_t",
-	.fields = {
 		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(struct o42a_obj_cside, body),
-			.name = "body",
-		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(struct o42a_obj_cside, fld),
-			.name = "fld",
+			.data_type = O42A_TYPE_INT32,
+			.offset = offsetof(o42a_obj_ctr_t, num_deps),
+			.name = "num_deps",
 		},
 	},
 };
@@ -244,7 +229,7 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_cside = {
 const struct _O42A_DEBUG_TYPE_o42a_obj_ctable
 _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 	.type_code = 0x042a0122,
-	.field_num = 8,
+	.field_num = 10,
 	.name = "o42a_obj_ctable_t",
 	.fields = {
 		{
@@ -270,10 +255,13 @@ _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctable_t, object_data),
-			.name = "object_data",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			.offset = offsetof(o42a_obj_ctable_t, from),
+			.name = "from",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, from),
+			.name = "to",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -283,6 +271,11 @@ _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
 		},
 		{
+			.data_type = O42A_TYPE_INT32,
+			.offset = offsetof(o42a_obj_ctable_t, derivation_kind),
+			.name = "derivation_kind",
+		},
+		{
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_ctable_t, field),
 			.name = "field",
@@ -290,18 +283,14 @@ _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_field,
 		},
 		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_ctable_t, from),
-			.name = "from",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_cside,
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, from_fld),
+			.name = "from_fld",
 		},
 		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_ctable_t, to),
-			.name = "to",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_cside,
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, to_fld),
+			.name = "to_fld",
 		},
 	},
 };
@@ -324,15 +313,11 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use = {
 #endif /* NDEBUG */
 
 
-extern o42a_obj_data_t *o42a_obj_data(const o42a_obj_body_t *);
+extern const o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_desc_t *);
 
 extern o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *);
 
-extern o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t *);
-
 extern o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *);
-
-extern o42a_obj_body_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t *);
 
 const o42a_obj_desc_t o42a_obj_void_desc = {
 #ifndef NDEBUG
@@ -355,7 +340,19 @@ const o42a_obj_desc_t o42a_obj_void_desc = {
 		.list = 0,
 		.size = 0,
 	},
-	.main_body_layout = O42A_LAYOUT(o42a_obj_body_t),
+	.ascendants = {
+#ifndef NDEBUG
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, ascendants)),
+			.name = "ascendants",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
+	.object_size = sizeof(o42a_obj_t),
 };
 
 const o42a_obj_desc_t o42a_obj_false_desc = {
@@ -379,7 +376,19 @@ const o42a_obj_desc_t o42a_obj_false_desc = {
 		.list = 0,
 		.size = 0,
 	},
-	.main_body_layout = O42A_LAYOUT(o42a_obj_body_t),
+	.ascendants = {
+#ifndef NDEBUG
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, ascendants)),
+			.name = "ascendants",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
+	.object_size = sizeof(o42a_obj_t),
 };
 
 const o42a_obj_desc_t o42a_obj_none_desc = {
@@ -403,109 +412,20 @@ const o42a_obj_desc_t o42a_obj_none_desc = {
 		.list = 0,
 		.size = 0,
 	},
-	.main_body_layout = O42A_LAYOUT(o42a_obj_body_t),
-};
-
-
-const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
-		const o42a_obj_data_t *const data,
-		const o42a_obj_desc_t *const desc) {
-	O42A_ENTER(return NULL);
-
-	o42a_debug_mem_name("--- Data: ", data);
-	o42a_debug_mem_name("--- Type: ", desc);
-
-	const o42a_obj_ascendant_t *ascendant = O42A(o42a_obj_ascendants(data));
-
-	for (size_t i = data->ascendants.size; i > 0; --i) {
-		if (ascendant->desc == desc) {
-			O42A_RETURN ascendant;
-		}
-		++ascendant;
-		continue;
-	}
-
-	O42A_RETURN NULL;
-}
-
-static inline o42a_obj_body_t *body_of_type(
-		const o42a_obj_data_t *const data,
-		const o42a_obj_desc_t *const desc) {
-	O42A_ENTER(return NULL);
-
-	const o42a_obj_ascendant_t *const ascendant =
-			O42A(o42a_obj_ascendant_of_type(data, desc));
-
-	if (!ascendant) {
-		O42A_RETURN NULL;
-	}
-
-	O42A_RETURN o42a_obj_ascendant_body(ascendant);
-}
-
-o42a_obj_body_t *o42a_obj_cast(
-		o42a_obj_t *const object,
-		const o42a_obj_desc_t *const desc) {
-	O42A_ENTER(return NULL);
-	O42A_DO("Cast");
-
-	if (desc == &o42a_obj_void_desc) {
-		// any body can be void
-		o42a_debug_mem_name("Cast to void: ", object);
-		O42A_DONE;
-		O42A_RETURN object;
-	}
-	if (object->declared_in == desc) {
-		// body of the necessary type
-		o42a_debug_mem_name("Cast not required: ", object);
-		o42a_debug_mem_name("     to: ", desc);
-		O42A_DONE;
-		O42A_RETURN object;
-	}
-
-	o42a_debug_mem_name("Cast of: ", object);
-	o42a_debug_mem_name("     to: ", desc);
-
-	o42a_obj_body_t *const result =
-			O42A(body_of_type(o42a_obj_data(object), desc));
-
-	o42a_debug_mem_name("Cast result: ", result);
-
-	O42A_DONE;
-	O42A_RETURN result;
-}
-
-
-static inline void copy_ancestor_ascendants(
-		const o42a_obj_data_t *const ancestor_data,
-		o42a_obj_ascendant_t *ascendants,
-		void *start) {
-	O42A_ENTER(return);
-
-	void *astart = ((char *) ancestor_data) + ancestor_data->start;
-	const o42a_obj_ascendant_t *aascendants =
-			O42A(o42a_obj_ascendants(ancestor_data));
-	const o42a_rptr_t aascendants_rptr =
-			((char *) aascendants) - ((char *) astart);
-	const o42a_rptr_t ascendants_rptr =
-			((char *) ascendants) - ((char *) start);
-	const o42a_rptr_t diff = aascendants_rptr - ascendants_rptr;
-
-	for (size_t i = ancestor_data->ascendants.size; i > 0; --i) {
+	.ascendants = {
 #ifndef NDEBUG
-		O42A(o42a_dbg_copy_header(
-				o42a_dbg_header(aascendants),
-				&ascendants->__o42a_dbg_header__,
-				(o42a_dbg_header_t*) start));
-#endif
-		ascendants->desc = aascendants->desc;
-		ascendants->body = aascendants->body + diff;
-		++aascendants;
-		++ascendants;
-	}
-
-	O42A_RETURN;
-}
+		.__o42a_dbg_header__ = {
+			.type_code = 0x042a0001,
+			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, ascendants)),
+			.name = "ascendants",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+#endif /* NDEBUG */
+		.list = 0,
+		.size = 0,
+	},
+	.object_size = sizeof(o42a_obj_t),
+};
 
 static inline void vmtc_use(const o42a_obj_vmtc_t *const vmtc) {
 	O42A_ENTER(return);
@@ -603,297 +523,48 @@ static inline void vmtc_release(const o42a_obj_vmtc_t *vmtc) {
 	}
 }
 
-static inline const o42a_obj_vmtc_t *vmtc_derive(
-		o42a_obj_ctable_t *const ctable) {
-	O42A_ENTER(return NULL);
-
-	const o42a_obj_desc_t *const declared_in =
-			ctable->from.body->declared_in;
-	const o42a_obj_ascendant_t *const aasc =
-			O42A(o42a_obj_ascendant_of_type(
-					ctable->ancestor_data,
-					declared_in));
-	const o42a_obj_ascendant_t *const sasc =
-			O42A(o42a_obj_ascendant_of_type(
-					ctable->sample_data,
-					declared_in));
-
-	if (!sasc) {
-
-		const o42a_obj_vmtc_t *const avmtc =
-				O42A(o42a_obj_ascendant_body(aasc))->vmtc;
-
-		O42A(vmtc_use(avmtc));
-
-		O42A_RETURN avmtc;
-	}
-
-	const o42a_obj_vmtc_t *const svmtc =
-			O42A(o42a_obj_ascendant_body(sasc))->vmtc;
-
-	if (!aasc) {
-		O42A(vmtc_use(svmtc));
-		O42A_RETURN svmtc;
-	}
-
-	const o42a_obj_vmtc_t *const prev =
-			O42A(o42a_obj_ascendant_body(aasc))->vmtc;
-
-	O42A_RETURN vmtc_alloc(svmtc->vmt, prev);
-}
-
-enum derivation_kind {
-	DK_COPY,
-	DK_INHERIT,
-	DK_MAIN,
-};
-
-static void derive_object_body(
-		o42a_obj_ctable_t *const ctable,
-		enum derivation_kind kind) {
-	O42A_ENTER(return);
-	O42A_DO("Derive body");
-
-	const o42a_obj_body_t *const from_body = ctable->from.body;
-	o42a_obj_body_t *const to_body = ctable->to.body;
-
-	O42A_DEBUG("Derive body %lx -> %lx\n", (long) from_body, (long) to_body);
-	o42a_debug_mem_name("Body type: ", ctable->body_desc);
-
-#ifndef NDEBUG
-
-	// Fill debug header.
-	const o42a_obj_data_t *const object_data = ctable->object_data;
-	const o42a_dbg_header_t *const object_header =
-			(o42a_dbg_header_t *) (((char *) object_data) + object_data->start);
-
-	O42A(o42a_dbg_copy_header(
-			o42a_dbg_header(from_body),
-			&to_body->__o42a_dbg_header__,
-			object_header));
-
-#endif
-
-	// Fill body header.
-	to_body->object_data =
-			((char *) ctable->object_data) - ((char *) to_body);
-	to_body->declared_in = from_body->declared_in;
-	to_body->vmtc = O42A(vmtc_derive(ctable));
-
-	if (kind == DK_INHERIT) {
-		// Drop the kind of body to "inherited" for inherited body.
-		to_body->flags =
-				(from_body->flags & ~O42A_OBJ_BODY_TYPE)
-				| O42A_OBJ_BODY_INHERITED;
-	} else {
-		// Keep the kind of body otherwise.
-		to_body->flags = from_body->flags;
-	}
-
-	// Derive fields.
-	const size_t num_fields = ctable->body_desc->fields.size;
-	o42a_obj_field_t *const fields =
-			O42A(o42a_obj_fields(ctable->body_desc));
-
-	for (size_t i = 0; i < num_fields; ++i) {
-
-		o42a_obj_field_t *const field = fields + i;
-
-		ctable->field = field;
-		ctable->from.fld = O42A(o42a_fld_by_field(from_body, field));
-		ctable->to.fld = O42A(o42a_fld_by_field(to_body, field));
-
-		const o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
-
-		O42A_DO(kind == DK_INHERIT ? "Inherit field" : "Propagate field");
-		o42a_debug_mem_name("From: ", ctable->from.fld);
-		O42A_DEBUG("To: <0x%lx>\n", (long) ctable->to.fld);
-		o42a_debug_dump_mem("Field: ", field, 3);
-
-		O42A((kind == DK_INHERIT ? desc->inherit : desc->propagate) (ctable));
-
-		O42A_DONE;
-	}
-
-	o42a_debug_dump_mem(
-			kind == DK_MAIN ? "Main body: " : (
-					kind == DK_INHERIT
-					? "Inherited body: " : (
-							kind == DK_COPY
-							? "Copied body: "
-							: "Propagated body: ")),
-			to_body,
-			3);
-
-	O42A_DONE;
-	O42A_RETURN;
-}
-
-static void derive_ancestor_bodies(
-		o42a_obj_ctable_t *const ctable,
-		int kind,
-		size_t excluded) {
-	O42A_ENTER(return);
-
-	const o42a_obj_ascendant_t *ascendant =
-			O42A(o42a_obj_ascendants(ctable->object_data));
-	const o42a_obj_data_t *const adata = ctable->ancestor_data;
-	const o42a_obj_ascendant_t *aascendant =
-			O42A(o42a_obj_ascendants(adata));
-	const size_t num = adata->ascendants.size - excluded;
-
-	for (size_t i = adata->ascendants.size; i > 0; --i) {
-		ctable->body_desc = ascendant->desc;
-		ctable->from.body = O42A(o42a_obj_ascendant_body(aascendant));
-		ctable->to.body = O42A(o42a_obj_ascendant_body(ascendant));
-		O42A(derive_object_body(ctable, kind));
-		++aascendant;
-		++ascendant;
-	}
-
-	O42A_RETURN;
-}
-
-
-#ifndef NDEBUG
-
-static inline size_t get_type_info_start(
-		size_t *const size,
-		const size_t type_field_num) {
-	O42A_ENTER(return 0);
-
-	size_t s = *size;
-	const o42a_layout_t type_info_layout = O42A_LAYOUT(o42a_dbg_type_info_t);
-	const o42a_layout_t field_info_layout = O42A_LAYOUT(o42a_dbg_field_info_t);
-	const size_t type_info_start = s =
-			O42A(o42a_layout_pad(s, type_info_layout));
-
-	s += O42A(o42a_layout_size(type_info_layout));
-	s += O42A(o42a_layout_pad(s, field_info_layout));
-	s += O42A(o42a_layout_array_size(field_info_layout, type_field_num));
-
-	*size = s;
-
-	O42A_RETURN type_info_start;
-}
-
-static inline void fill_type_info(
-		void *start,
-		o42a_obj_data_t *const data,
-		o42a_dbg_type_info_t *const type_info) {
-	O42A_ENTER(return);
-
-	// Fill new object's type info (without field info yet).
-	type_info->type_code = rand();
-	type_info->name = "New object";
-
-	// Fill top-level debug header.
-	o42a_dbg_header_t *const header = start;
-
-	header->type_code = type_info->type_code;
-	header->enclosing = 0;
-	header->name = type_info->name;
-	header->type_info = type_info;
-
-	// Fill (run-time) type debug header.
-	o42a_dbg_header_t *const type_header = &data->__o42a_dbg_header__;
-
-	O42A(o42a_dbg_fill_header(
-			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
-			type_header,
-			header));
-	type_header->name = "object_type";
-
-	O42A_RETURN;
-}
-
-static inline void fill_field_infos(
-		const o42a_obj_data_t *const data,
-		o42a_dbg_type_info_t *type_info) {
-	O42A_ENTER(return);
-
-	// Fill new object's type field info.
-	o42a_dbg_field_info_t *field_info = type_info->fields;
-
-	// Fill object ascendant bodies field info.
-	const o42a_obj_ascendant_t *const ascendants =
-			O42A(o42a_obj_ascendants(data));
-	const size_t num_ascendants = data->ascendants.size;
-
-	for (size_t i = 0; i < num_ascendants; ++i) {
-
-		const o42a_obj_body_t *const body =
-				o42a_obj_ascendant_body(ascendants + i);
-
-		O42A(o42a_dbg_fill_field_info(o42a_dbg_header(body), field_info++));
-	}
-
-	// Fill object type field info.
-	O42A(o42a_dbg_fill_field_info(&data->__o42a_dbg_header__, field_info++));
-
-	// Fill ascendants field info.
-	for (size_t i = 0; i < num_ascendants; ++i) {
-		O42A(o42a_dbg_fill_field_info(
-				&ascendants[i].__o42a_dbg_header__,
-				field_info++));
-	}
-
-	O42A_RETURN;
-}
-
-#endif /* NDEBUG */
-
-
-struct obj_bodies {
-	O42A_HEADER
-	o42a_obj_body_t first_body;
-};
-
-static inline o42a_obj_data_t *o42a_obj_gc_data(void *const obj_data) {
-
-	struct obj_bodies *const bodies = obj_data;
-
-	return O42A(o42a_obj_data(&bodies->first_body));
+static inline o42a_obj_t **o42a_obj_deps(const o42a_obj_data_t *const data) {
+	return (o42a_obj_t **) (((char *) &data->deps) + data->deps.list);
 }
 
 static void o42a_obj_gc_marker(void *const obj_data) {
 	O42A_ENTER(return);
 
-	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
+	o42a_obj_t *const object = obj_data;
+	o42a_obj_data_t *const data = &object->object_data;
 	const volatile o42a_val_t *const value = &data->value;
 	const uint32_t flags = value->flags;
 
 	if (flags & O42A_VAL_CONDITION) {
-		data->value_type->mark(data);
+		data->desc->value_type->mark(data);
 	}
 
-	uint32_t num_asc = data->ascendants.size;
+	const o42a_obj_desc_t *const desc = data->desc;
+	uint32_t num_asc = desc->ascendants.size;
 
 	if (!num_asc) {
 		O42A_RETURN;
 	}
 
 	// Mark all fields.
-	o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(data));
+	const o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(desc));
 
 	while (1) {
 
-		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(asc));
-		const o42a_obj_desc_t *const desc = asc->desc;
-
-		uint32_t num_fields = desc->fields.size;
+		const o42a_obj_desc_t *const body_desc = asc->desc;
+		uint32_t num_fields = body_desc->fields.size;
 
 		if (num_fields) {
 
-			o42a_obj_field_t *field = O42A(o42a_obj_fields(desc));
+			o42a_obj_field_t *field = O42A(o42a_obj_fields(body_desc));
 
 			while (1) {
 
-				o42a_fld *const fld = O42A(o42a_fld_by_field(body, field));
-				o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
+				o42a_fld *const fld = O42A(o42a_fld_by_field(object, field));
+				o42a_fld_desc_t *const fld_desc = O42A(o42a_fld_desc(field));
 
 				o42a_debug_mem_name("Mark field: ", fld);
-				O42A(desc->mark(fld));
+				O42A(fld_desc->mark(fld));
 
 				if (!(--num_fields)) {
 					break;
@@ -906,7 +577,30 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 			break;
 		}
 		++asc;
-	} while (num_asc);
+	}
+
+	const size_t num_deps = data->deps.size;
+
+	if (!num_deps) {
+		O42A_RETURN;
+	}
+
+	// Mark all deps.
+	o42a_obj_t **const deps = O42A(o42a_obj_deps(data));
+
+	for (size_t i = 0; i < num_deps; ++i) {
+		O42A_DEBUG("Mark dep #%zd\n", i);
+
+		o42a_obj_t *const dep = deps[i];
+
+		if (!dep) {
+			continue;
+		}
+
+		o42a_debug_mem_name("Dep: ", object);
+
+		O42A(o42a_gc_mark(o42a_gc_blockof(dep)));
+	}
 
 	O42A_RETURN;
 }
@@ -914,43 +608,46 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 static void o42a_obj_gc_sweeper(void *const obj_data) {
 	O42A_ENTER(return);
 
-	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
+	o42a_obj_t *const object = obj_data;
+	o42a_obj_data_t *const data = &object->object_data;
 	const volatile o42a_val_t *const value = &data->value;
 	const uint32_t flags = value->flags;
 
 	if (flags & O42A_VAL_CONDITION) {
-		data->value_type->sweep(data);
+		data->desc->value_type->sweep(data);
 	}
 
-	o42a_debug_mem_name("Sweep object: ", (char *) data + data->start);
-	uint32_t num_asc = data->ascendants.size;
+	o42a_debug_mem_name(
+			"Sweep object: ",
+			(char *) data - offsetof(struct o42a_obj, object_data));
+
+	O42A(vmtc_release(data->vmtc));
+
+	const o42a_obj_desc_t *const desc = data->desc;
+	uint32_t num_asc = desc->ascendants.size;
 
 	if (!num_asc) {
 		O42A_RETURN;
 	}
 
 	// Mark all fields.
-	o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(data));
+	const o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(desc));
 
 	while (1) {
 
-		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(asc));
-
-		O42A(vmtc_release(body->vmtc));
-
-		const o42a_obj_desc_t *const desc = asc->desc;
-		uint32_t num_fields = desc->fields.size;
+		const o42a_obj_desc_t *const body_desc = asc->desc;
+		uint32_t num_fields = body_desc->fields.size;
 
 		if (num_fields) {
 
-			o42a_obj_field_t *field = O42A(o42a_obj_fields(desc));
+			o42a_obj_field_t *field = O42A(o42a_obj_fields(body_desc));
 
 			while (1) {
 
-				o42a_fld *const fld = O42A(o42a_fld_by_field(body, field));
-				o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
+				o42a_fld *const fld = O42A(o42a_fld_by_field(object, field));
+				o42a_fld_desc_t *const fld_desc = O42A(o42a_fld_desc(field));
 
-				O42A(desc->sweep(fld));
+				O42A(fld_desc->sweep(fld));
 
 				if (!(--num_fields)) {
 					break;
@@ -973,90 +670,307 @@ const o42a_gc_desc_t o42a_obj_gc_desc = {
 	.sweep = &o42a_obj_gc_sweeper,
 };
 
-static o42a_obj_data_t *propagate_object(
+static void derive_object_body(o42a_obj_ctable_t *const ctable) {
+	O42A_ENTER(return);
+	O42A_DO("Derive body");
+
+	const enum o42a_obj_derivation_kind dkind = ctable->derivation_kind;
+
+	o42a_debug_mem_name(
+			dkind == O42A_DK_DERIVE_MAIN ? "Main body: "
+			: dkind == O42A_DK_OVERRIDE_MAIN ? "Overridden main body: "
+			: dkind == O42A_DK_INHERIT ? "Inherited body: "
+			: dkind == O42A_DK_COPY ? "Copied body: "
+			: dkind == O42A_DK_COPY_MAIN ? "Copied main body: "
+			: "Derived body: ",
+			ctable->body_desc);
+
+	// Derive fields.
+	const size_t num_fields = ctable->body_desc->fields.size;
+	o42a_obj_field_t *const fields =
+			O42A(o42a_obj_fields(ctable->body_desc));
+	const o42a_bool_t propagate =
+			dkind == O42A_DK_DERIVE_MAIN
+			|| dkind == O42A_DK_OVERRIDE_MAIN
+			|| dkind == O42A_DK_COPY_MAIN;
+
+	for (size_t i = 0; i < num_fields; ++i) {
+
+		o42a_obj_field_t *const field = fields + i;
+
+		ctable->field = field;
+		ctable->from_fld = O42A(o42a_fld_by_field(ctable->from, field));
+		ctable->to_fld = O42A(o42a_fld_by_field(ctable->to, field));
+
+		const o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
+
+		O42A_DO(propagate ? "Propagate field" : "Inherit field");
+		o42a_debug_mem_name("From: ", ctable->from_fld);
+		O42A_DEBUG("To: <0x%lx>\n", (long) ctable->to_fld);
+		o42a_debug_dump_mem("Field: ", field, 3);
+
+		O42A((propagate ? desc->propagate : desc->inherit) (ctable));
+
+		O42A_DONE;
+	}
+
+	O42A_DONE;
+	O42A_RETURN;
+}
+
+static void derive_ancestor_bodies(
+		o42a_obj_ctable_t *const ctable,
+		size_t excluded) {
+	O42A_ENTER(return);
+
+	const enum o42a_obj_derivation_kind dkind = ctable->derivation_kind;
+	const o42a_obj_data_t *const data = &ctable->to->object_data;
+	const o42a_obj_ascendant_t *ascendant =
+			O42A(o42a_obj_ascendants(data->desc));
+	const o42a_obj_data_t *const adata = ctable->ancestor_data;
+	const o42a_obj_ascendant_t *aascendant =
+			O42A(o42a_obj_ascendants(adata->desc));
+	const size_t num = adata->desc->ascendants.size - excluded;
+
+	for (size_t i = adata->desc->ascendants.size - excluded; i > 0; --i) {
+		assert(
+				aascendant->desc == ascendant->desc
+				&& "Ancestor and sample body descriptors differ");
+		ctable->body_desc = ascendant->desc;
+		if (i == 1 && dkind == O42A_DK_COPY) {
+			ctable->derivation_kind = O42A_DK_COPY_MAIN;
+		}
+		O42A(derive_object_body(ctable));
+		++aascendant;
+		++ascendant;
+	}
+
+	O42A_RETURN;
+}
+
+
+static inline void fill_deps(const o42a_obj_data_t *const data) {
+
+	const size_t num_deps = data->deps.size;
+	o42a_obj_t **const deps = o42a_obj_deps(data);
+
+	// Fill deps field info.
+	for (size_t i = 0; i < num_deps; ++i) {
+		deps[i] = NULL;// To be able to dump the object before deps filled.
+	}
+}
+
+
+#ifndef NDEBUG
+
+static inline size_t count_fields(const o42a_obj_desc_t *const desc) {
+	O42A_ENTER(return 0);
+
+	const size_t num_asc = desc->ascendants.size;
+	const o42a_obj_ascendant_t *const ascs = O42A(o42a_obj_ascendants(desc));
+	size_t num_fields = 0;
+
+	for (size_t i = 0; i < num_asc; ++i) {
+		num_fields += ascs[i].desc->fields.size;
+	}
+
+	O42A_DEBUG("Number of fields: %zu\n", num_fields);
+
+	O42A_RETURN num_fields;
+}
+
+static inline size_t get_type_info_start(
+		size_t *const size,
+		const size_t type_field_num) {
+	O42A_ENTER(return 0);
+
+	size_t s = *size;
+	static const o42a_layout_t type_info_layout =
+			O42A_LAYOUT(o42a_dbg_type_info_t);
+	static const o42a_layout_t field_info_layout =
+			O42A_LAYOUT(o42a_dbg_field_info_t);
+	const size_t type_info_start = s =
+			O42A(o42a_layout_pad(s, type_info_layout));
+
+	s += O42A(o42a_layout_size(type_info_layout));
+	s += O42A(o42a_layout_pad(s, field_info_layout));
+	s += O42A(o42a_layout_array_size(field_info_layout, type_field_num));
+
+	*size = s;
+
+	O42A_RETURN type_info_start;
+}
+
+static inline void fill_type_info(
+		o42a_obj_t *const object,
+		o42a_dbg_type_info_t *const type_info) {
+	O42A_ENTER(return);
+
+	// Fill new object's type info (without field info yet).
+	type_info->type_code = rand();
+	type_info->name = "New object";
+
+	// Fill object debug header.
+	o42a_dbg_header_t *const header = &object->__o42a_dbg_header__;
+
+	header->type_code = type_info->type_code;
+	header->enclosing = 0;
+	header->name = type_info->name;
+	header->type_info = type_info;
+
+	// Fill object data debug header.
+	o42a_dbg_header_t *const data_header =
+			&object->object_data.__o42a_dbg_header__;
+
+	O42A(o42a_dbg_fill_header(
+			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			data_header,
+			header));
+	data_header->name = "object_data";
+
+	O42A_RETURN;
+}
+
+static inline void fill_field_infos(
+		const o42a_obj_t *const from,
+		o42a_obj_t *const object,
+		o42a_dbg_type_info_t *type_info) {
+	O42A_ENTER(return);
+
+	o42a_obj_data_t *const data = &object->object_data;
+	const o42a_dbg_header_t *const object_header =
+			O42A(o42a_dbg_header(object));
+
+	// Fill new object's type field info.
+	o42a_dbg_field_info_t *field_info = type_info->fields;
+
+	// Fill object data field info.
+	O42A(o42a_dbg_fill_field_info(&data->__o42a_dbg_header__, field_info++));
+
+	// Fill object bodies field info.
+	const o42a_obj_ascendant_t *const ascendants =
+			O42A(o42a_obj_ascendants(data->desc));
+	const size_t num_ascendants = data->desc->ascendants.size;
+
+	for (size_t i = 0; i < num_ascendants; ++i) {
+
+		const o42a_obj_ascendant_t *const asc = ascendants + i;
+		const o42a_obj_field_t *const fields =
+				O42A(o42a_obj_fields(asc->desc));
+		const size_t num_fields = asc->desc->fields.size;
+
+		for (size_t i = 0; i < num_fields; ++i) {
+
+			const o42a_fld *const from_fld =
+					O42A(o42a_fld_by_field(from, fields + i));
+			o42a_fld *const fld =
+					O42A(o42a_fld_by_field(object, fields + i));
+
+			O42A(o42a_dbg_copy_header(
+					o42a_dbg_header(from_fld),
+					(o42a_dbg_header_t *) fld,
+					object_header));
+			O42A(o42a_dbg_fill_field_info(
+					o42a_dbg_header(fld),
+					field_info++));
+		}
+	}
+
+	const size_t num_deps = data->deps.size;
+	o42a_obj_t **const deps = o42a_obj_deps(data);
+
+	// Fill deps field info.
+	for (size_t i = 0; i < num_deps; ++i) {
+		field_info->data_type = O42A_TYPE_DATA_PTR;
+		field_info->offset = ((char *) (deps + i)) - ((char *) object);
+		field_info->name = "D";
+		field_info->type_info = NULL;
+		++field_info;
+	}
+
+	O42A_RETURN;
+}
+
+#endif /* NDEBUG */
+
+
+static o42a_obj_t *propagate_object(
 		const o42a_obj_ctr_t *const ctr,
-		const o42a_obj_data_t *const adata,
-		const o42a_obj_data_t *const sdata) {
+		const o42a_obj_t *const from) {
 	O42A_ENTER(return NULL);
 
-	const size_t main_body_start = (size_t) (adata->object - adata->start);
-	const size_t data_start = -adata->start;
-	const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
+	const o42a_obj_data_t *const fdata = &from->object_data;
+	static const o42a_layout_t dep_layout = O42A_LAYOUT(void *);
+	const size_t deps_start = o42a_layout_pad(
+			fdata->desc->object_size,
+			dep_layout);
+	const size_t num_ascendants = fdata->desc->ascendants.size;
+	const size_t num_deps = ctr->num_deps;
 
-	const o42a_layout_t ascendant_layout = O42A_LAYOUT(o42a_obj_ascendant_t);
-	const size_t ascendants_start = o42a_layout_pad(
-			data_start + o42a_layout_size(obj_data_layout),
-			ascendant_layout);
-	const size_t num_ascendants = adata->ascendants.size;
-
-	size_t size =
-			ascendants_start
-			+ o42a_layout_array_size(ascendant_layout, num_ascendants);
+	size_t size = deps_start + o42a_layout_array_size(dep_layout, num_deps);
 
 #ifndef NDEBUG
 
 	const size_t type_field_num =
-			num_ascendants + 1 + num_ascendants;
+			1 + O42A(count_fields(fdata->desc)) + num_deps;
 	const size_t type_info_start =
 			O42A(get_type_info_start(&size, type_field_num));
 
 #endif
 
 	char *const mem = O42A(o42a_gc_alloc(&o42a_obj_gc_desc, size));
-	o42a_obj_t *const object = (o42a_obj_t *) (mem + main_body_start);
-	o42a_obj_data_t *const data = (o42a_obj_data_t *) (mem + data_start);
-	o42a_obj_ascendant_t *const ascendants =
-			(o42a_obj_ascendant_t *) (mem + ascendants_start);
+	o42a_obj_t *const object = (o42a_obj_t *) mem;
+	o42a_obj_data_t *const data = &object->object_data;
+	void **const deps = (void **) (mem + deps_start);
 
 #ifndef NDEBUG
 
 	o42a_dbg_type_info_t *const type_info =
 			(o42a_dbg_type_info_t *) (mem + type_info_start);
 
-	O42A(fill_type_info(mem, data, type_info));
+	O42A(fill_type_info(object, type_info));
 	type_info->field_num = type_field_num;
 
 #endif
 
-	// Build samples.
-	O42A(copy_ancestor_ascendants(adata, ascendants, mem));
-
 	// Fill object type and data.
-	data->object = adata->object;
-	data->start = adata->start;
-	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
+	data->flags = O42A_OBJ_RT | (fdata->flags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
-	data->value_f = adata->value_f;
-	data->cond_f = adata->cond_f;
-	data->def_f = adata->def_f;
+	const o42a_obj_vmtc_t *const vmtc = fdata->vmtc;
+
+	O42A(vmtc_use(vmtc));
+
+	data->vmtc = vmtc;
+	data->value_f = fdata->value_f;
+	data->cond_f = fdata->cond_f;
+	data->def_f = fdata->def_f;
 	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
 		data->value = ctr->value;
 		data->value.flags |= O42A_VAL_EAGER;
-	} else if (adata->value.flags & O42A_VAL_EAGER) {
-		data->value = adata->value;
+	} else if (fdata->value.flags & O42A_VAL_EAGER) {
+		data->value = fdata->value;
 	} else {
 		data->value.flags = O42A_VAL_INDEFINITE;
 	}
 	data->resume_from = NULL;
-	data->desc = adata->desc;
-	if (adata->value_type != &o42a_val_type_void) {
-		data->value_type = adata->value_type;
-	} else {
-		data->value_type = sdata->value_type;
-	}
+	data->desc = fdata->desc;
 
 	data->fld_ctrs = NULL;
-	data->ascendants.list =
-			((char *) ascendants) - ((char *) &data->ascendants);
-	data->ascendants.size = num_ascendants;
+	data->deps.list = num_deps ? ((char *) deps) - ((char *) &data->deps) : 0;
+	data->deps.size = num_deps;
+
+#ifndef NDEBUG
+	O42A(fill_field_infos(from, object, type_info));
+#endif /* NDEBUG */
 
 	// propagate bodies
 	o42a_obj_ctable_t ctable = {
 		.owner_data = ctr->owner_data,
-		.ancestor_data = adata,
-		.sample_data = sdata,
-		.object_data = data,
+		.ancestor_data = fdata,
+		.sample_data = fdata,
+		.from = from,
+		.to = object,
 	};
 
 #ifndef NDEBUG
@@ -1066,15 +980,13 @@ static o42a_obj_data_t *propagate_object(
 			NULL));
 #endif /* NDEBUG */
 
-	O42A(derive_ancestor_bodies(&ctable, DK_COPY, 0));
-
-#ifndef NDEBUG
-	O42A(fill_field_infos(data, type_info));
-#endif /* NDEBUG */
+	ctable.derivation_kind = O42A_DK_COPY;
+	O42A(derive_ancestor_bodies(&ctable, 0));
+	O42A(fill_deps(data));
 
 	o42a_debug_dump_mem("Object: ", mem, 3);
 
-	O42A_RETURN data;
+	O42A_RETURN object;
 }
 
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
@@ -1095,62 +1007,41 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	const o42a_obj_data_t *const sdata = ctr->sample_data;
 	const o42a_obj_desc_t *const sdesc = sdata->desc;
+	const o42a_obj_t *const sample = O42A(o42a_obj_by_data(sdata));
 
 	if (!adata) {
 		// Sample has no ancestor.
 		// Propagate sample.
 		o42a_debug_mem_name("No ancestor of ", sdata);
-
-		o42a_obj_data_t *const result =
-				O42A(propagate_object(ctr, sdata, sdata));
-
-		O42A_RETURN o42a_obj_by_data(result);
+		O42A_RETURN propagate_object(ctr, sample);
 	}
 
-	const o42a_obj_ascendant_t *const consuming_ascendant =
-			O42A(o42a_obj_ascendant_of_type(adata, sdesc));
-	const size_t consumed_ascendants = consuming_ascendant ? 1 : 0;
+	const size_t num_ascendants = sdesc->ascendants.size;
+	const size_t adiff = num_ascendants - adata->desc->ascendants.size;
 
-	// Ancestor bodies size.
-	size_t start = -adata->start;
-	size_t main_body_start;
+	assert((adiff == 0 || adiff == 1) && "Inheritance is impossible");
 
-	if (consumed_ascendants) {
-		main_body_start = adata->object - adata->start;
-	} else {
-		main_body_start =
-				O42A(o42a_layout_pad(start, sdesc->main_body_layout));
-		start = main_body_start + o42a_layout_size(sdesc->main_body_layout);
-	}
-
-	const o42a_layout_t obj_data_layout = O42A_LAYOUT(o42a_obj_data_t);
-	const size_t data_start = o42a_layout_pad(start, obj_data_layout);
-
-	const o42a_layout_t ascendant_layout = O42A_LAYOUT(o42a_obj_ascendant_t);
-	const size_t ascendants_start = o42a_layout_pad(
-			data_start + o42a_layout_size(obj_data_layout),
-			ascendant_layout);
-	const size_t num_ascendants =
-			adata->ascendants.size + 1 - consumed_ascendants;
-
-	size_t size =
-			ascendants_start
-			+ o42a_layout_array_size(ascendant_layout, num_ascendants);
+	const size_t consumed_ascendants = adiff ? 0 : 1;
+	static const o42a_layout_t dep_layout = O42A_LAYOUT(void *);
+	const size_t deps_start = o42a_layout_pad(
+			sdesc->object_size,
+			dep_layout);
+	const size_t num_deps = ctr->num_deps;
+	size_t size = deps_start + o42a_layout_array_size(dep_layout, num_deps);
 
 #ifndef NDEBUG
 
 	const size_t type_field_num =
-			num_ascendants + 1 + num_ascendants;
+			1 + O42A(count_fields(sdata->desc)) + num_deps;
 	const size_t type_info_start =
 			O42A(get_type_info_start(&size, type_field_num));
 
 #endif
 
 	char *const mem = O42A(o42a_gc_alloc(&o42a_obj_gc_desc, size));
-	o42a_obj_t *const object = (o42a_obj_t *) (mem + main_body_start);
-	o42a_obj_data_t *const data = (o42a_obj_data_t *) (mem + data_start);
-	o42a_obj_ascendant_t *const ascendants =
-			(o42a_obj_ascendant_t *) (mem + ascendants_start);
+	o42a_obj_t *const object = (o42a_obj_t *) mem;
+	o42a_obj_data_t *const data = &object->object_data;
+	void **const deps = (void **) (mem + deps_start);
 
 #ifndef NDEBUG
 
@@ -1158,41 +1049,18 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	o42a_dbg_type_info_t *type_info =
 			(o42a_dbg_type_info_t*) (mem + type_info_start);
 
-	O42A(fill_type_info(mem, data, type_info));
+	O42A(fill_type_info(object, type_info));
 	type_info->field_num = type_field_num;
 
 #endif
 
-	// Build samples.
-	O42A(copy_ancestor_ascendants(adata, ascendants, mem));
-
-	if (!consumed_ascendants) {
-
-		o42a_obj_ascendant_t *const main_ascendant =
-				ascendants + (num_ascendants - 1);
-
-		main_ascendant->desc = sdesc;
-		main_ascendant->body = ((char *) object) - ((char *) main_ascendant);
-
-#ifndef NDEBUG
-
-	// Fill the main ascendant`s debug header.
-	O42A(o42a_dbg_copy_header(
-			o42a_dbg_header(o42a_obj_ascendant_of_type(sdata, sdesc)),
-			&main_ascendant->__o42a_dbg_header__,
-			(o42a_dbg_header_t*) mem));
-
-#endif
-	}
-
 	// fill object type and data
 	const int32_t sflags = sdata->flags;
 
-	data->object = main_body_start - data_start;
-	data->start = -data_start;
 	data->flags = O42A_OBJ_RT | (sflags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
+	data->vmtc = O42A(vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
 	data->value_f = sdata->value_f;
 	data->cond_f = sdata->cond_f;
 	data->def_f =
@@ -1213,23 +1081,23 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	}
 	data->resume_from = NULL;
 	data->desc = sdesc;
-	if (sdata->value_type != &o42a_val_type_void) {
-		data->value_type = sdata->value_type;
-	} else {
-		data->value_type = adata->value_type;
-	}
 
 	data->fld_ctrs = NULL;
-	data->ascendants.list =
-			((char *) ascendants) - ((char *) &data->ascendants);
-	data->ascendants.size = num_ascendants;
+	data->deps.list =
+			num_deps ? ((char *) deps) - ((char *) &data->deps) : 0;
+	data->deps.size = num_deps;
+
+#ifndef NDEBUG
+	O42A(fill_field_infos(sample, object, type_info));
+#endif /* NDEBUG */
 
 	// propagate sample and inherit ancestor
 	o42a_obj_ctable_t ctable = {
 		.owner_data = ctr->owner_data,
 		.ancestor_data = adata,
 		.sample_data = sdata,
-		.object_data = data,
+		.from = ancestor,
+		.to = object,
 	};
 
 #ifndef NDEBUG
@@ -1239,23 +1107,47 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			NULL));
 #endif /* NDEBUG */
 
-	derive_ancestor_bodies(&ctable, DK_INHERIT, consumed_ascendants);
+	ctable.derivation_kind = O42A_DK_INHERIT;
+	derive_ancestor_bodies(&ctable, consumed_ascendants);
 
 	ctable.body_desc = sdesc;
-	ctable.from.body = O42A(o42a_obj_by_data(sdata));
-	ctable.to.body = object;
-
-	O42A(derive_object_body(&ctable, DK_MAIN));
-
-#ifndef NDEBUG
-	O42A(fill_field_infos(data, type_info));
-#endif /* NDEBUG */
+	ctable.from = sample;
+	ctable.derivation_kind =
+			consumed_ascendants ? O42A_DK_OVERRIDE_MAIN : O42A_DK_DERIVE_MAIN;
+	O42A(derive_object_body(&ctable));
+	O42A(fill_deps(data));
 
 	o42a_debug_dump_mem("Object: ", mem, 3);
 
 	O42A_RETURN object;
 }
 
+o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
+	O42A_ENTER(return NULL);
+
+	o42a_obj_data_t *const adata = ctr->ancestor_data;
+	const size_t num_deps = adata->deps.size;
+
+	ctr->sample_data = adata;
+	ctr->num_deps = num_deps;
+
+	o42a_obj_t *const result = O42A(o42a_obj_new(ctr));
+
+	if (result && num_deps) {
+
+		o42a_obj_data_t *const data = &result->object_data;
+		void **const adeps =
+				(void **) (((char *) &adata->deps) + adata->deps.list);
+		void **const deps =
+				(void **) (((char *) &data->deps) + data->deps.list);
+
+		for (size_t i = 0; i < num_deps; ++i) {
+			deps[i] = adeps[i];
+		}
+	}
+
+	O42A_RETURN result;
+}
 
 void o42a_obj_def_false(
 		o42a_val_t *const result,
@@ -1432,18 +1324,17 @@ void o42a_obj_broadcast(o42a_obj_data_t *const data) {
 
 void o42a_obj_use(o42a_obj_data_t *const data) {
 	O42A_ENTER(return);
-	o42a_debug_mem_name("Use object: ", (char *) data + data->start);
-	O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+	o42a_debug_mem_name(
+			"Use object: ",
+			(char *) data - offsetof(struct o42a_obj, object_data));
+	O42A(o42a_gc_use(o42a_gc_blockof(
+			(char *) data - offsetof(struct o42a_obj, object_data))));
 	O42A_RETURN;
 }
 
 static inline o42a_gc_block_t *gc_block_by_object(void *const ptr) {
 	O42A_ENTER(return NULL);
-
-	o42a_obj_t *const obj = ptr;
-	o42a_obj_data_t *const data = o42a_obj_data(obj);
-
-	O42A_RETURN o42a_gc_blockof((char *) data + data->start);
+	O42A_RETURN o42a_gc_blockof(ptr);
 }
 
 o42a_obj_t *o42a_obj_use_mutable(o42a_obj_t **const var) {
@@ -1458,8 +1349,11 @@ void o42a_obj_use_static(o42a_obj_data_t *const data) {
 
 	assert(!(data->flags & O42A_OBJ_RT) && "Object is not static");
 	if (!(data->flags & O42A_OBJ_RT)) {
-		o42a_debug_mem_name("Static object: ", (char *) data + data->start);
-		O42A(o42a_gc_static(o42a_gc_blockof((char *) data + data->start)));
+		o42a_debug_mem_name(
+				"Static object: ",
+				(char *) data - offsetof(struct o42a_obj, object_data));
+		O42A(o42a_gc_static(o42a_gc_blockof(
+				(char *) data - offsetof(struct o42a_obj, object_data))));
 	}
 
 	O42A_RETURN;
@@ -1476,8 +1370,11 @@ void o42a_obj_start_use(
 
 	if (data->flags & O42A_OBJ_RT) {
 		use->data = data;
-		o42a_debug_mem_name("Start object use: ", (char *) data + data->start);
-		O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+		o42a_debug_mem_name(
+				"Start object use: ",
+				(char *) data - offsetof(struct o42a_obj, object_data));
+		O42A(o42a_gc_use(o42a_gc_blockof(
+				(char *) data - offsetof(struct o42a_obj, object_data))));
 	} else {
 		O42A(o42a_obj_use_static(data));
 	}
@@ -1491,9 +1388,9 @@ void o42a_obj_end_use(o42a_obj_use_t *const use) {
 	if (use->data) {
 		o42a_debug_mem_name(
 				"End object use: ",
-				(char *) use->data + use->data->start);
-		O42A(o42a_gc_unuse(
-				o42a_gc_blockof((char *) use->data + use->data->start)));
+				(char *) use->data - offsetof(struct o42a_obj, object_data));
+		O42A(o42a_gc_unuse(o42a_gc_blockof(
+				(char *) use->data - offsetof(struct o42a_obj, object_data))));
 		use->data = NULL;
 	}
 
@@ -1513,10 +1410,9 @@ void o42a_obj_start_val_use(o42a_val_t *const val) {
 		O42A_RETURN;
 	}
 
-	o42a_obj_data_t *const data = O42A(o42a_obj_data(obj));
+	o42a_debug_mem_name("Start link target use: ", obj);
 
-	o42a_debug_mem_name("Start link target use: ", (char *) data + data->start);
-	O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+	O42A(o42a_gc_use(o42a_gc_blockof(obj)));
 
 	O42A_RETURN;
 }
@@ -1534,10 +1430,9 @@ void o42a_obj_end_val_use(o42a_val_t *const val) {
 		O42A_RETURN;
 	}
 
-	o42a_obj_data_t *const data = O42A(o42a_obj_data(obj));
+	o42a_debug_mem_name("End link target use: ", obj);
 
-	o42a_debug_mem_name("End link target use: ", (char *) data + data->start);
-	O42A(o42a_gc_unuse(o42a_gc_blockof((char *) data + data->start)));
+	O42A(o42a_gc_unuse(o42a_gc_blockof(obj)));
 
 	O42A_RETURN;
 }

@@ -17,15 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.type;
+
+import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.Int32rec;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.impl.ObjectIRFields;
-import org.o42a.core.ir.object.type.FieldDescIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
@@ -34,19 +33,29 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	public static final ObjectIRDesc OBJECT_DESC_TYPE = new ObjectIRDesc();
 
+	private StructRec<ValueTypeDescOp> valueType;
 	private RelList<FieldDescIR> fields;
-	private Int32rec mainBodyLayout;
+	private RelList<ObjectIRBody> ascendants;
+	private Int32rec objectSize;
 
 	private ObjectIRDesc() {
 		super(ID.rawId("o42a_obj_desc_t"));
+	}
+
+	public final StructRec<ValueTypeDescOp> valueType() {
+		return this.valueType;
 	}
 
 	public final RelList<FieldDescIR> fields() {
 		return this.fields;
 	}
 
-	public final Int32rec mainBodyLayout() {
-		return this.mainBodyLayout;
+	public final RelList<ObjectIRBody> ascendants() {
+		return this.ascendants;
+	}
+
+	public final Int32rec objectSize() {
+		return this.objectSize;
 	}
 
 	@Override
@@ -56,8 +65,10 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRDescOp> data) {
+		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		this.fields = new ObjectIRFields().allocate(data, "fields");
-		this.mainBodyLayout = data.addInt32("main_body_layout");
+		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");
+		this.objectSize = data.addInt32("object_size");
 	}
 
 	@Override

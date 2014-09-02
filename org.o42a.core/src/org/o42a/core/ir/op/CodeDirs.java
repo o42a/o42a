@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.debug.TaskBlock;
 import org.o42a.core.ir.CodeBuilder;
@@ -30,7 +29,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public class CodeDirs {
+public class CodeDirs implements BuilderCode {
 
 	private static final ID VALUE_ID = ID.id("value");
 
@@ -57,10 +56,7 @@ public class CodeDirs {
 		this.falseDir = falseDir;
 	}
 
-	public final Generator getGenerator() {
-		return this.code.getGenerator();
-	}
-
+	@Override
 	public final CodeBuilder getBuilder() {
 		return this.builder;
 	}
@@ -77,6 +73,7 @@ public class CodeDirs {
 		return code().getAllocator();
 	}
 
+	@Override
 	public final Block code() {
 		return this.code;
 	}

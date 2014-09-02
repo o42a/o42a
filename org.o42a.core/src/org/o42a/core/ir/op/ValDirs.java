@@ -21,7 +21,6 @@ package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
@@ -34,7 +33,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public abstract class ValDirs {
+public abstract class ValDirs implements BuilderCode {
 
 	private final CodeDirs dirs;
 	private final ValueType<?> valueType;
@@ -44,10 +43,7 @@ public abstract class ValDirs {
 		this.valueType = valueType;
 	}
 
-	public final Generator getGenerator() {
-		return dirs().getGenerator();
-	}
-
+	@Override
 	public final CodeBuilder getBuilder() {
 		return dirs().getBuilder();
 	}
@@ -64,6 +60,7 @@ public abstract class ValDirs {
 		return dirs().getAllocator();
 	}
 
+	@Override
 	public final Block code() {
 		return dirs().code();
 	}

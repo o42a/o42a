@@ -20,16 +20,14 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
-import org.o42a.util.string.ID;
+import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.core.ir.object.dep.DepIR;
 
 
 public interface RefTargetIR {
 
-	Data<?> allocate(ID id, SubData<?> data);
+	boolean isOmitted();
 
-	RefTargetOp op(Code code, StructOp<?> data);
+	RefTargetOp op(Code code, DepIR depIR, DataRecOp data);
 
 }

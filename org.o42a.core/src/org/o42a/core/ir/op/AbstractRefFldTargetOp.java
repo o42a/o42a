@@ -23,25 +23,19 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.dep.DepIR;
-import org.o42a.core.ir.object.dep.DepIR.Op;
 import org.o42a.core.object.Obj;
-import org.o42a.util.string.ID;
 
 
 public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 
 	private final AbstractRefFldTargetIR ir;
-	private final DepIR.Op ptr;
+	private final DataRecOp ptr;
 
-	public AbstractRefFldTargetOp(AbstractRefFldTargetIR ir, Op ptr) {
+	public AbstractRefFldTargetOp(AbstractRefFldTargetIR ir, DataRecOp ptr) {
 		this.ir = ir;
 		this.ptr = ptr;
 	}
@@ -51,7 +45,7 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 	}
 
 	@Override
-	public final DepIR.Op ptr() {
+	public final DataRecOp ptr() {
 		return this.ptr;
 	}
 
@@ -60,7 +54,6 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 	@Override
 	public void storeTarget(CodeDirs dirs, HostOp host) {
 
-		final DataRecOp objectRec = this.ptr.object(dirs.code());
 		final Block noDep = dirs.addBlock("no_dep");
 		final CodeDirs depDirs =
 				dirs.getBuilder().dirs(dirs.code(), noDep.head());
@@ -70,7 +63,7 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 				tempObjHolder(depDirs.getAllocator()));
 		final Block code = depDirs.code();
 
-		objectRec.store(code, object.toData(null, code));
+		ptr().store(code, object.toData(null, code));
 
 		if (noDep.exists()) {
 
@@ -78,7 +71,7 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 			final ObjectIR noneIR =
 					builder.getContext().getNone().ir(builder.getGenerator());
 
-			objectRec.store(
+			ptr().store(
 					noDep,
 					noneIR.op(builder, noDep).toData(null, noDep));
 			noDep.go(code.tail());
@@ -91,9 +84,8 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 	public final void copyTarget(CodeDirs dirs, TargetStoreOp store) {
 
 		final Block code = dirs.code();
-		final DataRecOp objectRec = this.ptr.object(code);
 
-		objectRec.store(code, copyObject(dirs, store).toData(null, code));
+		ptr().store(code, copyObject(dirs, store).toData(null, code));
 	}
 
 	@Override
@@ -101,21 +93,11 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 
 		final Block code = dirs.code();
 		final ObjectOp owner = anonymousObject(
-				dirs.getBuilder(),
-				this.ptr.object(code).load(null, code),
+				dirs,
+				ptr().load(null, code),
 				getWellKnownOwner());
 
 		return fldOf(dirs, owner);
-	}
-
-	@Override
-	public DataOp toData(ID id, Code code) {
-		return ptr().toData(id, code);
-	}
-
-	@Override
-	public AnyOp toAny(ID id, Code code) {
-		return ptr().toAny(id, code);
 	}
 
 	@Override

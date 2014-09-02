@@ -190,7 +190,7 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 			final Block code = dirs.code();
 
 			return anonymousObject(
-					dirs.getBuilder(),
+					dirs,
 					this.ptrs.get(code)
 					.host
 					.load(null, code)

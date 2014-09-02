@@ -21,12 +21,10 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathIR;
-import org.o42a.util.string.ID;
 
 
 public final class RefIR extends PathIR implements RefTargetIR {
@@ -49,13 +47,13 @@ public final class RefIR extends PathIR implements RefTargetIR {
 	}
 
 	@Override
-	public final Data<?> allocate(ID id, SubData<?> data) {
-		return targetIR().allocate(id, data);
+	public boolean isOmitted() {
+		return targetIR().isOmitted();
 	}
 
 	@Override
-	public final RefIROp op(Code code, StructOp<?> data) {
-		return new RefIROp(this, targetIR().op(code, data));
+	public RefIROp op(Code code, DepIR depIR, DataRecOp data) {
+		return new RefIROp(this, targetIR().op(code, depIR, data));
 	}
 
 	@Override
