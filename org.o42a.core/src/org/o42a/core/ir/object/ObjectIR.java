@@ -94,7 +94,7 @@ public class ObjectIR {
 		return getObject().getScope().ir(getGenerator());
 	}
 
-	public final ObjectIR definitionIR() {
+	public final ObjectIR getDefinitionIR() {
 		if (isExact()) {
 			return this;
 		}
@@ -105,12 +105,25 @@ public class ObjectIR {
 		if (this.descIR != null) {
 			return this.descIR;
 		}
+
+		final ObjectIR definitionIR = getDefinitionIR();
+
+		if (definitionIR != this) {
+			return this.descIR = definitionIR.getDescIR();
+		}
+
 		return this.descIR = allocateDescIR(this);
 	}
 
 	public final VmtIR getVmtIR() {
 		if (this.vmtIR != null) {
 			return this.vmtIR;
+		}
+
+		final ObjectIR definitionIR = getDefinitionIR();
+
+		if (definitionIR != this) {
+			return this.vmtIR = definitionIR.getVmtIR();
 		}
 
 		this.vmtIR = new VmtIR(this);
@@ -122,6 +135,12 @@ public class ObjectIR {
 	public final ObjectIRStruct getStruct() {
 		if (this.struct != null) {
 			return this.struct;
+		}
+
+		final ObjectIR definitionIR = getDefinitionIR();
+
+		if (definitionIR != this) {
+			return this.struct = definitionIR.getStruct();
 		}
 
 		assert getObject().assertFullyResolved();
@@ -142,10 +161,6 @@ public class ObjectIR {
 
 	public final ObjectDataIR getDataIR() {
 		return getStruct().dataIR();
-	}
-
-	public final ObjectIRBody getBodyType() {
-		return definitionIR().getMainBodyIR();
 	}
 
 	public final ObjectIRBody getMainBodyIR() {
@@ -171,13 +186,6 @@ public class ObjectIR {
 		}
 
 		return bodyIR(ancestor);
-	}
-
-	public final ObjectDataIR getStaticDataIR() {
-
-		final Obj lastDefinition = getObject().type().getLastDefinition();
-
-		return lastDefinition.ir(getGenerator()).getDataIR();
 	}
 
 	public final ValueIR getValueIR() {
