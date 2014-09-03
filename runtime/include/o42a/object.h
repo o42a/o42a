@@ -498,7 +498,13 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 extern const o42a_obj_desc_t o42a_obj_void_desc;
 
 /** False object type descriptor. */
-extern const o42a_obj_desc_t o42a_obj_false_desc;
+extern const struct o42a_obj_false_desc {
+
+	o42a_obj_desc_t desc;
+
+	o42a_obj_ascendant_t ascendants[1];
+
+} o42a_obj_false_desc;
 
 /** None object type descriptor. */
 extern const o42a_obj_desc_t o42a_obj_none_desc;

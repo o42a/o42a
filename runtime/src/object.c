@@ -338,40 +338,64 @@ const o42a_obj_desc_t o42a_obj_void_desc = {
 	.object_size = sizeof(o42a_obj_t),
 };
 
-const o42a_obj_desc_t o42a_obj_false_desc = {
-#ifndef NDEBUG
-	.__o42a_dbg_header__ = {
-		.type_code = 0x042a0101,
-		.enclosing = 0,
-		.name = "o42a_obj_false_desc",
-		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
-	},
-#endif /* NDEBUG */
-	.fields = {
+const struct o42a_obj_false_desc o42a_obj_false_desc = {
+	.desc = {
 #ifndef NDEBUG
 		.__o42a_dbg_header__ = {
-			.type_code = 0x042a0001,
-			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, fields)),
-			.name = "fields",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+			.type_code = 0x042a0101,
+			.enclosing = 0,
+			.name = "o42a_obj_false_desc",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
 		},
 #endif /* NDEBUG */
-		.list = 0,
-		.size = 0,
+		.fields = {
+#ifndef NDEBUG
+			.__o42a_dbg_header__ = {
+				.type_code = 0x042a0001,
+				.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, fields)),
+				.name = "fields",
+				.type_info =
+						(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+			},
+#endif /* NDEBUG */
+			.list = 0,
+			.size = 0,
+		},
+		.ascendants = {
+#ifndef NDEBUG
+			.__o42a_dbg_header__ = {
+				.type_code = 0x042a0001,
+				.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, ascendants)),
+				.name = "ascendants",
+				.type_info =
+						(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+			},
+#endif /* NDEBUG */
+			.list =
+					offsetof(struct o42a_obj_false_desc, ascendants)
+					- offsetof(o42a_obj_desc_t, ascendants),
+			.size = 1,
+		},
+		.object_size = sizeof(o42a_obj_t),
 	},
 	.ascendants = {
+		{
 #ifndef NDEBUG
-		.__o42a_dbg_header__ = {
-			.type_code = 0x042a0001,
-			.enclosing = -((int32_t) offsetof(o42a_obj_desc_t, ascendants)),
-			.name = "ascendants",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
-		},
+			.__o42a_dbg_header__ = {
+				.type_code = 0x042a0110,
+				.enclosing = -((int32_t) offsetof(
+						struct o42a_obj_false_desc,
+						ascendants)),
+				.name = "$ascendant.false",
+				.type_info =
+						(o42a_dbg_type_info_t *)
+						&_O42A_DEBUG_TYPE_o42a_obj_ascendant,
+			},
 #endif /* NDEBUG */
-		.list = 0,
-		.size = 0,
+			.desc = &o42a_obj_false_desc.desc,
+		}
 	},
-	.object_size = sizeof(o42a_obj_t),
 };
 
 const o42a_obj_desc_t o42a_obj_none_desc = {
