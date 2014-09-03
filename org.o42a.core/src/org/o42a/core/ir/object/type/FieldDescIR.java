@@ -40,6 +40,8 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	private Type instance;
 
 	public FieldDescIR(FldIR fld) {
+		assert !fld.getKind().isStateless() :
+			fld + " is stateless";
 		this.fld = fld;
 	}
 

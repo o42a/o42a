@@ -247,13 +247,4 @@ public final class ObjectIRBody {
 		return null;
 	}
 
-	public enum Kind {
-
-		INHERITED,
-		EXPLICIT,
-		PROPAGATED,
-		MAIN
-
-	}
-
 }

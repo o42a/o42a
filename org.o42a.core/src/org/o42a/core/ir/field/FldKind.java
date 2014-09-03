@@ -38,4 +38,8 @@ public enum FldKind {
 		return this.code;
 	}
 
+	public final boolean isStateless() {
+		return this == LINK;
+	}
+
 }
