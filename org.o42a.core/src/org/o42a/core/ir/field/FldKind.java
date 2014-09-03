@@ -22,11 +22,11 @@ package org.o42a.core.ir.field;
 
 public enum FldKind {
 
+	LINK(-1),
 	OBJ(0),
-	LINK(1),
-	ALIAS(2),
-	VAR(3),
-	OWNER(4);
+	ALIAS(1),
+	VAR(2),
+	OWNER(3);
 
 	private final int code;
 
@@ -39,7 +39,7 @@ public enum FldKind {
 	}
 
 	public final boolean isStateless() {
-		return this == LINK;
+		return code() < 0;
 	}
 
 }
