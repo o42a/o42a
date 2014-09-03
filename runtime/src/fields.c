@@ -75,24 +75,11 @@ static void o42a_fld_mark_obj(o42a_fld *const field) {
 	O42A_RETURN;
 }
 
-static void fld_no_copy(
-		o42a_obj_ctable_t *const ctable __attribute__ ((unused))) {
-	O42A_ENTER(return);
-	O42A_RETURN;
-}
-
 static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	[O42A_FLD_OBJ] = {// Object field.
 		.propagate = &o42a_fld_obj_reset,
 		.inherit = &o42a_fld_obj_reset,
 		.mark = &o42a_fld_mark_obj,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_fld_obj_is_init,
-	},
-	[O42A_FLD_LINK] = {// Link field.
-		.propagate = &fld_no_copy,
-		.inherit = &fld_no_copy,
-		.mark = &o42a_fld_mark_none,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
 	},

@@ -8,7 +8,6 @@
 #ifndef O42A_FIELDS_H
 #define O42A_FIELDS_H
 
-#include "o42a/fld/link.h"
 #include "o42a/fld/obj.h"
 #include "o42a/fld/owner.h"
 

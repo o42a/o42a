@@ -27,13 +27,11 @@ enum o42a_fld_kind {
 
 	O42A_FLD_OBJ = 0,
 
-	O42A_FLD_LINK = 1,
+	O42A_FLD_ALIAS = 1,
 
-	O42A_FLD_ALIAS = 2,
+	O42A_FLD_VAR = 2,
 
-	O42A_FLD_VAR = 3,
-
-	O42A_FLD_OWNER = 4
+	O42A_FLD_OWNER = 3,
 
 };
 
