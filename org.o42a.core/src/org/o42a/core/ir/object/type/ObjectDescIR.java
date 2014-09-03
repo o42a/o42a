@@ -41,12 +41,10 @@ public class ObjectDescIR {
 
 	public static ObjectDescIR allocateDescIR(ObjectIR objectIR) {
 		if (!objectIR.isSampleDeclaration()) {
-			return objectIR
-					.getSampleDeclaration()
+			return objectIR.getSampleDeclaration()
 					.ir(objectIR.getGenerator())
 					.getDescIR();
 		}
-
 		return new ObjectDescIR(objectIR);
 	}
 

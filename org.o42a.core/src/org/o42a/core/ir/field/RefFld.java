@@ -152,7 +152,7 @@ public abstract class RefFld<
 		final Obj overriddenOwner =
 				lastDefinition.getEnclosingScope().toObject();
 		final ObjectIR overriddenOwnerIR =
-				overriddenOwner.ir(getGenerator()).getDefinitionIR();
+				overriddenOwner.ir(getGenerator());
 		@SuppressWarnings("unchecked")
 		final RefFld<F, C> overriddenFld =
 				(RefFld<F, C>) overriddenOwnerIR.fld(getField().getKey());
