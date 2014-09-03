@@ -72,6 +72,10 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 		return false;
 	}
 
+	public final boolean isStateless() {
+		return getKind().isStateless() || isOmitted();
+	}
+
 	public abstract boolean isDummy();
 
 	@Override
@@ -96,7 +100,9 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 		return op(
 				code,
 				host,
-				isOmitted() ? null : host.ptr(code).field(code, getInstance()));
+				isStateless()
+				? null
+				: host.ptr(code).field(code, getInstance()));
 	}
 
 	public void targetAllocated() {
@@ -107,7 +113,7 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 	protected void allocate(ObjectIRBodyData data) {
 		this.bodyIR = data.getBodyIR();
 		data.declareFld(this);
-		if (isOmitted()) {
+		if (isStateless()) {
 			return;
 		}
 		this.instance = data.getData().addInstance(

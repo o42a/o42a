@@ -45,7 +45,6 @@ public abstract class RefFld<
 		C extends ObjectFunc<C>>
 				extends MemberFld<F> {
 
-	public static final StatelessType STATELESS_FLD = new StatelessType();
 	public static final StatefulType STATEFUL_FLD = new StatefulType();
 
 	public static final ID FLD_CTR_ID = ID.id("fld_ctr");
@@ -352,34 +351,6 @@ public abstract class RefFld<
 
 		private StatelessOp(StructWriter<StatelessOp> writer) {
 			super(writer);
-		}
-
-		@Override
-		public final StatelessType getType() {
-			return (StatelessType) super.getType();
-		}
-
-	}
-
-	public static final class StatelessType extends RefFld.Type<StatelessOp> {
-
-		private StatelessType() {
-			super(ID.rawId("o42a_fld_link"));
-		}
-
-		@Override
-		public boolean isStateless() {
-			return true;
-		}
-
-		@Override
-		public StatelessOp op(StructWriter<StatelessOp> writer) {
-			return new StatelessOp(writer);
-		}
-
-		@Override
-		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0200 | FldKind.LINK.code());
 		}
 
 	}

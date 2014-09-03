@@ -21,8 +21,6 @@ package org.o42a.core.ir.object.type;
 
 import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 
-import java.util.HashMap;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -32,7 +30,6 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.RelList;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.util.string.ID;
@@ -54,7 +51,6 @@ public class ObjectDescIR {
 	}
 
 	private final ObjectIR objectIR;
-	private final HashMap<MemberKey, FieldDescIR> fieldDescs = new HashMap<>();
 	private Ptr<ObjectIRDescOp> ptr;
 
 	private ObjectDescIR(ObjectIR objectIR) {
@@ -74,16 +70,6 @@ public class ObjectDescIR {
 			return this.ptr;
 		}
 		return this.ptr = allocate();
-	}
-
-	public final FieldDescIR fieldDescIR(MemberKey key) {
-
-		final FieldDescIR fieldDesc = this.fieldDescs.get(key);
-
-		assert fieldDesc != null :
-			"Field descriptor for " + key + " is missing from " + this;
-
-		return fieldDesc;
 	}
 
 	private Ptr<ObjectIRDescOp> allocate() {
@@ -184,14 +170,9 @@ public class ObjectDescIR {
 
 			for (Fld<?> fld :
 					getObjectIR().getMainBodyIR().getDeclaredFields()) {
-				if (fld.isOmitted()) {
-					continue;
+				if (!fld.isStateless()) {
+					fields.add(new FieldDescIR(fld));
 				}
-
-				final FieldDescIR fieldDescIR = new FieldDescIR(fld);
-
-				fields.add(fieldDescIR);
-				getDescIR().fieldDescs.put(fld.getKey(), fieldDescIR);
 			}
 		}
 

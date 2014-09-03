@@ -43,6 +43,10 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		return fld().isOmitted();
 	}
 
+	public final boolean isStateless() {
+		return fld().isStateless();
+	}
+
 	@Override
 	public ID getId() {
 		if (!isOmitted()) {
@@ -139,9 +143,13 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		public FldPtrs<F> allocate(
 				Allocations code,
 				Allocated<FldPtrs<F>> allocated) {
+
+			final Fld<F> fld = this.fld.fld();
+
 			return new FldPtrs<>(
 					code.allocatePtr(HOST_ID),
-					code.allocatePtr(this.fld.fld().getType()));
+					fld.isStateless()
+					? null : code.allocatePtr(fld.getType()));
 		}
 
 		@Override
@@ -181,7 +189,9 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 			final FldPtrs<F> ptrs = this.ptrs.get(code);
 
 			ptrs.host.store(code, host.toAny(null, code));
-			ptrs.ptr.store(code, this.fld.ptr());
+			if (!this.fld.isStateless()) {
+				ptrs.ptr.store(code, this.fld.ptr());
+			}
 		}
 
 		@Override
@@ -202,7 +212,13 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		public TargetOp loadTarget(CodeDirs dirs) {
 
 			final Block code = dirs.code();
-			final F ptr = this.ptrs.get(code).ptr.load(null, code);
+			final F ptr;
+
+			if (this.fld.isStateless()) {
+				ptr = null;
+			} else {
+				ptr = this.ptrs.get(code).ptr.load(null, code);
+			}
 
 			return this.fld.fld().op(code, this.fld.host(), ptr);
 		}
