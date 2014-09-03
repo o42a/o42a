@@ -36,12 +36,9 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Derivative;
-import org.o42a.util.string.ID;
 
 
 public final class ObjectIRBody {
-
-	static final ID BODY_ID = ID.id("body");
 
 	private final ObjectIRStruct objectIRStruct;
 	private final Obj sampleDeclaration;

@@ -126,9 +126,9 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 	public final FuncPtr<F> get(ObjOp host) {
 
 		final ObjectIR objectIR = host.getAscendant().ir(getGenerator());
-		final ObjectDataIR typeIR =
-				objectIR.getBodyType().getObjectIR().getDataIR();
-		final ObjectIRData data = typeIR.getInstance();
+		final ObjectDataIR dataIR =
+				objectIR.getDefinitionIR().getDataIR();
+		final ObjectIRData data = dataIR.getInstance();
 
 		return func(data).getValue().get();
 	}
