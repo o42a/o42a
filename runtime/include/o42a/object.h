@@ -414,16 +414,6 @@ typedef struct o42a_obj_ctr {
 enum o42a_obj_derivation_kind {
 
 	/**
-	 * Copied ancestor body.
-	 */
-	O42A_DK_COPY = 0x00,
-
-	/**
-	 * Copied main ancestor body.
-	 */
-	O42A_DK_COPY_MAIN = 0x10,
-
-	/**
 	 * Inherited ancestor body.
 	 */
 	O42A_DK_INHERIT = 0x01,

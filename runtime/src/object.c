@@ -685,8 +685,6 @@ static void derive_object_body(o42a_obj_ctable_t *const ctable) {
 			dkind == O42A_DK_DERIVE_MAIN ? "Main body: "
 			: dkind == O42A_DK_OVERRIDE_MAIN ? "Overridden main body: "
 			: dkind == O42A_DK_INHERIT ? "Inherited body: "
-			: dkind == O42A_DK_COPY ? "Copied body: "
-			: dkind == O42A_DK_COPY_MAIN ? "Copied main body: "
 			: "Derived body: ",
 			ctable->body_desc);
 
@@ -695,9 +693,7 @@ static void derive_object_body(o42a_obj_ctable_t *const ctable) {
 	o42a_obj_field_t *const fields =
 			O42A(o42a_obj_fields(ctable->body_desc));
 	const o42a_bool_t propagate =
-			dkind == O42A_DK_DERIVE_MAIN
-			|| dkind == O42A_DK_OVERRIDE_MAIN
-			|| dkind == O42A_DK_COPY_MAIN;
+			dkind == O42A_DK_DERIVE_MAIN || dkind == O42A_DK_OVERRIDE_MAIN;
 
 	for (size_t i = 0; i < num_fields; ++i) {
 
@@ -743,9 +739,6 @@ static void derive_ancestor_bodies(
 				aascendant->desc == ascendant->desc
 				&& "Ancestor and sample body descriptors differ");
 		ctable->body_desc = ascendant->desc;
-		if (i == 1 && dkind == O42A_DK_COPY) {
-			ctable->derivation_kind = O42A_DK_COPY_MAIN;
-		}
 		O42A(derive_object_body(ctable));
 		++aascendant;
 		++ascendant;
@@ -900,128 +893,24 @@ static inline void fill_field_infos(
 #endif /* NDEBUG */
 
 
-static o42a_obj_t *propagate_object(
-		const o42a_obj_ctr_t *const ctr,
-		const o42a_obj_t *const from) {
-	O42A_ENTER(return NULL);
-
-	const o42a_obj_data_t *const fdata = &from->object_data;
-	static const o42a_layout_t dep_layout = O42A_LAYOUT(void *);
-	const size_t deps_start = o42a_layout_pad(
-			fdata->desc->object_size,
-			dep_layout);
-	const size_t num_ascendants = fdata->desc->ascendants.size;
-	const size_t num_deps = ctr->num_deps;
-
-	size_t size = deps_start + o42a_layout_array_size(dep_layout, num_deps);
-
-#ifndef NDEBUG
-
-	const size_t type_field_num =
-			1 + O42A(count_fields(fdata->desc)) + num_deps;
-	const size_t type_info_start =
-			O42A(get_type_info_start(&size, type_field_num));
-
-#endif
-
-	char *const mem = O42A(o42a_gc_alloc(&o42a_obj_gc_desc, size));
-	o42a_obj_t *const object = (o42a_obj_t *) mem;
-	o42a_obj_data_t *const data = &object->object_data;
-	void **const deps = (void **) (mem + deps_start);
-
-#ifndef NDEBUG
-
-	o42a_dbg_type_info_t *const type_info =
-			(o42a_dbg_type_info_t *) (mem + type_info_start);
-
-	O42A(fill_type_info(object, type_info));
-	type_info->field_num = type_field_num;
-
-#endif
-
-	// Fill object type and data.
-	data->flags = O42A_OBJ_RT | (fdata->flags & O42A_OBJ_INHERIT_MASK);
-	data->mutex_init = 0;
-
-	const o42a_obj_vmtc_t *const vmtc = fdata->vmtc;
-
-	O42A(vmtc_use(vmtc));
-
-	data->vmtc = vmtc;
-	data->value_f = fdata->value_f;
-	data->cond_f = fdata->cond_f;
-	data->def_f = fdata->def_f;
-	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
-		data->value = ctr->value;
-		data->value.flags |= O42A_VAL_EAGER;
-	} else if (fdata->value.flags & O42A_VAL_EAGER) {
-		data->value = fdata->value;
-	} else {
-		data->value.flags = O42A_VAL_INDEFINITE;
-	}
-	data->resume_from = NULL;
-	data->desc = fdata->desc;
-
-	data->fld_ctrs = NULL;
-	data->deps.list = num_deps ? ((char *) deps) - ((char *) &data->deps) : 0;
-	data->deps.size = num_deps;
-
-#ifndef NDEBUG
-	O42A(fill_field_infos(from, object, type_info));
-#endif /* NDEBUG */
-
-	// propagate bodies
-	o42a_obj_ctable_t ctable = {
-		.owner = ctr->owner,
-		.ancestor = from,
-		.sample = from,
-		.from = from,
-		.to = object,
-	};
-
-#ifndef NDEBUG
-	O42A(o42a_dbg_fill_header(
-			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_ctable,
-			&ctable.__o42a_dbg_header__,
-			NULL));
-#endif /* NDEBUG */
-
-	ctable.derivation_kind = O42A_DK_COPY;
-	O42A(derive_ancestor_bodies(&ctable, 0));
-	O42A(fill_deps(data));
-
-	o42a_debug_dump_mem("Object: ", mem, 3);
-
-	O42A_RETURN object;
-}
-
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
 	const o42a_obj_t *const ancestor = ctr->ancestor;
-	const o42a_obj_data_t *adata;
+	const o42a_obj_data_t *const adata = &ancestor->object_data;
 
-	if (!ancestor) {
-		adata = NULL;
-	} else {
-		adata = &ancestor->object_data;
-		if (adata->flags & O42A_OBJ_VOID) {
-			adata = NULL;
-		} else if (adata->flags & O42A_OBJ_NONE) {
-			O42A_RETURN NULL;
-		}
+	assert(ancestor && "Ancestor is missing");
+
+	if (adata->flags & O42A_OBJ_NONE) {
+		O42A_RETURN NULL;
 	}
 
 	const o42a_obj_t *const sample = ctr->sample;
+
+	assert(sample && "Sample is missing");
+
 	const o42a_obj_data_t *const sdata = &sample->object_data;
 	const o42a_obj_desc_t *const sdesc = sdata->desc;
-
-	if (!adata) {
-		// Sample has no ancestor.
-		// Propagate sample.
-		o42a_debug_mem_name("No ancestor of ", sdata);
-		O42A_RETURN propagate_object(ctr, sample);
-	}
 
 	const size_t num_ascendants = sdesc->ascendants.size;
 	const size_t adiff = num_ascendants - adata->desc->ascendants.size;
