@@ -64,39 +64,8 @@ typedef o42a_bool_t o42a_obj_cond_ft(o42a_obj_t *);
  */
 enum o42a_obj_flags {
 
-	/**
-	 * Object is created at run-time.
-	 *
-	 * If this is set, than object type implementation is o42a_obj_rtype.
-	 * Otherwise it's o42a_obj_stype.
-	 */
-	O42A_OBJ_RT = 0x1,
-
-	/** Object is abstract. */
-	O42A_OBJ_ABSTRACT = 0x2,
-
-	/** Object is prototype. */
-	O42A_OBJ_PROTOTYPE = 0x4,
-
 	/** Object value definition is inherited from ancestor. */
 	O42A_OBJ_ANCESTOR_DEF = 0x8,
-
-	/** Object is a VOID special object. */
-	O42A_OBJ_VOID = 0x8000,
-
-	/**
-	 * Object is a NONE special object.
-	 *
-	 * NONE is a placeholder for non-existing objects. E.g. when the link target
-	 * can not be evaluated the NONE object is used instead.
-	 *
-	 * This object's value is always false of type VOID. It also can not be
-	 * inherited and is not intended for other normal operations.
-	 */
-	O42A_OBJ_NONE = 0x4000,
-
-	/** Type flags mask inherited when constructing new instance. */
-	O42A_OBJ_INHERIT_MASK = 0xFF & ~O42A_OBJ_ANCESTOR_DEF,
 
 };
 
@@ -651,18 +620,6 @@ void o42a_obj_use(o42a_obj_t *);
  * by invoking o42a_gc_use_mutable method.
  */
 o42a_obj_t *o42a_obj_use_mutable(o42a_obj_t **);
-
-/**
- * Declares the static object is used.
- *
- * This function submits the static object to GC.
- *
- * The static objects does not require to be released, so no "unuse" function
- * exists.
- *
- * This should only be called for static objects.
- */
-void o42a_obj_use_static(o42a_obj_t *);
 
 /**
  * Declares the object is used.
