@@ -19,7 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectIRData.*;
+import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
+import static org.o42a.core.ir.object.ObjectIRData.OBJ_FLAG_ANCESTOR_DEF;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.value.Val.VAL_EAGER;
@@ -152,19 +153,8 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		final Obj object = getObjectIR().getObject();
 		short flags = 0;
 
-		if (object.isAbstract()) {
-			flags |= OBJ_FLAG_ABSTRACT;
-		}
-		if (object.isPrototype()) {
-			flags |= OBJ_FLAG_PROTOTYPE;
-		}
 		if (object.value().getDefinitions().hasInherited()) {
 			flags |= OBJ_FLAG_ANCESTOR_DEF;
-		}
-		if (object.isNone()) {
-			flags |= OBJ_FLAG_NONE;
-		} else if (object.is(object.getContext().getVoid())) {
-			flags |= OBJ_FLAG_VOID;
 		}
 
 		return flags;
