@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
+import org.o42a.core.ir.value.ObjectValueFunc;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 

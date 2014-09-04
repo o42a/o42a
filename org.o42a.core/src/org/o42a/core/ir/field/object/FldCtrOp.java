@@ -31,7 +31,6 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIROp;
-import org.o42a.core.ir.object.ObjectDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.util.string.ID;
 
@@ -68,22 +67,6 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 
 		return fn.op(null, code)
 				.call(code, fld.host().toData(null, code), this);
-	}
-
-	public final BoolOp start(Code code, ObjectDataOp data) {
-
-		final FuncPtr<FldCtrStartFunc> fn =
-				code.getGenerator().externalFunction().link(
-						"o42a_fld_val_start",
-						FLD_CTR_START);
-
-		fld(code).store(
-				code,
-				data.ptr(code).value(code).toData(null, code));
-
-		return fn.op(null, code).call(
-				code,
-				data.objectPtr(code, null).toData(null, code), this);
 	}
 
 	public final BoolOp start(Code code, ObjectOp host) {

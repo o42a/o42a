@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2012-2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,7 +23,6 @@ import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
@@ -32,46 +31,44 @@ import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectDefFunc extends ObjectFunc<ObjectDefFunc> {
+public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 
-	public static final Signature OBJECT_DEF = new Signature();
+	public static final Signature OBJECT_VALUE = new Signature();
 
-	private ObjectDefFunc(FuncCaller<ObjectDefFunc> caller) {
+	private ObjectValueFunc(FuncCaller<ObjectValueFunc> caller) {
 		super(caller);
 	}
 
-	public void call(DefDirs dirs, ObjectOp object) {
-		call(dirs, object.toData(null, dirs.code()));
+	public final void call(DefDirs dirs, ObjectOp object) {
+		call(dirs, object != null ? object.toData(null, dirs.code()) : null);
 	}
 
-	public void call(DefDirs dirs, DataOp object) {
+	public final void call(DefDirs dirs, DataOp object) {
 
 		final Block code = dirs.code();
 		final ValOp value = dirs.value();
 
-		invoke(null, code, OBJECT_DEF.result(), value.ptr(code), object);
+		invoke(
+				null,
+				code,
+				OBJECT_VALUE.result(),
+				value.ptr(code),
+				object != null ? object : code.nullDataPtr());
 
-		final Block hasResult = code.addBlock("has_result");
-
-		final BoolOp condition = value.flags(code).condition(null, code);
-
-		condition.go(code, hasResult.head());
-		value.holder().set(hasResult);
-		dirs.returnValue(hasResult, value);
-
-		value.flags(code)
-		.indefinite(null, code)
-		.goUnless(code, dirs.falseDir());
+		value.flags(code).condition(null, code).goUnless(code, dirs.falseDir());
+		value.holder().set(code);
+		dirs.returnValue(value);
 	}
 
-	public static final class Signature extends ObjectSignature<ObjectDefFunc> {
+	public static final class Signature
+			extends ObjectSignature<ObjectValueFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> value;
 		private Arg<DataOp> object;
 
 		private Signature() {
-			super(ID.rawId("o42a_obj_def_ft"));
+			super(ID.rawId("o42a_obj_value_ft"));
 		}
 
 		public final Return<Void> result() {
@@ -88,8 +85,8 @@ public final class ObjectDefFunc extends ObjectFunc<ObjectDefFunc> {
 		}
 
 		@Override
-		public ObjectDefFunc op(FuncCaller<ObjectDefFunc> caller) {
-			return new ObjectDefFunc(caller);
+		public ObjectValueFunc op(FuncCaller<ObjectValueFunc> caller) {
+			return new ObjectValueFunc(caller);
 		}
 
 		@Override

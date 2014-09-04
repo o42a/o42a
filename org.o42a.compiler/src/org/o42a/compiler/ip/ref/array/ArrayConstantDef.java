@@ -29,7 +29,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.ir.value.ObjectDefFunc;
+import org.o42a.core.ir.value.ObjectValueFunc;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
@@ -166,7 +166,7 @@ final class ArrayConstantDef extends Def {
 					.materialize(
 							dirs.dirs(),
 							tempObjHolder(dirs.getAllocator()));
-			final ObjectDefFunc constructor =
+			final ObjectValueFunc constructor =
 					arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
 
 			constructor.call(dirs, array);

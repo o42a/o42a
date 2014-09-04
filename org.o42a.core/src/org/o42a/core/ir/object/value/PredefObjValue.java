@@ -20,12 +20,13 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.value.ObjectCondFunc.OBJECT_COND;
-import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.value.PredefObjValues.predefObjValues;
+import static org.o42a.core.ir.value.ObjectValueFunc.OBJECT_VALUE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Function;
+import org.o42a.core.ir.value.ObjectValueFunc;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;

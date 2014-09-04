@@ -84,7 +84,7 @@ public final class ObjectCondFnIR
 	}
 
 	@Override
-	protected ObjectSignature<ObjectCondFunc> signature() {
+	protected final ObjectSignature<ObjectCondFunc> signature() {
 		return OBJECT_COND;
 	}
 
