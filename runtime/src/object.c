@@ -471,9 +471,13 @@ static inline const o42a_obj_vmtc_t *vmtc_alloc(
 	o42a_refcount_block_t *const block =
 			O42A(o42a_refcount_balloc(sizeof(o42a_obj_vmtc_t)));
 
+	if (!block) {
+		O42A_RETURN NULL;
+	}
+
 	block->ref_count = 1;
 
-	o42a_obj_vmtc_t *const vmtc = o42a_refcount_data(block);
+	o42a_obj_vmtc_t *const vmtc = O42A(o42a_refcount_data(block));
 
 #ifndef NDEBUG
 	O42A(o42a_dbg_fill_header(
@@ -973,7 +977,15 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->flags = O42A_OBJ_RT | (sflags & O42A_OBJ_INHERIT_MASK);
 	data->mutex_init = 0;
 
-	data->vmtc = O42A(vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
+	const o42a_obj_vmtc_t *const vmtc =
+			O42A(vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
+
+	if (!vmtc) {
+		O42A(o42a_gc_free(o42a_gc_blockof(mem)));
+		O42A_RETURN NULL;
+	}
+
+	data->vmtc = vmtc;
 	data->value_f = sdata->value_f;
 	data->cond_f = sdata->cond_f;
 	data->def_f =
