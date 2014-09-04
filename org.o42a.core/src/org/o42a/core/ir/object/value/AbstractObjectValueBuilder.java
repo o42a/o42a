@@ -20,18 +20,17 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
-import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.*;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectDataOp;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ObjectValueFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
 import org.o42a.core.ir.value.type.ValueOp;
@@ -57,10 +56,9 @@ abstract class AbstractObjectValueBuilder
 		assert getValueType().is(value.getValueType()) :
 			"Wrong value type";
 
-		final ObjectDataOp data = data(builder, function, function);
 		final StateOp state = value.state();
 
-		state.startEval(function, data);
+		state.startEval(function);
 
 		final FldCtrOp ctr =
 				writeKeptOrContinue(function, state, result);
@@ -71,7 +69,7 @@ abstract class AbstractObjectValueBuilder
 				.value(result)
 				.def(done.head());
 
-		writeValue(dirs, host, data);
+		writeValue(dirs, host);
 
 		final Block indefinite = dirs.done().code();
 
@@ -118,15 +116,7 @@ abstract class AbstractObjectValueBuilder
 			Function<ObjectValueFunc> function,
 			CodePos failureDir);
 
-	protected abstract ObjectDataOp data(
-			CodeBuilder builder,
-			Code code,
-			Function<ObjectValueFunc> function);
-
-	protected abstract void writeValue(
-			DefDirs dirs,
-			ObjOp host,
-			ObjectDataOp data);
+	protected abstract void writeValue(DefDirs dirs, ObjOp host);
 
 	private ObjBuilder builder(Function<ObjectValueFunc> function) {
 
@@ -157,7 +147,7 @@ abstract class AbstractObjectValueBuilder
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
-		ctr.start(code, state.data()).goUnless(code, valueKept.head());
+		ctr.start(code, state.host()).goUnless(code, valueKept.head());
 		writeKept(valueKept, state, result);
 
 		return ctr;

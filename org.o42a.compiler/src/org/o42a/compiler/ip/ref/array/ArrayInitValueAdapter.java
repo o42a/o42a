@@ -31,7 +31,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.value.ObjectDefFunc;
+import org.o42a.core.ir.value.ObjectValueFunc;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.TypeParameters;
@@ -197,7 +197,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 					.materialize(
 							dirs.dirs(),
 							tempObjHolder(dirs.getAllocator()));
-			final ObjectDefFunc constructor =
+			final ObjectValueFunc constructor =
 					arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
 
 			constructor.call(dirs, arrayObject);

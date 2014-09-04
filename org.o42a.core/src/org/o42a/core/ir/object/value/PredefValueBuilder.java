@@ -20,12 +20,15 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 
-import org.o42a.codegen.code.*;
-import org.o42a.core.ir.CodeBuilder;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjBuilder;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.value.ObjectValueFunc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
@@ -76,23 +79,16 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 	}
 
 	@Override
-	protected ObjectDataOp data(
-			CodeBuilder builder,
-			Code code,
-			Function<ObjectValueFunc> function) {
-		return function.arg(code, OBJECT_VALUE.data()).op(builder);
-	}
-
-	@Override
-	protected void writeValue(
-			DefDirs dirs,
-			ObjOp host,
-			ObjectDataOp data) {
+	protected void writeValue(DefDirs dirs, ObjOp host) {
 
 		final Block code = dirs.code();
 		final ObjectOp owner = dirs.getBuilder().host();
 
-		data.ptr(code).defsFunc(code).load(null, code).call(dirs, owner);
+		host.objectData(code)
+		.ptr(code)
+		.defsFunc(code)
+		.load(null, code)
+		.call(dirs, owner);
 	}
 
 	private Obj typeObject() {

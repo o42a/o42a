@@ -1074,17 +1074,8 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	O42A_RETURN result;
 }
 
-void o42a_obj_def_false(
-		o42a_val_t *const result,
-		o42a_obj_t *const object __attribute__((unused))) {
-	O42A_ENTER(return);
-	result->flags = O42A_FALSE;
-	O42A_RETURN;
-}
-
 void o42a_obj_value_false(
 		o42a_val_t *const result,
-		o42a_obj_data_t *const data __attribute__((unused)),
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	result->flags = O42A_FALSE;
@@ -1098,17 +1089,8 @@ o42a_bool_t o42a_obj_cond_false(
 }
 
 
-void o42a_obj_def_void(
-		o42a_val_t *const result,
-		o42a_obj_t *const object __attribute__((unused))) {
-	O42A_ENTER(return);
-	result->flags = O42A_TRUE;
-	O42A_RETURN;
-}
-
 void o42a_obj_value_void(
 		o42a_val_t *const result,
-		o42a_obj_data_t *const data __attribute__((unused)),
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	result->flags = O42A_TRUE;
@@ -1122,25 +1104,15 @@ o42a_bool_t o42a_obj_cond_true(
 }
 
 
-void o42a_obj_def_unknown(
+void o42a_obj_value_unknown(
 		o42a_val_t *const result __attribute__((unused)),
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }
 
-void o42a_obj_def_stub(
-		o42a_val_t *const result,
-		o42a_obj_t *const object __attribute__((unused))) {
-	O42A_ENTER(return);
-	o42a_error_print("Object value definition stub invoked");
-	result->flags = O42A_FALSE;
-	O42A_RETURN;
-}
-
 void o42a_obj_value_stub(
 		o42a_val_t *const result,
-		o42a_obj_data_t *const data __attribute__((unused)),
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	o42a_error_print("Object value stub invoked");

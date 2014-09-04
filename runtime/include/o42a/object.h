@@ -33,21 +33,12 @@ typedef struct o42a_obj_vmt o42a_obj_vmt_t;
 typedef struct o42a_obj_vmtc o42a_obj_vmtc_t;
 
 /**
- * Object value definition function.
- *
- * \param result[out] object value to fill by function (stack-allocated).
- * \param object[in] object pointer.
- */
-typedef void o42a_obj_def_ft(o42a_val_t *, o42a_obj_t *);
-
-/**
- * Object value evaluation function.
+ * Object value function.
  *
  * \param result[out] object value to fill (stack-allocated).
- * \param data[in] object data pointer.
  * \param object[in] object pointer.
  */
-typedef void o42a_obj_value_ft(o42a_val_t *, o42a_obj_data_t *, o42a_obj_t *);
+typedef void o42a_obj_value_ft(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Object condition evaluation function.
@@ -142,7 +133,7 @@ struct o42a_obj_data {
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_obj_def_ft *def_f;
+	o42a_obj_value_ft *def_f;
 
 	/**
 	 * Object value.
@@ -503,7 +494,7 @@ void o42a_obj_def_false(o42a_val_t *, o42a_obj_t *);
 /**
  * False object value.
  */
-void o42a_obj_value_false(o42a_val_t *, o42a_obj_data_t *, o42a_obj_t *);
+void o42a_obj_value_false(o42a_val_t *, o42a_obj_t *);
 
 /**
  * False object condition.
@@ -512,14 +503,9 @@ o42a_bool_t o42a_obj_cond_false(o42a_obj_t *);
 
 
 /**
- * Void value definition.
- */
-void o42a_obj_def_void(o42a_val_t *, o42a_obj_t *);
-
-/**
  * Void object value.
  */
-void o42a_obj_value_void(o42a_val_t *, o42a_obj_data_t *, o42a_obj_t *);
+void o42a_obj_value_void(o42a_val_t *, o42a_obj_t *);
 
 /**
  * True object condition.
@@ -528,22 +514,17 @@ o42a_bool_t o42a_obj_cond_true(o42a_obj_t *);
 
 
 /**
- * Unknown value definition.
+ * Unknown object value.
  *
  * This function does not modify the value. So, after the function call,
  * the value remain indefinite, as it was before.
  */
-void o42a_obj_def_unknown(o42a_val_t *, o42a_obj_t *);
-
-/**
- * Object value definition stub.
- */
-void o42a_obj_def_stub(o42a_val_t *, o42a_obj_t *);
+void o42a_obj_value_unknown(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Object value evaluation stub.
  */
-void o42a_obj_value_stub(o42a_val_t *, o42a_obj_data_t *, o42a_obj_t *);
+void o42a_obj_value_stub(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Object condition evaluation stub.
