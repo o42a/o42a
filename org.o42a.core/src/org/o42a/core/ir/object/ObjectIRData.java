@@ -45,12 +45,7 @@ import org.o42a.util.string.ID;
 
 public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
-	public static final short OBJ_FLAG_RT = 0x1;
-	public static final short OBJ_FLAG_ABSTRACT = 0x2;
-	public static final short OBJ_FLAG_PROTOTYPE = 0x4;
 	public static final short OBJ_FLAG_ANCESTOR_DEF = 0x8;
-	public static final short OBJ_FLAG_VOID = ~0x7fff;
-	public static final short OBJ_FLAG_NONE = 0x4000;
 
 	public static final ObjectIRData OBJECT_DATA_TYPE = new ObjectIRData();
 
