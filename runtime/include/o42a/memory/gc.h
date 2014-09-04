@@ -187,11 +187,19 @@ void o42a_gc_unlock_block(o42a_gc_block_t *);
  * The data descriptor ("desc" field) should be assigned. All other fields
  * should be set to zero.
  *
- * This function should be called only once per static data block.
+ * This function has no effect after the first call.
+ *
+ * This function should never be called for non-static blocks. Use the following
+ * code to call this function:
+ *
+ * if (!block->list) o42a_gc_static(block);
  *
  * \param data block.
+ *
+ * \return 1 if the given static data block successfully submitted to GC,
+ * -1 if it were submitted before, or 0 if it is not static.
  */
-void o42a_gc_static(o42a_gc_block_t *);
+int o42a_gc_static(o42a_gc_block_t *);
 
 /**
  * Discards a garbage-collected data block.
@@ -212,8 +220,12 @@ void o42a_gc_discard(o42a_gc_block_t *);
  *
  * This is an atomic operation. The block should not be locked by current
  * thread.
+ *
+ * \return O42A_TRUE if the given data block is allocated in heap and is
+ * garbage-collectible, or O42A_FALSE is the given data block is statically
+ * allocated.
  */
-void o42a_gc_use(o42a_gc_block_t *);
+o42a_bool_t o42a_gc_use(o42a_gc_block_t *);
 
 /**
  * Declares the indirectly pointed data block is used by current thread.

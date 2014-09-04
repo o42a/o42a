@@ -430,13 +430,23 @@ static inline void gc_list_remove(o42a_gc_block_t *const block) {
 	O42A_RETURN;
 }
 
+static inline void gc_static(o42a_gc_block_t *const block) {
+	O42A_ENTER(return);
+
+	O42A(gc_lock());
+	O42A(gc_list_add(block, O42A_GC_LIST_STATIC));
+	O42A(gc_unlock());
+
+	O42A_RETURN;
+}
+
 static inline void gc_link(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 
 	O42A_DEBUG("Link: %#lx\n", (long) block);
 	if (block->list == O42A_GC_LIST_NEW_STATIC) {
 		// New static block. Register it.
-		o42a_gc_static(block);
+		gc_static(block);
 	} else if (block->list == O42A_GC_LIST_NEW_ALLOCATED) {
 		// Newly allocated block.
 		// Mark it as linking and move it to the list of used blocks.
@@ -755,24 +765,32 @@ void o42a_gc_signal() {
 	O42A_RETURN;
 }
 
-void o42a_gc_static(o42a_gc_block_t *const block) {
-	O42A_ENTER(return);
-	O42A_DEBUG("Static block: %#lx\n", (long) block);
+int o42a_gc_static(o42a_gc_block_t *const block) {
+	O42A_ENTER(0);
+
 	if (block->list == O42A_GC_LIST_STATIC) {
-		// Block already registered. Do nothing.
-		O42A_RETURN;
+		// The block already registered. Do nothing.
+		O42A_DEBUG("Static block: %#lx\n", (long) block);
+		O42A_RETURN -1;
 	}
-	O42A(gc_lock());
+
+	O42A(o42a_gc_lock_block(block));
+
 	if (block->list == O42A_GC_LIST_STATIC) {
 		// Second check after the memory barrier.
-		O42A(gc_unlock());
-		O42A_RETURN;
+		O42A_DEBUG("Static block: %#lx\n", (long) block);
+		O42A(o42a_gc_unlock_block(block));
+		O42A_RETURN -1;
 	}
-	assert(block->list == O42A_GC_LIST_NEW_STATIC && "Block is not static");
-	O42A(gc_list_add(block, O42A_GC_LIST_STATIC));
-	O42A(gc_unlock());
 
-	O42A_RETURN;
+	O42A_DEBUG("Register static block: %#lx\n", (long) block);
+	assert(block->list == O42A_GC_LIST_NEW_STATIC && "Block is not static");
+
+	O42A(gc_static(block));
+
+	O42A(o42a_gc_unlock_block(block));
+
+	O42A_RETURN 1;
 }
 
 void o42a_gc_discard(o42a_gc_block_t *const block) {
@@ -781,6 +799,7 @@ void o42a_gc_discard(o42a_gc_block_t *const block) {
 	if (!block->list) {
 		O42A_RETURN;
 	}
+
 	O42A(gc_lock());
 	O42A(gc_list_remove(block));
 	O42A(gc_unlock());
@@ -788,10 +807,17 @@ void o42a_gc_discard(o42a_gc_block_t *const block) {
 	O42A_RETURN;
 }
 
-void o42a_gc_use(o42a_gc_block_t *const block) {
-	O42A_ENTER(return);
+o42a_bool_t o42a_gc_use(o42a_gc_block_t *const block) {
+	O42A_ENTER(return O42A_FALSE);
 
 	O42A_DEBUG("Use block: %#lx\n", (long) block);
+
+	if (block->list == O42A_GC_LIST_STATIC) {
+		O42A_DEBUG("Don't use a static block %#lx\n", (long) block);
+		// Block already registered. Do nothing.
+		O42A_RETURN O42A_FALSE;
+	}
+
 	O42A(o42a_gc_lock_block(block));
 	assert(block->list <= O42A_GC_LIST_MAX && "Wrong GC list");
 	assert(block->list != O42A_GC_LIST_NONE && "Illegal block state");
@@ -799,9 +825,12 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 	switch (block->list) {
 	case O42A_GC_LIST_NEW_STATIC:
 		// Static block not initialized yet. Add to static list.
-		O42A(o42a_gc_static(block));
+		O42A_DEBUG(
+				"Register static block %#lx and don't use it\n",
+				(long) block);
+		O42A(gc_static(block));
 		O42A(o42a_gc_unlock_block(block));
-		O42A_RETURN;
+		O42A_RETURN O42A_FALSE;
 	case O42A_GC_LIST_NEW_ALLOCATED:
 		// Not initialized yet. Add to used list.
 		block->use_count = 1;
@@ -813,11 +842,12 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 
 		O42A(o42a_gc_unlock_block(block));
 
-		O42A_RETURN;
+		O42A_RETURN O42A_TRUE;
 	case O42A_GC_LIST_STATIC:
 		// Static data is "grey".
+		O42A_DEBUG("Don't use a static block %#lx\n", (long) block);
 		O42A(o42a_gc_unlock_block(block));
-		O42A_RETURN;
+		O42A_RETURN O42A_FALSE;
 	case O42A_GC_LIST_USED:
 		// Already used by some thread.
 		// Drop the linking flag.
@@ -826,7 +856,7 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 		++block->use_count;
 		O42A_DEBUG("Use #%d of %#lx\n", block->use_count, (long) block);
 		O42A(o42a_gc_unlock_block(block));
-		O42A_RETURN;
+		O42A_RETURN O42A_TRUE;
 	}
 
 	// Data block is in the white list.
@@ -846,7 +876,7 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 
 	O42A(o42a_gc_unlock_block(block));
 
-	O42A_RETURN;
+	O42A_RETURN O42A_TRUE;
 }
 
 void *o42a_gc_use_mutable(

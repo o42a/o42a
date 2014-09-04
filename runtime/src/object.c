@@ -922,7 +922,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	assert(ancestor && "Ancestor is missing");
 
-	if (adata->flags & O42A_OBJ_NONE) {
+	if (adata->desc == &o42a_obj_none_desc) {
 		O42A_RETURN NULL;
 	}
 
@@ -974,7 +974,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	// fill object type and data
 	const int32_t sflags = sdata->flags;
 
-	data->flags = O42A_OBJ_RT | (sflags & O42A_OBJ_INHERIT_MASK);
+	data->flags = 0;
 	data->mutex_init = 0;
 
 	const o42a_obj_vmtc_t *const vmtc =
@@ -1198,8 +1198,11 @@ void o42a_obj_lock(o42a_obj_t *const object) {
 				|| O42A(pthread_cond_init(&data->thread_cond, NULL))) {
 			o42a_error_print("Failed to initialize an object mutex");
 		}
-		if (!(data->flags & O42A_OBJ_RT)) {
-			O42A(o42a_obj_use_static(object));
+
+		o42a_gc_block_t *const gc_block = O42A(o42a_gc_blockof(object));
+
+		if (!gc_block->list) {
+			O42A(o42a_gc_static(gc_block));
 		}
 
 		__sync_synchronize();
@@ -1270,19 +1273,6 @@ o42a_obj_t *o42a_obj_use_mutable(o42a_obj_t **const var) {
 	O42A_RETURN result;
 }
 
-void o42a_obj_use_static(o42a_obj_t *const object) {
-	O42A_ENTER(return);
-
-	assert(!(object->object_data.flags & O42A_OBJ_RT)
-			&& "Object is not static");
-	if (!(object->object_data.flags & O42A_OBJ_RT)) {
-		o42a_debug_mem_name("Static object: ", object);
-		O42A(o42a_gc_static(o42a_gc_blockof(object)));
-	}
-
-	O42A_RETURN;
-}
-
 void o42a_obj_start_use(o42a_obj_use_t *const use, o42a_obj_t *const object) {
 	O42A_ENTER(return);
 
@@ -1290,12 +1280,11 @@ void o42a_obj_start_use(o42a_obj_use_t *const use, o42a_obj_t *const object) {
 			!use->object
 			&& "Object use instance already utilized by another object");
 
-	if (object->object_data.flags & O42A_OBJ_RT) {
-		use->object = object;
+	if (O42A(o42a_gc_use(o42a_gc_blockof(object)))) {
 		o42a_debug_mem_name("Start object use: ", object);
-		O42A(o42a_gc_use(o42a_gc_blockof(object)));
+		use->object = object;
 	} else {
-		O42A(o42a_obj_use_static(object));
+		o42a_debug_mem_name("Static object: ", object);
 	}
 
 	O42A_RETURN;
