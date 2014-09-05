@@ -909,7 +909,7 @@ static inline void fill_field_infos(
 #endif /* NDEBUG */
 
 
-o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
+static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
 	const o42a_obj_t *const ancestor = ctr->ancestor;
@@ -966,9 +966,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 #endif
 
-	// fill object type and data
-	const int32_t sflags = sdata->vmtc->vmt->flags;
-
+	// Fill object data without value.
 	data->mutex_init = 0;
 
 	const o42a_obj_vmtc_t *const vmtc =
@@ -982,22 +980,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->vmtc = vmtc;
 	data->value_f = sdata->value_f;
 	data->cond_f = sdata->cond_f;
-	data->def_f =
-			(sflags & O42A_OBJ_ANCESTOR_DEF) ? adata->def_f : sdata->def_f;
-	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
-		O42A(sdesc->value_type->copy(&ctr->value, &data->value));
-		data->value.flags |= O42A_VAL_EAGER;
-	} else if (sflags & O42A_OBJ_ANCESTOR_DEF) {
-		if (adata->value.flags & O42A_VAL_EAGER) {
-			O42A(sdesc->value_type->copy(&adata->value, &data->value));
-		} else {
-			data->value.flags = O42A_VAL_INDEFINITE;
-		}
-	} else if (sdata->value.flags & O42A_VAL_EAGER) {
-		O42A(sdesc->value_type->copy(&sdata->value, &data->value));
-	} else {
-		data->value.flags = O42A_VAL_INDEFINITE;
-	}
 	data->resume_from = NULL;
 	data->desc = sdesc;
 
@@ -1033,15 +1015,56 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A(derive_object_body(
 			&ctable,
 			consumed_ascendants ? DK_OVERRIDE : DK_DERIVE));
+
+	O42A_RETURN object;
+}
+
+o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
+	O42A_ENTER(return NULL);
+
+	assert(
+			(ctr->value.flags & O42A_VAL_INDEFINITE)
+			&& "Value is eagerly evaluated");
+
+	o42a_obj_t *const object = O42A(new_obj(ctr));
+
+	if (!object) {
+		O42A_RETURN NULL;
+	}
+
+	const o42a_obj_data_t *const adata = &ctr->ancestor->object_data;
+	const o42a_obj_data_t *const sdata = &ctr->sample->object_data;
+	o42a_obj_data_t *const data = &object->object_data;
+
+	if (sdata->vmtc->vmt->flags & O42A_OBJ_ANCESTOR_DEF) {
+		data->def_f = adata->def_f;
+		if (adata->value.flags & O42A_VAL_EAGER) {
+			O42A(sdata->desc->value_type->copy(&adata->value, &data->value));
+		} else {
+			data->value.flags = O42A_VAL_INDEFINITE;
+		}
+	} else {
+		data->def_f = sdata->def_f;
+		if (sdata->value.flags & O42A_VAL_EAGER) {
+			O42A(sdata->desc->value_type->copy(&sdata->value, &data->value));
+		} else {
+			data->value.flags = O42A_VAL_INDEFINITE;
+		}
+	}
+
 	O42A(fill_deps(data));
 
-	o42a_debug_dump_mem("Object: ", mem, 3);
+	o42a_debug_dump_mem("Object: ", object, 3);
 
 	O42A_RETURN object;
 }
 
 o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
+
+	assert(
+			!(ctr->value.flags & O42A_VAL_INDEFINITE)
+			&& "Indefinite eagerly evaluated value");
 
 	const o42a_obj_t *const ancestor = ctr->ancestor;
 	const o42a_obj_data_t *const adata = &ancestor->object_data;
@@ -1050,11 +1073,21 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	ctr->sample = ancestor;
 	ctr->num_deps = num_deps;
 
-	o42a_obj_t *const result = O42A(o42a_obj_new(ctr));
+	o42a_obj_t *const object = O42A(new_obj(ctr));
 
-	if (result && num_deps) {
+	if (!object) {
+		O42A_RETURN NULL;
+	}
 
-		o42a_obj_data_t *const data = &result->object_data;
+	o42a_obj_data_t *const data = &object->object_data;
+
+	data->def_f = adata->def_f;
+	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
+	data->value.flags |= O42A_VAL_EAGER;
+
+	if (num_deps) {
+
+		o42a_obj_data_t *const data = &object->object_data;
 		void **const adeps =
 				(void **) (((char *) &adata->deps) + adata->deps.list);
 		void **const deps =
@@ -1065,7 +1098,9 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 		}
 	}
 
-	O42A_RETURN result;
+	o42a_debug_dump_mem("Eager object: ", object, 3);
+
+	O42A_RETURN object;
 }
 
 void o42a_obj_value_false(
