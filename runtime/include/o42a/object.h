@@ -49,18 +49,6 @@ typedef o42a_bool_t o42a_obj_cond_ft(o42a_obj_t *);
 
 
 /**
- * Object type flags.
- *
- * Used in o42a_obj_data.flags.
- */
-enum o42a_obj_flags {
-
-	/** Object value definition is inherited from ancestor. */
-	O42A_OBJ_ANCESTOR_DEF = 0x8,
-
-};
-
-/**
  * Object data.
  *
  * Contains object value and combines other data necessary to maintain object
@@ -71,14 +59,6 @@ enum o42a_obj_flags {
 struct o42a_obj_data {
 
 	O42A_HEADER
-
-	/**
-	 * Type flags.
-	 *
-	 * This can be used to distinguish object type implementation and contains
-	 * other information. See o42a_obj_flags enum.
-	 */
-	uint16_t flags;
 
 	/**
 	 * Object mutex initialization flag.
@@ -292,6 +272,18 @@ extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
 #endif /* NDEBUG */
 
 /**
+ * Object type flags.
+ *
+ * Used in o42a_obj_data.flags.
+ */
+enum o42a_obj_flags {
+
+	/** Object value definition is inherited from ancestor. */
+	O42A_OBJ_ANCESTOR_DEF = 0x01,
+
+};
+
+/**
  * Virtual methods table.
  *
  * This structure is only a header common to every VMT. An actual VMT structure
@@ -303,6 +295,13 @@ extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc;
 struct o42a_obj_vmt {
 
 	O42A_HEADER
+
+	/**
+	 * Object type flags.
+	 *
+	 * See o42a_obj_flags enum.
+	 */
+	uint16_t flags;
 
 	/**
 	 * The size of this VMT.
@@ -402,7 +401,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[13];
+	o42a_dbg_field_info_t fields[12];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;

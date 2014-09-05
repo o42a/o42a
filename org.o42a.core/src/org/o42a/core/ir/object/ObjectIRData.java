@@ -43,15 +43,12 @@ import org.o42a.util.string.ID;
 
 public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
-	public static final short OBJ_FLAG_ANCESTOR_DEF = 0x8;
-
 	public static final ObjectIRData OBJECT_DATA_TYPE = new ObjectIRData();
 
 	private static final ID VALUE_ID = ID.id("value");
 	private static final Type<?>[] TYPE_DEPENDENCIES =
 			new Type<?>[] {OBJECT_DESC_TYPE};
 
-	private Int16rec flags;
 	private StructRec<VmtIRChain.Op> vmtc;
 	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectCondFunc> condFunc;
@@ -68,10 +65,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	@Override
 	public final Type<?>[] getTypeDependencies() {
 		return TYPE_DEPENDENCIES;
-	}
-
-	public final Int16rec flags() {
-		return this.flags;
 	}
 
 	public final StructRec<Op> vmtc() {
@@ -113,7 +106,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRDataOp> data) {
-		this.flags = data.addInt16("flags");
 		data.addInt8("mutex_init").setValue((byte) 0);
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
