@@ -748,6 +748,34 @@ public abstract class Obj
 	}
 
 	protected Statefulness determineStatefulness() {
+		if (value().getDefinitions().areDerived()) {
+
+			final Sample sample = type().getSample();
+
+			if (sample != null) {
+
+				final Statefulness sampleStatefulness =
+						sample.getObject().value().getStatefulness();
+
+				if (sampleStatefulness.isEager()) {
+					return sampleStatefulness;
+				}
+			} else {
+
+				final TypeRef ancestor = type().getAncestor();
+
+				if (ancestor != null) {
+
+					final Statefulness ancestorStatefulness =
+							ancestor.getType().value().getStatefulness();
+
+					if (ancestorStatefulness.isEager()) {
+						return ancestorStatefulness;
+					}
+				}
+			}
+		}
+
 		return type().getValueType().getDefaultStatefulness();
 	}
 

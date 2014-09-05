@@ -124,6 +124,10 @@ public abstract class Def implements SourceInfo {
 		return getSource().is(getScope().toObject());
 	}
 
+	public final boolean isDerived() {
+		return !getSource().is(getScope().toObject());
+	}
+
 	public final boolean isInherited() {
 
 		final Obj source = getSource();

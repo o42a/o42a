@@ -283,7 +283,7 @@ public final class ObjectValue extends ObjectValueBase {
 		if (ancestor == null) {
 			return;
 		}
-		if (!getDefinitions().hasInherited()) {
+		if (!getDefinitions().areInherited()) {
 			return;
 		}
 

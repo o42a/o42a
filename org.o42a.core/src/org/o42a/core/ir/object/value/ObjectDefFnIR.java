@@ -204,7 +204,7 @@ public class ObjectDefFnIR
 
 	@Override
 	protected void reuse() {
-		if (defs().isEmpty()) {
+		if (defs().areEmpty()) {
 			return;
 		}
 
