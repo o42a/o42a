@@ -149,8 +149,12 @@ public class Definitions extends Scoped {
 		return this.defs;
 	}
 
-	public final boolean hasInherited() {
-		return defs().hasInherited();
+	public final boolean areDerived() {
+		return defs().areDerived();
+	}
+
+	public final boolean areInherited() {
+		return defs().areInherited();
 	}
 
 	public Value<?> value(Resolver resolver) {
@@ -346,7 +350,7 @@ public class Definitions extends Scoped {
 	}
 
 	private boolean assertEmptyWithoutValues() {
-		assert hasValues() || defs().isEmpty() :
+		assert hasValues() || defs().areEmpty() :
 				"Non-empty definitions should have a value type";
 		return true;
 	}

@@ -153,7 +153,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		final Obj object = getObjectIR().getObject();
 		short flags = 0;
 
-		if (object.value().getDefinitions().hasInherited()) {
+		if (object.value().getDefinitions().areInherited()) {
 			flags |= OBJ_FLAG_ANCESTOR_DEF;
 		}
 

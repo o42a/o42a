@@ -51,11 +51,11 @@ public final class Defs {
 		return this.defs;
 	}
 
-	public final boolean isEmpty() {
+	public final boolean areEmpty() {
 		return this.defs.length == 0;
 	}
 
-	public final boolean isDefined() {
+	public final boolean areDefined() {
 		for (Def def : this.defs) {
 			if (def.isDefined()) {
 				return true;
@@ -64,7 +64,20 @@ public final class Defs {
 		return false;
 	}
 
-	public final boolean hasInherited() {
+	public final boolean areDerived() {
+		for (Def def : this.defs) {
+			if (def.isDerived()) {
+				return true;
+			}
+			if (def.isDefined()) {
+				// Return unconditionally. Never request an ascendant value.
+				return false;
+			}
+		}
+		return true;// Not explicitly defined. Can reuse the derived value.
+	}
+
+	public final boolean areInherited() {
 		for (Def def : this.defs) {
 			if (def.isInherited()) {
 				return true;
@@ -197,7 +210,7 @@ public final class Defs {
 	}
 
 	final Defs upgradeScope(ScopeUpgrade scopeUpgrade) {
-		if (isEmpty()) {
+		if (areEmpty()) {
 			return this;
 		}
 
@@ -234,14 +247,14 @@ public final class Defs {
 	}
 
 	final Defs override(Defs overriders) {
-		if (!overriders.isDefined()) {
+		if (!overriders.areDefined()) {
 			return this;
 		}
 		return overriders;
 	}
 
 	InlineEval inline(Normalizer normalizer) {
-		if (!isDefined()) {
+		if (!areDefined()) {
 			return noInlineEval();
 		}
 
@@ -284,7 +297,7 @@ public final class Defs {
 
 	void resolveAll(Definitions definitions) {
 		validate(definitions.getTypeParameters());
-		if (isEmpty()) {
+		if (areEmpty()) {
 			return;
 		}
 
