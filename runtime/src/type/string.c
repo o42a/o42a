@@ -13,6 +13,33 @@
 #include "o42a/object.h"
 
 
+static void copy_str_val(const o42a_val_t *const from, o42a_val_t *const to) {
+	O42A_ENTER(return);
+
+	*to = *from;
+
+	const uint32_t flags = from->flags;
+
+	if (flags & O42A_VAL_STATIC) {
+		O42A_RETURN;
+	}
+	if (!(flags & O42A_VAL_EXTERNAL)) {
+		O42A_RETURN;
+	}
+
+	void *const ptr = from->value.v_ptr;
+
+	if (!ptr) {
+		O42A_RETURN;
+	}
+
+	o42a_refcount_block_t *const block = o42a_refcount_blockof(ptr);
+
+	__sync_add_and_fetch(&block->ref_count, 1);
+
+	O42A_RETURN;
+}
+
 static void sweep_str_val(o42a_obj_t *const object) {
 	O42A_ENTER(return);
 
@@ -43,6 +70,7 @@ static void sweep_str_val(o42a_obj_t *const object) {
 
 const o42a_val_type_t o42a_val_type_string = O42A_VAL_TYPE(
 		"string",
+		copy_str_val,
 		o42a_val_gc_none,
 		sweep_str_val);
 

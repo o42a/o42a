@@ -985,16 +985,16 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->def_f =
 			(sflags & O42A_OBJ_ANCESTOR_DEF) ? adata->def_f : sdata->def_f;
 	if (!(ctr->value.flags & O42A_VAL_INDEFINITE)) {
-		data->value = ctr->value;
+		O42A(sdesc->value_type->copy(&ctr->value, &data->value));
 		data->value.flags |= O42A_VAL_EAGER;
 	} else if (sflags & O42A_OBJ_ANCESTOR_DEF) {
 		if (adata->value.flags & O42A_VAL_EAGER) {
-			data->value = adata->value;
+			O42A(sdesc->value_type->copy(&adata->value, &data->value));
 		} else {
 			data->value.flags = O42A_VAL_INDEFINITE;
 		}
 	} else if (sdata->value.flags & O42A_VAL_EAGER) {
-		data->value = sdata->value;
+		O42A(sdesc->value_type->copy(&sdata->value, &data->value));
 	} else {
 		data->value.flags = O42A_VAL_INDEFINITE;
 	}
