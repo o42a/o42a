@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-import static org.o42a.core.ir.object.ObjectIRData.OBJ_FLAG_ANCESTOR_DEF;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.value.Val.VAL_EAGER;
@@ -110,7 +109,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 	@Override
 	public void fill(ObjectIRData instance) {
-		instance.flags().setConstant(true).setValue(objectFlags());
 		instance.vmtc().setConstant(true).setValue(
 				getObjectIR()
 				.getVmtIR()
@@ -146,18 +144,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		getObjectIR().getObjectValueIR().allocate(this);
 
 		return result;
-	}
-
-	private short objectFlags() {
-
-		final Obj object = getObjectIR().getObject();
-		short flags = 0;
-
-		if (object.value().getDefinitions().areInherited()) {
-			flags |= OBJ_FLAG_ANCESTOR_DEF;
-		}
-
-		return flags;
 	}
 
 }

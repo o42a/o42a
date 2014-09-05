@@ -20,14 +20,9 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 13,
+	.field_num = 12,
 	.name = "o42a_obj_data_t",
 	.fields = {
-		{
-			.data_type = O42A_TYPE_INT16,
-			.offset = offsetof(o42a_obj_data_t, flags),
-			.name = "flags",
-		},
 		{
 			.data_type = O42A_TYPE_INT8,
 			.offset = offsetof(o42a_obj_data_t, mutex_init),
@@ -972,9 +967,8 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 #endif
 
 	// fill object type and data
-	const int32_t sflags = sdata->flags;
+	const int32_t sflags = sdata->vmtc->vmt->flags;
 
-	data->flags = 0;
 	data->mutex_init = 0;
 
 	const o42a_obj_vmtc_t *const vmtc =
