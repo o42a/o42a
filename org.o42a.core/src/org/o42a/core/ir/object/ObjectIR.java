@@ -109,9 +109,18 @@ public class ObjectIR {
 			return this.vmtIR;
 		}
 
-		assert getObject().assertFullyResolved();
+		final Obj object = getObject();
+
+		assert object.assertFullyResolved();
+
+		final Obj lastDefinition = object.type().getLastDefinition();
+
+		if (!object.is(lastDefinition)) {
+			return this.vmtIR = lastDefinition.ir(getGenerator()).getVmtIR();
+		}
 
 		this.vmtIR = new VmtIR(this);
+
 		getGenerator().newGlobal().struct(this.vmtIR).getInstance();
 
 		return this.vmtIR;

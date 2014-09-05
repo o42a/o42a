@@ -833,12 +833,6 @@ public abstract class Obj
 			return wrapped.ir(generator);
 		}
 
-		final Obj lastDefinition = type().getLastDefinition();
-
-		if (!lastDefinition.is(this)) {
-			return lastDefinition.ir(generator);
-		}
-
 		return new ObjectIR(generator, this);
 	}
 
