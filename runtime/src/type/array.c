@@ -21,10 +21,12 @@ void mark_array_val(o42a_obj_t *const object) {
 
 const o42a_val_type_t o42a_val_type_array = O42A_VAL_TYPE(
 		"array",
+		o42a_val_copy_as_is,
 		mark_array_val,
 		o42a_val_gc_none);
 const o42a_val_type_t o42a_val_type_row = O42A_VAL_TYPE(
 		"row",
+		o42a_val_copy_as_is,
 		mark_array_val,
 		o42a_val_gc_none);
 
