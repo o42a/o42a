@@ -1036,21 +1036,18 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	const o42a_obj_data_t *const sdata = &ctr->sample->object_data;
 	o42a_obj_data_t *const data = &object->object_data;
 
-	if (sdata->vmtc->vmt->flags & O42A_OBJ_ANCESTOR_DEF) {
-		data->def_f = adata->def_f;
-		if (adata->value.flags & O42A_VAL_EAGER) {
-			O42A(sdata->desc->value_type->copy(&adata->value, &data->value));
-		} else {
-			data->value.flags = O42A_VAL_INDEFINITE;
-		}
-	} else {
-		data->def_f = sdata->def_f;
-		if (sdata->value.flags & O42A_VAL_EAGER) {
-			O42A(sdata->desc->value_type->copy(&sdata->value, &data->value));
-		} else {
-			data->value.flags = O42A_VAL_INDEFINITE;
-		}
-	}
+	assert(
+			!(adata->value.flags & O42A_VAL_EAGER)
+			&& "Ancestor value is eagerly evaluated");
+	assert(
+			!(sdata->value.flags & O42A_VAL_EAGER)
+			&& "Sample value is eagerly evaluated");
+
+	data->value.flags = O42A_VAL_INDEFINITE;
+	data->def_f =
+			(sdata->vmtc->vmt->flags & O42A_OBJ_ANCESTOR_DEF)
+			? adata->def_f
+			: sdata->def_f;
 
 	O42A(fill_deps(data));
 
