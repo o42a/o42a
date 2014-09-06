@@ -115,16 +115,10 @@ public final class ObjectsCode {
 			DataOp ancestorPtr,
 			Obj sample) {
 
-		final ObjectOp ancestor;
-
-		if (ancestorPtr == null) {
-			ancestor = null;
-		} else {
-			ancestor = anonymousObject(
-					dirs,
-					ancestorPtr,
-					sample.type().getAncestor().getInterface().mostWrapped());
-		}
+		final ObjectOp ancestor = anonymousObject(
+				dirs,
+				ancestorPtr,
+				sample.type().getAncestor().getInterface().mostWrapped());
 
 		return newObject(dirs, host, holder, owner, ancestor, sample);
 	}

@@ -337,7 +337,7 @@ typedef struct o42a_obj_ctr {
 	/**
 	 * Pointer to enclosing object.
 	 *
-	 * May be NULL when constructing object is local or exactly known.
+	 * May be NULL when constructing object is exactly known.
 	 */
 	o42a_obj_t *owner;
 

@@ -158,7 +158,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		cont.go(code.tail());
 
 		final DataOp ancestor = code.phi(
-				ID.id("atype"),
+				ID.id("ancestor"),
 				evaluatedAncestor,
 				suppliedAncestor);
 
