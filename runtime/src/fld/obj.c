@@ -27,11 +27,7 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_obj = {
 
 void o42a_fld_obj_reset(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
-
-	o42a_fld_obj *const to = &ctable->to_fld->obj;
-
-	to->object = NULL;
-
+	ctable->to_fld->obj.object = NULL;
 	O42A_RETURN;
 }
 

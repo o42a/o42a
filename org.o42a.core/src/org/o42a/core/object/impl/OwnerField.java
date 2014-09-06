@@ -222,12 +222,8 @@ public final class OwnerField extends ObjectField {
 
 		@Override
 		protected Fld<?> declareDummy(ObjectIRBodyData data) {
-
-			final OwnerFld fld = new OwnerFld(getField());
-
-			fld.declareDummy(data);
-
-			return fld;
+			throw new UnsupportedOperationException(
+					"Owner field can not be dummy: " + this);
 		}
 
 	}
