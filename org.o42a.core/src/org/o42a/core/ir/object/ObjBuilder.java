@@ -60,8 +60,7 @@ public final class ObjBuilder extends CodeBuilder {
 			return hostIR.op(this, code)
 					.cast(null, dirs(code, exit), hostType);
 		case COMPATIBLE:
-			return getFunction()
-					.arg(code, getObjectSignature().object())
+			return getObjectSignature().object(code, getFunction())
 					.to(null, code, hostIR.getStruct())
 					.op(this, hostType, hostPrecision);
 		case DERIVED:
@@ -69,7 +68,7 @@ public final class ObjBuilder extends CodeBuilder {
 			final ObjectOp host = anonymousObject(
 					this,
 					code,
-					getFunction().arg(code, getObjectSignature().object()),
+					getObjectSignature().object(code, getFunction()),
 					hostIR.getObject());
 
 			return host.cast(HOST_ID, dirs(code, exit), hostType);

@@ -24,8 +24,8 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjectArgSignature;
 import org.o42a.core.ir.object.op.ObjectFunc;
-import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.util.string.ID;
 
@@ -56,7 +56,7 @@ public final class ObjectCondFunc extends ObjectFunc<ObjectCondFunc> {
 	}
 
 	public static final class Signature
-			extends ObjectSignature<ObjectCondFunc> {
+			extends ObjectArgSignature<ObjectCondFunc> {
 
 		private Return<BoolOp> result;
 		private Arg<DataOp> object;

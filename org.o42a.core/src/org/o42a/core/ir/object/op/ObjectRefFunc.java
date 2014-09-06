@@ -52,7 +52,7 @@ public final class ObjectRefFunc extends ObjectFunc<ObjectRefFunc> {
 	}
 
 	public static final class Signature
-			extends ObjectSignature<ObjectRefFunc> {
+			extends ObjectArgSignature<ObjectRefFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;

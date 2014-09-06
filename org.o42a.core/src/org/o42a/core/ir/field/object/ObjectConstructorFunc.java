@@ -26,8 +26,8 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.VmtIRChain;
+import org.o42a.core.ir.object.op.ObjectArgSignature;
 import org.o42a.core.ir.object.op.ObjectFunc;
-import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.util.string.ID;
 
 
@@ -72,7 +72,7 @@ public final class ObjectConstructorFunc
 	}
 
 	public static final class Signature
-			extends ObjectSignature<ObjectConstructorFunc> {
+			extends ObjectArgSignature<ObjectConstructorFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;

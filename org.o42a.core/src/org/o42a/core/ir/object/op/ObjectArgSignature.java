@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,20 +19,25 @@
 */
 package org.o42a.core.ir.object.op;
 
+import org.o42a.codegen.code.Arg;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Function;
-import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.util.string.ID;
 
 
-public abstract class ObjectSignature<F extends ObjectFunc<F>>
-		extends Signature<F> {
+public abstract class ObjectArgSignature<F extends ObjectFunc<F>>
+		extends ObjectSignature<F> {
 
-	public ObjectSignature(ID id) {
+	public ObjectArgSignature(ID id) {
 		super(id);
 	}
 
-	public abstract DataOp object(Code code, Function<?> function);
+	public abstract Arg<DataOp> object();
+
+	@Override
+	public final DataOp object(Code code, Function<?> function) {
+		return function.arg(code, object());
+	}
 
 }
