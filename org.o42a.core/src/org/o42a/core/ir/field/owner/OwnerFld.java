@@ -41,7 +41,6 @@ public final class OwnerFld
 
 	private Obj ascendant;
 	private ObjectIR targetIR;
-	private boolean dummy;
 
 	public OwnerFld(Field field) {
 		super(field);
@@ -54,7 +53,7 @@ public final class OwnerFld
 
 	@Override
 	public boolean isDummy() {
-		return this.dummy;
+		return false;
 	}
 
 	@Override
@@ -77,11 +76,6 @@ public final class OwnerFld
 		} else {
 			this.targetIR = null;
 		}
-		allocate(data);
-	}
-
-	public final void declareDummy(ObjectIRBodyData data) {
-		this.dummy = true;
 		allocate(data);
 	}
 
@@ -130,7 +124,7 @@ public final class OwnerFld
 
 	@Override
 	protected Content<OwnerFld.Type> dummyContent() {
-		return this;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

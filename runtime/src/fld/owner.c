@@ -7,6 +7,8 @@
 */
 #include "o42a/fields.h"
 
+#include <assert.h>
+
 
 #ifndef NDEBUG
 const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_owner = {
@@ -26,31 +28,18 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_owner = {
 void o42a_fld_owner_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
-	o42a_fld_owner *const to = &ctable->to_fld->owner;
-	o42a_obj_t *const owner = ctable->owner;
-
-	if (owner) {
-		to->object = owner;
-		o42a_debug_mem_name("Updated owner: ", to->object);
-		O42A_RETURN;
-	}
-
-	// Object is local.
-	to->object = ctable->from_fld->owner.object;
-	o42a_debug_mem_name("Leave the owner unchanged: ", to->object);
+	assert(ctable->owner && "Object owner is unknown");
+	ctable->to_fld->owner.object = ctable->owner;
+	o42a_debug_mem_name("Owner: ", ctable->to_fld->owner.object);
 
 	O42A_RETURN;
 }
 
 void o42a_fld_owner_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
-
-	const o42a_fld_owner *const from = &ctable->from_fld->owner;
-	o42a_fld_owner *const to = &ctable->to_fld->owner;
-
-	to->object = from->object;
-
-	o42a_debug_mem_name("Leave the owner unchanged: ", from->object);
-
+	ctable->to_fld->owner.object = ctable->from_fld->owner.object;
+	o42a_debug_mem_name(
+			"Leave the owner unchanged: ",
+			ctable->to_fld->owner.object);
 	O42A_RETURN;
 }
