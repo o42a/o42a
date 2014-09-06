@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.core.ir.field.object.ObjFldCtrOp.ALLOCATABLE_OBJ_FLD_CTR;
+import static org.o42a.core.ir.field.object.ObjFldCtrOp.OBJ_FLD_CTR_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
@@ -28,7 +30,6 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
@@ -84,8 +85,21 @@ public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFunc> {
 	@Override
 	protected DataOp construct(
 			Code code,
-			ObjectConstructorFunc constructor, Op vmtc) {
-		return constructor.call(code, host(), vmtc);
+			ObjectConstructorFunc constructor,
+			VmtIRChain.Op vmtc) {
+
+		final ObjFldCtrOp fctr =
+				code.allocate(OBJ_FLD_CTR_ID, ALLOCATABLE_OBJ_FLD_CTR)
+				.get(code);
+
+		if (host().getPrecision().isExact()) {
+			fctr.owner(code).store(code, code.nullDataPtr());
+		} else {
+			fctr.owner(code).store(code, host().toData(null, code));
+		}
+		fctr.vmtc(code).store(code, vmtc);
+
+		return constructor.call(code, fctr);
 	}
 
 	@Override

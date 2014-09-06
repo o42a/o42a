@@ -124,14 +124,13 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 
 		final Block code = dirs.code();
 		final ObjOp host = builder.host();
-		final VmtIRChain.Op vmtc = builder.getFunction().arg(
-				code,
-				getConstructorSignature().vmtc());
+		final ObjFldCtrOp fctr =
+				builder.getFunction()
+				.arg(code, getConstructorSignature().fctr());
+		final VmtIRChain.Op vmtc = fctr.vmtc(code).load(null, code);
 		final ObjFldOp fld =
 				(ObjFldOp) host.field(dirs, getField().getKey());
-		final DataOp ancestorArg = builder.getFunction().arg(
-				code,
-				getConstructorSignature().ancestor());
+		final DataOp ancestorArg = fctr.ancestor(code).load(null, code);
 		final BoolOp noAncestor = ancestorArg.isNull(null, code);
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
@@ -150,11 +149,14 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 
 		final DataOp evaluatedAncestor = ancestor(builder, dirs, start);
 
+		fctr.ancestor(start).store(start, evaluatedAncestor);
+
 		start.go(code.tail());
 
 		final Block cont = start.otherwise();
 
 		final DataOp suppliedAncestor = cont.phi(null, ancestorArg);
+
 		cont.go(code.tail());
 
 		final DataOp ancestor = code.phi(
@@ -185,8 +187,8 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 				builder.dirs(delegate, dirs.falseDir()),
 				construct.head(),
 				holder,
-				prevVmtc,
-				ancestor).toData(null, delegate);
+				fctr,
+				prevVmtc).toData(null, delegate);
 
 		delegate.go(code.tail());
 
@@ -250,8 +252,8 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 			CodeDirs dirs,
 			CodePos construct,
 			ObjFldTargetHolder holder,
-			VmtIRChain.Op prevVmtc,
-			DataOp ancestorPtr) {
+			ObjFldCtrOp fctr,
+			VmtIRChain.Op prevVmtc) {
 
 		final Block code = dirs.code();
 
@@ -268,8 +270,9 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		// The field is dummy. The actual field is declared later.
 		constructor.isNull(null, code).go(code, construct);
 
-		final DataOp newAncestorPtr =
-				constructor.call(code, builder.host(), prevVmtc, ancestorPtr);
+		fctr.vmtc(code).store(code, prevVmtc);
+
+		final DataOp newAncestorPtr = constructor.call(code, fctr);
 		final ObjectOp ancestor = anonymousObject(
 				dirs,
 				newAncestorPtr,
@@ -291,13 +294,10 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 	private void buildCloneFunc(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final ObjOp host = builder.host();
-		final VmtIRChain.Op vmtc = builder.getFunction().arg(
-				code,
-				getConstructorSignature().vmtc());
-		final DataOp ancestorArg = builder.getFunction().arg(
-				code,
-				getConstructorSignature().ancestor());
+		final ObjFldCtrOp fctr =
+				builder.getFunction()
+				.arg(code, getConstructorSignature().fctr());
+		final VmtIRChain.Op vmtc = fctr.vmtc(code).load(null, code);
 		final VmtIRChain.Op prevVmtc = vmtc.prev(null, code).load(null, code);
 		final CondBlock construct =
 				prevVmtc.isNull(null, code)
@@ -305,7 +305,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 
 		constructor()
 		.op(null, construct)
-		.call(construct, host, vmtc, ancestorArg)
+		.call(construct, fctr)
 		.returnValue(construct);
 
 		final Block delegate = construct.otherwise();
@@ -313,9 +313,12 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 				prevVmtc.loadVmt(delegate, getObjectIR().getVmtIR());
 
 		prevVmt.compatible(delegate).goUnless(delegate, construct.head());
+
+		fctr.vmtc(delegate).store(delegate, prevVmtc);
+
 		prevVmt.func(null, delegate, vmtConstructor())
 		.load(null, delegate)
-		.call(delegate, host, prevVmtc, ancestorArg)
+		.call(delegate, fctr)
 		.returnValue(delegate);
 	}
 
