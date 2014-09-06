@@ -966,18 +966,8 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 
 #endif
 
-	// Fill object data without value.
+	// Fill object data without value and VMT.
 	data->mutex_init = 0;
-
-	const o42a_obj_vmtc_t *const vmtc =
-			O42A(vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
-
-	if (!vmtc) {
-		O42A(o42a_gc_free(o42a_gc_blockof(mem)));
-		O42A_RETURN NULL;
-	}
-
-	data->vmtc = vmtc;
 	data->value_f = sdata->value_f;
 	data->cond_f = sdata->cond_f;
 	data->resume_from = NULL;
@@ -1043,6 +1033,15 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			!(sdata->value.flags & O42A_VAL_EAGER)
 			&& "Sample value is eagerly evaluated");
 
+	const o42a_obj_vmtc_t *const vmtc =
+			O42A(vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
+
+	if (!vmtc) {
+		O42A(o42a_gc_free(o42a_gc_blockof(object)));
+		O42A_RETURN NULL;
+	}
+
+	data->vmtc = vmtc;
 	data->value.flags = O42A_VAL_INDEFINITE;
 	data->def_f =
 			(sdata->vmtc->vmt->flags & O42A_OBJ_ANCESTOR_DEF)
@@ -1078,6 +1077,11 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 
 	o42a_obj_data_t *const data = &object->object_data;
 
+	const o42a_obj_vmtc_t *const vmtc = adata->vmtc;
+
+	O42A(vmtc_use(vmtc));
+
+	data->vmtc = vmtc;
 	data->def_f = adata->def_f;
 	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
 	data->value.flags |= O42A_VAL_EAGER;
