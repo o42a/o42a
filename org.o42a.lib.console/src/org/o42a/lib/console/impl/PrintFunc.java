@@ -22,15 +22,19 @@ package org.o42a.lib.console.impl;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.lib.console.ConsoleModule.CONSOLE_ID;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
 
 
 public final class PrintFunc extends Func<PrintFunc> {
 
-	public static final Signature PRINT = new Signature();
+	public static final ExtSignature<Void, PrintFunc> PRINT =
+			customSignature(CONSOLE_ID.sub("PrintF"), 1)
+			.addPtr("text", VAL_TYPE)
+			.returnVoid(c -> new PrintFunc(c));
 
 	private PrintFunc(FuncCaller<PrintFunc> caller) {
 		super(caller);
@@ -38,37 +42,6 @@ public final class PrintFunc extends Func<PrintFunc> {
 
 	public void print(Code code, ValOp text) {
 		invoke(null, code, PRINT.result(), text.ptr(code));
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<PrintFunc> {
-
-		private Return<Void> result;
-		private Arg<ValType.Op> text;
-
-		private Signature() {
-			super(CONSOLE_ID.sub("PrintF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<ValType.Op> text() {
-			return this.text;
-		}
-
-		@Override
-		public PrintFunc op(FuncCaller<PrintFunc> caller) {
-			return new PrintFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.text = builder.addPtr("text", VAL_TYPE);
-		}
-
 	}
 
 }

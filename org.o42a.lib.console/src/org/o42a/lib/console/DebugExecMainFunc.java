@@ -22,7 +22,9 @@ package org.o42a.lib.console;
 import static org.o42a.lib.console.ConsoleModule.CONSOLE_ID;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
@@ -30,7 +32,13 @@ import org.o42a.codegen.code.op.Int32op;
 
 public final class DebugExecMainFunc extends Func<DebugExecMainFunc> {
 
-	public static final Signature DEBUG_EXEC_MAIN = new Signature();
+	public static final
+	ExtSignature<Int32op, DebugExecMainFunc> DEBUG_EXEC_MAIN =
+			customSignature(CONSOLE_ID.sub("DebugExecMainF"), 3)
+			.addFuncPtr("main", DEBUGGABLE_MAIN)
+			.addInt32("argc")
+			.addPtr("argv")
+			.returnInt32(c -> new DebugExecMainFunc(c));
 
 	private DebugExecMainFunc(FuncCaller<DebugExecMainFunc> caller) {
 		super(caller);
@@ -42,54 +50,6 @@ public final class DebugExecMainFunc extends Func<DebugExecMainFunc> {
 			Int32op argc,
 			AnyOp argv) {
 		return invoke(null, code, DEBUG_EXEC_MAIN.result(), main, argc, argv);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<DebugExecMainFunc> {
-
-		private Return<Int32op> result;
-		private Arg<DebuggableMainFunc> main;
-		private Arg<Int32op> argc;
-		private Arg<AnyOp> argv;
-
-		private Signature() {
-			super(CONSOLE_ID.sub("DebugExecMainF"));
-		}
-
-		@Override
-		public boolean isDebuggable() {
-			return false;
-		}
-
-		public final Return<Int32op> result() {
-			return this.result;
-		}
-
-		public final Arg<DebuggableMainFunc> main() {
-			return this.main;
-		}
-
-		public final Arg<Int32op> argc() {
-			return this.argc;
-		}
-
-		public final Arg<AnyOp> argv() {
-			return this.argv;
-		}
-
-		@Override
-		public DebugExecMainFunc op(FuncCaller<DebugExecMainFunc> caller) {
-			return new DebugExecMainFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnInt32();
-			this.main = builder.addFuncPtr("main", DEBUGGABLE_MAIN);
-			this.argc = builder.addInt32("argc");
-			this.argv = builder.addPtr("argv");
-		}
-
 	}
 
 }
