@@ -187,9 +187,9 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 	},
 };
 
-const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
+const o42a_dbg_type_info6f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
-	.field_num = 3,
+	.field_num = 6,
 	.name = "o42a_obj_ctr_t",
 	.fields = {
 		{
@@ -206,6 +206,19 @@ const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_ctr_t, sample),
 			.name = "sample",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctr_t, vmtc),
+			.name = "vmtc",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_ctr_t, value),
+			.name = "value",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
 		},
 		{
 			.data_type = O42A_TYPE_INT32,
@@ -1023,6 +1036,9 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	o42a_obj_t *const object = O42A(new_obj(ctr));
 
 	if (!object) {
+		if (ctr->vmtc) {
+			O42A(o42a_obj_vmtc_free(ctr->vmtc));
+		}
 		O42A_RETURN NULL;
 	}
 
@@ -1037,12 +1053,16 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			!(sdata->value.flags & O42A_VAL_EAGER)
 			&& "Sample value is eagerly evaluated");
 
-	const o42a_obj_vmtc_t *const vmtc =
-			O42A(o42a_obj_vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
+	const o42a_obj_vmtc_t *vmtc;
 
-	if (!vmtc) {
-		O42A(o42a_gc_free(o42a_gc_blockof(object)));
-		O42A_RETURN NULL;
+	if (ctr->vmtc) {
+		vmtc = ctr->vmtc;
+	} else {
+		vmtc = O42A(o42a_obj_vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
+		if (!vmtc) {
+			O42A(o42a_gc_free(o42a_gc_blockof(object)));
+			O42A_RETURN NULL;
+		}
 	}
 
 	O42A(vmtc_use(vmtc));
@@ -1078,12 +1098,15 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	o42a_obj_t *const object = O42A(new_obj(ctr));
 
 	if (!object) {
+		if (ctr->vmtc) {
+			O42A(o42a_obj_vmtc_free(ctr->vmtc));
+		}
 		O42A_RETURN NULL;
 	}
 
 	o42a_obj_data_t *const data = &object->object_data;
 
-	const o42a_obj_vmtc_t *const vmtc = adata->vmtc;
+	const o42a_obj_vmtc_t *const vmtc = ctr->vmtc ? ctr->vmtc : adata->vmtc;
 
 	O42A(vmtc_use(vmtc));
 

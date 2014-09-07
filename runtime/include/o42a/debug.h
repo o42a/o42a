@@ -218,6 +218,12 @@ typedef struct o42a_dbg_type_info5f {
 	o42a_dbg_field_info_t fields[5];
 } o42a_dbg_type_info5f_t;
 
+/** Type info with 6 fields. */
+typedef struct o42a_dbg_type_info6f {
+	O42A_DBG_TYPE_INFO
+	o42a_dbg_field_info_t fields[6];
+} o42a_dbg_type_info6f_t;
+
 /**
  * A dump of the call stack.
  *

@@ -352,6 +352,20 @@ typedef struct o42a_obj_ctr {
 	const o42a_obj_t *sample;
 
 	/**
+	 * VMT chain to use.
+	 *
+	 * If NULL, then is will be constructed from sample and ancestor.
+	 *
+	 * This should be either VMT chain from existing object, or the one
+	 * allocated with o42a_obj_vmtc_alloc function.
+	 *
+	 * The reference count of VMT chain link will be increased upon successful
+	 * object construction (unless it is a terminator). Otherwise the
+	 * VMT chain will be freed with o42a_obj_vmtc_free function.
+	 */
+	const o42a_obj_vmtc_t *vmtc;
+
+	/**
 	 * Eagerly evaluated object value.
 	 *
 	 * An O42A_VAL_INDEFINITE bit should be set if the value is not eagerly
@@ -410,7 +424,7 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
-extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
+extern const o42a_dbg_type_info6f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
