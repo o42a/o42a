@@ -23,14 +23,19 @@ import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 import static org.o42a.codegen.debug.DebugCodeBase.binaryMessage;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.AnyOp;
 
 
 final class DebugDoFunc extends Func<DebugDoFunc> {
 
-	static final Signature DEBUG_DO = new Signature();
+	static final ExtSignature<Void, DebugDoFunc> DEBUG_DO =
+			customSignature(DEBUG_ID.sub("DoF"), 2)
+			.addPtr("stack_frame", DEBUG_STACK_FRAME_TYPE)
+			.addPtr("comment")
+			.returnVoid(c -> new DebugDoFunc(c));
 
 	private DebugDoFunc(FuncCaller<DebugDoFunc> caller) {
 		super(caller);
@@ -46,49 +51,6 @@ final class DebugDoFunc extends Func<DebugDoFunc> {
 				DEBUG_DO.result(),
 				stackFrame,
 				binaryMessage(code.getGenerator(), comment).op(null, code));
-	}
-
-	static final class Signature
-			extends org.o42a.codegen.code.Signature<DebugDoFunc> {
-
-		private Return<Void> result;
-		private Arg<DebugStackFrameOp> stackFrame;
-		private Arg<AnyOp> comment;
-
-		private Signature() {
-			super(DEBUG_ID.sub("DoF"));
-		}
-
-		@Override
-		public boolean isDebuggable() {
-			return false;
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<DebugStackFrameOp> stackFrame() {
-			return this.stackFrame;
-		}
-
-		public final Arg<AnyOp> comment() {
-			return this.comment;
-		}
-
-		@Override
-		public DebugDoFunc op(FuncCaller<DebugDoFunc> caller) {
-			return new DebugDoFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.stackFrame =
-					builder.addPtr("stack_frame", DEBUG_STACK_FRAME_TYPE);
-			this.comment = builder.addPtr("comment");
-		}
-
 	}
 
 }

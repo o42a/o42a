@@ -21,14 +21,19 @@ package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 
 
 public final class DebugPrintFunc extends Func<DebugPrintFunc> {
 
-	public static final Signature DEBUG_PRINT = new Signature();
+	public static final ExtSignature<Void, DebugPrintFunc> DEBUG_PRINT =
+			customSignature(DEBUG_ID.sub("PrintF"), 1)
+			.addPtr("message")
+			.returnVoid(c -> new DebugPrintFunc(c));
 
 	private DebugPrintFunc(FuncCaller<DebugPrintFunc> caller) {
 		super(caller);
@@ -36,37 +41,6 @@ public final class DebugPrintFunc extends Func<DebugPrintFunc> {
 
 	public void call(Code code, AnyOp message) {
 		invoke(null, code, DEBUG_PRINT.result(), message);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<DebugPrintFunc> {
-
-		private Return<Void> result;
-		private Arg<AnyOp> message;
-
-		private Signature() {
-			super(DEBUG_ID.sub("PrintF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<AnyOp> message() {
-			return this.message;
-		}
-
-		@Override
-		public DebugPrintFunc op(FuncCaller<DebugPrintFunc> caller) {
-			return new DebugPrintFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.message = builder.addPtr("message");
-		}
-
 	}
 
 }
