@@ -19,14 +19,17 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.util.string.ID;
 
 
 public final class NoArgFunc extends Func<NoArgFunc> {
 
-	public static final Signature NO_ARG = new Signature();
+	public static final ExtSignature<Void, NoArgFunc> NO_ARG =
+			customSignature("NoArgF", 0)
+			.returnVoid(c -> new NoArgFunc(c));
 
 	private NoArgFunc(FuncCaller<NoArgFunc> caller) {
 		super(caller);
@@ -34,31 +37,6 @@ public final class NoArgFunc extends Func<NoArgFunc> {
 
 	public final void call(Code code) {
 		invoke(null, code, NO_ARG.result());
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<NoArgFunc> {
-
-		private Return<Void> result;
-
-		private Signature() {
-			super(ID.id("NoArgF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		@Override
-		public NoArgFunc op(FuncCaller<NoArgFunc> caller) {
-			return new NoArgFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-		}
-
 	}
 
 }

@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
-import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
+import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_USE;
 import static org.o42a.core.ir.object.op.StartObjectUseFunc.START_OBJECT_USE;
 
 import org.o42a.codegen.code.*;
@@ -172,7 +172,7 @@ public final class ObjectUseOp extends IROp {
 				Allocated<AllocatedObjectUse> allocated) {
 			code.getGenerator()
 			.externalFunction()
-			.link("o42a_obj_end_use", END_OBJECT_UNUSE)
+			.link("o42a_obj_end_use", END_OBJECT_USE)
 			.op(null, code)
 			.unuse(code, allocated.get(code).op);
 		}

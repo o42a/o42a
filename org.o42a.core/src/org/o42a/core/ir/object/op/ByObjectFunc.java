@@ -19,15 +19,19 @@
 */
 package org.o42a.core.ir.object.op;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.util.string.ID;
 
 
 public final class ByObjectFunc extends Func<ByObjectFunc> {
 
-	public static final Signature BY_OBJECT = new Signature();
+	public static final ExtSignature<Void, ByObjectFunc> BY_OBJECT =
+			customSignature("ByObjectF", 1)
+			.addData("object")
+			.returnVoid(c -> new ByObjectFunc(c));
 
 	private ByObjectFunc(FuncCaller<ByObjectFunc> caller) {
 		super(caller);
@@ -35,37 +39,6 @@ public final class ByObjectFunc extends Func<ByObjectFunc> {
 
 	public final void call(Code code, DataOp object) {
 		invoke(null, code, BY_OBJECT.result(), object);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ByObjectFunc> {
-
-		private Return<Void> result;
-		private Arg<DataOp> object;
-
-		private Signature() {
-			super(ID.id("ObjectDataF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<DataOp> object() {
-			return this.object;
-		}
-
-		@Override
-		public final ByObjectFunc op(FuncCaller<ByObjectFunc> caller) {
-			return new ByObjectFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.object = builder.addData("object");
-		}
-
 	}
 
 }

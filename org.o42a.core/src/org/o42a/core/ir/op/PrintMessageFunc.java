@@ -19,15 +19,19 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.util.string.ID;
 
 
 public class PrintMessageFunc extends Func<PrintMessageFunc> {
 
-	public static final Signature PRINT_MESSAGE = new Signature();
+	public static final ExtSignature<Void, PrintMessageFunc> PRINT_MESSAGE =
+			customSignature("PrintMessageF", 1)
+			.addPtr("message")
+			.returnVoid(c -> new PrintMessageFunc(c));
 
 	private PrintMessageFunc(FuncCaller<PrintMessageFunc> caller) {
 		super(caller);
@@ -35,37 +39,6 @@ public class PrintMessageFunc extends Func<PrintMessageFunc> {
 
 	public void print(Code code, AnyOp message) {
 		invoke(null, code, PRINT_MESSAGE.result(), message);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<PrintMessageFunc> {
-
-		private Return<Void> result;
-		private Arg<AnyOp> message;
-
-		private Signature() {
-			super(ID.id("PrintMessageF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<AnyOp> message() {
-			return this.message;
-		}
-
-		@Override
-		public final PrintMessageFunc op(FuncCaller<PrintMessageFunc> caller) {
-			return new PrintMessageFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.message = builder.addPtr("message");
-		}
-
 	}
 
 }

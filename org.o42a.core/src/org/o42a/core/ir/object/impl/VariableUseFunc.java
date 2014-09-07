@@ -19,17 +19,20 @@
 */
 package org.o42a.core.ir.object.impl;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.util.string.ID;
 
 
 public final class VariableUseFunc extends Func<VariableUseFunc> {
 
-	public static final Signature VARIABLE_USE = new Signature();
+	public static final ExtSignature<DataOp, VariableUseFunc> VARIABLE_USE =
+			customSignature("VariableUseF", 1)
+			.addPtr("var")
+			.returnData(c -> new VariableUseFunc(c));
 
 	private VariableUseFunc(FuncCaller<VariableUseFunc> caller) {
 		super(caller);
@@ -37,37 +40,6 @@ public final class VariableUseFunc extends Func<VariableUseFunc> {
 
 	public DataOp use(Code code, DataRecOp var) {
 		return invoke(null, code, VARIABLE_USE.result(), var.toAny(null, code));
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<VariableUseFunc> {
-
-		private Return<DataOp> result;
-		private Arg<AnyOp> var;
-
-		private Signature() {
-			super(ID.id("VariableUseF"));
-		}
-
-		public final Return<DataOp> result() {
-			return this.result;
-		}
-
-		public final Arg<AnyOp> var() {
-			return this.var;
-		}
-
-		@Override
-		public VariableUseFunc op(FuncCaller<VariableUseFunc> caller) {
-			return new VariableUseFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnData();
-			this.var = builder.addPtr("var");
-		}
-
 	}
 
 }
