@@ -21,14 +21,20 @@ package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 
 
 final class DebugNameFunc extends Func<DebugNameFunc> {
 
-	public static final Signature DEBUG_NAME = new Signature();
+	public static final ExtSignature<Void, DebugNameFunc> DEBUG_NAME =
+			customSignature(DEBUG_ID.sub("NameF"), 2)
+			.addPtr("message")
+			.addPtr("data")
+			.returnVoid(c -> new DebugNameFunc(c));
 
 	private DebugNameFunc(FuncCaller<DebugNameFunc> caller) {
 		super(caller);
@@ -36,43 +42,6 @@ final class DebugNameFunc extends Func<DebugNameFunc> {
 
 	public void call(Code code, AnyOp message, AnyOp data) {
 		invoke(null, code, DEBUG_NAME.result(), message, data);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<DebugNameFunc> {
-
-		private Return<Void> result;
-		private Arg<AnyOp> message;
-		private Arg<AnyOp> data;
-
-		private Signature() {
-			super(DEBUG_ID.sub("NameF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<AnyOp> message() {
-			return this.message;
-		}
-
-		public final Arg<AnyOp> data() {
-			return this.data;
-		}
-
-		@Override
-		public DebugNameFunc op(FuncCaller<DebugNameFunc> caller) {
-			return new DebugNameFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.message = builder.addPtr("message");
-			this.data = builder.addPtr("data");
-		}
-
 	}
 
 }

@@ -21,14 +21,18 @@ package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.Int32op;
 
 
 final class DebugDoneFunc extends Func<DebugDoneFunc> {
 
-	static final Signature DEBUG_DONE = new Signature();
+	static final ExtSignature<Void, DebugDoneFunc> DEBUG_DONE =
+			customSignature(DEBUG_ID.sub("DoneF"), 1)
+			.addInt32("line")
+			.returnVoid(c -> new DebugDoneFunc(c));
 
 	private DebugDoneFunc(FuncCaller<DebugDoneFunc> caller) {
 		super(caller);
@@ -36,42 +40,6 @@ final class DebugDoneFunc extends Func<DebugDoneFunc> {
 
 	public final void call(Code code) {
 		invoke(null, code, DEBUG_DONE.result(), code.int32(0));
-	}
-
-	static final class Signature
-			extends org.o42a.codegen.code.Signature<DebugDoneFunc> {
-
-		private Return<Void> result;
-		private Arg<Int32op> line;
-
-		private Signature() {
-			super(DEBUG_ID.sub("DoneF"));
-		}
-
-		@Override
-		public boolean isDebuggable() {
-			return false;
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<Int32op> line() {
-			return this.line;
-		}
-
-		@Override
-		public DebugDoneFunc op(FuncCaller<DebugDoneFunc> caller) {
-			return new DebugDoneFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.line = builder.addInt32("line");
-		}
-
 	}
 
 }

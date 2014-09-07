@@ -21,13 +21,17 @@ package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 
 
 final class DebugExitFunc extends Func<DebugExitFunc> {
 
-	static final Signature DEBUG_EXIT = new Signature();
+	static final ExtSignature<Void, DebugExitFunc> DEBUG_EXIT =
+			customSignature(DEBUG_ID.sub("ExitF"))
+			.returnVoid(c -> new DebugExitFunc(c));
 
 	private DebugExitFunc(FuncCaller<DebugExitFunc> caller) {
 		super(caller);
@@ -35,36 +39,6 @@ final class DebugExitFunc extends Func<DebugExitFunc> {
 
 	public final void exit(Code code) {
 		invoke(null, code, DEBUG_EXIT.result());
-	}
-
-	static class Signature
-			extends org.o42a.codegen.code.Signature<DebugExitFunc> {
-
-		private Return<Void> result;
-
-		private Signature() {
-			super(DEBUG_ID.sub("ExitF"));
-		}
-
-		@Override
-		public boolean isDebuggable() {
-			return false;
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		@Override
-		public DebugExitFunc op(FuncCaller<DebugExitFunc> caller) {
-			return new DebugExitFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-		}
-
 	}
 
 }

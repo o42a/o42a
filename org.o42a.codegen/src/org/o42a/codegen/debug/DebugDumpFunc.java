@@ -21,7 +21,9 @@ package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -30,7 +32,12 @@ import org.o42a.codegen.code.op.Int32op;
 
 final class DebugDumpFunc extends Func<DebugDumpFunc> {
 
-	public static final Signature DEBUG_DUMP = new Signature();
+	public static final ExtSignature<Void, DebugDumpFunc> DEBUG_DUMP =
+			customSignature(DEBUG_ID.sub("DumpF"), 3)
+			.addPtr("prefix")
+			.addData("data")
+			.addInt32("depth")
+			.returnVoid(c -> new DebugDumpFunc(c));
 
 	private DebugDumpFunc(FuncCaller<DebugDumpFunc> caller) {
 		super(caller);
@@ -38,49 +45,6 @@ final class DebugDumpFunc extends Func<DebugDumpFunc> {
 
 	public void call(Code code, AnyOp prefix, DataOp data, Int32op depth) {
 		invoke(null, code, DEBUG_DUMP.result(), prefix, data, depth);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<DebugDumpFunc> {
-
-		private Return<Void> result;
-		private Arg<AnyOp> prefix;
-		private Arg<DataOp> data;
-		private Arg<Int32op> depth;
-
-		private Signature() {
-			super(DEBUG_ID.sub("DumpF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<AnyOp> prefix() {
-			return this.prefix;
-		}
-
-		public final Arg<DataOp> data() {
-			return this.data;
-		}
-
-		public final Arg<Int32op> depth() {
-			return this.depth;
-		}
-
-		@Override
-		public DebugDumpFunc op(FuncCaller<DebugDumpFunc> caller) {
-			return new DebugDumpFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.prefix = builder.addPtr("prefix");
-			this.data = builder.addData("data");
-			this.depth = builder.addInt32("depth");
-		}
-
 	}
 
 }

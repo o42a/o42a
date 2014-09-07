@@ -22,14 +22,19 @@ package org.o42a.codegen.debug;
 import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 
 
 final class DebugEnterFunc extends Func<DebugEnterFunc> {
 
-	static final Signature DEBUG_ENTER = new Signature();
+	static final ExtSignature<BoolOp, DebugEnterFunc> DEBUG_ENTER =
+			customSignature(DEBUG_ID.sub("EnterF"), 1)
+			.addPtr("stack_frame", DEBUG_STACK_FRAME_TYPE)
+			.returnBool(c -> new DebugEnterFunc(c));
 
 	private DebugEnterFunc(FuncCaller<DebugEnterFunc> caller) {
 		super(caller);
@@ -37,42 +42,6 @@ final class DebugEnterFunc extends Func<DebugEnterFunc> {
 
 	public BoolOp enter(Code code, DebugStackFrameOp stackFrame) {
 		return invoke(null, code, DEBUG_ENTER.result(), stackFrame);
-	}
-
-	static final class Signature
-			extends org.o42a.codegen.code.Signature<DebugEnterFunc> {
-
-		private Return<BoolOp> result;
-		private Arg<DebugStackFrameOp> stackFrame;
-
-		private Signature() {
-			super(DEBUG_ID.sub("EnterF"));
-		}
-
-		@Override
-		public boolean isDebuggable() {
-			return false;
-		}
-
-		public final Return<BoolOp> result() {
-			return this.result;
-		}
-
-		public final Arg<DebugStackFrameOp> stackFrame() {
-			return this.stackFrame;
-		}
-
-		@Override
-		public DebugEnterFunc op(FuncCaller<DebugEnterFunc> caller) {
-			return new DebugEnterFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnBool();
-			this.stackFrame = builder.addPtr("env", DEBUG_STACK_FRAME_TYPE);
-		}
-
 	}
 
 }
