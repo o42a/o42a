@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.op.ByObjectFunc.BY_OBJECT;
+import static org.o42a.core.ir.object.op.ByObjectFn.BY_OBJECT;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.object.ObjectOp;

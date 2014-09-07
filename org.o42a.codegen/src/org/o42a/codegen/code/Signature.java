@@ -27,7 +27,7 @@ import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
 
 
-public abstract class Signature<F extends Func<F>> {
+public abstract class Signature<F extends Fn<F>> {
 
 	private static final Arg<?>[] NO_ARGS = new Arg<?>[0];
 

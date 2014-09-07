@@ -22,7 +22,7 @@ package org.o42a.codegen.data;
 import static org.o42a.codegen.data.Struct.structContent;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
@@ -115,12 +115,12 @@ public abstract class SubData<S extends StructOp<S>>
 		return add(new SystemData(this, name, systemType));
 	}
 
-	public final <F extends Func<F>>
+	public final <F extends Fn<F>>
 	FuncRec<F> addFuncPtr(String name, Signature<F> signature) {
 		return addFuncPtr(ID.id(name), signature);
 	}
 
-	public final <F extends Func<F>>
+	public final <F extends Fn<F>>
 	FuncRec<F> addFuncPtr(ID name, Signature<F> signature) {
 		return add(new FuncRec<>(
 				this,

@@ -45,7 +45,7 @@ public abstract class Functions {
 		return this.generator;
 	}
 
-	public final <F extends Func<F>> FuncPtr<F> nullPtr(
+	public final <F extends Fn<F>> FuncPtr<F> nullPtr(
 			Signature<F> signature) {
 		return new NullFuncPtr<>(allocate(signature));
 	}
@@ -58,7 +58,7 @@ public abstract class Functions {
 		return new ExternalFunctionSettings(this);
 	}
 
-	public final <F extends Func<F>> Signature<F> allocate(
+	public final <F extends Fn<F>> Signature<F> allocate(
 			Signature<F> signature) {
 		return signature.allocate(getGenerator());
 	}
@@ -84,18 +84,18 @@ public abstract class Functions {
 
 	protected abstract BeforeReturn createBeforeReturn(Function<?> function);
 
-	protected abstract <F extends Func<F>> void addFunction(
+	protected abstract <F extends Fn<F>> void addFunction(
 			ID id,
 			Signature<F> signature,
 			FuncPtr<F> function);
 
-	protected <F extends Func<F>> void addFunction(Function<F> function) {
+	protected <F extends Fn<F>> void addFunction(Function<F> function) {
 		this.functions.add(function);
 	}
 
 	protected abstract DataAllocation<AnyOp> codeToAny(CodePtr ptr);
 
-	final <F extends Func<F>> FuncPtr<F> externalFunction(
+	final <F extends Fn<F>> FuncPtr<F> externalFunction(
 			String name,
 			Signature<F> signature,
 			ExternalFunctionSettings settings) {

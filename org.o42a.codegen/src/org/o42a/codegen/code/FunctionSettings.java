@@ -44,7 +44,7 @@ public final class FunctionSettings
 		return this;
 	}
 
-	public <F extends Func<F>> Function<F> create(
+	public <F extends Fn<F>> Function<F> create(
 			ID id,
 			Signature<F> signature) {
 
@@ -55,7 +55,7 @@ public final class FunctionSettings
 		return function;
 	}
 
-	public <F extends Func<F>> Function<F> create(
+	public <F extends Fn<F>> Function<F> create(
 			ID id,
 			Signature<F> signature,
 			FunctionBuilder<F> builder) {

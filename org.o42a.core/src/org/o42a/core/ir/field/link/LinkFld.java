@@ -27,7 +27,7 @@ import org.o42a.core.ir.field.RefFld.StatelessOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
@@ -55,7 +55,7 @@ public class LinkFld extends AbstractLinkFld<StatelessOp> {
 	}
 
 	@Override
-	protected FuncPtr<ObjectRefFunc> constructorStub() {
+	protected FuncPtr<ObjectRefFn> constructorStub() {
 		throw new IllegalStateException(
 				"The link constructor can not be a stub");
 	}

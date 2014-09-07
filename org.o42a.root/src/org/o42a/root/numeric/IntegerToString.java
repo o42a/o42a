@@ -50,10 +50,10 @@ public class IntegerToString extends ToString<Long> {
 	protected ValOp convert(ValDirs stringDirs, ValOp value) {
 
 		final Block code = stringDirs.code();
-		final FuncPtr<IntegerStringFunc> fn =
+		final FuncPtr<IntegerStringFn> fn =
 				code.getGenerator().externalFunction().sideEffects().link(
 						"o42a_int_to_str",
-						IntegerStringFunc.INTEGER_STRING);
+						IntegerStringFn.INTEGER_STRING);
 
 		return fn.op(null, code).convert(
 				stringDirs,

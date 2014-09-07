@@ -31,7 +31,7 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.op.ObjectFunc;
+import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.Val;
@@ -42,7 +42,7 @@ import org.o42a.util.string.ID;
 
 public abstract class RefFld<
 		F extends RefFld.Op<F>,
-		C extends ObjectFunc<C>>
+		C extends ObjectFn<C>>
 				extends MemberFld<F> {
 
 	public static final StatefulType STATEFUL_FLD = new StatefulType();
@@ -394,7 +394,7 @@ public abstract class RefFld<
 	private static class FldContent<
 			F extends Op<F>,
 			T extends Type<F>,
-			C extends ObjectFunc<C>>
+			C extends ObjectFn<C>>
 					implements Content<T> {
 
 		private final RefFld<F, C> fld;

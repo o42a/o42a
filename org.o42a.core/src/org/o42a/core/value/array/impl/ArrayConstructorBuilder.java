@@ -22,8 +22,8 @@ package org.o42a.core.value.array.impl;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.value.ObjectValueFunc.OBJECT_VALUE;
-import static org.o42a.core.ir.value.ValAllocFunc.VAL_ALLOC;
+import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ValAllocFn.VAL_ALLOC;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.*;
@@ -34,8 +34,8 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ObjectValueFunc;
-import org.o42a.core.ir.value.ValAllocFunc;
+import org.o42a.core.ir.value.ObjectValueFn;
+import org.o42a.core.ir.value.ValAllocFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
@@ -45,7 +45,7 @@ import org.o42a.util.string.ID;
 
 
 public class ArrayConstructorBuilder
-		implements FunctionBuilder<ObjectValueFunc> {
+		implements FunctionBuilder<ObjectValueFn> {
 
 	private static final ID ITEMS_ID = ID.id("items");
 
@@ -56,7 +56,7 @@ public class ArrayConstructorBuilder
 	}
 
 	@Override
-	public void build(Function<ObjectValueFunc> function) {
+	public void build(Function<ObjectValueFn> function) {
 
 		final Array array = this.arrayIR.getArray();
 		final Obj owner = array.getOwner();
@@ -100,7 +100,7 @@ public class ArrayConstructorBuilder
 		final CodeDirs arrayDirs = dirs.dirs();
 		final Block code = arrayDirs.code();
 		final ArrayItem[] items = array.getItems();
-		final FuncPtr<ValAllocFunc> func =
+		final FuncPtr<ValAllocFn> func =
 				dirs.getGenerator()
 				.externalFunction()
 				.noSideEffects()

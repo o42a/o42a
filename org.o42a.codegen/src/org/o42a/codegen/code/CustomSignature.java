@@ -105,7 +105,7 @@ public final class CustomSignature {
 		return this;
 	}
 
-	public final <F extends Func<F>> CustomSignature addFuncPtr(
+	public final <F extends Fn<F>> CustomSignature addFuncPtr(
 			String name,
 			Signature<F> signature) {
 		this.args.add(builder -> builder.addFuncPtr(name, signature));
@@ -119,7 +119,7 @@ public final class CustomSignature {
 				builder -> builder.returnVoid());
 	}
 
-	public final <F extends Func<F>> ExtSignature<Void, F> returnVoid(
+	public final <F extends Fn<F>> ExtSignature<Void, F> returnVoid(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -135,7 +135,7 @@ public final class CustomSignature {
 				builder -> builder.returnInt8());
 	}
 
-	public final <F extends Func<F>> ExtSignature<Int8op, F> returnInt8(
+	public final <F extends Fn<F>> ExtSignature<Int8op, F> returnInt8(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -151,7 +151,7 @@ public final class CustomSignature {
 				builder -> builder.returnInt16());
 	}
 
-	public final <F extends Func<F>> ExtSignature<Int16op, F> returnInt16(
+	public final <F extends Fn<F>> ExtSignature<Int16op, F> returnInt16(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -167,7 +167,7 @@ public final class CustomSignature {
 				builder -> builder.returnInt32());
 	}
 
-	public final <F extends Func<F>> ExtSignature<Int32op, F> returnInt32(
+	public final <F extends Fn<F>> ExtSignature<Int32op, F> returnInt32(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -183,7 +183,7 @@ public final class CustomSignature {
 				builder -> builder.returnInt64());
 	}
 
-	public final <F extends Func<F>> ExtSignature<Int64op, F> returnInt64(
+	public final <F extends Fn<F>> ExtSignature<Int64op, F> returnInt64(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -199,7 +199,7 @@ public final class CustomSignature {
 				builder -> builder.returnFp32());
 	}
 
-	public final <F extends Func<F>> ExtSignature<Fp32op, F> returnFp32(
+	public final <F extends Fn<F>> ExtSignature<Fp32op, F> returnFp32(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -215,7 +215,7 @@ public final class CustomSignature {
 				builder -> builder.returnFp64());
 	}
 
-	public final <F extends Func<F>> ExtSignature<Fp64op, F> returnFp64(
+	public final <F extends Fn<F>> ExtSignature<Fp64op, F> returnFp64(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -231,7 +231,7 @@ public final class CustomSignature {
 				builder -> builder.returnBool());
 	}
 
-	public final <F extends Func<F>> ExtSignature<BoolOp, F> returnBool(
+	public final <F extends Fn<F>> ExtSignature<BoolOp, F> returnBool(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -247,7 +247,7 @@ public final class CustomSignature {
 				builder -> builder.returnAny());
 	}
 
-	public final <F extends Func<F>> ExtSignature<AnyOp, F> returnAny(
+	public final <F extends Fn<F>> ExtSignature<AnyOp, F> returnAny(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -263,7 +263,7 @@ public final class CustomSignature {
 				builder -> builder.returnData());
 	}
 
-	public final <F extends Func<F>> ExtSignature<DataOp, F> returnData(
+	public final <F extends Fn<F>> ExtSignature<DataOp, F> returnData(
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(
 				getId(),
@@ -281,7 +281,7 @@ public final class CustomSignature {
 	}
 
 	public final
-	<F extends Func<F>, S extends StructOp<S>> ExtSignature<S, F> returnPtr(
+	<F extends Fn<F>, S extends StructOp<S>> ExtSignature<S, F> returnPtr(
 			Type<S> type,
 			Function<FuncCaller<F>, F> createOp) {
 		return new ExtSignature<>(

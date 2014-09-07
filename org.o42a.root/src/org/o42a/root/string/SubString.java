@@ -21,7 +21,7 @@ package org.o42a.root.string;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
-import static org.o42a.root.string.SubStringFunc.SUB_STRING;
+import static org.o42a.root.string.SubStringFn.SUB_STRING;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;
@@ -259,11 +259,11 @@ final class SubString extends AnnotatedBuiltin {
 				toDirs.dirs().nested().value(dirs.valDirs()).def();
 
 		final Block code = substringDirs.code();
-		final FuncPtr<SubStringFunc> funcPtr =
+		final FuncPtr<SubStringFn> funcPtr =
 				substringDirs.getGenerator()
 				.externalFunction()
 				.link("o42a_str_sub", SUB_STRING);
-		final SubStringFunc func = funcPtr.op(null, code);
+		final SubStringFn func = funcPtr.op(null, code);
 
 		func.substring(
 				substringDirs,

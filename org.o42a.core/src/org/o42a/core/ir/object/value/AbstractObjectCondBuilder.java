@@ -29,10 +29,10 @@ import org.o42a.core.value.ValueType;
 
 
 abstract class AbstractObjectCondBuilder
-		implements FunctionBuilder<ObjectCondFunc> {
+		implements FunctionBuilder<ObjectCondFn> {
 
 	@Override
-	public final void build(Function<ObjectCondFunc> function) {
+	public final void build(Function<ObjectCondFn> function) {
 
 		final Block failure = function.addBlock("failure");
 		final ObjBuilder builder = createBuilder(function, failure.head());
@@ -54,7 +54,7 @@ abstract class AbstractObjectCondBuilder
 	protected abstract ValueType<?> getValueType();
 
 	protected abstract ObjBuilder createBuilder(
-			Function<ObjectCondFunc> function,
+			Function<ObjectCondFn> function,
 			CodePos failureDir);
 
 }

@@ -27,7 +27,7 @@ import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.util.string.ID;
 
 
-public final class FuncRec<F extends Func<F>>
+public final class FuncRec<F extends Fn<F>>
 		extends Rec<FuncOp<F>, FuncPtr<F>> {
 
 	private final Signature<F> signature;

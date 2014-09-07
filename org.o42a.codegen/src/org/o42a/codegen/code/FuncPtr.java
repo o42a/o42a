@@ -28,7 +28,7 @@ import org.o42a.codegen.data.backend.FuncAllocation;
 import org.o42a.util.string.ID;
 
 
-public abstract class FuncPtr<F extends Func<F>>
+public abstract class FuncPtr<F extends Fn<F>>
 		extends AbstractPtr
 		implements FunctionAttributes, Supplier<FuncPtr<F>> {
 

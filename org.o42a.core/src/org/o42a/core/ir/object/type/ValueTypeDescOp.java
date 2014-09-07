@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.op.ByObjectFunc.BY_OBJECT;
-import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
+import static org.o42a.core.ir.object.op.ByObjectFn.BY_OBJECT;
+import static org.o42a.core.ir.value.ValCopyFn.VAL_COPY;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -28,8 +28,8 @@ import org.o42a.codegen.data.AnyRec;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.op.ByObjectFunc;
-import org.o42a.core.ir.value.ValCopyFunc;
+import org.o42a.core.ir.object.op.ByObjectFn;
+import org.o42a.core.ir.value.ValCopyFn;
 import org.o42a.util.string.ID;
 
 
@@ -45,9 +45,9 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 			extends org.o42a.codegen.data.Type<ValueTypeDescOp> {
 
 		private AnyRec name;
-		private FuncRec<ValCopyFunc> copy;
-		private FuncRec<ByObjectFunc> mark;
-		private FuncRec<ByObjectFunc> sweep;
+		private FuncRec<ValCopyFn> copy;
+		private FuncRec<ByObjectFn> mark;
+		private FuncRec<ByObjectFn> sweep;
 
 		private Type() {
 			super(ID.rawId("o42a_val_type_t"));
@@ -57,15 +57,15 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 			return this.name;
 		}
 
-		public final FuncRec<ValCopyFunc> copy() {
+		public final FuncRec<ValCopyFn> copy() {
 			return this.copy;
 		}
 
-		public final FuncRec<ByObjectFunc> mark() {
+		public final FuncRec<ByObjectFn> mark() {
 			return this.mark;
 		}
 
-		public final FuncRec<ByObjectFunc> sweep() {
+		public final FuncRec<ByObjectFn> sweep() {
 			return this.sweep;
 		}
 

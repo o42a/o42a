@@ -26,7 +26,7 @@ import org.o42a.backend.constant.data.func.NullCFAlloc;
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.backend.constant.data.struct.GlobalCDAlloc;
 import org.o42a.backend.constant.data.struct.StructCDAlloc;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -101,7 +101,7 @@ public final class ConstDataWriter implements DataWriter {
 	}
 
 	@Override
-	public final <F extends Func<F>> CFAlloc<F> nullPtr(FuncPtr<F> pointer) {
+	public final <F extends Fn<F>> CFAlloc<F> nullPtr(FuncPtr<F> pointer) {
 		return new NullCFAlloc<>(getBackend(), pointer);
 	}
 

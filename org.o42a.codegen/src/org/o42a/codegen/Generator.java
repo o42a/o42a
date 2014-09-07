@@ -135,7 +135,7 @@ public abstract class Generator {
 
 	protected abstract DataWriter dataWriter();
 
-	protected <F extends Func<F>> void addFunction(
+	protected <F extends Fn<F>> void addFunction(
 			ID id,
 			FuncPtr<F> functionPtr) {
 		getDebug().addFunction(id, functionPtr);

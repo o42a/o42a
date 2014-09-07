@@ -26,7 +26,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.op.ObjectFunc;
+import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.object.Obj;
 
 
@@ -35,7 +35,7 @@ public final class ObjBuilder extends CodeBuilder {
 	private final ObjOp host;
 
 	public ObjBuilder(
-			Function<? extends ObjectFunc<?>> function,
+			Function<? extends ObjectFn<?>> function,
 			CodePos exit,
 			ObjectIR hostIR,
 			Obj hostType,

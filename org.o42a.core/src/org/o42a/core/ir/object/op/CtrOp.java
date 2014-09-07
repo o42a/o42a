@@ -23,7 +23,7 @@ import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
-import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
+import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.ir.value.ValOp.finalVal;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
@@ -157,14 +157,14 @@ public class CtrOp extends IROp {
 		return holder.holdVolatile(resultCode, newObject);
 	}
 
-	private FuncPtr<NewObjectFunc> newFunc() {
+	private FuncPtr<NewObjectFn> newFunc() {
 		return getGenerator()
 				.externalFunction()
 				.noSideEffects()
 				.link("o42a_obj_new", NEW_OBJECT);
 	}
 
-	private FuncPtr<NewObjectFunc> eagerFunc() {
+	private FuncPtr<NewObjectFn> eagerFunc() {
 		return getGenerator()
 				.externalFunction()
 				.noSideEffects()

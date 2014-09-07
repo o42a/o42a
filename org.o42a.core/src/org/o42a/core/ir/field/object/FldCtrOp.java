@@ -20,8 +20,8 @@
 package org.o42a.core.ir.field.object;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
-import static org.o42a.core.ir.field.object.FldCtrFinishFunc.FLD_CTR_FINISH;
-import static org.o42a.core.ir.field.object.FldCtrStartFunc.FLD_CTR_START;
+import static org.o42a.core.ir.field.object.FldCtrFinishFn.FLD_CTR_FINISH;
+import static org.o42a.core.ir.field.object.FldCtrStartFn.FLD_CTR_START;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 
 import org.o42a.codegen.code.*;
@@ -55,7 +55,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 
 	public BoolOp start(Code code, FldIROp fld) {
 
-		final FuncPtr<FldCtrStartFunc> fn =
+		final FuncPtr<FldCtrStartFn> fn =
 				code.getGenerator().externalFunction().link(
 						"o42a_fld_start",
 						FLD_CTR_START);
@@ -71,7 +71,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 
 	public final BoolOp start(Code code, ObjectOp host) {
 
-		final FuncPtr<FldCtrStartFunc> fn =
+		final FuncPtr<FldCtrStartFn> fn =
 				code.getGenerator().externalFunction().link(
 						"o42a_fld_val_start",
 						FLD_CTR_START);
@@ -92,7 +92,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 
 	public final void finish(Code code, ObjectOp host) {
 
-		final FuncPtr<FldCtrFinishFunc> fn =
+		final FuncPtr<FldCtrFinishFn> fn =
 				code.getGenerator().externalFunction().link(
 						"o42a_fld_finish",
 						FLD_CTR_FINISH);

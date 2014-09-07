@@ -20,8 +20,8 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
-import static org.o42a.codegen.debug.DebugDoFunc.DEBUG_DO;
-import static org.o42a.codegen.debug.DebugDoneFunc.DEBUG_DONE;
+import static org.o42a.codegen.debug.DebugDoFn.DEBUG_DO;
+import static org.o42a.codegen.debug.DebugDoneFn.DEBUG_DONE;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 
 import org.o42a.codegen.Generator;

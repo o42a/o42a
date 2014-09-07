@@ -21,7 +21,7 @@ package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.backend.constant.data.struct.*;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -203,7 +203,7 @@ public class ConstDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <F extends Func<F>> FuncRecCDAlloc<F> allocateFuncPtr(
+	public <F extends Fn<F>> FuncRecCDAlloc<F> allocateFuncPtr(
 			DataAllocation<?> enclosing,
 			FuncRec<F> data,
 			DataAllocation<FuncOp<F>> type,

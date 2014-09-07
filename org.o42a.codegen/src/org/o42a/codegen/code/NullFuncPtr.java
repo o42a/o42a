@@ -22,7 +22,7 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
-final class NullFuncPtr<F extends Func<F>> extends FuncPtr<F> {
+final class NullFuncPtr<F extends Fn<F>> extends FuncPtr<F> {
 
 	private FuncAllocation<F> allocation;
 

@@ -27,7 +27,7 @@ import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.value.ObjectValueFunc;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.value.ValueType;
 
 
@@ -54,7 +54,7 @@ final class ObjectValueBuilder extends AbstractObjectValueBuilder {
 
 	@Override
 	protected ObjBuilder createBuilder(
-			Function<ObjectValueFunc> function,
+			Function<ObjectValueFn> function,
 			CodePos failureDir) {
 		return new ObjBuilder(
 				function,

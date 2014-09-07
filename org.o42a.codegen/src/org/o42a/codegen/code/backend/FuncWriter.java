@@ -25,7 +25,7 @@ import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
-public interface FuncWriter<F extends Func<F>> extends BlockWriter {
+public interface FuncWriter<F extends Fn<F>> extends BlockWriter {
 
 	FuncAllocation<F> getAllocation();
 
@@ -51,7 +51,7 @@ public interface FuncWriter<F extends Func<F>> extends BlockWriter {
 
 	<S extends StructOp<S>> S ptrArg(Code code, Arg<S> arg, Type<S> type);
 
-	<FF extends Func<FF>> FF funcPtrArg(
+	<FF extends Fn<FF>> FF funcPtrArg(
 			Code code,
 			Arg<FF> arg,
 			Signature<FF> signature);

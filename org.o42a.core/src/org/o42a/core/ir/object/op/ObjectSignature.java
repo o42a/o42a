@@ -26,7 +26,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.util.string.ID;
 
 
-public abstract class ObjectSignature<F extends ObjectFunc<F>>
+public abstract class ObjectSignature<F extends ObjectFn<F>>
 		extends Signature<F> {
 
 	public ObjectSignature(ID id) {

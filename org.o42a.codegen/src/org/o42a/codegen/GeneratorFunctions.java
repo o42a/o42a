@@ -49,7 +49,7 @@ final class GeneratorFunctions extends Functions {
 	}
 
 	@Override
-	protected <F extends Func<F>> void addFunction(
+	protected <F extends Fn<F>> void addFunction(
 			ID id,
 			Signature<F> signature,
 			FuncPtr<F> function) {
@@ -62,7 +62,7 @@ final class GeneratorFunctions extends Functions {
 	}
 
 	@Override
-	protected <F extends Func<F>> void addFunction(Function<F> function) {
+	protected <F extends Fn<F>> void addFunction(Function<F> function) {
 		getGenerator().addFunction(function.getId(), function.getPointer());
 		super.addFunction(function);
 	}

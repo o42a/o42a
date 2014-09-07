@@ -36,7 +36,7 @@ import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.alias.AliasField;
 import org.o42a.core.member.field.Field;
@@ -65,7 +65,7 @@ public class EagerLinkFld extends AbstractLinkFld<StatefulOp> {
 	}
 
 	@Override
-	protected FuncPtr<ObjectRefFunc> constructorStub() {
+	protected FuncPtr<ObjectRefFn> constructorStub() {
 		return getGenerator()
 				.externalFunction()
 				.link("o42a_obj_ref_stub", getConstructorSignature());

@@ -26,13 +26,13 @@ import java.util.function.Function;
 import org.o42a.util.string.ID;
 
 
-public final class SimpleSignature<R> extends ExtSignature<R, ExtFunc<R>> {
+public final class SimpleSignature<R> extends ExtSignature<R, ExtFn<R>> {
 
 	SimpleSignature(
 			ID id,
 			ArrayList<Consumer<SignatureBuilder>> args,
 			Function<SignatureBuilder, Return<R>> ret) {
-		super(id, args, ret, ExtFunc<R>::new);
+		super(id, args, ret, ExtFn<R>::new);
 	}
 
 }

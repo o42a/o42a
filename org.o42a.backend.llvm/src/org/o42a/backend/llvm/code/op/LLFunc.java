@@ -27,7 +27,7 @@ import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
@@ -35,7 +35,7 @@ import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
 
-public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
+public class LLFunc<F extends Fn<F>> extends PtrLLOp<F>
 		implements FuncCaller<F> {
 
 	private final Signature<F> signature;

@@ -49,20 +49,20 @@ public class LLVMCodeBackend implements CodeBackend {
 	}
 
 	@Override
-	public <F extends Func<F>> SignatureWriter<F> addSignature(
+	public <F extends Fn<F>> SignatureWriter<F> addSignature(
 			Signature<F> signature) {
 		return new LLSignatureWriter<>(this.module, signature);
 	}
 
 	@Override
-	public <F extends Func<F>> LLFunction<F> addFunction(
+	public <F extends Fn<F>> LLFunction<F> addFunction(
 			Function<F> function,
 			BeforeReturn beforeReturn) {
 		return new LLFunction<>(this.module, function, beforeReturn);
 	}
 
 	@Override
-	public <F extends Func<F>> FuncAllocation<F> externFunction(
+	public <F extends Fn<F>> FuncAllocation<F> externFunction(
 			ID id,
 			FuncPtr<F> pointer) {
 

@@ -48,20 +48,20 @@ public class ConstCodeBackend implements CodeBackend {
 	}
 
 	@Override
-	public <F extends Func<F>> SignatureWriter<F> addSignature(
+	public <F extends Fn<F>> SignatureWriter<F> addSignature(
 			Signature<F> signature) {
 		return new CSignatureWriter<>(getBackend(), signature);
 	}
 
 	@Override
-	public <F extends Func<F>> FuncWriter<F> addFunction(
+	public <F extends Fn<F>> FuncWriter<F> addFunction(
 			Function<F> function,
 			BeforeReturn beforeReturn) {
 		return new CFunction<>(this.backend, function, beforeReturn);
 	}
 
 	@Override
-	public <F extends Func<F>> FuncAllocation<F> externFunction(
+	public <F extends Fn<F>> FuncAllocation<F> externFunction(
 			ID id,
 			FuncPtr<F> pointer) {
 		return new ExternCFAlloc<>(getBackend(), pointer, id.toString());

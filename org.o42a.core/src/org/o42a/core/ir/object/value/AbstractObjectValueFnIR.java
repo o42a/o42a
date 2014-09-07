@@ -27,7 +27,7 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.impl.ObjectFnIR;
-import org.o42a.core.ir.object.op.ObjectFunc;
+import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
@@ -35,7 +35,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
+public abstract class AbstractObjectValueFnIR<F extends ObjectFn<F>>
 		extends ObjectFnIR {
 
 	private final ObjectValueIR valueIR;

@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.value.PredefObjValue.*;
-import static org.o42a.core.ir.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
@@ -30,14 +30,14 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.value.ObjectValueFunc;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
 import org.o42a.util.string.ID;
 
 
 public final class ObjectValueFnIR
-		extends AbstractObjectValueFnIR<ObjectValueFunc> {
+		extends AbstractObjectValueFnIR<ObjectValueFn> {
 
 	public ObjectValueFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -52,7 +52,7 @@ public final class ObjectValueFnIR
 
 		if (!writeIfConstant(subDirs, getFinal())) {
 
-			final ObjectValueFunc func = get(host).op(suffix(), code);
+			final ObjectValueFn func = get(host).op(suffix(), code);
 
 			func.call(subDirs, getObjectIR().isExact() ? null : host);
 		}
@@ -66,7 +66,7 @@ public final class ObjectValueFnIR
 	}
 
 	@Override
-	protected FuncRec<ObjectValueFunc> func(ObjectIRData data) {
+	protected FuncRec<ObjectValueFn> func(ObjectIRData data) {
 		return data.valueFunc();
 	}
 
@@ -81,12 +81,12 @@ public final class ObjectValueFnIR
 	}
 
 	@Override
-	protected ObjectValueFunc.Signature signature() {
+	protected ObjectValueFn.Signature signature() {
 		return OBJECT_VALUE;
 	}
 
 	@Override
-	protected FunctionBuilder<ObjectValueFunc> builder() {
+	protected FunctionBuilder<ObjectValueFn> builder() {
 		return new ObjectValueBuilder(this);
 	}
 
@@ -96,22 +96,22 @@ public final class ObjectValueFnIR
 	}
 
 	@Override
-	protected FuncPtr<ObjectValueFunc> stubFunc() {
+	protected FuncPtr<ObjectValueFn> stubFunc() {
 		return predefined(STUB_OBJ_VALUE);
 	}
 
 	@Override
-	protected FuncPtr<ObjectValueFunc> unknownValFunc() {
+	protected FuncPtr<ObjectValueFn> unknownValFunc() {
 		return falseValFunc();
 	}
 
 	@Override
-	protected FuncPtr<ObjectValueFunc> falseValFunc() {
+	protected FuncPtr<ObjectValueFn> falseValFunc() {
 		return predefined(FALSE_OBJ_VALUE);
 	}
 
 	@Override
-	protected FuncPtr<ObjectValueFunc> voidValFunc() {
+	protected FuncPtr<ObjectValueFn> voidValFunc() {
 		return predefined(VOID_OBJ_VALUE);
 	}
 
@@ -123,7 +123,7 @@ public final class ObjectValueFnIR
 		reuse(predefined(DEFAULT_OBJ_VALUE));
 	}
 
-	private FuncPtr<ObjectValueFunc> predefined(PredefObjValue value) {
+	private FuncPtr<ObjectValueFn> predefined(PredefObjValue value) {
 		return value.valueFunction(
 				getObject().getContext(),
 				getGenerator(),

@@ -21,7 +21,7 @@ package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.util.string.ID;
@@ -153,7 +153,7 @@ public abstract class StructOp<S extends StructOp<S>>
 				field);
 	}
 
-	public final <F extends Func<F>> FuncOp<F> func(
+	public final <F extends Fn<F>> FuncOp<F> func(
 			ID id,
 			Code code,
 			FuncRec<F> field) {

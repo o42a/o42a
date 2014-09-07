@@ -20,14 +20,14 @@
 package org.o42a.backend.constant.code.signature;
 
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.SignatureBuilder;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.backend.SignatureAllocation;
 
 
-public final class CSignature<F extends Func<F>>
+public final class CSignature<F extends Fn<F>>
 		extends Signature<F>
 		implements SignatureAllocation<F> {
 

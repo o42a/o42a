@@ -31,7 +31,7 @@ import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
 
-public final class CFunc<F extends Func<F>>
+public final class CFunc<F extends Fn<F>>
 		extends PtrCOp<F, FuncPtr<F>>
 		implements FuncCaller<F> {
 

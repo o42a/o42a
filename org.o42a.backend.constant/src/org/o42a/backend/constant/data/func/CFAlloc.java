@@ -22,7 +22,7 @@ package org.o42a.backend.constant.data.func;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.*;
 import org.o42a.backend.constant.data.rec.FuncRecCDAlloc;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.AnyOp;
@@ -33,7 +33,7 @@ import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
-public abstract class CFAlloc<F extends Func<F>>
+public abstract class CFAlloc<F extends Fn<F>>
 		implements FuncAllocation<F> {
 
 	private final FuncPtr<F> pointer;

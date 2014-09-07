@@ -24,7 +24,7 @@ import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
 import static org.o42a.core.value.array.ArrayValueType.ARRAY;
-import static org.o42a.root.array.ArrayOfDuplicatesFunc.ARRAY_OF_DUPLICATES;
+import static org.o42a.root.array.ArrayOfDuplicatesFn.ARRAY_OF_DUPLICATES;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;
@@ -180,7 +180,7 @@ public class Duplicates extends AnnotatedBuiltin {
 		final Block code = dupDirs.code();
 		final AnyOp duplicate = evalDup(dupDirs, host, inlineDuplicate);
 
-		final FuncPtr<ArrayOfDuplicatesFunc> func =
+		final FuncPtr<ArrayOfDuplicatesFn> func =
 				dirs.getGenerator().externalFunction().link(
 						"o42a_array_of_duplicates",
 						ARRAY_OF_DUPLICATES);

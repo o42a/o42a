@@ -20,13 +20,13 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.Arg;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public interface SignatureWriter<F extends Func<F>> {
+public interface SignatureWriter<F extends Fn<F>> {
 
 	void returnVoid();
 
@@ -72,7 +72,7 @@ public interface SignatureWriter<F extends Func<F>> {
 
 	<S extends StructOp<S>> void addPtr(Arg<S> arg, Type<S> type);
 
-	<FF extends Func<FF>> void addFuncPtr(Arg<FF> arg, Signature<FF> signature);
+	<FF extends Fn<FF>> void addFuncPtr(Arg<FF> arg, Signature<FF> signature);
 
 	SignatureAllocation<F> done();
 

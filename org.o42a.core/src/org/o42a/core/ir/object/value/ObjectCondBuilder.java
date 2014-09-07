@@ -51,7 +51,7 @@ final class ObjectCondBuilder extends AbstractObjectCondBuilder {
 
 	@Override
 	protected ObjBuilder createBuilder(
-			Function<ObjectCondFunc> function,
+			Function<ObjectCondFn> function,
 			CodePos failureDir) {
 		return new ObjBuilder(
 				function,

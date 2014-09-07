@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
-import static org.o42a.core.ir.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
@@ -30,7 +30,7 @@ import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ObjectValueFunc;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
 import org.o42a.core.ir.value.type.ValueOp;
@@ -39,12 +39,12 @@ import org.o42a.util.string.ID;
 
 
 abstract class AbstractObjectValueBuilder
-		implements FunctionBuilder<ObjectValueFunc> {
+		implements FunctionBuilder<ObjectValueFn> {
 
 	private static final ID FLD_CTR_ID = ID.id("fld_ctr");
 
 	@Override
-	public void build(Function<ObjectValueFunc> function) {
+	public void build(Function<ObjectValueFn> function) {
 
 		final ObjBuilder builder = builder(function);
 		final ValOp result =
@@ -113,12 +113,12 @@ abstract class AbstractObjectValueBuilder
 	}
 
 	protected abstract ObjBuilder createBuilder(
-			Function<ObjectValueFunc> function,
+			Function<ObjectValueFn> function,
 			CodePos failureDir);
 
 	protected abstract void writeValue(DefDirs dirs, ObjOp host);
 
-	private ObjBuilder builder(Function<ObjectValueFunc> function) {
+	private ObjBuilder builder(Function<ObjectValueFn> function) {
 
 		final Block failure = function.addBlock("failure");
 		final ObjBuilder builder = createBuilder(function, failure.head());

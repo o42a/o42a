@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.data.backend;
 
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -90,7 +90,7 @@ public interface DataAllocator {
 			SystemData data,
 			DataAllocation<SystemOp> type);
 
-	<F extends Func<F>> DataAllocation<FuncOp<F>> allocateFuncPtr(
+	<F extends Fn<F>> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,
 			FuncRec<F> data,
 			DataAllocation<FuncOp<F>> type,

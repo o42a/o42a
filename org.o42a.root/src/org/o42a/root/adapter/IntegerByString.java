@@ -19,7 +19,7 @@
 */
 package org.o42a.root.adapter;
 
-import static org.o42a.root.adapter.ParseWithRadixFunc.PARSE_WITH_RADIX;
+import static org.o42a.root.adapter.ParseWithRadixFn.PARSE_WITH_RADIX;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
@@ -52,13 +52,13 @@ public abstract class IntegerByString extends ByString<Long> {
 	@Override
 	protected ValOp parse(ValDirs dirs, ValOp inputVal) {
 
-		final ParseWithRadixFunc parseFunc =
+		final ParseWithRadixFn parseFunc =
 				parseFunc(dirs.getGenerator()).op(null, dirs.code());
 
 		return parseFunc.parse(dirs, inputVal, 10);
 	}
 
-	private FuncPtr<ParseWithRadixFunc> parseFunc(Generator generator) {
+	private FuncPtr<ParseWithRadixFn> parseFunc(Generator generator) {
 		return generator.externalFunction()
 				.link("o42a_int_by_str", PARSE_WITH_RADIX);
 	}

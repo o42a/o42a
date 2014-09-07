@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.impl.VariableUseFunc.VARIABLE_USE;
+import static org.o42a.core.ir.object.impl.VariableUseFn.VARIABLE_USE;
 
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;

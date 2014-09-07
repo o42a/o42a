@@ -20,8 +20,8 @@
 package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
-import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_USE;
-import static org.o42a.core.ir.object.op.StartObjectUseFunc.START_OBJECT_USE;
+import static org.o42a.core.ir.object.op.EndObjectUnuseFn.END_OBJECT_USE;
+import static org.o42a.core.ir.object.op.StartObjectUseFn.START_OBJECT_USE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;

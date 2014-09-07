@@ -22,7 +22,7 @@ package org.o42a.backend.llvm.data.rec;
 import org.o42a.backend.llvm.code.op.FuncLLOp;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocPlace;
@@ -31,7 +31,7 @@ import org.o42a.util.DataLayout;
 import org.o42a.util.string.ID;
 
 
-public final class FuncRecLLDAlloc<F extends Func<F>>
+public final class FuncRecLLDAlloc<F extends Fn<F>>
 		extends SimpleLLDAlloc<FuncOp<F>> {
 
 	private final Signature<F> signature;

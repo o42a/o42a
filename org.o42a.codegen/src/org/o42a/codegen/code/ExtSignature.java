@@ -27,7 +27,7 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.util.string.ID;
 
 
-public class ExtSignature<R, F extends Func<F>> extends Signature<F> {
+public class ExtSignature<R, F extends Fn<F>> extends Signature<F> {
 
 	private final ArrayList<Consumer<SignatureBuilder>> args;
 	private final Function<SignatureBuilder, Return<R>> ret;
