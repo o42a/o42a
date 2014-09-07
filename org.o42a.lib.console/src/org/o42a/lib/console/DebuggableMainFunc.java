@@ -21,7 +21,9 @@ package org.o42a.lib.console;
 
 import static org.o42a.lib.console.ConsoleModule.CONSOLE_ID;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
@@ -29,7 +31,12 @@ import org.o42a.codegen.code.op.Int32op;
 
 public final class DebuggableMainFunc extends Func<DebuggableMainFunc> {
 
-	public static final Signature DEBUGGABLE_MAIN = new Signature();
+	public static final
+	ExtSignature<Int32op, DebuggableMainFunc> DEBUGGABLE_MAIN =
+			customSignature(CONSOLE_ID.sub("DebuggableMainF"), 2)
+			.addInt32("argc")
+			.addPtr("argv")
+			.returnInt32(c -> new DebuggableMainFunc(c));
 
 	private DebuggableMainFunc(FuncCaller<DebuggableMainFunc> caller) {
 		super(caller);
@@ -37,43 +44,6 @@ public final class DebuggableMainFunc extends Func<DebuggableMainFunc> {
 
 	public Int32op call(Code code, Int32op argc, AnyOp argv) {
 		return invoke(null, code, DEBUGGABLE_MAIN.result(), argc, argv);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<DebuggableMainFunc> {
-
-		private Return<Int32op> result;
-		private Arg<Int32op> argc;
-		private Arg<AnyOp> argv;
-
-		private Signature() {
-			super(CONSOLE_ID.sub("DebuggableMainF"));
-		}
-
-		public final Return<Int32op> result() {
-			return this.result;
-		}
-
-		public final Arg<Int32op> argc() {
-			return this.argc;
-		}
-
-		public final Arg<AnyOp> argv() {
-			return this.argv;
-		}
-
-		@Override
-		public DebuggableMainFunc op(FuncCaller<DebuggableMainFunc> caller) {
-			return new DebuggableMainFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnInt32();
-			this.argc = builder.addInt32("argc");
-			this.argv = builder.addPtr("argv");
-		}
-
 	}
 
 }

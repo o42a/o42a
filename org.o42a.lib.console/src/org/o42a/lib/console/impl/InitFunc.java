@@ -19,14 +19,18 @@
 */
 package org.o42a.lib.console.impl;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.util.string.ID;
 
 
 public class InitFunc extends Func<InitFunc> {
 
-	public static final Signature INIT = new Signature();
+	public static final ExtSignature<Void, InitFunc> INIT =
+			customSignature(ID.id("InitF"), 0)
+			.returnVoid(c -> new InitFunc(c));
 
 	private InitFunc(FuncCaller<InitFunc> caller) {
 		super(caller);
@@ -34,31 +38,6 @@ public class InitFunc extends Func<InitFunc> {
 
 	public void init(Code code) {
 		invoke(null, code, INIT.result());
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<InitFunc> {
-
-		private Return<Void> result;
-
-		private Signature() {
-			super(ID.id("InitF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		@Override
-		public InitFunc op(FuncCaller<InitFunc> caller) {
-			return new InitFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-		}
-
 	}
 
 }
