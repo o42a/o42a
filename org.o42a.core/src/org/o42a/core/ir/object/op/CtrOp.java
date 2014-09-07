@@ -22,21 +22,22 @@ package org.o42a.core.ir.object.op;
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.ir.value.ValOp.finalVal;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocated;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.DataRec;
-import org.o42a.codegen.data.Int32rec;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.value.ValHolderFactory;
@@ -193,6 +194,10 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().sample());
 		}
 
+		public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
+			return ptr(null, code, getType().vmtc());
+		}
+
 		public final ValType.Op value(Code code) {
 			return struct(null, code, getType().value());
 		}
@@ -208,6 +213,7 @@ public class CtrOp extends IROp {
 		private DataRec owner;
 		private DataRec ancestor;
 		private DataRec sample;
+		private StructRec<VmtIRChain.Op> vmtc;
 		private ValType value;
 		private Int32rec numDeps;
 
@@ -232,6 +238,10 @@ public class CtrOp extends IROp {
 			return this.sample;
 		}
 
+		public final StructRec<VmtIRChain.Op> vmtc() {
+			return this.vmtc;
+		}
+
 		public final ValType value() {
 			return this.value;
 		}
@@ -245,6 +255,7 @@ public class CtrOp extends IROp {
 			this.owner = data.addDataPtr("owner");
 			this.ancestor = data.addDataPtr("ancestor");
 			this.sample = data.addDataPtr("sample");
+			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 			this.value = data.addInstance(ID.rawId("value"), VAL_TYPE);
 			this.numDeps = data.addInt32("num_deps");
 		}
@@ -275,6 +286,8 @@ public class CtrOp extends IROp {
 
 		@Override
 		public void init(Code code, Op allocated) {
+			allocated.vmtc(code).store(code, code.nullPtr(VMT_IR_CHAIN_TYPE));
+
 			allocated.value(code)
 			.flags(code, NOT_ATOMIC)
 			.store(code, VAL_INDEFINITE);
