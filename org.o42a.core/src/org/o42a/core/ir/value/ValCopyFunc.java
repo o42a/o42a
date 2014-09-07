@@ -21,16 +21,20 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.value.ValType.Op;
-import org.o42a.util.string.ID;
 
 
 public final class ValCopyFunc extends Func<ValCopyFunc> {
 
-	public static final Signature VAL_COPY = new Signature();
+	public static final ExtSignature<Void, ValCopyFunc> VAL_COPY =
+			customSignature("ValCopyF", 2)
+			.addPtr("from", VAL_TYPE)
+			.addPtr("to", VAL_TYPE)
+			.returnVoid(c -> new ValCopyFunc(c));
 
 	private ValCopyFunc(FuncCaller<ValCopyFunc> caller) {
 		super(caller);
@@ -43,43 +47,6 @@ public final class ValCopyFunc extends Func<ValCopyFunc> {
 		invoke(null, code, VAL_COPY.result(), from.ptr(code), to.ptr(code));
 		to.go(code, dirs);
 		to.holder().hold(code);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ValCopyFunc> {
-
-		private Return<Void> result;
-		private Arg<Op> from;
-		private Arg<Op> to;
-
-		private Signature() {
-			super(ID.id("ValCopyF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<Op> from() {
-			return this.from;
-		}
-
-		public final Arg<Op> to() {
-			return this.to;
-		}
-
-		@Override
-		public ValCopyFunc op(FuncCaller<ValCopyFunc> caller) {
-			return new ValCopyFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.from = builder.addPtr("from", VAL_TYPE);
-			this.to = builder.addPtr("to", VAL_TYPE);
-		}
-
 	}
 
 }

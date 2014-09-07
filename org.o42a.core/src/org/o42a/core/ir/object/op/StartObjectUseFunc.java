@@ -21,16 +21,21 @@ package org.o42a.core.ir.object.op;
 
 import static org.o42a.core.ir.object.op.ObjectUseOp.OBJECT_USE_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.util.string.ID;
 
 
 public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 
-	public static final Signature START_OBJECT_USE = new Signature();
+	public static final
+	ExtSignature<Void, StartObjectUseFunc> START_OBJECT_USE =
+			customSignature("StartObjectUseF", 2)
+			.addPtr("use", OBJECT_USE_TYPE)
+			.addData("object")
+			.returnVoid(c -> new StartObjectUseFunc(c));
 
 	private StartObjectUseFunc(FuncCaller<StartObjectUseFunc> caller) {
 		super(caller);
@@ -43,44 +48,6 @@ public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 				START_OBJECT_USE.result(),
 				use,
 				object.toData(null, code));
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<StartObjectUseFunc> {
-
-		private Return<Void> result;
-		private Arg<ObjectUseOp.Op> use;
-		private Arg<DataOp> object;
-
-		private Signature() {
-			super(ID.id("StartObjectUseF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<ObjectUseOp.Op> use() {
-			return this.use;
-		}
-
-		public final Arg<DataOp> data() {
-			return this.object;
-		}
-
-		@Override
-		public final StartObjectUseFunc op(
-				FuncCaller<StartObjectUseFunc> caller) {
-			return new StartObjectUseFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.use = builder.addPtr("use", OBJECT_USE_TYPE);
-			this.object = builder.addData("object");
-		}
-
 	}
 
 }

@@ -21,14 +21,18 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.util.string.ID;
 
 
 public final class ValUseFunc extends Func<ValUseFunc> {
 
-	public static final Signature VAL_USE = new Signature();
+	public static final ExtSignature<Void, ValUseFunc> VAL_USE =
+			customSignature("ValUseF", 1)
+			.addPtr("val", VAL_TYPE)
+			.returnVoid(c -> new ValUseFunc(c));
 
 	private ValUseFunc(FuncCaller<ValUseFunc> caller) {
 		super(caller);
@@ -36,37 +40,6 @@ public final class ValUseFunc extends Func<ValUseFunc> {
 
 	public final void call(Code code, ValType.Op val) {
 		invoke(null, code, VAL_USE.result(), val);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ValUseFunc> {
-
-		private Return<Void> result;
-		private Arg<ValType.Op> val;
-
-		private Signature() {
-			super(ID.id("ValUseF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<ValType.Op> val() {
-			return this.val;
-		}
-
-		@Override
-		public ValUseFunc op(FuncCaller<ValUseFunc> caller) {
-			return new ValUseFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.val = builder.addPtr("val", VAL_TYPE);
-		}
-
 	}
 
 }

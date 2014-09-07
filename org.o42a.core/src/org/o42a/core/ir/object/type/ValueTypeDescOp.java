@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.type;
 
 import static org.o42a.core.ir.object.op.ByObjectFunc.BY_OBJECT;
+import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -28,6 +29,7 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.op.ByObjectFunc;
+import org.o42a.core.ir.value.ValCopyFunc;
 import org.o42a.util.string.ID;
 
 
@@ -43,6 +45,7 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 			extends org.o42a.codegen.data.Type<ValueTypeDescOp> {
 
 		private AnyRec name;
+		private FuncRec<ValCopyFunc> copy;
 		private FuncRec<ByObjectFunc> mark;
 		private FuncRec<ByObjectFunc> sweep;
 
@@ -52,6 +55,10 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 
 		public final AnyRec name() {
 			return this.name;
+		}
+
+		public final FuncRec<ValCopyFunc> copy() {
+			return this.copy;
 		}
 
 		public final FuncRec<ByObjectFunc> mark() {
@@ -70,6 +77,7 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 		@Override
 		protected void allocate(SubData<ValueTypeDescOp> data) {
 			this.name = data.addPtr("name");
+			this.copy = data.addFuncPtr("copy", VAL_COPY);
 			this.mark = data.addFuncPtr("mark", BY_OBJECT);
 			this.sweep = data.addFuncPtr("sweep", BY_OBJECT);
 		}

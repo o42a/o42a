@@ -21,52 +21,26 @@ package org.o42a.core.ir.object.op;
 
 import static org.o42a.core.ir.object.op.ObjectUseOp.OBJECT_USE_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.util.string.ID;
 
 
 public final class EndObjectUnuseFunc extends Func<EndObjectUnuseFunc> {
 
-	public static final Signature END_OBJECT_UNUSE = new Signature();
+	public static final
+	ExtSignature<Void, EndObjectUnuseFunc> END_OBJECT_USE =
+			customSignature("EndObjectUseF", 1)
+			.addPtr("use", OBJECT_USE_TYPE)
+			.returnVoid(c -> new EndObjectUnuseFunc(c));
 
 	private EndObjectUnuseFunc(FuncCaller<EndObjectUnuseFunc> caller) {
 		super(caller);
 	}
 
 	public final void unuse(Code code, ObjectUseOp.Op use) {
-		invoke(null, code, END_OBJECT_UNUSE.result(), use);
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<EndObjectUnuseFunc> {
-
-		private Return<Void> result;
-		private Arg<ObjectUseOp.Op> use;
-
-		private Signature() {
-			super(ID.id("EndObjectUseF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<ObjectUseOp.Op> use() {
-			return this.use;
-		}
-
-		@Override
-		public final EndObjectUnuseFunc op(FuncCaller<EndObjectUnuseFunc> caller) {
-			return new EndObjectUnuseFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.use = builder.addPtr("use", OBJECT_USE_TYPE);
-		}
-
+		invoke(null, code, END_OBJECT_USE.result(), use);
 	}
 
 }

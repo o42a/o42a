@@ -19,16 +19,19 @@
 */
 package org.o42a.core.ir.object.op;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.object.op.CtrOp.Op;
-import org.o42a.util.string.ID;
 
 
 public class NewObjectFunc extends Func<NewObjectFunc> {
 
-	public static final Signature NEW_OBJECT = new Signature();
+	public static final ExtSignature<DataOp, NewObjectFunc> NEW_OBJECT =
+			customSignature("NewObjectF", 1)
+			.addPtr("ctr", CtrOp.CTR_TYPE)
+			.returnData(c -> new NewObjectFunc(c));
 
 	private NewObjectFunc(FuncCaller<NewObjectFunc> caller) {
 		super(caller);
@@ -36,37 +39,6 @@ public class NewObjectFunc extends Func<NewObjectFunc> {
 
 	public DataOp newObject(Code code, CtrOp ctr) {
 		return invoke(null, code, NEW_OBJECT.result(), ctr.ptr(code));
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<NewObjectFunc> {
-
-		private Return<DataOp> result;
-		private Arg<Op> ctr;
-
-		private Signature() {
-			super(ID.id("NewObjectF"));
-		}
-
-		public final Return<DataOp> result() {
-			return this.result;
-		}
-
-		public final Arg<Op> ctr() {
-			return this.ctr;
-		}
-
-		@Override
-		public NewObjectFunc op(FuncCaller<NewObjectFunc> caller) {
-			return new NewObjectFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnData();
-			this.ctr = builder.addPtr("ctr", CtrOp.CTR_TYPE);
-		}
-
 	}
 
 }

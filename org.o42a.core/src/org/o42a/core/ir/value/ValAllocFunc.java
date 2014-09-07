@@ -21,17 +21,22 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.util.string.ID;
 
 
 public final class ValAllocFunc extends Func<ValAllocFunc> {
 
-	public static final Signature VAL_ALLOC = new Signature();
+	public static final ExtSignature<AnyOp, ValAllocFunc> VAL_ALLOC =
+			customSignature("ValAllocF", 2)
+			.addPtr("value", VAL_TYPE)
+			.addInt32("size")
+			.returnAny(c -> new ValAllocFunc(c));
 
 	private ValAllocFunc(FuncCaller<ValAllocFunc> caller) {
 		super(caller);
@@ -55,43 +60,6 @@ public final class ValAllocFunc extends Func<ValAllocFunc> {
 		value.go(dirs.code(), dirs.dirs());
 
 		return result;
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ValAllocFunc> {
-
-		private Return<AnyOp> result;
-		private Arg<ValType.Op> value;
-		private Arg<Int32op> size;
-
-		private Signature() {
-			super(ID.id("ValAllocF"));
-		}
-
-		public final Return<AnyOp> result() {
-			return this.result;
-		}
-
-		public final Arg<ValType.Op> value() {
-			return this.value;
-		}
-
-		public final Arg<Int32op> size() {
-			return this.size;
-		}
-
-		@Override
-		public ValAllocFunc op(FuncCaller<ValAllocFunc> caller) {
-			return new ValAllocFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnAny();
-			this.value = builder.addPtr("value", VAL_TYPE);
-			this.size = builder.addInt32("size");
-		}
-
 	}
 
 }
