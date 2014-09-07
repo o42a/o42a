@@ -26,6 +26,22 @@ import org.o42a.util.string.ID;
 
 public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 
+	public static CustomSignature customSignature(String id) {
+		return Signature.customSignature(id);
+	}
+
+	public static CustomSignature customSignature(ID id) {
+		return Signature.customSignature(id);
+	}
+
+	public static CustomSignature customSignature(String id, int numArgs) {
+		return Signature.customSignature(id, numArgs);
+	}
+
+	public static CustomSignature customSignature(ID id, int numArgs) {
+		return Signature.customSignature(id, numArgs);
+	}
+
 	private final FuncCaller<F> caller;
 
 	public Func(FuncCaller<F> caller) {
