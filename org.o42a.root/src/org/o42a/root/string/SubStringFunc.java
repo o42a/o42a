@@ -26,13 +26,17 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType.Op;
-import org.o42a.util.string.ID;
 
 
 final class SubStringFunc extends Func<SubStringFunc> {
 
-	public static final Signature SUB_STRING = new Signature();
+	public static final ExtSignature<Void, SubStringFunc> SUB_STRING =
+			customSignature("SubStringF", 4)
+			.addPtr("sub", VAL_TYPE)
+			.addPtr("string", VAL_TYPE)
+			.addInt64("from")
+			.addInt64("to")
+			.returnVoid(c -> new SubStringFunc(c));
 
 	private SubStringFunc(FuncCaller<SubStringFunc> caller) {
 		super(caller);
@@ -67,55 +71,6 @@ final class SubStringFunc extends Func<SubStringFunc> {
 				string.ptr(code),
 				from,
 				to);
-	}
-
-	static final class Signature
-			extends org.o42a.codegen.code.Signature<SubStringFunc> {
-
-		private Return<Void> result;
-		private Arg<Op> sub;
-		private Arg<Op> string;
-		private Arg<Int64op> from;
-		private Arg<Int64op> to;
-
-		private Signature() {
-			super(ID.id("SubStringF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<Op> sub() {
-			return this.sub;
-		}
-
-		public final Arg<Op> string() {
-			return this.string;
-		}
-
-		public final Arg<Int64op> from() {
-			return this.from;
-		}
-
-		public final Arg<Int64op> to() {
-			return this.to;
-		}
-
-		@Override
-		public SubStringFunc op(FuncCaller<SubStringFunc> caller) {
-			return new SubStringFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.sub = builder.addPtr("sub", VAL_TYPE);
-			this.string = builder.addPtr("string", VAL_TYPE);
-			this.from = builder.addInt64("from");
-			this.to = builder.addInt64("to");
-		}
-
 	}
 
 }

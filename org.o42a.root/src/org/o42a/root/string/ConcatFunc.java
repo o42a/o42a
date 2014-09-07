@@ -21,16 +21,21 @@ package org.o42a.root.string;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
-import org.o42a.util.string.ID;
 
 
 public class ConcatFunc extends Func<ConcatFunc> {
 
-	public static final Signature CONCAT = new Signature();
+	public static final ExtSignature<Void, ConcatFunc> CONCAT =
+			customSignature("ConcatF", 3)
+			.addPtr("output", VAL_TYPE)
+			.addPtr("what", VAL_TYPE)
+			.addPtr("with", VAL_TYPE)
+			.returnVoid(c -> new ConcatFunc(c));
 
 	private ConcatFunc(FuncCaller<ConcatFunc> caller) {
 		super(caller);
@@ -44,49 +49,6 @@ public class ConcatFunc extends Func<ConcatFunc> {
 				output.ptr(code),
 				what.ptr(code),
 				with.ptr(code));
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ConcatFunc> {
-
-		private Return<Void> result;
-		private Arg<ValType.Op> output;
-		private Arg<ValType.Op> what;
-		private Arg<ValType.Op> with;
-
-		private Signature() {
-			super(ID.id("ConcatF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<ValType.Op> output() {
-			return this.output;
-		}
-
-		public final Arg<ValType.Op> what() {
-			return this.what;
-		}
-
-		public final Arg<ValType.Op> with() {
-			return this.with;
-		}
-
-		@Override
-		public ConcatFunc op(FuncCaller<ConcatFunc> caller) {
-			return new ConcatFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.output = builder.addPtr("output", VAL_TYPE);
-			this.what = builder.addPtr("what", VAL_TYPE);
-			this.with = builder.addPtr("with", VAL_TYPE);
-		}
-
 	}
 
 }

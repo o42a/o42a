@@ -23,16 +23,19 @@ import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
-import org.o42a.util.string.ID;
 
 
 public final class ParseWithRadixFunc extends Func<ParseWithRadixFunc> {
 
-	public static final Signature PARSE_WITH_RADIX = new Signature();
+	public static final ExtSignature<Void, ParseWithRadixFunc>
+	PARSE_WITH_RADIX =
+			customSignature("ParseWithRadixF", 3)
+			.addPtr("output", VAL_TYPE)
+			.addPtr("input", VAL_TYPE)
+			.addInt32("radix")
+			.returnVoid(c -> new ParseWithRadixFunc(c));
 
 	private ParseWithRadixFunc(FuncCaller<ParseWithRadixFunc> caller) {
 		super(caller);
@@ -57,49 +60,6 @@ public final class ParseWithRadixFunc extends Func<ParseWithRadixFunc> {
 				output.ptr(code),
 				input.ptr(code),
 				code.int32(radix));
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ParseWithRadixFunc> {
-
-		private Return<Void> result;
-		private Arg<ValType.Op> output;
-		private Arg<ValType.Op> input;
-		private Arg<Int32op> radix;
-
-		private Signature() {
-			super(ID.id("ParseWithRadixF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<ValType.Op> output() {
-			return this.output;
-		}
-
-		public final Arg<ValType.Op> input() {
-			return this.input;
-		}
-
-		public final Arg<Int32op> radix() {
-			return this.radix;
-		}
-
-		@Override
-		public ParseWithRadixFunc op(FuncCaller<ParseWithRadixFunc> caller) {
-			return new ParseWithRadixFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.output = builder.addPtr("output", VAL_TYPE);
-			this.input = builder.addPtr("input", VAL_TYPE);
-			this.radix = builder.addInt32("radix");
-		}
-
 	}
 
 }

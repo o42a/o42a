@@ -21,19 +21,28 @@ package org.o42a.root.array;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType.Op;
 import org.o42a.util.string.ID;
 
 
 public final class CopyArrayElementsFunc extends Func<CopyArrayElementsFunc> {
 
-	public static final Signature COPY_ARRAY_ELEMENTS = new Signature();
+	public static final
+	ExtSignature<BoolOp, CopyArrayElementsFunc> COPY_ARRAY_ELEMENTS =
+			customSignature("CopyArrayElementsF", 5)
+			.addPtr("source", VAL_TYPE)
+			.addInt64("source_from")
+			.addInt64("source_to")
+			.addPtr("target", VAL_TYPE)
+			.addInt64("target_start")
+			.returnBool(c -> new CopyArrayElementsFunc(c));
 
 	private static final ID COPIED = ID.rawId("copied");
 
@@ -61,62 +70,6 @@ public final class CopyArrayElementsFunc extends Func<CopyArrayElementsFunc> {
 				targetStart);
 
 		copied.goUnless(code, dirs.falseDir());
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<CopyArrayElementsFunc> {
-
-		private Return<BoolOp> result;
-		private Arg<Op> source;
-		private Arg<Int64op> sourceFrom;
-		private Arg<Int64op> sourceTo;
-		private Arg<Op> target;
-		private Arg<Int64op> targetStart;
-
-		private Signature() {
-			super(ID.rawId("CopyArrayElementsF"));
-		}
-
-		public final Return<BoolOp> result() {
-			return this.result;
-		}
-
-		public final Arg<Op> source() {
-			return this.source;
-		}
-
-		public final Arg<Int64op> sourceFrom() {
-			return this.sourceFrom;
-		}
-
-		public final Arg<Int64op> sourceTo() {
-			return this.sourceTo;
-		}
-
-		public final Arg<Op> target() {
-			return this.target;
-		}
-
-		public final Arg<Int64op> targetStart() {
-			return this.targetStart;
-		}
-
-		@Override
-		public CopyArrayElementsFunc op(
-				FuncCaller<CopyArrayElementsFunc> caller) {
-			return new CopyArrayElementsFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnBool();
-			this.source = builder.addPtr("source", VAL_TYPE);
-			this.sourceFrom = builder.addInt64("source_from");
-			this.sourceTo = builder.addInt64("source_to");
-			this.target = builder.addPtr("target", VAL_TYPE);
-			this.targetStart = builder.addInt64("target_start");
-		}
-
 	}
 
 }
