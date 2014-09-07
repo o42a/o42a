@@ -29,7 +29,7 @@ import org.o42a.codegen.data.Type;
 import org.o42a.util.ArrayUtil;
 
 
-public class CSignatureWriter<F extends Func<F>>
+public class CSignatureWriter<F extends Fn<F>>
 		implements SignatureWriter<F> {
 
 	private static final CArg<?>[] NO_ARGS = new CArg<?>[0];
@@ -172,7 +172,7 @@ public class CSignatureWriter<F extends Func<F>>
 	}
 
 	@Override
-	public <FF extends Func<FF>> void addFuncPtr(
+	public <FF extends Fn<FF>> void addFuncPtr(
 			Arg<FF> arg,
 			Signature<FF> signature) {
 		arg(new FuncPtrCArg<>(getBackend().underlying(signature), arg));

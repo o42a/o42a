@@ -19,13 +19,13 @@
 */
 package org.o42a.codegen.data.backend;
 
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.FuncOp;
 
 
-public interface FuncAllocation<F extends Func<F>> {
+public interface FuncAllocation<F extends Fn<F>> {
 
 	Signature<F> getSignature();
 

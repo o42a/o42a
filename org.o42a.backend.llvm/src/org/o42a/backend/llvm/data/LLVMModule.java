@@ -30,7 +30,7 @@ import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.backend.llvm.code.LLSignature;
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
@@ -226,7 +226,7 @@ public final class LLVMModule {
 		return pointerToFunc(allocation.getNativePtr());
 	}
 
-	public final <F extends Func<F>> LLSignature<F> llvm(
+	public final <F extends Fn<F>> LLSignature<F> llvm(
 			Signature<F> signature) {
 		return (LLSignature<F>) signature.allocation(getGenerator());
 	}

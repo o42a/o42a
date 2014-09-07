@@ -136,7 +136,7 @@ public final class SignatureBuilder {
 		return arg(new Arg.PtrArg<>(this.signature, argIndex(), name, type));
 	}
 
-	public final <F extends Func<F>> Arg<F> addFuncPtr(
+	public final <F extends Fn<F>> Arg<F> addFuncPtr(
 			String name,
 			Signature<F> signature) {
 		this.signature.getGenerator().getFunctions().allocate(signature);

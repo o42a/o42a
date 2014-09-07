@@ -20,7 +20,7 @@
 package org.o42a.core.ir;
 
 import static org.o42a.codegen.code.AllocationMode.NO_ALLOCATION;
-import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
+import static org.o42a.core.ir.op.NoArgFn.NO_ARG;
 
 import org.o42a.codegen.code.*;
 import org.o42a.util.string.ID;

@@ -19,34 +19,34 @@
 */
 package org.o42a.core.ir.field;
 
-import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
+import static org.o42a.core.ir.object.op.ObjectRefFn.OBJECT_REF;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
 public abstract class ObjectRefFld<F extends RefFld.Op<F>>
-		extends RefFld<F, ObjectRefFunc> {
+		extends RefFld<F, ObjectRefFn> {
 
-	private FuncPtr<ObjectRefFunc> cloneFunc;
+	private FuncPtr<ObjectRefFn> cloneFunc;
 
 	public ObjectRefFld(Field field, Obj target) {
 		super(field, target);
 	}
 
 	@Override
-	protected final ObjectRefFunc.Signature getConstructorSignature() {
+	protected final ObjectRefFn.Signature getConstructorSignature() {
 		return OBJECT_REF;
 	}
 
 	@Override
-	protected FuncPtr<ObjectRefFunc> cloneFunc() {
+	protected FuncPtr<ObjectRefFn> cloneFunc() {
 		if (this.cloneFunc != null) {
 			return this.cloneFunc;
 		}

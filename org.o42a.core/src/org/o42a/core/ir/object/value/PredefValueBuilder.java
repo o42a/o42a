@@ -28,7 +28,7 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.value.ObjectValueFunc;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
@@ -65,7 +65,7 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 
 	@Override
 	protected ObjBuilder createBuilder(
-			Function<ObjectValueFunc> function,
+			Function<ObjectValueFn> function,
 			CodePos failureDir) {
 
 		final Obj typeObject = typeObject();

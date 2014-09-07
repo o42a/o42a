@@ -20,7 +20,7 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -36,7 +36,7 @@ public interface CodeWriter {
 
 	ID getId();
 
-	<F extends Func<F>> FuncCaller<F> caller(
+	<F extends Fn<F>> FuncCaller<F> caller(
 			ID id,
 			FuncAllocation<F> allocation);
 
@@ -64,7 +64,7 @@ public interface CodeWriter {
 
 	<S extends StructOp<S>> S nullPtr(DataAllocation<S> type);
 
-	<F extends Func<F>> FuncCaller<F> nullPtr(Signature<F> signature);
+	<F extends Fn<F>> FuncCaller<F> nullPtr(Signature<F> signature);
 
 	AnyRecOp allocatePtr(ID id);
 

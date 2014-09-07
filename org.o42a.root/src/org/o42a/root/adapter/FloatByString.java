@@ -19,7 +19,7 @@
 */
 package org.o42a.root.adapter;
 
-import static org.o42a.root.adapter.ParseFunc.PARSE;
+import static org.o42a.root.adapter.ParseFn.PARSE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
@@ -269,13 +269,13 @@ public abstract strictfp class FloatByString extends ByString<Double> {
 	@Override
 	protected ValOp parse(ValDirs dirs, ValOp inputVal) {
 
-		final ParseFunc parseFunc =
+		final ParseFn parseFunc =
 				parseFunc(dirs.getGenerator()).op(null, dirs.code());
 
 		return parseFunc.parse(dirs, inputVal);
 	}
 
-	private FuncPtr<ParseFunc> parseFunc(Generator generator) {
+	private FuncPtr<ParseFn> parseFunc(Generator generator) {
 		return generator.externalFunction()
 				.link("o42a_float_by_str", PARSE);
 	}

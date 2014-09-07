@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.core.ir.value.ObjectValueFunc;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 
@@ -47,28 +47,28 @@ final class PredefObjValues {
 	}
 
 	private final Generator generator;
-	private final HashMap<PredefKey, FuncPtr<ObjectValueFunc>> valueFunctions =
+	private final HashMap<PredefKey, FuncPtr<ObjectValueFn>> valueFunctions =
 			new HashMap<>();
-	private final HashMap<PredefKey, FuncPtr<ObjectCondFunc>> condFunctions =
+	private final HashMap<PredefKey, FuncPtr<ObjectCondFn>> condFunctions =
 			new HashMap<>();
 
 	private PredefObjValues(Generator generator) {
 		this.generator = generator;
 	}
 
-	final FuncPtr<ObjectValueFunc> valueFunction(
+	final FuncPtr<ObjectValueFn> valueFunction(
 			CompilerContext context,
 			PredefObjValue value,
 			ValueType<?> valueType) {
 
 		final PredefKey key = prefefKey(value, valueType);
-		final FuncPtr<ObjectValueFunc> cached = this.valueFunctions.get(key);
+		final FuncPtr<ObjectValueFn> cached = this.valueFunctions.get(key);
 
 		if (cached != null) {
 			return cached;
 		}
 
-		final FuncPtr<ObjectValueFunc> function = value.createValueFunction(
+		final FuncPtr<ObjectValueFn> function = value.createValueFunction(
 				context,
 				this.generator,
 				valueType);
@@ -78,19 +78,19 @@ final class PredefObjValues {
 		return function;
 	}
 
-	final FuncPtr<ObjectCondFunc> condFunction(
+	final FuncPtr<ObjectCondFn> condFunction(
 			CompilerContext context,
 			PredefObjValue value,
 			ValueType<?> valueType) {
 
 		final PredefKey key = prefefKey(value, valueType);
-		final FuncPtr<ObjectCondFunc> cached = this.condFunctions.get(key);
+		final FuncPtr<ObjectCondFn> cached = this.condFunctions.get(key);
 
 		if (cached != null) {
 			return cached;
 		}
 
-		final FuncPtr<ObjectCondFunc> function =
+		final FuncPtr<ObjectCondFn> function =
 				value.createCondFunction(context, this.generator, valueType);
 
 		this.condFunctions.put(key, function);

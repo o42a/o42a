@@ -20,11 +20,11 @@
 package org.o42a.backend.constant.code.signature;
 
 import org.o42a.codegen.code.Arg;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.SignatureBuilder;
 
 
-final class FuncPtrCArg<F extends Func<F>> extends CArg<F> {
+final class FuncPtrCArg<F extends Fn<F>> extends CArg<F> {
 
 	private final CSignature<F> signature;
 

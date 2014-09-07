@@ -21,7 +21,7 @@ package org.o42a.root.string;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
-import static org.o42a.root.string.ConcatFunc.CONCAT;
+import static org.o42a.root.string.ConcatFn.CONCAT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;
@@ -177,11 +177,11 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		}
 
 		final Block code = withDirs.code();
-		final FuncPtr<ConcatFunc> funcPtr =
+		final FuncPtr<ConcatFn> funcPtr =
 				code.getGenerator()
 				.externalFunction()
 				.link("o42a_str_concat", CONCAT);
-		final ConcatFunc func = funcPtr.op(null, code);
+		final ConcatFn func = funcPtr.op(null, code);
 		final ValOp result = dirs.value();
 
 		func.concat(code, result, whatVal, withVal);

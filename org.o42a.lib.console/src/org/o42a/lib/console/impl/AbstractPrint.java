@@ -21,7 +21,7 @@ package org.o42a.lib.console.impl;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
-import static org.o42a.lib.console.impl.PrintFunc.PRINT;
+import static org.o42a.lib.console.impl.PrintFn.PRINT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.Generator;
@@ -119,7 +119,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		return this.text = path.bind(this, getScope()).target(distribute());
 	}
 
-	private FuncPtr<PrintFunc> printFunc(Generator generator) {
+	private FuncPtr<PrintFn> printFunc(Generator generator) {
 		return generator.externalFunction().link(this.funcName, PRINT);
 	}
 
@@ -144,7 +144,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 			final Block code = textDirs.code();
 
 			final ValOp text = this.text.writeValue(textDirs, host);
-			final PrintFunc printFunc =
+			final PrintFn printFunc =
 					this.print.printFunc(code.getGenerator()).op(null, code);
 
 			printFunc.print(code, text);
@@ -191,7 +191,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 			final Block code = textDirs.code();
 
 			final ValOp text = this.print.text().op(host).writeValue(textDirs);
-			final PrintFunc printFunc =
+			final PrintFn printFunc =
 					this.print.printFunc(code.getGenerator()).op(null, code);
 
 			printFunc.print(code, text);

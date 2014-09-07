@@ -72,9 +72,9 @@ public class ConstBackend {
 
 			return structOp;
 		}
-		if (op instanceof Func) {
+		if (op instanceof Fn) {
 
-			final COp func = cast((Func) op);
+			final COp func = cast((Fn) op);
 
 			return func;
 		}
@@ -90,12 +90,12 @@ public class ConstBackend {
 		return (CStruct<S>) op.writer();
 	}
 
-	public static <F extends Func<F>> CFAlloc<F> cast(
+	public static <F extends Fn<F>> CFAlloc<F> cast(
 			FuncAllocation<F> funcAllocation) {
 		return (CFAlloc<F>) funcAllocation;
 	}
 
-	public static <F extends Func<F>> CFunc<F> cast(Func<F> func) {
+	public static <F extends Fn<F>> CFunc<F> cast(Fn<F> func) {
 		return (CFunc<F>) func.caller();
 	}
 
@@ -147,7 +147,7 @@ public class ConstBackend {
 		return alloc.getUnderlyingInstance();
 	}
 
-	public final <F extends Func<F>> CSignature<F> underlying(
+	public final <F extends Fn<F>> CSignature<F> underlying(
 			Signature<F> signature) {
 		return (CSignature<F>) signature.allocation(getGenerator());
 	}

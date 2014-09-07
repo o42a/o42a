@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.object.value.ObjectCondFunc.OBJECT_COND;
+import static org.o42a.core.ir.object.value.ObjectCondFn.OBJECT_COND;
 import static org.o42a.core.ir.object.value.PredefObjValue.*;
 
 import org.o42a.codegen.code.Block;
@@ -36,7 +36,7 @@ import org.o42a.util.string.ID;
 
 
 public final class ObjectCondFnIR
-		extends AbstractObjectValueFnIR<ObjectCondFunc> {
+		extends AbstractObjectValueFnIR<ObjectCondFn> {
 
 	private static final ID SUFFIX = ID.id("condition");
 
@@ -55,7 +55,7 @@ public final class ObjectCondFnIR
 
 		if (!writeIfConstant(subDirs, finalValue)) {
 
-			final ObjectCondFunc func = get(host).op(suffix(), code);
+			final ObjectCondFn func = get(host).op(suffix(), code);
 
 			func.call(subDirs, getObjectIR().isExact() ? null : host);
 		}
@@ -69,7 +69,7 @@ public final class ObjectCondFnIR
 	}
 
 	@Override
-	protected FuncRec<ObjectCondFunc> func(ObjectIRData data) {
+	protected FuncRec<ObjectCondFn> func(ObjectIRData data) {
 		return data.condFunc();
 	}
 
@@ -84,12 +84,12 @@ public final class ObjectCondFnIR
 	}
 
 	@Override
-	protected final ObjectSignature<ObjectCondFunc> signature() {
+	protected final ObjectSignature<ObjectCondFn> signature() {
 		return OBJECT_COND;
 	}
 
 	@Override
-	protected FunctionBuilder<ObjectCondFunc> builder() {
+	protected FunctionBuilder<ObjectCondFn> builder() {
 		return new ObjectCondBuilder(this);
 	}
 
@@ -99,22 +99,22 @@ public final class ObjectCondFnIR
 	}
 
 	@Override
-	protected FuncPtr<ObjectCondFunc> stubFunc() {
+	protected FuncPtr<ObjectCondFn> stubFunc() {
 		return predefined(STUB_OBJ_VALUE);
 	}
 
 	@Override
-	protected FuncPtr<ObjectCondFunc> unknownValFunc() {
+	protected FuncPtr<ObjectCondFn> unknownValFunc() {
 		return falseValFunc();
 	}
 
 	@Override
-	protected FuncPtr<ObjectCondFunc> falseValFunc() {
+	protected FuncPtr<ObjectCondFn> falseValFunc() {
 		return predefined(FALSE_OBJ_VALUE);
 	}
 
 	@Override
-	protected FuncPtr<ObjectCondFunc> voidValFunc() {
+	protected FuncPtr<ObjectCondFn> voidValFunc() {
 		return predefined(VOID_OBJ_VALUE);
 	}
 
@@ -126,7 +126,7 @@ public final class ObjectCondFnIR
 		reuse(predefined(DEFAULT_OBJ_VALUE));
 	}
 
-	private FuncPtr<ObjectCondFunc> predefined(PredefObjValue value) {
+	private FuncPtr<ObjectCondFn> predefined(PredefObjValue value) {
 		return value.condFunction(
 				getObject().getContext(),
 				getGenerator(),

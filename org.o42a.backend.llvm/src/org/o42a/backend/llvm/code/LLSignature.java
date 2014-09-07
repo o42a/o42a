@@ -19,12 +19,12 @@
 */
 package org.o42a.backend.llvm.code;
 
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.SignatureAllocation;
 
 
-public class LLSignature<F extends Func<F>> implements SignatureAllocation<F> {
+public class LLSignature<F extends Fn<F>> implements SignatureAllocation<F> {
 
 	private final long nativePtr;
 	private final Signature<F> signature;

@@ -23,7 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
-import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
+import static org.o42a.core.ir.field.object.ObjectConstructorFn.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
@@ -44,9 +44,9 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
+public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 
-	private FuncPtr<ObjectConstructorFunc> cloneFunc;
+	private FuncPtr<ObjectConstructorFn> cloneFunc;
 
 	public ObjFld(Field field) {
 		super(field, field.toObject());
@@ -75,9 +75,9 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 	}
 
 	@Override
-	protected FuncPtr<ObjectConstructorFunc> reuseConstructor() {
+	protected FuncPtr<ObjectConstructorFn> reuseConstructor() {
 
-		final FuncPtr<ObjectConstructorFunc> reused = super.reuseConstructor();
+		final FuncPtr<ObjectConstructorFn> reused = super.reuseConstructor();
 
 		if (reused != null) {
 			return reused;
@@ -97,19 +97,19 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 	}
 
 	@Override
-	protected ObjectConstructorFunc.Signature getConstructorSignature() {
+	protected ObjectConstructorFn.Signature getConstructorSignature() {
 		return OBJECT_CONSTRUCTOR;
 	}
 
 	@Override
-	protected FuncPtr<ObjectConstructorFunc> constructorStub() {
+	protected FuncPtr<ObjectConstructorFn> constructorStub() {
 		return getGenerator()
 				.externalFunction()
 				.link("o42a_obj_constructor_stub", getConstructorSignature());
 	}
 
 	@Override
-	protected FuncPtr<ObjectConstructorFunc> cloneFunc() {
+	protected FuncPtr<ObjectConstructorFn> cloneFunc() {
 		if (this.cloneFunc != null) {
 			return this.cloneFunc;
 		}
@@ -261,7 +261,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 
 		prevVmt.compatible(code).goUnless(code, construct);
 
-		final ObjectConstructorFunc constructor =
+		final ObjectConstructorFn constructor =
 				prevVmt.func(null, code, vmtConstructor()).load(null, code);
 
 		// The field is dummy. The actual field is declared later.

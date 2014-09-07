@@ -22,8 +22,8 @@ package org.o42a.codegen.debug;
 import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
 import static org.o42a.codegen.code.BeforeReturn.NOTHING_BEFORE_RETURN;
 import static org.o42a.codegen.debug.DbgOptionsType.DBG_OPTIONS_TYPE;
-import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
-import static org.o42a.codegen.debug.DebugExitFunc.DEBUG_EXIT;
+import static org.o42a.codegen.debug.DebugEnterFn.DEBUG_ENTER;
+import static org.o42a.codegen.debug.DebugExitFn.DEBUG_EXIT;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 import static org.o42a.util.string.StringCodec.nullTermASCIIString;
 import static org.o42a.util.string.StringCodec.nullTermString;
@@ -58,8 +58,8 @@ public final class Debug {
 
 	private int debugSeq;
 
-	private FuncPtr<DebugEnterFunc> enterFunc;
-	private FuncPtr<DebugExitFunc> exitFunc;
+	private FuncPtr<DebugEnterFn> enterFunc;
+	private FuncPtr<DebugExitFn> exitFunc;
 
 	private final HashMap<String, Ptr<AnyOp>> names = new HashMap<>();
 	private final HashMap<String, Ptr<AnyOp>> messages = new HashMap<>();
@@ -140,7 +140,7 @@ public final class Debug {
 				this.settings).getPointer();
 	}
 
-	public <F extends Func<F>> void addFunction(ID id, FuncPtr<F> functionPtr) {
+	public <F extends Fn<F>> void addFunction(ID id, FuncPtr<F> functionPtr) {
 		if (isProxied()) {
 			return;
 		}
@@ -265,7 +265,7 @@ public final class Debug {
 		return ID.id("DEBUG_" + (this.debugSeq++));
 	}
 
-	private FuncPtr<DebugEnterFunc> enterFunc() {
+	private FuncPtr<DebugEnterFn> enterFunc() {
 		if (this.enterFunc != null) {
 			return this.enterFunc;
 		}
@@ -275,7 +275,7 @@ public final class Debug {
 				.link("o42a_dbg_enter", DEBUG_ENTER);
 	}
 
-	private FuncPtr<DebugExitFunc> exitFunc() {
+	private FuncPtr<DebugExitFn> exitFunc() {
 		if (this.exitFunc != null) {
 			return this.exitFunc;
 		}

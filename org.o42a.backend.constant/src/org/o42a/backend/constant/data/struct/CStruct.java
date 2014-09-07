@@ -30,7 +30,7 @@ import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -515,7 +515,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public <F extends Func<F>> FuncCOp<F> func(
+	public <F extends Fn<F>> FuncCOp<F> func(
 			ID id,
 			Code code,
 			FuncRec<F> field) {

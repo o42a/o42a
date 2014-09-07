@@ -29,14 +29,14 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public class LinkFldOp extends RefFldOp<StatelessOp, ObjectRefFunc> {
+public class LinkFldOp extends RefFldOp<StatelessOp, ObjectRefFn> {
 
 	private final StatelessOp ptr;
 
@@ -93,7 +93,7 @@ public class LinkFldOp extends RefFldOp<StatelessOp, ObjectRefFunc> {
 	}
 
 	@Override
-	protected DataOp construct(Code code, ObjectRefFunc constructor, Op vmtc) {
+	protected DataOp construct(Code code, ObjectRefFn constructor, Op vmtc) {
 		return constructor.call(code, host(), vmtc);
 	}
 

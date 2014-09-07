@@ -26,7 +26,7 @@ import org.o42a.backend.constant.code.rec.FuncCOp;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.func.CFAlloc;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
@@ -35,7 +35,7 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
 
 
-public final class FuncRecCDAlloc<F extends Func<F>>
+public final class FuncRecCDAlloc<F extends Fn<F>>
 		extends RecCDAlloc<FuncRec<F>, FuncOp<F>, FuncPtr<F>> {
 
 	private final Signature<F> signature;

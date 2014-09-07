@@ -20,14 +20,14 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
 
-public interface FuncCaller<F extends Func<F>> extends PtrOp<F> {
+public interface FuncCaller<F extends Fn<F>> extends PtrOp<F> {
 
 	Signature<F> getSignature();
 

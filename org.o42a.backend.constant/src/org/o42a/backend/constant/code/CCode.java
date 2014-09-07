@@ -36,7 +36,7 @@ import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.*;
@@ -80,7 +80,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public final <F extends Func<F>> CFunc<F> caller(
+	public final <F extends Fn<F>> CFunc<F> caller(
 			ID id,
 			FuncAllocation<F> allocation) {
 
@@ -215,7 +215,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public final <F extends Func<F>> CFunc<F> nullPtr(
+	public final <F extends Fn<F>> CFunc<F> nullPtr(
 			final Signature<F> signature) {
 		return new CFunc<>(
 				new OpBE<F>(code().getOpNames().opId(null), this) {

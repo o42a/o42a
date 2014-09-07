@@ -21,7 +21,7 @@ package org.o42a.codegen.data.backend;
 
 import java.util.function.Supplier;
 
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -37,7 +37,7 @@ public interface DataWriter {
 			Ptr<S> pointer,
 			Type<S> type);
 
-	<F extends Func<F>> FuncAllocation<F> nullPtr(FuncPtr<F> pointer);
+	<F extends Fn<F>> FuncAllocation<F> nullPtr(FuncPtr<F> pointer);
 
 	<S extends StructOp<S>> void begin(
 			DataAllocation<S> destination,

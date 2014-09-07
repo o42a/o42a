@@ -19,9 +19,9 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DebugDumpFunc.DEBUG_DUMP;
-import static org.o42a.codegen.debug.DebugNameFunc.DEBUG_NAME;
-import static org.o42a.codegen.debug.DebugPrintFunc.DEBUG_PRINT;
+import static org.o42a.codegen.debug.DebugDumpFn.DEBUG_DUMP;
+import static org.o42a.codegen.debug.DebugNameFn.DEBUG_NAME;
+import static org.o42a.codegen.debug.DebugPrintFn.DEBUG_PRINT;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
@@ -85,7 +85,7 @@ public abstract class DebugCodeBase extends CodeBase {
 			return;
 		}
 
-		final FuncPtr<DebugNameFunc> func =
+		final FuncPtr<DebugNameFn> func =
 				getGenerator()
 				.externalFunction()
 				.link("o42a_dbg_mem_name", DEBUG_NAME);
@@ -96,7 +96,7 @@ public abstract class DebugCodeBase extends CodeBase {
 				data.toAny(null, code()));
 	}
 
-	public void dumpName(String prefix, Func<?> func) {
+	public void dumpName(String prefix, Fn<?> func) {
 		assert assertIncomplete();
 		assert func.getSignature().isDebuggable() :
 			"Can not dump " + func + " name: it is not debuggable";
@@ -104,7 +104,7 @@ public abstract class DebugCodeBase extends CodeBase {
 			return;
 		}
 
-		final FuncPtr<DebugNameFunc> debugFunc =
+		final FuncPtr<DebugNameFn> debugFunc =
 				getGenerator()
 				.externalFunction()
 				.link("o42a_dbg_func_name", DEBUG_NAME);
@@ -125,7 +125,7 @@ public abstract class DebugCodeBase extends CodeBase {
 			return;
 		}
 
-		final FuncPtr<DebugDumpFunc> func =
+		final FuncPtr<DebugDumpFn> func =
 				getGenerator()
 				.externalFunction()
 				.link("o42a_dbg_dump_mem", DEBUG_DUMP);
@@ -138,7 +138,7 @@ public abstract class DebugCodeBase extends CodeBase {
 				code.int32(depth));
 	}
 
-	protected static final FuncPtr<DebugPrintFunc> printFunc(
+	protected static final FuncPtr<DebugPrintFn> printFunc(
 			Generator generator,
 			boolean nl) {
 		return generator.externalFunction().link(

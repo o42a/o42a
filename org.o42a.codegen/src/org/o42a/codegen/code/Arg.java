@@ -155,7 +155,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	static final class FuncPtrArg<F extends Func<F>> extends Arg<F> {
+	static final class FuncPtrArg<F extends Fn<F>> extends Arg<F> {
 
 		private final Signature<F> targetSignature;
 
@@ -175,11 +175,11 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		public boolean compatibleWith(Op op) {
-			if (!(op instanceof Func)) {
+			if (!(op instanceof Fn)) {
 				return false;
 			}
 
-			final Func<?> func = (Func<?>) op;
+			final Fn<?> func = (Fn<?>) op;
 
 			return func.getSignature() == this.targetSignature;
 		}

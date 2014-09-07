@@ -28,7 +28,7 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.util.string.ID;
 
 
-public final class Function<F extends Func<F>>
+public final class Function<F extends Fn<F>>
 		extends Allocator
 		implements FunctionAttributes {
 

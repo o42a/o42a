@@ -31,7 +31,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public final class LLFunction<F extends Func<F>>
+public final class LLFunction<F extends Fn<F>>
 		extends LLBlock
 		implements FuncWriter<F> {
 
@@ -164,7 +164,7 @@ public final class LLFunction<F extends Func<F>>
 	}
 
 	@Override
-	public <FF extends Func<FF>> FF funcPtrArg(
+	public <FF extends Fn<FF>> FF funcPtrArg(
 			Code code,
 			Arg<FF> arg,
 			Signature<FF> signature) {

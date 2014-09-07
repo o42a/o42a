@@ -64,8 +64,8 @@ public abstract class LLCode implements CodeWriter {
 		if (op instanceof StructOp) {
 			return (LLOp<O>) llvm((StructOp<?>) op);
 		}
-		if (op instanceof Func) {
-			return (LLOp<O>) llvm((Func<?>) op);
+		if (op instanceof Fn) {
+			return (LLOp<O>) llvm((Fn<?>) op);
 		}
 		return (LLOp<O>) op;
 	}
@@ -75,11 +75,11 @@ public abstract class LLCode implements CodeWriter {
 		return (LLStruct<S>) op.writer();
 	}
 
-	public static final <F extends Func<F>> LLFunc<F> llvm(Func<F> func) {
+	public static final <F extends Fn<F>> LLFunc<F> llvm(Fn<F> func) {
 		return (LLFunc<F>) func.getCaller();
 	}
 
-	public static final <F extends Func<F>> LLSignature<F> llvm(
+	public static final <F extends Fn<F>> LLSignature<F> llvm(
 			LLVMModule module,
 			Signature<F> signature) {
 		return (LLSignature<F>) signature.allocation(module.getGenerator());
@@ -147,7 +147,7 @@ public abstract class LLCode implements CodeWriter {
 		"rawtypes", "unchecked"
 	})
 	@Override
-	public <F extends Func<F>> LLFunc<F> caller(
+	public <F extends Fn<F>> LLFunc<F> caller(
 			ID id,
 			FuncAllocation<F> allocation) {
 
@@ -263,7 +263,7 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public <F extends Func<F>> LLFunc<F> nullPtr(Signature<F> signature) {
+	public <F extends Fn<F>> LLFunc<F> nullPtr(Signature<F> signature) {
 
 		final LLSignature<F> allocation = llvm(getModule(), signature);
 

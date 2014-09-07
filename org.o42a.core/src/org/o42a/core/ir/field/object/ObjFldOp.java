@@ -36,7 +36,7 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFunc> {
+public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFn> {
 
 	private final StatefulOp ptr;
 
@@ -85,7 +85,7 @@ public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFunc> {
 	@Override
 	protected DataOp construct(
 			Code code,
-			ObjectConstructorFunc constructor,
+			ObjectConstructorFn constructor,
 			VmtIRChain.Op vmtc) {
 
 		final ObjFldCtrOp fctr =

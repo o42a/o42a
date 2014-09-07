@@ -35,7 +35,7 @@ public final class ExternalFunctionSettings
 		return this;
 	}
 
-	public <F extends Func<F>> FuncPtr<F> link(
+	public <F extends Fn<F>> FuncPtr<F> link(
 			String name,
 			Signature<F> signature) {
 		assert (hasSideEffects()

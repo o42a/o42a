@@ -20,7 +20,7 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.util.string.ID;
@@ -58,7 +58,7 @@ public interface StructWriter<S extends StructOp<S>>
 
 	<SS extends StructOp<SS>> SS struct(ID id, Code code, Type<SS> field);
 
-	<F extends Func<F>> FuncOp<F> func(ID id, Code code, FuncRec<F> field);
+	<F extends Fn<F>> FuncOp<F> func(ID id, Code code, FuncRec<F> field);
 
 	<SS extends StructOp<SS>> SS to(ID id, Code code, Type<SS> type);
 

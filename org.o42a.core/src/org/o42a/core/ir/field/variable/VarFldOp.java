@@ -33,14 +33,14 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public final class VarFldOp extends RefFldOp<StatefulOp, ObjectRefFunc> {
+public final class VarFldOp extends RefFldOp<StatefulOp, ObjectRefFn> {
 
 	private final StatefulOp ptr;
 
@@ -91,7 +91,7 @@ public final class VarFldOp extends RefFldOp<StatefulOp, ObjectRefFunc> {
 	}
 
 	@Override
-	protected DataOp construct(Code code, ObjectRefFunc constructor, Op vmtc) {
+	protected DataOp construct(Code code, ObjectRefFn constructor, Op vmtc) {
 		return constructor.call(code, host(), vmtc);
 	}
 

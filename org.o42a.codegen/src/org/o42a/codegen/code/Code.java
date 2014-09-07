@@ -184,7 +184,7 @@ public abstract class Code extends DebugCodeBase {
 		return writer().nullPtr(type.pointer(getGenerator()).getAllocation());
 	}
 
-	public final <F extends Func<F>> F nullPtr(Signature<F> signature) {
+	public final <F extends Fn<F>> F nullPtr(Signature<F> signature) {
 		assert assertIncomplete();
 		return signature.op(writer().nullPtr(
 				getGenerator().getFunctions().allocate(signature)));

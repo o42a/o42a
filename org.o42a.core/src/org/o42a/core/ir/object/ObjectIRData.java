@@ -21,10 +21,10 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
-import static org.o42a.core.ir.object.value.ObjectCondFunc.OBJECT_COND;
+import static org.o42a.core.ir.object.value.ObjectCondFn.OBJECT_COND;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
-import static org.o42a.core.ir.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
@@ -34,9 +34,9 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.impl.ObjectIRDeps;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
-import org.o42a.core.ir.object.value.ObjectCondFunc;
+import org.o42a.core.ir.object.value.ObjectCondFn;
 import org.o42a.core.ir.op.RelList;
-import org.o42a.core.ir.value.ObjectValueFunc;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
@@ -50,9 +50,9 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 			new Type<?>[] {OBJECT_DESC_TYPE};
 
 	private StructRec<VmtIRChain.Op> vmtc;
-	private FuncRec<ObjectValueFunc> valueFunc;
-	private FuncRec<ObjectCondFunc> condFunc;
-	private FuncRec<ObjectValueFunc> defFunc;
+	private FuncRec<ObjectValueFn> valueFunc;
+	private FuncRec<ObjectCondFn> condFunc;
+	private FuncRec<ObjectValueFn> defFunc;
 	private ValType value;
 	private AnyRec resumeFrom;
 	private StructRec<ObjectIRDescOp> desc;
@@ -71,15 +71,15 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.vmtc;
 	}
 
-	public final FuncRec<ObjectValueFunc> valueFunc() {
+	public final FuncRec<ObjectValueFn> valueFunc() {
 		return this.valueFunc;
 	}
 
-	public final FuncRec<ObjectCondFunc> condFunc() {
+	public final FuncRec<ObjectCondFn> condFunc() {
 		return this.condFunc;
 	}
 
-	public final FuncRec<ObjectValueFunc> defFunc() {
+	public final FuncRec<ObjectValueFn> defFunc() {
 		return this.defFunc;
 	}
 

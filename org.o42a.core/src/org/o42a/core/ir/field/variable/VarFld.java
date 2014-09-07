@@ -36,7 +36,7 @@ import org.o42a.core.ir.field.link.AbstractLinkFld;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
@@ -74,7 +74,7 @@ public class VarFld extends AbstractLinkFld<StatefulOp> {
 	}
 
 	@Override
-	protected FuncPtr<ObjectRefFunc> constructorStub() {
+	protected FuncPtr<ObjectRefFn> constructorStub() {
 		return getGenerator()
 				.externalFunction()
 				.link("o42a_obj_ref_stub", getConstructorSignature());

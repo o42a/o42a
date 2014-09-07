@@ -19,7 +19,7 @@
 */
 package org.o42a.root.string;
 
-import static org.o42a.root.string.CompareFunc.COMPARE;
+import static org.o42a.root.string.CompareFn.COMPARE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -56,12 +56,12 @@ final class CompareStrings extends BinaryResult<Long, String, String> {
 	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Code code = dirs.code();
-		final FuncPtr<CompareFunc> funcPtr =
+		final FuncPtr<CompareFn> funcPtr =
 				code.getGenerator()
 				.externalFunction()
 				.noSideEffects()
 				.link("o42a_str_compare", COMPARE);
-		final CompareFunc func = funcPtr.op(null, code);
+		final CompareFn func = funcPtr.op(null, code);
 		final Int64op result = func.compare(code, leftVal, rightVal);
 
 		return dirs.value().store(code, result);

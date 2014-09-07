@@ -25,14 +25,14 @@ import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.rec.AtomicRecLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocPlace;
 import org.o42a.util.string.ID;
 
 
-public final class FuncLLOp<F extends Func<F>>
+public final class FuncLLOp<F extends Fn<F>>
 		extends AtomicRecLLOp<FuncOp<F>, F>
 		implements FuncOp<F> {
 
@@ -54,7 +54,7 @@ public final class FuncLLOp<F extends Func<F>>
 	}
 
 	@Override
-	public <FF extends Func<FF>> FuncLLOp<FF> toFunc(
+	public <FF extends Fn<FF>> FuncLLOp<FF> toFunc(
 			ID id,
 			Code code,
 			Signature<FF> signature) {

@@ -20,11 +20,11 @@
 package org.o42a.backend.constant.data.func;
 
 import org.o42a.backend.constant.code.CFunction;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.FuncPtr;
 
 
-public final class FunctionCFAlloc<F extends Func<F>> extends CFAlloc<F> {
+public final class FunctionCFAlloc<F extends Fn<F>> extends CFAlloc<F> {
 
 	private final CFunction<F> function;
 

@@ -21,7 +21,7 @@ package org.o42a.root.array;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
-import static org.o42a.root.array.CopyArrayElementsFunc.COPY_ARRAY_ELEMENTS;
+import static org.o42a.root.array.CopyArrayElementsFn.COPY_ARRAY_ELEMENTS;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;
@@ -226,7 +226,7 @@ abstract class AbstractCopyArrayElements extends AnnotatedBuiltin {
 				inlineTargetStart);
 
 		final Block code = targetStartDirs.code();
-		final FuncPtr<CopyArrayElementsFunc> func =
+		final FuncPtr<CopyArrayElementsFn> func =
 				dirs.getGenerator().externalFunction().link(
 						"o42a_array_copy_elements",
 						COPY_ARRAY_ELEMENTS);

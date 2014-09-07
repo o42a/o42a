@@ -33,7 +33,7 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.object.op.ObjectFunc;
+import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -41,7 +41,7 @@ import org.o42a.util.string.ID;
 
 public abstract class RefFldOp<
 		F extends RefFld.Op<F>,
-		C extends ObjectFunc<C>>
+		C extends ObjectFn<C>>
 				extends MemberFldOp<F> {
 
 	public RefFldOp(RefFld<F, C> fld, ObjOp host) {

@@ -20,7 +20,7 @@
 package org.o42a.core.ir.value;
 
 import static org.o42a.codegen.data.TypeAlignment.TYPE_ALIGN_8;
-import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
+import static org.o42a.core.ir.value.ValUseFn.VAL_USE;
 
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
@@ -162,7 +162,7 @@ public final class ValType extends Type<ValType.Op> {
 
 		public final void useRefCounted(Code code) {
 
-			final FuncPtr<ValUseFunc> func =
+			final FuncPtr<ValUseFn> func =
 					code.getGenerator()
 					.externalFunction()
 					.link("o42a_val_use", VAL_USE);
@@ -172,7 +172,7 @@ public final class ValType extends Type<ValType.Op> {
 
 		public final void unuseRefCounted(Code code) {
 
-			final FuncPtr<ValUseFunc> func =
+			final FuncPtr<ValUseFn> func =
 					code.getGenerator()
 					.externalFunction()
 					.link("o42a_val_unuse", VAL_USE);
@@ -182,7 +182,7 @@ public final class ValType extends Type<ValType.Op> {
 
 		public final void useObjectPointer(Code code) {
 
-			final FuncPtr<ValUseFunc> func =
+			final FuncPtr<ValUseFn> func =
 					code.getGenerator()
 					.externalFunction()
 					.link("o42a_obj_start_val_use", VAL_USE);
@@ -192,7 +192,7 @@ public final class ValType extends Type<ValType.Op> {
 
 		public final void unuseObjectPointer(Code code) {
 
-			final FuncPtr<ValUseFunc> func =
+			final FuncPtr<ValUseFn> func =
 					code.getGenerator()
 					.externalFunction()
 					.link("o42a_obj_end_val_use", VAL_USE);
@@ -202,7 +202,7 @@ public final class ValType extends Type<ValType.Op> {
 
 		public final void useArrayPointer(Code code) {
 
-			final FuncPtr<ValUseFunc> func =
+			final FuncPtr<ValUseFn> func =
 					code.getGenerator()
 					.externalFunction()
 					.link("o42a_array_start_use", VAL_USE);
@@ -212,7 +212,7 @@ public final class ValType extends Type<ValType.Op> {
 
 		public final void unuseArrayPointer(Code code) {
 
-			final FuncPtr<ValUseFunc> func =
+			final FuncPtr<ValUseFn> func =
 					code.getGenerator()
 					.externalFunction()
 					.link("o42a_array_end_use", VAL_USE);

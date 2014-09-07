@@ -25,7 +25,7 @@ import static org.o42a.backend.llvm.id.LLVMId.dataId;
 
 import org.o42a.backend.llvm.data.alloc.*;
 import org.o42a.backend.llvm.data.rec.*;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -324,7 +324,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <F extends Func<F>> DataAllocation<FuncOp<F>> allocateFuncPtr(
+	public <F extends Fn<F>> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,
 			FuncRec<F> data,
 			DataAllocation<FuncOp<F>> type,

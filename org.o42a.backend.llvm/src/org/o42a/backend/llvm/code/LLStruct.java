@@ -30,7 +30,7 @@ import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SystemTypeLLAlloc;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -233,7 +233,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public <F extends Func<F>> FuncOp<F> func(
+	public <F extends Fn<F>> FuncOp<F> func(
 			ID id,
 			Code code,
 			FuncRec<F> field) {

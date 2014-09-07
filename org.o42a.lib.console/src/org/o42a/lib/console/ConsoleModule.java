@@ -27,10 +27,10 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.modulePath;
-import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
-import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
-import static org.o42a.lib.console.MainFunc.MAIN;
-import static org.o42a.lib.console.impl.InitFunc.INIT;
+import static org.o42a.lib.console.DebugExecMainFn.DEBUG_EXEC_MAIN;
+import static org.o42a.lib.console.DebuggableMainFn.DEBUGGABLE_MAIN;
+import static org.o42a.lib.console.MainFn.MAIN;
+import static org.o42a.lib.console.impl.InitFn.INIT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.analysis.Analyzer;
@@ -150,7 +150,7 @@ public class ConsoleModule extends AnnotatedModule {
 			return;
 		}
 
-		final Function<DebuggableMainFunc> main =
+		final Function<DebuggableMainFn> main =
 				generator.newFunction().create(
 						ID.rawId("__o42a_main__"),
 						DEBUGGABLE_MAIN,
@@ -191,7 +191,7 @@ public class ConsoleModule extends AnnotatedModule {
 		}
 	}
 
-	private ValOp callMain(Function<DebuggableMainFunc> main) {
+	private ValOp callMain(Function<DebuggableMainFn> main) {
 		main.getGenerator()
 		.externalFunction()
 		.link("o42a_init", INIT)
@@ -233,28 +233,28 @@ public class ConsoleModule extends AnnotatedModule {
 		return programResult;
 	}
 
-	private final class Main implements FunctionBuilder<DebuggableMainFunc> {
+	private final class Main implements FunctionBuilder<DebuggableMainFn> {
 
 		@Override
-		public void build(Function<DebuggableMainFunc> function) {
+		public void build(Function<DebuggableMainFn> function) {
 			callMain(function);
 			function.int32(0).returnValue(function);
 		}
 
 	}
 
-	private static final class DebugMain implements FunctionBuilder<MainFunc> {
+	private static final class DebugMain implements FunctionBuilder<MainFn> {
 
-		private final Function<DebuggableMainFunc> main;
+		private final Function<DebuggableMainFn> main;
 
-		DebugMain(Function<DebuggableMainFunc> main) {
+		DebugMain(Function<DebuggableMainFn> main) {
 			this.main = main;
 		}
 
 		@Override
-		public void build(Function<MainFunc> function) {
+		public void build(Function<MainFn> function) {
 
-			final FuncPtr<DebugExecMainFunc> executeMain =
+			final FuncPtr<DebugExecMainFn> executeMain =
 					function.getGenerator()
 					.externalFunction()
 					.link("o42a_dbg_exec_main", DEBUG_EXEC_MAIN);

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value.array;
 
-import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
+import static org.o42a.core.ir.value.ValCopyFn.VAL_COPY;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 
@@ -32,7 +32,7 @@ import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValCopyFunc;
+import org.o42a.core.ir.value.ValCopyFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
@@ -188,7 +188,7 @@ final class ArrayValueAdapter extends ValueAdapter {
 					TEMP_VAL_HOLDER);
 			final Block code = fromDirs.code();
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
-			final FuncPtr<ValCopyFunc> func =
+			final FuncPtr<ValCopyFn> func =
 					dirs.getGenerator()
 					.externalFunction()
 					.link("o42a_array_copy", VAL_COPY);

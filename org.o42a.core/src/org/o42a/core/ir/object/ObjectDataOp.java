@@ -31,10 +31,10 @@ import org.o42a.codegen.data.RelPtr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
-import org.o42a.core.ir.object.value.ObjectCondFunc;
+import org.o42a.core.ir.object.value.ObjectCondFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.DefiniteIROp;
-import org.o42a.core.ir.value.ObjectValueFunc;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
@@ -84,7 +84,7 @@ public final class ObjectDataOp extends DefiniteIROp {
 	public final void writeValue(DefDirs dirs) {
 
 		final Code code = dirs.code();
-		final ObjectValueFunc function =
+		final ObjectValueFn function =
 				ptr().valueFunc(code).load(null, code);
 
 		function.call(dirs, objectPtr(code, null));
@@ -93,7 +93,7 @@ public final class ObjectDataOp extends DefiniteIROp {
 	public final void writeCond(CodeDirs dirs) {
 
 		final Code code = dirs.code();
-		final ObjectCondFunc function =
+		final ObjectCondFn function =
 				ptr().condFunc(code).load(null, code);
 
 		function.call(dirs, objectPtr(code, null));
@@ -102,7 +102,7 @@ public final class ObjectDataOp extends DefiniteIROp {
 	public final void writeDefs(DefDirs dirs, ObjectOp body) {
 
 		final Block code = dirs.code();
-		final ObjectValueFunc function =
+		final ObjectValueFn function =
 				ptr().defsFunc(code).load(null, code);
 
 		function.call(dirs, body(code, body));

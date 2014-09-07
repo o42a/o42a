@@ -34,7 +34,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public class CFunction<F extends Func<F>>
+public class CFunction<F extends Fn<F>>
 		extends CBlock<Function<F>>
 		implements FuncWriter<F> {
 
@@ -251,7 +251,7 @@ public class CFunction<F extends Func<F>>
 	}
 
 	@Override
-	public <FF extends Func<FF>> FF funcPtrArg(
+	public <FF extends Fn<FF>> FF funcPtrArg(
 			final Code code,
 			final Arg<FF> arg,
 			final Signature<FF> signature) {

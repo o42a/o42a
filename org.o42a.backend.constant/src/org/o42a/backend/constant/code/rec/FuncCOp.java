@@ -31,7 +31,7 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.util.string.ID;
 
 
-public final class FuncCOp<F extends Func<F>>
+public final class FuncCOp<F extends Fn<F>>
 		extends AtomicRecCOp<FuncOp<F>, F, FuncPtr<F>>
 		implements FuncOp<F> {
 
@@ -60,7 +60,7 @@ public final class FuncCOp<F extends Func<F>>
 	}
 
 	@Override
-	public final <FF extends Func<FF>> FuncCOp<FF> toFunc(
+	public final <FF extends Fn<FF>> FuncCOp<FF> toFunc(
 			final ID id,
 			final Code code,
 			final Signature<FF> signature) {

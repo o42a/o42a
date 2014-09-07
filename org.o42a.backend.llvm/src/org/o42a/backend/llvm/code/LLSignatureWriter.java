@@ -23,14 +23,14 @@ import static java.lang.System.arraycopy;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.code.Arg;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-final class LLSignatureWriter<F extends Func<F>>
+final class LLSignatureWriter<F extends Fn<F>>
 		implements SignatureWriter<F> {
 
 	private final Signature<F> signature;
@@ -155,7 +155,7 @@ final class LLSignatureWriter<F extends Func<F>>
 	}
 
 	@Override
-	public <FF extends Func<FF>> void addFuncPtr(
+	public <FF extends Fn<FF>> void addFuncPtr(
 			Arg<FF> arg,
 			Signature<FF> signature) {
 		addParam(this.module.pointerTo(signature));

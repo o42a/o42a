@@ -21,7 +21,7 @@ package org.o42a.backend.llvm.data.alloc;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.FuncOp;
@@ -30,7 +30,7 @@ import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
-public final class LLFAlloc<F extends Func<F>>
+public final class LLFAlloc<F extends Fn<F>>
 		implements FuncAllocation<F>, LLAlloc {
 
 	private final LLVMModule module;

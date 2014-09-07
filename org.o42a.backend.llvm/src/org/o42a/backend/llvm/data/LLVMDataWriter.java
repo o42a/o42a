@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 import org.o42a.backend.llvm.data.alloc.*;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
@@ -80,7 +80,7 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public <F extends Func<F>> LLFAlloc<F> nullPtr(FuncPtr<F> pointer) {
+	public <F extends Fn<F>> LLFAlloc<F> nullPtr(FuncPtr<F> pointer) {
 
 		final Signature<F> signature = pointer.getSignature();
 

@@ -28,13 +28,13 @@ import org.o42a.util.string.ID;
 
 public interface CodeBackend {
 
-	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
+	<F extends Fn<F>> SignatureWriter<F> addSignature(Signature<F> signature);
 
-	<F extends Func<F>> FuncWriter<F> addFunction(
+	<F extends Fn<F>> FuncWriter<F> addFunction(
 			Function<F> function,
 			BeforeReturn beforeReturn);
 
-	<F extends Func<F>> FuncAllocation<F> externFunction(
+	<F extends Fn<F>> FuncAllocation<F> externFunction(
 			ID id,
 			FuncPtr<F> pointer);
 
