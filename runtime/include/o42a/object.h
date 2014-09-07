@@ -467,6 +467,44 @@ inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
 }
 
 /**
+ * Allocates a new VMT chain.
+ *
+ * If the VMT of the previous link is the same as provided one, then just
+ * returns it.
+ *
+ * The chain link instances are reference-counted. This function sets the
+ * reference count of newly allocated link to zero and increases the reference
+ * count of previous link in the chain by one, unless it is a terminator link.
+ *
+ * The allocated link chain should be either passed to object constructor
+ * function, or freed by o42a_obj_vmtc_free function.
+ *
+ * If allocation fails, then frees the previous link with o42a_obj_vmtc_free
+ * function.
+ *
+ * \param vmt VMT of the new chain link.
+ * \param prev previous link in VMT chain.
+ *
+ * \return a pointer to new VMT chain, or NULL if allocation failed.
+ */
+const o42a_obj_vmtc_t *o42a_obj_vmtc_alloc(
+		const o42a_obj_vmt_t *,
+		const o42a_obj_vmtc_t *);
+
+/**
+ * Frees the VMT chain.
+ *
+ * If VMT chain link reference count is not zero, or the chain link is
+ * terminator, then does nothing.
+ *
+ * If the previous link is not a terminator, then decreases the its reference
+ * count and frees if this count drops to zero.
+ *
+ * \param vmtc VMT chain to free.
+ */
+void o42a_obj_vmtc_free(const o42a_obj_vmtc_t *);
+
+/**
  * Instantiates a new object.
  *
  * \param ctr[in] filled-in construction data.

@@ -435,31 +435,13 @@ static inline void vmtc_use(const o42a_obj_vmtc_t *const vmtc) {
 	O42A_RETURN;
 }
 
-/**
- * Allocates a new VMT chain.
- *
- * The chain link instances are reference-counted. This function sets the
- * reference count of newly allocated link to one and increases the reference
- * count of previous link in the chain by one, unless it is a terminator link.
- *
- * The allocated link chain can be released by vmtc_release function.
- *
- * If the VMT of the previous link is the same as provided one, then just
- * increases the reference count of previous link and returns it.
- *
- * \param vmt VMT of the new chain link.
- * \param prev previous link in VMT chain.
- *
- * \return a pointer to new VMT chain, or NULL if allocation failed.
- */
-static inline const o42a_obj_vmtc_t *vmtc_alloc(
+const o42a_obj_vmtc_t *o42a_obj_vmtc_alloc(
 		const o42a_obj_vmt_t *const vmt,
 		const o42a_obj_vmtc_t *const prev) {
 	O42A_ENTER(return NULL);
 
 	if (vmt == prev->vmt) {
-		// Reuse a previous link chain with the same VMT.
-		O42A(vmtc_use(prev));
+		// Reuse the previous link chain with the same VMT.
 		O42A_RETURN prev;
 	}
 
@@ -467,10 +449,9 @@ static inline const o42a_obj_vmtc_t *vmtc_alloc(
 			O42A(o42a_refcount_balloc(sizeof(o42a_obj_vmtc_t)));
 
 	if (!block) {
+		O42A(o42a_obj_vmtc_free(prev));
 		O42A_RETURN NULL;
 	}
-
-	block->ref_count = 1;
 
 	o42a_obj_vmtc_t *const vmtc = O42A(o42a_refcount_data(block));
 
@@ -522,6 +503,29 @@ static inline void vmtc_release(const o42a_obj_vmtc_t *vmtc) {
 		O42A(o42a_refcount_free(block));
 		vmtc = prev;
 	}
+}
+
+void o42a_obj_vmtc_free(const o42a_obj_vmtc_t *vmtc) {
+	O42A_ENTER(return);
+
+	const o42a_obj_vmtc_t *const prev = vmtc->prev;
+
+	if (!prev) {
+		// Terminator. It is always statically allocated. Do nothing.
+		O42A_RETURN;
+	}
+
+	volatile uint64_t *const ref_count =
+			&o42a_refcount_blockof(vmtc)->ref_count;
+
+	if (*ref_count) {
+		// The chain is still referenced. Do nothing.
+		O42A_RETURN;
+	}
+
+	O42A(vmtc_release(prev));
+
+	O42A_RETURN;
 }
 
 static inline o42a_obj_t **o42a_obj_deps(const o42a_obj_data_t *const data) {
@@ -1034,12 +1038,14 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			&& "Sample value is eagerly evaluated");
 
 	const o42a_obj_vmtc_t *const vmtc =
-			O42A(vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
+			O42A(o42a_obj_vmtc_alloc(sdata->vmtc->vmt, adata->vmtc));
 
 	if (!vmtc) {
 		O42A(o42a_gc_free(o42a_gc_blockof(object)));
 		O42A_RETURN NULL;
 	}
+
+	O42A(vmtc_use(vmtc));
 
 	data->vmtc = vmtc;
 	data->value.flags = O42A_VAL_INDEFINITE;

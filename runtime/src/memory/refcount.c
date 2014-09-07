@@ -15,6 +15,8 @@
 o42a_refcount_block_t *o42a_refcount_balloc(const size_t size) {
 	O42A_ENTER(return NULL);
 
+	O42A_DEBUG("Allocating %zd bytes of reference-counted memory\n", size);
+
 	o42a_refcount_block_t *const block =
 			O42A(malloc(sizeof(struct _o42a_refcount_block) + size));
 

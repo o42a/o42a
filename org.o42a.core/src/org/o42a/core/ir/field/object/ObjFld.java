@@ -256,9 +256,6 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 			VmtIRChain.Op prevVmtc) {
 
 		final Block code = dirs.code();
-
-		code.dump("Delegate to ", prevVmtc);
-
 		final VmtIR vmtIR = getObjectIR().getVmtIR();
 		final VmtIROp prevVmt = prevVmtc.loadVmt(code, vmtIR);
 
@@ -271,6 +268,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		constructor.isNull(null, code).go(code, construct);
 
 		fctr.vmtc(code).store(code, prevVmtc);
+		code.dump("Delegate to ", prevVmtc);
 
 		final DataOp newAncestorPtr = constructor.call(code, fctr);
 		final ObjectOp ancestor = anonymousObject(
@@ -315,6 +313,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFunc> {
 		prevVmt.compatible(delegate).goUnless(delegate, construct.head());
 
 		fctr.vmtc(delegate).store(delegate, prevVmtc);
+		delegate.dump("Delegate to ", prevVmtc);
 
 		prevVmt.func(null, delegate, vmtConstructor())
 		.load(null, delegate)
