@@ -31,6 +31,22 @@ public abstract class Signature<F extends Func<F>> {
 
 	private static final Arg<?>[] NO_ARGS = new Arg<?>[0];
 
+	public static CustomSignature customSignature(String id) {
+		return customSignature(ID.rawId(id));
+	}
+
+	public static CustomSignature customSignature(ID id) {
+		return new CustomSignature(id);
+	}
+
+	public static CustomSignature customSignature(String id, int numArgs) {
+		return customSignature(ID.rawId(id), numArgs);
+	}
+
+	public static CustomSignature customSignature(ID id, int numArgs) {
+		return new CustomSignature(id, numArgs);
+	}
+
 	private final ID id;
 	private Generator generator;
 	private SignatureAllocation<F> allocation;
