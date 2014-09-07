@@ -161,6 +161,8 @@ static inline o42a_gc_block_t *gc_balloc(
 		const size_t size) {
 	O42A_ENTER(return NULL);
 
+	O42A_DEBUG("Allocating %zd bytes of garbage-collected memory\n", size);
+
 	size_t mem_size = sizeof(struct _o42a_gc_block) + size;
 
 #ifndef NDEBUG
