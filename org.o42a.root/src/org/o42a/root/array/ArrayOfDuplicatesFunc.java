@@ -21,18 +21,25 @@ package org.o42a.root.array;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.util.string.ID;
 
 
 final class ArrayOfDuplicatesFunc extends Func<ArrayOfDuplicatesFunc> {
 
-	static final Signature ARRAY_OF_DUPLICATES = new Signature();
+	static final
+	ExtSignature<Void, ArrayOfDuplicatesFunc> ARRAY_OF_DUPLICATES =
+			customSignature("ArrayOfDuplicatesF", 3)
+			.addPtr("value", VAL_TYPE)
+			.addInt32("size")
+			.addData("item")
+			.returnVoid(c -> new ArrayOfDuplicatesFunc(c));
 
 	private ArrayOfDuplicatesFunc(FuncCaller<ArrayOfDuplicatesFunc> caller) {
 		super(caller);
@@ -51,35 +58,6 @@ final class ArrayOfDuplicatesFunc extends Func<ArrayOfDuplicatesFunc> {
 				item);
 
 		value.go(code, dirs);
-	}
-
-	static final class Signature
-			extends org.o42a.codegen.code.Signature<ArrayOfDuplicatesFunc> {
-
-		private Return<Void> result;
-
-		private Signature() {
-			super(ID.id("ArrayOfDuplicatesF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		@Override
-		public ArrayOfDuplicatesFunc op(
-				FuncCaller<ArrayOfDuplicatesFunc> caller) {
-			return new ArrayOfDuplicatesFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			builder.addPtr("value", VAL_TYPE);
-			builder.addInt32("size");
-			builder.addData("item");
-		}
-
 	}
 
 }

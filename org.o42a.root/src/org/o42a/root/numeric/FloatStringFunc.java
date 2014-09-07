@@ -19,19 +19,24 @@
 */
 package org.o42a.root.numeric;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.util.string.ID;
 
 
 public class FloatStringFunc extends Func<FloatStringFunc> {
 
-	public static final Signature FLOAT_TO_STRING = new Signature();
+	public static final ExtSignature<BoolOp, FloatStringFunc> FLOAT_TO_STRING =
+			customSignature("FloatStringF", 2)
+			.addPtr("string", ValType.VAL_TYPE)
+			.addFp64("value")
+			.returnBool(c -> new FloatStringFunc(c));
 
 	private FloatStringFunc(FuncCaller<FloatStringFunc> caller) {
 		super(caller);
@@ -51,43 +56,6 @@ public class FloatStringFunc extends Func<FloatStringFunc> {
 		result.goUnless(code, stringDirs.falseDir());
 
 		return string;
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<FloatStringFunc> {
-
-		private Return<BoolOp> result;
-		private Arg<ValType.Op> string;
-		private Arg<Fp64op> value;
-
-		private Signature() {
-			super(ID.id("FloatStringF"));
-		}
-
-		public final Return<BoolOp> result() {
-			return this.result;
-		}
-
-		public final Arg<ValType.Op> string() {
-			return this.string;
-		}
-
-		public final Arg<Fp64op> value() {
-			return this.value;
-		}
-
-		@Override
-		public FloatStringFunc op(FuncCaller<FloatStringFunc> caller) {
-			return new FloatStringFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnBool();
-			this.string = builder.addPtr("string", ValType.VAL_TYPE);
-			this.value = builder.addFp64("value");
-		}
-
 	}
 
 }

@@ -25,13 +25,15 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
-import org.o42a.util.string.ID;
 
 
 public final class ParseFunc extends Func<ParseFunc> {
 
-	public static final Signature PARSE = new Signature();
+	public static final ExtSignature<Void, ParseFunc> PARSE =
+			customSignature("ParseF", 2)
+			.addPtr("output", VAL_TYPE)
+			.addPtr("input", VAL_TYPE)
+			.returnVoid(c -> new ParseFunc(c));
 
 	private ParseFunc(FuncCaller<ParseFunc> caller) {
 		super(caller);
@@ -50,43 +52,6 @@ public final class ParseFunc extends Func<ParseFunc> {
 
 	public void parse(Code code, ValOp output, ValOp input) {
 		invoke(null, code, PARSE.result(), output.ptr(code), input.ptr(code));
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ParseFunc> {
-
-		private Return<Void> result;
-		private Arg<ValType.Op> output;
-		private Arg<ValType.Op> input;
-
-		private Signature() {
-			super(ID.id("ParseF"));
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<ValType.Op> output() {
-			return this.output;
-		}
-
-		public final Arg<ValType.Op> input() {
-			return this.input;
-		}
-
-		@Override
-		public ParseFunc op(FuncCaller<ParseFunc> caller) {
-			return new ParseFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.output = builder.addPtr("output", VAL_TYPE);
-			this.input = builder.addPtr("input", VAL_TYPE);
-		}
-
 	}
 
 }

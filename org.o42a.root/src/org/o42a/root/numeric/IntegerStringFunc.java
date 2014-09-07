@@ -19,19 +19,24 @@
 */
 package org.o42a.root.numeric;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.util.string.ID;
 
 
 public class IntegerStringFunc extends Func<IntegerStringFunc> {
 
-	public static final Signature INTEGER_STRING = new Signature();
+	public static final ExtSignature<BoolOp, IntegerStringFunc> INTEGER_STRING =
+			customSignature("IntegerStringF", 2)
+			.addPtr("string", ValType.VAL_TYPE)
+			.addInt64("value")
+			.returnBool(c -> new IntegerStringFunc(c));
 
 	private IntegerStringFunc(FuncCaller<IntegerStringFunc> caller) {
 		super(caller);
@@ -51,43 +56,6 @@ public class IntegerStringFunc extends Func<IntegerStringFunc> {
 		result.goUnless(code, stringDirs.falseDir());
 
 		return string;
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<IntegerStringFunc> {
-
-		private Return<BoolOp> result;
-		private Arg<ValType.Op> string;
-		private Arg<Int64op> value;
-
-		private Signature() {
-			super(ID.id("IntegerStringF"));
-		}
-
-		public final Return<BoolOp> result() {
-			return this.result;
-		}
-
-		public final Arg<ValType.Op> string() {
-			return this.string;
-		}
-
-		public final Arg<Int64op> value() {
-			return this.value;
-		}
-
-		@Override
-		public IntegerStringFunc op(FuncCaller<IntegerStringFunc> caller) {
-			return new IntegerStringFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnBool();
-			this.string = builder.addPtr("string", ValType.VAL_TYPE);
-			this.value = builder.addInt64("value");
-		}
-
 	}
 
 }

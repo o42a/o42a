@@ -21,17 +21,21 @@ package org.o42a.root.string;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.ExtSignature;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType.Op;
-import org.o42a.util.string.ID;
 
 
 public class CompareFunc extends Func<CompareFunc> {
 
-	public static final Signature COMPARE = new Signature();
+	public static final ExtSignature<Int64op, CompareFunc> COMPARE =
+			customSignature("CompareF", 2)
+			.addPtr("what", VAL_TYPE)
+			.addPtr("with", VAL_TYPE)
+			.returnInt64(c -> new CompareFunc(c));
 
 	private CompareFunc(FuncCaller<CompareFunc> caller) {
 		super(caller);
@@ -44,43 +48,6 @@ public class CompareFunc extends Func<CompareFunc> {
 				COMPARE.result(),
 				what.ptr(code),
 				with.ptr(code));
-	}
-
-	public static final class Signature
-			extends org.o42a.codegen.code.Signature<CompareFunc> {
-
-		private Return<Int64op> result;
-		private Arg<Op> what;
-		private Arg<Op> with;
-
-		private Signature() {
-			super(ID.id("CompareF"));
-		}
-
-		public final Return<Int64op> result() {
-			return this.result;
-		}
-
-		public final Arg<Op> what() {
-			return this.what;
-		}
-
-		public final Arg<Op> with() {
-			return this.with;
-		}
-
-		@Override
-		public CompareFunc op(FuncCaller<CompareFunc> caller) {
-			return new CompareFunc(caller);
-		}
-
-		@Override
-		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnInt64();
-			this.what = builder.addPtr("what", VAL_TYPE);
-			this.with = builder.addPtr("with", VAL_TYPE);
-		}
-
 	}
 
 }
