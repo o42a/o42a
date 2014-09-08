@@ -131,6 +131,8 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 		return this;
 	}
 
+	public abstract ObjectOp phi(Code code, DataOp ptr);
+
 	public final ObjectDataOp objectData(Code code) {
 		return ptr(code).objectData(code).op(getBuilder());
 	}

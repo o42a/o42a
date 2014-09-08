@@ -76,7 +76,7 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	public static final <F extends Fn<F>> LLFunc<F> llvm(Fn<F> func) {
-		return (LLFunc<F>) func.getCaller();
+		return (LLFunc<F>) func.caller();
 	}
 
 	public static final <F extends Fn<F>> LLSignature<F> llvm(

@@ -24,19 +24,21 @@ import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.field.object.ObjectConstructorFn.OBJECT_CONSTRUCTOR;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.field.object.VmtChainAllocFn.VMT_CHAIN_ALLOC;
+import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.ObjectsCode;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
@@ -124,22 +126,28 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 
 		final Block code = dirs.code();
 		final ObjOp host = builder.host();
-		final ObjFldCtrOp fctr =
+		final CtrOp.Op ctr =
 				builder.getFunction()
-				.arg(code, getConstructorSignature().fctr());
-		final VmtIRChain.Op vmtc = fctr.vmtc(code).load(null, code);
+				.arg(code, getConstructorSignature().ctr());
+		final VmtIRChain.Op vmtc =
+				builder.getFunction()
+				.arg(code, getConstructorSignature().vmtc());
+		final DataOp ancestorArg = ctr.ancestor(code).load(null, code);
 		final ObjFldOp fld =
 				(ObjFldOp) host.field(dirs, getField().getKey());
-		final DataOp ancestorArg = fctr.ancestor(code).load(null, code);
+
+		// Ancestor is not specified for the first method in VMT chain.
 		final BoolOp noAncestor = ancestorArg.isNull(null, code);
-		final FldCtrOp ctr =
+
+		// Initialize field construction in first method.
+		final FldCtrOp fctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
 		final CondBlock start = noAncestor.branch(code, "start", "cont");
 
 		final Block constructed = start.addBlock("constructed");
 
-		ctr.start(start, fld).goUnless(start, constructed.head());
+		fctr.start(start, fld).goUnless(start, constructed.head());
 
 		fld.ptr()
 		.object(null, constructed)
@@ -147,62 +155,47 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 		.toData(null, constructed)
 		.returnValue(constructed);
 
-		final DataOp evaluatedAncestor = ancestor(builder, dirs, start);
-
-		fctr.ancestor(start).store(start, evaluatedAncestor);
+		final ObjectOp evalAncestor = ancestor(dirs.sub(start));
+		final DataOp evalAncestorPtr = initCtr(ctr, start, evalAncestor);
 
 		start.go(code.tail());
 
 		final Block cont = start.otherwise();
 
-		final DataOp suppliedAncestor = cont.phi(null, ancestorArg);
+		final DataOp suppliedAncestorPtr = cont.phi(null, ancestorArg);
 
 		cont.go(code.tail());
 
-		final DataOp ancestor = code.phi(
+		final DataOp ancestorPtr = code.phi(
 				ID.id("ancestor"),
-				evaluatedAncestor,
-				suppliedAncestor);
+				evalAncestorPtr,
+				suppliedAncestorPtr);
 
-		final ObjFldTargetHolder holder =
-				new ObjFldTargetHolder(code.getAllocator(), noAncestor);
-		final VmtIRChain.Op prevVmtc =
-				vmtc.prev(null, code).load(null, code);
-		final CondBlock construct =
-				prevVmtc.isNull(null, code)
-				.branch(code, "construct", "delegate");
-		final DataOp result1 =
-				construct(
-						builder,
-						builder.dirs(construct, dirs.falseDir()),
-						holder,
-						ancestor)
-				.toData(null, construct);
+		// Done initializing. Start the work.
+		final VmtIRChain.Op prevVmtc = vmtc.prev(null, code).load(null, code);
 
-		construct.go(code.tail());
+		delegate(dirs, ctr, prevVmtc);
+		updateVmtc(dirs, ctr);
 
-		final Block delegate = construct.otherwise();
-		final DataOp result2 = delegate(
-				builder,
-				builder.dirs(delegate, dirs.falseDir()),
-				construct.head(),
-				holder,
-				fctr,
-				prevVmtc).toData(null, delegate);
+		final Block dontConstruct = code.addBlock("dont_construct");
 
-		delegate.go(code.tail());
-
-		final DataOp result = code.phi(null, result1, result2);
-
-		final Block dontStore = code.addBlock("dont_store");
-
-		noAncestor.goUnless(code, dontStore.head());
-		if (dontStore.exists()) {
-			result.returnValue(dontStore);
+		noAncestor.goUnless(code, dontConstruct.head());
+		if (dontConstruct.exists()) {
+			// Not a first method in VMT chain. Just return NULL.
+			dontConstruct.nullDataPtr().returnValue(dontConstruct);
 		}
 
-		fld.ptr().object(null, code).store(code, result, ACQUIRE_RELEASE);
-		ctr.finish(code, fld);
+		// The first method constructs an object, stores it in the field,
+		// finishes field construction, and returns new object.
+		final DataOp result =
+				construct(dirs, ctr, evalAncestor.phi(code, ancestorPtr))
+				.toData(null, code);
+
+		fld.ptr()
+		.object(null, code)
+		.store(code, result, ACQUIRE_RELEASE);
+
+		fctr.finish(code, fld);
 
 		result.returnValue(code);
 	}
@@ -212,113 +205,116 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 		return new ObjFldOp(this, host, ptr);
 	}
 
-	private DataOp ancestor(
-			ObjBuilder builder,
-			CodeDirs dirs,
-			CondBlock code) {
+	private DataOp initCtr(CtrOp.Op ctr, Code code, ObjectOp ancestor) {
 
-		final CodeDirs ancDirs = dirs.sub(code);
-		final DataOp ancestor =
-				builder.objects()
-				.objectAncestor(ancDirs, getField().toObject())
-				.toData(null, code);
+		final DataOp ancestorPtr = ancestor.toData(null, code);
 
-		code.dumpName("Ancestor: ", ancestor);
-		ancDirs.done();
+		ctr.ancestor(code).store(code, ancestorPtr);
+		ctr.vmtc(code).store(
+				code,
+				ancestor.objectData(code)
+				.ptr(code)
+				.vmtc(code)
+				.load(null, code));
 
-		return ancestor;
+		return ancestorPtr;
 	}
 
-	private ObjectOp construct(
-			ObjBuilder builder,
-			CodeDirs dirs,
-			ObjHolder holder,
-			DataOp ancestor) {
-
-		final Obj object = getField().toObject();
-		final ObjectsCode objects = builder.objects();
-
-		return objects.newObject(
-				dirs,
-				builder.host(),
-				holder,
-				builder.host(),
-				ancestor,
-				object);
+	private ObjectOp ancestor(CodeDirs dirs) {
+		return dirs.getBuilder()
+				.objects()
+				.objectAncestor(
+						dirs,
+						getField().toObject(),
+						tempObjHolder(dirs.getAllocator()));
 	}
 
-	private ObjectOp delegate(
-			ObjBuilder builder,
-			CodeDirs dirs,
-			CodePos construct,
-			ObjFldTargetHolder holder,
-			ObjFldCtrOp fctr,
-			VmtIRChain.Op prevVmtc) {
+	private void delegate(CodeDirs dirs, CtrOp.Op ctr, VmtIRChain.Op prevVmtc) {
 
 		final Block code = dirs.code();
-		final VmtIR vmtIR = getObjectIR().getVmtIR();
-		final VmtIROp prevVmt = prevVmtc.loadVmt(code, vmtIR);
+		final Block delegate = code.addBlock("delegate");
 
-		prevVmt.compatible(code).goUnless(code, construct);
+		prevVmtc.isNull(null, code).goUnless(code, delegate.head());
+
+		final VmtIR vmtIR = getObjectIR().getVmtIR();
+		final VmtIROp prevVmt = prevVmtc.loadVmt(delegate, vmtIR);
+
+		prevVmt.compatible(delegate).goUnless(delegate, code.tail());
 
 		final ObjectConstructorFn constructor =
-				prevVmt.func(null, code, vmtConstructor()).load(null, code);
+				prevVmt.func(null, delegate, vmtConstructor())
+				.load(null, delegate);
 
 		// The field is dummy. The actual field is declared later.
-		constructor.isNull(null, code).go(code, construct);
+		constructor.isNull(null, delegate).go(delegate, code.tail());
 
-		fctr.vmtc(code).store(code, prevVmtc);
-		code.dump("Delegate to ", prevVmtc);
+		delegate.dump("Delegate to ", prevVmtc);
 
-		final DataOp newAncestorPtr = constructor.call(code, fctr);
-		final ObjectOp ancestor = anonymousObject(
-				dirs,
-				newAncestorPtr,
-				getBodyIR().getClosestAscendant());
+		constructor.call(delegate, prevVmtc, ctr);
 
-		// Ancestor object is marked used by previous constructor.
-		// Set it to a temporary holder, to automatically release.
-		tempObjHolder(dirs.getAllocator()).set(code, ancestor);
+		delegate.go(code.tail());
+	}
 
-		return builder.objects().newObject(
-				dirs,
-				builder.host(),
-				holder,
-				builder.host(),
-				ancestor,
-				getField().toObject());
+	private void updateVmtc(CodeDirs dirs, CtrOp.Op ctr) {
+
+		final Block code = dirs.code();
+		final FuncPtr<VmtChainAllocFn> allocFn =
+				getGenerator().externalFunction().link(
+						"o42a_obj_vmtc_alloc",
+						VMT_CHAIN_ALLOC);
+		final VmtIR vmtIR =
+				getField().toObject().ir(getGenerator()).getVmtIR();
+		final StructRecOp<VmtIRChain.Op> vmtcRec = ctr.vmtc(code);
+		final VmtIRChain.Op newVmtc =
+				allocFn.op(null, code)
+				.allocate(dirs, vmtIR, vmtcRec.load(null, code));
+
+		code.dump("Updated VMTC: ", newVmtc);
+
+		vmtcRec.store(code, newVmtc);
+	}
+
+	private ObjectOp construct(CodeDirs dirs, CtrOp.Op ctr, ObjectOp ancestor) {
+
+		final CodeBuilder builder = dirs.getBuilder();
+
+		return ctr.op(builder)
+		.host(builder.host())
+		.fillAscendants(dirs, ancestor, getField().toObject())
+		.newObject(dirs, objTrap());
 	}
 
 	private void buildCloneFunc(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final ObjFldCtrOp fctr =
+		final CtrOp.Op ctr =
 				builder.getFunction()
-				.arg(code, getConstructorSignature().fctr());
-		final VmtIRChain.Op vmtc = fctr.vmtc(code).load(null, code);
-		final VmtIRChain.Op prevVmtc = vmtc.prev(null, code).load(null, code);
-		final CondBlock construct =
-				prevVmtc.isNull(null, code)
-				.branch(code, "construct", "delegate");
+				.arg(code, getConstructorSignature().ctr());
+		final VmtIRChain.Op vmtc =
+				builder.getFunction()
+				.arg(code, getConstructorSignature().vmtc());
+		final VmtIRChain.Op prevVmtc =
+				vmtc.prev(null, code).load(null, code);
+		final Block construct = code.addBlock("construct");
+
+		prevVmtc.isNull(null, code).go(code, construct.head());
 
 		constructor()
 		.op(null, construct)
-		.call(construct, fctr)
+		.call(construct, vmtc, ctr)
 		.returnValue(construct);
 
-		final Block delegate = construct.otherwise();
 		final VmtIROp prevVmt =
-				prevVmtc.loadVmt(delegate, getObjectIR().getVmtIR());
+				prevVmtc.loadVmt(code, getObjectIR().getVmtIR());
 
-		prevVmt.compatible(delegate).goUnless(delegate, construct.head());
+		prevVmt.compatible(code).goUnless(code, construct.head());
 
-		fctr.vmtc(delegate).store(delegate, prevVmtc);
-		delegate.dump("Delegate to ", prevVmtc);
+		code.dump("Delegate to ", prevVmtc);
 
-		prevVmt.func(null, delegate, vmtConstructor())
-		.load(null, delegate)
-		.call(delegate, fctr)
-		.returnValue(delegate);
+		prevVmt.func(null, code, vmtConstructor())
+		.load(null, code)
+		.call(code, prevVmtc, ctr)
+		.returnValue(code);
 	}
 
 }

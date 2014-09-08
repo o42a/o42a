@@ -19,43 +19,47 @@
 */
 package org.o42a.core.ir;
 
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.CtrOp.ALLOCATABLE_CTR;
 import static org.o42a.core.ir.object.op.CtrOp.CTR_ID;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.object.ObjOp;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjHolder;
-import org.o42a.core.ir.op.*;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostOp;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectsCode {
 
+	public static final ID ANCESTOR_ID = ID.rawId("ancestor");
+	public static final ID NEW_OBJECT_ID = ID.rawId("new_object");
+
 	public static ObjectOp objectAncestor(
 			CodeDirs dirs,
 			HostOp host,
-			Obj object) {
+			Obj object,
+			ObjHolder holder) {
+
+		final CodeDirs subDirs = dirs.begin(ANCESTOR_ID, "Ancestor");
 
 		final TypeRef ancestorType = object.type().getAncestor();
-
-		if (ancestorType == null) {
-			return null;
-		}
-
 		final RefOp ancestor = ancestorType.op(host);
 
-		return ancestor.path()
+		final ObjectOp result = ancestor.path()
 				.target()
-				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
+				.materialize(subDirs, holder);
+
+		subDirs.done();
+
+		dirs.code().dumpName("Ancestor: ", result);
+
+		return result;
 	}
 
 	private final CodeBuilder builder;
@@ -76,86 +80,17 @@ public final class ObjectsCode {
 		return getBuilder().host();
 	}
 
-	public final ObjectOp newObject(
-			CodeDirs dirs,
-			HostOp host,
-			ObjHolder holder,
-			ObjectOp owner,
-			ObjectOp ancestor,
-			Obj sample) {
-
-		final Block code = dirs.code();
-		final CtrOp ctr = allocateCtr(dirs);
-
-		if (ancestor != null && sample.value().getStatefulness().isEager()) {
-
-			final ValOp value = ctr.value(
-					"eager",
-					dirs.getAllocator(),
-					sample.type().getValueType(),
-					TEMP_VAL_HOLDER);
-			final ValDirs eagerDirs = dirs.nested().value(value);
-			final ValOp result = ancestor.value().writeValue(eagerDirs);
-
-			value.store(code, result);
-
-			eagerDirs.done();
-
-			return ctr.eagerObject(dirs, holder, owner, ancestor, sample);
-		}
-
-		return newObject(dirs, ctr, host, holder, owner, ancestor, sample);
-	}
-
-	public final ObjectOp newObject(
-			CodeDirs dirs,
-			HostOp host,
-			ObjHolder holder,
-			ObjectOp owner,
-			DataOp ancestorPtr,
-			Obj sample) {
-
-		final ObjectOp ancestor = anonymousObject(
-				dirs,
-				ancestorPtr,
-				sample.type().getAncestor().getInterface().mostWrapped());
-
-		return newObject(dirs, host, holder, owner, ancestor, sample);
-	}
-
-	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
-		return objectAncestor(dirs, host(), object);
-	}
-
-	private CtrOp allocateCtr(CodeDirs dirs) {
+	public final CtrOp allocateCtr(Code code) {
 		return new CtrOp(
 				getBuilder(),
-				dirs.code().allocate(CTR_ID, ALLOCATABLE_CTR));
+				code.allocate(CTR_ID, ALLOCATABLE_CTR)::get);
 	}
 
-	private ObjectOp newObject(
+	public final ObjectOp objectAncestor(
 			CodeDirs dirs,
-			CtrOp ctr,
-			HostOp host,
-			ObjHolder holder,
-			ObjectOp owner,
-			ObjectOp ancestorData,
-			Obj sample) {
-
-		final ObjOp samplePtr =
-				sample.ir(getGenerator()).op(getBuilder(), dirs.code());
-		final ObjectOp newObject = ctr.newObject(
-				dirs,
-				holder,
-				owner,
-				ancestorData,
-				samplePtr);
-
-		if (host != null) {
-			newObject.fillDeps(dirs, host, sample);
-		}
-
-		return newObject;
+			Obj object,
+			ObjHolder holder) {
+		return objectAncestor(dirs, host(), object, holder);
 	}
 
 }

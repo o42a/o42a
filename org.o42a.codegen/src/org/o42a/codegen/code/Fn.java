@@ -50,40 +50,36 @@ public abstract class Fn<F extends Fn<F>> implements PtrOp<F> {
 
 	@Override
 	public final ID getId() {
-		return this.caller.getId();
+		return caller().getId();
 	}
 
 	public final Signature<F> getSignature() {
-		return this.caller.getSignature();
-	}
-
-	public final FuncCaller<F> getCaller() {
-		return this.caller;
+		return caller().getSignature();
 	}
 
 	@Override
 	public final void returnValue(Block code, boolean dispose) {
-		this.caller.returnValue(code, dispose);
+		caller().returnValue(code, dispose);
 	}
 
 	@Override
 	public final BoolOp isNull(ID id, Code code) {
-		return this.caller.isNull(id, code);
+		return caller().isNull(id, code);
 	}
 
 	@Override
 	public final BoolOp eq(ID id, Code code, F other) {
-		return this.caller.eq(id, code, other);
+		return caller().eq(id, code, other);
 	}
 
 	@Override
 	public BoolOp ne(ID id, Code code, F other) {
-		return this.caller.ne(id, code, other);
+		return caller().ne(id, code, other);
 	}
 
 	@Override
 	public final AnyOp toAny(ID id, Code code) {
-		return this.caller.toAny(id, code);
+		return caller().toAny(id, code);
 	}
 
 	public final FuncCaller<F> caller() {
@@ -92,7 +88,7 @@ public abstract class Fn<F extends Fn<F>> implements PtrOp<F> {
 
 	@Override
 	public String toString() {
-		return this.caller.toString();
+		return caller().toString();
 	}
 
 	protected final <O> O invoke(
@@ -101,7 +97,7 @@ public abstract class Fn<F extends Fn<F>> implements PtrOp<F> {
 			Return<O> ret,
 			Op... args) {
 		assert validSignature(ret.getSignature(), args);
-		return ret.call(id, code, this.caller, args);
+		return ret.call(id, code, caller(), args);
 	}
 
 	private boolean validSignature(Signature<?> signature, Op[] args) {

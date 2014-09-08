@@ -19,11 +19,14 @@
 */
 package org.o42a.core.ir.field.object;
 
-import static org.o42a.core.ir.field.object.ObjFldCtrOp.OBJ_FLD_CTR_TYPE;
+import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
+import static org.o42a.core.ir.object.op.CtrOp.CTR_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.VmtIRChain;
+import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.util.string.ID;
@@ -38,43 +41,52 @@ public final class ObjectConstructorFn
 		super(caller);
 	}
 
-	public final DataOp call(Code code, ObjFldCtrOp fctr) {
-		return invoke(null, code, OBJECT_CONSTRUCTOR.result(), fctr);
+	public final DataOp call(Code code, VmtIRChain.Op vmtc, CtrOp ctr) {
+		return call(code, vmtc, ctr.ptr(code));
+	}
+
+	public final DataOp call(Code code, VmtIRChain.Op vmtc, CtrOp.Op ctr) {
+		return invoke(null, code, OBJECT_CONSTRUCTOR.result(), vmtc, ctr);
 	}
 
 	public static final class Signature
 			extends ObjectSignature<ObjectConstructorFn> {
 
 		private Return<DataOp> result;
-		private Arg<ObjFldCtrOp> fctr;
+		private Arg<VmtIRChain.Op> vmtc;
+		private Arg<CtrOp.Op> ctr;
 
 		private Signature() {
-			super(ID.id("ObjectConstructorF"));
+			super(ID.rawId("ObjectConstructorF"));
 		}
 
 		public final Return<DataOp> result() {
 			return this.result;
 		}
 
-		public final Arg<ObjFldCtrOp> fctr() {
-			return this.fctr;
+		public final Arg<VmtIRChain.Op> vmtc() {
+			return this.vmtc;
+		}
+
+		public final Arg<CtrOp.Op> ctr() {
+			return this.ctr;
 		}
 
 		@Override
-		public ObjectConstructorFn op(
-				FuncCaller<ObjectConstructorFn> caller) {
+		public ObjectConstructorFn op(FuncCaller<ObjectConstructorFn> caller) {
 			return new ObjectConstructorFn(caller);
 		}
 
 		@Override
 		public DataOp object(Code code, Function<?> function) {
-			return function.arg(code, fctr()).owner(code).load(null, code);
+			return function.arg(code, ctr()).owner(code).load(null, code);
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnData();
-			this.fctr = builder.addPtr("fctr", OBJ_FLD_CTR_TYPE);
+			this.vmtc = builder.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
+			this.ctr = builder.addPtr("ctr", CTR_TYPE);
 		}
 
 	}
