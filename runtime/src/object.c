@@ -453,9 +453,15 @@ const o42a_obj_vmtc_t *o42a_obj_vmtc_alloc(
 		const o42a_obj_vmtc_t *const prev) {
 	O42A_ENTER(return NULL);
 
-	if (vmt == prev->vmt) {
+	const o42a_obj_vmt_t *const prev_vmt = prev->vmt;
+
+	if (vmt == prev_vmt) {
 		// Reuse the previous link chain with the same VMT.
 		O42A_RETURN prev;
+	}
+	if (prev_vmt->size <= sizeof(o42a_obj_vmt_t)) {
+		// The previous VMT is empty. No point in chaining with it.
+		O42A_RETURN &vmt->terminator;
 	}
 
 	o42a_refcount_block_t *const block =
