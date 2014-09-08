@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.dep.DepOp.DEP_ID;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.Fld;
@@ -80,6 +81,16 @@ public final class ObjOp extends ObjectOp {
 	@Override
 	public final Obj getWellKnownType() {
 		return getAscendant();
+	}
+
+	@Override
+	public ObjOp phi(Code code, DataOp ptr) {
+		return new ObjOp(
+				getBuilder(),
+				getObjectIR(),
+				ptr.to(null, code, ptr().getType()),
+				getAscendant(),
+				getPrecision());
 	}
 
 	public final VmtIRChain.Op vmtc(Code code) {

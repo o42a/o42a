@@ -26,6 +26,8 @@ import static org.o42a.core.ir.object.dep.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
@@ -59,6 +61,11 @@ public final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public final Obj getWellKnownType() {
 		return this.wellKnownType;
+	}
+
+	@Override
+	public ObjectOp phi(Code code, DataOp ptr) {
+		return anonymousObject(getBuilder(), code, ptr, getWellKnownType());
 	}
 
 	@Override

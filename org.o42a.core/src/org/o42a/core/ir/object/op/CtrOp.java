@@ -25,8 +25,11 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.finalVal;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
+
+import java.util.function.Function;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.Allocated;
@@ -35,11 +38,12 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
@@ -56,16 +60,30 @@ public class CtrOp extends IROp {
 
 	public static final ID CTR_ID = ID.id("ctr");
 
-	private final Allocated<Op> ptr;
+	private final Function<Code, Op> ptr;
+	private Obj sample;
+	private ObjectOp host;
 
-	public CtrOp(CodeBuilder builder, Allocated<Op> ptr) {
+	public CtrOp(CodeBuilder builder, Function<Code, Op> ptr) {
 		super(builder);
 		this.ptr = ptr;
 	}
 
+	public final Obj getSample() {
+		return this.sample;
+	}
+
+	public final boolean isEager() {
+		return getSample().value().getStatefulness().isEager();
+	}
+
 	@Override
 	public final Op ptr(Code code) {
-		return this.ptr.get(code);
+		return this.ptr.apply(code);
+	}
+
+	public final ObjectOp host() {
+		return this.host;
 	}
 
 	public final ValOp value(
@@ -82,79 +100,96 @@ public class CtrOp extends IROp {
 				holderFactory);
 	}
 
-	public ObjectOp newObject(
-			CodeDirs dirs,
-			ObjHolder holder,
-			ObjectOp owner,
-			ObjectOp ancestor,
-			ObjOp sample) {
-
-		final CodeDirs subDirs = dirs.begin(
-				"new_object",
-				"New object: sample=" + sample);
-		final Block code = subDirs.code();
-		final Op ptr = ptr(code);
-
-		if (owner != null) {
-			ptr.owner(code).store(code, owner.toData(null, code));
-		} else {
-			ptr.owner(code).store(code, code.nullDataPtr());
-		}
-		ptr.ancestor(code).store(
-				code,
-				ancestor != null
-				? ancestor.toData(null, code)
-				: code.nullDataPtr());
-		ptr.sample(code).store(code, sample.toData(null, code));
-		ptr.numDeps(code).store(
-				code,
-				code.int32(sample.getObjectIR().existingDeps().size()));
-
-		final DataOp result = newFunc().op(null, code).newObject(code, this);
-
-		result.isNull(null, code).go(code, subDirs.falseDir());
-
-		final ObjectOp newObject = anonymousObject(
-				subDirs,
-				result,
-				sample.getWellKnownType());
-		final Block resultCode = subDirs.done().code();
-
-		return holder.holdVolatile(resultCode, newObject);
+	public final CtrOp host(ObjectOp host) {
+		this.host = host;
+		return this;
 	}
 
-	public ObjectOp eagerObject(
-			CodeDirs dirs,
-			ObjHolder holder,
-			ObjectOp owner,
-			ObjectOp ancestor,
-			Obj sample) {
-		assert ancestor != null :
-			"Eager object's ancestor not specified";
-		assert sample.deps().size() == 0 :
-			"Eager object has run-time dependencies";
+	public final CtrOp fillOwner(Code code, ObjectOp host) {
+		host(host);
 
-		final CodeDirs subDirs = dirs.begin(
-				"eager_object",
-				"Eager object: ancestor=" + ancestor);
-		final Block code = subDirs.code();
 		final Op ptr = ptr(code);
 
-		if (owner != null) {
-			ptr.owner(code).store(code, owner.toData(null, code));
+		if (host != null) {
+			ptr.owner(code).store(code, host.toData(null, code));
 		} else {
 			ptr.owner(code).store(code, code.nullDataPtr());
 		}
+
+		return this;
+	}
+
+	public final CtrOp fillAscendants(
+			CodeDirs dirs,
+			ObjectOp ancestor,
+			Obj sample) {
+
+		final Block code = dirs.code();
+		final Op ptr = ptr(code);
+
 		ptr.ancestor(code).store(code, ancestor.toData(null, code));
+		this.sample = sample;
 
-		final DataOp result = eagerFunc().op(null, code).newObject(code, this);
+		if (isEager()) {
+			if (code.isDebug()) {
+				// Not meaningful for eager objects,
+				// NULL is required here only for making memory dumps.
+				ptr.sample(code).store(code, code.nullDataPtr());
+			}
 
-		result.isNull(null, code).go(code, subDirs.falseDir());
+			final ValOp value = value(
+					"eager",
+					code.getAllocator(),
+					sample.type().getValueType(),
+					TEMP_VAL_HOLDER);
+			final ValDirs eagerDirs = dirs.nested().value(value);
+			final ValOp result = ancestor.value().writeValue(eagerDirs);
 
-		final ObjectOp newObject = anonymousObject(subDirs, result, sample);
-		final Block resultCode = subDirs.done().code();
+			value.store(code, result);
 
-		return holder.holdVolatile(resultCode, newObject);
+			eagerDirs.done();
+		} else {
+
+			final ObjectIR sampleIR = sample.ir(getGenerator());
+
+			ptr.sample(code).store(
+					code,
+					sampleIR.ptr().op(null, code).toData(null, code));
+			ptr.numDeps(code).store(
+					code,
+					code.int32(sampleIR.existingDeps().size()));
+
+			ptr.value(code)
+			.flags(code, NOT_ATOMIC)
+			.store(code, VAL_INDEFINITE);
+		}
+
+		return this;
+	}
+
+	public ObjectOp newObject(CodeDirs dirs, ObjHolder holder) {
+
+		final Block code = dirs.code();
+
+		code.dump("Constructing: ", this);
+
+		final DataOp result;
+
+		if (isEager()) {
+			result = eagerFunc().op(null, code).newObject(code, this);
+		} else {
+			result = newFunc().op(null, code).newObject(code, this);
+		}
+
+		result.isNull(null, code).go(code, dirs.falseDir());
+
+		final ObjectOp newObject = anonymousObject(dirs, result, getSample());
+
+		if (!isEager()) {
+			newObject.fillDeps(dirs, host(), getSample());
+		}
+
+		return holder.holdVolatile(code, newObject);
 	}
 
 	private FuncPtr<NewObjectFn> newFunc() {
@@ -204,6 +239,10 @@ public class CtrOp extends IROp {
 
 		public final Int32recOp numDeps(Code code) {
 			return int32(null, code, getType().numDeps());
+		}
+
+		public final CtrOp op(CodeBuilder builder) {
+			return new CtrOp(builder, code -> this);
 		}
 
 	}
@@ -287,10 +326,6 @@ public class CtrOp extends IROp {
 		@Override
 		public void init(Code code, Op allocated) {
 			allocated.vmtc(code).store(code, code.nullPtr(VMT_IR_CHAIN_TYPE));
-
-			allocated.value(code)
-			.flags(code, NOT_ATOMIC)
-			.store(code, VAL_INDEFINITE);
 		}
 
 		@Override

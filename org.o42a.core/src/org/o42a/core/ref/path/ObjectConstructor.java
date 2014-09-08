@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ir.ObjectsCode.NEW_OBJECT_ID;
 import static org.o42a.core.ir.ObjectsCode.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
@@ -26,6 +27,7 @@ import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 import java.util.IdentityHashMap;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
@@ -258,24 +260,33 @@ public abstract class ObjectConstructor
 
 		private ObjectOp newObject(CodeDirs dirs, ObjHolder holder) {
 
-			final ObjectOp owner;
 			final ObjectOp host = host().target().materialize(
 					dirs,
 					tempObjHolder(dirs.getAllocator()));
 
-			if (host == null || host.getPrecision().isExact()) {
-				owner = null;
-			} else {
-				owner = host;
-			}
-
-			return getBuilder().objects().newObject(
-					dirs,
+			final CodeDirs subDirs = dirs.begin(
+					NEW_OBJECT_ID,
+					"New object: sample=`" + getConstructed() + "`");
+			final Block code = subDirs.code();
+			final ObjectOp ancestor = objectAncestor(
+					subDirs,
 					host,
-					holder,
-					owner,
-					objectAncestor(dirs, host, getConstructed()),
-					getConstructed());
+					getConstructed(),
+					tempObjHolder(code.getAllocator()));
+
+			final ObjectOp result = getBuilder()
+					.objects()
+					.allocateCtr(code)
+					.fillOwner(code, host)
+					.fillAscendants(
+							subDirs,
+							ancestor,
+							getConstructed())
+					.newObject(subDirs, holder);
+
+			subDirs.done();
+
+			return result;
 		}
 
 	}

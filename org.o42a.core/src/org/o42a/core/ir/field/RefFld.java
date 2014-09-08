@@ -47,7 +47,7 @@ public abstract class RefFld<
 
 	public static final StatefulType STATEFUL_FLD = new StatefulType();
 
-	public static final ID FLD_CTR_ID = ID.id("fld_ctr");
+	public static final ID FLD_CTR_ID = ID.id("fctr");
 	public static final ID CONSTRUCT_ID = ID.rawId("construct");
 	public static final ID CLONE_ID = ID.rawId("clone");
 
@@ -452,13 +452,18 @@ public abstract class RefFld<
 					getObjectIR(),
 					getBodyIR().getClosestAscendant(),
 					getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
-			final CodeDirs dirs =
-					builder.dirs(constructor, failure.head());
+			final CodeDirs dirs = builder.dirs(constructor, failure.head());
+			final CodeDirs subDirs =
+					dirs.begin(
+							CONSTRUCT_ID,
+							"Constructing field `" + getField() + "`");
 
-			this.build.accept(builder, dirs);
+			this.build.accept(builder, subDirs);
+
+			subDirs.done();
 
 			if (failure.exists()) {
-				failure.nullPtr().returnValue(failure);
+				failure.nullDataPtr().returnValue(failure);
 			}
 		}
 
