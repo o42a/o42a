@@ -486,6 +486,9 @@ inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_desc_t *const desc) {
  * If the VMT of the previous link is the same as provided one, then just
  * returns it.
  *
+ * If the VMT of the previous link is empty (e.g. VMT of void type),
+ * then returns a terminator of the given VMT.
+ *
  * The chain link instances are reference-counted. This function sets the
  * reference count of newly allocated link to zero and increases the reference
  * count of previous link in the chain by one, unless it is a terminator link.
