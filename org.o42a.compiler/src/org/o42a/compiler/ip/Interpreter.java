@@ -118,6 +118,10 @@ public enum Interpreter {
 
 		final SerialNode[] conjunction = singleAlt(block);
 
+		if (conjunction == null) {
+			return null;
+		}
+
 		return singleExpression(conjunction);
 	}
 

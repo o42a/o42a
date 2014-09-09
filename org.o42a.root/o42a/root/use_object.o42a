@@ -13,15 +13,15 @@ Module := `string ()
 Object := `string ()
 Alias := `string ()
 
-<'' | from | as ...> Object = ()
-<[] | from | as ...> Object = *
+<'' | from | as ...> *Object
+<[] | from | as ...> *Object
 
 <From ...> (
-  <'' | as> Module = ()
-  <[] | as> Module = *
+  <'' | as> *Module
+  <[] | as> *Module
 )
 
 <As ...> (
-  <'' | *> Alias = ()
-  <[] | *> Alias = *
+  <'' | *> *Alias
+  <[] | *> *Alias
 )

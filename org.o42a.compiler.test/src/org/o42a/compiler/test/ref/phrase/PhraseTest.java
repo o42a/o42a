@@ -58,7 +58,7 @@ public class PhraseTest extends CompilerTestCase {
 				"    = Val + inc",
 				"  )",
 				"  <*> Sum (",
-				"    <[]> Inc = ()",
+				"    <[]> *Inc",
 				"  )",
 				")",
 				"B := a (Val = 1)",

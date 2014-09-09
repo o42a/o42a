@@ -49,7 +49,26 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 				"Val := 1",
 				"A :=> integer (",
 				"  Foo :=< integer` link",
-				"  <[Arg]> Foo = ()",
+				"  <[Arg]> Foo = *",
+				")",
+				"B := a [val]");
+
+		final Field bFoo = field("b", "foo");
+		final Obj bFooTarget = linkTarget(bFoo);
+
+		assertThat(definiteValue(bFooTarget, ValueType.INTEGER), is(1L));
+		assertThat(
+				bFooTarget.getWrapped(),
+				sameInstance(field("val").toObject()));
+	}
+
+	@Test
+	public void shortOverrider() {
+		compile(
+				"Val := 1",
+				"A :=> integer (",
+				"  Foo :=< integer` link",
+				"  <[Arg]> *Foo",
 				")",
 				"B := a [val]");
 

@@ -20,9 +20,7 @@
 package org.o42a.compiler.ip.clause;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
-import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.core.member.field.AscendantsDefinition;
@@ -48,17 +46,6 @@ final class OverriderDefinitionVisitor
 				p.distribute()));
 
 		return p;
-	}
-
-	@Override
-	public ClauseAccess visitParentheses(
-			ParenthesesNode parentheses,
-			ClauseAccess p) {
-		if (parentheses.getContent().length == 0) {
-			p.get().setSubstitution(VALUE_SUBSTITUTION);
-			return p;
-		}
-		return super.visitParentheses(parentheses, p);
 	}
 
 }

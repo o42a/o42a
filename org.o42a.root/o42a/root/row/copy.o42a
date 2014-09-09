@@ -47,14 +47,14 @@ Zero by default.
 ~~~
 
 <*Interval to copy> Copy (
-  <[Copy from...) | copy to> From = *
-  <[...Copy to) | to...> To = *
-  <[Copy trailing...-) | to...> From = *
-  <(-...Copy leading) | to...> To = *
+  <[Copy from...) | copy to> *From
+  <[...Copy to) | to...> *To
+  <[Copy trailing...-) | to...> *From
+  <(-...Copy leading) | to...> *To
   <To...> (
-    <[] | at> Target = *
+    <[] | at> *Target
   )
   <At...> (
-    <[]> Target start = *
+    <[]> *Target start
   )
 )

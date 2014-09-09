@@ -15,7 +15,7 @@ A greater-or-equal comparison macro.
 What :=< macro ~~ What to compare.
 Than :=< macro ~~ What to compare with.
 
-<What~* | than> What = *
+<What~* | than> *What
 <:Than> (
-  <[Than]> Than = *
+  <[Than]> *Than
 )
