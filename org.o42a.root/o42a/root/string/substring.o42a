@@ -10,10 +10,10 @@ Substring :=> //string
 ======================
 
 <From ...> (
-  <[] | to> From = ()
+  <[] | to> *From
 )
 <To ...> (
-  <[]> To = ()
+  <[]> *To
 )
 
 From := `0

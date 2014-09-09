@@ -28,4 +28,4 @@ prototype.
 
 = value
 
-<[=*]!> Value = * ~~ Property initializer.
+<[=*]!> *Value ~~ Property initializer.

@@ -12,10 +12,10 @@ Use namespace ::=> directive
 Module := `string ()
 Object := `string ()
 
-<'' | object> Module = ()
-<[] | object> Module = *
+<'' | object> *Module
+<[] | object> *Module
 
 <Object ...> (
-  <''> Object = ()
-  <[]> Object = *
+  <''> *Object
+  <[]> *Object
 )

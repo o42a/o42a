@@ -143,7 +143,7 @@ public class MacroExpansionTest extends CompilerTestCase {
 		compile(
 				"A :=> void (",
 				"  F :=< string",
-				"  <[]!> F = ()",
+				"  <[]!> *F",
 				")",
 				"#T := \"test\"",
 				"B := a [#t]");

@@ -23,7 +23,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"A := void (",
 				"  <*Cmp> Compare (",
-				"    <* == *> Right = ()",
+				"    <* == *> *Right",
 				"  )",
 				")",
 				"B := a == 23");
@@ -39,7 +39,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				")",
 				"A := void (",
 				"  <*Cmp> Compare (",
-				"    <* == *> Right = ()",
+				"    <* == *> *Right",
 				"  )",
 				")",
 				"B := a <> 44");
