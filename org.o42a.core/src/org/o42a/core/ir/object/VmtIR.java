@@ -30,8 +30,6 @@ import org.o42a.util.string.ID;
 
 public class VmtIR extends Struct<VmtIROp> {
 
-	public static final short ANCESTOR_DEF = 0x01;
-
 	private static final ID SIZE_ID = ID.rawId("size");
 	private static final ID TERMINATOR_ID = ID.rawId("terminator");
 
@@ -39,7 +37,6 @@ public class VmtIR extends Struct<VmtIROp> {
 
 	private final ObjectIR objectIR;
 
-	private Int16rec flags;
 	private Int32rec size;
 	private VmtIRChain terminator;
 
@@ -54,10 +51,6 @@ public class VmtIR extends Struct<VmtIROp> {
 
 	public final Obj getSampleDeclaration() {
 		return getObjectIR().getSampleDeclaration();
-	}
-
-	public final Int16rec flags() {
-		return this.flags;
 	}
 
 	public final Int32rec size() {
@@ -75,7 +68,6 @@ public class VmtIR extends Struct<VmtIROp> {
 
 	@Override
 	protected void allocate(SubData<VmtIROp> data) {
-		this.flags = data.addInt16("flags");
 		this.size = data.addInt32(SIZE_ID);
 		this.terminator = data.addInstance(
 				TERMINATOR_ID,
@@ -90,7 +82,6 @@ public class VmtIR extends Struct<VmtIROp> {
 
 	@Override
 	protected void fill() {
-		flags().setConstant(true).setValue(objectFlags());
 		size()
 		.setConstant(true)
 		.setLowLevel(true).setValue(() -> layout(getGenerator()).size());
@@ -99,18 +90,6 @@ public class VmtIR extends Struct<VmtIROp> {
 				fld.fillMethods();
 			}
 		}
-	}
-
-	private short objectFlags() {
-
-		final Obj object = getObjectIR().getObject();
-		short flags = 0;
-
-		if (object.value().getDefinitions().areInherited()) {
-			flags |= ANCESTOR_DEF;
-		}
-
-		return flags;
 	}
 
 	private static final class VmtTerminator implements Content<VmtIRChain> {
