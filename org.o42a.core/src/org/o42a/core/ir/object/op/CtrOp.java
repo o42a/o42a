@@ -20,14 +20,12 @@
 package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
-import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.value.ObjectCondFn.OBJECT_COND;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
-import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.finalVal;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
@@ -78,6 +76,10 @@ public class CtrOp extends IROp {
 		return getSample().value().getStatefulness().isEager();
 	}
 
+	public final boolean isExplicitEager() {
+		return getSample().value().getStatefulness().isExplicitEager();
+	}
+
 	@Override
 	public final Op ptr(Code code) {
 		return this.ptr.apply(code);
@@ -124,36 +126,24 @@ public class CtrOp extends IROp {
 			CodeDirs dirs,
 			ObjectOp ancestor,
 			Obj sample) {
+		this.sample = sample;
 
 		final Block code = dirs.code();
 		final Op ptr = ptr(code);
 
 		ptr.ancestor(code).store(code, ancestor.toData(null, code));
-		this.sample = sample;
 
-		if (isEager()) {
+		if (isExplicitEager()) {
+			ptr.sampleDesc(code)
+			.store(code, code.nullPtr(OBJECT_DESC_TYPE));
 			if (code.isDebug()) {
-				// Not meaningful for eager objects,
-				// NULLa required here only for making memory dumps.
-				ptr.sampleDesc(code)
-				.store(code, code.nullPtr(OBJECT_DESC_TYPE));
+				// Not meaningful for eager objects.
+				// NULLs required here only for making memory dumps.
 				ptr.sampleTypeInfo(code).store(code, code.nullPtr());
 				ptr.valueFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 				ptr.condFunc(code).store(code, code.nullPtr(OBJECT_COND));
 				ptr.defFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			}
-
-			final ValOp value = value(
-					"eager",
-					code.getAllocator(),
-					sample.type().getValueType(),
-					TEMP_VAL_HOLDER);
-			final ValDirs eagerDirs = dirs.nested().value(value);
-			final ValOp result = ancestor.value().writeValue(eagerDirs);
-
-			value.store(code, result);
-
-			eagerDirs.done();
 		} else {
 
 			final ObjectIR sampleIR = sample.ir(getGenerator());
@@ -183,12 +173,29 @@ public class CtrOp extends IROp {
 						code,
 						valueIR.def().get().op(null, code));
 			}
-			ptr.value(code)
-			.flags(code, NOT_ATOMIC)
-			.store(code, VAL_INDEFINITE);
+
 			ptr.numDeps(code).store(
 					code,
 					code.int32(sampleIR.existingDeps().size()));
+		}
+
+		if (isEager()) {
+
+			final ValOp value = value(
+					"eager",
+					code.getAllocator(),
+					sample.type().getValueType(),
+					TEMP_VAL_HOLDER);
+			final ValDirs eagerDirs = dirs.nested().value(value);
+			final ValOp result = ancestor.value().writeValue(eagerDirs);
+
+			value.store(code, result);
+
+			assert !isExplicitEager()
+					|| sample.ir(getGenerator()).existingDeps().isEmpty() :
+				"Explicitly eager object has run time dependencies";
+
+			eagerDirs.done();
 		}
 
 		return this;
@@ -199,12 +206,14 @@ public class CtrOp extends IROp {
 		final StructRecOp<VmtIRChain.Op> vmtcRec = ptr(code).vmtc(code);
 		final VmtIR vmtIR = getSample().ir(getGenerator()).getVmtIR();
 
-		if (isEager()) {
-			vmtcRec.store(code, code.nullPtr(VMT_IR_CHAIN_TYPE));
-		} else {
+		if (!isExplicitEager()) {
 			vmtcRec.store(
 					code,
 					vmtIR.terminator().pointer(getGenerator()).op(null, code));
+		} else if (code.isDebug()) {
+			// Not meaningful for eager objects.
+			// NULLs required here only for making memory dumps.
+			vmtcRec.store(code, code.nullPtr(VMT_IR_CHAIN_TYPE));
 		}
 
 		return this;
@@ -228,7 +237,7 @@ public class CtrOp extends IROp {
 
 		final ObjectOp newObject = anonymousObject(dirs, result, getSample());
 
-		if (!isEager()) {
+		if (!isExplicitEager()) {
 			newObject.fillDeps(dirs, host(), getSample());
 		}
 
