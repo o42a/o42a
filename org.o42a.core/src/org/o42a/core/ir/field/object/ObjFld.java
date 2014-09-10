@@ -171,10 +171,34 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 				evalAncestorPtr,
 				suppliedAncestorPtr);
 
-		// Done initializing. Start the work.
-		final VmtIRChain.Op prevVmtc = vmtc.prev(null, code).load(null, code);
+		if (getField()
+				.toObject()
+				.value()
+				.getStatefulness()
+				.isExplicitEager()) {
+			// Explicit eager object can be constructed without delegation.
+			final Block eager = code.addBlock("eager");
 
-		delegate(dirs, ctr, prevVmtc);
+			noAncestor.go(code, eager.head());
+
+			final DataOp result =
+					construct(
+							dirs.sub(eager),
+							ctr,
+							evalAncestor.phi(eager, ancestorPtr))
+					.toData(null, eager);
+
+			finish(eager, fld, fctr, result);
+
+			delegate(dirs, ctr, vmtc);
+			updateVmtc(dirs, ctr);
+
+			code.nullDataPtr().returnValue(code);
+
+			return;
+		}
+
+		delegate(dirs, ctr, vmtc);
 		updateVmtc(dirs, ctr);
 
 		final Block dontConstruct = code.addBlock("dont_construct");
@@ -191,13 +215,7 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 				construct(dirs, ctr, evalAncestor.phi(code, ancestorPtr))
 				.toData(null, code);
 
-		fld.ptr()
-		.object(null, code)
-		.store(code, result, ACQUIRE_RELEASE);
-
-		fctr.finish(code, fld);
-
-		result.returnValue(code);
+		finish(code, fld, fctr, result);
 	}
 
 	@Override
@@ -229,9 +247,10 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 						tempObjHolder(dirs.getAllocator()));
 	}
 
-	private void delegate(CodeDirs dirs, CtrOp.Op ctr, VmtIRChain.Op prevVmtc) {
+	private void delegate(CodeDirs dirs, CtrOp.Op ctr, VmtIRChain.Op vmtc) {
 
 		final Block code = dirs.code();
+		final VmtIRChain.Op prevVmtc = vmtc.prev(null, code).load(null, code);
 		final Block delegate = code.addBlock("delegate");
 
 		prevVmtc.isNull(null, code).goUnless(code, delegate.head());
@@ -282,6 +301,16 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 		.host(builder.host())
 		.fillAscendants(dirs, ancestor, getField().toObject())
 		.newObject(dirs, objTrap());
+	}
+
+	private void finish(
+			Block code,
+			ObjFldOp fld,
+			FldCtrOp fctr,
+			DataOp result) {
+		fld.ptr(code).object(null, code).store(code, result, ACQUIRE_RELEASE);
+		fctr.finish(code, fld);
+		result.returnValue(code);
 	}
 
 	private void buildCloneFunc(ObjBuilder builder, CodeDirs dirs) {
