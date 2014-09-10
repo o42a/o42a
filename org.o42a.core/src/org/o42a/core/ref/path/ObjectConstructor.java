@@ -282,6 +282,7 @@ public abstract class ObjectConstructor
 							subDirs,
 							ancestor,
 							getConstructed())
+					.fillVmtc(code)
 					.newObject(subDirs, holder);
 
 			subDirs.done();

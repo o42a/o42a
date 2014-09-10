@@ -258,10 +258,6 @@ public class ObjectIR {
 		return this.object + " IR";
 	}
 
-	protected ObjectValueIR createValueIR() {
-		return new ObjectValueIR(this);
-	}
-
 	private Map<Dep, DepIR> deps() {
 		if (this.allDeps != null) {
 			return this.allDeps;
