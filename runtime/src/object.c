@@ -1044,21 +1044,17 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
-	o42a_obj_t *const object = O42A(new_obj(ctr));
-
-	if (!object) {
-		if (ctr->vmtc) {
-			O42A(o42a_obj_vmtc_free(ctr->vmtc));
-		}
-		O42A_RETURN NULL;
-	}
-
 	const o42a_obj_data_t *const adata = &ctr->ancestor->object_data;
-	o42a_obj_data_t *const data = &object->object_data;
-
 	assert(
 			!(adata->value.flags & O42A_VAL_EAGER)
 			&& "Ancestor value is eagerly evaluated");
+
+	o42a_obj_t *const object = O42A(new_obj(ctr));
+
+	if (!object) {
+		O42A(o42a_obj_vmtc_free(ctr->vmtc));
+		O42A_RETURN NULL;
+	}
 
 	const o42a_obj_vmtc_t *vmtc;
 
@@ -1073,6 +1069,8 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	}
 
 	O42A(vmtc_use(vmtc));
+
+	o42a_obj_data_t *const data = &object->object_data;
 
 	data->vmtc = vmtc;
 	data->value.flags = O42A_VAL_INDEFINITE;
@@ -1113,11 +1111,23 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 		O42A_RETURN NULL;
 	}
 
-	o42a_obj_data_t *const data = &object->object_data;
+	const o42a_obj_vmtc_t *vmtc;
 
-	const o42a_obj_vmtc_t *const vmtc = ctr->vmtc ? ctr->vmtc : adata->vmtc;
+	if (!ctr->vmtc) {
+		vmtc = adata->vmtc;
+	} else if (ctr->vmtc->prev) {
+		vmtc = ctr->vmtc;
+	} else {
+		vmtc = O42A(o42a_obj_vmtc_alloc(ctr->vmtc->vmt, adata->vmtc));
+		if (!vmtc) {
+			O42A(o42a_gc_free(o42a_gc_blockof(object)));
+			O42A_RETURN NULL;
+		}
+	}
 
 	O42A(vmtc_use(vmtc));
+
+	o42a_obj_data_t *const data = &object->object_data;
 
 	data->vmtc = vmtc;
 	data->def_f = adata->def_f;

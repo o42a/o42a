@@ -372,12 +372,12 @@ typedef struct o42a_obj_ctr {
 	/**
 	 * VMT chain to use.
 	 *
-	 * When constructing a non-eager object, if points to VMT chain terminator,
-	 * then VMT chain will be constructed from VMT the given VMT and ancestor.
-	 * Otherwise, this VMT chain will be used.
+	 * If points to VMT chain terminator, then VMT chain will be constructed
+	 * from VMT the given VMT and ancestor. Otherwise, this VMT chain will be
+	 * used.
 	 *
-	 * When constructing an eager object, if not NULL then will be used.
-	 * Otherwise the VMT chain from ancestor will be used.
+	 * May be NULL when constructing an eager object. In this case the VMT chain
+	 * from ancestor will be used.
 	 *
 	 * This should be either VMT chain from existing object, or the one
 	 * allocated with o42a_obj_vmtc_alloc function.
