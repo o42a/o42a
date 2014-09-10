@@ -269,7 +269,7 @@ int32_t o42a_dbg_exec_main(
 
 inline const o42a_dbg_header_t *o42a_dbg_header(const void *const ptr) {
 
-	const o42a_dbg_header_t *const header = (o42a_dbg_header_t*) ptr;
+	const o42a_dbg_header_t *const header = ptr;
 	const o42a_dbg_type_info_t *const type_info = header->type_info;
 
 	if (header->type_code != type_info->type_code) {
