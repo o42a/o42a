@@ -39,14 +39,14 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 	public static final ID OBJECT_DATA_ID = ID.id("object_data");
 
-	private final ObjectIRStruct objectIRStruct;
+	private final ObjectIR objectIR;
 	private final ID id;
 	private ObjectIRData instance;
 	private Val initialValue;
 
-	ObjectDataIR(ObjectIRStruct objectIRStruct) {
-		this.objectIRStruct = objectIRStruct;
-		this.id = objectIRStruct.getId().sub(OBJECT_DATA_ID);
+	ObjectDataIR(ObjectIR objectIR) {
+		this.objectIR = objectIR;
+		this.id = objectIR.getId().setLocal(OBJECT_DATA_ID);
 	}
 
 	public final Generator getGenerator() {
@@ -58,10 +58,13 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 	}
 
 	public final ObjectIR getObjectIR() {
-		return this.objectIRStruct.getObjectIR();
+		return this.objectIR;
 	}
 
 	public final ObjectIRData getInstance() {
+		if (this.instance == null) {
+			getObjectIR().getStruct();
+		}
 		return this.instance;
 	}
 

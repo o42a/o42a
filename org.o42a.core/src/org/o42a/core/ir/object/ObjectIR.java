@@ -40,7 +40,9 @@ import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Deps;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.state.Dep;
+import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
@@ -49,17 +51,21 @@ public class ObjectIR {
 
 	private final Generator generator;
 	private final Obj object;
+	private final ObjectDataIR dataIR;
 	private final ValueIR valueIR;
 	private ObjectDescIR descIR;
 	private VmtIR vmtIR;
-	private ObjectIRStruct struct;
 	private ObjectValueIR objectValueIR;
+	private LinkedHashMap<Obj, ObjectIRBody> bodyIRs;
+	private ObjectIRBody mainBodyIR;
+	private ObjectIRStruct struct;
 	private List<DepIR> existingDeps;
 	private Map<Dep, DepIR> allDeps;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
 		this.object = object;
+		this.dataIR = new ObjectDataIR(this);
 		this.valueIR =
 				object.type().getValueType().ir(generator).valueIR(this);
 	}
@@ -126,6 +132,25 @@ public class ObjectIR {
 		return this.vmtIR;
 	}
 
+	public final ObjectDataIR getDataIR() {
+		return this.dataIR;
+	}
+
+	public final ObjectIRBody getMainBodyIR() {
+		if (this.mainBodyIR == null) {
+			bodyIRs();
+		}
+		return this.mainBodyIR;
+	}
+
+	public final Collection<? extends ObjectIRBody> getBodyIRs() {
+		return bodyIRs().values();
+	}
+
+	public final Ptr<ObjectIROp> ptr() {
+		return getStruct().pointer(getGenerator());
+	}
+
 	public final ObjectIRStruct getStruct() {
 		if (this.struct != null) {
 			return this.struct;
@@ -141,22 +166,6 @@ public class ObjectIR {
 		getScopeIR().targetAllocated();
 
 		return this.struct;
-	}
-
-	public final Ptr<ObjectIROp> ptr() {
-		return getStruct().pointer(getGenerator());
-	}
-
-	public final ObjectDataIR getDataIR() {
-		return getStruct().dataIR();
-	}
-
-	public final ObjectIRBody getMainBodyIR() {
-		return getStruct().mainBodyIR();
-	}
-
-	public final Collection<? extends ObjectIRBody> getBodyIRs() {
-		return getStruct().bodyIRs().values();
 	}
 
 	public ObjectIRBody getAncestorBodyIR() {
@@ -218,8 +227,7 @@ public class ObjectIR {
 		if (ascendant.is(ascendant.getContext().getVoid())) {
 			return getMainBodyIR();
 		}
-		return getStruct().bodyIRs().get(
-				ascendant.type().getSampleDeclaration());
+		return bodyIRs().get(ascendant.type().getSampleDeclaration());
 	}
 
 	public final Fld<?> fld(MemberKey memberKey) {
@@ -256,6 +264,68 @@ public class ObjectIR {
 	@Override
 	public String toString() {
 		return this.object + " IR";
+	}
+
+	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs() {
+		if (this.bodyIRs != null) {
+			return this.bodyIRs;
+		}
+
+		this.bodyIRs = new LinkedHashMap<>();
+
+		final ObjectType objectType = getObject().type();
+		final TypeRef ancestorRef = objectType.getAncestor();
+
+		if (ancestorRef != null) {
+
+			final Obj ancestor = ancestorRef.getInterface();
+
+			if (!ancestor.is(ancestor.getContext().getVoid())) {
+				deriveBodyIRs(ancestor, true);
+			}
+		}
+
+		final Sample sample = objectType.getSample();
+
+		if (sample != null) {
+			deriveBodyIRs(sample.getObject(), false);
+		} else {
+			assert isSampleDeclaration() :
+				"The object has no sample. It should be a declaration then";
+			addBodyIR(new ObjectIRBody(this), false);
+		}
+
+		return this.bodyIRs;
+	}
+
+	private void deriveBodyIRs(Obj ascendant, boolean inherited) {
+
+		final Collection<? extends ObjectIRBody> ascendantBodyIRs =
+				ascendant.ir(getGenerator()).getBodyIRs();
+
+		for (ObjectIRBody ascendantBodyIR : ascendantBodyIRs) {
+			if (this.bodyIRs.containsKey(
+					ascendantBodyIR.getSampleDeclaration())) {
+				// The body for the given declaration is already present.
+				continue;
+			}
+
+			final ObjectIRBody bodyIR = ascendantBodyIR.derive(this);
+
+			addBodyIR(bodyIR, inherited);
+		}
+	}
+
+	private void addBodyIR(ObjectIRBody bodyIR, boolean inherited) {
+		if (!inherited) {
+			assert this.mainBodyIR == null :
+				"Main body already allocated: " + this.mainBodyIR;
+			this.mainBodyIR = bodyIR;
+		}
+
+		final Obj declaration = bodyIR.getSampleDeclaration();
+
+		this.bodyIRs.put(declaration, bodyIR);
 	}
 
 	private Map<Dep, DepIR> deps() {

@@ -40,21 +40,21 @@ import org.o42a.core.object.type.Derivative;
 
 public final class ObjectIRBody {
 
-	private final ObjectIRStruct objectIRStruct;
+	private final ObjectIR objectIR;
 	private final Obj sampleDeclaration;
 	private final Obj closestAscendant;
 
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 
-	ObjectIRBody(ObjectIRStruct objectIRStruct) {
-		this.objectIRStruct = objectIRStruct;
-		this.sampleDeclaration = objectIRStruct.getSampleDeclaration();
+	ObjectIRBody(ObjectIR objectIR) {
+		this.objectIR = objectIR;
+		this.sampleDeclaration = objectIR.getSampleDeclaration();
 		this.closestAscendant = this.sampleDeclaration;
 	}
 
 	private ObjectIRBody(ObjectIR inheritantIR, Obj sampleDeclaration) {
-		this.objectIRStruct = inheritantIR.getStruct();
+		this.objectIR = inheritantIR;
 		this.sampleDeclaration = sampleDeclaration;
 		this.closestAscendant =
 				inheritantIR.getSampleDeclaration().is(sampleDeclaration)
@@ -63,11 +63,11 @@ public final class ObjectIRBody {
 	}
 
 	public final Generator getGenerator() {
-		return this.objectIRStruct.getGenerator();
+		return this.objectIR.getGenerator();
 	}
 
 	public final ObjectIR getObjectIR() {
-		return this.objectIRStruct.getObjectIR();
+		return this.objectIR;
 	}
 
 	public final Obj getSampleDeclaration() {
@@ -79,7 +79,7 @@ public final class ObjectIRBody {
 	}
 
 	public final boolean isMain() {
-		return this == this.objectIRStruct.mainBodyIR();
+		return this == this.objectIR.getMainBodyIR();
 	}
 
 	public final ObjectIRBody derive(ObjectIR inheritantIR) {
@@ -87,6 +87,7 @@ public final class ObjectIRBody {
 	}
 
 	public final List<Fld<?>> getDeclaredFields() {
+		ensureFieldsAllocated();
 		return this.fieldList;
 	}
 
@@ -101,19 +102,25 @@ public final class ObjectIRBody {
 	}
 
 	public final Fld<?> findFld(MemberKey memberKey) {
-		return this.fieldMap.get(memberKey);
+		return fields().get(memberKey);
+	}
+
+	private HashMap<MemberKey, Fld<?>> fields() {
+		ensureFieldsAllocated();
+		return this.fieldMap;
 	}
 
 	final void allocate(SubData<?> data) {
-
-		final ObjectIRBodyData bodyData = new ObjectIRBodyData(this, data);
-
-		allocateFields(bodyData);
+		allocateFields(new ObjectIRBodyData(this, data));
 	}
 
 	final void declareFld(Fld<?> fld) {
 		this.fieldList.add(fld);
 		this.fieldMap.put(fld.getKey(), fld);
+	}
+
+	private void ensureFieldsAllocated() {
+		getObjectIR().getStruct();
 	}
 
 	private final void allocateFields(ObjectIRBodyData data) {

@@ -39,7 +39,7 @@ public final class ObjectIROp extends StructOp<ObjectIROp> {
 	}
 
 	public final Obj getSampleDeclaration() {
-		return getType().getSampleDeclaration();
+		return getType().getObjectIR().getSampleDeclaration();
 	}
 
 	public final ObjectIRDataOp objectData(Code code) {
