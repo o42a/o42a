@@ -839,53 +839,42 @@ static inline size_t get_type_info_start(
 	O42A_RETURN type_info_start;
 }
 
-static inline void fill_type_info(
+static inline void fill_debug_info(
+		const o42a_dbg_type_info_t *const ftype_info,
 		o42a_obj_t *const object,
-		o42a_dbg_type_info_t *const type_info) {
+		o42a_dbg_type_info_t *const type_info,
+		const size_t field_num) {
 	O42A_ENTER(return);
+
+	const o42a_dbg_field_info_t *ffield_info = ftype_info->fields;
+	o42a_dbg_field_info_t *field_info = type_info->fields;
 
 	// Fill new object's type info (without field info yet).
 	type_info->type_code = rand();
 	type_info->name = "New object";
+	type_info->field_num = field_num;
 
 	// Fill object debug header.
-	o42a_dbg_header_t *const header = &object->__o42a_dbg_header__;
+	o42a_dbg_header_t *const object_header = &object->__o42a_dbg_header__;
 
-	header->type_code = type_info->type_code;
-	header->enclosing = 0;
-	header->name = type_info->name;
-	header->type_info = type_info;
+	object_header->type_code = type_info->type_code;
+	object_header->enclosing = 0;
+	object_header->name = type_info->name;
+	object_header->type_info = type_info;
 
-	// Fill object data debug header.
-	o42a_dbg_header_t *const data_header =
-			&object->object_data.__o42a_dbg_header__;
+	// Fill object data debug info.
+	o42a_obj_data_t *const data = &object->object_data;
+	o42a_dbg_header_t *const data_header = &data->__o42a_dbg_header__;
 
 	O42A(o42a_dbg_fill_header(
-			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+			ffield_info->type_info,
 			data_header,
-			header));
-	data_header->name = "object_data";
+			object_header));
+	data_header->name = ffield_info->name;
+	O42A(o42a_dbg_fill_field_info(data_header, field_info++));
+	++ffield_info;
 
-	O42A_RETURN;
-}
-
-static inline void fill_field_infos(
-		const o42a_obj_t *const from,
-		o42a_obj_t *const object,
-		o42a_dbg_type_info_t *type_info) {
-	O42A_ENTER(return);
-
-	o42a_obj_data_t *const data = &object->object_data;
-	const o42a_dbg_header_t *const object_header =
-			O42A(o42a_dbg_header(object));
-
-	// Fill new object's type field info.
-	o42a_dbg_field_info_t *field_info = type_info->fields;
-
-	// Fill object data field info.
-	O42A(o42a_dbg_fill_field_info(&data->__o42a_dbg_header__, field_info++));
-
-	// Fill object bodies field info.
+	// Fill object bodies debug info.
 	const o42a_obj_ascendant_t *const ascendants =
 			O42A(o42a_obj_ascendants(data->desc));
 	const size_t num_ascendants = data->desc->ascendants.size;
@@ -899,18 +888,18 @@ static inline void fill_field_infos(
 
 		for (size_t i = 0; i < num_fields; ++i) {
 
-			const o42a_fld *const from_fld =
-					O42A(o42a_fld_by_field(from, fields + i));
 			o42a_fld *const fld =
 					O42A(o42a_fld_by_field(object, fields + i));
+			o42a_dbg_header_t *const fld_header =
+					(o42a_dbg_header_t *) fld;
 
-			O42A(o42a_dbg_copy_header(
-					o42a_dbg_header(from_fld),
-					(o42a_dbg_header_t *) fld,
+			O42A(o42a_dbg_fill_header(
+					ffield_info->type_info,
+					fld_header,
 					object_header));
-			O42A(o42a_dbg_fill_field_info(
-					o42a_dbg_header(fld),
-					field_info++));
+			fld_header->name = ffield_info->name;
+			O42A(o42a_dbg_fill_field_info(fld_header, field_info++));
+			++ffield_info;
 		}
 	}
 
@@ -978,17 +967,6 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	o42a_obj_data_t *const data = &object->object_data;
 	void **const deps = (void **) (mem + deps_start);
 
-#ifndef NDEBUG
-
-	// Fill new object's type info (without field info yet).
-	o42a_dbg_type_info_t *type_info =
-			(o42a_dbg_type_info_t*) (mem + type_info_start);
-
-	O42A(fill_type_info(object, type_info));
-	type_info->field_num = type_field_num;
-
-#endif
-
 	// Fill object data without value and VMT.
 	data->mutex_init = 0;
 	data->value_f = sdata->value_f;
@@ -1002,7 +980,11 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	data->deps.size = num_deps;
 
 #ifndef NDEBUG
-	O42A(fill_field_infos(sample, object, type_info));
+	O42A(fill_debug_info(
+			sample->__o42a_dbg_header__.type_info,
+			object,
+			(o42a_dbg_type_info_t*) (mem + type_info_start),
+			type_field_num));
 #endif /* NDEBUG */
 
 	// propagate sample and inherit ancestor
