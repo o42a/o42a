@@ -24,6 +24,9 @@ import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
+import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.value.ObjectCondFn.OBJECT_COND;
+import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.finalVal;
@@ -38,15 +41,13 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.VmtIRChain;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.type.ObjectIRDescOp;
+import org.o42a.core.ir.object.value.ObjectCondFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValHolderFactory;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
@@ -133,8 +134,13 @@ public class CtrOp extends IROp {
 		if (isEager()) {
 			if (code.isDebug()) {
 				// Not meaningful for eager objects,
-				// NULL is required here only for making memory dumps.
-				ptr.sample(code).store(code, code.nullDataPtr());
+				// NULLa required here only for making memory dumps.
+				ptr.sampleDesc(code)
+				.store(code, code.nullPtr(OBJECT_DESC_TYPE));
+				ptr.sampleTypeInfo(code).store(code, code.nullPtr());
+				ptr.valueFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
+				ptr.condFunc(code).store(code, code.nullPtr(OBJECT_COND));
+				ptr.defFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			}
 
 			final ValOp value = value(
@@ -151,17 +157,54 @@ public class CtrOp extends IROp {
 		} else {
 
 			final ObjectIR sampleIR = sample.ir(getGenerator());
+			final ObjectValueIR valueIR = sampleIR.getObjectValueIR();
 
-			ptr.sample(code).store(
+			ptr.sampleDesc(code).store(
 					code,
-					sampleIR.ptr().op(null, code).toData(null, code));
-			ptr.numDeps(code).store(
+					sampleIR.getDescIR().ptr().op(null, code));
+			if (code.isDebug()) {
+				ptr.sampleTypeInfo(code).store(
+						code,
+						sampleIR.getStruct()
+						.getTypeInfo()
+						.getPointer()
+						.op(null, code));
+			}
+			ptr.valueFunc(code).store(
 					code,
-					code.int32(sampleIR.existingDeps().size()));
-
+					valueIR.value().get().op(null, code));
+			ptr.condFunc(code).store(
+					code,
+					valueIR.condition().get().op(null, code));
+			if (sample.value().getDefinitions().areInherited()) {
+				ptr.defFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
+			} else {
+				ptr.defFunc(code).store(
+						code,
+						valueIR.def().get().op(null, code));
+			}
 			ptr.value(code)
 			.flags(code, NOT_ATOMIC)
 			.store(code, VAL_INDEFINITE);
+			ptr.numDeps(code).store(
+					code,
+					code.int32(sampleIR.existingDeps().size()));
+		}
+
+		return this;
+	}
+
+	public final CtrOp fillVmtc(Code code) {
+
+		final StructRecOp<VmtIRChain.Op> vmtcRec = ptr(code).vmtc(code);
+		final VmtIR vmtIR = getSample().ir(getGenerator()).getVmtIR();
+
+		if (isEager()) {
+			vmtcRec.store(code, code.nullPtr(VMT_IR_CHAIN_TYPE));
+		} else {
+			vmtcRec.store(
+					code,
+					vmtIR.terminator().pointer(getGenerator()).op(null, code));
 		}
 
 		return this;
@@ -225,8 +268,24 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().ancestor());
 		}
 
-		public final DataRecOp sample(Code code) {
+		public final StructRecOp<ObjectIRDescOp> sampleDesc(Code code) {
 			return ptr(null, code, getType().sample());
+		}
+
+		public final AnyRecOp sampleTypeInfo(Code code) {
+			return ptr(null, code, getType().sampleTypeInfo());
+		}
+
+		public final FuncOp<ObjectValueFn> valueFunc(Code code) {
+			return func(null, code, getType().valueFunc());
+		}
+
+		public final FuncOp<ObjectCondFn> condFunc(Code code) {
+			return func(null, code, getType().condFunc());
+		}
+
+		public final FuncOp<ObjectValueFn> defFunc(Code code) {
+			return func(null, code, getType().defFunc());
 		}
 
 		public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
@@ -251,7 +310,11 @@ public class CtrOp extends IROp {
 
 		private DataRec owner;
 		private DataRec ancestor;
-		private DataRec sample;
+		private StructRec<ObjectIRDescOp> sampleDesc;
+		private AnyRec sampleTypeInfo;
+		private FuncRec<ObjectValueFn> valueFunc;
+		private FuncRec<ObjectCondFn> condFunc;
+		private FuncRec<ObjectValueFn> defFunc;
 		private StructRec<VmtIRChain.Op> vmtc;
 		private ValType value;
 		private Int32rec numDeps;
@@ -273,8 +336,28 @@ public class CtrOp extends IROp {
 			return this.ancestor;
 		}
 
-		public final DataRec sample() {
-			return this.sample;
+		public final StructRec<ObjectIRDescOp> sample() {
+			return this.sampleDesc;
+		}
+
+		public final StructRec<ObjectIRDescOp> sampleDesc() {
+			return this.sampleDesc;
+		}
+
+		public final AnyRec sampleTypeInfo() {
+			return this.sampleTypeInfo;
+		}
+
+		public final FuncRec<ObjectValueFn> valueFunc() {
+			return this.valueFunc;
+		}
+
+		public final FuncRec<ObjectCondFn> condFunc() {
+			return this.condFunc;
+		}
+
+		public final FuncRec<ObjectValueFn> defFunc() {
+			return this.defFunc;
 		}
 
 		public final StructRec<VmtIRChain.Op> vmtc() {
@@ -293,7 +376,13 @@ public class CtrOp extends IROp {
 		protected void allocate(SubData<Op> data) {
 			this.owner = data.addDataPtr("owner");
 			this.ancestor = data.addDataPtr("ancestor");
-			this.sample = data.addDataPtr("sample");
+			this.sampleDesc = data.addPtr("sample_desc", OBJECT_DESC_TYPE);
+			if (data.getGenerator().isDebug()) {
+				this.sampleTypeInfo = data.addPtr("sample_type_info");
+			}
+			this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
+			this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
+			this.defFunc = data.addFuncPtr("def_f", OBJECT_VALUE);
 			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 			this.value = data.addInstance(ID.rawId("value"), VAL_TYPE);
 			this.numDeps = data.addInt32("num_deps");
@@ -325,7 +414,6 @@ public class CtrOp extends IROp {
 
 		@Override
 		public void init(Code code, Op allocated) {
-			allocated.vmtc(code).store(code, code.nullPtr(VMT_IR_CHAIN_TYPE));
 		}
 
 		@Override

@@ -347,14 +347,55 @@ typedef struct o42a_obj_ctr {
 	const o42a_obj_t *ancestor;
 
 	/**
-	 * Pointer to sample object.
+	 * Pointer to sample type descriptor.
+	 *
+	 * Ignored when constructing an eager object.
 	 */
-	const o42a_obj_t *sample;
+	const o42a_obj_desc_t *sample_desc;
+
+#ifndef NDEBUG
+
+	/**
+	 * Pointer to sample run-time debug type info.
+	 *
+	 * Ignored when constructing an eager object.
+	 */
+	const o42a_dbg_type_info_t *sample_type_info;
+
+#endif /* NDEBUG */
+
+	/**
+	 * Object value calculator function.
+	 *
+	 * Ignored when constructing an eager object.
+	 */
+	o42a_obj_value_ft *value_f;
+
+	/**
+	 * Object condition calculator function.
+	 *
+	 * Ignored when constructing an eager object.
+	 */
+	o42a_obj_cond_ft *cond_f;
+
+	/**
+	 * Object value definition function.
+	 *
+	 * When NULL, the one from ancestor will be used.
+	 *
+	 * Ignored when constructing an eager object.
+	 */
+	o42a_obj_value_ft *def_f;
 
 	/**
 	 * VMT chain to use.
 	 *
-	 * If NULL, then is will be constructed from sample and ancestor.
+	 * When constructing a non-eager object, if points to VMT chain terminator,
+	 * then VMT chain will be constructed from VMT the given VMT and ancestor.
+	 * Otherwise, this VMT chain will be used.
+	 *
+	 * When constructing an eager object, if not NULL then will be used.
+	 * Otherwise the VMT chain from ancestor will be used.
 	 *
 	 * This should be either VMT chain from existing object, or the one
 	 * allocated with o42a_obj_vmtc_alloc function.
@@ -370,6 +411,8 @@ typedef struct o42a_obj_ctr {
 	 *
 	 * An O42A_VAL_INDEFINITE bit should be set if the value is not eagerly
 	 * evaluated.
+	 *
+	 * Ignored when constructing a non-eager object.
 	 */
 	o42a_val_t value;
 
@@ -394,7 +437,7 @@ typedef struct o42a_obj_ctable {
 
 	const o42a_obj_t *const ancestor;
 
-	const o42a_obj_t *const sample;
+	const o42a_obj_desc_t *const sample_desc;
 
 	const o42a_obj_t *from;
 
@@ -424,7 +467,10 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
-extern const o42a_dbg_type_info6f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
+extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctr {
+	O42A_DBG_TYPE_INFO
+	o42a_dbg_field_info_t fields[10];
+} _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
