@@ -1092,15 +1092,20 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 
 	const o42a_obj_t *const ancestor = ctr->ancestor;
 	const o42a_obj_data_t *const adata = &ancestor->object_data;
-	const size_t num_deps = adata->deps.size;
+	const o42a_obj_desc_t *const sdesc = ctr->sample_desc;
+	const size_t copy_adeps = adata->deps.size;
 
-	ctr->sample_desc = adata->desc;
+	if (!sdesc) {
+		ctr->sample_desc = adata->desc;
 #ifndef NDEBUG
-	ctr->sample_type_info = O42A(o42a_dbg_header(ctr->ancestor))->type_info;
+		ctr->sample_type_info = O42A(o42a_dbg_header(ctr->ancestor))->type_info;
 #endif /* NDEBUG */
-	ctr->value_f = adata->value_f;
-	ctr->cond_f = adata->cond_f;
-	ctr->num_deps = num_deps;
+		ctr->value_f = adata->value_f;
+		ctr->cond_f = adata->cond_f;
+		ctr->num_deps = copy_adeps;
+	} else if (copy_adeps) {
+		assert(!ctr->num_deps && "Can not allocate more dependencies");
+	}
 
 	o42a_obj_t *const object = O42A(new_obj(ctr));
 
@@ -1113,7 +1118,7 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 
 	const o42a_obj_vmtc_t *vmtc;
 
-	if (!ctr->vmtc) {
+	if (!sdesc) {
 		vmtc = adata->vmtc;
 	} else if (ctr->vmtc->prev) {
 		vmtc = ctr->vmtc;
@@ -1130,11 +1135,11 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	data->vmtc = vmtc;
-	data->def_f = adata->def_f;
+	data->def_f = sdesc && ctr->def_f ? ctr->def_f : adata->def_f;
 	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
 	data->value.flags |= O42A_VAL_EAGER;
 
-	if (num_deps) {
+	if (copy_adeps) {
 
 		o42a_obj_data_t *const data = &object->object_data;
 		void **const adeps =
@@ -1142,7 +1147,7 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 		void **const deps =
 				(void **) (((char *) &data->deps) + data->deps.list);
 
-		for (size_t i = 0; i < num_deps; ++i) {
+		for (size_t i = 0; i < copy_adeps; ++i) {
 			deps[i] = adeps[i];
 		}
 	}

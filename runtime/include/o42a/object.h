@@ -331,7 +331,8 @@ typedef struct o42a_obj_ctr {
 	/**
 	 * Pointer to sample type descriptor.
 	 *
-	 * Ignored when constructing an eager object.
+	 * May be NULL when constructing an eager object. In this case the new
+	 * object will be a clone of ancestor.
 	 */
 	const o42a_obj_desc_t *sample_desc;
 
@@ -340,7 +341,7 @@ typedef struct o42a_obj_ctr {
 	/**
 	 * Pointer to sample run-time debug type info.
 	 *
-	 * Ignored when constructing an eager object.
+	 * Ignored when sample not specified.
 	 */
 	const o42a_dbg_type_info_t *sample_type_info;
 
@@ -349,14 +350,14 @@ typedef struct o42a_obj_ctr {
 	/**
 	 * Object value calculator function.
 	 *
-	 * Ignored when constructing an eager object.
+	 * Ignored when sample not specified.
 	 */
 	o42a_obj_value_ft *value_f;
 
 	/**
 	 * Object condition calculator function.
 	 *
-	 * Ignored when constructing an eager object.
+	 * Ignored when sample not specified.
 	 */
 	o42a_obj_cond_ft *cond_f;
 
@@ -365,7 +366,7 @@ typedef struct o42a_obj_ctr {
 	 *
 	 * When NULL, the one from ancestor will be used.
 	 *
-	 * Ignored when constructing an eager object.
+	 * Ignored when sample not specified.
 	 */
 	o42a_obj_value_ft *def_f;
 
@@ -376,8 +377,7 @@ typedef struct o42a_obj_ctr {
 	 * from VMT the given VMT and ancestor. Otherwise, this VMT chain will be
 	 * used.
 	 *
-	 * May be NULL when constructing an eager object. In this case the VMT chain
-	 * from ancestor will be used.
+	 * Ignored when sample not specified.
 	 *
 	 * This should be either VMT chain from existing object, or the one
 	 * allocated with o42a_obj_vmtc_alloc function.
@@ -400,6 +400,8 @@ typedef struct o42a_obj_ctr {
 
 	/**
 	 * The number of run-time dependencies of newly constructed object.
+	 *
+	 * Ignored when sample not specified.
 	 */
 	uint32_t num_deps;
 
