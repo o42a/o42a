@@ -48,6 +48,11 @@ public enum Statefulness {
 	EAGER,
 
 	/**
+	 * Derived eagerly evaluated value.
+	 */
+	DERIVED_EAGER,
+
+	/**
 	 * Stateful value.
 	 *
 	 * <p>This means that object value is evaluated at most once, and then
@@ -85,9 +90,18 @@ public enum Statefulness {
 	/**
 	 * Object value is eagerly evaluated.
 	 *
-	 * @return <code>true</code> for {@link #EAGER}.
+	 * @return <code>true</code> for {@link #EAGER} and {@link #DERIVED_EAGER}.
 	 */
 	public final boolean isEager() {
+		return this == EAGER || this == DERIVED_EAGER;
+	}
+
+	/**
+	 * Object value is explicitly eagerly evaluated.
+	 *
+	 * @return <code>true</code> for {@link #EAGER}.
+	 */
+	public final boolean isExplicitEager() {
 		return this == EAGER;
 	}
 
@@ -102,13 +116,6 @@ public enum Statefulness {
 
 	public final Statefulness setEager(boolean eager) {
 		if (!eager) {
-			return this;
-		}
-		return EAGER;
-	}
-
-	public final Statefulness makeEager() {
-		if (isEager()) {
 			return this;
 		}
 		return EAGER;

@@ -461,7 +461,10 @@ public class Ascendants
 					+ "ancestor specification");
 			return;
 		}
-		if (!objectType.getObject().value().getStatefulness().isEager()) {
+		if (!objectType.getObject()
+				.value()
+				.getStatefulness()
+				.isExplicitEager()) {
 			// Eager reference can always be constructed.
 			explicitAncestor.getRef()
 					.getPath()

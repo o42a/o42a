@@ -28,6 +28,7 @@ import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
 import static org.o42a.core.object.impl.OwnerField.ownerFieldFor;
 import static org.o42a.core.object.impl.OwnerField.reusedOwnerPath;
+import static org.o42a.core.object.value.Statefulness.DERIVED_EAGER;
 import static org.o42a.core.ref.path.Path.staticPath;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
@@ -758,7 +759,7 @@ public abstract class Obj
 						sample.getObject().value().getStatefulness();
 
 				if (sampleStatefulness.isEager()) {
-					return sampleStatefulness;
+					return isPropagated() ? sampleStatefulness : DERIVED_EAGER;
 				}
 			} else {
 
@@ -770,7 +771,7 @@ public abstract class Obj
 							ancestor.getType().value().getStatefulness();
 
 					if (ancestorStatefulness.isEager()) {
-						return ancestorStatefulness;
+						return DERIVED_EAGER;
 					}
 				}
 			}
