@@ -104,7 +104,7 @@ public abstract class Type<S extends StructOp<S>>
 		return data(generator, false).getPointer();
 	}
 
-	public final Data<S> data(Generator generator) {
+	public final SubData<S> data(Generator generator) {
 		return data(generator, true);
 	}
 
@@ -264,7 +264,7 @@ public abstract class Type<S extends StructOp<S>>
 		}
 	}
 
-	private final Data<S> data(Generator generator, boolean fullyAllocated) {
+	private final SubData<S> data(Generator generator, boolean fullyAllocated) {
 		ensureTypeAllocated(generator, fullyAllocated);
 		return this.data;
 	}
