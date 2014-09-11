@@ -32,11 +32,9 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.type.ObjectDescIR;
 import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Deps;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
@@ -131,6 +129,29 @@ public class ObjectIR {
 		return this.dataIR;
 	}
 
+	public final ObjectIRStruct getType() {
+		return typeBodies().getStruct();
+	}
+
+	public final Ptr<ObjectIROp> ptr() {
+		return bodies().ptr();
+	}
+
+	public final ObjectIRStruct getInstance() {
+		return bodies().getStruct();
+	}
+
+	public final ValueIR getValueIR() {
+		return this.valueIR;
+	}
+
+	public final ObjectValueIR getObjectValueIR() {
+		if (this.objectValueIR != null) {
+			return this.objectValueIR;
+		}
+		return this.objectValueIR = new ObjectValueIR(this);
+	}
+
 	public final ObjectIRBodies typeBodies() {
 		if (this.typeBodies != null) {
 			return this.typeBodies;
@@ -157,52 +178,16 @@ public class ObjectIR {
 		return this.bodies;
 	}
 
-	public final ObjectIRBody getMainBodyIR() {
-		return bodies().getMainBodyIR();
-	}
-
-	public final Collection<? extends ObjectIRBody> getBodyIRs() {
-		return bodies().getBodyIRs().values();
-	}
-
-	public final Ptr<ObjectIROp> ptr() {
-		return bodies().ptr();
-	}
-
-	public final ObjectIRStruct getStruct() {
-		return bodies().getStruct();
-	}
-
-	public final ValueIR getValueIR() {
-		return this.valueIR;
-	}
-
-	public final ObjectValueIR getObjectValueIR() {
-		if (this.objectValueIR != null) {
-			return this.objectValueIR;
-		}
-		return this.objectValueIR = new ObjectValueIR(this);
-	}
-
 	public final ObjectIR allocate() {
-		getStruct();
+		getInstance();
 		return this;
 	}
 
 	public final ObjOp op(CodeBuilder builder, Code code) {
-		return getStruct()
-				.data(getGenerator())
-				.getPointer()
+		return getInstance()
+				.pointer(getGenerator())
 				.op(null, code)
 				.op(builder, this);
-	}
-
-	public final Fld<?> fld(MemberKey memberKey) {
-		return bodies().fld(memberKey);
-	}
-
-	public final Fld<?> findFld(MemberKey memberKey) {
-		return bodies().findFld(memberKey);
 	}
 
 	public final List<DepIR> existingDeps() {

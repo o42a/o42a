@@ -21,6 +21,8 @@ package org.o42a.core.ir.object.type;
 
 import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 
+import java.util.List;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -133,7 +135,7 @@ public class ObjectDescIR {
 		protected void allocate(SubData<Op> data) {
 			this.desc = data.addInstance(OBJECT_DESC_ID, OBJECT_DESC_TYPE);
 			allocateFieldDecls();
-			getDesc().ascendants().addAll(getObjectIR().getBodyIRs());
+			getDesc().ascendants().addAll(getObjectIR().typeBodies());
 			getDesc().fields().allocateItems(data);
 			getDesc().ascendants().allocateItems(data);
 		}
@@ -157,7 +159,7 @@ public class ObjectDescIR {
 			.setLowLevel(true)
 			.setValue(
 					() -> getObjectIR()
-					.getStruct()
+					.getType()
 					.layout(generator)
 					.size());
 		}
@@ -165,9 +167,13 @@ public class ObjectDescIR {
 		private void allocateFieldDecls() {
 
 			final RelList<FieldDescIR> fields = getDesc().fields();
+			final List<Fld<?>> declaredFields =
+					getObjectIR()
+					.typeBodies()
+					.getMainBodyIR()
+					.getDeclaredFields();
 
-			for (Fld<?> fld :
-					getObjectIR().getMainBodyIR().getDeclaredFields()) {
+			for (Fld<?> fld : declaredFields) {
 				if (!fld.isStateless()) {
 					fields.add(new FieldDescIR(fld));
 				}

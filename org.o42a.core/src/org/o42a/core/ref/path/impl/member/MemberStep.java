@@ -127,6 +127,7 @@ final class MemberStep extends AbstractMemberStep {
 				.getOrigin()
 				.toObject()
 				.ir(refIR.getGenerator())
+				.bodies()
 				.fld(getMemberKey());
 
 		if (fld.isOmitted()) {

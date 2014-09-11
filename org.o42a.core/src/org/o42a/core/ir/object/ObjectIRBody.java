@@ -58,10 +58,7 @@ public final class ObjectIRBody {
 			Obj sampleDeclaration) {
 		this.bodies = inheritantBodies;
 		this.sampleDeclaration = sampleDeclaration;
-		this.closestAscendant =
-				inheritantBodies.getSampleDeclaration().is(sampleDeclaration)
-				? inheritantBodies.getObject()
-				: sampleDeclaration;
+		this.closestAscendant = inheritantBodies.getObject();
 	}
 
 	public final Generator getGenerator() {
@@ -126,7 +123,7 @@ public final class ObjectIRBody {
 	}
 
 	private void ensureFieldsAllocated() {
-		bodies().getStruct();
+		bodies().getStruct().allocate();
 	}
 
 	private final void allocateFields(ObjectIRBodyData data) {

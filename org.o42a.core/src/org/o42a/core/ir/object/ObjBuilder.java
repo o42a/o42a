@@ -61,7 +61,7 @@ public final class ObjBuilder extends CodeBuilder {
 					.cast(null, dirs(code, exit), hostType);
 		case COMPATIBLE:
 			return getObjectSignature().object(code, getFunction())
-					.to(null, code, hostIR.getStruct())
+					.to(null, code, hostIR.getType())
 					.op(this, hostType, hostPrecision);
 		case DERIVED:
 
