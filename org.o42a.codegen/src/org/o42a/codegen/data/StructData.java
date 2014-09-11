@@ -31,11 +31,13 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 
 	private final Global<?, ?> global;
 	private final Type<?> enclosing;
+	private final boolean typeData;
 
 	StructData(SubData<?> enclosing, Type<S> instance, ID name) {
 		super(enclosing.getGenerator(), name, instance);
 		this.global = enclosing.getGlobal();
 		this.enclosing = enclosing.getInstance();
+		this.typeData = enclosing.isTypeData();
 	}
 
 	@Override
@@ -46,6 +48,11 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	@Override
 	public final Type<?> getEnclosing() {
 		return this.enclosing;
+	}
+
+	@Override
+	public final boolean isTypeData() {
+		return this.typeData;
 	}
 
 	@Override
@@ -74,7 +81,9 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	@Override
 	protected void write(DataWriter writer) {
 		writer.enter(getPointer().getAllocation(), this);
-		((Struct<S>) getInstance()).fill();
+		if (!isTypeData()) {
+			((Struct<S>) getInstance()).fill();
+		}
 		writeIncluded(writer);
 		writer.exit(getPointer().getAllocation(), this);
 	}

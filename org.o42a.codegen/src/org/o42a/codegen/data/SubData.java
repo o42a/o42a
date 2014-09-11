@@ -58,6 +58,8 @@ public abstract class SubData<S extends StructOp<S>>
 		return this.instance;
 	}
 
+	public abstract boolean isTypeData();
+
 	public final Int8rec addInt8(String name) {
 		return addInt8(ID.id(name));
 	}

@@ -45,6 +45,11 @@ final class TypeData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	}
 
 	@Override
+	public boolean isTypeData() {
+		return true;
+	}
+
+	@Override
 	public int getDataFlags() {
 		return CONSTANT;
 	}

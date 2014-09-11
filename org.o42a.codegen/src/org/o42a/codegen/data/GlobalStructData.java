@@ -51,6 +51,11 @@ final class GlobalStructData<S extends StructOp<S>>
 	}
 
 	@Override
+	public final boolean isTypeData() {
+		return false;
+	}
+
+	@Override
 	public final int getDataFlags() {
 		return getGlobal().getDataFlags() & DATA_FLAGS;
 	}
