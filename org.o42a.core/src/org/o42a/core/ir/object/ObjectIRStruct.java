@@ -20,25 +20,30 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectIRStruct extends Struct<ObjectIROp> {
+public final class ObjectIRStruct extends Type<ObjectIROp> {
 
+	public static final ID TYPE_ID = ID.id("type");
 	public static final ID OBJECT_ID = ID.id("object");
 
-	private final ObjectIR objectIR;
+	private final ObjectIRBodies bodies;
 	private ObjectIRData objectData;
 
-	ObjectIRStruct(ObjectIR objectIR) {
-		super(objectIR.getId().detail(OBJECT_ID));
-		this.objectIR = objectIR;
+	ObjectIRStruct(ObjectIRBodies bodies) {
+		super(id(bodies));
+		this.bodies = bodies;
 	}
 
 	public final ObjectIR getObjectIR() {
-		return this.objectIR;
+		return bodies().getObjectIR();
+	}
+
+	public final ObjectIRBodies bodies() {
+		return this.bodies;
 	}
 
 	public final ObjectIRData objectData() {
@@ -52,16 +57,23 @@ public final class ObjectIRStruct extends Struct<ObjectIROp> {
 
 	@Override
 	protected final void allocate(SubData<ObjectIROp> data) {
-		this.objectData = getObjectIR().getDataIR().allocate(data);
+		if (bodies().isTypeBodies()) {
+			this.objectData = getObjectIR().getDataIR().allocateType(data);
+		} else {
+			this.objectData = getObjectIR().getDataIR().allocateInstance(data);
+		}
 		allocateBodyIRs(data);
 	}
 
-	@Override
-	protected void fill() {
+	private static ID id(ObjectIRBodies bodies) {
+
+		final ID prefix = bodies.getObjectIR().getId();
+
+		return prefix.detail(bodies.isTypeBodies() ? TYPE_ID : OBJECT_ID);
 	}
 
 	private void allocateBodyIRs(SubData<?> data) {
-		for (ObjectIRBody body : getObjectIR().getBodyIRs()) {
+		for (ObjectIRBody body : bodies().getBodyIRs().values()) {
 			body.allocate(data);
 		}
 	}

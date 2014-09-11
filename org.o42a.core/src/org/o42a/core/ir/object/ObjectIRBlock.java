@@ -32,11 +32,13 @@ import org.o42a.core.ir.gc.GCBlock;
 
 public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
+	private final ObjectIR objectIR;
 	private final ObjectIRStruct struct;
 
-	ObjectIRBlock(ObjectIR objectIR) {
-		super(objectIR.getId());
-		this.struct = new ObjectIRStruct(objectIR);
+	ObjectIRBlock(ObjectIRBodies bodies) {
+		super(bodies.getObjectIR().getId());
+		this.objectIR = bodies.getObjectIR();
+		this.struct = new ObjectIRStruct(bodies);
 	}
 
 	public final ObjectIRStruct getStruct() {
@@ -54,7 +56,10 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 				GC_BLOCK_ID,
 				GC_BLOCK_TYPE,
 				new GCBlock(this.struct, "o42a_obj_gc_desc"));
-		data.addStruct(OBJECT_ID, this.struct);
+		data.addInstance(
+				OBJECT_ID,
+				this.objectIR.typeBodies().getStruct(),
+				this.struct);
 	}
 
 	@Override

@@ -90,10 +90,10 @@ public class ObjectValueIR {
 		return this.objectIR + " Value IR";
 	}
 
-	protected void allocate(ObjectDataIR typeIR) {
-		value().allocate(typeIR);
-		condition().allocate(typeIR);
-		def().allocate(typeIR);
+	protected void allocate(ObjectDataIR dataIR) {
+		value().allocate(dataIR);
+		condition().allocate(dataIR);
+		def().allocate(dataIR);
 	}
 
 }
