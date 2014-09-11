@@ -122,6 +122,8 @@ public abstract class RefFld<
 
 	@Override
 	public void targetAllocated() {
+		assert !getBodyIR().bodies().isTypeBodies() :
+			"Can not allocate target in object type bodies";
 		if (this.targetIRAllocated) {
 			return;
 		}
@@ -409,7 +411,9 @@ public abstract class RefFld<
 
 		@Override
 		public void allocated(T instance) {
-			this.fld.buildConstructor();
+			if (!this.fld.getBodyIR().bodies().isTypeBodies()) {
+				this.fld.buildConstructor();
+			}
 		}
 
 		@Override
@@ -451,7 +455,7 @@ public abstract class RefFld<
 					failure.head(),
 					getObjectIR(),
 					getBodyIR().getClosestAscendant(),
-					getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
+					getObjectIR().isExact() ? EXACT : COMPATIBLE);
 			final CodeDirs dirs = builder.dirs(constructor, failure.head());
 			final CodeDirs subDirs =
 					dirs.begin(

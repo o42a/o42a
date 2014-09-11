@@ -40,10 +40,7 @@ import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Deps;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.object.type.Sample;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
 
@@ -56,9 +53,8 @@ public class ObjectIR {
 	private ObjectDescIR descIR;
 	private VmtIR vmtIR;
 	private ObjectValueIR objectValueIR;
-	private LinkedHashMap<Obj, ObjectIRBody> bodyIRs;
-	private ObjectIRBody mainBodyIR;
-	private ObjectIRStruct struct;
+	private ObjectIRBodies typeBodies;
+	private ObjectIRBodies bodies;
 	private List<DepIR> existingDeps;
 	private Map<Dep, DepIR> allDeps;
 
@@ -136,53 +132,46 @@ public class ObjectIR {
 		return this.dataIR;
 	}
 
-	public final ObjectIRBody getMainBodyIR() {
-		if (this.mainBodyIR == null) {
-			bodyIRs();
+	public final ObjectIRBodies typeBodies() {
+		if (this.typeBodies != null) {
+			return this.typeBodies;
 		}
-		return this.mainBodyIR;
+		if (!isSampleDeclaration()) {
+			return this.typeBodies =
+					getSampleDeclaration().ir(getGenerator()).typeBodies();
+		}
+
+		this.typeBodies = new ObjectIRBodies(this, true);
+		this.typeBodies.allocate();
+
+		return this.typeBodies;
+	}
+
+	public final ObjectIRBodies bodies() {
+		if (this.bodies != null) {
+			return this.bodies;
+		}
+
+		this.bodies = new ObjectIRBodies(this, false);
+		this.bodies.allocate();
+
+		return this.bodies;
+	}
+
+	public final ObjectIRBody getMainBodyIR() {
+		return bodies().getMainBodyIR();
 	}
 
 	public final Collection<? extends ObjectIRBody> getBodyIRs() {
-		return bodyIRs().values();
+		return bodies().getBodyIRs().values();
 	}
 
 	public final Ptr<ObjectIROp> ptr() {
-		return getStruct().pointer(getGenerator());
+		return bodies().ptr();
 	}
 
 	public final ObjectIRStruct getStruct() {
-		if (this.struct != null) {
-			return this.struct;
-		}
-
-		assert getObject().assertFullyResolved();
-
-		final ObjectIRBlock block = new ObjectIRBlock(this);
-
-		this.struct = block.getStruct();
-
-		getGenerator().newGlobal().struct(block);
-		getScopeIR().targetAllocated();
-
-		return this.struct;
-	}
-
-	public ObjectIRBody getAncestorBodyIR() {
-
-		final TypeRef ancestorType = getObject().type().getAncestor();
-
-		if (ancestorType == null) {
-			return null;
-		}
-
-		final Obj ancestor = ancestorType.getInterface();
-
-		if (ancestor.is(ancestor.getContext().getVoid())) {
-			return null;
-		}
-
-		return bodyIR(ancestor);
+		return bodies().getStruct();
 	}
 
 	public final ValueIR getValueIR() {
@@ -214,36 +203,19 @@ public class ObjectIR {
 	}
 
 	public final ObjectIRBody bodyIR(Obj ascendant) {
-
-		final ObjectIRBody bodyIR = findBodyIR(ascendant);
-
-		assert bodyIR != null :
-			"Can not find ascendant body for " + ascendant + " in " + this;
-
-		return bodyIR;
+		return bodies().bodyIR(ascendant);
 	}
 
 	public final ObjectIRBody findBodyIR(Obj ascendant) {
-		if (ascendant.is(ascendant.getContext().getVoid())) {
-			return getMainBodyIR();
-		}
-		return bodyIRs().get(ascendant.type().getSampleDeclaration());
+		return bodies().findBodyIR(ascendant);
 	}
 
 	public final Fld<?> fld(MemberKey memberKey) {
-
-		final Obj origin = memberKey.getOrigin().toObject();
-		final ObjectIRBody bodyIR = bodyIR(origin);
-
-		return bodyIR.fld(memberKey);
+		return bodies().fld(memberKey);
 	}
 
 	public final Fld<?> findFld(MemberKey memberKey) {
-
-		final Obj origin = memberKey.getOrigin().toObject();
-		final ObjectIRBody bodyIR = findBodyIR(origin);
-
-		return bodyIR != null ? bodyIR.findFld(memberKey) : null;
+		return bodies().findFld(memberKey);
 	}
 
 	public final List<DepIR> existingDeps() {
@@ -264,68 +236,6 @@ public class ObjectIR {
 	@Override
 	public String toString() {
 		return this.object + " IR";
-	}
-
-	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs() {
-		if (this.bodyIRs != null) {
-			return this.bodyIRs;
-		}
-
-		this.bodyIRs = new LinkedHashMap<>();
-
-		final ObjectType objectType = getObject().type();
-		final TypeRef ancestorRef = objectType.getAncestor();
-
-		if (ancestorRef != null) {
-
-			final Obj ancestor = ancestorRef.getInterface();
-
-			if (!ancestor.is(ancestor.getContext().getVoid())) {
-				deriveBodyIRs(ancestor, true);
-			}
-		}
-
-		final Sample sample = objectType.getSample();
-
-		if (sample != null) {
-			deriveBodyIRs(sample.getObject(), false);
-		} else {
-			assert isSampleDeclaration() :
-				"The object has no sample. It should be a declaration then";
-			addBodyIR(new ObjectIRBody(this), false);
-		}
-
-		return this.bodyIRs;
-	}
-
-	private void deriveBodyIRs(Obj ascendant, boolean inherited) {
-
-		final Collection<? extends ObjectIRBody> ascendantBodyIRs =
-				ascendant.ir(getGenerator()).getBodyIRs();
-
-		for (ObjectIRBody ascendantBodyIR : ascendantBodyIRs) {
-			if (this.bodyIRs.containsKey(
-					ascendantBodyIR.getSampleDeclaration())) {
-				// The body for the given declaration is already present.
-				continue;
-			}
-
-			final ObjectIRBody bodyIR = ascendantBodyIR.derive(this);
-
-			addBodyIR(bodyIR, inherited);
-		}
-	}
-
-	private void addBodyIR(ObjectIRBody bodyIR, boolean inherited) {
-		if (!inherited) {
-			assert this.mainBodyIR == null :
-				"Main body already allocated: " + this.mainBodyIR;
-			this.mainBodyIR = bodyIR;
-		}
-
-		final Obj declaration = bodyIR.getSampleDeclaration();
-
-		this.bodyIRs.put(declaration, bodyIR);
 	}
 
 	private Map<Dep, DepIR> deps() {

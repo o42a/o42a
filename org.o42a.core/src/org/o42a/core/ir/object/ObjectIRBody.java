@@ -40,34 +40,40 @@ import org.o42a.core.object.type.Derivative;
 
 public final class ObjectIRBody {
 
-	private final ObjectIR objectIR;
+	private final ObjectIRBodies bodies;
 	private final Obj sampleDeclaration;
 	private final Obj closestAscendant;
 
 	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
 	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
 
-	ObjectIRBody(ObjectIR objectIR) {
-		this.objectIR = objectIR;
-		this.sampleDeclaration = objectIR.getSampleDeclaration();
+	ObjectIRBody(ObjectIRBodies bodies) {
+		this.bodies = bodies;
+		this.sampleDeclaration = bodies.getSampleDeclaration();
 		this.closestAscendant = this.sampleDeclaration;
 	}
 
-	private ObjectIRBody(ObjectIR inheritantIR, Obj sampleDeclaration) {
-		this.objectIR = inheritantIR;
+	private ObjectIRBody(
+			ObjectIRBodies inheritantBodies,
+			Obj sampleDeclaration) {
+		this.bodies = inheritantBodies;
 		this.sampleDeclaration = sampleDeclaration;
 		this.closestAscendant =
-				inheritantIR.getSampleDeclaration().is(sampleDeclaration)
-				? inheritantIR.getObject()
+				inheritantBodies.getSampleDeclaration().is(sampleDeclaration)
+				? inheritantBodies.getObject()
 				: sampleDeclaration;
 	}
 
 	public final Generator getGenerator() {
-		return this.objectIR.getGenerator();
+		return bodies().getGenerator();
+	}
+
+	public final ObjectIRBodies bodies() {
+		return this.bodies;
 	}
 
 	public final ObjectIR getObjectIR() {
-		return this.objectIR;
+		return bodies().getObjectIR();
 	}
 
 	public final Obj getSampleDeclaration() {
@@ -79,11 +85,11 @@ public final class ObjectIRBody {
 	}
 
 	public final boolean isMain() {
-		return this == this.objectIR.getMainBodyIR();
+		return this == bodies().getMainBodyIR();
 	}
 
-	public final ObjectIRBody derive(ObjectIR inheritantIR) {
-		return new ObjectIRBody(inheritantIR, getSampleDeclaration());
+	public final ObjectIRBody derive(ObjectIRBodies inheritantBodies) {
+		return new ObjectIRBody(inheritantBodies, getSampleDeclaration());
 	}
 
 	public final List<Fld<?>> getDeclaredFields() {
@@ -120,7 +126,7 @@ public final class ObjectIRBody {
 	}
 
 	private void ensureFieldsAllocated() {
-		getObjectIR().getStruct();
+		bodies().getStruct();
 	}
 
 	private final void allocateFields(ObjectIRBodyData data) {
@@ -132,7 +138,7 @@ public final class ObjectIRBody {
 			Obj ascendant) {
 
 		final Generator generator = getGenerator();
-		final Obj object = getObjectIR().getObject();
+		final Obj object = bodies().getObject();
 
 		for (Member declared : ascendant.getMembers()) {
 			if (declared.isOverride()) {
