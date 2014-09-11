@@ -198,6 +198,8 @@ public abstract class RefFld<
 	protected abstract RefFldOp<F, C> op(Code code, ObjOp host, F ptr);
 
 	protected final FuncPtr<C> constructor() {
+		assert this.constructor != null :
+			"Constructor of " + this + " is not built";
 		return this.constructor;
 	}
 
