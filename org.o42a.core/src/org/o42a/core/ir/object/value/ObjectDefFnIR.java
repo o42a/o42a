@@ -216,7 +216,7 @@ public class ObjectDefFnIR
 
 		final Obj reuseFrom = def.getSource();
 		final ObjectValueIR reuseFromIR =
-				reuseFrom.ir(getGenerator()).allocate().getObjectValueIR();
+				reuseFrom.ir(getGenerator()).getObjectValueIR();
 		final FuncPtr<ObjectValueFn> reused = reuseFromIR.def().getNotStub();
 
 		if (reused != null) {

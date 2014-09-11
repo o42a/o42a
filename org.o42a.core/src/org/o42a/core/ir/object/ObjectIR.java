@@ -29,7 +29,6 @@ import java.util.*;
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
@@ -185,10 +184,6 @@ public class ObjectIR {
 		return this.objectValueIR = new ObjectValueIR(this);
 	}
 
-	public final Data<?> getData() {
-		return getStruct().data(getGenerator());
-	}
-
 	public final ObjectIR allocate() {
 		getStruct();
 		return this;
@@ -200,14 +195,6 @@ public class ObjectIR {
 				.getPointer()
 				.op(null, code)
 				.op(builder, this);
-	}
-
-	public final ObjectIRBody bodyIR(Obj ascendant) {
-		return bodies().bodyIR(ascendant);
-	}
-
-	public final ObjectIRBody findBodyIR(Obj ascendant) {
-		return bodies().findBodyIR(ascendant);
 	}
 
 	public final Fld<?> fld(MemberKey memberKey) {

@@ -133,11 +133,12 @@ public final class ObjectDataOp extends DefiniteIROp {
 			object = getBuilder().getContext().getIntrinsics().getVoid();
 		}
 
-		final ObjectIR ir = object.ir(getGenerator());
+		final ObjectIRStruct struct =
+				object.ir(getGenerator()).typeBodies().getStruct();
 		final ObjectStartOffset offset = new ObjectStartOffset(
 				getGenerator(),
-				ir.ptr().relativeTo(
-						ir.getDataIR().getInstance().pointer(getGenerator())));
+				struct.pointer(getGenerator())
+				.relativeTo(struct.objectData().pointer(getGenerator())));
 
 		startOffset = offset;
 
