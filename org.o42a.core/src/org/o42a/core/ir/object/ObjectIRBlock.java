@@ -58,7 +58,7 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 				new GCBlock(this.struct, "o42a_obj_gc_desc"));
 		data.addInstance(
 				OBJECT_ID,
-				this.objectIR.typeBodies().getStruct(),
+				this.objectIR.getType(),
 				this.struct);
 	}
 

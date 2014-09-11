@@ -133,7 +133,7 @@ public final class ObjOp extends ObjectOp {
 		final CodeDirs subDirs =
 				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
 		final Code code = subDirs.code();
-		final Fld<?> fld = getObjectIR().fld(memberKey);
+		final Fld<?> fld = getObjectIR().bodies().fld(memberKey);
 		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
 		final ObjOp host = cast(
 				hostId,
@@ -150,16 +150,6 @@ public final class ObjOp extends ObjectOp {
 		subDirs.done();
 
 		return op;
-	}
-
-	public FldOp<?> declaredField(Code code, MemberKey memberKey) {
-
-		final Fld<?> declared = getObjectIR().getMainBodyIR().fld(memberKey);
-
-		assert declared != null :
-			memberKey + " is not declared in " + this;
-
-		return declared.op(code, this);
 	}
 
 	@Override

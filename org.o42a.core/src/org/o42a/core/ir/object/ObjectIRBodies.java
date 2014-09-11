@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import org.o42a.codegen.Generator;
@@ -32,7 +32,7 @@ import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public final class ObjectIRBodies {
+public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 
 	private final ObjectIR objectIR;
 	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
@@ -102,6 +102,11 @@ public final class ObjectIRBodies {
 		return this.struct;
 	}
 
+	@Override
+	public final Iterator<ObjectIRBody> iterator() {
+		return getBodyIRs().values().iterator();
+	}
+
 	public final ObjectIRBody bodyIR(Obj ascendant) {
 
 		final ObjectIRBody bodyIR = findBodyIR(ascendant);
@@ -162,11 +167,8 @@ public final class ObjectIRBodies {
 	}
 
 	private void deriveBodyIRs(Obj ascendant, boolean inherited) {
-
-		final Collection<? extends ObjectIRBody> ascendantBodyIRs =
-				ascendant.ir(getGenerator()).getBodyIRs();
-
-		for (ObjectIRBody ascendantBodyIR : ascendantBodyIRs) {
+		for (ObjectIRBody ascendantBodyIR :
+				ascendant.ir(getGenerator()).typeBodies()) {
 			if (this.bodyIRs.containsKey(
 					ascendantBodyIR.getSampleDeclaration())) {
 				// The body for the given declaration is already present.

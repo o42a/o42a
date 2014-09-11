@@ -80,10 +80,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		.setConstant(true)
 		.setValue(
 				fld().pointer(generator).relativeTo(
-						fld()
-						.getObjectIR()
-						.getStruct()
-						.pointer(generator)));
+						fld().getBodyIR().bodies().ptr()));
 	}
 
 	@Override

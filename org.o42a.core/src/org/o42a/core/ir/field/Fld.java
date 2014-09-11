@@ -23,7 +23,9 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -54,7 +56,7 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 	}
 
 	@Override
-	public final Data<?> data(Generator generator) {
+	public final SubData<F> data(Generator generator) {
 		return getInstance().data(generator);
 	}
 

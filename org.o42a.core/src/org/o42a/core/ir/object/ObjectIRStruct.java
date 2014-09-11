@@ -50,8 +50,14 @@ public final class ObjectIRStruct extends Type<ObjectIROp> {
 		return this.objectData;
 	}
 
+	public final ObjectIRStruct allocate() {
+		data(bodies().getGenerator());
+		return this;
+	}
+
 	@Override
 	public ObjectIROp op(StructWriter<ObjectIROp> writer) {
+		allocate();
 		return new ObjectIROp(writer);
 	}
 
@@ -73,7 +79,7 @@ public final class ObjectIRStruct extends Type<ObjectIROp> {
 	}
 
 	private void allocateBodyIRs(SubData<?> data) {
-		for (ObjectIRBody body : bodies().getBodyIRs().values()) {
+		for (ObjectIRBody body : bodies()) {
 			body.allocate(data);
 		}
 	}

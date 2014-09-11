@@ -71,7 +71,7 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 				ptr.to(
 						null,
 						code,
-						wellKnownType.ir(builder.getGenerator()).getStruct()),
+						wellKnownType.ir(builder.getGenerator()).getType()),
 				wellKnownType);
 	}
 

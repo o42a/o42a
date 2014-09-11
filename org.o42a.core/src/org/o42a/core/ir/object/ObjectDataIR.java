@@ -63,7 +63,7 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 
 	public final ObjectIRData getInstance() {
 		if (this.instance == null) {
-			getObjectIR().getStruct();
+			getObjectIR().allocate();
 		}
 		return this.instance;
 	}

@@ -143,7 +143,7 @@ public final class AnonymousObjOp extends ObjectOp {
 				.loadDesc(code)
 				.ascendants(code);
 		final Int32op ascendantIndex =
-				code.int32(ascendantIR.getBodyIRs().size() - 1);
+				code.int32(ascendantIR.typeBodies().getBodyIRs().size() - 1);
 
 		// Is it enough ascendant records in type descriptor?
 		ascendants.size(code)
@@ -163,7 +163,7 @@ public final class AnonymousObjOp extends ObjectOp {
 		final ObjOp result =
 				ptr(code)
 				.toData(null, code)
-				.to(id, code, ascendantIR.getStruct())
+				.to(id, code, ascendantIR.getType())
 				.op(getBuilder(), ascendantIR.getObject(), COMPATIBLE);
 
 		subDirs.done();

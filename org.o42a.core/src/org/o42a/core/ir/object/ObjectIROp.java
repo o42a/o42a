@@ -50,26 +50,19 @@ public final class ObjectIROp extends StructOp<ObjectIROp> {
 			CodeBuilder builder,
 			Obj ascendant,
 			ObjectPrecision precision) {
-		return op(builder, null, ascendant, precision);
+		assert ascendant.assertDerivedFrom(getType().getObjectIR().getObject());
+		return new ObjOp(
+				builder,
+				ascendant.ir(builder.getGenerator()),
+				this,
+				ascendant,
+				precision);
 	}
 
 	public final <O extends Fld.Op<O>> O field(
 			Code code,
 			Fld.Type<O> instance) {
 		return struct(null, code, instance);
-	}
-
-	final ObjOp op(
-			CodeBuilder builder,
-			ObjectIR objectIR,
-			Obj ascendant,
-			ObjectPrecision precision) {
-		return new ObjOp(
-				builder,
-				objectIR != null ? objectIR : getType().getObjectIR(),
-				this,
-				ascendant,
-				precision);
 	}
 
 	final ObjOp op(CodeBuilder builder, ObjectIR objectIR) {

@@ -157,7 +157,8 @@ public abstract class RefFld<
 				overriddenOwner.ir(getGenerator());
 		@SuppressWarnings("unchecked")
 		final RefFld<F, C> overriddenFld =
-				(RefFld<F, C>) overriddenOwnerIR.fld(getField().getKey());
+				(RefFld<F, C>) overriddenOwnerIR.bodies()
+				.fld(getField().getKey());
 
 		return overriddenFld.cloneFunc();
 	}

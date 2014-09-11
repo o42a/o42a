@@ -155,7 +155,8 @@ public class CtrOp extends IROp {
 			if (code.isDebug()) {
 				ptr.sampleTypeInfo(code).store(
 						code,
-						sampleIR.getStruct()
+						sampleIR.getType()
+						.allocate()
 						.getTypeInfo()
 						.getPointer()
 						.op(null, code));

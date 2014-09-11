@@ -108,7 +108,7 @@ public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFn> {
 				fld()
 				.getTargetAscendant()
 				.ir(getGenerator())
-				.getStruct());
+				.getType());
 
 		return targetPtr.op(
 				getBuilder(),
