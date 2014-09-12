@@ -678,39 +678,14 @@ const o42a_gc_desc_t o42a_obj_gc_desc = {
 	.sweep = &o42a_obj_gc_sweeper,
 };
 
-/**
- * Object body derivation kind.
- */
-enum derivation_kind {
-
-	/**
-	 * Inherited ancestor body.
-	 */
-	DK_INHERIT = 0x01,
-
-	/**
-	 * Sample body not present in ancestor.
-	 */
-	DK_DERIVE = 0x12,
-
-	/**
-	 * Sample body present in ancestor.
-	 */
-	DK_OVERRIDE = 0x13,
-
-};
-
 static void derive_object_body(
 		o42a_obj_ctable_t *const ctable,
-		const enum derivation_kind dkind) {
+		const o42a_bool_t main) {
 	O42A_ENTER(return);
 	O42A_DO("Derive body");
 
 	o42a_debug_mem_name(
-			dkind == DK_DERIVE ? "Main body: "
-			: dkind == DK_OVERRIDE ? "Overridden main body: "
-			: dkind == DK_INHERIT ? "Inherited body: "
-			: "Derived body: ",
+			main ? "Main body: " : "Inherited body: ",
 			ctable->body_desc);
 
 	// Derive fields.
@@ -718,8 +693,6 @@ static void derive_object_body(
 	const size_t num_fields = ctable->body_desc->fields.size;
 	o42a_obj_field_t *const fields =
 			O42A(o42a_obj_fields(ctable->body_desc));
-	const o42a_bool_t propagate =
-			dkind == DK_DERIVE || dkind == DK_OVERRIDE;
 
 	if (!from) {
 		ctable->from_fld = NULL;
@@ -732,7 +705,7 @@ static void derive_object_body(
 
 		const o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
 
-		O42A_DO(propagate ? "Propagate field" : "Inherit field");
+		O42A_DO(main ? "Propagate field" : "Inherit field");
 		if (from) {
 			ctable->from_fld = O42A(o42a_fld_by_field(from, field));
 			o42a_debug_mem_name("From: ", ctable->from_fld);
@@ -741,7 +714,7 @@ static void derive_object_body(
 		O42A_DEBUG("To: <0x%lx>\n", (long) ctable->to_fld);
 		o42a_debug_dump_mem("Field: ", field, 3);
 
-		O42A((propagate ? desc->propagate : desc->inherit) (ctable));
+		O42A((main ? desc->propagate : desc->inherit) (ctable));
 
 		O42A_DONE;
 	}
@@ -752,8 +725,7 @@ static void derive_object_body(
 
 static void derive_ancestor_bodies(
 		o42a_obj_ctable_t *const ctable,
-		const size_t excluded,
-		const enum derivation_kind dkind) {
+		const size_t excluded) {
 	O42A_ENTER(return);
 
 	const o42a_obj_data_t *const data = &ctable->to->object_data;
@@ -770,7 +742,7 @@ static void derive_ancestor_bodies(
 				aascendant->desc == ascendant->desc
 				&& "Ancestor and sample body descriptors differ");
 		ctable->body_desc = ascendant->desc;
-		O42A(derive_object_body(ctable, dkind));
+		O42A(derive_object_body(ctable, O42A_FALSE));
 		++aascendant;
 		++ascendant;
 	}
@@ -839,13 +811,11 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 			NULL));
 #endif /* NDEBUG */
 
-	derive_ancestor_bodies(&ctable, consumed_ascendants, DK_INHERIT);
+	derive_ancestor_bodies(&ctable, consumed_ascendants);
 
 	ctable.body_desc = sdesc;
 	ctable.from = NULL;
-	O42A(derive_object_body(
-			&ctable,
-			consumed_ascendants ? DK_OVERRIDE : DK_DERIVE));
+	O42A(derive_object_body(&ctable, O42A_TRUE));
 
 	O42A_RETURN object;
 }
