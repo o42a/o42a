@@ -112,11 +112,11 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	protected abstract boolean mayOmit();
 
-	public void allocate(ObjectIRBodyData data) {
+	public void allocate(SubData<?> data) {
 		if (isStateless()) {
 			return;
 		}
-		this.instance = data.getData().addInstance(
+		this.instance = data.addInstance(
 				FLD_ID.detail(getId().getLocal()),
 				getType(),
 				isDummy() ? dummyContent() : content());

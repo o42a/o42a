@@ -23,13 +23,11 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.link.EagerLinkFld;
 import org.o42a.core.ir.field.link.LinkFld;
 import org.o42a.core.ir.field.variable.VarFld;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.LinkUses;
@@ -54,40 +52,28 @@ public final class ObjectFieldIR extends FieldIR {
 	}
 
 	@Override
-	protected RefFld<?, ?, ?> declareFld(ObjectIRBodyData data) {
-
-		final RefFld<?, ?, ?> linkFld = declareLink(data, false);
-
-		if (linkFld != null) {
-			return linkFld;
-		}
-
-		final ObjFld fld = new ObjFld(data.getBodyIR(), getField(), false);
-
-		fld.allocate(data);
-
-		return fld;
+	protected RefFld<?, ?, ?> declareFld(ObjectIRBody bodyIR) {
+		return declareFld(bodyIR, false);
 	}
 
 	@Override
-	protected Fld<?, ?> declareDummyFld(ObjectIRBodyData data) {
+	protected RefFld<?, ?, ?> declareDummyFld(ObjectIRBody bodyIR) {
+		return declareFld(bodyIR, true);
+	}
 
-		final RefFld<?, ?, ?> linkFld = declareLink(data, true);
+	private RefFld<?, ?, ?> declareFld(ObjectIRBody bodyIR, boolean dummy) {
+
+		final RefFld<?, ?, ?> linkFld = declareLink(bodyIR, dummy);
 
 		if (linkFld != null) {
 			return linkFld;
 		}
 
-		final ObjFld fld = new ObjFld(data.getBodyIR(), getField(), true);
-
-		fld.allocate(data);
-
-		return fld;
+		return new ObjFld(bodyIR, getField(), dummy);
 	}
 
-	private RefFld<?, ?, ?> declareLink(ObjectIRBodyData data, boolean dummy) {
+	private RefFld<?, ?, ?> declareLink(ObjectIRBody bodyIR, boolean dummy) {
 
-		final ObjectIRBody bodyIR = data.getBodyIR();
 		final Field field = getField();
 		final Obj object = field.toObject();
 		final LinkValueType linkType =
@@ -129,23 +115,17 @@ public final class ObjectFieldIR extends FieldIR {
 			target = defTarget.getRef().getResolution().toObject();
 		}
 
-		final RefFld<?, ?, ?> fld;
-
 		if (linkType == LinkValueType.LINK) {
-			if (eager) {
-				fld = new EagerLinkFld(bodyIR, field, dummy, target, ascendant);
-			} else {
-				fld = new LinkFld(bodyIR, field, dummy, target, ascendant);
+			if (!eager) {
+				return new LinkFld(bodyIR, field, dummy, target, ascendant);
 			}
-		} else if (linkType == LinkValueType.VARIABLE) {
-			fld = new VarFld(bodyIR, field, dummy, target, ascendant);
-		} else {
-			return null;
+			return new EagerLinkFld(bodyIR, field, dummy, target, ascendant);
+		}
+		if (linkType == LinkValueType.VARIABLE) {
+			return new VarFld(bodyIR, field, dummy, target, ascendant);
 		}
 
-		fld.allocate(data);
-
-		return fld;
+		return null;
 	}
 
 }

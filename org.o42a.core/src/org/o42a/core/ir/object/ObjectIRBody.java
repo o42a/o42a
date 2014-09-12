@@ -126,7 +126,8 @@ public final class ObjectIRBody {
 	}
 
 	final void allocate(SubData<?> data) {
-		allocateFields(new ObjectIRBodyData(this, data));
+		allocateFieldsDeclaredIn(data, getSampleDeclaration());
+		allocateDeps(data);
 	}
 
 	final void declareFld(Fld<?, ?> fld) {
@@ -151,20 +152,13 @@ public final class ObjectIRBody {
 		bodies().getStruct().allocate();
 	}
 
-	private final void allocateFields(ObjectIRBodyData data) {
-		allocateFieldsDeclaredIn(data, getSampleDeclaration());
-		allocateDeps(data.getData());
-	}
-
 	private void allocateDeps(SubData<?> data) {
 		for (DepIR dep : deps().values()) {
 			dep.allocate(data);
 		}
 	}
 
-	private void allocateFieldsDeclaredIn(
-			ObjectIRBodyData data,
-			Obj ascendant) {
+	private void allocateFieldsDeclaredIn(SubData<?> data, Obj ascendant) {
 
 		final Generator generator = getGenerator();
 		final Obj object = bodies().getObject();
@@ -195,10 +189,11 @@ public final class ObjectIRBody {
 
 				final Field field = member.toField().field(dummyUser());
 				final FieldIRBase fieldIR = field.ir(generator);
-				final Fld<?, ?> fld = fieldIR.declare(data);
+				final Fld<?, ?> fld = fieldIR.declare(this);
 
 				if (fld != null) {
 					this.fields.put(fld.getKey(), fld);
+					fld.allocate(data);
 				}
 			} else {
 
@@ -212,10 +207,11 @@ public final class ObjectIRBody {
 						.toField()
 						.field(dummyUser());
 				final FieldIRBase fieldIR = field.ir(generator);
-				final Fld<?, ?> fld = fieldIR.declareDummy(data);
+				final Fld<?, ?> fld = fieldIR.declareDummy(this);
 
 				if (fld != null) {
 					this.fields.put(fld.getKey(), fld);
+					fld.allocate(data);
 				}
 			}
 		}

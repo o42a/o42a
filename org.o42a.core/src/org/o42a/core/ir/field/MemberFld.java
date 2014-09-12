@@ -23,9 +23,9 @@ import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
@@ -68,7 +68,7 @@ public abstract class MemberFld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	}
 
 	@Override
-	public void allocate(ObjectIRBodyData data) {
+	public void allocate(SubData<?> data) {
 		assert getField()
 		.toMember()
 		.getAnalysis()

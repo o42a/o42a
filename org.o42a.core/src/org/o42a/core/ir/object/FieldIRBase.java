@@ -70,9 +70,9 @@ public abstract class FieldIRBase extends ScopeIR {
 		}
 	}
 
-	protected abstract Fld<?, ?> declareFld(ObjectIRBodyData data);
+	protected abstract Fld<?, ?> declareFld(ObjectIRBody bodyIR);
 
-	protected abstract Fld<?, ?> declareDummyFld(ObjectIRBodyData data);
+	protected abstract Fld<?, ?> declareDummyFld(ObjectIRBody bodyIR);
 
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
@@ -83,9 +83,9 @@ public abstract class FieldIRBase extends ScopeIR {
 		return this.fld.op(code, host);
 	}
 
-	final Fld<?, ?> declare(ObjectIRBodyData data) {
+	final Fld<?, ?> declare(ObjectIRBody bodyIR) {
 
-		final Fld<?, ?> fld = declareFld(data);
+		final Fld<?, ?> fld = declareFld(bodyIR);
 
 		if (fld == null) {
 			return null;
@@ -100,8 +100,8 @@ public abstract class FieldIRBase extends ScopeIR {
 		return fld;
 	}
 
-	final Fld<?, ?> declareDummy(ObjectIRBodyData data) {
-		return this.fld = declareDummyFld(data);
+	final Fld<?, ?> declareDummy(ObjectIRBody bodyIR) {
+		return this.fld = declareDummyFld(bodyIR);
 	}
 
 }
