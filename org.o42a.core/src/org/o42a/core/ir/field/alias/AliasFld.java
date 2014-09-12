@@ -32,6 +32,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
+import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
@@ -42,7 +43,7 @@ import org.o42a.core.member.alias.AliasField;
 import org.o42a.core.object.Obj;
 
 
-public class AliasFld extends ObjectRefFld<StatefulOp> {
+public class AliasFld extends ObjectRefFld<StatefulOp, StatefulType> {
 
 	public AliasFld(AliasField field, Obj target) {
 		super(field, target);
@@ -51,11 +52,6 @@ public class AliasFld extends ObjectRefFld<StatefulOp> {
 	@Override
 	public FldKind getKind() {
 		return FldKind.ALIAS;
-	}
-
-	@Override
-	public StatefulType getInstance() {
-		return (StatefulType) super.getInstance();
 	}
 
 	@Override
@@ -81,7 +77,7 @@ public class AliasFld extends ObjectRefFld<StatefulOp> {
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final FldOp<StatefulOp> fld = op(code, builder.host());
+		final FldOp<StatefulOp, StatefulType> fld = op(code, builder.host());
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 

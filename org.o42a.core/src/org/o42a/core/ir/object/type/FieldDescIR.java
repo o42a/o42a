@@ -36,16 +36,16 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 	public static final Type FIELD_DESC_IR = new Type();
 
-	private final FldIR fld;
+	private final FldIR<?, ?> fld;
 	private Type instance;
 
-	public FieldDescIR(FldIR fld) {
+	public FieldDescIR(FldIR<?, ?> fld) {
 		assert !fld.getKind().isStateless() :
 			fld + " is stateless";
 		this.fld = fld;
 	}
 
-	public final FldIR fld() {
+	public final FldIR<?, ?> fld() {
 		return this.fld;
 	}
 

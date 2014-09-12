@@ -19,12 +19,10 @@
 */
 package org.o42a.core.ir.field;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.member.MemberKey;
@@ -32,28 +30,19 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
+public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
+		implements FldIR<F, T> {
 
 	public static final ID FIELD_ID = ID.id("field");
 	public static final ID FLD_ID = ID.id("fld");
 
 	private ObjectIRBody bodyIR;
-	private Type<F> instance;
+	private T instance;
 	private byte omitted;
 
 	@Override
 	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;
-	}
-
-	@Override
-	public Ptr<?> pointer(Generator generator) {
-		return getInstance().pointer(generator);
-	}
-
-	@Override
-	public final SubData<F> data(Generator generator) {
-		return getInstance().data(generator);
 	}
 
 	public abstract MemberKey getKey();
@@ -86,7 +75,8 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 
 	public abstract Obj getDefinedIn();
 
-	public Type<F> getInstance() {
+	@Override
+	public T getInstance() {
 		return this.instance;
 	}
 
@@ -94,7 +84,7 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 
 	public abstract void fillMethods();
 
-	public final FldOp<F> op(Code code, ObjOp host) {
+	public final FldOp<F, T> op(Code code, ObjOp host) {
 		return op(
 				code,
 				host,
@@ -120,13 +110,13 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 				isDummy() ? dummyContent() : content());
 	}
 
-	protected abstract Type<F> getType();
+	protected abstract T getType();
 
-	protected abstract Content<? extends Type<F>> content();
+	protected abstract Content<T> content();
 
-	protected abstract Content<? extends Type<F>> dummyContent();
+	protected abstract Content<T> dummyContent();
 
-	protected abstract FldOp<F> op(Code code, ObjOp host, F ptr);
+	protected abstract FldOp<F, T> op(Code code, ObjOp host, F ptr);
 
 	public static abstract class Op<F extends Op<F>> extends StructOp<F> {
 

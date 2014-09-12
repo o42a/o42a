@@ -29,9 +29,9 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
+import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.field.link.AbstractLinkFld;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
@@ -42,7 +42,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
-public class VarFld extends AbstractLinkFld<StatefulOp> {
+public class VarFld extends AbstractLinkFld<StatefulOp, StatefulType> {
 
 	public VarFld(Field field, Obj target) {
 		super(field, target);
@@ -51,11 +51,6 @@ public class VarFld extends AbstractLinkFld<StatefulOp> {
 	@Override
 	public final FldKind getKind() {
 		return FldKind.VAR;
-	}
-
-	@Override
-	public StatefulType getInstance() {
-		return (StatefulType) super.getInstance();
 	}
 
 	@Override
@@ -84,7 +79,7 @@ public class VarFld extends AbstractLinkFld<StatefulOp> {
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final FldOp<StatefulOp> fld = op(code, builder.host());
+		final FldOp<StatefulOp, StatefulType> fld = op(code, builder.host());
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 

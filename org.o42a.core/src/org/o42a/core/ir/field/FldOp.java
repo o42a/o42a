@@ -33,9 +33,10 @@ import org.o42a.core.ir.op.TargetOp;
 import org.o42a.util.string.ID;
 
 
-public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
+public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
+		extends FldIROp<F, T> {
 
-	public FldOp(ObjOp host, Fld<F> fld) {
+	public FldOp(ObjOp host, Fld<F, T> fld) {
 		super(host, fld);
 	}
 
@@ -55,10 +56,9 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		return fld().getId();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Fld<F> fld() {
-		return (Fld<F>) super.fld();
+	public Fld<F, T> fld() {
+		return (Fld<F, T>) super.fld();
 	}
 
 	@Override
@@ -78,9 +78,9 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 	private static final class OmittedFldStoreOp implements FldStoreOp {
 
-		private final FldOp<?> fld;
+		private final FldOp<?, ?> fld;
 
-		OmittedFldStoreOp(FldOp<?> fld) {
+		OmittedFldStoreOp(FldOp<?, ?> fld) {
 			this.fld = fld;
 		}
 
@@ -120,12 +120,14 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 	}
 
-	private static final class AllocatableFldPtrs<F extends Fld.Op<F>>
-			implements Allocatable<FldPtrs<F>> {
+	private static final class AllocatableFldPtrs<
+			F extends Fld.Op<F>,
+			T extends Fld.Type<F>>
+					implements Allocatable<FldPtrs<F>> {
 
-		private final FldOp<F> fld;
+		private final FldOp<F, T> fld;
 
-		AllocatableFldPtrs(FldOp<F> fld) {
+		AllocatableFldPtrs(FldOp<F, T> fld) {
 			this.fld = fld;
 		}
 
@@ -143,13 +145,10 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 		public FldPtrs<F> allocate(
 				Allocations code,
 				Allocated<FldPtrs<F>> allocated) {
-
-			final Fld<F> fld = this.fld.fld();
-
 			return new FldPtrs<>(
 					code.allocatePtr(HOST_ID),
-					fld.isStateless()
-					? null : code.allocatePtr(fld.getType()));
+					this.fld.isStateless()
+					? null : code.allocatePtr(this.fld.fld().getType()));
 		}
 
 		@Override
@@ -162,15 +161,17 @@ public abstract class FldOp<F extends Fld.Op<F>> extends FldIROp {
 
 	}
 
-	private static final class RealFldStoreOp<F extends Fld.Op<F>>
-			implements FldStoreOp {
+	private static final class RealFldStoreOp<
+			F extends Fld.Op<F>,
+			T extends Fld.Type<F>>
+					implements FldStoreOp {
 
-		private final FldOp<F> fld;
+		private final FldOp<F, T> fld;
 		private final Allocator allocator;
 		private final Allocated<FldPtrs<F>> ptrs;
 
 		RealFldStoreOp(
-				FldOp<F> fld,
+				FldOp<F, T> fld,
 				Allocator allocator,
 				Allocated<FldPtrs<F>> ptrs) {
 			this.fld = fld;

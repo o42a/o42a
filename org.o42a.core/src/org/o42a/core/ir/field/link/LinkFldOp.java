@@ -22,9 +22,9 @@ package org.o42a.core.ir.field.link;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatelessOp;
-import org.o42a.core.ir.field.RefFldOp;
+import org.o42a.core.ir.field.RefFld.StatelessType;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.VmtIRChain.Op;
@@ -36,7 +36,8 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public class LinkFldOp extends RefFldOp<StatelessOp, ObjectRefFn> {
+public class LinkFldOp
+		extends RefFldOp<StatelessOp, StatelessType, ObjectRefFn> {
 
 	private final StatelessOp ptr;
 
@@ -61,7 +62,7 @@ public class LinkFldOp extends RefFldOp<StatelessOp, ObjectRefFn> {
 	}
 
 	@Override
-	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 		throw new UnsupportedOperationException("Link field has no fields");
 	}
 

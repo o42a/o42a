@@ -42,8 +42,9 @@ import org.o42a.util.string.ID;
 
 public abstract class RefFld<
 		F extends RefFld.Op<F>,
+		T extends RefFld.Type<F>,
 		C extends ObjectFn<C>>
-				extends MemberFld<F> {
+				extends MemberFld<F, T> {
 
 	public static final StatefulType STATEFUL_FLD = new StatefulType();
 
@@ -80,11 +81,6 @@ public abstract class RefFld<
 	@Override
 	public final boolean isDummy() {
 		return this.dummy;
-	}
-
-	@Override
-	public Type<F> getInstance() {
-		return (Type<F>) super.getInstance();
 	}
 
 	public final void allocate(ObjectIRBodyData data, Obj targetAscendant) {
@@ -133,9 +129,6 @@ public abstract class RefFld<
 	}
 
 	@Override
-	protected abstract Type<F> getType();
-
-	@Override
 	protected void allocate(ObjectIRBodyData data) {
 		super.allocate(data);
 		if (!this.targetIRAllocated) {
@@ -156,8 +149,8 @@ public abstract class RefFld<
 		final ObjectIR overriddenOwnerIR =
 				overriddenOwner.ir(getGenerator());
 		@SuppressWarnings("unchecked")
-		final RefFld<F, C> overriddenFld =
-				(RefFld<F, C>) overriddenOwnerIR.bodies()
+		final RefFld<F, T, C> overriddenFld =
+				(RefFld<F, T, C>) overriddenOwnerIR.bodies()
 				.fld(getField().getKey());
 
 		return overriddenFld.cloneFunc();
@@ -186,17 +179,17 @@ public abstract class RefFld<
 	protected abstract Obj targetType(Obj bodyType);
 
 	@Override
-	protected Content<Type<F>> content() {
+	protected Content<T> content() {
 		return new FldContent<>(this);
 	}
 
 	@Override
-	protected Content<Type<F>> dummyContent() {
+	protected Content<T> dummyContent() {
 		return instance -> fillDummy();
 	}
 
 	@Override
-	protected abstract RefFldOp<F, C> op(Code code, ObjOp host, F ptr);
+	protected abstract RefFldOp<F, T, C> op(Code code, ObjOp host, F ptr);
 
 	protected final FuncPtr<C> constructor() {
 		assert this.constructor != null :
@@ -396,19 +389,37 @@ public abstract class RefFld<
 
 	}
 
+	public static final class StatelessType extends RefFld.Type<StatelessOp> {
+
+		private StatelessType() {
+			super(null);
+		}
+
+		@Override
+		public boolean isStateless() {
+			return true;
+		}
+
+		@Override
+		public StatelessOp op(StructWriter<StatelessOp> writer) {
+			return new StatelessOp(writer);
+		}
+
+	}
+
 	private static class FldContent<
 			F extends Op<F>,
 			T extends Type<F>,
 			C extends ObjectFn<C>>
 					implements Content<T> {
 
-		private final RefFld<F, C> fld;
+		private final RefFld<F, T, C> fld;
 
-		FldContent(RefFld<F, C> fld) {
+		FldContent(RefFld<F, T, C> fld) {
 			this.fld = fld;
 		}
 
-		public final RefFld<F, C> fld() {
+		public final RefFld<F, T, C> fld() {
 			return this.fld;
 		}
 

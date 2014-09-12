@@ -126,7 +126,7 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 		return this.bodyIRs.get(ascendant.type().getSampleDeclaration());
 	}
 
-	public final Fld<?> fld(MemberKey memberKey) {
+	public final Fld<?, ?> fld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().toObject();
 		final ObjectIRBody bodyIR = bodyIR(origin);
@@ -134,7 +134,7 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 		return bodyIR.fld(memberKey);
 	}
 
-	public final Fld<?> findFld(MemberKey memberKey) {
+	public final Fld<?, ?> findFld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().toObject();
 		final ObjectIRBody bodyIR = findBodyIR(origin);

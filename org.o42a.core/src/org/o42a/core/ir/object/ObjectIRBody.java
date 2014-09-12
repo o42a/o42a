@@ -47,7 +47,7 @@ public final class ObjectIRBody {
 	private final Obj sampleDeclaration;
 	private final Obj closestAscendant;
 
-	private final LinkedHashMap<MemberKey, Fld<?>> fields =
+	private final LinkedHashMap<MemberKey, Fld<?, ?>> fields =
 			new LinkedHashMap<>();
 	private final LinkedHashMap<Dep, DepIR> deps =
 			new LinkedHashMap<>();
@@ -94,7 +94,7 @@ public final class ObjectIRBody {
 		return new ObjectIRBody(inheritantBodies, getSampleDeclaration());
 	}
 
-	public final Collection<Fld<?>> getFields() {
+	public final Collection<Fld<?, ?>> getFields() {
 		return fields().values();
 	}
 
@@ -102,9 +102,9 @@ public final class ObjectIRBody {
 		return deps().values();
 	}
 
-	public final Fld<?> fld(MemberKey memberKey) {
+	public final Fld<?, ?> fld(MemberKey memberKey) {
 
-		final Fld<?> fld = findFld(memberKey);
+		final Fld<?, ?> fld = findFld(memberKey);
 
 		assert fld != null :
 			fieldNotFound(memberKey);
@@ -112,7 +112,7 @@ public final class ObjectIRBody {
 		return fld;
 	}
 
-	public final Fld<?> findFld(MemberKey memberKey) {
+	public final Fld<?, ?> findFld(MemberKey memberKey) {
 		return fields().get(memberKey);
 	}
 
@@ -130,11 +130,11 @@ public final class ObjectIRBody {
 		allocateFields(new ObjectIRBodyData(this, data));
 	}
 
-	final void declareFld(Fld<?> fld) {
+	final void declareFld(Fld<?, ?> fld) {
 		this.fields.put(fld.getKey(), fld);
 	}
 
-	private HashMap<MemberKey, Fld<?>> fields() {
+	private HashMap<MemberKey, Fld<?, ?>> fields() {
 		ensureFieldsAllocated();
 		return this.fields;
 	}

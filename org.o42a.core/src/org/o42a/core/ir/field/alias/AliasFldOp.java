@@ -25,6 +25,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
+import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.VmtIRChain.Op;
@@ -35,14 +36,11 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-final class AliasFldOp extends RefFldOp<StatefulOp, ObjectRefFn> {
+final class AliasFldOp extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
 	private final StatefulOp ptr;
 
-	AliasFldOp(
-			RefFld<StatefulOp, ObjectRefFn> fld,
-			ObjOp host,
-			StatefulOp ptr) {
+	AliasFldOp(AliasFld fld, ObjOp host, StatefulOp ptr) {
 		super(fld, host);
 		this.ptr = ptr;
 	}
@@ -58,7 +56,7 @@ final class AliasFldOp extends RefFldOp<StatefulOp, ObjectRefFn> {
 	}
 
 	@Override
-	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}

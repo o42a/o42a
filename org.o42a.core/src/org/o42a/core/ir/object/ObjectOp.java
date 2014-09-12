@@ -147,7 +147,7 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	}
 
 	@Override
-	public abstract FldOp<?> field(CodeDirs dirs, MemberKey memberKey);
+	public abstract FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey);
 
 	public abstract DepOp dep(CodeDirs dirs, Dep dep);
 

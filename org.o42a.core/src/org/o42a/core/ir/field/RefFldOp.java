@@ -41,17 +41,18 @@ import org.o42a.util.string.ID;
 
 public abstract class RefFldOp<
 		F extends RefFld.Op<F>,
+		T extends RefFld.Type<F>,
 		C extends ObjectFn<C>>
-				extends MemberFldOp<F> {
+				extends MemberFldOp<F, T> {
 
-	public RefFldOp(RefFld<F, C> fld, ObjOp host) {
+	public RefFldOp(RefFld<F, T, C> fld, ObjOp host) {
 		super(fld, host);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public RefFld<F, C> fld() {
-		return (RefFld<F, C>) super.fld();
+	public RefFld<F, T, C> fld() {
+		return (RefFld<F, T, C>) super.fld();
 	}
 
 	@Override

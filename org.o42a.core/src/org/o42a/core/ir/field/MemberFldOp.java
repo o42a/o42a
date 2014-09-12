@@ -28,9 +28,10 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.string.ID;
 
 
-public abstract class MemberFldOp<F extends Fld.Op<F>> extends FldOp<F> {
+public abstract class MemberFldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
+		extends FldOp<F, T> {
 
-	public MemberFldOp(MemberFld<F> fld, ObjOp host) {
+	public MemberFldOp(MemberFld<F, T> fld, ObjOp host) {
 		super(host, fld);
 	}
 
@@ -43,8 +44,8 @@ public abstract class MemberFldOp<F extends Fld.Op<F>> extends FldOp<F> {
 	}
 
 	@Override
-	public MemberFld<F> fld() {
-		return (MemberFld<F>) super.fld();
+	public MemberFld<F, T> fld() {
+		return (MemberFld<F, T>) super.fld();
 	}
 
 	protected final HostValueOp objectFldValueOp() {
@@ -53,9 +54,9 @@ public abstract class MemberFldOp<F extends Fld.Op<F>> extends FldOp<F> {
 
 	private static final class ObjectFldValueOp implements HostValueOp {
 
-		private final MemberFldOp<?> fld;
+		private final MemberFldOp<?, ?> fld;
 
-		ObjectFldValueOp(MemberFldOp<?> fld) {
+		ObjectFldValueOp(MemberFldOp<?, ?> fld) {
 			this.fld = fld;
 		}
 

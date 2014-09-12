@@ -24,9 +24,9 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
-import org.o42a.core.ir.field.RefFldOp;
+import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -35,7 +35,8 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFn> {
+public class ObjFldOp
+		extends RefFldOp<StatefulOp, StatefulType, ObjectConstructorFn> {
 
 	private final StatefulOp ptr;
 
@@ -60,7 +61,7 @@ public class ObjFldOp extends RefFldOp<StatefulOp, ObjectConstructorFn> {
 	}
 
 	@Override
-	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}

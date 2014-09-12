@@ -926,7 +926,7 @@ public class BoundPath extends RefPath {
 		}
 
 		@Override
-		public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+		public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 			return object(dirs).target().field(dirs, memberKey);
 		}
 

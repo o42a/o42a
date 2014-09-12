@@ -96,7 +96,7 @@ final class TopIR extends ScopeIR {
 		}
 
 		@Override
-		public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+		public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 			throw new UnsupportedOperationException();
 		}
 

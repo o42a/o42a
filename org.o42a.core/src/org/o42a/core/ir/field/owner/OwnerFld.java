@@ -26,7 +26,9 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.field.*;
+import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.FldKind;
+import org.o42a.core.ir.field.MemberFld;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
@@ -34,7 +36,7 @@ import org.o42a.util.string.ID;
 
 
 public final class OwnerFld
-		extends MemberFld<OwnerFld.Op>
+		extends MemberFld<OwnerFld.Op, OwnerFld.Type>
 		implements Content<OwnerFld.Type> {
 
 	public static final Type SCOPE_FLD = new Type();
@@ -54,11 +56,6 @@ public final class OwnerFld
 	@Override
 	public boolean isDummy() {
 		return false;
-	}
-
-	@Override
-	public final Type getInstance() {
-		return (Type) super.getInstance();
 	}
 
 	public final Obj getAscendant() {
@@ -128,7 +125,7 @@ public final class OwnerFld
 	}
 
 	@Override
-	protected MemberFldOp<Op> op(Code code, ObjOp host, Op ptr) {
+	protected OwnerFldOp op(Code code, ObjOp host, Op ptr) {
 		assert !isDummy() :
 			"Dummy owner field accessd: " + this;
 		return new OwnerFldOp(this, host, ptr);

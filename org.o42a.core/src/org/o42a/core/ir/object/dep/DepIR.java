@@ -19,12 +19,12 @@
 */
 package org.o42a.core.ir.object.dep;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.DataRec;
+import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
@@ -37,7 +37,7 @@ import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
-public class DepIR implements FldIR {
+public class DepIR implements FldIR<DepIR.Op, DepIR.Type> {
 
 	public static final Type DEP_IR = new Type();
 
@@ -82,18 +82,9 @@ public class DepIR implements FldIR {
 		return this.bodyIR;
 	}
 
+	@Override
 	public final Type getInstance() {
 		return this.instance;
-	}
-
-	@Override
-	public final Ptr<?> pointer(Generator generator) {
-		return this.instance.pointer(generator);
-	}
-
-	@Override
-	public final Data<?> data(Generator generator) {
-		return this.instance.data(generator);
 	}
 
 	public final void allocate(ObjectIRBodyData data) {

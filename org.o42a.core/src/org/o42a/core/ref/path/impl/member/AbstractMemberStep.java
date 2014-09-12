@@ -155,7 +155,7 @@ public abstract class AbstractMemberStep extends Step {
 		}
 
 		@Override
-		public FldOp<?> pathTarget(CodeDirs dirs) {
+		public FldOp<?, ?> pathTarget(CodeDirs dirs) {
 			return host().target().field(dirs, getStep().getMemberKey());
 		}
 
@@ -185,7 +185,7 @@ public abstract class AbstractMemberStep extends Step {
 		@Override
 		public void storeTarget(CodeDirs dirs) {
 
-			final FldOp<?> field = this.member.pathTarget(dirs);
+			final FldOp<?, ?> field = this.member.pathTarget(dirs);
 
 			this.store = field.allocateStore(this.id, this.alloc);
 			this.store.storeTarget(dirs);

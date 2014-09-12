@@ -19,16 +19,19 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Type;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.*;
 
 
-public abstract class FldIROp extends DefiniteIROp implements TargetOp {
+public abstract class FldIROp<F extends StructOp<F>, T extends Type<F>>
+		extends DefiniteIROp implements TargetOp {
 
 	private final ObjOp host;
-	private final FldIR fld;
+	private final FldIR<F, T> fld;
 
-	public FldIROp(ObjOp host, FldIR fld) {
+	public FldIROp(ObjOp host, FldIR<F, T> fld) {
 		super(host.getBuilder());
 		this.host = host;
 		this.fld = fld;
@@ -38,7 +41,7 @@ public abstract class FldIROp extends DefiniteIROp implements TargetOp {
 		return this.host;
 	}
 
-	public FldIR fld() {
+	public FldIR<F ,T> fld() {
 		return this.fld;
 	}
 
