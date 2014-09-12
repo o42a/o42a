@@ -195,8 +195,11 @@ public final class ObjectIRBody {
 
 				final Field field = member.toField().field(dummyUser());
 				final FieldIRBase fieldIR = field.ir(generator);
+				final Fld<?, ?> fld = fieldIR.declare(data);
 
-				fieldIR.allocate(data);
+				if (fld != null) {
+					this.fields.put(fld.getKey(), fld);
+				}
 			} else {
 
 				final Obj origin =
@@ -209,8 +212,11 @@ public final class ObjectIRBody {
 						.toField()
 						.field(dummyUser());
 				final FieldIRBase fieldIR = field.ir(generator);
+				final Fld<?, ?> fld = fieldIR.declareDummy(data);
 
-				fieldIR.allocateDummy(data);
+				if (fld != null) {
+					this.fields.put(fld.getKey(), fld);
+				}
 			}
 		}
 

@@ -36,6 +36,7 @@ import org.o42a.core.ir.field.link.AbstractLinkFld;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
@@ -44,8 +45,13 @@ import org.o42a.core.object.Obj;
 
 public class VarFld extends AbstractLinkFld<StatefulOp, StatefulType> {
 
-	public VarFld(Field field, Obj target) {
-		super(field, target);
+	public VarFld(
+			ObjectIRBody bodyIR,
+			Field field,
+			boolean dummy,
+			Obj target,
+			Obj targetAscendant) {
+		super(bodyIR, field, dummy, target, targetAscendant);
 	}
 
 	@Override

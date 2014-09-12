@@ -67,25 +67,27 @@ public final class AliasField extends Field {
 		}
 
 		@Override
-		protected AliasFld declare(ObjectIRBodyData data) {
+		protected AliasFld declareFld(ObjectIRBodyData data) {
 
 			final AliasField field = (AliasField) getField();
 			final Obj target =
 					field.getRef().getResolution().toObject().mostWrapped();
-			final AliasFld fld = new AliasFld(field, target);
+			final AliasFld fld =
+					new AliasFld(data.getBodyIR(), field, false, target);
 
-			fld.allocate(data, target);
+			fld.allocate(data);
 
 			return fld;
 		}
 
 		@Override
-		protected Fld<?, ?> declareDummy(ObjectIRBodyData data) {
+		protected Fld<?, ?> declareDummyFld(ObjectIRBodyData data) {
 
 			final AliasField field = (AliasField) getField();
-			final AliasFld fld = new AliasFld(field, null);
+			final AliasFld fld =
+					new AliasFld(data.getBodyIR(), field, true, null);
 
-			fld.allocateDummy(data);
+			fld.allocate(data);
 
 			return fld;
 		}

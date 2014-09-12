@@ -25,9 +25,7 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld.StatelessOp;
 import org.o42a.core.ir.field.RefFld.StatelessType;
-import org.o42a.core.ir.object.ObjBuilder;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
@@ -36,8 +34,13 @@ import org.o42a.core.object.Obj;
 
 public class LinkFld extends AbstractLinkFld<StatelessOp, StatelessType> {
 
-	public LinkFld(Field field, Obj target) {
-		super(field, target);
+	public LinkFld(
+			ObjectIRBody bodyIR,
+			Field field,
+			boolean dummy,
+			Obj target,
+			Obj targetAscendant) {
+		super(bodyIR, field, dummy, target, targetAscendant);
 	}
 
 	@Override
