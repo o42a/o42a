@@ -20,7 +20,6 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
-import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
 import java.util.function.BiConsumer;
 
@@ -437,7 +436,7 @@ public abstract class RefFld<
 					constructor,
 					failure.head(),
 					getObjectIR(),
-					getObjectIR().isExact() ? EXACT : COMPATIBLE);
+					COMPATIBLE);
 			final CodeDirs dirs = builder.dirs(constructor, failure.head());
 			final CodeDirs subDirs =
 					dirs.begin(
