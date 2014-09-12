@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.core.ir.object.op.CtrOp.allocateCtr;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
@@ -88,7 +89,7 @@ public class ObjFldOp
 			ObjectConstructorFn constructor,
 			VmtIRChain.Op vmtc) {
 
-		final CtrOp ctr = getBuilder().objects().allocateCtr(code);
+		final CtrOp ctr = allocateCtr(getBuilder(), code);
 		final CtrOp.Op ptr = ctr.ptr(code);
 
 		ctr.fillOwner(code, host());

@@ -57,7 +57,6 @@ final class ObjectCondBuilder extends AbstractObjectCondBuilder {
 				function,
 				failureDir,
 				this.fn.getObjectIR(),
-				this.fn.getObjectIR().getObject(),
 				this.fn.getObjectIR().isExact() ? EXACT : DERIVED);
 	}
 

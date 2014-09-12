@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ir.ObjectsCode.NEW_OBJECT_ID;
-import static org.o42a.core.ir.ObjectsCode.objectAncestor;
+import static org.o42a.core.ir.object.ObjectOp.NEW_OBJECT_ID;
+import static org.o42a.core.ir.object.op.CtrOp.allocateCtr;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 
@@ -268,20 +268,10 @@ public abstract class ObjectConstructor
 					NEW_OBJECT_ID,
 					"New object: sample=`" + getConstructed() + "`");
 			final Block code = subDirs.code();
-			final ObjectOp ancestor = objectAncestor(
-					subDirs,
-					host,
-					getConstructed(),
-					tempObjHolder(code.getAllocator()));
-
-			final ObjectOp result = getBuilder()
-					.objects()
-					.allocateCtr(code)
+			final ObjectOp result =
+					allocateCtr(subDirs)
 					.fillOwner(code, host)
-					.fillAscendants(
-							subDirs,
-							ancestor,
-							getConstructed())
+					.fillAscendants(subDirs, getConstructed())
 					.fillVmtc(code)
 					.newObject(subDirs, holder);
 

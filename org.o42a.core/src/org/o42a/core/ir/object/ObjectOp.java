@@ -39,6 +39,7 @@ import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
@@ -46,6 +47,8 @@ import org.o42a.util.string.ID;
 
 public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
+	public static final ID ANCESTOR_ID = ID.rawId("ancestor");
+	public static final ID NEW_OBJECT_ID = ID.rawId("new_object");
 	protected static final ID CAST_ID = ID.id("cast");
 	protected static final ID TARGET_ID = ID.id("target");
 	protected static final ID FIELD_HOST_ID = ID.id("field_host");
@@ -82,6 +85,35 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 			ObjectIROp ptr,
 			Obj wellKnownType) {
 		return new AnonymousObjOp(builder, ptr, wellKnownType);
+	}
+
+	public static ObjectOp objectAncestor(
+			CodeDirs dirs,
+			Obj object,
+			ObjHolder holder) {
+		return objectAncestor(dirs, dirs.getBuilder().host(), object, holder);
+	}
+
+	public static ObjectOp objectAncestor(
+			CodeDirs dirs,
+			HostOp host,
+			Obj object,
+			ObjHolder holder) {
+
+		final CodeDirs subDirs = dirs.begin(ANCESTOR_ID, "Ancestor");
+
+		final TypeRef ancestorType = object.type().getAncestor();
+		final RefOp ancestor = ancestorType.op(host);
+
+		final ObjectOp result = ancestor.path()
+				.target()
+				.materialize(subDirs, holder);
+
+		subDirs.done();
+
+		dirs.code().dumpName("Ancestor: ", result);
+
+		return result;
 	}
 
 	private final ObjectIROp ptr;

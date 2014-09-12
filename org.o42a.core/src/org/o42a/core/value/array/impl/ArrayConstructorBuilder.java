@@ -66,7 +66,6 @@ public class ArrayConstructorBuilder
 				function,
 				failure.head(),
 				ownerIR,
-				owner,
 				ownerIR.isExact() ? EXACT : DERIVED);
 		final ValOp value = function.arg(function, OBJECT_VALUE.value()).op(
 				function,
