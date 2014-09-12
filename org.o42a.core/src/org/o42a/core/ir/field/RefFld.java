@@ -55,7 +55,6 @@ public abstract class RefFld<
 	private final Obj target;
 	private final Obj targetAscendant;
 
-	private boolean constructorBuilt;
 	private boolean targetIRAllocated;
 	private boolean filling;
 	private boolean filledFields;
@@ -79,6 +78,7 @@ public abstract class RefFld<
 			this.filledFields = true;
 			this.filledAll = true;
 		}
+		this.targetIRAllocated = isOmitted();
 	}
 
 	public final Obj getTarget() {
@@ -94,7 +94,6 @@ public abstract class RefFld<
 		if (isOmitted()) {
 			return;
 		}
-		buildConstructor();
 		this.vmtConstructor = vmt.addFuncPtr(
 				getId().detail("constructor"),
 				getConstructorSignature());
@@ -118,14 +117,6 @@ public abstract class RefFld<
 		this.targetIRAllocated = true;
 		// target object is allocated - fill it
 		fill(false, true);
-	}
-
-	@Override
-	public void allocate(SubData<?> data) {
-		super.allocate(data);
-		if (!this.targetIRAllocated) {
-			this.targetIRAllocated = isOmitted();
-		}
 	}
 
 	protected FuncPtr<C> reuseConstructor() {
@@ -184,9 +175,28 @@ public abstract class RefFld<
 	protected abstract RefFldOp<F, T, C> op(Code code, ObjOp host, F ptr);
 
 	protected final FuncPtr<C> constructor() {
-		assert this.constructor != null :
-			"Constructor of " + this + " is not built";
-		return this.constructor;
+		if (this.constructor != null) {
+			return this.constructor;
+		}
+		assert !getBodyIR().bodies().isTypeBodies() :
+			"Can not build constructor for type field " + this;
+		if (isDummy()) {
+			return this.constructor =
+					getGenerator()
+					.getFunctions()
+					.nullPtr(getConstructorSignature());
+		}
+
+		final FuncPtr<C> reusedConstructor = reuseConstructor();
+
+		if (reusedConstructor != null) {
+			return this.constructor = reusedConstructor;
+		}
+
+		return this.constructor = getGenerator().newFunction().create(
+				getField().getId().detail(CONSTRUCT_ID),
+				getConstructorSignature(),
+				new ConstructorBuilder(this::buildConstructor)).getPointer();
 	}
 
 	protected FuncPtr<C> cloneFunc() {
@@ -213,32 +223,6 @@ public abstract class RefFld<
 		final Ptr<DataOp> targetPtr = targetIR.ptr().toData();
 
 		getInstance().object().setValue(targetPtr);
-	}
-
-	private void buildConstructor() {
-		if (this.constructorBuilt) {
-			return;
-		}
-		this.constructorBuilt = true;
-		if (isDummy()) {
-			this.constructor =
-					getGenerator()
-					.getFunctions()
-					.nullPtr(getConstructorSignature());
-			return;
-		}
-
-		final FuncPtr<C> reusedConstructor = reuseConstructor();
-
-		if (reusedConstructor != null) {
-			this.constructor = reusedConstructor;
-			return;
-		}
-
-		this.constructor = getGenerator().newFunction().create(
-				getField().getId().detail(CONSTRUCT_ID),
-				getConstructorSignature(),
-				new ConstructorBuilder(this::buildConstructor)).getPointer();
 	}
 
 	private boolean runtimeConstructedTarget() {
@@ -413,13 +397,6 @@ public abstract class RefFld<
 
 		public final RefFld<F, T, C> fld() {
 			return this.fld;
-		}
-
-		@Override
-		public void allocated(T instance) {
-			if (!this.fld.getBodyIR().bodies().isTypeBodies()) {
-				this.fld.buildConstructor();
-			}
 		}
 
 		@Override

@@ -91,6 +91,10 @@ public abstract class FieldIRBase extends ScopeIR {
 			return null;
 		}
 
+		if (bodyIR.bodies().isTypeBodies()) {
+			return fld;
+		}
+
 		this.fld = fld;
 		if (this.targetAllocated) {
 			this.targetAllocated = false;
@@ -101,7 +105,14 @@ public abstract class FieldIRBase extends ScopeIR {
 	}
 
 	final Fld<?, ?> declareDummy(ObjectIRBody bodyIR) {
-		return this.fld = declareDummyFld(bodyIR);
+
+		final Fld<?, ?> fld = declareDummyFld(bodyIR);
+
+		if (!bodyIR.bodies().isTypeBodies()) {
+			this.fld = fld;
+		}
+
+		return fld;
 	}
 
 }
