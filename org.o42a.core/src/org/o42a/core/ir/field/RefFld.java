@@ -121,7 +121,7 @@ public abstract class RefFld<
 	}
 
 	@Override
-	public void allocate(ObjectIRBodyData data) {
+	public void allocate(SubData<?> data) {
 		super.allocate(data);
 		if (!this.targetIRAllocated) {
 			this.targetIRAllocated = isOmitted();

@@ -25,7 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.alias.AliasFld;
-import org.o42a.core.ir.object.ObjectIRBodyData;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldKind;
 import org.o42a.core.object.Obj;
@@ -67,29 +67,21 @@ public final class AliasField extends Field {
 		}
 
 		@Override
-		protected AliasFld declareFld(ObjectIRBodyData data) {
+		protected AliasFld declareFld(ObjectIRBody bodyIR) {
 
 			final AliasField field = (AliasField) getField();
 			final Obj target =
 					field.getRef().getResolution().toObject().mostWrapped();
-			final AliasFld fld =
-					new AliasFld(data.getBodyIR(), field, false, target);
 
-			fld.allocate(data);
-
-			return fld;
+			return new AliasFld(bodyIR, field, false, target);
 		}
 
 		@Override
-		protected Fld<?, ?> declareDummyFld(ObjectIRBodyData data) {
+		protected Fld<?, ?> declareDummyFld(ObjectIRBody bodyIR) {
 
 			final AliasField field = (AliasField) getField();
-			final AliasFld fld =
-					new AliasFld(data.getBodyIR(), field, true, null);
 
-			fld.allocate(data);
-
-			return fld;
+			return new AliasFld(bodyIR, field, true, null);
 		}
 
 	}

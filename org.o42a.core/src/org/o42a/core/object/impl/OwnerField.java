@@ -32,7 +32,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.owner.OwnerFld;
 import org.o42a.core.ir.field.owner.OwnerFldOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRBodyData;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -210,17 +210,12 @@ public final class OwnerField extends ObjectField {
 		}
 
 		@Override
-		protected OwnerFld declareFld(ObjectIRBodyData data) {
-
-			final OwnerFld fld = new OwnerFld(data.getBodyIR(), getField());
-
-			fld.allocate(data);
-
-			return fld;
+		protected OwnerFld declareFld(ObjectIRBody bodyIR) {
+			return new OwnerFld(bodyIR, getField());
 		}
 
 		@Override
-		protected Fld<?, ?> declareDummyFld(ObjectIRBodyData data) {
+		protected Fld<?, ?> declareDummyFld(ObjectIRBody bodyIR) {
 			throw new UnsupportedOperationException(
 					"Owner field can not be dummy: " + this);
 		}
