@@ -779,116 +779,6 @@ static void derive_ancestor_bodies(
 }
 
 
-#ifndef NDEBUG
-
-static inline size_t count_fields(const o42a_obj_desc_t *const desc) {
-	O42A_ENTER(return 0);
-
-	const size_t num_asc = desc->ascendants.size;
-	const o42a_obj_ascendant_t *const ascs = O42A(o42a_obj_ascendants(desc));
-	size_t num_fields = 0;
-
-	for (size_t i = 0; i < num_asc; ++i) {
-		num_fields += ascs[i].desc->fields.size;
-	}
-
-	O42A_DEBUG("Number of fields: %zu\n", num_fields);
-
-	O42A_RETURN num_fields;
-}
-
-static inline size_t get_type_info_start(
-		size_t *const size,
-		const size_t type_field_num) {
-	O42A_ENTER(return 0);
-
-	size_t s = *size;
-	static const o42a_layout_t type_info_layout =
-			O42A_LAYOUT(o42a_dbg_type_info_t);
-	static const o42a_layout_t field_info_layout =
-			O42A_LAYOUT(o42a_dbg_field_info_t);
-	const size_t type_info_start = s =
-			O42A(o42a_layout_pad(s, type_info_layout));
-
-	s += O42A(o42a_layout_size(type_info_layout));
-	s += O42A(o42a_layout_pad(s, field_info_layout));
-	s += O42A(o42a_layout_array_size(field_info_layout, type_field_num));
-
-	*size = s;
-
-	O42A_RETURN type_info_start;
-}
-
-static inline void fill_debug_info(
-		const o42a_dbg_type_info_t *const ftype_info,
-		o42a_obj_t *const object,
-		o42a_dbg_type_info_t *const type_info,
-		const size_t field_num) {
-	O42A_ENTER(return);
-
-	const o42a_dbg_field_info_t *ffield_info = ftype_info->fields;
-	o42a_dbg_field_info_t *field_info = type_info->fields;
-
-	// Fill new object's type info (without field info yet).
-	type_info->type_code = rand();
-	type_info->name = "New object";
-	type_info->field_num = field_num;
-
-	// Fill object debug header.
-	o42a_dbg_header_t *const object_header = &object->__o42a_dbg_header__;
-
-	object_header->type_code = type_info->type_code;
-	object_header->enclosing = 0;
-	object_header->name = type_info->name;
-	object_header->type_info = type_info;
-
-	// Fill object data debug info.
-	o42a_obj_data_t *const data = &object->object_data;
-	o42a_dbg_header_t *const data_header = &data->__o42a_dbg_header__;
-
-	O42A(o42a_dbg_fill_header(
-			ffield_info->type_info,
-			data_header,
-			object_header));
-	data_header->name = ffield_info->name;
-	O42A(o42a_dbg_fill_field_info(data_header, field_info++));
-	++ffield_info;
-
-	// Fill object bodies debug info.
-	const o42a_obj_ascendant_t *const ascendants =
-			O42A(o42a_obj_ascendants(data->desc));
-	const size_t num_ascendants = data->desc->ascendants.size;
-
-	for (size_t i = 0; i < num_ascendants; ++i) {
-
-		const o42a_obj_ascendant_t *const asc = ascendants + i;
-		const o42a_obj_field_t *const fields =
-				O42A(o42a_obj_fields(asc->desc));
-		const size_t num_fields = asc->desc->fields.size;
-
-		for (size_t i = 0; i < num_fields; ++i) {
-
-			o42a_fld *const fld =
-					O42A(o42a_fld_by_field(object, fields + i));
-			o42a_dbg_header_t *const fld_header =
-					(o42a_dbg_header_t *) fld;
-
-			O42A(o42a_dbg_fill_header(
-					ffield_info->type_info,
-					fld_header,
-					object_header));
-			fld_header->name = ffield_info->name;
-			O42A(o42a_dbg_fill_field_info(fld_header, field_info++));
-			++ffield_info;
-		}
-	}
-
-	O42A_RETURN;
-}
-
-#endif /* NDEBUG */
-
-
 static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
@@ -911,18 +801,18 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	assert((adiff == 0 || adiff == 1) && "Inheritance is impossible");
 
 	const size_t consumed_ascendants = adiff ? 0 : 1;
-	size_t size = sdesc->object_size;
+	o42a_obj_t *const object =
+			O42A(o42a_gc_alloc(&o42a_obj_gc_desc, sdesc->object_size));
 
 #ifndef NDEBUG
 
-	const size_t type_field_num = 1 + O42A(count_fields(sdesc));
-	const size_t type_info_start =
-			O42A(get_type_info_start(&size, type_field_num));
+	o42a_dbg_header_t *const header = &object->__o42a_dbg_header__;
 
-#endif
+	O42A(o42a_dbg_fill_header(ctr->sample_type_info, header, NULL));
+	header->name = "New object";
 
-	char *const mem = O42A(o42a_gc_alloc(&o42a_obj_gc_desc, size));
-	o42a_obj_t *const object = (o42a_obj_t *) mem;
+#endif /* NDEBUG */
+
 	o42a_obj_data_t *const data = &object->object_data;
 
 	// Fill object data without value and VMT.
@@ -932,14 +822,6 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	data->resume_from = NULL;
 	data->desc = sdesc;
 	data->fld_ctrs = NULL;
-
-#ifndef NDEBUG
-	O42A(fill_debug_info(
-			ctr->sample_type_info,
-			object,
-			(o42a_dbg_type_info_t*) (mem + type_info_start),
-			type_field_num));
-#endif /* NDEBUG */
 
 	// propagate sample and inherit ancestor
 	o42a_obj_ctable_t ctable = {
