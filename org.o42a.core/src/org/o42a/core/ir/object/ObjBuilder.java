@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.op.HostOp.HOST_ID;
 
 import org.o42a.codegen.code.Block;
@@ -39,7 +40,11 @@ public final class ObjBuilder extends CodeBuilder {
 			ObjectIR hostIR,
 			ObjectPrecision hostPrecision) {
 		super(hostIR.getSampleDeclaration().getContext(), function);
-		this.host = host(function, exit, hostIR, hostPrecision);
+		this.host = host(
+				function,
+				exit,
+				hostIR,
+				hostIR.isExact() ? EXACT : hostPrecision);
 	}
 
 	@Override

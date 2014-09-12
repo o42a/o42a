@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
@@ -57,7 +56,7 @@ final class ObjectCondBuilder extends AbstractObjectCondBuilder {
 				function,
 				failureDir,
 				this.fn.getObjectIR(),
-				this.fn.getObjectIR().isExact() ? EXACT : DERIVED);
+				DERIVED);
 	}
 
 }

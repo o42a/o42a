@@ -21,7 +21,6 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 import static org.o42a.core.object.value.ValuePartUsage.ALL_VALUE_PART_USAGES;
@@ -87,7 +86,7 @@ public class ObjectDefFnIR
 				function,
 				failure.head(),
 				getObjectIR(),
-				getObjectIR().isExact() ? EXACT : DERIVED);
+				DERIVED);
 		final ValOp result =
 				function.arg(function, signature().value())
 				.op(function, builder, getValueType(), VAL_TRAP);
