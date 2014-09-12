@@ -20,7 +20,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 12,
+	.field_num = 11,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -84,12 +84,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.name = "fld_ctrs",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_fld_ctr,
-		},
-		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_data_t, deps),
-			.name = "deps",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
 		},
 	},
 };
@@ -189,7 +183,7 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
-	.field_num = 10,
+	.field_num = 9,
 	.name = "o42a_obj_ctr_t",
 	.fields = {
 		{
@@ -241,11 +235,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.offset = offsetof(o42a_obj_ctr_t, value),
 			.name = "value",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
-		},
-		{
-			.data_type = O42A_TYPE_INT32,
-			.offset = offsetof(o42a_obj_ctr_t, num_deps),
-			.name = "num_deps",
 		},
 	},
 };
@@ -571,10 +560,6 @@ void o42a_obj_vmtc_free(const o42a_obj_vmtc_t *vmtc) {
 	O42A_RETURN;
 }
 
-static inline o42a_obj_t **o42a_obj_deps(const o42a_obj_data_t *const data) {
-	return (o42a_obj_t **) (((char *) &data->deps) + data->deps.list);
-}
-
 static void o42a_obj_gc_marker(void *const obj_data) {
 	O42A_ENTER(return);
 
@@ -625,29 +610,6 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 			break;
 		}
 		++asc;
-	}
-
-	const size_t num_deps = data->deps.size;
-
-	if (!num_deps) {
-		O42A_RETURN;
-	}
-
-	// Mark all deps.
-	o42a_obj_t **const deps = O42A(o42a_obj_deps(data));
-
-	for (size_t i = 0; i < num_deps; ++i) {
-		O42A_DEBUG("Mark dep #%zd\n", i);
-
-		o42a_obj_t *const dep = deps[i];
-
-		if (!dep) {
-			continue;
-		}
-
-		o42a_debug_mem_name("Dep: ", object);
-
-		O42A(o42a_gc_mark(o42a_gc_blockof(dep)));
 	}
 
 	O42A_RETURN;
@@ -817,18 +779,6 @@ static void derive_ancestor_bodies(
 }
 
 
-static inline void fill_deps(const o42a_obj_data_t *const data) {
-
-	const size_t num_deps = data->deps.size;
-	o42a_obj_t **const deps = o42a_obj_deps(data);
-
-	// Fill deps field info.
-	for (size_t i = 0; i < num_deps; ++i) {
-		deps[i] = NULL;// To be able to dump the object before deps filled.
-	}
-}
-
-
 #ifndef NDEBUG
 
 static inline size_t count_fields(const o42a_obj_desc_t *const desc) {
@@ -933,18 +883,6 @@ static inline void fill_debug_info(
 		}
 	}
 
-	const size_t num_deps = data->deps.size;
-	o42a_obj_t **const deps = o42a_obj_deps(data);
-
-	// Fill deps field info.
-	for (size_t i = 0; i < num_deps; ++i) {
-		field_info->data_type = O42A_TYPE_DATA_PTR;
-		field_info->offset = ((char *) (deps + i)) - ((char *) object);
-		field_info->name = "D";
-		field_info->type_info = NULL;
-		++field_info;
-	}
-
 	O42A_RETURN;
 }
 
@@ -973,17 +911,11 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	assert((adiff == 0 || adiff == 1) && "Inheritance is impossible");
 
 	const size_t consumed_ascendants = adiff ? 0 : 1;
-	static const o42a_layout_t dep_layout = O42A_LAYOUT(void *);
-	const size_t deps_start = o42a_layout_pad(
-			sdesc->object_size,
-			dep_layout);
-	const size_t num_deps = ctr->num_deps;
-	size_t size = deps_start + o42a_layout_array_size(dep_layout, num_deps);
+	size_t size = sdesc->object_size;
 
 #ifndef NDEBUG
 
-	const size_t type_field_num =
-			1 + O42A(count_fields(sdesc)) + num_deps;
+	const size_t type_field_num = 1 + O42A(count_fields(sdesc));
 	const size_t type_info_start =
 			O42A(get_type_info_start(&size, type_field_num));
 
@@ -992,7 +924,6 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	char *const mem = O42A(o42a_gc_alloc(&o42a_obj_gc_desc, size));
 	o42a_obj_t *const object = (o42a_obj_t *) mem;
 	o42a_obj_data_t *const data = &object->object_data;
-	void **const deps = (void **) (mem + deps_start);
 
 	// Fill object data without value and VMT.
 	data->mutex_init = 0;
@@ -1000,11 +931,7 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	data->cond_f = ctr->cond_f;
 	data->resume_from = NULL;
 	data->desc = sdesc;
-
 	data->fld_ctrs = NULL;
-	data->deps.list =
-			num_deps ? ((char *) deps) - ((char *) &data->deps) : 0;
-	data->deps.size = num_deps;
 
 #ifndef NDEBUG
 	O42A(fill_debug_info(
@@ -1076,8 +1003,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->value.flags = O42A_VAL_INDEFINITE;
 	data->def_f = ctr->def_f ? ctr->def_f : adata->def_f;
 
-	O42A(fill_deps(data));
-
 	o42a_debug_dump_mem("Object: ", object, 3);
 
 	O42A_RETURN object;
@@ -1093,7 +1018,6 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	const o42a_obj_t *const ancestor = ctr->ancestor;
 	const o42a_obj_data_t *const adata = &ancestor->object_data;
 	const o42a_obj_desc_t *const sdesc = ctr->sample_desc;
-	const size_t copy_adeps = adata->deps.size;
 
 	if (!sdesc) {
 		ctr->sample_desc = adata->desc;
@@ -1102,9 +1026,6 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 #endif /* NDEBUG */
 		ctr->value_f = adata->value_f;
 		ctr->cond_f = adata->cond_f;
-		ctr->num_deps = copy_adeps;
-	} else if (copy_adeps) {
-		assert(!ctr->num_deps && "Can not allocate more dependencies");
 	}
 
 	o42a_obj_t *const object = O42A(new_obj(ctr));
@@ -1138,19 +1059,6 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	data->def_f = sdesc && ctr->def_f ? ctr->def_f : adata->def_f;
 	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
 	data->value.flags |= O42A_VAL_EAGER;
-
-	if (copy_adeps) {
-
-		o42a_obj_data_t *const data = &object->object_data;
-		void **const adeps =
-				(void **) (((char *) &adata->deps) + adata->deps.list);
-		void **const deps =
-				(void **) (((char *) &data->deps) + data->deps.list);
-
-		for (size_t i = 0; i < copy_adeps; ++i) {
-			deps[i] = adeps[i];
-		}
-	}
 
 	o42a_debug_dump_mem("Eager object: ", object, 3);
 

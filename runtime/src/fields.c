@@ -103,7 +103,15 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.mark = &o42a_fld_mark_obj,
 		.sweep = &o42a_fld_sweep_none,
 		.is_init = &o42a_fld_obj_is_init,
-	}
+	},
+	[O42A_FLD_DEP] = {// Local dependency field.
+		.propagate = &o42a_fld_obj_reset,
+		.inherit = &o42a_fld_dep_copy,
+		.mark = &o42a_fld_mark_obj,
+		.sweep = &o42a_fld_sweep_none,
+		.is_init = &o42a_fld_obj_is_init,
+	},
+
 };
 
 

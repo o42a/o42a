@@ -22,6 +22,8 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
+import java.util.Collection;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
@@ -111,7 +113,14 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	}
 
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
-		for (DepIR dep : sample.ir(getGenerator()).existingDeps()) {
+
+		final Collection<DepIR> deps =
+				sample.ir(getGenerator())
+				.typeBodies()
+				.getMainBodyIR()
+				.getDeps();
+
+		for (DepIR dep : deps) {
 			fillDep(dirs, host, dep.getDep());
 		}
 	}

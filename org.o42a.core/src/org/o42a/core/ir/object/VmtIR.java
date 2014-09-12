@@ -74,7 +74,7 @@ public class VmtIR extends Struct<VmtIROp> {
 				VMT_IR_CHAIN_TYPE,
 				new VmtTerminator(data));
 		for (ObjectIRBody bodyIR : getObjectIR().bodies()) {
-			for (Fld<?> fld : bodyIR.getDeclaredFields()) {
+			for (Fld<?> fld : bodyIR.getFields()) {
 				fld.allocateMethods(data);
 			}
 		}
@@ -86,7 +86,7 @@ public class VmtIR extends Struct<VmtIROp> {
 		.setConstant(true)
 		.setLowLevel(true).setValue(() -> layout(getGenerator()).size());
 		for (ObjectIRBody bodyIR : getObjectIR().bodies()) {
-			for (Fld<?> fld : bodyIR.getDeclaredFields()) {
+			for (Fld<?> fld : bodyIR.getFields()) {
 				fld.fillMethods();
 			}
 		}

@@ -25,9 +25,11 @@ import java.util.LinkedHashMap;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -138,6 +140,10 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 		final ObjectIRBody bodyIR = findBodyIR(origin);
 
 		return bodyIR != null ? bodyIR.findFld(memberKey) : null;
+	}
+
+	public final DepIR dep(Dep dep) {
+		return bodyIR(dep.getDeclaredIn()).dep(dep);
 	}
 
 	void allocate() {

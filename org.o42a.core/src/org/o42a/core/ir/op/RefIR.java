@@ -21,8 +21,7 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathIR;
 
@@ -52,8 +51,8 @@ public final class RefIR extends PathIR implements RefTargetIR {
 	}
 
 	@Override
-	public RefIROp op(Code code, DepIR depIR, DataRecOp data) {
-		return new RefIROp(this, targetIR().op(code, depIR, data));
+	public RefIROp op(Code code, DepOp dep) {
+		return new RefIROp(this, targetIR().op(code, dep));
 	}
 
 	@Override

@@ -36,6 +36,10 @@ public interface FldIR {
 
 	Obj getDeclaredIn();
 
+	default Generator getGenerator() {
+		return getBodyIR().getGenerator();
+	}
+
 	default ObjectIR getObjectIR() {
 		return getBodyIR().getObjectIR();
 	}

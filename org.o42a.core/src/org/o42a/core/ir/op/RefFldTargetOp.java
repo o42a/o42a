@@ -23,30 +23,31 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.object.Obj;
 
 
-public abstract class AbstractRefFldTargetOp implements RefTargetOp {
+public abstract class RefFldTargetOp implements RefTargetOp {
 
-	private final AbstractRefFldTargetIR ir;
-	private final DataRecOp ptr;
+	private final RefTargetIR ir;
+	private final DepOp dep;
 
-	public AbstractRefFldTargetOp(AbstractRefFldTargetIR ir, DataRecOp ptr) {
+	public RefFldTargetOp(RefTargetIR ir, DepOp dep) {
 		this.ir = ir;
-		this.ptr = ptr;
+		this.dep = dep;
 	}
 
-	public final AbstractRefFldTargetIR ir() {
+	public final RefTargetIR ir() {
 		return this.ir;
 	}
 
 	@Override
-	public final DataRecOp ptr() {
-		return this.ptr;
+	public final DumpablePtrOp<?> ptr() {
+		return this.dep.ptr();
 	}
 
 	public abstract Obj getWellKnownOwner();
@@ -63,7 +64,7 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 				tempObjHolder(depDirs.getAllocator()));
 		final Block code = depDirs.code();
 
-		ptr().store(code, object.toData(null, code));
+		this.dep.op().object(code).store(code, object.toData(null, code));
 
 		if (noDep.exists()) {
 
@@ -71,7 +72,7 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 			final ObjectIR noneIR =
 					builder.getContext().getNone().ir(builder.getGenerator());
 
-			ptr().store(
+			this.dep.op().object(noDep).store(
 					noDep,
 					noneIR.op(builder, noDep).toData(null, noDep));
 			noDep.go(code.tail());
@@ -85,7 +86,9 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 
 		final Block code = dirs.code();
 
-		ptr().store(code, copyObject(dirs, store).toData(null, code));
+		this.dep.op().object(code).store(
+				code,
+				copyObject(dirs, store).toData(null, code));
 	}
 
 	@Override
@@ -94,7 +97,7 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 		final Block code = dirs.code();
 		final ObjectOp owner = anonymousObject(
 				dirs,
-				ptr().load(null, code),
+				this.dep.op().object(code).load(null, code),
 				getWellKnownOwner());
 
 		return fldOf(dirs, owner);
@@ -102,10 +105,10 @@ public abstract class AbstractRefFldTargetOp implements RefTargetOp {
 
 	@Override
 	public String toString() {
-		if (this.ptr == null) {
+		if (this.dep == null) {
 			return super.toString();
 		}
-		return this.ptr.toString();
+		return this.dep.toString();
 	}
 
 	protected abstract TargetOp fldOf(CodeDirs dirs, ObjectOp owner);

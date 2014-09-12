@@ -33,6 +33,8 @@ enum o42a_fld_kind {
 
 	O42A_FLD_OWNER = 3,
 
+	O42A_FLD_DEP = 4,
+
 };
 
 

@@ -22,19 +22,22 @@ package org.o42a.core.ir.object;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.type.Derivative;
 
 
@@ -44,8 +47,10 @@ public final class ObjectIRBody {
 	private final Obj sampleDeclaration;
 	private final Obj closestAscendant;
 
-	private final ArrayList<Fld<?>> fieldList = new ArrayList<>();
-	private final HashMap<MemberKey, Fld<?>> fieldMap = new HashMap<>();
+	private final LinkedHashMap<MemberKey, Fld<?>> fields =
+			new LinkedHashMap<>();
+	private final LinkedHashMap<Dep, DepIR> deps =
+			new LinkedHashMap<>();
 
 	ObjectIRBody(ObjectIRBodies bodies) {
 		this.bodies = bodies;
@@ -89,9 +94,12 @@ public final class ObjectIRBody {
 		return new ObjectIRBody(inheritantBodies, getSampleDeclaration());
 	}
 
-	public final List<Fld<?>> getDeclaredFields() {
-		ensureFieldsAllocated();
-		return this.fieldList;
+	public final Collection<Fld<?>> getFields() {
+		return fields().values();
+	}
+
+	public final Collection<DepIR> getDeps() {
+		return deps().values();
 	}
 
 	public final Fld<?> fld(MemberKey memberKey) {
@@ -108,9 +116,14 @@ public final class ObjectIRBody {
 		return fields().get(memberKey);
 	}
 
-	private HashMap<MemberKey, Fld<?>> fields() {
-		ensureFieldsAllocated();
-		return this.fieldMap;
+	public final DepIR dep(Dep dep) {
+
+		final DepIR ir = deps().get(dep);
+
+		assert ir != null :
+			dep + " not found in " + this;
+
+		return ir;
 	}
 
 	final void allocate(SubData<?> data) {
@@ -118,8 +131,17 @@ public final class ObjectIRBody {
 	}
 
 	final void declareFld(Fld<?> fld) {
-		this.fieldList.add(fld);
-		this.fieldMap.put(fld.getKey(), fld);
+		this.fields.put(fld.getKey(), fld);
+	}
+
+	private HashMap<MemberKey, Fld<?>> fields() {
+		ensureFieldsAllocated();
+		return this.fields;
+	}
+
+	private LinkedHashMap<Dep, DepIR> deps() {
+		ensureFieldsAllocated();
+		return this.deps;
 	}
 
 	private void ensureFieldsAllocated() {
@@ -128,6 +150,7 @@ public final class ObjectIRBody {
 
 	private final void allocateFields(ObjectIRBodyData data) {
 		allocateFieldsDeclaredIn(data, getSampleDeclaration());
+		allocateDepsDeclaredIn(data, getSampleDeclaration());
 	}
 
 	private void allocateFieldsDeclaredIn(
@@ -202,6 +225,30 @@ public final class ObjectIRBody {
 		}
 
 		return true;
+	}
+
+	private void allocateDepsDeclaredIn(
+			ObjectIRBodyData data,
+			Obj ascendant) {
+
+		final Analyzer analyzer = getGenerator().getAnalyzer();
+
+		for (Dep dep : ascendant.deps()) {
+			if (!dep.exists(analyzer)) {
+				continue;
+			}
+
+			final DepIR depIR = new DepIR(this, dep);
+
+			depIR.allocate(data);
+			this.deps.put(dep, depIR);
+		}
+
+		for (Derivative derivative : ascendant.type().allDerivatives()) {
+			if (derivative.isSample()) {
+				allocateDepsDeclaredIn(data, derivative.getDerivedObject());
+			}
+		}
 	}
 
 	private String fieldNotFound(MemberKey memberKey) {

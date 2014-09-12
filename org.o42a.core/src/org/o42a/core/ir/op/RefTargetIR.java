@@ -20,14 +20,13 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.dep.DepOp;
 
 
 public interface RefTargetIR {
 
 	boolean isOmitted();
 
-	RefTargetOp op(Code code, DepIR depIR, DataRecOp data);
+	RefTargetOp op(Code code, DepOp dep);
 
 }

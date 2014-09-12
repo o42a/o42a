@@ -19,25 +19,17 @@
 */
 package org.o42a.core.ir.object;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static org.o42a.core.ir.object.type.ObjectDescIR.allocateDescIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
-import java.util.*;
-
-import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.type.ObjectDescIR;
 import org.o42a.core.ir.value.type.ValueIR;
-import org.o42a.core.object.Deps;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
@@ -52,8 +44,6 @@ public class ObjectIR {
 	private ObjectValueIR objectValueIR;
 	private ObjectIRBodies typeBodies;
 	private ObjectIRBodies bodies;
-	private List<DepIR> existingDeps;
-	private Map<Dep, DepIR> allDeps;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
@@ -190,59 +180,9 @@ public class ObjectIR {
 				.op(builder, this);
 	}
 
-	public final List<DepIR> existingDeps() {
-		deps();
-		return this.existingDeps;
-	}
-
-	public final DepIR dep(Dep dep) {
-
-		final DepIR depIR = deps().get(dep);
-
-		assert depIR != null :
-			"Dependency `" + dep + "` is not present in `" + this + '`';
-
-		return depIR;
-	}
-
 	@Override
 	public String toString() {
 		return this.object + " IR";
-	}
-
-	private Map<Dep, DepIR> deps() {
-		if (this.allDeps != null) {
-			return this.allDeps;
-		}
-
-		final Deps deps = getObject().deps();
-		final int size = deps.size();
-
-		if (size == 0) {
-			this.existingDeps = emptyList();
-			return this.allDeps = emptyMap();
-		}
-
-		final Analyzer analyzer = getGenerator().getAnalyzer();
-		final IdentityHashMap<Dep, DepIR> irs = new IdentityHashMap<>(size);
-		final ArrayList<DepIR> existing = new ArrayList<>(size);
-
-		for (Dep dep : deps) {
-			if (!dep.exists(analyzer)) {
-				continue;
-			}
-
-			final DepIR depIR = new DepIR(this, dep, existing.size());
-
-			irs.put(dep, depIR);
-			if (!depIR.isOmitted()) {
-				existing.add(depIR);
-			}
-		}
-
-		this.existingDeps = existing;
-
-		return this.allDeps = irs;
 	}
 
 }
