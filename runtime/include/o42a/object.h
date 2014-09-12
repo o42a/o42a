@@ -148,9 +148,6 @@ struct o42a_obj_data {
 	 */
 	struct o42a_fld_ctr *fld_ctrs;
 
-	/** Relative pointer to the list of run-time dependencies. */
-	o42a_rlist_t deps;
-
 };
 
 /**
@@ -398,13 +395,6 @@ typedef struct o42a_obj_ctr {
 	 */
 	o42a_val_t value;
 
-	/**
-	 * The number of run-time dependencies of newly constructed object.
-	 *
-	 * Ignored when sample not specified.
-	 */
-	uint32_t num_deps;
-
 } o42a_obj_ctr_t;
 
 
@@ -442,7 +432,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[12];
+	o42a_dbg_field_info_t fields[11];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
@@ -453,7 +443,7 @@ extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctr {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[10];
+	o42a_dbg_field_info_t fields[9];
 } _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {

@@ -157,7 +157,7 @@ public final class ObjOp extends ObjectOp {
 
 		final CodeDirs subDirs = dirs.begin(DEP_ID, dep.toString());
 		final Code code = subDirs.code();
-		final DepIR ir = getObjectIR().dep(dep);
+		final DepIR ir = getObjectIR().bodies().dep(dep);
 		final ObjOp host = cast(
 				DEP_HOST_ID.sub(dep),
 				subDirs,

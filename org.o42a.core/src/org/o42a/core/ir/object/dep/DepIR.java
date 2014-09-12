@@ -21,37 +21,44 @@ package org.o42a.core.ir.object.dep;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.field.FldKind;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.RefIR;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
-public class DepIR {
+public class DepIR implements FldIR {
 
-	private final ObjectIR objectIR;
+	public static final Type DEP_IR = new Type();
+
+	private final ObjectIRBody bodyIR;
 	private final Dep dep;
 	private final RefIR refIR;
-	private final int index;
+	private Type instance;
 
-	public DepIR(ObjectIR objectIR, Dep dep, int index) {
-		assert dep.exists(objectIR.getGenerator().getAnalyzer()) :
+	public DepIR(ObjectIRBody bodyIR, Dep dep) {
+		assert dep.exists(bodyIR.getGenerator().getAnalyzer()) :
 			dep + " does not exist";
-		this.objectIR = objectIR;
+		this.bodyIR = bodyIR;
 		this.dep = dep;
-		this.index = index;
 		this.refIR = dep.ref().ir(getGenerator());
-	}
-
-	public final Generator getGenerator() {
-		return getObjectIR().getGenerator();
 	}
 
 	public final Dep getDep() {
 		return this.dep;
 	}
 
+	@Override
 	public final ID getId() {
 		return getDep().toID();
 	}
@@ -60,12 +67,43 @@ public class DepIR {
 		return this.refIR.isOmitted();
 	}
 
-	public final ObjectIR getObjectIR() {
-		return this.objectIR;
+	@Override
+	public final FldKind getKind() {
+		return FldKind.DEP;
 	}
 
-	public final int getIndex() {
-		return this.index;
+	@Override
+	public final Obj getDeclaredIn() {
+		return getDep().getDeclaredIn();
+	}
+
+	@Override
+	public final ObjectIRBody getBodyIR() {
+		return this.bodyIR;
+	}
+
+	public final Type getInstance() {
+		return this.instance;
+	}
+
+	@Override
+	public final Ptr<?> pointer(Generator generator) {
+		return this.instance.pointer(generator);
+	}
+
+	@Override
+	public final Data<?> data(Generator generator) {
+		return this.instance.data(generator);
+	}
+
+	public final void allocate(ObjectIRBodyData data) {
+		if (isOmitted()) {
+			return;
+		}
+		this.instance = data.getData().addInstance(
+				getId(),
+				DEP_IR,
+				instance -> instance.object().setNull());
 	}
 
 	public final DepOp op(Code code, ObjectOp host) {
@@ -82,6 +120,52 @@ public class DepIR {
 
 	final RefIR refIR() {
 		return this.refIR;
+	}
+
+	public static final class Type extends org.o42a.codegen.data.Type<Op> {
+
+		private DataRec object;
+
+		private Type() {
+			super(ID.rawId("o42a_fld_dep"));
+		}
+
+		public final DataRec object() {
+			return this.object;
+		}
+
+		@Override
+		public Op op(StructWriter<Op> writer) {
+			return new Op(writer);
+		}
+
+		@Override
+		protected void allocate(SubData<Op> data) {
+			this.object = data.addDataPtr("object");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.DEP.code());
+		}
+
+	}
+
+	public static final class Op extends StructOp<Op> {
+
+		private Op(StructWriter<Op> writer) {
+			super(writer);
+		}
+
+		@Override
+		public Type getType() {
+			return (Type) super.getType();
+		}
+
+		public final DataRecOp object(Code code) {
+			return ptr(null, code, getType().object());
+		}
+
 	}
 
 }

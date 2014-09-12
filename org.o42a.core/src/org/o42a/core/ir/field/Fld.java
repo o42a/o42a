@@ -41,10 +41,6 @@ public abstract class Fld<F extends Fld.Op<F>> implements FldIR {
 	private Type<F> instance;
 	private byte omitted;
 
-	public final Generator getGenerator() {
-		return getBodyIR().getGenerator();
-	}
-
 	@Override
 	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;

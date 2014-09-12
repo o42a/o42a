@@ -174,10 +174,6 @@ public class CtrOp extends IROp {
 						code,
 						valueIR.def().get().op(null, code));
 			}
-
-			ptr.numDeps(code).store(
-					code,
-					code.int32(sampleIR.existingDeps().size()));
 		}
 
 		if (isEager()) {
@@ -191,10 +187,6 @@ public class CtrOp extends IROp {
 			final ValOp result = ancestor.value().writeValue(eagerDirs);
 
 			value.store(code, result);
-
-			assert !isExplicitEager()
-					|| sample.ir(getGenerator()).existingDeps().isEmpty() :
-				"Explicitly eager object has run time dependencies";
 
 			eagerDirs.done();
 		}
@@ -306,10 +298,6 @@ public class CtrOp extends IROp {
 			return struct(null, code, getType().value());
 		}
 
-		public final Int32recOp numDeps(Code code) {
-			return int32(null, code, getType().numDeps());
-		}
-
 		public final CtrOp op(CodeBuilder builder) {
 			return new CtrOp(builder, code -> this);
 		}
@@ -327,7 +315,6 @@ public class CtrOp extends IROp {
 		private FuncRec<ObjectValueFn> defFunc;
 		private StructRec<VmtIRChain.Op> vmtc;
 		private ValType value;
-		private Int32rec numDeps;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ctr_t"));
@@ -378,10 +365,6 @@ public class CtrOp extends IROp {
 			return this.value;
 		}
 
-		public final Int32rec numDeps() {
-			return this.numDeps;
-		}
-
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.owner = data.addDataPtr("owner");
@@ -395,7 +378,6 @@ public class CtrOp extends IROp {
 			this.defFunc = data.addFuncPtr("def_f", OBJECT_VALUE);
 			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 			this.value = data.addInstance(ID.rawId("value"), VAL_TYPE);
-			this.numDeps = data.addInt32("num_deps");
 		}
 
 		@Override

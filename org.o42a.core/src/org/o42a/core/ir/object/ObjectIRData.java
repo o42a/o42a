@@ -28,14 +28,11 @@ import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.VmtIRChain.Op;
-import org.o42a.core.ir.object.impl.ObjectIRDeps;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFn;
-import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
@@ -56,7 +53,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private ValType value;
 	private AnyRec resumeFrom;
 	private StructRec<ObjectIRDescOp> desc;
-	private RelList<Ptr<DataOp>> deps;
 
 	private ObjectIRData() {
 		super(ID.rawId("o42a_obj_data_t"));
@@ -95,10 +91,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.desc;
 	}
 
-	public final RelList<Ptr<DataOp>> deps() {
-		return this.deps;
-	}
-
 	@Override
 	public ObjectIRDataOp op(StructWriter<ObjectIRDataOp> writer) {
 		return new ObjectIRDataOp(writer);
@@ -117,7 +109,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.resumeFrom = data.addPtr("resume_from");
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
-		this.deps = new ObjectIRDeps().allocate(data, "deps");
 	}
 
 	@Override

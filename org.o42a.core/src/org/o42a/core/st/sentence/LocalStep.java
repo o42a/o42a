@@ -27,11 +27,10 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataPtrOp;
-import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.LocalOp;
-import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
@@ -306,10 +305,10 @@ final class LocalStep extends Step {
 		}
 
 		@Override
-		public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
+		public RefTargetOp op(Code code, DepOp dep) {
 			return new LocalRefTargetOp(
 					this,
-					this.targetIR.op(code, depIR, data));
+					this.targetIR.op(code, dep));
 		}
 
 		@Override

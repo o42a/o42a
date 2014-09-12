@@ -25,11 +25,11 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.dep.DepIR;
+import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.*;
 
 
@@ -49,27 +49,23 @@ final class DefaultRefTargetIR implements RefTargetIR {
 	}
 
 	@Override
-	public RefTargetOp op(Code code, DepIR depIR, DataRecOp data) {
-
-		final DataRecOp ptr =
-				data.offset(null, code, code.int32(depIR.getIndex()));
-
-		return new DefaultRefTargetOp(this, ptr);
+	public RefTargetOp op(Code code, DepOp dep) {
+		return new DefaultRefTargetOp(this, dep);
 	}
 
 	private static final class DefaultRefTargetOp implements RefTargetOp {
 
 		private final DefaultRefTargetIR ir;
-		private final DataRecOp ptr;
+		private final DepOp dep;
 
-		DefaultRefTargetOp(DefaultRefTargetIR ir, DataRecOp ptr) {
-			this.ptr = ptr;
+		DefaultRefTargetOp(DefaultRefTargetIR ir, DepOp dep) {
+			this.dep = dep;
 			this.ir = ir;
 		}
 
 		@Override
-		public final DataRecOp ptr() {
-			return this.ptr;
+		public final DumpablePtrOp<?> ptr() {
+			return this.dep.ptr();
 		}
 
 		@Override
@@ -82,7 +78,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 			final DataOp object = createObject(depDirs, host);
 			final Block code = depDirs.code();
 
-			ptr().store(code, object);
+			this.dep.op().object(code).store(code, object);
 
 			if (noDep.exists()) {
 
@@ -91,7 +87,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 						builder.getContext().getNone().ir(
 								builder.getGenerator());
 
-				ptr().store(
+				this.dep.op().object(noDep).store(
 						noDep,
 						noneIR.op(builder, noDep).toData(null, noDep));
 				noDep.go(code.tail());
@@ -108,23 +104,26 @@ final class DefaultRefTargetIR implements RefTargetIR {
 					dirs,
 					tempObjHolder(dirs.getAllocator()));
 
-			ptr().store(code, object.toData(null, code));
+			this.dep.op().object(code).store(code, object.toData(null, code));
 		}
 
 		@Override
 		public TargetOp loadTarget(CodeDirs dirs) {
+
+			final Block code = dirs.code();
+
 			return anonymousObject(
 					dirs,
-					ptr().load(null, dirs.code()),
+					this.dep.op().object(code).load(null, code),
 					this.ir.refIR.ref().getResolution().resolveTarget());
 		}
 
 		@Override
 		public String toString() {
-			if (this.ptr == null) {
+			if (this.dep == null) {
 				return super.toString();
 			}
-			return this.ptr.toString();
+			return this.dep.toString();
 		}
 
 		private DataOp createObject(CodeDirs dirs, HostOp host) {

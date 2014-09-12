@@ -19,11 +19,9 @@
 */
 package org.o42a.core.ir.object.dep;
 
-import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.DataPtrOp;
-import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.core.ir.CodeBuilder;
+import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -31,50 +29,47 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.util.string.ID;
 
 
-public class DepOp implements TargetOp, HostValueOp {
+public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 
 	public static final ID DEP_ID = ID.id("dep");
 
 	private final ObjectOp host;
 	private final DepIR depIR;
-	private final RefIROp ptr;
+	private final DumpablePtrOp<?> ptr;
+	private final DepIR.Op op;
+	private final RefIROp ref;
 
 	DepOp(Code code, ObjectOp host, DepIR depIR) {
-		this.depIR = depIR;
+		super(host.getBuilder());
 		this.host = host;
-
-		final DataRecOp deps = host.objectData(code).ptr(code).loadDeps(code);
-
-		this.ptr = depIR.refIR().op(code, depIR, deps);
+		this.depIR = depIR;
+		if (depIR.isOmitted()) {
+			this.ptr = host.ptr(code);
+			this.op = null;
+		} else {
+			this.ptr = this.op =
+					host.ptr(code).field(code, depIR.getInstance());
+		}
+		this.ref = depIR.refIR().op(code, this);
 	}
 
 	@Override
-	public DataPtrOp<?> ptr() {
-		return this.ptr.ptr();
+	public DumpablePtrOp<?> ptr() {
+		return this.ptr;
+	}
+
+	public final DepIR.Op op() {
+		assert this.op != null :
+			this + " is omitted";
+		return this.op;
 	}
 
 	@Override
 	public ID getId() {
 		return ptr().getId();
-	}
-
-	@Override
-	public Generator getGenerator() {
-		return host().getGenerator();
-	}
-
-	@Override
-	public CodeBuilder getBuilder() {
-		return host().getBuilder();
-	}
-
-	@Override
-	public CompilerContext getContext() {
-		return host().getContext();
 	}
 
 	public final Dep getDep() {
@@ -140,10 +135,15 @@ public class DepOp implements TargetOp, HostValueOp {
 	}
 
 	public void fill(CodeDirs dirs, HostOp host) {
-		dirs.code().debug(
-				"Dep #" + depIR().getIndex()
-				+ " on " + getDep().ref());
-		this.ptr.storeTarget(dirs, host);
+		if (depIR().isOmitted()) {
+			return;
+		}
+
+		final Block code = dirs.code();
+
+		this.ref.storeTarget(dirs, host);
+		code.debug("Depends on " + getDep().ref());
+		code.dump(getDep() + " := ", this);
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class DepOp implements TargetOp, HostValueOp {
 	}
 
 	private TargetOp loadDep(CodeDirs dirs) {
-		return this.ptr.loadTarget(dirs);
+		return this.ref.loadTarget(dirs);
 	}
 
 	private static final class DepStoreOp implements TargetStoreOp {
