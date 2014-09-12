@@ -47,8 +47,7 @@ public final class ObjectIRBody {
 	private final Obj sampleDeclaration;
 	private final Obj closestAscendant;
 
-	private final LinkedHashMap<MemberKey, Fld<?, ?>> fields =
-			new LinkedHashMap<>();
+	private LinkedHashMap<MemberKey, Fld<?, ?>> fields;
 	private LinkedHashMap<Dep, DepIR> deps;
 
 	ObjectIRBody(ObjectIRBodies bodies) {
@@ -126,16 +125,16 @@ public final class ObjectIRBody {
 	}
 
 	final void allocate(SubData<?> data) {
-		allocateFieldsDeclaredIn(data, getSampleDeclaration());
+		allocateFields(data);
 		allocateDeps(data);
 	}
 
-	final void declareFld(Fld<?, ?> fld) {
-		this.fields.put(fld.getKey(), fld);
-	}
-
 	private HashMap<MemberKey, Fld<?, ?>> fields() {
-		ensureFieldsAllocated();
+		if (this.fields != null) {
+			return this.fields;
+		}
+		this.fields = new LinkedHashMap<>();
+		createFieldsDeclaredIn(getSampleDeclaration());
 		return this.fields;
 	}
 
@@ -148,17 +147,19 @@ public final class ObjectIRBody {
 		return this.deps;
 	}
 
-	private void ensureFieldsAllocated() {
-		bodies().getStruct().allocate();
-	}
-
 	private void allocateDeps(SubData<?> data) {
 		for (DepIR dep : deps().values()) {
 			dep.allocate(data);
 		}
 	}
 
-	private void allocateFieldsDeclaredIn(SubData<?> data, Obj ascendant) {
+	private void allocateFields(SubData<?> data) {
+		for (Fld<?, ?> fld : fields().values()) {
+			fld.allocate(data);
+		}
+	}
+
+	private void createFieldsDeclaredIn(Obj ascendant) {
 
 		final Generator generator = getGenerator();
 		final Obj object = bodies().getObject();
@@ -193,7 +194,6 @@ public final class ObjectIRBody {
 
 				if (fld != null) {
 					this.fields.put(fld.getKey(), fld);
-					fld.allocate(data);
 				}
 			} else {
 
@@ -211,14 +211,13 @@ public final class ObjectIRBody {
 
 				if (fld != null) {
 					this.fields.put(fld.getKey(), fld);
-					fld.allocate(data);
 				}
 			}
 		}
 
 		for (Derivative derivative : ascendant.type().allDerivatives()) {
 			if (derivative.isSample()) {
-				allocateFieldsDeclaredIn(data, derivative.getDerivedObject());
+				createFieldsDeclaredIn(derivative.getDerivedObject());
 			}
 		}
 	}

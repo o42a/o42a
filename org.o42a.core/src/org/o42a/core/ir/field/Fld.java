@@ -85,6 +85,13 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	@Override
 	public T getInstance() {
+		assert !isStateless() :
+			this + " is stateless";
+		if (this.instance == null) {
+			getBodyIR().bodies().getStruct().allocate();
+			assert this.instance != null :
+				this + " not allocated";
+		}
 		return this.instance;
 	}
 
@@ -112,7 +119,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	protected abstract boolean mayOmit();
 
-	public void allocate(SubData<?> data) {
+	public final void allocate(SubData<?> data) {
 		if (isStateless()) {
 			return;
 		}
