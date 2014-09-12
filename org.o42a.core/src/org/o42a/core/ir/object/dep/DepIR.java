@@ -28,7 +28,9 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjectIRBodies;
+import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.RefIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
@@ -82,6 +84,11 @@ public class DepIR implements FldIR<DepIR.Op, DepIR.Type> {
 
 	@Override
 	public final Type getInstance() {
+		assert !isOmitted() :
+			this + " is omitted";
+		if (this.instance == null) {
+			getBodyIR().bodies().getStruct().allocate();
+		}
 		return this.instance;
 	}
 
@@ -90,11 +97,11 @@ public class DepIR implements FldIR<DepIR.Op, DepIR.Type> {
 		return bodies.dep(getDep());
 	}
 
-	public final void allocate(ObjectIRBodyData data) {
+	public final void allocate(SubData<?> data) {
 		if (isOmitted()) {
 			return;
 		}
-		this.instance = data.getData().addInstance(
+		this.instance = data.addInstance(
 				getId(),
 				DEP_IR,
 				instance -> instance.object().setNull());
