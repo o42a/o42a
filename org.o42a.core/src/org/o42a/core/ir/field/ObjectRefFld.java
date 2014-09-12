@@ -31,8 +31,10 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
-public abstract class ObjectRefFld<F extends RefFld.Op<F>>
-		extends RefFld<F, ObjectRefFn> {
+public abstract class ObjectRefFld<
+		F extends RefFld.Op<F>,
+		T extends RefFld.Type<F>>
+				extends RefFld<F, T, ObjectRefFn> {
 
 	private FuncPtr<ObjectRefFn> cloneFunc;
 

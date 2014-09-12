@@ -53,9 +53,9 @@ public final class ObjectFieldIR extends FieldIR {
 	}
 
 	@Override
-	protected RefFld<?, ?> declare(ObjectIRBodyData data) {
+	protected RefFld<?, ?, ?> declare(ObjectIRBodyData data) {
 
-		final RefFld<?, ?> linkFld = declareLink(data, false);
+		final RefFld<?, ?, ?> linkFld = declareLink(data, false);
 
 		if (linkFld != null) {
 			return linkFld;
@@ -69,9 +69,9 @@ public final class ObjectFieldIR extends FieldIR {
 	}
 
 	@Override
-	protected Fld<?> declareDummy(ObjectIRBodyData data) {
+	protected Fld<?, ?> declareDummy(ObjectIRBodyData data) {
 
-		final RefFld<?, ?> linkFld = declareLink(data, true);
+		final RefFld<?, ?, ?> linkFld = declareLink(data, true);
 
 		if (linkFld != null) {
 			return linkFld;
@@ -84,7 +84,7 @@ public final class ObjectFieldIR extends FieldIR {
 		return fld;
 	}
 
-	private RefFld<?, ?> declareLink(ObjectIRBodyData data, boolean dummy) {
+	private RefFld<?, ?, ?> declareLink(ObjectIRBodyData data, boolean dummy) {
 
 		final Field field = getField();
 		final Obj object = field.toObject();
@@ -127,7 +127,7 @@ public final class ObjectFieldIR extends FieldIR {
 			target = defTarget.getRef().getResolution().toObject();
 		}
 
-		final RefFld<?, ?> fld;
+		final RefFld<?, ?, ?> fld;
 
 		if (linkType == LinkValueType.LINK) {
 			if (eager) {

@@ -93,7 +93,7 @@ public final class AnonymousObjOp extends ObjectOp {
 	}
 
 	@Override
-	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 
 		final CodeDirs subDirs =
 				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
@@ -102,7 +102,7 @@ public final class AnonymousObjOp extends ObjectOp {
 				hostId,
 				subDirs,
 				memberKey.getOrigin().toObject());
-		final FldOp<?> op = ascendant.field(subDirs, memberKey);
+		final FldOp<?, ?> op = ascendant.field(subDirs, memberKey);
 
 		if (!op.isOmitted()) {
 			subDirs.code().dumpName("Field: ", op);

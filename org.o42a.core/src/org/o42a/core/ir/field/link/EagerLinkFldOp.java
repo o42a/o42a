@@ -21,9 +21,9 @@ package org.o42a.core.ir.field.link;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
-import org.o42a.core.ir.field.RefFldOp;
+import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.VmtIRChain.Op;
@@ -35,7 +35,8 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public class EagerLinkFldOp extends RefFldOp<StatefulOp, ObjectRefFn> {
+public class EagerLinkFldOp
+		extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
 	private final StatefulOp ptr;
 
@@ -60,7 +61,7 @@ public class EagerLinkFldOp extends RefFldOp<StatefulOp, ObjectRefFn> {
 	}
 
 	@Override
-	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 		throw new UnsupportedOperationException(
 				"Eager link field has no fields");
 	}

@@ -121,7 +121,7 @@ final class MemberStep extends AbstractMemberStep {
 	@Override
 	protected RefTargetIR targetIR(RefIR refIR) {
 
-		final Fld<?> fld =
+		final Fld<?, ?> fld =
 				getMemberKey()
 				.getOrigin()
 				.toObject()
@@ -206,9 +206,9 @@ final class MemberStep extends AbstractMemberStep {
 	private static final class OmittedMemberRefTargetIR implements RefTargetIR {
 
 		private final MemberStep member;
-		private final Fld<?> fld;
+		private final Fld<?, ?> fld;
 
-		OmittedMemberRefTargetIR(MemberStep member, Fld<?> fld) {
+		OmittedMemberRefTargetIR(MemberStep member, Fld<?, ?> fld) {
 			this.member = member;
 			this.fld = fld;
 		}
@@ -237,12 +237,12 @@ final class MemberStep extends AbstractMemberStep {
 
 		private final MemberStep member;
 		private final DepOp dep;
-		private final Fld<?> fld;
+		private final Fld<?, ?> fld;
 
 		OmittedMemberRefTargetOp(
 				MemberStep member,
 				DepOp dep,
-				Fld<?> fld) {
+				Fld<?, ?> fld) {
 			this.member = member;
 			this.dep = dep;
 			this.fld = fld;
@@ -262,7 +262,7 @@ final class MemberStep extends AbstractMemberStep {
 		}
 
 		@Override
-		public FldOp<?> loadTarget(CodeDirs dirs) {
+		public FldOp<?, ?> loadTarget(CodeDirs dirs) {
 			return this.fld.op(
 					dirs.code(),
 					this.fld.getBodyIR()

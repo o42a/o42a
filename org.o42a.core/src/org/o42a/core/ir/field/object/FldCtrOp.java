@@ -53,7 +53,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		return int16(null, code, FLD_CTR_TYPE.fldKind());
 	}
 
-	public BoolOp start(Code code, FldIROp fld) {
+	public BoolOp start(Code code, FldIROp<?, ?> fld) {
 
 		final FuncPtr<FldCtrStartFn> fn =
 				code.getGenerator().externalFunction().link(
@@ -86,7 +86,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		return fn.op(null, code).call(code, host.toData(null, code), this);
 	}
 
-	public final void finish(Code code, FldIROp fld) {
+	public final void finish(Code code, FldIROp<?, ?> fld) {
 		finish(code, fld.host());
 	}
 

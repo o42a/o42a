@@ -80,7 +80,7 @@ public final class AliasField extends Field {
 		}
 
 		@Override
-		protected Fld<?> declareDummy(ObjectIRBodyData data) {
+		protected Fld<?, ?> declareDummy(ObjectIRBodyData data) {
 
 			final AliasField field = (AliasField) getField();
 			final AliasFld fld = new AliasFld(field, null);

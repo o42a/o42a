@@ -221,7 +221,7 @@ public final class OwnerField extends ObjectField {
 		}
 
 		@Override
-		protected Fld<?> declareDummy(ObjectIRBodyData data) {
+		protected Fld<?, ?> declareDummy(ObjectIRBodyData data) {
 			throw new UnsupportedOperationException(
 					"Owner field can not be dummy: " + this);
 		}

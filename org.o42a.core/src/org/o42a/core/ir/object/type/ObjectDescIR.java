@@ -169,13 +169,13 @@ public class ObjectDescIR {
 		private void allocateFieldDecls() {
 
 			final RelList<FieldDescIR> descs = getDesc().fields();
-			final Collection<Fld<?>> fields =
+			final Collection<Fld<?, ?>> fields =
 					getObjectIR()
 					.typeBodies()
 					.getMainBodyIR()
 					.getFields();
 
-			for (Fld<?> fld : fields) {
+			for (Fld<?, ?> fld : fields) {
 				if (!fld.isStateless()) {
 					descs.add(new FieldDescIR(fld));
 				}

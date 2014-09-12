@@ -33,7 +33,7 @@ import org.o42a.core.object.Obj;
 
 public abstract class FieldIRBase extends ScopeIR {
 
-	private Fld<?> fld;
+	private Fld<?, ?> fld;
 	private boolean targetAllocated;
 
 	public FieldIRBase(Generator generator, Field field) {
@@ -44,7 +44,7 @@ public abstract class FieldIRBase extends ScopeIR {
 		return getScope().toField();
 	}
 
-	public FldOp<?> field(Code code, ObjOp host) {
+	public FldOp<?, ?> field(Code code, ObjOp host) {
 		return this.fld.op(code, host);
 	}
 
@@ -70,9 +70,9 @@ public abstract class FieldIRBase extends ScopeIR {
 		}
 	}
 
-	protected abstract Fld<?> declare(ObjectIRBodyData data);
+	protected abstract Fld<?, ?> declare(ObjectIRBodyData data);
 
-	protected abstract Fld<?> declareDummy(ObjectIRBodyData data);
+	protected abstract Fld<?, ?> declareDummy(ObjectIRBodyData data);
 
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
@@ -85,7 +85,7 @@ public abstract class FieldIRBase extends ScopeIR {
 
 	void allocate(ObjectIRBodyData data) {
 
-		final Fld<?> fld = declare(data);
+		final Fld<?, ?> fld = declare(data);
 
 		if (fld == null) {
 			return;

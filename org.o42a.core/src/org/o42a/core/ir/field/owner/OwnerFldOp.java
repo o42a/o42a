@@ -37,7 +37,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 
 
-public class OwnerFldOp extends MemberFldOp<OwnerFld.Op> {
+public class OwnerFldOp extends MemberFldOp<OwnerFld.Op, OwnerFld.Type> {
 
 	private final OwnerFld.Op ptr;
 
@@ -67,7 +67,7 @@ public class OwnerFldOp extends MemberFldOp<OwnerFld.Op> {
 	}
 
 	@Override
-	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 		return scope(dirs, tempObjHolder(dirs.getAllocator()))
 				.field(dirs, memberKey);
 	}

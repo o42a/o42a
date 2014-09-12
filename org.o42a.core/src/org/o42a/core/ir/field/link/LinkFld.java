@@ -24,6 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld.StatelessOp;
+import org.o42a.core.ir.field.RefFld.StatelessType;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -33,7 +34,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
-public class LinkFld extends AbstractLinkFld<StatelessOp> {
+public class LinkFld extends AbstractLinkFld<StatelessOp, StatelessType> {
 
 	public LinkFld(Field field, Obj target) {
 		super(field, target);
@@ -45,12 +46,12 @@ public class LinkFld extends AbstractLinkFld<StatelessOp> {
 	}
 
 	@Override
-	public Type<StatelessOp> getInstance() {
+	public StatelessType getInstance() {
 		throw new UnsupportedOperationException("Field is stateless");
 	}
 
 	@Override
-	protected Type<StatelessOp> getType() {
+	protected StatelessType getType() {
 		throw new UnsupportedOperationException("Field is stateless");
 	}
 

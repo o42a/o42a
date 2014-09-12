@@ -34,9 +34,9 @@ import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
+import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -46,7 +46,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
+public class ObjFld
+		extends RefFld<StatefulOp, StatefulType, ObjectConstructorFn> {
 
 	private FuncPtr<ObjectConstructorFn> cloneFunc;
 
@@ -57,11 +58,6 @@ public class ObjFld extends RefFld<StatefulOp, ObjectConstructorFn> {
 	@Override
 	public final FldKind getKind() {
 		return FldKind.OBJ;
-	}
-
-	@Override
-	public StatefulType getInstance() {
-		return (StatefulType) super.getInstance();
 	}
 
 	@Override

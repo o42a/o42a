@@ -110,7 +110,7 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 	}
 
 	@Override
-	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 		return loadDep(dirs).field(dirs, memberKey);
 	}
 

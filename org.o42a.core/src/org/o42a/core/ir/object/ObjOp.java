@@ -128,18 +128,18 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	public FldOp<?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 
 		final CodeDirs subDirs =
 				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
 		final Code code = subDirs.code();
-		final Fld<?> fld = getObjectIR().bodies().fld(memberKey);
+		final Fld<?, ?> fld = getObjectIR().bodies().fld(memberKey);
 		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
 		final ObjOp host = cast(
 				hostId,
 				subDirs,
 				memberKey.getOrigin().toObject());
-		final FldOp<?> op = fld.op(code, host);
+		final FldOp<?, ?> op = fld.op(code, host);
 
 		if (!op.isOmitted()) {
 			code.dumpName("Field: ", op);
