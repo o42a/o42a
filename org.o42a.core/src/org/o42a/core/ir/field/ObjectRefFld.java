@@ -38,8 +38,13 @@ public abstract class ObjectRefFld<
 
 	private FuncPtr<ObjectRefFn> cloneFunc;
 
-	public ObjectRefFld(Field field, Obj target) {
-		super(field, target);
+	public ObjectRefFld(
+			ObjectIRBody bodyIR,
+			Field field,
+			boolean dummy,
+			Obj target,
+			Obj targetAscendant) {
+		super(bodyIR, field, dummy, target, targetAscendant);
 	}
 
 	@Override

@@ -53,9 +53,8 @@ public abstract class RefFld<
 	public static final ID CLONE_ID = ID.rawId("clone");
 
 	private final Obj target;
-	private Obj targetAscendant;
+	private final Obj targetAscendant;
 
-	private boolean dummy;
 	private boolean constructorBuilt;
 	private boolean targetIRAllocated;
 	private boolean filling;
@@ -65,9 +64,21 @@ public abstract class RefFld<
 	private FuncRec<C> vmtConstructor;
 	private FuncPtr<C> constructor;
 
-	public RefFld(Field field, Obj target) {
-		super(field);
+	public RefFld(
+			ObjectIRBody bodyIR,
+			Field field,
+			boolean dummy,
+			Obj target,
+			Obj targetAscendant) {
+		super(bodyIR, field, dummy);
+		assert dummy || target.assertDerivedFrom(targetAscendant);
 		this.target = target;
+		this.targetAscendant = targetAscendant;
+		if (isDummy()) {
+			this.targetIRAllocated = true;
+			this.filledFields = true;
+			this.filledAll = true;
+		}
 	}
 
 	public final Obj getTarget() {
@@ -76,25 +87,6 @@ public abstract class RefFld<
 
 	public final Obj getTargetAscendant() {
 		return this.targetAscendant;
-	}
-
-	@Override
-	public final boolean isDummy() {
-		return this.dummy;
-	}
-
-	public final void allocate(ObjectIRBodyData data, Obj targetAscendant) {
-		getTarget().assertDerivedFrom(targetAscendant);
-		this.targetAscendant = targetAscendant;
-		allocate(data);
-	}
-
-	public final void allocateDummy(ObjectIRBodyData data) {
-		this.dummy = true;
-		this.targetIRAllocated = true;
-		this.filledFields = true;
-		this.filledAll = true;
-		allocate(data);
 	}
 
 	@Override
@@ -129,7 +121,7 @@ public abstract class RefFld<
 	}
 
 	@Override
-	protected void allocate(ObjectIRBodyData data) {
+	public void allocate(ObjectIRBodyData data) {
 		super.allocate(data);
 		if (!this.targetIRAllocated) {
 			this.targetIRAllocated = isOmitted();

@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.field.Fld;
 
 
 public final class ObjectIRBodyData {
@@ -44,10 +43,6 @@ public final class ObjectIRBodyData {
 
 	public final SubData<?> getData() {
 		return this.data;
-	}
-
-	public final void declareFld(Fld<?, ?> fld) {
-		getBodyIR().declareFld(fld);
 	}
 
 	@Override

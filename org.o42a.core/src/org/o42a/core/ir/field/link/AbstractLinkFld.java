@@ -26,6 +26,7 @@ import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 import org.o42a.core.ir.field.ObjectRefFld;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjBuilder;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
@@ -40,8 +41,13 @@ public abstract class AbstractLinkFld<
 		T extends RefFld.Type<F>>
 				extends ObjectRefFld<F, T> {
 
-	public AbstractLinkFld(Field field, Obj target) {
-		super(field, target);
+	public AbstractLinkFld(
+			ObjectIRBody bodyIR,
+			Field field,
+			boolean dummy,
+			Obj target,
+			Obj targetAscendant) {
+		super(bodyIR, field, dummy, target, targetAscendant);
 	}
 
 	@Override

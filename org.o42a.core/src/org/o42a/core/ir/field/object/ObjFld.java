@@ -51,8 +51,11 @@ public class ObjFld
 
 	private FuncPtr<ObjectConstructorFn> cloneFunc;
 
-	public ObjFld(Field field) {
-		super(field, field.toObject());
+	public ObjFld(
+			ObjectIRBody bodyIR,
+			Field field,
+			boolean dummy) {
+		super(bodyIR, field, dummy, field.toObject(), field.toObject());
 	}
 
 	@Override

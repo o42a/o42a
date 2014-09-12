@@ -28,6 +28,7 @@ import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.link.EagerLinkFld;
 import org.o42a.core.ir.field.link.LinkFld;
 import org.o42a.core.ir.field.variable.VarFld;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIRBodyData;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.member.field.Field;
@@ -53,7 +54,7 @@ public final class ObjectFieldIR extends FieldIR {
 	}
 
 	@Override
-	protected RefFld<?, ?, ?> declare(ObjectIRBodyData data) {
+	protected RefFld<?, ?, ?> declareFld(ObjectIRBodyData data) {
 
 		final RefFld<?, ?, ?> linkFld = declareLink(data, false);
 
@@ -61,15 +62,15 @@ public final class ObjectFieldIR extends FieldIR {
 			return linkFld;
 		}
 
-		final ObjFld fld = new ObjFld(getField());
+		final ObjFld fld = new ObjFld(data.getBodyIR(), getField(), false);
 
-		fld.allocate(data, getField().toObject());
+		fld.allocate(data);
 
 		return fld;
 	}
 
 	@Override
-	protected Fld<?, ?> declareDummy(ObjectIRBodyData data) {
+	protected Fld<?, ?> declareDummyFld(ObjectIRBodyData data) {
 
 		final RefFld<?, ?, ?> linkFld = declareLink(data, true);
 
@@ -77,15 +78,16 @@ public final class ObjectFieldIR extends FieldIR {
 			return linkFld;
 		}
 
-		final ObjFld fld = new ObjFld(getField());
+		final ObjFld fld = new ObjFld(data.getBodyIR(), getField(), true);
 
-		fld.allocateDummy(data);
+		fld.allocate(data);
 
 		return fld;
 	}
 
 	private RefFld<?, ?, ?> declareLink(ObjectIRBodyData data, boolean dummy) {
 
+		final ObjectIRBody bodyIR = data.getBodyIR();
 		final Field field = getField();
 		final Obj object = field.toObject();
 		final LinkValueType linkType =
@@ -131,21 +133,17 @@ public final class ObjectFieldIR extends FieldIR {
 
 		if (linkType == LinkValueType.LINK) {
 			if (eager) {
-				fld = new EagerLinkFld(field, target);
+				fld = new EagerLinkFld(bodyIR, field, dummy, target, ascendant);
 			} else {
-				fld = new LinkFld(field, target);
+				fld = new LinkFld(bodyIR, field, dummy, target, ascendant);
 			}
 		} else if (linkType == LinkValueType.VARIABLE) {
-			fld = new VarFld(field, target);
+			fld = new VarFld(bodyIR, field, dummy, target, ascendant);
 		} else {
 			return null;
 		}
 
-		if (dummy) {
-			fld.allocateDummy(data);
-		} else {
-			fld.allocate(data, ascendant);
-		}
+		fld.allocate(data);
 
 		return fld;
 	}

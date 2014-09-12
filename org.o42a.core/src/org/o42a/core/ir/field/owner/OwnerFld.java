@@ -41,21 +41,25 @@ public final class OwnerFld
 
 	public static final Type SCOPE_FLD = new Type();
 
-	private Obj ascendant;
-	private ObjectIR targetIR;
+	private final Obj ascendant;
+	private final ObjectIR targetIR;
 
-	public OwnerFld(Field field) {
-		super(field);
+	public OwnerFld(ObjectIRBody bodyIR, Field field) {
+		super(bodyIR, field, false);
+
+		final Obj target = field.toObject();
+
+		this.ascendant = target;
+		if (!target.getConstructionMode().isRuntime()) {
+			this.targetIR = target.ir(bodyIR.getGenerator());
+		} else {
+			this.targetIR = null;
+		}
 	}
 
 	@Override
 	public final FldKind getKind() {
 		return FldKind.OWNER;
-	}
-
-	@Override
-	public boolean isDummy() {
-		return false;
 	}
 
 	public final Obj getAscendant() {
@@ -64,16 +68,6 @@ public final class OwnerFld
 
 	public final ObjectIR getTargetIR() {
 		return this.targetIR;
-	}
-
-	public final void declare(ObjectIRBodyData data, Obj target) {
-		this.ascendant = target;
-		if (!target.getConstructionMode().isRuntime()) {
-			this.targetIR = target.ir(data.getGenerator());
-		} else {
-			this.targetIR = null;
-		}
-		allocate(data);
 	}
 
 	@Override

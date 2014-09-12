@@ -33,9 +33,7 @@ import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.field.object.FldCtrOp;
-import org.o42a.core.ir.object.ObjBuilder;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.alias.AliasField;
@@ -45,8 +43,13 @@ import org.o42a.core.object.Obj;
 
 public class EagerLinkFld extends AbstractLinkFld<StatefulOp, StatefulType> {
 
-	public EagerLinkFld(Field field, Obj target) {
-		super(field, target);
+	public EagerLinkFld(
+			ObjectIRBody bodyIR,
+			Field field,
+			boolean dummy,
+			Obj target,
+			Obj targetAscendant) {
+		super(bodyIR, field, dummy, target, targetAscendant);
 	}
 
 	@Override

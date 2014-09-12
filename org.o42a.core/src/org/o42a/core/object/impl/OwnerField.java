@@ -210,18 +210,17 @@ public final class OwnerField extends ObjectField {
 		}
 
 		@Override
-		protected OwnerFld declare(ObjectIRBodyData data) {
+		protected OwnerFld declareFld(ObjectIRBodyData data) {
 
-			final OwnerFld fld = new OwnerFld(getField());
-			final Obj target = getField().toObject();
+			final OwnerFld fld = new OwnerFld(data.getBodyIR(), getField());
 
-			fld.declare(data, target);
+			fld.allocate(data);
 
 			return fld;
 		}
 
 		@Override
-		protected Fld<?, ?> declareDummy(ObjectIRBodyData data) {
+		protected Fld<?, ?> declareDummyFld(ObjectIRBodyData data) {
 			throw new UnsupportedOperationException(
 					"Owner field can not be dummy: " + this);
 		}

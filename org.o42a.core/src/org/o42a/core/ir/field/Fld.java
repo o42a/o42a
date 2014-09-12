@@ -36,9 +36,15 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	public static final ID FIELD_ID = ID.id("field");
 	public static final ID FLD_ID = ID.id("fld");
 
-	private ObjectIRBody bodyIR;
+	private final ObjectIRBody bodyIR;
+	private final boolean dummy;
 	private T instance;
 	private byte omitted;
+
+	public Fld(ObjectIRBody bodyIR, boolean dummy) {
+		this.bodyIR = bodyIR;
+		this.dummy = dummy;
+	}
 
 	@Override
 	public final ObjectIRBody getBodyIR() {
@@ -63,7 +69,9 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return getKind().isStateless() || isOmitted();
 	}
 
-	public abstract boolean isDummy();
+	public final boolean isDummy() {
+		return this.dummy;
+	}
 
 	@Override
 	public abstract FldKind getKind();
@@ -104,9 +112,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	protected abstract boolean mayOmit();
 
-	protected void allocate(ObjectIRBodyData data) {
-		this.bodyIR = data.getBodyIR();
-		data.declareFld(this);
+	public void allocate(ObjectIRBodyData data) {
 		if (isStateless()) {
 			return;
 		}
