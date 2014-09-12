@@ -49,8 +49,7 @@ public final class ObjectIRBody {
 
 	private final LinkedHashMap<MemberKey, Fld<?, ?>> fields =
 			new LinkedHashMap<>();
-	private final LinkedHashMap<Dep, DepIR> deps =
-			new LinkedHashMap<>();
+	private LinkedHashMap<Dep, DepIR> deps;
 
 	ObjectIRBody(ObjectIRBodies bodies) {
 		this.bodies = bodies;
@@ -139,8 +138,12 @@ public final class ObjectIRBody {
 		return this.fields;
 	}
 
-	private LinkedHashMap<Dep, DepIR> deps() {
-		ensureFieldsAllocated();
+	private final LinkedHashMap<Dep, DepIR> deps() {
+		if (this.deps != null) {
+			return this.deps;
+		}
+		this.deps = new LinkedHashMap<>();
+		createDepsDeclaredIn(getSampleDeclaration());
 		return this.deps;
 	}
 
@@ -150,7 +153,13 @@ public final class ObjectIRBody {
 
 	private final void allocateFields(ObjectIRBodyData data) {
 		allocateFieldsDeclaredIn(data, getSampleDeclaration());
-		allocateDepsDeclaredIn(data, getSampleDeclaration());
+		allocateDeps(data.getData());
+	}
+
+	private void allocateDeps(SubData<?> data) {
+		for (DepIR dep : deps().values()) {
+			dep.allocate(data);
+		}
 	}
 
 	private void allocateFieldsDeclaredIn(
@@ -227,9 +236,7 @@ public final class ObjectIRBody {
 		return true;
 	}
 
-	private void allocateDepsDeclaredIn(
-			ObjectIRBodyData data,
-			Obj ascendant) {
+	private void createDepsDeclaredIn(Obj ascendant) {
 
 		final Analyzer analyzer = getGenerator().getAnalyzer();
 
@@ -240,13 +247,12 @@ public final class ObjectIRBody {
 
 			final DepIR depIR = new DepIR(this, dep);
 
-			depIR.allocate(data);
 			this.deps.put(dep, depIR);
 		}
 
 		for (Derivative derivative : ascendant.type().allDerivatives()) {
 			if (derivative.isSample()) {
-				allocateDepsDeclaredIn(data, derivative.getDerivedObject());
+				createDepsDeclaredIn(derivative.getDerivedObject());
 			}
 		}
 	}
