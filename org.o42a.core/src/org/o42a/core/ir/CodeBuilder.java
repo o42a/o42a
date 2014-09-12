@@ -42,7 +42,6 @@ public abstract class CodeBuilder {
 
 	private final CompilerContext context;
 	private final Function<?> function;
-	private final ObjectsCode objects;
 	private final GCCode gc;
 	private final LocalsCode locals;
 	private int nameSeq;
@@ -50,7 +49,6 @@ public abstract class CodeBuilder {
 	protected CodeBuilder(CompilerContext context, Function<?> function) {
 		this.context = context;
 		this.function = function;
-		this.objects = new ObjectsCode(this);
 		this.locals = new FunctionLocals();
 		this.gc = new GCCode(this);
 	}
@@ -72,10 +70,6 @@ public abstract class CodeBuilder {
 	}
 
 	public abstract ObjectOp host();
-
-	public final ObjectsCode objects() {
-		return this.objects;
-	}
 
 	public final GCCode gc() {
 		return this.gc;

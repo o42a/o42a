@@ -74,7 +74,6 @@ final class PredefValueBuilder extends AbstractObjectValueBuilder {
 				function,
 				failureDir,
 				typeObject.ir(function.getGenerator()),
-				typeObject,
 				DERIVED);
 	}
 

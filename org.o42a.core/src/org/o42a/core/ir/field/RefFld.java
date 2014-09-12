@@ -437,7 +437,6 @@ public abstract class RefFld<
 					constructor,
 					failure.head(),
 					getObjectIR(),
-					getBodyIR().getClosestAscendant(),
 					getObjectIR().isExact() ? EXACT : COMPATIBLE);
 			final CodeDirs dirs = builder.dirs(constructor, failure.head());
 			final CodeDirs subDirs =

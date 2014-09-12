@@ -45,7 +45,6 @@ public final class ObjectIRBody {
 
 	private final ObjectIRBodies bodies;
 	private final Obj sampleDeclaration;
-	private final Obj closestAscendant;
 
 	private LinkedHashMap<MemberKey, Fld<?, ?>> fields;
 	private LinkedHashMap<Dep, DepIR> deps;
@@ -53,7 +52,6 @@ public final class ObjectIRBody {
 	ObjectIRBody(ObjectIRBodies bodies) {
 		this.bodies = bodies;
 		this.sampleDeclaration = bodies.getSampleDeclaration();
-		this.closestAscendant = this.sampleDeclaration;
 	}
 
 	private ObjectIRBody(
@@ -61,7 +59,6 @@ public final class ObjectIRBody {
 			Obj sampleDeclaration) {
 		this.bodies = inheritantBodies;
 		this.sampleDeclaration = sampleDeclaration;
-		this.closestAscendant = inheritantBodies.getObject();
 	}
 
 	public final Generator getGenerator() {
@@ -78,10 +75,6 @@ public final class ObjectIRBody {
 
 	public final Obj getSampleDeclaration() {
 		return this.sampleDeclaration;
-	}
-
-	public final Obj getClosestAscendant() {
-		return this.closestAscendant;
 	}
 
 	public final boolean isMain() {

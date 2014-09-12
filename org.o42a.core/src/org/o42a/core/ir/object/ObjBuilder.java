@@ -27,7 +27,6 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.op.ObjectFn;
-import org.o42a.core.object.Obj;
 
 
 public final class ObjBuilder extends CodeBuilder {
@@ -38,10 +37,9 @@ public final class ObjBuilder extends CodeBuilder {
 			Function<? extends ObjectFn<?>> function,
 			CodePos exit,
 			ObjectIR hostIR,
-			Obj hostType,
 			ObjectPrecision hostPrecision) {
 		super(hostIR.getSampleDeclaration().getContext(), function);
-		this.host = host(function, exit, hostIR, hostType, hostPrecision);
+		this.host = host(function, exit, hostIR, hostPrecision);
 	}
 
 	@Override
@@ -53,16 +51,14 @@ public final class ObjBuilder extends CodeBuilder {
 			Block code,
 			CodePos exit,
 			ObjectIR hostIR,
-			Obj hostType,
 			ObjectPrecision hostPrecision) {
 		switch (hostPrecision) {
 		case EXACT:
-			return hostIR.op(this, code)
-					.cast(null, dirs(code, exit), hostType);
+			return hostIR.op(this, code);
 		case COMPATIBLE:
 			return getObjectSignature().object(code, getFunction())
 					.to(null, code, hostIR.getType())
-					.op(this, hostType, hostPrecision);
+					.op(this, hostIR.getObject(), hostPrecision);
 		case DERIVED:
 
 			final ObjectOp host = anonymousObject(
@@ -71,7 +67,7 @@ public final class ObjBuilder extends CodeBuilder {
 					getObjectSignature().object(code, getFunction()),
 					hostIR.getObject());
 
-			return host.cast(HOST_ID, dirs(code, exit), hostType);
+			return host.cast(HOST_ID, dirs(code, exit), hostIR.getObject());
 		}
 
 		throw new IllegalArgumentException(

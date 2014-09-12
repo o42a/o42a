@@ -25,6 +25,7 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.field.object.ObjectConstructorFn.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.field.object.VmtChainAllocFn.VMT_CHAIN_ALLOC;
+import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
@@ -238,12 +239,10 @@ public class ObjFld
 	}
 
 	private ObjectOp ancestor(CodeDirs dirs) {
-		return dirs.getBuilder()
-				.objects()
-				.objectAncestor(
-						dirs,
-						getField().toObject(),
-						tempObjHolder(dirs.getAllocator()));
+		return objectAncestor(
+				dirs,
+				getField().toObject(),
+				tempObjHolder(dirs.getAllocator()));
 	}
 
 	private void delegate(CodeDirs dirs, CtrOp.Op ctr, VmtIRChain.Op vmtc) {

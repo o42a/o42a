@@ -21,8 +21,10 @@ package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
 import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.object.value.ObjectCondFn.OBJECT_COND;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
@@ -42,9 +44,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
 import org.o42a.core.ir.object.value.ObjectCondFn;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.IROp;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
@@ -58,6 +58,16 @@ public class CtrOp extends IROp {
 			new AllocatableCtr();
 
 	public static final ID CTR_ID = ID.id("ctr");
+
+	public static final CtrOp allocateCtr(BuilderCode code) {
+		return allocateCtr(code.getBuilder(), code.code());
+	}
+
+	public static final CtrOp allocateCtr(CodeBuilder builder, Code code) {
+		return new CtrOp(
+				builder,
+				code.allocate(CTR_ID, ALLOCATABLE_CTR)::get);
+	}
 
 	private final Function<Code, Op> ptr;
 	private Obj sample;
@@ -120,6 +130,17 @@ public class CtrOp extends IROp {
 		}
 
 		return this;
+	}
+
+	public final CtrOp fillAscendants(CodeDirs dirs, Obj sample) {
+
+		final ObjectOp ancestor = objectAncestor(
+				dirs,
+				host(),
+				sample,
+				tempObjHolder(dirs.getAllocator()));
+
+		return fillAscendants(dirs, ancestor, sample);
 	}
 
 	public final CtrOp fillAscendants(

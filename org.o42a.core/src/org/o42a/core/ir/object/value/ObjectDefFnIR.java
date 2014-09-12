@@ -87,7 +87,6 @@ public class ObjectDefFnIR
 				function,
 				failure.head(),
 				getObjectIR(),
-				getObjectIR().getObject(),
 				getObjectIR().isExact() ? EXACT : DERIVED);
 		final ValOp result =
 				function.arg(function, signature().value())
