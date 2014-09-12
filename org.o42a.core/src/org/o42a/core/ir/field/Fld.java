@@ -80,6 +80,12 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return this.instance;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Fld<F, T> get(ObjectIRBodies bodies) {
+		return (Fld<F, T>) bodies.fld(getKey());
+	}
+
 	public abstract void allocateMethods(SubData<VmtIROp> vmt);
 
 	public abstract void fillMethods();
@@ -90,7 +96,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 				host,
 				isStateless()
 				? null
-				: host.ptr(code).field(code, getInstance()));
+				: host.ptr(code).field(code, getTypeInstance()));
 	}
 
 	public void targetAllocated() {

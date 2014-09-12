@@ -51,7 +51,7 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 			this.op = null;
 		} else {
 			this.ptr = this.op =
-					host.ptr(code).field(code, depIR.getInstance());
+					host.ptr(code).field(code, depIR.getTypeInstance());
 		}
 		this.ref = depIR.refIR().op(code, this);
 	}

@@ -22,9 +22,9 @@ package org.o42a.core.ir.field;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.Type;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBodies;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -50,12 +50,17 @@ public interface FldIR<F extends StructOp<F>, T extends Type<F>> {
 
 	T getInstance();
 
+	default T getTypeInstance() {
+		if (getBodyIR().bodies().isTypeBodies()) {
+			return getInstance();
+		}
+		return get(getObjectIR().typeBodies()).getInstance();
+	}
+
 	default Ptr<F> pointer(Generator generator) {
 		return getInstance().pointer(generator);
 	}
 
-	default SubData<F> data(Generator generator) {
-		return getInstance().data(generator);
-	}
+	FldIR<F, T> get(ObjectIRBodies bodies);
 
 }
