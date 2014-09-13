@@ -86,7 +86,7 @@ public abstract class CFAlloc<F extends Fn<F>>
 
 	protected abstract FuncPtr<F> createUnderlyingPtr();
 
-	private final class ToAny extends UnderAlloc<AnyOp> {
+	private final class ToAny implements UnderAlloc<AnyOp> {
 
 		@Override
 		public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp> alloc) {
