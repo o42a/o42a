@@ -21,17 +21,14 @@ package org.o42a.core.ir;
 
 import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjectScopeIRBase;
-import org.o42a.core.ir.op.HostOp;
 
 
 public abstract class ScopeIR extends ObjectScopeIRBase implements Codegen {
 
 	private final Generator generator;
 	private final Scope scope;
-	private HostOp op;
 
 	public ScopeIR(Generator generator, Scope scope) {
 		this.generator = generator;
@@ -47,24 +44,11 @@ public abstract class ScopeIR extends ObjectScopeIRBase implements Codegen {
 		return this.scope;
 	}
 
-	public HostOp op(CodeBuilder builder, Code code) {
-
-		final HostOp op = this.op;
-
-		if (op != null && op.getBuilder() == builder) {
-			return op;
-		}
-
-		return this.op = createOp(builder, code);
-	}
-
 	@Override
 	public String toString() {
 		return this.scope + " IR";
 	}
 
 	public abstract void allocate();
-
-	protected abstract HostOp createOp(CodeBuilder builder, Code code);
 
 }

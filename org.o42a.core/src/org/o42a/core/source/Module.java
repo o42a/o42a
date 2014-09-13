@@ -25,12 +25,9 @@ import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberPath;
@@ -208,11 +205,6 @@ public class Module extends Obj {
 
 		@Override
 		protected void targetAllocated() {
-		}
-
-		@Override
-		protected HostOp createOp(CodeBuilder builder, Code code) {
-			return getScope().toObject().ir(getGenerator()).op(builder, code);
 		}
 
 	}

@@ -20,15 +20,12 @@
 package org.o42a.core.ir.field.object;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.link.EagerLinkFld;
 import org.o42a.core.ir.field.link.LinkFld;
 import org.o42a.core.ir.field.variable.VarFld;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.LinkUses;
 import org.o42a.core.object.Obj;
@@ -41,14 +38,6 @@ public final class ObjectFieldIR extends FieldIR {
 
 	public ObjectFieldIR(Generator generator, Field field) {
 		super(generator, field);
-	}
-
-	@Override
-	protected HostOp createOp(CodeBuilder builder, Code code) {
-
-		final Obj object = getField().toObject();
-
-		return object.ir(getGenerator()).op(builder, code);
 	}
 
 	@Override

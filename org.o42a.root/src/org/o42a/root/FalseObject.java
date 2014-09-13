@@ -26,16 +26,13 @@ import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.common.builtin.BuiltinDef;
 import org.o42a.common.builtin.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.OwnerPath;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
@@ -153,11 +150,6 @@ public class FalseObject extends BuiltinObject {
 
 		@Override
 		protected void targetAllocated() {
-		}
-
-		@Override
-		protected HostOp createOp(CodeBuilder builder, Code code) {
-			return getScope().toObject().ir(getGenerator()).op(builder, code);
 		}
 
 	}
