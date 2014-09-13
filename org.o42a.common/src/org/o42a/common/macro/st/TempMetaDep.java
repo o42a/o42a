@@ -20,11 +20,13 @@
 package org.o42a.common.macro.st;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.util.fn.Init;
 
 
 final class TempMetaDep extends MetaDep {
@@ -32,7 +34,7 @@ final class TempMetaDep extends MetaDep {
 	private final TempMacroDep dep;
 	private final Ref macroRef;
 	private MetaDep parentDep;
-	private MetaDep nestedDep;
+	private final Init<MetaDep> nestedDep = init(this::createNestedDep);
 
 	TempMetaDep(Meta declaredIn, TempMacroDep dep, Ref macroRef) {
 		super(declaredIn);
@@ -47,18 +49,7 @@ final class TempMetaDep extends MetaDep {
 
 	@Override
 	public MetaDep nestedDep() {
-		if (this.nestedDep != null) {
-			return this.nestedDep;
-		}
-
-		final Meta nestedMeta =
-				this.dep.getTempField()
-				.toField()
-				.field(dummyUser())
-				.toObject()
-				.meta();
-
-		return this.nestedDep = new TempFieldUpdate(this, nestedMeta);
+		return this.nestedDep.get();
 	}
 
 	@Override
@@ -81,6 +72,18 @@ final class TempMetaDep extends MetaDep {
 
 	final void setParentDep(MetaDep parentDep) {
 		this.parentDep = parentDep;
+	}
+
+	private MetaDep createNestedDep() {
+
+		final Meta nestedMeta =
+				this.dep.getTempField()
+				.toField()
+				.field(dummyUser())
+				.toObject()
+				.meta();
+
+		return new TempFieldUpdate(this, nestedMeta);
 	}
 
 }

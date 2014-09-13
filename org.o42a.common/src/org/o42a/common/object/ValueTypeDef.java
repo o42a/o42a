@@ -35,7 +35,7 @@ import org.o42a.core.value.ValueType;
 
 final class ValueTypeDef extends Def {
 
-	private ValueType<?> valueType;
+	private final ValueType<?> valueType;
 
 	ValueTypeDef(ValueTypeObject object) {
 		super(object, object.getScope(), noScopeUpgrade(object.getScope()));

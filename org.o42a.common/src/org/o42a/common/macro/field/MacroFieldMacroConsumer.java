@@ -19,10 +19,13 @@
 */
 package org.o42a.common.macro.field;
 
+import static org.o42a.util.fn.DoOnce.doOnce;
+
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.macro.MacroConsumer;
+import org.o42a.util.fn.DoOnce;
 
 
 class MacroFieldMacroConsumer implements MacroConsumer {
@@ -30,7 +33,7 @@ class MacroFieldMacroConsumer implements MacroConsumer {
 	private final MacroFieldConsumer macroDep;
 	private final Ref macroRef;
 	private final PathTemplate template;
-	private boolean dependencyRegistered;
+	private final DoOnce registerDep = doOnce(this::registerDep);
 
 	MacroFieldMacroConsumer(
 			MacroFieldConsumer macroDep,
@@ -48,10 +51,11 @@ class MacroFieldMacroConsumer implements MacroConsumer {
 
 	@Override
 	public Ref expandMacro(Ref macroExpansion) {
-		if (this.dependencyRegistered) {
-			return macroExpansion;
-		}
-		this.dependencyRegistered = true;
+		this.registerDep.run();
+		return macroExpansion;
+	}
+
+	private void registerDep() {
 
 		final MacroFieldMetaDep dep =
 				this.macroDep.buildDep(this.macroRef, this.template);
@@ -59,8 +63,6 @@ class MacroFieldMacroConsumer implements MacroConsumer {
 		if (dep != null) {
 			dep.register();
 		}
-
-		return macroExpansion;
 	}
 
 }

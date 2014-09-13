@@ -19,6 +19,8 @@
 */
 package org.o42a.common.phrase.part;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.common.phrase.PhraseContext;
 import org.o42a.common.ref.cmp.ComparisonOperator;
 import org.o42a.core.Distributor;
@@ -27,13 +29,15 @@ import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.util.fn.Init;
 
 
 public class BinaryPhrasePart extends PhraseContinuation {
 
 	private final BinaryPhraseOperator operator;
 	private final RefBuilder rightOperand;
-	private ComparisonOperator comparisonOperator;
+	private final Init<ComparisonOperator> comparisonOperator =
+			init(this::determineComparisonOperator);
 
 	BinaryPhrasePart(
 			LocationInfo location,
@@ -46,10 +50,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 	}
 
 	public final ComparisonOperator getComparisonOperator() {
-		if (this.comparisonOperator == null) {
-			getPhrase().build();
-		}
-		return this.comparisonOperator;
+		return this.comparisonOperator.get();
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		final NextBinaryClause first =
 				this.operator.findFirst(this, context);
 
-		this.comparisonOperator = first.getComparisonOperator();
+		this.comparisonOperator.set(first.getComparisonOperator());
 		if (first.getNextClause().found()) {
 			return first.getNextClause();
 		}
@@ -69,7 +70,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		if (second == null || !second.found()) {
 			return first.getNextClause();
 		}
-		this.comparisonOperator = second.getComparisonOperator();
+		this.comparisonOperator.set(second.getComparisonOperator());
 
 		return second.getNextClause();
 	}
@@ -100,6 +101,11 @@ public class BinaryPhrasePart extends PhraseContinuation {
 			return super.toString();
 		}
 		return this.operator.getSign() + this.rightOperand;
+	}
+
+	private ComparisonOperator determineComparisonOperator() {
+		getPhrase().build();
+		return this.comparisonOperator.getKnown();
 	}
 
 }

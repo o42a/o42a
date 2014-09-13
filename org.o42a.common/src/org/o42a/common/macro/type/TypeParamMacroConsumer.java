@@ -19,12 +19,15 @@
 */
 package org.o42a.common.macro.type;
 
+import static org.o42a.util.fn.DoOnce.doOnce;
+
 import org.o42a.core.Scope;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.source.ScopedLogger;
 import org.o42a.core.value.macro.MacroConsumer;
+import org.o42a.util.fn.DoOnce;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
@@ -35,7 +38,7 @@ final class TypeParamMacroConsumer implements MacroConsumer {
 	private final Ref macroRef;
 	private final PathTemplate template;
 	private final TypeParamExpansionLogger expansionLogger;
-	private boolean dependencyRegistered;
+	private final DoOnce registerDep = doOnce(this::registerDep);
 
 	TypeParamMacroConsumer(
 			TypeParamMacroDep macroDep,
@@ -54,10 +57,11 @@ final class TypeParamMacroConsumer implements MacroConsumer {
 
 	@Override
 	public Ref expandMacro(Ref macroExpansion) {
-		if (this.dependencyRegistered) {
-			return macroExpansion;
-		}
-		this.dependencyRegistered = true;
+		this.registerDep.run();
+		return macroExpansion;
+	}
+
+	private void registerDep() {
 
 		final TypeParamMetaDep dep =
 				this.macroDep.buildDep(this.macroRef, this.template);
@@ -65,8 +69,6 @@ final class TypeParamMacroConsumer implements MacroConsumer {
 		if (dep != null) {
 			dep.register();
 		}
-
-		return macroExpansion;
 	}
 
 	private static final class TypeParamExpansionLogger extends ScopedLogger {

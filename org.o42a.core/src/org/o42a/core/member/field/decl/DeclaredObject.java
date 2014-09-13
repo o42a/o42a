@@ -22,6 +22,7 @@ package org.o42a.core.member.field.decl;
 import static org.o42a.core.member.Inclusions.INCLUSIONS;
 import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.object.def.DefinitionsBuilder.NO_DEFINITIONS_BUILDER;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.function.Function;
 
@@ -37,13 +38,15 @@ import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueRequest;
+import org.o42a.util.fn.Init;
 
 
 class DeclaredObject extends Obj implements ObjectToDefine {
 
 	private final DeclaredField field;
-	private Registry memberRegistry;
-	private DefinitionsBuilder definitionsBuilder;
+	private final Init<Registry> memberRegistry = init(() -> new Registry());
+	private final Init<DefinitionsBuilder> definitionsBuilder =
+			init(this::createDefinitionsBuilder);
 
 	DeclaredObject(DeclaredField field) {
 		super(field);
@@ -51,16 +54,13 @@ class DeclaredObject extends Obj implements ObjectToDefine {
 	}
 
 	@Override
-	public boolean isValid() {
+	public final boolean isValid() {
 		return this.field.validate();
 	}
 
 	@Override
-	public Registry getMemberRegistry() {
-		if (this.memberRegistry == null) {
-			this.memberRegistry = new Registry();
-		}
-		return this.memberRegistry;
+	public final Registry getMemberRegistry() {
+		return this.memberRegistry.get();
 	}
 
 	@Override
@@ -106,18 +106,19 @@ class DeclaredObject extends Obj implements ObjectToDefine {
 	}
 
 	private DefinitionsBuilder getDefinitionsBuilder() {
-		if (this.definitionsBuilder != null) {
-			return this.definitionsBuilder;
-		}
+		return this.definitionsBuilder.get();
+	}
+
+	private DefinitionsBuilder createDefinitionsBuilder() {
 
 		final Function<ObjectToDefine, DefinitionsBuilder> definitions =
 				this.field.getDefinitions();
 
 		if (definitions == null) {
-			return this.definitionsBuilder = NO_DEFINITIONS_BUILDER;
+			return NO_DEFINITIONS_BUILDER;
 		}
 
-		return this.definitionsBuilder = definitions.apply(this);
+		return definitions.apply(this);
 	}
 
 	private final class Registry extends ObjectMemberRegistry {
