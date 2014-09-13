@@ -57,16 +57,6 @@ public final class Global<S extends StructOp<S>, T extends Type<S>>
 	}
 
 	@Override
-	public final boolean isExported() {
-		return this.settings.isExported();
-	}
-
-	@Override
-	public final boolean isConstant() {
-		return this.settings.isConstant();
-	}
-
-	@Override
 	public int getDataFlags() {
 		return this.settings.getDataFlags();
 	}

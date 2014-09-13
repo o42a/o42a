@@ -41,16 +41,6 @@ abstract class AbstractFunctionSettings<S extends AbstractFunctionSettings<S>>
 		return this.flags;
 	}
 
-	@Override
-	public final boolean isExported() {
-		return (this.flags & EXPORTED) != 0;
-	}
-
-	@Override
-	public final boolean hasSideEffects() {
-		return (this.flags & NO_SIDE_EFFECTS) == 0;
-	}
-
 	public final S noSideEffects() {
 		return sideEffects(false);
 	}

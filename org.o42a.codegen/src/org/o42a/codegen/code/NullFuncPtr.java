@@ -19,12 +19,16 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.fn.Init;
 
 
 final class NullFuncPtr<F extends Fn<F>> extends FuncPtr<F> {
 
-	private FuncAllocation<F> allocation;
+	private final Init<FuncAllocation<F>> allocation =
+			init(this::createAllocation);
 
 	NullFuncPtr(Signature<F> signature) {
 		super(signature.getId().detail("null"), signature, true);
@@ -52,19 +56,20 @@ final class NullFuncPtr<F extends Fn<F>> extends FuncPtr<F> {
 
 	@Override
 	public final FuncAllocation<F> getAllocation() {
-		if (this.allocation != null) {
-			return this.allocation;
-		}
-
-		final Functions functions =
-				getSignature().getGenerator().getFunctions();
-
-		return this.allocation = functions.dataWriter().nullPtr(this);
+		return this.allocation.get();
 	}
 
 	@Override
 	public String toString() {
 		return getSignature().toString("NULL");
+	}
+
+	private FuncAllocation<F> createAllocation() {
+
+		final Functions functions =
+				getSignature().getGenerator().getFunctions();
+
+		return functions.dataWriter().nullPtr(this);
 	}
 
 }

@@ -137,11 +137,6 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		}
 
 		@Override
-		public int getDisposePriority() {
-			return NORMAL_DISPOSE_PRIORITY;
-		}
-
-		@Override
 		public FldPtrs<F> allocate(
 				Allocations code,
 				Allocated<FldPtrs<F>> allocated) {

@@ -20,6 +20,7 @@
 package org.o42a.codegen.code;
 
 
+@FunctionalInterface
 public interface FunctionCompleteListener {
 
 	void functionComplete(Function<?> function);

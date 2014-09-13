@@ -20,11 +20,14 @@
 package org.o42a.codegen.code;
 
 import static java.util.Objects.requireNonNull;
+import static org.o42a.codegen.code.BeforeReturn.NOTHING_BEFORE_RETURN;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.LinkedList;
 
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -38,7 +41,7 @@ public final class Function<F extends Fn<F>>
 	private final FuncPtr<F> pointer;
 	private final LinkedList<FunctionCompleteListener> completeListeners =
 			new LinkedList<>();
-	private FuncWriter<F> writer;
+	private final Init<FuncWriter<F>> writer = init(this::createWriter);
 	private boolean done;
 
 	Function(
@@ -60,16 +63,6 @@ public final class Function<F extends Fn<F>>
 	}
 
 	@Override
-	public final boolean isExported() {
-		return this.settings.isExported();
-	}
-
-	@Override
-	public final boolean hasSideEffects() {
-		return this.settings.hasSideEffects();
-	}
-
-	@Override
 	public final int getFunctionFlags() {
 		return this.settings.getFunctionFlags();
 	}
@@ -85,12 +78,12 @@ public final class Function<F extends Fn<F>>
 
 	@Override
 	public boolean created() {
-		return this.writer != null;
+		return this.writer.isInitialized();
 	}
 
 	@Override
 	public final boolean exists() {
-		return this.writer != null && this.writer.exists();
+		return this.writer.isInitialized() && this.writer.get().exists();
 	}
 
 	public final boolean isDone() {
@@ -112,22 +105,7 @@ public final class Function<F extends Fn<F>>
 
 	@Override
 	public final FuncWriter<F> writer() {
-		if (this.writer != null) {
-			return this.writer;
-		}
-
-		final Functions functions = getGenerator().getFunctions();
-		final BeforeReturn beforeReturn;
-
-		if (getGenerator().isProxied()) {
-			beforeReturn = BeforeReturn.NOTHING_BEFORE_RETURN;
-		} else {
-			beforeReturn =
-					new DisposeBeforeReturn(functions.createBeforeReturn(this));
-		}
-
-		return this.writer =
-				functions.codeBackend().addFunction(this, beforeReturn);
+		return this.writer.get();
 	}
 
 	public void addCompleteListener(FunctionCompleteListener listener) {
@@ -156,6 +134,21 @@ public final class Function<F extends Fn<F>>
 	final void build() {
 		this.builder.build(this);
 		done();
+	}
+
+	private FuncWriter<F> createWriter() {
+
+		final Functions functions = getGenerator().getFunctions();
+		final BeforeReturn beforeReturn;
+
+		if (getGenerator().isProxied()) {
+			beforeReturn = NOTHING_BEFORE_RETURN;
+		} else {
+			beforeReturn =
+					new DisposeBeforeReturn(functions.createBeforeReturn(this));
+		}
+
+		return functions.codeBackend().addFunction(this, beforeReturn);
 	}
 
 	private void notifyCompleteListeners() {

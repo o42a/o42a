@@ -20,6 +20,7 @@
 package org.o42a.codegen.code;
 
 
+@FunctionalInterface
 public interface BeforeReturn {
 
 	BeforeReturn NOTHING_BEFORE_RETURN = new BeforeReturn() {

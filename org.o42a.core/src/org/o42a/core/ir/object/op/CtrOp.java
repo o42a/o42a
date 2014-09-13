@@ -416,11 +416,6 @@ public class CtrOp extends IROp {
 		}
 
 		@Override
-		public int getDisposePriority() {
-			return NORMAL_DISPOSE_PRIORITY;
-		}
-
-		@Override
 		public Op allocate(Allocations code, Allocated<Op> allocated) {
 			return code.allocate(CTR_ID, CTR_TYPE);
 		}

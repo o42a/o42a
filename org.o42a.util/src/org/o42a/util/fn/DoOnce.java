@@ -37,13 +37,17 @@ public final class DoOnce implements Runnable {
 		return this.executed;
 	}
 
-	@Override
-	public void run() {
+	public final void doOnce() {
 		if (this.executed) {
 			return;
 		}
 		this.executed = true;
 		this.action.run();
+	}
+
+	@Override
+	public final void run() {
+		doOnce();
 	}
 
 	@Override

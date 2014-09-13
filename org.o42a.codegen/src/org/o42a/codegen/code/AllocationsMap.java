@@ -83,14 +83,7 @@ final class AllocationsMap {
 		this.entry = getAllocator().inset(ENTRY_ID);
 		this.merges = getAllocator().inset(MERGES_ID);
 
-		getAllocator().getFunction()
-		.addCompleteListener(
-				new FunctionCompleteListener() {
-					@Override
-					public void functionComplete(Function<?> function) {
-						combineAll();
-					}
-				});
+		getAllocator().getFunction().addCompleteListener(fn -> combineAll());
 
 		return getAllocator().inset(ALLOCATIONS_ID);
 	}
@@ -99,12 +92,7 @@ final class AllocationsMap {
 		getAllocator().allocate(
 				ALLOCATOR_DISPOSAL_ID,
 				new AllocatableDisposal(
-						new Disposal() {
-							@Override
-							public void dispose(Code code) {
-								disposeAll(code);
-							}
-						},
+						code -> disposeAll(code),
 						Integer.MIN_VALUE));
 	}
 

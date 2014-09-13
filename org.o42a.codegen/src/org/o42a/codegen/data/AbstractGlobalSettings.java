@@ -37,16 +37,6 @@ abstract class AbstractGlobalSettings<
 		return this.globals.getGenerator();
 	}
 
-	@Override
-	public final boolean isExported() {
-		return (this.flags & EXPORTED) != 0;
-	}
-
-	@Override
-	public final boolean isConstant() {
-		return (this.flags & CONSTANT) != 0;
-	}
-
 	public final S setConstant() {
 		this.flags |= CONSTANT;
 		return self();

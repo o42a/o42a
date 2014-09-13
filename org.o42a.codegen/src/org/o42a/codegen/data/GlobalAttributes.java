@@ -23,8 +23,11 @@ package org.o42a.codegen.data;
 public interface GlobalAttributes extends DataAttributes {
 
 	int EXPORTED = 0x010000;
+
 	int GLOBAL_FLAGS = 0x111111;
 
-	boolean isExported();
+	default boolean isExported() {
+		return (getDataFlags() & EXPORTED) != 0;
+	}
 
 }

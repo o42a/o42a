@@ -52,11 +52,6 @@ public abstract class Rec<P extends AllocPtrOp<P>, T>
 		return this;
 	}
 
-	@Override
-	public final boolean isLowLevel() {
-		return (getDataFlags() & LOW_LEVEL) != 0;
-	}
-
 	public Rec<P, T> setLowLevel(boolean lowLevel) {
 		if (lowLevel) {
 			this.flags |= LOW_LEVEL;

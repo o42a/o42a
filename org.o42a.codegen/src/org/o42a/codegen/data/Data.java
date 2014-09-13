@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AllocPtrOp;
@@ -27,6 +29,7 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.util.DataLayout;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -34,7 +37,7 @@ public abstract class Data<P extends AllocPtrOp<P>> implements DataAttributes {
 
 	private final Generator generator;
 	private final ID id;
-	private Ptr<P> pointer;
+	private final Init<Ptr<P>> pointer = init(this::createPointer);
 	private Data<?> next;
 
 	Data(Generator generator, ID id) {
@@ -50,11 +53,6 @@ public abstract class Data<P extends AllocPtrOp<P>> implements DataAttributes {
 		return this.generator;
 	}
 
-	@Override
-	public final boolean isConstant() {
-		return (getDataFlags() & CONSTANT) != 0;
-	}
-
 	public abstract Global<?, ?> getGlobal();
 
 	public abstract Type<?> getEnclosing();
@@ -68,10 +66,7 @@ public abstract class Data<P extends AllocPtrOp<P>> implements DataAttributes {
 	public abstract DataType getDataType();
 
 	public final Ptr<P> getPointer() {
-		if (this.pointer != null) {
-			return this.pointer;
-		}
-		return this.pointer = createPointer();
+		return this.pointer.get();
 	}
 
 	public final DataLayout getLayout() {

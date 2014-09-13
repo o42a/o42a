@@ -19,18 +19,22 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
 public abstract class SystemType {
 
 	private final ID id;
+	private final Init<Ptr<SystemOp>> pointer =
+			init(() -> new SystemPtr(this));
 	private Generator generator;
 	private DataAllocation<SystemOp> allocation;
-	private Ptr<SystemOp> pointer;
 
 	public SystemType(ID id) {
 		this.id = id;
@@ -45,10 +49,7 @@ public abstract class SystemType {
 	}
 
 	public final Ptr<SystemOp> getPointer() {
-		if (this.pointer != null) {
-			return this.pointer;
-		}
-		return this.pointer = new SystemPtr(this);
+		return this.pointer.get();
 	}
 
 	@Override
