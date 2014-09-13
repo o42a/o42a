@@ -54,10 +54,8 @@ public class SystemTypeCDAlloc extends CDAlloc<SystemOp> {
 		throw new UnsupportedOperationException();
 	}
 
-	private static final class SystemUnderAlloc extends UnderAlloc<SystemOp> {
-
-		private SystemUnderAlloc() {
-		}
+	private static final class SystemUnderAlloc
+			implements UnderAlloc<SystemOp> {
 
 		@Override
 		public Ptr<SystemOp> allocateUnderlying(CDAlloc<SystemOp> alloc) {
@@ -71,7 +69,7 @@ public class SystemTypeCDAlloc extends CDAlloc<SystemOp> {
 
 		@Override
 		public String toString() {
-			return "DefaultUnderAlloc";
+			return "SystemUnderAlloc";
 		}
 
 	}

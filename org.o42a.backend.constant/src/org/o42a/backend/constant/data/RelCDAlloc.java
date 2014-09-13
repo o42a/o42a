@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.data;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.op.RelCOp;
@@ -31,6 +32,7 @@ import org.o42a.codegen.data.RelPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -39,7 +41,9 @@ public final class RelCDAlloc implements RelAllocation {
 	private final RelPtr pointer;
 	private final CDAlloc<?> relativeTo;
 	private final CDAlloc<?> target;
-	private RelPtr underlying;
+	private final Init<RelPtr> underlying = init(
+			() -> getTarget().getUnderlyingPtr().relativeTo(
+					getRelativeTo().getUnderlyingPtr()));
 
 	public RelCDAlloc(
 			RelPtr pointer,
@@ -67,11 +71,7 @@ public final class RelCDAlloc implements RelAllocation {
 	}
 
 	public RelPtr getUnderlying() {
-		if (this.underlying != null) {
-			return this.underlying;
-		}
-		return this.underlying = this.target.getUnderlyingPtr().relativeTo(
-				this.relativeTo.getUnderlyingPtr());
+		return this.underlying.get();
 	}
 
 	@Override

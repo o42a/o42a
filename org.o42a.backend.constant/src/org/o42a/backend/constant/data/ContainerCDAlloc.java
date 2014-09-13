@@ -21,6 +21,7 @@ package org.o42a.backend.constant.data;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,7 @@ import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -41,7 +43,8 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	private final ArrayList<DCDAlloc<?, ?>> nested = new ArrayList<>();
 	private final CType<S> underlyingStruct;
 	private Allocated<S, ?> underlyingAllocated;
-	private ContainerCDAlloc<S> declaringType;
+	private final Init<ContainerCDAlloc<S>> declaringType =
+			init(this::determineDeclaringType);
 	private boolean containerAllocated;
 
 	public ContainerCDAlloc(
@@ -71,28 +74,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	}
 
 	public ContainerCDAlloc<S> getDeclaringType() {
-		if (this.declaringType != null) {
-			return this.declaringType;
-		}
-
-		final ContainerCDAlloc<S> typeAlloc;
-
-		if (isStruct()) {
-			typeAlloc = (ContainerCDAlloc<S>) getUnderlyingStruct()
-					.getOriginal().pointer(
-							getBackend().getGenerator()).getAllocation();
-		} else {
-			typeAlloc = getTypeAllocation();
-			if (typeAlloc == null) {
-				return this.declaringType = this;
-			}
-		}
-
-		if (typeAlloc == this) {
-			return this.declaringType = this;
-		}
-
-		return this.declaringType = typeAlloc.getDeclaringType();
+		return this.declaringType.get();
 	}
 
 	public final boolean isContainerAllocated() {
@@ -193,6 +175,28 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		if (isUnderlyingAllocated()) {
 			this.underlyingAllocated.done();
 		}
+	}
+
+	private ContainerCDAlloc<S> determineDeclaringType() {
+
+		final ContainerCDAlloc<S> typeAlloc;
+
+		if (isStruct()) {
+			typeAlloc = (ContainerCDAlloc<S>) getUnderlyingStruct()
+					.getOriginal().pointer(
+							getBackend().getGenerator()).getAllocation();
+		} else {
+			typeAlloc = getTypeAllocation();
+			if (typeAlloc == null) {
+				return this;
+			}
+		}
+
+		if (typeAlloc == this) {
+			return this;
+		}
+
+		return typeAlloc.getDeclaringType();
 	}
 
 	private final DCDAlloc<?, ?> field(Ptr<?> pointer) {

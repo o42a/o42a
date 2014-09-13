@@ -19,31 +19,26 @@
 */
 package org.o42a.backend.constant.data;
 
-import static org.o42a.backend.constant.data.DefaultUnderAlloc.DEFAULT_UNDER_ALLOC;
-
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 
 
-public interface UnderAlloc<P extends DataPtrOp<P>> {
+final class ToAnyUnderAlloc implements UnderAlloc<AnyOp> {
 
-	@SuppressWarnings("unchecked")
-	static <P extends AllocPtrOp<P>> UnderAlloc<P> defaultUnderAlloc() {
-		return DEFAULT_UNDER_ALLOC;
+	private final CDAlloc<?> source;
+
+	ToAnyUnderAlloc(CDAlloc<?> source) {
+		this.source = source;
 	}
 
-	static UnderAlloc<AnyOp> anyUnderAlloc(CDAlloc<?> source) {
-		return new ToAnyUnderAlloc(source);
+	@Override
+	public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp> alloc) {
+		return this.source.getUnderlyingPtr().toAny();
 	}
 
-	static UnderAlloc<DataOp> dataUnderAlloc(CDAlloc<?> source) {
-		return new ToDataUnderAlloc(source);
+	@Override
+	public String toString() {
+		return "(any*) " + this.source;
 	}
-
-	default boolean isDefault() {
-		return this == DEFAULT_UNDER_ALLOC;
-	}
-
-	Ptr<P> allocateUnderlying(CDAlloc<P> alloc);
 
 }

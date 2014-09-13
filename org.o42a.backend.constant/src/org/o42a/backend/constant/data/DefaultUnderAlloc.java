@@ -19,31 +19,31 @@
 */
 package org.o42a.backend.constant.data;
 
-import static org.o42a.backend.constant.data.DefaultUnderAlloc.DEFAULT_UNDER_ALLOC;
-
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.data.Ptr;
 
 
-public interface UnderAlloc<P extends DataPtrOp<P>> {
+final class DefaultUnderAlloc<P extends AllocPtrOp<P>>
+		implements UnderAlloc<P> {
 
-	@SuppressWarnings("unchecked")
-	static <P extends AllocPtrOp<P>> UnderAlloc<P> defaultUnderAlloc() {
-		return DEFAULT_UNDER_ALLOC;
+	@SuppressWarnings("rawtypes")
+	static final DefaultUnderAlloc DEFAULT_UNDER_ALLOC = new DefaultUnderAlloc();
+
+	private DefaultUnderAlloc() {
 	}
 
-	static UnderAlloc<AnyOp> anyUnderAlloc(CDAlloc<?> source) {
-		return new ToAnyUnderAlloc(source);
+	@Override
+	public Ptr<P> allocateUnderlying(CDAlloc<P> alloc) {
+
+		@SuppressWarnings("unchecked")
+		final DCDAlloc<P, ?> dcdAlloc = (DCDAlloc<P, ?>) alloc;
+
+		return dcdAlloc.getUnderlying().getPointer();
 	}
 
-	static UnderAlloc<DataOp> dataUnderAlloc(CDAlloc<?> source) {
-		return new ToDataUnderAlloc(source);
+	@Override
+	public String toString() {
+		return "DefaultUnderAlloc";
 	}
-
-	default boolean isDefault() {
-		return this == DEFAULT_UNDER_ALLOC;
-	}
-
-	Ptr<P> allocateUnderlying(CDAlloc<P> alloc);
 
 }

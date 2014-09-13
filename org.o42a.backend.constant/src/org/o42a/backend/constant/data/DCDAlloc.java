@@ -74,7 +74,7 @@ public abstract class DCDAlloc<P extends AllocPtrOp<P>, D extends Data<P>>
 
 	public final D getUnderlying() {
 		if (this.underlying == null) {
-			assert this.underAlloc.isDefault() :
+			assert underAlloc().isDefault() :
 				"Can not allocate " + this;
 			getTopLevel().initUnderlying(null);
 		}

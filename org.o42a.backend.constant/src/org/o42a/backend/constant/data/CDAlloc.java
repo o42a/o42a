@@ -21,6 +21,7 @@ package org.o42a.backend.constant.data;
 
 import static org.o42a.backend.constant.data.UnderAlloc.anyUnderAlloc;
 import static org.o42a.backend.constant.data.UnderAlloc.dataUnderAlloc;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.backend.constant.data.rec.PtrRecCDAlloc;
 import org.o42a.codegen.code.op.DataPtrOp;
@@ -32,6 +33,7 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
 import org.o42a.util.DataLayout;
+import org.o42a.util.fn.Init;
 
 
 public abstract class CDAlloc<P extends DataPtrOp<P>>
@@ -39,8 +41,9 @@ public abstract class CDAlloc<P extends DataPtrOp<P>>
 
 	private final ConstBackend backend;
 	private final Ptr<P> pointer;
-	final UnderAlloc<P> underAlloc;
-	private Ptr<P> underlyingPtr;
+	private final UnderAlloc<P> underAlloc;
+	private final Init<Ptr<P>> underlyingPtr =
+			init(() -> underAlloc().allocateUnderlying(this));
 
 	public CDAlloc(
 			ConstBackend backend,
@@ -60,10 +63,7 @@ public abstract class CDAlloc<P extends DataPtrOp<P>>
 	}
 
 	public final Ptr<P> getUnderlyingPtr() {
-		if (this.underlyingPtr != null) {
-			return this.underlyingPtr;
-		}
-		return this.underlyingPtr = this.underAlloc.allocateUnderlying(this);
+		return this.underlyingPtr.get();
 	}
 
 	@Override
@@ -104,6 +104,10 @@ public abstract class CDAlloc<P extends DataPtrOp<P>>
 				(PtrRecCDAlloc<PtrRec<RR, Ptr<P>>, RR, Ptr<P>>) destination;
 
 		dest.setValue(getPointer());
+	}
+
+	final UnderAlloc<P> underAlloc() {
+		return this.underAlloc;
 	}
 
 }
