@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.codegen.data.Struct.structContent;
 import static org.o42a.core.ir.object.type.ObjectDescIR.allocateDescIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
@@ -109,8 +110,19 @@ public class ObjectIR {
 		}
 
 		this.vmtIR = new VmtIR(this);
+		if (isSampleDeclaration()) {
+			getGenerator().newGlobal().struct(this.vmtIR);
+		} else {
 
-		getGenerator().newGlobal().struct(this.vmtIR).getInstance();
+			final VmtIR sampleVmtIR =
+					getSampleDeclaration().ir(getGenerator()).getVmtIR();
+
+			getGenerator().newGlobal().instance(
+					this.vmtIR.getId(),
+					sampleVmtIR,
+					this.vmtIR,
+					structContent());
+		}
 
 		return this.vmtIR;
 	}
