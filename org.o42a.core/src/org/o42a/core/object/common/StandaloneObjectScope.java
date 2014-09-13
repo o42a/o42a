@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.common;
 
+import static org.o42a.codegen.Codegen.irInit;
 import static org.o42a.core.ref.impl.prediction.ObjectPrediction.predictObject;
 
 import org.o42a.codegen.Generator;
@@ -33,14 +34,14 @@ import org.o42a.core.object.ObjectScope;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.CondInit;
 
 
 public abstract class StandaloneObjectScope extends ObjectScope {
 
 	private final Location location;
 	private final Container enclosingContainer;
-
-	private ScopeIR ir;
+	private final CondInit<Generator, ScopeIR> ir = irInit(this::createIR);
 
 	protected StandaloneObjectScope(
 			LocationInfo location,
@@ -109,10 +110,7 @@ public abstract class StandaloneObjectScope extends ObjectScope {
 
 	@Override
 	public final ScopeIR ir(Generator generator) {
-		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = createIR(generator);
-		}
-		return this.ir;
+		return this.ir.get(generator);
 	}
 
 	@Override

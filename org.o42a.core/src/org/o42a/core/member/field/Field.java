@@ -20,8 +20,10 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.codegen.Codegen.irInit;
 import static org.o42a.core.member.field.FieldKind.ORDINAL_FIELD;
 import static org.o42a.core.ref.impl.prediction.FieldPrediction.predictField;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
@@ -36,15 +38,16 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectScope;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.source.Location;
+import org.o42a.util.fn.CondInit;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
 public abstract class Field extends ObjectScope {
 
 	private final MemberField member;
-	private Field[] overridden;
-
-	private FieldIR ir;
+	private final Init<Field[]> overridden = init(this::overriddenFields);
+	private final CondInit<Generator, FieldIR> ir = irInit(this::createIR);
 
 	public Field(MemberField member) {
 		this.member = member;
@@ -135,11 +138,8 @@ public abstract class Field extends ObjectScope {
 		return toMember().isClone();
 	}
 
-	public Field[] getOverridden() {
-		if (this.overridden == null) {
-			this.overridden = overriddenFields();
-		}
-		return this.overridden;
+	public final Field[] getOverridden() {
+		return this.overridden.get();
 	}
 
 	@Override
@@ -238,10 +238,7 @@ public abstract class Field extends ObjectScope {
 
 	@Override
 	public final FieldIR ir(Generator generator) {
-		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = createIR(generator);
-		}
-		return this.ir;
+		return this.ir.get(generator);
 	}
 
 	@Override

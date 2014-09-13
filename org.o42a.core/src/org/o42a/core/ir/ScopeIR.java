@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir;
 
+import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
@@ -26,7 +27,7 @@ import org.o42a.core.ir.object.ObjectScopeIRBase;
 import org.o42a.core.ir.op.HostOp;
 
 
-public abstract class ScopeIR extends ObjectScopeIRBase {
+public abstract class ScopeIR extends ObjectScopeIRBase implements Codegen {
 
 	private final Generator generator;
 	private final Scope scope;
@@ -37,6 +38,7 @@ public abstract class ScopeIR extends ObjectScopeIRBase {
 		this.scope = scope;
 	}
 
+	@Override
 	public final Generator getGenerator() {
 		return this.generator;
 	}
