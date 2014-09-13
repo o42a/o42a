@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.impl;
 
 import static java.util.Collections.emptyList;
+import static org.o42a.codegen.Codegen.irInit;
 import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 
 import java.util.Collection;
@@ -35,6 +36,7 @@ import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
+import org.o42a.util.fn.CondInit;
 import org.o42a.util.string.ID;
 
 
@@ -42,7 +44,8 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	private final CompilerContext context;
 	private final ID id;
-	private TopIR ir;
+	private final CondInit<Generator, TopIR> ir =
+			irInit(generator -> new TopIR(generator, this));
 
 	public Top(CompilerContext context) {
 		this.context = context;
@@ -162,10 +165,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public ScopeIR ir(Generator generator) {
-		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = new TopIR(generator, this);
-		}
-		return this.ir;
+		return this.ir.get(generator);
 	}
 
 	@Override
