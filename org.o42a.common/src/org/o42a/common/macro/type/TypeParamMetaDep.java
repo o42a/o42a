@@ -19,6 +19,8 @@
 */
 package org.o42a.common.macro.type;
 
+import static org.o42a.util.fn.NullableInit.nullableInit;
+
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
@@ -30,6 +32,7 @@ import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameter;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.util.fn.NullableInit;
 
 
 final class TypeParamMetaDep extends MetaDep {
@@ -38,7 +41,8 @@ final class TypeParamMetaDep extends MetaDep {
 	private final TypeParamMacroDep macroDep;
 	private final PathTemplate template;
 	private MetaDep parentDep;
-	private MetaDep nestedDep;
+	private final NullableInit<MetaDep> nestedDep =
+			nullableInit(this::createNestedDep);
 
 	TypeParamMetaDep(
 			Meta declaredIn,
@@ -58,20 +62,7 @@ final class TypeParamMetaDep extends MetaDep {
 
 	@Override
 	public final MetaDep nestedDep() {
-		if (this.nestedDep != null) {
-			return this.nestedDep;
-		}
-
-		final Nesting nesting = this.macroDep.getNesting();
-
-		if (nesting == null) {
-			return null;
-		}
-
-		final Obj nested =
-				nesting.findObjectIn(getDeclaredIn().getObject().getScope());
-
-		return this.nestedDep = new TypeParametersUpdate(this, nested.meta());
+		return this.nestedDep.get();
 	}
 
 	@Override
@@ -98,6 +89,20 @@ final class TypeParamMetaDep extends MetaDep {
 
 	final boolean typeParamChanged(Meta meta) {
 		return typeParamChanged(meta, this.macroDep.getParameterKey());
+	}
+
+	private MetaDep createNestedDep() {
+
+		final Nesting nesting = this.macroDep.getNesting();
+
+		if (nesting == null) {
+			return null;
+		}
+
+		final Obj nested =
+				nesting.findObjectIn(getDeclaredIn().getObject().getScope());
+
+		return new TypeParametersUpdate(this, nested.meta());
 	}
 
 	private Meta findNestedMeta(Meta meta) {

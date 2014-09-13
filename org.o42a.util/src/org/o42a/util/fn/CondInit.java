@@ -56,12 +56,16 @@ public final class CondInit<T, V> implements Function<T, V> {
 		return this.value;
 	}
 
-	@Override
-	public V apply(T t) {
+	public final V get(T t) {
 		if (this.value != null && this.condition.test(t, this.value)) {
 			return this.value;
 		}
 		return this.value = this.init.apply(t);
+	}
+
+	@Override
+	public final V apply(T t) {
+		return get(t);
 	}
 
 	public final void set(V value) {

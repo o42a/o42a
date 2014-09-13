@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Utilities
     Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,27 +17,41 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen;
-
-import static org.o42a.util.fn.CondInit.condInit;
-
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-
-import org.o42a.util.fn.CondInit;
+package org.o42a.util.fn;
 
 
-public interface Codegen {
+public final class DoOnce implements Runnable {
 
-	static <V extends Codegen> BiPredicate<Generator, V> hasGenerator() {
-		return (generator, t) -> t.getGenerator() == generator;
+	public static DoOnce doOnce(Runnable action) {
+		return new DoOnce(action);
 	}
 
-	static <V extends Codegen> CondInit<Generator, V> irInit(
-			Function<Generator, V> init) {
-		return condInit(hasGenerator(), init);
+	private final Runnable action;
+	private boolean executed;
+
+	private DoOnce(Runnable action) {
+		this.action = action;
 	}
 
-	Generator getGenerator();
+	public final boolean isExecuted() {
+		return this.executed;
+	}
+
+	@Override
+	public void run() {
+		if (this.executed) {
+			return;
+		}
+		this.executed = true;
+		this.action.run();
+	}
+
+	@Override
+	public String toString() {
+		if (this.action == null) {
+			return super.toString();
+		}
+		return this.action.toString();
+	}
 
 }

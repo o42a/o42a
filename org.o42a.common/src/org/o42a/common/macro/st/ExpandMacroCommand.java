@@ -20,6 +20,7 @@
 package org.o42a.common.macro.st;
 
 import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
+import static org.o42a.util.fn.Cache.cache;
 
 import java.util.IdentityHashMap;
 
@@ -38,12 +39,13 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.core.value.link.TargetResolver;
+import org.o42a.util.fn.Cache;
 
 
 final class ExpandMacroCommand extends Command {
 
-	private final IdentityHashMap<Scope, ValueAdapter> adapters =
-			new IdentityHashMap<>(1);
+	private final Cache<Scope, ValueAdapter> adapters =
+			cache(new IdentityHashMap<>(1), this::createAdapterIn);
 
 	ExpandMacroCommand(ExpandMacroStatement statement, CommandEnv env) {
 		super(statement, env);
@@ -127,13 +129,16 @@ final class ExpandMacroCommand extends Command {
 		return new DefTarget(target);
 	}
 
-	public ValueAdapter valueAdapter(Scope scope) {
+	public final ValueAdapter valueAdapter(Scope scope) {
+		return this.adapters.get(scope);
+	}
 
-		final ValueAdapter cached = this.adapters.get(scope);
+	@Override
+	protected void fullyResolve(FullResolver resolver) {
+		valueAdapter(resolver.getScope()).resolveAll(resolver);
+	}
 
-		if (cached != null) {
-			return cached;
-		}
+	private ValueAdapter createAdapterIn(Scope scope) {
 
 		final TypeParameters<?> expectedParameters =
 				env()
@@ -146,17 +151,8 @@ final class ExpandMacroCommand extends Command {
 						getContext().getLogger());
 		final ValueRequest valueRequest =
 				new ValueRequest(expectedParameters, logger);
-		final ValueAdapter adapter =
-				getExpansion().rebuildIn(scope).valueAdapter(valueRequest);
 
-		this.adapters.put(scope, adapter);
-
-		return adapter;
-	}
-
-	@Override
-	protected void fullyResolve(FullResolver resolver) {
-		valueAdapter(resolver.getScope()).resolveAll(resolver);
+		return getExpansion().rebuildIn(scope).valueAdapter(valueRequest);
 	}
 
 }
