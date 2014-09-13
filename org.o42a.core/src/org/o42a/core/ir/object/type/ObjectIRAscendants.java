@@ -42,7 +42,7 @@ final class ObjectIRAscendants extends RelList<ObjectIRBody> {
 		final Generator generator = item.getGenerator();
 		final ID id = PREFIX_ID.detail(
 				item.getSampleDeclaration().ir(generator).getId());
-		final AscendantDescIR.Type desc = data.addInstance(
+		final AscendantDescIR.Type desc = data.addNewInstance(
 				id,
 				ASCENDANT_DESC_IR,
 				new AscendantDescIR(item));

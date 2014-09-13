@@ -63,7 +63,7 @@ public final class ArrayItemsIRContainer
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(
+		data.addNewInstance(
 				GC_BLOCK_ID,
 				GC_BLOCK_TYPE,
 				new GCBlock(this.items, "o42a_array_gc_desc"));

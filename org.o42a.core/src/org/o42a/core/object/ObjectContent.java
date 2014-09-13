@@ -28,11 +28,18 @@ import org.o42a.analysis.use.*;
 
 public class ObjectContent implements UserInfo {
 
+	static ObjectContent objectContent(Obj object, boolean clonesContent) {
+		if (!object.meta().isUpdated()) {
+			return object.getCloneOf().clonesContent();
+		}
+		return new ObjectContent(object, clonesContent);
+	}
+
 	private final Obj object;
 	private Usable<SimpleUsage> usable;
 	private final boolean clonesContent;
 
-	ObjectContent(Obj object, boolean clonesContent) {
+	private ObjectContent(Obj object, boolean clonesContent) {
 		this.object = object;
 		this.clonesContent = clonesContent;
 	}

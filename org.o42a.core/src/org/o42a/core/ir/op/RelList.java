@@ -38,7 +38,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 	private Type instance;
 
 	public RelList<T> allocate(SubData<?> data, String fieldName) {
-		data.addInstance(ID.id(fieldName), REL_LIST_TYPE, this);
+		data.addNewInstance(ID.id(fieldName), REL_LIST_TYPE, this);
 		return this;
 	}
 

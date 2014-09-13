@@ -21,8 +21,11 @@ package org.o42a.core.object;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
+import static org.o42a.core.object.LinkUses.linkUsesFor;
 import static org.o42a.core.object.impl.ObjectResolution.NOT_RESOLVED;
 import static org.o42a.core.value.TypeParameters.typeParameters;
+import static org.o42a.util.fn.CondInit.condInit;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.*;
 
@@ -35,26 +38,42 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ObjectTypeParameters;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.CondInit;
+import org.o42a.util.fn.Init;
 
 
 public final class ObjectType implements UserInfo {
 
 	private final Obj object;
-	private final DerivationUses derivationUses;
-	private Obj lastDefinition;
-	private Obj sampleDeclaration;
-	private TypeParameters<?> parameters;
-	private LinkUses linkUses;
+
+	private final DerivationUses derivationUses =
+			new DerivationUses(this);
+	private final Init<Obj> lastDefinition =
+			init(this::findLastDefinition);
+	private final Init<Obj> sampleDeclaration =
+			init(this::findSampleDeclaration);
+	private final Init<TypeParameters<?>> parameters =
+			init(this::buildParameters);
+	private final Init<LinkUses> linkUses =
+			init(() -> linkUsesFor(this));
+	private final Init<ValueType<?>> valueType =
+			init(() -> getParameters().getValueType());
+
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
-	private Map<Scope, Derivation> allAscendants;
+
+	private CondInit<Void, Map<Scope, Derivation>> allAscendants =
+			condInit(
+					m -> getResolution().typeResolved(),
+					() -> getResolution().typeResolved()
+					? unmodifiableMap(buildAllAscendants())
+					: buildAllAscendants());
+
 	private ArrayList<Derivative> allDerivatives;
 	private ArrayList<Derivative> updatedDerivatives;
-	private ValueType<?> valueType;
 
 	ObjectType(Obj object) {
 		this.object = object;
-		this.derivationUses = new DerivationUses(this);
 	}
 
 	public final Obj getObject() {
@@ -62,40 +81,11 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public final Obj getLastDefinition() {
-		if (this.lastDefinition != null) {
-			return this.lastDefinition;
-		}
-
-		final Obj object = getObject();
-		final Obj cloneOf = object.getCloneOf();
-
-		if (cloneOf != null) {
-			return this.lastDefinition = cloneOf;
-		}
-
-		return this.lastDefinition = object;
+		return this.lastDefinition.get();
 	}
 
 	public final Obj getSampleDeclaration() {
-		if (this.sampleDeclaration != null) {
-			return this.sampleDeclaration;
-		}
-
-		Obj declaration = getObject();
-
-		for (;;) {
-
-			final Sample sample =
-					declaration.type().getAscendants().getSample();
-
-			if (sample == null) {
-				break;
-			}
-
-			declaration = sample.getObject();
-		}
-
-		return this.sampleDeclaration = declaration;
+		return this.sampleDeclaration.get();
 	}
 
 	public final boolean isRuntimeConstructed() {
@@ -125,23 +115,11 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public final ValueType<?> getValueType() {
-		if (this.valueType != null) {
-			return this.valueType;
-		}
-		return this.valueType = getParameters().getValueType();
+		return this.valueType.get();
 	}
 
 	public final TypeParameters<?> getParameters() {
-		if (this.parameters != null) {
-			return this.parameters;
-		}
-
-		final TypeParameters<?> parameters =
-				getObject().determineTypeParameters();
-
-		parameters.assertSameScope(getObject());
-
-		return this.parameters = parameters.declaredIn(getObject());
+		return this.parameters.get();
 	}
 
 	public final boolean isResolved() {
@@ -163,17 +141,7 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public final Map<Scope, Derivation> allAscendants() {
-		if (this.allAscendants != null) {
-			return this.allAscendants;
-		}
-
-		final HashMap<Scope, Derivation> allAscendants = buildAllAscendants();
-
-		if (getResolution().typeResolved()) {
-			this.allAscendants = unmodifiableMap(allAscendants);
-		}
-
-		return allAscendants;
+		return this.allAscendants.apply(null);
 	}
 
 	public final List<Derivative> allDerivatives() {
@@ -212,23 +180,7 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public final LinkUses linkUses() {
-		if (this.linkUses != null) {
-			return this.linkUses;
-		}
-
-		final ValueType<?> valueType = getValueType();
-
-		if (!valueType.isLink()) {
-			return null;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.linkUses = cloneOf.type().linkUses();
-		}
-
-		return this.linkUses = new LinkUses(this);
+		return this.linkUses.get();
 	}
 
 	public final void wrapBy(ObjectType type) {
@@ -259,11 +211,11 @@ public final class ObjectType implements UserInfo {
 	}
 
 	final void setKnownValueType(ValueType<?> valueType) {
-		this.valueType = valueType;
+		this.valueType.set(valueType);
 	}
 
 	final ValueType<?> getKnownValueType() {
-		return this.valueType;
+		return this.valueType.getKnown();
 	}
 
 	final ObjectResolution getResolution() {
@@ -332,6 +284,43 @@ public final class ObjectType implements UserInfo {
 				sample.getObject().type().registerUpdatedDerivative(sample);
 			}
 		}
+	}
+
+	private Obj findLastDefinition() {
+
+		final Obj object = getObject();
+		final Obj cloneOf = object.getCloneOf();
+
+		return cloneOf != null ? cloneOf : object;
+	}
+
+	private Obj findSampleDeclaration() {
+
+		Obj declaration = getObject();
+
+		for (;;) {
+
+			final Sample sample =
+					declaration.type().getAscendants().getSample();
+
+			if (sample == null) {
+				break;
+			}
+
+			declaration = sample.getObject();
+		}
+
+		return  declaration;
+	}
+
+	private TypeParameters<?> buildParameters() {
+
+		final TypeParameters<?> parameters =
+				getObject().determineTypeParameters();
+
+		parameters.assertSameScope(getObject());
+
+		return parameters.declaredIn(getObject());
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {

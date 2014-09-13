@@ -41,7 +41,7 @@ final class ObjectIRFields extends RelList<FieldDescIR> {
 		final FldIR<?, ?> fld = item.fld();
 		final ID id = PREFIX_ID.detail(fld.getId().getLocal());
 		final FieldDescIR.Type desc =
-				data.addInstance(id, FIELD_DESC_IR, item);
+				data.addNewInstance(id, FIELD_DESC_IR, item);
 
 		return desc.data(data.getGenerator()).getPointer();
 	}

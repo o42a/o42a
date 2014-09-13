@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause.impl;
 
+import static org.o42a.util.fn.Holder.holder;
+
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -54,7 +56,7 @@ public final class DeclaredPlainClause extends PlainClause {
 			DeclaredPlainClause propagatedFrom) {
 		super(clause, propagatedFrom);
 		this.builder = propagatedFrom.builder;
-		this.definition = new Holder<>(propagatedFrom.getDefinition());
+		this.definition = holder(propagatedFrom.getDefinition());
 		this.overridden = propagatedFrom.getOverridden();
 		this.reused = propagatedFrom.getReusedClauses();
 	}
@@ -151,7 +153,7 @@ public final class DeclaredPlainClause extends PlainClause {
 			definition = createExpressionDefinition();
 		}
 
-		this.definition = new Holder<>(definition);
+		this.definition = holder(definition);
 		setClauseObject(definition);
 
 		return definition;

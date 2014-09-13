@@ -19,10 +19,12 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.codegen.data.Struct.structContent;
-import static org.o42a.core.ir.object.type.ObjectDescIR.allocateDescIR;
+import static org.o42a.core.ir.object.VmtIR.vmtIR;
+import static org.o42a.core.ir.object.type.ObjectDescIR.objectDescIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
+import static org.o42a.util.fn.Init.init;
 
+import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
@@ -31,20 +33,27 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.type.ObjectDescIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.object.Obj;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
-public class ObjectIR {
+public class ObjectIR implements Codegen {
 
 	private final Generator generator;
 	private final Obj object;
 	private final ObjectDataIR dataIR;
 	private final ValueIR valueIR;
-	private ObjectDescIR descIR;
-	private VmtIR vmtIR;
-	private ObjectValueIR objectValueIR;
-	private ObjectIRBodies typeBodies;
-	private ObjectIRBodies bodies;
+	private final Init<ObjectDescIR> descIR =
+			init(() -> objectDescIR(this));
+	private final Init<VmtIR> vmtIR = init(() -> vmtIR(this));
+	private final Init<ObjectValueIR> objectValueIR =
+			init(() -> new ObjectValueIR(this));
+	private final Init<ObjectIRBodies> typeBodies = init(
+			() -> !isSampleDeclaration()
+			? getSampleDeclaration().ir(getGenerator()).typeBodies()
+			: new ObjectIRBodies(this, true).allocate());
+	private final Init<ObjectIRBodies> bodies =
+			init(() -> new ObjectIRBodies(this, false).allocate());
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
@@ -54,6 +63,7 @@ public class ObjectIR {
 				object.type().getValueType().ir(generator).valueIR(this);
 	}
 
+	@Override
 	public final Generator getGenerator() {
 		return this.generator;
 	}
@@ -85,46 +95,11 @@ public class ObjectIR {
 	}
 
 	public final ObjectDescIR getDescIR() {
-		if (this.descIR != null) {
-			return this.descIR;
-		}
-
-		assert getObject().assertFullyResolved();
-
-		return this.descIR = allocateDescIR(this);
+		return this.descIR.get();
 	}
 
 	public final VmtIR getVmtIR() {
-		if (this.vmtIR != null) {
-			return this.vmtIR;
-		}
-
-		final Obj object = getObject();
-
-		assert object.assertFullyResolved();
-
-		final Obj lastDefinition = object.type().getLastDefinition();
-
-		if (!object.is(lastDefinition)) {
-			return this.vmtIR = lastDefinition.ir(getGenerator()).getVmtIR();
-		}
-
-		this.vmtIR = new VmtIR(this);
-		if (isSampleDeclaration()) {
-			getGenerator().newGlobal().struct(this.vmtIR);
-		} else {
-
-			final VmtIR sampleVmtIR =
-					getSampleDeclaration().ir(getGenerator()).getVmtIR();
-
-			getGenerator().newGlobal().instance(
-					this.vmtIR.getId(),
-					sampleVmtIR,
-					this.vmtIR,
-					structContent());
-		}
-
-		return this.vmtIR;
+		return this.vmtIR.get();
 	}
 
 	public final ObjectDataIR getDataIR() {
@@ -148,36 +123,15 @@ public class ObjectIR {
 	}
 
 	public final ObjectValueIR getObjectValueIR() {
-		if (this.objectValueIR != null) {
-			return this.objectValueIR;
-		}
-		return this.objectValueIR = new ObjectValueIR(this);
+		return this.objectValueIR.get();
 	}
 
 	public final ObjectIRBodies typeBodies() {
-		if (this.typeBodies != null) {
-			return this.typeBodies;
-		}
-		if (!isSampleDeclaration()) {
-			return this.typeBodies =
-					getSampleDeclaration().ir(getGenerator()).typeBodies();
-		}
-
-		this.typeBodies = new ObjectIRBodies(this, true);
-		this.typeBodies.allocate();
-
-		return this.typeBodies;
+		return this.typeBodies.get();
 	}
 
 	public final ObjectIRBodies bodies() {
-		if (this.bodies != null) {
-			return this.bodies;
-		}
-
-		this.bodies = new ObjectIRBodies(this, false);
-		this.bodies.allocate();
-
-		return this.bodies;
+		return this.bodies.get();
 	}
 
 	public final ObjectIR allocate() {

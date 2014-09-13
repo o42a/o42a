@@ -20,17 +20,22 @@
 package org.o42a.core.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.codegen.Codegen.irInit;
 import static org.o42a.core.AbstractContainer.matchingPathOf;
 import static org.o42a.core.member.MemberId.OWNER_FIELD_ID;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
+import static org.o42a.core.object.ObjectContent.objectContent;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.object.impl.OverrideRequirement.abstractsAllowedIn;
 import static org.o42a.core.object.impl.OwnerField.ownerFieldFor;
 import static org.o42a.core.object.impl.OwnerField.reusedOwnerPath;
 import static org.o42a.core.object.value.Statefulness.DERIVED_EAGER;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.staticPath;
 import static org.o42a.core.value.TypeParameters.typeParameters;
+import static org.o42a.util.fn.Init.init;
+import static org.o42a.util.fn.NullableInit.nullableInit;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -68,37 +73,48 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.fn.Holder;
+import org.o42a.util.fn.CondInit;
+import org.o42a.util.fn.Init;
+import org.o42a.util.fn.NullableInit;
 
 
 public abstract class Obj
 		extends Contained
 		implements MemberContainer, ClauseContainer {
 
-	private ObjectContent content;
-	private ObjectContent clonesContent;
-	private Ref self;
 	private final Obj propagatedFrom;
-	private Holder<Obj> cloneOf;
+
+	private final Init<Meta> meta = init(() -> new Meta(this));
+	private final Init<ObjectType> type = init(() -> new ObjectType(this));
+	private final Init<ObjectValue> value = init(() -> new ObjectValue(this));
+	private final Init<Deps> deps = init(() -> new Deps(this));
+
+	private final Init<ObjectContent> content =
+			init(() -> objectContent(this, false));
+	private final Init<ObjectContent> clonesContent =
+			init(() -> objectContent(this, true));
+	private final Init<Ref> selfRef = init(
+			() -> SELF_PATH
+			.bindStatically(this, getScope())
+			.target(distribute()));
+	private final NullableInit<Obj> cloneOf = nullableInit(this::findCloneOf);
 	private byte fullResolution;
 
-	private OwnerPath ownerPath;
-	private Obj wrapped;
-	private Meta meta;
-	private ObjectType type;
-	private ObjectValue value;
-	private Deps deps;
+	private final Init<OwnerPath> ownerPath = init(this::createOwnerPath);
+	private final Init<Obj> wrapped = init(this::findWrapped);
 
+	private ObjectMembers objectMembers;
 	private final HashMap<MemberKey, Member> members = new HashMap<>();
 	private final HashMap<MemberId, Symbol> symbols = new HashMap<>();
 
-	private ObjectMembers objectMembers;
-	private MemberClause[] explicitClauses;
-	private MemberClause[] implicitClauses;
+	private final Init<MemberClause[]> explicitClauses =
+			init(this::findExplicitClauses);
+	private final Init<MemberClause[]> implicitClauses =
+			init(this::findImplicitClauses);
 
-	private FieldUses fieldUses;
+	private final Init<FieldUses> fieldUses = init(() -> new FieldUses(this));
 
-	private ObjectIR ir;
+	private final CondInit<Generator, ObjectIR> ir = irInit(this::createIR);
 
 	public Obj(Scope scope) {
 		super(scope, new ObjectDistributor(scope, scope));
@@ -213,15 +229,7 @@ public abstract class Obj
 	}
 
 	public final Obj getCloneOf() {
-		if (this.cloneOf != null) {
-			return this.cloneOf.get();
-		}
-
-		final Obj cloneOf = findCloneOf();
-
-		this.cloneOf = new Holder<>(cloneOf);
-
-		return cloneOf;
+		return this.cloneOf.get();
 	}
 
 	public ConstructionMode getConstructionMode() {
@@ -256,10 +264,7 @@ public abstract class Obj
 	}
 
 	public final Obj getWrapped() {
-		if (this.wrapped != null) {
-			return this.wrapped;
-		}
-		return this.wrapped = findWrapped();
+		return this.wrapped.get();
 	}
 
 	public final Obj mostWrapped() {
@@ -274,35 +279,23 @@ public abstract class Obj
 	}
 
 	public final Meta meta() {
-		if (this.meta != null) {
-			return this.meta;
-		}
-		return this.meta = new Meta(this);
+		return this.meta.get();
 	}
 
 	public final ObjectType type() {
-		if (this.type != null) {
-			return this.type;
-		}
-		return this.type = new ObjectType(this);
+		return this.type.get();
 	}
 
 	public final ObjectValue value() {
-		if (this.value != null) {
-			return this.value;
-		}
-		return this.value = new ObjectValue(this);
+		return this.value.get();
 	}
 
 	public final boolean hasDeps(Analyzer analyzer) {
-		return this.deps != null && this.deps.hasDeps(analyzer);
+		return this.deps.isInitialized() && deps().hasDeps(analyzer);
 	}
 
 	public final Deps deps() {
-		if (this.deps != null) {
-			return this.deps;
-		}
-		return this.deps = new Deps(this);
+		return this.deps.get();
 	}
 
 	public final boolean membersResolved() {
@@ -315,38 +308,8 @@ public abstract class Obj
 		return this.members.values();
 	}
 
-	public MemberClause[] getExplicitClauses() {
-		if (this.explicitClauses != null) {
-			return this.explicitClauses;
-		}
-
-		MemberClause[] explicitClauses = new MemberClause[0];
-		final Scope origin = getScope();
-
-		for (Member member : getMembers()) {
-			if (member.isTypeMember() || member.isAlias()) {
-				continue;
-			}
-
-			final MemberClause clause = member.toClause();
-
-			if (clause == null) {
-				continue;
-			}
-
-			final MemberKey key = member.getMemberKey();
-
-			if (key.getOrigin() != origin) {
-				continue;
-			}
-			if (key.getEnclosingKey() != null) {
-				continue;
-			}
-
-			explicitClauses = ArrayUtil.append(explicitClauses, clause);
-		}
-
-		return this.explicitClauses = explicitClauses;
+	public final MemberClause[] getExplicitClauses() {
+		return this.explicitClauses.get();
 	}
 
 	@Override
@@ -374,35 +337,7 @@ public abstract class Obj
 
 	@Override
 	public MemberClause[] getImplicitClauses() {
-		if (this.implicitClauses != null) {
-			return this.implicitClauses;
-		}
-
-		MemberClause[] implicitClauses = new MemberClause[0];
-
-		for (MemberClause clause : getExplicitClauses()) {
-			if (clause.isImplicit()) {
-				implicitClauses = ArrayUtil.append(implicitClauses, clause);
-			}
-		}
-
-		final Sample sample = type().getSample();
-
-		if (sample != null) {
-			implicitClauses = ArrayUtil.append(
-					implicitClauses,
-					sample.getObject().getImplicitClauses());
-		}
-
-		final TypeRef ancestor = type().getAncestor();
-
-		if (ancestor != null) {
-			implicitClauses = ArrayUtil.append(
-					implicitClauses,
-					ancestor.getType().getImplicitClauses());
-		}
-
-		return this.implicitClauses = implicitClauses;
+		return this.implicitClauses.get();
 	}
 
 	@Override
@@ -537,10 +472,7 @@ public abstract class Obj
 	}
 
 	public final OwnerPath ownerPath() {
-		if (this.ownerPath != null) {
-			return this.ownerPath;
-		}
-		return this.ownerPath = createOwnerPath();
+		return this.ownerPath.get();
 	}
 
 	public final Ref staticRef(Scope scope) {
@@ -552,43 +484,22 @@ public abstract class Obj
 	}
 
 	public final FieldUses fieldUses() {
-		if (this.fieldUses != null) {
-			return this.fieldUses;
-		}
-		return this.fieldUses = new FieldUses(this);
+		return this.fieldUses.get();
 	}
 
 	public final Ref selfRef() {
-		if (this.self != null) {
-			return this.self;
-		}
-		return this.self =
-				Path.SELF_PATH
-				.bindStatically(this, getScope())
-				.target(distribute());
+		return this.selfRef.get();
 	}
 
 	public final ObjectContent content() {
-		if (this.content != null) {
-			return this.content;
-		}
-		if (!meta().isUpdated()) {
-			return this.content = getCloneOf().clonesContent();
-		}
-		return this.content = new ObjectContent(this, false);
+		return this.content.get();
 	}
 
 	public final ObjectContent clonesContent() {
-		if (this.clonesContent != null) {
-			return this.clonesContent;
-		}
-		if (!meta().isUpdated()) {
-			return this.clonesContent = getCloneOf().clonesContent();
-		}
-		return this.clonesContent = new ObjectContent(this, true);
+		return this.clonesContent.get();
 	}
 
-	public CommandEnv definitionEnv() {
+	public final CommandEnv definitionEnv() {
 		return new ObjectEnv(this);
 	}
 
@@ -614,14 +525,7 @@ public abstract class Obj
 	}
 
 	public final ObjectIR ir(Generator generator) {
-
-		final ObjectIR ir = this.ir;
-
-		if (ir != null && ir.getGenerator() == generator) {
-			return ir;
-		}
-
-		return this.ir = createIR(generator);
+		return this.ir.apply(generator);
 	}
 
 	public final boolean assertFullyResolved() {
@@ -909,6 +813,66 @@ public abstract class Obj
 						new DeclaredMemberTypeParameter(parameter, this));
 			}
 		}
+	}
+
+	private MemberClause[] findExplicitClauses() {
+
+		MemberClause[] explicitClauses = new MemberClause[0];
+		final Scope origin = getScope();
+
+		for (Member member : getMembers()) {
+			if (member.isTypeMember() || member.isAlias()) {
+				continue;
+			}
+
+			final MemberClause clause = member.toClause();
+
+			if (clause == null) {
+				continue;
+			}
+
+			final MemberKey key = member.getMemberKey();
+
+			if (key.getOrigin() != origin) {
+				continue;
+			}
+			if (key.getEnclosingKey() != null) {
+				continue;
+			}
+
+			explicitClauses = ArrayUtil.append(explicitClauses, clause);
+		}
+
+		return explicitClauses;
+	}
+
+	private MemberClause[] findImplicitClauses() {
+
+		MemberClause[] implicitClauses = new MemberClause[0];
+
+		for (MemberClause clause : getExplicitClauses()) {
+			if (clause.isImplicit()) {
+				implicitClauses = ArrayUtil.append(implicitClauses, clause);
+			}
+		}
+
+		final Sample sample = type().getSample();
+
+		if (sample != null) {
+			implicitClauses = ArrayUtil.append(
+					implicitClauses,
+					sample.getObject().getImplicitClauses());
+		}
+
+		final TypeRef ancestor = type().getAncestor();
+
+		if (ancestor != null) {
+			implicitClauses = ArrayUtil.append(
+					implicitClauses,
+					ancestor.getType().getImplicitClauses());
+		}
+
+		return implicitClauses;
 	}
 
 	private void resolveAllMembers() {

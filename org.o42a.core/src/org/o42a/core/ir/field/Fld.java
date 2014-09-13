@@ -123,7 +123,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		if (isStateless()) {
 			return;
 		}
-		this.instance = data.addInstance(
+		this.instance = data.addNewInstance(
 				FLD_ID.detail(getId().getLocal()),
 				getType(),
 				isDummy() ? dummyContent() : content());

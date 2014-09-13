@@ -42,7 +42,8 @@ public class ObjectDescIR {
 
 	public static final ID OBJECT_DESC_ID = ID.id("desc");
 
-	public static ObjectDescIR allocateDescIR(ObjectIR objectIR) {
+	public static ObjectDescIR objectDescIR(ObjectIR objectIR) {
+		assert objectIR.getObject().assertFullyResolved();
 		if (!objectIR.isSampleDeclaration()) {
 			return objectIR.getSampleDeclaration()
 					.ir(objectIR.getGenerator())
@@ -134,7 +135,7 @@ public class ObjectDescIR {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.desc = data.addInstance(OBJECT_DESC_ID, OBJECT_DESC_TYPE);
+			this.desc = data.addNewInstance(OBJECT_DESC_ID, OBJECT_DESC_TYPE);
 			allocateFieldDecls();
 			allocateDepDecls();
 			getDesc().ascendants().addAll(getObjectIR().typeBodies());

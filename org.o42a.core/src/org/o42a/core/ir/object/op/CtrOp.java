@@ -398,7 +398,7 @@ public class CtrOp extends IROp {
 			this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
 			this.defFunc = data.addFuncPtr("def_f", OBJECT_VALUE);
 			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
-			this.value = data.addInstance(ID.rawId("value"), VAL_TYPE);
+			this.value = data.addNewInstance(ID.rawId("value"), VAL_TYPE);
 		}
 
 		@Override

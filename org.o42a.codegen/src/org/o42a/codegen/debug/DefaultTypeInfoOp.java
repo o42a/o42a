@@ -120,7 +120,7 @@ final class DefaultTypeInfoOp extends StructOp<DefaultTypeInfoOp> {
 				}
 			}
 
-			data.addInstance(
+			data.addNewInstance(
 					FIELD_ID.detail(field.getId()),
 					DEBUG_FIELD_INFO_TYPE,
 					new DebugFieldInfo(field));

@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
@@ -35,12 +36,45 @@ public class VmtIR extends Struct<VmtIROp> {
 
 	public static final ID VMT_ID = ID.id("vmt");
 
+	public static VmtIR vmtIR(ObjectIR objectIR) {
+
+		final Obj object = objectIR.getObject();
+
+		assert object.assertFullyResolved();
+
+		final Generator generator = objectIR.getGenerator();
+		final Obj lastDefinition = object.type().getLastDefinition();
+
+		if (!object.is(lastDefinition)) {
+			return lastDefinition.ir(generator).getVmtIR();
+		}
+
+		final VmtIR vmtIR = new VmtIR(objectIR);
+
+		if (objectIR.isSampleDeclaration()) {
+			generator.newGlobal().struct(vmtIR);
+		} else {
+
+			final VmtIR sampleVmtIR =
+					objectIR.getSampleDeclaration().ir(generator).getVmtIR();
+			final Content<VmtIR> content = structContent();
+
+			generator.newGlobal().instance(
+					vmtIR.getId(),
+					sampleVmtIR,
+					vmtIR,
+					content);
+		}
+
+		return vmtIR;
+	}
+
 	private final ObjectIR objectIR;
 
 	private Int32rec size;
 	private VmtIRChain terminator;
 
-	public VmtIR(ObjectIR objectIR) {
+	private VmtIR(ObjectIR objectIR) {
 		super(objectIR.getId().detail(VMT_ID));
 		this.objectIR = objectIR;
 	}
@@ -69,7 +103,7 @@ public class VmtIR extends Struct<VmtIROp> {
 	@Override
 	protected void allocate(SubData<VmtIROp> data) {
 		this.size = data.addInt32(SIZE_ID);
-		this.terminator = data.addInstance(
+		this.terminator = data.addNewInstance(
 				TERMINATOR_ID,
 				VMT_IR_CHAIN_TYPE,
 				new VmtTerminator(data));

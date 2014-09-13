@@ -101,7 +101,7 @@ public class DepIR implements FldIR<DepIR.Op, DepIR.Type> {
 		if (isOmitted()) {
 			return;
 		}
-		this.instance = data.addInstance(
+		this.instance = data.addNewInstance(
 				getId(),
 				DEP_IR,
 				instance -> instance.object().setNull());

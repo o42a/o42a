@@ -140,13 +140,13 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 	}
 
 	ObjectIRData allocateType(SubData<?> data) {
-		return data.addInstance(OBJECT_DATA_ID, OBJECT_DATA_TYPE);
+		return data.addNewInstance(OBJECT_DATA_ID, OBJECT_DATA_TYPE);
 	}
 
 	ObjectIRData allocateInstance(SubData<?> data) {
 
 		final ObjectIRData result =
-				data.addInstance(OBJECT_DATA_ID, OBJECT_DATA_TYPE, this);
+				data.addNewInstance(OBJECT_DATA_ID, OBJECT_DATA_TYPE, this);
 
 		getObjectIR().getObjectValueIR().allocate(this);
 
