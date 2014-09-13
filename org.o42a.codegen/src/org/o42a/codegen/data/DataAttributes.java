@@ -27,7 +27,9 @@ public interface DataAttributes {
 	int DATA_FLAGS = 0x11;
 	int NESTED_FLAGS = CONSTANT;
 
-	boolean isConstant();
+	default boolean isConstant() {
+		return (getDataFlags() & CONSTANT) != 0;
+	}
 
 	int getDataFlags();
 

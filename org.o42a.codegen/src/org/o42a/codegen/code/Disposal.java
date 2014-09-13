@@ -20,6 +20,7 @@
 package org.o42a.codegen.code;
 
 
+@FunctionalInterface
 public interface Disposal {
 
 	Disposal DISPOSE_NOTHING = new Disposal() {

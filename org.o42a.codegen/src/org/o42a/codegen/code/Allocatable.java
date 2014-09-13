@@ -28,7 +28,9 @@ public interface Allocatable<T> {
 
 	AllocationMode getAllocationMode();
 
-	int getDisposePriority();
+	default int getDisposePriority() {
+		return NORMAL_DISPOSE_PRIORITY;
+	}
 
 	T allocate(Allocations code, Allocated<T> allocated);
 

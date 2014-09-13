@@ -21,6 +21,7 @@ package org.o42a.codegen.data;
 
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.function.Supplier;
 
@@ -29,6 +30,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -36,7 +38,8 @@ public abstract class Ptr<P extends PtrOp<P>>
 		extends AbstractPtr
 		implements Supplier<Ptr<P>> {
 
-	private DataAllocation<P> allocation;
+	private final Init<DataAllocation<P>> allocation =
+			init(this::createAllocation);
 	private DataAllocation<P> protoAllocation;
 
 	protected Ptr(ID id, boolean ptrToConstant, boolean isNull) {
@@ -49,10 +52,7 @@ public abstract class Ptr<P extends PtrOp<P>>
 	}
 
 	public final DataAllocation<P> getAllocation() {
-		if (this.allocation != null) {
-			return this.allocation;
-		}
-		return this.allocation = createAllocation();
+		return this.allocation.get();
 	}
 
 	public final DataAllocation<P> getProtoAllocation() {
@@ -99,9 +99,9 @@ public abstract class Ptr<P extends PtrOp<P>>
 	}
 
 	void setAllocation(DataAllocation<P> allocation) {
-		assert this.allocation == null :
+		assert !this.allocation.isInitialized() :
 			"Allocation already present";
-		this.allocation = allocation;
+		this.allocation.set(allocation);
 	}
 
 	final void setProtoAllocation(DataAllocation<P> allocation) {

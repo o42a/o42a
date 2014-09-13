@@ -150,11 +150,6 @@ public final class ObjectUseOp extends IROp {
 		}
 
 		@Override
-		public int getDisposePriority() {
-			return NORMAL_DISPOSE_PRIORITY;
-		}
-
-		@Override
 		public AllocatedObjectUse allocate(
 				Allocations code,
 				Allocated<AllocatedObjectUse> allocated) {

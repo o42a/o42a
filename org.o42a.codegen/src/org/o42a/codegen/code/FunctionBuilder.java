@@ -20,6 +20,7 @@
 package org.o42a.codegen.code;
 
 
+@FunctionalInterface
 public interface FunctionBuilder<F extends Fn<F>> {
 
 	void build(Function<F> function);

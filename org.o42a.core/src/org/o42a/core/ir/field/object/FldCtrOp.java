@@ -163,11 +163,6 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		}
 
 		@Override
-		public int getDisposePriority() {
-			return NORMAL_DISPOSE_PRIORITY;
-		}
-
-		@Override
 		public FldCtrOp allocate(
 				Allocations code,
 				Allocated<FldCtrOp> allocated) {

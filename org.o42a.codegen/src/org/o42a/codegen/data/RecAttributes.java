@@ -26,6 +26,8 @@ public interface RecAttributes extends DataAttributes {
 
 	int REC_FLAGS = 0x1111;
 
-	boolean isLowLevel();
+	default boolean isLowLevel() {
+		return (getDataFlags() & LOW_LEVEL) != 0;
+	}
 
 }

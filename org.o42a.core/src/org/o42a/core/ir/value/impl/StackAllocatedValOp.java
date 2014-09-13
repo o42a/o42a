@@ -90,17 +90,11 @@ public final class StackAllocatedValOp extends ValOp {
 		return "(" + getValueType() + ") " + this.id;
 	}
 
-	private final class AllocatableVal
-			implements Allocatable<ValType.Op> {
+	private final class AllocatableVal implements Allocatable<ValType.Op> {
 
 		@Override
 		public AllocationMode getAllocationMode() {
 			return ALLOCATOR_ALLOCATION;
-		}
-
-		@Override
-		public int getDisposePriority() {
-			return NORMAL_DISPOSE_PRIORITY;
 		}
 
 		@Override

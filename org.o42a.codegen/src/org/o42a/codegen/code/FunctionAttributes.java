@@ -25,9 +25,13 @@ public interface FunctionAttributes {
 	int EXPORTED = 0x01;
 	int NO_SIDE_EFFECTS = 0x02;
 
-	boolean isExported();
+	default boolean isExported() {
+		return (getFunctionFlags() & EXPORTED) != 0;
+	}
 
-	boolean hasSideEffects();
+	default boolean hasSideEffects() {
+		return (getFunctionFlags() & NO_SIDE_EFFECTS) == 0;
+	}
 
 	int getFunctionFlags();
 

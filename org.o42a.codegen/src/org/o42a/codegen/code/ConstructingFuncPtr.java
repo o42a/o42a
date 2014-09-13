@@ -37,16 +37,6 @@ final class ConstructingFuncPtr<F extends Fn<F>> extends FuncPtr<F> {
 	}
 
 	@Override
-	public final boolean isExported() {
-		return getFunction().isExported();
-	}
-
-	@Override
-	public final boolean hasSideEffects() {
-		return getFunction().hasSideEffects();
-	}
-
-	@Override
 	public final int getFunctionFlags() {
 		return getFunction().getFunctionFlags();
 	}

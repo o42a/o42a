@@ -92,11 +92,6 @@ public abstract class AbstractObjectStoreOp
 		}
 
 		@Override
-		public int getDisposePriority() {
-			return NORMAL_DISPOSE_PRIORITY;
-		}
-
-		@Override
 		public AnyRecOp allocate(
 				Allocations code,
 				Allocated<AnyRecOp> allocated) {

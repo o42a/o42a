@@ -21,8 +21,10 @@ package org.o42a.core.ir;
 
 import static org.o42a.codegen.code.AllocationMode.NO_ALLOCATION;
 import static org.o42a.core.ir.op.NoArgFn.NO_ARG;
+import static org.o42a.util.fn.DoOnce.doOnce;
 
 import org.o42a.codegen.code.*;
+import org.o42a.util.fn.DoOnce;
 import org.o42a.util.string.ID;
 
 
@@ -32,7 +34,10 @@ public final class GCCode {
 	private static final SignalGC SIGNAL_GC = new SignalGC();
 
 	private final CodeBuilder builder;
-	private boolean signalSent;
+	private final DoOnce sendSignal = doOnce(
+			() -> getBuilder()
+			.getFunction()
+			.allocate(SIGNAL_GC_ID, SIGNAL_GC));
 
 	GCCode(CodeBuilder builder) {
 		this.builder = builder;
@@ -43,11 +48,7 @@ public final class GCCode {
 	}
 
 	public final void signal() {
-		if (this.signalSent) {
-			return;
-		}
-		this.signalSent = true;
-		getBuilder().getFunction().allocate(SIGNAL_GC_ID, SIGNAL_GC);
+		this.sendSignal.doOnce();
 	}
 
 	private static final class SignalGC implements Allocatable<Void> {

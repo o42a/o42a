@@ -19,11 +19,14 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.util.fn.Init.init;
+
 import java.util.function.Supplier;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.data.backend.RelAllocation;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -32,13 +35,16 @@ public final class RelPtr implements Supplier<RelPtr> {
 	private final Ptr<?> pointer;
 	private final Ptr<?> relativeTo;
 	private final ID id;
-	private RelAllocation allocation;
+	private final Init<RelAllocation> allocation =
+			init(() ->  getPointer().getAllocation().relativeTo(
+					this,
+					getRelativeTo().getAllocation()));
 
 	RelPtr(Ptr<?> pointer, Ptr<?> relativeTo) {
 		this.pointer = pointer;
 		this.relativeTo = relativeTo;
 		this.id =
-				this.pointer.getId()
+				pointer.getId()
 				.detail("relative_to")
 				.detail(relativeTo.getId());
 	}
@@ -61,12 +67,7 @@ public final class RelPtr implements Supplier<RelPtr> {
 	}
 
 	public final RelAllocation getAllocation() {
-		if (this.allocation != null) {
-			return this.allocation;
-		}
-		return this.allocation = getPointer().getAllocation().relativeTo(
-				this,
-				getRelativeTo().getAllocation());
+		return this.allocation.get();
 	}
 
 	public final RelOp op(ID id, Code code) {

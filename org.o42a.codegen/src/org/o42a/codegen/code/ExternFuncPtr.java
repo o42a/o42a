@@ -19,14 +19,18 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
 final class ExternFuncPtr<F extends Fn<F>> extends FuncPtr<F> {
 
 	private final ExternalFunctionSettings settings;
-	private FuncAllocation<F> allocation;
+	private final Init<FuncAllocation<F>> allocation =
+			init(this::createAllocation);
 
 	ExternFuncPtr(
 			ID id,
@@ -57,21 +61,21 @@ final class ExternFuncPtr<F extends Fn<F>> extends FuncPtr<F> {
 	}
 
 	@Override
-	public FuncAllocation<F> getAllocation() {
-		if (this.allocation != null) {
-			return this.allocation;
-		}
-
-		final Functions functions =
-				getSignature().getGenerator().getFunctions();
-
-		return this.allocation =
-				functions.codeBackend().externFunction(getId(), this);
+	public final FuncAllocation<F> getAllocation() {
+		return this.allocation.get();
 	}
 
 	@Override
 	public String toString() {
 		return "exten " + getSignature().toString(getId().toString());
+	}
+
+	private FuncAllocation<F> createAllocation() {
+
+		final Functions functions =
+				getSignature().getGenerator().getFunctions();
+
+		return functions.codeBackend().externFunction(getId(), this);
 	}
 
 }
