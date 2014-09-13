@@ -20,12 +20,8 @@
 package org.o42a.core.ir.object.impl;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.Obj;
 
 
@@ -57,15 +53,6 @@ public final class ObjectScopeIR extends ScopeIR {
 		}
 
 		enclosingContainer.getScope().ir(getGenerator()).allocate();
-	}
-
-	@Override
-	protected HostOp createOp(CodeBuilder builder, Code code) {
-
-		final Obj object = getScope().toObject();
-		final ObjectIR objectIR = object.ir(getGenerator());
-
-		return objectIR.op(builder, code);
 	}
 
 }

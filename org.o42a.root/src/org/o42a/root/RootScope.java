@@ -20,12 +20,9 @@
 package org.o42a.root;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.string.ID;
@@ -68,11 +65,6 @@ final class RootScope extends StandaloneObjectScope {
 
 		@Override
 		protected void targetAllocated() {
-		}
-
-		@Override
-		protected HostOp createOp(CodeBuilder builder, Code code) {
-			return getScope().toObject().ir(getGenerator()).op(builder, code);
 		}
 
 	}

@@ -22,13 +22,10 @@ package org.o42a.core.ir.object;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.object.Obj;
 
 
 public abstract class FieldIRBase extends ScopeIR {
@@ -73,15 +70,6 @@ public abstract class FieldIRBase extends ScopeIR {
 	protected abstract Fld<?, ?> declareFld(ObjectIRBody bodyIR);
 
 	protected abstract Fld<?, ?> declareDummyFld(ObjectIRBody bodyIR);
-
-	@Override
-	protected HostOp createOp(CodeBuilder builder, Code code) {
-
-		final Obj owner = getField().getEnclosingContainer().toObject();
-		final ObjOp host = owner.ir(getGenerator()).op(builder, code);
-
-		return this.fld.op(code, host);
-	}
 
 	final Fld<?, ?> declare(ObjectIRBody bodyIR) {
 
