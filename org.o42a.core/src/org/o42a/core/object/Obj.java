@@ -525,7 +525,7 @@ public abstract class Obj
 	}
 
 	public final ObjectIR ir(Generator generator) {
-		return this.ir.apply(generator);
+		return this.ir.get(generator);
 	}
 
 	public final boolean assertFullyResolved() {
