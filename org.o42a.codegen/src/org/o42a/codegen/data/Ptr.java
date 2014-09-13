@@ -98,10 +98,16 @@ public abstract class Ptr<P extends PtrOp<P>>
 		return getAllocation().toAny();
 	}
 
-	final void setAllocation(DataAllocation<P> allocation) {
+	void setAllocation(DataAllocation<P> allocation) {
 		assert this.allocation == null :
 			"Allocation already present";
 		this.allocation = allocation;
+	}
+
+	final void setProtoAllocation(DataAllocation<P> allocation) {
+		assert this.protoAllocation == null :
+			"Prototype allocation already present";
+		this.protoAllocation = allocation;
 	}
 
 	@SuppressWarnings("unchecked")

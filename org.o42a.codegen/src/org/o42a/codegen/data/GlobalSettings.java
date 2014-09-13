@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.codegen.data.Struct.structContent;
+
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.util.string.ID;
 
@@ -105,10 +107,7 @@ public final class GlobalSettings
 
 	public final <S extends StructOp<S>, ST extends Struct<S>>
 	Global<S, ST> struct(ST type, ST instance) {
-
-		final Content<ST> content = Struct.structContent();
-
-		return instance(instance.getId(), type, instance, content);
+		return instance(instance.getId(), type, instance, structContent());
 	}
 
 }
