@@ -27,6 +27,7 @@ import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.util.fn.Holder.holder;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.compiler.ip.access.AccessDistributor;
@@ -231,7 +232,7 @@ public class MemberById extends ContainedFragment {
 				container.findMember(access, this.memberId, declaredIn);
 
 		if (found != null) {
-			return new Holder<>(found.pathToMember());
+			return holder(found.pathToMember());
 		}
 
 		return memberOfAdapter(access, container);
@@ -271,7 +272,7 @@ public class MemberById extends ContainedFragment {
 			return null;
 		}
 
-		return new Holder<>(
+		return holder(
 				adapterPath.pathToMember()
 				.append(memberOfAdapter.pathToMember()));
 	}
@@ -302,13 +303,13 @@ public class MemberById extends ContainedFragment {
 						container);
 
 		if (accessibilityCheck.isError()) {
-			return new Holder<>(null);
+			return holder(null);
 		}
 
 		assert accessibilityCheck.isOk() :
 			"Wrong visibility check implementation";
 
-		return new Holder<>(matchingPath.pathToMember());
+		return holder(matchingPath.pathToMember());
 	}
 
 	private Holder<Path> memberOfLinkTarget(
@@ -346,7 +347,7 @@ public class MemberById extends ContainedFragment {
 			return targetMember;
 		}
 
-		return new Holder<>(SELF_PATH.dereference().append(targetMemberPath));
+		return holder(SELF_PATH.dereference().append(targetMemberPath));
 	}
 
 }

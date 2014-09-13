@@ -169,7 +169,7 @@ public abstract class Type<S extends StructOp<S>>
 		final Generator generator = data.getGenerator();
 
 		if (generator.isDebug() && isDebuggable()) {
-			data.addInstance(
+			data.addNewInstance(
 					ID.id("__o42a_dbg_header__"),
 					DEBUG_HEADER_TYPE,
 					new DebugHeader(this));

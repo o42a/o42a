@@ -105,7 +105,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
 		this.defFunc = data.addFuncPtr("def_f", OBJECT_VALUE);
-		this.value = data.addInstance(VALUE_ID, VAL_TYPE);
+		this.value = data.addNewInstance(VALUE_ID, VAL_TYPE);
 		this.resumeFrom = data.addPtr("resume_from");
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();

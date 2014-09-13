@@ -27,15 +27,33 @@ import org.o42a.analysis.use.Usable;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.type.Sample;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.LinkUsage;
 
 
 public class LinkUses {
 
+	static LinkUses linkUsesFor(ObjectType type) {
+
+		final ValueType<?> valueType = type.getValueType();
+
+		if (!valueType.isLink()) {
+			return null;
+		}
+
+		final Obj cloneOf = type.getObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return cloneOf.type().linkUses();
+		}
+
+		return new LinkUses(type);
+	}
+
 	private final ObjectType type;
 	private final Usable<LinkUsage> uses;
 
-	LinkUses(ObjectType type) {
+	private LinkUses(ObjectType type) {
 		this.type = type;
 		this.uses = usable(this);
 	}

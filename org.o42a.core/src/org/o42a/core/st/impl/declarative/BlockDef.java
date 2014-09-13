@@ -21,6 +21,7 @@ package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.ir.cmd.Control.mainControl;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
+import static org.o42a.util.fn.NullableInit.nullableInit;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ import org.o42a.core.st.sentence.Sentence;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.fn.Cancelable;
-import org.o42a.util.fn.Holder;
+import org.o42a.util.fn.NullableInit;
 import org.o42a.util.string.Name;
 
 
@@ -53,8 +54,9 @@ final class BlockDef extends Def {
 	private final DeclarativeBlock block;
 	private final CommandEnv env;
 	private final DefSentences sentences;
+	private final NullableInit<DefTarget> defTarget =
+			nullableInit(this::findTarget);
 	private InlineSentences normal;
-	private Holder<DefTarget> defTarget;
 
 	BlockDef(
 			DeclarativeBlock block,
@@ -92,16 +94,7 @@ final class BlockDef extends Def {
 
 	@Override
 	public DefTarget target() {
-		if (this.defTarget != null) {
-			return this.defTarget.get();
-		}
-
-		final DefTarget defTarget =
-				this.sentences.target(getScope());
-
-		this.defTarget = Holder.holder(defTarget);
-
-		return defTarget;
+		return this.defTarget.get();
 	}
 
 	@Override
@@ -200,6 +193,10 @@ final class BlockDef extends Def {
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
 		return new BlockDef(this, upgrade);
+	}
+
+	private final DefTarget findTarget() {
+		return this.sentences.target(getScope());
 	}
 
 	private static final class DefSentences extends Sentences {

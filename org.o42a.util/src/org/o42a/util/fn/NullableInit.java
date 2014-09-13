@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,55 +23,47 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 
-public final class Holder<T> implements Supplier<T> {
+public final class NullableInit<V> implements Supplier<V> {
 
-	public static <T> Holder<T> holder(T value) {
-		return new Holder<>(value);
+	public static <V> NullableInit<V> nullableInit(Supplier<V> init) {
+		return new NullableInit<>(init);
 	}
 
-	private final T value;
+	private final Supplier<V> init;
+	private V value;
+	private boolean initialized;
 
-	private Holder(T value) {
-		this.value = value;
+	private NullableInit(Supplier<V> init) {
+		this.init = init;
 	}
 
-	@Override
-	public final T get() {
+	public final boolean isInitialized() {
+		return this.initialized;
+	}
+
+	public final V getKnown() {
 		return this.value;
 	}
 
 	@Override
-	public int hashCode() {
-		return this.value == null ? 0 : this.value.hashCode();
+	public final V get() {
+		if (this.initialized) {
+			return this.value;
+		}
+		this.initialized = true;
+		return this.value = this.init.get();
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-
-		final Holder<?> other = (Holder<?>) obj;
-
-		if (this.value == null) {
-			if (other.value != null) {
-				return false;
-			}
-		} else if (!this.value.equals(other.value)) {
-			return false;
-		}
-
-		return true;
+	public final void set(V value) {
+		this.initialized = true;
+		this.value = value;
 	}
 
 	@Override
 	public String toString() {
+		if (this.initialized) {
+			return "???";
+		}
 		return Objects.toString(this.value);
 	}
 

@@ -107,7 +107,10 @@ public final class GlobalSettings
 
 	public final <S extends StructOp<S>, ST extends Struct<S>>
 	Global<S, ST> struct(ST type, ST instance) {
-		return instance(instance.getId(), type, instance, structContent());
+
+		final Content<ST> content = structContent();
+
+		return instance(instance.getId(), type, instance, content);
 	}
 
 }

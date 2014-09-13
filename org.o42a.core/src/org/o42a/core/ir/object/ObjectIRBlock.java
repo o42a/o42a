@@ -52,7 +52,7 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(
+		data.addNewInstance(
 				GC_BLOCK_ID,
 				GC_BLOCK_TYPE,
 				new GCBlock(this.struct, "o42a_obj_gc_desc"));

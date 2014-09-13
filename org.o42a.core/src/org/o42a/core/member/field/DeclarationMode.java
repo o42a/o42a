@@ -21,6 +21,7 @@ package org.o42a.core.member.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldKey.BROKEN_FIELD_KEY;
+import static org.o42a.util.fn.Holder.holder;
 
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.Member;
@@ -154,7 +155,7 @@ public enum DeclarationMode {
 		}
 
 		if (overridden == null) {
-			return new Holder<>(null);
+			return holder(null);
 		}
 		if (overridden.isStatic()) {
 			prohibitedStaticOverride(declaration, overridden);
@@ -181,7 +182,7 @@ public enum DeclarationMode {
 			}
 		}
 
-		return new Holder<>(overriddenField);
+		return holder(overriddenField);
 	}
 
 	private static Member overriddenMember(

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.util.fn.Init.init;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -32,6 +34,7 @@ import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.fn.Init;
 
 
 public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
@@ -40,7 +43,7 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
 			new LinkedHashMap<>();
 	private ObjectIRBody mainBodyIR;
-	private ObjectIRStruct struct;
+	private final Init<ObjectIRStruct> struct = init(this::allocateStruct);
 	private final boolean typeBodies;
 
 	public ObjectIRBodies(ObjectIR objectIR, boolean typeBodies) {
@@ -85,23 +88,24 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 	}
 
 	public final ObjectIRStruct getStruct() {
-		if (this.struct != null) {
-			return this.struct;
-		}
+		return this.struct.get();
+	}
 
+	private ObjectIRStruct allocateStruct() {
 		assert getObject().assertFullyResolved();
 
 		if (isTypeBodies()) {
-			return this.struct = new ObjectIRStruct(this);
+			return new ObjectIRStruct(this);
 		}
 
 		final ObjectIRBlock block = new ObjectIRBlock(this);
+		final ObjectIRStruct struct = block.getStruct();
 
-		this.struct = block.getStruct();
+		this.struct.set(struct);// Preliminary initialization.
 		getGenerator().newGlobal().struct(block);
 		getObjectIR().getScopeIR().targetAllocated();
 
-		return this.struct;
+		return struct;
 	}
 
 	@Override
@@ -146,7 +150,7 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 		return bodyIR(dep.getDeclaredIn()).dep(dep);
 	}
 
-	void allocate() {
+	final ObjectIRBodies allocate() {
 
 		final ObjectIR objectIR = getObjectIR();
 		final ObjectType objectType = objectIR.getObject().type();
@@ -170,6 +174,8 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 				"The object has no sample. It should be a declaration then";
 			addBodyIR(new ObjectIRBody(this), false);
 		}
+
+		return this;
 	}
 
 	private void deriveBodyIRs(Obj ascendant, boolean inherited) {
