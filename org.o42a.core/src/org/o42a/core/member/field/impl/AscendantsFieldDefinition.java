@@ -31,13 +31,14 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.Init;
 
 
 public final class AscendantsFieldDefinition extends FieldDefinition {
 
 	private final AscendantsDefinition ascendants;
 	private final Function<ObjectToDefine, DefinitionsBuilder> definitions;
-	private Ref value;
+	private final Init<Ref> value = Init.init(this::createValue);
 
 	public AscendantsFieldDefinition(
 			LocationInfo location,
@@ -97,15 +98,14 @@ public final class AscendantsFieldDefinition extends FieldDefinition {
 	}
 
 	private Ref getValue() {
-		if (this.value != null) {
-			return this.value;
-		}
+		return this.value.get();
+	}
 
+	private Ref createValue() {
 		if (this.ascendants.isEmpty()) {
 			getLogger().noDefinition(getLocation());
 		}
-
-		return this.value = new Call(
+		return new Call(
 				this,
 				distribute(),
 				this.ascendants,

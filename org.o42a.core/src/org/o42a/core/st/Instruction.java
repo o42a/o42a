@@ -22,7 +22,7 @@ package org.o42a.core.st;
 
 public interface Instruction {
 
-	Instruction SKIP_INSTRUCTION = new SkipInstruction();
+	Instruction SKIP_INSTRUCTION = context -> {};
 
 	void execute(InstructionContext context);
 

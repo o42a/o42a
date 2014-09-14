@@ -55,7 +55,7 @@ public final class OwnerStep
 		implements OwnerPath, ReversePath {
 
 	private final Obj object;
-	private ObjectStepUses uses;
+	private final ObjectStepUses uses = new ObjectStepUses(this);
 
 	public OwnerStep(Obj object, MemberKey memberKey) {
 		super(memberKey);
@@ -201,10 +201,7 @@ public final class OwnerStep
 	}
 
 	private final ObjectStepUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = new ObjectStepUses(this);
+		return this.uses;
 	}
 
 	private Container resolveWhenMembersNotResolved(Obj object) {

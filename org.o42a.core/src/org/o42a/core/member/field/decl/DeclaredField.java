@@ -132,7 +132,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 		getDefinition().defineMacro(definer);
 
-		return definer.getAscendants();
+		return definer.buildAscendants();
 	}
 
 	private Ascendants objectAscendants(Ascendants implicitAscendants) {

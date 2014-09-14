@@ -92,7 +92,7 @@ final class MetaUpdatesChecker {
 
 			final ObjectMeta nextMeta = nextAscendant.toObject().meta();
 
-			nextMeta.init();
+			nextMeta.initialize();
 
 			final Chain<MetaDep> nextDeps = nextMeta.deps();
 

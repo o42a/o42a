@@ -19,8 +19,11 @@
 */
 package org.o42a.core.source;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.core.object.Obj;
 import org.o42a.core.st.sentence.Block;
+import org.o42a.util.fn.Init;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.Logger;
 
@@ -30,7 +33,8 @@ public abstract class CompilerContext implements LocationInfo {
 	private final SourceCompiler compiler;
 	private final Intrinsics intrinsics;
 	private final CompilerLogger logger;
-	private Location location;
+	private final Init<Location> location =
+			init(() -> new Location(this, getSource()));
 
 	public CompilerContext(CompilerContext parent, Logger logger) {
 		this.compiler = parent.compiler;
@@ -51,10 +55,7 @@ public abstract class CompilerContext implements LocationInfo {
 
 	@Override
 	public Location getLocation() {
-		if (this.location != null) {
-			return this.location;
-		}
-		return this.location = new Location(this, getSource());
+		return this.location.get();
 	}
 
 	public final SourceCompiler getCompiler() {

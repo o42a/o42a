@@ -33,7 +33,7 @@ public final class FieldKey implements Nesting {
 
 	static final FieldKey BROKEN_FIELD_KEY = new FieldKey(brokenMemberKey());
 
-	private MemberKey memberKey;
+	private final MemberKey memberKey;
 
 	FieldKey(MemberKey memberKey) {
 		this.memberKey = memberKey;
@@ -52,6 +52,28 @@ public final class FieldKey implements Nesting {
 			this.memberKey + " not found in " + enclosing;
 
 		return member.toField().object(dummyUser());
+	}
+
+	@Override
+	public int hashCode() {
+		return this.memberKey.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final FieldKey other = (FieldKey) obj;
+
+		return this.memberKey.equals(other.memberKey);
 	}
 
 	@Override

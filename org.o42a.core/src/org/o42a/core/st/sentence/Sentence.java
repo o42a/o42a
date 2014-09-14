@@ -22,6 +22,8 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.Command.exitCommand;
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
+import static org.o42a.util.fn.DoOnce.doOnce;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,8 @@ import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.impl.local.Locals;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.util.fn.DoOnce;
+import org.o42a.util.fn.Init;
 
 
 public abstract class Sentence extends Contained {
@@ -43,9 +47,10 @@ public abstract class Sentence extends Contained {
 	private final ArrayList<Statements> alternatives = new ArrayList<>(1);
 	private final Locals externalLocals;
 	private Sentence prerequisite;
-	private CommandTargets targets;
+	private final Init<CommandTargets> targets = init(this::buildTargets);
 	private boolean statementDropped;
-	private boolean instructionsExecuted;
+	private final DoOnce executeInstructions =
+			doOnce(this::doExecuteInstructions);
 
 	protected Sentence(
 			LocationInfo location,
@@ -111,13 +116,7 @@ public abstract class Sentence extends Contained {
 	}
 
 	public final CommandTargets getTargets() {
-		if (this.targets != null) {
-			return this.targets;
-		}
-		return this.targets = applyExitTargets(
-				prerequisiteTargets().add(
-						isImperative()
-						? imperativeTargets() : declarativeTargets()));
+		return this.targets.get();
 	}
 
 	public final Statements alternative(LocationInfo location) {
@@ -208,19 +207,7 @@ public abstract class Sentence extends Contained {
 	}
 
 	final void executeInstructions() {
-		if (this.instructionsExecuted) {
-			return;
-		}
-		this.instructionsExecuted = true;
-
-		final Sentence prerequisite = getPrerequisite();
-
-		if (prerequisite != null) {
-			prerequisite.executeInstructions();
-		}
-		for (Statements alt : getAlternatives()) {
-			alt.executeInstructions();
-		}
+		this.executeInstructions.doOnce();
 	}
 
 	final void setPrerequisite(Sentence prerequisite) {
@@ -267,6 +254,25 @@ public abstract class Sentence extends Contained {
 		}
 		throw new IllegalStateException(
 				"Unsupported sentence kind: " + getKind());
+	}
+
+	private void doExecuteInstructions() {
+
+		final Sentence prerequisite = getPrerequisite();
+
+		if (prerequisite != null) {
+			prerequisite.executeInstructions();
+		}
+		for (Statements alt : getAlternatives()) {
+			alt.executeInstructions();
+		}
+	}
+
+	private CommandTargets buildTargets() {
+		return applyExitTargets(
+				prerequisiteTargets().add(
+						isImperative()
+						? imperativeTargets() : declarativeTargets()));
 	}
 
 	private CommandTargets prerequisiteTargets() {

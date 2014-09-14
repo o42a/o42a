@@ -35,11 +35,11 @@ import org.o42a.core.value.ValueType;
 final class MacroDefinerImpl implements MacroDefiner {
 
 	private final DeclaredField field;
-	private Ascendants ascendants;
+	private final Ascendants implicitAscendants;
 
 	MacroDefinerImpl(DeclaredField field, Ascendants implicitAscendants) {
 		this.field = field;
-		this.ascendants = implicitAscendants;
+		this.implicitAscendants = implicitAscendants;
 	}
 
 	@Override
@@ -52,12 +52,13 @@ final class MacroDefinerImpl implements MacroDefiner {
 		this.field.makeEager();
 	}
 
-	public final Ascendants getAscendants() {
+	final Ascendants buildAscendants() {
 
-		final TypeRef ancestor = this.ascendants.getAncestor();
+		final Ascendants ascendants;
+		final TypeRef ancestor = this.implicitAscendants.getAncestor();
 
 		if (ancestor == null) {
-			this.ascendants = this.ascendants.setAncestor(
+			ascendants = this.implicitAscendants.setAncestor(
 					ValueType.MACRO.typeRef(
 							getField().getDeclaration(),
 							getField().getEnclosingScope()));
@@ -70,9 +71,10 @@ final class MacroDefinerImpl implements MacroDefiner {
 				getField().invalid();
 				return null;
 			}
+			ascendants = this.implicitAscendants;
 		}
 
-		return this.ascendants;
+		return ascendants;
 	}
 
 	@Override

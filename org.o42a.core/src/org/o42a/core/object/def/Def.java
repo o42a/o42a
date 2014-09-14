@@ -60,8 +60,7 @@ public abstract class Def implements SourceInfo {
 	private final ScopeUpgrade scopeUpgrade;
 	private final Obj source;
 	private final Location location;
-	private final Init<DefValue> constantValue =
-			init(this::detectConstant);
+	private final Init<DefValue> constantValue = init(this::detectConstant);
 	private boolean allResolved;
 
 	public Def(

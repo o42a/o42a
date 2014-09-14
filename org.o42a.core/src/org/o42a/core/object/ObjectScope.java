@@ -19,17 +19,19 @@
 */
 package org.o42a.core.object;
 
+import static org.o42a.util.fn.Init.init;
 import static org.o42a.util.fn.NullableInit.nullableInit;
 
 import org.o42a.core.AbstractScope;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.fn.Init;
 import org.o42a.util.fn.NullableInit;
 import org.o42a.util.string.ID;
 
 
 public abstract class ObjectScope extends AbstractScope {
 
-	private Obj object;
+	private final Init<Obj> object = init(this::createObject);
 	private final NullableInit<Path> enclosingScopePath =
 			nullableInit(this::createEnclosingPath);
 
@@ -45,10 +47,7 @@ public abstract class ObjectScope extends AbstractScope {
 
 	@Override
 	public final Obj toObject() {
-		if (this.object != null) {
-			return this.object;
-		}
-		return this.object = createObject();
+		return this.object.get();
 	}
 
 	@Override
@@ -64,11 +63,12 @@ public abstract class ObjectScope extends AbstractScope {
 	}
 
 	protected final Obj getScopeObject() {
-		return this.object;
+		return this.object.get();
 	}
 
 	protected final Obj setScopeObject(Obj object) {
-		return this.object = object;
+		this.object.set(object);
+		return object;
 	}
 
 	protected abstract Obj createObject();

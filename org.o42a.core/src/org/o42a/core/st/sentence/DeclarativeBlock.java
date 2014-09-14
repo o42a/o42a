@@ -33,6 +33,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.impl.declarative.DeclarativeBlockCommand;
 import org.o42a.core.st.impl.declarative.Inclusion;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.Name;
 
 
@@ -52,7 +53,8 @@ public final class DeclarativeBlock extends Block {
 				false);
 	}
 
-	private NamedBlocks namedBlocks;
+	private final Init<NamedBlocks> namedBlocks =
+			Init.init(this::createNamedBlocks);
 
 	public DeclarativeBlock(
 			LocationInfo location,
@@ -152,24 +154,24 @@ public final class DeclarativeBlock extends Block {
 	}
 
 	@Override
-	NamedBlocks getNamedBlocks() {
-		if (this.namedBlocks != null) {
-			return this.namedBlocks;
-		}
-
-		final Statements enclosing = getEnclosing();
-
-		if (enclosing == null) {
-			return this.namedBlocks = new NamedBlocks(this);
-		}
-
-		return this.namedBlocks =
-				enclosing.getSentence().getBlock().getNamedBlocks();
+	final NamedBlocks getNamedBlocks() {
+		return this.namedBlocks.get();
 	}
 
 	@Override
 	final DeclarativeBlockCommand createCommand(CommandEnv env) {
 		return new DeclarativeBlockCommand(this, env);
+	}
+
+	private NamedBlocks createNamedBlocks() {
+
+		final Statements enclosing = getEnclosing();
+
+		if (enclosing == null) {
+			return new NamedBlocks(this);
+		}
+
+		return enclosing.getSentence().getBlock().getNamedBlocks();
 	}
 
 	private void addImplicitInclusions() {

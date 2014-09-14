@@ -20,6 +20,8 @@
 package org.o42a.core.object.meta;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.util.fn.DoOnce.doOnce;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.IdentityHashMap;
 
@@ -28,29 +30,20 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
 import org.o42a.util.Chain;
+import org.o42a.util.fn.DoOnce;
+import org.o42a.util.fn.Init;
 
 
 public abstract class ObjectMeta {
 
 	private IdentityHashMap<MetaDep, Boolean> tripped;
 	private Chain<MetaDep> deps;
-	private boolean initialized;
-	private byte updated;
+	private final DoOnce initialize = doOnce(this::doInitialize);
+	private final Init<Boolean> updated = init(
+			() -> !meta().getObject().isClone() || hasUpdates());
 
 	public boolean isUpdated() {
-		if (this.updated != 0) {
-			return this.updated > 0;
-		}
-		if (!meta().getObject().isClone()) {
-			this.updated = 1;
-			return true;
-		}
-		if (hasUpdates()) {
-			this.updated = 1;
-			return true;
-		}
-		this.updated = -1;
-		return false;
+		return this.updated.get();
 	}
 
 	final Chain<MetaDep> deps() {
@@ -82,7 +75,7 @@ public abstract class ObjectMeta {
 		}
 	}
 
-	boolean checkUpdated(MetaDep dep) {
+	final boolean checkUpdated(MetaDep dep) {
 
 		final Meta meta = meta();
 
@@ -109,11 +102,11 @@ public abstract class ObjectMeta {
 		return false;
 	}
 
-	void init() {
-		if (this.initialized) {
-			return;
-		}
-		this.initialized = true;
+	final void initialize() {
+		this.initialize.doOnce();
+	}
+
+	private void doInitialize() {
 		importParentDeps();
 		initTypeParameters();
 		initNestedDeps();
@@ -126,7 +119,7 @@ public abstract class ObjectMeta {
 		if (parentMeta == null) {
 			return;
 		}
-		parentMeta.init();
+		parentMeta.initialize();
 		if (parentMeta.deps == null) {
 			return;
 		}
