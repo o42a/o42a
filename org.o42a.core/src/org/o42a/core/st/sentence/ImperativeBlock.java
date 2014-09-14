@@ -31,6 +31,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.impl.imperative.ImperativeBlockCommand;
 import org.o42a.core.st.impl.imperative.ImperativeMemberRegistry;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.Name;
 
 
@@ -89,7 +90,8 @@ public final class ImperativeBlock extends Block {
 
 	private final boolean parentheses;
 	private final Name name;
-	private NamedBlocks namedBlocks;
+	private final Init<NamedBlocks> namedBlocks = Init.init(
+			() -> getEnclosing().getSentence().getBlock().getNamedBlocks());
 
 	private ImperativeBlock(
 			LocationInfo location,
@@ -163,16 +165,12 @@ public final class ImperativeBlock extends Block {
 	}
 
 	@Override
-	NamedBlocks getNamedBlocks() {
-		if (this.namedBlocks != null) {
-			return this.namedBlocks;
-		}
-		return this.namedBlocks =
-				getEnclosing().getSentence().getBlock().getNamedBlocks();
+	final NamedBlocks getNamedBlocks() {
+		return this.namedBlocks.get();
 	}
 
 	@Override
-	Command createCommand(CommandEnv env) {
+	final Command createCommand(CommandEnv env) {
 		return new ImperativeBlockCommand(this, env);
 	}
 

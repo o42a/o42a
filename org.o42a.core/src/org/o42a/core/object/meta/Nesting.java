@@ -21,12 +21,14 @@ package org.o42a.core.object.meta;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.impl.NoNesting;
 
 
 public interface Nesting {
 
-	Nesting NO_NESTING = NoNesting.INSTANCE;
+	Nesting NO_NESTING = enclosing -> {
+		throw new IllegalStateException(
+			"Nesting is impossible inside " + enclosing);
+	};
 
 	Obj findObjectIn(Scope enclosing);
 

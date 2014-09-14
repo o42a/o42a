@@ -21,6 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.member.MemberIdKind.LOCAL_NAME;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.util.fn.Init.init;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.core.Container;
@@ -38,6 +39,7 @@ import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.Name;
 import org.o42a.util.string.SubID;
 
@@ -58,7 +60,7 @@ public final class Local
 	private final MemberName memberId;
 	private final Ref originalRef;
 	private Ref fieldRef;
-	private Ref ref;
+	private final Init<Ref> ref = init(this::originalRef);
 
 	Local(LocationInfo location, Name name, Ref ref) {
 		assert name != null :
@@ -88,10 +90,7 @@ public final class Local
 	}
 
 	public final Ref ref() {
-		if (this.ref != null) {
-			return this.ref;
-		}
-		return this.ref = originalRef();
+		return this.ref.get();
 	}
 
 	@Override
@@ -159,12 +158,13 @@ public final class Local
 	}
 
 	void convertToField(MemberField field) {
-		assert this.ref == null :
+		assert !this.ref.isInitialized() :
 			"Too late to convert the local to field";
-		this.ref = this.fieldRef =
+		this.fieldRef =
 				SELF_PATH.append(field.getMemberKey())
 				.bind(this, getScope())
 				.target(distribute());
+		this.ref.set(this.fieldRef);
 	}
 
 }

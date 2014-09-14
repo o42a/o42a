@@ -21,6 +21,7 @@ package org.o42a.core.object.common;
 
 import static org.o42a.core.member.Inclusions.NO_INCLUSIONS;
 import static org.o42a.core.object.def.DefinitionsBuilder.NO_DEFINITIONS_BUILDER;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.function.Function;
 
@@ -33,23 +34,23 @@ import org.o42a.core.object.def.ObjectToDefine;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.util.fn.Init;
 
 
 public abstract class DefinedObject extends Obj implements ObjectToDefine {
 
-	private ObjectMemberRegistry memberRegistry;
-	private DefinitionsBuilder definitionsBuilder;
+	private final Init<ObjectMemberRegistry> memberRegistry =
+			init(() -> new ObjectMemberRegistry(NO_INCLUSIONS, this));
+	private final Init<DefinitionsBuilder> definitionsBuilder =
+			init(this::createDefinitionsBuilder);
 
 	public DefinedObject(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
 	}
 
 	@Override
-	public ObjectMemberRegistry getMemberRegistry() {
-		if (this.memberRegistry == null) {
-			this.memberRegistry = new ObjectMemberRegistry(NO_INCLUSIONS, this);
-		}
-		return this.memberRegistry;
+	public final ObjectMemberRegistry getMemberRegistry() {
+		return this.memberRegistry.get();
 	}
 
 	@Override
@@ -90,10 +91,7 @@ public abstract class DefinedObject extends Obj implements ObjectToDefine {
 	}
 
 	private DefinitionsBuilder definitionsBuilder() {
-		if (this.definitionsBuilder != null) {
-			return this.definitionsBuilder;
-		}
-		return this.definitionsBuilder = createDefinitionsBuilder();
+		return this.definitionsBuilder.get();
 	}
 
 }

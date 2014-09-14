@@ -51,7 +51,7 @@ import org.o42a.util.string.ID;
 final class LocalStep extends Step {
 
 	private final Local local;
-	private ObjectStepUses uses;
+	private final ObjectStepUses uses = new ObjectStepUses(this);
 
 	LocalStep(Local local) {
 		this.local = local;
@@ -185,10 +185,7 @@ final class LocalStep extends Step {
 	}
 
 	private final ObjectStepUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = new ObjectStepUses(this);
+		return this.uses;
 	}
 
 	private PrefixPath refPrefix(Ref ref) {

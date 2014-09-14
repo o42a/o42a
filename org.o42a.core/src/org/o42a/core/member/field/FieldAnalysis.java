@@ -23,19 +23,22 @@ import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
 import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.DerivationUsage;
+import org.o42a.util.fn.Init;
 
 
 public class FieldAnalysis {
 
 	private final MemberField member;
-	private MemberFieldUses uses;
-	private Usable<DerivationUsage> derivationUses;
+	private final Init<MemberFieldUses> uses = init(this::createUses);
+	private final Init<Usable<DerivationUsage>> derivationUses =
+			init(this::createDerivationUses);
 
 	FieldAnalysis(MemberField member) {
 		this.member = member;
@@ -119,11 +122,16 @@ public class FieldAnalysis {
 	}
 
 	final MemberFieldUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
+		return this.uses.get();
+	}
 
-		this.uses = new MemberFieldUses(getMember());
+	private Usable<DerivationUsage> derivationUses() {
+		return this.derivationUses.get();
+	}
+
+	private MemberFieldUses createUses() {
+
+		final MemberFieldUses uses = new MemberFieldUses(getMember());
 
 		if (getMember().isOverride()) {
 
@@ -131,40 +139,35 @@ public class FieldAnalysis {
 					getDeclarationAnalysis().uses();
 
 			declarationUses.useBy(
-					this.uses.usageUser(FIELD_ACCESS),
+					uses.usageUser(FIELD_ACCESS),
 					FIELD_ACCESS);
 			declarationUses.useBy(
-					this.uses.usageUser(SUBSTANCE_USAGE),
+					uses.usageUser(SUBSTANCE_USAGE),
 					SUBSTANCE_USAGE);
 			declarationUses.useBy(
-					this.uses.usageUser(NESTED_USAGE),
+					uses.usageUser(NESTED_USAGE),
 					NESTED_USAGE);
 		}
 
-		return this.uses;
+		return uses;
 	}
 
-	private Usable<DerivationUsage> derivationUses() {
-		if (this.derivationUses != null) {
-			return this.derivationUses;
-		}
+	private Usable<DerivationUsage> createDerivationUses() {
 
 		final MemberField member = getMember();
-
-		this.derivationUses =
+		final Usable<DerivationUsage> derivationUses =
 				DerivationUsage.usable("DerivationOf", getMember());
-
 		final ObjectType ownerType = member.getMemberOwner().type();
 
 		// If owner derived then member derived too.
-		this.derivationUses.useBy(ownerType.derivation(), DERIVATION_USAGE);
+		derivationUses.useBy(ownerType.derivation(), DERIVATION_USAGE);
 
 		final MemberField firstDeclaration = member.getFirstDeclaration();
 
 		if (firstDeclaration != member) {
 			firstDeclaration.getAnalysis()
 			.derivationUses()
-			.useBy(this.derivationUses, DERIVATION_USAGE);
+			.useBy(derivationUses, DERIVATION_USAGE);
 			if (!member.isUpdated()) {
 
 				final MemberField lastDefinition = member.getLastDefinition();
@@ -172,12 +175,12 @@ public class FieldAnalysis {
 				if (lastDefinition != member) {
 					lastDefinition.getAnalysis()
 					.derivationUses()
-					.useBy(derivation(), DERIVATION_USAGE);
+					.useBy(derivationUses, DERIVATION_USAGE);
 				}
 			}
 		}
 
-		return this.derivationUses;
+		return derivationUses;
 	}
 
 }
