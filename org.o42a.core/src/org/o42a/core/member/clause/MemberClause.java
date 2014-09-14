@@ -19,18 +19,22 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
+import org.o42a.util.fn.Init;
 
 
 public abstract class MemberClause extends NonAliasMember {
 
 	private final ClauseDeclaration declaration;
-	private MemberKey key;
+	private final Init<MemberKey> key =
+			init(() -> getDeclaration().getMemberId().key(getScope()));
 
 	public MemberClause(Obj owner, ClauseDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
@@ -43,7 +47,7 @@ public abstract class MemberClause extends NonAliasMember {
 						propagatedFrom.getLastDefinition()),
 				propagatedFrom.distributeIn(owner),
 				owner);
-		this.key = propagatedFrom.getMemberKey();
+		this.key.set(propagatedFrom.getMemberKey());
 		this.declaration = propagatedFrom.declaration.overrideBy(this);
 	}
 
@@ -54,10 +58,7 @@ public abstract class MemberClause extends NonAliasMember {
 
 	@Override
 	public final MemberKey getMemberKey() {
-		if (this.key != null) {
-			return this.key;
-		}
-		return this.key = getDeclaration().getMemberId().key(getScope());
+		return this.key.get();
 	}
 
 	public final ClauseDeclaration getDeclaration() {

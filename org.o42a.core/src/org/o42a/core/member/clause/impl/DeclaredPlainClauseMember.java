@@ -26,7 +26,7 @@ import org.o42a.core.object.Obj;
 
 final class DeclaredPlainClauseMember extends MemberClause {
 
-	final DeclaredPlainClause clause;
+	private final DeclaredPlainClause clause;
 
 	DeclaredPlainClauseMember(ClauseBuilder builder) {
 		super(builder.getMemberOwner(), builder.getDeclaration());
@@ -46,7 +46,7 @@ final class DeclaredPlainClauseMember extends MemberClause {
 	private static final class Propagated
 			extends OverriddenMemberClause<DeclaredPlainClause> {
 
-		private Propagated(Obj owner, MemberClause propagatedFrom) {
+		Propagated(Obj owner, MemberClause propagatedFrom) {
 			super(owner, propagatedFrom);
 		}
 

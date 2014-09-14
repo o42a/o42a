@@ -19,17 +19,20 @@
 */
 package org.o42a.core.member.clause.impl;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.object.Obj;
+import org.o42a.util.fn.Init;
 
 
 public abstract class OverriddenMemberClause<C extends Clause>
 		extends MemberClause {
 
 	private final MemberClause propagatedFrom;
-	private C clause;
+	private final Init<C> clause = init(this::propagateClause);
 
 	public OverriddenMemberClause(Obj owner, MemberClause propagatedFrom) {
 		super(owner, propagatedFrom);
@@ -43,17 +46,18 @@ public abstract class OverriddenMemberClause<C extends Clause>
 
 	@Override
 	public final C clause() {
-		if (this.clause != null) {
-			return this.clause;
-		}
-
-		@SuppressWarnings("unchecked")
-		final C propagatedClause =
-				(C) getPropagatedFrom().toClause().clause();
-
-		return this.clause = propagateClause(propagatedClause);
+		return this.clause.get();
 	}
 
 	protected abstract C propagateClause(C propagatedFrom);
+
+	private C propagateClause() {
+
+		@SuppressWarnings("unchecked")
+		final C propagatedFrom =
+				(C) getPropagatedFrom().toClause().clause();
+
+		return propagateClause(propagatedFrom);
+	}
 
 }

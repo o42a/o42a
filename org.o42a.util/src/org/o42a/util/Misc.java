@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Utilities
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,13 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.util;
 
-import org.o42a.core.member.clause.impl.LocalScopeClauseBase;
+import java.util.function.Supplier;
 
 
-public abstract class LocalScopeBase extends LocalScopeClauseBase {
+public final class Misc {
 
-	protected abstract void setBlock(ImperativeBlock block);
+	public static <T> T coalesce(T arg1, T arg2) {
+		return arg1 != null ? arg1 : arg2;
+	}
+
+	public static <T> T coalesce(T arg1, Supplier<T> arg2) {
+		return arg1 != null ? arg1 : arg2.get();
+	}
+
+	private Misc() {
+	}
 
 }

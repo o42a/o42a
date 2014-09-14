@@ -19,6 +19,9 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.util.fn.DoOnce.doOnce;
+import static org.o42a.util.fn.Init.init;
+
 import java.util.HashMap;
 
 import org.o42a.core.ContainerInfo;
@@ -26,11 +29,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.fn.DoOnce;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.Name;
 
 
@@ -92,11 +95,11 @@ public abstract class Clause implements ContainerInfo {
 	}
 
 	private final MemberClause member;
-	private Clause enclosingClause;
-	private Clause topClause;
-	private Path pathInObject;
-	private MemberClause[] implicitClauses;
-	private boolean allResolved;
+	private final Init<Clause> enclosingClause =
+			init(this::findEnclosingClause);
+	private final Init<MemberClause[]> implicitClauses =
+			init(this::findImplicitClauses);
+	private final DoOnce fullResolution = doOnce(this::doResolveAll);
 
 	public Clause(MemberClause member) {
 		this.member = member;
@@ -116,30 +119,7 @@ public abstract class Clause implements ContainerInfo {
 	}
 
 	public final Clause getEnclosingClause() {
-		if (this.enclosingClause != null) {
-			return this.enclosingClause;
-		}
-
-		final Scope enclosingScope = getEnclosingScope();
-		final MemberKey enclosingKey = getKey().getEnclosingKey();
-
-		if (enclosingKey == null) {
-			// Return enclosing scope, if it's clause.
-			return enclosingScope.getContainer().toClause();
-		}
-
-		final Member enclosingMember =
-				enclosingScope.getContainer().member(enclosingKey);
-
-		assert enclosingMember != null :
-			"Member " + enclosingKey + " not found in " + enclosingScope;
-
-		this.enclosingClause = enclosingMember.toClause().clause();
-
-		assert this.enclosingClause != null :
-			enclosingMember + " is not a clause";
-
-		return this.enclosingClause;
+		return this.enclosingClause.get();
 	}
 
 	public final ClauseKind getKind() {
@@ -196,66 +176,17 @@ public abstract class Clause implements ContainerInfo {
 	public abstract GroupClause toGroupClause();
 
 	public final MemberClause[] getImplicitClauses() {
-		if (this.implicitClauses != null) {
-			return this.implicitClauses;
-		}
-
-		MemberClause[] implicitClauses = new MemberClause[0];
-
-		for (MemberClause clause : getSubClauses()) {
-			if (clause.isImplicit()) {
-				implicitClauses = ArrayUtil.append(implicitClauses, clause);
-			}
-		}
-
-		return this.implicitClauses = implicitClauses;
+		return this.implicitClauses.get();
 	}
 
 	public abstract MemberClause[] getSubClauses();
 
 	public abstract ReusedClause[] getReusedClauses();
 
-	public final Obj getEnclosingObject() {
-		return getTopClause().getEnclosingScope().toObject();
-	}
-
-	public final Clause getTopClause() {
-		if (this.topClause != null) {
-			return this.topClause;
-		}
-
-		final Clause enclosingClause = getEnclosingClause();
-
-		if (enclosingClause != null) {
-			return this.topClause = enclosingClause.getTopClause();
-		}
-
-		return this.topClause = this;
-	}
-
-	public final Path pathInObject() {
-		if (this.pathInObject != null) {
-			return this.pathInObject;
-		}
-		return this.pathInObject = buildPathInObject();
-	}
-
 	public abstract void define(Reproducer reproducer);
 
 	public final void resolveAll() {
-		if (this.allResolved) {
-			return;
-		}
-		this.allResolved = true;
-		if (toMember().isPropagated()) {
-			return;
-		}
-		getContext().fullResolution().start();
-		try {
-			fullyResolve();
-		} finally {
-			getContext().fullResolution().end();
-		}
+		this.fullResolution.doOnce();
 	}
 
 	@Override
@@ -279,19 +210,53 @@ public abstract class Clause implements ContainerInfo {
 		getDeclaration().getClauseId().validateClause(this);
 	}
 
-	protected Path buildPathInObject() {
+	private Clause findEnclosingClause() {
 
-		final Member member = toMember();
 		final Scope enclosingScope = getEnclosingScope();
-		final Clause enclosingClause = enclosingScope.getContainer().toClause();
+		final MemberKey enclosingKey = getKey().getEnclosingKey();
 
-		if (enclosingClause == null) {
-			assert enclosingScope.toObject() != null :
-				this + " is not inside of object";
-			return member.getMemberKey().toPath();
+		if (enclosingKey == null) {
+			// Return enclosing scope, if it's clause.
+			return enclosingScope.getContainer().toClause();
 		}
 
-		return enclosingClause.pathInObject().append(member.getMemberKey());
+		final Member enclosingMember =
+				enclosingScope.getContainer().member(enclosingKey);
+
+		assert enclosingMember != null :
+			"Member " + enclosingKey + " not found in " + enclosingScope;
+
+		final Clause enclosingClause = enclosingMember.toClause().clause();
+
+		assert enclosingClause != null :
+			enclosingMember + " is not a clause";
+
+		return enclosingClause;
+	}
+
+	private MemberClause[] findImplicitClauses() {
+
+		MemberClause[] implicitClauses = new MemberClause[0];
+
+		for (MemberClause clause : getSubClauses()) {
+			if (clause.isImplicit()) {
+				implicitClauses = ArrayUtil.append(implicitClauses, clause);
+			}
+		}
+
+		return implicitClauses;
+	}
+
+	private void doResolveAll() {
+		if (toMember().isPropagated()) {
+			return;
+		}
+		getContext().fullResolution().start();
+		try {
+			fullyResolve();
+		} finally {
+			getContext().fullResolution().end();
+		}
 	}
 
 }

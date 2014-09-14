@@ -24,6 +24,8 @@ import static org.o42a.core.member.MemberIdKind.FIELD_ALIAS;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 import static org.o42a.core.ref.RefUsage.BODY_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TEMP_REF_USAGE;
+import static org.o42a.util.Misc.coalesce;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
@@ -37,6 +39,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.Local;
+import org.o42a.util.fn.Init;
 
 
 public class MemberAlias extends Member implements MemberPath {
@@ -45,8 +48,10 @@ public class MemberAlias extends Member implements MemberPath {
 	private final FieldDeclaration declaration;
 	private final Ref originalRef;
 	private final MemberAlias propagatedFrom;
-	private AliasRef aliasRef;
-	private Visibility visibility;
+	private final Init<AliasRef> aliasRef =
+			init(() -> coalesce(detectAliasRef(), this::createAliasField));
+	private final Init<Visibility> visibility =
+			init(() -> getDeclaration().visibilityOf(this));
 
 	public MemberAlias(MemberRegistry registry, FieldBuilder builder) {
 		super(
@@ -71,7 +76,7 @@ public class MemberAlias extends Member implements MemberPath {
 				propagatedFrom.getDeclaration().override(this, distribute());
 		this.originalRef =
 				propagatedFrom.getOriginalRef().upgradeScope(owner.getScope());
-		this.aliasRef = new AliasRef(this, propagatedFrom.getAliasRef());
+		this.aliasRef.set(new AliasRef(this, propagatedFrom.getAliasRef()));
 	}
 
 	public final FieldDeclaration getDeclaration() {
@@ -111,13 +116,7 @@ public class MemberAlias extends Member implements MemberPath {
 
 	@Override
 	public Visibility getVisibility() {
-		if (this.visibility != null) {
-			return this.visibility;
-		}
-		return this.visibility =
-				getDeclaration().getVisibilityMode().detectVisibility(
-						this,
-						getDeclaration());
+		return this.visibility.get();
 	}
 
 	@Override
@@ -201,18 +200,8 @@ public class MemberAlias extends Member implements MemberPath {
 						TEMP_REF_USAGE));
 	}
 
-	private AliasRef getAliasRef() {
-		if (this.aliasRef != null) {
-			return this.aliasRef;
-		}
-
-		final AliasRef detectedAliasRef = detectAliasRef();
-
-		if (detectedAliasRef != null) {
-			return this.aliasRef = detectedAliasRef;
-		}
-
-		return this.aliasRef = createAliasField();
+	private final AliasRef getAliasRef() {
+		return this.aliasRef.get();
 	}
 
 	private AliasRef detectAliasRef() {

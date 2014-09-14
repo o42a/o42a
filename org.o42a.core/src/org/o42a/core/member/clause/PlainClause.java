@@ -21,8 +21,10 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.AbstractScope.enclosingScopes;
 import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
@@ -41,6 +43,7 @@ import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -48,11 +51,13 @@ public abstract class PlainClause
 		extends Clause
 		implements Scope, ClauseContainer {
 
-	private Nesting definitionNesting;
-	private Obj clauseObject;
-	private Path enclosingScopePath;
-	private Set<Scope> enclosingScopes;
-	private int anonymusSeq;
+	private final Init<Nesting> definitionNesting =
+			init(() -> new ClauseDefinitionNesting(getKey()));
+	private final Init<Path> enclosingScopePath =
+			init(() -> getObject().ownerPath().toPath());
+	private final Init<Set<Scope>> enclosingScopes =
+			init(() -> enclosingScopes(this));
+	private final AtomicInteger anonymusSeq = new AtomicInteger();
 
 	public PlainClause(MemberClause member) {
 		super(member);
@@ -62,19 +67,12 @@ public abstract class PlainClause
 
 	protected PlainClause(MemberClause member, PlainClause propagatedFrom) {
 		super(member);
-		this.definitionNesting = propagatedFrom.getDefinitionNesting();
-		setClauseObject(propagateClauseObject(propagatedFrom));
+		this.definitionNesting.set(propagatedFrom.getDefinitionNesting());
 	}
 
 	@Override
 	public Path getEnclosingScopePath() {
-		if (this.enclosingScopePath != null) {
-			return this.enclosingScopePath;
-		}
-		if (getEnclosingContainer().getScope().isTopScope()) {
-			return null;
-		}
-		return this.enclosingScopePath = getObject().ownerPath().toPath();
+		return this.enclosingScopePath.get();
 	}
 
 	@Override
@@ -93,10 +91,7 @@ public abstract class PlainClause
 	}
 
 	public final Nesting getDefinitionNesting() {
-		if (this.definitionNesting != null) {
-			return this.definitionNesting;
-		}
-		return this.definitionNesting = new ClauseDefinitionNesting(getKey());
+		return this.definitionNesting.get();
 	}
 
 	public abstract Obj getObject();
@@ -118,10 +113,7 @@ public abstract class PlainClause
 
 	@Override
 	public final Set<? extends Scope> getEnclosingScopes() {
-		if (this.enclosingScopes != null) {
-			return this.enclosingScopes;
-		}
-		return this.enclosingScopes = enclosingScopes(this);
+		return this.enclosingScopes.get();
 	}
 
 	@Override
@@ -281,7 +273,7 @@ public abstract class PlainClause
 
 	@Override
 	public final ID nextAnonymousId() {
-		return ID.id().anonymous(++this.anonymusSeq);
+		return ID.id().anonymous(this.anonymusSeq.incrementAndGet());
 	}
 
 	@Override
@@ -289,20 +281,10 @@ public abstract class PlainClause
 		throw new UnsupportedOperationException();
 	}
 
-	protected Obj getClauseObject() {
-		return this.clauseObject;
-	}
-
-	protected Obj setClauseObject(Obj clauseObject) {
-		return this.clauseObject = clauseObject;
-	}
-
 	@Override
 	protected void fullyResolve() {
 		getObject().resolveAll();
 	}
-
-	protected abstract Obj propagateClauseObject(PlainClause overridden);
 
 	private static final class ClauseDefinitionNesting implements Nesting {
 

@@ -21,6 +21,8 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.st.sentence.Statements;
 
@@ -28,7 +30,7 @@ import org.o42a.core.st.sentence.Statements;
 public final class ClauseFactory {
 
 	private final MemberRegistry memberRegistry;
-	private int clauseSeq;
+	private final AtomicInteger clauseSeq = new AtomicInteger();
 
 	public ClauseFactory(MemberRegistry memberRegistry) {
 		this.memberRegistry = memberRegistry;
@@ -44,7 +46,8 @@ public final class ClauseFactory {
 				statements,
 				declaration.setName(
 						CASE_SENSITIVE.canonicalName(
-								Integer.toString(++this.clauseSeq))));
+								Integer.toString(
+										this.clauseSeq.incrementAndGet()))));
 	}
 
 	private final ClauseBuilder createNewClause(
