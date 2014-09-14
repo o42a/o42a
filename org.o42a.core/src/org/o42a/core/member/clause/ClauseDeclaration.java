@@ -20,12 +20,14 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.member.MemberIdKind.CLAUSE_NAME;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.Name;
 
 
@@ -51,13 +53,17 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 
 	private Name name;
 	private ClauseId clauseId;
-	private MemberId memberId;
+	private Init<MemberId> memberId;
 	private MemberId groupId;
 	private ClauseKind kind;
 	private boolean requiresContinuation;
 	private boolean terminator;
 	private boolean implicit;
 	private boolean internal;
+
+	{
+		setup();
+	}
 
 	private ClauseDeclaration(
 			LocationInfo location,
@@ -78,7 +84,7 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 			ClauseDeclaration prototype) {
 		super(location, distributor);
 		this.name = prototype.name;
-		this.memberId = prototype.getMemberId();
+		this.memberId.set(prototype.getMemberId());
 		this.clauseId = prototype.getClauseId();
 		this.kind = prototype.kind;
 		this.requiresContinuation = prototype.requiresContinuation;
@@ -103,13 +109,7 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 	}
 
 	public final MemberId getMemberId() {
-		if (this.memberId != null) {
-			return this.memberId;
-		}
-		if (this.groupId == null) {
-			return this.memberId = getLocalId();
-		}
-		return this.memberId = this.groupId.append(getLocalId());
+		return this.memberId.get();
 	}
 
 	public final ClauseDeclaration setName(Name name) {
@@ -119,9 +119,10 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 		clone.clauseId = ClauseId.NAME;
 		clone.name = name;
 		if (this.groupId != null) {
-			clone.memberId = this.groupId.append(CLAUSE_NAME.memberName(name));
+			clone.memberId.set(
+					this.groupId.append(CLAUSE_NAME.memberName(name)));
 		} else {
-			clone.memberId = CLAUSE_NAME.memberName(name);
+			clone.memberId.set(CLAUSE_NAME.memberName(name));
 		}
 
 		return clone;
@@ -132,7 +133,7 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 	}
 
 	public final String getDisplayName() {
-		return getClauseId().toString(this.memberId, this.name);
+		return getClauseId().toString(this.memberId.getKnown(), this.name);
 	}
 
 	public final ClauseKind getKind() {
@@ -209,8 +210,8 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 		} else {
 			clone.groupId = groupId;
 		}
-		if (this.memberId != null) {
-			clone.memberId = groupId.append(this.memberId);
+		if (this.memberId.isInitialized()) {
+			clone.memberId.set(groupId.append(this.memberId.getKnown()));
 		}
 
 		return clone;
@@ -224,7 +225,12 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 	@Override
 	protected ClauseDeclaration clone() {
 		try {
-			return (ClauseDeclaration) super.clone();
+
+			final ClauseDeclaration clone = (ClauseDeclaration) super.clone();
+
+			clone.setup();
+
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
@@ -237,7 +243,22 @@ public class ClauseDeclaration extends Contained implements Cloneable {
 				this);
 	}
 
-	private MemberId getLocalId() {
+	private void setup() {
+		this.memberId = init(this::buildMemberId);
+	}
+
+	private MemberId buildMemberId() {
+
+		final MemberId localId = buildLocalId();
+
+		if (this.groupId == null) {
+			return localId;
+		}
+
+		return this.groupId.append(localId);
+	}
+
+	private MemberId buildLocalId() {
 
 		final ClauseId clauseId = getClauseId();
 

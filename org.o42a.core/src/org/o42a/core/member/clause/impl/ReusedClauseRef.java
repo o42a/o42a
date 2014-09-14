@@ -28,7 +28,7 @@ import org.o42a.core.ref.Resolver;
 public final class ReusedClauseRef {
 
 	private final Ref ref;
-	private boolean reuseContents;
+	private final boolean reuseContents;
 
 	public ReusedClauseRef(Ref ref, boolean reuseContents) {
 		this.ref = ref;

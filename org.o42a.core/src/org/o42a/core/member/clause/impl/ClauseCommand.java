@@ -20,6 +20,7 @@
 package org.o42a.core.member.clause.impl;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
@@ -32,11 +33,12 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
+import org.o42a.util.fn.Init;
 
 
 final class ClauseCommand extends Command {
 
-	private Command command;
+	private final Init<Command> command = init(this::buildCommand);
 
 	ClauseCommand(
 			ClauseDeclarationStatement statement,
@@ -100,16 +102,16 @@ final class ClauseCommand extends Command {
 	}
 
 	private final Command command() {
-		if (this.command != null) {
-			return this.command;
-		}
+		return this.command.get();
+	}
+
+	private Command buildCommand() {
 
 		final ClauseDeclarationStatement declaration = declaration();
 		final Clause clause = declaration.getClause();
 
 		if (clause.isTopLevel()) {
-			return this.command =
-					new ClauseDeclarationCommand(declaration, env());
+			return new ClauseDeclarationCommand(declaration, env());
 		}
 
 		switch (clause.getKind()) {

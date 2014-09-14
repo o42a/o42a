@@ -22,6 +22,7 @@ package org.o42a.core.member.field;
 import static java.util.Collections.emptyList;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.Init;
 
 
 public abstract class MemberField
@@ -40,12 +42,17 @@ public abstract class MemberField
 		implements FieldReplacement {
 
 	private final FieldDeclaration declaration;
-	private Field field;
 
-	private FieldAnalysis analysis;
+	private final Init<Field> field = init(this::createField);
+	private Init<Visibility> visibility =
+			init(() -> getDeclaration().visibilityOf(this));
+	private final Init<Boolean> prototype = init(
+			() -> getDeclaration().getPrototypeMode().detectPrototype(this));
+	private final Init<FieldAnalysis> analysis = init(
+			() -> isUpdated()
+			? new FieldAnalysis(this)
+			: getLastDefinition().getAnalysis());
 	private ArrayList<FieldReplacement> allReplacements;
-	private Visibility visibility;
-	private byte prototype;
 
 	public MemberField(Obj owner, FieldDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
@@ -83,13 +90,7 @@ public abstract class MemberField
 
 	@Override
 	public final Visibility getVisibility() {
-		if (this.visibility != null) {
-			return this.visibility;
-		}
-		return this.visibility =
-				getDeclaration().getVisibilityMode().detectVisibility(
-						this,
-						getDeclaration());
+		return this.visibility.get();
 	}
 
 	public final boolean isAdapter() {
@@ -97,15 +98,7 @@ public abstract class MemberField
 	}
 
 	public final boolean isPrototype() {
-		if (this.prototype != 0) {
-			return this.prototype > 0;
-		}
-		if (getDeclaration().getPrototypeMode().detectPrototype(this)) {
-			this.prototype = 1;
-			return true;
-		}
-		this.prototype = -1;
-		return false;
+		return this.prototype.get();
 	}
 
 	@Override
@@ -132,8 +125,8 @@ public abstract class MemberField
 		if (!isClone()) {
 			return true;
 		}
-		if (this.field != null) {
-			return this.field.isUpdated();
+		if (this.field.isInitialized()) {
+			return this.field.getKnown().isUpdated();
 		}
 		if (!getMemberOwner().meta().isUpdated()) {
 			// Field can not be updated without owner to be updated also.
@@ -141,7 +134,8 @@ public abstract class MemberField
 		}
 
 		// Only instantiated field can be updated.
-		return this.field != null && this.field.objectAlreadyUpdated();
+		return this.field.isInitialized()
+				&& this.field.getKnown().objectAlreadyUpdated();
 	}
 
 	@Override
@@ -160,27 +154,16 @@ public abstract class MemberField
 	}
 
 	public final FieldAnalysis getAnalysis() {
-		if (this.analysis != null) {
-			return this.analysis;
-		}
-		if (isUpdated()) {
-			return this.analysis = new FieldAnalysis(this);
-		}
-
-		final MemberField lastDefinition = getLastDefinition();
-
-		return this.analysis = lastDefinition.getAnalysis();
+		return this.analysis.get();
 	}
 
 	public final Field field(UserInfo user) {
-		if (this.field != null) {
-			useBy(user);
-			return this.field;
-		}
 
-		setField(user, createField());
+		final Field field = field();
 
-		return this.field;
+		useBy(user);
+
+		return field;
 	}
 
 	public final Obj object(UserInfo user) {
@@ -238,11 +221,15 @@ public abstract class MemberField
 	}
 
 	protected final void setField(UserInfo user, Field field) {
-		this.field = field;
+		this.field.set(field);
 		useBy(user);
 	}
 
 	protected abstract Field createField();
+
+	private final Field field() {
+		return this.field.get();
+	}
 
 	private void useBy(UserInfo user) {
 		if (user.isDummyUser()) {

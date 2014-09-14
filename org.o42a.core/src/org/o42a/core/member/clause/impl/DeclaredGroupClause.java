@@ -22,6 +22,7 @@ package org.o42a.core.member.clause.impl;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.st.CommandEnv.defaultEnv;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
@@ -37,6 +38,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.imperative.ImperativeMemberRegistry;
 import org.o42a.core.st.sentence.*;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.Name;
 
 
@@ -50,7 +52,9 @@ public final class DeclaredGroupClause
 	}
 
 	private final ClauseBuilder builder;
-	private ReusedClause[] reused;
+	private final Init<ReusedClause[]> reused =
+			init(() -> getBuilder().reuseClauses(this));
+
 	private Block definition;
 	private ImperativeBlock imperative;
 
@@ -100,16 +104,13 @@ public final class DeclaredGroupClause
 	}
 
 	@Override
-	public ClauseContainer getClauseContainer() {
+	public final ClauseContainer getClauseContainer() {
 		return this;
 	}
 
 	@Override
-	public ReusedClause[] getReusedClauses() {
-		if (this.reused != null) {
-			return this.reused;
-		}
-		return this.reused = this.builder.reuseClauses(this);
+	public final ReusedClause[] getReusedClauses() {
+		return this.reused.get();
 	}
 
 	public Block parentheses(Group group) {

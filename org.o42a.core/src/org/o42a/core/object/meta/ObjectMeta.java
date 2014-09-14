@@ -19,9 +19,10 @@
 */
 package org.o42a.core.object.meta;
 
+import static org.o42a.analysis.use.User.dummyUser;
+
 import java.util.IdentityHashMap;
 
-import org.o42a.analysis.use.User;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
@@ -169,7 +170,7 @@ public abstract class ObjectMeta {
 				continue;
 			}
 
-			final Field field = memberField.field(User.dummyUser());
+			final Field field = memberField.field(dummyUser());
 
 			if (field.getFieldKind().isOwner()) {
 				// Only nested fields are interesting.

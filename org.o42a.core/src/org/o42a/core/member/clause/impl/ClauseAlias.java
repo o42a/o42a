@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause.impl;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
@@ -26,23 +28,26 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
+import org.o42a.util.fn.Init;
 
 
 public final class ClauseAlias extends Member {
 
 	private final MemberId memberId;
 	private final ClauseAlias propagatedFrom;
-	private MemberClause aliasedClause;
-	private MemberKey memberKey;
+	private final Init<MemberKey> memberKey =
+			init(() -> getMemberId().key(getMemberOwner().getScope()));
+	private final Init<MemberClause> aliasedClause =
+			init(this::findAliasedClause);
 
-	public ClauseAlias(MemberId memberId, MemberClause aliasedMember) {
+	public ClauseAlias(MemberId memberId, MemberClause aliasedClause) {
 		super(
-				aliasedMember,
-				aliasedMember.distribute(),
-				aliasedMember.getMemberOwner());
+				aliasedClause,
+				aliasedClause.distribute(),
+				aliasedClause.getMemberOwner());
 		this.memberId = memberId;
 		this.propagatedFrom = null;
-		this.aliasedClause = aliasedMember;
+		this.aliasedClause.set(aliasedClause);
 	}
 
 	private ClauseAlias(Obj owner, ClauseAlias prototype) {
@@ -52,7 +57,7 @@ public final class ClauseAlias extends Member {
 				owner);
 		this.memberId = prototype.getMemberId();
 		this.propagatedFrom = prototype;
-		this.memberKey = prototype.getMemberKey();
+		this.memberKey.set(prototype.getMemberKey());
 	}
 
 	@Override
@@ -62,10 +67,7 @@ public final class ClauseAlias extends Member {
 
 	@Override
 	public final MemberKey getMemberKey() {
-		if (this.memberKey != null) {
-			return this.memberKey;
-		}
-		return this.memberKey = this.memberId.key(getMemberOwner().getScope());
+		return this.memberKey.get();
 	}
 
 	@Override
@@ -126,24 +128,25 @@ public final class ClauseAlias extends Member {
 		if (this.propagatedFrom != null) {
 			return this.propagatedFrom.getAliasedKey();
 		}
-		return this.aliasedClause.getMemberKey();
+		return this.aliasedClause.getKnown().getMemberKey();
 	}
 
 	private MemberClause getAliasedClause() {
-		if (this.aliasedClause != null) {
-			return this.aliasedClause;
-		}
+		return this.aliasedClause.get();
+	}
 
-		this.aliasedClause =
+	private MemberClause findAliasedClause() {
+
+		final MemberClause aliasedClause =
 				getMemberOwner()
 				.getContainer()
 				.member(this.propagatedFrom.getAliasedKey())
 				.toClause();
 
-		assert this.aliasedClause != null :
+		assert aliasedClause != null :
 			"Can not find an aliased clause";
 
-		return this.aliasedClause;
+		return aliasedClause;
 	}
 
 }

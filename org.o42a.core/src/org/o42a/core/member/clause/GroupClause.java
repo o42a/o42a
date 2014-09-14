@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.util.fn.Init.init;
+
 import java.util.Collection;
 
 import org.o42a.core.Container;
@@ -27,11 +29,12 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.object.Obj;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.fn.Init;
 
 
 public abstract class GroupClause extends Clause implements Container {
 
-	private MemberClause[] subClauses;
+	private final Init<MemberClause[]> subClauses = init(this::findSubClauses);
 
 	public GroupClause(MemberClause member) {
 		super(member);
@@ -77,35 +80,8 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public MemberClause[] getSubClauses() {
-		if (this.subClauses != null) {
-			return this.subClauses;
-		}
-
-		MemberClause[] subClauses = new MemberClause[0];
-
-		final MemberKey key = getKey();
-		final Collection<? extends Member> members =
-				getEnclosingScope().getContainer().getMembers();
-
-		for (Member member : members) {
-			if (member.isTypeMember() || member.isAlias()) {
-				continue;
-			}
-
-			final MemberClause clause = member.toClause();
-
-			if (clause == null) {
-				continue;
-			}
-			if (!key.equals(member.getMemberKey().getEnclosingKey())) {
-				continue;
-			}
-
-			subClauses = ArrayUtil.append(subClauses, clause);
-		}
-
-		return this.subClauses = subClauses;
+	public final MemberClause[] getSubClauses() {
+		return this.subClauses.get();
 	}
 
 	@Override
@@ -199,6 +175,33 @@ public abstract class GroupClause extends Clause implements Container {
 		return clauseContainer.clause(
 				toMember().getMemberId().append(memberId),
 				declaredIn);
+	}
+
+	private MemberClause[] findSubClauses() {
+
+		MemberClause[] subClauses = new MemberClause[0];
+		final MemberKey key = getKey();
+		final Collection<? extends Member> members =
+				getEnclosingScope().getContainer().getMembers();
+
+		for (Member member : members) {
+			if (member.isTypeMember() || member.isAlias()) {
+				continue;
+			}
+
+			final MemberClause clause = member.toClause();
+
+			if (clause == null) {
+				continue;
+			}
+			if (!key.equals(member.getMemberKey().getEnclosingKey())) {
+				continue;
+			}
+
+			subClauses = ArrayUtil.append(subClauses, clause);
+		}
+
+		return subClauses;
 	}
 
 }

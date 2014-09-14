@@ -29,7 +29,9 @@ import static org.o42a.core.member.field.VisibilityMode.AUTO_VISIBILITY;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.Visibility;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -123,6 +125,10 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 
 	public final VisibilityMode getVisibilityMode() {
 		return this.visibilityMode;
+	}
+
+	public final Visibility visibilityOf(Member member) {
+		return getVisibilityMode().detectVisibility(member, this);
 	}
 
 	public final FieldDeclaration setVisibilityMode(

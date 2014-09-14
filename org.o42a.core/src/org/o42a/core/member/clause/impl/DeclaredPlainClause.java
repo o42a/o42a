@@ -19,7 +19,8 @@
 */
 package org.o42a.core.member.clause.impl;
 
-import static org.o42a.util.fn.Holder.holder;
+import static org.o42a.util.fn.Init.init;
+import static org.o42a.util.fn.NullableInit.nullableInit;
 
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.Member;
@@ -30,7 +31,8 @@ import org.o42a.core.member.field.PrototypeMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.fn.Holder;
+import org.o42a.util.fn.Init;
+import org.o42a.util.fn.NullableInit;
 
 
 public final class DeclaredPlainClause extends PlainClause {
@@ -40,9 +42,12 @@ public final class DeclaredPlainClause extends PlainClause {
 	}
 
 	private final ClauseBuilder builder;
-	private Holder<ClauseDefinition> definition;
-	private MemberKey overridden;
-	private ReusedClause[] reused;
+	private final NullableInit<MemberKey> overridden =
+			nullableInit(this::findOverridden);
+	private final NullableInit<ClauseDefinition> definition =
+			nullableInit(this::createDefinition);
+	private final Init<ReusedClause[]> reused =
+			init(() -> getBuilder().reuseClauses(this));
 
 	DeclaredPlainClause(
 			DeclaredPlainClauseMember clause,
@@ -56,9 +61,9 @@ public final class DeclaredPlainClause extends PlainClause {
 			DeclaredPlainClause propagatedFrom) {
 		super(clause, propagatedFrom);
 		this.builder = propagatedFrom.builder;
-		this.definition = holder(propagatedFrom.getDefinition());
-		this.overridden = propagatedFrom.getOverridden();
-		this.reused = propagatedFrom.getReusedClauses();
+		this.overridden.set(propagatedFrom.getOverridden());
+		this.definition.set(propagatedFrom.getDefinition());
+		this.reused.set(propagatedFrom.getReusedClauses());
 	}
 
 	public final ClauseBuilder getBuilder() {
@@ -92,24 +97,17 @@ public final class DeclaredPlainClause extends PlainClause {
 
 	@Override
 	public final MemberKey getOverridden() {
-		if (getKind() != ClauseKind.OVERRIDER) {
-			return null;
-		}
-		getDefinition();
-		return this.overridden;
+		return this.overridden.get();
 	}
 
 	@Override
-	public PrototypeMode getPrototypeMode() {
+	public final PrototypeMode getPrototypeMode() {
 		return this.builder.getPrototypeMode();
 	}
 
 	@Override
 	public final ReusedClause[] getReusedClauses() {
-		if (this.reused != null) {
-			return this.reused;
-		}
-		return this.reused = getBuilder().reuseClauses(this);
+		return this.reused.get();
 	}
 
 	@Override
@@ -135,43 +133,24 @@ public final class DeclaredPlainClause extends PlainClause {
 		validate();
 	}
 
-	@Override
-	protected Obj propagateClauseObject(PlainClause overridden) {
-		return new PropagatedClauseDefinition(this, overridden);
-	}
-
 	private final ClauseDefinition getDefinition() {
-		if (this.definition != null) {
-			return this.definition.get();
-		}
-
-		final ClauseDefinition definition;
-
-		if (getKind() == ClauseKind.OVERRIDER) {
-			definition = createOverriderDefinition();
-		} else {
-			definition = createExpressionDefinition();
-		}
-
-		this.definition = holder(definition);
-		setClauseObject(definition);
-
-		return definition;
+		return this.definition.get();
 	}
 
-	private ClauseDefinition createOverriderDefinition() {
-		this.overridden = overridden();
-		if (this.overridden == null) {
+	private ClauseDefinition createDefinition() {
+		if (getKind() != ClauseKind.OVERRIDER) {
+			return new ClauseDefinition(this);
+		}
+		if (getOverridden() == null) {
 			return null;
 		}
 		return new ClauseDefinition(this);
 	}
 
-	private ClauseDefinition createExpressionDefinition() {
-		return new ClauseDefinition(this);
-	}
-
-	private MemberKey overridden() {
+	private MemberKey findOverridden() {
+		if (getKind() != ClauseKind.OVERRIDER) {
+			return null;
+		}
 
 		final Obj enclosing = getScope().getEnclosingScope().toObject();
 		final StaticTypeRef declaredIn = getBuilder().getDeclaredIn();
