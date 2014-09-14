@@ -28,31 +28,10 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.util.string.ID;
 
 
-public class BoolLLOp extends BoolOp implements LLOp<BoolOp> {
-
-	private final ID id;
-	private final long blockPtr;
-	private final long nativePtr;
+public class BoolLLOp extends LLOp<BoolOp> implements BoolOp {
 
 	public BoolLLOp(ID id, long blockPtr, long nativePtr) {
-		this.id = id;
-		this.blockPtr = blockPtr;
-		this.nativePtr = nativePtr;
-	}
-
-	@Override
-	public final ID getId() {
-		return this.id;
-	}
-
-	@Override
-	public long getBlockPtr() {
-		return this.blockPtr;
-	}
-
-	@Override
-	public long getNativePtr() {
-		return this.nativePtr;
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override

@@ -19,16 +19,19 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
-public class CondBlock extends CodeBlock {
+public class CondBlock extends Block {
 
 	private final BoolOp condition;
 	private final ID falseName;
-	private Block otherwise;
+	private final Init<CondBlocks> blocks = init(this::initBlocks);
 
 	CondBlock(Block enclosing, BoolOp condition, ID trueName, ID falseName) {
 		super(enclosing, trueName);
@@ -41,18 +44,29 @@ public class CondBlock extends CodeBlock {
 	}
 
 	public final Block otherwise() {
-		if (this.otherwise == null) {
-			initBlocks();
-		}
-		return this.otherwise;
+		return this.blocks.get().otherwise;
+	}
+
+	@Override
+	public final Allocator getAllocator() {
+		return getEnclosing().getAllocator();
+	}
+
+	@Override
+	public boolean created() {
+		return this.blocks.isInitialized()
+				&& this.blocks.get().writer.created();
+	}
+
+	@Override
+	public final boolean exists() {
+		return this.blocks.isInitialized()
+				&& this.blocks.get().writer.exists();
 	}
 
 	@Override
 	public BlockWriter writer() {
-		if (this.writer == null) {
-			initBlocks();
-		}
-		return this.writer;
+		return this.blocks.get().writer;
 	}
 
 	@Override
@@ -68,18 +82,36 @@ public class CondBlock extends CodeBlock {
 		return (Block) getEnclosing();
 	}
 
-	private void initBlocks() {
-		this.writer = enclosing().writer().block(this);
-		this.otherwise = enclosing().addBlock(this.falseName);
+	private CondBlocks initBlocks() {
+
+		final BlockWriter writer = enclosing().writer().block(this);
+		final Block otherwise = enclosing().addBlock(this.falseName);
+		final CondBlocks blocks = new CondBlocks(writer, otherwise);
+
+		this.blocks.set(blocks);
 
 		final Block enclosing = enclosing();
 		final CodePos truePos = unwrapPos(head());
-		final CodePos falsePos = unwrapPos(this.otherwise.head());
+		final CodePos falsePos = unwrapPos(otherwise.head());
 
 		enclosing.addAssetsTo(truePos);
 		enclosing.addAssetsTo(falsePos);
 		enclosing.writer().go(this.condition, truePos, falsePos);
 		enclosing.removeAllAssets();
+
+		return blocks;
+	}
+
+	private static final class CondBlocks {
+
+		private final BlockWriter writer;
+		private final Block otherwise;
+
+		CondBlocks(BlockWriter writer, Block otherwise) {
+			this.writer = writer;
+			this.otherwise = otherwise;
+		}
+
 	}
 
 }

@@ -19,13 +19,17 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.codegen.code.backend.BlockWriter;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
-class CodeBlock extends Block {
+final class CodeBlock extends Block {
 
-	BlockWriter writer;
+	private final Init<BlockWriter> writer =
+			init(() -> getEnclosing().getBlock().writer().block(this));
 
 	CodeBlock(Code enclosing, ID name) {
 		super(enclosing, name);
@@ -38,20 +42,17 @@ class CodeBlock extends Block {
 
 	@Override
 	public boolean created() {
-		return this.writer != null && this.writer.created();
+		return this.writer.isInitialized() && this.writer.get().created();
 	}
 
 	@Override
 	public final boolean exists() {
-		return this.writer != null && this.writer.exists();
+		return this.writer.isInitialized() && this.writer.get().exists();
 	}
 
 	@Override
 	public BlockWriter writer() {
-		if (this.writer != null) {
-			return this.writer;
-		}
-		return this.writer = getEnclosing().getBlock().writer().block(this);
+		return this.writer.get();
 	}
 
 }

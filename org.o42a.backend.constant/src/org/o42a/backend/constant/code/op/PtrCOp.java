@@ -32,7 +32,7 @@ import org.o42a.util.string.ID;
 
 
 public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
-		extends AbstractCOp<P, PT>
+		extends COp<P, PT>
 		implements PtrOp<P> {
 
 	public PtrCOp(OpBE<P> backend) {

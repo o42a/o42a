@@ -28,31 +28,11 @@ import org.o42a.util.string.ID;
 
 
 public abstract class NumLLOp<O extends NumOp<O>, T extends O>
-		implements LLOp<O>, NumOp<O> {
-
-	private final ID id;
-	private final long blockPtr;
-	private final long nativePtr;
+		extends LLOp<O>
+		implements NumOp<O> {
 
 	public NumLLOp(ID id, long blockPtr, long nativePtr) {
-		this.id = id;
-		this.blockPtr = blockPtr;
-		this.nativePtr = nativePtr;
-	}
-
-	@Override
-	public final ID getId() {
-		return this.id;
-	}
-
-	@Override
-	public final long getBlockPtr() {
-		return this.blockPtr;
-	}
-
-	@Override
-	public final long getNativePtr() {
-		return this.nativePtr;
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
@@ -97,11 +77,6 @@ public abstract class NumLLOp<O extends NumOp<O>, T extends O>
 	@Override
 	public void returnValue(Block code, boolean dispose) {
 		llvm(code).returnValue(this, dispose);
-	}
-
-	@Override
-	public String toString() {
-		return this.id.toString();
 	}
 
 }
