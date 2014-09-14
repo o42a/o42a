@@ -43,8 +43,7 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 
 
-public class Ascendants
-		implements AscendantsBuilder<Ascendants>, Cloneable {
+public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 
 	private final Obj object;
 	private TypeRef explicitAncestor;

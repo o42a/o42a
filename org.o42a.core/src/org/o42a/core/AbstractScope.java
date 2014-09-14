@@ -24,9 +24,11 @@ import static java.util.Collections.unmodifiableSet;
 import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
 import static org.o42a.core.object.ConstructionMode.STRICT_CONSTRUCTION;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.ConstructionMode;
@@ -35,6 +37,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -95,8 +98,9 @@ public abstract class AbstractScope implements Scope {
 		return STRICT_CONSTRUCTION;
 	}
 
-	private Set<Scope> enclosingScopes;
-	private int anonymousSeq;
+	private final Init<Set<Scope>> enclosingScopes =
+			init(() -> enclosingScopes(this));
+	private final AtomicInteger anonymousSeq = new AtomicInteger();
 
 	@Override
 	public final Scope getScope() {
@@ -115,10 +119,7 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final Set<Scope> getEnclosingScopes() {
-		if (this.enclosingScopes != null) {
-			return this.enclosingScopes;
-		}
-		return this.enclosingScopes = enclosingScopes(this);
+		return this.enclosingScopes.get();
 	}
 
 	@Override
@@ -158,7 +159,7 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final ID nextAnonymousId() {
-		return getId().anonymous(++this.anonymousSeq);
+		return getId().anonymous(this.anonymousSeq.incrementAndGet());
 	}
 
 	static PrefixPath pathTo(Scope fromScope, Scope toScope) {

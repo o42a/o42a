@@ -31,7 +31,6 @@ public final class ImplicitSample extends Sample {
 
 	private final StaticTypeRef implicitAscendant;
 	private final TypeRef overriddenAncestor;
-	private TypeRef ancestor;
 
 	public ImplicitSample(
 			Ascendants ascendants,
@@ -51,10 +50,7 @@ public final class ImplicitSample extends Sample {
 
 	@Override
 	public TypeRef getAncestor() {
-		if (this.ancestor != null) {
-			return this.ancestor;
-		}
-		return this.ancestor = this.implicitAscendant.getAncestor();
+		return this.implicitAscendant.getAncestor();
 	}
 
 	@Override

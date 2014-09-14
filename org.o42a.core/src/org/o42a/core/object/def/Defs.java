@@ -21,6 +21,7 @@ package org.o42a.core.object.def;
 
 import static org.o42a.core.ir.def.InlineEval.noInlineEval;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
+import static org.o42a.util.fn.Init.init;
 
 import java.lang.reflect.Array;
 
@@ -36,12 +37,13 @@ import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.TargetResolver;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.fn.Init;
 
 
 public final class Defs {
 
 	private final Def[] defs;
-	private DefValue constant;
+	private final Init<DefValue> constant = init(this::detectConstant);
 
 	Defs(Def... defs) {
 		this.defs = defs;
@@ -107,23 +109,7 @@ public final class Defs {
 	}
 
 	public final DefValue getConstant() {
-		if (this.constant != null) {
-			return this.constant;
-		}
-
-		for (Def def : get()) {
-
-			final DefValue constant = def.getConstantValue();
-
-			if (constant.hasValue()) {
-				return this.constant = constant;
-			}
-			if (!constant.getCondition().isTrue()) {
-				return this.constant = constant;
-			}
-		}
-
-		return this.constant = TRUE_DEF_VALUE;
+		return this.constant.get();
 	}
 
 	public final DefValue value(Resolver resolver) {
@@ -315,6 +301,22 @@ public final class Defs {
 		for (Def def : get()) {
 			def.normalize(normalizer);
 		}
+	}
+
+	private DefValue detectConstant() {
+		for (Def def : get()) {
+
+			final DefValue constant = def.getConstantValue();
+
+			if (constant.hasValue()) {
+				return constant;
+			}
+			if (!constant.getCondition().isTrue()) {
+				return constant;
+			}
+		}
+
+		return TRUE_DEF_VALUE;
 	}
 
 	private void validate(TypeParameters<?> typeParameters) {

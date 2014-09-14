@@ -22,6 +22,7 @@ package org.o42a.core.ref;
 import org.o42a.core.Scope;
 
 
+@FunctionalInterface
 public interface ReversePath {
 
 	Scope revert(Scope target);

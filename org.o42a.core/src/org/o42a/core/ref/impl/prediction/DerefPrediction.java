@@ -29,7 +29,9 @@ import java.util.Iterator;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Pred;
+import org.o42a.core.ref.Predicted;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.value.link.Link;
 import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.collect.SubIterator;
@@ -118,12 +120,7 @@ final class DerefPrediction extends Prediction {
 									base),
 							base.getScope().getEnclosingScope(),
 							base.getScope().getEnclosingScopePath(),
-							new ReversePath() {
-								@Override
-								public Scope revert(Scope target) {
-									return base.getScope();
-								}
-							}),
+							t -> base.getScope()),
 					target.getRef()).iterator();
 		}
 

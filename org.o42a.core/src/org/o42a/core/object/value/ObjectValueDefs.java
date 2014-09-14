@@ -22,6 +22,7 @@ package org.o42a.core.object.value;
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -29,13 +30,15 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.Defs;
 import org.o42a.core.ref.FullResolver;
+import org.o42a.util.fn.Init;
 
 
 public final class ObjectValueDefs implements UserInfo {
 
 	private final ObjectValue objectValue;
 	private final ValueDefsUses uses;
-	private Usable<SimpleUsage> ancestorDefsUpdates;
+	private final Init<Usable<SimpleUsage>> ancestorDefsUpdates =
+			init(this::createAncestorDefsUpdates);
 
 	ObjectValueDefs(ObjectValue objectValue) {
 		this.objectValue = objectValue;
@@ -58,10 +61,10 @@ public final class ObjectValueDefs implements UserInfo {
 		if (getObject().getConstructionMode().isRuntime()) {
 			return SimpleUsage.alwaysUsed();
 		}
-		if (this.ancestorDefsUpdates == null) {
+		if (!this.ancestorDefsUpdates.isInitialized()) {
 			return SimpleUsage.neverUsed();
 		}
-		return this.ancestorDefsUpdates;
+		return this.ancestorDefsUpdates.getKnown();
 	}
 
 	@Override
@@ -116,16 +119,18 @@ public final class ObjectValueDefs implements UserInfo {
 	}
 
 	private final Usable<SimpleUsage> ancestorDefsUpdateUses() {
-		if (this.ancestorDefsUpdates != null) {
-			return this.ancestorDefsUpdates;
-		}
+		return this.ancestorDefsUpdates.get();
+	}
 
-		this.ancestorDefsUpdates = simpleUsable(
+	private Usable<SimpleUsage> createAncestorDefsUpdates() {
+
+		final Usable<SimpleUsage> ancestorDefsUpdates = simpleUsable(
 				"AncestorDefsUpdates",
 				getObject());
-		this.ancestorDefsUpdates.useBy(getObjectValue().toUser(), SIMPLE_USAGE);
 
-		return this.ancestorDefsUpdates;
+		ancestorDefsUpdates.useBy(getObjectValue().toUser(), SIMPLE_USAGE);
+
+		return ancestorDefsUpdates;
 	}
 
 }

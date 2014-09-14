@@ -19,16 +19,20 @@
 */
 package org.o42a.core.object;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.meta.ObjectMeta;
+import org.o42a.util.fn.Init;
 
 
 public final class Meta extends ObjectMeta {
 
 	private final Obj object;
-	private Nesting nesting;
+	private final Init<Nesting> nesting =
+			init(() -> getObject().createNesting());
 
 	Meta(Obj object) {
 		this.object = object;
@@ -65,10 +69,7 @@ public final class Meta extends ObjectMeta {
 	}
 
 	public final Nesting getNesting() {
-		if (this.nesting != null) {
-			return this.nesting;
-		}
-		return this.nesting = getObject().createNesting();
+		return this.nesting.get();
 	}
 
 	public final Obj findIn(Scope enclosing) {

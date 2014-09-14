@@ -36,7 +36,7 @@ public class ObjectContent implements UserInfo {
 	}
 
 	private final Obj object;
-	private Usable<SimpleUsage> usable;
+	private final Usable<SimpleUsage> usable = simpleUsable(this);
 	private final boolean clonesContent;
 
 	private ObjectContent(Obj object, boolean clonesContent) {
@@ -56,10 +56,7 @@ public class ObjectContent implements UserInfo {
 	public final UseFlag selectUse(
 			Analyzer analyzer,
 			UseSelector<SimpleUsage> selector) {
-		if (this.usable == null) {
-			return analyzer.toUseCase().unusedFlag();
-		}
-		return this.usable.selectUse(analyzer, selector);
+		return uses().selectUse(analyzer, selector);
 	}
 
 	public final boolean isUsed(
@@ -90,12 +87,6 @@ public class ObjectContent implements UserInfo {
 	}
 
 	private final Usable<SimpleUsage> uses() {
-		if (this.usable != null) {
-			return this.usable;
-		}
-
-		this.usable = simpleUsable(this);
-
 		return this.usable;
 	}
 

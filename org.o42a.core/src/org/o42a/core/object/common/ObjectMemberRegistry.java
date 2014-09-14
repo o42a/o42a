@@ -22,6 +22,7 @@ package org.o42a.core.object.common;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldBuilder;
@@ -36,8 +37,8 @@ import org.o42a.util.string.Name;
 public class ObjectMemberRegistry extends MemberRegistry {
 
 	private Obj owner;
-	private int tempMemberIndex;
-	private int localScopeIndex;
+	private final AtomicInteger tempMemberIndex = new AtomicInteger();
+	private final AtomicInteger localScopeIndex = new AtomicInteger();
 
 	private final ArrayList<Member> pending = new ArrayList<>();
 	private ObjectMembers members;
@@ -110,13 +111,13 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	@Override
 	public MemberId tempMemberId(MemberIdKind kind) {
 		return kind.memberName(CASE_SENSITIVE.canonicalName(
-				Integer.toString(++this.tempMemberIndex)));
+				Integer.toString(this.tempMemberIndex.incrementAndGet())));
 	}
 
 	@Override
 	public Name anonymousBlockName() {
 		return CASE_SENSITIVE.canonicalName(
-				Integer.toString(++this.localScopeIndex));
+				Integer.toString(this.localScopeIndex.incrementAndGet()));
 	}
 
 	@Override

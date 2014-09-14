@@ -22,6 +22,7 @@ package org.o42a.core.object.def;
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -37,6 +38,7 @@ import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.link.TargetResolver;
+import org.o42a.util.fn.Init;
 
 
 public abstract class Def implements SourceInfo {
@@ -58,7 +60,8 @@ public abstract class Def implements SourceInfo {
 	private final ScopeUpgrade scopeUpgrade;
 	private final Obj source;
 	private final Location location;
-	private DefValue constantValue;
+	private final Init<DefValue> constantValue =
+			init(this::detectConstant);
 	private boolean allResolved;
 
 	public Def(
@@ -152,13 +155,7 @@ public abstract class Def implements SourceInfo {
 	}
 
 	public final DefValue getConstantValue() {
-		if (this.constantValue != null) {
-			return this.constantValue;
-		}
-		if (!hasConstantValue()) {
-			return this.constantValue = RUNTIME_DEF_VALUE;
-		}
-		return this.constantValue = value(getScope().resolver());
+		return this.constantValue.get();
 	}
 
 	public DefValue value(Resolver resolver) {
@@ -260,6 +257,13 @@ public abstract class Def implements SourceInfo {
 		}
 
 		return create(newUpgrade, upgrade);
+	}
+
+	private DefValue detectConstant() {
+		if (!hasConstantValue()) {
+			return RUNTIME_DEF_VALUE;
+		}
+		return value(getScope().resolver());
 	}
 
 }

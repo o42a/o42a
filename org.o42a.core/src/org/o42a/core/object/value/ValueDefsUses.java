@@ -22,17 +22,19 @@ package org.o42a.core.object.value;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_USAGE;
 import static org.o42a.core.object.value.ValueUsage.VALUE_USAGE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
+import org.o42a.util.fn.Init;
 
 
 final class ValueDefsUses implements UserInfo {
 
 	private final ObjectValueDefs part;
-	private Usable<ValuePartUsage> uses;
+	private final Init<Usable<ValuePartUsage>> uses = init(this::createUses);
 
 	ValueDefsUses(ObjectValueDefs part) {
 		this.part = part;
@@ -87,19 +89,19 @@ final class ValueDefsUses implements UserInfo {
 	}
 
 	final Usable<ValuePartUsage> uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
+		return this.uses.get();
+	}
 
-		this.uses = ValuePartUsage.usable(this);
+	private Usable<ValuePartUsage> createUses() {
 
+		final Usable<ValuePartUsage> uses = ValuePartUsage.usable(this);
 		final ObjectValueBase objectValue = getObjectValue();
 		final Usable<ValueUsage> valueUses = objectValue.uses();
 
-		valueUses.useBy(this.uses, VALUE_USAGE);
-		this.uses.useBy(valueUses, VALUE_PART_USAGE);
+		valueUses.useBy(uses, VALUE_USAGE);
+		uses.useBy(valueUses, VALUE_PART_USAGE);
 
-		return this.uses;
+		return uses;
 	}
 
 }

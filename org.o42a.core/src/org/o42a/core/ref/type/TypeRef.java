@@ -22,6 +22,7 @@ package org.o42a.core.ref.type;
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.ref.type.TypeRefParameters.defaultTypeRefParameters;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -40,6 +41,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Init;
 
 
 public abstract class TypeRef implements ScopeInfo {
@@ -71,9 +73,11 @@ public abstract class TypeRef implements ScopeInfo {
 
 	private final Ref ref;
 	private final TypeRefParameters typeRefParameters;
-	private TypeParameters<?> parameters;
-	private TypeRef ancestor;
-	private TypeHolder type;
+	private final Init<TypeParameters<?>> parameters =
+			init(this::buildParameters);
+	private final Init<TypeRef> ancestor =
+			init(() -> getIntactRef().ancestor(this));
+	private final Init<TypeHolder> type = init(this::build);
 	private boolean fullyResolved;
 
 	public TypeRef(Ref ref, TypeRefParameters parameters) {
@@ -116,23 +120,7 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public final TypeParameters<?> getParameters() {
-		if (this.parameters != null) {
-			return this.parameters;
-		}
-
-		final TypeParameters<?> defaultParameters = defaultParameters();
-		final TypeParameters<?> typeParameters =
-				this.typeRefParameters.refine(defaultParameters);
-
-		if (typeParameters == null || typeParameters.isEmpty()) {
-			this.parameters = defaultParameters;
-		} else {
-			this.parameters = typeParameters;
-		}
-
-		this.parameters.assertSameScope(this);
-
-		return this.parameters;
+		return this.parameters.get();
 	}
 
 	public final TypeRefParameters copyParameters() {
@@ -170,10 +158,7 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public final TypeRef getAncestor() {
-		if (this.ancestor != null) {
-			return this.ancestor;
-		}
-		return this.ancestor = getIntactRef().ancestor(this);
+		return this.ancestor.get();
 	}
 
 	public final ConstructionMode getConstructionMode() {
@@ -327,14 +312,33 @@ public abstract class TypeRef implements ScopeInfo {
 			TypeRefParameters parameters);
 
 	private TypeHolder get() {
-		if (this.type != null) {
-			return this.type;
+		return this.type.get();
+	}
+
+	private TypeParameters<?> buildParameters() {
+
+		final TypeParameters<?> defaultParameters = defaultParameters();
+		final TypeParameters<?> typeParameters =
+				this.typeRefParameters.refine(defaultParameters);
+		final TypeParameters<?> parameters;
+
+		if (typeParameters == null || typeParameters.isEmpty()) {
+			parameters = defaultParameters;
+		} else {
+			parameters = typeParameters;
 		}
+
+		assert parameters.assertSameScope(this);
+
+		return parameters;
+	}
+
+	private TypeHolder build() {
 
 		final Resolution resolution = resolve(getScope().resolver());
 
 		if (resolution.isError()) {
-			return this.type = new TypeHolder(getContext().getNone(), false);
+			return new TypeHolder(getContext().getNone(), false);
 		}
 
 		final Obj object = resolution.toObject();
@@ -344,10 +348,10 @@ public abstract class TypeRef implements ScopeInfo {
 					"not_type_ref",
 					this,
 					"Not a valid type reference");
-			return this.type = new TypeHolder(getContext().getNone(), false);
+			return new TypeHolder(getContext().getNone(), false);
 		}
 
-		return this.type = new TypeHolder(object, true);
+		return new TypeHolder(object, true);
 	}
 
 	private static final class TypeHolder {
