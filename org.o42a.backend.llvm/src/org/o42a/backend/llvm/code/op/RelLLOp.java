@@ -30,31 +30,10 @@ import org.o42a.codegen.code.op.RelOp;
 import org.o42a.util.string.ID;
 
 
-public final class RelLLOp implements LLOp<RelOp>, RelOp {
-
-	private final ID id;
-	private final long blockPtr;
-	private final long nativePtr;
+public final class RelLLOp extends LLOp<RelOp> implements RelOp {
 
 	public RelLLOp(ID id, long blockPtr, long nativePtr) {
-		this.id = id;
-		this.blockPtr = blockPtr;
-		this.nativePtr = nativePtr;
-	}
-
-	@Override
-	public final ID getId() {
-		return this.id;
-	}
-
-	@Override
-	public long getBlockPtr() {
-		return this.blockPtr;
-	}
-
-	@Override
-	public long getNativePtr() {
-		return this.nativePtr;
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override

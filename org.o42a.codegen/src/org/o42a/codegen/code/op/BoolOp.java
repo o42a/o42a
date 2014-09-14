@@ -19,33 +19,33 @@
 */
 package org.o42a.codegen.code.op;
 
+import static org.o42a.codegen.code.op.BoolOpInternals.*;
+
 import org.o42a.codegen.code.*;
 import org.o42a.util.string.ID;
 
 
-public abstract class BoolOp implements Op {
+public interface BoolOp extends Op {
 
-	public static final ID TRUE_ID = ID.rawId("__true__");
-	public static final ID FALSE_ID = ID.rawId("__false__");
-	public static final ID NOT_ID = ID.rawId("__not__");
+	ID TRUE_ID = ID.rawId("__true__");
+	ID FALSE_ID = ID.rawId("__false__");
+	ID NOT_ID = ID.rawId("__not__");
 
-	private static final ID EXIT_TO_ID = ID.id().detail("__exit_to__");
-
-	public abstract <O extends Op> O select(
+	<O extends Op> O select(
 			ID id,
 			Code code,
 			O trueValue,
 			O falseValue);
 
-	public final CondBlock branch(Block source) {
+	default CondBlock branch(Block source) {
 		return branch(source, null);
 	}
 
-	public final CondBlock branch(Block source, String conditionName) {
+	default CondBlock branch(Block source, String conditionName) {
 		return branch(source, conditionName, null);
 	}
 
-	public final CondBlock branch(
+	default CondBlock branch(
 			Block source,
 			String trueName,
 			String falseName) {
@@ -55,7 +55,7 @@ public abstract class BoolOp implements Op {
 				falseName != null ? ID.id(falseName) : null);
 	}
 
-	public final CondBlock branch(Block source, ID trueName, ID falseName) {
+	default CondBlock branch(Block source, ID trueName, ID falseName) {
 
 		final OpBlockBase src = source;
 
@@ -66,17 +66,17 @@ public abstract class BoolOp implements Op {
 				: (trueName != null ? NOT_ID.sub(trueName) : FALSE_ID));
 	}
 
-	public final void go(Block source, CodePos truePos) {
+	default void go(Block source, CodePos truePos) {
 		go(source, truePos, null);
 	}
 
-	public final void goUnless(Block source, CodePos falsePos) {
+	default void goUnless(Block source, CodePos falsePos) {
 		go(source, null, falsePos);
 	}
 
-	public final void go(Block source, CodePos truePos, CodePos falsePos) {
+	default void go(Block source, CodePos truePos, CodePos falsePos) {
 		if (source.getGenerator().isProxied()) {
-			internalGo(source, truePos, falsePos);
+			internalGo(source, this, truePos, falsePos);
 			return;
 		}
 
@@ -112,96 +112,15 @@ public abstract class BoolOp implements Op {
 		// made between innermost position and the target one.
 		internalGo(
 				source,
+				this,
 				exitPos(source, innermostAllocator, truePos, !included),
 				exitPos(source, innermostAllocator, falsePos, !included));
 	}
 
-	public final void returnValue(Block code) {
+	default void returnValue(Block code) {
 		returnValue(code, true);
 	}
 
-	public abstract void returnValue(Block code, boolean dispose);
-
-	private static final Allocator allocatorOf(Block source, CodePos pos) {
-		if (pos == null) {
-			return source.getAllocator();
-		}
-		return pos.code().getAllocator();
-	}
-
-	private static boolean contains(
-			Allocator allocator1,
-			Allocator allocator2) {
-
-		Allocator allocator = allocator2;
-
-		do {
-			if (allocator == allocator1) {
-				return true;
-			}
-			allocator = allocator.getEnclosingAllocator();
-		} while (allocator != null);
-
-		return false;
-	}
-
-	private static CodePos exitPos(
-			Block source,
-			Allocator fromAllocator,
-			CodePos pos,
-			boolean includingFrom) {
-		if (pos == null) {
-			return null;
-		}
-
-		final OpBlockBase s = source;
-		final Allocator from;
-
-		if (includingFrom) {
-			from = fromAllocator;
-		} else {
-			// The source allocations already disposed.
-			// Start from the enclosing allocator.
-			from = fromAllocator.getEnclosingAllocator();
-			if (from == null) {
-				return s.unwrapPos(pos);
-			}
-		}
-
-		return dispose(source, pos, from);
-	}
-
-	private static CodePos dispose(Block source, CodePos pos, Allocator from) {
-
-		final Block exitBlock =
-				source.addBlock(EXIT_TO_ID.detail(pos.code().getId()));
-		final OpBlockBase exitBlk = exitBlock;
-
-		exitBlk.disposeFromTo(from, pos);
-		exitBlk.addAssetsTo(pos);
-		exitBlock.writer().go(exitBlk.unwrapPos(pos));
-		exitBlk.removeAllAssets();
-
-		return exitBlk.unwrapPos(exitBlock.head());
-	}
-
-	private void internalGo(Block source, CodePos truePos, CodePos falsePos) {
-
-		final OpBlockBase s = source;
-
-		if (truePos != null) {
-			s.addAssetsTo(truePos);
-		}
-		if (falsePos != null) {
-			s.addAssetsTo(falsePos);
-		}
-		source.writer().go(
-				this,
-				s.unwrapPos(truePos),
-				s.unwrapPos(falsePos));
-		if (truePos != null && falsePos != null) {
-			s.removeAllAssets();
-		}
-	}
+	void returnValue(Block code, boolean dispose);
 
 }

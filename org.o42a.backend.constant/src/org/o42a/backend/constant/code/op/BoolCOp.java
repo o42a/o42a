@@ -19,13 +19,9 @@
 */
 package org.o42a.backend.constant.code.op;
 
-import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
-import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.analysis.use.*;
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.ReturnBE;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -34,50 +30,18 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.util.string.ID;
 
 
-public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
-
-	private final OpBE<BoolOp> backend;
-	private final Boolean constant;
-	private final Usable<SimpleUsage> allUses;
-
-	public BoolCOp(OpBE<BoolOp> backend) {
-		this(backend, null);
-	}
+public final class BoolCOp extends COp<BoolOp, Boolean> implements BoolOp {
 
 	public BoolCOp(OpBE<BoolOp> backend, Boolean constant) {
-		this.backend = backend;
-		this.constant = constant;
-		this.allUses = simpleUsable(this);
-		this.backend.init(this);
+		super(backend, constant);
+	}
+
+	public BoolCOp(OpBE<BoolOp> backend) {
+		super(backend);
 	}
 
 	public BoolCOp(ID id, CCode<?> code, boolean constant) {
 		this(new BoolConstBE(id, code, constant), constant);
-	}
-
-	@Override
-	public final CCodePart<?> part() {
-		return backend().part();
-	}
-
-	@Override
-	public final OpBE<BoolOp> backend() {
-		return this.backend;
-	}
-
-	@Override
-	public ID getId() {
-		return backend().getId();
-	}
-
-	@Override
-	public final boolean isConstant() {
-		return getConstant() != null;
-	}
-
-	@Override
-	public final Boolean getConstant() {
-		return this.constant;
 	}
 
 	@Override
@@ -133,31 +97,8 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	}
 
 	@Override
-	public final BoolOp create(OpBE<BoolOp> backend) {
-		return create(backend, null);
-	}
-
-	@Override
 	public BoolOp create(OpBE<BoolOp> backend, Boolean constant) {
 		return new BoolCOp(backend, constant);
-	}
-
-	@Override
-	public final void useBy(UserInfo user) {
-		this.allUses.useBy(user, SIMPLE_USAGE);
-	}
-
-	@Override
-	public User<SimpleUsage> toUser() {
-		return this.allUses.toUser();
-	}
-
-	@Override
-	public String toString() {
-		if (this.backend == null) {
-			return super.toString();
-		}
-		return this.backend.toString();
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})

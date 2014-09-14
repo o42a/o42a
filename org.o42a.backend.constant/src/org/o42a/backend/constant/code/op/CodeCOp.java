@@ -23,7 +23,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.CodeOp;
 
 
-public class CodeCOp extends AbstractCOp<CodeOp, CodePos> implements CodeOp {
+public class CodeCOp extends COp<CodeOp, CodePos> implements CodeOp {
 
 	public CodeCOp(OpBE<CodeOp> backend) {
 		super(backend);

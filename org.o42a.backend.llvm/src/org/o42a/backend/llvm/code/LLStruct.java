@@ -260,6 +260,9 @@ public class LLStruct<S extends StructOp<S>>
 
 	@Override
 	public String toString() {
+		if (this.type == null) {
+			return super.toString();
+		}
 		return "(" + this.type.getType().getId() + "*) " + getId();
 	}
 

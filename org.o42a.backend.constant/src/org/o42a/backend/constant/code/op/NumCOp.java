@@ -31,7 +31,7 @@ import org.o42a.util.string.ID;
 
 
 public abstract class NumCOp<U extends NumOp<U>, T extends Number>
-		extends AbstractCOp<U, T>
+		extends COp<U, T>
 		implements NumOp<U> {
 
 	public NumCOp(OpBE<U> backend) {

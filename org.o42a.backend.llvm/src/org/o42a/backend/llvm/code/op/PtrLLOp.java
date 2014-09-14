@@ -31,31 +31,12 @@ import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.util.string.ID;
 
 
-public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
-
-	private final long blockPtr;
-	private final long nativePtr;
-	private final ID id;
+public abstract class PtrLLOp<P extends PtrOp<P>>
+		extends LLOp<P>
+		implements PtrOp<P> {
 
 	public PtrLLOp(ID id, long blockPtr, long nativePtr) {
-		this.id = id;
-		this.blockPtr = blockPtr;
-		this.nativePtr = nativePtr;
-	}
-
-	@Override
-	public final ID getId() {
-		return this.id;
-	}
-
-	@Override
-	public final long getBlockPtr() {
-		return this.blockPtr;
-	}
-
-	@Override
-	public final long getNativePtr() {
-		return this.nativePtr;
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
@@ -120,11 +101,6 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 						ids.length(),
 						getNativePtr(),
 						nativePtr(other))));
-	}
-
-	@Override
-	public String toString() {
-		return this.id.toString();
 	}
 
 	protected static native long field(

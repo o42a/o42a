@@ -19,30 +19,87 @@
 */
 package org.o42a.backend.constant.code.op;
 
-import org.o42a.analysis.use.SimpleUsage;
-import org.o42a.analysis.use.User;
-import org.o42a.analysis.use.UserInfo;
+import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
+
+import org.o42a.analysis.use.*;
 import org.o42a.backend.constant.code.CCodePart;
+import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
-public interface COp<U extends Op, T> extends Op, UserInfo {
+public abstract class COp<U extends Op, T> implements Op, UserInfo {
 
-	CCodePart<?> part();
+	private final OpBE<U> backend;
+	private final T constant;
+	private final Usable<SimpleUsage> allUses;
 
-	boolean isConstant();
+	public COp(OpBE<U> backend) {
+		this(backend, null);
+	}
 
-	T getConstant();
+	public COp(OpBE<U> backend, T constant) {
+		this.backend = backend;
+		this.constant = constant;
+		this.allUses = simpleUsable(this);
+		this.backend.init(this);
+	}
 
-	U create(OpBE<U> backend);
+	public final ConstBackend getBackend() {
+		return part().code().getBackend();
+	}
 
-	U create(OpBE<U> backend, T constant);
+	public final CCodePart<?> part() {
+		return backend().part();
+	}
 
-	OpBE<U> backend();
-
-	void useBy(UserInfo user);
+	public final OpBE<U> backend() {
+		return this.backend;
+	}
 
 	@Override
-	User<SimpleUsage> toUser();
+	public final ID getId() {
+		return backend().getId();
+	}
+
+	public final boolean isConstant() {
+		return getConstant() != null;
+	}
+
+	public final T getConstant() {
+		return this.constant;
+	}
+
+	public final U create(OpBE<U> backend) {
+		return create(backend, null);
+	}
+
+	public abstract U create(OpBE<U> backend, T constant);
+
+	public final void useBy(UserInfo user) {
+		explicitUses().useBy(user, SIMPLE_USAGE);
+	}
+
+	@Override
+	public final User<SimpleUsage> toUser() {
+		return allUses().toUser();
+	}
+
+	@Override
+	public String toString() {
+		if (this.backend == null) {
+			return super.toString();
+		}
+		return this.backend.toString();
+	}
+
+	protected final Usable<SimpleUsage> allUses() {
+		return this.allUses;
+	}
+
+	protected Usable<SimpleUsage> explicitUses() {
+		return allUses();
+	}
 
 }

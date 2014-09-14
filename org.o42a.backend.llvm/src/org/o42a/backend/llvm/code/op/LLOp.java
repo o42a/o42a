@@ -23,12 +23,39 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.util.string.ID;
 
 
-public interface LLOp<O extends Op> extends Op {
+public abstract class LLOp<O extends Op> implements Op {
 
-	long getBlockPtr();
+	private final ID id;
+	private final long blockPtr;
+	private final long nativePtr;
 
-	long getNativePtr();
+	public LLOp(ID id, long blockPtr, long nativePtr) {
+		this.id = id;
+		this.blockPtr = blockPtr;
+		this.nativePtr = nativePtr;
+	}
 
-	O create(ID id, long blockPtr, long nativePtr);
+	@Override
+	public final ID getId() {
+		return this.id;
+	}
+
+	public final long getBlockPtr() {
+		return this.blockPtr;
+	}
+
+	public final long getNativePtr() {
+		return this.nativePtr;
+	}
+
+	public abstract O create(ID id, long blockPtr, long nativePtr);
+
+	@Override
+	public String toString() {
+		if (this.id == null) {
+			return super.toString();
+		}
+		return this.id.toString();
+	}
 
 }

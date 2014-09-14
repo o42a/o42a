@@ -30,7 +30,7 @@ import org.o42a.codegen.data.RelPtr;
 import org.o42a.util.string.ID;
 
 
-public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
+public final class RelCOp extends COp<RelOp, RelPtr> implements RelOp {
 
 	public RelCOp(OpBE<RelOp> backend) {
 		super(backend);
