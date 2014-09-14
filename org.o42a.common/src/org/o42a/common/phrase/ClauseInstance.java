@@ -19,6 +19,8 @@
 */
 package org.o42a.common.phrase;
 
+import static org.o42a.util.fn.Init.init;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -34,6 +36,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.fn.Init;
 
 
 public final class ClauseInstance implements LocationInfo {
@@ -45,9 +48,10 @@ public final class ClauseInstance implements LocationInfo {
 	private final PhraseContext context;
 	private final HashMap<MemberKey, PhraseSubContext> subContexts =
 			new HashMap<>();
+	private final Init<Definition> definition =
+			init(() -> new Definition(this));
 	private PhraseContinuation[] content = NO_CONTENT;
 	private boolean complete;
-	private Definition definition;
 
 	ClauseInstance(PhraseContext context) {
 		this(context, context.getLocation());
@@ -89,10 +93,7 @@ public final class ClauseInstance implements LocationInfo {
 	}
 
 	public final BlockBuilder getDefinition() {
-		if (this.definition != null) {
-			return this.definition;
-		}
-		return this.definition = new Definition(this);
+		return this.definition.get();
 	}
 
 	public void groupDefinition(Block block) {

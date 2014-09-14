@@ -19,6 +19,8 @@
 */
 package org.o42a.common.phrase;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
@@ -29,12 +31,16 @@ import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.Init;
 
 
 final class ClauseInstanceConstructor extends ObjectConstructor {
 
 	private final ClauseInstance instance;
-	private AscendantsDefinition ascendants;
+	private final Init<AscendantsDefinition> ascendants = init(
+			() -> instance()
+			.getPhraseContext()
+			.ascendants(this, distribute()));
 
 	ClauseInstanceConstructor(
 			ClauseInstance instance,
@@ -53,7 +59,7 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 				new Location(distributor.getContext(), instance.getLocation()),
 				distributor);
 		this.instance = instance;
-		this.ascendants = ascendants;
+		this.ascendants.set(ascendants);
 	}
 
 	@Override
@@ -108,13 +114,8 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 		return new ClauseInstanceObject(this);
 	}
 
-	AscendantsDefinition getAscendants() {
-		if (this.ascendants != null) {
-			return this.ascendants;
-		}
-		return this.ascendants =
-				this.instance.getPhraseContext()
-				.ascendants(this, distribute());
+	final AscendantsDefinition getAscendants() {
+		return this.ascendants.get();
 	}
 
 }

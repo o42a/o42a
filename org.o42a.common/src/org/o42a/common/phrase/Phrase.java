@@ -19,6 +19,8 @@
 */
 package org.o42a.common.phrase;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.common.macro.Macros;
 import org.o42a.common.phrase.part.*;
 import org.o42a.core.Contained;
@@ -32,6 +34,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.ObjectTypeParameters;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.Name;
 
 
@@ -41,8 +44,9 @@ public class Phrase extends Contained {
 	private SuffixedByPhrase suffixed;
 	private PhrasePrefix prefix;
 	private PhrasePart last;
-	private MainPhraseContext mainContext;
-	private Ref ref;
+	private final Init<MainPhraseContext> mainContext =
+			init(() -> new MainPhraseContext(this));
+	private final Init<Ref> ref = init(this::createRef);
 	private boolean macroExpansion;
 
 	public Phrase(LocationInfo location, Distributor distributor) {
@@ -211,18 +215,7 @@ public class Phrase extends Contained {
 	}
 
 	public final Ref toRef() {
-		if (this.ref != null) {
-			return this.ref;
-		}
-
-		final BoundPath path =
-				new PhraseFragment(this).toPath().bind(this, getScope());
-
-		if (isMacroExpansion()) {
-			return this.ref = Macros.expandMacro(path).target(distribute());
-		}
-
-		return path.target(distribute());
+		return this.ref.get();
 	}
 
 	public final void build() {
@@ -285,15 +278,24 @@ public class Phrase extends Contained {
 	}
 
 	final MainPhraseContext getMainContext() {
-		if (this.mainContext != null) {
-			return this.mainContext;
-		}
-		return this.mainContext = new MainPhraseContext(this);
+		return this.mainContext.get();
 	}
 
 	private final <P extends PhrasePart> P append(P part) {
 		this.last = part;
 		return part;
+	}
+
+	private Ref createRef() {
+
+		final BoundPath path =
+				new PhraseFragment(this).toPath().bind(this, getScope());
+
+		if (isMacroExpansion()) {
+			return Macros.expandMacro(path).target(distribute());
+		}
+
+		return path.target(distribute());
 	}
 
 }
