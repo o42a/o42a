@@ -21,6 +21,7 @@ package org.o42a.core.object;
 
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_VALUE_USAGE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.use.Usable;
 import org.o42a.analysis.use.User;
@@ -33,12 +34,13 @@ import org.o42a.core.object.type.Inheritor;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValueDefs;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.fn.Init;
 
 
 final class DerivationUses implements UserInfo {
 
 	private final ObjectType type;
-	private Usable<DerivationUsage> uses;
+	private final Init<Usable<DerivationUsage>> uses = init(this::createUses);
 
 	DerivationUses(ObjectType type) {
 		this.type = type;
@@ -100,7 +102,7 @@ final class DerivationUses implements UserInfo {
 		uses().useBy(derived.type().derivation(), DERIVATION_USAGE);
 
 		trackUpdatesBySample(sample);
-		trackSampleRtDerivation(sample);
+		trackSampleDerivation(sample);
 	}
 
 	private Obj getOwner() {
@@ -117,54 +119,50 @@ final class DerivationUses implements UserInfo {
 	}
 
 	private final Usable<DerivationUsage> uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
+		return this.uses.get();
+	}
+
+	private Usable<DerivationUsage> createUses() {
 
 		final Obj object = getObject();
 
 		if (!object.meta().isUpdated()) {
-			return this.uses =
-					object.getCloneOf().type().derivationUses().uses();
+			return object.getCloneOf().type().derivationUses().uses();
 		}
 
-		this.uses = DerivationUsage.usable("DerivationOf", object);
-		this.uses.useBy(this.uses, DERIVATION_USAGE);
-
+		final Usable<DerivationUsage> uses =
+				DerivationUsage.usable("DerivationOf", object);
 		final Member member = object.toMember();
 
 		if (member != null) {
-			detectFieldRtDerivation(member);
+			detectFieldDerivation(uses, member);
 		} else {
-			detectStandaloneObjectRtDerivation();
+			detectStandaloneObjectDerivation(uses);
 		}
 
-		return this.uses;
+		return uses;
 	}
 
-	private void detectFieldRtDerivation(final Member member) {
-
-		// Detect run time construction mode by member.
+	private void detectFieldDerivation(
+			Usable<DerivationUsage> uses,
+			Member member) {
+		// Detect derivation mode by member.
 		final MemberField field = member.toField();
 
 		if (field == null) {
 			return;
 		}
 
-		this.uses.useBy(field.getAnalysis().derivation(), DERIVATION_USAGE);
+		uses.useBy(field.getAnalysis().derivation(), DERIVATION_USAGE);
 	}
 
-	private void detectStandaloneObjectRtDerivation() {
+	private void detectStandaloneObjectDerivation(
+			Usable<DerivationUsage> uses) {
 		if (getObject().getScope().getEnclosingScope().isTopScope()) {
 			return;
 		}
-
-		// Stand-alone object is constructed at run time, if it's ever derived.
-		this.uses.useBy(this, DERIVATION_USAGE);
-
-		// Stand-alone object is constructed at run time
-		// if its owner's value is ever used at runtime.
-		this.uses.useBy(getOwner().value().uses(), DERIVATION_USAGE);
+		// Stand-alone object is derived if its owner's value is ever used.
+		uses.useBy(getOwner().value().uses(), DERIVATION_USAGE);
 	}
 
 	private void trackUpdatesByAncestor(Obj derived) {
@@ -205,7 +203,7 @@ final class DerivationUses implements UserInfo {
 		}
 	}
 
-	private void trackSampleRtDerivation(Sample sample) {
+	private void trackSampleDerivation(Sample sample) {
 		// Run time derivation of sample means that
 		// the owner object's value can be constructed at run time.
 		final Obj derived = sample.getDerivedObject();

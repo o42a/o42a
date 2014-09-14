@@ -43,7 +43,7 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 	private static final SubID DEP_SUFFIX =
 			ID.displayText("'");
 
-	private LinkedHashMap<Object, Dep> deps = new LinkedHashMap<>();
+	private final LinkedHashMap<Object, Dep> deps = new LinkedHashMap<>();
 	private int depNameSeq;
 
 	Deps(Obj object) {
@@ -89,7 +89,7 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 	}
 
 	boolean hasDeps(Analyzer analyzer) {
-		if (this.deps == null || this.deps.isEmpty()) {
+		if (this.deps.isEmpty()) {
 			return false;
 		}
 		for (Dep dep : this) {

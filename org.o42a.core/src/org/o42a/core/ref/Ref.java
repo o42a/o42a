@@ -30,6 +30,7 @@ import static org.o42a.core.ref.type.TypeRef.typeRef;
 import static org.o42a.core.ref.type.impl.ValueTypeInterface.valueTypeInterfaceOf;
 import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.link.TargetRef.targetRef;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
@@ -57,6 +58,7 @@ import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.*;
 import org.o42a.core.value.link.TargetRef;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.fn.Init;
 
 
 public class Ref extends Statement implements RefBuilder {
@@ -79,7 +81,8 @@ public class Ref extends Statement implements RefBuilder {
 	}
 
 	private final BoundPath path;
-	private TypeRef iface;
+	private final Init<TypeRef> iface =
+			init(() -> ((RefPath) getPath()).iface(this, false));
 
 	public Ref(LocationInfo location, Distributor distributor, BoundPath path) {
 		super(location, distributor);
@@ -166,8 +169,9 @@ public class Ref extends Statement implements RefBuilder {
 		final Resolution resolution =
 				resolve(resolver.getResolver()).resolveAll(resolver);
 
-		if (this.iface != null && !this.iface.isFullyResolved()) {
-			this.iface.resolveAll(
+		if (this.iface.isInitialized()
+				&& !this.iface.getKnown().isFullyResolved()) {
+			this.iface.getKnown().resolveAll(
 					getScope()
 					.resolver()
 					.fullResolver(dummyUser(), TYPE_PARAMETER_REF_USAGE));
@@ -244,13 +248,7 @@ public class Ref extends Statement implements RefBuilder {
 	 * @return ancestor interface type reference.
 	 */
 	public final TypeRef getInterface() {
-		if (this.iface != null) {
-			return this.iface;
-		}
-
-		final RefPath path = getPath();
-
-		return this.iface = path.iface(this, false);
+		return this.iface.get();
 	}
 
 	public final TypeRef getValueTypeInterface() {

@@ -25,8 +25,11 @@ import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+import static org.o42a.util.fn.CondInit.condInit;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.UseFlag;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -35,11 +38,15 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.CondInit;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 import org.o42a.util.string.SubID;
@@ -52,12 +59,14 @@ public final class Dep extends Step implements SubID {
 	private final Name name;
 	private final ID id;
 	private final Obj target;
-	private ObjectStepUses uses;
+	private final Init<ObjectStepUses> uses =
+			init(() -> new ObjectStepUses(this));
 	private byte enabled;
 	private byte compileTimeOnly;
 	private SyntheticDep synthetic;
-	private Analyzer syntheticAnalyzer;
-	private boolean isSynthetic;
+	private CondInit<Analyzer, UseFlag> isSynthetic = condInit(
+			(a, f) -> a.toUseCase() == f.getUseCase(),
+			this::detectSynthetic);
 
 	Dep(Obj declaredIn, Ref ref, Name name, ID id) {
 		this.declaredIn = declaredIn;
@@ -213,12 +222,7 @@ public final class Dep extends Step implements SubID {
 		if (!normalizer.up(
 				enclosingScope,
 				objectScope.getEnclosingScopePath(),
-				new ReversePath() {
-					@Override
-					public Scope revert(Scope target) {
-						return object.meta().findIn(target).getScope();
-					}
-				})) {
+				target -> object.meta().findIn(target).getScope())) {
 			return;
 		}
 
@@ -281,24 +285,19 @@ public final class Dep extends Step implements SubID {
 	}
 
 	private final ObjectStepUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = new ObjectStepUses(this);
+		return this.uses.get();
 	}
 
 	private boolean isSynthetic(Analyzer analyzer) {
-		if (this.syntheticAnalyzer == analyzer) {
-			return this.isSynthetic;
+		return this.isSynthetic.get(analyzer).isUsed();
+	}
+
+	private UseFlag detectSynthetic(Analyzer analyzer) {
+		if (this.synthetic != null
+				&& this.synthetic.isSynthetic(analyzer, this)) {
+			return analyzer.toUseCase().usedFlag();
 		}
-		this.syntheticAnalyzer = analyzer;
-		if (this.synthetic == null) {
-			return this.isSynthetic = false;
-		}
-		if (!this.synthetic.isSynthetic(analyzer, this)) {
-			return this.isSynthetic = false;
-		}
-		return this.isSynthetic = true;
+		return analyzer.toUseCase().unusedFlag();
 	}
 
 	private Scope up(StepResolver resolver) {

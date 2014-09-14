@@ -23,6 +23,7 @@ import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_VALUE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.VALUE_USAGE;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -36,6 +37,7 @@ import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.FullResolution;
 import org.o42a.core.value.Value;
+import org.o42a.util.fn.Init;
 
 
 public final class ObjectValue extends ObjectValueBase {
@@ -43,12 +45,17 @@ public final class ObjectValue extends ObjectValueBase {
 	private static final byte FULLY_RESOLVED = 1;
 	private static final byte NORMALIZED = 2;
 
-	private Statefulness statefulness;
-	private Value<?> value;
-	private Definitions definitions;
-	private Definitions explicitDefinitions;
+	private final Init<Statefulness> statefulness =
+			init(() -> getObject().determineStatefulness());
+	private final Init<Value<?>> value = init(
+			() -> getDefinitions()
+			.value(getObject().getScope().resolver()));
+	private final Init<Definitions> definitions =
+			init(this::buildDefinitions);
+	private final Init<Definitions> explicitDefinitions =
+			init(this::buildExplicitDefinitions);
 
-	private Usable<ValueUsage> uses;
+	private final Init<Usable<ValueUsage>> uses = init(this::createUses);
 
 	private byte fullResolution;
 
@@ -57,19 +64,16 @@ public final class ObjectValue extends ObjectValueBase {
 	}
 
 	public final Statefulness getStatefulness() {
-		if (this.statefulness != null) {
-			return this.statefulness;
-		}
-		return this.statefulness = getObject().determineStatefulness();
+		return this.statefulness.get();
 	}
 
 	public final UseFlag selectUse(
 			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
-		if (this.uses == null) {
+		if (!this.uses.isInitialized()) {
 			return analyzer.toUseCase().unusedFlag();
 		}
-		return this.uses.selectUse(analyzer, selector);
+		return this.uses.get().selectUse(analyzer, selector);
 	}
 
 	public final boolean isUsed(
@@ -79,11 +83,7 @@ public final class ObjectValue extends ObjectValueBase {
 	}
 
 	public final Value<?> getValue() {
-		if (this.value == null) {
-			this.value =
-					getDefinitions().value(getObject().getScope().resolver());
-		}
-		return this.value;
+		return this.value.get();
 	}
 
 	public Value<?> value(Resolver resolver) {
@@ -101,58 +101,11 @@ public final class ObjectValue extends ObjectValueBase {
 	}
 
 	public final Definitions getDefinitions() {
-		if (this.definitions != null) {
-			return this.definitions;
-		}
-
-		final Obj object = getObject();
-
-		object.resolve();
-
-		final Definitions overriddenDefinitions = getOverriddenDefinitions();
-		final Definitions definitions =
-				object.overrideDefinitions(overriddenDefinitions)
-				.upgradeTypeParameters(getObject().type().getParameters());
-
-		if (getObject().type().getValueType().isVoid()) {
-			return this.definitions = definitions.addVoid();
-		}
-
-		return this.definitions = definitions;
+		return this.definitions.get();
 	}
 
 	public final Definitions getExplicitDefinitions() {
-		if (this.explicitDefinitions != null) {
-			return this.explicitDefinitions;
-		}
-
-		final Obj object = getObject();
-		final Obj wrapped = object.getWrapped();
-
-		if (wrapped != object) {
-
-			final Definitions wrappedDefinitions =
-					wrapped.value().getDefinitions();
-			final Definitions explicitDefinitions;
-
-			if (getObject().type().getValueType().isVoid()) {
-				explicitDefinitions = wrappedDefinitions.toVoid();
-			} else {
-				explicitDefinitions = wrappedDefinitions;
-			}
-
-			return this.explicitDefinitions =
-					explicitDefinitions.wrapBy(object.getScope());
-		}
-
-		this.explicitDefinitions = object.explicitDefinitions();
-
-		if (this.explicitDefinitions != null) {
-			return this.explicitDefinitions;
-		}
-
-		return this.explicitDefinitions =
-				emptyDefinitions(object, object.getScope());
+		return this.explicitDefinitions.get();
 	}
 
 	public final Definitions getOverriddenDefinitions() {
@@ -242,31 +195,88 @@ public final class ObjectValue extends ObjectValueBase {
 
 	@Override
 	protected final Usable<ValueUsage> uses() {
-		if (this.uses != null) {
-			return this.uses;
+		return this.uses.get();
+	}
+
+	private Definitions buildDefinitions() {
+
+		final Obj object = getObject();
+
+		object.resolve();
+
+		final Definitions overriddenDefinitions = getOverriddenDefinitions();
+		final Definitions definitions =
+				object.overrideDefinitions(overriddenDefinitions)
+				.upgradeTypeParameters(getObject().type().getParameters());
+
+		if (getObject().type().getValueType().isVoid()) {
+			return definitions.addVoid();
 		}
 
+		return definitions;
+	}
+
+	private Definitions buildExplicitDefinitions() {
+
+		final Obj object = getObject();
+		final Obj wrapped = object.getWrapped();
+
+		if (wrapped != object) {
+
+			final Definitions wrappedDefinitions =
+					wrapped.value().getDefinitions();
+			final Definitions explicitDefinitions;
+
+			if (getObject().type().getValueType().isVoid()) {
+				explicitDefinitions = wrappedDefinitions.toVoid();
+			} else {
+				explicitDefinitions = wrappedDefinitions;
+			}
+
+			return explicitDefinitions.wrapBy(object.getScope());
+		}
+
+		final Definitions explicitDefinitions = object.explicitDefinitions();
+
+		if (explicitDefinitions != null) {
+			return explicitDefinitions;
+		}
+
+		return emptyDefinitions(object, object.getScope());
+	}
+
+	private Definitions getAncestorDefinitions() {
+
+		final Definitions ancestorDefinitions;
+		final TypeRef ancestor = getObject().type().getAncestor();
+
+		if (ancestor == null) {
+			ancestorDefinitions = null;
+		} else {
+			ancestorDefinitions =
+					ancestor.getType().value()
+					.getDefinitions().upgradeScope(getObject().getScope());
+		}
+
+		return ancestorDefinitions;
+	}
+
+	private Usable<ValueUsage> createUses() {
+
+		final Usable<ValueUsage> uses;
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			this.uses = cloneOf.value().uses();
+			uses = cloneOf.value().uses();
 		} else {
-			this.uses = ValueUsage.usable(this);
-			// Always construct the value functions
-			// of run-time constructed objects.
-			this.uses.useBy(
-					getObject().type().derivation(),
-					VALUE_USAGE);
-			this.uses.useBy(
-					this.uses.usageUser(EXPLICIT_VALUE_USAGE),
-					EXPLICIT_VALUE_USAGE);
-			this.uses.useBy(
-					this.uses.usageUser(VALUE_USAGE),
-					VALUE_USAGE);
+			uses = ValueUsage.usable(this);
+			// Construct value functions if the object is ever derived.
+			uses.useBy(getObject().type().derivation(), VALUE_USAGE);
 		}
-		getObject().content().useBy(this.uses);
 
-		return this.uses;
+		getObject().content().useBy(uses);
+
+		return uses;
 	}
 
 	private void useAncestorValue() {
@@ -288,22 +298,6 @@ public final class ObjectValue extends ObjectValueBase {
 		}
 
 		ancestor.value().uses().useBy(uses(), VALUE_USAGE);
-	}
-
-	private Definitions getAncestorDefinitions() {
-
-		final Definitions ancestorDefinitions;
-		final TypeRef ancestor = getObject().type().getAncestor();
-
-		if (ancestor == null) {
-			ancestorDefinitions = null;
-		} else {
-			ancestorDefinitions =
-					ancestor.getType().value()
-					.getDefinitions().upgradeScope(getObject().getScope());
-		}
-
-		return ancestorDefinitions;
 	}
 
 }

@@ -26,6 +26,7 @@ import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 import static org.o42a.core.value.TypeParameters.typeParameters;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
@@ -40,6 +41,7 @@ import org.o42a.core.st.DefValue;
 import org.o42a.core.value.*;
 import org.o42a.core.value.Void;
 import org.o42a.core.value.link.TargetResolver;
+import org.o42a.util.fn.Init;
 
 
 public class Definitions extends Scoped {
@@ -66,8 +68,8 @@ public class Definitions extends Scoped {
 	private final TypeParameters<?> typeParameters;
 	private final Defs defs;
 
-	private Value<?> constant;
-	private DefTarget target;
+	private final Init<Value<?>> constant = init(this::detectConstant);
+	private final Init<DefTarget> target = init(this::buildTarget);
 
 	Definitions(
 			LocationInfo location,
@@ -120,29 +122,7 @@ public class Definitions extends Scoped {
 	}
 
 	public final Value<?> getConstant() {
-		if (this.constant != null) {
-			return this.constant;
-		}
-
-		final DefValue constant = defs().getConstant();
-
-		if (constant.hasValue()) {
-			return this.constant = constant.getValue();
-		}
-
-		final Condition condition = constant.getCondition();
-
-		if (condition.isConstant()) {
-			if (condition.isTrue()
-					&& getScope().toObject().type().getValueType().isVoid()) {
-				return this.constant = typeParameters(
-						this,
-						ValueType.VOID).compilerValue(Void.VOID);
-			}
-			return this.constant = getTypeParameters().falseValue();
-		}
-
-		return this.constant = getTypeParameters().runtimeValue();
+		return this.constant.get();
 	}
 
 	public final Defs defs() {
@@ -303,27 +283,8 @@ public class Definitions extends Scoped {
 		}
 	}
 
-	public DefTarget target() {
-		if (this.target != null) {
-			return this.target;
-		}
-
-		final Obj cloneOf = getScope().toObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.target = cloneOf.value().getDefinitions().target();
-		}
-		if (!getValueType().isLink()) {
-			return this.target = NO_DEF_TARGET;
-		}
-
-		final DefTarget defTarget = defs().target();
-
-		if (defTarget != null) {
-			return setTarget(defTarget);
-		}
-
-		return this.target = UNKNOWN_DEF_TARGET;
+	public final DefTarget target() {
+		return this.target.get();
 	}
 
 	@Override
@@ -388,26 +349,64 @@ public class Definitions extends Scoped {
 				newDefs);
 	}
 
-	private DefTarget setTarget(DefTarget target) {
+	private Value<?> detectConstant() {
+
+		final DefValue constant = defs().getConstant();
+
+		if (constant.hasValue()) {
+			return constant.getValue();
+		}
+
+		final Condition condition = constant.getCondition();
+
+		if (condition.isConstant()) {
+			if (condition.isTrue()
+					&& getScope().toObject().type().getValueType().isVoid()) {
+				return typeParameters(
+						this,
+						ValueType.VOID).compilerValue(Void.VOID);
+			}
+			return getTypeParameters().falseValue();
+		}
+
+		return getTypeParameters().runtimeValue();
+	}
+
+	private DefTarget buildTarget() {
+
+		final Obj cloneOf = getScope().toObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return cloneOf.value().getDefinitions().target();
+		}
+		if (!getValueType().isLink()) {
+			return NO_DEF_TARGET;
+		}
+
+		final DefTarget target = defs().target();
+
+		if (target == null) {
+			return UNKNOWN_DEF_TARGET;
+		}
 
 		final Ref ref = target.getRef();
 
 		if (ref == null) {
-			return this.target = target;
+			return target;
 		}
 
 		final BoundPath targetPath =
 				defTarget(ref.getPath(), getScope().getEnclosingScope());
 
 		if (targetPath == null) {
-			return this.target = NO_DEF_TARGET;
+			return NO_DEF_TARGET;
 		}
 
 		assert targetPath.getOrigin().is(getScope().getEnclosingScope()) :
 			"Wrong target scope: " + targetPath.getOrigin()
 			+ ", but " + getScope().getEnclosingScope() + " expected";
 
-		return this.target = new DefTarget(targetPath.target(
+		return new DefTarget(targetPath.target(
 				ref.distributeIn(targetPath.getOrigin().getContainer())));
 	}
 
