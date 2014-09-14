@@ -45,7 +45,7 @@ class PhraseConstructor extends ObjectConstructor {
 		super(phrase, phrase.distribute());
 		this.phrase = phrase;
 		this.ascendants = phrase.getMainContext().getAscendants();
-		this.ascendants.assertCompatibleScope(this);
+		assert this.ascendants.assertCompatibleScope(this);
 	}
 
 	private PhraseConstructor(

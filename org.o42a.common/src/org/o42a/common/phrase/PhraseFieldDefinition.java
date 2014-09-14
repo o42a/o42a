@@ -21,12 +21,14 @@ package org.o42a.common.phrase;
 
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.util.fn.Init;
 
 
 final class PhraseFieldDefinition extends FieldDefinition {
 
 	private final Phrase phrase;
-	private FieldDefinition definition;
+	private final Init<FieldDefinition> definition =
+			Init.init(this::createDefinition);
 
 	PhraseFieldDefinition(Phrase phrase) {
 		super(phrase, phrase.distribute());
@@ -67,13 +69,14 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	private final FieldDefinition getDefinition() {
-		if (this.definition != null) {
-			return this.definition;
-		}
+		return this.definition.get();
+	}
+
+	private FieldDefinition createDefinition() {
 
 		final MainPhraseContext mainContext = this.phrase.getMainContext();
 
-		return this.definition = mainContext.getAscendants().fieldDefinition(
+		return mainContext.getAscendants().fieldDefinition(
 				this,
 				mainContext.getInstances()[0].getDefinition()::definitions);
 	}
