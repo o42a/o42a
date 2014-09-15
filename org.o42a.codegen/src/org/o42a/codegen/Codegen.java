@@ -30,7 +30,7 @@ import org.o42a.util.fn.CondInit;
 public interface Codegen {
 
 	static <V extends Codegen> BiPredicate<Generator, V> hasGenerator() {
-		return (generator, t) -> t.getGenerator() == generator;
+		return (generator, t) -> t.getGenerator().is(generator);
 	}
 
 	static <V extends Codegen> CondInit<Generator, V> irInit(
