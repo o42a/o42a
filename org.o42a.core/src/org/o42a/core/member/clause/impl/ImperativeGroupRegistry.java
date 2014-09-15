@@ -63,7 +63,7 @@ final class ImperativeGroupRegistry extends ImperativeMemberRegistry {
 
 	private final MemberId getGroupId() {
 
-		final MemberId memberId = this.group.getDeclaration().getMemberId();
+		final MemberId memberId = this.group.toMember().getMemberId();
 		final MemberId[] ids = memberId.getIds();
 
 		return ids[ids.length - 1];
