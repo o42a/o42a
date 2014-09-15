@@ -29,6 +29,7 @@ import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.BoolOp;
@@ -44,13 +45,15 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.object.Obj;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
 public class ObjFld
 		extends RefFld<StatefulOp, StatefulType, ObjectConstructorFn> {
 
-	private FuncPtr<ObjectConstructorFn> cloneFunc;
+	private final Init<FuncPtr<ObjectConstructorFn>> cloneFunc =
+			init(this::createCloneFunc);
 
 	public ObjFld(
 			ObjectIRBody bodyIR,
@@ -112,13 +115,7 @@ public class ObjFld
 
 	@Override
 	protected FuncPtr<ObjectConstructorFn> cloneFunc() {
-		if (this.cloneFunc != null) {
-			return this.cloneFunc;
-		}
-		return this.cloneFunc = getGenerator().newFunction().create(
-				getField().getId().detail(CLONE_ID),
-				getConstructorSignature(),
-				new ConstructorBuilder(this::buildCloneFunc)).getPointer();
+		return this.cloneFunc.get();
 	}
 
 	@Override
@@ -221,6 +218,13 @@ public class ObjFld
 	@Override
 	protected ObjFldOp op(Code code, ObjOp host, StatefulOp ptr) {
 		return new ObjFldOp(this, host, ptr);
+	}
+
+	private FuncPtr<ObjectConstructorFn> createCloneFunc() {
+		return getGenerator().newFunction().create(
+				getField().getId().detail(CLONE_ID),
+				getConstructorSignature(),
+				new ConstructorBuilder(this::buildCloneFunc)).getPointer();
 	}
 
 	private DataOp initCtr(CtrOp.Op ctr, Code code, ObjectOp ancestor) {

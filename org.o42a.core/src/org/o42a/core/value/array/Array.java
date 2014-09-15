@@ -22,6 +22,8 @@ package org.o42a.core.value.array;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueKnowledge.*;
+import static org.o42a.util.fn.CondInit.condInit;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
@@ -35,6 +37,8 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
+import org.o42a.util.fn.CondInit;
+import org.o42a.util.fn.Init;
 
 
 public final class Array extends Contained {
@@ -44,9 +48,10 @@ public final class Array extends Contained {
 	private final Obj owner;
 	private final TypeParameters<Array> typeParameters;
 	private final ArrayItem[] items;
-	private ArrayIR ir;
-	private ValueKnowledge valueKnowledge;
-	private boolean hasStaticItems;
+	private final CondInit<ArrayIRGenerator, ArrayIR> ir = condInit(
+			(g, ir) -> ir.getGenerator() == g,
+			g -> new ArrayIR(g, this));
+	private Init<ArrayKnowledge> arrayKnowledge = init(this::analyseItems);
 
 	public Array(
 			LocationInfo location,
@@ -69,8 +74,7 @@ public final class Array extends Contained {
 		this.owner = owner(prefix.getStart());
 		this.typeParameters = from.getTypeParameters().prefixWith(prefix);
 		this.items = from.prefixItems(prefix);
-		this.valueKnowledge = from.getValueKnowledge();
-		this.hasStaticItems = from.hasStaticItems();
+		this.arrayKnowledge.set(from.arrayKnowledge.get());
 	}
 
 	public final boolean isOrigin() {
@@ -102,13 +106,11 @@ public final class Array extends Contained {
 	}
 
 	public final ValueKnowledge getValueKnowledge() {
-		analyseItems();
-		return this.valueKnowledge;
+		return this.arrayKnowledge.get().valueKnowledge;
 	}
 
 	public final boolean hasStaticItems() {
-		analyseItems();
-		return this.hasStaticItems;
+		return this.arrayKnowledge.get().hasStaticItems;
 	}
 
 	public final ArrayItem[] getItems() {
@@ -170,11 +172,7 @@ public final class Array extends Contained {
 	}
 
 	public final ArrayIR ir(ArrayIRGenerator generator) {
-		if (this.ir != null
-				&& this.ir.getGenerator() == generator.getGenerator()) {
-			return this.ir;
-		}
-		return this.ir = new ArrayIR(generator, this);
+		return this.ir.get(generator);
 	}
 
 	@Override
@@ -202,13 +200,10 @@ public final class Array extends Contained {
 		return out.toString();
 	}
 
-	private void analyseItems() {
-		if (this.valueKnowledge != null) {
-			return;
-		}
+	private ArrayKnowledge analyseItems() {
 
 		boolean runtime = false;
-		boolean staticItems = true;
+		boolean hasStaticItems = true;
 
 		for (ArrayItem item : getItems()) {
 			if (!runtime) {
@@ -218,35 +213,36 @@ public final class Array extends Contained {
 
 				if (itemObject.getConstructionMode().isRuntime()) {
 					runtime = true;
-					if (!staticItems) {
+					if (!hasStaticItems) {
 						break;
 					}
 				}
 			}
-			if (staticItems && !item.getValueRef().isStatic()) {
-				staticItems = false;
+			if (hasStaticItems && !item.getValueRef().isStatic()) {
+				hasStaticItems = false;
 				if (runtime) {
 					break;
 				}
 			}
 		}
 
-		if (staticItems) {
-			this.hasStaticItems = true;
-		}
+		final ValueKnowledge valueKnowledge;
+
 		if (runtime) {
 			if (!isVariable()) {
-				this.valueKnowledge = RUNTIME_CONSTRUCTED_VALUE;
+				valueKnowledge = RUNTIME_CONSTRUCTED_VALUE;
 			} else {
-				this.valueKnowledge = VARIABLE_VALUE;
+				valueKnowledge = VARIABLE_VALUE;
 			}
 		} else {
 			if (!isVariable()) {
-				this.valueKnowledge = KNOWN_VALUE;
+				valueKnowledge = KNOWN_VALUE;
 			} else {
-				this.valueKnowledge = INITIALLY_KNOWN_VALUE;
+				valueKnowledge = INITIALLY_KNOWN_VALUE;
 			}
 		}
+
+		return new ArrayKnowledge(valueKnowledge, hasStaticItems);
 	}
 
 	private static Obj owner(Scope scope) {
@@ -295,6 +291,20 @@ public final class Array extends Contained {
 		}
 
 		return newItems;
+	}
+
+	private static final class ArrayKnowledge {
+
+		private final ValueKnowledge valueKnowledge;
+		private boolean hasStaticItems;
+
+		ArrayKnowledge(
+				ValueKnowledge valueKnowledge,
+				boolean hasStaticItems) {
+			this.valueKnowledge = valueKnowledge;
+			this.hasStaticItems = hasStaticItems;
+		}
+
 	}
 
 }

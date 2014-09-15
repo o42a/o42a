@@ -23,10 +23,10 @@ import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 
 
-public abstract class MacroDep<D extends MetaDep> extends RefDep<D> {
+public interface MacroDep<D extends MetaDep> extends RefDep<D> {
 
 	@Override
-	public void invalidRef(Ref ref) {
+	default void invalidRef(Ref ref) {
 		ref.getLogger().error(
 				"invalid_macro_ref",
 				ref,

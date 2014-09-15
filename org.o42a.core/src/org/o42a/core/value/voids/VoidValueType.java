@@ -31,7 +31,7 @@ import org.o42a.core.value.Void;
 
 public final class VoidValueType extends SingleValueType<Void> {
 
-	public static VoidValueType INSTANCE = new VoidValueType();
+	public static final VoidValueType INSTANCE = new VoidValueType();
 
 	private VoidValueType() {
 		super("void", Void.class);

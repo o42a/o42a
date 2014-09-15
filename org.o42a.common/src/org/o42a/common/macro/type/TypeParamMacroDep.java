@@ -30,8 +30,7 @@ import org.o42a.core.value.macro.MacroDep;
 
 
 public final class TypeParamMacroDep
-		extends MacroDep<TypeParamMetaDep>
-		implements Consumer {
+		implements MacroDep<TypeParamMetaDep>, Consumer {
 
 	private final Nesting nesting;
 	private final TypeParameterKey parameterKey;

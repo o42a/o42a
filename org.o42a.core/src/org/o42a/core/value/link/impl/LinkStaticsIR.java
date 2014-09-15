@@ -22,6 +22,8 @@ package org.o42a.core.value.link.impl;
 import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.type.CachingStaticsIR;
 import org.o42a.core.ir.value.type.ValueTypeIR;
@@ -35,7 +37,7 @@ public class LinkStaticsIR extends CachingStaticsIR<KnownLink> {
 	private static final ID LINK_PREFIX = CONST_ID.sub("LINK");
 	private static final ID VAR_PREFIX = CONST_ID.sub("VAR");
 
-	private int constSeq;
+	private final AtomicInteger constSeq = new AtomicInteger();
 
 	public LinkStaticsIR(ValueTypeIR<KnownLink> valueTypeIR) {
 		super(valueTypeIR);
@@ -59,7 +61,7 @@ public class LinkStaticsIR extends CachingStaticsIR<KnownLink> {
 
 	@Override
 	protected ID constId(KnownLink value) {
-		return constIdPrefix().anonymous(++this.constSeq);
+		return constIdPrefix().anonymous(this.constSeq.incrementAndGet());
 	}
 
 	private final ID constIdPrefix() {

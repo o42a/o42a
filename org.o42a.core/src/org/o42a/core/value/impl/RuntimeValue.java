@@ -23,6 +23,7 @@ import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
+import org.o42a.codegen.Generated;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
@@ -31,12 +32,14 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
+import org.o42a.util.fn.CondInit;
 
 
 public final class RuntimeValue<T> extends Value<T> {
 
-	private static Ptr<ValType.Op> cachedPtr;
-	private static Generator cachedGenerator;
+	private static final
+	CondInit<Generator, Generated<Ptr<ValType.Op>>> INDEFINITE_PTR =
+			Generated.genInit(RuntimeValue::allocateIndefVal);
 
 	public RuntimeValue(TypeParameters<T> typeParameters) {
 		super(typeParameters, ValueKnowledge.RUNTIME_VALUE);
@@ -54,10 +57,10 @@ public final class RuntimeValue<T> extends Value<T> {
 
 	@Override
 	public Ptr<ValType.Op> valPtr(Generator generator) {
-		if (cachedPtr != null && cachedGenerator == generator) {
-			return cachedPtr;
-		}
-		cachedGenerator = generator;
+		return INDEFINITE_PTR.get(generator).get();
+	}
+
+	private static Ptr<ValType.Op> allocateIndefVal(Generator generator) {
 
 		final Global<ValType.Op, ValType> global =
 				generator.newGlobal()
@@ -68,7 +71,7 @@ public final class RuntimeValue<T> extends Value<T> {
 						VAL_TYPE,
 						INDEFINITE_VAL);
 
-		return cachedPtr = global.getPointer();
+		return global.getPointer();
 	}
 
 }

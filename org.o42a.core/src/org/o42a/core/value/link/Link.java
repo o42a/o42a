@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.link;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.core.*;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -28,14 +30,16 @@ import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.util.fn.Init;
 
 
 public abstract class Link extends AbstractContainer implements ContainerInfo {
 
 	private final Container enclosing;
 	private final LinkTargetNesting targetNesting = new LinkTargetNesting(this);
-	private TypeParameters<KnownLink> typeParameters;
-	private Obj target;
+	private final Init<TypeParameters<KnownLink>> typeParameters =
+			init(() -> getValueType().typeParameters(getInterfaceRef()));
+	private final Init<Obj> target = init(this::createTarget);
 
 	public Link(LocationInfo location, Distributor distributor) {
 		super(location);
@@ -64,11 +68,7 @@ public abstract class Link extends AbstractContainer implements ContainerInfo {
 	public abstract LinkValueType getValueType();
 
 	public final TypeParameters<KnownLink> getLinkParameters() {
-		if (this.typeParameters != null) {
-			return this.typeParameters;
-		}
-		return this.typeParameters =
-				getValueType().typeParameters(getInterfaceRef());
+		return this.typeParameters.get();
 	}
 
 	public abstract boolean isSynthetic();
@@ -81,10 +81,7 @@ public abstract class Link extends AbstractContainer implements ContainerInfo {
 	public abstract TypeRef getInterfaceRef();
 
 	public final Obj getTarget() {
-		if (this.target != null) {
-			return this.target;
-		}
-		return this.target = createTarget();
+		return this.target.get();
 	}
 
 	@Override

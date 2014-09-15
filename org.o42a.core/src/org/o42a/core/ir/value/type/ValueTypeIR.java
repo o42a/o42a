@@ -20,26 +20,32 @@
 package org.o42a.core.ir.value.type;
 
 import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
+import static org.o42a.util.fn.Init.init;
 
+import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Init;
 
 
-public abstract class ValueTypeIR<T> {
+public abstract class ValueTypeIR<T> implements Codegen {
 
 	private final Generator generator;
 	private final ValueType<T> valueType;
-	private Ptr<ValueTypeDescOp> valueTypeDesc;
-	private StaticsIR<T> staticsIR;
+	private final Init<Ptr<ValueTypeDescOp>> valueTypeDesc =
+			init(this::allocateValueTypeDesc);
+	private final Init<StaticsIR<T>> staticsIR =
+			init(this::createStaticsIR);
 
 	public ValueTypeIR(Generator generator, ValueType<T> valueType) {
 		this.generator = generator;
 		this.valueType = valueType;
 	}
 
+	@Override
 	public final Generator getGenerator() {
 		return this.generator;
 	}
@@ -49,20 +55,11 @@ public abstract class ValueTypeIR<T> {
 	}
 
 	public final Ptr<ValueTypeDescOp> getValueTypeDesc() {
-		if (this.valueTypeDesc != null) {
-			return this.valueTypeDesc;
-		}
-		return this.valueTypeDesc =
-				getGenerator().externalGlobal().setConstant().link(
-						"o42a_val_type_" + getValueType().getSystemId(),
-						VALUE_TYPE_DESC_TYPE);
+		return this.valueTypeDesc.get();
 	}
 
-	public StaticsIR<T> staticsIR() {
-		if (this.staticsIR != null) {
-			return this.staticsIR;
-		}
-		return this.staticsIR = createStaticsIR();
+	public final StaticsIR<T> staticsIR() {
+		return this.staticsIR.get();
 	}
 
 	public abstract ValueIR valueIR(ObjectIR objectIR);
@@ -76,5 +73,11 @@ public abstract class ValueTypeIR<T> {
 	}
 
 	protected abstract StaticsIR<T> createStaticsIR();
+
+	private Ptr<ValueTypeDescOp> allocateValueTypeDesc() {
+		return getGenerator().externalGlobal().setConstant().link(
+				"o42a_val_type_" + getValueType().getSystemId(),
+				VALUE_TYPE_DESC_TYPE);
+	}
 
 }

@@ -22,6 +22,7 @@ package org.o42a.core.value.link;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.value.ValueKnowledge.*;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Container;
 import org.o42a.core.ContainerInfo;
@@ -37,12 +38,13 @@ import org.o42a.core.source.Location;
 import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.link.impl.LinkTarget;
 import org.o42a.core.value.link.impl.RtLinkTarget;
+import org.o42a.util.fn.Init;
 
 
 public abstract class LinkData<L extends Link> implements ContainerInfo {
 
 	private final L link;
-	private TargetRef targetRef;
+	private final Init<TargetRef> targetRef = init(this::targetRef);
 
 	public LinkData(L link) {
 		this.link = link;
@@ -50,7 +52,7 @@ public abstract class LinkData<L extends Link> implements ContainerInfo {
 
 	public LinkData(L link, TargetRef targetRef) {
 		this.link = link;
-		this.targetRef = targetRef;
+		this.targetRef.set(targetRef);
 		if (targetRef != null) {
 			targetRef.assertSameScope(link);
 		}
@@ -80,10 +82,7 @@ public abstract class LinkData<L extends Link> implements ContainerInfo {
 	}
 
 	public final TargetRef getTargetRef() {
-		if (this.targetRef == null) {
-			define();
-		}
-		return this.targetRef;
+		return this.targetRef.get();
 	}
 
 	public final ValueKnowledge getKnowledge() {
@@ -140,31 +139,30 @@ public abstract class LinkData<L extends Link> implements ContainerInfo {
 
 	protected abstract TargetRef buildTargetRef();
 
-	private void define() {
-		this.targetRef = buildTargetRef();
-		if (this.targetRef == null) {
+	private TargetRef targetRef() {
+
+		final TargetRef targetRef = buildTargetRef();
+
+		if (targetRef == null) {
 			getLogger().error(
 					"missing_link_target",
 					this,
 					"Link target is missing");
-			this.targetRef = falseRef(
-					this,
-					distribute())
-					.toTargetRef(null);
-			return;
+			return falseRef(this, distribute()).toTargetRef(null);
 		}
-		this.targetRef.assertScopeIs(getScope());
+
+		assert targetRef.assertScopeIs(getScope());
 
 		final Field field = getScope().toField();
 
 		if (field == null || !(field.isAbstract() || field.isPrototype())) {
 			Role.INSTANCE.checkUseBy(
 					this,
-					this.targetRef.getRef(),
-					this.targetRef.getScope());
+					targetRef.getRef(),
+					targetRef.getScope());
 		}
 
-		final TypeRef typeRef = this.targetRef.getTypeRef();
+		final TypeRef typeRef = targetRef.getTypeRef();
 
 		Role.PROTOTYPE.checkUseBy(
 				this,
@@ -172,16 +170,16 @@ public abstract class LinkData<L extends Link> implements ContainerInfo {
 				typeRef.getScope());
 
 		final TypeRelation relation =
-				typeRef.relationTo(this.targetRef.toTypeRef())
+				typeRef.relationTo(targetRef.toTypeRef())
 				.check(this.link.getLogger());
 
 		if (!relation.isAscendant()) {
 			if (!relation.isError()) {
-				getLogger().notDerivedFrom(
-						this.targetRef.getLocation(),
-						typeRef);
+				getLogger().notDerivedFrom(targetRef.getLocation(), typeRef);
 			}
 		}
+
+		return targetRef;
 	}
 
 }

@@ -21,6 +21,8 @@ package org.o42a.core.value.floats;
 
 import static org.o42a.core.ir.IRNames.CONST_ID;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.type.CachingStaticsIR;
 import org.o42a.core.ir.value.type.ValueTypeIR;
@@ -29,7 +31,7 @@ import org.o42a.util.string.ID;
 
 final class FloatStaticsIR extends CachingStaticsIR<Double> {
 
-	private int constSeq;
+	private final AtomicInteger constSeq = new AtomicInteger();
 
 	FloatStaticsIR(ValueTypeIR<Double> valueTypeIR) {
 		super(valueTypeIR);
@@ -42,7 +44,7 @@ final class FloatStaticsIR extends CachingStaticsIR<Double> {
 
 	@Override
 	protected ID constId(Double value) {
-		return CONST_ID.sub("FLOAT").anonymous(++this.constSeq);
+		return CONST_ID.sub("FLOAT").anonymous(this.constSeq.incrementAndGet());
 	}
 
 }

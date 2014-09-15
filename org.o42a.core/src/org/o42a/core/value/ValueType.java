@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.codegen.Codegen.irInit;
 import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.impl.DefaultValueConverter.defaultValueConverter;
 
@@ -50,6 +51,7 @@ import org.o42a.core.value.macro.Macro;
 import org.o42a.core.value.macro.impl.MacroValueType;
 import org.o42a.core.value.string.StringValueType;
 import org.o42a.core.value.voids.VoidValueType;
+import org.o42a.util.fn.CondInit;
 
 
 public abstract class ValueType<T> {
@@ -73,7 +75,8 @@ public abstract class ValueType<T> {
 	private final String systemId;
 	private final Class<? extends T> valueClass;
 
-	private ValueTypeIR<T> ir;
+	private final CondInit<Generator, ValueTypeIR<T>> ir =
+			irInit(this::createIR);
 
 	public ValueType(String systemId, Class<? extends T> valueClass) {
 		this.systemId = systemId;
@@ -174,14 +177,7 @@ public abstract class ValueType<T> {
 	public abstract ValueIRDesc irDesc();
 
 	public final ValueTypeIR<T> ir(Generator generator) {
-
-		final ValueTypeIR<T> ir = this.ir;
-
-		if (ir != null && ir.getGenerator() == generator) {
-			return ir;
-		}
-
-		return this.ir = createIR(generator);
+		return this.ir.get(generator);
 	}
 
 	@Override
