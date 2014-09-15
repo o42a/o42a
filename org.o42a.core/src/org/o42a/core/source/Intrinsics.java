@@ -65,6 +65,10 @@ public abstract class Intrinsics {
 
 	public abstract Module getMainModule();
 
+	public final boolean is(Intrinsics other) {
+		return this == other;
+	}
+
 	public final FullResolution fullResolution() {
 		return this.fullResolution;
 	}
