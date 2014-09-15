@@ -33,8 +33,10 @@ import org.o42a.util.fn.Init;
 public abstract class MemberClause extends NonAliasMember {
 
 	private final ClauseDeclaration declaration;
+	private final Init<MemberId> memberId =
+			init(() -> getDeclaration().getMemberId());
 	private final Init<MemberKey> key =
-			init(() -> getDeclaration().getMemberId().key(getScope()));
+			init(() -> getMemberId().key(getScope()));
 
 	public MemberClause(Obj owner, ClauseDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
@@ -53,7 +55,7 @@ public abstract class MemberClause extends NonAliasMember {
 
 	@Override
 	public final MemberId getMemberId() {
-		return this.declaration.getMemberId();
+		return this.memberId.get();
 	}
 
 	@Override
