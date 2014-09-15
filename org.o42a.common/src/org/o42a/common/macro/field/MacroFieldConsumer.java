@@ -29,8 +29,7 @@ import org.o42a.core.value.macro.MacroDep;
 
 
 public final class MacroFieldConsumer
-		extends MacroDep<MacroFieldMetaDep>
-		implements Consumer {
+		implements MacroDep<MacroFieldMetaDep>, Consumer {
 
 	public static final MacroFieldConsumer INSTANCE = new MacroFieldConsumer();
 

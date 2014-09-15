@@ -27,7 +27,7 @@ import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.value.macro.MacroDep;
 
 
-final class TempMacroDep extends MacroDep<TempMetaDep> {
+final class TempMacroDep implements MacroDep<TempMetaDep> {
 
 	private final MemberField tempField;
 

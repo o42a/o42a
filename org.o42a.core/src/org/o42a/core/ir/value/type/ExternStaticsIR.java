@@ -22,59 +22,27 @@ package org.o42a.core.ir.value.type;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VAL_EXTERNAL;
 import static org.o42a.core.ir.value.Val.VAL_STATIC;
-
-import java.util.HashMap;
+import static org.o42a.util.fn.Cache.cache;
 
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.util.DataAlignment;
+import org.o42a.util.fn.Cache;
 import org.o42a.util.string.ID;
 
 
 public abstract class ExternStaticsIR<T> extends CachingStaticsIR<T> {
 
-	private final HashMap<T, Val> valueCache = new HashMap<>();
+	private final Cache<T, Val> valueCache = cache(this::createVal);
 
 	public ExternStaticsIR(ValueTypeIR<T> valueTypeIR) {
 		super(valueTypeIR);
 	}
 
 	@Override
-	public Val val(T value) {
-
-		final Val cachedVal = this.valueCache.get(value);
-
-		if (cachedVal != null) {
-			return cachedVal;
-		}
-
-		final DataAlignment alignment = alignment(value);
-		final byte[] bytes = toBinary(value, alignment);
-		final Val val;
-
-		if (bytes.length <= 8) {
-			val = new Val(
-					getValueType(),
-					VAL_CONDITION | (alignment.getShift() << 8),
-					length(value, bytes, alignment),
-					bytesToLong(bytes));
-		} else {
-
-			final Ptr<AnyOp> binary =
-					getGenerator().addBinary(valueId(value), true, bytes);
-
-			val = new Val(
-					getValueType(),
-					VAL_CONDITION | VAL_EXTERNAL | VAL_STATIC
-					| (alignment.getShift() << 8),
-					length(value, bytes, alignment),
-					binary);
-		}
-
-		this.valueCache.put(value, val);
-
-		return val;
+	public final Val val(T value) {
+		return this.valueCache.get(value);
 	}
 
 	protected abstract ID valueId(T value);
@@ -87,6 +55,30 @@ public abstract class ExternStaticsIR<T> extends CachingStaticsIR<T> {
 			T value,
 			byte[] binary,
 			DataAlignment alignment);
+
+	private Val createVal(T value) {
+
+		final DataAlignment alignment = alignment(value);
+		final byte[] bytes = toBinary(value, alignment);
+
+		if (bytes.length <= 8) {
+			return new Val(
+					getValueType(),
+					VAL_CONDITION | (alignment.getShift() << 8),
+					length(value, bytes, alignment),
+					bytesToLong(bytes));
+		}
+
+		final Ptr<AnyOp> binary =
+				getGenerator().addBinary(valueId(value), true, bytes);
+
+		return new Val(
+				getValueType(),
+				VAL_CONDITION | VAL_EXTERNAL | VAL_STATIC
+				| (alignment.getShift() << 8),
+				length(value, bytes, alignment),
+				binary);
+	}
 
 	private static long bytesToLong(byte[] bytes) {
 

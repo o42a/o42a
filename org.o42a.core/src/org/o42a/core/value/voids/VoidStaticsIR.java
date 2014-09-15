@@ -22,6 +22,7 @@ package org.o42a.core.value.voids;
 import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.VOID_VAL;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
@@ -30,11 +31,12 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.type.StaticsIR;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.core.value.Void;
+import org.o42a.util.fn.Init;
 
 
 final class VoidStaticsIR extends StaticsIR<Void> {
 
-	private Ptr<ValType.Op> valPtr;
+	private final Init<Ptr<ValType.Op>> voidPtr = init(this::allocateVoidVal);
 
 	VoidStaticsIR(ValueTypeIR<Void> valueTypeIR) {
 		super(valueTypeIR);
@@ -47,18 +49,19 @@ final class VoidStaticsIR extends StaticsIR<Void> {
 
 	@Override
 	public Ptr<ValType.Op> valPtr(Void value) {
-		if (this.valPtr != null) {
-			return this.valPtr;
-		}
+		return this.voidPtr.get();
+	}
+
+	private Ptr<ValType.Op> allocateVoidVal() {
 
 		final Global<ValType.Op, ValType> global =
 				getGenerator()
 				.newGlobal()
 				.setConstant()
 				.dontExport()
-				.newInstance(CONST_ID.sub("VOID"), VAL_TYPE, val(value));
+				.newInstance(CONST_ID.sub("VOID"), VAL_TYPE, VOID_VAL);
 
-		return this.valPtr = global.getPointer();
+		return global.getPointer();
 	}
 
 }

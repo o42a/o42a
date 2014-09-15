@@ -21,6 +21,7 @@ package org.o42a.core.value.array;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
+import static org.o42a.core.source.Intrinsic.intrInit;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 import static org.o42a.core.value.array.impl.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -43,11 +44,13 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.Intrinsic;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.*;
 import org.o42a.core.value.array.impl.ArrayStaticsIR;
 import org.o42a.core.value.array.impl.ArrayValueTypeIR;
 import org.o42a.core.value.link.LinkValueType;
+import org.o42a.util.fn.CondInit;
 
 
 public class ArrayValueType extends ValueType<Array> {
@@ -64,8 +67,8 @@ public class ArrayValueType extends ValueType<Array> {
 
 	private final boolean variable;
 	private final ArrayValueConverter converter;
-	private Intrinsics intrinsics;
-	private MemberKey itemTypeKey;
+	private final CondInit<Intrinsics, Intrinsic<MemberKey>> itemTypeKey =
+			intrInit(this::findItemKey);
 
 	private ArrayValueType(boolean variable) {
 		super(variable ? "array" : "row", Array.class);
@@ -84,19 +87,7 @@ public class ArrayValueType extends ValueType<Array> {
 	}
 
 	public final MemberKey itemTypeKey(Intrinsics intrinsics) {
-		if (this.itemTypeKey != null && this.intrinsics == intrinsics) {
-			return this.itemTypeKey;
-		}
-
-		final Field indexed =
-				intrinsics.getRoot()
-				.member(INDEXED_ID)
-				.toField()
-				.field(dummyUser());
-
-		this.intrinsics = intrinsics;
-
-		return this.itemTypeKey = ITEM_TYPE_ID.key(indexed);
+		return this.itemTypeKey.get(intrinsics).get();
 	}
 
 	public final TypeParameters<Array> typeParameters(TypeRef itemTypeRef) {
@@ -264,6 +255,17 @@ public class ArrayValueType extends ValueType<Array> {
 	@Override
 	protected ValueTypeIR<Array> createIR(Generator generator) {
 		return new ArrayValueTypeIR(generator, this);
+	}
+
+	private MemberKey findItemKey(Intrinsics intrinsics) {
+
+		final Field indexed =
+				intrinsics.getRoot()
+				.member(INDEXED_ID)
+				.toField()
+				.field(dummyUser());
+
+		return ITEM_TYPE_ID.key(indexed);
 	}
 
 }

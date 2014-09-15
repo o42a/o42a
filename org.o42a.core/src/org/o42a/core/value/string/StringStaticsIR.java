@@ -24,6 +24,8 @@ import static org.o42a.core.ir.IRNames.DATA_ID;
 import static org.o42a.util.string.StringCodec.bytesPerChar;
 import static org.o42a.util.string.StringCodec.stringToBinary;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.o42a.core.ir.value.type.ExternStaticsIR;
 import org.o42a.core.ir.value.type.ValueTypeIR;
 import org.o42a.util.DataAlignment;
@@ -35,8 +37,8 @@ final class StringStaticsIR extends ExternStaticsIR<String> {
 	private static final ID STRING_CONST_ID = CONST_ID.sub("STRING");
 	private static final ID STRING_DATA_ID = DATA_ID.sub("STRING");
 
-	private int stringSeq;
-	private int constSeq;
+	private final AtomicInteger stringSeq = new AtomicInteger();
+	private final AtomicInteger constSeq = new AtomicInteger();
 
 	StringStaticsIR(ValueTypeIR<String> valueTypeIR) {
 		super(valueTypeIR);
@@ -44,12 +46,12 @@ final class StringStaticsIR extends ExternStaticsIR<String> {
 
 	@Override
 	protected ID constId(String value) {
-		return STRING_CONST_ID.anonymous(++this.constSeq);
+		return STRING_CONST_ID.anonymous(this.constSeq.incrementAndGet());
 	}
 
 	@Override
 	protected ID valueId(String value) {
-		return STRING_DATA_ID.anonymous(++this.stringSeq);
+		return STRING_DATA_ID.anonymous(this.stringSeq.incrementAndGet());
 	}
 
 	@Override

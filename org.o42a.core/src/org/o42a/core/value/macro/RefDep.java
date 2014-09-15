@@ -25,9 +25,9 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 
 
-public abstract class RefDep<D extends MetaDep> {
+public interface RefDep<D extends MetaDep> {
 
-	public final D buildDep(Ref ref, PathTemplate template) {
+	default D buildDep(Ref ref, PathTemplate template) {
 		if (ref.isStatic()) {
 			return null;
 		}
@@ -38,11 +38,11 @@ public abstract class RefDep<D extends MetaDep> {
 		return builder.buildDep();
 	}
 
-	public abstract D newDep(Meta meta, Ref ref, PathTemplate template);
+	D newDep(Meta meta, Ref ref, PathTemplate template);
 
-	public abstract void setParentDep(D dep, MetaDep parentDep);
+	void setParentDep(D dep, MetaDep parentDep);
 
-	public void invalidRef(Ref ref) {
+	default void invalidRef(Ref ref) {
 		ref.getLogger().error(
 				"invalid_ref_meta_dep",
 				ref,

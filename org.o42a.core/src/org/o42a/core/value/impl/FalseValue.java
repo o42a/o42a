@@ -19,10 +19,12 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.codegen.Generated.genInit;
 import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
+import org.o42a.codegen.Generated;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
@@ -31,12 +33,14 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
+import org.o42a.util.fn.CondInit;
 
 
 public final class FalseValue<T> extends Value<T> {
 
-	private static Ptr<ValType.Op> cachedPtr;
-	private static Generator cachedGenerator;
+	private final static
+	CondInit<Generator, Generated<Ptr<ValType.Op>>> FALSE_PTR =
+			genInit(FalseValue::allocateFalseVal);
 
 	public FalseValue(TypeParameters<T> typeParameters) {
 		super(typeParameters, ValueKnowledge.FALSE_VALUE);
@@ -54,10 +58,10 @@ public final class FalseValue<T> extends Value<T> {
 
 	@Override
 	public Ptr<ValType.Op> valPtr(Generator generator) {
-		if (cachedPtr != null && cachedGenerator == generator) {
-			return cachedPtr;
-		}
-		cachedGenerator = generator;
+		return FALSE_PTR.get(generator).get();
+	}
+
+	private static Ptr<ValType.Op> allocateFalseVal(Generator generator) {
 
 		final Global<ValType.Op, ValType> global =
 				generator.newGlobal().setConstant().dontExport().newInstance(
@@ -65,7 +69,7 @@ public final class FalseValue<T> extends Value<T> {
 						VAL_TYPE,
 						FALSE_VAL);
 
-		return cachedPtr = global.getPointer();
+		return global.getPointer();
 	}
 
 }

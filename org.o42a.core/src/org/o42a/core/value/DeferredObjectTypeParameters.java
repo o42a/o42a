@@ -19,17 +19,20 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.util.fn.Init.init;
+
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.Init;
 
 
 public abstract class DeferredObjectTypeParameters
 		implements ObjectTypeParameters {
 
 	private final LocationInfo location;
-	private ObjectTypeParameters parameters;
+	private final Init<ObjectTypeParameters> parameters = init(this::resolve);
 
 	public DeferredObjectTypeParameters(LocationInfo location) {
 		this.location = location;
@@ -61,10 +64,7 @@ public abstract class DeferredObjectTypeParameters
 	}
 
 	protected final ObjectTypeParameters parameters() {
-		if (this.parameters != null) {
-			return this.parameters;
-		}
-		return this.parameters = resolve();
+		return this.parameters.get();
 	}
 
 	protected abstract ObjectTypeParameters resolve();

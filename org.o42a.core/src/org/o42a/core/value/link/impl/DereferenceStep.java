@@ -22,8 +22,10 @@ package org.o42a.core.value.link.impl;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.value.link.impl.LinkInterface.linkInterfaceOf;
+import static org.o42a.util.fn.ArgCache.argCache;
+import static org.o42a.util.fn.CondInit.condInit;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
@@ -45,14 +47,19 @@ import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.link.Link;
 import org.o42a.core.value.link.LinkValueType;
+import org.o42a.util.fn.ArgCache;
+import org.o42a.util.fn.CondInit;
 import org.o42a.util.string.ID;
 
 
 public class DereferenceStep extends Step {
 
-	private ObjectStepUses uses;
-	private HashMap<Scope, RtLink> rtLinks;
-	private Obj iface;
+	private final ObjectStepUses uses = new ObjectStepUses(this);
+	private final ArgCache<Scope, LocationInfo, RtLink> rtLinks = argCache(
+			new IdentityHashMap<>(1),
+			(s, l) -> new RtLink(l, this, s));
+	private final CondInit<TypeParameters<?>, Obj> iface =
+			condInit((tp, o) -> true, DereferenceStep::linkInterface);
 
 	@Override
 	public PathKind getPathKind() {
@@ -105,12 +112,12 @@ public class DereferenceStep extends Step {
 		final LinkValueType linkType =
 				typeParameters.getValueType().toLinkType();
 
-		if (this.iface == null) {
-			this.iface = linkType.interfaceRef(typeParameters).getType();
-		}
-
 		assert linkType != null :
 			linkObject + " is not a link object";
+
+		if (!this.iface.isInitialized()) {
+			this.iface.get(typeParameters);
+		}
 
 		final Value<?> value = linkObjectValue.getValue();
 		final Link link;
@@ -163,34 +170,23 @@ public class DereferenceStep extends Step {
 		return defaultTargetIR(refIR);
 	}
 
-	RtLink rtLink(LocationInfo location, Scope enclosing) {
-		if (this.rtLinks == null) {
-			this.rtLinks = new HashMap<>(1);
-		} else {
-
-			final RtLink existing = this.rtLinks.get(enclosing);
-
-			if (existing != null) {
-				return existing;
-			}
-		}
-
-		final RtLink rtLink = new RtLink(location, this, enclosing);
-
-		this.rtLinks.put(enclosing, rtLink);
-
-		return rtLink;
+	final RtLink rtLink(LocationInfo location, Scope enclosing) {
+		return this.rtLinks.get(enclosing, location);
 	}
 
 	private final ObjectStepUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = new ObjectStepUses(this);
+		return this.uses;
 	}
 
-	private RtLink rtLink(StepResolver resolver) {
+	private final RtLink rtLink(StepResolver resolver) {
 		return rtLink(resolver.getPath(), resolver.getStart());
+	}
+
+	private static Obj linkInterface(TypeParameters<?> typeParameters) {
+		return typeParameters.getValueType()
+				.toLinkType()
+				.interfaceRef(typeParameters)
+				.getType();
 	}
 
 	private void normalizeDeref(PathNormalizer normalizer) {
@@ -293,7 +289,7 @@ public class DereferenceStep extends Step {
 
 		@Override
 		public Obj getWellKnownType() {
-			return DereferenceStep.this.iface;
+			return DereferenceStep.this.iface.getKnown();
 		}
 
 		@Override

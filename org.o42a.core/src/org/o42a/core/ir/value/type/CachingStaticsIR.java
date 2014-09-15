@@ -19,44 +19,42 @@
 */
 package org.o42a.core.ir.value.type;
 
-import java.util.HashMap;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
+import static org.o42a.util.fn.Cache.cache;
 
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.util.fn.Cache;
 import org.o42a.util.string.ID;
 
 
 public abstract class CachingStaticsIR<T> extends StaticsIR<T> {
 
-	private final HashMap<T, Ptr<ValType.Op>> constCache = new HashMap<>();
+	private final Cache<T, Ptr<ValType.Op>> constCache =
+			cache(this::allocateConstVal);
 
 	public CachingStaticsIR(ValueTypeIR<T> valueTypeIR) {
 		super(valueTypeIR);
 	}
 
 	@Override
-	public Ptr<ValType.Op> valPtr(T value) {
-
-		final Ptr<ValType.Op> cached = this.constCache.get(value);
-
-		if (cached != null) {
-			return cached;
-		}
-
-		final Global<ValType.Op, ValType> global =
-				getGenerator().newGlobal().setConstant().dontExport()
-				.newInstance(
-						constId(value),
-						ValType.VAL_TYPE,
-						val(value));
-		final Ptr<ValType.Op> result = global.getPointer();
-
-		this.constCache.put(value, result);
-
-		return result;
+	public final Ptr<ValType.Op> valPtr(T value) {
+		return this.constCache.get(value);
 	}
 
 	protected abstract ID constId(T value);
+
+	private Ptr<ValType.Op> allocateConstVal(T value) {
+
+		final Global<ValType.Op, ValType> global =
+				getGenerator()
+				.newGlobal()
+				.setConstant()
+				.dontExport()
+				.newInstance(constId(value), VAL_TYPE, val(value));
+
+		return global.getPointer();
+	}
 
 }

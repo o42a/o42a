@@ -23,7 +23,9 @@ import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
+import static org.o42a.util.fn.Init.init;
 
+import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.Data;
@@ -35,18 +37,20 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.array.Array;
 import org.o42a.core.value.array.impl.*;
 import org.o42a.core.value.array.impl.ArrayItemsIR.Op;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
-public class ArrayIR {
+public class ArrayIR implements Codegen {
 
 	private final ArrayIRGenerator generator;
 	private final ID id;
 	private final Array array;
-	private Val val;
-	private Ptr<ValType.Op> valPtr;
-	private ArrayItemsIR items;
-	private FuncPtr<ObjectValueFn> constructor;
+	private final Init<Val> val = init(this::createVal);
+	private final Init<Ptr<ValType.Op>> valPtr = init(this::allocateVal);
+	private final Init<ArrayItemsIR> items = init(this::allocateItems);
+	private final Init<FuncPtr<ObjectValueFn>> constructor =
+			init(this::createConstructor);
 
 	public ArrayIR(ArrayIRGenerator generator, Array array) {
 		this.generator = generator;
@@ -54,6 +58,7 @@ public class ArrayIR {
 		this.array = array;
 	}
 
+	@Override
 	public final Generator getGenerator() {
 		return this.generator.getGenerator();
 	}
@@ -67,14 +72,35 @@ public class ArrayIR {
 	}
 
 	public final Val getVal() {
-		if (this.val != null) {
-			return this.val;
+		return this.val.get();
+	}
+
+	public final Ptr<ValType.Op> getValPtr() {
+		return this.valPtr.get();
+	}
+
+	public final ArrayItemsIR items() {
+		return this.items.get();
+	}
+
+	public final FuncPtr<ObjectValueFn> getConstructor() {
+		return this.constructor.get();
+	}
+
+	@Override
+	public String toString() {
+		if (this.array == null) {
+			return super.toString();
 		}
+		return this.array + " IR";
+	}
+
+	private Val createVal() {
 
 		final Array array = getArray();
 
 		if (array.isEmpty()) {
-			return this.val = new Val(
+			return new Val(
 					array.getValueType(),
 					VAL_CONDITION,
 					0,
@@ -84,18 +110,14 @@ public class ArrayIR {
 		final ArrayItemsIR items = items();
 		final Data<Op> itemsData = items.data(getGenerator());
 
-		return this.val = new Val(
+		return new Val(
 				array.getValueType(),
 				VAL_CONDITION,
 				items.length(),
 				itemsData.getPointer().toAny());
 	}
 
-	public final Ptr<ValType.Op> getValPtr() {
-		if (this.valPtr != null) {
-			return this.valPtr;
-		}
-
+	private Ptr<ValType.Op> allocateVal() {
 		final Global<ValType.Op, ValType> global =
 				getGenerator()
 				.newGlobal()
@@ -103,51 +125,34 @@ public class ArrayIR {
 				.dontExport()
 				.newInstance(CONST_ID.sub(getId()), VAL_TYPE, getVal());
 
-		return this.valPtr = global.getPointer();
+		return global.getPointer();
 	}
 
-	public final ArrayItemsIR items() {
+	private ArrayItemsIR allocateItems() {
 		assert !getArray().isEmpty() :
 			"Empty array doesn't have any items";
-
-		if (this.items != null) {
-			return this.items;
-		}
 
 		final ArrayItemsIRContainer itemsContainer =
 				new ArrayItemsIRContainer(this);
 
 		getGenerator().newGlobal().dontExport().struct(itemsContainer);
 
-		return this.items = itemsContainer.items();
+		return itemsContainer.items();
 	}
 
-	public final FuncPtr<ObjectValueFn> getConstructor() {
-		if (this.constructor != null) {
-			return this.constructor;
-		}
+	private FuncPtr<ObjectValueFn> createConstructor() {
 
 		final Array origin = getArray().getOrigin();
 
 		if (origin != getArray()) {
-			return this.constructor =
-					origin.ir(this.generator).getConstructor();
+			return origin.ir(this.generator).getConstructor();
 		}
 
-		return this.constructor =
-				getGenerator().newFunction().dontExport().create(
-						getId().detail("constructor"),
-						OBJECT_VALUE,
-						new ArrayConstructorBuilder(this))
-				.getPointer();
-	}
-
-	@Override
-	public String toString() {
-		if (this.array == null) {
-			return super.toString();
-		}
-		return this.array + " IR";
+		return getGenerator().newFunction().dontExport().create(
+				getId().detail("constructor"),
+				OBJECT_VALUE,
+				new ArrayConstructorBuilder(this))
+		.getPointer();
 	}
 
 }

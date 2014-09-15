@@ -21,6 +21,8 @@ package org.o42a.core.value.array.impl;
 
 import static org.o42a.core.ir.IRNames.DATA_ID;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
@@ -38,7 +40,7 @@ public class ArrayStaticsIR
 	private static final ID ROW_DATA_ID = DATA_ID.sub("ROW");
 	private static final ID ARRAY_DATA_ID = DATA_ID.sub("ARRAY");
 
-	private int idSeq;
+	private final AtomicInteger idSeq = new AtomicInteger();
 
 	public ArrayStaticsIR(ValueTypeIR<Array> valueTypeIR) {
 		super(valueTypeIR);
@@ -65,7 +67,7 @@ public class ArrayStaticsIR
 			prefix = ARRAY_DATA_ID;
 		}
 
-		return prefix.anonymous(++this.idSeq);
+		return prefix.anonymous(this.idSeq.incrementAndGet());
 	}
 
 }
