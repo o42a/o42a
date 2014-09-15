@@ -26,6 +26,7 @@ import static org.o42a.core.member.field.PrototypeMode.AUTO_PROTOTYPE;
 import static org.o42a.core.member.field.PrototypeMode.NOT_PROTOTYPE;
 import static org.o42a.core.member.field.PrototypeMode.PROTOTYPE;
 import static org.o42a.core.member.field.VisibilityMode.AUTO_VISIBILITY;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
@@ -34,7 +35,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
+import org.o42a.util.fn.Init;
 
 
 public final class FieldDeclaration extends Contained implements Cloneable {
@@ -51,19 +52,15 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 	}
 
 	private final MemberId memberId;
-	private FieldKey fieldKey;
+	private Init<FieldKey> fieldKey;
 	private DeclarationMode declarationMode = DECLARE;
 	private VisibilityMode visibilityMode = AUTO_VISIBILITY;
 	private PrototypeMode prototypeMode = NOT_PROTOTYPE;
 	private StaticTypeRef declaredIn;
 	private int mask;
 
-	private FieldDeclaration(
-			LocationInfo location,
-			Distributor distributor,
-			FieldDeclaration sample) {
-		this(location, distributor, sample, sample.getMemberId());
-		this.fieldKey = sample.getFieldKey();
+	{
+		setup();
 	}
 
 	private FieldDeclaration(
@@ -72,6 +69,16 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 			MemberId memberId) {
 		super(location, distributor);
 		this.memberId = memberId;
+	}
+
+	private FieldDeclaration(
+			LocationInfo location,
+			Distributor distributor,
+			FieldDeclaration sample) {
+		this(location, distributor, sample, sample.getMemberId());
+		this.declarationMode = OVERRIDE;
+		this.prototypeMode = AUTO_PROTOTYPE;
+		this.fieldKey.set(sample.getFieldKey());
 	}
 
 	private FieldDeclaration(
@@ -81,6 +88,7 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 			MemberId memberId) {
 		super(location, distributor);
 		this.memberId = memberId;
+		this.declarationMode = sample.getDeclarationMode();
 		this.visibilityMode = sample.getVisibilityMode();
 		this.prototypeMode = sample.getPrototypeMode();
 		this.declaredIn = sample.getDeclaredIn();
@@ -100,10 +108,7 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 	}
 
 	public final FieldKey getFieldKey() {
-		if (this.fieldKey != null) {
-			return this.fieldKey;
-		}
-		return this.fieldKey = getDeclarationMode().fieldKey(this);
+		return this.fieldKey.get();
 	}
 
 	public final StaticTypeRef getDeclaredIn() {
@@ -216,31 +221,29 @@ public final class FieldDeclaration extends Contained implements Cloneable {
 	public final FieldDeclaration override(
 			LocationInfo location,
 			Distributor distributor) {
-		return new FieldDeclaration(location, distributor, this)
-				.autoPrototype()
-				.override();
+		return new FieldDeclaration(location, distributor, this);
 	}
 
 	public final FieldDeclaration inGroup(MemberId groupId) {
 		return setMemberId(groupId.append(getMemberId()));
 	}
 
-	public FieldDeclaration reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-		return new FieldDeclaration(
-				reproducer.getContainer(),
-				reproducer.distribute(),
-				this,
-				getMemberId().reproduceFrom(reproducer.getReproducingScope()));
-	}
-
 	@Override
 	protected FieldDeclaration clone() {
 		try {
-			return (FieldDeclaration) super.clone();
+
+			final FieldDeclaration clone = (FieldDeclaration) super.clone();
+
+			clone.setup();
+
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
+	}
+
+	private void setup() {
+		this.fieldKey = init(() -> getDeclarationMode().fieldKey(this));
 	}
 
 	private final boolean hasMask(int mask) {
