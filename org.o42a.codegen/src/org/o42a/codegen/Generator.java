@@ -69,6 +69,10 @@ public abstract class Generator {
 		getDebug().setDebug(debug);
 	}
 
+	public final boolean is(Generator other) {
+		return this == other;
+	}
+
 	@SuppressWarnings("unchecked")
 	public final <T> T getFeature(Class<? extends T> featureType) {
 		return (T) this.features.get(featureType);
