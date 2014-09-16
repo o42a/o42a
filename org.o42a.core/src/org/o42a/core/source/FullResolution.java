@@ -25,9 +25,6 @@ public final class FullResolution {
 	private int started;
 	private boolean initiated;
 
-	FullResolution() {
-	}
-
 	private final boolean isInitiated() {
 		return this.initiated;
 	}

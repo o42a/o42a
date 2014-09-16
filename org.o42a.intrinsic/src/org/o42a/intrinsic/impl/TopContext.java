@@ -19,8 +19,6 @@
 */
 package org.o42a.intrinsic.impl;
 
-import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
-
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ModuleCompiler;
@@ -35,7 +33,7 @@ public final class TopContext extends CompilerContext {
 	private final EmptySource source = new EmptySource("<TOP>");
 
 	public TopContext(CompilerIntrinsics intrinsics) {
-		super(intrinsics.getCompiler(), intrinsics, DECLARATION_LOGGER);
+		super(intrinsics.getCompiler(), intrinsics);
 	}
 
 	@Override

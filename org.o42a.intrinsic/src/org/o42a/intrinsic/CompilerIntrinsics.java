@@ -42,11 +42,14 @@ import org.o42a.intrinsic.impl.Top;
 import org.o42a.intrinsic.impl.TopContext;
 import org.o42a.lib.console.ConsoleModule;
 import org.o42a.root.*;
+import org.o42a.util.log.Logger;
 import org.o42a.util.string.Name;
 
 
-public class CompilerIntrinsics extends Intrinsics {
+public class CompilerIntrinsics implements Intrinsics {
 
+	private final CompilerLogger compilerLogger;
+	private final FullResolution fullResolution = new FullResolution();
 	private final Usable<SimpleUsage> user = simpleUsable("MainUser");
 	private final SourceCompiler compiler;
 	private final Top top;
@@ -62,11 +65,22 @@ public class CompilerIntrinsics extends Intrinsics {
 	private ModuleUse mainModule;
 	private ConsoleModule consoleModule;
 
-	public static CompilerIntrinsics intrinsics(SourceCompiler compiler) {
-		return new CompilerIntrinsics(compiler);
+	public static CompilerIntrinsics intrinsics(
+			SourceCompiler compiler,
+			Logger logger) {
+		return intrinsics(compiler, new CompilerLogger(logger));
 	}
 
-	private CompilerIntrinsics(SourceCompiler compiler) {
+	public static CompilerIntrinsics intrinsics(
+			SourceCompiler compiler,
+			CompilerLogger compilerLogger) {
+		return new CompilerIntrinsics(compilerLogger, compiler);
+	}
+
+	private CompilerIntrinsics(
+			CompilerLogger compilerLogger,
+			SourceCompiler compiler) {
+		this.compilerLogger = compilerLogger;
 		this.compiler = compiler;
 		this.topContext = new TopContext(this);
 		this.top = new Top(this.topContext);
@@ -80,6 +94,11 @@ public class CompilerIntrinsics extends Intrinsics {
 		addModule(this.consoleModule);
 		addModule(macrosModule(this.root.getContext()));
 		addModule(testModule(this.root.getContext()));
+	}
+
+	@Override
+	public final CompilerLogger getCompilerLogger() {
+		return this.compilerLogger;
 	}
 
 	public final SourceCompiler getCompiler() {
@@ -181,6 +200,11 @@ public class CompilerIntrinsics extends Intrinsics {
 	@Override
 	public Module getMainModule() {
 		return this.mainModule.use();
+	}
+
+	@Override
+	public final FullResolution fullResolution() {
+		return this.fullResolution;
 	}
 
 	public void addModule(Module module) {

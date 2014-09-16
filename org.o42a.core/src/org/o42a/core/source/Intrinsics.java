@@ -25,52 +25,50 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.Name;
 
 
-public abstract class Intrinsics {
+public interface Intrinsics {
 
-	private final FullResolution fullResolution = new FullResolution();
+	CompilerLogger getCompilerLogger();
 
-	public abstract Obj getVoid();
+	Obj getVoid();
 
-	public abstract Obj getFalse();
+	Obj getFalse();
 
-	public abstract Obj getNone();
+	Obj getNone();
 
-	public abstract Container getTop();
+	Container getTop();
 
-	public abstract Namespace getModuleNamespace();
+	Namespace getModuleNamespace();
 
-	public abstract Obj getRoot();
+	Obj getRoot();
 
-	public abstract Obj getDirective();
+	Obj getDirective();
 
-	public abstract Obj getMacro();
+	Obj getMacro();
 
-	public abstract Obj getInteger();
+	Obj getInteger();
 
-	public abstract Obj getFloat();
+	Obj getFloat();
 
-	public abstract Obj getString();
+	Obj getString();
 
-	public abstract Obj getLink();
+	Obj getLink();
 
-	public abstract Obj getVariable();
+	Obj getVariable();
 
-	public abstract Obj getArray();
+	Obj getArray();
 
-	public abstract Obj getRow();
+	Obj getRow();
 
-	public abstract Obj getFlow();
+	Obj getFlow();
 
-	public abstract Module getModule(Name moduleName);
+	Module getModule(Name moduleName);
 
-	public abstract Module getMainModule();
+	Module getMainModule();
 
-	public final boolean is(Intrinsics other) {
+	FullResolution fullResolution();
+
+	default boolean is(Intrinsics other) {
 		return this == other;
-	}
-
-	public final FullResolution fullResolution() {
-		return this.fullResolution;
 	}
 
 }

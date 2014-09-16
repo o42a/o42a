@@ -10,7 +10,6 @@ import org.o42a.core.source.ModuleCompiler;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.util.io.EmptySource;
 import org.o42a.util.io.Source;
-import org.o42a.util.log.Logger;
 
 
 class TestCompilerContext extends CompilerContext {
@@ -18,11 +17,8 @@ class TestCompilerContext extends CompilerContext {
 	private final EmptySource source;
 	private final CompilerTestCase test;
 
-	TestCompilerContext(CompilerTestCase test, Logger logger) {
-		super(
-				CompilerTestCase.COMPILER,
-				CompilerTestCase.INTRINSICS,
-				logger);
+	TestCompilerContext(CompilerTestCase test) {
+		super(test.getCompiler(), test.getIntrinsics());
 		this.test = test;
 		this.source = new EmptySource("empty");
 	}

@@ -18,10 +18,15 @@ import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
 
-final class TestErrors extends TestWatcher implements Logger, CompileErrors {
+final class TestErrors implements Logger, CompileErrors {
+
+	static final TestErrors ERRORS = new TestErrors();
 
 	private final LinkedList<String> expectedErrors = new LinkedList<>();
 	private boolean hasErrors;
+
+	private TestErrors() {
+	}
 
 	@Override
 	public boolean hasCompileErrors() {
@@ -49,8 +54,12 @@ final class TestErrors extends TestWatcher implements Logger, CompileErrors {
 				is(expected));
 	}
 
-	public final void expectError(String code) {
+	final void expectError(String code) {
 		this.expectedErrors.add(code);
+	}
+
+	final TestWatcher newWatcher() {
+		return new ErrorWatcher(this);
 	}
 
 	@Override
@@ -58,18 +67,28 @@ final class TestErrors extends TestWatcher implements Logger, CompileErrors {
 		return this.expectedErrors.toString();
 	}
 
-	@Override
-	protected void succeeded(Description description) {
-		assertThat(
-				"Errors expected, but not logged: " + this,
-				this.expectedErrors.isEmpty(),
-				is(true));
-	}
+	private static final class ErrorWatcher extends TestWatcher {
 
-	@Override
-	protected void starting(Description description) {
-		this.hasErrors = false;
-		this.expectedErrors.clear();
+		private final TestErrors errors;
+
+		ErrorWatcher(TestErrors errors) {
+			this.errors = errors;
+		}
+
+		@Override
+		protected void starting(Description description) {
+			this.errors.hasErrors = false;
+			this.errors.expectedErrors.clear();
+		}
+
+		@Override
+		protected void succeeded(Description description) {
+			assertThat(
+					"Errors expected, but not logged: " + this,
+					this.errors.expectedErrors.isEmpty(),
+					is(true));
+		}
+
 	}
 
 }

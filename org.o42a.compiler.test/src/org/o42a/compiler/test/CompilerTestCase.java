@@ -12,6 +12,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.o42a.analysis.use.User.useCase;
 import static org.o42a.compiler.Compiler.compiler;
+import static org.o42a.compiler.test.TestErrors.ERRORS;
 import static org.o42a.compiler.test.matchers.FalseValueMatcher.FALSE_VALUE_MATCHER;
 import static org.o42a.compiler.test.matchers.RuntimeValueMatcher.RUNTIME_VALUE_MATCHER;
 import static org.o42a.compiler.test.matchers.TrueValueMatcher.TRUE_VALUE_MATCHER;
@@ -22,6 +23,7 @@ import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TestWatcher;
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.UseCase;
 import org.o42a.codegen.Generator;
@@ -50,10 +52,10 @@ public abstract class CompilerTestCase {
 			theInstance(Void.VOID);
 
 	public static final UseCase USE_CASE = useCase("test");
-	protected Analyzer analyzer = new Analyzer("test");
 
-	static final Compiler COMPILER = compiler();
-	static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
+	private static final Compiler COMPILER = compiler();
+	private static final CompilerIntrinsics INTRINSICS =
+			intrinsics(COMPILER, ERRORS);
 
 	public static Value<?> valueOf(Obj object) {
 		return object.value().getValue();
@@ -277,16 +279,25 @@ public abstract class CompilerTestCase {
 	}
 
 	@Rule
-	public final TestErrors errors = new TestErrors();
+	public final TestWatcher errors = ERRORS.newWatcher();
 
 	@Rule
 	public final ModuleName moduleName = new ModuleName();
 
+	protected Analyzer analyzer;
+
 	private TestSource source;
 	protected CompilerContext context;
-	private final CompilerContext topContext =
-			new TestCompilerContext(this, this.errors);
+	private final CompilerContext topContext = new TestCompilerContext(this);
 	protected Module module;
+
+	public final CompilerIntrinsics getIntrinsics() {
+		return INTRINSICS;
+	}
+
+	public final Compiler getCompiler() {
+		return COMPILER;
+	}
 
 	public final Name getModuleName() {
 		return this.moduleName.getModuleName();
@@ -302,7 +313,7 @@ public abstract class CompilerTestCase {
 	}
 
 	public void expectError(String code) {
-		this.errors.expectError(code);
+		ERRORS.expectError(code);
 	}
 
 	protected void addSource(
@@ -317,10 +328,10 @@ public abstract class CompilerTestCase {
 		this.source = new TestSource(this, buildCode(line, lines), this.source);
 		this.context = new TestSourceTree(this.source).context(this.topContext);
 
-		this.context.fullResolution().reset();
+		getIntrinsics().fullResolution().reset();
 		this.module = new Module(this.context, getModuleName());
-		INTRINSICS.setMainModule(this.module);
-		INTRINSICS.resolveAll(this.analyzer, this.errors);
+		getIntrinsics().setMainModule(this.module);
+		getIntrinsics().resolveAll(this.analyzer, ERRORS);
 		assert this.module.getContext().fullResolution().isComplete() :
 			"Full resolution is incomplete";
 	}
@@ -330,7 +341,7 @@ public abstract class CompilerTestCase {
 	}
 
 	protected void generateCode(Generator generator) {
-		INTRINSICS.generateAll(generator);
+		getIntrinsics().generateAll(generator);
 	}
 
 	private String buildCode(String line, String... lines) {

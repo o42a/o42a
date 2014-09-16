@@ -25,16 +25,13 @@ import org.o42a.util.log.*;
 public class CompilerLogger implements Logger {
 
 	private final Logger logger;
-	private final Object source;
 
-	public CompilerLogger(Logger logger, Object source) {
-		this.logger = logger != null ? logger : Logger.DEFAULT_LOGGER;
-		this.source = source;
+	public CompilerLogger(Logger logger) {
+		this.logger = logger != null ? logger : DEFAULT_LOGGER;
 	}
 
 	public CompilerLogger(CompilerLogger logger) {
 		this.logger = logger;
-		this.source = logger.getSource();
 	}
 
 	public void ambiguousClause(LogInfo location, String clauseName) {
@@ -270,10 +267,6 @@ public class CompilerLogger implements Logger {
 
 	protected Logger getLogger() {
 		return this.logger;
-	}
-
-	protected Object getSource() {
-		return this.source;
 	}
 
 }
