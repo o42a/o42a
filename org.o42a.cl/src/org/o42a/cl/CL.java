@@ -52,10 +52,10 @@ public class CL {
 	public void compile(FileSourceTree sourceTree) {
 
 		final Compiler compiler = compiler();
-		final CompilerIntrinsics intrinsics = intrinsics(compiler);
-		final CompilerContext rootContext = intrinsics.getRoot().getContext();
 		final CLLogger logger = new CLLogger();
-		final CompilerContext context = sourceTree.context(rootContext, logger);
+		final CompilerIntrinsics intrinsics = intrinsics(compiler, logger);
+		final CompilerContext rootContext = intrinsics.getRoot().getContext();
+		final CompilerContext context = sourceTree.context(rootContext);
 		final Module module = new Module(context, null);
 
 		intrinsics.setMainModule(module);

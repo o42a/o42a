@@ -24,7 +24,6 @@ import java.util.Iterator;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.util.io.Source;
-import org.o42a.util.log.Logger;
 
 
 public class TreeCompilerContext<S extends Source>
@@ -35,14 +34,7 @@ public class TreeCompilerContext<S extends Source>
 	public TreeCompilerContext(
 			CompilerContext parentContext,
 			SourceTree<S> sourceTree) {
-		this(parentContext, sourceTree, null);
-	}
-
-	public TreeCompilerContext(
-			CompilerContext parentContext,
-			SourceTree<S> sourceTree,
-			Logger logger) {
-		super(parentContext, logger);
+		super(parentContext);
 		this.sourceTree = sourceTree;
 		if (!sourceTree.getFileName().isValid()) {
 			getLogger().error(
@@ -94,7 +86,7 @@ public class TreeCompilerContext<S extends Source>
 	}
 
 	protected TreeCompilerContext<S> sectionContext(SourceTree<S> sourceTree) {
-		return new TreeCompilerContext<>(this, sourceTree, null);
+		return new TreeCompilerContext<>(this, sourceTree);
 	}
 
 }

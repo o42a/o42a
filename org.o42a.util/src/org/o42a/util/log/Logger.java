@@ -24,8 +24,6 @@ public interface Logger {
 
 	Logger DEFAULT_LOGGER = new DefaultLogger();
 
-	Logger DECLARATION_LOGGER = new DeclarationLogger();
-
 	void log(LogRecord record);
 
 }

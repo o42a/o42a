@@ -25,32 +25,22 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.util.fn.Init;
 import org.o42a.util.io.Source;
-import org.o42a.util.log.Logger;
 
 
 public abstract class CompilerContext implements LocationInfo {
 
 	private final SourceCompiler compiler;
 	private final Intrinsics intrinsics;
-	private final CompilerLogger logger;
 	private final Init<Location> location =
 			init(() -> new Location(this, getSource()));
 
-	public CompilerContext(CompilerContext parent, Logger logger) {
-		this.compiler = parent.compiler;
-		this.intrinsics = parent.intrinsics;
-		this.logger =
-				logger != null
-				? new CompilerLogger(logger, this) : parent.logger;
-	}
-
-	protected CompilerContext(
-			SourceCompiler compiler,
-			Intrinsics intrinsics,
-			Logger logger) {
+	protected CompilerContext(SourceCompiler compiler, Intrinsics intrinsics) {
 		this.compiler = compiler;
 		this.intrinsics = intrinsics;
-		this.logger = new CompilerLogger(logger, this);
+	}
+
+	protected CompilerContext(CompilerContext parentContext) {
+		this(parentContext.getCompiler(), parentContext.getIntrinsics());
 	}
 
 	@Override
@@ -68,7 +58,7 @@ public abstract class CompilerContext implements LocationInfo {
 
 	@Override
 	public final CompilerLogger getLogger() {
-		return this.logger;
+		return getIntrinsics().getCompilerLogger();
 	}
 
 	public final Obj getVoid() {
@@ -109,7 +99,7 @@ public abstract class CompilerContext implements LocationInfo {
 	}
 
 	public final FullResolution fullResolution() {
-		return this.intrinsics.fullResolution();
+		return getIntrinsics().fullResolution();
 	}
 
 	@Override

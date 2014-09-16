@@ -29,7 +29,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.io.Source;
 import org.o42a.util.io.SourceFileName;
-import org.o42a.util.log.Logger;
 
 
 public abstract class SourceTree<S extends Source> {
@@ -58,12 +57,6 @@ public abstract class SourceTree<S extends Source> {
 
 	public final TreeCompilerContext<S> context(CompilerContext parentContext) {
 		return new TreeCompilerContext<>(parentContext, this);
-	}
-
-	public final TreeCompilerContext<S> context(
-			CompilerContext parentContext,
-			Logger logger) {
-		return new TreeCompilerContext<>(parentContext, this, logger);
 	}
 
 	public final CompiledField field(Obj owner) {
