@@ -20,7 +20,6 @@
 package org.o42a.core.ref.impl;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
@@ -28,6 +27,7 @@ import org.o42a.core.ir.cmd.ResumeCallback;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.util.string.ID;
 
 
@@ -35,6 +35,7 @@ final class YieldCmd implements Cmd {
 
 	private static final ID YIELD_ID = ID.rawId("yield");
 	private static final ID PREPARE_RESUME_ID = ID.rawId("prepare_resume");
+	private static final ID RESUME_PREPARED_ID = ID.rawId("resume_prepared");
 
 	private final Eval eval;
 
@@ -71,18 +72,28 @@ final class YieldCmd implements Cmd {
 
 		code.dump("Yield: ", controlDirs.result());
 
-		final Code prepareResume = code.inset(PREPARE_RESUME_ID);
+		final Block prepareResume = code.addBlock(PREPARE_RESUME_ID);
+
+		code.go(prepareResume.head());
+
+		final Block resumePrepared = code.addBlock(RESUME_PREPARED_ID);
+
+		resumePrepared.go(code.tail());
+
+		final CodeDirs resumeDirs =
+				control.getBuilder().dirs(prepareResume, control.falseDir());
 		final ObjectOp host = control.host();
 
 		control.setResumeCallback(new ResumeCallback() {
 			@Override
 			public void resumedAt(CodePtr resumePtr) {
-				host.objectData(prepareResume)
+				host.resumeFrom(resumeDirs)
 				.ptr()
-				.resumeFrom(prepareResume)
+				.resumePtr(prepareResume)
 				.store(
 						prepareResume,
 						resumePtr.toAny().op(null, prepareResume));
+				prepareResume.go(resumePrepared.head());
 			}
 		});
 

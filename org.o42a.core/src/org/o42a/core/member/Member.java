@@ -21,6 +21,7 @@ package org.o42a.core.member;
 
 import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.impl.MemberPropagatedFromID.memberScopePrefix;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
@@ -33,6 +34,7 @@ import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -42,10 +44,11 @@ public abstract class Member extends Contained {
 
 	private final Obj owner;
 
-	private Member firstDeclaration;
-	private Member lastDefinition;
-	private Member[] overridden;
-	private ID id;
+	private final Init<ID> id = init(this::createId);
+	private final Init<Member> firstDeclaration =
+			init(this::findFirstDeclaration);
+	private final Init<Member> lastDefinition = init(this::findLastDefinition);
+	private final Init<Member[]> overridden = init(this::findOverridden);
 
 	public Member(
 			LocationInfo location,
@@ -56,18 +59,7 @@ public abstract class Member extends Contained {
 	}
 
 	public final ID getId() {
-		if (this.id != null) {
-			return this.id;
-		}
-
-		final ID prefix = memberScopePrefix(this);
-
-		if (!isOverride()) {
-			return this.id = prefix.sub(getMemberId());
-		}
-
-		return this.id = prefix.sub(
-				ID.id(getMemberId()).suffix(new MemberPropagatedFromID(this)));
+		return this.id.get();
 	}
 
 	public final Obj getMemberOwner() {
@@ -196,17 +188,7 @@ public abstract class Member extends Contained {
 	public abstract Member getPropagatedFrom();
 
 	public Member getFirstDeclaration() {
-		if (this.firstDeclaration != null) {
-			return this.firstDeclaration;
-		}
-		if (!isOverride()) {
-			return this.firstDeclaration = this;
-		}
-
-		final MemberKey memberKey = getMemberKey();
-		final Scope origin = memberKey.getOrigin();
-
-		return this.firstDeclaration = origin.getContainer().member(memberKey);
+		return this.firstDeclaration.get();
 	}
 
 	/**
@@ -216,20 +198,7 @@ public abstract class Member extends Contained {
 	 * with multiple inheritance.
 	 */
 	public Member getLastDefinition() {
-		if (this.lastDefinition != null) {
-			return this.lastDefinition;
-		}
-		if (!isPropagated()) {
-			return this.lastDefinition = this;
-		}
-
-		final Member[] overridden = getOverridden();
-
-		if (overridden.length != 1) {
-			return this.lastDefinition = this;
-		}
-
-		return this.lastDefinition = overridden[0].getLastDefinition();
+		return this.lastDefinition.get();
 	}
 
 	public final boolean isClone() {
@@ -237,10 +206,7 @@ public abstract class Member extends Contained {
 	}
 
 	public final Member[] getOverridden() {
-		if (this.overridden != null) {
-			return this.overridden;
-		}
-		return this.overridden = findOverridden();
+		return this.overridden.get();
 	}
 
 	public final boolean definedAfter(Member other) {
@@ -257,6 +223,42 @@ public abstract class Member extends Contained {
 			return super.toString();
 		}
 		return getId().toString();
+	}
+
+	private ID createId() {
+
+		final ID prefix = memberScopePrefix(this);
+
+		if (!isOverride()) {
+			return prefix.sub(getMemberId());
+		}
+
+		return prefix.sub(
+				ID.id(getMemberId()).suffix(new MemberPropagatedFromID(this)));
+	}
+
+	private Member findFirstDeclaration() {
+		if (!isOverride()) {
+			return this;
+		}
+
+		final MemberKey memberKey = getMemberKey();
+
+		return memberKey.getOrigin().getContainer().member(memberKey);
+	}
+
+	private Member findLastDefinition() {
+		if (!isPropagated()) {
+			return this;
+		}
+
+		final Member[] overridden = getOverridden();
+
+		if (overridden.length != 1) {
+			return this;
+		}
+
+		return overridden[0].getLastDefinition();
 	}
 
 	private Member[] findOverridden() {

@@ -38,16 +38,8 @@ import org.o42a.core.member.MemberKey;
 
 final class AliasFldOp extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
-	private final StatefulOp ptr;
-
-	AliasFldOp(AliasFld fld, ObjOp host, StatefulOp ptr) {
-		super(fld, host);
-		this.ptr = ptr;
-	}
-
-	@Override
-	public final StatefulOp ptr() {
-		return this.ptr;
+	AliasFldOp(ObjOp host, AliasFld fld, StatefulOp ptr) {
+		super(host, fld, ptr);
 	}
 
 	@Override

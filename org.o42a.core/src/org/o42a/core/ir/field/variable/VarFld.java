@@ -111,7 +111,7 @@ public class VarFld extends AbstractLinkFld<StatefulOp, StatefulType> {
 
 	@Override
 	protected VarFldOp op(Code code, ObjOp host, StatefulOp ptr) {
-		return new VarFldOp(this, host, ptr);
+		return new VarFldOp(host, this, ptr);
 	}
 
 }

@@ -21,12 +21,15 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.util.fn.Init.init;
 
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.inst.InstFld;
+import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -43,6 +46,8 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
 			new LinkedHashMap<>();
 	private ObjectIRBody mainBodyIR;
+	private final Init<EnumMap<InstFldKind, InstFld<?, ?>>> instFields =
+			init(this::findInstFields);
 	private final Init<ObjectIRStruct> struct = init(this::allocateStruct);
 	private final boolean typeBodies;
 
@@ -130,6 +135,16 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 		return this.bodyIRs.get(ascendant.type().getSampleDeclaration());
 	}
 
+	public final InstFld<?, ?> instFld(InstFldKind kind) {
+
+		final InstFld<?, ?> fld = instFields().get(kind);
+
+		assert fld != null :
+			"Instance field " + fld + " not found";
+
+		return fld;
+	}
+
 	public final Fld<?, ?> fld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().toObject();
@@ -178,6 +193,10 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 		return this;
 	}
 
+	private final EnumMap<InstFldKind, InstFld<?, ?>> instFields() {
+		return this.instFields.get();
+	}
+
 	private void deriveBodyIRs(Obj ascendant, boolean inherited) {
 		for (ObjectIRBody ascendantBodyIR :
 				ascendant.ir(getGenerator()).typeBodies()) {
@@ -203,6 +222,18 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 		final Obj declaration = bodyIR.getSampleDeclaration();
 
 		this.bodyIRs.put(declaration, bodyIR);
+	}
+
+	private EnumMap<InstFldKind, InstFld<?, ?>> findInstFields() {
+
+		final EnumMap<InstFldKind, InstFld<?, ?>> fields =
+				new EnumMap<>(InstFldKind.class);
+
+		for (ObjectIRBody body : this) {
+			fields.putAll(body.instFields());
+		}
+
+		return fields;
 	}
 
 }

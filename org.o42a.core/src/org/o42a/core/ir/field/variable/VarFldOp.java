@@ -43,21 +43,13 @@ import org.o42a.core.member.MemberKey;
 public final class VarFldOp
 		extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
-	private final StatefulOp ptr;
-
-	VarFldOp(VarFld fld, ObjOp host, StatefulOp ptr) {
-		super(fld, host);
-		this.ptr = ptr;
+	VarFldOp(ObjOp host, VarFld fld, StatefulOp ptr) {
+		super(host, fld, ptr);
 	}
 
 	@Override
 	public final VarFld fld() {
 		return (VarFld) super.fld();
-	}
-
-	@Override
-	public final StatefulOp ptr() {
-		return this.ptr;
 	}
 
 	@Override

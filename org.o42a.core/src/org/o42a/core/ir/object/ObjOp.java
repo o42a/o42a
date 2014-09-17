@@ -29,6 +29,9 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.inst.InstFld;
+import org.o42a.core.ir.field.inst.InstFldKind;
+import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -125,6 +128,23 @@ public final class ObjOp extends ObjectOp {
 				ptr(dirs.code()),
 				ascendant,
 				COMPATIBLE);
+	}
+
+	@Override
+	public InstFldOp<?, ?> instField(CodeDirs dirs, InstFldKind kind) {
+
+		final CodeDirs subDirs =
+				dirs.begin(FIELD_ID, "Field " + kind + " of " + this);
+		final Code code = subDirs.code();
+		final InstFld<?, ?> fld = getObjectIR().bodies().instFld(kind);
+		final ObjOp host = cast(null, subDirs, getAscendant());
+		final InstFldOp<?, ?> op = fld.op(code, host);
+
+		code.dumpName("Field: ", op);
+
+		subDirs.done();
+
+		return op;
 	}
 
 	@Override

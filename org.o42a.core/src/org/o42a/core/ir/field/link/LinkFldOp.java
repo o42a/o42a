@@ -39,21 +39,13 @@ import org.o42a.core.member.MemberKey;
 public class LinkFldOp
 		extends RefFldOp<StatelessOp, StatelessType, ObjectRefFn> {
 
-	private final StatelessOp ptr;
-
-	LinkFldOp(LinkFld fld, ObjOp host, StatelessOp ptr) {
-		super(fld, host);
-		this.ptr = ptr;
+	LinkFldOp(ObjOp host, LinkFld fld, StatelessOp ptr) {
+		super(host, fld, ptr);
 	}
 
 	@Override
 	public final LinkFld fld() {
 		return (LinkFld) super.fld();
-	}
-
-	@Override
-	public final StatelessOp ptr() {
-		return this.ptr;
 	}
 
 	@Override

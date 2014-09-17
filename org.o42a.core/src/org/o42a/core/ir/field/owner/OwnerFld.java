@@ -122,7 +122,7 @@ public final class OwnerFld
 	protected OwnerFldOp op(Code code, ObjOp host, Op ptr) {
 		assert !isDummy() :
 			"Dummy owner field accessd: " + this;
-		return new OwnerFldOp(this, host, ptr);
+		return new OwnerFldOp(host, this, ptr);
 	}
 
 	public static final class Op extends Fld.Op<Op> {

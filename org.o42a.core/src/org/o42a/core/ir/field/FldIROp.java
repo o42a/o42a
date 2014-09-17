@@ -19,22 +19,25 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.DefiniteIROp;
 
 
 public abstract class FldIROp<F extends StructOp<F>, T extends Type<F>>
-		extends DefiniteIROp implements TargetOp {
+		extends DefiniteIROp {
 
 	private final ObjOp host;
 	private final FldIR<F, T> fld;
+	private final F ptr;
 
-	public FldIROp(ObjOp host, FldIR<F, T> fld) {
+	public FldIROp(ObjOp host, FldIR<F, T> fld, F ptr) {
 		super(host.getBuilder());
 		this.host = host;
 		this.fld = fld;
+		this.ptr = ptr;
 	}
 
 	public final ObjOp host() {
@@ -46,13 +49,13 @@ public abstract class FldIROp<F extends StructOp<F>, T extends Type<F>>
 	}
 
 	@Override
-	public final HostTargetOp target() {
-		return this;
+	public final F ptr() {
+		return this.ptr;
 	}
 
 	@Override
-	public final TargetOp op(CodeDirs dirs) {
-		return this;
+	public final F ptr(Code code) {
+		return ptr();
 	}
 
 }

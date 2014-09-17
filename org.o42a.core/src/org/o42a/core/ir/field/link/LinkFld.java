@@ -75,7 +75,7 @@ public class LinkFld extends AbstractLinkFld<StatelessOp, StatelessType> {
 
 	@Override
 	protected LinkFldOp op(Code code, ObjOp host, StatelessOp ptr) {
-		return new LinkFldOp(this, host, ptr);
+		return new LinkFldOp(host, this, ptr);
 	}
 
 }

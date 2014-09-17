@@ -111,7 +111,7 @@ public class EagerLinkFld extends AbstractLinkFld<StatefulOp, StatefulType> {
 
 	@Override
 	protected EagerLinkFldOp op(Code code, ObjOp host, StatefulOp ptr) {
-		return new EagerLinkFldOp(this, host, ptr);
+		return new EagerLinkFldOp(host, this, ptr);
 	}
 
 }

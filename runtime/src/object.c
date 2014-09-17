@@ -20,7 +20,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 10,
+	.field_num = 9,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -60,11 +60,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.offset = offsetof(o42a_obj_data_t, value),
 			.name = "value",
 			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
-		},
-		{
-			.data_type = O42A_TYPE_PTR,
-			.offset = offsetof(o42a_obj_data_t, resume_from),
-			.name = "resume_from",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -808,9 +803,9 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	// Fill object data without value and VMT.
 	data->value_f = ctr->value_f;
 	data->cond_f = ctr->cond_f;
-	data->resume_from = NULL;
 	data->desc = sdesc;
 	data->fld_ctrs = NULL;
+
 	O42A(obj_mutex_init(data));
 
 	// propagate sample and inherit ancestor

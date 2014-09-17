@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.field.inst;
+
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Type;
+import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.field.FldIROp;
+import org.o42a.core.ir.object.ObjOp;
 
 
-public enum FldKind {
+public abstract class InstFldOp<F extends StructOp<F>, T extends Type<F>>
+		extends FldIROp<F, T> {
 
-	LINK(-1),
-	OBJ(0),
-	ALIAS(1),
-	VAR(2),
-	OWNER(3),
-	DEP(4),
-	RESUME_FROM(5);
-
-	private final int code;
-
-	FldKind(int code) {
-		this.code = code;
+	public InstFldOp(ObjOp host, FldIR<F, T> fld, F ptr) {
+		super(host, fld, ptr);
 	}
 
-	public final int code() {
-		return this.code;
-	}
-
-	public final boolean isStateless() {
-		return code() < 0;
+	@Override
+	public InstFld<F, T> fld() {
+		return (InstFld<F, T>) super.fld();
 	}
 
 }

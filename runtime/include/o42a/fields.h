@@ -11,6 +11,7 @@
 #include "o42a/fld/dep.h"
 #include "o42a/fld/obj.h"
 #include "o42a/fld/owner.h"
+#include "o42a/fld/resume_from.h"
 
 
 #ifdef __cplusplus
@@ -30,6 +31,8 @@ union o42a_fld {
 	o42a_fld_owner owner;
 
 	o42a_fld_dep dep;
+
+	o42a_fld_resume_from resume_from;
 
 };
 

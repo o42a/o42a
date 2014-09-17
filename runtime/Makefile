@@ -59,6 +59,7 @@ objects += $(srcdir)/value.o
 objects += $(srcdir)/fld/dep.o
 objects += $(srcdir)/fld/obj.o
 objects += $(srcdir)/fld/owner.o
+objects += $(srcdir)/fld/resume_from.o
 
 objects += $(srcdir)/lib/io.o
 

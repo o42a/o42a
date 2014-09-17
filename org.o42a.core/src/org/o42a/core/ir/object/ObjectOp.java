@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.field.inst.InstFldKind.INST_RESUME_FROM;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
@@ -29,6 +30,9 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.inst.InstFldKind;
+import org.o42a.core.ir.field.inst.InstFldOp;
+import org.o42a.core.ir.field.inst.ResumeFromOp;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
@@ -177,6 +181,12 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	public final ObjectDataOp objectData(Code code) {
 		return ptr(code).objectData(code).op(getBuilder());
 	}
+
+	public final ResumeFromOp resumeFrom(CodeDirs dirs) {
+		return (ResumeFromOp) instField(dirs, INST_RESUME_FROM);
+	}
+
+	public abstract InstFldOp<?, ?> instField(CodeDirs dirs, InstFldKind kind);
 
 	@Override
 	public abstract FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey);

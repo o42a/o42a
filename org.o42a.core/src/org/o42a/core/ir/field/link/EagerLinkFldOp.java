@@ -38,21 +38,13 @@ import org.o42a.core.member.MemberKey;
 public class EagerLinkFldOp
 		extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
-	private final StatefulOp ptr;
-
-	EagerLinkFldOp(EagerLinkFld fld, ObjOp host, StatefulOp ptr) {
-		super(fld, host);
-		this.ptr = ptr;
+	EagerLinkFldOp(ObjOp host, EagerLinkFld fld, StatefulOp ptr) {
+		super(host, fld, ptr);
 	}
 
 	@Override
 	public final EagerLinkFld fld() {
 		return (EagerLinkFld) super.fld();
-	}
-
-	@Override
-	public final StatefulOp ptr() {
-		return this.ptr;
 	}
 
 	@Override
