@@ -45,22 +45,14 @@ public abstract class RefFldOp<
 		C extends ObjectFn<C>>
 				extends MemberFldOp<F, T> {
 
-	public RefFldOp(RefFld<F, T, C> fld, ObjOp host) {
-		super(fld, host);
+	public RefFldOp(ObjOp host, RefFld<F, T, C> fld, F ptr) {
+		super(host, fld, ptr);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public RefFld<F, T, C> fld() {
 		return (RefFld<F, T, C>) super.fld();
-	}
-
-	@Override
-	public abstract F ptr();
-
-	@Override
-	public final F ptr(Code code) {
-		return ptr();
 	}
 
 	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {

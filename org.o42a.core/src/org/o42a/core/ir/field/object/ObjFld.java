@@ -217,7 +217,7 @@ public class ObjFld
 
 	@Override
 	protected ObjFldOp op(Code code, ObjOp host, StatefulOp ptr) {
-		return new ObjFldOp(this, host, ptr);
+		return new ObjFldOp(host, this, ptr);
 	}
 
 	private FuncPtr<ObjectConstructorFn> createCloneFunc() {

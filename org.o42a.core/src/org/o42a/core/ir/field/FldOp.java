@@ -29,15 +29,17 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostTargetOp;
 import org.o42a.core.ir.op.TargetOp;
 import org.o42a.util.string.ID;
 
 
 public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
-		extends FldIROp<F, T> {
+		extends FldIROp<F, T>
+		implements TargetOp {
 
-	public FldOp(ObjOp host, Fld<F, T> fld) {
-		super(host, fld);
+	public FldOp(ObjOp host, Fld<F, T> fld, F ptr) {
+		super(host, fld, ptr);
 	}
 
 	public final boolean isOmitted() {
@@ -62,7 +64,14 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	}
 
 	@Override
-	public abstract F ptr();
+	public final HostTargetOp target() {
+		return this;
+	}
+
+	@Override
+	public final TargetOp op(CodeDirs dirs) {
+		return this;
+	}
 
 	@Override
 	public FldStoreOp allocateStore(ID id, Code code) {

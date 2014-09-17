@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.field.inst;
+
+import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.field.inst.ResumeFromFld.Op;
+import org.o42a.core.ir.field.inst.ResumeFromFld.Type;
+import org.o42a.core.ir.object.ObjOp;
 
 
-public enum FldKind {
+public class ResumeFromOp extends InstFldOp<Op, Type> {
 
-	LINK(-1),
-	OBJ(0),
-	ALIAS(1),
-	VAR(2),
-	OWNER(3),
-	DEP(4),
-	RESUME_FROM(5);
-
-	private final int code;
-
-	FldKind(int code) {
-		this.code = code;
-	}
-
-	public final int code() {
-		return this.code;
-	}
-
-	public final boolean isStateless() {
-		return code() < 0;
+	ResumeFromOp(ObjOp host, FldIR<Op, Type> fld, ResumeFromFld.Op ptr) {
+		super(host, fld, ptr);
 	}
 
 }

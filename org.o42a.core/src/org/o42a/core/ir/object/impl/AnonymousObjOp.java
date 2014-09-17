@@ -31,6 +31,8 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.inst.InstFldKind;
+import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -90,6 +92,20 @@ public final class AnonymousObjOp extends ObjectOp {
 			return ptr().op(getBuilder(), getWellKnownType(), COMPATIBLE);
 		}
 		return dynamicCast(id, dirs, ascendant);
+	}
+
+	@Override
+	public InstFldOp<?, ?> instField(CodeDirs dirs, InstFldKind kind) {
+
+		final CodeDirs subDirs =
+				dirs.begin(FIELD_ID, "Field " + kind + " of " + this);
+		final ObjOp ascendant = cast(null, subDirs, getWellKnownType());
+		final InstFldOp<?, ?> op = ascendant.instField(subDirs, kind);
+
+		subDirs.code().dumpName("Field: ", op);
+		subDirs.done();
+
+		return op;
 	}
 
 	@Override

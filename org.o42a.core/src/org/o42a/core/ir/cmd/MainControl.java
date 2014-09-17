@@ -26,7 +26,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.DefStore;
-import org.o42a.core.ir.object.ObjectIRDataOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
@@ -139,9 +139,12 @@ final class MainControl extends Control {
 			return;
 		}
 
-		final ObjectIRDataOp objectData = host().objectData(this.resume).ptr();
+		final CodeDirs resumeDirs =
+				getBuilder().dirs(this.resume, falseDir());
 		final AnyOp resumeFrom =
-				objectData.resumeFrom(this.resume)
+				host().resumeFrom(resumeDirs)
+				.ptr(this.resume)
+				.resumePtr(this.resume)
 				.load(null, this.resume);
 
 		resumeFrom.isNull(null, this.resume).go(this.resume, this.start);

@@ -118,7 +118,6 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 				.terminator()
 				.pointer(getGenerator()));
 		instance.value().set(getInitialValue());
-		instance.resumeFrom().setNull();
 		instance.desc()
 		.setConstant(true)
 		.setValue(getObjectIR().getDescIR().ptr());

@@ -39,21 +39,13 @@ import org.o42a.core.member.MemberKey;
 public class ObjFldOp
 		extends RefFldOp<StatefulOp, StatefulType, ObjectConstructorFn> {
 
-	private final StatefulOp ptr;
-
-	ObjFldOp(ObjFld fld, ObjOp host, StatefulOp ptr) {
-		super(fld, host);
-		this.ptr = ptr;
+	ObjFldOp(ObjOp host, ObjFld fld, StatefulOp ptr) {
+		super(host, fld, ptr);
 	}
 
 	@Override
 	public final ObjFld fld() {
 		return (ObjFld) super.fld();
-	}
-
-	@Override
-	public final StatefulOp ptr() {
-		return this.ptr;
 	}
 
 	@Override

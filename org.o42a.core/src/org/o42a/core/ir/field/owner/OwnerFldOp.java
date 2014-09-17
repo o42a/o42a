@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.MemberFldOp;
@@ -39,26 +38,13 @@ import org.o42a.core.object.Obj;
 
 public class OwnerFldOp extends MemberFldOp<OwnerFld.Op, OwnerFld.Type> {
 
-	private final OwnerFld.Op ptr;
-
-	OwnerFldOp(OwnerFld field, ObjOp host, OwnerFld.Op ptr) {
-		super(field, host);
-		this.ptr = ptr;
+	OwnerFldOp(ObjOp host, OwnerFld fld, OwnerFld.Op ptr) {
+		super(host, fld, ptr);
 	}
 
 	@Override
 	public final OwnerFld fld() {
 		return (OwnerFld) super.fld();
-	}
-
-	@Override
-	public final OwnerFld.Op ptr() {
-		return this.ptr;
-	}
-
-	@Override
-	public final OwnerFld.Op ptr(Code code) {
-		return ptr();
 	}
 
 	@Override

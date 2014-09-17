@@ -21,15 +21,16 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
+import static org.o42a.util.fn.Init.init;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.inst.InstFld;
+import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -39,6 +40,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.type.Derivative;
+import org.o42a.util.fn.Init;
 
 
 public final class ObjectIRBody {
@@ -46,8 +48,12 @@ public final class ObjectIRBody {
 	private final ObjectIRBodies bodies;
 	private final Obj sampleDeclaration;
 
-	private LinkedHashMap<MemberKey, Fld<?, ?>> fields;
-	private LinkedHashMap<Dep, DepIR> deps;
+	private final Init<EnumMap<InstFldKind, InstFld<?, ?>>> instFields =
+			init(this::createInstFields);
+	private final Init<LinkedHashMap<MemberKey, Fld<?, ?>>> fields =
+			init(this::createFields);
+	private final Init<LinkedHashMap<Dep, DepIR>> deps =
+			init(this::createDeps);
 
 	ObjectIRBody(ObjectIRBodies bodies) {
 		this.bodies = bodies;
@@ -117,32 +123,27 @@ public final class ObjectIRBody {
 		return ir;
 	}
 
+	final EnumMap<InstFldKind, InstFld<?, ?>> instFields() {
+		return this.instFields.get();
+	}
+
 	final void allocate(SubData<?> data) {
+		allocateInstFields(data);
 		allocateFields(data);
 		allocateDeps(data);
 	}
 
-	private HashMap<MemberKey, Fld<?, ?>> fields() {
-		if (this.fields != null) {
-			return this.fields;
-		}
-		this.fields = new LinkedHashMap<>();
-		createFieldsDeclaredIn(getSampleDeclaration());
-		return this.fields;
+	private final LinkedHashMap<MemberKey, Fld<?, ?>> fields() {
+		return this.fields.get();
 	}
 
 	private final LinkedHashMap<Dep, DepIR> deps() {
-		if (this.deps != null) {
-			return this.deps;
-		}
-		this.deps = new LinkedHashMap<>();
-		createDepsDeclaredIn(getSampleDeclaration());
-		return this.deps;
+		return this.deps.get();
 	}
 
-	private void allocateDeps(SubData<?> data) {
-		for (DepIR dep : deps().values()) {
-			dep.allocate(data);
+	private void allocateInstFields(SubData<?> data) {
+		for (InstFld<?, ?> fld : instFields().values()) {
+			fld.allocate(data);
 		}
 	}
 
@@ -152,7 +153,104 @@ public final class ObjectIRBody {
 		}
 	}
 
-	private void createFieldsDeclaredIn(Obj ascendant) {
+	private void allocateDeps(SubData<?> data) {
+		for (DepIR dep : deps().values()) {
+			dep.allocate(data);
+		}
+	}
+
+	private EnumMap<InstFldKind, InstFld<?, ?>> createInstFields() {
+
+		final EnumMap<InstFldKind, InstFld<?, ?>> fields =
+				new EnumMap<>(InstFldKind.class);
+
+		if (!isMain()) {
+			deriveInstFields(fields);
+		} else {
+			createInstFieldsDeclaredIn(
+					fields,
+					instFldKindsToDeclare(),
+					getSampleDeclaration());
+		}
+
+		return fields;
+	}
+
+	private void deriveInstFields(EnumMap<InstFldKind, InstFld<?, ?>> fields) {
+		for (InstFld<?, ?> fld
+				: getSampleDeclaration()
+				.ir(getGenerator())
+				.typeBodies()
+				.getMainBodyIR()
+				.instFields()
+				.values()) {
+			fields.put(fld.getInstFldKind(), fld.derive(this));
+		}
+	}
+
+	private EnumSet<InstFldKind> instFldKindsToDeclare() {
+
+		final EnumSet<InstFldKind> kinds = EnumSet.allOf(InstFldKind.class);
+
+		for (ObjectIRBody body : bodies()) {
+			if (body.isMain()) {
+				break;
+			}
+			// An instance field can be declared at most once per object
+			kinds.removeAll(body.instFields().keySet());
+		}
+
+		return kinds;
+	}
+
+	private void createInstFieldsDeclaredIn(
+			EnumMap<InstFldKind, InstFld<?, ?>> fields,
+			EnumSet<InstFldKind> kinds,
+			Obj ascendant) {
+
+		final Iterator<InstFldKind> it = kinds.iterator();
+
+		while (it.hasNext()) {
+
+			final InstFldKind kind = it.next();
+			final InstFld<?, ?> fld = kind.declare(this, ascendant);
+
+			if (fld != null) {
+				fields.put(kind, fld);
+				it.remove();
+			}
+		}
+		if (kinds.isEmpty()) {
+			return;
+		}
+
+		for (Derivative derivative : ascendant.type().allDerivatives()) {
+			if (!derivative.isSample()) {
+				continue;
+			}
+			createInstFieldsDeclaredIn(
+					fields,
+					kinds,
+					derivative.getDerivedObject());
+			if (kinds.isEmpty()) {
+				break;
+			}
+		}
+	}
+
+	private LinkedHashMap<MemberKey, Fld<?, ?>> createFields() {
+
+		final LinkedHashMap<MemberKey, Fld<?, ?>> fields =
+				new LinkedHashMap<>();
+
+		createFieldsDeclaredIn(fields, getSampleDeclaration());
+
+		return fields;
+	}
+
+	private void createFieldsDeclaredIn(
+			LinkedHashMap<MemberKey, Fld<?, ?>> fields,
+			Obj ascendant) {
 
 		final Generator generator = getGenerator();
 		final Obj object = bodies().getObject();
@@ -186,7 +284,7 @@ public final class ObjectIRBody {
 				final Fld<?, ?> fld = fieldIR.declare(this);
 
 				if (fld != null) {
-					this.fields.put(fld.getKey(), fld);
+					fields.put(fld.getKey(), fld);
 				}
 			} else {
 
@@ -203,14 +301,14 @@ public final class ObjectIRBody {
 				final Fld<?, ?> fld = fieldIR.declareDummy(this);
 
 				if (fld != null) {
-					this.fields.put(fld.getKey(), fld);
+					fields.put(fld.getKey(), fld);
 				}
 			}
 		}
 
 		for (Derivative derivative : ascendant.type().allDerivatives()) {
 			if (derivative.isSample()) {
-				createFieldsDeclaredIn(derivative.getDerivedObject());
+				createFieldsDeclaredIn(fields, derivative.getDerivedObject());
 			}
 		}
 	}
@@ -230,7 +328,18 @@ public final class ObjectIRBody {
 		return true;
 	}
 
-	private void createDepsDeclaredIn(Obj ascendant) {
+	private LinkedHashMap<Dep, DepIR> createDeps() {
+
+		final LinkedHashMap<Dep, DepIR> deps = new LinkedHashMap<>();
+
+		createDepsDeclaredIn(deps, getSampleDeclaration());
+
+		return deps;
+	}
+
+	private void createDepsDeclaredIn(
+			LinkedHashMap<Dep, DepIR> deps,
+			Obj ascendant) {
 
 		final Analyzer analyzer = getGenerator().getAnalyzer();
 
@@ -241,12 +350,12 @@ public final class ObjectIRBody {
 
 			final DepIR depIR = new DepIR(this, dep);
 
-			this.deps.put(dep, depIR);
+			deps.put(dep, depIR);
 		}
 
 		for (Derivative derivative : ascendant.type().allDerivatives()) {
 			if (derivative.isSample()) {
-				createDepsDeclaredIn(derivative.getDerivedObject());
+				createDepsDeclaredIn(deps, derivative.getDerivedObject());
 			}
 		}
 	}

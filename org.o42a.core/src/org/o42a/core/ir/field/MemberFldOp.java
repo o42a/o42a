@@ -31,8 +31,8 @@ import org.o42a.util.string.ID;
 public abstract class MemberFldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		extends FldOp<F, T> {
 
-	public MemberFldOp(MemberFld<F, T> fld, ObjOp host) {
-		super(host, fld);
+	public MemberFldOp(ObjOp host, MemberFld<F, T> fld, F ptr) {
+		super(host, fld, ptr);
 	}
 
 	@Override

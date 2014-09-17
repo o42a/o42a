@@ -105,7 +105,7 @@ public class AliasFld extends ObjectRefFld<StatefulOp, StatefulType> {
 
 	@Override
 	protected AliasFldOp op(Code code, ObjOp host, StatefulOp ptr) {
-		return new AliasFldOp(this, host, ptr);
+		return new AliasFldOp(host, this, ptr);
 	}
 
 	private ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {

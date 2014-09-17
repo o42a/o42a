@@ -37,8 +37,8 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	public static final ID FLD_ID = ID.id("fld");
 
 	private final ObjectIRBody bodyIR;
-	private final boolean dummy;
 	private T instance;
+	private final boolean dummy;
 	private byte omitted;
 
 	public Fld(ObjectIRBody bodyIR, boolean dummy) {
@@ -97,7 +97,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Fld<F, T> get(ObjectIRBodies bodies) {
+	public final Fld<F, T> get(ObjectIRBodies bodies) {
 		return (Fld<F, T>) bodies.fld(getKey());
 	}
 
@@ -114,20 +114,20 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 				: host.ptr(code).field(code, getTypeInstance()));
 	}
 
-	public void targetAllocated() {
-	}
-
-	protected abstract boolean mayOmit();
-
 	public final void allocate(SubData<?> data) {
 		if (isStateless()) {
 			return;
 		}
 		this.instance = data.addNewInstance(
-				FLD_ID.detail(getId().getLocal()),
+				FLD_ID.detail(getId()),
 				getType(),
 				isDummy() ? dummyContent() : content());
 	}
+
+	public void targetAllocated() {
+	}
+
+	protected abstract boolean mayOmit();
 
 	protected abstract T getType();
 
