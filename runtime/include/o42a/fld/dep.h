@@ -28,9 +28,6 @@ typedef struct {
 extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_dep;
 #endif /* NDEBUG */
 
-void o42a_fld_dep_copy(o42a_obj_ctable_t*);
-
-
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

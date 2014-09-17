@@ -34,12 +34,3 @@ void o42a_fld_owner_propagate(o42a_obj_ctable_t *const ctable) {
 
 	O42A_RETURN;
 }
-
-void o42a_fld_owner_inherit(o42a_obj_ctable_t *const ctable) {
-	O42A_ENTER(return);
-	ctable->to_fld->owner.object = ctable->from_fld->owner.object;
-	o42a_debug_mem_name(
-			"Leave the owner unchanged: ",
-			ctable->to_fld->owner.object);
-	O42A_RETURN;
-}

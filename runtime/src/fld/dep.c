@@ -22,14 +22,3 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_dep = {
 	},
 };
 #endif /* NDEBUG */
-
-void o42a_fld_dep_copy(o42a_obj_ctable_t *const ctable) {
-	O42A_ENTER(return);
-
-	const o42a_fld_dep *const from = &ctable->from_fld->dep;
-	o42a_fld_dep *const to = &ctable->to_fld->dep;
-
-	to->object = from->object;
-
-	O42A_RETURN;
-}
