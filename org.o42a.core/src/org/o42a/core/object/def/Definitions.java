@@ -137,6 +137,10 @@ public class Definitions extends Scoped {
 		return defs().areInherited();
 	}
 
+	public final boolean areYielding() {
+		return defs().areYielding();
+	}
+
 	public Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 

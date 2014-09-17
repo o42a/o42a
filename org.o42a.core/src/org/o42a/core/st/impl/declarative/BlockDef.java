@@ -88,6 +88,11 @@ final class BlockDef extends Def {
 		return this.sentences.getTargets().haveDefinition();
 	}
 
+	@Override
+	public boolean isYielding() {
+		return this.sentences.getTargets().yielding();
+	}
+
 	public final List<Sentence> getSentences() {
 		return this.sentences.getSentences();
 	}

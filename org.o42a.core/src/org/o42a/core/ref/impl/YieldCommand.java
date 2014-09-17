@@ -42,7 +42,7 @@ final class YieldCommand extends RefCommand {
 
 	@Override
 	public CommandTargets getTargets() {
-		return actionCommand();
+		return yieldCommand();
 	}
 
 	@Override

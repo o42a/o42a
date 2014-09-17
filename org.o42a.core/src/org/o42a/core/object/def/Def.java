@@ -146,6 +146,10 @@ public abstract class Def implements SourceInfo {
 				Derivation.INHERITANCE);
 	}
 
+	public boolean isYielding() {
+		return false;
+	}
+
 	public final Def upgradeScope(Scope toScope) {
 		if (toScope.is(getScope())) {
 			return this;
