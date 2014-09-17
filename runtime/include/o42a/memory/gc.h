@@ -116,6 +116,14 @@ struct _o42a_gc_block {
 };
 
 /**
+ * Obtains the garbage-allocated data pointer from GC data block.
+ */
+inline void* o42a_gc_dataof(const o42a_gc_block_t *const block) {
+	struct _o42a_gc_block *const blk = (struct _o42a_gc_block *) block;
+	return (void*) &blk->data;
+}
+
+/**
  * A function, which finds a garbage-collected data block the given address
  * belongs to.
  *
@@ -194,12 +202,16 @@ void o42a_gc_unlock_block(o42a_gc_block_t *);
  *
  * if (!block->list) o42a_gc_static(block);
  *
+ * If initializer specified, then it is called right after the GC block is
+ * submitted to GC, while the block is still locked.
+ *
  * \param data block.
+ * \param init data initializer function pointer.
  *
  * \return 1 if the given static data block successfully submitted to GC,
  * -1 if it were submitted before, or 0 if it is not static.
  */
-int o42a_gc_static(o42a_gc_block_t *);
+int o42a_gc_static(o42a_gc_block_t *, void (*init)(const o42a_gc_block_t *));
 
 /**
  * Discards a garbage-collected data block.
