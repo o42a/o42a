@@ -50,66 +50,83 @@ const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_fld_ctr = {
 };
 #endif /* NDEBUG */
 
-static void o42a_fld_mark_none(o42a_fld *const field __attribute__((unused))) {
+static void fld_ptr_reset(o42a_obj_ctable_t *const ctable) {
+	O42A_ENTER(return);
+	ctable->to_fld->obj.object = NULL;
+	O42A_RETURN;
+}
+
+static void fld_ptr_copy(o42a_obj_ctable_t *const ctable) {
+	O42A_ENTER(return);
+	ctable->to_fld->obj.object = ctable->from_fld->obj.object;
+	O42A_RETURN;
+}
+
+static void fld_mark_none(o42a_fld *const field __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }
 
-static void o42a_fld_sweep_none(o42a_fld *const field __attribute__((unused))) {
+static void fld_sweep_none(o42a_fld *const field __attribute__((unused))) {
 	O42A_ENTER(return);
 	O42A_RETURN;
 }
 
-static void o42a_fld_mark_obj(o42a_fld *const field) {
+static void fld_ptr_mark(o42a_fld *const field) {
 	O42A_ENTER(return);
 
 	volatile o42a_fld_obj *const fld = &field->obj;
-	o42a_obj_t *const object = fld->object;
+	void *ptr = fld->object;
 
-	if (!object) {
+	if (!ptr) {
 		O42A_RETURN;
 	}
 
-	O42A(o42a_gc_mark(o42a_gc_blockof(object)));
+	O42A(o42a_gc_mark(o42a_gc_blockof(ptr)));
 
 	O42A_RETURN;
+}
+
+static o42a_bool_t fld_ptr_is_init(const o42a_fld *const fld) {
+	O42A_ENTER(return O42A_FALSE);
+	O42A_RETURN fld->obj.object ? O42A_TRUE : O42A_FALSE;
 }
 
 static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	[O42A_FLD_OBJ] = {// Object field.
-		.propagate = &o42a_fld_obj_reset,
-		.inherit = &o42a_fld_obj_reset,
-		.mark = &o42a_fld_mark_obj,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_fld_obj_is_init,
+		.inherit = &fld_ptr_reset,
+		.propagate = &fld_ptr_reset,
+		.mark = &fld_ptr_mark,
+		.sweep = &fld_sweep_none,
+		.is_init = fld_ptr_is_init,
 	},
 	[O42A_FLD_ALIAS] = {// Alias field.
-		.propagate = &o42a_fld_obj_reset,
-		.inherit = &o42a_fld_obj_reset,
-		.mark = &o42a_fld_mark_obj,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_fld_obj_is_init,
+		.inherit = &fld_ptr_reset,
+		.propagate = &fld_ptr_reset,
+		.mark = &fld_ptr_mark,
+		.sweep = &fld_sweep_none,
+		.is_init = fld_ptr_is_init,
 	},
 	[O42A_FLD_VAR] = {// Variable field.
-		.propagate = &o42a_fld_obj_reset,
-		.inherit = &o42a_fld_obj_reset,
-		.mark = &o42a_fld_mark_obj,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_fld_obj_is_init,
+		.inherit = fld_ptr_reset,
+		.propagate = fld_ptr_reset,
+		.mark = fld_ptr_mark,
+		.sweep = fld_sweep_none,
+		.is_init = fld_ptr_is_init,
 	},
 	[O42A_FLD_OWNER] = {// Owner object pointer.
+		.inherit = &fld_ptr_copy,
 		.propagate = &o42a_fld_owner_propagate,
-		.inherit = &o42a_fld_owner_inherit,
-		.mark = &o42a_fld_mark_obj,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_fld_obj_is_init,
+		.mark = &fld_ptr_mark,
+		.sweep = &fld_sweep_none,
+		.is_init = NULL,// Eagerly constructed.
 	},
-	[O42A_FLD_DEP] = {// Local dependency field.
-		.propagate = &o42a_fld_obj_reset,
-		.inherit = &o42a_fld_dep_copy,
-		.mark = &o42a_fld_mark_obj,
-		.sweep = &o42a_fld_sweep_none,
-		.is_init = &o42a_fld_obj_is_init,
+	[O42A_FLD_DEP] = {// Run time dependency field.
+		.inherit = fld_ptr_copy,
+		.propagate = fld_ptr_reset,
+		.mark = fld_ptr_mark,
+		.sweep = fld_sweep_none,
+		.is_init = NULL,// Eagerly constructed.
 	},
 
 };

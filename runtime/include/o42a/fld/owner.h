@@ -30,9 +30,6 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_owner;
 
 void o42a_fld_owner_propagate(o42a_obj_ctable_t*);
 
-void o42a_fld_owner_inherit(o42a_obj_ctable_t*);
-
-
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
