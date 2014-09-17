@@ -98,7 +98,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRDataOp> data) {
-		data.addInt8("mutex_init").setValue((byte) 0);
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);

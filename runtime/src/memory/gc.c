@@ -141,10 +141,7 @@ typedef struct o42a_gc_list {
 } o42a_gc_list_t;
 
 
-static inline void* o42a_gc_dataof(o42a_gc_block_t *block) {
-	struct _o42a_gc_block *const blk = (struct _o42a_gc_block *) block;
-	return (void*) &blk->data;
-}
+extern void* o42a_gc_dataof(const o42a_gc_block_t *const block);
 
 #ifndef NDEBUG
 static inline size_t gc_dump_offset(size_t size) {
@@ -767,7 +764,9 @@ void o42a_gc_signal() {
 	O42A_RETURN;
 }
 
-int o42a_gc_static(o42a_gc_block_t *const block) {
+int o42a_gc_static(
+		o42a_gc_block_t *const block,
+		void (*init)(const o42a_gc_block_t *)) {
 	O42A_ENTER(0);
 
 	if (block->list == O42A_GC_LIST_STATIC) {
@@ -789,6 +788,9 @@ int o42a_gc_static(o42a_gc_block_t *const block) {
 	assert(block->list == O42A_GC_LIST_NEW_STATIC && "Block is not static");
 
 	O42A(gc_static(block));
+	if (init) {
+		init(block);
+	}
 
 	O42A(o42a_gc_unlock_block(block));
 

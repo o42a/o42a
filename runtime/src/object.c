@@ -20,14 +20,9 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 11,
+	.field_num = 10,
 	.name = "o42a_obj_data_t",
 	.fields = {
-		{
-			.data_type = O42A_TYPE_INT8,
-			.offset = offsetof(o42a_obj_data_t, mutex_init),
-			.name = "mutex_init",
-		},
 		{
 			.data_type = O42A_TYPE_SYSTEM,
 			.offset = offsetof(o42a_obj_data_t, mutex),
@@ -678,6 +673,29 @@ const o42a_gc_desc_t o42a_obj_gc_desc = {
 	.sweep = &o42a_obj_gc_sweeper,
 };
 
+static pthread_mutexattr_t recursive_mutex_attr;
+
+void o42a_init() {
+	O42A_ENTER(return);
+	if (O42A(pthread_mutexattr_init(&recursive_mutex_attr))
+			|| O42A(pthread_mutexattr_settype(
+					&recursive_mutex_attr,
+					PTHREAD_MUTEX_RECURSIVE))) {
+		o42a_error_print("Can not initialize o42a runtime");
+		exit(EXIT_FAILURE);
+	}
+	O42A_RETURN;
+}
+
+static inline void obj_mutex_init(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	if (O42A(pthread_mutex_init(&data->mutex, &recursive_mutex_attr))
+			|| O42A(pthread_cond_init(&data->thread_cond, NULL))) {
+		o42a_error_print("Failed to initialize an object mutex");
+	}
+	O42A_RETURN;
+}
+
 static void derive_object_body(
 		o42a_obj_ctable_t *const ctable,
 		const o42a_bool_t main) {
@@ -788,12 +806,12 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	// Fill object data without value and VMT.
-	data->mutex_init = 0;
 	data->value_f = ctr->value_f;
 	data->cond_f = ctr->cond_f;
 	data->resume_from = NULL;
 	data->desc = sdesc;
 	data->fld_ctrs = NULL;
+	O42A(obj_mutex_init(data));
 
 	// propagate sample and inherit ancestor
 	o42a_obj_ctable_t ctable = {
@@ -971,63 +989,27 @@ o42a_bool_t o42a_obj_cond_stub(
 }
 
 
-static pthread_mutexattr_t recursive_mutex_attr;
-
-void o42a_init() {
+static void static_obj_init(const o42a_gc_block_t *block) {
 	O42A_ENTER(return);
-	if (O42A(pthread_mutexattr_init(&recursive_mutex_attr))
-			|| O42A(pthread_mutexattr_settype(
-					&recursive_mutex_attr,
-					PTHREAD_MUTEX_RECURSIVE))) {
-		o42a_error_print("Can not initialize o42a runtime");
-		exit(EXIT_FAILURE);
-	}
+
+	o42a_obj_t *const object = O42A(o42a_gc_dataof(block));
+
+	O42A(obj_mutex_init(&object->object_data));
+
 	O42A_RETURN;
 }
 
 void o42a_obj_lock(o42a_obj_t *const object) {
 	O42A_ENTER(return);
 
-	o42a_obj_data_t *const data = &object->object_data;
+	o42a_gc_block_t *const gc_block = O42A(o42a_gc_blockof(object));
 
-	// Ensure the mutex is initialized.
-	while (1) {
-
-		// Attempt to start the mutex initialization.
-		volatile int8_t *const init = &data->mutex_init;
-		int8_t old = __sync_val_compare_and_swap(init, 0, -1);
-
-		if (old) {
-			if (old > 0) {
-				__sync_synchronize();
-				// The mutex is initialized already.
-				break;
-			}
-			// The mutext is currently initializing by another thread.
-			O42A(sched_yield());
-			continue;
-		}
-
-		// Initialize the (recursive) mutex.
-		if (O42A(pthread_mutex_init(&data->mutex, &recursive_mutex_attr))
-				|| O42A(pthread_cond_init(&data->thread_cond, NULL))) {
-			o42a_error_print("Failed to initialize an object mutex");
-		}
-
-		o42a_gc_block_t *const gc_block = O42A(o42a_gc_blockof(object));
-
-		if (!gc_block->list) {
-			O42A(o42a_gc_static(gc_block));
-		}
-
-		__sync_synchronize();
-		*init = 1;
-
-		break;
+	if (!gc_block->list) {
+		O42A(o42a_gc_static(gc_block, &static_obj_init));
 	}
 
 	// Lock the mutex.
-	if (O42A(pthread_mutex_lock(&data->mutex))) {
+	if (O42A(pthread_mutex_lock(&object->object_data.mutex))) {
 		o42a_error_print("Failed to lock an object mutex");
 	}
 

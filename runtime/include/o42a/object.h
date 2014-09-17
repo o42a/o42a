@@ -61,13 +61,6 @@ struct o42a_obj_data {
 	O42A_HEADER
 
 	/**
-	 * Object mutex initialization flag.
-	 *
-	 * This is set to by atomic operations and should not be accessed directly.
-	 */
-	int8_t mutex_init;
-
-	/**
 	 * Object mutex.
 	 *
 	 * The mutex is valid only when mutex_init flags set. The o42a_obj_lock
@@ -432,7 +425,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[11];
+	o42a_dbg_field_info_t fields[10];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
