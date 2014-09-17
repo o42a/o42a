@@ -145,6 +145,12 @@ public abstract class Command implements ContainerInfo {
 		return new CommandTargets(this, PRECONDITION_MASK | NON_CONSTANT_MASK);
 	}
 
+	protected final CommandTargets yieldCommand() {
+		return new CommandTargets(
+				this,
+				YIELD_MASK | PRECONDITION_MASK | NON_CONSTANT_MASK);
+	}
+
 	protected final CommandTargets exitCommand() {
 		return new CommandTargets(this, EXIT_MASK);
 	}

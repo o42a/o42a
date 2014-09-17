@@ -92,6 +92,15 @@ public final class Defs {
 		return true;// Not explicitly defined. Can reuse the inherited value.
 	}
 
+	public final boolean areYielding() {
+		for (Def def : this.defs) {
+			if (def.isYielding()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public final int length() {
 		return this.defs.length;
 	}

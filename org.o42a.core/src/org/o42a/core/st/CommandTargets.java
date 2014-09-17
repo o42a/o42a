@@ -32,11 +32,12 @@ public final class CommandTargets implements LogInfo {
 	static final int PREREQUISITE_MASK = 0x02;
 	static final int PRECONDITION_MASK = 0x04;
 	static final int VALUE_MASK = 0x08;
-	static final int FIELD_MASK = 0x10;
-	static final int CLAUSE_MASK = 0x20;
-	static final int EXIT_MASK = 0x100;
-	static final int REPEAT_MASK = 0x200;
-	static final int ERROR_MASK = 0x1000;
+	static final int YIELD_MASK = 0x10;
+	static final int FIELD_MASK = 0x100;
+	static final int CLAUSE_MASK = 0x200;
+	static final int EXIT_MASK = 0x1000;
+	static final int REPEAT_MASK = 0x2000;
+	static final int ERROR_MASK = 0x10000;
 
 	static final int CONDITIONAL_MASK = PREREQUISITE_MASK | PRECONDITION_MASK;
 	static final int DECLARING_MASK = FIELD_MASK | CLAUSE_MASK;
@@ -69,39 +70,43 @@ public final class CommandTargets implements LogInfo {
 	}
 
 	public final boolean isEmpty() {
-		return (mask() & ~ERROR_MASK) == 0;
+		return noMask(~ERROR_MASK);
 	}
 
 	public final boolean isConstant() {
-		return (mask() & NON_CONSTANT_MASK) == 0;
+		return noMask(NON_CONSTANT_MASK);
 	}
 
 	public final boolean haveDefinition() {
-		return (mask() & DEFINITION_MASK) != 0;
+		return haveMask(DEFINITION_MASK);
 	}
 
 	public final boolean havePrerequisite() {
-		return (mask() & PREREQUISITE_MASK) != 0;
+		return haveMask(PREREQUISITE_MASK);
 	}
 
 	public final boolean havePrecondition() {
-		return (mask() & PRECONDITION_MASK) != 0;
+		return haveMask(PRECONDITION_MASK);
 	}
 
 	public final boolean haveValue() {
-		return (mask() & VALUE_MASK) != 0;
+		return haveMask(VALUE_MASK);
+	}
+
+	public final boolean yielding() {
+		return haveMask(YIELD_MASK);
 	}
 
 	public final boolean haveError() {
-		return (mask() & ERROR_MASK) != 0;
+		return haveMask(ERROR_MASK);
 	}
 
 	public final boolean conditional() {
-		return (mask() & CONDITIONAL_MASK) != 0;
+		return haveMask(CONDITIONAL_MASK);
 	}
 
 	public final boolean breaking() {
-		return (mask() & BREAKING_MASK) != 0;
+		return haveMask(BREAKING_MASK);
 	}
 
 	public final boolean unconditionallyBreaking() {
@@ -149,35 +154,43 @@ public final class CommandTargets implements LogInfo {
 	}
 
 	public final boolean haveField() {
-		return (mask() & FIELD_MASK) != 0;
+		return haveMask(FIELD_MASK);
 	}
 
 	public final boolean haveClause() {
-		return (mask() & CLAUSE_MASK) != 0;
+		return haveMask(CLAUSE_MASK);
 	}
 
 	public final boolean declaring() {
-		return (mask() & DECLARING_MASK) != 0;
+		return haveMask(DECLARING_MASK);
 	}
 
 	public final boolean defining() {
-		return (mask() & ~DECLARING_MASK) != 0;
+		return haveMask(~DECLARING_MASK);
 	}
 
 	public final boolean haveExit() {
-		return (mask() & EXIT_MASK) != 0;
+		return haveMask(EXIT_MASK);
 	}
 
 	public final boolean haveRepeat() {
-		return (mask() & REPEAT_MASK) != 0;
+		return haveMask(REPEAT_MASK);
 	}
 
 	public final boolean looping() {
-		return (mask() & LOOPING_MASK) != 0;
+		return haveMask(LOOPING_MASK);
 	}
 
 	public final CommandTargets removeLooping() {
 		return removeMask(LOOPING_MASK);
+	}
+
+	private final boolean haveMask(int mask) {
+		return (mask() & mask) != 0;
+	}
+
+	private final boolean noMask(int mask) {
+		return !haveMask(mask);
 	}
 
 	@Override
