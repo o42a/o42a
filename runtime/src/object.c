@@ -20,7 +20,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 8,
+	.field_num = 7,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -44,11 +44,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.data_type = O42A_TYPE_FUNC_PTR,
 			.offset = offsetof(o42a_obj_data_t, value_f),
 			.name = "value_f",
-		},
-		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_data_t, def_f),
-			.name = "def_f",
 		},
 		{
 			.data_type = O42A_TYPE_STRUCT,
@@ -168,7 +163,7 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
-	.field_num = 8,
+	.field_num = 7,
 	.name = "o42a_obj_ctr_t",
 	.fields = {
 		{
@@ -197,11 +192,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.data_type = O42A_TYPE_FUNC_PTR,
 			.offset = offsetof(o42a_obj_ctr_t, value_f),
 			.name = "value_f",
-		},
-		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, def_f),
-			.name = "def_f",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -791,7 +781,6 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	// Fill object data without value and VMT.
-	data->value_f = ctr->value_f;
 	data->desc = sdesc;
 	data->fld_ctrs = NULL;
 
@@ -855,7 +844,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	data->vmtc = vmtc;
 	data->value.flags = O42A_VAL_INDEFINITE;
-	data->def_f = ctr->def_f ? ctr->def_f : adata->def_f;
+	data->value_f = ctr->value_f ? ctr->value_f : adata->value_f;
 
 	o42a_debug_dump_mem("Object: ", object, 3);
 
@@ -909,7 +898,7 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	data->vmtc = vmtc;
-	data->def_f = sdesc && ctr->def_f ? ctr->def_f : adata->def_f;
+	data->value_f = sdesc && ctr->value_f ? ctr->value_f : adata->value_f;
 	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
 	data->value.flags |= O42A_VAL_EAGER;
 

@@ -19,28 +19,132 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.object.value.PredefObjValue.*;
+import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ValOp.VALUE_ID;
+import static org.o42a.core.object.value.ValuePartUsage.ALL_VALUE_PART_USAGES;
+import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
+import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
+import static org.o42a.util.fn.Init.init;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.FunctionBuilder;
+import org.o42a.codegen.code.Function;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.object.ObjectValueIR;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.Def;
+import org.o42a.core.object.def.Defs;
+import org.o42a.core.object.value.ObjectValueDefs;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectValueFnIR
-		extends AbstractObjectValueFnIR<ObjectValueFn> {
+public final class ObjectValueFnIR {
+
+	private final ObjectValueIR valueIR;
+	private final ID id;
+	private FuncPtr<ObjectValueFn> funcPtr;
+	private FuncRec<ObjectValueFn> func;
+	private byte reused;
+	private final Init<DefValue> constant = init(this::determineConstant);
+	private final Init<DefValue> finalValue = init(this::determineFinal);
 
 	public ObjectValueFnIR(ObjectValueIR valueIR) {
-		super(valueIR);
+		this.valueIR = valueIR;
+		this.id = getObjectIR().getId().setLocal(
+				ID.id().detail(VALUE_ID));
+	}
+
+	public final Generator getGenerator() {
+		return getObjectIR().getGenerator();
+	}
+
+	public final ObjectIR getObjectIR() {
+		return getValueIR().getObjectIR();
+	}
+
+	public final Obj getObject() {
+		return getObjectIR().getObject();
+	}
+
+	public final ObjectValueIR getValueIR() {
+		return this.valueIR;
+	}
+
+	public final ID getId() {
+		return this.id;
+	}
+
+	public final ValueType<?> getValueType() {
+		return getObject().type().getValueType();
+	}
+
+	public final ObjectValueDefs valueDefs() {
+		return getObject().value().valueDefs();
+	}
+
+	public final Defs defs() {
+		return valueDefs().getDefs();
+	}
+
+	public final boolean isReused() {
+		return this.reused > 0;
+	}
+
+	public final boolean isStub() {
+		return this.reused == 2;
+	}
+
+	public final FuncPtr<ObjectValueFn> get() {
+
+		final FuncPtr<ObjectValueFn> ptr = getNotStub();
+
+		assert ptr != null :
+			"Attempt to call a stub function: " + this;
+
+		return this.funcPtr;
+	}
+
+	public final FuncPtr<ObjectValueFn> getNotStub() {
+		if (this.funcPtr == null) {
+			create();
+		}
+
+		assert this.funcPtr != null :
+			"Can't call " + this;
+
+		return isStub() ? null : this.funcPtr;
+	}
+
+	public final DefValue getConstant() {
+		return this.constant.get();
+	}
+
+	public final DefValue getFinal() {
+		return this.finalValue.get();
+	}
+
+	public void allocate(ObjectDataIR dataIR) {
+		this.func = func(dataIR.getInstance());
+		if (this.funcPtr == null) {
+			create();
+		}
+		this.func.setConstant(true).setValue(this.funcPtr);
+	}
+
+	public final FuncPtr<ObjectValueFn> get(ObjOp host) {
+
+		final ObjectIR objectIR = host.getAscendant().ir(getGenerator());
+		final ObjectIRData data = objectIR.getDataIR().getInstance();
+
+		return func(data).getValue().get();
 	}
 
 	public final void call(DefDirs dirs, ObjOp host) {
@@ -52,7 +156,7 @@ public final class ObjectValueFnIR
 
 		if (!writeIfConstant(subDirs, getFinal())) {
 
-			final ObjectValueFn func = get(host).op(suffix(), code);
+			final ObjectValueFn func = get(host).op(VALUE_ID, code);
 
 			func.call(subDirs, getObjectIR().isExact() ? null : host);
 		}
@@ -61,73 +165,212 @@ public final class ObjectValueFnIR
 	}
 
 	@Override
-	protected ID suffix() {
-		return ValOp.VALUE_ID;
+	public String toString() {
+		return getId().toString();
 	}
 
-	@Override
 	protected FuncRec<ObjectValueFn> func(ObjectIRData data) {
 		return data.valueFunc();
 	}
 
-	@Override
+	protected final void set(Function<ObjectValueFn> function) {
+		this.funcPtr = function.getPointer();
+		this.reused = -1;
+	}
+
+	protected final void reuse(FuncPtr<ObjectValueFn> ptr) {
+		this.funcPtr = ptr;
+		this.reused = 1;
+	}
+
+	protected final void stub(FuncPtr<ObjectValueFn> ptr) {
+		this.funcPtr = ptr;
+		this.reused = 2;
+	}
+
+	protected final void create() {
+		if (canStub() && !getObject().value().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_VALUE_USAGES)) {
+			stub(stubFunc());
+			return;
+		}
+
+		final DefValue finalValue = getFinal();
+
+		if (isConstantValue(finalValue)) {
+			if (finalValue.getCondition().isFalse()) {
+				// Final value is false.
+				reuse(falseValFunc());
+				return;
+			}
+			// Condition is true.
+			if (!finalValue.hasValue()) {
+				// Only condition present in value.
+				if (finalValue.getCondition().isTrue()) {
+					// Condition is unknown.
+					// Do not update the value during calculation.
+					reuse(unknownValFunc());
+				}
+				return;
+			}
+			// Final value is known.
+			if (getValueType().isVoid()) {
+				// Value is void.
+				reuse(voidValFunc());
+				return;
+			}
+		}
+
+		reuse();
+		if (isReused()) {
+			return;
+		}
+
+		set(getGenerator().newFunction().create(
+				getId(),
+				OBJECT_VALUE,
+				new ObjectValueBuilder(this)));
+	}
+
 	protected DefValue determineConstant() {
-		return getValueIR().def().getConstant();
+
+		final DefValue constant = defs().getConstant();
+
+		if (!isConstantValue(constant)) {
+			return constant;
+		}
+		if (!ancestorDefsUpdated()) {
+			return constant;
+		}
+
+		return RUNTIME_DEF_VALUE;
 	}
 
-	@Override
 	protected DefValue determineFinal() {
-		return getValueIR().def().getFinal();
+
+		final DefValue constant = getConstant();
+
+		if (isConstantValue(constant)) {
+			return constant;
+		}
+		if (isUsed() && !getObject().getConstructionMode().isPredefined()) {
+			return RUNTIME_DEF_VALUE;
+		}
+
+		return defs().value(getObject().getScope().resolver());
 	}
 
-	@Override
-	protected ObjectValueFn.Signature signature() {
-		return OBJECT_VALUE;
-	}
-
-	@Override
-	protected FunctionBuilder<ObjectValueFn> builder() {
-		return new ObjectValueBuilder(this);
-	}
-
-	@Override
 	protected boolean canStub() {
-		return getValueIR().def().canStub();
+		if (isUsed()) {
+			return false;
+		}
+		return !getObject().getConstructionMode().isPredefined();
 	}
 
-	@Override
+	protected boolean writeIfConstant(DefDirs dirs, DefValue value) {
+		if (!isConstantValue(value)) {
+			return false;
+		}
+
+		final Block code = dirs.code();
+
+		code.debug("Value = " + value.valueString());
+
+		if (value.getCondition().isFalse()) {
+			code.go(dirs.falseDir());
+			return true;
+		}
+		if (!value.hasValue()) {
+			return true;
+		}
+
+		final ValOp result =
+				value.getValue().op(dirs.getBuilder(), code);
+
+		result.go(code, dirs);
+		dirs.returnValue(result);
+
+		return true;
+	}
+
+	static boolean isConstantValue(DefValue value) {
+		if (!value.getCondition().isConstant()) {
+			return false;
+		}
+		if (!value.hasValue()) {
+			return true;
+		}
+		return value.getValue().getKnowledge().isKnown();
+	}
+
 	protected FuncPtr<ObjectValueFn> stubFunc() {
-		return predefined(STUB_OBJ_VALUE);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_value_stub", OBJECT_VALUE);
 	}
 
-	@Override
 	protected FuncPtr<ObjectValueFn> unknownValFunc() {
-		return falseValFunc();
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_value_unknown", OBJECT_VALUE);
 	}
 
-	@Override
 	protected FuncPtr<ObjectValueFn> falseValFunc() {
-		return predefined(FALSE_OBJ_VALUE);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_value_false", OBJECT_VALUE);
 	}
 
-	@Override
 	protected FuncPtr<ObjectValueFn> voidValFunc() {
-		return predefined(VOID_OBJ_VALUE);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_value_void", OBJECT_VALUE);
 	}
 
-	@Override
 	protected void reuse() {
 		if (getObjectIR().isExact()) {
 			return;
 		}
-		reuse(predefined(DEFAULT_OBJ_VALUE));
+		if (defs().areEmpty()) {
+			return;
+		}
+
+		final Def def = defs().get()[0];
+
+		if (def.isExplicit()) {
+			return;
+		}
+
+		final Obj reuseFrom = def.getSource();
+		final ObjectValueIR reuseFromIR =
+				reuseFrom.ir(getGenerator()).getObjectValueIR();
+		final FuncPtr<ObjectValueFn> reused = reuseFromIR.value().getNotStub();
+
+		if (reused != null) {
+			reuse(reused);
+		}
 	}
 
-	private FuncPtr<ObjectValueFn> predefined(PredefObjValue value) {
-		return value.valueFunction(
-				getObject().getContext(),
-				getGenerator(),
-				getValueType());
+	private boolean isUsed() {
+		return valueDefs().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_VALUE_PART_USAGES);
+	}
+
+	private boolean rtUsed() {
+		return getObject().value().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_VALUE_USAGES);
+	}
+
+	private boolean ancestorDefsUpdated() {
+		if (rtUsed()) {
+			return true;
+		}
+		return valueDefs().ancestorDefsUpdates().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_SIMPLE_USAGES);
 	}
 
 }

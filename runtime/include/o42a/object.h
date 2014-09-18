@@ -90,13 +90,6 @@ struct o42a_obj_data {
 	o42a_obj_value_ft *value_f;
 
 	/**
-	 * Object value definition function.
-	 *
-	 * Accepts main object body as a second argument.
-	 */
-	o42a_obj_value_ft *def_f;
-
-	/**
 	 * Object value.
 	 *
 	 * This is only used by stateful objects. Stateless ones have a
@@ -320,15 +313,6 @@ typedef struct o42a_obj_ctr {
 	o42a_obj_value_ft *value_f;
 
 	/**
-	 * Object value definition function.
-	 *
-	 * When NULL, the one from ancestor will be used.
-	 *
-	 * Ignored when sample not specified.
-	 */
-	o42a_obj_value_ft *def_f;
-
-	/**
 	 * VMT chain to use.
 	 *
 	 * If points to VMT chain terminator, then VMT chain will be constructed
@@ -393,7 +377,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[8];
+	o42a_dbg_field_info_t fields[7];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
@@ -404,7 +388,7 @@ extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctr {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[8];
+	o42a_dbg_field_info_t fields[7];
 } _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {

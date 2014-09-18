@@ -160,7 +160,6 @@ public class CtrOp extends IROp {
 				// NULLs required here only for making memory dumps.
 				ptr.sampleTypeInfo(code).store(code, code.nullPtr());
 				ptr.valueFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
-				ptr.defFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			}
 		} else {
 
@@ -179,15 +178,12 @@ public class CtrOp extends IROp {
 						.getPointer()
 						.op(null, code));
 			}
-			ptr.valueFunc(code).store(
-					code,
-					valueIR.value().get().op(null, code));
 			if (sample.value().getDefinitions().areInherited()) {
-				ptr.defFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
+				ptr.valueFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			} else {
-				ptr.defFunc(code).store(
+				ptr.valueFunc(code).store(
 						code,
-						valueIR.def().get().op(null, code));
+						valueIR.value().get().op(null, code));
 			}
 		}
 
@@ -297,10 +293,6 @@ public class CtrOp extends IROp {
 			return func(null, code, getType().valueFunc());
 		}
 
-		public final FuncOp<ObjectValueFn> defFunc(Code code) {
-			return func(null, code, getType().defFunc());
-		}
-
 		public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
 			return ptr(null, code, getType().vmtc());
 		}
@@ -322,7 +314,6 @@ public class CtrOp extends IROp {
 		private StructRec<ObjectIRDescOp> sampleDesc;
 		private AnyRec sampleTypeInfo;
 		private FuncRec<ObjectValueFn> valueFunc;
-		private FuncRec<ObjectValueFn> defFunc;
 		private StructRec<VmtIRChain.Op> vmtc;
 		private ValType value;
 
@@ -359,10 +350,6 @@ public class CtrOp extends IROp {
 			return this.valueFunc;
 		}
 
-		public final FuncRec<ObjectValueFn> defFunc() {
-			return this.defFunc;
-		}
-
 		public final StructRec<VmtIRChain.Op> vmtc() {
 			return this.vmtc;
 		}
@@ -380,7 +367,6 @@ public class CtrOp extends IROp {
 				this.sampleTypeInfo = data.addPtr("sample_type_info");
 			}
 			this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
-			this.defFunc = data.addFuncPtr("def_f", OBJECT_VALUE);
 			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 			this.value = data.addNewInstance(ID.rawId("value"), VAL_TYPE);
 		}
