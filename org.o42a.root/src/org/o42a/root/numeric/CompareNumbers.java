@@ -55,8 +55,7 @@ abstract class CompareNumbers<P extends Number>
 	protected ValType.Op intVal(CodeBuilder builder, Code code, long value) {
 
 		final StaticsIR<Long> staticsIR =
-				ValueType.INTEGER.ir(builder.getGenerator())
-				.staticsIR();
+				ValueType.INTEGER.ir(builder.getGenerator()).staticsIR();
 
 		return staticsIR.valPtr(value).op(null, code);
 	}
