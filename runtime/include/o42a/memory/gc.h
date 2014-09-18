@@ -119,8 +119,11 @@ struct _o42a_gc_block {
  * Obtains the garbage-allocated data pointer from GC data block.
  */
 inline void* o42a_gc_dataof(const o42a_gc_block_t *const block) {
-	struct _o42a_gc_block *const blk = (struct _o42a_gc_block *) block;
-	return (void*) &blk->data;
+	union {
+		const o42a_gc_block_t *const block;
+		struct _o42a_gc_block *const blk;
+	} blk = {.block = block};
+	return &blk.blk->data;
 }
 
 /**
