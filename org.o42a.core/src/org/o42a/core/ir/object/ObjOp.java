@@ -137,8 +137,7 @@ public final class ObjOp extends ObjectOp {
 				dirs.begin(FIELD_ID, "Field " + kind + " of " + this);
 		final Code code = subDirs.code();
 		final InstFld<?, ?> fld = getObjectIR().bodies().instFld(kind);
-		final ObjOp host = cast(null, subDirs, getAscendant());
-		final InstFldOp<?, ?> op = fld.op(code, host);
+		final InstFldOp<?, ?> op = fld.op(code, this);
 
 		code.dumpName("Field: ", op);
 
