@@ -24,23 +24,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
-			.data_type = O42A_TYPE_SYSTEM,
-			.offset = offsetof(o42a_obj_data_t, mutex),
-			.name = "mutex",
-		},
-		{
-			.data_type = O42A_TYPE_SYSTEM,
-			.offset = offsetof(o42a_obj_data_t, thread_cond),
-			.name = "thread_cond",
-		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_data_t, vmtc),
-			.name = "vmtc",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
-		},
-		{
 			.data_type = O42A_TYPE_FUNC_PTR,
 			.offset = offsetof(o42a_obj_data_t, value_f),
 			.name = "value_f",
@@ -53,10 +36,27 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_data_t, vmtc),
+			.name = "vmtc",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_data_t, desc),
 			.name = "desc",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
+		},
+		{
+			.data_type = O42A_TYPE_SYSTEM,
+			.offset = offsetof(o42a_obj_data_t, mutex),
+			.name = "mutex",
+		},
+		{
+			.data_type = O42A_TYPE_SYSTEM,
+			.offset = offsetof(o42a_obj_data_t, thread_cond),
+			.name = "thread_cond",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,

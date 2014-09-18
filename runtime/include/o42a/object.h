@@ -54,6 +54,29 @@ struct o42a_obj_data {
 	O42A_HEADER
 
 	/**
+	 * Object value calculator function.
+	 */
+	o42a_obj_value_ft *value_f;
+
+	/**
+	 * Object value.
+	 *
+	 * This is only used by stateful objects. Stateless ones have a
+	 * O42A_VAL_STATELESS flag set.
+	 */
+	o42a_val_t value;
+
+	/**
+	 * Pointer to virtual method tables chain.
+	 */
+	const o42a_obj_vmtc_t *vmtc;
+
+	/**
+	 * Pointer to object type descriptor.
+	 */
+	const o42a_obj_desc_t *desc;
+
+	/**
 	 * Object mutex.
 	 *
 	 * The mutex is valid only when mutex_init flags set. The o42a_obj_lock
@@ -78,29 +101,6 @@ struct o42a_obj_data {
 	 * all waiting thread.
 	 */
 	pthread_cond_t thread_cond;
-
-	/**
-	 * Pointer to virtual method tables chain.
-	 */
-	const o42a_obj_vmtc_t *vmtc;
-
-	/**
-	 * Object value calculator function.
-	 */
-	o42a_obj_value_ft *value_f;
-
-	/**
-	 * Object value.
-	 *
-	 * This is only used by stateful objects. Stateless ones have a
-	 * O42A_VAL_STATELESS flag set.
-	 */
-	o42a_val_t value;
-
-	/**
-	 * Pointer to object type descriptor.
-	 */
-	const o42a_obj_desc_t *desc;
 
 	/**
 	 * Pointer to the head of the constructing fields list.

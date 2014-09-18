@@ -44,9 +44,9 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private static final Type<?>[] TYPE_DEPENDENCIES =
 			new Type<?>[] {OBJECT_DESC_TYPE};
 
-	private StructRec<VmtIRChain.Op> vmtc;
 	private FuncRec<ObjectValueFn> valueFunc;
 	private ValType value;
+	private StructRec<VmtIRChain.Op> vmtc;
 	private StructRec<ObjectIRDescOp> desc;
 
 	private ObjectIRData() {
@@ -81,12 +81,12 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	@Override
 	protected void allocate(SubData<ObjectIRDataOp> data) {
-		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
-		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
-		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.value = data.addNewInstance(VALUE_ID, VAL_TYPE);
+		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
+		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
+		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
 	}
 
