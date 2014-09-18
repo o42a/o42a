@@ -20,7 +20,9 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
+import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.VALUE_ID;
 import static org.o42a.core.object.value.ValuePartUsage.ALL_VALUE_PART_USAGES;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
@@ -196,32 +198,6 @@ public final class ObjectValueFnIR {
 			return;
 		}
 
-		final DefValue finalValue = getFinal();
-
-		if (isConstantValue(finalValue)) {
-			if (finalValue.getCondition().isFalse()) {
-				// Final value is false.
-				reuse(falseValFunc());
-				return;
-			}
-			// Condition is true.
-			if (!finalValue.hasValue()) {
-				// Only condition present in value.
-				if (finalValue.getCondition().isTrue()) {
-					// Condition is unknown.
-					// Do not update the value during calculation.
-					reuse(unknownValFunc());
-				}
-				return;
-			}
-			// Final value is known.
-			if (getValueType().isVoid()) {
-				// Value is void.
-				reuse(voidValFunc());
-				return;
-			}
-		}
-
 		reuse();
 		if (isReused()) {
 			return;
@@ -329,6 +305,32 @@ public final class ObjectValueFnIR {
 	}
 
 	protected void reuse() {
+
+		final DefValue finalValue = getFinal();
+
+		if (isConstantValue(finalValue)) {
+			if (finalValue.getCondition().isFalse()) {
+				// Final value is false.
+				reuse(falseValFunc());
+				return;
+			}
+			// Condition is true.
+			if (!finalValue.hasValue()) {
+				// Only condition present in value.
+				if (finalValue.getCondition().isTrue()) {
+					// Condition is unknown.
+					// Do not update the value during calculation.
+					reuse(unknownValFunc());
+				}
+				return;
+			}
+			// Final value is known.
+			if (getValueType().isVoid()) {
+				// Value is void.
+				reuse(voidValFunc());
+				return;
+			}
+		}
 		if (getObjectIR().isExact()) {
 			return;
 		}
@@ -350,6 +352,31 @@ public final class ObjectValueFnIR {
 		if (reused != null) {
 			reuse(reused);
 		}
+	}
+
+	ObjBuilder createBuilder(Function<ObjectValueFn> function) {
+
+		final Block failure = function.addBlock("failure");
+		final ObjBuilder builder =
+				new ObjBuilder(
+				function,
+				failure.head(),
+				getObjectIR(),
+				DERIVED);
+
+		if (failure.exists()) {
+			failure.debug("Failure");
+
+			// No need to hold a false value.
+			final ValOp result =
+					function.arg(failure, OBJECT_VALUE.value())
+					.op(function, builder, getValueType(), NO_VAL_HOLDER);
+
+			result.storeFalse(failure);
+			failure.returnVoid();
+		}
+
+		return builder;
 	}
 
 	private boolean isUsed() {
