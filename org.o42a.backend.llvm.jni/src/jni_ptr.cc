@@ -29,6 +29,7 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Value.h"
+#include "llvm/Support/FileSystem.h"
 
 using namespace llvm;
 
@@ -217,6 +218,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 				pointer,
 				expected,
 				value,
+				Monotonic,
 				Monotonic);
 
 		result->setName(StringRef(from_ptr<char>(id), idLen));
@@ -231,6 +233,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 			builder.CreatePointerCast(pointer, intType->getPointerTo()),
 			builder.CreatePtrToInt(expected, intType),
 			builder.CreatePtrToInt(value, intType),
+			Monotonic,
 			Monotonic);
 
 	return to_instr_ptr(
