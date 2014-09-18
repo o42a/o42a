@@ -653,30 +653,30 @@ public abstract class Obj
 	}
 
 	protected Statefulness determineStatefulness() {
-		if (value().getDefinitions().areDerived()) {
 
-			final Sample sample = type().getSample();
+		final Sample sample = type().getSample();
 
-			if (sample != null) {
+		if (sample != null) {
 
-				final Statefulness sampleStatefulness =
-						sample.getObject().value().getStatefulness();
+			final Statefulness sampleStatefulness =
+					sample.getObject().value().getStatefulness();
 
-				if (sampleStatefulness.isEager()) {
-					return isPropagated() ? sampleStatefulness : DERIVED_EAGER;
-				}
-			} else {
+			if (sampleStatefulness.isEager()) {
+				checkEagerOverride();
+				return isPropagated() ? sampleStatefulness : DERIVED_EAGER;
+			}
+		} else {
 
-				final TypeRef ancestor = type().getAncestor();
+			final TypeRef ancestor = type().getAncestor();
 
-				if (ancestor != null) {
+			if (ancestor != null) {
 
-					final Statefulness ancestorStatefulness =
-							ancestor.getType().value().getStatefulness();
+				final Statefulness ancestorStatefulness =
+						ancestor.getType().value().getStatefulness();
 
-					if (ancestorStatefulness.isEager()) {
-						return DERIVED_EAGER;
-					}
+				if (ancestorStatefulness.isEager()) {
+					checkEagerOverride();
+					return DERIVED_EAGER;
 				}
 			}
 		}
@@ -775,6 +775,16 @@ public abstract class Obj
 
 	final Map<MemberId, Symbol> symbols() {
 		return Obj.this.symbols;
+	}
+
+	private void checkEagerOverride() {
+		if (value().getDefinitions().areDerived()) {
+			return;
+		}
+		getLogger().error(
+				"prohibited_eager_override",
+				value().getDefinitions(),
+				"Eagerly evaluated value can not be overridden");
 	}
 
 	private void declareMembers() {
