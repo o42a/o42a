@@ -101,7 +101,7 @@ public abstract class StateOp {
 		code.dump(this + " value calculated: ", value);
 
 		loadCondition(definite).goUnless(definite, dirs.falseDir());
-		value.store(definite, loadValue(dirs, definite));
+		value.store(definite, loadValue(definite, dirs.value()));
 		definite.dump(this + " value is definite: ", value);
 		definite.go(code.tail());
 
@@ -112,12 +112,12 @@ public abstract class StateOp {
 		return this.flags.condition(null, code);
 	}
 
-	public ValOp loadValue(ValDirs dirs, Code code) {
-		return dirs.value().store(
+	public ValOp loadValue(Code code, ValOp result) {
+		return result.store(
 				code,
 				this.value.op(
 						code.getAllocator(),
-						dirs.getBuilder(),
+						getBuilder(),
 						getValueType(),
 						TEMP_VAL_HOLDER));
 	}

@@ -20,9 +20,7 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
-import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.Block;
@@ -32,7 +30,6 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
@@ -67,7 +64,7 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 	@Override
 	public void build(Function<ObjectValueFn> function) {
 
-		final ObjBuilder builder = builder(function);
+		final ObjBuilder builder = fnIR().createBuilder(function);
 		final ValOp result =
 				function.arg(function, OBJECT_VALUE.value())
 				.op(function, builder, getValueType(), VAL_TRAP);
@@ -123,31 +120,6 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 		}
 	}
 
-	private ObjBuilder builder(Function<ObjectValueFn> function) {
-
-		final Block failure = function.addBlock("failure");
-		final ObjBuilder builder =
-				new ObjBuilder(
-				function,
-				failure.head(),
-				fnIR().getObjectIR(),
-				DERIVED);
-
-		if (failure.exists()) {
-			failure.debug("Failure");
-
-			// No need to hold a false value.
-			final ValOp result =
-					function.arg(failure, OBJECT_VALUE.value())
-					.op(function, builder, getValueType(), NO_VAL_HOLDER);
-
-			result.storeFalse(failure);
-			failure.returnVoid();
-		}
-
-		return builder;
-	}
-
 	private static FldCtrOp writeKeptOrContinue(
 			Block code,
 			StateOp state,
@@ -172,13 +144,9 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 		state.loadCondition(code).goUnless(code, falseKept.head());
 
 		// Return the value if condition is not false.
-		final ValDirs dirs =
-				state.getBuilder().dirs(code, falseKept.head())
-				.value(result);
-
-		state.loadValue(dirs, code);
+		state.loadValue(code, result);
 		code.dump("Kept: ", state.value());
-		dirs.done().code().returnVoid();
+		code.returnVoid();
 
 		if (falseKept.exists()) {
 			falseKept.debug("False kept");
