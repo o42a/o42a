@@ -20,13 +20,15 @@
 package org.o42a.core.ir.value.type;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.object.value.ObjectCondFn.OBJECT_COND;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.ObjectValueIR;
+import org.o42a.core.ir.object.value.ObjectCondFn;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
@@ -103,7 +105,7 @@ public abstract class ValueOp implements HostValueOp {
 	 *
 	 * <p>The object's value can be of any type. In this case the memory
 	 * occupied by calculated value should be freed in this method. The object's
-	 * {@link ObjectValueIR#condition() condition function} takes care of it.
+	 * condition evaluation function ({@code o42a_obj_cond}) takes care of it.
 	 * </p>
 	 *
 	 * @param dirs code directions.
@@ -120,7 +122,15 @@ public abstract class ValueOp implements HostValueOp {
 	}
 
 	protected final void defaultCond(CodeDirs dirs) {
-		object().objectData(dirs.code()).writeCond(dirs);
+
+		final Block code = dirs.code();
+		final ObjectCondFn condFn =
+				getGenerator()
+				.externalFunction()
+				.link("o42a_obj_cond", OBJECT_COND)
+				.op(null, code);
+
+		condFn.call(dirs, object());
 	}
 
 	protected final ValOp defaultValue(ValDirs dirs) {

@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
-import static org.o42a.core.ir.object.value.ObjectCondFn.OBJECT_COND;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
@@ -32,7 +31,6 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.VmtIRChain.Op;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
-import org.o42a.core.ir.object.value.ObjectCondFn;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
@@ -48,7 +46,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	private StructRec<VmtIRChain.Op> vmtc;
 	private FuncRec<ObjectValueFn> valueFunc;
-	private FuncRec<ObjectCondFn> condFunc;
 	private FuncRec<ObjectValueFn> defFunc;
 	private ValType value;
 	private StructRec<ObjectIRDescOp> desc;
@@ -68,10 +65,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	public final FuncRec<ObjectValueFn> valueFunc() {
 		return this.valueFunc;
-	}
-
-	public final FuncRec<ObjectCondFn> condFunc() {
-		return this.condFunc;
 	}
 
 	public final FuncRec<ObjectValueFn> defFunc() {
@@ -97,7 +90,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
-		this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
 		this.defFunc = data.addFuncPtr("def_f", OBJECT_VALUE);
 		this.value = data.addNewInstance(VALUE_ID, VAL_TYPE);
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);

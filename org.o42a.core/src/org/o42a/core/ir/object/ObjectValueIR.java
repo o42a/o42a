@@ -23,10 +23,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.value.ObjectCondFnIR;
 import org.o42a.core.ir.object.value.ObjectDefFnIR;
 import org.o42a.core.ir.object.value.ObjectValueFnIR;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.object.Obj;
 
@@ -35,13 +33,11 @@ public class ObjectValueIR {
 
 	private final ObjectIR objectIR;
 	private final ObjectValueFnIR value;
-	private final ObjectCondFnIR condition;
 	private final ObjectDefFnIR def;
 
 	protected ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
 		this.value = new ObjectValueFnIR(this);
-		this.condition = new ObjectCondFnIR(this);
 		this.def = new ObjectDefFnIR(this);
 	}
 
@@ -61,10 +57,6 @@ public class ObjectValueIR {
 		return this.value;
 	}
 
-	public final ObjectCondFnIR condition() {
-		return this.condition;
-	}
-
 	public final ObjectDefFnIR def() {
 		return this.def;
 	}
@@ -75,10 +67,6 @@ public class ObjectValueIR {
 
 	public final void writeValue(DefDirs dirs, ObjOp host) {
 		value().call(dirs, host);
-	}
-
-	public final void writeCondition(CodeDirs dirs, ObjOp host) {
-		condition().call(dirs, host);
 	}
 
 	public final void writeDef(DefDirs dirs, ObjOp host) {
@@ -92,7 +80,6 @@ public class ObjectValueIR {
 
 	protected void allocate(ObjectDataIR dataIR) {
 		value().allocate(dataIR);
-		condition().allocate(dataIR);
 		def().allocate(dataIR);
 	}
 

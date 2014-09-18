@@ -31,8 +31,6 @@ import org.o42a.codegen.data.RelPtr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
-import org.o42a.core.ir.object.value.ObjectCondFn;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.DefiniteIROp;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.object.Obj;
@@ -86,15 +84,6 @@ public final class ObjectDataOp extends DefiniteIROp {
 		final Code code = dirs.code();
 		final ObjectValueFn function =
 				ptr().valueFunc(code).load(null, code);
-
-		function.call(dirs, objectPtr(code, null));
-	}
-
-	public final void writeCond(CodeDirs dirs) {
-
-		final Code code = dirs.code();
-		final ObjectCondFn function =
-				ptr().condFunc(code).load(null, code);
 
 		function.call(dirs, objectPtr(code, null));
 	}

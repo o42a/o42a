@@ -40,13 +40,6 @@ typedef struct o42a_obj_vmtc o42a_obj_vmtc_t;
  */
 typedef void o42a_obj_value_ft(o42a_val_t *, o42a_obj_t *);
 
-/**
- * Object condition evaluation function.
- *
- * \param object[in] object pointer.
- */
-typedef o42a_bool_t o42a_obj_cond_ft(o42a_obj_t *);
-
 
 /**
  * Object data.
@@ -95,11 +88,6 @@ struct o42a_obj_data {
 	 * Object value calculator function.
 	 */
 	o42a_obj_value_ft *value_f;
-
-	/**
-	 * Object condition calculator function.
-	 */
-	o42a_obj_cond_ft *cond_f;
 
 	/**
 	 * Object value definition function.
@@ -332,13 +320,6 @@ typedef struct o42a_obj_ctr {
 	o42a_obj_value_ft *value_f;
 
 	/**
-	 * Object condition calculator function.
-	 *
-	 * Ignored when sample not specified.
-	 */
-	o42a_obj_cond_ft *cond_f;
-
-	/**
 	 * Object value definition function.
 	 *
 	 * When NULL, the one from ancestor will be used.
@@ -412,7 +393,7 @@ typedef struct o42a_obj_ctable {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[9];
+	o42a_dbg_field_info_t fields[8];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
@@ -423,7 +404,7 @@ extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctr {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[9];
+	o42a_dbg_field_info_t fields[8];
 } _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
@@ -539,11 +520,16 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
  */
 o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *);
 
-
 /**
- * False value definition.
+ * Object condition evaluation function.
+ *
+ * \param object target object.
+ *
+ * \return O42A_TRUE if object value is successfully evaluated,
+ * or O42A_FALSE otherwise.
  */
-void o42a_obj_def_false(o42a_val_t *, o42a_obj_t *);
+o42a_bool_t o42a_obj_cond(o42a_obj_t *);
+
 
 /**
  * False object value.
@@ -551,21 +537,9 @@ void o42a_obj_def_false(o42a_val_t *, o42a_obj_t *);
 void o42a_obj_value_false(o42a_val_t *, o42a_obj_t *);
 
 /**
- * False object condition.
- */
-o42a_bool_t o42a_obj_cond_false(o42a_obj_t *);
-
-
-/**
  * Void object value.
  */
 void o42a_obj_value_void(o42a_val_t *, o42a_obj_t *);
-
-/**
- * True object condition.
- */
-o42a_bool_t o42a_obj_cond_true(o42a_obj_t *);
-
 
 /**
  * Unknown object value.
@@ -579,11 +553,6 @@ void o42a_obj_value_unknown(o42a_val_t *, o42a_obj_t *);
  * Object value evaluation stub.
  */
 void o42a_obj_value_stub(o42a_val_t *, o42a_obj_t *);
-
-/**
- * Object condition evaluation stub.
- */
-o42a_bool_t o42a_obj_cond_stub(o42a_obj_t *);
 
 
 /**
@@ -689,7 +658,7 @@ void o42a_obj_end_use(o42a_obj_use_t *);
  * This function calls o42a_gc_use if the value condition is true and it
  * contains a non-NULL object pointer.
  */
-void o42a_obj_start_val_use(o42a_val_t *);
+void o42a_obj_start_val_use(const o42a_val_t *);
 
 /**
  * Releases the object previously used by o42a_obj_start_val_use.
@@ -697,7 +666,7 @@ void o42a_obj_start_val_use(o42a_val_t *);
  * This function calls o42a_gc_unuse if the value condition is true and it
  * contains a non-NULL object pointer.
  */
-void o42a_obj_end_val_use(o42a_val_t *);
+void o42a_obj_end_val_use(const o42a_val_t *);
 
 
 #ifdef __cplusplus

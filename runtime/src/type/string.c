@@ -71,6 +71,7 @@ static void sweep_str_val(o42a_obj_t *const object) {
 const o42a_val_type_t o42a_val_type_string = O42A_VAL_TYPE(
 		"string",
 		copy_str_val,
+		o42a_val_unuse,
 		o42a_val_gc_none,
 		sweep_str_val);
 

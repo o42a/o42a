@@ -137,12 +137,22 @@ typedef struct o42a_val_type {
 	const char *name;
 
 	/**
-	 * Value copy function.
+	 * Value copy function pointer.
 	 *
-	 * \param from[in] value to copy contents from.
+	 * \param from[in] value to copy contents from. Never false.
 	 * \param to value to copy contents to.
 	 */
 	void (* copy) (const o42a_val_t *, o42a_val_t *);
+
+	/**
+	 * Value discard function pointer.
+	 *
+	 * This is used e.g. when evaluating an object condition to discard
+	 * the value returned from object value evaluation function.
+	 *
+	 * \param value the value to discard. Never false.
+	 */
+	void (* discard) (const o42a_val_t *);
 
 	/**
 	 * GC marker function pointer.
@@ -173,27 +183,30 @@ typedef struct o42a_val_type {
  *
  * \param _name string containing the type name.
  * \param _copy value copy function pointer.
+ * \param _discard value discard function pointer.
  * \param _mark mark function pointer.
  * \param _sweep sweep function pointer.
  */
-#define O42A_VAL_TYPE(_type_name, _copy, _mark, _sweep) { \
-	.name = _type_name, \
+#define O42A_VAL_TYPE(_name, _copy, _discard, _mark, _sweep) { \
+	.name = _name, \
 	.copy = _copy, \
+	.discard = _discard, \
 	.mark = _mark, \
 	.sweep = _sweep, \
 }
 
 #else /* NDEBUG */
 
-#define O42A_VAL_TYPE(_type_name, _copy, _mark, _sweep) { \
+#define O42A_VAL_TYPE(_name, _copy, _discard, _mark, _sweep) { \
 	.__o42a_dbg_header__ = { \
 		.type_code = 0x042a0003, \
 		.enclosing = 0, \
-		.name = "o42a_val_type_" _type_name, \
+		.name = "o42a_val_type_" _name, \
 		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type, \
 	}, \
+	.name = _name, \
 	.copy = _copy, \
-	.name = _type_name, \
+	.discard = _discard, \
 	.mark = _mark, \
 	.sweep = _sweep, \
 }
@@ -243,9 +256,21 @@ inline void *o42a_val_data(const o42a_val_t *const val) {
  */
 void o42a_val_copy_as_is(const o42a_val_t *, o42a_val_t *);
 
-void o42a_val_use(o42a_val_t *);
+/**
+ * Value discard function, which does nothing.
+ *
+ * Used for for simple types.
+ */
+void o42a_val_discard_none(const o42a_val_t *);
 
-void o42a_val_unuse(o42a_val_t *);
+/**
+ * Garbage-collected value discard function.
+ */
+void o42a_val_discard_gc(const o42a_val_t *);
+
+void o42a_val_use(const o42a_val_t *);
+
+void o42a_val_unuse(const o42a_val_t *);
 
 void o42a_val_gc_none(struct o42a_obj *);
 

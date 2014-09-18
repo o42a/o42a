@@ -20,7 +20,7 @@
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 9,
+	.field_num = 8,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -34,11 +34,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.name = "thread_cond",
 		},
 		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_data_t, value_f),
-			.name = "value_f",
-		},
-		{
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_data_t, vmtc),
 			.name = "vmtc",
@@ -47,8 +42,8 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_data_t, cond_f),
-			.name = "cond_f",
+			.offset = offsetof(o42a_obj_data_t, value_f),
+			.name = "value_f",
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
@@ -173,7 +168,7 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
-	.field_num = 9,
+	.field_num = 8,
 	.name = "o42a_obj_ctr_t",
 	.fields = {
 		{
@@ -202,11 +197,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.data_type = O42A_TYPE_FUNC_PTR,
 			.offset = offsetof(o42a_obj_ctr_t, value_f),
 			.name = "value_f",
-		},
-		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, cond_f),
-			.name = "cond_f",
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
@@ -802,7 +792,6 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 
 	// Fill object data without value and VMT.
 	data->value_f = ctr->value_f;
-	data->cond_f = ctr->cond_f;
 	data->desc = sdesc;
 	data->fld_ctrs = NULL;
 
@@ -890,7 +879,6 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 		ctr->sample_type_info = O42A(o42a_dbg_header(ctr->ancestor))->type_info;
 #endif /* NDEBUG */
 		ctr->value_f = adata->value_f;
-		ctr->cond_f = adata->cond_f;
 	}
 
 	o42a_obj_t *const object = O42A(new_obj(ctr));
@@ -930,18 +918,39 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	O42A_RETURN object;
 }
 
+o42a_bool_t o42a_obj_cond(o42a_obj_t *const object) {
+	O42A_ENTER(return O42A_FALSE);
+
+	o42a_val_t val = {
+		.flags = O42A_VAL_INDEFINITE,
+	};
+
+#ifndef NDEBUG
+	O42A(o42a_dbg_fill_header(
+			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
+			&val.__o42a_dbg_header__,
+			NULL));
+#endif /* NDEBUG */
+
+	o42a_obj_data_t *const data = &object->object_data;
+
+	O42A(data->value_f(&val, object));
+
+	if (!(val.flags & O42A_VAL_CONDITION)) {
+		O42A_RETURN O42A_FALSE;
+	}
+
+	O42A(data->desc->value_type->discard(&val));
+
+	O42A_RETURN O42A_TRUE;
+}
+
 void o42a_obj_value_false(
 		o42a_val_t *const result,
 		o42a_obj_t *const object __attribute__((unused))) {
 	O42A_ENTER(return);
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
-}
-
-o42a_bool_t o42a_obj_cond_false(
-		o42a_obj_t *const object __attribute__((unused))) {
-	O42A_ENTER(return O42A_FALSE);
-	O42A_RETURN O42A_FALSE;
 }
 
 
@@ -951,12 +960,6 @@ void o42a_obj_value_void(
 	O42A_ENTER(return);
 	result->flags = O42A_TRUE;
 	O42A_RETURN;
-}
-
-o42a_bool_t o42a_obj_cond_true(
-		o42a_obj_t *const object __attribute__((unused))) {
-	O42A_ENTER(return O42A_FALSE);
-	O42A_RETURN O42A_TRUE;
 }
 
 
@@ -974,13 +977,6 @@ void o42a_obj_value_stub(
 	o42a_error_print("Object value stub invoked");
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
-}
-
-o42a_bool_t o42a_obj_cond_stub(
-		o42a_obj_t *const object __attribute__((unused))) {
-	O42A_ENTER(return O42A_FALSE);
-	o42a_error_print("Object condition stub invoked");
-	O42A_RETURN O42A_FALSE;
 }
 
 
@@ -1094,7 +1090,7 @@ void o42a_obj_end_use(o42a_obj_use_t *const use) {
 	O42A_RETURN;
 }
 
-void o42a_obj_start_val_use(o42a_val_t *const val) {
+void o42a_obj_start_val_use(const o42a_val_t *const val) {
 	O42A_ENTER(return);
 
 	if (!(val->flags & O42A_VAL_CONDITION)) {
@@ -1114,7 +1110,7 @@ void o42a_obj_start_val_use(o42a_val_t *const val) {
 	O42A_RETURN;
 }
 
-void o42a_obj_end_val_use(o42a_val_t *const val) {
+void o42a_obj_end_val_use(const o42a_val_t *const val) {
 	O42A_ENTER(return);
 
 	if (!(val->flags & O42A_VAL_CONDITION)) {
