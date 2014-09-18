@@ -118,7 +118,7 @@ public class DefDirs implements BuilderCode {
 
 	public void returnValue(Block code, ValOp value) {
 		this.store.store(code, value);
-		code.go(this.returnDir);
+		code.go(returnDir());
 	}
 
 	public final Block addBlock(String name) {

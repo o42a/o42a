@@ -99,8 +99,8 @@ public abstract class CodeBuilder {
 	}
 
 	public ValOp voidVal(Code code) {
-		return ValueType.VOID
-				.ir(getGenerator()).staticsIR()
+		return ValueType.VOID.ir(getGenerator())
+				.staticsIR()
 				.valPtr(Void.VOID)
 				.op(null, code)
 				.op(this, Val.VOID_VAL);

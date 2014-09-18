@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.ObjectIRStruct.OBJECT_ID;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.RelOp;
@@ -88,22 +87,9 @@ public final class ObjectDataOp extends DefiniteIROp {
 		function.call(dirs, objectPtr(code, null));
 	}
 
-	public final void writeDefs(DefDirs dirs, ObjectOp body) {
-
-		final Block code = dirs.code();
-		final ObjectValueFn function =
-				ptr().defsFunc(code).load(null, code);
-
-		function.call(dirs, body(code, body));
-	}
-
 	@Override
 	public String toString() {
 		return "ObjectData[" + ptr().toString() + ']';
-	}
-
-	private final DataOp body(Code code, ObjectOp body) {
-		return body != null ? body.toData(null, code) : objectPtr(code, null);
 	}
 
 	private RelOp startOffset(Code code, Obj anyObject) {

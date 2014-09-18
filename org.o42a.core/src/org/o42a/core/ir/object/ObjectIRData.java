@@ -46,7 +46,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	private StructRec<VmtIRChain.Op> vmtc;
 	private FuncRec<ObjectValueFn> valueFunc;
-	private FuncRec<ObjectValueFn> defFunc;
 	private ValType value;
 	private StructRec<ObjectIRDescOp> desc;
 
@@ -65,10 +64,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	public final FuncRec<ObjectValueFn> valueFunc() {
 		return this.valueFunc;
-	}
-
-	public final FuncRec<ObjectValueFn> defFunc() {
-		return this.defFunc;
 	}
 
 	public final ValType value() {
@@ -90,7 +85,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
-		this.defFunc = data.addFuncPtr("def_f", OBJECT_VALUE);
 		this.value = data.addNewInstance(VALUE_ID, VAL_TYPE);
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
