@@ -183,7 +183,7 @@ public class CtrOp extends IROp {
 			} else {
 				ptr.valueFunc(code).store(
 						code,
-						valueIR.value().get().op(null, code));
+						valueIR.ptr().op(null, code));
 			}
 		}
 

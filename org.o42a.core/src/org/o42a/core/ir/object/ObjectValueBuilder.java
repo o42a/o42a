@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.value;
+package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
@@ -28,8 +28,6 @@ import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.FunctionBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.object.FldCtrOp;
-import org.o42a.core.ir.object.ObjBuilder;
-import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
@@ -43,18 +41,18 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 
 	private static final ID FLD_CTR_ID = ID.id("fld_ctr");
 
-	private final ObjectValueFnIR fnIR;
+	private final ObjectValueIR ir;
 
-	ObjectValueBuilder(ObjectValueFnIR fnIR) {
-		this.fnIR = fnIR;
+	ObjectValueBuilder(ObjectValueIR ir) {
+		this.ir = ir;
 	}
 
-	public final ObjectValueFnIR fnIR() {
-		return this.fnIR;
+	public final ObjectValueIR ir() {
+		return this.ir;
 	}
 
 	public final ValueType<?> getValueType() {
-		return this.fnIR.getValueType();
+		return this.ir.getValueType();
 	}
 
 	public final boolean isStateful() {
@@ -64,7 +62,7 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 	@Override
 	public void build(Function<ObjectValueFn> function) {
 
-		final ObjBuilder builder = fnIR().createBuilder(function);
+		final ObjBuilder builder = ir().createBuilder(function);
 		final ValOp result =
 				function.arg(function, OBJECT_VALUE.value())
 				.op(function, builder, getValueType(), VAL_TRAP);
@@ -161,16 +159,16 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 	}
 
 	private void writeValue(DefDirs dirs, ObjOp host) {
-		if (fnIR().getObjectIR().isExact()) {
-			dirs.code().debug("Exact host: " + fnIR().getObjectIR().getId());
+		if (ir().getObjectIR().isExact()) {
+			dirs.code().debug("Exact host: " + ir().getObjectIR().getId());
 		} else {
 			dirs.code().dumpName("Host: ", host);
 		}
 
-		if (fnIR().writeIfConstant(dirs, fnIR().getFinal())) {
+		if (ir().writeIfConstant(dirs, ir().getFinal())) {
 			return;
 		}
-		for (Def def : fnIR().defs().get()) {
+		for (Def def : ir().defs().get()) {
 			def.eval().write(dirs, host);
 			if (!dirs.code().exists()) {
 				break;
