@@ -308,7 +308,9 @@ typedef struct o42a_obj_ctr {
 	/**
 	 * Object value calculator function.
 	 *
-	 * Ignored when sample not specified.
+	 * When constructing an eager object, this function will be ignored,
+	 * and o42a_obj_value_eager function will be used instead.
+	 * Otherwise, if not specified an ancestor value function will be used.
 	 */
 	o42a_obj_value_ft *value_f;
 
@@ -514,6 +516,10 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *);
  */
 o42a_bool_t o42a_obj_cond(o42a_obj_t *);
 
+/**
+ * Returns eagerly evaluated object value.
+ */
+void o42a_obj_value_eager(o42a_val_t *, o42a_obj_t *);
 
 /**
  * False object value.

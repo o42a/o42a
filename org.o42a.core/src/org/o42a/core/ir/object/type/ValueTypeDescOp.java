@@ -21,6 +21,7 @@ package org.o42a.core.ir.object.type;
 
 import static org.o42a.core.ir.object.op.ByObjectFn.BY_OBJECT;
 import static org.o42a.core.ir.value.ValCopyFn.VAL_COPY;
+import static org.o42a.core.ir.value.ValUseFn.VAL_USE;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -30,6 +31,7 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.op.ByObjectFn;
 import org.o42a.core.ir.value.ValCopyFn;
+import org.o42a.core.ir.value.ValUseFn;
 import org.o42a.util.string.ID;
 
 
@@ -46,6 +48,8 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 
 		private AnyRec name;
 		private FuncRec<ValCopyFn> copy;
+		private FuncRec<ValCopyFn> use;
+		private FuncRec<ValUseFn> discard;
 		private FuncRec<ByObjectFn> mark;
 		private FuncRec<ByObjectFn> sweep;
 
@@ -59,6 +63,14 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 
 		public final FuncRec<ValCopyFn> copy() {
 			return this.copy;
+		}
+
+		public final FuncRec<ValCopyFn> use() {
+			return this.use;
+		}
+
+		public final FuncRec<ValUseFn> discard() {
+			return this.discard;
 		}
 
 		public final FuncRec<ByObjectFn> mark() {
@@ -78,6 +90,8 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 		protected void allocate(SubData<ValueTypeDescOp> data) {
 			this.name = data.addPtr("name");
 			this.copy = data.addFuncPtr("copy", VAL_COPY);
+			this.use = data.addFuncPtr("use", VAL_COPY);
+			this.discard = data.addFuncPtr("discard", VAL_USE);
 			this.mark = data.addFuncPtr("mark", BY_OBJECT);
 			this.sweep = data.addFuncPtr("sweep", BY_OBJECT);
 		}

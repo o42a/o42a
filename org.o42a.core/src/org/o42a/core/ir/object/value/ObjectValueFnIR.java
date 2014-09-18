@@ -180,21 +180,32 @@ public final class ObjectValueFnIR {
 		this.reused = -1;
 	}
 
-	protected final void reuse(FuncPtr<ObjectValueFn> ptr) {
-		this.funcPtr = ptr;
-		this.reused = 1;
+	protected final void reuse(String name) {
+		reuse(name, 1);
 	}
 
-	protected final void stub(FuncPtr<ObjectValueFn> ptr) {
-		this.funcPtr = ptr;
-		this.reused = 2;
+	protected final void reuse(FuncPtr<ObjectValueFn> funcPtr) {
+		reuse(funcPtr, 1);
+	}
+
+	protected final void stub(String name) {
+		reuse(name, 2);
+	}
+
+	protected final void reuse(String name, int mode) {
+		reuse(getGenerator().externalFunction().link(name, OBJECT_VALUE), mode);
+	}
+
+	protected final void reuse(FuncPtr<ObjectValueFn> funcPtr, int mode) {
+		this.funcPtr = funcPtr;
+		this.reused = (byte) mode;
 	}
 
 	protected final void create() {
 		if (canStub() && !getObject().value().isUsed(
 				getGenerator().getAnalyzer(),
 				ALL_VALUE_USAGES)) {
-			stub(stubFunc());
+			stub("o42a_obj_value_stub");
 			return;
 		}
 
@@ -280,30 +291,6 @@ public final class ObjectValueFnIR {
 		return value.getValue().getKnowledge().isKnown();
 	}
 
-	protected FuncPtr<ObjectValueFn> stubFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_value_stub", OBJECT_VALUE);
-	}
-
-	protected FuncPtr<ObjectValueFn> unknownValFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_value_unknown", OBJECT_VALUE);
-	}
-
-	protected FuncPtr<ObjectValueFn> falseValFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_value_false", OBJECT_VALUE);
-	}
-
-	protected FuncPtr<ObjectValueFn> voidValFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_value_void", OBJECT_VALUE);
-	}
-
 	protected void reuse() {
 
 		final DefValue finalValue = getFinal();
@@ -311,7 +298,7 @@ public final class ObjectValueFnIR {
 		if (isConstantValue(finalValue)) {
 			if (finalValue.getCondition().isFalse()) {
 				// Final value is false.
-				reuse(falseValFunc());
+				reuse("o42a_obj_value_false");
 				return;
 			}
 			// Condition is true.
@@ -320,16 +307,19 @@ public final class ObjectValueFnIR {
 				if (finalValue.getCondition().isTrue()) {
 					// Condition is unknown.
 					// Do not update the value during calculation.
-					reuse(unknownValFunc());
+					reuse("o42a_obj_value_unknown");
 				}
 				return;
 			}
 			// Final value is known.
 			if (getValueType().isVoid()) {
 				// Value is void.
-				reuse(voidValFunc());
+				reuse("o42a_obj_value_void");
 				return;
 			}
+		}
+		if (getObject().value().getStatefulness().isEager()) {
+			reuse("o42a_obj_value_eager");
 		}
 		if (getObjectIR().isExact()) {
 			return;
