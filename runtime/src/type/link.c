@@ -29,11 +29,13 @@ static void mark_link_val(o42a_obj_t *const object) {
 const o42a_val_type_t o42a_val_type_link = O42A_VAL_TYPE(
 		"link",
 		o42a_val_copy_as_is,
+		o42a_obj_end_val_use,
 		mark_link_val,
 		o42a_val_gc_none);
 
 const o42a_val_type_t o42a_val_type_variable = O42A_VAL_TYPE(
 		"variable",
 		o42a_val_copy_as_is,
+		o42a_obj_end_val_use,
 		mark_link_val,
 		o42a_val_gc_none);

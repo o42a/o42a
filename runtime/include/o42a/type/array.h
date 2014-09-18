@@ -92,9 +92,9 @@ o42a_bool_t o42a_array_copy_elements(
 
 void o42a_array_mark(const volatile o42a_val_t *);
 
-void o42a_array_start_use(o42a_val_t *);
+void o42a_array_start_use(const o42a_val_t *);
 
-void o42a_array_end_use(o42a_val_t *);
+void o42a_array_end_use(const o42a_val_t *);
 
 
 #ifdef __cplusplus

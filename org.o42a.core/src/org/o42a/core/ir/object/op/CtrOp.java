@@ -26,7 +26,6 @@ import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
-import static org.o42a.core.ir.object.value.ObjectCondFn.OBJECT_COND;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.finalVal;
@@ -43,7 +42,6 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.type.ObjectIRDescOp;
-import org.o42a.core.ir.object.value.ObjectCondFn;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.*;
 import org.o42a.core.object.Obj;
@@ -162,7 +160,6 @@ public class CtrOp extends IROp {
 				// NULLs required here only for making memory dumps.
 				ptr.sampleTypeInfo(code).store(code, code.nullPtr());
 				ptr.valueFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
-				ptr.condFunc(code).store(code, code.nullPtr(OBJECT_COND));
 				ptr.defFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			}
 		} else {
@@ -185,9 +182,6 @@ public class CtrOp extends IROp {
 			ptr.valueFunc(code).store(
 					code,
 					valueIR.value().get().op(null, code));
-			ptr.condFunc(code).store(
-					code,
-					valueIR.condition().get().op(null, code));
 			if (sample.value().getDefinitions().areInherited()) {
 				ptr.defFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			} else {
@@ -303,10 +297,6 @@ public class CtrOp extends IROp {
 			return func(null, code, getType().valueFunc());
 		}
 
-		public final FuncOp<ObjectCondFn> condFunc(Code code) {
-			return func(null, code, getType().condFunc());
-		}
-
 		public final FuncOp<ObjectValueFn> defFunc(Code code) {
 			return func(null, code, getType().defFunc());
 		}
@@ -332,7 +322,6 @@ public class CtrOp extends IROp {
 		private StructRec<ObjectIRDescOp> sampleDesc;
 		private AnyRec sampleTypeInfo;
 		private FuncRec<ObjectValueFn> valueFunc;
-		private FuncRec<ObjectCondFn> condFunc;
 		private FuncRec<ObjectValueFn> defFunc;
 		private StructRec<VmtIRChain.Op> vmtc;
 		private ValType value;
@@ -370,10 +359,6 @@ public class CtrOp extends IROp {
 			return this.valueFunc;
 		}
 
-		public final FuncRec<ObjectCondFn> condFunc() {
-			return this.condFunc;
-		}
-
 		public final FuncRec<ObjectValueFn> defFunc() {
 			return this.defFunc;
 		}
@@ -395,7 +380,6 @@ public class CtrOp extends IROp {
 				this.sampleTypeInfo = data.addPtr("sample_type_info");
 			}
 			this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
-			this.condFunc = data.addFuncPtr("cond_f", OBJECT_COND);
 			this.defFunc = data.addFuncPtr("def_f", OBJECT_VALUE);
 			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 			this.value = data.addNewInstance(ID.rawId("value"), VAL_TYPE);

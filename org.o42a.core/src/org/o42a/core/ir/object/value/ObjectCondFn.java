@@ -62,7 +62,7 @@ public final class ObjectCondFn extends ObjectFn<ObjectCondFn> {
 		private Arg<DataOp> object;
 
 		private Signature() {
-			super(ID.rawId("o42a_obj_cond_ft"));
+			super(ID.rawId("ObjectCondF"));
 		}
 
 		public final Return<BoolOp> result() {

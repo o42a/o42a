@@ -49,8 +49,6 @@ final class PredefObjValues {
 	private final Generator generator;
 	private final HashMap<PredefKey, FuncPtr<ObjectValueFn>> valueFunctions =
 			new HashMap<>();
-	private final HashMap<PredefKey, FuncPtr<ObjectCondFn>> condFunctions =
-			new HashMap<>();
 
 	private PredefObjValues(Generator generator) {
 		this.generator = generator;
@@ -74,26 +72,6 @@ final class PredefObjValues {
 				valueType);
 
 		this.valueFunctions.put(key, function);
-
-		return function;
-	}
-
-	final FuncPtr<ObjectCondFn> condFunction(
-			CompilerContext context,
-			PredefObjValue value,
-			ValueType<?> valueType) {
-
-		final PredefKey key = prefefKey(value, valueType);
-		final FuncPtr<ObjectCondFn> cached = this.condFunctions.get(key);
-
-		if (cached != null) {
-			return cached;
-		}
-
-		final FuncPtr<ObjectCondFn> function =
-				value.createCondFunction(context, this.generator, valueType);
-
-		this.condFunctions.put(key, function);
 
 		return function;
 	}

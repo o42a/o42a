@@ -22,8 +22,12 @@ void o42a_val_copy_as_is(const o42a_val_t *const from, o42a_val_t *const to) {
 	*to = *from;
 	O42A_RETURN;
 }
+void o42a_val_discard_none(const o42a_val_t *val __attribute__((unused))) {
+	O42A_ENTER(return);
+	O42A_RETURN;
+}
 
-inline void o42a_val_use(o42a_val_t *const val) {
+inline void o42a_val_use(const o42a_val_t *const val) {
 	O42A_ENTER(return);
 
 	const uint32_t flags = val->flags;
@@ -43,7 +47,7 @@ inline void o42a_val_use(o42a_val_t *const val) {
 	O42A_RETURN;
 }
 
-inline void o42a_val_unuse(o42a_val_t *const val) {
+inline void o42a_val_unuse(const o42a_val_t *const val) {
 	O42A_ENTER(return);
 
 	const uint32_t flags = val->flags;
@@ -73,18 +77,21 @@ void o42a_val_gc_none(o42a_obj_t *const object __attribute__((unused))) {
 const o42a_val_type_t o42a_val_type_void = O42A_VAL_TYPE(
 		"void",
 		o42a_val_copy_as_is,
+		o42a_val_discard_none,
 		o42a_val_gc_none,
 		o42a_val_gc_none);
 
 const o42a_val_type_t o42a_val_type_directive = O42A_VAL_TYPE(
 		"directive",
 		o42a_val_copy_as_is,
+		o42a_val_discard_none,
 		o42a_val_gc_none,
 		o42a_val_gc_none);
 
 const o42a_val_type_t o42a_val_type_macro = O42A_VAL_TYPE(
 		"macro",
 		o42a_val_copy_as_is,
+		o42a_val_discard_none,
 		o42a_val_gc_none,
 		o42a_val_gc_none);
 
