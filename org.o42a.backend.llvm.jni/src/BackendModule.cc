@@ -22,17 +22,18 @@
 #include "o42ac/llvm/debug.h"
 
 #include "llvm/PassManager.h"
-#include "llvm/Analysis/Verifier.h"
-#include "llvm/Assembly/PrintModulePass.h"
 #include "llvm/CodeGen/AsmPrinter.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/IRPrintingPasses.h"
+#include "llvm/IR/Verifier.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCStreamer.h"
 #include "llvm/MC/SubtargetFeature.h"
 #include "llvm/Support/CommandLine.h"
+#include "llvm/Support/FileSystem.h"
 #include "llvm/Support/FormattedStream.h"
 #include "llvm/Support/Host.h"
 #include "llvm/Support/TargetRegistry.h"
@@ -220,7 +221,9 @@ TargetMachine *BackendModule::getTargetMachine() const {
 		if (sys::getHostCPUFeatures(featureMap)) {
 			for (StringMapIterator<bool> it = featureMap.begin();
 					it != featureMap.end();) {
-				f.AddFeature(it->getKey(), it->getValue());
+				if (it->getValue()) {
+					f.AddFeature(it->getKey());
+				}
 			}
 		}
 
@@ -287,7 +290,7 @@ Constant *BackendModule::getStackRestoreFunc() {
 bool BackendModule::validateFunction(Function *const function) {
 	OTRACE("--------- Validating " << function->getName() << "\n");
 
-	if (verifyFunction(*function, PrintMessageAction)) {
+	if (verifyFunction(*function, &errs())) {
 		ODEBUG("--------- Validation failed: " << function->getName() << "\n");
 		ODDUMP(function);
 		ODEBUG("---------\n");
@@ -301,7 +304,7 @@ bool BackendModule::validateFunction(Function *const function) {
 
 		this->functionPassManager = new FunctionPassManager(this);
 		this->functionPassManager->add(
-				new llvm::DataLayout(*this->getTargetDataLayout()));
+				new llvm::DataLayoutPass(*this->getTargetDataLayout()));
 		// Do simple "peephole" optimizations and bit-twiddling optzns.
 		this->functionPassManager->add(createInstructionCombiningPass());
 		// Reassociate expressions.
@@ -321,7 +324,7 @@ bool BackendModule::writeCode() {
 
 	OTRACE("========= " << this->getModuleIdentifier() << " verification\n");
 
-	if (verifyModule(*this, PrintMessageAction)) {
+	if (verifyModule(*this, &errs())) {
 		if (OutFormat.getValue() != OUTF_LL) {
 			return false;
 		}
@@ -330,7 +333,7 @@ bool BackendModule::writeCode() {
 	OTRACE("========== " << this->getModuleIdentifier() << " generation\n");
 
 	formatted_raw_ostream *out;
-	std::auto_ptr<formatted_raw_ostream> outPtr;
+	std::auto_ptr<raw_ostream> outPtr;
 
 	if (!OutputFilename.getNumOccurrences()) {
 		out = &fouts();
@@ -342,7 +345,7 @@ bool BackendModule::writeCode() {
 				new raw_fd_ostream(
 						OutputFilename.getValue().c_str(),
 						errorInfo,
-						sys::fs::F_Binary);
+						sys::fs::F_RW);
 
 		if (!errorInfo.empty()) {
 			errs() << errorInfo << '\n';
@@ -371,7 +374,7 @@ bool BackendModule::writeCode() {
 	PassManager pm;
 
 	if (fileType == TargetMachine::CGFT_Null) {
-		pm.add(createPrintModulePass(out, false));
+		pm.add(createPrintModulePass(*out));
 	} else {
 
 		TargetMachine *const machine = getTargetMachine();
@@ -379,8 +382,7 @@ bool BackendModule::writeCode() {
 		if (!machine || machine->addPassesToEmitFile(
 				pm,
 				*out,
-				fileType,
-				CodeGenOpt::Default)) {
+				fileType)) {
 			errs() << "Can not emit code\n";
 			return false;
 		}
