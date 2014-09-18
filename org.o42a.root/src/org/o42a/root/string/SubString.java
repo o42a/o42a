@@ -256,7 +256,10 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		final DefDirs substringDirs =
-				toDirs.dirs().nested().value(dirs.valDirs()).def();
+				toDirs.dirs()
+				.nested()
+				.value(dirs.valDirs())
+				.def(dirs.returnDir());
 
 		final Block code = substringDirs.code();
 		final FuncPtr<SubStringFn> funcPtr =
