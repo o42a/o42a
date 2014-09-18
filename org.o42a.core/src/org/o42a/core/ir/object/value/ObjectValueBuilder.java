@@ -79,7 +79,9 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 		state.startEval(function);
 
 		final FldCtrOp ctr =
-				writeKeptOrContinue(function, state, result);
+				isStateful()
+				? writeKeptOrContinue(function, state, result)
+				: null;
 		final Block done = function.addBlock("done");
 		final Block exit = function.addBlock("exit");
 		final DefDirs dirs =
@@ -94,36 +96,39 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 		if (indefinite.exists()) {
 			indefinite.debug("Indefinite");
 			result.storeFalse(indefinite);
-			if (isStateful()) {
+			if (ctr != null) {
 				state.initToFalse(indefinite);
+				ctr.finish(indefinite, state.host());
 			}
-			ctr.finish(indefinite, state.host());
 			indefinite.returnVoid();
 		}
 		if (exit.exists()) {
 			exit.debug("False");
 			result.storeFalse(exit);
-			if (isStateful()) {
+			if (ctr != null) {
 				state.initToFalse(exit);
+				ctr.finish(exit, state.host());
 			}
-			ctr.finish(exit, state.host());
 			exit.returnVoid();
 		}
 		if (done.exists()) {
 			result.store(done, dirs.result());
 			done.dump("Result: ", result);
-			if (isStateful()) {
+			if (ctr != null) {
 				state.init(done, result);
+				ctr.finish(done, state.host());
 			}
-			ctr.finish(done, state.host());
 			done.returnVoid();
 		}
 	}
 
-	private static FldCtrOp writeKeptOrContinue(
+	private FldCtrOp writeKeptOrContinue(
 			Block code,
 			StateOp state,
 			ValOp result) {
+		if (!isStateful()) {
+			return null;
+		}
 
 		final Block valueKept = code.addBlock("value_kept");
 		final FldCtrOp ctr =
