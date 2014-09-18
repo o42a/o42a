@@ -11,6 +11,17 @@
 #include "o42a/object.h"
 
 
+static void use_link_val(const o42a_val_t *const from, o42a_val_t *const to) {
+	O42A_ENTER(return);
+
+	volatile const o42a_val_t *const f = from;
+
+	*to = *f;
+	O42A(o42a_obj_start_val_use(to));
+
+	O42A_RETURN;
+}
+
 static void mark_link_val(o42a_obj_t *const object) {
 	O42A_ENTER(return);
 
@@ -29,6 +40,7 @@ static void mark_link_val(o42a_obj_t *const object) {
 const o42a_val_type_t o42a_val_type_link = O42A_VAL_TYPE(
 		"link",
 		o42a_val_copy_as_is,
+		use_link_val,
 		o42a_obj_end_val_use,
 		mark_link_val,
 		o42a_val_gc_none);
@@ -36,6 +48,7 @@ const o42a_val_type_t o42a_val_type_link = O42A_VAL_TYPE(
 const o42a_val_type_t o42a_val_type_variable = O42A_VAL_TYPE(
 		"variable",
 		o42a_val_copy_as_is,
+		use_link_val,
 		o42a_obj_end_val_use,
 		mark_link_val,
 		o42a_val_gc_none);

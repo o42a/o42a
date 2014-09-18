@@ -22,6 +22,7 @@
 const o42a_val_type_t o42a_val_type_float = O42A_VAL_TYPE(
 		"float",
 		o42a_val_copy_as_is,
+		o42a_val_copy_as_is,
 		o42a_val_discard_none,
 		o42a_val_gc_none,
 		o42a_val_gc_none);

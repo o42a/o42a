@@ -898,7 +898,7 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	data->vmtc = vmtc;
-	data->value_f = sdesc && ctr->value_f ? ctr->value_f : adata->value_f;
+	data->value_f = o42a_obj_value_eager;
 	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
 	data->value.flags |= O42A_VAL_EAGER;
 
@@ -932,6 +932,23 @@ o42a_bool_t o42a_obj_cond(o42a_obj_t *const object) {
 	O42A(data->desc->value_type->discard(&val));
 
 	O42A_RETURN O42A_TRUE;
+}
+
+void o42a_obj_value_eager(
+		o42a_val_t *const result,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+
+	o42a_obj_data_t *const data = &object->object_data;
+
+	assert(
+			(data->value.flags & O42A_VAL_CONDITION)
+			&& "Object value is not eagerly evaluated");
+
+	O42A(data->desc->value_type->use(&data->value, result));
+	o42a_debug_dump_mem("Eager value: ", result, 3);
+
+	O42A_RETURN;
 }
 
 void o42a_obj_value_false(
