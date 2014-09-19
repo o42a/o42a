@@ -21,6 +21,8 @@ package org.o42a.analysis.use;
 
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
+import java.util.function.BooleanSupplier;
+
 
 public abstract class User<U extends Usage<U>> implements UserInfo, Uses<U> {
 
@@ -60,6 +62,9 @@ public abstract class User<U extends Usage<U>> implements UserInfo, Uses<U> {
 		return this;
 	}
 
-	abstract <UU extends Usage<UU>> void use(Usable<UU> usable, UU usage);
+	abstract <UU extends Usage<UU>> void use(
+			Usable<UU> usable,
+			UU usage,
+			BooleanSupplier condition);
 
 }

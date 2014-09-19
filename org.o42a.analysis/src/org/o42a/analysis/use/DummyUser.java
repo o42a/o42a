@@ -19,6 +19,8 @@
 */
 package org.o42a.analysis.use;
 
+import java.util.function.BooleanSupplier;
+
 
 final class DummyUser<U extends Usage<U>> extends User<U> {
 
@@ -44,7 +46,10 @@ final class DummyUser<U extends Usage<U>> extends User<U> {
 	}
 
 	@Override
-	<UU extends Usage<UU>> void use(Usable<UU> usable, UU usage) {
+	<UU extends Usage<UU>> void use(
+			Usable<UU> usable,
+			UU usage,
+			BooleanSupplier condition) {
 	}
 
 }

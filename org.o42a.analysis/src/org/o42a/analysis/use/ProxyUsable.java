@@ -20,6 +20,7 @@
 package org.o42a.analysis.use;
 
 
+
 public class ProxyUsable<U extends Usage<U>> extends ProxyUser<U> {
 
 	private SimpleUsable<U> usable;

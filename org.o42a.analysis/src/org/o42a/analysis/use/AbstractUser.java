@@ -19,6 +19,8 @@
 */
 package org.o42a.analysis.use;
 
+import java.util.function.BooleanSupplier;
+
 
 public abstract class AbstractUser<U extends Usage<U>> extends User<U> {
 
@@ -32,8 +34,11 @@ public abstract class AbstractUser<U extends Usage<U>> extends User<U> {
 	}
 
 	@Override
-	<UU extends Usage<UU>> void use(Usable<UU> usable, UU usage) {
-		usable.useBy(this, usage);
+	<UU extends Usage<UU>> void use(
+			Usable<UU> usable,
+			UU usage,
+			BooleanSupplier condition) {
+		usable.useByUser(this, usage, condition);
 	}
 
 }
