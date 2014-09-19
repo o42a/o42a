@@ -21,7 +21,7 @@ package org.o42a.core.object.meta;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.util.fn.DoOnce.doOnce;
-import static org.o42a.util.fn.Init.init;
+import static org.o42a.util.fn.FlagInit.boolInit;
 
 import java.util.IdentityHashMap;
 
@@ -31,7 +31,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
 import org.o42a.util.Chain;
 import org.o42a.util.fn.DoOnce;
-import org.o42a.util.fn.Init;
+import org.o42a.util.fn.FlagInit;
 
 
 public abstract class ObjectMeta {
@@ -39,7 +39,7 @@ public abstract class ObjectMeta {
 	private IdentityHashMap<MetaDep, Boolean> tripped;
 	private Chain<MetaDep> deps;
 	private final DoOnce initialize = doOnce(this::doInitialize);
-	private final Init<Boolean> updated = init(
+	private final FlagInit updated = boolInit(
 			() -> !meta().getObject().isClone() || hasUpdates());
 
 	public boolean isUpdated() {
