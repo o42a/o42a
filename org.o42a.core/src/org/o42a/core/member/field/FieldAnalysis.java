@@ -116,9 +116,10 @@ public class FieldAnalysis {
 		uses.useBy(object.content().toUser(), SUBSTANCE_USAGE);
 		uses.useBy(object.fieldUses(), NESTED_USAGE);
 
-		if (object.type().isRuntimeConstructed()) {
-			derivationUses().useBy(object.content(), DERIVATION_USAGE);
-		}
+		derivationUses().useBy(
+				object.content(),
+				DERIVATION_USAGE,
+				object.type()::isRuntimeConstructed);
 	}
 
 	final MemberFieldUses uses() {
@@ -134,19 +135,7 @@ public class FieldAnalysis {
 		final MemberFieldUses uses = new MemberFieldUses(getMember());
 
 		if (getMember().isOverride()) {
-
-			final MemberFieldUses declarationUses =
-					getDeclarationAnalysis().uses();
-
-			declarationUses.useBy(
-					uses.usageUser(FIELD_ACCESS),
-					FIELD_ACCESS);
-			declarationUses.useBy(
-					uses.usageUser(SUBSTANCE_USAGE),
-					SUBSTANCE_USAGE);
-			declarationUses.useBy(
-					uses.usageUser(NESTED_USAGE),
-					NESTED_USAGE);
+			getDeclarationAnalysis().uses().useByEach(uses);
 		}
 
 		return uses;
@@ -168,15 +157,13 @@ public class FieldAnalysis {
 			firstDeclaration.getAnalysis()
 			.derivationUses()
 			.useBy(derivationUses, DERIVATION_USAGE);
-			if (!member.isUpdated()) {
 
-				final MemberField lastDefinition = member.getLastDefinition();
+			final MemberField lastDefinition = member.getLastDefinition();
 
-				if (lastDefinition != member) {
-					lastDefinition.getAnalysis()
-					.derivationUses()
-					.useBy(derivationUses, DERIVATION_USAGE);
-				}
+			if (lastDefinition != member) {
+				lastDefinition.getAnalysis().derivationUses().useBy(
+						derivationUses,
+						DERIVATION_USAGE, () -> !member.isUpdated());
 			}
 		}
 
