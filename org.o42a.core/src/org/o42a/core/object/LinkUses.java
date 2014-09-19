@@ -22,6 +22,8 @@ package org.o42a.core.object;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.value.link.LinkUsage.*;
 
+import java.util.function.BooleanSupplier;
+
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.Usable;
 import org.o42a.analysis.use.UserInfo;
@@ -124,7 +126,7 @@ public class LinkUses {
 
 	void fieldChanged(MemberField field) {
 		if (!field.field(dummyUser()).getFieldKind().isOrdinal()) {
-			// Only orfinal fields considered.
+			// Only ordinal fields considered.
 			return;
 		}
 
@@ -138,14 +140,16 @@ public class LinkUses {
 			// Link type object.
 			return;
 		}
-		if (!field.isUpdated()
-				&& field.getMemberKey().getOrigin().is(
-						linkTypeObject.getScope())) {
-			// Field is declared in link type object.
-			return;
-		}
 
-		uses().useBy(field.object(dummyUser()).content(), LINK_FIELD_CHANGES);
+		final BooleanSupplier fieldDeclaredOutsideLinkTypeObject =
+				() -> field.isUpdated()
+				|| !field.getMemberKey().getOrigin().is(
+						linkTypeObject.getScope());
+
+		uses().useBy(
+				field.object(dummyUser()).content(),
+				LINK_FIELD_CHANGES,
+				fieldDeclaredOutsideLinkTypeObject);
 	}
 
 	final void depAdded() {

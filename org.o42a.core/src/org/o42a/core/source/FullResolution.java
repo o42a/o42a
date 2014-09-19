@@ -30,7 +30,7 @@ public final class FullResolution {
 	}
 
 	public final boolean isComplete() {
-		return this.initiated && this.started == 0;
+		return isInitiated() && this.started == 0;
 	}
 
 	public final void initiate() {
@@ -55,8 +55,16 @@ public final class FullResolution {
 		this.started = 0;
 	}
 
+	public final boolean assertComplete() {
+		assert isInitiated():
+			"Full resolution is not initiated yet";
+		assert isComplete():
+			"Full resolution is not complete yet";
+		return true;
+	}
+
 	public final boolean assertIncomplete() {
-		assert !this.initiated  || this.started > 0:
+		assert !isInitiated() || !isComplete():
 			"Full resolution is already complete";
 		return true;
 	}

@@ -19,8 +19,7 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
-import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
+import static org.o42a.core.member.field.FieldUsage.*;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -131,6 +130,12 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 			return super.toString();
 		}
 		return "FieldUses[" + this.field + ']';
+	}
+
+	final void useByEach(MemberFieldUses uses) {
+		useBy(uses.usageUser(FIELD_ACCESS), FIELD_ACCESS);
+		useBy(uses.usageUser(SUBSTANCE_USAGE), SUBSTANCE_USAGE);
+		useBy(uses.usageUser(NESTED_USAGE), NESTED_USAGE);
 	}
 
 	final void useBy(Uses<?> user, FieldUsage usage) {
