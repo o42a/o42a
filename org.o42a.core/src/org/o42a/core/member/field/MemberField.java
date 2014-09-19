@@ -22,6 +22,7 @@ package org.o42a.core.member.field;
 import static java.util.Collections.emptyList;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
+import static org.o42a.util.fn.FlagInit.boolInit;
 import static org.o42a.util.fn.Init.init;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.fn.FlagInit;
 import org.o42a.util.fn.Init;
 
 
@@ -46,7 +48,7 @@ public abstract class MemberField
 	private final Init<Field> field = init(this::createField);
 	private Init<Visibility> visibility =
 			init(() -> getDeclaration().visibilityOf(this));
-	private final Init<Boolean> prototype = init(
+	private final FlagInit prototype = boolInit(
 			() -> getDeclaration().getPrototypeMode().detectPrototype(this));
 	private final Init<FieldAnalysis> analysis = init(
 			() -> isUpdated()
