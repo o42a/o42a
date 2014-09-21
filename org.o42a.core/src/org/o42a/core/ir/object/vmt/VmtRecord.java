@@ -24,7 +24,7 @@ import org.o42a.codegen.data.SubData;
 
 public interface VmtRecord {
 
-	boolean isDerived();
+	boolean derive(VmtIR vmtIR);
 
 	void allocateMethods(SubData<VmtIROp> vmt);
 
