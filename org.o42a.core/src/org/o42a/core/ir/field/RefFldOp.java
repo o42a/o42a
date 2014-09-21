@@ -45,7 +45,7 @@ public abstract class RefFldOp<
 		F extends RefFld.Op<F>,
 		T extends RefFld.Type<F>,
 		C extends ObjectFn<C>>
-				extends MemberFldOp<F, T> {
+				extends FldOp<F, T> {
 
 	public RefFldOp(ObjOp host, RefFld<F, T, C> fld, F ptr) {
 		super(host, fld, ptr);

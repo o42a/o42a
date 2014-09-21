@@ -28,7 +28,6 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.field.MemberFld;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
@@ -39,7 +38,7 @@ import org.o42a.util.string.ID;
 
 
 public final class OwnerFld
-		extends MemberFld<OwnerFld.Op, OwnerFld.Type>
+		extends Fld<OwnerFld.Op, OwnerFld.Type>
 		implements Content<OwnerFld.Type> {
 
 	public static final Type SCOPE_FLD = new Type();

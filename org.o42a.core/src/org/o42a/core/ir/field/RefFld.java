@@ -44,7 +44,7 @@ public abstract class RefFld<
 		F extends RefFld.Op<F>,
 		T extends RefFld.Type<F>,
 		C extends ObjectFn<C>>
-				extends MemberFld<F, T> {
+				extends Fld<F, T> {
 
 	public static final StatefulType STATEFUL_FLD = new StatefulType();
 
