@@ -19,6 +19,9 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
+import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -29,6 +32,8 @@ import org.o42a.core.ir.object.ObjectIRBodies;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.vmt.VmtIROp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
@@ -40,13 +45,26 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	public static final ID FLD_ID = ID.id("fld");
 
 	private final ObjectIRBody bodyIR;
+	private final Field field;
 	private T instance;
 	private final boolean dummy;
 	private byte omitted;
 
-	public Fld(ObjectIRBody bodyIR, boolean dummy) {
+	public Fld(ObjectIRBody bodyIR, Field field, boolean dummy) {
+		assert field
+		.toMember()
+		.getAnalysis()
+		.getDeclarationAnalysis()
+		.isUsed(bodyIR.getGenerator().getAnalyzer(), ALL_FIELD_USAGES) :
+				"Attempt to generate never accessed field " + field;
 		this.bodyIR = bodyIR;
+		this.field = field;
 		this.dummy = dummy;
+	}
+
+	@Override
+	public final ID getId() {
+		return getField().getId();
 	}
 
 	@Override
@@ -54,7 +72,13 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return this.bodyIR;
 	}
 
-	public abstract MemberKey getKey();
+	public final Field getField() {
+		return this.field;
+	}
+
+	public final MemberKey getKey() {
+		return getField().getKey();
+	}
 
 	public final boolean isOmitted() {
 		if (this.omitted != 0) {
@@ -84,7 +108,9 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return getKey().getOrigin().toObject();
 	}
 
-	public abstract Obj getDefinedIn();
+	public final Obj getDefinedIn() {
+		return getField().getDefinedIn().toObject();
+	}
 
 	@Override
 	public T getInstance() {
@@ -130,7 +156,15 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	public void targetAllocated() {
 	}
 
-	protected abstract boolean mayOmit();
+	protected boolean mayOmit() {
+
+		final FieldAnalysis declarationAnalysis =
+				getField().toMember().getAnalysis().getDeclarationAnalysis();
+
+		return !declarationAnalysis.derivation().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_DERIVATION_USAGES);
+	}
 
 	protected abstract T getType();
 

@@ -28,9 +28,8 @@ import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.HostTargetOp;
-import org.o42a.core.ir.op.TargetOp;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.string.ID;
 
 
@@ -83,6 +82,49 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 				code.allocate(id, new AllocatableFldPtrs<>(this));
 
 		return new RealFldStoreOp<>(this, code.getAllocator(), ptrs);
+	}
+
+	protected final HostValueOp objectFldValueOp() {
+		return new ObjectFldValueOp(this);
+	}
+
+	private static final class ObjectFldValueOp implements HostValueOp {
+
+		private final FldOp<?, ?> fld;
+
+		ObjectFldValueOp(FldOp<?, ?> fld) {
+			this.fld = fld;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs) {
+			object(dirs).value().writeCond(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return object(dirs.dirs()).value().writeValue(dirs);
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			object(dirs).value().assign(dirs, value);
+		}
+
+		@Override
+		public String toString() {
+			if (this.fld == null) {
+				return super.toString();
+			}
+			return this.fld.toString();
+		}
+
+		private final ObjectOp object(CodeDirs dirs) {
+			return this.fld.materialize(
+					dirs,
+					tempObjHolder(dirs.getAllocator()));
+		}
+
 	}
 
 	private static final class OmittedFldStoreOp implements FldStoreOp {
