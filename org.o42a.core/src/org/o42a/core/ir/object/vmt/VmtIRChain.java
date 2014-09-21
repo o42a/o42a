@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.vmt;
 
-import static org.o42a.core.ir.object.VmtIR.VMT_ID;
+import static org.o42a.core.ir.object.vmt.VmtIR.VMT_ID;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;

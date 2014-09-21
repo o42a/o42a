@@ -31,6 +31,7 @@ import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
