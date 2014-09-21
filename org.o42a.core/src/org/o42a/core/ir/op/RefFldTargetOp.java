@@ -25,9 +25,9 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.object.Obj;
 
 

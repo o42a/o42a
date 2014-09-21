@@ -33,7 +33,7 @@ import org.o42a.analysis.use.UseFlag;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.object.dep.DepOp;
+import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;

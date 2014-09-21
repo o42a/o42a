@@ -20,7 +20,7 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.object.dep.DepOp;
+import org.o42a.core.ir.field.dep.DepOp;
 
 
 public interface RefTargetIR {
