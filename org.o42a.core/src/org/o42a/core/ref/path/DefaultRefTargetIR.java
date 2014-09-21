@@ -27,9 +27,9 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.*;
 
 

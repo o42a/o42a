@@ -20,9 +20,9 @@
 package org.o42a.core.ir.object.impl;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
+import static org.o42a.core.ir.field.dep.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.dep.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
 
 import org.o42a.codegen.code.Block;
@@ -31,10 +31,10 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.dep.DepOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.type.ValueIR;
