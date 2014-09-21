@@ -19,14 +19,14 @@
 */
 package org.o42a.core.ir.value.type;
 
-import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
+import static org.o42a.core.ir.object.desc.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.type.ValueTypeDescOp;
+import org.o42a.core.ir.object.desc.ValueTypeDescOp;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Init;
 

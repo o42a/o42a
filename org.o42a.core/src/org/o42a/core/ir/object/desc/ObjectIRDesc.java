@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.type;
+package org.o42a.core.ir.object.desc;
 
-import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
+import static org.o42a.core.ir.object.desc.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;

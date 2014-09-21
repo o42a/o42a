@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.type.ObjectIRDescOp;
+import org.o42a.core.ir.object.desc.ObjectIRDescOp;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValType;

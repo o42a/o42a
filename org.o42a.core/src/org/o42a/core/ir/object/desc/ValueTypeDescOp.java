@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.type;
+package org.o42a.core.ir.object.desc;
 
 import static org.o42a.core.ir.object.op.ByObjectFn.BY_OBJECT;
 import static org.o42a.core.ir.value.ValCopyFn.VAL_COPY;
