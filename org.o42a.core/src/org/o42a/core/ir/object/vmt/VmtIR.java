@@ -29,6 +29,7 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Sample;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.string.ID;
 
 
@@ -40,22 +41,32 @@ public class VmtIR extends Struct<VmtIROp> {
 	public static final ID VMT_ID = ID.id("vmt");
 
 	public static VmtIR vmtIR(ObjectIR objectIR) {
+		assert objectIR.getObject().assertFullyResolved();
+
+		final VmtIR derivedVmtIR = deriveVmtIR(objectIR);
+
+		if (derivedVmtIR != null) {
+			return derivedVmtIR;
+		}
+
+		return createVmtIR(objectIR);
+	}
+
+	private static VmtIR deriveVmtIR(ObjectIR objectIR) {
 
 		final Obj object = objectIR.getObject();
-
-		assert object.assertFullyResolved();
-
-		final Generator generator = objectIR.getGenerator();
 		final Obj lastDefinition = object.type().getLastDefinition();
 
 		if (!object.is(lastDefinition)) {
-			return lastDefinition.ir(generator).getVmtIR();
+			// Field definition is derived.
+			// Use the derived VMT.
+			return lastDefinition.ir(objectIR.getGenerator()).getVmtIR();
 		}
 
 		final Sample sample = object.type().getSample();
 
 		if (sample != null) {
-
+			// Reuse sample VMT if every VMT record is derived.
 			final VmtIR sampleVmtIR =
 					sample.getObject()
 					.ir(objectIR.getGenerator())
@@ -64,8 +75,33 @@ public class VmtIR extends Struct<VmtIROp> {
 			if (deriveVmtRecords(objectIR, sampleVmtIR)) {
 				return sampleVmtIR;
 			}
+
+			return null;
 		}
 
+		// An explicitly inherited object.
+		final TypeRef ancestor = object.type().getAncestor();
+
+		if (ancestor != null
+				&& ancestor.isStatic()
+				&& !ancestor.getType().getConstructionMode().isRuntime()) {
+			// Reuse static ancestor VMT if every VMT record is inherited.
+			final VmtIR ancestorVmtIR =
+					ancestor.getType()
+					.ir(objectIR.getGenerator())
+					.getVmtIR();
+
+			if (deriveVmtRecords(objectIR, ancestorVmtIR)) {
+				return ancestorVmtIR;
+			}
+		}
+
+		return null;
+	}
+
+	private static VmtIR createVmtIR(ObjectIR objectIR) {
+
+		final Generator generator = objectIR.getGenerator();
 		final VmtIR vmtIR = new VmtIR(objectIR);
 
 		if (objectIR.isSampleDeclaration()) {
@@ -88,13 +124,13 @@ public class VmtIR extends Struct<VmtIROp> {
 
 	private static boolean deriveVmtRecords(
 			ObjectIR objectIR,
-			VmtIR sampleVmtIR) {
+			VmtIR ascendantVmtIR) {
 		for (ObjectIRBody bodyIR : objectIR.bodies()) {
 			for (Fld<?, ?> fld : bodyIR.getFields()) {
 
 				final VmtRecord vmtRecord = fld.vmtRecord();
 
-				if (vmtRecord != null && !vmtRecord.derive(sampleVmtIR)) {
+				if (vmtRecord != null && !vmtRecord.derive(ascendantVmtIR)) {
 					return false;
 				}
 			}

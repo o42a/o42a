@@ -84,7 +84,11 @@ public abstract class RefVmtRecord<
 		@SuppressWarnings("unchecked")
 		final RefFld<F, T, C> derivedFld =
 				(RefFld<F, T, C>)
-				vmtIR.getObjectIR().bodies().fld(fld().getKey());
+				vmtIR.getObjectIR().bodies().findFld(fld().getKey());
+
+		if (derivedFld == null) {
+			return false;
+		}
 
 		this.vmtConstructor = derivedFld.vmtRecord().vmtConstructor();
 
