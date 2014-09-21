@@ -19,24 +19,22 @@
 */
 package org.o42a.core.ir.field;
 
-import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
+import static org.o42a.util.fn.NullableInit.nullableInit;
 
-import java.util.function.BiConsumer;
-
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.op.ObjectFn;
-import org.o42a.core.ir.object.op.ObjectSignature;
-import org.o42a.core.ir.object.vmt.VmtIROp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
+import org.o42a.util.fn.NullableInit;
 import org.o42a.util.string.ID;
 
 
@@ -48,20 +46,15 @@ public abstract class RefFld<
 
 	public static final StatefulType STATEFUL_FLD = new StatefulType();
 
-	public static final ID FLD_CTR_ID = ID.id("fctr");
-	public static final ID CONSTRUCT_ID = ID.rawId("construct");
-	public static final ID CLONE_ID = ID.rawId("clone");
-
 	private final Obj target;
 	private final Obj targetAscendant;
+	private final NullableInit<RefVmtRecord<F, T, C>> vmtRecord =
+			nullableInit(() -> isOmitted() ? null : createVmtRecord());
 
 	private boolean targetIRAllocated;
 	private boolean filling;
 	private boolean filledFields;
 	private boolean filledAll;
-
-	private FuncRec<C> vmtConstructor;
-	private FuncPtr<C> constructor;
 
 	public RefFld(
 			ObjectIRBody bodyIR,
@@ -90,21 +83,8 @@ public abstract class RefFld<
 	}
 
 	@Override
-	public void allocateMethods(SubData<VmtIROp> vmt) {
-		if (isOmitted()) {
-			return;
-		}
-		this.vmtConstructor = vmt.addFuncPtr(
-				getId().detail("constructor"),
-				getConstructorSignature());
-	}
-
-	@Override
-	public void fillMethods() {
-		if (isOmitted()) {
-			return;
-		}
-		vmtConstructor().setConstant(true).setValue(constructor());
+	public final RefVmtRecord<F, T, C> vmtRecord() {
+		return this.vmtRecord.get();
 	}
 
 	@Override
@@ -117,26 +97,6 @@ public abstract class RefFld<
 		this.targetIRAllocated = true;
 		// target object is allocated - fill it
 		fill(false, true);
-	}
-
-	protected FuncPtr<C> reuseConstructor() {
-		if (getField().isUpdated()) {
-			return null;
-		}
-
-		// Field is a clone of overridden one.
-		// Reuse constructor from overridden field.
-		final Field lastDefinition = getField().getLastDefinition();
-		final Obj overriddenOwner =
-				lastDefinition.getEnclosingScope().toObject();
-		final ObjectIR overriddenOwnerIR =
-				overriddenOwner.ir(getGenerator());
-		@SuppressWarnings("unchecked")
-		final RefFld<F, T, C> overriddenFld =
-				(RefFld<F, T, C>) overriddenOwnerIR.bodies()
-				.fld(getField().getKey());
-
-		return overriddenFld.cloneFunc();
 	}
 
 	protected void fill() {
@@ -155,10 +115,6 @@ public abstract class RefFld<
 		}
 	}
 
-	protected abstract ObjectSignature<C> getConstructorSignature();
-
-	protected abstract void buildConstructor(ObjBuilder builder, CodeDirs dirs);
-
 	protected abstract Obj targetType(Obj bodyType);
 
 	@Override
@@ -171,45 +127,10 @@ public abstract class RefFld<
 		return instance -> fillDummy();
 	}
 
+	protected abstract RefVmtRecord<F, T, C> createVmtRecord();
+
 	@Override
 	protected abstract RefFldOp<F, T, C> op(Code code, ObjOp host, F ptr);
-
-	protected final FuncPtr<C> constructor() {
-		if (this.constructor != null) {
-			return this.constructor;
-		}
-		assert !getBodyIR().bodies().isTypeBodies() :
-			"Can not build constructor for type field " + this;
-		if (isDummy()) {
-			return this.constructor =
-					getGenerator()
-					.getFunctions()
-					.nullPtr(getConstructorSignature());
-		}
-
-		final FuncPtr<C> reusedConstructor = reuseConstructor();
-
-		if (reusedConstructor != null) {
-			return this.constructor = reusedConstructor;
-		}
-
-		return this.constructor = getGenerator().newFunction().create(
-				getField().getId().detail(CONSTRUCT_ID),
-				getConstructorSignature(),
-				new ConstructorBuilder(this::buildConstructor)).getPointer();
-	}
-
-	protected FuncPtr<C> cloneFunc() {
-		return constructor();
-	}
-
-	protected final FuncRec<C> vmtConstructor() {
-		assert this.vmtConstructor != null :
-			"Constructor of " + this + " is not allocated in VMT";
-		return this.vmtConstructor;
-	}
-
-	protected abstract FuncPtr<C> constructorStub();
 
 	private void fillTarget() {
 		if (getType().isStateless()) {
@@ -417,40 +338,6 @@ public abstract class RefFld<
 		@Override
 		public String toString() {
 			return "Decls[" + this.fld + ']';
-		}
-
-	}
-
-	protected final class ConstructorBuilder implements FunctionBuilder<C> {
-
-		private final BiConsumer<ObjBuilder, CodeDirs> build;
-
-		public ConstructorBuilder(BiConsumer<ObjBuilder, CodeDirs> build) {
-			this.build = build;
-		}
-
-		@Override
-		public void build(Function<C> constructor) {
-
-			final Block failure = constructor.addBlock("failure");
-			final ObjBuilder builder = new ObjBuilder(
-					constructor,
-					failure.head(),
-					getObjectIR(),
-					COMPATIBLE);
-			final CodeDirs dirs = builder.dirs(constructor, failure.head());
-			final CodeDirs subDirs =
-					dirs.begin(
-							CONSTRUCT_ID,
-							"Constructing field `" + getField() + "`");
-
-			this.build.accept(builder, subDirs);
-
-			subDirs.done();
-
-			if (failure.exists()) {
-				failure.nullDataPtr().returnValue(failure);
-			}
 		}
 
 	}

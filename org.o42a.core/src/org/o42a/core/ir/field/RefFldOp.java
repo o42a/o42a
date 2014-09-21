@@ -146,7 +146,7 @@ public abstract class RefFldOp<
 				vmtc.vmt(null, code)
 				.load(null, code)
 				.to(VMT_ID, code, fld().getObjectIR().getVmtIR())
-				.func(null, code, fld().vmtConstructor())
+				.func(null, code, fld().vmtRecord().vmtConstructor())
 				.load(null, code);
 
 		code.dumpName("Constructor: ", constructor);

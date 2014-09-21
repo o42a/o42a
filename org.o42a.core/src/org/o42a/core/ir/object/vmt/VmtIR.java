@@ -109,9 +109,15 @@ public class VmtIR extends Struct<VmtIROp> {
 				TERMINATOR_ID,
 				VMT_IR_CHAIN_TYPE,
 				new VmtTerminator(data));
+
 		for (ObjectIRBody bodyIR : getObjectIR().bodies()) {
 			for (Fld<?, ?> fld : bodyIR.getFields()) {
-				fld.allocateMethods(data);
+
+				final VmtRecord vmtRecord = fld.vmtRecord();
+
+				if (vmtRecord != null) {
+					vmtRecord.allocateMethods(data);
+				}
 			}
 		}
 	}
@@ -120,10 +126,17 @@ public class VmtIR extends Struct<VmtIROp> {
 	protected void fill() {
 		size()
 		.setConstant(true)
-		.setLowLevel(true).setValue(() -> layout(getGenerator()).size());
+		.setLowLevel(true)
+		.setValue(() -> layout(getGenerator()).size());
+
 		for (ObjectIRBody bodyIR : getObjectIR().bodies()) {
 			for (Fld<?, ?> fld : bodyIR.getFields()) {
-				fld.fillMethods();
+
+				final VmtRecord vmtRecord = fld.vmtRecord();
+
+				if (vmtRecord != null) {
+					vmtRecord.fillMethods();
+				}
 			}
 		}
 	}
@@ -141,6 +154,7 @@ public class VmtIR extends Struct<VmtIROp> {
 			instance.vmt()
 			.setConstant(true)
 			.setValue(this.vmt.getPointer().toData());
+
 			instance.prev().setConstant(true).setNull();
 		}
 
