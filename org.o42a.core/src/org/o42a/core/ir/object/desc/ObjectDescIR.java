@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.type;
+package org.o42a.core.ir.object.desc;
 
-import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.desc.ObjectIRDesc.OBJECT_DESC_TYPE;
 
 import java.util.Collection;
 

@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
-import static org.o42a.core.ir.object.type.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.desc.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
@@ -29,7 +29,7 @@ import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.type.ObjectIRDescOp;
+import org.o42a.core.ir.object.desc.ObjectIRDescOp;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.object.vmt.VmtIRChain.Op;
 import org.o42a.core.ir.value.ObjectValueFn;

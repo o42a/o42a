@@ -29,7 +29,7 @@ import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.data.RelPtr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.type.ObjectIRDescOp;
+import org.o42a.core.ir.object.desc.ObjectIRDescOp;
 import org.o42a.core.ir.op.DefiniteIROp;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.object.Obj;

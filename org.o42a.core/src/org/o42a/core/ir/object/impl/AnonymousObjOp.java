@@ -23,7 +23,7 @@ import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.field.dep.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
+import static org.o42a.core.ir.object.desc.AscendantDescIR.ASCENDANT_DESC_IR;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;

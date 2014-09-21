@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2014 Ruslan Lopatin
+    Copyright (C) 2012-2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,22 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.impl;
+package org.o42a.core.ir.object.desc;
 
-import org.o42a.codegen.code.op.DataOp;
+import static org.o42a.core.ir.object.desc.FieldDescIR.FIELD_DESC_IR;
+
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.op.RelList;
+import org.o42a.util.string.ID;
 
 
-public class ObjectIRDeps extends RelList<Ptr<DataOp>> {
+final class ObjectIRFields extends RelList<FieldDescIR> {
+
+	private static final ID PREFIX_ID = ID.id("field");
 
 	@Override
 	protected Ptr<?> allocateItem(
 			SubData<?> data,
 			int index,
-			Ptr<DataOp> item) {
-		throw new UnsupportedOperationException();
+			FieldDescIR item) {
+
+		final FldIR<?, ?> fld = item.fld();
+		final ID id = PREFIX_ID.detail(fld.getId().getLocal());
+		final FieldDescIR.Type desc =
+				data.addNewInstance(id, FIELD_DESC_IR, item);
+
+		return desc.data(data.getGenerator()).getPointer();
 	}
 
 }

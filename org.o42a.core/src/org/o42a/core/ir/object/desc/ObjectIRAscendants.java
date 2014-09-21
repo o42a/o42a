@@ -17,31 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.type;
+package org.o42a.core.ir.object.desc;
 
-import static org.o42a.core.ir.object.type.FieldDescIR.FIELD_DESC_IR;
+import static org.o42a.core.ir.object.desc.AscendantDescIR.ASCENDANT_DESC_IR;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
 
-final class ObjectIRFields extends RelList<FieldDescIR> {
+final class ObjectIRAscendants extends RelList<ObjectIRBody> {
 
-	private static final ID PREFIX_ID = ID.id("field");
+	private static final ID PREFIX_ID = ID.id("ascendant");
 
 	@Override
 	protected Ptr<?> allocateItem(
 			SubData<?> data,
 			int index,
-			FieldDescIR item) {
+			ObjectIRBody item) {
 
-		final FldIR<?, ?> fld = item.fld();
-		final ID id = PREFIX_ID.detail(fld.getId().getLocal());
-		final FieldDescIR.Type desc =
-				data.addNewInstance(id, FIELD_DESC_IR, item);
+		final Generator generator = item.getGenerator();
+		final ID id = PREFIX_ID.detail(
+				item.getSampleDeclaration().ir(generator).getId());
+		final AscendantDescIR.Type desc = data.addNewInstance(
+				id,
+				ASCENDANT_DESC_IR,
+				new AscendantDescIR(item));
 
 		return desc.data(data.getGenerator()).getPointer();
 	}
