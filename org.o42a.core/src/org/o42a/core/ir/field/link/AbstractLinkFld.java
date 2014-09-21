@@ -20,26 +20,20 @@
 package org.o42a.core.ir.field.link;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
-import org.o42a.core.ir.field.ObjectRefFld;
 import org.o42a.core.ir.field.RefFld;
-import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.TypeParameters;
 
 
 public abstract class AbstractLinkFld<
 		F extends RefFld.Op<F>,
 		T extends RefFld.Type<F>>
-				extends ObjectRefFld<F, T> {
+				extends RefFld<F, T, ObjectRefFn> {
 
 	public AbstractLinkFld(
 			ObjectIRBody bodyIR,
@@ -74,44 +68,6 @@ public abstract class AbstractLinkFld<
 				.toLinkType()
 				.interfaceRef(parameters)
 				.getType();
-	}
-
-	protected ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
-
-		final Obj object = getField().toObject();
-
-		assert object.type().getValueType().isLink() :
-			"Not a link: " + this;
-
-		final TypeParameters<?> parameters = object.type().getParameters();
-		final Definitions definitions = object.value().getDefinitions();
-		final DefTarget target = definitions.target();
-
-		assert target.exists() :
-			"Link target can not be constructed";
-
-		if (target.isUnknown()) {
-			dirs.code().go(dirs.falseDir());
-			return builder.getContext()
-					.getNone()
-					.ir(getGenerator())
-					.op(builder, dirs.code());
-		}
-
-		// Links and variables should trap the object before returning
-		// to the caller.
-		return target.getRef()
-				.op(builder.host())
-				.path()
-				.target()
-				.materialize(dirs, objTrap())
-				.cast(
-						null,
-						dirs,
-						parameters.getValueType()
-						.toLinkType()
-						.interfaceRef(parameters)
-						.getType());
 	}
 
 }

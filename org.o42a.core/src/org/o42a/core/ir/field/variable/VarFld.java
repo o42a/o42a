@@ -19,26 +19,15 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.core.ir.field.*;
+import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
 import org.o42a.core.ir.field.link.AbstractLinkFld;
-import org.o42a.core.ir.field.object.FldCtrOp;
-import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.op.ObjectRefFn;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
@@ -75,38 +64,8 @@ public class VarFld extends AbstractLinkFld<StatefulOp, StatefulType> {
 	}
 
 	@Override
-	protected FuncPtr<ObjectRefFn> constructorStub() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_ref_stub", getConstructorSignature());
-	}
-
-	@Override
-	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
-
-		final Block code = dirs.code();
-		final FldOp<StatefulOp, StatefulType> fld = op(code, builder.host());
-		final FldCtrOp ctr =
-				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
-
-		final Block constructed = code.addBlock("constructed");
-
-		ctr.start(code, fld).goUnless(code, constructed.head());
-
-		fld.ptr()
-		.object(null, constructed)
-		.load(null, constructed, ATOMIC)
-		.toData(null, constructed)
-		.returnValue(constructed);
-
-		final DataOp res = construct(builder, dirs).toData(null, code);
-		final DataRecOp objectRec =
-				op(code, builder.host()).ptr().object(null, code);
-
-		objectRec.store(code, res, ACQUIRE_RELEASE);
-		ctr.finish(code, fld);
-
-		res.returnValue(code);
+	protected VarVmtRecord createVmtRecord() {
+		return new VarVmtRecord(this);
 	}
 
 	@Override

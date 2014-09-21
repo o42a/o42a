@@ -31,7 +31,7 @@ import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.vmt.VmtIROp;
+import org.o42a.core.ir.object.vmt.VmtRecord;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -73,11 +73,8 @@ public final class OwnerFld
 	}
 
 	@Override
-	public void allocateMethods(SubData<VmtIROp> vmt) {
-	}
-
-	@Override
-	public void fillMethods() {
+	public VmtRecord vmtRecord() {
+		return null;
 	}
 
 	@Override

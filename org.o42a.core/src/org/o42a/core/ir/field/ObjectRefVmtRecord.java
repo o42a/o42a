@@ -26,43 +26,38 @@ import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.object.vmt.VmtIROp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.object.Obj;
+import org.o42a.util.fn.Init;
 
 
-public abstract class ObjectRefFld<
+public abstract class ObjectRefVmtRecord<
 		F extends RefFld.Op<F>,
 		T extends RefFld.Type<F>>
-				extends RefFld<F, T, ObjectRefFn> {
+				extends RefVmtRecord<F, T, ObjectRefFn> {
 
-	private FuncPtr<ObjectRefFn> cloneFunc;
+	private final Init<FuncPtr<ObjectRefFn>> cloneFunc =
+			Init.init(this::createCloneFunc);
 
-	public ObjectRefFld(
-			ObjectIRBody bodyIR,
-			Field field,
-			boolean dummy,
-			Obj target,
-			Obj targetAscendant) {
-		super(bodyIR, field, dummy, target, targetAscendant);
+	public ObjectRefVmtRecord(RefFld<F, T, ObjectRefFn> fld) {
+		super(fld);
 	}
 
 	@Override
-	protected final ObjectRefFn.Signature getConstructorSignature() {
+	public final ObjectRefFn.Signature getConstructorSignature() {
 		return OBJECT_REF;
 	}
 
 	@Override
 	protected FuncPtr<ObjectRefFn> cloneFunc() {
-		if (this.cloneFunc != null) {
-			return this.cloneFunc;
-		}
-		return this.cloneFunc = getGenerator().newFunction().create(
-				getField().getId().detail(CLONE_ID),
+		return this.cloneFunc.get();
+	}
+
+	private FuncPtr<ObjectRefFn> createCloneFunc() {
+		return getGenerator().newFunction().create(
+				fld().getField().getId().detail(CLONE_ID),
 				getConstructorSignature(),
 				new ConstructorBuilder(this::buildCloneFunc)).getPointer();
 	}
@@ -86,7 +81,7 @@ public abstract class ObjectRefFld<
 
 		final Block delegate = refer.otherwise();
 		final VmtIROp prevVmt =
-				prevVmtc.loadVmt(delegate, getObjectIR().getVmtIR());
+				prevVmtc.loadVmt(delegate, fld().getObjectIR().getVmtIR());
 
 		prevVmt.compatible(delegate).goUnless(delegate, refer.head());
 		prevVmt.func(null, delegate, vmtConstructor())

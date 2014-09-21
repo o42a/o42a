@@ -30,7 +30,7 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBodies;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.vmt.VmtIROp;
+import org.o42a.core.ir.object.vmt.VmtRecord;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
@@ -130,9 +130,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return (Fld<F, T>) bodies.fld(getKey());
 	}
 
-	public abstract void allocateMethods(SubData<VmtIROp> vmt);
-
-	public abstract void fillMethods();
+	public abstract VmtRecord vmtRecord();
 
 	public final FldOp<F, T> op(Code code, ObjOp host) {
 		return op(

@@ -19,15 +19,12 @@
 */
 package org.o42a.core.ir.field.link;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld.StatelessOp;
 import org.o42a.core.ir.field.RefFld.StatelessType;
-import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.op.ObjectRefFn;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
@@ -59,18 +56,8 @@ public class LinkFld extends AbstractLinkFld<StatelessOp, StatelessType> {
 	}
 
 	@Override
-	protected FuncPtr<ObjectRefFn> constructorStub() {
-		throw new IllegalStateException(
-				"The link constructor can not be a stub");
-	}
-
-	@Override
-	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
-
-		final Block code = dirs.code();
-		final ObjectOp result = construct(builder, dirs);
-
-		result.toData(null, code).returnValue(code);
+	protected LinkVmtRecord createVmtRecord() {
+		return new LinkVmtRecord(this);
 	}
 
 	@Override
