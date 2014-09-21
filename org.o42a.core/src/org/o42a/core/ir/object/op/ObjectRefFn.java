@@ -19,13 +19,13 @@
 */
 package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.object.VmtIRChain.VMT_IR_CHAIN_TYPE;
+import static org.o42a.core.ir.object.vmt.VmtIRChain.VMT_IR_CHAIN_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.VmtIRChain;
+import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.util.string.ID;
 
 

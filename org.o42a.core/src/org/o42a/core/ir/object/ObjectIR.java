@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.VmtIR.vmtIR;
 import static org.o42a.core.ir.object.type.ObjectDescIR.objectDescIR;
+import static org.o42a.core.ir.object.vmt.VmtIR.vmtIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 import static org.o42a.util.fn.Init.init;
 
@@ -31,6 +31,7 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.type.ObjectDescIR;
+import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.object.Obj;
 import org.o42a.util.fn.Init;

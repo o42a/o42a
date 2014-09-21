@@ -32,6 +32,7 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.object.op.ObjectSignature;
+import org.o42a.core.ir.object.vmt.VmtIROp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.member.field.Field;

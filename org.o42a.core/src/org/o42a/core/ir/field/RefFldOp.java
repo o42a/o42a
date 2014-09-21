@@ -21,8 +21,8 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.VmtIR.VMT_ID;
 import static org.o42a.core.ir.object.op.ObjHolder.useVar;
+import static org.o42a.core.ir.object.vmt.VmtIR.VMT_ID;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -30,10 +30,12 @@ import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.VmtIRChain.Op;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectFn;
+import org.o42a.core.ir.object.vmt.VmtIRChain.Op;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;

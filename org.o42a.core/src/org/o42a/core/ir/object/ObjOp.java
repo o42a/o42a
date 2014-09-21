@@ -34,6 +34,7 @@ import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.object.dep.DepIR;
 import org.o42a.core.ir.object.dep.DepOp;
+import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
