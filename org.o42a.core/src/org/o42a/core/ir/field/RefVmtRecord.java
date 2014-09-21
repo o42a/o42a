@@ -32,6 +32,7 @@ import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.object.op.ObjectSignature;
+import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.ir.object.vmt.VmtIROp;
 import org.o42a.core.ir.object.vmt.VmtRecord;
 import org.o42a.core.ir.op.CodeDirs;
@@ -75,8 +76,22 @@ public abstract class RefVmtRecord<
 	}
 
 	@Override
-	public final boolean isDerived() {
-		return this.constructor.get().isDerived();
+	public boolean derive(VmtIR vmtIR) {
+		if (!this.constructor.get().isDerived()) {
+			return false;
+		}
+
+		@SuppressWarnings("unchecked")
+		final RefFld<F, T, C> derivedFld =
+				(RefFld<F, T, C>)
+				vmtIR.getObjectIR().bodies().fld(fld().getKey());
+
+		this.vmtConstructor = derivedFld.vmtRecord().vmtConstructor();
+
+		assert this.vmtConstructor != null :
+			"Derived constructor of " + this + " is not allocated in VMT";
+
+		return true;
 	}
 
 	@Override

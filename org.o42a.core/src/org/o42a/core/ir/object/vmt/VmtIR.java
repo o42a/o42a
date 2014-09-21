@@ -28,6 +28,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.type.Sample;
 import org.o42a.util.string.ID;
 
 
@@ -51,24 +52,54 @@ public class VmtIR extends Struct<VmtIROp> {
 			return lastDefinition.ir(generator).getVmtIR();
 		}
 
+		final Sample sample = object.type().getSample();
+
+		if (sample != null) {
+
+			final VmtIR sampleVmtIR =
+					sample.getObject()
+					.ir(objectIR.getGenerator())
+					.getVmtIR();
+
+			if (deriveVmtRecords(objectIR, sampleVmtIR)) {
+				return sampleVmtIR;
+			}
+		}
+
 		final VmtIR vmtIR = new VmtIR(objectIR);
 
 		if (objectIR.isSampleDeclaration()) {
 			generator.newGlobal().struct(vmtIR);
-		} else {
-
-			final VmtIR sampleVmtIR =
-					objectIR.getSampleDeclaration().ir(generator).getVmtIR();
-			final Content<VmtIR> content = structContent();
-
-			generator.newGlobal().instance(
-					vmtIR.getId(),
-					sampleVmtIR,
-					vmtIR,
-					content);
+			return vmtIR;
 		}
 
+		final VmtIR sampleVmtIR =
+				objectIR.getSampleDeclaration().ir(generator).getVmtIR();
+		final Content<VmtIR> content = structContent();
+
+		generator.newGlobal().instance(
+				vmtIR.getId(),
+				sampleVmtIR,
+				vmtIR,
+				content);
+
 		return vmtIR;
+	}
+
+	private static boolean deriveVmtRecords(
+			ObjectIR objectIR,
+			VmtIR sampleVmtIR) {
+		for (ObjectIRBody bodyIR : objectIR.bodies()) {
+			for (Fld<?, ?> fld : bodyIR.getFields()) {
+
+				final VmtRecord vmtRecord = fld.vmtRecord();
+
+				if (vmtRecord != null && !vmtRecord.derive(sampleVmtIR)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	private final ObjectIR objectIR;
