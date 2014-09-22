@@ -327,11 +327,11 @@ final class MemberStep extends AbstractMemberStep {
 		}
 
 		@Override
-		protected ObjectOp copyObject(CodeDirs dirs, TargetStoreOp store) {
+		protected ObjectOp loadOwner(CodeDirs dirs, TargetStoreOp store) {
 
 			final FldStoreOp memberStore = (FldStoreOp) store;
 
-			return memberStore.loadObject(dirs);
+			return memberStore.loadOwner(dirs);
 		}
 
 		@Override

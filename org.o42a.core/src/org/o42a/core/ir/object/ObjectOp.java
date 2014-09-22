@@ -163,6 +163,10 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
 	public abstract ObjOp cast(ID id, CodeDirs dirs, Obj ascendant);
 
+	public final ObjOp castToWellKnown(ID id, CodeDirs dirs) {
+		return cast(id, dirs, getWellKnownType());
+	}
+
 	@Override
 	public abstract ValueOp value();
 
