@@ -30,6 +30,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.st.sentence.Statements;
 
 
@@ -57,6 +58,13 @@ final class GroupRegistry
 		return registry().newAlias(
 				declaration.inGroup(getGroupId()),
 				ref);
+	}
+
+	@Override
+	public FieldBuilder newLocal(FieldDeclaration declaration, Local local) {
+		return registry().newLocal(
+				declaration.inGroup(getGroupId()),
+				local);
 	}
 
 	@Override

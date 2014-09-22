@@ -28,6 +28,7 @@ import org.o42a.core.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.MemberPropagatedFromID;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
@@ -159,6 +160,8 @@ public abstract class Member extends Contained {
 	public abstract MemberTypeParameter toTypeParameter();
 
 	public abstract MemberField toField();
+
+	public abstract MemberLocal toLocal();
 
 	public abstract MemberClause toClause();
 

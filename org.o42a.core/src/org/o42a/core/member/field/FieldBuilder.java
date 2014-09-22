@@ -26,9 +26,12 @@ import org.o42a.core.member.alias.AliasDeclarationStatement;
 import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.decl.DeclaredMemberField;
 import org.o42a.core.member.field.decl.FieldDeclarationStatement;
+import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.member.local.impl.LocalDeclarationStatement;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.sentence.Local;
 
 
 public final class FieldBuilder implements ContainerInfo {
@@ -37,27 +40,54 @@ public final class FieldBuilder implements ContainerInfo {
 	private final FieldDeclaration declaration;
 	private final FieldDefinition definition;
 	private final Ref ref;
+	private final Local local;
 
 	public FieldBuilder(
 			MemberRegistry memberRegistry,
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
+		assert memberRegistry != null :
+			"Member registry not specified";
+		assert definition != null :
+			"Field definition not specified";
+		assert declaration.assertSameScope(definition);
 		this.memberRegistry = memberRegistry;
 		this.declaration = declaration;
 		this.definition = definition;
 		this.ref = null;
-		assert declaration.assertSameScope(definition);
+		this.local = null;
 	}
 
 	public FieldBuilder(
 			MemberRegistry memberRegistry,
 			FieldDeclaration declaration,
 			Ref ref) {
+		assert memberRegistry != null :
+			"Member registry not specified";
+		assert ref != null :
+			"Aliased reference not specified";
+		assert declaration.assertSameScope(ref);
 		this.memberRegistry = memberRegistry;
 		this.declaration = declaration;
 		this.definition = null;
 		this.ref = ref;
-		assert declaration.assertSameScope(ref);
+		this.local = null;
+	}
+
+	public FieldBuilder(
+			MemberRegistry memberRegistry,
+			FieldDeclaration declaration,
+			Local local) {
+		assert memberRegistry != null :
+			"Member registry not specified";
+		assert local != null :
+			"Local not specified";
+		assert declaration.assertSameScope(local);
+		this.memberRegistry = memberRegistry;
+		this.declaration = declaration;
+		this.definition = null;
+		this.ref = null;
+		this.local = local;
 	}
 
 	public final Obj getMemberOwner() {
@@ -72,12 +102,20 @@ public final class FieldBuilder implements ContainerInfo {
 		return this.ref != null;
 	}
 
+	public final boolean isLocal() {
+		return this.local != null;
+	}
+
 	public final FieldDefinition getDefinition() {
 		return this.definition;
 	}
 
 	public final Ref getRef() {
 		return this.ref;
+	}
+
+	public final Local getLocal() {
+		return this.local;
 	}
 
 	@Override
@@ -105,23 +143,20 @@ public final class FieldBuilder implements ContainerInfo {
 		return this.declaration.distributeIn(container);
 	}
 
-	public DeclarationStatement build() {
+	public final DeclarationStatement build() {
 		if (isAlias()) {
 			return declareAlias();
+		}
+		if (isLocal()) {
+			return declareLocal();
 		}
 		return declareField();
 	}
 
-	private DeclarationStatement declareField() {
-
-		final DeclaredMemberField member = new DeclaredMemberField(this);
-
-		this.memberRegistry.declareMember(member);
-
-		final FieldDeclarationStatement statement =
-				new FieldDeclarationStatement(this, member);
-
-		return statement;
+	@Override
+	public String toString() {
+		return "FieldBuilder[" + this.declaration + "]:"
+				+ (this.definition != null ? this.definition : this.ref);
 	}
 
 	private DeclarationStatement declareAlias() {
@@ -136,10 +171,28 @@ public final class FieldBuilder implements ContainerInfo {
 		return statement;
 	}
 
-	@Override
-	public String toString() {
-		return "FieldBuilder[" + this.declaration + "]:"
-				+ (this.definition != null ? this.definition : this.ref);
+	private DeclarationStatement declareLocal() {
+
+		final MemberLocal member = new MemberLocal(this);
+
+		this.memberRegistry.declareMember(member);
+
+		final LocalDeclarationStatement statement =
+				new LocalDeclarationStatement(this, member);
+
+		return statement;
+	}
+
+	private DeclarationStatement declareField() {
+
+		final DeclaredMemberField member = new DeclaredMemberField(this);
+
+		this.memberRegistry.declareMember(member);
+
+		final FieldDeclarationStatement statement =
+				new FieldDeclarationStatement(this, member);
+
+		return statement;
 	}
 
 }

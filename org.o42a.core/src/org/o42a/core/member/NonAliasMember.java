@@ -22,13 +22,16 @@ package org.o42a.core.member;
 import static org.o42a.core.ref.path.Path.staticPath;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Local;
 
 
-public abstract class NonAliasMember extends Member implements MemberPath {
+public abstract class NonAliasMember extends Member {
+
+	private final NonAliasPath memberPath = new NonAliasPath(this);
 
 	public NonAliasMember(
 			LocationInfo location,
@@ -38,26 +41,54 @@ public abstract class NonAliasMember extends Member implements MemberPath {
 	}
 
 	@Override
-	public MemberPath getMemberPath() {
-		return this;
+	public final MemberPath getMemberPath() {
+		return this.memberPath;
 	}
 
 	@Override
-	public final Path pathToMember() {
-		if (isStatic()) {
-			return staticPath(getScope(), getScope()).append(getMemberKey());
+	public final boolean isAlias() {
+		return false;
+	}
+
+	private static final class NonAliasPath implements MemberPath {
+
+		private final NonAliasMember member;
+
+		NonAliasPath(NonAliasMember member) {
+			this.member = member;
 		}
-		return getMemberKey().toPath();
-	}
 
-	@Override
-	public final Member toMember() {
-		return this;
-	}
+		@Override
+		public final Path pathToMember() {
+			if (this.member.isStatic()) {
 
-	@Override
-	public final Local toLocal() {
-		return null;
+				final Scope scope = this.member.getScope();
+
+				return staticPath(scope, scope)
+						.append(this.member.getMemberKey());
+			}
+
+			return this.member.getMemberKey().toPath();
+		}
+
+		@Override
+		public final Member toMember() {
+			return this.member;
+		}
+
+		@Override
+		public final Local toLocal() {
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			if (this.member == null) {
+				return super.toString();
+			}
+			return this.member.toString();
+		}
+
 	}
 
 }

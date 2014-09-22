@@ -32,6 +32,7 @@ import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.*;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.FullResolver;
@@ -42,12 +43,13 @@ import org.o42a.core.st.sentence.Local;
 import org.o42a.util.fn.Init;
 
 
-public class MemberAlias extends Member implements MemberPath {
+public final class MemberAlias extends Member {
 
 	private final MemberRegistry registry;
 	private final FieldDeclaration declaration;
 	private final Ref originalRef;
 	private final MemberAlias propagatedFrom;
+	private final AliasPath memberPath = new AliasPath(this);
 	private final Init<AliasRef> aliasRef =
 			init(() -> coalesce(detectAliasRef(), this::createAliasField));
 	private final Init<Visibility> visibility =
@@ -96,7 +98,7 @@ public class MemberAlias extends Member implements MemberPath {
 	}
 
 	@Override
-	public MemberId getMemberId() {
+	public final MemberId getMemberId() {
 		return getDeclaration().getMemberId();
 	}
 
@@ -105,42 +107,42 @@ public class MemberAlias extends Member implements MemberPath {
 	}
 
 	@Override
-	public MemberKey getMemberKey() {
+	public final MemberKey getMemberKey() {
 		return getFieldKey().getMemberKey();
 	}
 
 	@Override
-	public MemberPath getMemberPath() {
-		return this;
+	public final MemberPath getMemberPath() {
+		return this.memberPath;
 	}
 
 	@Override
-	public Visibility getVisibility() {
+	public final Visibility getVisibility() {
 		return this.visibility.get();
 	}
 
 	@Override
-	public boolean isOverride() {
+	public final boolean isOverride() {
 		return this.propagatedFrom != null;
 	}
 
 	@Override
-	public Member getPropagatedFrom() {
+	public final Member getPropagatedFrom() {
 		return this.propagatedFrom;
 	}
 
 	@Override
-	public boolean isAlias() {
+	public final boolean isAlias() {
 		return true;
 	}
 
 	@Override
-	public MemberTypeParameter toTypeParameter() {
+	public final MemberTypeParameter toTypeParameter() {
 		return null;
 	}
 
 	@Override
-	public MemberField toField() {
+	public final MemberField toField() {
 
 		final MemberRef aliasedField = getAliasedField();
 
@@ -148,7 +150,12 @@ public class MemberAlias extends Member implements MemberPath {
 	}
 
 	@Override
-	public MemberClause toClause() {
+	public final MemberLocal toLocal() {
+		return null;
+	}
+
+	@Override
+	public final MemberClause toClause() {
 		return null;
 	}
 
@@ -173,22 +180,7 @@ public class MemberAlias extends Member implements MemberPath {
 	}
 
 	@Override
-	public Path pathToMember() {
-		return getRef().getPath().getPath();
-	}
-
-	@Override
-	public Member toMember() {
-		return this;
-	}
-
-	@Override
-	public Local toLocal() {
-		return null;
-	}
-
-	@Override
-	public Member propagateTo(Obj owner) {
+	public MemberAlias propagateTo(Obj owner) {
 		return new MemberAlias(owner, this);
 	}
 
@@ -246,6 +238,39 @@ public class MemberAlias extends Member implements MemberPath {
 		this.registry.declareMember(alias);
 
 		return new AliasRef(this, alias);
+	}
+
+	private static final class AliasPath implements MemberPath {
+
+		private final MemberAlias alias;
+
+		AliasPath(MemberAlias alias) {
+			this.alias = alias;
+		}
+
+		@Override
+		public Path pathToMember() {
+			return this.alias.getRef().getPath().getPath();
+		}
+
+		@Override
+		public Member toMember() {
+			return this.alias;
+		}
+
+		@Override
+		public Local toLocal() {
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			if (this.alias == null) {
+				return super.toString();
+			}
+			return this.alias.toString();
+		}
+
 	}
 
 	private static final class AliasRef {

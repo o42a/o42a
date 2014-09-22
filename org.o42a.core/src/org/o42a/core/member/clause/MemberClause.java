@@ -25,6 +25,7 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.util.fn.Init;
@@ -88,13 +89,13 @@ public abstract class MemberClause extends NonAliasMember {
 	}
 
 	@Override
-	public final MemberClause toClause() {
-		return this;
+	public final MemberLocal toLocal() {
+		return null;
 	}
 
 	@Override
-	public final boolean isAlias() {
-		return false;
+	public final MemberClause toClause() {
+		return this;
 	}
 
 	@Override

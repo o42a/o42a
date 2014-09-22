@@ -108,7 +108,11 @@ public class TypeDefinitionBuilder
 
 	@Override
 	public MemberPath member(Access access, MemberId memberId, Obj declaredIn) {
-		return findTypeParameter(memberId, declaredIn);
+
+		final MemberTypeParameter typeParameter =
+				findTypeParameter(memberId, declaredIn);
+
+		return typeParameter != null ? typeParameter.getMemberPath() : null;
 	}
 
 	@Override
@@ -116,7 +120,11 @@ public class TypeDefinitionBuilder
 			Access access,
 			MemberId memberId,
 			Obj declaredIn) {
-		return findTypeParameter(memberId, declaredIn);
+
+		final MemberTypeParameter typeParameter =
+				findTypeParameter(memberId, declaredIn);
+
+		return typeParameter != null ? typeParameter.getMemberPath() : null;
 	}
 
 	public final AccessDistributor distributeAccess() {
