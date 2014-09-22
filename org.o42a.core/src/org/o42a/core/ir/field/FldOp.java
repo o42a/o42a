@@ -19,25 +19,20 @@
 */
 package org.o42a.core.ir.field;
 
-import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
 public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		extends FldIROp<F, T>
 		implements TargetOp {
-
-	private static final AllocatableOwnerPtr ALLOCATABLE_OWNER_PTR =
-			new AllocatableOwnerPtr();
 
 	public FldOp(ObjOp host, Fld<F, T> fld, F ptr) {
 		super(host, fld, ptr);
@@ -76,11 +71,7 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	@Override
 	public FldStoreOp allocateStore(ID id, Code code) {
-
-		final Allocated<DataRecOp> ownerPtr =
-				code.allocate(id, ALLOCATABLE_OWNER_PTR);
-
-		return new FldByOwnerStoreOp<>(this, code.getAllocator(), ownerPtr);
+		return new FldByOwnerStoreOp<>(id, code, this);
 	}
 
 	protected final HostValueOp objectFldValueOp() {
@@ -126,85 +117,31 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	}
 
-	private static final class AllocatableOwnerPtr
-			implements Allocatable<DataRecOp> {
-
-		@Override
-		public AllocationMode getAllocationMode() {
-			return ALLOCATOR_ALLOCATION;
-		}
-
-		@Override
-		public DataRecOp allocate(
-				Allocations code,
-				Allocated<DataRecOp> allocated) {
-			return code.allocateDataPtr(HOST_ID);
-		}
-
-		@Override
-		public void init(Code code, DataRecOp allocated) {
-		}
-
-		@Override
-		public void dispose(Code code, Allocated<DataRecOp> allocated) {
-		}
-
-	}
-
 	private static final class FldByOwnerStoreOp<
 			F extends Fld.Op<F>,
 			T extends Fld.Type<F>>
-					implements FldStoreOp {
+					extends ByOwnerStoreOp {
 
 		private final FldOp<F, T> fld;
-		private final Allocator allocator;
-		private final Allocated<DataRecOp> ownerPtr;
 
-		FldByOwnerStoreOp(
-				FldOp<F, T> fld,
-				Allocator allocator,
-				Allocated<DataRecOp> ownerPtr) {
+		FldByOwnerStoreOp(ID id, Code code, FldOp<F, T> fld) {
+			super(id, code);
 			this.fld = fld;
-			this.allocator = allocator;
-			this.ownerPtr = ownerPtr;
 		}
 
 		@Override
-		public void storeTarget(CodeDirs dirs) {
-
-			final Block code = dirs.code();
-			final ObjOp host = this.fld.host();
-
-			tempObjHolder(this.allocator).holdVolatile(code, host);
-
-			this.ownerPtr.get(code).store(code, host.toData(null, code));
+		public Obj getOwnerType() {
+			return this.fld.fld().getBodyIR().getObjectIR().getObject();
 		}
 
 		@Override
-		public ObjectOp loadOwner(CodeDirs dirs) {
-
-			final Block code = dirs.code();
-
-			return anonymousObject(
-					dirs,
-					this.ownerPtr.get(code).load(null, code),
-					this.fld.fld().getBodyIR().getObjectIR().getObject());
+		public ObjectOp owner() {
+			return this.fld.host();
 		}
 
 		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
-
-			final ObjOp host = loadOwner(dirs).castToWellKnown(null, dirs);
-
-			return this.fld.fld().op(dirs.code(), host);
-		}
-
-		@Override
-		public String toString() {
-			if (this.ownerPtr == null) {
-				return super.toString();
-			}
-			return this.ownerPtr.toString();
+		protected TargetOp op(CodeDirs dirs, ObjOp owner) {
+			return this.fld.fld().op(dirs.code(), owner);
 		}
 
 	}
