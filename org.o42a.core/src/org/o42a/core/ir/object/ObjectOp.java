@@ -236,9 +236,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
 	@Override
 	public TargetStoreOp allocateStore(ID id, Code code) {
-		if (getPrecision().isExact()) {
-			return new ExactObjectStoreOp(this);
-		}
 		return new ObjectStoreOp(id, code, this);
 	}
 
@@ -295,33 +292,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 			tempObjHolder(getAllocator())
 			.holdVolatile(dirs.code(), this.object);
 			return this.object;
-		}
-
-	}
-
-	private static final class ExactObjectStoreOp implements TargetStoreOp {
-
-		private final ObjectOp object;
-
-		ExactObjectStoreOp(ObjectOp object) {
-			this.object = object;
-		}
-
-		@Override
-		public void storeTarget(CodeDirs dirs) {
-		}
-
-		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
-			return this.object;
-		}
-
-		@Override
-		public String toString() {
-			if (this.object == null) {
-				return super.toString();
-			}
-			return this.object.toString();
 		}
 
 	}

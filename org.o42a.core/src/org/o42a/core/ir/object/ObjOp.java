@@ -38,8 +38,7 @@ import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
 import org.o42a.core.ir.value.type.ValueIR;
@@ -213,6 +212,14 @@ public final class ObjOp extends ObjectOp {
 		return op;
 	}
 
+	@Override
+	public TargetStoreOp allocateStore(ID id, Code code) {
+		if (getPrecision().isExact()) {
+			return new ExactObjectStoreOp(getObjectIR());
+		}
+		return super.allocateStore(id, code);
+	}
+
 	private boolean validPrecision() {
 		assert getPrecision().isCompatible() :
 			"Wrong object precision: " + this;
@@ -269,6 +276,33 @@ public final class ObjOp extends ObjectOp {
 
 		private final ObjectValueIR objectValueIR() {
 			return objectIR().getObjectValueIR();
+		}
+
+	}
+
+	private static final class ExactObjectStoreOp implements TargetStoreOp {
+
+		private final ObjectIR objectIR;
+
+		ExactObjectStoreOp(ObjectIR objectIR) {
+			this.objectIR = objectIR;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			return this.objectIR.op(dirs);
+		}
+
+		@Override
+		public String toString() {
+			if (this.objectIR == null) {
+				return super.toString();
+			}
+			return this.objectIR.getObject().toString();
 		}
 
 	}
