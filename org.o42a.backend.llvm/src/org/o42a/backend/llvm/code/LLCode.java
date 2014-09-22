@@ -24,6 +24,7 @@ import static org.o42a.codegen.data.AllocPlace.constantAllocPlace;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.code.rec.AnyRecLLOp;
+import org.o42a.backend.llvm.code.rec.DataRecLLOp;
 import org.o42a.backend.llvm.code.rec.StructRecLLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.NativeBuffer;
@@ -305,6 +306,23 @@ public abstract class LLCode implements CodeWriter {
 		final NativeBuffer ids = getModule().ids();
 
 		return new AnyRecLLOp(
+				id,
+				code().getAllocator().getAllocPlace(),
+				nextPtr,
+				instr(allocatePtr(
+						nextPtr,
+						nextInstr(),
+						ids.write(id),
+						ids.length())));
+	}
+
+	@Override
+	public DataRecLLOp allocateDataPtr(ID id) {
+
+		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
+
+		return new DataRecLLOp(
 				id,
 				code().getAllocator().getAllocPlace(),
 				nextPtr,

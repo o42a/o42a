@@ -21,9 +21,7 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.code.Allocated.AllocatedValue;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.AnyRecOp;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
@@ -53,6 +51,12 @@ public abstract class Allocations {
 	}
 
 	public abstract AnyRecOp allocatePtr(ID id);
+
+	public final DataRecOp allocateDataPtr() {
+		return allocateDataPtr(getAllocated().getId());
+	}
+
+	public abstract DataRecOp allocateDataPtr(ID id);
 
 	public final <S extends StructOp<S>> StructRecOp<S> allocatePtr(
 			Type<S> type) {
@@ -102,6 +106,12 @@ public abstract class Allocations {
 		public AnyRecOp allocatePtr(ID id) {
 			assert assertIncomplete();
 			return writer().allocatePtr(code().opId(id));
+		}
+
+		@Override
+		public DataRecOp allocateDataPtr(ID id) {
+			assert assertIncomplete();
+			return writer().allocateDataPtr(code().opId(id));
 		}
 
 		@Override
@@ -193,6 +203,16 @@ public abstract class Allocations {
 		}
 
 		@Override
+		public DataRecOp allocateDataPtr(ID id) {
+			return this.allocationsMap.reallocateDataPtr(
+					code(),
+					this.target,
+					getAllocated(),
+					this.index++,
+					id);
+		}
+
+		@Override
 		public <S extends StructOp<S>> StructRecOp<S> allocatePtr(
 				ID id,
 				Type<S> type) {
@@ -249,6 +269,15 @@ public abstract class Allocations {
 		@Override
 		public AnyRecOp allocatePtr(ID id) {
 			return this.allocationsMap.allocatePtr(
+					this.target,
+					getAllocated(),
+					this.index++,
+					id);
+		}
+
+		@Override
+		public DataRecOp allocateDataPtr(ID id) {
+			return this.allocationsMap.allocateDataPtr(
 					this.target,
 					getAllocated(),
 					this.index++,
