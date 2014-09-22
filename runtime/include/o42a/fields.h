@@ -9,6 +9,7 @@
 #define O42A_FIELDS_H
 
 #include "o42a/fld/dep.h"
+#include "o42a/fld/local.h"
 #include "o42a/fld/obj.h"
 #include "o42a/fld/owner.h"
 #include "o42a/fld/resume_from.h"
@@ -27,10 +28,6 @@ union o42a_fld {
 	O42A_HEADER
 
 	o42a_fld_obj obj;
-
-	o42a_fld_owner owner;
-
-	o42a_fld_dep dep;
 
 	o42a_fld_resume_from resume_from;
 

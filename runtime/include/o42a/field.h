@@ -35,7 +35,9 @@ enum o42a_fld_kind {
 
 	O42A_FLD_DEP = 4,
 
-	O42A_FLD_RESUME_FROM = 5,
+	O42A_FLD_LOCAL = 5,
+
+	O42A_FLD_RESUME_FROM = 6,
 
 };
 

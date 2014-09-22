@@ -128,6 +128,13 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.sweep = fld_sweep_none,
 		.is_init = NULL,// Eagerly constructed.
 	},
+	[O42A_FLD_LOCAL] = {// Storage for locals used in yielding objects.
+		.inherit = fld_ptr_reset,
+		.propagate = fld_ptr_reset,
+		.mark = fld_ptr_mark,
+		.sweep = fld_sweep_none,
+		.is_init = NULL,// Eagerly constructed.
+	},
 	[O42A_FLD_RESUME_FROM] = {// Resume from pointer field.
 		.inherit = fld_ptr_reset,
 		.propagate = fld_ptr_reset,

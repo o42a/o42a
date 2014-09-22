@@ -28,7 +28,8 @@ public enum FldKind {
 	VAR(2),
 	OWNER(3),
 	DEP(4),
-	RESUME_FROM(5);
+	LOCAL(5),
+	RESUME_FROM(6);
 
 	private final int code;
 
