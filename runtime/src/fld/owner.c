@@ -18,7 +18,7 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_owner = {
 	.fields = {
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_fld_owner, object),
+			.offset = offsetof(o42a_fld_obj, object),
 			.name = "object",
 		},
 	},
@@ -29,8 +29,8 @@ void o42a_fld_owner_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	assert(ctable->owner && "Object owner is unknown");
-	ctable->to_fld->owner.object = ctable->owner;
-	o42a_debug_mem_name("Owner: ", ctable->to_fld->owner.object);
+	ctable->to_fld->obj.object = ctable->owner;
+	o42a_debug_mem_name("Owner: ", ctable->to_fld->obj.object);
 
 	O42A_RETURN;
 }
