@@ -26,6 +26,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.Name;
 
@@ -61,6 +62,11 @@ public abstract class ProxyMemberRegistry extends MemberRegistry {
 	@Override
 	public FieldBuilder newAlias(FieldDeclaration declaration, Ref ref) {
 		return registry().newAlias(declaration, ref);
+	}
+
+	@Override
+	public FieldBuilder newLocal(FieldDeclaration declaration, Local local) {
+		return registry().newLocal(declaration, local);
 	}
 
 	@Override

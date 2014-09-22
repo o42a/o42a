@@ -31,6 +31,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.Name;
 
@@ -70,6 +71,10 @@ public abstract class MemberRegistry {
 	public abstract FieldBuilder newAlias(
 			FieldDeclaration declaration,
 			Ref ref);
+
+	public abstract FieldBuilder newLocal(
+			FieldDeclaration declaration,
+			Local local);
 
 	public ClauseBuilder newClause(
 			Statements statements,
@@ -119,6 +124,12 @@ public abstract class MemberRegistry {
 
 		@Override
 		public FieldBuilder newAlias(FieldDeclaration declaration, Ref ref) {
+			reportDeclaration(declaration);
+			return null;
+		}
+
+		@Override
+		public FieldBuilder newLocal(FieldDeclaration declaration, Local local) {
 			reportDeclaration(declaration);
 			return null;
 		}

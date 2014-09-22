@@ -26,6 +26,7 @@ import org.o42a.core.member.NonAliasMember;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.member.type.impl.OverriddenMemberTypeParameter;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
@@ -73,8 +74,8 @@ public abstract class MemberTypeParameter extends NonAliasMember {
 	}
 
 	@Override
-	public final boolean isAlias() {
-		return false;
+	public final MemberLocal toLocal() {
+		return null;
 	}
 
 	@Override
