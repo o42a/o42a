@@ -26,6 +26,6 @@ import org.o42a.core.ir.op.TargetStoreOp;
 
 public interface FldStoreOp extends TargetStoreOp {
 
-	ObjectOp loadObject(CodeDirs dirs);
+	ObjectOp loadOwner(CodeDirs dirs);
 
 }

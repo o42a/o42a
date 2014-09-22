@@ -88,7 +88,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 
 		this.dep.op().object(code).store(
 				code,
-				copyObject(dirs, store).toData(null, code));
+				loadOwner(dirs, store).toData(null, code));
 	}
 
 	@Override
@@ -113,6 +113,6 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 
 	protected abstract TargetOp fldOf(CodeDirs dirs, ObjectOp owner);
 
-	protected abstract ObjectOp copyObject(CodeDirs dirs, TargetStoreOp store);
+	protected abstract ObjectOp loadOwner(CodeDirs dirs, TargetStoreOp store);
 
 }

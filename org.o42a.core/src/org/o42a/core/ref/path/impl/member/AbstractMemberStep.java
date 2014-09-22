@@ -192,8 +192,8 @@ public abstract class AbstractMemberStep extends Step {
 		}
 
 		@Override
-		public ObjectOp loadObject(CodeDirs dirs) {
-			return this.store.loadObject(dirs);
+		public ObjectOp loadOwner(CodeDirs dirs) {
+			return this.store.loadOwner(dirs);
 		}
 
 		@Override
