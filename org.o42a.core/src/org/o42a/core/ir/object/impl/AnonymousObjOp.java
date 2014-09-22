@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object.impl;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
-import static org.o42a.core.ir.field.dep.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.desc.AscendantDescIR.ASCENDANT_DESC_IR;
@@ -34,6 +33,7 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.field.inst.InstFldOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RelList;
@@ -111,38 +111,36 @@ public final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 
-		final CodeDirs subDirs =
-				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
 		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
 		final ObjOp ascendant = cast(
 				hostId,
-				subDirs,
+				dirs,
 				memberKey.getOrigin().toObject());
-		final FldOp<?, ?> op = ascendant.field(subDirs, memberKey);
 
-		if (!op.isOmitted()) {
-			subDirs.code().dumpName("Field: ", op);
-		} else {
-			subDirs.code().debug("Final field: " + op.getId());
-		}
-		subDirs.done();
-
-		return op;
+		return ascendant.field(dirs, memberKey);
 	}
 
 	@Override
 	public DepOp dep(CodeDirs dirs, Dep dep) {
 
-		final CodeDirs subDirs = dirs.begin(DEP_ID, dep.toString());
 		final ObjOp ascendant = cast(
 				DEP_HOST_ID.sub(dep),
-				subDirs,
+				dirs,
 				dep.getDeclaredIn());
-		final DepOp op = ascendant.dep(subDirs, dep);
 
-		subDirs.done();
+		return ascendant.dep(dirs, dep);
+	}
 
-		return op;
+	@Override
+	public LocalIROp local(CodeDirs dirs, MemberKey memberKey) {
+
+		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
+		final ObjOp ascendant = cast(
+				hostId,
+				dirs,
+				memberKey.getOrigin().toObject());
+
+		return ascendant.local(dirs, memberKey);
 	}
 
 	private ObjOp dynamicCast(ID id, CodeDirs dirs, Obj ascendant) {

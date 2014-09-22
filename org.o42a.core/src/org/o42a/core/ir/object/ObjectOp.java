@@ -29,12 +29,12 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.dep.DepIR;
 import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.field.inst.ResumeFromOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
@@ -192,10 +192,9 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
 	public abstract InstFldOp<?, ?> instField(CodeDirs dirs, InstFldKind kind);
 
-	@Override
-	public abstract FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey);
-
 	public abstract DepOp dep(CodeDirs dirs, Dep dep);
+
+	public abstract LocalIROp local(CodeDirs dirs, MemberKey memberKey);
 
 	@Override
 	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
