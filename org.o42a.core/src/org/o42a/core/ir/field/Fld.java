@@ -101,9 +101,6 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	}
 
 	@Override
-	public abstract FldKind getKind();
-
-	@Override
 	public final Obj getDeclaredIn() {
 		return getKey().getOrigin().toObject();
 	}

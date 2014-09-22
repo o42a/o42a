@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.field.dep.DepOp.DEP_ID;
+import static org.o42a.core.ir.field.local.LocalIR.LOCAL_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 
 import org.o42a.codegen.code.Code;
@@ -34,6 +35,8 @@ import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.field.inst.InstFld;
 import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.field.inst.InstFldOp;
+import org.o42a.core.ir.field.local.LocalIR;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -183,6 +186,27 @@ public final class ObjOp extends ObjectOp {
 				subDirs,
 				dep.getDeclaredIn());
 		final DepOp op = ir.op(code, host);
+
+		subDirs.done();
+
+		return op;
+	}
+
+	@Override
+	public LocalIROp local(CodeDirs dirs, MemberKey memberKey) {
+
+		final CodeDirs subDirs =
+				dirs.begin(LOCAL_ID, memberKey.toString());
+		final Code code = subDirs.code();
+		final LocalIR local = getObjectIR().bodies().local(memberKey);
+		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
+		final ObjOp host = cast(
+				hostId,
+				subDirs,
+				memberKey.getOrigin().toObject());
+		final LocalIROp op = local.op(code, host);
+
+		code.dump("Local: ", op);
 
 		subDirs.done();
 

@@ -32,11 +32,13 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.dep.DepIR;
 import org.o42a.core.ir.field.inst.InstFld;
 import org.o42a.core.ir.field.inst.InstFldKind;
+import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.type.Derivative;
@@ -54,6 +56,8 @@ public final class ObjectIRBody {
 			init(this::createFields);
 	private final Init<LinkedHashMap<Dep, DepIR>> deps =
 			init(this::createDeps);
+	private final Init<LinkedHashMap<MemberKey, LocalIR>> locals =
+			init(this::createLocals);
 
 	ObjectIRBody(ObjectIRBodies bodies) {
 		this.bodies = bodies;
@@ -123,6 +127,16 @@ public final class ObjectIRBody {
 		return ir;
 	}
 
+	public final LocalIR local(MemberKey memberKey) {
+
+		final LocalIR ir = locals().get(memberKey);
+
+		assert ir != null :
+			memberKey + " not found in " + this;
+
+		return ir;
+	}
+
 	final EnumMap<InstFldKind, InstFld<?, ?>> instFields() {
 		return this.instFields.get();
 	}
@@ -131,6 +145,7 @@ public final class ObjectIRBody {
 		allocateInstFields(data);
 		allocateFields(data);
 		allocateDeps(data);
+		allocateLocals(data);
 	}
 
 	private final LinkedHashMap<MemberKey, Fld<?, ?>> fields() {
@@ -139,6 +154,10 @@ public final class ObjectIRBody {
 
 	private final LinkedHashMap<Dep, DepIR> deps() {
 		return this.deps.get();
+	}
+
+	private final LinkedHashMap<MemberKey, LocalIR> locals() {
+		return this.locals.get();
 	}
 
 	private void allocateInstFields(SubData<?> data) {
@@ -156,6 +175,12 @@ public final class ObjectIRBody {
 	private void allocateDeps(SubData<?> data) {
 		for (DepIR dep : deps().values()) {
 			dep.allocate(data);
+		}
+	}
+
+	private void allocateLocals(SubData<?> data) {
+		for (LocalIR local : locals().values()) {
+			local.allocate(data);
 		}
 	}
 
@@ -246,6 +271,16 @@ public final class ObjectIRBody {
 		createFieldsDeclaredIn(fields, getSampleDeclaration());
 
 		return fields;
+	}
+
+	private LinkedHashMap<MemberKey, LocalIR> createLocals() {
+
+		final LinkedHashMap<MemberKey, LocalIR> locals =
+				new LinkedHashMap<>();
+
+		createLocalsDeclaredIn(locals, getSampleDeclaration());
+
+		return locals;
 	}
 
 	private void createFieldsDeclaredIn(
@@ -348,14 +383,36 @@ public final class ObjectIRBody {
 				continue;
 			}
 
-			final DepIR depIR = new DepIR(this, dep);
-
-			deps.put(dep, depIR);
+			deps.put(dep, new DepIR(this, dep));
 		}
 
 		for (Derivative derivative : ascendant.type().allDerivatives()) {
 			if (derivative.isSample()) {
 				createDepsDeclaredIn(deps, derivative.getDerivedObject());
+			}
+		}
+	}
+
+	private void createLocalsDeclaredIn(
+			LinkedHashMap<MemberKey, LocalIR> locals,
+			Obj ascendant) {
+		for (Member declared : ascendant.getMembers()) {
+			if (!declared.isOverride()) {
+				continue;
+			}
+
+			final MemberLocal local = declared.toLocal();
+
+			if (local == null) {
+				continue;
+			}
+
+			locals.put(local.getMemberKey(), new LocalIR(this, local));
+		}
+
+		for (Derivative derivative : ascendant.type().allDerivatives()) {
+			if (derivative.isSample()) {
+				createLocalsDeclaredIn(locals, derivative.getDerivedObject());
 			}
 		}
 	}

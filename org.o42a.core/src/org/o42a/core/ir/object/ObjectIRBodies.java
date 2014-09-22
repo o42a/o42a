@@ -31,6 +31,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.dep.DepIR;
 import org.o42a.core.ir.field.inst.InstFld;
 import org.o42a.core.ir.field.inst.InstFldKind;
+import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
@@ -163,6 +164,14 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 
 	public final DepIR dep(Dep dep) {
 		return bodyIR(dep.getDeclaredIn()).dep(dep);
+	}
+
+	public final LocalIR local(MemberKey memberKey) {
+
+		final Obj origin = memberKey.getOrigin().toObject();
+		final ObjectIRBody bodyIR = bodyIR(origin);
+
+		return bodyIR.local(memberKey);
 	}
 
 	final ObjectIRBodies allocate() {
