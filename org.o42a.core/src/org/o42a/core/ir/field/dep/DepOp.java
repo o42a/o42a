@@ -22,12 +22,15 @@ package org.o42a.core.ir.field.dep;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DumpablePtrOp;
+import org.o42a.core.ir.field.ByOwnerStoreOp;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
@@ -126,7 +129,7 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 
 	@Override
 	public TargetStoreOp allocateStore(ID id, Code code) {
-		return new DepStoreOp(this);
+		return new DepByOwnerStoreOp(id, code, this);
 	}
 
 	@Override
@@ -155,29 +158,28 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 		return this.ref.loadTarget(dirs);
 	}
 
-	private static final class DepStoreOp implements TargetStoreOp {
+	private static final class DepByOwnerStoreOp extends ByOwnerStoreOp {
 
 		private final DepOp dep;
 
-		DepStoreOp(DepOp dep) {
+		DepByOwnerStoreOp(ID id, Code code, DepOp dep) {
+			super(id, code);
 			this.dep = dep;
 		}
 
 		@Override
-		public void storeTarget(CodeDirs dirs) {
+		public Obj getOwnerType() {
+			return this.dep.depIR().getBodyIR().getObjectIR().getObject();
 		}
 
 		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
-			return this.dep.loadDep(dirs);
+		public ObjectOp owner() {
+			return this.dep.host();
 		}
 
 		@Override
-		public String toString() {
-			if (this.dep == null) {
-				return super.toString();
-			}
-			return this.dep.toString();
+		protected TargetOp op(CodeDirs dirs, ObjOp owner) {
+			return this.dep.depIR().op(dirs.code(), owner);
 		}
 
 	}
