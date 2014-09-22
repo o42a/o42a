@@ -73,6 +73,34 @@ final class AllocRecords {
 		});
 	}
 
+	public AllocRecord<DataRecOp> recordDataPtr(int index, ID id) {
+		if (index < this.records.length) {
+			return cast(index);
+		}
+
+		return record(new AllocRecord<DataRecOp>(id, index) {
+			@Override
+			DataRecOp load(Code code, AnyRecOp prealloc) {
+				return prealloc.load(null, code).toDataRec(getId(), code);
+			}
+			@Override
+			DataRecOp allocate(Code code) {
+				return code.writer().allocateDataPtr(getId());
+			}
+			@Override
+			void combine(
+					AllocationsMap map,
+					AnyRecOp prealloc,
+					DataRecOp[] ptrs) {
+
+				final DataRecOp phi = map.phis().phi(getId(), ptrs);
+				final Code code = map.entry();
+
+				prealloc.store(code, phi.toAny(null, code));
+			}
+		});
+	}
+
 	public <S extends StructOp<S>> AllocRecord<StructRecOp<S>> recordPtr(
 			int index,
 			ID id,

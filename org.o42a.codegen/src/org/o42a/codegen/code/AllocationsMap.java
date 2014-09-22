@@ -26,9 +26,7 @@ import java.util.IdentityHashMap;
 import org.o42a.codegen.code.AllocRecords.AllocRecord;
 import org.o42a.codegen.code.Allocated.AllocatedValue;
 import org.o42a.codegen.code.backend.AllocatorWriter;
-import org.o42a.codegen.code.op.AnyRecOp;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.string.ID;
 
@@ -179,6 +177,18 @@ final class AllocationsMap {
 		return entryTo(target).dataFor(allocated).ptrsTo(record).ptr();
 	}
 
+	public DataRecOp allocateDataPtr(
+			Allocator target,
+			Allocated<?> allocated,
+			int index,
+			ID id) {
+
+		final AllocRecord<DataRecOp> record =
+				records(allocated).recordDataPtr(index, id);
+
+		return entryTo(target).dataFor(allocated).ptrsTo(record).ptr();
+	}
+
 	public AnyRecOp reallocatePtr(
 			Code code,
 			Allocator target,
@@ -188,6 +198,19 @@ final class AllocationsMap {
 
 		final AllocRecord<AnyRecOp> record =
 				records(allocated).recordPtr(index, id);
+
+		return entryTo(target).dataFor(allocated).ptrsTo(record).add(code);
+	}
+
+	public DataRecOp reallocateDataPtr(
+			Code code,
+			Allocator target,
+			Allocated<?> allocated,
+			int index,
+			ID id) {
+
+		final AllocRecord<DataRecOp> record =
+				records(allocated).recordDataPtr(index, id);
 
 		return entryTo(target).dataFor(allocated).ptrsTo(record).add(code);
 	}

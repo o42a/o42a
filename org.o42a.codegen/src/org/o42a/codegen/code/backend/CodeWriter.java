@@ -68,6 +68,8 @@ public interface CodeWriter {
 
 	AnyRecOp allocatePtr(ID id);
 
+	DataRecOp allocateDataPtr(ID id);
+
 	<S extends StructOp<S>> StructRecOp<S> allocatePtr(
 			ID id,
 			DataAllocation<S> allocation);

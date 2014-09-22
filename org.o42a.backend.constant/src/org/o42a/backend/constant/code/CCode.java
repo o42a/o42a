@@ -29,6 +29,7 @@ import java.lang.reflect.Array;
 
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
+import org.o42a.backend.constant.code.rec.DataRecCOp;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -248,6 +249,24 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 								.underlying()
 								.writer()
 								.allocatePtr(getId());
+					}
+				},
+				autoRecStore(code())));
+	}
+
+	@Override
+	public DataRecCOp allocateDataPtr(ID id) {
+		return allocated(new DataRecCOp(
+				new OpBE<DataRecOp>(id, this) {
+					@Override
+					public void prepare() {
+					}
+					@Override
+					protected DataRecOp write() {
+						return part()
+								.underlying()
+								.writer()
+								.allocateDataPtr(getId());
 					}
 				},
 				autoRecStore(code())));
