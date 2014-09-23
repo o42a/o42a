@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.path.impl.member;
 
-import static org.o42a.core.ir.op.HostTargetOp.ALLOC_STORE_SUFFIX;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -161,52 +159,23 @@ public abstract class AbstractMemberStep extends Step {
 
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
-
-			final Code alloc = code.inset(id.detail(ALLOC_STORE_SUFFIX));
-
-			return new MemberStoreOp(id, alloc, this);
+			return new MemberStoreOp(id, this);
 		}
 
 	}
 
-	private static final class MemberStoreOp implements FldStoreOp {
+	private static final class MemberStoreOp
+			extends IndirectTargetStoreOp<FldStoreOp>
+			implements FldStoreOp {
 
-		private final ID id;
-		private final Code alloc;
-		private final MemberOp member;
-		private FldStoreOp store;
-
-		MemberStoreOp(ID id, Code alloc, MemberOp member) {
-			this.id = id;
-			this.alloc = alloc;
-			this.member = member;
-		}
-
-		@Override
-		public void storeTarget(CodeDirs dirs) {
-
-			final FldOp<?, ?> field = this.member.pathTarget(dirs);
-
-			this.store = field.allocateStore(this.id, this.alloc);
-			this.store.storeTarget(dirs);
+		MemberStoreOp(ID id, MemberOp member) {
+			super(dirs -> member.pathTarget(dirs)
+					.allocateStore(id, dirs.code()));
 		}
 
 		@Override
 		public ObjectOp loadOwner(CodeDirs dirs) {
-			return this.store.loadOwner(dirs);
-		}
-
-		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
-			return this.store.loadTarget(dirs);
-		}
-
-		@Override
-		public String toString() {
-			if (this.id != null) {
-				return super.toString();
-			}
-			return this.id.toString();
+			return store().loadOwner(dirs);
 		}
 
 	}

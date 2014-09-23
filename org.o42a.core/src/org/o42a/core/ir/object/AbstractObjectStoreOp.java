@@ -37,19 +37,13 @@ public abstract class AbstractObjectStoreOp
 	private static final AllocatableObjectStore ALLOCATABLE_OBJECT_STORE =
 			new AllocatableObjectStore();
 
-	private final Allocator allocator;
 	private final Allocated<AnyRecOp> ptr;
 
 	public AbstractObjectStoreOp(ID id, Code code) {
-		this.allocator = code.getAllocator();
 		this.ptr = code.allocate(id, ALLOCATABLE_OBJECT_STORE);
 	}
 
 	public abstract Obj getWellKnownType();
-
-	public final Allocator getAllocator() {
-		return this.allocator;
-	}
 
 	@Override
 	public void storeTarget(CodeDirs dirs) {

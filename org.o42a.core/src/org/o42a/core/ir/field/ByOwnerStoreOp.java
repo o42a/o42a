@@ -21,7 +21,6 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.DataRecOp;
@@ -38,11 +37,9 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 	private static final AllocatableOwnerPtr ALLOCATABLE_OWNER_PTR =
 			new AllocatableOwnerPtr();
 
-	private final Allocator allocator;
 	private final Allocated<DataRecOp> ownerPtr;
 
 	public ByOwnerStoreOp(ID id, Code code) {
-		this.allocator = code.getAllocator();
 		this.ownerPtr = code.allocate(id, ALLOCATABLE_OWNER_PTR);
 	}
 
@@ -55,8 +52,6 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 
 		final Block code = dirs.code();
 		final ObjectOp owner = owner();
-
-		tempObjHolder(this.allocator).holdVolatile(code, owner);
 
 		this.ownerPtr.get(code).store(code, owner.toData(null, code));
 	}

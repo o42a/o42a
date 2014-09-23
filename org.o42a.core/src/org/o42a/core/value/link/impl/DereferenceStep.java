@@ -296,7 +296,7 @@ public class DereferenceStep extends Step {
 		protected ObjectOp object(CodeDirs dirs) {
 			return this.op.dereference(
 					dirs,
-					tempObjHolder(getAllocator()));
+					tempObjHolder(dirs.getAllocator()));
 		}
 
 	}
