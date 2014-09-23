@@ -22,9 +22,12 @@ package org.o42a.core.ref.path;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.*;
@@ -191,20 +194,23 @@ final class StaticStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return staticObject(dirs.code());
+			return objectIR().op(getBuilder(), dirs.code());
 		}
 
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
-			return staticObject(code).allocateStore(id, code);
+			return objectIR().exactTargetStore(id);
 		}
 
-		private ObjOp staticObject(Code code) {
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return objectIR().exactTargetStore(id);
+		}
 
-			final ObjectIR ir =
-					getStep().getFinalScope().toObject().ir(getGenerator());
-
-			return ir.op(getBuilder(), code);
+		private final ObjectIR objectIR() {
+			return getStep().getFinalScope().toObject().ir(getGenerator());
 		}
 
 	}

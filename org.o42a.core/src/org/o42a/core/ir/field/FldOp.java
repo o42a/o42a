@@ -21,7 +21,11 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
+import java.util.function.Function;
+
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
@@ -60,8 +64,15 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	}
 
 	@Override
-	public FldStoreOp allocateStore(ID id, Code code) {
+	public final FldStoreOp allocateStore(ID id, Code code) {
 		return new FldByOwnerStoreOp<>(id, code, this);
+	}
+
+	@Override
+	public final FldStoreOp localStore(
+			ID id,
+			Function<CodeDirs, LocalIROp> getLocal) {
+		return new FldByOwnerStoreOp<>(id, getLocal, this);
 	}
 
 	protected final HostValueOp objectFldValueOp() {
@@ -119,14 +130,30 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 			this.fld = fld;
 		}
 
+		FldByOwnerStoreOp(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal,
+				FldOp<F, T> fld) {
+			super(id, getLocal);
+			this.fld = fld;
+		}
+
 		@Override
 		public Obj getOwnerType() {
 			return this.fld.fld().getBodyIR().getObjectIR().getObject();
 		}
 
 		@Override
-		public ObjectOp owner() {
-			return this.fld.host();
+		protected ObjectOp owner(CodeDirs dirs, Allocator allocator) {
+
+			final ObjOp owner = this.fld.host();
+
+			if (allocator != null) {
+				// Ensure the owner not deallocated until the local exists.
+				tempObjHolder(allocator).holdVolatile(dirs.code(), owner);
+			}
+
+			return owner;
 		}
 
 		@Override

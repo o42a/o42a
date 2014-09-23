@@ -21,13 +21,15 @@ package org.o42a.core.ref.path.impl;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
@@ -171,21 +173,26 @@ public final class ModuleStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return module(dirs.code());
+			return moduleIR().op(getBuilder(), dirs.code());
 		}
 
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
-			return module(code).allocateStore(id, code);
+			return moduleIR().exactTargetStore(id);
 		}
 
-		private ObjOp module(Code code) {
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return moduleIR().exactTargetStore(id);
+		}
 
-			final Obj module = getContext().getIntrinsics().getModule(
-					getStep().getModuleName());
-			final ObjectIR moduleIR = module.ir(getGenerator());
-
-			return moduleIR.op(getBuilder(), code);
+		private final ObjectIR moduleIR() {
+			return getContext()
+					.getIntrinsics()
+					.getModule(getStep().getModuleName())
+					.ir(getGenerator());
 		}
 
 	}

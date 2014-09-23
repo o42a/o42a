@@ -20,10 +20,10 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.inst.InstFldKind.INST_RESUME_FROM;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
@@ -231,6 +231,13 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	}
 
 	@Override
+	public TargetStoreOp localStore(
+			ID id,
+			Function<CodeDirs, LocalIROp> getLocal) {
+		return new ObjectStoreOp(id, getLocal, this);
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -273,6 +280,14 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 			this.object = object;
 		}
 
+		ObjectStoreOp(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal,
+				ObjectOp object) {
+			super(id, getLocal);
+			this.object = object;
+		}
+
 		@Override
 		public Obj getWellKnownType() {
 			return this.object.getWellKnownType();
@@ -280,7 +295,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
 		@Override
 		protected ObjectOp object(CodeDirs dirs, Allocator allocator) {
-			tempObjHolder(allocator).holdVolatile(dirs.code(), this.object);
 			return this.object;
 		}
 

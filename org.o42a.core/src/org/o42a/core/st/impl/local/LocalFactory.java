@@ -29,6 +29,6 @@ public interface LocalFactory {
 
 	Local createLocal(LocationInfo location, Name name, Ref ref);
 
-	void convertToField(Local local);
+	void convertToMember(Local local);
 
 }

@@ -105,16 +105,16 @@ public enum MemberIdKind {
 
 	},
 
-	LOCAL_FIELD_NAME() {
+	LOCAL_MEMBER_NAME() {
 
 		@Override
 		ID toID(MemberName memberName) {
-			return LOCAL_FIELD_PREFIX_ID.suffix(memberName.getName());
+			return LOCAL_MEMBER_PREFIX_ID.suffix(memberName.getName());
 		}
 
 		@Override
 		ID toDisplayID(MemberName memberName) {
-			return LOCAL_FIELD_DISPLAY_PREFIX
+			return LOCAL_MEMBER_DISPLAY_PREFIX
 					.suffix(memberName.getName())
 					.suffix(DISPLAY_SUFFIX);
 		}
@@ -138,7 +138,7 @@ public enum MemberIdKind {
 	private static final ID TEMP_PREFIX_ID = ID.id("T");
 	private static final ID CLAUSE_PREFIX_ID = ID.id("C");
 	private static final ID LOCAL_PREFIX_ID = ID.id("L");
-	private static final ID LOCAL_FIELD_PREFIX_ID = ID.id("LF");
+	private static final ID LOCAL_MEMBER_PREFIX_ID = ID.id("LF");
 	private static final ID ALIAS_PREFIX_ID = ID.id("A");
 
 	private static final ID CLAUSE_DISPLAY_PREFIX =
@@ -147,7 +147,7 @@ public enum MemberIdKind {
 			ID.id(ID.displayText("$"));
 	private static final ID LOCAL_DISPLAY_PREFIX =
 			ID.id(ID.displayText("Local `"));
-	private static final ID LOCAL_FIELD_DISPLAY_PREFIX =
+	private static final ID LOCAL_MEMBER_DISPLAY_PREFIX =
 			ID.id(ID.displayText("Local field `"));
 	private static final SubID DISPLAY_SUFFIX =
 			ID.displayText("`");

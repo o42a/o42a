@@ -24,10 +24,13 @@ import static org.o42a.core.ir.value.Val.falseVal;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -221,6 +224,13 @@ public class NoneStep extends Step {
 
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
+			return NONE_STORE;
+		}
+
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
 			return NONE_STORE;
 		}
 

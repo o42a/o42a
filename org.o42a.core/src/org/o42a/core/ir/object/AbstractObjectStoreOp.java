@@ -22,9 +22,12 @@ package org.o42a.core.ir.object;
 import static org.o42a.codegen.code.AllocationMode.LAZY_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.TargetStoreOp;
 import org.o42a.core.object.Obj;
@@ -37,13 +40,27 @@ public abstract class AbstractObjectStoreOp
 	private static final AllocatableObjectStore ALLOCATABLE_OBJECT_STORE =
 			new AllocatableObjectStore();
 
+	private final ID id;
 	private final Allocator allocator;
-	private final Allocated<AnyRecOp> ptr;
-
+	private final Function<CodeDirs, DataRecOp> getPtr;
 
 	public AbstractObjectStoreOp(ID id, Code code) {
+		this.id = id;
 		this.allocator = code.getAllocator();
-		this.ptr = code.allocate(id, ALLOCATABLE_OBJECT_STORE);
+
+		final Allocated<DataRecOp> allocated =
+				code.allocate(id, ALLOCATABLE_OBJECT_STORE);
+
+		this.getPtr = dirs -> allocated.get(dirs.code());
+	}
+
+	public AbstractObjectStoreOp(
+			ID id,
+			Function<CodeDirs, LocalIROp> getLocal) {
+		this.id = id;
+		this.allocator = null;
+		this.getPtr =
+				dirs -> getLocal.apply(dirs).ptr().object(id, dirs.code());
 	}
 
 	public abstract Obj getWellKnownType();
@@ -54,7 +71,7 @@ public abstract class AbstractObjectStoreOp
 		final Block code = dirs.code();
 		final ObjectOp object = object(dirs, this.allocator);
 
-		this.ptr.get(code).store(code, object.toAny(null, code));
+		ptr(dirs).store(code, object.toData(null, code));
 	}
 
 	@Override
@@ -62,7 +79,7 @@ public abstract class AbstractObjectStoreOp
 
 		final Block code = dirs.code();
 		final DataOp objectPtr =
-				this.ptr.get(code).load(null, code).toData(null, code);
+				ptr(dirs).load(null, code).toData(null, code);
 
 		return anonymousObject(
 				dirs,
@@ -72,16 +89,20 @@ public abstract class AbstractObjectStoreOp
 
 	@Override
 	public String toString() {
-		if (this.ptr == null) {
+		if (this.id == null) {
 			return super.toString();
 		}
-		return this.ptr.toString();
+		return this.id.toString();
 	}
 
 	protected abstract ObjectOp object(CodeDirs dirs, Allocator allocator);
 
+	private final DataRecOp ptr(CodeDirs dirs) {
+		return this.getPtr.apply(dirs);
+	}
+
 	private static final class AllocatableObjectStore
-			implements Allocatable<AnyRecOp> {
+			implements Allocatable<DataRecOp> {
 
 		@Override
 		public AllocationMode getAllocationMode() {
@@ -89,18 +110,18 @@ public abstract class AbstractObjectStoreOp
 		}
 
 		@Override
-		public AnyRecOp allocate(
+		public DataRecOp allocate(
 				Allocations code,
-				Allocated<AnyRecOp> allocated) {
-			return code.allocatePtr();
+				Allocated<DataRecOp> allocated) {
+			return code.allocateDataPtr();
 		}
 
 		@Override
-		public void init(Code code, AnyRecOp allocated) {
+		public void init(Code code, DataRecOp allocated) {
 		}
 
 		@Override
-		public void dispose(Code code, Allocated<AnyRecOp> allocated) {
+		public void dispose(Code code, Allocated<DataRecOp> allocated) {
 		}
 
 	}

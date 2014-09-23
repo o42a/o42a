@@ -8,7 +8,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.MemberIdKind.LOCAL_FIELD_NAME;
+import static org.o42a.core.member.MemberIdKind.LOCAL_MEMBER_NAME;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class YieldTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void convertLocalToField() {
+	public void convertLocalToMember() {
 		compile(
 				"A := integer (",
 				"  2 $ F (",
@@ -53,12 +53,12 @@ public class YieldTest extends CompilerTestCase {
 
 		final Obj a = field("a").toObject();
 		final Member memberF = a.member(
-				LOCAL_FIELD_NAME.memberName(caseInsensitiveName("f")),
+				LOCAL_MEMBER_NAME.memberName(caseInsensitiveName("f")),
 				Accessor.OWNER);
 
 		assertThat("Local field `f` not created", memberF, notNullValue());
 
-		final Obj f = memberF.toField().field(dummyUser()).toObject();
+		final Obj f = memberF.toLocal().substance(dummyUser());
 
 		assertThat(definiteValue(f, ValueType.INTEGER), is(2L));
 		assertThat(valueOf(a, ValueType.INTEGER), runtimeValue());
@@ -76,12 +76,12 @@ public class YieldTest extends CompilerTestCase {
 
 		final Obj a = field("a").toObject();
 		final Member memberF = a.member(
-				LOCAL_FIELD_NAME.memberName(caseInsensitiveName("f")),
+				LOCAL_MEMBER_NAME.memberName(caseInsensitiveName("f")),
 				Accessor.OWNER);
 
 		assertThat("Local field `f` not created", memberF, notNullValue());
 
-		final Obj f = memberF.toField().field(dummyUser()).toObject();
+		final Obj f = memberF.toLocal().substance(dummyUser());
 
 		assertThat(
 				definiteValue(linkTarget(f), ValueType.INTEGER),

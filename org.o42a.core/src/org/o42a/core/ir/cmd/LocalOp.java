@@ -22,21 +22,44 @@ package org.o42a.core.ir.cmd;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.st.sentence.Local;
 import org.o42a.util.string.ID;
 
 
 public final class LocalOp {
 
+	private static final ID FILL_LOCAL_ID = ID.id("fill_local");
+
 	static LocalOp allocateLocal(CodeDirs dirs, Local local, RefOp ref) {
 
 		final ID id = local.getMemberId().toID();
-		final Code allocation = dirs.getAllocator().allocations();
 		final HostTargetOp target = ref.path().target();
-		final TargetStoreOp targetStore =
-				target.allocateStore(id, allocation);
+		final TargetStoreOp targetStore;
+		final MemberLocal member = local.getMember();
 
-		targetStore.storeTarget(dirs);
+		if (member == null) {
+
+			final Code allocation = dirs.getAllocator().allocations();
+
+			targetStore = target.allocateStore(id, allocation);
+			targetStore.storeTarget(dirs);
+		} else {
+			targetStore = target.localStore(
+					id,
+					ds -> ds.getBuilder()
+					.host()
+					.local(ds, member.getMemberKey()));
+
+			// Obtain target and store it inside nested allocator
+			// to prevent target references outside the scope.
+			final ID fillId = FILL_LOCAL_ID.detail(local.getMemberId());
+			final CodeDirs fillDirs = dirs.sub(dirs.code().allocator(fillId));
+
+			targetStore.storeTarget(fillDirs);
+
+			fillDirs.done().code().go(dirs.code().tail());
+		}
 
 		return new LocalOp(local, targetStore);
 	}

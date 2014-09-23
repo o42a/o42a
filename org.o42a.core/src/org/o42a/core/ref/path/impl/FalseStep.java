@@ -23,10 +23,14 @@ import static org.o42a.core.ir.value.Val.falseVal;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
@@ -205,19 +209,23 @@ public class FalseStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return falseObject(dirs.code());
+			return falseIR().op(getBuilder(), dirs.code());
 		}
 
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
-			return falseObject(code).target().allocateStore(id, code);
+			return falseIR().exactTargetStore(id);
 		}
 
-		private ObjOp falseObject(final Code code) {
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return falseIR().exactTargetStore(id);
+		}
 
-			final Obj falseObject = getContext().getFalse();
-
-			return falseObject.ir(getGenerator()).op(getBuilder(), code);
+		private final ObjectIR falseIR() {
+			return getContext().getFalse().ir(getGenerator());
 		}
 
 	}

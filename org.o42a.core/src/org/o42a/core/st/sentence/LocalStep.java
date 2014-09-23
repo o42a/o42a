@@ -23,6 +23,8 @@ import static org.o42a.core.member.AccessSource.FROM_DEFINITION;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
+import java.util.function.Function;
+
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -31,6 +33,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.LocalOp;
 import org.o42a.core.ir.field.dep.DepOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
@@ -99,8 +102,7 @@ final class LocalStep extends Step {
 
 	@Override
 	protected TypeRef iface(Ref ref) {
-		return local().originalRef().getInterface().prefixWith(
-				refPrefix(ref));
+		return local().ref().getInterface().prefixWith(refPrefix(ref));
 	}
 
 	@Override
@@ -240,7 +242,18 @@ final class LocalStep extends Step {
 					.localsOf(code.getAllocator())
 					.get(getStep().local());
 
-			return new LocalStoreOp(op);
+			return new LocalStoreOp(id, dirs -> op);
+		}
+
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return new LocalStoreOp(
+					id,
+					dirs -> getBuilder()
+					.localsOf(dirs.getAllocator())
+					.get(getStep().local()));
 		}
 
 		private LocalOp op(CodeDirs dirs) {
@@ -254,10 +267,12 @@ final class LocalStep extends Step {
 
 	private static final class LocalStoreOp implements TargetStoreOp {
 
-		private final LocalOp local;
+		private final ID id;
+		private final Function<CodeDirs, LocalOp> getLocal;
 
-		LocalStoreOp(LocalOp local) {
-			this.local = local;
+		LocalStoreOp(ID id, Function<CodeDirs, LocalOp> getLocal) {
+			this.id = id;
+			this.getLocal = getLocal;
 		}
 
 		@Override
@@ -266,15 +281,19 @@ final class LocalStep extends Step {
 
 		@Override
 		public TargetOp loadTarget(CodeDirs dirs) {
-			return this.local.target(dirs);
+			return local(dirs).target(dirs);
 		}
 
 		@Override
 		public String toString() {
-			if (this.local == null) {
+			if (this.id == null) {
 				return super.toString();
 			}
-			return this.local.toString();
+			return this.id.toString();
+		}
+
+		private final LocalOp local(CodeDirs dirs) {
+			return this.getLocal.apply(dirs);
 		}
 
 	}
@@ -346,7 +365,7 @@ final class LocalStep extends Step {
 		public void copyTarget(CodeDirs dirs, TargetStoreOp store) {
 
 			final LocalStoreOp localStore = (LocalStoreOp) store;
-			final TargetStoreOp st = localStore.local.getTargetStore();
+			final TargetStoreOp st = localStore.local(dirs).getTargetStore();
 
 			this.target.copyTarget(dirs, st);
 		}

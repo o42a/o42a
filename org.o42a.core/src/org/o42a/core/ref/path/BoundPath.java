@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ir.op.TargetStoreOp.indirectTargetStore;
 import static org.o42a.core.ref.path.PathIR.pathOp;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
 import static org.o42a.core.ref.path.PathResolution.noPathResolutionError;
@@ -27,6 +28,8 @@ import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathResolution.pathResolutionError;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+
+import java.util.function.Function;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
@@ -36,6 +39,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -943,6 +947,15 @@ public class BoundPath extends RefPath {
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
 			return object(code).allocateStore(id, code);
+		}
+
+		@Override
+		public TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return indirectTargetStore(
+					id,
+					dirs -> object(dirs.code()).localStore(id, getLocal));
 		}
 
 		@Override

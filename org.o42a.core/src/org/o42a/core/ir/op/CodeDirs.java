@@ -157,16 +157,10 @@ public class CodeDirs implements BuilderCode {
 	public String toString(String title, Code code) {
 
 		final StringBuilder out = new StringBuilder();
-		boolean semicolon = false;
 
-		out.append(title).append('[').append(code).append(": ");
+		out.append(title).append('[').append(code);
 		if (this.falseDir != null) {
-			if (semicolon) {
-				out.append("; ");
-			} else {
-				semicolon = true;
-			}
-			out.append("false->").append(this.falseDir);
+			out.append(", false->").append(this.falseDir);
 		}
 		out.append(']');
 

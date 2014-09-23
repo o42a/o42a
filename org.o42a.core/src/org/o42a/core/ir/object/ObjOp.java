@@ -24,6 +24,8 @@ import static org.o42a.core.ir.field.dep.DepOp.DEP_ID;
 import static org.o42a.core.ir.field.local.LocalIR.LOCAL_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
@@ -38,7 +40,9 @@ import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.TargetStoreOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
 import org.o42a.core.ir.value.type.ValueIR;
@@ -215,9 +219,19 @@ public final class ObjOp extends ObjectOp {
 	@Override
 	public TargetStoreOp allocateStore(ID id, Code code) {
 		if (getPrecision().isExact()) {
-			return new ExactObjectStoreOp(getObjectIR());
+			return getObjectIR().exactTargetStore(id);
 		}
 		return super.allocateStore(id, code);
+	}
+
+	@Override
+	public TargetStoreOp localStore(
+			ID id,
+			Function<CodeDirs, LocalIROp> getLocal) {
+		if (getPrecision().isExact()) {
+			return getObjectIR().exactTargetStore(id);
+		}
+		return super.localStore(id, getLocal);
 	}
 
 	private boolean validPrecision() {
@@ -276,33 +290,6 @@ public final class ObjOp extends ObjectOp {
 
 		private final ObjectValueIR objectValueIR() {
 			return objectIR().getObjectValueIR();
-		}
-
-	}
-
-	private static final class ExactObjectStoreOp implements TargetStoreOp {
-
-		private final ObjectIR objectIR;
-
-		ExactObjectStoreOp(ObjectIR objectIR) {
-			this.objectIR = objectIR;
-		}
-
-		@Override
-		public void storeTarget(CodeDirs dirs) {
-		}
-
-		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
-			return this.objectIR.op(dirs);
-		}
-
-		@Override
-		public String toString() {
-			if (this.objectIR == null) {
-				return super.toString();
-			}
-			return this.objectIR.getObject().toString();
 		}
 
 	}

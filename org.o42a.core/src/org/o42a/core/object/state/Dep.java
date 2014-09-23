@@ -29,12 +29,15 @@ import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.fn.CondInit.condInit;
 import static org.o42a.util.fn.Init.init;
 
+import java.util.function.Function;
+
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.UseFlag;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.dep.DepOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
@@ -413,8 +416,19 @@ public final class Dep extends Step implements SubID {
 			final Code alloc = code.inset(id);
 
 			return indirectTargetStore(
+					id,
 					dirs -> dep(dirs, tempObjHolder(alloc.getAllocator()))
 					.allocateStore(id, alloc));
+		}
+
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return indirectTargetStore(
+					id,
+					dirs -> dep(dirs, tempObjHolder(dirs.getAllocator()))
+					.localStore(id, getLocal));
 		}
 
 		private DepOp dep(CodeDirs dirs, ObjHolder holder) {
@@ -464,6 +478,13 @@ public final class Dep extends Step implements SubID {
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
 			return path().target().allocateStore(id, code);
+		}
+
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return path().target().localStore(id, getLocal);
 		}
 
 	}

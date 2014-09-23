@@ -91,8 +91,6 @@ public final class OwnerStep
 			PathRebuilder rebuilder,
 			Step step,
 			Local local) {
-		assert !local.isField() :
-			"Can not combine with local field";
 		replaceWithDep(rebuilder, step, local.getName());
 	}
 

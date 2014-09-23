@@ -22,12 +22,12 @@ package org.o42a.core.member.local;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.use.UserInfo;
-import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.*;
 import org.o42a.core.member.type.MemberTypeParameter;
 import org.o42a.core.object.Obj;
+import org.o42a.core.st.sentence.Local;
 import org.o42a.util.fn.Init;
 
 
@@ -35,6 +35,7 @@ public class MemberLocal extends NonAliasMember {
 
 	private final FieldDeclaration declaration;
 	private final MemberLocal propagatedFrom;
+	private final Local local;
 	private final Init<Visibility> visibility =
 			init(() -> getDeclaration().visibilityOf(this));
 
@@ -44,6 +45,7 @@ public class MemberLocal extends NonAliasMember {
 				builder.distribute(),
 				builder.getMemberOwner());
 		this.declaration = builder.getDeclaration();
+		this.local = builder.getLocal();
 		this.propagatedFrom = null;
 	}
 
@@ -55,11 +57,16 @@ public class MemberLocal extends NonAliasMember {
 				owner);
 		this.declaration =
 				propagatedFrom.getDeclaration().override(this, distribute());
+		this.local = propagatedFrom.getLocal();
 		this.propagatedFrom = propagatedFrom;
 	}
 
 	public final FieldDeclaration getDeclaration() {
 		return this.declaration;
+	}
+
+	public final Local getLocal() {
+		return this.local;
 	}
 
 	@Override
@@ -97,9 +104,8 @@ public class MemberLocal extends NonAliasMember {
 	}
 
 	@Override
-	public Container substance(UserInfo user) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Obj substance(UserInfo user) {
+		return this.local.ref().resolve(getScope().resolver()).toObject();
 	}
 
 	@Override

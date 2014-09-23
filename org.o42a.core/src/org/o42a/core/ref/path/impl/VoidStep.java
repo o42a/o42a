@@ -22,9 +22,12 @@ package org.o42a.core.ref.path.impl;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
-import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.field.local.LocalIROp;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -181,19 +184,23 @@ public class VoidStep extends Step {
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
-			return voidObject(dirs.code());
+			return voidIR().op(getBuilder(), dirs.code());
 		}
 
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
-			return voidObject(code).allocateStore(id, code);
+			return voidIR().exactTargetStore(id);
 		}
 
-		private ObjOp voidObject(Code code) {
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return voidIR().exactTargetStore(id);
+		}
 
-			final Obj voidObject = getContext().getVoid();
-
-			return voidObject.ir(getGenerator()).op(getBuilder(), code);
+		private final ObjectIR voidIR() {
+			return getContext().getVoid().ir(getGenerator());
 		}
 
 	}

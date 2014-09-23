@@ -19,11 +19,17 @@
 */
 package org.o42a.core.ir.field.dep;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+
+import java.util.function.Function;
+
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.core.ir.field.ByOwnerStoreOp;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -123,6 +129,13 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 	}
 
 	@Override
+	public TargetStoreOp localStore(
+			ID id,
+			Function<CodeDirs, LocalIROp> getLocal) {
+		return new DepByOwnerStoreOp(id, getLocal, this);
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 		throw new UnsupportedOperationException();
 	}
@@ -157,14 +170,30 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 			this.dep = dep;
 		}
 
+		DepByOwnerStoreOp(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal,
+				DepOp dep) {
+			super(id, getLocal);
+			this.dep = dep;
+		}
+
 		@Override
 		public Obj getOwnerType() {
 			return this.dep.depIR().getBodyIR().getObjectIR().getObject();
 		}
 
 		@Override
-		public ObjectOp owner() {
-			return this.dep.host();
+		protected ObjectOp owner(CodeDirs dirs, Allocator allocator) {
+
+			final ObjectOp owner = this.dep.host();
+
+			if (allocator != null) {
+				// Ensure the owner not deallocated until the local exists.
+				tempObjHolder(allocator).holdVolatile(dirs.code(), owner);
+			}
+
+			return owner;
 		}
 
 		@Override

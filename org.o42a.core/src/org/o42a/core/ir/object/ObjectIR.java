@@ -32,7 +32,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.desc.ObjectDescIR;
 import org.o42a.core.ir.object.vmt.VmtIR;
-import org.o42a.core.ir.op.BuilderCode;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.object.Obj;
 import org.o42a.util.fn.Init;
@@ -152,9 +152,42 @@ public class ObjectIR implements Codegen {
 				.op(builder, this);
 	}
 
+	public final TargetStoreOp exactTargetStore(ID id) {
+		return new ExactObjectStoreOp(id, this);
+	}
+
 	@Override
 	public String toString() {
 		return this.object + " IR";
+	}
+
+	private static final class ExactObjectStoreOp implements TargetStoreOp {
+
+		private final ID id;
+		private final ObjectIR objectIR;
+
+		ExactObjectStoreOp(ID id, ObjectIR objectIR) {
+			this.id = id;
+			this.objectIR = objectIR;
+		}
+
+		@Override
+		public void storeTarget(CodeDirs dirs) {
+		}
+
+		@Override
+		public TargetOp loadTarget(CodeDirs dirs) {
+			return this.objectIR.op(dirs);
+		}
+
+		@Override
+		public String toString() {
+			if (this.id == null) {
+				return super.toString();
+			}
+			return this.id.toString();
+		}
+
 	}
 
 }

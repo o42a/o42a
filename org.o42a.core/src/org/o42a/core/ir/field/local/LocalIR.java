@@ -119,8 +119,8 @@ public final class LocalIR implements FldIR<LocalIR.Op, LocalIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final DataRecOp object(Code code) {
-			return ptr(null, code, getType().object());
+		public final DataRecOp object(ID id, Code code) {
+			return ptr(id, code, getType().object());
 		}
 
 	}
