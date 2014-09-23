@@ -37,9 +37,12 @@ public abstract class AbstractObjectStoreOp
 	private static final AllocatableObjectStore ALLOCATABLE_OBJECT_STORE =
 			new AllocatableObjectStore();
 
+	private final Allocator allocator;
 	private final Allocated<AnyRecOp> ptr;
 
+
 	public AbstractObjectStoreOp(ID id, Code code) {
+		this.allocator = code.getAllocator();
 		this.ptr = code.allocate(id, ALLOCATABLE_OBJECT_STORE);
 	}
 
@@ -49,7 +52,7 @@ public abstract class AbstractObjectStoreOp
 	public void storeTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final ObjectOp object = object(dirs);
+		final ObjectOp object = object(dirs, this.allocator);
 
 		this.ptr.get(code).store(code, object.toAny(null, code));
 	}
@@ -75,7 +78,7 @@ public abstract class AbstractObjectStoreOp
 		return this.ptr.toString();
 	}
 
-	protected abstract ObjectOp object(CodeDirs dirs);
+	protected abstract ObjectOp object(CodeDirs dirs, Allocator allocator);
 
 	private static final class AllocatableObjectStore
 			implements Allocatable<AnyRecOp> {

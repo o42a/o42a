@@ -27,6 +27,7 @@ import static org.o42a.util.fn.CondInit.condInit;
 
 import java.util.IdentityHashMap;
 
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -293,10 +294,10 @@ public class DereferenceStep extends Step {
 		}
 
 		@Override
-		protected ObjectOp object(CodeDirs dirs) {
+		protected ObjectOp object(CodeDirs dirs, Allocator allocator) {
 			return this.op.dereference(
 					dirs,
-					tempObjHolder(dirs.getAllocator()));
+					tempObjHolder(allocator));
 		}
 
 	}

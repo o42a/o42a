@@ -159,7 +159,7 @@ public abstract class AbstractMemberStep extends Step {
 
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
-			return new MemberStoreOp(id, this);
+			return new MemberStoreOp(id, code.inset(id), this);
 		}
 
 	}
@@ -168,9 +168,9 @@ public abstract class AbstractMemberStep extends Step {
 			extends IndirectTargetStoreOp<FldStoreOp>
 			implements FldStoreOp {
 
-		MemberStoreOp(ID id, MemberOp member) {
+		MemberStoreOp(ID id, Code alloc, MemberOp member) {
 			super(dirs -> member.pathTarget(dirs)
-					.allocateStore(id, dirs.code()));
+					.allocateStore(id, alloc));
 		}
 
 		@Override

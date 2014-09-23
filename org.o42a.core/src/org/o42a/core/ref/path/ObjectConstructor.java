@@ -27,6 +27,7 @@ import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 import java.util.IdentityHashMap;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Contained;
@@ -297,10 +298,8 @@ public abstract class ObjectConstructor
 		}
 
 		@Override
-		protected ObjectOp object(CodeDirs dirs) {
-			return this.op.createObject(
-					dirs,
-					tempObjHolder(dirs.getAllocator()));
+		protected ObjectOp object(CodeDirs dirs, Allocator allocator) {
+			return this.op.createObject(dirs, tempObjHolder(allocator));
 		}
 
 	}

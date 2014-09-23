@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value.impl;
 
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
@@ -205,12 +206,12 @@ public final class Constant<T> extends ObjectConstructor {
 		}
 
 		@Override
-		protected ObjectOp object(CodeDirs dirs) {
+		protected ObjectOp object(CodeDirs dirs, Allocator allocator) {
 
 			final ObjectIR ir =
 					this.constant.getConstructed().ir(dirs.getGenerator());
 
-			return ir.op(dirs.getBuilder(), dirs.code());
+			return ir.op(dirs);
 		}
 
 	}

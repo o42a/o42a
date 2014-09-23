@@ -414,7 +414,7 @@ public final class Dep extends Step implements SubID {
 
 			return indirectTargetStore(
 					dirs -> dep(dirs, tempObjHolder(alloc.getAllocator()))
-					.allocateStore(id, dirs.code()));
+					.allocateStore(id, alloc));
 		}
 
 		private DepOp dep(CodeDirs dirs, ObjHolder holder) {
