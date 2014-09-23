@@ -169,16 +169,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	@Override
 	public abstract ValueOp value();
 
-	@Override
-	public HostTargetOp target() {
-		return this;
-	}
-
-	@Override
-	public final ObjectOp op(CodeDirs dirs) {
-		return this;
-	}
-
 	public abstract ObjectOp phi(Code code, DataOp ptr);
 
 	public final ObjectDataOp objectData(Code code) {

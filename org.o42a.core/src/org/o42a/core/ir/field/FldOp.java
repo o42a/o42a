@@ -60,16 +60,6 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	}
 
 	@Override
-	public final HostTargetOp target() {
-		return this;
-	}
-
-	@Override
-	public final TargetOp op(CodeDirs dirs) {
-		return this;
-	}
-
-	@Override
 	public FldStoreOp allocateStore(ID id, Code code) {
 		return new FldByOwnerStoreOp<>(id, code, this);
 	}
