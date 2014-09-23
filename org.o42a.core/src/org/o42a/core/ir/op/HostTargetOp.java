@@ -29,8 +29,6 @@ import org.o42a.util.string.ID;
 
 public interface HostTargetOp {
 
-	ID ALLOC_STORE_SUFFIX = ID.rawId("alloc_store");
-
 	TargetOp op(CodeDirs dirs);
 
 	FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey);
@@ -39,6 +37,19 @@ public interface HostTargetOp {
 
 	ObjectOp dereference(CodeDirs dirs, ObjHolder holder);
 
+	/**
+	 * Allocates target store.
+	 *
+	 * <p>Note that this method is typically called in the allocator code,
+	 * when target itself is not constructed yet. So this method should not rely
+	 * on target. The {@link TargetStoreOp#storeTarget(CodeDirs)}, on the other
+	 * hand, will be called when the target will be available.</p>
+	 *
+	 * @param id target store identifier.
+	 * @param code target store allocation code.
+	 *
+	 * @return target store instance.
+	 */
 	TargetStoreOp allocateStore(ID id, Code code);
 
 }
