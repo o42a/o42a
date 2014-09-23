@@ -26,11 +26,13 @@ import static org.o42a.util.fn.ArgCache.argCache;
 import static org.o42a.util.fn.CondInit.condInit;
 
 import java.util.IdentityHashMap;
+import java.util.function.Function;
 
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.AbstractObjectStoreOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -273,6 +275,13 @@ public class DereferenceStep extends Step {
 			return new DereferenceStoreOp(id, code, this);
 		}
 
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return new DereferenceStoreOp(id, getLocal, this);
+		}
+
 		private ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 			return host().target().dereference(dirs, holder);
 		}
@@ -288,6 +297,14 @@ public class DereferenceStep extends Step {
 			this.op = op;
 		}
 
+		DereferenceStoreOp(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal,
+				DereferenceOp op) {
+			super(id, getLocal);
+			this.op = op;
+		}
+
 		@Override
 		public Obj getWellKnownType() {
 			return DereferenceStep.this.iface.getKnown();
@@ -295,9 +312,11 @@ public class DereferenceStep extends Step {
 
 		@Override
 		protected ObjectOp object(CodeDirs dirs, Allocator allocator) {
-			return this.op.dereference(
-					dirs,
-					tempObjHolder(allocator));
+
+			final ObjHolder holder = tempObjHolder(
+					allocator != null ? allocator : dirs.getAllocator());
+
+			return this.op.dereference(dirs, holder);
 		}
 
 	}

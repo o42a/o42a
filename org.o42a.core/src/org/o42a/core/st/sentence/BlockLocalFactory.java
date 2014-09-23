@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.member.MemberIdKind.LOCAL_FIELD_NAME;
+import static org.o42a.core.member.MemberIdKind.LOCAL_MEMBER_NAME;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 import static org.o42a.core.st.sentence.Local.ANONYMOUS_LOCAL_NAME;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.impl.local.LocalFactory;
@@ -53,30 +53,29 @@ final class BlockLocalFactory implements LocalFactory {
 	}
 
 	@Override
-	public void convertToField(Local local) {
-		if (local.isField()) {
-			return;// Already converted.
+	public void convertToMember(Local local) {
+		if (!local.isMember()) {
+			local.convertToMember(declareMember(local));
 		}
-		local.convertToField(declareField(local));
 	}
 
-	private MemberField declareField(Local local) {
+	private MemberLocal declareMember(Local local) {
 
 		final Distributor distributor = this.block.distribute();
 		final FieldDeclaration declaration = fieldDeclaration(
 				local,
 				distributor,
-				fieldName(local))
+				localName(local))
 				.setVisibilityMode(PRIVATE_VISIBILITY);
 
 		return this.block.getMemberRegistry()
-				.newAlias(declaration, local.originalRef())
+				.newLocal(declaration, local)
 				.build()
 				.toMember()
-				.toField();
+				.toLocal();
 	}
 
-	private MemberName fieldName(Local local) {
+	private MemberName localName(Local local) {
 
 		final Name localName = local.getName();
 		final Name fieldName;
@@ -99,7 +98,7 @@ final class BlockLocalFactory implements LocalFactory {
 
 		this.fieldNames.put(localName, newIndex);
 
-		return LOCAL_FIELD_NAME.memberName(fieldName);
+		return LOCAL_MEMBER_NAME.memberName(fieldName);
 	}
 
 }

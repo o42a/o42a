@@ -21,15 +21,23 @@ package org.o42a.core.ir.op;
 
 import java.util.function.Function;
 
+import org.o42a.util.string.ID;
+
 
 public class IndirectTargetStoreOp<S extends TargetStoreOp>
 		implements TargetStoreOp {
 
+	private final ID id;
 	private final Function<CodeDirs, S> getStore;
 	private S store;
 
-	public IndirectTargetStoreOp(Function<CodeDirs, S> getStore) {
+	public IndirectTargetStoreOp(ID id, Function<CodeDirs, S> getStore) {
+		this.id = id;
 		this.getStore = getStore;
+	}
+
+	public final ID getId() {
+		return this.id;
 	}
 
 	@Override
@@ -41,6 +49,14 @@ public class IndirectTargetStoreOp<S extends TargetStoreOp>
 	@Override
 	public TargetOp loadTarget(CodeDirs dirs) {
 		return this.store.loadTarget(dirs);
+	}
+
+	@Override
+	public String toString() {
+		if (this.id == null) {
+			return super.toString();
+		}
+		return this.id.toString();
 	}
 
 	protected final S store() {

@@ -95,7 +95,7 @@ public class AncestorValidator implements PathWalker {
 
 	@Override
 	public boolean local(Step step, Scope scope, Local local) {
-		return validateNested(scope, local.originalRef());
+		return validateNested(scope, local.ref());
 	}
 
 	@Override

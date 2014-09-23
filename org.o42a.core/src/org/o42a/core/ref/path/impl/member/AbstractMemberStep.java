@@ -19,11 +19,14 @@
 */
 package org.o42a.core.ref.path.impl.member;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.FldStoreOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.Member;
@@ -159,7 +162,21 @@ public abstract class AbstractMemberStep extends Step {
 
 		@Override
 		protected TargetStoreOp allocateStore(ID id, Code code) {
-			return new MemberStoreOp(id, code.inset(id), this);
+
+			final Code alloc = code.inset(id);
+
+			return new MemberStoreOp(
+					id,
+					dirs -> pathTarget(dirs).allocateStore(id, alloc));
+		}
+
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return new MemberStoreOp(
+					id,
+					dirs -> pathTarget(dirs).localStore(id, getLocal));
 		}
 
 	}
@@ -168,9 +185,8 @@ public abstract class AbstractMemberStep extends Step {
 			extends IndirectTargetStoreOp<FldStoreOp>
 			implements FldStoreOp {
 
-		MemberStoreOp(ID id, Code alloc, MemberOp member) {
-			super(dirs -> member.pathTarget(dirs)
-					.allocateStore(id, alloc));
+		MemberStoreOp(ID id, Function<CodeDirs, FldStoreOp> getStore) {
+			super(id, getStore);
 		}
 
 		@Override

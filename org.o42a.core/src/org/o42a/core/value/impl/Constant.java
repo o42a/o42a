@@ -19,10 +19,13 @@
 */
 package org.o42a.core.value.impl;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.AbstractObjectStoreOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -189,6 +192,13 @@ public final class Constant<T> extends ObjectConstructor {
 			return new ConstantStoreOp(id, code, this.constant);
 		}
 
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return new ConstantStoreOp(id, getLocal, this.constant);
+		}
+
 	}
 
 	private static final class ConstantStoreOp extends AbstractObjectStoreOp {
@@ -197,6 +207,14 @@ public final class Constant<T> extends ObjectConstructor {
 
 		ConstantStoreOp(ID id, Code code, Constant<?> constant) {
 			super(id, code);
+			this.constant = constant;
+		}
+
+		ConstantStoreOp(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal,
+				Constant<?> constant) {
+			super(id, getLocal);
 			this.constant = constant;
 		}
 

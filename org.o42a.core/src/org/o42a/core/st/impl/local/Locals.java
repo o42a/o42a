@@ -113,7 +113,7 @@ public final class Locals {
 			final Local local = locals.getLocal();
 
 			if (local != null) {
-				this.factory.convertToField(local);
+				this.factory.convertToMember(local);
 			}
 
 			locals = locals.enclosing;

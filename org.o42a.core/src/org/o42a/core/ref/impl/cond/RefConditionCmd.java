@@ -40,7 +40,7 @@ final class RefConditionCmd implements Cmd {
 		final RefOp op = ref().op(control.host());
 		final Local local = this.statement.getLocal();
 
-		if (local == null || local.isField()) {
+		if (local == null) {
 			writeCond(control, op);
 		} else {
 			storeLocal(control.end(), op, local);

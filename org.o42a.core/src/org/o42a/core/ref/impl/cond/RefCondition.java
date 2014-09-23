@@ -26,7 +26,7 @@ import org.o42a.core.st.sentence.Local;
 
 public final class RefCondition extends Statement {
 
-	private Ref ref;
+	private final Ref ref;
 	private final Local local;
 
 	public RefCondition(Ref ref) {
@@ -37,14 +37,12 @@ public final class RefCondition extends Statement {
 
 	public RefCondition(Local local) {
 		super(local, local.distribute());
+		this.ref = local.ref();
 		this.local = local;
 	}
 
 	public final Ref ref() {
-		if (this.ref != null) {
-			return this.ref;
-		}
-		return this.ref = this.local.ref();
+		return this.ref;
 	}
 
 	public final boolean isLocal() {
@@ -57,7 +55,7 @@ public final class RefCondition extends Statement {
 
 	@Override
 	public boolean isValid() {
-		return originalRef().isValid();
+		return ref().isValid();
 	}
 
 	@Override
@@ -69,7 +67,7 @@ public final class RefCondition extends Statement {
 	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Ref ref = originalRef().reproduce(reproducer);
+		final Ref ref = ref().reproduce(reproducer);
 
 		if (ref == null) {
 			return null;
@@ -89,16 +87,12 @@ public final class RefCondition extends Statement {
 	@Override
 	public String toString() {
 		if (this.local != null) {
-			return this.local.toString() + " = " + this.local.originalRef();
+			return this.local.toString() + " = " + this.local.ref();
 		}
 		if (this.ref != null) {
 			return this.ref.toString();
 		}
 		return super.toString();
-	}
-
-	private final Ref originalRef() {
-		return this.local != null ? this.local.originalRef() : this.ref;
 	}
 
 }

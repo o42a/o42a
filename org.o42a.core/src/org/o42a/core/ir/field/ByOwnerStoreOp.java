@@ -21,10 +21,12 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+
+import java.util.function.Function;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -38,27 +40,36 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 	private static final AllocatableOwnerPtr ALLOCATABLE_OWNER_PTR =
 			new AllocatableOwnerPtr();
 
-	private final Allocated<DataRecOp> ownerPtr;
+	private final ID id;
 	private final Allocator allocator;
+	private final Function<CodeDirs, DataRecOp> getOwnerPtr;
 
 	public ByOwnerStoreOp(ID id, Code code) {
+		this.id = id;
 		this.allocator = code.getAllocator();
-		this.ownerPtr = code.allocate(id, ALLOCATABLE_OWNER_PTR);
+
+		final Allocated<DataRecOp> allocated =
+				code.allocate(id, ALLOCATABLE_OWNER_PTR);
+
+		this.getOwnerPtr = dirs -> allocated.get(dirs.code());
+	}
+
+	public ByOwnerStoreOp(ID id, Function<CodeDirs, LocalIROp> getLocal) {
+		this.id = id;
+		this.allocator = null;
+		this.getOwnerPtr =
+				dirs -> getLocal.apply(dirs).ptr().object(id, dirs.code());
 	}
 
 	public abstract Obj getOwnerType();
-
-	public abstract ObjectOp owner();
 
 	@Override
 	public final void storeTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final ObjectOp owner = owner();
+		final ObjectOp owner = owner(dirs, this.allocator);
 
-		tempObjHolder(this.allocator).holdVolatile(code, owner);
-
-		this.ownerPtr.get(code).store(code, owner.toData(null, code));
+		ownerPtr(dirs).store(code, owner.toData(null, code));
 	}
 
 	@Override
@@ -68,7 +79,7 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 
 		return anonymousObject(
 				dirs,
-				this.ownerPtr.get(code).load(null, code),
+				ownerPtr(dirs).load(null, code),
 				getOwnerType());
 	}
 
@@ -82,13 +93,19 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 
 	@Override
 	public String toString() {
-		if (this.ownerPtr == null) {
+		if (this.id == null) {
 			return super.toString();
 		}
-		return this.ownerPtr.toString();
+		return this.id.toString();
 	}
 
+	protected abstract ObjectOp owner(CodeDirs dirs, Allocator allocator);
+
 	protected abstract TargetOp op(CodeDirs dirs, ObjOp owner);
+
+	private final DataRecOp ownerPtr(CodeDirs dirs) {
+		return this.getOwnerPtr.apply(dirs);
+	}
 
 	private static final class AllocatableOwnerPtr
 			implements Allocatable<DataRecOp> {

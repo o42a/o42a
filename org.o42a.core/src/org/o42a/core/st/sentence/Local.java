@@ -20,8 +20,6 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.member.MemberIdKind.LOCAL_NAME;
-import static org.o42a.core.ref.path.Path.SELF_PATH;
-import static org.o42a.util.fn.Init.init;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.core.Container;
@@ -31,7 +29,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberPath;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
@@ -39,7 +37,6 @@ import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.fn.Init;
 import org.o42a.util.string.Name;
 import org.o42a.util.string.SubID;
 
@@ -58,9 +55,8 @@ public final class Local
 	private final Location location;
 	private final Name name;
 	private final MemberName memberId;
-	private final Ref originalRef;
-	private Ref fieldRef;
-	private final Init<Ref> ref = init(this::originalRef);
+	private final Ref ref;
+	private MemberLocal member;
 
 	Local(LocationInfo location, Name name, Ref ref) {
 		assert name != null :
@@ -69,7 +65,7 @@ public final class Local
 			"Local reference not specified";
 		this.location = location.getLocation();
 		this.name = name;
-		this.originalRef = ref;
+		this.ref = ref;
 		this.memberId = LOCAL_NAME.memberName(name);
 	}
 
@@ -81,16 +77,16 @@ public final class Local
 		return this.memberId;
 	}
 
-	public final boolean isField() {
-		return this.fieldRef != null;
+	public final boolean isMember() {
+		return this.member != null;
 	}
 
-	public final Ref originalRef() {
-		return this.originalRef;
+	public final MemberLocal getMember() {
+		return this.member;
 	}
 
 	public final Ref ref() {
-		return this.ref.get();
+		return this.ref;
 	}
 
 	@Override
@@ -100,12 +96,12 @@ public final class Local
 
 	@Override
 	public final Scope getScope() {
-		return originalRef().getScope();
+		return ref().getScope();
 	}
 
 	@Override
 	public final Container getContainer() {
-		return originalRef().getContainer();
+		return ref().getContainer();
 	}
 
 	public Ref toRef() {
@@ -114,14 +110,7 @@ public final class Local
 
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
-
-		final Ref ref = ref();// Initialize
-
-		if (!isField()) {
-			return new LocalStep(this).toPath();
-		}
-
-		return ref.getPath().getPath();
+		return new LocalStep(this).toPath();
 	}
 
 	@Override
@@ -157,14 +146,8 @@ public final class Local
 		return this.name.toString();
 	}
 
-	void convertToField(MemberField field) {
-		assert !this.ref.isInitialized() :
-			"Too late to convert the local to field";
-		this.fieldRef =
-				SELF_PATH.append(field.getMemberKey())
-				.bind(this, getScope())
-				.target(distribute());
-		this.ref.set(this.fieldRef);
+	void convertToMember(MemberLocal member) {
+		this.member = member;
 	}
 
 }

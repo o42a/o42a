@@ -19,8 +19,11 @@
 */
 package org.o42a.core.ir.op;
 
+import java.util.function.Function;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.member.MemberKey;
@@ -51,5 +54,15 @@ public interface HostTargetOp {
 	 * @return target store instance.
 	 */
 	TargetStoreOp allocateStore(ID id, Code code);
+
+	/**
+	 * Creates a target store storing the target as local member.
+	 *
+	 * @param id target store identifier.
+	 * @param getLocal a function obtaining local member by code directions.
+	 *
+	 * @return target store instance.
+	 */
+	TargetStoreOp localStore(ID id, Function<CodeDirs, LocalIROp> getLocal);
 
 }

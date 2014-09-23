@@ -397,7 +397,7 @@ public final class ObjectIRBody {
 			LinkedHashMap<MemberKey, LocalIR> locals,
 			Obj ascendant) {
 		for (Member declared : ascendant.getMembers()) {
-			if (!declared.isOverride()) {
+			if (declared.isOverride()) {
 				continue;
 			}
 

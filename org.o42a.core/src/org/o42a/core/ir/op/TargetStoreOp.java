@@ -21,12 +21,15 @@ package org.o42a.core.ir.op;
 
 import java.util.function.Function;
 
+import org.o42a.util.string.ID;
+
 
 public interface TargetStoreOp {
 
 	static TargetStoreOp indirectTargetStore(
+			ID id,
 			Function<CodeDirs, TargetStoreOp> getStore) {
-		return new IndirectTargetStoreOp<>(getStore);
+		return new IndirectTargetStoreOp<>(id, getStore);
 	}
 
 	void storeTarget(CodeDirs dirs);

@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 
 import java.util.IdentityHashMap;
+import java.util.function.Function;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.Allocator;
@@ -33,6 +34,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.AbstractObjectStoreOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -233,6 +235,13 @@ public abstract class ObjectConstructor
 			return new NewObjectStoreOp(id, code, this);
 		}
 
+		@Override
+		protected TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return new NewObjectStoreOp(id, getLocal, this);
+		}
+
 		private boolean isExact() {
 			return !getConstructed().type().derivation().isUsed(
 					getGenerator().getAnalyzer(),
@@ -292,6 +301,14 @@ public abstract class ObjectConstructor
 			this.op = op;
 		}
 
+		NewObjectStoreOp(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal,
+				ConstructorOp op) {
+			super(id, getLocal);
+			this.op = op;
+		}
+
 		@Override
 		public Obj getWellKnownType() {
 			return getConstructed();
@@ -299,7 +316,11 @@ public abstract class ObjectConstructor
 
 		@Override
 		protected ObjectOp object(CodeDirs dirs, Allocator allocator) {
-			return this.op.createObject(dirs, tempObjHolder(allocator));
+
+			final ObjHolder holder = tempObjHolder(
+					allocator != null ? allocator : dirs.getAllocator());
+
+			return this.op.createObject(dirs, holder);
 		}
 
 	}
