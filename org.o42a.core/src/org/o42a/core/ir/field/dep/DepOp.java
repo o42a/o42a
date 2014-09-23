@@ -93,16 +93,6 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 	}
 
 	@Override
-	public final HostTargetOp target() {
-		return this;
-	}
-
-	@Override
-	public final TargetOp op(CodeDirs dirs) {
-		return this;
-	}
-
-	@Override
 	public void writeCond(CodeDirs dirs) {
 		loadDep(dirs).value().writeCond(dirs);
 	}

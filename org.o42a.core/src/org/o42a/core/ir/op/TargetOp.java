@@ -29,4 +29,14 @@ public interface TargetOp extends HostOp, HostTargetOp {
 
 	DataPtrOp<?> ptr();
 
+	@Override
+	default HostTargetOp target() {
+		return this;
+	}
+
+	@Override
+	default TargetOp op(CodeDirs dirs) {
+		return this;
+	}
+
 }
