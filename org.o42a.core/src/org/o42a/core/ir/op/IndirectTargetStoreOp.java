@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2013,2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,15 +22,29 @@ package org.o42a.core.ir.op;
 import java.util.function.Function;
 
 
-public interface TargetStoreOp {
+public class IndirectTargetStoreOp<S extends TargetStoreOp>
+		implements TargetStoreOp {
 
-	static TargetStoreOp indirectTargetStore(
-			Function<CodeDirs, TargetStoreOp> getStore) {
-		return new IndirectTargetStoreOp<>(getStore);
+	private final Function<CodeDirs, S> getStore;
+	private S store;
+
+	public IndirectTargetStoreOp(Function<CodeDirs, S> getStore) {
+		this.getStore = getStore;
 	}
 
-	void storeTarget(CodeDirs dirs);
+	@Override
+	public void storeTarget(CodeDirs dirs) {
+		this.store = this.getStore.apply(dirs);
+		this.store.storeTarget(dirs);
+	}
 
-	TargetOp loadTarget(CodeDirs dirs);
+	@Override
+	public TargetOp loadTarget(CodeDirs dirs) {
+		return this.store.loadTarget(dirs);
+	}
+
+	protected final S store() {
+		return this.store;
+	}
 
 }

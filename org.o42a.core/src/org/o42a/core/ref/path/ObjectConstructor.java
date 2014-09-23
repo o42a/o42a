@@ -298,7 +298,9 @@ public abstract class ObjectConstructor
 
 		@Override
 		protected ObjectOp object(CodeDirs dirs) {
-			return this.op.createObject(dirs, tempObjHolder(getAllocator()));
+			return this.op.createObject(
+					dirs,
+					tempObjHolder(dirs.getAllocator()));
 		}
 
 	}

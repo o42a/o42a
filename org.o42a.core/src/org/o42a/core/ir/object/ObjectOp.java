@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.inst.InstFldKind.INST_RESUME_FROM;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import java.util.Collection;
@@ -289,8 +288,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
 		@Override
 		protected ObjectOp object(CodeDirs dirs) {
-			tempObjHolder(getAllocator())
-			.holdVolatile(dirs.code(), this.object);
 			return this.object;
 		}
 

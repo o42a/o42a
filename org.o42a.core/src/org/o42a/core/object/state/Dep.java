@@ -21,6 +21,7 @@ package org.o42a.core.object.state;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.op.TargetStoreOp.indirectTargetStore;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
@@ -411,7 +412,9 @@ public final class Dep extends Step implements SubID {
 
 			final Code alloc = code.inset(id);
 
-			return new DepStepStoreOp(id, alloc, this);
+			return indirectTargetStore(
+					dirs -> dep(dirs, tempObjHolder(alloc.getAllocator()))
+					.allocateStore(id, dirs.code()));
 		}
 
 		private DepOp dep(CodeDirs dirs, ObjHolder holder) {
@@ -419,45 +422,6 @@ public final class Dep extends Step implements SubID {
 					.target()
 					.materialize(dirs, holder)
 					.dep(dirs, getStep());
-		}
-
-	}
-
-	private static final class DepStepStoreOp implements TargetStoreOp {
-
-		private final ID id;
-		private final Code alloc;
-		private final DepStepOp op;
-		private TargetStoreOp store;
-
-		DepStepStoreOp(ID id, Code alloc, DepStepOp op) {
-			this.id = id;
-			this.alloc = alloc;
-			this.op = op;
-		}
-
-		@Override
-		public void storeTarget(CodeDirs dirs) {
-
-			final DepOp dep = this.op.dep(
-					dirs,
-					tempObjHolder(this.alloc.getAllocator()));
-
-			this.store = dep.allocateStore(this.id, this.alloc);
-			this.store.storeTarget(dirs);
-		}
-
-		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
-			return this.store.loadTarget(dirs);
-		}
-
-		@Override
-		public String toString() {
-			if (this.id == null) {
-				return super.toString();
-			}
-			return this.id.toString();
 		}
 
 	}
