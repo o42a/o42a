@@ -438,6 +438,9 @@ public class BoundPath extends RefPath {
 
 	@Override
 	protected void localMember(LocalRegistry registry) {
+		if (isStatic()) {
+			return;
+		}
 
 		final Step lastStep = lastStep();
 
