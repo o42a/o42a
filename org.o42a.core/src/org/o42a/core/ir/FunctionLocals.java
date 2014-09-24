@@ -19,18 +19,32 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.core.ir.object.op.ByObjectFn.BY_OBJECT;
+
 import java.util.IdentityHashMap;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.cmd.LocalOp;
 import org.o42a.core.ir.cmd.LocalsCode;
+import org.o42a.core.ir.object.op.ByObjectFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.st.sentence.Local;
+import org.o42a.util.string.ID;
 
 
 final class FunctionLocals extends LocalsCode {
 
+	private static final ID INIT_STATIC_ID = ID.rawId("init_static");
+
+	private final CodeBuilder builder;
+	private Code initStaticObject;
 	private IdentityHashMap<Local, LocalOp> locals;
+	private boolean staticObjectInitialized;
+
+	FunctionLocals(CodeBuilder builder) {
+		this.builder = builder;
+	}
 
 	@Override
 	public final LocalOp get(Local local) {
@@ -45,6 +59,9 @@ final class FunctionLocals extends LocalsCode {
 
 	@Override
 	public final LocalOp set(CodeDirs dirs, Local local, RefOp ref) {
+		if (local.isMember()) {
+			initStaticObject();
+		}
 		if (this.locals == null) {
 			this.locals = new IdentityHashMap<>();
 		}
@@ -56,6 +73,37 @@ final class FunctionLocals extends LocalsCode {
 			"Local " + local + " already evaluated";
 
 		return op;
+	}
+
+	final void start() {
+		if (this.builder.host()
+				.getWellKnownType()
+				.getConstructionMode()
+				.isRuntime()) {
+			// Not necessary for objects constructed at run time.
+			this.staticObjectInitialized = true;
+		} else {
+			this.initStaticObject =
+					this.builder.getFunction().inset(INIT_STATIC_ID);
+		}
+	}
+
+	private void initStaticObject() {
+		if (this.staticObjectInitialized) {
+			return;
+		}
+		this.staticObjectInitialized = true;
+
+		final Code code = this.initStaticObject;
+		final ByObjectFn fn =
+				this.builder.getGenerator()
+				.externalFunction()
+				.link("o42a_obj_static", BY_OBJECT)
+				.op(null, code);
+
+		fn.call(code, this.builder.host().toData(null, code));
+
+		this.builder.host();
 	}
 
 }

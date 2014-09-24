@@ -45,6 +45,7 @@ public final class ObjBuilder extends CodeBuilder {
 				exit,
 				hostIR,
 				hostIR.isExact() ? EXACT : hostPrecision);
+		initFunction();
 	}
 
 	@Override

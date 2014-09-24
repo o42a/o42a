@@ -43,13 +43,13 @@ public abstract class CodeBuilder {
 	private final CompilerContext context;
 	private final Function<?> function;
 	private final GCCode gc;
-	private final LocalsCode locals;
+	private final FunctionLocals locals;
 	private int nameSeq;
 
 	protected CodeBuilder(CompilerContext context, Function<?> function) {
 		this.context = context;
 		this.function = function;
-		this.locals = new FunctionLocals();
+		this.locals = new FunctionLocals(this);
 		this.gc = new GCCode(this);
 	}
 
@@ -104,6 +104,10 @@ public abstract class CodeBuilder {
 				.valPtr(Void.VOID)
 				.op(null, code)
 				.op(this, Val.VOID_VAL);
+	}
+
+	protected final void initFunction() {
+		this.locals.start();
 	}
 
 }
